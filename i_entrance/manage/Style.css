@@ -1,0 +1,199 @@
+@charset "utf-8";
+
+#EntranceManage_00 {
+    width: 500px; height: 409px;
+    position: absolute;
+    top: 50px; left: 50%;
+    margin-left: -256px; /* DIV박스 크기의 1/2로 마진을 잡아줍니다. */
+    display: none;
+    z-index: 2;
+}
+
+#EntranceManage_0000 {
+    width: 498px; height: 50px;
+    position: absolute; top: 0px; left: 0px;
+}
+
+#EntranceManage_0001 {
+    width: 100px; height: 30px;
+    position: absolute; top: 10px; left: 350px;
+}
+
+#EntranceManage_0002 {
+    width: 498px; height: 25px;
+    position: absolute; top: 50px; left: 0px;
+}
+
+#EntranceManage_0003 {
+    width: 98px; height: 84px;
+    position: absolute; top: 75px; left: 0px;
+    line-height: 84px;
+}
+
+#EntranceManage_0004 {
+    width: 148px; height: 84px;
+    position: absolute; top: 75px; left: 100px;
+    line-height: 84px;
+}
+
+#EntranceManage_0005 {
+    width: 98px; height: 84px;
+    position: absolute; top: 75px; left: 250px;
+    line-height: 84px;
+}
+
+#EntranceManage_0006 {
+    width: 148px; height: 84px;
+    position: absolute; top: 75px; left: 350px;
+    text-align: left;
+}
+
+#EntranceManage_000600 {
+    width: 80px; height: 17px;
+}
+
+#EntranceManage_000601 {
+    width: 80px; height: 17px;
+}
+
+#EntranceManage_000602 {
+    width: 80px; height: 17px;
+}
+
+#EntranceManage_000603 {
+    width: 144px; height: 20px;
+}
+
+#EntranceManage_0007 {
+    width: 98px; height: 64px;
+    position: absolute; top: 159px; left: 0px;
+    line-height: 64px;
+}
+
+#EntranceManage_0008 {
+    width: 148px; height: 64px;
+    position: absolute; top: 159px; left: 100px;
+    line-height: 64px;
+}
+
+#EntranceManage_0009 {
+    width: 98px; height: 64px;
+    position: absolute; top: 159px; left: 250px;
+    line-height: 64px;
+}
+
+#EntranceManage_0010 {
+    width: 148px; height: 64px;
+    position: absolute; top: 159px; left: 350px;
+    line-height: 64px;
+}
+
+#EntranceManage_0011 {
+    width: 98px; height: 20px;
+    position: absolute; top: 223px; left: 0px;
+}
+
+#EntranceManage_0012 {
+    width: 148px; height: 20px;
+    position: absolute; top: 223px; left: 100px;
+}
+
+#EntranceManage_0013 {
+    width: 248px; height: 20px;
+    position: absolute; top: 223px; left: 250px;
+}
+
+#EntranceManage_0014 {
+    width: 98px; height: 64px;
+    position: absolute; top: 243px; left: 0px;
+    line-height: 64px;
+}
+
+#EntranceManage_0015 {
+    width: 148px; height: 64px;
+    position: absolute; top: 243px; left: 100px;
+}
+
+#EntranceManage_001500 {
+    width: 64px; height: 64px;
+    position: absolute; top: 0px; left: 0px;
+}
+
+#EntranceManage_001501 {
+    width: 64px; height: 64px;
+    position: absolute; top: 0px; left: 85px;
+}
+
+#EntranceManage_0016 {
+    width: 248px; height: 64px;
+    position: absolute; top: 243px; left: 250px;
+}
+
+#EntranceManage_001600 {
+    width: 100px; height: 16px;
+    position: absolute; top: 10px; left: 10px;
+    display: none;
+}
+
+#EntranceManage_001601 {
+    width: 70px; height: 20px;
+    position: absolute; top: 10px; left: 120px;
+}
+
+#EntranceManage_001602 {
+    width: 85px; height: 20px;
+    position: absolute; top: 35px; left: 10px;
+}
+
+#EntranceManage_001603 {
+    width: 85px; height: 20px;
+    position: absolute; top: 35px; left: 105px;
+}
+
+#EntranceManage_0017 {
+    width: 98px; height: 100px;
+    position: absolute; top: 307px; left: 0px;
+    line-height: 100px;
+}
+
+#EntranceManage_0018 {
+    width: 398px; height: 100px;
+    position: absolute; top: 307px; left: 100px;
+    text-align: left;
+}
+
+#EntranceManage_0019 {
+    width: 149px; height: 20px;
+    position: absolute; top: 139px; left: 101px;
+}
+
+#EntranceManage_0020 {
+    width: 500px; height: 20px;
+    position: absolute; top: 409px; left: -1px;
+    border: none;
+}
+
+#EntranceManage_002000 {
+    width: 500px;
+    position: absolute; top: 0px; left: 0px;
+}
+
+#EntranceManage_00200000 {
+    width: 498px; height: 20px;
+}
+
+.EntranceManage_Sequence {
+    width: 48px; height: 20px;
+}
+
+.EntranceManage_Date {
+    width: 148px; height: 20px;
+}
+
+.EntranceManage_Amount {
+    width: 148px; height: 20px;
+}
+
+.EntranceManage_Cumul {
+    width: 148px; height: 20px;
+}

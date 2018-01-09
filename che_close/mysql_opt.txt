@@ -1,0 +1,53 @@
+﻿로그활성화
+show variables like '%log%';
+
+ALTER TABLE mysql.general_log
+ADD COLUMN seq BIGINT UNSIGNED NOT NULL AUTO_INCREMENT AFTER argument,
+ADD PRIMARY KEY(seq),
+ENGINE=MYISAM;
+
+set global expire_logs_days=7;
+set global log_output='TABLE';
+set global general_log=1;
+
+select count(*) from mysql.general_log;
+select * from mysql.general_log limit 100;
+
+set global general_log=0;
+truncate mysql.general_log;
+
+
+캐시들
+show variables like '%cache%';
+show status like '%cache%';
+show variables like '%key%';
+show status like '%key%';
+
+key_buffer_size 줄이자. 현16M -> 8M이하
+myisam_sort_buffer_size 줄이자. 현8M -> 2M
+
+innodb 설정
+기존 Antelope 포맷은 가변컬럼의 767바이트까지만 저장하고 나머지는 offset하여 외부에 저장한다.
+그런데 innodb는 1개 행이 최대 8KB만 저장 가능하므로 가변컬럼이 11개 이상인 경우는 오류 위험이 있다.
+(MyISAM은 64KB)
+Barracuda 포맷에 Dynamic 또는 Compressed를 사용하면 포인터 20바이트만 저장하고 실데이터는 외부에 저장한다.
+
+[mysqld]
+innodb_file_format=barracuda
+innodb_file_per_table=1
+
+
+innodb 최적화
+innodb_buffer_pool_size: 체섭 테이블 최대 5M정도. 인덱스 포함해도 32M면 충분?
+innodb_flush_method: 기본값대로. O_DIRECT는 메모리가 커서 캐시 2중 필요 없을때만.
+innodb_file_per_table: 테이블마다 독립파일로 저장
+innodb_flush_log_at_trx_commit: 기본1(커밋마다), 0(로그찰때만), 추천2(1초마다)
+innodb_log_file_size: 현 5M, 많이 키워도 될듯
+innodb_log_buffer_size: 기본 8M 적당
+innodb_thread_concurrency: 코어개수 2배 정도
+
+sync_binlog=0 이미 꺼져있음
+
+ib_logfile0, ib_logfile1은 로그사이즈 바꾸면 재시작이 안되므로 지우고 다시 해야함
+
+alter table table_name engine=innodb row_format=dynamic

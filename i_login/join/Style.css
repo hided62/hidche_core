@@ -1,0 +1,280 @@
+@charset "utf-8";
+
+#LoginJoin_00 {
+    width: 800px; height: 851px;
+    position: absolute; top: 0px; left: 50%;
+    margin-left: -400px; /* DIV박스 크기의 1/2로 마진을 잡아줍니다. */
+    display: none;
+    z-index: 2;
+}
+
+#LoginJoin_0000 {
+    width: 800px; height: 50px;
+    float: left;
+}
+
+.LoginJoin_back {
+    height: 30px;
+}
+
+#LoginJoin_0001 {
+    width: 800px; height: 15px;
+    float: left;
+}
+
+#LoginJoin_0002 {
+    width: 800px; height: 30px;
+    float: left;
+    color: red; font-size: 20px; font-weight: bold;
+}
+
+#LoginJoin_0003 {
+    width: 800px; height: 25px;
+    float: left;
+    font-size: 20px; font-weight: bold;
+}
+
+#LoginJoin_0004 {
+    width: 800px; height: 15px;
+    float: left;
+}
+
+#LoginJoin_0005 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: right;
+}
+
+#LoginJoin_0006 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: left;
+}
+
+#LoginJoin_000600 {
+    width: 100px; height: 16px;
+    float: left;
+}
+
+#LoginJoin_000601 {
+    width: 120px; height: 20px;
+    float: left;
+}
+
+#LoginJoin_0007 {
+    width: 800px; height: 30px;
+    float: left;
+}
+
+#LoginJoin_0008 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: right;
+}
+
+#LoginJoin_0009 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: left;
+}
+
+#LoginJoin_000900 {
+    width: 100px; height: 16px;
+    float: left;
+}
+
+#LoginJoin_0010 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: right;
+}
+
+#LoginJoin_0011 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: left;
+}
+
+#LoginJoin_001100 {
+    width: 100px; height: 16px;
+    float: left;
+}
+
+#LoginJoin_0012 {
+    width: 800px; height: 65px;
+    float: left;
+}
+
+#LoginJoin_0013 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: right;
+}
+
+#LoginJoin_0014 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: left;
+}
+
+#LoginJoin_001400 {
+    width: 100px; height: 16px;
+    float: left;
+}
+
+#LoginJoin_001401 {
+    width: 20px; height: 16px;
+    float: left;
+}
+
+#LoginJoin_001402 {
+    width: 120px; height: 20px;
+    float: left;
+}
+
+#LoginJoin_0015 {
+    width: 800px; height: 50px;
+    float: left;
+}
+
+#LoginJoin_0016 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: right;
+}
+
+#LoginJoin_0017 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: left;
+}
+
+#LoginJoin_001700 {
+    width: 100px; height: 16px;
+    float: left;
+}
+
+#LoginJoin_001701 {
+    width: 120px; height: 20px;
+    float: left;
+}
+
+#LoginJoin_0018 {
+    width: 800px; height: 50px;
+    float: left;
+}
+
+#LoginJoin_0019 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: right;
+}
+
+#LoginJoin_0020 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: left;
+}
+
+#LoginJoin_002000 {
+    width: 100px; height: 16px;
+    float: left;
+}
+
+#LoginJoin_002001 {
+    width: 120px; height: 20px;
+    float: left;
+}
+
+#LoginJoin_0021 {
+    width: 800px; height: 50px;
+    float: left;
+}
+
+#LoginJoin_0022 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: right;
+}
+
+#LoginJoin_0023 {
+    width: 398px; height: 20px;
+    float: left;
+    text-align: left;
+}
+
+#LoginJoin_002300 {
+    width: 100px; height: 20px;
+    float: left;
+}
+
+#LoginJoin_002301 {
+    width: 50px; height: 16px;
+    float: left;
+}
+
+#LoginJoin_002302 {
+    width: 100px; height: 20px;
+    float: left;
+}
+
+#LoginJoin_0024 {
+    width: 800px; height: 35px;
+    float: left;
+    color: red; font-size: 30px; font-weight: bold;
+}
+
+#LoginJoin_0025 {
+    width: 800px; height: 110px;
+    float: left;
+}
+
+#LoginJoin_0026 {
+    width: 800px; height: 60px;
+    float: left;
+    color: cyan; font-size: 15px; font-weight: bold;
+}
+
+#LoginJoin_0027 {
+    width: 800px; height: 20px;
+    float: left;
+}
+
+#LoginJoin_002700 {
+    width: 15px; height: 15px;
+}
+
+#LoginJoin_0028 {
+    width: 398px; height: 30px;
+    float: left;
+}
+
+#LoginJoin_002800 {
+    width: 120px; height: 30px;
+}
+
+#LoginJoin_0029 {
+    width: 398px; height: 30px;
+    float: left;
+}
+
+#LoginJoin_002900 {
+    width: 120px; height: 30px;
+}
+
+#LoginJoin_0030 {
+    width: 800px; height: 30px;
+    float: left;
+}
+
+.LoginJoin_notice {
+    color: cyan;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.LoginJoin_alert {
+    color: red;
+    font-size: 15px;
+    font-weight: bold;
+}

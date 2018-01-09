@@ -1,0 +1,17 @@
+DB Connect() error
+DB Connect() error: sammo_che
+DB Connect() error: _che
+DB Connect() error: sammo\_che
+DB Connect() error: sammo\_che
+DB Connect() error: sammo\_che
+DB Connect() error: sammo\_che
+DB Connect() error: test
+DB Connect() error: test
+DB Connect() error: test
+DB Connect() error: test
+DB Connect() error: test
+DB Connect() error: test
+DB Connect() error: test
+DB Connect() error: test
+DB Connect() error: test
+DB Connect() error: test

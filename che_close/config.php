@@ -1,0 +1,6 @@
+<?
+localhost
+root
+root
+test
+?>
