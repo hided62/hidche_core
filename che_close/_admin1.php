@@ -9,7 +9,7 @@ $query = "select userlevel from general where user_id='$_SESSION[p_id]'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "
 <html>
 <head>
@@ -43,7 +43,7 @@ $admin = getAdmin($connect);
 <form name=form1 method=post action=_admin1_submit.php>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td width=110 align=right>운영자메세지</td>
-        <td colspan=3><input type=textarea size=90 style=color:white;background-color:black; name=msg value='<?=$admin[msg];?>'><input type=submit name=btn value=변경></td></td>
+        <td colspan=3><input type=textarea size=90 style=color:white;background-color:black; name=msg value='<?=$admin['msg'];?>'><input type=submit name=btn value=변경></td></td>
     </tr>
     <tr><td width=110 align=right>중원정세추가</td>
         <td colspan=3><input type=textarea size=90 maxlength=80 style=color:white;background-color:black; name=log><input type=submit name=btn value=로그쓰기></td></td>
@@ -55,7 +55,7 @@ $admin = getAdmin($connect);
         <td width=110 align=right>시작시간변경</td>
         <td width=285><input type=text size=20 maxlength=20 style=color:white;background-color:black;text-align:right; name=starttime value='<?=$admin[starttime];?>'><input type=submit name=btn value=변경1></td>
         <td width=110 align=right>현재도시훈사</td>
-        <td width=285><?=$admin[city_rate];?></td>
+        <td width=285><?=$admin['city_rate'];?></td>
     </tr>
     <tr>
         <td width=110 align=right>최대 장수</td>

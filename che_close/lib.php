@@ -7,8 +7,8 @@
 //    @header ("P3P : CP=\"ALL CURa ADMa DEVa TAIa OUR BUS IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC OTC\"");
 
 //디버그용 매크로
-define(__OLINE__,__LINE__);
-define(__LINE__,__FILE__." ".__FUNCTION__." ".__LINE__." : ");
+define('__OLINE__',__LINE__);
+define('__LINE__',__FILE__." ".__FUNCTION__." ".__LINE__." : ");
 ini_set("session.cache_expire", 10080);      // minutes
 ini_set("session.gc_maxlifetime", 604800);    // seconds
 
@@ -17,8 +17,8 @@ ob_start();
 include "MYDB.php";
 
 // 각종 변수
-define(STEP_LOG, true);
-define(PROCESS_LOG, true);
+define('STEP_LOG', true);
+define('PROCESS_LOG', true);
 $_startTime = getMicroTime();
 $_ver     = "서비스중";
 $_version = "삼국지 모의전투 PHP v2.29.1";
@@ -76,21 +76,21 @@ session_cache_expire(60);   // 60분
 session_start();
 
 //첫 등장
-if($_SESSION[p_ip] == "") {
-    $_SESSION[p_ip] = getenv("REMOTE_ADDR");
-    $_SESSION[p_time] = time();
+if($_SESSION['p_ip'] == "") {
+    $_SESSION['p_ip'] = getenv("REMOTE_ADDR");
+    $_SESSION['p_time'] = time();
 }
 
 //id, 이름, 국가는 로그인에서
 //초과된 세션은 로그아웃(1시간)
-if($_SESSION[p_time]+3600 < time()) {
-    $_SESSION[p_id] = "";
-    $_SESSION[p_name] = "";
-    $_SESSION[p_nation] = 0;
-    $_SESSION[p_time] = time();
+if($_SESSION['p_time']+3600 < time()) {
+    $_SESSION['p_id'] = "";
+    $_SESSION['p_name'] = "";
+    $_SESSION['p_nation'] = 0;
+    $_SESSION['p_time'] = time();
     session_destroy();
 } else {
-    $_SESSION[p_time] = time();
+    $_SESSION['p_time'] = time();
 }
 
 // DB가 설정이 되었는지를 검사
@@ -114,9 +114,23 @@ function dbconn($table = "") {
 // 에러 메세지 출력
 function Error($message, $url="") {
     global $setup, $connect, $dir, $config_dir;
+    $message .= '<br><pre>'.var_dump(debug_backtrace()).'</pre>';
     include "error.php";
     if($connect) @MYDB_close($connect);
     exit;
+}
+
+function getPost($str){
+    if(!isset($_POST[$str])){
+        return '';
+    }
+    $temp = $_POST[$str];
+    $temp=str_replace("　","",$temp);
+    $temp=str_replace("\n","",$temp);
+    $temp=strip_tags($temp);
+    $temp=str_replace("&nbsp;","",$temp);
+    $temp=str_replace(" ","",$temp);
+    return $temp;
 }
 
 // 게시판의 생성유무 검사

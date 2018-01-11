@@ -12,7 +12,7 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $me = MYDB_fetch_array($result);
 
 //그새 사망이면
-if($me[no] == 0) {
+if($me['no'] == 0) {
     echo "a";
     echo "<script>location.replace('start.php');</script>";
     exit(0);
