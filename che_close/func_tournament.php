@@ -42,7 +42,7 @@ function processTournament($connect) {
                 if($phase >= 32) { $tnmt = 4; $phase = 0; }
                 break;
             case 4: //본선중
-                finally($connect, $type, $tnmt, $phase);        $phase++;
+                finallySingle($connect, $type, $tnmt, $phase);        $phase++;
                 if($phase >= 6) { $tnmt = 5; $phase = 0; }
                 break;
             case 5: //배정중
@@ -454,7 +454,7 @@ function selectionAll($connect, $tnmt_type, $tnmt, $phase) {
     }
 }
 
-function finally($connect, $tnmt_type, $tnmt, $phase) {
+function finallySingle($connect, $tnmt_type, $tnmt, $phase) {
     $cand = getTwo($tnmt, $phase);
 
     //각 그룹 페이즈 실행
@@ -484,7 +484,7 @@ function finallyAll($connect, $tnmt_type, $tnmt, $phase) {
     $start = $phase;
     $end = $phase - ($phase % 2) + 2;
     for($i=$start; $i < $end; $i++) {
-        finally($connect, $tnmt_type, $tnmt, $i);
+        finallySingle($connect, $tnmt_type, $tnmt, $i);
     }
 }
 

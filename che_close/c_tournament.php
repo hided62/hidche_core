@@ -182,7 +182,7 @@ if($btn == "자동개최설정" && $me[userlevel] >= 5) {
 } elseif($btn == "예선전부"     && $me[userlevel] >= 5) { qualifyAll($connect, $admin[tnmt_type], $admin[tournament], $admin[phase]);
 } elseif($btn == "추첨"         && $me[userlevel] >= 5) { selection($connect, $admin[tnmt_type], $admin[tournament], $admin[phase]);
 } elseif($btn == "추첨전부"     && $me[userlevel] >= 5) { selectionAll($connect, $admin[tnmt_type], $admin[tournament], $admin[phase]);
-} elseif($btn == "본선"         && $me[userlevel] >= 5) { finally($connect, $admin[tnmt_type], $admin[tournament], $admin[phase]);
+} elseif($btn == "본선"         && $me[userlevel] >= 5) { finallySingle($connect, $admin[tnmt_type], $admin[tournament], $admin[phase]);
 } elseif($btn == "본선전부"     && $me[userlevel] >= 5) { finallyAll($connect, $admin[tnmt_type], $admin[tournament], $admin[phase]);
 } elseif($btn == "배정"         && $me[userlevel] >= 5) { final16set($connect);
 } elseif($btn == "베팅마감"     && $me[userlevel] >= 5) {
