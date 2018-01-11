@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -49,7 +49,7 @@ $admin = MYDB_fetch_array($result);
 </head>
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>일 제 정 보<br><? closeButton(); ?></td></tr>
+    <tr><td>일 제 정 보<br><?php closeButton(); ?></td></tr>
     <tr><td>
         <form name=form1 method=post>정렬순서 :
         <select name=type size=1>
@@ -86,7 +86,7 @@ $admin = MYDB_fetch_array($result);
         <form name=form2 method=post action=_admin5_submit.php>
         <select name=nation size=1 style=color:white;background-color:black>";
             <option value=0>재야</option>";
-<?
+<?php
 $query = "select nation,name,color,scout,scoutmsg,gennum from nation order by power";
 $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
 $count = MYDB_num_rows($result);
@@ -137,7 +137,7 @@ for($i=1; $i <= $count; $i++) {
         <td align=center>수비</td>
         <td align=center>국명</td>
     </tr>
-<?
+<?php
 $query = "
 SELECT
     A.nation,
@@ -251,7 +251,7 @@ for($i=0; $i < $nationCount; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? TrickLog(20, $me[skin]); ?></td></tr>
+    <tr><td><?php TrickLog(20, $me[skin]); ?></td></tr>
 </table>
 
 <table align=center width=1760 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13; id=bg0>
@@ -260,7 +260,7 @@ for($i=0; $i < $nationCount; $i++) {
         <td width=30 align=center>월</td>
         <td width=50 align=center>국가수</td>
         <td width=50 align=center>장수수</td>
-<?
+<?php
 switch($type2) {
 default:
 case 0: echo "<td width=1600>국력(국력,장수수,도시수,인구/100,최대인구/100,국가자원/100,장수자원/100,능력치,숙련/1000,경험공헌/100)</td>"; break;
@@ -273,7 +273,7 @@ case 6: echo "<td width=1600>기타</td>"; break;
 }
 ?>
     </tr>
-<?
+<?php
 $query = "select * from statistic where month=1 or no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $count = MYDB_num_rows($result);
@@ -306,8 +306,8 @@ for($i=0; $i < $count; $i++) {
 </table>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
 </body>
 </html>

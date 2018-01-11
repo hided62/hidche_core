@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -23,14 +23,14 @@ if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>세력일람</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>세 력 일 람<br><? closeButton(); ?></td></tr>
+    <tr><td>세 력 일 람<br><?php closeButton(); ?></td></tr>
 </table>
-<?
+<?php
 $query = "select nation,name,color,level,type,power,gennum,capital from nation order by power desc";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $count = MYDB_num_rows($result);
@@ -237,10 +237,10 @@ echo"
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?></td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?></td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 
 </html>

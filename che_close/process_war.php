@@ -1,4 +1,4 @@
-<?
+<?php
 
 function processWar($connect, $general, $city) {
     global $_armperphase, $_maximumatmos, $_maximumtrain, $_dexLimit, $_basegold, $_baserice;

@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -23,12 +23,12 @@ if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>명장일람</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>명 장 일 람<br><? closeButton(); ?></td></tr>
+    <tr><td>명 장 일 람<br><?php closeButton(); ?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
 <form name=form1 action=a_bestGeneral.php method=post>
@@ -39,7 +39,7 @@ if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
 </form>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-<?
+<?php
 if($btn == "NPC 보기") { $sel = "npc>=2"; }
 else { $sel = "npc<2"; }
 
@@ -270,10 +270,10 @@ for($i=0; $i < 4; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

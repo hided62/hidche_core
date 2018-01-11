@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 $connect = dbConn();
@@ -36,18 +36,18 @@ if($game[maxonline] < $curonline) { $game[maxonline] = $curonline; }
 <title>트래픽정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>트 래 픽 정 보<br><? closeButton(); ?></td></tr>
+    <tr><td>트 래 픽 정 보<br><?php closeButton(); ?></td></tr>
 </table>
 <br>
 <table align=center width=1016 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all;>
     <tr><td align=left>
         <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 량</font></td></tr>
-<?
+<?php
 for($i=0; $i < 11; $i++) {
     $w = round($refresh[$i] / $game[maxrefresh] * 100, 1);
     if($w >= 100) { $w -= 0.1; }
@@ -106,7 +106,7 @@ echo "
     <td align=right>
         <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 자</font></td></tr>
-<?
+<?php
 for($i=0; $i < 11; $i++) {
     $w = round($online[$i] / $game[maxonline] * 100, 1);
     if($w >= 100) { $w -= 0.1; }
@@ -166,7 +166,7 @@ echo "
 <br>
 <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td colspan=3 align=center id=bg2><font size=5>주 의 대 상 자 (순간과도갱신)</font></td></tr>
-<?
+<?php
 $query = "select sum(refresh) as refresh,sum(connect) as connect from general";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $user = MYDB_fetch_array($result);
@@ -224,14 +224,14 @@ for($i=0; $i < $count; $i++) {
 </table>
 <br>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>
 
-<?
+<?php
 function getColor($per) {
     $r = getHex($per);
     $b = getHex(100 - $per);

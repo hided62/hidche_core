@@ -1,4 +1,4 @@
-<?
+<?php
 require_once('_common.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 
@@ -6,18 +6,18 @@ $rs = $DB->Select('REG, LOGIN', 'SYSTEM', "NO='1'");
 $system = $DB->Get($rs);
 ?>
 
-<? include(FINDPW.W.FRAME); ?>
-<? include(JOIN.W.FRAME); ?>
+<?php include(FINDPW.W.FRAME); ?>
+<?php include(JOIN.W.FRAME); ?>
 
 <div id="Login_00">
 
     <div id="Login_0000">심의</div>
-<? $banner_id = 'none'; ?>
+<?php $banner_id = 'none'; ?>
     <div id="Login_0002">
-<? include(ROOT.W.'i_banner/banner.php'); ?>
+<?php include(ROOT.W.'i_banner/banner.php'); ?>
     </div>
     <div id="Login_0003">
-<? include(ROOT.W.'i_banner/banner.php'); ?>
+<?php include(ROOT.W.'i_banner/banner.php'); ?>
     </div>
 
     <div class="Login_TopBottomButtons">
@@ -43,7 +43,7 @@ $system = $DB->Get($rs);
             <div id="Login_00010006">접속장소&nbsp;</div>
             <input id="Login_00010007" type="text" maxlength="35">
             <input id="Login_00010008" type="button" value="비번&#13;찾기">
-<?
+<?php
 if($system['REG'] == 'Y') {
     echo '
             <input id="Login_00010009" type="button" value="회원&#13;가입">
@@ -54,7 +54,7 @@ if($system['REG'] == 'Y') {
     ';
 }
 ?>
-<?
+<?php
 if($system['LOGIN'] == 'Y') {
     echo '
             <input id="Login_00010010" type="button" value="로그인">

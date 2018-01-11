@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -59,12 +59,12 @@ if($me[skin] < 1) {
 <title>감찰부</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>감 찰 부<br><? closeButton(); ?></td></tr>
+    <tr><td>감 찰 부<br><?php closeButton(); ?></td></tr>
     <tr><td>
         <form name=form1 method=post>
         정렬순서 :
@@ -77,7 +77,7 @@ if($me[skin] < 1) {
         <input type=submit name=btn value='정렬하기'>
         대상장수 :
         <select name=gen size=1>
-<?
+<?php
 switch($type) {
     case 0: $query = "select no,name from general where nation='{$me[nation]}' order by turntime desc"; break;
     case 1: $query = "select no,name from general where nation='{$me[nation]}' order by recwar desc"; break;
@@ -114,10 +114,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <? generalInfo($connect, $gen, $me[skin]); generalInfo2($connect, $gen, $me[skin]); ?>
+            <?php generalInfo($connect, $gen, $me[skin]); generalInfo2($connect, $gen, $me[skin]); ?>
         </td>
         <td valign=top>
-            <? MyHistory($connect, $gen, $me[skin]); ?>
+            <?php MyHistory($connect, $gen, $me[skin]); ?>
         </td>
     </tr>
     <tr>
@@ -126,17 +126,17 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <? MyBatLog($gen, 24, $me[skin]); ?>
+            <?php MyBatLog($gen, 24, $me[skin]); ?>
         </td>
         <td valign=top>
-            <? MyBatRes($gen, 24, $me[skin]); ?>
+            <?php MyBatRes($gen, 24, $me[skin]); ?>
         </td>
     </tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>

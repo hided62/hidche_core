@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 
 if($graphic == 2) {
@@ -63,7 +63,7 @@ function hideLayer() {
     layerObj2.style.visibility = "hidden";
 }
 </script>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 <body bgcolor=black leftmargin=0 marginwidth=0 topmargin=0 marginheight=0 oncontextmenu='return false'>
 <div id=city_name class=balloon style=background-color:1EA4FF;position:absolute;visibility:hidden;z-index:6;>
@@ -80,11 +80,11 @@ function hideLayer() {
             </form>
         </table>
 </div>
-<? showMap($connect, $type, $graphic); ?>
+<?php showMap($connect, $type, $graphic); ?>
 </body>
 </html>
 
-<?
+<?php
 function showMap($connect, $type, $graphic) {
     global $images;
 

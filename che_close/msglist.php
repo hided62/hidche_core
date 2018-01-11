@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -12,11 +12,11 @@ $connect = dbconn();
 <title>메시지리스트</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 <body oncontextmenu='return false'>
 
-<?
+<?php
 $query = "select no,nation,skin from general where user_id='$_SESSION[p_id]'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
@@ -26,15 +26,15 @@ $me = MYDB_fetch_array($result);
     <tr>
         <td valign=top width=500>
             전체 메세지(최고75자)<br>
-            <? MsgFile($me[skin], 1); ?>
+            <?php MsgFile($me[skin], 1); ?>
             <br>
             개인 메세지(최고75자)<br>
-            <? MsgMe($connect, 2); ?>
+            <?php MsgMe($connect, 2); ?>
         </td>
         <td valign=top width=500>
-            <? MsgDip($connect, 4); ?>
+            <?php MsgDip($connect, 4); ?>
             국가 메세지(최고75자)<br>
-            <? MsgFile($me[skin], 3, $me[nation]); ?>
+            <?php MsgFile($me[skin], 3, $me[nation]); ?>
         </td>
     </tr>
 </table>

@@ -1,4 +1,4 @@
-<?
+<?php
 require_once('_common.php');
 
 $images = IMAGES;
@@ -36,7 +36,7 @@ font { font-family:'맑은 고딕'; line-height:110%; }
 
 -->
 </style>
-<? require('../i_banner/analytics.php'); ?>
+<?php require('../i_banner/analytics.php'); ?>
     </head>
 
 <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
@@ -63,7 +63,7 @@ font { font-family:'맑은 고딕'; line-height:110%; }
     <tr>
         <td align=center>
             <font size=6 color=orange><b>
-<?
+<?php
 switch($sel) {
 case 1: echo "화 려 한 &nbsp; 중 원 지 도"; break;
 case 2: echo "명 장 들 의 &nbsp; 자 랑 터"; break;

@@ -1,4 +1,4 @@
-<?
+<?php
 // $btn0~15, $gold0~15
 
 include "lib.php";

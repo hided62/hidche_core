@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -34,16 +34,16 @@ function out() {
     return confirm('정말 추방하시겠습니까?');
 }
 </script>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>인 사 부<br><? backButton(); ?></td></tr>
+    <tr><td>인 사 부<br><?php backButton(); ?></td></tr>
 </table>
 <br>
 
-<?
+<?php
 $cityNames = CityNameArray();
 
 $query = "select nation,name,level,color,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set from nation where nation='$me[nation]'";
@@ -495,9 +495,9 @@ for($j=0; $j < $citycount; $j++) {
 </table>
 <br>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?></td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?></td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>

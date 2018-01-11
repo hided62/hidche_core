@@ -1,4 +1,4 @@
-<?
+<?php
 include "process_war.php";
 include "func_process.php";
 include "func_npc.php";

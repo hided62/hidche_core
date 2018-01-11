@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -76,17 +76,17 @@ function turn(type) {
     else if(type == 1) location.replace('turn_pop_core.php');
 }
 </script>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>사 령 부<input type=button value='갱신' onclick=location.replace('b_chiefcenter.php')><br><? backButton(); ?></td></tr>
+    <tr><td>사 령 부<input type=button value='갱신' onclick=location.replace('b_chiefcenter.php')><br><?php backButton(); ?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td colspan=10 align=center bgcolor=skyblue>수뇌부 일정</td></tr>
     <tr><td colspan=10 align=center>
-<?
+<?php
 $year = $admin[year];
 $month = $admin[month];
 $date = substr(date('Y-m-d H:i:s'), 14);
@@ -166,10 +166,10 @@ for($k=0; $k < 2; $k++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?></td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?></td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

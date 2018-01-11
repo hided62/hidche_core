@@ -1,4 +1,4 @@
-<?
+<?php
 localhost
 root
 root

@@ -1,4 +1,4 @@
-<?
+<?php
 require_once('_common.php');
 
 $images = IMAGES;
@@ -50,7 +50,7 @@ font { font-family:'맑은 고딕'; line-height:110%; }
 
 -->
 </style>
-<? require('../i_banner/analytics.php'); ?>
+<?php require('../i_banner/analytics.php'); ?>
     </head>
 
 <body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
@@ -72,7 +72,7 @@ font { font-family:'맑은 고딕'; line-height:110%; }
 
 
 
-<?
+<?php
 if($category == 0) {
 ?>
 
@@ -124,7 +124,7 @@ if($category == 0) {
 
 
 
-<?
+<?php
 } elseif($category == 1) {
 ?>
 
@@ -167,7 +167,7 @@ if($category == 0) {
 
 
 
-<?
+<?php
 } elseif($category == 2) {
 ?>
 
@@ -200,7 +200,7 @@ if($category == 0) {
 
 
 
-<?
+<?php
 } elseif($category == 3) {
 ?>
 
@@ -270,7 +270,7 @@ if($category == 0) {
 
 
 
-<?
+<?php
 } elseif($category == 4) {
 ?>
 
@@ -336,7 +336,7 @@ if($category == 0) {
 
 
 
-<?
+<?php
 } elseif($category == 5) {
 ?>
 
@@ -508,7 +508,7 @@ if($category == 0) {
 
 
 
-<?
+<?php
 } elseif($category == 6) {
 ?>
 
@@ -577,7 +577,7 @@ if($category == 0) {
 
 
 
-<?
+<?php
 } elseif($category == 7) {
 ?>
 
@@ -761,7 +761,7 @@ if($category == 0) {
 
 
 
-<?
+<?php
 }
 ?>
 

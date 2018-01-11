@@ -1,4 +1,4 @@
-<?
+<?php
 // $msg
 
 include "lib.php";

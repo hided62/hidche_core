@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -47,17 +47,17 @@ if($me[skin] < 1) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>중원정보</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>중 원 정 보<br><? backButton(); ?></td></tr>
+    <tr><td>중 원 정 보<br><?php backButton(); ?></td></tr>
 </table>
 <br>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td colspan=<?=$nationcount+1;?> align=center bgcolor=blue>외 교 현 황</td></tr>
-<?
+<?php
 echo "
     <tr>
         <td align=center width=108 style=background-color:$_basecolor2;>&nbsp;</td>";
@@ -122,7 +122,7 @@ for($i=0; $i < $nationcount; $i++) {
 ?>
     <tr><td colspan=<?=$nationcount+1;?> align=center>불가침 : <font color=limegreen>@</font>, 통합 : <font color=cyan>○</font>, 합병 : <font color=skyblue>◎</font>, 통상 : ㆍ, 선포 : <font color=magenta>▲</font>, 교전 : <font color=red>★</font></td></tr>
 </table>
-<?
+<?php
 $query = "select city,name,conflict,conflict2 from city where conflict like '%|%'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $citycount = MYDB_num_rows($result);
@@ -214,9 +214,9 @@ echo "
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?></td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?></td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>

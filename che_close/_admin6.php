@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -42,7 +42,7 @@ $sel[$type] = "selected";
 </head>
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>접 속 정 보<br><? closeButton(); ?></td></tr>
+    <tr><td>접 속 정 보<br><?php closeButton(); ?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
             <option <?=$sel[0];?> value=0>접속률</option>
@@ -65,7 +65,7 @@ $sel[$type] = "selected";
         <td align=center width=80>총로그인</td>
         <td align=center width=100>갱신/로그인</td>
     </tr>
-<?
+<?php
 switch($type) {
     case 0: $query = "select name,connect,startage,age,refcnt,logcnt,refcnt/(age-startage+1)/12 as ref,refcnt/logcnt as log from general order by connect desc limit 0,30"; break;
     case 1: $query = "select name,connect,startage,age,refcnt,logcnt,refcnt/(age-startage+1)/12 as ref,refcnt/logcnt as log from general order by refcnt desc limit 0,30"; break;
@@ -94,8 +94,8 @@ for($i=0; $i < $gencount; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
 </body>
 </html>

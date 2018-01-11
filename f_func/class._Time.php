@@ -1,4 +1,4 @@
-<?
+<?php
 
 class _Time {
     public static function DateToday() {

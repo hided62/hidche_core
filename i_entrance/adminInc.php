@@ -1,4 +1,4 @@
-<?
+<?php
 // 외부 파라미터
 
 require_once('_common.php');
@@ -28,7 +28,7 @@ Entrance_AdminUpdate();
             <div id="Entrance_00030002" class="bg1">선 택</div>
         </div>
         <div id="Entrance_000302">
-<?
+<?php
 $i = 0;
 foreach($_serverDirs as $serverDir) {
     if(is_dir(ROOT.W.$serverDir.'_close') && is_dir(ROOT.W.$serverDir.'_rest')) {
@@ -75,7 +75,7 @@ foreach($_serverDirs as $serverDir) {
                     <input type="button" class="Entrance_ServerAdminListSelectButton2" value="119" onclick="Entrance_AdminOpen119('../<?=$serverDir;?>');">
                 </div>
             </div>
-<?
+<?php
     $i++;
 }
 ?>

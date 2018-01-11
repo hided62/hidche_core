@@ -1,4 +1,4 @@
-<?
+<?php
 require_once('_common.php');
 ?>
 
@@ -41,7 +41,7 @@ function Login() {
     Login_Update();
 }
         </script>
-<? require('../i_banner/analytics.php'); ?>
+<?php require('../i_banner/analytics.php'); ?>
     </head>
 
     <body <?=BLOCKBODY;?>>

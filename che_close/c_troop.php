@@ -1,4 +1,4 @@
-<?
+<?php
 // $btn, $name, $troop
 
 include "lib.php";

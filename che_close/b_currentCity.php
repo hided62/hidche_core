@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -25,12 +25,12 @@ if($me[skin] < 1) {
 <title>도시정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>도 시 정 보<br><? backButton(); ?></td></tr>
+    <tr><td>도 시 정 보<br><?php backButton(); ?></td></tr>
 </table>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
@@ -38,7 +38,7 @@ if($me[skin] < 1) {
         <td width=998>
             <form name=cityselect method=post>도시선택 :
                 <select name=citylist size=1 style=color:white;background-color:black;width:798;>
-<?
+<?php
 if($_POST[citylist] == '') { $_POST[citylist] = $me[city]; }
 
 // 재야일때는 현재 도시만
@@ -159,10 +159,10 @@ if($city[trade] == 0) {
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
 </table>
 
-<?
+<?php
 echo "
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
     <tr>
@@ -343,10 +343,10 @@ for($j=0; $j < $gencount; $j++) {
 </table>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

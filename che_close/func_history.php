@@ -1,4 +1,4 @@
-<?
+<?php
 include "func_http.php";
 
 function getHistory($count, $year, $month, $isFirst=0) {

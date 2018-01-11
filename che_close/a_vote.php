@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 $connect = dbConn();
@@ -32,16 +32,16 @@ function captureKey(e) {
     }
 }
 </script>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>설 문 조 사<br><? closeButton(); ?></td></tr>
+    <tr><td>설 문 조 사<br><?php closeButton(); ?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
 <form name=form1 action=c_vote.php method=post>
     <tr><td colspan=3 align=center id=bg2><font size=5>설 문 조 사 (<?=$admin[develcost]*5;?>금과 추첨으로 유니크템 증정!)</font></td></tr>
-<?
+<?php
 
 if($me[userlevel] >= 5) {
     echo "
@@ -169,7 +169,7 @@ if($me[no] > 0) {
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td colspan=3 align=center id=bg2><font size=5>
         전 체 통 계
-<?
+<?php
 if($me[userlevel] >= 5) {
     echo "
         <input type=submit name=btn value='숨김'>
@@ -294,14 +294,14 @@ if($admin[voteopen] >= 2 || $me[userlevel] >= 5) {
 </form>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>
 
-<?
+<?php
 function getColor($type) {
     if($type > 0) {
         $type = (($type - 1) % 7) + 1;

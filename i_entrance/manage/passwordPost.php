@@ -1,4 +1,4 @@
-<?
+<?php
 // 외부 파라미터
 // $_POST['pw'] : PW
 // $_POST['newPw'] : 새 PW

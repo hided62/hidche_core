@@ -1,4 +1,4 @@
-<?
+<?php
 
 function CriticalRatio($leader, $power, $intel, $type=0) {
     $avg = ($leader+$power+$intel) / 3;

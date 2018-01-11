@@ -1,4 +1,4 @@
-<?
+<?php
 
 function getFont($str) {
     if(strlen($str) >= 22) { $str = "<font size=1>{$str}</font>"; }

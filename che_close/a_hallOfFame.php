@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 $connect = dbConn();
@@ -10,15 +10,15 @@ increaseRefresh($connect, "명예의전당", 2);
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>명예의 전당</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=Font-size:13;word-break:break-all; id=bg0>
-    <tr><td>명 예 의 전 당<br><? closeButton(); ?></td></tr>
+    <tr><td>명 예 의 전 당<br><?php closeButton(); ?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-<?
+<?php
 $type = array(
     "명 성",
     "계 급",
@@ -94,10 +94,10 @@ for($i=0; $i < 21; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=Font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

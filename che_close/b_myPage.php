@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -46,18 +46,18 @@ function go(type) {
     if(type == 0) location.replace('c_vacation.php');
 }
 </script>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>내 정 보<br><? backButton(); ?></td></tr>
+    <tr><td>내 정 보<br><?php backButton(); ?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr>
         <td width=50%>
-            <? myInfo($connect); ?>
-            <? myInfo2($connect); ?>
+            <?php myInfo($connect); ?>
+            <?php myInfo2($connect); ?>
         </td>
         <td width=50% valign=top>
             <form name=form1 action=b_myPage.php method=post>
@@ -110,10 +110,10 @@ function go(type) {
     </tr>
     <tr>
         <td valign=top>
-            <? MyLog($me[no], 24, $me[skin]); ?>
+            <?php MyLog($me[no], 24, $me[skin]); ?>
         </td>
         <td valign=top>
-            <? MyBatLog($me[no], 24, $me[skin]); ?>
+            <?php MyBatLog($me[no], 24, $me[skin]); ?>
         </td>
     </tr>
     <tr>
@@ -122,18 +122,18 @@ function go(type) {
     </tr>
     <tr>
         <td valign=top>
-            <? MyHistory($connect, $me[no], $me[skin]); ?>
+            <?php MyHistory($connect, $me[no], $me[skin]); ?>
         </td>
         <td valign=top>
-            <? MyBatRes($me[no], 24, $me[skin]); ?>
+            <?php MyBatRes($me[no], 24, $me[skin]); ?>
         </td>
     </tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?></td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?></td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

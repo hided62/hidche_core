@@ -1,4 +1,4 @@
-<?
+<?php
 
 class _String {
     public static function GetStrLen($str) {

@@ -1,4 +1,4 @@
-<?
+<?php
 // 외부 파라미터
 // $_GET['select'] : 정렬선택
 $select = $_GET['select'];

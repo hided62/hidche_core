@@ -1,4 +1,4 @@
-<?
+<?php
 // $btn, $level, $genlist, $outlist
 
 include "lib.php";

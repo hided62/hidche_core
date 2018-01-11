@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -27,7 +27,7 @@ case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "�
 
 ?>
 <html>
-<? if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다! 제한량이 모자라다면 참여를 해보세요^^"); } ?>
+<?php if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다! 제한량이 모자라다면 참여를 해보세요^^"); } ?>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>토너먼트</title>
@@ -41,15 +41,15 @@ select { font-family:'굴림'; line-height:100%; }
 #bg1 { background-image:url(<?=$images;?>/back_green.jpg); }
 #bg2 { background-image:url(<?=$images;?>/back_blue.jpg); }
 </style>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=2000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>삼모전 토너먼트<br><? closeButton(); ?></td></tr>
+    <tr><td>삼모전 토너먼트<br><?php closeButton(); ?></td></tr>
 </table>
 <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-<?
+<?php
 if($me[userlevel] >= 5) {
     echo "
 <form method=post action=c_tournament.php>
@@ -162,7 +162,7 @@ $str3 = getTournamentTerm($connect);
     <tr><td colspan=8 align=center><font color=white size=6><?=$tnmt_type;?> (<?=$str1.", ".$str2.", ".$str3;?>)</font></td></tr>
     <tr><td colspan=8 align=center id=bg2><font color=magenta size=5>16강 승자전</font></td></tr>
     <tr><td height=10 colspan=8 align=center></td></tr>
-<?
+<?php
 
 echo "
     <tr>
@@ -397,9 +397,9 @@ if($admin[tournament] == 2 || $admin[tournament] == 3) { printFighting($admin[to
     </td></tr>
 </table>
 <table align=center width=2000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>

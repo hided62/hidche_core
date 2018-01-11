@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -49,10 +49,10 @@ function myclock() {
     window.setTimeout("myclock();", 1000);
 }
 </script>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 <body OnLoad='myclock()' oncontextmenu='return false'>
-<?
+<?php
 myCommandList($connect);
 
 function myCommandList($connect) {

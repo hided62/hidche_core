@@ -1,4 +1,4 @@
-<?
+<?php
 require_once('_common.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
@@ -11,8 +11,8 @@ $member = $DB->Get($rs);
 
 ?>
 
-<? include(MANAGE.W.FRAME); ?>
-<?
+<?php include(MANAGE.W.FRAME); ?>
+<?php
 if($member['GRADE'] >= 6) {
     include(DONATION.W.FRAME);
     include(MEMBER.W.FRAME);
@@ -23,12 +23,12 @@ if($member['GRADE'] >= 6) {
 
     <div id="Entrance_0007"><font color=orange size=6><?=$system['NOTICE'];?></font></div>
     <div id="Entrance_0004">심의</div>
-<? $banner_id = $member['ID']; ?>
+<?php $banner_id = $member['ID']; ?>
     <div id="Entrance_0005">
-<? include(ROOT.W.'i_banner/banner.php'); ?>
+<?php include(ROOT.W.'i_banner/banner.php'); ?>
     </div>
     <div id="Entrance_0006">
-<? include(ROOT.W.'i_banner/banner.php'); ?>
+<?php include(ROOT.W.'i_banner/banner.php'); ?>
     </div>
 
     <div id="Entrance_0000" class="bg0">
@@ -59,7 +59,7 @@ if($member['GRADE'] >= 6) {
         <input id="Entrance_000102" type="button" value="로 그 아 웃">
     </div>
 
-<?
+<?php
 if($member['GRADE'] >= 6) {
     include(ADMIN.INC);
 }

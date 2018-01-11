@@ -1,4 +1,4 @@
-<?
+<?php
 
 function processTournament($connect) {
     $query = "select tournament,phase,tnmt_type,tnmt_auto,tnmt_time,now() as now,TIMESTAMPDIFF(SECOND,tnmt_time,now()) as offset from game where no=1";

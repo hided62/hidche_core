@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 
@@ -28,17 +28,17 @@ $connect = dbConn();
 <title>NPC선택</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body onLoad='changeGen()' oncontextmenu='return false'>
     <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-        <tr><td>장 수 선 택<br><? backButton(); ?></td></tr>
+        <tr><td>장 수 선 택<br><?php backButton(); ?></td></tr>
     </table>
     <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-        <tr><td align=center><? info($connect, 0, 1); ?></td></tr>
+        <tr><td align=center><?php info($connect, 0, 1); ?></td></tr>
     </table>
-<?
+<?php
 $query = "select npcmode,maxgeneral,img from game where no='1'";
 $result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
@@ -62,7 +62,7 @@ if($gencount >= $admin[maxgeneral]) {
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
 <tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
-<?
+<?php
 $query = "select name,scoutmsg,color from nation";
 $nationresult = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
 $nationcount = MYDB_num_rows($nationresult);
@@ -87,20 +87,20 @@ for($i=0; $i < $nationcount; $i++) {
         <tr>
             <td colspan=2 align=center id=bg1>장수 선택</td>
         </tr>
-<?
+<?php
 if($admin[img] >= 3) {
 ?>
         <tr>
             <td width=498 align=right rowspan=2 height=64 id=bg1>장수</td>
             <td width=498><img src=<?=$image;?>/1001.jpg border=0 name=picture width=64 height=64></td>
         </tr>
-<?
+<?php
 }
 ?>
         <tr>
             <td align=left colspan=2>
                 <select name=face size=1 style=color:white;background-color:black; value=1001 disabled>
-<?
+<?php
 //$query  = "select npcid,name,leader,power,intel from general where npc=2 and level<5";
 $query  = "select npcid,name,leader,power,intel from general where npc=2";
 $result = MYDB_query($query,$connect);
@@ -129,8 +129,8 @@ for($i=0; $i < $count; $i++) {
     </table>
 </form>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
 </body>
 <script type="text/javascript">

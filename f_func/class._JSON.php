@@ -1,4 +1,4 @@
-<?
+<?php
 
 class _JSON {
     public static function Encode($arr) {

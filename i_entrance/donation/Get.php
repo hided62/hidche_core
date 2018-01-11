@@ -1,4 +1,4 @@
-<?
+<?php
 // 외부 파라미터
 
 require_once('_common.php');

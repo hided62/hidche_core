@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -46,11 +46,11 @@ if($msg2 == "") $msg2 = "-";
 <title>거래장</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>거 래 장<br><? closeButton(); ?></td></tr>
+    <tr><td>거 래 장<br><?php closeButton(); ?></td></tr>
     <tr><td align=center id=bg2><font color=orange size=6><b>거 래 장</b></font><input type=button value='갱신' onclick=location.replace('b_auction.php')></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
@@ -69,7 +69,7 @@ if($msg2 == "") $msg2 = "-";
         <td width=98>구매 예정자</td>
         <td width=148>거래종료</td>
     </tr>
-<?
+<?php
 $query = "select * from auction where type=0 order by expire";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $count = MYDB_num_rows($result);
@@ -153,7 +153,7 @@ for($i=0; $i < $count; $i++) {
         <td width=98>판매 예정자</td>
         <td width=148>거래종료</td>
     </tr>
-<?
+<?php
 $query = "select * from auction where type=1 order by expire";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $count = MYDB_num_rows($result);
@@ -252,9 +252,9 @@ for($i=0; $i < $count; $i++) {
 ㆍ즐거운 거래!
         </font>
     </td></tr>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>

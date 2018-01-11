@@ -1,4 +1,4 @@
-<?
+<?php
 require_once(ROOT.W.F_FUNC.W.'class._String.php');
 
 class _Validation {

@@ -1,4 +1,4 @@
-<?
+<?php
 class HTTP{
     var $Socket, $Server, $Port, $Timeout, $HttpVersion = "1.0", $Url, $Length, $ResponseTime, $ErrNum, $ErrMsg;
     var $headers = array();

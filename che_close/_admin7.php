@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -45,7 +45,7 @@ $sel[$type] = "selected";
 </head>
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>로 그 정 보<br><? closeButton(); ?></td></tr>
+    <tr><td>로 그 정 보<br><?php closeButton(); ?></td></tr>
     <tr><td>
         <form name=form1 method=post>
         정렬순서 :
@@ -58,7 +58,7 @@ $sel[$type] = "selected";
         <input type=submit name=btn value='정렬하기'>
         대상장수 :
         <select name=gen size=1>
-<?
+<?php
 switch($type) {
     case 0: $query = "select no,name from general order by turntime desc"; break;
     case 1: $query = "select no,name from general order by recwar desc"; break;
@@ -95,7 +95,7 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <? generalInfo($connect, $gen, $me[skin]); generalInfo2($connect, $gen, $me[skin]); ?>
+            <?php generalInfo($connect, $gen, $me[skin]); generalInfo2($connect, $gen, $me[skin]); ?>
         </td>
         <td valign=top>&nbsp;
         </td>
@@ -106,10 +106,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <? MyLog($gen, 24, $me[skin]); ?>
+            <?php MyLog($gen, 24, $me[skin]); ?>
         </td>
         <td valign=top>
-            <? MyBatLog($gen, 24, $me[skin]); ?>
+            <?php MyBatLog($gen, 24, $me[skin]); ?>
         </td>
     </tr>
     <tr>
@@ -118,16 +118,16 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <? MyHistory($connect, $gen, $me[skin]); ?>
+            <?php MyHistory($connect, $gen, $me[skin]); ?>
         </td>
         <td valign=top>
-            <? MyBatRes($gen, 24, $me[skin]); ?>
+            <?php MyBatRes($gen, 24, $me[skin]); ?>
         </td>
     </tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
 </body>
 </html>

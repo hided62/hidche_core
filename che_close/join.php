@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 
@@ -98,16 +98,16 @@ function abilityPowint() {
 }
 
 </script>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 <body oncontextmenu='return false'>
     <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-        <tr><td>장 수 생 성<br><? backButton(); ?></td></tr>
+        <tr><td>장 수 생 성<br><?php backButton(); ?></td></tr>
     </table>
     <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-        <tr><td align=center><? info($connect, 0, 1); ?></td></tr>
+        <tr><td align=center><?php info($connect, 0, 1); ?></td></tr>
     </table>
-<?
+<?php
 $query = "select img,maxgeneral from game where no='1'";
 $result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
@@ -125,7 +125,7 @@ if($gencount >= $admin[maxgeneral]) {
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
 <tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
-<?
+<?php
 $query = "select name,scoutmsg,color from nation";
 $nationresult = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
 $nationcount = MYDB_num_rows($nationresult);
@@ -156,7 +156,7 @@ for($i=0; $i < $nationcount; $i++) {
                 <input type=text name=name maxlength=6 size=12 style=color:white;background-color:black; value=<?=$member[name]?>>(6글자 이내)
             </td>
         </tr>
-<?
+<?php
 if($admin[img] >= 1 && $member[grade] >= 1 && $member[picture] != "") {
     $imageTemp = GetImageURL($member[imgsvr]);
     echo "
@@ -238,8 +238,8 @@ if($admin[img] >= 1 && $member[grade] >= 1 && $member[picture] != "") {
     </table>
 </form>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
 </body>
 </html>

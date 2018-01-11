@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -39,12 +39,12 @@ if($me[skin] < 1) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>내무부</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>내 무 부<br><? backButton(); ?></td></tr>
+    <tr><td>내 무 부<br><?php backButton(); ?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td colspan=9 align=center bgcolor=blue>외 교 관 계</td></tr>
@@ -58,7 +58,7 @@ if($me[skin] < 1) {
         <td width=100 align=center id=bg1>종 료 시 점</td>
         <td align=center id=bg1>비 고</td>
     </tr>
-<?
+<?php
 $query = "select year,month from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
@@ -212,7 +212,7 @@ else { $budgetricediff = "$budgetricediff"; }
     <tr>
         <td colspan=2>
             <table width=998 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-<?
+<?php
 echo "
                 <tr>
                     <td colspan=2 align=center id=bg1>자금 예산</td>
@@ -263,7 +263,7 @@ echo "
                 </tr>
                 <tr>
                     <td colspan=4 align=center>
-<?
+<?php
 if($nation[myset] > 0) {
     if($nation[scout] == 0) {
         echo "
@@ -290,9 +290,9 @@ if($nation[myset] > 0) {
 </form>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?></td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?></td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<?
+<?php
 // $msg, $genlist
 
 include "lib.php";

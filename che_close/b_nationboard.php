@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -20,12 +20,12 @@ if($me[skin] < 1) {
 <title>회의실</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>회 의 실<br><? backButton(); ?></td></tr>
+    <tr><td>회 의 실<br><?php backButton(); ?></td></tr>
 <form name=form1 method=post action=c_nationboard.php>
     <tr><td align=center>
         제목 <input type=textarea maxlength=50 name=title style=color:white;background-color:black;width:830;>
@@ -39,7 +39,7 @@ if($me[skin] < 1) {
 </form>
 </table>
 <br>
-<?
+<?php
 $nation = getNation($connect, $me[nation]);
 
 //20개 메세지
@@ -57,10 +57,10 @@ for($i=0; $i < 20; $i++) {
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

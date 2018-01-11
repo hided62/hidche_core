@@ -1,4 +1,4 @@
-<?
+<?php
 // 외부 파라미터
 // $_POST['serverDir'] : 로그인할 서버 디렉토리
 $serverDir = $_POST['serverDir'];

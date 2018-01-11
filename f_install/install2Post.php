@@ -1,4 +1,4 @@
-<?
+<?php
 // id, pw
 $id = $_POST['id'];
 $pw = $_POST['pw'];

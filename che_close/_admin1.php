@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -38,7 +38,7 @@ $admin = getAdmin($connect);
 </head>
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>게 임 관 리<br><? backButton(); ?></td></tr>
+    <tr><td>게 임 관 리<br><?php backButton(); ?></td></tr>
 </table>
 <form name=form1 method=post action=_admin1_submit.php>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
@@ -91,7 +91,7 @@ $admin = getAdmin($connect);
         <td align=center>군량</td>
     </tr>
 
-<?
+<?php
     for($i=0; $i <= 5; $i++) {
         $att = $admin["att{$i}"];
         $def = $admin["def{$i}"];
@@ -216,8 +216,8 @@ $admin = getAdmin($connect);
 </table>
 </form>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
 </body>
 </html>

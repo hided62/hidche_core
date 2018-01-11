@@ -1,4 +1,4 @@
-<?
+<?php
 $year = $_GET['year'];
 $month = $_GET['month'];
 

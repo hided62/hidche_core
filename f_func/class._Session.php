@@ -1,4 +1,4 @@
-<?
+<?php
 
 class _Session {
     public function __construct() {

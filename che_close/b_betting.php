@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -31,7 +31,7 @@ $str3 = getTournamentTerm($connect);
 
 ?>
 <html>
-<? if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다! 제한량이 모자라다면 참여를 해보세요^^"); } ?>
+<?php if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다! 제한량이 모자라다면 참여를 해보세요^^"); } ?>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>베팅장</title>
@@ -45,12 +45,12 @@ select { font-family:'굴림'; line-height:100%; }
 #bg1 { background-image:url(<?=$images;?>/back_green.jpg); }
 #bg2 { background-image:url(<?=$images;?>/back_blue.jpg); }
 </style>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>베 팅 장<br><? closeButton(); ?></td></tr>
+    <tr><td>베 팅 장<br><?php closeButton(); ?></td></tr>
 </table>
 <table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10;word-break:break-all; id=bg0>
     <tr><td colspan=16><input type=button value='갱신' onclick='location.reload()'></td></tr>
@@ -60,7 +60,7 @@ select { font-family:'굴림'; line-height:100%; }
 <table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10;word-break:break-all; id=bg0>
     <tr align=center><td height=10 colspan=16></td></tr>
     <tr align=center>
-<?
+<?php
 $query = "select npc,name,win from tournament where grp>=60 order by grp, grp_no";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 for($i=0; $i < 1; $i++) {
@@ -211,7 +211,7 @@ for($i=0; $i < 16; $i++) {
 </table>
 <table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr align=center><td height=10 colspan=16></td></tr>
-<?
+<?php
 echo "
     <tr align=center>";
 
@@ -225,7 +225,7 @@ for($i=0; $i < 16; $i++) {
         <td>×</td><td>×</td><td>×</td><td>×</td><td>×</td><td>×</td><td>×</td><td>×</td>
     </tr>
     <tr align=center>
-<?
+<?php
 for($i=0; $i < 16; $i++) {
     echo "<td><font color=orange>{$myBet[$i]}</font></td>";
 }
@@ -236,7 +236,7 @@ for($i=0; $i < 16; $i++) {
         <td>∥</td><td>∥</td><td>∥</td><td>∥</td><td>∥</td><td>∥</td><td>∥</td><td>∥</td>
     </tr>
     <tr align=center>
-<?
+<?php
 for($i=0; $i < 16; $i++) {
     echo "<td><font color=cyan>{$gold[$i]}</font></td>";
 }
@@ -292,7 +292,7 @@ if($admin[tournament] == 6) {
     <tr align=center><td height=50 colspan=4 id=bg2><font color=yellow size=6>토너먼트 랭킹</font></td></tr>
     <tr align=center><td colspan=4 id=bg2><font color=skyblue size=3>순위 / 장수명 / 능력치 / 경기수 / 승리 / 무승부 / 패배 / 집계점수 / 우승횟수</font></td></tr>
     <tr align=center>
-<?
+<?php
 
 $type1 = Array("전 력 전", "통 솔 전", "일 기 토", "설 전");
 $type2 = Array("종합", "통솔", "무력", "지력");
@@ -331,9 +331,9 @@ for($i=0; $i < 4; $i++) {
     </tr>
 </table>
 <table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?></td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?></td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>

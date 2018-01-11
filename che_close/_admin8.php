@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -45,7 +45,7 @@ $sel[$type] = "selected";
 </head>
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>외 교 정 보<br><? closeButton(); ?></td></tr>
+    <tr><td>외 교 정 보<br><?php closeButton(); ?></td></tr>
     <tr><td>
         <form name=form1 method=post>
         정렬순서 :
@@ -65,7 +65,7 @@ $sel[$type] = "selected";
         <td width=60  align=center id=bg1>기 간</td>
         <td align=center id=bg1>비 고</td>
     </tr>
-<?
+<?php
 $query = "select nation,name,color from nation";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nationcount = MYDB_num_rows($result);
@@ -149,8 +149,8 @@ for($i=0; $i < $dipcount; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
 </body>
 </html>

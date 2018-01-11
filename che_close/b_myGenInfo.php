@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -32,12 +32,12 @@ if($me[skin] < 1) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>세력장수</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>세 력 장 수<br><? backButton(); ?></td></tr>
+    <tr><td>세 력 장 수<br><?php backButton(); ?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
             <option <?=$sel[1];?> value=1>관직</option>
@@ -59,7 +59,7 @@ if($me[skin] < 1) {
         <input type=submit value='정렬하기'></form>
     </td></tr>
 </table>
-<?
+<?php
 $query = "select level from nation where nation='$me[nation]'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
@@ -163,10 +163,10 @@ for($j=0; $j < $gencount; $j++) {
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?></td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?></td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 
 </html>

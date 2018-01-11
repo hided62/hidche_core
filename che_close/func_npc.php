@@ -1,4 +1,4 @@
-<?
+<?php
 
 function RegNPC($connect) {
     $query = "select startyear,year,turnterm,scenario,extend,fiction,img from game where no='1'";

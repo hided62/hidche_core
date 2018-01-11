@@ -1,4 +1,4 @@
-<?
+<?php
 class Queue {
     private $capacity;
     private $size;

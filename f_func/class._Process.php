@@ -1,4 +1,4 @@
-<?
+<?php
 require_once('_common.php');
 require_once(ROOT.'/f_config/config.php');
 require_once(ROOT.W.F_FUNC.W.'class._Lock.php');

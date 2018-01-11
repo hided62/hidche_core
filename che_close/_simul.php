@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -1051,7 +1051,7 @@ select { background-color:black;color:white; }
 input { background-color:black;color:white; }
 -->
 </style>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
@@ -1480,7 +1480,7 @@ input { background-color:black;color:white; }
         </td>
     </tr>
     <tr><td colspan=3>
-<?
+<?php
 if($isgen == "장수공격" || $isgen == "성벽공격") {
     echo $msg;
 } elseif($isgen == "장수평균" || $isgen == "성벽평균") {
@@ -1501,7 +1501,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격") {
         <td width=500 align=center>-</td>
     </tr>
 
-<?
+<?php
     for($i=0; $i <= 5; $i++) {
         printSimul($game, $i);
     }
@@ -1535,9 +1535,9 @@ if($isgen == "장수공격" || $isgen == "성벽공격") {
 </table>
 </form>
 </body>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </html>
-<?
+<?php
 
 function printSimul($game, $i) {
     $att = $game["att{$i}"];

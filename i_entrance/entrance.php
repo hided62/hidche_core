@@ -1,4 +1,4 @@
-<?
+<?php
 require_once('_common.php');
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 ?>
@@ -42,7 +42,7 @@ function Entrance() {
     Entrance_Update();
 }
         </script>
-<? require('../i_banner/analytics.php'); ?>
+<?php require('../i_banner/analytics.php'); ?>
     </head>
 
     <body <?=BLOCKBODY;?>>

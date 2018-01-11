@@ -1,4 +1,4 @@
-<?
+<?php
 // $turn, $command, $cost, $name, $nationname, $note, $double, $third, $fourth
 
 include "lib.php";

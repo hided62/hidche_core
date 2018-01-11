@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -24,17 +24,17 @@ if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>세력도</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1200 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>세 력 도<br><? closeButton(); ?></td></tr>
+    <tr><td>세 력 도<br><?php closeButton(); ?></td></tr>
 </table>
 <table align=center width=1200 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr height=520>
         <td width=498 valign=top>
-            <? AllLog(34, $me[skin]); ?>
+            <?php AllLog(34, $me[skin]); ?>
         </td>
         <td width=698>
             <iframe src='map.php?type=2&graphic=<?=$me[map];?>' width=698 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
@@ -43,15 +43,15 @@ if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
     </tr>
     <tr>
         <td colspan=2 valign=top>
-            <? History(34, $me[skin]); ?>
+            <?php History(34, $me[skin]); ?>
         </td>
     </tr>
 </table>
 <table align=center width=1200 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 
 </html>

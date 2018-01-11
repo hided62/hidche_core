@@ -1,4 +1,4 @@
-<?
+<?php
 
 function CustomHeader() {
     if(!headers_sent()) {

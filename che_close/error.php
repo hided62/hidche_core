@@ -1,4 +1,4 @@
-<?
+<?php
 $fp = fopen("logs/_db_bug.txt", "a");
 fwrite($fp, $message."\r\n");
 fclose($fp);
@@ -9,7 +9,7 @@ fclose($fp);
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>에러</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 <body>
 <br><br><br><br><br>

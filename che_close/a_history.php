@@ -1,4 +1,4 @@
-<?
+<?php
 $yearmonth = $_POST['yearmonth'];
 
 include "lib.php";
@@ -65,18 +65,18 @@ if($me[skin] < 1) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>연감</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>연 감<br><? closeButton(); ?></td></tr>
+    <tr><td>연 감<br><?php closeButton(); ?></td></tr>
     <tr><td>
         <form name=form1 method=post>
         년월 선택 :
         <input type=submit name=btn value="◀◀ 이전달">
         <select name=yearmonth size=1>
-<?
+<?php
 $query = "select year,month from history";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $histCount = MYDB_num_rows($result);
@@ -128,10 +128,10 @@ $history = MYDB_fetch_array($result);
     </tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 
 </html>

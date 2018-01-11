@@ -1,4 +1,4 @@
-<?
+<?php
 
 function GetStuffName($stuff) {
     $type1 = $stuff % 10;

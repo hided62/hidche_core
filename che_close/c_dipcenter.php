@@ -1,4 +1,4 @@
-<?
+<?php
 // $btn, $msg, $scoutmsg, $rate, $bill, $secretlimit
 
 include "lib.php";

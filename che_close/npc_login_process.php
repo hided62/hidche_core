@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 $connect = dbConn();

@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -118,31 +118,31 @@ function turn(type) {
 }
 
 </script>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 <body oncontextmenu='return false'>
 
 <div style="position:absolute; top:15px; left:50%; margin-left: -567px; width:  52px; height:  52px; border: 1px solid white;">심의</div>
-<? $banner_id = $_SESSION[p_id]; ?>
+<?php $banner_id = $_SESSION[p_id]; ?>
 <div style="position:absolute; top:77px; left:50%; margin-left: -675px; width: 160px; height: 600px; border: 1px solid white;">
-<? include('../i_banner/banner.php'); ?>
+<?php include('../i_banner/banner.php'); ?>
 </div>
 <div style="position:absolute; top:77px; left:50%; margin-left: 515px; width: 160px; height: 600px; border: 1px solid white;">
-<? include('../i_banner/banner.php'); ?>
+<?php include('../i_banner/banner.php'); ?>
 </div>
 <div style="position:absolute; top:1720px; left:50%; margin-left: -675px; width: 160px; height: 600px; border: 1px solid white;">
-<? include('../i_banner/banner.php'); ?>
+<?php include('../i_banner/banner.php'); ?>
 </div>
 <div style="position:absolute; top:1720px; left:50%; margin-left: 515px; width: 160px; height: 600px; border: 1px solid white;">
-<? include('../i_banner/banner.php'); ?>
+<?php include('../i_banner/banner.php'); ?>
 </div>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td colspan=5><? allButton($connect); ?></td></tr>
+    <tr><td colspan=5><?php allButton($connect); ?></td></tr>
     <tr height=50>
         <td colspan=5 align=center><font size=4>삼국지 모의전투 PHP 유기체서버 (<font color=<?=$me[skin]>0?"cyan":"white";?>><?=$scenario;?></font>)</font></td>
     </tr>
-<?
+<?php
 $valid = 0;
 if($admin[extend] == 0) { $extend = "표준"; }
 else { $extend = "확장"; $valid = 1; }
@@ -164,14 +164,14 @@ if($valid == 1) {
 ?>
 
     <tr height=30>
-        <td width=198 align=center><? info($connect, 2, $me[skin]); ?></td>
+        <td width=198 align=center><?php info($connect, 2, $me[skin]); ?></td>
         <td width=198 align=center>전체 접속자 수 : <?=$admin[online];?> 명</td>
         <td width=198 align=center>턴당 갱신횟수 : <?=$admin[conlimit];?>회</td>
-        <td width=398 colspan=2 align=center><? info($connect, 3, $me[skin]); ?></td>
+        <td width=398 colspan=2 align=center><?php info($connect, 3, $me[skin]); ?></td>
     </tr>
     <tr height=30>
         <td align=center>
-<?
+<?php
 if    ($onlineNumber > $thr3) { $state = "(긴급모드)"; }
 elseif($onlineNumber > $thr2) { $state = "(안전모드)"; }
 elseif($onlineNumber > $thr1) { $state = "(절약모드)"; }
@@ -222,10 +222,10 @@ echo "
     </tr>";
 ?>
     <tr><td colspan=5>접속중인 국가: <?=onlinenation($connect);?></td></tr>
-    <tr><td colspan=5><? adminMsg($connect, $me[skin]); ?></td></tr>
-    <tr><td colspan=5>【 국가방침 】<? nationMsg($connect, $me[skin]); ?></td></tr>
+    <tr><td colspan=5><?php adminMsg($connect, $me[skin]); ?></td></tr>
+    <tr><td colspan=5>【 국가방침 】<?php nationMsg($connect, $me[skin]); ?></td></tr>
     <tr><td colspan=5>【 접속자 】<?=onlinegen($connect);?></td></tr>
-<?
+<?php
 if($me[userlevel] >= 5) {
     echo "
     <tr><td colspan=5>
@@ -253,8 +253,8 @@ if($me[userlevel] >= 5) {
     </tr>
 <form name=form2 action=preprocessing.php method=post target=commandlist>
     <tr>
-        <td rowspan=3 width=50 valign=top><? turnTable(); ?></td>
-        <td width=646><? cityInfo($connect); ?></td>
+        <td rowspan=3 width=50 valign=top><?php turnTable(); ?></td>
+        <td width=646><?php cityInfo($connect); ?></td>
     </tr>
     <tr>
         <td width=646 align=right>
@@ -277,7 +277,7 @@ if($me[userlevel] >= 5) {
     </tr>
     <tr>
         <td width=646 align=right>
-            <? commandTable($connect); ?>
+            <?php commandTable($connect); ?>
             <input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13; value='실 행' onclick='refreshing(3,form2)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13; value='갱 신' onclick='refreshing(0,0)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:160;font-size:13; value='로그아웃' onclick=location.replace('logout_process.php')><br>
         </td>
     </tr>
@@ -285,10 +285,10 @@ if($me[userlevel] >= 5) {
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
     <tr>
-        <td width=498><? myNationInfo($connect); ?></td>
-        <td width=498><? myInfo($connect); ?></td>
+        <td width=498><?php myNationInfo($connect); ?></td>
+        <td width=498><?php myInfo($connect); ?></td>
     </tr>
-    <tr><td colspan=2><? commandButton($connect); ?></td></tr>
+    <tr><td colspan=2><?php commandButton($connect); ?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
     <tr>
@@ -296,41 +296,41 @@ if($me[userlevel] >= 5) {
         <td width=498 align=center id=bg1><b>개인 기록</b></td>
     </tr>
     <tr>
-        <td width=498 ><? AllLog(15, $me[skin]); ?></td>
-        <td width=498 ><? MyLog($me[no], 15, $me[skin]); ?></td>
+        <td width=498 ><?php AllLog(15, $me[skin]); ?></td>
+        <td width=498 ><?php MyLog($me[no], 15, $me[skin]); ?></td>
     </tr>
     <tr><td width=998 colspan=2 align=center id=bg1><b>중원 정세</b></td></tr>
-    <tr><td width=998 colspan=2><? History(15, $me[skin]); ?></td></tr>
+    <tr><td width=998 colspan=2><?php History(15, $me[skin]); ?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
     <tr>
         <td colspan=2>
             <form id=message name=message method=post action=c_msgsubmit.php target=msglist>
-                <? genList($connect); ?>
+                <?php genList($connect); ?>
                 <input type=textarea id=msg name=msg maxlength=99 style=color:white;background-color:black;font-size:13;width:720px;>
                 <input type=button style=background-color:<?=$_basecolor2;?>;color:white;font-size:13;width:100px; value='서신전달&갱신' onclick='refreshing(4,message)'>
                 <br>내용 없이 '서신전달&갱신'을 누르면 메세지창이 갱신됩니다.
             </form>
         </td>
     </tr>
-    <tr><td colspan=2><? allButton($connect); ?></td></tr>
+    <tr><td colspan=2><?php allButton($connect); ?></td></tr>
     <tr><td colspan=2>
         <iframe name=msglist src='msglist.php' width=1000 height=1375 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
         </iframe>
     </td></tr>
     <tr><td colspan=2>
 
-<?
+<?php
 allButton($connect);
 banner();
 ?>
 
     </td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>
-<?
+<?php
 if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다! 제한량이 모자라다면 참여를 해보세요^^"); }
 if($me[newmsg] == 1) { MessageBox("개인 서신이 도착했습니다!"); }
 if($me[newvote] == 1) { $develcost = $admin[develcost]*5; MessageBox("설문조사에 참여하시면 금{$develcost}과 유니크템을 드립니다! (우측 상단 설문조사 메뉴)"); }

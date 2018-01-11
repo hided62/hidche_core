@@ -1,4 +1,4 @@
-<?
+<?php
 // dbHost, dbId, dbPw, dbName, mailHost, mailPort, mailId, mailPw
 $dbHost = $_POST['dbHost'];
 $dbId = $_POST['dbId'];
@@ -49,7 +49,7 @@ foreach($querys as $query) {
 
 // 파일로 DB 정보 저장
 $file = @fopen(ROOT.W.D_SETTING.W.SET.PHP, 'w') or ErrorToScreen('설정 실패. 디렉토리의 퍼미션을 707로 주십시요');
-@fwrite($file, "<?\n{$dbHost}\n{$dbId}\n{$dbPw}\n{$dbName}\n{$mailHost}\n{$mailPort}\n{$mailId}\n{$mailPw}\n{$mailAddr}\n?>\n") or ErrorToScreen('설정 실패. 디렉토리의 퍼미션을 707로 주십시요');
+@fwrite($file, "<?php /*\n{$dbHost}\n{$dbId}\n{$dbPw}\n{$dbName}\n{$mailHost}\n{$mailPort}\n{$mailId}\n{$mailPw}\n{$mailAddr}\n */?>\n") or ErrorToScreen('설정 실패. 디렉토리의 퍼미션을 707로 주십시요');
 @fclose($file);
 @chmod(ROOT.W.D_SETTING.W.SET.PHP, 0604);
 

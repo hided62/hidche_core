@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 //로그인 검사
@@ -24,12 +24,12 @@ if($me[skin] < 1) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>부대편성</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>부 대 편 성<br><? backButton(); ?></td></tr>
+    <tr><td>부 대 편 성<br><?php backButton(); ?></td></tr>
 </table>
 <form name=form1 method=post action=c_troop.php>
 <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
@@ -40,7 +40,7 @@ if($me[skin] < 1) {
         <td align=center width=662 id=bg1 style=table-layout:fixed;word-break:break-all;>장 수</td>
         <td align=center width=98  id=bg1 style=table-layout:fixed;word-break:break-all;>부대장행동</td>
     </tr>
-<?
+<?php
 for($i=0; $i < $troopcount; $i++) {
     $troop = MYDB_fetch_array($result);
 
@@ -151,11 +151,11 @@ echo "
 MYDB_close($connect);
 ?>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? backButton(); ?></td></tr>
-    <tr><td><? banner(); ?> </td></tr>
+    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?php banner(); ?> </td></tr>
 </table>
 </form>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

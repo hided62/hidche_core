@@ -1,4 +1,4 @@
-<?
+<?php
 include "lib.php";
 include "func.php";
 $connect = dbConn();
@@ -16,12 +16,12 @@ $sel[$type] = "selected";
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>빙의일람</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<? require('analytics.php'); ?>
+<?php require('analytics.php'); ?>
 </head>
 
 <body oncontextmenu='return false'>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td>빙 의 일 람<br><? closeButton(); ?></td></tr>
+    <tr><td>빙 의 일 람<br><?php closeButton(); ?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
             <option <?=$sel[1];?> value=1>이름</option>
@@ -36,7 +36,7 @@ $sel[$type] = "selected";
         <input type=submit value='정렬하기'></form>
     </td></tr>
 </table>
-<?
+<?php
 $query = "select nation,name from nation";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $count = MYDB_num_rows($result);
@@ -108,10 +108,10 @@ MYDB_close($connect);
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><? closeButton(); ?></td></tr>
-    <tr><td><? banner(); ?></td></tr>
+    <tr><td><?php closeButton(); ?></td></tr>
+    <tr><td><?php banner(); ?></td></tr>
 </table>
-<? PrintElapsedTime(); ?>
+<?php PrintElapsedTime(); ?>
 </body>
 
 </html>
