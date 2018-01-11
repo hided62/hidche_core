@@ -1,6 +1,6 @@
 <?
 include "lib.php";
-include "schema.sql";
+include "schema.php";
 include "func.php";
 
 if(file_exists("d_setting/set.php")) error("이미 set.php가 생성되어 있습니다.<br><br>재설치하려면 해당 파일을 지우세요");
