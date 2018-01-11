@@ -989,5 +989,3 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
 
     pushFightLog($group, $log);
 }
-
-?>

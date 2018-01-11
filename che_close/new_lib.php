@@ -1,6 +1,6 @@
 <?php
 //임시 땜빵 리팩터링.
-require_once("lib.php")
+require_once "lib.php";
 
 function dbConnRoot() {
     global $connect, $HTTP_COOKIE_VARS;
@@ -10,4 +10,3 @@ function dbConnRoot() {
     @MYDB_select_db($f[4], $connect) or Error("DB Select 에러가 발생했습니다","");
     return $connect;
 }
-?>

@@ -1,20 +1,20 @@
 <?php
 
-define(POPUP, 'popup');
+define('POPUP', 'popup');
 
-define(LOGIN, 'login');
-define(JOIN, 'join');
-define(FINDPW, 'findpw');
+define('LOGIN', 'login');
+define('JOIN', 'join');
+define('FINDPW', 'findpw');
 
-define(ENTRANCE, 'entrance');
-define(SERVERLIST, 'serverList');
-define(LOGOUT, 'logout');
-define(ADMIN, 'admin');
-define(DONATION, 'donation');
-define(MEMBER, 'member');
+define('ENTRANCE', 'entrance');
+define('SERVERLIST', 'serverList');
+define('LOGOUT', 'logout');
+define('ADMIN', 'admin');
+define('DONATION', 'donation');
+define('MEMBER', 'member');
 
-define(MANAGE, 'manage');
-define(ICON, 'icon');
+define('MANAGE', 'manage');
+define('ICON', 'icon');
 
 $_serverDirs = array(
     'che',

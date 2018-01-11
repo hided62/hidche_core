@@ -15,3 +15,4 @@ DB Connect() error: test
 DB Connect() error: test
 DB Connect() error: test
 DB Connect() error: test
+이미 설치되어 있습니다. 재설치하려면 설정 파일을 지우세요.

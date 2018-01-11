@@ -48,9 +48,9 @@ button  {
     font-family: '맑은 고딕';
     font-size: 13px;
 }
-.bg0    { background-image:url(http://115.68.28.99/images/back_walnut.jpg); }
-.bg1    { background-image:url(http://115.68.28.99/images/back_green.jpg); }
-.bg2    { background-image:url(http://115.68.28.99/images/back_blue.jpg); }
+.bg0    { background-image:url('/images/back_walnut.jpg'); }
+.bg1    { background-image:url('/images/back_green.jpg'); }
+.bg2    { background-image:url('/images/back_blue.jpg'); }
 
 .font0  { font-size: 10px; }
 .font1  { font-size: 13px; }
