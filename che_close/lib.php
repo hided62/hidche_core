@@ -54,11 +54,11 @@ $_baserice = 2000;  // 기본 병량
 $_taxrate = 0.01;   // 군량 매매시 세율
 //$images = "http://115.68.28.99/images";
 //$image = "http://115.68.28.99/image";
-$images = "http://jwh1807.vipweb.kr/images";
-$image = "http://jwh1807.vipweb.kr/image";
+//$images = "http://jwh1807.vipweb.kr/images";
+//$image = "http://jwh1807.vipweb.kr/image";
 $image1 = "../d_pic";
-//    $images = "images";
-//    $image = "image";
+    $images = "/images";
+    $image = "/image";
 
 unset($member);
 unset($setup);
