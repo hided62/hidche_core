@@ -1,5 +1,5 @@
 var W = "/";
-var HOME = "/sam/";
+var HOME = "/dev_sam/"; //TODO:install시 수정
 //var HOME = "http://62che.com/sam/";
 //var HOME = "http://localhost/sam/";
 

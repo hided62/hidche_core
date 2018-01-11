@@ -12,7 +12,8 @@ class _Session {
         session_start();
 
         //첫 등장
-        if($_SESSION['ip'] == '') {
+
+        if(!isset($_SESSION['ip']) || $_SESSION['ip'] == '') {
             $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
             $_SESSION['time'] = time();
         }
@@ -53,6 +54,9 @@ class _Session {
     }
 
     public function IsLoggedIn() {
+        if(!isset($_SESSION['noMember'])){
+            return false;
+        }
         if($_SESSION['noMember'] != 0) {
             return true;
         } else {

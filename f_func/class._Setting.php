@@ -26,11 +26,14 @@ class _Setting {
             $this->dbId = trim(str_replace("\n", "", $f[2]));
             $this->dbPw = trim(str_replace("\n", "", $f[3]));
             $this->dbName = trim(str_replace("\n", "", $f[4]));
-            $this->mailHost = trim(str_replace("\n", "", $f[5]));
-            $this->mailPort = trim(str_replace("\n", "", $f[6]));
-            $this->mailId = trim(str_replace("\n", "", $f[7]));
-            $this->mailPw = trim(str_replace("\n", "", $f[8]));
-            $this->mailAddr = trim(str_replace("\n", "", $f[9]));
+            if(count($f) > 10){
+                $this->mailHost = trim(str_replace("\n", "", $f[5]));
+                $this->mailPort = trim(str_replace("\n", "", $f[6]));
+                $this->mailId = trim(str_replace("\n", "", $f[7]));
+                $this->mailPw = trim(str_replace("\n", "", $f[8]));
+                $this->mailAddr = trim(str_replace("\n", "", $f[9]));
+            }
+            
         }
     }
 

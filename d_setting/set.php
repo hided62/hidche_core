@@ -1,11 +1,11 @@
-<?php
-db_host
-db_user
-db_pass
-db_name
-smtp_host
-smtp_port
-smtp_id
-smtp_pw
-smtp_sender
-?>
+<?php /*
+localhost
+sam_dev
+letmein
+sammo
+smtp.gmail.com
+465
+aser
+ewrwer
+@gmail.com
+ */?>
