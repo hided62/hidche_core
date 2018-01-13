@@ -2,10 +2,14 @@
 include "lib.php";
 include "schema.php";
 include "func.php";
-
+require_once "../e_lib/util.php";
 if(file_exists("d_setting/set.php")) error("이미 set.php가 생성되어 있습니다.<br><br>재설치하려면 해당 파일을 지우세요");
 
 
+$hostname = util::array_get($_POST['hostname'], '');
+$user_id = util::array_get($_POST['user_id'], '');
+$password = util::array_get($_POST['password'], '');
+$dbname = util::array_get($_POST['dbname'], '');
 
 // 호스트네임, 아이디, DB네임, 비밀번호의 공백여부 검사
 if(isBlank($hostname)) Error("HostName을 입력하세요","");

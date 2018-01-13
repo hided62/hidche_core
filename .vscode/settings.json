@@ -6,10 +6,12 @@
         "**/CVS": true,
         "**/.DS_Store": true,
         "**/logs/*.txt": true,
+        "**/session/sess*":true,
         
     },
     "search.exclude": {
-        "**/che_close": true,
+        "**/che_close/*": true,
         "e_lib/*":true,
+       
       },
 }

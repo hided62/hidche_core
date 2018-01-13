@@ -82,7 +82,7 @@ function delInDir($dir) {
     while(false !== ($FolderOrFile = readdir($handle))) {
         if($FolderOrFile != "." && $FolderOrFile != "..") {
             if(is_dir("$dir/$FolderOrFile")) {
-                deldir("$dir/$FolderOrFile");
+                delInDir("$dir/$FolderOrFile");
             } // recursive
             else {
                 unlink("$dir/$FolderOrFile");
@@ -93,7 +93,7 @@ function delInDir($dir) {
 //    if(rmdir($dir)) {
 //        $success = true;
 //    }
-    return $success;
+    return true;
 }
 
 function GetImageURL($imgsvr) {

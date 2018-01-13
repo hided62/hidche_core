@@ -80,20 +80,23 @@ function abilityPowint() {
 function delInDir($dir) {
     $handle = opendir($dir);
     while(false !== ($FolderOrFile = readdir($handle))) {
-        if($FolderOrFile != "." && $FolderOrFile != "..") {
-            if(is_dir("$dir/$FolderOrFile")) {
-                deldir("$dir/$FolderOrFile");
-            } // recursive
-            else {
-                unlink("$dir/$FolderOrFile");
-            }
+        if($FolderOrFile == "." || $FolderOrFile == "..") {
+            continue;
+        }
+
+        $filepath = sprintf('%s/%s', $dir, $FolderOrFile);
+        if(is_dir($filepath)) {
+            delInDir($filepath);
+        } // recursive
+        else {
+            @unlink($filepath);
         }
     }
     closedir($handle);
 //    if(rmdir($dir)) {
 //        $success = true;
 //    }
-    return $success;
+    return true;
 }
 
 function GetImageURL($imgsvr) {
