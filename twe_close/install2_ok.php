@@ -302,6 +302,35 @@ insertCity($connect, "파양", 1, 103700,  2000,  2200,  2000,  3800,  3800, 7, 
 insertCity($connect, "탐라", 1, 113000,  2200,  2100,  2000,  4300,  4100, 8, "31|33|34|62");       // 93 : 탐라
 insertCity($connect, "유구", 1,  92100,  1700,  1800,  2000,  3700,  3700, 8, "59|69");             // 94 : 유구
 
+//TODO:replace
+switch($scenario) {
+    case  0: echo "index.php";     break;
+    case  1: echo "scenario_1.php";  break;
+    case  2: echo "scenario_2.php";  break;
+    case  3: echo "scenario_3.php";  break;
+    case  4: echo "scenario_4.php";  break;
+    case  5: echo "scenario_5.php";  break;
+    case  6: echo "scenario_6.php";  break;
+    case  7: echo "scenario_7.php";  break;
+    case  8: echo "scenario_8.php";  break;
+    case  9: echo "scenario_9.php";  break;
+    case 10: echo "scenario_10.php";  break;
+    case 11: echo "scenario_11.php";  break;
+
+    case 12: echo "scenario_12.php";  break;
+
+    case 20: echo "scenario_20.php";  break;
+    case 21: echo "scenario_21.php";  break;
+    case 22: echo "scenario_22.php";  break;
+    case 23: echo "scenario_23.php";  break;
+    case 24: echo "scenario_24.php";  break;
+    case 25: echo "scenario_25.php";  break;
+    case 26: echo "scenario_26.php";  break;
+    case 27: echo "scenario_27.php";  break;
+    case 28: echo "scenario_28.php";  break;
+    default: echo "install3_ok.php";     break;
+}
+/*
 switch($scenario) {
     case  0: echo "<script>location.replace('index.php');</script>";     break;
     case  1: echo "<script>location.replace('scenario_1.php');</script>";  break;
@@ -329,7 +358,7 @@ switch($scenario) {
     case 28: echo "<script>location.replace('scenario_28.php');</script>";  break;
     default: echo "<script>location.replace('install3_ok.php');</script>";     break;
 }
-
+*/
 function insertCity($connect, $name, $level, $pop2, $agri2, $comm2, $secu2, $def2, $wall2, $region, $path) {
     switch($level) {
     case 1: $pop =   5000; $agri =  100; $comm =  100; $secu =  100; $def =  500; $wall =  500; break;

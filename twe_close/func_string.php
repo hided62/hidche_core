@@ -220,7 +220,7 @@ class _String {
     }
 
     //중간정렬
-    function Fill($str, $maxsize, $ch) {
+    public static function staticFill($str, $maxsize, $ch) {
         $size = strlen($str);
 
         $count = ($maxsize - $size) / 2;
@@ -236,7 +236,7 @@ class _String {
     }
 
     //우측정렬
-    function Fill2($str, $maxsize, $ch='0') {
+    public static function Fill2($str, $maxsize, $ch='0') {
         $size = strlen($str);
 
         $count = ($maxsize - $size);
