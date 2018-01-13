@@ -240,7 +240,7 @@ class _String {
         $size = strlen($str);
 
         $count = ($maxsize - $size);
-
+        $string = '';
         for($i=0; $i < $count; $i++) {
             $string = $string.$ch;
         }

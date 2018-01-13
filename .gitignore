@@ -116,6 +116,5 @@ d_log/*.txt
 d_setting/set.php
 set.php
 config.php
-d_session/sess_*
-data/session/sess_*
+sess_*
 */logs/*.txt

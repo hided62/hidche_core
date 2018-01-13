@@ -1,6 +1,15 @@
 <?php
 include "lib.php";
 include "func.php";
+require_once('../e_lib/util.php');
+
+$turnterm = util::array_get($_POST['turnterm'],'0');
+$sync = util::array_get($_POST['sync'],'0');
+$scenario = util::array_get($_POST['scenario'],'0');
+$fiction = util::array_get($_POST['fiction'],'0');
+$extend = util::array_get($_POST['extend'],'0');
+$npcmode = util::array_get($_POST['npcmode'],'0');
+$img = util::array_get($_POST['img'],'0');
 
 $connect=dbConn();
 
