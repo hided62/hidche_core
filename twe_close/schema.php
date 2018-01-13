@@ -23,7 +23,7 @@ $general_schema = "
     logcnt   int(6) default 1,      refcnt   int(6) default 1,
     picture  char(32) not null,     imgsvr   int(1) default 0,
     name     char(32) not null,
-    name2    char(32) not null,
+    name2    char(32) NULL DEFAULT NULL,
     nation   int(6) default 0,
     nations  char(64) default ',0,',
     city     int(6) default 0,
