@@ -120,5 +120,3 @@ switch($commandtype) {
     default: command_Other($connect, $turn, $commandtype); break;
 }
 
-?>
-

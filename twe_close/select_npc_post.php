@@ -124,4 +124,3 @@ if($admin[npcmode] != 1) {
     echo("<script>location.replace('index.php');</script>");
 }
 
-?>

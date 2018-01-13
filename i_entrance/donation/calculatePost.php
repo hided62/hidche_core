@@ -43,4 +43,4 @@ if($member['GRADE'] < 6) {
 
 echo json_encode($response);
 
-?>
+

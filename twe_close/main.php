@@ -334,5 +334,3 @@ banner();
 if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다! 제한량이 모자라다면 참여를 해보세요^^"); }
 if($me[newmsg] == 1) { MessageBox("개인 서신이 도착했습니다!"); }
 if($me[newvote] == 1) { $develcost = $admin[develcost]*5; MessageBox("설문조사에 참여하시면 금{$develcost}과 유니크템을 드립니다! (우측 상단 설문조사 메뉴)"); }
-?>
-

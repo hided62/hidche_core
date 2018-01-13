@@ -124,5 +124,3 @@ if($command == 46) {
     echo "<script>location.replace('main.php');</script>";
 }
 
-?>
-

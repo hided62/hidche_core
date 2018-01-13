@@ -78,4 +78,3 @@ function DeleteSession() {
 }
 
 MYDB_close($connect);
-?>

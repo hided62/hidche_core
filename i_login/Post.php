@@ -51,4 +51,4 @@ if($DB->Count($rs) == 1) {
 sleep(1);
 echo json_encode($response);
 
-?>
+

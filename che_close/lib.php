@@ -181,4 +181,3 @@ function PrintElapsedTime() {
     $_endTime = round(getMicroTime() - $_startTime, 3);
     echo "<table width=1000 align=center style=font-size:10;><tr><td align=right>경과시간 : {$_endTime}초</td></tr></table>";
 }
-?>

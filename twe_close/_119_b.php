@@ -53,5 +53,5 @@ case "락풀기":
     break;
 }
 
-echo "<script>location.replace('_119.php');</script>";
-?>
+//echo "<script>location.replace('_119.php');</script>";
+echo '_119.php';//TODO:replace

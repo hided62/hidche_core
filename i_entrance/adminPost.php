@@ -6,6 +6,7 @@
 // $_POST['select'] : 0: 폐쇄, 1: 리셋, 2: 오픈
 
 require_once('_common.php');
+require_once(ROOT.W.E_LIB.W.'util.php');
 require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
@@ -23,10 +24,10 @@ function getPost($str){
     return $temp;
 }
 
-$action = getPost('action');
-$notice = getPost('notice');
-$server = getPost('server');
-$select = getPost('select');
+$action = util::array_get($_POST['action'], '');
+$notice = util::array_get($_POST['notice'], '');
+$server = util::array_get($_POST['server'], '');
+$select = util::array_get($_POST['select'], '');
 
 
 $rs = $DB->Select('GRADE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
@@ -48,7 +49,10 @@ if($member['GRADE'] < 6) {
             rename(ROOT.W.$serverDir.'_rest', ROOT.W.$serverDir);
             $response['result'] = 'SUCCESS';
         } elseif($select == 1) {
-            @unlink(ROOT.W.$serverDir.'_close'.W.D_SETTING.W.SET.PHP);
+            if(file_exists(ROOT.W.$serverDir.'_close'.W.D_SETTING.W.SET.PHP)){
+                @unlink(ROOT.W.$serverDir.'_close'.W.D_SETTING.W.SET.PHP);
+            }
+            
             $response['installURL'] = ROOT.W."{$serverDir}_close/install.php";
             $response['result'] = 'SUCCESS';
         } elseif($select == 2) {
@@ -64,5 +68,3 @@ if($member['GRADE'] < 6) {
 
 sleep(1);
 echo json_encode($response);
-
-?>

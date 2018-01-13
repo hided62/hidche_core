@@ -1861,4 +1861,3 @@ function RiceBillRate($connect, $nation, $rate, $rice_rate, $type, $rice) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-?>

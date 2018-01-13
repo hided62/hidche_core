@@ -26,5 +26,3 @@ switch($btn) {
 }
 
 echo "<script>location.replace('_admin5.php');</script>";
-?>
-

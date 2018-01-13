@@ -13,4 +13,4 @@ $response['result'] = 'SUCCESS';
 sleep(1);
 echo json_encode($response);
 
-?>
+

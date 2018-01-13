@@ -253,5 +253,3 @@ function RegGeneral3($connect,$turnterm,$gencount,$nation,$level,$name,$leader,$
     ) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-?>
-

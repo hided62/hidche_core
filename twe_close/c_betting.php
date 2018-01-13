@@ -38,4 +38,5 @@ for($i=0; $i < 16; $i++) {
 
 ?>
 
-<script>location.replace('b_betting.php');</script>
+<!--<script>location.replace('b_betting.php');</script>//TODO:replace-->
+b_betting.php

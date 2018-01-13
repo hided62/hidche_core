@@ -74,7 +74,7 @@ if(!$check) {
             <tr>
                 <form method=post action=install1.php onsubmit='return check_submit()'>
                 <td align=center height=30>
-                    <input type=button text='inst_b_1' border=0 align=absmiddle>
+                    <input type=submit text='inst_b_1' border=0 align=absmiddle>
                 </td>
                 </form>
             </tr>

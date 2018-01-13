@@ -1845,4 +1845,3 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
     pushHistory($connect, $history);
 }
 
-?>

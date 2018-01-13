@@ -202,4 +202,5 @@ if($btn == "자동개최설정" && $me[userlevel] >= 5) {
 }
 ?>
 
-<script>location.replace('b_tournament.php');</script>
+<!--<script>location.replace('b_tournament.php');</script> //TODO:replace -->
+b_tournament.php

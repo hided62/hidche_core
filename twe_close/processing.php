@@ -3125,5 +3125,3 @@ function command_81($connect, $turn, $command) {
 ";
     ender(1);
 }
-?>
-

@@ -194,4 +194,3 @@ function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$p
     }
 }
 
-?>

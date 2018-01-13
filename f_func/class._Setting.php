@@ -78,4 +78,4 @@ class _Setting {
     }
 }
 
-?>
+

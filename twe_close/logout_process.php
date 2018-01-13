@@ -16,10 +16,11 @@ $id = $me[user_id];
 $pw = $me[password];
 $conmsg = $me[conmsg];
 
-//¼¼¼Çº¯¼ö Á¦°Å
+//ï¿½ï¿½ï¿½Çºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 session_destroy();
 
-echo "<script>location.replace('start.php');</script>";
+//echo "<script>location.replace('start.php');</script>";
+echo 'start.php';//TODO:replace
 
 /*
 <html>
@@ -33,4 +34,3 @@ a
 </html>
 */
 
-?>

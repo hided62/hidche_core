@@ -116,5 +116,3 @@ pushGenLog($you, $youlog);
 
 echo "<script>location.replace('msglist.php');</script>";
 
-?>
-

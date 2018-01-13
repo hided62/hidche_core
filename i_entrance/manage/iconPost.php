@@ -76,4 +76,4 @@ echo "<script type='text/javascript'>
     alert('{$response['msg']}');
     location.replace('".ROOT.W.I.ENTRANCE.W.ENTRANCE.PHP."');
 </script>";
-?>
+

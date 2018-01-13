@@ -103,5 +103,3 @@ switch($btn) {
 }
 
 echo "<script>location.replace('_admin4.php');</script>";
-?>
-

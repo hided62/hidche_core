@@ -335,4 +335,4 @@ function getNewColor($type) {
     return $color;
 }
 
-?>
+

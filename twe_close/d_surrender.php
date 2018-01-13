@@ -124,5 +124,3 @@ pushHistory($connect, $history);
 
 echo "<script>location.replace('msglist.php');</script>";
 
-?>
-

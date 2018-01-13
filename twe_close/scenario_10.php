@@ -898,4 +898,3 @@ pushHistory($connect, $history);
 
 echo "<script>location.replace('install3_ok.php');</script>";
 
-?>

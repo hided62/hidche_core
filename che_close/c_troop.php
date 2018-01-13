@@ -54,5 +54,3 @@ if($btn == "부 대 창 설" && $name != "" && $me[troop] == 0) {
 echo "<script>location.replace('b_troop.php');</script>";
 
 MYDB_close($connect);
-?>
-

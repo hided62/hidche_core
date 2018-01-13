@@ -432,4 +432,3 @@ function getCityLevel($region, $level) {
     return $str;
 }
 
-?>

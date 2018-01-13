@@ -56,7 +56,7 @@ if($btn == "국가방침") {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-echo "<script>location.replace('b_dipcenter.php');</script>";
+//echo "<script>location.replace('b_dipcenter.php');</script>";
+echo 'b_dipcenter.php';//TODO:replace
 
-?>
 

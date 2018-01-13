@@ -617,5 +617,3 @@ $history_schema = "
 
     ";
 
-?>
-

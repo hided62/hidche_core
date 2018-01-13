@@ -129,6 +129,6 @@ switch($btn) {
         break;
 }
 
-echo "<script>location.replace('_admin3.php');</script>";
-?>
+//echo "<script>location.replace('_admin3.php');</script>";
+echo '_admin3.php';//TODO:replace
 

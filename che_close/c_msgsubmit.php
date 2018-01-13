@@ -115,5 +115,3 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
 
 echo "<script>location.replace('msglist.php');</script>";
 
-?>
-

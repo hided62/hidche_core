@@ -67,7 +67,7 @@ if(!isTable($connect, "history",$dbname)) @MYDB_query($history_schema, $connect)
 
 // 파일로 DB 정보 저장
 $file=@fopen("d_setting/set.php","w") or Error("set.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
-@fwrite($file,"<?php /*\n$hostname\n$user_id\n$password\n$dbname\n */?>\n") or Error("set.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
+@fwrite($file,"<?php /*\n$hostname\n$user_id\n$password\n$dbname\n */\n") or Error("set.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
 @fclose($file);
 @mkdir("data",0707);
 @chmod("data",0707);
@@ -78,4 +78,3 @@ $temp=MYDB_fetch_array(MYDB_query("select count(*) from general where level = '1
 MYDB_close($connect);
 
 echo "<script>location.replace('install2.php');</script>";
-?>

@@ -31,4 +31,3 @@ $map = str_replace('<_quot_>', "'", $map);
 $map = str_replace('<_dquot_>', '"', $map);
 
 echo $map;
-?>

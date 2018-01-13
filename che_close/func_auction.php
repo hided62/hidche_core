@@ -345,4 +345,3 @@ function processAuction($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-?>

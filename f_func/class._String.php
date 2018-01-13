@@ -234,4 +234,3 @@ class _String {
     }
 }
 
-?>

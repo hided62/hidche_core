@@ -345,4 +345,3 @@ function insertCity($connect, $name, $level, $pop2, $agri2, $comm2, $secu2, $def
     ) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-?>

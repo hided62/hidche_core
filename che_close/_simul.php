@@ -1559,4 +1559,4 @@ function printSimul($game, $i) {
     </tr>";
 }
 
-?>
+

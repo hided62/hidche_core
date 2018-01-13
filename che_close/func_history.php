@@ -128,4 +128,3 @@ function LogHistory($connect, $isFirst=0) {
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', LogHistory Finish');
     return true;
 }
-?>

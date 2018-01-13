@@ -14,7 +14,6 @@ $admin[killturn] *= 3;
 $query = "update general set killturn='$admin[killturn]' where user_id='$_SESSION[p_id]'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-echo "<script>location.replace('b_myPage.php');</script>";
-
-?>
+//echo "<script>location.replace('b_myPage.php');</script>";
+echo 'b_myPage.php'; //TODO:replace
 

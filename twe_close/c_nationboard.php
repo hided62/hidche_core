@@ -42,7 +42,8 @@ if(CheckBlock($connect) != 1 && CheckBlock($connect) != 3) {
     }
 }
 
-echo "<script>location.replace('b_nationboard.php');</script>";
+//echo "<script>location.replace('b_nationboard.php');</script>";
+echo 'b_nationboard.php';//TODO:replace
 
 ?>
 

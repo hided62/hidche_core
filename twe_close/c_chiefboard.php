@@ -42,8 +42,8 @@ if(CheckBlock($connect) != 1 && CheckBlock($connect) != 3) {
     }
 }
 
-echo "<script>location.replace('b_chiefboard.php');</script>";
-
+//echo "<script>location.replace('b_chiefboard.php');</script>";
+echo 'b_chiefboard.php';//TODO:replace
 ?>
 
 </body>

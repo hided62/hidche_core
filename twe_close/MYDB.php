@@ -38,4 +38,3 @@ function MYDB_close($connect) {
     return mysqli_close($connect);
 }
 
-?>

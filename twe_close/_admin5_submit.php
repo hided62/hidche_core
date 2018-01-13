@@ -25,6 +25,7 @@ switch($btn) {
         break;
 }
 
-echo "<script>location.replace('_admin5.php');</script>";
-?>
+//echo "<script>location.replace('_admin5.php');</script>";
+echo '_admin5.php';//TODO:replace
+
 

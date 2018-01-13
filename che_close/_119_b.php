@@ -54,4 +54,3 @@ case "락풀기":
 }
 
 echo "<script>location.replace('_119.php');</script>";
-?>

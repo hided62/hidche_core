@@ -3,6 +3,7 @@
 
 include "lib.php";
 include "func.php";
+
 //로그인 검사
 CheckLogin();
 $connect = dbConn();

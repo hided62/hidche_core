@@ -73,4 +73,5 @@ if($btn == "수정" && $me[userlevel] >= 5) {
 }
 ?>
 
-<script>location.replace('a_vote.php');</script>
+<!--<script>location.replace('a_vote.php');</script> //TODO:replace -->
+a_vote.php 

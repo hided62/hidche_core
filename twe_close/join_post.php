@@ -272,4 +272,3 @@ if($id_num) {
     echo("<script>location.replace('index.php');</script>");
 }
 
-?>

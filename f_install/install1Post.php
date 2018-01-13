@@ -49,10 +49,12 @@ foreach($querys as $query) {
 
 // 파일로 DB 정보 저장
 $file = @fopen(ROOT.W.D_SETTING.W.SET.PHP, 'w') or ErrorToScreen('설정 실패. 디렉토리의 퍼미션을 707로 주십시요');
-@fwrite($file, "<?php /*\n{$dbHost}\n{$dbId}\n{$dbPw}\n{$dbName}\n{$mailHost}\n{$mailPort}\n{$mailId}\n{$mailPw}\n{$mailAddr}\n */?>\n") or ErrorToScreen('설정 실패. 디렉토리의 퍼미션을 707로 주십시요');
+@fwrite($file, "<?php /*\n{$dbHost}\n{$dbId}\n{$dbPw}\n{$dbName}\n{$mailHost}\n{$mailPort}\n{$mailId}\n{$mailPw}\n{$mailAddr}\n */\n") or ErrorToScreen('설정 실패. 디렉토리의 퍼미션을 707로 주십시요');
 @fclose($file);
 @chmod(ROOT.W.D_SETTING.W.SET.PHP, 0604);
 
 ?>
 
-<meta HTTP-EQUIV="refresh" CONTENT="0; URL=install2.php">
+<!--<meta HTTP-EQUIV="refresh" CONTENT="0; URL=install2.php">-->
+Go to install2.php<br>
+Todo : Back to replace code

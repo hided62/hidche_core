@@ -85,6 +85,3 @@ case 2:
 }
 
 echo "<script>location.replace('commandlist.php');</script>";
-
-?>
-

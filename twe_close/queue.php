@@ -38,4 +38,3 @@ class Queue {
         return $value;
     }
 }
-?>

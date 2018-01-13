@@ -6145,4 +6145,3 @@ function process_99($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-?>

@@ -6,5 +6,5 @@ $connect=dbConn();
 
 LogHistory($connect, 1);
 
-echo "<script>location.replace('index.php');</script>";
-?>
+//echo "<script>location.replace('index.php');</script>";
+echo 'index.php'; //TODO:replace

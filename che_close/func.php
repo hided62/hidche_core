@@ -7416,4 +7416,3 @@ function Submit($url, $msg="", $msg2="") {
     ";
 }
 
-?>

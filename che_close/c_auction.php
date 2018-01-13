@@ -213,4 +213,3 @@ if($btn == "판매") {
 }
 
 Submit("b_auction.php", $msg, $msg2);
-?>

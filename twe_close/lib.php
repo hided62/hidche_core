@@ -7,7 +7,7 @@
 //    @header ("P3P : CP=\"ALL CURa ADMa DEVa TAIa OUR BUS IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC OTC\"");
 
 //디버그용 매크로
-define(__OLINE__,__LINE__);
+define('__OLINE__',__LINE__);
 define(__LINE__,__FILE__." ".__FUNCTION__." ".__LINE__." : ");
 ini_set("session.cache_expire", 10080);      // minutes
 ini_set("session.gc_maxlifetime", 604800);    // seconds
@@ -167,4 +167,3 @@ function PrintElapsedTime() {
     $_endTime = round(getMicroTime() - $_startTime, 3);
     echo "<table width=1000 align=center style=font-size:10;><tr><td align=right>경과시간 : {$_endTime}초</td></tr></table>";
 }
-?>

@@ -58,5 +58,3 @@ if($btn == "국가방침") {
 
 echo "<script>location.replace('b_dipcenter.php');</script>";
 
-?>
-

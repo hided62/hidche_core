@@ -54,4 +54,3 @@ switch(rand()%10) {
     break;
 }
 */
-?>

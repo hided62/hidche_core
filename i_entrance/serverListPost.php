@@ -150,5 +150,5 @@ function getTurnTerm($term) {
     return $str;
 }
 
-?>
+
 

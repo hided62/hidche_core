@@ -1,6 +1,6 @@
-<?php
+<?php /*
 localhost
 root
 root
 test
-?>
+*/
