@@ -10,3 +10,18 @@ function dbConnRoot() {
     @MYDB_select_db($f[4], $connect) or Error("DB Select 에러가 발생했습니다","");
     return $connect;
 }
+
+
+
+class General{
+    protected
+        $no, $user_id, $name, $level, $level_exp,
+        $leadership, $leadership_exp,
+        $power, $power_exp,
+        $intel, $intel_exp;
+}
+
+class NPCGeneral extends General{
+    protected
+        $npc_name, $npcmsg;
+}

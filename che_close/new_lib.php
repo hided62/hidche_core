@@ -10,3 +10,4 @@ function dbConnRoot() {
     @MYDB_select_db($f[4], $connect) or Error("DB Select 에러가 발생했습니다","");
     return $connect;
 }
+

@@ -2395,7 +2395,7 @@ function process_32($connect, &$general) {
 
 function process_33($connect, &$general) {
     global $_firing, $_basefiring, $_firingpower;
-    global $_basegold, $_baserice;
+    //global $_basegold, $_baserice; //TODO : 버그로 보여서 지웠는데, 진짜로 지워도 되는지 확인
     //탈취는 0까지 무제한
     $_basegold = 0; $_baserice = 0;
     $date = substr($general[turntime],11,5);

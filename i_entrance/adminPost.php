@@ -4,15 +4,30 @@
 // $_POST['notice'] : 공지
 // $_POST['server'] : 서버 인덱스
 // $_POST['select'] : 0: 폐쇄, 1: 리셋, 2: 오픈
-$action = $_POST['action'];
-$notice = $_POST['notice'];
-$server = $_POST['server'];
-$select = $_POST['select'];
 
 require_once('_common.php');
 require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
+
+function getPost($str){
+    if(!isset($_POST[$str])){
+        return '';
+    }
+    $temp = $_POST[$str];
+    $temp=str_replace("　","",$temp);
+    $temp=str_replace("\n","",$temp);
+    $temp=strip_tags($temp);
+    $temp=str_replace("&nbsp;","",$temp);
+    $temp=str_replace(" ","",$temp);
+    return $temp;
+}
+
+$action = getPost('action');
+$notice = getPost('notice');
+$server = getPost('server');
+$select = getPost('select');
+
 
 $rs = $DB->Select('GRADE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
 $member = $DB->Get($rs);
