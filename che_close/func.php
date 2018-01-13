@@ -2879,7 +2879,7 @@ function pushProcessLog($connect, $log) {
 
 function delStepLog() {
     $date = date('Y_m_d');
-    @unlink("logs/_{$date}_steplog.txt");
+    @unlink(realpath(dirname(__FILE__))."/logs/_{$date}_steplog.txt");
 }
 
 function pushStepLog($log) {

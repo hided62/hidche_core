@@ -45,19 +45,19 @@ if($member['GRADE'] < 6) {
         $serverDir = $_serverDirs[$server];
 
         if($select == 0) {
-            rename(ROOT.W.$serverDir, ROOT.W.$serverDir.'_close');
-            rename(ROOT.W.$serverDir.'_rest', ROOT.W.$serverDir);
+            rename(realpath(dirname(__FILE__)).W.ROOT.W.$serverDir, realpath(dirname(__FILE__)).W.ROOT.W.$serverDir.'_close');
+            rename(realpath(dirname(__FILE__)).W.ROOT.W.$serverDir.'_rest', realpath(dirname(__FILE__)).W.ROOT.W.$serverDir);
             $response['result'] = 'SUCCESS';
         } elseif($select == 1) {
-            if(file_exists(ROOT.W.$serverDir.'_close'.W.D_SETTING.W.SET.PHP)){
-                @unlink(ROOT.W.$serverDir.'_close'.W.D_SETTING.W.SET.PHP);
+            if(file_exists(realpath(dirname(__FILE__)).W.ROOT.W.$serverDir.'_close'.W.D_SETTING.W.SET.PHP)){
+                @unlink(realpath(dirname(__FILE__)).W.ROOT.W.$serverDir.'_close'.W.D_SETTING.W.SET.PHP);
             }
             
             $response['installURL'] = ROOT.W."{$serverDir}_close/install.php";
             $response['result'] = 'SUCCESS';
         } elseif($select == 2) {
-            rename(ROOT.W.$serverDir, ROOT.W.$serverDir."_rest");
-            rename(ROOT.W.$serverDir."_close", ROOT.W.$serverDir);
+            rename(realpath(dirname(__FILE__)).W.ROOT.W.$serverDir, realpath(dirname(__FILE__)).W.ROOT.W.$serverDir."_rest");
+            rename(realpath(dirname(__FILE__)).W.ROOT.W.$serverDir."_close", realpath(dirname(__FILE__)).W.ROOT.W.$serverDir);
             $response['result'] = 'SUCCESS';
         }
     } else {

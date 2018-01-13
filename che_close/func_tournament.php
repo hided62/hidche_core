@@ -238,12 +238,12 @@ function printFighting($tournament, $phase) {
 
 function startTournament($connect, $auto, $type) {
     for($i=0; $i < 8; $i++) {
-        @unlink("logs/fight{$i}.txt");
-        @unlink("logs/fight1{$i}.txt");
-        @unlink("logs/fight2{$i}.txt");
-        @unlink("logs/fight3{$i}.txt");
-        @unlink("logs/fight4{$i}.txt");
-        @unlink("logs/fight5{$i}.txt");
+        @unlink(realpath(dirname(__FILE__))."/logs/fight{$i}.txt");
+        @unlink(realpath(dirname(__FILE__))."/logs/fight1{$i}.txt");
+        @unlink(realpath(dirname(__FILE__))."/logs/fight2{$i}.txt");
+        @unlink(realpath(dirname(__FILE__))."/logs/fight3{$i}.txt");
+        @unlink(realpath(dirname(__FILE__))."/logs/fight4{$i}.txt");
+        @unlink(realpath(dirname(__FILE__))."/logs/fight5{$i}.txt");
     }
 
     switch($auto) {

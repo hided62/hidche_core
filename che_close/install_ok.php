@@ -15,9 +15,9 @@ $connect = MYDB_connect($hostname,$user_id,$password) or Error("MySQL-DB Connect
 if(MYDB_error($connect)) Error(__LINE__.MYDB_error($connect),"");
 MYDB_select_db($dbname, $connect) or Error("MySQL-DB Select<br>Error!!!","");
 
-delInDir("logs");
-delInDir("data/session");
-@unlink("data/connected.php");
+delInDir(realpath(dirname(__FILE__))."/logs");
+delInDir(realpath(dirname(__FILE__))."/data/session");
+@unlink(realpath(dirname(__FILE__))."/data/connected.php");
 
 // 관리자 테이블 삭제
 if(isTable($connect, "game", $dbname)) @MYDB_query("drop table game", $connect) or Error("drop ".MYDB_error($connect),"");
