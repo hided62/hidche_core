@@ -31,36 +31,39 @@ Entrance_AdminUpdate();
 <?php
 $i = 0;
 foreach($_serverDirs as $serverDir) {
-    if(is_dir(ROOT.W.$serverDir.'_close') && is_dir(ROOT.W.$serverDir.'_rest')) {
-        // 이상함
+    $serverPath = ROOT.W.$serverDir;
+    $realServerPath = realpath(dirname(__FILE__)).W.$serverPath;
+    //TODO: .htaccess가 서버 오픈에도 사용될 수 있으니 별도의 방법이 필요함
+    if(!is_dir($serverPath)){
         $state = '상태이상, 01';
-    } elseif(!is_dir(ROOT.W.$serverDir.'_close') && !is_dir(ROOT.W.$serverDir.'_rest')) {
-        // 이상함
-        $state = '상태이상, 02';
-    } else {
-        if(is_dir(ROOT.W.$serverDir.'_close')) {
-            // 폐쇄중
-            if(file_exists(ROOT.W.$serverDir.'_close'.W.D_SETTING.W.SET.PHP)) {
-                // 폐쇄중, 설정있음
-                $state = '폐쇄중, 설정있음';
-            } else {
-                // 폐쇄중, 설정없음
-                $state = '폐쇄중, 설정없음';
-            }
-        } elseif(is_dir(ROOT.W.$serverDir)) {
-            // 오픈중
-            if(file_exists(ROOT.W.$serverDir.W.D_SETTING.W.SET.PHP)) {
-                // 서비스중
-                $state = '서비스중';
-            } else {
-                // 오픈중, 설정없음
-                $state = '오픈중, 설정없음';
-            }
-        } else {
-            // 이상함
-            $state = '상태이상, 03';
-        }
     }
+    else if(!file_exists($realServerPath.'/main.php')){
+        $state = '상태이상, 02';
+    }
+    else if(file_exists($realServerPath.'/.htaccess')) {
+        // 폐쇄중
+        if(file_exists($realServerPath.W.D_SETTING.W.SET.PHP)) {
+            // 폐쇄중, 설정있음
+            $state = '폐쇄중, 설정있음';
+        } else {
+            // 폐쇄중, 설정없음
+            $state = '폐쇄중, 설정없음';
+        }
+    } else{
+        // 오픈중
+        if(file_exists($realServerPath.W.D_SETTING.W.SET.PHP)) {
+            // 서비스중
+            $state = '서비스중';
+        } else {
+            // 오픈중, 설정없음
+            $state = '오픈중, 설정없음';
+        }
+    } 
+    
+    /*else {
+        // 이상함
+        $state = '상태이상, 03';
+    }*/
 ?>
             <div class="Entrance_ServerAdminList">
                 <div class="Entrance_ServerAdminListServer"><?=$serverDir;?></div>
