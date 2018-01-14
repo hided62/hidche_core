@@ -12,7 +12,7 @@ HOUR=`expr ${HOUR} + 0`
 
 
 
-TAR=/home/jwh1807/www/sam/che_close/
+TAR=/home/jwh1807/www/sam/che/
 if [ -e $TAR ]
 then
     TIME=`date -d "0 hours" "+%H:%M:%S.%N"`
@@ -27,7 +27,7 @@ fi
 
 if [ $HOUR -ge 9 -a $HOUR -lt 21 ]
 then
-    TAR=/home/jwh1807/www/sam/kwe_close/
+    TAR=/home/jwh1807/www/sam/kwe/
     if [ -e $TAR ]
     then
         TIME=`date -d "0 hours" "+%H:%M:%S.%N"`
@@ -38,7 +38,7 @@ then
         echo [$TIME] kwe finish.
     fi
 
-    TAR=/home/jwh1807/www/sam/pwe_close/
+    TAR=/home/jwh1807/www/sam/pwe/
     if [ -e $TAR ]
     then
         TIME=`date -d "0 hours" "+%H:%M:%S.%N"`
@@ -49,7 +49,7 @@ then
         echo [$TIME] pwe finish.
     fi
 
-    TAR=/home/jwh1807/www/sam/twe_close/
+    TAR=/home/jwh1807/www/sam/twe/
     if [ -e $TAR ]
     then
         TIME=`date -d "0 hours" "+%H:%M:%S.%N"`
@@ -60,7 +60,7 @@ then
         echo [$TIME] twe finish.
     fi
 
-    TAR=/home/jwh1807/www/sam/hwe_close/
+    TAR=/home/jwh1807/www/sam/hwe/
     if [ -e $TAR ]
     then
         TIME=`date -d "0 hours" "+%H:%M:%S.%N"`

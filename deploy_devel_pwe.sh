@@ -2,7 +2,7 @@
 
 SAM=pwe
 SRC=~/svn/branches/che_devel/
-TAR=~/www/sam/${SAM}_close/
+TAR=~/www/sam/${SAM}/
 ALT=~/www/sam/${SAM}/
 
 if [ -e $TAR ]

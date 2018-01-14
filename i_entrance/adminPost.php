@@ -25,9 +25,8 @@ $select = util::array_get($_POST['select'], '');
 $rs = $DB->Select('GRADE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
 $member = $DB->Get($rs);
 
-function doServerModeSet($server, $select, &$reason){
+function doServerModeSet($server, $select, &$response){
     global $_serverDirs;
-    $reason = '';
     $serverDir = $_serverDirs[$server];
     $serverPath = ROOT.W.$serverDir;
     $realServerPath = realpath(dirname(__FILE__)).W.$serverPath;
@@ -50,20 +49,16 @@ function doServerModeSet($server, $select, &$reason){
         $htaccess = $templates->render('block_htaccess', 
             ['allow_ip' => $allow_ip, 'xforward_allow_ip' => $xforward_allow_ip]);
         file_put_contents($realServerPath.'/.htaccess', $htaccess);
-        
-        $response['result'] = 'SUCCESS';
     } elseif($select == 1) {//리셋
         if(file_exists($realServerPath.W.D_SETTING.W.SET.PHP)){
             @unlink($realServerPath.W.D_SETTING.W.SET.PHP);
         }
         
         $response['installURL'] = $serverPath.W."install.php";
-        $response['result'] = 'SUCCESS';
     } elseif($select == 2) {//오픈
         if(file_exists($realServerPath.'.htaccess')){
             @unlink($realServerPath.'.htaccess');
         }
-        $response['result'] = 'SUCCESS';
     }
     return true;
 }
@@ -83,12 +78,8 @@ function doAdminPost($member, $action, $notice, $server, $select){
     } 
     
     if($action == 1) {
-        $reason = '';
-        if(doServerModeSet($server, $select, $reason)){
+        if(doServerModeSet($server, $select, $response)){
             $response['result'] = 'SUCCESS';
-        }
-        else{
-            $response['msg'] = $reason;
         }
 
         return $response;

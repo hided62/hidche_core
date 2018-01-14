@@ -80,7 +80,7 @@ function Entrance_AdminNPCCreate(serverDir) {
 }
 
 function Entrance_AdminClosedLogin(serverDir) {
-    ReplaceFrame(serverDir+'_close'+W+'npc_login'+PHP);
+    ReplaceFrame(serverDir+W+'npc_login'+PHP);
 }
 
 function Entrance_AdminOpen119(serverDir) {

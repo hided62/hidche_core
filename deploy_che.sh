@@ -1,8 +1,8 @@
 #!/bin/bash
 
 SAM=che
-SRC=~/svn/trunk/sam/che_close/
-TAR=~/www/sam/${SAM}_close/
+SRC=~/svn/trunk/sam/che/
+TAR=~/www/sam/${SAM}/
 ALT=~/www/sam/${SAM}/
 
 if [ -e $TAR ]

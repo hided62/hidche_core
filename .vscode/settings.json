@@ -7,11 +7,11 @@
         "**/.DS_Store": true,
         "**/logs/*.txt": true,
         "**/session/sess*":true,
-        //"**/che_close": true,
+        "**/che": true,
         
     },
     "search.exclude": {
-        "**/che_close": true,
+        "**/che": true,
         "e_lib/*":true,
        
       },
