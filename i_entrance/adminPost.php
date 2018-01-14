@@ -11,17 +11,8 @@ require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
-function getPost($str){
-    if(!isset($_POST[$str])){
-        return '';
-    }
-    $temp = $_POST[$str];
-    $temp=str_replace("　","",$temp);
-    $temp=str_replace("\n","",$temp);
-    $temp=strip_tags($temp);
-    $temp=str_replace("&nbsp;","",$temp);
-    $temp=str_replace(" ","",$temp);
-    return $temp;
+function escapeIPv4($ip){
+    return str_replace('.', '\\.', $ip);
 }
 
 $action = util::array_get($_POST['action'], '');
