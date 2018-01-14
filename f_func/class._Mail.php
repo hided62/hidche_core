@@ -1,6 +1,6 @@
 <?php
 require_once('_common.php');
-require(ROOT.W.E_LIB.W.'phpmailer5/class.phpmailer.php');
+require_once(ROOT.W.E_LIB.W.'phpmailer5/class.phpmailer.php');
 
 class _Mail {
     private $objMail;

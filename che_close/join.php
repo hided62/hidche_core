@@ -1,7 +1,7 @@
 <?php
-include "lib.php";
-include "func.php";
-require("new_lib.php");
+require_once "lib.php";
+require_once "func.php";
+require_once("new_lib.php");
 
 $id = $_POST[id];
 $pw = $_POST[pw];

@@ -4,8 +4,8 @@
 require_once('_common.php');
 require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
-require(ROOT.W.F_CONFIG.W.'DBS'.PHP);
-require(ROOT.W.F_CONFIG.W.SETTINGS.PHP);
+require_once(ROOT.W.F_CONFIG.W.'DBS'.PHP);
+require_once(ROOT.W.F_CONFIG.W.SETTINGS.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
 $dest = ROOT.W.D."pic/pic_{$SESSION->NoMember()}.jpg";

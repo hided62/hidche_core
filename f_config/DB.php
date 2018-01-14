@@ -1,7 +1,7 @@
 <?php
 require_once('_common.php');
 require_once(ROOT.W.F_FUNC.W.'class._DB.php');
-require(ROOT.W.F_CONFIG.W.SETTING.PHP);
+require_once(ROOT.W.F_CONFIG.W.SETTING.PHP);
 
 if($SETTING->IsExist()) {
     $DB = new _DB($SETTING->DBHost(), $SETTING->DBId(), $SETTING->DBPw(), $SETTING->DBName());
