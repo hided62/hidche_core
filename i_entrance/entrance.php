@@ -1,6 +1,6 @@
 <?php
-require_once('_common.php');
-require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
+require('_common.php');
+require(ROOT.W.F_CONFIG.W.SESSION.PHP);
 ?>
 
 <!DOCTYPE html>

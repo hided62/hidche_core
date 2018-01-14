@@ -1,6 +1,6 @@
 <?php
-require_once('_common.php');
-require_once(ROOT.W.E_LIB.W.'adodb5/adodb.inc.php');
+require('_common.php');
+require(ROOT.W.E_LIB.W.'adodb5/adodb.inc.php');
 
 class _DB {
     private $objDB;

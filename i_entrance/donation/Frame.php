@@ -1,5 +1,5 @@
 <?php
-require_once('_common.php');
+require('_common.php');
 ?>
 
 <script type="text/javascript">

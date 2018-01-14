@@ -5,11 +5,12 @@
 // $_POST['server'] : 서버 인덱스
 // $_POST['select'] : 0: 폐쇄, 1: 리셋, 2: 오픈
 
-require_once('_common.php');
-require_once(ROOT.W.E_LIB.W.'util.php');
-require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
-require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
+require('_common.php');
+require(ROOT.W.E_LIB.W.'util.php');
+require(ROOT.W.E_LIB.W.'util.php');
+require(ROOT.W.F_FUNC.W.'class._JSON.php');
+require(ROOT.W.F_CONFIG.W.DB.PHP);
+require(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
 function escapeIPv4($ip){
     return str_replace('.', '\\.', $ip);

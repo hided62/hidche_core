@@ -1,5 +1,5 @@
 <?php
-require_once(ROOT.W.F_FUNC.W.'class._String.php');
+require(ROOT.W.F_FUNC.W.'class._String.php');
 
 class _Validation {
     public static function CheckID($id) {

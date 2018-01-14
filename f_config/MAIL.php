@@ -1,7 +1,7 @@
 <?php
-require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._Mail.php');
-require_once(ROOT.W.F_CONFIG.W.SETTING.PHP);
+require('_common.php');
+require(ROOT.W.F_FUNC.W.'class._Mail.php');
+require(ROOT.W.F_CONFIG.W.SETTING.PHP);
 
 if($SETTING->IsExist()) {
     $MAIL = new _Mail($SETTING->MailHost(), $SETTING->MailPort(), $SETTING->MailId(), $SETTING->MailPw(), $SETTING->MailAddr());

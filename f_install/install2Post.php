@@ -4,9 +4,9 @@ $id = $_POST['id'];
 $pw = $_POST['pw'];
 $pw = md5($pw.$pw);
 
-require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._Time.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+require('_common.php');
+require(ROOT.W.F_FUNC.W.'class._Time.php');
+require(ROOT.W.F_CONFIG.W.DB.PHP);
 
 // 시스템정보 1개 등록
 $DB->InsertArray('SYSTEM', array(

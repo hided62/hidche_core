@@ -1,5 +1,5 @@
 <?php
-require_once('_common.php');
+require('_common.php');
 ?>
 
 <div id="LoginFindpw_00" class="bg0">

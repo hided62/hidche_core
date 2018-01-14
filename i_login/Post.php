@@ -7,11 +7,11 @@ $id = $_POST['id'];
 $pw = $_POST['pw'];
 $conmsg = $_POST['conmsg'];
 
-require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
-require_once(ROOT.W.F_FUNC.W.'class._Session.php');
-require_once(ROOT.W.F_FUNC.W.'class._String.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+require('_common.php');
+require(ROOT.W.F_FUNC.W.'class._JSON.php');
+require(ROOT.W.F_FUNC.W.'class._Session.php');
+require(ROOT.W.F_FUNC.W.'class._String.php');
+require(ROOT.W.F_CONFIG.W.DB.PHP);
 
 $id = _String::NoSpecialCharacter($id);
 $pw = substr($pw, 0, 32);

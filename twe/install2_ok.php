@@ -1,7 +1,7 @@
 <?php
 include "lib.php";
 include "func.php";
-require_once('../e_lib/util.php');
+require('../e_lib/util.php');
 
 $turnterm = util::array_get($_POST['turnterm'],'0');
 $sync = util::array_get($_POST['sync'],'0');
