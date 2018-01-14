@@ -1,5 +1,5 @@
 <?php
-define(__LINE__,__FILE__." ".__FUNCTION__." ".__LINE__." : ");
+define('__LINE__',__FILE__." ".__FUNCTION__." ".__LINE__." : ");
 ob_start();
 
 // 주요 환경변수들

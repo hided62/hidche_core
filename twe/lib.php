@@ -8,7 +8,7 @@
 
 //디버그용 매크로
 define('__OLINE__',__LINE__);
-define(__LINE__,__FILE__." ".__FUNCTION__." ".__LINE__." : ");
+define('__LINE__',__FILE__." ".__FUNCTION__." ".__LINE__." : ");
 ini_set("session.cache_expire", 10080);      // minutes
 ini_set("session.gc_maxlifetime", 604800);    // seconds
 
@@ -21,9 +21,9 @@ define('STEP_LOG', true);
 define('PROCESS_LOG', true);
 $_startTime = getMicroTime();
 $_ver     = "서비스중";
-$_version = "삼국지 모의전투 PHP v2.29.1";
-$_banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : 유기체(jwh1807@gmail.com)";
-$_helper = "도움 주신 분들 : 하후연묘재, 자소유, 모모리, 반사대선, 마킹, 뒷집할머니, 허기, 헹이, 나나, 유키, SARS";
+$_version = "삼국지 모의전투 PHP HideD v0.1";
+$_banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : 유기체(jwh1807@gmail.com), HideD(hided62@gmail.com)";
+$_helper = "도움 주신 분들";
 $_develrate = 50;   // 내정시 최하 민심 설정
 $_upgradeLimit = 30;    // 능력치 상승 경험치
 $_dexLimit = 1000000;    // 숙련도 제한치
@@ -167,3 +167,14 @@ function PrintElapsedTime() {
     $_endTime = round(getMicroTime() - $_startTime, 3);
     echo "<table width=1000 align=center style=font-size:10;><tr><td align=right>경과시간 : {$_endTime}초</td></tr></table>";
 }
+
+function LogText($prefix, $variable){
+    $fp = fopen('logs/dbg_logs.txt', 'at');
+    fwrite($fp, sprintf('%s : %s\n', $prefix, var_export($_POST, true)));
+    fclose($fp);
+}
+
+LogText($_SERVER['REQUEST_URI'], $_POST);
+extract($_POST, EXTR_SKIP); 
+//XXX: $_POST를 추출 없이 그냥 쓰는 경우가 많아서 일단 디버깅을 위해 씀!!!! 절대 production 서버에서 사용 금지!
+//todo: $_POST로 제공되는 데이터를 각 페이지마다 분석할것.

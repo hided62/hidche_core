@@ -14,11 +14,11 @@ $pid = $_POST['pid1'].'-'.substr($_POST['pid2'],0,1).'-'.md5($_POST['pid2']);
 $name = $_POST['name'];
 $email = $_POST['email'];
 
-require('_common.php');
-require(ROOT.W.F_FUNC.W.'class._JSON.php');
+require_once('_common.php');
+require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require(ROOT.W.F_FUNC.W.'class._String.php');
 require(ROOT.W.F_FUNC.W.'class._Validation.php');
-require(ROOT.W.F_CONFIG.W.DB.PHP);
+require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 
 $name = _String::NoSpecialCharacter($name);
 

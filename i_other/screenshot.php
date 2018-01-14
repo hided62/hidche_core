@@ -1,5 +1,5 @@
 <?php
-require('_common.php');
+require_once('_common.php');
 
 $images = IMAGES;
 

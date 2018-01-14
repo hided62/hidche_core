@@ -1,5 +1,5 @@
 <?php
-require('_common.php');
+require_once('_common.php');
 
 /*
 <pre>주민번호는 중복가입 방지와 허위정보 방지를 위한 용도로만 사용되며,

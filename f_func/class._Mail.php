@@ -1,5 +1,5 @@
 <?php
-require('_common.php');
+require_once('_common.php');
 require(ROOT.W.E_LIB.W.'phpmailer5/class.phpmailer.php');
 
 class _Mail {

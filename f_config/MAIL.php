@@ -1,5 +1,5 @@
 <?php
-require('_common.php');
+require_once('_common.php');
 require(ROOT.W.F_FUNC.W.'class._Mail.php');
 require(ROOT.W.F_CONFIG.W.SETTING.PHP);
 

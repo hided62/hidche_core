@@ -10,8 +10,8 @@ $mailId = $_POST['mailId'];
 $mailPw = $_POST['mailPw'];
 $mailAddr = $_POST['mailAddr'];
 
-require('_common.php');
-require(ROOT.W.F_FUNC.W.'class._DB.php');
+require_once('_common.php');
+require_once(ROOT.W.F_FUNC.W.'class._DB.php');
 require(ROOT.W.F_FUNC.W.'class._String.php');
 
 if(file_exists(ROOT.W.D_SETTING.W.SET.PHP)) ErrorToScreen('이미 설치되어 있습니다. 재설치하려면 설정 파일을 지우세요.');

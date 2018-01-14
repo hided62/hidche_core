@@ -3,10 +3,10 @@
 // $_POST['serverDir'] : 로그인할 서버 디렉토리
 $serverDir = $_POST['serverDir'];
 
-require('_common.php');
-require(ROOT.W.F_FUNC.W.'class._JSON.php');
-require(ROOT.W.F_CONFIG.W.DB.PHP);
-require(ROOT.W.F_CONFIG.W.SESSION.PHP);
+require_once('_common.php');
+require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
+require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
 $rs = $DB->Select('ID, PW, CONMSG', 'MEMBER', "NO='{$SESSION->NoMember()}'");
 $member = $DB->Get($rs);

@@ -1,12 +1,12 @@
 <?php
 // 외부 파라미터
 
-require('_common.php');
-require(ROOT.W.F_FUNC.W.'class._JSON.php');
-require(ROOT.W.F_CONFIG.W.DB.PHP);
+require_once('_common.php');
+require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
+require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require(ROOT.W.F_CONFIG.W.'DBS'.PHP);
 require(ROOT.W.F_CONFIG.W.SETTINGS.PHP);
-require(ROOT.W.F_CONFIG.W.SESSION.PHP);
+require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
 $dest = ROOT.W.D."pic/pic_{$SESSION->NoMember()}.jpg";
 

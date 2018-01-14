@@ -11,4 +11,6 @@ include(__DIR__.'/plates/Template/Functions.php');
 include(__DIR__.'/plates/Template/Name.php');
 include(__DIR__.'/plates/Template/Template.php');
 
+class Plates extends League\Plates\Engine { }
+
 ?>

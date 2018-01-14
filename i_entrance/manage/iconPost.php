@@ -2,11 +2,11 @@
 // 외부 파라미터
 // $_FILES['picture'] : 사진파일
 
-require('_common.php');
-require(ROOT.W.F_CONFIG.W.DB.PHP);
+require_once('_common.php');
+require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require(ROOT.W.F_CONFIG.W.'DBS'.PHP);
 require(ROOT.W.F_CONFIG.W.SETTINGS.PHP);
-require(ROOT.W.F_CONFIG.W.SESSION.PHP);
+require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
 $image = $_FILES['picture'];
 $ext = strrchr($image['name'], ".");

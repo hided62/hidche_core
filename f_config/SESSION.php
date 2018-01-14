@@ -1,6 +1,6 @@
 <?php
-require('_common.php');
-require(ROOT.W.F_FUNC.W.'class._Session.php');
+require_once('_common.php');
+require_once(ROOT.W.F_FUNC.W.'class._Session.php');
 
 $SESSION = new _Session();
 
