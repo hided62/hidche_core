@@ -110,8 +110,8 @@ function LogHistory($connect, $isFirst=0) {
         $citycount = MYDB_num_rows($cityresult);
 
         $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:$nation['color'];>{$nation['name']}</font><br>";
-        $powerStr .= "국력 $nation['power']<br>";
-        $genStr .= "장수 $nation['gennum']<br>";
+        $powerStr .= "국력 {$nation['power']}<br>";
+        $genStr .= "장수 {$nation['gennum']}<br>";
         $cityStr .= "속령 $citycount<br>";
     }
 

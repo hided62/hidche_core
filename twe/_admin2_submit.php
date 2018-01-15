@@ -126,7 +126,7 @@ switch($btn) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special2)."</></b>】(을)를 익혔습니다!";
-            $general = addHistory($connect, $general, "<C>●</>$admin['year']년 $admin['month']월:특기 【<b><C>".getGenSpecial($special2)."</></b>】(을)를 습득");
+            $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special2)."</></b>】(을)를 습득");
             pushGenLog($general, $log);
         }
         break;

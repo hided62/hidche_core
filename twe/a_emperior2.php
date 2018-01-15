@@ -43,7 +43,7 @@ if($select == 0) {
     </tr>
     <tr>
         <td align=center style=color:".newColor($emperior['color'])."; bgcolor={$emperior['color']} colspan=8>
-            <font size=5>$emperior['name'] ({$emperior['year']}年 {$emperior['month']}月)</font>
+            <font size=5>{$emperior['name']} ({$emperior['year']}年 {$emperior['month']}月)</font>
         </td>
     </tr>
     <tr>
@@ -110,7 +110,7 @@ if($select == 0) {
     </tr>
     <tr>
         <td align=center style=color:".newColor($emperior['color'])."; bgcolor={$emperior['color']} colspan=6>
-            <font size=5>$emperior['name'] ({$emperior['year']}年 {$emperior['month']}月)</font>
+            <font size=5>{$emperior['name']} ({$emperior['year']}年 {$emperior['month']}月)</font>
         </td>
     </tr>
     <tr>

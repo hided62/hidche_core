@@ -31,8 +31,8 @@ for($i=0; $i < $nationcount; $i++) {
     $nationcolor[$nation['nation']] = $nation['color'];
 
     $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:$nation['color'];>{$nation['name']}</font><br>";
-    $powerStr .= "국력 $nation['power']<br>";
-    $genStr .= "장수 $nation['gennum']<br>";
+    $powerStr .= "국력 {$nation['power']}<br>";
+    $genStr .= "장수 {$nation['gennum']}<br>";
     $cityStr .= "속령 $citycount<br>";
 }
 

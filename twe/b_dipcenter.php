@@ -157,7 +157,7 @@ for($i=0; $i < $nationcount; $i++) {
         <td align=center>$state</td>";
     if($dip['term'] != 0) {
         echo"
-        <td align=center>$dip['term'] 개월</td>
+        <td align=center>{$dip['term']} 개월</td>
         <td align=center>{$year}年 {$month}月</td>";
     } else {
         echo"

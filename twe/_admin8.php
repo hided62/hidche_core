@@ -142,7 +142,7 @@ for($i=0; $i < $dipcount; $i++) {
         <td align=center style=color:".newColor($nationColor[$me]).";background-color:{$nationColor[$me]};>$nationName[$me]</td>
         <td align=center style=color:".newColor($nationColor[$you]).";background-color:{$nationColor[$you]};>$nationName[$you]</td>
         <td align=center>$state</td>
-        <td align=center>$dip['term'] 개월</td>
+        <td align=center>{$dip['term']} 개월</td>
         <td align=left style=font-size:7px;>{$note}</td>
     </tr>";
 }

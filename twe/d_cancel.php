@@ -56,11 +56,11 @@ if($ok == "수락") {
         $mylog[count($mylog)] = "<C>●</>이미 거절했습니다. 파기 실패.";
     } else {
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>(이)가 <D><b>{$younation['name']}</b></>(와)과 <M>조약 파기</>에 합의.";
-        $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【파기】</b></><D><b>{$mynation['name']}</b></>(이)가 <D><b>{$younation['name']}</b></>(와)과 불가침을 파기 하였습니다.";
+        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【파기】</b></><D><b>{$mynation['name']}</b></>(이)가 <D><b>{$younation['name']}</b></>(와)과 불가침을 파기 하였습니다.";
         $youlog[count($youlog)] = "<C>●</><D><b>{$mynation['name']}</b></>(와)과 파기에 성공했습니다.";
         $mylog[count($mylog)] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 파기에 합의했습니다.";
-        $you = addHistory($connect, $you, "<C>●</>$admin['year']년 $admin['month']월:<D><b>{$mynation['name']}</b></>(와)과 파기 성공");
-        $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<D><b>{$younation['name']}</b></>(와)과 파기 수락");
+        $you = addHistory($connect, $you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 파기 성공");
+        $me = addHistory($connect, $me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 파기 수락");
 
         //외교 변경
         $query = "update diplomacy set state='2',term='0' where me='{$me['nation']}' and you='{$you['nation']}'";
@@ -69,8 +69,8 @@ if($ok == "수락") {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //국메로 저장
-        $msg = "【외교】$admin['year']년 $admin['month']월:$younation['name'](와)과 불가침 파기 동의";
-        $youmsg = "【외교】$admin['year']년 $admin['month']월:$mynation['name'](와)과 불가침 파기 동의";
+        $msg = "【외교】{$admin['year']}년 {$admin['month']}월:$younation['name'](와)과 불가침 파기 동의";
+        $youmsg = "【외교】{$admin['year']}년 {$admin['month']}월:$mynation['name'](와)과 불가침 파기 동의";
 
         PushMsg(2, $me['nation'], $me['picture'], $me['imgsvr'], "{$me['name']}:{$mynation['name']}▶", $mynation['color'], $younation['name'], $younation['color'], $msg);
         PushMsg(3, $you['nation'], $me['picture'], $me['imgsvr'], "{$me['name']}:{$mynation['name']}▶", $mynation['color'], $younation['name'], $younation['color'], $youmsg);

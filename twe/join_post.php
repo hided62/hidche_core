@@ -242,12 +242,12 @@ if($id_num) {
         $log[0] = "<C>●</>{$admin['month']}월:<G><b>{$cityname['name']}</b></>에서 <Y>{$me['name']}</>(이)라는 기재가 천하에 이름을 알립니다.";
         $log[1] = "<C>●</>{$admin['month']}월:<C>".getGenSpecial($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
 
-        $history[0] = "<C>●</>$admin['year']년 $admin['month']월:<L><b>【천재】</b></><G><b>{$cityname['name']}</b></>에 천재가 등장했습니다.";
+        $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【천재】</b></><G><b>{$cityname['name']}</b></>에 천재가 등장했습니다.";
         pushHistory($connect, $history);
     } else {
         $log[0] = "<C>●</>{$admin['month']}월:<G><b>{$cityname['name']}</b></>에서 <Y>{$me['name']}</>(이)라는 호걸이 천하에 이름을 알립니다.";
     }
-    $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<Y>{$me['name']}</>, <G>{$cityname['name']}</>에서 큰 뜻을 품다.");
+    $me = addHistory($connect, $me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$me['name']}</>, <G>{$cityname['name']}</>에서 큰 뜻을 품다.");
     $mylog[count($mylog)] = "<C>●</>삼국지 모의전투 PHP의 세계에 오신 것을 환영합니다 ^o^";
     $mylog[count($mylog)] = "<C>●</>처음 하시는 경우에는 <D>도움말</>을 참고하시고,";
     $mylog[count($mylog)] = "<C>●</>문의사항이 있으시면 게시판에 글을 남겨주시면 되겠네요~";
@@ -256,7 +256,7 @@ if($id_num) {
     $mylog[count($mylog)] = "<C>●</>연령은 <C>$age</>세로 시작합니다.";
     if($genius == 1) {
         $mylog[count($mylog)] = "<C>●</>축하합니다! 천재로 태어나 처음부터 <C>".getGenSpecial($special2)."</> 특기를 가지게 됩니다!";
-        $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<C>".getGenSpecial($special2)."</> 특기를 가진 천재로 탄생.");
+        $me = addHistory($connect, $me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getGenSpecial($special2)."</> 특기를 가진 천재로 탄생.");
     }
     pushGenLog($me, $mylog);
     pushAllLog($log);

@@ -249,7 +249,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $myDef = round($myDef, 2);
                     $cityAtt = round($cityAtt, 2);
                     $cityDef = round($cityDef, 2);
-                    $msg .= "<C>●</> $phase : <Y1>【공격장수】</> <C>$general['crew'] (-$myCrew)</> VS <C>$city['def'] (-$cityCrew)</> <Y1>【성벽】</><br>";
+                    $msg .= "<C>●</> $phase : <Y1>【공격장수】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$city['def']} (-$cityCrew)</> <Y1>【성벽】</><br>";
 
                     $mykillnum += $cityCrew; $mydeathnum += $myCrew;
 
@@ -636,7 +636,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $myDef = round($myDef, 2);
                     $opAtt = round($opAtt, 2);
                     $opDef = round($opDef, 2);
-                    $msg .= "<C>●</> $phase : <Y1>【공격장수】</> <C>$general['crew'] (-$myCrew)</> VS <C>$oppose['crew'] (-$opCrew)</> <Y1>【수비장수】</><br>";
+                    $msg .= "<C>●</> $phase : <Y1>【공격장수】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$oppose['crew']} (-$opCrew)</> <Y1>【수비장수】</><br>";
 
                     $mykillnum += $opCrew; $mydeathnum += $myCrew;
 

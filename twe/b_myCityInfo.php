@@ -115,17 +115,17 @@ for($j=0; $j < $citycount; $j++) {
     </tr>
     <tr>
         <td align=center width=48 id=bg1>주민</td>
-        <td align=center width=112>$city['pop']/$city[pop2]</td>
+        <td align=center width=112>{$city['pop']}/$city[pop2]</td>
         <td align=center width=48 id=bg1>농업</td>
-        <td align=center width=108>$city['agri']/$city[agri2]</td>
+        <td align=center width=108>{$city['agri']}/$city[agri2]</td>
         <td align=center width=48 id=bg1>상업</td>
-        <td align=center width=108>$city['comm']/$city[comm2]</td>
+        <td align=center width=108>{$city['comm']}/$city[comm2]</td>
         <td align=center width=48 id=bg1>치안</td>
-        <td align=center width=108>$city['secu']/$city[secu2]</td>
+        <td align=center width=108>{$city['secu']}/$city[secu2]</td>
         <td align=center width=48 id=bg1>수비</td>
-        <td align=center width=108>$city['def']/$city[def2]</td>
+        <td align=center width=108>{$city['def']}/$city[def2]</td>
         <td align=center width=48 id=bg1>성벽</td>
-        <td align=center width=108>$city['wall']/$city[wall2]</td>
+        <td align=center width=108>{$city['wall']}/$city[wall2]</td>
     </tr>
     <tr>
         <td align=center id=bg1>민심</td>

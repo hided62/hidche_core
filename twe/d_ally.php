@@ -69,16 +69,16 @@ if($ok == "수락") {
         $mylog[count($mylog)] = "<C>●</>이미 거절했습니다. 불가침 실패.";
     } else {
 //        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>(이)가 <D><b>{$younation['name']}</b></>(와)과 <M>불가침</>에 합의.";
-//        $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【불가침】</b></><D><b>{$mynation['name']}</b></>(이)가 <D><b>{$younation['name']}</b></>(와)과 불가침 조약을 체결했습니다.";
+//        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【불가침】</b></><D><b>{$mynation['name']}</b></>(이)가 <D><b>{$younation['name']}</b></>(와)과 불가침 조약을 체결했습니다.";
 
         $youlog[count($youlog)] = "<C>●</><D><b>{$mynation['name']}</b></>(와)과 <C>$when</>년 불가침에 성공했습니다.";
         $mylog[count($mylog)] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 <C>$when</>년 불가침에 합의했습니다.";
-        $you = addHistory($connect, $you, "<C>●</>$admin['year']년 $admin['month']월:<D><b>{$mynation['name']}</b></>(와)과 {$when}년 불가침 성공");
-        $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<D><b>{$younation['name']}</b></>(와)과 {$when}년 불가침 수락");
+        $you = addHistory($connect, $you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 {$when}년 불가침 성공");
+        $me = addHistory($connect, $me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 {$when}년 불가침 수락");
 
         //국메로 저장
-        $msg = "【외교】$admin['year']년 $admin['month']월:$younation['name'](와)과 {$when}년 불가침 합의, 비고: {$dip2['reserved']}";
-        $youmsg = "【외교】$admin['year']년 $admin['month']월:$mynation['name'](와)과 {$when}년 불가침 합의, 비고: {$dip2['reserved']}";
+        $msg = "【외교】{$admin['year']}년 {$admin['month']}월:$younation['name'](와)과 {$when}년 불가침 합의, 비고: {$dip2['reserved']}";
+        $youmsg = "【외교】{$admin['year']}년 {$admin['month']}월:$mynation['name'](와)과 {$when}년 불가침 합의, 비고: {$dip2['reserved']}";
 
         PushMsg(2, $me['nation'], $me['picture'], $me['imgsvr'], "{$me['name']}:{$mynation['name']}▶", $mynation['color'], $younation['name'], $younation['color'], $msg);
         PushMsg(3, $you['nation'], $me['picture'], $me['imgsvr'], "{$me['name']}:{$mynation['name']}▶", $mynation['color'], $younation['name'], $younation['color'], $youmsg);

@@ -2045,7 +2045,7 @@ function command_48($connect, $turn, $command) {
     echo "
 장비를 구입하거나 매각합니다.<br>
 현재 구입 불가능한 것은 <font color=red>붉은색</font>으로 표시됩니다.<br>
-현재 도시 치안 : $city['secu'] &nbsp;&nbsp;&nbsp;현재 자금 : $me['gold']<br>
+현재 도시 치안 : $city['secu'] &nbsp;&nbsp;&nbsp;현재 자금 : {$me['gold']}<br>
 <form name=form1 action=c_double.php method=post>
 장비 : <select name=double size=1 style=color:white;background-color:black>
     <option value=0   style=color:skyblue>_____무기매각(반값)____</option>

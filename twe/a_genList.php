@@ -150,7 +150,7 @@ for($j=0; $j < $gencount; $j++) {
     <tr>
         <td align=center><img src={$imageTemp}/{$general['picture']}></img></td>
         <td align=center>$name</td>
-        <td align=center>$general['age']세</td>
+        <td align=center>{$general['age']}세</td>
         <td align=center>".getGenChar($general['personal'])."</td>
         <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general[special2])."</td>
         <td align=center>Lv ".getExpLevel($general['experience'])."</td>
@@ -162,7 +162,7 @@ for($j=0; $j < $gencount; $j++) {
         <td align=center>$power</td>
         <td align=center>$intel</td>
         <td align=center>{$general['killturn']}</td>
-        <td align=center>$general['connect']"; echo "<br>【".getConnect($general['connect'])."】</td>
+        <td align=center>{$general['connect']}"; echo "<br>【".getConnect($general['connect'])."】</td>
     </tr>";
 }
 echo "

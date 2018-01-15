@@ -87,7 +87,7 @@ if($btn == "자동개최설정" && $me['userlevel'] >= 5) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $general = MYDB_fetch_array($result);
 
-        //$admin['develcost']원 참가비
+        //{$admin['develcost']}원 참가비
         if($general['gold'] < $admin['develcost']) { echo "<script>location.replace('b_tournament.php');</script>"; exit(1); }
         $general['gold'] -= $admin['develcost'];
     }

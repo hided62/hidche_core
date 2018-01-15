@@ -36,10 +36,10 @@ if(!$member) {
         MessageBox("비매너 발언으로 인해, 발언권이 제한됩니다."); break;
     case 2:
         MessageBox("현재 블럭된 계정입니다. 턴 실행이 제한됩니다.");
-        MessageBox("절대 1계정만 사용하십시오! $me['killturn']시간 후 재등록 가능합니다."); break;
+        MessageBox("절대 1계정만 사용하십시오! {$me['killturn']}시간 후 재등록 가능합니다."); break;
     case 3:
         MessageBox("현재 블럭된 계정입니다. 발언권과 턴 실행이 제한됩니다.");
-        MessageBox("절대 1계정만 사용하십시오! $me['killturn']시간 후 재등록 가능합니다."); break;
+        MessageBox("절대 1계정만 사용하십시오! {$me['killturn']}시간 후 재등록 가능합니다."); break;
     }
 
     $_SESSION['p_id']     = $id;
