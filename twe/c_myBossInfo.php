@@ -251,6 +251,6 @@ if($btn == "추방") {
 }
 
 //echo "<script>location.replace('b_myBossInfo.php');</script>";
-echo 'b_myBossInfo.php'//TODO:replace
+echo 'b_myBossInfo.php';//TODO:replace
 
 

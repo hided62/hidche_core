@@ -359,8 +359,8 @@ function calc(cost, formnum) {
             현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
             현재 통솔 : <input type=text style=text-align:right;color:white;background-color:black size=3 readonly value=$leader>
             현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".getTypename($me['crewtype']).">
-            현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me['crew']>
-            현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me['gold']>
+            현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['crew']}>
+            현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['gold']}>
         </td>
     </tr>
     <tr>
@@ -793,8 +793,8 @@ function calc(cost, formnum) {
             현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
             현재 통솔 : <input type=text style=text-align:right;color:white;background-color:black size=3 readonly value=$leader>
             현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".getTypename($me['crewtype']).">
-            현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me['crew']>
-            현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me['gold']>
+            현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['crew']}>
+            현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['gold']}>
         </td>
     </tr>
     <tr>
@@ -1123,7 +1123,7 @@ function command_16($connect, $turn, $command) {
 선택된 도시로 침공을 합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity['name'] =>
+{$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1164,7 +1164,7 @@ function command_21($connect, $turn, $command) {
 인접 도시로만 이동이 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity['name'] =>
+{$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1544,7 +1544,7 @@ function command_30($connect, $turn, $command) {
 최대 3칸내 도시로만 강행이 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity['name'] =>
+{$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1586,7 +1586,7 @@ function command_31($connect, $turn, $command) {
 인접도시일 경우 많은 정보를 얻을 수 있습니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity['name'] =>
+{$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1630,7 +1630,7 @@ function command_32($connect, $turn, $command) {
 선택된 도시에 화계를 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity['name'] =>
+{$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1670,7 +1670,7 @@ function command_33($connect, $turn, $command) {
 선택된 도시에 탈취를 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity['name'] =>
+{$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1710,7 +1710,7 @@ function command_34($connect, $turn, $command) {
 선택된 도시에 파괴를 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity['name'] =>
+{$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1750,7 +1750,7 @@ function command_35($connect, $turn, $command) {
 선택된 도시에 선동을 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity['name'] =>
+{$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1790,7 +1790,7 @@ function command_36($connect, $turn, $command) {
 선택된 도시에 기습을 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity['name'] =>
+{$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -2045,7 +2045,7 @@ function command_48($connect, $turn, $command) {
     echo "
 장비를 구입하거나 매각합니다.<br>
 현재 구입 불가능한 것은 <font color=red>붉은색</font>으로 표시됩니다.<br>
-현재 도시 치안 : $city['secu'] &nbsp;&nbsp;&nbsp;현재 자금 : {$me['gold']}<br>
+현재 도시 치안 : {$city['secu']} &nbsp;&nbsp;&nbsp;현재 자금 : {$me['gold']}<br>
 <form name=form1 action=c_double.php method=post>
 장비 : <select name=double size=1 style=color:white;background-color:black>
     <option value=0   style=color:skyblue>_____무기매각(반값)____</option>
@@ -2163,9 +2163,9 @@ function command_51($connect, $turn, $command) {
         $nation = MYDB_fetch_array($result);
 
         if($myNation['power'] / $nation['power'] <= 3 || !isClose($connect, $me['nation'], $nation['nation'])) {
-            echo "<option style=color:{$nation['color']};background-color:red; value=$nation['nation']>【 {$nation['name']} 】</option>";
+            echo "<option style=color:{$nation['color']};background-color:red; value={$nation['nation']}>【 {$nation['name']} 】</option>";
         } else {
-            echo "<option style=color:{$nation['color']} value=$nation['nation']>【 {$nation['name']} 】</option>";
+            echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
         }
     }
     echo "
@@ -2219,7 +2219,7 @@ function command_52($connect, $turn, $command) {
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        echo "<option style=color:{$nation['color']} value=$nation['nation']>【 {$nation['name']} 】</option>";
+        echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2306,9 +2306,9 @@ function command_53($connect, $turn, $command) {
         $nation = MYDB_fetch_array($result);
 
         if($myNation['power']+$nation['power'] > $cond1 || $myNation['gennum']+$nation['gennum'] > $cond2 || !isClose($connect, $me['nation'], $nation['nation'])) {
-            echo "<option style=color:{$nation['color']};background-color:red; value=$nation['nation']>【 {$nation['name']} 】</option>";
+            echo "<option style=color:{$nation['color']};background-color:red; value={$nation['nation']}>【 {$nation['name']} 】</option>";
         } else {
-            echo "<option style=color:{$nation['color']} value=$nation['nation']>【 {$nation['name']} 】</option>";
+            echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
         }
     }
 
@@ -2416,7 +2416,7 @@ function command_61($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
+        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2505,7 +2505,7 @@ function command_62($connect, $turn, $command) {
             case 6: $color = "black"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
+        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2561,7 +2561,7 @@ function command_63($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "red"; break;
         }
-        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
+        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2617,7 +2617,7 @@ function command_64($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
+        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2939,7 +2939,7 @@ function command_75($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
+        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2996,7 +2996,7 @@ function command_77($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
+        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -3053,7 +3053,7 @@ function command_78($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
+        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>

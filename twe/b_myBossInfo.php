@@ -71,7 +71,7 @@ echo "
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr>
         <td align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']} colspan=6>
-            <font size=5>【 $nation['name'] 】</font>
+            <font size=5>【 {$nation['name']} 】</font>
         </td>
     </tr>
 ";

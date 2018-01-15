@@ -102,7 +102,7 @@ for($i=0; $i < $troopcount; $i++) {
             for($k=0; $k < $genCount; $k++) {
                 $general = MYDB_fetch_array($genresult);
                 echo "
-                <option value=$general['no']>{$general['name']}</option>";
+                <option value={$general['no']}>{$general['name']}</option>";
             }
             echo "
             </select><br>

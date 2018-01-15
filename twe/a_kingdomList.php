@@ -163,7 +163,7 @@ for($i=1; $i <= $count; $i++) {
             if($city['city'] == $nation['capital']) {
                 echo "<font color=cyan>[{$city['name']}]</font>, ";
             } else {
-                echo "$city['name'], ";
+                echo "{$city['name']}, ";
             }
         }
     } else {
@@ -182,7 +182,7 @@ for($i=1; $i <= $count; $i++) {
         $general = MYDB_fetch_array($genresult);
         if($general['npc'] >= 2) { echo "<font color=cyan>{$general['name']}</font>, "; }
         elseif($general['npc'] == 1) { echo "<font color=skyblue>{$general['name']}</font>, "; }
-        else { echo "$general['name'], "; }
+        else { echo "{$general['name']}, "; }
     }
     echo"
         </td>
@@ -216,7 +216,7 @@ echo "
         <td colspan=5> 속령 일람 : ";
 for($j=0; $j < $citycount; $j++) {
     $city = MYDB_fetch_array($cityresult);
-    echo "$city['name'], ";
+    echo "{$city['name']}, ";
 }
 echo"
         </td>
@@ -227,7 +227,7 @@ echo"
         $general = MYDB_fetch_array($genresult);
         if($general['npc'] >= 2) { echo "<font color=cyan>{$general['name']}</font>, "; }
         elseif($general['npc'] == 1) { echo "<font color=skyblue>{$general['name']}</font>, "; }
-        else { echo "$general['name'], "; }
+        else { echo "{$general['name']}, "; }
     }
     echo"
         </td>

@@ -77,8 +77,8 @@ if($ok == "수락") {
         $me = addHistory($connect, $me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 {$when}년 불가침 수락");
 
         //국메로 저장
-        $msg = "【외교】{$admin['year']}년 {$admin['month']}월:$younation['name'](와)과 {$when}년 불가침 합의, 비고: {$dip2['reserved']}";
-        $youmsg = "【외교】{$admin['year']}년 {$admin['month']}월:$mynation['name'](와)과 {$when}년 불가침 합의, 비고: {$dip2['reserved']}";
+        $msg = "【외교】{$admin['year']}년 {$admin['month']}월:{$younation['name']}(와)과 {$when}년 불가침 합의, 비고: {$dip2['reserved']}";
+        $youmsg = "【외교】{$admin['year']}년 {$admin['month']}월:{$mynation['name']}(와)과 {$when}년 불가침 합의, 비고: {$dip2['reserved']}";
 
         PushMsg(2, $me['nation'], $me['picture'], $me['imgsvr'], "{$me['name']}:{$mynation['name']}▶", $mynation['color'], $younation['name'], $younation['color'], $msg);
         PushMsg(3, $you['nation'], $me['picture'], $me['imgsvr'], "{$me['name']}:{$mynation['name']}▶", $mynation['color'], $younation['name'], $younation['color'], $youmsg);

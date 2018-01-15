@@ -57,10 +57,10 @@ for($i=0; $i < $gencount; $i++) {
     $general = MYDB_fetch_array($result);
     if($general['power'] >= $general['intel']) {
         echo "
-                <option value=$general['no'] style=color:orange;>{$general['name']}</option>";
+                <option value={$general['no']} style=color:orange;>{$general['name']}</option>";
     } else {
         echo "
-                <option value=$general['no'] style=color:skyblue;>{$general['name']}</option>";
+                <option value={$general['no']} style=color:skyblue;>{$general['name']}</option>";
     }
 }
 

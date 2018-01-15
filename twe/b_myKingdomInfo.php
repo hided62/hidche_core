@@ -80,7 +80,7 @@ else { $budgetricediff = "$budgetricediff"; }
 echo "
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
     <tr>
-        <td colspan=8 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 ";echo $me['nation']==0?"공 백 지":"$nation['name']";echo " 】</td>
+        <td colspan=8 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 ";echo $me['nation']==0?"공 백 지":"{$nation['name']}";echo " 】</td>
     </tr>
     <tr>
         <td width=98 align=center id=bg1>총주민</td>
@@ -92,11 +92,11 @@ echo "
     </tr>
     <tr>
         <td align=center id=bg1>국 고</td>
-        <td align=center>"; echo $nation['gold']==0?"-":"$nation['gold']"; echo "</td>
+        <td align=center>"; echo $nation['gold']==0?"-":"{$nation['gold']}"; echo "</td>
         <td align=center id=bg1>병 량</td>
-        <td align=center>"; echo $nation['rice']==0?"-":"$nation['rice']"; echo "</td>
+        <td align=center>"; echo $nation['rice']==0?"-":"{$nation['rice']}"; echo "</td>
         <td align=center id=bg1>세 율</td>
-        <td align=center colspan=3>"; echo $me['nation']==0?"해당 없음":"$nation['rate'] %"; echo "</td>
+        <td align=center colspan=3>"; echo $me['nation']==0?"해당 없음":"{$nation['rate']} %"; echo "</td>
         </td>
     </tr>
     <tr>
@@ -105,7 +105,7 @@ echo "
         <td align=center id=bg1>세곡/둔전</td>
         <td align=center>+$riceincomeList[0] / +$riceincomeList[1]</td>
         <td align=center id=bg1>지급율</td>
-        <td align=center colspan=3>"; echo $me['nation']==0?"해당 없음":"$nation['bill'] %"; echo "</td>
+        <td align=center colspan=3>"; echo $me['nation']==0?"해당 없음":"{$nation['bill']} %"; echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1>수입/지출</td>

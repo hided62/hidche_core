@@ -66,7 +66,7 @@ for($i=0; $i < $gencount; $i++) {
     if($general['userlevel'] > 2) { $style .= "color:blue;"; }
 
     echo "
-                <option value=$general['no'] $style>{$general['name']}</option>";
+                <option value={$general['no']} $style>{$general['name']}</option>";
 }
 
 echo "

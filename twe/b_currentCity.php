@@ -48,7 +48,7 @@ if($me['level'] == 0) {
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($cityresult);
     echo "
-                    <option value=$city['city']";
+                    <option value={$city['city']}";
     if($city['city'] == $_POST['citylist']) { echo " selected"; $valid = 1; }
     echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
     if($city['nation'] == 0) echo "공백지";
@@ -64,7 +64,7 @@ if($me['level'] == 0) {
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($cityresult);
         echo "
-                        <option value=$city['city']";
+                        <option value={$city['city']}";
         if($city['city'] == $_POST['citylist']) { echo " selected"; $valid = 1; }
         echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
@@ -81,7 +81,7 @@ if($me['level'] == 0) {
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($cityresult);
         echo "
-                        <option value=$city['city']";
+                        <option value={$city['city']}";
         if($city['city'] == $_POST['citylist']) { echo " selected"; $valid = 1; }
         echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
@@ -107,7 +107,7 @@ if($myNation['level'] > 0) {
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($cityresult);
         echo "
-                        <option value=$city['city']";
+                        <option value={$city['city']}";
         if($city['city'] == $_POST['citylist']) { echo " selected"; $valid = 1; }
         echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
@@ -166,7 +166,7 @@ if($city['trade'] == 0) {
 echo "
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
     <tr>
-        <td colspan=12 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 $city['name']</td>
+        <td colspan=12 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 {$city['name']}</td>
     </tr>
     <tr>
         <td align=center width=48 id=bg1>주민</td>
@@ -190,11 +190,11 @@ echo "
         <td align=center id=bg1>인구</td>
         <td align=center>".round($city['pop']/$city[pop2]*100, 2)." %</td>
         <td align=center id=bg1>태수</td>
-        <td align=center>";echo $gen1['name']==''?"-":"$gen1['name']";echo "</td>
+        <td align=center>";echo $gen1['name']==''?"-":"{$gen1['name']}";echo "</td>
         <td align=center id=bg1>군사</td>
-        <td align=center>";echo $gen2['name']==''?"-":"$gen2['name']";echo "</td>
+        <td align=center>";echo $gen2['name']==''?"-":"{$gen2['name']}";echo "</td>
         <td align=center id=bg1>시중</td>
-        <td align=center>";echo $gen3['name']==''?"-":"$gen3['name']";echo "</td>
+        <td align=center>";echo $gen3['name']==''?"-":"{$gen3['name']}";echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1>장수</td>
@@ -205,7 +205,7 @@ echo "
     if($gencount == 0) echo "-";
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($genresult);
-        echo "$general['name'], ";
+        echo "{$general['name']}, ";
     }
     echo "
         </td>

@@ -353,7 +353,7 @@ function processWar($connect, $general, $city) {
                 $general['crew'] = round($general['crew']);
                 $cityCrew = round($cityCrew);
                 $myCrew = round($myCrew);
-                $batlog[count($batlog)] = "<C>●</> $phase : <Y1>【$general['name']】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$city['def']} (-$cityCrew)</> <Y1>【$city['name']】</>";
+                $batlog[count($batlog)] = "<C>●</> $phase : <Y1>【{$general['name']}】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$city['def']} (-$cityCrew)</> <Y1>【{$city['name']}】</>";
 
                 $mykillnum += $cityCrew; $mydeathnum += $myCrew;
 
@@ -371,7 +371,7 @@ function processWar($connect, $general, $city) {
                 if($city['def'] <= 0) { break; }
                 if($general['crew'] <= 0) { break; }
             }
-            $res = "성 <1>"._String::SubStr(getTypename($general['crewtype']), 0, 2)."</><Y1>【$general['name']】</> <O>{$general['crew']} (-$mydeathnum)</> VS <O>{$city['def']} (-$mykillnum)</> <Y1>【$city['name']】</><1>성벽</>";
+            $res = "성 <1>"._String::SubStr(getTypename($general['crewtype']), 0, 2)."</><Y1>【{$general['name']}】</> <O>{$general['crew']} (-$mydeathnum)</> VS <O>{$city['def']} (-$mykillnum)</> <Y1>【{$city['name']}】</><1>성벽</>";
             $log[count($log)] = "<O>◆</>".$res;
             $batlog[count($batlog)] = "<O>◆</>".$res;
             $batres[count($batres)] = "<O>◆</>{$game['year']}년 {$game['month']}월: ".$res;
@@ -1190,8 +1190,8 @@ function processWar($connect, $general, $city) {
                 $oppose['crew'] = round($oppose['crew']);
                 $myCrew = round($myCrew);
                 $opCrew = round($opCrew);
-                $batlog[count($batlog)] = "<C>●</> $phase : <Y1>【$general['name']】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$oppose['crew']} (-$opCrew)</> <Y1>【$oppose['name']】</>";
-                $oppbatlog[count($oppbatlog)] = "<C>●</> $phase : <Y1>【$oppose['name']】</> <C>{$oppose['crew']} (-$opCrew)</> VS <C>{$general['crew']} (-$myCrew)</> <Y1>【$general['name']】</>";
+                $batlog[count($batlog)] = "<C>●</> $phase : <Y1>【{$general['name']}】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$oppose['crew']} (-$opCrew)</> <Y1>【{$oppose['name']}】</>";
+                $oppbatlog[count($oppbatlog)] = "<C>●</> $phase : <Y1>【{$oppose['name']}】</> <C>{$oppose['crew']} (-$opCrew)</> VS <C>{$general['crew']} (-$myCrew)</> <Y1>【{$general['name']}】</>";
 
                 $mykillnum += $opCrew; $mydeathnum += $myCrew;
                 $opkillnum += $myCrew; $opdeathnum += $opCrew;
@@ -1220,11 +1220,11 @@ function processWar($connect, $general, $city) {
                 if($oppose['crew'] <= 0) { break; }
                 if($general['crew'] <= 0) { break; }
             }
-            $res = "<C>공</> <1>"._String::SubStr(getTypename($general['crewtype']), 0, 2)."</><Y1>【$general['name']】</> <O>{$general['crew']} (-$mydeathnum)</> VS <O>{$oppose['crew']} (-$opdeathnum)</> <Y1>【$oppose['name']】</><1>"._String::SubStr(getTypename($oppose['crewtype']), 0, 2)."</>";
+            $res = "<C>공</> <1>"._String::SubStr(getTypename($general['crewtype']), 0, 2)."</><Y1>【{$general['name']}】</> <O>{$general['crew']} (-$mydeathnum)</> VS <O>{$oppose['crew']} (-$opdeathnum)</> <Y1>【{$oppose['name']}】</><1>"._String::SubStr(getTypename($oppose['crewtype']), 0, 2)."</>";
             $log[count($log)] = "<O>◆</>".$res;
             $batlog[count($batlog)] = "<O>◆</>".$res;
             $batres[count($batres)] = "<O>◆</>{$game['year']}년 {$game['month']}월: ".$res;
-            $oppres = "<M>수</> <1>"._String::SubStr(getTypename($oppose['crewtype']), 0, 2)."</><Y1>【$oppose['name']】</> <O>{$oppose['crew']} (-$opdeathnum)</> VS <O>{$general['crew']} (-$mydeathnum)</> <Y1>【$general['name']】</><1>"._String::SubStr(getTypename($general['crewtype']), 0, 2)."</>";
+            $oppres = "<M>수</> <1>"._String::SubStr(getTypename($oppose['crewtype']), 0, 2)."</><Y1>【{$oppose['name']}】</> <O>{$oppose['crew']} (-$opdeathnum)</> VS <O>{$general['crew']} (-$mydeathnum)</> <Y1>【{$general['name']}】</><1>"._String::SubStr(getTypename($general['crewtype']), 0, 2)."</>";
             $opplog[count($opplog)] = "<O>◆</>".$oppres;
             $oppbatlog[count($oppbatlog)] = "<O>◆</>".$oppres;
             $oppbatres[count($oppbatres)] = "<O>◆</>{$game['year']}년 {$game['month']}월: ".$oppres;

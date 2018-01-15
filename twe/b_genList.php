@@ -138,7 +138,7 @@ for($j=0; $j < $gencount; $j++) {
 
     if($general['npc'] >= 2) { $name = "<font color=cyan>{$general['name']}</font>"; }
     elseif($general['npc'] == 1) { $name = "<font color=skyblue>{$general['name']}</font>"; }
-    else { $name =  "$general['name']"; }
+    else { $name =  "{$general['name']}"; }
 
     switch($general['mode']) {
     case 0: $mode = "×"; break;

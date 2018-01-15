@@ -135,11 +135,11 @@ for($j=0; $j < $citycount; $j++) {
         <td align=center id=bg1>인구</td>
         <td align=center>".round($city['pop']/$city[pop2]*100, 2)." %</td>
         <td align=center id=bg1>태수</td>
-        <td align=center>";echo $gen1['name']==''?"-":"$gen1['name']";echo "</td>
+        <td align=center>";echo $gen1['name']==''?"-":"{$gen1['name']}";echo "</td>
         <td align=center id=bg1>군사</td>
-        <td align=center>";echo $gen2['name']==''?"-":"$gen2['name']";echo "</td>
+        <td align=center>";echo $gen2['name']==''?"-":"{$gen2['name']}";echo "</td>
         <td align=center id=bg1>시중</td>
-        <td align=center>";echo $gen3['name']==''?"-":"$gen3['name']";echo "</td>
+        <td align=center>";echo $gen3['name']==''?"-":"{$gen3['name']}";echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1>장수</td>
@@ -152,7 +152,7 @@ for($j=0; $j < $citycount; $j++) {
         $general = MYDB_fetch_array($genresult);
         if($general['npc'] >= 2) { echo "<font color=cyan>{$general['name']}, </font>"; }
         elseif($general['npc'] == 1) { echo "<font color=skyblue>{$general['name']}, </font>"; }
-        else { echo "$general['name'], "; }
+        else { echo "{$general['name']}, "; }
     }
     echo "
         </td>

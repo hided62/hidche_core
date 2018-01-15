@@ -98,8 +98,8 @@ if($ok == "수락") {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //국메로 저장
-        $msg = "【외교】{$admin['year']}년 {$admin['month']}월:$younation['name'](와)과 합병에 동의";
-        $youmsg = "【외교】{$admin['year']}년 {$admin['month']}월:$mynation['name'](와)과 합병에 동의";
+        $msg = "【외교】{$admin['year']}년 {$admin['month']}월:{$younation['name']}(와)과 합병에 동의";
+        $youmsg = "【외교】{$admin['year']}년 {$admin['month']}월:{$mynation['name']}(와)과 합병에 동의";
 
         PushMsg(2, $mynation['nation'], $me['picture'], $me['imgsvr'], "{$me['name']}:{$mynation['name']}▶", $mynation['color'], $younation['name'], $younation['color'], $msg);
         PushMsg(3, $younation['nation'], $me['picture'], $me['imgsvr'], "{$me['name']}:{$mynation['name']}▶", $mynation['color'], $younation['name'], $younation['color'], $youmsg);

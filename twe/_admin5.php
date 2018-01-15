@@ -213,7 +213,7 @@ for($i=0; $i < $nationCount; $i++) {
 
     echo "
     <tr>
-        <td align=center style=background-color:$nation['color'];color:".newColor($nation['color']).";>{$nation['name']}</td>
+        <td align=center style=background-color:{$nation['color']};color:".newColor($nation['color']).";>{$nation['name']}</td>
         <td align=center>&nbsp;{$nation['connect']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['con']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['power']}&nbsp;</td>
@@ -243,7 +243,7 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=center>&nbsp;{$city['secu']}%&nbsp;</td>
         <td align=center>&nbsp;{$city['wall']}%&nbsp;</td>
         <td align=center>&nbsp;{$city['def']}%&nbsp;</td>
-        <td align=center style=background-color:$nation['color'];color:".newColor($nation['color']).";>{$nation['name']}</td>
+        <td align=center style=background-color:{$nation['color']};color:".newColor($nation['color']).";>{$nation['name']}</td>
     </tr>
 ";
 }

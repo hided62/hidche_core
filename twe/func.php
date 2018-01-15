@@ -1886,8 +1886,8 @@ function cityInfo($connect) {
 
     if($nation['color'] == "" || $me['skin'] < 1) { $nation['color'] = "000000"; }
     echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
-    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:$nation['color'];font-weight:bold;font-size:13;>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 $city['name']</td></tr>
-    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:$nation['color']><b>";
+    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13;>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 {$city['name']}</td></tr>
+    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
 
     if($city['nation'] == 0) {
         echo "공 백 지";
@@ -2021,22 +2021,22 @@ function myNationInfo($connect) {
     </tr>
     <tr>
         <td width=68  align=center id=bg1><b>".getLevel(12, $nation['level'])."</b></td>
-        <td width=178 align=center>";echo $level12==''?"-":"$level12['name']"; echo "</td>
+        <td width=178 align=center>";echo $level12==''?"-":"{$level12['name']}"; echo "</td>
         <td width=68  align=center id=bg1><b>".getLevel(11, $nation['level'])."</b></td>
-        <td width=178 align=center>";echo $level11==''?"-":"$level11['name']"; echo "</td>
+        <td width=178 align=center>";echo $level11==''?"-":"{$level11['name']}"; echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>총주민</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"$city['totpop']/$city['maxpop']";echo "</td>
+        <td align=center>";echo $me['nation']==0?"해당 없음":"{$city['totpop']}/{$city['maxpop']}";echo "</td>
         <td align=center id=bg1><b>총병사</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"$general['totcrew']/$general['maxcrew']"; echo "</td>
+        <td align=center>";echo $me['nation']==0?"해당 없음":"{$general['totcrew']}/{$general['maxcrew']}"; echo "</td>
         </td>
     </tr>
     <tr>
         <td align=center id=bg1><b>국 고</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"$nation['gold']";echo "</td>
+        <td align=center>";echo $me['nation']==0?"해당 없음":"{$nation['gold']}";echo "</td>
         <td align=center id=bg1><b>병 량</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"$nation['rice']";echo "</td>
+        <td align=center>";echo $me['nation']==0?"해당 없음":"{$nation['rice']}";echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>지급율</b></td>
@@ -2044,7 +2044,7 @@ function myNationInfo($connect) {
     if($me['nation'] == 0) {
         echo "해당 없음";
     } else {
-        echo $nation['bill']==0?"0 %":"$nation['bill'] %";
+        echo $nation['bill']==0?"0 %":"{$nation['bill']} %";
     }
     echo "
         </td>
@@ -2053,7 +2053,7 @@ function myNationInfo($connect) {
     if($me['nation'] == 0) {
         echo "해당 없음";
     } else {
-        echo $nation['rate']==0?"0 %":"$nation['rate'] %";
+        echo $nation['rate']==0?"0 %":"{$nation['rate']} %";
     }
 
     $techCall = getTechCall($nation['tech']);
@@ -2061,7 +2061,7 @@ function myNationInfo($connect) {
     if(TechLimit($admin['startyear'], $admin['year'], $nation['tech'])) { $nation['tech'] = "<font color=magenta>{$nation['tech']}</font>"; }
     else { $nation['tech'] = "<font color=limegreen>{$nation['tech']}</font>"; }
 
-    $nation['tech'] = "$techCall / $nation['tech']";
+    $nation['tech'] = "$techCall / {$nation['tech']}";
 
     if($nation['tricklimit'] != 0) { $nation['tricklimit'] = "<font color=red>{$nation['tricklimit']}턴</font>"; }
     else { $nation['tricklimit'] = "<font color=limegreen>가 능</font>"; }
@@ -2088,15 +2088,15 @@ function myNationInfo($connect) {
     </tr>
     <tr>
         <td align=center id=bg1><b>속 령</b></td>
-        <td align=center>";echo $me['nation']==0?"-":"$city['cnt']"; echo "</td>
+        <td align=center>";echo $me['nation']==0?"-":"{$city['cnt']}"; echo "</td>
         <td align=center id=bg1><b>장 수</b></td>
-        <td align=center>";echo $me['nation']==0?"-":"$general['cnt']"; echo "</td>
+        <td align=center>";echo $me['nation']==0?"-":"{$general['cnt']}"; echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>국 력</b></td>
         <td align=center>{$nation['power']}</td>
         <td align=center id=bg1><b>기술력</b></td>
-        <td align=center>";echo $me['nation']==0?"-":"$nation['tech']"; echo "</td>
+        <td align=center>";echo $me['nation']==0?"-":"{$nation['tech']}"; echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>전 략</b></td>
@@ -2491,22 +2491,22 @@ function commandButton($connect) {
 <table align=center border=0 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg2>
     <tr>";
 
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='회 의 실' onclick='refreshing(1,1)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='회 의 실' onclick='refreshing(1,1)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【회 의 실】</font></td>"; }
-    if($me['level'] >= 5) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='기 밀 실' onclick='refreshing(1,4)'></td>"; }
+    if($me['level'] >= 5) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='기 밀 실' onclick='refreshing(1,4)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【기 밀 실】</font></td>"; }
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='부대 편성' onclick='refreshing(1,2)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='부대 편성' onclick='refreshing(1,2)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【부대 편성】</font></td>"; }
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='인 사 부' onclick='refreshing(1,10)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='인 사 부' onclick='refreshing(1,10)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【인 사 부】</font></td>"; }
-    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='내 무 부' onclick='refreshing(1,13)'></td>"; }
+    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='내 무 부' onclick='refreshing(1,13)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【내 무 부】</font></td>"; }
-    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='사 령 부' onclick='refreshing(1,5)'></td>"; }
+    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='사 령 부' onclick='refreshing(1,5)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【사 령 부】</font></td>"; }
-    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='암 행 부' onclick='refreshing(1,6)'></td>"; }
+    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='암 행 부' onclick='refreshing(1,6)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【암 행 부】</font></td>"; }
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='토 너 먼 트' onclick='refreshing(1,15)'></td>";
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='베 팅 장' onclick='refreshing(1,16)'></td>";
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='토 너 먼 트' onclick='refreshing(1,15)'></td>";
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='베 팅 장' onclick='refreshing(1,16)'></td>";
     echo "
     </tr>
 </table>";
@@ -2515,20 +2515,20 @@ function commandButton($connect) {
 <table align=center border=0 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg2>
     <tr>";
 
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 정보' onclick='refreshing(1,7)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 정보' onclick='refreshing(1,7)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【세력 정보】</font></td>"; }
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 도시' onclick='refreshing(1,8)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 도시' onclick='refreshing(1,8)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【세력 도시】</font></td>"; }
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 장수' onclick='refreshing(1,9)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 장수' onclick='refreshing(1,9)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【세력 장수】</font></td>"; }
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='국 법' onclick='refreshing(1,3)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='국 법' onclick='refreshing(1,3)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【국 법】</font></td>"; }
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='중원 정보' onclick='refreshing(1,14)'></td>";
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='현재 도시' onclick='refreshing(1,11)'></td>";
-    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='감 찰 부' onclick='refreshing(1,18)'></td>"; }
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='중원 정보' onclick='refreshing(1,14)'></td>";
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='현재 도시' onclick='refreshing(1,11)'></td>";
+    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='감 찰 부' onclick='refreshing(1,18)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【감 찰 부】</font></td>"; }
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='내 정보 & 설정' onclick='refreshing(1,12)'></td>";
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='거 래 장' onclick='refreshing(1,17)'></td>";
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='내 정보 & 설정' onclick='refreshing(1,12)'></td>";
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='거 래 장' onclick='refreshing(1,17)'></td>";
     echo "
     </tr>
 </table>";
@@ -2638,7 +2638,7 @@ function generalInfo($connect, $no, $skin) {
         case  0:    case  9:    case 10:
             $atmos = "<font color=magenta>{$general['atmos']} (-5)</font>"; break;
         default:
-            $atmos = "$general['atmos']"; break;
+            $atmos = "{$general['atmos']}"; break;
     }
     switch($general['personal']) {
         case  3:    case  5:
@@ -2646,7 +2646,7 @@ function generalInfo($connect, $no, $skin) {
         case  1:    case  8:    case 10:
             $train = "<font color=magenta>{$general['train']} (-5)</font>"; break;
         default:
-            $train = "$general['train']"; break;
+            $train = "{$general['train']}"; break;
     }
     if($general['troop'] == 0)    { $troop['name'] = "-"; }
     if($general['mode'] == 2)     { $general['mode'] = "<font color=limegreen>수비 함(훈사80)</font>"; }
@@ -2733,7 +2733,7 @@ function generalInfo($connect, $no, $skin) {
         <td align=center id=bg1><b>부대</b></td>
         <td align=center colspan=3>{$troop['name']}</td>
         <td align=center id=bg1><b>벌점</b></td>
-        <td align=center colspan=5>".getConnect($general['connect'])." $general['connect']($general['con'])</td>
+        <td align=center colspan=5>".getConnect($general['connect'])." {$general['connect']}({$general['con']})</td>
     </tr>
 </table>";
 }
@@ -2758,17 +2758,17 @@ function generalInfo2($connect, $no, $skin) {
 
     switch($general['personal']) {
         case  0:    case  1;    case  6:
-            $experience = "<font color=cyan>".getHonor($general['experience'])." ($general['experience'])</font>"; break;
+            $experience = "<font color=cyan>".getHonor($general['experience'])." ({$general['experience']})</font>"; break;
         case  4:    case  5:    case  7:    case 10:
-            $experience = "<font color=magenta>".getHonor($general['experience'])." ($general['experience'])</font>"; break;
+            $experience = "<font color=magenta>".getHonor($general['experience'])." ({$general['experience']})</font>"; break;
         default:
-            $experience = getHonor($general['experience'])." ($general['experience'])"; break;
+            $experience = getHonor($general['experience'])." ({$general['experience']})"; break;
     }
     switch($general['personal']) {
         case 10:
-            $dedication = "<font color=magenta>".getDed($general['dedication'])." ($general['dedication'])</font>"; break;
+            $dedication = "<font color=magenta>".getDed($general['dedication'])." ({$general['dedication']})</font>"; break;
         default:
-            $dedication = getDed($general['dedication'])." ($general['dedication'])"; break;
+            $dedication = getDed($general['dedication'])." ({$general['dedication']})"; break;
     }
 
     if($skin == 0) {
@@ -5901,7 +5901,7 @@ function CheckHall($connect, $no) {
         $count = MYDB_num_rows($result);
 
         //승률,살상률인데 10회 미만 전투시 스킵
-        if(($k == 5 || $k == 7) && {$general['warnum']}<10) { continue; }
+        if(($k == 5 || $k == 7) && $general['warnum']<10) { continue; }
         //토너승률인데 50회 미만시 스킵
         if($k == 13 && $general['tt'] < 50) { continue; }
         //토너승률인데 50회 미만시 스킵

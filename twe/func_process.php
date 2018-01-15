@@ -2191,12 +2191,12 @@ function process_31($connect, &$general) {
         if($dist[$destination] > 2) {
             $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
             $log[count($log)] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 소문만 들을 수 있었습니다. <1>$date</>";
-            $log[count($log)] = "【<G>{$city['name']}</>】주민:$city['pop'], 민심:$city['rate'], 장수:$gencount, 병력:$crew";
+            $log[count($log)] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
         } elseif($dist[$destination] == 2) {
             $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
             $log[count($log)] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 어느정도 정보를 얻었습니다. <1>$date</>";
-            $log[count($log)] = "【<M>첩보</>】농업:$city['agri'], 상업:$city['comm'], 치안:$city['secu'], 수비:$city['def'], 성벽:$city['wall']";
-            $log[count($log)] = "【<G>{$city['name']}</>】주민:$city['pop'], 민심:$city['rate'], 장수:$gencount, 병력:$crew";
+            $log[count($log)] = "【<M>첩보</>】농업:{$city['agri']}, 상업:{$city['comm']}, 치안:{$city['secu']}, 수비:{$city['def']}, 성벽:{$city['wall']}";
+            $log[count($log)] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
         } else {
             $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
             $log[count($log)] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 많은 정보를 얻었습니다. <1>$date</>";
@@ -2211,8 +2211,8 @@ function process_31($connect, &$general) {
             for($i=$count; $i > 0; $i-=8) {
                 $log[count($log)] = "{$msg[$i-8]} {$msg[$i-7]} {$msg[$i-6]} {$msg[$i-5]} {$msg[$i-4]} {$msg[$i-3]} {$msg[$i-2]} {$msg[$i-1]}";
             }
-            $log[count($log)] = "【<M>첩보</>】농업:$city['agri'], 상업:$city['comm'], 치안:$city['secu'], 수비:$city['def'], 성벽:$city['wall']";
-            $log[count($log)] = "【<G>{$city['name']}</>】주민:$city['pop'], 민심:$city['rate'], 장수:$gencount, 병력:$crew";
+            $log[count($log)] = "【<M>첩보</>】농업:{$city['agri']}, 상업:{$city['comm']}, 치안:{$city['secu']}, 수비:{$city['def']}, 성벽:{$city['wall']}";
+            $log[count($log)] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
 
             if($general['nation'] != 0 && $city['nation'] != 0) {
                 $query = "select name,tech from nation where nation='{$city['nation']}'";
