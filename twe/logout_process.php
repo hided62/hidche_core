@@ -4,7 +4,7 @@ include "func.php";
 
 $connect=dbConn();
 
-$query = "select no,user_id,password,name from general where user_id='$_SESSION['p_id']'";
+$query = "select no,user_id,password,name from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

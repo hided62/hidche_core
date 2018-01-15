@@ -6,11 +6,11 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "부대편성", 1);
 
-$query = "select skin,no,nation,troop from general where user_id='$_SESSION['p_id']'";
+$query = "select skin,no,nation,troop from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select * from troop where nation='$me['nation']'";
+$query = "select * from troop where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $troopcount = MYDB_num_rows($result);
 
@@ -45,7 +45,7 @@ for($i=0; $i < $troopcount; $i++) {
     $troop = MYDB_fetch_array($result);
 
     $genlist = "";
-    $query = "select no,name,picture,imgsvr,turntime,city,turn0,turn1,turn2,turn3,turn4,turn5 from general where troop='$troop['troop']'";
+    $query = "select no,name,picture,imgsvr,turntime,city,turn0,turn1,turn2,turn3,turn4,turn5 from general where troop='{$troop['troop']}'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
     for($j=0; $j < $gencount; $j++) {
@@ -56,7 +56,7 @@ for($i=0; $i < $troopcount; $i++) {
             $imageTemp = GetImageURL($general['imgsvr']);
             $name = $general['name'];
             $turntime = $general['turntime'];
-            $query = "select name from city where city='$general['city']'";
+            $query = "select name from city where city='{$general['city']}'";
             $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $city = MYDB_fetch_array($cityresult);
             $cityname = $city['name'];
@@ -94,7 +94,7 @@ for($i=0; $i < $troopcount; $i++) {
         <td rowspan=2>";
 
         if($troop['no'] == $me['no']) {
-            $query = "select no,name from general where troop='$troop['troop']' and no!='$me['no']' order by binary(name)";
+            $query = "select no,name from general where troop='{$troop['troop']}' and no!='{$me['no']}' order by binary(name)";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $genCount = MYDB_num_rows($genresult);
                 echo "

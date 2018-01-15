@@ -5,7 +5,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
+$query = "select userlevel from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -157,7 +157,7 @@ $conMsg  = "";
 for($i=0; $i < $ipCount; $i++) {
     $ip = MYDB_fetch_array($result);
 
-    $query = "select name,password,lastconnect,user_id,block,conmsg from general where password='$ip['password']' and npc<2";
+    $query = "select name,password,lastconnect,user_id,block,conmsg from general where password='{$ip['password']}' and npc<2";
     $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($genResult);
     for($k=0; $k < $genCount; $k++) {

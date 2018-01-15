@@ -971,47 +971,47 @@ function processAI($connect, $no) {
         return;
     }
 
-    $query = "select city,region,nation,level,path,rate,gen1,gen2,gen3,pop,supply,front from city where city='$general['city']'";
+    $query = "select city,region,nation,level,path,rate,gen1,gen2,gen3,pop,supply,front from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error("processAI02 ".MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,level,tech,gold,rice,rate,type,color,name,war from nation where nation='$general['nation']'";
+    $query = "select nation,level,tech,gold,rice,rate,type,color,name,war from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error("processAI03 ".MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
     if($general['level'] >= 5) {
-        $query = "select l{$general['level']}turn0 from nation where nation='$general['nation']'";
+        $query = "select l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
         $result = MYDB_query($query, $connect) or Error("processAI03 ".MYDB_error($connect),"");
         $coreCommand = MYDB_fetch_array($result);
     }
 
     $attackable = 0;
-    $query = "select city from city where nation='$general['nation']' and supply='1' and front=1";
+    $query = "select city from city where nation='{$general['nation']}' and supply='1' and front=1";
     $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
     $cityCount = MYDB_num_rows($result);
     // 공격가능도시 있으면 1
     if($cityCount > 0) { $attackable = 1; }
 
     $dipState = 0;
-    $query = "select no from diplomacy where me='$general['nation']' and state=1 and term>8";
+    $query = "select no from diplomacy where me='{$general['nation']}' and state=1 and term>8";
     $result = MYDB_query($query, $connect) or Error("processAI04 ".MYDB_error($connect),"");
     $dipCount = MYDB_num_rows($result);
     // 선포중이면 1상태
     if($dipCount > 0) { $dipState = 1; }
 
-    $query = "select no from diplomacy where me='$general['nation']' and state=1 and term<=8";
+    $query = "select no from diplomacy where me='{$general['nation']}' and state=1 and term<=8";
     $result = MYDB_query($query, $connect) or Error("processAI04 ".MYDB_error($connect),"");
     $dipCount = MYDB_num_rows($result);
     // 전쟁준비 선포중이면 2상태
     if($dipCount > 0) { $dipState = 2; }
 
-    $query = "select no from diplomacy where me='$general['nation']' and state=1 and term<=3";
+    $query = "select no from diplomacy where me='{$general['nation']}' and state=1 and term<=3";
     $result = MYDB_query($query, $connect) or Error("processAI04 ".MYDB_error($connect),"");
     $dipCount = MYDB_num_rows($result);
     // 교전 직전이면 3상태
     if($dipCount > 0) { $dipState = 3; }
 
-    $query = "select no from diplomacy where me='$general['nation']' and state=0";
+    $query = "select no from diplomacy where me='{$general['nation']}' and state=0";
     $result = MYDB_query($query, $connect) or Error("processAI04 ".MYDB_error($connect),"");
     $dipCount = MYDB_num_rows($result);
     // 교전중이면 4상태
@@ -1048,12 +1048,12 @@ function processAI($connect, $no) {
 
     if($general['atmos'] >= 90 && $general['train'] >= 90) {
         if($general['mode'] == 0) {
-            $query = "update general set mode=1 where no='$general['no']'";
+            $query = "update general set mode=1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
         }
     } else {
         if($general['mode'] == 1) {
-            $query = "update general set mode=0 where no='$general['no']'";
+            $query = "update general set mode=0 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
         }
     }
@@ -1088,7 +1088,7 @@ function processAI($connect, $no) {
         } else {
             $command = EncodeCommand(0, 0, 0, 42); //견문
         }
-        $query = "update general set turn0='$command' where no='$general['no']'";
+        $query = "update general set turn0='$command' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error("processAI07 ".MYDB_error($connect),"");
         return;
     } elseif($general['npc'] < 5 && $general['level'] == 0) {
@@ -1120,7 +1120,7 @@ function processAI($connect, $no) {
                 $ratio = round($npcCount / ($nonCount + $npcCount) * 100);
                 $ratio = round($ratio * 1.0);
                 //NPC우선임관
-                $query = "select nation,ABS(IF(ABS(npcmatch-'$general['npcmatch']')>75,150-ABS(npcmatch-'$general['npcmatch']'),ABS(npcmatch-'$general['npcmatch']'))) as npcmatch2 from general where level=12 and npc>0 and nation not in (0{$general['nations']}0) order by npcmatch2,rand() limit 0,1";
+                $query = "select nation,ABS(IF(ABS(npcmatch-'{$general['npcmatch']}')>75,150-ABS(npcmatch-'{$general['npcmatch']}'),ABS(npcmatch-'{$general['npcmatch']}'))) as npcmatch2 from general where level=12 and npc>0 and nation not in (0{$general['nations']}0) order by npcmatch2,rand() limit 0,1";
                 $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
                 $rulerCount = MYDB_num_rows($result);
                 if($rulerCount > 0 && $general['npcmatch'] != 999 && rand()%100 < $ratio && $general['makelimit'] == 0) {  // 엔국 비율대로 임관(50% : 50%)
@@ -1153,7 +1153,7 @@ function processAI($connect, $no) {
             $command = EncodeCommand(0, 0, $paths[rand()%count($paths)], 21);
             break;
         }
-        $query = "update general set turn0='$command' where no='$general['no']'";
+        $query = "update general set turn0='$command' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error("processAI07 ".MYDB_error($connect),"");
         return;
     }
@@ -1167,13 +1167,13 @@ function processAI($connect, $no) {
             if($nation['level'] == 0) {
                 // 해산
                 $command = EncodeCommand(0, 0, 0, 56);
-                $query = "update general set turn0='$command' where no='$general['no']'";
+                $query = "update general set turn0='$command' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             } else {
                 // 방랑
                 $command = EncodeCommand(0, 0, 0, 47);
-                $query = "update general set turn0='$command' where no='$general['no']'";
+                $query = "update general set turn0='$command' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             }
@@ -1199,7 +1199,7 @@ function processAI($connect, $no) {
             if($admin['startyear']+2 <= $admin['year']) {
                 // 해산
                 $command = EncodeCommand(0, 0, 0, 56);
-                $query = "update general set turn0='$command' where no='$general['no']'";
+                $query = "update general set turn0='$command' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             } elseif($city['nation'] == 0 && ($city['level'] == 5 || $city['level'] == 6)) {
@@ -1209,20 +1209,20 @@ function processAI($connect, $no) {
                 $command = EncodeCommand(0, $type, $color, 46);
                 $nationName = "㉿"._String::SubStr($general['name'], 1);
                 //건국
-                $query = "update general set turn0='$command',makenation='$nationName' where no='$general['no']'";
+                $query = "update general set turn0='$command',makenation='$nationName' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error("processAI08 ".MYDB_error($connect),"");
                 return;
             } elseif(rand()%4 > 0) {
                 //이동
                 $paths = explode("|", $city['path']);
                 $command = EncodeCommand(0, 0, $paths[rand()%count($paths)], 21);
-                $query = "update general set turn0='$command' where no='$general['no']'";
+                $query = "update general set turn0='$command' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             } else {
                 //조달
                 $command = EncodeCommand(0, 0, 0, 9);
-                $query = "update general set turn0='$command' where no='$general['no']'";
+                $query = "update general set turn0='$command' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             }
@@ -1232,12 +1232,12 @@ function processAI($connect, $no) {
                 //전방 체크 먼저
                 SetNationFront($connect, $nation['nation']);
 
-                $query = "select city from city where nation='$general['nation']' and front=1 limit 0,1";
+                $query = "select city from city where nation='{$general['nation']}' and front=1 limit 0,1";
                 $result = MYDB_query($query, $connect) or Error("processAI02 ".MYDB_error($connect),"");
                 $frontCount = MYDB_num_rows($result);
                 //근접 공백지 없을때
                 if($frontCount == 0) {
-                    $query = "select (sum(pop/10)+sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(pop2/10)+sum(agri2)+sum(comm2)+sum(secu2)+sum(def2)+sum(wall2))*100 as dev from city where nation='$general['nation']'";
+                    $query = "select (sum(pop/10)+sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(pop2/10)+sum(agri2)+sum(comm2)+sum(secu2)+sum(def2)+sum(wall2))*100 as dev from city where nation='{$general['nation']}'";
                     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     $devRate = MYDB_fetch_array($result);
                     //내정이 80% 이상일때
@@ -1250,7 +1250,7 @@ function processAI($connect, $no) {
 
                             if(isClose($connect, $general['nation'], $youNation['nation'])) {
                                 $command = EncodeCommand(0, 0, $youNation['nation'], 62);
-                                $query = "update nation set l12turn0='$command' where nation='$general['nation']'";
+                                $query = "update nation set l12turn0='$command' where nation='{$general['nation']}'";
                                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                                 $rulerCommand = 1;
                                 break;
@@ -1269,13 +1269,13 @@ function processAI($connect, $no) {
 
     //방랑군 아니고, 입력된 턴이 없을때 수뇌부가 할일
     if($nation['level'] != 0 && $general['level'] >= 5 && $rulerCommand == 0) {
-        $query = "select A.no,A.name,A.nation,B.nation from general A, city B where A.city=B.city and A.nation='$general['nation']' and B.nation!='$general['nation']' and A.no!='$general['no']' order by rand() limit 0,1";
+        $query = "select A.no,A.name,A.nation,B.nation from general A, city B where A.city=B.city and A.nation='{$general['nation']}' and B.nation!='{$general['nation']}' and A.no!='{$general['no']}' order by rand() limit 0,1";
         $result = MYDB_query($query, $connect) or Error("processAI11 ".MYDB_error($connect),"");
         $curGen = MYDB_fetch_array($result);
 
         if($curGen['no'] != 0) {          // 타도시에 있는 경우 국내로 발령
             if($dipState >= 3) {
-                $query = "select city from city where nation='$general['nation']' and front=1 and supply=1 order by rand() limit 0,1";
+                $query = "select city from city where nation='{$general['nation']}' and front=1 and supply=1 order by rand() limit 0,1";
                 $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                 $selCity = MYDB_fetch_array($result);
                 if($selCity['city'] > 0) {
@@ -1289,11 +1289,11 @@ function processAI($connect, $no) {
                 // 발령
                 $command = EncodeCommand(0, $curGen['no'], $city['city'], 27);
             }
-            $query = "update nation set l{$general['level']}turn0='$command' where nation='$general['nation']'";
+            $query = "update nation set l{$general['level']}turn0='$command' where nation='{$general['nation']}'";
             MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
         } elseif($dipState <= 1) {      // 평시엔 균등 발령만
             //발령, 최소장수 도시 선택, 최다장수도시의 장수 선택
-            $query = "select B.city,count(*) as cnt,((B.agri+B.comm+B.secu+B.def+B.wall)/(B.agri2+B.comm2+B.secu2+B.def2+B.wall2)+(B.pop/B.pop2))/2*100 as dev from general A, city B where A.city=B.city and A.nation='$general['nation']' and B.nation='$general['nation']' and B.supply=1 group by A.city";
+            $query = "select B.city,count(*) as cnt,((B.agri+B.comm+B.secu+B.def+B.wall)/(B.agri2+B.comm2+B.secu2+B.def2+B.wall2)+(B.pop/B.pop2))/2*100 as dev from general A, city B where A.city=B.city and A.nation='{$general['nation']}' and B.nation='{$general['nation']}' and B.supply=1 group by A.city";
             $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
             $cityCount = MYDB_num_rows($result);
             //도시 2개 이상일때만
@@ -1309,14 +1309,14 @@ function processAI($connect, $no) {
                 }
                 if($devCity != 0) { $minCity = $devCity; }
                 if($maxCity != $minCity) {
-                    $query = "select no from general where city='$maxCity' and nation='$general['nation']' and no!='$general['no']' and npc>=2 limit 0,1";
+                    $query = "select no from general where city='$maxCity' and nation='{$general['nation']}' and no!='{$general['no']}' and npc>=2 limit 0,1";
                     $result = MYDB_query($query, $connect) or Error("processAI11 ".MYDB_error($connect),"");
                     $curGen = MYDB_fetch_array($result);
 
                     if($curGen['no'] != 0) {
                         // 발령
                         $command = EncodeCommand(0, $curGen['no'], $minCity, 27);
-                        $query = "update nation set l{$general['level']}turn0='$command' where nation='$general['nation']'";
+                        $query = "update nation set l{$general['level']}turn0='$command' where nation='{$general['nation']}'";
                         MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                     }
                     //계속 진행
@@ -1324,14 +1324,14 @@ function processAI($connect, $no) {
             }
         } else {
             // 병사있고 쌀있고 후방에 있는 장수
-            $query = "select A.no from general A, city B where A.city=B.city and A.nation='$general['nation']' and B.nation='$general['nation']' and B.front=0 and A.crew>700 and A.rice>700*{$tech} order by A.npc,A.crew desc limit 0,1";
+            $query = "select A.no from general A, city B where A.city=B.city and A.nation='{$general['nation']}' and B.nation='{$general['nation']}' and B.front=0 and A.crew>700 and A.rice>700*{$tech} order by A.npc,A.crew desc limit 0,1";
             $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
             $selGen = MYDB_fetch_array($result);
             // 전방 도시, 30% 확률로 태수 있는 전방으로 발령
             if(rand()%100 < 30) {
-                $query = "select city from city where nation='$general['nation']' and front=1 and supply=1 order by gen1 desc,rand() limit 0,1";
+                $query = "select city from city where nation='{$general['nation']}' and front=1 and supply=1 order by gen1 desc,rand() limit 0,1";
             } else {
-                $query = "select city from city where nation='$general['nation']' and front=1 and supply=1 order by rand() limit 0,1";
+                $query = "select city from city where nation='{$general['nation']}' and front=1 and supply=1 order by rand() limit 0,1";
             }
             $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
             $selCity = MYDB_fetch_array($result);
@@ -1340,11 +1340,11 @@ function processAI($connect, $no) {
                 $command = EncodeCommand(0, $selGen['no'], $selCity['city'], 27);
             } else {
                 //병사 없고 인구없는 전방에 있는 장수
-                $query = "select A.no from general A, city B where A.city=B.city and A.nation='$general['nation']' and B.nation='$general['nation']' and B.pop<40000 and B.front=1 and A.crew<700 order by A.npc,A.crew limit 0,1";
+                $query = "select A.no from general A, city B where A.city=B.city and A.nation='{$general['nation']}' and B.nation='{$general['nation']}' and B.pop<40000 and B.front=1 and A.crew<700 order by A.npc,A.crew limit 0,1";
                 $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                 $selGen = MYDB_fetch_array($result);
                 // 인구많은도시
-                $query = "select city from city where nation='$general['nation']' and supply=1 order by pop desc limit 0,1";
+                $query = "select city from city where nation='{$general['nation']}' and supply=1 order by pop desc limit 0,1";
                 $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                 $selCity = MYDB_fetch_array($result);
                 if($selGen['no'] > 0 && $selCity['city'] > 0 && rand() % 100 < 80) {    // 80% 확률
@@ -1357,7 +1357,7 @@ function processAI($connect, $no) {
 
                     if($nation[$type] < 1000) {  // 몰수
                         // 몰수 대상
-                        $query = "select no,{$type} from general where nation='$general['nation']' and no!='$general['no']' and {$type}>3000 order by {$type} desc limit 0,1";
+                        $query = "select no,{$type} from general where nation='{$general['nation']}' and no!='{$general['no']}' and {$type}>3000 order by {$type} desc limit 0,1";
                         $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                         $SelGen = MYDB_fetch_array($result);
                         if($SelGen['no'] != 0) {
@@ -1368,7 +1368,7 @@ function processAI($connect, $no) {
                         }
                     } else {    // 포상
                         // 포상 대상
-                        $query = "select no from general where nation='$general['nation']' and no!='$general['no']' and killturn>=5 order by {$type} limit 0,1";
+                        $query = "select no from general where nation='{$general['nation']}' and no!='{$general['no']}' and killturn>=5 order by {$type} limit 0,1";
                         $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                         $SelGen = MYDB_fetch_array($result);
                         if($SelGen['no'] != 0) {
@@ -1380,7 +1380,7 @@ function processAI($connect, $no) {
                     }
                 }
             }
-            $query = "update nation set l{$general['level']}turn0='$command' where nation='$general['nation']'";
+            $query = "update nation set l{$general['level']}turn0='$command' where nation='{$general['nation']}'";
             MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
         }
     }
@@ -1415,7 +1415,7 @@ function processAI($connect, $no) {
         //아국땅 아니면 귀환
         if($general['nation'] != $city['nation'] || $city['supply'] == 0) {
             $command = EncodeCommand(0, 0, 0, 28);  //귀환
-            $query = "update general set turn0='$command' where no='$general['no']'";
+            $query = "update general set turn0='$command' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
             return;
         }
@@ -1424,7 +1424,7 @@ function processAI($connect, $no) {
             $amount = floor(($general['rice'] - 200)/100) + 1;
             if($amount > 20) { $amount = 20; }
             $command = EncodeCommand(0, 2, $amount, 44);  //헌납
-            $query = "update general set turn0='$command' where no='$general['no']'";
+            $query = "update general set turn0='$command' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
             return;
         }
@@ -1473,7 +1473,7 @@ function processAI($connect, $no) {
                 }
 
                 if($command == EncodeCommand(0, 0, 0, 1)) {     // 공격아닌 경우
-                    $query = "select city,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev from city where city='$general['city']'";
+                    $query = "select city,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev from city where city='{$general['city']}'";
                     $result = MYDB_query($query, $connect) or Error("processAI19 ".MYDB_error($connect),"");
                     $selCity = MYDB_fetch_array($result);
 
@@ -1487,9 +1487,9 @@ function processAI($connect, $no) {
                     case 8: case 9: // 저개발 도시로 워프 20%
                         //도시 선택, 30% 확률로 군사 있는 곳으로 워프
                         if(rand()%100 < 30) {
-                            $query = "select city,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev from city where nation='$general['nation']' and supply='1' order by gen2 desc,dev limit 0,1";
+                            $query = "select city,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev from city where nation='{$general['nation']}' and supply='1' order by gen2 desc,dev limit 0,1";
                         } else {
-                            $query = "select city,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev from city where nation='$general['nation']' and supply='1' order by dev limit 0,1";
+                            $query = "select city,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev from city where nation='{$general['nation']}' and supply='1' order by dev limit 0,1";
                         }
                         $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
                         $selCity = MYDB_fetch_array($result);
@@ -1498,11 +1498,11 @@ function processAI($connect, $no) {
                             $command = EncodeCommand(0, 0, 0, 1);
                         } else {
                             //워프
-                            $query = "update general set city='$selCity['city']' where no='$general['no']'";
+                            $query = "update general set city='{$selCity['city']}' where no='{$general['no']}'";
                             MYDB_query($query, $connect) or Error("processAI18 ".MYDB_error($connect),"");
 
                             $command = EncodeCommand(0, 0, 0, 50);  //요양
-                            $query = "update general set turn0='$command' where no='$general['no']'";
+                            $query = "update general set turn0='$command' where no='{$general['no']}'";
                             MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
                             return;
                         }
@@ -1569,15 +1569,15 @@ function processAI($connect, $no) {
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
             } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
             elseif($general['crew'] < 700 && $general['gold'] >= $resrc && $general['rice'] >= $resrc) {
-                $query = "select no from general where nation='$general['nation']'";
+                $query = "select no from general where nation='{$general['nation']}'";
                 $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
                 $genCount = MYDB_num_rows($result);
 
-                $query = "select no from general where nation='$general['nation']' and city='$general['city']'";
+                $query = "select no from general where nation='{$general['nation']}' and city='{$general['city']}'";
                 $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
                 $genCount2 = MYDB_num_rows($result);
 
-                $query = "select sum(pop) as sum from city where nation='$general['nation']' and supply='1'";
+                $query = "select sum(pop) as sum from city where nation='{$general['nation']}' and supply='1'";
                 $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
                 $sumCity = MYDB_fetch_array($result);
                 // 현도시 인구 비율
@@ -1590,17 +1590,17 @@ function processAI($connect, $no) {
                     $command = EncodeCommand(0, 0, 0, 11);  //인구 되면 징병
                 } else {
                     // 인구 안되면 4만 이상인 도시로 워프
-                    $query = "select city from city where nation='$general['nation']' and pop>40000 and supply='1' order by rand() limit 0,1";
+                    $query = "select city from city where nation='{$general['nation']}' and pop>40000 and supply='1' order by rand() limit 0,1";
                     $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
                     $cityCount = MYDB_num_rows($result);
                     if($cityCount > 0) {
                         $selCity = MYDB_fetch_array($result);
                         //워프
-                        $query = "update general set city='$selCity['city']' where no='$general['no']'";
+                        $query = "update general set city='{$selCity['city']}' where no='{$general['no']}'";
                         MYDB_query($query, $connect) or Error("processAI18 ".MYDB_error($connect),"");
 
                         $command = EncodeCommand(0, 0, 0, 50);  //요양
-                        $query = "update general set turn0='$command' where no='$general['no']'";
+                        $query = "update general set turn0='$command' where no='{$general['no']}'";
                         MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
                         return;
                     } else {
@@ -1609,13 +1609,13 @@ function processAI($connect, $no) {
                 }
             } elseif($general['crew'] >= 700 && $general['train'] < 90) {
                 if($general['atmos'] >= 90 && $general['train'] >= 60 && $general['mode'] == 0) {
-                    $query = "update general set mode=1 where no='$general['no']'";
+                    $query = "update general set mode=1 where no='{$general['no']}'";
                     MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
                 }
                 $command = EncodeCommand(0, 0, 0, 13);  //훈련
             } elseif($general['crew'] >= 700 && $general['atmos'] < 90) {
                 if($general['atmos'] >= 60 && $general['train'] >= 90 && $general['mode'] == 0) {
-                    $query = "update general set mode=1 where no='$general['no']'";
+                    $query = "update general set mode=1 where no='{$general['no']}'";
                     MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
                 }
                 $command = EncodeCommand(0, 0, 0, 14);  //사기진작
@@ -1630,7 +1630,7 @@ function processAI($connect, $no) {
                     $targetCity = MYDB_fetch_array($result);
                     //소유국이 있는 경우
                     if($targetCity['nation'] != 0 && $targetCity['nation'] != $general['nation']) {
-                        $query = "select state from diplomacy where me='$general['nation']' and you='$targetCity['nation']'";
+                        $query = "select state from diplomacy where me='{$general['nation']}' and you='{$targetCity['nation']}'";
                         $dipResult = MYDB_query($query, $connect) or Error("processAI22 ".MYDB_error($connect),"");
                         $dip = MYDB_fetch_array($dipResult);
                         //전쟁중인 국가이면 타겟에 포함
@@ -1640,20 +1640,20 @@ function processAI($connect, $no) {
                 if(count($target) == 0) {
                     //전방 도시 선택, 30% 확률로 태수 있는 전방으로 워프
                     if(rand()%100 < 30) {
-                        $query = "select city from city where nation='$general['nation']' and supply='1' and front=1 order by gen1 desc,rand() limit 0,1";
+                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front=1 order by gen1 desc,rand() limit 0,1";
                     } else {
-                        $query = "select city from city where nation='$general['nation']' and supply='1' and front=1 order by rand() limit 0,1";
+                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front=1 order by rand() limit 0,1";
                     }
                     $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                     $cityCount = MYDB_num_rows($result);
                     if($cityCount == 0) {
                         //도시 수, 랜덤(상위 20%) 선택, 저개발 도시 선택
-                        $query = "select city from city where nation='$general['nation']' and supply='1'";
+                        $query = "select city from city where nation='{$general['nation']}' and supply='1'";
                         $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                         $cityCount = MYDB_num_rows($result);
                         $citySelect = rand() % (round($cityCount/5) + 1);
 
-                        $query = "select city,(def+wall)/(def2+wall2) as dev from city where nation='$general['nation']' and supply='1' order by dev limit {$citySelect},1";
+                        $query = "select city,(def+wall)/(def2+wall2) as dev from city where nation='{$general['nation']}' and supply='1' order by dev limit {$citySelect},1";
                         $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                         $selCity = MYDB_fetch_array($result);
                     } else {
@@ -1662,11 +1662,11 @@ function processAI($connect, $no) {
 
                     if($general['city'] != $selCity['city']) {
                         //워프
-                        $query = "update general set city='$selCity['city']' where no='$general['no']'";
+                        $query = "update general set city='{$selCity['city']}' where no='{$general['no']}'";
                         MYDB_query($query, $connect) or Error("processAI18 ".MYDB_error($connect),"");
 
                         $command = EncodeCommand(0, 0, 0, 50);  //요양
-                        $query = "update general set turn0='$command' where no='$general['no']'";
+                        $query = "update general set turn0='$command' where no='{$general['no']}'";
                         MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
                         return;
                     } else {
@@ -1685,14 +1685,14 @@ function processAI($connect, $no) {
         SetDevelop($connect, $genType, $general['no'], $general['city'], $nation['tech']);
         return;
     case "00000000000011": //징병
-        $query = "select region from city where nation='$general['nation']' order by rand() limit 0,1";
+        $query = "select region from city where nation='{$general['nation']}' order by rand() limit 0,1";
         $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
         $selRegion = MYDB_fetch_array($result);
 
         $selCity['city'] = 0;
         // 90% 확률로 이민족 또는 특성병
         if(rand()%100 < 90) {
-            $query = "select city from city where nation='$general['nation']' and (level='4' or level='8') order by rand() limit 0,1";
+            $query = "select city from city where nation='{$general['nation']}' and (level='4' or level='8') order by rand() limit 0,1";
             $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
             $selCity = MYDB_fetch_array($result);
         }
@@ -1703,7 +1703,7 @@ function processAI($connect, $no) {
         SetCrew($connect, $general['no'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $selRegion['region'], $selCity['city'], $general[dex0], $general[dex10], $general[dex20], $general[dex30], $general[dex40]);
         return;
     default:
-        $query = "update general set turn0='$command' where no='$general['no']'";
+        $query = "update general set turn0='$command' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
         return;
     }
@@ -1747,7 +1747,7 @@ function Promotion($connect, $nation, $level) {
     MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
 
     //유저 후보 선택
-    $query = "select no from general where nation='$nation' and npc<2 and level=1 and belong>=3 and killturn>='$admin['killturn']' order by rand() limit 0,1";
+    $query = "select no from general where nation='$nation' and npc<2 and level=1 and belong>=3 and killturn>='{$admin['killturn']}' order by rand() limit 0,1";
     $result = MYDB_query($query, $connect) or Error("Promotion_00 ".MYDB_error($connect),"");
     $userCandidate = MYDB_fetch_array($result);
     // 유저수뇌 안함
@@ -1770,14 +1770,14 @@ function Promotion($connect, $nation, $level) {
             $query = "update general set level=1 where nation='$nation' and level=11";
             MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
             //유저 후보 있으면 임명
-            $query = "update general set level=11 where no='$userCandidate['no']'";
+            $query = "update general set level=11 where no='{$userCandidate['no']}'";
             MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
         } elseif($npcCandidate['no'] > 0) {
             //기존 참모 해임
             $query = "update general set level=1 where nation='$nation' and level=11";
             MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
             //NPC 후보 있으면 임명
-            $query = "update general set level=11 where no='$npcCandidate['no']'";
+            $query = "update general set level=11 where no='{$npcCandidate['no']}'";
             MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
         }
     } elseif($level11['npc'] >= 2 && $userCandidate['no'] > 0) {
@@ -1786,7 +1786,7 @@ function Promotion($connect, $nation, $level) {
         $query = "update general set level=1 where nation='$nation' and level=11";
         MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
         //유저 후보 있으면 임명
-        $query = "update general set level=11 where no='$userCandidate['no']'";
+        $query = "update general set level=11 where no='{$userCandidate['no']}'";
         MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
     }
 
@@ -1796,13 +1796,13 @@ function Promotion($connect, $nation, $level) {
         $query = "select no from general where nation='$nation' and level=1 order by power desc limit 0,1";
         $result = MYDB_query($query, $connect) or Error("Promotion_00 ".MYDB_error($connect),"");
         $level = MYDB_fetch_array($result);
-        $query = "update general set level={$i1} where no='$level['no']'";
+        $query = "update general set level={$i1} where no='{$level['no']}'";
         MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
         //문관임명
         $query = "select no from general where nation='$nation' and level=1 order by intel desc limit 0,1";
         $result = MYDB_query($query, $connect) or Error("Promotion_00 ".MYDB_error($connect),"");
         $level = MYDB_fetch_array($result);
-        $query = "update general set level={$i2} where no='$level['no']'";
+        $query = "update general set level={$i2} where no='{$level['no']}'";
         MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
     }
 }

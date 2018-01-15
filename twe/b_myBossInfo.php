@@ -8,7 +8,7 @@ increaseRefresh($connect, "인사부", 1);
 //훼섭 추방을 위해 갱신
 checkTurn($connect);
 
-$query = "select skin,no,nation,level from general where user_id='$_SESSION['p_id']'";
+$query = "select skin,no,nation,level from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -46,7 +46,7 @@ function out() {
 <?php
 $cityNames = CityNameArray();
 
-$query = "select nation,name,level,color,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set from nation where nation='$me['nation']'";
+$query = "select nation,name,level,color,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);   //국가정보
 
@@ -54,17 +54,17 @@ $lv = getNationChiefLevel($nation['level']);
 if($meLevel >= 5) { $btn = "submit"; }
 else { $btn = "hidden"; }
 
-$query = "select name,level,picture,imgsvr,belong from general where nation='$nation['nation']' and level>={$lv} order by level desc";
+$query = "select name,level,picture,imgsvr,belong from general where nation='{$nation['nation']}' and level>={$lv} order by level desc";
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 for($i=12; $i >= $lv; $i--) {
     $levels = MYDB_fetch_array($genresult);
     $level[$levels['level']] = $levels;
 }
 
-$query = "select name,picture,killnum from general where nation='$nation['nation']' order by killnum desc limit 5";   // 오호장군
+$query = "select name,picture,killnum from general where nation='{$nation['nation']}' order by killnum desc limit 5";   // 오호장군
 $tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-$query = "select name,picture,firenum from general where nation='$nation['nation']' order by firenum desc limit 7";   // 건안칠자
+$query = "select name,picture,firenum from general where nation='{$nation['nation']}' order by firenum desc limit 7";   // 건안칠자
 $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 echo "
@@ -140,7 +140,7 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
     echo "
             <select name=outlist size=1 style=color:white;background-color:black;>";
 
-    $query = "select no,name,level from general where nation='$me['nation']' and level!='12' and no!='$me['no']' order by npc,binary(name)";
+    $query = "select no,name,level from general where nation='{$me['nation']}' and level!='12' and no!='{$me['no']}' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -155,7 +155,7 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
             <input type=$btn name=btn value=추방 onclick='return out()'>";
 }
 
-$query = "select name,city from general where nation='$me['nation']' and level=12";
+$query = "select name,city from general where nation='{$me['nation']}' and level=12";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
 echo "
@@ -178,7 +178,7 @@ if($meLevel >= 5 && $nation['l11set'] == 0) {
     echo "
             <select name=genlist size=1 maxlength=15 style=color:white;background-color:black;>
                 <option value=0>____공석____</option>";
-    $query = "select no,name,level,city from general where nation='$me['nation']' and level!='12' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -198,7 +198,7 @@ if($meLevel >= 5 && $nation['l11set'] == 0) {
             <input type=hidden name=level value=11>
             <input type=$btn name=btn value=임명>";
 } else {
-    $query = "select name,city from general where nation='$me['nation']' and level='11'";
+    $query = "select name,city from general where nation='{$me['nation']}' and level='11'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
     echo "{$general['name']} 【{$cityNames[$general['city']]}】";
@@ -209,12 +209,12 @@ echo "
     </tr>
 ";
 
-$querys[10] = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
-$querys[9]  = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
-$querys[8]  = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
-$querys[7]  = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
-$querys[6]  = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
-$querys[5]  = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
+$querys[10] = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
+$querys[9]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
+$querys[8]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
+$querys[7]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
+$querys[6]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
+$querys[5]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
 
 for($i=10; $i >= $lv; $i--) {
     if($i % 2 == 0) { echo "<tr>"; }
@@ -249,7 +249,7 @@ for($i=10; $i >= $lv; $i--) {
             <input type=hidden name=level value={$i}>
             <input type=$btn name=btn value=임명>";
     } else {
-        $query = "select name,city from general where nation='$me['nation']' and level={$i}";
+        $query = "select name,city from general where nation='{$me['nation']}' and level={$i}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $general = MYDB_fetch_array($result);
         echo "{$general['name']} 【{$cityNames[$general['city']]}】";
@@ -273,7 +273,7 @@ if($meLevel >= 5) {
             <select name=citylist size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='$nation['nation']' and gen1set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='{$nation['nation']}' and gen1set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -299,7 +299,7 @@ if($meLevel >= 5) {
                 <option value=0>____공석____</option>
     ";
 
-    $query = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
@@ -327,7 +327,7 @@ if($meLevel >= 5) {
             <select name=citylist size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='$nation['nation']' and gen2set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='{$nation['nation']}' and gen2set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -353,7 +353,7 @@ if($meLevel >= 5) {
                 <option value=0>____공석____</option>
     ";
 
-    $query = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
@@ -381,7 +381,7 @@ if($meLevel >= 5) {
             <select name=citylist size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='$nation['nation']' and gen3set=0 order by region, level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='{$nation['nation']}' and gen3set=0 order by region, level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -407,7 +407,7 @@ if($meLevel >= 5) {
                 <option value=0>____공석____</option>
     ";
 
-    $query = "select no,name,level,city from general where nation='$me['nation']' and level!='12' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
@@ -449,7 +449,7 @@ $citylevel[6] = "중";
 $citylevel[7] = "대";
 $citylevel[8] = "특";
 
-$query = "select city,name,gen1,gen2,gen3,level,region,gen1set,gen2set,gen3set from city where nation='$nation['nation']' order by region,level desc,binary(name)"; // 도시 이름 목록
+$query = "select city,name,gen1,gen2,gen3,level,region,gen1set,gen2set,gen3set from city where nation='{$nation['nation']}' order by region,level desc,binary(name)"; // 도시 이름 목록
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $citycount = MYDB_num_rows($cityresult);
 

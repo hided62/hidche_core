@@ -9,7 +9,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
+$query = "select userlevel from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -55,11 +55,11 @@ $count = MYDB_num_rows($result);
 for($i=0; $i < $count; $i++) {
     $nation = MYDB_fetch_array($result);
 
-    $query = "select city,nation from city where nation='$nation['nation']' order by rand() limit 0,1";
+    $query = "select city,nation from city where nation='{$nation['nation']}' order by rand() limit 0,1";
     $result2 = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
     $city = MYDB_fetch_array($result2);
 
-    $query = "update nation set capital='$city['city']' where nation='$nation['nation']'";
+    $query = "update nation set capital='{$city['city']}' where nation='{$nation['nation']}'";
     MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 }
 
@@ -88,7 +88,7 @@ for($i=0; $i < 7; $i++) {
 
     $nationNum[$i] = $nation['nation'];
 
-    $query = "update nation set scout=1,capital={$cap[$i]} where nation='$nation['nation']'";
+    $query = "update nation set scout=1,capital={$cap[$i]} where nation='{$nation['nation']}'";
     MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 
     //태수,군사,시중 해제
@@ -105,24 +105,24 @@ for($i=0; $i < 7; $i++) {
     $query = "update general set level=1 where no='{$city[gen3]}'";
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 
-    $query = "update city set nation='$nation['nation']',pop='1000000',agri=agri2,comm=comm2,secu=secu2,def=def2,wall=wall2,supply=1,gen1=0,gen2=0,gen3=0 where city='{$cap[$i]}'";
+    $query = "update city set nation='{$nation['nation']}',pop='1000000',agri=agri2,comm=comm2,secu=secu2,def=def2,wall=wall2,supply=1,gen1=0,gen2=0,gen3=0 where city='{$cap[$i]}'";
     MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 
-    $query = "select nation,level from nation where nation!='$nation['nation']'";
+    $query = "select nation,level from nation where nation!='{$nation['nation']}'";
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($k=0; $k < $count; $k++) {
         $your = MYDB_fetch_array($result);
         if($your['level'] > 0) {
-            $query = "insert into diplomacy (me, you, state, term) values ('$nation['nation']', '$your['nation']', '1', '1')";
+            $query = "insert into diplomacy (me, you, state, term) values ('{$nation['nation']}', '{$your['nation']}', '1', '1')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "insert into diplomacy (me, you, state, term) values ('$your['nation']', '$nation['nation']', '1', '1')";
+            $query = "insert into diplomacy (me, you, state, term) values ('{$your['nation']}', '{$nation['nation']}', '1', '1')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            $query = "insert into diplomacy (me, you, state, term) values ('$nation['nation']', '$your['nation']', '7', '999')";
+            $query = "insert into diplomacy (me, you, state, term) values ('{$nation['nation']}', '{$your['nation']}', '7', '999')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "insert into diplomacy (me, you, state, term) values ('$your['nation']', '$nation['nation']', '7', '999')";
+            $query = "insert into diplomacy (me, you, state, term) values ('{$your['nation']}', '{$nation['nation']}', '7', '999')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }

@@ -212,7 +212,7 @@ function getScenario($connect) {
 }
 
 function CheckBlock($connect) {
-    $query = "select block from general where user_id='$_SESSION['p_id']'";
+    $query = "select block from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
     return $me['block'];
@@ -1512,7 +1512,7 @@ function getTurn($connect, $general, $type, $font=1) {
                 $str[$i] = "하야";
                 break;
             case 46: //건국
-                $query = "select makenation from general where no='$general['no']'";
+                $query = "select makenation from general where no='{$general['no']}'";
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
@@ -1665,7 +1665,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $str[$i] = "【{$nation['name']}】에게 국고 {$third} 병량 {$fourth} 원조";
                 break;
             case 53: //통합제의
-                $query = "select makenation from general where level='$level' and nation='$nation['nation']'";
+                $query = "select makenation from general where level='$level' and nation='{$nation['nation']}'";
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
@@ -1858,14 +1858,14 @@ function CoreTurnTable() {
 function cityInfo($connect) {
     global $_basecolor, $_basecolor2, $images;
 
-    $query = "select no,city,skin from general where user_id='$_SESSION['p_id']'";
+    $query = "select no,city,skin from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
     // 도시 정보
     $city = getCity($connect, $me['city']);
 
-    $query = "select name,color from nation where nation='$city['nation']'";
+    $query = "select name,color from nation where nation='{$city['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -1975,27 +1975,27 @@ function myNationInfo($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select skin,no,nation from general where user_id='$_SESSION['p_id']'";
+    $query = "select skin,no,nation from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,tricklimit,surlimit,tech,totaltech,level,type from nation where nation='$me['nation']'";
+    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,tricklimit,surlimit,tech,totaltech,level,type from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select COUNT(*) as cnt, SUM(pop) as totpop, SUM(pop2) as maxpop from city where nation='$nation['nation']'"; // 도시 이름 목록
+    $query = "select COUNT(*) as cnt, SUM(pop) as totpop, SUM(pop2) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select COUNT(*) as cnt, SUM(crew) as totcrew,SUM(leader)*100 as maxcrew from general where nation='$nation['nation']'";    // 장수 목록
+    $query = "select COUNT(*) as cnt, SUM(crew) as totcrew,SUM(leader)*100 as maxcrew from general where nation='{$nation['nation']}'";    // 장수 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select name from general where nation='$nation['nation']' and level='12'";
+    $query = "select name from general where nation='{$nation['nation']}' and level='12'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level12 = MYDB_fetch_array($genresult);
 
-    $query = "select name from general where nation='$nation['nation']' and level='11'";
+    $query = "select name from general where nation='{$nation['nation']}' and level='11'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level11 = MYDB_fetch_array($genresult);
 
@@ -2151,7 +2151,7 @@ function commandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where user_id='$_SESSION['p_id']'";
+    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2162,15 +2162,15 @@ function commandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($result);
 
-    $query = "select city from city where nation='$me['nation']'";
+    $query = "select city from city where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
-    $query = "select no from general where nation='$me['nation']'";
+    $query = "select no from general where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
-    $query = "select type,level from nation where nation='$me['nation']'";
+    $query = "select type,level from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -2385,19 +2385,19 @@ function CoreCommandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,city,level from general where user_id='$_SESSION['p_id']'";
+    $query = "select no,nation,city,level from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select level,colset from nation where nation='$me['nation']'";
+    $query = "select level,colset from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select no from general where nation='$me['nation']'";
+    $query = "select no from general where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
 
-    $query = "select supply from city where city='$me['city']'";
+    $query = "select supply from city where city='{$me['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
@@ -2477,11 +2477,11 @@ function CoreCommandTable($connect) {
 function commandButton($connect) {
     global $_basecolor, $_basecolor2;
 
-    $query = "select skin,no,nation,level,belong from general where user_id='$_SESSION['p_id']'";
+    $query = "select skin,no,nation,level,belong from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,color,secretlimit from nation where nation='$me['nation']'";
+    $query = "select nation,color,secretlimit from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -2535,7 +2535,7 @@ function commandButton($connect) {
 }
 
 function myInfo($connect) {
-    $query = "select no,skin from general where user_id='$_SESSION['p_id']'";
+    $query = "select no,skin from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2549,7 +2549,7 @@ function generalInfo($connect, $no, $skin) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select skin from general where user_id='$_SESSION['p_id']'";
+    $query = "select skin from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2557,7 +2557,7 @@ function generalInfo($connect, $no, $skin) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select nation,level,color from nation where nation='$general['nation']'";
+    $query = "select nation,level,color from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -2578,17 +2578,17 @@ function generalInfo($connect, $no, $skin) {
 
     $level = getLevel($general['level'], $nation['level']);
     if($general['level'] == 2)     {
-        $query = "select name from city where gen3='$general['no']'";
+        $query = "select name from city where gen3='{$general['no']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $city = MYDB_fetch_array($result);
         $level = $city['name']." ".$level;
     } elseif($general['level'] == 3) {
-        $query = "select name from city where gen2='$general['no']'";
+        $query = "select name from city where gen2='{$general['no']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $city = MYDB_fetch_array($result);
         $level = $city['name']." ".$level;
     } elseif($general['level'] == 4) {
-        $query = "select name from city where gen1='$general['no']'";
+        $query = "select name from city where gen1='{$general['no']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $city = MYDB_fetch_array($result);
         $level = $city['name']." ".$level;
@@ -2739,7 +2739,7 @@ function generalInfo($connect, $no, $skin) {
 }
 
 function myInfo2($connect) {
-    $query = "select no,skin from general where user_id='$_SESSION['p_id']'";
+    $query = "select no,skin from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -3067,7 +3067,7 @@ function MyHistory($connect, $no, $skin) {
 
 function addHistory($connect, $me, $history) {
     $me['history'] = "{$history}<br>{$me['history']}";
-    $query = "update general set history='$me['history']' where no='$me['no']'";
+    $query = "update general set history='{$me['history']}' where no='{$me['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     return $me;
@@ -3075,7 +3075,7 @@ function addHistory($connect, $me, $history) {
 
 function addNationHistory($connect, $nation, $history) {
     $nation['history'] = "{$nation['history']}{$history}<br>";
-    $query = "update nation set history='$nation['history']' where nation='$nation['nation']'";
+    $query = "update nation set history='{$nation['history']}' where nation='{$nation['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     return $nation;
@@ -3144,7 +3144,7 @@ function onlinegen($connect) {
 
         $onlinegen = $game['onlinegen'];
     } else {
-        $query = "select onlinegen from nation where nation='$_SESSION['p_nation']'";
+        $query = "select onlinegen from nation where nation='{$_SESSION['p_nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($result);
 
@@ -3161,11 +3161,11 @@ function onlineNation($connect) {
 }
 
 function nationMsg($connect) {
-    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
+    $query = "select no,nation from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select msg from nation where nation='$me['nation']'";
+    $query = "select msg from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -3173,11 +3173,11 @@ function nationMsg($connect) {
 }
 
 function genList($connect) {
-    $query = "select no,nation,level,msgindex,userlevel from general where user_id='$_SESSION['p_id']'";
+    $query = "select no,nation,level,msgindex,userlevel from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select msg{$me['msgindex']}_who as reply,msg{$me['msgindex']}_type as type from general where user_id='$_SESSION['p_id']'";
+    $query = "select msg{$me['msgindex']}_who as reply,msg{$me['msgindex']}_type as type from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $reply = MYDB_fetch_array($result);
     if($reply['type'] % 100 == 9) {
@@ -3192,7 +3192,7 @@ function genList($connect) {
         $you = MYDB_fetch_array($result);
     }
 
-    $query = "select nation,color,name from nation where nation='$me['nation']'";
+    $query = "select nation,color,name from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -3239,7 +3239,7 @@ function genList($connect) {
     echo "
     <optgroup label='개인메세지'>
     <optgroup label='재야'>";
-    $query = "select no,name,npc from general where nation=0 and user_id!='$_SESSION['p_id']' and npc<2 order by npc,binary(name)";
+    $query = "select no,name,npc from general where nation=0 and user_id!='{$_SESSION['p_id']}' and npc<2 order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
     for($i=0; $i < $gencount; $i++) {
@@ -3261,7 +3261,7 @@ function genList($connect) {
         echo "
     <optgroup label='【{$nation['name']}】' style=color:".newColor($nation['color']).";background-color:{$nation['color']};>";
 
-        $query = "select no,name,npc,level from general where nation='$nation['nation']' and user_id!='$_SESSION['p_id']' and npc<2 order by npc,binary(name)";
+        $query = "select no,name,npc,level from general where nation='{$nation['nation']}' and user_id!='{$_SESSION['p_id']}' and npc<2 order by npc,binary(name)";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
         for($j=0; $j < $gencount; $j++) {
@@ -3292,7 +3292,7 @@ function MsgMe($connect, $bg) {
         msg0_type,msg1_type,msg2_type,msg3_type,msg4_type,msg5_type,msg6_type,msg7_type,msg8_type,msg9_type,
         msg0_who,msg1_who,msg2_who,msg3_who,msg4_who,msg5_who,msg6_who,msg7_who,msg8_who,msg9_who,
         msg0_when,msg1_when,msg2_when,msg3_when,msg4_when,msg5_when,msg6_when,msg7_when,msg8_when,msg9_when
-        from general where user_id='$_SESSION['p_id']'";
+        from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -3305,11 +3305,11 @@ function MsgMe($connect, $bg) {
 }
 
 function MsgDip($connect, $bg) {
-    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
+    $query = "select no,nation from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select dip0,dip1,dip2,dip3,dip4,dip0_who,dip1_who,dip2_who,dip3_who,dip4_who,dip0_when,dip1_when,dip2_when,dip3_when,dip4_when,dip0_type,dip1_type,dip2_type,dip3_type,dip4_type from nation where nation='$me['nation']'";
+    $query = "select dip0,dip1,dip2,dip3,dip4,dip0_who,dip1_who,dip2_who,dip3_who,dip4_who,dip0_when,dip1_when,dip2_when,dip3_when,dip4_when,dip0_type,dip1_type,dip2_type,dip3_type,dip4_type from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -3323,7 +3323,7 @@ function MsgDip($connect, $bg) {
 // type : xx,xx(불가침기간,타입)
 // who : xxxx,xxxx(발신인, 수신인)
 function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
-    $query = "select skin,no,nation,name,picture,level from general where user_id='$_SESSION['p_id']'";
+    $query = "select skin,no,nation,name,picture,level from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -3343,7 +3343,7 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
         $sndrnation['name'] = '재야';
         $sndrnation['color'] = 'FFFFFF';
     } else {
-        $query = "select name,color from nation where nation='$sndr['nation']'";
+        $query = "select name,color from nation where nation='{$sndr['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $sndrnation = MYDB_fetch_array($result);
     }
@@ -3354,7 +3354,7 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
     }
 
     if($category == 6) {
-        $query = "select reserved from diplomacy where me='$sndr['nation']' and you='$me['nation']'";
+        $query = "select reserved from diplomacy where me='{$sndr['nation']}' and you='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $dip = MYDB_fetch_array($result);
 
@@ -3374,7 +3374,7 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
             $rcvrnation['name'] = '재야';
             $rcvrnation['color'] = 'FFFFFF';
         } else {
-            $query = "select name,color from nation where nation='$rcvr['nation']'";
+            $query = "select name,color from nation where nation='{$rcvr['nation']}'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $rcvrnation = MYDB_fetch_array($result);
         }
@@ -4246,7 +4246,7 @@ function addAge($connect) {
         for($i=0; $i < $gencount; $i++) {
             $general = MYDB_fetch_array($result);
             $special = getSpecial($connect, $general['leader'], $general['power'], $general['intel']);
-            $query = "update general set special='$special' where no='$general['no']'";
+            $query = "update general set special='$special' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special)."</></b>】(을)를 익혔습니다!";
@@ -4262,7 +4262,7 @@ function addAge($connect) {
             $general = MYDB_fetch_array($result);
             $special2 = getSpecial2($connect, $general['leader'], $general['power'], $general['intel'], 0, $general[dex0], $general[dex10], $general[dex20], $general[dex30], $general[dex40]);
 
-            $query = "update general set special2='$special2' where no='$general['no']'";
+            $query = "update general set special2='$special2' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special2)."</></b>】(을)를 익혔습니다!";
@@ -4488,7 +4488,7 @@ function preUpdateMonthly($connect) {
     for($i=0; $i < $cityCount; $i++) {
         $city = MYDB_fetch_array($result);
         //병 훈 사 5%감소
-        $query = "update general set crew=crew*0.95,atmos=atmos*0.95,train=train*0.95 where city='$city['city']' and nation='$city['nation']'";
+        $query = "update general set crew=crew*0.95,atmos=atmos*0.95,train=train*0.95 where city='{$city['city']}' and nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     //민심30이하 공백지 처리
@@ -4520,10 +4520,10 @@ function preUpdateMonthly($connect) {
         $general = MYDB_fetch_array($result);
 
         // 주민으로 돌아감
-        $query = "update city set pop=pop+'$general['crew']' where city='$general['city']'";
+        $query = "update city set pop=pop+'{$general['crew']}' where city='{$general['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "update general set crew=0,rice=0 where no='$general['no']'";
+        $query = "update general set crew=0,rice=0 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[0] = "<C>●</>군량이 모자라 병사들이 <R>소집해제</>되었습니다!";
@@ -4607,7 +4607,7 @@ function preUpdateMonthly($connect) {
             if($k >= count($citys)) { break; }
             if($citys[$k-1]%10 != 0) { $spy .= "|"; }
         }
-        $query = "update nation set spy='$spy' where nation='$nation['nation']'";
+        $query = "update nation set spy='$spy' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     
@@ -4672,7 +4672,7 @@ group by A.nation
 
         //약간의 랜덤치 부여 (95% ~ 105%)
         $nation['power'] = round($nation['power'] * (rand()%101 + 950) / 1000);
-        $query = "update nation set power='$nation['power']',gennum2='$nation['gennum']',chemi='$nation['chemi']' where nation='$nation['nation']'";
+        $query = "update nation set power='{$nation['power']}',gennum2='{$nation['gennum']}',chemi='{$nation['chemi']}' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
@@ -4688,7 +4688,7 @@ group by A.nation
         $term = round($dip['dead'] / 100 / $genCount) + 1;
         if($dip['term'] > $term) { $term = $dip['term']; }
         if($term > 13) { $term = 13; }
-        $query = "update diplomacy set term='{$term}' where (me='$dip['me']' and you='$dip['you']')";
+        $query = "update diplomacy set term='{$term}' where (me='{$dip['me']}' and you='{$dip['you']}')";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
@@ -4698,7 +4698,7 @@ group by A.nation
     $dipCount = MYDB_num_rows($result);
     for($i=0; $i < $dipCount; $i++) {
         $dip = MYDB_fetch_array($result);
-        $query = "select name from nation where nation='$dip['me']' or nation='$dip['you']'";
+        $query = "select name from nation where nation='{$dip['me']}' or nation='{$dip['you']}'";
         $nationResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($nationResult);
         $name1 = $nation['name'];
@@ -4715,7 +4715,7 @@ group by A.nation
 
         //양측 기간 모두 0이 되는 상황이면 휴전
         if($dip[term1] <= 1 && $dip[term2] <= 1) {
-            $query = "select name from nation where nation='$dip['me']' or nation='$dip['you']'";
+            $query = "select name from nation where nation='{$dip['me']}' or nation='{$dip['you']}'";
             $nationResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $nation = MYDB_fetch_array($nationResult);
             $name1 = $nation['name'];
@@ -4723,7 +4723,7 @@ group by A.nation
             $name2 = $nation['name'];
             $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<R><b>【휴전】</b></><D><b>$name1</b></>(와)과 <D><b>$name2</b></>(이)가 <S>휴전</>합니다.";
             //기한 되면 휴전으로
-            $query = "update diplomacy set state='2',term='0' where (me='$dip['me']' and you='$dip['you']') or (me='$dip['you']' and you='$dip['me']')";
+            $query = "update diplomacy set state='2',term='0' where (me='{$dip['me']}' and you='{$dip['you']}') or (me='{$dip['you']}' and you='{$dip['me']}')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
@@ -4792,7 +4792,7 @@ function checkWander($connect) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        $query = "select no,name,nation,level,history,turntime from general where nation='$nation['nation']' and level=12";
+        $query = "select no,name,nation,level,history,turntime from general where nation='{$nation['nation']}' and level=12";
         $kingResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $king = MYDB_fetch_array($kingResult);
 
@@ -4816,32 +4816,32 @@ function checkMerge($connect) {
         $dip = MYDB_fetch_array($dipresult);
 
         // 아국군주
-        $query = "select no,name,history,nation from general where nation='$dip['me']' and level='12'";
+        $query = "select no,name,history,nation from general where nation='{$dip['me']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $me = MYDB_fetch_array($result);
         // 상대군주
-        $query = "select no,name,history,nation,makenation from general where nation='$dip['you']' and level='12'";
+        $query = "select no,name,history,nation,makenation from general where nation='{$dip['you']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
         // 모국
-        $query = "select nation,name,surlimit,history,totaltech from nation where nation='$you['nation']'";
+        $query = "select nation,name,surlimit,history,totaltech from nation where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $younation = MYDB_fetch_array($result);
         // 아국
-        $query = "select nation,name,gold,rice,surlimit,totaltech from nation where nation='$me['nation']'";
+        $query = "select nation,name,gold,rice,surlimit,totaltech from nation where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $mynation = MYDB_fetch_array($result);
         //양국 NPC수
-        $query = "select no from general where nation='$you['nation']' and npc>=2";
+        $query = "select no from general where nation='{$you['nation']}' and npc>=2";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount = MYDB_num_rows($result);
         //양국 NPC수
-        $query = "select no from general where nation='$me['nation']' and npc>=2";
+        $query = "select no from general where nation='{$me['nation']}' and npc>=2";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount2 = MYDB_num_rows($result);
 
         //피항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='$you['nation']'";
+        $query = "select no,name,nation,history from general where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>$mynation['name']</b></>(와)과 통합에 성공했습니다.";
@@ -4851,7 +4851,7 @@ function checkMerge($connect) {
             $gen = addHistory($connect, $gen, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$mynation['name']</b></>과 <D><b>$you['makenation']</b></>로 통합에 성공");
         }
         //항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='$me['nation']'";
+        $query = "select no,name,nation,history from general where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount2 = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>$younation['name']</b></>(와)과 통합에 성공했습니다.";
@@ -4870,28 +4870,28 @@ function checkMerge($connect) {
         $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
         $newTech = round($newTotalTech / $newGenCount);
         // 자금 통합, 외교제한 5년, 기술유지
-        $query = "update nation set name='$you['makenation']',gold=gold+'$mynation['gold']',rice=rice+'$mynation['rice']',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='$younation['nation']'";
+        $query = "update nation set name='{$you['makenation']}',gold=gold+'{$mynation['gold']}',rice=rice+'{$mynation['rice']}',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='{$younation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //국가 삭제
-        $query = "delete from nation where nation='$me['nation']'";
+        $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 도시들 상대국 소속으로
-        $query = "update city set nation='$you['nation']',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='$me['nation']'";
+        $query = "update city set nation='{$you['nation']}',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 장수들 일반으로 하고 상대국 소속으로, 수도로 이동
-        $query = "update general set belong=1,level=1,nation='$you['nation']' where nation='$me['nation']'";
+        $query = "update general set belong=1,level=1,nation='{$you['nation']}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 공헌도0.9, 명성0.9
-        $query = "update general set dedication=dedication*0.9,experience=experience*0.9 where nation='$you['nation']'";
+        $query = "update general set dedication=dedication*0.9,experience=experience*0.9 where nation='{$you['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 부대도 모두 국가 소속 변경
-        $query = "update troop set nation='$you['nation']' where nation='$me['nation']'";
+        $query = "update troop set nation='{$you['nation']}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 통합국 모든 도시 5% 감소
-        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='$you['nation']'";
+        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='{$you['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 외교 삭제
-        $query = "delete from diplomacy where me='$me['nation']' or you='$me['nation']'";
+        $query = "delete from diplomacy where me='{$me['nation']}' or you='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // NPC들 일부 하야 (양국중 큰쪽 장수수의 90~110%만큼)
@@ -4902,7 +4902,7 @@ function checkMerge($connect) {
             $resignCount = round($npccount2*(rand()%21+90)/100);
         }
         $resignCommand = EncodeCommand(0, 0, 0, 45); //하야
-        $query = "update general set turn0='$resignCommand' where nation='$you['nation']' and npc>=2 order by rand() limit {$resignCount}";
+        $query = "update general set turn0='$resignCommand' where nation='{$you['nation']}' and npc>=2 order by rand() limit {$resignCount}";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         pushGenLog($me, $mylog);
@@ -4927,32 +4927,32 @@ function checkSurrender($connect) {
         $dip = MYDB_fetch_array($dipresult);
 
         // 아국군주
-        $query = "select no,name,history,nation from general where nation='$dip['me']' and level='12'";
+        $query = "select no,name,history,nation from general where nation='{$dip['me']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $me = MYDB_fetch_array($result);
         // 상대군주
-        $query = "select no,name,history,nation,makenation from general where nation='$dip['you']' and level='12'";
+        $query = "select no,name,history,nation,makenation from general where nation='{$dip['you']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
         // 모국
-        $query = "select nation,name,surlimit,history,totaltech from nation where nation='$you['nation']'";
+        $query = "select nation,name,surlimit,history,totaltech from nation where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $younation = MYDB_fetch_array($result);
         // 아국
-        $query = "select nation,name,gold,rice,surlimit,totaltech from nation where nation='$me['nation']'";
+        $query = "select nation,name,gold,rice,surlimit,totaltech from nation where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $mynation = MYDB_fetch_array($result);
         //양국 NPC수
-        $query = "select no from general where nation='$you['nation']' and npc>=2";
+        $query = "select no from general where nation='{$you['nation']}' and npc>=2";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount = MYDB_num_rows($result);
         //양국 NPC수
-        $query = "select no from general where nation='$me['nation']' and npc>=2";
+        $query = "select no from general where nation='{$me['nation']}' and npc>=2";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount2 = MYDB_num_rows($result);
 
         //피항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='$you['nation']'";
+        $query = "select no,name,nation,history from general where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>$mynation['name']</b></> 합병에 성공했습니다.";
@@ -4962,7 +4962,7 @@ function checkSurrender($connect) {
             $gen = addHistory($connect, $gen, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$mynation['name']</b></> 합병에 성공");
         }
         //항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='$me['nation']'";
+        $query = "select no,name,nation,history from general where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount2 = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>$younation['name']</b></>(으)로 항복하여 수도로 이동합니다.";
@@ -4981,35 +4981,35 @@ function checkSurrender($connect) {
         $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
         $newTech = round($newTotalTech / $newGenCount);
         // 자금 통합, 외교제한 5년, 기술유지
-        $query = "update nation set gold=gold+'$mynation['gold']',rice=rice+'$mynation['rice']',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='$younation['nation']'";
+        $query = "update nation set gold=gold+'{$mynation['gold']}',rice=rice+'{$mynation['rice']}',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='{$younation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //합병 당한국 모든 도시 10%감소
-        $query = "update city set pop=pop*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,rate=rate*0.9,def=def*0.9,wall=wall*0.9 where nation='$me['nation']'";
+        $query = "update city set pop=pop*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,rate=rate*0.9,def=def*0.9,wall=wall*0.9 where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //합병 시도국 모든 도시 5%감소
-        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='$you['nation']'";
+        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='{$you['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //국가 삭제
-        $query = "delete from nation where nation='$me['nation']'";
+        $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 군주가 있는 위치 구함
-        $query = "select city from general where nation='$you['nation']' and level='12'";
+        $query = "select city from general where nation='{$you['nation']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $king = MYDB_fetch_array($result);
         // 아국 모든 도시들 상대국 소속으로
-        $query = "update city set nation='$you['nation']',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='$me['nation']'";
+        $query = "update city set nation='{$you['nation']}',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 제의국 모든 장수들 공헌도0.95, 명성0.95
-        $query = "update general set dedication=dedication*0.95,experience=experience*0.95 where nation='$you['nation']'";
+        $query = "update general set dedication=dedication*0.95,experience=experience*0.95 where nation='{$you['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 장수들 일반으로 하고 상대국 소속으로, 수도로 이동, 공헌도1.1, 명성0.9
-        $query = "update general set belong=1,level=1,nation='$you['nation']',city='$king['city']',dedication=dedication*1.1,experience=experience*0.9 where nation='$me['nation']'";
+        $query = "update general set belong=1,level=1,nation='{$you['nation']}',city='{$king['city']}',dedication=dedication*1.1,experience=experience*0.9 where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 부대도 모두 국가 소속 변경
-        $query = "update troop set nation='$you['nation']' where nation='$me['nation']'";
+        $query = "update troop set nation='{$you['nation']}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 외교 삭제
-        $query = "delete from diplomacy where me='$me['nation']' or you='$me['nation']'";
+        $query = "delete from diplomacy where me='{$me['nation']}' or you='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // NPC들 일부 하야 (양국중 큰쪽 장수수의 90~110%만큼)
@@ -5020,7 +5020,7 @@ function checkSurrender($connect) {
             $resignCount = round($npccount2*(rand()%21+90)/100);
         }
         $resignCommand = EncodeCommand(0, 0, 0, 45); //하야
-        $query = "update general set turn0='$resignCommand' where nation='$you['nation']' and npc>=2 order by rand() limit {$resignCount}";
+        $query = "update general set turn0='$resignCommand' where nation='{$you['nation']}' and npc>=2 order by rand() limit {$resignCount}";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         pushGenLog($me, $mylog);
@@ -5044,11 +5044,11 @@ function updateNationState($connect) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($nationresult);
 
-        $query = "select city,level,secu from city where nation='$nation['nation']' and level>=4";
+        $query = "select city,level,secu from city where nation='{$nation['nation']}' and level>=4";
         $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $citycount = MYDB_num_rows($cityresult);
 
-        $query = "select no from general where nation='$nation['nation']'";
+        $query = "select no from general where nation='{$nation['nation']}'";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
 
@@ -5095,14 +5095,14 @@ function updateNationState($connect) {
             }
 
             //작위 상승
-            $query = "update nation set level='$nation['level']' where nation='$nation['nation']'";
+            $query = "update nation set level='{$nation['level']}' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         $gennum = $gencount;
         if($gencount < 10) $gencount = 10;
         //기술 및 변경횟수 업데이트
         $myset = $nation['level'] + 1;
-        $query = "update nation set tech=totaltech/'$gencount',gennum='$gennum',myset='$myset' where nation='$nation['nation']'";
+        $query = "update nation set tech=totaltech/'$gencount',gennum='$gennum',myset='$myset' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     pushHistory($connect, $history);
@@ -5224,7 +5224,7 @@ function checkStatistic($connect) {
             gen_count, personal_hist, special_hist, power_hist,
             crewtype, etc
         ) values (
-            '$admin['year']', '$admin['month']',
+            '{$admin['year']}', '{$admin['month']}',
             '$nationCount', '$nationName', '$nationHist',
             '$generalCountStr', '$personalHist', '$specialHist', '$power_hist',
             '$crewtype', '$etc'
@@ -5244,7 +5244,7 @@ function checkEmperior($connect) {
     if($count == 1 && $admin['isUnited'] == 0) {
         $nation = MYDB_fetch_array($result);
 
-        $query = "select city from city where nation='$nation['nation']'";
+        $query = "select city from city where nation='{$nation['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $count = MYDB_num_rows($result);
 
@@ -5267,50 +5267,50 @@ function checkEmperior($connect) {
                 CheckHall($connect, $general['no']);
             }
 
-            $query = "select nation,name,type,color,gold,rice,power,gennum,history from nation where nation='$nation['nation']'";
+            $query = "select nation,name,type,color,gold,rice,power,gennum,history from nation where nation='{$nation['nation']}'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $nation = MYDB_fetch_array($result);
 
-            $query = "select SUM(pop) as totalpop,SUM(pop2) as maxpop from city where nation='$nation['nation']'"; // 도시 이름 목록
+            $query = "select SUM(pop) as totalpop,SUM(pop2) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
             $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $city = MYDB_fetch_array($cityresult);
             $pop = "{$city['totalpop']} / {$city['maxpop']}";
             $poprate = round($city['totalpop']/$city['maxpop']*100, 2);
             $poprate .= " %";
 
-            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='12'";
+            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='12'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level12 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='11'";
+            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='11'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level11 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='10'";
+            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='10'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level10 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='9'";
+            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='9'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level9 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='8'";
+            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='8'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level8 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='7'";
+            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='7'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level7 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='6'";
+            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='6'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level6 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='5'";
+            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='5'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level5 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,killnum from general where nation='$nation['nation']' order by killnum desc limit 5";   // 오호장군
+            $query = "select name,picture,killnum from general where nation='{$nation['nation']}' order by killnum desc limit 5";   // 오호장군
             $tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $tigernum = MYDB_num_rows($tigerresult);
             for($i=0; $i < $tigernum; $i++) {
@@ -5320,7 +5320,7 @@ function checkEmperior($connect) {
                 }
             }
 
-            $query = "select name,picture,firenum from general where nation='$nation['nation']' order by firenum desc limit 7";   // 건안칠자
+            $query = "select name,picture,firenum from general where nation='{$nation['nation']}' order by firenum desc limit 7";   // 건안칠자
             $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $eaglenum = MYDB_num_rows($eagleresult);
             for($i=0; $i < $eaglenum; $i++) {
@@ -5332,7 +5332,7 @@ function checkEmperior($connect) {
 
             $log[0] = "<C>●</>$admin['year']년 $admin['month']월: <D><b>$nation['name']</b></>(이)가 전토를 통일하였습니다.";
 
-            $query = "select no,name from general where nation='$nation['nation']' order by dedication desc";
+            $query = "select no,name from general where nation='{$nation['nation']}' order by dedication desc";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gencount = MYDB_num_rows($result);
             for($i=0; $i < $gencount; $i++) {
@@ -5355,7 +5355,7 @@ function checkEmperior($connect) {
             $statNC = "1 / {$stat['nc']}";
             $statGC = "{$gencount['cnt']} / {$stat['gc']}";
 
-            $query = "select nation_count,nation_name,nation_hist from statistic where nation_count='$stat['nc']' limit 0,1";
+            $query = "select nation_count,nation_name,nation_hist from statistic where nation_count='{$stat['nc']}' limit 0,1";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $statNation = MYDB_fetch_array($result);
 
@@ -5377,15 +5377,15 @@ function checkEmperior($connect) {
                     tiger, eagle, gen, history
                 ) values (
                     '-',
-                    '$statNC', '$statNation['nation_name']', '$statNation['nation_hist']',
-                    '$statGC', '$statGeneral['personal_hist']', '$statGeneral['special_hist']',
-                    '$nation['name']', '$nation['type']', '$nation['color']', '$admin['year']', '$admin['month']', '$nation['power']', '$nation['gennum']', '$allcount',
-                    '$pop', '$poprate', '$nation['gold']', '$nation['rice']',
-                    '$level12['name']', '$level12['picture']', '$level11['name']', '$level11['picture']',
-                    '$level10['name']', '$level10['picture']', '$level9['name']', '$level9['picture']',
-                    '$level8['name']', '$level8['picture']', '$level7['name']', '$level7['picture']',
-                    '$level6['name']', '$level6['picture']', '$level5['name']', '$level5['picture']',
-                    '$tigerstr', '$eaglestr', '$gen', '$nation['history']'
+                    '$statNC', '{$statNation['nation_name']}', '{$statNation['nation_hist']}',
+                    '$statGC', '{$statGeneral['personal_hist']}', '{$statGeneral['special_hist']}',
+                    '{$nation['name']}', '{$nation['type']}', '{$nation['color']}', '{$admin['year']}', '{$admin['month']}', '{$nation['power']}', '{$nation['gennum']}', '$allcount',
+                    '$pop', '$poprate', '{$nation['gold']}', '{$nation['rice']}',
+                    '{$level12['name']}', '{$level12['picture']}', '{$level11['name']}', '{$level11['picture']}',
+                    '{$level10['name']}', '{$level10['picture']}', '{$level9['name']}', '{$level9['picture']}',
+                    '{$level8['name']}', '{$level8['picture']}', '{$level7['name']}', '{$level7['picture']}',
+                    '{$level6['name']}', '{$level6['picture']}', '{$level5['name']}', '{$level5['picture']}',
+                    '$tigerstr', '$eaglestr', '$gen', '{$nation['history']}'
                 )";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -5415,7 +5415,7 @@ function PreprocessCommand($connect, $no) {
             pushGenLog($general, $log);
         }
             
-        $query = "select no,name,injury from general where city='$general['city']' and injury>10 order by rand()";
+        $query = "select no,name,injury from general where city='{$general['city']}' and injury>10 order by rand()";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $patientCount = MYDB_num_rows($result);
     
@@ -5428,7 +5428,7 @@ function PreprocessCommand($connect, $no) {
                 $patient = MYDB_fetch_array($result);
     
                 //부상 치료
-                $query = "update general set injury=0 where no='$patient['no']'";
+                $query = "update general set injury=0 where no='{$patient['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     
                 $log[0] = "<C>●</><Y>{$general['name']}</>(이)가 <C>의술</>로써 치료해줍니다!";
@@ -5491,24 +5491,24 @@ function processCommand($connect, $no) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:현재 멀티, 또는 비매너로 인한<R>블럭</> 대상자입니다. <1>$date</>";
         pushGenLog($general, $log);
 
-        $query = "update general set recturn='',resturn='BLOCK_2',myset=3,con=0,killturn=killturn-1 where no='$general['no']'";
+        $query = "update general set recturn='',resturn='BLOCK_2',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } elseif($general['block'] == 3) {
         $date = substr($general['turntime'],11,5);
         $log[count($log)] = "<C>●</>{$admin['month']}월:현재 악성유저로 분류되어 <R>블럭, 발언권 무효</> 대상자입니다. <1>$date</>";
         pushGenLog($general, $log);
 
-        $query = "update general set recturn='',resturn='BLOCK_3',myset=3,con=0,killturn=killturn-1 where no='$general['no']'";
+        $query = "update general set recturn='',resturn='BLOCK_3',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } else {
         if($general['level'] >= 5 && $general['level'] <= 12) {
-            $query = "select l{$general['level']}turn0,l{$general['level']}term from nation where nation='$general['nation']'";
+            $query = "select l{$general['level']}turn0,l{$general['level']}term from nation where nation='{$general['nation']}'";
             $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $core = MYDB_fetch_array($coreresult);
             $corecommand = DecodeCommand($core["l{$general['level']}turn0"]);
             //연속턴 아닌경우 텀 리셋
             if($core["l{$general['level']}term"]%100 != $corecommand[0]) {
-                $query = "update nation set l{$general['level']}term=0 where nation='$general['nation']'";
+                $query = "update nation set l{$general['level']}term=0 where nation='{$general['nation']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
 
@@ -5548,18 +5548,18 @@ function processCommand($connect, $no) {
         $command = DecodeCommand($general[turn0]);
         //삭턴 처리
         if($general['npc'] >= 2 || $general['killturn'] > $admin['killturn']) {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='$general['no']'";
+            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } elseif(floor($command[0]) == 0 && $general['userlevel'] < 5) {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='$general['no']'";
+            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn='$admin['killturn']' where no='$general['no']'";
+            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn='{$admin['killturn']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         //연속턴 아닌경우 텀 리셋
         if($general['term']%100 != $command[0]) {
-            $query = "update general set term=0 where no='$general['no']'";
+            $query = "update general set term=0 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         //턴 처리
@@ -5632,7 +5632,7 @@ update general set
 turn0=turn1,turn1=turn2,turn2=turn3,turn3=turn4,turn4=turn5,turn5=turn6,turn6=turn7,turn7=turn8,turn8=turn9,
 turn9=turn10,turn10=turn11,turn11=turn12,turn12=turn13,turn13=turn14,turn14=turn15,turn15=turn16,turn16=turn17,
 turn17=turn18,turn18=turn19,turn19=turn20,turn20=turn21,turn21=turn22,turn22=turn23,turn23='00000000000000'
-where no='$general['no']'
+where no='{$general['no']}'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
@@ -5646,7 +5646,7 @@ update nation set
 {$turn}6={$turn}7,{$turn}7={$turn}8,
 {$turn}8={$turn}9,{$turn}9={$turn}10,
 {$turn}10={$turn}11,{$turn}11='00000000000099'
-where nation='$general['nation']'
+where nation='{$general['nation']}'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
@@ -5685,7 +5685,7 @@ update nation set
 {$turn}5={$turn}4,{$turn}4={$turn}3,
 {$turn}3={$turn}2,{$turn}2={$turn}1,
 {$turn}1={$turn}0,{$turn}0='00000000000099'
-where nation='$general['nation']'
+where nation='{$general['nation']}'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
@@ -5708,7 +5708,7 @@ function updateTurntime($connect, $no) {
             $pw = md5("18071807");
             $general['killturn'] = ($general['deadyear'] - $admin['year']) * 12;
             $general['npc'] = $general['npc_org'];
-            $query = "update general set user_id='$npcid',password='$pw',npc='$general['npc']',killturn='$general['killturn']',mode=2 where no='$no'";
+            $query = "update general set user_id='$npcid',password='$pw',npc='{$general['npc']}',killturn='{$general['killturn']}',mode=2 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general[name2]</>(이)가 <Y>$general['name']</>의 육체에서 <S>유체이탈</>합니다!";
@@ -5724,41 +5724,41 @@ function updateTurntime($connect, $no) {
             }
 
             //도시의 태수, 군사, 시중직도 초기화
-            $query = "update city set gen1='0' where gen1='$general['no']'";
+            $query = "update city set gen1='0' where gen1='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update city set gen2='0' where gen2='$general['no']'";
+            $query = "update city set gen2='0' where gen2='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update city set gen3='0' where gen3='$general['no']'";
+            $query = "update city set gen3='0' where gen3='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             // 부대 처리
-            $query = "select no from troop where troop='$general['troop']'";
+            $query = "select no from troop where troop='{$general['troop']}'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $troop = MYDB_fetch_array($result);
 
             //부대장일 경우
             if($troop['no'] == $general['no']) {
                 // 모두 탈퇴
-                $query = "update general set troop='0' where troop='$general['troop']'";
+                $query = "update general set troop='0' where troop='{$general['troop']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 // 부대 삭제
-                $query = "delete from troop where troop='$general['troop']'";
+                $query = "delete from troop where troop='{$general['troop']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
-                $query = "update general set troop='0' where no='$general['no']'";
+                $query = "update general set troop='0' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
             // 장수 삭제
-            $query = "delete from general where no='$general['no']'";
+            $query = "delete from general where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //기존 국가 기술력 그대로
-            $query = "select no from general where nation='$general['nation']'";
+            $query = "select no from general where nation='{$general['nation']}'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gencount = MYDB_num_rows($result);
             $gennum = $gencount;
             if($gencount < 10) $gencount = 10;
 
-            $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='$general['nation']'";
+            $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$general['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             // 병, 요절, 객사, 번개, 사채, 일확천금, 호랑이, 곰, 수영, 처형, 발견
@@ -5891,7 +5891,7 @@ function CheckHall($connect, $no) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select nation,name,color from nation where nation='$general['nation']'";
+    $query = "select nation,name,color from nation where nation='{$general['nation']}'";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($nationresult);
 
@@ -5928,10 +5928,10 @@ function CheckHall($connect, $no) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $ranker = MYDB_fetch_array($result);
 
-            $query = "update hall set name='$ranker['name']', nation='$ranker['nation']', data='$ranker['data']', color='$ranker['color']', picture='$ranker['picture']' where type='$k' and rank='$j'";
+            $query = "update hall set name='{$ranker['name']}', nation='{$ranker['nation']}', data='{$ranker['data']}', color='{$ranker['color']}', picture='{$ranker['picture']}' where type='$k' and rank='$j'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
-        $query = "update hall set name='$general['name']', nation='{$nation['name']}', data='{$general[$type[$k]]}', color='{$nation['color']}', picture='$general['picture']' where type='$k' and rank='$rank'";
+        $query = "update hall set name='{$general['name']}', nation='{$nation['name']}', data='{$general[$type[$k]]}', color='{$nation['color']}', picture='{$general['picture']}' where type='$k' and rank='$rank'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 }
@@ -6021,10 +6021,10 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             }
             $it = $item[rand() % count($item)];
 
-            $query = "update general set {$type}='$it' where no='$general['no']'";
+            $query = "update general set {$type}='$it' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $query = "select name from nation where nation='$general['nation']'";
+            $query = "select name from nation where nation='{$general['nation']}'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $nation = MYDB_fetch_array($result);
 
@@ -6102,41 +6102,41 @@ function checkAbility($connect, $general, $log) {
 
     $limit = $_upgradeLimit;
 
-    $query = "select no,leader,leader2,power,power2,intel,intel2 from general where no='$general['no']'";
+    $query = "select no,leader,leader2,power,power2,intel,intel2 from general where no='{$general['no']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
     if($general[leader2] < 0) {
-        $query = "update general set leader2='$limit'+leader2,leader=leader-1 where no='$general['no']'";
+        $query = "update general set leader2='$limit'+leader2,leader=leader-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><R>통솔</>이 <C>1</> 떨어졌습니다!";
     } elseif($general[leader2] >= $limit) {
-        $query = "update general set leader2=leader2-'$limit',leader=leader+1 where no='$general['no']'";
+        $query = "update general set leader2=leader2-'$limit',leader=leader+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><Y>통솔</>이 <C>1</> 올랐습니다!";
     }
 
     if($general[power2] < 0) {
-        $query = "update general set power2='$limit'+power2,power=power-1 where no='$general['no']'";
+        $query = "update general set power2='$limit'+power2,power=power-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><R>무력</>이 <C>1</> 떨어졌습니다!";
     } elseif($general[power2] >= $limit) {
-        $query = "update general set power2=power2-'$limit',power=power+1 where no='$general['no']'";
+        $query = "update general set power2=power2-'$limit',power=power+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><Y>무력</>이 <C>1</> 올랐습니다!";
     }
 
     if($general[intel2] < 0) {
-        $query = "update general set intel2='$limit'+intel2,intel=intel-1 where no='$general['no']'";
+        $query = "update general set intel2='$limit'+intel2,intel=intel-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><R>지력</>이 <C>1</> 떨어졌습니다!";
     } elseif($general[intel2] >= $limit) {
-        $query = "update general set intel2=intel2-'$limit',intel=intel+1 where no='$general['no']'";
+        $query = "update general set intel2=intel2-'$limit',intel=intel+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><Y>지력</>이 <C>1</> 올랐습니다!";
@@ -6148,7 +6148,7 @@ function checkAbility($connect, $general, $log) {
 function checkDedication($connect, $general, $log) {
     $dedlevel = getDedLevel($general['dedication']);
 
-    $query = "update general set dedlevel='$dedlevel' where no='$general['no']'";
+    $query = "update general set dedlevel='$dedlevel' where no='{$general['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 승급했다면
@@ -6165,7 +6165,7 @@ function checkDedication($connect, $general, $log) {
 function checkExperience($connect, $general, $log) {
     $explevel = getExpLevel($general['experience']);
 
-    $query = "update general set explevel='$explevel' where no='$general['no']'";
+    $query = "update general set explevel='$explevel' where no='{$general['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 승급했다면
@@ -6255,7 +6255,7 @@ function processGoldIncome($connect) {
         }
         $adminLog[count($adminLog)] = _String::Fill2($nation['name'],12," ")." // 세금 : "._String::Fill2($income,6," ")." // 세출 : "._String::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과금 : ".tab2($nation['gold'],6," ");
 
-        $query = "select no,name,nation from general where nation='$nation['nation']' and level>='9'";
+        $query = "select no,name,nation from general where nation='{$nation['nation']}' and level>='9'";
         $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $corecount = MYDB_num_rows($coreresult);
         $corelog[0] = "<C>●</>이번 수입은 금 <C>$income</>입니다.";
@@ -6264,10 +6264,10 @@ function processGoldIncome($connect) {
             pushGenLog($coregen, $corelog);
         }
 
-        $query = "update nation set gold='$nation['gold']' where nation='$nation['nation']'";
+        $query = "update nation set gold='{$nation['gold']}' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "select no,name,nation,dedication,gold from general where nation='$nation['nation']'";
+        $query = "select no,name,nation,dedication,gold from general where nation='{$nation['nation']}'";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
 
@@ -6277,7 +6277,7 @@ function processGoldIncome($connect) {
             $gold = round(getBill($general['dedication'])*$ratio);
             $general['gold'] += $gold;
 
-            $query = "update general set gold='$general['gold']' where no='$general['no']'";
+            $query = "update general set gold='{$general['gold']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>봉급으로 금 <C>$gold</>을 받았습니다.";
@@ -6357,7 +6357,7 @@ function popIncrease($connect) {
         if($wall > $city[wall2]) { $wall = $city[wall2]; }
 
         //시세
-        $query = "update city set pop='$pop',rate='$cityrate',agri='$agri',comm='$comm',secu='$secu',def='$def',wall='$wall' where city='$city['city']'";
+        $query = "update city set pop='$pop',rate='$cityrate',agri='$agri',comm='$comm',secu='$secu',def='$def',wall='$wall' where city='{$city['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 }
@@ -6437,8 +6437,8 @@ function processDeadIncome($connect, $admin_rate) {
         $income = getDeadIncome($connect, $nation['nation'], $nation['type'], $admin_rate);
 
 //  단기수입 금만적용
-//        $query = "update nation set gold=gold+'$income',rice=rice+'$income' where nation='$nation['nation']'";
-        $query = "update nation set gold=gold+'$income' where nation='$nation['nation']'";
+//        $query = "update nation set gold=gold+'$income',rice=rice+'$income' where nation='{$nation['nation']}'";
+        $query = "update nation set gold=gold+'$income' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     // 10%수입, 20%부상병
@@ -6556,7 +6556,7 @@ function processRiceIncome($connect) {
         }
         $adminLog[count($adminLog)] = _String::Fill2($nation['name'],12," ")." // 세곡 : "._String::Fill2($income,6," ")." // 세출 : "._String::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과곡 : ".tab2($nation['rice'],6," ");
 
-        $query = "select no,name,nation from general where nation='$nation['nation']' and level>='9'";
+        $query = "select no,name,nation from general where nation='{$nation['nation']}' and level>='9'";
         $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $corecount = MYDB_num_rows($coreresult);
         $corelog[0] = "<C>●</>이번 수입은 쌀 <C>$income</>입니다.";
@@ -6565,10 +6565,10 @@ function processRiceIncome($connect) {
             pushGenLog($coregen, $corelog);
         }
 
-        $query = "update nation set rice='$nation['rice']' where nation='$nation['nation']'";
+        $query = "update nation set rice='{$nation['rice']}' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "select no,name,nation,dedication,rice from general where nation='$nation['nation']'";
+        $query = "select no,name,nation,dedication,rice from general where nation='{$nation['nation']}'";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
 
@@ -6578,7 +6578,7 @@ function processRiceIncome($connect) {
             $rice = round(getBill($general['dedication'])*$ratio);
             $general['rice'] += $rice;
 
-            $query = "update general set rice='$general['rice']' where no='$general['no']'";
+            $query = "update general set rice='{$general['rice']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>봉급으로 쌀 <C>$rice</>을 받았습니다.";
@@ -6695,7 +6695,7 @@ function tradeRate($connect) {
         } else {
             $trade = 0;
         }
-        $query = "update city set trade='$trade' where city='$city['city']'";
+        $query = "update city set trade='$trade' where city='{$city['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 }
@@ -6857,7 +6857,7 @@ function disaster($connect) {
                 if($city['def'] > $city[def2]) { $city['def'] = $city[def2]; }
                 if($city['wall'] > $city[wall2]) { $city['wall'] = $city[wall2]; }
         
-                $query = "update city set state='$state',pop='$city['pop']',rate='$city['rate']',agri='$city['agri']',comm='$city['comm']',secu='$city['secu']',def='$city['def']',wall='$city['wall']' where city='$disastercity[$i]'";
+                $query = "update city set state='$state',pop='{$city['pop']}',rate='{$city['rate']}',agri='{$city['agri']}',comm='{$city['comm']}',secu='{$city['secu']}',def='{$city['def']}',wall='{$city['wall']}' where city='$disastercity[$i]'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         }
@@ -6875,7 +6875,7 @@ function getAdmin($connect) {
 }
 
 function getMe($connect) {
-    $query = "select * from general where user_id='$_SESSION['p_id']'";
+    $query = "select * from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error("접속자가 많아 접속을 중단합니다. 잠시후 갱신해주세요.<br>getMe : ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -6982,26 +6982,26 @@ function deleteNation($connect, $general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select name from nation where nation='$general['nation']'";
+    $query = "select name from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
     $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<R><b>【멸망】</b></><D><b>$nation['name']</b></>은(는) <R>멸망</>했습니다.";
 
     // 전 장수 재야로    // 전 장수 소속 무소속으로
-    $query = "update general set belong=0,troop=0,level=0,nation=0,makelimit=12 where nation='$general['nation']'";
+    $query = "update general set belong=0,troop=0,level=0,nation=0,makelimit=12 where nation='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 도시 공백지로
-    $query = "update city set nation=0,front=0,gen1=0,gen2=0,gen3=0 where nation='$general['nation']'";
+    $query = "update city set nation=0,front=0,gen1=0,gen2=0,gen3=0 where nation='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 부대 삭제
-    $query = "delete from troop where nation='$general['nation']'";
+    $query = "delete from troop where nation='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 국가 삭제
-    $query = "delete from nation where nation='$general['nation']'";
+    $query = "delete from nation where nation='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 외교 삭제
-    $query = "delete from diplomacy where me='$general['nation']' or you='$general['nation']'";
+    $query = "delete from diplomacy where me='{$general['nation']}' or you='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     pushHistory($connect, $history);
@@ -7012,17 +7012,17 @@ function nextRuler($connect, $general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select nation,name,history from nation where nation='$general['nation']'";
+    $query = "select nation,name,history from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select no,name from general where nation='$general['nation']' and level!='12' and level>='9' order by level desc";
+    $query = "select no,name from general where nation='{$general['nation']}' and level!='12' and level>='9' order by level desc";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $corecount = MYDB_num_rows($result);
 
     //npc or npc유저인 경우 후계 찾기
     if($general['npc'] > 0) {
-        $query = "select no,name,nation,IF(ABS(npcmatch-'$general['npcmatch']')>75,150-ABS(npcmatch-'$general['npcmatch']'),ABS(npcmatch-'$general['npcmatch']')) as npcmatch2 from general where nation='$general['nation']' and level!=12 and npc>0 order by npcmatch2,rand() limit 0,1";
+        $query = "select no,name,nation,IF(ABS(npcmatch-'{$general['npcmatch']}')>75,150-ABS(npcmatch-'{$general['npcmatch']}'),ABS(npcmatch-'{$general['npcmatch']}')) as npcmatch2 from general where nation='{$general['nation']}' and level!=12 and npc>0 order by npcmatch2,rand() limit 0,1";
         $npcresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount = MYDB_num_rows($npcresult);
     } else {
@@ -7033,10 +7033,10 @@ function nextRuler($connect, $general) {
     if($npccount > 0) {
         $nextruler = MYDB_fetch_array($npcresult);
         //국명 교체
-        //$query = "update nation set name='$nextruler['name']' where nation='$general['nation']'";
+        //$query = "update nation set name='{$nextruler['name']}' where nation='{$general['nation']}'";
         //MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } elseif($corecount == 0) {
-        $query = "select no,name from general where nation='$general['nation']' and level!='12' order by dedication desc";
+        $query = "select no,name from general where nation='{$general['nation']}' and level!='12' order by dedication desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $corecount = MYDB_num_rows($result);
 
@@ -7054,16 +7054,16 @@ function nextRuler($connect, $general) {
     }
 
     //군주 교체
-    $query = "update general set level='12' where no='$nextruler['no']'";
+    $query = "update general set level='12' where no='{$nextruler['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //도시관직해제
-    $query = "update city set gen1=0 where gen1='$nextruler['no']'";
+    $query = "update city set gen1=0 where gen1='{$nextruler['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //도시관직해제
-    $query = "update city set gen2=0 where gen2='$nextruler['no']'";
+    $query = "update city set gen2=0 where gen2='{$nextruler['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //도시관직해제
-    $query = "update city set gen3=0 where gen3='$nextruler['no']'";
+    $query = "update city set gen3=0 where gen3='{$nextruler['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<C><b>【유지】</b></><Y>$nextruler['name']</>(이)가 <D><b>$nation['name']</b></>의 유지를 이어 받았습니다";
@@ -7277,7 +7277,7 @@ function TrickInjury($connect, $city, $type=0) {
         if($injury < 30) {  // 부상률 30%
             $injury = floor($injury / 2) + 1;   // 부상 1~16
 
-            $query = "update general set crew=crew*0.98,atmos=atmos*0.98,train=train*0.98,injury=injury+'$injury' where no='$general['no']'";
+            $query = "update general set crew=crew*0.98,atmos=atmos*0.98,train=train*0.98,injury=injury+'$injury' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             pushGenLog($general, $log);
@@ -7341,7 +7341,7 @@ function command_Single($connect, $turn, $command) {
     for($i=0; $i < $count; $i++) {
         $str .= ",turn{$turn[$i]}='{$command}'";
     }
-    $query = "update general set {$str} where user_id='$_SESSION['p_id']'";
+    $query = "update general set {$str} where user_id='{$_SESSION['p_id']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     echo "<script>location.replace('commandlist.php');</script>";
 
@@ -7350,7 +7350,7 @@ function command_Single($connect, $turn, $command) {
 function command_Chief($connect, $turn, $command) {
     $command = EncodeCommand(0, 0, 0, $command);
 
-    $query = "select nation,level from general where user_id='$_SESSION['p_id']'";
+    $query = "select nation,level from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -7360,7 +7360,7 @@ function command_Chief($connect, $turn, $command) {
         for($i=0; $i < $count; $i++) {
             $str .= ",l{$me['level']}turn{$turn[$i]}='{$command}'";
         }
-        $query = "update nation set {$str} where nation='$me['nation']'";
+        $query = "update nation set {$str} where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     echo "<script>location.replace('b_chiefcenter.php');</script>";

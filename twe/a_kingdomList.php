@@ -10,7 +10,7 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select con,userlevel,turntime from general where user_id='$_SESSION['p_id']'";
+$query = "select con,userlevel,turntime from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -38,43 +38,43 @@ $count = MYDB_num_rows($result);
 for($i=1; $i <= $count; $i++) {
     $nation = MYDB_fetch_array($result);   //국가정보
 
-    $query = "select city,name from city where nation='$nation['nation']'"; // 도시 이름 목록
+    $query = "select city,name from city where nation='{$nation['nation']}'"; // 도시 이름 목록
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($cityresult);
 
-    $query = "select npc,name,city from general where nation='$nation['nation']' and level='12'";
+    $query = "select npc,name,city from general where nation='{$nation['nation']}' and level='12'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level12 = MYDB_fetch_array($genresult);
 
-    $query = "select npc,name from general where nation='$nation['nation']' and level='11'";
+    $query = "select npc,name from general where nation='{$nation['nation']}' and level='11'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level11 = MYDB_fetch_array($genresult);
 
-    $query = "select npc,name from general where nation='$nation['nation']' and level='10'";
+    $query = "select npc,name from general where nation='{$nation['nation']}' and level='10'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level10 = MYDB_fetch_array($genresult);
 
-    $query = "select npc,name from general where nation='$nation['nation']' and level='9'";
+    $query = "select npc,name from general where nation='{$nation['nation']}' and level='9'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level9 = MYDB_fetch_array($genresult);
 
-    $query = "select npc,name from general where nation='$nation['nation']' and level='8'";
+    $query = "select npc,name from general where nation='{$nation['nation']}' and level='8'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level8 = MYDB_fetch_array($genresult);
 
-    $query = "select npc,name from general where nation='$nation['nation']' and level='7'";
+    $query = "select npc,name from general where nation='{$nation['nation']}' and level='7'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level7 = MYDB_fetch_array($genresult);
 
-    $query = "select npc,name from general where nation='$nation['nation']' and level='6'";
+    $query = "select npc,name from general where nation='{$nation['nation']}' and level='6'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level6 = MYDB_fetch_array($genresult);
 
-    $query = "select npc,name from general where nation='$nation['nation']' and level='5'";
+    $query = "select npc,name from general where nation='{$nation['nation']}' and level='5'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level5 = MYDB_fetch_array($genresult);
 
-    $query = "select npc,name from general where nation='$nation['nation']' order by dedication desc";    // 장수 목록
+    $query = "select npc,name from general where nation='{$nation['nation']}' order by dedication desc";    // 장수 목록
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
 
@@ -167,7 +167,7 @@ for($i=1; $i <= $count; $i++) {
             }
         }
     } else {
-        $query = "select name from city where city='$level12['city']'";   // 군주 위치 도시 이름
+        $query = "select name from city where city='{$level12['city']}'";   // 군주 위치 도시 이름
         $cityResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $city = MYDB_fetch_array($cityResult);
 

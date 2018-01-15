@@ -20,11 +20,11 @@ increaseRefresh($connect, "국법", 1);
     <tr><td>
 
 <?php
-$query = "select no,nation,level from general where user_id='$_SESSION['p_id']'";
+$query = "select no,nation,level from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select rule from nation where nation='$me['nation']'";
+$query = "select rule from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 

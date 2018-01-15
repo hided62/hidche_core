@@ -196,7 +196,7 @@ function processAuction($connect) {
                     $gold = round($auction['value'] * 0.01);
                     $bidder['gold'] -= $gold;
                     if($bidder['gold'] < 0) $bidder['gold'] = 0;
-                    $query = "update general set gold='$bidder['gold']' where no='$auction[no2]'";
+                    $query = "update general set gold='{$bidder['gold']}' where no='$auction[no2]'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                     $traderLog[0] = "<S>◆</>입찰자의 자금 부족으로 {$auction['no']}번 <C>".GetStuffName($auction['stuff'])."</> 거래 <M>유찰</>!";
@@ -208,7 +208,7 @@ function processAuction($connect) {
                     $auctionLog[0] = "<S>◆</>$admin['year']년 $admin['month']월, {$auction['no']}번 <O>판매</> <C>성사</> : <Y>{$auction[name1]}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, <Y>{$auction[name2]}</>(이)가 금 <C>{$auction['value']}</>(으)로 구매";
                     $auctionLog[0] .= " <M>★ 아이템 거래 ★</>";
 
-                    $query = "update general set gold=gold-'$auction['value']',{$type}='$sel2' where no='$auction[no2]'";
+                    $query = "update general set gold=gold-'{$auction['value']}',{$type}='$sel2' where no='$auction[no2]'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                     $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$auction[name2]</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 구매했습니다!";
@@ -259,7 +259,7 @@ function processAuction($connect) {
                         $gold = round($auction['value'] * 0.01);
                         $trader['gold'] -= $gold;
                         if($trader['gold'] < 0) $trader['gold'] = 0;
-                        $query = "update general set gold='$trader['gold']' where no='$auction[no1]'";
+                        $query = "update general set gold='{$trader['gold']}' where no='$auction[no1]'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                         $traderLog[0] = "<S>◆</>판매자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
@@ -269,7 +269,7 @@ function processAuction($connect) {
                         $gold = round($auction['value'] * 0.01);
                         $bidder['gold'] -= $gold;
                         if($bidder['gold'] < 0) $bidder['gold'] = 0;
-                        $query = "update general set gold='$bidder['gold']' where no='$auction[no2]'";
+                        $query = "update general set gold='{$bidder['gold']}' where no='$auction[no2]'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                         $traderLog[0] = "<S>◆</>입찰자의 자금 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
@@ -286,9 +286,9 @@ function processAuction($connect) {
                         } elseif($auction['value'] * 2 <= $auction['amount']) {
                             $auctionLog[0] .= " <R>★ 최저가 거래 ★</>";
                         }
-                        $query = "update general set gold=gold+'$auction['value']',rice=rice-'$auction['amount']' where no='$auction[no1]'";
+                        $query = "update general set gold=gold+'{$auction['value']}',rice=rice-'{$auction['amount']}' where no='$auction[no1]'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                        $query = "update general set gold=gold-'$auction['value']',rice=rice+'$auction['amount']' where no='$auction[no2]'";
+                        $query = "update general set gold=gold-'{$auction['value']}',rice=rice+'{$auction['amount']}' where no='$auction[no2]'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     }
                     pushGenLog($trader, $traderLog);
@@ -300,7 +300,7 @@ function processAuction($connect) {
                         $gold = round($auction['value'] * 0.01);
                         $bidder['gold'] -= $gold;
                         if($bidder['gold'] < 0) $bidder['gold'] = 0;
-                        $query = "update general set gold='$bidder['gold']' where no='$auction[no2]'";
+                        $query = "update general set gold='{$bidder['gold']}' where no='$auction[no2]'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                         $traderLog[0] = "<S>◆</>입찰자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
@@ -310,7 +310,7 @@ function processAuction($connect) {
                         $gold = round($auction['value'] * 0.01);
                         $trader['gold'] -= $gold;
                         if($trader['gold'] < 0) $trader['gold'] = 0;
-                        $query = "update general set gold='$trader['gold']' where no='$auction[no1]'";
+                        $query = "update general set gold='{$trader['gold']}' where no='$auction[no1]'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                         $traderLog[0] = "<S>◆</>구매자의 자금 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
@@ -328,9 +328,9 @@ function processAuction($connect) {
                             $auctionLog[0] .= " <M>★ 즉시구매가 거래 ★</>";
                         }
 
-                        $query = "update general set gold=gold-'$auction['value']',rice=rice+'$auction['amount']' where no='$auction[no1]'";
+                        $query = "update general set gold=gold-'{$auction['value']}',rice=rice+'{$auction['amount']}' where no='$auction[no1]'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                        $query = "update general set gold=gold+'$auction['value']',rice=rice-'$auction['amount']' where no='$auction[no2]'";
+                        $query = "update general set gold=gold+'{$auction['value']}',rice=rice-'{$auction['amount']}' where no='$auction[no2]'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     }
                     pushGenLog($trader, $traderLog);

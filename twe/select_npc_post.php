@@ -23,7 +23,7 @@ if(!$member) {
 
 $date = date('Y-m-d H:i:s');
 //등록정보
-$query = "update MEMBER set reg_num=reg_num+1,reg_date='$date' where no='$member['no']'";
+$query = "update MEMBER set reg_num=reg_num+1,reg_date='$date' where no='{$member['no']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 $connect = dbConn();
@@ -43,7 +43,7 @@ $query  = "select no from general where npc<2";
 $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($result);
 
-$query  = "select no from general where user_id='$member['id']'";
+$query  = "select no from general where user_id='{$member['id']}'";
 $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
 $id_num = MYDB_num_rows($result);
 

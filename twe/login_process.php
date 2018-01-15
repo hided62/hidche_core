@@ -49,7 +49,7 @@ if(!$member) {
 
     $date = date('Y-m-d H:i:s');
 
-    $query="update general set logcnt=logcnt+1,ip='$_SESSION['p_ip']',lastconnect='$date',conmsg='$conmsg' where user_id='$_SESSION['p_id']'";
+    $query="update general set logcnt=logcnt+1,ip='{$_SESSION['p_ip']}',lastconnect='$date',conmsg='$conmsg' where user_id='{$_SESSION['p_id']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     echo "<script>window.top.location.replace('./');</script>";

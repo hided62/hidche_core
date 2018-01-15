@@ -9,7 +9,7 @@ $query = "select year,month from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,nation,level,history,picture,imgsvr from general where user_id='$_SESSION['p_id']'";
+$query = "select no,name,nation,level,history,picture,imgsvr from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -17,32 +17,32 @@ $query = "select no,nation,history from general where no='$gen'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $you = MYDB_fetch_array($result);
 
-$query = "select nation,name,power,gold,rice,surlimit,history,color from nation where nation='$you['nation']'";
+$query = "select nation,name,power,gold,rice,surlimit,history,color from nation where nation='{$you['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $younation = MYDB_fetch_array($result);
 
-$query = "select nation,name,power,surlimit,color,dip{$num} as dipmsg from nation where nation='$me['nation']'";
+$query = "select nation,name,power,surlimit,color,dip{$num} as dipmsg from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $mynation = MYDB_fetch_array($result);
 
-$query = "select city from city where nation='$me['nation']'";
+$query = "select city from city where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $losecitynum = MYDB_num_rows($result);
 
-$query = "select city from city where nation='$you['nation']'";
+$query = "select city from city where nation='{$you['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $wincitynum = MYDB_num_rows($result);
 
 //아국과의 관계
-$query = "select state from diplomacy where me='$me['nation']' and you='$you['nation']'";
+$query = "select state from diplomacy where me='{$me['nation']}' and you='{$you['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $dip = MYDB_fetch_array($result);
 //대상국이 외교 진행중(선포중,교전중,합병수락중,통합수락중)일때
-$query = "select state from diplomacy where me='$you['nation']' and (state='0' or state='1' or state='3' or state='5')";
+$query = "select state from diplomacy where me='{$you['nation']}' and (state='0' or state='1' or state='3' or state='5')";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $dipcount = MYDB_num_rows($result);
 //대상국B이 아국C과 교전중인 국가A와 불가침중일때 불가(A=B 불가침, A=C(아국) 교전, B<-C(아국) 항복)
-$query = "select you,state from diplomacy where me='$me['nation']' and (state='0' or state='1')";
+$query = "select you,state from diplomacy where me='{$me['nation']}' and (state='0' or state='1')";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $warcount = MYDB_num_rows($result);
 // 아국과 교전중인 국가 골라냄
@@ -50,7 +50,7 @@ $valid = 1;
 for($i=0; $i < $warcount; $i++) {
     $acdip = MYDB_fetch_array($result);
     //교전중 국가A와 대상국B 외교 확인
-    $query = "select state from diplomacy where me='$acdip['you']' and you='$you['nation']'";
+    $query = "select state from diplomacy where me='{$acdip['you']}' and you='{$you['nation']}'";
     $dipresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $abdip = MYDB_fetch_array($dipresult);
 
@@ -92,9 +92,9 @@ if($ok == "수락") {
         $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$younation['name']</b></>(와)과 합병 시도");
 
         //외교 변경
-        $query = "update diplomacy set state='5',term='24' where me='$mynation['nation']' and you='$younation['nation']'";
+        $query = "update diplomacy set state='5',term='24' where me='{$mynation['nation']}' and you='{$younation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update diplomacy set state='6',term='24' where me='$younation['nation']' and you='$mynation['nation']'";
+        $query = "update diplomacy set state='6',term='24' where me='{$younation['nation']}' and you='{$mynation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //국메로 저장
@@ -106,14 +106,14 @@ if($ok == "수락") {
     }
 
     //현 메세지 지움
-    $query = "update nation set dip{$num}='',dip{$num}_who='0',dip{$num}_when='' where nation='$me['nation']'";
+    $query = "update nation set dip{$num}='',dip{$num}_who='0',dip{$num}_when='' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } else {
     $youlog[count($youlog)] = "<C>●</><Y>$mynation['name']</>(이)가 항복을 거부했습니다.";
     $mylog[count($mylog)] = "<C>●</><D>$younation['name']</>(으)로 항복을 거부했습니다.";
 
     //현 메세지 지움
-    $query = "update nation set dip{$num}='',dip{$num}_who='0',dip{$num}_when='' where nation='$me['nation']'";
+    $query = "update nation set dip{$num}='',dip{$num}_who='0',dip{$num}_when='' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 

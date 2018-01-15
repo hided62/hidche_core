@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "거래장", 2);
 
-$query = "select no,special,skin,userlevel,con,turntime from general where user_id='$_SESSION['p_id']'";
+$query = "select no,special,skin,userlevel,con,turntime from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -17,11 +17,11 @@ $admin = MYDB_fetch_array($result);
 $con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-$query = "select no from auction where no1='$me['no']'";
+$query = "select no from auction where no1='{$me['no']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $tradeCount = MYDB_num_rows($result);
 
-$query = "select no from auction where no2='$me['no']'";
+$query = "select no from auction where no2='{$me['no']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $bidCount = MYDB_num_rows($result);
 

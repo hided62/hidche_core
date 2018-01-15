@@ -17,7 +17,7 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,nation,level,msgindex,userlevel,con,picture,imgsvr from general where user_id='$_SESSION['p_id']'";
+$query = "select no,name,nation,level,msgindex,userlevel,con,picture,imgsvr from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -37,7 +37,7 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
         $nation['name'] = '재야';
         $nation['color'] = 'FFFFFF';
     } else {
-        $query = "select nation,name,color from nation where nation='$me['nation']'";
+        $query = "select nation,name,color from nation where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($result);
     }
@@ -48,7 +48,7 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
         $nation['name'] = '재야';
         $nation['color'] = 'FFFFFF';
     } else {
-        $query = "select nation,name,color from nation where nation='$me['nation']'";
+        $query = "select nation,name,color from nation where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($result);
     }
@@ -80,7 +80,7 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
 
     $msg = addslashes(SQ2DQ($msg));
 
-    $query = "select msg{$me['msgindex']}_when as priv_when from general where no='$me['no']'";
+    $query = "select msg{$me['msgindex']}_when as priv_when from general where no='{$me['no']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $prev_msg = MYDB_fetch_array($result);
     $diff_second = strtotime($date) - strtotime($prev_msg['priv_when']);
@@ -91,19 +91,19 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
         //자신에게 표시
         $me['msgindex']++;
         if($me['msgindex'] >= 10) { $me['msgindex'] = 0; }
-        $query = "update general set msgindex='$me['msgindex']',msg{$me['msgindex']}='$msg',msg{$me['msgindex']}_type='10',msg{$me['msgindex']}_who='$who',msg{$me['msgindex']}_when='$date',newmsg=1 where no='$me['no']'";
+        $query = "update general set msgindex='{$me['msgindex']}',msg{$me['msgindex']}='$msg',msg{$me['msgindex']}_type='10',msg{$me['msgindex']}_who='$who',msg{$me['msgindex']}_when='$date',newmsg=1 where no='{$me['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } else {
         //자신에게 표시
         $me['msgindex']++;
         if($me['msgindex'] >= 10) { $me['msgindex'] = 0; }
-        $query = "update general set msgindex='$me['msgindex']',msg{$me['msgindex']}='$msg',msg{$me['msgindex']}_type='9',msg{$me['msgindex']}_who='$who',msg{$me['msgindex']}_when='$date' where no='$me['no']'";
+        $query = "update general set msgindex='{$me['msgindex']}',msg{$me['msgindex']}='$msg',msg{$me['msgindex']}_type='9',msg{$me['msgindex']}_who='$who',msg{$me['msgindex']}_when='$date' where no='{$me['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         
         // 상대에게 발송
         $you['msgindex']++;
         if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-        $query = "update general set msgindex='$you['msgindex']',msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_type='10',msg{$you['msgindex']}_who='$who',msg{$you['msgindex']}_when='$date',newmsg=1 where no='$genlist'";
+        $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_type='10',msg{$you['msgindex']}_who='$who',msg{$you['msgindex']}_when='$date',newmsg=1 where no='$genlist'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     

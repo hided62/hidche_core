@@ -7,7 +7,7 @@ $connect = dbConn();
 
 $admin = getAdmin($connect);
 
-$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
+$query = "select userlevel from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -82,7 +82,7 @@ switch($btn) {
             for($i=0; $i < $count; $i++) {
                 $gen = MYDB_fetch_array($result);
                 $turntime = getRandTurn($turnterm);
-                $query = "update general set turntime='$turntime' where no='$gen['no']'";
+                $query = "update general set turntime='$turntime' where no='{$gen['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         // 턴시간이 너무 멀리 떨어진 선수 제대로 보정
@@ -95,7 +95,7 @@ switch($btn) {
                 $num = floor((strtotime($gen['turntime']) - strtotime($admin['turntime'])) / $unit);
                 if($num > 0) {
                     $gen['turntime'] = date("Y-m-d H:i:s", strtotime($gen['turntime']) - $unit * $num);
-                    $query = "update general set turntime='$gen['turntime']' where no='$gen['no']'";
+                    $query = "update general set turntime='{$gen['turntime']}' where no='{$gen['no']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 }
             }

@@ -168,10 +168,10 @@ function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$p
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($result);
         // 군주로        // 현 국가 소속으로
-        $query = "update general set belong=1,level=12,nation='$nation['nation']' where user_id='$genid'";
+        $query = "update general set belong=1,level=12,nation='{$nation['nation']}' where user_id='$genid'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //외교 추가
-        $query = "select nation from nation where nation!='$nation['nation']'";
+        $query = "select nation from nation where nation!='{$nation['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $count = MYDB_num_rows($result);
         for($i=0; $i < $count; $i++) {
@@ -180,14 +180,14 @@ function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$p
                 insert into diplomacy (
                     me, you, state, term
                 ) values (
-                    '$nation['nation']', '$you['nation']', '2', '0'
+                    '{$nation['nation']}', '{$you['nation']}', '2', '0'
                 )", $connect
             ) or Error(__LINE__.MYDB_error($connect),"");
             @MYDB_query("
                 insert into diplomacy (
                     me, you, state, term
                 ) values (
-                    '$you['nation']', '$nation['nation']', '2', '0'
+                    '{$you['nation']}', '{$nation['nation']}', '2', '0'
                 )", $connect
             ) or Error(__LINE__.MYDB_error($connect),"");
         }

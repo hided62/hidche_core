@@ -103,11 +103,11 @@ function showMap($connect, $type, $graphic) {
     $result = MYDB_query($query, $connect) or Error("showMap ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,userlevel,level,city from general where user_id='$_SESSION['p_id']'";
+    $query = "select no,nation,userlevel,level,city from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select spy from nation where nation='$me['nation']'";
+    $query = "select spy from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $myNation = MYDB_fetch_array($result);
 
@@ -173,13 +173,13 @@ function showMap($connect, $type, $graphic) {
             }
         } elseif($me['level'] == 0) {
             // 재야는 내 도시만
-            $query = "select city,name,nation from city where city='$me['city']'";
+            $query = "select city,name,nation from city where city='{$me['city']}'";
             $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $cityvalid = MYDB_fetch_array($cityresult);
             $valid[$cityvalid['city']] = 1;
         } else {
             // 아국 도시
-            $query = "select city,name from city where nation='$me['nation']'";
+            $query = "select city,name from city where nation='{$me['nation']}'";
             $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $citycount = MYDB_num_rows($cityresult);
             for($i=0; $i < $citycount; $i++) {
@@ -187,7 +187,7 @@ function showMap($connect, $type, $graphic) {
                 $valid[$cityvalid['city']] = 1;
             }
             // 아국 장수가 있는 타국 도시들 선택
-            $query = "select distinct A.city,B.name,B.nation from general A,city B where A.city=B.city and A.nation='$me['nation']' and B.nation!='$me['nation']'";
+            $query = "select distinct A.city,B.name,B.nation from general A,city B where A.city=B.city and A.nation='{$me['nation']}' and B.nation!='{$me['nation']}'";
             $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $citycount = MYDB_num_rows($cityresult);
             for($i=0; $i < $citycount; $i++) {

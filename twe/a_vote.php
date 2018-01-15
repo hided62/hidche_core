@@ -4,7 +4,7 @@ include "func.php";
 $connect = dbConn();
 increaseRefresh($connect, "설문조사", 1);
 
-$query = "select no,userlevel,vote from general where user_id='$_SESSION['p_id']'";
+$query = "select no,userlevel,vote from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

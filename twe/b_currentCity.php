@@ -6,11 +6,11 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "현재도시", 1);
 
-$query = "select skin,no,nation,userlevel,level,city from general where user_id='$_SESSION['p_id']'";
+$query = "select skin,no,nation,userlevel,level,city from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select nation,level,spy from nation where nation='$me['nation']'";
+$query = "select nation,level,spy from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $myNation = MYDB_fetch_array($result);
 
@@ -44,7 +44,7 @@ if($_POST['citylist'] == '') { $_POST['citylist'] = $me['city']; }
 // 재야일때는 현재 도시만
 $valid = 0;
 if($me['level'] == 0) {
-    $query = "select city,name,nation from city where city='$me['city']'";
+    $query = "select city,name,nation from city where city='{$me['city']}'";
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($cityresult);
     echo "
@@ -57,7 +57,7 @@ if($me['level'] == 0) {
     echo "============================================</option>";
 } else {
     // 아국 도시들 선택
-    $query = "select city,name,nation from city where nation='$me['nation']'";
+    $query = "select city,name,nation from city where nation='{$me['nation']}'";
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($cityresult);
 
@@ -74,7 +74,7 @@ if($me['level'] == 0) {
     }
 
     // 아국 장수가 있는 타국 도시들 선택
-    $query = "select distinct A.city,B.name,B.nation from general A,city B where A.city=B.city and A.nation='$me['nation']' and B.nation!='$me['nation']'";
+    $query = "select distinct A.city,B.name,B.nation from general A,city B where A.city=B.city and A.nation='{$me['nation']}' and B.nation!='{$me['nation']}'";
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($cityresult);
 
@@ -133,11 +133,11 @@ if($valid == 0 && $me['userlevel'] < 5) {
     $_POST['citylist'] = $me['city'];
 }
 
-$query = "select * from city where city='$_POST['citylist']'"; // 도시 이름 목록
+$query = "select * from city where city='{$_POST['citylist']}'"; // 도시 이름 목록
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $city = MYDB_fetch_array($cityresult);
 
-$query = "select nation,name,color from nation where nation='$city['nation']'";
+$query = "select nation,name,color from nation where nation='{$city['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
@@ -199,7 +199,7 @@ echo "
     <tr>
         <td align=center id=bg1>장수</td>
         <td colspan=11>";
-    $query = "select name from general where city='$city['city']' and nation='$city['nation']'";    // 장수 목록
+    $query = "select name from general where city='{$city['city']}' and nation='{$city['nation']}'";    // 장수 목록
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
     if($gencount == 0) echo "-";
@@ -212,7 +212,7 @@ echo "
     </tr>
 </table>";
 
-$query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos,term,turn0,turn1,turn2,turn3,turn4 from general where city='$city['city']' order by dedication desc";    // 장수 목록
+$query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos,term,turn0,turn1,turn2,turn3,turn4 from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);
 

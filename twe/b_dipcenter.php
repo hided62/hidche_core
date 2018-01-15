@@ -10,11 +10,11 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select skin,no,nation,level,userlevel,con,turntime,belong from general where user_id='$_SESSION['p_id']'";
+$query = "select skin,no,nation,level,userlevel,con,turntime,belong from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select secretlimit from nation where nation='$me['nation']'";
+$query = "select secretlimit from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
@@ -72,7 +72,7 @@ for($i=0; $i < $nationcount; $i++) {
     // 아국표시
     if($nation['nation'] == $me['nation']) {
         //속령수
-        $query = "select city from city where nation='$nation['nation']'";
+        $query = "select city from city where nation='{$nation['nation']}'";
         $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $citycount = MYDB_num_rows($result2);
         echo "
@@ -90,15 +90,15 @@ for($i=0; $i < $nationcount; $i++) {
         continue;
     }
 
-    $query = "select state,term,fixed,reserved,showing from diplomacy where me='$me['nation']' and you='$nation['nation']'";
+    $query = "select state,term,fixed,reserved,showing from diplomacy where me='{$me['nation']}' and you='{$nation['nation']}'";
     $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dip = MYDB_fetch_array($result2);
 
-    $query = "select reserved,showing from diplomacy where you='$me['nation']' and me='$nation['nation']'";
+    $query = "select reserved,showing from diplomacy where you='{$me['nation']}' and me='{$nation['nation']}'";
     $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dip2 = MYDB_fetch_array($result2);
     //속령수
-    $query = "select city from city where nation='$nation['nation']'";
+    $query = "select city from city where nation='{$nation['nation']}'";
     $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result2);
     switch($dip['state']) {
@@ -172,7 +172,7 @@ echo "
 </table>
 ";
 
-$query = "select nation,name,color,type,msg,gold,rice,bill,rate,scout,war,myset,scoutmsg,secretlimit from nation where nation='$me['nation']'";
+$query = "select nation,name,color,type,msg,gold,rice,bill,rate,scout,war,myset,scoutmsg,secretlimit from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 

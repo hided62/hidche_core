@@ -10,11 +10,11 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select skin,no,nation,level,userlevel,con,turntime,belong from general where user_id='$_SESSION['p_id']'";
+$query = "select skin,no,nation,level,userlevel,con,turntime,belong from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select secretlimit from nation where nation='$me['nation']'";
+$query = "select secretlimit from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
@@ -51,7 +51,7 @@ $query = "
     l7turn0, l7turn1, l7turn2, l7turn3, l7turn4, l7turn5, l7turn6, l7turn7, l7turn8, l7turn9, l7turn10, l7turn11,
     l6turn0, l6turn1, l6turn2, l6turn3, l6turn4, l6turn5, l6turn6, l6turn7, l6turn8, l6turn9, l6turn10, l6turn11,
     l5turn0, l5turn1, l5turn2, l5turn3, l5turn4, l5turn5, l5turn6, l5turn7, l5turn8, l5turn9, l5turn10, l5turn11
-    from nation where nation='$me['nation']'";
+    from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
@@ -59,7 +59,7 @@ $lv = getNationChiefLevel($nation['level']);
 for($i=12; $i >= $lv; $i--) {
     $turn[$i] = getCoreTurn($connect, $nation, $i);
 
-    $query = "select name,turntime,npc from general where level={$i} and nation='$me['nation']'";
+    $query = "select name,turntime,npc from general where level={$i} and nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen[$i] = MYDB_fetch_array($result);
 }

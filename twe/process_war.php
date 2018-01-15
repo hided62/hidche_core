@@ -20,7 +20,7 @@ function processWar($connect, $general, $city) {
     if($general['item'] == 3) {
         //탁주 사용
         $genAtmos += 3;
-        $query = "update general set item=0 where no='$general['no']'";
+        $query = "update general set item=0 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $log[count($log)] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
         $general['item'] = 0;
@@ -35,7 +35,7 @@ function processWar($connect, $general, $city) {
     if($general['item'] == 4) {
         //청주 사용
         $genTrain += 3;
-        $query = "update general set item=0 where no='$general['no']'";
+        $query = "update general set item=0 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $log[count($log)] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
         $general['item'] = 0;
@@ -51,25 +51,25 @@ function processWar($connect, $general, $city) {
     $city['def'] *= 10;
     $city['wall'] *= 10;
 
-    $query = "select level from city where city='$general['city']'";
+    $query = "select level from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $originCity = MYDB_fetch_array($result);
 
-    $query = "select nation,level,name,history,capital,tech,type from nation where nation='$general['nation']'";
+    $query = "select nation,level,name,history,capital,tech,type from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select nation,level,name,history,rice,capital,tech,type from nation where nation='$city['nation']'";
+    $query = "select nation,level,name,history,rice,capital,tech,type from nation where nation='{$city['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destnation = MYDB_fetch_array($result);
 
     //장수수 구함
-    $query = "select no from general where nation='$general['nation']'";
+    $query = "select no from general where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
     if($gencount < 10) $gencount = 10;
     //장수수 구함
-    $query = "select no from general where nation='$destnation['nation']'";
+    $query = "select no from general where nation='{$destnation['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destgencount = MYDB_num_rows($result);
     if($destgencount < 10) $destgencount = 10;
@@ -90,7 +90,7 @@ function processWar($connect, $general, $city) {
 //    $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<O><b>【전투】</b></><D><b>$nation['name']</b></>(이)가 <D><b>$destnation['name']</b></>의 <G><b>$city['name']</b></>(으)로 <M>진격</>합니다.";
 
     // 목표 도시내에 목표 국가 소속 장수 중, 병사가 있는 능력치합+병사수 순으로 훈,사 60, 80 이상
-    $query = "select no,name,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,leader+power+intel+weap+horse+book+crew/100 as sum,dex0,dex10,dex20,dex30,dex40 from general where city='$city['city']' and nation='$city['nation']' and nation!=0 and crew>'0' and rice>round(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2)) order by sum desc";
+    $query = "select no,name,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,leader+power+intel+weap+horse+book+crew/100 as sum,dex0,dex10,dex20,dex30,dex40 from general where city='{$city['city']}' and nation='{$city['nation']}' and nation!=0 and crew>'0' and rice>round(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2)) order by sum desc";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $opposecount = MYDB_num_rows($result);
 
@@ -103,7 +103,7 @@ function processWar($connect, $general, $city) {
         if($opposecount == 0 && $destnation['nation'] > 0 && $destnation['rice'] <= 0 && $city['supply'] == 1) {
             $general['train'] += 1; //훈련 상승
             if($general['train'] > $_maximumtrain) { $general['train'] = $_maximumtrain; }
-            $query = "update general set recwar='$general['turntime']',train='$general['train']',warnum=warnum+1 where no='$general['no']'";
+            $query = "update general set recwar='{$general['turntime']}',train='{$general['train']}',warnum=warnum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $alllog[count($alllog)] = "<C>●</>{$game['month']}월:병량 부족으로 <G><b>$city['name']</b></>의 수비병들이 <R>패퇴</>합니다.";
@@ -117,10 +117,10 @@ function processWar($connect, $general, $city) {
 
             //패퇴시 병량보충
             $destnation['rice'] += 500;
-            $query = "update nation set rice='$destnation['rice']' where nation='$destnation['nation']'";
+            $query = "update nation set rice='{$destnation['rice']}' where nation='{$destnation['nation']}'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //내정 피폐
-            $query = "update city set agri=agri*0.5,comm=comm*0.5,secu=secu*0.5 where city='$city['city']'";
+            $query = "update city set agri=agri*0.5,comm=comm*0.5,secu=secu*0.5 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $city = addConflict($connect, $city, $general['nation'], 1);
@@ -134,7 +134,7 @@ function processWar($connect, $general, $city) {
 
             $general['train'] += 1; //훈련 상승
             if($general['train'] > $_maximumtrain) { $general['train'] = $_maximumtrain; }
-            $query = "update general set recwar='$general['turntime']',train='$general['train']',warnum=warnum+1 where no='$general['no']'";
+            $query = "update general set recwar='{$general['turntime']}',train='{$general['train']}',warnum=warnum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $mykillnum = 0; $mydeathnum = 0;
@@ -383,7 +383,7 @@ function processWar($connect, $general, $city) {
             $rice = round($opexp * 5 * getCrewtypeRice($game, 0, 0) * ($game['city_rate']/100 - 0.2));
             $destnation['rice'] -= $rice;
             if($destnation['rice'] < 0) { $destnation['rice'] = 0; }
-            $query = "update nation set rice='$destnation['rice']' where nation='$destnation['nation']'";
+            $query = "update nation set rice='{$destnation['rice']}' where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $adminLog[0] = "성벽 쌀 소모 : $rice";
@@ -401,7 +401,7 @@ function processWar($connect, $general, $city) {
             if($city['comm'] < 0) { $city['comm'] = 0; }
             if($city['secu'] < 0) { $city['secu'] = 0; }
             // 병사수 변경
-            $query = "update general set crew='$general['crew']',killcrew=killcrew+'$mykillnum',deathcrew=deathcrew+'$mydeathnum' where no='$general['no']'";
+            $query = "update general set crew='{$general['crew']}',killcrew=killcrew+'$mykillnum',deathcrew=deathcrew+'$mydeathnum' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 숙련도 증가
             addGenDex($connect, $general['no'], $general['crewtype'], $mykillnum);
@@ -413,7 +413,7 @@ function processWar($connect, $general, $city) {
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
             if(TechLimit($game['startyear'], $game['year'], $nation['tech'])) { $num = floor($num/4); }
-            $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='$nation['nation']'";
+            $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 죽은수 기술로 누적
             $num = round($mykillnum * 0.01);
@@ -422,7 +422,7 @@ function processWar($connect, $general, $city) {
             if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
             if(TechLimit($game['startyear'], $game['year'], $destnation['tech'])) { $num = floor($num/4); }
-            $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='$destnation['nation']'";
+            $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //양국 평균 기술가격
             //$techRatio = (getTechCost($nation['tech']) + getTechCost($destnation['tech'])) / 2;
@@ -432,14 +432,14 @@ function processWar($connect, $general, $city) {
             // 국가보정
             if($destnation['type'] == 1)                            { $num *= 1.1; }
             if($destnation['type'] == 9 || $destnation['type'] == 10) { $num *= 0.9; }
-            $query = "update city set dead=dead+'$num',def='$city['def']',wall='$city['wall']',agri='$city['agri']',comm='$city['comm']',secu='$city['secu']' where city='$city['city']'";
+            $query = "update city set dead=dead+'$num',def='{$city['def']}',wall='{$city['wall']}',agri='{$city['agri']}',comm='{$city['comm']}',secu='{$city['secu']}' where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 죽은수 도시 재정으로 누적 40%
             $num = round(($mykillnum+$mydeathnum) * 0.4 * $techRatio);
             // 국가보정
             if($nation['type'] == 1)                        { $num *= 1.1; }
             if($nation['type'] == 9 || $nation['type'] == 10) { $num *= 0.9; }
-            $query = "update city set dead=dead+'$num' where city='$general['city']'";
+            $query = "update city set dead=dead+'$num' where city='{$general['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             //분쟁현황에 추가
@@ -468,14 +468,14 @@ function processWar($connect, $general, $city) {
                 $alllog[count($alllog)] = "<C>●</>{$game['month']}월:<Y>$general['name']</>의 ".getTypename($general['crewtype'])."(이)가 퇴각했습니다.";
                 $log[count($log)] = "<C>●</>퇴각했습니다.";
 
-                $query = "update general set deathnum=deathnum+1 where no='$general['no']'";
+                $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 break;
             } elseif($myRice <= round($general['crew']/100)) {
                 $alllog[count($alllog)] = "<C>●</>{$game['month']}월:<Y>$general['name']</>의 ".getTypename($general['crewtype'])."(이)가 퇴각했습니다.";
                 $log[count($log)] = "<C>●</>군량 부족으로 퇴각합니다.";
 
-                $query = "update general set deathnum=deathnum+1 where no='$general['no']'";
+                $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 break;
             }
@@ -490,7 +490,7 @@ function processWar($connect, $general, $city) {
             if($oppose['item'] == 3) {
                 //탁주 사용
                 $oppAtmos += 3;
-                $query = "update general set item=0 where no='$oppose['no']'";
+                $query = "update general set item=0 where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $opplog[count($opplog)] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
                 $oppose['item'] = 0;
@@ -505,7 +505,7 @@ function processWar($connect, $general, $city) {
             if($oppose['item'] == 4) {
                 //청주 사용
                 $oppTrain += 3;
-                $query = "update general set item=0 where no='$oppose['no']'";
+                $query = "update general set item=0 where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $opplog[count($opplog)] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
                 $oppose['item'] = 0;
@@ -522,9 +522,9 @@ function processWar($connect, $general, $city) {
             $oppose['train'] += 1; //훈련 상승
             if($oppose['train'] > $_maximumtrain) { $oppose['train'] = $_maximumtrain; }
 
-            $query = "update general set recwar='$general['turntime']',train='$general['train']',warnum=warnum+1 where no='$general['no']'";
+            $query = "update general set recwar='{$general['turntime']}',train='{$general['train']}',warnum=warnum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update general set recwar='$general['turntime']',train='$oppose['train']',warnum=warnum+1 where no='$oppose['no']'";
+            $query = "update general set recwar='{$general['turntime']}',train='{$oppose['train']}',warnum=warnum+1 where no='{$oppose['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $ratio = rand() % 100;
@@ -532,7 +532,7 @@ function processWar($connect, $general, $city) {
             if(($general[special2] == 70 && $ratio <= 33) || ($general['item'] == 2 && $ratio <= 20) || (($general['weap'] == 10 || $general['weap'] == 14 || $general['weap'] == 18 || $general['weap'] == 22) && $ratio <= 20)) {
                 //수극 사용
                 if($general['item'] == 2) {
-                    $query = "update general set item=0 where no='$general['no']'";
+                    $query = "update general set item=0 where no='{$general['no']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     $log[count($log)] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
                     $general['item'] = 0;
@@ -547,7 +547,7 @@ function processWar($connect, $general, $city) {
                 $oppose['injury'] += rand() % 41 + 20;   // 20 ~ 60
                 if($oppose['injury'] > 80) { $oppose['injury'] = 80; }
             } else if($general['item'] == 2 && $ratio <= 40) {
-                $query = "update general set item=0 where no='$general['no']'";
+                $query = "update general set item=0 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $batlog[count($batlog)] = "<C>●</><C>".getItemName($general['item'])."</>(이)가 빗나갑니다!";
                 $general['item'] = 0;
@@ -557,7 +557,7 @@ function processWar($connect, $general, $city) {
             if(($oppose[special2] == 70 && $ratio <= 33) || ($oppose['item'] == 2 && $ratio <= 20) || (($oppose['weap'] == 10 || $oppose['weap'] == 14 || $oppose['weap'] == 18 || $oppose['weap'] == 22) && $ratio <= 20)) {
                 //수극 사용
                 if($oppose['item'] == 2) {
-                    $query = "update general set item=0 where no='$oppose['no']'";
+                    $query = "update general set item=0 where no='{$oppose['no']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     $opplog[count($opplog)] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
                     $oppose['item'] = 0;
@@ -572,7 +572,7 @@ function processWar($connect, $general, $city) {
                 $general['injury'] += rand() % 41 + 20;   // 20 ~ 60
                 if($general['injury'] > 80) { $general['injury'] = 80; }
             } else if($oppose['item'] == 2 && $ratio <= 40) {
-                $query = "update general set item=0 where no='$oppose['no']'";
+                $query = "update general set item=0 where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $oppbatlog[count($oppbatlog)] = "<C>●</><C>".getItemName($oppose['item'])."</>(이)가 빗나갑니다!";
                 $oppose['item'] = 0;
@@ -1240,7 +1240,7 @@ function processWar($connect, $general, $city) {
                 if($oppose['injury'] > 80) { $oppose['injury'] = 80; }
             }
             // 병사수 변경
-            $query = "update general set injury='$oppose['injury']',crew='$oppose['crew']',killcrew=killcrew+'$opkillnum',deathcrew=deathcrew+'$opdeathnum' where no='$oppose['no']'";
+            $query = "update general set injury='{$oppose['injury']}',crew='{$oppose['crew']}',killcrew=killcrew+'$opkillnum',deathcrew=deathcrew+'$opdeathnum' where no='{$oppose['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 숙련도 증가
             addGenDex($connect, $oppose['no'], $oppose['crewtype'], $opkillnum * 0.9);
@@ -1252,7 +1252,7 @@ function processWar($connect, $general, $city) {
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
             if(TechLimit($game['startyear'], $game['year'], $nation['tech'])) { $num = floor($num/4); }
-            $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='$nation['nation']'";
+            $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             // 장수 부상
@@ -1263,7 +1263,7 @@ function processWar($connect, $general, $city) {
                 if($general['injury'] > 80) { $general['injury'] = 80; }
             }
             // 병사수 변경
-            $query = "update general set injury='$general['injury']',crew='$general['crew']',killcrew=killcrew+'$mykillnum',deathcrew=deathcrew+'$mydeathnum' where no='$general['no']'";
+            $query = "update general set injury='{$general['injury']}',crew='{$general['crew']}',killcrew=killcrew+'$mykillnum',deathcrew=deathcrew+'$mydeathnum' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 숙련도 증가
             addGenDex($connect, $general['no'], $general['crewtype'], $mykillnum);
@@ -1275,7 +1275,7 @@ function processWar($connect, $general, $city) {
             if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
             if(TechLimit($game['startyear'], $game['year'], $destnation['tech'])) { $num = floor($num/4); }
-            $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='$destnation['nation']'";
+            $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //양국 평균 기술가격
             //$techRatio = (getTechCost($nation['tech']) + getTechCost($destnation['tech'])) / 2;
@@ -1285,14 +1285,14 @@ function processWar($connect, $general, $city) {
             // 국가보정
             if($destnation['type'] == 1)                            { $num *= 1.1; }
             if($destnation['type'] == 9 || $destnation['type'] == 10) { $num *= 0.9; }
-            $query = "update city set dead=dead+'$num' where city='$city['city']'";
+            $query = "update city set dead=dead+'$num' where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 죽은수 도시 재정으로 누적 40%
             $num = round(($mykillnum+$mydeathnum) * 0.4 * $techRatio);
             // 국가보정
             if($nation['type'] == 1)                        { $num *= 1.1; }
             if($nation['type'] == 9 || $nation['type'] == 10) { $num *= 0.9; }
-            $query = "update city set dead=dead+'$num' where city='$general['city']'";
+            $query = "update city set dead=dead+'$num' where city='{$general['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             // 상대 병사 소진이나 쌀 소진시 다음 장수
@@ -1311,7 +1311,7 @@ function processWar($connect, $general, $city) {
                 $general['atmos'] *= 1.1; //사기 증가
                 if($general['atmos'] > $_maximumatmos) { $general['atmos'] = $_maximumatmos; }
 
-                $query = "update general set atmos='$general['atmos']',killnum=killnum+1 where no='$general['no']'";
+                $query = "update general set atmos='{$general['atmos']}',killnum=killnum+1 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                 $exp2++;
@@ -1323,7 +1323,7 @@ function processWar($connect, $general, $city) {
                 $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($game, $oppose['crewtype'], $destnation['tech']));
                 if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
 
-                $query = "update general set deathnum=deathnum+1,rice='$oppose['rice']',experience=experience+'$opexp',dedication=dedication+'$opexp' where no='$oppose['no']'";
+                $query = "update general set deathnum=deathnum+1,rice='{$oppose['rice']}',experience=experience+'$opexp',dedication=dedication+'$opexp' where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $opexp = 0;
 
@@ -1365,9 +1365,9 @@ function processWar($connect, $general, $city) {
                 $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($game, $oppose['crewtype'], $destnation['tech']));
                 if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
 
-                $query = "update general set rice='$oppose['rice']',leader2='$oppose[leader2]',power2='$oppose[power2]',intel2='$oppose[intel2]',atmos='$oppose['atmos']',experience=experience+'$opexp',dedication=dedication+'$opexp',killnum=killnum+1 where no='$oppose['no']'";
+                $query = "update general set rice='{$oppose['rice']}',leader2='$oppose[leader2]',power2='$oppose[power2]',intel2='$oppose[intel2]',atmos='{$oppose['atmos']}',experience=experience+'$opexp',dedication=dedication+'$opexp',killnum=killnum+1 where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $query = "update general set deathnum=deathnum+1 where no='$general['no']'";
+                $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $opexp = 0;
 
@@ -1401,7 +1401,7 @@ function processWar($connect, $general, $city) {
     $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($game, $oppose['crewtype'], $destnation['tech']));
     if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
 
-    $query = "update general set rice='$oppose['rice']',experience=experience+'$opexp',dedication=dedication+'$opexp' where no='$oppose['no']'";
+    $query = "update general set rice='{$oppose['rice']}',experience=experience+'$opexp',dedication=dedication+'$opexp' where no='{$oppose['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 경험치 상승
@@ -1412,7 +1412,7 @@ function processWar($connect, $general, $city) {
     } else {
         $general[power2] += $exp2;
     }
-    $query = "update general set leader2='$general[leader2]',power2='$general[power2]',intel2='$general[intel2]' where no='$general['no']'";
+    $query = "update general set leader2='$general[leader2]',power2='$general[power2]',intel2='$general[intel2]' where no='{$general['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 공헌, 명성 상승
@@ -1423,7 +1423,7 @@ function processWar($connect, $general, $city) {
     $general['rice'] -= ($exp * 5 * getCrewtypeRice($game, $general['crewtype'], $nation['tech']));
     if($general['rice'] < 0) { $general['rice'] = 0; }
 
-    $query = "update general set rice='$general['rice']',dedication=dedication+'$exp',experience=experience+'$exp' where no='$general['no']'";
+    $query = "update general set rice='{$general['rice']}',dedication=dedication+'$exp',experience=experience+'$exp' where no='{$general['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     $log = checkAbility($connect, $general, $log);
@@ -1550,7 +1550,7 @@ function addConflict($connect, $city, $nationnum, $mykillnum) {
     $city['conflict'] = implode("|", $nationlist);
     $city[conflict2] = implode("|", $killnum);
 
-    $query = "update city set conflict='$city['conflict']',conflict2='$city[conflict2]' where city='$city['city']'";
+    $query = "update city set conflict='{$city['conflict']}',conflict2='$city[conflict2]' where city='{$city['city']}'";
     MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
 
     return $city;
@@ -1580,7 +1580,7 @@ function DeleteConflict($connect, $nation) {
             $conflict = implode("|", $nationlist);
             $conflict2 = implode("|", $killnum);
 
-            $query = "update city set conflict='$conflict',conflict2='$conflict2' where city='$city['city']'";
+            $query = "update city set conflict='$conflict',conflict2='$conflict2' where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
         }
     }
@@ -1616,36 +1616,36 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
     $nation = addNationHistory($connect, $nation, "<C>●</>{$game['year']}년 {$game['month']}월:<Y>$general['name']</>(이)가 {$destnationName} <G><b>$city['name']</b></>(을)를 <S>점령</>");
     $destnation = addNationHistory($connect, $destnation, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>$nation['name']</b></>의 <Y>$general['name']</>에 의해 <G><b>$city['name']</b></>(이)가 <O>함락</>");
 
-    $query = "select city from city where nation='$city['nation']'";
+    $query = "select city from city where nation='{$city['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
     // 국가 멸망시
     if($citycount == 1 && $city['nation'] != 0) {
-        $query = "select nation,name,history,tech,type from nation where nation='$nation['nation']'";
+        $query = "select nation,name,history,tech,type from nation where nation='{$nation['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($result);
 
-        $query = "select nation,name,gold,rice from nation where nation='$city['nation']'";
+        $query = "select nation,name,gold,rice from nation where nation='{$city['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $losenation = MYDB_fetch_array($result);
 
         $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<R><b>【멸망】</b></><D><b>$losenation['name']</b></>(이)가 멸망하였습니다.";
         $nation = addNationHistory($connect, $nation, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>$losenation['name']</b></>(을)를 정복");
 
-        $query = "select no from general where nation='$general['nation']' and level='12'";
+        $query = "select no from general where nation='{$general['nation']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $ruler = MYDB_fetch_array($result);
 
         //다굴치는 나라들 전방설정을 위해 미리 얻어옴
-        $query = "select you from diplomacy where me='$losenation['nation']' and state<2";
+        $query = "select you from diplomacy where me='{$losenation['nation']}' and state<2";
         $dipResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $dipCount = MYDB_num_rows($dipResult);
 
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
         //멸망국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,npc,gold,rice,history,msgindex from general where nation='$city['nation']'";
+        $query = "select no,name,nation,npc,gold,rice,history,msgindex from general where nation='{$city['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>$losenation['name']</b></>(이)가 <R>멸망</>했습니다.";
@@ -1697,11 +1697,11 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         $losenation['rice'] = floor($losenation['gold'] / 2);
         
         // 기본량 제외 금쌀50% + 장수들 분실 금쌀50% 흡수
-        $query = "update nation set gold=gold+'$losenation['gold']',rice=rice+'$losenation['rice']' where nation='$general['nation']'";
+        $query = "update nation set gold=gold+'{$losenation['gold']}',rice=rice+'{$losenation['rice']}' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         
         //아국 수뇌부에게 로그 전달
-        $query = "select no,name,nation from general where nation='$general['nation']' and level>='9'";
+        $query = "select no,name,nation from general where nation='{$general['nation']}' and level>='9'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>$losenation['name']</b></> 정복으로 금<C>$losenation['gold']</> 쌀<C>$losenation['rice']</>을 획득했습니다.";
@@ -1713,22 +1713,22 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         //분쟁기록 모두 지움
         DeleteConflict($connect, $city['nation']);
         // 전 장수 공헌 명성치 깎음
-        $query = "update general set dedication=dedication*0.5,experience=experience*0.9 where nation='$city['nation']'";
+        $query = "update general set dedication=dedication*0.5,experience=experience*0.9 where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 전 도시 공백지로
-        $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='',conflict2='',term=0 where nation='$city['nation']'";
+        $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='',conflict2='',term=0 where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 전 장수 소속 무소속으로, 재야로, 부대 탈퇴
-        $query = "update general set nation='0',belong='0',level='0',troop='0' where nation='$city['nation']'";
+        $query = "update general set nation='0',belong='0',level='0',troop='0' where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 부대도 삭제
-        $query = "delete from troop where nation='$city['nation']'";
+        $query = "delete from troop where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 외교 삭제
-        $query = "delete from diplomacy where me='$city['nation']' or you='$city['nation']'";
+        $query = "delete from diplomacy where me='{$city['nation']}' or you='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 국가 삭제
-        $query = "delete from nation where nation='$city['nation']'";
+        $query = "delete from nation where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아까 얻어온 다굴국들 전방설정
         for($i=0; $i < $dipCount; $i++) {
@@ -1749,7 +1749,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         if($destnation['capital'] == $city['city']) {
             $dist = distance($connect, $city['city']);
 
-            $query = "select city,name,pop from city where nation='$destnation['nation']' and city!='$city['city']'";
+            $query = "select city,name,pop from city where nation='{$destnation['nation']}' and city!='{$city['city']}'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $cityCount = MYDB_num_rows($result);
             $minDist = 99;  $minCity = 0;   $minCityPop = 0;
@@ -1771,7 +1771,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
             $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<M><b>【긴급천도】</b></><D><b>$destnation['name']</b></>(이)가 수도가 함락되어 <G><b>$minCityName</b></>으로 긴급천도하였습니다.";
 
             //아국 수뇌부에게 로그 전달
-            $query = "select no,name,nation from general where nation='$destnation['nation']' and level>='5'";
+            $query = "select no,name,nation from general where nation='{$destnation['nation']}' and level>='5'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gencount = MYDB_num_rows($result);
             $genlog[0] = "<C>●</>수도가 함락되어 <G><b>$minCityName</b></>으로 <M>긴급천도</>합니다.";
@@ -1780,16 +1780,16 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
                 pushGenLog($gen, $genlog);
             }
             //천도
-            $query = "update nation set capital='$minCity',gold=gold*0.5,rice=rice*0.5 where nation='$destnation['nation']'";
+            $query = "update nation set capital='$minCity',gold=gold*0.5,rice=rice*0.5 where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //보급도시로 만듬
             $query = "update city set supply=1 where city='$minCity'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //수뇌부 이동
-            $query = "update general set city='$minCity' where nation='$destnation['nation']' and level>='5'";
+            $query = "update general set city='$minCity' where nation='{$destnation['nation']}' and level>='5'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //장수 사기 감소
-            $query = "update general set atmos=atmos*0.8 where nation='$destnation['nation']'";
+            $query = "update general set atmos=atmos*0.8 where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
@@ -1801,15 +1801,15 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
 
     if($conquerNation == $general['nation']) {
         // 이동 및 사기 변경
-        $query = "update general set city='$city['city']',atmos='$general['atmos']',killnum=killnum+1 where no='$general['no']'";
+        $query = "update general set city='{$city['city']}',atmos='{$general['atmos']}',killnum=killnum+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         if($city['level'] > 3) {
             // 도시 소속 변경, 태수,군사,시중 초기화
-            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=1000,wall=1000,nation='$general['nation']',gen1=0,gen2=0,gen3=0 where city='$city['city']'";
+            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=1000,wall=1000,nation='{$general['nation']}',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
             // 도시 소속 변경, 태수,군사,시중 초기화
-            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=def2/2,wall=wall2/2,nation='$general['nation']',gen1=0,gen2=0,gen3=0 where city='$city['city']'";
+            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=def2/2,wall=wall2/2,nation='{$general['nation']}',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         //전방설정
@@ -1824,15 +1824,15 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         $nation = addNationHistory($connect, $nation, "<C>●</>{$game['year']}년 {$game['month']}월:<G><b>$city['name']</b></>(을)를 <D><b>$conquerNationArray['name']</b></>에 <Y>양도</>");
         $conquerNationArray = addNationHistory($connect, $conquerNationArray, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>$nation['name']</b></>에서 <G><b>$city['name']</b></>(을)를 <S>양도</> 받음");
         // 이동X 및 사기 변경
-        $query = "update general set atmos='$general['atmos']',killnum=killnum+1 where no='$general['no']'";
+        $query = "update general set atmos='{$general['atmos']}',killnum=killnum+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         if($city['level'] > 3) {
             // 도시 소속 변경, 태수,군사,시중 초기화
-            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=1000,wall=1000,nation='$conquerNation',gen1=0,gen2=0,gen3=0 where city='$city['city']'";
+            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=1000,wall=1000,nation='$conquerNation',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
             // 도시 소속 변경, 태수,군사,시중 초기화
-            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=def2/2,wall=wall2/2,nation='$conquerNation',gen1=0,gen2=0,gen3=0 where city='$city['city']'";
+            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=def2/2,wall=wall2/2,nation='$conquerNation',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         //전방설정

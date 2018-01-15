@@ -5,7 +5,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel,skin from general where user_id='$_SESSION['p_id']'";
+$query = "select userlevel,skin from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -195,7 +195,7 @@ for($i=0; $i < $nationCount; $i++) {
                                             ROUND(AVG(intel), 1) as avgi,
                                             ROUND(AVG(explevel), 1) as avge,
                     SUM(crew) as crew
-        from general where nation='$nation['nation']'";
+        from general where nation='{$nation['nation']}'";
     $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen = MYDB_fetch_array($genResult);
 
@@ -207,7 +207,7 @@ for($i=0; $i < $nationCount; $i++) {
                     ROUND(SUM(secu)/SUM(secu2)*100, 2) as secu,
                     ROUND(SUM(wall)/SUM(wall2)*100, 2) as wall,
                     ROUND(SUM(def)/SUM(def2)*100, 2) as def
-        from city where nation='$nation['nation']'";
+        from city where nation='{$nation['nation']}'";
     $cityResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($cityResult);
 

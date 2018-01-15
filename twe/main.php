@@ -7,7 +7,7 @@ $connect = dbConn();
 increaseRefresh($connect, "메인", 2);
 checkTurn($connect);
 
-$query = "select no,skin,userlevel,con,turntime,newmsg,newvote,map from general where user_id='$_SESSION['p_id']'";
+$query = "select no,skin,userlevel,con,turntime,newmsg,newvote,map from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -19,13 +19,13 @@ if($me['no'] == 0) {
 }
 
 if($me['newmsg'] == 1 && $me['newvote'] == 1) {
-    $query = "update general set newmsg=0,newvote=0 where user_id='$_SESSION['p_id']'";
+    $query = "update general set newmsg=0,newvote=0 where user_id='{$_SESSION['p_id']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($me['newmsg'] == 1) {
-    $query = "update general set newmsg=0 where user_id='$_SESSION['p_id']'";
+    $query = "update general set newmsg=0 where user_id='{$_SESSION['p_id']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($me['newvote'] == 1) {
-    $query = "update general set newvote=0 where user_id='$_SESSION['p_id']'";
+    $query = "update general set newvote=0 where user_id='{$_SESSION['p_id']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 

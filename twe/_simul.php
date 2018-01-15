@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "시뮬", 2);
 
-$query = "select no,tournament,userlevel,con,turntime from general where user_id='$_SESSION['p_id']'";
+$query = "select no,tournament,userlevel,con,turntime from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

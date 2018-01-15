@@ -38,7 +38,7 @@ if($select == 0) {
         <td bgcolor=skyblue align=center colspan=8>
             <font size=5>$emperior['phase']</font>
             <input type=submit value='자세히'>
-            <input type=hidden name=select value='$emperior['no']'>
+            <input type=hidden name=select value='{$emperior['no']}'>
         </td>
     </tr>
     <tr>

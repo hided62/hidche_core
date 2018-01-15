@@ -105,7 +105,7 @@ function LogHistory($connect, $isFirst=0) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        $query = "select city from city where nation='$nation['nation']'";
+        $query = "select city from city where nation='{$nation['nation']}'";
         $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $citycount = MYDB_num_rows($cityresult);
 
@@ -121,7 +121,7 @@ function LogHistory($connect, $isFirst=0) {
         insert into history (
             year, month, map, log, genlog, nation, power, gen, city
         ) values (
-            '$admin['year']', '$admin['month']', '$map', '$log', '$genlog', '$nationStr', '$powerStr', '$genStr', '$cityStr'
+            '{$admin['year']}', '{$admin['month']}', '$map', '$log', '$genlog', '$nationStr', '$powerStr', '$genStr', '$cityStr'
         )",
     $connect) or Error(__LINE__.MYDB_error($connect),"");
 

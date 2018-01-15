@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "세력도시", 1);
 
-$query = "select no,nation,level,skin from general where user_id='$_SESSION['p_id']'";
+$query = "select no,nation,level,skin from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -56,27 +56,27 @@ if($me['skin'] < 1) {
     </td></tr>
 </table>
 <?php
-$query = "select nation from general where user_id='$_SESSION['p_id']'";
+$query = "select nation from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select color,capital from nation where nation='$me['nation']'";
+$query = "select color,capital from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);   //국가정보
 
 switch($type) {
-    case  1: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']'"; break;
-    case  2: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by pop desc"; break;
-    case  3: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by poprate desc"; break;
-    case  4: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by rate desc"; break;
-    case  5: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by agri desc"; break;
-    case  6: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by comm desc"; break;
-    case  7: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by secu desc"; break;
-    case  8: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by def desc"; break;
-    case  9: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by wall desc"; break;
-    case 10: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by trade desc"; break;
-    case 11: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by region,level desc"; break;
-    case 12: $query = "select *,pop/pop2 as poprate from city where nation='$me['nation']' order by level desc, region"; break;
+    case  1: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}'"; break;
+    case  2: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by pop desc"; break;
+    case  3: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by poprate desc"; break;
+    case  4: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by rate desc"; break;
+    case  5: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by agri desc"; break;
+    case  6: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by comm desc"; break;
+    case  7: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by secu desc"; break;
+    case  8: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by def desc"; break;
+    case  9: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by wall desc"; break;
+    case 10: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by trade desc"; break;
+    case 11: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by region,level desc"; break;
+    case 12: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by level desc, region"; break;
 }
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $citycount = MYDB_num_rows($cityresult);
@@ -144,7 +144,7 @@ for($j=0; $j < $citycount; $j++) {
     <tr>
         <td align=center id=bg1>장수</td>
         <td colspan=11>";
-    $query = "select npc,name from general where city='$city['city']' and nation='$me['nation']'";    // 장수 목록
+    $query = "select npc,name from general where city='{$city['city']}' and nation='{$me['nation']}'";    // 장수 목록
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
     if($gencount == 0) echo "-";

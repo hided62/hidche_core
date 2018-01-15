@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "세력정보", 1);
 
-$query = "select no,nation,level from general where user_id='$_SESSION['p_id']'";
+$query = "select no,nation,level from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -30,15 +30,15 @@ if($me['level'] == 0) {
 </table>
 <br>
 <?php
-$query = "select nation,skin from general where user_id='$_SESSION['p_id']'";
+$query = "select nation,skin from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select nation,gennum,power,rate,bill,type,gold,rice,color,name,level,tech,history,capital from nation where nation='$me['nation']'";
+$query = "select nation,gennum,power,rate,bill,type,gold,rice,color,name,level,tech,history,capital from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);   //국가정보
 
-$query = "select city,name,pop,pop2 from city where nation='$nation['nation']'"; // 도시 이름 목록
+$query = "select city,name,pop,pop2 from city where nation='{$nation['nation']}'"; // 도시 이름 목록
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $citycount = MYDB_num_rows($cityresult);
 
@@ -50,7 +50,7 @@ for($j=0; $j < $citycount; $j++) {
     $maxpop += $city[pop2];
 }
 
-$query = "select sum(crew) as totcrew,sum(leader)*100 as maxcrew from general where nation='$nation['nation']'";
+$query = "select sum(crew) as totcrew,sum(leader)*100 as maxcrew from general where nation='{$nation['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
 

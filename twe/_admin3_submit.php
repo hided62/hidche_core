@@ -7,7 +7,7 @@ $connect = dbConn();
 
 $admin = getAdmin($connect);
 
-$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
+$query = "select userlevel from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -27,7 +27,7 @@ switch($btn) {
             // 상대에게 발송
             $you['msgindex']++;
             if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='$you['msgindex']',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
+            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         for($i=0; $i < sizeof($genlist); $i++) {
@@ -50,7 +50,7 @@ switch($btn) {
             // 상대에게 발송
             $you['msgindex']++;
             if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='$you['msgindex']',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
+            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         for($i=0; $i < sizeof($genlist); $i++) {
@@ -73,7 +73,7 @@ switch($btn) {
             // 상대에게 발송
             $you['msgindex']++;
             if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='$you['msgindex']',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
+            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         for($i=0; $i < sizeof($genlist); $i++) {
@@ -96,7 +96,7 @@ switch($btn) {
             // 상대에게 발송
             $you['msgindex']++;
             if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='$you['msgindex']',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
+            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         for($i=0; $i < sizeof($genlist); $i++) {
@@ -123,7 +123,7 @@ switch($btn) {
             // 상대에게 발송
             $you['msgindex']++;
             if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='$you['msgindex']',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date',newmsg=1 where no='$genlist[$i]'";
+            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date',newmsg=1 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;

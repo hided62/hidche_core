@@ -8,7 +8,7 @@ CheckLogin();
 $connect = dbConn();
 
 if(CheckBlock($connect) != 1 && CheckBlock($connect) != 3) {
-    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
+    $query = "select no,nation from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -28,16 +28,16 @@ if(CheckBlock($connect) != 1 && CheckBlock($connect) != 3) {
         $msg = $title."|".$msg;
         $msg = addslashes(SQ2DQ($msg));
         $date = date('Y-m-d H:i:s');
-        $query = "update nation set board{$num}='$msg',board{$num}_who='$me['no']',board{$num}_when='$date' where nation='$me['nation']'";
+        $query = "update nation set board{$num}='$msg',board{$num}_who='{$me['no']}',board{$num}_when='$date' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update nation set boardindex='$num' where nation='$me['nation']'";
+        $query = "update nation set boardindex='$num' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //$num에 댓글시
     } elseif($num >= 0 && $reply != "") {
         $newmsg = $nation["board{$num}"]."|".$me['no']."|".$reply;
         $newmsg = addslashes(SQ2DQ($newmsg));
 
-        $query = "update nation set board{$num}='$newmsg' where nation='$me['nation']'";
+        $query = "update nation set board{$num}='$newmsg' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 }

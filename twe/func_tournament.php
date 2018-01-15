@@ -297,7 +297,7 @@ function fillLowGenAll($connect) {
     }
 
     //자동신청하고, 돈 있고, 아직 참가 안한 장수
-    $query = "select no,npc,name,leader,power,intel,explevel from general where tnmt='1' and tournament='0' and gold>='$admin['develcost']' order by rand() limit 0,64";
+    $query = "select no,npc,name,leader,power,intel,explevel from general where tnmt='1' and tournament='0' and gold>='{$admin['develcost']}' order by rand() limit 0,64";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
 
@@ -312,14 +312,14 @@ function fillLowGenAll($connect) {
                 if($genCount > 0) {
                     $genCount--;
                     $gen = MYDB_fetch_array($result);
-                    $query = "update general set gold=gold-'$admin['develcost']',tournament='1' where no='$gen['no']'";
+                    $query = "update general set gold=gold-'{$admin['develcost']}',tournament='1' where no='{$gen['no']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-                    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('$gen['no']', '$gen['npc']', '$gen['name']', '$gen['leader']', '$gen['power']', '$gen['intel']', '$gen['explevel']', '$i', '$grpCount[$i]')";
+                    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('{$gen['no']}', '{$gen['npc']}', '{$gen['name']}', '{$gen['leader']}', '{$gen['power']}', '{$gen['intel']}', '{$gen['explevel']}', '$i', '$grpCount[$i]')";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 //자동신청 장수 없으면 무명장수
                 } else {
-                    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('$general['no']', '$general['npc']', '$general['name']', '$general['leader']', '$general['power']', '$general['intel']', '$general['explevel']', '$i', '$grpCount[$i]')";
+                    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['leader']}', '{$general['power']}', '{$general['intel']}', '{$general['explevel']}', '$i', '$grpCount[$i]')";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 }
                 $grpCount[$i]++;
@@ -396,7 +396,7 @@ function qualify($connect, $tnmt_type, $tnmt, $phase) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             for($k=1; $k <= 4; $k++) {
                 $gen = MYDB_fetch_array($result);
-                $query = "update tournament set prmt='$k' where grp='$gen['grp']' and grp_no='$gen['grp_no']'";
+                $query = "update tournament set prmt='$k' where grp='{$gen['grp']}' and grp_no='{$gen['grp_no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         }
@@ -431,10 +431,10 @@ function selection($connect, $tnmt_type, $tnmt, $phase) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
     //본선에 추가
-    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('$general['no']', '$general['npc']', '$general['name']', '$general['ldr']', '$general['pwr']', '$general['itl']', '$general['lvl']', '$grp', '$grp_no', '$general[h]', '$general[w]', '$general[b]')";
+    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['ldr']}', '{$general['pwr']}', '{$general['itl']}', '{$general['lvl']}', '$grp', '$grp_no', '$general[h]', '$general[w]', '$general[b]')";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //시드 삭제
-    $query = "update tournament set prmt=0 where grp='$general['grp']' and grp_no='$general['grp_no']'";
+    $query = "update tournament set prmt=0 where grp='{$general['grp']}' and grp_no='{$general['grp_no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     if($phase < 31) {
@@ -473,7 +473,7 @@ function finallySingle($connect, $tnmt_type, $tnmt, $phase) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             for($k=1; $k <= 2; $k++) {
                 $gen = MYDB_fetch_array($result);
-                $query = "update tournament set prmt='$k' where grp='$gen['grp']' and grp_no='$gen['grp_no']'";
+                $query = "update tournament set prmt='$k' where grp='{$gen['grp']}' and grp_no='{$gen['grp_no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         }
@@ -499,7 +499,7 @@ function final16set($connect) {
         //16강에 추가
         $newGrp    = 20 + floor($i / 2);
         $newGrp_no = $i % 2;
-        $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('$general['no']', '$general['npc']', '$general['name']', '$general['ldr']', '$general['pwr']', '$general['itl']', '$general['lvl']', '$newGrp', '$newGrp_no', '$general[h]', '$general[w]', '$general[b]')";
+        $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['ldr']}', '{$general['pwr']}', '{$general['itl']}', '{$general['lvl']}', '$newGrp', '$newGrp_no', '$general[h]', '$general[w]', '$general[b]')";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     $query = "update tournament set prmt=0";
@@ -529,7 +529,7 @@ function finalFight($connect, $tnmt_type, $tnmt, $phase, $type) {
     //x강에 추가
     $newGrp    = floor($phase / 2) + $offset + 10;
     $newGrp_no = $phase % 2;
-    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('$general['no']', '$general['npc']', '$general['name']', '$general['ldr']', '$general['pwr']', '$general['itl']', '$general['lvl']', '$newGrp', '$newGrp_no', '$general[h]', '$general[w]', '$general[b]')";
+    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['ldr']}', '{$general['pwr']}', '{$general['itl']}', '{$general['lvl']}', '$newGrp', '$newGrp_no', '$general[h]', '$general[w]', '$general[b]')";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     if($phase >= $turn) {
@@ -557,7 +557,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+25,gold=gold+'$cost',{$tp2}g={$tp2}g+1 where no='$general['no']'";
+        $query = "update general set experience=experience+25,gold=gold+'$cost',{$tp2}g={$tp2}g+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
         $genNo[$i] = $general['no'];
@@ -572,7 +572,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+50,gold=gold+'$cost',{$tp2}g={$tp2}g+1 where no='$general['no']'";
+        $query = "update general set experience=experience+50,gold=gold+'$cost',{$tp2}g={$tp2}g+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
         $genGold[$general['no']] += $cost;
@@ -585,7 +585,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+75,gold=gold+'$cost',{$tp2}g={$tp2}g+2 where no='$general['no']'";
+        $query = "update general set experience=experience+75,gold=gold+'$cost',{$tp2}g={$tp2}g+2 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
         $genGold[$general['no']] += $cost;
@@ -598,7 +598,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+150,gold=gold+'$cost',{$tp2}g={$tp2}g+2 where no='$general['no']'";
+        $query = "update general set experience=experience+150,gold=gold+'$cost',{$tp2}g={$tp2}g+2 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
         $genGold[$general['no']] += $cost;
@@ -611,7 +611,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+200,gold=gold+'$cost',{$tp2}g={$tp2}g+3,{$tp2}p={$tp2}p+1 where no='$general['no']'";
+        $query = "update general set experience=experience+200,gold=gold+'$cost',{$tp2}g={$tp2}g+3,{$tp2}p={$tp2}p+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
         $genGold[$general['no']] += $cost;
@@ -658,7 +658,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
     //16강 목록에서 검색
-    $query = "select grp,grp_no from tournament where grp>=20 and grp<30 and no='$general['no']'";
+    $query = "select grp,grp_no from tournament where grp>=20 and grp<30 and no='{$general['no']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
     $no = ($general['grp'] - 20) * 2 + $general['grp_no'];
@@ -676,7 +676,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
         $gen = MYDB_fetch_array($result);
         $gold = round($gen['bet'] * $bet);
         //금 지급
-        $query = "update general set gold=gold+'$gold',betwingold=betwingold+'$gold',betwin=betwin+1 where no='$gen['no']'";
+        $query = "update general set gold=gold+'$gold',betwingold=betwingold+'$gold',betwin=betwin+1 where no='{$gen['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //로그
         $log[0] = "<S>◆</><C>{$tp}</> 대회의 베팅 당첨으로 <C>{$gold}</>의 <S>금</> 획득!";
@@ -696,7 +696,7 @@ function setRefund($connect) {
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set gold=gold+'$cost' where no='$general['no']'";
+        $query = "update general set gold=gold+'$cost' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
@@ -911,11 +911,11 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         if($energy2 <= 0) { $sel = 0; break; }
     }
 
-    $query = "select {$tp2}g as gl from general where no='$gen1['no']'";
+    $query = "select {$tp2}g as gl from general where no='{$gen1['no']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general1 = MYDB_fetch_array($result);
 
-    $query = "select {$tp2}g as gl from general where no='$gen2['no']'";
+    $query = "select {$tp2}g as gl from general where no='{$gen2['no']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general2 = MYDB_fetch_array($result);
 
@@ -933,9 +933,9 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         elseif($general1['gl'] == $general2['gl']) { $gl1 = "+2"; $gl2 = "-1"; }
         else                                   { $gl1 = "+3"; $gl2 = "-2"; }
 
-        $query = "update general set {$tp2}w={$tp2}w+1,{$tp2}g={$tp2}g{$gl1} where no='$gen1['no']'";
+        $query = "update general set {$tp2}w={$tp2}w+1,{$tp2}g={$tp2}g{$gl1} where no='{$gen1['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set {$tp2}l={$tp2}l+1,{$tp2}g={$tp2}g{$gl2} where no='$gen2['no']'";
+        $query = "update general set {$tp2}l={$tp2}l+1,{$tp2}g={$tp2}g{$gl2} where no='{$gen2['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 1:
@@ -951,9 +951,9 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         elseif($general2['gl'] == $general1['gl']) { $gl2 = "+2"; $gl1 = "-1"; }
         else                                   { $gl2 = "+3"; $gl1 = "-2"; }
 
-        $query = "update general set {$tp2}l={$tp2}l+1,{$tp2}g={$tp2}g{$gl1} where no='$gen1['no']'";
+        $query = "update general set {$tp2}l={$tp2}l+1,{$tp2}g={$tp2}g{$gl1} where no='{$gen1['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set {$tp2}w={$tp2}w+1,{$tp2}g={$tp2}g{$gl2} where no='$gen2['no']'";
+        $query = "update general set {$tp2}w={$tp2}w+1,{$tp2}g={$tp2}g{$gl2} where no='{$gen2['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 2:
@@ -966,9 +966,9 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         elseif($general1['gl'] == $general2['gl']) { $gl2 = "+0"; $gl1 = "+0"; }
         else                                   { $gl2 = "+1"; $gl1 = "-1"; }
 
-        $query = "update general set {$tp2}d={$tp2}d+1,{$tp2}g={$tp2}g{$gl1} where no='$gen1['no']'";
+        $query = "update general set {$tp2}d={$tp2}d+1,{$tp2}g={$tp2}g{$gl1} where no='{$gen1['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set {$tp2}d={$tp2}d+1,{$tp2}g={$tp2}g{$gl2} where no='$gen2['no']'";
+        $query = "update general set {$tp2}d={$tp2}d+1,{$tp2}g={$tp2}g{$gl2} where no='{$gen2['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     }
