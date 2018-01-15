@@ -5,11 +5,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel,skin from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel,skin from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "
 <html>
 <head>
@@ -72,14 +72,14 @@ for($i=0; $i < $gencount; $i++) {
     $general = MYDB_fetch_array($result);
     // 선택 없으면 맨 처음 장수
     if($gen == 0) {
-        $gen = $general[no];
+        $gen = $general['no'];
     }
-    if($gen == $general[no]) {
+    if($gen == $general['no']) {
         echo "
-            <option selected value={$general[no]}>{$general[name]}</option>";
+            <option selected value={$general['no']}>{$general['name']}</option>";
     } else {
         echo "
-            <option value={$general[no]}>{$general[name]}</option>";
+            <option value={$general['no']}>{$general['name']}</option>";
     }
 }
 ?>
@@ -95,7 +95,7 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php generalInfo($connect, $gen, $me[skin]); generalInfo2($connect, $gen, $me[skin]); ?>
+            <?php generalInfo($connect, $gen, $me['skin']); generalInfo2($connect, $gen, $me['skin']); ?>
         </td>
         <td valign=top>&nbsp;
         </td>
@@ -106,10 +106,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php MyLog($gen, 24, $me[skin]); ?>
+            <?php MyLog($gen, 24, $me['skin']); ?>
         </td>
         <td valign=top>
-            <?php MyBatLog($gen, 24, $me[skin]); ?>
+            <?php MyBatLog($gen, 24, $me['skin']); ?>
         </td>
     </tr>
     <tr>
@@ -118,10 +118,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php MyHistory($connect, $gen, $me[skin]); ?>
+            <?php MyHistory($connect, $gen, $me['skin']); ?>
         </td>
         <td valign=top>
-            <?php MyBatRes($gen, 24, $me[skin]); ?>
+            <?php MyBatRes($gen, 24, $me['skin']); ?>
         </td>
     </tr>
 </table>

@@ -2,9 +2,9 @@
 include "lib.php";
 include "func.php";
 
-$id   = $_POST[id];
-$pw   = $_POST[pw];
-$face = $_POST[face];
+$id   = $_POST['id'];
+$pw   = $_POST['pw'];
+$face = $_POST['face'];
 
 $pwTemp = substr($pw, 0, 32);
 
@@ -23,7 +23,7 @@ if(!$member) {
 
 $date = date('Y-m-d H:i:s');
 //등록정보
-$query = "update MEMBER set reg_num=reg_num+1,reg_date='$date' where no='$member[no]'";
+$query = "update MEMBER set reg_num=reg_num+1,reg_date='$date' where no='$member['no']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 $connect = dbConn();
@@ -43,11 +43,11 @@ $query  = "select no from general where npc<2";
 $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($result);
 
-$query  = "select no from general where user_id='$member[id]'";
+$query  = "select no from general where user_id='$member['id']'";
 $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
 $id_num = MYDB_num_rows($result);
 
-if($admin[npcmode] != 1) {
+if($admin['npcmode'] != 1) {
     echo "<script>alert('잘못된 접근입니다!');</script>";
     echo "<script>history.go(-1);</script>";
     exit();
@@ -57,26 +57,26 @@ if($admin[npcmode] != 1) {
       history.go(-1)
       </script>");
     exit;
-} elseif($admin[maxgeneral] <= $gencount) {
+} elseif($admin['maxgeneral'] <= $gencount) {
     echo("<script>
       window.alert('더이상 등록할 수 없습니다!')
       history.go(-1)
       </script>");
     exit;
-} elseif($npc[npc] < 2) {
+} elseif($npc['npc'] < 2) {
     echo("<script>
       window.alert('이미 선택된 장수입니다!')
       history.go(-1)
       </script>");
     exit;
-} elseif($npc[npc] != 2) {
+} elseif($npc['npc'] != 2) {
     echo("<script>
       window.alert('선택할 수 없는 NPC입니다!')
       history.go(-1)
       </script>");
     exit;
 /*
-} elseif($npc[level] >= 5) {
+} elseif($npc['level'] >= 5) {
     echo("<script>
       window.alert('수뇌부는 선택할 수 없습니다!')
       history.go(-1)
@@ -85,13 +85,13 @@ if($admin[npcmode] != 1) {
 */
 } else {
     //특회
-    $userlevel = $member[grade];
+    $userlevel = $member['grade'];
 
     $query = "
         update general set
             user_id='{$id}',
             password='{$pwTemp}',
-            name2='{$member[name]}',
+            name2='{$member['name']}',
             conmsg='',
             npc=1,
             killturn=6,
@@ -107,12 +107,12 @@ if($admin[npcmode] != 1) {
     $result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $log[0] = "<C>●</>{$admin[month]}월:<Y>$me[name]</>의 육체에 <Y>$member[name]</>(이)가 <S>빙의</>됩니다!";
-    $me = addHistory($connect, $me, "<C>●</>$admin[year]년 $admin[month]월:<Y>$me[name]</>의 육체에 <Y>$member[name]</>(이)가 빙의되다.");
+    $log[0] = "<C>●</>{$admin['month']}월:<Y>$me['name']</>의 육체에 <Y>$member['name']</>(이)가 <S>빙의</>됩니다!";
+    $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<Y>$me['name']</>의 육체에 <Y>$member['name']</>(이)가 빙의되다.");
     pushGenLog($me, $mylog);
     pushAllLog($log);
 
-    $adminLog[0] = "가입 : {$me[name]} // {$id} // ".getenv("REMOTE_ADDR");
+    $adminLog[0] = "가입 : {$me['name']} // {$id} // ".getenv("REMOTE_ADDR");
     pushAdminLog($connect, $adminLog);
 
     MYDB_close($connect);

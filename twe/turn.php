@@ -10,11 +10,11 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,nation,msgindex,userlevel,con from general where user_id='$_SESSION[p_id]'";
+$query = "select no,name,nation,msgindex,userlevel,con from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me[userlevel], $me[con], $admin[conlimit]);
+$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
 if($con >= 2) { echo "<script>window.top.main.location.replace('main.php');</script>"; exit(); }
 
 switch($type) {
@@ -29,7 +29,7 @@ case 0:
             if($k >= 24) break;
             $query .= ",";
         }
-        $query .= " where user_id='$_SESSION[p_id]'";
+        $query .= " where user_id='$_SESSION['p_id']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 */
@@ -43,7 +43,7 @@ case 0:
             if($k >= 24) break;
         }
     }
-    $query .= " where user_id='$_SESSION[p_id]'";
+    $query .= " where user_id='$_SESSION['p_id']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     break;
 case 1:
@@ -61,7 +61,7 @@ case 1:
         if($k < 0) break;
         $query .= ",";
     }
-    $query .= " where user_id='$_SESSION[p_id]'";
+    $query .= " where user_id='$_SESSION['p_id']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     break;
 case 2:
@@ -79,7 +79,7 @@ case 2:
         if($i >= 24) break;
         $query .= ",";
     }
-    $query .= " where user_id='$_SESSION[p_id]'";
+    $query .= " where user_id='$_SESSION['p_id']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     break;
 }

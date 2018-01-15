@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "시뮬", 2);
 
-$query = "select no,tournament,userlevel,con,turntime from general where user_id='$_SESSION[p_id]'";
+$query = "select no,tournament,userlevel,con,turntime from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -14,10 +14,10 @@ $query = "select * from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $game = MYDB_fetch_array($result);
 
-$con = checkLimit($me[userlevel], $me[con], $game[conlimit]);
-if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
+$con = checkLimit($me['userlevel'], $me['con'], $game['conlimit']);
+if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-if($me[userlevel] < 3) {
+if($me['userlevel'] < 3) {
     echo "특별회원이 아닙니다.";
     exit();
 }
@@ -38,38 +38,38 @@ if($isgen == "장수평균" || $isgen == "성벽평균") {
 if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평균" || $isgen == "성벽평균") {
     $msg2 = "";
     for($i=0; $i < $simulCount; $i++) {
-        $general[leader] = $leader1;
-        $general[power] = $power1;
-        $general[intel] = $intel1;
-        $general[crewtype] = $type1;
-        $general[crew] = $crew1;
-        $general[train] = $train1;
-        $general[atmos] = $atmos1;
-        $general[level] = $level1;
-        $general[explevel] = $explevel1;
+        $general['leader'] = $leader1;
+        $general['power'] = $power1;
+        $general['intel'] = $intel1;
+        $general['crewtype'] = $type1;
+        $general['crew'] = $crew1;
+        $general['train'] = $train1;
+        $general['atmos'] = $atmos1;
+        $general['level'] = $level1;
+        $general['explevel'] = $explevel1;
         $general[dex0] = $dex10;
         $general[dex10] = $dex110;
         $general[dex20] = $dex120;
         $general[dex30] = $dex130;
         $general[dex40] = $dex140;
 
-        $oppose[leader] = $leader2;
-        $oppose[power] = $power2;
-        $oppose[intel] = $intel2;
-        $oppose[crewtype] = $type2;
-        $oppose[crew] = $crew2;
-        $oppose[train] = $train2;
-        $oppose[atmos] = $atmos2;
-        $oppose[level] = $level2;
-        $oppose[explevel] = $explevel2;
+        $oppose['leader'] = $leader2;
+        $oppose['power'] = $power2;
+        $oppose['intel'] = $intel2;
+        $oppose['crewtype'] = $type2;
+        $oppose['crew'] = $crew2;
+        $oppose['train'] = $train2;
+        $oppose['atmos'] = $atmos2;
+        $oppose['level'] = $level2;
+        $oppose['explevel'] = $explevel2;
         $oppose[dex0] = $dex20;
         $oppose[dex10] = $dex210;
         $oppose[dex20] = $dex220;
         $oppose[dex30] = $dex230;
         $oppose[dex40] = $dex240;
 
-        $city[def] = $def;
-        $city[wall] = $wall;
+        $city['def'] = $def;
+        $city['wall'] = $wall;
 
         if($isgen == "장수공격" || $isgen == "장수평균") {
             $opposecount = 1;
@@ -77,11 +77,11 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
             $opposecount = 0;
         }
 
-        $warphase = getRate($game, $general[crewtype], "spd");   //병종간 페이즈 수 얻기
+        $warphase = getRate($game, $general['crewtype'], "spd");   //병종간 페이즈 수 얻기
 
         // 우선 스케일링
-        $city[def] *= 10;
-        $city[wall] *= 10;
+        $city['def'] *= 10;
+        $city['wall'] *= 10;
 
         $msg = "";
         $msg .= "<C>●</>1월:공격장수가 <R>공격</>합니다.<br>";
@@ -93,7 +93,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
         while($phase < $warphase) {
             // 장수가 없어서 도시 공격
             if($opposecount == 0) {
-                $msg .= "<C>●</>".getTypename($general[crewtype])."(으)로 성을 <M>공격</>합니다.<br>";
+                $msg .= "<C>●</>".getTypename($general['crewtype'])."(으)로 성을 <M>공격</>합니다.<br>";
 
                 $mykillnum = 0; $mydeathnum = 0;
                 while($phase < $warphase) {
@@ -110,35 +110,35 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $myweight = $cityAtt - $myDef;
 
                     //훈련 사기따라
-                    $myCrew = getCrew($myCrew, $atmos3, $general[train]);
-                    $cityCrew = getCrew($cityCrew, $general[atmos], $train3);
+                    $myCrew = getCrew($myCrew, $atmos3, $general['train']);
+                    $cityCrew = getCrew($cityCrew, $general['atmos'], $train3);
                     //숙련도 따라
-                    $genDexAtt = getGenDex($general, $general[crewtype]);
+                    $genDexAtt = getGenDex($general, $general['crewtype']);
                     $genDexDef = getGenDex($general, 40);
                     $cityCrew *= getDexLog($genDexAtt, ($train3-60)*7200);
                     $myCrew *= getDexLog(($atmos3-60)*7200, $genDexDef);
 
                     $avoid = 1;
                     // 병종간 특성
-                    if(floor($general[crewtype]/10) == 3) {   // 귀병
-                        $int = $general[intel] + getBookEff($general[book]);
-                        if($general[crewtype] == 30) {
+                    if(floor($general['crewtype']/10) == 3) {   // 귀병
+                        $int = $general['intel'] + getBookEff($general['book']);
+                        if($general['crewtype'] == 30) {
                             $ratio2 = $int * 5;   // 0~500 즉 50%
-                        } elseif($general[crewtype] == 31) {
+                        } elseif($general['crewtype'] == 31) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($general[crewtype] == 32) {
+                        } elseif($general['crewtype'] == 32) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($general[crewtype] == 33) {
+                        } elseif($general['crewtype'] == 33) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($general[crewtype] == 34) {
+                        } elseif($general['crewtype'] == 34) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($general[crewtype] == 35) {
+                        } elseif($general['crewtype'] == 35) {
                             $ratio2 = $int * 8;   // 0~800 즉 80%
-                        } elseif($general[crewtype] == 36) {
+                        } elseif($general['crewtype'] == 36) {
                             $ratio2 = $int * 8;   // 0~800 즉 80%
-                        } elseif($general[crewtype] == 37) {
+                        } elseif($general['crewtype'] == 37) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($general[crewtype] == 38) {
+                        } elseif($general['crewtype'] == 38) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
                         }
                         $ratio = rand() % 1000; // 0~999
@@ -181,23 +181,23 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                                 }
                             }
                         }
-                    } elseif($general[crewtype] == 40) { // 정란
+                    } elseif($general['crewtype'] == 40) { // 정란
                         $cityCrew = $cityCrew * 1.5;
-                    } elseif($general[crewtype] == 41) { // 충차
+                    } elseif($general['crewtype'] == 41) { // 충차
                         $cityCrew = $cityCrew * 2.0;
-                    } elseif($general[crewtype] == 42) { // 벽력거
+                    } elseif($general['crewtype'] == 42) { // 벽력거
                         $cityCrew = $cityCrew * 1.5;
                     }
                     //군주, 참모, 장군 공격 보정 5%
-                    if($general[level] == 12 || $general[level] == 11 || $general[level] == 10 || $general[level] == 8 || $general[level] == 6) {
+                    if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 10 || $general['level'] == 8 || $general['level'] == 6) {
                         $cityCrew = $cityCrew * 1.05;
                     }
                     //레벨 보정
-                    $cityCrew = $cityCrew * (100 + $general[explevel]/6)/100;
+                    $cityCrew = $cityCrew * (100 + $general['explevel']/6)/100;
 
                     //크리
                     $rd = rand() % 100; // 0 ~ 99
-                    $ratio = CriticalRatio2($general[leader], $general[power], $general[intel]);
+                    $ratio = CriticalRatio2($general['leader'], $general['power'], $general['intel']);
                     if($ratio >= $rd && $avoid == 1) {
                         $msg .= "<C>●</><C>필살</>공격!</><br>";
                         $cityCrew = CriticalScore2($cityCrew);
@@ -205,7 +205,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     }
                     //회피
                     $ratio = rand() % 100; // 0 ~ 99
-                    $ratio2 = getRate($game, $general[crewtype], "avd");   //회피율
+                    $ratio2 = getRate($game, $general['crewtype'], "avd");   //회피율
                     if($ratio < $ratio2 && $avoid == 1) {
                         $msg .= "<C>●</><C>회피</>했다!</><br>";
                         $myCrew /= 10; // 10%만 소모
@@ -216,45 +216,45 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $cityCrew *= (rand() % 21 + 90)/100; // 90~110%
                     $myCrew *= (rand() % 21 + 90)/100; // 90~110%
 
-                    $general[crew] -= round($myCrew);
-                    $city[def] -= round($cityCrew);
-                    $city[wall] -= round($cityCrew);
+                    $general['crew'] -= round($myCrew);
+                    $city['def'] -= round($cityCrew);
+                    $city['wall'] -= round($cityCrew);
 
                     $tempMyCrew = $myCrew; $tempCityCrew = $cityCrew;
-                    $tempGeneralCrew = $general[crew]; $tempCityDef = $city[def];
+                    $tempGeneralCrew = $general['crew']; $tempCityDef = $city['def'];
 
-                    if($city[wall] <= 0) { $city[wall] = 0; }
+                    if($city['wall'] <= 0) { $city['wall'] = 0; }
 
-                    if($city[def] < 0) {
+                    if($city['def'] < 0) {
                         $offset = round($tempCityDef*$tempMyCrew/$tempCityCrew);
                         $myCrew += $offset;
-                        $general[crew] -= $offset;
+                        $general['crew'] -= $offset;
                         $cityCrew += $tempCityDef;
-                        $city[def] = 0;
+                        $city['def'] = 0;
                     }
-                    if($general[crew] < 0) {
+                    if($general['crew'] < 0) {
                         $offset = round($tempGeneralCrew*$tempCityCrew/$tempMyCrew);
                         $cityCrew += $offset;
-                        $city[def] -= $offset;
+                        $city['def'] -= $offset;
                         $myCrew += $tempGeneralCrew;
-                        $general[crew] = 0;
+                        $general['crew'] = 0;
                     }
 
                     $exp += $cityCrew;
                     $opexp += $myCrew;
-                    $general[crew] = round($general[crew]);
+                    $general['crew'] = round($general['crew']);
                     $cityCrew = round($cityCrew);
                     $myCrew = round($myCrew);
                     $myAtt = round($myAtt, 2);
                     $myDef = round($myDef, 2);
                     $cityAtt = round($cityAtt, 2);
                     $cityDef = round($cityDef, 2);
-                    $msg .= "<C>●</> $phase : <Y1>【공격장수】</> <C>$general[crew] (-$myCrew)</> VS <C>$city[def] (-$cityCrew)</> <Y1>【성벽】</><br>";
+                    $msg .= "<C>●</> $phase : <Y1>【공격장수】</> <C>$general['crew'] (-$myCrew)</> VS <C>$city['def'] (-$cityCrew)</> <Y1>【성벽】</><br>";
 
                     $mykillnum += $cityCrew; $mydeathnum += $myCrew;
 
-                    if($city[def] <= 0) { break; }
-                    if($general[crew] <= 0) { break; }
+                    if($city['def'] <= 0) { break; }
+                    if($general['crew'] <= 0) { break; }
                 }
 
                 // 도시쌀 소모 계산
@@ -262,28 +262,28 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                 $rice = round($opexp * 4 * getCrewtypeRice($game, 0, 0) * ($train3/100 - 0.2));
 
                 //원래대로 스케일링
-                $city[def] = round($city[def] / 10);
-                $city[wall] = round($city[wall] / 10);
+                $city['def'] = round($city['def'] / 10);
+                $city['wall'] = round($city['wall'] / 10);
                 //내정 감소
                 $dec = round($cityCrew / 10);
-                $city[agri] -= $dec;
-                $city[comm] -= $dec;
-                $city[secu] -= $dec;
-                if($city[agri] < 0) { $city[agri] = 0; }
-                if($city[comm] < 0) { $city[comm] = 0; }
-                if($city[secu] < 0) { $city[secu] = 0; }
+                $city['agri'] -= $dec;
+                $city['comm'] -= $dec;
+                $city['secu'] -= $dec;
+                if($city['agri'] < 0) { $city['agri'] = 0; }
+                if($city['comm'] < 0) { $city['comm'] = 0; }
+                if($city['secu'] < 0) { $city['secu'] = 0; }
                 $msg .= "<S>★</>병사수 변화 : <C>-$mydeathnum</> vs <C>-$mykillnum</><br>";
                 $msg .= "<R>★</>【성벽】내정 감소량 : $dec 【성벽】쌀 소모 : $rice<br>";
 
 //                $msg2 .= "<S>★</>병사수 변화 : <C>-$mydeathnum</> vs <C>-$mykillnum</>　　　";
 //                $msg2 .= "<R>★</>【성벽】내정 감소량 : $dec 【성벽】쌀 소모 : $rice<br>";
 
-                if($city[def] == 0 || $general[crew] == 0) {
+                if($city['def'] == 0 || $general['crew'] == 0) {
                     break;
                 }
             // 장수 대결
             } else {
-                $msg .= "<C>●</>".getTypename($general[crewtype])."(으)로 <Y>수비장수</>의 ".getTypename($oppose[crewtype])."(을)를 공격합니다.<br>";
+                $msg .= "<C>●</>".getTypename($general['crewtype'])."(으)로 <Y>수비장수</>의 ".getTypename($oppose['crewtype'])."(을)를 공격합니다.<br>";
 
                 $mykillnum = 0; $mydeathnum = 0;
                 while($phase < $warphase) {
@@ -297,38 +297,38 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $myCrew = $_armperphase + $opAtt - $myDef;
                     $opCrew = $_armperphase + $myAtt - $opDef;
                     //훈련 사기따라
-                    $myCrew = getCrew($myCrew, $oppose[atmos], $general[train]);
-                    $opCrew = getCrew($opCrew, $general[atmos], $oppose[train]);
+                    $myCrew = getCrew($myCrew, $oppose['atmos'], $general['train']);
+                    $opCrew = getCrew($opCrew, $general['atmos'], $oppose['train']);
                     //숙련도 따라
-                    $genDexAtt = getGenDex($general, $general[crewtype]);
-                    $genDexDef = getGenDex($general, $oppose[crewtype]);
-                    $oppDexAtt = getGenDex($oppose, $oppose[crewtype]);
-                    $oppDexDef = getGenDex($oppose, $general[crewtype]);
+                    $genDexAtt = getGenDex($general, $general['crewtype']);
+                    $genDexDef = getGenDex($general, $oppose['crewtype']);
+                    $oppDexAtt = getGenDex($oppose, $oppose['crewtype']);
+                    $oppDexDef = getGenDex($oppose, $general['crewtype']);
                     $opCrew *= getDexLog($genDexAtt, $oppDexDef);
                     $myCrew *= getDexLog($oppDexAtt, $genDexDef);
 
                     $myAvoid = 1;
                     $opAvoid = 1;
                     // 병종간 특성
-                    if(floor($general[crewtype]/10) == 3) {   // 귀병
-                        $int = $general[intel] + getBookEff($general[book]);
-                        if($general[crewtype] == 30) {
+                    if(floor($general['crewtype']/10) == 3) {   // 귀병
+                        $int = $general['intel'] + getBookEff($general['book']);
+                        if($general['crewtype'] == 30) {
                             $ratio2 = $int * 5;   // 0~500 즉 50%
-                        } elseif($general[crewtype] == 31) {
+                        } elseif($general['crewtype'] == 31) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($general[crewtype] == 32) {
+                        } elseif($general['crewtype'] == 32) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($general[crewtype] == 33) {
+                        } elseif($general['crewtype'] == 33) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($general[crewtype] == 34) {
+                        } elseif($general['crewtype'] == 34) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($general[crewtype] == 35) {
+                        } elseif($general['crewtype'] == 35) {
                             $ratio2 = $int * 8;   // 0~800 즉 80%
-                        } elseif($general[crewtype] == 36) {
+                        } elseif($general['crewtype'] == 36) {
                             $ratio2 = $int * 8;   // 0~800 즉 80%
-                        } elseif($general[crewtype] == 37) {
+                        } elseif($general['crewtype'] == 37) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($general[crewtype] == 38) {
+                        } elseif($general['crewtype'] == 38) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
                         }
                         $ratio = rand() % 1000; // 0~999
@@ -392,25 +392,25 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     }
 
                     // 상대 장수 병종간 특성
-                    if(floor($oppose[crewtype]/10) == 3) {   // 귀병
-                        $int = $oppose[intel] + getBookEff($oppose[book]);
-                        if($oppose[crewtype] == 30) {
+                    if(floor($oppose['crewtype']/10) == 3) {   // 귀병
+                        $int = $oppose['intel'] + getBookEff($oppose['book']);
+                        if($oppose['crewtype'] == 30) {
                             $ratio2 = $int * 5;   // 0~500 즉 50%
-                        } elseif($oppose[crewtype] == 31) {
+                        } elseif($oppose['crewtype'] == 31) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($oppose[crewtype] == 32) {
+                        } elseif($oppose['crewtype'] == 32) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($oppose[crewtype] == 33) {
+                        } elseif($oppose['crewtype'] == 33) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($oppose[crewtype] == 34) {
+                        } elseif($oppose['crewtype'] == 34) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($oppose[crewtype] == 35) {
+                        } elseif($oppose['crewtype'] == 35) {
                             $ratio2 = $int * 8;   // 0~800 즉 80%
-                        } elseif($oppose[crewtype] == 36) {
+                        } elseif($oppose['crewtype'] == 36) {
                             $ratio2 = $int * 8;   // 0~800 즉 80%
-                        } elseif($oppose[crewtype] == 37) {
+                        } elseif($oppose['crewtype'] == 37) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
-                        } elseif($oppose[crewtype] == 38) {
+                        } elseif($oppose['crewtype'] == 38) {
                             $ratio2 = $int * 6;   // 0~600 즉 60%
                         }
                         $ratio = rand() % 1000; // 0~999
@@ -473,10 +473,10 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                         }
                     }
 
-                    if($oppose[crewtype] == 43) { // 목우
+                    if($oppose['crewtype'] == 43) { // 목우
                         $r = 0;
-                        $r += $oppose[atmos];
-                        $r += $oppose[train];
+                        $r += $oppose['atmos'];
+                        $r += $oppose['train'];
                         $ratio = rand() % 400;  // 최대 50% 저지
                         if($ratio < $r && $opAvoid == 1) {
                             $msg .= "<C>●</><R>저지</>당했다!</><br>";
@@ -487,73 +487,73 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
                     // my 입장 상성
                     // 보병계열 > 궁병계열
-                    if(floor($general[crewtype]/10) == 0 && floor($oppose[crewtype]/10) == 1) {
+                    if(floor($general['crewtype']/10) == 0 && floor($oppose['crewtype']/10) == 1) {
                         $myCrew *= 0.8;
                         $opCrew *= 1.2;
                     }
                     // 궁병계열 > 기병계열
-                    if(floor($general[crewtype]/10) == 1 && floor($oppose[crewtype]/10) == 2) {
+                    if(floor($general['crewtype']/10) == 1 && floor($oppose['crewtype']/10) == 2) {
                         $myCrew *= 0.8;
                         $opCrew *= 1.2;
                     }
                     // 기병계열 > 보병계열
-                    if(floor($general[crewtype]/10) == 2 && floor($oppose[crewtype]/10) == 0) {
+                    if(floor($general['crewtype']/10) == 2 && floor($oppose['crewtype']/10) == 0) {
                         $myCrew *= 0.8;
                         $opCrew *= 1.2;
                     }
                     // 차병계열
-                    if(floor($general[crewtype]/10) == 4) {
+                    if(floor($general['crewtype']/10) == 4) {
                         $myCrew *= 1.2;
                         $opCrew *= 0.8;
                     }
 
                     // op 입장 상성
                     // 보병계열 > 궁병계열
-                    if(floor($oppose[crewtype]/10) == 0 && floor($general[crewtype]/10) == 1) {
+                    if(floor($oppose['crewtype']/10) == 0 && floor($general['crewtype']/10) == 1) {
                         $opCrew *= 0.8;
                         $myCrew *= 1.2;
                     }
                     // 궁병계열 > 기병계열
-                    if(floor($oppose[crewtype]/10) == 1 && floor($general[crewtype]/10) == 2) {
+                    if(floor($oppose['crewtype']/10) == 1 && floor($general['crewtype']/10) == 2) {
                         $opCrew *= 0.8;
                         $myCrew *= 1.2;
                     }
                     // 기병계열 > 보병계열
-                    if(floor($oppose[crewtype]/10) == 2 && floor($general[crewtype]/10) == 0) {
+                    if(floor($oppose['crewtype']/10) == 2 && floor($general['crewtype']/10) == 0) {
                         $opCrew *= 0.8;
                         $myCrew *= 1.2;
                     }
                     // 차병계열
-                    if(floor($oppose[crewtype]/10) == 4) {
+                    if(floor($oppose['crewtype']/10) == 4) {
                         $opCrew *= 1.2;
                         $myCrew *= 0.8;
                     }
 
                     //군주, 참모, 장군 공격 보정 5%
-                    if($general[level] == 12 || $general[level] == 11 || $general[level] == 10 || $general[level] == 8 || $general[level] == 6) {
+                    if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 10 || $general['level'] == 8 || $general['level'] == 6) {
                         $opCrew = $opCrew * 1.05;
                     }
                     //상대장수 관직 보정
                     //군주, 참모, 모사 방어 보정 5%
-                    if($oppose[level] == 12 || $oppose[level] == 11 || $oppose[level] == 9 || $oppose[level] == 7 || $oppose[level] == 5) {
+                    if($oppose['level'] == 12 || $oppose['level'] == 11 || $oppose['level'] == 9 || $oppose['level'] == 7 || $oppose['level'] == 5) {
                         $opCrew = $opCrew * 0.95;
-                    } elseif($oppose[level] == 4 && $oppose[no] == $city[gen1]) { // 태수 보정
+                    } elseif($oppose['level'] == 4 && $oppose['no'] == $city[gen1]) { // 태수 보정
                         $opCrew = $opCrew * 0.95;
-                    } elseif($oppose[level] == 3 && $oppose[no] == $city[gen2]) { // 군사 보정
+                    } elseif($oppose['level'] == 3 && $oppose['no'] == $city[gen2]) { // 군사 보정
                         $opCrew = $opCrew * 0.95;
-                    } elseif($oppose[level] == 2 && $oppose[no] == $city[gen3]) { // 시중 보정
+                    } elseif($oppose['level'] == 2 && $oppose['no'] == $city[gen3]) { // 시중 보정
                         $opCrew = $opCrew * 0.95;
                     }
 
                     //레벨 보정
-                    $myCrew = $myCrew * ((100 - $general[explevel]/3)/100);
-                    $opCrew = $opCrew / ((100 - $general[explevel]/3)/100);
-                    $myCrew = $myCrew / ((100 -  $oppose[explevel]/3)/100);
-                    $opCrew = $opCrew * ((100 -  $oppose[explevel]/3)/100);
+                    $myCrew = $myCrew * ((100 - $general['explevel']/3)/100);
+                    $opCrew = $opCrew / ((100 - $general['explevel']/3)/100);
+                    $myCrew = $myCrew / ((100 -  $oppose['explevel']/3)/100);
+                    $opCrew = $opCrew * ((100 -  $oppose['explevel']/3)/100);
 
                     //크리
                     $rd = rand() % 100; // 0 ~ 99
-                    $ratio = CriticalRatio2($general[leader], $general[power], $general[intel]);
+                    $ratio = CriticalRatio2($general['leader'], $general['power'], $general['intel']);
                     if($ratio >= $rd && $myAvoid == 1) {
                         $msg .= "<C>●</><C>필살</>공격!</><br>";
                         $opCrew = CriticalScore2($opCrew);
@@ -561,7 +561,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     }
                     //크리
                     $rd = rand() % 100; // 0 ~ 99
-                    $ratio = CriticalRatio2($oppose[leader], $oppose[power], $oppose[intel]);
+                    $ratio = CriticalRatio2($oppose['leader'], $oppose['power'], $oppose['intel']);
                     if($ratio >= $rd && $opAvoid == 1) {
                         $msg .= "<C>●</>상대의 <R>필살</>공격!</><br>";
                         $myCrew = CriticalScore2($myCrew);
@@ -569,7 +569,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     }
                     //회피
                     $ratio = rand() % 100; // 0 ~ 99
-                    $ratio2 = getRate($game, $general[crewtype], "avd");   //회피율
+                    $ratio2 = getRate($game, $general['crewtype'], "avd");   //회피율
                     if($ratio < $ratio2 && $myAvoid == 1) {
                         $msg .= "<C>●</><C>회피</>했다!</><br>";
                         $myCrew /= 10; // 10%만 소모
@@ -577,7 +577,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     }
                     //회피
                     $ratio = rand() % 100; // 0 ~ 99
-                    $ratio2 = getRate($game, $oppose[crewtype], "avd");   //회피율
+                    $ratio2 = getRate($game, $oppose['crewtype'], "avd");   //회피율
                     if($ratio < $ratio2 && $opAvoid == 1) {
                         $msg .= "<C>●</>상대가 <R>회피</>했다!</><br>";
                         $opCrew /= 10; // 10%만 소모
@@ -588,60 +588,60 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $opCrew *= (rand() % 21 + 90)/100; // 90~110%
                     $myCrew *= (rand() % 21 + 90)/100; // 90~110%
 
-                    $general[crew] -= round($myCrew);
-                    $oppose[crew] -= round($opCrew);
+                    $general['crew'] -= round($myCrew);
+                    $oppose['crew'] -= round($opCrew);
                     $tempMyCrew = $myCrew; $tempOpCrew = $opCrew;
-                    $tempGeneralCrew = $general[crew]; $tempOpposeCrew = $oppose[crew];
-                    if($general[crew] <= 0 && $oppose[crew] <= 0) {
+                    $tempGeneralCrew = $general['crew']; $tempOpposeCrew = $oppose['crew'];
+                    if($general['crew'] <= 0 && $oppose['crew'] <= 0) {
                         $r1 = $tempGeneralCrew / $tempMyCrew;
                         $r2 = $tempOpposeCrew / $tempOpCrew;
 
                         if($r1 > $r2) {
                             $offset = round($tempOpposeCrew*$tempMyCrew/$tempOpCrew);
                             $myCrew += $offset;
-                            $general[crew] -= $offset;
+                            $general['crew'] -= $offset;
                             $opCrew += $tempOpposeCrew;
-                            $oppose[crew] = 0;
+                            $oppose['crew'] = 0;
                         } else {
                             $offset = round($tempGeneralCrew*$tempOpCrew/$tempMyCrew);
                             $opCrew += $offset;
-                            $oppose[crew] -= $offset;
+                            $oppose['crew'] -= $offset;
                             $myCrew += $tempGeneralCrew;
-                            $general[crew] = 0;
+                            $general['crew'] = 0;
                         }
-                    } elseif($general[crew] * $oppose[crew] <= 0) {
-                        if($oppose[crew] < 0) {
+                    } elseif($general['crew'] * $oppose['crew'] <= 0) {
+                        if($oppose['crew'] < 0) {
                             $offset = round($tempOpposeCrew*$tempMyCrew/$tempOpCrew);
                             $myCrew += $offset;
-                            $general[crew] -= $offset;
+                            $general['crew'] -= $offset;
                             $opCrew += $tempOpposeCrew;
-                            $oppose[crew] = 0;
+                            $oppose['crew'] = 0;
                         }
-                        if($general[crew] < 0) {
+                        if($general['crew'] < 0) {
                             $offset = round($tempGeneralCrew*$tempOpCrew/$tempMyCrew);
                             $opCrew += $offset;
-                            $oppose[crew] -= $offset;
+                            $oppose['crew'] -= $offset;
                             $myCrew += $tempGeneralCrew;
-                            $general[crew] = 0;
+                            $general['crew'] = 0;
                         }
                     }
 
                     $exp += $opCrew;
                     $opexp += $myCrew;
-                    $general[crew] = round($general[crew]);
-                    $oppose[crew] = round($oppose[crew]);
+                    $general['crew'] = round($general['crew']);
+                    $oppose['crew'] = round($oppose['crew']);
                     $myCrew = round($myCrew);
                     $opCrew = round($opCrew);
                     $myAtt = round($myAtt, 2);
                     $myDef = round($myDef, 2);
                     $opAtt = round($opAtt, 2);
                     $opDef = round($opDef, 2);
-                    $msg .= "<C>●</> $phase : <Y1>【공격장수】</> <C>$general[crew] (-$myCrew)</> VS <C>$oppose[crew] (-$opCrew)</> <Y1>【수비장수】</><br>";
+                    $msg .= "<C>●</> $phase : <Y1>【공격장수】</> <C>$general['crew'] (-$myCrew)</> VS <C>$oppose['crew'] (-$opCrew)</> <Y1>【수비장수】</><br>";
 
                     $mykillnum += $opCrew; $mydeathnum += $myCrew;
 
-                    if($oppose[crew] <= 0) { break; }
-                    if($general[crew] <= 0) { break; }
+                    if($oppose['crew'] <= 0) { break; }
+                    if($general['crew'] <= 0) { break; }
                 }
 
                 $msg .= "<S>★</>병사수 변화 : <C>-$mydeathnum</> vs <C>-$mykillnum</><br>";
@@ -651,9 +651,9 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
         // 공헌, 명성 상승
         $exp = round($exp / 50);
-        $ricing = ($exp * 5 * getCrewtypeRice($game, $general[crewtype], $tech1));
-        $msg .= "★ 【공격장수】공헌 상승 : $exp 쌀 소비 : {$exp}x5x".getCrewtypeRice($game, $general[crewtype], $tech1)." = $ricing<br>";
-//        $msg2 .= "★ 【공격장수】공헌 상승 : $exp 쌀 소비 : {$exp}x5x".getCrewtypeRice($game, $general[crewtype], $tech1)." = $ricing<br>";
+        $ricing = ($exp * 5 * getCrewtypeRice($game, $general['crewtype'], $tech1));
+        $msg .= "★ 【공격장수】공헌 상승 : $exp 쌀 소비 : {$exp}x5x".getCrewtypeRice($game, $general['crewtype'], $tech1)." = $ricing<br>";
+//        $msg2 .= "★ 【공격장수】공헌 상승 : $exp 쌀 소비 : {$exp}x5x".getCrewtypeRice($game, $general['crewtype'], $tech1)." = $ricing<br>";
 
         $msg = ConvertLog($msg, 1);
 
@@ -675,11 +675,11 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
         $msg2 .= "{$simulCount}회 평균<br>";
         $msg2 .= "<S>★</>병사수 변화 : <C>-$mydeathnumSum</> vs <C>-$mykillnumSum</>　　　";
         $msg2 .= "<R>★</>【성벽】내정 감소량 : $expSum2 【성벽】쌀 소모 : $ricingSum2<br>";
-        $msg2 .= "★ 【공격장수】공헌 상승 : $expSum 쌀 소비 : {$expSum}x5x".getCrewtypeRice($game, $general[crewtype], $tech1)." = $ricingSum<br>";
+        $msg2 .= "★ 【공격장수】공헌 상승 : $expSum 쌀 소비 : {$expSum}x5x".getCrewtypeRice($game, $general['crewtype'], $tech1)." = $ricingSum<br>";
     } elseif($isgen == "장수평균") {
         $msg2 .= "{$simulCount}회 평균<br>";
         $msg2 .= "<S>★</>병사수 변화 : <C>-$mydeathnumSum</> vs <C>-$mykillnumSum</>　　　";
-        $msg2 .= "★ 【공격장수】공헌 상승 : $expSum 쌀 소비 : {$expSum}x5x".getCrewtypeRice($game, $general[crewtype], $tech1)." = $ricingSum<br>";
+        $msg2 .= "★ 【공격장수】공헌 상승 : $expSum 쌀 소비 : {$expSum}x5x".getCrewtypeRice($game, $general['crewtype'], $tech1)." = $ricingSum<br>";
     }
 
     $msg2 = ConvertLog($msg2, 1);
@@ -706,8 +706,8 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
     $def = 7000;
     $wall = 7000;
-    $train3 = $game[city_rate];
-    $atmos3 = $game[city_rate];
+    $train3 = $game['city_rate'];
+    $atmos3 = $game['city_rate'];
 }
 
 switch($level1) {

@@ -20,23 +20,23 @@ increaseRefresh($connect, "국법", 1);
     <tr><td>
 
 <?php
-$query = "select no,nation,level from general where user_id='$_SESSION[p_id]'";
+$query = "select no,nation,level from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select rule from nation where nation='$me[nation]'";
+$query = "select rule from nation where nation='$me['nation']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
-if($me[level] >= 5) {
+if($me['level'] >= 5) {
     echo "
 <form name=form1 method=post action=c_nationrule.php>
-<textarea name=msg style=color:white;background-color:black;width:998;height:500;>$nation[rule]</textarea><br>
+<textarea name=msg style=color:white;background-color:black;width:998;height:500;>$nation['rule']</textarea><br>
 <input type=submit value=저장하기>
 </form>";
 } else {
     echo "
-<textarea name=msg style=color:white;background-color:black;width:998;height:500; readonly>$nation[rule]</textarea><br>";
+<textarea name=msg style=color:white;background-color:black;width:998;height:500; readonly>$nation['rule']</textarea><br>";
 }
 
 ?>

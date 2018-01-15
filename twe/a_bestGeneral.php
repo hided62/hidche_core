@@ -10,12 +10,12 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select con,userlevel,turntime from general where user_id='$_SESSION[p_id]'";
+$query = "select con,userlevel,turntime from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me[userlevel], $me[con], $admin[conlimit]);
-if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
+$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 ?>
 <html>
 
@@ -49,8 +49,8 @@ $nationcount = MYDB_num_rows($nationresult);
 
 for($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($nationresult);
-    $nationName[$nation[nation]] = $nation[name];
-    $nationColor[$nation[nation]] = $nation[color];
+    $nationName[$nation['nation']] = $nation['name'];
+    $nationColor[$nation['nation']] = $nation['color'];
 }
 
 $type = array(
@@ -110,17 +110,17 @@ for($i=0; $i < 21; $i++) {
     for($k=0; $k < 10; $k++) {
         $gen = MYDB_fetch_array($result);
         if($i != 2) {
-            $name[$k]   = $gen[name];
-            $nation[$k] = $nationName[$gen[nation]];
-            $data[$k]   = $gen[data];
-            $color[$k]  = $nationColor[$gen[nation]];
-            $pic[$k]    = $gen[picture];
+            $name[$k]   = $gen['name'];
+            $nation[$k] = $nationName[$gen['nation']];
+            $data[$k]   = $gen['data'];
+            $color[$k]  = $nationColor[$gen['nation']];
+            $pic[$k]    = $gen['picture'];
         } else {
             $name[$k]   = "???";
             $nation[$k] = "???";
-            $data[$k]   = $gen[data];
+            $data[$k]   = $gen['data'];
             $color[$k]  = $_basecolor4;
-            $gen[imgsvr] = 0;
+            $gen['imgsvr'] = 0;
             $pic[$k]    = "9999.jpg";
         }
         if($color[$k] == "") $color[$k] = $_basecolor4;
@@ -128,7 +128,7 @@ for($i=0; $i < 21; $i++) {
         if($pic[$k] == "") {
             echo "<td align=center>&nbsp;</td>";
         } else {
-            $imageTemp = GetImageURL($gen[imgsvr]);
+            $imageTemp = GetImageURL($gen['imgsvr']);
             echo "<td align=center><img src={$imageTemp}/{$pic[$k]}></img></td>";
         }
     }
@@ -197,16 +197,16 @@ for($i=0; $i < 4; $i++) {
         $query = "select nation,no,name,picture,imgsvr from general where {$call[$i]}={$k}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
-        $name[$k]   = $gen[name];
-        $nation[$k] = $nationName[$gen[nation]];
-        $color[$k]  = $nationColor[$gen[nation]];
-        $pic[$k]    = $gen[picture];
+        $name[$k]   = $gen['name'];
+        $nation[$k] = $nationName[$gen['nation']];
+        $color[$k]  = $nationColor[$gen['nation']];
+        $pic[$k]    = $gen['picture'];
         if($color[$k] == "") $color[$k] = $_basecolor4;
         if($nation[$k] == "") $nation[$k] = "&nbsp;";
         if($pic[$k] == "") {
             echo "<td align=center>&nbsp;</td>";
         } else {
-            $imageTemp = GetImageURL($gen[imgsvr]);
+            $imageTemp = GetImageURL($gen['imgsvr']);
             echo "<td align=center><img src={$imageTemp}/{$pic[$k]}></img></td>";
         }
     }
@@ -238,16 +238,16 @@ for($i=0; $i < 4; $i++) {
         $query = "select nation,no,name,picture,imgsvr from general where {$call[$i]}={$k}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
-        $name[$k]   = $gen[name];
-        $nation[$k] = $nationName[$gen[nation]];
-        $color[$k]  = $nationColor[$gen[nation]];
-        $pic[$k]    = $gen[picture];
+        $name[$k]   = $gen['name'];
+        $nation[$k] = $nationName[$gen['nation']];
+        $color[$k]  = $nationColor[$gen['nation']];
+        $pic[$k]    = $gen['picture'];
         if($color[$k] == "") $color[$k] = $_basecolor4;
         if($nation[$k] == "") $nation[$k] = "&nbsp;";
         if($pic[$k] == "") {
             echo "<td align=center>&nbsp;</td>";
         } else {
-            $imageTemp = GetImageURL($gen[imgsvr]);
+            $imageTemp = GetImageURL($gen['imgsvr']);
             echo "<td align=center><img src={$imageTemp}/{$pic[$k]}></img></td>";
         }
     }

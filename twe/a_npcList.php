@@ -44,7 +44,7 @@ $count = MYDB_num_rows($result);
 $nationname[0] = "-";
 for($i=0; $i < $count; $i++) {
     $nation = MYDB_fetch_array($result);
-    $nationname[$nation[nation]] = $nation[name];
+    $nationname[$nation['nation']] = $nation['name'];
 }
 
 switch($type) {
@@ -78,26 +78,26 @@ echo"
     </tr>";
 for($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
-    $nation = $nationname[$general[nation]];
+    $nation = $nationname[$general['nation']];
 
-    if($general[npc] >= 2) { $name = "<font color=cyan>$general[name]</font>"; }
-    elseif($general[npc] == 1) { $name = "<font color=skyblue>$general[name]</font>"; }
-    else { $name =  "$general[name]"; }
+    if($general['npc'] >= 2) { $name = "<font color=cyan>$general['name']</font>"; }
+    elseif($general['npc'] == 1) { $name = "<font color=skyblue>$general['name']</font>"; }
+    else { $name =  "$general['name']"; }
 
     echo "
     <tr>
         <td align=center>{$name}</td>
         <td align=center>{$general[name2]}</td>
-        <td align=center>Lv {$general[explevel]}</td>
+        <td align=center>Lv {$general['explevel']}</td>
         <td align=center>{$nation}</td>
-        <td align=center>".getGenChar($general[personal])."</td>
-        <td align=center>".getGenSpecial($general[special])." / ".getGenSpecial($general[special2])."</td>
-        <td align=center>$general[sum]</td>
-        <td align=center>$general[leader]</td>
-        <td align=center>$general[power]</td>
-        <td align=center>$general[intel]</td>
-        <td align=center>{$general[experience]}</td>
-        <td align=center>{$general[dedication]}</td>
+        <td align=center>".getGenChar($general['personal'])."</td>
+        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general[special2])."</td>
+        <td align=center>$general['sum']</td>
+        <td align=center>$general['leader']</td>
+        <td align=center>$general['power']</td>
+        <td align=center>$general['intel']</td>
+        <td align=center>{$general['experience']}</td>
+        <td align=center>{$general['dedication']}</td>
     </tr>";
 }
 echo "

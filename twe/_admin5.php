@@ -5,11 +5,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel,skin from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel,skin from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "
 <html>
 <head>
@@ -94,7 +94,7 @@ for($i=1; $i <= $count; $i++) {
     $nation = MYDB_fetch_array($result);
 
     echo "
-            <option value={$nation[nation]}>{$nation[name]}</option>";
+            <option value={$nation['nation']}>{$nation['name']}</option>";
 }
 ?>
         </select>
@@ -195,7 +195,7 @@ for($i=0; $i < $nationCount; $i++) {
                                             ROUND(AVG(intel), 1) as avgi,
                                             ROUND(AVG(explevel), 1) as avge,
                     SUM(crew) as crew
-        from general where nation='$nation[nation]'";
+        from general where nation='$nation['nation']'";
     $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen = MYDB_fetch_array($genResult);
 
@@ -207,43 +207,43 @@ for($i=0; $i < $nationCount; $i++) {
                     ROUND(SUM(secu)/SUM(secu2)*100, 2) as secu,
                     ROUND(SUM(wall)/SUM(wall2)*100, 2) as wall,
                     ROUND(SUM(def)/SUM(def2)*100, 2) as def
-        from city where nation='$nation[nation]'";
+        from city where nation='$nation['nation']'";
     $cityResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($cityResult);
 
     echo "
     <tr>
-        <td align=center style=background-color:$nation[color];color:".newColor($nation[color]).";>$nation[name]</td>
-        <td align=center>&nbsp;{$nation[connect]}&nbsp;</td>
-        <td align=center>&nbsp;{$nation[con]}&nbsp;</td>
-        <td align=center>&nbsp;{$nation[power]}&nbsp;</td>
-        <td align=center>&nbsp;{$nation[chemi]}&nbsp;</td>
-        <td align=center>&nbsp;{$gen[cnt]}&nbsp;</td>
-        <td align=center>&nbsp;{$city[cnt]}&nbsp;</td>
-        <td align=center>&nbsp;{$nation[tech]}&nbsp;</td>
-        <td align=center>&nbsp;{$nation[tricklimit]}&nbsp;</td>
-        <td align=center>&nbsp;{$nation[gold]}&nbsp;</td>
-        <td align=center>&nbsp;{$nation[rice]}&nbsp;</td>
-        <td align=center>&nbsp;{$gen[avgg]}&nbsp;</td>
-        <td align=center>&nbsp;{$gen[avgr]}&nbsp;</td>
-        <td align=center>&nbsp;{$gen[avgl]}&nbsp;</td>
-        <td align=center>&nbsp;{$gen[avgp]}&nbsp;</td>
-        <td align=center>&nbsp;{$gen[avgi]}&nbsp;</td>
-        <td align=center>&nbsp;{$gen[avge]}&nbsp;</td>
+        <td align=center style=background-color:$nation['color'];color:".newColor($nation['color']).";>$nation['name']</td>
+        <td align=center>&nbsp;{$nation['connect']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['con']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['power']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['chemi']}&nbsp;</td>
+        <td align=center>&nbsp;{$gen['cnt']}&nbsp;</td>
+        <td align=center>&nbsp;{$city['cnt']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['tech']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['tricklimit']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['gold']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['rice']}&nbsp;</td>
+        <td align=center>&nbsp;{$gen['avgg']}&nbsp;</td>
+        <td align=center>&nbsp;{$gen['avgr']}&nbsp;</td>
+        <td align=center>&nbsp;{$gen['avgl']}&nbsp;</td>
+        <td align=center>&nbsp;{$gen['avgp']}&nbsp;</td>
+        <td align=center>&nbsp;{$gen['avgi']}&nbsp;</td>
+        <td align=center>&nbsp;{$gen['avge']}&nbsp;</td>
         <td align=center>&nbsp;{$nation[dex0]}&nbsp;</td>
         <td align=center>&nbsp;{$nation[dex10]}&nbsp;</td>
         <td align=center>&nbsp;{$nation[dex20]}&nbsp;</td>
         <td align=center>&nbsp;{$nation[dex30]}&nbsp;</td>
         <td align=center>&nbsp;{$nation[dex40]}&nbsp;</td>
-        <td align=center>&nbsp;{$gen[crew]}/{$gen[leader]}00&nbsp;</td>
-        <td align=center>&nbsp;{$city[pop]}/{$city[pop2]}&nbsp;</td>
-        <td align=center>&nbsp;{$city[rate]}%&nbsp;</td>
-        <td align=center>&nbsp;{$city[agri]}%&nbsp;</td>
-        <td align=center>&nbsp;{$city[comm]}%&nbsp;</td>
-        <td align=center>&nbsp;{$city[secu]}%&nbsp;</td>
-        <td align=center>&nbsp;{$city[wall]}%&nbsp;</td>
-        <td align=center>&nbsp;{$city[def]}%&nbsp;</td>
-        <td align=center style=background-color:$nation[color];color:".newColor($nation[color]).";>$nation[name]</td>
+        <td align=center>&nbsp;{$gen['crew']}/{$gen['leader']}00&nbsp;</td>
+        <td align=center>&nbsp;{$city['pop']}/{$city[pop2]}&nbsp;</td>
+        <td align=center>&nbsp;{$city['rate']}%&nbsp;</td>
+        <td align=center>&nbsp;{$city['agri']}%&nbsp;</td>
+        <td align=center>&nbsp;{$city['comm']}%&nbsp;</td>
+        <td align=center>&nbsp;{$city['secu']}%&nbsp;</td>
+        <td align=center>&nbsp;{$city['wall']}%&nbsp;</td>
+        <td align=center>&nbsp;{$city['def']}%&nbsp;</td>
+        <td align=center style=background-color:$nation['color'];color:".newColor($nation['color']).";>$nation['name']</td>
     </tr>
 ";
 }
@@ -251,7 +251,7 @@ for($i=0; $i < $nationCount; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td><?php TrickLog(20, $me[skin]); ?></td></tr>
+    <tr><td><?php TrickLog(20, $me['skin']); ?></td></tr>
 </table>
 
 <table align=center width=1760 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13; id=bg0>
@@ -282,20 +282,20 @@ for($i=0; $i < $count; $i++) {
 
     echo "
     <tr>
-        <td align=center>{$stat[year]}</td>
-        <td align=center>{$stat[month]}</td>
-        <td align=center>{$stat[nation_count]}</td>
-        <td align=center>{$stat[gen_count]}</td>
+        <td align=center>{$stat['year']}</td>
+        <td align=center>{$stat['month']}</td>
+        <td align=center>{$stat['nation_count']}</td>
+        <td align=center>{$stat['gen_count']}</td>
 ";
     switch($type2) {
         default:
-        case 0: echo "<td>{$stat[power_hist]}</td>"; break;
-        case 1: echo "<td>{$stat[nation_name]}</td>"; break;
-        case 2: echo "<td>{$stat[nation_hist]}</td>"; break;
-        case 3: echo "<td>{$stat[personal_hist]}</td>"; break;
-        case 4: echo "<td>{$stat[special_hist]}</td>"; break;
-        case 5: echo "<td>{$stat[crewtype]}</td>"; break;
-        case 6: echo "<td>{$stat[etc]}</td>"; break;
+        case 0: echo "<td>{$stat['power_hist']}</td>"; break;
+        case 1: echo "<td>{$stat['nation_name']}</td>"; break;
+        case 2: echo "<td>{$stat['nation_hist']}</td>"; break;
+        case 3: echo "<td>{$stat['personal_hist']}</td>"; break;
+        case 4: echo "<td>{$stat['special_hist']}</td>"; break;
+        case 5: echo "<td>{$stat['crewtype']}</td>"; break;
+        case 6: echo "<td>{$stat['etc']}</td>"; break;
     }
     
     echo "

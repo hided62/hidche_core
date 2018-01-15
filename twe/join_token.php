@@ -2,9 +2,9 @@
 include "lib.php";
 include "func.php";
 
-$id = $_POST[id];
-$pw = $_POST[pw];
-$type = $_POST[type];
+$id = $_POST['id'];
+$pw = $_POST['pw'];
+$type = $_POST['type'];
 
 $pwTemp = substr($pw, 0, 32);
 

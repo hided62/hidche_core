@@ -43,8 +43,8 @@ $connect=dbConn();
 $query = "select startyear,year,month,turnterm,scenario,extend,fiction,img from game where no='1'";
 $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
-$fiction = 1;    $turnterm = $admin[turnterm];    $startyear = $admin[startyear];    $year = $admin[year];    $extend = $admin[extend];
-$img = $admin[img];
+$fiction = 1;    $turnterm = $admin['turnterm'];    $startyear = $admin['startyear'];    $year = $admin['year'];    $extend = $admin['extend'];
+$img = $admin['img'];
 //가상모드6 : 180년 무풍지대
 
 //////////////////////////국가1/////////////////////////////////////////////////

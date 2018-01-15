@@ -1,11 +1,12 @@
 <?php
 include "lib.php";
 include "func.php";
+require_once('../e_lib/util.php');
 $connect = dbConn("sammo");
 
-$id = $_POST[id];
-$pw = $_POST[pw];
-$conmsg = $_POST[conmsg];
+$id = util::array_get($_POST['id'],'');
+$pw = util::array_get($_POST['pw'], '');
+$conmsg = util::array_get($_POST['conmsg'], '');
 
 $pw = substr($pw, 0, 32);
 
@@ -30,25 +31,25 @@ if(!$member) {
     MessageBox("캐릭터가 없습니다!!!");
     echo "<script>location.replace('index.php');</script>";
 } else {
-    switch($me[block]) {
+    switch($me['block']) {
     case 1:
         MessageBox("비매너 발언으로 인해, 발언권이 제한됩니다."); break;
     case 2:
         MessageBox("현재 블럭된 계정입니다. 턴 실행이 제한됩니다.");
-        MessageBox("절대 1계정만 사용하십시오! $me[killturn]시간 후 재등록 가능합니다."); break;
+        MessageBox("절대 1계정만 사용하십시오! $me['killturn']시간 후 재등록 가능합니다."); break;
     case 3:
         MessageBox("현재 블럭된 계정입니다. 발언권과 턴 실행이 제한됩니다.");
-        MessageBox("절대 1계정만 사용하십시오! $me[killturn]시간 후 재등록 가능합니다."); break;
+        MessageBox("절대 1계정만 사용하십시오! $me['killturn']시간 후 재등록 가능합니다."); break;
     }
 
-    $_SESSION[p_id]     = $id;
-    $_SESSION[p_name]   = $me[name];
-    $_SESSION[p_nation] = $me[nation];
-    $_SESSION[p_time]   = time();
+    $_SESSION['p_id']     = $id;
+    $_SESSION['p_name']   = $me['name'];
+    $_SESSION['p_nation'] = $me['nation'];
+    $_SESSION['p_time']   = time();
 
     $date = date('Y-m-d H:i:s');
 
-    $query="update general set logcnt=logcnt+1,ip='$_SESSION[p_ip]',lastconnect='$date',conmsg='$conmsg' where user_id='$_SESSION[p_id]'";
+    $query="update general set logcnt=logcnt+1,ip='$_SESSION['p_ip']',lastconnect='$date',conmsg='$conmsg' where user_id='$_SESSION['p_id']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     echo "<script>window.top.location.replace('./');</script>";
@@ -56,7 +57,7 @@ if(!$member) {
     $date = date('Y_m_d H:i:s');
     $date2 = substr($date, 0, 10);
     $fp = fopen("logs/_{$date2}_login.txt", "a");
-    $msg = _String::Fill2($date,20," ").tab2($id,13," ")._String::Fill2($me[name],13," ")._String::Fill2($_SESSION[p_ip],16," ");
+    $msg = _String::Fill2($date,20," ").tab2($id,13," ")._String::Fill2($me['name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ");
     fwrite($fp, $msg."\r\n");
     fclose($fp);
 }

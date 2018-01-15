@@ -16,26 +16,26 @@ $query = "select nation from general where no='$gen'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
 
-$query = "select skin,no,nation,level,userlevel,con,turntime,belong from general where user_id='$_SESSION[p_id]'";
+$query = "select skin,no,nation,level,userlevel,con,turntime,belong from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select secretlimit from nation where nation='$me[nation]'";
+$query = "select secretlimit from nation where nation='$me['nation']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
-$con = checkLimit($me[userlevel], $me[con], $admin[conlimit]);
-if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
+$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
 //재야인 경우
-$meLevel = $me[level];
-if($meLevel == 0 || ($meLevel == 1 && $me[belong] < $nation[secretlimit])) {
+$meLevel = $me['level'];
+if($meLevel == 0 || ($meLevel == 1 && $me['belong'] < $nation['secretlimit'])) {
     echo "수뇌부가 아니거나 사관년도가 부족합니다.";
     exit();
 }
 
 //잘못된 접근
-if($general[nation] != $me[nation]) {
+if($general['nation'] != $me['nation']) {
     $gen = 0;
 }
 
@@ -48,7 +48,7 @@ if($type == 0) {
 }
 $sel[$type] = "selected";
 
-if($me[skin] < 1) {
+if($me['skin'] < 1) {
     $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
@@ -79,10 +79,10 @@ if($me[skin] < 1) {
         <select name=gen size=1>
 <?php
 switch($type) {
-    case 0: $query = "select no,name from general where nation='{$me[nation]}' order by turntime desc"; break;
-    case 1: $query = "select no,name from general where nation='{$me[nation]}' order by recwar desc"; break;
-    case 2: $query = "select no,name from general where nation='{$me[nation]}' order by npc,binary(name)"; break;
-    case 3: $query = "select no,name from general where nation='{$me[nation]}' order by warnum desc"; break;
+    case 0: $query = "select no,name from general where nation='{$me['nation']}' order by turntime desc"; break;
+    case 1: $query = "select no,name from general where nation='{$me['nation']}' order by recwar desc"; break;
+    case 2: $query = "select no,name from general where nation='{$me['nation']}' order by npc,binary(name)"; break;
+    case 3: $query = "select no,name from general where nation='{$me['nation']}' order by warnum desc"; break;
 }
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($result);
@@ -91,14 +91,14 @@ for($i=0; $i < $gencount; $i++) {
     $general = MYDB_fetch_array($result);
     // 선택 없으면 맨 처음 장수
     if($gen == 0) {
-        $gen = $general[no];
+        $gen = $general['no'];
     }
-    if($gen == $general[no]) {
+    if($gen == $general['no']) {
         echo "
-            <option selected value={$general[no]}>{$general[name]}</option>";
+            <option selected value={$general['no']}>{$general['name']}</option>";
     } else {
         echo "
-            <option value={$general[no]}>{$general[name]}</option>";
+            <option value={$general['no']}>{$general['name']}</option>";
     }
 }
 ?>
@@ -114,10 +114,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php generalInfo($connect, $gen, $me[skin]); generalInfo2($connect, $gen, $me[skin]); ?>
+            <?php generalInfo($connect, $gen, $me['skin']); generalInfo2($connect, $gen, $me['skin']); ?>
         </td>
         <td valign=top>
-            <?php MyHistory($connect, $gen, $me[skin]); ?>
+            <?php MyHistory($connect, $gen, $me['skin']); ?>
         </td>
     </tr>
     <tr>
@@ -126,10 +126,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php MyBatLog($gen, 24, $me[skin]); ?>
+            <?php MyBatLog($gen, 24, $me['skin']); ?>
         </td>
         <td valign=top>
-            <?php MyBatRes($gen, 24, $me[skin]); ?>
+            <?php MyBatRes($gen, 24, $me['skin']); ?>
         </td>
     </tr>
 </table>

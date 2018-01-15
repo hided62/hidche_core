@@ -7,7 +7,7 @@ $connect = dbConn();
 increaseRefresh($connect, "베팅장", 1);
 checkTurn($connect);
 
-$query = "select no,tournament,userlevel,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where user_id='$_SESSION[p_id]'";
+$query = "select no,tournament,userlevel,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -15,17 +15,17 @@ $query = "select conlimit,tournament,phase,tnmt_type,develcost,bet0,bet1,bet2,be
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$con = checkLimit($me[userlevel], $me[con], $admin[conlimit]);
-if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
+$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-switch($admin[tnmt_type]) {
+switch($admin['tnmt_type']) {
 case 0: $tnmt_type = "<font color=cyan>전력전</font>"; $tp = "tot"; $tp2 = "종합"; $tp3 = "total"; break;
 case 1: $tnmt_type = "<font color=cyan>통솔전</font>"; $tp = "ldr"; $tp2 = "통솔"; $tp3 = "leader"; break;
 case 2: $tnmt_type = "<font color=cyan>일기토</font>"; $tp = "pwr"; $tp2 = "무력"; $tp3 = "power"; break;
 case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "지력"; $tp3 = "intel"; break;
 }
 
-$str1 = getTournament($admin[tournament]);
+$str1 = getTournament($admin['tournament']);
 $str2 = getTournamentTime($connect);
 $str3 = getTournamentTerm($connect);
 
@@ -55,7 +55,7 @@ select { font-family:'굴림'; line-height:100%; }
 <table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10;word-break:break-all; id=bg0>
     <tr><td colspan=16><input type=button value='갱신' onclick='location.reload()'></td></tr>
     <tr><td colspan=16 align=center><font color=white size=6><?=$tnmt_type;?> (<?=$str1.", ".$str2.", ".$str3;?>)</font></td></tr>
-    <tr><td height=50 colspan=16 align=center id=bg2><font color=limegreen size=6>16강 상황</font><br><font color=orange size=3>(전체 금액 : <?=$admin[bet];?> / 내 투자 금액 : <?=$me[bet];?>)</font></td></tr>
+    <tr><td height=50 colspan=16 align=center id=bg2><font color=limegreen size=6>16강 상황</font><br><font color=orange size=3>(전체 금액 : <?=$admin['bet'];?> / 내 투자 금액 : <?=$me['bet'];?>)</font></td></tr>
 </table>
 <table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10;word-break:break-all; id=bg0>
     <tr align=center><td height=10 colspan=16></td></tr>
@@ -65,10 +65,10 @@ $query = "select npc,name,win from tournament where grp>=60 order by grp, grp_no
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 for($i=0; $i < 1; $i++) {
     $general = MYDB_fetch_array($result);
-    if($general[name] == "") { $general[name] = "-"; }
-    if($general[npc] >= 2) { $general[name] = "<font color=cyan>".$general[name]."</font>"; }
-    elseif($general[npc] == 1) { $general[name] = "<font color=skyblue>".$general[name]."</font>"; }
-    echo "<td colspan=16>{$general[name]}</td>";
+    if($general['name'] == "") { $general['name'] = "-"; }
+    if($general['npc'] >= 2) { $general['name'] = "<font color=cyan>".$general['name']."</font>"; }
+    elseif($general['npc'] == 1) { $general['name'] = "<font color=skyblue>".$general['name']."</font>"; }
+    echo "<td colspan=16>{$general['name']}</td>";
 }
 
 echo "
@@ -80,12 +80,12 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 for($i=0; $i < 1; $i++) { $cent[$i] = "<font color=white>"; }
 for($i=0; $i < 2; $i++) {
     $general = MYDB_fetch_array($result);
-    if($general[name] == "") { $general[name] = "-"; }
-    if($general[npc] >= 2) { $general[name] = "<font color=cyan>".$general[name]."</font>"; }
-    elseif($general[npc] == 1) { $general[name] = "<font color=skyblue>".$general[name]."</font>"; }
-    if($general[win] > 0) { $line[$i] = "<font color=red>";   $cent[floor($i/2)] = "<font color=red>"; }
+    if($general['name'] == "") { $general['name'] = "-"; }
+    if($general['npc'] >= 2) { $general['name'] = "<font color=cyan>".$general['name']."</font>"; }
+    elseif($general['npc'] == 1) { $general['name'] = "<font color=skyblue>".$general['name']."</font>"; }
+    if($general['win'] > 0) { $line[$i] = "<font color=red>";   $cent[floor($i/2)] = "<font color=red>"; }
     else                  { $line[$i] = "<font color=white>"; }
-    $gen[$i] = $general[name];
+    $gen[$i] = $general['name'];
 }
 for($i=0; $i < 1; $i++) {
     $cent[$i] = $cent[$i]."┻"."</font>";
@@ -110,12 +110,12 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 for($i=0; $i < 2; $i++) { $cent[$i] = "<font color=white>"; }
 for($i=0; $i < 4; $i++) {
     $general = MYDB_fetch_array($result);
-    if($general[name] == "") { $general[name] = "-"; }
-    if($general[npc] >= 2) { $general[name] = "<font color=cyan>".$general[name]."</font>"; }
-    elseif($general[npc] == 1) { $general[name] = "<font color=skyblue>".$general[name]."</font>"; }
-    if($general[win] > 0) { $line[$i] = "<font color=red>";   $cent[floor($i/2)] = "<font color=red>"; }
+    if($general['name'] == "") { $general['name'] = "-"; }
+    if($general['npc'] >= 2) { $general['name'] = "<font color=cyan>".$general['name']."</font>"; }
+    elseif($general['npc'] == 1) { $general['name'] = "<font color=skyblue>".$general['name']."</font>"; }
+    if($general['win'] > 0) { $line[$i] = "<font color=red>";   $cent[floor($i/2)] = "<font color=red>"; }
     else                  { $line[$i] = "<font color=white>"; }
-    $gen[$i] = $general[name];
+    $gen[$i] = $general['name'];
 }
 for($i=0; $i < 2; $i++) {
     $cent[$i] = $cent[$i]."┻"."</font>";
@@ -140,12 +140,12 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 for($i=0; $i < 4; $i++) { $cent[$i] = "<font color=white>"; }
 for($i=0; $i < 8; $i++) {
     $general = MYDB_fetch_array($result);
-    if($general[name] == "") { $general[name] = "-"; }
-    if($general[npc] >= 2) { $general[name] = "<font color=cyan>".$general[name]."</font>"; }
-    elseif($general[npc] == 1) { $general[name] = "<font color=skyblue>".$general[name]."</font>"; }
-    if($general[win] > 0) { $line[$i] = "<font color=red>";   $cent[floor($i/2)] = "<font color=red>"; }
+    if($general['name'] == "") { $general['name'] = "-"; }
+    if($general['npc'] >= 2) { $general['name'] = "<font color=cyan>".$general['name']."</font>"; }
+    elseif($general['npc'] == 1) { $general['name'] = "<font color=skyblue>".$general['name']."</font>"; }
+    if($general['win'] > 0) { $line[$i] = "<font color=red>";   $cent[floor($i/2)] = "<font color=red>"; }
     else                  { $line[$i] = "<font color=white>"; }
-    $gen[$i] = $general[name];
+    $gen[$i] = $general['name'];
 }
 for($i=0; $i < 4; $i++) {
     $cent[$i] = $cent[$i]."┻"."</font>";
@@ -170,12 +170,12 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 for($i=0; $i < 8; $i++) { $cent[$i] = "<font color=white>"; }
 for($i=0; $i < 16; $i++) {
     $general = MYDB_fetch_array($result);
-    if($general[name] == "") { $general[name] = "-"; }
-    if($general[npc] >= 2) { $general[name] = "<font color=cyan>".$general[name]."</font>"; }
-    elseif($general[npc] == 1) { $general[name] = "<font color=skyblue>".$general[name]."</font>"; }
-    if($general[win] > 0) { $line[$i] = "<font color=red>";   $cent[floor($i/2)] = "<font color=red>"; }
+    if($general['name'] == "") { $general['name'] = "-"; }
+    if($general['npc'] >= 2) { $general['name'] = "<font color=cyan>".$general['name']."</font>"; }
+    elseif($general['npc'] == 1) { $general['name'] = "<font color=skyblue>".$general['name']."</font>"; }
+    if($general['win'] > 0) { $line[$i] = "<font color=red>";   $cent[floor($i/2)] = "<font color=red>"; }
     else                  { $line[$i] = "<font color=white>"; }
-    $gen[$i] = $general[name];
+    $gen[$i] = $general['name'];
 }
 for($i=0; $i < 8; $i++) {
     $cent[$i] = $cent[$i]."┻"."</font>";
@@ -191,7 +191,7 @@ for($i=0; $i < 16; $i++) {
     echo "<td width=70>{$gen[$i]}</td>";
 }
 
-$query = "select bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15 from general where user_id='$_SESSION[p_id]'";
+$query = "select bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15 from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 for($i=0; $i < 16; $i++) {
@@ -199,7 +199,7 @@ for($i=0; $i < 16; $i++) {
 }
 
 for($i=0; $i < 16; $i++) {
-    $bet[$i]  = @round($admin[bet] /  $admin["bet{$i}"], 2);
+    $bet[$i]  = @round($admin['bet'] /  $admin["bet{$i}"], 2);
     if($bet[$i] == 0) { $bet[$i] = "∞"; }
 }
 
@@ -245,7 +245,7 @@ echo "
     </tr>
     <tr align=center><td height=10 colspan=16></td></tr>";
 
-if($admin[tournament] == 6) {
+if($admin['tournament'] == 6) {
     echo "
 <form method=post action=c_betting.php>
     <tr align=center>";
@@ -311,7 +311,7 @@ for($i=0; $i < 4; $i++) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     for($k=1; $k <= 30; $k++) {
         $general = MYDB_fetch_array($result);
-        printRow($k, $general[npc], $general[name], $general[$type4[$i]], $general[game], $general[win], $general[draw], $general[lose], $general[gl], $general[prize], 0);
+        printRow($k, $general['npc'], $general['name'], $general[$type4[$i]], $general['game'], $general['win'], $general['draw'], $general['lose'], $general['gl'], $general['prize'], 0);
     }
     echo "
             </table>

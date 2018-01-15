@@ -5,11 +5,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "<script>location.replace('_admin4.php');</script>";
 }
 
@@ -28,7 +28,7 @@ switch($btn) {
             $query = "select user_id from general where no='$genlist[$i]'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gen = MYDB_fetch_array($result);
-            $uid[$i] = $gen[user_id];
+            $uid[$i] = $gen['user_id'];
         }
         $connect = dbConn("sammo");
         $date = date('Y-m-d H:i:s');
@@ -46,7 +46,7 @@ switch($btn) {
             $query = "select user_id from general where no='$genlist[$i]'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gen = MYDB_fetch_array($result);
-            $uid[$i] = $gen[user_id];
+            $uid[$i] = $gen['user_id'];
         }
         $connect = dbConn("sammo");
         $date = date('Y-m-d H:i:s');
@@ -64,7 +64,7 @@ switch($btn) {
             $query = "select user_id from general where no='$genlist[$i]'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gen = MYDB_fetch_array($result);
-            $uid[$i] = $gen[user_id];
+            $uid[$i] = $gen['user_id'];
         }
         $connect = dbConn("sammo");
         $date = date('Y-m-d H:i:s');
@@ -94,9 +94,9 @@ switch($btn) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $you = MYDB_fetch_array($result);
             // 상대에게 발송
-            $you[msgindex]++;
-            if($you[msgindex] >= 10) { $you[msgindex] = 0; }
-            $query = "update general set msgindex='$you[msgindex]',msg{$you[msgindex]}_type=10,msg{$you[msgindex]}='$msg',msg{$you[msgindex]}_who='$genlist[$i]'+10000,msg{$you[msgindex]}_when='$date',newmsg=1 where no='$genlist[$i]'";
+            $you['msgindex']++;
+            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
+            $query = "update general set msgindex='$you['msgindex']',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date',newmsg=1 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;

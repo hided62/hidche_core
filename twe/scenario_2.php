@@ -43,8 +43,8 @@ $connect=dbConn();
 $query = "select startyear,year,month,turnterm,scenario,extend,fiction,img from game where no='1'";
 $result = MYDB_query($query, $connect) or Error("scenario_190A ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
-$fiction = $admin[fiction];    $turnterm = $admin[turnterm];    $startyear = $admin[startyear];    $year = $admin[year];    $extend = $admin[extend];
-$img = $admin[img];
+$fiction = $admin['fiction'];    $turnterm = $admin['turnterm'];    $startyear = $admin['startyear'];    $year = $admin['year'];    $extend = $admin['extend'];
+$img = $admin['img'];
 //역사모드2 : 190년 반동탁연합
 
 //국가1 동탁 국가2 원소 국가3 유표 국가4 조조 국가5 유언 국가6 원술 국가7 손견
@@ -1686,7 +1686,7 @@ $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($con
 $count = MYDB_num_rows($result);
 for($i=0; $i < $count; $i++) {
     $nation = MYDB_fetch_array($result);
-    SetNationFront($connect, $nation[nation]);
+    SetNationFront($connect, $nation['nation']);
 }
 
 //////////////////////////도시 끝///////////////////////////////////////////////

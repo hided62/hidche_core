@@ -109,7 +109,7 @@ function GetImageURL($imgsvr) {
 }
 
 function CheckLogin($type=0) {
-    if($_SESSION[p_id] == "") {
+    if($_SESSION['p_id'] == "") {
         if($type == 0) { echo "<script>location.replace('start.php');</script>"; }
         else           { echo "<script>window.top.main.location.replace('main.php');</script>"; }
         exit();
@@ -181,7 +181,7 @@ function getScenario($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    switch($admin[scenario]) {
+    switch($admin['scenario']) {
     case  0: $str = "공백지모드"; break;
     case  1: $str = "역사모드1 : 184년 황건적의 난"; break;
     case  2: $str = "역사모드2 : 190년 반동탁연합"; break;
@@ -212,10 +212,10 @@ function getScenario($connect) {
 }
 
 function CheckBlock($connect) {
-    $query = "select block from general where user_id='$_SESSION[p_id]'";
+    $query = "select block from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
-    return $me[block];
+    return $me['block'];
 }
 
 function NationCharCall($call) {
@@ -1406,7 +1406,7 @@ function getTurn($connect, $general, $type, $font=1) {
             case 16: //전쟁
                 $double = $command[1];
                 $city = getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】(으)로 출병";
+                $str[$i] = "【{$city['name']}】(으)로 출병";
                 break;
             case 17: //소집해제
                 $str[$i] = "소집 해제";
@@ -1415,7 +1415,7 @@ function getTurn($connect, $general, $type, $font=1) {
             case 21: //이동
                 $double = $command[1];
                 $city = getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】(으)로 이동";
+                $str[$i] = "【{$city['name']}】(으)로 이동";
                 break;
             case 22: //등용
                 $double = $command[1];
@@ -1424,7 +1424,7 @@ function getTurn($connect, $general, $type, $font=1) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$general[name]}】(을)를 등용";
+                $str[$i] = "【{$general['name']}】(을)를 등용";
                 break;
             case 25: //임관
                 $double = $command[1];
@@ -1433,9 +1433,9 @@ function getTurn($connect, $general, $type, $font=1) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $nation = MYDB_fetch_array($result);
 
-                if(!$nation[name]) { $nation[name] = '????'; }
+                if(!$nation['name']) { $nation['name'] = '????'; }
 
-                $str[$i] = "【{$nation[name]}】(으)로 임관";
+                $str[$i] = "【{$nation['name']}】(으)로 임관";
                 break;
             case 26: //집합
                 $str[$i] = "집합";
@@ -1449,38 +1449,38 @@ function getTurn($connect, $general, $type, $font=1) {
             case 30: //강행
                 $double = $command[1];
                 $city = getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】(으)로 강행";
+                $str[$i] = "【{$city['name']}】(으)로 강행";
                 break;
                 
             case 31: //첩보
                 $double = $command[1];
                 $city= getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】에 첩보 실행";
+                $str[$i] = "【{$city['name']}】에 첩보 실행";
                 break;
             case 32: //화계
                 $double = $command[1];
                 $city= getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】에 화계 실행";
+                $str[$i] = "【{$city['name']}】에 화계 실행";
                 break;
             case 33: //탈취
                 $double = $command[1];
                 $city= getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】에 탈취 실행";
+                $str[$i] = "【{$city['name']}】에 탈취 실행";
                 break;
             case 34: //파괴
                 $double = $command[1];
                 $city= getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】에 파괴 실행";
+                $str[$i] = "【{$city['name']}】에 파괴 실행";
                 break;
             case 35: //선동
                 $double = $command[1];
                 $city= getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】에 선동 실행";
+                $str[$i] = "【{$city['name']}】에 선동 실행";
                 break;
             case 36: //기습
                 $double = $command[1];
                 $city= getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】에 기습 실행";
+                $str[$i] = "【{$city['name']}】에 기습 실행";
                 break;
 
             case 41: //단련
@@ -1498,8 +1498,8 @@ function getTurn($connect, $general, $type, $font=1) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                if($fourth == 1) { $str[$i] = "【{$general[name]}】에게 금 {$double}00을 증여"; }
-                else { $str[$i] = "【{$general[name]}】에게 쌀 {$double}00을 증여"; }
+                if($fourth == 1) { $str[$i] = "【{$general['name']}】에게 금 {$double}00을 증여"; }
+                else { $str[$i] = "【{$general['name']}】에게 쌀 {$double}00을 증여"; }
                 break;
             case 44: //헌납
                 $third = $command[2];
@@ -1512,11 +1512,11 @@ function getTurn($connect, $general, $type, $font=1) {
                 $str[$i] = "하야";
                 break;
             case 46: //건국
-                $query = "select makenation from general where no='$general[no]'";
+                $query = "select makenation from general where no='$general['no']'";
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$general[makenation]}】(을)를 건국";
+                $str[$i] = "【{$general['makenation']}】(을)를 건국";
                 break;
             case 47: //방랑
                 $str[$i] = "방랑";
@@ -1559,7 +1559,7 @@ function getTurn($connect, $general, $type, $font=1) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$general[name]}】에게 선양";
+                $str[$i] = "【{$general['name']}】에게 선양";
                 break;
             case 55: //거병
                 $str[$i] = "방랑군 결성";
@@ -1616,8 +1616,8 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                if($fourth == 1) { $str[$i] = "【{$general[name]}】에게 금 {$double}00을 포상"; }
-                else { $str[$i] = "【{$general[name]}】에게 쌀 {$double}00을 포상"; }
+                if($fourth == 1) { $str[$i] = "【{$general['name']}】에게 금 {$double}00을 포상"; }
+                else { $str[$i] = "【{$general['name']}】에게 쌀 {$double}00을 포상"; }
                 break;
             case 24: //몰수
                 $fourth = $command[3];
@@ -1628,8 +1628,8 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                if($fourth == 1) { $str[$i] = "【{$general[name]}】에게서 금 {$double}00을 몰수"; }
-                else { $str[$i] = "【{$general[name]}】에게서 쌀 {$double}00을 몰수"; }
+                if($fourth == 1) { $str[$i] = "【{$general['name']}】에게서 금 {$double}00을 몰수"; }
+                else { $str[$i] = "【{$general['name']}】에게서 쌀 {$double}00을 몰수"; }
                 break;
             case 27: //발령
                 $third = $command[2];
@@ -1640,7 +1640,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $general = MYDB_fetch_array($result);
                 $city = getCity($connect, $double, "name");
 
-                $str[$i] = "【{$general[name]}】【{$city[name]}】(으)로 발령";
+                $str[$i] = "【{$general['name']}】【{$city['name']}】(으)로 발령";
                 break;
             case 51: //항복권고
                 $double = $command[1];
@@ -1649,7 +1649,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $nation = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$nation[name]}】에게 항복 권고";
+                $str[$i] = "【{$nation['name']}】에게 항복 권고";
                 break;
             case 52: //원조
                 $fourth = $command[3];
@@ -1662,10 +1662,10 @@ function getCoreTurn($connect, $nation, $level) {
 
                 $fourth *= 1000;
                 $third *= 1000;
-                $str[$i] = "【{$nation[name]}】에게 국고 {$third} 병량 {$fourth} 원조";
+                $str[$i] = "【{$nation['name']}】에게 국고 {$third} 병량 {$fourth} 원조";
                 break;
             case 53: //통합제의
-                $query = "select makenation from general where level='$level' and nation='$nation[nation]'";
+                $query = "select makenation from general where level='$level' and nation='$nation['nation']'";
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
@@ -1675,7 +1675,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $nation = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$nation[name]}】에 【{$general[makenation]}】(으)로 통합 제의";
+                $str[$i] = "【{$nation['name']}】에 【{$general['makenation']}】(으)로 통합 제의";
                 break;
             case 61: //불가침제의
                 $third = $command[2];
@@ -1685,7 +1685,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $nation = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$nation[name]}】에 {$third}년 불가침 제의";
+                $str[$i] = "【{$nation['name']}】에 {$third}년 불가침 제의";
                 break;
             case 62: //선전 포고
                 $double = $command[1];
@@ -1694,7 +1694,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $nation = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$nation[name]}】에 선전 포고";
+                $str[$i] = "【{$nation['name']}】에 선전 포고";
                 break;
             case 63: //종전 제의
                 $double = $command[1];
@@ -1703,7 +1703,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $nation = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$nation[name]}】에 종전 제의";
+                $str[$i] = "【{$nation['name']}】에 종전 제의";
                 break;
             case 64: //파기 제의
                 $double = $command[1];
@@ -1712,27 +1712,27 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $nation = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$nation[name]}】에 파기 제의";
+                $str[$i] = "【{$nation['name']}】에 파기 제의";
                 break;
             case 65: //초토
                 $double = $command[1];
                 $city = getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】(을)를 초토화";
+                $str[$i] = "【{$city['name']}】(을)를 초토화";
                 break;
             case 66: //천도
                 $double = $command[1];
                 $city = getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】(으)로 천도";
+                $str[$i] = "【{$city['name']}】(으)로 천도";
                 break;
             case 67: //증축
                 $double = $command[1];
                 $city = getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】(을)를 증축";
+                $str[$i] = "【{$city['name']}】(을)를 증축";
                 break;
             case 68: //감축
                 $double = $command[1];
                 $city = getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】(을)를 감축";
+                $str[$i] = "【{$city['name']}】(을)를 감축";
                 break;
             case 71: //필사즉생
                 $str[$i] = "필사즉생";
@@ -1740,17 +1740,17 @@ function getCoreTurn($connect, $nation, $level) {
             case 72: //백성동원
                 $double = $command[1];
                 $city = getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】에 백성동원";
+                $str[$i] = "【{$city['name']}】에 백성동원";
                 break;
             case 73: //수몰
                 $double = $command[1];
                 $city = getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】(을)를 수몰";
+                $str[$i] = "【{$city['name']}】(을)를 수몰";
                 break;
             case 74: //허보
                 $double = $command[1];
                 $city = getCity($connect, $double, "name");
-                $str[$i] = "【{$city[name]}】에 허보";
+                $str[$i] = "【{$city['name']}】에 허보";
                 break;
             case 75: //피장파장
                 $double = $command[1];
@@ -1759,7 +1759,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $nation = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$nation[name]}】에 피장파장";
+                $str[$i] = "【{$nation['name']}】에 피장파장";
                 break;
             case 76: //의병모집
                 $str[$i] = "의병모집";
@@ -1771,7 +1771,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $nation = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$nation[name]}】에 이호경식";
+                $str[$i] = "【{$nation['name']}】에 이호경식";
                 break;
             case 78: //급습
                 $double = $command[1];
@@ -1780,7 +1780,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $nation = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$nation[name]}】에 급습";
+                $str[$i] = "【{$nation['name']}】에 급습";
                 break;
             case 81: //국기변경
                 $double = $command[1];
@@ -1858,41 +1858,41 @@ function CoreTurnTable() {
 function cityInfo($connect) {
     global $_basecolor, $_basecolor2, $images;
 
-    $query = "select no,city,skin from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,city,skin from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
     // 도시 정보
-    $city = getCity($connect, $me[city]);
+    $city = getCity($connect, $me['city']);
 
-    $query = "select name,color from nation where nation='$city[nation]'";
+    $query = "select name,color from nation where nation='$city['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $pop  = $city[pop] / $city[pop2] * 100;
-    $rate = $city[rate];
-    $agri = $city[agri] / $city[agri2] * 100;
-    $comm = $city[comm] / $city[comm2] * 100;
-    $secu = $city[secu] / $city[secu2] * 100;
-    $def  = $city[def] / $city[def2] * 100;
-    $wall = $city[wall] / $city[wall2] * 100;
-    if($city[trade] == 0) {
+    $pop  = $city['pop'] / $city[pop2] * 100;
+    $rate = $city['rate'];
+    $agri = $city['agri'] / $city[agri2] * 100;
+    $comm = $city['comm'] / $city[comm2] * 100;
+    $secu = $city['secu'] / $city[secu2] * 100;
+    $def  = $city['def'] / $city[def2] * 100;
+    $wall = $city['wall'] / $city[wall2] * 100;
+    if($city['trade'] == 0) {
         $trade = 0;
         $tradeStr = "상인없음";
     } else {
-        $trade = ($city[trade]-95) * 10;
-        $tradeStr = $city[trade] . "%";
+        $trade = ($city['trade']-95) * 10;
+        $tradeStr = $city['trade'] . "%";
     }
 
-    if($nation[color] == "" || $me[skin] < 1) { $nation[color] = "000000"; }
+    if($nation['color'] == "" || $me['skin'] < 1) { $nation['color'] = "000000"; }
     echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
-    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation[color]).";background-color:$nation[color];font-weight:bold;font-size:13;>【 ".getRegion($city[region])." | ".getCityLevel($city[level])." 】 $city[name]</td></tr>
-    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation[color]).";background-color:$nation[color]><b>";
+    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:$nation['color'];font-weight:bold;font-size:13;>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 $city['name']</td></tr>
+    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:$nation['color']><b>";
 
-    if($city[nation] == 0) {
+    if($city['nation'] == 0) {
         echo "공 백 지";
     } else {
-        echo "지배 국가 【 {$nation[name]} 】";
+        echo "지배 국가 【 {$nation['name']} 】";
     }
 
     if($city[gen1] > 0) {
@@ -1900,7 +1900,7 @@ function cityInfo($connect) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen1 = MYDB_fetch_array($result);
     } else {
-        $gen1[name] = '-';
+        $gen1['name'] = '-';
     }
 
     if($city[gen2] > 0) {
@@ -1908,7 +1908,7 @@ function cityInfo($connect) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen2 = MYDB_fetch_array($result);
     } else {
-        $gen2[name] = '-';
+        $gen2['name'] = '-';
     }
 
     if($city[gen3] > 0) {
@@ -1916,7 +1916,7 @@ function cityInfo($connect) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen3 = MYDB_fetch_array($result);
     } else {
-        $gen3[name] = '-';
+        $gen3['name'] = '-';
     }
 
     echo "
@@ -1924,44 +1924,44 @@ function cityInfo($connect) {
     </tr>
     <tr>
         <td rowspan=2 align=center id=bg1><b>주민</b></td>
-        <td height=7 colspan=3>".bar($pop, $me[skin])."</td>
+        <td height=7 colspan=3>".bar($pop, $me['skin'])."</td>
         <td rowspan=2 align=center id=bg1><b>민심</b></td>
-        <td height=7>".bar($rate, $me[skin])."</td>
+        <td height=7>".bar($rate, $me['skin'])."</td>
         <td rowspan=2 align=center id=bg1><b>태수</b></td>
-        <td rowspan=2 align=center>{$gen1[name]}</td>
+        <td rowspan=2 align=center>{$gen1['name']}</td>
     </tr>
     <tr>
-        <td colspan=3 align=center>{$city[pop]}/{$city[pop2]}</td>
-        <td align=center>{$city[rate]}</td>
+        <td colspan=3 align=center>{$city['pop']}/{$city[pop2]}</td>
+        <td align=center>{$city['rate']}</td>
     </tr>
     <tr>
         <td width=50  rowspan=2 align=center id=bg1><b>농업</b></td>
-        <td width=100 height=7>".bar($agri, $me[skin])."</td>
+        <td width=100 height=7>".bar($agri, $me['skin'])."</td>
         <td width=50  rowspan=2 align=center id=bg1><b>상업</b></td>
-        <td width=100 height=7>".bar($comm, $me[skin])."</td>
+        <td width=100 height=7>".bar($comm, $me['skin'])."</td>
         <td width=50  rowspan=2 align=center id=bg1><b>치안</b></td>
-        <td width=100 height=7>".bar($secu, $me[skin])."</td>
+        <td width=100 height=7>".bar($secu, $me['skin'])."</td>
         <td width=50  rowspan=2 align=center id=bg1><b>군사</b></td>
-        <td rowspan=2 align=center>{$gen2[name]}</td>
+        <td rowspan=2 align=center>{$gen2['name']}</td>
     </tr>
     <tr>
-        <td align=center>{$city[agri]}/{$city[agri2]}</td>
-        <td align=center>{$city[comm]}/{$city[comm2]}</td>
-        <td align=center>{$city[secu]}/{$city[secu2]}</td>
+        <td align=center>{$city['agri']}/{$city[agri2]}</td>
+        <td align=center>{$city['comm']}/{$city[comm2]}</td>
+        <td align=center>{$city['secu']}/{$city[secu2]}</td>
     </tr>
     <tr>
         <td rowspan=2 align=center id=bg1><b>수비</b></td>
-        <td height=7>".bar($def, $me[skin])."</td>
+        <td height=7>".bar($def, $me['skin'])."</td>
         <td rowspan=2 align=center id=bg1><b>성벽</b></td>
-        <td height=7>".bar($wall, $me[skin])."</td>
+        <td height=7>".bar($wall, $me['skin'])."</td>
         <td rowspan=2 align=center id=bg1><b>시세</b></td>
-        <td height=7>".bar($trade, $me[skin])."</td>
+        <td height=7>".bar($trade, $me['skin'])."</td>
         <td rowspan=2 align=center id=bg1><b>시중</b></td>
-        <td rowspan=2 align=center>{$gen3[name]}</td>
+        <td rowspan=2 align=center>{$gen3['name']}</td>
     </tr>
     <tr>
-        <td align=center>{$city[def]}/{$city[def2]}</td>
-        <td align=center>{$city[wall]}/{$city[wall2]}</td>
+        <td align=center>{$city['def']}/{$city[def2]}</td>
+        <td align=center>{$city['wall']}/{$city[wall2]}</td>
         <td align=center>{$tradeStr}</td>
     </tr>
 </table>
@@ -1975,27 +1975,27 @@ function myNationInfo($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select skin,no,nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select skin,no,nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,tricklimit,surlimit,tech,totaltech,level,type from nation where nation='$me[nation]'";
+    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,tricklimit,surlimit,tech,totaltech,level,type from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select COUNT(*) as cnt, SUM(pop) as totpop, SUM(pop2) as maxpop from city where nation='$nation[nation]'"; // 도시 이름 목록
+    $query = "select COUNT(*) as cnt, SUM(pop) as totpop, SUM(pop2) as maxpop from city where nation='$nation['nation']'"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select COUNT(*) as cnt, SUM(crew) as totcrew,SUM(leader)*100 as maxcrew from general where nation='$nation[nation]'";    // 장수 목록
+    $query = "select COUNT(*) as cnt, SUM(crew) as totcrew,SUM(leader)*100 as maxcrew from general where nation='$nation['nation']'";    // 장수 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select name from general where nation='$nation[nation]' and level='12'";
+    $query = "select name from general where nation='$nation['nation']' and level='12'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level12 = MYDB_fetch_array($genresult);
 
-    $query = "select name from general where nation='$nation[nation]' and level='11'";
+    $query = "select name from general where nation='$nation['nation']' and level='11'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level11 = MYDB_fetch_array($genresult);
 
@@ -2003,12 +2003,12 @@ function myNationInfo($connect) {
     <tr>
         <td colspan=4 align=center ";
 
-    if($me[skin] < 1) {
-        if($me[nation] == 0) { echo "style=font-weight:bold;font-size:13;>【재 야】"; }
-        else { echo "style=font-weight:bold;font-size:13;>국가【 {$nation[name]} 】"; }
+    if($me['skin'] < 1) {
+        if($me['nation'] == 0) { echo "style=font-weight:bold;font-size:13;>【재 야】"; }
+        else { echo "style=font-weight:bold;font-size:13;>국가【 {$nation['name']} 】"; }
     } else {
-        if($me[nation] == 0) { echo "style=color:white;background-color:000000;font-weight:bold;font-size:13;>【재 야】"; }
-        else { echo "style=color:".newColor($nation[color]).";background-color:{$nation[color]};font-weight:bold;font-size:13;>국가【 {$nation[name]} 】"; }
+        if($me['nation'] == 0) { echo "style=color:white;background-color:000000;font-weight:bold;font-size:13;>【재 야】"; }
+        else { echo "style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13;>국가【 {$nation['name']} 】"; }
     }
 
     echo "
@@ -2016,71 +2016,71 @@ function myNationInfo($connect) {
     </tr>
     <tr>
         <td align=center id=bg1><b>성 향</b></td>
-        <td align=center colspan=3><font color="; echo $me[skin]>0?"yellow":"white"; echo ">".getNationType($nation[type])."</font> (".getNationType2($nation[type], $me[skin]).")</td>
+        <td align=center colspan=3><font color="; echo $me['skin']>0?"yellow":"white"; echo ">".getNationType($nation['type'])."</font> (".getNationType2($nation['type'], $me['skin']).")</td>
         </td>
     </tr>
     <tr>
-        <td width=68  align=center id=bg1><b>".getLevel(12, $nation[level])."</b></td>
-        <td width=178 align=center>";echo $level12==''?"-":"$level12[name]"; echo "</td>
-        <td width=68  align=center id=bg1><b>".getLevel(11, $nation[level])."</b></td>
-        <td width=178 align=center>";echo $level11==''?"-":"$level11[name]"; echo "</td>
+        <td width=68  align=center id=bg1><b>".getLevel(12, $nation['level'])."</b></td>
+        <td width=178 align=center>";echo $level12==''?"-":"$level12['name']"; echo "</td>
+        <td width=68  align=center id=bg1><b>".getLevel(11, $nation['level'])."</b></td>
+        <td width=178 align=center>";echo $level11==''?"-":"$level11['name']"; echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>총주민</b></td>
-        <td align=center>";echo $me[nation]==0?"해당 없음":"$city[totpop]/$city[maxpop]";echo "</td>
+        <td align=center>";echo $me['nation']==0?"해당 없음":"$city['totpop']/$city['maxpop']";echo "</td>
         <td align=center id=bg1><b>총병사</b></td>
-        <td align=center>";echo $me[nation]==0?"해당 없음":"$general[totcrew]/$general[maxcrew]"; echo "</td>
+        <td align=center>";echo $me['nation']==0?"해당 없음":"$general['totcrew']/$general['maxcrew']"; echo "</td>
         </td>
     </tr>
     <tr>
         <td align=center id=bg1><b>국 고</b></td>
-        <td align=center>";echo $me[nation]==0?"해당 없음":"$nation[gold]";echo "</td>
+        <td align=center>";echo $me['nation']==0?"해당 없음":"$nation['gold']";echo "</td>
         <td align=center id=bg1><b>병 량</b></td>
-        <td align=center>";echo $me[nation]==0?"해당 없음":"$nation[rice]";echo "</td>
+        <td align=center>";echo $me['nation']==0?"해당 없음":"$nation['rice']";echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>지급율</b></td>
         <td align=center>";
-    if($me[nation] == 0) {
+    if($me['nation'] == 0) {
         echo "해당 없음";
     } else {
-        echo $nation[bill]==0?"0 %":"$nation[bill] %";
+        echo $nation['bill']==0?"0 %":"$nation['bill'] %";
     }
     echo "
         </td>
         <td align=center id=bg1><b>세 율</b></td>
         <td align=center>";
-    if($me[nation] == 0) {
+    if($me['nation'] == 0) {
         echo "해당 없음";
     } else {
-        echo $nation[rate]==0?"0 %":"$nation[rate] %";
+        echo $nation['rate']==0?"0 %":"$nation['rate'] %";
     }
 
-    $techCall = getTechCall($nation[tech]);
+    $techCall = getTechCall($nation['tech']);
 
-    if(TechLimit($admin[startyear], $admin[year], $nation[tech])) { $nation[tech] = "<font color=magenta>{$nation[tech]}</font>"; }
-    else { $nation[tech] = "<font color=limegreen>{$nation[tech]}</font>"; }
+    if(TechLimit($admin['startyear'], $admin['year'], $nation['tech'])) { $nation['tech'] = "<font color=magenta>{$nation['tech']}</font>"; }
+    else { $nation['tech'] = "<font color=limegreen>{$nation['tech']}</font>"; }
 
-    $nation[tech] = "$techCall / $nation[tech]";
+    $nation['tech'] = "$techCall / $nation['tech']";
 
-    if($nation[tricklimit] != 0) { $nation[tricklimit] = "<font color=red>$nation[tricklimit]턴</font>"; }
-    else { $nation[tricklimit] = "<font color=limegreen>가 능</font>"; }
+    if($nation['tricklimit'] != 0) { $nation['tricklimit'] = "<font color=red>$nation['tricklimit']턴</font>"; }
+    else { $nation['tricklimit'] = "<font color=limegreen>가 능</font>"; }
 
-    if($nation[surlimit] != 0) { $nation[surlimit] = "<font color=red>$nation[surlimit]턴</font>"; }
-    else { $nation[surlimit] = "<font color=limegreen>가 능</font>"; }
+    if($nation['surlimit'] != 0) { $nation['surlimit'] = "<font color=red>$nation['surlimit']턴</font>"; }
+    else { $nation['surlimit'] = "<font color=limegreen>가 능</font>"; }
 
-    if($nation[scout] != 0) { $nation[scout] = "<font color=red>금 지</font>"; }
-    else { $nation[scout] = "<font color=limegreen>허 가</font>"; }
+    if($nation['scout'] != 0) { $nation['scout'] = "<font color=red>금 지</font>"; }
+    else { $nation['scout'] = "<font color=limegreen>허 가</font>"; }
 
-    if($nation[war] != 0) { $nation[war] = "<font color=red>금 지</font>"; }
-    else { $nation[war] = "<font color=limegreen>허 가</font>"; }
+    if($nation['war'] != 0) { $nation['war'] = "<font color=red>금 지</font>"; }
+    else { $nation['war'] = "<font color=limegreen>허 가</font>"; }
 
-    if($me[skin] == 0) {
-        $nation[tech] = unfont($nation[tech]);
-        $nation[tricklimit] = unfont($nation[tricklimit]);
-        $nation[surlimit] = unfont($nation[surlimit]);
-        $nation[scout] = unfont($nation[scout]);
-        $nation[war] = unfont($nation[war]);
+    if($me['skin'] == 0) {
+        $nation['tech'] = unfont($nation['tech']);
+        $nation['tricklimit'] = unfont($nation['tricklimit']);
+        $nation['surlimit'] = unfont($nation['surlimit']);
+        $nation['scout'] = unfont($nation['scout']);
+        $nation['war'] = unfont($nation['war']);
     }
 
     echo "
@@ -2088,27 +2088,27 @@ function myNationInfo($connect) {
     </tr>
     <tr>
         <td align=center id=bg1><b>속 령</b></td>
-        <td align=center>";echo $me[nation]==0?"-":"$city[cnt]"; echo "</td>
+        <td align=center>";echo $me['nation']==0?"-":"$city['cnt']"; echo "</td>
         <td align=center id=bg1><b>장 수</b></td>
-        <td align=center>";echo $me[nation]==0?"-":"$general[cnt]"; echo "</td>
+        <td align=center>";echo $me['nation']==0?"-":"$general['cnt']"; echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>국 력</b></td>
-        <td align=center>$nation[power]</td>
+        <td align=center>$nation['power']</td>
         <td align=center id=bg1><b>기술력</b></td>
-        <td align=center>";echo $me[nation]==0?"-":"$nation[tech]"; echo "</td>
+        <td align=center>";echo $me['nation']==0?"-":"$nation['tech']"; echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>전 략</b></td>
-        <td align=center>$nation[tricklimit]</td>
+        <td align=center>$nation['tricklimit']</td>
         <td align=center id=bg1><b>외 교</b></td>
-        <td align=center>$nation[surlimit]</td>
+        <td align=center>$nation['surlimit']</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>임 관</b></td>
-        <td align=center>$nation[scout]</td>
+        <td align=center>$nation['scout']</td>
         <td align=center id=bg1><b>전 쟁</b></td>
-        <td align=center>$nation[war]</td>
+        <td align=center>$nation['war']</td>
     </tr>
 </table>
 ";
@@ -2151,53 +2151,53 @@ function commandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $troop = getTroop($connect, $me[troop]);
-    $city = getCity($connect, $me[city]);
+    $troop = getTroop($connect, $me['troop']);
+    $city = getCity($connect, $me['city']);
 
     $query = "select nation from nation";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($result);
 
-    $query = "select city from city where nation='$me[nation]'";
+    $query = "select city from city where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
-    $query = "select no from general where nation='$me[nation]'";
+    $query = "select no from general where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
-    $query = "select type,level from nation where nation='$me[nation]'";
+    $query = "select type,level from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $develcost = $admin[develcost];
-    $develcostA = $admin[develcost];    $colorA = 0;
-    $develcostB = $admin[develcost];    $colorB = 0;
-    $develcostC = $admin[develcost];    $colorC = 0;
-    $develcostD = $admin[develcost];    $colorD = 0;
-    $develcostE = $admin[develcost]*2;  $colorE = 0;
-    $develcost3 = $admin[develcost]*3;
-    $develcost5 = $admin[develcost]*5;
+    $develcost = $admin['develcost'];
+    $develcostA = $admin['develcost'];    $colorA = 0;
+    $develcostB = $admin['develcost'];    $colorB = 0;
+    $develcostC = $admin['develcost'];    $colorC = 0;
+    $develcostD = $admin['develcost'];    $colorD = 0;
+    $develcostE = $admin['develcost']*2;  $colorE = 0;
+    $develcost3 = $admin['develcost']*3;
+    $develcost5 = $admin['develcost']*5;
 
     // 농상 국가보정
-    if($nation[type] == 2 || $nation[type] == 12)                                             { $develcostA *= 0.8;   $colorA = 1; }
-    if($nation[type] == 8 || $nation[type] == 11)                                                                   { $develcostA *= 1.2;   $colorA = 2; }
+    if($nation['type'] == 2 || $nation['type'] == 12)                                             { $develcostA *= 0.8;   $colorA = 1; }
+    if($nation['type'] == 8 || $nation['type'] == 11)                                                                   { $develcostA *= 1.2;   $colorA = 2; }
     // 기술 국가보정
-    if($nation[type] == 3 || $nation[type] == 13)                                                                   { $develcostB *= 0.8;   $colorB = 1; }
-    if($nation[type] == 5 || $nation[type] == 6 || $nation[type] == 7 || $nation[type] == 8 || $nation[type] == 12) { $develcostB *= 1.2;   $colorB = 2; }
+    if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $develcostB *= 0.8;   $colorB = 1; }
+    if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $develcostB *= 1.2;   $colorB = 2; }
     // 수성 국가보정
-    if($nation[type] == 3 || $nation[type] == 5 || $nation[type] == 10 || $nation[type] == 11)                      { $develcostC *= 0.8;   $colorC = 1; }
-    if($nation[type] == 4 || $nation[type] == 7 || $nation[type] == 8  || $nation[type] == 13)                      { $develcostC *= 1.2;   $colorC = 2; }
+    if($nation['type'] == 3 || $nation['type'] == 5 || $nation['type'] == 10 || $nation['type'] == 11)                      { $develcostC *= 0.8;   $colorC = 1; }
+    if($nation['type'] == 4 || $nation['type'] == 7 || $nation['type'] == 8  || $nation['type'] == 13)                      { $develcostC *= 1.2;   $colorC = 2; }
     // 치안 국가보정
-    if($nation[type] == 1 || $nation[type] == 4)                                                                    { $develcostD *= 0.8;   $colorD = 1; }
-    if($nation[type] == 6 || $nation[type] == 9)                                                                    { $develcostD *= 1.2;   $colorD = 2; }
+    if($nation['type'] == 1 || $nation['type'] == 4)                                                                    { $develcostD *= 0.8;   $colorD = 1; }
+    if($nation['type'] == 6 || $nation['type'] == 9)                                                                    { $develcostD *= 1.2;   $colorD = 2; }
     // 민심,정착장려 국가보정
-    if($nation[type] == 2 || $nation[type] == 4 || $nation[type] == 7 || $nation[type] == 10) { $develcostE *= 0.8;   $colorE = 1; }
-    if($nation[type] == 1 || $nation[type] == 3 || $nation[type] == 9)                                                                    { $develcostE *= 1.2;   $colorE = 2; }
+    if($nation['type'] == 2 || $nation['type'] == 4 || $nation['type'] == 7 || $nation['type'] == 10) { $develcostE *= 0.8;   $colorE = 1; }
+    if($nation['type'] == 1 || $nation['type'] == 3 || $nation['type'] == 9)                                                                    { $develcostE *= 1.2;   $colorE = 2; }
 
     $develcostA = round($develcostA);
     $develcostB = round($develcostB);
@@ -2210,7 +2210,7 @@ function commandTable($connect) {
     addCommand("휴 식", 0);
     addCommand("요 양", 50);
     commandGroup("========= 내 정 ==========");
-    if($me[level] >= 1 && ($citycount != 0 || $admin[year] >= $admin[startyear]+3) && $city[supply] != 0) {
+    if($me['level'] >= 1 && ($citycount != 0 || $admin['year'] >= $admin['startyear']+3) && $city['supply'] != 0) {
         addCommand("농지개간(지력경험, 자금$develcostA)", 1, 1, $colorA);
         addCommand("상업투자(지력경험, 자금$develcostA)", 2, 1, $colorA);
         addCommand("기술연구(지력경험, 자금$develcostB)", 3, 1, $colorB);
@@ -2229,14 +2229,14 @@ function commandTable($connect) {
         addCommand("정착장려(통솔경험, 군량$develcostE)", 7, 0);
         addCommand("주민선정(통솔경험, 군량$develcostE)", 4, 0);
     }
-    if($me[level] >= 1 && (($nation[level] > 0 && $city[nation] == $me[nation] && $city[supply] != 0) || $nation[level] == 0)) {
+    if($me['level'] >= 1 && (($nation['level'] > 0 && $city['nation'] == $me['nation'] && $city['supply'] != 0) || $nation['level'] == 0)) {
         addCommand("물자조달(랜덤경험)", 9, 1);
     } else {
         addCommand("물자조달(랜덤경험)", 9, 0);
     }
     commandGroup("", 1);
     commandGroup("========= 군 사 ==========");
-    if($me[level] >= 1 && $citycount > 0) {
+    if($me['level'] >= 1 && $citycount > 0) {
         addCommand("첩보(통솔경험, 자금$develcost3, 군량$develcost3)", 31);
         addCommand("징병(통솔경험)", 11);
         addCommand("모병(통솔경험, 자금x2)", 12);
@@ -2253,7 +2253,7 @@ function commandTable($connect) {
         //addCommand("전투태세/3턴(통솔경험, 자금↓)", 15, 0);
         addCommand("출병", 16, 0);
     }
-    if($me[crew] > 0) {
+    if($me['crew'] > 0) {
         addCommand("소집해제(병사↓, 주민↑)", 17);
     } else {
         addCommand("소집해제(병사↓, 주민↑)", 17, 0);
@@ -2264,34 +2264,34 @@ function commandTable($connect) {
     addCommand("이동(통솔경험, 자금$develcost, 사기↓)", 21);
     addCommand("강행(통솔경험, 자금$develcost5, 병력/사기/훈련↓)", 30);
     
-    if($nation[level] > 0 && $me[level] >= 1) {
+    if($nation['level'] > 0 && $me['level'] >= 1) {
         addCommand("인재탐색(랜덤경험, 자금$develcost)", 29);
     } else {
         addCommand("인재탐색(랜덤경험, 자금$develcost)", 29, 0);
     }
-    if($me[level] >= 1 && $city[supply] != 0) {
+    if($me['level'] >= 1 && $city['supply'] != 0) {
         addCommand("등용(자금{$develcost5}+장수가치)", 22);
     } else {
         addCommand("등용(자금{$develcost5}+장수가치)", 22, 0);
     }
-    if($me[no] == $troop[no] && $citycount > 0 && $city[supply] != 0 && $city[nation] == $me[nation]) {
+    if($me['no'] == $troop['no'] && $citycount > 0 && $city['supply'] != 0 && $city['nation'] == $me['nation']) {
         addCommand("집합(통솔경험)", 26);
     } else {
         addCommand("집합(통솔경험)", 26, 0);
     }
-    if($me[level] >= 1 && $me[level] <= 12 && $nation[level] > 0) {
+    if($me['level'] >= 1 && $me['level'] <= 12 && $nation['level'] > 0) {
         addCommand("귀환(통솔경험)", 28);
     } else {
         addCommand("귀환(통솔경험)", 28, 0);
     }
-    if($me[level] == 0 && $nationcount != 0 && $me[makelimit] == 0) {
+    if($me['level'] == 0 && $nationcount != 0 && $me['makelimit'] == 0) {
         addCommand("임관", 25);
     } else {
         addCommand("임관", 25, 0);
     }
     commandGroup("", 1);
     commandGroup("========= 계 략 ==========");
-    if($me[level] >= 1 && (($nation[level] > 0 && $city[nation] == $me[nation] && $city[supply] != 0) || $nation[level] == 0)) {
+    if($me['level'] >= 1 && (($nation['level'] > 0 && $city['nation'] == $me['nation'] && $city['supply'] != 0) || $nation['level'] == 0)) {
         addCommand("화계(지력경험, 자금$develcost5, 군량$develcost5)", 32);
         addCommand("탈취(무력경험, 자금$develcost5, 군량$develcost5)", 33);
         addCommand("파괴(무력경험, 자금$develcost5, 군량$develcost5)", 34);
@@ -2306,55 +2306,55 @@ function commandTable($connect) {
     }
     commandGroup("", 1);
     commandGroup("========= 개 인 ==========");
-    if($me[level] >= 1) {
+    if($me['level'] >= 1) {
         addCommand("단련(자금$develcost, 군량$develcost)", 41);
     } else {
         addCommand("단련(자금$develcost, 군량$develcost)", 41, 0);
     }
     addCommand("견문(자금?, 군량?, 경험치?)", 42);
-    if($city[trade] > 0 || $me[special] == 30) {
+    if($city['trade'] > 0 || $me['special'] == 30) {
         addCommand("장비매매", 48);
         addCommand("군량매매", 49);
     } else {
         addCommand("장비매매", 48, 0);
         addCommand("군량매매", 49, 0);
     }
-    if($city[supply] != 0 && $city[nation] == $me[nation]) {
+    if($city['supply'] != 0 && $city['nation'] == $me['nation']) {
         addCommand("증여(통솔경험)", 43);
     } else {
         addCommand("증여(통솔경험)", 43, 0);
     }
 
-    if($me[level] >= 1 && $city[supply] != 0 && $city[nation] == $me[nation]) {
+    if($me['level'] >= 1 && $city['supply'] != 0 && $city['nation'] == $me['nation']) {
         addCommand("헌납(통솔경험)", 44);
     } else {
         addCommand("헌납(통솔경험)", 44, 0);
     }
-    if($me[npc] == 0) {
-        if($me[level] >= 1 && $me[level] < 12) {
+    if($me['npc'] == 0) {
+        if($me['level'] >= 1 && $me['level'] < 12) {
             addCommand("하야", 45);
         } else {
             addCommand("하야", 45, 0);
         }
     }
-    if($me[level] == 0) {
+    if($me['level'] == 0) {
         addCommand("거병", 55);
     } else {
         addCommand("거병", 55, 0);
     }
-    if($me[level] == 12 &&
-        ($city[level] == 5 || $city[level] == 6) &&
-        $city[nation] == 0 &&
-        $me[makelimit] == 0 &&
+    if($me['level'] == 12 &&
+        ($city['level'] == 5 || $city['level'] == 6) &&
+        $city['nation'] == 0 &&
+        $me['makelimit'] == 0 &&
         $gencount >= 2 &&
         $citycount == 0 &&
-        $admin[year] < $admin[startyear]+2
+        $admin['year'] < $admin['startyear']+2
     ) {
         addCommand("건국", 46);
     } else {
         addCommand("건국", 46, 0);
     }
-    if($me[level] == 12) {
+    if($me['level'] == 12) {
         addCommand("선양", 54);
         if($citycount != 0) {
             addCommand("방랑", 47);
@@ -2368,7 +2368,7 @@ function commandTable($connect) {
         addCommand("방랑", 47, 0);
         addCommand("해산", 56, 0);
     }
-    if($me[level] > 1 && $me[level] < 12) {
+    if($me['level'] > 1 && $me['level'] < 12) {
         addCommand("모반시도", 57);
     } else {
         addCommand("모반시도", 57, 0);
@@ -2385,25 +2385,25 @@ function CoreCommandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,city,level from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation,city,level from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select level,colset from nation where nation='$me[nation]'";
+    $query = "select level,colset from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select no from general where nation='$me[nation]'";
+    $query = "select no from general where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
 
-    $query = "select supply from city where city='$me[city]'";
+    $query = "select supply from city where city='$me['city']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    if($nation[level] > 0) { $valid = 1; }
+    if($nation['level'] > 0) { $valid = 1; }
     else { $valid = 0; }
-    if($city[supply] == 0) { $valid = 0; }
+    if($city['supply'] == 0) { $valid = 0; }
 
     echo "
 <select name=commandtype size=1 style=color:white;background-color:black;font-size:13>";
@@ -2422,7 +2422,7 @@ function CoreCommandTable($connect) {
     }
 
     addCommand("항복 권고", 51, $valid);
-    if($nation[level] >= 2) {
+    if($nation['level'] >= 2) {
         addCommand("물자 원조", 52, $valid);
     } else {
         addCommand("물자 원조", 52, 0);
@@ -2438,8 +2438,8 @@ function CoreCommandTable($connect) {
     } else {
         addCommand("초토화", 65, 0);
     }
-    addCommand("천도/3턴(금쌀{$admin[develcost]}0)", 66, $valid);
-    $cost = $admin[develcost] * 500 + 60000;   // 7만~13만
+    addCommand("천도/3턴(금쌀{$admin['develcost']}0)", 66, $valid);
+    $cost = $admin['develcost'] * 500 + 60000;   // 7만~13만
     addCommand("증축/6턴(금쌀{$cost})", 67, $valid);
     addCommand("감축/6턴", 68, $valid);
     commandGroup("", 1);
@@ -2463,7 +2463,7 @@ function CoreCommandTable($connect) {
     addCommand("급습/1턴(전략{$term})", 78, $valid);
     commandGroup("", 1);
     commandGroup("====== 기 타 ======");
-    if($nation[colset] > 0) {
+    if($nation['colset'] > 0) {
         addCommand("국기 변경", 81, 1);
     } else {
         addCommand("국기 변경", 81, 0);
@@ -2477,36 +2477,36 @@ function CoreCommandTable($connect) {
 function commandButton($connect) {
     global $_basecolor, $_basecolor2;
 
-    $query = "select skin,no,nation,level,belong from general where user_id='$_SESSION[p_id]'";
+    $query = "select skin,no,nation,level,belong from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,color,secretlimit from nation where nation='$me[nation]'";
+    $query = "select nation,color,secretlimit from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($nation[color] == "" || $me[skin] < 1) { $nation[color] = "000000"; }
+    if($nation['color'] == "" || $me['skin'] < 1) { $nation['color'] = "000000"; }
 
     echo "
 <table align=center border=0 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg2>
     <tr>";
 
-    if($me[level] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='회 의 실' onclick='refreshing(1,1)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='회 의 실' onclick='refreshing(1,1)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【회 의 실】</font></td>"; }
-    if($me[level] >= 5) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='기 밀 실' onclick='refreshing(1,4)'></td>"; }
+    if($me['level'] >= 5) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='기 밀 실' onclick='refreshing(1,4)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【기 밀 실】</font></td>"; }
-    if($me[level] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='부대 편성' onclick='refreshing(1,2)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='부대 편성' onclick='refreshing(1,2)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【부대 편성】</font></td>"; }
-    if($me[level] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='인 사 부' onclick='refreshing(1,10)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='인 사 부' onclick='refreshing(1,10)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【인 사 부】</font></td>"; }
-    if($me[level] >= 2 || ($me[level] == 1 && $me[belong] >= $nation[secretlimit])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='내 무 부' onclick='refreshing(1,13)'></td>"; }
+    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='내 무 부' onclick='refreshing(1,13)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【내 무 부】</font></td>"; }
-    if($me[level] >= 2 || ($me[level] == 1 && $me[belong] >= $nation[secretlimit])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='사 령 부' onclick='refreshing(1,5)'></td>"; }
+    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='사 령 부' onclick='refreshing(1,5)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【사 령 부】</font></td>"; }
-    if($me[level] >= 2 || ($me[level] == 1 && $me[belong] >= $nation[secretlimit])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='암 행 부' onclick='refreshing(1,6)'></td>"; }
+    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='암 행 부' onclick='refreshing(1,6)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【암 행 부】</font></td>"; }
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='토 너 먼 트' onclick='refreshing(1,15)'></td>";
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='베 팅 장' onclick='refreshing(1,16)'></td>";
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='토 너 먼 트' onclick='refreshing(1,15)'></td>";
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='베 팅 장' onclick='refreshing(1,16)'></td>";
     echo "
     </tr>
 </table>";
@@ -2515,31 +2515,31 @@ function commandButton($connect) {
 <table align=center border=0 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg2>
     <tr>";
 
-    if($me[level] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='세력 정보' onclick='refreshing(1,7)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 정보' onclick='refreshing(1,7)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【세력 정보】</font></td>"; }
-    if($me[level] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='세력 도시' onclick='refreshing(1,8)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 도시' onclick='refreshing(1,8)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【세력 도시】</font></td>"; }
-    if($me[level] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='세력 장수' onclick='refreshing(1,9)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 장수' onclick='refreshing(1,9)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【세력 장수】</font></td>"; }
-    if($me[level] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='국 법' onclick='refreshing(1,3)'></td>"; }
+    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='국 법' onclick='refreshing(1,3)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【국 법】</font></td>"; }
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='중원 정보' onclick='refreshing(1,14)'></td>";
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='현재 도시' onclick='refreshing(1,11)'></td>";
-    if($me[level] >= 2 || ($me[level] == 1 && $me[belong] >= $nation[secretlimit])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='감 찰 부' onclick='refreshing(1,18)'></td>"; }
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='중원 정보' onclick='refreshing(1,14)'></td>";
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='현재 도시' onclick='refreshing(1,11)'></td>";
+    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='감 찰 부' onclick='refreshing(1,18)'></td>"; }
     else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【감 찰 부】</font></td>"; }
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='내 정보 & 설정' onclick='refreshing(1,12)'></td>";
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation[color];color:".newColor($nation[color]).";font-weight:bold; type=button value='거 래 장' onclick='refreshing(1,17)'></td>";
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='내 정보 & 설정' onclick='refreshing(1,12)'></td>";
+    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:$nation['color'];color:".newColor($nation['color']).";font-weight:bold; type=button value='거 래 장' onclick='refreshing(1,17)'></td>";
     echo "
     </tr>
 </table>";
 }
 
 function myInfo($connect) {
-    $query = "select no,skin from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,skin from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    generalInfo($connect, $me[no], $me[skin]);
+    generalInfo($connect, $me['no'], $me['skin']);
 }
 
 function generalInfo($connect, $no, $skin) {
@@ -2549,7 +2549,7 @@ function generalInfo($connect, $no, $skin) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select skin from general where user_id='$_SESSION[p_id]'";
+    $query = "select skin from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2557,14 +2557,14 @@ function generalInfo($connect, $no, $skin) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select nation,level,color from nation where nation='$general[nation]'";
+    $query = "select nation,level,color from nation where nation='$general['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general[level] == 12) {
-        $lbonus = $nation[level] * 2;
-    } elseif($general[level] >= 5) {
-        $lbonus = $nation[level];
+    if($general['level'] == 12) {
+        $lbonus = $nation['level'] * 2;
+    } elseif($general['level'] >= 5) {
+        $lbonus = $nation['level'];
     } else {
         $lbonus = 0;
     }
@@ -2574,101 +2574,101 @@ function generalInfo($connect, $no, $skin) {
         $lbonus = "";
     }
 
-    $troop = getTroop($connect, $general[troop]);
+    $troop = getTroop($connect, $general['troop']);
 
-    $level = getLevel($general[level], $nation[level]);
-    if($general[level] == 2)     {
-        $query = "select name from city where gen3='$general[no]'";
+    $level = getLevel($general['level'], $nation['level']);
+    if($general['level'] == 2)     {
+        $query = "select name from city where gen3='$general['no']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $city = MYDB_fetch_array($result);
-        $level = $city[name]." ".$level;
-    } elseif($general[level] == 3) {
-        $query = "select name from city where gen2='$general[no]'";
+        $level = $city['name']." ".$level;
+    } elseif($general['level'] == 3) {
+        $query = "select name from city where gen2='$general['no']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $city = MYDB_fetch_array($result);
-        $level = $city[name]." ".$level;
-    } elseif($general[level] == 4) {
-        $query = "select name from city where gen1='$general[no]'";
+        $level = $city['name']." ".$level;
+    } elseif($general['level'] == 4) {
+        $query = "select name from city where gen1='$general['no']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $city = MYDB_fetch_array($result);
-        $level = $city[name]." ".$level;
+        $level = $city['name']." ".$level;
     }
-    $call = getCall($general[leader], $general[power], $general[intel]);
-    $typename = getTypename($general[crewtype]);
-    $weapname = getWeapName($general[weap]);
-    $bookname = getBookName($general[book]);
-    $horsename = getHorseName($general[horse]);
-    $itemname = getItemName($general[item]);
-    if($general[injury] > 0) {
-        $leader = floor($general[leader] * (100 - $general[injury])/100);
-        $power = floor($general[power] * (100 - $general[injury])/100);
-        $intel = floor($general[intel] * (100 - $general[injury])/100);
+    $call = getCall($general['leader'], $general['power'], $general['intel']);
+    $typename = getTypename($general['crewtype']);
+    $weapname = getWeapName($general['weap']);
+    $bookname = getBookName($general['book']);
+    $horsename = getHorseName($general['horse']);
+    $itemname = getItemName($general['item']);
+    if($general['injury'] > 0) {
+        $leader = floor($general['leader'] * (100 - $general['injury'])/100);
+        $power = floor($general['power'] * (100 - $general['injury'])/100);
+        $intel = floor($general['intel'] * (100 - $general['injury'])/100);
     } else {
-        $leader = $general[leader];
-        $power = $general[power];
-        $intel = $general[intel];
+        $leader = $general['leader'];
+        $power = $general['power'];
+        $intel = $general['intel'];
     }
-    if($general[injury] > 60)     { $color = "<font color=red>";     $injury = "위독"; }
-    elseif($general[injury] > 40) { $color = "<font color=magenta>"; $injury = "심각"; }
-    elseif($general[injury] > 20) { $color = "<font color=orange>";  $injury = "중상"; }
-    elseif($general[injury] > 0)  { $color = "<font color=yellow>";  $injury = "경상"; }
+    if($general['injury'] > 60)     { $color = "<font color=red>";     $injury = "위독"; }
+    elseif($general['injury'] > 40) { $color = "<font color=magenta>"; $injury = "심각"; }
+    elseif($general['injury'] > 20) { $color = "<font color=orange>";  $injury = "중상"; }
+    elseif($general['injury'] > 0)  { $color = "<font color=yellow>";  $injury = "경상"; }
     else                     { $color = "<font color=white>";   $injury = "건강"; }
 
-    $remaining = substr($general[turntime], 14, 2) - date('i');
+    $remaining = substr($general['turntime'], 14, 2) - date('i');
     if($remaining < 0) { $remaining = 60 + $remaining; }
 
-    if($general[userlevel] > 2) { $specUser = "<font color=cyan><b>특별</b></font>"; }
+    if($general['userlevel'] > 2) { $specUser = "<font color=cyan><b>특별</b></font>"; }
     else                   { $specUser = "<font color=gray><b>일반</b></font>"; }
-    if($general[block] > 0)     { $specUser = "<font color=red><b>블럭</b></font>"; }
+    if($general['block'] > 0)     { $specUser = "<font color=red><b>블럭</b></font>"; }
     $specUser = '';
 
-    if($nation[color] == "" || $skin < 1) { $nation[color] = "000000"; }
+    if($nation['color'] == "" || $skin < 1) { $nation['color'] = "000000"; }
 
-    if($general[age] < 60)     { $general[age] = "<font color=limegreen>$general[age] 세</font>"; }
-    elseif($general[age] < 80) { $general[age] = "<font color=yellow>$general[age] 세</font>"; }
-    else                  { $general[age] = "<font color=red>$general[age] 세</font>"; }
+    if($general['age'] < 60)     { $general['age'] = "<font color=limegreen>$general['age'] 세</font>"; }
+    elseif($general['age'] < 80) { $general['age'] = "<font color=yellow>$general['age'] 세</font>"; }
+    else                  { $general['age'] = "<font color=red>$general['age'] 세</font>"; }
 
-    $general[connect] = round($general[connect] / 10, 0) * 10;
-    $special = $general[special] == 0 ? "{$general[specage]}세" : "<font color=limegreen>".getGenSpecial($general[special])."</font>";
+    $general['connect'] = round($general['connect'] / 10, 0) * 10;
+    $special = $general['special'] == 0 ? "{$general['specage']}세" : "<font color=limegreen>".getGenSpecial($general['special'])."</font>";
     $special2 = $general[special2] == 0 ? "{$general[specage2]}세" : "<font color=limegreen>".getGenSpecial($general[special2])."</font>";
 
-    switch($general[personal]) {
+    switch($general['personal']) {
         case  2:    case  4:
-            $atmos = "<font color=cyan>{$general[atmos]} (+5)</font>"; break;
+            $atmos = "<font color=cyan>{$general['atmos']} (+5)</font>"; break;
         case  0:    case  9:    case 10:
-            $atmos = "<font color=magenta>{$general[atmos]} (-5)</font>"; break;
+            $atmos = "<font color=magenta>{$general['atmos']} (-5)</font>"; break;
         default:
-            $atmos = "$general[atmos]"; break;
+            $atmos = "$general['atmos']"; break;
     }
-    switch($general[personal]) {
+    switch($general['personal']) {
         case  3:    case  5:
-            $train = "<font color=cyan>{$general[train]} (+5)</font>"; break;
+            $train = "<font color=cyan>{$general['train']} (+5)</font>"; break;
         case  1:    case  8:    case 10:
-            $train = "<font color=magenta>{$general[train]} (-5)</font>"; break;
+            $train = "<font color=magenta>{$general['train']} (-5)</font>"; break;
         default:
-            $train = "$general[train]"; break;
+            $train = "$general['train']"; break;
     }
-    if($general[troop] == 0)    { $troop[name] = "-"; }
-    if($general[mode] == 2)     { $general[mode] = "<font color=limegreen>수비 함(훈사80)</font>"; }
-    elseif($general[mode] == 1) { $general[mode] = "<font color=limegreen>수비 함(훈사60)</font>"; }
-    else                        { $general[mode] = "<font color=red>수비 안함</font>"; }
+    if($general['troop'] == 0)    { $troop['name'] = "-"; }
+    if($general['mode'] == 2)     { $general['mode'] = "<font color=limegreen>수비 함(훈사80)</font>"; }
+    elseif($general['mode'] == 1) { $general['mode'] = "<font color=limegreen>수비 함(훈사60)</font>"; }
+    else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
 
     if($skin == 0) {
-        $general[age] = unfont($general[age]);
+        $general['age'] = unfont($general['age']);
         $special = unfont($special);
         $special2 = unfont($special2);
         $atmos = unfont($atmos);
         $train = unfont($train);
-        $general[mode] = unfont($general[mode]);
+        $general['mode'] = unfont($general['mode']);
     }
 
-    $weapImage = "{$images}/weap{$general[crewtype]}.jpg";
-    if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; };
-    $imageTemp = GetImageURL($general[imgsvr]);
+    $weapImage = "{$images}/weap{$general['crewtype']}.jpg";
+    if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; };
+    $imageTemp = GetImageURL($general['imgsvr']);
     echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
     <tr>
-        <td width=64 height=64 align=center rowspan=3"; echo $skin>0?" background={$imageTemp}/{$general[picture]}":""; echo ">&nbsp;</td>
-        <td align=center colspan=9 height=16 style=color:".newColor($nation[color]).";background-color:{$nation[color]};font-weight:bold;font-size:13;>{$specUser} {$general[name]} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general[turntime], 11)."</td>
+        <td width=64 height=64 align=center rowspan=3"; echo $skin>0?" background={$imageTemp}/{$general['picture']}":""; echo ">&nbsp;</td>
+        <td align=center colspan=9 height=16 style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13;>{$specUser} {$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>통솔</b></td>
@@ -2692,9 +2692,9 @@ function generalInfo($connect, $no, $skin) {
     <tr>
         <td align=center height=64 rowspan=3"; echo $skin>0?" background={$weapImage}":""; echo ">&nbsp;</td>
         <td align=center id=bg1><b>자금</b></td>
-        <td align=center colspan=2>$general[gold]</td>
+        <td align=center colspan=2>$general['gold']</td>
         <td align=center id=bg1><b>군량</b></td>
-        <td align=center colspan=2>$general[rice]</td>
+        <td align=center colspan=2>$general['rice']</td>
         <td align=center id=bg1><b>도구</b></td>
         <td align=center colspan=2><font size=1>$itemname</font></td>
     </tr>
@@ -2702,9 +2702,9 @@ function generalInfo($connect, $no, $skin) {
         <td align=center id=bg1><b>병종</b></td>
         <td align=center colspan=2>$typename</td>
         <td align=center id=bg1><b>병사</b></td>
-        <td align=center colspan=2>$general[crew]</td>
+        <td align=center colspan=2>$general['crew']</td>
         <td align=center id=bg1><b>성격</b></td>
-        <td align=center colspan=2>".getGenChar($general[personal])."</td>
+        <td align=center colspan=2>".getGenChar($general['personal'])."</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>훈련</b></td>
@@ -2716,34 +2716,34 @@ function generalInfo($connect, $no, $skin) {
     </tr>
     <tr height=20>
         <td align=center id=bg1><b>Lv</b></td>
-        <td align=center>&nbsp;{$general[explevel]}&nbsp;</td>
-        <td align=center colspan=5>".bar(getLevelPer($general[experience], $general[explevel]), $skin, 20)."</td>
+        <td align=center>&nbsp;{$general['explevel']}&nbsp;</td>
+        <td align=center colspan=5>".bar(getLevelPer($general['experience'], $general['explevel']), $skin, 20)."</td>
         <td align=center id=bg1><b>연령</b></td>
-        <td align=center colspan=2>$general[age]</td>
+        <td align=center colspan=2>$general['age']</td>
     </tr>
     <tr height=20>
         <td align=center id=bg1><b>수비</b></td>
-        <td align=center colspan=3>$general[mode]</td>
+        <td align=center colspan=3>$general['mode']</td>
         <td align=center id=bg1><b>삭턴</b></td>
-        <td align=center colspan=2>$general[killturn] 턴</td>
+        <td align=center colspan=2>$general['killturn'] 턴</td>
         <td align=center id=bg1><b>실행</b></td>
         <td align=center colspan=2>$remaining 분 남음</td>
     </tr>
     <tr height=20>
         <td align=center id=bg1><b>부대</b></td>
-        <td align=center colspan=3>$troop[name]</td>
+        <td align=center colspan=3>$troop['name']</td>
         <td align=center id=bg1><b>벌점</b></td>
-        <td align=center colspan=5>".getConnect($general[connect])." $general[connect]($general[con])</td>
+        <td align=center colspan=5>".getConnect($general['connect'])." $general['connect']($general['con'])</td>
     </tr>
 </table>";
 }
 
 function myInfo2($connect) {
-    $query = "select no,skin from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,skin from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    generalInfo2($connect, $me[no], $me[skin]);
+    generalInfo2($connect, $me['no'], $me['skin']);
 }
 
 function generalInfo2($connect, $no, $skin) {
@@ -2753,22 +2753,22 @@ function generalInfo2($connect, $no, $skin) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $general[winrate] = round($general[winrate], 2);
-    $general[killrate] = round($general[killrate], 2);
+    $general['winrate'] = round($general['winrate'], 2);
+    $general['killrate'] = round($general['killrate'], 2);
 
-    switch($general[personal]) {
+    switch($general['personal']) {
         case  0:    case  1;    case  6:
-            $experience = "<font color=cyan>".getHonor($general[experience])." ($general[experience])</font>"; break;
+            $experience = "<font color=cyan>".getHonor($general['experience'])." ($general['experience'])</font>"; break;
         case  4:    case  5:    case  7:    case 10:
-            $experience = "<font color=magenta>".getHonor($general[experience])." ($general[experience])</font>"; break;
+            $experience = "<font color=magenta>".getHonor($general['experience'])." ($general['experience'])</font>"; break;
         default:
-            $experience = getHonor($general[experience])." ($general[experience])"; break;
+            $experience = getHonor($general['experience'])." ($general['experience'])"; break;
     }
-    switch($general[personal]) {
+    switch($general['personal']) {
         case 10:
-            $dedication = "<font color=magenta>".getDed($general[dedication])." ($general[dedication])</font>"; break;
+            $dedication = "<font color=magenta>".getDed($general['dedication'])." ($general['dedication'])</font>"; break;
         default:
-            $dedication = getDed($general[dedication])." ($general[dedication])"; break;
+            $dedication = getDed($general['dedication'])." ($general['dedication'])"; break;
     }
 
     if($skin == 0) {
@@ -2804,27 +2804,27 @@ function generalInfo2($connect, $no, $skin) {
     </tr>
     <tr>
         <td width=64 align=center id=bg1><b>전투</b></td>
-        <td width=132 align=center>$general[warnum]</td>
+        <td width=132 align=center>$general['warnum']</td>
         <td width=48 align=center id=bg1><b>계략</b></td>
-        <td width=98 align=center>$general[firenum]</td>
+        <td width=98 align=center>$general['firenum']</td>
         <td width=48 align=center id=bg1><b>사관</b></td>
-        <td width=98 align=center>$general[belong]년</td>
+        <td width=98 align=center>$general['belong']년</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>승률</b></td>
-        <td align=center>$general[winrate] %</td>
+        <td align=center>$general['winrate'] %</td>
         <td align=center id=bg1><b>승리</b></td>
-        <td align=center>$general[killnum]</td>
+        <td align=center>$general['killnum']</td>
         <td align=center id=bg1><b>패배</b></td>
-        <td align=center>$general[deathnum]</td>
+        <td align=center>$general['deathnum']</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>살상률</b></td>
-        <td align=center>$general[killrate] %</td>
+        <td align=center>$general['killrate'] %</td>
         <td align=center id=bg1><b>사살</b></td>
-        <td align=center>$general[killcrew]</td>
+        <td align=center>$general['killcrew']</td>
         <td align=center id=bg1><b>피살</b></td>
-        <td align=center>$general[deathcrew]</td>
+        <td align=center>$general['deathcrew']</td>
     </tr>
 </table>
 <table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
@@ -2929,7 +2929,7 @@ function pushAuctionLog($connect, $log) {
 function pushGenLog($general, $log) {
     $size = count($log);
     if($size > 0) {
-        $fp = fopen("logs/gen{$general[no]}.txt", "a");
+        $fp = fopen("logs/gen{$general['no']}.txt", "a");
         for($i=0; $i < $size; $i++) {
             fwrite($fp, $log[$i]."\r\n");
         }
@@ -2940,7 +2940,7 @@ function pushGenLog($general, $log) {
 function pushBatRes($general, $log) {
     $size = count($log);
     if($size > 0) {
-        $fp = fopen("logs/batres{$general[no]}.txt", "a");
+        $fp = fopen("logs/batres{$general['no']}.txt", "a");
         for($i=0; $i < $size; $i++) {
             fwrite($fp, $log[$i]."\r\n");
         }
@@ -2951,7 +2951,7 @@ function pushBatRes($general, $log) {
 function pushBatLog($general, $log) {
     $size = count($log);
     if($size > 0) {
-        $fp = fopen("logs/batlog{$general[no]}.txt", "a");
+        $fp = fopen("logs/batlog{$general['no']}.txt", "a");
         for($i=0; $i < $size; $i++) {
             fwrite($fp, $log[$i]."\r\n");
         }
@@ -3062,20 +3062,20 @@ function MyHistory($connect, $no, $skin) {
     $query = "select history from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    echo ConvertLog($general[history], $skin);
+    echo ConvertLog($general['history'], $skin);
 }
 
 function addHistory($connect, $me, $history) {
-    $me[history] = "{$history}<br>{$me[history]}";
-    $query = "update general set history='$me[history]' where no='$me[no]'";
+    $me['history'] = "{$history}<br>{$me['history']}";
+    $query = "update general set history='$me['history']' where no='$me['no']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     return $me;
 }
 
 function addNationHistory($connect, $nation, $history) {
-    $nation[history] = "{$nation[history]}{$history}<br>";
-    $query = "update nation set history='$nation[history]' where nation='$nation[nation]'";
+    $nation['history'] = "{$nation['history']}{$history}<br>";
+    $query = "update nation set history='$nation['history']' where nation='$nation['nation']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     return $nation;
@@ -3087,7 +3087,7 @@ function adminMsg($connect, $skin=1) {
     $admin = MYDB_fetch_array($result);
 
     echo "운영자 메세지 : <font color="; echo $skin>0?"yellow":"white"; echo ">";
-    echo $admin[msg]."</font>";
+    echo $admin['msg']."</font>";
 }
 
 function allButton($connect) {
@@ -3095,7 +3095,7 @@ function allButton($connect) {
     $query = "select npcmode from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
-    if($admin[npcmode] == 1) {
+    if($admin['npcmode'] == 1) {
         $site = "a_npcList.php";
         $call = "빙의일람";
     } else {
@@ -3132,23 +3132,23 @@ function onlinenum($connect) {
     $query = "select online from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $game = MYDB_fetch_array($result);
-    return $game[online];
+    return $game['online'];
 }
 
 function onlinegen($connect) {
     $onlinegen = "";
-    if($_SESSION[p_nation] == 0) {
+    if($_SESSION['p_nation'] == 0) {
         $query = "select onlinegen from game where no='1'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $game = MYDB_fetch_array($result);
 
-        $onlinegen = $game[onlinegen];
+        $onlinegen = $game['onlinegen'];
     } else {
-        $query = "select onlinegen from nation where nation='$_SESSION[p_nation]'";
+        $query = "select onlinegen from nation where nation='$_SESSION['p_nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($result);
 
-        $onlinegen = $nation[onlinegen];
+        $onlinegen = $nation['onlinegen'];
     }
     return $onlinegen;
 }
@@ -3157,65 +3157,65 @@ function onlineNation($connect) {
     $query = "select onlinenation from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $game = MYDB_fetch_array($result);
-    return $game[onlinenation];
+    return $game['onlinenation'];
 }
 
 function nationMsg($connect) {
-    $query = "select no,nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select msg from nation where nation='$me[nation]'";
+    $query = "select msg from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    echo "<font color="; echo $skin>0?"orange":"white"; echo ">".$nation[msg]."</font>";
+    echo "<font color="; echo $skin>0?"orange":"white"; echo ">".$nation['msg']."</font>";
 }
 
 function genList($connect) {
-    $query = "select no,nation,level,msgindex,userlevel from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation,level,msgindex,userlevel from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select msg{$me[msgindex]}_who as reply,msg{$me[msgindex]}_type as type from general where user_id='$_SESSION[p_id]'";
+    $query = "select msg{$me['msgindex']}_who as reply,msg{$me['msgindex']}_type as type from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $reply = MYDB_fetch_array($result);
-    if($reply[type] % 100 == 9) {
-        $reply[reply] %= 10000;
-        $query = "select no,name from general where no={$reply[reply]}";
+    if($reply['type'] % 100 == 9) {
+        $reply['reply'] %= 10000;
+        $query = "select no,name from general where no={$reply['reply']}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
-    } elseif($reply[type] % 100 == 10) {
-        $reply[reply] = floor($reply[reply]/10000);
-        $query = "select no,name from general where no={$reply[reply]}";
+    } elseif($reply['type'] % 100 == 10) {
+        $reply['reply'] = floor($reply['reply']/10000);
+        $query = "select no,name from general where no={$reply['reply']}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
     }
 
-    $query = "select nation,color,name from nation where nation='$me[nation]'";
+    $query = "select nation,color,name from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
     echo "
 <select name=genlist size=1 style=color:white;background-color:black;font-size:13>
     <optgroup label='즐겨찾기'>";
-    if($me[nation] != 0) {
+    if($me['nation'] != 0) {
         echo "
-    <option selected style=color:".newColor($nation[color]).";background-color:{$nation[color]} value="; echo $nation[nation]+9000; echo ">【 아국 메세지 】</option>";
+    <option selected style=color:".newColor($nation['color']).";background-color:{$nation['color']} value="; echo $nation['nation']+9000; echo ">【 아국 메세지 】</option>";
     } else {
         echo "
-    <option selected style=color:".newColor($nation[color]).";background-color:{$nation[color]} value="; echo 9000; echo ">【 재야 】</option>";
+    <option selected style=color:".newColor($nation['color']).";background-color:{$nation['color']} value="; echo 9000; echo ">【 재야 】</option>";
     }
     echo "
     <option value=9999>【 전체&nbsp;&nbsp;&nbsp;메세지 】</option>";
     if($you) {
         echo "
-    <option value={$you[no]}>{$you[name]}</option>";
+    <option value={$you['no']}>{$you['name']}</option>";
     }
     echo "
     <option value=1>운영자</option>";
 
-    if($me[level] >= 5 || $me[userlevel] >= 5) {
+    if($me['level'] >= 5 || $me['userlevel'] >= 5) {
         echo "
     </optgroup>
     <optgroup label='국가메세지'>
@@ -3226,11 +3226,11 @@ function genList($connect) {
         $count = MYDB_num_rows($result);
         for($i=1; $i <= $count; $i++) {
             $nation = MYDB_fetch_array($result);
-            $nationNation[$nation[nation]] = $nation[nation];
-            $nationName[$nation[nation]]   = $nation[name];
-            $nationColor[$nation[nation]]  = $nation[color];
+            $nationNation[$nation['nation']] = $nation['nation'];
+            $nationName[$nation['nation']]   = $nation['name'];
+            $nationColor[$nation['nation']]  = $nation['color'];
             echo "
-    <option style=color:".newColor($nation[color]).";background-color:{$nation[color]} value="; echo $nation[nation]+9000; echo ">【 {$nation[name]} 】</option>";
+    <option style=color:".newColor($nation['color']).";background-color:{$nation['color']} value="; echo $nation['nation']+9000; echo ">【 {$nation['name']} 】</option>";
         }
         echo "
     </optgroup>";
@@ -3239,16 +3239,16 @@ function genList($connect) {
     echo "
     <optgroup label='개인메세지'>
     <optgroup label='재야'>";
-    $query = "select no,name,npc from general where nation=0 and user_id!='$_SESSION[p_id]' and npc<2 order by npc,binary(name)";
+    $query = "select no,name,npc from general where nation=0 and user_id!='$_SESSION['p_id']' and npc<2 order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
-        if($general[npc] >= 2)     { $color = "cyan"; }
-        elseif($general[npc] == 1) { $color = "skyblue"; }
+        if($general['npc'] >= 2)     { $color = "cyan"; }
+        elseif($general['npc'] == 1) { $color = "skyblue"; }
         else                       { $color = "white"; }
         echo "
-    <option value={$general[no]} style=color:{$color};background-color:black;>{$general[name]}</option>";
+    <option value={$general['no']} style=color:{$color};background-color:black;>{$general['name']}</option>";
     }
     echo "
     </optgroup>";
@@ -3259,19 +3259,19 @@ function genList($connect) {
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
         echo "
-    <optgroup label='【{$nation[name]}】' style=color:".newColor($nation[color]).";background-color:{$nation[color]};>";
+    <optgroup label='【{$nation['name']}】' style=color:".newColor($nation['color']).";background-color:{$nation['color']};>";
 
-        $query = "select no,name,npc,level from general where nation='$nation[nation]' and user_id!='$_SESSION[p_id]' and npc<2 order by npc,binary(name)";
+        $query = "select no,name,npc,level from general where nation='$nation['nation']' and user_id!='$_SESSION['p_id']' and npc<2 order by npc,binary(name)";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
         for($j=0; $j < $gencount; $j++) {
             $general = MYDB_fetch_array($genresult);
-            if($general[level] >= 12) { $general[name] = "*{$general[name]}*"; }
-            if($general[npc] >= 2)     { $color = "cyan"; }
-            elseif($general[npc] == 1) { $color = "skyblue"; }
+            if($general['level'] >= 12) { $general['name'] = "*{$general['name']}*"; }
+            if($general['npc'] >= 2)     { $color = "cyan"; }
+            elseif($general['npc'] == 1) { $color = "skyblue"; }
             else                       { $color = "white"; }
             echo "
-    <option value={$general[no]} style=color:{$color};background-color:black;>{$general[name]}</option>";
+    <option value={$general['no']} style=color:{$color};background-color:black;>{$general['name']}</option>";
         }
         echo "
     </optgroup>";
@@ -3292,11 +3292,11 @@ function MsgMe($connect, $bg) {
         msg0_type,msg1_type,msg2_type,msg3_type,msg4_type,msg5_type,msg6_type,msg7_type,msg8_type,msg9_type,
         msg0_who,msg1_who,msg2_who,msg3_who,msg4_who,msg5_who,msg6_who,msg7_who,msg8_who,msg9_who,
         msg0_when,msg1_when,msg2_when,msg3_when,msg4_when,msg5_when,msg6_when,msg7_when,msg8_when,msg9_when
-        from general where user_id='$_SESSION[p_id]'";
+        from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $index = $me[msgindex];
+    $index = $me['msgindex'];
     for($i=0; $i < 10; $i++) {
         if($me["msg{$index}"]) { echo "\n"; DecodeMsg($connect, $me["msg{$index}"], $me["msg{$index}_type"], $me["msg{$index}_who"], $me["msg{$index}_when"], $bg, $index); }
         $index--;
@@ -3305,25 +3305,25 @@ function MsgMe($connect, $bg) {
 }
 
 function MsgDip($connect, $bg) {
-    $query = "select no,nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select dip0,dip1,dip2,dip3,dip4,dip0_who,dip1_who,dip2_who,dip3_who,dip4_who,dip0_when,dip1_when,dip2_when,dip3_when,dip4_when,dip0_type,dip1_type,dip2_type,dip3_type,dip4_type from nation where nation='$me[nation]'";
+    $query = "select dip0,dip1,dip2,dip3,dip4,dip0_who,dip1_who,dip2_who,dip3_who,dip4_who,dip0_when,dip1_when,dip2_when,dip3_when,dip4_when,dip0_type,dip1_type,dip2_type,dip3_type,dip4_type from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($nation[dip0]) { echo "\n"; DecodeMsg($connect, $nation[dip0], $nation[dip0_type], $nation[dip0_who], $nation[dip0_when], $bg, 0); }
-    if($nation[dip1]) { echo "\n"; DecodeMsg($connect, $nation[dip1], $nation[dip1_type], $nation[dip1_who], $nation[dip1_when], $bg, 1); }
-    if($nation[dip2]) { echo "\n"; DecodeMsg($connect, $nation[dip2], $nation[dip2_type], $nation[dip2_who], $nation[dip2_when], $bg, 2); }
-    if($nation[dip3]) { echo "\n"; DecodeMsg($connect, $nation[dip3], $nation[dip3_type], $nation[dip3_who], $nation[dip3_when], $bg, 3); }
-    if($nation[dip4]) { echo "\n"; DecodeMsg($connect, $nation[dip4], $nation[dip4_type], $nation[dip4_who], $nation[dip4_when], $bg, 4); }
+    if($nation[dip0]) { echo "\n"; DecodeMsg($connect, $nation[dip0], $nation['dip0_type'], $nation['dip0_who'], $nation['dip0_when'], $bg, 0); }
+    if($nation[dip1]) { echo "\n"; DecodeMsg($connect, $nation[dip1], $nation['dip1_type'], $nation['dip1_who'], $nation['dip1_when'], $bg, 1); }
+    if($nation[dip2]) { echo "\n"; DecodeMsg($connect, $nation[dip2], $nation['dip2_type'], $nation['dip2_who'], $nation['dip2_when'], $bg, 2); }
+    if($nation[dip3]) { echo "\n"; DecodeMsg($connect, $nation[dip3], $nation['dip3_type'], $nation['dip3_who'], $nation['dip3_when'], $bg, 3); }
+    if($nation[dip4]) { echo "\n"; DecodeMsg($connect, $nation[dip4], $nation['dip4_type'], $nation['dip4_who'], $nation['dip4_when'], $bg, 4); }
 }
 
 // type : xx,xx(불가침기간,타입)
 // who : xxxx,xxxx(발신인, 수신인)
 function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
-    $query = "select skin,no,nation,name,picture,level from general where user_id='$_SESSION[p_id]'";
+    $query = "select skin,no,nation,name,picture,level from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -3339,11 +3339,11 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $sndr = MYDB_fetch_array($result);
 
-    if($sndr[nation] == 0) {
-        $sndrnation[name] = '재야';
-        $sndrnation[color] = 'FFFFFF';
+    if($sndr['nation'] == 0) {
+        $sndrnation['name'] = '재야';
+        $sndrnation['color'] = 'FFFFFF';
     } else {
-        $query = "select name,color from nation where nation='$sndr[nation]'";
+        $query = "select name,color from nation where nation='$sndr['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $sndrnation = MYDB_fetch_array($result);
     }
@@ -3354,31 +3354,31 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
     }
 
     if($category == 6) {
-        $query = "select reserved from diplomacy where me='$sndr[nation]' and you='$me[nation]'";
+        $query = "select reserved from diplomacy where me='$sndr['nation']' and you='$me['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $dip = MYDB_fetch_array($result);
 
-        ShowMsg($me[skin], $bgcolor, $category, $sndr[picture], $sndr[imgsvr], "{$sndr[name]}:{$sndrnation[name]}▶", $sndrnation[color], $sndr[name], $sndrnation[color], $msg, $date, $num, $from, $term, $me[level], $dip[reserved]);
+        ShowMsg($me['skin'], $bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], $sndr['name'], $sndrnation['color'], $msg, $date, $num, $from, $term, $me['level'], $dip['reserved']);
     } elseif($category <= 8) {
         $query = "select name,color from nation where nation='$to'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $rcvrnation = MYDB_fetch_array($result);
 
-        ShowMsg($me[skin], $bgcolor, $category, $sndr[picture], $sndr[imgsvr], "{$sndr[name]}:{$sndrnation[name]}▶", $sndrnation[color], $rcvrnation[name], $rcvrnation[color], $msg, $date, $num, $from, $term, $me[level]);
+        ShowMsg($me['skin'], $bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], $rcvrnation['name'], $rcvrnation['color'], $msg, $date, $num, $from, $term, $me['level']);
     } elseif($category <= 11) {
         $query = "select name,picture,nation from general where no='$to'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $rcvr = MYDB_fetch_array($result);
 
-        if($rcvr[nation] == 0) {
-            $rcvrnation[name] = '재야';
-            $rcvrnation[color] = 'FFFFFF';
+        if($rcvr['nation'] == 0) {
+            $rcvrnation['name'] = '재야';
+            $rcvrnation['color'] = 'FFFFFF';
         } else {
-            $query = "select name,color from nation where nation='$rcvr[nation]'";
+            $query = "select name,color from nation where nation='$rcvr['nation']'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $rcvrnation = MYDB_fetch_array($result);
         }
-        ShowMsg($me[skin], $bgcolor, $category, $sndr[picture], $sndr[imgsvr], "{$sndr[name]}:{$sndrnation[name]}▶", $sndrnation[color], "{$rcvr[name]}:{$rcvrnation[name]}", $rcvrnation[color], $msg, $date, $num, $from, $term);
+        ShowMsg($me['skin'], $bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], "{$rcvr['name']}:{$rcvrnation['name']}", $rcvrnation['color'], $msg, $date, $num, $from, $term);
     }
 }
 
@@ -3512,7 +3512,7 @@ function msgprint($connect, $msg, $name, $picture, $imgsvr, $when, $num, $type) 
         $regen = MYDB_fetch_array($result);
         echo "
     <tr>
-        <td width=64 align=center><font size=1>$regen[name]</font></td>
+        <td width=64 align=center><font size=1>$regen['name']</font></td>
         <td width=932 colspan=2>$reply</td>
     </tr>";
     }
@@ -3762,8 +3762,10 @@ function increaseRefresh($connect, $type="", $cnt=1) {
     $query = "update game set refresh=refresh+'$cnt' where no='1'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    if($_SESSION[p_id] != "") {
-        $query = "update general set lastrefresh='$date',con=con+'$cnt',connect=connect+'$cnt',refcnt=refcnt+'$cnt',refresh=refresh+'$cnt' where user_id='$_SESSION[p_id]'";
+    if($_SESSION['p_id'] != "") {
+        $query = sprintf("update general set lastrefresh='%s',con=con+'%d',connect=connect+'%d',refcnt=refcnt+'%d',refresh=refresh+'%d' where user_id='%s'",
+        $date,$cnt,$cnt,$cnt,$cnt,$_SESSION['p_id']);
+        
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
@@ -3771,7 +3773,7 @@ function increaseRefresh($connect, $type="", $cnt=1) {
     $date2 = substr($date, 0, 10);
     $online = onlinenum($connect);
     $fp = fopen("logs/_{$date2}_refresh.txt", "a");
-    $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION[p_id],13," ")._String::Fill2($_SESSION[p_name],13," ")._String::Fill2($_SESSION[p_ip],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
+    $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['p_id'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
     fwrite($fp, $msg."\r\n");
     fclose($fp);
 
@@ -3799,7 +3801,8 @@ function increaseRefresh($connect, $type="", $cnt=1) {
     }
     if($str != "") {
         $fp2 = fopen("logs/_{$date2}_ipcheck.txt", "a");
-        $str = "ID:{$_SESSION[p_id]}//name:{$_SESSION[p_name]}//REMOTE_ADDR:{$_SERVER[REMOTE_ADDR]}" . $str;
+        $str = sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s",
+            $_SESSION['p_id'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str);
         fwrite($fp2, $str."\r\n");
         fclose($fp2);
     }
@@ -3817,13 +3820,13 @@ function updateTraffic($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $user = MYDB_fetch_array($result);
 
-    if($game[maxrefresh] < $game[refresh]) {
-        $game[maxrefresh] = $game[refresh];
+    if($game['maxrefresh'] < $game['refresh']) {
+        $game['maxrefresh'] = $game['refresh'];
     }
-    if($game[maxonline] < $online) {
-        $game[maxonline] = $online;
+    if($game['maxonline'] < $online) {
+        $game['maxonline'] = $online;
     }
-    $query = "update game set refresh=0,maxrefresh={$game[maxrefresh]},maxonline={$game[maxonline]} where no='1'";
+    $query = "update game set refresh=0,maxrefresh={$game['maxrefresh']},maxonline={$game['maxonline']} where no='1'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     $query = "update general set refresh=0";
@@ -3832,7 +3835,7 @@ function updateTraffic($connect) {
     $date = date('Y-m-d H:i:s');
     $fp = fopen("logs/_traffic.txt", "a");
     //일시|년|월|총갱신|접속자|최다갱신자
-    $msg = _String::Fill2($date,20," ")."|"._String::Fill2($game[year],3," ")."|"._String::Fill2($game[month],2," ")."|"._String::Fill2($game[refresh],8," ")."|"._String::Fill2($online,5," ")."|"._String::Fill2($user[name]."(".$user[refresh].")",20," ");
+    $msg = _String::Fill2($date,20," ")."|"._String::Fill2($game['year'],3," ")."|"._String::Fill2($game['month'],2," ")."|"._String::Fill2($game['refresh'],8," ")."|"._String::Fill2($online,5," ")."|"._String::Fill2($user['name']."(".$user['refresh'].")",20," ");
     fwrite($fp, $msg."\r\n");
     fclose($fp);
 }
@@ -3844,7 +3847,7 @@ function CheckOverhead($connect) {
     $admin = MYDB_fetch_array($result);
 
     $onlineNumber = onlinenum($connect);
-    switch($admin[turnterm]) {
+    switch($admin['turnterm']) {
     case 0: $thr1 =  30; $thr2 =  60; $thr3 = 120; $con1 = 480; $con2 = 360; $con3 = 240; $con4 = 120; break;   // 120분턴
     case 1: $thr1 =  30; $thr2 =  60; $thr3 = 120; $con1 = 480; $con2 = 360; $con3 = 240; $con4 = 120; break;   // 60분턴
     case 2: $thr1 =  10; $thr2 =  20; $thr3 =  30; $con1 = 360; $con2 = 240; $con3 = 120; $con4 =  60; break;   // 30분턴
@@ -3855,25 +3858,25 @@ function CheckOverhead($connect) {
     case 7: $thr1 =   5; $thr2 =  10; $thr3 =  20; $con1 =  90; $con2 =  60; $con3 =  40; $con4 =  30; break;   // 1분턴
     }
 
-    $thr1 *= $admin[conweight] / 100;
-    $thr2 *= $admin[conweight] / 100;
-    $thr3 *= $admin[conweight] / 100;
-    $con1 *= $admin[conweight] / 100;
-    $con2 *= $admin[conweight] / 100;
-    $con3 *= $admin[conweight] / 100;
-    $con4 *= $admin[conweight] / 100;
+    $thr1 *= $admin['conweight'] / 100;
+    $thr2 *= $admin['conweight'] / 100;
+    $thr3 *= $admin['conweight'] / 100;
+    $con1 *= $admin['conweight'] / 100;
+    $con2 *= $admin['conweight'] / 100;
+    $con3 *= $admin['conweight'] / 100;
+    $con4 *= $admin['conweight'] / 100;
 
-    //if($onlineNumber > $thr2)  { $me[map]  = 1; }
-    if      ($onlineNumber > $thr3  && $admin[conlimit] != $con4) {
+    //if($onlineNumber > $thr2)  { $me['map']  = 1; }
+    if      ($onlineNumber > $thr3  && $admin['conlimit'] != $con4) {
         $query = "update game set conlimit='$con4' where no='1'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } elseif($onlineNumber > $thr2  && $admin[conlimit] != $con3) {
+    } elseif($onlineNumber > $thr2  && $admin['conlimit'] != $con3) {
         $query = "update game set conlimit='$con3' where no='1'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } elseif($onlineNumber > $thr1  && $admin[conlimit] != $con2) {
+    } elseif($onlineNumber > $thr1  && $admin['conlimit'] != $con2) {
         $query = "update game set conlimit='$con2' where no='1'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } elseif($onlineNumber <= $thr1 && $admin[conlimit] != $con1) {
+    } elseif($onlineNumber <= $thr1 && $admin['conlimit'] != $con1) {
         $query = "update game set conlimit='$con1' where no='1'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } else {
@@ -3885,7 +3888,7 @@ function isLock($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $plock = MYDB_fetch_array($result);
 
-    if($plock[plock] == 0) { return 0; }  // 열려있음
+    if($plock['plock'] == 0) { return 0; }  // 열려있음
     else { return 1; }  // 사용중
 }
 
@@ -3912,7 +3915,7 @@ function timeover($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    switch($admin[turnterm]) {
+    switch($admin['turnterm']) {
     case 0: $t = 20; break;   // 120분턴
     case 1: $t = 10; break;   // 60분턴
     case 2: $t = 10; break;   // 30분턴
@@ -3923,7 +3926,7 @@ function timeover($connect) {
     case 7: $t =  1; break;   // 1분턴
     }
 
-    $term = $admin[diff];
+    $term = $admin['diff'];
     if($term >= $t || $term < 0) { return 1; }
     else { return 0; }
 }
@@ -3934,7 +3937,7 @@ function checkDelay($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
     // 1턴이상 갱신 없었으면 서버 지연
-    switch($admin[turnterm]) {
+    switch($admin['turnterm']) {
         case 0: $term = 120; $threshold = 1; break;
         case 1: $term = 60;  $threshold = 1; break;
         case 2: $term = 30;  $threshold = 1; break;
@@ -3945,7 +3948,7 @@ function checkDelay($connect) {
         case 7: $term = 1;   $threshold = 3; break;
     }
     //지연 해야할 밀린 턴 횟수
-    $iter = floor($admin[offset] / $term);
+    $iter = floor($admin['offset'] / $term);
     if($iter > $threshold) {
         $minute = $iter * $term;
         $query = "update game set turntime=DATE_ADD(turntime, INTERVAL $minute MINUTE),starttime=DATE_ADD(starttime, INTERVAL $minute MINUTE),tnmt_time=DATE_ADD(tnmt_time, INTERVAL $minute MINUTE)";
@@ -3965,7 +3968,7 @@ function updateOnline($connect) {
     //국가별 이름 매핑
     for($i=0; $i < $count; $i++) {
         $nation = MYDB_fetch_array($result);
-        $nationname[$nation[nation]] = $nation[name];
+        $nationname[$nation['nation']] = $nation['name'];
     }
     $nationname[0] = "재야";
 
@@ -3977,7 +3980,7 @@ function updateOnline($connect) {
     //국가별 접속중인 장수
     for($i=0; $i < $onlinenum; $i++) {
         $general = MYDB_fetch_array($result);
-        $onnation[$general[nation]] .= $general[name].', ';
+        $onnation[$general['nation']] .= $general['name'].', ';
     }
 
     foreach($onnation as $key => $val) {
@@ -4003,7 +4006,7 @@ function checkTurn($connect) {
     // 현재 처리중이면 접근 불가
     if(isLock($connect)) { return; }
 
-    $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$_SESSION[p_id];
+    $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
     pushLockLog($connect, $locklog);
 
     // 파일락 획득
@@ -4023,7 +4026,7 @@ function checkTurn($connect) {
     // 세마포어 해제
     //if(!@sem_release($sema)) { echo "치명적 에러! 유기체에게 문의하세요!"; exit(1); }
 
-    $locklog[0] = "- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$_SESSION[p_id];
+    $locklog[0] = "- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
     pushLockLog($connect, $locklog);
     
     //if(STEP_LOG) delStepLog();
@@ -4054,8 +4057,8 @@ function checkTurn($connect) {
 
     $date = date('Y-m-d H:i:s');
     // 최종 처리 월턴의 다음 월턴시간 구함
-    $prevTurn = cutTurn($admin[turntime], $admin[turnterm]);
-    $nextTurn = addTurn($prevTurn, $admin[turnterm]);
+    $prevTurn = cutTurn($admin['turntime'], $admin['turnterm']);
+    $nextTurn = addTurn($prevTurn, $admin['turnterm']);
     // 현재 턴 이전 월턴까지 모두처리.
     //최종 처리 이후 다음 월턴이 현재 시간보다 전이라면
     while($nextTurn <= $date) {
@@ -4066,19 +4069,19 @@ function checkTurn($connect) {
         for($i=0; $i < $gencount; $i++) {
             $general = MYDB_fetch_array($result);
             
-            //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이전 갱신: name({$general[name]}), no({$general[no]}), turntime({$general[turntime]}), turn0({$general[turn0]})";
+            //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이전 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general[turn0]})";
             //if(PROCESS_LOG) pushProcessLog($connect, $processlog);
             
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
-            if($general[npc] >= 2) { processAI($connect, $general[no]); }    // npc AI 처리
+            if($general['npc'] >= 2) { processAI($connect, $general['no']); }    // npc AI 처리
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', PreprocessCommand');
-            PreprocessCommand($connect, $general[no]);
+            PreprocessCommand($connect, $general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
-            processCommand($connect, $general[no]);
+            processCommand($connect, $general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateCommand');
-            updateCommand($connect, $general[no]);
+            updateCommand($connect, $general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateTurntime');
-            updateTurntime($connect, $general[no]);
+            updateTurntime($connect, $general['no']);
             
         }
         
@@ -4089,7 +4092,7 @@ function checkTurn($connect) {
         //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', preUpdateMonthly');
         $result = preUpdateMonthly($connect);
         if($result == false) {
-            $locklog[0] = "-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$_SESSION[p_id];
+            $locklog[0] = "-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
             pushLockLog($connect, $locklog);
 
             // 잡금 해제
@@ -4100,14 +4103,14 @@ function checkTurn($connect) {
 
         // 그 시각 년도,월 저장
         $dt = turnDate($connect, $nextTurn);
-        $admin[year] = $dt[0]; $admin[month] = $dt[1];
+        $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
 
-        $locklog[0] = "-- checkTurn() ".$admin[month]."월 : ".date('Y-m-d H:i:s')." : ".$_SESSION[p_id];
+        $locklog[0] = "-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
         pushLockLog($connect, $locklog);
         // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
-        if($admin[month] == 1) {
+        if($admin['month'] == 1) {
             // NPC 등장
-            if($admin[scenario] > 0 && $admin[scenario] < 20) { RegNPC($connect); }
+            if($admin['scenario'] > 0 && $admin['scenario'] < 20) { RegNPC($connect); }
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processGoldIncome');
             processGoldIncome($connect);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processSpring');
@@ -4123,14 +4126,14 @@ function checkTurn($connect) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', addAge');
             addAge($connect);
             // 새해 알림
-            $alllog[count($alllog)] = "<C>◆</>{$admin[month]}월:<C>$admin[year]</>년이 되었습니다.";
+            $alllog[count($alllog)] = "<C>◆</>{$admin['month']}월:<C>$admin['year']</>년이 되었습니다.";
             pushAllLog($alllog);
-        } elseif($admin[month] == 4) {
+        } elseif($admin['month'] == 4) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
             updateQuaterly($connect);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
             disaster($connect);
-        } elseif($admin[month] == 7) {
+        } elseif($admin['month'] == 7) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processRiceIncome');
             processRiceIncome($connect);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processFall');
@@ -4141,7 +4144,7 @@ function checkTurn($connect) {
             disaster($connect);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', tradeRate');
             tradeRate($connect);
-        } elseif($admin[month] == 10) {
+        } elseif($admin['month'] == 10) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
             updateQuaterly($connect);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
@@ -4152,7 +4155,7 @@ function checkTurn($connect) {
 
         // 다음달로 넘김
         $prevTurn = $nextTurn;
-        $nextTurn = addTurn($prevTurn, $admin[turnterm]);
+        $nextTurn = addTurn($prevTurn, $admin['turnterm']);
     }
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
@@ -4163,7 +4166,7 @@ function checkTurn($connect) {
 
     // 그 시각 년도,월 저장
     $dt = turnDate($connect, $prevTurn);
-    $admin[year] = $dt[0]; $admin[month] = $dt[1];
+    $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
     // 현재시간의 월턴시간 이후 분단위 장수 처리
     do {
         $query = "select no,name,turntime,turn0,npc from general where turntime<='$date' order by turntime";
@@ -4173,19 +4176,19 @@ function checkTurn($connect) {
         for($i=0; $i < $gencount; $i++) {
             $general = MYDB_fetch_array($result);
 
-            //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이후 갱신: name({$general[name]}), no({$general[no]}), turntime({$general[turntime]}), turn0({$general[turn0]})";
+            //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이후 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general[turn0]})";
             //if(PROCESS_LOG) pushProcessLog($connect, $processlog);
             
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
-            if($general[npc] >= 2) { processAI($connect, $general[no]); }    // npc AI 처리
+            if($general['npc'] >= 2) { processAI($connect, $general['no']); }    // npc AI 처리
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', PreprocessCommand');
-            PreprocessCommand($connect, $general[no]);
+            PreprocessCommand($connect, $general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
-            processCommand($connect, $general[no]);
+            processCommand($connect, $general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateCommand');
-            updateCommand($connect, $general[no]);
+            updateCommand($connect, $general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateTurntime');
-            updateTurntime($connect, $general[no]);
+            updateTurntime($connect, $general['no']);
         }
     } while($gencount > 0);
 
@@ -4196,9 +4199,9 @@ function checkTurn($connect) {
 
     // 3턴 전 시간
     $letterdate = $date;
-    $letterdate = subTurn($letterdate, $admin[turnterm]);
-    $letterdate = subTurn($letterdate, $admin[turnterm]);
-    $letterdate = subTurn($letterdate, $admin[turnterm]);
+    $letterdate = subTurn($letterdate, $admin['turnterm']);
+    $letterdate = subTurn($letterdate, $admin['turnterm']);
+    $letterdate = subTurn($letterdate, $admin['turnterm']);
     //기한 지난 외교 메세지 지움(3개월 유지)
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
     for($i=0; $i < 5; $i++) {
@@ -4218,7 +4221,7 @@ function checkTurn($connect) {
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
     unlock($connect);
 
-    $locklog[0] = "- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$_SESSION[p_id];
+    $locklog[0] = "- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
     pushLockLog($connect, $locklog);
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', finish');
@@ -4235,19 +4238,19 @@ function addAge($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    if($admin[year] >= $admin[startyear]+3) {
+    if($admin['year'] >= $admin['startyear']+3) {
         $query = "select no,name,nation,leader,power,intel,history from general where specage<=age and special='0'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
 
         for($i=0; $i < $gencount; $i++) {
             $general = MYDB_fetch_array($result);
-            $special = getSpecial($connect, $general[leader], $general[power], $general[intel]);
-            $query = "update general set special='$special' where no='$general[no]'";
+            $special = getSpecial($connect, $general['leader'], $general['power'], $general['intel']);
+            $query = "update general set special='$special' where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special)."</></b>】(을)를 익혔습니다!";
-            $general = addHistory($connect, $general, "<C>●</>$admin[year]년 $admin[month]월:특기 【<b><C>".getGenSpecial($special)."</></b>】(을)를 습득");
+            $general = addHistory($connect, $general, "<C>●</>$admin['year']년 $admin['month']월:특기 【<b><C>".getGenSpecial($special)."</></b>】(을)를 습득");
             pushGenLog($general, $log);
         }
 
@@ -4257,13 +4260,13 @@ function addAge($connect) {
 
         for($i=0; $i < $gencount; $i++) {
             $general = MYDB_fetch_array($result);
-            $special2 = getSpecial2($connect, $general[leader], $general[power], $general[intel], 0, $general[dex0], $general[dex10], $general[dex20], $general[dex30], $general[dex40]);
+            $special2 = getSpecial2($connect, $general['leader'], $general['power'], $general['intel'], 0, $general[dex0], $general[dex10], $general[dex20], $general[dex30], $general[dex40]);
 
-            $query = "update general set special2='$special2' where no='$general[no]'";
+            $query = "update general set special2='$special2' where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special2)."</></b>】(을)를 익혔습니다!";
-            $general = addHistory($connect, $general, "<C>●</>$admin[year]년 $admin[month]월:특기 【<b><C>".getGenSpecial($special2)."</></b>】(을)를 습득");
+            $general = addHistory($connect, $general, "<C>●</>$admin['year']년 $admin['month']월:특기 【<b><C>".getGenSpecial($special2)."</></b>】(을)를 습득");
             pushGenLog($general, $log);
         }
     }
@@ -4274,10 +4277,10 @@ function turnDate($connect, $curtime) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $turn = $admin[starttime];
-    $curturn = cutTurn($curtime, $admin[turnterm]);
+    $turn = $admin['starttime'];
+    $curturn = cutTurn($curtime, $admin['turnterm']);
     $num = 0;
-    switch($admin[turnterm]) {
+    switch($admin['turnterm']) {
         case 0: $term = 7200; break;
         case 1: $term = 3600; break;
         case 2: $term = 1800; break;
@@ -4289,11 +4292,11 @@ function turnDate($connect, $curtime) {
     }
     $num = floor((strtotime($curturn) - strtotime($turn)) / $term);
 
-    $year = $admin[startyear] + floor($num / 12);
+    $year = $admin['startyear'] + floor($num / 12);
     $month = 1 + (12+$num) % 12;
 
     // 바뀐 경우만 업데이트
-    if($admin[month] != $month || $admin[year] != $year) {
+    if($admin['month'] != $month || $admin['year'] != $year) {
         $query = "update game set year='$year',month='$month' where no='1'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
@@ -4313,12 +4316,12 @@ function SetNationFront($connect, $nationNo) {
         for($i=0; $i < $dipNum; $i++) {
             $dip = MYDB_fetch_array($result);
 
-            $query = "select city,path from city where nation={$dip[you]}";
+            $query = "select city,path from city where nation={$dip['you']}";
             $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $cityNum = MYDB_num_rows($result2);
             for($k=0; $k < $cityNum; $k++) {
                 $city = MYDB_fetch_array($result2);
-                $path = explode("|", $city[path]);
+                $path = explode("|", $city['path']);
                 $cnt = count($path);
                 for($j=0; $j < $cnt; $j++) {
                     $adj[$path[$j]] = 1;
@@ -4332,7 +4335,7 @@ function SetNationFront($connect, $nationNo) {
         $cityNum = MYDB_num_rows($result2);
         for($k=0; $k < $cityNum; $k++) {
             $city = MYDB_fetch_array($result2);
-            $path = explode("|", $city[path]);
+            $path = explode("|", $city['path']);
             $cnt = count($path);
             for($j=0; $j < $cnt; $j++) {
                 $adj[$path[$j]] = 1;
@@ -4345,7 +4348,7 @@ function SetNationFront($connect, $nationNo) {
     $cityNum = MYDB_num_rows($result);
     for($i=0; $i < $cityNum; $i++) {
         $city = MYDB_fetch_array($result);
-        if($adj[$city[city]] == 1) { $str .= " or city={$city[city]}"; $valid = 1; }
+        if($adj[$city['city']] == 1) { $str .= " or city={$city['city']}"; $valid = 1; }
     }
     $query = "update city set front=0 where nation={$nationNo}";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -4363,9 +4366,9 @@ function checkSupply($connect) {
     $cityNum = MYDB_num_rows($result);
     for($i=0; $i < $cityNum; $i++) {
         $city = MYDB_fetch_array($result);
-        $cityPath[$city[city]] = $city[path];
-        $cityNation[$city[city]] = $city[nation];
-        $label[$city[city]] = 0;
+        $cityPath[$city['city']] = $city['path'];
+        $cityNation[$city['city']] = $city['nation'];
+        $label[$city['city']] = 0;
     }
 
     $select = 0;
@@ -4432,7 +4435,7 @@ function checkSupply($connect) {
     for($i=0; $i < $nationNum; $i++) {
         $nation = MYDB_fetch_array($result);
         //수도 있는 덩어리 도시들 1로 세팅
-        $lbl = $label[$nation[capital]];
+        $lbl = $label[$nation['capital']];
 
         for($k=1; $k <= $cityNum; $k++) {
             if($lbl == $label[$k]) {
@@ -4485,7 +4488,7 @@ function preUpdateMonthly($connect) {
     for($i=0; $i < $cityCount; $i++) {
         $city = MYDB_fetch_array($result);
         //병 훈 사 5%감소
-        $query = "update general set crew=crew*0.95,atmos=atmos*0.95,train=train*0.95 where city='$city[city]' and nation='$city[nation]'";
+        $query = "update general set crew=crew*0.95,atmos=atmos*0.95,train=train*0.95 where city='$city['city']' and nation='$city['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     //민심30이하 공백지 처리
@@ -4498,7 +4501,7 @@ function preUpdateMonthly($connect) {
         $query = "update general set level=1 where no='$city[gen1]' or no='$city[gen2]' or no='$city[gen3]'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<R><b>【고립】</b></><G><b>$city[name]</b></>(이)가 보급이 끊겨 <R>미지배</> 도시가 되었습니다.";
+        $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<R><b>【고립】</b></><G><b>$city['name']</b></>(이)가 보급이 끊겨 <R>미지배</> 도시가 되었습니다.";
     }
     pushHistory($connect, $history);
     //민심30이하 공백지 처리
@@ -4517,10 +4520,10 @@ function preUpdateMonthly($connect) {
         $general = MYDB_fetch_array($result);
 
         // 주민으로 돌아감
-        $query = "update city set pop=pop+'$general[crew]' where city='$general[city]'";
+        $query = "update city set pop=pop+'$general['crew']' where city='$general['city']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "update general set crew=0,rice=0 where no='$general[no]'";
+        $query = "update general set crew=0,rice=0 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[0] = "<C>●</>군량이 모자라 병사들이 <R>소집해제</>되었습니다!";
@@ -4542,17 +4545,17 @@ function preUpdateMonthly($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     //도시훈사 180년 60, 220년 87, 240년 100
-    $rate = round(($admin[year] - $admin[startyear]) / 1.5) + 60;
+    $rate = round(($admin['year'] - $admin['startyear']) / 1.5) + 60;
     if($rate > 100) $rate = 100;
 
     //금률 쌀률, 내정비용
 //    $query = "select count(*) as cnt from general";
 //    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 //    $gencount = MYDB_fetch_array($result);    // 전체 등록자 수
-//    $ratio = 50 + round($gencount[cnt] / $admin[normgeneral] * 100 / 2); // 300명 등록시에 100% 지급
+//    $ratio = 50 + round($gencount['cnt'] / $admin['normgeneral'] * 100 / 2); // 300명 등록시에 100% 지급
     $ratio = 100;
     // 20 ~ 140원
-    $develcost = ($admin[year] - $admin[startyear] + 10) * 2;
+    $develcost = ($admin['year'] - $admin['startyear'] + 10) * 2;
     $query = "update game set gold_rate='$ratio',rice_rate='$ratio',city_rate='$rate',develcost='$develcost' where no='1'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -4596,7 +4599,7 @@ function preUpdateMonthly($connect) {
     for($i=0; $i < $nationCount; $i++) {
         $nation = MYDB_fetch_array($result);
         $spy = "";  $k = 0; unset($citys);
-        if($nation[spy] != "") { $citys = explode("|", $nation[spy]); }
+        if($nation['spy'] != "") { $citys = explode("|", $nation['spy']); }
         while(count($citys)) {
             $citys[$k]--;
             if($citys[$k]%10 != 0) { $spy .= "$citys[$k]"; }
@@ -4604,7 +4607,7 @@ function preUpdateMonthly($connect) {
             if($k >= count($citys)) { break; }
             if($citys[$k-1]%10 != 0) { $spy .= "|"; }
         }
-        $query = "update nation set spy='$spy' where nation='$nation[nation]'";
+        $query = "update nation set spy='$spy' where nation='$nation['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     
@@ -4653,23 +4656,23 @@ group by A.nation
     $nationCount = MYDB_num_rows($result);
     for($i=0; $i < $nationCount; $i++) {
         $nation = MYDB_fetch_array($result);
-        $genNum[$nation[nation]] = $nation[gennum];
+        $genNum[$nation['nation']] = $nation['gennum'];
 
-        if($nation[gennum] > $nation[gennum2]) {
+        if($nation['gennum'] > $nation[gennum2]) {
             // 장수가 증가했을때
-            $nation[chemi] -= ceil(($nation[gennum] - $nation[gennum2]) / $nation[gennum] * 100);
+            $nation['chemi'] -= ceil(($nation['gennum'] - $nation[gennum2]) / $nation['gennum'] * 100);
         } else {
             // 장수가 감소했을때
-            $nation[chemi] -= ceil(($nation[gennum2] - $nation[gennum]) / $nation[gennum2] * 100);
+            $nation['chemi'] -= ceil(($nation[gennum2] - $nation['gennum']) / $nation[gennum2] * 100);
         }
         // 매달 2씩 증가
-        $nation[chemi] += 2;
-        if($nation[chemi] < 0) { $nation[chemi] = 0; }
-        if($nation[chemi] > 100) { $nation[chemi] = 100; }
+        $nation['chemi'] += 2;
+        if($nation['chemi'] < 0) { $nation['chemi'] = 0; }
+        if($nation['chemi'] > 100) { $nation['chemi'] = 100; }
 
         //약간의 랜덤치 부여 (95% ~ 105%)
-        $nation[power] = round($nation[power] * (rand()%101 + 950) / 1000);
-        $query = "update nation set power='$nation[power]',gennum2='$nation[gennum]',chemi='$nation[chemi]' where nation='$nation[nation]'";
+        $nation['power'] = round($nation['power'] * (rand()%101 + 950) / 1000);
+        $query = "update nation set power='$nation['power']',gennum2='$nation['gennum']',chemi='$nation['chemi']' where nation='$nation['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
@@ -4679,13 +4682,13 @@ group by A.nation
     $dipCount = MYDB_num_rows($result);
     for($i=0; $i < $dipCount; $i++) {
         $dip = MYDB_fetch_array($result);
-        $genCount = $genNum[$dip[me]];
+        $genCount = $genNum[$dip['me']];
         // 25% 참여율일때 두당 10턴에 4000명 소모한다고 계산
         // 4000 / 10 * 0.25 = 100
-        $term = round($dip[dead] / 100 / $genCount) + 1;
-        if($dip[term] > $term) { $term = $dip[term]; }
+        $term = round($dip['dead'] / 100 / $genCount) + 1;
+        if($dip['term'] > $term) { $term = $dip['term']; }
         if($term > 13) { $term = 13; }
-        $query = "update diplomacy set term='{$term}' where (me='$dip[me]' and you='$dip[you]')";
+        $query = "update diplomacy set term='{$term}' where (me='$dip['me']' and you='$dip['you']')";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
@@ -4695,13 +4698,13 @@ group by A.nation
     $dipCount = MYDB_num_rows($result);
     for($i=0; $i < $dipCount; $i++) {
         $dip = MYDB_fetch_array($result);
-        $query = "select name from nation where nation='$dip[me]' or nation='$dip[you]'";
+        $query = "select name from nation where nation='$dip['me']' or nation='$dip['you']'";
         $nationResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($nationResult);
-        $name1 = $nation[name];
+        $name1 = $nation['name'];
         $nation = MYDB_fetch_array($nationResult);
-        $name2 = $nation[name];
-        $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<R><b>【개전】</b></><D><b>$name1</b></>(와)과 <D><b>$name2</b></>(이)가 <R>전쟁</>을 시작합니다.";
+        $name2 = $nation['name'];
+        $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<R><b>【개전】</b></><D><b>$name1</b></>(와)과 <D><b>$name2</b></>(이)가 <R>전쟁</>을 시작합니다.";
     }
     //휴전국 로그
     $query = "select A.me as me,A.you as you,A.term as term1,B.term as term2 from diplomacy A, diplomacy B where A.me=B.you and A.you=B.me and A.state='0' and A.me<A.you";
@@ -4712,15 +4715,15 @@ group by A.nation
 
         //양측 기간 모두 0이 되는 상황이면 휴전
         if($dip[term1] <= 1 && $dip[term2] <= 1) {
-            $query = "select name from nation where nation='$dip[me]' or nation='$dip[you]'";
+            $query = "select name from nation where nation='$dip['me']' or nation='$dip['you']'";
             $nationResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $nation = MYDB_fetch_array($nationResult);
-            $name1 = $nation[name];
+            $name1 = $nation['name'];
             $nation = MYDB_fetch_array($nationResult);
-            $name2 = $nation[name];
-            $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<R><b>【휴전】</b></><D><b>$name1</b></>(와)과 <D><b>$name2</b></>(이)가 <S>휴전</>합니다.";
+            $name2 = $nation['name'];
+            $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<R><b>【휴전】</b></><D><b>$name1</b></>(와)과 <D><b>$name2</b></>(이)가 <S>휴전</>합니다.";
             //기한 되면 휴전으로
-            $query = "update diplomacy set state='2',term='0' where (me='$dip[me]' and you='$dip[you]') or (me='$dip[you]' and you='$dip[me]')";
+            $query = "update diplomacy set state='2',term='0' where (me='$dip['me']' and you='$dip['you']') or (me='$dip['you']' and you='$dip['me']')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
@@ -4742,7 +4745,7 @@ group by A.nation
     //5,6 기간 끝나면 합병
     checkSurrender($connect);
     //초반이후 방랑군 자동 해체
-    if($admin[year] >= $admin[startyear]+3) {
+    if($admin['year'] >= $admin['startyear']+3) {
         checkWander($connect);
     }
     // 작위 업데이트
@@ -4759,7 +4762,7 @@ group by A.nation
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $nation = MYDB_fetch_array($result);
-        SetNationFront($connect, $nation[nation]);
+        SetNationFront($connect, $nation['nation']);
     }
 }
 
@@ -4769,11 +4772,11 @@ function triggerTournament($connect) {
     $admin = MYDB_fetch_array($result);
 
     //현재 토너먼트 없고, 자동개시 걸려있을때, 40%확률
-    if($admin[tournament] == 0 && $admin[tnmt_trig] > 0 && rand() % 100 < 40) {
+    if($admin['tournament'] == 0 && $admin['tnmt_trig'] > 0 && rand() % 100 < 40) {
         $type = rand() % 6; //  0 : 전력전, 1 : 통솔전, 2 : 일기토, 3 : 설전
         //전력전 50%, 통, 일, 설 각 17%
         if($type > 3) { $type = 0; }
-        startTournament($connect, $admin[tnmt_trig], $type);
+        startTournament($connect, $admin['tnmt_trig'], $type);
     }
 }
 
@@ -4789,7 +4792,7 @@ function checkWander($connect) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        $query = "select no,name,nation,level,history,turntime from general where nation='$nation[nation]' and level=12";
+        $query = "select no,name,nation,level,history,turntime from general where nation='$nation['nation']' and level=12";
         $kingResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $king = MYDB_fetch_array($kingResult);
 
@@ -4813,82 +4816,82 @@ function checkMerge($connect) {
         $dip = MYDB_fetch_array($dipresult);
 
         // 아국군주
-        $query = "select no,name,history,nation from general where nation='$dip[me]' and level='12'";
+        $query = "select no,name,history,nation from general where nation='$dip['me']' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $me = MYDB_fetch_array($result);
         // 상대군주
-        $query = "select no,name,history,nation,makenation from general where nation='$dip[you]' and level='12'";
+        $query = "select no,name,history,nation,makenation from general where nation='$dip['you']' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
         // 모국
-        $query = "select nation,name,surlimit,history,totaltech from nation where nation='$you[nation]'";
+        $query = "select nation,name,surlimit,history,totaltech from nation where nation='$you['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $younation = MYDB_fetch_array($result);
         // 아국
-        $query = "select nation,name,gold,rice,surlimit,totaltech from nation where nation='$me[nation]'";
+        $query = "select nation,name,gold,rice,surlimit,totaltech from nation where nation='$me['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $mynation = MYDB_fetch_array($result);
         //양국 NPC수
-        $query = "select no from general where nation='$you[nation]' and npc>=2";
+        $query = "select no from general where nation='$you['nation']' and npc>=2";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount = MYDB_num_rows($result);
         //양국 NPC수
-        $query = "select no from general where nation='$me[nation]' and npc>=2";
+        $query = "select no from general where nation='$me['nation']' and npc>=2";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount2 = MYDB_num_rows($result);
 
         //피항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='$you[nation]'";
+        $query = "select no,name,nation,history from general where nation='$you['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>$mynation[name]</b></>(와)과 통합에 성공했습니다.";
+        $genlog[0] = "<C>●</><D><b>$mynation['name']</b></>(와)과 통합에 성공했습니다.";
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);
-            $gen = addHistory($connect, $gen, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$mynation[name]</b></>과 <D><b>$you[makenation]</b></>로 통합에 성공");
+            $gen = addHistory($connect, $gen, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$mynation['name']</b></>과 <D><b>$you['makenation']</b></>로 통합에 성공");
         }
         //항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='$me[nation]'";
+        $query = "select no,name,nation,history from general where nation='$me['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount2 = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>$younation[name]</b></>(와)과 통합에 성공했습니다.";
+        $genlog[0] = "<C>●</><D><b>$younation['name']</b></>(와)과 통합에 성공했습니다.";
         for($i=0; $i < $gencount2; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);
-            $gen = addHistory($connect, $gen, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$younation[name]</b></>과 <D><b>$you[makenation]</b></>로 통합에 성공");
+            $gen = addHistory($connect, $gen, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$younation['name']</b></>과 <D><b>$you['makenation']</b></>로 통합에 성공");
         }
 
-        $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<Y><b>【통합】</b></><D><b>$mynation[name]</b></>(와)과 <D><b>$younation[name]</b></>(이)가 <D><b>$you[makenation]</b></>(으)로 통합하였습니다.";
-        $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>$you[makenation]</b></>에 혼란이 일고 있습니다.";
-        $younation = addNationHistory($connect, $younation, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$mynation[name]</b></>과 <D><b>$you[makenation]</b></>로 통합");
+        $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【통합】</b></><D><b>$mynation['name']</b></>(와)과 <D><b>$younation['name']</b></>(이)가 <D><b>$you['makenation']</b></>(으)로 통합하였습니다.";
+        $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>$you['makenation']</b></>에 혼란이 일고 있습니다.";
+        $younation = addNationHistory($connect, $younation, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$mynation['name']</b></>과 <D><b>$you['makenation']</b></>로 통합");
 
         $newGenCount = $gencount + $gencount2;
         if($newGenCount < 10) { $newGenCount = 10; }
-        $newTotalTech = $younation[totaltech] + $mynation[totaltech];
+        $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
         $newTech = round($newTotalTech / $newGenCount);
         // 자금 통합, 외교제한 5년, 기술유지
-        $query = "update nation set name='$you[makenation]',gold=gold+'$mynation[gold]',rice=rice+'$mynation[rice]',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='$younation[nation]'";
+        $query = "update nation set name='$you['makenation']',gold=gold+'$mynation['gold']',rice=rice+'$mynation['rice']',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='$younation['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //국가 삭제
-        $query = "delete from nation where nation='$me[nation]'";
+        $query = "delete from nation where nation='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 도시들 상대국 소속으로
-        $query = "update city set nation='$you[nation]',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='$me[nation]'";
+        $query = "update city set nation='$you['nation']',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 장수들 일반으로 하고 상대국 소속으로, 수도로 이동
-        $query = "update general set belong=1,level=1,nation='$you[nation]' where nation='$me[nation]'";
+        $query = "update general set belong=1,level=1,nation='$you['nation']' where nation='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 공헌도0.9, 명성0.9
-        $query = "update general set dedication=dedication*0.9,experience=experience*0.9 where nation='$you[nation]'";
+        $query = "update general set dedication=dedication*0.9,experience=experience*0.9 where nation='$you['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 부대도 모두 국가 소속 변경
-        $query = "update troop set nation='$you[nation]' where nation='$me[nation]'";
+        $query = "update troop set nation='$you['nation']' where nation='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 통합국 모든 도시 5% 감소
-        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='$you[nation]'";
+        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='$you['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 외교 삭제
-        $query = "delete from diplomacy where me='$me[nation]' or you='$me[nation]'";
+        $query = "delete from diplomacy where me='$me['nation']' or you='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // NPC들 일부 하야 (양국중 큰쪽 장수수의 90~110%만큼)
@@ -4899,7 +4902,7 @@ function checkMerge($connect) {
             $resignCount = round($npccount2*(rand()%21+90)/100);
         }
         $resignCommand = EncodeCommand(0, 0, 0, 45); //하야
-        $query = "update general set turn0='$resignCommand' where nation='$you[nation]' and npc>=2 order by rand() limit {$resignCount}";
+        $query = "update general set turn0='$resignCommand' where nation='$you['nation']' and npc>=2 order by rand() limit {$resignCount}";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         pushGenLog($me, $mylog);
@@ -4924,89 +4927,89 @@ function checkSurrender($connect) {
         $dip = MYDB_fetch_array($dipresult);
 
         // 아국군주
-        $query = "select no,name,history,nation from general where nation='$dip[me]' and level='12'";
+        $query = "select no,name,history,nation from general where nation='$dip['me']' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $me = MYDB_fetch_array($result);
         // 상대군주
-        $query = "select no,name,history,nation,makenation from general where nation='$dip[you]' and level='12'";
+        $query = "select no,name,history,nation,makenation from general where nation='$dip['you']' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
         // 모국
-        $query = "select nation,name,surlimit,history,totaltech from nation where nation='$you[nation]'";
+        $query = "select nation,name,surlimit,history,totaltech from nation where nation='$you['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $younation = MYDB_fetch_array($result);
         // 아국
-        $query = "select nation,name,gold,rice,surlimit,totaltech from nation where nation='$me[nation]'";
+        $query = "select nation,name,gold,rice,surlimit,totaltech from nation where nation='$me['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $mynation = MYDB_fetch_array($result);
         //양국 NPC수
-        $query = "select no from general where nation='$you[nation]' and npc>=2";
+        $query = "select no from general where nation='$you['nation']' and npc>=2";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount = MYDB_num_rows($result);
         //양국 NPC수
-        $query = "select no from general where nation='$me[nation]' and npc>=2";
+        $query = "select no from general where nation='$me['nation']' and npc>=2";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount2 = MYDB_num_rows($result);
 
         //피항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='$you[nation]'";
+        $query = "select no,name,nation,history from general where nation='$you['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>$mynation[name]</b></> 합병에 성공했습니다.";
+        $genlog[0] = "<C>●</><D><b>$mynation['name']</b></> 합병에 성공했습니다.";
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);
-            $gen = addHistory($connect, $gen, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$mynation[name]</b></> 합병에 성공");
+            $gen = addHistory($connect, $gen, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$mynation['name']</b></> 합병에 성공");
         }
         //항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='$me[nation]'";
+        $query = "select no,name,nation,history from general where nation='$me['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount2 = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>$younation[name]</b></>(으)로 항복하여 수도로 이동합니다.";
+        $genlog[0] = "<C>●</><D><b>$younation['name']</b></>(으)로 항복하여 수도로 이동합니다.";
         for($i=0; $i < $gencount2; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);
-            $gen = addHistory($connect, $gen, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$mynation[name]</b></>가 <D><b>$younation[name]</b></>(으)로 항복");
+            $gen = addHistory($connect, $gen, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$mynation['name']</b></>가 <D><b>$younation['name']</b></>(으)로 항복");
         }
 
-        $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<Y><b>【투항】</b></><D><b>$mynation[name]</b></> (이)가 <D><b>$younation[name]</b></>(으)로 항복하였습니다.";
-        $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>$younation[name]</b></>에 혼란이 일고 있습니다.";
-        $younation = addNationHistory($connect, $younation, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$mynation[name]</b></>(와)과 합병");
+        $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【투항】</b></><D><b>$mynation['name']</b></> (이)가 <D><b>$younation['name']</b></>(으)로 항복하였습니다.";
+        $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>$younation['name']</b></>에 혼란이 일고 있습니다.";
+        $younation = addNationHistory($connect, $younation, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$mynation['name']</b></>(와)과 합병");
 
         $newGenCount = $gencount + $gencount2;
         if($newGenCount < 10) { $newGenCount = 10; }
-        $newTotalTech = $younation[totaltech] + $mynation[totaltech];
+        $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
         $newTech = round($newTotalTech / $newGenCount);
         // 자금 통합, 외교제한 5년, 기술유지
-        $query = "update nation set gold=gold+'$mynation[gold]',rice=rice+'$mynation[rice]',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='$younation[nation]'";
+        $query = "update nation set gold=gold+'$mynation['gold']',rice=rice+'$mynation['rice']',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='$younation['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //합병 당한국 모든 도시 10%감소
-        $query = "update city set pop=pop*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,rate=rate*0.9,def=def*0.9,wall=wall*0.9 where nation='$me[nation]'";
+        $query = "update city set pop=pop*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,rate=rate*0.9,def=def*0.9,wall=wall*0.9 where nation='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //합병 시도국 모든 도시 5%감소
-        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='$you[nation]'";
+        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='$you['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //국가 삭제
-        $query = "delete from nation where nation='$me[nation]'";
+        $query = "delete from nation where nation='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 군주가 있는 위치 구함
-        $query = "select city from general where nation='$you[nation]' and level='12'";
+        $query = "select city from general where nation='$you['nation']' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $king = MYDB_fetch_array($result);
         // 아국 모든 도시들 상대국 소속으로
-        $query = "update city set nation='$you[nation]',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='$me[nation]'";
+        $query = "update city set nation='$you['nation']',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 제의국 모든 장수들 공헌도0.95, 명성0.95
-        $query = "update general set dedication=dedication*0.95,experience=experience*0.95 where nation='$you[nation]'";
+        $query = "update general set dedication=dedication*0.95,experience=experience*0.95 where nation='$you['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 장수들 일반으로 하고 상대국 소속으로, 수도로 이동, 공헌도1.1, 명성0.9
-        $query = "update general set belong=1,level=1,nation='$you[nation]',city='$king[city]',dedication=dedication*1.1,experience=experience*0.9 where nation='$me[nation]'";
+        $query = "update general set belong=1,level=1,nation='$you['nation']',city='$king['city']',dedication=dedication*1.1,experience=experience*0.9 where nation='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 부대도 모두 국가 소속 변경
-        $query = "update troop set nation='$you[nation]' where nation='$me[nation]'";
+        $query = "update troop set nation='$you['nation']' where nation='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 외교 삭제
-        $query = "delete from diplomacy where me='$me[nation]' or you='$me[nation]'";
+        $query = "delete from diplomacy where me='$me['nation']' or you='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // NPC들 일부 하야 (양국중 큰쪽 장수수의 90~110%만큼)
@@ -5017,7 +5020,7 @@ function checkSurrender($connect) {
             $resignCount = round($npccount2*(rand()%21+90)/100);
         }
         $resignCommand = EncodeCommand(0, 0, 0, 45); //하야
-        $query = "update general set turn0='$resignCommand' where nation='$you[nation]' and npc>=2 order by rand() limit {$resignCount}";
+        $query = "update general set turn0='$resignCommand' where nation='$you['nation']' and npc>=2 order by rand() limit {$resignCount}";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         pushGenLog($me, $mylog);
@@ -5041,11 +5044,11 @@ function updateNationState($connect) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($nationresult);
 
-        $query = "select city,level,secu from city where nation='$nation[nation]' and level>=4";
+        $query = "select city,level,secu from city where nation='$nation['nation']' and level>=4";
         $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $citycount = MYDB_num_rows($cityresult);
 
-        $query = "select no from general where nation='$nation[nation]'";
+        $query = "select no from general where nation='$nation['nation']'";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
 
@@ -5067,39 +5070,39 @@ function updateNationState($connect) {
             $nationlevel = 7;   // 황제
         }
 
-        if($nationlevel > $nation[level]) {
-            $nation[level] = $nationlevel;
+        if($nationlevel > $nation['level']) {
+            $nation['level'] = $nationlevel;
 
             switch($nationlevel) {
                 case 7:
-                    $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<Y><b>【작위】</b></><D><b>$nation[name]</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>(을)를 자칭하였습니다.";
-                    $nation = addNationHistory($connect, $nation, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$nation[name]</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>(을)를 자칭");
+                    $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【작위】</b></><D><b>$nation['name']</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>(을)를 자칭하였습니다.";
+                    $nation = addNationHistory($connect, $nation, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$nation['name']</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>(을)를 자칭");
                     break;
                 case 6:
-                    $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<Y><b>【작위】</b></><D><b>$nation[name]</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 등극하였습니다.";
-                    $nation = addNationHistory($connect, $nation, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$nation[name]</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 등극");
+                    $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【작위】</b></><D><b>$nation['name']</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 등극하였습니다.";
+                    $nation = addNationHistory($connect, $nation, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$nation['name']</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 등극");
                     break;
                 case 5:
                 case 4:
                 case 3:
-                    $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<Y><b>【작위】</b></><D><b>$nation[name]</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 임명되었습니다.";
-                    $nation = addNationHistory($connect, $nation, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$nation[name]</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 임명됨");
+                    $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【작위】</b></><D><b>$nation['name']</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 임명되었습니다.";
+                    $nation = addNationHistory($connect, $nation, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$nation['name']</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>에 임명됨");
                     break;
                 case 2:
-                    $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<Y><b>【작위】</b></><D><b>$nation[name]</b></>의 군주가 독립하여 <Y>".getNationLevel($nationlevel)."</>로 나섰습니다.";
-                    $nation = addNationHistory($connect, $nation, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$nation[name]</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>로 나서다");
+                    $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【작위】</b></><D><b>$nation['name']</b></>의 군주가 독립하여 <Y>".getNationLevel($nationlevel)."</>로 나섰습니다.";
+                    $nation = addNationHistory($connect, $nation, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$nation['name']</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>로 나서다");
                     break;
             }
 
             //작위 상승
-            $query = "update nation set level='$nation[level]' where nation='$nation[nation]'";
+            $query = "update nation set level='$nation['level']' where nation='$nation['nation']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         $gennum = $gencount;
         if($gencount < 10) $gencount = 10;
         //기술 및 변경횟수 업데이트
-        $myset = $nation[level] + 1;
-        $query = "update nation set tech=totaltech/'$gencount',gennum='$gennum',myset='$myset' where nation='$nation[nation]'";
+        $myset = $nation['level'] + 1;
+        $query = "update nation set tech=totaltech/'$gencount',gennum='$gennum',myset='$myset' where nation='$nation['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     pushHistory($connect, $history);
@@ -5115,19 +5118,19 @@ function checkStatistic($connect) {
     $query = "select avg(gold) as avggold, avg(rice) as avgrice, avg(dex0+dex10+dex20+dex30) as avgdex, max(dex0+dex10+dex20+dex30) as maxdex, avg(experience+dedication) as avgexpded, max(experience+dedication) as maxexpded from general";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    $general[avggold] = round($general[avggold]);
-    $general[avgrice] = round($general[avgrice]);
-    $general[avgdex] = round($general[avgdex]);
-    $general[avgexpded] = round($general[avgexpded]);
-    $etc .= "평균 금/쌀 ({$general[avggold]}/{$general[avgrice]}), 평균/최고 숙련({$general[avgdex]}/{$general[maxdex]}), 평균/최고 경험공헌({$general[avgexpded]}/{$general[maxexpded]}), ";
+    $general['avggold'] = round($general['avggold']);
+    $general['avgrice'] = round($general['avgrice']);
+    $general['avgdex'] = round($general['avgdex']);
+    $general['avgexpded'] = round($general['avgexpded']);
+    $etc .= "평균 금/쌀 ({$general['avggold']}/{$general['avgrice']}), 평균/최고 숙련({$general['avgdex']}/{$general['maxdex']}), 평균/최고 경험공헌({$general['avgexpded']}/{$general['maxexpded']}), ";
 
     $query = "select min(tech) as mintech, max(tech) as maxtech, avg(tech) as avgtech, min(power) as minpower, max(power) as maxpower, avg(power) as avgpower from nation where level>0";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
-    $nation[avgtech] = round($nation[avgtech]);
-    $nation[avgpower] = round($nation[avgpower]);
-    $etc .= "최저/평균/최고 기술({$nation[mintech]}/{$nation[avgtech]}/{$nation[maxtech]}), ";
-    $etc .= "최저/평균/최고 국력({$nation[minpower]}/{$nation[avgpower]}/{$nation[maxpower]}), ";
+    $nation['avgtech'] = round($nation['avgtech']);
+    $nation['avgpower'] = round($nation['avgpower']);
+    $etc .= "최저/평균/최고 기술({$nation['mintech']}/{$nation['avgtech']}/{$nation['maxtech']}), ";
+    $etc .= "최저/평균/최고 국력({$nation['minpower']}/{$nation['avgpower']}/{$nation['maxpower']}), ";
     
     $nationName = '';
     $power_hist = '';
@@ -5211,7 +5214,7 @@ function checkStatistic($connect) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $general = MYDB_fetch_array($result);
 
-        $crewtype .= getTypeName($types[$i])."({$general[type]}), ";
+        $crewtype .= getTypeName($types[$i])."({$general['type']}), ";
     }
 
     $query = "
@@ -5221,7 +5224,7 @@ function checkStatistic($connect) {
             gen_count, personal_hist, special_hist, power_hist,
             crewtype, etc
         ) values (
-            '$admin[year]', '$admin[month]',
+            '$admin['year']', '$admin['month']',
             '$nationCount', '$nationName', '$nationHist',
             '$generalCountStr', '$personalHist', '$specialHist', '$power_hist',
             '$crewtype', '$etc'
@@ -5238,10 +5241,10 @@ function checkEmperior($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
-    if($count == 1 && $admin[isUnited] == 0) {
+    if($count == 1 && $admin['isUnited'] == 0) {
         $nation = MYDB_fetch_array($result);
 
-        $query = "select city from city where nation='$nation[nation]'";
+        $query = "select city from city where nation='$nation['nation']'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $count = MYDB_num_rows($result);
 
@@ -5250,7 +5253,7 @@ function checkEmperior($connect) {
         $allcount = MYDB_num_rows($result);
 
         if($count == $allcount) {
-            $nation = addNationHistory($connect, $nation, "<C>●</>$admin[year]년 $admin[month]월:<D><b>$nation[name]</b></>(이)가 전토를 통일");
+            $nation = addNationHistory($connect, $nation, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$nation['name']</b></>(이)가 전토를 통일");
 
             $query = "update game set isUnited=2,conlimit=conlimit*100 where no='1'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -5261,85 +5264,85 @@ function checkEmperior($connect) {
 
             for($i=0; $i < $count; $i++) {
                 $general = MYDB_fetch_array($result);
-                CheckHall($connect, $general[no]);
+                CheckHall($connect, $general['no']);
             }
 
-            $query = "select nation,name,type,color,gold,rice,power,gennum,history from nation where nation='$nation[nation]'";
+            $query = "select nation,name,type,color,gold,rice,power,gennum,history from nation where nation='$nation['nation']'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $nation = MYDB_fetch_array($result);
 
-            $query = "select SUM(pop) as totalpop,SUM(pop2) as maxpop from city where nation='$nation[nation]'"; // 도시 이름 목록
+            $query = "select SUM(pop) as totalpop,SUM(pop2) as maxpop from city where nation='$nation['nation']'"; // 도시 이름 목록
             $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $city = MYDB_fetch_array($cityresult);
-            $pop = "{$city[totalpop]} / {$city[maxpop]}";
-            $poprate = round($city[totalpop]/$city[maxpop]*100, 2);
+            $pop = "{$city['totalpop']} / {$city['maxpop']}";
+            $poprate = round($city['totalpop']/$city['maxpop']*100, 2);
             $poprate .= " %";
 
-            $query = "select name,picture,belong from general where nation='$nation[nation]' and level='12'";
+            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='12'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level12 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation[nation]' and level='11'";
+            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='11'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level11 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation[nation]' and level='10'";
+            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='10'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level10 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation[nation]' and level='9'";
+            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='9'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level9 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation[nation]' and level='8'";
+            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='8'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level8 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation[nation]' and level='7'";
+            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='7'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level7 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation[nation]' and level='6'";
+            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='6'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level6 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,belong from general where nation='$nation[nation]' and level='5'";
+            $query = "select name,picture,belong from general where nation='$nation['nation']' and level='5'";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level5 = MYDB_fetch_array($genresult);
 
-            $query = "select name,picture,killnum from general where nation='$nation[nation]' order by killnum desc limit 5";   // 오호장군
+            $query = "select name,picture,killnum from general where nation='$nation['nation']' order by killnum desc limit 5";   // 오호장군
             $tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $tigernum = MYDB_num_rows($tigerresult);
             for($i=0; $i < $tigernum; $i++) {
                 $tiger = MYDB_fetch_array($tigerresult);
-                if($tiger[killnum] > 0) {
-                    $tigerstr .= "{$tiger[name]}【{$tiger[killnum]}】, ";
+                if($tiger['killnum'] > 0) {
+                    $tigerstr .= "{$tiger['name']}【{$tiger['killnum']}】, ";
                 }
             }
 
-            $query = "select name,picture,firenum from general where nation='$nation[nation]' order by firenum desc limit 7";   // 건안칠자
+            $query = "select name,picture,firenum from general where nation='$nation['nation']' order by firenum desc limit 7";   // 건안칠자
             $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $eaglenum = MYDB_num_rows($eagleresult);
             for($i=0; $i < $eaglenum; $i++) {
                 $eagle = MYDB_fetch_array($eagleresult);
-                if($eagle[firenum] > 0) {
-                    $eaglestr .= "{$eagle[name]}【{$eagle[firenum]}】, ";
+                if($eagle['firenum'] > 0) {
+                    $eaglestr .= "{$eagle['name']}【{$eagle['firenum']}】, ";
                 }
             }
 
-            $log[0] = "<C>●</>$admin[year]년 $admin[month]월: <D><b>$nation[name]</b></>(이)가 전토를 통일하였습니다.";
+            $log[0] = "<C>●</>$admin['year']년 $admin['month']월: <D><b>$nation['name']</b></>(이)가 전토를 통일하였습니다.";
 
-            $query = "select no,name from general where nation='$nation[nation]' order by dedication desc";
+            $query = "select no,name from general where nation='$nation['nation']' order by dedication desc";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gencount = MYDB_num_rows($result);
             for($i=0; $i < $gencount; $i++) {
                 $general = MYDB_fetch_array($result);
-                $gen .= "{$general[name]}, ";
+                $gen .= "{$general['name']}, ";
 
                 pushGenLog($general, $log);
             }
 
-            $nation[type] = getNationType($nation[type]);
+            $nation['type'] = getNationType($nation['type']);
 
             $query = "select MAX(nation_count) as nc,MAX(gen_count) as gc from statistic";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -5349,10 +5352,10 @@ function checkEmperior($connect) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gencount = MYDB_fetch_array($result);
 
-            $statNC = "1 / {$stat[nc]}";
-            $statGC = "{$gencount[cnt]} / {$stat[gc]}";
+            $statNC = "1 / {$stat['nc']}";
+            $statGC = "{$gencount['cnt']} / {$stat['gc']}";
 
-            $query = "select nation_count,nation_name,nation_hist from statistic where nation_count='$stat[nc]' limit 0,1";
+            $query = "select nation_count,nation_name,nation_hist from statistic where nation_count='$stat['nc']' limit 0,1";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $statNation = MYDB_fetch_array($result);
 
@@ -5374,19 +5377,19 @@ function checkEmperior($connect) {
                     tiger, eagle, gen, history
                 ) values (
                     '-',
-                    '$statNC', '$statNation[nation_name]', '$statNation[nation_hist]',
-                    '$statGC', '$statGeneral[personal_hist]', '$statGeneral[special_hist]',
-                    '$nation[name]', '$nation[type]', '$nation[color]', '$admin[year]', '$admin[month]', '$nation[power]', '$nation[gennum]', '$allcount',
-                    '$pop', '$poprate', '$nation[gold]', '$nation[rice]',
-                    '$level12[name]', '$level12[picture]', '$level11[name]', '$level11[picture]',
-                    '$level10[name]', '$level10[picture]', '$level9[name]', '$level9[picture]',
-                    '$level8[name]', '$level8[picture]', '$level7[name]', '$level7[picture]',
-                    '$level6[name]', '$level6[picture]', '$level5[name]', '$level5[picture]',
-                    '$tigerstr', '$eaglestr', '$gen', '$nation[history]'
+                    '$statNC', '$statNation['nation_name']', '$statNation['nation_hist']',
+                    '$statGC', '$statGeneral['personal_hist']', '$statGeneral['special_hist']',
+                    '$nation['name']', '$nation['type']', '$nation['color']', '$admin['year']', '$admin['month']', '$nation['power']', '$nation['gennum']', '$allcount',
+                    '$pop', '$poprate', '$nation['gold']', '$nation['rice']',
+                    '$level12['name']', '$level12['picture']', '$level11['name']', '$level11['picture']',
+                    '$level10['name']', '$level10['picture']', '$level9['name']', '$level9['picture']',
+                    '$level8['name']', '$level8['picture']', '$level7['name']', '$level7['picture']',
+                    '$level6['name']', '$level6['picture']', '$level5['name']', '$level5['picture']',
+                    '$tigerstr', '$eaglestr', '$gen', '$nation['history']'
                 )";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<Y><b>【통일】</b></><D><b>$nation[name]</b></>(이)가 전토를 통일하였습니다.";
+            $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【통일】</b></><D><b>$nation['name']</b></>(이)가 전토를 통일하였습니다.";
             pushHistory($connect, $history);
 
             //연감 월결산
@@ -5400,11 +5403,11 @@ function PreprocessCommand($connect, $no) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    if($general[special2] == 73 || $general[item] == 23 || $general[item] == 24) {
+    if($general[special2] == 73 || $general['item'] == 23 || $general['item'] == 24) {
         //특기보정 : 의술
         //의서 사용
-        if($general[injury] > 0) {
-            $general[injury] = 0;
+        if($general['injury'] > 0) {
+            $general['injury'] = 0;
             $query = "update general set injury=0 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -5412,7 +5415,7 @@ function PreprocessCommand($connect, $no) {
             pushGenLog($general, $log);
         }
             
-        $query = "select no,name,injury from general where city='$general[city]' and injury>10 order by rand()";
+        $query = "select no,name,injury from general where city='$general['city']' and injury>10 order by rand()";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $patientCount = MYDB_num_rows($result);
     
@@ -5425,7 +5428,7 @@ function PreprocessCommand($connect, $no) {
                 $patient = MYDB_fetch_array($result);
     
                 //부상 치료
-                $query = "update general set injury=0 where no='$patient[no]'";
+                $query = "update general set injury=0 where no='$patient['no']'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     
                 $log[0] = "<C>●</><Y>{$general['name']}</>(이)가 <C>의술</>로써 치료해줍니다!";
@@ -5446,22 +5449,22 @@ function PreprocessCommand($connect, $no) {
         }
     }
     
-    if($general[injury] > 0) {
-        if($general[item] >=7 && $general[item] <= 11) {
+    if($general['injury'] > 0) {
+        if($general['item'] >=7 && $general['item'] <= 11) {
             //영구약 사용
             $query = "update general set injury=0 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $log[0] = "<C>●</><C>".getItemName($general[item])."</>(을)를 사용하여 치료합니다!";
+            $log[0] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용하여 치료합니다!";
             pushGenLog($general, $log);
-        } elseif($general[injury] > 10 && $general[item] == 1 && $general[turn0] != EncodeCommand(0, 0, 0, 50)) {
+        } elseif($general['injury'] > 10 && $general['item'] == 1 && $general[turn0] != EncodeCommand(0, 0, 0, 50)) {
             //환약 사용
             $query = "update general set injury=0,item=0 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</><C>환약</>을 사용하여 치료합니다!";
             pushGenLog($general, $log);
-        } elseif($general[injury] > 10) {
+        } elseif($general['injury'] > 10) {
             //부상 감소
             $query = "update general set injury=injury-10 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -5483,29 +5486,29 @@ function processCommand($connect, $no) {
     $admin = MYDB_fetch_array($result);
 
     // 블럭자는 미실행. 삭턴 감소
-    if($general[block] == 2) {
-        $date = substr($general[turntime],11,5);
-        $log[count($log)] = "<C>●</>{$admin[month]}월:현재 멀티, 또는 비매너로 인한<R>블럭</> 대상자입니다. <1>$date</>";
+    if($general['block'] == 2) {
+        $date = substr($general['turntime'],11,5);
+        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 멀티, 또는 비매너로 인한<R>블럭</> 대상자입니다. <1>$date</>";
         pushGenLog($general, $log);
 
-        $query = "update general set recturn='',resturn='BLOCK_2',myset=3,con=0,killturn=killturn-1 where no='$general[no]'";
+        $query = "update general set recturn='',resturn='BLOCK_2',myset=3,con=0,killturn=killturn-1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } elseif($general[block] == 3) {
-        $date = substr($general[turntime],11,5);
-        $log[count($log)] = "<C>●</>{$admin[month]}월:현재 악성유저로 분류되어 <R>블럭, 발언권 무효</> 대상자입니다. <1>$date</>";
+    } elseif($general['block'] == 3) {
+        $date = substr($general['turntime'],11,5);
+        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 악성유저로 분류되어 <R>블럭, 발언권 무효</> 대상자입니다. <1>$date</>";
         pushGenLog($general, $log);
 
-        $query = "update general set recturn='',resturn='BLOCK_3',myset=3,con=0,killturn=killturn-1 where no='$general[no]'";
+        $query = "update general set recturn='',resturn='BLOCK_3',myset=3,con=0,killturn=killturn-1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } else {
-        if($general[level] >= 5 && $general[level] <= 12) {
-            $query = "select l{$general[level]}turn0,l{$general[level]}term from nation where nation='$general[nation]'";
+        if($general['level'] >= 5 && $general['level'] <= 12) {
+            $query = "select l{$general['level']}turn0,l{$general['level']}term from nation where nation='$general['nation']'";
             $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $core = MYDB_fetch_array($coreresult);
-            $corecommand = DecodeCommand($core["l{$general[level]}turn0"]);
+            $corecommand = DecodeCommand($core["l{$general['level']}turn0"]);
             //연속턴 아닌경우 텀 리셋
-            if($core["l{$general[level]}term"]%100 != $corecommand[0]) {
-                $query = "update nation set l{$general[level]}term=0 where nation='$general[nation]'";
+            if($core["l{$general['level']}term"]%100 != $corecommand[0]) {
+                $query = "update nation set l{$general['level']}term=0 where nation='$general['nation']'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
 
@@ -5544,26 +5547,26 @@ function processCommand($connect, $no) {
 
         $command = DecodeCommand($general[turn0]);
         //삭턴 처리
-        if($general[npc] >= 2 || $general[killturn] > $admin[killturn]) {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='$general[no]'";
+        if($general['npc'] >= 2 || $general['killturn'] > $admin['killturn']) {
+            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } elseif(floor($command[0]) == 0 && $general[userlevel] < 5) {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='$general[no]'";
+        } elseif(floor($command[0]) == 0 && $general['userlevel'] < 5) {
+            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn='$admin[killturn]' where no='$general[no]'";
+            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn='$admin['killturn']' where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         //연속턴 아닌경우 텀 리셋
-        if($general[term]%100 != $command[0]) {
-            $query = "update general set term=0 where no='$general[no]'";
+        if($general['term']%100 != $command[0]) {
+            $query = "update general set term=0 where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         //턴 처리
         switch($command[0]) {
             case 0: //휴식
-                $date = substr($general[turntime],11,5);
-                $log[count($log)] = "<C>●</>{$admin[month]}월:아무것도 실행하지 않았습니다. <1>$date</>";
+                $date = substr($general['turntime'],11,5);
+                $log[count($log)] = "<C>●</>{$admin['month']}월:아무것도 실행하지 않았습니다. <1>$date</>";
                 pushGenLog($general, $log);
                 break;
             case  1: process_1($connect, $general, 1); break; //농업
@@ -5629,12 +5632,12 @@ update general set
 turn0=turn1,turn1=turn2,turn2=turn3,turn3=turn4,turn4=turn5,turn5=turn6,turn6=turn7,turn7=turn8,turn8=turn9,
 turn9=turn10,turn10=turn11,turn11=turn12,turn12=turn13,turn13=turn14,turn14=turn15,turn15=turn16,turn16=turn17,
 turn17=turn18,turn18=turn19,turn19=turn20,turn20=turn21,turn21=turn22,turn22=turn23,turn23='00000000000000'
-where no='$general[no]'
+where no='$general['no']'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    if($type == 2 || ($general[level] >= 5 && $general[level] <= 12 && $type == 0)) {   // 턴 처리후 수뇌부, 수뇌부 당기기
-        $turn = "l{$general[level]}turn";
+    if($type == 2 || ($general['level'] >= 5 && $general['level'] <= 12 && $type == 0)) {   // 턴 처리후 수뇌부, 수뇌부 당기기
+        $turn = "l{$general['level']}turn";
         $query = "
 update nation set
 {$turn}0={$turn}1,{$turn}1={$turn}2,
@@ -5643,7 +5646,7 @@ update nation set
 {$turn}6={$turn}7,{$turn}7={$turn}8,
 {$turn}8={$turn}9,{$turn}9={$turn}10,
 {$turn}10={$turn}11,{$turn}11='00000000000099'
-where nation='$general[nation]'
+where nation='$general['nation']'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
@@ -5673,7 +5676,7 @@ where no='$no'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } elseif($type == 2) {  // 수뇌부 미루기
-        $turn = "l{$general[level]}turn";
+        $turn = "l{$general['level']}turn";
         $query = "
 update nation set
 {$turn}11={$turn}10,{$turn}10={$turn}9,
@@ -5682,7 +5685,7 @@ update nation set
 {$turn}5={$turn}4,{$turn}4={$turn}3,
 {$turn}3={$turn}2,{$turn}2={$turn}1,
 {$turn}1={$turn}0,{$turn}0='00000000000099'
-where nation='$general[nation]'
+where nation='$general['nation']'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
@@ -5698,127 +5701,127 @@ function updateTurntime($connect, $no) {
     $general = MYDB_fetch_array($result);
 
     // 삭턴장수 삭제처리
-    if($general[killturn] <= 0) {
+    if($general['killturn'] <= 0) {
         // npc유저 삭턴시 npc로 전환
-        if($general[npc] == 1 && $general[deadyear] > $admin[year]) {
-            $npcid = "gen" . $general[npcid];
+        if($general['npc'] == 1 && $general['deadyear'] > $admin['year']) {
+            $npcid = "gen" . $general['npcid'];
             $pw = md5("18071807");
-            $general[killturn] = ($general[deadyear] - $admin[year]) * 12;
-            $general[npc] = $general[npc_org];
-            $query = "update general set user_id='$npcid',password='$pw',npc='$general[npc]',killturn='$general[killturn]',mode=2 where no='$no'";
+            $general['killturn'] = ($general['deadyear'] - $admin['year']) * 12;
+            $general['npc'] = $general['npc_org'];
+            $query = "update general set user_id='$npcid',password='$pw',npc='$general['npc']',killturn='$general['killturn']',mode=2 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name2]</>(이)가 <Y>$general[name]</>의 육체에서 <S>유체이탈</>합니다!";
+            $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general[name2]</>(이)가 <Y>$general['name']</>의 육체에서 <S>유체이탈</>합니다!";
             pushAllLog($alllog);
 
-            if($admin[isUnited] == 0) {
+            if($admin['isUnited'] == 0) {
                 CheckHall($connect, $no);
             }
         } else {
             // 군주였으면 유지 이음
-            if($general[level] == 12) {
+            if($general['level'] == 12) {
                 nextRuler($connect, $general);
             }
 
             //도시의 태수, 군사, 시중직도 초기화
-            $query = "update city set gen1='0' where gen1='$general[no]'";
+            $query = "update city set gen1='0' where gen1='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update city set gen2='0' where gen2='$general[no]'";
+            $query = "update city set gen2='0' where gen2='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update city set gen3='0' where gen3='$general[no]'";
+            $query = "update city set gen3='0' where gen3='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             // 부대 처리
-            $query = "select no from troop where troop='$general[troop]'";
+            $query = "select no from troop where troop='$general['troop']'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $troop = MYDB_fetch_array($result);
 
             //부대장일 경우
-            if($troop[no] == $general[no]) {
+            if($troop['no'] == $general['no']) {
                 // 모두 탈퇴
-                $query = "update general set troop='0' where troop='$general[troop]'";
+                $query = "update general set troop='0' where troop='$general['troop']'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 // 부대 삭제
-                $query = "delete from troop where troop='$general[troop]'";
+                $query = "delete from troop where troop='$general['troop']'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
-                $query = "update general set troop='0' where no='$general[no]'";
+                $query = "update general set troop='0' where no='$general['no']'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
             // 장수 삭제
-            $query = "delete from general where no='$general[no]'";
+            $query = "delete from general where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //기존 국가 기술력 그대로
-            $query = "select no from general where nation='$general[nation]'";
+            $query = "select no from general where nation='$general['nation']'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gencount = MYDB_num_rows($result);
             $gennum = $gencount;
             if($gencount < 10) $gencount = 10;
 
-            $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='$general[nation]'";
+            $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='$general['nation']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             // 병, 요절, 객사, 번개, 사채, 일확천금, 호랑이, 곰, 수영, 처형, 발견
             switch(rand()%42) {
-            case 0:  $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 역병에 걸려 <R>죽고</> 말았습니다."; break;
-            case 1:  $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 <R>요절</>하고 말았습니다."; break;
-            case 2:  $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 거리에서 갑자기 <R>객사</>하고 말았습니다."; break;
-            case 3:  $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 안타깝게도 번개에 맞아 <R>죽고</> 말았습니다."; break;
-            case 4:  $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 고리대금에 시달리다가 <R>자살</>하고 말았습니다."; break;
-            case 5:  $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 일확천금에 놀라 심장마비로 <R>죽고</> 말았습니다."; break;
-            case 6:  $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 산속에서 호랑이에게 물려 <R>죽고</> 말았습니다."; break;
-            case 7:  $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 산책중 곰에게 할퀴어 <R>죽고</> 말았습니다."; break;
-            case 8:  $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 수영을 하다 <R>익사</>하고 말았습니다."; break;
-            case 9:  $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 황제를 모독하다가 <R>처형</>당하고 말았습니다."; break;
-            case 10: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 이튿날 침실에서 <R>죽은채로</>발견되었습니다."; break;
-            case 11: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 색에 빠져 기력이 쇠진해 <R>죽고</>말았습니다."; break;
-            case 12: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 미녀를 보고 심장마비로 <R>죽고</>말았습니다."; break;
-            case 13: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 우울증에 걸려 <R>자살</>하고 말았습니다."; break;
-            case 14: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 천하 정세를 비관하며 <R>분신</>하고 말았습니다."; break;
-            case 15: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 어떤 관심도 못받고 쓸쓸히 <R>죽고</>말았습니다."; break;
-            case 16: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 유산 상속 문제로 다투다가 <R>살해</>당했습니다."; break;
-            case 17: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 누군가의 사주로 자객에게 <R>암살</>당했습니다."; break;
-            case 18: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 바람난 배우자에게 <R>독살</>당하고 말았습니다."; break;
-            case 19: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 농약을 술인줄 알고 마셔 <R>죽고</>말았습니다."; break;
-            case 20: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 아무 이유 없이 <R>죽고</>말았습니다."; break;
-            case 21: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 전재산을 잃고 화병으로 <R>죽고</>말았습니다."; break;
-            case 22: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 단식운동을 하다가 굶어 <R>죽고</>말았습니다."; break;
-            case 23: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 귀신에게 홀려 시름 앓다가 <R>죽고</>말았습니다."; break;
-            case 24: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 사람들에게 집단으로 맞아서 <R>죽고</>말았습니다."; break;
-            case 25: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 갑자기 성벽에서 뛰어내려 <R>죽고</>말았습니다."; break;
-            case 26: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 농사중 호미에 머리를 맞아 <R>죽고</>말았습니다."; break;
-            case 27: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 저세상이 궁금하다며 <R>자살</>하고 말았습니다."; break;
-            case 28: $alllog[0] = "<C>●</>{$admin[month]}월:운좋기로 소문난 <Y>$general[name]</>(이)가 불운하게도 <R>죽고</>말았습니다."; break;
-            case 29: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 무리하게 단련을 하다가 <R>죽고</>말았습니다."; break;
-            case 30: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 생활고를 비관하며 <R>자살</>하고 말았습니다."; break;
-            case 31: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 평생 결혼도 못해보고 <R>죽고</> 말았습니다."; break;
-            case 32: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 과식하다 배가 터져 <R>죽고</> 말았습니다."; break;
-            case 33: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 웃다가 숨이 넘어가 <R>죽고</> 말았습니다."; break;
-            case 34: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 추녀를 보고 놀라서 <R>죽고</> 말았습니다."; break;
-            case 35: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 물에 빠진 사람을 구하려다 같이 <R>죽고</> 말았습니다."; break;
-            case 36: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 독살을 준비하다 독에 걸려 <R>죽고</> 말았습니다."; break;
-            case 37: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 뒷간에서 너무 힘을 주다가 <R>죽고</> 말았습니다."; break;
-            case 38: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 돌팔이 의사에게 치료받다가 <R>죽고</> 말았습니다."; break;
-            case 39: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 남의 보약을 훔쳐먹다 부작용으로 <R>죽고</> 말았습니다."; break;
-            case 40: $alllog[0] = "<C>●</>{$admin[month]}월:희대의 사기꾼 <Y>$general[name]</>(이)가 <R>사망</>했습니다."; break;
-            case 41: $alllog[0] = "<C>●</>{$admin[month]}월:희대의 호색한 <Y>$general[name]</>(이)가 <R>사망</>했습니다."; break;
-            default: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 <R>사망</>했습니다."; break;
+            case 0:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 역병에 걸려 <R>죽고</> 말았습니다."; break;
+            case 1:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 <R>요절</>하고 말았습니다."; break;
+            case 2:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 거리에서 갑자기 <R>객사</>하고 말았습니다."; break;
+            case 3:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 안타깝게도 번개에 맞아 <R>죽고</> 말았습니다."; break;
+            case 4:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 고리대금에 시달리다가 <R>자살</>하고 말았습니다."; break;
+            case 5:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 일확천금에 놀라 심장마비로 <R>죽고</> 말았습니다."; break;
+            case 6:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 산속에서 호랑이에게 물려 <R>죽고</> 말았습니다."; break;
+            case 7:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 산책중 곰에게 할퀴어 <R>죽고</> 말았습니다."; break;
+            case 8:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 수영을 하다 <R>익사</>하고 말았습니다."; break;
+            case 9:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 황제를 모독하다가 <R>처형</>당하고 말았습니다."; break;
+            case 10: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 이튿날 침실에서 <R>죽은채로</>발견되었습니다."; break;
+            case 11: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 색에 빠져 기력이 쇠진해 <R>죽고</>말았습니다."; break;
+            case 12: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 미녀를 보고 심장마비로 <R>죽고</>말았습니다."; break;
+            case 13: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 우울증에 걸려 <R>자살</>하고 말았습니다."; break;
+            case 14: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 천하 정세를 비관하며 <R>분신</>하고 말았습니다."; break;
+            case 15: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 어떤 관심도 못받고 쓸쓸히 <R>죽고</>말았습니다."; break;
+            case 16: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 유산 상속 문제로 다투다가 <R>살해</>당했습니다."; break;
+            case 17: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 누군가의 사주로 자객에게 <R>암살</>당했습니다."; break;
+            case 18: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 바람난 배우자에게 <R>독살</>당하고 말았습니다."; break;
+            case 19: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 농약을 술인줄 알고 마셔 <R>죽고</>말았습니다."; break;
+            case 20: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 아무 이유 없이 <R>죽고</>말았습니다."; break;
+            case 21: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 전재산을 잃고 화병으로 <R>죽고</>말았습니다."; break;
+            case 22: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 단식운동을 하다가 굶어 <R>죽고</>말았습니다."; break;
+            case 23: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 귀신에게 홀려 시름 앓다가 <R>죽고</>말았습니다."; break;
+            case 24: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 사람들에게 집단으로 맞아서 <R>죽고</>말았습니다."; break;
+            case 25: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 갑자기 성벽에서 뛰어내려 <R>죽고</>말았습니다."; break;
+            case 26: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 농사중 호미에 머리를 맞아 <R>죽고</>말았습니다."; break;
+            case 27: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 저세상이 궁금하다며 <R>자살</>하고 말았습니다."; break;
+            case 28: $alllog[0] = "<C>●</>{$admin['month']}월:운좋기로 소문난 <Y>$general['name']</>(이)가 불운하게도 <R>죽고</>말았습니다."; break;
+            case 29: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 무리하게 단련을 하다가 <R>죽고</>말았습니다."; break;
+            case 30: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 생활고를 비관하며 <R>자살</>하고 말았습니다."; break;
+            case 31: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 평생 결혼도 못해보고 <R>죽고</> 말았습니다."; break;
+            case 32: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 과식하다 배가 터져 <R>죽고</> 말았습니다."; break;
+            case 33: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 웃다가 숨이 넘어가 <R>죽고</> 말았습니다."; break;
+            case 34: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 추녀를 보고 놀라서 <R>죽고</> 말았습니다."; break;
+            case 35: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 물에 빠진 사람을 구하려다 같이 <R>죽고</> 말았습니다."; break;
+            case 36: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 독살을 준비하다 독에 걸려 <R>죽고</> 말았습니다."; break;
+            case 37: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 뒷간에서 너무 힘을 주다가 <R>죽고</> 말았습니다."; break;
+            case 38: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 돌팔이 의사에게 치료받다가 <R>죽고</> 말았습니다."; break;
+            case 39: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 남의 보약을 훔쳐먹다 부작용으로 <R>죽고</> 말았습니다."; break;
+            case 40: $alllog[0] = "<C>●</>{$admin['month']}월:희대의 사기꾼 <Y>$general['name']</>(이)가 <R>사망</>했습니다."; break;
+            case 41: $alllog[0] = "<C>●</>{$admin['month']}월:희대의 호색한 <Y>$general['name']</>(이)가 <R>사망</>했습니다."; break;
+            default: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 <R>사망</>했습니다."; break;
             }
             // 엔피씨,엠피씨,의병 사망로그
-            if($general[npc] == 2) {
-                $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 <R>사망</>했습니다.";
-            } elseif($general[npc] >= 3) {
+            if($general['npc'] == 2) {
+                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 <R>사망</>했습니다.";
+            } elseif($general['npc'] >= 3) {
                 switch(rand()%10) {
-                case 0: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 푸대접에 실망하여 떠났습니다."; break;
-                case 1: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 갑자기 화를 내며 떠났습니다."; break;
-                case 2: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 의견차이를 좁히지 못하고 떠났습니다."; break;
-                case 3: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 판단 착오였다며 떠났습니다."; break;
-                case 4: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 생활고가 나아지지 않는다며 떠났습니다."; break;
-                case 5: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 기대가 너무 컸다며 떠났습니다."; break;
-                case 6: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 아무 이유 없이 떠났습니다."; break;
-                case 7: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 자기 목적은 달성했다며 떠났습니다."; break;
-                case 8: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 자기가 없어도 될것 같다며 떠났습니다."; break;
-                case 9: $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 처자식이 그립다며 떠났습니다."; break;
+                case 0: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 푸대접에 실망하여 떠났습니다."; break;
+                case 1: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 갑자기 화를 내며 떠났습니다."; break;
+                case 2: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 의견차이를 좁히지 못하고 떠났습니다."; break;
+                case 3: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 판단 착오였다며 떠났습니다."; break;
+                case 4: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 생활고가 나아지지 않는다며 떠났습니다."; break;
+                case 5: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 기대가 너무 컸다며 떠났습니다."; break;
+                case 6: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 아무 이유 없이 떠났습니다."; break;
+                case 7: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 자기 목적은 달성했다며 떠났습니다."; break;
+                case 8: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 자기가 없어도 될것 같다며 떠났습니다."; break;
+                case 9: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 처자식이 그립다며 떠났습니다."; break;
                 }
             }
 
@@ -5828,23 +5831,23 @@ function updateTurntime($connect, $no) {
         }
     }
 
-    if($general[age] >= 80 && $general[npc] == 0) {
-        if($admin[isUnited] == 0) {
+    if($general['age'] >= 80 && $general['npc'] == 0) {
+        if($admin['isUnited'] == 0) {
             CheckHall($connect, $no);
         }
 
         $query = "update general set leader=leader*0.85,power=power*0.85,intel=intel*0.85,injury=0,experience=experience*0.5,dedication=dedication*0.5,firenum=0,warnum=0,killnum=0,deathnum=0,killcrew=0,deathcrew=0,age=20,specage=0,specage2=0,crew=crew*0.85,dex0=dex0*0.5,dex10=dex10*0.5,dex20=dex20*0.5,dex30=dex30*0.5,dex40=dex40*0.5 where no='$no'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $alllog[0] = "<C>●</>{$admin[month]}월:<Y>$general[name]</>(이)가 <R>은퇴</>하고 그 자손이 유지를 이어받았습니다.";
+        $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general['name']</>(이)가 <R>은퇴</>하고 그 자손이 유지를 이어받았습니다.";
         pushAllLog($alllog);
 
         $log[0] = "<C>●</>나이가 들어 <R>은퇴</>하고 자손에게 자리를 물려줍니다.";
         pushGenLog($general, $log);
-        $general = addHistory($connect, $general, "<C>●</>$admin[year]년 $admin[month]월:나이가 들어 은퇴하고, 자손에게 관직을 물려줌");
+        $general = addHistory($connect, $general, "<C>●</>$admin['year']년 $admin['month']월:나이가 들어 은퇴하고, 자손에게 관직을 물려줌");
     }
 
-    $turntime = addTurn($general[turntime], $admin[turnterm]);
+    $turntime = addTurn($general['turntime'], $admin['turnterm']);
 
     $query = "update general set turntime='$turntime' where no='$no'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -5888,7 +5891,7 @@ function CheckHall($connect, $no) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select nation,name,color from nation where nation='$general[nation]'";
+    $query = "select nation,name,color from nation where nation='$general['nation']'";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($nationresult);
 
@@ -5898,23 +5901,23 @@ function CheckHall($connect, $no) {
         $count = MYDB_num_rows($result);
 
         //승률,살상률인데 10회 미만 전투시 스킵
-        if(($k == 5 || $k == 7) && $general[warnum]<10) { continue; }
+        if(($k == 5 || $k == 7) && $general['warnum']<10) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($k == 13 && $general[tt] < 50) { continue; }
+        if($k == 13 && $general['tt'] < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($k == 14 && $general[tl] < 50) { continue; }
+        if($k == 14 && $general['tl'] < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($k == 15 && $general[tp] < 50) { continue; }
+        if($k == 15 && $general['tp'] < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($k == 16 && $general[ti] < 50) { continue; }
+        if($k == 16 && $general['ti'] < 50) { continue; }
         //수익률인데 1000미만시 스킵
-        if($k == 20 && $general[betgold] < 1000) { continue; }
+        if($k == 20 && $general['betgold'] < 1000) { continue; }
 
         $rank = 10;
         for($i=0; $i < $count; $i++) {
             $ranker = MYDB_fetch_array($result);
 
-            if($general[$type[$k]] >= $ranker[data]) {
+            if($general[$type[$k]] >= $ranker['data']) {
                 $rank = $i;
                 break;
             }
@@ -5925,10 +5928,10 @@ function CheckHall($connect, $no) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $ranker = MYDB_fetch_array($result);
 
-            $query = "update hall set name='$ranker[name]', nation='$ranker[nation]', data='$ranker[data]', color='$ranker[color]', picture='$ranker[picture]' where type='$k' and rank='$j'";
+            $query = "update hall set name='$ranker['name']', nation='$ranker['nation']', data='$ranker['data']', color='$ranker['color']', picture='$ranker['picture']' where type='$k' and rank='$j'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
-        $query = "update hall set name='$general[name]', nation='{$nation[name]}', data='{$general[$type[$k]]}', color='{$nation[color]}', picture='$general[picture]' where type='$k' and rank='$rank'";
+        $query = "update hall set name='$general['name']', nation='{$nation['name']}', data='{$general[$type[$k]]}', color='{$nation['color']}', picture='$general['picture']' where type='$k' and rank='$rank'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 }
@@ -5938,7 +5941,7 @@ function info($connect, $type=0, $skin=1) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    switch($admin[turnterm]) {
+    switch($admin['turnterm']) {
         case 0: $termtype="120분 턴"; break;
         case 1: $termtype="60분 턴"; break;
         case 2: $termtype="30분 턴"; break;
@@ -5959,23 +5962,23 @@ function info($connect, $type=0, $skin=1) {
 
     switch($type) {
     case 0:
-        echo "현재 : {$admin[year]}年 {$admin[month]}月 (<font color="; echo $skin>0?"cyan":"white"; echo ">$termtype</font> 서버)<br> 등록 장수 : 유저 {$gencount} / {$admin[maxgeneral]} 명 + <font color="; echo $skin>0?"cyan":"white"; echo ">NPC {$npccount} 명</font>";
+        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color="; echo $skin>0?"cyan":"white"; echo ">$termtype</font> 서버)<br> 등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color="; echo $skin>0?"cyan":"white"; echo ">NPC {$npccount} 명</font>";
         break;
     case 1:
-        echo "현재 : {$admin[year]}年 {$admin[month]}月 (<font color="; echo $skin>0?"cyan":"white"; echo ">$termtype</font> 서버)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 등록 장수 : 유저 {$gencount} / {$admin[maxgeneral]} 명 + <font color="; echo $skin>0?"cyan":"white"; echo ">NPC {$npccount} 명</font>";
+        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color="; echo $skin>0?"cyan":"white"; echo ">$termtype</font> 서버)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color="; echo $skin>0?"cyan":"white"; echo ">NPC {$npccount} 명</font>";
         break;
     case 2:
-        echo "현재 : {$admin[year]}年 {$admin[month]}月 (<font color="; echo $skin>0?"cyan":"white"; echo ">$termtype</font> 서버)";
+        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color="; echo $skin>0?"cyan":"white"; echo ">$termtype</font> 서버)";
         break;
     case 3:
-        echo "등록 장수 : 유저 {$gencount} / {$admin[maxgeneral]} 명 + <font color="; echo $skin>0?"cyan":"white"; echo ">NPC {$npccount} 명</font>";
+        echo "등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color="; echo $skin>0?"cyan":"white"; echo ">NPC {$npccount} 명</font>";
         break;
     }
 }
 
 function uniqueItem($connect, $general, $log, $vote=0) {
-    if($general[npc] >= 2 || $general[betray] > 1) { return $log; }
-    if($general[weap] > 6 || $general[book] > 6 || $general[horse] > 6 || $general[item] > 6) { return $log; }
+    if($general['npc'] >= 2 || $general['betray'] > 1) { return $log; }
+    if($general['weap'] > 6 || $general['book'] > 6 || $general['horse'] > 6 || $general['item'] > 6) { return $log; }
 
     $query = "select year,month,scenario from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -5985,12 +5988,12 @@ function uniqueItem($connect, $general, $log, $vote=0) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen = MYDB_fetch_array($result);
 
-    if($game[scenario] == 0)  { $prob = $gen[cnt] * 5; }  // 5~6개월에 하나씩 등장
-    else { $prob = $gen[cnt]; }  // 1~2개월에 하나씩 등장
+    if($game['scenario'] == 0)  { $prob = $gen['cnt'] * 5; }  // 5~6개월에 하나씩 등장
+    else { $prob = $gen['cnt']; }  // 1~2개월에 하나씩 등장
 
-    if($vote == 1) { $prob = round($gen[cnt] * 0.7 / 3); }     // 투표율 70%, 투표 한번에 2~3개 등장
-    elseif($vote == 2) { $prob = round($gen[cnt] / 10 / 2); }   // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
-    elseif($vote == 3) { $prob = round($gen[cnt] / 10 / 4); }   // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
+    if($vote == 1) { $prob = round($gen['cnt'] * 0.7 / 3); }     // 투표율 70%, 투표 한번에 2~3개 등장
+    elseif($vote == 2) { $prob = round($gen['cnt'] / 10 / 2); }   // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
+    elseif($vote == 3) { $prob = round($gen['cnt'] / 10 / 4); }   // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
 
     if($prob < 3) { $prob = 3; }
     //아이템 습득 상황
@@ -6018,72 +6021,72 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             }
             $it = $item[rand() % count($item)];
 
-            $query = "update general set {$type}='$it' where no='$general[no]'";
+            $query = "update general set {$type}='$it' where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $query = "select name from nation where nation='$general[nation]'";
+            $query = "select name from nation where nation='$general['nation']'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $nation = MYDB_fetch_array($result);
 
-            if($nation[name] == "") {
-                $nation[name] = "재야";
+            if($nation['name'] == "") {
+                $nation['name'] = "재야";
             }
 
             switch($sel) {
             case 0:
                 $log[count($log)] = "<C>●</><C>".getWeapName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game[month]}월:<Y>$general[name]</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
-                $general = addHistory($connect, $general, "<C>●</>{$game[year]}년 {$game[month]}월:<C>".getWeapName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$game['month']}월:<Y>$general['name']</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                $general = addHistory($connect, $general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getWeapName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【아이템】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【아이템】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【설문상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【설문상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【랜덤임관상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【랜덤임관상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【건국상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【건국상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             case 1:
                 $log[count($log)] = "<C>●</><C>".getBookName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game[month]}월:<Y>$general[name]</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
-                $general = addHistory($connect, $general, "<C>●</>{$game[year]}년 {$game[month]}월:<C>".getBookName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$game['month']}월:<Y>$general['name']</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                $general = addHistory($connect, $general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getBookName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【아이템】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【아이템】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【설문상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【설문상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【랜덤임관상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【랜덤임관상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【건국상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【건국상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             case 2:
                 $log[count($log)] = "<C>●</><C>".getHorseName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game[month]}월:<Y>$general[name]</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
-                $general = addHistory($connect, $general, "<C>●</>{$game[year]}년 {$game[month]}월:<C>".getHorseName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$game['month']}월:<Y>$general['name']</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                $general = addHistory($connect, $general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getHorseName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【아이템】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【아이템】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【설문상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【설문상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【랜덤임관상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【랜덤임관상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【건국상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【건국상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             case 3:
                 $log[count($log)] = "<C>●</><C>".getItemName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game[month]}월:<Y>$general[name]</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
-                $general = addHistory($connect, $general, "<C>●</>{$game[year]}년 {$game[month]}월:<C>".getItemName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$game['month']}월:<Y>$general['name']</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                $general = addHistory($connect, $general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getItemName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【아이템】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【아이템】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【설문상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【설문상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【랜덤임관상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【랜덤임관상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[0] = "<C>●</>$game[year]년 $game[month]월:<C><b>【건국상품】</b></><D><b>$nation[name]</b></>의 <Y>$general[name]</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[0] = "<C>●</>$game['year']년 $game['month']월:<C><b>【건국상품】</b></><D><b>$nation['name']</b></>의 <Y>$general['name']</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             }
@@ -6099,41 +6102,41 @@ function checkAbility($connect, $general, $log) {
 
     $limit = $_upgradeLimit;
 
-    $query = "select no,leader,leader2,power,power2,intel,intel2 from general where no='$general[no]'";
+    $query = "select no,leader,leader2,power,power2,intel,intel2 from general where no='$general['no']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
     if($general[leader2] < 0) {
-        $query = "update general set leader2='$limit'+leader2,leader=leader-1 where no='$general[no]'";
+        $query = "update general set leader2='$limit'+leader2,leader=leader-1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><R>통솔</>이 <C>1</> 떨어졌습니다!";
     } elseif($general[leader2] >= $limit) {
-        $query = "update general set leader2=leader2-'$limit',leader=leader+1 where no='$general[no]'";
+        $query = "update general set leader2=leader2-'$limit',leader=leader+1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><Y>통솔</>이 <C>1</> 올랐습니다!";
     }
 
     if($general[power2] < 0) {
-        $query = "update general set power2='$limit'+power2,power=power-1 where no='$general[no]'";
+        $query = "update general set power2='$limit'+power2,power=power-1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><R>무력</>이 <C>1</> 떨어졌습니다!";
     } elseif($general[power2] >= $limit) {
-        $query = "update general set power2=power2-'$limit',power=power+1 where no='$general[no]'";
+        $query = "update general set power2=power2-'$limit',power=power+1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><Y>무력</>이 <C>1</> 올랐습니다!";
     }
 
     if($general[intel2] < 0) {
-        $query = "update general set intel2='$limit'+intel2,intel=intel-1 where no='$general[no]'";
+        $query = "update general set intel2='$limit'+intel2,intel=intel-1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><R>지력</>이 <C>1</> 떨어졌습니다!";
     } elseif($general[intel2] >= $limit) {
-        $query = "update general set intel2=intel2-'$limit',intel=intel+1 where no='$general[no]'";
+        $query = "update general set intel2=intel2-'$limit',intel=intel+1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><Y>지력</>이 <C>1</> 올랐습니다!";
@@ -6143,33 +6146,33 @@ function checkAbility($connect, $general, $log) {
 }
 
 function checkDedication($connect, $general, $log) {
-    $dedlevel = getDedLevel($general[dedication]);
+    $dedlevel = getDedLevel($general['dedication']);
 
-    $query = "update general set dedlevel='$dedlevel' where no='$general[no]'";
+    $query = "update general set dedlevel='$dedlevel' where no='$general['no']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 승급했다면
-    if($general[dedlevel] < $dedlevel) {
-        $log[count($log)] = "<C>●</><Y>".getDed($general[dedication])."</>(으)로 <C>승급</>하여 봉록이 <C>".getBill($general[dedication])."</>(으)로 <C>상승</>했습니다!";
+    if($general['dedlevel'] < $dedlevel) {
+        $log[count($log)] = "<C>●</><Y>".getDed($general['dedication'])."</>(으)로 <C>승급</>하여 봉록이 <C>".getBill($general['dedication'])."</>(으)로 <C>상승</>했습니다!";
     // 강등했다면
-    } elseif($general[dedlevel] > $dedlevel) {
-        $log[count($log)] = "<C>●</><Y>".getDed($general[dedication])."</>(으)로 <R>강등</>되어 봉록이 <C>".getBill($general[dedication])."</>(으)로 <R>하락</>했습니다!";
+    } elseif($general['dedlevel'] > $dedlevel) {
+        $log[count($log)] = "<C>●</><Y>".getDed($general['dedication'])."</>(으)로 <R>강등</>되어 봉록이 <C>".getBill($general['dedication'])."</>(으)로 <R>하락</>했습니다!";
     }
 
     return $log;
 }
 
 function checkExperience($connect, $general, $log) {
-    $explevel = getExpLevel($general[experience]);
+    $explevel = getExpLevel($general['experience']);
 
-    $query = "update general set explevel='$explevel' where no='$general[no]'";
+    $query = "update general set explevel='$explevel' where no='$general['no']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 승급했다면
-    if($general[explevel] < $explevel) {
+    if($general['explevel'] < $explevel) {
         $log[count($log)] = "<C>●</><C>Lv $explevel</>로 <C>레벨업</>!";
     // 강등했다면
-    } elseif($general[explevel] > $explevel) {
+    } elseif($general['explevel'] > $explevel) {
         $log[count($log)] = "<C>●</><C>Lv $explevel</>로 <R>레벨다운</>!";
     }
 
@@ -6227,32 +6230,32 @@ function processGoldIncome($connect) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($nationresult);
 
-        $incomeList = getGoldIncome($connect, $nation[nation], $nation[rate_tmp], $admin[gold_rate], $nation[type]);
+        $incomeList = getGoldIncome($connect, $nation['nation'], $nation['rate_tmp'], $admin['gold_rate'], $nation['type']);
         $income = $incomeList[0] + $incomeList[1];
-        $originoutcome = getGoldOutcome($connect, $nation[nation], 100);    // 100%의 지급량
-        $outcome = round($originoutcome * $nation[bill] / 100);   // 지급량에 따른 요구량
+        $originoutcome = getGoldOutcome($connect, $nation['nation'], 100);    // 100%의 지급량
+        $outcome = round($originoutcome * $nation['bill'] / 100);   // 지급량에 따른 요구량
         // 실제 지급량 계산
-        $nation[gold] += $income;
+        $nation['gold'] += $income;
         // 기본량도 안될경우
-        if($nation[gold] < $_basegold) {
+        if($nation['gold'] < $_basegold) {
             $realoutcome = 0;
             // 실지급율
             $ratio = 0;
         //기본량은 넘지만 요구량이 안될경우
-        } elseif($nation[gold] - $_basegold < $outcome) {
-            $realoutcome = $nation[gold] - $_basegold;
-            $nation[gold] = $_basegold;
+        } elseif($nation['gold'] - $_basegold < $outcome) {
+            $realoutcome = $nation['gold'] - $_basegold;
+            $nation['gold'] = $_basegold;
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         } else {
             $realoutcome = $outcome;
-            $nation[gold] -= $realoutcome;
+            $nation['gold'] -= $realoutcome;
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         }
-        $adminLog[count($adminLog)] = _String::Fill2($nation[name],12," ")." // 세금 : "._String::Fill2($income,6," ")." // 세출 : "._String::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과금 : ".tab2($nation[gold],6," ");
+        $adminLog[count($adminLog)] = _String::Fill2($nation['name'],12," ")." // 세금 : "._String::Fill2($income,6," ")." // 세출 : "._String::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과금 : ".tab2($nation['gold'],6," ");
 
-        $query = "select no,name,nation from general where nation='$nation[nation]' and level>='9'";
+        $query = "select no,name,nation from general where nation='$nation['nation']' and level>='9'";
         $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $corecount = MYDB_num_rows($coreresult);
         $corelog[0] = "<C>●</>이번 수입은 금 <C>$income</>입니다.";
@@ -6261,20 +6264,20 @@ function processGoldIncome($connect) {
             pushGenLog($coregen, $corelog);
         }
 
-        $query = "update nation set gold='$nation[gold]' where nation='$nation[nation]'";
+        $query = "update nation set gold='$nation['gold']' where nation='$nation['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "select no,name,nation,dedication,gold from general where nation='$nation[nation]'";
+        $query = "select no,name,nation,dedication,gold from general where nation='$nation['nation']'";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
 
         // 각 장수들에게 지급
         for($j=0; $j < $gencount; $j++) {
             $general = MYDB_fetch_array($genresult);
-            $gold = round(getBill($general[dedication])*$ratio);
-            $general[gold] += $gold;
+            $gold = round(getBill($general['dedication'])*$ratio);
+            $general['gold'] += $gold;
 
-            $query = "update general set gold='$general[gold]' where no='$general[no]'";
+            $query = "update general set gold='$general['gold']' where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>봉급으로 금 <C>$gold</>을 받았습니다.";
@@ -6282,7 +6285,7 @@ function processGoldIncome($connect) {
         }
     }
 
-    $history[0] = "<C>●</>$admin[year]년 $admin[month]월:<W><b>【지급】</b></>봄이 되어 봉록에 따라 자금이 지급됩니다.";
+    $history[0] = "<C>●</>$admin['year']년 $admin['month']월:<W><b>【지급】</b></>봄이 되어 봉록에 따라 자금이 지급됩니다.";
     pushHistory($connect, $history);
     pushAdminLog($connect, $adminLog);
 }
@@ -6294,8 +6297,8 @@ function popIncrease($connect) {
 
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($nationresult);
-        $rate[$nation[nation]] = $nation[rate_tmp];
-        $type[$nation[nation]] = $nation[type];
+        $rate[$nation['nation']] = $nation['rate_tmp'];
+        $type[$nation['nation']] = $nation['type'];
     }
 
     $query = "select * from city where supply='1'"; // 도시 목록
@@ -6306,42 +6309,42 @@ function popIncrease($connect) {
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($cityresult);
 
-        $pop = $city[pop];
-        if($city[nation] == 0) {
-            $pop = $city[pop];  // 공백지는 증가하지 않게
+        $pop = $city['pop'];
+        if($city['nation'] == 0) {
+            $pop = $city['pop'];  // 공백지는 증가하지 않게
             $cityrate = 50;
 
             $ratio = 0.99;   // 공백지는 수비 빼고 약간씩 감소
-            $agri = floor($city[agri] * $ratio);
-            $comm = floor($city[comm] * $ratio);
-            $secu = floor($city[secu] * $ratio);
-            $def  = $city[def];
-            $wall = $city[wall];
+            $agri = floor($city['agri'] * $ratio);
+            $comm = floor($city['comm'] * $ratio);
+            $secu = floor($city['secu'] * $ratio);
+            $def  = $city['def'];
+            $wall = $city['wall'];
         } else {
-            $ratio = (20 - $rate[$city[nation]])/200;  // 20일때 0% 0일때 10% 100일때 -40%
-            $agri = $city[agri] + floor($city[agri] * $ratio);  //내정도 증감
-            $comm = $city[comm] + floor($city[comm] * $ratio);
-            $secu = $city[secu] + floor($city[secu] * $ratio);
-            $def  = $city[def]  + floor($city[def]  * $ratio);
-            $wall = $city[wall] + floor($city[wall] * $ratio);
-            $ratio = (30 - $rate[$city[nation]])/200;  // 20일때 5% 5일때 12.5% 50일때 -10%
+            $ratio = (20 - $rate[$city['nation']])/200;  // 20일때 0% 0일때 10% 100일때 -40%
+            $agri = $city['agri'] + floor($city['agri'] * $ratio);  //내정도 증감
+            $comm = $city['comm'] + floor($city['comm'] * $ratio);
+            $secu = $city['secu'] + floor($city['secu'] * $ratio);
+            $def  = $city['def']  + floor($city['def']  * $ratio);
+            $wall = $city['wall'] + floor($city['wall'] * $ratio);
+            $ratio = (30 - $rate[$city['nation']])/200;  // 20일때 5% 5일때 12.5% 50일때 -10%
             if($ratio >= 0) {
                 // 국가보정
-                if($type[$city[nation]] == 4 || $type[$city[nation]] == 6 || $type[$city[nation]] == 7 || $type[$city[nation]] == 8 || $type[$city[nation]] == 12 || $type[$city[nation]] == 13) { $ratio *= 1.2; }
-                if($type[$city[nation]] == 1 || $type[$city[nation]] == 3) { $ratio *= 0.8; }
-                $ratio *= (1 + $city[secu]/$city[secu2]/10);    //치안에 따라 최대 10% 추가
+                if($type[$city['nation']] == 4 || $type[$city['nation']] == 6 || $type[$city['nation']] == 7 || $type[$city['nation']] == 8 || $type[$city['nation']] == 12 || $type[$city['nation']] == 13) { $ratio *= 1.2; }
+                if($type[$city['nation']] == 1 || $type[$city['nation']] == 3) { $ratio *= 0.8; }
+                $ratio *= (1 + $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 추가
             } else {
                 // 국가보정
-                if($type[$city[nation]] == 4 || $type[$city[nation]] == 6 || $type[$city[nation]] == 7 || $type[$city[nation]] == 8 || $type[$city[nation]] == 12 || $type[$city[nation]] == 13) { $ratio *= 0.8; }
-                if($type[$city[nation]] == 1 || $type[$city[nation]] == 3) { $ratio *= 1.2; }
-                $ratio *= (1 - $city[secu]/$city[secu2]/10);    //치안에 따라 최대 10% 경감
+                if($type[$city['nation']] == 4 || $type[$city['nation']] == 6 || $type[$city['nation']] == 7 || $type[$city['nation']] == 8 || $type[$city['nation']] == 12 || $type[$city['nation']] == 13) { $ratio *= 0.8; }
+                if($type[$city['nation']] == 1 || $type[$city['nation']] == 3) { $ratio *= 1.2; }
+                $ratio *= (1 - $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 경감
             }
 
-            $pop = $city[pop] + floor($city[pop] * $ratio) + 5000;  // 기본 5000명은 증가
+            $pop = $city['pop'] + floor($city['pop'] * $ratio) + 5000;  // 기본 5000명은 증가
 
             $ratio = round($ratio*100, 2);
-            $cityrate = $city[rate];
-            $cityrate = $cityrate + (20 - $rate[$city[nation]]);
+            $cityrate = $city['rate'];
+            $cityrate = $cityrate + (20 - $rate[$city['nation']]);
             if($cityrate > 100) { $cityrate = 100; }
             if($cityrate < 0) { $cityrate = 0; }
         }
@@ -6354,7 +6357,7 @@ function popIncrease($connect) {
         if($wall > $city[wall2]) { $wall = $city[wall2]; }
 
         //시세
-        $query = "update city set pop='$pop',rate='$cityrate',agri='$agri',comm='$comm',secu='$secu',def='$def',wall='$wall' where city='$city[city]'";
+        $query = "update city set pop='$pop',rate='$cityrate',agri='$agri',comm='$comm',secu='$secu',def='$def',wall='$wall' where city='$city['city']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 }
@@ -6365,21 +6368,21 @@ function getGoldIncome($connect, $nationNo, $rate, $admin_rate, $type) {
     $count = MYDB_num_rows($result);
     for($j=0; $j < $count; $j++) {
         $gen = MYDB_fetch_array($result);
-        $level4[$gen[no]] = $gen[city];
+        $level4[$gen['no']] = $gen['city'];
     }
     $query = "select no,city from general where nation='$nationNo' and level=3"; // 군사
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($j=0; $j < $count; $j++) {
         $gen = MYDB_fetch_array($result);
-        $level3[$gen[no]] = $gen[city];
+        $level3[$gen['no']] = $gen['city'];
     }
     $query = "select no,city from general where nation='$nationNo' and level=2"; // 시중
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($j=0; $j < $count; $j++) {
         $gen = MYDB_fetch_array($result);
-        $level2[$gen[no]] = $gen[city];
+        $level2[$gen['no']] = $gen['city'];
     }
 
     $query = "select capital,level from nation where nation='$nationNo'"; // 수도
@@ -6396,17 +6399,17 @@ function getGoldIncome($connect, $nationNo, $rate, $admin_rate, $type) {
         $city = MYDB_fetch_array($cityresult);
 
         //민충 0~100 : 50~100 수입
-        $ratio = $city[rate] / 2 + 50;
-        $tax1 = ($city[pop] * $city[comm] / $city[comm2] * $ratio / 1000) / 3;
-//        $tax2 = $city[def] * $city[wall] / $city[wall2] / 3;
-        $tax1 *= (1 + $city[secu]/$city[secu2]/10);    //치안에 따라 최대 10% 추가
-//        $tax2 *= (1 + $city[secu]/$city[secu2]/10);    //치안에 따라 최대 10% 추가
+        $ratio = $city['rate'] / 2 + 50;
+        $tax1 = ($city['pop'] * $city['comm'] / $city[comm2] * $ratio / 1000) / 3;
+//        $tax2 = $city['def'] * $city['wall'] / $city[wall2] / 3;
+        $tax1 *= (1 + $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 추가
+//        $tax2 *= (1 + $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 추가
         //도시 관직 추가 세수
-        if($level4[$city[gen1]] == $city[city]) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if($level3[$city[gen2]] == $city[city]) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if($level2[$city[gen3]] == $city[city]) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if($level4[$city[gen1]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if($level3[$city[gen2]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if($level2[$city[gen3]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
         //수도 추가 세수 130%~105%
-        if($city[city] == $nation[capital]) { $tax1 *= 1+(1/3/$nation[level]); $tax2 *= 1+(1/3/$nation[level]); }
+        if($city['city'] == $nation['capital']) { $tax1 *= 1+(1/3/$nation['level']); $tax2 *= 1+(1/3/$nation['level']); }
 
         $income[0] += $tax1;
 //        $income[1] += $tax2;
@@ -6431,11 +6434,11 @@ function processDeadIncome($connect, $admin_rate) {
     for($i=0; $i < $nationCount; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        $income = getDeadIncome($connect, $nation[nation], $nation[type], $admin_rate);
+        $income = getDeadIncome($connect, $nation['nation'], $nation['type'], $admin_rate);
 
 //  단기수입 금만적용
-//        $query = "update nation set gold=gold+'$income',rice=rice+'$income' where nation='$nation[nation]'";
-        $query = "update nation set gold=gold+'$income' where nation='$nation[nation]'";
+//        $query = "update nation set gold=gold+'$income',rice=rice+'$income' where nation='$nation['nation']'";
+        $query = "update nation set gold=gold+'$income' where nation='$nation['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     // 10%수입, 20%부상병
@@ -6453,7 +6456,7 @@ function getDeadIncome($connect, $nation, $type, $admin_rate) {
         for($k=0; $k < $cityCount; $k++) {
             $city = MYDB_fetch_array($cityResult);
 
-            $income += $city[dead];
+            $income += $city['dead'];
         }
         $income /= 10;
 
@@ -6475,7 +6478,7 @@ function getGoldOutcome($connect, $nation, $bill) {
     $outcome = 0;
     for($j=0; $j < $gencount; $j++) {
         $general = MYDB_fetch_array($genresult);
-        $outcome += getBill($general[dedication]);
+        $outcome += getBill($general['dedication']);
     }
 
     $outcome = round($outcome * $bill / 100);
@@ -6527,33 +6530,33 @@ function processRiceIncome($connect) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($nationresult);
 
-        $incomeList = getRiceIncome($connect, $nation[nation], $nation[rate_tmp], $admin[rice_rate], $nation[type]);
+        $incomeList = getRiceIncome($connect, $nation['nation'], $nation['rate_tmp'], $admin['rice_rate'], $nation['type']);
         $income = $incomeList[0] + $incomeList[1];
-        $originoutcome = getRiceOutcome($connect, $nation[nation], 100);    // 100%의 지급량
-        $outcome = round($originoutcome * $nation[bill] / 100);   // 지급량에 따른 요구량
+        $originoutcome = getRiceOutcome($connect, $nation['nation'], 100);    // 100%의 지급량
+        $outcome = round($originoutcome * $nation['bill'] / 100);   // 지급량에 따른 요구량
 
         // 실제 지급량 계산
-        $nation[rice] += $income;
+        $nation['rice'] += $income;
         // 기본량도 안될경우
-        if($nation[rice] < $_baserice) {
+        if($nation['rice'] < $_baserice) {
             $realoutcome = 0;
             // 실지급율
             $ratio = 0;
         //기본량은 넘지만 요구량이 안될경우
-        } elseif($nation[rice] - $_baserice < $outcome) {
-            $realoutcome = $nation[rice] - $_baserice;
-            $nation[rice] = $_baserice;
+        } elseif($nation['rice'] - $_baserice < $outcome) {
+            $realoutcome = $nation['rice'] - $_baserice;
+            $nation['rice'] = $_baserice;
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         } else {
             $realoutcome = $outcome;
-            $nation[rice] -= $realoutcome;
+            $nation['rice'] -= $realoutcome;
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         }
-        $adminLog[count($adminLog)] = _String::Fill2($nation[name],12," ")." // 세곡 : "._String::Fill2($income,6," ")." // 세출 : "._String::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과곡 : ".tab2($nation[rice],6," ");
+        $adminLog[count($adminLog)] = _String::Fill2($nation['name'],12," ")." // 세곡 : "._String::Fill2($income,6," ")." // 세출 : "._String::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과곡 : ".tab2($nation['rice'],6," ");
 
-        $query = "select no,name,nation from general where nation='$nation[nation]' and level>='9'";
+        $query = "select no,name,nation from general where nation='$nation['nation']' and level>='9'";
         $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $corecount = MYDB_num_rows($coreresult);
         $corelog[0] = "<C>●</>이번 수입은 쌀 <C>$income</>입니다.";
@@ -6562,20 +6565,20 @@ function processRiceIncome($connect) {
             pushGenLog($coregen, $corelog);
         }
 
-        $query = "update nation set rice='$nation[rice]' where nation='$nation[nation]'";
+        $query = "update nation set rice='$nation['rice']' where nation='$nation['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "select no,name,nation,dedication,rice from general where nation='$nation[nation]'";
+        $query = "select no,name,nation,dedication,rice from general where nation='$nation['nation']'";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
 
         // 각 장수들에게 지급
         for($j=0; $j < $gencount; $j++) {
             $general = MYDB_fetch_array($genresult);
-            $rice = round(getBill($general[dedication])*$ratio);
-            $general[rice] += $rice;
+            $rice = round(getBill($general['dedication'])*$ratio);
+            $general['rice'] += $rice;
 
-            $query = "update general set rice='$general[rice]' where no='$general[no]'";
+            $query = "update general set rice='$general['rice']' where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>봉급으로 쌀 <C>$rice</>을 받았습니다.";
@@ -6583,7 +6586,7 @@ function processRiceIncome($connect) {
         }
     }
 
-    $history[0] = "<C>●</>$admin[year]년 $admin[month]월:<W><b>【지급】</b></>가을이 되어 봉록에 따라 군량이 지급됩니다.";
+    $history[0] = "<C>●</>$admin['year']년 $admin['month']월:<W><b>【지급】</b></>가을이 되어 봉록에 따라 군량이 지급됩니다.";
     pushHistory($connect, $history);
     pushAdminLog($connect, $adminLog);
 }
@@ -6594,21 +6597,21 @@ function getRiceIncome($connect, $nationNo, $rate, $admin_rate, $type) {
     $count = MYDB_num_rows($result);
     for($j=0; $j < $count; $j++) {
         $gen = MYDB_fetch_array($result);
-        $level4[$gen[no]] = $gen[city];
+        $level4[$gen['no']] = $gen['city'];
     }
     $query = "select no,city from general where nation='$nationNo' and level=3"; // 군사
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($j=0; $j < $count; $j++) {
         $gen = MYDB_fetch_array($result);
-        $level3[$gen[no]] = $gen[city];
+        $level3[$gen['no']] = $gen['city'];
     }
     $query = "select no,city from general where nation='$nationNo' and level=2"; // 시중
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($j=0; $j < $count; $j++) {
         $gen = MYDB_fetch_array($result);
-        $level2[$gen[no]] = $gen[city];
+        $level2[$gen['no']] = $gen['city'];
     }
 
     $query = "select capital,level from nation where nation='$nationNo'"; // 수도
@@ -6625,17 +6628,17 @@ function getRiceIncome($connect, $nationNo, $rate, $admin_rate, $type) {
         $city = MYDB_fetch_array($cityresult);
 
         //민충 0~100 : 50~100 수입
-        $ratio = $city[rate] / 2 + 50;
-        $tax1 = ($city[pop] * $city[agri] / $city[agri2] * $ratio / 1000) / 3;
-        $tax2 = $city[def] * $city[wall] / $city[wall2] / 3;
-        $tax1 *= (1 + $city[secu]/$city[secu2]/10);    //치안에 따라 최대 10% 추가
-        $tax2 *= (1 + $city[secu]/$city[secu2]/10);    //치안에 따라 최대 10% 추가
+        $ratio = $city['rate'] / 2 + 50;
+        $tax1 = ($city['pop'] * $city['agri'] / $city[agri2] * $ratio / 1000) / 3;
+        $tax2 = $city['def'] * $city['wall'] / $city[wall2] / 3;
+        $tax1 *= (1 + $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 추가
+        $tax2 *= (1 + $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 추가
         //도시 관직 추가 세수
-        if($level4[$city[gen1]] == $city[city]) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if($level3[$city[gen2]] == $city[city]) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if($level2[$city[gen3]] == $city[city]) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if($level4[$city[gen1]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if($level3[$city[gen2]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if($level2[$city[gen3]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
         //수도 추가 세수 130%~105%
-        if($city[city] == $nation[capital]) { $tax1 *= 1+(1/3/$nation[level]); $tax2 *= 1+(1/3/$nation[level]); }
+        if($city['city'] == $nation['capital']) { $tax1 *= 1+(1/3/$nation['level']); $tax2 *= 1+(1/3/$nation['level']); }
         $income[0] += $tax1;
         $income[1] += $tax2;
     }
@@ -6660,7 +6663,7 @@ function getRiceOutcome($connect, $nation, $bill) {
     $outcome = 0;
     for($j=0; $j < $gencount; $j++) {
         $general = MYDB_fetch_array($genresult);
-        $outcome += getBill($general[dedication]);
+        $outcome += getBill($general['dedication']);
     }
 
     $outcome = round($outcome * $bill / 100);
@@ -6676,7 +6679,7 @@ function tradeRate($connect) {
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($cityresult);
         //시세
-        switch($city[level]) {
+        switch($city['level']) {
         case 1: $per =   0; break;
         case 2: $per =   0; break;
         case 3: $per =   0; break;
@@ -6692,7 +6695,7 @@ function tradeRate($connect) {
         } else {
             $trade = 0;
         }
-        $query = "update city set trade='$trade' where city='$city[city]'";
+        $query = "update city set trade='$trade' where city='$city['city']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 }
@@ -6707,7 +6710,7 @@ function disaster($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 초반 3년은 스킵
-    if($admin[startyear] + 3 > $admin[year]) return;
+    if($admin['startyear'] + 3 > $admin['year']) return;
     
     $query = "select city,name,secu,secu2 from city"; // 도시 목록
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -6715,20 +6718,20 @@ function disaster($connect) {
 
     $disastertype = rand() % 4;
     $isgood = 0;
-    if($admin[month] == 4 && $disastertype == 3) { $isgood = 1; }
-    if($admin[month] == 7 && $disastertype == 3) { $isgood = 1; }
+    if($admin['month'] == 4 && $disastertype == 3) { $isgood = 1; }
+    if($admin['month'] == 7 && $disastertype == 3) { $isgood = 1; }
 
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($cityresult);
         //호황 발생 도시 선택 ( 기본 3% 이므로 약 3개 도시 )
         //재해 발생 도시 선택 ( 기본 6% 이므로 약 6개 도시 )
-        if($isgood == 1) { $ratio = 3 + round(1.0*$city[secu]/$city[secu2]*3); }    // 3 ~ 6%
-        else { $ratio = 6 - round(1.0*$city[secu]/$city[secu2]*3); }    // 3 ~ 6%
+        if($isgood == 1) { $ratio = 3 + round(1.0*$city['secu']/$city[secu2]*3); }    // 3 ~ 6%
+        else { $ratio = 6 - round(1.0*$city['secu']/$city[secu2]*3); }    // 3 ~ 6%
 
         if(rand()%100+1 < $ratio) {
-            $disastercity[count($disastercity)] = $city[city];
-            $disasterratio[count($disastercity)] = 1.0 * $city[secu] / $city[secu2];
-            $disastername .= $city[name]." ";
+            $disastercity[count($disastercity)] = $city['city'];
+            $disasterratio[count($disastercity)] = 1.0 * $city['secu'] / $city[secu2];
+            $disastername .= $city['name']." ";
         }
     }
 
@@ -6737,24 +6740,24 @@ function disaster($connect) {
     //재해 처리
     if(count($disastercity)) {
         $state = 0;
-        switch($admin[month]) {
+        switch($admin['month']) {
         //봄
         case 1:
             switch($disastertype) {
             case 0:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 역병이 발생하여 도시가 황폐해지고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 역병이 발생하여 도시가 황폐해지고 있습니다.";
                 $state = 4;
                 break;
             case 1:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
                 $state = 5;
                 break;
             case 2:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 추위가 풀리지 않아 얼어죽는 백성들이 늘어나고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 추위가 풀리지 않아 얼어죽는 백성들이 늘어나고 있습니다.";
                 $state = 3;
                 break;
             case 3:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 황건적이 출현해 도시를 습격하고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 황건적이 출현해 도시를 습격하고 있습니다.";
                 $state = 9;
                 break;
             }
@@ -6763,19 +6766,19 @@ function disaster($connect) {
         case 4:
             switch($disastertype) {
             case 0:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 홍수로 인해 피해가 급증하고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 홍수로 인해 피해가 급증하고 있습니다.";
                 $state = 7;
                 break;
             case 1:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
                 $state = 5;
                 break;
             case 2:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 태풍으로 인해 피해가 속출하고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 태풍으로 인해 피해가 속출하고 있습니다.";
                 $state = 6;
                 break;
             case 3:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<C><b>【호황】</b></>{$disastername}에 호황으로 도시가 번창하고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<C><b>【호황】</b></>{$disastername}에 호황으로 도시가 번창하고 있습니다.";
                 $state = 2;
                 $isGood = 1;
                 break;
@@ -6785,19 +6788,19 @@ function disaster($connect) {
         case 7:
             switch($disastertype) {
             case 0:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 메뚜기 떼가 발생하여 도시가 황폐해지고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 메뚜기 떼가 발생하여 도시가 황폐해지고 있습니다.";
                 $state = 8;
                 break;
             case 1:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
                 $state = 5;
                 break;
             case 2:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 흉년이 들어 굶어죽는 백성들이 늘어나고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 흉년이 들어 굶어죽는 백성들이 늘어나고 있습니다.";
                 $state = 8;
                 break;
             case 3:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<C><b>【풍작】</b></>{$disastername}에 풍작으로 도시가 번창하고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<C><b>【풍작】</b></>{$disastername}에 풍작으로 도시가 번창하고 있습니다.";
                 $state = 1;
                 $isGood = 1;
                 break;
@@ -6807,19 +6810,19 @@ function disaster($connect) {
         case 10:
             switch($disastertype) {
             case 0:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 혹한으로 도시가 황폐해지고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 혹한으로 도시가 황폐해지고 있습니다.";
                 $state = 3;
                 break;
             case 1:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
                 $state = 5;
                 break;
             case 2:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 눈이 많이 쌓여 도시가 황폐해지고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 눈이 많이 쌓여 도시가 황폐해지고 있습니다.";
                 $state = 3;
                 break;
             case 3:
-                $disaster[count($disaster)] = "<C>●</>$admin[year]년 $admin[month]월:<M><b>【재난】</b></>{$disastername}에 황건적이 출현해 도시를 습격하고 있습니다.";
+                $disaster[count($disaster)] = "<C>●</>$admin['year']년 $admin['month']월:<M><b>【재난】</b></>{$disastername}에 황건적이 출현해 도시를 습격하고 있습니다.";
                 $state = 9;
                 break;
             }
@@ -6842,19 +6845,19 @@ function disaster($connect) {
                 $ratio = (101 + $ratio) / 100.0; // 치안률 따라서 101~105%
         
                 $city = getCity($connect, $disastercity[$i]);
-                $city[pop] *= $ratio;   $city[rate] *= $ratio;  $city[agri] *= $ratio;
-                $city[comm] *= $ratio;  $city[secu] *= $ratio;  $city[def] *= $ratio;
-                $city[wall] *= $ratio;
+                $city['pop'] *= $ratio;   $city['rate'] *= $ratio;  $city['agri'] *= $ratio;
+                $city['comm'] *= $ratio;  $city['secu'] *= $ratio;  $city['def'] *= $ratio;
+                $city['wall'] *= $ratio;
         
-                if($city[pop] > $city[pop2]) { $city[pop] = $city[pop2]; }
-                if($city[rate] > 100) { $city[rate] = 100; }
-                if($city[agri] > $city[agri2]) { $city[agri] = $city[agri2]; }
-                if($city[comm] > $city[comm2]) { $city[comm] = $city[comm2]; }
-                if($city[secu] > $city[secu2]) { $city[secu] = $city[secu2]; }
-                if($city[def] > $city[def2]) { $city[def] = $city[def2]; }
-                if($city[wall] > $city[wall2]) { $city[wall] = $city[wall2]; }
+                if($city['pop'] > $city[pop2]) { $city['pop'] = $city[pop2]; }
+                if($city['rate'] > 100) { $city['rate'] = 100; }
+                if($city['agri'] > $city[agri2]) { $city['agri'] = $city[agri2]; }
+                if($city['comm'] > $city[comm2]) { $city['comm'] = $city[comm2]; }
+                if($city['secu'] > $city[secu2]) { $city['secu'] = $city[secu2]; }
+                if($city['def'] > $city[def2]) { $city['def'] = $city[def2]; }
+                if($city['wall'] > $city[wall2]) { $city['wall'] = $city[wall2]; }
         
-                $query = "update city set state='$state',pop='$city[pop]',rate='$city[rate]',agri='$city[agri]',comm='$city[comm]',secu='$city[secu]',def='$city[def]',wall='$city[wall]' where city='$disastercity[$i]'";
+                $query = "update city set state='$state',pop='$city['pop']',rate='$city['rate']',agri='$city['agri']',comm='$city['comm']',secu='$city['secu']',def='$city['def']',wall='$city['wall']' where city='$disastercity[$i]'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         }
@@ -6872,7 +6875,7 @@ function getAdmin($connect) {
 }
 
 function getMe($connect) {
-    $query = "select * from general where user_id='$_SESSION[p_id]'";
+    $query = "select * from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("접속자가 많아 접속을 중단합니다. 잠시후 갱신해주세요.<br>getMe : ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -6973,32 +6976,32 @@ function ConvertLog($str, $type=1) {
 }
 
 function deleteNation($connect, $general) {
-    $date = substr($general[turntime],11,5);
+    $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select name from nation where nation='$general[nation]'";
+    $query = "select name from nation where nation='$general['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<R><b>【멸망】</b></><D><b>$nation[name]</b></>은(는) <R>멸망</>했습니다.";
+    $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<R><b>【멸망】</b></><D><b>$nation['name']</b></>은(는) <R>멸망</>했습니다.";
 
     // 전 장수 재야로    // 전 장수 소속 무소속으로
-    $query = "update general set belong=0,troop=0,level=0,nation=0,makelimit=12 where nation='$general[nation]'";
+    $query = "update general set belong=0,troop=0,level=0,nation=0,makelimit=12 where nation='$general['nation']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 도시 공백지로
-    $query = "update city set nation=0,front=0,gen1=0,gen2=0,gen3=0 where nation='$general[nation]'";
+    $query = "update city set nation=0,front=0,gen1=0,gen2=0,gen3=0 where nation='$general['nation']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 부대 삭제
-    $query = "delete from troop where nation='$general[nation]'";
+    $query = "delete from troop where nation='$general['nation']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 국가 삭제
-    $query = "delete from nation where nation='$general[nation]'";
+    $query = "delete from nation where nation='$general['nation']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 외교 삭제
-    $query = "delete from diplomacy where me='$general[nation]' or you='$general[nation]'";
+    $query = "delete from diplomacy where me='$general['nation']' or you='$general['nation']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     pushHistory($connect, $history);
@@ -7009,17 +7012,17 @@ function nextRuler($connect, $general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select nation,name,history from nation where nation='$general[nation]'";
+    $query = "select nation,name,history from nation where nation='$general['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select no,name from general where nation='$general[nation]' and level!='12' and level>='9' order by level desc";
+    $query = "select no,name from general where nation='$general['nation']' and level!='12' and level>='9' order by level desc";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $corecount = MYDB_num_rows($result);
 
     //npc or npc유저인 경우 후계 찾기
-    if($general[npc] > 0) {
-        $query = "select no,name,nation,IF(ABS(npcmatch-'$general[npcmatch]')>75,150-ABS(npcmatch-'$general[npcmatch]'),ABS(npcmatch-'$general[npcmatch]')) as npcmatch2 from general where nation='$general[nation]' and level!=12 and npc>0 order by npcmatch2,rand() limit 0,1";
+    if($general['npc'] > 0) {
+        $query = "select no,name,nation,IF(ABS(npcmatch-'$general['npcmatch']')>75,150-ABS(npcmatch-'$general['npcmatch']'),ABS(npcmatch-'$general['npcmatch']')) as npcmatch2 from general where nation='$general['nation']' and level!=12 and npc>0 order by npcmatch2,rand() limit 0,1";
         $npcresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount = MYDB_num_rows($npcresult);
     } else {
@@ -7030,17 +7033,17 @@ function nextRuler($connect, $general) {
     if($npccount > 0) {
         $nextruler = MYDB_fetch_array($npcresult);
         //국명 교체
-        //$query = "update nation set name='$nextruler[name]' where nation='$general[nation]'";
+        //$query = "update nation set name='$nextruler['name']' where nation='$general['nation']'";
         //MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } elseif($corecount == 0) {
-        $query = "select no,name from general where nation='$general[nation]' and level!='12' order by dedication desc";
+        $query = "select no,name from general where nation='$general['nation']' and level!='12' order by dedication desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $corecount = MYDB_num_rows($result);
 
         // 아무도 없으면 국가 삭제
         if($corecount == 0) {
             //분쟁기록 모두 지움
-            DeleteConflict($connect, $general[nation]);
+            DeleteConflict($connect, $general['nation']);
             deleteNation($connect, $general);
             return;
         } else {
@@ -7051,22 +7054,22 @@ function nextRuler($connect, $general) {
     }
 
     //군주 교체
-    $query = "update general set level='12' where no='$nextruler[no]'";
+    $query = "update general set level='12' where no='$nextruler['no']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //도시관직해제
-    $query = "update city set gen1=0 where gen1='$nextruler[no]'";
+    $query = "update city set gen1=0 where gen1='$nextruler['no']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //도시관직해제
-    $query = "update city set gen2=0 where gen2='$nextruler[no]'";
+    $query = "update city set gen2=0 where gen2='$nextruler['no']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //도시관직해제
-    $query = "update city set gen3=0 where gen3='$nextruler[no]'";
+    $query = "update city set gen3=0 where gen3='$nextruler['no']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    $history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<C><b>【유지】</b></><Y>$nextruler[name]</>(이)가 <D><b>$nation[name]</b></>의 유지를 이어 받았습니다";
+    $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<C><b>【유지】</b></><Y>$nextruler['name']</>(이)가 <D><b>$nation['name']</b></>의 유지를 이어 받았습니다";
 
     pushHistory($connect, $history);
-    $nation = addNationHistory($connect, $nation, "<C>●</>$admin[year]년 $admin[month]월:<C><b>【유지】</b></><Y>$nextruler[name]</>(이)가 <D><b>$nation[name]</b></>의 유지를 이어 받음.");
+    $nation = addNationHistory($connect, $nation, "<C>●</>$admin['year']년 $admin['month']월:<C><b>【유지】</b></><Y>$nextruler['name']</>(이)가 <D><b>$nation['name']</b></>의 유지를 이어 받음.");
     // 장수 삭제 및 부대처리는 checkTurn에서
 }
 
@@ -7118,8 +7121,8 @@ function distance($connect, $from, $maxDist=99) {
     $cityNum = MYDB_num_rows($result);
     for($i=0; $i < $cityNum; $i++) {
         $city = MYDB_fetch_array($result);
-        $cityPath[$city[city]] = $city[path];
-        $dist[$city[city]] = 99;
+        $cityPath[$city['city']] = $city['path'];
+        $dist[$city['city']] = 99;
     }
 
     $select = 0;
@@ -7168,7 +7171,7 @@ function isClose($connect, $nation1, $nation2) {
         $city = MYDB_fetch_array($result);
 
         // 각 도시당 모든 인접 도시 플래그 세팅
-        $path = explode("|", $city[path]);
+        $path = explode("|", $city['path']);
         for($j=0; $j < count($path); $j++) {
             $barrier[$path[$j]] = 1;
         }
@@ -7182,7 +7185,7 @@ function isClose($connect, $nation1, $nation2) {
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($result);
 
-        if($barrier[$city[city]] == 1) {
+        if($barrier[$city['city']] == 1) {
             $isClose = 1;
         }
     }
@@ -7263,9 +7266,9 @@ function TrickInjury($connect, $city, $type=0) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
     if($type == 0) {
-        $log[0] = "<C>●</>{$admin[month]}월:<M>계략</>으로 인해 <R>부상</>을 당했습니다.";
+        $log[0] = "<C>●</>{$admin['month']}월:<M>계략</>으로 인해 <R>부상</>을 당했습니다.";
     } else {
-        $log[0] = "<C>●</>{$admin[month]}월:<M>재난</>으로 인해 <R>부상</>을 당했습니다.";
+        $log[0] = "<C>●</>{$admin['month']}월:<M>재난</>으로 인해 <R>부상</>을 당했습니다.";
     }
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
@@ -7274,7 +7277,7 @@ function TrickInjury($connect, $city, $type=0) {
         if($injury < 30) {  // 부상률 30%
             $injury = floor($injury / 2) + 1;   // 부상 1~16
 
-            $query = "update general set crew=crew*0.98,atmos=atmos*0.98,train=train*0.98,injury=injury+'$injury' where no='$general[no]'";
+            $query = "update general set crew=crew*0.98,atmos=atmos*0.98,train=train*0.98,injury=injury+'$injury' where no='$general['no']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             pushGenLog($general, $log);
@@ -7338,7 +7341,7 @@ function command_Single($connect, $turn, $command) {
     for($i=0; $i < $count; $i++) {
         $str .= ",turn{$turn[$i]}='{$command}'";
     }
-    $query = "update general set {$str} where user_id='$_SESSION[p_id]'";
+    $query = "update general set {$str} where user_id='$_SESSION['p_id']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     echo "<script>location.replace('commandlist.php');</script>";
 
@@ -7347,17 +7350,17 @@ function command_Single($connect, $turn, $command) {
 function command_Chief($connect, $turn, $command) {
     $command = EncodeCommand(0, 0, 0, $command);
 
-    $query = "select nation,level from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation,level from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    if($me[level] >= 5) {
+    if($me['level'] >= 5) {
         $count = sizeof($turn);
         $str = "type=type";
         for($i=0; $i < $count; $i++) {
-            $str .= ",l{$me[level]}turn{$turn[$i]}='{$command}'";
+            $str .= ",l{$me['level']}turn{$turn[$i]}='{$command}'";
         }
-        $query = "update nation set {$str} where nation='$me[nation]'";
+        $query = "update nation set {$str} where nation='$me['nation']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     echo "<script>location.replace('b_chiefcenter.php');</script>";

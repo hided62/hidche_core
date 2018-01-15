@@ -2,9 +2,9 @@
 include "lib.php";
 include "func.php";
 
-$id  = $_POST[id];
-$pw  = $_POST[pw];
-$btn = $_POST[btn];
+$id  = $_POST['id'];
+$pw  = $_POST['pw'];
+$btn = $_POST['btn'];
 
 $connect = dbConn("sammo");
 

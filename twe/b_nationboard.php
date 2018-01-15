@@ -6,11 +6,11 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "회의실", 1);
 
-$query = "select skin,no,nation from general where user_id='$_SESSION[p_id]'";
+$query = "select skin,no,nation from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[skin] < 1) {
+if($me['skin'] < 1) {
     $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
@@ -40,16 +40,16 @@ if($me[skin] < 1) {
 </table>
 <br>
 <?php
-$nation = getNation($connect, $me[nation]);
+$nation = getNation($connect, $me['nation']);
 
 //20개 메세지
-$index = $nation[boardindex];
+$index = $nation['boardindex'];
 for($i=0; $i < 20; $i++) {
     $who = "board{$index}_who";
     $query = "select name,picture,imgsvr from general where no='$nation[$who]'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    if($nation["board{$index}"] != '') { msgprint($connect, $nation["board{$index}"], $general[name], $general[picture], $general[imgsvr], $nation["board{$index}_when"], $index, 0); }
+    if($nation["board{$index}"] != '') { msgprint($connect, $nation["board{$index}"], $general['name'], $general['picture'], $general['imgsvr'], $nation["board{$index}_when"], $index, 0); }
     $index--;
     if($index < 0) { $index = 19; }
 }

@@ -10,26 +10,26 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select skin,no,nation,level,userlevel,con,turntime,belong from general where user_id='$_SESSION[p_id]'";
+$query = "select skin,no,nation,level,userlevel,con,turntime,belong from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select secretlimit from nation where nation='$me[nation]'";
+$query = "select secretlimit from nation where nation='$me['nation']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
-$con = checkLimit($me[userlevel], $me[con], $admin[conlimit]);
-if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
+$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-if($me[level] == 0 || ($me[level] == 1 && $me[belong] < $nation[secretlimit])) {
+if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretlimit'])) {
     echo "수뇌부가 아니거나 사관년도가 부족합니다.";
     exit();
 }
 
-if($me[level] >= 5) { $btn = "submit"; $btn2 = "button"; }
+if($me['level'] >= 5) { $btn = "submit"; $btn2 = "button"; }
 else { $btn = "hidden"; $btn2 = "hidden"; }
 
-if($me[skin] < 1) {
+if($me['skin'] < 1) {
     $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
@@ -51,15 +51,15 @@ $query = "
     l7turn0, l7turn1, l7turn2, l7turn3, l7turn4, l7turn5, l7turn6, l7turn7, l7turn8, l7turn9, l7turn10, l7turn11,
     l6turn0, l6turn1, l6turn2, l6turn3, l6turn4, l6turn5, l6turn6, l6turn7, l6turn8, l6turn9, l6turn10, l6turn11,
     l5turn0, l5turn1, l5turn2, l5turn3, l5turn4, l5turn5, l5turn6, l5turn7, l5turn8, l5turn9, l5turn10, l5turn11
-    from nation where nation='$me[nation]'";
+    from nation where nation='$me['nation']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
-$lv = getNationChiefLevel($nation[level]);
+$lv = getNationChiefLevel($nation['level']);
 for($i=12; $i >= $lv; $i--) {
     $turn[$i] = getCoreTurn($connect, $nation, $i);
 
-    $query = "select name,turntime,npc from general where level={$i} and nation='$me[nation]'";
+    $query = "select name,turntime,npc from general where level={$i} and nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen[$i] = MYDB_fetch_array($result);
 }
@@ -87,8 +87,8 @@ function turn(type) {
     <tr><td colspan=10 align=center bgcolor=skyblue>수뇌부 일정</td></tr>
     <tr><td colspan=10 align=center>
 <?php
-$year = $admin[year];
-$month = $admin[month];
+$year = $admin['year'];
+$month = $admin['month'];
 $date = substr(date('Y-m-d H:i:s'), 14);
 for($i=12; $i >= $lv; $i--) {
     $totaldate[$i] = $gen[$i][turntime];
@@ -110,10 +110,10 @@ for($k=0; $k < 2; $k++) {
     echo "
     <tr>
         <td align=center id=bg1>.</td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l4, $nation[level])." : {$gen[$l4][name]}</b></td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l3, $nation[level])." : {$gen[$l3][name]}</b></td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l2, $nation[level])." : {$gen[$l2][name]}</b></td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l1, $nation[level])." : {$gen[$l1][name]}</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l4, $nation['level'])." : {$gen[$l4][name]}</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l3, $nation['level'])." : {$gen[$l3][name]}</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l2, $nation['level'])." : {$gen[$l2][name]}</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l1, $nation['level'])." : {$gen[$l1][name]}</b></td>
         <td align=center id=bg1>.</td>
     </tr>
     ";
@@ -146,10 +146,10 @@ for($k=0; $k < 2; $k++) {
         <td width=28  align=center id=bg0><b>$j</b></td>
     </tr>
         ";
-        if($totaldate[$l4] != "") { $totaldate[$l4] = addTurn($totaldate[$l4], $admin[turnterm]); }
-        if($totaldate[$l3] != "") { $totaldate[$l3] = addTurn($totaldate[$l3], $admin[turnterm]); }
-        if($totaldate[$l2] != "") { $totaldate[$l2] = addTurn($totaldate[$l2], $admin[turnterm]); }
-        if($totaldate[$l1] != "") { $totaldate[$l1] = addTurn($totaldate[$l1], $admin[turnterm]); }
+        if($totaldate[$l4] != "") { $totaldate[$l4] = addTurn($totaldate[$l4], $admin['turnterm']); }
+        if($totaldate[$l3] != "") { $totaldate[$l3] = addTurn($totaldate[$l3], $admin['turnterm']); }
+        if($totaldate[$l2] != "") { $totaldate[$l2] = addTurn($totaldate[$l2], $admin['turnterm']); }
+        if($totaldate[$l1] != "") { $totaldate[$l1] = addTurn($totaldate[$l1], $admin['turnterm']); }
     }
     if($k == 0) {
         echo "<form action=processing.php method=post><tr><td colspan=5 align=right>";

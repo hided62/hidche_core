@@ -9,11 +9,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "
 <html>
 <head>
@@ -36,14 +36,14 @@ $query = "select year,month,turnterm,isUnited from game where no='1'";
 $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-if($admin[isUnited] == 0) {
+if($admin['isUnited'] == 0) {
     $query = "select no from general where npc<2 and age>50";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        CheckHall($connect, $general[no]);
+        CheckHall($connect, $general['no']);
     }
 }
 
@@ -54,14 +54,14 @@ $gencount = 2001;
 for($k=1; $k <= 200; $k++) {
     if(rand()%2) { $l = rand()%40 + 35; $p = rand()%40 + 35; $i = rand()%10 + 10; }
     else         { $l = rand()%40 + 35; $p = rand()%10 + 10; $i = rand()%40 + 35; }
-    RegGeneral3($connect,$admin[turnterm],$gencount, 0, 0,  "무명장{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
+    RegGeneral3($connect,$admin['turnterm'],$gencount, 0, 0,  "무명장{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
 }
 
 //////////////////////////장수 끝///////////////////////////////////////////////
 
 //////////////////////////이벤트///////////////////////////////////////////////
-$history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<L><b>【이벤트】</b></>각지에서 인재들이 <M>등장</>합니다!";
-$history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<L><b>【이벤트】</b></>중원 통일에 보탬이 될듯 합니다!";
+$history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<L><b>【이벤트】</b></>각지에서 인재들이 <M>등장</>합니다!";
+$history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<L><b>【이벤트】</b></>중원 통일에 보탬이 될듯 합니다!";
 pushHistory($connect, $history);
 
 echo "<script>location.replace('./');</script>";

@@ -43,8 +43,8 @@ $connect=dbConn();
 $query = "select startyear,year,month,turnterm,scenario,extend,fiction,img from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
-$fiction = $admin[fiction];    $turnterm = $admin[turnterm];    $startyear = $admin[startyear];    $year = $admin[year];    $extend = $admin[extend];
-$img = $admin[img];
+$fiction = $admin['fiction'];    $turnterm = $admin['turnterm'];    $startyear = $admin['startyear'];    $year = $admin['year'];    $extend = $admin['extend'];
+$img = $admin['img'];
 //IF모드1 : 191년 백마장군의 위세
 
 //국가1 원소 국가2 공손찬 국가3 동탁 국가4 원술 국가5 유언 국가6 마등 국가7 유표
@@ -1166,7 +1166,7 @@ $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($con
 $count = MYDB_num_rows($result);
 for($i=0; $i < $count; $i++) {
     $nation = MYDB_fetch_array($result);
-    SetNationFront($connect, $nation[nation]);
+    SetNationFront($connect, $nation['nation']);
 }
 
 //////////////////////////도시 끝///////////////////////////////////////////////

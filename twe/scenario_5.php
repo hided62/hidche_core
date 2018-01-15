@@ -43,8 +43,8 @@ $connect=dbConn();
 $query = "select startyear,year,month,turnterm,scenario,extend,fiction,img from game where no='1'";
 $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
-$fiction = $admin[fiction];    $turnterm = $admin[turnterm];    $startyear = $admin[startyear];    $year = $admin[year];    $extend = $admin[extend];
-$img = $admin[img];
+$fiction = $admin['fiction'];    $turnterm = $admin['turnterm'];    $startyear = $admin['startyear'];    $year = $admin['year'];    $extend = $admin['extend'];
+$img = $admin['img'];
 //역사모드5 : 200년 관도대전
 
 //////////////////////////국가1/////////////////////////////////////////////////
@@ -980,7 +980,7 @@ $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($con
 $count = MYDB_num_rows($result);
 for($i=0; $i < $count; $i++) {
     $nation = MYDB_fetch_array($result);
-    SetNationFront($connect, $nation[nation]);
+    SetNationFront($connect, $nation['nation']);
 }
 
 //////////////////////////도시 끝///////////////////////////////////////////////

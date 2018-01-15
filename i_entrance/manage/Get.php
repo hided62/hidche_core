@@ -36,7 +36,7 @@ if($member['PICTURE'] == '') {
 
 $response['donation'] = '';
 
-$rs = $DB->Select('DATE, AMOUNT, CUMUL', 'DONATION', "ID='{$member[ID]}'");
+$rs = $DB->Select('DATE, AMOUNT, CUMUL', 'DONATION', "ID='{$member['ID']}'");
 $count = $DB->Count($rs);
 if($count > 0) {
     $response['donation'] = '

@@ -6,11 +6,11 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "세력장수", 1);
 
-$query = "select skin,no,nation,level from general where user_id='$_SESSION[p_id]'";
+$query = "select skin,no,nation,level from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[level] == 0) {
+if($me['level'] == 0) {
     echo "재야입니다.";
     exit();
 }
@@ -21,7 +21,7 @@ if($type == 0) {
 }
 $sel[$type] = "selected";
 
-if($me[skin] < 1) {
+if($me['skin'] < 1) {
     $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
@@ -60,26 +60,26 @@ if($me[skin] < 1) {
     </td></tr>
 </table>
 <?php
-$query = "select level from nation where nation='$me[nation]'";
+$query = "select level from nation where nation='$me['nation']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
 switch($type) {
-    case  1: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by level desc"; break;
-    case  2: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by dedication desc"; break;
-    case  3: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by experience desc"; break;
-    case  4: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by leader desc"; break;
-    case  5: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by power desc"; break;
-    case  6: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by intel desc"; break;
-    case  7: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by gold desc"; break;
-    case  8: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by rice desc"; break;
-    case  9: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by crew desc"; break;
-    case 10: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by connect desc"; break;
-    case 11: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by personal"; break;
-    case 12: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by special desc"; break;
-    case 13: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by special2 desc"; break;
-    case 14: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by belong desc"; break;
-    case 15: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me[nation]' order by npc desc"; break;
+    case  1: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by level desc"; break;
+    case  2: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by dedication desc"; break;
+    case  3: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by experience desc"; break;
+    case  4: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by leader desc"; break;
+    case  5: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by power desc"; break;
+    case  6: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by intel desc"; break;
+    case  7: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by gold desc"; break;
+    case  8: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by rice desc"; break;
+    case  9: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by crew desc"; break;
+    case 10: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by connect desc"; break;
+    case 11: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by personal"; break;
+    case 12: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by special desc"; break;
+    case 13: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by special2 desc"; break;
+    case 14: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by belong desc"; break;
+    case 15: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='$me['nation']' order by npc desc"; break;
 }
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);
@@ -106,10 +106,10 @@ echo"
 for($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
 
-    if($general[level] == 12) {
-        $lbonus = $nation[level] * 2;
-    } elseif($general[level] >= 5) {
-        $lbonus = $nation[level];
+    if($general['level'] == 12) {
+        $lbonus = $nation['level'] * 2;
+    } elseif($general['level'] >= 5) {
+        $lbonus = $nation['level'];
     } else {
         $lbonus = 0;
     }
@@ -119,41 +119,41 @@ for($j=0; $j < $gencount; $j++) {
         $lbonus = "";
     }
 
-    if($general[injury] > 0) {
-        $leader = floor($general[leader] * (100 - $general[injury])/100);
-        $power = floor($general[power] * (100 - $general[injury])/100);
-        $intel = floor($general[intel] * (100 - $general[injury])/100);
+    if($general['injury'] > 0) {
+        $leader = floor($general['leader'] * (100 - $general['injury'])/100);
+        $power = floor($general['power'] * (100 - $general['injury'])/100);
+        $intel = floor($general['intel'] * (100 - $general['injury'])/100);
         $leader = "<font color=red>{$leader}</font>{$lbonus}";
         $power = "<font color=red>{$power}</font>";
         $intel = "<font color=red>{$intel}</font>";
     } else {
-        $leader = "{$general[leader]}{$lbonus}";
-        $power = "{$general[power]}";
-        $intel = "{$general[intel]}";
+        $leader = "{$general['leader']}{$lbonus}";
+        $power = "{$general['power']}";
+        $intel = "{$general['intel']}";
     }
 
-    if($general[npc] >= 2) { $name = "<font color=cyan>$general[name]</font>"; }
-    elseif($general[npc] == 1) { $name = "<font color=skyblue>$general[name]</font>"; }
-    else { $name =  "$general[name]"; }
+    if($general['npc'] >= 2) { $name = "<font color=cyan>$general['name']</font>"; }
+    elseif($general['npc'] == 1) { $name = "<font color=skyblue>$general['name']</font>"; }
+    else { $name =  "$general['name']"; }
 
-    $imageTemp = GetImageURL($general[imgsvr]);
+    $imageTemp = GetImageURL($general['imgsvr']);
     echo "
     <tr>
-        <td align=center"; echo $me[skin]>0?" background={$imageTemp}/{$general[picture]}":""; echo " height=64></td>
+        <td align=center"; echo $me['skin']>0?" background={$imageTemp}/{$general['picture']}":""; echo " height=64></td>
         <td align=center>$name</td>
-        <td align=center>"; echo getLevel($general[level], $nation[level]); echo "</td>
-        <td align=center>".getDed($general[dedication])."</td>
-        <td align=center>".getHonor($general[experience])."</td>
-        <td align=center>".getBill($general[dedication])."</td>
+        <td align=center>"; echo getLevel($general['level'], $nation['level']); echo "</td>
+        <td align=center>".getDed($general['dedication'])."</td>
+        <td align=center>".getHonor($general['experience'])."</td>
+        <td align=center>".getBill($general['dedication'])."</td>
         <td align=center>$leader</td>
         <td align=center>$power</td>
         <td align=center>$intel</td>
-        <td align=center>$general[gold]</td>
-        <td align=center>$general[rice]</td>
-        <td align=center>".getGenChar($general[personal])."</td>
-        <td align=center>".getGenSpecial($general[special])." / ".getGenSpecial($general[special2])."</td>
-        <td align=center>$general[belong]</td>
-        <td align=center>$general[connect]"; echo "<br>(".getConnect($general[connect]).")</td>
+        <td align=center>$general['gold']</td>
+        <td align=center>$general['rice']</td>
+        <td align=center>".getGenChar($general['personal'])."</td>
+        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general[special2])."</td>
+        <td align=center>$general['belong']</td>
+        <td align=center>$general['connect']"; echo "<br>(".getConnect($general['connect']).")</td>
     </tr>";
 }
     echo "

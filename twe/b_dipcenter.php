@@ -10,26 +10,26 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select skin,no,nation,level,userlevel,con,turntime,belong from general where user_id='$_SESSION[p_id]'";
+$query = "select skin,no,nation,level,userlevel,con,turntime,belong from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select secretlimit from nation where nation='$me[nation]'";
+$query = "select secretlimit from nation where nation='$me['nation']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
-$con = checkLimit($me[userlevel], $me[con], $admin[conlimit]);
-if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
+$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-if($me[level] == 0 || ($me[level] == 1 && $me[belong] < $nation[secretlimit])) {
+if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretlimit'])) {
     echo "수뇌부가 아니거나 사관년도가 부족합니다.";
     exit();
 }
 
-if($me[level] >= 5) { $btn = "submit"; $read = ""; }
+if($me['level'] >= 5) { $btn = "submit"; $read = ""; }
 else { $btn = "hidden"; $read = "readonly"; }
 
-if($me[skin] < 1) {
+if($me['skin'] < 1) {
     $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
@@ -70,16 +70,16 @@ for($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($result);
 
     // 아국표시
-    if($nation[nation] == $me[nation]) {
+    if($nation['nation'] == $me['nation']) {
         //속령수
-        $query = "select city from city where nation='$nation[nation]'";
+        $query = "select city from city where nation='$nation['nation']'";
         $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $citycount = MYDB_num_rows($result2);
         echo "
     <tr>
-        <td align=center style=color:".newColor($nation[color]).";background-color:{$nation[color]};>$nation[name]</td>
-        <td align=center>$nation[power]</td>
-        <td align=center>$nation[gennum]</td>
+        <td align=center style=color:".newColor($nation['color']).";background-color:{$nation['color']};>$nation['name']</td>
+        <td align=center>$nation['power']</td>
+        <td align=center>$nation['gennum']</td>
         <td align=center>$citycount</td>
         <td align=center>-</td>
         <td align=center>-</td>
@@ -90,18 +90,18 @@ for($i=0; $i < $nationcount; $i++) {
         continue;
     }
 
-    $query = "select state,term,fixed,reserved,showing from diplomacy where me='$me[nation]' and you='$nation[nation]'";
+    $query = "select state,term,fixed,reserved,showing from diplomacy where me='$me['nation']' and you='$nation['nation']'";
     $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dip = MYDB_fetch_array($result2);
 
-    $query = "select reserved,showing from diplomacy where you='$me[nation]' and me='$nation[nation]'";
+    $query = "select reserved,showing from diplomacy where you='$me['nation']' and me='$nation['nation']'";
     $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dip2 = MYDB_fetch_array($result2);
     //속령수
-    $query = "select city from city where nation='$nation[nation]'";
+    $query = "select city from city where nation='$nation['nation']'";
     $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result2);
-    switch($dip[state]) {
+    switch($dip['state']) {
         case 0: $state = "<font color=red>교 전</font>"; break;
         case 1: $state = "<font color=magenta>선포중</font>"; break;
         case 2: $state = "통 상"; break;
@@ -112,7 +112,7 @@ for($i=0; $i < $nationcount; $i++) {
         case 7: $state = "<font color=green>불가침</font>"; break;
     }
 
-    $term = $admin[year] * 12 + $admin[month] + $dip[term];
+    $term = $admin['year'] * 12 + $admin['month'] + $dip['term'];
     $year = floor($term / 12);
     $month = $term % 12;
 
@@ -123,41 +123,41 @@ for($i=0; $i < $nationcount; $i++) {
 
     $date = date('Y-m-d H:i:s');
     $note = "";
-    if($dip[fixed] != "") {
-        if($dip[state] == 7) {
-            $note .= $dip[fixed];
+    if($dip['fixed'] != "") {
+        if($dip['state'] == 7) {
+            $note .= $dip['fixed'];
         } else {
-            $note .= "<font color=gray>{$dip[fixed]}</font>";
+            $note .= "<font color=gray>{$dip['fixed']}</font>";
         }
-        if($dip[reserved] != "" || $dip2[reserved] != "") {
+        if($dip['reserved'] != "" || $dip2['reserved'] != "") {
             $note .= "<br>";
         }
     }
-    if($dip[showing] >= $date) {
-        if($dip[reserved] != "") {
-            $note .= "<font color=skyblue>아국측 제의</font>: ".$dip[reserved];
-            if($dip2[reserved] != "") {
+    if($dip['showing'] >= $date) {
+        if($dip['reserved'] != "") {
+            $note .= "<font color=skyblue>아국측 제의</font>: ".$dip['reserved'];
+            if($dip2['reserved'] != "") {
                 $note .= "<br>";
             }
         }
     }
-    if($dip2[showing] >= $date) {
-        if($dip2[reserved] != "") {
-            $note .= "<font color=limegreen>상대측 제의</font>: ".$dip2[reserved];
+    if($dip2['showing'] >= $date) {
+        if($dip2['reserved'] != "") {
+            $note .= "<font color=limegreen>상대측 제의</font>: ".$dip2['reserved'];
         }
     }
     if($note == "") { $note = "&nbsp;"; }
 
     echo "
     <tr>
-        <td align=center style=color:".newColor($nation[color]).";background-color:{$nation[color]};>$nation[name]</td>
-        <td align=center>$nation[power]</td>
-        <td align=center>$nation[gennum]</td>
+        <td align=center style=color:".newColor($nation['color']).";background-color:{$nation['color']};>$nation['name']</td>
+        <td align=center>$nation['power']</td>
+        <td align=center>$nation['gennum']</td>
         <td align=center>$citycount</td>
         <td align=center>$state</td>";
-    if($dip[term] != 0) {
+    if($dip['term'] != 0) {
         echo"
-        <td align=center>$dip[term] 개월</td>
+        <td align=center>$dip['term'] 개월</td>
         <td align=center>{$year}年 {$month}月</td>";
     } else {
         echo"
@@ -172,7 +172,7 @@ echo "
 </table>
 ";
 
-$query = "select nation,name,color,type,msg,gold,rice,bill,rate,scout,war,myset,scoutmsg,secretlimit from nation where nation='$me[nation]'";
+$query = "select nation,name,color,type,msg,gold,rice,bill,rate,scout,war,myset,scoutmsg,secretlimit from nation where nation='$me['nation']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
@@ -180,18 +180,18 @@ $query = "select gold_rate,rice_rate from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 // 금 수지
-$deadIncome = getDeadIncome($connect, $nation[nation], $nation[type], $admin[gold_rate]);
+$deadIncome = getDeadIncome($connect, $nation['nation'], $nation['type'], $admin['gold_rate']);
 
-$goldincomeList  = getGoldIncome($connect, $nation[nation], $nation[rate], $admin[gold_rate], $nation[type]);
+$goldincomeList  = getGoldIncome($connect, $nation['nation'], $nation['rate'], $admin['gold_rate'], $nation['type']);
 $goldincome  = $goldincomeList[0] + $goldincomeList[1] + $deadIncome;
-$goldoutcome = getGoldOutcome($connect, $nation[nation], $nation[bill]);
-$riceincomeList = getRiceIncome($connect, $nation[nation], $nation[rate], $admin[rice_rate], $nation[type]);
+$goldoutcome = getGoldOutcome($connect, $nation['nation'], $nation['bill']);
+$riceincomeList = getRiceIncome($connect, $nation['nation'], $nation['rate'], $admin['rice_rate'], $nation['type']);
 $riceincome  = $riceincomeList[0] + $riceincomeList[1];
-$riceoutcome = getRiceOutcome($connect, $nation[nation], $nation[bill]);
+$riceoutcome = getRiceOutcome($connect, $nation['nation'], $nation['bill']);
 
 
-$budgetgold = $nation[gold] + $goldincome - $goldoutcome + $deadIncome;
-$budgetrice = $nation[rice] + $riceincome - $riceoutcome;
+$budgetgold = $nation['gold'] + $goldincome - $goldoutcome + $deadIncome;
+$budgetrice = $nation['rice'] + $riceincome - $riceoutcome;
 $budgetgolddiff = $goldincome - $goldoutcome + $deadIncome;
 $budgetricediff = $riceincome - $riceoutcome;
 if($budgetgolddiff > 0) { $budgetgolddiff = "+{$budgetgolddiff}"; }
@@ -204,8 +204,8 @@ else { $budgetricediff = "$budgetricediff"; }
 <form name=form1 method=post action=c_dipcenter.php>
     <tr><td colspan=2 height=10></td></tr>
     <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 & 임관 권유 메세지</td></tr>
-    <tr><td colspan=2 id=bg1>국가 방침 <input type=text <?=$read;?> maxlength=500 style=color:white;background-color:black;width:830; name=msg value='<?=$nation[msg];?>'><input type=<?=$btn;?> name=btn value=국가방침></td></tr>
-    <tr><td colspan=2 id=bg1>임관 권유 <input type=text <?=$read;?> maxlength=500 style=color:white;background-color:black;width:830; name=scoutmsg value='<?=$nation[scoutmsg];?>'><input type=<?=$btn;?> name=btn value=임관권유></td></tr>
+    <tr><td colspan=2 id=bg1>국가 방침 <input type=text <?=$read;?> maxlength=500 style=color:white;background-color:black;width:830; name=msg value='<?=$nation['msg'];?>'><input type=<?=$btn;?> name=btn value=국가방침></td></tr>
+    <tr><td colspan=2 id=bg1>임관 권유 <input type=text <?=$read;?> maxlength=500 style=color:white;background-color:black;width:830; name=scoutmsg value='<?=$nation['scoutmsg'];?>'><input type=<?=$btn;?> name=btn value=임관권유></td></tr>
     <tr><td colspan=2>900 x 200px 넘는 크기를 점유할 시 통보없이 제한될 수 있습니다.</td></tr>
     <tr><td colspan=2 height=10></td></tr>
     <tr><td colspan=2 align=center bgcolor=green>예 산 & 정 책</td></tr>
@@ -220,9 +220,9 @@ echo "
                 </tr>
                 <tr>
                     <td width=248 align=right id=bg1>현 재&nbsp;&nbsp;&nbsp;</td>
-                    <td width=248 align=center>$nation[gold]</td>
+                    <td width=248 align=center>$nation['gold']</td>
                     <td width=248 align=right id=bg1>현 재&nbsp;&nbsp;&nbsp;</td>
-                    <td width=248 align=center>$nation[rice]</td>
+                    <td width=248 align=center>$nation['rice']</td>
                 </tr>
                 <tr>
                     <td align=right id=bg1>단기수입&nbsp;&nbsp;&nbsp;</td>
@@ -251,21 +251,21 @@ echo "
 ?>
                 <tr>
                     <td align=right id=bg1>세율 (5 ~ 30%)&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center><input type=text <?=$read;?> name=rate style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation[rate]?>>% <input type=<?=$btn;?> name=btn value=세율></td>
+                    <td align=center><input type=text <?=$read;?> name=rate style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['rate']?>>% <input type=<?=$btn;?> name=btn value=세율></td>
                     <td align=right id=bg1>봉급 지급율 (20 ~ 200%)&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center><input type=text <?=$read;?> name=bill style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation[bill]?>>% <input type=<?=$btn;?> name=btn value=지급율></td>
+                    <td align=center><input type=text <?=$read;?> name=bill style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['bill']?>>% <input type=<?=$btn;?> name=btn value=지급율></td>
                 </tr>
                 <tr>
                     <td align=right id=bg1>기밀 권한 (1 ~ 99년)&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center><input type=text <?=$read;?> name=secretlimit style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation[secretlimit]?>>년 <input type=<?=$btn;?> name=btn value=기밀권한></td>
+                    <td align=center><input type=text <?=$read;?> name=secretlimit style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['secretlimit']?>>년 <input type=<?=$btn;?> name=btn value=기밀권한></td>
                     <td align=right id=bg1>임관&전쟁 변경 가능</td>
-                    <td align=center><?=$nation[myset];?> 회</td>
+                    <td align=center><?=$nation['myset'];?> 회</td>
                 </tr>
                 <tr>
                     <td colspan=4 align=center>
 <?php
-if($nation[myset] > 0) {
-    if($nation[scout] == 0) {
+if($nation['myset'] > 0) {
+    if($nation['scout'] == 0) {
         echo "
         <input type=$btn name=btn value='임관 금지'>";
     } else {
@@ -273,7 +273,7 @@ if($nation[myset] > 0) {
         <input type=$btn name=btn value='임관 허가'>";
     }
     
-    if($nation[war] == 0) {
+    if($nation['war'] == 0) {
         echo "
         <input type=$btn name=btn value='전쟁 금지'>";
     } else {

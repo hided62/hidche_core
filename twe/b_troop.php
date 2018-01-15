@@ -6,15 +6,15 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "부대편성", 1);
 
-$query = "select skin,no,nation,troop from general where user_id='$_SESSION[p_id]'";
+$query = "select skin,no,nation,troop from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select * from troop where nation='$me[nation]'";
+$query = "select * from troop where nation='$me['nation']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $troopcount = MYDB_num_rows($result);
 
-if($me[skin] < 1) {
+if($me['skin'] < 1) {
     $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
@@ -45,21 +45,21 @@ for($i=0; $i < $troopcount; $i++) {
     $troop = MYDB_fetch_array($result);
 
     $genlist = "";
-    $query = "select no,name,picture,imgsvr,turntime,city,turn0,turn1,turn2,turn3,turn4,turn5 from general where troop='$troop[troop]'";
+    $query = "select no,name,picture,imgsvr,turntime,city,turn0,turn1,turn2,turn3,turn4,turn5 from general where troop='$troop['troop']'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
     for($j=0; $j < $gencount; $j++) {
         $general = MYDB_fetch_array($genresult);
-        $genlist .= $general[name].", ";
-        if($troop[no] == $general[no]) {
-            $picture = $general[picture];
-            $imageTemp = GetImageURL($general[imgsvr]);
-            $name = $general[name];
-            $turntime = $general[turntime];
-            $query = "select name from city where city='$general[city]'";
+        $genlist .= $general['name'].", ";
+        if($troop['no'] == $general['no']) {
+            $picture = $general['picture'];
+            $imageTemp = GetImageURL($general['imgsvr']);
+            $name = $general['name'];
+            $turntime = $general['turntime'];
+            $query = "select name from city where city='$general['city']'";
             $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $city = MYDB_fetch_array($cityresult);
-            $cityname = $city[name];
+            $cityname = $city['name'];
             $turn = "";
             for($k=0; $k < 5; $k++) {
                 $m = $k+1;
@@ -73,11 +73,11 @@ for($i=0; $i < $troopcount; $i++) {
     }
     $genlist .= "({$gencount}명)";
 
-    if($me[troop] == 0) {
+    if($me['troop'] == 0) {
         echo "
     <tr>
-        <td align=center rowspan=2><input "; echo $i==0?"checked ":""; echo "type=radio name=troop value='{$troop[troop]}'></td>
-        <td align=center >$troop[name]<br>【 $cityname 】</td>
+        <td align=center rowspan=2><input "; echo $i==0?"checked ":""; echo "type=radio name=troop value='{$troop['troop']}'></td>
+        <td align=center >$troop['name']<br>【 $cityname 】</td>
         <td height=64 background={$imageTemp}/{$picture}>&nbsp;</td>
         <td rowspan=2 width=662>$genlist</td>
         <td rowspan=2>$turn</td>
@@ -88,13 +88,13 @@ for($i=0; $i < $troopcount; $i++) {
         echo "
     <tr>
         <td align=center rowspan=2>&nbsp;</td>
-        <td align=center >$troop[name]<br>【 $cityname 】</td>
+        <td align=center >$troop['name']<br>【 $cityname 】</td>
         <td height=64 background={$imageTemp}/{$picture}>&nbsp;</td>
         <td rowspan=2 width=662>$genlist</td>
         <td rowspan=2>";
 
-        if($troop[no] == $me[no]) {
-            $query = "select no,name from general where troop='$troop[troop]' and no!='$me[no]' order by binary(name)";
+        if($troop['no'] == $me['no']) {
+            $query = "select no,name from general where troop='$troop['troop']' and no!='$me['no']' order by binary(name)";
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $genCount = MYDB_num_rows($genresult);
                 echo "
@@ -102,7 +102,7 @@ for($i=0; $i < $troopcount; $i++) {
             for($k=0; $k < $genCount; $k++) {
                 $general = MYDB_fetch_array($genresult);
                 echo "
-                <option value=$general[no]>$general[name]</option>";
+                <option value=$general['no']>$general['name']</option>";
             }
             echo "
             </select><br>
@@ -119,7 +119,7 @@ for($i=0; $i < $troopcount; $i++) {
     }
 }
 
-if($me[troop] == 0) {
+if($me['troop'] == 0) {
     echo"
 <input type=submit name=btn value='부 대 가 입'>";
 } else {
@@ -137,7 +137,7 @@ echo "
     <tr>
         <td width=80 id=bg1>부 대 명</td>
         <td width=100><input type=text style=color:white;background-color:black; size=12 maxlength=6 name=name></td>";
-if($me[troop] == 0) {
+if($me['troop'] == 0) {
     echo "
         <td><input type=submit name=btn value='부 대 창 설'></td>";
 } else {

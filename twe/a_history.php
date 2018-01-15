@@ -12,22 +12,22 @@ $query = "select startyear,year,month,conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select skin,map,con,userlevel,turntime from general where user_id='$_SESSION[p_id]'";
+$query = "select skin,map,con,userlevel,turntime from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me[userlevel], $me[con], $admin[conlimit]);
-if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
+$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
 $query = "select year,month from history order by no limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $history = MYDB_fetch_array($result);
-$s = ($history[year]*12) + $history[month];
+$s = ($history['year']*12) + $history['month'];
 
 $query = "select year,month from history order by no desc limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $history = MYDB_fetch_array($result);
-$e = ($history[year]*12) + $history[month];
+$e = ($history['year']*12) + $history['month'];
 
 if(!$yearmonth) {
     $year = $admin['year'];
@@ -54,7 +54,7 @@ if($month <= 0) {
     $month += 12;
 }
 
-if($me[skin] < 1) {
+if($me['skin'] < 1) {
     $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }

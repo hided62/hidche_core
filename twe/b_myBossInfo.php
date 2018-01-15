@@ -8,17 +8,17 @@ increaseRefresh($connect, "인사부", 1);
 //훼섭 추방을 위해 갱신
 checkTurn($connect);
 
-$query = "select skin,no,nation,level from general where user_id='$_SESSION[p_id]'";
+$query = "select skin,no,nation,level from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$meLevel = $me[level];
+$meLevel = $me['level'];
 if($meLevel == 0) {
     echo "재야입니다.";
     exit();
 }
 
-if($me[skin] < 1) {
+if($me['skin'] < 1) {
     $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
@@ -46,32 +46,32 @@ function out() {
 <?php
 $cityNames = CityNameArray();
 
-$query = "select nation,name,level,color,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set from nation where nation='$me[nation]'";
+$query = "select nation,name,level,color,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set from nation where nation='$me['nation']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);   //국가정보
 
-$lv = getNationChiefLevel($nation[level]);
+$lv = getNationChiefLevel($nation['level']);
 if($meLevel >= 5) { $btn = "submit"; }
 else { $btn = "hidden"; }
 
-$query = "select name,level,picture,imgsvr,belong from general where nation='$nation[nation]' and level>={$lv} order by level desc";
+$query = "select name,level,picture,imgsvr,belong from general where nation='$nation['nation']' and level>={$lv} order by level desc";
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 for($i=12; $i >= $lv; $i--) {
     $levels = MYDB_fetch_array($genresult);
-    $level[$levels[level]] = $levels;
+    $level[$levels['level']] = $levels;
 }
 
-$query = "select name,picture,killnum from general where nation='$nation[nation]' order by killnum desc limit 5";   // 오호장군
+$query = "select name,picture,killnum from general where nation='$nation['nation']' order by killnum desc limit 5";   // 오호장군
 $tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-$query = "select name,picture,firenum from general where nation='$nation[nation]' order by firenum desc limit 7";   // 건안칠자
+$query = "select name,picture,firenum from general where nation='$nation['nation']' order by firenum desc limit 7";   // 건안칠자
 $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 echo "
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr>
-        <td align=center style=color:".newColor($nation[color])."; bgcolor={$nation[color]} colspan=6>
-            <font size=5>【 $nation[name] 】</font>
+        <td align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']} colspan=6>
+            <font size=5>【 $nation['name'] 】</font>
         </td>
     </tr>
 ";
@@ -81,10 +81,10 @@ for($i=12; $i >= $lv; $i-=2) {
     $imageTemp2 = GetImageURL($level[$i2][imgsvr]);
     echo "
     <tr>
-        <td width=98 align=center id=bg1><font size=4>".getLevel($i1, $nation[level])."</font></td>
+        <td width=98 align=center id=bg1><font size=4>".getLevel($i1, $nation['level'])."</font></td>
         <td width=64 height=64 background={$imageTemp1}/{$level[$i1][picture]}>&nbsp;</td>
         <td width=332><font size=4>";echo $level[$i1][name]==''?"-":$level[$i1][name]; echo " ({$level[$i1][belong]}년)</font></td>
-        <td width=98 align=center id=bg1><font size=4>".getLevel($i2, $nation[level])."</font></td>
+        <td width=98 align=center id=bg1><font size=4>".getLevel($i2, $nation['level'])."</font></td>
         <td width=64 height=64 background={$imageTemp2}/{$level[$i2][picture]}>&nbsp;</td>
         <td width=332><font size=4>";echo $level[$i2][name]==''?"-":$level[$i2][name]; echo " ({$level[$i2][belong]}년)</font></td>
     </tr>
@@ -101,8 +101,8 @@ $tigernum = MYDB_num_rows($tigerresult);
 for($i=0; $i < $tigernum; $i++) {
     $tiger = MYDB_fetch_array($tigerresult);
 
-    if($tiger[killnum] > 0) {
-        echo "{$tiger[name]}【{$tiger[killnum]}】, ";
+    if($tiger['killnum'] > 0) {
+        echo "{$tiger['name']}【{$tiger['killnum']}】, ";
     }
 }
 
@@ -118,8 +118,8 @@ $eaglenum = MYDB_num_rows($eagleresult);
 for($i=0; $i < $eaglenum; $i++) {
     $eagle = MYDB_fetch_array($eagleresult);
 
-    if($eagle[firenum] > 0) {
-        echo "{$eagle[name]}【{$eagle[firenum]}】, ";
+    if($eagle['firenum'] > 0) {
+        echo "{$eagle['name']}【{$eagle['firenum']}】, ";
     }
 }
 
@@ -140,14 +140,14 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
     echo "
             <select name=outlist size=1 style=color:white;background-color:black;>";
 
-    $query = "select no,name,level from general where nation='$me[nation]' and level!='12' and no!='$me[no]' order by npc,binary(name)";
+    $query = "select no,name,level from general where nation='$me['nation']' and level!='12' and no!='$me['no']' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
         echo "
-                <option value={$general[no]}>{$general[name]}</option>";
+                <option value={$general['no']}>{$general['name']}</option>";
     }
 
     echo "
@@ -155,7 +155,7 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
             <input type=$btn name=btn value=추방 onclick='return out()'>";
 }
 
-$query = "select name,city from general where nation='$me[nation]' and level=12";
+$query = "select name,city from general where nation='$me['nation']' and level=12";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
 echo "
@@ -167,29 +167,29 @@ echo "
     <tr><td colspan=4 height=5></td></tr>
     <tr><td colspan=4 align=center bgcolor=blue>수 뇌 부 임 명</td></tr>
     <tr>
-        <td width=98  align=right id=bg1>".getLevel(12, $nation[level])."</td>
-        <td width=398>{$general[name]} 【{$cityNames[$general[city]]}】</td>
-        <td width=98  align=right id=bg1>".getLevel(11, $nation[level])."</td>
+        <td width=98  align=right id=bg1>".getLevel(12, $nation['level'])."</td>
+        <td width=398>{$general['name']} 【{$cityNames[$general['city']]}】</td>
+        <td width=98  align=right id=bg1>".getLevel(11, $nation['level'])."</td>
 <form method=post action=c_myBossInfo.php>
         <td width=398>
 ";
 
-if($meLevel >= 5 && $nation[l11set] == 0) {
+if($meLevel >= 5 && $nation['l11set'] == 0) {
     echo "
             <select name=genlist size=1 maxlength=15 style=color:white;background-color:black;>
                 <option value=0>____공석____</option>";
-    $query = "select no,name,level,city from general where nation='$me[nation]' and level!='12' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='$me['nation']' and level!='12' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
-        if($general[level] == 11) {
-            echo "<option style=color:red; selected value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
-        } elseif($general[level] > 1) {
-            echo "<option style=color:orange; value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
+        if($general['level'] == 11) {
+            echo "<option style=color:red; selected value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+        } elseif($general['level'] > 1) {
+            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
         } else {
-            echo "<option value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
+            echo "<option value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
         }
     }
 
@@ -198,10 +198,10 @@ if($meLevel >= 5 && $nation[l11set] == 0) {
             <input type=hidden name=level value=11>
             <input type=$btn name=btn value=임명>";
 } else {
-    $query = "select name,city from general where nation='$me[nation]' and level='11'";
+    $query = "select name,city from general where nation='$me['nation']' and level='11'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    echo "{$general[name]} 【{$cityNames[$general[city]]}】";
+    echo "{$general['name']} 【{$cityNames[$general['city']]}】";
 }
 echo "
         </td>
@@ -209,17 +209,17 @@ echo "
     </tr>
 ";
 
-$querys[10] = "select no,name,level,city from general where nation='$me[nation]' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
-$querys[9]  = "select no,name,level,city from general where nation='$me[nation]' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
-$querys[8]  = "select no,name,level,city from general where nation='$me[nation]' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
-$querys[7]  = "select no,name,level,city from general where nation='$me[nation]' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
-$querys[6]  = "select no,name,level,city from general where nation='$me[nation]' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
-$querys[5]  = "select no,name,level,city from general where nation='$me[nation]' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
+$querys[10] = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
+$querys[9]  = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
+$querys[8]  = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
+$querys[7]  = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
+$querys[6]  = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
+$querys[5]  = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
 
 for($i=10; $i >= $lv; $i--) {
     if($i % 2 == 0) { echo "<tr>"; }
     echo "
-        <td width=98 align=right id=bg1>".getLevel($i, $nation[level])."</td>
+        <td width=98 align=right id=bg1>".getLevel($i, $nation['level'])."</td>
 <form method=post action=c_myBossInfo.php>
         <td width=398>
     ";
@@ -235,12 +235,12 @@ for($i=10; $i >= $lv; $i--) {
 
         for($k=0; $k < $gencount; $k++) {
             $general = MYDB_fetch_array($result);
-            if($general[level] == $i) {
-                echo "<option style=color:red; selected value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
-            } elseif($general[level] > 1) {
-                echo "<option style=color:orange; value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
+            if($general['level'] == $i) {
+                echo "<option style=color:red; selected value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            } elseif($general['level'] > 1) {
+                echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
             } else {
-                echo "<option value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
+                echo "<option value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
             }
         }
 
@@ -249,10 +249,10 @@ for($i=10; $i >= $lv; $i--) {
             <input type=hidden name=level value={$i}>
             <input type=$btn name=btn value=임명>";
     } else {
-        $query = "select name,city from general where nation='$me[nation]' and level={$i}";
+        $query = "select name,city from general where nation='$me['nation']' and level={$i}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $general = MYDB_fetch_array($result);
-        echo "{$general[name]} 【{$cityNames[$general[city]]}】";
+        echo "{$general['name']} 【{$cityNames[$general['city']]}】";
     }
     echo "</td></form>";
     if($i % 2 == 1) { echo "</tr>"; }
@@ -273,7 +273,7 @@ if($meLevel >= 5) {
             <select name=citylist size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='$nation[nation]' and gen1set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='$nation['nation']' and gen1set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -281,15 +281,15 @@ if($meLevel >= 5) {
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($result);
 
-        if($region != $city[region]) {
+        if($region != $city['region']) {
             if($region != 0) {
                 echo "</optgroup>";
             }
-            echo "<optgroup label=' 【 ".getRegion($city[region])." 】 ' style=color:skyblue;>";
-            $region = $city[region];
+            echo "<optgroup label=' 【 ".getRegion($city['region'])." 】 ' style=color:skyblue;>";
+            $region = $city['region'];
         }
 
-        echo "<option value='{$city[city]}' style=color:white;>{$city[name]}</option>";
+        echo "<option value='{$city['city']}' style=color:white;>{$city['name']}</option>";
     }
     echo "</optgroup>";
 
@@ -299,17 +299,17 @@ if($meLevel >= 5) {
                 <option value=0>____공석____</option>
     ";
 
-    $query = "select no,name,level,city from general where nation='$me[nation]' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and power>='$_goodgenpower' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        if($general[level] == 4) {
-            echo "<option style=color:red; value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
-        } elseif($general[level] > 1) {
-            echo "<option style=color:orange; value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
+        if($general['level'] == 4) {
+            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+        } elseif($general['level'] > 1) {
+            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
         } else {
-            echo "<option value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
+            echo "<option value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
         }
     }
 
@@ -327,7 +327,7 @@ if($meLevel >= 5) {
             <select name=citylist size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='$nation[nation]' and gen2set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='$nation['nation']' and gen2set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -335,15 +335,15 @@ if($meLevel >= 5) {
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($result);
 
-        if($region != $city[region]) {
+        if($region != $city['region']) {
             if($region != 0) {
                 echo "</optgroup>";
             }
-            echo "<optgroup label=' 【 ".getRegion($city[region])." 】 ' style=color:skyblue;>";
-            $region = $city[region];
+            echo "<optgroup label=' 【 ".getRegion($city['region'])." 】 ' style=color:skyblue;>";
+            $region = $city['region'];
         }
 
-        echo "<option value='{$city[city]}' style=color:white;>{$city[name]}</option>";
+        echo "<option value='{$city['city']}' style=color:white;>{$city['name']}</option>";
     }
     echo "</optgroup>";
 
@@ -353,17 +353,17 @@ if($meLevel >= 5) {
                 <option value=0>____공석____</option>
     ";
 
-    $query = "select no,name,level,city from general where nation='$me[nation]' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='$me['nation']' and level!='12' and intel>='$_goodgenintel' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        if($general[level] == 3) {
-            echo "<option style=color:red; value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
-        } elseif($general[level] > 1) {
-            echo "<option style=color:orange; value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
+        if($general['level'] == 3) {
+            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+        } elseif($general['level'] > 1) {
+            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
         } else {
-            echo "<option value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
+            echo "<option value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
         }
     }
 
@@ -381,7 +381,7 @@ if($meLevel >= 5) {
             <select name=citylist size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='$nation[nation]' and gen3set=0 order by region, level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='$nation['nation']' and gen3set=0 order by region, level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -389,15 +389,15 @@ if($meLevel >= 5) {
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($result);
 
-        if($region != $city[region]) {
+        if($region != $city['region']) {
             if($region != 0) {
                 echo "</optgroup>";
             }
-            echo "<optgroup label=' 【 ".getRegion($city[region])." 】 ' style=color:skyblue;>";
-            $region = $city[region];
+            echo "<optgroup label=' 【 ".getRegion($city['region'])." 】 ' style=color:skyblue;>";
+            $region = $city['region'];
         }
 
-        echo "<option value='{$city[city]}' style=color:white;>{$city[name]}</option>";
+        echo "<option value='{$city['city']}' style=color:white;>{$city['name']}</option>";
     }
     echo "</optgroup>";
 
@@ -407,17 +407,17 @@ if($meLevel >= 5) {
                 <option value=0>____공석____</option>
     ";
 
-    $query = "select no,name,level,city from general where nation='$me[nation]' and level!='12' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='$me['nation']' and level!='12' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        if($general[level] == 2) {
-            echo "<option style=color:red; value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
-        } elseif($general[level] > 1) {
-            echo "<option style=color:orange; value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
+        if($general['level'] == 2) {
+            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+        } elseif($general['level'] > 1) {
+            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
         } else {
-            echo "<option value={$general[no]}>{$general[name]} 【{$cityNames[$general[city]]}】</option>";
+            echo "<option value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
         }
     }
 
@@ -449,7 +449,7 @@ $citylevel[6] = "중";
 $citylevel[7] = "대";
 $citylevel[8] = "특";
 
-$query = "select city,name,gen1,gen2,gen3,level,region,gen1set,gen2set,gen3set from city where nation='$nation[nation]' order by region,level desc,binary(name)"; // 도시 이름 목록
+$query = "select city,name,gen1,gen2,gen3,level,region,gen1set,gen2set,gen3set from city where nation='$nation['nation']' order by region,level desc,binary(name)"; // 도시 이름 목록
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $citycount = MYDB_num_rows($cityresult);
 
@@ -467,26 +467,26 @@ for($j=0; $j < $citycount; $j++) {
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen3 = MYDB_fetch_array($genresult);
 
-    if($region != $city[region]) {
+    if($region != $city['region']) {
         echo "
     <tr><td colspan=5 height=3 id=bg1></td></tr>
-    <tr><td colspan=5 id=bg1><font size=4 color=skyblue> 【 ".getRegion($city[region])." 】 </font></td></tr>";
-        $region = $city[region];
+    <tr><td colspan=5 id=bg1><font size=4 color=skyblue> 【 ".getRegion($city['region'])." 】 </font></td></tr>";
+        $region = $city['region'];
     }
 
-    $gen1[name] = $gen1[name]==""?"-":$gen1[name]." ({$gen1[belong]}년) 【{$cityNames[$gen1[city]]}】";
-    $gen2[name] = $gen2[name]==""?"-":$gen2[name]." ({$gen2[belong]}년) 【{$cityNames[$gen2[city]]}】";
-    $gen3[name] = $gen3[name]==""?"-":$gen3[name]." ({$gen3[belong]}년) 【{$cityNames[$gen3[city]]}】";
-    if($city[gen1set] == 1) { $gen1[name] = "<font color=orange>".$gen1[name]."</font>"; }
-    if($city[gen2set] == 1) { $gen2[name] = "<font color=orange>".$gen2[name]."</font>"; }
-    if($city[gen3set] == 1) { $gen3[name] = "<font color=orange>".$gen3[name]."</font>"; }
+    $gen1['name'] = $gen1['name']==""?"-":$gen1['name']." ({$gen1['belong']}년) 【{$cityNames[$gen1['city']]}】";
+    $gen2['name'] = $gen2['name']==""?"-":$gen2['name']." ({$gen2['belong']}년) 【{$cityNames[$gen2['city']]}】";
+    $gen3['name'] = $gen3['name']==""?"-":$gen3['name']." ({$gen3['belong']}년) 【{$cityNames[$gen3['city']]}】";
+    if($city['gen1set'] == 1) { $gen1['name'] = "<font color=orange>".$gen1['name']."</font>"; }
+    if($city['gen2set'] == 1) { $gen2['name'] = "<font color=orange>".$gen2['name']."</font>"; }
+    if($city['gen3set'] == 1) { $gen3['name'] = "<font color=orange>".$gen3['name']."</font>"; }
     echo "
     <tr>
-        <td width=78 align=center style=color:".newColor($nation[color])."; bgcolor={$nation[color]}><font size=3>【{$citylevel[$city[level]]}】</font></td>
-        <td width=78 align=right  style=color:".newColor($nation[color])."; bgcolor={$nation[color]}><font size=3>$city[name]&nbsp;&nbsp;</font></td>
-        <td align=center>$gen1[name]</td>
-        <td align=center>$gen2[name]</td>
-        <td align=center>$gen3[name]</td>
+        <td width=78 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=3>【{$citylevel[$city['level']]}】</font></td>
+        <td width=78 align=right  style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=3>$city['name']&nbsp;&nbsp;</font></td>
+        <td align=center>$gen1['name']</td>
+        <td align=center>$gen2['name']</td>
+        <td align=center>$gen3['name']</td>
     </tr>
     ";
 }

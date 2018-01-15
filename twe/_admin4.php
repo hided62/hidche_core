@@ -5,11 +5,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "
 <html>
 <head>
@@ -59,14 +59,14 @@ $gencount = MYDB_num_rows($result);
 for($i=0; $i < $gencount; $i++) {
     $general = MYDB_fetch_array($result);
     $style = "style=;";
-    if($general[block]         > 0) { $style .= "background-color:red;"; }
-    if($general[npc]          >= 2) { $style .= "color:cyan;"; }
-    elseif($general[npc]      == 1) { $style .= "color:skyblue;"; }
-    if($general[con] > $admin[conlimit]) { $style .= "color:red;"; }
-    if($general[userlevel] > 2) { $style .= "color:blue;"; }
+    if($general['block']         > 0) { $style .= "background-color:red;"; }
+    if($general['npc']          >= 2) { $style .= "color:cyan;"; }
+    elseif($general['npc']      == 1) { $style .= "color:skyblue;"; }
+    if($general['con'] > $admin['conlimit']) { $style .= "color:red;"; }
+    if($general['userlevel'] > 2) { $style .= "color:blue;"; }
 
     echo "
-                <option value=$general[no] $style>$general[name]</option>";
+                <option value=$general['no'] $style>$general['name']</option>";
 }
 
 echo "
@@ -114,12 +114,12 @@ for($i=0; $i < $ipCount; $i++) {
     $genCount = MYDB_num_rows($genResult);
     for($k=0; $k < $genCount; $k++) {
         $gen = MYDB_fetch_array($genResult);
-        if($gen[block] > 0) $genName .= "<font color=magenta>{$gen[name]}</font><br>";
-        else $genName .= $gen[name]."<br>";
-        $genDate .= $gen[lastconnect]."<br>";
-        $genIP   .= $gen[ip]."<br>";
-        $genID   .= $gen[user_id]."<br>";
-        $conMsg  .= $gen[conmsg]."<br>";
+        if($gen['block'] > 0) $genName .= "<font color=magenta>{$gen['name']}</font><br>";
+        else $genName .= $gen['name']."<br>";
+        $genDate .= $gen['lastconnect']."<br>";
+        $genIP   .= $gen['ip']."<br>";
+        $genID   .= $gen['user_id']."<br>";
+        $conMsg  .= $gen['conmsg']."<br>";
     }
     $genName .= "<br>";
     $genDate .= "<br>";
@@ -157,17 +157,17 @@ $conMsg  = "";
 for($i=0; $i < $ipCount; $i++) {
     $ip = MYDB_fetch_array($result);
 
-    $query = "select name,password,lastconnect,user_id,block,conmsg from general where password='$ip[password]' and npc<2";
+    $query = "select name,password,lastconnect,user_id,block,conmsg from general where password='$ip['password']' and npc<2";
     $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($genResult);
     for($k=0; $k < $genCount; $k++) {
         $gen = MYDB_fetch_array($genResult);
-        if($gen[block] > 0) $genName .= "<font color=magenta>{$gen[name]}</font><br>";
-        else $genName .= $gen[name]."<br>";
-        $genDate .= $gen[lastconnect]."<br>";
-        $genIP   .= substr($gen[password],0,10)." ...<br>";
-        $genID   .= $gen[user_id]."<br>";
-        $conMsg  .= $gen[conmsg]."<br>";
+        if($gen['block'] > 0) $genName .= "<font color=magenta>{$gen['name']}</font><br>";
+        else $genName .= $gen['name']."<br>";
+        $genDate .= $gen['lastconnect']."<br>";
+        $genIP   .= substr($gen['password'],0,10)." ...<br>";
+        $genID   .= $gen['user_id']."<br>";
+        $conMsg  .= $gen['conmsg']."<br>";
     }
     $genName .= "<br>";
     $genDate .= "<br>";

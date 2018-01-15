@@ -9,11 +9,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "
 <html>
 <head>
@@ -36,14 +36,14 @@ $query = "select year,month,turnterm,isUnited from game where no='1'";
 $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-if($admin[isUnited] == 0) {
+if($admin['isUnited'] == 0) {
     $query = "select no from general where npc<2 and age>50";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        CheckHall($connect, $general[no]);
+        CheckHall($connect, $general['no']);
     }
 }
 
@@ -55,11 +55,11 @@ $count = MYDB_num_rows($result);
 for($i=0; $i < $count; $i++) {
     $nation = MYDB_fetch_array($result);
 
-    $query = "select city,nation from city where nation='$nation[nation]' order by rand() limit 0,1";
+    $query = "select city,nation from city where nation='$nation['nation']' order by rand() limit 0,1";
     $result2 = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
     $city = MYDB_fetch_array($result2);
 
-    $query = "update nation set capital='$city[city]' where nation='$nation[nation]'";
+    $query = "update nation set capital='$city['city']' where nation='$nation['nation']'";
     MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 }
 
@@ -86,9 +86,9 @@ for($i=0; $i < 7; $i++) {
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $nationNum[$i] = $nation[nation];
+    $nationNum[$i] = $nation['nation'];
 
-    $query = "update nation set scout=1,capital={$cap[$i]} where nation='$nation[nation]'";
+    $query = "update nation set scout=1,capital={$cap[$i]} where nation='$nation['nation']'";
     MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 
     //태수,군사,시중 해제
@@ -105,24 +105,24 @@ for($i=0; $i < 7; $i++) {
     $query = "update general set level=1 where no='{$city[gen3]}'";
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 
-    $query = "update city set nation='$nation[nation]',pop='1000000',agri=agri2,comm=comm2,secu=secu2,def=def2,wall=wall2,supply=1,gen1=0,gen2=0,gen3=0 where city='{$cap[$i]}'";
+    $query = "update city set nation='$nation['nation']',pop='1000000',agri=agri2,comm=comm2,secu=secu2,def=def2,wall=wall2,supply=1,gen1=0,gen2=0,gen3=0 where city='{$cap[$i]}'";
     MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 
-    $query = "select nation,level from nation where nation!='$nation[nation]'";
+    $query = "select nation,level from nation where nation!='$nation['nation']'";
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($k=0; $k < $count; $k++) {
         $your = MYDB_fetch_array($result);
-        if($your[level] > 0) {
-            $query = "insert into diplomacy (me, you, state, term) values ('$nation[nation]', '$your[nation]', '1', '1')";
+        if($your['level'] > 0) {
+            $query = "insert into diplomacy (me, you, state, term) values ('$nation['nation']', '$your['nation']', '1', '1')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "insert into diplomacy (me, you, state, term) values ('$your[nation]', '$nation[nation]', '1', '1')";
+            $query = "insert into diplomacy (me, you, state, term) values ('$your['nation']', '$nation['nation']', '1', '1')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            $query = "insert into diplomacy (me, you, state, term) values ('$nation[nation]', '$your[nation]', '7', '999')";
+            $query = "insert into diplomacy (me, you, state, term) values ('$nation['nation']', '$your['nation']', '7', '999')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "insert into diplomacy (me, you, state, term) values ('$your[nation]', '$nation[nation]', '7', '999')";
+            $query = "insert into diplomacy (me, you, state, term) values ('$your['nation']', '$nation['nation']', '7', '999')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
@@ -137,54 +137,54 @@ for($i=0; $i < 7; $i++) {
 //////////////////////////장수//////////////////////////////////////////////////
 //                                                                          이름   통  무  지    꿈   특기
 $gencount = 2001;
-RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[0],12,    "강대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
-RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[1],12,    "저대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
-RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[2],12,  "흉노대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
-RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[3],12,  "남만대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
-RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[4],12,  "산월대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
-RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[5],12,  "오환대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
-RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[6],12,    "왜대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
+RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[0],12,    "강대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
+RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[1],12,    "저대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
+RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[2],12,  "흉노대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
+RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[3],12,  "남만대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
+RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[4],12,  "산월대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
+RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[5],12,  "오환대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
+RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[6],12,    "왜대왕", 95, 95, 75,"패권","돌격", ""); $gencount++;
 
 for($k=1; $k <= $eachCount; $k++) {
     if(rand()%2) { $l = rand()%10 + 85; $p = rand()%10 + 85; $i = rand()%10 + 10; }
     else         { $l = rand()%10 + 85; $p = rand()%10 + 10; $i = rand()%10 + 85; }
-    RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[0], 1,  "강장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
+    RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[0], 1,  "강장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
 }
 
 for($k=1; $k <= $eachCount; $k++) {
     if(rand()%2) { $l = rand()%10 + 85; $p = rand()%10 + 85; $i = rand()%10 + 10; }
     else         { $l = rand()%10 + 85; $p = rand()%10 + 10; $i = rand()%10 + 85; }
-    RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[1], 1,  "저장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
+    RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[1], 1,  "저장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
 }
 
 for($k=1; $k <= $eachCount; $k++) {
     if(rand()%2) { $l = rand()%10 + 85; $p = rand()%10 + 85; $i = rand()%10 + 10; }
     else         { $l = rand()%10 + 85; $p = rand()%10 + 10; $i = rand()%10 + 85; }
-    RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[2], 1,"흉노장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
+    RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[2], 1,"흉노장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
 }
 
 for($k=1; $k <= $eachCount; $k++) {
     if(rand()%2) { $l = rand()%10 + 85; $p = rand()%10 + 85; $i = rand()%10 + 10; }
     else         { $l = rand()%10 + 85; $p = rand()%10 + 10; $i = rand()%10 + 85; }
-    RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[3], 1,"남만장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
+    RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[3], 1,"남만장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
 }
 
 for($k=1; $k <= $eachCount; $k++) {
     if(rand()%2) { $l = rand()%10 + 85; $p = rand()%10 + 85; $i = rand()%10 + 10; }
     else         { $l = rand()%10 + 85; $p = rand()%10 + 10; $i = rand()%10 + 85; }
-    RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[4], 1,"산월장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
+    RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[4], 1,"산월장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
 }
 
 for($k=1; $k <= $eachCount; $k++) {
     if(rand()%2) { $l = rand()%10 + 85; $p = rand()%10 + 85; $i = rand()%10 + 10; }
     else         { $l = rand()%10 + 85; $p = rand()%10 + 10; $i = rand()%10 + 85; }
-    RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[5], 1,"오환장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
+    RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[5], 1,"오환장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
 }
 
 for($k=1; $k <= $eachCount; $k++) {
     if(rand()%2) { $l = rand()%10 + 85; $p = rand()%10 + 85; $i = rand()%10 + 10; }
     else         { $l = rand()%10 + 85; $p = rand()%10 + 10; $i = rand()%10 + 85; }
-    RegGeneral3($connect,$admin[turnterm],$gencount,$nationNum[6], 1,  "왜장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
+    RegGeneral3($connect,$admin['turnterm'],$gencount,$nationNum[6], 1,  "왜장수{$k}", $l, $p, $i,"패권","돌격", ""); $gencount++;
 }
 
 //////////////////////////장수 끝///////////////////////////////////////////////
@@ -194,9 +194,9 @@ $query = "update general set gold=999999,rice=999999";
 MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 
 //////////////////////////이벤트///////////////////////////////////////////////
-$history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<L><b>【이벤트】</b></>각지의 이민족들이 <M>궐기</>합니다!";
-$history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<L><b>【이벤트】</b></>중원의 전 국가에 <M>선전포고</> 합니다!";
-$history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<L><b>【이벤트】</b></>이민족의 기세는 그 누구도 막을 수 없을듯 합니다!";
+$history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<L><b>【이벤트】</b></>각지의 이민족들이 <M>궐기</>합니다!";
+$history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<L><b>【이벤트】</b></>중원의 전 국가에 <M>선전포고</> 합니다!";
+$history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<L><b>【이벤트】</b></>이민족의 기세는 그 누구도 막을 수 없을듯 합니다!";
 pushHistory($connect, $history);
 
 echo "<script>location.replace('./');</script>";

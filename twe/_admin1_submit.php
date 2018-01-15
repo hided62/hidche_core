@@ -7,11 +7,11 @@ $connect = dbConn();
 
 $admin = getAdmin($connect);
 
-$query = "select userlevel from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "<script>location.replace('_admin1.php');</script>";
 }
 
@@ -26,7 +26,7 @@ switch($btn) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "로그쓰기":
-        $lognum = $admin[historyindex] + 1;
+        $lognum = $admin['historyindex'] + 1;
         if($lognum >= 29) { $lognum = 0; }
         $history[0] = "<R>★</><S>{$log}</>";
         pushHistory($connect, $history);
@@ -69,20 +69,20 @@ switch($btn) {
         case  "60분턴": $turnterm = 1; $unit = 3600; break;
         case "120분턴": $turnterm = 0; $unit = 7200; break;
         }
-        $turn = ($admin[year] - $admin[startyear]) * 12 + $admin[month] - 1;
-        $starttime = date("Y-m-d H:i:s", strtotime($admin[turntime]) - $turn * $unit);
+        $turn = ($admin['year'] - $admin['startyear']) * 12 + $admin['month'] - 1;
+        $starttime = date("Y-m-d H:i:s", strtotime($admin['turntime']) - $turn * $unit);
         $starttime = cutTurn($starttime, $turnterm);
         $query = "update game set turnterm='$turnterm',starttime='$starttime' where no='1'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 턴시간이 길어지는 경우 랜덤턴 배정
-        if($turnterm < $admin[turnterm]) {
+        if($turnterm < $admin['turnterm']) {
             $query = "select no from general";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $count = MYDB_num_rows($result);
             for($i=0; $i < $count; $i++) {
                 $gen = MYDB_fetch_array($result);
                 $turntime = getRandTurn($turnterm);
-                $query = "update general set turntime='$turntime' where no='$gen[no]'";
+                $query = "update general set turntime='$turntime' where no='$gen['no']'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         // 턴시간이 너무 멀리 떨어진 선수 제대로 보정
@@ -92,10 +92,10 @@ switch($btn) {
             $count = MYDB_num_rows($result);
             for($i=0; $i < $count; $i++) {
                 $gen = MYDB_fetch_array($result);
-                $num = floor((strtotime($gen[turntime]) - strtotime($admin[turntime])) / $unit);
+                $num = floor((strtotime($gen['turntime']) - strtotime($admin['turntime'])) / $unit);
                 if($num > 0) {
-                    $gen[turntime] = date("Y-m-d H:i:s", strtotime($gen[turntime]) - $unit * $num);
-                    $query = "update general set turntime='$gen[turntime]' where no='$gen[no]'";
+                    $gen['turntime'] = date("Y-m-d H:i:s", strtotime($gen['turntime']) - $unit * $num);
+                    $query = "update general set turntime='$gen['turntime']' where no='$gen['no']'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 }
             }

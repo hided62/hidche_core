@@ -10,7 +10,7 @@ $query = "select turnterm from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,nation,skin,map,userlevel from general where user_id='$_SESSION[p_id]'";
+$query = "select no,nation,skin,map,userlevel from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -22,21 +22,21 @@ $nationStr = "";
 for($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($result);
 
-    $query = "select city from city where nation='$nation[nation]'";
+    $query = "select city from city where nation='$nation['nation']'";
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($cityresult);
 
-    $nationnum[count($nationnum)] = $nation[nation];
-    $nationname[$nation[nation]] = $nation[name];
-    $nationcolor[$nation[nation]] = $nation[color];
+    $nationnum[count($nationnum)] = $nation['nation'];
+    $nationname[$nation['nation']] = $nation['name'];
+    $nationcolor[$nation['nation']] = $nation['color'];
 
-    $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation[color]).";background-color:$nation[color];>$nation[name]</font><br>";
-    $powerStr .= "국력 $nation[power]<br>";
-    $genStr .= "장수 $nation[gennum]<br>";
+    $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:$nation['color'];>$nation['name']</font><br>";
+    $powerStr .= "국력 $nation['power']<br>";
+    $genStr .= "장수 $nation['gennum']<br>";
     $cityStr .= "속령 $citycount<br>";
 }
 
-if($me[skin] < 1) {
+if($me['skin'] < 1) {
     $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
@@ -79,7 +79,7 @@ for($i=0; $i < $nationcount; $i++) {
     $nationcount2 = MYDB_num_rows($dipresult);
     for($k=0; $k < $nationcount2; $k++) {
         $dip = MYDB_fetch_array($dipresult);
-        $state[$dip[you]] = $dip[state];
+        $state[$dip['you']] = $dip['state'];
     }
     echo "
     <tr>
@@ -93,7 +93,7 @@ for($i=0; $i < $nationcount; $i++) {
                 case 0: $str = "<font color=red>★</font>"; break;
                 case 1: $str = "<font color=magenta>▲</font>"; break;
                 case 2:
-                    if($nationnum[$i] == $me[nation] || $nationnum[$k] == $me[nation] || $me[userlevel] >= 4) { $str = "ㆍ"; }
+                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || $me['userlevel'] >= 4) { $str = "ㆍ"; }
                     else { $str = "?"; }
 //                    $str = "ㆍ";
                     break;
@@ -102,14 +102,14 @@ for($i=0; $i < $nationcount; $i++) {
                 case 5: $str = "<font color=cyan>◎</font>"; break;
                 case 6: $str = "<font color=cyan>◎</font>"; break;
                 case 7:
-                    if($nationnum[$i] == $me[nation] || $nationnum[$k] == $me[nation] || $me[userlevel] >= 4) { $str = "<font color=green>@</font>"; }
+                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || $me['userlevel'] >= 4) { $str = "<font color=green>@</font>"; }
                     else { $str = "?"; }
 //                    $str = "<font color=limegreen>@</font>";
                     break;
             }
         }
 
-        if($nationnum[$i] == $me[nation] || $nationnum[$k] == $me[nation]) { $backcolor = "style=background-color:$_basecolor3;"; }
+        if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation']) { $backcolor = "style=background-color:$_basecolor3;"; }
         else { $backcolor = ""; }
 
         echo "
@@ -137,8 +137,8 @@ if($citycount != 0) {
 for($i=0; $i < $citycount; $i++) {
     $city = MYDB_fetch_array($result);
 
-    if($city[conflict] != "") {
-        $nation = explode("|", $city[conflict]);
+    if($city['conflict'] != "") {
+        $nation = explode("|", $city['conflict']);
         $killnum = explode("|", $city[conflict2]);
 
         $seq = mySort($killnum);    // 큰 순서대로 순서를 구한다.
@@ -149,7 +149,7 @@ for($i=0; $i < $citycount; $i++) {
         }
         echo "
         <tr>
-            <td align=center width=48>$city[name]</td>
+            <td align=center width=48>$city['name']</td>
             <td width=948>";
         for($k=0; $k < count($nation); $k++) {
             $per = 100*$killnum[$seq[$k]] / $sum;
@@ -201,7 +201,7 @@ echo "
     </tr>
     <tr>
         <td width=698 height=420>
-            <iframe src='map.php?type=2&graphic={$me[map]}' width=698 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
+            <iframe src='map.php?type=2&graphic={$me['map']}' width=698 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
             </iframe>
         </td>
         <td width=98 valign=top>$nationStr</td>

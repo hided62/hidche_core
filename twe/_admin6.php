@@ -5,11 +5,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "
 <html>
 <head>
@@ -80,14 +80,14 @@ for($i=0; $i < $gencount; $i++) {
     $gen = MYDB_fetch_array($genresult);
     echo "
     <tr>
-        <td align=center>$gen[name]</td>
-        <td align=center>$gen[connect]</td>
-        <td align=center>$gen[startage]</td>
-        <td align=center>$gen[age]</td>
-        <td align=center>".round($gen[refcnt]/2, 1)."</td>
-        <td align=center>".round($gen[ref]/2,1)."</td>
-        <td align=center>$gen[logcnt]</td>
-        <td align=center>".round($gen[log]/2,1)."</td>
+        <td align=center>$gen['name']</td>
+        <td align=center>$gen['connect']</td>
+        <td align=center>$gen['startage']</td>
+        <td align=center>$gen['age']</td>
+        <td align=center>".round($gen['refcnt']/2, 1)."</td>
+        <td align=center>".round($gen['ref']/2,1)."</td>
+        <td align=center>$gen['logcnt']</td>
+        <td align=center>".round($gen['log']/2,1)."</td>
     </tr>";
 }
 

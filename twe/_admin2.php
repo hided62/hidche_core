@@ -5,11 +5,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "
 <html>
 <head>
@@ -51,7 +51,7 @@ $admin = MYDB_fetch_array($result);
     <tr>
         <td width=80 align=center>제한등급</td>
         <td width=713 align=center>
-            <input type=text size=3 maxlength=3 name=conweight value=<?=$admin[conweight];?> style=color:white;background-color:black;font-size:13;>
+            <input type=text size=3 maxlength=3 name=conweight value=<?=$admin['conweight'];?> style=color:white;background-color:black;font-size:13;>
             <input type=submit name=btn value='접속가중치'>
         </td>
     </tr>
@@ -72,14 +72,14 @@ $gencount = MYDB_num_rows($result);
 for($i=0; $i < $gencount; $i++) {
     $general = MYDB_fetch_array($result);
     $style = "style=;";
-    if($general[block]         > 0) { $style .= "background-color:red;"; }
-    if($general[npc]          >= 2) { $style .= "color:cyan;"; }
-    elseif($general[npc]      == 1) { $style .= "color:skyblue;"; }
-    if($general[con] > $admin[conlimit]) { $style .= "color:red;"; }
-    if($general[userlevel] > 2) { $style .= "color:blue;"; }
+    if($general['block']         > 0) { $style .= "background-color:red;"; }
+    if($general['npc']          >= 2) { $style .= "color:cyan;"; }
+    elseif($general['npc']      == 1) { $style .= "color:skyblue;"; }
+    if($general['con'] > $admin['conlimit']) { $style .= "color:red;"; }
+    if($general['userlevel'] > 2) { $style .= "color:blue;"; }
 
     echo "
-                <option value=$general[no] $style>$general[name]</option>";
+                <option value=$general['no'] $style>$general['name']</option>";
 }
 
 echo "

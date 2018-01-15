@@ -2,8 +2,8 @@
 include "lib.php";
 include "func.php";
 
-$id = $_POST[id];
-$pw = $_POST[pw];
+$id = $_POST['id'];
+$pw = $_POST['pw'];
 
 $pwTemp = substr($pw, 0, 32);
 
@@ -43,7 +43,7 @@ $query = "select npcmode,maxgeneral,img from game where no='1'";
 $result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-if($admin[npcmode] != 1) {
+if($admin['npcmode'] != 1) {
     echo "<script>alert('잘못된 접근입니다!');</script>";
     echo "<script>history.go(-1);</script>";
     exit();
@@ -53,7 +53,7 @@ $query = "select no from general where npc<2";
 $result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
 $gencount = MYDB_num_rows($result);
 
-if($gencount >= $admin[maxgeneral]) {
+if($gencount >= $admin['maxgeneral']) {
     echo "<script>alert('더 이상 등록할 수 없습니다.');</script>";
     echo "<script>history.go(-1);</script>";
     exit();
@@ -69,12 +69,12 @@ $nationcount = MYDB_num_rows($nationresult);
 
 for($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($nationresult);
-    if($nation[scoutmsg] == "") {
+    if($nation['scoutmsg'] == "") {
         echo "
-    <tr><td align=center width=98 style=color:".newColor($nation[color]).";background-color:{$nation[color]}>$nation[name]</td><td width=898 style=color:{newColor($nation[color])};background-color:{$nation[color]}>-</td></tr>";
+    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>$nation['name']</td><td width=898 style=color:{newColor($nation['color'])};background-color:{$nation['color']}>-</td></tr>";
     } else {
         echo "
-    <tr><td align=center width=98 style=color:".newColor($nation[color]).";background-color:{$nation[color]}>$nation[name]</td><td width=898 style=color:{newColor($nation[color])};background-color:{$nation[color]}>$nation[scoutmsg]</td></tr>";
+    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>$nation['name']</td><td width=898 style=color:{newColor($nation['color'])};background-color:{$nation['color']}>$nation['scoutmsg']</td></tr>";
     }
 }
 ?>
@@ -88,7 +88,7 @@ for($i=0; $i < $nationcount; $i++) {
             <td colspan=2 align=center id=bg1>장수 선택</td>
         </tr>
 <?php
-if($admin[img] >= 3) {
+if($admin['img'] >= 3) {
 ?>
         <tr>
             <td width=498 align=right rowspan=2 height=64 id=bg1>장수</td>
@@ -108,9 +108,9 @@ $count = MYDB_num_rows($result);
 
 for($i=0; $i < $count; $i++) {
     $npc = MYDB_fetch_array($result);
-    $call = "{$npc[leader]} / {$npc[power]} / {$npc[intel]}";
+    $call = "{$npc['leader']} / {$npc['power']} / {$npc['intel']}";
     echo "
-        <option value={$npc[npcid]}>{$npc[name]} 【{$call}】</option>";
+        <option value={$npc['npcid']}>{$npc['name']} 【{$call}】</option>";
 }
 ?>
 

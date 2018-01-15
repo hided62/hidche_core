@@ -103,33 +103,33 @@ function showMap($connect, $type, $graphic) {
     $result = MYDB_query($query, $connect) or Error("showMap ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,userlevel,level,city from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation,userlevel,level,city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select spy from nation where nation='$me[nation]'";
+    $query = "select spy from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $myNation = MYDB_fetch_array($result);
 
     //도시수
     $allcount = 94;
 
-    if($admin[year] < $admin[startyear] + 1) {
+    if($admin['year'] < $admin['startyear'] + 1) {
         $color = "magenta";
-    } elseif($admin[year] < $admin[startyear] + 2) {
+    } elseif($admin['year'] < $admin['startyear'] + 2) {
         $color = "orange";
-    } elseif($admin[year] < $admin[startyear] + 3) {
+    } elseif($admin['year'] < $admin['startyear'] + 3) {
         $color = "yellow";
     } else {
         $color = "white";
     }
-    if($admin[month] < 4) {         $season = "spring"; }
-    elseif($admin[month] < 7) {     $season = "summer"; }
-    elseif($admin[month] < 10) {    $season = "fall";   }
+    if($admin['month'] < 4) {         $season = "spring"; }
+    elseif($admin['month'] < 7) {     $season = "summer"; }
+    elseif($admin['month'] < 10) {    $season = "fall";   }
     else {                          $season = "winter"; }
-    if($admin[month] < 4) {         $mapType = "map1"; }
-    elseif($admin[month] < 7) {     $mapType = "map2"; }
-    elseif($admin[month] < 10) {    $mapType = "map3"; }
+    if($admin['month'] < 4) {         $mapType = "map1"; }
+    elseif($admin['month'] < 7) {     $mapType = "map2"; }
+    elseif($admin['month'] < 10) {    $mapType = "map3"; }
     else {                          $mapType = "map4"; }
     if($graphic == 0) {
         $ltitle = "<img src={$images}/ltitle.jpg></img>";
@@ -147,7 +147,7 @@ function showMap($connect, $type, $graphic) {
     <tr height=20>
         <td width=268 align=left>{$ltitle}</td>
         <td width=38 {$ad}></td>
-        <td width=98>&nbsp;<font color={$color}><b>{$admin[year]}年 {$admin[month]}月</b></font></td>
+        <td width=98>&nbsp;<font color={$color}><b>{$admin['year']}年 {$admin['month']}月</b></font></td>
         <td width=18 {$season}></td>
         <td width=268 align=right>{$rtitle}</td>
     </tr>
@@ -160,42 +160,42 @@ function showMap($connect, $type, $graphic) {
     $count = MYDB_num_rows($result);
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
-        $nationcolor[$nation[nation]] = $nation[color];
-        $nationname[$nation[nation]] = $nation[name];
-        $nationCapital[$nation[nation]] = $nation[capital];
+        $nationcolor[$nation['nation']] = $nation['color'];
+        $nationname[$nation['nation']] = $nation['name'];
+        $nationCapital[$nation['nation']] = $nation['capital'];
     }
 
     if($type == 0) {
         // 운영자의 경우 다 볼 수 있음
-        if($me[userlevel] >= 5) {
+        if($me['userlevel'] >= 5) {
             for($i=1; $i <= $allcount; $i++) {
                 $valid[$i] = 1;
             }
-        } elseif($me[level] == 0) {
+        } elseif($me['level'] == 0) {
             // 재야는 내 도시만
-            $query = "select city,name,nation from city where city='$me[city]'";
+            $query = "select city,name,nation from city where city='$me['city']'";
             $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $cityvalid = MYDB_fetch_array($cityresult);
-            $valid[$cityvalid[city]] = 1;
+            $valid[$cityvalid['city']] = 1;
         } else {
             // 아국 도시
-            $query = "select city,name from city where nation='$me[nation]'";
+            $query = "select city,name from city where nation='$me['nation']'";
             $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $citycount = MYDB_num_rows($cityresult);
             for($i=0; $i < $citycount; $i++) {
                 $cityvalid = MYDB_fetch_array($cityresult);
-                $valid[$cityvalid[city]] = 1;
+                $valid[$cityvalid['city']] = 1;
             }
             // 아국 장수가 있는 타국 도시들 선택
-            $query = "select distinct A.city,B.name,B.nation from general A,city B where A.city=B.city and A.nation='$me[nation]' and B.nation!='$me[nation]'";
+            $query = "select distinct A.city,B.name,B.nation from general A,city B where A.city=B.city and A.nation='$me['nation']' and B.nation!='$me['nation']'";
             $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $citycount = MYDB_num_rows($cityresult);
             for($i=0; $i < $citycount; $i++) {
                 $cityvalid = MYDB_fetch_array($cityresult);
-                $valid[$cityvalid[city]] = 1;
+                $valid[$cityvalid['city']] = 1;
             }
             // 첩보된 도시
-            $citys = explode("|", $myNation[spy]);
+            $citys = explode("|", $myNation['spy']);
             for($i=0; $i < count($citys); $i++) {
                 $valid[floor($citys[$i]/10)] = 1;
             }
@@ -236,23 +236,23 @@ function showMap($connect, $type, $graphic) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     for($i=0; $i < $allcount; $i++) {
         $city = MYDB_fetch_array($result);
-        $name = $city[name];
-        $nation = $nationname[$city[nation]];
-        $color = $nationcolor[$city[nation]];
-        $capital = $nationCapital[$city[nation]];
-        $level = $city[level];
-        $state = $city[state];
-        $region = $city[region];
+        $name = $city['name'];
+        $nation = $nationname[$city['nation']];
+        $color = $nationcolor[$city['nation']];
+        $capital = $nationCapital[$city['nation']];
+        $level = $city['level'];
+        $state = $city['state'];
+        $region = $city['region'];
 
-        if($me[city] == $city[city]) { $myCity = 1; }
+        if($me['city'] == $city['city']) { $myCity = 1; }
         else                         { $myCity = 0; }
 
-        if($capital == $city[city]) { $cap = 1; }
+        if($capital == $city['city']) { $cap = 1; }
         else                        { $cap = 0; }
 
         city($graphic, $brouserIE,
             $type, $name, $nation, $color, $level, $region, $i+1, $valid[$i+1], $x[$i], $y[$i],
-            $state, $myCity, $city[supply], $cap);
+            $state, $myCity, $city['supply'], $cap);
     }
 
     echo "

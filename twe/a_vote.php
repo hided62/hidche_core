@@ -4,7 +4,7 @@ include "func.php";
 $connect = dbConn();
 increaseRefresh($connect, "설문조사", 1);
 
-$query = "select no,userlevel,vote from general where user_id='$_SESSION[p_id]'";
+$query = "select no,userlevel,vote from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -12,7 +12,7 @@ $query = "select develcost,voteopen,vote,votecomment from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$vote = explode("|", $admin[vote]);
+$vote = explode("|", $admin['vote']);
 if($vote[0] == "") {
     $vote[0] = "-";
 }
@@ -40,10 +40,10 @@ function captureKey(e) {
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
 <form name=form1 action=c_vote.php method=post>
-    <tr><td colspan=3 align=center id=bg2><font size=5>설 문 조 사 (<?=$admin[develcost]*5;?>금과 추첨으로 유니크템 증정!)</font></td></tr>
+    <tr><td colspan=3 align=center id=bg2><font size=5>설 문 조 사 (<?=$admin['develcost']*5;?>금과 추첨으로 유니크템 증정!)</font></td></tr>
 <?php
 
-if($me[userlevel] >= 5) {
+if($me['userlevel'] >= 5) {
     echo "
     <tr>
         <td width=48  align=center><input type=submit name=btn value='알림'></td>
@@ -78,11 +78,11 @@ for($i=1; $i < $voteTypeCount; $i++) {
         <td width=48 align=center style=color:".getNewColor($i)."; bgcolor=".getColor($i).">{$i}.</td>
         <td width=98 align=center>
     ";
-    if($me[vote] == 0 && $me[no] > 0) {
+    if($me['vote'] == 0 && $me['no'] > 0) {
         echo "
             <input type=radio name=sel value={$i}>
         ";
-    } elseif($admin[voteopen] >= 1 || $me[userlevel] >= 5) {
+    } elseif($admin['voteopen'] >= 1 || $me['userlevel'] >= 5) {
         $query = "select no from general where vote='{$i}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $vCount = MYDB_num_rows($result);
@@ -103,7 +103,7 @@ for($i=1; $i < $voteTypeCount; $i++) {
 echo "
     <tr>
 ";
-if($me[vote] == 0 && $me[no] > 0) {
+if($me['vote'] == 0 && $me['no'] > 0) {
     echo "
         <td align=center>투표</td>
         <td align=center><input type=submit name=btn value='투표'></td>
@@ -118,7 +118,7 @@ echo "
     </tr>
 ";
 
-if($me[userlevel] >= 5) {
+if($me['userlevel'] >= 5) {
     echo "
     <tr>
         <td align=center><input type=submit name=btn value='리셋'></td>
@@ -128,8 +128,8 @@ if($me[userlevel] >= 5) {
     ";
 }
 
-if($admin[votecomment] != "") {
-    $comment = explode("|", $admin[votecomment]);
+if($admin['votecomment'] != "") {
+    $comment = explode("|", $admin['votecomment']);
     $commentCount = count($comment);
 } else {
     $commentCount = 0;
@@ -154,7 +154,7 @@ for($i=0; $i < $commentCount; $i++) {
     </tr>
     ";
 }
-if($me[no] > 0) {
+if($me['no'] > 0) {
     echo "
     <tr>
         <td width=108 colspan=2 align=center>-</td>
@@ -170,7 +170,7 @@ if($me[no] > 0) {
     <tr><td colspan=3 align=center id=bg2><font size=5>
         전 체 통 계
 <?php
-if($me[userlevel] >= 5) {
+if($me['userlevel'] >= 5) {
     echo "
         <input type=submit name=btn value='숨김'>
         <input type=submit name=btn value='전체통계만'>
@@ -179,7 +179,7 @@ if($me[userlevel] >= 5) {
 echo "
     </font></td></tr>";
 
-if($admin[voteopen] >= 1 || $me[userlevel] >= 5) {
+if($admin['voteopen'] >= 1 || $me['userlevel'] >= 5) {
     echo "
     <tr>
         <td width=98  align=center>전 체</td>
@@ -199,14 +199,14 @@ if($admin[voteopen] >= 1 || $me[userlevel] >= 5) {
     for($i=0; $i < $count; $i++) {
         $vote = MYDB_fetch_array($result);
 
-        $totalVote[$vote[vote]]++;
-        if($vote[vote] > 0) { $nationVoteCount[$vote[nation]]++; }
-        $nationVote[$vote[nation]][$vote[vote]]++;
+        $totalVote[$vote['vote']]++;
+        if($vote['vote'] > 0) { $nationVoteCount[$vote['nation']]++; }
+        $nationVote[$vote['nation']][$vote['vote']]++;
     }
 
     for($i=0; $i < $voteTypeCount; $i++) {
         $per = @round($totalVote[$i] / $memCount * 100, 1);
-//        if($per < 5) { $vote[cnt] = "&nbsp;"; }
+//        if($per < 5) { $vote['cnt'] = "&nbsp;"; }
         echo "
                     <td width={$per}% align=center style=color:".getNewColor($i)."; bgcolor=".getColor($i).">{$totalVote[$i]}</td>
         ";
@@ -220,7 +220,7 @@ if($admin[voteopen] >= 1 || $me[userlevel] >= 5) {
     ";
 }
 
-if($admin[voteopen] >= 2 || $me[userlevel] >= 5) {
+if($admin['voteopen'] >= 2 || $me['userlevel'] >= 5) {
     $query = "select no from general where nation=0 and npc<2";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $memCount = MYDB_num_rows($result);
@@ -239,7 +239,7 @@ if($admin[voteopen] >= 2 || $me[userlevel] >= 5) {
 
     for($i=0; $i < $voteTypeCount; $i++) {
         $per = @round($nationVote[0][$i] / $memCount * 100, 1);
-//        if($per < 5) { $vote[cnt] = "&nbsp;"; }
+//        if($per < 5) { $vote['cnt'] = "&nbsp;"; }
         echo "
                     <td width={$per}% align=center style=color:".getNewColor($i)."; bgcolor=".getColor($i).">{$nationVote[0][$i]}</td>
         ";
@@ -258,27 +258,27 @@ if($admin[voteopen] >= 2 || $me[userlevel] >= 5) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($nationResult);
 
-        $query = "select no from general where nation='{$nation[nation]}' and npc<2";
+        $query = "select no from general where nation='{$nation['nation']}' and npc<2";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $memCount = MYDB_num_rows($result);
 
-        if(!$nationVoteCount[$nation[nation]]) { $nationVoteCount[$nation[nation]] = 0; }
-        $percentage = @round($nationVoteCount[$nation[nation]] / $memCount * 100, 1);
+        if(!$nationVoteCount[$nation['nation']]) { $nationVoteCount[$nation['nation']] = 0; }
+        $percentage = @round($nationVoteCount[$nation['nation']] / $memCount * 100, 1);
 
         echo "
     <tr>
-        <td align=center style=color:".newColor($nation[color])."; bgcolor={$nation[color]}>{$nation[name]}</td>
-        <td align=center>{$nationVoteCount[$nation[nation]]} / {$memCount} ({$percentage} %)</td>
+        <td align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>{$nation['name']}</td>
+        <td align=center>{$nationVoteCount[$nation['nation']]} / {$memCount} ({$percentage} %)</td>
         <td align=center>
             <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
                 <tr>
         ";
 
         for($k=0; $k < $voteTypeCount; $k++) {
-            $per = @round($nationVote[$nation[nation]][$k] / $memCount * 100, 1);
-//            if($per < 5) { $vote[cnt] = "&nbsp;"; }
+            $per = @round($nationVote[$nation['nation']][$k] / $memCount * 100, 1);
+//            if($per < 5) { $vote['cnt'] = "&nbsp;"; }
             echo "
-                    <td width={$per}% align=center style=color:".getNewColor($k)."; bgcolor=".getColor($k).">{$nationVote[$nation[nation]][$k]}</td>
+                    <td width={$per}% align=center style=color:".getNewColor($k)."; bgcolor=".getColor($k).">{$nationVote[$nation['nation']][$k]}</td>
             ";
         }
 

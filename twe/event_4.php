@@ -9,11 +9,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "
 <html>
 <head>
@@ -37,7 +37,7 @@ $query = "select no from general where user_id='jwh1807'";
 $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
 
-if($general[no] > 0) {
+if($general['no'] > 0) {
     echo "
 <html>
 <head>
@@ -81,15 +81,15 @@ if(rand()%2 == 0) {
     $intel = 150 - $leader - $power;
 }
 
-RegGeneral4($connect,$admin[turnterm],$gencount, 0, 0,    "유기체", $leader, $power, $intel, $personal, $general[specage], $general[specage2], "흠... 그럼 어쩔 수 없이 흉노로 가야겠군요."); $gencount++;
+RegGeneral4($connect,$admin['turnterm'],$gencount, 0, 0,    "유기체", $leader, $power, $intel, $personal, $general['specage'], $general[specage2], "흠... 그럼 어쩔 수 없이 흉노로 가야겠군요."); $gencount++;
 
 //////////////////////////장수 끝///////////////////////////////////////////////
 
 //////////////////////////이벤트///////////////////////////////////////////////
-$log[0] = "<C>●</>{$admin[month]}월:<Y>ⓝ유기체</>가 천하에 이름을 알립니다.";
+$log[0] = "<C>●</>{$admin['month']}월:<Y>ⓝ유기체</>가 천하에 이름을 알립니다.";
 pushAllLog($log);
 
-$history[count($history)] = "<C>●</>$admin[year]년 $admin[month]월:<L><b>【이벤트】</b></>NPC 유기체가 등장합니다. 의병장과 NPC들의 지능 개선을 위해 NPC 두뇌를 체험합니다. 크게 신경쓰진 마세요.";
+$history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<L><b>【이벤트】</b></>NPC 유기체가 등장합니다. 의병장과 NPC들의 지능 개선을 위해 NPC 두뇌를 체험합니다. 크게 신경쓰진 마세요.";
 pushHistory($connect, $history);
 
 echo "<script>location.replace('./');</script>";

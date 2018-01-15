@@ -6,15 +6,15 @@ function processTournament($connect) {
     $admin = MYDB_fetch_array($result);
 
     //수동일땐 무시
-    if($admin[tnmt_auto] == 0) { return; }
+    if($admin['tnmt_auto'] == 0) { return; }
 
-    $type  = $admin[tnmt_type];
-    $tnmt  = $admin[tournament];
-    $phase = $admin[phase];
+    $type  = $admin['tnmt_type'];
+    $tnmt  = $admin['tournament'];
+    $phase = $admin['phase'];
 
     //현시간이 스탬프 지나친경우
-    if($admin[offset] >= 0)  {
-        switch($admin[tnmt_auto]) {
+    if($admin['offset'] >= 0)  {
+        switch($admin['tnmt_auto']) {
         case 1: $unit = 720; break;
         case 2: $unit = 420; break;
         case 3: $unit = 180; break;
@@ -25,7 +25,7 @@ function processTournament($connect) {
         }
 
         //업데이트 횟수
-        $iter = floor($admin[offset] / $unit) + 1;
+        $iter = floor($admin['offset'] / $unit) + 1;
 
         for($i=0; $i < $iter; $i++) {
             switch($tnmt) {
@@ -77,15 +77,15 @@ function processTournament($connect) {
                 $betTerm = $unit * 60;
                 if($betTerm > 3600) { $betTerm = 3600; }
                 //처리 초 더한 날짜
-                $dt = date("Y-m-d H:i:s", strtotime($admin[tnmt_time]) + $unit * $i + $betTerm);
+                $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i + $betTerm);
                 $query = "update game set tournament='$tnmt',phase='$phase',tnmt_time='$dt' where no=1";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 return;
             }
 
-            if($admin[tnmt_auto] == 1) {
+            if($admin['tnmt_auto'] == 1) {
                 //처리 초 더한 날짜
-                $dt = date("Y-m-d H:i:s", strtotime($admin[tnmt_time]) + $unit * $i);
+                $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i);
                 $hr = substr($dt, 11, 2);
                 //지정시간대 넘어가면 중단 20~24시
                 if($hr < 20) {
@@ -108,7 +108,7 @@ function getTournamentTerm($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    switch($admin[tnmt_auto]) {
+    switch($admin['tnmt_auto']) {
     case 1: $str = "경기당 12분"; break;
     case 2: $str = "경기당 7분"; break;
     case 3: $str = "경기당 3분"; break;
@@ -125,8 +125,8 @@ function getTournamentTime($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $tnmt = $admin[tournament];
-    $dt = substr($admin[tnmt_time], 11, 5);
+    $tnmt = $admin['tournament'];
+    $dt = substr($admin['tnmt_time'], 11, 5);
     switch($tnmt) {
     case 1: $tnmt = "개막시간 {$dt}"; break;
     case 2: $tnmt = "다음경기 {$dt}"; break;
@@ -282,13 +282,13 @@ function fillLowGenAll($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $general[no] = 0;
-    $general[name] = "무명장수";
-    $general[npc] = 2;
-    $general[leader] = 10;
-    $general[power] = 10;
-    $general[intel] = 10;
-    $general[explevel] = 10;
+    $general['no'] = 0;
+    $general['name'] = "무명장수";
+    $general['npc'] = 2;
+    $general['leader'] = 10;
+    $general['power'] = 10;
+    $general['intel'] = 10;
+    $general['explevel'] = 10;
 
     for($i=0; $i < 8; $i++) {
         $query = "select grp from tournament where grp='$i'";
@@ -297,7 +297,7 @@ function fillLowGenAll($connect) {
     }
 
     //자동신청하고, 돈 있고, 아직 참가 안한 장수
-    $query = "select no,npc,name,leader,power,intel,explevel from general where tnmt='1' and tournament='0' and gold>='$admin[develcost]' order by rand() limit 0,64";
+    $query = "select no,npc,name,leader,power,intel,explevel from general where tnmt='1' and tournament='0' and gold>='$admin['develcost']' order by rand() limit 0,64";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
 
@@ -312,14 +312,14 @@ function fillLowGenAll($connect) {
                 if($genCount > 0) {
                     $genCount--;
                     $gen = MYDB_fetch_array($result);
-                    $query = "update general set gold=gold-'$admin[develcost]',tournament='1' where no='$gen[no]'";
+                    $query = "update general set gold=gold-'$admin['develcost']',tournament='1' where no='$gen['no']'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-                    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('$gen[no]', '$gen[npc]', '$gen[name]', '$gen[leader]', '$gen[power]', '$gen[intel]', '$gen[explevel]', '$i', '$grpCount[$i]')";
+                    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('$gen['no']', '$gen['npc']', '$gen['name']', '$gen['leader']', '$gen['power']', '$gen['intel']', '$gen['explevel']', '$i', '$grpCount[$i]')";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 //자동신청 장수 없으면 무명장수
                 } else {
-                    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('$general[no]', '$general[npc]', '$general[name]', '$general[leader]', '$general[power]', '$general[intel]', '$general[explevel]', '$i', '$grpCount[$i]')";
+                    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('$general['no']', '$general['npc']', '$general['name']', '$general['leader']', '$general['power']', '$general['intel']', '$general['explevel']', '$i', '$grpCount[$i]')";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 }
                 $grpCount[$i]++;
@@ -396,7 +396,7 @@ function qualify($connect, $tnmt_type, $tnmt, $phase) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             for($k=1; $k <= 4; $k++) {
                 $gen = MYDB_fetch_array($result);
-                $query = "update tournament set prmt='$k' where grp='$gen[grp]' and grp_no='$gen[grp_no]'";
+                $query = "update tournament set prmt='$k' where grp='$gen['grp']' and grp_no='$gen['grp_no']'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         }
@@ -431,10 +431,10 @@ function selection($connect, $tnmt_type, $tnmt, $phase) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
     //본선에 추가
-    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('$general[no]', '$general[npc]', '$general[name]', '$general[ldr]', '$general[pwr]', '$general[itl]', '$general[lvl]', '$grp', '$grp_no', '$general[h]', '$general[w]', '$general[b]')";
+    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('$general['no']', '$general['npc']', '$general['name']', '$general['ldr']', '$general['pwr']', '$general['itl']', '$general['lvl']', '$grp', '$grp_no', '$general[h]', '$general[w]', '$general[b]')";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //시드 삭제
-    $query = "update tournament set prmt=0 where grp='$general[grp]' and grp_no='$general[grp_no]'";
+    $query = "update tournament set prmt=0 where grp='$general['grp']' and grp_no='$general['grp_no']'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     if($phase < 31) {
@@ -473,7 +473,7 @@ function finallySingle($connect, $tnmt_type, $tnmt, $phase) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             for($k=1; $k <= 2; $k++) {
                 $gen = MYDB_fetch_array($result);
-                $query = "update tournament set prmt='$k' where grp='$gen[grp]' and grp_no='$gen[grp_no]'";
+                $query = "update tournament set prmt='$k' where grp='$gen['grp']' and grp_no='$gen['grp_no']'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         }
@@ -499,7 +499,7 @@ function final16set($connect) {
         //16강에 추가
         $newGrp    = 20 + floor($i / 2);
         $newGrp_no = $i % 2;
-        $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('$general[no]', '$general[npc]', '$general[name]', '$general[ldr]', '$general[pwr]', '$general[itl]', '$general[lvl]', '$newGrp', '$newGrp_no', '$general[h]', '$general[w]', '$general[b]')";
+        $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('$general['no']', '$general['npc']', '$general['name']', '$general['ldr']', '$general['pwr']', '$general['itl']', '$general['lvl']', '$newGrp', '$newGrp_no', '$general[h]', '$general[w]', '$general[b]')";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     $query = "update tournament set prmt=0";
@@ -529,7 +529,7 @@ function finalFight($connect, $tnmt_type, $tnmt, $phase, $type) {
     //x강에 추가
     $newGrp    = floor($phase / 2) + $offset + 10;
     $newGrp_no = $phase % 2;
-    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('$general[no]', '$general[npc]', '$general[name]', '$general[ldr]', '$general[pwr]', '$general[itl]', '$general[lvl]', '$newGrp', '$newGrp_no', '$general[h]', '$general[w]', '$general[b]')";
+    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('$general['no']', '$general['npc']', '$general['name']', '$general['ldr']', '$general['pwr']', '$general['itl']', '$general['lvl']', '$newGrp', '$newGrp_no', '$general[h]', '$general[w]', '$general[b]')";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     if($phase >= $turn) {
@@ -551,71 +551,71 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     }
 
     //16강자 명성 돈
-    $cost = $admin[develcost];
+    $cost = $admin['develcost'];
     $query = "select no,name from tournament where grp>=20 and grp<30";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+25,gold=gold+'$cost',{$tp2}g={$tp2}g+1 where no='$general[no]'";
+        $query = "update general set experience=experience+25,gold=gold+'$cost',{$tp2}g={$tp2}g+1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
-        $genNo[$i] = $general[no];
-        $genName[$i] = $general[name];
-        $genGold[$general[no]] = $cost;
-        $genCall[$general[no]] = "<O>16강 진출</>";
+        $genNo[$i] = $general['no'];
+        $genName[$i] = $general['name'];
+        $genGold[$general['no']] = $cost;
+        $genCall[$general['no']] = "<O>16강 진출</>";
     }
     //8강자 명성 돈
-    $cost = $admin[develcost] * 2;
+    $cost = $admin['develcost'] * 2;
     $query = "select no from tournament where grp>=30 and grp<40";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+50,gold=gold+'$cost',{$tp2}g={$tp2}g+1 where no='$general[no]'";
+        $query = "update general set experience=experience+50,gold=gold+'$cost',{$tp2}g={$tp2}g+1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
-        $genGold[$general[no]] += $cost;
-        $genCall[$general[no]] = "<O>8강 진출</>";
+        $genGold[$general['no']] += $cost;
+        $genCall[$general['no']] = "<O>8강 진출</>";
     }
     //4강자 명성 돈
-    $cost = $admin[develcost] * 3;
+    $cost = $admin['develcost'] * 3;
     $query = "select no from tournament where grp>=40 and grp<50";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+75,gold=gold+'$cost',{$tp2}g={$tp2}g+2 where no='$general[no]'";
+        $query = "update general set experience=experience+75,gold=gold+'$cost',{$tp2}g={$tp2}g+2 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
-        $genGold[$general[no]] += $cost;
-        $genCall[$general[no]] = "<O>4강 진출</>";
+        $genGold[$general['no']] += $cost;
+        $genCall[$general['no']] = "<O>4강 진출</>";
     }
     //결승자 명성 돈
-    $cost = $admin[develcost] * 6;
+    $cost = $admin['develcost'] * 6;
     $query = "select no from tournament where grp>=50 and grp<60";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+150,gold=gold+'$cost',{$tp2}g={$tp2}g+2 where no='$general[no]'";
+        $query = "update general set experience=experience+150,gold=gold+'$cost',{$tp2}g={$tp2}g+2 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
-        $genGold[$general[no]] += $cost;
-        $genCall[$general[no]] = "<O>준우승</>으";
+        $genGold[$general['no']] += $cost;
+        $genCall[$general['no']] = "<O>준우승</>으";
     }
     //우승자 명성 돈
-    $cost = $admin[develcost] * 8;
+    $cost = $admin['develcost'] * 8;
     $query = "select no from tournament where grp>=60";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set experience=experience+200,gold=gold+'$cost',{$tp2}g={$tp2}g+3,{$tp2}p={$tp2}p+1 where no='$general[no]'";
+        $query = "update general set experience=experience+200,gold=gold+'$cost',{$tp2}g={$tp2}g+3,{$tp2}p={$tp2}p+1 where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
-        $genGold[$general[no]] += $cost;
-        $genCall[$general[no]] = "<O>우승</>으";
+        $genGold[$general['no']] += $cost;
+        $genCall[$general['no']] = "<O>우승</>으";
     }
     //우승자 이름
     $query = "select no,name from tournament where grp=60";
@@ -631,24 +631,24 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     //장수열전 기록
-    $query = "select no,history from general where no={$general[no]}";
+    $query = "select no,history from general where no={$general['no']}";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen1 = MYDB_fetch_array($result);
-    $query = "select no,history from general where no={$general2[no]}";
+    $query = "select no,history from general where no={$general2['no']}";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen2 = MYDB_fetch_array($result);
-    $gen1 = addHistory($connect, $gen1, "<C>●</>{$admin[year]}년 {$admin[month]}월:<C>{$tp}</> 대회에서 우승");
-    $gen2 = addHistory($connect, $gen2, "<C>●</>{$admin[year]}년 {$admin[month]}월:<C>{$tp}</> 대회에서 준우승");
+    $gen1 = addHistory($connect, $gen1, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 우승");
+    $gen2 = addHistory($connect, $gen2, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 준우승");
 
-    $cost = $admin[develcost] * 20;
-    $cost2 = $admin[develcost] * 12;
-    $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회에서 <Y>{$general[name]}</>(이)가 <C>우승</>, <Y>{$general2[name]}</>(이)가 <C>준우승</>을 차지하여 천하에 이름을 떨칩니다!";
+    $cost = $admin['develcost'] * 20;
+    $cost2 = $admin['develcost'] * 12;
+    $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회에서 <Y>{$general['name']}</>(이)가 <C>우승</>, <Y>{$general2['name']}</>(이)가 <C>준우승</>을 차지하여 천하에 이름을 떨칩니다!";
     $history[1] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회의 <S>우승자</>에게는 <C>{$cost}</>, <S>준우승자</>에겐 <C>{$cost2}</>의 <S>상금</>과 약간의 <S>명성</>이 주어집니다!";
     pushHistory($connect, $history);
 
     for($i=0; $i < count($genNo); $i++) {
-        $general[no]   = $genNo[$i];
-        $general[name] = $genName[$i];
+        $general['no']   = $genNo[$i];
+        $general['name'] = $genName[$i];
         $log[0] = "<S>◆</><C>{$tp}</> 대회의 {$genCall[$genNo[$i]]}로 <C>{$genGold[$genNo[$i]]}</>의 <S>상금</>, 약간의 <S>명성</> 획득!";
         pushGenLog($general, $log);
     }
@@ -658,15 +658,15 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
     //16강 목록에서 검색
-    $query = "select grp,grp_no from tournament where grp>=20 and grp<30 and no='$general[no]'";
+    $query = "select grp,grp_no from tournament where grp>=20 and grp<30 and no='$general['no']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    $no = ($general[grp] - 20) * 2 + $general[grp_no];
+    $no = ($general['grp'] - 20) * 2 + $general['grp_no'];
 
     $query = "select bet{$no},bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from game where no=1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
-    $bet = @round($admin[bet] /  $admin["bet{$no}"], 2);
+    $bet = @round($admin['bet'] /  $admin["bet{$no}"], 2);
 
     //당첨칸에 베팅한 사람들만
     $query = "select no,name,gold,bet{$no} as bet from general where bet{$no}>0";
@@ -674,9 +674,9 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $gen = MYDB_fetch_array($result);
-        $gold = round($gen[bet] * $bet);
+        $gold = round($gen['bet'] * $bet);
         //금 지급
-        $query = "update general set gold=gold+'$gold',betwingold=betwingold+'$gold',betwin=betwin+1 where no='$gen[no]'";
+        $query = "update general set gold=gold+'$gold',betwingold=betwingold+'$gold',betwin=betwin+1 where no='$gen['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //로그
         $log[0] = "<S>◆</><C>{$tp}</> 대회의 베팅 당첨으로 <C>{$gold}</>의 <S>금</> 획득!";
@@ -690,13 +690,13 @@ function setRefund($connect) {
     $admin = MYDB_fetch_array($result);
 
     //16강자 명성 돈
-    $cost = $admin[develcost];
+    $cost = $admin['develcost'];
     $query = "select no from tournament where grp<10";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
-        $query = "update general set gold=gold+'$cost' where no='$general[no]'";
+        $query = "update general set gold=gold+'$cost' where no='$general['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
@@ -736,60 +736,60 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     elseif($tnmt_type == 2) { $tp = "pwr"; $tp2 = "tp"; }
     elseif($tnmt_type == 3) { $tp = "itl"; $tp2 = "ti"; }
 
-    $e1 = $energy1 = round($gen1[$tp] * getLog($gen1[lvl], $gen2[lvl]) * 10);
-    $e2 = $energy2 = round($gen2[$tp] * getLog($gen1[lvl], $gen2[lvl]) * 10);
+    $e1 = $energy1 = round($gen1[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
+    $e2 = $energy2 = round($gen2[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
 
     //아이템 로그
     if($gen1[h] > 6 && ($tnmt_type == 0 || $tnmt_type == 1)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <S>".getHorseName($gen1[h])."</>(이)가 포효합니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <S>".getHorseName($gen1[h])."</>(이)가 그 위용을 뽐냅니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>(이)가 <S>".getHorseName($gen1[h])."</>(을)를 타고 있습니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <S>".getHorseName($gen1[h])."</>(이)가 갈기를 휘날립니다!"; break;
+        case 0: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getHorseName($gen1[h])."</>(이)가 포효합니다!"; break;
+        case 1: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getHorseName($gen1[h])."</>(이)가 그 위용을 뽐냅니다!"; break;
+        case 2: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getHorseName($gen1[h])."</>(을)를 타고 있습니다!"; break;
+        case 3: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getHorseName($gen1[h])."</>(이)가 갈기를 휘날립니다!"; break;
         }
     }
     if($gen1[w] > 6 && ($tnmt_type == 0 || $tnmt_type == 2)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <S>".getWeapName($gen1[w])."</>(이)가 번뜩입니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <S>".getWeapName($gen1[w])."</>(이)가 푸르게 빛납니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <S>".getWeapName($gen1[w])."</>에서 살기가 느껴집니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 손에는 <S>".getWeapName($gen1[w])."</>(이)가 쥐어져 있습니다!"; break;
+        case 0: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1[w])."</>(이)가 번뜩입니다!"; break;
+        case 1: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1[w])."</>(이)가 푸르게 빛납니다!"; break;
+        case 2: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1[w])."</>에서 살기가 느껴집니다!"; break;
+        case 3: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 손에는 <S>".getWeapName($gen1[w])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
     if($gen1[b] > 6 && ($tnmt_type == 0 || $tnmt_type == 3)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>(이)가 <S>".getBookName($gen1[b])."</>(을)를 펼쳐듭니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>(이)가 <S>".getBookName($gen1[b])."</>(을)를 품에서 꺼냅니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>(이)가 <S>".getBookName($gen1[b])."</>(을)를 들고 있습니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 손에는 <S>".getBookName($gen1[b])."</>(이)가 쥐어져 있습니다!"; break;
+        case 0: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1[b])."</>(을)를 펼쳐듭니다!"; break;
+        case 1: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1[b])."</>(을)를 품에서 꺼냅니다!"; break;
+        case 2: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1[b])."</>(을)를 들고 있습니다!"; break;
+        case 3: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 손에는 <S>".getBookName($gen1[b])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
     if($gen2[h] > 6 && ($tnmt_type == 0 || $tnmt_type == 1)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <S>".getHorseName($gen2[h])."</>(이)가 포효합니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <S>".getHorseName($gen2[h])."</>(이)가 그 위용을 뽐냅니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>(이)가 <S>".getHorseName($gen2[h])."</>(을)를 타고 있습니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <S>".getHorseName($gen2[h])."</>(이)가 갈기를 휘날립니다!"; break;
+        case 0: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2[h])."</>(이)가 포효합니다!"; break;
+        case 1: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2[h])."</>(이)가 그 위용을 뽐냅니다!"; break;
+        case 2: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getHorseName($gen2[h])."</>(을)를 타고 있습니다!"; break;
+        case 3: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2[h])."</>(이)가 갈기를 휘날립니다!"; break;
         }
     }
     if($gen2[w] > 6 && ($tnmt_type == 0 || $tnmt_type == 2)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <S>".getWeapName($gen2[w])."</>(이)가 번뜩입니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <S>".getWeapName($gen2[w])."</>(이)가 푸르게 빛납니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <S>".getWeapName($gen2[w])."</>에서 살기가 느껴집니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 손에는 <S>".getWeapName($gen2[w])."</>(이)가 쥐어져 있습니다!"; break;
+        case 0: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2[w])."</>(이)가 번뜩입니다!"; break;
+        case 1: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2[w])."</>(이)가 푸르게 빛납니다!"; break;
+        case 2: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2[w])."</>에서 살기가 느껴집니다!"; break;
+        case 3: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 손에는 <S>".getWeapName($gen2[w])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
     if($gen2[b] > 6 && ($tnmt_type == 0 || $tnmt_type == 3)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>(이)가 <S>".getBookName($gen2[b])."</>(을)를 펼쳐듭니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>(이)가 <S>".getBookName($gen2[b])."</>(을)를 품에서 꺼냅니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>(이)가 <S>".getBookName($gen2[b])."</>(을)를 들고 있습니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 손에는 <S>".getBookName($gen2[b])."</>(이)가 쥐어져 있습니다!"; break;
+        case 0: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2[b])."</>(을)를 펼쳐듭니다!"; break;
+        case 1: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2[b])."</>(을)를 품에서 꺼냅니다!"; break;
+        case 2: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2[b])."</>(을)를 들고 있습니다!"; break;
+        case 3: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 손에는 <S>".getBookName($gen2[b])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
 
-    $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</> <C>({$energy1})</> vs <C>({$energy2})</> <Y>{$gen2[name]}</>";
+    $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</> <C>({$energy1})</> vs <C>({$energy2})</> <Y>{$gen2['name']}</>";
 
     $gd1 = 0;       $gd2 = 0;
     $phase = 0;     $sel = 2;
@@ -813,7 +813,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
             elseif($tnmt_type == 1) { switch(rand()%2) { case 0: $str = "봉시진"; break; case 1: $str = "어린진"; break; } }
             elseif($tnmt_type == 2) { switch(rand()%2) { case 0: $str = "삼단"; break; case 1: $str = "나선"; break; } }
             elseif($tnmt_type == 3) { switch(rand()%2) { case 0: $str = "독설"; break; case 1: $str = "논파"; break; } }
-            $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 분노의 <M>{$str}</> 공격!";
+            $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 분노의 <M>{$str}</> 공격!";
         }
         $ratio = rand() % 300;
         if($e2 / 5 > $energy2 && $damage2 > $damage1 && $gen2[$tp] >= $ratio) {
@@ -823,24 +823,24 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
             elseif($tnmt_type == 1) { switch(rand()%2) { case 0: $str = "봉시진"; break; case 1: $str = "어린진"; break; } }
             elseif($tnmt_type == 2) { switch(rand()%2) { case 0: $str = "삼단"; break; case 1: $str = "나선"; break; } }
             elseif($tnmt_type == 3) { switch(rand()%2) { case 0: $str = "독설"; break; case 1: $str = "논파"; break; } }
-            $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 분노의 <M>{$str}</> 공격!";
+            $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 분노의 <M>{$str}</> 공격!";
         }
         //1합 승부
         if($phase == 1) {
             $ratio = rand() % 400;
             if($gen1[$tp]*0.9 > $gen2[$tp] && $gen1[$tp] >= $ratio) {
                 $damage1 = 0;   $damage2 = $e2;
-                if    ($tnmt_type == 0) { $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <M>압도</>!"; }
-                elseif($tnmt_type == 1) { $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <M>팔문금쇄진</>!"; }
-                elseif($tnmt_type == 2) { $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <M>일격 필살</>!"; }
-                elseif($tnmt_type == 3) { $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <M>모독 욕설</>!"; }
+                if    ($tnmt_type == 0) { $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <M>압도</>!"; }
+                elseif($tnmt_type == 1) { $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <M>팔문금쇄진</>!"; }
+                elseif($tnmt_type == 2) { $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <M>일격 필살</>!"; }
+                elseif($tnmt_type == 3) { $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <M>모독 욕설</>!"; }
             }
             if($gen2[$tp]*0.9 > $gen1[$tp] && $gen2[$tp] >= $ratio) {
                 $damage2 = 0;   $damage1 = $e1;
-                if    ($tnmt_type == 0) { $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <M>압도</>!"; }
-                elseif($tnmt_type == 1) { $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <M>팔문금쇄진</>!"; }
-                elseif($tnmt_type == 2) { $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <M>일격 필살</>!"; }
-                elseif($tnmt_type == 3) { $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <M>모독 욕설</>!"; }
+                if    ($tnmt_type == 0) { $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <M>압도</>!"; }
+                elseif($tnmt_type == 1) { $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <M>팔문금쇄진</>!"; }
+                elseif($tnmt_type == 2) { $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <M>일격 필살</>!"; }
+                elseif($tnmt_type == 3) { $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <M>모독 욕설</>!"; }
             }
         } else {
             $ratio = rand() % 1000;
@@ -851,7 +851,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
                 elseif($tnmt_type == 1) { switch(rand()%6) { case 0: $str = "추행진"; break; case 1: $str = "학익진"; break; case 2: $str = "장사진"; break; case 3: $str = "형액진"; break; case 4: $str = "기형진"; break; case 5: $str = "구행진"; break; } }
                 elseif($tnmt_type == 2) { switch(rand()%6) { case 0: $str = "기합"; break; case 1: $str = "기염"; break; case 2: $str = "반격"; break; case 3: $str = "역공"; break; case 4: $str = "삼단"; break; case 5: $str = "나선"; break; } }
                 elseif($tnmt_type == 3) { switch(rand()%6) { case 0: $str = "논파"; break; case 1: $str = "항변"; break; case 2: $str = "반론"; break; case 3: $str = "반박"; break; case 4: $str = "도발"; break; case 5: $str = "면박"; break; } }
-                $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</>의 <M>{$str}</>!";
+                $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <M>{$str}</>!";
             }
             $ratio = rand() % 1000;
             if($critical2 == 0 && $gen2[$tp] >= $ratio) {
@@ -861,7 +861,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
                 elseif($tnmt_type == 1) { switch(rand()%6) { case 0: $str = "추행진"; break; case 1: $str = "학익진"; break; case 2: $str = "장사진"; break; case 3: $str = "형액진"; break; case 4: $str = "기형진"; break; case 5: $str = "구행진"; break; } }
                 elseif($tnmt_type == 2) { switch(rand()%6) { case 0: $str = "기합"; break; case 1: $str = "기염"; break; case 2: $str = "반격"; break; case 3: $str = "역공"; break; case 4: $str = "삼단"; break; case 5: $str = "나선"; break; } }
                 elseif($tnmt_type == 3) { switch(rand()%6) { case 0: $str = "논파"; break; case 1: $str = "항변"; break; case 2: $str = "반론"; break; case 3: $str = "반박"; break; case 4: $str = "도발"; break; case 5: $str = "면박"; break; } }
-                $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</>의 <M>{$str}</>!";
+                $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <M>{$str}</>!";
             }
         }
 
@@ -911,17 +911,17 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         if($energy2 <= 0) { $sel = 0; break; }
     }
 
-    $query = "select {$tp2}g as gl from general where no='$gen1[no]'";
+    $query = "select {$tp2}g as gl from general where no='$gen1['no']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general1 = MYDB_fetch_array($result);
 
-    $query = "select {$tp2}g as gl from general where no='$gen2[no]'";
+    $query = "select {$tp2}g as gl from general where no='$gen2['no']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general2 = MYDB_fetch_array($result);
 
     switch($sel) {
     case 0:
-        $log[count($log)] = "<S>●</> <Y>{$gen1[name]}</> <S>승리</>!";
+        $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</> <S>승리</>!";
 
         $gl = round(($gd2 - $gd1) / 50);
         $query = "update tournament set win=win+1,gl=gl+'$gl' where grp='$group' and grp_no='$g1'";
@@ -929,17 +929,17 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $query = "update tournament set lose=lose+1,gl=gl-'$gl' where grp='$group' and grp_no='$g2'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        if($general1[gl] > $general2[gl])      { $gl1 = "+1"; $gl2 = "+0"; }
-        elseif($general1[gl] == $general2[gl]) { $gl1 = "+2"; $gl2 = "-1"; }
+        if($general1['gl'] > $general2['gl'])      { $gl1 = "+1"; $gl2 = "+0"; }
+        elseif($general1['gl'] == $general2['gl']) { $gl1 = "+2"; $gl2 = "-1"; }
         else                                   { $gl1 = "+3"; $gl2 = "-2"; }
 
-        $query = "update general set {$tp2}w={$tp2}w+1,{$tp2}g={$tp2}g{$gl1} where no='$gen1[no]'";
+        $query = "update general set {$tp2}w={$tp2}w+1,{$tp2}g={$tp2}g{$gl1} where no='$gen1['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set {$tp2}l={$tp2}l+1,{$tp2}g={$tp2}g{$gl2} where no='$gen2[no]'";
+        $query = "update general set {$tp2}l={$tp2}l+1,{$tp2}g={$tp2}g{$gl2} where no='$gen2['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 1:
-        $log[count($log)] = "<S>●</> <Y>{$gen2[name]}</> <S>승리</>!";
+        $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</> <S>승리</>!";
 
         $gl = round(($gd1 - $gd2) / 50);
         $query = "update tournament set win=win+1,gl=gl+'$gl' where grp='$group' and grp_no='$g2'";
@@ -947,13 +947,13 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $query = "update tournament set lose=lose+1,gl=gl-'$gl' where grp='$group' and grp_no='$g1'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        if($general2[gl] > $general1[gl])      { $gl2 = "+1"; $gl1 = "+0"; }
-        elseif($general2[gl] == $general1[gl]) { $gl2 = "+2"; $gl1 = "-1"; }
+        if($general2['gl'] > $general1['gl'])      { $gl2 = "+1"; $gl1 = "+0"; }
+        elseif($general2['gl'] == $general1['gl']) { $gl2 = "+2"; $gl1 = "-1"; }
         else                                   { $gl2 = "+3"; $gl1 = "-2"; }
 
-        $query = "update general set {$tp2}l={$tp2}l+1,{$tp2}g={$tp2}g{$gl1} where no='$gen1[no]'";
+        $query = "update general set {$tp2}l={$tp2}l+1,{$tp2}g={$tp2}g{$gl1} where no='$gen1['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set {$tp2}w={$tp2}w+1,{$tp2}g={$tp2}g{$gl2} where no='$gen2[no]'";
+        $query = "update general set {$tp2}w={$tp2}w+1,{$tp2}g={$tp2}g{$gl2} where no='$gen2['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 2:
@@ -962,13 +962,13 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $query = "update tournament set draw=draw+1 where grp='$group' and (grp_no='$g1' or grp_no='$g2')";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        if($general1[gl] > $general2[gl])      { $gl2 = "-1"; $gl1 = "+1"; }
-        elseif($general1[gl] == $general2[gl]) { $gl2 = "+0"; $gl1 = "+0"; }
+        if($general1['gl'] > $general2['gl'])      { $gl2 = "-1"; $gl1 = "+1"; }
+        elseif($general1['gl'] == $general2['gl']) { $gl2 = "+0"; $gl1 = "+0"; }
         else                                   { $gl2 = "+1"; $gl1 = "-1"; }
 
-        $query = "update general set {$tp2}d={$tp2}d+1,{$tp2}g={$tp2}g{$gl1} where no='$gen1[no]'";
+        $query = "update general set {$tp2}d={$tp2}d+1,{$tp2}g={$tp2}g{$gl1} where no='$gen1['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set {$tp2}d={$tp2}d+1,{$tp2}g={$tp2}g{$gl2} where no='$gen2[no]'";
+        $query = "update general set {$tp2}d={$tp2}d+1,{$tp2}g={$tp2}g{$gl2} where no='$gen2['no']'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     }
@@ -984,7 +984,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen2 = MYDB_fetch_array($result);
 
-        $log[count($log)] = "--------------- 다음경기 ---------------<br><S>☞</> <Y>{$gen1[name]}</> vs <Y>{$gen2[name]}</>";
+        $log[count($log)] = "--------------- 다음경기 ---------------<br><S>☞</> <Y>{$gen1['name']}</> vs <Y>{$gen2['name']}</>";
     }
 
     pushFightLog($group, $log);

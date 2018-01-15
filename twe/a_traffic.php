@@ -26,10 +26,10 @@ for($i=0; $i < 11; $i++) {
     $refresh[$i] = trim($parse[3]);
     $online[$i]  = trim($parse[4]);
 }
-if($game[maxrefresh] == 0) { $game[maxrefresh] = 1; }
-if($game[maxrefresh] < $game[refresh]) { $game[maxrefresh] = $game[refresh]; }
-if($game[maxonline] == 0) { $game[maxonline] = 1; }
-if($game[maxonline] < $curonline) { $game[maxonline] = $curonline; }
+if($game['maxrefresh'] == 0) { $game['maxrefresh'] = 1; }
+if($game['maxrefresh'] < $game['refresh']) { $game['maxrefresh'] = $game['refresh']; }
+if($game['maxonline'] == 0) { $game['maxonline'] = 1; }
+if($game['maxonline'] < $curonline) { $game['maxonline'] = $curonline; }
 ?>
 <html>
 <head>
@@ -49,7 +49,7 @@ if($game[maxonline] < $curonline) { $game[maxonline] = $curonline; }
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 량</font></td></tr>
 <?php
 for($i=0; $i < 11; $i++) {
-    $w = round($refresh[$i] / $game[maxrefresh] * 100, 1);
+    $w = round($refresh[$i] / $game['maxrefresh'] * 100, 1);
     if($w >= 100) { $w -= 0.1; }
     if($refresh[$i] < 10 && $w < 3) { $w = 3; }
     elseif($refresh[$i] < 100 && $w < 6) { $w = 6; }
@@ -73,23 +73,23 @@ for($i=0; $i < 11; $i++) {
             </tr>
     ";
 }
-$w = round($game[refresh] / $game[maxrefresh] * 100, 1);
+$w = round($game['refresh'] / $game['maxrefresh'] * 100, 1);
 if($w >= 100) { $w -= 0.1; }
-if($game[refresh] < 10 && $w < 3) { $w = 3; }
-elseif($game[refresh] < 100 && $w < 6) { $w = 6; }
-elseif($game[refresh] < 1000 && $w < 9) { $w = 9; }
+if($game['refresh'] < 10 && $w < 3) { $w = 3; }
+elseif($game['refresh'] < 100 && $w < 6) { $w = 6; }
+elseif($game['refresh'] < 1000 && $w < 9) { $w = 9; }
 $w2 = round(100 - $w, 1);
 $color = getColor($w);
 $dt = date('H:i');
 echo "
             <tr height=30>
-                <td width=100 align=center>{$game[year]}년 {$game[month]}월</td>
+                <td width=100 align=center>{$game['year']}년 {$game['month']}월</td>
                 <td width=60 align=center id=bg2>{$dt}</td>
                 <td width=2 align=center id=bg1></td>
                 <td width=320 align=center>
                     <table align=center width=100% height=30 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
                         <tr>
-                            <td width={$w}% bgcolor={$color} align=right>{$game[refresh]}&nbsp;</td>
+                            <td width={$w}% bgcolor={$color} align=right>{$game['refresh']}&nbsp;</td>
                             <td width={$w2}% id=bg0><font size=1>&nbsp;</font></td>
                         </tr>
                     </table>
@@ -97,7 +97,7 @@ echo "
             </tr>
             <tr><td colspan=4 height=5 align=center id=bg1></td></tr>
             <tr>
-                <td colspan=4 height=30 align=center id=bg0>최고기록: {$game[maxrefresh]}</td>
+                <td colspan=4 height=30 align=center id=bg0>최고기록: {$game['maxrefresh']}</td>
             </tr>
 ";
 ?>
@@ -108,7 +108,7 @@ echo "
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 자</font></td></tr>
 <?php
 for($i=0; $i < 11; $i++) {
-    $w = round($online[$i] / $game[maxonline] * 100, 1);
+    $w = round($online[$i] / $game['maxonline'] * 100, 1);
     if($w >= 100) { $w -= 0.1; }
     if($online[$i] < 10 && $w < 3) { $w = 3; }
     elseif($online[$i] < 100 && $w < 6) { $w = 6; }
@@ -132,7 +132,7 @@ for($i=0; $i < 11; $i++) {
             </tr>
     ";
 }
-$w = round($curonline / $game[maxonline] * 100, 1);
+$w = round($curonline / $game['maxonline'] * 100, 1);
 if($w >= 100) { $w -= 0.1; }
 if($curonline < 10 && $w < 3) { $w = 3; }
 elseif($curonline < 100 && $w < 6) { $w = 6; }
@@ -142,7 +142,7 @@ $color = getColor($w);
 $dt = date('H:i');
 echo "
             <tr height=30>
-                <td width=100 align=center>{$game[year]}년 {$game[month]}월</td>
+                <td width=100 align=center>{$game['year']}년 {$game['month']}월</td>
                 <td width=60 align=center id=bg2>{$dt}</td>
                 <td width=2 align=center id=bg1></td>
                 <td width=320 align=center>
@@ -156,7 +156,7 @@ echo "
             </tr>
             <tr><td colspan=4 height=5 align=center id=bg1></td></tr>
             <tr>
-                <td colspan=4 height=30 align=center id=bg0>최고기록: {$game[maxonline]}</td>
+                <td colspan=4 height=30 align=center id=bg0>최고기록: {$game['maxonline']}</td>
             </tr>
 ";
 ?>
@@ -170,8 +170,8 @@ echo "
 $query = "select sum(refresh) as refresh,sum(connect) as connect from general";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $user = MYDB_fetch_array($result);
-$user[connect] = round($user[connect], 1);
-$maxrefresh = $user[refresh];
+$user['connect'] = round($user['connect'], 1);
+$maxrefresh = $user['refresh'];
 
 $w = round($maxrefresh / $maxrefresh * 100, 1);
 $w2 = round(100 - $w, 1);
@@ -184,7 +184,7 @@ echo "
     </tr>
     <tr>
         <td align=center>접속자 총합</td>
-        <td align=center>{$user[connect]}({$maxrefresh})</td>
+        <td align=center>{$user['connect']}({$maxrefresh})</td>
         <td align=center>
             <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
                 <tr>
@@ -202,13 +202,13 @@ $count = MYDB_num_rows($result);
 for($i=0; $i < $count; $i++) {
     $user = MYDB_fetch_array($result);
 
-    $w = round($user[refresh] / $maxrefresh * 100, 1);
+    $w = round($user['refresh'] / $maxrefresh * 100, 1);
     $w2 = round(100 - $w, 1);
     $color = getColor($w);
     echo "
     <tr>
-        <td width=98  align=center>{$user[name]}</td>
-        <td width=98  align=center>{$user[connect]}({$user[refresh]})</td>
+        <td width=98  align=center>{$user['name']}</td>
+        <td width=98  align=center>{$user['connect']}({$user['refresh']})</td>
         <td width=798 align=center>
             <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
                 <tr>

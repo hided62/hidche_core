@@ -143,15 +143,15 @@ function ender($type=0) {
 }
 
 function command_99($connect, $turn) {
-    $query = "select nation,level from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation,level from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    if($me[level] >= 5) {
+    if($me['level'] >= 5) {
         $command = EncodeCommand(0, 0, 0, 99);
 
         for($i=0; $i < sizeof($turn); $i++) {
-            $query = "update nation set l{$me[level]}turn{$turn[$i]}='{$command}' where nation='$me[nation]'";
+            $query = "update nation set l{$me['level']}turn{$turn[$i]}='{$command}' where nation='$me['nation']'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
@@ -206,30 +206,30 @@ function command_11($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
     //현재 도시
-    $query = "select city,region from city where city='$me[city]'";
+    $query = "select city,region from city where city='$me['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $curCity = MYDB_fetch_array($result);
 
-    $query = "select level,tech from nation where nation='$me[nation]'";
+    $query = "select level,tech from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("process53 ".MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($me[level] == 12) {
-        $lbonus = $nation[level] * 2;
-    } elseif($me[level] >= 5) {
-        $lbonus = $nation[level];
+    if($me['level'] == 12) {
+        $lbonus = $nation['level'] * 2;
+    } elseif($me['level'] >= 5) {
+        $lbonus = $nation['level'];
     } else {
         $lbonus = 0;
     }
 
     $explain = GetExplain();
 
-    if($admin[year] < $admin[startyear]+3) {
+    if($admin['year'] < $admin['startyear']+3) {
         //그 국가에서 그 병종 가능한지
         $valid[0]  = 1;             $color[0]  = $_basecolor2;
         $valid[10] = 1;             $color[10] = $_basecolor2;
@@ -239,23 +239,23 @@ function command_11($connect, $turn, $command) {
         $valid[41] = 1;             $color[41] = "red"; // 충차
     } else {
         // 아국 도시 구분
-        $query = "select city,level,region from city where nation='$me[nation]'";
+        $query = "select city,level,region from city where nation='$me['nation']'";
         $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
         $citycount = MYDB_num_rows($result);
 
         for($i=0; $i < $citycount; $i++) {
             $city = MYDB_fetch_array($result);
             // 기술 1000 이상부터 지역병
-            if($nation[tech] >= 1000) {
-                $myregion[$city[region]] = 1;
+            if($nation['tech'] >= 1000) {
+                $myregion[$city['region']] = 1;
             }
             // 기술 2000 이상부터 이민족병
-            if($city[level] == 4 && $nation[tech] >= 2000) {
-                $mycity[$city[city]] = 1;
+            if($city['level'] == 4 && $nation['tech'] >= 2000) {
+                $mycity[$city['city']] = 1;
             }
             // 기술 3000 이상부터 특수병
-            if($city[level] == 8 && $nation[tech] >= 3000) {
-                $mycity[$city[city]] = 1;
+            if($city['level'] == 8 && $nation['tech'] >= 3000) {
+                $mycity[$city['city']] = 1;
             }
         }
 
@@ -294,19 +294,19 @@ function command_11($connect, $turn, $command) {
         $valid[43] = $mycity[5];    $color[43] = "limegreen"; // 목우(성도)
 
         // 남귀병은 기술1등급부터
-        if($nation[tech] < 1000) {
+        if($nation['tech'] < 1000) {
             $valid[35] = 0;
         }
         // 충차는 기술1등급부터
-        if($nation[tech] < 1000) {
+        if($nation['tech'] < 1000) {
             $valid[41] = 0;
         }
     }
 
-    $leader = floor($me[leader] * (100 - $me[injury])/100) + getHorseEff($me[horse]) + $lbonus;
-    $crew = $leader - round($me[crew]/100);
-    $abil = getTechAbil($nation[tech]);
-    $cost = getTechCost($nation[tech]);
+    $leader = floor($me['leader'] * (100 - $me['injury'])/100) + getHorseEff($me['horse']) + $lbonus;
+    $crew = $leader - round($me['crew']/100);
+    $abil = getTechAbil($nation['tech']);
+    $cost = getTechCost($nation['tech']);
     echo "
 <font size=2>병사를 모집합니다. 훈련과 사기치는 낮지만 가격이 저렴합니다.<br>
 가능한 수보다 많게 입력하면 가능한 최대 병사를 모집합니다.<br>
@@ -356,11 +356,11 @@ function calc(cost, formnum) {
 <table border=1 cellspacing=0 bordercolordark=gray bordercolorlight=black>
     <tr>
         <td colspan=10 align=center id=bg2>
-            현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation[tech]).">
+            현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
             현재 통솔 : <input type=text style=text-align:right;color:white;background-color:black size=3 readonly value=$leader>
-            현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".getTypename($me[crewtype]).">
-            현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me[crew]>
-            현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me[gold]>
+            현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".getTypename($me['crewtype']).">
+            현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me['crew']>
+            현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me['gold']>
         </td>
     </tr>
     <tr>
@@ -384,7 +384,7 @@ function calc(cost, formnum) {
             $ric = $admin["ric{$i}"] * $cost;
             $cst = $admin["cst{$i}"] * $cost;
             //성격 보정
-            $cst = CharCost($cst, $me[personal]);
+            $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 보병, 징병
             if($me[special2] == 50) { $cst *= 0.9; }
             if($me[special2] == 72) { $cst *= 0.5; }
@@ -396,7 +396,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -434,7 +434,7 @@ function calc(cost, formnum) {
             $ric = $admin["ric{$i}"] * $cost;
             $cst = $admin["cst{$i}"] * $cost;
             //성격 보정
-            $cst = CharCost($cst, $me[personal]);
+            $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 궁병, 징병
             if($me[special2] == 51) { $cst *= 0.9; }
             if($me[special2] == 72) { $cst *= 0.5; }
@@ -446,7 +446,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -484,7 +484,7 @@ function calc(cost, formnum) {
             $ric = $admin["ric{$i}"] * $cost;
             $cst = $admin["cst{$i}"] * $cost;
             //성격 보정
-            $cst = CharCost($cst, $me[personal]);
+            $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 기병, 징병
             if($me[special2] == 52) { $cst *= 0.9; }
             if($me[special2] == 72) { $cst *= 0.5; }
@@ -496,7 +496,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -534,7 +534,7 @@ function calc(cost, formnum) {
             $ric = $admin["ric{$i}"] * $cost;
             $cst = $admin["cst{$i}"] * $cost;
             //성격 보정
-            $cst = CharCost($cst, $me[personal]);
+            $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 귀병, 징병
             if($me[special2] == 40) { $cst *= 0.9; }
             if($me[special2] == 72) { $cst *= 0.5; }
@@ -546,7 +546,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -584,7 +584,7 @@ function calc(cost, formnum) {
             $ric = $admin["ric{$i}"] * $cost;
             $cst = $admin["cst{$i}"] * $cost;
             //성격 보정
-            $cst = CharCost($cst, $me[personal]);
+            $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 공성, 징병
             if($me[special2] == 53) { $cst *= 0.9; }
             if($me[special2] == 72) { $cst *= 0.5; }
@@ -596,7 +596,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -639,30 +639,30 @@ function command_12($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("command_12 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
     //현재 도시
-    $query = "select city,region from city where city='$me[city]'";
+    $query = "select city,region from city where city='$me['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $curCity = MYDB_fetch_array($result);
 
-    $query = "select level,tech from nation where nation='$me[nation]'";
+    $query = "select level,tech from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("process53 ".MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($me[level] == 12) {
-        $lbonus = $nation[level] * 2;
-    } elseif($me[level] >= 5) {
-        $lbonus = $nation[level];
+    if($me['level'] == 12) {
+        $lbonus = $nation['level'] * 2;
+    } elseif($me['level'] >= 5) {
+        $lbonus = $nation['level'];
     } else {
         $lbonus = 0;
     }
 
     $explain = GetExplain();
 
-    if($admin[year] < $admin[startyear]+3) {
+    if($admin['year'] < $admin['startyear']+3) {
         //그 국가에서 그 병종 가능한지
         $valid[0]  = 1;             $color[0]  = $_basecolor2;
         $valid[10] = 1;             $color[10] = $_basecolor2;
@@ -672,23 +672,23 @@ function command_12($connect, $turn, $command) {
         $valid[41] = 1;             $color[41] = "red"; // 충차
     } else {
         // 아국 도시 구분
-        $query = "select city,level,region from city where nation='$me[nation]'";
+        $query = "select city,level,region from city where nation='$me['nation']'";
         $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
         $citycount = MYDB_num_rows($result);
 
         for($i=0; $i < $citycount; $i++) {
             $city = MYDB_fetch_array($result);
             // 기술 1000 이상부터 지역병
-            if($nation[tech] >= 1000) {
-                $myregion[$city[region]] = 1;
+            if($nation['tech'] >= 1000) {
+                $myregion[$city['region']] = 1;
             }
             // 기술 2000 이상부터 이민족병
-            if($city[level] == 4 && $nation[tech] >= 2000) {
-                $mycity[$city[city]] = 1;
+            if($city['level'] == 4 && $nation['tech'] >= 2000) {
+                $mycity[$city['city']] = 1;
             }
             // 기술 3000 이상부터 특수병
-            if($city[level] == 8 && $nation[tech] >= 3000) {
-                $mycity[$city[city]] = 1;
+            if($city['level'] == 8 && $nation['tech'] >= 3000) {
+                $mycity[$city['city']] = 1;
             }
         }
 
@@ -727,19 +727,19 @@ function command_12($connect, $turn, $command) {
         $valid[43] = $mycity[5];    $color[43] = "limegreen"; // 목우(성도)
 
         // 남귀병은 기술1등급부터
-        if($nation[tech] < 1000) {
+        if($nation['tech'] < 1000) {
             $valid[35] = 0;
         }
         // 충차는 기술1등급부터
-        if($nation[tech] < 1000) {
+        if($nation['tech'] < 1000) {
             $valid[41] = 0;
         }
     }
 
-    $leader = floor($me[leader] * (100 - $me[injury])/100) + getHorseEff($me[horse]) + $lbonus;
-    $crew = $leader - round($me[crew]/100);
-    $abil = getTechAbil($nation[tech]);
-    $cost = getTechCost($nation[tech]);
+    $leader = floor($me['leader'] * (100 - $me['injury'])/100) + getHorseEff($me['horse']) + $lbonus;
+    $crew = $leader - round($me['crew']/100);
+    $abil = getTechAbil($nation['tech']);
+    $cost = getTechCost($nation['tech']);
     echo "
 <font size=2>병사를 모집합니다. 훈련과 사기치는 높지만 자금이 많이 듭니다.<br>
 가능한 수보다 많게 입력하면 가능한 최대 병사를 모집합니다.<br>
@@ -790,11 +790,11 @@ function calc(cost, formnum) {
     <tr><td align=center colspan=10>모병은 가격 2배의 자금이 소요됩니다.</td></tr>
     <tr>
         <td colspan=10 align=center id=bg2>
-            현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation[tech]).">
+            현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
             현재 통솔 : <input type=text style=text-align:right;color:white;background-color:black size=3 readonly value=$leader>
-            현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".getTypename($me[crewtype]).">
-            현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me[crew]>
-            현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me[gold]>
+            현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".getTypename($me['crewtype']).">
+            현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me['crew']>
+            현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value=$me['gold']>
         </td>
     </tr>
     <tr>
@@ -818,7 +818,7 @@ function calc(cost, formnum) {
             $ric = $admin["ric{$i}"] * $cost;
             $cst = $admin["cst{$i}"] * $cost;
             //성격 보정
-            $cst = CharCost($cst, $me[personal]);
+            $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 보병, 징병
             if($me[special2] == 50) { $cst *= 0.9; }
             if($me[special2] == 72) { $cst *= 0.5; }
@@ -830,7 +830,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -868,7 +868,7 @@ function calc(cost, formnum) {
             $ric = $admin["ric{$i}"] * $cost;
             $cst = $admin["cst{$i}"] * $cost;
             //성격 보정
-            $cst = CharCost($cst, $me[personal]);
+            $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 궁병, 징병
             if($me[special2] == 51) { $cst *= 0.9; }
             if($me[special2] == 72) { $cst *= 0.5; }
@@ -880,7 +880,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -918,7 +918,7 @@ function calc(cost, formnum) {
             $ric = $admin["ric{$i}"] * $cost;
             $cst = $admin["cst{$i}"] * $cost;
             //성격 보정
-            $cst = CharCost($cst, $me[personal]);
+            $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 기병, 징병
             if($me[special2] == 52) { $cst *= 0.9; }
             if($me[special2] == 72) { $cst *= 0.5; }
@@ -930,7 +930,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -968,7 +968,7 @@ function calc(cost, formnum) {
             $ric = $admin["ric{$i}"] * $cost;
             $cst = $admin["cst{$i}"] * $cost;
             //성격 보정
-            $cst = CharCost($cst, $me[personal]);
+            $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 귀병, 징병
             if($me[special2] == 40) { $cst *= 0.9; }
             if($me[special2] == 72) { $cst *= 0.5; }
@@ -980,7 +980,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -1018,7 +1018,7 @@ function calc(cost, formnum) {
             $ric = $admin["ric{$i}"] * $cost;
             $cst = $admin["cst{$i}"] * $cost;
             //성격 보정
-            $cst = CharCost($cst, $me[personal]);
+            $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 공성, 징병
             if($me[special2] == 53) { $cst *= 0.9; }
             if($me[special2] == 72) { $cst *= 0.5; }
@@ -1030,7 +1030,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin[img] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -1068,12 +1068,12 @@ function calc(cost, formnum) {
 
 function command_15($connect, $turn, $command) {
     starter("재편성");
-    $query = "select no,nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    $me = $general[no];
+    $me = $general['no'];
 
-    $query = "select no,name from general where nation='$general[nation]'";
+    $query = "select no,name from general where nation='$general['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -1084,9 +1084,9 @@ function command_15($connect, $turn, $command) {
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
-        if($me != $general[no]) {
+        if($me != $general['no']) {
             echo "
-    <option value={$general[no]}>{$general[name]}</option>";
+    <option value={$general['no']}>{$general['name']}</option>";
         }
     }
 
@@ -1109,11 +1109,11 @@ function command_15($connect, $turn, $command) {
 
 function command_16($connect, $turn, $command) {
     starter("출병");
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select city,name from city where city='$general[city]'";
+    $query = "select city,name from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -1123,7 +1123,7 @@ function command_16($connect, $turn, $command) {
 선택된 도시로 침공을 합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity[name] =>
+$currentcity['name'] =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1142,18 +1142,18 @@ $currentcity[name] =>
 </form>
 ";
 
-    printCitysName($connect, $currentcity[city], 1);
+    printCitysName($connect, $currentcity['city'], 1);
 
     ender();
 }
 
 function command_21($connect, $turn, $command) {
     starter("이동");
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select city,name from city where city='$general[city]'";
+    $query = "select city,name from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -1164,7 +1164,7 @@ function command_21($connect, $turn, $command) {
 인접 도시로만 이동이 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity[name] =>
+$currentcity['name'] =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1182,7 +1182,7 @@ $currentcity[name] =>
 </form>
 ";
 
-    printCitysName($connect, $currentcity[city], 1);
+    printCitysName($connect, $currentcity['city'], 1);
 
     ender();
 }
@@ -1190,7 +1190,7 @@ $currentcity[name] =>
 function command_22($connect, $turn, $command) {
     starter("등용");
 
-    $query = "select nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1209,33 +1209,33 @@ function command_22($connect, $turn, $command) {
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
-        if    ($general[npc] >= 2) { $style = "style=color:cyan;"; }
-        elseif($general[npc] == 1) { $style = "style=color:skyblue;"; }
+        if    ($general['npc'] >= 2) { $style = "style=color:cyan;"; }
+        elseif($general['npc'] == 1) { $style = "style=color:skyblue;"; }
         else                       { $style = ""; }
         echo "
-    <option value={$general[no]} {$style}>{$general[name]}</option>";
+    <option value={$general['no']} {$style}>{$general['name']}</option>";
     }
 
-    $query = "select nation,name,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        echo "<option style=color:{$nation[color]}>【 {$nation[name]} 】</option>";
+        echo "<option style=color:{$nation['color']}>【 {$nation['name']} 】</option>";
 
-        $query = "select no,name,npc from general where nation='$nation[nation]' and level!='12' and npc<2 order by npc,binary(name)";
+        $query = "select no,name,npc from general where nation='$nation['nation']' and level!='12' and npc<2 order by npc,binary(name)";
         $genresult = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
 
         for($j=0; $j < $gencount; $j++) {
             $general = MYDB_fetch_array($genresult);
-            if    ($general[npc] >= 2) { $style = "style=color:cyan;"; }
-            elseif($general[npc] == 1) { $style = "style=color:skyblue;"; }
+            if    ($general['npc'] >= 2) { $style = "style=color:cyan;"; }
+            elseif($general['npc'] == 1) { $style = "style=color:skyblue;"; }
             else                       { $style = ""; }
             echo "
-    <option value={$general[no]} {$style}>{$general[name]}</option>";
+    <option value={$general['no']} {$style}>{$general['name']}</option>";
         }
     }
     echo "
@@ -1255,11 +1255,11 @@ function command_22($connect, $turn, $command) {
 
 function command_23($connect, $turn, $command) {
     starter("포상", 1);
-    $query = "select no,nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select no,name,level,npc from general where nation='$general[nation]' and no!='$general[no]' order by npc,binary(name)";
+    $query = "select no,name,level,npc from general where nation='$general['nation']' and no!='$general['no']' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -1270,15 +1270,15 @@ function command_23($connect, $turn, $command) {
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
-        if    ($general[npc] >= 2) { $style = "style=color:cyan;"; }
-        elseif($general[npc] == 1) { $style = "style=color:skyblue;"; }
+        if    ($general['npc'] >= 2) { $style = "style=color:cyan;"; }
+        elseif($general['npc'] == 1) { $style = "style=color:skyblue;"; }
         else                       { $style = ""; }
-        if($general[level] >= 5) {
+        if($general['level'] >= 5) {
             echo "
-    <option value={$general[no]} {$style}>*{$general[name]}*</option>";
+    <option value={$general['no']} {$style}>*{$general['name']}*</option>";
         } else {
             echo "
-    <option value={$general[no]} {$style}>{$general[name]}</option>";
+    <option value={$general['no']} {$style}>{$general['name']}</option>";
         }
     }
 
@@ -1325,11 +1325,11 @@ function command_23($connect, $turn, $command) {
 
 function command_24($connect, $turn, $command) {
     starter("몰수", 1);
-    $query = "select no,nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select no,name,level,npc from general where nation='$general[nation]' and no!='$general[no]' order by npc,binary(name)";
+    $query = "select no,name,level,npc from general where nation='$general['nation']' and no!='$general['no']' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -1341,15 +1341,15 @@ function command_24($connect, $turn, $command) {
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
-        if    ($general[npc] >= 2) { $style = "style=color:cyan;"; }
-        elseif($general[npc] == 1) { $style = "style=color:skyblue;"; }
+        if    ($general['npc'] >= 2) { $style = "style=color:cyan;"; }
+        elseif($general['npc'] == 1) { $style = "style=color:skyblue;"; }
         else                       { $style = ""; }
-        if($general[level] >= 5) {
+        if($general['level'] >= 5) {
             echo "
-    <option value={$general[no]} {$style}>*{$general[name]}*</option>";
+    <option value={$general['no']} {$style}>*{$general['name']}*</option>";
         } else {
             echo "
-    <option value={$general[no]} {$style}>{$general[name]}</option>";
+    <option value={$general['no']} {$style}>{$general['name']}</option>";
         }
     }
 
@@ -1403,7 +1403,7 @@ function command_25($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("command_46 ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nations from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nations from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("command_27 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
     
@@ -1429,26 +1429,26 @@ function command_25($connect, $turn, $command) {
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        if($nation[scoutmsg] == "") {
-            $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation[color]).";background-color:{$nation[color]};>$nation[name]</td><td width=900 style=color:".newColor($nation[color]).";background-color:{$nation[color]}>-</td></tr>";
+        if($nation['scoutmsg'] == "") {
+            $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>$nation['name']</td><td width=900 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>-</td></tr>";
         } else {
-            $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation[color]).";background-color:{$nation[color]};>$nation[name]</td><td width=900 style=color:".newColor($nation[color]).";background-color:{$nation[color]}>".$nation[scoutmsg]."</td></tr>";
+            $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>$nation['name']</td><td width=900 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>".$nation['scoutmsg']."</td></tr>";
         }
 
-        if($admin[year] < $admin[startyear]+3 && $nation[gennum] >= 10) {
+        if($admin['year'] < $admin['startyear']+3 && $nation['gennum'] >= 10) {
             echo "
-    <option value={$nation[nation]} style=color:{$nation[color]};background-color:red;>【 {$nation[name]} 】</option>";
-        } elseif($nation[scout] == 1) {
+    <option value={$nation['nation']} style=color:{$nation['color']};background-color:red;>【 {$nation['name']} 】</option>";
+        } elseif($nation['scout'] == 1) {
             echo "
-    <option value={$nation[nation]} style=color:{$nation[color]};background-color:red;>【 {$nation[name]} 】</option>";
+    <option value={$nation['nation']} style=color:{$nation['color']};background-color:red;>【 {$nation['name']} 】</option>";
         } elseif(strpos($me['nations'], ",{$nation['nation']},") > 0) {
             /*
             echo "
-    <option value={$nation[nation]} style=color:{$nation[color]};background-color:red; disabled>【 {$nation[name]} 】</option>";
+    <option value={$nation['nation']} style=color:{$nation['color']};background-color:red; disabled>【 {$nation['name']} 】</option>";
             */
         } else {
             echo "
-    <option value={$nation[nation]} style=color:{$nation[color]};>【 {$nation[name]} 】</option>";
+    <option value={$nation['nation']} style=color:{$nation['color']};>【 {$nation['name']} 】</option>";
         }
     }
     echo "
@@ -1473,11 +1473,11 @@ function command_25($connect, $turn, $command) {
 function command_27($connect, $turn, $command) {
     starter("발령", 1);
 
-    $query = "select no,nation,level from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation,level from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("command_27 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select no,name,level,npc from general where nation='$me[nation]' and no!='$me[no]' order by npc,binary(name)";
+    $query = "select no,name,level,npc from general where nation='$me['nation']' and no!='$me['no']' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -1492,15 +1492,15 @@ function command_27($connect, $turn, $command) {
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
-        if    ($general[npc] >= 2) { $style = "style=color:cyan;"; }
-        elseif($general[npc] == 1) { $style = "style=color:skyblue;"; }
+        if    ($general['npc'] >= 2) { $style = "style=color:cyan;"; }
+        elseif($general['npc'] == 1) { $style = "style=color:skyblue;"; }
         else                       { $style = ""; }
-        if($general[level] >= 5) {
+        if($general['level'] >= 5) {
             echo "
-    <option value={$general[no]} {$style}>*{$general[name]}*</option>";
+    <option value={$general['no']} {$style}>*{$general['name']}*</option>";
         } else {
             echo "
-    <option value={$general[no]} {$style}>{$general[name]}</option>";
+    <option value={$general['no']} {$style}>{$general['name']}</option>";
         }
     }
 
@@ -1529,11 +1529,11 @@ function command_27($connect, $turn, $command) {
 
 function command_30($connect, $turn, $command) {
     starter("강행");
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select city,name from city where city='$general[city]'";
+    $query = "select city,name from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -1544,7 +1544,7 @@ function command_30($connect, $turn, $command) {
 최대 3칸내 도시로만 강행이 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity[name] =>
+$currentcity['name'] =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1562,20 +1562,20 @@ echo "
 </form>
 ";
 
-printCitysName($connect, $currentcity[city], 1);
-printCitysName($connect, $currentcity[city], 2);
-printCitysName($connect, $currentcity[city], 3);
+printCitysName($connect, $currentcity['city'], 1);
+printCitysName($connect, $currentcity['city'], 2);
+printCitysName($connect, $currentcity['city'], 3);
 
 ender();
 }
 
 function command_31($connect, $turn, $command) {
     starter("첩보");
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select city,name from city where city='$general[city]'";
+    $query = "select city,name from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -1586,7 +1586,7 @@ function command_31($connect, $turn, $command) {
 인접도시일 경우 많은 정보를 얻을 수 있습니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity[name] =>
+$currentcity['name'] =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1608,19 +1608,19 @@ $currentcity[name] =>
 모든 도시가 가능하지만 많은 정보를 얻을 수 있는<br>
 ";
 
-    printCitysName($connect, $currentcity[city], 1);
-    printCitysName($connect, $currentcity[city], 2);
+    printCitysName($connect, $currentcity['city'], 1);
+    printCitysName($connect, $currentcity['city'], 2);
 
     ender();
 }
 
 function command_32($connect, $turn, $command) {
     starter("화계");
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select city,name from city where city='$general[city]'";
+    $query = "select city,name from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -1630,7 +1630,7 @@ function command_32($connect, $turn, $command) {
 선택된 도시에 화계를 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity[name] =>
+$currentcity['name'] =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1648,19 +1648,19 @@ $currentcity[name] =>
 </form>
 ";
 
-    printCitysName($connect, $currentcity[city], 1);
-    printCitysName($connect, $currentcity[city], 2);
+    printCitysName($connect, $currentcity['city'], 1);
+    printCitysName($connect, $currentcity['city'], 2);
 
     ender();
 }
 
 function command_33($connect, $turn, $command) {
     starter("탈취");
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select city,name from city where city='$general[city]'";
+    $query = "select city,name from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -1670,7 +1670,7 @@ function command_33($connect, $turn, $command) {
 선택된 도시에 탈취를 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity[name] =>
+$currentcity['name'] =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1688,19 +1688,19 @@ $currentcity[name] =>
 </form>
 ";
 
-    printCitysName($connect, $currentcity[city], 1);
-    printCitysName($connect, $currentcity[city], 2);
+    printCitysName($connect, $currentcity['city'], 1);
+    printCitysName($connect, $currentcity['city'], 2);
 
     ender();
 }
 
 function command_34($connect, $turn, $command) {
     starter("파괴");
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select city,name from city where city='$general[city]'";
+    $query = "select city,name from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -1710,7 +1710,7 @@ function command_34($connect, $turn, $command) {
 선택된 도시에 파괴를 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity[name] =>
+$currentcity['name'] =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1728,19 +1728,19 @@ $currentcity[name] =>
 </form>
 ";
 
-    printCitysName($connect, $currentcity[city], 1);
-    printCitysName($connect, $currentcity[city], 2);
+    printCitysName($connect, $currentcity['city'], 1);
+    printCitysName($connect, $currentcity['city'], 2);
 
     ender();
 }
 
 function command_35($connect, $turn, $command) {
     starter("선동");
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select city,name from city where city='$general[city]'";
+    $query = "select city,name from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -1750,7 +1750,7 @@ function command_35($connect, $turn, $command) {
 선택된 도시에 선동을 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity[name] =>
+$currentcity['name'] =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1768,19 +1768,19 @@ $currentcity[name] =>
 </form>
 ";
 
-    printCitysName($connect, $currentcity[city], 1);
-    printCitysName($connect, $currentcity[city], 2);
+    printCitysName($connect, $currentcity['city'], 1);
+    printCitysName($connect, $currentcity['city'], 2);
 
     ender();
 }
 
 function command_36($connect, $turn, $command) {
     starter("기습");
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select city,name from city where city='$general[city]'";
+    $query = "select city,name from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -1790,7 +1790,7 @@ function command_36($connect, $turn, $command) {
 선택된 도시에 기습을 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
-$currentcity[name] =>
+$currentcity['name'] =>
 <select name=double size=1 style=color:white;background-color:black>";
 
     OptionsForCitys();
@@ -1808,19 +1808,19 @@ $currentcity[name] =>
 </form>
 ";
 
-    printCitysName($connect, $currentcity[city], 1);
-    printCitysName($connect, $currentcity[city], 2);
+    printCitysName($connect, $currentcity['city'], 1);
+    printCitysName($connect, $currentcity['city'], 2);
 
     ender();
 }
 
 function command_43($connect, $turn, $command) {
     starter("증여");
-    $query = "select no,nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select no,name,level,npc from general where nation='$general[nation]' and no!='$general[no]' order by npc,binary(name)";
+    $query = "select no,name,level,npc from general where nation='$general['nation']' and no!='$general['no']' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -1832,15 +1832,15 @@ function command_43($connect, $turn, $command) {
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
-        if    ($general[npc] >= 2) { $style = "style=color:cyan;"; }
-        elseif($general[npc] == 1) { $style = "style=color:skyblue;"; }
+        if    ($general['npc'] >= 2) { $style = "style=color:cyan;"; }
+        elseif($general['npc'] == 1) { $style = "style=color:skyblue;"; }
         else                       { $style = ""; }
-        if($general[level] >= 9) {
+        if($general['level'] >= 9) {
             echo "
-    <option value={$general[no]} {$style}>*{$general[name]}*</option>";
+    <option value={$general['no']} {$style}>*{$general['name']}*</option>";
         } else {
             echo "
-    <option value={$general[no]} {$style}>{$general[name]}</option>";
+    <option value={$general['no']} {$style}>{$general['name']}</option>";
         }
     }
 
@@ -1945,7 +1945,7 @@ function command_46($connect, $turn, $command) {
 
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($result);
-        $nationcolor[$i] = $nation[color];
+        $nationcolor[$i] = $nation['color'];
     }
     $validCount = count($color);
     //등록된 색깔 가려내기
@@ -1965,7 +1965,7 @@ function command_46($connect, $turn, $command) {
         }
     }
 
-    if($nationcount < $admin[maxnation]) {
+    if($nationcount < $admin['maxnation']) {
             echo "
 현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.<br>
 
@@ -2029,13 +2029,13 @@ function command_46($connect, $turn, $command) {
 function command_48($connect, $turn, $command) {
     starter("장비 매매");
 
-    $query = "select no,city,gold from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,city,gold from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("command_48 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
-    $city = getCity($connect, $me[city], "secu");
+    $city = getCity($connect, $me['city'], "secu");
 
     for($i=1; $i <= 6; $i++) {
-        if($city[secu] >= $i*1000) {
+        if($city['secu'] >= $i*1000) {
             $color[$i] = "white";
         } else {
             $color[$i] = "red";
@@ -2045,7 +2045,7 @@ function command_48($connect, $turn, $command) {
     echo "
 장비를 구입하거나 매각합니다.<br>
 현재 구입 불가능한 것은 <font color=red>붉은색</font>으로 표시됩니다.<br>
-현재 도시 치안 : $city[secu] &nbsp;&nbsp;&nbsp;현재 자금 : $me[gold]<br>
+현재 도시 치안 : $city['secu'] &nbsp;&nbsp;&nbsp;현재 자금 : $me['gold']<br>
 <form name=form1 action=c_double.php method=post>
 장비 : <select name=double size=1 style=color:white;background-color:black>
     <option value=0   style=color:skyblue>_____무기매각(반값)____</option>
@@ -2139,11 +2139,11 @@ function command_49($connect, $turn, $command) {
 function command_51($connect, $turn, $command) {
     starter("항복 권고", 1);
 
-    $query = "select nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,power from nation where nation='$me[nation]'";
+    $query = "select nation,power from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $myNation = MYDB_fetch_array($result);
 
@@ -2155,17 +2155,17 @@ function command_51($connect, $turn, $command) {
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select nation,name,power,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,power,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        if($myNation[power] / $nation[power] <= 3 || !isClose($connect, $me[nation], $nation[nation])) {
-            echo "<option style=color:{$nation[color]};background-color:red; value=$nation[nation]>【 {$nation[name]} 】</option>";
+        if($myNation['power'] / $nation['power'] <= 3 || !isClose($connect, $me['nation'], $nation['nation'])) {
+            echo "<option style=color:{$nation['color']};background-color:red; value=$nation['nation']>【 {$nation['name']} 】</option>";
         } else {
-            echo "<option style=color:{$nation[color]} value=$nation[nation]>【 {$nation[name]} 】</option>";
+            echo "<option style=color:{$nation['color']} value=$nation['nation']>【 {$nation['name']} 】</option>";
         }
     }
     echo "
@@ -2190,11 +2190,11 @@ function command_51($connect, $turn, $command) {
 function command_52($connect, $turn, $command) {
     starter("원조", 1);
 
-    $query = "select nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,level from nation where nation='$me[nation]'";
+    $query = "select nation,level from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $mynation = MYDB_fetch_array($result);
     
@@ -2212,14 +2212,14 @@ function command_52($connect, $turn, $command) {
 <form name=form1 action=c_double.php method=post>
  대상 국가 <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select nation,name,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        echo "<option style=color:{$nation[color]} value=$nation[nation]>【 {$nation[name]} 】</option>";
+        echo "<option style=color:{$nation['color']} value=$nation['nation']>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2234,7 +2234,7 @@ function command_52($connect, $turn, $command) {
     <option value=7>7000</option>
     <option value=8>8000</option>
     <option value=9>9000</option>";
-    for($i=1; $i <= $mynation[level]; $i++) {
+    for($i=1; $i <= $mynation['level']; $i++) {
         echo "<option value={$i}0>{$i}0000</option>";
     }
     echo "
@@ -2250,7 +2250,7 @@ function command_52($connect, $turn, $command) {
     <option value=7>7000</option>
     <option value=8>8000</option>
     <option value=9>9000</option>";
-    for($i=1; $i <= $mynation[level]; $i++) {
+    for($i=1; $i <= $mynation['level']; $i++) {
         echo "<option value={$i}0>{$i}0000</option>";
     }
     echo "
@@ -2271,7 +2271,7 @@ function command_52($connect, $turn, $command) {
 function command_53($connect, $turn, $command) {
     starter("통합제의", 1);
 
-    $query = "select no,nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("command_53 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2283,7 +2283,7 @@ function command_53($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $stdNation = MYDB_fetch_array($result);
     
-    $query = "select nation,power,gennum from nation where nation='$me[nation]'";
+    $query = "select nation,power,gennum from nation where nation='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $myNation = MYDB_fetch_array($result);
 
@@ -2295,20 +2295,20 @@ function command_53($connect, $turn, $command) {
         <form name=form1 action=c_double.php method=post>
 대상국 : <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select nation,name,power,gennum,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,power,gennum,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
-    $cond1 = $avgNation[power]+$stdNation[power];
-    $cond2 = $avgNation[gennum]+$stdNation[gennum];
+    $cond1 = $avgNation['power']+$stdNation['power'];
+    $cond2 = $avgNation['gennum']+$stdNation['gennum'];
     
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        if($myNation[power]+$nation[power] > $cond1 || $myNation[gennum]+$nation[gennum] > $cond2 || !isClose($connect, $me[nation], $nation[nation])) {
-            echo "<option style=color:{$nation[color]};background-color:red; value=$nation[nation]>【 {$nation[name]} 】</option>";
+        if($myNation['power']+$nation['power'] > $cond1 || $myNation['gennum']+$nation['gennum'] > $cond2 || !isClose($connect, $me['nation'], $nation['nation'])) {
+            echo "<option style=color:{$nation['color']};background-color:red; value=$nation['nation']>【 {$nation['name']} 】</option>";
         } else {
-            echo "<option style=color:{$nation[color]} value=$nation[nation]>【 {$nation[name]} 】</option>";
+            echo "<option style=color:{$nation['color']} value=$nation['nation']>【 {$nation['name']} 】</option>";
         }
     }
 
@@ -2335,11 +2335,11 @@ function command_53($connect, $turn, $command) {
 
 function command_54($connect, $turn, $command) {
     starter("선양");
-    $query = "select no,nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select no,name,level from general where nation='$general[nation]' and no!='$general[no]' order by npc,binary(name)";
+    $query = "select no,name,level from general where nation='$general['nation']' and no!='$general['no']' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -2351,12 +2351,12 @@ function command_54($connect, $turn, $command) {
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
-        if($general[level] >= 5) {
+        if($general['level'] >= 5) {
             echo "
-    <option value={$general[no]}>*{$general[name]}*</option>";
+    <option value={$general['no']}>*{$general['name']}*</option>";
         } else {
             echo "
-    <option value={$general[no]}>{$general[name]}</option>";
+    <option value={$general['no']}>{$general['name']}</option>";
         }
     }
 
@@ -2379,7 +2379,7 @@ function command_54($connect, $turn, $command) {
 function command_61($connect, $turn, $command) {
     starter("불가침", 1);
 
-    $query = "select nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2391,22 +2391,22 @@ function command_61($connect, $turn, $command) {
 <form name=form1 action=c_double.php method=post>
  대상 국가 <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select you,state from diplomacy where me='$me[nation]'";
+    $query = "select you,state from diplomacy where me='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
-        $diplomacy[$dip[you]] = $dip[state];
+        $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
-        switch($diplomacy[$nation[nation]]) {
+        switch($diplomacy[$nation['nation']]) {
             case 0: $color = "red"; break;
             case 1: $color = "red"; break;
             case 2: $color = "black"; break;
@@ -2416,7 +2416,7 @@ function command_61($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation[color]; value=$nation[nation]>【 {$nation[name]} 】</option>";
+        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2460,7 +2460,7 @@ function command_61($connect, $turn, $command) {
 function command_62($connect, $turn, $command) {
     starter("선전포고", 1);
 
-    $query = "select nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2473,29 +2473,29 @@ function command_62($connect, $turn, $command) {
 <form name=form1 action=c_double.php method=post>
  대상 국가 <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select you,state from diplomacy where me='$me[nation]'";
+    $query = "select you,state from diplomacy where me='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
-        $diplomacy[$dip[you]] = $dip[state];
+        $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
         //합병중 국가는 안됨
-        $query = "select state from diplomacy where me='$nation[nation]' and (state='3' or state='5')";
+        $query = "select state from diplomacy where me='$nation['nation']' and (state='3' or state='5')";
         $tempresult = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
         $anycount = MYDB_num_rows($tempresult);
-        if($anycount != 0 && $diplomacy[$nation[nation]] != 7) {
-            $diplomacy[$nation[nation]] = 3;
+        if($anycount != 0 && $diplomacy[$nation['nation']] != 7) {
+            $diplomacy[$nation['nation']] = 3;
         }
-        switch($diplomacy[$nation[nation]]) {
+        switch($diplomacy[$nation['nation']]) {
             case 0: $color = "red"; break;
             case 1: $color = "red"; break;
             case 2: $color = "black"; break;
@@ -2505,7 +2505,7 @@ function command_62($connect, $turn, $command) {
             case 6: $color = "black"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation[color]; value=$nation[nation]>【 {$nation[name]} 】</option>";
+        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2525,7 +2525,7 @@ function command_62($connect, $turn, $command) {
 function command_63($connect, $turn, $command) {
     starter("종전", 1);
 
-    $query = "select nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2536,22 +2536,22 @@ function command_63($connect, $turn, $command) {
 <form name=form1 action=c_double.php method=post>
  대상 국가 <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select you,state from diplomacy where me='$me[nation]'";
+    $query = "select you,state from diplomacy where me='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
-        $diplomacy[$dip[you]] = $dip[state];
+        $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
-        switch($diplomacy[$nation[nation]]) {
+        switch($diplomacy[$nation['nation']]) {
             case 0: $color = "black"; break;
             case 1: $color = "black"; break;
             case 2: $color = "red"; break;
@@ -2561,7 +2561,7 @@ function command_63($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "red"; break;
         }
-        echo "<option style=background-color:$color;color:$nation[color]; value=$nation[nation]>【 {$nation[name]} 】</option>";
+        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2581,7 +2581,7 @@ function command_63($connect, $turn, $command) {
 function command_64($connect, $turn, $command) {
     starter("파기", 1);
 
-    $query = "select nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2592,22 +2592,22 @@ function command_64($connect, $turn, $command) {
 <form name=form1 action=c_double.php method=post>
  대상 국가 <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select you,state from diplomacy where me='$me[nation]'";
+    $query = "select you,state from diplomacy where me='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
-        $diplomacy[$dip[you]] = $dip[state];
+        $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
-        switch($diplomacy[$nation[nation]]) {
+        switch($diplomacy[$nation['nation']]) {
             case 0: $color = "red"; break;
             case 1: $color = "red"; break;
             case 2: $color = "red"; break;
@@ -2617,7 +2617,7 @@ function command_64($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation[color]; value=$nation[nation]>【 {$nation[name]} 】</option>";
+        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2636,11 +2636,11 @@ function command_64($connect, $turn, $command) {
 
 function command_65($connect, $turn, $command) {
     starter("초토화", 1);
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select name,path from city where city='$general[city]'";
+    $query = "select name,path from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -2673,11 +2673,11 @@ echo "
 
 function command_66($connect, $turn, $command) {
     starter("천도", 1);
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select name,path from city where city='$general[city]'";
+    $query = "select name,path from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -2711,11 +2711,11 @@ echo "
 
 function command_67($connect, $turn, $command) {
     starter("증축", 1);
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select name,path from city where city='$general[city]'";
+    $query = "select name,path from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -2749,11 +2749,11 @@ echo "
 
 function command_68($connect, $turn, $command) {
     starter("감축", 1);
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select name,path from city where city='$general[city]'";
+    $query = "select name,path from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -2787,11 +2787,11 @@ echo "
 
 function command_72($connect, $turn, $command) {
     starter("백성동원", 1);
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select name,path from city where city='$general[city]'";
+    $query = "select name,path from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -2825,11 +2825,11 @@ echo "
 
 function command_73($connect, $turn, $command) {
     starter("수몰", 1);
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select name,path from city where city='$general[city]'";
+    $query = "select name,path from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -2863,11 +2863,11 @@ echo "
 
 function command_74($connect, $turn, $command) {
     starter("허보", 1);
-    $query = "select city from general where user_id='$_SESSION[p_id]'";
+    $query = "select city from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select name,path from city where city='$general[city]'";
+    $query = "select name,path from city where city='$general['city']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
@@ -2902,7 +2902,7 @@ echo "
 function command_75($connect, $turn, $command) {
     starter("피장파장", 1);
 
-    $query = "select nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2914,22 +2914,22 @@ function command_75($connect, $turn, $command) {
 <form name=form1 action=c_double.php method=post>
  대상 국가 <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select you,state from diplomacy where me='$me[nation]'";
+    $query = "select you,state from diplomacy where me='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
-        $diplomacy[$dip[you]] = $dip[state];
+        $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
-        switch($diplomacy[$nation[nation]]) {
+        switch($diplomacy[$nation['nation']]) {
             case 0: $color = "black"; break;
             case 1: $color = "black"; break;
             case 2: $color = "red"; break;
@@ -2939,7 +2939,7 @@ function command_75($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation[color]; value=$nation[nation]>【 {$nation[name]} 】</option>";
+        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2959,7 +2959,7 @@ function command_75($connect, $turn, $command) {
 function command_77($connect, $turn, $command) {
     starter("이호경식", 1);
 
-    $query = "select nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2971,22 +2971,22 @@ function command_77($connect, $turn, $command) {
 <form name=form1 action=c_double.php method=post>
  대상 국가 <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select you,state from diplomacy where me='$me[nation]'";
+    $query = "select you,state from diplomacy where me='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
-        $diplomacy[$dip[you]] = $dip[state];
+        $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
-        switch($diplomacy[$nation[nation]]) {
+        switch($diplomacy[$nation['nation']]) {
             case 0: $color = "black"; break;
             case 1: $color = "black"; break;
             case 2: $color = "red"; break;
@@ -2996,7 +2996,7 @@ function command_77($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation[color]; value=$nation[nation]>【 {$nation[name]} 】</option>";
+        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -3016,7 +3016,7 @@ function command_77($connect, $turn, $command) {
 function command_78($connect, $turn, $command) {
     starter("급습", 1);
 
-    $query = "select nation from general where user_id='$_SESSION[p_id]'";
+    $query = "select nation from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -3028,22 +3028,22 @@ function command_78($connect, $turn, $command) {
 <form name=form1 action=c_double.php method=post>
  대상 국가 <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select you,state from diplomacy where me='$me[nation]'";
+    $query = "select you,state from diplomacy where me='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
-        $diplomacy[$dip[you]] = $dip[state];
+        $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='$me[nation]'";
+    $query = "select nation,name,color from nation where nation!='$me['nation']'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
-        switch($diplomacy[$nation[nation]]) {
+        switch($diplomacy[$nation['nation']]) {
             case 0: $color = "red"; break;
             case 1: $color = "black"; break;
             case 2: $color = "red"; break;
@@ -3053,7 +3053,7 @@ function command_78($connect, $turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:$nation[color]; value=$nation[nation]>【 {$nation[name]} 】</option>";
+        echo "<option style=background-color:$color;color:$nation['color']; value=$nation['nation']>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -3081,7 +3081,7 @@ function command_81($connect, $turn, $command) {
 
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($result);
-        $nationcolor[$i] = $nation[color];
+        $nationcolor[$i] = $nation['color'];
     }
     $validCount = count($color);
     //등록된 색깔 가려내기

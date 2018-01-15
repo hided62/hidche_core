@@ -53,18 +53,18 @@ for($i=0; $i < 21; $i++) {
 
     for($k=0; $k < 10; $k++) {
         $gen = MYDB_fetch_array($result);
-        $name[$k]   = $gen[name];
-        $nation[$k] = $gen[nation];
-        $data[$k]   = $gen[data];
-        $color[$k]  = $gen[color];
-        $pic[$k]    = $gen[picture];
+        $name[$k]   = $gen['name'];
+        $nation[$k] = $gen['nation'];
+        $data[$k]   = $gen['data'];
+        $color[$k]  = $gen['color'];
+        $pic[$k]    = $gen['picture'];
         if($color[$k] == "") $color[$k] = $_basecolor4;
         if($nation[$k] == "") $nation[$k] = "&nbsp;";
 /*
         if($pic[$k] == "") {
             echo "<td align=center>&nbsp;</td>";
         } else {
-            $imageTemp = GetImageURL($gen[imgsvr]);
+            $imageTemp = GetImageURL($gen['imgsvr']);
             echo "<td align=center><img src={$imageTemp}/{$pic[$k]}></img></td>";
         }
 */

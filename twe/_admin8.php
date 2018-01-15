@@ -5,11 +5,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel,skin from general where user_id='$_SESSION[p_id]'";
+$query = "select userlevel,skin from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if($me[userlevel] < 5) {
+if($me['userlevel'] < 5) {
     echo "
 <html>
 <head>
@@ -72,8 +72,8 @@ $nationcount = MYDB_num_rows($result);
 for($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($result);
 
-    $nationName[$nation[nation]] = $nation[name];
-    $nationColor[$nation[nation]] = $nation[color];
+    $nationName[$nation['nation']] = $nation['name'];
+    $nationColor[$nation['nation']] = $nation['color'];
 }
 
 switch($type) {
@@ -84,18 +84,18 @@ $dipcount = MYDB_num_rows($result);
 for($i=0; $i < $dipcount; $i++) {
     $dip = MYDB_fetch_array($result);
 
-    $me = $dip[me];
-    $you = $dip[you];
+    $me = $dip['me'];
+    $you = $dip['you'];
 
     $query = "select reserved,showing from diplomacy where you='$me' and me='$you'";
     $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dip2 = MYDB_fetch_array($result2);
 
-    if($dip[state] == 2 && $dip[fixed] == "" && $dip[reserved] == "" && $dip2[reserved] == "") {
+    if($dip['state'] == 2 && $dip['fixed'] == "" && $dip['reserved'] == "" && $dip2['reserved'] == "") {
         continue;
     }
 
-    switch($dip[state]) {
+    switch($dip['state']) {
         case 0: $state = "<font color=red>교 전</font>"; break;
         case 1: $state = "<font color=magenta>선포중</font>"; break;
         case 2: $state = "통 상"; break;
@@ -108,31 +108,31 @@ for($i=0; $i < $dipcount; $i++) {
 
     $date = date('Y-m-d H:i:s');
     $note = "";
-    if($dip[fixed] != "") {
-        if($dip[state] == 7) {
-            $note .= $dip[fixed];
+    if($dip['fixed'] != "") {
+        if($dip['state'] == 7) {
+            $note .= $dip['fixed'];
         } else {
-            $note .= "<font color=gray>{$dip[fixed]}</font>";
+            $note .= "<font color=gray>{$dip['fixed']}</font>";
         }
-        if($dip[reserved] != "" || $dip2[reserved] != "") {
+        if($dip['reserved'] != "" || $dip2['reserved'] != "") {
             $note .= "<br>";
         }
     }
-    if($dip[reserved] != "") {
-        if($dip[showing] >= $date) {
-            $note .= "<font color=skyblue>아국측 제의</font>: {$dip[reserved]}";
+    if($dip['reserved'] != "") {
+        if($dip['showing'] >= $date) {
+            $note .= "<font color=skyblue>아국측 제의</font>: {$dip['reserved']}";
         } else {
-            $note .= "<font color=gray>아국측 제의: {$dip[reserved]}</font>";
+            $note .= "<font color=gray>아국측 제의: {$dip['reserved']}</font>";
         }
-        if($dip2[reserved] != "") {
+        if($dip2['reserved'] != "") {
             $note .= "<br>";
         }
     }
-    if($dip2[reserved] != "") {
-        if($dip2[showing] >= $date) {
-            $note .= "<font color=limegreen>상대측 제의</font>: {$dip2[reserved]}";
+    if($dip2['reserved'] != "") {
+        if($dip2['showing'] >= $date) {
+            $note .= "<font color=limegreen>상대측 제의</font>: {$dip2['reserved']}";
         } else {
-            $note .= "<font color=gray>상대측 제의: {$dip2[reserved]}</font>";
+            $note .= "<font color=gray>상대측 제의: {$dip2['reserved']}</font>";
         }
     }
     if($note == "") { $note = "&nbsp;"; }
@@ -142,7 +142,7 @@ for($i=0; $i < $dipcount; $i++) {
         <td align=center style=color:".newColor($nationColor[$me]).";background-color:{$nationColor[$me]};>$nationName[$me]</td>
         <td align=center style=color:".newColor($nationColor[$you]).";background-color:{$nationColor[$you]};>$nationName[$you]</td>
         <td align=center>$state</td>
-        <td align=center>$dip[term] 개월</td>
+        <td align=center>$dip['term'] 개월</td>
         <td align=left style=font-size:7px;>{$note}</td>
     </tr>";
 }

@@ -5,11 +5,11 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select no from general where user_id='$_SESSION[p_id]'";
+$query = "select no from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-backupdateCommand($connect, $me[no], 2);
+backupdateCommand($connect, $me['no'], 2);
 
 echo "<script>location.replace('b_chiefcenter.php');</script>";
 

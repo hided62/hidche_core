@@ -40,6 +40,7 @@ function BadTag2Code($str) {
 function tab($str, $maxsize, $ch) {
     $size = strlen($str);
 
+    $string = '';
     $count = ($maxsize - $size) / 2;
 
     for($i=0; $i < $count; $i++) {
@@ -55,6 +56,7 @@ function tab($str, $maxsize, $ch) {
 function tab2($str, $maxsize, $ch) {
     $size = strlen($str);
 
+    $string = '';
     $count = ($maxsize - $size);
 
     for($i=0; $i < $count; $i++) {

@@ -3,8 +3,8 @@ include "lib.php";
 include "func.php";
 require("new_lib.php")
 
-$id = $_POST[id];
-$pw = $_POST[pw];
+$id = $_POST['id'];
+$pw = $_POST['pw'];
 
 $pwTemp = substr($pw, 0, 32);
 
@@ -117,7 +117,7 @@ $query = "select no from general where npc<2";
 $result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
 $gencount = MYDB_num_rows($result);
 
-if($gencount >= $admin[maxgeneral]) {
+if($gencount >= $admin['maxgeneral']) {
     echo "<script>alert('더 이상 등록할 수 없습니다.');</script>";
     echo "<script>history.go(-1);</script>";
     exit();
@@ -133,12 +133,12 @@ $nationcount = MYDB_num_rows($nationresult);
 
 for($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($nationresult);
-    if($nation[scoutmsg] == "") {
+    if($nation['scoutmsg'] == "") {
         echo "
-    <tr><td align=center width=98 style=color:".newColor($nation[color]).";background-color:{$nation[color]}>$nation[name]</td><td width=898 style=color:{newColor($nation[color])};background-color:{$nation[color]}>-</td></tr>";
+    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>$nation['name']</td><td width=898 style=color:{newColor($nation['color'])};background-color:{$nation['color']}>-</td></tr>";
     } else {
         echo "
-    <tr><td align=center width=98 style=color:".newColor($nation[color]).";background-color:{$nation[color]}>$nation[name]</td><td width=898 style=color:{newColor($nation[color])};background-color:{$nation[color]}>$nation[scoutmsg]</td></tr>";
+    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>$nation['name']</td><td width=898 style=color:{newColor($nation['color'])};background-color:{$nation['color']}>$nation['scoutmsg']</td></tr>";
     }
 }
 ?>
@@ -154,17 +154,17 @@ for($i=0; $i < $nationcount; $i++) {
         <tr>
             <td width=498 align=right id=bg1>장수명</td>
             <td colspan=2>
-                <input type=text name=name maxlength=6 size=12 style=color:white;background-color:black; value=<?=$member[name]?>>(6글자 이내)
+                <input type=text name=name maxlength=6 size=12 style=color:white;background-color:black; value=<?=$member['name']?>>(6글자 이내)
             </td>
         </tr>
 <?php
-if($admin[img] >= 1 && $member[grade] >= 1 && $member[picture] != "") {
-    $imageTemp = GetImageURL($member[imgsvr]);
+if($admin['img'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "") {
+    $imageTemp = GetImageURL($member['imgsvr']);
     echo "
         <tr>
             <td align=right id=bg1>전콘 사용 여부</td>
             <td width=64 height=64>
-                <img src={$imageTemp}/{$member[picture]} border=0>
+                <img src={$imageTemp}/{$member['picture']} border=0>
             </td>
             <td>
                 <input type=checkbox name=pic value=1 checked>사용

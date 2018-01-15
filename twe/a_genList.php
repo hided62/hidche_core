@@ -10,12 +10,12 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select con,userlevel,turntime from general where user_id='$_SESSION[p_id]'";
+$query = "select con,userlevel,turntime from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me[userlevel], $me[con], $admin[conlimit]);
-if($con >= 2) { printLimitMsg($me[turntime]); exit(); }
+$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
 if($type == 0) {
     $type = 9;
@@ -65,8 +65,8 @@ $count = MYDB_num_rows($result);
 $nationname[0] = "-";
 for($i=0; $i < $count; $i++) {
     $nation = MYDB_fetch_array($result);
-    $nationname[$nation[nation]] = $nation[name];
-    $nationlevel[$nation[nation]] = $nation[level];
+    $nationname[$nation['nation']] = $nation['name'];
+    $nationlevel[$nation['nation']] = $nation['level'];
 }
 
 switch($type) {
@@ -111,12 +111,12 @@ echo"
     </tr>";
 for($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
-    $nation = $nationname[$general[nation]];
+    $nation = $nationname[$general['nation']];
 
-    if($general[level] == 12) {
-        $lbonus = $nationlevel[$general[nation]] * 2;
-    } elseif($general[level] >= 5) {
-        $lbonus = $nationlevel[$general[nation]];
+    if($general['level'] == 12) {
+        $lbonus = $nationlevel[$general['nation']] * 2;
+    } elseif($general['level'] >= 5) {
+        $lbonus = $nationlevel[$general['nation']];
     } else {
         $lbonus = 0;
     }
@@ -126,43 +126,43 @@ for($j=0; $j < $gencount; $j++) {
         $lbonus = "";
     }
 
-    if($general[injury] > 0) {
-        $leader = floor($general[leader] * (100 - $general[injury])/100);
-        $power = floor($general[power] * (100 - $general[injury])/100);
-        $intel = floor($general[intel] * (100 - $general[injury])/100);
+    if($general['injury'] > 0) {
+        $leader = floor($general['leader'] * (100 - $general['injury'])/100);
+        $power = floor($general['power'] * (100 - $general['injury'])/100);
+        $intel = floor($general['intel'] * (100 - $general['injury'])/100);
         $leader = "<font color=red>{$leader}</font>{$lbonus}";
         $power = "<font color=red>{$power}</font>";
         $intel = "<font color=red>{$intel}</font>";
     } else {
-        $leader = "{$general[leader]}{$lbonus}";
-        $power = "{$general[power]}";
-        $intel = "{$general[intel]}";
+        $leader = "{$general['leader']}{$lbonus}";
+        $power = "{$general['power']}";
+        $intel = "{$general['intel']}";
     }
 
-    if($general[npc] >= 2) { $name = "<font color=cyan>$general[name]</font>"; }
-    elseif($general[npc] == 1) { $name = "<font color=skyblue>$general[name]</font>"; }
-    else { $name =  "$general[name]"; }
+    if($general['npc'] >= 2) { $name = "<font color=cyan>$general['name']</font>"; }
+    elseif($general['npc'] == 1) { $name = "<font color=skyblue>$general['name']</font>"; }
+    else { $name =  "$general['name']"; }
 
-    $general[connect] = round($general[connect] / 10, 0) * 10;
+    $general['connect'] = round($general['connect'] / 10, 0) * 10;
 
-    $imageTemp = GetImageURL($general[imgsvr]);
+    $imageTemp = GetImageURL($general['imgsvr']);
     echo "
     <tr>
-        <td align=center><img src={$imageTemp}/{$general[picture]}></img></td>
+        <td align=center><img src={$imageTemp}/{$general['picture']}></img></td>
         <td align=center>$name</td>
-        <td align=center>$general[age]세</td>
-        <td align=center>".getGenChar($general[personal])."</td>
-        <td align=center>".getGenSpecial($general[special])." / ".getGenSpecial($general[special2])."</td>
-        <td align=center>Lv ".getExpLevel($general[experience])."</td>
+        <td align=center>$general['age']세</td>
+        <td align=center>".getGenChar($general['personal'])."</td>
+        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general[special2])."</td>
+        <td align=center>Lv ".getExpLevel($general['experience'])."</td>
         <td align=center>{$nation}</td>
-        <td align=center>".getHonor($general[experience])."</td>
-        <td align=center>".getDed($general[dedication])."</td>
-        <td align=center>"; echo getLevel($general[level]); echo "</td>
+        <td align=center>".getHonor($general['experience'])."</td>
+        <td align=center>".getDed($general['dedication'])."</td>
+        <td align=center>"; echo getLevel($general['level']); echo "</td>
         <td align=center>$leader</td>
         <td align=center>$power</td>
         <td align=center>$intel</td>
-        <td align=center>$general[killturn]</td>
-        <td align=center>$general[connect]"; echo "<br>【".getConnect($general[connect])."】</td>
+        <td align=center>$general['killturn']</td>
+        <td align=center>$general['connect']"; echo "<br>【".getConnect($general['connect'])."】</td>
     </tr>";
 }
 echo "

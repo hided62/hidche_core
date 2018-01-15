@@ -2,12 +2,12 @@
 include "lib.php";
 include "func.php";
 
-$id = $_POST[id];
-$pw = $_POST[pw];
-$name       = $_POST[name];
+$id = $_POST['id'];
+$pw = $_POST['pw'];
+$name       = $_POST['name'];
 $name       = _String::NoSpecialCharacter($name);
-$pic        = $_POST[pic];
-$character  = $_POST[character];
+$pic        = $_POST['pic'];
+$character  = $_POST['character'];
 
 $pwTemp = substr($pw, 0, 32);
 
@@ -26,7 +26,7 @@ if(!$member) {
 
 $date = date('Y-m-d H:i:s');
 //등록정보
-$query = "update MEMBER set reg_num=reg_num+1,reg_date='$date' where no='$member[no]'";
+$query = "update MEMBER set reg_num=reg_num+1,reg_date='$date' where no='$member['no']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 $connect = dbConn();
@@ -41,7 +41,7 @@ $query  = "select no from general where npc<2";
 $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($result);
 
-$query  = "select no from general where user_id='$member[id]'";
+$query  = "select no from general where user_id='$member['id']'";
 $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
 $id_num = MYDB_num_rows($result);
 
@@ -49,7 +49,7 @@ $query  = "select no from general where name='$name'";
 $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
 $name_num = MYDB_num_rows($result);
 
-$query  = "select * from token where id='$member[id]'";
+$query  = "select * from token where id='$member['id']'";
 $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
 $token_num = MYDB_num_rows($result);
 
@@ -82,7 +82,7 @@ if($id_num) {
       history.go(-1)
       </script>");
     exit;
-} elseif($admin[maxgeneral] <= $gencount) {
+} elseif($admin['maxgeneral'] <= $gencount) {
     echo("<script>
       window.alert('더이상 등록할 수 없습니다!')
       history.go(-1)
@@ -133,7 +133,7 @@ if($id_num) {
 } else {
     $ratio = rand() % 100;
     // 현재 1%
-    if($ratio == 50 && $admin[genius] > 0) {
+    if($ratio == 50 && $admin['genius'] > 0) {
         $genius = 1;
 
         $query = "update game set genius=genius-1 where no='1'";
@@ -157,7 +157,7 @@ if($id_num) {
         $result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
         $city = MYDB_fetch_array($result);
     }
-    $city = $city[city];
+    $city = $city['city'];
 
     $total  = rand() % 6;
     $pleader = rand() % 100;
@@ -185,28 +185,28 @@ if($id_num) {
     $specage = round((80 - $age)/12) + $age;
     $special = 0;
 
-    if($admin[scenario] > 0) {
+    if($admin['scenario'] > 0) {
         $specage2 = $age + 3;
         $specage = $age + 3;
     }
 
-    $turntime = getRandTurn($admin[turnterm]);
+    $turntime = getRandTurn($admin['turnterm']);
 
     $lastconnect = date('Y-m-d H:i:s');
     if($lastconnect >= $turntime) {
-        $turntime = addTurn($turntime, $admin[turnterm]);
+        $turntime = addTurn($turntime, $admin['turnterm']);
     }
 
     //특회 전콘
-    if($admin[img] >= 1 && $member[grade] >= 1 && $member[picture] != "" && $pic == 1) {
-        $face = $member[picture];
-        $imgsvr = $member[imgsvr];
+    if($admin['img'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "" && $pic == 1) {
+        $face = $member['picture'];
+        $imgsvr = $member['imgsvr'];
     } else {
         $face = "default.jpg";
         $imgsvr = 0;
     }
     //특회
-    $userlevel = $member[grade];
+    $userlevel = $member['grade'];
 
     //성격 랜덤시
     if($character == 11) $character = rand()%10;
@@ -230,24 +230,24 @@ if($id_num) {
     $result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    if($me[name] == "") {
+    if($me['name'] == "") {
         $r = rand() % 999 + 1;
-        $me[name] = '장수-'.$r;
+        $me['name'] = '장수-'.$r;
         
-        $query = "update general set name='$me[name]' where user_id='$id'";
+        $query = "update general set name='$me['name']' where user_id='$id'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     $cityname = getCity($connect, $city, "name");
     if($genius == 1) {
-        $log[0] = "<C>●</>{$admin[month]}월:<G><b>$cityname[name]</b></>에서 <Y>$me[name]</>(이)라는 기재가 천하에 이름을 알립니다.";
-        $log[1] = "<C>●</>{$admin[month]}월:<C>".getGenSpecial($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
+        $log[0] = "<C>●</>{$admin['month']}월:<G><b>$cityname['name']</b></>에서 <Y>$me['name']</>(이)라는 기재가 천하에 이름을 알립니다.";
+        $log[1] = "<C>●</>{$admin['month']}월:<C>".getGenSpecial($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
 
-        $history[0] = "<C>●</>$admin[year]년 $admin[month]월:<L><b>【천재】</b></><G><b>$cityname[name]</b></>에 천재가 등장했습니다.";
+        $history[0] = "<C>●</>$admin['year']년 $admin['month']월:<L><b>【천재】</b></><G><b>$cityname['name']</b></>에 천재가 등장했습니다.";
         pushHistory($connect, $history);
     } else {
-        $log[0] = "<C>●</>{$admin[month]}월:<G><b>$cityname[name]</b></>에서 <Y>$me[name]</>(이)라는 호걸이 천하에 이름을 알립니다.";
+        $log[0] = "<C>●</>{$admin['month']}월:<G><b>$cityname['name']</b></>에서 <Y>$me['name']</>(이)라는 호걸이 천하에 이름을 알립니다.";
     }
-    $me = addHistory($connect, $me, "<C>●</>$admin[year]년 $admin[month]월:<Y>$me[name]</>, <G>$cityname[name]</>에서 큰 뜻을 품다.");
+    $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<Y>$me['name']</>, <G>$cityname['name']</>에서 큰 뜻을 품다.");
     $mylog[count($mylog)] = "<C>●</>삼국지 모의전투 PHP의 세계에 오신 것을 환영합니다 ^o^";
     $mylog[count($mylog)] = "<C>●</>처음 하시는 경우에는 <D>도움말</>을 참고하시고,";
     $mylog[count($mylog)] = "<C>●</>문의사항이 있으시면 게시판에 글을 남겨주시면 되겠네요~";
@@ -256,12 +256,12 @@ if($id_num) {
     $mylog[count($mylog)] = "<C>●</>연령은 <C>$age</>세로 시작합니다.";
     if($genius == 1) {
         $mylog[count($mylog)] = "<C>●</>축하합니다! 천재로 태어나 처음부터 <C>".getGenSpecial($special2)."</> 특기를 가지게 됩니다!";
-        $me = addHistory($connect, $me, "<C>●</>$admin[year]년 $admin[month]월:<C>".getGenSpecial($special2)."</> 특기를 가진 천재로 탄생.");
+        $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<C>".getGenSpecial($special2)."</> 특기를 가진 천재로 탄생.");
     }
     pushGenLog($me, $mylog);
     pushAllLog($log);
 
-    $adminLog[0] = "가입 : {$name} // {$me[name]} // {$id} // ".getenv("REMOTE_ADDR");
+    $adminLog[0] = "가입 : {$name} // {$me['name']} // {$id} // ".getenv("REMOTE_ADDR");
     pushAdminLog($connect, $adminLog);
 
     MYDB_close($connect);

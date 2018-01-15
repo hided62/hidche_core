@@ -4,17 +4,17 @@ include "func.php";
 
 $connect=dbConn();
 
-$query = "select no,user_id,password,name from general where user_id='$_SESSION[p_id]'";
+$query = "select no,user_id,password,name from general where user_id='$_SESSION['p_id']'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$_SESSION[p_id]     = "";
-$_SESSION[p_name]   = "";
-$_SESSION[p_nation] = 0;
+$_SESSION['p_id']     = "";
+$_SESSION['p_name']   = "";
+$_SESSION['p_nation'] = 0;
 
-$id = $me[user_id];
-$pw = $me[password];
-$conmsg = $me[conmsg];
+$id = $me['user_id'];
+$pw = $me['password'];
+$conmsg = $me['conmsg'];
 
 //���Ǻ��� ����
 session_destroy();

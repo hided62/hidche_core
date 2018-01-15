@@ -65,7 +65,7 @@ function myCommandList($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,turntime,term,turn0,turn1,turn2,turn3,turn4,turn5,turn6,turn7,turn8,turn9,turn10,turn11,turn12,turn13,turn14,turn15,turn16,turn17,turn18,turn19,turn20,turn21,turn22,turn23 from general where user_id='$_SESSION[p_id]'";
+    $query = "select no,turntime,term,turn0,turn1,turn2,turn3,turn4,turn5,turn6,turn7,turn8,turn9,turn10,turn11,turn12,turn13,turn14,turn15,turn16,turn17,turn18,turn19,turn20,turn21,turn22,turn23 from general where user_id='$_SESSION['p_id']'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
     $turn = getTurn($connect, $me, 2);
@@ -76,13 +76,13 @@ function myCommandList($connect) {
         <td colspan=4 align=center id=bg0><b>- 명령 목록 - <input value='$date' type=text name=clock size=19 style=background-color:black;color:white;border-style:none;></b></td>
     </tr>";
 
-    $year = $admin[year];
-    $month = $admin[month];
+    $year = $admin['year'];
+    $month = $admin['month'];
     // 실행된 턴시간이면 +1
-    $cutTurn = cutTurn($me[turntime], $admin[turnterm]);
+    $cutTurn = cutTurn($me['turntime'], $admin['turnterm']);
     if($date <= $cutTurn) { $month++; }
 
-    $totaldate = $me[turntime];
+    $totaldate = $me['turntime'];
 
     for($i=0; $i < 24; $i++) {
         if($month == 13) {
@@ -99,7 +99,7 @@ function myCommandList($connect) {
         <td width=137 align=center height=24 style=table-layout:fixed;>$turn[$i]</td>
     </tr>";
         $month++;
-        $totaldate = addTurn($totaldate, $admin[turnterm]);
+        $totaldate = addTurn($totaldate, $admin['turnterm']);
     }
 
     echo "

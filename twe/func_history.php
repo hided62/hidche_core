@@ -105,13 +105,13 @@ function LogHistory($connect, $isFirst=0) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        $query = "select city from city where nation='$nation[nation]'";
+        $query = "select city from city where nation='$nation['nation']'";
         $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $citycount = MYDB_num_rows($cityresult);
 
-        $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation[color]).";background-color:$nation[color];>$nation[name]</font><br>";
-        $powerStr .= "국력 $nation[power]<br>";
-        $genStr .= "장수 $nation[gennum]<br>";
+        $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:$nation['color'];>$nation['name']</font><br>";
+        $powerStr .= "국력 $nation['power']<br>";
+        $genStr .= "장수 $nation['gennum']<br>";
         $cityStr .= "속령 $citycount<br>";
     }
 
@@ -121,7 +121,7 @@ function LogHistory($connect, $isFirst=0) {
         insert into history (
             year, month, map, log, genlog, nation, power, gen, city
         ) values (
-            '$admin[year]', '$admin[month]', '$map', '$log', '$genlog', '$nationStr', '$powerStr', '$genStr', '$cityStr'
+            '$admin['year']', '$admin['month']', '$map', '$log', '$genlog', '$nationStr', '$powerStr', '$genStr', '$cityStr'
         )",
     $connect) or Error(__LINE__.MYDB_error($connect),"");
 
