@@ -1430,9 +1430,9 @@ function command_25($connect, $turn, $command) {
         $nation = MYDB_fetch_array($result);
 
         if($nation['scoutmsg'] == "") {
-            $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>$nation['name']</td><td width=900 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>-</td></tr>";
+            $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=900 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>-</td></tr>";
         } else {
-            $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>$nation['name']</td><td width=900 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>".$nation['scoutmsg']."</td></tr>";
+            $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=900 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>".$nation['scoutmsg']."</td></tr>";
         }
 
         if($admin['year'] < $admin['startyear']+3 && $nation['gennum'] >= 10) {

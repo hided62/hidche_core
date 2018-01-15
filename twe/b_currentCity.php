@@ -184,7 +184,7 @@ echo "
     </tr>
     <tr>
         <td align=center id=bg1>민심</td>
-        <td align=center>$city['rate']</td>
+        <td align=center>{$city['rate']}</td>
         <td align=center id=bg1>시세</td>
         <td align=center>{$city['trade']}%</td>
         <td align=center id=bg1>인구</td>
@@ -281,7 +281,7 @@ for($j=0; $j < $gencount; $j++) {
     echo "
     <tr>
         <td align=center"; echo $me['skin']==2?" background={$imageTemp}/{$general['picture']}":""; echo " height=64></td>
-        <td align=center>$general['name']</td>
+        <td align=center>{$general['name']}</td>
         <td align=center>$leader</td>
         <td align=center>$power</td>
         <td align=center>$intel</td>
@@ -297,9 +297,9 @@ for($j=0; $j < $gencount; $j++) {
         echo "
         <td align=center>$mode</td>
         <td align=center>".getTypename($general['crewtype'])."</td>
-        <td align=center>$general['crew']</td>
-        <td align=center>$general['train']</td>
-        <td align=center>$general['atmos']</td>";
+        <td align=center>{$general['crew']}</td>
+        <td align=center>{$general['train']}</td>
+        <td align=center>{$general['atmos']}</td>";
         if($general['npc'] >= 2) {
             echo "
         <td>NPC 장수";
@@ -321,7 +321,7 @@ for($j=0; $j < $gencount; $j++) {
         echo "
         <td align=center>?</td>
         <td align=center>?</td>
-        <td align=center>$general['crew']</td>
+        <td align=center>{$general['crew']}</td>
         <td align=center>?</td>
         <td align=center>?</td>
         <td>【{$nationname[$general['nation']]}】 장수";
@@ -329,7 +329,7 @@ for($j=0; $j < $gencount; $j++) {
         echo "
         <td align=center>?</td>
         <td align=center>?</td>
-        <td align=center>$general['crew']</td>
+        <td align=center>{$general['crew']}</td>
         <td align=center>?</td>
         <td align=center>?</td>
         <td>&nbsp; 재 야";

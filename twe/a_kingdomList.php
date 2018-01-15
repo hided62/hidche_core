@@ -79,43 +79,43 @@ for($i=1; $i <= $count; $i++) {
     $gencount = MYDB_num_rows($genresult);
 
     if($level12['name'] == "") { $l12 = "-"; }
-    elseif($level12['npc'] >= 2) { $l12 = "<font color=cyan>$level12['name']</font>"; }
-    elseif($level12['npc'] == 1) { $l12 = "<font color=skyblue>$level12['name']</font>"; }
+    elseif($level12['npc'] >= 2) { $l12 = "<font color=cyan>{$level12['name']}</font>"; }
+    elseif($level12['npc'] == 1) { $l12 = "<font color=skyblue>{$level12['name']}</font>"; }
     else { $l12 = $level12['name']; }
 
     if($level11['name'] == "") { $l11 = "-"; }
-    elseif($level11['npc'] >= 2) { $l11 = "<font color=cyan>$level11['name']</font>"; }
-    elseif($level11['npc'] == 1) { $l11 = "<font color=skyblue>$level11['name']</font>"; }
+    elseif($level11['npc'] >= 2) { $l11 = "<font color=cyan>{$level11['name']}</font>"; }
+    elseif($level11['npc'] == 1) { $l11 = "<font color=skyblue>{$level11['name']}</font>"; }
     else { $l11 = $level11['name']; }
 
     if($level10['name'] == "") { $l10 = "-"; }
-    elseif($level10['npc'] >= 2) { $l10 = "<font color=cyan>$level10['name']</font>"; }
-    elseif($level10['npc'] == 1) { $l10 = "<font color=skyblue>$level10['name']</font>"; }
+    elseif($level10['npc'] >= 2) { $l10 = "<font color=cyan>{$level10['name']}</font>"; }
+    elseif($level10['npc'] == 1) { $l10 = "<font color=skyblue>{$level10['name']}</font>"; }
     else { $l10 = $level10['name']; }
 
     if($level9['name'] == "") { $l9 = "-"; }
-    elseif($level9['npc'] >= 2) { $l9 = "<font color=cyan>$level9['name']</font>"; }
-    elseif($level9['npc'] == 1) { $l9 = "<font color=skyblue>$level9['name']</font>"; }
+    elseif($level9['npc'] >= 2) { $l9 = "<font color=cyan>{$level9['name']}</font>"; }
+    elseif($level9['npc'] == 1) { $l9 = "<font color=skyblue>{$level9['name']}</font>"; }
     else { $l9 = $level9['name']; }
 
     if($level8['name'] == "") { $l8 = "-"; }
-    elseif($level8['npc'] >= 2) { $l8 = "<font color=cyan>$level8['name']</font>"; }
-    elseif($level8['npc'] == 1) { $l8 = "<font color=skyblue>$level8['name']</font>"; }
+    elseif($level8['npc'] >= 2) { $l8 = "<font color=cyan>{$level8['name']}</font>"; }
+    elseif($level8['npc'] == 1) { $l8 = "<font color=skyblue>{$level8['name']}</font>"; }
     else { $l8 = $level8['name']; }
 
     if($level7['name'] == "") { $l7 = "-"; }
-    elseif($level7['npc'] >= 2) { $l7 = "<font color=cyan>$level7['name']</font>"; }
-    elseif($level7['npc'] == 1) { $l7 = "<font color=skyblue>$level7['name']</font>"; }
+    elseif($level7['npc'] >= 2) { $l7 = "<font color=cyan>{$level7['name']}</font>"; }
+    elseif($level7['npc'] == 1) { $l7 = "<font color=skyblue>{$level7['name']}</font>"; }
     else { $l7 = $level7['name']; }
 
     if($level6['name'] == "") { $l6 = "-"; }
-    elseif($level6['npc'] >= 2) { $l6 = "<font color=cyan>$level6['name']</font>"; }
-    elseif($level6['npc'] == 1) { $l6 = "<font color=skyblue>$level6['name']</font>"; }
+    elseif($level6['npc'] >= 2) { $l6 = "<font color=cyan>{$level6['name']}</font>"; }
+    elseif($level6['npc'] == 1) { $l6 = "<font color=skyblue>{$level6['name']}</font>"; }
     else { $l6 = $level6['name']; }
 
     if($level5['name'] == "") { $l5 = "-"; }
-    elseif($level5['npc'] >= 2) { $l5 = "<font color=cyan>$level5['name']</font>"; }
-    elseif($level5['npc'] == 1) { $l5 = "<font color=skyblue>$level5['name']</font>"; }
+    elseif($level5['npc'] >= 2) { $l5 = "<font color=cyan>{$level5['name']}</font>"; }
+    elseif($level5['npc'] == 1) { $l5 = "<font color=skyblue>{$level5['name']}</font>"; }
     else { $l5 = $level5['name']; }
 
     echo "
@@ -171,7 +171,7 @@ for($i=1; $i <= $count; $i++) {
         $cityResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $city = MYDB_fetch_array($cityResult);
 
-        echo "현재 위치 : <font color=yellow>$city['name']</font>";
+        echo "현재 위치 : <font color=yellow>{$city['name']}</font>";
     }
     echo"
         </td>
@@ -180,8 +180,8 @@ for($i=1; $i <= $count; $i++) {
         <td colspan=8> 장수 일람 : ";
     for($j=0; $j < $gencount; $j++) {
         $general = MYDB_fetch_array($genresult);
-        if($general['npc'] >= 2) { echo "<font color=cyan>$general['name']</font>, "; }
-        elseif($general['npc'] == 1) { echo "<font color=skyblue>$general['name']</font>, "; }
+        if($general['npc'] >= 2) { echo "<font color=cyan>{$general['name']}</font>, "; }
+        elseif($general['npc'] == 1) { echo "<font color=skyblue>{$general['name']}</font>, "; }
         else { echo "$general['name'], "; }
     }
     echo"
@@ -225,8 +225,8 @@ echo"
         <td colspan=5> 장수 일람 : ";
     for($j=0; $j < $gencount; $j++) {
         $general = MYDB_fetch_array($genresult);
-        if($general['npc'] >= 2) { echo "<font color=cyan>$general['name']</font>, "; }
-        elseif($general['npc'] == 1) { echo "<font color=skyblue>$general['name']</font>, "; }
+        if($general['npc'] >= 2) { echo "<font color=cyan>{$general['name']}</font>, "; }
+        elseif($general['npc'] == 1) { echo "<font color=skyblue>{$general['name']}</font>, "; }
         else { echo "$general['name'], "; }
     }
     echo"

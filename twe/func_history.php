@@ -109,7 +109,7 @@ function LogHistory($connect, $isFirst=0) {
         $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $citycount = MYDB_num_rows($cityresult);
 
-        $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:$nation['color'];>$nation['name']</font><br>";
+        $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:$nation['color'];>{$nation['name']}</font><br>";
         $powerStr .= "국력 $nation['power']<br>";
         $genStr .= "장수 $nation['gennum']<br>";
         $cityStr .= "속령 $citycount<br>";

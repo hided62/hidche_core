@@ -22,11 +22,11 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $nation = MYDB_fetch_array($result);
 
 if($ok == "수락" && $me['level'] < 12 && $nation['level'] > 0 && $nation['scout'] == 0 && $me['nation'] != $nation['nation'] && $admin['year'] >= $admin['startyear']+3 && strpos($me['nations'], ",{$nation['nation']},") === false) {
-    $youlog[count($youlog)] = "<C>●</><Y>$me['name']</> 등용에 성공했습니다.";
-    $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>$me['name']</>(이)가 <D><b>$nation['name']</b></>(으)로 <S>망명</>하였습니다.";
-    $mylog[count($mylog)] = "<C>●</><D>$nation['name']</>(으)로 망명하여 수도로 이동합니다.";
-    $you = addHistory($connect, $you, "<C>●</>$admin['year']년 $admin['month']월:<Y>$me['name']</> 등용에 성공");
-    $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<D>$nation['name']</>(으)로 망명");
+    $youlog[count($youlog)] = "<C>●</><Y>{$me['name']}</> 등용에 성공했습니다.";
+    $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>(이)가 <D><b>{$nation['name']}</b></>(으)로 <S>망명</>하였습니다.";
+    $mylog[count($mylog)] = "<C>●</><D>{$nation['name']}</>(으)로 망명하여 수도로 이동합니다.";
+    $you = addHistory($connect, $you, "<C>●</>$admin['year']년 $admin['month']월:<Y>{$me['name']}</> 등용에 성공");
+    $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<D>{$nation['name']}</>(으)로 망명");
 
     // 임관내역 추가
     $me['nations'] .= "{$nation['nation']},";
@@ -145,8 +145,8 @@ if($ok == "수락" && $me['level'] < 12 && $nation['level'] > 0 && $nation['scou
     $query = "update general set msg{$num}='$nation['name'](으)로 등용 제의 수락 불가',msg{$num}_type='10' where no='{$me['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } else {
-    $youlog[count($youlog)] = "<C>●</><Y>$me['name']</>(이)가 등용을 거부했습니다.";
-    $mylog[count($mylog)] = "<C>●</><D>$nation['name']</>(으)로 망명을 거부했습니다.";
+    $youlog[count($youlog)] = "<C>●</><Y>{$me['name']}</>(이)가 등용을 거부했습니다.";
+    $mylog[count($mylog)] = "<C>●</><D>{$nation['name']}</>(으)로 망명을 거부했습니다.";
 
     //현 메세지 지움
     $query = "update general set msg{$num}='$nation['name'](으)로 등용 제의 거부',msg{$num}_type='10' where no='{$me['no']}'";

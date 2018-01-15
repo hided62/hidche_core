@@ -55,12 +55,12 @@ if($ok == "수락") {
     } elseif($mynation['dipmsg'] == "") {
         $mylog[count($mylog)] = "<C>●</>이미 거절했습니다. 불가침 실패.";
     } else {
-        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>$me['name']</>(이)가 <D><b>$younation['name']</b></>(와)과 <M>종전 합의</> 하였습니다.";
-        $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【종전】</b></><D><b>$mynation['name']</b></>(이)가 <D><b>$younation['name']</b></>(와)과 <M>종전 합의</> 하였습니다.";
-        $youlog[count($youlog)] = "<C>●</><D><b>$mynation['name']</b></>(와)과 종전에 성공했습니다.";
-        $mylog[count($mylog)] = "<C>●</><D><b>$younation['name']</b></>(와)과 종전에 합의했습니다.";
-        $you = addHistory($connect, $you, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$mynation['name']</b></>(와)과 종전 성공");
-        $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<D><b>$younation['name']</b></>(와)과 종전 수락");
+        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>(이)가 <D><b>{$younation['name']}</b></>(와)과 <M>종전 합의</> 하였습니다.";
+        $history[count($history)] = "<C>●</>$admin['year']년 $admin['month']월:<Y><b>【종전】</b></><D><b>{$mynation['name']}</b></>(이)가 <D><b>{$younation['name']}</b></>(와)과 <M>종전 합의</> 하였습니다.";
+        $youlog[count($youlog)] = "<C>●</><D><b>{$mynation['name']}</b></>(와)과 종전에 성공했습니다.";
+        $mylog[count($mylog)] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 종전에 합의했습니다.";
+        $you = addHistory($connect, $you, "<C>●</>$admin['year']년 $admin['month']월:<D><b>{$mynation['name']}</b></>(와)과 종전 성공");
+        $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<D><b>{$younation['name']}</b></>(와)과 종전 수락");
 
         //외교 변경
         $query = "update diplomacy set state='2',term='0' where me='{$mynation['nation']}' and you='{$younation['nation']}'";
@@ -85,8 +85,8 @@ if($ok == "수락") {
     $query = "update nation set dip{$num}='',dip{$num}_who='0',dip{$num}_when='' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } else {
-    $youlog[count($youlog)] = "<C>●</><Y>$mynation['name']</>(이)가 종전을 거부했습니다.";
-    $mylog[count($mylog)] = "<C>●</><D>$younation['name']</>(와)과 종전을 거부했습니다.";
+    $youlog[count($youlog)] = "<C>●</><Y>{$mynation['name']}</>(이)가 종전을 거부했습니다.";
+    $mylog[count($mylog)] = "<C>●</><D>{$younation['name']}</>(와)과 종전을 거부했습니다.";
 
     //현 메세지 지움
     $query = "update nation set dip{$num}='',dip{$num}_who='0',dip{$num}_when='' where nation='{$me['nation']}'";

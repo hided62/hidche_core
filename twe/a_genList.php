@@ -139,8 +139,8 @@ for($j=0; $j < $gencount; $j++) {
         $intel = "{$general['intel']}";
     }
 
-    if($general['npc'] >= 2) { $name = "<font color=cyan>$general['name']</font>"; }
-    elseif($general['npc'] == 1) { $name = "<font color=skyblue>$general['name']</font>"; }
+    if($general['npc'] >= 2) { $name = "<font color=cyan>{$general['name']}</font>"; }
+    elseif($general['npc'] == 1) { $name = "<font color=skyblue>{$general['name']}</font>"; }
     else { $name =  "$general['name']"; }
 
     $general['connect'] = round($general['connect'] / 10, 0) * 10;
@@ -161,7 +161,7 @@ for($j=0; $j < $gencount; $j++) {
         <td align=center>$leader</td>
         <td align=center>$power</td>
         <td align=center>$intel</td>
-        <td align=center>$general['killturn']</td>
+        <td align=center>{$general['killturn']}</td>
         <td align=center>$general['connect']"; echo "<br>【".getConnect($general['connect'])."】</td>
     </tr>";
 }

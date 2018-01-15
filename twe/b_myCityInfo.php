@@ -129,7 +129,7 @@ for($j=0; $j < $citycount; $j++) {
     </tr>
     <tr>
         <td align=center id=bg1>민심</td>
-        <td align=center>$city['rate']</td>
+        <td align=center>{$city['rate']}</td>
         <td align=center id=bg1>시세</td>
         <td align=center>{$city['trade']}%</td>
         <td align=center id=bg1>인구</td>

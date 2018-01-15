@@ -77,7 +77,7 @@ for($i=0; $i < $troopcount; $i++) {
         echo "
     <tr>
         <td align=center rowspan=2><input "; echo $i==0?"checked ":""; echo "type=radio name=troop value='{$troop['troop']}'></td>
-        <td align=center >$troop['name']<br>【 $cityname 】</td>
+        <td align=center >{$troop['name']}<br>【 $cityname 】</td>
         <td height=64 background={$imageTemp}/{$picture}>&nbsp;</td>
         <td rowspan=2 width=662>$genlist</td>
         <td rowspan=2>$turn</td>
@@ -88,7 +88,7 @@ for($i=0; $i < $troopcount; $i++) {
         echo "
     <tr>
         <td align=center rowspan=2>&nbsp;</td>
-        <td align=center >$troop['name']<br>【 $cityname 】</td>
+        <td align=center >{$troop['name']}<br>【 $cityname 】</td>
         <td height=64 background={$imageTemp}/{$picture}>&nbsp;</td>
         <td rowspan=2 width=662>$genlist</td>
         <td rowspan=2>";
@@ -102,7 +102,7 @@ for($i=0; $i < $troopcount; $i++) {
             for($k=0; $k < $genCount; $k++) {
                 $general = MYDB_fetch_array($genresult);
                 echo "
-                <option value=$general['no']>$general['name']</option>";
+                <option value=$general['no']>{$general['name']}</option>";
             }
             echo "
             </select><br>

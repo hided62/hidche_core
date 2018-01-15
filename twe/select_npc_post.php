@@ -107,8 +107,8 @@ if($admin['npcmode'] != 1) {
     $result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $log[0] = "<C>●</>{$admin['month']}월:<Y>$me['name']</>의 육체에 <Y>$member['name']</>(이)가 <S>빙의</>됩니다!";
-    $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<Y>$me['name']</>의 육체에 <Y>$member['name']</>(이)가 빙의되다.");
+    $log[0] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>의 육체에 <Y>{$member['name']}</>(이)가 <S>빙의</>됩니다!";
+    $me = addHistory($connect, $me, "<C>●</>$admin['year']년 $admin['month']월:<Y>{$me['name']}</>의 육체에 <Y>{$member['name']}</>(이)가 빙의되다.");
     pushGenLog($me, $mylog);
     pushAllLog($log);
 

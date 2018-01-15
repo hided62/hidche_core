@@ -88,7 +88,7 @@ echo "
         <td width=98 align=center id=bg1>총병사</td>
         <td width=198 align=center>{$general['totcrew']}/{$general['maxcrew']}</td>
         <td width=98 align=center id=bg1>국 력</td>
-        <td width=298 align=center colspan=3>$nation['power']</td>
+        <td width=298 align=center colspan=3>{$nation['power']}</td>
     </tr>
     <tr>
         <td align=center id=bg1>국 고</td>
@@ -115,7 +115,7 @@ echo "
         <td align=center id=bg1>속 령</td>
         <td width=98 align=center>$citycount</td>
         <td width=98 align=center id=bg1>장 수</td>
-        <td width=98 align=center>$nation['gennum']</td>
+        <td width=98 align=center>{$nation['gennum']}</td>
     </tr>
     <tr>
         <td align=center id=bg1>국고 예산</td>
@@ -123,7 +123,7 @@ echo "
         <td align=center id=bg1>병량 예산</td>
         <td align=center>{$budgetrice} ({$budgetricediff})</td>
         <td align=center id=bg1>기술력</td>
-        <td align=center>$nation['tech']</td>
+        <td align=center>{$nation['tech']}</td>
         <td align=center id=bg1>작 위</td>
         <td align=center>".getNationLevel($nation['level'])."</td>
     </tr>

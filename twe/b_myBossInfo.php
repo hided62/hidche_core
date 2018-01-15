@@ -484,9 +484,9 @@ for($j=0; $j < $citycount; $j++) {
     <tr>
         <td width=78 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=3>【{$citylevel[$city['level']]}】</font></td>
         <td width=78 align=right  style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=3>$city['name']&nbsp;&nbsp;</font></td>
-        <td align=center>$gen1['name']</td>
-        <td align=center>$gen2['name']</td>
-        <td align=center>$gen3['name']</td>
+        <td align=center>{$gen1['name']}</td>
+        <td align=center>{$gen2['name']}</td>
+        <td align=center>{$gen3['name']}</td>
     </tr>
     ";
 }

@@ -80,13 +80,13 @@ for($i=0; $i < $gencount; $i++) {
     $gen = MYDB_fetch_array($genresult);
     echo "
     <tr>
-        <td align=center>$gen['name']</td>
-        <td align=center>$gen['connect']</td>
-        <td align=center>$gen['startage']</td>
-        <td align=center>$gen['age']</td>
+        <td align=center>{$gen['name']}</td>
+        <td align=center>{$gen['connect']}</td>
+        <td align=center>{$gen['startage']}</td>
+        <td align=center>{$gen['age']}</td>
         <td align=center>".round($gen['refcnt']/2, 1)."</td>
         <td align=center>".round($gen['ref']/2,1)."</td>
-        <td align=center>$gen['logcnt']</td>
+        <td align=center>{$gen['logcnt']}</td>
         <td align=center>".round($gen['log']/2,1)."</td>
     </tr>";
 }

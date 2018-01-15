@@ -77,9 +77,9 @@ for($i=0; $i < $nationcount; $i++) {
         $citycount = MYDB_num_rows($result2);
         echo "
     <tr>
-        <td align=center style=color:".newColor($nation['color']).";background-color:{$nation['color']};>$nation['name']</td>
-        <td align=center>$nation['power']</td>
-        <td align=center>$nation['gennum']</td>
+        <td align=center style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td>
+        <td align=center>{$nation['power']}</td>
+        <td align=center>{$nation['gennum']}</td>
         <td align=center>$citycount</td>
         <td align=center>-</td>
         <td align=center>-</td>
@@ -150,9 +150,9 @@ for($i=0; $i < $nationcount; $i++) {
 
     echo "
     <tr>
-        <td align=center style=color:".newColor($nation['color']).";background-color:{$nation['color']};>$nation['name']</td>
-        <td align=center>$nation['power']</td>
-        <td align=center>$nation['gennum']</td>
+        <td align=center style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td>
+        <td align=center>{$nation['power']}</td>
+        <td align=center>{$nation['gennum']}</td>
         <td align=center>$citycount</td>
         <td align=center>$state</td>";
     if($dip['term'] != 0) {
@@ -220,9 +220,9 @@ echo "
                 </tr>
                 <tr>
                     <td width=248 align=right id=bg1>현 재&nbsp;&nbsp;&nbsp;</td>
-                    <td width=248 align=center>$nation['gold']</td>
+                    <td width=248 align=center>{$nation['gold']}</td>
                     <td width=248 align=right id=bg1>현 재&nbsp;&nbsp;&nbsp;</td>
-                    <td width=248 align=center>$nation['rice']</td>
+                    <td width=248 align=center>{$nation['rice']}</td>
                 </tr>
                 <tr>
                     <td align=right id=bg1>단기수입&nbsp;&nbsp;&nbsp;</td>

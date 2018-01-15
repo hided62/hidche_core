@@ -30,7 +30,7 @@ for($i=0; $i < $nationcount; $i++) {
     $nationname[$nation['nation']] = $nation['name'];
     $nationcolor[$nation['nation']] = $nation['color'];
 
-    $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:$nation['color'];>$nation['name']</font><br>";
+    $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:$nation['color'];>{$nation['name']}</font><br>";
     $powerStr .= "국력 $nation['power']<br>";
     $genStr .= "장수 $nation['gennum']<br>";
     $cityStr .= "속령 $citycount<br>";
@@ -149,7 +149,7 @@ for($i=0; $i < $citycount; $i++) {
         }
         echo "
         <tr>
-            <td align=center width=48>$city['name']</td>
+            <td align=center width=48>{$city['name']}</td>
             <td width=948>";
         for($k=0; $k < count($nation); $k++) {
             $per = 100*$killnum[$seq[$k]] / $sum;

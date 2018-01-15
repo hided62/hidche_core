@@ -136,8 +136,8 @@ for($j=0; $j < $gencount; $j++) {
         $intel = "{$general['intel']}";
     }
 
-    if($general['npc'] >= 2) { $name = "<font color=cyan>$general['name']</font>"; }
-    elseif($general['npc'] == 1) { $name = "<font color=skyblue>$general['name']</font>"; }
+    if($general['npc'] >= 2) { $name = "<font color=cyan>{$general['name']}</font>"; }
+    elseif($general['npc'] == 1) { $name = "<font color=skyblue>{$general['name']}</font>"; }
     else { $name =  "$general['name']"; }
 
     switch($general['mode']) {
@@ -151,14 +151,14 @@ for($j=0; $j < $gencount; $j++) {
         <td align=center>$name<br>Lv ".getExpLevel($general['experience'])."</td>
         <td align=center>{$leader}∥{$power}∥{$intel}</td>
         <td align=center>$troop</td>
-        <td align=center>$general['gold']</td>
-        <td align=center>$general['rice']</td>
+        <td align=center>{$general['gold']}</td>
+        <td align=center>{$general['rice']}</td>
         <td align=center>$city</td>
         <td align=center>$mode</td>
         <td align=center>".getTypename($general['crewtype'])."</td>
-        <td align=center>$general['crew']</td>
-        <td align=center>$general['train']</td>
-        <td align=center>$general['atmos']</td>";
+        <td align=center>{$general['crew']}</td>
+        <td align=center>{$general['train']}</td>
+        <td align=center>{$general['atmos']}</td>";
     if($general['npc'] >= 2) {
         echo "
         <td>
@@ -179,7 +179,7 @@ for($j=0; $j < $gencount; $j++) {
     echo "
             </font>
         </td>
-        <td align=center>$general['killturn']</td>
+        <td align=center>{$general['killturn']}</td>
         <td align=center>".substr($general['turntime'],14,5)."</td>
     </tr>";
 }

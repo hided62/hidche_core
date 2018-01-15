@@ -31,12 +31,12 @@ $nation = MYDB_fetch_array($result);
 if($me['level'] >= 5) {
     echo "
 <form name=form1 method=post action=c_nationrule.php>
-<textarea name=msg style=color:white;background-color:black;width:998;height:500;>$nation['rule']</textarea><br>
+<textarea name=msg style=color:white;background-color:black;width:998;height:500;>{$nation['rule']}</textarea><br>
 <input type=submit value=저장하기>
 </form>";
 } else {
     echo "
-<textarea name=msg style=color:white;background-color:black;width:998;height:500; readonly>$nation['rule']</textarea><br>";
+<textarea name=msg style=color:white;background-color:black;width:998;height:500; readonly>{$nation['rule']}</textarea><br>";
 }
 
 ?>
