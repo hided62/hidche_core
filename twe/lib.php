@@ -169,7 +169,14 @@ function PrintElapsedTime() {
 }
 
 function LogText($prefix, $variable){
-    $fp = fopen('logs/dbg_logs.txt', 'at');
+    $fp = fopen('logs/dbg_logs.txt', 'a+');
+    if($fp == false){
+        $directory_name = dirname('logs/dbg_logs.txt');
+        if(!is_dir($directory_name)){
+            mkdir($directory_name);
+            $fp = fopen('logs/dbg_logs.txt', 'a+');
+        }
+    }
     fwrite($fp, sprintf('%s : %s\n', $prefix, var_export($_POST, true)));
     fclose($fp);
 }
