@@ -79,17 +79,19 @@ function abilityPowint() {
 
 function delInDir($dir) {
     $handle = opendir($dir);
-    while(false !== ($FolderOrFile = readdir($handle))) {
-        if($FolderOrFile == "." || $FolderOrFile == "..") {
-            continue;
-        }
+    if($handle !== false){
+        while(false !== ($FolderOrFile = readdir($handle))) {
+            if ($FolderOrFile == "." || $FolderOrFile == "..") {
+                continue;
+            }
 
-        $filepath = sprintf('%s/%s', $dir, $FolderOrFile);
-        if(is_dir($filepath)) {
-            delInDir($filepath);
-        } // recursive
-        else {
-            @unlink($filepath);
+            $filepath = sprintf('%s/%s', $dir, $FolderOrFile);
+            if (is_dir($filepath)) {
+                delInDir($filepath);
+            } // recursive
+            else {
+                @unlink($filepath);
+            }
         }
     }
     closedir($handle);
