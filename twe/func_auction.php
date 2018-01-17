@@ -222,9 +222,9 @@ function processAuction($connect) {
             }
         } else {
             // 쌀 처리
-            if($auction[no2] == 0) {
+            if($auction['no2'] == 0) {
                 // 상인건수가 아닌것만 출력
-                if($auction[no1] != 0) {
+                if($auction['no1'] != 0) {
                     $query = "select no from general where no='$auction[no1]'";
                     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     $trader = MYDB_fetch_array($result);
