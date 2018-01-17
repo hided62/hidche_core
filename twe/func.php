@@ -4386,7 +4386,12 @@ function SetNationFront($connect, $nationNo) {
     $cityNum = MYDB_num_rows($result);
     for($i=0; $i < $cityNum; $i++) {
         $city = MYDB_fetch_array($result);
-        if($adj[$city['city']] == 1) { $str .= " or city={$city['city']}"; $valid = 1; }
+        if(isset($city['city'])) {
+            if (isset($adj[$city['city']]) && ($adj[$city['city']] == 1)) {
+                $str .= " or city={$city['city']}";
+                $valid = 1;
+            }
+        }
     }
     $query = "update city set front=0 where nation={$nationNo}";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -5076,6 +5081,7 @@ function checkSurrender($connect) {
 }
 
 function updateNationState($connect) {
+    $history = array();
     $query = "select year,month from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -6670,14 +6676,14 @@ function getRiceIncome($connect, $nationNo, $rate, $admin_rate, $type) {
 
         //민충 0~100 : 50~100 수입
         $ratio = $city['rate'] / 2 + 50;
-        $tax1 = ($city['pop'] * $city['agri'] / $city[agri2] * $ratio / 1000) / 3;
-        $tax2 = $city['def'] * $city['wall'] / $city[wall2] / 3;
-        $tax1 *= (1 + $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 추가
-        $tax2 *= (1 + $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 추가
+        $tax1 = ($city['pop'] * $city['agri'] / $city['agri2'] * $ratio / 1000) / 3;
+        $tax2 = $city['def'] * $city['wall'] / $city['wall2'] / 3;
+        $tax1 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
+        $tax2 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
         //도시 관직 추가 세수
-        if($level4[$city[gen1]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if($level3[$city[gen2]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if($level2[$city[gen3]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if($level4[$city['gen1']] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if($level3[$city['gen2']] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if($level2[$city['gen3']] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
         //수도 추가 세수 130%~105%
         if($city['city'] == $nation['capital']) { $tax1 *= 1+(1/3/$nation['level']); $tax2 *= 1+(1/3/$nation['level']); }
         $income[0] += $tax1;
