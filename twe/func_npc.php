@@ -1439,6 +1439,7 @@ function processAI($connect, $no) {
 //   0┗━┻━━━━┻━━━> G
 //       100       700
         $resrc = $tech * 700;
+        $target = array();
         // 평시거나 초반아니면서 공격가능 없으면서 병사 있으면 해제(25%)
         if($dipState == 0 && $isStart == 0 && $attackable == 0 && $general['crew'] > 0 && rand()% 100 < 25) {
             $command = EncodeCommand(0, 0, 0, 17);    //소집해제

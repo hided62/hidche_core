@@ -1344,7 +1344,7 @@ function getTurn($connect, $general, $type, $font=1) {
         $turn[2] = $general["turn2"];
         $turn[3] = $general["turn3"];
         $turn[4] = $general["turn4"];
-        $turn[5] = $general["turn5"];
+        //$turn[5] = $general["turn5"];
     }
     if($type >= 2) {
         $turn[6] = $general["turn6"];
@@ -4414,6 +4414,7 @@ function checkSupply($connect) {
     $queue2 = new Queue(20);
     $labelling = 0;
     $marked = 0;
+    $comCount = array();
 
     //모든 도시 마크할 때까지
     while($marked < $cityNum) {
@@ -4504,6 +4505,8 @@ function updateQuaterly($connect) {
 function preUpdateMonthly($connect) {
     //연감 월결산
     $result = LogHistory($connect);
+    $history = array();
+
     if($result == false) { return false; }
 
     $query = "select startyear,year,month,normgeneral from game where no='1'";
@@ -4625,6 +4628,7 @@ function preUpdateMonthly($connect) {
         $general = MYDB_fetch_array($result);
 
         unset($log);
+        $log = array();
         $log = checkDedication($connect, $general, $log);
         $log = checkExperience($connect, $general, $log);
         pushGenLog($general, $log);
@@ -4748,6 +4752,7 @@ group by A.nation
     $query = "select A.me as me,A.you as you,A.term as term1,B.term as term2 from diplomacy A, diplomacy B where A.me=B.you and A.you=B.me and A.state='0' and A.me<A.you";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dipCount = MYDB_num_rows($result);
+    $history = array();
     for($i=0; $i < $dipCount; $i++) {
         $dip = MYDB_fetch_array($result);
 
@@ -6386,13 +6391,13 @@ function popIncrease($connect) {
             if($cityrate > 100) { $cityrate = 100; }
             if($cityrate < 0) { $cityrate = 0; }
         }
-        if($pop > $city[pop2]) { $pop = $city[pop2]; }
+        if($pop > $city['pop2']) { $pop = $city['pop2']; }
         if($pop < 0) { $pop = 0; }
-        if($agri > $city[agri2]) { $agri = $city[agri2]; }
-        if($comm > $city[comm2]) { $comm = $city[comm2]; }
-        if($secu > $city[secu2]) { $secu = $city[secu2]; }
-        if($def > $city[def2]) { $def= $city[def2]; }
-        if($wall > $city[wall2]) { $wall = $city[wall2]; }
+        if($agri > $city['agri2']) { $agri = $city['agri2']; }
+        if($comm > $city['comm2']) { $comm = $city['comm2']; }
+        if($secu > $city['secu2']) { $secu = $city['secu2']; }
+        if($def > $city['def2']) { $def= $city['def2']; }
+        if($wall > $city['wall2']) { $wall = $city['wall2']; }
 
         //시세
         $query = "update city set pop='$pop',rate='$cityrate',agri='$agri',comm='$comm',secu='$secu',def='$def',wall='$wall' where city='{$city['city']}'";
@@ -6438,19 +6443,16 @@ function getGoldIncome($connect, $nationNo, $rate, $admin_rate, $type) {
 
         //민충 0~100 : 50~100 수입
         $ratio = $city['rate'] / 2 + 50;
-        $tax1 = ($city['pop'] * $city['comm'] / $city[comm2] * $ratio / 1000) / 3;
-//        $tax2 = $city['def'] * $city['wall'] / $city[wall2] / 3;
-        $tax1 *= (1 + $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 추가
-//        $tax2 *= (1 + $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 추가
+        $tax1 = ($city['pop'] * $city['comm'] / $city['comm2'] * $ratio / 1000) / 3;
+        $tax1 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
         //도시 관직 추가 세수
-        if($level4[$city[gen1]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if($level3[$city[gen2]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if($level2[$city[gen3]] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if($level4[$city['gen1']] == $city['city']) { $tax1 *= 1.05;  }
+        if($level3[$city['gen2']] == $city['city']) { $tax1 *= 1.05;  }
+        if($level2[$city['gen3']] == $city['city']) { $tax1 *= 1.05;  }
         //수도 추가 세수 130%~105%
-        if($city['city'] == $nation['capital']) { $tax1 *= 1+(1/3/$nation['level']); $tax2 *= 1+(1/3/$nation['level']); }
+        if($city['city'] == $nation['capital']) { $tax1 *= 1+(1/3/$nation['level']); };
 
         $income[0] += $tax1;
-//        $income[1] += $tax2;
     }
     $income[0] *= ($rate / 20);
 

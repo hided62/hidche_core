@@ -17,14 +17,19 @@ $me = MYDB_fetch_array($result);
 $query = "select nation,color,name,power,gennum from nation where level>0 order by power desc";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nationcount = MYDB_num_rows($result);
+$nationnum = array();
 
 $nationStr = "";
+$powerStr = "";
+$genStr = "";
+$cityStr = "";
 for($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($result);
 
     $query = "select city from city where nation='{$nation['nation']}'";
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($cityresult);
+
 
     $nationnum[count($nationnum)] = $nation['nation'];
     $nationname[$nation['nation']] = $nation['name'];

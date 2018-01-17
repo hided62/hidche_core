@@ -39,7 +39,7 @@ if($me['skin'] < 1) {
             <form name=cityselect method=post>도시선택 :
                 <select name=citylist size=1 style=color:white;background-color:black;width:798;>
 <?php
-if($_POST['citylist'] == '') { $_POST['citylist'] = $me['city']; }
+if(!array_key_exists('citylist', $_POST) && $_POST['citylist'] == '') { $_POST['citylist'] = $me['city']; }
 
 // 재야일때는 현재 도시만
 $valid = 0;
@@ -188,7 +188,7 @@ echo "
         <td align=center id=bg1>시세</td>
         <td align=center>{$city['trade']}%</td>
         <td align=center id=bg1>인구</td>
-        <td align=center>".round($city['pop']/$city[pop2]*100, 2)." %</td>
+        <td align=center>".round($city['pop']/$city['pop2']*100, 2)." %</td>
         <td align=center id=bg1>태수</td>
         <td align=center>";echo $gen1['name']==''?"-":"{$gen1['name']}";echo "</td>
         <td align=center id=bg1>군사</td>
