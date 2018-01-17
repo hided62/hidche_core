@@ -17,10 +17,9 @@ $me = MYDB_fetch_array($result);
 $con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-if($type == 0) {
+if(!isset($type) || $type == 0) {
     $type = 9;
 }
-$sel[$type] = "selected";
 
 ?>
 <html>
@@ -29,6 +28,7 @@ $sel[$type] = "selected";
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>장수일람</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
+<script src="../e_lib/jquery-1.6.4.min.js"></script>
 <?php require('analytics.php'); ?>
 </head>
 
@@ -36,23 +36,23 @@ $sel[$type] = "selected";
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td>장 수 일 람<br><?php closeButton(); ?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
-        <select name=type size=1>
-            <option <?=$sel[1];?> value=1>국가</option>
-            <option <?=$sel[2];?> value=2>통솔</option>
-            <option <?=$sel[3];?> value=3>무력</option>
-            <option <?=$sel[4];?> value=4>지력</option>
-            <option <?=$sel[5];?> value=5>명성</option>
-            <option <?=$sel[6];?> value=6>계급</option>
-            <option <?=$sel[7];?> value=7>관직</option>
-            <option <?=$sel[8];?> value=8>삭턴</option>
-            <option <?=$sel[9];?> value=9>벌점</option>
-            <option <?=$sel[10];?> value=10>Lv</option>
-            <option <?=$sel[11];?> value=11>성격</option>
-            <option <?=$sel[12];?> value=12>내특</option>
-            <option <?=$sel[13];?> value=13>전특</option>
-            <option <?=$sel[14];?> value=14>연령</option>
-            <option <?=$sel[15];?> value=15>NPC</option>
-            <option <?=$sel[16];?> value=16>특별</option>
+        <select id='viewType' name='type' size=1>
+            <option value=1>국가</option>
+            <option value=2>통솔</option>
+            <option value=3>무력</option>
+            <option value=4>지력</option>
+            <option value=5>명성</option>
+            <option value=6>계급</option>
+            <option value=7>관직</option>
+            <option value=8>삭턴</option>
+            <option value=9>벌점</option>
+            <option value=10>Lv</option>
+            <option value=11>성격</option>
+            <option value=12>내특</option>
+            <option value=13>전특</option>
+            <option value=14>연령</option>
+            <option value=15>NPC</option>
+            <option value=16>특별</option>
         </select>
         <input type=submit value='정렬하기'></form>
     </td></tr>
@@ -152,7 +152,7 @@ for($j=0; $j < $gencount; $j++) {
         <td align=center>$name</td>
         <td align=center>{$general['age']}세</td>
         <td align=center>".getGenChar($general['personal'])."</td>
-        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general[special2])."</td>
+        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general['special2'])."</td>
         <td align=center>Lv ".getExpLevel($general['experience'])."</td>
         <td align=center>{$nation}</td>
         <td align=center>".getHonor($general['experience'])."</td>
@@ -177,6 +177,11 @@ MYDB_close($connect);
     <tr><td><?php banner(); ?></td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#viewType").val("<?=$type?>").attr("selected", "selected");
+});
+</script>
 </body>
 
 </html>
