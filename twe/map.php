@@ -159,6 +159,11 @@ function showMap($connect, $type, $graphic) {
     $query = "select nation,name,color,capital from nation";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
+    
+    $nationname = array();
+    $nationcolor = array();
+    $nationCapital = array();
+    
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
         $nationcolor[$nation['nation']] = $nation['color'];
@@ -233,9 +238,7 @@ function showMap($connect, $type, $graphic) {
     210, 285, 275,  75, 160, 180, 255, 295, 315, 30, 325, 350, 260, 435
     );
 
-    $nationname = array();
-    $nationcolor = array();
-    $nationCapital = array();
+
     
     $query = "select name,level,nation,city,state,region,supply from city";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -262,7 +265,7 @@ function showMap($connect, $type, $graphic) {
         else                        { $cap = 0; }
 
         city($graphic, $brouserIE,
-            $type, $name, $nation, $color, $level, $region, $i+1, $valid[$i+1], $x[$i], $y[$i],
+            $type, $name, $nation, $color, $level, $region, $i+1, isset($valid[$i+1])?$valid[$i+1]:0 , $x[$i], $y[$i],
             $state, $myCity, $city['supply'], $cap);
     }
 

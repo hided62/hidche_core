@@ -2788,11 +2788,11 @@ function generalInfo2($connect, $no, $skin) {
         $dedication = unfont($dedication);
     }
 
-    $dex0  = $general[dex0]  / $_dexLimit * 100;
-    $dex10 = $general[dex10] / $_dexLimit * 100;
-    $dex20 = $general[dex20] / $_dexLimit * 100;
-    $dex30 = $general[dex30] / $_dexLimit * 100;
-    $dex40 = $general[dex40] / $_dexLimit * 100;
+    $dex0  = $general['dex0']  / $_dexLimit * 100;
+    $dex10 = $general['dex10'] / $_dexLimit * 100;
+    $dex20 = $general['dex20'] / $_dexLimit * 100;
+    $dex30 = $general['dex30'] / $_dexLimit * 100;
+    $dex40 = $general['dex40'] / $_dexLimit * 100;
 
     if($dex0 > 100) { $dex0 = 100; }
     if($dex10 > 100) { $dex10 = 100; }
@@ -2800,11 +2800,11 @@ function generalInfo2($connect, $no, $skin) {
     if($dex30 > 100) { $dex30 = 100; }
     if($dex40 > 100) { $dex40 = 100; }
 
-    $general[dex0]  = getDexCall($general[dex0]);
-    $general[dex10] = getDexCall($general[dex10]);
-    $general[dex20] = getDexCall($general[dex20]);
-    $general[dex30] = getDexCall($general[dex30]);
-    $general[dex40] = getDexCall($general[dex40]);
+    $general['dex0']  = getDexCall($general['dex0']);
+    $general['dex10'] = getDexCall($general['dex10']);
+    $general['dex20'] = getDexCall($general['dex20']);
+    $general['dex30'] = getDexCall($general['dex30']);
+    $general['dex40'] = getDexCall($general['dex40']);
 
     echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
     <tr><td align=center colspan=6 id=bg1><b>추 가 정 보</b></td></tr>
