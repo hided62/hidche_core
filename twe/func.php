@@ -3001,7 +3001,9 @@ function AllLog($count, $skin) {
     @fclose($fp);
     $log = explode("\r\n",$file);
     $str = "";
-    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
+    for($i=0; $i < $count; $i++) {
+    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
+  	}
     echo $str;
 }
 
@@ -3023,7 +3025,9 @@ function History($count, $skin) {
     @fclose($fp);
     $log = explode("\r\n",$file);
     $str = "";
-    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
+    for($i=0; $i < $count; $i++) {
+    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
+	}
     echo $str;
 }
 
@@ -3034,7 +3038,9 @@ function MyLog($no, $count, $skin) {
     @fclose($fp);
     $log = explode("\r\n",$file);
     $str = "";
-    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
+    for($i=0; $i < $count; $i++) {
+    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
+	}
     echo $str;
 }
 
@@ -3315,11 +3321,11 @@ function MsgDip($connect, $bg) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($nation[dip0]) { echo "\n"; DecodeMsg($connect, $nation[dip0], $nation['dip0_type'], $nation['dip0_who'], $nation['dip0_when'], $bg, 0); }
-    if($nation[dip1]) { echo "\n"; DecodeMsg($connect, $nation[dip1], $nation['dip1_type'], $nation['dip1_who'], $nation['dip1_when'], $bg, 1); }
-    if($nation[dip2]) { echo "\n"; DecodeMsg($connect, $nation[dip2], $nation['dip2_type'], $nation['dip2_who'], $nation['dip2_when'], $bg, 2); }
-    if($nation[dip3]) { echo "\n"; DecodeMsg($connect, $nation[dip3], $nation['dip3_type'], $nation['dip3_who'], $nation['dip3_when'], $bg, 3); }
-    if($nation[dip4]) { echo "\n"; DecodeMsg($connect, $nation[dip4], $nation['dip4_type'], $nation['dip4_who'], $nation['dip4_when'], $bg, 4); }
+    if($nation['dip0']) { echo "\n"; DecodeMsg($connect, $nation['dip0'], $nation['dip0_type'], $nation['dip0_who'], $nation['dip0_when'], $bg, 0); }
+    if($nation['dip1']) { echo "\n"; DecodeMsg($connect, $nation['dip1'], $nation['dip1_type'], $nation['dip1_who'], $nation['dip1_when'], $bg, 1); }
+    if($nation['dip2']) { echo "\n"; DecodeMsg($connect, $nation['dip2'], $nation['dip2_type'], $nation['dip2_who'], $nation['dip2_when'], $bg, 2); }
+    if($nation['dip3']) { echo "\n"; DecodeMsg($connect, $nation['dip3'], $nation['dip3_type'], $nation['dip3_who'], $nation['dip3_when'], $bg, 3); }
+    if($nation['dip4']) { echo "\n"; DecodeMsg($connect, $nation['dip4'], $nation['dip4_type'], $nation['dip4_who'], $nation['dip4_when'], $bg, 4); }
 }
 
 // type : xx,xx(불가침기간,타입)
@@ -3412,10 +3418,14 @@ function MsgFile($skin, $bg, $nation=0, $level=0) {
     @fclose($fp);
     $code = explode("\r\n",$file);
     for($i=0; $i < $count; $i++) {
-        $msg = explode("|", $code[count($code)-2-$i]);
+        $msg = isset($code[count($code)-2-$i]) ? explode("|", $code[count($code)-2-$i]) : array();
 
         $cnt = count($msg);
-        for($k=0; $k < $cnt; $k++) { $msg[$k] = trim($msg[$k]); }
+		if(!empty($cnt)){
+	        for($k=0; $k < $cnt; $k++) {
+	        	 $msg[$k] = trim($msg[$k]); 
+			}
+		}
 
         ShowMsg($skin, $bgcolor, $msg[0], $msg[7], $msg[8], $msg[1], $msg[5], $msg[2], $msg[6], $msg[4], $msg[3]);
     }

@@ -53,7 +53,6 @@ $scenario = getScenario($connect);
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php?<?=$me['skin'];?> type=text/css>
 <script type="text/javascript">
-//var term = <?=$term;?>;  // 갱신 가능 텀
 
 if (document.all) {
     document.onkeydown = function () {
@@ -86,9 +85,6 @@ function refreshing(arg1, arg2) {
             message.msg.focus();
             break;
     }
-//    } else {
-//        alert('<?=$term;?>초가 지나야 합니다!!!\n서버 보호를 위한 조치이니 모두 협조 바랍니다.\n<?=$term;?>초가 지난 후 눌러주세요.\n\n                                          ®유기체서버™');
-//    }
 }
 
 function go(type) {
