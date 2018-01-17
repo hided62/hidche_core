@@ -3061,7 +3061,9 @@ function MyBatRes($no, $count, $skin) {
     @fclose($fp);
     $log = explode("\r\n",$file);
     $str = "";
-    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
+    for($i=0; $i < $count; $i++) {
+         $str .= isset($log[count($log)-2-$i]) ?  ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
+    }
     echo $str;
 }
 
@@ -3072,7 +3074,9 @@ function MyBatLog($no, $count, $skin) {
     @fclose($fp);
     $log = explode("\r\n",$file);
     $str = "";
-    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
+    for($i=0; $i < $count; $i++) {
+         $str .= isset($log[count($log)-2-$i]) ?  ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
+    }
     echo $str;
 }
 
