@@ -236,6 +236,22 @@ class _String {
         }
         return $string;
     }
+    
+    function Fill($str, $maxsize, $ch) {
+        $size = strlen($str);
+
+        $count = ($maxsize - $size) / 2;
+        
+        $string = '';
+        for($i=0; $i < $count; $i++) {
+            $string = $string.$ch;
+        }
+        $string = $string.$str;
+        for($i=0; $i < $count; $i++) {
+            $string = $string.$ch;
+        }
+        return $string;
+    }
 
     //우측정렬
     public static function Fill2($str, $maxsize, $ch='0') {

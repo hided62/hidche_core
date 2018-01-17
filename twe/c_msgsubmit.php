@@ -27,12 +27,15 @@ if($con >= 2) { echo "<script>window.top.main.location.replace('main.php');</scr
 $msg = str_replace("|", "", $msg);
 $msg = trim($msg);
 
+//TODO : 몰라서 임시로 값 세팅해봄. 추후에 용도를 확인하고 수정 필요
+$s = 50;
 $msg = _String::SubStrForWidth($msg, $s, 198);
 
 $date = date('Y-m-d H:i:s');
 
 // 전체 메세지
 if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
+    echo '<script>console.log('.$me['nation'].')</script>';
     if($me['nation'] == 0) {
         $nation['name'] = '재야';
         $nation['color'] = 'FFFFFF';
@@ -47,6 +50,7 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
     if($me['nation'] == 0) {
         $nation['name'] = '재야';
         $nation['color'] = 'FFFFFF';
+        $nation['nation'] = 0;
     } else {
         $query = "select nation,name,color from nation where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -57,6 +61,13 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
     $query = "select nation,name,color from nation where nation='$genlist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dest = MYDB_fetch_array($result);
+    
+    //$dest가 없다는건 수신도 재야. 
+    if(empty($dest)){
+        $dest['name'] = '재야';
+        $dest['color'] = 'FFFFFF';
+        $dest['nation'] = 0;       
+    }
 
     if($nation['nation'] == $dest['nation']) {
         PushMsg(2, $nation['nation'], $me['picture'], $me['imgsvr'], "{$me['name']}:", $nation['color'], $dest['name'], $dest['color'], $msg);
@@ -113,6 +124,6 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
     fclose($fp);
 }
 
-//echo "<script>location.replace('msglist.php');</script>";
-echo 'msglist.php';//TODO:replace
+echo "<script>location.replace('msglist.php');</script>";
+//echo 'msglist.php';//TODO:replace
 

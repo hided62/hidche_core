@@ -3184,7 +3184,8 @@ function genList($connect) {
     $query = "select no,nation,level,msgindex,userlevel from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
-
+    $you = array();
+    
     $query = "select msg{$me['msgindex']}_who as reply,msg{$me['msgindex']}_type as type from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $reply = MYDB_fetch_array($result);
@@ -3426,8 +3427,9 @@ function MsgFile($skin, $bg, $nation=0, $level=0) {
 	        	 $msg[$k] = trim($msg[$k]); 
 			}
 		}
-
-        ShowMsg($skin, $bgcolor, $msg[0], $msg[7], $msg[8], $msg[1], $msg[5], $msg[2], $msg[6], $msg[4], $msg[3]);
+        if(!empty($msg)){
+            ShowMsg($skin, $bgcolor, $msg[0], $msg[7], $msg[8], $msg[1], $msg[5], $msg[2], $msg[6], $msg[4], $msg[3]);
+        }
     }
 }
 
