@@ -1337,34 +1337,34 @@ function getItemCost($weap) {
 }
 
 function getTurn($connect, $general, $type, $font=1) {
-    $turn[0] = $general[turn0];
+    $turn[0] = $general["turn0"];
 
     if($type >= 1) {
-        $turn[1] = $general[turn1];
-        $turn[2] = $general[turn2];
-        $turn[3] = $general[turn3];
-        $turn[4] = $general[turn4];
-        $turn[5] = $general[turn5];
+        $turn[1] = $general["turn1"];
+        $turn[2] = $general["turn2"];
+        $turn[3] = $general["turn3"];
+        $turn[4] = $general["turn4"];
+        $turn[5] = $general["turn5"];
     }
     if($type >= 2) {
-        $turn[6] = $general[turn6];
-        $turn[7] = $general[turn7];
-        $turn[8] = $general[turn8];
-        $turn[9] = $general[turn9];
-        $turn[10] = $general[turn10];
-        $turn[11] = $general[turn11];
-        $turn[12] = $general[turn12];
-        $turn[13] = $general[turn13];
-        $turn[14] = $general[turn14];
-        $turn[15] = $general[turn15];
-        $turn[16] = $general[turn16];
-        $turn[17] = $general[turn17];
-        $turn[18] = $general[turn18];
-        $turn[19] = $general[turn19];
-        $turn[20] = $general[turn20];
-        $turn[21] = $general[turn21];
-        $turn[22] = $general[turn22];
-        $turn[23] = $general[turn23];
+        $turn[6] = $general["turn6"];
+        $turn[7] = $general["turn7"];
+        $turn[8] = $general["turn8"];
+        $turn[9] = $general["turn9"];
+        $turn[10] = $general["turn10"];
+        $turn[11] = $general["turn11"];
+        $turn[12] = $general["turn12"];
+        $turn[13] = $general["turn13"];
+        $turn[14] = $general["turn14"];
+        $turn[15] = $general["turn15"];
+        $turn[16] = $general["turn16"];
+        $turn[17] = $general["turn17"];
+        $turn[18] = $general["turn18"];
+        $turn[19] = $general["turn19"];
+        $turn[20] = $general["turn20"];
+        $turn[21] = $general["turn21"];
+        $turn[22] = $general["turn22"];
+        $turn[23] = $general["turn23"];
     }
 
     if($type == 0) { $count = 1; }
@@ -1871,13 +1871,13 @@ function cityInfo($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $pop  = $city['pop'] / $city[pop2] * 100;
+    $pop  = $city['pop'] / $city['pop2'] * 100;
     $rate = $city['rate'];
-    $agri = $city['agri'] / $city[agri2] * 100;
-    $comm = $city['comm'] / $city[comm2] * 100;
-    $secu = $city['secu'] / $city[secu2] * 100;
-    $def  = $city['def'] / $city[def2] * 100;
-    $wall = $city['wall'] / $city[wall2] * 100;
+    $agri = $city['agri'] / $city['agri2'] * 100;
+    $comm = $city['comm'] / $city['comm2'] * 100;
+    $secu = $city['secu'] / $city['secu2'] * 100;
+    $def  = $city['def'] / $city['def2'] * 100;
+    $wall = $city['wall'] / $city['wall2'] * 100;
     if($city['trade'] == 0) {
         $trade = 0;
         $tradeStr = "상인없음";
@@ -1897,7 +1897,7 @@ function cityInfo($connect) {
         echo "지배 국가 【 {$nation['name']} 】";
     }
 
-    if($city[gen1] > 0) {
+    if($city['gen1'] > 0) {
         $query = "select name from general where no='$city[gen1]'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen1 = MYDB_fetch_array($result);
@@ -1905,7 +1905,7 @@ function cityInfo($connect) {
         $gen1['name'] = '-';
     }
 
-    if($city[gen2] > 0) {
+    if($city['gen2'] > 0) {
         $query = "select name from general where no='$city[gen2]'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen2 = MYDB_fetch_array($result);
@@ -1913,7 +1913,7 @@ function cityInfo($connect) {
         $gen2['name'] = '-';
     }
 
-    if($city[gen3] > 0) {
+    if($city['gen3'] > 0) {
         $query = "select name from general where no='$city[gen3]'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen3 = MYDB_fetch_array($result);
@@ -1933,7 +1933,7 @@ function cityInfo($connect) {
         <td rowspan=2 align=center>{$gen1['name']}</td>
     </tr>
     <tr>
-        <td colspan=3 align=center>{$city['pop']}/{$city[pop2]}</td>
+        <td colspan=3 align=center>{$city['pop']}/{$city['pop2']}</td>
         <td align=center>{$city['rate']}</td>
     </tr>
     <tr>
@@ -1947,9 +1947,9 @@ function cityInfo($connect) {
         <td rowspan=2 align=center>{$gen2['name']}</td>
     </tr>
     <tr>
-        <td align=center>{$city['agri']}/{$city[agri2]}</td>
-        <td align=center>{$city['comm']}/{$city[comm2]}</td>
-        <td align=center>{$city['secu']}/{$city[secu2]}</td>
+        <td align=center>{$city['agri']}/{$city['agri2']}</td>
+        <td align=center>{$city['comm']}/{$city['comm2']}</td>
+        <td align=center>{$city['secu']}/{$city['secu2']}</td>
     </tr>
     <tr>
         <td rowspan=2 align=center id=bg1><b>수비</b></td>
@@ -1962,8 +1962,8 @@ function cityInfo($connect) {
         <td rowspan=2 align=center>{$gen3['name']}</td>
     </tr>
     <tr>
-        <td align=center>{$city['def']}/{$city[def2]}</td>
-        <td align=center>{$city['wall']}/{$city[wall2]}</td>
+        <td align=center>{$city['def']}/{$city['def2']}</td>
+        <td align=center>{$city['wall']}/{$city['wall2']}</td>
         <td align=center>{$tradeStr}</td>
     </tr>
 </table>
@@ -2632,7 +2632,7 @@ function generalInfo($connect, $no, $skin) {
 
     $general['connect'] = round($general['connect'] / 10, 0) * 10;
     $special = $general['special'] == 0 ? "{$general['specage']}세" : "<font color=limegreen>".getGenSpecial($general['special'])."</font>";
-    $special2 = $general[special2] == 0 ? "{$general[specage2]}세" : "<font color=limegreen>".getGenSpecial($general[special2])."</font>";
+    $special2 = $general['special2'] == 0 ? "{$general['specage2']}세" : "<font color=limegreen>".getGenSpecial($general['special2'])."</font>";
 
     switch($general['personal']) {
         case  2:    case  4:
@@ -2675,13 +2675,13 @@ function generalInfo($connect, $no, $skin) {
     <tr height=16>
         <td align=center id=bg1><b>통솔</b></td>
         <td align=center>&nbsp;{$color}{$leader}</font>{$lbonus}&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general[leader2]), $skin, 20)."</td>
+        <td align=center width=45>".bar(expStatus($general['leader2']), $skin, 20)."</td>
         <td align=center id=bg1><b>무력</b></td>
         <td align=center>&nbsp;{$color}{$power}</font>&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general[power2]), $skin, 20)."</td>
+        <td align=center width=45>".bar(expStatus($general['power2']), $skin, 20)."</td>
         <td align=center id=bg1><b>지력</b></td>
         <td align=center>&nbsp;{$color}{$intel}</font>&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general[intel2]), $skin, 20)."</td>
+        <td align=center width=45>".bar(expStatus($general['intel2']), $skin, 20)."</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>명마</b></td>
