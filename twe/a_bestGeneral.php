@@ -40,8 +40,11 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
 <?php
-if($btn == "NPC 보기") { $sel = "npc>=2"; }
-else { $sel = "npc<2"; }
+if(isset($btn) && $btn == "NPC 보기") {
+    $sel = "npc>=2";
+} else {
+    $sel = "npc<2";
+}
 
 $query = "select nation,name,color from nation";
 $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -109,12 +112,21 @@ for($i=0; $i < 21; $i++) {
 
     for($k=0; $k < 10; $k++) {
         $gen = MYDB_fetch_array($result);
+
         if($i != 2) {
-            $name[$k]   = $gen['name'];
-            $nation[$k] = $nationName[$gen['nation']];
-            $data[$k]   = $gen['data'];
-            $color[$k]  = $nationColor[$gen['nation']];
-            $pic[$k]    = $gen['picture'];
+            if(isset($gen)) {
+                $name[$k] = $gen['name'];
+                $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
+                $data[$k] = $gen['data'];
+                $color[$k] = $gen['nation'] == 0 ? "FFFFFF" : $nationColor[$gen['nation']];
+                $pic[$k] = $gen['picture'];
+            }else{
+                $name[$k] = "-";
+                $nation[$k] = "-";
+                $data[$k] = "-";
+                $color[$k] = $_basecolor4;
+                $pic[$k] = "";
+            }
         } else {
             $name[$k]   = "???";
             $nation[$k] = "???";
@@ -197,10 +209,17 @@ for($i=0; $i < 4; $i++) {
         $query = "select nation,no,name,picture,imgsvr from general where {$call[$i]}={$k}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
-        $name[$k]   = $gen['name'];
-        $nation[$k] = $nationName[$gen['nation']];
-        $color[$k]  = $nationColor[$gen['nation']];
-        $pic[$k]    = $gen['picture'];
+        if(isset($gen)) {
+            $name[$k] = $gen['name'];
+            $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
+            $color[$k] = $gen['nation'] == 0 ? "FFFFFF" : $nationColor[$gen['nation']];
+            $pic[$k] = $gen['picture'];
+        }else{
+            $name[$k] = "미발견";
+            $nation[$k] = "-";
+            $color[$k] = "";
+            $pic[$k] = "";
+        }
         if($color[$k] == "") $color[$k] = $_basecolor4;
         if($nation[$k] == "") $nation[$k] = "&nbsp;";
         if($pic[$k] == "") {
@@ -238,10 +257,17 @@ for($i=0; $i < 4; $i++) {
         $query = "select nation,no,name,picture,imgsvr from general where {$call[$i]}={$k}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
-        $name[$k]   = $gen['name'];
-        $nation[$k] = $nationName[$gen['nation']];
-        $color[$k]  = $nationColor[$gen['nation']];
-        $pic[$k]    = $gen['picture'];
+        if(isset($gen)) {
+            $name[$k] = $gen['name'];
+            $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
+            $color[$k] = $gen['nation'] == 0 ? "FFFFFF" : $nationColor[$gen['nation']];
+            $pic[$k] = $gen['picture'];
+        }else{
+            $name[$k] = "미발견";
+            $nation[$k] = "-";
+            $color[$k] = "";
+            $pic[$k] = "";
+        }
         if($color[$k] == "") $color[$k] = $_basecolor4;
         if($nation[$k] == "") $nation[$k] = "&nbsp;";
         if($pic[$k] == "") {

@@ -4427,7 +4427,7 @@ function checkSupply($connect) {
             if($label[$i] == 0) {
                 $label[$i] = $labelling;
                 $labelMapping[$labelling] = $cityNation[$i];
-                $comCount[$cityNation[$i]]++;
+                isset($comCount[$cityNation[$i]]) ? $comCount[$cityNation[$i]]++ : $comCount[$cityNation[$i]] = 1;
                 $q->push($i);
                 $marked++;
                 break;
@@ -5527,6 +5527,7 @@ function processCommand($connect, $no) {
     $query = "select month,killturn from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
+    $log = array();
 
     // 블럭자는 미실행. 삭턴 감소
     if($general['block'] == 2) {
