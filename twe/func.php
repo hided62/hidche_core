@@ -3979,23 +3979,29 @@ function updateOnline($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $onlinenum = MYDB_num_rows($result);
 
+	$onnation = array();
+	$onnationstr = "";
+	
     //국가별 접속중인 장수
     for($i=0; $i < $onlinenum; $i++) {
         $general = MYDB_fetch_array($result);
         $onnation[$general['nation']] .= $general['name'].', ';
     }
-
-    foreach($onnation as $key => $val) {
-        $onnationstr .= "【{$nationname[$key]}】, ";
-
-        if($key == 0) {
-            $query = "update game set onlinegen='$onnation[0]' where no='1'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } else {
-            $query = "update nation set onlinegen='$onnation[$key]' where nation='$key'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
-    }
+	
+	//$onnation이 empty라면 굳이 foreach를 수행 할 이유가 없음. 
+	if(!empty($onnation)){
+	    foreach($onnation as $key => $val) {
+	        $onnationstr .= "【{$nationname[$key]}】, ";
+	
+	        if($key == 0) {
+	            $query = "update game set onlinegen='$onnation[0]' where no='1'";
+	            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+	        } else {
+	            $query = "update nation set onlinegen='$onnation[$key]' where nation='$key'";
+	            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+	        }
+	    }
+	}
 
     //접속중인 국가
     $query = "update game set online='$onlinenum',onlinenation='$onnationstr' where no='1'";
