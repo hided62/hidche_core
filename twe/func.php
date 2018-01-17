@@ -4696,12 +4696,12 @@ group by A.nation
         $nation = MYDB_fetch_array($result);
         $genNum[$nation['nation']] = $nation['gennum'];
 
-        if($nation['gennum'] > $nation[gennum2]) {
+        if($nation['gennum'] > $nation['gennum2']) {
             // 장수가 증가했을때
-            $nation['chemi'] -= ceil(($nation['gennum'] - $nation[gennum2]) / $nation['gennum'] * 100);
+            $nation['chemi'] -= ceil(($nation['gennum'] - $nation['gennum2']) / $nation['gennum'] * 100);
         } else {
             // 장수가 감소했을때
-            $nation['chemi'] -= ceil(($nation[gennum2] - $nation['gennum']) / $nation[gennum2] * 100);
+            $nation['chemi'] -= ceil(($nation['gennum2'] - $nation['gennum']) / $nation['gennum2'] * 100);
         }
         // 매달 2씩 증가
         $nation['chemi'] += 2;
@@ -5441,7 +5441,7 @@ function PreprocessCommand($connect, $no) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    if($general[special2] == 73 || $general['item'] == 23 || $general['item'] == 24) {
+    if($general['special2'] == 73 || $general['item'] == 23 || $general['item'] == 24) {
         //특기보정 : 의술
         //의서 사용
         if($general['injury'] > 0) {
@@ -5583,7 +5583,7 @@ function processCommand($connect, $no) {
             $general = MYDB_fetch_array($result);
         }
 
-        $command = DecodeCommand($general[turn0]);
+        $command = DecodeCommand($general['turn0']);
         //삭턴 처리
         if($general['npc'] >= 2 || $general['killturn'] > $admin['killturn']) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
@@ -6144,36 +6144,36 @@ function checkAbility($connect, $general, $log) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    if($general[leader2] < 0) {
+    if($general['leader2'] < 0) {
         $query = "update general set leader2='$limit'+leader2,leader=leader-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><R>통솔</>이 <C>1</> 떨어졌습니다!";
-    } elseif($general[leader2] >= $limit) {
+    } elseif($general['leader2'] >= $limit) {
         $query = "update general set leader2=leader2-'$limit',leader=leader+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><Y>통솔</>이 <C>1</> 올랐습니다!";
     }
 
-    if($general[power2] < 0) {
+    if($general['power2'] < 0) {
         $query = "update general set power2='$limit'+power2,power=power-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><R>무력</>이 <C>1</> 떨어졌습니다!";
-    } elseif($general[power2] >= $limit) {
+    } elseif($general['power2'] >= $limit) {
         $query = "update general set power2=power2-'$limit',power=power+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><Y>무력</>이 <C>1</> 올랐습니다!";
     }
 
-    if($general[intel2] < 0) {
+    if($general['intel2'] < 0) {
         $query = "update general set intel2='$limit'+intel2,intel=intel-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[count($log)] = "<C>●</><R>지력</>이 <C>1</> 떨어졌습니다!";
-    } elseif($general[intel2] >= $limit) {
+    } elseif($general['intel2'] >= $limit) {
         $query = "update general set intel2=intel2-'$limit',intel=intel+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 

@@ -967,7 +967,7 @@ function processAI($connect, $no) {
     $general = MYDB_fetch_array($result);
 
     // 입력된 턴이 있으면 그것 실행
-    if($general[turn0] != "00000000000000") {
+    if($general['turn0'] != "00000000000000") {
         return;
     }
 
@@ -979,6 +979,7 @@ function processAI($connect, $no) {
     $result = MYDB_query($query, $connect) or Error("processAI03 ".MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
+    $coreCommand = array();
     if($general['level'] >= 5) {
         $query = "select l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
         $result = MYDB_query($query, $connect) or Error("processAI03 ".MYDB_error($connect),"");
@@ -1263,7 +1264,7 @@ function processAI($connect, $no) {
     }
 
     // 입력된 턴이 있으면
-    if($coreCommand["l{$general['level']}turn0"] != EncodeCommand(0, 0, 0, 99)) {
+    if(!empty($coreCommand) && ($coreCommand["l{$general['level']}turn0"] != EncodeCommand(0, 0, 0, 99))) {
         $rulerCommand = 1;
     }
 
