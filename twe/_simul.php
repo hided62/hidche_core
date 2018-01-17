@@ -120,6 +120,9 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
         $city['def'] = $def;
         $city['wall'] = $wall;
+        $city['agri'] = 0;
+        $city['comm'] = 0;
+        $city['secu'] = 0;
 
         if($isgen == "장수공격" || $isgen == "장수평균") {
             $opposecount = 1;
@@ -148,7 +151,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                 $mykillnum = 0; $mydeathnum = 0;
                 while($phase < $warphase) {
                     $phase++;
-                    $myAtt = getAtt($game, $general, $tech1);
+                    $myAtt = getAtt($game, $general, $tech1, 0);
                     $myDef = getDef($game, $general, $tech1);
                     $cityAtt = getCityAtt($city);
                     $cityDef = getCityDef($city);
