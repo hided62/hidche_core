@@ -32,8 +32,8 @@ if($err == 1) {
             $response['msg'] = '인증번호가 일치하지 않습니다.';
         } else {
             $DB->UpdateArray('EMAIL', array(
-                VERIFIED=>  1,
-                VRF_DATE=> _Time::DatetimeNow()
+                'VERIFIED'=>  1,
+                'VRF_DATE'=> _Time::DatetimeNow()
             ), "EMAIL='{$email}'");
 
             $response['result'] = 'SUCCESS';

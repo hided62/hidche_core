@@ -19,8 +19,8 @@ if($member['PW'] != $pw) {
     $response['msg'] = '실패: 현재 비밀번호가 일치하지 않습니다.';
 } else {
     $DB->UpdateArray('MEMBER', array(
-        QUIT    =>  'Y',
-        REG_DATE=> _Time::DatetimeNow()
+        'QUIT'    =>  'Y',
+        'REG_DATE'=> _Time::DatetimeNow()
     ), "NO='{$SESSION->NoMember()}'");
 
 
