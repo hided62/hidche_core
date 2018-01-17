@@ -3179,7 +3179,7 @@ function onlineNation($connect) {
 }
 
 function nationMsg($connect) {
-    $query = "select no,nation from general where user_id='{$_SESSION['p_id']}'";
+    $query = "select no,nation,skin from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -3187,7 +3187,7 @@ function nationMsg($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    echo "<font color="; echo $skin>0?"orange":"white"; echo ">".$nation['msg']."</font>";
+    echo "<font color="; echo $me['skin']>0?"orange":"white"; echo ">".$nation['msg']."</font>";
 }
 
 function genList($connect) {
