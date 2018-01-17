@@ -40,14 +40,14 @@ if($member['GRADE'] < 6) {
     $total = $donator['TOT'] + $amount;
 
     $DB->InsertArray('DONATION', array(
-        ID      =>  $id,
-        NAME    =>  $name,
-        RNAME   =>  $rname,
-        SUBNAME =>  $subname,
-        DATE    =>  $date,
-        AMOUNT  =>  $amount,
-        CUMUL   =>  $cumul,
-        TOTAL   =>  $total
+        'ID'      =>  $id,
+        'NAME'    =>  $name,
+        'RNAME'   =>  $rname,
+        'SUBNAME' =>  $subname,
+        'DATE'    =>  $date,
+        'AMOUNT'  =>  $amount,
+        'CUMUL'   =>  $cumul,
+        'TOTAL'   =>  $total
     ));
 
     $response['result'] = 'SUCCESS';
