@@ -1,7 +1,47 @@
 <?php
 include "lib.php";
 include "func.php";
+require_once '../e_lib/util.php';
 //로그인 검사
+
+$isgen = util::array_get($_POST['isgen'], '');
+$tech1 = 0;
+$tech2 = 0;
+$dex10 = 0;
+$dex110 = 0;
+$dex120 = 0;
+$dex130 = 0;
+$dex140 = 0;
+
+$dx10 = array_fill(0, 20, '');
+$dx110 = array_fill(0, 20, '');
+$dx120 = array_fill(0, 20, '');
+$dx130 = array_fill(0, 20, '');
+$dx140 = array_fill(0, 20, '');
+
+$dex20 = 0;
+$dex210 = 0;
+$dex220 = 0;
+$dex230 = 0;
+$dex240 = 0;
+
+$dx20 = array_fill(0, 20, '');
+$dx210 = array_fill(0, 20, '');
+$dx220 = array_fill(0, 20, '');
+$dx230 = array_fill(0, 20, '');
+$dx240 = array_fill(0, 20, '');
+
+$sellevel1 = array_fill(0, 13, '');
+$sel1 = array_fill(0,44, '');
+$tch1 = array_fill(0,11, '');
+
+$sellevel2 = array_fill(0, 13, '');
+$sel2 = array_fill(0,44, '');
+$tch2 = array_fill(0,11, '');
+
+$dec = 0;
+$rice = 0;
+
 CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "시뮬", 2);
@@ -47,11 +87,16 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
         $general['atmos'] = $atmos1;
         $general['level'] = $level1;
         $general['explevel'] = $explevel1;
-        $general[dex0] = $dex10;
-        $general[dex10] = $dex110;
-        $general[dex20] = $dex120;
-        $general[dex30] = $dex130;
-        $general[dex40] = $dex140;
+        $general['dex0'] = $dex10;
+        $general['dex10'] = $dex110;
+        $general['dex20'] = $dex120;
+        $general['dex30'] = $dex130;
+        $general['dex40'] = $dex140;
+
+        $general['injury'] = 0;
+        $general['horse'] = 0;
+        $general['weap'] = 0;
+        $general['book'] = 0;
 
         $oppose['leader'] = $leader2;
         $oppose['power'] = $power2;
@@ -62,11 +107,16 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
         $oppose['atmos'] = $atmos2;
         $oppose['level'] = $level2;
         $oppose['explevel'] = $explevel2;
-        $oppose[dex0] = $dex20;
-        $oppose[dex10] = $dex210;
-        $oppose[dex20] = $dex220;
-        $oppose[dex30] = $dex230;
-        $oppose[dex40] = $dex240;
+        $oppose['dex0'] = $dex20;
+        $oppose['dex10'] = $dex210;
+        $oppose['dex20'] = $dex220;
+        $oppose['dex30'] = $dex230;
+        $oppose['dex40'] = $dex240;
+
+        $oppose['injury'] = 0;
+        $oppose['horse'] = 0;
+        $oppose['weap'] = 0;
+        $oppose['book'] = 0;
 
         $city['def'] = $def;
         $city['wall'] = $wall;
@@ -289,9 +339,9 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                 while($phase < $warphase) {
                     $phase++;
 
-                    $myAtt = getAtt($game, $general, $tech1);
+                    $myAtt = getAtt($game, $general, $tech1, 0);
                     $myDef = getDef($game, $general, $tech1);
-                    $opAtt = getAtt($game, $oppose, $tech2);
+                    $opAtt = getAtt($game, $oppose, $tech2, 0);
                     $opDef = getDef($game, $oppose, $tech2);
                     // 감소할 병사 수
                     $myCrew = $_armperphase + $opAtt - $myDef;

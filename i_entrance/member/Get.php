@@ -7,6 +7,7 @@ require_once('_common.php');
 require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
+require_once(ROOT.W.E_LIB.W.UTIL.PHP);
 
 $rs = $DB->Select('GRADE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
 $member = $DB->Get($rs);
