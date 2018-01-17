@@ -160,14 +160,14 @@ if($response['result'] != 'SUCCESS') {
 
 // 멤버 등록
 $DB->InsertArray('MEMBER', array(
-    ID      => $id,
-    PW      => $pw,
-    PID     => $pid,
-    NAME    => $name,
-    EMAIL   => $email,
-    IP      => $_SERVER['REMOTE_ADDR'],
-    GRADE   => 1,
-    REG_DATE => _Time::DatetimeNow()
+    'ID'      => $id,
+    'PW'      => $pw,
+    'PID'     => $pid,
+    'NAME'    => $name,
+    'EMAIL'   => $email,
+    'IP'      => $_SERVER['REMOTE_ADDR'],
+    'GRADE'   => 1,
+    'REG_DATE' => _Time::DatetimeNow()
 ));
 
 $response['result'] = 'SUCCESS';
