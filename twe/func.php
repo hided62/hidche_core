@@ -4011,7 +4011,11 @@ function updateOnline($connect) {
     //국가별 접속중인 장수
     for($i=0; $i < $onlinenum; $i++) {
         $general = MYDB_fetch_array($result);
-        $onnation[$general['nation']] .= $general['name'].', ';
+        if(isset($onnation[$general['nation']])){
+            $onnation[$general['nation']] .= $general['name'].', ';
+        }else {
+            $onnation[$general['nation']] = $general['name'].', ';
+        }
     }
 	
 	//$onnation이 empty라면 굳이 foreach를 수행 할 이유가 없음. 
