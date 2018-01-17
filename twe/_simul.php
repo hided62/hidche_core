@@ -5,13 +5,13 @@ require_once '../e_lib/util.php';
 //로그인 검사
 
 $isgen = util::array_get($_POST['isgen'], '');
-$tech1 = 0;
-$tech2 = 0;
-$dex10 = 0;
-$dex110 = 0;
-$dex120 = 0;
-$dex130 = 0;
-$dex140 = 0;
+$tech1 = util::array_get($_POST['tech1'], 0);
+$tech2 =util::array_get($_POST['tech2'], 0);
+$dex10 = util::array_get($_POST['dex10'], 0);
+$dex110 = util::array_get($_POST['dex110'], 0);
+$dex120 = util::array_get($_POST['dex120'], 0);
+$dex130 = util::array_get($_POST['dex130'], 0);
+$dex140 = util::array_get($_POST['dex140'], 0);
 
 $dx10 = array_fill(0, 20, '');
 $dx110 = array_fill(0, 20, '');
@@ -19,11 +19,11 @@ $dx120 = array_fill(0, 20, '');
 $dx130 = array_fill(0, 20, '');
 $dx140 = array_fill(0, 20, '');
 
-$dex20 = 0;
-$dex210 = 0;
-$dex220 = 0;
-$dex230 = 0;
-$dex240 = 0;
+$dex20 = util::array_get($_POST['dex20'], 0);
+$dex210 = util::array_get($_POST['dex210'], 0);
+$dex220 = util::array_get($_POST['dex220'], 0);
+$dex230 = util::array_get($_POST['dex230'], 0);
+$dex240 = util::array_get($_POST['dex240'], 0);
 
 $dx20 = array_fill(0, 20, '');
 $dx210 = array_fill(0, 20, '');
