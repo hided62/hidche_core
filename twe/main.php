@@ -168,11 +168,7 @@ if($valid == 1) {
     <tr height=30>
         <td align=center>
 <?php
-if    ($onlineNumber > $thr3) { $state = "(긴급모드)"; }
-elseif($onlineNumber > $thr2) { $state = "(안전모드)"; }
-elseif($onlineNumber > $thr1) { $state = "(절약모드)"; }
-else                          { $state = ""; }
-if($plock['plock'] == 0) { echo "<marquee scrollamount=2><font color=cyan>서버 가동중{$state}</font></marquee>"; }
+if($plock['plock'] == 0) { echo "<marquee scrollamount=2><font color=cyan>서버 가동중</font></marquee>"; }
 else { echo "<font color=magenta>서버 동결중{$state}</font>"; }
 
 echo "
