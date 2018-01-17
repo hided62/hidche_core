@@ -1,6 +1,7 @@
 <?php
 include "lib.php";
-
+$graphic = 0;
+$type=0;
 if($graphic == 2) {
     echo "
 <body bgcolor=black leftmargin=0 marginwidth=0 topmargin=0 marginheight=0 oncontextmenu='return false' onselectstart='return false' ondragstart='return false'>
@@ -232,14 +233,24 @@ function showMap($connect, $type, $graphic) {
     210, 285, 275,  75, 160, 180, 255, 295, 315, 30, 325, 350, 260, 435
     );
 
+    $nationname = array();
+    $nationcolor = array();
+    $nationCapital = array();
+    
     $query = "select name,level,nation,city,state,region,supply from city";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     for($i=0; $i < $allcount; $i++) {
         $city = MYDB_fetch_array($result);
         $name = $city['name'];
-        $nation = $nationname[$city['nation']];
-        $color = $nationcolor[$city['nation']];
-        $capital = $nationCapital[$city['nation']];
+        if($city['nation']!=0){
+            $nation = $nationname[$city['nation']];
+            $color = $nationcolor[$city['nation']];
+            $capital = $nationCapital[$city['nation']];
+        }else{
+            $nation = "";
+            $color = "FFFFFF";
+            $capital = "";
+        }
         $level = $city['level'];
         $state = $city['state'];
         $region = $city['region'];
