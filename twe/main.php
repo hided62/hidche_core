@@ -169,7 +169,7 @@ if($valid == 1) {
         <td align=center>
 <?php
 if($plock['plock'] == 0) { echo "<marquee scrollamount=2><font color=cyan>서버 가동중</font></marquee>"; }
-else { echo "<font color=magenta>서버 동결중{$state}</font>"; }
+else { echo "<font color=magenta>서버 동결중</font>"; }
 
 echo "
         </td>

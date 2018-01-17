@@ -1825,6 +1825,8 @@ function process_27($connect, &$general) {
 function process_28($connect, &$general) {
     $log = array();
     $alllog = array();
+    $youlog = array();
+
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game where no='1'";
@@ -1881,7 +1883,7 @@ function process_28($connect, &$general) {
     }
 
     pushGenLog($general, $log);
-    pushGenLog($you, $youlog);
+    //pushGenLog($you, $youlog);
 }
 
 function process_29($connect, &$general) {

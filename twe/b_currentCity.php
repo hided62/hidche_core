@@ -212,7 +212,7 @@ echo "
     </tr>
 </table>";
 
-$query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos,term,turn0,turn1,turn2,turn3,turn4 from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
+$query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos,term,turn0,turn1,turn2,turn3,turn4,turn5 from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);
 
@@ -309,7 +309,7 @@ for($j=0; $j < $gencount; $j++) {
             <font size=1>";
             $turn = getTurn($connect, $general, 1);
 
-            for($i=0; $i < 5; $i++) {
+            for($i=0; $i < 4; $i++) {
                 $k = $i+1;
                 echo "
                     &nbsp;&nbsp;$k : $turn[$i]<br>";
