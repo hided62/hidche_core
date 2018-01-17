@@ -64,8 +64,21 @@ unset($member);
 unset($setup);
 
 // Data, Icon, 세션디렉토리의 쓰기 권한이 없다면 에러 처리
-if(!is_writable("data")) Error("Data 디렉토리의 쓰기 권한이 없습니다!");
-if(!is_writable("data/session")) Error("세션 디렉토리 data/session의 쓰기 권한이 없습니다!");
+// 단, 폴더가 없는 경우라면 폴더를 생성 할 필요가 있음. 
+// data폴더가 없으면 data/session까지 생성
+if(is_dir("data")){
+	if(!is_writable("data")) Error("Data 디렉토리의 쓰기 권한이 없습니다!");
+	if(is_dir("data/session")){
+		if(!is_writable("data/session")) Error("세션 디렉토리 data/session의 쓰기 권한이 없습니다!");	
+	}else{
+		mkdir("data/session");
+	}		
+}else{
+	mkdir("data");
+	mkdir("data/session");
+}
+
+
 
 session_save_path('data/session');
 session_cache_limiter('nocache, must_revalidate');
