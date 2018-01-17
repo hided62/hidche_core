@@ -2064,18 +2064,28 @@ function myNationInfo($connect) {
     else { $nation['tech'] = "<font color=limegreen>{$nation['tech']}</font>"; }
 
     $nation['tech'] = "$techCall / {$nation['tech']}";
-
-    if($nation['tricklimit'] != 0) { $nation['tricklimit'] = "<font color=red>{$nation['tricklimit']}턴</font>"; }
-    else { $nation['tricklimit'] = "<font color=limegreen>가 능</font>"; }
-
-    if($nation['surlimit'] != 0) { $nation['surlimit'] = "<font color=red>{$nation['surlimit']}턴</font>"; }
-    else { $nation['surlimit'] = "<font color=limegreen>가 능</font>"; }
-
-    if($nation['scout'] != 0) { $nation['scout'] = "<font color=red>금 지</font>"; }
-    else { $nation['scout'] = "<font color=limegreen>허 가</font>"; }
-
-    if($nation['war'] != 0) { $nation['war'] = "<font color=red>금 지</font>"; }
-    else { $nation['war'] = "<font color=limegreen>허 가</font>"; }
+    
+    if($me['nation']==0){
+        $nation['tricklimit'] = "<font color=white>해당 없음</font>";
+        $nation['surlimit'] = "<font color=white>해당 없음</font>";
+        $nation['scout'] = "<font color=white>해당 없음</font>";
+        $nation['war'] = "<font color=white>해당 없음</font>";
+        $nation['power'] = "<font color=white>해당 없음</font>";
+    } else {
+        if($nation['tricklimit'] != 0) { $nation['tricklimit'] = "<font color=red>{$nation['tricklimit']}턴</font>"; }
+        else { $nation['tricklimit'] = "<font color=limegreen>가 능</font>"; }
+    
+        if($nation['surlimit'] != 0) { $nation['surlimit'] = "<font color=red>{$nation['surlimit']}턴</font>"; }
+        else { $nation['surlimit'] = "<font color=limegreen>가 능</font>"; }
+    
+        if($nation['scout'] != 0) { $nation['scout'] = "<font color=red>금 지</font>"; }
+        else { $nation['scout'] = "<font color=limegreen>허 가</font>"; }
+    
+        if($nation['war'] != 0) { $nation['war'] = "<font color=red>금 지</font>"; }
+        else { $nation['war'] = "<font color=limegreen>허 가</font>"; }
+    
+        
+    }
 
     if($me['skin'] == 0) {
         $nation['tech'] = unfont($nation['tech']);
