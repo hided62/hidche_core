@@ -51,7 +51,7 @@ if(!$token) {
 <title>장수생성</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<script type="text/javascript" src="jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src=<?="../e_lib/jquery-3.2.1.min.js";?>></script>
 <script type="text/javascript">
 
 function updateToken(type) {

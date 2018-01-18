@@ -28,7 +28,7 @@ if(!isset($type) || $type == 0) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>장수일람</title>
 <link rel=stylesheet href=stylesheet.php type=text/css>
-<script src="../e_lib/jquery-1.6.4.min.js"></script>
+<script type="text/javascript" src=<?="../e_lib/jquery-3.2.1.min.js";?>></script>
 <?php require('analytics.php'); ?>
 </head>
 

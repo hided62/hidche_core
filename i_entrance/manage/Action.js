@@ -10,7 +10,7 @@ function EntranceManage_Init() {
     $("#EntranceManage_001603").click(EntranceManage_DeleteIcon);
     $("#EntranceManage_0019").click(EntranceManage_Quit);
 
-    if($.browser.mozilla == true) {
+    if(navigator.userAgent.match('mozilla')) {
         $("#EntranceManage_001601").css("left", "10px");
     } else {
         $("#EntranceManage_001600").show();

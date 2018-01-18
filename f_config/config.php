@@ -10,7 +10,7 @@ define('IMAGES', '../../images');
 //define('IMAGE', 'http://115.68.28.99/image');
 //define('IMAGES', 'http://115.68.28.99/images');
 
-define('JQUERY', 'jquery-1.6.4.min.js');
+define('JQUERY', 'jquery-3.2.1.min.js');
 define('MD5', 'md5-min.js');
 
 define('D', 'd_');
