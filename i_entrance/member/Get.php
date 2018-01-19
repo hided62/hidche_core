@@ -11,7 +11,8 @@ require_once(ROOT.W.E_LIB.W.'util.php');
 
 $rs = $DB->Select('GRADE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
 $member = $DB->Get($rs);
-
+$donCumul = [];
+$donDate = [];
 if($member['GRADE'] < 6) {
     $response['result'] = 'FAIL';
     $response['msg'] = '운영자 권한이 없습니다.';
@@ -66,8 +67,8 @@ if($member['GRADE'] < 6) {
         <td class='EntranceMember_00050007'>{$member['REG_NUM']}</td>
         <td class='EntranceMember_00050008'>{$member['REG_DATE']}</td>
         <td class='EntranceMember_00050009'>{$member['GRADE']}</td>
-        <td class='EntranceMember_00050010'>{$donCumul[$member['ID']]}</td>
-        <td class='EntranceMember_00050011'>{$donDate[$member['ID']]}</td>
+        <td class='EntranceMember_00050010'>".util::array_get($donCumul[$member['ID']],'0')."</td>
+        <td class='EntranceMember_00050011'>".util::array_get($donDate[$member['ID']],'')."</td>
         <td class='EntranceMember_00050012'>{$member['PICTURE']}</td>
         <td class='EntranceMember_00050013'>{$member['IMGSVR']}</td>
         <td class='EntranceMember_00050014'>{$member['QUIT']}</td>
