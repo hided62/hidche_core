@@ -1,16 +1,17 @@
 <?php
 include "lib.php";
 include "func.php";
+require "../e_lib/util.php";
 
 $id = $_POST['id'];
 $pw = $_POST['pw'];
 $name       = $_POST['name'];
 $name       = _String::NoSpecialCharacter($name);
-$pic        = $_POST['pic'];
+$pic        = util::array_get($_POST['pic'],'');
 $character  = $_POST['character'];
 
 $pwTemp = substr($pw, 0, 32);
-
+$mylog = [];
 $connect = dbConn("sammo");
 
 //회원 테이블에서 정보확인

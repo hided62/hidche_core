@@ -50,7 +50,7 @@ if(!$token) {
 <head>
 <title>장수생성</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel=stylesheet href=stylesheet.php type=text/css>
+<link rel='stylesheet' href='stylesheet.php'>
 <script type="text/javascript" src=<?="../e_lib/jquery-3.2.1.min.js";?>></script>
 <script type="text/javascript">
 
@@ -70,16 +70,16 @@ function updateToken(type) {
                 location.replace("index.php");
                 //echo 'index.php';//TODO:debug all and replace
             } else {
-                $("#leader").text(data.leader);
-                $("#power").text(data.power);
-                $("#intel").text(data.intel);
+                $("#leader").val(data.leader);
+                $("#power").val(data.power);
+                $("#intel").val(data.intel);
             }
         },
         dataType: 'json',
         error: function(jqXHR, textStatus, errorThrown) {
             alert(jqXHR.status+", "+jqXHR.statusText+", "+jqXHR.responseText);
-            //location.replace("index.php");
-            echo 'index.php';//TODO:debug all and replace
+            location.replace("index.php");
+            //echo 'index.php';//TODO:debug all and replace
         }
     });
 }
@@ -203,15 +203,15 @@ if($admin['img'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "") {
         </tr>
         <tr>
             <td width=498 align=right id=bg1>통솔</td>
-            <td colspan=2><font id=leader><?=$abil['leader'];?></font></td>
+            <td colspan=2><input type="text" name="leader" id="leader" value="<?=$abil['leader'];?>"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>무력</td>
-            <td colspan=2><font id=power><?=$abil['power'];?></font></td>
+            <td colspan=2><input type="text" name="power" id="power" value="<?=$abil['power'];?>"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>지력</td>
-            <td colspan=2><font id=intel><?=$abil['intel'];?></font></td>
+            <td colspan=2><input type="text" name="intel" id="intel" value="<?=$abil['intel'];?>"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>능력치 조정</td>

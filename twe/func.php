@@ -3000,6 +3000,9 @@ function pushHistory($connect, $history) {
 }
 
 function TrickLog($count, $skin) {
+    if(!file_exists("logs/_tricklog.txt")){
+        return '';
+    }
     $fp = @fopen("logs/_tricklog.txt", "r");
     @fseek($fp, -$count*150, SEEK_END);
     $file = @fread($fp, $count*150);
@@ -3011,6 +3014,9 @@ function TrickLog($count, $skin) {
 }
 
 function AllLog($count, $skin) {
+    if(!file_exists("logs/_alllog.txt")){
+        return '';
+    }
     $fp = @fopen("logs/_alllog.txt", "r");
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
@@ -3024,6 +3030,9 @@ function AllLog($count, $skin) {
 }
 
 function AuctionLog($count, $skin) {
+    if(!file_exists("logs/_auctionlog.txt")){
+        return '';
+    }
     $fp = @fopen("logs/_auctionlog.txt", "r");
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
@@ -3035,8 +3044,11 @@ function AuctionLog($count, $skin) {
 }
 
 function History($count, $skin) {
+    if(!file_exists("logs/_history.txt")){
+        return '';
+    }
     $fp = @fopen("logs/_history.txt", "r");
-    @fseek($fp, -$count*300, SEEK_END);
+    @fseek($fp, -300*$count, SEEK_END); //
     $file = @fread($fp, $count*300);
     @fclose($fp);
     $log = explode("\r\n",$file);
@@ -3048,6 +3060,9 @@ function History($count, $skin) {
 }
 
 function MyLog($no, $count, $skin) {
+    if(!file_exists("logs/gen{$no}.txt")){
+        return '';
+    }
     $fp = @fopen("logs/gen{$no}.txt", "r");
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
@@ -3061,6 +3076,9 @@ function MyLog($no, $count, $skin) {
 }
 
 function MyBatRes($no, $count, $skin) {
+    if(!file_exists("logs/batres{$no}.txt")){
+        return '';
+    }
     $fp = @fopen("logs/batres{$no}.txt", "r");
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
@@ -3074,6 +3092,9 @@ function MyBatRes($no, $count, $skin) {
 }
 
 function MyBatLog($no, $count, $skin) {
+    if(!file_exists("logs/batlog{$no}.txt")){
+        return '';
+    }
     $fp = @fopen("logs/batlog{$no}.txt", "r");
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);

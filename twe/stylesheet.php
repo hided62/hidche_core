@@ -8,7 +8,11 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $admin = MYDB_fetch_array($result);
 
 
-$tmp_id = util::array_get($_SESSION['p_id'],0);
+
+$tmp_id = util::array_get($_SESSION['p_id'],0); 
+//xxx:와 이게 뭐지
+//TODO:p_id 관련 스킨 세팅 확인
+
 
 $query = "select no,skin,con from general where user_id='$tmp_id'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -77,6 +81,8 @@ if($me['skin'] == 0) {
 //    $bg0 = "background-color:#9c1c6b;";  $bg1 = "background-color:#ca278c;";  $bg2 = "background-color:#e47297;";
     $bg0 = "background-color:#ff88c4;";  $bg1 = "background-color:#cc66ff;";  $bg2 = "background-color:#f5a2ff;";
 }
+
+header("Content-type: text/css");
 
 ?>
 
