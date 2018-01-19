@@ -32,10 +32,10 @@ if($err == 1) {
             $DB->Delete('EMAIL', "EMAIL='{$email}'");
         }
         $DB->InsertArray('EMAIL', array(
-            EMAIL   =>  $email,
-            CODE    =>  $code,
-            VERIFIED=>  0,
-            REG_DATE=>  _Time::DatetimeNow()
+            'EMAIL'   =>  $email,
+            'CODE'    =>  $code,
+            'VERIFIED'=>  0,
+            'REG_DATE'=>  _Time::DatetimeNow()
         ));
 
         $response['result'] = 'SUCCESS';

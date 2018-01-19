@@ -7,5 +7,5 @@ localhost
 25
 test
 letmein
-@localhost
+test@localhost
  */

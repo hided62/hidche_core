@@ -12,8 +12,9 @@ function Replace(url) {
 }
 
 function ReplaceFrame(url) {
-    //window.top.location.replace(url);
     console.log('top',url);
+    window.top.location.replace(url);
+    
 }
 
 function ImportStyle(href) {
