@@ -154,7 +154,7 @@ class _String {
         return $str;
     }
 
-    function Fill($str, $maxsize, $ch) {
+    static function Fill($str, $maxsize, $ch) {
         $size = strlen($str);
 
         $count = ($maxsize - $size) / 2;
@@ -169,7 +169,7 @@ class _String {
         return $string;
     }
 
-    function Fill2($str, $maxsize, $ch='0') {
+    static function Fill2($str, $maxsize, $ch='0') {
         $size = strlen($str);
 
         $count = ($maxsize - $size);

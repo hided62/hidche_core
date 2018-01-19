@@ -1,6 +1,6 @@
 <?php
 require_once(ROOT.W.F_FUNC.W.'class._String.php');
-
+require_once(ROOT.W.E_LIB.W.'util.php');
 class _Validation {
     public static function CheckID($id) {
         $len = strlen($id);
@@ -103,6 +103,9 @@ class _Validation {
     }
 
     public static function CheckEmail($email) {
+        if(util::ends_with($email, '@localhost')){
+            return 0;
+        }
         if(!preg_match("/^[_\.0-9a-zA-Z-]+@([0-9a-zA-Z][0-9a-zA-Z-]+\.)+[a-zA-Z]{2,6}$/i", $email)) {
             return 1;
         } else {

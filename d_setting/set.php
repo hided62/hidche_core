@@ -6,6 +6,6 @@ sammo
 localhost
 25
 test
-lemein
+letmein
 @localhost
  */
