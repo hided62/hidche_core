@@ -89,7 +89,7 @@ class _Validation {
         //if($year < 50) { return 3; }
         if($month < 1 || $month > 12) { return 3; }
         if($day < 1 || $day > 31) { return 3; }
-        if($sex < 1 || $sex > 2) { return 3; }
+        if($sex < 1 || $sex > 4) { return 3; }
         return 0;
     }
 

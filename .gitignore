@@ -118,3 +118,4 @@ set.php
 config.php
 sess_*
 */logs/*.txt
+d_setting/set.php

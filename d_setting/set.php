@@ -3,9 +3,9 @@ localhost
 sam_dev
 letmein
 sammo
-smtp.gmail.com
-465
-aser
-ewrwer
-@gmail.com
+localhost
+25
+test
+lemein
+@localhost
  */
