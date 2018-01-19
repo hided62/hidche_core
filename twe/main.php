@@ -7,13 +7,18 @@ $connect = dbConn();
 increaseRefresh($connect, "메인", 2);
 checkTurn($connect);
 
+if(!isset($_SESSION['p_id'])){
+    echo "<script>location.replace('start.php');</script>";
+    exit(0);
+}
+
 $query = "select no,skin,userlevel,con,turntime,newmsg,newvote,map from general where user_id='{$_SESSION['p_id']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
 //그새 사망이면
 if($me['no'] == 0) {
-    echo "a";
+    //echo "a";
     echo "<script>location.replace('start.php');</script>";
     exit(0);
 }

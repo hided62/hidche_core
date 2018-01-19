@@ -1,12 +1,16 @@
 <?php
 include "lib.php";
+include "../e_lib/util.php";
 $connect=dbConn();
 
 $query = "select month from game";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,skin,con from general where user_id='{$_SESSION['p_id']}'";
+
+$tmp_id = util::array_get($_SESSION['p_id'],0);
+
+$query = "select no,skin,con from general where user_id='$tmp_id'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

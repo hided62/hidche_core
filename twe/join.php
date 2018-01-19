@@ -67,8 +67,8 @@ function updateToken(type) {
             console.log(data);
             if(data.result != "rand" && data.result != "leadpow" && data.result != "leadint" && data.result != "powint") {
                 alert(jqXHR.status+", "+jqXHR.statusText+", "+jqXHR.responseText);
-                //location.replace("index.php");
-                echo 'index.php';//TODO:debug all and replace
+                location.replace("index.php");
+                //echo 'index.php';//TODO:debug all and replace
             } else {
                 $("#leader").text(data.leader);
                 $("#power").text(data.power);

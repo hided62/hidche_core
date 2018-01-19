@@ -111,7 +111,7 @@ function GetImageURL($imgsvr) {
 }
 
 function CheckLogin($type=0) {
-    if($_SESSION['p_id'] == "") {
+    if(!isset($_SESSION['p_id'])) {
         if($type == 0) {
              //echo "<script>location.replace('start.php');</script>"; 
              echo 'start.php';//TODO:debug all and replace
