@@ -99,4 +99,5 @@ $temp=MYDB_fetch_array(MYDB_query("select count(*) from general where level = '1
 
 MYDB_close($connect);
 
-echo "<script>location.replace('install2.php');</script>";
+//echo "<script>location.replace('install2.php');</script>";
+echo 'install2.php';//TODO:debug all and replace

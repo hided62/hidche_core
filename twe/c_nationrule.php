@@ -17,5 +17,5 @@ $query = "update nation set rule='$msg' where nation='{$me['nation']}'";
 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 //echo "<script>location.replace('b_nationrule.php');</script>";
-echo 'b_nationrule.php';//TODO:replace
+echo 'b_nationrule.php';//TODO:debug all and replace
 

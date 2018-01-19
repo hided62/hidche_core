@@ -121,6 +121,7 @@ if($admin['npcmode'] != 1) {
         window.alert('정상적으로 회원 가입되었습니다. ID : $id');
         </script>");
     echo("<script>window.open('../i_other/help.php');</script>");
-    echo("<script>location.replace('index.php');</script>");
+    //echo("<script>location.replace('index.php');</script>");
+    echo 'index.php';//TODO:debug all and replace
 }
 

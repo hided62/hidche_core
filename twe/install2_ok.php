@@ -302,7 +302,7 @@ insertCity($connect, "파양", 1, 103700,  2000,  2200,  2000,  3800,  3800, 7, 
 insertCity($connect, "탐라", 1, 113000,  2200,  2100,  2000,  4300,  4100, 8, "31|33|34|62");       // 93 : 탐라
 insertCity($connect, "유구", 1,  92100,  1700,  1800,  2000,  3700,  3700, 8, "59|69");             // 94 : 유구
 
-//TODO:replace
+//TODO:debug all and replace
 switch($scenario) {
     case  0: echo "index.php";     break;
     case  1: echo "scenario_1.php";  break;

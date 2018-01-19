@@ -26,10 +26,12 @@ $me = MYDB_fetch_array($result);
 
 if(!$member) {
     MessageBox("아이디나 암호가 올바르지 않습니다!!!");
-    echo "<script>location.replace('index.php');</script>";
+    //echo "<script>location.replace('index.php');</script>";
+    echo 'index.php';//TODO:debug all and replace
 } elseif(!$me) {
     MessageBox("캐릭터가 없습니다!!!");
-    echo "<script>location.replace('index.php');</script>";
+    //echo "<script>location.replace('index.php');</script>";
+    echo 'index.php';//TODO:debug all and replace
 } else {
     switch($me['block']) {
     case 1:
@@ -52,7 +54,8 @@ if(!$member) {
     $query="update general set logcnt=logcnt+1,ip='{$_SESSION['p_ip']}',lastconnect='$date',conmsg='$conmsg' where user_id='{$_SESSION['p_id']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    echo "<script>window.top.location.replace('./');</script>";
+    //echo "<script>window.top.location.replace('./');</script>";
+    echo './';//TODO:debug all and replace
 
     $date = date('Y_m_d H:i:s');
     $date2 = substr($date, 0, 10);

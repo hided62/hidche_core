@@ -1,3 +1,6 @@
+<?php
+header ("Location:main.php", true, 301);
+/*
 <html>
 <head>
 <title>삼국지 모의전투 유기체서버</title>
@@ -7,3 +10,4 @@
         <frame src=main.php id=main name=main>
     </frameset>
 </html>
+*/

@@ -15,7 +15,8 @@ $btn = $_POST['btn'];
 
 //내가 수뇌부이어야함
 if($me['level'] < 5) {
-    echo "<script>location.replace('b_myBossInfo.php');</script>";
+    //echo "<script>location.replace('b_myBossInfo.php');</script>";
+    echo 'b_myBossInfo.php';//TODO:debug all and replace
     exit();
 }
 
@@ -57,6 +58,6 @@ if($btn == "국가방침") {
 }
 
 //echo "<script>location.replace('b_dipcenter.php');</script>";
-echo 'b_dipcenter.php';//TODO:replace
+echo 'b_dipcenter.php';//TODO:debug all and replace
 
 

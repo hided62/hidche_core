@@ -12,7 +12,8 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $me = MYDB_fetch_array($result);
 
 if($me['userlevel'] < 5) {
-    echo "<script>location.replace('_admin1.php');</script>";
+    //echo "<script>location.replace('_admin1.php');</script>";
+    echo '_admin1.php';//TODO:debug all and replace
 }
 
 switch($btn) {
@@ -176,5 +177,5 @@ switch($btn) {
 }
 
 //echo "<script>location.replace('_admin1.php');</script>";
-echo '_admin1.php';//TODO:replace
+echo '_admin1.php';//TODO:debug all and replace
 

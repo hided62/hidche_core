@@ -6,8 +6,10 @@ $SESSION = new _Session();
 
 if($SESSION->IsLoggedIn() == false) {
 //    echo('<script>window.top.entrance.location.replace("'.ROOT.W.'indexLogin.php");</script>');
-    echo('<script>window.top.entrance.location.replace("'.ROOT.W.'i_login/login.php");</script>');
+    header ("Location: ".ROOT.W.'i_login/login.php');
     exit(1);
+    //echo('<script>window.top.entrance.location.replace("'.ROOT.W.'i_login/login.php");</script>');
+    //exit(1);
 }
 
 

@@ -13,7 +13,8 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $admin = MYDB_fetch_array($result);
 
 if($admin['tournament'] != 6) {
-    echo "<script>location.replace('b_betting.php');</script>";
+    //echo "<script>location.replace('b_betting.php');</script>";
+    echo 'b_betting.php';//TODO:debug all and replace
     exit();
 }
 
@@ -38,5 +39,5 @@ for($i=0; $i < 16; $i++) {
 
 ?>
 
-<!--<script>location.replace('b_betting.php');</script>//TODO:replace-->
+<!--<script>location.replace('b_betting.php');</script>//TODO:debug all and replace-->
 b_betting.php

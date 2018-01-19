@@ -43,7 +43,10 @@ if($me['skin'] < 1) {
 <link rel=stylesheet href=stylesheet.php?<?=$me['skin'];?> type=text/css>
 <script type="text/javascript">
 function go(type) {
-    if(type == 0) location.replace('c_vacation.php');
+    if(type == 0){ 
+        //location.replace('c_vacation.php');
+        console.log('c_vacation.php');//TODO:debug all and replace
+    }
 }
 </script>
 <?php require('analytics.php'); ?>

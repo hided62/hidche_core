@@ -40,7 +40,8 @@ if($command == 46) {
     }
     $query = "update general set {$str} where user_id='{$_SESSION['p_id']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    echo "<script>location.replace('main.php');</script>";
+    //echo "<script>location.replace('main.php');</script>";
+    echo 'main.php';//TODO:debug all and replace
 //통합제의
 } elseif($command == 53) {
     $query = "select nation,level from general where user_id='{$_SESSION['p_id']}'";
@@ -66,7 +67,8 @@ if($command == 46) {
         $query = "update nation set {$str} where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    echo "<script>location.replace('b_chiefcenter.php');</script>";
+    //echo "<script>location.replace('b_chiefcenter.php');</script>";
+    echo 'b_chiefcenter.php';//TODO:debug all and replace
 //불가침
 } elseif($command == 61) {
     $query = "select nation,level from general where user_id='{$_SESSION['p_id']}'";
@@ -91,7 +93,8 @@ if($command == 46) {
         $query = "update nation set {$str} where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    echo "<script>location.replace('b_chiefcenter.php');</script>";
+    //echo "<script>location.replace('b_chiefcenter.php');</script>";
+    echo 'b_chiefcenter.php';//TODO:debug all and replace
 //포상, 몰수, 발령, 항복권고, 원조
 //선전포고, 종전, 파기, 초토화, 천도, 증축, 감축
 //백성동원, 수몰, 허보, 피장파장, 의병모집, 이호경식, 급습
@@ -112,7 +115,8 @@ if($command == 46) {
         $query = "update nation set {$str} where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    echo "<script>location.replace('b_chiefcenter.php');</script>";
+    //echo "<script>location.replace('b_chiefcenter.php');</script>";
+    echo 'b_chiefcenter.php';//TODO:debug all and replace
 } else {
     $count = sizeof($turn);
     $str = "con=con";
@@ -121,7 +125,8 @@ if($command == 46) {
     }
     $query = "update general set {$str} where user_id='{$_SESSION['p_id']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    echo "<script>location.replace('main.php');</script>";
+    //echo "<script>location.replace('main.php');</script>";
+    echo 'main.php';//TODO:debug all and replace
 }
 
 

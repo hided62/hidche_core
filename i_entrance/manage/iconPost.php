@@ -72,8 +72,11 @@ if(!is_uploaded_file($image['tmp_name'])) {
 
 sleep(1);
 
+/*
 echo "<script type='text/javascript'>
     alert('{$response['msg']}');
     location.replace('".ROOT.W.I.ENTRANCE.W.ENTRANCE.PHP."');
 </script>";
+*/
+echo ROOT.W.I.ENTRANCE.W.ENTRANCE.PHP;//TODO:debug all and replace
 

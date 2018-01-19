@@ -11,4 +11,5 @@ $me = MYDB_fetch_array($result);
 
 updateCommand($connect, $me['no'], 2);
 
-echo "<script>location.replace('b_chiefcenter.php');</script>";
+//echo "<script>location.replace('b_chiefcenter.php');</script>";
+echo 'b_chiefcenter.php';//TODO:debug all and replace

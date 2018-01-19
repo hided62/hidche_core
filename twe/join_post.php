@@ -269,6 +269,7 @@ if($id_num) {
     echo("<script>
         window.alert('정상적으로 회원 가입되었습니다. ID : $id \n튜토리얼을 꼭 읽어보세요!');
         </script>");
-    echo("<script>location.replace('index.php');</script>");
+    //echo("<script>location.replace('index.php');</script>");
+    echo 'index.php';//TODO:debug all and replace
 }
 

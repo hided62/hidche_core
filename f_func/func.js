@@ -7,11 +7,13 @@ function Open(url) {
 }
 
 function Replace(url) {
-    location.replace(url);
+    //location.replace(url);
+    console.log('this',url);
 }
 
 function ReplaceFrame(url) {
-    window.top.location.replace(url);
+    //window.top.location.replace(url);
+    console.log('top',url);
 }
 
 function ImportStyle(href) {

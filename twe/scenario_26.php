@@ -311,5 +311,5 @@ $history[count($history)] = "<C>●</>180년 1월:<L><b>【가상모드6】</b>�
 $history[count($history)] = "<C>●</>180년 1월:<L><b>【이벤트】</b></>영웅은 없다! 오직 내가 영웅일 뿐이다!";
 pushHistory($connect, $history);
 
-echo "<script>location.replace('install3_ok.php');</script>";
-
+//echo "<script>location.replace('install3_ok.php');</script>";
+echo 'install3_ok.php';//TODO:debug all and replace

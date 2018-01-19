@@ -1,3 +1,8 @@
+<?php
+
+header ("Location:i_entrance/entrance.php");
+
+/*
 <!DOCTYPE html>
 <html>
 
@@ -12,3 +17,4 @@
     <noframes></noframes>
 
 </html>
+*/

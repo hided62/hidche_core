@@ -112,8 +112,14 @@ function GetImageURL($imgsvr) {
 
 function CheckLogin($type=0) {
     if($_SESSION['p_id'] == "") {
-        if($type == 0) { echo "<script>location.replace('start.php');</script>"; }
-        else           { echo "<script>window.top.main.location.replace('main.php');</script>"; }
+        if($type == 0) {
+             //echo "<script>location.replace('start.php');</script>"; 
+             echo 'start.php';//TODO:debug all and replace
+            }
+        else           { 
+            echo 'main.php';//TODO:debug all and replace
+            //echo "<script>window.top.main.location.replace('main.php');</script>";
+         }
         exit();
     }
 }
@@ -7390,7 +7396,8 @@ function command_Single($connect, $turn, $command) {
     }
     $query = "update general set {$str} where user_id='{$_SESSION['p_id']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    echo "<script>location.replace('commandlist.php');</script>";
+    //echo "<script>location.replace('commandlist.php');</script>";
+    echo 'commandlist.php';//TODO:debug all and replace
 
 }
 
@@ -7410,7 +7417,8 @@ function command_Chief($connect, $turn, $command) {
         $query = "update nation set {$str} where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    echo "<script>location.replace('b_chiefcenter.php');</script>";
+    //echo "<script>location.replace('b_chiefcenter.php');</script>";
+    echo 'b_chiefcenter.php';//TODO:debug all and replace
 }
 
 function command_Other($connect, $turn, $commandtype) {

@@ -27,7 +27,8 @@ if($btn == "임명") {
 
     //임명할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($general['level'] == 12 || $meLevel < 5 || ($general['nation'] != $me['nation'] && $genlist != 0)) {
-        echo "<script>location.replace('b_myBossInfo.php');</script>";
+        //echo "<script>location.replace('b_myBossInfo.php');</script>";
+        echo 'b_myBossInfo.php';//TODO:debug all and replace
         exit();
     }
 } elseif($btn == "추방") {
@@ -37,7 +38,8 @@ if($btn == "임명") {
 
     //추방할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($general['level'] == 12 || $meLevel < 5 || ($general['nation'] != $me['nation'] && $outlist != 0)) {
-        echo "<script>location.replace('b_myBossInfo.php');</script>";
+        //echo "<script>location.replace('b_myBossInfo.php');</script>";
+        echo 'b_myBossInfo.php';//TODO:debug all and replace
         exit();
     }
 }
@@ -251,6 +253,6 @@ if($btn == "추방") {
 }
 
 //echo "<script>location.replace('b_myBossInfo.php');</script>";
-echo 'b_myBossInfo.php';//TODO:replace
+echo 'b_myBossInfo.php';//TODO:debug all and replace
 
 

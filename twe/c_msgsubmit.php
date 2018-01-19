@@ -22,7 +22,10 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $me = MYDB_fetch_array($result);
 
 $con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
-if($con >= 2) { echo "<script>window.top.main.location.replace('main.php');</script>"; exit(); }
+if($con >= 2) { 
+    //echo "<script>window.top.main.location.replace('main.php');</script>"; exit();
+    echo 'main.php';//TODO:debug all and replace
+ }
 
 $msg = str_replace("|", "", $msg);
 $msg = trim($msg);
@@ -124,6 +127,6 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
     fclose($fp);
 }
 
-echo "<script>location.replace('msglist.php');</script>";
-//echo 'msglist.php';//TODO:replace
+//echo "<script>location.replace('msglist.php');</script>";
+echo 'msglist.php';//TODO:debug all and replace
 

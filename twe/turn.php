@@ -15,7 +15,11 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $me = MYDB_fetch_array($result);
 
 $con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
-if($con >= 2) { echo "<script>window.top.main.location.replace('main.php');</script>"; exit(); }
+if($con >= 2) { 
+    //echo "<script>window.top.main.location.replace('main.php');</script>"; 
+    echo 'main.php';//TODO:debug all and replace
+    exit();
+ }
 
 switch($type) {
 case 0:
@@ -84,4 +88,5 @@ case 2:
     break;
 }
 
-echo "<script>location.replace('commandlist.php');</script>";
+//echo "<script>location.replace('commandlist.php');</script>";
+echo 'commandlist.php';//TODO:debug all and replace
