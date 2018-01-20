@@ -6802,12 +6802,12 @@ function disaster($connect) {
         $city = MYDB_fetch_array($cityresult);
         //호황 발생 도시 선택 ( 기본 3% 이므로 약 3개 도시 )
         //재해 발생 도시 선택 ( 기본 6% 이므로 약 6개 도시 )
-        if($isgood == 1) { $ratio = 3 + round(1.0*$city['secu']/$city[secu2]*3); }    // 3 ~ 6%
-        else { $ratio = 6 - round(1.0*$city['secu']/$city[secu2]*3); }    // 3 ~ 6%
+        if($isgood == 1) { $ratio = 3 + round(1.0*$city['secu']/$city['secu2']*3); }    // 3 ~ 6%
+        else { $ratio = 6 - round(1.0*$city['secu']/$city['secu2']*3); }    // 3 ~ 6%
 
         if(rand()%100+1 < $ratio) {
             $disastercity[count($disastercity)] = $city['city'];
-            $disasterratio[count($disastercity)] = 1.0 * $city['secu'] / $city[secu2];
+            $disasterratio[count($disastercity)] = 1.0 * $city['secu'] / $city['secu2'];
             $disastername .= $city['name']." ";
         }
     }
@@ -6926,13 +6926,13 @@ function disaster($connect) {
                 $city['comm'] *= $ratio;  $city['secu'] *= $ratio;  $city['def'] *= $ratio;
                 $city['wall'] *= $ratio;
         
-                if($city['pop'] > $city[pop2]) { $city['pop'] = $city[pop2]; }
+                if($city['pop'] > $city['pop2']) { $city['pop'] = $city['pop2']; }
                 if($city['rate'] > 100) { $city['rate'] = 100; }
-                if($city['agri'] > $city[agri2]) { $city['agri'] = $city[agri2]; }
-                if($city['comm'] > $city[comm2]) { $city['comm'] = $city[comm2]; }
-                if($city['secu'] > $city[secu2]) { $city['secu'] = $city[secu2]; }
-                if($city['def'] > $city[def2]) { $city['def'] = $city[def2]; }
-                if($city['wall'] > $city[wall2]) { $city['wall'] = $city[wall2]; }
+                if($city['agri'] > $city['agri2']) { $city['agri'] = $city['agri2']; }
+                if($city['comm'] > $city['comm2']) { $city['comm'] = $city['comm2']; }
+                if($city['secu'] > $city['secu2']) { $city['secu'] = $city['secu2']; }
+                if($city['def'] > $city['def2']) { $city['def'] = $city['def2']; }
+                if($city['wall'] > $city['wall2']) { $city['wall'] = $city['wall2']; }
         
                 $query = "update city set state='$state',pop='{$city['pop']}',rate='{$city['rate']}',agri='{$city['agri']}',comm='{$city['comm']}',secu='{$city['secu']}',def='{$city['def']}',wall='{$city['wall']}' where city='$disastercity[$i]'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

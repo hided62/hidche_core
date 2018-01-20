@@ -748,7 +748,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         case 3: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getHorseName($gen1['h'])."</>(이)가 갈기를 휘날립니다!"; break;
         }
     }
-    if($gen1[w] > 6 && ($tnmt_type == 0 || $tnmt_type == 2)) {
+    if($gen1['w'] > 6 && ($tnmt_type == 0 || $tnmt_type == 2)) {
         switch(rand()%4) {
         case 0: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1['w'])."</>(이)가 번뜩입니다!"; break;
         case 1: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1['w'])."</>(이)가 푸르게 빛납니다!"; break;
@@ -756,7 +756,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         case 3: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 손에는 <S>".getWeapName($gen1['w'])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
-    if($gen1[b] > 6 && ($tnmt_type == 0 || $tnmt_type == 3)) {
+    if($gen1['b'] > 6 && ($tnmt_type == 0 || $tnmt_type == 3)) {
         switch(rand()%4) {
         case 0: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1['b'])."</>(을)를 펼쳐듭니다!"; break;
         case 1: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1['b'])."</>(을)를 품에서 꺼냅니다!"; break;
@@ -764,7 +764,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         case 3: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 손에는 <S>".getBookName($gen1['b'])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
-    if($gen2[h] > 6 && ($tnmt_type == 0 || $tnmt_type == 1)) {
+    if($gen2['h'] > 6 && ($tnmt_type == 0 || $tnmt_type == 1)) {
         switch(rand()%4) {
         case 0: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2['h'])."</>(이)가 포효합니다!"; break;
         case 1: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2['h'])."</>(이)가 그 위용을 뽐냅니다!"; break;
@@ -772,7 +772,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         case 3: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2['h'])."</>(이)가 갈기를 휘날립니다!"; break;
         }
     }
-    if($gen2[w] > 6 && ($tnmt_type == 0 || $tnmt_type == 2)) {
+    if($gen2['w'] > 6 && ($tnmt_type == 0 || $tnmt_type == 2)) {
         switch(rand()%4) {
         case 0: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2['w'])."</>(이)가 번뜩입니다!"; break;
         case 1: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2['w'])."</>(이)가 푸르게 빛납니다!"; break;
@@ -780,7 +780,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         case 3: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 손에는 <S>".getWeapName($gen2['w'])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
-    if($gen2[b] > 6 && ($tnmt_type == 0 || $tnmt_type == 3)) {
+    if($gen2['b'] > 6 && ($tnmt_type == 0 || $tnmt_type == 3)) {
         switch(rand()%4) {
         case 0: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2['b'])."</>(을)를 펼쳐듭니다!"; break;
         case 1: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2['b'])."</>(을)를 품에서 꺼냅니다!"; break;
