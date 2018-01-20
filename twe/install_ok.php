@@ -49,6 +49,8 @@ if(isTable($connect, "auction", $dbname)) @MYDB_query("drop table auction", $con
 if(isTable($connect, "statistic",$dbname)) @MYDB_query("drop table statistic", $connect) or Error("drop ".MYDB_error($connect),"");
 // 연감 테이블 삭제
 if(isTable($connect, "history",$dbname)) @MYDB_query("drop table history", $connect) or Error("drop ".MYDB_error($connect),"");
+// 메시지 테이블 삭제
+if(isTable($connect, "message",$dbname)) @MYDB_query("drop table message", $connect) or Error("drop ".MYDB_error($connect),"");
 
 // 관리자 테이블 생성
 if(!isTable($connect, "game", $dbname)) @MYDB_query($game_schema, $connect) or Error("create game ".MYDB_error($connect),"");
@@ -74,6 +76,10 @@ if(!isTable($connect, "hall", $dbname)) {
             MYDB_query("insert into hall (type, rank) values ({$i}, {$j})", $connect);
         }
     }
+}
+// 메시지 테이블 생성
+if(!isTable($connect, "message", $dbname)) {
+    MYDB_query($message_schema, $connect) or Error("create message ".MYDB_error($connect),"");
 }
 
 // 왕조 테이블 생성

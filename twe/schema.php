@@ -427,6 +427,29 @@ $game_schema = "
     ";
 
 ///////////////////////////////////////////////////////////////////////////
+// 메시지 테이블
+///////////////////////////////////////////////////////////////////////////
+$message_schema = "
+CREATE TABLE `message` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`address` INT(11) NOT NULL,
+	`type` ENUM('send','receive') NOT NULL,
+	`src` INT(11) NOT NULL,
+	`dest` INT(11) NOT NULL,
+	`time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`message` TEXT NOT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `by_owner` (`address`, `time`),
+	INDEX `by_dest` (`dest`, `time`),
+	INDEX `by_full` (`src`, `dest`, `time`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+";
+
+///////////////////////////////////////////////////////////////////////////
 // 명전 테이블
 ///////////////////////////////////////////////////////////////////////////
 
