@@ -3454,6 +3454,9 @@ function MsgFile($skin, $bg, $nation=0, $level=0) {
         case 3: $bgcolor = "336600"; $count = 20; $fl = "_nation_msg{$nation}.txt"; break;
     }
 
+    if(!file_exists("logs/{$fl}")){
+        return;
+    }
     $fp = @fopen("logs/{$fl}", "r");
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);

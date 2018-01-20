@@ -237,7 +237,7 @@ class _String {
         return $string;
     }
     
-    function Fill($str, $maxsize, $ch) {
+    public static function Fill($str, $maxsize, $ch) {
         $size = strlen($str);
 
         $count = ($maxsize - $size) / 2;

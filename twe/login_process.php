@@ -25,45 +25,48 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $me = MYDB_fetch_array($result);
 
 if(!$member) {
-    MessageBox("아이디나 암호가 올바르지 않습니다!!!");
-    //echo "<script>location.replace('index.php');</script>";
-    echo 'index.php';//TODO:debug all and replace
-} elseif(!$me) {
-    MessageBox("캐릭터가 없습니다!!!");
-    //echo "<script>location.replace('index.php');</script>";
-    echo 'index.php';//TODO:debug all and replace
-} else {
-    switch($me['block']) {
-    case 1:
-        MessageBox("비매너 발언으로 인해, 발언권이 제한됩니다."); break;
-    case 2:
-        MessageBox("현재 블럭된 계정입니다. 턴 실행이 제한됩니다.");
-        MessageBox("절대 1계정만 사용하십시오! {$me['killturn']}시간 후 재등록 가능합니다."); break;
-    case 3:
-        MessageBox("현재 블럭된 계정입니다. 발언권과 턴 실행이 제한됩니다.");
-        MessageBox("절대 1계정만 사용하십시오! {$me['killturn']}시간 후 재등록 가능합니다."); break;
-    }
-
-    $_SESSION['p_id']     = $id;
-    $_SESSION['p_name']   = $me['name'];
-    $_SESSION['p_nation'] = $me['nation'];
-    $_SESSION['p_time']   = time();
-
-    $date = date('Y-m-d H:i:s');
-
-    $query="update general set logcnt=logcnt+1,ip='{$_SESSION['p_ip']}',lastconnect='$date',conmsg='$conmsg' where user_id='{$_SESSION['p_id']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    //echo "<script>window.top.location.replace('./');</script>";
-    echo './';//TODO:debug all and replace
-
-    $date = date('Y_m_d H:i:s');
-    $date2 = substr($date, 0, 10);
-    $fp = fopen("logs/_{$date2}_login.txt", "a");
-    $msg = _String::Fill2($date,20," ").tab2($id,13," ")._String::Fill2($me['name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ");
-    fwrite($fp, $msg."\r\n");
-    fclose($fp);
+    //MessageBox("아이디나 암호가 올바르지 않습니다!!!");
+    //TODO:login_process를 rest 형태로 처리
+    header ("Location: index.php");
+    exit(0);
 }
+if(!$me) {
+    //MessageBox("캐릭터가 없습니다!!!");
+    //TODO:login_process를 rest 형태로 처리
+    header ("Location: index.php");
+    exit(0);
+}
+
+
+switch($me['block']) {
+case 1:
+    MessageBox("비매너 발언으로 인해, 발언권이 제한됩니다."); break;
+case 2:
+    MessageBox("현재 블럭된 계정입니다. 턴 실행이 제한됩니다.");
+    MessageBox("절대 1계정만 사용하십시오! {$me['killturn']}시간 후 재등록 가능합니다."); break;
+case 3:
+    MessageBox("현재 블럭된 계정입니다. 발언권과 턴 실행이 제한됩니다.");
+    MessageBox("절대 1계정만 사용하십시오! {$me['killturn']}시간 후 재등록 가능합니다."); break;
+}
+
+$_SESSION['p_id']     = $id;
+$_SESSION['p_name']   = $me['name'];
+$_SESSION['p_nation'] = $me['nation'];
+$_SESSION['p_time']   = time();
+
+$date = date('Y-m-d H:i:s');
+
+$query="update general set logcnt=logcnt+1,ip='{$_SESSION['p_ip']}',lastconnect='$date',conmsg='$conmsg' where user_id='{$_SESSION['p_id']}'";
+MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+$date = date('Y_m_d H:i:s');
+$date2 = substr($date, 0, 10);
+$fp = fopen("logs/_{$date2}_login.txt", "a");
+$msg = _String::Fill2($date,20," ").tab2($id,13," ")._String::Fill2($me['name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ");
+fwrite($fp, $msg."\r\n");
+fclose($fp);
+
+header ("Location: index.php");
 
 function DeleteSession() {
     $session_path = "data/session";  // 세션이저장된 디렉토리

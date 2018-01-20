@@ -57,6 +57,7 @@ $scenario = getScenario($connect);
 <title>메인</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php?<?=$me['skin'];?> type=text/css>
+<script src="../e_lib/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 
 if (document.all) {
