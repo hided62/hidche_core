@@ -1,6 +1,6 @@
 <?php
-include "lib.php";
-include "func.php";
+require_once("lib.php");
+require_once("func_message.php");
 //로그인 검사
 CheckLogin(1);
 $connect = dbconn();
@@ -26,15 +26,15 @@ $me = MYDB_fetch_array($result);
     <tr>
         <td valign=top width=500>
             전체 메세지(최고75자)<br>
-            <?php MsgFile($me['skin'], 1); ?>
+            <?=MsgFile($me['skin'], 1)?>
             <br>
             개인 메세지(최고75자)<br>
-            <?php MsgMe($connect, 2); ?>
+            <?=MsgMe($connect, 2)?>
         </td>
         <td valign=top width=500>
-            <?php MsgDip($connect, 4); ?>
+            <?=MsgDip($connect, 4)?>
             국가 메세지(최고75자)<br>
-            <?php MsgFile($me['skin'], 3, $me['nation']); ?>
+            <?=MsgFile($me['skin'], 3, $me['nation'])?>
         </td>
     </tr>
 </table>

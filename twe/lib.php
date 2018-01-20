@@ -15,6 +15,7 @@ ini_set("session.gc_maxlifetime", 604800);    // seconds
 ob_start();
 
 include "MYDB.php";
+require_once(__dir__.'/d_setting/conf.php');
 
 // 각종 변수
 define('STEP_LOG', true);
@@ -115,6 +116,7 @@ echo $_SERVER['PHP_SELF'].'//'.preg_match("/install/i",$_SERVER['PHP_SELF']);
 
 // MySQL 데이타 베이스에 접근
 function dbconn($table = "") {
+    //TODO:dbconn 사용하는 모든 녀석들을 없애야한다.
     global $connect, $HTTP_COOKIE_VARS;
     $f = @file("d_setting/set.php") or Error("set.php파일이 없습니다. DB설정을 먼저 하십시요!");
     for($i=1; $i<= 4; $i++) $f[$i] = trim(str_replace("\n","",$f[$i]));
@@ -192,6 +194,64 @@ function LogText($prefix, $variable){
     }
     fwrite($fp, sprintf('%s : %s\n', $prefix, var_export($_POST, true)));
     fclose($fp);
+}
+
+function parseJsonPost(){
+    // http://thisinterestsme.com/receiving-json-post-data-via-php/
+    // http://thisinterestsme.com/php-json-error-handling/
+    if(strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') != 0){
+        throw new Exception('Request method must be POST!');
+    }
+    
+    //Make sure that the content type of the POST request has been set to application/json
+    $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
+    if(strcasecmp($contentType, 'application/json') != 0){
+        throw new Exception('Content type must be: application/json');
+    }
+    
+    //Receive the RAW post data.
+    $content = trim(file_get_contents("php://input"));
+    
+    //Attempt to decode the incoming RAW post data from JSON.
+    $decoded = json_decode($content, true);
+    
+    
+    $jsonError = json_last_error();
+    
+    //In some cases, this will happen.
+    if(is_null($decoded) && $jsonError == JSON_ERROR_NONE){
+        throw new Exception('Could not decode JSON!');
+    }
+    
+    //If an error exists.
+    if($jsonError != JSON_ERROR_NONE){
+        $error = 'Could not decode JSON! ';
+        
+        //Use a switch statement to figure out the exact error.
+        switch($jsonError){
+            case JSON_ERROR_DEPTH:
+                $error .= 'Maximum depth exceeded!';
+            break;
+            case JSON_ERROR_STATE_MISMATCH:
+                $error .= 'Underflow or the modes mismatch!';
+            break;
+            case JSON_ERROR_CTRL_CHAR:
+                $error .= 'Unexpected control character found';
+            break;
+            case JSON_ERROR_SYNTAX:
+                $error .= 'Malformed JSON';
+            break;
+            case JSON_ERROR_UTF8:
+                 $error .= 'Malformed UTF-8 characters found!';
+            break;
+            default:
+                $error .= 'Unknown error!';
+            break;
+        }
+        throw new Exception($error);
+    }
+
+    return $decoded;
 }
 
 LogText($_SERVER['REQUEST_URI'], $_POST);

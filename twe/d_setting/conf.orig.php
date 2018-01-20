@@ -1,6 +1,11 @@
 <?php
 require_once(__dir__.'/../../d_setting/conf.php');
 
+/**
+ * DB 객체 생성
+ * 
+ * @return MeekroDB 
+ */
 function newDB(){
     $host = '_host_';
     $user = '_user_';
