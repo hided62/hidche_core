@@ -79,9 +79,9 @@ for($i=0; $i < $count; $i++) {
     $auction = MYDB_fetch_array($result);
     $itemname = GetStuffName($auction['stuff']);
     $radio = ""; $alert = ""; $alert2 = "";
-    if($auction[no1] == $me['no']) { $radio = " disabled"; }
-    elseif($auction[no2] > 0 && $auction['amount'] * 2 <= $auction['value'] && $auction['stuff'] == 0) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
-    elseif($auction[no2] > 0 && $auction['topv'] <= $auction['value']) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
+    if($auction['no1'] == $me['no']) { $radio = " disabled"; }
+    elseif($auction['no2'] > 0 && $auction['amount'] * 2 <= $auction['value'] && $auction['stuff'] == 0) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
+    elseif($auction['no2'] > 0 && $auction['topv'] <= $auction['value']) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
     elseif($chk == 0) { $radio = " checked"; $chk = 1; }
     $pv = round($auction['value'] * 100 / $auction['amount']) / 100 + 0.001;
     $pv = substr($pv, 0, 4);
@@ -90,14 +90,14 @@ for($i=0; $i < $count; $i++) {
     <tr align=center>
         <td>{$auction['no']}</td>
         <td><input type=radio name=sel value={$auction['no']}{$radio}></td>
-        <td>{$auction[name1]}</td>
+        <td>{$auction['name1']}</td>
         <td>{$itemname}</td>
         <td>{$auction['amount']}</td>
         <td>금 {$auction['cost']}</td>
         <td>{$alert}금 {$auction['value']}{$alert2}</td>
         <td>{$alert}금 {$auction['topv']}{$alert2}</td>
         <td>{$alert}{$pv}{$alert2}</td>
-        <td>{$alert}{$auction[name2]}{$alert2}</td>
+        <td>{$alert}{$auction['name2']}{$alert2}</td>
         <td>{$auction['expire']}</td>
     </tr>
     ";
@@ -163,9 +163,9 @@ for($i=0; $i < $count; $i++) {
     $auction = MYDB_fetch_array($result);
     $itemname = GetStuffName($auction['stuff']);
     $radio = ""; $alert = ""; $alert2 = "";
-    if($auction[no1] == $me['no']) { $radio = " disabled"; }
-    elseif($auction[no2] > 0 && $auction['amount'] >= $auction['value'] * 2 && $auction['stuff'] == 0) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
-    elseif($auction[no2] > 0 && $auction['topv'] >= $auction['value']) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
+    if($auction['no1'] == $me['no']) { $radio = " disabled"; }
+    elseif($auction['no2'] > 0 && $auction['amount'] >= $auction['value'] * 2 && $auction['stuff'] == 0) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
+    elseif($auction['no2'] > 0 && $auction['topv'] >= $auction['value']) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
     elseif($chk == 0) { $radio = " checked"; $chk = 1; }
     $pv = round($auction['value'] * 100 / $auction['amount']) / 100 + 0.001;
     $pv = substr($pv, 0, 4);
@@ -174,14 +174,14 @@ for($i=0; $i < $count; $i++) {
     <tr align=center>
         <td>{$auction['no']}</td>
         <td><input type=radio name=sel value={$auction['no']}{$radio}></td>
-        <td>{$auction[name1]}</td>
+        <td>{$auction['name1']}</td>
         <td>{$itemname}</td>
         <td>{$auction['amount']}</td>
         <td>금 {$auction['cost']}</td>
         <td>{$alert}금 {$auction['value']}{$alert2}</td>
         <td>{$alert}금 {$auction['topv']}{$alert2}</td>
         <td>{$alert}{$pv}{$alert2}</td>
-        <td>{$alert}{$auction[name2]}{$alert2}</td>
+        <td>{$alert}{$auction['name2']}{$alert2}</td>
         <td>{$auction['expire']}</td>
     </tr>
     ";

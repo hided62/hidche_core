@@ -109,7 +109,7 @@ $conMsg  = "";
 for($i=0; $i < $ipCount; $i++) {
     $ip = MYDB_fetch_array($result);
 
-    $query = "select name,ip,lastconnect,user_id,block,conmsg from general where ip like '$ip[ip2]%' and npc<2 order by ip";
+    $query = "select name,ip,lastconnect,user_id,block,conmsg from general where ip like '{$ip['ip2']}%' and npc<2 order by ip";
     $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($genResult);
     for($k=0; $k < $genCount; $k++) {

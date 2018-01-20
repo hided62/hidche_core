@@ -89,7 +89,7 @@ function process_1($connect, &$general, $type) {
         // 군주, 참모, 모사 보정
         if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 9 || $general['level'] == 7 || $general['level'] == 5) { $score *= 1.05; }
         // 군사 보정
-        if($general['level'] == 3 && $general['no'] == $city[gen2]) { $score *= 1.05; }
+        if($general['level'] == 3 && $general['no'] == $city['gen2']) { $score *= 1.05; }
 
         $rd = rand() % 100;
         $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 2);
@@ -127,7 +127,7 @@ function process_1($connect, &$general, $type) {
         // 자금 하락, 경험치 상승
         $general['gold'] -= $admin['develcost'];
         $general['intel2']++;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',intel2='$general[intel2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -228,7 +228,7 @@ function process_3($connect, &$general) {
         $general['gold'] -= $admin['develcost'];
 
         $general['intel2']++;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',intel2='$general[intel2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -288,7 +288,7 @@ function process_4($connect, &$general) {
         // 군주, 참모 보정
         if($general['level'] == 12 || $general['level'] == 11) { $score *= 1.05; }
         // 시중 보정
-        if($general['level'] == 2 && $general['no'] == $city[gen3]) { $score *= 1.05; }
+        if($general['level'] == 2 && $general['no'] == $city['gen3']) { $score *= 1.05; }
 
         $rd = rand() % 100;
         $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 0);
@@ -324,7 +324,7 @@ function process_4($connect, &$general) {
         // 군량 하락 내정보다 2배   지력경험    경험, 공헌 상승
         $general['rice'] -= $admin['develcost'] * 2;
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -391,7 +391,7 @@ function process_5($connect, &$general, $type) {
         // 군주, 참모, 장군 보정
         if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 10 || $general['level'] == 8 || $general['level'] == 6) { $score *= 1.05; }
         // 태수 보정
-        if($general['level'] == 4 && $general['no'] == $city[gen1]) { $score *= 1.05; }
+        if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
 
         $rd = rand() % 100;   // 현재 20%
         $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 0);
@@ -428,7 +428,7 @@ function process_5($connect, &$general, $type) {
         // 자금 하락, 무력 경험     경험, 공헌 상승
         $general['gold'] -= $admin['develcost'];
         $general['power2']++;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',power2='$general[power2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -488,7 +488,7 @@ function process_7($connect, &$general) {
         // 군주, 참모 보정
         if($general['level'] == 12 || $general['level'] == 11) { $score *= 1.05; }
         // 시중 보정
-        if($general['level'] == 2 && $general['no'] == $city[gen3]) { $score *= 1.05; }
+        if($general['level'] == 2 && $general['no'] == $city['gen3']) { $score *= 1.05; }
 
         $rd = rand() % 100;   // 현재 20%
         $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 0);
@@ -524,7 +524,7 @@ function process_7($connect, &$general) {
         // 군량 하락 내정보다 2배   지력경험    경험, 공헌 상승
         $general['rice'] -= $admin['develcost'] * 2;
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -626,7 +626,7 @@ function process_8($connect, &$general) {
         // 자금 하락, 무력 경험     경험, 공헌 상승
         $general['gold'] -= $admin['develcost'];
         $general['power2']++;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',power2='$general[power2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -711,15 +711,15 @@ function process_9($connect, &$general) {
         switch(rand()%3) {
             case 0:
                 $general['leader2']++;
-                $query = "update general set resturn='SUCCESS',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+                $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
                 break;
             case 1:
                 $general['power2']++;
-                $query = "update general set resturn='SUCCESS',power2='$general[power2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+                $query = "update general set resturn='SUCCESS',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
                 break;
             case 2:
                 $general['intel2']++;
-                $query = "update general set resturn='SUCCESS',intel2='$general[intel2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+                $query = "update general set resturn='SUCCESS',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
                 break;
         }
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -907,7 +907,7 @@ function process_11($connect, &$general, $type) {
 
         // 통솔경험, 병종 변경, 병사수 변경, 훈련치 변경, 사기치 변경, 자금 군량 하락, 공헌도, 명성 상승
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='$general[leader2]',crewtype='$armtype',crew='{$general['crew']}',train='$train',atmos='$atmos',gold='{$general['gold']}',rice=rice-'$crew',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',crewtype='$armtype',crew='{$general['crew']}',train='$train',atmos='$atmos',gold='{$general['gold']}',rice=rice-'$crew',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -981,7 +981,7 @@ function process_13($connect, &$general) {
 
         // 경험치 상승        // 공헌도, 명성 상승
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -1048,7 +1048,7 @@ function process_14($connect, &$general) {
         $score += $general['atmos'];
         if($score > $_maxatmos) { $score = $_maxatmos; }
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',atmos='$score',gold='$gold',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',atmos='$score',gold='$gold',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -1118,7 +1118,7 @@ function process_15($connect, &$general) {
 
         // 훈련,사기치 변경        // 자금 감소        // 경험치 상승        // 공헌도, 명성 상승
         $general['leader2']+=3;
-        $query = "update general set resturn='SUCCESS',term='0',atmos='95',train='95',gold='$gold',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',term='0',atmos='95',train='95',gold='$gold',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -1290,7 +1290,7 @@ function process_21($connect, &$general) {
 
         // 이동, 경험치 상승, 명성 상승, 사기 감소
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',gold=gold-'{$admin['develcost']}',city='$destination',atmos=atmos*0.95,leader2='$general[leader2]',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold=gold-'{$admin['develcost']}',city='$destination',atmos=atmos*0.95,leader2='{$general['leader2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         if($general['level'] == 12) {
@@ -1366,7 +1366,7 @@ function process_22($connect, &$general) {
         ScoutMsg($connect, $general['no'], $nation['name'], $who, $you['msgindex']);
 
         $general['intel2']++;
-        $query = "update general set resturn='SUCCESS',gold=gold-'$cost',intel2='$general[intel2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold=gold-'$cost',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -1740,7 +1740,7 @@ function process_26($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 경험치 명성 공헌 상승
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -1876,7 +1876,7 @@ function process_28($connect, &$general) {
 
         // 경험치 상승        // 명성,공헌 상승
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='$general[leader2]',experience=experience+'$exp',dedication=dedication+'$ded' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',experience=experience+'$exp',dedication=dedication+'$ded' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -2095,7 +2095,7 @@ function process_29($connect, &$general) {
                     '$scoutLevel','100','100','0','0','0','0','0',
                     '0','0','0','$turntime','$killturn','$age','1','$personal','0','$specage','0','$specage2','',
                     '0','$bornyear','$deadyear',
-                    '$avgGen[dex0]','$avgGen[dex10]','$avgGen[dex20]','$avgGen[dex30]','$avgGen[dex40]'
+                    '{$avgGen['dex0']}','{$avgGen['dex10']}','{$avgGen['dex20']}','{$avgGen['dex30']}','{$avgGen['dex40']}'
                 )",
                 $connect
             ) or Error(__LINE__.MYDB_error($connect),"");
@@ -2131,7 +2131,7 @@ function process_29($connect, &$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         // 자금 감소        // 경험치 상승        // 공헌도, 명성 상승
-        $query = "update general set resturn='SUCCESS',term='0',gold='$gold',leader2='$general[leader2]',power2='$general[power2]',intel2='$general[intel2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',term='0',gold='$gold',leader2='{$general['leader2']}',power2='{$general['power2']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -2178,7 +2178,7 @@ function process_30($connect, &$general) {
 
         // 이동, 경험치 상승, 명성 상승, 병력/사기/훈련 감소
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',gold=gold-'$cost',city='$destination',crew=crew*0.95,atmos=atmos*0.9,train=train*0.95,leader2='$general[leader2]',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold=gold-'$cost',city='$destination',crew=crew*0.95,atmos=atmos*0.9,train=train*0.95,leader2='{$general['leader2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         if($general['level'] == 12) {
@@ -2297,7 +2297,7 @@ function process_31($connect, &$general) {
         $general['leader2']++;
         $general['gold'] -= $admin['develcost']*3;
         $general['rice'] -= $admin['develcost']*3;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $query = "select spy from nation where nation='{$general['nation']}'";
@@ -2379,7 +2379,7 @@ function process_32($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $intelgen = MYDB_fetch_array($result);
 
-        $ratio = round((($general['intel']+getBookEff($general['book']) - $intelgen['intel']-getBookEff($intelgen['book'])) / $_firing - ($destcity['secu']/$destcity[secu2])/5 + $_basefiring)*100);
+        $ratio = round((($general['intel']+getBookEff($general['book']) - $intelgen['intel']-getBookEff($intelgen['book'])) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2402,7 +2402,7 @@ function process_32($connect, &$general) {
         }
 
         // 특기보정 : 신산, 귀모
-        if($general[special2] == 41) { $ratio += 10; }
+        if($general['special2'] == 41) { $ratio += 10; }
         if($general['special'] == 31) { $ratio += 20; }
 
         // 국가보정
@@ -2440,7 +2440,7 @@ function process_32($connect, &$general) {
         $general['intel2']++;
         $general['gold'] -= $admin['develcost']*5;
         $general['rice'] -= $admin['develcost']*5;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',intel2='$general[intel2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -2509,7 +2509,7 @@ function process_33($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = round((($general['power']+getWeapEff($general['weap']) - $powergen['power']-getWeapEff($powergen['weap'])) / $_firing - ($destcity['secu']/$destcity[secu2])/5 + $_basefiring)*100);
+        $ratio = round((($general['power']+getWeapEff($general['weap']) - $powergen['power']-getWeapEff($powergen['weap'])) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2532,7 +2532,7 @@ function process_33($connect, &$general) {
         }
 
         // 특기보정 : 신산, 귀모
-        if($general[special2] == 41) { $ratio += 10; }
+        if($general['special2'] == 41) { $ratio += 10; }
         if($general['special'] == 31) { $ratio += 20; }
 
         // 국가보정
@@ -2592,7 +2592,7 @@ function process_33($connect, &$general) {
         $general['power2']++;
         $general['gold'] -= $admin['develcost']*5;
         $general['rice'] -= $admin['develcost']*5;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',power2='$general[power2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -2654,7 +2654,7 @@ function process_34($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = round((($general['power']+getWeapEff($general['weap']) - $powergen['power']-getWeapEff($powergen['weap'])) / $_firing - ($destcity['secu']/$destcity[secu2])/5 + $_basefiring)*100);
+        $ratio = round((($general['power']+getWeapEff($general['weap']) - $powergen['power']-getWeapEff($powergen['weap'])) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2677,7 +2677,7 @@ function process_34($connect, &$general) {
         }
 
         // 특기보정 : 신산, 귀모
-        if($general[special2] == 41) { $ratio += 10; }
+        if($general['special2'] == 41) { $ratio += 10; }
         if($general['special'] == 31) { $ratio += 20; }
 
         // 국가보정
@@ -2716,7 +2716,7 @@ function process_34($connect, &$general) {
         $general['power2']++;
         $general['gold'] -= $admin['develcost']*5;
         $general['rice'] -= $admin['develcost']*5;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',power2='$general[power2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -2786,7 +2786,7 @@ function process_35($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
 
-        $ratio = round(((floor($general['leader'] * (100 - $general['injury'])/100)+getHorseEff($general['horse'])+$lbonus - ($gen['sum']-$gen['horse']+getHorseEff($gen['horse']))) / $_firing - ($destcity['secu']/$destcity[secu2])/5 + $_basefiring)*100);
+        $ratio = round(((floor($general['leader'] * (100 - $general['injury'])/100)+getHorseEff($general['horse'])+$lbonus - ($gen['sum']-$gen['horse']+getHorseEff($gen['horse']))) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2809,7 +2809,7 @@ function process_35($connect, &$general) {
         }
 
         // 특기보정 : 신산, 귀모
-        if($general[special2] == 41) { $ratio += 10; }
+        if($general['special2'] == 41) { $ratio += 10; }
         if($general['special'] == 31) { $ratio += 20; }
 
         // 국가보정
@@ -2848,7 +2848,7 @@ function process_35($connect, &$general) {
         $general['leader2']++;
         $general['gold'] -= $admin['develcost']*5;
         $general['rice'] -= $admin['develcost']*5;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -2918,7 +2918,7 @@ function process_36($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
 
-        $ratio = round(((floor(($general['leader']+$general['intel']+$general['power']) * (100 - $general['injury'])/100)+getWeapEff($general['weap'])+getHorseEff($general['horse'])+$lbonus+getBookEff($general['book']) - ($gen['sum']-$gen['weap']-$gen['horse']-$gen['book']+getWeapEff($gen['weap'])+getHorseEff($gen['horse'])+getBookEff($gen['book']))) / $_firing - ($destcity['secu']/$destcity[secu2])/5 + $_basefiring)*100);
+        $ratio = round(((floor(($general['leader']+$general['intel']+$general['power']) * (100 - $general['injury'])/100)+getWeapEff($general['weap'])+getHorseEff($general['horse'])+$lbonus+getBookEff($general['book']) - ($gen['sum']-$gen['weap']-$gen['horse']-$gen['book']+getWeapEff($gen['weap'])+getHorseEff($gen['horse'])+getBookEff($gen['book']))) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2941,7 +2941,7 @@ function process_36($connect, &$general) {
         }
 
         // 특기보정 : 신산, 귀모
-        if($general[special2] == 41) { $ratio += 10; }
+        if($general['special2'] == 41) { $ratio += 10; }
         if($general['special'] == 31) { $ratio += 20; }
 
         // 국가보정
@@ -2990,7 +2990,7 @@ function process_36($connect, &$general) {
         $general['power2']++;
         $general['gold'] -= $admin['develcost']*5;
         $general['rice'] -= $admin['develcost']*5;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='$general[leader2]',intel2='$general[intel2]',power2='$general[power2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='{$general['leader2']}',intel2='{$general['intel2']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -3100,7 +3100,7 @@ function process_42($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:어느 명사와 설전을 벌여 멋지게 이겼습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['intel2'] += 2;
-        $query = "update general set resturn='SUCCESS',intel2='$general[intel2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',intel2='{$general['intel2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 4:
@@ -3113,7 +3113,7 @@ function process_42($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:동네 장사와 힘겨루기를 하여 멋지게 이겼습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['power2'] += 2;
-        $query = "update general set resturn='SUCCESS',power2='$general[power2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 6:
@@ -3126,7 +3126,7 @@ function process_42($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:산적과 싸워 금 <C>300</>을 빼앗았습니다. <1>$date</>";
         // 자금 상승        // 경험치 상승        // 명성 상승
         $general['power2'] += 2;
-        $query = "update general set resturn='SUCCESS',gold=gold+300,power2='$general[power2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold=gold+300,power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 8:
@@ -3141,7 +3141,7 @@ function process_42($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:호랑이를 잡아 고기 <C>300</>을 얻었습니다. <1>$date</>";
         // 군량 상승        // 경험치 상승
         $general['power2'] += 2;
-        $query = "update general set resturn='SUCCESS',rice=rice+300,power2='$general[power2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',rice=rice+300,power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 10:
@@ -3149,14 +3149,14 @@ function process_42($connect, &$general) {
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
         $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='$general[power2]',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 11:
         $log[count($log)] = "<C>●</>{$admin['month']}월:곰을 잡아 고기 <C>300</>을 얻었습니다. <1>$date</>";
         // 군량 상승        // 경험치 상승        // 명성 상승
         $general['power2'] += 2;
-        $query = "update general set resturn='SUCCESS',rice=rice+300,power2='$general[power2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',rice=rice+300,power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 12:
@@ -3164,7 +3164,7 @@ function process_42($connect, &$general) {
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
         $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='$general[power2]',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 13:
@@ -3184,14 +3184,14 @@ function process_42($connect, &$general) {
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
         $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='$general[power2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 16:
         $log[count($log)] = "<C>●</>{$admin['month']}월:돈을 빌려주었다가 이자 <C>300</>을 받았습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['intel2']++;
-        $query = "update general set resturn='SUCCESS',gold=gold+300,intel2='$general[intel2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',gold=gold+300,intel2='{$general['intel2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 17:
@@ -3206,7 +3206,7 @@ function process_42($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:쌀을 빌려주었다가 이자 <C>300</>을 받았습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['intel2']++;
-        $query = "update general set resturn='SUCCESS',rice=rice+300,intel2='$general[intel2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',rice=rice+300,intel2='{$general['intel2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 19:
@@ -3221,28 +3221,28 @@ function process_42($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:거리에서 글 모르는 아이들을 모아 글을 가르쳤습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['intel2'] += 2;
-        $query = "update general set resturn='SUCCESS',intel2='$general[intel2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',intel2='{$general['intel2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 21:
         $log[count($log)] = "<C>●</>{$admin['month']}월:백성들에게 현인의 가르침을 설파했습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['leader2'] += 2;
-        $query = "update general set resturn='SUCCESS',leader2='$general[leader2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 22:
         $log[count($log)] = "<C>●</>{$admin['month']}월:어느 집의 무너진 울타리를 고쳐주었습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['power2'] += 2;
-        $query = "update general set resturn='SUCCESS',power2='$general[power2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 23:
         $log[count($log)] = "<C>●</>{$admin['month']}월:어느 집의 도망친 가축을 되찾아 주었습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['leader2'] += 2;
-        $query = "update general set resturn='SUCCESS',leader2='$general[leader2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 24:
@@ -3250,7 +3250,7 @@ function process_42($connect, &$general) {
         // 경험치 하락        // 명성 상승
         $injury = rand() % 30 + 20;
         $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='$general[power2]',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 25:
@@ -3258,7 +3258,7 @@ function process_42($connect, &$general) {
         // 경험치 하락        // 명성 상승
         $injury = rand() % 30 + 20;
         $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='$general[power2]',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 26:
@@ -3266,7 +3266,7 @@ function process_42($connect, &$general) {
         // 경험치 하락        // 명성 상승
         $injury = rand() % 50 + 30;
         $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='$general[power2]',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     default:
@@ -3358,7 +3358,7 @@ function process_43($connect, &$general) {
 
         // 경험치 상승        // 공헌도, 명성 상승
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -3444,7 +3444,7 @@ function process_44($connect, &$general) {
 
         // 경험치 상승        // 공헌도, 명성 상승
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='$general[leader2]',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($connect, $general, $log);
@@ -3929,17 +3929,17 @@ function process_49($connect, &$general) {
         switch(rand()%3) {
         case 0:
             $general['leader2']++;
-            $query = "update general set leader2='$general[leader2]' where no='{$general['no']}'";
+            $query = "update general set leader2='{$general['leader2']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             break;
         case 1:
             $general['power2']++;
-            $query = "update general set power2='$general[power2]' where no='{$general['no']}'";
+            $query = "update general set power2='{$general['power2']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             break;
         case 2:
             $general['intel2']++;
-            $query = "update general set intel2='$general[intel2]' where no='{$general['no']}'";
+            $query = "update general set intel2='{$general['intel2']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             break;
         }
@@ -4834,7 +4834,7 @@ function process_65($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //직위해제
-        $query = "update general set level=1 where no='$destcity[gen1]' or no='$destcity[gen2]' or no='$destcity[gen3]'";
+        $query = "update general set level=1 where no='{$destcity['gen1']}' or no='{$destcity['gen2']}' or no='{$destcity['gen3']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //성 공백지로
@@ -5911,7 +5911,7 @@ function process_76($connect, &$general) {
                     '1','100','100','0','0','0','0','0',
                     '0','0','0','$turntime','$killturn','{$avgGen['age']}','1','$personal','0','0','0','0','',
                     '0','$bornyear','$deadyear',
-                    '$avgGen[dex0]','$avgGen[dex10]','$avgGen[dex20]','$avgGen[dex30]','$avgGen[dex40]'
+                    '{$avgGen['dex0']}','{$avgGen['dex10']}','{$avgGen['dex20']}','{$avgGen['dex30']}','{$avgGen['dex40']}'
                 )",
                 $connect
             ) or Error(__LINE__.MYDB_error($connect),"");

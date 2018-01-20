@@ -81,7 +81,7 @@ if(rand()%2 == 0) {
     $intel = 150 - $leader - $power;
 }
 
-RegGeneral4($connect,$admin['turnterm'],$gencount, 0, 0,    "유기체", $leader, $power, $intel, $personal, $general['specage'], $general[specage2], "흠... 그럼 어쩔 수 없이 흉노로 가야겠군요."); $gencount++;
+RegGeneral4($connect,$admin['turnterm'],$gencount, 0, 0,    "유기체", $leader, $power, $intel, $personal, $general['specage'], $general['specage2'], "흠... 그럼 어쩔 수 없이 흉노로 가야겠군요."); $gencount++;
 
 //////////////////////////장수 끝///////////////////////////////////////////////
 

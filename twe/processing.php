@@ -387,8 +387,8 @@ function calc(cost, formnum) {
             //성격 보정
             $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 보병, 징병
-            if($me[special2] == 50) { $cst *= 0.9; }
-            if($me[special2] == 72) { $cst *= 0.5; }
+            if($me['special2'] == 50) { $cst *= 0.9; }
+            if($me['special2'] == 72) { $cst *= 0.5; }
             $att = $admin["att{$i}"] + $abil;
             $def = $admin["def{$i}"] + $abil;
             $spd = $admin["spd{$i}"];
@@ -437,8 +437,8 @@ function calc(cost, formnum) {
             //성격 보정
             $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 궁병, 징병
-            if($me[special2] == 51) { $cst *= 0.9; }
-            if($me[special2] == 72) { $cst *= 0.5; }
+            if($me['special2'] == 51) { $cst *= 0.9; }
+            if($me['special2'] == 72) { $cst *= 0.5; }
             $att = $admin["att{$i}"] + $abil;
             $def = $admin["def{$i}"] + $abil;
             $spd = $admin["spd{$i}"];
@@ -487,8 +487,8 @@ function calc(cost, formnum) {
             //성격 보정
             $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 기병, 징병
-            if($me[special2] == 52) { $cst *= 0.9; }
-            if($me[special2] == 72) { $cst *= 0.5; }
+            if($me['special2'] == 52) { $cst *= 0.9; }
+            if($me['special2'] == 72) { $cst *= 0.5; }
             $att = $admin["att{$i}"] + $abil;
             $def = $admin["def{$i}"] + $abil;
             $spd = $admin["spd{$i}"];
@@ -537,8 +537,8 @@ function calc(cost, formnum) {
             //성격 보정
             $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 귀병, 징병
-            if($me[special2] == 40) { $cst *= 0.9; }
-            if($me[special2] == 72) { $cst *= 0.5; }
+            if($me['special2'] == 40) { $cst *= 0.9; }
+            if($me['special2'] == 72) { $cst *= 0.5; }
             $att = $admin["att{$i}"] + $abil;
             $def = $admin["def{$i}"] + $abil;
             $spd = $admin["spd{$i}"];
@@ -587,8 +587,8 @@ function calc(cost, formnum) {
             //성격 보정
             $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 공성, 징병
-            if($me[special2] == 53) { $cst *= 0.9; }
-            if($me[special2] == 72) { $cst *= 0.5; }
+            if($me['special2'] == 53) { $cst *= 0.9; }
+            if($me['special2'] == 72) { $cst *= 0.5; }
             $att = $admin["att{$i}"] + $abil;
             $def = $admin["def{$i}"] + $abil;
             $spd = $admin["spd{$i}"];
@@ -821,8 +821,8 @@ function calc(cost, formnum) {
             //성격 보정
             $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 보병, 징병
-            if($me[special2] == 50) { $cst *= 0.9; }
-            if($me[special2] == 72) { $cst *= 0.5; }
+            if($me['special2'] == 50) { $cst *= 0.9; }
+            if($me['special2'] == 72) { $cst *= 0.5; }
             $att = $admin["att{$i}"] + $abil;
             $def = $admin["def{$i}"] + $abil;
             $spd = $admin["spd{$i}"];
@@ -871,8 +871,8 @@ function calc(cost, formnum) {
             //성격 보정
             $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 궁병, 징병
-            if($me[special2] == 51) { $cst *= 0.9; }
-            if($me[special2] == 72) { $cst *= 0.5; }
+            if($me['special2'] == 51) { $cst *= 0.9; }
+            if($me['special2'] == 72) { $cst *= 0.5; }
             $att = $admin["att{$i}"] + $abil;
             $def = $admin["def{$i}"] + $abil;
             $spd = $admin["spd{$i}"];
@@ -921,8 +921,8 @@ function calc(cost, formnum) {
             //성격 보정
             $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 기병, 징병
-            if($me[special2] == 52) { $cst *= 0.9; }
-            if($me[special2] == 72) { $cst *= 0.5; }
+            if($me['special2'] == 52) { $cst *= 0.9; }
+            if($me['special2'] == 72) { $cst *= 0.5; }
             $att = $admin["att{$i}"] + $abil;
             $def = $admin["def{$i}"] + $abil;
             $spd = $admin["spd{$i}"];
@@ -971,8 +971,8 @@ function calc(cost, formnum) {
             //성격 보정
             $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 귀병, 징병
-            if($me[special2] == 40) { $cst *= 0.9; }
-            if($me[special2] == 72) { $cst *= 0.5; }
+            if($me['special2'] == 40) { $cst *= 0.9; }
+            if($me['special2'] == 72) { $cst *= 0.5; }
             $att = $admin["att{$i}"] + $abil;
             $def = $admin["def{$i}"] + $abil;
             $spd = $admin["spd{$i}"];
@@ -1021,8 +1021,8 @@ function calc(cost, formnum) {
             //성격 보정
             $cst = CharCost($cst, $me['personal']);
             //특기 보정 : 공성, 징병
-            if($me[special2] == 53) { $cst *= 0.9; }
-            if($me[special2] == 72) { $cst *= 0.5; }
+            if($me['special2'] == 53) { $cst *= 0.9; }
+            if($me['special2'] == 72) { $cst *= 0.5; }
             $att = $admin["att{$i}"] + $abil;
             $def = $admin["def{$i}"] + $abil;
             $spd = $admin["spd{$i}"];

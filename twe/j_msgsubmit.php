@@ -31,7 +31,7 @@ if($con >= 2) {
         'redirect' => 'main.php',
         'page_target' => 'top'
     ]);
-    echo 'main.php';//TODO:debug all and replace
+    //echo 'main.php';//TODO:debug all and replace
  }
 
 $msg = str_replace("|", "", $msg);
@@ -45,7 +45,7 @@ $date = date('Y-m-d H:i:s');
 
 // 전체 메세지
 if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
-    echo '<script>console.log('.$me['nation'].')</script>';
+    //echo '<script>console.log('.$me['nation'].')</script>';
     if($me['nation'] == 0) {
         $nation['name'] = '재야';
         $nation['color'] = 'FFFFFF';
@@ -135,5 +135,12 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
 }
 
 //echo "<script>location.replace('msglist.php');</script>";
-echo 'msglist.php';//TODO:debug all and replace
+//echo 'msglist.php';//TODO:debug all and replace
 
+header('Content-Type: application/json');
+echo json_encode([
+    'result' => true,
+    'reason' => 'SUCCESS',
+    'redirect' => 'msglist.php',
+    'page_target' => '#msglist'
+]);

@@ -144,7 +144,7 @@ for($i=0; $i < $citycount; $i++) {
 
     if($city['conflict'] != "") {
         $nation = explode("|", $city['conflict']);
-        $killnum = explode("|", $city[conflict2]);
+        $killnum = explode("|", $city['conflict2']);
 
         $seq = mySort($killnum);    // 큰 순서대로 순서를 구한다.
 

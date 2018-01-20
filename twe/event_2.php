@@ -100,13 +100,13 @@ for($i=0; $i < 7; $i++) {
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
     //태수 해제
-    $query = "update general set level=1 where no='{$city[gen1]}'";
+    $query = "update general set level=1 where no='{$city['gen1']}'";
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
     //군사 해제
-    $query = "update general set level=1 where no='{$city[gen2]}'";
+    $query = "update general set level=1 where no='{$city['gen2']}'";
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
     //시중 해제
-    $query = "update general set level=1 where no='{$city[gen3]}'";
+    $query = "update general set level=1 where no='{$city['gen3']}'";
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 
     $query = "update city set nation='{$nation['nation']}',pop='1000000',agri=agri2,comm=comm2,secu=secu2,def=def2,wall=wall2,supply=1,gen1=0,gen2=0,gen3=0 where city='{$cap[$i]}'";

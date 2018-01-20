@@ -151,7 +151,7 @@ for($j=0; $j < $gencount; $j++) {
         <td align=center>{$general['gold']}</td>
         <td align=center>{$general['rice']}</td>
         <td align=center>".getGenChar($general['personal'])."</td>
-        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general[special2])."</td>
+        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general['special2'])."</td>
         <td align=center>{$general['belong']}</td>
         <td align=center>{$general['connect']}"; echo "<br>(".getConnect($general['connect']).")</td>
     </tr>";

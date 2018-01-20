@@ -84,15 +84,15 @@ $citycount = MYDB_num_rows($cityresult);
 for($j=0; $j < $citycount; $j++) {
     $city = MYDB_fetch_array($cityresult);
     if($city['city'] == $nation['capital']) { $city['name'] = "<font color=cyan>[{$city['name']}]</font>"; }
-    $query = "select name from general where no='$city[gen1]'";    // 태수
+    $query = "select name from general where no='{$city['gen1']}'";    // 태수
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen1 = MYDB_fetch_array($genresult);
 
-    $query = "select name from general where no='$city[gen2]'";    // 군사
+    $query = "select name from general where no='{$city['gen2']}'";    // 군사
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen2 = MYDB_fetch_array($genresult);
 
-    $query = "select name from general where no='$city[gen3]'";    // 시중
+    $query = "select name from general where no='{$city['gen3']}'";    // 시중
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen3 = MYDB_fetch_array($genresult);
 
@@ -115,17 +115,17 @@ for($j=0; $j < $citycount; $j++) {
     </tr>
     <tr>
         <td align=center width=48 id=bg1>주민</td>
-        <td align=center width=112>{$city['pop']}/$city[pop2]</td>
+        <td align=center width=112>{$city['pop']}/{$city['pop2']}</td>
         <td align=center width=48 id=bg1>농업</td>
-        <td align=center width=108>{$city['agri']}/$city[agri2]</td>
+        <td align=center width=108>{$city['agri']}/{$city['agri2']}</td>
         <td align=center width=48 id=bg1>상업</td>
-        <td align=center width=108>{$city['comm']}/$city[comm2]</td>
+        <td align=center width=108>{$city['comm']}/{$city['comm2']}</td>
         <td align=center width=48 id=bg1>치안</td>
-        <td align=center width=108>{$city['secu']}/$city[secu2]</td>
+        <td align=center width=108>{$city['secu']}/{$city['secu2']}</td>
         <td align=center width=48 id=bg1>수비</td>
-        <td align=center width=108>{$city['def']}/$city[def2]</td>
+        <td align=center width=108>{$city['def']}/{$city['def2']}</td>
         <td align=center width=48 id=bg1>성벽</td>
-        <td align=center width=108>{$city['wall']}/$city[wall2]</td>
+        <td align=center width=108>{$city['wall']}/{$city['wall2']}</td>
     </tr>
     <tr>
         <td align=center id=bg1>민심</td>
@@ -133,7 +133,7 @@ for($j=0; $j < $citycount; $j++) {
         <td align=center id=bg1>시세</td>
         <td align=center>{$city['trade']}%</td>
         <td align=center id=bg1>인구</td>
-        <td align=center>".round($city['pop']/$city[pop2]*100, 2)." %</td>
+        <td align=center>".round($city['pop']/$city['pop2']*100, 2)." %</td>
         <td align=center id=bg1>태수</td>
         <td align=center>";echo $gen1['name']==''?"-":"{$gen1['name']}";echo "</td>
         <td align=center id=bg1>군사</td>

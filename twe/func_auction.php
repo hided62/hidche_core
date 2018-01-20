@@ -161,8 +161,8 @@ function processAuction($connect) {
 
         // 유닉템 처리
         if($auction['stuff'] != 0) {
-            if($auction[no2] == 0) {
-                $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction[name1]}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, 그러나 입찰자 부재";
+            if($auction['no2'] == 0) {
+                $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, 그러나 입찰자 부재";
                 pushAuctionLog($connect, $auctionLog);
             } else {
                 $trader['no'] = 0;
@@ -170,7 +170,7 @@ function processAuction($connect) {
                 $trader['gold'] = 99999999;
                 $trader['rice'] = 99999999;
 
-                $query = "select no,name,gold,rice from general where no='$auction[no2]'";
+                $query = "select no,name,gold,rice from general where no='{$auction['no2']}'";
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $bidder = MYDB_fetch_array($result);
 
@@ -191,28 +191,28 @@ function processAuction($connect) {
                 if($count > 0) {
                     $traderLog[0] = "<S>◆</>{$auction['no']}번 거래 <M>유찰</>! 이미 아이템을 누군가가 가로챘습니다!";
                     $bidderLog[0] = "<S>◆</>{$auction['no']}번 거래 <M>유찰</>! 이미 아이템을 누군가가 가로챘습니다!";
-                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction[name1]}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, <Y>{$auction[name2]}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 아이템 이미 매진!";
+                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 아이템 이미 매진!";
                 } elseif($auction['value'] > $bidder['gold'] - 1000) {
                     $gold = round($auction['value'] * 0.01);
                     $bidder['gold'] -= $gold;
                     if($bidder['gold'] < 0) $bidder['gold'] = 0;
-                    $query = "update general set gold='{$bidder['gold']}' where no='$auction[no2]'";
+                    $query = "update general set gold='{$bidder['gold']}' where no='{$auction['no2']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                     $traderLog[0] = "<S>◆</>입찰자의 자금 부족으로 {$auction['no']}번 <C>".GetStuffName($auction['stuff'])."</> 거래 <M>유찰</>!";
                     $bidderLog[0] = "<S>◆</>입찰자의 자금 부족으로 {$auction['no']}번 <C>".GetStuffName($auction['stuff'])."</> 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
-                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction[name1]}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, <Y>{$auction[name2]}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 입찰자 자금부족, 벌금 <C>{$gold}</>";
+                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 입찰자 자금부족, 벌금 <C>{$gold}</>";
                 } else {
                     $traderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, 금 <C>{$auction['value']}</>(을)를 획득!";
                     $bidderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 금 <C>{$auction['value']}</>(을)를 지불, <C>".GetStuffName($auction['stuff'])."</> 구입!";
-                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <C>성사</> : <Y>{$auction[name1]}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, <Y>{$auction[name2]}</>(이)가 금 <C>{$auction['value']}</>(으)로 구매";
+                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <C>성사</> : <Y>{$auction['name1']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 구매";
                     $auctionLog[0] .= " <M>★ 아이템 거래 ★</>";
 
-                    $query = "update general set gold=gold-'{$auction['value']}',{$type}='$sel2' where no='$auction[no2]'";
+                    $query = "update general set gold=gold-'{$auction['value']}',{$type}='$sel2' where no='{$auction['no2']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-                    $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$auction[name2]</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 구매했습니다!";
-                    $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【암시장】</b></><Y>$auction[name2]</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 구매했습니다!";
+                    $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$auction['name2']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 구매했습니다!";
+                    $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【암시장】</b></><Y>{$auction['name2']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 구매했습니다!";
                     pushAllLog($alllog);
                     pushHistory($connect, $history);
                 }
@@ -225,32 +225,32 @@ function processAuction($connect) {
             if($auction['no2'] == 0) {
                 // 상인건수가 아닌것만 출력
                 if($auction['no1'] != 0) {
-                    $query = "select no from general where no='$auction[no1]'";
+                    $query = "select no from general where no='{$auction['no1']}'";
                     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     $trader = MYDB_fetch_array($result);
 
                     $traderLog[0] = "<S>◆</>입찰자 부재로 {$auction['no']}번 거래 <M>유찰</>!";
                     if($auction['type'] == 0) {
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction[name1]}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 판매, 그러나 입찰자 부재";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 판매, 그러나 입찰자 부재";
                     } else {
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction[name1]}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 구매, 그러나 입찰자 부재";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 구매, 그러나 입찰자 부재";
                     }
                     pushGenLog($trader, $traderLog);
                     pushAuctionLog($connect, $auctionLog);
                 }
             } else {
-                if($auction[no1] == 0) {
+                if($auction['no1'] == 0) {
                     $trader['no'] = 0;
                     $trader['name'] = 'ⓝ상인';
                     $trader['gold'] = 99999;
                     $trader['rice'] = 99999;
                 } else {
-                    $query = "select no,name,gold,rice from general where no='$auction[no1]'";
+                    $query = "select no,name,gold,rice from general where no='{$auction['no1']}'";
                     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     $trader = MYDB_fetch_array($result);
                 }
 
-                $query = "select no,name,gold,rice from general where no='$auction[no2]'";
+                $query = "select no,name,gold,rice from general where no='{$auction['no2']}'";
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $bidder = MYDB_fetch_array($result);
                 //판매거래
@@ -259,26 +259,26 @@ function processAuction($connect) {
                         $gold = round($auction['value'] * 0.01);
                         $trader['gold'] -= $gold;
                         if($trader['gold'] < 0) $trader['gold'] = 0;
-                        $query = "update general set gold='{$trader['gold']}' where no='$auction[no1]'";
+                        $query = "update general set gold='{$trader['gold']}' where no='{$auction['no1']}'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                         $traderLog[0] = "<S>◆</>판매자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
                         $bidderLog[0] = "<S>◆</>판매자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction[name1]}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 판매, <Y>{$auction[name2]}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 판매자 군량부족, 벌금 <C>{$gold}</>";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 판매자 군량부족, 벌금 <C>{$gold}</>";
                     } elseif($auction['value'] > $bidder['gold'] - 1000) {
                         $gold = round($auction['value'] * 0.01);
                         $bidder['gold'] -= $gold;
                         if($bidder['gold'] < 0) $bidder['gold'] = 0;
-                        $query = "update general set gold='{$bidder['gold']}' where no='$auction[no2]'";
+                        $query = "update general set gold='{$bidder['gold']}' where no='{$auction['no2']}'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                         $traderLog[0] = "<S>◆</>입찰자의 자금 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
                         $bidderLog[0] = "<S>◆</>입찰자의 자금 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction[name1]}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 판매, <Y>{$auction[name2]}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 입찰자 자금부족, 벌금 <C>{$gold}</>";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 입찰자 자금부족, 벌금 <C>{$gold}</>";
                     } else {
                         $traderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 쌀 <C>{$auction['amount']}</>(을)를 판매, 금 <C>{$auction['value']}</>(을)를 획득!";
                         $bidderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 금 <C>{$auction['value']}</>(을)를 지불, 쌀 <C>{$auction['amount']}</>(을)를 구입!";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <C>성사</> : <Y>{$auction[name1]}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 판매, <Y>{$auction[name2]}</>(이)가 금 <C>{$auction['value']}</>(으)로 구매";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <O>판매</> <C>성사</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 구매";
                         if($auction['value'] >= $auction['amount'] * 2) {
                             $auctionLog[0] .= " <R>★ 최고가 거래 ★</>";
                         } elseif($auction['value'] >= $auction['topv']) {
@@ -286,9 +286,9 @@ function processAuction($connect) {
                         } elseif($auction['value'] * 2 <= $auction['amount']) {
                             $auctionLog[0] .= " <R>★ 최저가 거래 ★</>";
                         }
-                        $query = "update general set gold=gold+'{$auction['value']}',rice=rice-'{$auction['amount']}' where no='$auction[no1]'";
+                        $query = "update general set gold=gold+'{$auction['value']}',rice=rice-'{$auction['amount']}' where no='{$auction['no1']}'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                        $query = "update general set gold=gold-'{$auction['value']}',rice=rice+'{$auction['amount']}' where no='$auction[no2]'";
+                        $query = "update general set gold=gold-'{$auction['value']}',rice=rice+'{$auction['amount']}' where no='{$auction['no2']}'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     }
                     pushGenLog($trader, $traderLog);
@@ -300,26 +300,26 @@ function processAuction($connect) {
                         $gold = round($auction['value'] * 0.01);
                         $bidder['gold'] -= $gold;
                         if($bidder['gold'] < 0) $bidder['gold'] = 0;
-                        $query = "update general set gold='{$bidder['gold']}' where no='$auction[no2]'";
+                        $query = "update general set gold='{$bidder['gold']}' where no='{$auction['no2']}'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                         $traderLog[0] = "<S>◆</>입찰자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
                         $bidderLog[0] = "<S>◆</>입찰자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction[name1]}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 구매, <Y>{$auction[name2]}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 입찰자 군량부족, 벌금 <C>{$gold}</>";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 구매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 입찰자 군량부족, 벌금 <C>{$gold}</>";
                     } elseif($auction['value'] > $trader['gold'] - 1000) {
                         $gold = round($auction['value'] * 0.01);
                         $trader['gold'] -= $gold;
                         if($trader['gold'] < 0) $trader['gold'] = 0;
-                        $query = "update general set gold='{$trader['gold']}' where no='$auction[no1]'";
+                        $query = "update general set gold='{$trader['gold']}' where no='{$auction['no1']}'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                         $traderLog[0] = "<S>◆</>구매자의 자금 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
                         $bidderLog[0] = "<S>◆</>구매자의 자금 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction[name1]}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 구매, <Y>{$auction[name2]}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 구매자 자금부족, 벌금 <C>{$gold}</>";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 구매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 구매자 자금부족, 벌금 <C>{$gold}</>";
                     } else {
                         $traderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 금 <C>{$auction['value']}</>(을)를 지불, 쌀 <C>{$auction['amount']}</>(을)를 구입!";
                         $bidderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 쌀 <C>{$auction['amount']}</>(을)를 판매, 금 <C>{$auction['value']}</>(을)를 획득!";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <C>성사</> : <Y>{$auction[name1]}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 구매, <Y>{$auction[name2]}</>(이)가 금 <C>{$auction['value']}</>(으)로 판매";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <C>성사</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 구매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 판매";
                         if($auction['value'] >= $auction['amount'] * 2) {
                             $auctionLog[0] .= " <R>★ 최고가 거래 ★</>";
                         } elseif($auction['value'] * 2 <= $auction['amount']) {
@@ -328,9 +328,9 @@ function processAuction($connect) {
                             $auctionLog[0] .= " <M>★ 즉시구매가 거래 ★</>";
                         }
 
-                        $query = "update general set gold=gold-'{$auction['value']}',rice=rice+'{$auction['amount']}' where no='$auction[no1]'";
+                        $query = "update general set gold=gold-'{$auction['value']}',rice=rice+'{$auction['amount']}' where no='{$auction['no1']}'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                        $query = "update general set gold=gold+'{$auction['value']}',rice=rice-'{$auction['amount']}' where no='$auction[no2]'";
+                        $query = "update general set gold=gold+'{$auction['value']}',rice=rice-'{$auction['amount']}' where no='{$auction['no2']}'";
                         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     }
                     pushGenLog($trader, $traderLog);

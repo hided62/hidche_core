@@ -141,15 +141,15 @@ $query = "select nation,name,color from nation where nation='{$city['nation']}'"
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
-$query = "select name from general where no='$city[gen1]'"; // 태수 이름
+$query = "select name from general where no='{$city['gen1']}'"; // 태수 이름
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gen1 = MYDB_fetch_array($genresult);
 
-$query = "select name from general where no='$city[gen2]'"; // 군사 이름
+$query = "select name from general where no='{$city['gen2']}'"; // 군사 이름
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gen2 = MYDB_fetch_array($genresult);
 
-$query = "select name from general where no='$city[gen3]'"; // 시중 이름
+$query = "select name from general where no='{$city['gen3']}'"; // 시중 이름
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gen3 = MYDB_fetch_array($genresult);
 
@@ -170,17 +170,17 @@ echo "
     </tr>
     <tr>
         <td align=center width=48 id=bg1>주민</td>
-        <td align=center width=112>{$city['pop']}/$city[pop2]</td>
+        <td align=center width=112>{$city['pop']}/{$city['pop2']}</td>
         <td align=center width=48 id=bg1>농업</td>
-        <td align=center width=108>{$city['agri']}/$city[agri2]</td>
+        <td align=center width=108>{$city['agri']}/{$city['agri2']}</td>
         <td align=center width=48 id=bg1>상업</td>
-        <td align=center width=108>{$city['comm']}/$city[comm2]</td>
+        <td align=center width=108>{$city['comm']}/{$city['comm2']}</td>
         <td align=center width=48 id=bg1>치안</td>
-        <td align=center width=108>{$city['secu']}/$city[secu2]</td>
+        <td align=center width=108>{$city['secu']}/{$city['secu2']}</td>
         <td align=center width=48 id=bg1>수비</td>
-        <td align=center width=108>{$city['def']}/$city[def2]</td>
+        <td align=center width=108>{$city['def']}/{$city['def2']}</td>
         <td align=center width=48 id=bg1>성벽</td>
-        <td align=center width=108>{$city['wall']}/$city[wall2]</td>
+        <td align=center width=108>{$city['wall']}/{$city['wall2']}</td>
     </tr>
     <tr>
         <td align=center id=bg1>민심</td>

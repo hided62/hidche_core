@@ -92,7 +92,7 @@ for($i=1; $i < $voteTypeCount; $i++) {
     } else {
         echo "추후공개";
     }
-    $vote[i] = Tag2Code($vote[i]);
+    $vote[$i] = Tag2Code($vote[$i]);
     echo "
         </td>
         <td align=left>&nbsp;{$vote[$i]}</td>

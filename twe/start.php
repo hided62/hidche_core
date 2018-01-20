@@ -1,5 +1,11 @@
+<?php
+
+Header('Location:../');
+
+/*
+
 <html>
-<script>/*window.top.location.replace('../');*///TODO:debug all and replace
+<script>window.top.location.replace('../');
 </script>
 ../
 </html>

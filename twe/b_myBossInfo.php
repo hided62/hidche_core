@@ -77,16 +77,16 @@ echo "
 ";
 for($i=12; $i >= $lv; $i-=2) {
     $i1 = $i;   $i2 = $i - 1;
-    $imageTemp1 = GetImageURL($level[$i1][imgsvr]);
-    $imageTemp2 = GetImageURL($level[$i2][imgsvr]);
+    $imageTemp1 = GetImageURL($level[$i1]['imgsvr']);
+    $imageTemp2 = GetImageURL($level[$i2]['imgsvr']);
     echo "
     <tr>
         <td width=98 align=center id=bg1><font size=4>".getLevel($i1, $nation['level'])."</font></td>
-        <td width=64 height=64 background={$imageTemp1}/{$level[$i1][picture]}>&nbsp;</td>
-        <td width=332><font size=4>";echo $level[$i1][name]==''?"-":$level[$i1][name]; echo " ({$level[$i1][belong]}년)</font></td>
+        <td width=64 height=64 background={$imageTemp1}/{$level[$i1]['picture']}>&nbsp;</td>
+        <td width=332><font size=4>";echo $level[$i1]['name']==''?"-":$level[$i1]['name']; echo " ({$level[$i1]['belong']}년)</font></td>
         <td width=98 align=center id=bg1><font size=4>".getLevel($i2, $nation['level'])."</font></td>
-        <td width=64 height=64 background={$imageTemp2}/{$level[$i2][picture]}>&nbsp;</td>
-        <td width=332><font size=4>";echo $level[$i2][name]==''?"-":$level[$i2][name]; echo " ({$level[$i2][belong]}년)</font></td>
+        <td width=64 height=64 background={$imageTemp2}/{$level[$i2]['picture']}>&nbsp;</td>
+        <td width=332><font size=4>";echo $level[$i2]['name']==''?"-":$level[$i2]['name']; echo " ({$level[$i2]['belong']}년)</font></td>
     </tr>
     ";
 }
@@ -457,13 +457,13 @@ $region = 0;
 for($j=0; $j < $citycount; $j++) {
     $city = MYDB_fetch_array($cityresult);
 
-    $query = "select name,belong,city from general where no='$city[gen1]'";
+    $query = "select name,belong,city from general where no='{$city['gen1']}'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen1 = MYDB_fetch_array($genresult);
-    $query = "select name,belong,city from general where no='$city[gen2]'";
+    $query = "select name,belong,city from general where no='{$city['gen2']}'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen2 = MYDB_fetch_array($genresult);
-    $query = "select name,belong,city from general where no='$city[gen3]'";
+    $query = "select name,belong,city from general where no='{$city['gen3']}'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen3 = MYDB_fetch_array($genresult);
 

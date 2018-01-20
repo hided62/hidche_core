@@ -590,11 +590,11 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     //군주, 참모, 모사 방어 보정 5%
                     if($oppose['level'] == 12 || $oppose['level'] == 11 || $oppose['level'] == 9 || $oppose['level'] == 7 || $oppose['level'] == 5) {
                         $opCrew = $opCrew * 0.95;
-                    } elseif($oppose['level'] == 4 && $oppose['no'] == $city[gen1]) { // 태수 보정
+                    } elseif($oppose['level'] == 4 && $oppose['no'] == $city['gen1']) { // 태수 보정
                         $opCrew = $opCrew * 0.95;
-                    } elseif($oppose['level'] == 3 && $oppose['no'] == $city[gen2]) { // 군사 보정
+                    } elseif($oppose['level'] == 3 && $oppose['no'] == $city['gen2']) { // 군사 보정
                         $opCrew = $opCrew * 0.95;
-                    } elseif($oppose['level'] == 2 && $oppose['no'] == $city[gen3]) { // 시중 보정
+                    } elseif($oppose['level'] == 2 && $oppose['no'] == $city['gen3']) { // 시중 보정
                         $opCrew = $opCrew * 0.95;
                     }
 

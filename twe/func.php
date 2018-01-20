@@ -1904,7 +1904,7 @@ function cityInfo($connect) {
     }
 
     if($city['gen1'] > 0) {
-        $query = "select name from general where no='$city[gen1]'";
+        $query = "select name from general where no='{$city['gen1']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen1 = MYDB_fetch_array($result);
     } else {
@@ -1912,7 +1912,7 @@ function cityInfo($connect) {
     }
 
     if($city['gen2'] > 0) {
-        $query = "select name from general where no='$city[gen2]'";
+        $query = "select name from general where no='{$city['gen2']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen2 = MYDB_fetch_array($result);
     } else {
@@ -1920,7 +1920,7 @@ function cityInfo($connect) {
     }
 
     if($city['gen3'] > 0) {
-        $query = "select name from general where no='$city[gen3]'";
+        $query = "select name from general where no='{$city['gen3']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen3 = MYDB_fetch_array($result);
     } else {
@@ -2849,27 +2849,27 @@ function generalInfo2($connect, $no, $skin) {
     <tr><td align=center colspan=3 id=bg1><b>숙 련 도</b></td></tr>
     <tr height=16>
         <td width=64 align=center id=bg1><b>보병</b></td>
-        <td width=64>　　$general[dex0]</td>
+        <td width=64>　　{$general['dex0']}</td>
         <td width=366 align=center>".bar($dex0, $skin, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>궁병</b></td>
-        <td>　　$general[dex10]</td>
+        <td>　　{$general['dex10']}</td>
         <td align=center>".bar($dex10, $skin, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>기병</b></td>
-        <td>　　$general[dex20]</td>
+        <td>　　{$general['dex20']}</td>
         <td align=center>".bar($dex20, $skin, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>귀병</b></td>
-        <td>　　$general[dex30]</td>
+        <td>　　{$general['dex30']}</td>
         <td align=center>".bar($dex30, $skin, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>차병</b></td>
-        <td>　　$general[dex40]</td>
+        <td>　　{$general['dex40']}</td>
         <td align=center>".bar($dex40, $skin, 16)."</td>
     </tr>
 </table>";
@@ -4137,7 +4137,7 @@ function checkTurn($connect) {
         for($i=0; $i < $gencount; $i++) {
             $general = MYDB_fetch_array($result);
             
-            //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이전 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general[turn0]})";
+            //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이전 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general['turn0']})";
             //if(PROCESS_LOG) pushProcessLog($connect, $processlog);
             
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
@@ -4244,7 +4244,7 @@ function checkTurn($connect) {
         for($i=0; $i < $gencount; $i++) {
             $general = MYDB_fetch_array($result);
 
-            //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이후 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general[turn0]})";
+            //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이후 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general['turn0']})";
             //if(PROCESS_LOG) pushProcessLog($connect, $processlog);
             
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
@@ -4328,7 +4328,7 @@ function addAge($connect) {
 
         for($i=0; $i < $gencount; $i++) {
             $general = MYDB_fetch_array($result);
-            $special2 = getSpecial2($connect, $general['leader'], $general['power'], $general['intel'], 0, $general[dex0], $general[dex10], $general[dex20], $general[dex30], $general[dex40]);
+            $special2 = getSpecial2($connect, $general['leader'], $general['power'], $general['intel'], 0, $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
 
             $query = "update general set special2='$special2' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -4574,7 +4574,7 @@ function preUpdateMonthly($connect) {
     for($i=0; $i < $cityCount; $i++) {
         $city = MYDB_fetch_array($result);
 
-        $query = "update general set level=1 where no='$city[gen1]' or no='$city[gen2]' or no='$city[gen3]'";
+        $query = "update general set level=1 where no='{$city['gen1']}' or no='{$city['gen2']}' or no='{$city['gen3']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【고립】</b></><G><b>{$city['name']}</b></>(이)가 보급이 끊겨 <R>미지배</> 도시가 되었습니다.";
@@ -4792,7 +4792,7 @@ group by A.nation
         $dip = MYDB_fetch_array($result);
 
         //양측 기간 모두 0이 되는 상황이면 휴전
-        if($dip[term1] <= 1 && $dip[term2] <= 1) {
+        if($dip['term1'] <= 1 && $dip['term2'] <= 1) {
             $query = "select name from nation where nation='{$dip['me']}' or nation='{$dip['you']}'";
             $nationResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $nation = MYDB_fetch_array($nationResult);
@@ -5536,7 +5536,7 @@ function PreprocessCommand($connect, $no) {
 
             $log[0] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용하여 치료합니다!";
             pushGenLog($general, $log);
-        } elseif($general['injury'] > 10 && $general['item'] == 1 && $general[turn0] != EncodeCommand(0, 0, 0, 50)) {
+        } elseif($general['injury'] > 10 && $general['item'] == 1 && $general['turn0'] != EncodeCommand(0, 0, 0, 50)) {
             //환약 사용
             $query = "update general set injury=0,item=0 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -5791,7 +5791,7 @@ function updateTurntime($connect, $no) {
             $query = "update general set user_id='$npcid',password='$pw',npc='{$general['npc']}',killturn='{$general['killturn']}',mode=2 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $alllog[0] = "<C>●</>{$admin['month']}월:<Y>$general[name2]</>(이)가 <Y>{$general['name']}</>의 육체에서 <S>유체이탈</>합니다!";
+            $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name2']}</>(이)가 <Y>{$general['name']}</>의 육체에서 <S>유체이탈</>합니다!";
             pushAllLog($alllog);
 
             if($admin['isUnited'] == 0) {
@@ -6412,12 +6412,12 @@ function popIncrease($connect) {
                 // 국가보정
                 if($type[$city['nation']] == 4 || $type[$city['nation']] == 6 || $type[$city['nation']] == 7 || $type[$city['nation']] == 8 || $type[$city['nation']] == 12 || $type[$city['nation']] == 13) { $ratio *= 1.2; }
                 if($type[$city['nation']] == 1 || $type[$city['nation']] == 3) { $ratio *= 0.8; }
-                $ratio *= (1 + $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 추가
+                $ratio *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
             } else {
                 // 국가보정
                 if($type[$city['nation']] == 4 || $type[$city['nation']] == 6 || $type[$city['nation']] == 7 || $type[$city['nation']] == 8 || $type[$city['nation']] == 12 || $type[$city['nation']] == 13) { $ratio *= 0.8; }
                 if($type[$city['nation']] == 1 || $type[$city['nation']] == 3) { $ratio *= 1.2; }
-                $ratio *= (1 - $city['secu']/$city[secu2]/10);    //치안에 따라 최대 10% 경감
+                $ratio *= (1 - $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 경감
             }
 
             $pop = $city['pop'] + floor($city['pop'] * $ratio) + 5000;  // 기본 5000명은 증가

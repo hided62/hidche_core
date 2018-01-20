@@ -1702,7 +1702,7 @@ function processAI($connect, $no) {
         if($selCity['city'] == 0) {
             $selCity['city'] = $general['city'];
         }
-        SetCrew($connect, $general['no'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $selRegion['region'], $selCity['city'], $general[dex0], $general[dex10], $general[dex20], $general[dex30], $general[dex40]);
+        SetCrew($connect, $general['no'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $selRegion['region'], $selCity['city'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
         return;
     default:
         $query = "update general set turn0='$command' where no='{$general['no']}'";

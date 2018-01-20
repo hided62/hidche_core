@@ -103,7 +103,7 @@ if($btn == "판매") {
         $valid = 0;
     }
 */
-    if($auction[no2] > 0 && $value <= $auction['value']) {
+    if($auction['no2'] > 0 && $value <= $auction['value']) {
         $msg = "ㆍ<O>현재판매가보다 높게 입찰해야 합니다.</>";
         $valid = 0;
     }
@@ -182,7 +182,7 @@ if($btn == "판매") {
         $msg2 = "ㆍ<O>현재 쌀만 거래 가능합니다.</>";
         $valid = 0;
     }
-    if($auction[no2] > 0 && $value >= $auction['value']) {
+    if($auction['no2'] > 0 && $value >= $auction['value']) {
         $msg2 = "ㆍ<O>현재구매가보다 낮게 입찰해야 합니다.</>";
         $valid = 0;
     }

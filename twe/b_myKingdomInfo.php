@@ -47,7 +47,7 @@ for($j=0; $j < $citycount; $j++) {
     if($city['city'] == $nation['capital']) { $cityname[$j] = "<font color=cyan>[{$city['name']}]</font>"; }
     else { $cityname[$j] = $city['name']; }
     $totalpop += $city['pop'];
-    $maxpop += $city[pop2];
+    $maxpop += $city['pop2'];
 }
 
 $query = "select sum(crew) as totcrew,sum(leader)*100 as maxcrew from general where nation='{$nation['nation']}'";

@@ -87,11 +87,11 @@ for($j=0; $j < $gencount; $j++) {
     echo "
     <tr>
         <td align=center>{$name}</td>
-        <td align=center>{$general[name2]}</td>
+        <td align=center>{$general['name2']}</td>
         <td align=center>Lv {$general['explevel']}</td>
         <td align=center>{$nation}</td>
         <td align=center>".getGenChar($general['personal'])."</td>
-        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general[special2])."</td>
+        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general['special2'])."</td>
         <td align=center>{$general['sum']}</td>
         <td align=center>{$general['leader']}</td>
         <td align=center>{$general['power']}</td>

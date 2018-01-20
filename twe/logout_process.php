@@ -20,7 +20,8 @@ $conmsg = $me['conmsg'];
 session_destroy();
 
 //echo "<script>location.replace('start.php');</script>";
-echo 'start.php';//TODO:debug all and replace
+//echo 'start.php';//TODO:debug all and replace
+header('Location:start.php');
 
 /*
 <html>
