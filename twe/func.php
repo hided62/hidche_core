@@ -3582,6 +3582,42 @@ function increateRefreshEx($type, $cnt=1, $db=NULL){
             'p_id'=>$p_id
         ));
     }
+
+    $date = date('Y_m_d H:i:s');
+    $date2 = substr($date, 0, 10);
+    $online = onlinenum($connect);
+    $fp = fopen("logs/_{$date2}_refresh.txt", "a");
+    $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['p_id'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
+    fwrite($fp, $msg."\n");
+    fclose($fp);
+
+    $proxy_headers = array(
+        'HTTP_VIA',
+        'HTTP_X_FORWARDED_FOR',
+        'HTTP_FORWARDED_FOR',
+        'HTTP_X_FORWARDED',
+        'HTTP_FORWARDED',
+        'HTTP_CLIENT_IP',
+        'HTTP_FORWARDED_FOR_IP',
+        'VIA',
+        'X_FORWARDED_FOR',
+        'FORWARDED_FOR',
+        'X_FORWARDED',
+        'FORWARDED',
+        'CLIENT_IP',
+        'FORWARDED_FOR_IP',
+        'HTTP_PROXY_CONNECTION'
+    );
+
+    $str = "";
+    foreach($proxy_headers as $x) {
+        if(isset($_SERVER[$x])) $str .= "//{$x}:{$_SERVER[$x]}";
+    }
+    if($str != "") {
+        file_put_contents("logs/_{$date2}_ipcheck.txt",
+            sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s\n",
+                $_SESSION['p_id'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
+    }
     
     
 }
