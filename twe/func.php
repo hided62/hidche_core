@@ -3268,7 +3268,7 @@ function PushMsg($type, $nation, $picture, $imgsvr, $from, $fromcolor, $to, $toc
     $fp = fopen("logs/{$file}", "a");
     //로그 파일에 기록
     $str = "{$type}|"._String::Fill($from,12," ")."|"._String::Fill($to,12," ")."|".$date."|".$msg."|".$fromcolor."|".$tocolor."|".$picture."|".$imgsvr;
-    fwrite($fp, "{$str}\r\n");
+    fwrite($fp, "{$str}\n");
     fclose($fp);
 }
 
@@ -3604,7 +3604,7 @@ function increaseRefresh($connect, $type="", $cnt=1) {
     $online = onlinenum($connect);
     $fp = fopen("logs/_{$date2}_refresh.txt", "a");
     $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['p_id'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
-    fwrite($fp, $msg."\r\n");
+    fwrite($fp, $msg."\n");
     fclose($fp);
 
     $proxy_headers = array(
@@ -3631,7 +3631,7 @@ function increaseRefresh($connect, $type="", $cnt=1) {
     }
     if($str != "") {
         file_put_contents("logs/_{$date2}_ipcheck.txt",
-            sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s\r\n",
+            sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s\n",
                 $_SESSION['p_id'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
     }
 }
@@ -3664,7 +3664,7 @@ function updateTraffic($connect) {
     $fp = fopen("logs/_traffic.txt", "a");
     //일시|년|월|총갱신|접속자|최다갱신자
     $msg = _String::Fill2($date,20," ")."|"._String::Fill2($game['year'],3," ")."|"._String::Fill2($game['month'],2," ")."|"._String::Fill2($game['refresh'],8," ")."|"._String::Fill2($online,5," ")."|"._String::Fill2($user['name']."(".$user['refresh'].")",20," ");
-    fwrite($fp, $msg."\r\n");
+    fwrite($fp, $msg."\n");
     fclose($fp);
 }
 

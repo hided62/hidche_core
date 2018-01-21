@@ -63,7 +63,7 @@ $date = date('Y_m_d H:i:s');
 $date2 = substr($date, 0, 10);
 $fp = fopen("logs/_{$date2}_login.txt", "a");
 $msg = _String::Fill2($date,20," ").tab2($id,13," ")._String::Fill2($me['name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ");
-fwrite($fp, $msg."\r\n");
+fwrite($fp, $msg."\n");
 fclose($fp);
 
 header ("Location: index.php");

@@ -159,7 +159,7 @@ if($genlist == 9999 && str_replace(" ", "", $msg) != "") {
     
     $fp = fopen("logs/_gen_msg.txt", "a");
     //로그 파일에 기록
-    fwrite($fp, _String::Fill($me['name'],12," ")." > "._String::Fill($you['name'],12," ")." | {$msg}\r\n");
+    fwrite($fp, _String::Fill($me['name'],12," ")." > "._String::Fill($you['name'],12," ")." | {$msg}\n");
     fclose($fp);
 }
 
