@@ -27,7 +27,7 @@ class HTTP{
 
     function Head($Url = "/") {
         $this->Url = $Url;
-        $msg = sprintf("HEAD %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("HEAD %s HTTP/%s\n", $this->Url, $this->HttpVersion);
         $msg .= $this->PutHead();
         $msg .= "\n\n";
         fputs($this->Socket, $msg);
@@ -37,7 +37,7 @@ class HTTP{
 
     function isHead($Url = "/"){
         $this->Url = $Url;
-        $msg = sprintf("HEAD %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("HEAD %s HTTP/%s\n", $this->Url, $this->HttpVersion);
         if($Cookie != ""){
             $msg .= $this->PutCookie($Cookie);
         }
@@ -50,7 +50,7 @@ class HTTP{
 
     function GetHead($Url = "/") {
         $this->Url = $Url;
-        $msg = sprintf("GET %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("GET %s HTTP/%s\n", $this->Url, $this->HttpVersion);
         $msg .= $this->PutHead();
         $msg .= "\n\n";
         fputs($this->Socket, $msg);
@@ -60,7 +60,7 @@ class HTTP{
 
     function Get($Url = "/", $Cookie="") {
         $this->Url = $Url;
-        $msg = sprintf("GET %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("GET %s HTTP/%s\n", $this->Url, $this->HttpVersion);
         if($Cookie != ""){
             $msg .= $this->PutCookie($Cookie);
         }
@@ -72,7 +72,7 @@ class HTTP{
 
     function isGet($Url = "/", $Cookie=""){
         $this->Url = $Url;
-        $msg = sprintf("GET %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("GET %s HTTP/%s\n", $this->Url, $this->HttpVersion);
         if($Cookie != ""){
             $msg .= $this->PutCookie($Cookie);
         }
@@ -84,7 +84,7 @@ class HTTP{
 
     function isGetAll($Url = "/", $Cookie=""){
         $this->Url = $Url;
-        $msg = sprintf("GET %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("GET %s HTTP/%s\n", $this->Url, $this->HttpVersion);
         if($Cookie != ""){
             $msg .= $this->PutCookie($Cookie);
         }
@@ -99,12 +99,12 @@ class HTTP{
 
     function Post($Url, $Data, $Cookie = ""){
         $this->Url = $Url;
-        fputs ($this->Socket,sprintf("POST %s HTTP/%s\r\n", $this->Url, $this->HttpVersion));
+        fputs ($this->Socket,sprintf("POST %s HTTP/%s\n", $this->Url, $this->HttpVersion));
         if($Cookie != ""){
             $this->PutCookie($Cookie);
         }
         $this->PutHead();
-        fputs ($this->Socket, "Content-type: application/x-www-form-urlencoded\r\n");
+        fputs ($this->Socket, "Content-type: application/x-www-form-urlencoded\n");
         $out = "";
         while (list ($k, $v) = each ($Data)) {
             if(strlen($out) != 0) $out .= "&";
@@ -118,12 +118,12 @@ class HTTP{
 
     function IsPost($Url, $Data, $Cookie = ""){
         $this->Url = $Url;
-        fputs ($this->Socket,sprintf("POST %s HTTP/%s\r\n", $this->Url, $this->HttpVersion));
+        fputs ($this->Socket,sprintf("POST %s HTTP/%s\n", $this->Url, $this->HttpVersion));
         if($Cookie != ""){
             $this->PutCookie($Cookie);
         }
         $this->PutHead();
-        fputs ($this->Socket, "Content-type: application/x-www-form-urlencoded\r\n");
+        fputs ($this->Socket, "Content-type: application/x-www-form-urlencoded\n");
         $out = "";
         while (list ($k, $v) = each ($Data))  {
             if(strlen($out) != 0) $out .= "&";
@@ -137,15 +137,15 @@ class HTTP{
 
     function PutHead(){
         $msg = "";
-        $msg .= "Accept: */*\r\n";
-        $msg .= "Accept-Language: ko\r\n";
-        $msg .= "Accept-Encoding: gzip, deflate\r\n";
-        $msg .= "User-Agent: Mozilla/4.0 (compatible; 62che)\r\n";
+        $msg .= "Accept: */*\n";
+        $msg .= "Accept-Language: ko\n";
+        $msg .= "Accept-Encoding: gzip, deflate\n";
+        $msg .= "User-Agent: Mozilla/4.0 (compatible; 62che)\n";
         while (list($name, $value) = each ($this->headers)) {
-            $msg .= "$name: $value\r\n";
+            $msg .= "$name: $value\n";
         }
-        $msg .= "Host: ".$this->Server.":".$this->Port."\r\n";
-        $msg .= "Connection: close\r\n";
+        $msg .= "Host: ".$this->Server.":".$this->Port."\n";
+        $msg .= "Connection: close\n";
         return $msg;
     }
 

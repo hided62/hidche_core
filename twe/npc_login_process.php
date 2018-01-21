@@ -55,7 +55,7 @@ if(!$me2) {
     $date2 = substr($date, 0, 10);
     $fp = fopen("logs/_{$date2}-login.txt", "a");
     $msg = _String::Fill2($date,20," ")._String::Fill2($id,13," ")._String::Fill2($me['name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ");
-    fwrite($fp, $msg."\r\n");
+    fwrite($fp, $msg."\n");
     fclose($fp);
 }
 

@@ -115,15 +115,25 @@ function GetImageURL($imgsvr) {
 function CheckLogin($type=0) {
     if(!isset($_SESSION['p_id'])) {
         if($type == 0) {
+            header('Location: start.php');
              //echo "<script>location.replace('start.php');</script>"; 
-             echo 'start.php';//TODO:debug all and replace
+             //echo 'start.php';//TODO:debug all and replace
             }
         else           { 
-            echo 'main.php';//TODO:debug all and replace
+            header('Location: main.php');
+            //echo 'main.php';//TODO:debug all and replace
             //echo "<script>window.top.main.location.replace('main.php');</script>";
          }
         exit();
     }
+}
+
+function CheckLoginEx(){
+    //TODO: 서버 별로 p_id를 다르게 설정할 수 있어야함.
+    if(!isset($_SESSION['p_id'])) {
+        return false;
+    }
+    return true;
 }
 
 function checkLimit($userlevel, $con, $conlimit) {
@@ -2882,7 +2892,7 @@ function pushTrickLog($connect, $log) {
     if($size > 0) {
         $fp = fopen("logs/_tricklog.txt", "a");
         for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\r\n");
+            fwrite($fp, $log[$i]."\n");
         }
         fclose($fp);
     }
@@ -2894,7 +2904,7 @@ function pushProcessLog($connect, $log) {
         $date = date('Y_m_d');
         $fp = fopen("logs/_{$date}_processlog.txt", "a");
         for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\r\n");
+            fwrite($fp, $log[$i]."\n");
         }
         fclose($fp);
     }
@@ -2908,7 +2918,7 @@ function delStepLog() {
 function pushStepLog($log) {
     $date = date('Y_m_d');
     $fp = fopen("logs/_{$date}_steplog.txt", "a");
-    fwrite($fp, $log."\r\n");
+    fwrite($fp, $log."\n");
     fclose($fp);
 }
 
@@ -2918,7 +2928,7 @@ function pushLockLog($connect, $log) {
         $date = date('Y_m_d');
         $fp = fopen("logs/_{$date}_locklog.txt", "a");
         for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\r\n");
+            fwrite($fp, $log[$i]."\n");
         }
         fclose($fp);
     }
@@ -2929,7 +2939,7 @@ function pushAdminLog($connect, $log) {
     if($size > 0) {
         $fp = fopen("logs/_adminlog.txt", "a");
         for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\r\n");
+            fwrite($fp, $log[$i]."\n");
         }
         fclose($fp);
     }
@@ -2940,7 +2950,7 @@ function pushAuctionLog($connect, $log) {
     if($size > 0) {
         $fp = fopen("logs/_auctionlog.txt", "a");
         for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\r\n");
+            fwrite($fp, $log[$i]."\n");
         }
         fclose($fp);
     }
@@ -2951,7 +2961,7 @@ function pushGenLog($general, $log) {
     if($size > 0) {
         $fp = fopen("logs/gen{$general['no']}.txt", "a");
         for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\r\n");
+            fwrite($fp, $log[$i]."\n");
         }
         fclose($fp);
     }
@@ -2962,7 +2972,7 @@ function pushBatRes($general, $log) {
     if($size > 0) {
         $fp = fopen("logs/batres{$general['no']}.txt", "a");
         for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\r\n");
+            fwrite($fp, $log[$i]."\n");
         }
         fclose($fp);
     }
@@ -2973,7 +2983,7 @@ function pushBatLog($general, $log) {
     if($size > 0) {
         $fp = fopen("logs/batlog{$general['no']}.txt", "a");
         for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\r\n");
+            fwrite($fp, $log[$i]."\n");
         }
         fclose($fp);
     }
@@ -2984,7 +2994,7 @@ function pushAllLog($log) {
     if($size > 0) {
         $fp = fopen("logs/_alllog.txt", "a");
         for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\r\n");
+            fwrite($fp, $log[$i]."\n");
         }
         fclose($fp);
     }
@@ -2995,10 +3005,22 @@ function pushHistory($connect, $history) {
     if($size > 0) {
         $fp = fopen("logs/_history.txt", "a");
         for($i=0; $i < $size; $i++) {
-            fwrite($fp, $history[$i]."\r\n");
+            fwrite($fp, $history[$i]."\n");
         }
         fclose($fp);
     }
+}
+
+function getRawLog($path, $count, $line_length, $skin){
+    //TODO: tail과 유사한 형태로 처리할 수 있는게 나을 듯. 그 이전에 파일 로그는 좀... ㅜㅜ
+    if(!file_exists($path)){
+        return NULL;
+    }
+
+    $fp = fopen($path, 'r');
+    @fseek(fp, -$count * $line_length, SEEK_END);
+    $data = fread($fp, $count * $line_length);
+    fclose($fp);
 }
 
 function TrickLog($count, $skin) {
@@ -3009,7 +3031,7 @@ function TrickLog($count, $skin) {
     @fseek($fp, -$count*150, SEEK_END);
     $file = @fread($fp, $count*150);
     @fclose($fp);
-    $log = explode("\r\n",$file);
+    $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
     echo $str;
@@ -3023,7 +3045,7 @@ function AllLog($count, $skin) {
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
     @fclose($fp);
-    $log = explode("\r\n",$file);
+    $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) {
     	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
@@ -3039,7 +3061,7 @@ function AuctionLog($count, $skin) {
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
     @fclose($fp);
-    $log = explode("\r\n",$file);
+    $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
     echo $str;
@@ -3053,7 +3075,7 @@ function History($count, $skin) {
     @fseek($fp, -300*$count, SEEK_END); //
     $file = @fread($fp, $count*300);
     @fclose($fp);
-    $log = explode("\r\n",$file);
+    $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) {
     	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
@@ -3069,7 +3091,7 @@ function MyLog($no, $count, $skin) {
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
     @fclose($fp);
-    $log = explode("\r\n",$file);
+    $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) {
     	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
@@ -3085,7 +3107,7 @@ function MyBatRes($no, $count, $skin) {
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
     @fclose($fp);
-    $log = explode("\r\n",$file);
+    $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) {
          $str .= isset($log[count($log)-2-$i]) ?  ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
@@ -3101,7 +3123,7 @@ function MyBatLog($no, $count, $skin) {
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
     @fclose($fp);
-    $log = explode("\r\n",$file);
+    $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) {
          $str .= isset($log[count($log)-2-$i]) ?  ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
@@ -3178,6 +3200,16 @@ function allButton($connect) {
     </tr>
 </table>";
 }
+
+function getOnlineNumEx($db = NULL){
+    if($db === NULL){
+        $db = newDB();
+    }
+
+    return $db->queryFirstField('select `online` from `game` where `no`=1');
+}
+
+
 
 function onlinenum($connect) {
     $query = "select online from game where no='1'";
@@ -3517,6 +3549,43 @@ function CutDay($date) {
     return $date;
 }
 
+function getPID(){
+    //TODO: 서버마다 p_id가 다를 수 있도록 조치
+    if(!isset($_SESSION['p_id'])){
+        return NULL;
+    }
+    if($_SESSION['p_id']===''){
+        return NULL;
+    }
+    return $_SESSION['p_id'];
+}
+
+function increateRefreshEx($type, $cnt=1, $db=NULL){
+    
+    if($db === NULL){
+        $db = newDB();
+    }
+
+    $db->query("update `game` set `refresh` = `refresh` + %d_p_id where `no` = %d_cnt", array(
+        'p_id'=>$p_id,
+        'cnt'=>$cnt
+    ));
+
+    $date = date('Y-m-d H:i:s');
+    $p_id = getPID();
+    if($p_id !== NULL){
+        
+        $db->query("update `general` set `lastrefresh`= %s_date, `con` = `con`+%d_cnt, `connect`= `connect`+ %d_cnt, '\
+        '`refcnt` = `refcnt` + %d_cnt, `refresh` = `refresh` + %d_cnt where `user_id` =%s_p_id",array(
+            'date'=>$date,
+            'cnt'=>$cnt,
+            'p_id'=>$p_id
+        ));
+    }
+    
+    
+}
+
 function increaseRefresh($connect, $type="", $cnt=1) {
     $date = date('Y-m-d H:i:s');
 
@@ -3561,11 +3630,9 @@ function increaseRefresh($connect, $type="", $cnt=1) {
         if(isset($_SERVER[$x])) $str .= "//{$x}:{$_SERVER[$x]}";
     }
     if($str != "") {
-        $fp2 = fopen("logs/_{$date2}_ipcheck.txt", "a");
-        $str = sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s",
-            $_SESSION['p_id'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str);
-        fwrite($fp2, $str."\r\n");
-        fclose($fp2);
+        file_put_contents("logs/_{$date2}_ipcheck.txt",
+            sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s\r\n",
+                $_SESSION['p_id'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
     }
 }
 

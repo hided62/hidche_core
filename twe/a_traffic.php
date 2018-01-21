@@ -12,7 +12,7 @@ $fp = @fopen("logs/_traffic.txt", "r");
 @fseek($fp, -1000, SEEK_END);
 $file = @fread($fp, 1000);
 @fclose($fp);
-$log = explode("\r\n",$file);
+$log = explode("\n",$file);
 $str = "";
 for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
 echo $str;

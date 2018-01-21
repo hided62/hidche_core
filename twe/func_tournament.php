@@ -169,7 +169,7 @@ function printFightLog($group) {
     $fp = @fopen("logs/fight{$group}.txt", "r");
     $file = @fread($fp, 3000);
     @fclose($fp);
-    $log = explode("\r\n", $file);
+    $log = explode("\n", $file);
     $str = "";
     for($i=0; $i < count($log); $i++) { $str .= ConvertLog($log[$i], 1)."<br>"; }
     return substr($str, 0, -4);
@@ -179,7 +179,7 @@ function pushFightLog($group, $log) {
     $fp = fopen("logs/fight{$group}.txt", "w");
     $size = count($log);
     for($i=0; $i < $size; $i++) {
-        fwrite($fp, $log[$i]."\r\n");
+        fwrite($fp, $log[$i]."\n");
     }
     fclose($fp);
 }

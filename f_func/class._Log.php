@@ -10,14 +10,14 @@ class _Log {
 
     public static function SetLog($type, $log) {
         $filename = ROOT.W.D_LOG.W.$type."Log.txt";
-        if(_Log::$flagLog) AppendToFile($filename, $log."\r\n");
+        if(_Log::$flagLog) AppendToFile($filename, $log."\n");
     }
 
     public static function GetWorldLog($type, $size=10) {
         $filename = ROOT.W.D_LOG.W.$type."Log.txt";
         if(_Log::$flagLog) {
             $content = ReadToFileBackward($filename, $size*150);
-            $logs = explode("\r\n", $content);
+            $logs = explode("\n", $content);
             $count = count($logs) - 1;
             $start = $count - $size;
             if($start < 0) $start = 0;

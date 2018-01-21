@@ -3,35 +3,64 @@
 
 include "lib.php";
 include "func.php";
+require_once('func_message.php');
+
+
+$post = parseJsonPost();
+
+if(!isset($post['genlist']) || !isset($post['msg'])){
+    header('Content-Type: application/json');
+    die(json_encode([
+        'result' => false,
+        'reason' => '올바르지 않은 호출입니다.',
+        'redirect' => NULL
+    ]));
+}
+
+
+$genlist = $post['genlist'];
+$msg = $post['msg'];
+
 //로그인 검사
-CheckLogin(1);
+if(!CheckLoginEx()){
+    header('Content-Type: application/json');
+    die(json_encode([
+        'result' => false,
+        'reason' => '로그인되지 않았습니다.',
+        'redirect' => NULL
+    ]));
+}
+
 $connect = dbConn();
 increaseRefresh($connect, "서신전달", 1);
 
+//$msg,$genlist 두가지 값을 받
+
 if(CheckBlock($connect) == 1 || CheckBlock($connect) == 3) {
-    $msg = "";
-    $genlist = 0;
+    header('Content-Type: application/json');
+    die(json_encode([
+        'result' => false,
+        'reason' => '차단되었습니다.',
+        'redirect' => NULL
+    ]));
 }
 
-$query = "select conlimit from game where no=1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$db = newDB();
 
-$query = "select no,name,nation,level,msgindex,userlevel,con,picture,imgsvr from general where user_id='{$_SESSION['p_id']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
 
-$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+$conlimit = $db->queryFirstField("select conlimit from game where no=1");
+
+$me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`msgindex`,`userlevel`,`con`,`picture`,`imgsvr` from `general` where `user_id` = %s_p_id',
+    array('p_id'=>$_SESSION['p_id']));
+
+$con = checkLimit($me['userlevel'], $me['con'], $conlimit);
 if($con >= 2) { 
-    //echo "<script>window.top.main.location.replace('main.php');</script>"; exit();
     header('Content-Type: application/json');
-    echo json_encode([
+    die(json_encode([
         'result' => false,
-        'reason' => '권한이 충분하지 않습니다.',
-        'redirect' => 'main.php',
-        'page_target' => 'top'
-    ]);
-    //echo 'main.php';//TODO:debug all and replace
+        'reason' => '접속 제한입니다.',
+        'redirect' => NULL
+    ]));
  }
 
 $msg = str_replace("|", "", $msg);

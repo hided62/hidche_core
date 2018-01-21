@@ -34,7 +34,7 @@ function getGenHistory($count, $year, $month, $isFirst=0) {
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
     @fclose($fp);
-    $log = explode("\r\n",$file);
+    $log = explode("\n",$file);
 
     $str = "";
     $prefix = "</>{$month}월:";

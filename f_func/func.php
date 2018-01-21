@@ -18,12 +18,12 @@ function getmicrotime() {
 }
 
 function Error($msg) {
-    AppendToFile(ROOT.'/d_log/err.txt', $msg."\r\n");
+    AppendToFile(ROOT.'/d_log/err.txt', $msg."\n");
     exit(1);
 }
 
 function ErrorToScreen($msg) {
-    AppendToFile(ROOT.'/d_log/err.txt', $msg."\r\n");
+    AppendToFile(ROOT.'/d_log/err.txt', $msg."\n");
     echo $msg;
     exit(1);
 }

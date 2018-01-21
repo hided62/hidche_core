@@ -1,7 +1,5 @@
 <?php
-$fp = fopen("logs/_db_bug.txt", "a");
-fwrite($fp, $message."\r\n");
-fclose($fp);
+file_put_contents("logs/_db_bug.txt", $message."\n", FILE_APPEND);
 ?>
 
 <html>
