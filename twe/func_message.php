@@ -195,7 +195,7 @@ function MsgFile($skin, $bg, $nation=0, $level=0) {
     @fseek($fp, -$count*300, SEEK_END);
     $file = @fread($fp, $count*300);
     @fclose($fp);
-    $code = explode("\r\n",$file);
+    $code = explode("\n",$file);
     for($i=0; $i < $count; $i++) {
         $msg = isset($code[count($code)-2-$i]) ? explode("|", $code[count($code)-2-$i]) : array();
 
