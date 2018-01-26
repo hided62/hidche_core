@@ -1438,6 +1438,7 @@ function getTurn($connect, $general, $type, $font=1) {
                 $str[$i] = "【{$city['name']}】(으)로 이동";
                 break;
             case 22: //등용
+            //TODO:등용장 재디자인
                 $double = $command[1];
 
                 $query = "select name from general where no='$double'";
@@ -2299,11 +2300,15 @@ function commandTable($connect) {
     } else {
         addCommand("인재탐색(랜덤경험, 자금$develcost)", 29, 0);
     }
+    //TODO:등용장 재 디자인
+    //xxx:등용장 일단 끔
+    /*
     if($me['level'] >= 1 && $city['supply'] != 0) {
         addCommand("등용(자금{$develcost5}+장수가치)", 22);
     } else {
         addCommand("등용(자금{$develcost5}+장수가치)", 22, 0);
     }
+    */
     if($me['no'] == $troop['no'] && $citycount > 0 && $city['supply'] != 0 && $city['nation'] == $me['nation']) {
         addCommand("집합(통솔경험)", 26);
     } else {
@@ -5474,7 +5479,7 @@ function processCommand($connect, $no) {
             case 17: process_17($connect, $general); break; //소집해제
 
             case 21: process_21($connect, $general); break; //이동
-            case 22: process_22($connect, $general); break; //등용
+            //case 22: process_22($connect, $general); break; //등용 //TODO:등용장 재 디자인
             case 25: process_25($connect, $general); break; //임관
             case 26: process_26($connect, $general); break; //집합
             case 28: process_28($connect, $general); break; //귀환
@@ -7205,6 +7210,9 @@ function getRandTurn2($term) {
 }
 
 function ScoutMsg($connect, $genNum, $nationName, $who, $msgIndex) {
+    return;
+    //TODO: 등용장 재 디자인.
+    //xxx: 일단 껐음
     // 상대에게 발송
     $msgIndex++;
     if($msgIndex >= 10) { $msgIndex = 0; }

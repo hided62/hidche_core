@@ -43,12 +43,12 @@ switch($commandtype) {
     case 12: command_12($connect,     $turn, 12); break; //모병
     case 13: command_Single($connect, $turn, 13); break; //훈련
     case 14: command_Single($connect, $turn, 14); break; //사기진작
-    case 15: command_Single($connect, $turn, 0); break; //전투태세
+    //case 15: command_Single($connect, $turn, 0); break; //전투태세 
     case 16: command_16($connect,     $turn, 16); break; //전쟁
     case 17: command_Single($connect, $turn, 17); break; //소집해제
 
     case 21: command_21($connect,     $turn, 21); break; //이동
-    case 22: command_22($connect,     $turn, 22); break; //등용
+    //case 22: command_22($connect,     $turn, 22); break; //등용 //TODO:등용장 재 디자인
     case 23: command_23($connect,     $turn, 23); break; //포상
     case 24: command_24($connect,     $turn, 24); break; //몰수
     case 25: command_25($connect,     $turn, 25); break; //임관
@@ -102,6 +102,8 @@ switch($commandtype) {
     case 78: command_78($connect, $turn, 78); break; //급습
     case 81: command_81($connect, $turn, 81); break; //국기변경
     case 99: command_99($connect, $turn); break; //수뇌부 휴식
+    
+    default:command_Single($connect, $turn, 0); break; //휴식
 }
 
 function starter($name, $type=0) {
@@ -1189,6 +1191,7 @@ function command_21($connect, $turn, $command) {
 }
 
 function command_22($connect, $turn, $command) {
+    die('비활성화됨');//TODO:등용장 대 디자인
     starter("등용");
 
     $query = "select nation from general where user_id='{$_SESSION['p_id']}'";

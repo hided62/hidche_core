@@ -730,7 +730,7 @@ if($category == 0) {
 　<font class=bullet>☞</font>소집해제: 현재 소유중인 병사를 해체하고 주민으로 돌려보냅니다.<br>
 　---------- 인 사 ----------<br>
 　<font class=bullet>☞</font>　　이동: 인접 도시로 이동합니다.<br>
-　<font class=bullet>☞</font>　　등용: 재야나 타국의 장수를 등용합니다. 서신은 개인메세지로 도착하며 상대 장수가 수락,거절을 하게 됩니다.<br>
+　<!--<font class=bullet>☞</font>　　등용: 재야나 타국의 장수를 등용합니다. 서신은 개인메세지로 도착하며 상대 장수가 수락,거절을 하게 됩니다.<br>--> <!--xxx:등용장 일단 끔-->
 　<font class=bullet>☞</font>　　집합: 현재 도시로 부대원들을 집합합니다. 부대장만 가능합니다.<br>
 　<font class=bullet>☞</font>　　귀환: 태수, 군사, 시중인 경우 자신의 도시로 귀환합니다.<br>
 　<font class=bullet>☞</font>　　임관: 국가에 사관을 합니다. 대상 국가의 군주가 있는 장소로 바로 이동합니다. 재야만 가능합니다.<br>

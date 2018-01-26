@@ -1666,6 +1666,9 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
             $loseGeneralGold += $loseGold;
             $loseGeneralRice += $loseRice;
             
+            /*
+            //TODO:등용장 재디자인
+            //xxx: 일단 끔
             //모두 등용장 발부
             if($nation['name'] == "강족" || $nation['name'] == "저족" || $nation['name'] == "흉노족"
                 || $nation['name'] == "남만족" || $nation['name'] == "산월족" || $nation['name'] == "오환족"
@@ -1674,6 +1677,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
             } elseif(rand() % 100 < 50) {
                 ScoutMsg($connect, $ruler['no'], $nation['name'], $gen['no'], $gen['msgindex']);
             }
+            */
 
             //NPC인 경우 10% 확률로 임관(엔장, 인재, 의병)
             if($gen['npc'] >= 2 && $gen['npc'] <= 4 && rand() % 100 < 10) {

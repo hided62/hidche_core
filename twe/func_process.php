@@ -1319,6 +1319,9 @@ function process_21($connect, &$general) {
 }
 
 function process_22($connect, &$general) {
+    return;
+    //TODO: 등용장 재 디자인
+    //xxx: 일단 등용장 끔
     $log = array();
     $alllog = array();
     $date = substr($general['turntime'],11,5);
