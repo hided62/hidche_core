@@ -1,4 +1,5 @@
 <?php
+require_once('../e_lib/util.php');
 include "func_http.php";
 
 function getHistory($count, $year, $month, $isFirst=0) {
@@ -72,17 +73,25 @@ function LogHistory($connect, $isFirst=0) {
         $admin['month'] = 12;
     }
 
-    $file = explode('/', __FILE__);
-    $url = '/'.$file[count($file)-3].'/'.$file[count($file)-2].'/map.php?type=2&graphic=0';
+    //TODO: 웹 접속이 아닌 콘솔일 경우에 대응책 필요. conf등에 저장하는 것을 고려
+    $current_url = util::get_current_url();
+    $map_path =  explode('/',parse_url($current_url, PHP_URL_PASS));
+    array_pop($map_path);
+    array_push($map_path, 'map.php?type=2&graphic=0');
+    $map_path = join('/', $map_path);
+    //$file = explode('/', __FILE__);
+    //$url = '/'.$file[count($file)-3].'/'.$file[count($file)-2].'/map.php?type=2&graphic=0';
 
     /* 소켓 통신을 통하여 필요한 html정보를 가져옴 */
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', Start HTTP');
-    $http = new HTTP("62che.com", 80, 10);
+    
+    //$http = new HTTP("62che.com", 80, 10);
+    $http = new HTTP(parse_url($current_url, PHP_URL_HOST), parse_url($current_url, PHP_URL_PORT), 10); 
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', Connect end, '.$http->GetError());
     if($http->GetErr() == true) { return false; }
     $http->setHttpVersion("1.1");
     $cookie = "";
-    $http->Get($url, $cookie);
+    $http->Get($map_path, $cookie);
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', Response end, '.$http->GetError());
     if($http->GetErr() == true) { return false; }
     $map = $http->Response["body"];

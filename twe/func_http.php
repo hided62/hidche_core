@@ -27,9 +27,9 @@ class HTTP{
 
     function Head($Url = "/") {
         $this->Url = $Url;
-        $msg = sprintf("HEAD %s HTTP/%s\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("HEAD %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
         $msg .= $this->PutHead();
-        $msg .= "\n\n";
+        $msg .= "\r\n\r\n";
         fputs($this->Socket, $msg);
 
         return $this->Read();
@@ -37,12 +37,12 @@ class HTTP{
 
     function isHead($Url = "/"){
         $this->Url = $Url;
-        $msg = sprintf("HEAD %s HTTP/%s\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("HEAD %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
         if($Cookie != ""){
             $msg .= $this->PutCookie($Cookie);
         }
         $msg .= $this->PutHead();
-        $msg .= "\n\n";
+        $msg .= "\r\n\r\n";
         fputs($this->Socket, $msg);
 
         return $this->isOK();
@@ -50,9 +50,9 @@ class HTTP{
 
     function GetHead($Url = "/") {
         $this->Url = $Url;
-        $msg = sprintf("GET %s HTTP/%s\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("GET %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
         $msg .= $this->PutHead();
-        $msg .= "\n\n";
+        $msg .= "\r\n\r\n";
         fputs($this->Socket, $msg);
         $out = $this->ReadHeader();
         return $out;
@@ -60,36 +60,36 @@ class HTTP{
 
     function Get($Url = "/", $Cookie="") {
         $this->Url = $Url;
-        $msg = sprintf("GET %s HTTP/%s\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("GET %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
         if($Cookie != ""){
             $msg .= $this->PutCookie($Cookie);
         }
         $msg .= $this->PutHead();
-        $msg .= "\n\n";
+        $msg .= "\r\n\r\n";
         fputs($this->Socket, $msg);
         return $this->Read();
     }
 
     function isGet($Url = "/", $Cookie=""){
         $this->Url = $Url;
-        $msg = sprintf("GET %s HTTP/%s\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("GET %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
         if($Cookie != ""){
             $msg .= $this->PutCookie($Cookie);
         }
         $msg .= $this->PutHead();
-        $msg .= "\n\n";
+        $msg .= "\r\n\r\n";
         fputs($this->Socket, $msg);
         return $this->isOK();
     }
 
     function isGetAll($Url = "/", $Cookie=""){
         $this->Url = $Url;
-        $msg = sprintf("GET %s HTTP/%s\n", $this->Url, $this->HttpVersion);
+        $msg = sprintf("GET %s HTTP/%s\r\n", $this->Url, $this->HttpVersion);
         if($Cookie != ""){
             $msg .= $this->PutCookie($Cookie);
         }
         $msg .= $this->PutHead();
-        $msg .= "\n\n";
+        $msg .= "\r\n\r\n";
         fputs($this->Socket, $msg);
 
         $data = $this->Read();
@@ -99,53 +99,53 @@ class HTTP{
 
     function Post($Url, $Data, $Cookie = ""){
         $this->Url = $Url;
-        fputs ($this->Socket,sprintf("POST %s HTTP/%s\n", $this->Url, $this->HttpVersion));
+        fputs($this->Socket,sprintf("POST %s HTTP/%s\r\n", $this->Url, $this->HttpVersion));
         if($Cookie != ""){
             $this->PutCookie($Cookie);
         }
         $this->PutHead();
-        fputs ($this->Socket, "Content-type: application/x-www-form-urlencoded\n");
+        fputs($this->Socket, "Content-type: application/x-www-form-urlencoded\r\n");
         $out = "";
         while (list ($k, $v) = each ($Data)) {
             if(strlen($out) != 0) $out .= "&";
             $out .= rawurlencode($k). "=" .rawurlencode($v);
         }
-        fputs ($this->Socket, "Content-length: ".strlen($out)."\n\n");
-        fputs ($this->Socket, "$out");
-        fputs ($this->Socket, "\n");
+        fputs($this->Socket, "Content-length: ".strlen($out)."\r\n");
+        fputs($this->Socket, "$out");
+        fputs($this->Socket, "\r\n");
         return $this->Read();
     }
 
     function IsPost($Url, $Data, $Cookie = ""){
         $this->Url = $Url;
-        fputs ($this->Socket,sprintf("POST %s HTTP/%s\n", $this->Url, $this->HttpVersion));
+        fputs($this->Socket,sprintf("POST %s HTTP/%s\r\n", $this->Url, $this->HttpVersion));
         if($Cookie != ""){
             $this->PutCookie($Cookie);
         }
         $this->PutHead();
-        fputs ($this->Socket, "Content-type: application/x-www-form-urlencoded\n");
+        fputs($this->Socket, "Content-type: application/x-www-form-urlencoded\r\n");
         $out = "";
         while (list ($k, $v) = each ($Data))  {
             if(strlen($out) != 0) $out .= "&";
             $out .= rawurlencode($k). "=" .rawurlencode($v);
         }
-        fputs ($this->Socket, "Content-length: ".strlen($out)."\n\n");
-        fputs ($this->Socket, "$out");
-        fputs ($this->Socket, "\n");
+        fputs($this->Socket, "Content-length: ".strlen($out)."\r\n\r\n");
+        fputs($this->Socket, "$out");
+        fputs($this->Socket, "\r\n");
         return $this->isOk();
     }
 
     function PutHead(){
         $msg = "";
-        $msg .= "Accept: */*\n";
-        $msg .= "Accept-Language: ko\n";
-        $msg .= "Accept-Encoding: gzip, deflate\n";
-        $msg .= "User-Agent: Mozilla/4.0 (compatible; 62che)\n";
+        $msg .= "Accept: */*\r\n";
+        $msg .= "Accept-Language: ko\r\n";
+        $msg .= "Accept-Encoding: gzip, deflate\r\n";
+        $msg .= "User-Agent: Mozilla/4.0 (compatible; 62che)\r\n";
         while (list($name, $value) = each ($this->headers)) {
-            $msg .= "$name: $value\n";
+            $msg .= "$name: $value\r\n";
         }
-        $msg .= "Host: ".$this->Server.":".$this->Port."\n";
-        $msg .= "Connection: close\n";
+        $msg .= "Host: ".$this->Server.":".$this->Port."\r\n";
+        $msg .= "Connection: close\r\n";
         return $msg;
     }
 
@@ -173,6 +173,7 @@ class HTTP{
         $chunked = isset($this->Response['transfer-encoding']) && ('chunked' == $this->Response['transfer-encoding']);
         $gzipped = isset($this->Response['content-encoding']) && ('gzip' == $this->Response['content-encoding']);
         $body = '';
+		$this->_chunkLength = 0;
         while(!feof($this->Socket)){
             if ($chunked) {
                 $buf = $this->_readChunked();
