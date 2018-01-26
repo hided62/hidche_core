@@ -9,6 +9,11 @@ include "func_auction.php";
 include "func_string.php";
 include "func_history.php";
 require_once("func_message.php");
+
+/// 0.0~1.0 사이의 랜덤 float
+function randF(){
+    return mt_rand() / mt_getrandmax();
+}
 // 37.5 ~ 75
 function abilityRand() {
     $total  = 150;
@@ -465,34 +470,34 @@ function SpecCall($call) {
 function getSpecial($connect, $leader, $power, $intel) {
     //통장
     if($leader*0.9 > $power && $leader*0.9 > $intel) {
-        $type = array(20, 30, 31);
-        $special = $type[rand()%3];
-        // 거상, 귀모는 33% * 6% = 2%
-        if(($special == 30 || $special == 31) && rand()%100 > 6) {
+        $type = array(20, 31);
+        $special = array_rand($type);
+        // 귀모는 50% * 5% = 2.5%
+        if($special == 31 && randF() < 0.05) {
             $type = array(20, 20);
-            $special = $type[rand()%2];
+            $special = array_rand($type);
         }
     //무장
     } elseif($power >= $intel) {
-        $type = array(10, 11, 12, 30, 31);
-        $special = $type[rand()%5];
-        // 거상, 귀모는 그중에 20% * 10% = 2%
-        if(($special == 30 || $special == 31) && rand()%100 > 10) {
+        $type = array(10, 11, 12, 31);
+        $special = array_rand($type);
+        // 귀모는 그중에 25% * 10% = 2.5%
+        if(($special == 30 || $special == 31) && randF() < 0.05) {
             $type = array(10, 11, 12);
-            $special = $type[rand()%3];
+            $special = array_rand($type);
         }
     //지장
     } elseif($intel > $power) {
-        $type = array(1, 2, 3, 30, 31);
-        $special = $type[rand()%5];
-        // 거상, 귀모는 그중에 20% * 10% = 2%
-        if(($special == 30 || $special == 31) && rand()%100 > 10) {
+        $type = array(1, 2, 3, 31);
+        $special = array_rand($type);
+        // 거상, 귀모는 그중에 25% * 10% = 2.5%
+        if($special == 31 && randF() < 0.05) {
             $type = array(1, 2, 3);
-            $special = $type[rand()%3];
+            $special = array_rand($type);
         }
     } else {
-        $type = array(30, 31);
-        $special = $type[rand()%2];
+        //귀모. 다만 이쪽으로 빠지지 않음.
+        $type = 31;
     }
     return $special;
 }
