@@ -250,7 +250,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
                     //크리
                     $rd = rand() % 100; // 0 ~ 99
-                    $ratio = CriticalRatio2($general['leader'], $general['power'], $general['intel']);
+                    $ratio = CriticalRatio3($general['leader'], $general['power'], $general['intel']);
                     if($ratio >= $rd && $avoid == 1) {
                         $msg .= "<C>●</><C>필살</>공격!</><br>";
                         $cityCrew = CriticalScore2($cityCrew);
@@ -606,7 +606,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
                     //크리
                     $rd = rand() % 100; // 0 ~ 99
-                    $ratio = CriticalRatio2($general['leader'], $general['power'], $general['intel']);
+                    $ratio = CriticalRatio3($general['leader'], $general['power'], $general['intel']);
                     if($ratio >= $rd && $myAvoid == 1) {
                         $msg .= "<C>●</><C>필살</>공격!</><br>";
                         $opCrew = CriticalScore2($opCrew);
@@ -614,7 +614,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     }
                     //크리
                     $rd = rand() % 100; // 0 ~ 99
-                    $ratio = CriticalRatio2($oppose['leader'], $oppose['power'], $oppose['intel']);
+                    $ratio = CriticalRatio3($oppose['leader'], $oppose['power'], $oppose['intel']);
                     if($ratio >= $rd && $opAvoid == 1) {
                         $msg .= "<C>●</>상대의 <R>필살</>공격!</><br>";
                         $myCrew = CriticalScore2($myCrew);

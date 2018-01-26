@@ -273,7 +273,7 @@ function processWar($connect, $general, $city) {
 
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio2($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']));
+                $ratio = CriticalRatio3($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']));
                 // 특기보정 : 무쌍, 필살
                 if($general['special2'] == 61) { $ratio += 10; }
                 if($general['special2'] == 71) { $ratio += 20; }
@@ -1030,7 +1030,7 @@ function processWar($connect, $general, $city) {
 
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio2($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']));
+                $ratio = CriticalRatio3($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']));
                 // 특기보정 : 무쌍, 필살
                 if($general['special2'] == 61) { $ratio += 10; }
                 if($general['special2'] == 71) { $ratio += 20; }
@@ -1052,7 +1052,7 @@ function processWar($connect, $general, $city) {
                 }
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio2($oppose['leader']+getHorseEff($oppose['horse'])+$opplbonus, $oppose['power']+getWeapEff($oppose['weap']), $oppose['intel']+getBookEff($oppose['book']));
+                $ratio = CriticalRatio3($oppose['leader']+getHorseEff($oppose['horse'])+$opplbonus, $oppose['power']+getWeapEff($oppose['weap']), $oppose['intel']+getBookEff($oppose['book']));
                 // 특기보정 : 필살
                 if($oppose['special2'] == 71) { $ratio += 20; }
                 if($ratio >= $rd && $opAvoid == 1) {
@@ -1434,6 +1434,10 @@ function processWar($connect, $general, $city) {
     pushHistory($connect, $history);
 
     return $deadAmount;
+}
+
+function CriticalRatio3($leader, $power, $intel) {
+    return 15; //15% 고정
 }
 
 function CriticalRatio2($leader, $power, $intel) {
