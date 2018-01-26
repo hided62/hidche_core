@@ -394,7 +394,7 @@ function process_5($connect, &$general, $type) {
         if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
 
         $rd = rand() % 100;   // 현재 20%
-        $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 0);
+        $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 1);
         // 특기보정 : 수비, 축성
         if($type == 1 && $general['special'] == 11) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
         if($type == 2 && $general['special'] == 10) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
