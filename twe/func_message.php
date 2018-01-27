@@ -1,48 +1,60 @@
 <?php
 require_once(__dir__.'/d_setting/conf.php');
 require_once(__dir__.'/../e_lib/util.php');
+require_once(__dir__.'/../e_lib/plates.php');
 
 class Message{
     //기본 정보
     public $id;
-    public $address;
+    public $mailbox;
     public $type;
     public $src;
     public $dest;
     public $time;
     public $message;
 
-    //부가 정보
-    public $src_name;
-    public $src_nation;
-    public $src_color;
-    public $src_icon;
-    public $dest_name;
-    public $dest_nation;
-    public $dest_color;
-
-    public $bg_color;
+    public $rawType;
 
     function __construct($row){
-        $this->id = $row['id'];
-        $this->address = $row['address'];
-        $this->type = $row['type'];
-        $this->src = $row['src'];
-        $this->dest = $row['dest'];
-        $this->time = $row['time'];
-        $this->message = $row['message'];
+        $this->raw_type = $row['type'];
 
-        $this->src_name = $row['src_name'];
+        $this->id = $row['id'];
+        $this->mailbox = $row['mailbox'];
+        
+        if($this->rawType === 'public'){
+            $this->type = 'public';
+        }
+        else if(util::ends_with($this->rawType, 'national')){
+            $this->type = 'national';
+        }
+        else{
+            $this->type = 'private';
+        }
+
+        $this->src = [
+            'id' => $row['src'],
+            'name' => $row['src_name'],
+            'nation' => $row['src_nation'],
+            'color' => $row['src_color']
+        ];
+        $this->dest = [
+            'id' => $row['dest'],
+            'name' => $row['dest_name'],
+            'nation' => $row['dest_nation'],
+            'color' => $row['dest_color']
+        ];
+        $this->datetime = $row['time'];
+        $this->message = $row['message'];
     }
 }
 
 
 
-function getRawMessage($address, $limit=30, $fromTime=NULL){
-    //'select * from `message` where `address` = 90 and `time` < "2018-01-21 04:47:20" ORDER BY `time` desc LIMIT 3 ';
+function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
+    //'select * from `message` where `mailbox` = 90 and `time` < "2018-01-21 04:47:20" ORDER BY `time` desc LIMIT 3 ';
     
 
-    $sql = 'select * from `message` where `address` = %d_address';
+    $sql = 'select * from `message` where `mailbox` = %d_mailbox';
     if($fromTime !== NULL){
         $sql .= ' and `time` <= %s_time';
     }
@@ -55,7 +67,7 @@ function getRawMessage($address, $limit=30, $fromTime=NULL){
     $db = newDB();
     //TODO: table 네임의 prefix를 처리할 수 있도록 개선
     $result = $db->query($sql, array(
-        'address' => $address,
+        'mailbox' => $mailbox,
         'limit' => $limit,
         'time' => $fromTime
     ));
@@ -319,7 +331,7 @@ function MsgDip($connect, $bg) {
 }
 
 function ShowMsgEx($msgType, $src, $dest, $msg, $datetime){
-
+    new Plates('templates');
 }
 
 function ShowMsg($skin, $bgcolor, $type, $picture, $imgsvr, $me, $mycolor, $you, $youcolor, $msg, $date, $num=0, $who=0, $when=0, $level=0, $note="") {

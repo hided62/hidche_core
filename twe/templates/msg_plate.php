@@ -11,18 +11,18 @@
     cellspacing="0"
     <?php if($msgType == 'private'): ?>
         bgcolor="#CC6600" 
-    <?php elseif($msgType == 'public'): ?>
-        bgcolor="#000055" 
-    <?php else: /*$msgType == 'national'*/?>
-        bgcolor="#336600"   
+    <?php elseif($msgType == 'national'): ?>
+        bgcolor="#336600" 
+    <?php else: /*$msgType == 'public'*/?>
+        bgcolor="#000055"   
     <?php endif; ?>
     style="font-size:13;table-layout:fixed;word-break:break-all;"
-    data-num="<?=$num?>"  <?php /*NOTE: 사용되지 않을 num인데 필요한가? */ ?>
+    data-id="<?=$id?>"
 >
     <tbody><tr>
         <td width="64px" height="64px">
             <?php if ($src['iconPath'] !== NULL): ?>
-                <img src="<?=urlencode($src['iconPath'])?>">
+                <img src="<?=$this->e(urlencode($src['iconPath']))?>">
             <?php else: ?>
                 <img src="/image/default.jpg"> <?php /*NOTE: image 폴더는 어느 단에서 다뤄야하는가? */?>
             <?php endif; ?>
@@ -30,18 +30,24 @@
         <td width="434px" valign="top">
             <?php if($msgType == 'private'): ?>
                 <b>[
-                    <font color="<?=$src['color']?>"><?=$src['name']?>:<?=$src['nation']?>
+                    <font color="<?=$src['color']?>"><?=$this->e($src['name'])?>:<?=$this->e($src['nation'])?></font>
                 ▶
-                    </font><font color="<?=$dest['color']?>"><?=$dest['name']?>:<?=$dest['nation']?></font>
+                    <font color="<?=$dest['color']?>"><?=$this->e($dest['name'])?>:<?=$this->e($dest['nation'])?></font>
+                ]</b>
+            <?php elseif($msgType == 'national'): ?>
+                <b>[
+                    <font color="<?=$src['color']?>"><?=$this->e($src['name'])?>:<?=$this->e($src['nation'])?></font>
+                ▶
+                    <font color="<?=$dest['color']?>"><?=$this->e($dest['nation'])?></font>
                 ]</b>
             <?php else: ?>
                 <b>[
-                    <font color="<?=$src['color']?>"><?=$src['name']?>:<?=$src['nation']?>
+                    <font color="<?=$src['color']?>"><?=$this->e($src['name'])?>:<?=$this->e($src['nation'])?>
                 ]</b>
             <?php endif; ?>
             <font size="1">&lt;<?=$datetime?>&gt;</font>
             <br>
-            <?=$msg?>
+            <?=$this->e($message)?>
         </td>
     </tr></tbody>
 </table>
