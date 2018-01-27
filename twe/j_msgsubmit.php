@@ -1,8 +1,8 @@
 <?php
 // $msg, $genlist
 
-include "lib.php";
-include "func.php";
+include 'lib.php';
+include 'func.php';
 require_once('../e_lib/util.php');
 require_once('func_message.php');
 
@@ -38,7 +38,7 @@ if(!CheckLoginEx($db)){
 $db = newDB();
 
 $connect = dbConn();
-increaseRefresh($connect, "서신전달", 1);
+increaseRefresh($connect, '서신전달', 1);
 
 //$msg,$genlist 두가지 값을 받
 
@@ -54,7 +54,7 @@ if(CheckBlock($connect) == 1 || CheckBlock($connect) == 3) {
 
 
 
-$conlimit = $db->queryFirstField("select conlimit from game where no=1");
+$conlimit = $db->queryFirstField('select conlimit from game where no=1');
 
 $me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`msgindex`,`userlevel`,`con`,`picture`,`imgsvr` from `general` where `user_id` = %s_p_id',
     array('p_id'=>$_SESSION['p_id']));
@@ -70,7 +70,7 @@ if($con >= 2) {
  }
 
 //FIXME: 원래는 필요없는 값이지만 예전 코드와 꼬일 수 있어 유지함.
-$msg = str_replace("|", "", $msg);
+$msg = str_replace('|', '', $msg);
 
 //TODO: 몰라서 임시로 값 세팅해봄. 추후에 용도를 확인하고 수정 필요
 //$s = 50;
@@ -99,9 +99,7 @@ if($src_nation_id == 0) {
     $src_color = '#FFFFFF';
 }
 else{
-    $nation = $db->queryFirstRow("select nation,name,color from nation where nation=%i_nation",array(
-        'nation' => $src_nation_id
-    ));
+    $nation = $db->queryFirstRow('select nation,name,color from nation where nation=%i',$src_nation_id);
     $src_nation = $nation['name'];
     $src_color = '#'.$nation['color'];
     $src_color = str_replace('##', '#', $src_color); //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
@@ -123,12 +121,10 @@ if($dest == 9999) {
         'message' => $msg
     ));
     
-    //PushMsg(1, 0, $me['picture'], $me['imgsvr'], "{$me['name']}:", $nation['color'], $nation['name'], $nation['color'], $msg);
 // 국가 메세지
 } elseif($dest >= 9000) {
     $real_nation = $dest - 9000;
-    $query = "select nation,name,color from nation where nation='$genlist'";
-    $nation = $db->queryFirstRow("select nation,name,color from nation where nation=%i",$real_nation);
+    $nation = $db->queryFirstRow('select nation,name,color from nation where nation=%i',$real_nation);
     
     if($nation === NULL || empty($nation)){
         $dest = 9998;
@@ -198,7 +194,7 @@ if($dest == 9999) {
         header('Content-Type: application/json');
         die(json_encode([
             'result' => false,
-            'reason' => "개인메세지는 2초당 1건만 보낼 수 있습니다!",
+            'reason' => '개인메세지는 2초당 1건만 보낼 수 있습니다!',
             'redirect' => NULL
         ]));
     }
@@ -223,7 +219,7 @@ if($dest == 9999) {
         $dest_color = str_replace('##', '#', $dest_color);
     }
     else{
-        $nation = $db->queryFirstRow("select nation,name,color from nation where nation=%i",$dest_user['nation']);
+        $nation = $db->queryFirstRow('select nation,name,color from nation where nation=%i',$dest_user['nation']);
         $dest_nation = $nation['name'];
         $dest_color = '#'.$nation['color'];
         $dest_color = str_replace('##', '#', $dest_color); //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
@@ -264,13 +260,10 @@ else{
     header('Content-Type: application/json');
     die(json_encode([
         'result' => false,
-        'reason' => "알 수 없는 에러",
+        'reason' => '알 수 없는 에러',
         'redirect' => NULL
     ]));
 }
-
-//echo "<script>location.replace('msglist.php');</script>";
-//echo 'msglist.php';//TODO:debug all and replace
 
 header('Content-Type: application/json');
 echo json_encode([
