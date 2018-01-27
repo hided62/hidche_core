@@ -51,7 +51,7 @@ if($me['skin'] < 1) {
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
 
-$scenario = getScenario($connect);
+$scenario = getScenario();
 ?>
 <html>
 <head>

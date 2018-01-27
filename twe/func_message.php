@@ -37,12 +37,24 @@ class Message{
             'nation' => $row['src_nation'],
             'color' => $row['src_color']
         ];
+
+        if($this->src['nation'] === NULL){
+            $this->src['nation'] = '재야';
+            $this->src['color'] = '#FFFFFF';
+        }
+
         $this->dest = [
             'id' => $row['dest'],
             'name' => $row['dest_name'],
             'nation' => $row['dest_nation'],
             'color' => $row['dest_color']
         ];
+
+        if($this->dest['nation'] === NULL){
+            $this->dest['nation'] = '재야';
+            $this->dest['color'] = '#FFFFFF';
+        }
+
         $this->datetime = $row['time'];
         $this->message = $row['message'];
     }
@@ -54,19 +66,17 @@ function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
     //'select * from `message` where `mailbox` = 90 and `time` < "2018-01-21 04:47:20" ORDER BY `time` desc LIMIT 3 ';
     
 
-    $sql = 'select * from `message` where `mailbox` = %d_mailbox';
+    $sql = 'select * from `message` where `mailbox` = %i_mailbox';
     if($fromTime !== NULL){
         $sql .= ' and `time` <= %s_time';
     }
     $sql .= ' ORDER BY `time` desc';
     if($limit > 0){
-        $sql .= ' LIMIT %d_limit';
+        $sql .= ' LIMIT %i_limit';
     }
 
-
-    $db = newDB();
     //TODO: table 네임의 prefix를 처리할 수 있도록 개선
-    $result = $db->query($sql, [
+    $result = newDB()->query($sql, [
         'mailbox' => $mailbox,
         'limit' => $limit,
         'time' => $fromTime
@@ -79,8 +89,8 @@ function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
 }
 
 function getMessage($msgType, $limit=30, $fromTime=NULL){
-    $genID = util::array_get($_SESSION['p_id'], NULL);
-    if($genID === NULL){
+    $generalID = genID();
+    if($generalID === NULL){
         return [];
     }
 
@@ -91,7 +101,11 @@ function getMessage($msgType, $limit=30, $fromTime=NULL){
         return getRawMessage($genID, $limit, $fromTime);
     }
     else if($msgType === 'national'){
-        
+        $nationID = newDB()->queryFirstField(
+            'select `nation` from `general` where user_id = %i',
+            $genID
+        );
+        return getRawMessage(9000 + $nationID, $limit, $fromTime);
     }
     else{
         return [];
