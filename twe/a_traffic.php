@@ -17,7 +17,7 @@ $str = "";
 for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
 echo $str;
 
-$curonline = onlinenum($connect);
+$curonline = getOnlineNum();
 for($i=0; $i < 11; $i++) {
     $parse = explode("|", $log[count($log)-12+$i]);
     $date[$i]    = trim($parse[0]);

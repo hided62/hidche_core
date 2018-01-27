@@ -1981,18 +1981,8 @@ function adminMsg($connect, $skin=1) {
     echo $admin['msg']."</font>";
 }
 
-
-function getOnlineNumEx(){
+function getOnlineNum() {
     return newDB()->queryFirstField('select `online` from `game` where `no`=1');
-}
-
-
-
-function onlinenum($connect) {
-    $query = "select online from game where no='1'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $game = MYDB_fetch_array($result);
-    return $game['online'];
 }
 
 function onlinegen($connect) {
@@ -2349,7 +2339,7 @@ function increateRefreshEx($type, $cnt=1){
 
     $date = date('Y_m_d H:i:s');
     $date2 = substr($date, 0, 10);
-    $online = onlinenum($connect);
+    $online = getOnlineNum();
     $fp = fopen("logs/_{$date2}_refresh.txt", "a");
     $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['p_id'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
     fwrite($fp, $msg."\n");
@@ -2401,7 +2391,7 @@ function increaseRefresh($connect, $type="", $cnt=1) {
 
     $date = date('Y_m_d H:i:s');
     $date2 = substr($date, 0, 10);
-    $online = onlinenum($connect);
+    $online = getOnlineNum();
     $fp = fopen("logs/_{$date2}_refresh.txt", "a");
     $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['p_id'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
     fwrite($fp, $msg."\n");
@@ -2437,7 +2427,7 @@ function increaseRefresh($connect, $type="", $cnt=1) {
 }
 
 function updateTraffic($connect) {
-    $online = onlinenum($connect);
+    $online = getOnlineNum();
 
     $query = "select year,month,refresh,maxonline,maxrefresh from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2474,7 +2464,7 @@ function CheckOverhead($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $onlineNumber = onlinenum($connect);
+    $onlineNumber = getOnlineNum();
     switch($admin['turnterm']) {
     case 0: $thr1 =  30; $thr2 =  60; $thr3 = 120; $con1 = 480; $con2 = 360; $con3 = 240; $con4 = 120; break;   // 120분턴
     case 1: $thr1 =  30; $thr2 =  60; $thr3 = 120; $con1 = 480; $con2 = 360; $con3 = 240; $con4 = 120; break;   // 60분턴
