@@ -38,3 +38,26 @@ echo "
 ";
 }
 // (자신의 턴이 되면 다시 접속 가능합니다. <font color=orange size=4>제한량을 늘리기 위해 참여해주세요!</font> <font color=magenta size=4>참여게시판 참고.</font>)<br>
+
+
+function bar($per, $skin=1, $h=7) {
+    global $images;
+    if($h == 7) { $bd = 0; $h =  7; $h2 =  5; }
+    else        { $bd = 1; $h = 12; $h2 =  8; }
+
+    $per = round($per, 1);
+    if($per < 1 || $per > 99) { $per = round($per); }
+    $str1 = "<td width={$per}% background={$images}/pb{$h2}.gif>&nbsp;</td>";
+    $str2 = "<td width=*% background={$images}/pr{$h2}.gif>&nbsp;</td>";
+    if($per <= 0) { $str1 = ""; }
+    elseif($per >= 100) { $str2 = ""; }
+    if($skin == 0) {
+        $str = "-";
+    } else {
+        $str = "
+        <table width=100% height={$h} border={$bd} cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:1;>
+            <tr>{$str1}{$str2}</tr>
+        </table>";
+    }
+    return $str;
+}

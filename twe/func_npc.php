@@ -937,7 +937,7 @@ function SetCrew($connect, $no, $personal, $gold, $leader, $genType, $tech, $reg
 
     $gold -= 200;   // 사기비용
 
-    $cost = getCost($connect, $type) * getTechCost($tech);
+    $cost = getCost($type) * getTechCost($tech);
     $cost = CharCost($cost, $personal);
 
     $crew = floor($gold / $cost);

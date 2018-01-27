@@ -17,6 +17,19 @@ require_once("func_message.php");
 function randF(){
     return mt_rand() / mt_getrandmax();
 }
+
+
+function getGeneralID(){
+    //TODO: 서버마다 p_id가 다를 수 있도록 조치
+    if(!isset($_SESSION['p_id'])){
+        return NULL;
+    }
+    if($_SESSION['p_id']===''){
+        return NULL;
+    }
+    return $_SESSION['p_id'];
+}
+
 // 37.5 ~ 75
 function abilityRand() {
     $total  = 150;
@@ -95,6 +108,7 @@ function GetImageURL($imgsvr) {
         return $image1;
     }
 }
+
 function CheckLoginEx(){
     //TODO: 서버 별로 p_id를 다르게 설정할 수 있어야함.
     if(!isset($_SESSION['p_id'])) {
@@ -104,6 +118,7 @@ function CheckLoginEx(){
 }
 
 function checkLimit($userlevel, $con, $conlimit) {
+    //TODO: 접속 제한의 기준을 새로 세울 것.
     //운영자
     if($userlevel >= 5) { return 0; }
     //특회이면 3배
@@ -117,28 +132,6 @@ function checkLimit($userlevel, $con, $conlimit) {
     } else {
         return 0;
     }
-}
-
-function bar($per, $skin=1, $h=7) {
-    global $images;
-    if($h == 7) { $bd = 0; $h =  7; $h2 =  5; }
-    else        { $bd = 1; $h = 12; $h2 =  8; }
-
-    $per = round($per, 1);
-    if($per < 1 || $per > 99) { $per = round($per); }
-    $str1 = "<td width={$per}% background={$images}/pb{$h2}.gif>&nbsp;</td>";
-    $str2 = "<td width=*% background={$images}/pr{$h2}.gif>&nbsp;</td>";
-    if($per <= 0) { $str1 = ""; }
-    elseif($per >= 100) { $str2 = ""; }
-    if($skin == 0) {
-        $str = "-";
-    } else {
-        $str = "
-        <table width=100% height={$h} border={$bd} cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:1;>
-            <tr>{$str1}{$str2}</tr>
-        </table>";
-    }
-    return $str;
 }
 
 function CheckBlock($connect) {
@@ -284,251 +277,6 @@ function addGenDex($connect, $no, $type, $exp) {
 
     $query = "update general set {$dexType}={$dexType}+{$exp} where no='$no'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-}
-
-function getWeapName($weap) {
-    switch($weap) {
-        case  0: $weapname = "-"; break;
-        case  1: $weapname = "단도(+1)"; break;
-        case  2: $weapname = "단궁(+2)"; break;
-        case  3: $weapname = "단극(+3)"; break;
-        case  4: $weapname = "목검(+4)"; break;
-        case  5: $weapname = "죽창(+5)"; break;
-        case  6: $weapname = "소부(+6)"; break;
-
-        case  7: $weapname = "동추(+7)"; break;
-        case  8: $weapname = "철편(+7)"; break;
-        case  9: $weapname = "철쇄(+7)"; break;
-        case 10: $weapname = "맥궁(+7)"; break;
-        case 11: $weapname = "유성추(+8)"; break;
-        case 12: $weapname = "철질여골(+8)"; break;
-        case 13: $weapname = "쌍철극(+9)"; break;
-        case 14: $weapname = "동호비궁(+9)"; break;
-        case 15: $weapname = "삼첨도(+10)"; break;
-        case 16: $weapname = "대부(+10)"; break;
-        case 17: $weapname = "고정도(+11)"; break;
-        case 18: $weapname = "이광궁(+11)"; break;
-        case 19: $weapname = "철척사모(+12)"; break;
-        case 20: $weapname = "칠성검(+12)"; break;
-        case 21: $weapname = "사모(+13)"; break;
-        case 22: $weapname = "양유기궁(+13)"; break;
-        case 23: $weapname = "언월도(+14)"; break;
-        case 24: $weapname = "방천화극(+14)"; break;
-        case 25: $weapname = "청홍검(+15)"; break;
-        case 26: $weapname = "의천검(+15)"; break;
-    }
-    return $weapname;
-}
-
-function getWeapEff($weap) {
-    switch($weap) {
-        case  7: $weap =  7; break;
-        case  8: $weap =  7; break;
-        case  9: $weap =  7; break;
-        case 10: $weap =  7; break;
-        case 11: $weap =  8; break;
-        case 12: $weap =  8; break;
-        case 13: $weap =  9; break;
-        case 14: $weap =  9; break;
-        case 15: $weap = 10; break;
-        case 16: $weap = 10; break;
-        case 17: $weap = 11; break;
-        case 18: $weap = 11; break;
-        case 19: $weap = 12; break;
-        case 20: $weap = 12; break;
-        case 21: $weap = 13; break;
-        case 22: $weap = 13; break;
-        case 23: $weap = 14; break;
-        case 24: $weap = 14; break;
-        case 25: $weap = 15; break;
-        case 26: $weap = 15; break;
-        default: break;
-    }
-    return $weap;
-}
-
-function getBookName($book) {
-    switch($book) {
-        case  0: $bookname = "-"; break;
-        case  1: $bookname = "효경전(+1)"; break;
-        case  2: $bookname = "회남자(+2)"; break;
-        case  3: $bookname = "변도론(+3)"; break;
-        case  4: $bookname = "건상역주(+4)"; break;
-        case  5: $bookname = "여씨춘추(+5)"; break;
-        case  6: $bookname = "사민월령(+6)"; break;
-
-        case  7: $bookname = "위료자(+7)"; break;
-        case  8: $bookname = "사마법(+7)"; break;
-        case  9: $bookname = "한서(+7)"; break;
-        case 10: $bookname = "논어(+7)"; break;
-        case 11: $bookname = "전론(+8)"; break;
-        case 12: $bookname = "사기(+8)"; break;
-        case 13: $bookname = "장자(+9)"; break;
-        case 14: $bookname = "역경(+9)"; break;
-        case 15: $bookname = "시경(+10)"; break;
-        case 16: $bookname = "구국론(+10)"; break;
-        case 17: $bookname = "상군서(+11)"; break;
-        case 18: $bookname = "춘추전(+11)"; break;
-        case 19: $bookname = "산해경(+12)"; break;
-        case 20: $bookname = "맹덕신서(+12)"; break;
-        case 21: $bookname = "관자(+13)"; break;
-        case 22: $bookname = "병법24편(+13)"; break;
-        case 23: $bookname = "한비자(+14)"; break;
-        case 24: $bookname = "오자병법(+14)"; break;
-        case 25: $bookname = "노자(+15)"; break;
-        case 26: $bookname = "손자병법(+15)"; break;
-    }
-    return $bookname;
-}
-
-function getBookEff($book) {
-    switch($book) {
-        case  7: $book =  7; break;
-        case  8: $book =  7; break;
-        case  9: $book =  7; break;
-        case 10: $book =  7; break;
-        case 11: $book =  8; break;
-        case 12: $book =  8; break;
-        case 13: $book =  9; break;
-        case 14: $book =  9; break;
-        case 15: $book = 10; break;
-        case 16: $book = 10; break;
-        case 17: $book = 11; break;
-        case 18: $book = 11; break;
-        case 19: $book = 12; break;
-        case 20: $book = 12; break;
-        case 21: $book = 13; break;
-        case 22: $book = 13; break;
-        case 23: $book = 14; break;
-        case 24: $book = 14; break;
-        case 25: $book = 15; break;
-        case 26: $book = 15; break;
-        default: break;
-    }
-    return $book;
-}
-
-function getHorseName($horse) {
-    switch($horse) {
-        case  0: $horsename = "-"; break;
-        case  1: $horsename = "노기(+1)"; break;
-        case  2: $horsename = "조랑(+2)"; break;
-        case  3: $horsename = "노새(+3)"; break;
-        case  4: $horsename = "나귀(+4)"; break;
-        case  5: $horsename = "갈색마(+5)"; break;
-        case  6: $horsename = "흑색마(+6)"; break;
-
-        case  7: $horsename = "백마(+7)"; break;
-        case  8: $horsename = "백마(+7)"; break;
-        case  9: $horsename = "기주마(+7)"; break;
-        case 10: $horsename = "기주마(+7)"; break;
-        case 11: $horsename = "양주마(+8)"; break;
-        case 12: $horsename = "양주마(+8)"; break;
-        case 13: $horsename = "과하마(+9)"; break;
-        case 14: $horsename = "과하마(+9)"; break;
-        case 15: $horsename = "대완마(+10)"; break;
-        case 16: $horsename = "대완마(+10)"; break;
-        case 17: $horsename = "서량마(+11)"; break;
-        case 18: $horsename = "서량마(+11)"; break;
-        case 19: $horsename = "사륜거(+12)"; break;
-        case 20: $horsename = "사륜거(+12)"; break;
-        case 21: $horsename = "절영(+13)"; break;
-        case 22: $horsename = "적로(+13)"; break;
-        case 23: $horsename = "적란마(+14)"; break;
-        case 24: $horsename = "조황비전(+14)"; break;
-        case 25: $horsename = "한혈마(+15)"; break;
-        case 26: $horsename = "적토마(+15)"; break;
-    }
-    return $horsename;
-}
-
-function getHorseEff($horse) {
-    switch($horse) {
-        case  7: $horse =  7; break;
-        case  8: $horse =  7; break;
-        case  9: $horse =  7; break;
-        case 10: $horse =  7; break;
-        case 11: $horse =  8; break;
-        case 12: $horse =  8; break;
-        case 13: $horse =  9; break;
-        case 14: $horse =  9; break;
-        case 15: $horse = 10; break;
-        case 16: $horse = 10; break;
-        case 17: $horse = 11; break;
-        case 18: $horse = 11; break;
-        case 19: $horse = 12; break;
-        case 20: $horse = 12; break;
-        case 21: $horse = 13; break;
-        case 22: $horse = 13; break;
-        case 23: $horse = 14; break;
-        case 24: $horse = 14; break;
-        case 25: $horse = 15; break;
-        case 26: $horse = 15; break;
-        default: break;
-    }
-    return $horse;
-}
-
-function getItemName($item) {
-    switch($item) {
-        case  0: $itemname = "-"; break;
-        case  1: $itemname = "환약(치료)"; break;
-        case  2: $itemname = "수극(저격)"; break;
-        case  3: $itemname = "탁주(사기)"; break;
-        case  4: $itemname = "청주(훈련)"; break;
-        case  5: $itemname = "이추(계략)"; break;
-        case  6: $itemname = "향낭(계략)"; break;
-
-        case  7: $itemname = "오석산(치료)"; break;
-        case  8: $itemname = "무후행군(치료)"; break;
-        case  9: $itemname = "도소연명(치료)"; break;
-        case 10: $itemname = "칠엽청점(치료)"; break;
-        case 11: $itemname = "정력견혈(치료)"; break;
-        case 12: $itemname = "과실주(훈련)"; break;
-        case 13: $itemname = "이강주(훈련)"; break;
-        case 14: $itemname = "의적주(사기)"; break;
-        case 15: $itemname = "두강주(사기)"; break;
-        case 16: $itemname = "보령압주(사기)"; break;
-        case 17: $itemname = "철벽서(훈련)"; break;
-        case 18: $itemname = "단결도(훈련)"; break;
-        case 19: $itemname = "춘화첩(사기)"; break;
-        case 20: $itemname = "초선화(사기)"; break;
-        case 21: $itemname = "육도(계략)"; break;
-        case 22: $itemname = "삼략(계략)"; break;
-        case 23: $itemname = "청낭서(의술)"; break;
-        case 24: $itemname = "태평청령(의술)"; break;
-        case 25: $itemname = "태평요술(회피)"; break;
-        case 26: $itemname = "둔갑천서(회피)"; break;
-    }
-    return $itemname;
-}
-
-function getItemCost2($weap) {
-    switch($weap) {
-        case  0: $weapcost = 0; break;
-        case  1: $weapcost = 100; break;
-        case  2: $weapcost = 1000; break;
-        case  3: $weapcost = 1000; break;
-        case  4: $weapcost = 1000; break;
-        case  5: $weapcost = 1000; break;
-        case  6: $weapcost = 3000; break;
-        default: $weapcost = 200; break;
-    }
-    return $weapcost;
-}
-
-function getItemCost($weap) {
-    switch($weap) {
-        case  0: $weapcost = 0; break;
-        case  1: $weapcost = 1000; break;
-        case  2: $weapcost = 3000; break;
-        case  3: $weapcost = 6000; break;
-        case  4: $weapcost = 10000; break;
-        case  5: $weapcost = 15000; break;
-        case  6: $weapcost = 21000; break;
-        default: $weapcost = 200; break;
-    }
-    return $weapcost;
 }
 
 function getTurn($connect, $general, $type, $font=1) {
@@ -1000,58 +748,6 @@ function getCoreTurn($connect, $nation, $level) {
     return $str;
 }
 
-function turnTable() {
-    echo "
-<select name=turn[] size=11 multiple style=width:50px;color:white;background-color:black;font-size:13;>
-    <option value=100>전체</option>
-    <option value=99>홀턴</option>
-    <option value=98>짝턴</option>
-    <option selected value=0> 1턴</option>
-    <option value=1> 2턴</option>
-    <option value=2> 3턴</option>
-    <option value=3> 4턴</option>
-    <option value=4> 5턴</option>
-    <option value=5> 6턴</option>
-    <option value=6> 7턴</option>
-    <option value=7> 8턴</option>
-    <option value=8> 9턴</option>
-    <option value=9>10턴</option>
-    <option value=10>11턴</option>
-    <option value=11>12턴</option>
-    <option value=12>13턴</option>
-    <option value=13>14턴</option>
-    <option value=14>15턴</option>
-    <option value=15>16턴</option>
-    <option value=16>17턴</option>
-    <option value=17>18턴</option>
-    <option value=18>19턴</option>
-    <option value=19>20턴</option>
-    <option value=20>21턴</option>
-    <option value=21>22턴</option>
-    <option value=22>23턴</option>
-    <option value=23>24턴</option>
-</select>
-";
-}
-
-function CoreTurnTable() {
-    echo "
-<select name=turn[] size=3 multiple style=color:white;background-color:black;font-size:13;>
-    <option selected value=0> 1턴</option>
-    <option value=1> 2턴</option>
-    <option value=2> 3턴</option>
-    <option value=3> 4턴</option>
-    <option value=4> 5턴</option>
-    <option value=5> 6턴</option>
-    <option value=6> 7턴</option>
-    <option value=7> 8턴</option>
-    <option value=8> 9턴</option>
-    <option value=9>10턴</option>
-    <option value=10>11턴</option>
-    <option value=11>12턴</option>
-</select>
-";
-}
 
 function cityInfo($connect) {
     global $_basecolor, $_basecolor2, $images;
@@ -1214,7 +910,7 @@ function myNationInfo($connect) {
     </tr>
     <tr>
         <td align=center id=bg1><b>성 향</b></td>
-        <td align=center colspan=3><font color="; echo $me['skin']>0?"yellow":"white"; echo ">".getNationType($nation['type'])."</font> (".getNationType2($nation['type'], $me['skin']).")</td>
+        <td align=center colspan=3><font color=\"yellow\">".getNationType($nation['type'])."</font> (".getNationType2($nation['type']).")</td>
         </td>
     </tr>
     <tr>
@@ -1684,66 +1380,6 @@ function CoreCommandTable($connect) {
     echo "
 </select>
 ";
-}
-
-function commandButton($connect) {
-    global $_basecolor, $_basecolor2;
-
-    $query = "select skin,no,nation,level,belong from general where user_id='{$_SESSION['p_id']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
-
-    $query = "select nation,color,secretlimit from nation where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    if($nation['color'] == "" || $me['skin'] < 1) { $nation['color'] = "000000"; }
-
-    echo "
-<table align=center border=0 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg2>
-    <tr>";
-
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='회 의 실' onclick='refreshing(1,1)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【회 의 실】</font></td>"; }
-    if($me['level'] >= 5) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='기 밀 실' onclick='refreshing(1,4)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【기 밀 실】</font></td>"; }
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='부대 편성' onclick='refreshing(1,2)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【부대 편성】</font></td>"; }
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='인 사 부' onclick='refreshing(1,10)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【인 사 부】</font></td>"; }
-    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='내 무 부' onclick='refreshing(1,13)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【내 무 부】</font></td>"; }
-    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='사 령 부' onclick='refreshing(1,5)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【사 령 부】</font></td>"; }
-    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='암 행 부' onclick='refreshing(1,6)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【암 행 부】</font></td>"; }
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='토 너 먼 트' onclick='refreshing(1,15)'></td>";
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='베 팅 장' onclick='refreshing(1,16)'></td>";
-    echo "
-    </tr>
-</table>";
-
-    echo "
-<table align=center border=0 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg2>
-    <tr>";
-
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 정보' onclick='refreshing(1,7)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【세력 정보】</font></td>"; }
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 도시' onclick='refreshing(1,8)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【세력 도시】</font></td>"; }
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 장수' onclick='refreshing(1,9)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【세력 장수】</font></td>"; }
-    if($me['level'] >= 1) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='국 법' onclick='refreshing(1,3)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【국 법】</font></td>"; }
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='중원 정보' onclick='refreshing(1,14)'></td>";
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='현재 도시' onclick='refreshing(1,11)'></td>";
-    if($me['level'] >= 2 || ($me['level'] == 1 && $me['belong'] >= $nation['secretlimit'])) { echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='감 찰 부' onclick='refreshing(1,18)'></td>"; }
-    else {                     echo "<td width=111 height=30 align=center><font size=2 color=gray>【감 찰 부】</font></td>"; }
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='내 정보 & 설정' onclick='refreshing(1,12)'></td>";
-    echo "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='거 래 장' onclick='refreshing(1,17)'></td>";
-    echo "
-    </tr>
-</table>";
 }
 
 function myInfo($connect) {
@@ -2345,43 +1981,6 @@ function adminMsg($connect, $skin=1) {
     echo $admin['msg']."</font>";
 }
 
-function allButton($connect) {
-    global $_basecolor2;
-    $query = "select npcmode from game where no='1'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-    if($admin['npcmode'] == 1) {
-        $site = "a_npcList.php";
-        $call = "빙의일람";
-    } else {
-        $site = "a_vote.php";
-        $call = "설문조사";
-    }
-
-    echo "
-<table align=center border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg1>
-    <tr>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='세력도' onclick=window.open('a_status.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='세력일람' onclick=window.open('a_kingdomList.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='장수일람' onclick=window.open('a_genList.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='명장일람' onclick=window.open('a_bestGeneral.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='연감' onclick=window.open('a_history.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='명예의전당' onclick=window.open('a_hallOfFame.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='왕조일람' onclick=window.open('a_emperior.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='접속량정보' onclick=window.open('a_traffic.php')></td>
-    </tr>
-    <tr>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:magenta;width:125;height:30;font-weight:bold;font-size:13; value='삼모게시판' onclick=window.open('/bbs/bbs/board.php?bo_table=0free')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='삼국일보' onclick=window.open('/bbs/bbs/board.php?bo_table=1news')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='레퍼런스' onclick=window.open('/bbs/bbs/board.php?bo_table=2reference')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='패치게시판' onclick=window.open('/bbs/bbs/board.php?bo_table=3patch')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='-'></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='참여게시판' onclick=window.open('/bbs/bbs/board.php?bo_table=4donation')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='튜토리얼' onclick=window.open('../i_other/help.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='{$call}' onclick=window.open('{$site}')></td>
-    </tr>
-</table>";
-}
 
 function getOnlineNumEx(){
     return newDB()->queryFirstField('select `online` from `game` where `no`=1');
@@ -2727,16 +2326,6 @@ function CutDay($date) {
     return $date;
 }
 
-function getPID(){
-    //TODO: 서버마다 p_id가 다를 수 있도록 조치
-    if(!isset($_SESSION['p_id'])){
-        return NULL;
-    }
-    if($_SESSION['p_id']===''){
-        return NULL;
-    }
-    return $_SESSION['p_id'];
-}
 
 function increateRefreshEx($type, $cnt=1){
     $db = newDB();
@@ -2747,7 +2336,7 @@ function increateRefreshEx($type, $cnt=1){
     ));
 
     $date = date('Y-m-d H:i:s');
-    $p_id = getPID();
+    $p_id = getGeneralID();
     if($p_id !== NULL){
         
         $db->query("update `general` set `lastrefresh`= %s_date, `con` = `con`+%d_cnt, `connect`= `connect`+ %d_cnt, '\

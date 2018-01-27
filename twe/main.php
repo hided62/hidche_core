@@ -80,7 +80,7 @@ $scenario = getScenario();
 </div>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td colspan=5><?php allButton($connect); ?></td></tr>
+    <tr><td colspan=5><?=allButton()?></td></tr>
     <tr height=50>
         <td colspan=5 align=center><font size=4>삼국지 모의전투 PHP 유기체서버 (<font color=<?=$me['skin']>0?"cyan":"white";?>><?=$scenario;?></font>)</font></td>
     </tr>
@@ -191,7 +191,7 @@ if($me['userlevel'] >= 5) {
     </tr>
 <form name=form2 action=preprocessing.php method=post target=commandlist>
     <tr>
-        <td rowspan=3 width=50 valign=top><?php turnTable(); ?></td>
+        <td rowspan=3 width=50 valign=top><?=turnTable()?></td>
         <td width=646><?php cityInfo($connect); ?></td>
     </tr>
     <tr>
@@ -226,7 +226,7 @@ if($me['userlevel'] >= 5) {
         <td width=498><?php myNationInfo($connect); ?></td>
         <td width=498><?php myInfo($connect); ?></td>
     </tr>
-    <tr><td colspan=2><?php commandButton($connect); ?></td></tr>
+    <tr><td colspan=2><?=commandButton()?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
     <tr>
@@ -251,7 +251,7 @@ if($me['userlevel'] >= 5) {
             </form>
         </td>
     </tr>
-    <tr><td colspan=2><?php allButton($connect); ?></td></tr>
+    <tr><td colspan=2><?=allButton()?></td></tr>
     <tr><td colspan=2>
         <iframe id="msglist" name="msglist" src='msglist.php' width=1000 height=1375 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
         </iframe>
@@ -259,7 +259,7 @@ if($me['userlevel'] >= 5) {
     <tr><td colspan=2>
 
 <?php
-allButton($connect);
+echo allButton();
 banner();
 ?>
 

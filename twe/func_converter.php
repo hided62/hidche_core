@@ -399,7 +399,7 @@ function getConnect($con) {
     return $conname;
 }
 
-function getNationType2($type, $skin) {
+function getNationType2($type) {
     switch($type) {
         case 13: $call = "<font color=cyan>기술↑ 인구↑</font> <font color=magenta>쌀수입↓ 수성↓</font>"; break;
         case 12: $call = "<font color=cyan>내정↑ 인구↑</font> <font color=magenta>기술↓ 전략↓</font>"; break;
@@ -415,11 +415,6 @@ function getNationType2($type, $skin) {
         case 2: $call = "<font color=cyan>내정↑ 민심↑</font> <font color=magenta>쌀수입↓</font>"; break;
         case 1: $call = "<font color=cyan>금수입↑ 치안↑</font> <font color=magenta>인구↓ 민심↓</font>"; break;
         case 0: $call = "-"; break;
-    }
-    if($skin == 0) {
-        $call = str_replace("<font color=cyan>","", $call);
-        $call = str_replace("<font color=magenta>","", $call);
-        $call = str_replace("</font>","", $call);
     }
     return $call;
 }
@@ -631,12 +626,9 @@ function getBill($dedication) {
     return ($level * 200 + 400);
 }
 
-function getCost($connect, $armtype) {
-    $query = "select cst{$armtype} from game where no='1'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
-    return $admin["cst{$armtype}"];
+function getCost($armtype) {
+    //FIXME: 정말로 side effect가 없으려면 query는 밖으로 이동해야함.
+    return newDB()->queryFirstColumn("select cst%l from game where no='1'", $armtype);
 }
 
 function TechLimit($startyear, $year, $tech) {
@@ -780,4 +772,250 @@ function getDexLevel($dex) {
 function getDexLog($dex1, $dex2) {
     $ratio = (getDexLevel($dex1) - getDexLevel($dex2)) / 50 + 1;
     return $ratio;
+}
+
+
+function getWeapName($weap) {
+    switch($weap) {
+        case  0: $weapname = "-"; break;
+        case  1: $weapname = "단도(+1)"; break;
+        case  2: $weapname = "단궁(+2)"; break;
+        case  3: $weapname = "단극(+3)"; break;
+        case  4: $weapname = "목검(+4)"; break;
+        case  5: $weapname = "죽창(+5)"; break;
+        case  6: $weapname = "소부(+6)"; break;
+
+        case  7: $weapname = "동추(+7)"; break;
+        case  8: $weapname = "철편(+7)"; break;
+        case  9: $weapname = "철쇄(+7)"; break;
+        case 10: $weapname = "맥궁(+7)"; break;
+        case 11: $weapname = "유성추(+8)"; break;
+        case 12: $weapname = "철질여골(+8)"; break;
+        case 13: $weapname = "쌍철극(+9)"; break;
+        case 14: $weapname = "동호비궁(+9)"; break;
+        case 15: $weapname = "삼첨도(+10)"; break;
+        case 16: $weapname = "대부(+10)"; break;
+        case 17: $weapname = "고정도(+11)"; break;
+        case 18: $weapname = "이광궁(+11)"; break;
+        case 19: $weapname = "철척사모(+12)"; break;
+        case 20: $weapname = "칠성검(+12)"; break;
+        case 21: $weapname = "사모(+13)"; break;
+        case 22: $weapname = "양유기궁(+13)"; break;
+        case 23: $weapname = "언월도(+14)"; break;
+        case 24: $weapname = "방천화극(+14)"; break;
+        case 25: $weapname = "청홍검(+15)"; break;
+        case 26: $weapname = "의천검(+15)"; break;
+    }
+    return $weapname;
+}
+
+function getWeapEff($weap) {
+    switch($weap) {
+        case  7: $weap =  7; break;
+        case  8: $weap =  7; break;
+        case  9: $weap =  7; break;
+        case 10: $weap =  7; break;
+        case 11: $weap =  8; break;
+        case 12: $weap =  8; break;
+        case 13: $weap =  9; break;
+        case 14: $weap =  9; break;
+        case 15: $weap = 10; break;
+        case 16: $weap = 10; break;
+        case 17: $weap = 11; break;
+        case 18: $weap = 11; break;
+        case 19: $weap = 12; break;
+        case 20: $weap = 12; break;
+        case 21: $weap = 13; break;
+        case 22: $weap = 13; break;
+        case 23: $weap = 14; break;
+        case 24: $weap = 14; break;
+        case 25: $weap = 15; break;
+        case 26: $weap = 15; break;
+        default: break;
+    }
+    return $weap;
+}
+
+function getBookName($book) {
+    switch($book) {
+        case  0: $bookname = "-"; break;
+        case  1: $bookname = "효경전(+1)"; break;
+        case  2: $bookname = "회남자(+2)"; break;
+        case  3: $bookname = "변도론(+3)"; break;
+        case  4: $bookname = "건상역주(+4)"; break;
+        case  5: $bookname = "여씨춘추(+5)"; break;
+        case  6: $bookname = "사민월령(+6)"; break;
+
+        case  7: $bookname = "위료자(+7)"; break;
+        case  8: $bookname = "사마법(+7)"; break;
+        case  9: $bookname = "한서(+7)"; break;
+        case 10: $bookname = "논어(+7)"; break;
+        case 11: $bookname = "전론(+8)"; break;
+        case 12: $bookname = "사기(+8)"; break;
+        case 13: $bookname = "장자(+9)"; break;
+        case 14: $bookname = "역경(+9)"; break;
+        case 15: $bookname = "시경(+10)"; break;
+        case 16: $bookname = "구국론(+10)"; break;
+        case 17: $bookname = "상군서(+11)"; break;
+        case 18: $bookname = "춘추전(+11)"; break;
+        case 19: $bookname = "산해경(+12)"; break;
+        case 20: $bookname = "맹덕신서(+12)"; break;
+        case 21: $bookname = "관자(+13)"; break;
+        case 22: $bookname = "병법24편(+13)"; break;
+        case 23: $bookname = "한비자(+14)"; break;
+        case 24: $bookname = "오자병법(+14)"; break;
+        case 25: $bookname = "노자(+15)"; break;
+        case 26: $bookname = "손자병법(+15)"; break;
+    }
+    return $bookname;
+}
+
+function getBookEff($book) {
+    switch($book) {
+        case  7: $book =  7; break;
+        case  8: $book =  7; break;
+        case  9: $book =  7; break;
+        case 10: $book =  7; break;
+        case 11: $book =  8; break;
+        case 12: $book =  8; break;
+        case 13: $book =  9; break;
+        case 14: $book =  9; break;
+        case 15: $book = 10; break;
+        case 16: $book = 10; break;
+        case 17: $book = 11; break;
+        case 18: $book = 11; break;
+        case 19: $book = 12; break;
+        case 20: $book = 12; break;
+        case 21: $book = 13; break;
+        case 22: $book = 13; break;
+        case 23: $book = 14; break;
+        case 24: $book = 14; break;
+        case 25: $book = 15; break;
+        case 26: $book = 15; break;
+        default: break;
+    }
+    return $book;
+}
+
+function getHorseName($horse) {
+    switch($horse) {
+        case  0: $horsename = "-"; break;
+        case  1: $horsename = "노기(+1)"; break;
+        case  2: $horsename = "조랑(+2)"; break;
+        case  3: $horsename = "노새(+3)"; break;
+        case  4: $horsename = "나귀(+4)"; break;
+        case  5: $horsename = "갈색마(+5)"; break;
+        case  6: $horsename = "흑색마(+6)"; break;
+
+        case  7: $horsename = "백마(+7)"; break;
+        case  8: $horsename = "백마(+7)"; break;
+        case  9: $horsename = "기주마(+7)"; break;
+        case 10: $horsename = "기주마(+7)"; break;
+        case 11: $horsename = "양주마(+8)"; break;
+        case 12: $horsename = "양주마(+8)"; break;
+        case 13: $horsename = "과하마(+9)"; break;
+        case 14: $horsename = "과하마(+9)"; break;
+        case 15: $horsename = "대완마(+10)"; break;
+        case 16: $horsename = "대완마(+10)"; break;
+        case 17: $horsename = "서량마(+11)"; break;
+        case 18: $horsename = "서량마(+11)"; break;
+        case 19: $horsename = "사륜거(+12)"; break;
+        case 20: $horsename = "사륜거(+12)"; break;
+        case 21: $horsename = "절영(+13)"; break;
+        case 22: $horsename = "적로(+13)"; break;
+        case 23: $horsename = "적란마(+14)"; break;
+        case 24: $horsename = "조황비전(+14)"; break;
+        case 25: $horsename = "한혈마(+15)"; break;
+        case 26: $horsename = "적토마(+15)"; break;
+    }
+    return $horsename;
+}
+
+function getHorseEff($horse) {
+    switch($horse) {
+        case  7: $horse =  7; break;
+        case  8: $horse =  7; break;
+        case  9: $horse =  7; break;
+        case 10: $horse =  7; break;
+        case 11: $horse =  8; break;
+        case 12: $horse =  8; break;
+        case 13: $horse =  9; break;
+        case 14: $horse =  9; break;
+        case 15: $horse = 10; break;
+        case 16: $horse = 10; break;
+        case 17: $horse = 11; break;
+        case 18: $horse = 11; break;
+        case 19: $horse = 12; break;
+        case 20: $horse = 12; break;
+        case 21: $horse = 13; break;
+        case 22: $horse = 13; break;
+        case 23: $horse = 14; break;
+        case 24: $horse = 14; break;
+        case 25: $horse = 15; break;
+        case 26: $horse = 15; break;
+        default: break;
+    }
+    return $horse;
+}
+
+function getItemName($item) {
+    switch($item) {
+        case  0: $itemname = "-"; break;
+        case  1: $itemname = "환약(치료)"; break;
+        case  2: $itemname = "수극(저격)"; break;
+        case  3: $itemname = "탁주(사기)"; break;
+        case  4: $itemname = "청주(훈련)"; break;
+        case  5: $itemname = "이추(계략)"; break;
+        case  6: $itemname = "향낭(계략)"; break;
+
+        case  7: $itemname = "오석산(치료)"; break;
+        case  8: $itemname = "무후행군(치료)"; break;
+        case  9: $itemname = "도소연명(치료)"; break;
+        case 10: $itemname = "칠엽청점(치료)"; break;
+        case 11: $itemname = "정력견혈(치료)"; break;
+        case 12: $itemname = "과실주(훈련)"; break;
+        case 13: $itemname = "이강주(훈련)"; break;
+        case 14: $itemname = "의적주(사기)"; break;
+        case 15: $itemname = "두강주(사기)"; break;
+        case 16: $itemname = "보령압주(사기)"; break;
+        case 17: $itemname = "철벽서(훈련)"; break;
+        case 18: $itemname = "단결도(훈련)"; break;
+        case 19: $itemname = "춘화첩(사기)"; break;
+        case 20: $itemname = "초선화(사기)"; break;
+        case 21: $itemname = "육도(계략)"; break;
+        case 22: $itemname = "삼략(계략)"; break;
+        case 23: $itemname = "청낭서(의술)"; break;
+        case 24: $itemname = "태평청령(의술)"; break;
+        case 25: $itemname = "태평요술(회피)"; break;
+        case 26: $itemname = "둔갑천서(회피)"; break;
+    }
+    return $itemname;
+}
+
+function getItemCost2($weap) {
+    switch($weap) {
+        case  0: $weapcost = 0; break;
+        case  1: $weapcost = 100; break;
+        case  2: $weapcost = 1000; break;
+        case  3: $weapcost = 1000; break;
+        case  4: $weapcost = 1000; break;
+        case  5: $weapcost = 1000; break;
+        case  6: $weapcost = 3000; break;
+        default: $weapcost = 200; break;
+    }
+    return $weapcost;
+}
+
+function getItemCost($weap) {
+    switch($weap) {
+        case  0: $weapcost = 0; break;
+        case  1: $weapcost = 1000; break;
+        case  2: $weapcost = 3000; break;
+        case  3: $weapcost = 6000; break;
+        case  4: $weapcost = 10000; break;
+        case  5: $weapcost = 15000; break;
+        case  6: $weapcost = 21000; break;
+        default: $weapcost = 200; break;
+    }
+    return $weapcost;
 }

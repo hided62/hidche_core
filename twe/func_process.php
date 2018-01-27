@@ -767,7 +767,7 @@ function process_11($connect, &$general, $type) {
 
     if($crew*100 + $general['crew'] > (floor($general['leader'] * (100 - $general['injury'])/100)+getHorseEff($general['horse'])+$lbonus)*100) { $crew = round(((floor($general['leader'] * (100 - $general['injury'])/100)+getHorseEff($general['horse'])+$lbonus)*100 - $general['crew'])/100, 0); }
     if($crew < 0) { $crew = 0; }
-    $cost = $crew * getCost($connect, $armtype);
+    $cost = $crew * getCost($armtype);
     //기술로 가격
     $cost *= getTechCost($nation['tech']);
     //성격 보정
