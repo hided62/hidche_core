@@ -8,7 +8,7 @@
 
 function getScenario() {
     //FIXME: 정말로 side effect가 없으려면 query는 밖으로 이동해야함.
-    $scenario = newDB()->queryFirstColumn("select `scenario` from `game` where no=1");
+    $scenario = newDB()->queryFirstColumn('select `scenario` from `game` where no=1');
 
     switch($scenario) {
     case  0: $str = '공백지모드'; break;
@@ -629,7 +629,7 @@ function getBill($dedication) {
 function getCost($armtype) {
     //FIXME: 정말로 side effect가 없으려면 query는 밖으로 이동해야함.
     //TODO: 병종 값이 column으로 들어있는건 전혀 옳지 않음. key->value 형태로 바꿔야함
-    return newDB()->queryFirstColumn("select cst%l from game where no='1'", intval($armtype));
+    return newDB()->queryFirstColumn('select cst%l from game where no=1', intval($armtype));
 }
 
 function TechLimit($startyear, $year, $tech) {
@@ -1019,4 +1019,78 @@ function getItemCost($weap) {
         default: $weapcost = 200; break;
     }
     return $weapcost;
+}
+
+
+
+function ConvertLog($str, $type=1) {
+    //TODO: 이 함수는 없애야 한다. CSS로 대신하자
+    if($type > 0) {
+        $str = str_replace("<1>", "<font size=1>", $str);
+        $str = str_replace("<Y1>", "<font size=1 color=yellow>", $str);
+        $str = str_replace("<R>", "<font color=red>", $str);
+        $str = str_replace("<B>", "<font color=blue>", $str);
+        $str = str_replace("<G>", "<font color=green>", $str);
+        $str = str_replace("<M>", "<font color=magenta>", $str);
+        $str = str_replace("<C>", "<font color=cyan>", $str);
+        $str = str_replace("<L>", "<font color=limegreen>", $str);
+        $str = str_replace("<S>", "<font color=skyblue>", $str);
+        //$str = str_replace("<O>", "<font color=orange>", $str);
+        //$str = str_replace("<D>", "<font color=darkorange>", $str);
+        $str = str_replace("<O>", "<font color=orangered>", $str);
+        $str = str_replace("<D>", "<font color=orangered>", $str);
+        $str = str_replace("<Y>", "<font color=yellow>", $str);
+        $str = str_replace("<W>", "<font color=white>", $str);
+        $str = str_replace("</>", "</font>", $str);
+    } else {
+        $str = str_replace("<1>", "", $str);
+        $str = str_replace("<Y1>", "", $str);
+        $str = str_replace("<R>", "", $str);
+        $str = str_replace("<B>", "", $str);
+        $str = str_replace("<G>", "", $str);
+        $str = str_replace("<M>", "", $str);
+        $str = str_replace("<C>", "", $str);
+        $str = str_replace("<L>", "", $str);
+        $str = str_replace("<S>", "", $str);
+        $str = str_replace("<O>", "", $str);
+        $str = str_replace("<D>", "", $str);
+        $str = str_replace("<Y>", "", $str);
+        $str = str_replace("<W>", "", $str);
+        $str = str_replace("</>", "", $str);
+    }
+
+    return $str;
+}
+
+
+
+function newColor($color) {
+    switch($color) {
+        case "":
+        case "330000":
+        case "FF0000":
+        case "800000":
+        case "A0522D":
+        case "FF6347":
+        case "808000":
+        case "008000":
+        case "2E8B57":
+        case "008080":
+        case "6495ED":
+        case "0000FF":
+        case "000080":
+        case "483D8B":
+        case "7B68EE":
+        case "800080":
+        case "A9A9A9":
+        case "000000":
+            $color = "FFFFFF"; break;
+        default:
+            $color = "000000"; break;
+    }
+    return $color;
+}
+
+function backColor($color) {
+    return newColor($color);
 }
