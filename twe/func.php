@@ -2501,31 +2501,24 @@ function CheckOverhead($connect) {
     }
 }
 
-function isLock($connect) {
-    $query = "select plock from plock where no=1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $plock = MYDB_fetch_array($result);
-
-    if($plock['plock'] == 0) { return 0; }  // 열려있음
-    else { return 1; }  // 사용중
+function isLock() {
+    return newDB()->queryFirstColumn("select plock from plock where no=1") != 0;
 }
 
-function lock($connect) {
+function lock() {
+    //NOTE: 게임 로직과 관련한 모든 insert, update 함수들은 lock을 거칠것을 권장함.
+    $db = newDB();
     //테이블 락
-    $query = "lock tables plock write";
-    @MYDB_query($query, $connect);
+    $db->query("lock tables plock write");
     // 잠금
-    $query = "update plock set plock=1 where no=1";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->query("update plock set plock=1 where no=1");
     //테이블 언락
-    $query = "unlock tables";
-    @MYDB_query($query, $connect);
+    $db->query("unlock tables");
 }
 
-function unlock($connect) {
+function unlock() {
     // 풀림
-    $query = "update plock set plock=0 where no=1";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    newDB()->query("update plock set plock=0 where no=1");
 }
 
 function timeover($connect) {
@@ -2632,7 +2625,7 @@ function checkTurn($connect) {
     // 잦은 갱신 금지 현재 10초당 1회
     if(!timeover($connect)) { return; }
     // 현재 처리중이면 접근 불가
-    if(isLock($connect)) { return; }
+    if(isLock()) { return; }
 
     $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
     pushLockLog($connect, $locklog);
@@ -2645,9 +2638,9 @@ function checkTurn($connect) {
     //if(!@sem_acquire($sema)) { echo "치명적 에러! 유기체에게 문의하세요!"; exit(1); }
 
     // 현재 처리중이면 접근 불가
-    if(isLock($connect)) { return; }
+    if(isLock()) { return; }
     // 락 걸고 처리
-    lock($connect);
+    lock();
 
     // 파일락 해제
     if(!flock($fp, LOCK_UN)) { return; }
@@ -2725,7 +2718,7 @@ function checkTurn($connect) {
 
             // 잡금 해제
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
-            unlock($connect);
+            unlock();
             return false;
         }
 
@@ -2847,7 +2840,7 @@ function checkTurn($connect) {
     processAuction($connect);
     // 잡금 해제
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
-    unlock($connect);
+    unlock();
 
     $locklog[0] = "- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
     pushLockLog($connect, $locklog);
