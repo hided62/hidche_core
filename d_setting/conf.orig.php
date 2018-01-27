@@ -17,7 +17,13 @@ function newRootDB(){
     $port = _port_;
     $encoding = 'utf8';
 
-    return new MeekroDB($host,$user,$password,$dbName,$port,$encoding);
+    static $uDB = NULL;
+
+    if($uDB === NULL){
+        $uDB = new MeekroDB($host,$user,$password,$dbName,$port,$encoding);
+    }
+
+    return $uDB;
 }
 
 function newMailObj(){

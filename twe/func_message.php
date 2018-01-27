@@ -66,11 +66,11 @@ function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
 
     $db = newDB();
     //TODO: table 네임의 prefix를 처리할 수 있도록 개선
-    $result = $db->query($sql, array(
+    $result = $db->query($sql, [
         'mailbox' => $mailbox,
         'limit' => $limit,
         'time' => $fromTime
-    ));
+    ]);
     
     
     return array_map(function ($row){
@@ -78,7 +78,25 @@ function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
     }, $result);
 }
 
-function getMessage(){
+function getMessage($msgType, $limit=30, $fromTime=NULL){
+    $genID = util::array_get($_SESSION['p_id'], NULL);
+    if($genID === NULL){
+        return [];
+    }
+
+    if($msgType === 'public'){
+        return getRawMessage(9999, $limit, $fromTime);
+    }
+    else if($msgType === 'private'){
+        return getRawMessage($genID, $limit, $fromTime);
+    }
+    else if($msgType === 'national'){
+        
+    }
+    else{
+        return [];
+    }
+
 
 }
 
@@ -87,7 +105,7 @@ function genList($connect) {
     $query = "select no,nation,level,msgindex,userlevel from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
-    $you = array();
+    $you = [];
     
     $query = "select msg{$me['msgindex']}_who as reply,msg{$me['msgindex']}_type as type from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
