@@ -32,6 +32,7 @@ function Tag2Code($str) {
 }
 
 function BadTag2Code($str) {
+    /* FIXME: 제대로된 tag 변환 코드 사용 */
     $str = str_replace("<script", "<sorry", $str);
     $str = str_replace("<embed", "<sorry", $str);
     return $str;

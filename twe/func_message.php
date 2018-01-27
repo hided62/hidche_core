@@ -318,7 +318,9 @@ function MsgDip($connect, $bg) {
     if($nation['dip4']) { echo "\n"; DecodeMsg($connect, $nation['dip4'], $nation['dip4_type'], $nation['dip4_who'], $nation['dip4_when'], $bg, 4); }
 }
 
+function ShowMsgEx($msgType, $src, $dest, $msg, $datetime){
 
+}
 
 function ShowMsg($skin, $bgcolor, $type, $picture, $imgsvr, $me, $mycolor, $you, $youcolor, $msg, $date, $num=0, $who=0, $when=0, $level=0, $note="") {
     if($msg == "") return;
