@@ -99,7 +99,7 @@ if($src_nation_id == 0) {
     $src_color = '#FFFFFF';
 }
 else{
-    $nation = $db->queryFirstRow("select nation,name,color from nation where nation=%d_nation",array(
+    $nation = $db->queryFirstRow("select nation,name,color from nation where nation=%i_nation",array(
         'nation' => $src_nation_id
     ));
     $src_nation = $nation['name'];
@@ -128,9 +128,7 @@ if($dest == 9999) {
 } elseif($dest >= 9000) {
     $real_nation = $dest - 9000;
     $query = "select nation,name,color from nation where nation='$genlist'";
-    $nation = $db->queryFirstRow("select nation,name,color from nation where nation=%d_nation",array(
-        'nation' => $real_nation
-    ));
+    $nation = $db->queryFirstRow("select nation,name,color from nation where nation=%i",$real_nation);
     
     if($nation === NULL || empty($nation)){
         $dest = 9998;
@@ -207,8 +205,7 @@ if($dest == 9999) {
 
     $_SESSION['last_msg'] = $date;
 
-    $dest_user = $db->queryFirstRow('select `no`,`name`,`nation` from `general` where `user_id` = %s_p_id',array(
-        'p_id'=>$dest));
+    $dest_user = $db->queryFirstRow('select `no`,`name`,`nation` from `general` where `user_id` = %s',$dest);
 
     if($dest_user == NULL || empty($dest_user)){
         header('Content-Type: application/json');
@@ -226,9 +223,7 @@ if($dest == 9999) {
         $dest_color = str_replace('##', '#', $dest_color);
     }
     else{
-        $nation = $db->queryFirstRow("select nation,name,color from nation where nation=%d_nation",array(
-            'nation' => $dest_user['nation']
-        ));
+        $nation = $db->queryFirstRow("select nation,name,color from nation where nation=%i",$dest_user['nation']);
         $dest_nation = $nation['name'];
         $dest_color = '#'.$nation['color'];
         $dest_color = str_replace('##', '#', $dest_color); //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
