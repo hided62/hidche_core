@@ -18,10 +18,6 @@ if($member['GRADE'] == 6) {
     $response['grade'] = '부운영자';
 } elseif($member['GRADE'] == 4) {
     $response['grade'] = '특별회원';
-} elseif($member['GRADE'] == 3) {
-    $response['grade'] = '참여회원';
-} elseif($member['GRADE'] == 2) {
-    $response['grade'] = '참여회원';
 } elseif($member['GRADE'] == 1) {
     $response['grade'] = '일반회원';
 } elseif($member['GRADE'] == 0) {

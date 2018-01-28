@@ -22,7 +22,6 @@ for($i=0; $i < $_serverCount; $i++) {
     <div class='Entrance_ServerListDown'><br>- 폐 쇄 중 -</div>
 </div>
 ";
-//<br>(참여금이 모여 운영비가 마련될수록 많은 서버가 열립니다!)
     } else {
         $rs = $DBS[$i]->Select('ISUNITED, NPCMODE, YEAR, MONTH, SCENARIO, MAXGENERAL, TURNTERM', 'game', "NO='1'");
         $game = $DBS[$i]->Get($rs);

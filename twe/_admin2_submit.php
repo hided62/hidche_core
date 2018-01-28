@@ -34,65 +34,29 @@ switch($btn) {
         }
         break;
     case "1단계 블럭":
-        for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "update general set block=1,killturn=24 where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            $query = "select user_id from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $gen = MYDB_fetch_array($result);
-            $uid[$i] = $gen['user_id'];
-        }
-        
-        $connect = dbConn("sammo");
         $date = date('Y-m-d H:i:s');
-        for($i=0; $i < sizeof($uid); $i++) {
-            //블럭정보
-            $query = "update MEMBER set block_num=block_num+1,block_date='$date' where id='$uid[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
+        $db = getDB();
+        $db->query('update general set block=1,killturn=24 where no IN %li',$genlist);
+        //FIXME: subquery로 하는게 더 빠를 듯.
+        $uid = $db->queryFirstColumn('select user_id from general where no IN %li', $genlist);
+        getRootDB()->query('update MEMBER set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
         break;
     case "2단계 블럭":
-        for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "update general set gold=0,rice=0,block=2,killturn=24 where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            $query = "select user_id from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $gen = MYDB_fetch_array($result);
-            $uid[$i] = $gen['user_id'];
-        }
-        $connect = dbConn("sammo");
         $date = date('Y-m-d H:i:s');
-        for($i=0; $i < sizeof($uid); $i++) {
-            //블럭정보
-            $query = "update MEMBER set block_num=block_num+1,block_date='$date' where id='$uid[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
+        $db = getDB();
+        $db->query('update general set gold=0,rice=0,block=2,killturn=24 where no IN %li',$genlist);
+        $uid = $db->queryFirstColumn('select user_id from general where no IN %li', $genlist);
+        getRootDB()->query('update MEMBER set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
         break;
     case "3단계 블럭":
-        for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "update general set gold=0,rice=0,block=3,killturn=24 where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            $query = "select user_id from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $gen = MYDB_fetch_array($result);
-            $uid[$i] = $gen['user_id'];
-        }
-        $connect = dbConn("sammo");
         $date = date('Y-m-d H:i:s');
-        for($i=0; $i < sizeof($uid); $i++) {
-            //블럭정보
-            $query = "update MEMBER set block_num=block_num+1,block_date='$date' where id='$uid[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
+        $db = getDB();
+        $db->query('update general set gold=0,rice=0,block=3,killturn=24 where no IN %li',$genlist);
+        $uid = $db->queryFirstColumn('select user_id from general where no IN %li', $genlist);
+        getRootDB()->query('update MEMBER set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
         break;
     case "무한삭턴":
-        for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "update general set killturn=8000 where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
+        getDB()->query('update general set killturn=8000 where no IN %li',$genlist);
         break;
     case "강제 사망":
         $date = date('Y-m-d H:i:s');

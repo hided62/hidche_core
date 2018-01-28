@@ -37,7 +37,6 @@ echo "
 </html>
 ";
 }
-// (자신의 턴이 되면 다시 접속 가능합니다. <font color=orange size=4>제한량을 늘리기 위해 참여해주세요!</font> <font color=magenta size=4>참여게시판 참고.</font>)<br>
 
 
 function bar($per, $skin=1, $h=7) {

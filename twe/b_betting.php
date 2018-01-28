@@ -31,7 +31,7 @@ $str3 = getTournamentTerm($connect);
 
 ?>
 <html>
-<?php if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다! 제한량이 모자라다면 참여를 해보세요^^"); } ?>
+<?php if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다!"); } ?>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>베팅장</title>
