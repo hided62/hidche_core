@@ -1,8 +1,10 @@
 <?php
-// $btn0~15, $gold0~15
-
 include "lib.php";
 include "func.php";
+
+// $btn0~15, $gold0~15
+
+
 //로그인 검사
 CheckLogin();
 $connect = dbConn();

@@ -1,7 +1,6 @@
 <?php
 require_once(__dir__.'/d_setting/conf.php');
-require_once(__dir__.'/../e_lib/util.php');
-require_once(__dir__.'/../e_lib/plates.php');
+require(__dir__.'/../vendor/autoload.php');
 
 class Message{
     //기본 정보

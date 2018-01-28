@@ -1,10 +1,9 @@
 <?php
-// $msg, $genlist
-
 include 'lib.php';
 include 'func.php';
-require_once('../e_lib/util.php');
 require_once('func_message.php');
+
+// $msg, $genlist
 
 
 $post = parseJsonPost();

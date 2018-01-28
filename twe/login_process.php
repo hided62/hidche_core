@@ -1,7 +1,7 @@
 <?php
+require(__dir__.'/../vendor/autoload.php');
 include "lib.php";
 include "func.php";
-require_once('../e_lib/util.php');
 $connect = dbConn("sammo");
 
 $id = util::array_get($_POST['id'],'');

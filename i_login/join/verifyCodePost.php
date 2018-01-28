@@ -1,15 +1,15 @@
 <?php
-// 외부 파라미터
-// $_POST['email'] : 이메일
-// $_POST['code'] : 인증번호
-$email = $_POST['email'];
-$code = $_POST['code'];
-
 require_once('_common.php');
 require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_FUNC.W.'class._Validation.php');
 require_once(ROOT.W.F_FUNC.W.'class._Time.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+
+// 외부 파라미터
+// $_POST['email'] : 이메일
+// $_POST['code'] : 인증번호
+$email = $_POST['email'];
+$code = $_POST['code'];
 
 $response['result'] = 'FAIL';
 

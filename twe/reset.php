@@ -1,7 +1,7 @@
 <?php
 include "lib.php";
 include "func.php";
-include "schema.sql";
+include "schema.php";
 
 $connect = dbConn();
 

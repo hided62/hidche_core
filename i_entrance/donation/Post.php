@@ -1,4 +1,9 @@
 <?php
+require_once('_common.php');
+require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
+require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
+
 // 외부 파라미터
 // $_POST['date'] : 일자
 // $_POST['id'] : ID
@@ -12,11 +17,6 @@ $name = $_POST['name'];
 $rname = $_POST['rname'];
 $subname = $_POST['subname'];
 $amount = $_POST['amount'];
-
-require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
-require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
 $rs = $DB->Select('GRADE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
 $member = $DB->Get($rs);

@@ -1,8 +1,8 @@
 <?php
-// $btn, $level, $genlist, $outlist
-
 include "lib.php";
 include "func.php";
+// $btn, $level, $genlist, $outlist
+
 //로그인 검사
 CheckLogin();
 $connect = dbConn();

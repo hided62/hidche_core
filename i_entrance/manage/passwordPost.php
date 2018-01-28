@@ -1,16 +1,16 @@
 <?php
-// 외부 파라미터
-// $_POST['pw'] : PW
-// $_POST['newPw'] : 새 PW
-$pw = $_POST['pw'];
-$newPw = $_POST['newPw'];
-
 require_once('_common.php');
 require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require_once(ROOT.W.F_CONFIG.W.'DBS'.PHP);
 require_once(ROOT.W.F_CONFIG.W.SETTINGS.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
+
+// 외부 파라미터
+// $_POST['pw'] : PW
+// $_POST['newPw'] : 새 PW
+$pw = $_POST['pw'];
+$newPw = $_POST['newPw'];
 
 $response['result'] = 'FAIL';
 

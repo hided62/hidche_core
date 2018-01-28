@@ -1,8 +1,8 @@
 <?php
-// $turn, $command, $cost, $name, $nationname, $note, $double, $third, $fourth
-
 include "lib.php";
 include "func.php";
+// $turn, $command, $cost, $name, $nationname, $note, $double, $third, $fourth
+
 //로그인 검사
 CheckLogin();
 $connect = dbConn();

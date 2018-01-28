@@ -1,7 +1,6 @@
 <?php
 include "lib.php";
 include "func.php";
-require "../e_lib/util.php";
 
 $id = $_POST['id'];
 $pw = $_POST['pw'];

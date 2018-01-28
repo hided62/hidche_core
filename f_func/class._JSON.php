@@ -1,4 +1,5 @@
 <?php
+require(__dir__.'/../vendor/autoload.php');
 
 class _JSON {
     public static function Encode($arr) {

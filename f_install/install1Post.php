@@ -1,4 +1,5 @@
 <?php
+require_once('_common.php');
 // dbHost, dbId, dbPw, dbName, mailHost, mailPort, mailId, mailPw
 $dbHost = $_POST['dbHost'];
 $dbId = $_POST['dbId'];
@@ -10,7 +11,7 @@ $mailId = $_POST['mailId'];
 $mailPw = $_POST['mailPw'];
 $mailAddr = $_POST['mailAddr'];
 
-require_once('_common.php');
+
 require_once(ROOT.W.F_FUNC.W.'class._DB.php');
 require_once(ROOT.W.F_FUNC.W.'class._String.php');
 

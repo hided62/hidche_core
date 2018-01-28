@@ -1,8 +1,8 @@
 <?php
-
 //TODO: 등용장 재 디자인.
 //xxx: 일단 비활성화
-die("<script>location.replace('msglist.php');</script>");
+header('Location:msglist.php');
+die();
 
 include "lib.php";
 include "func.php";

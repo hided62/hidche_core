@@ -1,4 +1,5 @@
 <?php
+require(__dir__.'/../vendor/autoload.php');
 
 class _String {
     public static function GetStrLen($str) {

@@ -1,6 +1,5 @@
 <?php
 include "lib.php";
-include "../e_lib/util.php";
 $connect=dbConn();
 
 $query = "select month from game";

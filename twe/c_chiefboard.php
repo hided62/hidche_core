@@ -1,8 +1,8 @@
 <?php
-// $title, $msg, $num
-
 include "lib.php";
 include "func.php";
+// $title, $msg, $num
+
 //로그인 검사
 CheckLogin();
 $connect = dbConn();

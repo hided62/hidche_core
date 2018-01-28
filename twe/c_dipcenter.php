@@ -1,8 +1,8 @@
 <?php
-// $btn, $msg, $scoutmsg, $rate, $bill, $secretlimit
-
 include "lib.php";
 include "func.php";
+// $btn, $msg, $scoutmsg, $rate, $bill, $secretlimit
+
 //로그인 검사
 CheckLogin();
 $connect = dbConn();

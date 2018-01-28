@@ -1,8 +1,8 @@
 <?php
-// $msg, $genlist
-
 include "lib.php";
 include "func.php";
+// $msg, $genlist
+
 //로그인 검사
 CheckLogin(1);
 $connect = dbConn();

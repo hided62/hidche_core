@@ -6,8 +6,6 @@
 // $_POST['select'] : 0: 폐쇄, 1: 리셋, 2: 오픈
 
 require_once('_common.php');
-require_once(ROOT.W.E_LIB.W.'util.php');
-require_once(ROOT.W.E_LIB.W.'plates.php');
 require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);

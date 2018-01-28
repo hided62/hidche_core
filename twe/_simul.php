@@ -1,7 +1,6 @@
 <?php
 include "lib.php";
 include "func.php";
-require_once '../e_lib/util.php';
 //로그인 검사
 
 $isgen = util::array_get($_POST['isgen'], '');

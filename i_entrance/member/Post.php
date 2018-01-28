@@ -1,16 +1,16 @@
 <?php
-// 외부 파라미터
-// $_POST['select'] : 처리종류
-// $_POST['no'] : NO
-$select = $_POST['select'];
-$no = $_POST['no'];
-
 require_once('_common.php');
 require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require_once(ROOT.W.F_CONFIG.W.'DBS'.PHP);
 require_once(ROOT.W.F_CONFIG.W.SETTINGS.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
+
+// 외부 파라미터
+// $_POST['select'] : 처리종류
+// $_POST['no'] : NO
+$select = $_POST['select'];
+$no = $_POST['no'];
 
 $rs = $DB->Select('GRADE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
 $member = $DB->Get($rs);

@@ -1,4 +1,10 @@
 <?php
+require_once('_common.php');
+require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
+require_once(ROOT.W.F_FUNC.W.'class._Session.php');
+require_once(ROOT.W.F_FUNC.W.'class._String.php');
+require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+
 // 외부 파라미터
 // $_POST['id'] : ID
 // $_POST['pw'] : PW
@@ -6,12 +12,6 @@
 $id = $_POST['id'];
 $pw = $_POST['pw'];
 $conmsg = $_POST['conmsg'];
-
-require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
-require_once(ROOT.W.F_FUNC.W.'class._Session.php');
-require_once(ROOT.W.F_FUNC.W.'class._String.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 
 $id = _String::NoSpecialCharacter($id);
 $pw = substr($pw, 0, 32);

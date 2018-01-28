@@ -1,6 +1,8 @@
 <?php
+require(__dir__.'/../vendor/autoload.php');
 
 function CustomHeader() {
+    //FIXME: 왜 Contect-Type이 text/html로 고정이지?!
     if(!headers_sent()) {
         header('Cache-Control: no-cache');
         header('Pragma: no-cache');

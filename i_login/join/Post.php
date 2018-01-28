@@ -1,4 +1,11 @@
 <?php
+require_once('_common.php');
+require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
+require_once(ROOT.W.F_FUNC.W.'class._Time.php');
+require_once(ROOT.W.F_FUNC.W.'class._String.php');
+require_once(ROOT.W.F_FUNC.W.'class._Validation.php');
+require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+
 // 외부 파라미터
 // $_POST['id'] : ID
 // $_POST['pw'] : PW
@@ -14,14 +21,7 @@ $pid = $_POST['pid1'].'-'.substr($_POST['pid2'],0,1).'-'.md5($_POST['pid2']);
 $name = $_POST['name'];
 $email = $_POST['email'];
 
-$pw = substr($pw, 0, 32);
-
-require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
-require_once(ROOT.W.F_FUNC.W.'class._Time.php');
-require_once(ROOT.W.F_FUNC.W.'class._String.php');
-require_once(ROOT.W.F_FUNC.W.'class._Validation.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+$pw = substr($pw, 0, 32); //FIXME: 32글자 제한을 왜해!
 
 $name = _String::NoSpecialCharacter($name);
 

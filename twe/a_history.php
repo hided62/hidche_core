@@ -1,8 +1,7 @@
 <?php
-$yearmonth = $_POST['yearmonth'];
-
 include "lib.php";
 include "func.php";
+$yearmonth = $_POST['yearmonth'];
 //로그인 검사
 CheckLogin();
 $connect = dbConn();

@@ -1,10 +1,11 @@
 <?php
+require_once('_common.php');
+
 // id, pw
 $id = $_POST['id'];
 $pw = $_POST['pw'];
 $pw = md5($pw.$pw);
 
-require_once('_common.php');
 require_once(ROOT.W.F_FUNC.W.'class._Time.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 

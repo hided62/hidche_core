@@ -1,8 +1,8 @@
 <?php
-// $btn, $name, $troop
-
 include "lib.php";
 include "func.php";
+// $btn, $name, $troop
+
 //로그인 검사
 CheckLogin();
 $connect = dbConn();

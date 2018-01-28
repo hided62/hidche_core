@@ -1,6 +1,5 @@
 <?php
-require_once('../e_lib/util.php');
-include "func_http.php";
+require(__dir__.'/../vendor/autoload.php');
 
 function getHistory($count, $year, $month, $isFirst=0) {
     $fp = @fopen("logs/_history.txt", "r");
@@ -79,26 +78,13 @@ function LogHistory($connect, $isFirst=0) {
     array_pop($map_path);
     array_push($map_path, 'map.php?type=2&graphic=0');
     $map_path = join('/', $map_path);
-    //$file = explode('/', __FILE__);
-    //$url = '/'.$file[count($file)-3].'/'.$file[count($file)-2].'/map.php?type=2&graphic=0';
-
-    /* 소켓 통신을 통하여 필요한 html정보를 가져옴 */
-    if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', Start HTTP');
     
-    //$http = new HTTP("62che.com", 80, 10);
-    $http = new HTTP(parse_url($current_url, PHP_URL_HOST), parse_url($current_url, PHP_URL_PORT), 10); 
-    if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', Connect end, '.$http->GetError());
-    if($http->GetErr() == true) { return false; }
-    $http->setHttpVersion("1.1");
-    $cookie = "";
-    $http->Get($map_path, $cookie);
-    if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', Response end, '.$http->GetError());
-    if($http->GetErr() == true) { return false; }
-    $map = $http->Response["body"];
+    $client = new GuzzleHttp\Client();
+    $response = $client->get($map_path);
+    
+    $map = (string)$response->getBody();
     $map = str_replace("'", '<_quot_>', $map);
     $map = str_replace('"', '<_dquot_>', $map);
-    $http->Close();
-    if($http->GetErr() == true) { return false; }
     
     $log = getHistory(20, $admin['year'], $admin['month'], $isFirst);
     $genlog = getGenHistory(50, $admin['year'], $admin['month'], $isFirst);

@@ -1,4 +1,10 @@
 <?php
+require_once('_common.php');
+require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
+require_once(ROOT.W.F_FUNC.W.'class._String.php');
+require_once(ROOT.W.F_FUNC.W.'class._Validation.php');
+require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+
 // 외부 파라미터
 // $_POST['type'] : 0: ID체크, 1: 주민번호 체크, 2: 닉네임 체크, 3: 이메일 체크
 // $_POST['id'] : ID
@@ -13,12 +19,6 @@ $pid2 = $_POST['pid2'];
 $pid = $_POST['pid1'].'-'.substr($_POST['pid2'],0,1).'-'.md5($_POST['pid2']);
 $name = $_POST['name'];
 $email = $_POST['email'];
-
-require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
-require_once(ROOT.W.F_FUNC.W.'class._String.php');
-require_once(ROOT.W.F_FUNC.W.'class._Validation.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 
 $name = _String::NoSpecialCharacter($name);
 

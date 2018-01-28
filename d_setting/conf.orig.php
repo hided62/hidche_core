@@ -1,7 +1,5 @@
 <?php
 require(__dir__.'/../vendor/autoload.php');
-require_once(__dir__.'/../e_lib/phpmailer5/class.phpmailer.php');
-require_once(__dir__.'/../e_lib/phpmailer5/class.smtp.php');
 
 /**
  * DB 객체 생성
