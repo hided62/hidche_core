@@ -66,7 +66,7 @@ function CoreTurnTable() {
 function allButton() {
     
     global $_basecolor2;
-    $npcmode = newDB()->queryFirstField("select npcmode from game where no='1'");
+    $npcmode = getDB()->queryFirstField("select npcmode from game where no='1'");
     if($npcmode == 1) {
         $site = "a_npcList.php";
         $call = "빙의일람";
@@ -109,7 +109,7 @@ function commandButton() {
     if($generalID === NULL){
         return '';
     }
-    $db = newDB();
+    $db = getDB();
     
     $me = $db->queryFirstRow("select skin,no,nation,level,belong from general where user_id=%i", $generalID);
 

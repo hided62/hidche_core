@@ -6,7 +6,7 @@ require(__dir__.'/../vendor/autoload.php');
  * 
  * @return MeekroDB 
  */
-function newRootDB(){
+function getRootDB(){
     $host = '_host_';
     $user = '_user_';
     $password = '_password_';

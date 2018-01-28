@@ -1797,7 +1797,7 @@ function adminMsg($connect, $skin=1) {
 }
 
 function getOnlineNum() {
-    return newDB()->queryFirstField('select `online` from `game` where `no`=1');
+    return getDB()->queryFirstField('select `online` from `game` where `no`=1');
 }
 
 function onlinegen($connect) {
@@ -2133,7 +2133,7 @@ function CutDay($date) {
 
 
 function increateRefreshEx($type, $cnt=1){
-    $db = newDB();
+    $db = getDB();
 
     $db->query("update `game` set `refresh` = `refresh` + %d_p_id where `no` = %d_cnt", array(
         'p_id'=>$p_id,
@@ -2317,12 +2317,12 @@ function CheckOverhead($connect) {
 }
 
 function isLock() {
-    return newDB()->queryFirstField("select plock from plock where no=1") != 0;
+    return getDB()->queryFirstField("select plock from plock where no=1") != 0;
 }
 
 function tryLock() {
     //NOTE: 게임 로직과 관련한 모든 insert, update 함수들은 lock을 거칠것을 권장함.
-    $db = newDB();
+    $db = getDB();
     //테이블 락
     $db->query("lock tables plock write");
     // 잠금
@@ -2340,7 +2340,7 @@ function tryLock() {
 function unlock() {
     // 풀림
     //NOTE: unlock에는 table lock이 필요없는가?
-    newDB()->query("update plock set plock=0 where no=1");
+    getDB()->query("update plock set plock=0 where no=1");
 }
 
 function timeover($connect) {

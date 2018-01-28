@@ -34,7 +34,7 @@ if(!CheckLoginEx($db)){
 }
 
 
-$db = newDB();
+$db = getDB();
 
 $connect = dbConn();
 increaseRefresh($connect, '서신전달', 1);

@@ -43,6 +43,7 @@ switch($btn) {
             $gen = MYDB_fetch_array($result);
             $uid[$i] = $gen['user_id'];
         }
+        
         $connect = dbConn("sammo");
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($uid); $i++) {

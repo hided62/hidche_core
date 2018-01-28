@@ -75,7 +75,7 @@ function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
     }
 
     //TODO: table 네임의 prefix를 처리할 수 있도록 개선
-    $result = newDB()->query($sql, [
+    $result = getDB()->query($sql, [
         'mailbox' => $mailbox,
         'limit' => $limit,
         'time' => $fromTime
@@ -100,7 +100,7 @@ function getMessage($msgType, $limit=30, $fromTime=NULL){
         return getRawMessage($genID, $limit, $fromTime);
     }
     else if($msgType === 'national'){
-        $nationID = newDB()->queryFirstField(
+        $nationID = getDB()->queryFirstField(
             'select `nation` from `general` where user_id = %i',
             $genID
         );

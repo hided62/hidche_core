@@ -6,7 +6,7 @@ require_once(__dir__.'/../../d_setting/conf.php');
  * 
  * @return MeekroDB 
  */
-function newDB(){
+function getDB(){
     $host = '_host_';
     $user = '_user_';
     $password = '_password_';
