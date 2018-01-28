@@ -2317,7 +2317,7 @@ function CheckOverhead($connect) {
 }
 
 function isLock() {
-    return newDB()->queryFirstColumn("select plock from plock where no=1") != 0;
+    return newDB()->queryFirstField("select plock from plock where no=1") != 0;
 }
 
 function lock() {
