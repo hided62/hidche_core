@@ -7,7 +7,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-if(CheckBlock($connect) != 1 && CheckBlock($connect) != 3) {
+if(getBlockLevel() != 1 && getBlockLevel() != 3) {
     $query = "select no,nation from general where user_id='{$_SESSION['p_id']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);

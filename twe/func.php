@@ -19,7 +19,7 @@ function randF(){
     return mt_rand() / mt_getrandmax();
 }
 
-
+/// $_SESSION['p_id'] 의 값을 받아옴
 function getGeneralID(){
     //TODO: 서버마다 p_id가 다를 수 있도록 조치
     if(!isset($_SESSION['p_id'])){
@@ -67,11 +67,8 @@ function checkLimit($userlevel, $con, $conlimit) {
     }
 }
 
-function CheckBlock($connect) {
-    $query = "select block from general where user_id='{$_SESSION['p_id']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
-    return $me['block'];
+function getBlockLevel() {
+    return getDB()->queryFirstField('select block from general where user_id= %i', getGeneralID());
 }
 
 function getRandGenName() {

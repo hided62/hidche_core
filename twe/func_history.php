@@ -76,7 +76,7 @@ function LogHistory($connect, $isFirst=0) {
     $current_url = util::get_current_url();
     $map_path =  explode('/',parse_url($current_url, PHP_URL_PASS));
     array_pop($map_path);
-    array_push($map_path, 'map.php?type=2&graphic=0');
+    $map_path[] =  'map.php?type=2&graphic=0';
     $map_path = join('/', $map_path);
     
     $client = new GuzzleHttp\Client();

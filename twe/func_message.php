@@ -7,51 +7,43 @@ class Message{
     public $id;
     public $mailbox;
     public $type;
+    public $isSender;
     public $src;
     public $dest;
     public $time;
     public $message;
 
-    public $rawType;
-
     function __construct($row){
-        $this->raw_type = $row['type'];
-
         $this->id = $row['id'];
         $this->mailbox = $row['mailbox'];
-        
-        if($this->rawType === 'public'){
-            $this->type = 'public';
-        }
-        else if(util::ends_with($this->rawType, 'national')){
-            $this->type = 'national';
-        }
-        else{
-            $this->type = 'private';
-        }
-
+        $this->type = $row['type'];
+        $this->isSender = $row['is_sender'] != 0;
         $this->src = [
             'id' => $row['src'],
             'name' => $row['src_name'],
             'nation' => $row['src_nation'],
-            'color' => $row['src_color']
+            'color' => $row['src_color'],
+            'nation_id' => $row['src_nation_id']
         ];
 
-        if($this->src['nation'] === NULL){
+        if($this->src['nation'] === null){
             $this->src['nation'] = '재야';
             $this->src['color'] = '#FFFFFF';
+            $this->src['nation_id'] = null;
         }
 
         $this->dest = [
             'id' => $row['dest'],
             'name' => $row['dest_name'],
             'nation' => $row['dest_nation'],
-            'color' => $row['dest_color']
+            'color' => $row['dest_color'],
+            'nation_id' => $row['dest_nation_id']
         ];
 
-        if($this->dest['nation'] === NULL){
+        if($this->dest['nation'] === null){
             $this->dest['nation'] = '재야';
             $this->dest['color'] = '#FFFFFF';
+            $this->dest['nation_id'] = null;
         }
 
         $this->datetime = $row['time'];
@@ -88,7 +80,7 @@ function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
 }
 
 function getMessage($msgType, $limit=30, $fromTime=NULL){
-    $generalID = genID();
+    $generalID = getGeneralID();
     if($generalID === NULL){
         return [];
     }
@@ -109,10 +101,103 @@ function getMessage($msgType, $limit=30, $fromTime=NULL){
     else{
         return [];
     }
-
-
 }
 
+function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date){
+    
+    getDB()->insert('message', array(
+        'address' => $dest,
+        'type' => 'receive',
+        'src' => $src['id'],
+        'dest' => $dest['id'],
+        'time' => $date,
+        'src_nation_id' => util::array_get($src['nation_id'], null),
+        'src_name' => util::array_get($src['name'], null),
+        'src_nation' => util::array_get($src['nation'], null),
+        'src_color' => util::array_get($src['color'], null),
+        'src_icon' => util::array_get($src['icon'], null),
+        'dest_nation_id' => util::array_get($dest['nation_id'], null),
+        'dest_name' => util::array_get($dest['name'], null),
+        'dest_nation' => util::array_get($dest['nation'], null),
+        'dest_color' => util::array_get($dest['color'], null),
+        'message' => $msg
+    ));
+}
+
+function sendMessage($msgType, $src, $dest, $msg, $date = null){
+    if($date === null){
+        $date = $datetime->format('Y-m-d H:i:s');
+    }
+
+    if($msgType === 'public'){
+        //dest는 필요하지 않음
+        $srcMailbox = null;
+        $destMailbox = 9999;
+        $dest['id'] = 9999;
+    }
+    else if($msgType === 'national'){
+        //dest는 nation_id만 필요함
+        $dest['id'] = $dest['nation_id'] + 9000;
+
+        if($src['nation_id'] === $dest['nation_id']){
+            $srcMailbox = null;
+        }
+        else{
+            $srcMailbox = $src['nation_id'] + 9000;
+        }
+        $destMailbox = $dest['nation_id'] + 9000;
+    }
+    else{
+        //dest는 id, name이 필수
+        $srcMailbox = $src['id'];
+        $destMailbox = $dest['id'];
+    }
+
+    if($srcMailbox !== null){
+        sendRawMessage($msgType, true, $srcMailbox, $src, $dest, $msg, $date);
+    }
+    sendRawMessage($msgType, false, $destMailbox, $src, $dest, $msg, $date);
+}
+
+function getMailboxList(){
+    $result = [];
+
+    $generalID = getGeneralID();
+    $db = getDB();
+    $me = $db->queryFirstRow('select no,nation,level from general where user_id=%i', $generalID);
+
+    //가장 최근에 주고 받은 사람.
+    $latestMessage = util::array_get(getMessage('private', 1)[0], null);
+    if($latestMessage !== null){
+        if($latestMessage->src == $generalID){
+            $latestMessage = $latestMessage->dest;
+        }
+        else{
+            $latestMessage = $latestMessage->src;
+        }
+    }
+
+    $nations = [];
+    foreach ($db->query('select nation, name, color from nation') as $nation) {
+        $nations[$nation['nation']] = $nation;
+    }
+    $nations[0] = [
+        'nation' => 0,
+        'name' => '재야',
+        'color' => '#ffffff'
+    ];
+
+    $generals = $db->query('select no, nation, name, level from general where npc < 2 and no != %i order by name asc', $generalID);
+    foreach ($generals as $general) {
+        $nations[$general['nation']] = $general;
+    }
+
+    return [
+        'me' => $me,
+        'latest' => $latestMessage,
+        'nations' => $nations
+    ];
+}
 
 function genList($connect) {
     $query = "select no,nation,level,msgindex,userlevel from general where user_id='{$_SESSION['p_id']}'";

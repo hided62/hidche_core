@@ -3,9 +3,6 @@ include 'lib.php';
 include 'func.php';
 require_once('func_message.php');
 
-// $msg, $genlist
-
-
 $post = parseJsonPost();
 
 if(!isset($post['genlist']) || !isset($post['msg'])){
@@ -18,7 +15,7 @@ if(!isset($post['genlist']) || !isset($post['msg'])){
 }
 
 
-$dest = $post['dest'];
+$destMailbox = $post['dest_mailbox'];
 $msg = $post['msg'];
 $datetime = new DateTime();
 $date = $datetime->format('Y-m-d H:i:s');
@@ -39,9 +36,7 @@ $db = getDB();
 $connect = dbConn();
 increaseRefresh($connect, '서신전달', 1);
 
-//$msg,$genlist 두가지 값을 받
-
-if(CheckBlock($connect) == 1 || CheckBlock($connect) == 3) {
+if(getBlockLevel() == 1 || getBlockLevel() == 3) {
     header('Content-Type: application/json');
     die(json_encode([
         'result' => false,
@@ -49,9 +44,6 @@ if(CheckBlock($connect) == 1 || CheckBlock($connect) == 3) {
         'redirect' => NULL
     ]));
 }
-
-
-
 
 $conlimit = $db->queryFirstField('select conlimit from game where no=1');
 
@@ -89,106 +81,55 @@ if($msg == ''){
     ]));
 }
 
-$src = $me['no'];
-$src_name = $me['name'];
-$src_icon = $me['picture'];
-$src_nation_id = $me['nation'];
-if($src_nation_id == 0) {
-    $src_nation = '재야';
-    $src_color = '#FFFFFF';
-}
-else{
+$src = [
+    'id' => $me['no'],
+    'name' => $me['name'],
+    'icon' => $me['picture'],
+    'nation_id' => $me['nation'],
+    'nation' => null
+];
+if($src['nation_id'] != 0) {
     $nation = $db->queryFirstRow('select nation,name,color from nation where nation=%i',$src_nation_id);
-    $src_nation = $nation['name'];
-    $src_color = '#'.$nation['color'];
-    $src_color = str_replace('##', '#', $src_color); //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
+    $src['nation'] = $nation['name'];
+    $src['color'] = '#'.$nation['color'];
+    $src['color'] = str_replace('##', '#', $src['color']); //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
 }
 
 // 전체 메세지
-if($dest == 9999) {
-
-    $db->insert('message', array(
-        'address' => $dest,
-        'type' => 'global',
-        'src' => $src,
-        'dest' => $dest,
-        'time' => $date,
-        'src_name' => $src_name,
-        'src_nation' => $src_nation,
-        'src_color' => $src_color,
-        'src_icon' => $src_icon,
-        'message' => $msg
-    ));
-    
+if($destMailbox == 9999) {
+    sendMessage('public', $src, [], $msg, $date);
 // 국가 메세지
-} elseif($dest >= 9000) {
-    $real_nation = $dest - 9000;
+} elseif($destMailbox >= 9000) {
+
+    if($me['level'] < 5){
+        $real_nation = $me['nation_id'];
+    }
+    else{
+        $real_nation = $dest - 9000;
+    }
     $nation = $db->queryFirstRow('select nation,name,color from nation where nation=%i',$real_nation);
     
     if($nation === NULL || empty($nation)){
-        $dest = 9998;
-        $dest_nation = '재야';
-        $dest_color = '#FFFFFF';   
+        $dest = ['nation_id' => 0];
     }
     else{
-        $dest_nation = $nation['name'];
-        $dest_color = '#'.$nation['color'];
-        $dest_color = str_replace('##', '#', $dest_color); //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
+        $color = '#'.$nation['color'];
+        $color = str_replace('##', '#', $color); 
+        //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
+        $dest = [
+            'nation_id' => $nation['nation'],
+            'color' => $color
+        ];
     }
 
-    
-    if($nation['nation'] == $me['nation'] || $me['level'] < 5){
-        $db->insert('message', array(
-            'address' => $dest,
-            'type' => 'receive_nation',
-            'src' => $src,
-            'dest' => $dest,
-            'time' => $date,
-            'src_name' => $src_name,
-            'src_nation' => $src_nation,
-            'src_color' => $src_color,
-            'src_icon' => $src_icon,
-            'dest_nation' => $dest_nation,
-            'dest_color' => $dest_color,
-            'message' => $msg
-        ));
-    }
-    else{
-        $db->insert('message', array(
-            'address' => $src_nation_id + 9000,
-            'type' => 'send_nation',
-            'src' => $src,
-            'dest' => $dest,
-            'time' => $date,
-            'src_name' => $src_name,
-            'src_nation' => $src_nation,
-            'src_color' => $src_color,
-            'src_icon' => $src_icon,
-            'dest_nation' => $dest_nation,
-            'dest_color' => $dest_color,
-            'message' => $msg
-        ));
-        $db->insert('message', array(
-            'address' => $dest,
-            'type' => 'receive_nation',
-            'src' => $src,
-            'dest' => $dest,
-            'time' => $date,
-            'src_name' => $src_name,
-            'src_nation' => $src_nation,
-            'src_color' => $src_color,
-            'src_icon' => $src_icon,
-            'dest_nation' => $dest_nation,
-            'dest_color' => $dest_color,
-            'message' => $msg
-        ));
-    }
+    sendMessage('national', $src, $dest, $msg, $date);
 
 // 개인 메세지
-} elseif($dest > 0) {
+} elseif($destMailbox > 0) {
     $last_msg = new DateTime(util::array_get($_SESSION['last_msg'], '0000-00-00'));
 
     $msg_interval = $datetime->getTimestamp() - $last_msg->getTimestamp();
+    //NOTE: 여기서 유저 레벨을 구별할 코드가 필요할까?
     if($msg_interval < 2){
         header('Content-Type: application/json');
         die(json_encode([
@@ -198,11 +139,10 @@ if($dest == 9999) {
         ]));
     }
 
-    $_SESSION['last_msg'] = $date;
+    
+    $destUser = $db->queryFirstRow('select `no`,`name`,`nation` from `general` where `user_id` = %s',$destMailbox);
 
-    $dest_user = $db->queryFirstRow('select `no`,`name`,`nation` from `general` where `user_id` = %s',$dest);
-
-    if($dest_user == NULL || empty($dest_user)){
+    if($destUser == NULL || empty($destUser)){
         header('Content-Type: application/json');
         die(json_encode([
             'result' => false,
@@ -211,49 +151,23 @@ if($dest == 9999) {
         ]));
     }
 
-    $dest_name = $dest_user['name'];
-    if($dest_user['nation'] == 0){
-        $dest_nation = $nation['name'];
-        $dest_color = '#'.$nation['color'];
-        $dest_color = str_replace('##', '#', $dest_color);
-    }
-    else{
-        $nation = $db->queryFirstRow('select nation,name,color from nation where nation=%i',$dest_user['nation']);
-        $dest_nation = $nation['name'];
-        $dest_color = '#'.$nation['color'];
-        $dest_color = str_replace('##', '#', $dest_color); //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
-    }
+    $_SESSION['last_msg'] = $date;
 
-    $db->insert('message', array(
-        'address' => $src_nation_id + 9000,
-        'type' => 'send',
-        'src' => $src,
-        'dest' => $dest,
-        'time' => $date,
-        'src_name' => $src_name,
-        'src_nation' => $src_nation,
-        'src_color' => $src_color,
-        'src_icon' => $src_icon,
-        'dest_name' => $dest_name,
-        'dest_nation' => $dest_nation,
-        'dest_color' => $dest_color,
-        'message' => $msg
-    ));
-    $db->insert('message', array(
-        'address' => $dest,
-        'type' => 'receive',
-        'src' => $src,
-        'dest' => $dest,
-        'time' => $date,
-        'src_name' => $src_name,
-        'src_nation' => $src_nation,
-        'src_color' => $src_color,
-        'src_icon' => $src_icon,
-        'dest_name' => $dest_name,
-        'dest_nation' => $dest_nation,
-        'dest_color' => $dest_color,
-        'message' => $msg
-    ));
+    $dest = [
+        'id' => $destMailbox,
+        'name' => $dest_user['name']
+    ];
+    if($dest_user['nation'] != 0){
+        $nation = $db->queryFirstRow('select nation,name,color from nation where nation=%i',$dest_user['nation']);
+        
+        $color = $nation['color'];
+        $color = str_replace('##', '#', $color); 
+        //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
+        $dest['color'] = $color;
+        $dest['nation'] = $nation['name'];
+        $dest['nation_id'] = $nation['nation'];
+    }
+    sendMessage('private', $src, $dest, $msg, $date);
 }
 else{
     header('Content-Type: application/json');

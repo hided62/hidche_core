@@ -28,10 +28,7 @@ switch($btn) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "블럭 해제":
-        for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "update general set block=0 where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
+        getDB()->query('update general set block=0 where no IN %li', $genlist);
         break;
     case "1단계 블럭":
         $date = date('Y-m-d H:i:s');
@@ -60,10 +57,7 @@ switch($btn) {
         break;
     case "강제 사망":
         $date = date('Y-m-d H:i:s');
-        for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "update general set turn0=0,killturn=0,turntime='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
+        getDB()->query('update general set turn0=0,killturn=0,turntime=%s where no IN %li',$date, $genlist);
         break;
     case "특기 부여":
         $query = "select year,month from game where no=1";

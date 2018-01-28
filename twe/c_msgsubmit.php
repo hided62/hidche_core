@@ -8,7 +8,7 @@ CheckLogin(1);
 $connect = dbConn();
 increaseRefresh($connect, "서신전달", 1);
 
-if(CheckBlock($connect) == 1 || CheckBlock($connect) == 3) {
+if(getBlockLevel() == 1 || getBlockLevel() == 3) {
     $msg = "";
     $genlist = 0;
 }

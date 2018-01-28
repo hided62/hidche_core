@@ -432,14 +432,24 @@ $game_schema = "
 $message_schema = "
 CREATE TABLE `message` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`address` INT(11) NOT NULL,
-	`type` ENUM('send','receive') NOT NULL,
+	`mailbox` INT(11) NOT NULL COMMENT '9999 == public, >= 9000 national',
+	`type` ENUM('private','national','public') NOT NULL,
+	`is_sender` BIT(1) NOT NULL,
 	`src` INT(11) NOT NULL,
 	`dest` INT(11) NOT NULL,
-	`time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`src_nation_id` INT(11) NULL DEFAULT NULL,
+	`src_name` VARCHAR(15) NOT NULL,
+	`src_nation` VARCHAR(15) NULL DEFAULT NULL,
+	`src_color` VARCHAR(15) NULL DEFAULT NULL,
+	`src_icon` VARCHAR(15) NULL DEFAULT NULL,
+	`dest_nation_id` INT(11) NULL DEFAULT NULL,
+	`dest_name` VARCHAR(15) NULL DEFAULT NULL,
+	`dest_nation` VARCHAR(15) NULL DEFAULT NULL,
+	`dest_color` VARCHAR(15) NULL DEFAULT NULL,
 	`message` TEXT NOT NULL,
 	PRIMARY KEY (`id`),
-	INDEX `by_owner` (`address`, `time`),
+	INDEX `by_owner` (`mailbox`, `time`),
 	INDEX `by_dest` (`dest`, `time`),
 	INDEX `by_full` (`src`, `dest`, `time`)
 )
