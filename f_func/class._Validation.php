@@ -1,6 +1,6 @@
 <?php
 require_once(ROOT.W.F_FUNC.W.'class._String.php');
-require_once(ROOT.W.E_LIB.W.'util.php');
+require(__dir__.'/../vendor/autoload.php');
 class _Validation {
     public static function CheckID($id) {
         $len = strlen($id);

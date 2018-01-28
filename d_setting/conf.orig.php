@@ -1,6 +1,5 @@
 <?php
-require_once(__dir__.'/../e_lib/util.php');
-require_once(__dir__.'/../e_lib/meekrodb.2.3.class.php.php');
+require(__dir__.'/../vendor/autoload.php');
 require_once(__dir__.'/../e_lib/phpmailer5/class.phpmailer.php');
 require_once(__dir__.'/../e_lib/phpmailer5/class.smtp.php');
 

@@ -1,6 +1,6 @@
 <?php
+require(__dir__.'/../vendor/autoload.php');
 require_once(__dir__.'/d_setting/conf.php');
-require_once(__dir__.'/../e_lib/util.php');
 require_once 'process_war.php';
 require_once 'func_gamerule.php';
 require_once 'func_process.php';
@@ -2320,19 +2320,26 @@ function isLock() {
     return newDB()->queryFirstField("select plock from plock where no=1") != 0;
 }
 
-function lock() {
+function tryLock() {
     //NOTE: 게임 로직과 관련한 모든 insert, update 함수들은 lock을 거칠것을 권장함.
     $db = newDB();
     //테이블 락
     $db->query("lock tables plock write");
     // 잠금
-    $db->query("update plock set plock=1 where no=1");
+    $isUnlocked = $db->queryFirstField("select plock from plock where no=1") != 0;
+    if($isUnlocked){
+        $db->query("update plock set plock=1 where no=1");
+    }
+    
     //테이블 언락
     $db->query("unlock tables");
+
+    return $isUnlocked;
 }
 
 function unlock() {
     // 풀림
+    //NOTE: unlock에는 table lock이 필요없는가?
     newDB()->query("update plock set plock=0 where no=1");
 }
 
@@ -2440,22 +2447,20 @@ function checkTurn($connect) {
     // 잦은 갱신 금지 현재 10초당 1회
     if(!timeover($connect)) { return; }
     // 현재 처리중이면 접근 불가
-    if(isLock()) { return; }
+
+    // 파일락 획득
+    //FIXME:이미 DB 테이블로 lock을 시도하는데 이게 따로 필요한가?
+    $fp = fopen('lock.txt', 'r');
+    if(!flock($fp, LOCK_EX)) {
+         return; 
+        }
+
+    if(!tryLock()){
+        return;
+    }
 
     $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
     pushLockLog($connect, $locklog);
-
-    // 파일락 획득
-    $fp = fopen('lock.txt', 'r');
-    if(!flock($fp, LOCK_EX)) { return; }
-    // 세마포어 획득(윈도우서버 불가)
-    //$sema = @sem_get(fileinode('stylesheet.php'));
-    //if(!@sem_acquire($sema)) { echo "치명적 에러! 유기체에게 문의하세요!"; exit(1); }
-
-    // 현재 처리중이면 접근 불가
-    if(isLock()) { return; }
-    // 락 걸고 처리
-    lock();
 
     // 파일락 해제
     if(!flock($fp, LOCK_UN)) { return; }
