@@ -6,12 +6,11 @@ require_once('func_message.php');
 $post = parseJsonPost();
 
 if(!isset($post['genlist']) || !isset($post['msg'])){
-    header('Content-Type: application/json');
-    die(json_encode([
+    returnJson([
         'result' => false,
         'reason' => '올바르지 않은 호출입니다.',
         'redirect' => NULL
-    ]));
+    ]);
 }
 
 
@@ -22,12 +21,11 @@ $date = $datetime->format('Y-m-d H:i:s');
 
 //로그인 검사
 if(!CheckLoginEx($db)){
-    header('Content-Type: application/json');
-    die(json_encode([
+    returnJson([
         'result' => false,
         'reason' => '로그인되지 않았습니다.',
         'redirect' => NULL
-    ]));
+    ]);
 }
 
 
@@ -37,12 +35,11 @@ $connect = dbConn();
 increaseRefresh($connect, '서신전달', 1);
 
 if(getBlockLevel() == 1 || getBlockLevel() == 3) {
-    header('Content-Type: application/json');
-    die(json_encode([
+    returnJson([
         'result' => false,
         'reason' => '차단되었습니다.',
         'redirect' => NULL
-    ]));
+    ]);
 }
 
 $conlimit = $db->queryFirstField('select conlimit from game where no=1');
@@ -52,12 +49,11 @@ $me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`msgindex`,`userle
 
 $con = checkLimit($me['userlevel'], $me['con'], $conlimit);
 if($con >= 2) { 
-    header('Content-Type: application/json');
-    die(json_encode([
+    returnJson([
         'result' => false,
         'reason' => '접속 제한입니다.',
         'redirect' => NULL
-    ]));
+    ]);
  }
 
 //FIXME: 원래는 필요없는 값이지만 예전 코드와 꼬일 수 있어 유지함.
@@ -131,24 +127,22 @@ if($destMailbox == 9999) {
     $msg_interval = $datetime->getTimestamp() - $last_msg->getTimestamp();
     //NOTE: 여기서 유저 레벨을 구별할 코드가 필요할까?
     if($msg_interval < 2){
-        header('Content-Type: application/json');
-        die(json_encode([
+        returnJson([
             'result' => false,
             'reason' => '개인메세지는 2초당 1건만 보낼 수 있습니다!',
             'redirect' => NULL
-        ]));
+        ]);
     }
 
     
     $destUser = $db->queryFirstRow('select `no`,`name`,`nation` from `general` where `user_id` = %s',$destMailbox);
 
     if($destUser == NULL || empty($destUser)){
-        header('Content-Type: application/json');
-        die(json_encode([
+        returnJson([
             'result' => false,
             'reason' => '존재하지 않는 유저입니다.',
             'redirect' => NULL
-        ]));
+        ]);
     }
 
     $_SESSION['last_msg'] = $date;
@@ -170,16 +164,14 @@ if($destMailbox == 9999) {
     sendMessage('private', $src, $dest, $msg, $date);
 }
 else{
-    header('Content-Type: application/json');
-    die(json_encode([
+    returnJson([
         'result' => false,
         'reason' => '알 수 없는 에러',
         'redirect' => NULL
-    ]));
+    ]);
 }
 
-header('Content-Type: application/json');
-echo json_encode([
+returnJson([
     'result' => true,
     'reason' => 'SUCCESS',
     'redirect' => 'msglist.php',

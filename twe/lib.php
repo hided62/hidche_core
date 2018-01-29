@@ -135,6 +135,20 @@ function Error($message, $url="") {
     exit;
 }
 
+function returnJson($value, $pretty = false, $die = true){
+    header('Content-Type: application/json');
+    if($pretty){
+        $flag = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
+    }
+    else{
+        $flag = JSON_UNESCAPED_UNICODE;
+    }
+    echo json_encode($value, $flag); 
+    if($die){
+        die();
+    }
+}
+
 // 게시판의 생성유무 검사
 function isTable($connect, $str, $dbname='') {
     if(!$dbname) {

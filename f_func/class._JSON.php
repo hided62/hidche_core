@@ -1,6 +1,7 @@
 <?php
 require(__dir__.'/../vendor/autoload.php');
 
+//NOTE: 그냥 json_encode(), json_decode() 쓰면 안되나?
 class _JSON {
     public static function Encode($arr) {
         foreach($arr as $key => $val) {
