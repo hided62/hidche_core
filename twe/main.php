@@ -68,21 +68,6 @@ $scenario = getScenario();
 </head>
 <body>
 
-<div style="position:absolute; top:15px; left:50%; margin-left: -567px; width:  52px; height:  52px; border: 1px solid white;">심의</div>
-<?php $banner_id = $_SESSION['p_id']; ?>
-<div style="position:absolute; top:77px; left:50%; margin-left: -675px; width: 160px; height: 600px; border: 1px solid white;">
-<?php include('../i_banner/banner.php'); ?>
-</div>
-<div style="position:absolute; top:77px; left:50%; margin-left: 515px; width: 160px; height: 600px; border: 1px solid white;">
-<?php include('../i_banner/banner.php'); ?>
-</div>
-<div style="position:absolute; top:1720px; left:50%; margin-left: -675px; width: 160px; height: 600px; border: 1px solid white;">
-<?php include('../i_banner/banner.php'); ?>
-</div>
-<div style="position:absolute; top:1720px; left:50%; margin-left: 515px; width: 160px; height: 600px; border: 1px solid white;">
-<?php include('../i_banner/banner.php'); ?>
-</div>
-
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
     <tr><td colspan=5><?=allButton()?></td></tr>
     <tr height=50>
