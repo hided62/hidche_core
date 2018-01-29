@@ -22,7 +22,7 @@ if($vote[0] == "") {
 <head>
 <title>설문조사</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel=stylesheet href=stylesheet.php type=text/css>
+<link rel=stylesheet href=css/common.css type=text/css>
 <script type="text/javascript">
 function captureKey(e) {
     if(e.keyCode == 13 && e.srcElement.type == 'text') {

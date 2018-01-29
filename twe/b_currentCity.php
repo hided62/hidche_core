@@ -24,7 +24,7 @@ if($me['skin'] < 1) {
 <head>
 <title>도시정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel=stylesheet href=stylesheet.php type=text/css>
+<link rel=stylesheet href=css/common.css type=text/css>
 <?php require('analytics.php'); ?>
 </head>
 

@@ -23,7 +23,7 @@ if($me['skin'] < 1) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>부대편성</title>
-<link rel=stylesheet href=stylesheet.php type=text/css>
+<link rel=stylesheet href=css/common.css type=text/css>
 <?php require('analytics.php'); ?>
 </head>
 

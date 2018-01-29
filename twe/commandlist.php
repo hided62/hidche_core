@@ -11,7 +11,7 @@ $connect = dbconn();
 <head>
 <title>커맨드리스트</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel=stylesheet href=stylesheet.php type=text/css>
+<link rel=stylesheet href=css/common.css type=text/css>
 <script type="text/javascript">
 function myclock() {
     lastday = new Array(31,28,31,30,31,30,31,31,30,31,30,31);

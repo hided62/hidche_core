@@ -22,7 +22,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>세력일람</title>
-<link rel=stylesheet href=stylesheet.php type=text/css>
+<link rel=stylesheet href=css/common.css type=text/css>
 <?php require('analytics.php'); ?>
 </head>
 

@@ -14,7 +14,7 @@ if($graphic == 2) {
     exit();
 }
 $connect=dbConn();
-//<link rel=stylesheet href=stylesheet.php type=text/css>
+//<link rel=stylesheet href=css/common.css type=text/css>
 ?>
 
 <html>

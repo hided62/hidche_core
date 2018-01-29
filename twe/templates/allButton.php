@@ -20,6 +20,3 @@
         <button class="toolbarButton" onclick="window.open('<?=$site?>')"><?=$call?></button>
     </div>
 </div>
-<!--
-<table align=center border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg1>
-    <tr>-->

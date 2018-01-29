@@ -6,7 +6,7 @@ file_put_contents("logs/_db_bug.txt", $message."\n", FILE_APPEND);
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>에러</title>
-<link rel=stylesheet href=stylesheet.php type=text/css>
+<link rel=stylesheet href=css/common.css type=text/css>
 <?php require('analytics.php'); ?>
 </head>
 <body>

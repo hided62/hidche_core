@@ -28,7 +28,7 @@ if($me['skin'] < 1) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>인사부</title>
-<link rel=stylesheet href=stylesheet.php type=text/css>
+<link rel=stylesheet href=css/common.css type=text/css>
 <script type="text/javascript">
 function out() {
     return confirm('정말 추방하시겠습니까?');
