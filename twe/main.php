@@ -53,6 +53,7 @@ if($me['skin'] < 1) {
 
 $scenario = getScenario();
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>메인</title>
