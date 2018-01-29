@@ -2,6 +2,8 @@
 include "lib.php";
 include "func.php";
 
+use utilphp\util as util;
+
 $id = $_POST['id'];
 $pw = $_POST['pw'];
 $name       = $_POST['name'];

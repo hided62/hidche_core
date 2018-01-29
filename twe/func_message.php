@@ -2,6 +2,8 @@
 require_once(__dir__.'/d_setting/conf.php');
 require(__dir__.'/../vendor/autoload.php');
 
+use utilphp\util as util;
+
 class Message{
     //기본 정보
     public $id;

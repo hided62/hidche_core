@@ -1,6 +1,8 @@
 <?php
 require(__dir__.'/../vendor/autoload.php');
 
+use utilphp\util as util;
+
 function getHistory($count, $year, $month, $isFirst=0) {
     $fp = @fopen("logs/_history.txt", "r");
     @fseek($fp, -$count*300, SEEK_END);

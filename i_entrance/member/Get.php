@@ -4,6 +4,8 @@ require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
+use utilphp\util as util;
+
 // 외부 파라미터
 // $_GET['select'] : 정렬선택
 $select = $_GET['select'];

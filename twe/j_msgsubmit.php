@@ -3,6 +3,8 @@ include 'lib.php';
 include 'func.php';
 require_once('func_message.php');
 
+use utilphp\util as util;
+
 $post = parseJsonPost();
 
 if(!isset($post['genlist']) || !isset($post['msg'])){

@@ -2,6 +2,8 @@
 require(__dir__.'/../vendor/autoload.php');
 require_once(ROOT.W.F_FUNC.W.'class._String.php');
 
+use utilphp\util as util;
+
 class _Validation {
     public static function CheckID($id) {
         $len = strlen($id);

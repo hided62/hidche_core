@@ -2,6 +2,9 @@
 require(__dir__.'/../vendor/autoload.php');
 include "lib.php";
 include "func.php";
+
+use utilphp\util as util;
+
 $connect = dbConn("sammo");
 
 $id = util::array_get($_POST['id'],'');
