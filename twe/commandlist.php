@@ -70,7 +70,7 @@ function myCommandList($connect) {
     $me = MYDB_fetch_array($result);
     $turn = getTurn($connect, $me, 2);
 
-    echo "<table width=300 height=700 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
+    echo "<table width=300 height=700 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
 <form name=clock>
     <tr>
         <td colspan=4 align=center id=bg0><b>- 명령 목록 - <input value='$date' type=text name=clock size=19 style=background-color:black;color:white;border-style:none;></b></td>

@@ -39,11 +39,11 @@ $admin = MYDB_fetch_array($result);
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>멀 티 관 리<br><?php backButton(); ?></td></tr>
 </table>
 <form name=form1 method=post action=_admin4_submit.php>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=80 align=center rowspan=3>회원선택<br><br><font color=cyan>NPC</font><br><font color=skyblue>NPC유저</font><br><font color=blue>특별회원</font><br><font color=red>접속제한</font><br><b style=background-color:red;>블럭회원</b></td>
         <td width=105 rowspan=3>
@@ -88,7 +88,7 @@ echo "
         <td><input type=textarea size=60 maxlength=255 name=msg style=background-color:black;color:white;><input type=submit name=btn value='메세지 전달'></td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td align=center width=100>장수명</td>
         <td align=center width=180>최근로그인</td>
@@ -136,7 +136,7 @@ echo "
 ?>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td align=center width=100>장수명</td>
         <td align=center width=180>최근로그인</td>
@@ -185,7 +185,7 @@ echo "
     </tr>
 </table>
 </form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

@@ -27,7 +27,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>세 력 일 람<br><?php closeButton(); ?></td></tr>
 </table>
 <?php
@@ -119,7 +119,7 @@ for($i=1; $i <= $count; $i++) {
     else { $l5 = $level5['name']; }
 
     echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
         <td colspan=8 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 {$nation['name']} 】</td>
     </tr>
@@ -201,7 +201,7 @@ $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect
 $citycount = MYDB_num_rows($cityresult);
 
 echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
         <td colspan=5 align=center>【 재 야 】</td>
     </tr>
@@ -236,7 +236,7 @@ echo"
 
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php closeButton(); ?></td></tr>
     <tr><td><?php banner(); ?></td></tr>
 </table>

@@ -11,7 +11,7 @@
 
 function turnTable() {
     return "
-<select name=turn[] size=11 multiple style=width:50px;color:white;background-color:black;font-size:13;>
+<select name=turn[] size=11 multiple style=width:50px;color:white;background-color:black;font-size:13px;>
     <option value=100>전체</option>
     <option value=99>홀턴</option>
     <option value=98>짝턴</option>
@@ -45,7 +45,7 @@ function turnTable() {
 
 function CoreTurnTable() {
     return "
-<select name=turn[] size=3 multiple style=color:white;background-color:black;font-size:13;>
+<select name=turn[] size=3 multiple style=color:white;background-color:black;font-size:13px;>
     <option selected value=0> 1턴</option>
     <option value=1> 2턴</option>
     <option value=2> 3턴</option>
@@ -75,29 +75,12 @@ function allButton() {
         $call = "설문조사";
     }
 
-    return "
-<table align=center border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg1>
-    <tr>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='세력도' onclick=window.open('a_status.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='세력일람' onclick=window.open('a_kingdomList.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='장수일람' onclick=window.open('a_genList.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='명장일람' onclick=window.open('a_bestGeneral.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='연감' onclick=window.open('a_history.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='명예의전당' onclick=window.open('a_hallOfFame.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='왕조일람' onclick=window.open('a_emperior.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='접속량정보' onclick=window.open('a_traffic.php')></td>
-    </tr>
-    <tr>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:magenta;width:125;height:30;font-weight:bold;font-size:13; value='삼모게시판' onclick=window.open('/bbs/bbs/board.php?bo_table=0free')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='삼국일보' onclick=window.open('/bbs/bbs/board.php?bo_table=1news')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='레퍼런스' onclick=window.open('/bbs/bbs/board.php?bo_table=2reference')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='패치게시판' onclick=window.open('/bbs/bbs/board.php?bo_table=3patch')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='-'></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='참여게시판' onclick=window.open('/bbs/bbs/board.php?bo_table=4donation')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='튜토리얼' onclick=window.open('../i_other/help.php')></td>
-        <td align=center><input type=button style=background-color:$_basecolor2;color:white;width:125;height:30;font-weight:bold;font-size:13; value='{$call}' onclick=window.open('{$site}')></td>
-    </tr>
-</table>";
+    $templates = new League\Plates\Engine('templates');
+
+    return $templates->render('allButton', [
+        'call' => $call,
+        'site' => $site
+    ]);
 }
 
 
@@ -119,7 +102,7 @@ function commandButton() {
 
     $result = '';
     $result .= "
-<table align=center border=0 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg2>
+<table align=center border=0 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg2>
     <tr>";
 
     if($me['level'] >= 1) { $result .= "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='회 의 실' onclick='refreshing(1,1)'></td>"; }
@@ -143,7 +126,7 @@ function commandButton() {
 </table>";
 
     $result .= "
-<table align=center border=0 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg2>
+<table align=center border=0 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg2>
     <tr>";
 
     if($me['level'] >= 1) { $result .= "<td width=111 height=30 align=center><input style=width:111;height:30;background-color:{$nation['color']};color:".newColor($nation['color']).";font-weight:bold; type=button value='세력 정보' onclick='refreshing(1,7)'></td>"; }

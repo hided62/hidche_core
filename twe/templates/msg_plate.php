@@ -16,7 +16,7 @@
     <?php else: /*$msgType == 'public'*/?>
         bgcolor="#000055"   
     <?php endif; ?>
-    style="font-size:13;table-layout:fixed;word-break:break-all;"
+    style="font-size:13px;table-layout:fixed;word-break:break-all;"
     data-id="<?=$id?>"
 >
     <tbody><tr>

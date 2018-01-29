@@ -36,11 +36,11 @@ if($me['userlevel'] < 5) {
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>특 별 회 원<br><?php backButton(); ?></td></tr>
 </table>
 <form name=form1 method=post action=_admin3_submit.php>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=80 align=center rowspan=5>회원선택<br><br><font color=orange>무장</font><br><font color=skyblue>지장</font></td>
         <td width=105 rowspan=5>
@@ -92,7 +92,7 @@ for($i=0; $i < 27; $i++) {
     </tr>
 </table>
 </form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

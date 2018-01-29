@@ -37,11 +37,11 @@ $admin = getAdmin($connect);
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>게 임 관 리<br><?php backButton(); ?></td></tr>
 </table>
 <form name=form1 method=post action=_admin1_submit.php>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td width=110 align=right>운영자메세지</td>
         <td colspan=3><input type=textarea size=90 style=color:white;background-color:black; name=msg value='<?=$admin['msg'];?>'><input type=submit name=btn value=변경></td></td>
     </tr>
@@ -80,7 +80,7 @@ $admin = getAdmin($connect);
         <td colspan=3><input type=submit name=btn value=1분턴><input type=submit name=btn value=2분턴><input type=submit name=btn value=5분턴><input type=submit name=btn value=10분턴><input type=submit name=btn value=20분턴><input type=submit name=btn value=30분턴><input type=submit name=btn value=60분턴><input type=submit name=btn value=120분턴></td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td align=right><input type=submit name=btn value=변경6></td>
         <td align=center>공격</td>
@@ -200,7 +200,7 @@ $admin = getAdmin($connect);
 </table>
 </form>
 <form name=form2 method=post action=reset.php>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=9>리 셋 요 청</td></tr>
     <tr>
         <td align=right>HOSTNAME</td>
@@ -215,7 +215,7 @@ $admin = getAdmin($connect);
     </tr>
 </table>
 </form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

@@ -32,10 +32,10 @@ $connect = dbConn();
 </head>
 
 <body onLoad='changeGen()'>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
         <tr><td>장 수 선 택<br><?php backButton(); ?></td></tr>
     </table>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
         <tr><td align=center><?php info($connect, 0, 1); ?></td></tr>
     </table>
 <?php
@@ -60,7 +60,7 @@ if($gencount >= $admin['maxgeneral']) {
 }
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
 <?php
 $query = "select name,scoutmsg,color from nation";
@@ -83,7 +83,7 @@ for($i=0; $i < $nationcount; $i++) {
 <form name=form1 method=post action=select_npc_post.php>
 <input type=hidden name=id value='<?=$id;?>'>
 <input type=hidden name=pw value='<?=$pw;?>'>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
         <tr>
             <td colspan=2 align=center id=bg1>장수 선택</td>
         </tr>
@@ -128,7 +128,7 @@ for($i=0; $i < $count; $i++) {
         </tr>
     </table>
 </form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

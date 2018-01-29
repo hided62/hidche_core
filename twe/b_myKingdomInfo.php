@@ -25,7 +25,7 @@ if($me['level'] == 0) {
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>세 력 정 보<br><?php backButton(); ?></td></tr>
 </table>
 <br>
@@ -78,7 +78,7 @@ if($budgetricediff > 0) { $budgetricediff = "+{$budgetricediff}"; }
 else { $budgetricediff = "$budgetricediff"; }
 
 echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
         <td colspan=8 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 ";echo $me['nation']==0?"공 백 지":"{$nation['name']}";echo " 】</td>
     </tr>
@@ -145,7 +145,7 @@ echo"
 
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?></td></tr>
 </table>

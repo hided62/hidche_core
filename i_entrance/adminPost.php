@@ -32,7 +32,7 @@ function doServerModeSet($server, $select, &$response){
     $realServerPath = realpath(dirname(__FILE__)).W.$serverPath;
 
     if($select == 0) { //폐쇄
-        $templates = new Plates('templates');
+        $templates = new League\Plates\Engine('templates');
         
 
         //TODO: .htaccess가 서버 오픈에도 사용될 수 있으니 별도의 방법이 필요함

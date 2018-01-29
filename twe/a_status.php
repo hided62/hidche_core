@@ -28,10 +28,10 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 </head>
 
 <body>
-<table align=center width=1200 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1200 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>세 력 도<br><?php closeButton(); ?></td></tr>
 </table>
-<table align=center width=1200 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1200 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr height=520>
         <td width=498 valign=top>
             <?php AllLog(34, $me['skin']); ?>
@@ -47,7 +47,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
         </td>
     </tr>
 </table>
-<table align=center width=1200 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1200 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php closeButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

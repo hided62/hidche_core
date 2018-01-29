@@ -17,7 +17,7 @@ increaseRefresh($connect, "명예의전당", 2);
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=Font-size:13;word-break:break-all; id=bg0>
     <tr><td>명 예 의 전 당<br><?php closeButton(); ?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <?php
 $type = array(
     "명 성",

@@ -44,7 +44,7 @@ $sel[$type] = "selected";
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>로 그 정 보<br><?php closeButton(); ?></td></tr>
     <tr><td>
         <form name=form1 method=post>
@@ -88,7 +88,7 @@ for($i=0; $i < $gencount; $i++) {
         </form>
     </td></tr>
 </table>
-<table width=1000 align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table width=1000 align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=50% align=center id=bg1><font color=skyblue size=3>장 수 정 보</font></td>
         <td width=50% align=center id=bg1><font color=orange size=3>-</font></td>
@@ -125,7 +125,7 @@ for($i=0; $i < $gencount; $i++) {
         </td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php closeButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

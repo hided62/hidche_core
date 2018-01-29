@@ -39,13 +39,13 @@ if($game['maxonline'] < $curonline) { $game['maxonline'] = $curonline; }
 <?php require('analytics.php'); ?>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>트 래 픽 정 보<br><?php closeButton(); ?></td></tr>
 </table>
 <br>
-<table align=center width=1016 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all;>
+<table align=center width=1016 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all;>
     <tr><td align=left>
-        <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+        <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 량</font></td></tr>
 <?php
 for($i=0; $i < 11; $i++) {
@@ -63,7 +63,7 @@ for($i=0; $i < 11; $i++) {
                 <td width=60 align=center id=bg2>{$dt}</td>
                 <td width=2 align=center id=bg1></td>
                 <td width=320 align=center>
-                    <table align=center width=100% height=30 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+                    <table align=center width=100% height=30 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                         <tr>
                             <td width={$w}% bgcolor={$color} align=right>{$refresh[$i]}&nbsp;</td>
                             <td width={$w2}% id=bg0><font size=1>&nbsp;</font></td>
@@ -87,7 +87,7 @@ echo "
                 <td width=60 align=center id=bg2>{$dt}</td>
                 <td width=2 align=center id=bg1></td>
                 <td width=320 align=center>
-                    <table align=center width=100% height=30 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+                    <table align=center width=100% height=30 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                         <tr>
                             <td width={$w}% bgcolor={$color} align=right>{$game['refresh']}&nbsp;</td>
                             <td width={$w2}% id=bg0><font size=1>&nbsp;</font></td>
@@ -104,7 +104,7 @@ echo "
         </table>
     </td>
     <td align=right>
-        <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+        <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 자</font></td></tr>
 <?php
 for($i=0; $i < 11; $i++) {
@@ -122,7 +122,7 @@ for($i=0; $i < 11; $i++) {
                 <td width=60 align=center id=bg2>{$dt}</td>
                 <td width=2 align=center id=bg1></td>
                 <td width=320 align=center>
-                    <table align=center width=100% height=30 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+                    <table align=center width=100% height=30 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                         <tr>
                             <td width={$w}% bgcolor={$color} align=right>{$online[$i]}&nbsp;</td>
                             <td width={$w2}% id=bg0><font size=1>&nbsp;</font></td>
@@ -146,7 +146,7 @@ echo "
                 <td width=60 align=center id=bg2>{$dt}</td>
                 <td width=2 align=center id=bg1></td>
                 <td width=320 align=center>
-                    <table align=center width=100% height=30 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+                    <table align=center width=100% height=30 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                         <tr>
                             <td width={$w}% bgcolor={$color} align=right>{$curonline}&nbsp;</td>
                             <td width={$w2}% id=bg0><font size=1>&nbsp;</font></td>
@@ -164,7 +164,7 @@ echo "
     </td></tr>
 </table>
 <br>
-<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=3 align=center id=bg2><font size=5>주 의 대 상 자 (순간과도갱신)</font></td></tr>
 <?php
 $query = "select sum(refresh) as refresh,sum(connect) as connect from general";
@@ -186,7 +186,7 @@ echo "
         <td align=center>접속자 총합</td>
         <td align=center>{$user['connect']}({$maxrefresh})</td>
         <td align=center>
-            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                 <tr>
                     <td width={$w}% bgcolor={$color}>&nbsp;</td>
                     <td width={$w2}%>&nbsp;</td>
@@ -210,7 +210,7 @@ for($i=0; $i < $count; $i++) {
         <td width=98  align=center>{$user['name']}</td>
         <td width=98  align=center>{$user['connect']}({$user['refresh']})</td>
         <td width=798 align=center>
-            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                 <tr>
                     <td width={$w}% bgcolor={$color}>&nbsp;</td>
                     <td width={$w2}%>&nbsp;</td>
@@ -223,7 +223,7 @@ for($i=0; $i < $count; $i++) {
 ?>
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php closeButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

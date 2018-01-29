@@ -68,7 +68,7 @@ if($me['skin'] < 1) {
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>연 감<br><?php closeButton(); ?></td></tr>
     <tr><td>
         <form name=form1 method=post>
@@ -101,7 +101,7 @@ $history = MYDB_fetch_array($result);
         </form>
     </td></tr>
 </table>
-<table align=center width=1000 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=5 align=center id=bg1>중 원 지 도</td></tr>
     <tr height=520>
         <td width=698>
@@ -126,7 +126,7 @@ $history = MYDB_fetch_array($result);
         </td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php closeButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

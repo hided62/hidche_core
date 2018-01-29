@@ -449,7 +449,7 @@ function MsgDip($connect, $bg) {
 }
 
 function ShowMsgEx($msgType, $src, $dest, $msg, $datetime){
-    new Plates('templates');
+    new League\Plates\Engine('templates');
 }
 
 function ShowMsg($skin, $bgcolor, $type, $picture, $imgsvr, $me, $mycolor, $you, $youcolor, $msg, $date, $num=0, $who=0, $when=0, $level=0, $note="") {
@@ -498,7 +498,7 @@ function ShowMsg($skin, $bgcolor, $type, $picture, $imgsvr, $me, $mycolor, $you,
     if($when > 0) { $when = "<input type=hidden name=when value=$when>"; }
     else { $when = ""; }
     echo "
-        <table width=498 border=1  bordercolordark=gray bordercolorlight=black cellpadding=0 cellspacing=0 bgcolor='$bgcolor' style=font-size:13;table-layout:fixed;word-break:break-all;>
+        <table width=498 border=1  bordercolordark=gray bordercolorlight=black cellpadding=0 cellspacing=0 bgcolor='$bgcolor' style=font-size:13px;table-layout:fixed;word-break:break-all;>
             <tr>
                 <td width=64 height=64>$picture</td>
                 $form

@@ -592,8 +592,8 @@ function cityInfo($connect) {
     }
 
     if($nation['color'] == "" || $me['skin'] < 1) { $nation['color'] = "000000"; }
-    echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
-    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13;>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 {$city['name']}</td></tr>
+    echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 {$city['name']}</td></tr>
     <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
 
     if($city['nation'] == 0) {
@@ -706,16 +706,16 @@ function myNationInfo($connect) {
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level11 = MYDB_fetch_array($genresult);
 
-    echo "<table width=498 height=190 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
+    echo "<table width=498 height=190 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
         <td colspan=4 align=center ";
 
     if($me['skin'] < 1) {
-        if($me['nation'] == 0) { echo "style=font-weight:bold;font-size:13;>【재 야】"; }
-        else { echo "style=font-weight:bold;font-size:13;>국가【 {$nation['name']} 】"; }
+        if($me['nation'] == 0) { echo "style=font-weight:bold;font-size:13px;>【재 야】"; }
+        else { echo "style=font-weight:bold;font-size:13px;>국가【 {$nation['name']} 】"; }
     } else {
-        if($me['nation'] == 0) { echo "style=color:white;background-color:000000;font-weight:bold;font-size:13;>【재 야】"; }
-        else { echo "style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13;>국가【 {$nation['name']} 】"; }
+        if($me['nation'] == 0) { echo "style=color:white;background-color:000000;font-weight:bold;font-size:13px;>【재 야】"; }
+        else { echo "style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>국가【 {$nation['name']} 】"; }
     }
 
     echo "
@@ -1326,10 +1326,10 @@ function generalInfo($connect, $no, $skin) {
     $weapImage = "{$images}/weap{$general['crewtype']}.jpg";
     if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; };
     $imageTemp = GetImageURL($general['imgsvr']);
-    echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
+    echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
         <td width=64 height=64 align=center rowspan=3"; echo $skin>0?" background={$imageTemp}/{$general['picture']}":""; echo ">&nbsp;</td>
-        <td align=center colspan=9 height=16 style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13;>{$specUser} {$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
+        <td align=center colspan=9 height=16 style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$specUser} {$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>통솔</b></td>
@@ -1455,7 +1455,7 @@ function generalInfo2($connect, $no, $skin) {
     $general['dex30'] = getDexCall($general['dex30']);
     $general['dex40'] = getDexCall($general['dex40']);
 
-    echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
+    echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr><td align=center colspan=6 id=bg1><b>추 가 정 보</b></td></tr>
     <tr>
         <td align=center id=bg1><b>명성</b></td>
@@ -1488,7 +1488,7 @@ function generalInfo2($connect, $no, $skin) {
         <td align=center>{$general['deathcrew']}</td>
     </tr>
 </table>
-<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg2>
+<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr><td align=center colspan=3 id=bg1><b>숙 련 도</b></td></tr>
     <tr height=16>
         <td width=64 align=center id=bg1><b>보병</b></td>
@@ -1867,7 +1867,7 @@ function msgprint($connect, $msg, $name, $picture, $imgsvr, $when, $num, $type) 
 
     $imageTemp = GetImageURL($imgsvr);
     echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=64 align=center id=bg1><font size=1>$name</font></td>
         <td width=772 align=center id=bg1><font size=4><b>$message[0]</b></font></td>

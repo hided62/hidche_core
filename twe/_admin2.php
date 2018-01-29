@@ -39,11 +39,11 @@ $admin = MYDB_fetch_array($result);
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>회 원 관 리<br><?php backButton(); ?></td></tr>
 </table>
 <form name=form1 method=post action=_admin2_submit.php>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=80 align=center>접속제한</td>
         <td width=713 align=center><input type=submit name=btn value='전체 접속허용'><input type=submit name=btn value='전체 접속제한'></td>
@@ -51,12 +51,12 @@ $admin = MYDB_fetch_array($result);
     <tr>
         <td width=80 align=center>제한등급</td>
         <td width=713 align=center>
-            <input type=text size=3 maxlength=3 name=conweight value=<?=$admin['conweight'];?> style=color:white;background-color:black;font-size:13;>
+            <input type=text size=3 maxlength=3 name=conweight value=<?=$admin['conweight'];?> style=color:white;background-color:black;font-size:13px;>
             <input type=submit name=btn value='접속가중치'>
         </td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=80 align=center rowspan=12>회원선택<br><br><font color=cyan>NPC</font><br><font color=skyblue>NPC유저</font><br><font color=blue>특별회원</font><br><font color=red>접속제한</font><br><b style=background-color:red;>블럭회원</b></td>
         <td width=105 rowspan=12>
@@ -141,7 +141,7 @@ for($i=0; $i < 27; $i++) {
     </tr>
 </table>
 </form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

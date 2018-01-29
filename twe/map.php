@@ -144,7 +144,7 @@ function showMap($connect, $type, $graphic) {
         $rtitle = ""&nbsp;";";
     }
     echo "
-<table border=0 width=700 cellpadding=0 cellspacing=0 style=font-size:13;>
+<table border=0 width=700 cellpadding=0 cellspacing=0 style=font-size:13px;>
     <tr height=20>
         <td width=268 align=left>{$ltitle}</td>
         <td width=38 {$ad}></td>

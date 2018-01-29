@@ -80,10 +80,10 @@ function turn(type) {
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>사 령 부<input type=button value='갱신' onclick=location.replace('b_chiefcenter.php')><br><?php backButton(); ?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=10 align=center bgcolor=skyblue>수뇌부 일정</td></tr>
     <tr><td colspan=10 align=center>
 <?php
@@ -155,17 +155,17 @@ for($k=0; $k < 2; $k++) {
         echo "<form action=processing.php method=post><tr><td colspan=5 align=right>";
         echo CoreTurnTable();
         echo "</td><td colspan=5>
-        <input type={$btn2} style=background-color:$_basecolor2;color:white;width:58;font-size:13; value='미루기▼' onclick='turn(0)'>
-        <input type={$btn2} style=background-color:$_basecolor2;color:white;width:58;font-size:13; value='▲당기기' onclick='turn(1)'>
+        <input type={$btn2} style=background-color:$_basecolor2;color:white;width:58;font-size:13px; value='미루기▼' onclick='turn(0)'>
+        <input type={$btn2} style=background-color:$_basecolor2;color:white;width:58;font-size:13px; value='▲당기기' onclick='turn(1)'>
         <br>";
         CoreCommandTable($connect);
-        echo "<input type={$btn} style=background-color:$_basecolor2;color:white;width:55;font-size:13; value='실 행'></td></tr></form>";
+        echo "<input type={$btn} style=background-color:$_basecolor2;color:white;width:55;font-size:13px; value='실 행'></td></tr></form>";
     }
 }
 
 ?>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?></td></tr>
 </table>

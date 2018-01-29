@@ -49,7 +49,7 @@ select { font-family:'굴림'; line-height:100%; }
 </head>
 
 <body>
-<table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>베 팅 장<br><?php closeButton(); ?></td></tr>
 </table>
 <table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10;word-break:break-all; id=bg0>
@@ -209,7 +209,7 @@ for($i=0; $i < 16; $i++) {
 ?>
     </tr>
 </table>
-<table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr align=center><td height=10 colspan=16></td></tr>
 <?php
 echo "
@@ -288,7 +288,7 @@ if($admin['tournament'] == 6) {
     </tr>
     <tr align=center><td height=10 colspan=16></td></tr>
 </table>
-<table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr align=center><td height=50 colspan=4 id=bg2><font color=yellow size=6>토너먼트 랭킹</font></td></tr>
     <tr align=center><td colspan=4 id=bg2><font color=skyblue size=3>순위 / 장수명 / 능력치 / 경기수 / 승리 / 무승부 / 패배 / 집계점수 / 우승횟수</font></td></tr>
     <tr align=center>
@@ -303,7 +303,7 @@ for($i=0; $i < 4; $i++) {
     $grp = $i;
     echo "
         <td>
-            <table align=center width=280 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+            <table align=center width=280 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                 <tr><td colspan=9 align=center style=color:white;background-color:black;><font size=4>{$type1[$i]}</font></td></tr>
                 <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$type2[$i]}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>勝</td></tr>";
 
@@ -330,7 +330,7 @@ for($i=0; $i < 4; $i++) {
         </td>
     </tr>
 </table>
-<table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php closeButton(); ?></td></tr>
     <tr><td><?php banner(); ?></td></tr>
 </table>

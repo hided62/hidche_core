@@ -58,17 +58,20 @@ $scenario = getScenario();
 <head>
 <title>메인</title>
 <meta charset="UTF-8">
-<link rel=stylesheet href=stylesheet.php?<?=$me['skin'];?> type=text/css>
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
 <script src="js/main.js"></script>
+
+<link href="css/normalize.css" rel="stylesheet">
 <link href="css/common.css" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
+<link rel=stylesheet href=stylesheet.php type=text/css>
 
 <?php require('analytics.php'); ?>
 </head>
 <body>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
+<div id="container">
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=5><?=allButton()?></td></tr>
     <tr height=50>
         <td colspan=5 align=center><font size=4>삼국지 모의전투 PHP 유기체서버 (<font color=<?=$me['skin']>0?"cyan":"white";?>><?=$scenario;?></font>)</font></td>
@@ -173,7 +176,7 @@ if($me['userlevel'] >= 5) {
 ?>
 
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=698 height=520 colspan=2><iframe src='map.php?type=0&graphic=<?=$me['map'];?>' width=698 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
         <td width=298 rowspan=4><iframe name=commandlist src='commandlist.php' width=298 height=700 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
@@ -186,7 +189,7 @@ if($me['userlevel'] >= 5) {
     <tr>
         <td width=646 align=right>
             <font color=<?=$me['skin']>0?"cyan":"white";?>><b>←</b> Ctrl, Shift, 드래그로 복수선택 가능　　　　　반복&수정<b>→</b></font>
-            <select name=sel size=1 style=color:white;background-color:black;font-size:13;>
+            <select name=sel size=1 style=color:white;background-color:black;font-size:13px;>
                 <option value=1>1턴</option>
                 <option value=2>2턴</option>
                 <option value=3>3턴</option>
@@ -199,25 +202,25 @@ if($me['userlevel'] >= 5) {
                 <option value=10>10턴</option>
                 <option value=11>11턴</option>
                 <option value=12>12턴</option>
-            </select><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:50;font-size:13; value='반복' onclick='refreshing(2,0)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:80;font-size:13; value='▼미루기' onclick='refreshing(2,1)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:80;font-size:13; value='▲당기기' onclick='refreshing(2,2)'>
+            </select><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:50;font-size:13px; value='반복' onclick='refreshing(2,0)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:80;font-size:13px; value='▼미루기' onclick='refreshing(2,1)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:80;font-size:13px; value='▲당기기' onclick='refreshing(2,2)'>
         </td>
     </tr>
     <tr>
         <td width=646 align=right>
             <?php commandTable($connect); ?>
-            <input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13; value='실 행' onclick='refreshing(3,form2)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13; value='갱 신' onclick='refreshing(0,0)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:160;font-size:13; value='로그아웃' onclick=location.replace('logout_process.php')><br>
+            <input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13px; value='실 행' onclick='refreshing(3,form2)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13px; value='갱 신' onclick='refreshing(0,0)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:160;font-size:13px; value='로그아웃' onclick=location.replace('logout_process.php')><br>
         </td>
     </tr>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=498><?php myNationInfo($connect); ?></td>
         <td width=498><?php myInfo($connect); ?></td>
     </tr>
     <tr><td colspan=2><?=commandButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=498 align=center id=bg1><b>장수 동향</b></td>
         <td width=498 align=center id=bg1><b>개인 기록</b></td>
@@ -229,13 +232,13 @@ if($me['userlevel'] >= 5) {
     <tr><td width=998 colspan=2 align=center id=bg1><b>중원 정세</b></td></tr>
     <tr><td width=998 colspan=2><?php History(15, $me['skin']); ?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td colspan=2>
             <form id="message" name="message" method="post" action="c_msgsubmit.php" target="msglist">
                 <?php genList($connect); ?>
-                <input type=textarea id=msg name=msg maxlength=99 style=color:white;background-color:black;font-size:13;width:720px;>
-                <input type=button style=background-color:<?=$_basecolor2;?>;color:white;font-size:13;width:100px; value='서신전달&갱신' onclick='refreshing(4,message)'>
+                <input type=textarea id=msg name=msg maxlength=99 style=color:white;background-color:black;font-size:13px;width:720px;>
+                <input type=button style=background-color:<?=$_basecolor2;?>;color:white;font-size:13px;width:100px; value='서신전달&갱신' onclick='refreshing(4,message)'>
                 <br>내용 없이 '서신전달&amp;갱신'을 누르면 메세지창이 갱신됩니다.
             </form>
         </td>
@@ -255,6 +258,7 @@ banner();
     </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
+</div>
 </body>
 </html>
 <?php

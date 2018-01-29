@@ -48,7 +48,7 @@ $admin = MYDB_fetch_array($result);
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>일 제 정 보<br><?php closeButton(); ?></td></tr>
     <tr><td>
         <form name=form1 method=post>정렬순서 :
@@ -103,7 +103,7 @@ for($i=1; $i <= $count; $i++) {
     </td></tr>
 </table>
 
-<table align=center width=1600 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13; id=bg0>
+<table align=center width=1600 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px; id=bg0>
     <tr id=bg1>
         <td align=center>국명</td>
         <td align=center>접률</td>
@@ -250,11 +250,11 @@ for($i=0; $i < $nationCount; $i++) {
 
 ?>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php TrickLog(20, $me['skin']); ?></td></tr>
 </table>
 
-<table align=center width=1760 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13; id=bg0>
+<table align=center width=1760 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px; id=bg0>
     <tr id=bg1>
         <td width=30 align=center>년</td>
         <td width=30 align=center>월</td>
@@ -305,7 +305,7 @@ for($i=0; $i < $count; $i++) {
 ?>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php closeButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

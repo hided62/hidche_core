@@ -56,11 +56,11 @@ if($me['skin'] < 1) {
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>중 원 정 보<br><?php backButton(); ?></td></tr>
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=<?=$nationcount+1;?> align=center bgcolor=blue>외 교 현 황</td></tr>
 <?php
 echo "
@@ -135,7 +135,7 @@ $citycount = MYDB_num_rows($result);
 if($citycount != 0) {
     echo "
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=2 align=center bgcolor=magenta>분 쟁 현 황</td></tr>";
 }
 
@@ -161,7 +161,7 @@ for($i=0; $i < $citycount; $i++) {
             $graph1 = $per / 100 * 798;
             $per = round($per, 1);
             echo "
-                <table border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+                <table border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                     <tr>
                         <td width=98 align=right style=color:".newColor($nationcolor[$nation[$seq[$k]]]).";background-color:{$nationcolor[$nation[$seq[$k]]]};>{$nationname[$nation[$seq[$k]]]}&nbsp;</td>
                         <td width=48 align=right>{$per}%&nbsp;</td>
@@ -200,7 +200,7 @@ echo "
 <br>";
 
 echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td colspan=5 align=center bgcolor=green><font size=3>중 원 지 도</font></td>
     </tr>
@@ -218,7 +218,7 @@ echo "
 <br>";
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?></td></tr>
 </table>

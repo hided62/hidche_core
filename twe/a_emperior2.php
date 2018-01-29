@@ -15,7 +15,7 @@ increaseRefresh($connect, "왕조일람", 2);
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>역 대 왕 조<br>
         <input type=button value='창 닫기' onclick=window.close()><br>
     </td></tr>
@@ -33,7 +33,7 @@ if($select == 0) {
 
         echo "
 <form action=a_emperior2.php method=post>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td bgcolor=skyblue align=center colspan=8>
             <font size=5>{$emperior['phase']}</font>
@@ -78,7 +78,7 @@ if($select == 0) {
 
     echo "
 <form action=a_emperior2.php method=post>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td bgcolor=skyblue align=center colspan=6>
             <font size=5>{$emperior['phase']}</font>
@@ -190,7 +190,7 @@ if($select == 0) {
 }
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php closeButton(); ?></td></tr>
     <tr><td><?php banner(); ?></td></tr>
 </table>

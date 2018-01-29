@@ -28,11 +28,11 @@ if($me['skin'] < 1) {
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>부 대 편 성<br><?php backButton(); ?></td></tr>
 </table>
 <form name=form1 method=post action=c_troop.php>
-<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td align=center width=64  id=bg1>선 택</td>
         <td align=center width=98  id=bg1>부 대 정 보</td>
@@ -98,7 +98,7 @@ for($i=0; $i < $troopcount; $i++) {
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $genCount = MYDB_num_rows($genresult);
                 echo "
-            <select name=gen size=3 style=color:white;background-color:black;font-size:13;width:98;>";
+            <select name=gen size=3 style=color:white;background-color:black;font-size:13px;width:98;>";
             for($k=0; $k < $genCount; $k++) {
                 $general = MYDB_fetch_array($genresult);
                 echo "
@@ -133,7 +133,7 @@ echo "
 <br>";
 
 echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=80 id=bg1>부 대 명</td>
         <td width=100><input type=text style=color:white;background-color:black; size=12 maxlength=6 name=name></td>";
@@ -150,7 +150,7 @@ echo "
 
 MYDB_close($connect);
 ?>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

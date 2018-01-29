@@ -35,10 +35,10 @@ function captureKey(e) {
 <?php require('analytics.php'); ?>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>설 문 조 사<br><?php closeButton(); ?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <form name=form1 action=c_vote.php method=post>
     <tr><td colspan=3 align=center id=bg2><font size=5>설 문 조 사 (<?=$admin['develcost']*5;?>금과 추첨으로 유니크템 증정!)</font></td></tr>
 <?php
@@ -136,7 +136,7 @@ if($admin['votecomment'] != "") {
 }
 echo "
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td colspan=4 align=center id=bg1>댓 글</td>
     </tr>
@@ -166,7 +166,7 @@ if($me['no'] > 0) {
 ?>
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=3 align=center id=bg2><font size=5>
         전 체 통 계
 <?php
@@ -185,7 +185,7 @@ if($admin['voteopen'] >= 1 || $me['userlevel'] >= 5) {
         <td width=98  align=center>전 체</td>
         <td width=128 align=center>{$voteCount} / {$allCount} ({$percentage} %)</td>
         <td width=768 align=center>
-            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                 <tr>
     ";
 
@@ -233,7 +233,7 @@ if($admin['voteopen'] >= 2 || $me['userlevel'] >= 5) {
         <td align=center bgcolor=black>재 야</td>
         <td align=center>{$nationVoteCount[0]} / {$memCount} ({$percentage} %)</td>
         <td align=center>
-            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                 <tr>
     ";
 
@@ -270,7 +270,7 @@ if($admin['voteopen'] >= 2 || $me['userlevel'] >= 5) {
         <td align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>{$nation['name']}</td>
         <td align=center>{$nationVoteCount[$nation['nation']]} / {$memCount} ({$percentage} %)</td>
         <td align=center>
-            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
                 <tr>
         ";
 
@@ -293,7 +293,7 @@ if($admin['voteopen'] >= 2 || $me['userlevel'] >= 5) {
 ?>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php closeButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

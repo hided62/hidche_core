@@ -11,7 +11,7 @@ file_put_contents("logs/_db_bug.txt", $message."\n", FILE_APPEND);
 </head>
 <body>
 <br><br><br><br><br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td align=center style=background-color:225500;><font color=orange size=5>서 버 에 러</font></td></tr>
     <tr>
         <td>

@@ -104,10 +104,10 @@ function abilityPowint() {
 <?php require('analytics.php'); ?>
 </head>
 <body>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
         <tr><td>장 수 생 성<br><?php backButton(); ?></td></tr>
     </table>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
         <tr><td align=center><?php info($connect, 0, 1); ?></td></tr>
     </table>
 <?php
@@ -126,7 +126,7 @@ if($gencount >= $admin['maxgeneral']) {
 }
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
 <?php
 $query = "select name,scoutmsg,color from nation";
@@ -149,7 +149,7 @@ for($i=0; $i < $nationcount; $i++) {
 <form name=form1 method=post action=join_post.php>
 <input type=hidden name=id id=id value='<?=$id;?>'>
 <input type=hidden name=pw id=pw value='<?=$pw;?>'>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
         <tr>
             <td colspan=3 align=center id=bg1>장수 생성</td>
         </tr>
@@ -240,7 +240,7 @@ if($admin['img'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "") {
         </tr>
     </table>
 </form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?> </td></tr>
 </table>

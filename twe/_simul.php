@@ -1111,7 +1111,7 @@ input { background-color:black;color:white; }
 
 <body>
 <form method=post action=_simul.php>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr id=bg1>
         <td>공격장수</td>
         <td>상대장수</td>
@@ -1544,7 +1544,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격") {
 ?>
     </td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr id=bg1>
         <td align=right></td>
         <td align=center>공격</td>

@@ -1,50 +1,28 @@
 @charset "UTF-8";
 
-/* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0 | 20110126
-   License: none (public domain)
-*/
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+body { color:white; background-color:black; border-width:1; border-color:gray; background-image:url(/images/back.jpg); background-position:center; background-repeat:repeat-y; }
+table { font-family:'맑은 고딕'; line-height:110%; }
+font { font-family:'맑은 고딕'; line-height:110%; }
+input { font-family:'맑은 고딕'; line-height:110%; height:20px }
+select { font-family:'굴림'; line-height:100%; }
+#bg0 {
+    background-image:url('/images/back_walnut.jpg');
 }
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
+#bg1 {
+    background-image:url('/images/back_green.jpg');
 }
-body {
-	line-height: 1;
+#bg2 {
+    background-image:url('/images/back_blue.jpg');
 }
-ol, ul {
-	list-style: none;
+
+.bg0{
+    background-image:url('/images/back_walnut.jpg');
 }
-blockquote, q {
-	quotes: none;
+.bg1{
+    background-image:url('/images/back_green.jpg');
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
+
+.bg2{
+    background-image:url('/images/back_blue.jpg');
 }
