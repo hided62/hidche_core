@@ -21,7 +21,7 @@ if($me['userlevel'] < 5) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
-<body oncontextmenu='return false'>
+<body>
 관리자가 아닙니다.<br>
 ";
     banner();

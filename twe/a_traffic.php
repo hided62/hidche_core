@@ -38,7 +38,7 @@ if($game['maxonline'] < $curonline) { $game['maxonline'] = $curonline; }
 <link rel=stylesheet href=stylesheet.php type=text/css>
 <?php require('analytics.php'); ?>
 </head>
-<body oncontextmenu='return false'>
+<body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td>트 래 픽 정 보<br><?php closeButton(); ?></td></tr>
 </table>

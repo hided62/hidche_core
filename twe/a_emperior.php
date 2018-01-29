@@ -14,7 +14,7 @@ increaseRefresh($connect, "왕조일람", 2);
 <?php require('analytics.php'); ?>
 </head>
 
-<body oncontextmenu='return false'>
+<body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style="font-size:13;word-break:break-all;color:white;background-color:black" id=bg0>
     <tr><td>역 대 왕 조<br>
         <input type=button value='창 닫기' onclick=window.close()><br>

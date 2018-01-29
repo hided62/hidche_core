@@ -39,7 +39,7 @@ font { font-family:'맑은 고딕'; line-height:110%; }
 <?php require('../i_banner/analytics.php'); ?>
     </head>
 
-<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td><font size=5 color=skyblue><b>스 크 린 샷</b></font></td></tr>
 </table>

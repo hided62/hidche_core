@@ -51,7 +51,7 @@ function myclock() {
 </script>
 <?php require('analytics.php'); ?>
 </head>
-<body OnLoad='myclock()' oncontextmenu='return false'>
+<body OnLoad='myclock()'>
 <?php
 myCommandList($connect);
 

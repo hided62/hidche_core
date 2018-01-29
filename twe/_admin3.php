@@ -17,7 +17,7 @@ if($me['userlevel'] < 5) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
-<body oncontextmenu='return false'>
+<body>
 관리자가 아닙니다.<br>
 ";
     banner();
@@ -35,7 +35,7 @@ if($me['userlevel'] < 5) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
-<body oncontextmenu='return false'>
+<body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td>특 별 회 원<br><?php backButton(); ?></td></tr>
 </table>

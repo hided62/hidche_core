@@ -26,7 +26,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <?php require('analytics.php'); ?>
 </head>
 
-<body oncontextmenu='return false'>
+<body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td>명 장 일 람<br><?php closeButton(); ?></td></tr>
 </table>

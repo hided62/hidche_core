@@ -37,7 +37,7 @@ function out() {
 <?php require('analytics.php'); ?>
 </head>
 
-<body oncontextmenu='return false'>
+<body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td>인 사 부<br><?php backButton(); ?></td></tr>
 </table>

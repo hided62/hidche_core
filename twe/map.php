@@ -4,7 +4,7 @@ $graphic = 0;
 $type=0;
 if($graphic == 2) {
     echo "
-<body bgcolor=black leftmargin=0 marginwidth=0 topmargin=0 marginheight=0 oncontextmenu='return false' onselectstart='return false' ondragstart='return false'>
+<body bgcolor=black leftmargin=0 marginwidth=0 topmargin=0 marginheight=0>
 <font color=white>
 지 도 생 략<br>
 (개인설정 또는 과부하로 인한 서버의 긴급모드)
@@ -66,7 +66,7 @@ function hideLayer() {
 </script>
 <?php require('analytics.php'); ?>
 </head>
-<body bgcolor=black leftmargin=0 marginwidth=0 topmargin=0 marginheight=0 oncontextmenu='return false'>
+<body bgcolor=black leftmargin=0 marginwidth=0 topmargin=0 marginheight=0>
 <div id=city_name class=balloon style=background-color:1EA4FF;position:absolute;visibility:hidden;z-index:6;>
         <table border=1 cellspacing=0 cellpadding=0>
             <form name=city_form>

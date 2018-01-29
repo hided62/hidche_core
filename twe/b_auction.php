@@ -48,7 +48,7 @@ if($msg2 == "") $msg2 = "-";
 <link rel=stylesheet href=stylesheet.php type=text/css>
 <?php require('analytics.php'); ?>
 </head>
-<body oncontextmenu='return false'>
+<body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
     <tr><td>거 래 장<br><?php closeButton(); ?></td></tr>
     <tr><td align=center id=bg2><font color=orange size=6><b>거 래 장</b></font><input type=button value='갱신' onclick=location.replace('b_auction.php')></td></tr>

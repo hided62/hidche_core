@@ -66,7 +66,7 @@ $scenario = getScenario();
 
 <?php require('analytics.php'); ?>
 </head>
-<body oncontextmenu='return false'>
+<body>
 
 <div style="position:absolute; top:15px; left:50%; margin-left: -567px; width:  52px; height:  52px; border: 1px solid white;">심의</div>
 <?php $banner_id = $_SESSION['p_id']; ?>

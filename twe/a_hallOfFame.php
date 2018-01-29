@@ -13,7 +13,7 @@ increaseRefresh($connect, "명예의전당", 2);
 <?php require('analytics.php'); ?>
 </head>
 
-<body oncontextmenu='return false'>
+<body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=Font-size:13;word-break:break-all; id=bg0>
     <tr><td>명 예 의 전 당<br><?php closeButton(); ?></td></tr>
 </table>

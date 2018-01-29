@@ -16,7 +16,7 @@ if($me['userlevel'] < 5) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
-<body oncontextmenu='return false'>
+<body>
 관리자가 아닙니다.<br>
 ";
     banner();
@@ -42,7 +42,7 @@ $plock = MYDB_fetch_array($result);
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=stylesheet.php type=text/css>
 </head>
-<body oncontextmenu='return false'>
+<body>
     <form action=_119_b.php method=post>
     시간조정 : <input type=text size=3 name=minute><input type=submit name=btn value='분당김'><input type=submit name=btn value='분지연'> 최종갱신 : <?=$admin['turntime'];?><br>
     시간조정 : <input type=text size=3 name=minute2><input type=submit name=btn value='토너분당김'><input type=submit name=btn value='토너분지연'> 토너먼트 : <?=$admin['tnmt_time'];?><br>

@@ -14,7 +14,7 @@ $connect = dbconn();
 <link rel=stylesheet href=stylesheet.php type=text/css>
 <?php require('analytics.php'); ?>
 </head>
-<body oncontextmenu='return false'>
+<body>
 
 <?php
 
