@@ -12,6 +12,7 @@ require_once 'func_history.php';
 require_once 'func_legacy.php';
 require_once 'func_file.php';
 require_once 'func_converter.php';
+require_once('func_template.php');
 require_once('func_message.php');
 
 /// 0.0~1.0 사이의 랜덤 float

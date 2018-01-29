@@ -1,6 +1,6 @@
 <?php
 require_once("lib.php");
-require_once("func_message.php");
+require_once("func.php");
 //로그인 검사
 CheckLogin(1);
 $connect = dbconn();
