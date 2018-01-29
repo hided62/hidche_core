@@ -1,0 +1,16 @@
+
+{
+    "staryYear":215,
+    "year":217,
+    "month":5,
+    "cityList":[
+        [1,"name","level","state","nationId","region","supply"]
+    ],
+    "nationList":[
+        ["id","name","color","capital"]
+    ],
+    "spyList":[13, 22],
+    "shownByGeneralList":[65,33,73],
+    "myCity":33,
+    "myNation":1
+}

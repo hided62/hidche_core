@@ -1,0 +1,102 @@
+.world_map{
+    background:black;
+    font-size:13px;
+    color:white;
+}
+
+.map_title{
+    width:700px;
+    height:20px;
+    background:
+        url('/images/ltitle.jpg') no-repeat left, 
+        url('/images/rtitle.jpg') no-repeat right;
+    text-align:center;
+}
+
+.map_title_text{
+    margin:auto;
+    text-align:center;
+    width:160px;
+    display:block;
+    line-height:20px;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.map_spring .map_title_text{
+    background:
+        url('/images/ad.gif') no-repeat left, 
+        url('/images/spring.gif') no-repeat right;
+}
+
+.map_summer .map_title_text{
+    background:
+        url('/images/ad.gif') no-repeat left, 
+        url('/images/summer.gif') no-repeat right;
+}
+
+.map_fall .map_title_text{
+    background:
+        url('/images/ad.gif') no-repeat left, 
+        url('/images/fall.gif') no-repeat right;
+}
+
+.map_winter .map_title_text{
+    background:
+        url('/images/ad.gif') no-repeat left, 
+        url('/images/winter.gif') no-repeat right;
+}
+
+.map_body{
+    width:700px;
+    height:500px;
+    position:relative;
+}
+
+.map_spring .map_body{
+    background: url('/images/map1.jpg') no-repeat;
+}
+
+.map_summer .map_body{
+    background: url('/images/map2.jpg') no-repeat;
+}
+
+.map_fall .map_body{
+    background: url('/images/map3.jpg') no-repeat;
+}
+
+.map_winter .map_body{
+    background: url('/images/map4.jpg') no-repeat;
+}
+
+.world_map .city_tooltip{
+    position: absolute;
+    display:none;
+    width:120px;
+    border: 0.02em gray solid;
+}
+.world_map .city_name{
+    background-color: rgb(30, 164, 255);
+    z-index: 6;
+    line-height:15px;
+    height:15px;
+    
+}
+.world_map .nation_name{
+    background-color: rgb(30, 164, 255);
+    z-index: 6;
+    line-height:15px;
+    height:15px;
+    border-top: 0.02em gray solid;
+    text-align:right;
+}
+
+.world_map .map_flag{
+    width:12px;
+    height:12px;
+}
+
+.world_map .my_city{
+    border:solid 0.02em red;/* Always 1px :) */
+    outline:dotted 3px red;
+}
