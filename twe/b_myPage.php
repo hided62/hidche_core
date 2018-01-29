@@ -40,7 +40,7 @@ if($me['skin'] < 1) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>내정보</title>
-<link rel=stylesheet href=stylesheet.php?<?=$me['skin'];?> type=text/css>
+<link rel=stylesheet href="css/common.css" type=text/css>
 <script type="text/javascript">
 function go(type) {
     if(type == 0){ 
