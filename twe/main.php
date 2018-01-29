@@ -57,10 +57,13 @@ $scenario = getScenario();
 <html>
 <head>
 <title>메인</title>
-<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<meta charset="UTF-8">
 <link rel=stylesheet href=stylesheet.php?<?=$me['skin'];?> type=text/css>
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
 <script src="js/main.js"></script>
+<link href="css/common.css" rel="stylesheet">
+<link href="css/main.css" rel="stylesheet">
+
 <?php require('analytics.php'); ?>
 </head>
 <body oncontextmenu='return false'>
