@@ -6,7 +6,11 @@ String.prototype.format = function() {
     });
 };
 
-function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
+function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate){
+
+    if(!hrefTemplate){
+        hrefTemplate = '#';
+    }
 
     var cityPosition = getCityPosition();
 
@@ -202,31 +206,13 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
         var myCity = obj.myCity;
 
         cityList.forEach(function(city){
-            console.log(city);
             var id = city.id;
             $('.city_base_{0}'.format(id)).detach();
-            var flagTemplate = '<div class="map_flag"><div class="map_flag_capital"></div></div>';
-            var stateTemplate = '<div class="map_state"></div>';
-            var backgroundTemplate = '<div class="map_background"></div>';
+            //이전 도시는 지운다.
 
-            
-
-
-            
-            //TODO: 도시를 그린다.........
-            //
-            //도시 선택 크기는 동일하게 가고 도시 이미지는 div로 설정.
             var $cityObj = $('<div class="city_base city_base_{0}"></div>'.format(id));
             $cityObj.addClass('city_level_{0}'.format(city.level));
-
-            $cityObj.css({'left':city.x-20,'top':city.y-15});
-
-            var $linkObj = $('<a class="city_link" href="#"></a>');
-            $linkObj.data({'text':city.text,'nation':city.nation});
-            var $imgObj = $('<div class="city_img"><img src="/images/cast_{0}.gif"></div>'.format(city.level));
-            $cityObj.data('obj', city);
-            //$cityObj.append($bgObj);
-            //$cityObj.append($linkObj);
+            $cityObj.data('obj', city).css({'left':city.x-20,'top':city.y-15});
 
             if('color' in city && city.color !== null){
                 var $bgObj = $('<div class="city_bg"></div>');
@@ -234,21 +220,23 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
                 $bgObj.css({'background-image':'url(/images/b{0}.png)'.format(convColorValue(city.color))});
             }
 
-            if(city.state > 0){
-                var $imgObj = $('<img class="city_state" src="/images/state_{0}.gif">'.format(city.state));
-            }
-
+            var $linkObj = $('<a class="city_link"></a>');
+            $linkObj.data({'text':city.text,'nation':city.nation,'id':city.id});
             $cityObj.append($linkObj);
 
+            var $imgObj = $('<div class="city_img"><img src="/images/cast_{0}.gif"></div>'.format(city.level));
             $linkObj.append($imgObj);
-            $map_body.append($cityObj);
+            
+            
 
-            if(selectCallback){
-                $linkObj.click(function(){
-                    selectCallback($cityObj);
-                    return false;
-                });
+            if(city.state > 0){
+                var $stateObj = $('<div class="city_state"><img src="/images/event{0}.gif"></div>'.format(city.state));
+                $linkObj.append($stateObj);
             }
+
+            
+
+            $map_body.append($cityObj);
             
             
         });
@@ -257,9 +245,6 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
     }
 
     function drawBasicWorldMap(obj){
-        
-
-        
         return obj;
     }
 
@@ -294,6 +279,21 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
     }
 
     function setCityClickable(obj){
+
+        obj.cityList.forEach(function(city){
+            var $cityLink = $world_map.find('.city_base_{0} .city_link'.format(city.id));
+
+            if('clickable' in city && city.clickable > 0){
+                $cityLink.attr('href',hrefTemplate.format(city.id));
+            }
+
+            if(selectCallback){
+                $cityLink.click(function(){
+                    return selectCallback(city);
+                });
+            }
+        });
+        
         return obj;
     }
 
@@ -324,6 +324,10 @@ $(function(){
     var isDetailMap = true;
     var clickableAll = false;
 
-    reloadWorldMap(isDetailMap, clickableAll, console.log);
+    function tmp(a){
+        console.log(a);
+        return false;
+    }
+    reloadWorldMap(isDetailMap, clickableAll, tmp, 'goCity.php?id={0}');
 
 });

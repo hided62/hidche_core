@@ -273,3 +273,9 @@
     left:4px;
     top:3px;
 }
+
+.city_base .city_state{
+    position: absolute;
+    top:5px; /*TODO:도시 레벨 별로 다르게 위치 설정해볼 것*/
+    left:0;
+}
