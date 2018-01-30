@@ -286,7 +286,7 @@
     height:12px;
 }
 
-.city_base .city_flag img{
+.city_base .city_flag > img{
     width:12px;
     height:12px;
 }
@@ -329,4 +329,17 @@
 .city_base.city_level_8 .city_flag{
     right:-6px;
     top:-3px;
+}
+
+.city_base .city_flag .city_capital{
+    position: absolute;
+    width:10px;
+    height:10px;
+    top:0;
+    right:-1px;
+}
+
+.city_base .city_flag .city_capital > img{
+    width:10px;
+    height:10px;
 }

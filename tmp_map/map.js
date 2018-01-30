@@ -237,6 +237,10 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             if(city.nationId && city.nationId > 0){
                 var flagType = city.supply?'f':'d';
                 var $flagObj = $('<div class="city_flag"><img src="/images/{0}{1}.gif"></div>'.format(flagType, convColorValue(city.color)));
+                if(city.isCapital){
+                    var $capitalObj = $('<div class="city_capital"><img src="/images/event51.gif"></div>');
+                    $flagObj.append($capitalObj);
+                }
                 $imgObj.append($flagObj);
             }
 
