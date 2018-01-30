@@ -64,7 +64,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
                 "state":arr[2],
                 "nationId":(arr[3]>0)?arr[3]:null,
                 "region":arr[4],
-                "supply":arr[5]
+                "supply":(arr[5]!=0)
             };
         }
 
@@ -232,6 +232,12 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             if(city.state > 0){
                 var $stateObj = $('<div class="city_state"><img src="/images/event{0}.gif"></div>'.format(city.state));
                 $linkObj.append($stateObj);
+            }
+
+            if(city.nationId && city.nationId > 0){
+                var flagType = city.supply?'f':'d';
+                var $flagObj = $('<div class="city_flag"><img src="/images/{0}{1}.gif"></div>'.format(flagType, convColorValue(city.color)));
+                $imgObj.append($flagObj);
             }
 
             

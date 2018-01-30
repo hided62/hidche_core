@@ -279,3 +279,54 @@
     top:5px; /*TODO:도시 레벨 별로 다르게 위치 설정해볼 것*/
     left:0;
 }
+
+.city_base .city_flag{
+    position: absolute;
+    width:12px;
+    height:12px;
+}
+
+.city_base .city_flag img{
+    width:12px;
+    height:12px;
+}
+
+.city_base.city_level_1 .city_flag{
+    right:-8px;
+    top:-4px;
+}
+
+.city_base.city_level_2 .city_flag{
+    right:-8px;
+    top:-4px;
+}
+
+.city_base.city_level_3 .city_flag{
+    right:-8px;
+    top:-4px;
+}
+
+.city_base.city_level_4 .city_flag{
+    right:-6px;
+    top:-3px;
+}
+
+.city_base.city_level_5 .city_flag{
+    right:-6px;
+    top:-4px;
+}
+
+.city_base.city_level_6 .city_flag{
+    right:-6px;
+    top:-4px;
+}
+
+.city_base.city_level_7 .city_flag{
+    right:-6px;
+    top:-4px;
+}
+
+.city_base.city_level_8 .city_flag{
+    right:-6px;
+    top:-3px;
+}
