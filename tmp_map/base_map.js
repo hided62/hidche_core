@@ -1,3 +1,25 @@
+function convColorValue(color){
+    if(color.startsWith('#')){
+        color = color.substr(1);
+    }
+    color = color.toUpperCase();
+
+    var colorBase = new Set([
+        '000080', '0000FF', '008000', '008080', '00BFFF', '00FF00', '00FFFF', '20B2AA',
+        '2E8B57', '483D8B', '6495ED', '7B68EE', '7CFC00', '7FFFD4', '800000', '800080',
+        '808000', '87CEEB', 'A0522D', 'A9A9A9', 'AFEEEE', 'BA55D3', 'E0FFFF', 'F5F5DC',
+        'FF0000', 'FF00FF', 'FF6347', 'FFA500', 'FFC0CB', 'FFD700', 'FFDAB9', 'FFFF00',
+        'FFFFFF'
+    ]);
+
+    if(!colorBase.has(color)){
+        return '000000';
+    }
+
+    return color;
+    
+}
+
 function getCityPosition(){
     return {
         1: ["업", 345, 130],

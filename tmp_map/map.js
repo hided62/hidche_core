@@ -129,7 +129,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
                 case 8: level_str = "특】"; break;
             }
 
-            city.text = region_str + city.name + level_str;
+            city.text = region_str + level_str + city.name;
             city.region_str = region_str;
             city.level_str = level_str;
 
@@ -179,7 +179,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
             if(nationId == myNation){
                 clickable |= 4;
             }
-            if(id in shownByGeneralList){
+            if(shownByGeneralList.has(id)){
                 clickable |= 2;
             }
             if(clickableAll){
@@ -192,10 +192,10 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
         }
 
         cityList = cityList
-            .map(formatCityInfo)
             .map(mergePositionInfo)
             .map(mergeNationInfo)
-            .map(mergeClickable);
+            .map(mergeClickable)
+            .map(formatCityInfo);
 
         return {
             'cityList' : cityList,
@@ -205,31 +205,63 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
 
     function drawDetailWorldMap(obj){
         
-        var flagTemplate = '<div class="map_flag"></div>';
-        var backgroundTemplate = '<div class="map_background"></div>';
+        var $map_body = $('.world_map .map_body');
 
         var cityList = obj.cityList;
         var myCity = obj.myCity;
 
-        //TODO: 도시를 그린다.........
-        //
-        //도시 선택 크기는 동일하게 가고 도시 이미지는 div로 설정.
+        cityList.forEach(function(city){
+            console.log(city);
+            var id = city.id;
+            $('.city_base_{0}'.format(id)).detach();
+            var flagTemplate = '<div class="map_flag"><div class="map_flag_capital"></div></div>';
+            var stateTemplate = '<div class="map_state"></div>';
+            var backgroundTemplate = '<div class="map_background"></div>';
 
+            
+
+
+            
+            //TODO: 도시를 그린다.........
+            //
+            //도시 선택 크기는 동일하게 가고 도시 이미지는 div로 설정.
+            var $cityObj = $('<div class="city_base city_base_{0}"></div>'.format(id));
+            $cityObj.addClass('city_level_{0}'.format(city.level));
+
+            $cityObj.css({'left':city.x,'top':city.y});
+
+            var $linkObj = $('<a class="city_link" href="#"></a>');
+            var $bgObj = $('<div class="city_bg"></div>');
+            var $imgObj = $('<div class="city_img"><img src="/images/cast_{0}.gif"></div>'.format(city.level));
+            $cityObj.data('obj', city);
+            //$cityObj.append($bgObj);
+            //$cityObj.append($linkObj);
+
+            if('color' in city && city.color !== null){
+                $cityObj.append($bgObj);
+                $bgObj.css({'background-image':"url('/images/b{0}.png')".format(convColorValue(city.color))});
+            }
+
+            $cityObj.append($linkObj);
+
+            $linkObj.append($imgObj);
+            $map_body.append($cityObj);
+
+            if(selectCallback){
+                $linkObj.click(function(){
+                    selectCallback($cityObj);
+                    return false;
+                });
+            }
+            
+            
+        });
         
         return obj;
     }
 
     function drawBasicWorldMap(obj){
         
-        var flagTemplate = '<div class="map_flag"></div>';
-        var backgroundTemplate = '<div class="map_background"></div>';
-
-        var cityList = obj.cityList;
-        var myCity = obj.myCity;
-
-        //TODO: 도시를 그린다.........
-        //
-        //도시 선택 크기는 동일하게 가고 도시 이미지는 div로 설정.
 
         
         return obj;
