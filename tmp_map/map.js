@@ -73,7 +73,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
                 "id":arr[0],
                 "name":arr[1],
                 "color":arr[2],
-                "capital":(arr[3]!==0)
+                "capital":arr[3]
             };
         }
 
@@ -159,6 +159,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             city.nation = nationObj.name;
             city.color = nationObj.color;
             city.isCapital = (nationObj.capital == city.id);
+            console.log(city.id, nationObj.capital, city.isCapital);
 
             return city;
         }
