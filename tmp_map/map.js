@@ -336,7 +336,7 @@ $(function(){
     var clickableAll = false;
 
     function tmp(a){
-        console.log(a);
+        console.log(a.name);
         return false;
     }
     reloadWorldMap(isDetailMap, clickableAll, tmp, 'goCity.php?id={0}');
