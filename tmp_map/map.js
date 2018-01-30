@@ -2,28 +2,19 @@
 String.prototype.format = function() {
     var args = arguments;
     return this.replace(/{(\d+)}/g, function(match, number) { 
-        return typeof args[number] != 'undefined'
-            ? args[number]
-            : match
-        ;
+        return (typeof args[number] != 'undefined') ? args[number] : match;
     });
 };
 
-jQuery(function($){
+
+
+
+function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
+
     var cityPosition = getCityPosition();
 
     //OBJ : startYear, year, month, cityList, nationList, spyList, ourCityList, shownByGeneralList, myCity
     var $world_map = $('.world_map');
-
-    function clearWorldMap(obj){
-        $world_map.find('.city_obj').detach();
-        $world_map
-            .removeClass('map_spring')
-            .removeClass('map_summer')
-            .removeClass('map_fall')
-            .removeClass('map_winter');
-        return obj;
-    }
 
     function setMapBackground(obj){
         var startYear = obj.startYear;
@@ -43,6 +34,7 @@ jQuery(function($){
         }
 
 
+        $world_map.removeClass('map_string map_summer map_fall map_winter');
         if(month <= 3){
             $world_map.addClass('map_spring');
         }
@@ -67,12 +59,11 @@ jQuery(function($){
         function toCityObj(arr){
             return {
                 "id":arr[0],
-                "name":arr[1],
-                "level":arr[2],
-                "state":arr[3],
-                "nationId":arr[4],
-                "region":arr[5],
-                "supply":arr[6]
+                "level":arr[1],
+                "state":arr[2],
+                "nationId":(arr[3]>0)?arr[3]:null,
+                "region":arr[4],
+                "supply":arr[5]
             };
         }
 
@@ -81,7 +72,7 @@ jQuery(function($){
                 "id":arr[0],
                 "name":arr[1],
                 "color":arr[2],
-                "capital":(arr[3]!=0)
+                "capital":(arr[3]!==0)
             };
         }
 
@@ -137,20 +128,21 @@ jQuery(function($){
                 case 7: level_str = "대】"; break;
                 case 8: level_str = "특】"; break;
             }
-    
+
             city.text = region_str + city.name + level_str;
             city.region_str = region_str;
             city.level_str = level_str;
-    
+
             return city;
         }
-    
+
         function mergePositionInfo(city){
             var id = city.id;
             if(!(id in cityPosition)){
                 return city;
             }
             var xy_val = cityPosition[id];
+            city.name = xy_val[0];
             city.x = xy_val[1];
             city.y = xy_val[2];
             return city;
@@ -160,7 +152,7 @@ jQuery(function($){
             //nationId 값으로 isCapital, color, nation을 통합
 
             var nationId = city.nationId;
-            if(nationId == null || !(nationId in nationList)){
+            if(nationId === null || !(nationId in nationList)){
                 city.nationId = null;
                 city.nation = null;
                 city.color = null;
@@ -177,19 +169,23 @@ jQuery(function($){
         }
 
         function mergeClickable(city){
-            //clickable = (remainSpy << 2) | (ourCity << 1) | shownByGeneral
+            //clickable = (remainSpy << 3) | (ourCity << 2) | (shownByGeneral << 1) | clickableAll
             var id = city.id;
             var nationId = city.nationId;
             var clickable = 0;
             if(id in spyList){
-                clickable |= spyList[id] << 2;
+                clickable |= spyList[id] << 3;
             }
             if(nationId == myNation){
-                clickable |= 2;
+                clickable |= 4;
             }
             if(id in shownByGeneralList){
+                clickable |= 2;
+            }
+            if(clickableAll){
                 clickable |= 1;
             }
+
 
             city.clickable = clickable;
             return city;
@@ -204,10 +200,10 @@ jQuery(function($){
         return {
             'cityList' : cityList,
             'myCity' : myCity
-        }
+        };
     }
 
-    function drawWorldMap(obj){
+    function drawDetailWorldMap(obj){
         
         var flagTemplate = '<div class="map_flag"></div>';
         var backgroundTemplate = '<div class="map_background"></div>';
@@ -220,10 +216,26 @@ jQuery(function($){
         //도시 선택 크기는 동일하게 가고 도시 이미지는 div로 설정.
 
         
-        
+        return obj;
     }
 
-    var setMouseWork = function(){
+    function drawBasicWorldMap(obj){
+        
+        var flagTemplate = '<div class="map_flag"></div>';
+        var backgroundTemplate = '<div class="map_background"></div>';
+
+        var cityList = obj.cityList;
+        var myCity = obj.myCity;
+
+        //TODO: 도시를 그린다.........
+        //
+        //도시 선택 크기는 동일하게 가고 도시 이미지는 div로 설정.
+
+        
+        return obj;
+    }
+
+    function setMouseWork(obj){
         var $tooltip = $('.world_map .city_tooltip');
         var $tooltip_city = $tooltip.find('.city_name');
         var $tooltip_nation = $tooltip.find('.nation_name');
@@ -231,7 +243,7 @@ jQuery(function($){
         var $objs = $('.world_map .city_obj');
 
         var $map_body = $('.world_map .map_body');
-    
+
 
         $map_body.mousemove(function(e){
             var parentOffset = $map_body.offset(); 
@@ -249,13 +261,41 @@ jQuery(function($){
         },function(event){
             $tooltip.hide();
         });
+
+        return obj;
     }
 
+    function setCityClickable(obj){
+        return obj;
+    }
 
+    function saveCityInfo(obj){
+        $world_map.data('cityInfo', obj);
+        return obj;
+    }
+
+    if(isDetailMap){
+        $world_map.addClass('map_detail');
+    }
+    else{
+        $world_map.removeClass('map_datail');
+    }
+
+    //deferred mode of jQuery. != promise-then.
     $.getJSON( 'result.json', {})
-        .then(clearWorldMap)
         .then(setMapBackground)
         .then(convertCityObjs)
-        .then(drawWorldMap)
-        .then(setMouseWork);
+        .then(isDetailMap?drawDetailWorldMap:drawBasicWorldMap)
+        .then(setMouseWork)
+        .then(setCityClickable)
+        .then(saveCityInfo);    
+}
+
+$(function(){
+
+    var isDetailMap = true;
+    var clickableAll = false;
+
+    reloadWorldMap(isDetailMap, clickableAll, console.log);
+
 });

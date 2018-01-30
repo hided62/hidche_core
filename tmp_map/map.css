@@ -7,10 +7,13 @@
 .map_title{
     width:700px;
     height:20px;
+    text-align:center;
+}
+
+.map_detail .map_title{
     background:
         url('/images/ltitle.jpg') no-repeat left, 
         url('/images/rtitle.jpg') no-repeat right;
-    text-align:center;
 }
 
 .map_title_text{
@@ -23,25 +26,25 @@
     font-weight:bold;
 }
 
-.map_spring .map_title_text{
+.map_detail.map_spring .map_title_text{
     background:
         url('/images/ad.gif') no-repeat left, 
         url('/images/spring.gif') no-repeat right;
 }
 
-.map_summer .map_title_text{
+.map_detail.map_summer .map_title_text{
     background:
         url('/images/ad.gif') no-repeat left, 
         url('/images/summer.gif') no-repeat right;
 }
 
-.map_fall .map_title_text{
+.map_detail.map_fall .map_title_text{
     background:
         url('/images/ad.gif') no-repeat left, 
         url('/images/fall.gif') no-repeat right;
 }
 
-.map_winter .map_title_text{
+.map_detail.map_winter .map_title_text{
     background:
         url('/images/ad.gif') no-repeat left, 
         url('/images/winter.gif') no-repeat right;
