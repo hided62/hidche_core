@@ -6,9 +6,6 @@ String.prototype.format = function() {
     });
 };
 
-
-
-
 function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
 
     var cityPosition = getCityPosition();
@@ -86,20 +83,14 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
             return result;
         }
 
-        function convertDictById(arr){
-            var result = [];
-            arr.forEach(function(v, i){
-                result[v.id] = v;
-            });
-            return result;
-        }
+        
 
         var cityList = obj.cityList.map(toCityObj);
         var nationList = obj.nationList.map(toNationObj);
         nationList = convertDictById(nationList); //array of object -> dict
 
         var spyList = convertSpyList(obj.spyList);//Array -> Dict
-        var shownByGeneralList = new Set(obj.shownByGeneralList);//Array -> Set
+        var shownByGeneralList = convertSet(obj.shownByGeneralList);//Array -> Set
 
         var myCity = obj.myCity;
         var myNation = obj.myNation;
@@ -179,7 +170,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
             if(nationId == myNation){
                 clickable |= 4;
             }
-            if(shownByGeneralList.has(id)){
+            if(shownByGeneralList.hasOwnProperty(id)){
                 clickable |= 2;
             }
             if(clickableAll){
@@ -228,18 +219,23 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
             var $cityObj = $('<div class="city_base city_base_{0}"></div>'.format(id));
             $cityObj.addClass('city_level_{0}'.format(city.level));
 
-            $cityObj.css({'left':city.x,'top':city.y});
+            $cityObj.css({'left':city.x-20,'top':city.y-15});
 
             var $linkObj = $('<a class="city_link" href="#"></a>');
-            var $bgObj = $('<div class="city_bg"></div>');
+            $linkObj.data({'text':city.text,'nation':city.nation});
             var $imgObj = $('<div class="city_img"><img src="/images/cast_{0}.gif"></div>'.format(city.level));
             $cityObj.data('obj', city);
             //$cityObj.append($bgObj);
             //$cityObj.append($linkObj);
 
             if('color' in city && city.color !== null){
+                var $bgObj = $('<div class="city_bg"></div>');
                 $cityObj.append($bgObj);
-                $bgObj.css({'background-image':"url('/images/b{0}.png')".format(convColorValue(city.color))});
+                $bgObj.css({'background-image':'url(/images/b{0}.png)'.format(convColorValue(city.color))});
+            }
+
+            if(city.state > 0){
+                var $imgObj = $('<img class="city_state" src="/images/state_{0}.gif">'.format(city.state));
             }
 
             $cityObj.append($linkObj);
@@ -272,7 +268,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback){
         var $tooltip_city = $tooltip.find('.city_name');
         var $tooltip_nation = $tooltip.find('.nation_name');
 
-        var $objs = $('.world_map .city_obj');
+        var $objs = $('.world_map .city_link');
 
         var $map_body = $('.world_map .map_body');
 
