@@ -159,7 +159,6 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             city.nation = nationObj.name;
             city.color = nationObj.color;
             city.isCapital = (nationObj.capital == city.id);
-            console.log(city.id, nationObj.capital, city.isCapital);
 
             return city;
         }
@@ -268,23 +267,67 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
 
         var $map_body = $('.world_map .map_body');
 
+        $objs.bind('touchstart', function(e){
+            var $this = $(this);
+            
+            var touchMode = $this.data('touchMode');
+            if($tooltip_city.data('target') != $this.data('id')){
+                $this.data('touchMode', 1);
+            }
+            else if(touchMode === undefined){
+                $this.data('touchMode', 1);
+            }
+            else{
+                $this.data('touchMode', touchMode + 1);
+            }
 
-        $map_body.mousemove(function(e){
+            $tooltip_city.data('target', $this.data('id'))
+            
+        });
+
+        $map_body.bind('mousemove', function(e){
             var parentOffset = $map_body.offset(); 
             var relX = e.pageX - parentOffset.left;
             var relY = e.pageY - parentOffset.top;
             
             $tooltip.css({'top': relY + 10, 'left': relX + 10});
         });
-        $objs.hover(function(event){
-            var $city = $(this);
 
-            $tooltip_city.html($city.data('text'));
-            $tooltip_nation.html($city.data('nation'));
+        $objs.bind('mouseenter touchend', function(e){
+            var $this = $(this);
+
+            $tooltip_city.html($this.data('text'));
+            $tooltip_nation.html($this.data('nation'));
+            $tooltip_city.data('target', $this.data('id'));
             $tooltip.show();
-        },function(event){
+            return false;
+        });
+
+        $map_body.bind('touchend',function(e){
+            //위의 touchend bind에 해당하지 않는 경우 -> 빈 지도 터치
             $tooltip.hide();
         });
+
+        $objs.bind('mouseleave', function(event){
+            $tooltip.hide();
+        });
+
+        $objs.bind('click', function(){
+            //touch의 경우 첫 터치는 tooltip을 보여주고, 두번째는 클릭
+            var $this = $(this);
+            var touchMode = $this.data('touchMode');
+
+            if(touchMode === undefined){
+                return true;
+            }
+
+            if(touchMode === 1){
+                return false;
+            }
+            $this.data('touchMode', 1);
+            return true;
+        });
+
 
         return obj;
     }
@@ -337,7 +380,7 @@ $(function(){
 
     function tmp(a){
         console.log(a);
-        return false;
+        //return false;
     }
     reloadWorldMap(isDetailMap, clickableAll, tmp, 'goCity.php?id={0}');
 
