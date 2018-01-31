@@ -460,18 +460,3 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
         .then(saveCityInfo);    
 }
 
-<<<<<<< HEAD
-$(function(){
-
-    var isDetailMap = true;
-    var clickableAll = false;
-
-    function tmp(a){
-        console.log(a.name);
-        return false;
-    }
-    reloadWorldMap(isDetailMap, clickableAll, tmp, 'goCity.php?id={0}');
-
-});
-=======
->>>>>>> fd8ab0e4b0165b8ea13b39705ea58b0b76d4f7e9
