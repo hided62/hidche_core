@@ -14,7 +14,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
 
     var cityPosition = getCityPosition();
 
-    //OBJ : startYear, year, month, cityList, nationList, spyList, ourCityList, shownByGeneralList, myCity
+    //OBJ : startYear, year, month, cityList, nationList, spyList, shownByGeneralList, myCity
     var $world_map = $('.world_map');
 
     function setMapBackground(obj){
@@ -288,7 +288,6 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             $linkObj.append($imgObj);
 
             if(city.state > 0){
-                console.log(city.state);
                 var state_text = 'wrong';
                 if(city.state < 10){
                     state_text = 'good';
@@ -390,7 +389,6 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             if($map_body.data('touchMode')){
                 return true;
             }
-            console.log('mouseenter');
             
             var $this = $(this);
 
@@ -462,15 +460,3 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
         .then(saveCityInfo);    
 }
 
-$(function(){
-
-    var isDetailMap = false;
-    var clickableAll = false;
-
-    function tmp(a){
-        console.log(a);
-        //return false;
-    }
-    reloadWorldMap(isDetailMap, clickableAll, tmp, 'goCity.php?id={0}');
-
-});
