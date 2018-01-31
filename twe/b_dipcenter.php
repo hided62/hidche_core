@@ -172,7 +172,7 @@ echo "
 </table>
 ";
 
-$query = "select nation,name,color,type,msg,gold,rice,bill,rate,scout,war,myset,scoutmsg,secretlimit from nation where nation='{$me['nation']}'";
+$query = "select nation,name,color,type,msg,gold,rice,bill,rate,scout,war,scoutmsg,secretlimit from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
@@ -259,27 +259,25 @@ echo "
                     <td align=right id=bg1>기밀 권한 (1 ~ 99년)&nbsp;&nbsp;&nbsp;</td>
                     <td align=center><input type=text <?=$read;?> name=secretlimit style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['secretlimit']?>>년 <input type=<?=$btn;?> name=btn value=기밀권한></td>
                     <td align=right id=bg1>임관&전쟁 변경 가능</td>
-                    <td align=center><?=$nation['myset'];?> 회</td>
+                    <td align=center>무제한</td>
                 </tr>
                 <tr>
                     <td colspan=4 align=center>
 <?php
-if($nation['myset'] > 0) {
-    if($nation['scout'] == 0) {
-        echo "
-        <input type=$btn name=btn value='임관 금지'>";
-    } else {
-        echo "
-        <input type=$btn name=btn value='임관 허가'>";
-    }
-    
-    if($nation['war'] == 0) {
-        echo "
-        <input type=$btn name=btn value='전쟁 금지'>";
-    } else {
-        echo "
-        <input type=$btn name=btn value='전쟁 허가'>";
-    }
+if($nation['scout'] == 0) {
+    echo "
+    <input type=$btn name=btn value='임관 금지'>";
+} else {
+    echo "
+    <input type=$btn name=btn value='임관 허가'>";
+}
+
+if($nation['war'] == 0) {
+    echo "
+    <input type=$btn name=btn value='전쟁 금지'>";
+} else {
+    echo "
+    <input type=$btn name=btn value='전쟁 허가'>";
 }
 ?>
                     </td>

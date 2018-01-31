@@ -44,16 +44,16 @@ if($btn == "국가방침") {
     $query = "update nation set secretlimit='$secretlimit' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "임관 금지") {
-    $query = "update nation set myset=myset-1,scout='1' where nation='{$me['nation']}' and myset>0";
+    $query = "update nation set scout='1' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "임관 허가") {
-    $query = "update nation set myset=myset-1,scout='0' where nation='{$me['nation']}' and myset>0";
+    $query = "update nation set scout='0' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "전쟁 금지") {
-    $query = "update nation set myset=myset-1,war='1' where nation='{$me['nation']}' and myset>0";
+    $query = "update nation set war='1' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "전쟁 허가") {
-    $query = "update nation set myset=myset-1,war='0' where nation='{$me['nation']}' and myset>0";
+    $query = "update nation set war='0' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 

@@ -994,8 +994,7 @@ function updateNationState($connect) {
         $gennum = $gencount;
         if($gencount < 10) $gencount = 10;
         //기술 및 변경횟수 업데이트
-        $myset = $nation['level'] + 1;
-        $query = "update nation set tech=totaltech/'$gencount',gennum='$gennum',myset='$myset' where nation='{$nation['nation']}'";
+        $query = "update nation set tech=totaltech/'$gencount',gennum='$gennum' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     pushHistory($connect, $history);
