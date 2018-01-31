@@ -14,7 +14,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
 
     var cityPosition = getCityPosition();
 
-    //OBJ : startYear, year, month, cityList, nationList, spyList, ourCityList, shownByGeneralList, myCity
+    //OBJ : startYear, year, month, cityList, nationList, spyList, shownByGeneralList, myCity
     var $world_map = $('.world_map');
 
     function setMapBackground(obj){
@@ -22,6 +22,12 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
         var year = obj.year;
         var month = obj.month;
 
+        if(isDetailMap){
+            $world_map.addClass('map_detail').removeClass('map_basic');
+        }
+        else{
+            $world_map.addClass('map_basic').removeClass('map_detail');
+        }
         
         var $map_title = $('.map_title_text');
         if(year < startYear + 1){
@@ -159,7 +165,6 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             city.nation = nationObj.name;
             city.color = nationObj.color;
             city.isCapital = (nationObj.capital == city.id);
-            console.log(city.id, nationObj.capital, city.isCapital);
 
             return city;
         }
@@ -225,7 +230,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             $linkObj.data({'text':city.text,'nation':city.nation,'id':city.id});
             $cityObj.append($linkObj);
 
-            var $imgObj = $('<div class="city_img"><img src="/images/cast_{0}.gif"></div>'.format(city.level));
+            var $imgObj = $('<div class="city_img"><img src="/images/cast_{0}.gif"><div class="city_filler"></div></div>'.format(city.level));
             $linkObj.append($imgObj);
             
             
@@ -244,18 +249,72 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
                 }
                 $imgObj.append($flagObj);
             }
-
-            
+         
 
             $map_body.append($cityObj);
             
             
         });
+
+        $world_map.find('.city_base_{0} .city_filler'.format(myCity)).addClass('my_city');
         
         return obj;
     }
 
     function drawBasicWorldMap(obj){
+
+        var $map_body = $('.world_map .map_body');
+
+        var cityList = obj.cityList;
+        var myCity = obj.myCity;
+
+        cityList.forEach(function(city){
+            var id = city.id;
+            $('.city_base_{0}'.format(id)).detach();
+            //이전 도시는 지운다.
+
+            var $cityObj = $('<div class="city_base city_base_{0}"></div>'.format(id));
+            $cityObj.addClass('city_level_{0}'.format(city.level));
+            $cityObj.data('obj', city).css({'left':city.x-20,'top':city.y-15});
+
+            var $linkObj = $('<a class="city_link"></a>');
+            $linkObj.data({'text':city.text,'nation':city.nation,'id':city.id});
+            $cityObj.append($linkObj);
+
+            var $imgObj = $('<div class="city_img"><div class="city_filler"></div></div>');
+            if('color' in city && city.color !== null){
+                $imgObj.css({'background-color':city.color});
+            }
+            $linkObj.append($imgObj);
+
+            if(city.state > 0){
+                var state_text = 'wrong';
+                if(city.state < 10){
+                    state_text = 'good';
+                }
+                else if(city.state < 40){
+                    state_text = 'bad';
+                }
+                else if(city.state < 50){
+                    state_text = 'war';
+                }
+                
+                var $stateObj = $('<div class="city_state city_state_{0}"></div>'.format(state_text));
+                $imgObj.append($stateObj);
+            }
+
+            //단순 표기에서는 깃발 여부가 없음
+            if(city.isCapital){
+                var $capitalObj = $('<div class="city_capital"></div>');
+                $imgObj.append($capitalObj);
+            }
+
+
+            $map_body.append($cityObj);
+        });
+
+        $world_map.find('.city_base_{0} .city_filler'.format(myCity)).addClass('my_city');
+
         return obj;
     }
 
@@ -268,23 +327,94 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
 
         var $map_body = $('.world_map .map_body');
 
+        //터치스크린 탭
 
-        $map_body.mousemove(function(e){
+        $objs.on('touchstart', function(e){
+            var $this = $(this);
+            
+            var touchMode = $this.data('touchMode');
+            if($tooltip_city.data('target') != $this.data('id')){
+                $this.data('touchMode', 1);
+            }
+            else if(touchMode === undefined){
+                $this.data('touchMode', 1);
+            }
+            else{
+                $this.data('touchMode', touchMode + 1);
+            }
+            $map_body.data('touchMode', 1);
+
+            $tooltip_city.data('target', $this.data('id'));
+            
+            
+        });
+        
+        $objs.on('touchend', function(e){    
+            var $this = $(this);
+            var position = $this.parent().position();
+            $tooltip_city.html($this.data('text'));
+            $tooltip_nation.html($this.data('nation'));
+            $tooltip.css({'top': position.top + 25, 'left': position.left + 35}).show();
+            
+            var touchMode = $this.data('touchMode');
+            if(touchMode <= 1){
+                return false;
+            }
+
+            //xxx: touchend 다음 click 이벤트가 갈 수도 있고, 안 갈 수도 있다.
+            $this.data('touchMode', 0);
+        });
+
+        $map_body.on('touchend',function(e){
+            
+            //위의 touchend bind에 해당하지 않는 경우 -> 빈 지도 터치
+            $tooltip.hide();
+        });
+
+        //Mouse over 모드 작동
+
+        $map_body.on('mousemove', function(e){
+            if($(this).data('touchMode')){
+                return true;
+            }
+
             var parentOffset = $map_body.offset(); 
             var relX = e.pageX - parentOffset.left;
             var relY = e.pageY - parentOffset.top;
             
             $tooltip.css({'top': relY + 10, 'left': relX + 10});
         });
-        $objs.hover(function(event){
-            var $city = $(this);
 
-            $tooltip_city.html($city.data('text'));
-            $tooltip_nation.html($city.data('nation'));
+        $objs.on('mouseenter', function(e){
+            if($map_body.data('touchMode')){
+                return true;
+            }
+            
+            var $this = $(this);
+
+            $tooltip_city.data('target', $this.data('id'));
+            $tooltip_city.html($this.data('text'));
+            $tooltip_nation.html($this.data('nation'));
+
             $tooltip.show();
-        },function(event){
+        });
+
+        $objs.on('mouseleave', function(event){
             $tooltip.hide();
         });
+
+        $objs.on('click', function(e){
+            //xxx: touchend 다음 click 이벤트가 갈 수도 있고, 안 갈 수도 있다.
+            var touchMode = $(this).data('touchMode');
+            if(touchMode === undefined){
+                return;
+            }
+
+            if(touchMode === 1){
+                return false;
+            }
+        });
+
 
         return obj;
     }
@@ -330,6 +460,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
         .then(saveCityInfo);    
 }
 
+<<<<<<< HEAD
 $(function(){
 
     var isDetailMap = true;
@@ -342,3 +473,5 @@ $(function(){
     reloadWorldMap(isDetailMap, clickableAll, tmp, 'goCity.php?id={0}');
 
 });
+=======
+>>>>>>> fd8ab0e4b0165b8ea13b39705ea58b0b76d4f7e9
