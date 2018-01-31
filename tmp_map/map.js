@@ -268,9 +268,8 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
         var $map_body = $('.world_map .map_body');
 
         //터치스크린 탭
-        
-        $objs.bind('touchstart', function(e){
-            console.log('touchstart');
+
+        $objs.on('touchstart', function(e){
             var $this = $(this);
             
             var touchMode = $this.data('touchMode');
@@ -290,41 +289,31 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             
         });
         
-        $objs.bind('touchend', function(e){    
-            console.log('touchend');
+        $objs.on('touchend', function(e){    
             var $this = $(this);
             var position = $this.parent().position();
-            console.log(position);
             $tooltip_city.html($this.data('text'));
             $tooltip_nation.html($this.data('nation'));
             $tooltip.css({'top': position.top + 25, 'left': position.left + 35}).show();
-            return false;
+            
+            var touchMode = $this.data('touchMode');
+            if(touchMode <= 1){
+                return false;
+            }
+
+            //xxx: touchend 다음 click 이벤트가 갈 수도 있고, 안 갈 수도 있다.
+            $this.data('touchMode', 0);
         });
 
-        $map_body.bind('touchend',function(e){
+        $map_body.on('touchend',function(e){
+            
             //위의 touchend bind에 해당하지 않는 경우 -> 빈 지도 터치
             $tooltip.hide();
         });
 
-        $objs.bind('click', function(){
-            //touch의 경우 첫 터치는 tooltip을 보여주고, 두번째는 클릭
-            var $this = $(this);
-            var touchMode = $this.data('touchMode');
-
-            if(touchMode === undefined){
-                return true;
-            }
-
-            if(touchMode === 1){
-                return false;
-            }
-            $this.data('touchMode', 1);
-            return true;
-        });
-
         //Mouse over 모드 작동
 
-        $map_body.bind('mousemove', function(e){
+        $map_body.on('mousemove', function(e){
             if($(this).data('touchMode')){
                 return true;
             }
@@ -336,12 +325,13 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             $tooltip.css({'top': relY + 10, 'left': relX + 10});
         });
 
-        $objs.bind('mouseenter', function(e){
+        $objs.on('mouseenter', function(e){
+            if($map_body.data('touchMode')){
+                return true;
+            }
             console.log('mouseenter');
+            
             var $this = $(this);
-            //mouseenter는 터치에서는 없는 마우스 고유 기능임.
-            $this.removeData('touchMode');
-            $map_body.removeData('touchMode');
 
             $tooltip_city.data('target', $this.data('id'));
             $tooltip_city.html($this.data('text'));
@@ -350,11 +340,21 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             $tooltip.show();
         });
 
-        $objs.bind('mouseleave', function(event){
+        $objs.on('mouseleave', function(event){
             $tooltip.hide();
         });
 
-        
+        $objs.on('click', function(e){
+            //xxx: touchend 다음 click 이벤트가 갈 수도 있고, 안 갈 수도 있다.
+            var touchMode = $(this).data('touchMode');
+            if(touchMode === undefined){
+                return;
+            }
+
+            if(touchMode === 1){
+                return false;
+            }
+        });
 
 
         return obj;
