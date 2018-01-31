@@ -22,6 +22,12 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
         var year = obj.year;
         var month = obj.month;
 
+        if(isDetailMap){
+            $world_map.addClass('map_detail').removeClass('map_basic');
+        }
+        else{
+            $world_map.addClass('map_basic').removeClass('map_detail');
+        }
         
         var $map_title = $('.map_title_text');
         if(year < startYear + 1){
@@ -224,7 +230,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             $linkObj.data({'text':city.text,'nation':city.nation,'id':city.id});
             $cityObj.append($linkObj);
 
-            var $imgObj = $('<div class="city_img"><img src="/images/cast_{0}.gif"></div>'.format(city.level));
+            var $imgObj = $('<div class="city_img"><img src="/images/cast_{0}.gif"><div class="city_filler"></div></div>'.format(city.level));
             $linkObj.append($imgObj);
             
             
@@ -243,20 +249,73 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
                 }
                 $imgObj.append($flagObj);
             }
-
-            
+         
 
             $map_body.append($cityObj);
             
             
         });
 
-        $world_map.find('.city_base_{0} .city_img'.format(myCity)).addClass('my_city');
+        $world_map.find('.city_base_{0} .city_filler'.format(myCity)).addClass('my_city');
         
         return obj;
     }
 
     function drawBasicWorldMap(obj){
+
+        var $map_body = $('.world_map .map_body');
+
+        var cityList = obj.cityList;
+        var myCity = obj.myCity;
+
+        cityList.forEach(function(city){
+            var id = city.id;
+            $('.city_base_{0}'.format(id)).detach();
+            //이전 도시는 지운다.
+
+            var $cityObj = $('<div class="city_base city_base_{0}"></div>'.format(id));
+            $cityObj.addClass('city_level_{0}'.format(city.level));
+            $cityObj.data('obj', city).css({'left':city.x-20,'top':city.y-15});
+
+            var $linkObj = $('<a class="city_link"></a>');
+            $linkObj.data({'text':city.text,'nation':city.nation,'id':city.id});
+            $cityObj.append($linkObj);
+
+            var $imgObj = $('<div class="city_img"><div class="city_filler"></div></div>');
+            if('color' in city && city.color !== null){
+                $imgObj.css({'background-color':city.color});
+            }
+            $linkObj.append($imgObj);
+
+            if(city.state > 0){
+                console.log(city.state);
+                var state_text = 'wrong';
+                if(city.state < 10){
+                    state_text = 'good';
+                }
+                else if(city.state < 40){
+                    state_text = 'bad';
+                }
+                else if(city.state < 50){
+                    state_text = 'war';
+                }
+                
+                var $stateObj = $('<div class="city_state city_state_{0}"></div>'.format(state_text));
+                $imgObj.append($stateObj);
+            }
+
+            //단순 표기에서는 깃발 여부가 없음
+            if(city.isCapital){
+                var $capitalObj = $('<div class="city_capital"></div>');
+                $imgObj.append($capitalObj);
+            }
+
+
+            $map_body.append($cityObj);
+        });
+
+        $world_map.find('.city_base_{0} .city_filler'.format(myCity)).addClass('my_city');
+
         return obj;
     }
 
@@ -405,7 +464,7 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
 
 $(function(){
 
-    var isDetailMap = true;
+    var isDetailMap = false;
     var clickableAll = false;
 
     function tmp(a){
