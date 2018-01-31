@@ -250,6 +250,8 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             
             
         });
+
+        $world_map.find('.city_base_{0} .city_img'.format(myCity)).addClass('my_city');
         
         return obj;
     }

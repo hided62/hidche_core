@@ -101,7 +101,6 @@
 }
 
 .world_map .my_city{
-    border:solid 0.02em red;/* Always 1px :) */
     outline:dotted 3px red;
 }
 
