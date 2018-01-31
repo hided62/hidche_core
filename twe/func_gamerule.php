@@ -89,29 +89,29 @@ function getSpecial($connect, $leader, $power, $intel) {
     //통장
     if($leader*0.9 > $power && $leader*0.9 > $intel) {
         $type = array(20, 31);
-        $special = array_rand($type);
+        $special = $type[array_rand($type)];
         // 귀모는 50% * 5% = 2.5%
         if($special == 31 && randF() < 0.05) {
             $type = array(20, 20);
-            $special = array_rand($type);
+            $special = $type[array_rand($type)];
         }
     //무장
     } elseif($power >= $intel) {
         $type = array(10, 11, 12, 31);
-        $special = array_rand($type);
+        $special = $type[array_rand($type)];
         // 귀모는 그중에 25% * 10% = 2.5%
         if(($special == 30 || $special == 31) && randF() < 0.05) {
             $type = array(10, 11, 12);
-            $special = array_rand($type);
+            $special = $type[array_rand($type)];
         }
     //지장
     } elseif($intel > $power) {
         $type = array(1, 2, 3, 31);
-        $special = array_rand($type);
+        $special = $type[array_rand($type)];
         // 거상, 귀모는 그중에 25% * 10% = 2.5%
         if($special == 31 && randF() < 0.05) {
             $type = array(1, 2, 3);
-            $special = array_rand($type);
+            $special = $type[array_rand($type)];
         }
     } else {
         //귀모. 다만 이쪽으로 빠지지 않음.
