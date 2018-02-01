@@ -149,3 +149,12 @@ function commandButton() {
 
     return $result;
 }
+
+
+
+function getMapHtml(){
+    //NOTE: 필요한가?
+    $templates = new League\Plates\Engine('templates');
+
+    return $templates->render('map');
+}

@@ -18,12 +18,28 @@ $me = MYDB_fetch_array($result);
 $con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 ?>
+<!DOCTYPE html>
 <html>
-
 <head>
-<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>세력도</title>
-<link rel=stylesheet href=css/common.css type=text/css>
+<script src="../e_lib/jquery-3.2.1.min.js"></script>
+<script src="js/base_map.js"></script>
+<script src="js/map.js"></script>
+<script>
+$(function(){
+
+    reloadWorldMap({
+        neutralView:true,
+        showMe:true
+    });
+
+});
+</script>
+<link href="css/normalize.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<link href="css/map.css" rel="stylesheet">
 <?php require('analytics.php'); ?>
 </head>
 
@@ -37,8 +53,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
             <?php AllLog(34, $me['skin']); ?>
         </td>
         <td width=698>
-            <iframe src='map.php?type=2&graphic=<?=$me['map'];?>' width=698 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-            </iframe>
+            <?=getMapHtml()?>
         </td>
     </tr>
     <tr>
