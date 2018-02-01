@@ -33,4 +33,11 @@ else{
     $post['month'] = null;
 }
 
-returnJson(getWorldMap($post));
+$result = getWorldMap($post);
+if($post['year'] && $post['month'] && $result['result']){
+    //연감 자료는 캐싱 가능
+    returnJson($result, false);
+}
+else{
+    returnJson($result);
+}
