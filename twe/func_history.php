@@ -74,7 +74,7 @@ function LogHistory($connect, $isFirst=0) {
         $admin['month'] = 12;
     }
 
-    //TODO: 웹 접속이 아닌 콘솔일 경우에 대응책 필요. conf등에 저장하는 것을 고려
+    //TODO: 새롭게 추가할 지도 값 받아오는 함수를 이용하여 재구성
     $current_url = util::get_current_url();
     $map_path =  explode('/',parse_url($current_url, PHP_URL_PASS));
     array_pop($map_path);

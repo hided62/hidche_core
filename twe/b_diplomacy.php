@@ -46,12 +46,28 @@ if($me['skin'] < 1) {
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
 ?>
-
+<!DOCTYPE html>
 <html>
 <head>
-<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>중원정보</title>
-<link rel=stylesheet href=css/common.css type=text/css>
+<script src="../e_lib/jquery-3.2.1.min.js"></script>
+<script src="js/base_map.js"></script>
+<script src="js/map.js"></script>
+<script>
+$(function(){
+
+    reloadWorldMap({
+        neutralView:true,
+        showMe:true
+    });
+
+});
+</script>
+<link href="css/normalize.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<link href="css/map.css" rel="stylesheet">
 <?php require('analytics.php'); ?>
 </head>
 
@@ -195,30 +211,27 @@ function mySort($killnum) {
     return $seq;
 }
 
-echo "
-</table>
-<br>";
+?>
 
-echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+</table>
+<br>
+<table class="bg0" align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style="font-size:13px;word-break:break-all;">
     <tr>
         <td colspan=5 align=center bgcolor=green><font size=3>중 원 지 도</font></td>
     </tr>
     <tr>
         <td width=698 height=420>
-            <iframe src='map.php?type=2&graphic={$me['map']}' width=698 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-            </iframe>
+            <?=getMapHtml()?>
         </td>
-        <td width=98 valign=top>$nationStr</td>
-        <td width=78 valign=top>$powerStr</td>
-        <td width=58 valign=top>$genStr</td>
-        <td width=58 valign=top>$cityStr</td>
+        <td width=98 valign=top><?=$nationStr?></td>
+        <td width=78 valign=top><?=$powerStr?></td>
+        <td width=58 valign=top><?=$genStr?></td>
+        <td width=58 valign=top><?=$cityStr?></td>
     </tr>
 </table>
-<br>";
-?>
+<br>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table class="bg0" align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style="font-size:13px;word-break:break-all;">
     <tr><td><?php backButton(); ?></td></tr>
     <tr><td><?php banner(); ?></td></tr>
 </table>
