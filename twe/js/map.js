@@ -215,10 +215,13 @@ function reloadWorldMap(option){
             if(id in spyList){
                 clickable |= spyList[id] << 3;
             }
-            if(nationId == myNation){
+            if(myNation !== null && nationId == myNation){
                 clickable |= 4;
             }
             if(shownByGeneralList.hasOwnProperty(id)){
+                clickable |= 2;
+            }
+            if(myCity !== null && id == myCity){
                 clickable |= 2;
             }
             if(clickableAll){
