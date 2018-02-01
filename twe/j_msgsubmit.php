@@ -1,9 +1,11 @@
 <?php
 include 'lib.php';
 include 'func.php';
-require_once('func_message.php');
 
 use utilphp\util as util;
+
+//읽기 전용이다. 빠르게 세션 끝내자
+session_write_close();
 
 $post = parseJsonPost();
 

@@ -366,7 +366,7 @@ function updateQuaterly($connect) {
 // 벌점 감소와 건국제한-1 전턴제한-1 외교제한-1, 1달마다 실행, 병사 있는 장수의 군량 감소, 수입비율 조정
 function preUpdateMonthly($connect) {
     //연감 월결산
-    $result = LogHistory($connect);
+    $result = LogHistory();
     $history = array();
 
     if($result == false) { return false; }
@@ -1285,7 +1285,7 @@ function checkEmperior($connect) {
             pushHistory($connect, $history);
 
             //연감 월결산
-            LogHistory($connect);
+            LogHistory();
         }
     }
 }

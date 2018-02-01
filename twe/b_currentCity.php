@@ -36,10 +36,10 @@ if($me['skin'] < 1) {
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=998>
-            <form name=cityselect method=post>도시선택 :
+            <form name=cityselect method=get>도시선택 :
                 <select name=citylist size=1 style=color:white;background-color:black;width:798;>
 <?php
-if(!array_key_exists('citylist', $_POST) && $_POST['citylist'] == '') { $_POST['citylist'] = $me['city']; }
+if(!array_key_exists('citylist', $_REQUEST) || $_REQUEST['citylist'] == '') { $_REQUEST['citylist'] = $me['city']; }
 
 // 재야일때는 현재 도시만
 $valid = 0;
@@ -49,7 +49,7 @@ if($me['level'] == 0) {
     $city = MYDB_fetch_array($cityresult);
     echo "
                     <option value={$city['city']}";
-    if($city['city'] == $_POST['citylist']) { echo " selected"; $valid = 1; }
+    if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
     echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
     if($city['nation'] == 0) echo "공백지";
     elseif($me['nation'] == $city['nation']) echo "본국==";
@@ -65,7 +65,7 @@ if($me['level'] == 0) {
         $city = MYDB_fetch_array($cityresult);
         echo "
                         <option value={$city['city']}";
-        if($city['city'] == $_POST['citylist']) { echo " selected"; $valid = 1; }
+        if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
         echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
@@ -82,7 +82,7 @@ if($me['level'] == 0) {
         $city = MYDB_fetch_array($cityresult);
         echo "
                         <option value={$city['city']}";
-        if($city['city'] == $_POST['citylist']) { echo " selected"; $valid = 1; }
+        if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
         echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
@@ -108,7 +108,7 @@ if($myNation['level'] > 0) {
         $city = MYDB_fetch_array($cityresult);
         echo "
                         <option value={$city['city']}";
-        if($city['city'] == $_POST['citylist']) { echo " selected"; $valid = 1; }
+        if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
         echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
@@ -130,10 +130,10 @@ echo "
 
 // 첩보된 도시까지만 허용
 if($valid == 0 && $me['userlevel'] < 5) {
-    $_POST['citylist'] = $me['city'];
+    $_REQUEST['citylist'] = $me['city'];
 }
 
-$query = "select * from city where city='{$_POST['citylist']}'"; // 도시 이름 목록
+$query = "select * from city where city='{$_REQUEST['citylist']}'"; // 도시 이름 목록
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $city = MYDB_fetch_array($cityresult);
 
