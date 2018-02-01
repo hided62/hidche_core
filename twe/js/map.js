@@ -391,7 +391,15 @@ function reloadWorldMap(option){
             var $this = $(this);
             var position = $this.parent().position();
             $tooltip_city.html($this.data('text'));
-            $tooltip_nation.html($this.data('nation'));
+            
+            var nation_text = $this.data('nation');
+            if(nation_text){
+                $tooltip_nation.html(nation_text).show();
+            }
+            else{
+                $tooltip_nation.html('').hide();
+            }
+            
             $tooltip.css({'top': position.top + 25, 'left': position.left + 35}).show();
             
             var touchMode = $this.data('touchMode');
@@ -432,7 +440,13 @@ function reloadWorldMap(option){
 
             $tooltip_city.data('target', $this.data('id'));
             $tooltip_city.html($this.data('text'));
-            $tooltip_nation.html($this.data('nation'));
+            var nation_text = $this.data('nation');
+            if(nation_text){
+                $tooltip_nation.html(nation_text).show();
+            }
+            else{
+                $tooltip_nation.html('').hide();
+            }
 
             $tooltip.show();
         });
@@ -491,16 +505,16 @@ function reloadWorldMap(option){
     //deferred mode of jQuery. != promise-then.
     deferred = $.ajax({
         url: option.targetJson,
-        type: 'POST',
+        type: 'post',
+        dataType:'json',
         contentType: 'application/json',
-        data: {
+        data: JSON.stringify({
             neutralView:option.neutralView,
             year:option.year,
             month:option.month,
             showMe:option.showMe,
             aux:option.aux
-        },
-        dataType:'json'
+        })
     });
 
     deferred

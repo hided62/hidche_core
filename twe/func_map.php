@@ -54,13 +54,19 @@ function getWorldMap($req){
 
     $db = getDB();
 
-    list($startYear, $year, $month) = $db->queryFirstRow('select `startyear`, `year`, `month` from `game` where `no`=1');
+    $game = $db->queryFirstRow('select `startyear`, `year`, `month` from `game` where `no` = 1');
+    $startYear = $game['startyear'];
+    $year = $game['year'];
+    $month = $game['month'];
 
     if($generalID && ($req->showMe || $req->neutralView)){
-        list($myCity, $myNation) 
-            = $db->queryFirstRow(
+        $city = $db->queryFirstRow(
                 'select `city`, `nation` from `general` where `user_id`=%i',
                  $generalID);
+
+        $myCity = $city['city'];
+        $myNation = $city['nation'];
+
         if(!$req->showMe){
             $myCity = null;
         }
@@ -99,7 +105,8 @@ function getWorldMap($req){
 
     $cityList = [];
     foreach($db->query('select `city`, `level`, `state`, `nation`, `region`, `supply` from `city`') as $r){
-        $cityList[] = [$r['city'], $r['level'], $r['state'], $r['nation'], $r['region'], $r['supply']];
+        $cityList[] = 
+            array_map('intval', [$r['city'], $r['level'], $r['state'], $r['nation'], $r['region'], $r['supply']]);
     }
 
     return [
@@ -111,6 +118,7 @@ function getWorldMap($req){
         'spyList' => $spyList,
         'shownByGeneralList' => $shownByGeneralList,
         'myCity' => $myCity,
-        'myNation' => $myNation
+        'myNation' => $myNation,
+        'result' => true
     ];
 }

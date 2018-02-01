@@ -58,13 +58,22 @@ $scenario = getScenario();
 <head>
 <title>메인</title>
 <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
 <script src="js/main.js"></script>
-
+<script src="js/base_map.js"></script>
+<script src="js/map.js"></script>
+<script>
+$(function(){
+    reloadWorldMap({
+        hrefTemplate:'b_currentCity.php?citylist={0}'
+    });
+});
+</script>
 <link href="css/normalize.css" rel="stylesheet">
 <link href="css/common.css" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
-<link rel=stylesheet href=css/common.css type=text/css>
+<link href="css/map.css" rel="stylesheet">
 
 <?php require('analytics.php'); ?>
 </head>
@@ -178,7 +187,9 @@ if($me['userlevel'] >= 5) {
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
-        <td width=698 height=520 colspan=2><iframe src='map.php?type=0&graphic=<?=$me['map'];?>' width=698 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
+        <td width=698 height=520 colspan=2>
+            <?=getMapHtml()?>
+        </td>
         <td width=298 rowspan=4><iframe name=commandlist src='commandlist.php' width=298 height=700 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
     </tr>
 <form name=form2 action=preprocessing.php method=post target=commandlist>
