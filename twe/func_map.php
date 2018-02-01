@@ -55,17 +55,17 @@ function getWorldMap($req){
     $db = getDB();
 
     $game = $db->queryFirstRow('select `startyear`, `year`, `month` from `game` where `no` = 1');
-    $startYear = $game['startyear'];
-    $year = $game['year'];
-    $month = $game['month'];
+    $startYear = intval($game['startyear']);
+    $year = intval($game['year']);
+    $month = intval($game['month']);
 
     if($generalID && ($req->showMe || $req->neutralView)){
         $city = $db->queryFirstRow(
                 'select `city`, `nation` from `general` where `user_id`=%i',
                  $generalID);
 
-        $myCity = $city['city'];
-        $myNation = $city['nation'];
+        $myCity = intval($city['city']);
+        $myNation = intval($city['nation']);
 
         if(!$req->showMe){
             $myCity = null;
@@ -90,14 +90,20 @@ function getWorldMap($req){
 
     $nationList = [];
     foreach($db->query('select `nation`, `name`, `color`, `capital` from `nation`') as $row){
-        $nationList[] = [$row['nation'], $row['name'], $row['color'], $row['capital']];
+        $nationList[] = [
+            intval($row['nation']), 
+            $row['name'], 
+            $row['color'], 
+            intval($row['capital'])
+        ];
     }
 
     if($myNation){
         //굳이 타국 도시에 있는 아국 장수 리스트를 뽑을 이유가 없음. 일단 다 뽑자.
         $shownByGeneralList = 
-            $db->queryFirstRow('select distinct `city` from `general` where `nation` = %i',
-                $myNation);
+            array_map('intval',
+                $db->queryFirstColumn('select distinct `city` from `general` where `nation` = %i',
+                    $myNation));
     }
     else{
         $shownByGeneralList = [];
