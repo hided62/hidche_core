@@ -120,3 +120,4 @@ sess_*
 */logs/*.txt
 d_setting/set.php
 conf.php
+err.txt
