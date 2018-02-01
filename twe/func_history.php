@@ -63,48 +63,37 @@ function getGenHistory($count, $year, $month, $isFirst=0) {
     return $str;
 }
 
-function LogHistory($connect, $isFirst=0) {
+function LogHistory($isFirst=0) {
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', LogHistory Start');
-    
-    $query = "select startyear,year,month from game where no='1'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-    if($isFirst == 1) {
-        $admin['year'] -= 1;
-        $admin['month'] = 12;
-    }
 
     //TODO: 새롭게 추가할 지도 값 받아오는 함수를 이용하여 재구성
-    $current_url = util::get_current_url();
-    $map_path =  explode('/',parse_url($current_url, PHP_URL_PASS));
-    array_pop($map_path);
-    $map_path[] =  'map.php?type=2&graphic=0';
-    $map_path = join('/', $map_path);
-    
-    $client = new GuzzleHttp\Client();
-    $response = $client->get($map_path);
-    
-    $map = (string)$response->getBody();
-    $map = str_replace("'", '<_quot_>', $map);
-    $map = str_replace('"', '<_dquot_>', $map);
-    
-    $log = getHistory(20, $admin['year'], $admin['month'], $isFirst);
-    $genlog = getGenHistory(50, $admin['year'], $admin['month'], $isFirst);
+    $map = getWorldMap([
+        'neutralView'=>true,
+        'showMe'=>false
+    ]);
 
-    $query = "select nation,color,name,power,gennum from nation where level>0 order by power desc";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationcount = MYDB_num_rows($result);
+    if($isFirst == 1){
+        $map['year'] -= 1;
+        $map['month'] = 12;
+    }
+
+    $startYear = $map['startYear'];
+    $year = $map['year'];
+    $month = $map['month'];
+
+    $map_json = json_encode($map, JSON_UNESCAPED_UNICODE);
+    
+    $log = getHistory(20, $year, $month, $isFirst);
+    $genlog = getGenHistory(50, $year, $month, $isFirst);
 
     $nationStr = "";
     $powerStr = "";
     $genStr = "";
     $cityStr = "";
-    for($i=0; $i < $nationcount; $i++) {
-        $nation = MYDB_fetch_array($result);
 
-        $query = "select city from city where nation='{$nation['nation']}'";
-        $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $citycount = MYDB_num_rows($cityresult);
+    $db = getDB();
+    foreach($db->query('select nation,color,name,power,gennum from nation where level>0 order by power desc') as $nation){
+        $cityCount = $db->queryFirstField('select count(*) from city where nation = %i',$nation['nation']);
 
         $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</font><br>";
         $powerStr .= "국력 {$nation['power']}<br>";
@@ -114,13 +103,17 @@ function LogHistory($connect, $isFirst=0) {
 
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', contents collected');
     
-    @MYDB_query("
-        insert into history (
-            year, month, map, log, genlog, nation, power, gen, city
-        ) values (
-            '{$admin['year']}', '{$admin['month']}', '$map', '$log', '$genlog', '$nationStr', '$powerStr', '$genStr', '$cityStr'
-        )",
-    $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->insert('history', [
+        'year' => $year,
+        'month' => $month,
+        'map' => $map_json,
+        'log' => $log,
+        'genlog' => $genlog,
+        'nation' => $nationStr,
+        'power' => $powerStr,
+        'gen' => $genStr,
+        'city' => $cityStr
+    ]);
 
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', LogHistory Finish');
     return true;

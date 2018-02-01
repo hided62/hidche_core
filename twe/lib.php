@@ -89,6 +89,7 @@ session_set_cookie_params(0, '/');
 session_cache_expire(60);   // 60분
 
 // 세션 변수의 등록
+//FIXME:session_start()를 각자 수행하고, ajax등의 경우에는 session_write_close로 빠르게 끝낼 수 있어야한다.
 session_start();
 
 //첫 등장

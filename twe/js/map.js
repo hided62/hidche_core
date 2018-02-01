@@ -37,6 +37,24 @@ function reloadWorldMap(option){
     //OBJ : startYear, year, month, cityList, nationList, spyList, shownByGeneralList, myCity
     var $world_map = $('.world_map');
 
+    var deferred;
+
+    function checkReturnObject(obj){
+        if(!obj.result){
+            deferred.reject();
+            return;
+        }
+
+        if(!$.isNumeric(obj.startYear)
+            ||!$.isNumeric(obj.year)
+            ||!$.isNumeric(obj.month)){
+            deferred.reject();
+            return;
+        }
+
+        return obj;
+    }
+    
     function setMapBackground(obj){
         var startYear = obj.startYear;
         var year = obj.year;
@@ -471,7 +489,7 @@ function reloadWorldMap(option){
     }
 
     //deferred mode of jQuery. != promise-then.
-    $.ajax({
+    deferred = $.ajax({
         url: option.targetJson,
         type: 'POST',
         contentType: 'application/json',
@@ -483,12 +501,15 @@ function reloadWorldMap(option){
             aux:option.aux
         },
         dataType:'json'
-    })
-    .then(setMapBackground)
-    .then(convertCityObjs)
-    .then(isDetailMap?drawDetailWorldMap:drawBasicWorldMap)
-    .then(setMouseWork)
-    .then(setCityClickable)
-    .then(saveCityInfo);    
+    });
+
+    deferred
+        .then(checkReturnObject)
+        .then(setMapBackground)
+        .then(convertCityObjs)
+        .then(isDetailMap?drawDetailWorldMap:drawBasicWorldMap)
+        .then(setMouseWork)
+        .then(setCityClickable)
+        .then(saveCityInfo);    
 }
 

@@ -14,6 +14,7 @@ require_once 'func_file.php';
 require_once 'func_converter.php';
 require_once('func_template.php');
 require_once('func_message.php');
+require_once('func_map.php');
 
 /// 0.0~1.0 사이의 랜덤 float
 function randF(){
