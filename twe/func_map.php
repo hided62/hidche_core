@@ -50,22 +50,22 @@ function getWorldMap($req){
         return getHistoryMap($req->year, $req->month);
     }
 
-    $generalID = getGeneralID();
+    $generalID = getGeneralID(false);
 
     $db = getDB();
 
     $game = $db->queryFirstRow('select `startyear`, `year`, `month` from `game` where `no` = 1');
-    $startYear = intval($game['startyear']);
-    $year = intval($game['year']);
-    $month = intval($game['month']);
+    $startYear = toInt($game['startyear']);
+    $year = toInt($game['year']);
+    $month = toInt($game['month']);
 
     if($generalID && ($req->showMe || $req->neutralView)){
         $city = $db->queryFirstRow(
                 'select `city`, `nation` from `general` where `user_id`=%i',
                  $generalID);
 
-        $myCity = intval($city['city']);
-        $myNation = intval($city['nation']);
+        $myCity = toInt($city['city']);
+        $myNation = toInt($city['nation']);
 
         if(!$req->showMe){
             $myCity = null;
@@ -82,7 +82,7 @@ function getWorldMap($req){
     if($myNation){
         $spyList = $db->queryFirstField('select `spy` from `nation` where `nation`=%i', 
             $myNation);
-        $spyList = array_map('intval', explode("|", $spyList));
+        $spyList = array_map('toInt', explode("|", $spyList));
     }
     else{
         $spyList = [];
@@ -91,17 +91,17 @@ function getWorldMap($req){
     $nationList = [];
     foreach($db->query('select `nation`, `name`, `color`, `capital` from `nation`') as $row){
         $nationList[] = [
-            intval($row['nation']), 
+            toInt($row['nation']), 
             $row['name'], 
             $row['color'], 
-            intval($row['capital'])
+            toInt($row['capital'])
         ];
     }
 
     if($myNation){
         //굳이 타국 도시에 있는 아국 장수 리스트를 뽑을 이유가 없음. 일단 다 뽑자.
         $shownByGeneralList = 
-            array_map('intval',
+            array_map('toInt',
                 $db->queryFirstColumn('select distinct `city` from `general` where `nation` = %i',
                     $myNation));
     }
@@ -112,7 +112,7 @@ function getWorldMap($req){
     $cityList = [];
     foreach($db->query('select `city`, `level`, `state`, `nation`, `region`, `supply` from `city`') as $r){
         $cityList[] = 
-            array_map('intval', [$r['city'], $r['level'], $r['state'], $r['nation'], $r['region'], $r['supply']]);
+            array_map('toInt', [$r['city'], $r['level'], $r['state'], $r['nation'], $r['region'], $r['supply']]);
     }
 
     return [

@@ -24,7 +24,7 @@ $datetime = new DateTime();
 $date = $datetime->format('Y-m-d H:i:s');
 
 //로그인 검사
-if(!CheckLoginEx($db)){
+if(!isSigned()){
     returnJson([
         'result' => false,
         'reason' => '로그인되지 않았습니다.',

@@ -25,8 +25,8 @@ if($post['year']){
         ]);
     }
 
-    $post['year'] = intval($post['year']);
-    $post['month'] = intval($post['month']);
+    $post['year'] = toInt($post['year']);
+    $post['month'] = toInt($post['month']);
 }
 else{
     $post['year'] = null;

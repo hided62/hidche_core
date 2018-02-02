@@ -1,6 +1,8 @@
 <?php
 require(__dir__.'/../vendor/autoload.php');
 
+use utilphp\util as util;
+
 /******************************************************************************
 체섭용 인클루드 파일
  ******************************************************************************/
@@ -84,16 +86,16 @@ if(is_dir("data")){
 
 
 session_save_path('data/session');
-session_cache_limiter('nocache, must_revalidate');
+session_cache_limiter('nocache, must_revalidate');//NOTE: 캐시가 가능할 수도 있음. 주의!
 session_set_cookie_params(0, '/');
 session_cache_expire(60);   // 60분
 
 // 세션 변수의 등록
-//FIXME:session_start()를 각자 수행하고, ajax등의 경우에는 session_write_close로 빠르게 끝낼 수 있어야한다.
+//NOTE: ajax등의 경우에는 session_write_close로 빠르게 끝낼 수 있어야한다.
 session_start();
 
 //첫 등장
-if(!isset($_SESSION['p_ip']) || $_SESSION['p_ip'] == "") {
+if(!util::array_get($_SESSION['p_ip'], null)) {
     $_SESSION['p_ip'] = getenv("REMOTE_ADDR");
     $_SESSION['p_time'] = time();
 }
@@ -101,9 +103,8 @@ if(!isset($_SESSION['p_ip']) || $_SESSION['p_ip'] == "") {
 //id, 이름, 국가는 로그인에서
 //초과된 세션은 로그아웃(1시간)
 if($_SESSION['p_time']+3600 < time()) {
-    $_SESSION['p_id'] = "";
-    $_SESSION['p_name'] = "";
-    $_SESSION['p_nation'] = 0;
+    unset($_SESSION['p_id']);
+    unset($_SESSION[getServPrefix().'p_name']);
     $_SESSION['p_time'] = time();
     session_destroy();
 } else {
@@ -180,6 +181,7 @@ function isTable($connect, $str, $dbname='') {
 
 // 빈문자열 경우 1을 리턴
 function isblank($str) {
+    //FIXME: 리턴 값은 boolean이 더 적절하다.
     $temp=str_replace("　","",$str);
     $temp=str_replace("\n","",$temp);
     $temp=strip_tags($temp);
@@ -208,6 +210,30 @@ function PrintElapsedTime() {
     echo "<table width=1000 align=center style=font-size:10;><tr><td align=right>경과시간 : {$_endTime}초</td></tr></table>";
 }
 
+/**
+ * '비교적' 안전한 int 변환
+ * null -> null
+ * int -> int
+ * float -> int
+ * numeric(int, float) 포함 -> int
+ * 기타 -> 예외처리
+ * 
+ * @return int|null
+ */
+function toInt($val){
+    if($val === null){
+        return null;
+    }
+    if(is_int($val)){
+        return $val;
+    }
+    if(is_numeric($val)){
+        return intval($val);//
+    }
+
+    throw new InvalidArgumentException('올바르지 않은 타입형 :'.$val);
+}
+
 function LogText($prefix, $variable){
     $fp = fopen('logs/dbg_logs.txt', 'a+');
     if($fp == false){
@@ -217,8 +243,17 @@ function LogText($prefix, $variable){
             $fp = fopen('logs/dbg_logs.txt', 'a+');
         }
     }
-    fwrite($fp, sprintf('%s : %s\n', $prefix, var_export($_POST, true)));
+    fwrite($fp, sprintf('%s : %s'."\n", $prefix, var_export($_POST, true)));
     fclose($fp);
+}
+
+function dictToArray($dict, $keys){
+    $result = [];
+
+    foreach($keys as $key){
+        $result[] = util::array_get($dict[$key], null);
+    }
+    return $result;
 }
 
 function parseJsonPost(){
@@ -279,7 +314,9 @@ function parseJsonPost(){
     return $decoded;
 }
 
-LogText($_SERVER['REQUEST_URI'], $_POST);
+if(isset($_POST) && count($_POST) > 0){
+    LogText($_SERVER['REQUEST_URI'], $_POST);
+}
 extract($_POST, EXTR_SKIP); 
 //XXX: $_POST를 추출 없이 그냥 쓰는 경우가 많아서 일단 디버깅을 위해 씀!!!! 절대 production 서버에서 사용 금지!
 //todo: $_POST로 제공되는 데이터를 각 페이지마다 분석할것.

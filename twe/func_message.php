@@ -82,7 +82,7 @@ function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
 }
 
 function getMessage($msgType, $limit=30, $fromTime=NULL){
-    $generalID = getGeneralID();
+    $generalID = getGeneralID(false);
     if($generalID === NULL){
         return [];
     }
@@ -91,12 +91,12 @@ function getMessage($msgType, $limit=30, $fromTime=NULL){
         return getRawMessage(9999, $limit, $fromTime);
     }
     else if($msgType === 'private'){
-        return getRawMessage($genID, $limit, $fromTime);
+        return getRawMessage($generalID, $limit, $fromTime);
     }
     else if($msgType === 'national'){
         $nationID = getDB()->queryFirstField(
-            'select `nation` from `general` where user_id = %i',
-            $genID
+            'select `nation` from `general` where no = %i',
+            $generalID
         );
         return getRawMessage(9000 + $nationID, $limit, $fromTime);
     }
@@ -164,9 +164,14 @@ function sendMessage($msgType, $src, $dest, $msg, $date = null){
 function getMailboxList(){
     $result = [];
 
-    $generalID = getGeneralID();
+    $generalID = getGeneralID(false);
+
+    if(!$generalID){
+
+    }
+
     $db = getDB();
-    $me = $db->queryFirstRow('select no,nation,level from general where user_id=%i', $generalID);
+    $me = $db->queryFirstRow('select no,nation,level from general where no=%i', $generalID);
 
     //가장 최근에 주고 받은 사람.
     $latestMessage = util::array_get(getMessage('private', 1)[0], null);

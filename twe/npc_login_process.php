@@ -40,8 +40,7 @@ if(!$me2) {
     }
 
     $_SESSION['p_id']     = $id;
-    $_SESSION['p_name']   = $me['name'];
-    $_SESSION['p_nation'] = $me['nation'];
+    $_SESSION['p_ip']     = getenv("REMOTE_ADDR");
     $_SESSION['p_time']   = time();
 
     $date = date('Y-m-d H:i:s');

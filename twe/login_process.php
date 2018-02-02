@@ -1,11 +1,10 @@
 <?php
-require(__dir__.'/../vendor/autoload.php');
 include "lib.php";
 include "func.php";
 
-use utilphp\util as util;
+//FIXME: 이 프로세스 전체가 필요없을 수 있다. session 디렉토리를 관리하지 않거나, 자동 로그인을 처리하는 방법을 생각할 것.
 
-$connect = dbConn("sammo");
+use utilphp\util as util;
 
 $id = util::array_get($_POST['id'],'');
 $pw = util::array_get($_POST['pw'], '');
@@ -13,30 +12,34 @@ $conmsg = util::array_get($_POST['conmsg'], '');
 
 $pw = substr($pw, 0, 32);
 
+
+
 //회원 테이블에서 정보확인
-$query = "select no,name from MEMBER where id='$id' and pw='$pw'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$member = MYDB_fetch_array($result);
+$member = getRootDB()->queryFirstRow('select no,name from MEMBER where id=%s and pw=%s', $id, $pw);
 
-$connect = dbConn();
 
+if(!$member) {
+    MessageBox("아이디나 암호가 올바르지 않습니다!!!");
+    //TODO:login_process를 rest 형태로 처리
+    //header ("Location: index.php");
+    exit(0);
+}
+
+//NOTE: 왜 Session을 지우는가?
 DeleteSession();
 
+$db = getDB();
+
 //회원 테이블에서 정보확인
-$query="select no,name,nation,block,killturn from general where user_id='$id'";
+$me= $db->queryFirstRow('select no,name,nation,block,killturn from general where user_id= %s', $id);
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-if(!$member) {
-    //MessageBox("아이디나 암호가 올바르지 않습니다!!!");
-    //TODO:login_process를 rest 형태로 처리
-    header ("Location: index.php");
-    exit(0);
-}
+
 if(!$me) {
-    //MessageBox("캐릭터가 없습니다!!!");
+    MessageBox("캐릭터가 없습니다!!!");
     //TODO:login_process를 rest 형태로 처리
-    header ("Location: index.php");
+    //header ("Location: index.php");
     exit(0);
 }
 
@@ -52,9 +55,9 @@ case 3:
     MessageBox("절대 1계정만 사용하십시오! {$me['killturn']}시간 후 재등록 가능합니다."); break;
 }
 
+$_SESSION[getServPrefix().'p_no']     = toInt($me['no']);
 $_SESSION['p_id']     = $id;
-$_SESSION['p_name']   = $me['name'];
-$_SESSION['p_nation'] = $me['nation'];
+$_SESSION[getServPrefix().'p_name']   = $me['name'];
 $_SESSION['p_time']   = time();
 
 $date = date('Y-m-d H:i:s');

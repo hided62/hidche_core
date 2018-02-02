@@ -224,6 +224,9 @@ class _String {
 
     //중간정렬
     public static function staticFill($str, $maxsize, $ch) {
+        if(!$str){
+            $str = '';
+        }
         $size = strlen($str);
 
         $count = ($maxsize - $size) / 2;
@@ -239,6 +242,9 @@ class _String {
     }
     
     public static function Fill($str, $maxsize, $ch) {
+        if(!$str){
+            $str = '';
+        }
         $size = strlen($str);
 
         $count = ($maxsize - $size) / 2;
@@ -256,6 +262,9 @@ class _String {
 
     //우측정렬
     public static function Fill2($str, $maxsize, $ch='0') {
+        if(!$str){
+            $str = '';
+        }
         $size = strlen($str);
 
         $count = ($maxsize - $size);

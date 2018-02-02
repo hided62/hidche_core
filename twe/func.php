@@ -16,24 +16,89 @@ require_once('func_template.php');
 require_once('func_message.php');
 require_once('func_map.php');
 
-/// 0.0~1.0 사이의 랜덤 float
+/** 
+ * 0.0~1.0 사이의 랜덤 float
+ * @return float
+ */
 function randF(){
     return mt_rand() / mt_getrandmax();
 }
 
-/// $_SESSION['p_id'] 의 값을 받아옴
-function getGeneralID(){
-    //TODO: 서버마다 p_id가 다를 수 있도록 조치
-    if(!isset($_SESSION['p_id'])){
-        return NULL;
+/** 
+ * 로그인한 유저의 전역 id를 받아옴 
+ *
+ * @return string|null 
+ */
+function getUserID($forceExit=false){
+    $userID = util::array_get($_SESSION['p_id'], null);
+    if(!$userID && $forceExit){
+        header('Location:..');
+        die();
     }
-    if($_SESSION['p_id']===''){
-        return NULL;
-    }
-    return $_SESSION['p_id'];
+
+    return $userID;
 }
 
 
+/** 
+ * 로그인한 유저의 장수 id를 받아옴
+ * 
+ * @return int|null
+ */
+function getGeneralID($forceExit=false){
+    $username = getUserID();
+    if(!$username){ //유저명 없으면 어차피 의미 없음.
+        return null;
+    }
+
+    $id_key = getServPrefix().'p_no';
+    $generalID = util::array_get($_SESSION[$id_key], null);
+
+    if($generalID){
+        return $generalID;
+    }
+
+    //흠?
+    $generalID = getDB()->queryFirstField('select no from general where user_id = %s', $username);
+    if(!$generalID && $forceExit){
+        header('Location:..');
+        die();
+    }
+
+    if($generalIDid){
+        $_SESSION[$id_key] = $generalID;
+    }
+    
+    return $generalID;
+}
+
+/** 
+ * 로그인한 유저의 장수명을 받아옴
+ * 
+ * @return string|null
+ */
+function getGeneralName($forceExit=false)
+{
+    $generalID = getGeneralID();
+    if(!$generalID){
+        if($forceExit){
+            header('Location:..');
+            die();
+        }
+
+        return null;
+    }
+
+    $id_key = getServPrefix().'p_name';
+    $generalName = util::array_get($_SESSION[$id_key], null);
+
+    if($generalName){
+        return $generalName;
+    }
+
+    //흠?
+    $generalName = getDB()->queryFirstField('select name from general where no = %i', $generalID);
+}
 
 function GetImageURL($imgsvr) {
     global $image, $image1;
@@ -44,9 +109,14 @@ function GetImageURL($imgsvr) {
     }
 }
 
-function CheckLoginEx(){
-    //TODO: 서버 별로 p_id를 다르게 설정할 수 있어야함.
-    if(!isset($_SESSION['p_id'])) {
+/**
+ * generalID를 이용해 각 서버 등록 여부를 확인함
+ * 
+ * @return bool
+ */
+function isSigned(){
+    $p_id = getGeneralID();
+    if(!$_pid){
         return false;
     }
     return true;
@@ -70,7 +140,7 @@ function checkLimit($userlevel, $con, $conlimit) {
 }
 
 function getBlockLevel() {
-    return getDB()->queryFirstField('select block from general where user_id= %i', getGeneralID());
+    return getDB()->queryFirstField('select block from general where no = %i', getGeneralID());
 }
 
 function getRandGenName() {
@@ -1801,7 +1871,9 @@ function getOnlineNum() {
 
 function onlinegen($connect) {
     $onlinegen = "";
-    if($_SESSION['p_nation'] == 0) {
+    $generalID = getGeneralID();
+    $nationID = getDB()->queryFirstField('select `nation` from `general` where `no` = %i', $generalID);
+    if($nationID !== null || toInt($nationID) === 0) {
         $query = "select onlinegen from game where no='1'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $game = MYDB_fetch_array($result);
@@ -2140,14 +2212,14 @@ function increateRefreshEx($type, $cnt=1){
     ));
 
     $date = date('Y-m-d H:i:s');
-    $p_id = getGeneralID();
+    $generalID = getGeneralID();
     if($p_id !== NULL){
         
         $db->query("update `general` set `lastrefresh`= %s_date, `con` = `con`+%d_cnt, `connect`= `connect`+ %d_cnt, '\
-        '`refcnt` = `refcnt` + %d_cnt, `refresh` = `refresh` + %d_cnt where `user_id` =%s_p_id",array(
+        '`refcnt` = `refcnt` + %d_cnt, `refresh` = `refresh` + %d_cnt where `no` =%i_generalID",array(
             'date'=>$date,
             'cnt'=>$cnt,
-            'p_id'=>$p_id
+            'p_id'=>$generalID
         ));
     }
 
@@ -2155,7 +2227,7 @@ function increateRefreshEx($type, $cnt=1){
     $date2 = substr($date, 0, 10);
     $online = getOnlineNum();
     $fp = fopen("logs/_{$date2}_refresh.txt", "a");
-    $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['p_id'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
+    $msg = _String::Fill2($date,20," ")._String::Fill2(getUserID(),13," ")._String::Fill2(getGeneralName(),13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
     fwrite($fp, $msg."\n");
     fclose($fp);
 
@@ -2184,7 +2256,7 @@ function increateRefreshEx($type, $cnt=1){
     if($str != "") {
         file_put_contents("logs/_{$date2}_ipcheck.txt",
             sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s\n",
-                $_SESSION['p_id'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
+                getUserID(), getGeneralName(),$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
     }
     
     

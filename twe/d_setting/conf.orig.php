@@ -22,3 +22,7 @@ function getDB(){
 
     return $uDB;
 }
+
+function getServPrefix(){
+    return '_prefix_';
+}
