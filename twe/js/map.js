@@ -9,6 +9,11 @@ String.prototype.format = function() {
 
 
 function reloadWorldMap(option){
+    var $world_map = $('.world_map');
+
+    if($world_map.length == 0){
+        return;
+    }
     
     var defaultOption = {
         isDetailMap:true, //복잡 지도, 단순 지도
@@ -35,7 +40,7 @@ function reloadWorldMap(option){
     var cityPosition = getCityPosition();
 
     //OBJ : startYear, year, month, cityList, nationList, spyList, shownByGeneralList, myCity
-    var $world_map = $('.world_map');
+    
 
     var deferred;
 

@@ -107,23 +107,47 @@ switch($commandtype) {
 }
 
 function starter($name, $type=0) {
+    //FIXME: 장기적으로 template로 변경해야함.
     global $_basecolor2, $_basecolor4;
     global $images;
-    echo "
+    echo '
+<!DOCTYPE html>
 <html>
 <head>
-<title>$name</title>
-<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel=stylesheet href=css/common.css type=text/css>
-";
+<title>'.$name.'</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<script src="../e_lib/jquery-3.2.1.min.js"></script>
+<script src="js/main.js"></script>
+<script src="js/base_map.js"></script>
+<script src="js/map.js"></script>
+<script>
+$(function(){
+    var $target = $("form[name=form1] select[name=double]");
+    console.log($target);
+    reloadWorldMap({
+        isDetailMap:false,
+        clickableAll:true,
+        neutralView:true,
+        selectCallback:function(city){
+            $target.val(city.id);
+        }
+    });
+});
+</script>
+<link href="css/normalize.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
+<link href="css/main.css" rel="stylesheet">
+<link href="css/map.css" rel="stylesheet">
+';
 require('analytics.php');
-echo "
+echo '
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td align=center id=bg1>$name</td></tr>
+<table class="bg0" align="center" width="1000" border="1" cellspacing="0" cellpadding="0" bordercolordark="gray" bordercolorlight="black" style="font-size:13px;word-break:break-all;">
+    <tr><td class="bg1" align="center">'.$name.'</td></tr>
     <tr><td>
-";
+';
     if($type == 1) CoreBackButton();
     else backButton();
 }
@@ -1120,9 +1144,8 @@ function command_16($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-    echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+    echo "<br>
 선택된 도시로 침공을 합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
@@ -1160,9 +1183,8 @@ function command_21($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-    echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+    echo "<br>
 선택된 도시로 이동합니다.<br>
 인접 도시로만 이동이 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
@@ -1485,9 +1507,8 @@ function command_27($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
-    echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+    echo "<br>
 선택된 도시로 아국 장수를 발령합니다.<br>
 아국 도시로만 발령이 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
@@ -1541,9 +1562,8 @@ function command_30($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-    echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+    echo "<br>
 선택된 도시로 강행합니다.<br>
 최대 3칸내 도시로만 강행이 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
@@ -1583,9 +1603,8 @@ function command_31($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-    echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+    echo "<br>
 선택된 도시에 첩보를 실행합니다.<br>
 인접도시일 경우 많은 정보를 얻을 수 있습니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
@@ -1628,9 +1647,8 @@ function command_32($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-    echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+    echo "<br>
 선택된 도시에 화계를 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
@@ -1668,9 +1686,8 @@ function command_33($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-    echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+    echo "<br>
 선택된 도시에 탈취를 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
@@ -1708,9 +1725,8 @@ function command_34($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-    echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+    echo "<br>
 선택된 도시에 파괴를 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
@@ -1748,9 +1764,8 @@ function command_35($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-    echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+    echo "<br>
 선택된 도시에 선동을 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
@@ -1788,9 +1803,8 @@ function command_36($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-    echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+    echo "<br>
 선택된 도시에 기습을 실행합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
@@ -2648,9 +2662,8 @@ function command_65($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+echo "<br>
 선택된 도시를 초토화 시킵니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
 <form name=form1 action=c_double.php method=post>
@@ -2685,9 +2698,8 @@ function command_66($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+echo "<br>
 선택된 도시로 천도합니다.<br>
 현재 수도에서 인접한 도시만 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
@@ -2723,9 +2735,8 @@ function command_67($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+echo "<br>
 선택된 도시를 증축합니다.<br>
 현재 수도만 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
@@ -2761,9 +2772,8 @@ function command_68($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+echo "<br>
 선택된 도시를 감축합니다.<br>
 현재 수도만 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
@@ -2799,9 +2809,8 @@ function command_72($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+echo "<br>
 선택된 도시에 백성동원을 발동합니다.<br>
 아국 도시만 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
@@ -2837,9 +2846,8 @@ function command_73($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+echo "<br>
 선택된 도시에 수몰을 발동합니다.<br>
 전쟁중인 상대국 도시만 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
@@ -2875,9 +2883,8 @@ function command_74($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $currentcity = MYDB_fetch_array($result);
 
-echo "
-<iframe src='map.php?type=1&graphic=1' width=700 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-</iframe><br>
+    echo getMapHtml();
+echo "<br>
 선택된 도시에 허보를 발동합니다.<br>
 선포, 전쟁중인 상대국 도시만 가능합니다.<br>
 목록을 선택하거나 도시를 클릭하세요.<br>
