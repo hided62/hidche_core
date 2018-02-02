@@ -33,6 +33,7 @@ class _Session {
 
     public function Logout() {
         unset($_SESSION['noMember']);
+        unset($_SESSION['p_id']);
     }
 
     public function IsLoggedIn() {

@@ -76,17 +76,17 @@ for($i=0; $i < $_serverCount; $i++) {
             $character = "
 <div class='Entrance_ServerListCharacter'>{$picture}</div>
 <div class='Entrance_ServerListName'>{$me['NAME']}</div>
-<input class='Entrance_ServerListLogin' type='button' value='입장' onclick='Entrance_Enter(\"{$_serverDirs[$i]}/index.php\")'>
+<input class='Entrance_ServerListLogin' type='button' value='입장' onclick=\"location.href='{$_serverDirs[$i]}')\">
 ";
         } elseif($gen['CNT'] >= $game['MAXGENERAL']) {
             $character = "<div class='Entrance_ServerListBlock'>- 장수 등록 마감 -</div>";
         } else {
             $character = "<div class='Entrance_ServerListNoRegister'>- 미 등 록 -</div>";
             if($game['NPCMODE'] == 1) {
-                $character .= "<input class='Entrance_ServerListSelect' type='button' value='장수선택' onclick='Entrance_Enter(\"{$_serverDirs[$i]}/select_npc.php\")'>";
-                $character .= "<input class='Entrance_ServerListSelect' type='button' value='장수생성' onclick='Entrance_Enter(\"{$_serverDirs[$i]}/join.php\")'>";
+                $character .= "<input class='Entrance_ServerListSelect' type='button' value='장수선택' onclick=\"location.href='{$_serverDirs[$i]}/select_npc.php';\">";
+                $character .= "<input class='Entrance_ServerListSelect' type='button' value='장수생성' onclick=\"location.href='{$_serverDirs[$i]}/join.php';\">";
             } else {
-                $character .= "<input class='Entrance_ServerListLogin' type='button' value='장수생성' onclick='Entrance_Enter(\"{$_serverDirs[$i]}/join.php\")'>";
+                $character .= "<input class='Entrance_ServerListLogin' type='button' value='장수생성' onclick=\"location.href='{$_serverDirs[$i]}/join.php';\">";
             }
         }
 

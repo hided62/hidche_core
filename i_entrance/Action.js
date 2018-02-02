@@ -83,7 +83,7 @@ function Entrance_Logout() {
 function Entrance_Enter(serverDir) {
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+ENTRANCE+W+"enter"+POST, {
+            HOME+I+ENTRANCE+W+"enterPost", {
             },
             function(response, textStatus) {
                 if(response.result == "SUCCESS") {
