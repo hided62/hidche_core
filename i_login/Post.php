@@ -31,7 +31,7 @@ if($DB->Count($rs) == 1) {
         $system = $DB->Get($rs);
 
         if($system['LOGIN'] == 'Y' || $member['GRADE'] >= 5) {
-            $SESSION->Login($member['NO']);
+            $SESSION->Login($member['NO'], $id);
             $DB->Update('MEMBER', "CONMSG='{$conmsg}', IP='{$_SERVER['REMOTE_ADDR']}'", "NO='{$member['NO']}'");
 
             $response['result'] = 'SUCCESS';

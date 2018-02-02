@@ -24,8 +24,9 @@ class _Session {
         return $_SESSION[$key];
     }
 
-    public function Login($noMember) {
+    public function Login($noMember, $idMember) {
         $_SESSION['noMember'] = $noMember;
+        $_SESSION['p_id'] = $idMember;
         $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
         $_SESSION['time'] = time();
     }
