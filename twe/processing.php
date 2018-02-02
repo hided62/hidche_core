@@ -131,6 +131,7 @@ $(function(){
         neutralView:true,
         selectCallback:function(city){
             $target.val(city.id);
+            return false;
         }
     });
 });
