@@ -23,15 +23,15 @@ $me = MYDB_fetch_array($result);
 
 $con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
 if($con >= 2) { 
-    //echo "<script>window.top.main.location.replace('main.php');</script>"; exit();
+    //echo "<script>window.top.main.location.replace('index.php');</script>"; exit();
     header('Content-Type: application/json');
     echo json_encode([
         'result' => false,
         'reason' => '권한이 충분하지 않습니다.',
-        'redirect' => 'main.php',
+        'redirect' => 'index.php',
         'page_target' => 'top'
     ]);
-    echo 'main.php';//TODO:debug all and replace
+    echo 'index.php';//TODO:debug all and replace
  }
 
 $msg = str_replace("|", "", $msg);

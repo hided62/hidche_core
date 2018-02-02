@@ -6,7 +6,7 @@ function CheckLogin($type=0) {
             header('Location: ../');
             }
         else           { 
-            header('Location: main.php');
+            header('Location: index.php');
          }
         exit();
     }

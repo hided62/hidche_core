@@ -4506,7 +4506,7 @@ function printCitysName($connect, $cityNo, $distance=1) {
 
 function backButton() {
     echo "
-<input type=button value='돌아가기' onclick=location.replace('main.php')><br>
+<input type=button value='돌아가기' onclick=location.replace('index.php')><br>
 ";
 }
 

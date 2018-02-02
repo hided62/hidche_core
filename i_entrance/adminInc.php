@@ -37,7 +37,7 @@ foreach($_serverDirs as $serverDir) {
     if(!is_dir($serverPath)){
         $state = '상태이상, 01';
     }
-    else if(!file_exists($realServerPath.'/main.php')){
+    else if(!file_exists($realServerPath.'/index.php')){
         $state = '상태이상, 02';
     }
     else if(file_exists($realServerPath.'/.htaccess')) {

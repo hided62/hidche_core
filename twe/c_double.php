@@ -40,8 +40,8 @@ if($command == 46) {
     }
     $query = "update general set {$str} where no_member='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //echo "<script>location.replace('main.php');</script>";
-    echo 'main.php';//TODO:debug all and replace
+    //echo "<script>location.replace('index.php');</script>";
+    echo 'index.php';//TODO:debug all and replace
 //통합제의
 } elseif($command == 53) {
     $query = "select nation,level from general where no_member='{$_SESSION['noMember']}'";
@@ -125,8 +125,8 @@ if($command == 46) {
     }
     $query = "update general set {$str} where no_member='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //echo "<script>location.replace('main.php');</script>";
-    echo 'main.php';//TODO:debug all and replace
+    //echo "<script>location.replace('index.php');</script>";
+    echo 'index.php';//TODO:debug all and replace
 }
 
 
