@@ -47,18 +47,17 @@ $turntime = date('Y-m-d H:i:s');
 $lastconnect = $turntime;
 $turntime = addTurn($turntime, $turnterm);
 $turntime = cutTurn($turntime, $turnterm);
-$pw = md5('18071807');
 
 $picture = 'pic_1.jpg';
 if($img < 1) { $picture = 'default.jpg'; };
 
 @MYDB_query("
     insert into general (
-        user_id, password, connect, name, picture, nation, city, troop, makelimit,
+        no_member, connect, name, picture, nation, city, troop, makelimit,
         leader, power, intel, experience, dedication, gold, rice, crew, train, atmos,
         weap, book, level, turntime, killturn, lastconnect, userlevel
     ) values (
-        'admin', '$pw', '0', '운영자', '$picture', '0', '3', '0', '0',
+        '1', '0', '운영자', '$picture', '0', '3', '0', '0',
         '50', '50', '50', '0', '0', '10000', '10000', '0', '0', '0',
         '0', '0', '0', '$turntime', '80', '$lastconnect', '6'
     )",
@@ -71,11 +70,11 @@ if($img < 1) { $picture = 'default.jpg'; };
 //부운영자는 비밀번호를 지정하지 않아 로그인할수 없도록 처리한다.
 @MYDB_query("
     insert into general (
-        user_id, password, connect, name, picture, nation, city, troop, makelimit,
+        no_member, connect, name, picture, nation, city, troop, makelimit,
         leader, power, intel, experience, dedication, gold, rice, crew, train, atmos,
         weap, book, level, turntime, killturn, lastconnect, userlevel
     ) values (
-        'viceadmin', 'a', '0', '부운영자', '$picture', '0', '3', '0', '0',
+        '2', '0', '부운영자', '$picture', '0', '3', '0', '0',
         '50', '50', '50', '0', '0', '10000', '10000', '0', '0', '0',
         '0', '0', '0', '$turntime', '80', '$lastconnect', '5'
     )",

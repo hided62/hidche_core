@@ -2,11 +2,6 @@
 include "lib.php";
 include "func.php";
 
-$id = $_POST['id'];
-$pw = $_POST['pw'];
-
-$pwTemp = substr($pw, 0, 32);
-
 $connect = dbConn("sammo");
 
 //회원 테이블에서 정보확인
@@ -81,8 +76,6 @@ for($i=0; $i < $nationcount; $i++) {
 </table>
 
 <form name=form1 method=post action=select_npc_post.php>
-<input type=hidden name=id value='<?=$id;?>'>
-<input type=hidden name=pw value='<?=$pw;?>'>
     <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
         <tr>
             <td colspan=2 align=center id=bg1>장수 선택</td>

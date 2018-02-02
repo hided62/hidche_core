@@ -203,7 +203,6 @@ echo "<script>location.replace('./');</script>";
 
 function RegGeneral3($connect,$turnterm,$gencount,$nation,$level,$name,$leader,$power,$intel,$personal,$special,$msg="") {
     $name = "ⓞ".$name;
-    $genid      = "npc{$gencount}";
     $turntime = getRandTurn2($turnterm);
     $personal = CharCall($personal);
     $special = SpecCall($special);
@@ -221,18 +220,17 @@ function RegGeneral3($connect,$turnterm,$gencount,$nation,$level,$name,$leader,$
     $picture = 'default.jpg';
     $crew = $leader * 100;
     $crewtype = rand() % 3;
-    $pw = md5("18071807");
     //장수
     @MYDB_query("
         insert into general (
-            npcid,npc,npc_org,npcmatch,user_id,password,name,picture,nation,city,
+            npcid,npc,npc_org,npcmatch,name,picture,nation,city,
             leader,power,intel,experience,dedication,
             level,gold,rice,crew,crewtype,train,atmos,tnmt,
             weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
             makelimit,
             dex0, dex10, dex20, dex30, dex40
         ) values (
-            '$gencount','$npc','$npc','$npcmatch','$genid','$pw','$name','$picture','$nation','$city',
+            '$gencount','$npc','$npc','$npcmatch','$name','$picture','$nation','$city',
             '$leader','$power','$intel','$experience','$dedication',
             '$level','99999','99999','$crew','$crewtype','100','100','0',
             '6','6','6','$turntime','$killturn','$age','1',

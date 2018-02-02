@@ -2,6 +2,8 @@
 include "lib.php";
 include "func.php";
 
+//TODO: 이게 뭔지 분석
+
 $id  = $_POST['id'];
 $pw  = $_POST['pw'];
 $btn = $_POST['btn'];

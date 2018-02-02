@@ -18,7 +18,6 @@ function RegGeneral($connect,$init,$life,$fiction,$turnterm,$startyear,$year,$ge
     if($init != 0 && $startyear > $bornyear+14 && $startyear <= $deadyear) {
         if($deadyear <= $startyear+3) $deadyear += 5;
 
-        $genid = "gen{$gencount}";
         $turntime = getRandTurn($turnterm);
         if($personal != "-") { $personal = CharCall($personal); }
         else { $personal = rand() % 10; }
@@ -37,17 +36,16 @@ function RegGeneral($connect,$init,$life,$fiction,$turnterm,$startyear,$year,$ge
         $experience = $age * 100;
         $dedication = $age * 100;
         if($nation != 0 && $level == 0) $level = 1;
-        $pw = md5("18071807");
-
+        
         //장수
         @MYDB_query("
             insert into general (
-                npcid,npc,npc_org,npcmatch,user_id,password,name,picture,nation,city,leader,power,intel,
+                npcid,npc,npc_org,npcmatch,name,picture,nation,city,leader,power,intel,
                 experience,dedication,level,gold,rice,crew,crewtype,train,atmos,
                 weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
                 makelimit,bornyear,deadyear
             ) values (
-                '$gencount','$npc','$npc','$npcmatch','$genid','$pw','$name','$picture','$nation',
+                '$gencount','$npc','$npc','$npcmatch','$name','$picture','$nation',
                 '$city','$leader','$power','$intel','$experience','$dedication',
                 '$level','1000','1000','0','0','0','0',
                 '0','0','0','$turntime','$killturn','$age','1',
