@@ -7,8 +7,6 @@ $id = $_POST['id'];
 $pw = $_POST['pw'];
 $pw = md5($pw.$pw);
 
-DeleteSession();
-
 //회원 테이블에서 정보확인
 $query="select no from general where user_id='$id'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

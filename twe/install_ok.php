@@ -24,7 +24,6 @@ if(MYDB_error($connect)) Error(__LINE__.MYDB_error($connect),"");
 MYDB_select_db($dbname, $connect) or Error("MySQL-DB Select<br>Error!!!","");
 
 delInDir("logs");
-delInDir("data/session");
 @unlink("data/connected.php");
 
 // 관리자 테이블 삭제

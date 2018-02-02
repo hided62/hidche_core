@@ -14,7 +14,6 @@ use utilphp\util as util;
 define('__OLINE__',__LINE__);
 define('__LINE__',__FILE__." ".__FUNCTION__." ".__LINE__." : ");
 ini_set("session.cache_expire", 10080);      // minutes
-ini_set("session.gc_maxlifetime", 604800);    // seconds
 
 ob_start();
 
@@ -73,22 +72,11 @@ unset($setup);
 // data폴더가 없으면 data/session까지 생성
 if(is_dir("data")){
 	if(!is_writable("data")) Error("Data 디렉토리의 쓰기 권한이 없습니다!");
-	if(is_dir("data/session")){
-		if(!is_writable("data/session")) Error("세션 디렉토리 data/session의 쓰기 권한이 없습니다!");	
-	}else{
-		mkdir("data/session");
-	}		
 }else{
 	mkdir("data");
-	mkdir("data/session");
 }
 
-
-
-session_save_path('data/session');
-session_cache_limiter('nocache, must_revalidate');//NOTE: 캐시가 가능할 수도 있음. 주의!
-session_set_cookie_params(0, '/');
-session_cache_expire(60);   // 60분
+session_cache_limiter('nocache, must_revalidate');//NOTE: 캐시가 가능하도록 설정해야 할 수도 있음. 주의!
 
 // 세션 변수의 등록
 //NOTE: ajax등의 경우에는 session_write_close로 빠르게 끝낼 수 있어야한다.
@@ -106,7 +94,6 @@ if($_SESSION['p_time']+3600 < time()) {
     unset($_SESSION['p_id']);
     unset($_SESSION[getServPrefix().'p_name']);
     $_SESSION['p_time'] = time();
-    session_destroy();
 } else {
     $_SESSION['p_time'] = time();
 }

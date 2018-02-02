@@ -3,14 +3,10 @@
 function CheckLogin($type=0) {
     if(!isset($_SESSION['p_id'])) {
         if($type == 0) {
-            header('Location: start.php');
-             //echo "<script>location.replace('start.php');</script>"; 
-             //echo 'start.php';//TODO:debug all and replace
+            header('Location: ../');
             }
         else           { 
             header('Location: main.php');
-            //echo 'main.php';//TODO:debug all and replace
-            //echo "<script>window.top.main.location.replace('main.php');</script>";
          }
         exit();
     }

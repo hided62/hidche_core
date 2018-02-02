@@ -51,6 +51,15 @@ $conlimit = $db->queryFirstField('select conlimit from game where no=1');
 $me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`msgindex`,`userlevel`,`con`,`picture`,`imgsvr` from `general` where `user_id` = %s_p_id',
     array('p_id'=>$_SESSION['p_id']));
 
+if(!$me){
+    resetSessionGeneralValues();
+    returnJson([
+        'result' => false,
+        'reason' => '로그인되지 않았습니다.',
+        'redirect' => NULL
+    ]);
+}
+
 $con = checkLimit($me['userlevel'], $me['con'], $conlimit);
 if($con >= 2) { 
     returnJson([

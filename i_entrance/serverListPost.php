@@ -43,7 +43,7 @@ for($i=0; $i < $_serverCount; $i++) {
         else { $state = "&lt;{$nation['CNT']}국 경쟁중&gt;"; }
         $state = "<font size=2>{$state}</font>";
 
-        if($me)                       { $site = "login_process.php"; }
+        if($me)                       { $site = "index.php"; }
         elseif($game['NPCMODE'] == 1) { $site = "selection.php"; }
         else                          { $site = "join.php"; }
 
@@ -76,7 +76,7 @@ for($i=0; $i < $_serverCount; $i++) {
             $character = "
 <div class='Entrance_ServerListCharacter'>{$picture}</div>
 <div class='Entrance_ServerListName'>{$me['NAME']}</div>
-<input class='Entrance_ServerListLogin' type='button' value='입장' onclick='Entrance_Enter(\"{$_serverDirs[$i]}/login_process.php\")'>
+<input class='Entrance_ServerListLogin' type='button' value='입장' onclick='Entrance_Enter(\"{$_serverDirs[$i]}/index.php\")'>
 ";
         } elseif($gen['CNT'] >= $game['MAXGENERAL']) {
             $character = "<div class='Entrance_ServerListBlock'>- 장수 등록 마감 -</div>";

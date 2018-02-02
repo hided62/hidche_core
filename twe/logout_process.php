@@ -8,6 +8,4 @@ unset($_SESSION['p_ip']);
 unset($_SESSION[getServPrefix().'p_no']);
 unset($_SESSION[getServPrefix().'p_name']);
 
-session_destroy();
-
-header('Location:start.php');
+header('Location:../');

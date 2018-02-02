@@ -84,5 +84,5 @@ function Entrance_AdminClosedLogin(serverDir) {
 }
 
 function Entrance_AdminOpen119(serverDir) {
-    Open(serverDir+W+'119'+PHP);
+    Open(serverDir+W+'_119'+PHP);
 }

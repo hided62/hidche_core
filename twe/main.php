@@ -1,27 +1,33 @@
 <?php
 include "lib.php";
 include "func.php";
-//로그인 검사
-CheckLogin();
+
+
 $connect = dbConn();
 increaseRefresh($connect, "메인", 2);
 checkTurn($connect);
 
-if(!isset($_SESSION['p_id'])){
-    echo "<script>location.replace('start.php');</script>";
-    exit(0);
+$db = getDB();
+
+//로그인 검사
+if(!isSigned()){
+    header('Location:../');
+    die();
 }
 
-$query = "select no,skin,userlevel,con,turntime,newmsg,newvote,map from general where user_id='{$_SESSION['p_id']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$userID = getUserID();
+if(!$userID){
+    header('Location:../');
+    die();
+}
+
+$me = $db->queryFirstRow('select no,skin,userlevel,con,turntime,newmsg,newvote,map from general where user_id = %s', $userID);
 
 //그새 사망이면
-if($me['no'] == 0) {
-    //echo "a";
-    header('Location: start.php');
-    //echo "<script>location.replace('start.php');</script>";
-    exit(0);
+if($me === null) {
+    resetSessionGeneralValues();
+    header('Location: ../');
+    die();
 }
 
 if($me['newmsg'] == 1 && $me['newvote'] == 1) {

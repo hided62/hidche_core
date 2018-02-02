@@ -46,27 +46,37 @@ function getUserID($forceExit=false){
  * @return int|null
  */
 function getGeneralID($forceExit=false){
-    $username = getUserID();
-    if(!$username){ //유저명 없으면 어차피 의미 없음.
+    $userID = getUserID();
+    if(!$userID){ //유저명 없으면 어차피 의미 없음.
         return null;
     }
 
-    $id_key = getServPrefix().'p_no';
-    $generalID = util::array_get($_SESSION[$id_key], null);
+    $idKey = getServPrefix().'p_no';
+    $generalID = util::array_get($_SESSION[$idKey], null);
 
     if($generalID){
         return $generalID;
     }
 
+    $db = getDB();
     //흠?
-    $generalID = getDB()->queryFirstField('select no from general where user_id = %s', $username);
+    $generalID = $db->queryFirstField('select no from general where user_id = %s', $userID);
     if(!$generalID && $forceExit){
         header('Location:..');
         die();
     }
 
-    if($generalIDid){
-        $_SESSION[$id_key] = $generalID;
+    if($generalID){
+        //로그인으로 처리
+        //XXX: 'get' 함수인데 update가 들어가있다.
+        //TODO: 조금더 적절한 형태의 로그인 카운트를 생각해볼 것
+        $query=$db->query("update general set logcnt=logcnt+1 ,ip = %s_ip,lastconnect=%s_lastConnect,conmsg=%s_conmsg where user_id= %s_userID",[
+            'ip' => getenv("REMOTE_ADDR"),
+            'lastConnect' => date('Y-m-d H:i:s'),
+            'conmsg' => util::array_get($_SESSION['conmsg'], ''),
+            'userID' => $userID
+        ]);
+        $_SESSION[$idKey] = $generalID;
     }
     
     return $generalID;
@@ -89,8 +99,8 @@ function getGeneralName($forceExit=false)
         return null;
     }
 
-    $id_key = getServPrefix().'p_name';
-    $generalName = util::array_get($_SESSION[$id_key], null);
+    $nameKey = getServPrefix().'p_name';
+    $generalName = util::array_get($_SESSION[$nameKey], null);
 
     if($generalName){
         return $generalName;
@@ -98,6 +108,32 @@ function getGeneralName($forceExit=false)
 
     //흠?
     $generalName = getDB()->queryFirstField('select name from general where no = %i', $generalID);
+    if(!$generalName){
+        //이게 말이 돼?
+        resetSessionGeneralValues();
+        if($forceExit){
+            header('Location:..');
+            die();
+        }
+    }
+
+    if($generalName){
+        $_SESSION[$nameKey] = $generalName;
+    }
+
+    return $generalName;
+}
+
+/**
+ * Session에 보관된 장수 정보를 제거함.
+ * _prefix_p_no, _prefix_p_name 두 값임
+ */
+function resetSessionGeneralValues(){
+    $idKey = getServPrefix().'p_no';
+    $nameKey = getServPrefix().'p_name';
+
+    unset($_SESSION[$idKey]);
+    unset($_SESSION[$nameKey]);
 }
 
 function GetImageURL($imgsvr) {
@@ -112,15 +148,22 @@ function GetImageURL($imgsvr) {
 /**
  * generalID를 이용해 각 서버 등록 여부를 확인함
  * 
+ * FIXME: 현재의 구현으로는 session에 p_no가 남아있지만 general 테이블에서는 삭제되어있는 진풍경(!)이 펼쳐질 수도 있음.
+ * 장수가 사망했을 때에 바로 테이블에서 삭제하는 것이 아니라 삭제 플래그를 설정하는 것이 나을 것임.
+ * (퀘 섭등 NPC가 빙의할 경우에도 마찬가지!)
+ * 
+ * 세팅된 플래그는 새롭게 장수를 생성하거나, 새로 빙의할 때 초기화하는 것이 적절한 해결책일 것.
+ * 
  * @return bool
  */
 function isSigned(){
-    $p_id = getGeneralID();
-    if(!$_pid){
+    $generalID = getGeneralID();
+    if(!$generalID){
         return false;
     }
     return true;
 }
+
 
 function checkLimit($userlevel, $con, $conlimit) {
     //TODO: 접속 제한의 기준을 새로 세울 것.

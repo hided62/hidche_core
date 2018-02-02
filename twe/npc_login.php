@@ -2,6 +2,8 @@
 include "lib.php";
 include "func.php";
 
+//NOTE:관리자의 경우 NPC로그인을 user_id는 유지하되 no값만 바꾸는 식으로 가능하지 않을까?
+
 $connect=dbConn();
 
 ?>
