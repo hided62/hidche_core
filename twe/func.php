@@ -36,6 +36,12 @@ function getUserID($forceExit=false){
         die();
     }
 
+    if($userID == -1){
+        unset($_SESSION['noMember']);
+        header('Location:..');
+        die();
+    }
+
     return $userID;
 }
 
@@ -2308,7 +2314,7 @@ function increaseRefresh($connect, $type="", $cnt=1) {
     $query = "update game set refresh=refresh+'$cnt' where no='1'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    if($_SESSION['noMember'] != "") {
+    if(!util::array_get($_SESSION['noMember'], null)) {
         $query = sprintf("update general set lastrefresh='%s',con=con+'%d',connect=connect+'%d',refcnt=refcnt+'%d',refresh=refresh+'%d' where no_member='%d'",
         $date,$cnt,$cnt,$cnt,$cnt,$_SESSION['noMember']);
         
@@ -2319,7 +2325,7 @@ function increaseRefresh($connect, $type="", $cnt=1) {
     $date2 = substr($date, 0, 10);
     $online = getOnlineNum();
     $fp = fopen("logs/_{$date2}_refresh.txt", "a");
-    $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['noMember'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
+    $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['p_id'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
     fwrite($fp, $msg."\n");
     fclose($fp);
 
@@ -2348,7 +2354,7 @@ function increaseRefresh($connect, $type="", $cnt=1) {
     if($str != "") {
         file_put_contents("logs/_{$date2}_ipcheck.txt",
             sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s\n",
-                $_SESSION['noMember'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
+                $_SESSION['p_id'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
     }
 }
 
@@ -2570,7 +2576,7 @@ function checkTurn($connect) {
         return;
     }
 
-    $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$_SESSION['noMember'];
+    $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
     pushLockLog($connect, $locklog);
 
     // 파일락 해제
@@ -2578,7 +2584,7 @@ function checkTurn($connect) {
     // 세마포어 해제
     //if(!@sem_release($sema)) { echo "치명적 에러! 유기체에게 문의하세요!"; exit(1); }
 
-    $locklog[0] = "- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$_SESSION['noMember'];
+    $locklog[0] = "- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
     pushLockLog($connect, $locklog);
     
     //if(STEP_LOG) delStepLog();
@@ -2644,7 +2650,7 @@ function checkTurn($connect) {
         //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', preUpdateMonthly');
         $result = preUpdateMonthly($connect);
         if($result == false) {
-            $locklog[0] = "-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['noMember'];
+            $locklog[0] = "-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
             pushLockLog($connect, $locklog);
 
             // 잡금 해제
@@ -2657,7 +2663,7 @@ function checkTurn($connect) {
         $dt = turnDate($connect, $nextTurn);
         $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
 
-        $locklog[0] = "-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$_SESSION['noMember'];
+        $locklog[0] = "-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
         pushLockLog($connect, $locklog);
         // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
         if($admin['month'] == 1) {
@@ -2773,7 +2779,7 @@ function checkTurn($connect) {
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
     unlock();
 
-    $locklog[0] = "- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['noMember'];
+    $locklog[0] = "- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
     pushLockLog($connect, $locklog);
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', finish');
