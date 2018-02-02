@@ -8,7 +8,7 @@ CheckLogin();
 $connect = dbConn();
 
 if(getBlockLevel() != 1 && getBlockLevel() != 3) {
-    $query = "select no,nation from general where user_id='{$_SESSION['p_id']}'";
+    $query = "select no,nation from general where no_member='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

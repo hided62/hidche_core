@@ -10,7 +10,7 @@ $query = "select turnterm from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,nation,skin,map,userlevel from general where user_id='{$_SESSION['p_id']}'";
+$query = "select no,nation,skin,map,userlevel from general where no_member='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

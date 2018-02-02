@@ -1,7 +1,7 @@
 <?php
 
 function CheckLogin($type=0) {
-    if(!isset($_SESSION['p_id'])) {
+    if(!isset($_SESSION['noMember'])) {
         if($type == 0) {
             header('Location: ../');
             }

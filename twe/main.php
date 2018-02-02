@@ -31,13 +31,13 @@ if($me === null) {
 }
 
 if($me['newmsg'] == 1 && $me['newvote'] == 1) {
-    $query = "update general set newmsg=0,newvote=0 where user_id='{$_SESSION['p_id']}'";
+    $query = "update general set newmsg=0,newvote=0 where no_member='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($me['newmsg'] == 1) {
-    $query = "update general set newmsg=0 where user_id='{$_SESSION['p_id']}'";
+    $query = "update general set newmsg=0 where no_member='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($me['newvote'] == 1) {
-    $query = "update general set newvote=0 where user_id='{$_SESSION['p_id']}'";
+    $query = "update general set newvote=0 where no_member='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 

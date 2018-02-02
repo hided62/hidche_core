@@ -9,7 +9,7 @@ $query = "select develcost,vote,votecomment from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,userlevel,vote,name,nation,horse,weap,book,item,npc,history from general where user_id='{$_SESSION['p_id']}'";
+$query = "select no,userlevel,vote,name,nation,horse,weap,book,item,npc,history from general where no_member='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -48,7 +48,7 @@ if($btn == "수정" && $me['userlevel'] >= 5) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "투표" && $me['vote'] == 0 && $sel > 0) {
     $develcost = $admin['develcost'] * 5;
-    $query = "update general set gold=gold+{$develcost},vote='{$sel}' where user_id='{$_SESSION['p_id']}'";
+    $query = "update general set gold=gold+{$develcost},vote='{$sel}' where no_member='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     $log = array();

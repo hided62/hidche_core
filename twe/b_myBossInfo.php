@@ -8,7 +8,7 @@ increaseRefresh($connect, "인사부", 1);
 //훼섭 추방을 위해 갱신
 checkTurn($connect);
 
-$query = "select skin,no,nation,level from general where user_id='{$_SESSION['p_id']}'";
+$query = "select skin,no,nation,level from general where no_member='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

@@ -7,7 +7,7 @@ $connect = dbConn();
 increaseRefresh($connect, "토너먼트", 1);
 checkTurn($connect);
 
-$query = "select no,tournament,userlevel,con,turntime from general where user_id='{$_SESSION['p_id']}'";
+$query = "select no,tournament,userlevel,con,turntime from general where no_member='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

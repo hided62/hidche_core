@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "세력도시", 1);
 
-$query = "select no,nation,level,skin from general where user_id='{$_SESSION['p_id']}'";
+$query = "select no,nation,level,skin from general where no_member='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -56,7 +56,7 @@ if($me['skin'] < 1) {
     </td></tr>
 </table>
 <?php
-$query = "select nation from general where user_id='{$_SESSION['p_id']}'";
+$query = "select nation from general where no_member='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

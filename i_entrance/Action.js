@@ -79,6 +79,7 @@ function Entrance_Logout() {
     });
 }
 
+//TODO: 재설계
 function Entrance_Enter(serverDir) {
     Popup_Wait(function() {
         PostJSON(

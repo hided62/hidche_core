@@ -90,9 +90,9 @@ if(!util::array_get($_SESSION['p_ip'], null)) {
 
 //id, 이름, 국가는 로그인에서
 //초과된 세션은 로그아웃(1시간)
+//TODO: 로그아웃 원리를 다시 확인
 if($_SESSION['p_time']+3600 < time()) {
-    unset($_SESSION['p_id']);
-    unset($_SESSION[getServPrefix().'p_name']);
+    resetSessionGeneralValues();
     $_SESSION['p_time'] = time();
 } else {
     $_SESSION['p_time'] = time();

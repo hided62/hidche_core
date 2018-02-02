@@ -63,7 +63,7 @@ $_SESSION['p_time']   = time();
 $date = date('Y-m-d H:i:s');
 
 //
-$query="update general set logcnt=logcnt+1,ip='{$_SESSION['p_ip']}',lastconnect='$date',conmsg='$conmsg' where user_id='{$_SESSION['p_id']}'";
+$query="update general set logcnt=logcnt+1,ip='{$_SESSION['p_ip']}',lastconnect='$date',conmsg='$conmsg' where no_member='{$_SESSION['noMember']}'";
 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 $date = date('Y_m_d H:i:s');

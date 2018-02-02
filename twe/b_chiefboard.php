@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "기밀실", 1);
 
-$query = "select skin,no,nation,level from general where user_id='{$_SESSION['p_id']}'";
+$query = "select skin,no,nation,level from general where no_member='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

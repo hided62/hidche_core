@@ -7,7 +7,7 @@ $connect = dbConn();
 increaseRefresh($connect, "베팅장", 1);
 checkTurn($connect);
 
-$query = "select no,tournament,userlevel,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where user_id='{$_SESSION['p_id']}'";
+$query = "select no,tournament,userlevel,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where no_member='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -191,7 +191,7 @@ for($i=0; $i < 16; $i++) {
     echo "<td width=70>{$gen[$i]}</td>";
 }
 
-$query = "select bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15 from general where user_id='{$_SESSION['p_id']}'";
+$query = "select bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15 from general where no_member='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 for($i=0; $i < 16; $i++) {
