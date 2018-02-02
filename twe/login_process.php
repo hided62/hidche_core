@@ -6,32 +6,12 @@ include "func.php";
 
 use utilphp\util as util;
 
-$id = util::array_get($_POST['id'],'');
-$pw = util::array_get($_POST['pw'], '');
-$conmsg = util::array_get($_POST['conmsg'], '');
-
-$pw = substr($pw, 0, 32);
-
-
-
-//회원 테이블에서 정보확인
-$member = getRootDB()->queryFirstRow('select no,name from MEMBER where id=%s and pw=%s', $id, $pw);
-
-
-if(!$member) {
-    MessageBox("아이디나 암호가 올바르지 않습니다!!!");
-    //TODO:login_process를 rest 형태로 처리
-    //header ("Location: index.php");
-    exit(0);
-}
-
-//NOTE: 왜 Session을 지우는가?
-DeleteSession();
-
 $db = getDB();
 
+$userID = getUserID();
+
 //회원 테이블에서 정보확인
-$me= $db->queryFirstRow('select no,name,nation,block,killturn from general where user_id= %s', $id);
+$me= $db->queryFirstRow('select no,name,nation,block,killturn from general where no_member= %s', $userID);
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -56,7 +36,6 @@ case 3:
 }
 
 $_SESSION[getServPrefix().'p_no']     = toInt($me['no']);
-$_SESSION['p_id']     = $id;
 $_SESSION[getServPrefix().'p_name']   = $me['name'];
 $_SESSION['p_time']   = time();
 
@@ -74,21 +53,5 @@ fwrite($fp, $msg."\n");
 fclose($fp);
 
 header ("Location: index.php");
-
-function DeleteSession() {
-    $session_path = "data/session";  // 세션이저장된 디렉토리
-    if(!$dir=@opendir($session_path)) echo "디렉토리를 열지못했습니다.";
-
-    while($file=@readdir($dir)) {
-        if(!strstr($file,'sess_')) continue;
-        if(strpos($file,'sess_')!=0) continue;
-        if (!$atime=@fileatime("$session_path/$file")) continue;
-        if (time() > $atime + 86400) {  // 10대시 지난시간을 초로 계산해서 적어주시면 됩니다.
-    //        $return = (@unlink("$session_path/$file"));
-            @unlink("$session_path/$file");
-        }
-    }
-    closedir($dir);
-}
 
 MYDB_close($connect);
