@@ -3,17 +3,16 @@ include "lib.php";
 include "func.php";
 require("new_lib.php");
 
-$id = $_POST['id'];
-$pw = $_POST['pw'];
+$userID = getUserID();
 
-$pwTemp = substr($pw, 0, 32);
-
-$connect = dbConn("sammo");
+if(!$userID) {
+    MessageBox("잘못된 접근입니다!!!");
+    echo "<script>history.go(-1);</script>";
+    exit(1);
+}
 
 //회원 테이블에서 정보확인
-$query = "select no,name,picture,imgsvr,grade from MEMBER where id='$id' and pw='$pwTemp'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$member = MYDB_fetch_array($result);
+$member = getRootDB()->queryFirstRow("select no,name,picture,imgsvr,grade from MEMBER where no= %i", $userID);
 
 if(!$member) {
     MessageBox("잘못된 접근입니다!!!");
@@ -22,27 +21,6 @@ if(!$member) {
 }
 
 $connect = dbConn();
-
-$abil = abilityRand();
-
-//토큰 테이블에서 정보확인
-$query = "select id from token where id='{$id}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$token = MYDB_fetch_array($result);
-
-if(!$token) {
-    //능력치 토큰 생성
-    $query = "
-        insert into token (
-            id, leader, power, intel
-        ) values (
-            '{$id}', {$abil['leader']}, {$abil['power']}, {$abil['intel']}
-        )";
-    $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
-} else {
-    $query = "update token set leader={$abil['leader']},power={$abil['power']},intel={$abil['intel']} where id='{$id}'";
-    MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
-}
 
 ?>
 
@@ -54,50 +32,85 @@ if(!$token) {
 <script type="text/javascript" src=<?="../e_lib/jquery-3.2.1.min.js";?>></script>
 <script type="text/javascript">
 
-function updateToken(type) {
-    var id = $("#id").val();
-    var pw = $("#pw").val();
-    
-    $.ajax({
-        type: "POST",
-        url: "join_token.php",
-        async: false,
-        data: { id: id, pw: pw, type: type },
-        success: function(data, textStatus, jqXHR) {
-            console.log(data);
-            if(data.result != "rand" && data.result != "leadpow" && data.result != "leadint" && data.result != "powint") {
-                alert(jqXHR.status+", "+jqXHR.statusText+", "+jqXHR.responseText);
-                location.replace("index.php");
-                //echo 'index.php';//TODO:debug all and replace
-            } else {
-                $("#leader").val(data.leader);
-                $("#power").val(data.power);
-                $("#intel").val(data.intel);
-            }
-        },
-        dataType: 'json',
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert(jqXHR.status+", "+jqXHR.statusText+", "+jqXHR.responseText);
-            location.replace("index.php");
-            //echo 'index.php';//TODO:debug all and replace
-        }
-    });
+var totalAbil = 150;
+var $leader = $('#leader');
+var $power = $('#power');
+var $intel = $('#intel');
+function abilityRand(){
+    var leader = Math.random();
+    var power = Math.random();
+    var intel = Math.random();
+    var rate = leader + power + intel;
+
+    leader = Math.fllor(leader / rate * totalAbil);
+    power = Math.fllor(power / rate * totalAbil);
+    intel = Math.fllor(intel / rate * totalAbil);
+
+    while(leader+power+intel < totalAbil){
+        leader+=1;
+    }
+
+    $leader.val(leader);
+    $power.val(power);
+    $intel.val(intel);
 }
 
-function abilityRand() {
-    updateToken("rand");
+function abilityLeadpow(){
+    var leader = Math.random() * 6;
+    var power = Math.random() * 6;
+    var intel = Math.random() * 1;
+    var rate = leader + power + intel;
+
+    leader = Math.fllor(leader / rate * totalAbil);
+    power = Math.fllor(power / rate * totalAbil);
+    intel = Math.fllor(intel / rate * totalAbil);
+
+    while(leader+power+intel < totalAbil){
+        power+=1;
+    }
+
+    $leader.val(leader);
+    $power.val(power);
+    $intel.val(intel);
 }
 
-function abilityLeadpow() {
-    updateToken("leadpow");
+function abilityLeadint(){
+    var leader = Math.random() * 6;
+    var power = Math.random() * 1;
+    var intel = Math.random() * 6;
+    var rate = leader + power + intel;
+
+    leader = Math.fllor(leader / rate * totalAbil);
+    power = Math.fllor(power / rate * totalAbil);
+    intel = Math.fllor(intel / rate * totalAbil);
+
+    while(leader+power+intel < totalAbil){
+        intel+=1;
+    }
+
+    $leader.val(leader);
+    $power.val(power);
+    $intel.val(intel);
 }
 
-function abilityLeadint() {
-    updateToken("leadint");
-}
+function abilityPowint(){
+    var leader = Math.random() * 1;
+    var power = Math.random() * 6;
+    var intel = Math.random() * 6;
+    var rate = leader + power + intel;
 
-function abilityPowint() {
-    updateToken("powint");
+    leader = Math.fllor(leader / rate * totalAbil);
+    power = Math.fllor(power / rate * totalAbil);
+    intel = Math.fllor(intel / rate * totalAbil);
+
+    while(leader+power+intel < totalAbil){
+        intel+=1;
+    }
+
+    $leader.val(leader);
+    $power.val(power);
+    $intel.val(intel);
+}
 }
 
 </script>
@@ -147,8 +160,6 @@ for($i=0; $i < $nationcount; $i++) {
 </table>
 
 <form name=form1 method=post action=join_post.php>
-<input type=hidden name=id id=id value='<?=$id;?>'>
-<input type=hidden name=pw id=pw value='<?=$pw;?>'>
     <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
         <tr>
             <td colspan=3 align=center id=bg1>장수 생성</td>

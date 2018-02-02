@@ -4,21 +4,28 @@ include "func.php";
 
 use utilphp\util as util;
 
-$id = $_POST['id'];
-$pw = $_POST['pw'];
 $name       = $_POST['name'];
 $name       = _String::NoSpecialCharacter($name);
 $pic        = util::array_get($_POST['pic'],'');
 $character  = $_POST['character'];
 
-$pwTemp = substr($pw, 0, 32);
+$leader = util::array_get($_POST['leader'], 50);
+$power = util::array_get($_POST['power'], 50);
+$intel = util::array_get($_POST['intel'], 50);
+
 $mylog = [];
-$connect = dbConn("sammo");
+
+$userID = getUserID();
+
+if(!$userID) {
+    MessageBox("잘못된 접근입니다!!!");
+    echo "<script>history.go(-1);</script>";
+    exit(1);
+}
+
 
 //회원 테이블에서 정보확인
-$query = "select no,id,picture,imgsvr,grade from MEMBER where id='$id' and pw='$pwTemp'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$member = MYDB_fetch_array($result);
+$member = getRootDB()->queryFirstRow("select no,id,picture,imgsvr,grade from MEMBER where no = %i", $userID);
 
 if(!$member) {
     MessageBox("잘못된 접근입니다!!!");
@@ -28,43 +35,16 @@ if(!$member) {
 
 $date = date('Y-m-d H:i:s');
 //등록정보
-$query = "update MEMBER set reg_num=reg_num+1,reg_date='$date' where no='{$member['no']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+getRootDB()->query("update MEMBER set reg_num=reg_num+1,reg_date=%s where no=%i", $date, $userID);
 
 $connect = dbConn();
-
+$db = getDB();
 ########## 동일 정보 존재여부 확인. ##########
 
-$query = "select year,month,scenario,maxgeneral,turnterm,genius,img from game where no='1'";
-$result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
-
-$query  = "select no from general where npc<2";
-$result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
-$gencount = MYDB_num_rows($result);
-
-$query  = "select no from general where user_id='{$member['id']}'";
-$result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
-$id_num = MYDB_num_rows($result);
-
-$query  = "select no from general where name='$name'";
-$result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
-$name_num = MYDB_num_rows($result);
-
-$query  = "select * from token where id='{$member['id']}'";
-$result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
-$token_num = MYDB_num_rows($result);
-
-if($token_num == 1) {
-    $token = MYDB_fetch_array($result);
-    $leader = $token['leader'];
-    $power = $token['power'];
-    $intel = $token['intel'];
-} else {
-    $leader = 0;
-    $power = 0;
-    $intel = 0;
-}
+$admin = $db->queryFirstRow("select year,month,scenario,maxgeneral,turnterm,genius,img from game where no='1'");
+$gencount = $db->queryFirstField("select count(no) from general where npc<2");
+$id_num = $db->queryFirstField("select count(no) from general where no_member= %i", $userID);
+$name_num = $db->queryFirstField("select count(no) from general where name= %s", $name);
 
 if($id_num) {
     echo("<script>
@@ -138,28 +118,20 @@ if($id_num) {
     if($ratio == 50 && $admin['genius'] > 0) {
         $genius = 1;
 
-        $query = "update game set genius=genius-1 where no='1'";
-        MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
+        $db->query("update game set genius=genius-1 where no='1'");
     } else {
         $genius = 0;
     }
 
     //중, 소 공백지 개수
-    $query = "select city from city where level>=5 and level<=6 and nation=0";
-    $result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($result);
+    $citycount = toInt($db->queryFirstField("select count(city) from city where level>=5 and level<=6 and nation=0"));
 
     // 공백지에서만 태어나게
     if($citycount > 0) {
-        $query = "select city from city where level>=5 and level<=6 and nation=0 order by rand() limit 0,1";
-        $result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
-        $city = MYDB_fetch_array($result);
+        $city = toInt($db->queryFirstField("select city from city where level>=5 and level<=6 and nation=0 order by rand() limit 0,1"));
     } else {
-        $query = "select city from city where level>=5 and level<=6 order by rand() limit 0,1";
-        $result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
-        $city = MYDB_fetch_array($result);
+        $city = toInt($db->queryFirstField("select city from city where level>=5 and level<=6 order by rand() limit 0,1"));
     }
-    $city = $city['city'];
 
     $total  = rand() % 6;
     $pleader = rand() % 100;
@@ -216,28 +188,47 @@ if($id_num) {
     $npcmatch = rand()%150 + 1;
 
     ########## 회원정보 테이블에 입력값을 등록한다. ##########
-    $query = "
-        insert into general (
-            user_id, password, name, picture, imgsvr, nation, city, troop, npcmatch,
-            leader, power, intel, experience, dedication, gold, rice, crew, train, atmos,
-            userlevel, level, turntime, killturn, lastconnect, makelimit, age, startage, personal, specage, special, specage2, special2
-        ) values (
-            '$id', '$pwTemp', '$name', '$face', '$imgsvr', '0', '$city', '0', '$npcmatch',
-            '$leader', '$power', '$intel', '0', '0', '1000', '1000', '0', '0', '0',
-            '$userlevel', '0', '$turntime', '6', '$lastconnect', '0', '$age', '$age', '$character', '$specage', '$special', '$specage2', '$special2'
-        )";
-    $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->insert('general', [
+        'no_member' => $userID,
+        'name' => $name,
+        'picture' => $face,
+        'imgsvr' => $imgsvr,
+        'nation' => 0,
+        'city' => $city,
+        'troop' => 0,
+        'npcmatch' => $npcmatch,
+        'leader' => $leader,
+        'power' => $power,
+        'intel' => $intel,
+        'experience' => 0,
+        'dedication' => 0,
+        'gold' => 1000,
+        'rice' => 1000,
+        'crew' => 0,
+        'train' => 0,
+        'atmos' => 0,
+        'userlevel' => $userlevel,
+        'level' => 0,
+        'turntime' => $turntime,
+        'killturn' => 6,
+        'lastconnect' => $lastconnect,
+        'makelimit' => 0,
+        'age' => $age,
+        'startage' => $age,
+        'personal' => $character,
+        'specage' => $specage,
+        'special' => $special,
+        'specage2' => $specage2,
+        'special2' => $special2
+    ]);
 
-    $query = "select no,name,history from general where user_id='$id'";
-    $result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
+    $me = $db->queryFirstRow("select no,name,history from general where no_member= %i", $userID);
 
     if($me['name'] == "") {
         $r = rand() % 999 + 1;
         $me['name'] = '장수-'.$r;
         
-        $query = "update general set name='{$me['name']}' where user_id='$id'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->query("update general set name=%s where no_member=%i", $me['name'], $userID);
     }
     $cityname = getCity($connect, $city, "name");
     if($genius == 1) {
