@@ -11,6 +11,6 @@
     },
     "search.exclude": {
         "e_lib/*":true,
-       
+        "vendor/*":true
       },
 }
