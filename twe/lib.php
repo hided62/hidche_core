@@ -207,7 +207,7 @@ function PrintElapsedTime() {
  * 
  * @return int|null
  */
-function toInt($val){
+function toInt($val, $force=false){
     if($val === null){
         return null;
     }
@@ -217,7 +217,13 @@ function toInt($val){
     if(is_numeric($val)){
         return intval($val);//
     }
+    if($val === 'NULL' || $val === 'null'){
+        return null;
+    }
 
+    if($force){
+        return intval($val);
+    }
     throw new InvalidArgumentException('올바르지 않은 타입형 :'.$val);
 }
 
