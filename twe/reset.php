@@ -3,7 +3,18 @@ include "lib.php";
 include "func.php";
 include "schema.php";
 
+$userID = getUserID();
+$userLevel = toInt(getRootDB()->queryFirstField('select userlevel from member where no=%i',$userID));
+
+if($userLevel < 5){
+    echo '관리자 아님';
+    die();
+}
+
 $connect = dbConn();
+
+
+
 
 // 삭제
 unlink("d_setting/set.php");
