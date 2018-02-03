@@ -30,7 +30,7 @@ if($command == 46) {
     if($name == "") { $name = "무명"; }
     $name = _String::SubStrForWidth($name, 0, 12);
 
-    $query = "update general set makenation='{$name}' where no_member='{$_SESSION['noMember']}'";
+    $query = "update general set makenation='{$name}' where owner='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     $count = sizeof($turn);
@@ -38,13 +38,13 @@ if($command == 46) {
     for($i=0; $i < $count; $i++) {
         $str .= ",turn{$turn[$i]}='{$comStr}'";
     }
-    $query = "update general set {$str} where no_member='{$_SESSION['noMember']}'";
+    $query = "update general set {$str} where owner='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //echo "<script>location.replace('index.php');</script>";
     echo 'index.php';//TODO:debug all and replace
 //통합제의
 } elseif($command == 53) {
-    $query = "select nation,level from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select nation,level from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -71,7 +71,7 @@ if($command == 46) {
     echo 'b_chiefcenter.php';//TODO:debug all and replace
 //불가침
 } elseif($command == 61) {
-    $query = "select nation,level from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select nation,level from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -100,7 +100,7 @@ if($command == 46) {
 //백성동원, 수몰, 허보, 피장파장, 의병모집, 이호경식, 급습
 //국기변경
 } elseif($command == 23 || $command == 24 || $command == 27 || $command == 51 || $command == 52 || $command > 60) {
-    $query = "select no,nation,level from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select no,nation,level from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -123,7 +123,7 @@ if($command == 46) {
     for($i=0; $i < $count; $i++) {
         $str .= ",turn{$turn[$i]}='{$comStr}'";
     }
-    $query = "update general set {$str} where no_member='{$_SESSION['noMember']}'";
+    $query = "update general set {$str} where owner='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //echo "<script>location.replace('index.php');</script>";
     echo 'index.php';//TODO:debug all and replace

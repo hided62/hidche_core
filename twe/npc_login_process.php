@@ -3,6 +3,8 @@ include "lib.php";
 include "func.php";
 $connect = dbConn();
 
+//TODO: 폐기
+
 $id = $_POST['id'];
 $pw = $_POST['pw'];
 $pw = md5($pw.$pw);
@@ -43,7 +45,7 @@ if(!$me2) {
 
     $date = date('Y-m-d H:i:s');
 
-    $query="update general set logcnt=logcnt+1,ip='{$_SESSION['p_ip']}',lastconnect='$date',conmsg='$conmsg' where no_member='{$_SESSION['noMember']}'";
+    $query="update general set logcnt=logcnt+1,ip='{$_SESSION['p_ip']}',lastconnect='$date',conmsg='$conmsg' where owner='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     //echo "<script>window.top.location.replace('./');</script>";

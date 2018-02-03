@@ -61,7 +61,7 @@ function getWorldMap($req){
 
     if($generalID && ($req->showMe || $req->neutralView)){
         $city = $db->queryFirstRow(
-                'select `city`, `nation` from `general` where `user_id`=%i',
+                'select `city`, `nation` from `general` where `no`=%i',
                  $generalID);
 
         $myCity = toInt($city['city']);

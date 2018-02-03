@@ -250,7 +250,6 @@ echo 'install3_ok.php';//TODO:debug all and replace
 
 function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$personal,$special,$msg="") {
     $name = "ⓝ".$name;
-    $genid      = "gen{$gencount}";
     $turntime = getRandTurn($turnterm);
     $personal = CharCall($personal);
     $special = SpecCall($special);
@@ -266,17 +265,16 @@ function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$p
     $npc = 2;
     $npcmatch = rand()%150 + 1;
     $picture = 'default.jpg';
-    $pw = md5("18071807");
     //장수
     @MYDB_query("
         insert into general (
-            npcid,npc,npc_org,npcmatch,user_id,password,name,picture,nation,level,city,
+            npcid,npc,npc_org,npcmatch,name,picture,nation,level,city,
             leader,power,intel,experience,dedication,
             gold,rice,crew,crewtype,train,atmos,
             weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
             makelimit
         ) values (
-            '$gencount','$npc','$npc','$npcmatch','$genid','$pw','$name','$picture','1','1','$city',
+            '$gencount','$npc','$npc','$npcmatch','$name','$picture','1','1','$city',
             '$leader','$power','$intel','$experience','$dedication',
             '2000','2000','0','0','0','0',
             '0','0','0','$turntime','$killturn','$age','1',
@@ -289,7 +287,6 @@ function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$p
 
 function RegGeneral3($connect,$turnterm,$gencount,$nation,$level,$name,$leader,$power,$intel,$personal,$special,$msg="") {
     $name = "ⓝ".$name;
-    $genid      = "npc{$gencount}";
     $turntime = getRandTurn($turnterm);
     $personal = CharCall($personal);
     $special = SpecCall($special);
@@ -305,17 +302,16 @@ function RegGeneral3($connect,$turnterm,$gencount,$nation,$level,$name,$leader,$
     $npc = 2;
     $npcmatch = 999;
     $picture = 'default.jpg';
-    $pw = md5("18071807");
     //장수
     @MYDB_query("
         insert into general (
-            npcid,npc,npc_org,npcmatch,user_id,password,name,picture,nation,city,
+            npcid,npc,npc_org,npcmatch,name,picture,nation,city,
             leader,power,intel,experience,dedication,
             level,gold,rice,crew,crewtype,train,atmos,
             weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
             makelimit
         ) values (
-            '$gencount','$npc','$npc','$npcmatch','$genid','$pw','$name','$picture','$nation','$city',
+            '$gencount','$npc','$npc','$npcmatch','$name','$picture','$nation','$city',
             '$leader','$power','$intel','$experience','$dedication',
             '$level','2000','2000','0','0','0','0',
             '0','0','0','$turntime','$killturn','$age','1',

@@ -53,7 +53,7 @@ if($img < 1) { $picture = 'default.jpg'; };
 
 @MYDB_query("
     insert into general (
-        no_member, connect, name, picture, nation, city, troop, makelimit,
+        owner, connect, name, picture, nation, city, troop, makelimit,
         leader, power, intel, experience, dedication, gold, rice, crew, train, atmos,
         weap, book, level, turntime, killturn, lastconnect, userlevel
     ) values (
@@ -70,7 +70,7 @@ if($img < 1) { $picture = 'default.jpg'; };
 //부운영자는 비밀번호를 지정하지 않아 로그인할수 없도록 처리한다.
 @MYDB_query("
     insert into general (
-        no_member, connect, name, picture, nation, city, troop, makelimit,
+        owner, connect, name, picture, nation, city, troop, makelimit,
         leader, power, intel, experience, dedication, gold, rice, crew, train, atmos,
         weap, book, level, turntime, killturn, lastconnect, userlevel
     ) values (

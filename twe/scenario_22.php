@@ -118,7 +118,6 @@ echo 'install3_ok.php';//TODO:debug all and replace
 
 function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$personal,$special,$msg="") {
     $name = "ⓝ".$name;
-    $genid      = "gen{$gencount}";
     $turntime = getRandTurn($turnterm);
     $personal = CharCall($personal);
     $special = SpecCall($special);
@@ -134,17 +133,16 @@ function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$p
     $npc = 2;
     $npcmatch = rand()%150 + 1;
     $picture = 'default.jpg';
-    $pw = md5("18071807");
     //장수
     @MYDB_query("
         insert into general (
-            npcid,npc,npc_org,npcmatch,user_id,password,name,picture,nation,city,
+            npcid,npc,npc_org,npcmatch,name,picture,nation,city,
             leader,power,intel,experience,dedication,
             level,gold,rice,crew,crewtype,train,atmos,
             weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
             makelimit
         ) values (
-            '$gencount','$npc','$npc','$npcmatch','$genid','$pw','$name','$picture','0',
+            '$gencount','$npc','$npc','$npcmatch','$name','$picture','0',
             '$city','$leader','$power','$intel','$experience','$dedication',
             '0','1000','1000','0','0','0','0',
             '0','0','0','$turntime','$killturn','$age','1',
@@ -153,6 +151,7 @@ function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$p
         )",
         $connect
     ) or Error(__LINE__.MYDB_error($connect),"");
+    //FIXME: insert 쿼리 이후 insertedID를 받아서 처리하는게 낫다.
     //방랑군
     if(rand()%20 == 0) {
         @MYDB_query("
@@ -169,7 +168,7 @@ function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$p
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($result);
         // 군주로        // 현 국가 소속으로
-        $query = "update general set belong=1,level=12,nation='{$nation['nation']}' where user_id='$genid'";
+        $query = "update general set belong=1,level=12,nation='{$nation['nation']}' where npcid='$gencount'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //외교 추가
         $query = "select nation from nation where nation!='{$nation['nation']}'";

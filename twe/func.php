@@ -66,7 +66,7 @@ function getGeneralID($forceExit=false){
 
     $db = getDB();
     //흠?
-    $generalID = $db->queryFirstField('select no from general where no_member = %i', $userID);
+    $generalID = $db->queryFirstField('select no from general where owner = %i', $userID);
     if(!$generalID && $forceExit){
         header('Location:..');
         die();
@@ -76,7 +76,7 @@ function getGeneralID($forceExit=false){
         //로그인으로 처리
         //XXX: 'get' 함수인데 update가 들어가있다.
         //TODO: 조금더 적절한 형태의 로그인 카운트를 생각해볼 것
-        $query=$db->query("update general set logcnt=logcnt+1 ,ip = %s_ip,lastconnect=%s_lastConnect,conmsg=%s_conmsg where user_id= %s_userID",[
+        $query=$db->query("update general set logcnt=logcnt+1 ,ip = %s_ip,lastconnect=%s_lastConnect,conmsg=%s_conmsg where owner= %s_userID",[
             'ip' => getenv("REMOTE_ADDR"),
             'lastConnect' => date('Y-m-d H:i:s'),
             'conmsg' => util::array_get($_SESSION['conmsg'], ''),
@@ -685,7 +685,7 @@ function getCoreTurn($connect, $nation, $level) {
 function cityInfo($connect) {
     global $_basecolor, $_basecolor2, $images;
 
-    $query = "select no,city,skin from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select no,city,skin from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -802,7 +802,7 @@ function myNationInfo($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select skin,no,nation from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select skin,no,nation from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -988,7 +988,7 @@ function commandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1226,7 +1226,7 @@ function CoreCommandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,city,level from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select no,nation,city,level from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1316,7 +1316,7 @@ function CoreCommandTable($connect) {
 }
 
 function myInfo($connect) {
-    $query = "select no,skin from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select no,skin from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1330,7 +1330,7 @@ function generalInfo($connect, $no, $skin) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select skin from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select skin from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1520,7 +1520,7 @@ function generalInfo($connect, $no, $skin) {
 }
 
 function myInfo2($connect) {
-    $query = "select no,skin from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select no,skin from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1946,7 +1946,7 @@ function onlineNation($connect) {
 }
 
 function nationMsg($connect) {
-    $query = "select no,nation,skin from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select no,nation,skin from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2315,7 +2315,7 @@ function increaseRefresh($connect, $type="", $cnt=1) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     if(!util::array_get($_SESSION['noMember'], null)) {
-        $query = sprintf("update general set lastrefresh='%s',con=con+'%d',connect=connect+'%d',refcnt=refcnt+'%d',refresh=refresh+'%d' where no_member='%d'",
+        $query = sprintf("update general set lastrefresh='%s',con=con+'%d',connect=connect+'%d',refcnt=refcnt+'%d',refresh=refresh+'%d' where owner='%d'",
         $date,$cnt,$cnt,$cnt,$cnt,$_SESSION['noMember']);
         
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -3185,11 +3185,9 @@ function updateTurntime($connect, $no) {
     if($general['killturn'] <= 0) {
         // npc유저 삭턴시 npc로 전환
         if($general['npc'] == 1 && $general['deadyear'] > $admin['year']) {
-            $npcid = "gen" . $general['npcid'];
-            $pw = md5("18071807");
             $general['killturn'] = ($general['deadyear'] - $admin['year']) * 12;
             $general['npc'] = $general['npc_org'];
-            $query = "update general set user_id='$npcid',password='$pw',npc='{$general['npc']}',killturn='{$general['killturn']}',mode=2 where no='$no'";
+            $query = "update general set owner=-1,npc='{$general['npc']}',killturn='{$general['killturn']}',mode=2 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name2']}</>(이)가 <Y>{$general['name']}</>의 육체에서 <S>유체이탈</>합니다!";
@@ -4353,7 +4351,7 @@ function getAdmin($connect) {
 }
 
 function getMe($connect) {
-    $query = "select * from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select * from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error("접속자가 많아 접속을 중단합니다. 잠시후 갱신해주세요.<br>getMe : ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -4753,7 +4751,7 @@ function command_Single($connect, $turn, $command) {
     for($i=0; $i < $count; $i++) {
         $str .= ",turn{$turn[$i]}='{$command}'";
     }
-    $query = "update general set {$str} where no_member='{$_SESSION['noMember']}'";
+    $query = "update general set {$str} where owner='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //echo "<script>location.replace('commandlist.php');</script>";
     echo 'commandlist.php';//TODO:debug all and replace
@@ -4763,7 +4761,7 @@ function command_Single($connect, $turn, $command) {
 function command_Chief($connect, $turn, $command) {
     $command = EncodeCommand(0, 0, 0, $command);
 
-    $query = "select nation,level from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select nation,level from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

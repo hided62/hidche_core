@@ -94,7 +94,7 @@ function commandButton() {
     }
     $db = getDB();
     
-    $me = $db->queryFirstRow("select skin,no,nation,level,belong from general where user_id=%i", $generalID);
+    $me = $db->queryFirstRow("select skin,no,nation,level,belong from general where no=%i", $generalID);
 
     $nation = $db->queryFirstRow("select nation,color,secretlimit from nation where nation=%i",$me['nation']);
 

@@ -5,7 +5,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where no_member='{$_SESSION['noMember']}'";
+$query = "select userlevel from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -17,10 +17,10 @@ if($me['userlevel'] < 5) {
 switch($btn) {
     case "국가변경":
         if($nation == 0) {
-            $query = "update general set nation=0,level=0 where no_member='{$_SESSION['noMember']}'";
+            $query = "update general set nation=0,level=0 where owner='{$_SESSION['noMember']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            $query = "update general set nation='{$nation}',level=1 where no_member='{$_SESSION['noMember']}'";
+            $query = "update general set nation='{$nation}',level=1 where owner='{$_SESSION['noMember']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;

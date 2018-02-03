@@ -20,7 +20,7 @@ if($admin['tournament'] != 6) {
     exit();
 }
 
-$query = "select gold,bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where no_member='{$_SESSION['noMember']}'";
+$query = "select gold,bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -30,7 +30,7 @@ for($i=0; $i < 16; $i++) {
         $mebet = $me["bet{$i}"];
         if($gold >= 10 && $gold <= 1000) {
             if($gold + 500 <= $me['gold'] && $gold + $mebet <= 1000 && $gold + $me['bet'] <= 1000) {
-                $query = "update general set gold=gold-'$gold',bet{$i}=bet{$i}+'$gold',betgold=betgold+'$gold' where no_member='{$_SESSION['noMember']}'";
+                $query = "update general set gold=gold-'$gold',bet{$i}=bet{$i}+'$gold',betgold=betgold+'$gold' where owner='{$_SESSION['noMember']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $query = "update game set bet{$i}=bet{$i}+'$gold' where no='1'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

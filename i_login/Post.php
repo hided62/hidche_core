@@ -13,7 +13,6 @@ $id = $_POST['id'];
 $pw = $_POST['pw'];
 $conmsg = $_POST['conmsg'];
 
-$_SESSION['conmsg'] = $conmsg;//XXX: conmsg를 처리할 더 적절한 장소는?
 
 $id = _String::NoSpecialCharacter($id);
 $pw = substr($pw, 0, 32);
@@ -33,6 +32,8 @@ if($DB->Count($rs) == 1) {
         if($system['LOGIN'] == 'Y' || $member['GRADE'] >= 5) {
             $SESSION->Login($member['NO'], $id);
             $DB->Update('MEMBER', "CONMSG='{$conmsg}', IP='{$_SERVER['REMOTE_ADDR']}'", "NO='{$member['NO']}'");
+
+            $_SESSION['conmsg'] = $conmsg;//XXX: conmsg를 처리할 더 적절한 장소는?
 
             $response['result'] = 'SUCCESS';
         } else {

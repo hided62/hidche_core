@@ -2,16 +2,13 @@
 include "lib.php";
 include "func.php";
 
-$id   = $_POST['id'];
-$pw   = $_POST['pw'];
-$face = $_POST['face'];
+$face = $_POST['face'];//TODO: face를 user_id에서 general.no 값을 이용하도록 변경
 
-$pwTemp = substr($pw, 0, 32);
-
+$userID = getUserID();
 $connect = dbConn("sammo");
 
 //회원 테이블에서 정보확인
-$query = "select no,id,picture,grade,name from MEMBER where id='$id' and pw='$pwTemp'";
+$query = "select no,id,picture,grade,name from MEMBER where no='$userID'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $member = MYDB_fetch_array($result);
 
@@ -29,7 +26,7 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $connect = dbConn();
 
 $npcid = "gen{$face}";
-$query = "select no,npc,level from general where user_id='$npcid'";
+$query = "select no,npc,level from general where no='$face'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $npc = MYDB_fetch_array($result);
 
@@ -43,7 +40,7 @@ $query  = "select no from general where npc<2";
 $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($result);
 
-$query  = "select no from general where user_id='{$member['id']}'";
+$query  = "select no from general where owner='$userID'";
 $result = MYDB_query($query,$connect) or Error(__LINE__.MYDB_error($connect),"");
 $id_num = MYDB_num_rows($result);
 
@@ -89,8 +86,6 @@ if($admin['npcmode'] != 1) {
 
     $query = "
         update general set
-            user_id='{$id}',
-            password='{$pwTemp}',
             name2='{$member['name']}',
             conmsg='',
             npc=1,
@@ -98,8 +93,9 @@ if($admin['npcmode'] != 1) {
             skin=1,
             mode=2,
             map=0,
+            owner='$userID',
             userlevel='{$userlevel}'
-        where user_id='{$npcid}'
+        where no='{$npcid}'
     ";
     MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
 

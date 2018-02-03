@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "부대편성", 1);
 
-$query = "select skin,no,nation,troop from general where no_member='{$_SESSION['noMember']}'";
+$query = "select skin,no,nation,troop from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

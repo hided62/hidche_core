@@ -43,7 +43,7 @@ $db = getDB();
 
 $admin = $db->queryFirstRow("select year,month,scenario,maxgeneral,turnterm,genius,img from game where no='1'");
 $gencount = $db->queryFirstField("select count(no) from general where npc<2");
-$id_num = $db->queryFirstField("select count(no) from general where no_member= %i", $userID);
+$id_num = $db->queryFirstField("select count(no) from general where owner= %i", $userID);
 $name_num = $db->queryFirstField("select count(no) from general where name= %s", $name);
 
 if($id_num) {
@@ -189,7 +189,7 @@ if($id_num) {
 
     ########## 회원정보 테이블에 입력값을 등록한다. ##########
     $db->insert('general', [
-        'no_member' => $userID,
+        'owner' => $userID,
         'name' => $name,
         'picture' => $face,
         'imgsvr' => $imgsvr,
@@ -222,13 +222,13 @@ if($id_num) {
         'special2' => $special2
     ]);
 
-    $me = $db->queryFirstRow("select no,name,history from general where no_member= %i", $userID);
+    $me = $db->queryFirstRow("select no,name,history from general where owner= %i", $userID);
 
     if($me['name'] == "") {
         $r = rand() % 999 + 1;
         $me['name'] = '장수-'.$r;
         
-        $db->query("update general set name=%s where no_member=%i", $me['name'], $userID);
+        $db->query("update general set name=%s where owner=%i", $me['name'], $userID);
     }
     $cityname = getCity($connect, $city, "name");
     if($genius == 1) {

@@ -55,7 +55,6 @@ function RegGeneral($connect,$init,$life,$fiction,$turnterm,$startyear,$year,$ge
             $connect
         ) or Error(__LINE__.MYDB_error($connect),"");
     } elseif($year == $bornyear+14 && $year < $deadyear) {
-        $genid = "gen{$gencount}";
 
         $query = "select no from general where npcid='$gencount'";
         $result = MYDB_query($query, $connect) or Error("func_npc ".MYDB_error($connect),"");
@@ -77,17 +76,16 @@ function RegGeneral($connect,$init,$life,$fiction,$turnterm,$startyear,$year,$ge
             $killturn = ($deadyear - $year) * 12 + (rand() % 12);
             $experience = $age * 100;
             $dedication = $age * 100;
-            $pw = md5("18071807");
 
             //장수
             @MYDB_query("
                 insert into general (
-                    npcid,npc,npc_org,npcmatch,user_id,password,name,picture,nation,city,leader,power,intel,
+                    npcid,npc,npc_org,npcmatch,name,picture,nation,city,leader,power,intel,
                     experience,dedication,level,gold,rice,crew,crewtype,train,atmos,
                     weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
                     makelimit,bornyear,deadyear
                 ) values (
-                    '$gencount','$npc','$npc','$npcmatch','$genid','$pw','$name','$picture','0',
+                    '$gencount','$npc','$npc','$npcmatch','$name','$picture','0',
                     '$city','$leader','$power','$intel','$experience','$dedication',
                     '0','1000','1000','0','0','0','0',
                     '0','0','0','$turntime','$killturn','$age','1',

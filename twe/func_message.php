@@ -207,12 +207,12 @@ function getMailboxList(){
 }
 
 function genList($connect) {
-    $query = "select no,nation,level,msgindex,userlevel from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select no,nation,level,msgindex,userlevel from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
     $you = [];
     
-    $query = "select msg{$me['msgindex']}_who as reply,msg{$me['msgindex']}_type as type from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select msg{$me['msgindex']}_who as reply,msg{$me['msgindex']}_type as type from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $reply = MYDB_fetch_array($result);
     if($reply['type'] % 100 == 9) {
@@ -274,7 +274,7 @@ function genList($connect) {
     echo "
     <optgroup label='개인메세지'>
     <optgroup label='재야'>";
-    $query = "select no,name,npc from general where nation=0 and no_member!='{$_SESSION['noMember']}' and npc<2 order by npc,binary(name)";
+    $query = "select no,name,npc from general where nation=0 and owner!='{$_SESSION['noMember']}' and npc<2 order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
     for($i=0; $i < $gencount; $i++) {
@@ -296,7 +296,7 @@ function genList($connect) {
         echo "
     <optgroup label='【{$nation['name']}】' style=color:".newColor($nation['color']).";background-color:{$nation['color']};>";
 
-        $query = "select no,name,npc,level from general where nation='{$nation['nation']}' and no_member!='{$_SESSION['noMember']}' and npc<2 order by npc,binary(name)";
+        $query = "select no,name,npc,level from general where nation='{$nation['nation']}' and owner!='{$_SESSION['noMember']}' and npc<2 order by npc,binary(name)";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
         for($j=0; $j < $gencount; $j++) {
@@ -350,7 +350,7 @@ function MsgFile($skin, $bg, $nation=0, $level=0) {
 // type : xx,xx(불가침기간,타입)
 // who : xxxx,xxxx(발신인, 수신인)
 function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
-    $query = "select skin,no,nation,name,picture,level from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select skin,no,nation,name,picture,level from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -416,7 +416,7 @@ function MsgMe($connect, $bg) {
         msg0_type,msg1_type,msg2_type,msg3_type,msg4_type,msg5_type,msg6_type,msg7_type,msg8_type,msg9_type,
         msg0_who,msg1_who,msg2_who,msg3_who,msg4_who,msg5_who,msg6_who,msg7_who,msg8_who,msg9_who,
         msg0_when,msg1_when,msg2_when,msg3_when,msg4_when,msg5_when,msg6_when,msg7_when,msg8_when,msg9_when
-        from general where no_member='{$_SESSION['noMember']}'";
+        from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -438,7 +438,7 @@ function moveMsg($connect, $table, $msgtype, $msgnum, $msg, $type, $who, $when, 
 }
 
 function MsgDip($connect, $bg) {
-    $query = "select no,nation from general where no_member='{$_SESSION['noMember']}'";
+    $query = "select no,nation from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

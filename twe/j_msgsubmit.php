@@ -48,7 +48,7 @@ if(getBlockLevel() == 1 || getBlockLevel() == 3) {
 
 $conlimit = $db->queryFirstField('select conlimit from game where no=1');
 
-$me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`msgindex`,`userlevel`,`con`,`picture`,`imgsvr` from `general` where `no_member` = %i', getUserID());
+$me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`msgindex`,`userlevel`,`con`,`picture`,`imgsvr` from `general` where `owner` = %i', getUserID());
 
 if(!$me){
     resetSessionGeneralValues();
@@ -147,7 +147,7 @@ if($destMailbox == 9999) {
     }
 
     
-    $destUser = $db->queryFirstRow('select `no`,`name`,`nation` from `general` where `user_id` = %s',$destMailbox);
+    $destUser = $db->queryFirstRow('select `no`,`name`,`nation` from `general` where `no` = %s',$destMailbox);
 
     if($destUser == NULL || empty($destUser)){
         returnJson([

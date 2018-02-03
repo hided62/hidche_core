@@ -3,9 +3,9 @@ include "lib.php";
 include "func.php";
 
 $connect = dbConn("sammo");
-
+$userID = getUserID();
 //회원 테이블에서 정보확인
-$query = "select no,name,picture,grade from MEMBER where id='$id' and pw='$pwTemp'";
+$query = "select no,name,picture,grade from MEMBER where no='$userID'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $member = MYDB_fetch_array($result);
 
@@ -94,8 +94,7 @@ if($admin['img'] >= 3) {
             <td align=left colspan=2>
                 <select name=face size=1 style=color:white;background-color:black; value=1001 disabled>
 <?php
-//$query  = "select npcid,name,leader,power,intel from general where npc=2 and level<5";
-$query  = "select npcid,name,leader,power,intel from general where npc=2";
+$query  = "select no,name,leader,power,intel from general where npc=2";
 $result = MYDB_query($query,$connect);
 $count = MYDB_num_rows($result);
 
@@ -103,7 +102,7 @@ for($i=0; $i < $count; $i++) {
     $npc = MYDB_fetch_array($result);
     $call = "{$npc['leader']} / {$npc['power']} / {$npc['intel']}";
     echo "
-        <option value={$npc['npcid']}>{$npc['name']} 【{$call}】</option>";
+        <option value={$npc['no']}>{$npc['name']} 【{$call}】</option>";
 }
 ?>
 

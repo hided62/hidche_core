@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "현재도시", 1);
 
-$query = "select skin,no,nation,userlevel,level,city from general where no_member='{$_SESSION['noMember']}'";
+$query = "select skin,no,nation,userlevel,level,city from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

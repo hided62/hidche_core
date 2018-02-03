@@ -5,7 +5,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where no_member='{$_SESSION['noMember']}'";
+$query = "select userlevel from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -109,7 +109,7 @@ $conMsg  = "";
 for($i=0; $i < $ipCount; $i++) {
     $ip = MYDB_fetch_array($result);
 
-    $query = "select name,ip,lastconnect,user_id,block,conmsg from general where ip like '{$ip['ip2']}%' and npc<2 order by ip";
+    $query = "select name,ip,lastconnect,owner,block,conmsg from general where ip like '{$ip['ip2']}%' and npc<2 order by ip";
     $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($genResult);
     for($k=0; $k < $genCount; $k++) {
@@ -118,7 +118,7 @@ for($i=0; $i < $ipCount; $i++) {
         else $genName .= $gen['name']."<br>";
         $genDate .= $gen['lastconnect']."<br>";
         $genIP   .= $gen['ip']."<br>";
-        $genID   .= $gen['user_id']."<br>";
+        $genID   .= $gen['owner']."<br>";
         $conMsg  .= $gen['conmsg']."<br>";
     }
     $genName .= "<br>";
@@ -136,54 +136,9 @@ echo "
 ?>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr>
-        <td align=center width=100>장수명</td>
-        <td align=center width=180>최근로그인</td>
-        <td align=center width=129>Password</td>
-        <td align=center width=100>ID</td>
-        <td align=center width=278>-</td>
-    </tr>
-    <tr>
 <?php
-$query = "select password from general where npc<2 group by password having count(*)>1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$ipCount = MYDB_num_rows($result);
-$genName = "";
-$genDate = "";
-$genIP   = "";
-$genID   = "";
-$conMsg  = "";
-for($i=0; $i < $ipCount; $i++) {
-    $ip = MYDB_fetch_array($result);
-
-    $query = "select name,password,lastconnect,user_id,block,conmsg from general where password='{$ip['password']}' and npc<2";
-    $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $genCount = MYDB_num_rows($genResult);
-    for($k=0; $k < $genCount; $k++) {
-        $gen = MYDB_fetch_array($genResult);
-        if($gen['block'] > 0) $genName .= "<font color=magenta>{$gen['name']}</font><br>";
-        else $genName .= $gen['name']."<br>";
-        $genDate .= $gen['lastconnect']."<br>";
-        $genIP   .= substr($gen['password'],0,10)." ...<br>";
-        $genID   .= $gen['user_id']."<br>";
-        $conMsg  .= $gen['conmsg']."<br>";
-    }
-    $genName .= "<br>";
-    $genDate .= "<br>";
-    $genIP   .= "<br>";
-    $genID   .= "<br>";
-    $conMsg  .= "<br>";
-}
-echo "
-        <td align=right>$genName</td>
-        <td>$genDate</td>
-        <td>$genIP</td>
-        <td>$genID</td>
-        <td>$conMsg</td>";
+//NOTE: password의 md5 해시가 같은지 확인하는 방식으로는 앞으로 잡아낼 수 없다. 폐기
 ?>
-    </tr>
-</table>
 </form>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?php backButton(); ?></td></tr>

@@ -21,7 +21,7 @@ if(!$userID){
     die();
 }
 
-$me = $db->queryFirstRow('select no,skin,userlevel,con,turntime,newmsg,newvote,map from general where user_id = %s', $userID);
+$me = $db->queryFirstRow('select no,skin,userlevel,con,turntime,newmsg,newvote,map from general where owner = %i', $userID);
 
 //그새 사망이면
 if($me === null) {
@@ -31,13 +31,13 @@ if($me === null) {
 }
 
 if($me['newmsg'] == 1 && $me['newvote'] == 1) {
-    $query = "update general set newmsg=0,newvote=0 where no_member='{$_SESSION['noMember']}'";
+    $query = "update general set newmsg=0,newvote=0 where owner='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($me['newmsg'] == 1) {
-    $query = "update general set newmsg=0 where no_member='{$_SESSION['noMember']}'";
+    $query = "update general set newmsg=0 where owner='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($me['newvote'] == 1) {
-    $query = "update general set newvote=0 where no_member='{$_SESSION['noMember']}'";
+    $query = "update general set newvote=0 where owner='{$_SESSION['noMember']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 

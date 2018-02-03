@@ -1,6 +1,9 @@
 <?php
 include "lib.php";
 include "func.php";
+
+//NOTE:폐기.
+
 //////////////////////////장수성격//////////////////////////////////////////////
 //은둔 안전 유지 재간 출세 할거 정복 패권 의협 대의 왕좌
 ////////////////////////////////////////////////////////////////////////
@@ -9,7 +12,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where no_member='{$_SESSION['noMember']}'";
+$query = "select userlevel from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -97,7 +100,6 @@ echo './';//TODO:debug all and replace
 
 function RegGeneral4($connect,$turnterm,$gencount,$nation,$level,$name,$leader,$power,$intel,$personal,$specage,$specage2,$msg="") {
     $name = "ⓝ".$name;
-    $genid    = "jwh1807";
     $turntime = getRandTurn($turnterm);
     $personal = CharCall($personal);
     $city = rand()%94 + 1;
@@ -121,18 +123,17 @@ function RegGeneral4($connect,$turnterm,$gencount,$nation,$level,$name,$leader,$
     $dex20 = 0;
     $dex30 = 0;
     $dex40 = 0;
-    $pw = md5("18071807");
     //장수
     @MYDB_query("
         insert into general (
-            npcid,npc,npc_org,npcmatch,user_id,password,name,picture,nation,city,
+            npcid,npc,npc_org,npcmatch,name,picture,nation,city,
             leader,power,intel,experience,dedication,
             level,gold,rice,crew,crewtype,train,atmos,
             weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
             makelimit,
             dex0, dex10, dex20, dex30, dex40
         ) values (
-            '$gencount','$npc','$npc','$npcmatch','$genid','$pw','$name','$picture','$nation','$city',
+            '$gencount','$npc','$npc','$npcmatch','$name','$picture','$nation','$city',
             '$leader','$power','$intel','$experience','$dedication',
             '$level','1000','1000','$crew','$crewtype','100','100',
             '0','0','0','$turntime','$killturn','$age','1',

@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh($connect, "내정보", 1);
 
-$query = "select myset from general where no_member='{$_SESSION['noMember']}'";
+$query = "select myset from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -23,11 +23,11 @@ if($btn == "설정저장" && $me['myset'] > 0) {
         $submit = 'hidden';
     }
 
-    $query = "update general set myset=myset-1,map='$map',mode='$mode',skin='$skin',tnmt='$tnmt' where no_member='{$_SESSION['noMember']}'";
+    $query = "update general set myset=myset-1,map='$map',mode='$mode',skin='$skin',tnmt='$tnmt' where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-$query = "select no,skin,map,mode,tnmt,myset from general where no_member='{$_SESSION['noMember']}'";
+$query = "select no,skin,map,mode,tnmt,myset from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

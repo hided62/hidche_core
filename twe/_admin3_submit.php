@@ -7,7 +7,7 @@ $connect = dbConn();
 
 $admin = getAdmin($connect);
 
-$query = "select userlevel from general where no_member='{$_SESSION['noMember']}'";
+$query = "select userlevel from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
