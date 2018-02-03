@@ -91,16 +91,15 @@ function getSpecial($connect, $leader, $power, $intel) {
         $type = array(20, 31);
         $special = $type[array_rand($type)];
         // 귀모는 50% * 5% = 2.5%
-        if($special == 31 && randF() < 0.05) {
-            $type = array(20, 20);
-            $special = $type[array_rand($type)];
+        if($special == 31 && randF() > 0.05) {
+            $special = 20;
         }
     //무장
     } elseif($power >= $intel) {
         $type = array(10, 11, 12, 31);
         $special = $type[array_rand($type)];
         // 귀모는 그중에 25% * 10% = 2.5%
-        if(($special == 30 || $special == 31) && randF() < 0.05) {
+        if($special == 31 && randF() > 0.1) {
             $type = array(10, 11, 12);
             $special = $type[array_rand($type)];
         }
@@ -109,7 +108,7 @@ function getSpecial($connect, $leader, $power, $intel) {
         $type = array(1, 2, 3, 31);
         $special = $type[array_rand($type)];
         // 거상, 귀모는 그중에 25% * 10% = 2.5%
-        if($special == 31 && randF() < 0.05) {
+        if($special == 31 && randF() > 0.1) {
             $type = array(1, 2, 3);
             $special = $type[array_rand($type)];
         }
