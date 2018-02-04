@@ -467,22 +467,20 @@ function getLevel($level, $nlevel=8) {
 }
 
 function getCall($leader, $power, $intel) {
-    global $_goodgenleader, $_goodgenpower, $_goodgenintel;
-
     $call = '평범';
-    if($leader >= $_goodgenleader && $power >= $_goodgenpower && $intel >= $_goodgenintel) {
+    if($leader >= GameConst::goodgenleader && $power >= GameConst::goodgenpower && $intel >= GameConst::goodgenintel) {
         $call = '만능';
-    } elseif($leader >= $_goodgenleader && $power >= $_goodgenpower) {
+    } elseif($leader >= GameConst::goodgenleader && $power >= GameConst::goodgenpower) {
         $call = '용장';
-    } elseif($leader >= $_goodgenleader && $intel >= $_goodgenintel) {
+    } elseif($leader >= GameConst::goodgenleader && $intel >= GameConst::goodgenintel) {
         $call = '지장';
-    } elseif($power >= $_goodgenpower && $intel >= $_goodgenintel) {
+    } elseif($power >= GameConst::goodgenpower && $intel >= GameConst::goodgenintel) {
         $call = '명장';
-    } elseif($leader >= $_goodgenleader) {
+    } elseif($leader >= GameConst::goodgenleader) {
         $call = '명사';
-    } elseif($power >= $_goodgenpower) {
+    } elseif($power >= GameConst::goodgenpower) {
         $call = '용맹';
-    } elseif($intel >= $_goodgenintel) {
+    } elseif($intel >= GameConst::goodgenintel) {
         $call = '현명';
     }
     return $call;
@@ -608,8 +606,7 @@ function getDedLevel($dedication) {
 }
 
 function expStatus($exp) {
-    global $_upgradeLimit;
-    return $exp / $_upgradeLimit * 100;
+    return $exp / GameConst::upgradeLimit * 100;
 }
 
 function getLevelPer($exp, $level) {

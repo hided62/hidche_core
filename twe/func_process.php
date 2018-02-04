@@ -33,7 +33,6 @@ function CriticalScore($score, $type) {
 }
 
 function process_1($connect, &$general, $type) {
-    global $_develrate;
     $log = array();
     $alllog = array();
     $date = substr($general['turntime'],11,5);
@@ -75,7 +74,7 @@ function process_1($connect, &$general, $type) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}{$btype} 충분합니다. $dtype 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
-        if($city['rate'] < $_develrate) { $city['rate'] = $_develrate; }
+        if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
         $rate = $city['rate'] / 100;
 
         $score = ($general['intel'] * (100 - $general['injury'])/100 + getBookEff($general['book'])) * $rate;
@@ -138,7 +137,6 @@ function process_1($connect, &$general, $type) {
 }
 
 function process_3($connect, &$general) {
-    global $_develrate;
     $log = array();
     $alllog = array();
     $date = substr($general['turntime'],11,5);
@@ -239,7 +237,6 @@ function process_3($connect, &$general) {
 }
 
 function process_4($connect, &$general) {
-    global $_develrate;
     $log = array();
     $alllog = array();
     $date = substr($general['turntime'],11,5);
@@ -335,7 +332,6 @@ function process_4($connect, &$general) {
 }
 
 function process_5($connect, &$general, $type) {
-    global $_develrate;
     $log = array();
     $alllog = array();
     $date = substr($general['turntime'],11,5);
@@ -377,7 +373,7 @@ function process_5($connect, &$general, $type) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}는 충분합니다. $dtype 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
-        if($city['rate'] < $_develrate) { $city['rate'] = $_develrate; }
+        if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
         $rate = $city['rate'] / 100;
 
         $score = ($general['power'] * (100 - $general['injury'])/100 + getWeapEff($general['weap'])) * $rate;
@@ -439,7 +435,6 @@ function process_5($connect, &$general, $type) {
 }
 
 function process_7($connect, &$general) {
-    global $_develrate;
     $log = array();
     $alllog = array();
     $date = substr($general['turntime'],11,5);
@@ -535,7 +530,6 @@ function process_7($connect, &$general) {
 }
 
 function process_8($connect, &$general) {
-    global $_develrate;
     $log = array();
     $alllog = array();
     $date = substr($general['turntime'],11,5);
@@ -576,7 +570,7 @@ function process_8($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:치안은 충분합니다. $dtype 강화 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
-        if($city['rate'] < $_develrate) { $city['rate'] = $_develrate; }
+        if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
         $rate = $city['rate'] / 100;
 
         $score = ($general['power'] * (100 - $general['injury'])/100 + getWeapEff($general['weap'])) * $rate;

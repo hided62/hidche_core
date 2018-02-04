@@ -2027,8 +2027,8 @@ function msgprint($connect, $msg, $name, $picture, $imgsvr, $when, $num, $type) 
 }
 
 function banner() {
-    global $_version, $_banner, $_helper;
-    echo "<font size=2>$_version / $_banner <br> $_helper</font>";
+
+    echo "<font size=2>".GameConst::version." / ".GameConst::banner." <br> ".GameConst::helper."</font>";
 }
 
 function addTurn($date, $turnterm=1) {
@@ -3577,9 +3577,8 @@ function uniqueItem($connect, $general, $log, $vote=0) {
 }
 
 function checkAbility($connect, $general, $log) {
-    global $_upgradeLimit;
 
-    $limit = $_upgradeLimit;
+    $limit = GameConst::upgradeLimit;
 
     $query = "select no,leader,leader2,power,power2,intel,intel2 from general where no='{$general['no']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

@@ -25,10 +25,10 @@ define('STEP_LOG', true);
 define('PROCESS_LOG', true);
 $_startTime = getMicroTime();
 $_ver     = "서비스중";
-$_version = "삼국지 모의전투 PHP HideD v0.1";
-$_banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : 유기체(jwh1807@gmail.com), HideD(hided62@gmail.com)";
-$_helper = "도움 주신 분들";
-$_develrate = 50;   // 내정시 최하 민심 설정
+$x_version = "삼국지 모의전투 PHP HideD v0.1";
+$x_banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : 유기체(jwh1807@gmail.com), HideD(hided62@gmail.com)";
+$x_helper = "도움 주신 분들";
+$x_develrate = 50;   // 내정시 최하 민심 설정
 $_upgradeLimit = 30;    // 능력치 상승 경험치
 $_dexLimit = 1000000;    // 숙련도 제한치
 $_defaultatmos = 40;  // 초기 사기치
@@ -45,9 +45,9 @@ $_basefiring = 0.25; // 계략 기본 성공률
 $_firing = 300;    // 계략시 확률 가중치(수치가 클수록 변화가 적음 : (지력차/$_firing + $_basefiring)
 $_firingbase = 100; // 계략시 기본 수치 감소량
 $_firingpower = 400; // 계략시 수치 감소량($_firingbase ~ $_firingpower)
-$_goodgenleader = 65;  // 명장,지장에 사용될 통솔 제한
-$_goodgenpower = 65;  // 명장에 사용될 무력 제한
-$_goodgenintel = 65;  // 지장에 사용될 지력 제한
+$x_goodgenleader = 65;  // 명장,지장에 사용될 통솔 제한
+$x_goodgenpower = 65;  // 명장에 사용될 무력 제한
+$x_goodgenintel = 65;  // 지장에 사용될 지력 제한
 $_basecolor = "000044"; // 기본 배경색깔 푸른색
 $_basecolor2 = "225500"; // 기본 배경색깔 초록색
 $_basecolor3 = "660000"; // 기본 배경색깔 붉은색
