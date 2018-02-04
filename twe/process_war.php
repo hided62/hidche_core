@@ -90,7 +90,6 @@ function processWar($connect, $general, $city) {
 
     $alllog[count($alllog)] = "<C>●</>{$game['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>(으)로 진격합니다.";
     $log[count($log)] = "<C>●</>{$game['month']}월:<G><b>{$city['name']}</b></>(으)로 <M>진격</>합니다. <1>$date</>";
-//    $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<O><b>【전투】</b></><D><b>{$nation['name']}</b></>(이)가 <D><b>{$destnation['name']}</b></>의 <G><b>{$city['name']}</b></>(으)로 <M>진격</>합니다.";
 
     // 목표 도시내에 목표 국가 소속 장수 중, 병사가 있는 능력치합+병사수 순으로 훈,사 60, 80 이상
     $query = "select no,name,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,leader+power+intel+weap+horse+book+crew/100 as sum,dex0,dex10,dex20,dex30,dex40 from general where city='{$city['city']}' and nation='{$city['nation']}' and nation!=0 and crew>'0' and rice>round(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2)) order by sum desc";
@@ -1673,7 +1672,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
     $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<S><b>【지배】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></>(을)를 지배했습니다.";
     $general = addHistory($connect, $general, "<C>●</>{$game['year']}년 {$game['month']}월:<G><b>{$city['name']}</b></>(을)를 <S>함락</>시킴");
     $nation = addNationHistory($connect, $nation, "<C>●</>{$game['year']}년 {$game['month']}월:<Y>{$general['name']}</>(이)가 {$destnationName} <G><b>{$city['name']}</b></>(을)를 <S>점령</>");
-    $destnation = addNationHistory($connect, $destnation, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>(이)가 <O>함락</>");
+    $destnation = addNationHistory($connect, $destnation, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>(이)가 <span class='ev_highlight'>함락</span>");
 
     $query = "select city from city where nation='{$city['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

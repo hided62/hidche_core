@@ -27,6 +27,32 @@ select { font-family:'굴림'; line-height:100%; }
     background-image:url('/images/back_blue.jpg');
 }
 
+/* */
+
+.ev_warning{
+    color:orangered;
+}
+
+.ev_notice{
+    color:orangered;
+}
+
+.ev_succes{
+    color:lightgreen;
+}
+
+.ev_sell{
+    color:orange;
+}
+
+.ev_failed{
+    color:orangered;
+}
+
+.ev_highlight{
+    color:orangered;
+}
+
 /* TODO: 색상값이 아니라 의미에 따라 클래스 지정 */
 
 .o_bullet::before{

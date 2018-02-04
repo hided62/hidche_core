@@ -269,10 +269,10 @@ function startTournament($connect, $auto, $type) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     switch($type) {
-    case 0: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>전력전</> 대회가 개최됩니다! 천하의 <O>영웅</>들을 모집하고 있습니다!"; break;
-    case 1: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>통솔전</> 대회가 개최됩니다! 천하의 <O>명사</>들을 모집하고 있습니다!"; break;
-    case 2: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>일기토</> 대회가 개최됩니다! 천하의 <O>용사</>들을 모집하고 있습니다!"; break;
-    case 3: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>설전</> 대회가 개최됩니다! 천하의 <O>책사</>들을 모집하고 있습니다!"; break;
+    case 0: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>전력전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>영웅</span>들을 모집하고 있습니다!"; break;
+    case 1: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>통솔전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>명사</span>들을 모집하고 있습니다!"; break;
+    case 2: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>일기토</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>용사</span>들을 모집하고 있습니다!"; break;
+    case 3: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>설전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>책사</span>들을 모집하고 있습니다!"; break;
     }
     pushHistory($connect, $history);
 }
@@ -563,7 +563,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
         $genNo[$i] = $general['no'];
         $genName[$i] = $general['name'];
         $genGold[$general['no']] = $cost;
-        $genCall[$general['no']] = "<O>16강 진출</>";
+        $genCall[$general['no']] = "<span class='ev_highlight'>16강 진출</span>";
     }
     //8강자 명성 돈
     $cost = $admin['develcost'] * 2;
@@ -576,7 +576,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
         $genGold[$general['no']] += $cost;
-        $genCall[$general['no']] = "<O>8강 진출</>";
+        $genCall[$general['no']] = "<span class='ev_highlight'>8강 진출</span>";
     }
     //4강자 명성 돈
     $cost = $admin['develcost'] * 3;
@@ -589,7 +589,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
         $genGold[$general['no']] += $cost;
-        $genCall[$general['no']] = "<O>4강 진출</>";
+        $genCall[$general['no']] = "<span class='ev_highlight'>4강 진출</span>";
     }
     //결승자 명성 돈
     $cost = $admin['develcost'] * 6;
@@ -602,7 +602,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
         $genGold[$general['no']] += $cost;
-        $genCall[$general['no']] = "<O>준우승</>으";
+        $genCall[$general['no']] = "<span class='ev_highlight'>준우승</span>으";
     }
     //우승자 명성 돈
     $cost = $admin['develcost'] * 8;
@@ -615,7 +615,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //포상 장수 이름, 금액
         $genGold[$general['no']] += $cost;
-        $genCall[$general['no']] = "<O>우승</>으";
+        $genCall[$general['no']] = "<span class='ev_highlight'>우승</span>으";
     }
     //우승자 이름
     $query = "select no,name from tournament where grp=60";
@@ -898,13 +898,13 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $energy1 = round($energy1); $energy2 = round($energy2);
         $damage1 = round($damage1); $damage2 = round($damage2);
 
-        $log[count($log)] = "<S>●</> "._String::Fill2($phase, 2, "0")."合 : <C>"._String::Fill2($energy1, 3, "0")."</> <O>(-"._String::Fill2($damage1, 3, "0").")</> vs <O>(-"._String::Fill2($damage2, 3, "0").")</> <C>"._String::Fill2($energy2, 3, "0")."</>";
+        $log[count($log)] = "<S>●</> "._String::Fill2($phase, 2, "0")."合 : <C>"._String::Fill2($energy1, 3, "0")."</> <span class='ev_highlight'>(-"._String::Fill2($damage1, 3, "0").")</span> vs <span class='ev_highlight'>(-"._String::Fill2($damage2, 3, "0").")</span> <C>"._String::Fill2($energy2, 3, "0")."</>";
 
         if($energy1 <= 0 && $energy2 <= 0) {
             if($type == 0) { $sel = 2; break; }
             else {
                 $energy1 = round($e1 / 2); $energy2 = round($e2 / 2);
-                $log[count($log)] = "<S>●</> <O>재대결</>!";
+                $log[count($log)] = "<S>●</> <span class='ev_highlight'>재대결</span>!";
             }
         }
         if($energy1 <= 0) { $sel = 1; break; }

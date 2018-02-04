@@ -102,7 +102,7 @@ function process_1($connect, &$general, $type) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <O>실패</>하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
@@ -195,7 +195,7 @@ function process_3($connect, &$general) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 <O>실패</>하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
@@ -297,7 +297,7 @@ function process_4($connect, &$general) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:선정을 <O>실패</>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[count($log)] = "<C>●</>{$admin['month']}월:선정을 <span class='ev_failed'>실패</span>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
         } elseif($r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[count($log)] = "<C>●</>{$admin['month']}월:선정을 <S>성공</>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
@@ -400,7 +400,7 @@ function process_5($connect, &$general, $type) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 <O>실패</>하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
@@ -495,7 +495,7 @@ function process_7($connect, &$general) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:장려를 <O>실패</>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
+            $log[count($log)] = "<C>●</>{$admin['month']}월:장려를 <span class='ev_failed'>실패</span>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
         } elseif($r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[count($log)] = "<C>●</>{$admin['month']}월:장려를 <S>성공</>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
@@ -596,7 +596,7 @@ function process_8($connect, &$general) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}을 <O>실패</>하여 <C>$score</> 강화했습니다. <1>$date</>";
+            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}을 <span class='ev_failed'>실패</span>하여 <C>$score</> 강화했습니다. <1>$date</>";
         } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}을 <S>성공</>하여 <C>$score</> 강화했습니다. <1>$date</>";
@@ -677,7 +677,7 @@ function process_9($connect, &$general) {
 
         if(30 > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:조달을 <O>실패</>하여 {$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
+            $log[count($log)] = "<C>●</>{$admin['month']}월:조달을 <span class='ev_failed'>실패</span>하여 {$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
         } elseif(40 > $rd) {
             $score = CriticalScore($score, 0);
             $log[count($log)] = "<C>●</>{$admin['month']}월:조달을 <S>성공</>하여 {$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
@@ -2273,11 +2273,11 @@ function process_31($connect, &$general) {
                 $myTech = MYDB_fetch_array($result);
 
                 $diff = $yourTech['tech'] - $myTech['tech'];   // 차이
-                if($diff >= 1000) {      $log[count($log)] = "【<O>{$yourTech['name']}</>】아국대비기술:<M>↑</>압도"; }
-                elseif($diff >=  250) {  $log[count($log)] = "【<O>{$yourTech['name']}</>】아국대비기술:<Y>▲</>우위"; }
-                elseif($diff >= -250) {  $log[count($log)] = "【<O>{$yourTech['name']}</>】아국대비기술:<W>↕</>대등"; }
-                elseif($diff >= -1000) { $log[count($log)] = "【<O>{$yourTech['name']}</>】아국대비기술:<G>▼</>열위"; }
-                else {                   $log[count($log)] = "【<O>{$yourTech['name']}</>】아국대비기술:<C>↓</>미미"; }
+                if($diff >= 1000) {      $log[count($log)] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<M>↑</>압도"; }
+                elseif($diff >=  250) {  $log[count($log)] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<Y>▲</>우위"; }
+                elseif($diff >= -250) {  $log[count($log)] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<W>↕</>대등"; }
+                elseif($diff >= -1000) { $log[count($log)] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<G>▼</>열위"; }
+                else {                   $log[count($log)] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<C>↓</>미미"; }
             }
         }
 
@@ -3039,7 +3039,7 @@ function process_41($connect, &$general) {
         if($ratio < 33) {
             // 숙련도 증가
             addGenDex($connect, $general['no'], $general['crewtype'], $crewexp);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:$crewstr 숙련도 향상이 <O>지지부진</>했습니다. <1>$date</>";
+            $log[count($log)] = "<C>●</>{$admin['month']}월:$crewstr 숙련도 향상이 <span class='ev_failed'>지지부진</span>했습니다. <1>$date</>";
         } elseif($ratio < 66) {
             $exp = $exp * 2;
             // 숙련도 증가
