@@ -27,11 +27,12 @@ $_serverDirs = array(
 $_serverCount = count($_serverDirs);
 
 $_serverNames = array(
-    '<font size=4 color=white><b>체섭</b></font>',
-    '<font size=4 color=yellow><b>퀘섭</b></font>',
-    '<font size=4 color=orange><b>풰섭</b></font>',
-    '<font size=4 color=magenta><b>퉤섭</b></font>',
-    '<font size=4 color=red><b>훼섭</b></font>'
+    //FIXME: color빼곤 css로 옮겨야..
+    '<span style="font-weight:bold;font-size:1.4em;color:white">체섭</span>',
+    '<span style="font-weight:bold;font-size:1.4em;color:yellow">퀘섭</span>',
+    '<span style="font-weight:bold;font-size:1.4em;color:orange">풰섭</span>',
+    '<span style="font-weight:bold;font-size:1.4em;color:magenta">퉤섭</span>',
+    '<span style="font-weight:bold;font-size:1.4em;color:red">훼섭</span>'
 );
 
 $_serverLevels = array(
