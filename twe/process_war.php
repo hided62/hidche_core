@@ -1,6 +1,9 @@
 <?php
 
 function processWar($connect, $general, $city) {
+
+    $templates = new League\Plates\Engine('templates');
+
     global $_armperphase, $_maximumatmos, $_maximumtrain, $_dexLimit, $_basegold, $_baserice;
     $date = substr($general['turntime'],11,5);
 
@@ -371,10 +374,32 @@ function processWar($connect, $general, $city) {
                 if($city['def'] <= 0) { break; }
                 if($general['crew'] <= 0) { break; }
             }
-            $res = "성 <1>"._String::SubStr(getTypename($general['crewtype']), 0, 2)."</><Y1>【{$general['name']}】</> <O>{$general['crew']} (-$mydeathnum)</> VS <O>{$city['def']} (-$mykillnum)</> <Y1>【{$city['name']}】</><1>성벽</>";
-            $log[count($log)] = "<O>◆</>".$res;
-            $batlog[count($batlog)] = "<O>◆</>".$res;
-            $batres[count($batres)] = "<O>◆</>{$game['year']}년 {$game['month']}월: ".$res;
+
+            $render_attacker = [
+                'crewtype' => _String::SubStr(getTypename($general['crewtype']), 0, 2),
+                'name'=> $general['name'],
+                'remain_crew' => $general['crew'],
+                'killed_crew' => -$mydeathnum
+            ];
+            $render_defender = [
+                'crewtype' => '성벽',
+                'name'=> $city['name'],
+                'remain_crew' => $city['def'],
+                'killed_crew' => -$mykillnum
+            ];
+
+            $res = $templates->render('small_war_log',[
+                'year'=>$game['year'],
+                'month'=>$game['month'],
+                'war_type'=>'siege',
+                'war_type_str'=>'성',
+                'me' => $render_attacker,
+                'you' => $render_defender,
+            ]);
+
+            $log[count($log)] = $res;//TODO: $log를 출력할 때 date에 대해선 숨겨야 함.
+            $batlog[count($batlog)] = $res;
+            $batres[count($batres)] = $res;
             $deadAmount['att'] = $deadAmount['att'] + $mydeathnum;
             $deadAmount['def'] = $deadAmount['def'] + $mykillnum;
 
@@ -1220,14 +1245,44 @@ function processWar($connect, $general, $city) {
                 if($oppose['crew'] <= 0) { break; }
                 if($general['crew'] <= 0) { break; }
             }
-            $res = "<C>공</> <1>"._String::SubStr(getTypename($general['crewtype']), 0, 2)."</><Y1>【{$general['name']}】</> <O>{$general['crew']} (-$mydeathnum)</> VS <O>{$oppose['crew']} (-$opdeathnum)</> <Y1>【{$oppose['name']}】</><1>"._String::SubStr(getTypename($oppose['crewtype']), 0, 2)."</>";
-            $log[count($log)] = "<O>◆</>".$res;
-            $batlog[count($batlog)] = "<O>◆</>".$res;
-            $batres[count($batres)] = "<O>◆</>{$game['year']}년 {$game['month']}월: ".$res;
-            $oppres = "<M>수</> <1>"._String::SubStr(getTypename($oppose['crewtype']), 0, 2)."</><Y1>【{$oppose['name']}】</> <O>{$oppose['crew']} (-$opdeathnum)</> VS <O>{$general['crew']} (-$mydeathnum)</> <Y1>【{$general['name']}】</><1>"._String::SubStr(getTypename($general['crewtype']), 0, 2)."</>";
-            $opplog[count($opplog)] = "<O>◆</>".$oppres;
-            $oppbatlog[count($oppbatlog)] = "<O>◆</>".$oppres;
-            $oppbatres[count($oppbatres)] = "<O>◆</>{$game['year']}년 {$game['month']}월: ".$oppres;
+
+            $render_attacker = [
+                'crewtype' => _String::SubStr(getTypename($general['crewtype']), 0, 2),
+                'name'=> $general['name'],
+                'remain_crew' => $general['crew'],
+                'killed_crew' => -$mydeathnum
+            ];
+            $render_defender = [
+                'crewtype' => _String::SubStr(getTypename($oppose['crewtype']), 0, 2),
+                'name'=> $oppose['name'],
+                'remain_crew' => $oppose['crew'],
+                'killed_crew' => -$opdeathnum
+            ];
+
+            $res = $templates->render('small_war_log',[
+                'year'=>$game['year'],
+                'month'=>$game['month'],
+                'war_type'=>'attack',
+                'war_type_str'=>'공',
+                'me' => $render_attacker,
+                'you' => $render_defender,
+            ]);
+
+            $oppres = $templates->render('small_war_log',[
+                'year'=>$game['year'],
+                'month'=>$game['month'],
+                'war_type'=>'defense',
+                'war_type_str'=>'수',
+                'me' => $render_defender,
+                'you' => $render_attacker,
+            ]);
+
+            $log[count($log)] = $res;
+            $batlog[count($batlog)] = $res;
+            $batres[count($batres)] = $res;
+            $opplog[count($opplog)] = $oppres;
+            $oppbatlog[count($oppbatlog)] = $oppres;
+            $oppbatres[count($oppbatres)] = $oppres;
 
             $deadAmount['att'] = $deadAmount['att'] + $mydeathnum;
             $deadAmount['def'] = $deadAmount['def'] + $opdeathnum;
