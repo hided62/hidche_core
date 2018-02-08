@@ -18,6 +18,7 @@ function getRootDB(){
 
     if($uDB === NULL){
         $uDB = new MeekroDB($host,$user,$password,$dbName,$port,$encoding);
+        $uDB->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
     }
 
     return $uDB;
