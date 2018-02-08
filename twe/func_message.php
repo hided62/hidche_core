@@ -105,7 +105,7 @@ function getMessage($msgType, $limit=30, $fromTime=NULL){
     }
 }
 
-function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date){
+function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date, $msgOption){
     
     getDB()->insert('message', array(
         'address' => $dest,
@@ -113,20 +113,16 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date)
         'src' => $src['id'],
         'dest' => $dest['id'],
         'time' => $date,
-        'src_nation_id' => util::array_get($src['nation_id'], null),
-        'src_name' => util::array_get($src['name'], null),
-        'src_nation' => util::array_get($src['nation'], null),
-        'src_color' => util::array_get($src['color'], null),
-        'src_icon' => util::array_get($src['icon'], null),
-        'dest_nation_id' => util::array_get($dest['nation_id'], null),
-        'dest_name' => util::array_get($dest['name'], null),
-        'dest_nation' => util::array_get($dest['nation'], null),
-        'dest_color' => util::array_get($dest['color'], null),
-        'message' => $msg
+        'message' => json_encode(eraseNullValue([
+            'src' => $src,
+            'dest' =>$dest,
+            'text' => $msg,
+            'option' => $msgOption
+        ]))
     ));
 }
 
-function sendMessage($msgType, $src, $dest, $msg, $date = null){
+function sendMessage($msgType, $src, $dest, $msg, $date = null, $msgOption = null){
     if($date === null){
         $date = $datetime->format('Y-m-d H:i:s');
     }

@@ -249,7 +249,32 @@ function dictToArray($dict, $keys){
     return $result;
 }
 
-function eraseNullKey(&$dict, $depth=512){
+function isDict(&$array){
+    if(!is_array($array)){
+        //배열이 아니면 dictionary 조차 아님.
+        return false;
+    }
+    $idx = 0;
+    $jmp = 0;
+    foreach ($arr as $key=>&$value) {
+        if(is_string($key)){
+            return true;
+        }
+        $jmp = $key - $idx - 1;
+        $idx = $key;
+    }
+
+    if ($jmp * 5 >= count($array)){
+        //빈칸이 많으면 dictionary인걸로.
+        return true;
+    }
+    else{
+        return false;
+    }
+
+}
+
+function eraseNullValue(&$dict, $depth=512){
     //TODO:Test 추가
     if($depth <= 0){
         return $dict;
@@ -259,7 +284,7 @@ function eraseNullKey(&$dict, $depth=512){
         if($value === null){
             unset($dict[$key]);
         }
-        else if(is_array($value)){
+        else if(isDict($value)){
             $dict[$key] = eraseNullKey($value, $depth - 1);
         }
     }
