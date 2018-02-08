@@ -136,7 +136,7 @@ function sendMessage($msgType, $src, $dest, $msg, $date = null, $msgOption = nul
         }
         $destMailbox = $dest['nation_id'] + 9000;
     }
-    else if($msgType === 'deplomacy'){
+    else if($msgType === 'diplomacy'){
         $dest['id'] = $dest['nation_id'] + 8000;
     }
     else{
