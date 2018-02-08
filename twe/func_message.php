@@ -137,6 +137,7 @@ function sendMessage($msgType, $src, $dest, $msg, $date = null, $msgOption = nul
         $destMailbox = $dest['nation_id'] + 9000;
     }
     else if($msgType === 'diplomacy'){
+        //NOTE:외교 서신의 경우 '동일한 내용'이 두번 가지 않으므로, 별도 처리가 필요함
         $dest['id'] = $dest['nation_id'] + 8000;
     }
     else{
