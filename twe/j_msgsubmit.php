@@ -131,7 +131,14 @@ if($destMailbox == 9999) {
     }
 
     sendMessage('national', $src, $dest, $msg, $date);
-
+    
+} elseif($destMailbox >= 8000){
+    //외교 서신은 j_msgsubmit으로 보낼 수 없음.
+    returnJson([
+        'result' => false,
+        'reason' => '존재하지 않는 유저입니다.',
+        'redirect' => NULL
+    ]);
 // 개인 메세지
 } elseif($destMailbox > 0) {
     $last_msg = new DateTime(util::array_get($_SESSION['last_msg'], '0000-00-00'));
