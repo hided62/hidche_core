@@ -249,6 +249,24 @@ function dictToArray($dict, $keys){
     return $result;
 }
 
+function eraseNullKey(&$dict, $depth=512){
+    //TODO:Test 추가
+    if($depth <= 0){
+        return $dict;
+    }
+
+    foreach ($arr as $key=>$value) {
+        if($value === null){
+            unset($dict[$key]);
+        }
+        else if(is_array($value)){
+            $dict[$key] = eraseNullKey($value, $depth - 1);
+        }
+    }
+
+    return $dict;
+}
+
 function parseJsonPost(){
     // http://thisinterestsme.com/receiving-json-post-data-via-php/
     // http://thisinterestsme.com/php-json-error-handling/
