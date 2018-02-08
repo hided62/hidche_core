@@ -13,20 +13,16 @@ class Message{
     public $src;
     public $dest;
     public $time;
-    public $message;
+    public $text;
+    public $option;
 
     function __construct($row){
+        $db_message = $row['message'];
         $this->id = $row['id'];
         $this->mailbox = $row['mailbox'];
         $this->type = $row['type'];
         $this->isSender = $row['is_sender'] != 0;
-        $this->src = [
-            'id' => $row['src'],
-            'name' => $row['src_name'],
-            'nation' => $row['src_nation'],
-            'color' => $row['src_color'],
-            'nation_id' => $row['src_nation_id']
-        ];
+        $this->src = $db_message['src'];
 
         if($this->src['nation'] === null){
             $this->src['nation'] = '재야';
@@ -34,13 +30,7 @@ class Message{
             $this->src['nation_id'] = null;
         }
 
-        $this->dest = [
-            'id' => $row['dest'],
-            'name' => $row['dest_name'],
-            'nation' => $row['dest_nation'],
-            'color' => $row['dest_color'],
-            'nation_id' => $row['dest_nation_id']
-        ];
+        $this->dest = $db_message['dest'];
 
         if($this->dest['nation'] === null){
             $this->dest['nation'] = '재야';
@@ -49,7 +39,8 @@ class Message{
         }
 
         $this->datetime = $row['time'];
-        $this->message = $row['message'];
+        $this->text = $db_message['text'];
+        $this->option = $db_message['option'];
     }
 }
 
@@ -144,6 +135,9 @@ function sendMessage($msgType, $src, $dest, $msg, $date = null, $msgOption = nul
             $srcMailbox = $src['nation_id'] + 9000;
         }
         $destMailbox = $dest['nation_id'] + 9000;
+    }
+    else if($msgType === 'deplomacy'){
+        $dest['id'] = $dest['nation_id'] + 8000;
     }
     else{
         //dest는 id, name이 필수
