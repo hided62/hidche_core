@@ -24,6 +24,14 @@ function randF(){
     return mt_rand() / mt_getrandmax();
 }
 
+/**
+ * $prob의 확률로 true를 반환
+ * @return boolean
+ */
+function randBool($prob = 0.5){
+    return randF() < $prob;
+}
+
 /** 
  * 로그인한 유저의 전역 id를 받아옴 
  *
