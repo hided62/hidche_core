@@ -534,7 +534,7 @@ $game_schema = "
 $message_schema = "
 CREATE TABLE `message` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`mailbox` INT(11) NOT NULL COMMENT '9999 == public, >= 9000 national, >= 8000 diplomacy',
+	`mailbox` INT(11) NOT NULL COMMENT '9999 == public, >= 9000 national',
 	`type` ENUM('private','national','public','diplomacy') NOT NULL,
 	`is_sender` BIT(1) NOT NULL,
 	`src` INT(11) NOT NULL,
