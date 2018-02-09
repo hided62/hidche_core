@@ -4,6 +4,12 @@ include 'func.php';
 
 use utilphp\util as util;
 
+/**
+ * 메시지 전송 코드.
+ * 
+ * TODO: 장기적으로 ajax는 한곳에 모을 필요가 있을 듯.
+ */
+
 //읽기 전용이다. 빠르게 세션 끝내자
 session_write_close();
 
@@ -13,7 +19,7 @@ if(!isset($post['genlist']) || !isset($post['msg'])){
     returnJson([
         'result' => false,
         'reason' => '올바르지 않은 호출입니다.',
-        'redirect' => NULL
+        'newSeq' => false
     ]);
 }
 
@@ -28,7 +34,7 @@ if(!isSigned()){
     returnJson([
         'result' => false,
         'reason' => '로그인되지 않았습니다.',
-        'redirect' => NULL
+        'newSeq' => false
     ]);
 }
 
@@ -42,7 +48,7 @@ if(getBlockLevel() == 1 || getBlockLevel() == 3) {
     returnJson([
         'result' => false,
         'reason' => '차단되었습니다.',
-        'redirect' => NULL
+        'newSeq' => false
     ]);
 }
 
@@ -55,7 +61,7 @@ if(!$me){
     returnJson([
         'result' => false,
         'reason' => '로그인되지 않았습니다.',
-        'redirect' => NULL
+        'newSeq' => false
     ]);
 }
 
@@ -64,7 +70,7 @@ if($con >= 2) {
     returnJson([
         'result' => false,
         'reason' => '접속 제한입니다.',
-        'redirect' => NULL
+        'newSeq' => false
     ]);
  }
 
@@ -80,13 +86,11 @@ $msg = mb_substr($msg, 0, 99, 'UTF-8');
 $msg = trim($msg);
 
 if($msg == ''){
-    header('Content-Type: application/json');
-    die(json_encode([
+    returnJson([
         'result' => true,
         'reason' => 'SUCCESS',
-        'redirect' => 'msglist.php',
-        'page_target' => '#msglist'
-    ]));
+        'newSeq' => false
+    ]);
 }
 
 $src = [
@@ -142,7 +146,7 @@ if($destMailbox == 9999) {
         returnJson([
             'result' => false,
             'reason' => '개인메세지는 2초당 1건만 보낼 수 있습니다!',
-            'redirect' => NULL
+            'newSeq' => false
         ]);
     }
 
@@ -153,7 +157,7 @@ if($destMailbox == 9999) {
         returnJson([
             'result' => false,
             'reason' => '존재하지 않는 유저입니다.',
-            'redirect' => NULL
+            'newSeq' => false
         ]);
     }
 
@@ -179,13 +183,12 @@ else{
     returnJson([
         'result' => false,
         'reason' => '알 수 없는 에러',
-        'redirect' => NULL
+        'newSeq' => false
     ]);
 }
 
 returnJson([
     'result' => true,
     'reason' => 'SUCCESS',
-    'redirect' => 'msglist.php',
-    'page_target' => '#msglist'
+    'newSeq' => true
 ]);
