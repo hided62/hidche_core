@@ -50,6 +50,18 @@ function convertSet(arr) {
     return result;
 }
 
+
+/** 
+ * {0}, {1}, {2}형태로 포맷해주는 함수
+*/
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/{(\d+)}/g, function(match, number) { 
+        return (typeof args[number] != 'undefined') ? args[number] : match;
+    });
+};
+
+
 /**
  * 게임내에서 지원하는 color type만 선택할 수 있도록 해주는 함수
  * @param {string} color #AAAAAA 또는 AAAAAA 형태로 작성된 RGB hex color string
