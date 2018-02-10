@@ -1,17 +1,385 @@
 {
     "result":true,
-    "server-uuid":"twe-d1af658a-f094-4303-9496-9a27a8180b0b",
+    "server":"d1af658a-f094-4303-9496-9a27a8180b0b",
     "sequence":1122,
     "national":[
-
+        {
+            "id":1009,
+            "time":"2018-02-10 22:05:09",
+            "isSender":false,
+            "src":{
+                "id":21,
+                "nation_id":1,
+                "name":"Hide_D3",
+                "icon":"pic_781.jpg",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"에붸붸붸9"
+        },{
+            "id":1008,
+            "time":"2018-02-10 22:05:08",
+            "isSender":false,
+            "src":{
+                "id":12,
+                "nation_id":1,
+                "name":"Hide_D2",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"에붸붸붸8"
+        },{
+            "id":1007,
+            "time":"2018-02-10 22:05:07",
+            "isSender":false,
+            "src":{
+                "id":12,
+                "nation_id":1,
+                "name":"Hide_D2",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"에붸붸붸7"
+        },{
+            "id":1006,
+            "time":"2018-02-10 22:05:06",
+            "isSender":true,
+            "src":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9000,
+                "nation_id":0
+            },
+            "text":"국가->재야"
+        },{
+            "id":1005,
+            "time":"2018-02-10 22:05:05",
+            "isSender":true,
+            "src":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D2",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9002,
+                "nation_id":2,
+                "nation":"연구소2",
+                "color":"#ff0000"
+            },
+            "text":"아국->타국"
+        },{
+            "id":1004,
+            "time":"2018-02-10 22:05:04",
+            "isSender":false,
+            "src":{
+                "id":21,
+                "nation_id":2,
+                "name":"Hide_Dx2",
+                "nation":"연구소2",
+                "color":"#ff0000"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"타국->아국"
+        },{
+            "id":1003,
+            "time":"2018-02-10 22:05:03",
+            "isSender":false,
+            "src":{
+                "id":12,
+                "nation_id":1,
+                "name":"Hide_D2",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"에붸붸붸3"
+        },{
+            "id":1002,
+            "time":"2018-02-10 22:05:02",
+            "isSender":false,
+            "src":{
+                "id":12,
+                "nation_id":1,
+                "name":"Hide_D2",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"에붸붸붸2"
+        },{
+            "id":1001,
+            "time":"2018-02-10 22:05:01",
+            "isSender":false,
+            "src":{
+                "id":12,
+                "nation_id":1,
+                "name":"Hide_D2",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"에붸붸붸1"
+        },
+        {
+            "id":1000,
+            "time":"2018-02-10 22:04:00",
+            "isSender":false,
+            "src":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"에붸붸붸0"
+        }
     ],
     "public":[
-
+        
+        {
+            "id":1012,
+            "time":"2018-02-10 22:05:01",
+            "isSender":false,
+            "src":{
+                "id":21,
+                "nation_id":0,
+                "name":"Hide_Dy"
+            },
+            "dest":{
+                "id":9999
+            },
+            "text":"전메놀이2, 재야"
+        },{
+            "id":1011,
+            "time":"2018-02-10 22:05:01",
+            "isSender":false,
+            "src":{
+                "id":21,
+                "nation_id":2,
+                "name":"Hide_Dx2",
+                "nation":"연구소2",
+                "color":"#ff0000",
+                "icon":"pic_781.jpg"
+            },
+            "dest":{
+                "id":9999
+            },
+            "text":"전메놀이1"
+        },{
+            "id":1010,
+            "time":"2018-02-10 22:05:00",
+            "isSender":false,
+            "src":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9999
+            },
+            "text":"전메놀이0"
+        }
     ],
     "private":[
-
+        {
+            "id":1025,
+            "time":"2018-02-10 22:04:04",
+            "isSender":false,
+            "src":{
+                "id":21,
+                "nation_id":2,
+                "name":"Hide_Dx2",
+                "nation":"연구소2",
+                "color":"#ff0000"
+            },
+            "dest":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"연구소2로 망명 권유 서신",
+            "option":{
+                "used":false,
+                "action":"scout"
+            }
+        },{
+            "id":1024,
+            "time":"2018-02-10 22:04:04",
+            "isSender":false,
+            "src":{
+                "id":12,
+                "nation_id":0,
+                "name":"Hide_Dy"
+            },
+            "dest":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"재야로부터 갠메(수신)"
+        },{
+            "id":1023,
+            "time":"2018-02-10 22:04:03",
+            "isSender":true,
+            "src":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":21,
+                "nation_id":2,
+                "name":"Hide_Dx2",
+                "nation":"연구소2",
+                "color":"#ff0000"
+            },
+            "text":"타국 갠메(송신)"
+        },{
+            "id":1022,
+            "time":"2018-02-10 22:04:02",
+            "isSender":true,
+            "src":{
+                "id":12,
+                "nation_id":1,
+                "name":"Hide_D2",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"아국 갠메(수신)"
+        },{
+            "id":1021,
+            "time":"2018-02-10 22:04:01",
+            "isSender":true,
+            "src":{
+                "id":12,
+                "nation_id":1,
+                "name":"Hide_D2",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"아국 갠메(수신)"
+        },{
+            "id":1020,
+            "time":"2018-02-10 22:04:00",
+            "isSender":true,
+            "src":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":12,
+                "nation_id":1,
+                "name":"Hide_D2",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"아국 갠메"
+        }
     ],
     "diplomacy":[
-        
+        {
+            "id":1030,
+            "time":"2018-02-10 22:05:04",
+            "isSender":false,
+            "src":{
+                "id":21,
+                "nation_id":2,
+                "name":"Hide_Dx2",
+                "nation":"연구소2",
+                "color":"#ff0000",
+                "icon":"pic_1.jpg"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"타국->아국",
+            "option":{
+                "used":false,
+                "result":false,
+                "until":[210, 9],
+                "action":"ally",
+                "allyYear":20,
+                "allyText":"메롱"
+            }
+        }
     ]
 }

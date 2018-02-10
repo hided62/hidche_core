@@ -34,7 +34,11 @@ var messageTemplate = `
                 ▶
                     <font color="<%dest.color%>"><%e(dest.name)%>:<%e(dest.nation)%></font>
                 ]</b>
-            <%} else if(msgType == 'national') {%>
+            <%} else if(msgType == 'national' && src.nation_id == dest.nation_id){%>
+                <b>[
+                    <font color="<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></font>
+                ]</b>
+            <%} else if(msgType == 'national' || msgType == 'diplomacy'){%>
                 <b>[
                     <font color="<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></font>
                 ▶
