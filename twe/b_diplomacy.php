@@ -53,6 +53,7 @@ if($me['skin'] < 1) {
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>중원정보</title>
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
+<script src="js/common.js"></script>
 <script src="js/base_map.js"></script>
 <script src="js/map.js"></script>
 <script>

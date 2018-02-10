@@ -1,40 +1,4 @@
-function convertDictById(arr){
-    var result = {};
-    arr.forEach(function(v, i){
-        result[v.id] = v;
-    });
-    return result;
-}
 
-function convertSet(arr){
-    var result = {};
-    arr.forEach(function(v){
-        result[v] = v;
-    });
-    return result;
-}
-
-function convColorValue(color){
-    if(color.charAt(0) == '#'){
-        color = color.substr(1);
-    }
-    color = color.toUpperCase();
-
-    var colorBase = convertSet([
-        '000080', '0000FF', '008000', '008080', '00BFFF', '00FF00', '00FFFF', '20B2AA',
-        '2E8B57', '483D8B', '6495ED', '7B68EE', '7CFC00', '7FFFD4', '800000', '800080',
-        '808000', '87CEEB', 'A0522D', 'A9A9A9', 'AFEEEE', 'BA55D3', 'E0FFFF', 'F5F5DC',
-        'FF0000', 'FF00FF', 'FF6347', 'FFA500', 'FFC0CB', 'FFD700', 'FFDAB9', 'FFFF00',
-        'FFFFFF'
-    ]);
-
-    if(!colorBase.hasOwnProperty(color)){
-        return '000000';
-    }
-
-    return color;
-    
-}
 
 function getCityPosition(){
     return {

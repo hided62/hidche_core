@@ -66,6 +66,7 @@ $scenario = getScenario();
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
+<script src="js/common.js"></script>
 <script src="js/main.js"></script>
 <script src="js/base_map.js"></script>
 <script src="js/map.js"></script>
