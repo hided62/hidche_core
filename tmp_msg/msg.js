@@ -17,7 +17,7 @@ var messageTemplate = `
         bgcolor="#000055"   
     <%} %>
     style="font-size:13px;table-layout:fixed;word-break:break-all;"
-    data-id="<%id%>"
+    id="msg_<%id%>"
 >
     <tbody><tr>
         <td width="64px" height="64px">
@@ -52,19 +52,55 @@ var messageTemplate = `
             <font size="1">&lt;<%e($datetime)%>&gt;</font>
             <br>
             <%e(message)%>
+            <%if(this.option){ console.log('HasOption!!'); %>
+                <div>
+                <button class="prompt_yes btn_prompt">수락</button><button class="prompt_no btn_prompt">거정</button>
+                </div>
+            <%} %>
         </td>
     </tr></tbody>
 </table>
 `;
 
-jQuery(function($){
-
-    var generalID=1;
+var refreshMsg = (function(){
+    var generalID=null;
+    var isChief = false;
     var sequence =null;
-
-    function refreshMsg(){
     
-    }
+    return function(){
+        
+
+        var deferred = $.ajax({
+            url: option.targetJson,
+            type: 'post',
+            dataType:'json',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                sequence:sequence
+            })
+        });
+        
+        function registerGlobal(obj){
+            if(!obj.result){
+                deferred.reject();
+                return;
+            }
+            generalID = obj.generalID;
+            isChief = obj.isChief;
+            sequence = obj.sequence;
+            return obj;
+        }
+
+        deferred
+            .then(registerGlobal);
+
+
+
+
+    };
+})();
+
+jQuery(function($){
 
     refreshMsg();
 });

@@ -13,7 +13,7 @@
         bgcolor="#000055"   
     <%} %>
     style="font-size:13px;table-layout:fixed;word-break:break-all;"
-    data-id="<%id%>"
+    id="msg_<%id%>"
 >
     <tbody><tr>
         <td width="64px" height="64px">
@@ -48,6 +48,11 @@
             <font size="1">&lt;<%e($datetime)%>&gt;</font>
             <br>
             <%e(message)%>
+            <%if(this.option){ console.log('HasOption!!'); %>
+                <div>
+                <button class="prompt_yes btn_prompt">수락</button><button class="prompt_no btn_prompt">거정</button>
+                </div>
+            <%} %>
         </td>
     </tr></tbody>
 </table>
