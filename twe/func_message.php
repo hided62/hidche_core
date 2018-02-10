@@ -100,7 +100,8 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
     
     getDB()->insert('message', array(
         'address' => $dest,
-        'type' => 'receive',
+        'type' => $msgType,
+        'is_sender' => $isSender,
         'src' => $src['id'],
         'dest' => $dest['id'],
         'time' => $date,
