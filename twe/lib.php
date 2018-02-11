@@ -70,10 +70,10 @@ unset($setup);
 // Data, Icon, 세션디렉토리의 쓰기 권한이 없다면 에러 처리
 // 단, 폴더가 없는 경우라면 폴더를 생성 할 필요가 있음. 
 // data폴더가 없으면 data/session까지 생성
-if(is_dir("data")){
-	if(!is_writable("data")) Error("Data 디렉토리의 쓰기 권한이 없습니다!");
+if(is_dir(__DIR__."/data")){
+	if(!is_writable(__DIR__."/data")) Error("Data 디렉토리의 쓰기 권한이 없습니다!");
 }else{
-	mkdir("data");
+	mkdir(__DIR__."/data");
 }
 
 session_cache_limiter('nocache, must_revalidate');//NOTE: 캐시가 가능하도록 설정해야 할 수도 있음. 주의!
@@ -99,7 +99,7 @@ if($_SESSION['p_time']+3600 < time()) {
 }
 
 // DB가 설정이 되었는지를 검사
-if(!file_exists("d_setting/set.php")&&!preg_match("/install/i",$_SERVER['PHP_SELF'])) {
+if(!file_exists(__DIR__."/d_setting/set.php")&&!preg_match("/install/i",$_SERVER['PHP_SELF'])) {
 //    echo"<meta http-equiv=refresh content='0;url=../'>";
 echo $_SERVER['PHP_SELF'].'//'.preg_match("/install/i",$_SERVER['PHP_SELF']);
     exit;
