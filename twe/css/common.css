@@ -134,3 +134,8 @@ select { font-family:'굴림'; line-height:100%; }
 .t_white{
     color:white;
 }
+
+.float_left{
+    float:left;
+}
+

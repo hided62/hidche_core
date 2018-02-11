@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>JSON 지도</title>
+<title>JSON 메시지</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
@@ -9,7 +9,7 @@
 <script src="msg.js"></script>
 <link href="../twe/css/normalize.css" rel="stylesheet">
 <link href="../twe/css/common.css" rel="stylesheet">
-<link href="msg.css" ref="stylesheet">
+<link href="msg.css" rel="stylesheet">
 
 <script>
 
@@ -17,22 +17,31 @@
 
 </head>
 <body style="background-color: black;">
-<div id="message_board">
-    <div class="float_left">
-        <section class="public_message">
+<div id="container">
+    <div class="message_input_form bg0">
+        <select>
 
-        </section>
-        <section class="private_message">
-            
-        </section>
+        </select>
+        <input type="textarea" id="msg_input" maxlength="99">
+        <button>서신전달&amp;갱신</button>
     </div>
-    <div class="float_left">
-        <section class="diplomacy_message">
+    <div id="message_board">
+        <div class="float_left">
+            <section class="public_message">
 
-        </section>
-        <section class="national_message">
+            </section>
+            <section class="private_message">
+                
+            </section>
+        </div>
+        <div class="float_left">
+            <section class="diplomacy_message">
 
-        </section>
+            </section>
+            <section class="national_message">
+
+            </section>
+        </div>
     </div>
 </div>
 </body>

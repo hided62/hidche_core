@@ -1,58 +1,45 @@
-<table 
-    width="498px" 
-    border="1" 
-    bordercolordark="gray" 
-    bordercolorlight="black" 
-    cellpadding="0" 
-    cellspacing="0"
-    <%if(msgType == 'private') {%>
-        bgcolor="#CC6600" 
-    <%} else if(msgType == 'national') {%>
-        bgcolor="#336600" 
-    <%} else /*$msgType == 'public'*/ {%>
-        bgcolor="#000055"   
-    <%} %>
-    style="font-size:13px;table-layout:fixed;word-break:break-all;"
+<div 
+    class="msg_plate msg_plate_<%msgType%>"
     id="msg_<%id%>"
 >
-    <tbody><tr>
-        <td width="64px" height="64px">
-            <%if(src.icon !== null) { %>
-                <img src="<%encodeURI(src.icon)%>">
-            <%} else {%>
-                <img src="/image/default.jpg">
-            <%}%>
-        </td>
-        <td width="434px" valign="top">
+    <div class="msg_icon">
+        <%if(src.icon) { %>
+            <img src="<%encodeURI(src.icon)%>">
+        <%} else {%>
+            <img src="/image/default.jpg">
+        <%}%>
+    </div>
+    <div class="msg_body">
+        <div class="msg_header">
             <%if(msgType == 'private') {%>
-                <b>[
-                    <font color="<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></font>
+                <span>[</span>
+                    <span style="color:<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></span>
                 ▶
-                    <font color="<%dest.color%>"><%e(dest.name)%>:<%e(dest.nation)%></font>
-                ]</b>
+                    <span style="color:<%dest.color%>"><%e(dest.name)%>:<%e(dest.nation)%></span>
+                ]
             <%} else if(msgType == 'national' && src.nation_id == dest.nation_id){%>
-                <b>[
-                    <font color="<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></font>
-                ]</b>
+                [
+                    <span style="color:<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></span>
+                ]
             <%} else if(msgType == 'national' || msgType == 'diplomacy'){%>
-                <b>[
-                    <font color="<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></font>
+                [
+                    <span style="color:<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></span>
                 ▶
-                    <font color="<%dest.color%>"><%e(dest.nation)%></font>
-                ]</b>
+                    <span style="color:<%dest.color%>"><%e(dest.nation)%></span>
+                ]
             <%} else {%>
-                <b>[
-                    <font color="<%src.color%>"><%e(src.name)%>:<%e(src.nation)%>
-                ]</b>
+                [
+                    <span style="color:<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></span>
+                ]
             <%} %>
-            <font size="1">&lt;<%e(time)%>&gt;</font>
-            <br>
-            <%e(text)%>
-            <%if(this.option){ console.log('HasOption!!'); %>
-                <div>
-                <button class="prompt_yes btn_prompt">수락</button><button class="prompt_no btn_prompt">거절</button>
-                </div>
-            <%} %>
-        </td>
-    </tr></tbody>
-</table>
+            <span class="msg_time">&lt;<%e(time)%>&gt;</span>
+        </div>
+
+        <%e(text)%>
+        <%if(this.option){ console.log('HasOption!!'); %>
+            <div>
+            <button class="prompt_yes btn_prompt">수락</button><button class="prompt_no btn_prompt">거절</button>
+            </div>
+        <%} %>
+    </div>
+</div>

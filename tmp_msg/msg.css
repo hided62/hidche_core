@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+/*임시용 */
+
+#container{
+    width:1000px;
+    margin:auto;
+    font-size:13px;
+}
+/*임시용 끝*/
+
+#message_board section{
+    width:498px;
+}
+
+.msg_plate{
+    width:100%;
+    border:groove 0.1em;
+    height:64px;
+    font-size:13px;
+    word-break:break-all;
+    color:white;
+}
+
+.msg_plate_private{
+    background-color:#cc6600;
+}
+
+.msg_plate_public{
+    background-color:#000055;
+
+}
+
+.msg_plate_national, .msg_plate_diplomacy{
+    background-color:#336600;
+
+}
+
+.msg_icon{
+    float:left;
+    width:64px;
+    height:64px;
+    border-right:groove 0.1em;
+}
+
+.msg_time{
+    font-size:0.7em;
+    font-weight:normal;
+}
+
+.msg_header{
+    font-weight: bold;
+}
+
+#msg_input{
+    color:white;
+    background-color:black;
+    font-size:13px;
+    width:720px;
+    height:15px;
+}
