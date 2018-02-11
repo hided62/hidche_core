@@ -21,10 +21,10 @@ var messageTemplate = `
 >
     <tbody><tr>
         <td width="64px" height="64px">
-            <%if(src.iconPath !== null) { %>
-                <img src="<%urlencode(src.iconPath)%>">
+            <%if(src.icon) { %>
+                <img src="<%encodeURI(src.icon)%>">
             <%} else {%>
-                <img src="/image/default.jpg"> /*NOTE: image 폴더는 어느 단에서 다뤄야하는가? */
+                <img src="/image/default.jpg">
             <%}%>
         </td>
         <td width="434px" valign="top">
@@ -49,12 +49,12 @@ var messageTemplate = `
                     <font color="<%src.color%>"><%e(src.name)%>:<%e(src.nation)%>
                 ]</b>
             <%} %>
-            <font size="1">&lt;<%e($datetime)%>&gt;</font>
+            <font size="1">&lt;<%e(time)%>&gt;</font>
             <br>
-            <%e(message)%>
+            <%e(text)%>
             <%if(this.option){ console.log('HasOption!!'); %>
                 <div>
-                <button class="prompt_yes btn_prompt">수락</button><button class="prompt_no btn_prompt">거정</button>
+                <button class="prompt_yes btn_prompt">수락</button><button class="prompt_no btn_prompt">거절</button>
                 </div>
             <%} %>
         </td>
@@ -68,8 +68,6 @@ var refreshMsg = (function(){
     var sequence =null;
     
     return function(){
-        
-
         var deferred = $.ajax({
             url: 'json_result.php',
             type: 'post',
@@ -91,8 +89,42 @@ var refreshMsg = (function(){
             return obj;
         }
 
+        function printTemplate(obj){
+            var printList = [
+                [obj.public, $('#message_board .public_message'), 'public'],
+                [obj.private, $('#message_board .private_message'), 'private'],
+                [obj.diplomacy, $('#message_board .diplomacy_message'), 'diplomacy'],
+                [obj.national, $('#message_board .national_message'), 'national'],
+            ];
+
+            $.each(printList, function(){
+                var msgSource = this[0];
+                var $msgBoard = this[1];
+                var msgType = this[2];
+
+                if(!msgSource || $msgBoard.length == 0){
+                    console.log('No Items', msgSource, $msgBoard);
+                    return true;
+                }
+
+                //list의 맨 앞이 가장 최신 메시지임.
+                var msgHtmls = msgSource.map(function(msg){
+                    msg.msgType = msgType;
+                    var msgHtml = TemplateEngine(messageTemplate, msg);
+                    console.log(msgHtml);
+                    return msgHtml;
+                });
+
+                var $items = $(msgHtmls.join(''));
+                console.log($items);
+                $msgBoard.prepend($items);
+            });
+
+        }
+
         deferred
-            .then(registerGlobal);
+            .then(registerGlobal)
+            .then(printTemplate);
 
 
 

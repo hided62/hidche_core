@@ -17,10 +17,10 @@
 >
     <tbody><tr>
         <td width="64px" height="64px">
-            <%if(src.iconPath !== null) { %>
-                <img src="<%urlencode(src.iconPath)%>">
+            <%if(src.icon !== null) { %>
+                <img src="<%encodeURI(src.icon)%>">
             <%} else {%>
-                <img src="/image/default.jpg"> /*NOTE: image 폴더는 어느 단에서 다뤄야하는가? */
+                <img src="/image/default.jpg">
             <%}%>
         </td>
         <td width="434px" valign="top">
@@ -45,12 +45,12 @@
                     <font color="<%src.color%>"><%e(src.name)%>:<%e(src.nation)%>
                 ]</b>
             <%} %>
-            <font size="1">&lt;<%e($datetime)%>&gt;</font>
+            <font size="1">&lt;<%e(time)%>&gt;</font>
             <br>
-            <%e(message)%>
+            <%e(text)%>
             <%if(this.option){ console.log('HasOption!!'); %>
                 <div>
-                <button class="prompt_yes btn_prompt">수락</button><button class="prompt_no btn_prompt">거정</button>
+                <button class="prompt_yes btn_prompt">수락</button><button class="prompt_no btn_prompt">거절</button>
                 </div>
             <%} %>
         </td>
