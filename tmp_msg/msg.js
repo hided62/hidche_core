@@ -71,7 +71,7 @@ var refreshMsg = (function(){
         
 
         var deferred = $.ajax({
-            url: option.targetJson,
+            url: 'json_result.php',
             type: 'post',
             dataType:'json',
             contentType: 'application/json',
