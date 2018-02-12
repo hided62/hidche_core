@@ -18,7 +18,8 @@ function relayJson($filepath, $noCache = true, $die = true){
         header('Pragma: no-cache');
     }
 
-    echo file_get_contents($filepath);
+    $json = json_decode(file_get_contents($filepath));
+    echo json_encode($json,JSON_UNESCAPED_UNICODE);
 
     if($die){
         die();
