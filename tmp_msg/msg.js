@@ -27,6 +27,18 @@ var sequence =null;
 var myNation = null;
 var lastMsg = null;
 
+function responseMessage(msgID, response){
+    $.ajax({
+        url: 'prompt_dummy.php',
+        type: 'post',
+        dataType:'json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            msgID:msgID,
+            response:response
+        })
+    }).then(refreshMsg);
+}
 
 function refreshMsg(){
     return redrawMsg(fetchMsg());
@@ -107,14 +119,47 @@ function redrawMsg(deferred){
             }
 
             //list의 맨 앞이 가장 최신 메시지임.
-            var msgHtmls = msgSource.map(function(msg){
+            var $msgs = msgSource.map(function(msg){
+
+                
+
                 msg.msgType = msgType;
                 var msgHtml = TemplateEngine(messageTemplate, msg);
-                return msgHtml;
+                
+
+                //만약 이전 메시지가 변경된 것인가 확인한다.
+                var $existMsg = $('#msg_{0}'.format(msg.id));
+                var $msg = $(msgHtml);
+                if($existMsg.length){
+                    $existMsg.html($msg.html());
+                    $msg = $existMsg;
+                }
+
+                $msg.find('button.prompt_yes').click(function(){
+                    if(!confirm("수락하시겠습니까?")){
+                        return false;
+                    }
+                    responseMessage(msg.id, true);
+
+                });
+                
+                $msg.find('button.prompt_no').click(function(){
+                    if(!confirm("거절하시겠습니까?")){
+                        return false;
+                    }
+                    responseMessage(msg.id, false);
+                });
+
+                if($existMsg.length){
+                    return null;
+                }
+                else{
+                    return $msg;
+                }
+                
             });
 
-            var $items = $(msgHtmls.join(''));
-            $msgBoard.prepend($items);
+            $msgBoard.prepend($msgs);
         });
 
     }
@@ -144,6 +189,8 @@ function refreshMailboxList(obj){
     var oldSelected = $mailboxList.val();
 
     $mailboxList.empty();
+
+    //TODO:수뇌인 경우 각국에 대해 외교 국메를 넣을 수 있어야함.
 
     $.each(obj.nation, function(){
         var nation = this;
@@ -228,6 +275,53 @@ function registerGlobal(basicInfo){
     isChief = basicInfo.isChief;
 }
 
+function activateMessageForm(){
+    var $msgInput = $('#msg_input');
+    var $msgSubmit = $('#msg_submit');
+    var $mailboxList = $('#mailbox_list');
+
+    $msgInput.keypress(function (e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) {
+            $msgSubmit.trigger('click');
+            return true;
+        }
+    });
+
+    $msgSubmit.click(function(){
+
+        var text = $.trim($msgInput.val());
+        $msgInput.val('').focus();
+
+        var targetMailbox = $mailboxList.val();
+        console.log(targetMailbox, text);
+
+        var deferred;
+
+        if(text){
+            deferred = $.ajax({
+                url:'add_msg_dummy.php',
+                type: 'post',
+                dataType:'json',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    mailbox:targetMailbox,
+                    text:text
+                })
+            });
+        }
+        else{
+            deferred = $.Deferred();
+            deferred.resolve({
+                result:true,
+                reason:'no_text'
+            });
+        }
+
+        deferred.then(refreshMsg);
+    });
+}
+
 jQuery(function($){
 
     //tmp_template.html은 추후 msg.js에 통합될 수 있음
@@ -260,7 +354,8 @@ jQuery(function($){
     var MessageList = fetchMsg();
         
     $.when(senderList, basicInfo)
-        .then(refreshMailboxList);
+        .then(refreshMailboxList)
+        .then(activateMessageForm);
     
     $.when(MessageList, getTemplate, basicInfo)
         .then(function(){

@@ -43,10 +43,10 @@ switch($reqSequence){
         relayJson('update_private_result.json');
         break;
     case 1366:
-        relayJson('update_public_result.json');
+        relayJson('update_national_result.json');
         break;
     case 1811:
-        relayJson('update_national_result.json');
+        relayJson('update_public_result.json');
         break;
 }
 

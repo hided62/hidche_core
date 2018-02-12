@@ -1,9 +1,48 @@
 {
     "result":true,
     "server":"d1af658a-f094-4303-9496-9a27a8180b0b",
-    "sequence":1357,
+    "sequence":1811,
     "national":[
-
+        {
+            "id":1210,
+            "time":"2018-02-10 22:05:09",
+            "isSender":false,
+            "src":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "icon":"pic_781.jpg",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"새롭게 추가된 나의 텍스트!"
+        },
+        {
+            "id":1209,
+            "time":"2018-02-10 22:05:08",
+            "isSender":false,
+            "src":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "icon":"pic_781.jpg",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "dest":{
+                "id":9001,
+                "nation_id":1,
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"외교를 거절해버렸당"
+        }
     ],
     "public":[
 
