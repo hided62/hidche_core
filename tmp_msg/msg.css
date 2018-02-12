@@ -17,22 +17,22 @@
     width:100%;
     border:groove 0.1em;
     height:64px;
-    font-size:13px;
+    font-size:12px;
     word-break:break-all;
     color:white;
 }
 
 .msg_plate_private{
-    background-color:#cc6600;
+    background-color:#5d1e1a;
 }
 
 .msg_plate_public{
-    background-color:#000055;
+    background-color:#141c65;
 
 }
 
 .msg_plate_national, .msg_plate_diplomacy{
-    background-color:#336600;
+    background-color:#00582c;
 
 }
 
@@ -50,12 +50,69 @@
 
 .msg_header{
     font-weight: bold;
+    margin-bottom:3px;
+    color:white;
 }
 
 #msg_input{
     color:white;
     background-color:black;
-    font-size:13px;
+    font-size:12px;
     width:720px;
     height:15px;
+}
+
+#mailbox_list{
+    color:white;
+    background-color:black;
+    font-size:12px;
+}
+
+.board_header{
+    color:white;
+    border:groove 0.1em;
+}
+
+.board_side{
+    width:50%;
+    float:left;
+}
+
+.msg_body{
+    padding-left:64px;
+}
+
+.msg_target{
+    margin:2px 2px 0 2px;
+    padding:2px 3px;
+    display:inline-block;
+    box-shadow: 2px 2px black;
+    border-radius: 3px;
+}
+
+.public_message .msg_target{
+    box-shadow: 2px 2px darkslategrey;
+}
+
+.msg_target.msg_bright{
+    color:black;
+}
+
+.msg_target.msg_dark{
+    color:white;
+}
+
+.msg_from_to{
+    display:inline-block;
+}
+
+.msg_content{
+    margin-left:10px;
+    margin-right:5px;
+}
+
+.msg_prompt{
+    text-align:right;
+    margin-top:5px;
+    margin-right:5px;
 }

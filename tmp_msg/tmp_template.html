@@ -12,34 +12,28 @@
     <div class="msg_body">
         <div class="msg_header">
             <%if(msgType == 'private') {%>
-                <span>[</span>
-                    <span style="color:<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></span>
-                ▶
-                    <span style="color:<%dest.color%>"><%e(dest.name)%>:<%e(dest.nation)%></span>
-                ]
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span
+                ><span class="msg_from_to">▶</span
+                ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;"><%e(dest.name)%>:<%e(dest.nation)%></span>
             <%} else if(msgType == 'national' && src.nation_id == dest.nation_id){%>
-                [
-                    <span style="color:<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></span>
-                ]
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span>
             <%} else if(msgType == 'national' || msgType == 'diplomacy'){%>
-                [
-                    <span style="color:<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></span>
-                ▶
-                    <span style="color:<%dest.color%>"><%e(dest.nation)%></span>
-                ]
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span
+                    ><span class="msg_from_to">▶</span
+                ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;"><%e(dest.nation)%></span>
             <%} else {%>
-                [
-                    <span style="color:<%src.color%>"><%e(src.name)%>:<%e(src.nation)%></span>
-                ]
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span>
             <%} %>
             <span class="msg_time">&lt;<%e(time)%>&gt;</span>
         </div>
 
-        <%e(text)%>
+        <div class="msg_content">
+            <%e(text)%>
+        </div>
         <%if(this.option){ console.log('HasOption!!'); %>
-            <div>
-            <button class="prompt_yes btn_prompt">수락</button><button class="prompt_no btn_prompt">거절</button>
-            </div>
+        <div class="msg_prompt">
+            <button class="prompt_yes btn_prompt">수락</button> <button class="prompt_no btn_prompt">거절</button>
+        </div>
         <%} %>
     </div>
 </div>

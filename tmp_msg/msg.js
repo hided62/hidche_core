@@ -1,5 +1,25 @@
 
 
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+
+function isBrightColor(color){
+    color = hexToRgb(color);
+    if ((color.r*0.299 + color.g*0.587 + color.b*0.114) > 186){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
 var messageTemplate = '';
 
 var refreshMsg = (function(){
@@ -49,6 +69,9 @@ var refreshMsg = (function(){
                         msg.dest.nation = '재야';
                         msg.dest.color = '#ffffff';
                     }
+
+                    msg.src.colorType = isBrightColor(msg.src.color)?'bright':'dark';
+                    msg.dest.colorType = isBrightColor(msg.dest.color)?'bright':'dark';
                 });
             });
             return obj;
