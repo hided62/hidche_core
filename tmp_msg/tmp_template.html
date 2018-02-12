@@ -27,10 +27,8 @@
             <span class="msg_time">&lt;<%e(time)%>&gt;</span>
         </div>
 
-        <div class="msg_content">
-            <%e(text)%>
-        </div>
-        <%if(this.option){ console.log('HasOption!!'); %>
+        <div class="msg_content"><%e(text)%></div>
+        <%if(this.option) {%>
         <div class="msg_prompt">
             <button class="prompt_yes btn_prompt">수락</button> <button class="prompt_no btn_prompt">거절</button>
         </div>

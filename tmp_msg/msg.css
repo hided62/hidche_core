@@ -44,7 +44,7 @@
 }
 
 .msg_time{
-    font-size:0.7em;
+    font-size:0.75em;
     font-weight:normal;
 }
 
@@ -90,9 +90,11 @@
     border-radius: 3px;
 }
 
+/*
 .public_message .msg_target{
     box-shadow: 2px 2px darkslategrey;
 }
+*/
 
 .msg_target.msg_bright{
     color:black;
@@ -115,4 +117,9 @@
     text-align:right;
     margin-top:5px;
     margin-right:5px;
+}
+
+#mailbox_list option{
+    color:white;
+    background-color:black;
 }
