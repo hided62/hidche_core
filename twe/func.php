@@ -139,18 +139,6 @@ function getGeneralName($forceExit=false)
     return $generalName;
 }
 
-/**
- * Session에 보관된 장수 정보를 제거함.
- * _prefix_p_no, _prefix_p_name 두 값임
- */
-function resetSessionGeneralValues(){
-    $idKey = getServPrefix().'p_no';
-    $nameKey = getServPrefix().'p_name';
-
-    unset($_SESSION[$idKey]);
-    unset($_SESSION[$nameKey]);
-}
-
 function GetImageURL($imgsvr) {
     global $image, $image1;
     if($imgsvr == 0) {

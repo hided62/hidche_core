@@ -105,6 +105,18 @@ echo $_SERVER['PHP_SELF'].'//'.preg_match("/install/i",$_SERVER['PHP_SELF']);
     exit;
 }
 
+/**
+ * Session에 보관된 장수 정보를 제거함.
+ * _prefix_p_no, _prefix_p_name 두 값임
+ */
+function resetSessionGeneralValues(){
+    $idKey = getServPrefix().'p_no';
+    $nameKey = getServPrefix().'p_name';
+
+    unset($_SESSION[$idKey]);
+    unset($_SESSION[$nameKey]);
+}
+
 // MySQL 데이타 베이스에 접근
 function dbconn($table = "") {
     //TODO:dbconn 사용하는 모든 녀석들을 없애야한다.
