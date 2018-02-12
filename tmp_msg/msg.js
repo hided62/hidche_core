@@ -27,8 +27,13 @@ var sequence =null;
 var myNation = null;
 var lastMsg = null;
 
+
 function refreshMsg(){
-    var deferred = $.ajax({
+    return redrawMsg(fetchMsg());
+}
+
+function fetchMsg(){
+    return $.ajax({
         url: 'json_result.php',
         type: 'post',
         dataType:'json',
@@ -37,7 +42,12 @@ function refreshMsg(){
             sequence:sequence
         })
     });
+}
+
+function redrawMsg(deferred){
     
+    console.log(deferred);
+
     function registerSequence(obj){
         if(!obj.result){
             deferred.reject();
@@ -120,6 +130,11 @@ function refreshMsg(){
 }
 
 function refreshMailboxList(obj){
+    //$.ajax는 data, textStatus, jqXHR를 가진다
+    //when으로 묶었으므로 data를 풀어야함.
+    obj = obj[0];
+    
+
     var $mailboxList = $('#mailbox_list');
 
     $mailboxList.change(function(){
@@ -132,7 +147,7 @@ function refreshMailboxList(obj){
 
     $.each(obj.nation, function(){
         var nation = this;
-        console.log(nation);
+        //console.log(nation);
         var $optgroup = $('<optgroup label="{0}"></optgroup>'.format(nation.nation));
         $optgroup.css('background-color', nation.color);
 
@@ -199,11 +214,8 @@ function refreshMailboxList(obj){
     }
 }
 
-function registerGlobal(basicInfo, senderList){
-    //$.ajax는 data, textStatus, jqXHR를 가진다
-    //when으로 묶었으므로 data를 풀어야함.
-    basicInfo = basicInfo[0];
-    senderList = senderList[0];
+function registerGlobal(basicInfo){
+    
     myNation = {
         'mailbox':basicInfo.myNationMailbox,
         'color':'#000000',
@@ -214,8 +226,6 @@ function registerGlobal(basicInfo, senderList){
     };
     myGeneralID = basicInfo.generalID;
     isChief = basicInfo.isChief;
-
-    return senderList;
 }
 
 jQuery(function($){
@@ -234,7 +244,7 @@ jQuery(function($){
         data: JSON.stringify({
             
         })
-    });
+    }).then(registerGlobal);
     
     //sender_list.json 은 서버측에선 캐시 가능한 데이터임.
     var senderList = $.ajax({
@@ -246,11 +256,14 @@ jQuery(function($){
             
         })
     });
+
+    var MessageList = fetchMsg();
         
-    $.when(basicInfo, senderList)
-        .then(registerGlobal)
+    $.when(senderList, basicInfo)
         .then(refreshMailboxList);
     
-    $.when(basicInfo, getTemplate)
-        .then(refreshMsg);
+    $.when(MessageList, getTemplate, basicInfo)
+        .then(function(){
+            redrawMsg(MessageList);
+        });
 });
