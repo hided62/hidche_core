@@ -21,9 +21,11 @@ function isBrightColor(color){
 }
 
 var messageTemplate = '';
-var generalID=null;
+var myGeneralID=null;
 var isChief = false;
 var sequence =null;
+var myNation = null;
+var lastMsg = null;
 
 function refreshMsg(){
     var deferred = $.ajax({
@@ -36,7 +38,7 @@ function refreshMsg(){
         })
     });
     
-    function registerGlobal(obj){
+    function registerSequence(obj){
         if(!obj.result){
             deferred.reject();
             return;
@@ -108,7 +110,7 @@ function refreshMsg(){
     }
 
     deferred
-        .then(registerGlobal)
+        .then(registerSequence)
         .then(refineMessageObjs)
         .then(printTemplate);
 
@@ -118,18 +120,6 @@ function refreshMsg(){
 }
 
 function refreshMailboxList(obj){
-    generalID = obj.generalID;
-    isChief = obj.isChief;
-    
-    var last = {
-        'id':obj.last
-    };
-    var myNation = {
-        'mailbox':obj.myNationMailbox,
-        'color':'#000000',
-        'nation':'재야'
-    };
-
     var $mailboxList = $('#mailbox_list');
 
     $mailboxList.change(function(){
@@ -142,6 +132,7 @@ function refreshMailboxList(obj){
 
     $.each(obj.nation, function(){
         var nation = this;
+        console.log(nation);
         var $optgroup = $('<optgroup label="{0}"></optgroup>'.format(nation.nation));
         $optgroup.css('background-color', nation.color);
 
@@ -161,8 +152,12 @@ function refreshMailboxList(obj){
             var generalName = this[1];
             var isRuler = this.length>2;
 
-            if(generalID == last.id){
-                last.name = generalName;
+            if(generalID == lastMsg.id){
+                lastMsg.name = generalName;
+            }
+
+            if(generalID == myGeneralID){
+                return true;
             }
 
             var textName = generalName;
@@ -187,8 +182,8 @@ function refreshMailboxList(obj){
     $favorite.append($toPublic);
 
     //최근 대화상대
-    if(last.id){
-        var $last = $('<option value="{0}">{1}</option>'.format(last.id, last.name));
+    if(lastMsg.id){
+        var $last = $('<option value="{0}">{1}</option>'.format(lastMsg.id, lastMsg.name));
         $favorite.append($last);
     }
 
@@ -204,13 +199,45 @@ function refreshMailboxList(obj){
     }
 }
 
-jQuery(function($){
-    $.get('tmp_template.html',function(obj){
-        messageTemplate = obj;
-    }).then(refreshMsg);
-    //refreshMsg();
+function registerGlobal(basicInfo, senderList){
+    //$.ajax는 data, textStatus, jqXHR를 가진다
+    //when으로 묶었으므로 data를 풀어야함.
+    basicInfo = basicInfo[0];
+    senderList = senderList[0];
+    myNation = {
+        'mailbox':basicInfo.myNationMailbox,
+        'color':'#000000',
+        'nation':'재야'
+    };
+    lastMsg = {
+        id : basicInfo.last
+    };
+    myGeneralID = basicInfo.generalID;
+    isChief = basicInfo.isChief;
 
-    $.ajax({
+    return senderList;
+}
+
+jQuery(function($){
+
+    //tmp_template.html은 추후 msg.js에 통합될 수 있음
+    var getTemplate = $.get('tmp_template.html',function(obj){
+        messageTemplate = obj;
+    });
+
+    //basic_info.json은 세션값에 따라 동적으로 바뀌는 데이터임.
+    var basicInfo = $.ajax({
+        url:'basic_info.json',
+        type: 'post',
+        dataType:'json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            
+        })
+    });
+    
+    //sender_list.json 은 서버측에선 캐시 가능한 데이터임.
+    var senderList = $.ajax({
         url: 'sender_list.json',
         type: 'post',
         dataType:'json',
@@ -218,5 +245,12 @@ jQuery(function($){
         data: JSON.stringify({
             
         })
-    }).then(refreshMailboxList);
+    });
+        
+    $.when(basicInfo, senderList)
+        .then(registerGlobal)
+        .then(refreshMailboxList);
+    
+    $.when(basicInfo, getTemplate)
+        .then(refreshMsg);
 });
