@@ -2,8 +2,6 @@
     "result":true,
     "server":"d1af658a-f094-4303-9496-9a27a8180b0b",
     "sequence":1122,
-    "generalID":11,
-    "isChief":true,
     "national":[
         {
             "id":1009,
@@ -188,7 +186,22 @@
         }
     ],
     "public":[
-        
+        {
+            "id":1013,
+            "time":"2018-02-10 22:05:02",
+            "isSender":false,
+            "src":{
+                "id":41,
+                "nation_id":3,
+                "name":"Hide_Dz1",
+                "nation":"연구소3",
+                "color":"#000080"
+            },
+            "dest":{
+                "id":9999
+            },
+            "text":"전메놀이3, 특수"
+        },
         {
             "id":1012,
             "time":"2018-02-10 22:05:01",
