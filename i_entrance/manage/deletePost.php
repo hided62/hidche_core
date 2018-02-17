@@ -18,9 +18,9 @@ $member = $DB->Get($rs);
 
 $picName = $member['PICTURE'];
 
-if($picName && strlen($picName) > 10){
+if($picName && strlen($picName) > 11){
     $dt = substr($picName, -8);
-    $picName = substr($picName, 0, -9);
+    $picName = substr($picName, 0, -10);
 }
 else{
     $dt = '00000000';
@@ -39,8 +39,8 @@ if($dt == $rf) {
     $response['result'] = 'FAIL';
 } else {
     $DB->Update('MEMBER', "PICTURE='', IMGSVR=0", "NO='{$SESSION->NoMember()}'");
-    if(file_exists(__DIR__.'/'.$dest)){
-        @unlink(__DIR__.'/'.$dest);
+    if(file_exists($dest)){
+        @unlink($dest);
     }
 
     for($i=0; $i < $_serverCount; $i++) {

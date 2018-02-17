@@ -27,9 +27,9 @@ $member = $DB->Get($rs);
 $picName = $member['PICTURE'];
 $newExt = array_search($imageType, $availableImageType, true);
 
-if($picName && strlen($picName) > 10){
+if($picName && strlen($picName) > 11){
     $dt = substr($picName, -8);
-    $picName = substr($picName, 0, -9);
+    $picName = substr($picName, 0, -10);
 }
 else{
     $dt = '00000000';
@@ -78,8 +78,8 @@ if(!is_uploaded_file($image['tmp_name'])) {
         $response['msg'] = '업로드에 실패했습니다!';
         $response['result'] = 'FAIL';
     } else {
-        if(file_exists(__DIR__.'/'.$old_path)){
-            @unlink(__DIR__.'/'.$old_path);
+        if(file_exists($old_path)){
+            @unlink($old_path);
         }
         $pic = "{$newPicName}?={$rf}";
         $DB->Update('MEMBER', "PICTURE='{$pic}', IMGSVR=1", "NO='{$SESSION->NoMember()}'");
