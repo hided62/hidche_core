@@ -1,6 +1,114 @@
 <?php
 
-function CriticalRatio($leader, $power, $intel, $type=0) {
+/**
+ * 장수의 통솔을 받아옴
+ * 
+ * @param array $general 장수 정보, leader, injury, lbonus, horse 사용
+ * @param bool $withInjury 부상값 사용 여부
+ * @param bool $withItem 아이템 적용 여부
+ * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
+ * @param bool $useFloor 내림 사용 여부, false시 float 값을 반환할 수도 있음
+ * 
+ * @return int|float 계산된 능력치
+ */
+function getGeneralLeadership(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+    $leadership = $general['leader'];
+    if($withInjury){
+        $leadership *= (100 - $general['injury']) / 100;
+    }
+
+    if(isset($general['lbonus'])){
+        $leadership += $general['lbonus'];
+    }
+
+    if($withItem){
+        $leadership += getHorseEff($general['horse']);
+    }
+
+    //$withStatAdjust는 통솔에서 미사용
+
+    if($useFloor){
+        return floor($leadership);
+    }
+    return $leadership;
+    
+}
+
+/**
+ * 장수의 무력을 받아옴
+ * 
+ * @param array $general 장수 정보, power, injury, weap 사용
+ * @param bool $withInjury 부상값 사용 여부
+ * @param bool $withItem 아이템 적용 여부
+ * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
+ * @param bool $useFloor 내림 사용 여부, false시 float 값을 반환할 수도 있음
+ * 
+ * @return int|float 계산된 능력치
+ */
+function getGeneralPower(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+    $power = $general['power'];
+    if($withInjury){
+        $power *= (100 - $general['injury']) / 100;
+    }
+
+    if($withItem){
+        $power += getWeapEff($general['weap']);
+    }
+
+    if($withStatAdjust){
+        $power += round(getGeneralIntel($general, $withInjury, $withItem, false, false) / 4);
+    }
+
+    if($useFloor){
+        return floor($power);
+    }
+    return $power;
+}
+
+/**
+ * 장수의 지력을 받아옴
+ * 
+ * @param array $general 장수 정보, intel, injury, book 사용
+ * @param bool $withInjury 부상값 사용 여부
+ * @param bool $withItem 아이템 적용 여부
+ * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
+ * @param bool $useFloor 내림 사용 여부, false시 float 값을 반환할 수도 있음
+ * 
+ * @return int|float 계산된 능력치
+ */
+function getGeneralIntel(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+    $intel = $general['intel'];
+    if($withInjury){
+        $intel *= (100 - $general['injury']) / 100;
+    }
+
+    if($withItem){
+        $intel += getBookEff($general['book']);
+    }
+
+    if($withStatAdjust){
+        $intel += round(getGeneralPower($general, $withInjury, $withItem, false, false) / 4);
+    }
+    
+    if($useFloor){
+        return floor($intel);
+    }
+    return $intel;
+}
+
+/**
+ * 내정 커맨드 사용시 성공 확률 계산
+ * 
+ * @param array $general 장수 정보
+ * @param int $type 내정 커맨드 타입, 0 = 통솔 기반, 1 = 무력 기반, 2 = 지력 기반
+ * 
+ * @return array 계산된 실패, 성공 확률 ('succ' => 성공 확률, 'fail' => 실패 확률)
+ */
+function CriticalRatioDomestic(&$general, $type) {
+    $leader = getGeneralLeadership($general, false, true, false, false);
+    $power = getGeneralPower($general, false, true, false, false);
+    $power = getGeneralIntel($general, false, true, false, false);
+
     $avg = ($leader+$power+$intel) / 3;
     // 707010장수 18/21% 706515장수 16/27% 706020장수 14/33% xx50xx장수 10/50%
     switch($type) {
@@ -18,6 +126,26 @@ function CriticalRatio($leader, $power, $intel, $type=0) {
     if($r['succ'] > 100) { $r['succ'] = 100; }
 
     return $r;
+}
+
+/**
+ * 수뇌직 통솔 보너스 계산
+ * 
+ * @param array &$general 장수 정보. 'lbonus' 값에 통솔 보너스가 입력 됨
+ * @param int $nationLevel 국가 등급
+ * 
+ * @return int 계산된 $general['lbonus'] 값
+ */
+function setLeadershipBonus(&$general, $nationLevel){
+    if($general['level'] == 12) {
+        $lbonus = $nationLevel * 2;
+    } elseif($general['level'] >= 5) {
+        $lbonus = $nationLevel;
+    } else {
+        $lbonus = 0;
+    }
+    $general['lbonus'] = $lbonus;
+    return $lbonus;
 }
 
 function CriticalScore($score, $type) {
@@ -52,13 +180,7 @@ function process_1($connect, &$general, $type) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
@@ -77,7 +199,7 @@ function process_1($connect, &$general, $type) {
         if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
         $rate = $city['rate'] / 100;
 
-        $score = ($general['intel'] * (100 - $general['injury'])/100 + getBookEff($general['book'])) * $rate;
+        $score = getGeneralIntel($general, true, true, true, false) * $rate;
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -91,7 +213,7 @@ function process_1($connect, &$general, $type) {
         if($general['level'] == 3 && $general['no'] == $city['gen2']) { $score *= 1.05; }
 
         $rd = rand() % 100;
-        $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 2);
+        $r = CriticalRatioDomestic($general, 2);
 
         // 특기보정 : 경작, 상재
         if($type == 1 && $general['special'] == 1) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
@@ -155,13 +277,7 @@ function process_3($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
@@ -174,7 +290,7 @@ function process_3($connect, &$general) {
     } elseif($general['gold'] < $admin['develcost']) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
     } else {
-        $score = ($general['intel'] * (100 - $general['injury'])/100 + getBookEff($general['book']));
+        $score = getGeneralIntel($general, true, true, true, false);
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -186,7 +302,7 @@ function process_3($connect, &$general) {
         if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 9 || $general['level'] == 7 || $general['level'] == 5) { $score *= 1.05; }
 
         $rd = rand() % 100;
-        $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 0);
+        $r = CriticalRatioDomestic($general, 2);
         // 특기보정 : 발명
         if($general['special'] == 3) { $score *= 1.1; $admin['develcost'] *= 0.8; $r['succ'] += 10; }
 
@@ -253,13 +369,7 @@ function process_4($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 주민 선정 실패. <1>$date</>";
@@ -274,7 +384,7 @@ function process_4($connect, &$general) {
     } elseif($city['rate'] >= 100) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:민심은 충분합니다. 주민 선정 실패. <1>$date</>";
     } else {
-        $score = ($general['leader'] * (100 - $general['injury'])/100 + getHorseEff($general['horse']) + $lbonus) / 10;
+        $score = getGeneralLeadership($general, true, true, true);
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -288,7 +398,7 @@ function process_4($connect, &$general) {
         if($general['level'] == 2 && $general['no'] == $city['gen3']) { $score *= 1.05; }
 
         $rd = rand() % 100;
-        $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 0);
+        $r = CriticalRatioDomestic($general, 0);
         // 특기보정 : 인덕
         if($general['special'] == 20) { $r['succ'] += 10; $admin['develcost'] *= 0.8; $score *= 1.1; }
 
@@ -351,13 +461,7 @@ function process_5($connect, &$general, $type) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
@@ -376,7 +480,7 @@ function process_5($connect, &$general, $type) {
         if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
         $rate = $city['rate'] / 100;
 
-        $score = ($general['power'] * (100 - $general['injury'])/100 + getWeapEff($general['weap'])) * $rate;
+        $score = getGeneralPower($general, true, true, true, false) * $rate;
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -390,7 +494,7 @@ function process_5($connect, &$general, $type) {
         if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
 
         $rd = rand() % 100;   // 현재 20%
-        $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 1);
+        $r = CriticalRatioDomestic($general, 1);
         // 특기보정 : 수비, 축성
         if($type == 1 && $general['special'] == 11) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
         if($type == 2 && $general['special'] == 10) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
@@ -451,13 +555,7 @@ function process_7($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 정착 장려 실패. <1>$date</>";
@@ -472,7 +570,7 @@ function process_7($connect, &$general) {
     } elseif($city['pop'] >= $city['pop2']) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:이미 포화상태입니다. 정착 장려 실패. <1>$date</>";
     } else {
-        $score = $general['leader'] * (100 - $general['injury'])/100 + getHorseEff($general['horse']) + $lbonus;
+        $score = getGeneralLeadership($general, true, true, true);
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -486,7 +584,7 @@ function process_7($connect, &$general) {
         if($general['level'] == 2 && $general['no'] == $city['gen3']) { $score *= 1.05; }
 
         $rd = rand() % 100;   // 현재 20%
-        $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 0);
+        $r = CriticalRatioDomestic($general, 0);
         // 특기보정 : 인덕
         if($general['special'] == 20) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
 
@@ -548,13 +646,7 @@ function process_8($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 강화 실패. <1>$date</>";
@@ -573,7 +665,7 @@ function process_8($connect, &$general) {
         if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
         $rate = $city['rate'] / 100;
 
-        $score = ($general['power'] * (100 - $general['injury'])/100 + getWeapEff($general['weap'])) * $rate;
+        $score = getGeneralPower($general, true, true, true, false) * $rate;
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -587,7 +679,7 @@ function process_8($connect, &$general) {
         if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
 
         $rd = rand() % 100;   // 현재 20%
-        $r = CriticalRatio($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']), 0);
+        $r = CriticalRatioDomestic($general, 1);
         // 특기보정 : 통찰
         if($general['special'] == 12) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
 
@@ -648,13 +740,7 @@ function process_9($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 물자 조달 실패. <1>$date</>";
@@ -666,7 +752,9 @@ function process_9($connect, &$general) {
         if(rand() % 2 == 0) { $dtype = 0; $stype = "금"; }
         else                { $dtype = 1; $stype = "쌀"; }
 
-        $score = (($general['leader']+$general['power']+$general['intel']) * (100 - $general['injury'])/100 + getHorseEff($general['horse'])+$lbonus+getWeapEff($general['weap'])+getBookEff($general['book']));
+        $score = getGeneralLeadership($general, true, true, true) 
+            + getGeneralPower($general, true, true, true) 
+            + getGeneralIntel($general, true, true, true);
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -741,13 +829,7 @@ function process_11($connect, &$general, $type) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nation['level']);
 
     $query = "select * from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -759,7 +841,9 @@ function process_11($connect, &$general, $type) {
 
     if($armtype != $general['crewtype']) { $general['crew'] = 0; $general['train'] = $defaulttrain; $general['atmos'] = $defaultatmos; }
 
-    if($crew*100 + $general['crew'] > (floor($general['leader'] * (100 - $general['injury'])/100)+getHorseEff($general['horse'])+$lbonus)*100) { $crew = round(((floor($general['leader'] * (100 - $general['injury'])/100)+getHorseEff($general['horse'])+$lbonus)*100 - $general['crew'])/100, 0); }
+    if($crew*100 + $general['crew'] > getGeneralLeadership($general, true, true, true)) { 
+        $crew = round(getGeneralLeadership($general, true, true, true) - $general['crew']/100);
+    }
     if($crew < 0) { $crew = 0; }
     $cost = $crew * getCost($armtype);
     //기술로 가격
@@ -925,13 +1009,7 @@ function process_13($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nation['level']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -951,7 +1029,7 @@ function process_13($connect, &$general) {
 //        $log[count($log)] = "<C>●</>{$admin['month']}월:병기는 훈련이 불가능합니다. <1>$date</>";
     } else {
         // 훈련시
-        $score = round((floor($general['leader'] * (100 - $general['injury'])/100)+getHorseEff($general['horse'])+$lbonus)*100 / $general['crew'] * $_training);
+        $score = round(getGeneralLeadership($general, true, true, true) * 100 / $general['crew'] * $_training);
 
         $log[count($log)] = "<C>●</>{$admin['month']}월:훈련치가 <C>$score</> 상승했습니다. <1>$date</>";
         $exp = 100;
@@ -999,13 +1077,7 @@ function process_14($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nation['level']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1026,7 +1098,7 @@ function process_14($connect, &$general) {
 //    } elseif(floor($general['crewtype']/10) == 4) {
 //        $log[count($log)] = "<C>●</>{$admin['month']}월:병기는 사기 진작이 불가능합니다. <1>$date</>";
     } else {
-        $score = round((floor($general['leader'] * (100 - $general['injury'])/100)+getHorseEff($general['horse'])+$lbonus)*100 / $general['crew'] * $_training);
+        $score = round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * $_training);
         $gold = $general['gold'] - round($general['crew']/100);
 
         $log[count($log)] = "<C>●</>{$admin['month']}월:사기치가 <C>$score</> 상승했습니다. <1>$date</>";
@@ -2374,7 +2446,7 @@ function process_32($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $intelgen = MYDB_fetch_array($result);
 
-        $ratio = round((($general['intel']+getBookEff($general['book']) - $intelgen['intel']-getBookEff($intelgen['book'])) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = round((getGeneralIntel($general, true, true, true, false) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2504,7 +2576,7 @@ function process_33($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = round((($general['power']+getWeapEff($general['weap']) - $powergen['power']-getWeapEff($powergen['weap'])) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = round((getGeneralPower($general, true, true, true, false) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2649,7 +2721,7 @@ function process_34($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = round((($general['power']+getWeapEff($general['weap']) - $powergen['power']-getWeapEff($powergen['weap'])) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = round((getGeneralPower($general, true, true, true, false) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2742,13 +2814,7 @@ function process_35($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $mynation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $mynation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $mynation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $mynation['level']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2781,7 +2847,7 @@ function process_35($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
 
-        $ratio = round(((floor($general['leader'] * (100 - $general['injury'])/100)+getHorseEff($general['horse'])+$lbonus - ($gen['sum']-$gen['horse']+getHorseEff($gen['horse']))) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = round(((getGeneralLeadership($general, true, true, true) - ($gen['sum']-$gen['horse']+getHorseEff($gen['horse']))) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2874,13 +2940,7 @@ function process_36($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $mynation = MYDB_fetch_array($result);
 
-    if($general['level'] == 12) {
-        $lbonus = $mynation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $mynation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $mynation['level']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2913,7 +2973,10 @@ function process_36($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
 
-        $ratio = round(((floor(($general['leader']+$general['intel']+$general['power']) * (100 - $general['injury'])/100)+getWeapEff($general['weap'])+getHorseEff($general['horse'])+$lbonus+getBookEff($general['book']) - ($gen['sum']-$gen['weap']-$gen['horse']-$gen['book']+getWeapEff($gen['weap'])+getHorseEff($gen['horse'])+getBookEff($gen['book']))) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $generalStatAll = getGeneralLeadership($general, true, true, true)
+         + getGeneralPower($general, true, true, true)
+         + getGeneralIntel($general, true, true, true);
+        $ratio = round((($generalStatAll - ($gen['sum']+getWeapEff($gen['weap'])+getHorseEff($gen['horse'])+getBookEff($gen['book']))) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
