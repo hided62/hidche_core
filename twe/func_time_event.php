@@ -551,8 +551,9 @@ function disaster($connect) {
         else { $ratio = 6 - round(1.0*$city['secu']/$city['secu2']*3); }    // 3 ~ 6%
 
         if(rand()%100+1 < $ratio) {
-            $disastercity[count($disastercity)] = $city['city'];
-            $disasterratio[count($disastercity)] = 1.0 * $city['secu'] / $city['secu2'];
+            $idx = count($disastercity);
+            $disastercity[$idx] = $city['city'];
+            $disasterratio[$idx] = 1.0 * $city['secu'] / $city['secu2'];
             $disastername .= $city['name']." ";
         }
     }
