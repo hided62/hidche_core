@@ -39,8 +39,8 @@ if($dt == $rf) {
     $response['result'] = 'FAIL';
 } else {
     $DB->Update('MEMBER', "PICTURE='', IMGSVR=0", "NO='{$SESSION->NoMember()}'");
-    if(file_exists($dest)){
-        @unlink($dest);
+    if(file_exists(__DIR__.'/'.$dest)){
+        @unlink(__DIR__.'/'.$dest);
     }
 
     for($i=0; $i < $_serverCount; $i++) {
