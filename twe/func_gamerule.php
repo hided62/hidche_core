@@ -1214,7 +1214,7 @@ function checkEmperior($connect) {
             $query = "update game set isUnited=2,conlimit=conlimit*100 where no='1'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $query = "select no from general where npc<2 and age>50";
+            $query = "select no from general where npc<2 and age>=45";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $count = MYDB_num_rows($result);
 
