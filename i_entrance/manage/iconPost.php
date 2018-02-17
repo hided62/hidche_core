@@ -8,15 +8,36 @@ require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 // 외부 파라미터
 // $_FILES['picture'] : 사진파일
 
+$defaultImg = 'default.jpg';
+
 $image = $_FILES['picture'];
 $ext = strrchr($image['name'], ".");
 $size = getImageSize($image['tmp_name']);
-$dest = ROOT.W.D."pic/pic_{$SESSION->NoMember()}.jpg";
+
+
+
+$imageType = $size[2];
+
+$availableImageType = array('.jpg'=>IMAGETYPE_JPEG, '.png'=>IMAGETYPE_PNG, '.gif'=>IMAGETYPE_GIF);
 
 $rs = $DB->Select('ID, PICTURE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
 $member = $DB->Get($rs);
 
-$dt = substr($member['PICTURE'], -8);
+
+$picName = $member['PICTURE'];
+$newExt = array_search($imageType, $availableImageType, true);
+
+if($picName && strlen($picName) > 10){
+    $dt = substr($picName, -8);
+    $picName = substr($picName, 0, -9);
+}
+else{
+    $dt = '00000000';
+}
+
+$old_path = ROOT.W.D."pic/{$picName}";
+
+
 $rf = date('Ymd');
 
 $response['result'] = 'FAIL';
@@ -25,13 +46,9 @@ if(!is_uploaded_file($image['tmp_name'])) {
     //진짜 전송된 파일인지 검증
     $response['msg'] = '업로드가 되지 않았습니다!';
     $response['result'] = 'FAIL';
-} elseif($ext != '.jpg' && $ext != '.JPG') {
+} elseif(!$newExt) {
     //확장자 검사
-    $response['msg'] = '잘못된 확장자입니다!';
-    $response['result'] = 'FAIL';
-} elseif($image['type'] != 'image/jpg' && $image['type'] != 'image/jpeg' && $image['type'] != 'image/pjpeg') {
-    //파일종류 검사
-    $response['msg'] = 'jpg 파일이 아닙니다!';
+    $response['msg'] = 'jpg, gif, png 파일이 아닙니다!';
     $response['result'] = 'FAIL';
 } elseif($image['size'] > 10000) {
     //파일크기 검사
@@ -47,11 +64,24 @@ if(!is_uploaded_file($image['tmp_name'])) {
     $response['result'] = 'FAIL';
 } else {
     //이미지 저장
+
+    while(true){
+        $newPicName = dechex(rand(0x000000f,0xfffffff)).$newExt; 
+        $dest = ROOT.W.D."pic/{$newPicName}";
+        if(file_exists($dest)){
+            continue;
+        }
+        break;
+    }
+
     if(!move_uploaded_file($image['tmp_name'], $dest)) {
         $response['msg'] = '업로드에 실패했습니다!';
         $response['result'] = 'FAIL';
     } else {
-        $pic = 'pic_'.$SESSION->NoMember().".jpg?={$rf}";
+        if(file_exists($old_path)){
+            @unlink($old_path);
+        }
+        $pic = "{$newPicName}?={$rf}";
         $DB->Update('MEMBER', "PICTURE='{$pic}', IMGSVR=1", "NO='{$SESSION->NoMember()}'");
 
         for($i=0; $i < $_serverCount; $i++) {

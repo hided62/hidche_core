@@ -8,23 +8,40 @@ require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
 // 외부 파라미터
 
-$dest = ROOT.W.D."pic/pic_{$SESSION->NoMember()}.jpg";
+$respone = [];
 
 $rs = $DB->Select('ID, PICTURE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
+
 $member = $DB->Get($rs);
 
-$dt = substr($member['PICTURE'], -8);
+
+
+$picName = $member['PICTURE'];
+
+if($picName && strlen($picName) > 10){
+    $dt = substr($picName, -8);
+    $picName = substr($picName, 0, -9);
+}
+else{
+    $dt = '00000000';
+}
+
+$dest = ROOT.W.D."pic/{$picName}";
+
 $rf = date('Ymd');
 
 $response['result'] = 'FAIL';
 $response['msg'] = '요청이 올바르지 않습니다!';
+
 if($dt == $rf) {
     //갱신날짜 검사
     $response['msg'] = '1일 1회 변경 가능합니다!';
     $response['result'] = 'FAIL';
 } else {
     $DB->Update('MEMBER', "PICTURE='', IMGSVR=0", "NO='{$SESSION->NoMember()}'");
-    @unlink($dest);
+    if(file_exists($dest)){
+        @unlink($dest);
+    }
 
     for($i=0; $i < $_serverCount; $i++) {
         if($SETTINGS[$i]->IsExist()) {
@@ -43,5 +60,3 @@ if($dt == $rf) {
 
 sleep(1);
 echo json_encode($response);
-
-
