@@ -173,7 +173,7 @@ function processWar($connect, $general, $city) {
                 $avoid = 1;
                 // 병종간 특성
                 if(floor($general['crewtype']/10) == 3) {   // 귀병
-                    $int = round($general['intel'] * (100-$general['injury'])/100) + getBookEff($general['book']);
+                    $int = round(getGeneralIntel($general, true, true, true, false));
                     if($general['crewtype'] == 30) {
                         $ratio2 = $int * 5;   // 0~500 즉 50%
                     } elseif($general['crewtype'] == 31) {
@@ -275,7 +275,10 @@ function processWar($connect, $general, $city) {
 
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio3($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']));
+                $ratio = CriticalRatio3(
+                    getGeneralLeadership($general, false, true, true, false), 
+                    getGeneralPower($general, false, true, true, false),
+                    getGeneralIntel($general, false, true, true, false));
                 // 특기보정 : 무쌍, 필살
                 if($general['special2'] == 61) { $ratio += 10; }
                 if($general['special2'] == 71) { $ratio += 20; }
@@ -646,7 +649,7 @@ function processWar($connect, $general, $city) {
                 $opAvoid = 1;
                 // 병종간 특성
                 if(floor($general['crewtype']/10) == 3) {   // 귀병
-                    $int = round($general['intel'] * (100-$general['injury'])/100) + getBookEff($general['book']);
+                    $int = round(getGeneralIntel($general, true, true, true, false));
                     if($general['crewtype'] == 30) {
                         $ratio2 = $int * 5;   // 0~500 즉 50%
                     } elseif($general['crewtype'] == 31) {
@@ -787,7 +790,7 @@ function processWar($connect, $general, $city) {
 
                 // 상대 장수 병종간 특성
                 if(floor($oppose['crewtype']/10) == 3) {   // 귀병
-                    $int = round($oppose['intel'] * (100-$oppose['injury'])/100) + getBookEff($oppose['book']);
+                    $int = round(getGeneralIntel($oppose, true, true, true, false));
                     if($oppose['crewtype'] == 30) {
                         $ratio2 = $int * 5;   // 0~500 즉 50%
                     } elseif($oppose['crewtype'] == 31) {
@@ -1054,7 +1057,10 @@ function processWar($connect, $general, $city) {
 
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio3($general['leader']+getHorseEff($general['horse'])+$lbonus, $general['power']+getWeapEff($general['weap']), $general['intel']+getBookEff($general['book']));
+                $ratio = CriticalRatio3(
+                    getGeneralLeadership($general, false, true, true, false),
+                    getGeneralPower($general, false, true, true, false),
+                    getGeneralIntel($general, false, true, true, false));
                 // 특기보정 : 무쌍, 필살
                 if($general['special2'] == 61) { $ratio += 10; }
                 if($general['special2'] == 71) { $ratio += 20; }
@@ -1076,7 +1082,10 @@ function processWar($connect, $general, $city) {
                 }
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio3($oppose['leader']+getHorseEff($oppose['horse'])+$opplbonus, $oppose['power']+getWeapEff($oppose['weap']), $oppose['intel']+getBookEff($oppose['book']));
+                $ratio = CriticalRatio3(
+                    getGeneralLeadership($oppose, false, true, true, false),
+                    getGeneralPower($oppose, false, true, true, false),
+                    getGeneralIntel($oppose, false, true, true, false));
                 // 특기보정 : 필살
                 if($oppose['special2'] == 71) { $ratio += 20; }
                 if($ratio >= $rd && $opAvoid == 1) {
@@ -1537,11 +1546,11 @@ function getAtt($game, $general, $tech, $lbonus) {
     $att = getRate($game, $general['crewtype'], "att") + getTechAbil($tech);
 
     if(floor($general['crewtype']/10) == 3) {   // 귀병 지100%
-        $ratio = (floor($general['intel']*(100-$general['injury'])/100)+getBookEff($general['book']))*2 - 40;
+        $ratio = getGeneralIntel($general, true, true, true)*2 - 40;
     } elseif(floor($general['crewtype']/10) == 4) {   // 차병 통100%
-        $ratio = (floor($general['leader']*(100-$general['injury'])/100)+getHorseEff($general['horse'])+$lbonus)*2 - 40;
+        $ratio = getGeneralLeadership($general, true, true, true)*2 - 40;
     } else {
-        $ratio = (floor($general['power']*(100-$general['injury'])/100)+getWeapEff($general['weap']))*2 - 40; //10일때 -20, 70일때 100, 100일때 160
+        $ratio = getGeneralPower($general, true, true, true)*2 - 40; //10일때 -20, 70일때 100, 100일때 160
     }
     if($ratio <  10) { $ratio = 10; }
     if($ratio > 100) { $ratio = 50 + $ratio/2; }    // 100보다 큰 경우는 상승률 1/2
