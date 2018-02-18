@@ -384,7 +384,7 @@ function process_4($connect, &$general) {
     } elseif($city['rate'] >= 100) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:민심은 충분합니다. 주민 선정 실패. <1>$date</>";
     } else {
-        $score = getGeneralLeadership($general, true, true, true);
+        $score = getGeneralLeadership($general, true, true, true) / 10;
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -841,7 +841,7 @@ function process_11($connect, &$general, $type) {
 
     if($armtype != $general['crewtype']) { $general['crew'] = 0; $general['train'] = $defaulttrain; $general['atmos'] = $defaultatmos; }
 
-    if($crew*100 + $general['crew'] > getGeneralLeadership($general, true, true, true)) { 
+    if($crew*100 + $general['crew'] > getGeneralLeadership($general, true, true, true)*100) { 
         $crew = round(getGeneralLeadership($general, true, true, true) - $general['crew']/100);
     }
     if($crew < 0) { $crew = 0; }
@@ -2442,11 +2442,11 @@ function process_32($connect, &$general) {
     } elseif($dip['state'] >= 7) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 화계 실패. <1>$date</>";
     } else {
-        $query = "select intel,book from general where city='$destination' and nation='{$destcity['nation']}' order by intel desc";
+        $query = "select leader,horse,power,weap,intel,book from general where city='$destination' and nation='{$destcity['nation']}' order by intel desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $intelgen = MYDB_fetch_array($result);
 
-        $ratio = round((getGeneralIntel($general, true, true, true, false) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = round(((getGeneralIntel($general, true, true, true, false) - getGeneralIntel($intelgen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2572,11 +2572,11 @@ function process_33($connect, &$general) {
     } elseif($dip['state'] >= 7) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 탈취 실패. <1>$date</>";
     } else {
-        $query = "select power,weap from general where city='$destination' and nation='{$destcity['nation']}' order by power desc";
+        $query = "select leader,horse,power,weap,intel,book from general where city='$destination' and nation='{$destcity['nation']}' order by power desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = round((getGeneralPower($general, true, true, true, false) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2717,11 +2717,11 @@ function process_34($connect, &$general) {
     } elseif($dip['state'] >= 7) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 파괴 실패. <1>$date</>";
     } else {
-        $query = "select power,weap from general where city='$destination' and nation='{$destcity['nation']}' order by power desc";
+        $query = "select leader,horse,power,weap,intel,book from general where city='$destination' and nation='{$destcity['nation']}' order by power desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = round((getGeneralPower($general, true, true, true, false) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -2843,11 +2843,11 @@ function process_35($connect, &$general) {
     } elseif($dip['state'] >= 7) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
     } else {
-        $query = "select ROUND(leader*(100-injury)/100)+horse as sum,horse from general where city='$destination' and nation='{$destcity['nation']}' order by sum desc";
+        $query = "select leader,horse,power,weap,intel,book from general where city='$destination' and nation='{$destcity['nation']}' order by sum desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
 
-        $ratio = round(((getGeneralLeadership($general, true, true, true) - ($gen['sum']-$gen['horse']+getHorseEff($gen['horse']))) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = round(((getGeneralLeadership($general, true, true, true) - getGeneralLeadership($gen, true, true, true)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
