@@ -2442,7 +2442,7 @@ function process_32($connect, &$general) {
     } elseif($dip['state'] >= 7) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 화계 실패. <1>$date</>";
     } else {
-        $query = "select leader,horse,power,weap,intel,book from general where city='$destination' and nation='{$destcity['nation']}' order by intel desc";
+        $query = "select leader,horse,power,weap,intel,book,injury from general where city='$destination' and nation='{$destcity['nation']}' order by intel desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $intelgen = MYDB_fetch_array($result);
 
@@ -2572,7 +2572,7 @@ function process_33($connect, &$general) {
     } elseif($dip['state'] >= 7) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 탈취 실패. <1>$date</>";
     } else {
-        $query = "select leader,horse,power,weap,intel,book from general where city='$destination' and nation='{$destcity['nation']}' order by power desc";
+        $query = "select leader,horse,power,weap,intel,book,injury from general where city='$destination' and nation='{$destcity['nation']}' order by power desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
@@ -2717,7 +2717,7 @@ function process_34($connect, &$general) {
     } elseif($dip['state'] >= 7) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 파괴 실패. <1>$date</>";
     } else {
-        $query = "select leader,horse,power,weap,intel,book from general where city='$destination' and nation='{$destcity['nation']}' order by power desc";
+        $query = "select leader,horse,power,weap,intel,book,injury from general where city='$destination' and nation='{$destcity['nation']}' order by power desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
@@ -2843,7 +2843,7 @@ function process_35($connect, &$general) {
     } elseif($dip['state'] >= 7) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
     } else {
-        $query = "select leader,horse,power,weap,intel,book from general where city='$destination' and nation='{$destcity['nation']}' order by sum desc";
+        $query = "select leader,horse,power,weap,intel,book,injury from general where city='$destination' and nation='{$destcity['nation']}' order by sum desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
 
