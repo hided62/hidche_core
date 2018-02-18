@@ -302,7 +302,7 @@ function process_3($connect, &$general) {
         if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 9 || $general['level'] == 7 || $general['level'] == 5) { $score *= 1.05; }
 
         $rd = rand() % 100;
-        $r = CriticalRatioDomestic($general, 2);
+        $r = CriticalRatioDomestic($general, 0);
         // 특기보정 : 발명
         if($general['special'] == 3) { $score *= 1.1; $admin['develcost'] *= 0.8; $r['succ'] += 10; }
 
@@ -494,7 +494,7 @@ function process_5($connect, &$general, $type) {
         if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
 
         $rd = rand() % 100;   // 현재 20%
-        $r = CriticalRatioDomestic($general, 1);
+        $r = CriticalRatioDomestic($general, 0);
         // 특기보정 : 수비, 축성
         if($type == 1 && $general['special'] == 11) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
         if($type == 2 && $general['special'] == 10) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
@@ -679,7 +679,7 @@ function process_8($connect, &$general) {
         if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
 
         $rd = rand() % 100;   // 현재 20%
-        $r = CriticalRatioDomestic($general, 1);
+        $r = CriticalRatioDomestic($general, 0);
         // 특기보정 : 통찰
         if($general['special'] == 12) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
 
