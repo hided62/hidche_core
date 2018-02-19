@@ -1544,6 +1544,8 @@ function getCrewtypeRice($game, $crewtype, $tech) {
 
 function getAtt($game, $general, $tech, $lbonus) {
     $att = getRate($game, $general['crewtype'], "att") + getTechAbil($tech);
+    
+    $general['lbonus'] = $lbonus;
 
     if(floor($general['crewtype']/10) == 3) {   // 귀병 지100%
         $ratio = getGeneralIntel($general, true, true, true)*2 - 40;
