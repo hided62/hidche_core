@@ -540,6 +540,7 @@ CREATE TABLE `message` (
 	`src` INT(11) NOT NULL,
 	`dest` INT(11) NOT NULL,
 	`time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`valid_until` DATETIME NOT NULL DEFAULT '9999-12-31 23:59:59',
 	`message` TEXT NOT NULL COMMENT 'json',
 	PRIMARY KEY (`id`),
 	INDEX `by_owner` (`mailbox`, `time`),
