@@ -107,7 +107,7 @@ function getGeneralIntel(&$general, $withInjury, $withItem, $withStatAdjust, $us
 function CriticalRatioDomestic(&$general, $type) {
     $leader = getGeneralLeadership($general, false, true, false, false);
     $power = getGeneralPower($general, false, true, false, false);
-    $power = getGeneralIntel($general, false, true, false, false);
+    $intel = getGeneralIntel($general, false, true, false, false);
 
     $avg = ($leader+$power+$intel) / 3;
     // 707010장수 18/21% 706515장수 16/27% 706020장수 14/33% xx50xx장수 10/50%
