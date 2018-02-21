@@ -98,6 +98,13 @@ function getMessage($msgType, $limit=30, $fromTime=NULL){
 
 function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date, $validUntil, $msgOption){
     
+    if(!$isSender && $mailBox < 9000){
+        //TODO:newmsg보단 lastmsg로 datetime을 넣는게 더 나아보임
+        getDB()->update('general', array(
+            'newmsg' => true
+        ), 'no=%i', $dest['id']);
+    }
+
     getDB()->insert('message', array(
         'address' => $dest,
         'type' => $msgType,
@@ -158,7 +165,36 @@ function sendMessage($msgType, $src, $dest, $msg, $date = null, $validUntil = nu
         sendRawMessage($msgType, true, $srcMailbox, $src, $dest, $msg, $date, $validUntil, null);
     }
     sendRawMessage($msgType, false, $destMailbox, $src, $dest, $msg, $date, $validUntil, null);
+
+    return true;
 }
+
+
+function sendScoutMsg($src, $dest, $date) {
+
+    //$msgType, $isSender, $mailbox, $src, $dest, $msg, $date, $validUntil, $msgOption
+
+    if(!$src || !$src['id'] || !$src['nation_id'] || !$src['nation']){
+        return false;
+    }
+
+    if(!$dest || !$dest['id']){
+        return false;
+    }
+
+    $msgType = 'private';
+    $option = [
+        "action" => "scout"
+    ];
+
+    $msg = "{$src['nation']}(으)로 망명 권유 서신";
+    $validUntil = "9999-12-31 23:59:59";//등용장의 시간 제한 없음
+    
+    sendRawMessage('private', false, $dest['id'], $src, $dest, $msg, $date, $validUntil, $option);
+
+    return true;
+}
+
 
 function getMailboxList(){
     $result = [];
@@ -409,27 +445,6 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
 }
 
 
-function MsgMe($connect, $bg) {
-    $query = "select no,nation,msgindex,
-        msg0,msg1,msg2,msg3,msg4,msg5,msg6,msg7,msg8,msg9,
-        msg0_type,msg1_type,msg2_type,msg3_type,msg4_type,msg5_type,msg6_type,msg7_type,msg8_type,msg9_type,
-        msg0_who,msg1_who,msg2_who,msg3_who,msg4_who,msg5_who,msg6_who,msg7_who,msg8_who,msg9_who,
-        msg0_when,msg1_when,msg2_when,msg3_when,msg4_when,msg5_when,msg6_when,msg7_when,msg8_when,msg9_when
-        from general where owner='{$_SESSION['noMember']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
-
-    $index = $me['msgindex'];
-    for($i=0; $i < 10; $i++) {
-        if($me["msg{$index}"]) { echo "\n"; DecodeMsg($connect, $me["msg{$index}"], $me["msg{$index}_type"], $me["msg{$index}_who"], $me["msg{$index}_when"], $bg, $index); }
-        $index--;
-        if($index < 0) { $index = 9; }
-    }
-}
-
-
-
-
 function moveMsg($connect, $table, $msgtype, $msgnum, $msg, $type, $who, $when, $column, $value) {
     //TODO: moveMsg 쓰는 곳 모두 고쳐!!!
     $query = "update {$table} set {$msgtype}{$msgnum}='$msg',{$msgtype}{$msgnum}_type='$type',{$msgtype}{$msgnum}_who='$who',{$msgtype}{$msgnum}_when='$when' where {$column}='$value'";
@@ -450,10 +465,6 @@ function MsgDip($connect, $bg) {
     if($nation['dip2']) { echo "\n"; DecodeMsg($connect, $nation['dip2'], $nation['dip2_type'], $nation['dip2_who'], $nation['dip2_when'], $bg, 2); }
     if($nation['dip3']) { echo "\n"; DecodeMsg($connect, $nation['dip3'], $nation['dip3_type'], $nation['dip3_who'], $nation['dip3_when'], $bg, 3); }
     if($nation['dip4']) { echo "\n"; DecodeMsg($connect, $nation['dip4'], $nation['dip4_type'], $nation['dip4_who'], $nation['dip4_when'], $bg, 4); }
-}
-
-function ShowMsgEx($msgType, $src, $dest, $msg, $datetime){
-    new League\Plates\Engine('templates');
 }
 
 function ShowMsg($skin, $bgcolor, $type, $picture, $imgsvr, $me, $mycolor, $you, $youcolor, $msg, $date, $num=0, $who=0, $when=0, $level=0, $note="") {

@@ -252,6 +252,17 @@ function LogText($prefix, $variable){
     fclose($fp);
 }
 
+function ArrayToDict($arr, $keyName){
+    $result = [];
+
+    foreach($arr as $obj){
+        $key = $obj[$keyName];
+        $result[$key] = $obj;
+    }
+
+    return $result;
+}
+
 function dictToArray($dict, $keys){
     $result = [];
 
@@ -288,6 +299,14 @@ function isDict(&$array){
 
 function eraseNullValue(&$dict, $depth=512){
     //TODO:Test 추가
+    if($dict === null){
+        return null;
+    }
+
+    if(is_array($dict) && empty($dict)){
+        return null;
+    }
+
     if($depth <= 0){
         return $dict;
     }
@@ -297,9 +316,18 @@ function eraseNullValue(&$dict, $depth=512){
             unset($dict[$key]);
         }
         else if(isDict($value)){
-            $dict[$key] = eraseNullKey($value, $depth - 1);
+            $newValue = eraseNullKey($value, $depth - 1);
+            if($newValue === null){
+                unset($dict[$key]);
+            }
+            else{
+                $dict[$key] = $newValue;
+            }
+            
         }
     }
+
+    
 
     return $dict;
 }

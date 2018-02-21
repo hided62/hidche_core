@@ -50,16 +50,10 @@ switch($btn) {
         getDB()->query('update general set turn0=0,killturn=0,turntime=%s where no IN %li',$date, $genlist);
         break;
     case "메세지 전달":
+    //TODO:새 갠메 시스템으로 변경
         $date = date('Y-m-d H:i:s');
+        $msg;
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date',newmsg=1 where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
 }

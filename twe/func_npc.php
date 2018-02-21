@@ -1042,6 +1042,7 @@ function RegCity($connect, $nation, $name, $cap=0) {
     if($cap > 0) {
         @MYDB_query("update nation set capital='$city' where nation='$nation'",$connect) or Error(__LINE__.MYDB_error($connect),"");
     }
+    getNationStaticInfo(null, true);
 }
 
 function Promotion($connect, $nation, $level) {

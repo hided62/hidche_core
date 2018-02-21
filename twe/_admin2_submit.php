@@ -234,6 +234,7 @@ switch($btn) {
         }
         break;
     case "메세지 전달":
+        //TODO:새 갠메 시스템으로 변경
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
             $query = "select msgindex from general where no='$genlist[$i]'";

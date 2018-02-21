@@ -867,6 +867,8 @@ function checkMerge($connect) {
         unset($mylog);
         unset($youlog);
         unset($history);
+
+        getNationStaticInfo(null, true);
     }
 }
 
@@ -985,6 +987,8 @@ function checkSurrender($connect) {
         unset($mylog);
         unset($youlog);
         unset($history);
+
+        getNationStaticInfo(null, true);
     }
 }
 

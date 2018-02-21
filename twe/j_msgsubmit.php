@@ -74,13 +74,6 @@ if($con >= 2) {
     ]);
  }
 
-//FIXME: 원래는 필요없는 값이지만 예전 코드와 꼬일 수 있어 유지함.
-$msg = str_replace('|', '', $msg);
-
-//TODO: 몰라서 임시로 값 세팅해봄. 추후에 용도를 확인하고 수정 필요
-//$s = 50;
-//$msg = _String::SubStrForWidth($msg, $s, 198);
-
 //SubStrForWidth는 반각은 1, 전각은 2로 측정하는듯 보이나, 대부분 글자수 단위로 카운트 하고 있어 mb_substr로 처리함.
 $msg = mb_substr($msg, 0, 99, 'UTF-8');
 $msg = trim($msg);
@@ -109,7 +102,7 @@ if($src['nation_id'] != 0) {
 
 // 전체 메세지
 if($destMailbox == 9999) {
-    sendMessage('public', $src, [], $msg, $date);
+    sendMessage('public', $src, null, $msg, $date);
 // 국가 메세지
 } elseif($destMailbox >= 9000) {
 
@@ -119,9 +112,9 @@ if($destMailbox == 9999) {
     else{
         $real_nation = $dest - 9000;
     }
-    $nation = $db->queryFirstRow('select nation,name,color from nation where nation=%i',$real_nation);
+    $nation = getNationStaticInfo($real_nation);
     
-    if($nation === NULL || empty($nation)){
+    if($nation === null || empty($nation)){
         $dest = ['nation_id' => 0];
     }
     else{
@@ -167,15 +160,14 @@ if($destMailbox == 9999) {
         'id' => $destMailbox,
         'name' => $dest_user['name']
     ];
-    if($dest_user['nation'] != 0){
-        $nation = $db->queryFirstRow('select nation,name,color from nation where nation=%i',$dest_user['nation']);
-        
-        $color = $nation['color'];
+    $destNation = getNationStaticInfo($dest_user['nation']);
+    if($destNation){
+        $color = $destNation['color'];
         $color = str_replace('##', '#', $color); 
         //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
         $dest['color'] = $color;
-        $dest['nation'] = $nation['name'];
-        $dest['nation_id'] = $nation['nation'];
+        $dest['nation'] = $destNation['name'];
+        $dest['nation_id'] = $destNation['nation'];
     }
     sendMessage('private', $src, $dest, $msg, $date);
 }

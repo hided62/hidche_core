@@ -253,18 +253,39 @@ if($me['userlevel'] >= 5) {
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td colspan=2>
-            <form id="message" name="message" method="post" action="c_msgsubmit.php" target="msglist">
-                <?php genList($connect); ?>
-                <input type=textarea id=msg name=msg maxlength=99 style=color:white;background-color:black;font-size:13px;width:720px;>
-                <input type=button style=background-color:<?=$_basecolor2;?>;color:white;font-size:13px;width:100px; value='서신전달&갱신' onclick='refreshing(4,message)'>
-                <br>내용 없이 '서신전달&amp;갱신'을 누르면 메세지창이 갱신됩니다.
-            </form>
+            <div class="message_input_form bg0">
+                <select id="mailbox_list" size="1">
+
+                        <select name="genlist" size="1" style="color:white;background-color:black;font-size:13">
+                </select>
+                <input type="textarea" id="msg_input" maxlength="99">
+                <button id="msg_submit">서신전달&amp;갱신</button>
+            </div>
         </td>
     </tr>
     <tr><td colspan=2><?=allButton()?></td></tr>
     <tr><td colspan=2>
-        <iframe id="msglist" name="msglist" src='msglist.php' width=1000 height=1375 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-        </iframe>
+        <div id="message_board">
+            <div class="board_side">
+                <div class="board_header bg0">전체 메시지(최고99자)</div>
+                <section class="public_message">
+
+                </section>
+                <div class="board_header bg0">개인 메시지(최고99자)</div>
+                <section class="private_message">
+                    
+                </section>
+            </div>
+            <div class="board_side">
+                <section class="diplomacy_message">
+
+                </section>
+                <div class="board_header bg0">국가 메시지(최고99자)</div>
+                <section class="national_message">
+
+                </section>
+            </div>
+        </div>
     </td></tr>
     <tr><td colspan=2>
 

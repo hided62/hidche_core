@@ -139,6 +139,40 @@ function getGeneralName($forceExit=false)
     return $generalName;
 }
 
+/**
+ * nationID를 이용하여 국가의 '어지간해선' 변경되지 않는 정보(이름, 색, 성향, 수도)를 반환해줌
+ * 
+ * @param int|null $nationID 국가 코드
+ * @param bool $forceRefresh 강제 갱신 여부
+ * 
+ * @return array|null nationID에 해당하는 국가가 있을 경우 array 반환. 그외의 경우 null
+ */
+function getNationStaticInfo($nationID, $forceRefresh=false)
+{
+    static $nationList = null;
+
+    if ($forceRefresh) {
+        $nationList = null;
+    }
+
+    if($nationID === null || $nationID == 0){
+        return null;
+    }
+
+    if($nationList === null){
+        $nationList = ArrayToDict(
+            getDB()->query("select nation, name, color, type, capital from nation"),
+            "nation");
+    }
+
+    if(isset($nationList[$nationID])){
+        return $nationList[$nationID];
+    }
+    return null;
+
+
+}
+
 function GetImageURL($imgsvr) {
     global $image, $image1;
     if($imgsvr == 0) {
@@ -293,7 +327,6 @@ function getTurn($connect, $general, $type, $font=1) {
                 $str[$i] = "【{$city['name']}】(으)로 이동";
                 break;
             case 22: //등용
-            //TODO:등용장 재디자인
                 $double = $command[1];
 
                 $query = "select name from general where no='$double'";
@@ -3724,6 +3757,7 @@ function deleteNation($connect, $general) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     pushHistory($connect, $history);
+    getNationStaticInfo(null, false);
 }
 
 function nextRuler($connect, $general) {
@@ -4038,21 +4072,6 @@ function getRandTurn2($term) {
     $turntime = date('Y-m-d H:i:s', strtotime('now') - $randtime);
 
     return $turntime;
-}
-
-function ScoutMsg($connect, $genNum, $nationName, $who, $msgIndex) {
-    return;
-    //TODO: 등용장 재 디자인.
-    //xxx: 일단 껐음
-    // 상대에게 발송
-    $msgIndex++;
-    if($msgIndex >= 10) { $msgIndex = 0; }
-
-    $date = date('Y-m-d H:i:s');
-    //등용 서신시 장수번호/내 번호
-    $me = $genNum * 10000 + $who;
-    $query = "update general set msgindex='$msgIndex',msg{$msgIndex}='{$nationName}(으)로 망명 권유 서신',msg{$msgIndex}_who='$me',msg{$msgIndex}_when='$date',msg{$msgIndex}_type='11' where no='$who'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
 function command_Single($connect, $turn, $command) {

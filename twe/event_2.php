@@ -203,6 +203,8 @@ $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<
 $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>그러나 중원의 영웅들이라면 막아낼 수도 있을법 해 보입니다!";
 pushHistory($connect, $history);
 
+getNationStaticInfo(null, true);
+
 echo "<script>location.replace('./');</script>";
 
 function RegGeneral3($connect,$turnterm,$gencount,$nation,$level,$name,$leader,$power,$intel,$personal,$special,$msg="") {

@@ -1385,9 +1385,6 @@ function process_21($connect, &$general) {
 }
 
 function process_22($connect, &$general) {
-    return;
-    //TODO: 등용장 재 디자인
-    //xxx: 일단 등용장 끔
     $log = array();
     $alllog = array();
     $date = substr($general['turntime'],11,5);
@@ -1399,10 +1396,6 @@ function process_22($connect, &$general) {
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
-
-    $query = "select name from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
 
     $command = DecodeCommand($general['turn0']);
     $who = $command[1];
@@ -1432,7 +1425,21 @@ function process_22($connect, &$general) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
-        ScoutMsg($connect, $general['no'], $nation['name'], $who, $you['msgindex']);
+        $myNation = getNationStaticInfo($general['nation']);
+        $youNation = getNationStaticInfo($you['nation']);
+
+        sendScoutMsg([
+            'id' => $general['no'],
+            'nation_id' => util::array_get($myNation['nation'], 0),
+            'nation' => util::array_get($myNation['name'], '재야'),
+            'color' => util::array_get($myNation['color'], '#ffffff')
+        ],[
+            'id' => $you['no'],
+            'nation_id' => util::array_get($youNation['nation'], 0),
+            'nation' => util::array_get($youNation['name'], '재야'),
+            'color' => util::array_get($youNation['color'], '#ffffff')
+        ],$date);
+        //sendScoutMsg($connect, $general['no'], $nation['name'], $who, $you['msgindex']);
 
         $general['intel2']++;
         $query = "update general set resturn='SUCCESS',gold=gold-'$cost',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
@@ -3691,6 +3698,8 @@ function process_46($connect, &$general) {
         $exp = 1000;
         $ded = 1000;
 
+        getNationStaticInfo(null, true);
+
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -3763,6 +3772,8 @@ function process_47($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         pushHistory($connect, $history);
+
+        getNationStaticInfo(null, true);
     }
     pushAllLog($alllog);
     pushGenLog($general, $log);
@@ -4390,6 +4401,8 @@ function process_55($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nationcount = MYDB_num_rows($result);
 
+        getNationStaticInfo(null, true);
+
         for($i=0; $i < $nationcount; $i++) {
             $younation = MYDB_fetch_array($result);
             $query = "insert into diplomacy (me, you, state, term) values ('{$nation['nation']}', '{$younation['nation']}', '2', '0')";
@@ -4446,6 +4459,8 @@ function process_56($connect, &$general) {
         //분쟁기록 모두 지움
         DeleteConflict($connect, $general['nation']);
         deleteNation($connect, $general);
+
+        getNationStaticInfo(null, true);
     }
     pushAllLog($alllog);
     pushGenLog($general, $log);
@@ -4991,6 +5006,8 @@ function process_66($connect, &$general) {
         //경험치, 공헌치
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        getNationStaticInfo(null, true);
     }
 
     pushHistory($connect, $history);
@@ -6308,6 +6325,8 @@ function process_81($connect, &$general) {
         //경험치, 공헌치
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        getNationStaticInfo(null, true);
     }
 
     pushHistory($connect, $history);
