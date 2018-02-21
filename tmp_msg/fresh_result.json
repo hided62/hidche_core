@@ -250,6 +250,30 @@
     ],
     "private":[
         {
+            "id":1206,
+            "time":"2018-02-10 22:04:04",
+            "isSender":false,
+            "src":{
+                "id":21,
+                "nation_id":2,
+                "name":"Hide_Dx2",
+                "nation":"연구소2",
+                "color":"#ff0000"
+            },
+            "dest":{
+                "id":11,
+                "nation_id":1,
+                "name":"Hide_D",
+                "nation":"연구소",
+                "color":"#ffd700"
+            },
+            "text":"연구소2로 망명 권유 서신2",
+            "option":{
+                "used":false,
+                "action":"scout"
+            }
+        },
+        {
             "id":1205,
             "time":"2018-02-10 22:04:04",
             "isSender":false,

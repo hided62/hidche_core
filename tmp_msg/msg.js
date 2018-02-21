@@ -127,12 +127,19 @@ function redrawMsg(deferred){
                 var msgHtml = TemplateEngine(messageTemplate, msg);
                 
 
-                //만약 이전 메시지가 변경된 것인가 확인한다.
+                //만약 이전 메시지와 같은 id가 온 경우 덮어씌운다.
+                //NOTE:현 프로세스 상에서는 같은 id가 와선 안된다.
                 var $existMsg = $('#msg_{0}'.format(msg.id));
                 var $msg = $(msgHtml);
                 if($existMsg.length){
+                    console.log('메시지 충돌', $msg, $existMsg);
                     $existMsg.html($msg.html());
                     $msg = $existMsg;
+                }
+
+                if(msg.option && msg.option.parent){
+                    //parent는 삭제.
+                    $('#msg_{0}'.format(msg.option.parent)).detach();
                 }
 
                 $msg.find('button.prompt_yes').click(function(){
