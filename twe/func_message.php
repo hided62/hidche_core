@@ -96,7 +96,7 @@ function getMessage($msgType, $limit=30, $fromTime=NULL){
     }
 }
 
-function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date, $msgOption){
+function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date, $validUntil, $msgOption){
     
     getDB()->insert('message', array(
         'address' => $dest,
@@ -105,6 +105,7 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
         'src' => $src['id'],
         'dest' => $dest['id'],
         'time' => $date,
+        'valid_until' => $validUntil,
         'message' => json_encode(eraseNullValue([
             'src' => $src,
             'dest' =>$dest,
@@ -114,9 +115,13 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
     ));
 }
 
-function sendMessage($msgType, $src, $dest, $msg, $date = null, $msgOption = null){
+function sendMessage($msgType, $src, $dest, $msg, $date = null, $validUntil = null, $msgOption = null){
     if($date === null){
         $date = $datetime->format('Y-m-d H:i:s');
+    }
+
+    if($validUntil === null){
+        $validUntil = '9999-12-31 12:59:59';
     }
 
     if($msgType === 'public'){
@@ -150,9 +155,9 @@ function sendMessage($msgType, $src, $dest, $msg, $date = null, $msgOption = nul
     }
 
     if($srcMailbox !== null){
-        sendRawMessage($msgType, true, $srcMailbox, $src, $dest, $msg, $date);
+        sendRawMessage($msgType, true, $srcMailbox, $src, $dest, $msg, $date, $validUntil, null);
     }
-    sendRawMessage($msgType, false, $destMailbox, $src, $dest, $msg, $date);
+    sendRawMessage($msgType, false, $destMailbox, $src, $dest, $msg, $date, $validUntil, null);
 }
 
 function getMailboxList(){
