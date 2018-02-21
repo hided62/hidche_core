@@ -21,6 +21,7 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'L' => 
         array (
             'League\\Plates\\' => 14,
+            'Leafo\\ScssPhp\\' => 14,
         ),
         'G' => 
         array (
@@ -42,6 +43,10 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'League\\Plates\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/plates/src',
+        ),
+        'Leafo\\ScssPhp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/leafo/scssphp/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

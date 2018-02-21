@@ -4,6 +4,7 @@
         "sergeytsalkov/meekrodb": "^2.3",
         "league/plates": "^3.3",
         "phpmailer/phpmailer": "^6.0",
-        "guzzlehttp/guzzle": "^6.3"
+        "guzzlehttp/guzzle": "^6.3",
+        "leafo/scssphp": "^0.7.5"
     }
 }
