@@ -199,7 +199,7 @@ $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<
 $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>이민족의 기세는 그 누구도 막을 수 없을듯 합니다!";
 pushHistory($connect, $history);
 
-getNationStaticInfo(null, true);
+refreshNationStaticInfo();
 
 echo "<script>location.replace('./');</script>";
 

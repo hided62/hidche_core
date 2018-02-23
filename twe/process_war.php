@@ -1861,7 +1861,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
             $query = "update general set atmos=atmos*0.8 where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            getNationStaticInfo(null, true);
+            refreshNationStaticInfo();
         }
     }
 

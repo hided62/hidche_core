@@ -3698,7 +3698,7 @@ function process_46($connect, &$general) {
         $exp = 1000;
         $ded = 1000;
 
-        getNationStaticInfo(null, true);
+        refreshNationStaticInfo();
 
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
@@ -3773,7 +3773,7 @@ function process_47($connect, &$general) {
 
         pushHistory($connect, $history);
 
-        getNationStaticInfo(null, true);
+        refreshNationStaticInfo();
     }
     pushAllLog($alllog);
     pushGenLog($general, $log);
@@ -4401,7 +4401,7 @@ function process_55($connect, &$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nationcount = MYDB_num_rows($result);
 
-        getNationStaticInfo(null, true);
+        refreshNationStaticInfo();
 
         for($i=0; $i < $nationcount; $i++) {
             $younation = MYDB_fetch_array($result);
@@ -4460,7 +4460,7 @@ function process_56($connect, &$general) {
         DeleteConflict($connect, $general['nation']);
         deleteNation($connect, $general);
 
-        getNationStaticInfo(null, true);
+        refreshNationStaticInfo();
     }
     pushAllLog($alllog);
     pushGenLog($general, $log);
@@ -5007,7 +5007,7 @@ function process_66($connect, &$general) {
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        getNationStaticInfo(null, true);
+        refreshNationStaticInfo();
     }
 
     pushHistory($connect, $history);
@@ -6326,7 +6326,7 @@ function process_81($connect, &$general) {
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        getNationStaticInfo(null, true);
+        refreshNationStaticInfo();
     }
 
     pushHistory($connect, $history);

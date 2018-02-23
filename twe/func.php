@@ -140,7 +140,7 @@ function getGeneralName($forceExit=false)
 }
 
 /**
- * nationID를 이용하여 국가의 '어지간해선' 변경되지 않는 정보(이름, 색, 성향, 수도)를 반환해줌
+ * nationID를 이용하여 국가의 '어지간해선' 변경되지 않는 정보(이름, 색, 성향, 규모, 수도)를 반환해줌
  * 
  * @param int|null $nationID 국가 코드
  * @param bool $forceRefresh 강제 갱신 여부
@@ -161,7 +161,7 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
 
     if($nationList === null){
         $nationList = ArrayToDict(
-            getDB()->query("select nation, name, color, type, capital from nation"),
+            getDB()->query("select nation, name, color, type, level, capital from nation"),
             "nation");
     }
 
@@ -169,8 +169,13 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
         return $nationList[$nationID];
     }
     return null;
+}
 
-
+/**
+ * getNationStaticInfo() 함수의 국가 캐시를 초기화
+ */
+function refreshNationStaticInfo(){
+    getNationStaticInfo(null, true);
 }
 
 function GetImageURL($imgsvr) {
@@ -3757,7 +3762,7 @@ function deleteNation($connect, $general) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     pushHistory($connect, $history);
-    getNationStaticInfo(null, false);
+    refreshNationStaticInfo();
 }
 
 function nextRuler($connect, $general) {

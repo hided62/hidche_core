@@ -868,7 +868,7 @@ function checkMerge($connect) {
         unset($youlog);
         unset($history);
 
-        getNationStaticInfo(null, true);
+        refreshNationStaticInfo();
     }
 }
 
@@ -988,7 +988,7 @@ function checkSurrender($connect) {
         unset($youlog);
         unset($history);
 
-        getNationStaticInfo(null, true);
+        refreshNationStaticInfo();
     }
 }
 
@@ -1058,6 +1058,8 @@ function updateNationState($connect) {
             //작위 상승
             $query = "update nation set level='{$nation['level']}' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+            refreshNationStaticInfo();
         }
         $gennum = $gencount;
         if($gencount < 10) $gencount = 10;
