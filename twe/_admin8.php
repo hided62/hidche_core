@@ -66,12 +66,8 @@ $sel[$type] = "selected";
         <td align=center id=bg1>비 고</td>
     </tr>
 <?php
-$query = "select nation,name,color from nation";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nationcount = MYDB_num_rows($result);
-for($i=0; $i < $nationcount; $i++) {
-    $nation = MYDB_fetch_array($result);
 
+foreach(getAllNationStaticInfo() as $nation){
     $nationName[$nation['nation']] = $nation['name'];
     $nationColor[$nation['nation']] = $nation['color'];
 }

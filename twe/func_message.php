@@ -220,7 +220,7 @@ function getMailboxList(){
     }
 
     $nations = [];
-    foreach ($db->query('select nation, name, color from nation') as $nation) {
+    foreach (getAllNationStaticInfo() as $nation) {
         $nations[$nation['nation']] = $nation;
     }
     $nations[0] = [
@@ -262,9 +262,7 @@ function genList($connect) {
         $you = MYDB_fetch_array($result);
     }
 
-    $query = "select nation,color,name from nation where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($me['nation']);
 
     echo "
 <select name=genlist size=1 style=color:white;background-color:black;font-size:13>

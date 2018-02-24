@@ -210,9 +210,7 @@ function getGoldIncome($connect, $nationNo, $rate, $admin_rate, $type) {
         $level2[$gen['no']] = $gen['city'];
     }
 
-    $query = "select capital,level from nation where nation='$nationNo'"; // 수도
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($cityresult);
+    $nation = getNationStaticInfo($nationNo);
 
     $query = "select * from city where nation='$nationNo' and supply='1'"; // 도시 목록
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -249,13 +247,11 @@ function getGoldIncome($connect, $nationNo, $rate, $admin_rate, $type) {
 }
 
 function processDeadIncome($connect, $admin_rate) {
-    $query = "select nation,type from nation where level>0";  // 도시 가진 국가
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationCount = MYDB_num_rows($result);
 
-    for($i=0; $i < $nationCount; $i++) {
-        $nation = MYDB_fetch_array($result);
-
+    foreach(getAllNationStaticInfo() as $nation){
+        if($nation['level'] <= 0){
+            continue;
+        }
         $income = getDeadIncome($connect, $nation['nation'], $nation['type'], $admin_rate);
 
 //  단기수입 금만적용

@@ -216,12 +216,7 @@ $query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);
 
-$query = "select nation,level,name from nation";    // 국가 이름 목록
-$nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nationcount = MYDB_num_rows($nationresult);
-
-for($i=0; $i < $nationcount; $i++) {
-    $nation = MYDB_fetch_array($nationresult);
+foreach(getAllNationStaticInfo() as $nation){
     $nationname[$nation['nation']] = $nation['name'];
     $nationlevel[$nation['nation']] = $nation['level'];
 }

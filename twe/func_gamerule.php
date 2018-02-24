@@ -666,12 +666,10 @@ group by A.nation
     $dipCount = MYDB_num_rows($result);
     for($i=0; $i < $dipCount; $i++) {
         $dip = MYDB_fetch_array($result);
-        $query = "select name from nation where nation='{$dip['me']}' or nation='{$dip['you']}'";
-        $nationResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $nation = MYDB_fetch_array($nationResult);
-        $name1 = $nation['name'];
-        $nation = MYDB_fetch_array($nationResult);
-        $name2 = $nation['name'];
+        $nation1 = getNationStaticInfo($dip['me']);
+        $name1 = $nation1['name'];
+        $nation2 = getNationStaticInfo($dip['you']);
+        $name2 = $nation2['name'];
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【개전】</b></><D><b>$name1</b></>(와)과 <D><b>$name2</b></>(이)가 <R>전쟁</>을 시작합니다.";
     }
     //휴전국 로그
@@ -684,12 +682,10 @@ group by A.nation
 
         //양측 기간 모두 0이 되는 상황이면 휴전
         if($dip['term1'] <= 1 && $dip['term2'] <= 1) {
-            $query = "select name from nation where nation='{$dip['me']}' or nation='{$dip['you']}'";
-            $nationResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $nation = MYDB_fetch_array($nationResult);
-            $name1 = $nation['name'];
-            $nation = MYDB_fetch_array($nationResult);
-            $name2 = $nation['name'];
+            $nation1 = getNationStaticInfo($dip['me']);
+            $name1 = $nation1['name'];
+            $nation2 = getNationStaticInfo($dip['you']);
+            $name2 = $nation2['name'];
             $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【휴전】</b></><D><b>$name1</b></>(와)과 <D><b>$name2</b></>(이)가 <S>휴전</>합니다.";
             //기한 되면 휴전으로
             $query = "update diplomacy set state='2',term='0' where (me='{$dip['me']}' and you='{$dip['you']}') or (me='{$dip['you']}' and you='{$dip['me']}')";
@@ -726,11 +722,10 @@ group by A.nation
     // 시스템 거래건 등록
     registerAuction($connect);
     //전방설정
-    $query = "select nation from nation where level>0";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-    for($i=0; $i < $count; $i++) {
-        $nation = MYDB_fetch_array($result);
+    foreach(getAllNationStaticInfo() as $nation){
+        if($nation['level'] <= 0){
+            continue;
+        }
         SetNationFront($connect, $nation['nation']);
     }
 }

@@ -1729,11 +1729,7 @@ MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $query = "update city set pop=pop2*0.7,agri=agri2*0.7,comm=comm2*0.7,secu=secu2*0.7,rate=80 where nation=0";
 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 //전방설정
-$query = "select nation from nation";
-$result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
-$count = MYDB_num_rows($result);
-for($i=0; $i < $count; $i++) {
-    $nation = MYDB_fetch_array($result);
+foreach(getAllNationStaticInfo() as $nation){
     SetNationFront($connect, $nation['nation']);
 }
 

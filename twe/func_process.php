@@ -176,9 +176,7 @@ function process_1($connect, &$general, $type) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
@@ -365,9 +363,7 @@ function process_4($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
@@ -457,9 +453,7 @@ function process_5($connect, &$general, $type) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
@@ -551,9 +545,7 @@ function process_7($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
@@ -642,9 +634,7 @@ function process_8($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
@@ -736,9 +726,7 @@ function process_9($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
@@ -1005,9 +993,7 @@ function process_13($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select level from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
@@ -2418,9 +2404,7 @@ function process_32($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2548,9 +2532,7 @@ function process_33($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $mynation = MYDB_fetch_array($result);
+    $mynation = getNationStaticInfo($general['nation']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

@@ -37,13 +37,8 @@ $sel[$type] = "selected";
     </td></tr>
 </table>
 <?php
-$query = "select nation,name from nation";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$count = MYDB_num_rows($result);
-
 $nationname[0] = "-";
-for($i=0; $i < $count; $i++) {
-    $nation = MYDB_fetch_array($result);
+foreach(getAllNationStaticInfo() as $nation){
     $nationname[$nation['nation']] = $nation['name'];
 }
 

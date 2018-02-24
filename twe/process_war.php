@@ -1602,9 +1602,7 @@ function addConflict($connect, $city, $nationnum, $mykillnum) {
         if($nationlist[$i] == $nationnum) break;
     }
     if($i != 0 && $i == count($nationlist)) { // 두번째 나라부터 분쟁 가담 메시지 출력
-        $query = "select name from nation where nation='$nationnum'";
-        $result = MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
-        $nation = MYDB_fetch_array($result);
+        $nation = getNationStaticInfo($nationnum);
 
         $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<M><b>【분쟁】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다.";
         pushHistory($connect, $history);

@@ -46,12 +46,7 @@ if(isset($btn) && $btn == "NPC 보기") {
     $sel = "npc<2";
 }
 
-$query = "select nation,name,color from nation";
-$nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nationcount = MYDB_num_rows($nationresult);
-
-for($i=0; $i < $nationcount; $i++) {
-    $nation = MYDB_fetch_array($nationresult);
+foreach(getAllNationStaticInfo() as $nation){
     $nationName[$nation['nation']] = $nation['name'];
     $nationColor[$nation['nation']] = $nation['color'];
 }

@@ -142,7 +142,7 @@ function getGeneralName($forceExit=false)
 /**
  * nationID를 이용하여 국가의 '어지간해선' 변경되지 않는 정보(이름, 색, 성향, 규모, 수도)를 반환해줌
  * 
- * @param int|null $nationID 국가 코드
+ * @param int|null $nationID 국가 코드, -1인 경우 전체, null인 경우 수행하지 않음
  * @param bool $forceRefresh 강제 갱신 여부
  * 
  * @return array|null nationID에 해당하는 국가가 있을 경우 array 반환. 그외의 경우 null
@@ -160,9 +160,9 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
     }
 
     if($nationList === null){
-        $nationList = ArrayToDict(
-            getDB()->query("select nation, name, color, type, level, capital from nation"),
-            "nation");
+        $nationAll = getDB()->query("select nation, name, color, type, level, capital from nation");
+        $nationList = ArrayToDict($nationAll, "nation");
+        $nationList[-1] = $nationAll;
     }
 
     if(isset($nationList[$nationID])){
@@ -176,6 +176,13 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
  */
 function refreshNationStaticInfo(){
     getNationStaticInfo(null, true);
+}
+
+/**
+ * getNationStaticInfo(-1) 의 단축형
+ */
+function getAllNationStaticInfo(){
+    return getNationStaticInfo(-1);
 }
 
 function GetImageURL($imgsvr) {
