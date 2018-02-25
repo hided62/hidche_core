@@ -94,7 +94,7 @@ $src = [
     'nation' => null
 ];
 if($src['nation_id'] != 0) {
-    $nation = $db->queryFirstRow('select nation,name,color from nation where nation=%i',$src_nation_id);
+    $nation = getNationStaticInfo($src_nation_id);
     $src['nation'] = $nation['name'];
     $src['color'] = '#'.$nation['color'];
     $src['color'] = str_replace('##', '#', $src['color']); //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비

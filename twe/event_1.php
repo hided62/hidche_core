@@ -48,7 +48,7 @@ if($admin['isUnited'] == 0) {
 }
 
 // 수도가 이성인경우 옆으로 이전, 또는 랜덤
-$query = "select nation from nation where capital=63 or capital=64 or capital=65 or capital=66 or capital=67 or capital=68 or capital=69";
+$query = "select nation from nation where capital in (63,64,65,66,67,68,69)"; //NOTE: 이성의 여부가 하드코딩 되어있다. 물론 국가 수와 도시가 정해져있으므로 큰 문제는 없다.
 $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 $count = MYDB_num_rows($result);
 

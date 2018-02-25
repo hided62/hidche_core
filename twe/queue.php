@@ -1,4 +1,5 @@
 <?php
+//TODO: 참조 값을 SplQueue ( https://secure.php.net/manual/en/class.splqueue.php )를 이용하도록 변경
 class Queue {
     private $capacity;
     private $size;

@@ -60,10 +60,10 @@ if($btn == "수정" && $me['userlevel'] >= 5) {
     $comment = trim($comment);
     $comment = addslashes(SQ2DQ($comment));
 
-    $query = "select name from nation where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-    if($nation['name'] == "") { $nation['name'] = "재야"; }
+    $nation = getNationStaticInfo($me['nation']);
+    if($nation == null) { 
+        $nation['name'] = "재야"; 
+    }
 
     if($admin['votecomment'] != "") { $admin['votecomment'] .= "|"; }
     $admin['votecomment'] .= "{$nation['name']}:{$me['name']}:{$comment}";

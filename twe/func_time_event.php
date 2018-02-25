@@ -432,9 +432,7 @@ function getRiceIncome($connect, $nationNo, $rate, $admin_rate, $type) {
         $level2[$gen['no']] = $gen['city'];
     }
 
-    $query = "select capital,level from nation where nation='$nationNo'"; // 수도
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($cityresult);
+    $nation = getNationStaticInfo($nationNo);
 
     $query = "select * from city where nation='$nationNo' and supply='1'"; // 도시 목록
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

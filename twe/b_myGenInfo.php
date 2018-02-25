@@ -60,10 +60,8 @@ if($me['skin'] < 1) {
     </td></tr>
 </table>
 <?php
-$query = "select level from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nation = MYDB_fetch_array($result);
 
+$nationLevel = getDB()->queryFirstField('select level from nation where nation = %i', $me['nation']);
 switch($type) {
     case  1: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by level desc"; break;
     case  2: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by dedication desc"; break;
@@ -107,9 +105,9 @@ for($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
 
     if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
+        $lbonus = $nationLevel * 2;
     } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
+        $lbonus = $nationLevel;
     } else {
         $lbonus = 0;
     }

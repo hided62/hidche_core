@@ -391,22 +391,24 @@ function checkSupply($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     //도시 있는 국가들
-    $query = "select nation,capital from nation where level>'0'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationNum = MYDB_num_rows($result);
 
     $str = "city='0'";
-    for($i=0; $i < $nationNum; $i++) {
-        $nation = MYDB_fetch_array($result);
-        //수도 있는 덩어리 도시들 1로 세팅
+
+    //TODO: in 을 쓰는게 낫다
+    foreach(getAllNationStaticInfo() as $nation){
+        if($nation['level'] <= 0){
+            continue;
+        }
+
         $lbl = $label[$nation['capital']];
 
-        for($k=1; $k <= $cityNum; $k++) {
-            if($lbl == $label[$k]) {
+        for ($k=1; $k <= $cityNum; $k++) {
+            if ($lbl == $label[$k]) {
                 $str .= " or city='{$k}'";
             }
         }
     }
+
     $query = "update city set supply='1' where {$str}";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
@@ -736,12 +738,15 @@ function checkWander($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
+    $needRefresh = false;
+
     // 국가정보, 장수수
-    $query = "select nation from nation where level=0";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationcount = MYDB_num_rows($result);
-    for($i=0; $i < $nationcount; $i++) {
-        $nation = MYDB_fetch_array($result);
+    foreach(getAllNationStaticInfo() as $nation){
+        if($nation['level'] != 0){
+            continue;
+        }
+
+        $needRefresh = true;
 
         $query = "select no,name,nation,level,history,turntime from general where nation='{$nation['nation']}' and level=12";
         $kingResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -749,8 +754,11 @@ function checkWander($connect) {
 
         $log[0] = "<C>●</>초반 제한후 방랑군은 자동 해산됩니다.";
         pushGenLog($king, $log);
-
         process_56($connect, $king);
+    }
+
+    if($needRefresh){
+        refreshNationStaticInfo();
     }
 }
 
@@ -791,6 +799,7 @@ function checkMerge($connect) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount2 = MYDB_num_rows($result);
 
+        //TODO: 로그 기록에 대한 쿼리는 한번만 할 수 있다.
         //피항복국 장수들 역사 기록 및 로그 전달
         $query = "select no,name,nation,history from general where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

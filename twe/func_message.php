@@ -289,11 +289,7 @@ function genList($connect) {
     <optgroup label='국가메세지'>
     <option value=9000>【 재야 】</option>";
 
-        $query = "select nation,name,color from nation order by binary(name)";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $count = MYDB_num_rows($result);
-        for($i=1; $i <= $count; $i++) {
-            $nation = MYDB_fetch_array($result);
+        foreach(getAllNationStaticInfo() as $nation) {
             $nationNation[$nation['nation']] = $nation['nation'];
             $nationName[$nation['nation']]   = $nation['name'];
             $nationColor[$nation['nation']]  = $nation['color'];
@@ -321,7 +317,7 @@ function genList($connect) {
     echo "
     </optgroup>";
 
-    $query = "select nation,name,color from nation order by binary(name)";
+    $query = "select nation,name,color from nation order by name";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=1; $i <= $count; $i++) {
@@ -383,6 +379,7 @@ function MsgFile($skin, $bg, $nation=0, $level=0) {
 // type : xx,xx(불가침기간,타입)
 // who : xxxx,xxxx(발신인, 수신인)
 function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
+    //FIXME: 폐기
     $query = "select skin,no,nation,name,picture,level from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
@@ -403,9 +400,7 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
         $sndrnation['name'] = '재야';
         $sndrnation['color'] = 'FFFFFF';
     } else {
-        $query = "select name,color from nation where nation='{$sndr['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $sndrnation = MYDB_fetch_array($result);
+        $sndrnation = getNationStaticInfo($sndr['nation']);
     }
 
     switch($bg) {
@@ -420,9 +415,7 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
 
         ShowMsg($me['skin'], $bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], $sndr['name'], $sndrnation['color'], $msg, $date, $num, $from, $term, $me['level'], $dip['reserved']);
     } elseif($category <= 8) {
-        $query = "select name,color from nation where nation='$to'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $rcvrnation = MYDB_fetch_array($result);
+        $rcvrnation = getNationStaticInfo($to);
 
         ShowMsg($me['skin'], $bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], $rcvrnation['name'], $rcvrnation['color'], $msg, $date, $num, $from, $term, $me['level']);
     } elseif($category <= 11) {
@@ -434,9 +427,7 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
             $rcvrnation['name'] = '재야';
             $rcvrnation['color'] = 'FFFFFF';
         } else {
-            $query = "select name,color from nation where nation='{$rcvr['nation']}'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $rcvrnation = MYDB_fetch_array($result);
+            $rcvrnation = getNationStaticInfo($rcvr['nation']);
         }
         ShowMsg($me['skin'], $bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], "{$rcvr['name']}:{$rcvrnation['name']}", $rcvrnation['color'], $msg, $date, $num, $from, $term);
     }

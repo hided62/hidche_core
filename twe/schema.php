@@ -179,7 +179,7 @@ $nation_schema = "
 
   create table nation (
     nation  int(6) not null auto_increment,
-    name    char(64) not null,
+    `name` CHAR(64) NOT NULL COLLATE 'utf8_bin',
     color   char(10) not null,  colset int(1) default 1,
     onlinegen   varchar(1024) default '',
     msg     text default '',

@@ -350,9 +350,7 @@ function getTurn($connect, $general, $type, $font=1) {
             case 25: //임관
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 if(!$nation['name']) { $nation['name'] = '????'; }
 
@@ -566,9 +564,7 @@ function getCoreTurn($connect, $nation, $level) {
             case 51: //항복권고
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 $str[$i] = "【{$nation['name']}】에게 항복 권고";
                 break;
@@ -577,9 +573,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $third = $command[2];
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 $fourth *= 1000;
                 $third *= 1000;
@@ -592,9 +586,7 @@ function getCoreTurn($connect, $nation, $level) {
 
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 $str[$i] = "【{$nation['name']}】에 【{$general['makenation']}】(으)로 통합 제의";
                 break;
@@ -602,36 +594,28 @@ function getCoreTurn($connect, $nation, $level) {
                 $third = $command[2];
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 $str[$i] = "【{$nation['name']}】에 {$third}년 불가침 제의";
                 break;
             case 62: //선전 포고
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 $str[$i] = "【{$nation['name']}】에 선전 포고";
                 break;
             case 63: //종전 제의
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 $str[$i] = "【{$nation['name']}】에 종전 제의";
                 break;
             case 64: //파기 제의
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 $str[$i] = "【{$nation['name']}】에 파기 제의";
                 break;
@@ -676,9 +660,7 @@ function getCoreTurn($connect, $nation, $level) {
             case 75: //피장파장
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 $str[$i] = "【{$nation['name']}】에 피장파장";
                 break;
@@ -688,18 +670,14 @@ function getCoreTurn($connect, $nation, $level) {
             case 77: //이호경식
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 $str[$i] = "【{$nation['name']}】에 이호경식";
                 break;
             case 78: //급습
                 $double = $command[1];
 
-                $query = "select name from nation where nation='$double'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
+                $nation = getNationStaticInfo($double);
 
                 $str[$i] = "【{$nation['name']}】에 급습";
                 break;
@@ -734,9 +712,7 @@ function cityInfo($connect) {
     // 도시 정보
     $city = getCity($connect, $me['city']);
 
-    $query = "select name,color from nation where nation='{$city['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($city['nation']);
 
     $pop  = $city['pop'] / $city['pop2'] * 100;
     $rate = $city['rate'];
@@ -1037,9 +1013,7 @@ function commandTable($connect) {
     $troop = getTroop($connect, $me['troop']);
     $city = getCity($connect, $me['city']);
 
-    $query = "select nation from nation";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationcount = MYDB_num_rows($result);
+    $nationcount = count(getAllNationStaticInfo());
 
     $query = "select city from city where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1049,9 +1023,7 @@ function commandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
-    $query = "select type,level from nation where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($me['nation']);
 
     $develcost = $admin['develcost'];
     $develcostA = $admin['develcost'];    $colorA = 0;
@@ -1380,9 +1352,7 @@ function generalInfo($connect, $no, $skin) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select nation,level,color from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     if($general['level'] == 12) {
         $lbonus = $nation['level'] * 2;
@@ -1932,6 +1902,7 @@ function MyHistory($connect, $no, $skin) {
 }
 
 function addHistory($connect, $me, $history) {
+    //FIXME: update 쿼리만으로도 구성 가능해보임.
     $me['history'] = "{$history}<br>{$me['history']}";
     $query = "update general set history='{$me['history']}' where no='{$me['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1940,6 +1911,7 @@ function addHistory($connect, $me, $history) {
 }
 
 function addNationHistory($connect, $nation, $history) {
+    //FIXME: update 쿼리만으로도 구성 가능해보임.
     $nation['history'] = "{$nation['history']}{$history}<br>";
     $query = "update nation set history='{$nation['history']}' where nation='{$nation['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2553,13 +2525,8 @@ function checkDelay($connect) {
 }
 
 function updateOnline($connect) {
-    $query = "select nation,name from nation";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-
     //국가별 이름 매핑
-    for($i=0; $i < $count; $i++) {
-        $nation = MYDB_fetch_array($result);
+    foreach(getAllNationStaticInfo() as $nation) {
         $nationname[$nation['nation']] = $nation['name'];
     }
     $nationname[0] = "재야";
@@ -3412,9 +3379,7 @@ function CheckHall($connect, $no) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select nation,name,color from nation where nation='{$general['nation']}'";
-    $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($nationresult);
+    $nation = getNationStaticInfo($general['nation']);
 
     for($k=0; $k < 21; $k++) {
         $query = "select * from hall where type='$k' order by data desc";
@@ -3545,11 +3510,9 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             $query = "update general set {$type}='$it' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $query = "select name from nation where nation='{$general['nation']}'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $nation = MYDB_fetch_array($result);
+            $nation = getNationStaticInfo($general['nation']);
 
-            if($nation['name'] == "") {
+            if($nation == null) {
                 $nation['name'] = "재야";
             }
 
@@ -3746,9 +3709,7 @@ function deleteNation($connect, $general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select name from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【멸망】</b></><D><b>{$nation['name']}</b></>은(는) <R>멸망</>했습니다.";
 

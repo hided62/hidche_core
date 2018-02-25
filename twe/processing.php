@@ -1244,13 +1244,7 @@ function command_22($connect, $turn, $command) {
     <option value={$general['no']} {$style}>{$general['name']}</option>";
     }
 
-    $query = "select nation,name,color from nation where nation!='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-
-    for($i=1; $i <= $count; $i++) {
-        $nation = MYDB_fetch_array($result);
-
+    foreach(getAllNationStaticInfo() as $nation){
         echo "<option style=color:{$nation['color']}>【 {$nation['name']} 】</option>";
 
         $query = "select no,name,npc from general where nation='{$nation['nation']}' and level!='12' and npc<2 order by npc,binary(name)";
@@ -1959,12 +1953,10 @@ function command_46($connect, $turn, $command) {
 
     $color = GetNationColors();
 
-    $query = "select color from nation where level>0";
-    $result = MYDB_query($query, $connect) or Error("command_46 ".MYDB_error($connect),"");
-    $nationcount = MYDB_num_rows($result);
-
-    for($i=0; $i < $nationcount; $i++) {
-        $nation = MYDB_fetch_array($result);
+    foreach(getAllNationStaticInfo() as $nation){
+        if($nation['level'] <= 0){
+            continue;
+        }
         $nationcolor[$i] = $nation['color'];
     }
     $validCount = count($color);
@@ -2214,9 +2206,7 @@ function command_52($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,level from nation where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $mynation = MYDB_fetch_array($result);
+    $mynation = getNationStaticInfo($me['nation']);
     
     echo "
 타국에게 원조합니다.<br>
@@ -2232,12 +2222,7 @@ function command_52($connect, $turn, $command) {
 <form name=form1 action=c_double.php method=post>
  대상 국가 <select name=double size=1 style=color:white;background-color:black>";
 
-    $query = "select nation,name,color from nation where nation!='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-
-    for($i=1; $i <= $count; $i++) {
-        $nation = MYDB_fetch_array($result);
+    foreach(getAllNationStaticInfo() as $nation) {
 
         echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
     }
@@ -2420,12 +2405,11 @@ function command_61($connect, $turn, $command) {
         $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
+    foreach(getAllNationStaticInfo() as $nation){
+        if($nation['nation'] == $me['nation']){
+            continue;
+        }
 
-    for($i=1; $i <= $count; $i++) {
-        $nation = MYDB_fetch_array($result);
         switch($diplomacy[$nation['nation']]) {
             case 0: $color = "red"; break;
             case 1: $color = "red"; break;
@@ -2502,12 +2486,10 @@ function command_62($connect, $turn, $command) {
         $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-
-    for($i=1; $i <= $count; $i++) {
-        $nation = MYDB_fetch_array($result);
+    foreach(getAllNationStaticInfo() as $nation){
+        if($nation['nation'] == $me['nation']){
+            continue;
+        }
         //합병중 국가는 안됨
         $query = "select state from diplomacy where me='{$nation['nation']}' and (state='3' or state='5')";
         $tempresult = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
@@ -2565,12 +2547,11 @@ function command_63($connect, $turn, $command) {
         $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
+    foreach(getAllNationStaticInfo() as $nation){
+        if($nation['nation'] == $me['nation']){
+            continue;
+        }
 
-    for($i=1; $i <= $count; $i++) {
-        $nation = MYDB_fetch_array($result);
         switch($diplomacy[$nation['nation']]) {
             case 0: $color = "black"; break;
             case 1: $color = "black"; break;
@@ -2621,12 +2602,11 @@ function command_64($connect, $turn, $command) {
         $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
+    foreach(getAllNationStaticInfo() as $nation){
+        if($nation['nation'] == $me['nation']){
+            continue;
+        }
 
-    for($i=1; $i <= $count; $i++) {
-        $nation = MYDB_fetch_array($result);
         switch($diplomacy[$nation['nation']]) {
             case 0: $color = "red"; break;
             case 1: $color = "red"; break;
@@ -2936,12 +2916,11 @@ function command_75($connect, $turn, $command) {
         $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
+     foreach(getAllNationStaticInfo() as $nation){
+        if($nation['nation'] == $me['nation']){
+            continue;
+        }
 
-    for($i=1; $i <= $count; $i++) {
-        $nation = MYDB_fetch_array($result);
         switch($diplomacy[$nation['nation']]) {
             case 0: $color = "black"; break;
             case 1: $color = "black"; break;
@@ -2993,12 +2972,11 @@ function command_77($connect, $turn, $command) {
         $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
+     foreach(getAllNationStaticInfo() as $nation){
+        if($nation['nation'] == $me['nation']){
+            continue;
+        }
 
-    for($i=1; $i <= $count; $i++) {
-        $nation = MYDB_fetch_array($result);
         switch($diplomacy[$nation['nation']]) {
             case 0: $color = "black"; break;
             case 1: $color = "black"; break;
@@ -3050,12 +3028,11 @@ function command_78($connect, $turn, $command) {
         $diplomacy[$dip['you']] = $dip['state'];
     }
 
-    $query = "select nation,name,color from nation where nation!='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
+     foreach(getAllNationStaticInfo() as $nation){
+        if($nation['nation'] == $me['nation']){
+            continue;
+        }
 
-    for($i=1; $i <= $count; $i++) {
-        $nation = MYDB_fetch_array($result);
         switch($diplomacy[$nation['nation']]) {
             case 0: $color = "red"; break;
             case 1: $color = "black"; break;
@@ -3088,12 +3065,11 @@ function command_81($connect, $turn, $command) {
 
     $color = GetNationColors();
 
-    $query = "select color from nation where level>0";
-    $result = MYDB_query($query, $connect) or Error("command_46 ".MYDB_error($connect),"");
-    $nationcount = MYDB_num_rows($result);
+     foreach(getAllNationStaticInfo() as $nation){
+        if($nation['level'] <= 0){
+            continue;
+        }
 
-    for($i=0; $i < $nationcount; $i++) {
-        $nation = MYDB_fetch_array($result);
         $nationcolor[$i] = $nation['color'];
     }
     $validCount = count($color);

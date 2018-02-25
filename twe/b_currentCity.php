@@ -137,9 +137,7 @@ $query = "select * from city where city='{$_REQUEST['citylist']}'"; // 도시 �
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $city = MYDB_fetch_array($cityresult);
 
-$query = "select nation,name,color from nation where nation='{$city['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nation = MYDB_fetch_array($result);
+$nation = getNationStaticInfo($city['nation']);
 
 $query = "select name from general where no='{$city['gen1']}'"; // 태수 이름
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

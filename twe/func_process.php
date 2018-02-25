@@ -1059,9 +1059,7 @@ function process_14($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select level from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
@@ -1346,9 +1344,7 @@ function process_21($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         if($general['level'] == 12) {
-            $query = "select level from nation where nation='{$general['nation']}'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $nation = MYDB_fetch_array($result);
+            $nation = getNationStaticInfo($general['nation']);
 
             if($nation['level'] == 0) {
                 $query = "update general set city='$destination' where nation='{$general['nation']}'";
@@ -1895,9 +1891,7 @@ function process_28($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select level,capital from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     if($nation['level'] == 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:방랑군입니다. 귀환 실패. <1>$date</>";
@@ -2242,9 +2236,7 @@ function process_30($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         if($general['level'] == 12) {
-            $query = "select level from nation where nation='{$general['nation']}'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $nation = MYDB_fetch_array($result);
+            $nation = getNationStaticInfo($general['nation']);
 
             if($nation['level'] == 0) {
                 $query = "update general set city='$destination' where nation='{$general['nation']}'";
@@ -2675,9 +2667,7 @@ function process_34($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $mynation = MYDB_fetch_array($result);
+    $mynation = getNationStaticInfo($general['nation']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2799,9 +2789,7 @@ function process_35($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $mynation = MYDB_fetch_array($result);
+    $mynation = getNationStaticInfo($general['nation']);
 
     $lbonus = setLeadershipBonus($general, $mynation['level']);
 
@@ -2925,9 +2913,7 @@ function process_36($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $query = "select level,type from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $mynation = MYDB_fetch_array($result);
+    $mynation = getNationStaticInfo($general['nation']);
 
     $lbonus = setLeadershipBonus($general, $mynation['level']);
 
@@ -3707,9 +3693,7 @@ function process_47($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select name,level from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     //현재 외교 진행중(평시, 불가침만 제외)일때
     $query = "select state from diplomacy where me='{$general['nation']}' and state!='2' and state!='7'";
@@ -3876,9 +3860,7 @@ function process_49($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select level from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $city = getCity($connect, $general['city']);
 
@@ -4379,14 +4361,14 @@ function process_55($connect, &$general) {
         $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에서 거병");
 
         // 외교테이블 추가
-        $query = "select nation from nation where nation!='{$nation['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $nationcount = MYDB_num_rows($result);
-
         refreshNationStaticInfo();
 
-        for($i=0; $i < $nationcount; $i++) {
-            $younation = MYDB_fetch_array($result);
+        foreach(getAllNationStaticInfo() as $younation){
+            if($nation['nation'] == $you['nation']){
+                continue;
+            }
+
+            //FIXME: 쿼리 개선. foreach문은 굳이 필요없을것
             $query = "insert into diplomacy (me, you, state, term) values ('{$nation['nation']}', '{$younation['nation']}', '2', '0')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $query = "insert into diplomacy (me, you, state, term) values ('{$younation['nation']}', '{$nation['nation']}', '2', '0')";
@@ -4407,9 +4389,7 @@ function process_56($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select name from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = getNationStaticInfo($general['nation']);
 
     $query = "select city from city where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
