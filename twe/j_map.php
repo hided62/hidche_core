@@ -4,6 +4,8 @@ include 'func.php';
 
 use utilphp\util as util;
 
+getGeneralID();
+
 //읽기 전용이다. 빠르게 세션 끝내자
 session_write_close();
 
