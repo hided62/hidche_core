@@ -252,6 +252,14 @@ function LogText($prefix, $variable){
     fclose($fp);
 }
 
+function dict_map($callback, $dict){
+    $result = [];
+    foreach(array_keys($dict) as $key){
+        $result[$key] = ($callback)($dict[$key]);
+    }
+    return $result;
+}
+
 function ArrayToDict($arr, $keyName){
     $result = [];
 
