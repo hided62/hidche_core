@@ -197,48 +197,51 @@ function sendScoutMsg($src, $dest, $date) {
 
 
 function getMailboxList(){
-    $result = [];
+        
+    $generalNations = [];
 
-    $generalID = getGeneralID(false);
-
-    if(!$generalID){
-
-    }
-
-    $db = getDB();
-    $me = $db->queryFirstRow('select no,nation,level from general where no=%i', $generalID);
-
-    //가장 최근에 주고 받은 사람.
-    $latestMessage = util::array_get(getMessage('private', 1)[0], null);
-    if($latestMessage !== null){
-        if($latestMessage->src == $generalID){
-            $latestMessage = $latestMessage->dest;
+    foreach(getDB()->query('select `no`, `name`, `nation`, `level`, `npc` from `general` where `npc` < 2') as $general)
+    {
+        list($generalID, $generalName, $nationID, $level, $npc) = $general;
+        if(!isset($generalNations[$nationID])){
+            $generalNations[$nationID] = [];
         }
-        else{
-            $latestMessage = $latestMessage->src;
+
+        $isChief = ($level == 12);
+
+        $obj = [$generalID, $generalName];
+        if($isChief){
+            $obj[] = 1;
         }
+
+        //TODO: 빙의장 정보 추가
+        $generalNations[$nationID][] = $obj;
     }
 
-    $nations = [];
-    foreach (getAllNationStaticInfo() as $nation) {
-        $nations[$nation['nation']] = $nation;
-    }
-    $nations[0] = [
-        'nation' => 0,
-        'name' => '재야',
-        'color' => '#ffffff'
+    $neutral = [
+        "nation"=>0,
+        "name"=>"재야",
+        "color"=>"#ffffff"
     ];
 
-    $generals = $db->query('select no, nation, name, level from general where npc < 2 and no != %i order by name asc', $generalID);
-    foreach ($generals as $general) {
-        $nations[$general['nation']] = $general;
-    }
+    $result = array_map(function($nation){
+        $nationID = $nation['nation'];
+        $mailbox = $nationID + 9000;
+        $nation = $nation['name'];
+        $color = ('#'.$nation['color']).replace('##','#');//xxx: #기호 없는 이전 코드 대비용
+        $generals = util::array_get($generalNations[$nationID], []);
 
-    return [
-        'me' => $me,
-        'latest' => $latestMessage,
-        'nations' => $nations
-    ];
+        return [
+            "nationID"=>$nationID,
+            "mailbox"=>$mailbox,
+            "nation"=>$nationID,
+            "color"=>$color,
+            "general"=>$generals
+        ];
+    }, array_merge([$neutral], getAllNationStaticInfo()));
+
+    return $result;
+
 }
 
 function genList($connect) {
