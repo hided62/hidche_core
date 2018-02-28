@@ -27,6 +27,8 @@ var sequence =null;
 var myNation = null;
 var lastMsg = null;
 
+var generalList = {};
+
 function responseMessage(msgID, response){
     $.ajax({
         url: 'prompt_dummy.php',
@@ -118,10 +120,18 @@ function redrawMsg(deferred){
                 $msgBoard.empty();
             }
 
+
+            var needRefreshLastContact = (msgType == 'private');
+
             //list의 맨 앞이 가장 최신 메시지임.
             var $msgs = msgSource.map(function(msg){
 
-                
+                var contactTarget = (msg.src.id != myGeneralID) ? msg.src.id : msg.dest.id;
+                if(needRefreshLastContact && contactTarget != myGeneralID)
+                {
+                    needRefreshLastContact = false;
+                    $('#last_contact').val(contactTarget).html(generalList[contactTarget].textName).show();
+                }
 
                 msg.msgType = msgType;
                 var msgHtml = TemplateEngine(messageTemplate, msg);
@@ -221,9 +231,7 @@ function refreshMailboxList(obj){
             var generalName = this[1];
             var isRuler = this.length>2;
 
-            if(generalID == lastMsg.id){
-                lastMsg.name = generalName;
-            }
+            
 
             if(generalID == myGeneralID){
                 return true;
@@ -233,6 +241,15 @@ function refreshMailboxList(obj){
             if(isRuler){
                 textName = '*{0}*'.format(textName);
             }
+
+            generalList[generalID] = {
+                id:generalID,
+                name:generalName,
+                textName:textName,
+                isRuler:isRuler,
+                nation:nation.nationID,
+                color:nation.color
+            };
 
             var $item = $('<option value="{0}">{1}</option>'.format(generalID, textName));
             $optgroup.append($item);
@@ -250,12 +267,8 @@ function refreshMailboxList(obj){
     $favorite.append($ourCountry);
     $favorite.append($toPublic);
 
-    //최근 대화상대
-    if(lastMsg.id){
-        var $lastContact = $('<option value="{0}">{1}</option>'.format(lastMsg.id, lastMsg.name));
-        $favorite.append($lastContact);
-    }
-
+    var $lastContact = $('<option id="last_contact" value="-1"></option>').hide();
+    $favorite.append($lastContact);
     //TODO:운영자를 추가하는 코드도 넣을 것.
 
     $mailboxList.prepend($favorite);
@@ -361,11 +374,11 @@ jQuery(function($){
 
     var MessageList = fetchMsg();
         
-    $.when(senderList, basicInfo)
+    senderList = $.when(senderList, basicInfo)
         .then(refreshMailboxList)
         .then(activateMessageForm);
     
-    $.when(MessageList, getTemplate, basicInfo)
+    $.when(MessageList, getTemplate, basicInfo, senderList)
         .then(function(){
             redrawMsg(MessageList);
         });
