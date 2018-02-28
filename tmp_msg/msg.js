@@ -206,6 +206,18 @@ function refreshMailboxList(obj){
     var oldSelected = $mailboxList.val();
 
     $mailboxList.empty();
+    
+    var $lastContact = $('#last_contact');
+    var lastContact = null;
+    if($lastContact.length > 0 && $lastContact.val()>=0){
+        lastContact = {
+            id:$lastContact.val(),
+            textName:$lastContact.html()
+        };
+        $lastContact = null;
+    }
+
+    generalList = {};
 
     //TODO:수뇌인 경우 각국에 대해 외교 국메를 넣을 수 있어야함.
 
@@ -267,7 +279,10 @@ function refreshMailboxList(obj){
     $favorite.append($ourCountry);
     $favorite.append($toPublic);
 
-    var $lastContact = $('<option id="last_contact" value="-1"></option>').hide();
+    $lastContact = $('<option id="last_contact" value="-1"></option>').hide();
+    if(lastContact){
+        $lastContact.show().val(lastContact.id).html(lastContact.textName);
+    }
     $favorite.append($lastContact);
     //TODO:운영자를 추가하는 코드도 넣을 것.
 
