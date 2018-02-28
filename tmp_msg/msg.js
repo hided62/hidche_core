@@ -252,8 +252,8 @@ function refreshMailboxList(obj){
 
     //최근 대화상대
     if(lastMsg.id){
-        var $last = $('<option value="{0}">{1}</option>'.format(lastMsg.id, lastMsg.name));
-        $favorite.append($last);
+        var $lastContact = $('<option value="{0}">{1}</option>'.format(lastMsg.id, lastMsg.name));
+        $favorite.append($lastContact);
     }
 
     //TODO:운영자를 추가하는 코드도 넣을 것.
@@ -271,12 +271,13 @@ function refreshMailboxList(obj){
 function registerGlobal(basicInfo){
     
     myNation = {
-        'mailbox':basicInfo.myNationMailbox,
+        'id':basicInfo.myNationID,
+        'mailbox':basicInfo.myNationID+9000,
         'color':'#000000',
         'nation':'재야'
     };
     lastMsg = {
-        id : basicInfo.last
+        id : basicInfo.lastContact
     };
     myGeneralID = basicInfo.generalID;
     isChief = basicInfo.isChief;
