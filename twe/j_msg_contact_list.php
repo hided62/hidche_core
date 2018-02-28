@@ -4,6 +4,12 @@ include('func.php');
 
 use utilphp\util as util;
 
+if(!getGeneralID()){
+    returnJson([
+        "nation"=>[]
+    ]);
+}
+
 session_write_close(); // 세션 안쓴다
 
 //NOTE: 모든 국가, 모든 장수에 대해서 같은 결과라면 캐싱 가능하지 않을까?
