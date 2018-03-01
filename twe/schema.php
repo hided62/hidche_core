@@ -503,13 +503,10 @@ CREATE TABLE `message` (
 	`valid_until` DATETIME NOT NULL DEFAULT '9999-12-31 23:59:59',
 	`message` TEXT NOT NULL COMMENT 'json',
 	PRIMARY KEY (`id`),
-	INDEX `by_owner` (`mailbox`, `time`),
-	INDEX `by_dest` (`dest`, `time`),
-	INDEX `by_full` (`src`, `dest`, `time`)
+	INDEX `by_mailbox` (`mailbox`, `type`, `time`)
 )
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
-;
 
 ";
 

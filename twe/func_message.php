@@ -46,15 +46,14 @@ class Message{
 
 
 
-function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
-    //'select * from `message` where `mailbox` = 90 and `time` < "2018-01-21 04:47:20" ORDER BY `time` desc LIMIT 3 ';
-    
+function getRawMessage($mailbox, $msgType, $limit=30, $fromSeq=NULL){
 
-    $sql = 'select * from `message` where `mailbox` = %i_mailbox';
-    if($fromTime !== NULL){
-        $sql .= ' and `time` <= %s_time';
+
+    $sql = 'select * from `message` where `mailbox` = %i_mailbox and `type` = %s_type and `valid_until` > now()';
+    if($fromSeq !== NULL){
+        $sql .= ' and `id` > %i_id';
     }
-    $sql .= ' ORDER BY `time` desc';
+    $sql .= ' ORDER BY `id` desc';
     if($limit > 0){
         $sql .= ' LIMIT %i_limit';
     }
@@ -62,6 +61,7 @@ function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
     //TODO: table 네임의 prefix를 처리할 수 있도록 개선
     $result = getDB()->query($sql, [
         'mailbox' => $mailbox,
+        'type' => $msgType,
         'limit' => $limit,
         'time' => $fromTime
     ]);
@@ -72,24 +72,31 @@ function getRawMessage($mailbox, $limit=30, $fromTime=NULL){
     }, $result);
 }
 
-function getMessage($msgType, $limit=30, $fromTime=NULL){
+function getMessage($msgType, $nationID=null, $limit=30, $fromSeq=NULL){
     $generalID = getGeneralID(false);
     if($generalID === NULL){
         return [];
     }
 
     if($msgType === 'public'){
-        return getRawMessage(9999, $limit, $fromTime);
+        return getRawMessage(9999, 'public', $limit, $fromSeq);
     }
     else if($msgType === 'private'){
-        return getRawMessage($generalID, $limit, $fromTime);
+        return getRawMessage($generalID, 'private', $limit, $fromSeq);
     }
     else if($msgType === 'national'){
-        $nationID = getDB()->queryFirstField(
-            'select `nation` from `general` where no = %i',
-            $generalID
-        );
-        return getRawMessage(9000 + $nationID, $limit, $fromTime);
+        if($nationID === null){
+            return [];
+        }
+
+        return getRawMessage($nationID + 9000, 'national', $limit, $fromSeq);
+    }
+    else if($msgType === 'diplomacy'){
+        if($nationID === null){
+            return [];
+        }
+        
+        return getRawMessage($nationID + 9000, 'diplomacy', $limit, $fromSeq);
     }
     else{
         return [];
@@ -244,6 +251,8 @@ function getMailboxList(){
 
 }
 
+
+//Legacy
 function genList($connect) {
     $query = "select no,nation,level,msgindex,userlevel from general where owner='{$_SESSION['noMember']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
