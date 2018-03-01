@@ -59,8 +59,8 @@ if($ok == "수락") {
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【종전】</b></><D><b>{$mynation['name']}</b></>(이)가 <D><b>{$younation['name']}</b></>(와)과 <M>종전 합의</> 하였습니다.";
         $youlog[count($youlog)] = "<C>●</><D><b>{$mynation['name']}</b></>(와)과 종전에 성공했습니다.";
         $mylog[count($mylog)] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 종전에 합의했습니다.";
-        $you = addHistory($connect, $you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 종전 성공");
-        $me = addHistory($connect, $me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 종전 수락");
+        addHistory($you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 종전 성공");
+        addHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 종전 수락");
 
         //외교 변경
         $query = "update diplomacy set state='2',term='0' where me='{$mynation['nation']}' and you='{$younation['nation']}'";

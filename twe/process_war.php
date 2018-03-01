@@ -1679,9 +1679,9 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
     $alllog[count($alllog)] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
     $log[count($log)] = "<C>●</><G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
     $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<S><b>【지배】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></>(을)를 지배했습니다.";
-    $general = addHistory($connect, $general, "<C>●</>{$game['year']}년 {$game['month']}월:<G><b>{$city['name']}</b></>(을)를 <S>함락</>시킴");
-    $nation = addNationHistory($connect, $nation, "<C>●</>{$game['year']}년 {$game['month']}월:<Y>{$general['name']}</>(이)가 {$destnationName} <G><b>{$city['name']}</b></>(을)를 <S>점령</>");
-    $destnation = addNationHistory($connect, $destnation, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>(이)가 <span class='ev_highlight'>함락</span>");
+    addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<G><b>{$city['name']}</b></>(을)를 <S>함락</>시킴");
+    addNationHistory($nation, "<C>●</>{$game['year']}년 {$game['month']}월:<Y>{$general['name']}</>(이)가 {$destnationName} <G><b>{$city['name']}</b></>(을)를 <S>점령</>");
+    addNationHistory($destnation, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>(이)가 <span class='ev_highlight'>함락</span>");
 
     $query = "select city from city where nation='{$city['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1695,7 +1695,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         $losenation = MYDB_fetch_array($result);
 
         $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>(이)가 멸망하였습니다.";
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$losenation['name']}</b></>(을)를 정복");
+        addNationHistory($nation, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$losenation['name']}</b></>(을)를 정복");
 
         $query = "select no from general where nation='{$general['nation']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1725,7 +1725,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
             
             pushGenLog($gen, $genlog);
             
-            $gen = addHistory($connect, $gen, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$losenation['name']}</b></>(이)가 <R>멸망</>");
+            addHistory($gen, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$losenation['name']}</b></>(이)가 <R>멸망</>");
 
             $loseGeneralGold += $loseGold;
             $loseGeneralRice += $loseRice;
@@ -1893,8 +1893,8 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         $conquerNationArray = MYDB_fetch_array($conquerResult);
 
         $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationArray['name']}</b></>(이)가 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>(을)를 양도받았습니다.";
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$game['year']}년 {$game['month']}월:<G><b>{$city['name']}</b></>(을)를 <D><b>{$conquerNationArray['name']}</b></>에 <Y>양도</>");
-        $conquerNationArray = addNationHistory($connect, $conquerNationArray, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>(을)를 <S>양도</> 받음");
+        addNationHistory($nation, "<C>●</>{$game['year']}년 {$game['month']}월:<G><b>{$city['name']}</b></>(을)를 <D><b>{$conquerNationArray['name']}</b></>에 <Y>양도</>");
+        addNationHistory($conquerNationArray, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>(을)를 <S>양도</> 받음");
         // 이동X 및 사기 변경
         $query = "update general set atmos='{$general['atmos']}',killnum=killnum+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

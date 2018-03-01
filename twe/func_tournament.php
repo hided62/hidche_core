@@ -637,8 +637,8 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $query = "select no,history from general where no={$general2['no']}";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen2 = MYDB_fetch_array($result);
-    $gen1 = addHistory($connect, $gen1, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 우승");
-    $gen2 = addHistory($connect, $gen2, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 준우승");
+    addHistory($gen1, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 우승");
+    addHistory($gen2, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 준우승");
 
     $cost = $admin['develcost'] * 20;
     $cost2 = $admin['develcost'] * 12;

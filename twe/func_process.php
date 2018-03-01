@@ -1693,7 +1693,7 @@ function process_25($connect, &$general) {
     } else {
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
         $log[count($log)] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 임관했습니다. <1>$date</>";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
 
         if($gencount < 10) { $exp = 700; }
         else { $exp = 100; }
@@ -2016,7 +2016,7 @@ function process_29($connect, &$general) {
             
             $log[count($log)] = "<C>●</>{$admin['month']}월:<Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다! <1>$date</>";
             $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다!";
-            $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>$name</>(이)라는 <C>인재</>를 {$scoutType}");
+            addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>$name</>(이)라는 <C>인재</>를 {$scoutType}");
 
             $query = "select max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0) as dex0, avg(dex10) as dex10, avg(dex20) as dex20, avg(dex30) as dex30, avg(dex40) as dex40 from general where nation='{$general['nation']}'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -3527,7 +3527,7 @@ function process_45($connect, &$general) {
         if($dipcount1 > 0) {
             $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 통합에 반대하며 <D><b>{$nation['name']}</b></>(을)를 <R>떠났</>습니다.";
             $log[count($log)] = "<C>●</>{$admin['month']}월:통합에 반대하며 <D><b>{$nation['name']}</b></>에서 떠났습니다. <1>$date</>";
-            $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:통합에 반대하며 <D><b>{$nation['name']}</b></>(을)를 떠남");
+            addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:통합에 반대하며 <D><b>{$nation['name']}</b></>(을)를 떠남");
 
             // 국적 바꾸고 등급 재야로
             $query = "update general set resturn='SUCCESS',belong=0,nation=0,level=0,makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}' where no='{$general['no']}'";
@@ -3535,7 +3535,7 @@ function process_45($connect, &$general) {
         } elseif($dipcount2 > 0) {
             $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 합병에 반대하며 <D><b>{$nation['name']}</b></>(을)를 <R>떠났</>습니다.";
             $log[count($log)] = "<C>●</>{$admin['month']}월:합병에 반대하며 <D><b>{$nation['name']}</b></>에서 떠났습니다. <1>$date</>";
-            $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:합병에 반대하며 <D><b>{$nation['name']}</b></>(을)를 떠남");
+            addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:합병에 반대하며 <D><b>{$nation['name']}</b></>(을)를 떠남");
 
             // 국적 바꾸고 등급 재야로
             $query = "update general set resturn='SUCCESS',belong=0,nation=0,level=0,makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}' where no='{$general['no']}'";
@@ -3543,7 +3543,7 @@ function process_45($connect, &$general) {
         } else {
             $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에서 <R>하야</>했습니다.";
             $log[count($log)] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>에서 하야했습니다. <1>$date</>";
-            $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에서 하야");
+            addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에서 하야");
 
             // 국적 바꾸고 등급 재야로        // 명성/공헌 N*10% 감소
             $query = "update general set resturn='SUCCESS',belong=0,betray=betray+1,nation=0,level=0,experience=experience*(1-0.1*betray),dedication=dedication*(1-0.1*betray),makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}' where no='{$general['no']}'";
@@ -3652,8 +3652,8 @@ function process_46($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 건국하였습니다. <1>$date</>";
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에 국가를 건설하였습니다.";
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【건국】</b></>".getNationType($type)." <D><b>{$nation['name']}</b></>(이)가 새로이 등장하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 건국");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>(을)를 건국");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 건국");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>(을)를 건국");
 
         $exp = 1000;
         $ded = 1000;
@@ -3704,7 +3704,7 @@ function process_47($connect, &$general) {
     } else {
         $log[count($log)] = "<C>●</>{$admin['month']}월:영토를 버리고 방랑의 길을 떠납니다. <1>$date</>";
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 방랑의 길을 떠납니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 버리고 방랑");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 버리고 방랑");
 
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【방랑】</b></><D><b>{$general['name']}</b></>은(는) <R>방랑</>의 길을 떠납니다.";
 
@@ -4136,9 +4136,9 @@ function process_52($connect, &$general) {
             $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원했습니다.";
             pushGenLog($gen, $genlog);
         }
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원");
-        $mynation = addNationHistory($connect, $mynation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원");
-        $younation = addNationHistory($connect, $younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(으)로부터 금<C>$gold</> 쌀<C>$rice</>을 지원 받음");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원");
+        addNationHistory($mynation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원");
+        addNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(으)로부터 금<C>$gold</> 쌀<C>$rice</>을 지원 받음");
 
         //상대국 수뇌부에게 로그 전달
         $query = "select no,name,nation from general where nation='$which' and level>='9'";
@@ -4287,9 +4287,9 @@ function process_54($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:<Y>{$nextruler['name']}</>에게 군주의 자리를 물려줍니다. <1>$date</>";
         $youlog[count($youlog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게서 군주의 자리를 물려받습니다.";
 
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주자리를 <Y>{$nextruler['name']}</>에게 선양");
-        $nextruler = addHistory($connect, $nextruler, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주자리를 물려 받음");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <Y>{$nextruler['name']}</>에게 선양");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주자리를 <Y>{$nextruler['name']}</>에게 선양");
+        addHistory($nextruler, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주자리를 물려 받음");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <Y>{$nextruler['name']}</>에게 선양");
     }
     pushGenLog($general, $log);
     pushGenLog($nextruler, $youlog);
@@ -4349,8 +4349,8 @@ function process_55($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:거병에 성공하였습니다. <1>$date</>";
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에서 거병하였습니다.";
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【거병】</b></><D><b>{$general['name']}</b></>(이)가 세력을 결성하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$city['name']}</b></>에서 거병");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에서 거병");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$city['name']}</b></>에서 거병");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에서 거병");
 
         // 외교테이블 추가
         refreshNationStaticInfo();
@@ -4394,7 +4394,7 @@ function process_56($connect, &$general) {
     } else {
         $log[count($log)] = "<C>●</>{$admin['month']}월:세력을 해산했습니다. <1>$date</>";
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 세력을 해산했습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 해산");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 해산");
 
         $query = "select no from general where nation='{$general['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -4475,9 +4475,9 @@ function process_57($connect, &$general) {
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <M>모반</>에 성공했습니다.";
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【모반】</b></><Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 군주 자리를 찬탈했습니다.";
 
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:모반으로 <D><b>{$nation['name']}</b></>의 군주자리를 찬탈");
-        $ruler = addHistory($connect, $ruler, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$general['name']}</b></>의 모반으로 인해 <D><b>{$nation['name']}</b></>의 군주자리를 박탈당함");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <Y>{$ruler['name']}</>에게서 군주자리를 찬탈");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:모반으로 <D><b>{$nation['name']}</b></>의 군주자리를 찬탈");
+        addHistory($ruler, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$general['name']}</b></>의 모반으로 인해 <D><b>{$nation['name']}</b></>의 군주자리를 박탈당함");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <Y>{$ruler['name']}</>에게서 군주자리를 찬탈");
     }
     pushGenLog($general, $log);
     pushGenLog($ruler, $youlog);
@@ -4638,9 +4638,9 @@ function process_62($connect, &$general) {
 
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$younation['name']}</b></>에 <M>선전 포고</> 하였습니다.";
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【선포】</b></><D><b>{$nation['name']}</b></>(이)가 <D><b>{$younation['name']}</b></>에 선전 포고 하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>에 선전 포고");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$younation['name']}</b></>에 선전 포고");
-        $younation = addNationHistory($connect, $younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국에 선전 포고");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>에 선전 포고");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$younation['name']}</b></>에 선전 포고");
+        addNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국에 선전 포고");
 
         //외교 변경
         $query = "update diplomacy set state='1',term='24' where me='{$nation['nation']}' and you='{$younation['nation']}'";
@@ -4852,8 +4852,8 @@ function process_65($connect, &$general) {
 
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령하였습니다.";
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【초토화】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>(을)를 <R>초토화</>하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령");
 
         //외교제한 24
         $amount = round($destcity['pop'] * 0.1);
@@ -4950,8 +4950,8 @@ function process_66($connect, &$general) {
 
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(으)로 <R>천도</>를 명령하였습니다.";
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<S><b>【천도】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>(으)로 천도하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>(으)로 천도 명령");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(으)로 천도 명령");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>(으)로 천도 명령");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(으)로 천도 명령");
 
         //수도 변경
         $query = "update nation set l{$general['level']}term='0',capital='{$destcity['city']}',capset='1',gold=gold-'$amount',rice=rice-'$amount' where nation='{$general['nation']}'";
@@ -5036,8 +5036,8 @@ function process_67($connect, &$general) {
 
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(을)를 <C>증축</>하였습니다.";
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【증축】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>(을)를 증축하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>(을)를 증축");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(을)를 증축");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>(을)를 증축");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(을)를 증축");
 
         //물자 감소
         $query = "update nation set l{$general['level']}term='0',capset='1',gold=gold-'$amount',rice=rice-'$amount' where nation='{$general['nation']}'";
@@ -5126,8 +5126,8 @@ function process_68($connect, &$general) {
 
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(을)를 <M>감축</>하였습니다.";
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【감축】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>(을)를 감축하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>(을)를 감축");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(을)를 감축");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>(을)를 감축");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(을)를 감축");
 
         //물자 증가
         $query = "update nation set l{$general['level']}term='0',capset='1',gold=gold+'$amount',rice=rice+'$amount' where nation='{$general['nation']}'";
@@ -5235,8 +5235,8 @@ function process_71($connect, &$general) {
 //        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <M>필사즉생</>(을)를 발동하였습니다.";
 //        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <M>필사즉생</>(을)를 발동하였습니다.";
         $tricklog[count($tricklog)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <M>필사즉생</>(을)를 발동하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<M>필사즉생</>(을)를 발동");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <M>필사즉생</>(을)를 발동");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<M>필사즉생</>(을)를 발동");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <M>필사즉생</>(을)를 발동");
 
         //전장수 훈사100
         $query = "update general set atmos=100,train=100 where nation='{$general['nation']}'";
@@ -5346,8 +5346,8 @@ function process_72($connect, &$general) {
 //        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>에 <M>백성동원</>(을)를 발동하였습니다.";
 //        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>에 <M>백성동원</>(을)를 발동하였습니다.";
         $tricklog[count($tricklog)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>에 <M>백성동원</>(을)를 발동하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>에 <M>백성동원</>(을)를 발동");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>에 <M>백성동원</>(을)를 발동");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>에 <M>백성동원</>(을)를 발동");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>에 <M>백성동원</>(을)를 발동");
 
         //도시 성수 80%
         $query = "update city set def=def2*0.8,wall=wall2*0.8 where city='{$destcity['city']}'";
@@ -5472,9 +5472,9 @@ function process_73($connect, &$general) {
 //        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>에 <M>수몰</>(을)를 발동하였습니다.";
 //        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>에 <M>수몰</>(을)를 발동하였습니다.";
         $tricklog[count($tricklog)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>에 <M>수몰</>(을)를 발동하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>에 <M>수몰</>(을)를 발동");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>의 <G><b>{$destcity['name']}</b></>에 <M>수몰</>(을)를 발동");
-        $destnation = addNationHistory($connect, $destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국의 <G><b>{$destcity['name']}</b></>에 <M>수몰</>(을)를 발동");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>에 <M>수몰</>(을)를 발동");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>의 <G><b>{$destcity['name']}</b></>에 <M>수몰</>(을)를 발동");
+        addNationHistory($destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국의 <G><b>{$destcity['name']}</b></>에 <M>수몰</>(을)를 발동");
 
         //도시 성수 80% 감소
         $query = "update city set def=def*0.2,wall=wall*0.2 where city='{$destcity['city']}'";
@@ -5590,9 +5590,9 @@ function process_74($connect, &$general) {
 //        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>에 <M>허보</>(을)를 발동하였습니다.";
 //        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>에 <M>허보</>(을)를 발동하였습니다.";
         $tricklog[count($tricklog)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>에 <M>허보</>(을)를 발동하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>에 <M>허보</>(을)를 발동");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>의 <G><b>{$destcity['name']}</b></>에 <M>허보</>(을)를 발동");
-        $destnation = addNationHistory($connect, $destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국의 <G><b>{$destcity['name']}</b></>에 <M>허보</>(을)를 발동");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>에 <M>허보</>(을)를 발동");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>의 <G><b>{$destcity['name']}</b></>에 <M>허보</>(을)를 발동");
+        addNationHistory($destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국의 <G><b>{$destcity['name']}</b></>에 <M>허보</>(을)를 발동");
 
         //상대국 도시 전부 검색
         $query = "select city from city where nation='{$destcity['nation']}' and supply=1";
@@ -5732,9 +5732,9 @@ function process_75($connect, &$general) {
 //        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>에 <M>피장파장</>(을)를 발동하였습니다.";
 //        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <D><b>{$destnation['name']}</b></>에 <M>피장파장</>(을)를 발동하였습니다.";
         $tricklog[count($tricklog)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <D><b>{$destnation['name']}</b></>에 <M>피장파장</>(을)를 발동하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$destnation['name']}</b></>에 <M>피장파장</>(을)를 발동");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>에 <M>피장파장</>(을)를 발동");
-        $destnation = addNationHistory($connect, $destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국에 <M>피장파장</>(을)를 발동");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$destnation['name']}</b></>에 <M>피장파장</>(을)를 발동");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>에 <M>피장파장</>(을)를 발동");
+        addNationHistory($destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국에 <M>피장파장</>(을)를 발동");
 
         //전략기한+60
         $query = "update nation set tricklimit=tricklimit+60 where nation='{$destnation['nation']}'";
@@ -5832,8 +5832,8 @@ function process_76($connect, &$general) {
 //        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <M>의병모집</>(을)를 발동하였습니다.";
 //        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <M>의병모집</>(을)를 발동하였습니다.";
         $tricklog[count($tricklog)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <M>의병모집</>(을)를 발동하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<M>의병모집</>(을)를 발동");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <M>의병모집</>(을)를 발동");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<M>의병모집</>(을)를 발동");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <M>의병모집</>(을)를 발동");
 
         $query = "select avg(gennum) as gennum from nation";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -6067,9 +6067,9 @@ function process_77($connect, &$general) {
 //        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>에 <M>이호경식</>(을)를 발동하였습니다.";
 //        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <D><b>{$destnation['name']}</b></>에 <M>이호경식</>(을)를 발동하였습니다.";
         $tricklog[count($tricklog)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <D><b>{$destnation['name']}</b></>에 <M>이호경식</>(을)를 발동하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$destnation['name']}</b></>에 <M>이호경식</>(을)를 발동");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>에 <M>이호경식</>(을)를 발동");
-        $destnation = addNationHistory($connect, $destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국에 <M>이호경식</>(을)를 발동");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$destnation['name']}</b></>에 <M>이호경식</>(을)를 발동");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>에 <M>이호경식</>(을)를 발동");
+        addNationHistory($destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국에 <M>이호경식</>(을)를 발동");
 
         //선포+3개월
         if($dip['state'] == 0) {
@@ -6193,9 +6193,9 @@ function process_78($connect, &$general) {
 //        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>에 <M>급습</>(을)를 발동하였습니다.";
 //        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <D><b>{$destnation['name']}</b></>에 <M>급습</>(을)를 발동하였습니다.";
         $tricklog[count($tricklog)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【전략】</b></><D><b>{$nation['name']}</b></>(이)가 <D><b>{$destnation['name']}</b></>에 <M>급습</>(을)를 발동하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$destnation['name']}</b></>에 <M>급습</>(을)를 발동");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>에 <M>급습</>(을)를 발동");
-        $destnation = addNationHistory($connect, $destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국에 <M>급습</>(을)를 발동");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$destnation['name']}</b></>에 <M>급습</>(을)를 발동");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$destnation['name']}</b></>에 <M>급습</>(을)를 발동");
+        addNationHistory($destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 아국에 <M>급습</>(을)를 발동");
 
         //선포-3개월
         $query = "update diplomacy set term=term-3 where (me='{$general['nation']}' and you='{$destnation['nation']}') or (you='{$general['nation']}' and me='{$destnation['nation']}')";
@@ -6269,8 +6269,8 @@ function process_81($connect, &$general) {
 
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <font color={$color}><b>국기</b></font>를 변경하였습니다.";
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【국기변경】</b></><D><b>{$nation['name']}</b></>(이)가 <font color={$color}><b>국기</b></font>를 변경하였습니다.";
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<font color={$color}><b>국기</b></font>를 변경");
-        $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <font color={$color}><b>국기</b></font>를 변경");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<font color={$color}><b>국기</b></font>를 변경");
+        addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <font color={$color}><b>국기</b></font>를 변경");
 
         //국기변경
         $query = "update nation set color='$color',colset=colset-1 where nation='{$nation['nation']}'";

@@ -88,8 +88,8 @@ if($ok == "수락") {
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【합병시도】</b></><D><b>{$mynation['name']}</b></>(와)과 <D><b>{$younation['name']}</b></>(이)가 합병을 시도합니다.";
         $mylog[count($mylog)] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 합병에 동의했습니다.";
         $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>(이)가 <D><b>{$younation['name']}</b></>(와)과 <M>합병</>에 동의하였습니다.";
-        $you = addHistory($connect, $you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 합병 시도");
-        $me = addHistory($connect, $me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 합병 시도");
+        addHistory($you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 합병 시도");
+        addHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 합병 시도");
 
         //외교 변경
         $query = "update diplomacy set state='5',term='24' where me='{$mynation['nation']}' and you='{$younation['nation']}'";

@@ -44,7 +44,15 @@ class Message{
     }
 }
 
+function getSingleMessage($messageID){
+    $messageInfo = getDB()->queryFirstRow('select * from `message` where `id` = %i', $messageID);
 
+    if (!$messageInfo) {
+        return [false, '존재하지 않는 메시지'];
+    }
+    
+    return [true, $messageInfo];
+}
 
 function getRawMessage($mailbox, $msgType, $limit=30, $fromSeq=NULL){
 
@@ -114,11 +122,15 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
     $dest['nation'] = util::array_get($destNation['name'], '재야');
     $dest['color'] = util::array_get($destNation['color'], '#ffffff');
 
-    if(!$isSender && $mailBox < 9000){
+    if(!$isSender && $mailBox < 9000 && util::array_get($msgOption['alert'], false)){
         //TODO:newmsg보단 lastmsg로 datetime을 넣는게 더 나아보임
         getDB()->update('general', array(
             'newmsg' => true
         ), 'no=%i', $dest['id']);
+    }
+
+    if(isset($msgOption['alert'])){
+        unset($msgOption['alert']);
     }
 
     getDB()->insert('message', array(

@@ -1902,22 +1902,17 @@ function MyHistory($connect, $no, $skin) {
     echo ConvertLog($general['history'], $skin);
 }
 
-function addHistory($connect, $me, $history) {
-    //FIXME: update 쿼리만으로도 구성 가능해보임.
-    $me['history'] = "{$history}<br>{$me['history']}";
-    $query = "update general set history='{$me['history']}' where no='{$me['no']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    return $me;
+function addHistory($me, $history) {
+    getDB()->query("update general set history=concat(%s, history) where no=%i",
+        $history.'<br>', $me['no']);
 }
 
-function addNationHistory($connect, $nation, $history) {
+function addNationHistory($nation, $history) {
     //FIXME: update 쿼리만으로도 구성 가능해보임.
     $nation['history'] = "{$nation['history']}{$history}<br>";
-    $query = "update nation set history='{$nation['history']}' where nation='{$nation['nation']}'";
+    getDB()->query("update nation set history=concat(%s, history) where nation=%i",
+        $history.'<br>', $nation['nation']);
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    return $nation;
 }
 
 function adminMsg($connect, $skin=1) {
@@ -2818,7 +2813,7 @@ function addAge($connect) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special)."</></b>】(을)를 익혔습니다!";
-            $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special)."</></b>】(을)를 습득");
+            addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special)."</></b>】(을)를 습득");
             pushGenLog($general, $log);
         }
 
@@ -2834,7 +2829,7 @@ function addAge($connect) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special2)."</></b>】(을)를 익혔습니다!";
-            $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special2)."</></b>】(을)를 습득");
+            addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special2)."</></b>】(을)를 습득");
             pushGenLog($general, $log);
         }
     }
@@ -3333,7 +3328,7 @@ function updateTurntime($connect, $no) {
 
         $log[0] = "<C>●</>나이가 들어 <R>은퇴</>하고 자손에게 자리를 물려줍니다.";
         pushGenLog($general, $log);
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:나이가 들어 은퇴하고, 자손에게 관직을 물려줌");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:나이가 들어 은퇴하고, 자손에게 관직을 물려줌");
     }
 
     $turntime = addTurn($general['turntime'], $admin['turnterm']);
@@ -3521,7 +3516,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             case 0:
                 $log[count($log)] = "<C>●</><C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
-                $general = addHistory($connect, $general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getWeapName($it)."</>(을)를 습득");
+                addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getWeapName($it)."</>(을)를 습득");
                 if($vote == 0) {
                     $history[0] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
@@ -3535,7 +3530,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             case 1:
                 $log[count($log)] = "<C>●</><C>".getBookName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
-                $general = addHistory($connect, $general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getBookName($it)."</>(을)를 습득");
+                addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getBookName($it)."</>(을)를 습득");
                 if($vote == 0) {
                     $history[0] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
@@ -3549,7 +3544,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             case 2:
                 $log[count($log)] = "<C>●</><C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
-                $general = addHistory($connect, $general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getHorseName($it)."</>(을)를 습득");
+                addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getHorseName($it)."</>(을)를 습득");
                 if($vote == 0) {
                     $history[0] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
@@ -3563,7 +3558,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             case 3:
                 $log[count($log)] = "<C>●</><C>".getItemName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
-                $general = addHistory($connect, $general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getItemName($it)."</>(을)를 습득");
+                addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getItemName($it)."</>(을)를 습득");
                 if($vote == 0) {
                     $history[0] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
@@ -3796,7 +3791,7 @@ function nextRuler($connect, $general) {
     $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받았습니다";
 
     pushHistory($history);
-    $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받음.");
+    addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받음.");
     // 장수 삭제 및 부대처리는 checkTurn에서
 }
 

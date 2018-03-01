@@ -157,7 +157,7 @@ if($btn == "추방") {
         $query = "select year,month from game where no='1'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $admin = MYDB_fetch_array($result);
-        $general = addHistory($connect, $general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D>{$nation['name']}</>에서 추방됨");
+        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D>{$nation['name']}</>에서 추방됨");
 
         pushGenLog($general, $log);
         pushAllLog($alllog);
