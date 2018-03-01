@@ -16,20 +16,17 @@ if($me['userlevel'] < 4) {
     echo '_admin3.php';//TODO:debug all and replace
 }
 
+$generalID = getGeneralID();
+
 switch($btn) {
     case "무기지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "무기 회수!"; }
             else { $msg = getWeapName($weap)." 지급!"; }
             // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             if($weap == 0) {
@@ -43,16 +40,11 @@ switch($btn) {
     case "책지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "서적 회수!"; }
             else { $msg = getBookName($weap)." 지급!"; }
             // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             if($weap == 0) {
@@ -66,16 +58,11 @@ switch($btn) {
     case "말지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "말 회수!"; }
             else { $msg = getHorseName($weap)." 지급!"; }
             // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             if($weap == 0) {
@@ -89,16 +76,11 @@ switch($btn) {
     case "도구지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "특수도구 회수!"; }
             else { $msg = getItemName($weap)." 지급!"; }
             // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             if($weap == 0) {
@@ -119,14 +101,9 @@ switch($btn) {
     //TODO:새 갠메 시스템으로 변경
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date',newmsg=1 where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         break;
 }

@@ -14,6 +14,8 @@ if($me['userlevel'] < 5) {
     echo '_admin2.php';//TODO:debug all and replace
 }
 
+$generalID = getGeneralID();
+
 switch($btn) {
     case "전체 접속허용":
         $query = "update general set con=0";
@@ -60,20 +62,12 @@ switch($btn) {
         getDB()->query('update general set turn0=0,killturn=0,turntime=%s where no IN %li',$date, $genlist);
         break;
     case "특기 부여":
-        $query = "select year,month from game where no=1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $admin = MYDB_fetch_array($result);
+        $admin = getDB()->queryFirstRow('select `year`, `month` from `game` where `no`=1');
 
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
-            $msg = $btn." 지급!";
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $msg = "특기 부여!";
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             $query = "select no,leader,power,intel,history from general where no='$genlist[$i]'";
@@ -92,15 +86,9 @@ switch($btn) {
         break;
     case "경험치1000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = $btn." 지급!";
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             $query = "update general set experience=experience+1000 where no='$genlist[$i]'";
@@ -109,15 +97,9 @@ switch($btn) {
         break;
     case "공헌치1000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = $btn." 지급!";
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             $query = "update general set dedication=dedication+1000 where no='$genlist[$i]'";
@@ -126,15 +108,9 @@ switch($btn) {
         break;
     case "보숙10000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "보병숙련도+10000 지급!";
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             $query = "update general set dex0=dex0+10000 where no='$genlist[$i]'";
@@ -143,15 +119,9 @@ switch($btn) {
         break;
     case "궁숙10000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "궁병숙련도+10000 지급!";
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             $query = "update general set dex10=dex10+10000 where no='$genlist[$i]'";
@@ -160,15 +130,9 @@ switch($btn) {
         break;
     case "기숙10000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "기병숙련도+10000 지급!";
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             $query = "update general set dex20=dex20+10000 where no='$genlist[$i]'";
@@ -177,15 +141,9 @@ switch($btn) {
         break;
     case "귀숙10000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "귀병숙련도+10000 지급!";
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             $query = "update general set dex30=dex30+10000 where no='$genlist[$i]'";
@@ -194,15 +152,9 @@ switch($btn) {
         break;
     case "차숙10000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "차병숙련도+10000 지급!";
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             $query = "update general set dex40=dex40+10000 where no='$genlist[$i]'";
@@ -237,29 +189,17 @@ switch($btn) {
         //TODO:새 갠메 시스템으로 변경
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date',newmsg=1 where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         break;
     case "무기지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "무기 회수!"; }
             else { $msg = getWeapName($weap)." 지급!"; }
-            // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             if($weap == 0) {
@@ -273,16 +213,11 @@ switch($btn) {
     case "책지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "서적 회수!"; }
             else { $msg = getBookName($weap)." 지급!"; }
             // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             if($weap == 0) {
@@ -296,16 +231,11 @@ switch($btn) {
     case "말지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "말 회수!"; }
             else { $msg = getHorseName($weap)." 지급!"; }
             // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             if($weap == 0) {
@@ -319,16 +249,11 @@ switch($btn) {
     case "도구지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select msgindex from general where no='$genlist[$i]'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $you = MYDB_fetch_array($result);
+            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "특수도구 회수!"; }
             else { $msg = getItemName($weap)." 지급!"; }
             // 상대에게 발송
-            $you['msgindex']++;
-            if($you['msgindex'] >= 10) { $you['msgindex'] = 0; }
-            $query = "update general set msgindex='{$you['msgindex']}',msg{$you['msgindex']}_type=10,msg{$you['msgindex']}='$msg',msg{$you['msgindex']}_who='$genlist[$i]'+10000,msg{$you['msgindex']}_when='$date' where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             if($weap == 0) {

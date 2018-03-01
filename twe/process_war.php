@@ -1743,7 +1743,6 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
                     'id' => $gen['no'],
                     'nation_id' => $gen['nation']
                 ],$general['turntime']);
-                //TODO: msgindex 사용하는 코드 모두 제거
             }
 
             //NPC인 경우 10% 확률로 임관(엔장, 인재, 의병)
