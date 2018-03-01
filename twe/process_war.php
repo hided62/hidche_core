@@ -58,11 +58,11 @@ function processWar($connect, $general, $city) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $originCity = MYDB_fetch_array($result);
 
-    $query = "select nation,level,name,history,capital,tech,type from nation where nation='{$general['nation']}'";
+    $query = "select nation,level,name,capital,tech,type from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select nation,level,name,history,rice,capital,tech,type from nation where nation='{$city['nation']}'";
+    $query = "select nation,level,name,rice,capital,tech,type from nation where nation='{$city['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destnation = MYDB_fetch_array($result);
 
@@ -1709,7 +1709,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
         //멸망국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,npc,gold,rice,history from general where nation='{$city['nation']}'";
+        $query = "select no,name,nation,npc,gold,rice from general where nation='{$city['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>{$losenation['name']}</b></>(이)가 <R>멸망</>했습니다.";
@@ -1888,7 +1888,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         SetNationFront($connect, $nation['nation']);
         SetNationFront($connect, $destnation['nation']);
     } else {
-        $query = "select name,nation,history from nation where nation='$conquerNation'";
+        $query = "select name,nation from nation where nation='$conquerNation'";
         $conquerResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $conquerNationArray = MYDB_fetch_array($conquerResult);
 

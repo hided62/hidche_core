@@ -3641,9 +3641,8 @@ function process_46($connect, &$general) {
         $query = "update nation set name='{$general['makenation']}',color='$color',level=1,type='$type',capital='{$general['city']}' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "select nation,name,history from nation where nation='{$general['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $nation = MYDB_fetch_array($result);
+        refreshNationStaticInfo();
+        $nation = getNationStaticInfo($general['nation']);
 
         // 현 도시 소속지로
         $query = "update city set nation='{$nation['nation']}',conflict='',conflict2='' where city='{$general['city']}'";
@@ -3658,7 +3657,7 @@ function process_46($connect, &$general) {
         $exp = 1000;
         $ded = 1000;
 
-        refreshNationStaticInfo();
+        
 
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
@@ -4077,7 +4076,7 @@ function process_52($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,level,gold,rice,surlimit,history,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,level,gold,rice,surlimit,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $mynation = MYDB_fetch_array($result);
 
@@ -4092,7 +4091,7 @@ function process_52($connect, &$general) {
     if($gold < 0) { $gold = 0; }
     if($rice < 0) { $rice = 0; }
 
-    $query = "select nation,name,gold,rice,surlimit,history from nation where nation='$which'";
+    $query = "select nation,name,gold,rice,surlimit from nation where nation='$which'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $younation = MYDB_fetch_array($result);
 
@@ -4247,11 +4246,11 @@ function process_54($connect, &$general) {
     $command = DecodeCommand($general['turn0']);
     $who = $command[1];
 
-    $query = "select no,name,nation,history from general where no='$who'";
+    $query = "select no,name,nation from general where no='$who'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nextruler = MYDB_fetch_array($result);
 
-    $query = "select nation,name,history from nation where nation='{$general['nation']}'";
+    $query = "select nation,name from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -4326,12 +4325,23 @@ function process_55($connect, &$general) {
     } elseif($general['makelimit'] > 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:재야가 된지 12시간이 지나야 합니다. 거병 실패. <1>$date</>";
     } else {
-        $query = "insert into nation (name, color, gold, rice, rate, bill, tricklimit, surlimit, type, gennum) values ('$makename', '330000', '0', '$_baserice', '20' ,'100', '36', '72', '0', '1')";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "select nation,name,history from nation where name='$makename'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $nation = MYDB_fetch_array($result);
+        getDB()->insert('nation', [
+            'name'=>$makename,
+            'color'=>'#330000', 
+            'gold'=>0, 
+            'rice'=>GameConst::baserice, 
+            'rate'=>20, 
+            'bill'=>100, 
+            'tricklimit'=>36, 
+            'surlimit'=>72, 
+            'type'=>0, 
+            'gennum'=>1
+        ]);
+        $nationID = getDB()->insertId();
+
+        refreshNationStaticInfo();
+        $nation = getNationStaticInfo($nationID);
 
         $exp = 100;
         $ded = 100;
@@ -4353,7 +4363,7 @@ function process_55($connect, &$general) {
         addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에서 거병");
 
         // 외교테이블 추가
-        refreshNationStaticInfo();
+        
 
         foreach(getAllNationStaticInfo() as $younation){
             if($nation['nation'] == $you['nation']){
@@ -4429,7 +4439,7 @@ function process_57($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select nation,name,history from nation where nation='{$general['nation']}'";
+    $query = "select nation,name from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -4437,7 +4447,7 @@ function process_57($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select npc,no,name,killturn,history from general where nation='{$general['nation']}' and level='12'";
+    $query = "select npc,no,name,killturn from general where nation='{$general['nation']}' and level='12'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $ruler = MYDB_fetch_array($result);
 
@@ -4583,14 +4593,14 @@ function process_62($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,history,l{$general['level']}turn0,color from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,l{$general['level']}turn0,color from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
     $command = DecodeCommand($nation["l{$general['level']}turn0"]);
     $which = $command[1];
 
-    $query = "select nation,name,color,history from nation where nation='$which'";
+    $query = "select nation,name,color from nation where nation='$which'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $younation = MYDB_fetch_array($result);
 
@@ -4809,7 +4819,7 @@ function process_65($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
-    $query = "select nation,capital,name,surlimit,history,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,capital,name,surlimit,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -4897,7 +4907,7 @@ function process_66($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,gold,rice,surlimit,history,l{$general['level']}term,l{$general['level']}turn0,capital,capset from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,gold,rice,surlimit,l{$general['level']}term,l{$general['level']}turn0,capital,capset from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -4984,7 +4994,7 @@ function process_67($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,gold,rice,surlimit,history,l{$general['level']}term,l{$general['level']}turn0,capital,capset from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,gold,rice,surlimit,l{$general['level']}term,l{$general['level']}turn0,capital,capset from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -5072,7 +5082,7 @@ function process_68($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,gold,rice,surlimit,history,l{$general['level']}term,l{$general['level']}turn0,capital,capset from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,gold,rice,surlimit,l{$general['level']}term,l{$general['level']}turn0,capital,capset from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -5174,7 +5184,7 @@ function process_71($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,tricklimit,history,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -5276,7 +5286,7 @@ function process_72($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,tricklimit,history,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -5387,7 +5397,7 @@ function process_73($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,tricklimit,history,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -5398,7 +5408,7 @@ function process_73($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $query = "select nation,name,history from nation where nation='{$destcity['nation']}'";
+    $query = "select nation,name from nation where nation='{$destcity['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destnation = MYDB_fetch_array($result);
 
@@ -5514,7 +5524,7 @@ function process_74($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,tricklimit,history,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -5525,7 +5535,7 @@ function process_74($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $query = "select nation,name,history from nation where nation='{$destcity['nation']}'";
+    $query = "select nation,name from nation where nation='{$destcity['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destnation = MYDB_fetch_array($result);
 
@@ -5653,14 +5663,14 @@ function process_75($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,tricklimit,history,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
     $command = DecodeCommand($nation["l{$general['level']}turn0"]);
     $which = $command[1];
 
-    $query = "select nation,name,history from nation where nation='$which'";
+    $query = "select nation,name from nation where nation='$which'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destnation = MYDB_fetch_array($result);
 
@@ -5775,7 +5785,7 @@ function process_76($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,tricklimit,history,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -5990,14 +6000,14 @@ function process_77($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,tricklimit,history,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
     $command = DecodeCommand($nation["l{$general['level']}turn0"]);
     $which = $command[1];
 
-    $query = "select nation,name,history from nation where nation='$which'";
+    $query = "select nation,name from nation where nation='$which'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destnation = MYDB_fetch_array($result);
 
@@ -6114,14 +6124,14 @@ function process_78($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,tricklimit,history,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
     $command = DecodeCommand($nation["l{$general['level']}turn0"]);
     $which = $command[1];
 
-    $query = "select nation,name,history from nation where nation='$which'";
+    $query = "select nation,name from nation where nation='$which'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destnation = MYDB_fetch_array($result);
 
@@ -6233,7 +6243,7 @@ function process_81($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,colset,name,type,tricklimit,history,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,colset,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 

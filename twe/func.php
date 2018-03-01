@@ -1912,7 +1912,6 @@ function addNationHistory($nation, $history) {
     $nation['history'] = "{$nation['history']}{$history}<br>";
     getDB()->query("update nation set history=concat(%s, history) where nation=%i",
         $history.'<br>', $nation['nation']);
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
 function adminMsg($connect, $skin=1) {
@@ -2802,7 +2801,7 @@ function addAge($connect) {
     $admin = MYDB_fetch_array($result);
 
     if($admin['year'] >= $admin['startyear']+3) {
-        $query = "select no,name,nation,leader,power,intel,history from general where specage<=age and special='0'";
+        $query = "select no,name,nation,leader,power,intel from general where specage<=age and special='0'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
 
@@ -2817,7 +2816,7 @@ function addAge($connect) {
             pushGenLog($general, $log);
         }
 
-        $query = "select no,name,nation,leader,power,intel,history,npc,dex0,dex10,dex20,dex30,dex40 from general where specage2<=age and special2='0'";
+        $query = "select no,name,nation,leader,power,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where specage2<=age and special2='0'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
 
@@ -2962,7 +2961,7 @@ function PreprocessCommand($connect, $no) {
 }
 
 function processCommand($connect, $no) {
-    $query = "select npc,no,name,userlevel,picture,imgsvr,nation,nations,city,troop,injury,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,history,belong,personal,special,special2,term,turn0,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
+    $query = "select npc,no,name,userlevel,picture,imgsvr,nation,nations,city,troop,injury,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,belong,personal,special,special2,term,turn0,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -3026,7 +3025,7 @@ function processCommand($connect, $no) {
             }
 
             //장수정보 재로드
-            $query = "select npc,no,name,userlevel,picture,imgsvr,nation,nations,city,troop,injury,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,history,belong,personal,special,special2,term,turn0,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
+            $query = "select npc,no,name,userlevel,picture,imgsvr,nation,nations,city,troop,injury,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,belong,personal,special,special2,term,turn0,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $general = MYDB_fetch_array($result);
         }
@@ -3182,7 +3181,7 @@ function updateTurntime($connect, $no) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,name,name2,nation,troop,age,turntime,history,killturn,level,deadyear,npc,npc_org,npcmatch,npcid from general where no='$no'";
+    $query = "select no,name,name2,nation,troop,age,turntime,killturn,level,deadyear,npc,npc_org,npcmatch,npcid from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -3734,7 +3733,7 @@ function nextRuler($connect, $general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select nation,name,history from nation where nation='{$general['nation']}'";
+    $query = "select nation,name from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 

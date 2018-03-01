@@ -99,7 +99,7 @@ if($admin['npcmode'] != 1) {
     ";
     MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
 
-    $query = "select no,name,history from general where user_id='$id'";
+    $query = "select no,name from general where user_id='$id'";
     $result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

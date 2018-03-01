@@ -32,7 +32,7 @@ if($btn == "임명") {
         exit();
     }
 } elseif($btn == "추방") {
-    $query = "select no,name,gold,rice,nation,troop,level,history,npc,picture,imgsvr from general where no='$outlist'";
+    $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr from general where no='$outlist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 

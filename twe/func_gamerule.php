@@ -748,7 +748,7 @@ function checkWander($connect) {
 
         $needRefresh = true;
 
-        $query = "select no,name,nation,level,history,turntime from general where nation='{$nation['nation']}' and level=12";
+        $query = "select no,name,nation,level,turntime from general where nation='{$nation['nation']}' and level=12";
         $kingResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $king = MYDB_fetch_array($kingResult);
 
@@ -775,15 +775,15 @@ function checkMerge($connect) {
         $dip = MYDB_fetch_array($dipresult);
 
         // 아국군주
-        $query = "select no,name,history,nation from general where nation='{$dip['me']}' and level='12'";
+        $query = "select no,name,nation from general where nation='{$dip['me']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $me = MYDB_fetch_array($result);
         // 상대군주
-        $query = "select no,name,history,nation,makenation from general where nation='{$dip['you']}' and level='12'";
+        $query = "select no,name,nation,makenation from general where nation='{$dip['you']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
         // 모국
-        $query = "select nation,name,surlimit,history,totaltech from nation where nation='{$you['nation']}'";
+        $query = "select nation,name,surlimit,totaltech from nation where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $younation = MYDB_fetch_array($result);
         // 아국
@@ -801,7 +801,7 @@ function checkMerge($connect) {
 
         //TODO: 로그 기록에 대한 쿼리는 한번만 할 수 있다.
         //피항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='{$you['nation']}'";
+        $query = "select no,name,nation from general where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>{$mynation['name']}</b></>(와)과 통합에 성공했습니다.";
@@ -811,7 +811,7 @@ function checkMerge($connect) {
             addHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합에 성공");
         }
         //항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='{$me['nation']}'";
+        $query = "select no,name,nation from general where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount2 = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 통합에 성공했습니다.";
@@ -889,15 +889,15 @@ function checkSurrender($connect) {
         $dip = MYDB_fetch_array($dipresult);
 
         // 아국군주
-        $query = "select no,name,history,nation from general where nation='{$dip['me']}' and level='12'";
+        $query = "select no,name,nation from general where nation='{$dip['me']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $me = MYDB_fetch_array($result);
         // 상대군주
-        $query = "select no,name,history,nation,makenation from general where nation='{$dip['you']}' and level='12'";
+        $query = "select no,name,nation,makenation from general where nation='{$dip['you']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
         // 모국
-        $query = "select nation,name,surlimit,history,totaltech from nation where nation='{$you['nation']}'";
+        $query = "select nation,name,surlimit,totaltech from nation where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $younation = MYDB_fetch_array($result);
         // 아국
@@ -914,7 +914,7 @@ function checkSurrender($connect) {
         $npccount2 = MYDB_num_rows($result);
 
         //피항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='{$you['nation']}'";
+        $query = "select no,name,nation from general where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>{$mynation['name']}</b></> 합병에 성공했습니다.";
@@ -924,7 +924,7 @@ function checkSurrender($connect) {
             addHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></> 합병에 성공");
         }
         //항복국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,history from general where nation='{$me['nation']}'";
+        $query = "select no,name,nation from general where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount2 = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>(으)로 항복하여 수도로 이동합니다.";
@@ -1002,7 +1002,7 @@ function updateNationState($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select nation,name,level,history from nation";
+    $query = "select nation,name,level from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($nationresult);
 
@@ -1203,7 +1203,7 @@ function checkEmperior($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select nation,name,history from nation where level>0";
+    $query = "select nation,name from nation where level>0";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
@@ -1233,7 +1233,7 @@ function checkEmperior($connect) {
                 CheckHall($connect, $general['no']);
             }
 
-            $query = "select nation,name,type,color,gold,rice,power,gennum,history from nation where nation='{$nation['nation']}'";
+            $query = "select nation,name,type,color,gold,rice,power,gennum from nation where nation='{$nation['nation']}'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $nation = MYDB_fetch_array($result);
 
@@ -1329,6 +1329,8 @@ function checkEmperior($connect) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $statGeneral = MYDB_fetch_array($result);
 
+            $nationHistory = getDB()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
+
             $query = "
                 insert into emperior (
                     phase,
@@ -1351,7 +1353,7 @@ function checkEmperior($connect) {
                     '{$level10['name']}', '{$level10['picture']}', '{$level9['name']}', '{$level9['picture']}',
                     '{$level8['name']}', '{$level8['picture']}', '{$level7['name']}', '{$level7['picture']}',
                     '{$level6['name']}', '{$level6['picture']}', '{$level5['name']}', '{$level5['picture']}',
-                    '$tigerstr', '$eaglestr', '$gen', '{$nation['history']}'
+                    '$tigerstr', '$eaglestr', '$gen', '{$nationHistory}'
                 )";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 

@@ -222,7 +222,7 @@ if($id_num) {
         'special2' => $special2
     ]);
 
-    $me = $db->queryFirstRow("select no,name,history from general where owner= %i", $userID);
+    $me = $db->queryFirstRow("select no,name from general where owner= %i", $userID);
 
     if($me['name'] == "") {
         $r = rand() % 999 + 1;

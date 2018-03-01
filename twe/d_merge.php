@@ -9,11 +9,11 @@ $query = "select year,month from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,nation,level,history,picture,imgsvr from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,name,nation,level,picture,imgsvr from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select no,name,nation,history from general where no='$gen'";
+$query = "select no,name,nation from general where no='$gen'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $you = MYDB_fetch_array($result);
 
@@ -25,7 +25,7 @@ $query = "select round(std(power)) as power,round(std(gennum)) as gennum from na
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $stdnation = MYDB_fetch_array($result);
 
-$query = "select nation,name,gennum,power,surlimit,history,color from nation where nation='{$you['nation']}'";
+$query = "select nation,name,gennum,power,surlimit,color from nation where nation='{$you['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $younation = MYDB_fetch_array($result);
 

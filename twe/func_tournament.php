@@ -631,10 +631,10 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     //장수열전 기록
-    $query = "select no,history from general where no={$general['no']}";
+    $query = "select no from general where no={$general['no']}";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen1 = MYDB_fetch_array($result);
-    $query = "select no,history from general where no={$general2['no']}";
+    $query = "select no from general where no={$general2['no']}";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen2 = MYDB_fetch_array($result);
     addHistory($gen1, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 우승");

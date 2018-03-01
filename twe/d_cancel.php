@@ -9,15 +9,15 @@ $query = "select year,month from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,nation,level,history,picture,imgsvr from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,name,nation,level,picture,imgsvr from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select no,nation,history from general where no='$gen'";
+$query = "select no,nation from general where no='$gen'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $you = MYDB_fetch_array($result);
 
-$query = "select name,surlimit,history,color from nation where nation='{$you['nation']}'";
+$query = "select name,surlimit,color from nation where nation='{$you['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $younation = MYDB_fetch_array($result);
 

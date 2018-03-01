@@ -70,7 +70,7 @@ switch($btn) {
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "select no,leader,power,intel,history from general where no='$genlist[$i]'";
+            $query = "select no,leader,power,intel from general where no='$genlist[$i]'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $general = MYDB_fetch_array($result);
 
