@@ -1406,22 +1406,14 @@ function process_22($connect, &$general) {
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
-
-        $myNation = getNationStaticInfo($general['nation']);
-        $youNation = getNationStaticInfo($you['nation']);
-
+        
         sendScoutMsg([
             'id' => $general['no'],
-            'nation_id' => util::array_get($myNation['nation'], 0),
-            'nation' => util::array_get($myNation['name'], '재야'),
-            'color' => util::array_get($myNation['color'], '#ffffff')
+            'nation_id' => util::array_get($general['nation'], 0)
         ],[
             'id' => $you['no'],
-            'nation_id' => util::array_get($youNation['nation'], 0),
-            'nation' => util::array_get($youNation['name'], '재야'),
-            'color' => util::array_get($youNation['color'], '#ffffff')
+            'nation_id' => util::array_get($you['nation'], 0)
         ],$date);
-        //sendScoutMsg($connect, $general['no'], $nation['name'], $who, $you['msgindex']);
 
         $general['intel2']++;
         $query = "update general set resturn='SUCCESS',gold=gold-'$cost',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";

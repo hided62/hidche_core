@@ -1688,11 +1688,8 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
     $citycount = MYDB_num_rows($result);
 
     // 국가 멸망시
+    //TODO: 국가 멸망 코드를 별도로 작성
     if($citycount == 1 && $city['nation'] != 0) {
-        $query = "select nation,name,history,tech,type from nation where nation='{$nation['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $nation = MYDB_fetch_array($result);
-
         $query = "select nation,name,gold,rice from nation where nation='{$city['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $losenation = MYDB_fetch_array($result);
@@ -1712,7 +1709,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
         //멸망국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,npc,gold,rice,history,msgindex from general where nation='{$city['nation']}'";
+        $query = "select no,name,nation,npc,gold,rice,history from general where nation='{$city['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $genlog[0] = "<C>●</><D><b>{$losenation['name']}</b></>(이)가 <R>멸망</>했습니다.";
@@ -1738,8 +1735,15 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
                 || $nation['name'] == "남만족" || $nation['name'] == "산월족" || $nation['name'] == "오환족"
                 || $nation['name'] == "왜족") {
                 //등용장 미발부
-            } elseif(rand() % 100 < 50) {
-                sendScoutMsg($connect, $ruler['no'], $nation['name'], $gen['no'], $gen['msgindex']);
+            } elseif(randBool(0.5)) {
+                sendScoutMsg([
+                    'id' => $ruler['no'],
+                    'nation_id' => $ruler['nation']
+                ],[
+                    'id' => $gen['no'],
+                    'nation_id' => $gen['nation']
+                ],$general['turntime']);
+                //TODO: msgindex 사용하는 코드 모두 제거
             }
 
             //NPC인 경우 10% 확률로 임관(엔장, 인재, 의병)

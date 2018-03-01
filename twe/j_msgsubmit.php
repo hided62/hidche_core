@@ -54,7 +54,7 @@ if(getBlockLevel() == 1 || getBlockLevel() == 3) {
 
 $conlimit = $db->queryFirstField('select conlimit from game where no=1');
 
-$me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`msgindex`,`userlevel`,`con`,`picture`,`imgsvr` from `general` where `owner` = %i', getUserID());
+$me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`userlevel`,`con`,`picture`,`imgsvr` from `general` where `owner` = %i', getUserID());
 
 if(!$me){
     resetSessionGeneralValues();
@@ -91,14 +91,7 @@ $src = [
     'name' => $me['name'],
     'icon' => $me['picture'],
     'nation_id' => $me['nation'],
-    'nation' => null
 ];
-if($src['nation_id'] != 0) {
-    $nation = getNationStaticInfo($src_nation_id);
-    $src['nation'] = $nation['name'];
-    $src['color'] = '#'.$nation['color'];
-    $src['color'] = str_replace('##', '#', $src['color']); //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
-}
 
 // 전체 메세지
 if($destMailbox == 9999) {
@@ -112,20 +105,14 @@ if($destMailbox == 9999) {
     else{
         $real_nation = $dest - 9000;
     }
-    $nation = getNationStaticInfo($real_nation);
-    
-    if($nation === null || empty($nation)){
-        $dest = ['nation_id' => 0];
+
+    if(!getNationStaticInfo($real_nation)){
+        $real_nation = $me['nation_id'];
     }
-    else{
-        $color = '#'.$nation['color'];
-        $color = str_replace('##', '#', $color); 
-        //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
-        $dest = [
-            'nation_id' => $nation['nation'],
-            'color' => $color
-        ];
-    }
+
+    $dest = [
+        'nation_id' => $real_nation
+    ];
 
     sendMessage('national', $src, $dest, $msg, $date);
 
@@ -142,7 +129,6 @@ if($destMailbox == 9999) {
             'newSeq' => false
         ]);
     }
-
     
     $destUser = $db->queryFirstRow('select `no`,`name`,`nation` from `general` where `no` = %s',$destMailbox);
 
@@ -158,17 +144,10 @@ if($destMailbox == 9999) {
 
     $dest = [
         'id' => $destMailbox,
-        'name' => $dest_user['name']
+        'name' => $dest_user['name'],
+        'nation_id' => $dest_user['nation']
     ];
-    $destNation = getNationStaticInfo($dest_user['nation']);
-    if($destNation){
-        $color = $destNation['color'];
-        $color = str_replace('##', '#', $color); 
-        //FIXME: nation table에서 color가 #포함된 걸로 바뀔 경우를 대비
-        $dest['color'] = $color;
-        $dest['nation'] = $destNation['name'];
-        $dest['nation_id'] = $destNation['nation'];
-    }
+
     sendMessage('private', $src, $dest, $msg, $date);
 }
 else{

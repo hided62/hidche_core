@@ -105,6 +105,15 @@ function getMessage($msgType, $nationID=null, $limit=30, $fromSeq=NULL){
 
 function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date, $validUntil, $msgOption){
     
+    $srcNation = getNationStaticInfo($src['nation_id']);
+    $destNation = getNationStaticInfo($dest['nation_id']);
+
+    $src['nation'] = util::array_get($srcNation['name'], '재야');
+    $src['color'] = util::array_get($srcNation['color'], '#ffffff');
+
+    $dest['nation'] = util::array_get($destNation['name'], '재야');
+    $dest['color'] = util::array_get($destNation['color'], '#ffffff');
+
     if(!$isSender && $mailBox < 9000){
         //TODO:newmsg보단 lastmsg로 datetime을 넣는게 더 나아보임
         getDB()->update('general', array(
@@ -181,9 +190,12 @@ function sendScoutMsg($src, $dest, $date) {
 
     //$msgType, $isSender, $mailbox, $src, $dest, $msg, $date, $validUntil, $msgOption
 
-    if(!$src || !$src['id'] || !$src['nation_id'] || !$src['nation']){
+    if(!$src || !$src['id'] || !$src['nation_id']){
         return false;
     }
+
+    $nation = getNationStaticInfo($src['nation_id']);
+    $nationName = util::array_get($nation['name'], '재야');
 
     if(!$dest || !$dest['id']){
         return false;
@@ -195,7 +207,7 @@ function sendScoutMsg($src, $dest, $date) {
     ];
 
     $msg = "{$src['nation']}(으)로 망명 권유 서신";
-    $validUntil = "9999-12-31 23:59:59";//등용장의 시간 제한 없음
+    $validUntil = "9999-12-31 12:59:59";//등용장의 시간 제한 없음
     
     sendRawMessage('private', false, $dest['id'], $src, $dest, $msg, $date, $validUntil, $option);
 
