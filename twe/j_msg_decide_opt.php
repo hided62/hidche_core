@@ -30,7 +30,15 @@ if ($msgID === null || !is_bool($msgResponse)) {
 }
 
 
-$result = getSingleMessage($msgID, $generalID);
+$general = getDB()->queryFirstRow('select `no`, `name`, `nation`, `nations`, `level`, `npc`, `gold`, `rice`, `troop` from `general` where `no` = %i', $generalID);
+if(!$general){
+    returnJson([
+        'result'=>false,
+        'reason'=>'존재하지 않는 장수'
+    ]);
+}
+
+$result = getSingleMessage($msgID, $general);
 
 if (!$result[0]) {
     returnJson([
@@ -77,19 +85,12 @@ if ($msgType == 'diplomacy' && $msgSrc['nation_id'] != $msgDest['nation_id']) {
 }
 
 if($msgType == 'diplomacy'){
-    if(!getNationStaticInfo($msgSrc['nation_id'])){
+    if($general['level'] < 6){
         returnJson([
             'result'=>false,
-            'reason'=>'발신 국가 없음'
+            'reason'=>'외교 권한 없음'
         ]);
-    }
-
-    if(!getNationStaticInfo($msgDest['nation_id'])){
-        returnJson([
-            'result'=>false,
-            'reason'=>'수신 국가 없음'
-        ]);
-    }
+    }   
 
     if($general['nation'] != $msgDest['nation_id']){
         returnJson([
@@ -97,41 +98,15 @@ if($msgType == 'diplomacy'){
             'reason'=>'올바르지 않은 소속 국가'
         ]);
     }
-    
-    if($general['level'] < 6){
-        returnJson([
-            'result'=>false,
-            'reason'=>'외교 권한 없음'
-        ]);
-    }    
-}
-
-if(!$msgResponse){
-    switch($msgAction){
-    case 'scout':
-        $result = declineScout($messageInfo);
-        break;
-    case 'ally':
-        $result = declineAlly($messageInfo);
-        break;
-        //TODO:기타 등등
-    default:
-        $result = [false, '처리 대상 아님'];
-    }
-
-    returnJson([
-        'result' => $result[0],
-        'reason' => $result[1]
-    ]);
 }
 
 switch ($msgAction) {
 case 'scout':
     //TODO: 등용장 받음. 함수 호출
-    $result = acceptScout($messageInfo);
+    $result = acceptScout($messageInfo, $general, $msgResponse);
     break;
 case 'ally':
-    $result = acceptAlly($messageInfo);
+    $result = acceptAlly($messageInfo, $general, $msgResponse);
     break;
     //TODO:기타 등등
 case '':
