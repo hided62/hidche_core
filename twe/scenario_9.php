@@ -861,7 +861,7 @@ $history[count($history)] = "<C>●</>219년 1월:<L><b>【이벤트】</b></><G
 $history[count($history)] = "<C>●</>219년 1월:<L><b>【이벤트】</b></><G><b>동오</b></>의 <Y>손권</>은 <G><b>형주</b></>를 되찾기 위해 호시탐탐 노리고 있습니다.";
 $history[count($history)] = "<C>●</>219년 1월:<L><b>【이벤트】</b></><G><b>한중</b></>왕에 오른 <Y>유비</>군의 기세는 하늘을 찌를 듯 합니다!";
 $history[count($history)] = "<C>●</>219년 1월:<L><b>【이벤트】</b></><Y>위</>, <Y>오</>, <Y>촉</>의 본격적인 삼국시대가 되었습니다.";
-pushHistory($connect, $history);
+pushHistory($history);
 
 //echo "<script>location.replace('install3_ok.php');</script>";
 echo 'install3_ok.php';//TODO:debug all and replace

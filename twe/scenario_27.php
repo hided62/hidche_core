@@ -587,7 +587,7 @@ RegGeneral($connect,1,1,$fiction,$turnterm,$startyear,$year,1395,   0,       "�
 
 $history[count($history)] = "<C>●</>180년 1월:<L><b>【가상모드7】</b>가요대잔치</>";
 $history[count($history)] = "<C>●</>180년 1월:<L><b>【이벤트】</b></>올해의 가요대상은!";
-pushHistory($connect, $history);
+pushHistory($history);
 
 //echo "<script>location.replace('install3_ok.php');</script>";
 echo 'install3_ok.php';//TODO:debug all and replace

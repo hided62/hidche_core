@@ -1406,7 +1406,7 @@ function process_22($connect, &$general) {
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
-        
+
         sendScoutMsg([
             'id' => $general['no'],
             'nation_id' => util::array_get($general['nation'], 0)
@@ -3671,7 +3671,7 @@ function process_46($connect, &$general) {
         $log = uniqueItem($connect, $general, $log, 3);
     }
 
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushAllLog($alllog);
     pushGenLog($general, $log);
 }
@@ -3729,7 +3729,7 @@ function process_47($connect, &$general) {
         $query = "update diplomacy set state='2',term='0' where me='{$general['nation']}' or you='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        pushHistory($connect, $history);
+        pushHistory($history);
 
         refreshNationStaticInfo();
     }
@@ -4167,7 +4167,7 @@ function process_52($connect, &$general) {
 
 //      $log = checkAbility($connect, $general, $log);
     }
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushGenLog($general, $log);
 }
 
@@ -4293,7 +4293,7 @@ function process_54($connect, &$general) {
     }
     pushGenLog($general, $log);
     pushGenLog($nextruler, $youlog);
-    pushHistory($connect, $history);
+    pushHistory($history);
 }
 
 function process_55($connect, &$general) {
@@ -4367,7 +4367,7 @@ function process_55($connect, &$general) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushAllLog($alllog);
     pushGenLog($general, $log);
 }
@@ -4482,7 +4482,7 @@ function process_57($connect, &$general) {
     pushGenLog($general, $log);
     pushGenLog($ruler, $youlog);
     pushAllLog($alllog);
-    pushHistory($connect, $history);
+    pushHistory($history);
 }
 
 function process_61($connect, &$general) {
@@ -4659,7 +4659,7 @@ function process_62($connect, &$general) {
         PushMsg(3, $younation['nation'], $general['picture'], $general['imgsvr'], "{$general['name']}:{$nation['name']}▶", $nation['color'], $younation['name'], $younation['color'], $youmsg);
     }
 
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushAllLog($alllog);
     pushGenLog($general, $log);
 }
@@ -4877,7 +4877,7 @@ function process_65($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushAllLog($alllog);
     pushGenLog($general, $log);
 }
@@ -4964,7 +4964,7 @@ function process_66($connect, &$general) {
         refreshNationStaticInfo();
     }
 
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushAllLog($alllog);
     pushGenLog($general, $log);
 }
@@ -5052,7 +5052,7 @@ function process_67($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushAllLog($alllog);
     pushGenLog($general, $log);
 }
@@ -5154,7 +5154,7 @@ function process_68($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushAllLog($alllog);
     pushGenLog($general, $log);
 }
@@ -5255,7 +5255,7 @@ function process_71($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($connect, $history);
+//    pushHistory($history);
 //    pushAllLog($alllog);
     pushTrickLog($connect, $tricklog);
     pushGenLog($general, $log);
@@ -5366,7 +5366,7 @@ function process_72($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($connect, $history);
+//    pushHistory($history);
 //    pushAllLog($alllog);
     pushTrickLog($connect, $tricklog);
     pushGenLog($general, $log);
@@ -5493,7 +5493,7 @@ function process_73($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($connect, $history);
+//    pushHistory($history);
 //    pushAllLog($alllog);
     pushTrickLog($connect, $tricklog);
     pushGenLog($general, $log);
@@ -5632,7 +5632,7 @@ function process_74($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($connect, $history);
+//    pushHistory($history);
 //    pushAllLog($alllog);
     pushTrickLog($connect, $tricklog);
     pushGenLog($general, $log);
@@ -5754,7 +5754,7 @@ function process_75($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($connect, $history);
+//    pushHistory($history);
 //    pushAllLog($alllog);
     pushTrickLog($connect, $tricklog);
     pushGenLog($general, $log);
@@ -5969,7 +5969,7 @@ function process_76($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($connect, $history);
+//    pushHistory($history);
 //    pushAllLog($alllog);
     pushTrickLog($connect, $tricklog);
     pushGenLog($general, $log);
@@ -6093,7 +6093,7 @@ function process_77($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($connect, $history);
+//    pushHistory($history);
 //    pushAllLog($alllog);
     pushTrickLog($connect, $tricklog);
     pushGenLog($general, $log);
@@ -6214,7 +6214,7 @@ function process_78($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($connect, $history);
+//    pushHistory($history);
 //    pushAllLog($alllog);
     pushTrickLog($connect, $tricklog);
     pushGenLog($general, $log);
@@ -6283,7 +6283,7 @@ function process_81($connect, &$general) {
         refreshNationStaticInfo();
     }
 
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushAllLog($alllog);
     pushGenLog($general, $log);
 }

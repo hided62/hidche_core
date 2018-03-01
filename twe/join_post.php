@@ -236,7 +236,7 @@ if($id_num) {
         $log[1] = "<C>●</>{$admin['month']}월:<C>".getGenSpecial($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
 
         $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【천재】</b></><G><b>{$cityname['name']}</b></>에 천재가 등장했습니다.";
-        pushHistory($connect, $history);
+        pushHistory($history);
     } else {
         $log[0] = "<C>●</>{$admin['month']}월:<G><b>{$cityname['name']}</b></>에서 <Y>{$me['name']}</>(이)라는 호걸이 천하에 이름을 알립니다.";
     }

@@ -472,7 +472,7 @@ function preUpdateMonthly($connect) {
 
         $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【고립】</b></><G><b>{$city['name']}</b></>(이)가 보급이 끊겨 <R>미지배</> 도시가 되었습니다.";
     }
-    pushHistory($connect, $history);
+    pushHistory($history);
     //민심30이하 공백지 처리
     $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='',conflict2='',term=0,front=0 where rate<='30' and supply='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -694,7 +694,7 @@ group by A.nation
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
-    pushHistory($connect, $history);
+    pushHistory($history);
     //사상자 초기화
     $query = "update diplomacy set dead=0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -867,7 +867,7 @@ function checkMerge($connect) {
 
         pushGenLog($me, $mylog);
         pushGenLog($you, $youlog);
-        pushHistory($connect, $history);
+        pushHistory($history);
         unset($mylog);
         unset($youlog);
         unset($history);
@@ -987,7 +987,7 @@ function checkSurrender($connect) {
 
         pushGenLog($me, $mylog);
         pushGenLog($you, $youlog);
-        pushHistory($connect, $history);
+        pushHistory($history);
         unset($mylog);
         unset($youlog);
         unset($history);
@@ -1071,7 +1071,7 @@ function updateNationState($connect) {
         $query = "update nation set tech=totaltech/'$gencount',gennum='$gennum' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    pushHistory($connect, $history);
+    pushHistory($history);
 }
 
 function checkStatistic($connect) {
@@ -1356,7 +1356,7 @@ function checkEmperior($connect) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>(이)가 전토를 통일하였습니다.";
-            pushHistory($connect, $history);
+            pushHistory($history);
 
             //연감 월결산
             LogHistory();

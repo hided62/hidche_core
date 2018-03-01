@@ -30,7 +30,7 @@ switch($btn) {
         $lognum = $admin['historyindex'] + 1;
         if($lognum >= 29) { $lognum = 0; }
         $history[0] = "<R>★</><S>{$log}</>";
-        pushHistory($connect, $history);
+        pushHistory($history);
         break;
     case "변경1":
         $query = "update game set starttime='$starttime' where no='1'";
@@ -102,7 +102,7 @@ switch($btn) {
             }
         }
         $history[count($history)] = "<R>★</>턴시간이 <C>$btn</>으로 변경됩니다.";
-        pushHistory($connect, $history);
+        pushHistory($history);
         break;
     case "변경6":
         $query = "update game set att0='$att0',def0='$def0',spd0='$spd0',avd0='$avd0',ric0='$ric0',cst0='$cst0' where no='1'";

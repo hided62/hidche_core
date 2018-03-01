@@ -112,7 +112,7 @@ if($ok == "수락") {
 pushGenLog($me, $mylog);
 pushGenLog($you, $youlog);
 //pushAllLog($alllog);
-//pushHistory($connect, $history);
+//pushHistory($history);
 
 echo "<script>location.replace('msglist.php');</script>";
 

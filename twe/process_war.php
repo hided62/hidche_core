@@ -112,7 +112,7 @@ function processWar($connect, $general, $city) {
             $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<M><b>【패퇴】</b></><D><b>{$destnation['name']}</b></>(이)가 병량 부족으로 <G><b>{$city['name']}</b></>(을)를 뺏기고 말았습니다.";
             pushGenLog($general, $log);
             pushAllLog($alllog);
-            pushHistory($connect, $history);
+            pushHistory($history);
             unset($log);
             unset($alllog);
             unset($history);
@@ -481,7 +481,7 @@ function processWar($connect, $general, $city) {
                 pushBatLog($general, $batlog);
                 pushBatRes($general, $batres);
                 pushAllLog($alllog);
-                pushHistory($connect, $history);
+                pushHistory($history);
                 unset($log);
                 unset($batlog);
                 unset($batres);
@@ -1494,7 +1494,7 @@ function processWar($connect, $general, $city) {
     pushBatLog($general, $batlog);
     pushBatRes($general, $batres);
     pushAllLog($alllog);
-    pushHistory($connect, $history);
+    pushHistory($history);
 
     return $deadAmount;
 }
@@ -1605,7 +1605,7 @@ function addConflict($connect, $city, $nationnum, $mykillnum) {
         $nation = getNationStaticInfo($nationnum);
 
         $history[count($history)] = "<C>●</>{$game['year']}년 {$game['month']}월:<M><b>【분쟁】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다.";
-        pushHistory($connect, $history);
+        pushHistory($history);
     }
 
     $nationlist[$i] = $nationnum;
@@ -1914,6 +1914,6 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
 
     pushGenLog($general, $log);
     pushAllLog($alllog);
-    pushHistory($connect, $history);
+    pushHistory($history);
 }
 

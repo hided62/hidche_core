@@ -93,7 +93,7 @@ $log[0] = "<C>●</>{$admin['month']}월:<Y>ⓝ유기체</>가 천하에 이름�
 pushAllLog($log);
 
 $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>NPC 유기체가 등장합니다. 의병장과 NPC들의 지능 개선을 위해 NPC 두뇌를 체험합니다. 크게 신경쓰진 마세요.";
-pushHistory($connect, $history);
+pushHistory($history);
 
 //echo "<script>location.replace('./');</script>";
 echo './';//TODO:debug all and replace

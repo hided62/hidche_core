@@ -243,7 +243,7 @@ RegCity($connect, 2, "양양", 1);
 //////////////////////////이벤트///////////////////////////////////////////////
 $history[count($history)] = "<C>●</>180년 1월:<L><b>【가상모드4】</b>결사항전</>";
 $history[count($history)] = "<C>●</>180년 1월:<L><b>【이벤트】</b></>오랑캐에 맞서 버텨내야 합니다!";
-pushHistory($connect, $history);
+pushHistory($history);
 
 //echo "<script>location.replace('install3_ok.php');</script>";
 echo 'install3_ok.php';//TODO:debug all and replace

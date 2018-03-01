@@ -742,7 +742,7 @@ RegGeneral($connect,1,1,$fiction,$turnterm,$startyear,$year,1678,  22,   "희지
 //////////////////////////이벤트///////////////////////////////////////////////
 $history[count($history)] = "<C>●</>180년 1월:<L><b>【가상모드1】</b>영웅 난무</>";
 $history[count($history)] = "<C>●</>180년 1월:<L><b>【이벤트】</b></>당대의 대표 세력들이 등장합니다.";
-pushHistory($connect, $history);
+pushHistory($history);
 
 //echo "<script>location.replace('install3_ok.php');</script>";
 echo 'install3_ok.php';//TODO:debug all and replace

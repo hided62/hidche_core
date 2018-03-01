@@ -1703,7 +1703,7 @@ $history[count($history)] = "<C>●</>190년 1월:<G><b>【연합】</b></><G><b
 $history[count($history)] = "<C>●</>190년 1월:<G><b>【연합】</b></><G><b>평원</b></>의 <Y>유비</>가 연합에 참가했습니다.";
 $history[count($history)] = "<C>●</>190년 1월:<G><b>【연합】</b></><G><b>북해</b></>의 <Y>공융</>이 연합에 참가했습니다.";
 $history[count($history)] = "<C>●</>190년 1월:<G><b>【연합】</b></><G><b>초</b></>의 <Y>공주</>가 연합에 참가했습니다.";
-pushHistory($connect, $history);
+pushHistory($history);
 
 //echo "<script>location.replace('install3_ok.php');</script>";
 echo 'install3_ok.php';//TODO:debug all and replace

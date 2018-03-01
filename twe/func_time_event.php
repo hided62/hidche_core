@@ -37,7 +37,7 @@ function processSpring($connect) {
     $admin = MYDB_fetch_array($result);
 
     $history[0] = "<R>★</>{$admin['year']}년 {$admin['month']}월: <S>모두들 즐거운 게임 하고 계신가요? ^^ <Y>삼국일보</> 애독해 주시고, <M>훼접</>은 삼가주세요~</>";
-    pushHistory($connect, $history);
+    pushHistory($history);
 }
 
 function processGoldIncome($connect) {
@@ -111,7 +111,7 @@ function processGoldIncome($connect) {
     }
 
     $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<W><b>【지급】</b></>봄이 되어 봉록에 따라 자금이 지급됩니다.";
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushAdminLog($connect, $adminLog);
 }
 
@@ -405,7 +405,7 @@ function processRiceIncome($connect) {
     }
 
     $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<W><b>【지급】</b></>가을이 되어 봉록에 따라 군량이 지급됩니다.";
-    pushHistory($connect, $history);
+    pushHistory($history);
     pushAdminLog($connect, $adminLog);
 }
 
@@ -680,5 +680,5 @@ function disaster($connect) {
         }
     }
 
-    pushHistory($connect, $disaster);
+    pushHistory($disaster);
 }

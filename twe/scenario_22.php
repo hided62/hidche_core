@@ -111,7 +111,7 @@ RegGeneral2($connect,$admin['turnterm'],$gencount,      "후랴", 56, 79, 20,"�
 //////////////////////////이벤트///////////////////////////////////////////////
 $history[count($history)] = "<C>●</>179년 1월:<L><b>【가상모드2】</b>훼신 집결</>";
 $history[count($history)] = "<C>●</>179년 1월:<L><b>【이벤트】</b></>삼모전 역대 훼신들이 등장합니다.";
-pushHistory($connect, $history);
+pushHistory($history);
 
 //echo "<script>location.replace('install3_ok.php');</script>";
 echo 'install3_ok.php';//TODO:debug all and replace

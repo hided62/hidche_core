@@ -16,6 +16,7 @@ require_once 'func_time_event.php';
 require_once('func_template.php');
 require_once('func_message.php');
 require_once('func_map.php');
+require_once('func_diplomacy.php');
 
 /** 
  * 0.0~1.0 사이의 랜덤 float
@@ -1763,7 +1764,7 @@ function pushAllLog($log) {
     }
 }
 
-function pushHistory($connect, $history) {
+function pushHistory($history) {
     $size = count($history);
     if($size > 0) {
         $fp = fopen("logs/_history.txt", "a");
@@ -3575,7 +3576,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
                 break;
             }
             pushAllLog($alllog);
-            pushHistory($connect, $history);
+            pushHistory($history);
         }
     }
     return $log;
@@ -3729,7 +3730,7 @@ function deleteNation($connect, $general) {
     $query = "delete from diplomacy where me='{$general['nation']}' or you='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    pushHistory($connect, $history);
+    pushHistory($history);
     refreshNationStaticInfo();
 }
 
@@ -3794,7 +3795,7 @@ function nextRuler($connect, $general) {
 
     $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받았습니다";
 
-    pushHistory($connect, $history);
+    pushHistory($history);
     $nation = addNationHistory($connect, $nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받음.");
     // 장수 삭제 및 부대처리는 checkTurn에서
 }
