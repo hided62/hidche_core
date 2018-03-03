@@ -36,7 +36,7 @@ function captureKey(e) {
 </head>
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>설 문 조 사<br><?php closeButton(); ?></td></tr>
+    <tr><td>설 문 조 사<br><?=closeButton()?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <form name=form1 action=c_vote.php method=post>
@@ -294,8 +294,8 @@ if($admin['voteopen'] >= 2 || $me['userlevel'] >= 5) {
 </form>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php closeButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=closeButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

@@ -25,7 +25,7 @@ if($me['skin'] < 1) {
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>회 의 실<br><?php backButton(); ?></td></tr>
+    <tr><td>회 의 실<br><?=backButton()?></td></tr>
 <form name=form1 method=post action=c_nationboard.php>
     <tr><td align=center>
         제목 <input type=textarea maxlength=50 name=title style=color:white;background-color:black;width:830;>
@@ -57,8 +57,8 @@ for($i=0; $i < 20; $i++) {
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php backButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=backButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

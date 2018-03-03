@@ -36,7 +36,7 @@ if($me['skin'] < 1) {
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>세 력 도 시<br><?php backButton(); ?></td></tr>
+    <tr><td>세 력 도 시<br><?=backButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
             <option <?=$sel[1];?> value=1>기본</option>
@@ -161,8 +161,8 @@ for($j=0; $j < $citycount; $j++) {
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php backButton(); ?></td></tr>
-    <tr><td><?php banner(); ?></td></tr>
+    <tr><td><?=backButton()?></td></tr>
+    <tr><td><?=banner()?></td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

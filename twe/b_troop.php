@@ -29,7 +29,7 @@ if($me['skin'] < 1) {
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>부 대 편 성<br><?php backButton(); ?></td></tr>
+    <tr><td>부 대 편 성<br><?=backButton()?></td></tr>
 </table>
 <form name=form1 method=post action=c_troop.php>
 <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
@@ -151,8 +151,8 @@ echo "
 MYDB_close($connect);
 ?>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php backButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=backButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 </form>
 <?php PrintElapsedTime(); ?>

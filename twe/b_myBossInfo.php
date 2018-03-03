@@ -39,7 +39,7 @@ function out() {
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>인 사 부<br><?php backButton(); ?></td></tr>
+    <tr><td>인 사 부<br><?=backButton()?></td></tr>
 </table>
 <br>
 
@@ -495,8 +495,8 @@ for($j=0; $j < $citycount; $j++) {
 </table>
 <br>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php backButton(); ?></td></tr>
-    <tr><td><?php banner(); ?></td></tr>
+    <tr><td><?=backButton()?></td></tr>
+    <tr><td><?=banner()?></td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

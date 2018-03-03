@@ -20,7 +20,7 @@ if($me['userlevel'] < 5) {
 <body>
 관리자가 아닙니다.<br>
 ";
-    banner();
+    echo banner();
     echo "
 </body>
 </html>";
@@ -42,7 +42,7 @@ $sel[$type] = "selected";
 </head>
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>접 속 정 보<br><?php closeButton(); ?></td></tr>
+    <tr><td>접 속 정 보<br><?=closeButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
             <option <?=$sel[0];?> value=0>접속률</option>
@@ -94,8 +94,8 @@ for($i=0; $i < $gencount; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php closeButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=closeButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 </body>
 </html>

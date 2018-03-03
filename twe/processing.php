@@ -150,14 +150,14 @@ echo '
     <tr><td class="bg1" align="center">'.$name.'</td></tr>
     <tr><td>
 ';
-    if($type == 1) CoreBackButton();
-    else backButton();
+    if($type == 1) echo CoreBackButton();
+    else echo backButton();
 }
 
 function ender($type=0) {
-    if($type == 1) CoreBackButton();
-    else backButton();
-    banner();
+    if($type == 1) echo CoreBackButton();
+    else echo backButton();
+    echo banner();
     echo "
     </td></tr>
 </table>";

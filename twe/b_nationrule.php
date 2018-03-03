@@ -16,7 +16,7 @@ increaseRefresh($connect, "국법", 1);
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>국 법<br><?php backButton(); ?></td></tr>
+    <tr><td>국 법<br><?=backButton()?></td></tr>
     <tr><td>
 
 <?php
@@ -41,8 +41,8 @@ if($me['level'] >= 5) {
 
 ?>
     </td></tr>
-    <tr><td><?php backButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=backButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

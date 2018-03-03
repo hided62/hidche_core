@@ -28,7 +28,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>명 장 일 람<br><?php closeButton(); ?></td></tr>
+    <tr><td>명 장 일 람<br><?=closeButton()?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <form name=form1 action=a_bestGeneral.php method=post>
@@ -291,8 +291,8 @@ for($i=0; $i < 4; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php closeButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=closeButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

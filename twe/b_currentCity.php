@@ -30,7 +30,7 @@ if($me['skin'] < 1) {
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>도 시 정 보<br><?php backButton(); ?></td></tr>
+    <tr><td>도 시 정 보<br><?=backButton()?></td></tr>
 </table>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
@@ -157,7 +157,7 @@ if($city['trade'] == 0) {
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php backButton(); ?></td></tr>
+    <tr><td><?=backButton()?></td></tr>
 </table>
 
 <?php
@@ -336,8 +336,8 @@ for($j=0; $j < $gencount; $j++) {
 </table>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php backButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=backButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

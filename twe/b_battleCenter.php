@@ -64,7 +64,7 @@ if($me['skin'] < 1) {
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>감 찰 부<br><?php closeButton(); ?></td></tr>
+    <tr><td>감 찰 부<br><?=closeButton()?></td></tr>
     <tr><td>
         <form name=form1 method=post>
         정렬순서 :
@@ -134,8 +134,8 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php closeButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=closeButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

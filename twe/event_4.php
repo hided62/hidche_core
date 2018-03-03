@@ -27,7 +27,7 @@ if($me['userlevel'] < 5) {
 <body>
 관리자가 아닙니다.<br>
 ";
-    banner();
+    echo banner();
     echo "
 </body>
 </html>";
@@ -51,7 +51,7 @@ if($general['no'] > 0) {
 <body>
 이미 있습니다.<br>
 ";
-    banner();
+    echo banner();
     echo "
 </body>
 </html>";

@@ -40,7 +40,7 @@ if($game['maxonline'] < $curonline) { $game['maxonline'] = $curonline; }
 </head>
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>트 래 픽 정 보<br><?php closeButton(); ?></td></tr>
+    <tr><td>트 래 픽 정 보<br><?=closeButton()?></td></tr>
 </table>
 <br>
 <table align=center width=1016 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all;>
@@ -224,8 +224,8 @@ for($i=0; $i < $count; $i++) {
 </table>
 <br>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php closeButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=closeButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

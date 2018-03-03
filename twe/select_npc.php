@@ -28,7 +28,7 @@ $connect = dbConn();
 
 <body onLoad='changeGen()'>
     <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-        <tr><td>장 수 선 택<br><?php backButton(); ?></td></tr>
+        <tr><td>장 수 선 택<br><?=backButton()?></td></tr>
     </table>
     <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
         <tr><td align=center><?php info($connect, 0, 1); ?></td></tr>
@@ -121,8 +121,8 @@ for($i=0; $i < $count; $i++) {
     </table>
 </form>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php backButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=backButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 </body>
 <script type="text/javascript">

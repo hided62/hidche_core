@@ -291,7 +291,7 @@ if($me['userlevel'] >= 5) {
 
 <?php
 echo allButton();
-banner();
+echo banner();
 ?>
 
     </td></tr>

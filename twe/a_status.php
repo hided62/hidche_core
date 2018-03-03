@@ -46,7 +46,7 @@ $(function(){
 
 <body>
 <table align=center width=1200 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>세 력 도<br><?php closeButton(); ?></td></tr>
+    <tr><td>세 력 도<br><?=closeButton()?></td></tr>
 </table>
 <table align=center width=1200 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr height=520>
@@ -64,8 +64,8 @@ $(function(){
     </tr>
 </table>
 <table align=center width=1200 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php closeButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=closeButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

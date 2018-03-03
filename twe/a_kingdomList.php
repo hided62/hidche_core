@@ -28,7 +28,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>세 력 일 람<br><?php closeButton(); ?></td></tr>
+    <tr><td>세 력 일 람<br><?=closeButton()?></td></tr>
 </table>
 <?php
 $query = "select nation,name,color,level,type,power,gennum,capital from nation order by power desc";
@@ -237,8 +237,8 @@ echo"
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php closeButton(); ?></td></tr>
-    <tr><td><?php banner(); ?></td></tr>
+    <tr><td><?=closeButton()?></td></tr>
+    <tr><td><?=banner()?></td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

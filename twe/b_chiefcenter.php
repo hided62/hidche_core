@@ -81,7 +81,7 @@ function turn(type) {
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>사 령 부<input type=button value='갱신' onclick=location.replace('b_chiefcenter.php')><br><?php backButton(); ?></td></tr>
+    <tr><td>사 령 부<input type=button value='갱신' onclick=location.replace('b_chiefcenter.php')><br><?=backButton()?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=10 align=center bgcolor=skyblue>수뇌부 일정</td></tr>
@@ -166,8 +166,8 @@ for($k=0; $k < 2; $k++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php backButton(); ?></td></tr>
-    <tr><td><?php banner(); ?></td></tr>
+    <tr><td><?=backButton()?></td></tr>
+    <tr><td><?=banner()?></td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

@@ -50,7 +50,7 @@ if($msg2 == "") $msg2 = "-";
 </head>
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>거 래 장<br><?php closeButton(); ?></td></tr>
+    <tr><td>거 래 장<br><?=closeButton()?></td></tr>
     <tr><td align=center id=bg2><font color=orange size=6><b>거 래 장</b></font><input type=button value='갱신' onclick=location.replace('b_auction.php')></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
@@ -252,8 +252,8 @@ for($i=0; $i < $count; $i++) {
 ㆍ즐거운 거래!
         </font>
     </td></tr>
-    <tr><td><?php closeButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=closeButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

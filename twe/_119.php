@@ -19,7 +19,7 @@ if($me['userlevel'] < 5) {
 <body>
 관리자가 아닙니다.<br>
 ";
-    banner();
+    echo banner();
     echo "
 </body>
 </html>";

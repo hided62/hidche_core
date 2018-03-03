@@ -15,7 +15,7 @@ increaseRefresh($connect, "명예의전당", 2);
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=Font-size:13;word-break:break-all; id=bg0>
-    <tr><td>명 예 의 전 당<br><?php closeButton(); ?></td></tr>
+    <tr><td>명 예 의 전 당<br><?=closeButton()?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <?php
@@ -94,8 +94,8 @@ for($i=0; $i < 21; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=Font-size:13;word-break:break-all; id=bg0>
-    <tr><td><?php closeButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=closeButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

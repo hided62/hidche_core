@@ -44,7 +44,7 @@ if($me['skin'] < 1) {
 
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>내 무 부<br><?php backButton(); ?></td></tr>
+    <tr><td>내 무 부<br><?=backButton()?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=9 align=center bgcolor=blue>외 교 관 계</td></tr>
@@ -288,8 +288,8 @@ if($nation['war'] == 0) {
 </form>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php backButton(); ?></td></tr>
-    <tr><td><?php banner(); ?></td></tr>
+    <tr><td><?=backButton()?></td></tr>
+    <tr><td><?=banner()?></td></tr>
 </table>
 <?php PrintElapsedTime(); ?>
 </body>

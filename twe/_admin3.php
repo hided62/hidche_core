@@ -20,7 +20,7 @@ if($me['userlevel'] < 5) {
 <body>
 관리자가 아닙니다.<br>
 ";
-    banner();
+    echo banner();
     echo "
 </body>
 </html>";
@@ -37,7 +37,7 @@ if($me['userlevel'] < 5) {
 </head>
 <body>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td>특 별 회 원<br><?php backButton(); ?></td></tr>
+    <tr><td>특 별 회 원<br><?=backButton()?></td></tr>
 </table>
 <form name=form1 method=post action=_admin3_submit.php>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
@@ -93,8 +93,8 @@ for($i=0; $i < 27; $i++) {
 </table>
 </form>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php backButton(); ?></td></tr>
-    <tr><td><?php banner(); ?> </td></tr>
+    <tr><td><?=backButton()?></td></tr>
+    <tr><td><?=banner()?> </td></tr>
 </table>
 </body>
 </html>
