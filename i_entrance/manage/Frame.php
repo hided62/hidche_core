@@ -44,7 +44,7 @@ require_once('_common.php');
 
     <div id="EntranceManage_0017" class="bg1 font2">도움말</div>
     <div id="EntranceManage_0018">
-<pre>jpg파일 64 x 64 크기만 가능합니다.
+<pre>jpg,png,gif 파일 64 x 64 크기만 가능합니다.
 서버최적화를 위해 신규에서 기존으로 약 월1회 저장됩니다.
 <font color=cyan>브라우저의 임시파일을 삭제하셔야 제대로 나옵니다.
 새로 캐릭터를 생성할때부터 적용됩니다.</font>
