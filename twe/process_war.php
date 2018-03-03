@@ -4,7 +4,7 @@ function processWar($connect, $general, $city) {
 
     $templates = new League\Plates\Engine('templates');
 
-    global $_armperphase, $_maximumatmos, $_maximumtrain, $_dexLimit, $_basegold, $_baserice;
+    global $_maximumatmos, $_maximumtrain, $_dexLimit;
     $date = substr($general['turntime'],11,5);
 
     $query = "select * from game where no='1'";
@@ -156,8 +156,8 @@ function processWar($connect, $general, $city) {
                 $cityDef = getCityDef($city);
 
                 // 감소할 병사 수
-                $cityCrew = $_armperphase + $myAtt - $cityDef;
-                $myCrew = $_armperphase + $cityAtt - $myDef;
+                $cityCrew = GameConst::armperphase + $myAtt - $cityDef;
+                $myCrew = GameConst::armperphase + $cityAtt - $myDef;
                 if($cityCrew <= 0) { $cityCrew = rand() % 90 + 10; }
                 if($myCrew <= 0) { $myCrew = rand() % 90 + 10; }
 
@@ -630,8 +630,8 @@ function processWar($connect, $general, $city) {
                 $opAtt = getAtt($game, $oppose, $destnation['tech'], $opplbonus);
                 $opDef = getDef($game, $oppose, $destnation['tech']);
                 // 감소할 병사 수
-                $myCrew = $_armperphase + $opAtt - $myDef;
-                $opCrew = $_armperphase + $myAtt - $opDef;
+                $myCrew = GameConst::armperphase + $opAtt - $myDef;
+                $opCrew = GameConst::armperphase + $myAtt - $opDef;
                 if($myCrew <= 0) { $myCrew = rand() % 90 + 10; }
                 if($opCrew <= 0) { $opCrew = rand() % 90 + 10; }
                 //훈련 사기따라
@@ -1668,7 +1668,7 @@ function getConquerNation($connect, $city) {
 }
 
 function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
-    global $_armperphase, $_maximumatmos, $_basegold, $_baserice;
+    global $_maximumatmos;
 
     if($destnation['nation'] > 0) {
         $destnationName = "<D><b>{$destnation['name']}</b></>의";
@@ -1755,8 +1755,8 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         unset($genlog[1]);
         
         // 승전국 보상
-        $losenation['gold'] -= $_basegold;
-        $losenation['rice'] -= $_baserice;
+        $losenation['gold'] -= GameConst::basegold;
+        $losenation['rice'] -= GameConst::baserice;
         if($losenation['gold'] < 0) { $losenation['gold'] = 0; }
         if($losenation['rice'] < 0) { $losenation['rice'] = 0; }
         

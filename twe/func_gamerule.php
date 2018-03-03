@@ -61,6 +61,10 @@ class GameConst{
     const basegold = 0;   
     /** @var int 기본 병량*/
     const baserice = 2000;   
+    /** @var int 최저 국고(긴급시) */
+    const minNationalgold = 0;
+    /** @var int 최저 병량(긴급시) */
+    const minNationalRice = 0;
     /** @var float 군량 매매시 세율*/
     const taxrate = 0.01;    
 }

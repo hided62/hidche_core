@@ -41,8 +41,6 @@ function processSpring($connect) {
 }
 
 function processGoldIncome($connect) {
-    global $_basegold;
-
     $query = "select year,month,gold_rate from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -62,14 +60,14 @@ function processGoldIncome($connect) {
         // 실제 지급량 계산
         $nation['gold'] += $income;
         // 기본량도 안될경우
-        if($nation['gold'] < $_basegold) {
+        if($nation['gold'] < GameConst::basegold) {
             $realoutcome = 0;
             // 실지급율
             $ratio = 0;
         //기본량은 넘지만 요구량이 안될경우
-        } elseif($nation['gold'] - $_basegold < $outcome) {
-            $realoutcome = $nation['gold'] - $_basegold;
-            $nation['gold'] = $_basegold;
+        } elseif($nation['gold'] - GameConst::basegold < $outcome) {
+            $realoutcome = $nation['gold'] - GameConst::basegold;
+            $nation['gold'] = GameConst::basegold;
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         } else {
@@ -334,8 +332,6 @@ function processFall($connect) {
 }
 
 function processRiceIncome($connect) {
-    global $_baserice;
-
     $query = "select year,month,rice_rate from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -356,14 +352,14 @@ function processRiceIncome($connect) {
         // 실제 지급량 계산
         $nation['rice'] += $income;
         // 기본량도 안될경우
-        if($nation['rice'] < $_baserice) {
+        if($nation['rice'] < GameConst::baserice) {
             $realoutcome = 0;
             // 실지급율
             $ratio = 0;
         //기본량은 넘지만 요구량이 안될경우
-        } elseif($nation['rice'] - $_baserice < $outcome) {
-            $realoutcome = $nation['rice'] - $_baserice;
-            $nation['rice'] = $_baserice;
+        } elseif($nation['rice'] - GameConst::baserice < $outcome) {
+            $realoutcome = $nation['rice'] - GameConst::baserice;
+            $nation['rice'] = GameConst::baserice;
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         } else {

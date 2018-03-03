@@ -1427,7 +1427,6 @@ function process_22($connect, &$general) {
 function process_23($connect, &$general) {
     $log = array();
     $alllog = array();
-    global $_basegold, $_baserice;
 
     $date = substr($general['turntime'],11,5);
 
@@ -1453,14 +1452,14 @@ function process_23($connect, &$general) {
     if($amount < 100) { $amount = 100; }
     if($what == 1) {
         $dtype = "금";
-        if($nation['gold']-$_basegold < $amount) { $amount = $nation['gold'] - $_basegold; }
+        if($nation['gold']-GameConst::basegold < $amount) { $amount = $nation['gold'] - GameConst::basegold; }
     } elseif($what == 2) {
         $dtype = "쌀";
-        if($nation['rice']-$_baserice < $amount) { $amount = $nation['rice'] - $_baserice; }
+        if($nation['rice']-GameConst::baserice < $amount) { $amount = $nation['rice'] - GameConst::baserice; }
     } else {
         $what = 2;
         $dtype = "쌀";
-        if($nation['rice']-$_baserice < $amount) { $amount = $nation['rice'] - $_baserice; }
+        if($nation['rice']-GameConst::baserice < $amount) { $amount = $nation['rice'] - GameConst::baserice; }
     }
 
     $query = "select no,nation,level,name,gold,rice from general where no='$who'";
@@ -2495,9 +2494,7 @@ function process_33($connect, &$general) {
     $log = array();
     $alllog = array();
     global $_firing, $_basefiring, $_firingpower;
-    //global $_basegold, $_baserice; //TODO : 버그로 보여서 지웠는데, 진짜로 지워도 되는지 확인
     //탈취는 0까지 무제한
-    $_basegold = 0; $_baserice = 0;
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game where no='1'";
@@ -2591,8 +2588,8 @@ function process_33($connect, &$general) {
 
             $nation['gold'] -= $gold;
             $nation['rice'] -= $rice;
-            if($nation['gold'] < $_basegold) { $gold += ($nation['gold'] - $_basegold); $nation['gold'] = $_basegold; }
-            if($nation['rice'] < $_baserice) { $rice += ($nation['rice'] - $_baserice); $nation['rice'] = $_baserice; }
+            if($nation['gold'] < GameConst::minNationalgold) { $gold += ($nation['gold'] - GameConst::minNationalgold); $nation['gold'] = GameConst::minNationalgold; }
+            if($nation['rice'] < GameConst::minNationalrice) { $rice += ($nation['rice'] - GameConst::minNationalrice); $nation['rice'] = GameConst::minNationalrice; }
             $query = "update nation set gold='{$nation['gold']}',rice='{$nation['rice']}' where nation='{$destcity['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $query = "update city set state=34 where city='$destination'";
@@ -4063,7 +4060,6 @@ function process_51($connect, &$general) {
 }
 
 function process_52($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
     $date = substr($general['turntime'],11,5);
@@ -4095,8 +4091,8 @@ function process_52($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $younation = MYDB_fetch_array($result);
 
-    if($gold > $mynation['gold']-$_basegold) { $gold = $mynation['gold'] - $_basegold; }
-    if($rice > $mynation['rice']-$_baserice) { $rice = $mynation['rice'] - $_baserice; }
+    if($gold > $mynation['gold']-GameConst::basegold) { $gold = $mynation['gold'] - GameConst::basegold; }
+    if($rice > $mynation['rice']-GameConst::baserice) { $rice = $mynation['rice'] - GameConst::basegold; }
 
     if($younation['nation'] == 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:멸망한 국가입니다. 원조 실패. <1>$date</>";
@@ -4300,7 +4296,6 @@ function process_55($connect, &$general) {
     $alllog = array();
     $history = array();
 
-    global $_baserice;
     $date = substr($general['turntime'],11,5);
 
     $query = "select startyear,year,month from game where no='1'";
@@ -4498,7 +4493,6 @@ function process_57($connect, &$general) {
 function process_61($connect, &$general) {
     $log = array();
     $alllog = array();
-    global $_basegold, $_baserice;
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost,turnterm from game where no='1'";
@@ -4532,8 +4526,6 @@ function process_61($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 제의 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 제의 실패. <1>$date</>";
-//    } elseif($nation['gold']-$_basegold < $admin['develcost'] || $nation['rice']-$_baserice < $admin['develcost']) {
-//        $log[count($log)] = "<C>●</>{$admin['month']}월:증정할 물자가 부족합니다. 제의 실패. <1>$date</>";
     } else {
         $log[count($log)] = "<C>●</>{$admin['month']}월:<D><b>{$younation['name']}</b></>으로 불가침 제의 서신을 보냈습니다.<1>$date</>";
         $exp = 5;
@@ -4893,7 +4885,6 @@ function process_65($connect, &$general) {
 }
 
 function process_66($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 
@@ -4942,7 +4933,7 @@ function process_66($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. 천도 실패. <1>$date</>";
     } elseif($nation['capset'] == 1) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:다음 분기에 가능합니다. 천도 실패. <1>$date</>";
-    } elseif($nation['gold']-$_basegold < $amount || $nation['rice']-$_baserice < $amount) {
+    } elseif($nation['gold']-GameConst::basegold < $amount || $nation['rice']-GameConst::basegold < $amount) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:물자가 부족합니다. 천도 실패. <1>$date</>";
     } elseif($term < 3) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:천도중... ({$term}/3) <1>$date</>";
@@ -4980,7 +4971,6 @@ function process_66($connect, &$general) {
 }
 
 function process_67($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 
@@ -5028,7 +5018,7 @@ function process_67($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 증축 실패. <1>$date</>";
     } elseif($nation['capset'] == 1) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:다음 분기에 가능합니다. 증축 실패. <1>$date</>";
-    } elseif($nation['gold']-$_basegold < $amount || $nation['rice']-$_baserice < $amount) {
+    } elseif($nation['gold']-GameConst::basegold < $amount || $nation['rice']-GameConst::basegold < $amount) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:물자가 부족합니다. 증축 실패. <1>$date</>";
     } elseif($term < 6) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:증축중... ({$term}/6) <1>$date</>";
@@ -5068,7 +5058,6 @@ function process_67($connect, &$general) {
 }
 
 function process_68($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 
@@ -5118,8 +5107,6 @@ function process_68($connect, &$general) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 감축 실패. <1>$date</>";
     } elseif($nation['capset'] == 1) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:다음 분기에 가능합니다. 감축 실패. <1>$date</>";
-//    } elseif($nation['gold']-$_basegold < $amount || $nation['rice']-$_baserice < $amount) {
-//        $log[count($log)] = "<C>●</>{$admin['month']}월:물자가 부족합니다. 감축 실패. <1>$date</>";
     } elseif($term < 6) {
         $log[count($log)] = "<C>●</>{$admin['month']}월:감축중... ({$term}/6) <1>$date</>";
 
@@ -5170,7 +5157,6 @@ function process_68($connect, &$general) {
 }
 
 function process_71($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 
@@ -5272,7 +5258,6 @@ function process_71($connect, &$general) {
 }
 
 function process_72($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 
@@ -5383,7 +5368,6 @@ function process_72($connect, &$general) {
 }
 
 function process_73($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 
@@ -5510,7 +5494,6 @@ function process_73($connect, &$general) {
 }
 
 function process_74($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 
@@ -5649,7 +5632,6 @@ function process_74($connect, &$general) {
 }
 
 function process_75($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 
@@ -5771,7 +5753,6 @@ function process_75($connect, &$general) {
 }
 
 function process_76($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 
@@ -5986,7 +5967,6 @@ function process_76($connect, &$general) {
 }
 
 function process_77($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 
@@ -6110,7 +6090,6 @@ function process_77($connect, &$general) {
 }
 
 function process_78($connect, &$general) {
-    global $_basegold, $_baserice;
     $log = array();
     $alllog = array();
 

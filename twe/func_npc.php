@@ -257,8 +257,6 @@ function SetCrew($connect, $no, $personal, $gold, $leader, $genType, $tech, $reg
 }
 
 function processAI($connect, $no) {
-    global $_baserice;
-
     $query = "select startyear,year,month,turnterm,scenario,gold_rate,rice_rate from game where no='1'";
     $result = MYDB_query($query, $connect) or Error("processAI00 ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -680,7 +678,7 @@ function processAI($connect, $no) {
                         $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                         $SelGen = MYDB_fetch_array($result);
                         if($SelGen['no'] != 0) {
-                            $amount = floor(($nation[$type]-$_baserice) / 5000)*10 + 10;
+                            $amount = floor(($nation[$type]-GameConst::baserice) / 5000)*10 + 10;
                             if($amount > 100) $amount = 100;
                             // 포상
                             $command = EncodeCommand($type2, $SelGen['no'], $amount, 23);    // 금 1000단위 포상
