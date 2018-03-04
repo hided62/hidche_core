@@ -70,33 +70,33 @@ for($i=0; $i < $warcount; $i++) {
 if($ok == "수락") {
     // 서신 보낸 후 멸망 했을때.
     if($me['level'] < 5) {
-        $mylog[)] = "<C>●</>수뇌부가 아니므로 불가능합니다. 통합 실패.";
+        $mylog[] = "<C>●</>수뇌부가 아니므로 불가능합니다. 통합 실패.";
     } elseif($mynation['surlimit'] > 0) {
-        $mylog[)] = "<C>●</>본국이 외교제한이 지나지 않았습니다. 통합 실패.";
+        $mylog[] = "<C>●</>본국이 외교제한이 지나지 않았습니다. 통합 실패.";
     } elseif($younation['surlimit'] > 0) {
-        $mylog[)] = "<C>●</>상대국이 외교제한이 지나지 않았습니다. 통합 실패.";
+        $mylog[] = "<C>●</>상대국이 외교제한이 지나지 않았습니다. 통합 실패.";
     } elseif($losecitynum == 0) {
-        $mylog[)] = "<C>●</>방랑군이므로 불가능합니다. 통합 실패.";
+        $mylog[] = "<C>●</>방랑군이므로 불가능합니다. 통합 실패.";
     } elseif($wincitynum == 0) {
-        $mylog[)] = "<C>●</>상대가 방랑군이므로 불가능합니다. 통합 실패.";
+        $mylog[] = "<C>●</>상대가 방랑군이므로 불가능합니다. 통합 실패.";
     } elseif($mynation['power']+$younation['power'] > $avgnation['power']+$stdnation['power']) {
-        $mylog[)] = "<C>●</>양국 국력이 너무 높습니다. 통합 실패.";
+        $mylog[] = "<C>●</>양국 국력이 너무 높습니다. 통합 실패.";
     } elseif($mynation['gennum']+$younation['gennum'] > $avgnation['gennum']+$stdnation['gennum']) {
-        $mylog[)] = "<C>●</>양국 장수가 많습니다. 통합 실패.";
+        $mylog[] = "<C>●</>양국 장수가 많습니다. 통합 실패.";
     } elseif(!isClose($connect, $younation['nation'], $mynation['nation'])) {
-        $mylog[)] = "<C>●</>인접한 국가가 아니므로 불가능합니다. 통합 실패.";
+        $mylog[] = "<C>●</>인접한 국가가 아니므로 불가능합니다. 통합 실패.";
     } elseif($dip['state'] == 0) {
-        $mylog[)] = "<C>●</>아국과 교전중입니다. 통합 실패.";
+        $mylog[] = "<C>●</>아국과 교전중입니다. 통합 실패.";
     } elseif($dipcount != 0) {
-        $mylog[)] = "<C>●</>상대국이 외교 진행중입니다. 통합 실패.";
+        $mylog[] = "<C>●</>상대국이 외교 진행중입니다. 통합 실패.";
     } elseif($valid == 0) {
-        $mylog[)] = "<C>●</>상대국이 아국의 교전국과 불가침중입니다. 통합 실패.";
+        $mylog[] = "<C>●</>상대국이 아국의 교전국과 불가침중입니다. 통합 실패.";
     } elseif($mynation['dipmsg'] == "") {
-        $mylog[)] = "<C>●</>이미 거절했습니다. 불가침 실패.";
+        $mylog[] = "<C>●</>이미 거절했습니다. 불가침 실패.";
     } else {
         $youlog[] = "<C>●</><D><b>{$mynation['name']}</b></>(이)가 통합에 동의했습니다.";
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통합시도】</b></><D><b>{$mynation['name']}</b></>(와)과 <D><b>{$younation['name']}</b></>(이)가 통합을 시도합니다.";
-        $mylog[)] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 통합에 동의했습니다.";
+        $mylog[] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 통합에 동의했습니다.";
         $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>(이)가 <D><b>{$younation['name']}</b></>(와)과 <M>통합</>에 동의하였습니다.";
         addHistory($you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 통합 시도");
         addHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 통합 시도");
@@ -120,7 +120,7 @@ if($ok == "수락") {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } else {
     $youlog[] = "<C>●</><Y>{$mynation['name']}</>(이)가 항복을 거부했습니다.";
-    $mylog[)] = "<C>●</><D>{$younation['name']}</>(으)로 항복을 거부했습니다.";
+    $mylog[] = "<C>●</><D>{$younation['name']}</>(으)로 항복을 거부했습니다.";
 
     //현 메세지 지움
     $query = "update nation set dip{$num}='',dip{$num}_who='0',dip{$num}_when='' where nation='{$me['nation']}'";
