@@ -113,7 +113,7 @@ for($i=0; $i < 21; $i++) {
                 $name[$k] = $gen['name'];
                 $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
                 $data[$k] = $gen['data'];
-                $color[$k] = $gen['nation'] == 0 ? "FFFFFF" : $nationColor[$gen['nation']];
+                $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
                 $pic[$k] = $gen['picture'];
             }else{
                 $name[$k] = "-";
@@ -207,7 +207,7 @@ for($i=0; $i < 4; $i++) {
         if(isset($gen)) {
             $name[$k] = $gen['name'];
             $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
-            $color[$k] = $gen['nation'] == 0 ? "FFFFFF" : $nationColor[$gen['nation']];
+            $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
             $pic[$k] = $gen['picture'];
         }else{
             $name[$k] = "미발견";
@@ -255,7 +255,7 @@ for($i=0; $i < 4; $i++) {
         if(isset($gen)) {
             $name[$k] = $gen['name'];
             $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
-            $color[$k] = $gen['nation'] == 0 ? "FFFFFF" : $nationColor[$gen['nation']];
+            $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
             $pic[$k] = $gen['picture'];
         }else{
             $name[$k] = "미발견";

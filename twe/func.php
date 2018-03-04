@@ -1527,9 +1527,9 @@ function nationMsg($connect) {
 
 function PushMsg($type, $nation, $picture, $imgsvr, $from, $fromcolor, $to, $tocolor, $msg) {
     if($nation == 0) { $nation = 0; }
-    if($fromcolor == "") { $fromcolor = "FFFFFF"; }
+    if($fromcolor == "") { $fromcolor = "#FFFFFF"; }
     if($to == "") { $to = "재야"; }
-    if($tocolor == "") { $tocolor = "FFFFFF"; }
+    if($tocolor == "") { $tocolor = "#FFFFFF"; }
 
     $date = date('Y-m-d H:i:s');
     if($type == 1) { $file = "_all_msg.txt"; }

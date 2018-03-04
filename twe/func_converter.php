@@ -1065,23 +1065,23 @@ function newColor($color) {
     switch($color) {
         case "":
         case "330000":
-        case "FF0000":
-        case "800000":
-        case "A0522D":
-        case "FF6347":
-        case "808000":
-        case "008000":
-        case "2E8B57":
-        case "008080":
-        case "6495ED":
-        case "0000FF":
-        case "000080":
-        case "483D8B":
-        case "7B68EE":
-        case "800080":
-        case "A9A9A9":
+        case "#FF0000":
+        case "#800000":
+        case "#A0522D":
+        case "#FF6347":
+        case "#808000":
+        case "#008000":
+        case "#2E8B57":
+        case "#008080":
+        case "#6495ED":
+        case "#0000FF":
+        case "#000080":
+        case "#483D8B":
+        case "#7B68EE":
+        case "#800080":
+        case "#A9A9A9":
         case "000000":
-            $color = "FFFFFF"; break;
+            $color = "#FFFFFF"; break;
         default:
             $color = "000000"; break;
     }

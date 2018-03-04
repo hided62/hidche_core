@@ -80,10 +80,10 @@ function Submit($url, $msg="", $msg2="") {
 
 
 function GetNationColors() {
-    $colors = array("FF0000", "800000", "A0522D", "FF6347", "FFA500", "FFDAB9", "FFD700", "FFFF00",
-        "7CFC00", "00FF00", "808000", "008000", "2E8B57", "008080", "20B2AA", "6495ED", "7FFFD4",
-        "AFEEEE", "87CEEB", "00FFFF", "00BFFF", "0000FF", "000080", "483D8B", "7B68EE", "BA55D3",
-        "800080", "FF00FF", "FFC0CB", "F5F5DC", "E0FFFF", "FFFFFF", "A9A9A9");
+    $colors = array("#FF0000", "#800000", "#A0522D", "#FF6347", "#FFA500", "#FFDAB9", "#FFD700", "#FFFF00",
+        "#7CFC00", "#00FF00", "#808000", "#008000", "#2E8B57", "#008080", "#20B2AA", "#6495ED", "#7FFFD4",
+        "#AFEEEE", "#87CEEB", "#00FFFF", "#00BFFF", "#0000FF", "#000080", "#483D8B", "#7B68EE", "#BA55D3",
+        "#800080", "#FF00FF", "#FFC0CB", "#F5F5DC", "#E0FFFF", "#FFFFFF", "#A9A9A9");
     return $colors;
 }
 
