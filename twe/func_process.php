@@ -181,17 +181,17 @@ function process_1($connect, &$general, $type) {
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
     } elseif($city["$stype"] >= $city["$stype"."2"]) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}{$btype} 충분합니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$btype} 충분합니다. $dtype 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
         if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
@@ -222,13 +222,13 @@ function process_1($connect, &$general, $type) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
             $score = round($score);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} 하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} 하여 <C>$score</> 상승했습니다. <1>$date</>";
         }
 
         $exp = $score * 0.7;
@@ -278,15 +278,15 @@ function process_3($connect, &$general) {
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
     } else {
         $score = getGeneralIntel($general, true, true, true, false);
         $score = $score * (100 + $general['explevel']/5)/100;
@@ -309,13 +309,13 @@ function process_3($connect, &$general) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
             $score = round($score);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 하여 <C>$score</> 상승했습니다. <1>$date</>";
         }
 
         $exp = $score * 0.7;
@@ -368,17 +368,17 @@ function process_4($connect, &$general) {
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 주민 선정 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 주민 선정 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. 주민 선정 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. 주민 선정 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 주민 선정 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 주민 선정 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 주민 선정 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 주민 선정 실패. <1>$date</>";
     } elseif($general['rice'] < $admin['develcost']*2) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 주민 선정 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 주민 선정 실패. <1>$date</>";
     } elseif($city['rate'] >= 100) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:민심은 충분합니다. 주민 선정 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:민심은 충분합니다. 주민 선정 실패. <1>$date</>";
     } else {
         $score = getGeneralLeadership($general, true, true, true) / 10;
         $score = $score * (100 + $general['explevel']/5)/100;
@@ -403,13 +403,13 @@ function process_4($connect, &$general) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:선정을 <span class='ev_failed'>실패</span>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:선정을 <span class='ev_failed'>실패</span>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
         } elseif($r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:선정을 <S>성공</>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:선정을 <S>성공</>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
             $score = round($score);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:민심이 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:민심이 <C>$score</> 상승했습니다. <1>$date</>";
         }
 
         $exp = $score * 7;
@@ -458,17 +458,17 @@ function process_5($connect, &$general, $type) {
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
     } elseif($city["$stype"] >= $city["$stype"."2"]) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}는 충분합니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:{$dtype}는 충분합니다. $dtype 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
         if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
@@ -498,13 +498,13 @@ function process_5($connect, &$general, $type) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
             $score = round($score);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}를 하여 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 하여 <C>$score</> 상승했습니다. <1>$date</>";
         }
 
         $exp = $score * 0.7;
@@ -550,17 +550,17 @@ function process_7($connect, &$general) {
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 정착 장려 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 정착 장려 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. 정착 장려 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. 정착 장려 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 정착 장려 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 정착 장려 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 정착 장려 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 정착 장려 실패. <1>$date</>";
     } elseif($general['rice'] < $admin['develcost'] * 2) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 정착 장려 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 정착 장려 실패. <1>$date</>";
     } elseif($city['pop'] >= $city['pop2']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:이미 포화상태입니다. 정착 장려 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:이미 포화상태입니다. 정착 장려 실패. <1>$date</>";
     } else {
         $score = getGeneralLeadership($general, true, true, true);
         $score = $score * (100 + $general['explevel']/5)/100;
@@ -585,13 +585,13 @@ function process_7($connect, &$general) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:장려를 <span class='ev_failed'>실패</span>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:장려를 <span class='ev_failed'>실패</span>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
         } elseif($r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:장려를 <S>성공</>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:장려를 <S>성공</>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
         } else {
             $score = round($score);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
         }
 
         $exp = $score * 0.7;
@@ -639,17 +639,17 @@ function process_8($connect, &$general) {
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 강화 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 강화 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 강화 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 강화 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 강화 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 강화 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 강화 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 강화 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 강화 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 강화 실패. <1>$date</>";
     } elseif($city['secu'] >= $city['secu2']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:치안은 충분합니다. $dtype 강화 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:치안은 충분합니다. $dtype 강화 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
         if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
@@ -678,13 +678,13 @@ function process_8($connect, &$general) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}을 <span class='ev_failed'>실패</span>하여 <C>$score</> 강화했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <span class='ev_failed'>실패</span>하여 <C>$score</> 강화했습니다. <1>$date</>";
         } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
             $score = CriticalScore($score, 0);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}을 <S>성공</>하여 <C>$score</> 강화했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <S>성공</>하여 <C>$score</> 강화했습니다. <1>$date</>";
         } else {
             $score = round($score);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$dtype}을 <C>$score</> 강화했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <C>$score</> 강화했습니다. <1>$date</>";
         }
 
         $exp = $score * 0.7;
@@ -731,11 +731,11 @@ function process_9($connect, &$general) {
     $lbonus = setLeadershipBonus($general, $nation['level']);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 물자 조달 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 물자 조달 실패. <1>$date</>";
     } elseif($nation['level'] > 0 && $city['nation'] != $general['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 물자 조달 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 물자 조달 실패. <1>$date</>";
     } elseif($city['supply'] == 0 && $city['nation'] == $general['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 물자 조달 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 물자 조달 실패. <1>$date</>";
     } else {
         if(rand() % 2 == 0) { $dtype = 0; $stype = "금"; }
         else                { $dtype = 1; $stype = "쌀"; }
@@ -753,13 +753,13 @@ function process_9($connect, &$general) {
 
         if(30 > $rd) {
             $score = CriticalScore($score, 1);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:조달을 <span class='ev_failed'>실패</span>하여 {$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:조달을 <span class='ev_failed'>실패</span>하여 {$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
         } elseif(40 > $rd) {
             $score = CriticalScore($score, 0);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:조달을 <S>성공</>하여 {$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:조달을 <S>성공</>하여 {$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
         } else {
             $score = round($score);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:{$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:{$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
         }
 
         $exp = $score * 0.7;
@@ -933,25 +933,25 @@ function process_11($connect, &$general, $type) {
     }
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
 //    } elseif($city['supply'] == 0) {
-//        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
+//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
     } elseif($crew <= 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:더이상 $dtype 할 수 없습니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:더이상 $dtype 할 수 없습니다. $dtype 실패. <1>$date</>";
     } elseif($general['gold'] < $cost) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
     } elseif($general['rice'] < $crew) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. $dtype 실패. <1>$date</>";
     } elseif($valid == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 $dtype 할 수 없는 병종입니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:현재 $dtype 할 수 없는 병종입니다. $dtype 실패. <1>$date</>";
     } elseif($city['pop']-30000 < $crew*100) {    // 주민 30000명 이상만 가능
-        $log[count($log)] = "<C>●</>{$admin['month']}월:주민이 모자랍니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:주민이 모자랍니다. $dtype 실패. <1>$date</>";
     } elseif($city['rate'] < 20) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:민심이 낮아 주민들이 도망갑니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:민심이 낮아 주민들이 도망갑니다. $dtype 실패. <1>$date</>";
     } else {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:".getTypename($armtype)."을(를) <C>{$crew}00</>명 {$dtype}했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:".getTypename($armtype)."을(를) <C>{$crew}00</>명 {$dtype}했습니다. <1>$date</>";
         $exp = $crew;
         $ded = $crew;
         // 숙련도 증가
@@ -1002,22 +1002,22 @@ function process_13($connect, &$general) {
     $city = MYDB_fetch_array($result);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 훈련 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 훈련 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 훈련 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 훈련 실패. <1>$date</>";
 //    } elseif($city['supply'] == 0) {
-//        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 훈련 실패. <1>$date</>";
+//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 훈련 실패. <1>$date</>";
     } elseif($general['crew'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:병사가 없습니다. 훈련 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 훈련 실패. <1>$date</>";
     } elseif($general['train'] >= $_maxtrain) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:병사들은 이미 정예병사들입니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:병사들은 이미 정예병사들입니다. <1>$date</>";
 //    } elseif(floor($general['crewtype']/10) == 4) {
-//        $log[count($log)] = "<C>●</>{$admin['month']}월:병기는 훈련이 불가능합니다. <1>$date</>";
+//        $log[] = "<C>●</>{$admin['month']}월:병기는 훈련이 불가능합니다. <1>$date</>";
     } else {
         // 훈련시
         $score = round(getGeneralLeadership($general, true, true, true) * 100 / $general['crew'] * $_training);
 
-        $log[count($log)] = "<C>●</>{$admin['month']}월:훈련치가 <C>$score</> 상승했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:훈련치가 <C>$score</> 상승했습니다. <1>$date</>";
         $exp = 100;
         $ded = 70;
         // 숙련도 증가
@@ -1068,24 +1068,24 @@ function process_14($connect, &$general) {
     $city = MYDB_fetch_array($result);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 사기진작 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 사기진작 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 사기진작 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 사기진작 실패. <1>$date</>";
 //    } elseif($city['supply'] == 0) {
-//        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 사기진작 실패. <1>$date</>";
+//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 사기진작 실패. <1>$date</>";
     } elseif($general['crew'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:병사가 없습니다. 사기진작 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 사기진작 실패. <1>$date</>";
     } elseif($general['gold'] < $general['crew']/100) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 사기진작 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 사기진작 실패. <1>$date</>";
     } elseif($general['atmos'] >= $_maxatmos) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:이미 사기는 하늘을 찌를듯 합니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:이미 사기는 하늘을 찌를듯 합니다. <1>$date</>";
 //    } elseif(floor($general['crewtype']/10) == 4) {
-//        $log[count($log)] = "<C>●</>{$admin['month']}월:병기는 사기 진작이 불가능합니다. <1>$date</>";
+//        $log[] = "<C>●</>{$admin['month']}월:병기는 사기 진작이 불가능합니다. <1>$date</>";
     } else {
         $score = round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * $_training);
         $gold = $general['gold'] - round($general['crew']/100);
 
-        $log[count($log)] = "<C>●</>{$admin['month']}월:사기치가 <C>$score</> 상승했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:사기치가 <C>$score</> 상승했습니다. <1>$date</>";
         $exp = 100;
         $ded = 70;
         // 숙련도 증가
@@ -1137,19 +1137,19 @@ function process_15($connect, &$general) {
     $cost = round($general['crew']/100 * 3 * getTechCost($nation['tech']));
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 전투태세 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 전투태세 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 전투태세 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 전투태세 실패. <1>$date</>";
 //    } elseif($city['supply'] == 0) {
-//        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 전투태세 실패. <1>$date</>";
+//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 전투태세 실패. <1>$date</>";
     } elseif($general['crew'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:병사가 없습니다. 전투태세 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 전투태세 실패. <1>$date</>";
     } elseif($general['atmos'] >= 90 && $general['train'] >= 90) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:이미 병사들은 날쌔고 용맹합니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:이미 병사들은 날쌔고 용맹합니다. <1>$date</>";
     } elseif($general['gold'] < $cost) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 전투태세 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 전투태세 실패. <1>$date</>";
     } elseif($term < 3) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:병사들을 열심히 훈련중... ({$term}/3) <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:병사들을 열심히 훈련중... ({$term}/3) <1>$date</>";
 
         $query = "update general set resturn='ONGOING',term={$code} where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1157,7 +1157,7 @@ function process_15($connect, &$general) {
         //기술로 가격
         $gold = $general['gold'] - $cost;
 
-        $log[count($log)] = "<C>●</>{$admin['month']}월:전투태세 완료! <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:전투태세 완료! <1>$date</>";
         $exp = 100 * 3;
         $ded = 70 * 3;
         // 숙련도 증가
@@ -1216,25 +1216,25 @@ function process_16($connect, &$general) {
     }
 
     if($admin['year'] < $admin['startyear']+3) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 초반 제한중입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:현재 초반 제한중입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
 //    } elseif($city['supply'] == 0) {
-//        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif(!$valid) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif($general['crew'] <= 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:병사가 없습니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif($general['rice'] <= round($general['crew']/100)) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif($dip['state'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:교전중인 국가가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:교전중인 국가가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif($general['nation'] != $city['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:본국에서만 출병가능합니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:본국에서만 출병가능합니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif($nation['war'] == 1) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 전쟁 금지입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:현재 전쟁 금지입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif($general['nation'] == $destcity['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:본국입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:본국입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
         pushGenLog($general, $log);
         process_21($connect, $general);
         return;
@@ -1275,7 +1275,7 @@ function process_17($connect, &$general) {
     $admin = MYDB_fetch_array($result);
 
     if($general['crew'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:병사가 없습니다. 소집해제 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 소집해제 실패. <1>$date</>";
     } else {
         // 주민으로 돌아감
         $query = "update city set pop=pop+'{$general['crew']}' where city='{$general['city']}'";
@@ -1328,11 +1328,11 @@ function process_21($connect, &$general) {
     }
 
     if(!$valid) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 이동 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 이동 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destcity['name']}</b></>(으)로 이동 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destcity['name']}</b></>(으)로 이동 실패. <1>$date</>";
     } else {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(으)로 이동했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(으)로 이동했습니다. <1>$date</>";
         $exp = 50;
 
         // 성격 보정
@@ -1386,15 +1386,15 @@ function process_26($connect, &$general) {
     $gencount = MYDB_num_rows($result);
 
     if($general['nation'] != $city['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 집합 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 집합 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 집합 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 집합 실패. <1>$date</>";
     } elseif($general['no'] != $troop['no']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:부대장이 아닙니다. 집합 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:부대장이 아닙니다. 집합 실패. <1>$date</>";
     } elseif($gencount == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:집합 가능한 부대원이 없습니다. 집합 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:집합 가능한 부대원이 없습니다. 집합 실패. <1>$date</>";
     } else {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>에서 집합을 실시했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>에서 집합을 실시했습니다. <1>$date</>";
         $exp = 70;
         $ded = 100;
 
@@ -1442,11 +1442,11 @@ function process_28($connect, &$general) {
     $nation = getNationStaticInfo($general['nation']);
 
     if($nation['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:방랑군입니다. 귀환 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:방랑군입니다. 귀환 실패. <1>$date</>";
     } elseif($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 귀환 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 귀환 실패. <1>$date</>";
     } elseif(($general['level'] == 1 || $general['level'] >= 5) && $general['city'] == $nation['capital']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:이미 수도입니다. 귀환 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:이미 수도입니다. 귀환 실패. <1>$date</>";
     } else {
         if($general['level'] == 2) {
             $query = "select city,name from city where gen3='{$general['no']}'";
@@ -1466,7 +1466,7 @@ function process_28($connect, &$general) {
             $city = MYDB_fetch_array($result);
         }
 
-        $log[count($log)] = "<C>●</>{$admin['month']}월:<G>{$city['name']}</>(으)로 귀환했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:<G>{$city['name']}</>(으)로 귀환했습니다. <1>$date</>";
         $exp = 70;
         $ded = 100;
 
@@ -1514,11 +1514,11 @@ function process_30($connect, &$general) {
     $cost = $admin['develcost'] * 5;
     
     if($dist[$destination] > 3) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:거리가 멉니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:거리가 멉니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
     } elseif($general['gold'] < $cost) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
     } else {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(으)로 강행했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(으)로 강행했습니다. <1>$date</>";
         $exp = 100;
 
         // 성격 보정
@@ -1570,15 +1570,15 @@ function process_31($connect, &$general) {
     $city = MYDB_fetch_array($result);
 
     if(!$city) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:없는 도시입니다. 첩보 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:없는 도시입니다. 첩보 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']*3) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
     } elseif($general['rice'] < $admin['develcost']*3) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
     } elseif($general['nation'] == $city['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국입니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국입니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
 //    } elseif($dist[$destination] > 3) {
-//        $log[count($log)] = "<C>●</>{$admin['month']}월:너무 멉니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
+//        $log[] = "<C>●</>{$admin['month']}월:너무 멉니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
     } else {
         $query = "select crew,crewtype from general where city='$destination' and nation='{$city['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1589,17 +1589,17 @@ function process_31($connect, &$general) {
             if($gen['crew'] != 0) { $typecount[$gen['crewtype']]++; $crew += $gen['crew']; }
         }
         if($dist[$destination] > 2) {
-            $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
-            $log[count($log)] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 소문만 들을 수 있었습니다. <1>$date</>";
-            $log[count($log)] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
+            $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
+            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 소문만 들을 수 있었습니다. <1>$date</>";
+            $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
         } elseif($dist[$destination] == 2) {
-            $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
-            $log[count($log)] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 어느정도 정보를 얻었습니다. <1>$date</>";
-            $log[count($log)] = "【<M>첩보</>】농업:{$city['agri']}, 상업:{$city['comm']}, 치안:{$city['secu']}, 수비:{$city['def']}, 성벽:{$city['wall']}";
-            $log[count($log)] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
+            $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
+            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 어느정도 정보를 얻었습니다. <1>$date</>";
+            $log[] = "【<M>첩보</>】농업:{$city['agri']}, 상업:{$city['comm']}, 치안:{$city['secu']}, 수비:{$city['def']}, 성벽:{$city['wall']}";
+            $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
         } else {
-            $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
-            $log[count($log)] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 많은 정보를 얻었습니다. <1>$date</>";
+            $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
+            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 많은 정보를 얻었습니다. <1>$date</>";
             $msg[count($msg)] = "【<S>병종</>】";
             for($i=0;  $i <= 5;  $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = _String::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
             for($i=10; $i <= 14; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = _String::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
@@ -1609,10 +1609,10 @@ function process_31($connect, &$general) {
 
             $count = ceil(count($msg) / 8) * 8;
             for($i=$count; $i > 0; $i-=8) {
-                $log[count($log)] = "{$msg[$i-8]} {$msg[$i-7]} {$msg[$i-6]} {$msg[$i-5]} {$msg[$i-4]} {$msg[$i-3]} {$msg[$i-2]} {$msg[$i-1]}";
+                $log[] = "{$msg[$i-8]} {$msg[$i-7]} {$msg[$i-6]} {$msg[$i-5]} {$msg[$i-4]} {$msg[$i-3]} {$msg[$i-2]} {$msg[$i-1]}";
             }
-            $log[count($log)] = "【<M>첩보</>】농업:{$city['agri']}, 상업:{$city['comm']}, 치안:{$city['secu']}, 수비:{$city['def']}, 성벽:{$city['wall']}";
-            $log[count($log)] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
+            $log[] = "【<M>첩보</>】농업:{$city['agri']}, 상업:{$city['comm']}, 치안:{$city['secu']}, 수비:{$city['def']}, 성벽:{$city['wall']}";
+            $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
 
             if($general['nation'] != 0 && $city['nation'] != 0) {
                 $query = "select name,tech from nation where nation='{$city['nation']}'";
@@ -1624,11 +1624,11 @@ function process_31($connect, &$general) {
                 $myTech = MYDB_fetch_array($result);
 
                 $diff = $yourTech['tech'] - $myTech['tech'];   // 차이
-                if($diff >= 1000) {      $log[count($log)] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<M>↑</>압도"; }
-                elseif($diff >=  250) {  $log[count($log)] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<Y>▲</>우위"; }
-                elseif($diff >= -250) {  $log[count($log)] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<W>↕</>대등"; }
-                elseif($diff >= -1000) { $log[count($log)] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<G>▼</>열위"; }
-                else {                   $log[count($log)] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<C>↓</>미미"; }
+                if($diff >= 1000) {      $log[] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<M>↑</>압도"; }
+                elseif($diff >=  250) {  $log[] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<Y>▲</>우위"; }
+                elseif($diff >= -250) {  $log[] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<W>↕</>대등"; }
+                elseif($diff >= -1000) { $log[] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<G>▼</>열위"; }
+                else {                   $log[] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<C>↓</>미미"; }
             }
         }
 
@@ -1693,17 +1693,17 @@ function process_41($connect, &$general) {
     $ratio = CharCritical($ratio, $general['personal']);
 
     if($general['nation'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 단련 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 단련 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 단련 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 단련 실패. <1>$date</>";
     } elseif($general['rice'] < $admin['develcost']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 단련 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 단련 실패. <1>$date</>";
     } elseif($general['train'] < 40) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:훈련이 너무 낮습니다. 단련 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:훈련이 너무 낮습니다. 단련 실패. <1>$date</>";
     } elseif($general['atmos'] < 40) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:사기가 너무 낮습니다. 단련 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:사기가 너무 낮습니다. 단련 실패. <1>$date</>";
     } elseif($crewexp == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:병사가 모자랍니다. 단련 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:병사가 모자랍니다. 단련 실패. <1>$date</>";
     } else {
         $type = floor($general['crewtype'] / 10) * 10;
         switch($type) {
@@ -1717,17 +1717,17 @@ function process_41($connect, &$general) {
         if($ratio < 33) {
             // 숙련도 증가
             addGenDex($connect, $general['no'], $general['crewtype'], $crewexp);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:$crewstr 숙련도 향상이 <span class='ev_failed'>지지부진</span>했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도 향상이 <span class='ev_failed'>지지부진</span>했습니다. <1>$date</>";
         } elseif($ratio < 66) {
             $exp = $exp * 2;
             // 숙련도 증가
             addGenDex($connect, $general['no'], $general['crewtype'], $crewexp * 2);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:$crewstr 숙련도가 향상되었습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도가 향상되었습니다. <1>$date</>";
         } else {
             $exp = $exp * 3;
             // 숙련도 증가
             addGenDex($connect, $general['no'], $general['crewtype'], $crewexp * 3);
-            $log[count($log)] = "<C>●</>{$admin['month']}월:$crewstr 숙련도가 <S>일취월장</>했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도가 <S>일취월장</>했습니다. <1>$date</>";
         }
 
         // 경험치 상승    // 명성 상승
@@ -1758,52 +1758,52 @@ function process_42($connect, &$general) {
 
     switch($type) {
     case 1:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:지나가는 행인에게서 금을 <C>300</> 받았습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:지나가는 행인에게서 금을 <C>300</> 받았습니다. <1>$date</>";
         // 자금 상승        // 명성 상승
         $query = "update general set resturn='SUCCESS',gold=gold+300,experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 2:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:지나가는 행인에게서 쌀을 <C>300</> 받았습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:지나가는 행인에게서 쌀을 <C>300</> 받았습니다. <1>$date</>";
         // 군량 상승        // 명성 상승
         $query = "update general set resturn='SUCCESS',rice=rice+300,experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 3:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:어느 명사와 설전을 벌여 멋지게 이겼습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:어느 명사와 설전을 벌여 멋지게 이겼습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['intel2'] += 2;
         $query = "update general set resturn='SUCCESS',intel2='{$general['intel2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 4:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:명사와 설전을 벌였으나 망신만 당했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:명사와 설전을 벌였으나 망신만 당했습니다. <1>$date</>";
         // 명성 상승
         $query = "update general set resturn='SUCCESS',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 5:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:동네 장사와 힘겨루기를 하여 멋지게 이겼습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:동네 장사와 힘겨루기를 하여 멋지게 이겼습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['power2'] += 2;
         $query = "update general set resturn='SUCCESS',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 6:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:동네 장사와 힘겨루기를 했지만 망신만 당했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:동네 장사와 힘겨루기를 했지만 망신만 당했습니다. <1>$date</>";
         // 명성 상승
         $query = "update general set resturn='SUCCESS',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 7:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:산적과 싸워 금 <C>300</>을 빼앗았습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:산적과 싸워 금 <C>300</>을 빼앗았습니다. <1>$date</>";
         // 자금 상승        // 경험치 상승        // 명성 상승
         $general['power2'] += 2;
         $query = "update general set resturn='SUCCESS',gold=gold+300,power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 8:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:산적을 만나 금 <C>200</>을 빼앗겼습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:산적을 만나 금 <C>200</>을 빼앗겼습니다. <1>$date</>";
         $general['gold'] -= 200;
         if($general['gold'] <= 0) { $general['gold'] = 0; }
         // 자금 하락        // 경험 상승
@@ -1811,14 +1811,14 @@ function process_42($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 9:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:호랑이를 잡아 고기 <C>300</>을 얻었습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:호랑이를 잡아 고기 <C>300</>을 얻었습니다. <1>$date</>";
         // 군량 상승        // 경험치 상승
         $general['power2'] += 2;
         $query = "update general set resturn='SUCCESS',rice=rice+300,power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 10:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:호랑이에게 물려 다쳤습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:호랑이에게 물려 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
         $general['power2']--;
@@ -1826,14 +1826,14 @@ function process_42($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 11:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:곰을 잡아 고기 <C>300</>을 얻었습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:곰을 잡아 고기 <C>300</>을 얻었습니다. <1>$date</>";
         // 군량 상승        // 경험치 상승        // 명성 상승
         $general['power2'] += 2;
         $query = "update general set resturn='SUCCESS',rice=rice+300,power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 12:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:곰에게 할퀴어 다쳤습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:곰에게 할퀴어 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
         $general['power2']--;
@@ -1841,19 +1841,19 @@ function process_42($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 13:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:주점에서 사람들과 어울려 술을 마셨습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:주점에서 사람들과 어울려 술을 마셨습니다. <1>$date</>";
         // 명성 상승
         $query = "update general set resturn='SUCCESS',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 14:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:위기에 빠진 사람을 구해주었습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:위기에 빠진 사람을 구해주었습니다. <1>$date</>";
         // 명성 상승
         $query = "update general set resturn='SUCCESS',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 15:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:위기에 빠진 사람을 구해주다가 다쳤습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:위기에 빠진 사람을 구해주다가 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
         $general['power2']--;
@@ -1861,14 +1861,14 @@ function process_42($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 16:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:돈을 빌려주었다가 이자 <C>300</>을 받았습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:돈을 빌려주었다가 이자 <C>300</>을 받았습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['intel2']++;
         $query = "update general set resturn='SUCCESS',gold=gold+300,intel2='{$general['intel2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 17:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:돈을 <C>200</> 빌려주었다가 떼어먹혔습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:돈을 <C>200</> 빌려주었다가 떼어먹혔습니다. <1>$date</>";
         $general['gold'] -= 200;
         if($general['gold'] <= 0) { $general['gold'] = 0; }
         // 명성 상승
@@ -1876,14 +1876,14 @@ function process_42($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 18:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:쌀을 빌려주었다가 이자 <C>300</>을 받았습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:쌀을 빌려주었다가 이자 <C>300</>을 받았습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['intel2']++;
         $query = "update general set resturn='SUCCESS',rice=rice+300,intel2='{$general['intel2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 19:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:쌀을 <C>200</> 빌려주었다가 떼어먹혔습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:쌀을 <C>200</> 빌려주었다가 떼어먹혔습니다. <1>$date</>";
         $general['rice'] -= 200;
         if($general['rice'] <= 0) { $general['rice'] = 0; }
         // 명성 상승
@@ -1891,35 +1891,35 @@ function process_42($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 20:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:거리에서 글 모르는 아이들을 모아 글을 가르쳤습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:거리에서 글 모르는 아이들을 모아 글을 가르쳤습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['intel2'] += 2;
         $query = "update general set resturn='SUCCESS',intel2='{$general['intel2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 21:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:백성들에게 현인의 가르침을 설파했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:백성들에게 현인의 가르침을 설파했습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['leader2'] += 2;
         $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 22:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:어느 집의 무너진 울타리를 고쳐주었습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:어느 집의 무너진 울타리를 고쳐주었습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['power2'] += 2;
         $query = "update general set resturn='SUCCESS',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 23:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:어느 집의 도망친 가축을 되찾아 주었습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:어느 집의 도망친 가축을 되찾아 주었습니다. <1>$date</>";
         // 경험치 상승        // 명성 상승
         $general['leader2'] += 2;
         $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 24:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:호랑이에게 물려 크게 다쳤습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:호랑이에게 물려 크게 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 30 + 20;
         $general['power2']--;
@@ -1927,7 +1927,7 @@ function process_42($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 25:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:곰에게 할퀴어 크게 다쳤습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:곰에게 할퀴어 크게 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 30 + 20;
         $general['power2']--;
@@ -1935,7 +1935,7 @@ function process_42($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 26:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:위기에 빠진 사람을 구하다가 죽을뻔 했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:위기에 빠진 사람을 구하다가 죽을뻔 했습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 50 + 30;
         $general['power2']--;
@@ -1943,7 +1943,7 @@ function process_42($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     default:
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아무일도 일어나지 않았습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아무일도 일어나지 않았습니다. <1>$date</>";
         // 명성 상승
         $query = "update general set resturn='SUCCESS',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1987,22 +1987,22 @@ function process_43($connect, &$general) {
     if($what == 2 && $general['rice'] < $amount) { $amount = $general['rice']; }
 
     if(!$gen) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:없는 장수입니다. 증여 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:없는 장수입니다. 증여 실패. <1>$date</>";
     } elseif($what == 1 && $general['gold'] <= 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 없습니다. 증여 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 없습니다. 증여 실패. <1>$date</>";
     } elseif($what == 2 && $general['rice'] <= 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군량이 없습니다. 증여 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군량이 없습니다. 증여 실패. <1>$date</>";
     } elseif($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야는 불가능합니다. 증여 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야는 불가능합니다. 증여 실패. <1>$date</>";
     } elseif($general['nation'] != $city['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 증여 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 증여 실패. <1>$date</>";
     } elseif($general['nation'] != $gen['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국 장수가 아닙니다. 증여 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국 장수가 아닙니다. 증여 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 증여 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 증여 실패. <1>$date</>";
     } else {
         $genlog[count($genlog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게서 $dtype <C>$amount</>을 증여 받았습니다.";
-        $log[count($log)] = "<C>●</>{$admin['month']}월:<Y>{$gen['name']}</>에게 $dtype <C>$amount</>을 증여했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:<Y>{$gen['name']}</>에게 $dtype <C>$amount</>을 증여했습니다. <1>$date</>";
 
         if($what == 1) {
             $gen['gold'] += $amount;
@@ -2077,18 +2077,18 @@ function process_44($connect, &$general) {
     }
 
     if($general['nation'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 헌납 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 헌납 실패. <1>$date</>";
     } elseif($what == 1 && $general['gold'] <= 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 없습니다. 헌납 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 없습니다. 헌납 실패. <1>$date</>";
     } elseif($what == 2 && $general['rice'] <= 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군량이 없습니다. 헌납 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군량이 없습니다. 헌납 실패. <1>$date</>";
     } elseif($general['nation'] != $city['nation'] && $mynation['level'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 증여 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 증여 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 증여 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 증여 실패. <1>$date</>";
     } else {
-//        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>에서 장수들이 재산을 헌납 하고 있습니다.";
-        $log[count($log)] = "<C>●</>{$admin['month']}월: $dtype <C>$amount</>을 헌납했습니다. <1>$date</>";
+//        $alllog[] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>에서 장수들이 재산을 헌납 하고 있습니다.";
+        $log[] = "<C>●</>{$admin['month']}월: $dtype <C>$amount</>을 헌납했습니다. <1>$date</>";
 
         if($what == 1) {
             $general['gold'] -= $amount;
@@ -2154,63 +2154,63 @@ function process_48($connect, &$general) {
     if($general['special'] == 30 && $type != 0) { $cost *= 0.5; }
 
     if($city['trade'] == 0 && $general['special'] != 30) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:도시에 상인이 없습니다. 장비매매 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:도시에 상인이 없습니다. 장비매매 실패. <1>$date</>";
     } elseif($city['secu']/1000 < $type) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:이 도시에서는 구할 수 없었습니다. 구입 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:이 도시에서는 구할 수 없었습니다. 구입 실패. <1>$date</>";
     } elseif($type > 6 || $type < 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:구입할 수 있는 물건이 아닙니다. 구입 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:구입할 수 있는 물건이 아닙니다. 구입 실패. <1>$date</>";
     } elseif($general['gold'] < $cost && $type != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 구입 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 구입 실패. <1>$date</>";
     } elseif($general['weap'] == 0 && $isweap == 0 && $type == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:무기가 없습니다. 판매 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:무기가 없습니다. 판매 실패. <1>$date</>";
     } elseif($general['book'] == 0 && $isweap == 1 && $type == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:서적이 없습니다. 판매 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:서적이 없습니다. 판매 실패. <1>$date</>";
     } elseif($general['horse'] == 0 && $isweap == 2 && $type == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:명마가 없습니다. 판매 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:명마가 없습니다. 판매 실패. <1>$date</>";
     } elseif($general['item'] == 0 && $isweap == 3 && $type == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:도구가 없습니다. 판매 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:도구가 없습니다. 판매 실패. <1>$date</>";
     } else {
         if($isweap == 0) {
             if($type != 0) {
-                $log[count($log)] = "<C>●</>{$admin['month']}월:<C>".getWeapName($type)."</>(을)를 구입했습니다. <1>$date</>";
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getWeapName($type)."</>(을)를 구입했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',weap='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
                 $cost = round(getItemCost($general['weap']) / 2, 0);
-                $log[count($log)] = "<C>●</>{$admin['month']}월:<C>".getWeapName($general['weap'])."</>(을)를 판매했습니다. <1>$date</>";
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getWeapName($general['weap'])."</>(을)를 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',weap='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         } elseif($isweap == 1) {
             if($type != 0) {
-                $log[count($log)] = "<C>●</>{$admin['month']}월:<C>".getBookName($type)."</>(을)를 구입했습니다. <1>$date</>";
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getBookName($type)."</>(을)를 구입했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',book='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
                 $cost = round(getItemCost($general['book']) / 2, 0);
-                $log[count($log)] = "<C>●</>{$admin['month']}월:<C>".getBookName($general['book'])."</>(을)를 판매했습니다. <1>$date</>";
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getBookName($general['book'])."</>(을)를 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',book='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         } elseif($isweap == 2) {
             if($type != 0) {
-                $log[count($log)] = "<C>●</>{$admin['month']}월:<C>".getHorseName($type)."</>(을)를 구입했습니다. <1>$date</>";
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getHorseName($type)."</>(을)를 구입했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',horse='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
                 $cost = round(getItemCost($general['horse']) / 2, 0);
-                $log[count($log)] = "<C>●</>{$admin['month']}월:<C>".getHorseName($general['horse'])."</>(을)를 판매했습니다. <1>$date</>";
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getHorseName($general['horse'])."</>(을)를 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',horse='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         } elseif($isweap == 3) {
             if($type != 0) {
-                $log[count($log)] = "<C>●</>{$admin['month']}월:<C>".getItemName($type)."</>(을)를 구입했습니다. <1>$date</>";
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($type)."</>(을)를 구입했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',item='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
                 $cost = round(getItemCost2($general['item']) / 2, 0);
-                $log[count($log)] = "<C>●</>{$admin['month']}월:<C>".getItemName($general['item'])."</>(을)를 판매했습니다. <1>$date</>";
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($general['item'])."</>(을)를 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',item='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
@@ -2295,19 +2295,19 @@ function process_49($connect, &$general) {
     $tax = round($tax);
 
     if($city['trade'] == 0 && $general['special'] != 30 && $general['npc'] < 2) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:도시에 상인이 없습니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:도시에 상인이 없습니다. $dtype 실패. <1>$date</>";
     } elseif($general['nation'] != $city['nation'] && $nation['level'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
     } elseif($type == 1 && $general['rice'] <= 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군량이 없습니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군량이 없습니다. $dtype 실패. <1>$date</>";
     } elseif($type == 2 && $general['gold'] <= 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 없습니다. $dtype 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 없습니다. $dtype 실패. <1>$date</>";
     } else {
         // 판매
         if($type == 1) {
-            $log[count($log)] = "<C>●</>{$admin['month']}월:군량 <C>$amount</>을 팔아 자금 <C>$cost</>을 얻었습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:군량 <C>$amount</>을 팔아 자금 <C>$cost</>을 얻었습니다. <1>$date</>";
             // 군량 감소
             $query = "update general set rice=rice-{$amount} where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2316,7 +2316,7 @@ function process_49($connect, &$general) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 구입
         } elseif($type == 2) {
-            $log[count($log)] = "<C>●</>{$admin['month']}월:군량 <C>$amount</>을 사서 자금 <C>$cost</>을 썼습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:군량 <C>$amount</>을 사서 자금 <C>$cost</>을 썼습니다. <1>$date</>";
             // 군량 증가
             $query = "update general set rice=rice+{$amount} where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2374,7 +2374,7 @@ function process_50($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $log[count($log)] = "<C>●</>{$admin['month']}월:건강 회복을 위해 요양합니다. <1>$date</>";
+    $log[] = "<C>●</>{$admin['month']}월:건강 회복을 위해 요양합니다. <1>$date</>";
     // 경험치 상승        // 공헌도, 명성 상승
     $exp = 10;
     $ded = 7;
@@ -2397,7 +2397,7 @@ function process_99($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $log[count($log)] = "<C>●</>{$admin['month']}월:아직 구현되지 않았습니다. <1>$date</>";
+    $log[] = "<C>●</>{$admin['month']}월:아직 구현되지 않았습니다. <1>$date</>";
 
     $exp = 100;
     $ded = 0;

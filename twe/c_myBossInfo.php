@@ -72,22 +72,22 @@ if($btn == "추방") {
         }
 
         if($dipcount1 > 0) {
-            $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:통합에 반대하던 <Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에서 <R>숙청</>당했습니다.";
-            $log[count($log)] = "<C>●</>통합에 반대하다가 <D><b>{$nation['name']}</b></>에서 <R>숙청</>당했습니다.";
+            $alllog[] = "<C>●</>{$admin['month']}월:통합에 반대하던 <Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에서 <R>숙청</>당했습니다.";
+            $log[] = "<C>●</>통합에 반대하다가 <D><b>{$nation['name']}</b></>에서 <R>숙청</>당했습니다.";
 
             // 재야로, 국가 무소속으로
             $query = "update general set level=0,nation=0,belong=0,makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } elseif($dipcount2 > 0) {
-            $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:합병에 반대하던 <Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에서 <R>숙청</>당했습니다.";
-            $log[count($log)] = "<C>●</>합병에 반대하다가 <D><b>{$nation['name']}</b></>에서 <R>숙청</>당했습니다.";
+            $alllog[] = "<C>●</>{$admin['month']}월:합병에 반대하던 <Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에서 <R>숙청</>당했습니다.";
+            $log[] = "<C>●</>합병에 반대하다가 <D><b>{$nation['name']}</b></>에서 <R>숙청</>당했습니다.";
 
             // 재야로, 국가 무소속으로
             $query = "update general set level=0,nation=0,belong=0,makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에서 <R>추방</>당하였습니다.";
-            $log[count($log)] = "<C>●</><D><b>{$nation['name']}</b></>에서 <R>추방</>당하였습니다.";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에서 <R>추방</>당하였습니다.";
+            $log[] = "<C>●</><D><b>{$nation['name']}</b></>에서 <R>추방</>당하였습니다.";
 
             // 재야로, 국가 무소속으로, 명성/공헌 N*10%감소
             $query = "update general set level=0,nation=0,belong=0,betray=betray+1,makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}',dedication=dedication*(1-0.1*betray),experience=experience*(1-0.1*betray) where no='{$general['no']}'";

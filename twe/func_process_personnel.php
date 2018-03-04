@@ -24,17 +24,17 @@ function process_22($connect, &$general) {
     $cost = round($admin['develcost'] + ($you['experience'] + $you['dedication'])/1000) * 10;
 
     if(!$you) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:없는 장수입니다. 등용 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:없는 장수입니다. 등용 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:초반 제한중입니다. 등용 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:초반 제한중입니다. 등용 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 등용 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 등용 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 등용 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 등용 실패. <1>$date</>";
     } elseif($general['gold'] < $cost) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 등용 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 등용 실패. <1>$date</>";
     } else {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:<Y>{$you['name']}</>에게 등용 권유 서신을 보냈습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:<Y>{$you['name']}</>에게 등용 권유 서신을 보냈습니다. <1>$date</>";
         $exp = 100;
         $ded = 200;
 
@@ -108,24 +108,24 @@ function process_25($connect, &$general) {
     $gencount = MYDB_num_rows($genresult);
 
     if(!$nation) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:임관할 국가가 없습니다. 임관 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:임관할 국가가 없습니다. 임관 실패. <1>$date</>";
     } elseif($general['nation'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야가 아닙니다. 임관 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야가 아닙니다. 임관 실패. <1>$date</>";
     } elseif($nation['nation'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:없는 국가입니다. 임관 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:없는 국가입니다. 임관 실패. <1>$date</>";
     } elseif($nation['level'] == 0 && $gencount >= 10) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 임관이 제한되고 있습니다. 임관 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 임관이 제한되고 있습니다. 임관 실패.";
     } elseif($admin['year'] < $admin['startyear']+3 && $gencount >= 10) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 임관이 제한되고 있습니다. 임관 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 임관이 제한되고 있습니다. 임관 실패.";
     } elseif($nation['scout'] == 1 && $general['npc'] < 5) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 임관이 금지되어 있습니다. 임관 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 임관이 금지되어 있습니다. 임관 실패.";
     } elseif($general['makelimit'] > 0 && $general['npc'] < 5) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야가 된지 12턴이 지나야 합니다. 임관 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야가 된지 12턴이 지나야 합니다. 임관 실패. <1>$date</>";
     } elseif(strpos($general['nations'], ",{$nation['nation']},") > 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:이미 임관했었던 국가입니다. 임관 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:이미 임관했었던 국가입니다. 임관 실패. <1>$date</>";
     } else {
-        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
-        $log[count($log)] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 임관했습니다. <1>$date</>";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
+        $log[] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 임관했습니다. <1>$date</>";
         addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
 
         if($gencount < 10) { $exp = 700; }
@@ -186,13 +186,13 @@ function process_29($connect, &$general) {
     $nation = MYDB_fetch_array($result);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 인재탐색 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 인재탐색 실패. <1>$date</>";
     } elseif($nation['level'] <= 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:방랑군입니다. 인재탐색 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:방랑군입니다. 인재탐색 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3 && $nation['gennum'] >= 10) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 탐색이 제한되고 있습니다. 인재탐색 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 탐색이 제한되고 있습니다. 인재탐색 실패.";
     } elseif($general['gold'] < $admin['develcost']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 인재탐색 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 인재탐색 실패. <1>$date</>";
     } else {
         $query = "select no from general where nation='{$general['nation']}' and npc<2";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -220,7 +220,7 @@ function process_29($connect, &$general) {
             case 1: $general['power2'] += 1; break;
             case 2: $general['intel2'] += 1; break;
             }
-            $log[count($log)] = "<C>●</>{$admin['month']}월:인재를 찾을 수 없었습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:인재를 찾을 수 없었습니다. <1>$date</>";
         } else {
             // 탐색 성공
             $exp = 200;
@@ -252,8 +252,8 @@ function process_29($connect, &$general) {
                 $scoutNation = $nation['nation'];
             }
             
-            $log[count($log)] = "<C>●</>{$admin['month']}월:<Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다! <1>$date</>";
-            $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다!";
+            $log[] = "<C>●</>{$admin['month']}월:<Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다! <1>$date</>";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다!";
             addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>$name</>(이)라는 <C>인재</>를 {$scoutType}");
 
             $query = "select max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0) as dex0, avg(dex10) as dex10, avg(dex20) as dex20, avg(dex30) as dex30, avg(dex40) as dex40 from general where nation='{$general['nation']}'";
@@ -440,11 +440,11 @@ function process_45($connect, &$general) {
     $nation = MYDB_fetch_array($result);
 
     if($general['nation'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야입니다. 하야 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 하야 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:초반제한중 하야는 불가능합니다. 하야 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 하야는 불가능합니다. 하야 실패. <1>$date</>";
     } elseif($general['level'] == 12) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군주입니다. 하야 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군주입니다. 하야 실패. <1>$date</>";
     } else {
         $exp = 100;
 
@@ -473,24 +473,24 @@ function process_45($connect, &$general) {
         }
 
         if($dipcount1 > 0) {
-            $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 통합에 반대하며 <D><b>{$nation['name']}</b></>(을)를 <R>떠났</>습니다.";
-            $log[count($log)] = "<C>●</>{$admin['month']}월:통합에 반대하며 <D><b>{$nation['name']}</b></>에서 떠났습니다. <1>$date</>";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 통합에 반대하며 <D><b>{$nation['name']}</b></>(을)를 <R>떠났</>습니다.";
+            $log[] = "<C>●</>{$admin['month']}월:통합에 반대하며 <D><b>{$nation['name']}</b></>에서 떠났습니다. <1>$date</>";
             addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:통합에 반대하며 <D><b>{$nation['name']}</b></>(을)를 떠남");
 
             // 국적 바꾸고 등급 재야로
             $query = "update general set resturn='SUCCESS',belong=0,nation=0,level=0,makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } elseif($dipcount2 > 0) {
-            $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 합병에 반대하며 <D><b>{$nation['name']}</b></>(을)를 <R>떠났</>습니다.";
-            $log[count($log)] = "<C>●</>{$admin['month']}월:합병에 반대하며 <D><b>{$nation['name']}</b></>에서 떠났습니다. <1>$date</>";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 합병에 반대하며 <D><b>{$nation['name']}</b></>(을)를 <R>떠났</>습니다.";
+            $log[] = "<C>●</>{$admin['month']}월:합병에 반대하며 <D><b>{$nation['name']}</b></>에서 떠났습니다. <1>$date</>";
             addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:합병에 반대하며 <D><b>{$nation['name']}</b></>(을)를 떠남");
 
             // 국적 바꾸고 등급 재야로
             $query = "update general set resturn='SUCCESS',belong=0,nation=0,level=0,makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에서 <R>하야</>했습니다.";
-            $log[count($log)] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>에서 하야했습니다. <1>$date</>";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에서 <R>하야</>했습니다.";
+            $log[] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>에서 하야했습니다. <1>$date</>";
             addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에서 하야");
 
             // 국적 바꾸고 등급 재야로        // 명성/공헌 N*10% 감소
@@ -572,19 +572,19 @@ function process_46($connect, &$general) {
     elseif($type > 13) { $type = 9; }
 
     if($gencount < 2) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:수하 장수가 부족합니다. 건국 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:수하 장수가 부족합니다. 건국 실패. <1>$date</>";
     } elseif($admin['year'] >= $admin['startyear']+2) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:건국 기간이 지났습니다. 건국 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:건국 기간이 지났습니다. 건국 실패. <1>$date</>";
     } elseif($city['nation'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:공백지가 아닙니다. 건국 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:공백지가 아닙니다. 건국 실패. <1>$date</>";
     } elseif($nationcount > 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:존재하는 국가명입니다. 건국 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:존재하는 국가명입니다. 건국 실패. <1>$date</>";
     } elseif($general['makelimit'] > 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야가 된지 12시간이 지나야 합니다. 건국 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야가 된지 12시간이 지나야 합니다. 건국 실패. <1>$date</>";
     } elseif($general['level'] != 12) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군주가 아닙니다. 건국 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군주가 아닙니다. 건국 실패. <1>$date</>";
     } elseif($city['level'] != 5 && $city['level'] != 6) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:중, 소 도시에서만 가능합니다. 건국 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:중, 소 도시에서만 가능합니다. 건국 실패. <1>$date</>";
     } else {
         $query = "update nation set name='{$general['makenation']}',color='$color',level=1,type='$type',capital='{$general['city']}' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -596,9 +596,9 @@ function process_46($connect, &$general) {
         $query = "update city set nation='{$nation['nation']}',conflict='',conflict2='' where city='{$general['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[count($log)] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 건국하였습니다. <1>$date</>";
-        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에 국가를 건설하였습니다.";
-        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【건국】</b></>".getNationType($type)." <D><b>{$nation['name']}</b></>(이)가 새로이 등장하였습니다.";
+        $log[] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 건국하였습니다. <1>$date</>";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에 국가를 건설하였습니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【건국】</b></>".getNationType($type)." <D><b>{$nation['name']}</b></>(이)가 새로이 등장하였습니다.";
         addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 건국");
         addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>(을)를 건국");
 
@@ -641,19 +641,19 @@ function process_47($connect, &$general) {
 
 
     if($general['level'] != 12) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군주가 아닙니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군주가 아닙니다. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:초반제한중에는 방랑이 불가능합니다. 방랑 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중에는 방랑이 불가능합니다. 방랑 실패.";
     } elseif($dipcount != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:방랑할 수 없는 외교상태입니다. 방랑 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:방랑할 수 없는 외교상태입니다. 방랑 실패.";
     } elseif($nation['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:이미 방랑군입니다. 방랑 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:이미 방랑군입니다. 방랑 실패.";
     } else {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:영토를 버리고 방랑의 길을 떠납니다. <1>$date</>";
-        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 방랑의 길을 떠납니다.";
+        $log[] = "<C>●</>{$admin['month']}월:영토를 버리고 방랑의 길을 떠납니다. <1>$date</>";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 방랑의 길을 떠납니다.";
         addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 버리고 방랑");
 
-        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【방랑】</b></><D><b>{$general['name']}</b></>은(는) <R>방랑</>의 길을 떠납니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【방랑】</b></><D><b>{$general['name']}</b></>은(는) <R>방랑</>의 길을 떠납니다.";
 
         //분쟁기록 모두 지움
         DeleteConflict($connect, $general['nation']);
@@ -710,13 +710,13 @@ function process_54($connect, &$general) {
     $dipcount = MYDB_num_rows($result);
 
     if($nextruler['name'] == "") {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:잘못된 장수입니다. 선양 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:잘못된 장수입니다. 선양 실패. <1>$date</>";
     } elseif($general['level'] != 12) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군주가 아닙니다. 선양 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군주가 아닙니다. 선양 실패. <1>$date</>";
     } elseif($nextruler['nation'] != $general['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:잘못된 장수입니다. 선양 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:잘못된 장수입니다. 선양 실패. <1>$date</>";
     } elseif($dipcount != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 통합 진행중입니다. 선양 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:현재 통합 진행중입니다. 선양 실패.";
     } else {
         //군주 교체
         $query = "update general set level='12' where no='$who'";
@@ -732,9 +732,9 @@ function process_54($connect, &$general) {
         $query = "update general set resturn='SUCCESS',level='1',experience=experience*0.7 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【선양】</b></><Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 군주 자리를 <Y>{$nextruler['name']}</>에게 선양했습니다.";
-        $log[count($log)] = "<C>●</>{$admin['month']}월:<Y>{$nextruler['name']}</>에게 군주의 자리를 물려줍니다. <1>$date</>";
-        $youlog[count($youlog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게서 군주의 자리를 물려받습니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【선양】</b></><Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 군주 자리를 <Y>{$nextruler['name']}</>에게 선양했습니다.";
+        $log[] = "<C>●</>{$admin['month']}월:<Y>{$nextruler['name']}</>에게 군주의 자리를 물려줍니다. <1>$date</>";
+        $youlog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게서 군주의 자리를 물려받습니다.";
 
         addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주자리를 <Y>{$nextruler['name']}</>에게 선양");
         addHistory($nextruler, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주자리를 물려 받음");
@@ -768,11 +768,11 @@ function process_55($connect, &$general) {
     else { $makename = $general['name']; }
 
     if($general['level'] != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야가 아닙니다. 거병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야가 아닙니다. 거병 실패. <1>$date</>";
     } elseif($admin['year'] >= $admin['startyear']+2) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:거병 기간이 지났습니다. 거병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:거병 기간이 지났습니다. 거병 실패. <1>$date</>";
     } elseif($general['makelimit'] > 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야가 된지 12시간이 지나야 합니다. 거병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야가 된지 12시간이 지나야 합니다. 거병 실패. <1>$date</>";
     } else {
 
         getDB()->insert('nation', [
@@ -805,9 +805,9 @@ function process_55($connect, &$general) {
         $query = "update general set resturn='SUCCESS',belong=1,level=12,nation='{$nation['nation']}',dedication=dedication+'$ded', experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[count($log)] = "<C>●</>{$admin['month']}월:거병에 성공하였습니다. <1>$date</>";
-        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에서 거병하였습니다.";
-        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【거병】</b></><D><b>{$general['name']}</b></>(이)가 세력을 결성하였습니다.";
+        $log[] = "<C>●</>{$admin['month']}월:거병에 성공하였습니다. <1>$date</>";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에서 거병하였습니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【거병】</b></><D><b>{$general['name']}</b></>(이)가 세력을 결성하였습니다.";
         addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$city['name']}</b></>에서 거병");
         addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에서 거병");
 
@@ -847,12 +847,12 @@ function process_56($connect, &$general) {
     $citycount = MYDB_num_rows($result);
 
     if($general['level'] != 12) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군주가 아닙니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군주가 아닙니다. <1>$date</>";
     } elseif($citycount != 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:방랑군이 아닙니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:방랑군이 아닙니다. <1>$date</>";
     } else {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:세력을 해산했습니다. <1>$date</>";
-        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 세력을 해산했습니다.";
+        $log[] = "<C>●</>{$admin['month']}월:세력을 해산했습니다. <1>$date</>";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 세력을 해산했습니다.";
         addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 해산");
 
         $query = "select no from general where nation='{$general['nation']}'";
@@ -902,19 +902,19 @@ function process_57($connect, &$general) {
     $ruler = MYDB_fetch_array($result);
 
     if($general['level'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:재야 입니다. 모반 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야 입니다. 모반 실패. <1>$date</>";
     } elseif($general['level'] < 5) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:수뇌부 이상만 가능합니다. 모반 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:수뇌부 이상만 가능합니다. 모반 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 모반 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 모반 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 모반 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 모반 실패. <1>$date</>";
     } elseif($general['level'] == 12) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:이미 군주 입니다. 모반 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:이미 군주 입니다. 모반 실패. <1>$date</>";
     } elseif($ruler['killturn'] >= $admin['killturn']) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군주가 활동중입니다. 모반 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군주가 활동중입니다. 모반 실패. <1>$date</>";
     } elseif($ruler['npc'] >= 2) {
-        $log[count($log)] = "<C>●</>{$admin['month']}월:군주가 NPC입니다. 모반 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군주가 NPC입니다. 모반 실패. <1>$date</>";
     } else {
         //군주 교체
         $query = "update general set resturn='SUCCESS',level='12' where no='{$general['no']}'";
@@ -930,10 +930,10 @@ function process_57($connect, &$general) {
         $query = "update general set level='1',experience=experience*0.7 where no='{$ruler['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[count($log)] = "<C>●</>{$admin['month']}월:모반에 성공했습니다. <1>$date</>";
-        $youlog[count($youlog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게서 군주의 자리를 뺏겼습니다.";
-        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <M>모반</>에 성공했습니다.";
-        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【모반】</b></><Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 군주 자리를 찬탈했습니다.";
+        $log[] = "<C>●</>{$admin['month']}월:모반에 성공했습니다. <1>$date</>";
+        $youlog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게서 군주의 자리를 뺏겼습니다.";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <M>모반</>에 성공했습니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【모반】</b></><Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 군주 자리를 찬탈했습니다.";
 
         addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:모반으로 <D><b>{$nation['name']}</b></>의 군주자리를 찬탈");
         addHistory($ruler, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$general['name']}</b></>의 모반으로 인해 <D><b>{$nation['name']}</b></>의 군주자리를 박탈당함");

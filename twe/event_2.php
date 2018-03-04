@@ -198,9 +198,9 @@ $query = "update general set gold=999999,rice=999999";
 MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 
 //////////////////////////이벤트///////////////////////////////////////////////
-$history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>각지의 오랑캐들이 <M>궐기</>합니다!";
-$history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>중원의 전 국가에 <M>선전포고</> 합니다!";
-$history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>그러나 중원의 영웅들이라면 막아낼 수도 있을법 해 보입니다!";
+$history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>각지의 오랑캐들이 <M>궐기</>합니다!";
+$history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>중원의 전 국가에 <M>선전포고</> 합니다!";
+$history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>그러나 중원의 영웅들이라면 막아낼 수도 있을법 해 보입니다!";
 pushHistory($history);
 
 refreshNationStaticInfo();

@@ -2187,7 +2187,7 @@ function checkTurn($connect) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', addAge');
             addAge($connect);
             // 새해 알림
-            $alllog[count($alllog)] = "<C>◆</>{$admin['month']}월:<C>{$admin['year']}</>년이 되었습니다.";
+            $alllog[] = "<C>◆</>{$admin['month']}월:<C>{$admin['year']}</>년이 되었습니다.";
             pushAllLog($alllog);
         } elseif($admin['month'] == 4) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
@@ -2758,7 +2758,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
 
             switch($sel) {
             case 0:
-                $log[count($log)] = "<C>●</><C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                $log[] = "<C>●</><C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getWeapName($it)."</>(을)를 습득");
                 if($vote == 0) {
@@ -2772,7 +2772,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
                 }
                 break;
             case 1:
-                $log[count($log)] = "<C>●</><C>".getBookName($it)."</>(을)를 습득했습니다!";
+                $log[] = "<C>●</><C>".getBookName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getBookName($it)."</>(을)를 습득");
                 if($vote == 0) {
@@ -2786,7 +2786,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
                 }
                 break;
             case 2:
-                $log[count($log)] = "<C>●</><C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                $log[] = "<C>●</><C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getHorseName($it)."</>(을)를 습득");
                 if($vote == 0) {
@@ -2800,7 +2800,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
                 }
                 break;
             case 3:
-                $log[count($log)] = "<C>●</><C>".getItemName($it)."</>(을)를 습득했습니다!";
+                $log[] = "<C>●</><C>".getItemName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getItemName($it)."</>(을)를 습득");
                 if($vote == 0) {
@@ -2833,36 +2833,36 @@ function checkAbility($connect, $general, $log) {
         $query = "update general set leader2='$limit'+leader2,leader=leader-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[count($log)] = "<C>●</><R>통솔</>이 <C>1</> 떨어졌습니다!";
+        $log[] = "<C>●</><R>통솔</>이 <C>1</> 떨어졌습니다!";
     } elseif($general['leader2'] >= $limit) {
         $query = "update general set leader2=leader2-'$limit',leader=leader+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[count($log)] = "<C>●</><Y>통솔</>이 <C>1</> 올랐습니다!";
+        $log[] = "<C>●</><Y>통솔</>이 <C>1</> 올랐습니다!";
     }
 
     if($general['power2'] < 0) {
         $query = "update general set power2='$limit'+power2,power=power-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[count($log)] = "<C>●</><R>무력</>이 <C>1</> 떨어졌습니다!";
+        $log[] = "<C>●</><R>무력</>이 <C>1</> 떨어졌습니다!";
     } elseif($general['power2'] >= $limit) {
         $query = "update general set power2=power2-'$limit',power=power+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[count($log)] = "<C>●</><Y>무력</>이 <C>1</> 올랐습니다!";
+        $log[] = "<C>●</><Y>무력</>이 <C>1</> 올랐습니다!";
     }
 
     if($general['intel2'] < 0) {
         $query = "update general set intel2='$limit'+intel2,intel=intel-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[count($log)] = "<C>●</><R>지력</>이 <C>1</> 떨어졌습니다!";
+        $log[] = "<C>●</><R>지력</>이 <C>1</> 떨어졌습니다!";
     } elseif($general['intel2'] >= $limit) {
         $query = "update general set intel2=intel2-'$limit',intel=intel+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[count($log)] = "<C>●</><Y>지력</>이 <C>1</> 올랐습니다!";
+        $log[] = "<C>●</><Y>지력</>이 <C>1</> 올랐습니다!";
     }
 
     return $log;
@@ -2876,10 +2876,10 @@ function checkDedication($connect, $general, $log) {
 
     // 승급했다면
     if($general['dedlevel'] < $dedlevel) {
-        $log[count($log)] = "<C>●</><Y>".getDed($general['dedication'])."</>(으)로 <C>승급</>하여 봉록이 <C>".getBill($general['dedication'])."</>(으)로 <C>상승</>했습니다!";
+        $log[] = "<C>●</><Y>".getDed($general['dedication'])."</>(으)로 <C>승급</>하여 봉록이 <C>".getBill($general['dedication'])."</>(으)로 <C>상승</>했습니다!";
     // 강등했다면
     } elseif($general['dedlevel'] > $dedlevel) {
-        $log[count($log)] = "<C>●</><Y>".getDed($general['dedication'])."</>(으)로 <R>강등</>되어 봉록이 <C>".getBill($general['dedication'])."</>(으)로 <R>하락</>했습니다!";
+        $log[] = "<C>●</><Y>".getDed($general['dedication'])."</>(으)로 <R>강등</>되어 봉록이 <C>".getBill($general['dedication'])."</>(으)로 <R>하락</>했습니다!";
     }
 
     return $log;
@@ -2893,10 +2893,10 @@ function checkExperience($connect, $general, $log) {
 
     // 승급했다면
     if($general['explevel'] < $explevel) {
-        $log[count($log)] = "<C>●</><C>Lv $explevel</>로 <C>레벨업</>!";
+        $log[] = "<C>●</><C>Lv $explevel</>로 <C>레벨업</>!";
     // 강등했다면
     } elseif($general['explevel'] > $explevel) {
-        $log[count($log)] = "<C>●</><C>Lv $explevel</>로 <R>레벨다운</>!";
+        $log[] = "<C>●</><C>Lv $explevel</>로 <R>레벨다운</>!";
     }
 
     return $log;
@@ -2951,7 +2951,7 @@ function deleteNation($connect, $general) {
 
     $nation = getNationStaticInfo($general['nation']);
 
-    $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【멸망】</b></><D><b>{$nation['name']}</b></>은(는) <R>멸망</>했습니다.";
+    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【멸망】</b></><D><b>{$nation['name']}</b></>은(는) <R>멸망</>했습니다.";
 
     // 전 장수 재야로    // 전 장수 소속 무소속으로
     $query = "update general set belong=0,troop=0,level=0,nation=0,makelimit=12 where nation='{$general['nation']}'";
@@ -3032,7 +3032,7 @@ function nextRuler($connect, $general) {
     $query = "update city set gen3=0 where gen3='{$nextruler['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받았습니다";
+    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받았습니다";
 
     pushHistory($history);
     addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받음.");

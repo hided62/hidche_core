@@ -101,7 +101,7 @@ switch($btn) {
                 }
             }
         }
-        $history[count($history)] = "<R>★</>턴시간이 <C>$btn</>으로 변경됩니다.";
+        $history[] = "<R>★</>턴시간이 <C>$btn</>으로 변경됩니다.";
         pushHistory($history);
         break;
     case "변경6":

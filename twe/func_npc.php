@@ -2,11 +2,35 @@
 
 include('func_regnpc.php');
 
-function RegGeneral($connect,$init,$life,$fiction,$turnterm,$startyear,$year,$gencount,$npcmatch,$name,$img,$picture,$nation,
+function RegGenerals($init,$life,$fiction,$turnterm,$startyear,$year,$npc_mark,$genLists){
+    static $gencount = 1000;
+
+    $name = $npc_mark.$name;
+    foreach($genLists as $genInfo){
+        $genInfo[] = '';//$msg 대비
+        list(
+            $npcmatch,$name,$img,$picture,$nation,
+            $city,$leader,$power,$intel,$level,
+            $bornyear,$deadyear,$personal,$special,
+            $msg) = $genInfo;
+
+        $gencount += 1;
+
+        RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,
+            $gencount,$npcmatch,$name,$img,$picture,$nation,
+            $city,$leader,$power,$intel,$level,
+            $bornyear,$deadyear,$personal,$special,
+            $msg);
+    }
+}
+
+function RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,$gencount,$npcmatch,$name,$img,$picture,$nation,
                     $city,$leader,$power,$intel,$level,
                     $bornyear,$deadyear,$personal,$special,
                     $msg="") {
-    $name = "ⓝ".$name;
+
+    $alllog = [];
+    //$name = "ⓝ".$name;
     $npc = 2;
     if($city == "-") {
         $city = rand() % 94 + 1;
@@ -37,68 +61,92 @@ function RegGeneral($connect,$init,$life,$fiction,$turnterm,$startyear,$year,$ge
         $dedication = $age * 100;
         if($nation != 0 && $level == 0) $level = 1;
         
-        //장수
-        @MYDB_query("
-            insert into general (
-                npcid,npc,npc_org,npcmatch,name,picture,nation,city,leader,power,intel,
-                experience,dedication,level,gold,rice,crew,crewtype,train,atmos,
-                weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
-                makelimit,bornyear,deadyear
-            ) values (
-                '$gencount','$npc','$npc','$npcmatch','$name','$picture','$nation',
-                '$city','$leader','$power','$intel','$experience','$dedication',
-                '$level','1000','1000','0','0','0','0',
-                '0','0','0','$turntime','$killturn','$age','1',
-                '$personal','$special','$specage','$special2','$specage2','$msg',
-                '0','$bornyear','$deadyear'
-            )",
-            $connect
-        ) or Error(__LINE__.MYDB_error($connect),"");
     } elseif($year == $bornyear+14 && $year < $deadyear) {
-
-        $query = "select no from general where npcid='$gencount'";
-        $result = MYDB_query($query, $connect) or Error("func_npc ".MYDB_error($connect),"");
-        $count = MYDB_num_rows($result);
-        if($count == 0) {
+        $count = getDB()->queryFirstField('SELECT count(`no`) from `general` where `name` = %s' , $name);
+        if ($count == 0) {
             $turntime = getRandTurn($turnterm);
-            if($personal != "-") { $personal = CharCall($personal); }
-            else { $personal = rand() % 10; }
-            if($fiction == 1) { $special = SpecCall("-"); }
-            else { $special = SpecCall($special); }
-            if($special >= 40) { $special2 = $special; $special = 0; }
-            else { $special2 = 0; }
-            if($picture == 0) { $picture = 1001 + rand() % 400; }
+            if ($personal != "-") {
+                $personal = CharCall($personal);
+            } else {
+                $personal = rand() % 10;
+            }
+            if ($fiction == 1) {
+                $special = SpecCall("-");
+            } else {
+                $special = SpecCall($special);
+            }
+            if ($special >= 40) {
+                $special2 = $special;
+                $special = 0;
+            } else {
+                $special2 = 0;
+            }
+            if ($picture == 0) {
+                $picture = 1001 + rand() % 400;
+            }
             $picture = "{$picture}.jpg";
-            if($img < 3) { $picture = 'default.jpg'; }
+            if ($img < 3) {
+                $picture = 'default.jpg';
+            }
             $age = $year - $bornyear;
             $specage = $age + 1;
             $specage2 = $age + 1;
             $killturn = ($deadyear - $year) * 12 + (rand() % 12);
             $experience = $age * 100;
             $dedication = $age * 100;
-
-            //장수
-            @MYDB_query("
-                insert into general (
-                    npcid,npc,npc_org,npcmatch,name,picture,nation,city,leader,power,intel,
-                    experience,dedication,level,gold,rice,crew,crewtype,train,atmos,
-                    weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
-                    makelimit,bornyear,deadyear
-                ) values (
-                    '$gencount','$npc','$npc','$npcmatch','$name','$picture','0',
-                    '$city','$leader','$power','$intel','$experience','$dedication',
-                    '0','1000','1000','0','0','0','0',
-                    '0','0','0','$turntime','$killturn','$age','1',
-                    '$personal','$special','$specage','$special2','$specage2','$msg',
-                    '0','$bornyear','$deadyear'
-                )",
-                $connect
-            ) or Error(__LINE__.MYDB_error($connect),"");
+            $nation = 0;
+            $level = 0;
 
             $alllog[0] = "<C>●</>1월:<Y>$name</>(이)가 성인이 되어 <S>등장</>했습니다.";
-            pushAllLog($alllog);
+        }
+        else{
+            return;
         }
     }
+    else{
+        return;
+    }
+
+    //장수
+    getDB()->insert('general',[
+        'npcid'=>$gencount,
+        'npc'=>$npc,
+        'npc_org'=>$npc,
+        'npcmatch'=>$npcmatch,
+        'name'=>$name,
+        'picture'=>$picture,
+        'nation'=>$nation,
+        'city'=>$city,
+        'leader'=>$leader,
+        'power'=>$power,
+        'intel'=>$intel,
+        'experience'=>$experience,
+        'dedication'=>$dedication,
+        'level'=>$level,
+        'gold'=>1000,
+        'rice'=>1000,
+        'crew'=>0,
+        'crewtype'=>0,
+        'train'=>0,
+        'atmos'=>0,
+        'weap'=>0,
+        'book'=>0,
+        'horse'=>0,
+        'turntime'=>$turntime,
+        'killturn'=>$killturn,
+        'age'=>$age,
+        'belong'=>1,
+        'personal'=>$personal,
+        'special'=>$special,
+        'specage'=>$specage,
+        'special2'=>$special2,
+        'specage2'=>$specage2,
+        'npcmsg'=>$msg,
+        'makelimit'=>0,
+        'bornyear'=>$bornyear,
+        'deadyear'=>$deadyear
+    ]);
+    pushAllLog($alllog);
 }
 
 function SetDevelop($connect, $genType, $no, $city, $tech) {

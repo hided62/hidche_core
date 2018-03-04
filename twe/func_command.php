@@ -461,14 +461,14 @@ function processCommand($connect, $no) {
     // 블럭자는 미실행. 삭턴 감소
     if($general['block'] == 2) {
         $date = substr($general['turntime'],11,5);
-        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 멀티, 또는 비매너로 인한<R>블럭</> 대상자입니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:현재 멀티, 또는 비매너로 인한<R>블럭</> 대상자입니다. <1>$date</>";
         pushGenLog($general, $log);
 
         $query = "update general set recturn='',resturn='BLOCK_2',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } elseif($general['block'] == 3) {
         $date = substr($general['turntime'],11,5);
-        $log[count($log)] = "<C>●</>{$admin['month']}월:현재 악성유저로 분류되어 <R>블럭, 발언권 무효</> 대상자입니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:현재 악성유저로 분류되어 <R>블럭, 발언권 무효</> 대상자입니다. <1>$date</>";
         pushGenLog($general, $log);
 
         $query = "update general set recturn='',resturn='BLOCK_3',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
@@ -539,7 +539,7 @@ function processCommand($connect, $no) {
         switch($command[0]) {
             case 0: //휴식
                 $date = substr($general['turntime'],11,5);
-                $log[count($log)] = "<C>●</>{$admin['month']}월:아무것도 실행하지 않았습니다. <1>$date</>";
+                $log[] = "<C>●</>{$admin['month']}월:아무것도 실행하지 않았습니다. <1>$date</>";
                 pushGenLog($general, $log);
                 break;
             case  1: process_1($connect, $general, 1); break; //농업

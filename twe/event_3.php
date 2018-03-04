@@ -60,8 +60,8 @@ for($k=1; $k <= 200; $k++) {
 //////////////////////////장수 끝///////////////////////////////////////////////
 
 //////////////////////////이벤트///////////////////////////////////////////////
-$history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>각지에서 인재들이 <M>등장</>합니다!";
-$history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>중원 통일에 보탬이 될듯 합니다!";
+$history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>각지에서 인재들이 <M>등장</>합니다!";
+$history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【이벤트】</b></>중원 통일에 보탬이 될듯 합니다!";
 pushHistory($history);
 
 echo "<script>location.replace('./');</script>";

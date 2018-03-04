@@ -742,54 +742,54 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     //아이템 로그
     if($gen1['h'] > 6 && ($tnmt_type == 0 || $tnmt_type == 1)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getHorseName($gen1['h'])."</>(이)가 포효합니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getHorseName($gen1['h'])."</>(이)가 그 위용을 뽐냅니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getHorseName($gen1['h'])."</>(을)를 타고 있습니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getHorseName($gen1['h'])."</>(이)가 갈기를 휘날립니다!"; break;
+        case 0: $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getHorseName($gen1['h'])."</>(이)가 포효합니다!"; break;
+        case 1: $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getHorseName($gen1['h'])."</>(이)가 그 위용을 뽐냅니다!"; break;
+        case 2: $log[] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getHorseName($gen1['h'])."</>(을)를 타고 있습니다!"; break;
+        case 3: $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getHorseName($gen1['h'])."</>(이)가 갈기를 휘날립니다!"; break;
         }
     }
     if($gen1['w'] > 6 && ($tnmt_type == 0 || $tnmt_type == 2)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1['w'])."</>(이)가 번뜩입니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1['w'])."</>(이)가 푸르게 빛납니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1['w'])."</>에서 살기가 느껴집니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 손에는 <S>".getWeapName($gen1['w'])."</>(이)가 쥐어져 있습니다!"; break;
+        case 0: $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1['w'])."</>(이)가 번뜩입니다!"; break;
+        case 1: $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1['w'])."</>(이)가 푸르게 빛납니다!"; break;
+        case 2: $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <S>".getWeapName($gen1['w'])."</>에서 살기가 느껴집니다!"; break;
+        case 3: $log[] = "<S>●</> <Y>{$gen1['name']}</>의 손에는 <S>".getWeapName($gen1['w'])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
     if($gen1['b'] > 6 && ($tnmt_type == 0 || $tnmt_type == 3)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1['b'])."</>(을)를 펼쳐듭니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1['b'])."</>(을)를 품에서 꺼냅니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1['b'])."</>(을)를 들고 있습니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 손에는 <S>".getBookName($gen1['b'])."</>(이)가 쥐어져 있습니다!"; break;
+        case 0: $log[] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1['b'])."</>(을)를 펼쳐듭니다!"; break;
+        case 1: $log[] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1['b'])."</>(을)를 품에서 꺼냅니다!"; break;
+        case 2: $log[] = "<S>●</> <Y>{$gen1['name']}</>(이)가 <S>".getBookName($gen1['b'])."</>(을)를 들고 있습니다!"; break;
+        case 3: $log[] = "<S>●</> <Y>{$gen1['name']}</>의 손에는 <S>".getBookName($gen1['b'])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
     if($gen2['h'] > 6 && ($tnmt_type == 0 || $tnmt_type == 1)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2['h'])."</>(이)가 포효합니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2['h'])."</>(이)가 그 위용을 뽐냅니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getHorseName($gen2['h'])."</>(을)를 타고 있습니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2['h'])."</>(이)가 갈기를 휘날립니다!"; break;
+        case 0: $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2['h'])."</>(이)가 포효합니다!"; break;
+        case 1: $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2['h'])."</>(이)가 그 위용을 뽐냅니다!"; break;
+        case 2: $log[] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getHorseName($gen2['h'])."</>(을)를 타고 있습니다!"; break;
+        case 3: $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getHorseName($gen2['h'])."</>(이)가 갈기를 휘날립니다!"; break;
         }
     }
     if($gen2['w'] > 6 && ($tnmt_type == 0 || $tnmt_type == 2)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2['w'])."</>(이)가 번뜩입니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2['w'])."</>(이)가 푸르게 빛납니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2['w'])."</>에서 살기가 느껴집니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 손에는 <S>".getWeapName($gen2['w'])."</>(이)가 쥐어져 있습니다!"; break;
+        case 0: $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2['w'])."</>(이)가 번뜩입니다!"; break;
+        case 1: $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2['w'])."</>(이)가 푸르게 빛납니다!"; break;
+        case 2: $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <S>".getWeapName($gen2['w'])."</>에서 살기가 느껴집니다!"; break;
+        case 3: $log[] = "<S>●</> <Y>{$gen2['name']}</>의 손에는 <S>".getWeapName($gen2['w'])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
     if($gen2['b'] > 6 && ($tnmt_type == 0 || $tnmt_type == 3)) {
         switch(rand()%4) {
-        case 0: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2['b'])."</>(을)를 펼쳐듭니다!"; break;
-        case 1: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2['b'])."</>(을)를 품에서 꺼냅니다!"; break;
-        case 2: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2['b'])."</>(을)를 들고 있습니다!"; break;
-        case 3: $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 손에는 <S>".getBookName($gen2['b'])."</>(이)가 쥐어져 있습니다!"; break;
+        case 0: $log[] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2['b'])."</>(을)를 펼쳐듭니다!"; break;
+        case 1: $log[] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2['b'])."</>(을)를 품에서 꺼냅니다!"; break;
+        case 2: $log[] = "<S>●</> <Y>{$gen2['name']}</>(이)가 <S>".getBookName($gen2['b'])."</>(을)를 들고 있습니다!"; break;
+        case 3: $log[] = "<S>●</> <Y>{$gen2['name']}</>의 손에는 <S>".getBookName($gen2['b'])."</>(이)가 쥐어져 있습니다!"; break;
         }
     }
 
-    $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</> <C>({$energy1})</> vs <C>({$energy2})</> <Y>{$gen2['name']}</>";
+    $log[] = "<S>●</> <Y>{$gen1['name']}</> <C>({$energy1})</> vs <C>({$energy2})</> <Y>{$gen2['name']}</>";
 
     $gd1 = 0;       $gd2 = 0;
     $phase = 0;     $sel = 2;
@@ -813,7 +813,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
             elseif($tnmt_type == 1) { switch(rand()%2) { case 0: $str = "봉시진"; break; case 1: $str = "어린진"; break; } }
             elseif($tnmt_type == 2) { switch(rand()%2) { case 0: $str = "삼단"; break; case 1: $str = "나선"; break; } }
             elseif($tnmt_type == 3) { switch(rand()%2) { case 0: $str = "독설"; break; case 1: $str = "논파"; break; } }
-            $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 분노의 <M>{$str}</> 공격!";
+            $log[] = "<S>●</> <Y>{$gen1['name']}</>의 분노의 <M>{$str}</> 공격!";
         }
         $ratio = rand() % 300;
         if($e2 / 5 > $energy2 && $damage2 > $damage1 && $gen2[$tp] >= $ratio) {
@@ -823,24 +823,24 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
             elseif($tnmt_type == 1) { switch(rand()%2) { case 0: $str = "봉시진"; break; case 1: $str = "어린진"; break; } }
             elseif($tnmt_type == 2) { switch(rand()%2) { case 0: $str = "삼단"; break; case 1: $str = "나선"; break; } }
             elseif($tnmt_type == 3) { switch(rand()%2) { case 0: $str = "독설"; break; case 1: $str = "논파"; break; } }
-            $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 분노의 <M>{$str}</> 공격!";
+            $log[] = "<S>●</> <Y>{$gen2['name']}</>의 분노의 <M>{$str}</> 공격!";
         }
         //1합 승부
         if($phase == 1) {
             $ratio = rand() % 400;
             if($gen1[$tp]*0.9 > $gen2[$tp] && $gen1[$tp] >= $ratio) {
                 $damage1 = 0;   $damage2 = $e2;
-                if    ($tnmt_type == 0) { $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <M>압도</>!"; }
-                elseif($tnmt_type == 1) { $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <M>팔문금쇄진</>!"; }
-                elseif($tnmt_type == 2) { $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <M>일격 필살</>!"; }
-                elseif($tnmt_type == 3) { $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <M>모독 욕설</>!"; }
+                if    ($tnmt_type == 0) { $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>압도</>!"; }
+                elseif($tnmt_type == 1) { $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>팔문금쇄진</>!"; }
+                elseif($tnmt_type == 2) { $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>일격 필살</>!"; }
+                elseif($tnmt_type == 3) { $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>모독 욕설</>!"; }
             }
             if($gen2[$tp]*0.9 > $gen1[$tp] && $gen2[$tp] >= $ratio) {
                 $damage2 = 0;   $damage1 = $e1;
-                if    ($tnmt_type == 0) { $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <M>압도</>!"; }
-                elseif($tnmt_type == 1) { $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <M>팔문금쇄진</>!"; }
-                elseif($tnmt_type == 2) { $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <M>일격 필살</>!"; }
-                elseif($tnmt_type == 3) { $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <M>모독 욕설</>!"; }
+                if    ($tnmt_type == 0) { $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>압도</>!"; }
+                elseif($tnmt_type == 1) { $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>팔문금쇄진</>!"; }
+                elseif($tnmt_type == 2) { $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>일격 필살</>!"; }
+                elseif($tnmt_type == 3) { $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>모독 욕설</>!"; }
             }
         } else {
             $ratio = rand() % 1000;
@@ -851,7 +851,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
                 elseif($tnmt_type == 1) { switch(rand()%6) { case 0: $str = "추행진"; break; case 1: $str = "학익진"; break; case 2: $str = "장사진"; break; case 3: $str = "형액진"; break; case 4: $str = "기형진"; break; case 5: $str = "구행진"; break; } }
                 elseif($tnmt_type == 2) { switch(rand()%6) { case 0: $str = "기합"; break; case 1: $str = "기염"; break; case 2: $str = "반격"; break; case 3: $str = "역공"; break; case 4: $str = "삼단"; break; case 5: $str = "나선"; break; } }
                 elseif($tnmt_type == 3) { switch(rand()%6) { case 0: $str = "논파"; break; case 1: $str = "항변"; break; case 2: $str = "반론"; break; case 3: $str = "반박"; break; case 4: $str = "도발"; break; case 5: $str = "면박"; break; } }
-                $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</>의 <M>{$str}</>!";
+                $log[] = "<S>●</> <Y>{$gen1['name']}</>의 <M>{$str}</>!";
             }
             $ratio = rand() % 1000;
             if($critical2 == 0 && $gen2[$tp] >= $ratio) {
@@ -861,7 +861,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
                 elseif($tnmt_type == 1) { switch(rand()%6) { case 0: $str = "추행진"; break; case 1: $str = "학익진"; break; case 2: $str = "장사진"; break; case 3: $str = "형액진"; break; case 4: $str = "기형진"; break; case 5: $str = "구행진"; break; } }
                 elseif($tnmt_type == 2) { switch(rand()%6) { case 0: $str = "기합"; break; case 1: $str = "기염"; break; case 2: $str = "반격"; break; case 3: $str = "역공"; break; case 4: $str = "삼단"; break; case 5: $str = "나선"; break; } }
                 elseif($tnmt_type == 3) { switch(rand()%6) { case 0: $str = "논파"; break; case 1: $str = "항변"; break; case 2: $str = "반론"; break; case 3: $str = "반박"; break; case 4: $str = "도발"; break; case 5: $str = "면박"; break; } }
-                $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</>의 <M>{$str}</>!";
+                $log[] = "<S>●</> <Y>{$gen2['name']}</>의 <M>{$str}</>!";
             }
         }
 
@@ -898,13 +898,13 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $energy1 = round($energy1); $energy2 = round($energy2);
         $damage1 = round($damage1); $damage2 = round($damage2);
 
-        $log[count($log)] = "<S>●</> "._String::Fill2($phase, 2, "0")."合 : <C>"._String::Fill2($energy1, 3, "0")."</> <span class='ev_highlight'>(-"._String::Fill2($damage1, 3, "0").")</span> vs <span class='ev_highlight'>(-"._String::Fill2($damage2, 3, "0").")</span> <C>"._String::Fill2($energy2, 3, "0")."</>";
+        $log[] = "<S>●</> "._String::Fill2($phase, 2, "0")."合 : <C>"._String::Fill2($energy1, 3, "0")."</> <span class='ev_highlight'>(-"._String::Fill2($damage1, 3, "0").")</span> vs <span class='ev_highlight'>(-"._String::Fill2($damage2, 3, "0").")</span> <C>"._String::Fill2($energy2, 3, "0")."</>";
 
         if($energy1 <= 0 && $energy2 <= 0) {
             if($type == 0) { $sel = 2; break; }
             else {
                 $energy1 = round($e1 / 2); $energy2 = round($e2 / 2);
-                $log[count($log)] = "<S>●</> <span class='ev_highlight'>재대결</span>!";
+                $log[] = "<S>●</> <span class='ev_highlight'>재대결</span>!";
             }
         }
         if($energy1 <= 0) { $sel = 1; break; }
@@ -921,7 +921,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
 
     switch($sel) {
     case 0:
-        $log[count($log)] = "<S>●</> <Y>{$gen1['name']}</> <S>승리</>!";
+        $log[] = "<S>●</> <Y>{$gen1['name']}</> <S>승리</>!";
 
         $gl = round(($gd2 - $gd1) / 50);
         $query = "update tournament set win=win+1,gl=gl+'$gl' where grp='$group' and grp_no='$g1'";
@@ -939,7 +939,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 1:
-        $log[count($log)] = "<S>●</> <Y>{$gen2['name']}</> <S>승리</>!";
+        $log[] = "<S>●</> <Y>{$gen2['name']}</> <S>승리</>!";
 
         $gl = round(($gd1 - $gd2) / 50);
         $query = "update tournament set win=win+1,gl=gl+'$gl' where grp='$group' and grp_no='$g2'";
@@ -957,7 +957,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 2:
-        $log[count($log)] = "<S>●</> 무승부!";
+        $log[] = "<S>●</> 무승부!";
 
         $query = "update tournament set draw=draw+1 where grp='$group' and (grp_no='$g1' or grp_no='$g2')";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -984,7 +984,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen2 = MYDB_fetch_array($result);
 
-        $log[count($log)] = "--------------- 다음경기 ---------------<br><S>☞</> <Y>{$gen1['name']}</> vs <Y>{$gen2['name']}</>";
+        $log[] = "--------------- 다음경기 ---------------<br><S>☞</> <Y>{$gen1['name']}</> vs <Y>{$gen2['name']}</>";
     }
 
     pushFightLog($group, $log);

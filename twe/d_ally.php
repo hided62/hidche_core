@@ -52,27 +52,27 @@ $dip2 = MYDB_fetch_array($result);
 if($ok == "수락") {
     // 서신 보낸 후 멸망,선양 등 했을때.
     if($me['level'] < 5) {
-        $mylog[count($mylog)] = "<C>●</>수뇌부가 아니므로 불가능합니다. 불가침 실패.";
+        $mylog[)] = "<C>●</>수뇌부가 아니므로 불가능합니다. 불가침 실패.";
     } elseif($dip['term'] == $when*12 && $dip['state'] == 7) {
-        $mylog[count($mylog)] = "<C>●</>이미 수락했습니다. 불가침 실패.";
+        $mylog[)] = "<C>●</>이미 수락했습니다. 불가침 실패.";
     } elseif($losecitynum == 0) {
-        $mylog[count($mylog)] = "<C>●</>방랑군이므로 불가능합니다. 불가침 실패.";
+        $mylog[)] = "<C>●</>방랑군이므로 불가능합니다. 불가침 실패.";
     } elseif($wincitynum == 0) {
-        $mylog[count($mylog)] = "<C>●</>상대가 방랑군이므로 불가능합니다. 불가침 실패.";
+        $mylog[)] = "<C>●</>상대가 방랑군이므로 불가능합니다. 불가침 실패.";
     } elseif($dip['state'] == 0) {
-        $mylog[count($mylog)] = "<C>●</>아국과 교전중입니다. 불가침 실패.";
+        $mylog[)] = "<C>●</>아국과 교전중입니다. 불가침 실패.";
     } elseif($dip['state'] == 1) {
-        $mylog[count($mylog)] = "<C>●</>아국과 선포중입니다. 불가침 실패.";
+        $mylog[)] = "<C>●</>아국과 선포중입니다. 불가침 실패.";
     } elseif($dip['state'] == 3 || $dip['state'] == 4) {
-        $mylog[count($mylog)] = "<C>●</>아국과 합병중입니다. 불가침 실패.";
+        $mylog[)] = "<C>●</>아국과 합병중입니다. 불가침 실패.";
     } elseif($mynation['dipmsg'] == "") {
-        $mylog[count($mylog)] = "<C>●</>이미 거절했습니다. 불가침 실패.";
+        $mylog[)] = "<C>●</>이미 거절했습니다. 불가침 실패.";
     } else {
-//        $alllog[count($alllog)] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>(이)가 <D><b>{$younation['name']}</b></>(와)과 <M>불가침</>에 합의.";
-//        $history[count($history)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【불가침】</b></><D><b>{$mynation['name']}</b></>(이)가 <D><b>{$younation['name']}</b></>(와)과 불가침 조약을 체결했습니다.";
+//        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>(이)가 <D><b>{$younation['name']}</b></>(와)과 <M>불가침</>에 합의.";
+//        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【불가침】</b></><D><b>{$mynation['name']}</b></>(이)가 <D><b>{$younation['name']}</b></>(와)과 불가침 조약을 체결했습니다.";
 
-        $youlog[count($youlog)] = "<C>●</><D><b>{$mynation['name']}</b></>(와)과 <C>$when</>년 불가침에 성공했습니다.";
-        $mylog[count($mylog)] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 <C>$when</>년 불가침에 합의했습니다.";
+        $youlog[] = "<C>●</><D><b>{$mynation['name']}</b></>(와)과 <C>$when</>년 불가침에 성공했습니다.";
+        $mylog[)] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 <C>$when</>년 불가침에 합의했습니다.";
         addHistory($you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 {$when}년 불가침 성공");
         addHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 {$when}년 불가침 수락");
 
@@ -98,8 +98,8 @@ if($ok == "수락") {
     $query = "update nation set dip{$num}='',dip{$num}_who='0',dip{$num}_when='' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } else {
-    $youlog[count($youlog)] = "<C>●</><Y>{$mynation['name']}</>(이)가 불가침을 거부했습니다.";
-    $mylog[count($mylog)] = "<C>●</><D>{$younation['name']}</>(와)과 불가침을 거부했습니다.";
+    $youlog[] = "<C>●</><Y>{$mynation['name']}</>(이)가 불가침을 거부했습니다.";
+    $mylog[)] = "<C>●</><D>{$younation['name']}</>(와)과 불가침을 거부했습니다.";
 
     //조건 지움
     $query = "update diplomacy set reserved='' where me='{$you['nation']}' and you='{$me['nation']}'";
