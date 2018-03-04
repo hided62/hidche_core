@@ -95,12 +95,14 @@ if($_SESSION['p_time']+3600 < time()) {
     $_SESSION['p_time'] = time();
 }
 
+/*
 // DB가 설정이 되었는지를 검사
-if(!file_exists(__DIR__."/d_setting/set.php")&&!preg_match("/install/i",$_SERVER['PHP_SELF'])) {
+if(!file_exists(__DIR__."/d_setting/conf.php")&&!preg_match("/install/i",$_SERVER['PHP_SELF'])) {
 //    echo"<meta http-equiv=refresh content='0;url=../'>";
-echo $_SERVER['PHP_SELF'].'//'.preg_match("/install/i",$_SERVER['PHP_SELF']);
+    echo $_SERVER['PHP_SELF'].'//'.preg_match("/install/i",$_SERVER['PHP_SELF']);
     exit;
 }
+*/
 
 /**
  * Session에 보관된 장수 정보를 제거함.
@@ -115,15 +117,11 @@ function resetSessionGeneralValues(){
 }
 
 // MySQL 데이타 베이스에 접근
-function dbconn($table = "") {
-    //TODO:dbconn 사용하는 모든 녀석들을 없애야한다.
-    global $connect, $HTTP_COOKIE_VARS;
-    $f = @file("d_setting/set.php") or Error("set.php파일이 없습니다. DB설정을 먼저 하십시요!");
-    for($i=1; $i<= 4; $i++) $f[$i] = trim(str_replace("\n","",$f[$i]));
-    if(!$connect) $connect = @MYDB_connect($f[1],$f[2],$f[3]) or Error("DB 접속시 에러가 발생했습니다");
-    if($table != "") { $f[4] = $table; }
-    @MYDB_select_db($f[4], $connect) or Error("DB Select 에러가 발생했습니다","");
-    return $connect;
+function dbConn($isRoot=false) {
+    if($isRoot){
+        return getRootDB()->get();
+    }
+    return getDB()->get();
 }
 
 // 에러 메세지 출력
@@ -159,7 +157,7 @@ function returnJson($value, $noCache = true, $pretty = false, $die = true){
 // 게시판의 생성유무 검사
 function isTable($connect, $str, $dbname='') {
     if(!$dbname) {
-        $f=@file("d_setting/set.php") or Error("set.php파일이 없습니다. DB설정을 먼저 하십시요");
+        $f=@file("d_setting/conf.php") or Error("conf.php파일이 없습니다. DB설정을 먼저 하십시요");
         for($i=1;$i<=4;$i++) $f[$i]=str_replace("\n","",$f[$i]);
         $dbname=$f[4];
     }

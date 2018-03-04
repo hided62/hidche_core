@@ -5,7 +5,7 @@ include "func.php";
 $face = $_POST['face'];//TODO: face를 user_id에서 general.no 값을 이용하도록 변경
 
 $userID = getUserID();
-$connect = dbConn("sammo");
+$connect = dbConn(true);
 
 //회원 테이블에서 정보확인
 $query = "select no,id,picture,grade,name from MEMBER where no='$userID'";

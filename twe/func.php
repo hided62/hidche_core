@@ -59,6 +59,17 @@ function getUserID($forceExit=false){
     return $userID;
 }
 
+/**
+ * 로그인 유저의 전역 grade를 받아옴
+ * @return int|null
+ */
+function getUserGrade($forceExit=false){
+    $userID = getUserID($forceExit);
+    if(!$userID){
+        return null;
+    }
+    return getRootDB()->queryFirstField('SELECT `GRADE` from `MEMBER` WHERE NO=%i', $userID);
+}
 
 /** 
  * 로그인한 유저의 장수 id를 받아옴

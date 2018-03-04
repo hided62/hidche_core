@@ -6,7 +6,7 @@ include "func.php";
 
 $btn = $_POST['btn'];
 $userID = getUserID();
-$connect = dbConn("sammo");
+$connect = dbConn(true);
 
 //회원 테이블에서 정보확인
 $query = "select no,name,picture,grade from MEMBER where no='$userID'";

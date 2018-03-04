@@ -2,7 +2,7 @@
 include "lib.php";
 include "func.php";
 
-$connect = dbConn("sammo");
+$connect = dbConn(true);
 $userID = getUserID();
 //회원 테이블에서 정보확인
 $query = "select no,name,picture,grade from MEMBER where no='$userID'";
