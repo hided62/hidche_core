@@ -4,7 +4,7 @@ include "func.php";
 //로그인 검사
 CheckLogin();
 $connect = dbConn();
-increaseRefresh($connect, "입찰", 1);
+increaseRefresh("입찰", 1);
 
 $query = "select turnterm from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

@@ -1018,27 +1018,39 @@ function processAI($connect, $no) {
 //종전하기, 지급율
 //$command = $fourth * 100000000 + $type * 100000 + $crew * 100 + 11;
 
-function RegNation($connect,
-        $name, $color, $gold, $rice, $scoutmsg, $tech, $gencount, $type, $level) {
+function RegNation($name, $color, $gold, $rice, $scoutmsg, $tech, $gencount, $type, $level) {
     $type = NationCharCall($type);
     $totaltech = $tech * $gencount;
 
-    @MYDB_query("
-        insert into nation (
-            name,color,gold,rice,bill,rate,scout,war,tricklimit,surlimit,
-            scoutmsg,tech,totaltech,type,level,gennum
-        ) values (
-            '$name','$color','$gold','$rice','100','15','0','0','24','72',
-            '$scoutmsg','$tech','$totaltech','$type','$level','$gencount'
-        )", $connect
-    ) or Error(__LINE__.MYDB_error($connect),"");
+    getDB()->insert('nation', [
+        'name'=>$name,
+        'color'=>$color,
+        'gold'=>$gold,
+        'rice'=>$rice,
+        'bill'=>100,
+        'rate'=>15,
+        'scout'=>0,
+        'war'=>0,
+        'tricklimit'=>24,
+        'surlimit'=>72,
+        'scoutmsg'=>$scoutmsg,
+        'tech'=>$tech,
+        'totaltech'=>$totaltech,
+        'type'=>$type,
+        'level'=>$level,
+        'gennum'=>$gencount
+    ]);
 }
 
-function RegCity($connect, $nation, $name, $cap=0) {
+function RegCity($nation, $name, $cap=0) {
     $city = CityCall($name);
-    @MYDB_query("update city set nation='$nation' where city='$city'",$connect) or Error(__LINE__.MYDB_error($connect),"");
-    if($cap > 0) {
-        @MYDB_query("update nation set capital='$city' where nation='$nation'",$connect) or Error(__LINE__.MYDB_error($connect),"");
+    getDB()->update('city', [
+        'nation'=>$nation,
+        'city'=>$city
+    ]);
+
+    if($cap > 0){
+        getDB()->update('nation', ['capital'=>city], 'nation = %i', $nation);
     }
     refreshNationStaticInfo();
 }

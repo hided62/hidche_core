@@ -4,7 +4,7 @@ include "func.php";
 //로그인 검사
 CheckLogin();
 $connect = dbConn();
-increaseRefresh($connect, "세력정보", 1);
+increaseRefresh("세력정보", 1);
 
 $query = "select no,nation,level from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

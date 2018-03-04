@@ -4,7 +4,7 @@ include "func.php";
 //로그인 검사
 CheckLogin();
 $connect = dbConn();
-increaseRefresh($connect, "국법", 1);
+increaseRefresh("국법", 1);
 ?>
 <html>
 <head>

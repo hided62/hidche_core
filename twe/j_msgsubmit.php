@@ -42,7 +42,7 @@ if(!isSigned()){
 $db = getDB();
 
 $connect = dbConn();
-increaseRefresh($connect, '서신전달', 1);
+increaseRefresh('서신전달', 1);
 
 if(getBlockLevel() == 1 || getBlockLevel() == 3) {
     returnJson([

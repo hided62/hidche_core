@@ -48,19 +48,19 @@ $img = $admin['img'];
 //역사모드8 : 213년 익주 공방전
 
 //////////////////////////국가1/////////////////////////////////////////////////
-RegNation($connect, "조조", "000080", 10000, 10000, "강남 정벌에 실패한 뒤 한중을 노리는 조조", 1000, 78, "병가", 6);
+RegNation("조조", "000080", 10000, 10000, "강남 정벌에 실패한 뒤 한중을 노리는 조조", 1000, 78, "병가", 6);
 //////////////////////////국가2/////////////////////////////////////////////////
-RegNation($connect, "손권", "FF0000", 10000, 10000, "적벽대전을 대승으로 이끈 뒤 세력을 재정비하는 손권", 1000, 49, "덕가", 4);
+RegNation("손권", "FF0000", 10000, 10000, "적벽대전을 대승으로 이끈 뒤 세력을 재정비하는 손권", 1000, 49, "덕가", 4);
 //////////////////////////국가3////////////////////////////////////////////////
-RegNation($connect, "유비", "008000", 10000, 10000, "형주를 제패하고 익주를 노리는 유비", 1000, 43, "유가", 4);
+RegNation("유비", "008000", 10000, 10000, "형주를 제패하고 익주를 노리는 유비", 1000, 43, "유가", 4);
 //////////////////////////국가4/////////////////////////////////////////////////
-RegNation($connect, "유장", "483D8B", 10000, 10000, "장로를 막기 위해 유비를 끌어들인 유장", 1000, 24, "유가", 4);
+RegNation("유장", "483D8B", 10000, 10000, "장로를 막기 위해 유비를 끌어들인 유장", 1000, 24, "유가", 4);
 //////////////////////////국가5/////////////////////////////////////////////////
-RegNation($connect, "장로", "20B2AA", 10000, 10000, "익주 진출에 실패하고 조조에게 위협받는 장로", 1000, 7, "오두미도", 2);
+RegNation("장로", "20B2AA", 10000, 10000, "익주 진출에 실패하고 조조에게 위협받는 장로", 1000, 7, "오두미도", 2);
 //////////////////////////국가6/////////////////////////////////////////////////
-RegNation($connect, "마초", "808000", 10000, 10000, "서북지방을 잃고 장로에게 의탁중인 마초", 1000, 3, "병가", 0);
+RegNation("마초", "808000", 10000, 10000, "서북지방을 잃고 장로에게 의탁중인 마초", 1000, 3, "병가", 0);
 //////////////////////////국가7/////////////////////////////////////////////////
-RegNation($connect, "공손공", "A0522D", 10000, 10000, "공손공", 1000, 1, "도적", 1);
+RegNation("공손공", "A0522D", 10000, 10000, "공손공", 1000, 1, "도적", 1);
 
 //////////////////////////외교//////////////////////////////////////////////////
 $query = "insert into diplomacy (me, you, state, term) values ('1', '2', '2', '0')";
@@ -863,61 +863,61 @@ RegGeneral($connect,1,0,$fiction,$turnterm,$startyear,$year,1678,  22,   "희지
 //////////////////////////도시 소속/////////////////////////////////////////////
 //국가1 조조  국가2 손권  국가3 유비  국가4 유장  국가5 장로
 //국가6 마초  국가7 공손공
-RegCity($connect, 1, "역경");
-RegCity($connect, 1, "계교");
-RegCity($connect, 1, "관도");
-RegCity($connect, 1, "정도");
-RegCity($connect, 1, "서주");
-RegCity($connect, 1, "호관");
-RegCity($connect, 1, "호로");
-RegCity($connect, 1, "사곡");
-RegCity($connect, 1, "함곡");
-RegCity($connect, 1, "사수");
-RegCity($connect, 1, "계");
-RegCity($connect, 1, "북평");
-RegCity($connect, 1, "진양");
-RegCity($connect, 1, "남피");
-RegCity($connect, 1, "평원");
-RegCity($connect, 1, "하내");
-RegCity($connect, 1, "업");
-RegCity($connect, 1, "북해");
-RegCity($connect, 1, "복양");
-RegCity($connect, 1, "안정");
-RegCity($connect, 1, "장안");
-RegCity($connect, 1, "홍농");
-RegCity($connect, 1, "낙양");
-RegCity($connect, 1, "진류");
-RegCity($connect, 1, "패");
-RegCity($connect, 1, "허창", 1);
-RegCity($connect, 1, "초");
-RegCity($connect, 1, "하비");
-RegCity($connect, 1, "완");
-RegCity($connect, 1, "여남");
-RegCity($connect, 1, "수춘");
-RegCity($connect, 1, "신야");
-RegCity($connect, 1, "양양");
-RegCity($connect, 2, "건업", 1);
-RegCity($connect, 2, "파양");
-RegCity($connect, 2, "적벽");
-RegCity($connect, 2, "여강");
-RegCity($connect, 2, "오");
-RegCity($connect, 2, "회계");
-RegCity($connect, 2, "시상");
-RegCity($connect, 3, "자동");
-RegCity($connect, 3, "강하");
-RegCity($connect, 3, "강릉", 1);
-RegCity($connect, 3, "무릉");
-RegCity($connect, 3, "장사");
-RegCity($connect, 3, "영릉");
-RegCity($connect, 3, "계양");
-RegCity($connect, 4, "성도", 1);
-RegCity($connect, 4, "면죽");
-RegCity($connect, 4, "덕양");
-RegCity($connect, 4, "영안");
-RegCity($connect, 4, "강주");
-RegCity($connect, 5, "한중", 1);
-RegCity($connect, 5, "양평");
-RegCity($connect, 7, "안평", 1);
+RegCity(1, "역경");
+RegCity(1, "계교");
+RegCity(1, "관도");
+RegCity(1, "정도");
+RegCity(1, "서주");
+RegCity(1, "호관");
+RegCity(1, "호로");
+RegCity(1, "사곡");
+RegCity(1, "함곡");
+RegCity(1, "사수");
+RegCity(1, "계");
+RegCity(1, "북평");
+RegCity(1, "진양");
+RegCity(1, "남피");
+RegCity(1, "평원");
+RegCity(1, "하내");
+RegCity(1, "업");
+RegCity(1, "북해");
+RegCity(1, "복양");
+RegCity(1, "안정");
+RegCity(1, "장안");
+RegCity(1, "홍농");
+RegCity(1, "낙양");
+RegCity(1, "진류");
+RegCity(1, "패");
+RegCity(1, "허창", 1);
+RegCity(1, "초");
+RegCity(1, "하비");
+RegCity(1, "완");
+RegCity(1, "여남");
+RegCity(1, "수춘");
+RegCity(1, "신야");
+RegCity(1, "양양");
+RegCity(2, "건업", 1);
+RegCity(2, "파양");
+RegCity(2, "적벽");
+RegCity(2, "여강");
+RegCity(2, "오");
+RegCity(2, "회계");
+RegCity(2, "시상");
+RegCity(3, "자동");
+RegCity(3, "강하");
+RegCity(3, "강릉", 1);
+RegCity(3, "무릉");
+RegCity(3, "장사");
+RegCity(3, "영릉");
+RegCity(3, "계양");
+RegCity(4, "성도", 1);
+RegCity(4, "면죽");
+RegCity(4, "덕양");
+RegCity(4, "영안");
+RegCity(4, "강주");
+RegCity(5, "한중", 1);
+RegCity(5, "양평");
+RegCity(7, "안평", 1);
 
 $query = "update city set pop=pop2*0.7,agri=agri2*0.7,comm=comm2*0.7,secu=secu2*0.7,rate=80,def=def2*0.7,wall=wall2*0.7 where nation>0";
 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

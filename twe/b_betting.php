@@ -4,7 +4,7 @@ include "func.php";
 //로그인 검사
 CheckLogin();
 $connect = dbConn();
-increaseRefresh($connect, "베팅장", 1);
+increaseRefresh("베팅장", 1);
 checkTurn($connect);
 
 $query = "select no,tournament,userlevel,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where owner='{$_SESSION['noMember']}'";

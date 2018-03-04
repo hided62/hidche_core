@@ -1275,7 +1275,7 @@ function process_71($connect, &$general) {
 
 //    pushHistory($history);
 //    pushAllLog($alllog);
-    pushTrickLog($connect, $tricklog);
+    pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
 
@@ -1385,7 +1385,7 @@ function process_72($connect, &$general) {
 
 //    pushHistory($history);
 //    pushAllLog($alllog);
-    pushTrickLog($connect, $tricklog);
+    pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
 
@@ -1511,7 +1511,7 @@ function process_73($connect, &$general) {
 
 //    pushHistory($history);
 //    pushAllLog($alllog);
-    pushTrickLog($connect, $tricklog);
+    pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
 
@@ -1649,7 +1649,7 @@ function process_74($connect, &$general) {
 
 //    pushHistory($history);
 //    pushAllLog($alllog);
-    pushTrickLog($connect, $tricklog);
+    pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
 
@@ -1770,7 +1770,7 @@ function process_75($connect, &$general) {
 
 //    pushHistory($history);
 //    pushAllLog($alllog);
-    pushTrickLog($connect, $tricklog);
+    pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
 
@@ -1984,7 +1984,7 @@ function process_76($connect, &$general) {
 
 //    pushHistory($history);
 //    pushAllLog($alllog);
-    pushTrickLog($connect, $tricklog);
+    pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
 
@@ -2107,7 +2107,7 @@ function process_77($connect, &$general) {
 
 //    pushHistory($history);
 //    pushAllLog($alllog);
-    pushTrickLog($connect, $tricklog);
+    pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
 
@@ -2227,7 +2227,7 @@ function process_78($connect, &$general) {
 
 //    pushHistory($history);
 //    pushAllLog($alllog);
-    pushTrickLog($connect, $tricklog);
+    pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
 

@@ -109,7 +109,7 @@ if($admin['npcmode'] != 1) {
     pushAllLog($log);
 
     $adminLog[0] = "가입 : {$me['name']} // {$id} // ".getenv("REMOTE_ADDR");
-    pushAdminLog($connect, $adminLog);
+    pushAdminLog($adminLog);
 
     MYDB_close($connect);
 

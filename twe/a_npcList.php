@@ -2,7 +2,7 @@
 include "lib.php";
 include "func.php";
 $connect = dbConn();
-increaseRefresh($connect, "빙의일람", 2);
+increaseRefresh("빙의일람", 2);
 
 if($type == 0) {
     $type = 1;

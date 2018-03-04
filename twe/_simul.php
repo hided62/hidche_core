@@ -46,7 +46,7 @@ $rice = 0;
 
 CheckLogin();
 $connect = dbConn();
-increaseRefresh($connect, "시뮬", 2);
+increaseRefresh("시뮬", 2);
 
 $query = "select no,tournament,userlevel,con,turntime from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

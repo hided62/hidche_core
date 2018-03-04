@@ -48,27 +48,27 @@ $img = $admin['img'];
 //역사모드7 : 207년 적벽대전
 
 //////////////////////////국가1/////////////////////////////////////////////////
-RegNation($connect, "조조", "000080", 10000, 10000, "하북을 제패하고 대군을 이끌고 남하하는 조조", 1000, 73, "병가", 6);
+RegNation("조조", "000080", 10000, 10000, "하북을 제패하고 대군을 이끌고 남하하는 조조", 1000, 73, "병가", 6);
 //////////////////////////국가2/////////////////////////////////////////////////
-RegNation($connect, "손권", "FF0000", 10000, 10000, "조조의 남하에 유비와 불가침으로 맞서는 손권", 1000, 49, "덕가", 4);
+RegNation("손권", "FF0000", 10000, 10000, "조조의 남하에 유비와 불가침으로 맞서는 손권", 1000, 49, "덕가", 4);
 //////////////////////////국가3/////////////////////////////////////////////////
-RegNation($connect, "유장", "483D8B", 10000, 10000, "익주에 만족하는 익주자사 유장", 1000, 25, "유가", 4);
+RegNation("유장", "483D8B", 10000, 10000, "익주에 만족하는 익주자사 유장", 1000, 25, "유가", 4);
 //////////////////////////국가4////////////////////////////////////////////////
-RegNation($connect, "유비", "008000", 10000, 10000, "공명의 영입과 손씨와의 불가침으로 반전을 꾀하는 유비", 1000, 18, "유가", 2);
+RegNation("유비", "008000", 10000, 10000, "공명의 영입과 손씨와의 불가침으로 반전을 꾀하는 유비", 1000, 18, "유가", 2);
 //////////////////////////국가5/////////////////////////////////////////////////
-RegNation($connect, "마등", "808000", 10000, 10000, "서량태수 마등", 1000, 13, "병가", 4);
+RegNation("마등", "808000", 10000, 10000, "서량태수 마등", 1000, 13, "병가", 4);
 //////////////////////////국가6/////////////////////////////////////////////////
-RegNation($connect, "장로", "20B2AA", 10000, 10000, "한중의 오두미도 장로", 1000, 7, "오두미도", 1);
+RegNation("장로", "20B2AA", 10000, 10000, "한중의 오두미도 장로", 1000, 7, "오두미도", 1);
 //////////////////////////국가7/////////////////////////////////////////////////
-RegNation($connect, "한현", "FF6347", 10000, 10000, "장사태수 한현", 1000, 4, "묵가", 2);
+RegNation("한현", "FF6347", 10000, 10000, "장사태수 한현", 1000, 4, "묵가", 2);
 //////////////////////////국가8/////////////////////////////////////////////////
-RegNation($connect, "조범", "808000", 10000, 10000, "계양태수 조범", 1000, 3, "도가", 2);
+RegNation("조범", "808000", 10000, 10000, "계양태수 조범", 1000, 3, "도가", 2);
 //////////////////////////국가9/////////////////////////////////////////////////
-RegNation($connect, "유도", "AFEEEE", 10000, 10000, "영릉태수 유도", 1000, 3, "덕가", 2);
+RegNation("유도", "AFEEEE", 10000, 10000, "영릉태수 유도", 1000, 3, "덕가", 2);
 //////////////////////////국가10/////////////////////////////////////////////////
-RegNation($connect, "공손강", "A0522D", 10000, 10000, "공손강", 1000, 2, "도적", 1);
+RegNation("공손강", "A0522D", 10000, 10000, "공손강", 1000, 2, "도적", 1);
 //////////////////////////국가11/////////////////////////////////////////////////
-RegNation($connect, "금선", "800080", 10000, 10000, "무릉태수 금선", 1000, 2, "도가", 2);
+RegNation("금선", "800080", 10000, 10000, "무릉태수 금선", 1000, 2, "도가", 2);
 
 //////////////////////////외교//////////////////////////////////////////////////
 $query = "insert into diplomacy (me, you, state, term) values ('1', '2', '2', '0')";
@@ -1011,61 +1011,61 @@ RegGeneral($connect,1,0,$fiction,$turnterm,$startyear,$year,1678,  22,   "희지
 //////////////////////////도시 소속/////////////////////////////////////////////
 //국가1 조조  국가2 손권  국가3 유장  국가4 유비  국가5 마등
 //국가6 장로  국가7 한현  국가8 조범  국가9 유도  국가10공손강 국가11 금선
-RegCity($connect, 1, "역경");
-RegCity($connect, 1, "계교");
-RegCity($connect, 1, "관도");
-RegCity($connect, 1, "호관");
-RegCity($connect, 1, "정도");
-RegCity($connect, 1, "호로");
-RegCity($connect, 1, "사곡");
-RegCity($connect, 1, "함곡");
-RegCity($connect, 1, "사수");
-RegCity($connect, 1, "서주");
-RegCity($connect, 1, "계");
-RegCity($connect, 1, "북평");
-RegCity($connect, 1, "진양");
-RegCity($connect, 1, "남피");
-RegCity($connect, 1, "평원");
-RegCity($connect, 1, "하내");
-RegCity($connect, 1, "업");
-RegCity($connect, 1, "북해");
-RegCity($connect, 1, "복양");
-RegCity($connect, 1, "장안");
-RegCity($connect, 1, "홍농");
-RegCity($connect, 1, "낙양");
-RegCity($connect, 1, "진류");
-RegCity($connect, 1, "패");
-RegCity($connect, 1, "허창", 1);
-RegCity($connect, 1, "초");
-RegCity($connect, 1, "하비");
-RegCity($connect, 1, "완");
-RegCity($connect, 1, "여남");
-RegCity($connect, 1, "수춘");
-RegCity($connect, 1, "신야");
-RegCity($connect, 1, "양양");
-RegCity($connect, 1, "강릉");
-RegCity($connect, 1, "장판");
-RegCity($connect, 2, "파양");
-RegCity($connect, 2, "적벽");
-RegCity($connect, 2, "여강");
-RegCity($connect, 2, "오");
-RegCity($connect, 2, "회계");
-RegCity($connect, 2, "건업", 1);
-RegCity($connect, 2, "시상");
-RegCity($connect, 3, "면죽");
-RegCity($connect, 3, "자동");
-RegCity($connect, 3, "성도", 1);
-RegCity($connect, 3, "강주");
-RegCity($connect, 4, "강하", 1);
-RegCity($connect, 5, "서량", 1);
-RegCity($connect, 5, "천수");
-RegCity($connect, 6, "한중", 1);
-RegCity($connect, 6, "양평");
-RegCity($connect, 7, "장사", 1);
-RegCity($connect, 8, "계양", 1);
-RegCity($connect, 9, "영릉", 1);
-RegCity($connect, 10, "안평", 1);
-RegCity($connect, 11, "무릉", 1);
+RegCity(1, "역경");
+RegCity(1, "계교");
+RegCity(1, "관도");
+RegCity(1, "호관");
+RegCity(1, "정도");
+RegCity(1, "호로");
+RegCity(1, "사곡");
+RegCity(1, "함곡");
+RegCity(1, "사수");
+RegCity(1, "서주");
+RegCity(1, "계");
+RegCity(1, "북평");
+RegCity(1, "진양");
+RegCity(1, "남피");
+RegCity(1, "평원");
+RegCity(1, "하내");
+RegCity(1, "업");
+RegCity(1, "북해");
+RegCity(1, "복양");
+RegCity(1, "장안");
+RegCity(1, "홍농");
+RegCity(1, "낙양");
+RegCity(1, "진류");
+RegCity(1, "패");
+RegCity(1, "허창", 1);
+RegCity(1, "초");
+RegCity(1, "하비");
+RegCity(1, "완");
+RegCity(1, "여남");
+RegCity(1, "수춘");
+RegCity(1, "신야");
+RegCity(1, "양양");
+RegCity(1, "강릉");
+RegCity(1, "장판");
+RegCity(2, "파양");
+RegCity(2, "적벽");
+RegCity(2, "여강");
+RegCity(2, "오");
+RegCity(2, "회계");
+RegCity(2, "건업", 1);
+RegCity(2, "시상");
+RegCity(3, "면죽");
+RegCity(3, "자동");
+RegCity(3, "성도", 1);
+RegCity(3, "강주");
+RegCity(4, "강하", 1);
+RegCity(5, "서량", 1);
+RegCity(5, "천수");
+RegCity(6, "한중", 1);
+RegCity(6, "양평");
+RegCity(7, "장사", 1);
+RegCity(8, "계양", 1);
+RegCity(9, "영릉", 1);
+RegCity(10, "안평", 1);
+RegCity(11, "무릉", 1);
 
 $query = "update city set pop=pop2*0.7,agri=agri2*0.7,comm=comm2*0.7,secu=secu2*0.7,rate=80,def=def2*0.7,wall=wall2*0.7 where nation>0";
 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

@@ -110,7 +110,7 @@ function processGoldIncome($connect) {
 
     $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<W><b>【지급】</b></>봄이 되어 봉록에 따라 자금이 지급됩니다.";
     pushHistory($history);
-    pushAdminLog($connect, $adminLog);
+    pushAdminLog($adminLog);
 }
 
 function popIncrease($connect) {
@@ -402,7 +402,7 @@ function processRiceIncome($connect) {
 
     $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<W><b>【지급】</b></>가을이 되어 봉록에 따라 군량이 지급됩니다.";
     pushHistory($history);
-    pushAdminLog($connect, $adminLog);
+    pushAdminLog($adminLog);
 }
 
 function getRiceIncome($connect, $nationNo, $rate, $admin_rate, $type) {

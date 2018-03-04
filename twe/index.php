@@ -4,7 +4,7 @@ include "func.php";
 
 
 $connect = dbConn();
-increaseRefresh($connect, "메인", 2);
+increaseRefresh("메인", 2);
 checkTurn($connect);
 
 $db = getDB();

@@ -1208,7 +1208,7 @@ function generalInfo2($connect, $no, $skin) {
 </table>";
 }
 
-function pushTrickLog($connect, $log) {
+function pushTrickLog($log) {
     $size = count($log);
     if($size > 0) {
         $fp = fopen("logs/_tricklog.txt", "a");
@@ -1219,7 +1219,7 @@ function pushTrickLog($connect, $log) {
     }
 }
 
-function pushProcessLog($connect, $log) {
+function pushProcessLog($log) {
     $size = count($log);
     if($size > 0) {
         $date = date('Y_m_d');
@@ -1243,7 +1243,7 @@ function pushStepLog($log) {
     fclose($fp);
 }
 
-function pushLockLog($connect, $log) {
+function pushLockLog($log) {
     $size = count($log);
     if($size > 0) {
         $date = date('Y_m_d');
@@ -1255,7 +1255,7 @@ function pushLockLog($connect, $log) {
     }
 }
 
-function pushAdminLog($connect, $log) {
+function pushAdminLog($log) {
     $size = count($log);
     if($size > 0) {
         $fp = fopen("logs/_adminlog.txt", "a");
@@ -1266,7 +1266,7 @@ function pushAdminLog($connect, $log) {
     }
 }
 
-function pushAuctionLog($connect, $log) {
+function pushAuctionLog($log) {
     $size = count($log);
     if($size > 0) {
         $fp = fopen("logs/_auctionlog.txt", "a");
@@ -1817,74 +1817,17 @@ function CutDay($date) {
     return $date;
 }
 
-
-function increaseRefreshEx($type, $cnt=1){
-    $db = getDB();
-
-    $db->query("update `game` set `refresh` = `refresh` + %i where `no` = 1", $cnt);
-
-    $date = date('Y-m-d H:i:s');
-    $generalID = getGeneralID();
-    if($generalID !== NULL){
-        
-        $db->query("update `general` set `lastrefresh`= %s_date, `con` = `con`+%d_cnt, `connect`= `connect`+ %d_cnt, '\
-        '`refcnt` = `refcnt` + %d_cnt, `refresh` = `refresh` + %d_cnt where `no` =%i_generalID",array(
-            'date'=>$date,
-            'cnt'=>$cnt,
-            'generalID'=>$generalID
-        ));
-    }
-
-    $date = date('Y_m_d H:i:s');
-    $date2 = substr($date, 0, 10);
-    $online = getOnlineNum();
-    $fp = fopen("logs/_{$date2}_refresh.txt", "a");
-    $msg = _String::Fill2($date,20," ")._String::Fill2(getUserID(),13," ")._String::Fill2(getGeneralName(),13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
-    fwrite($fp, $msg."\n");
-    fclose($fp);
-
-    $proxy_headers = array(
-        'HTTP_VIA',
-        'HTTP_X_FORWARDED_FOR',
-        'HTTP_FORWARDED_FOR',
-        'HTTP_X_FORWARDED',
-        'HTTP_FORWARDED',
-        'HTTP_CLIENT_IP',
-        'HTTP_FORWARDED_FOR_IP',
-        'VIA',
-        'X_FORWARDED_FOR',
-        'FORWARDED_FOR',
-        'X_FORWARDED',
-        'FORWARDED',
-        'CLIENT_IP',
-        'FORWARDED_FOR_IP',
-        'HTTP_PROXY_CONNECTION'
-    );
-
-    $str = "";
-    foreach($proxy_headers as $x) {
-        if(isset($_SERVER[$x])) $str .= "//{$x}:{$_SERVER[$x]}";
-    }
-    if($str != "") {
-        file_put_contents("logs/_{$date2}_ipcheck.txt",
-            sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s\n",
-                getUserID(), getGeneralName(),$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
-    }
-    
-    
-}
-
-function increaseRefresh($connect, $type="", $cnt=1) {
+function increaseRefresh($type="", $cnt=1) {
     $date = date('Y-m-d H:i:s');
 
-    $query = "update game set refresh=refresh+'$cnt' where no='1'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    getDB()->query('UPDATE game set refresh=refresh+%i where `no`=1', $cnt);
 
     if(!util::array_get($_SESSION['noMember'], null)) {
-        $query = sprintf("update general set lastrefresh='%s',con=con+'%d',connect=connect+'%d',refcnt=refcnt+'%d',refresh=refresh+'%d' where owner='%d'",
-        $date,$cnt,$cnt,$cnt,$cnt,$_SESSION['noMember']);
-        
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        getDB()->query('UPDATE general set `lastrefresh`=%s_date, `con`=`con`+%i_cnt, `connect`=`connect`+%i_cnt, refcnt=refcnt+%i_cnt, refresh=refresh+%i_cnt where `no`=%i_no',[
+            'date'=>$date,
+            'cnt'=>$cnt,
+            'owner'->getGeneralID()
+        ]);
     }
 
     $date = date('Y_m_d H:i:s');
@@ -1924,17 +1867,13 @@ function increaseRefresh($connect, $type="", $cnt=1) {
     }
 }
 
-function updateTraffic($connect) {
+function updateTraffic() {
     $online = getOnlineNum();
-
-    $query = "select year,month,refresh,maxonline,maxrefresh from game where no='1'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $game = MYDB_fetch_array($result);
+    $db = getDB();
+    $game = $db->queryFirstRow('SELECT year,month,refresh,maxonline,maxrefresh from game where no=1');
 
     //최다갱신자
-    $query = "select name,refresh from general order by refresh desc limit 0,1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $user = MYDB_fetch_array($result);
+    $user = $db->queryFirstRow('select name,refresh from general order by refresh desc limit 1');
 
     if($game['maxrefresh'] < $game['refresh']) {
         $game['maxrefresh'] = $game['refresh'];
@@ -1942,11 +1881,13 @@ function updateTraffic($connect) {
     if($game['maxonline'] < $online) {
         $game['maxonline'] = $online;
     }
-    $query = "update game set refresh=0,maxrefresh={$game['maxrefresh']},maxonline={$game['maxonline']} where no='1'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('game',[
+        'refresh'=>0,
+        'maxrefresh'=>$game['maxrefresh'],
+        'maxonline'=>$game['maxonline']
+    ], 'no=1');
 
-    $query = "update general set refresh=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', ['refresh'=>0]);
 
     $date = date('Y-m-d H:i:s');
     $fp = fopen("logs/_traffic.txt", "a");
@@ -2138,7 +2079,7 @@ function checkTurn($connect) {
     }
 
     $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
-    pushLockLog($connect, $locklog);
+    pushLockLog($locklog);
 
     // 파일락 해제
     if(!flock($fp, LOCK_UN)) { return; }
@@ -2146,7 +2087,7 @@ function checkTurn($connect) {
     //if(!@sem_release($sema)) { echo "치명적 에러! 유기체에게 문의하세요!"; exit(1); }
 
     $locklog[0] = "- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
-    pushLockLog($connect, $locklog);
+    pushLockLog($locklog);
     
     //if(STEP_LOG) delStepLog();
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', 진입');
@@ -2189,7 +2130,7 @@ function checkTurn($connect) {
             $general = MYDB_fetch_array($result);
             
             //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이전 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general['turn0']})";
-            //if(PROCESS_LOG) pushProcessLog($connect, $processlog);
+            //if(PROCESS_LOG) pushProcessLog($processlog);
             
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
             if($general['npc'] >= 2) { processAI($connect, $general['no']); }    // npc AI 처리
@@ -2206,13 +2147,13 @@ function checkTurn($connect) {
         
         // 트래픽 업데이트
         //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateTraffic');
-        updateTraffic($connect);
+        updateTraffic();
         // 1달마다 처리하는 것들, 벌점 감소 및 건국,전턴,합병 -1, 군량 소모
         //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', preUpdateMonthly');
         $result = preUpdateMonthly($connect);
         if($result == false) {
             $locklog[0] = "-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
-            pushLockLog($connect, $locklog);
+            pushLockLog($locklog);
 
             // 잡금 해제
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
@@ -2225,7 +2166,7 @@ function checkTurn($connect) {
         $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
 
         $locklog[0] = "-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
-        pushLockLog($connect, $locklog);
+        pushLockLog($locklog);
         // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
         if($admin['month'] == 1) {
             // NPC 등장
@@ -2296,7 +2237,7 @@ function checkTurn($connect) {
             $general = MYDB_fetch_array($result);
 
             //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이후 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general['turn0']})";
-            //if(PROCESS_LOG) pushProcessLog($connect, $processlog);
+            //if(PROCESS_LOG) pushProcessLog($processlog);
             
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
             if($general['npc'] >= 2) { processAI($connect, $general['no']); }    // npc AI 처리
@@ -2341,7 +2282,7 @@ function checkTurn($connect) {
     unlock();
 
     $locklog[0] = "- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
-    pushLockLog($connect, $locklog);
+    pushLockLog($locklog);
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', finish');
     

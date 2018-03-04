@@ -2,7 +2,7 @@
 include "lib.php";
 include "func.php";
 $connect = dbConn();
-increaseRefresh($connect, "명예의전당", 2);
+increaseRefresh("명예의전당", 2);
 ?>
 <html>
 

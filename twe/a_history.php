@@ -5,7 +5,7 @@ $yearmonth = $_POST['yearmonth'];
 //로그인 검사
 CheckLogin();
 $connect = dbConn();
-increaseRefresh($connect, "연감", 5);
+increaseRefresh("연감", 5);
 
 $query = "select startyear,year,month,conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

@@ -4,7 +4,7 @@ include "func.php";
 //로그인 검사
 CheckLogin();
 $connect = dbConn();
-increaseRefresh($connect, "감찰부", 2);
+increaseRefresh("감찰부", 2);
 //전투 추진을 위해 갱신
 checkTurn($connect);
 

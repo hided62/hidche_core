@@ -2,7 +2,7 @@
 include "lib.php";
 include "func.php";
 $connect = dbConn();
-increaseRefresh($connect, "갱신정보", 2);
+increaseRefresh("갱신정보", 2);
 
 $query = "select year,month,refresh,maxrefresh,maxonline from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

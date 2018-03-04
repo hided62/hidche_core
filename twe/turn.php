@@ -6,7 +6,7 @@ include "func.php";
 use utilphp\util as util;
 CheckLogin(1);
 $connect = dbConn();
-increaseRefresh($connect, "턴반복", 1);
+increaseRefresh("턴반복", 1);
 
 $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

@@ -414,7 +414,7 @@ function processWar($connect, $general, $city) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $adminLog[0] = "성벽 쌀 소모 : $rice";
-            pushAdminLog($connect, $adminLog);
+            pushAdminLog($adminLog);
 
             //원래대로 스케일링
             $city['def'] = round($city['def'] / 10);

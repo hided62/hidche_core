@@ -49,9 +49,9 @@ $img = $admin['img'];
 //역사모드1 : 184년 황건적의 난
 
 //////////////////////////국가1/////////////////////////////////////////////////
-RegNation($connect, "후한", "800000", 10000, 10000, "후한왕조", 1500, 47, "유가", 7);
+RegNation("후한", "800000", 10000, 10000, "후한왕조", 1500, 47, "유가", 7);
 //////////////////////////국가2/////////////////////////////////////////////////
-RegNation($connect, "황건적", "FFD700", 10000, 10000, "황건적",  500, 23, "태평도", 2);
+RegNation("황건적", "FFD700", 10000, 10000, "황건적",  500, 23, "태평도", 2);
 //////////////////////////외교//////////////////////////////////////////////////
 $query = "insert into diplomacy (me, you, state, term) values ('1', '2', '2', '0')";
 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -746,30 +746,30 @@ RegGeneral($connect,1,0,$fiction,$turnterm,$startyear,$year,1678,  22,   "희지
 //////////////////////////장수 끝///////////////////////////////////////////////
 
 //////////////////////////도시 소속/////////////////////////////////////////////
-RegCity($connect, 1, "계");
-RegCity($connect, 1, "역경");
-RegCity($connect, 1, "진양");
-RegCity($connect, 1, "남피");
-RegCity($connect, 1, "호관");
-RegCity($connect, 1, "호로");
-RegCity($connect, 1, "사곡");
-RegCity($connect, 1, "함곡");
-RegCity($connect, 1, "사수");
-RegCity($connect, 1, "하내");
-RegCity($connect, 1, "장안");
-RegCity($connect, 1, "홍농");
-RegCity($connect, 1, "낙양", 1);
-RegCity($connect, 1, "완");
-RegCity($connect, 2, "계교");
-RegCity($connect, 2, "진류");
-RegCity($connect, 2, "관도");
-RegCity($connect, 2, "정도");
-RegCity($connect, 2, "평원");
-RegCity($connect, 2, "업", 1);
-RegCity($connect, 2, "복양");
-RegCity($connect, 2, "패");
-RegCity($connect, 2, "허창");
-RegCity($connect, 2, "초");
+RegCity(1, "계");
+RegCity(1, "역경");
+RegCity(1, "진양");
+RegCity(1, "남피");
+RegCity(1, "호관");
+RegCity(1, "호로");
+RegCity(1, "사곡");
+RegCity(1, "함곡");
+RegCity(1, "사수");
+RegCity(1, "하내");
+RegCity(1, "장안");
+RegCity(1, "홍농");
+RegCity(1, "낙양", 1);
+RegCity(1, "완");
+RegCity(2, "계교");
+RegCity(2, "진류");
+RegCity(2, "관도");
+RegCity(2, "정도");
+RegCity(2, "평원");
+RegCity(2, "업", 1);
+RegCity(2, "복양");
+RegCity(2, "패");
+RegCity(2, "허창");
+RegCity(2, "초");
 
 $query = "update city set pop=pop2*0.7,agri=agri2*0.7,comm=comm2*0.7,secu=secu2*0.7,rate=80,def=def2*0.7,wall=wall2*0.7 where nation>0";
 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

@@ -163,7 +163,7 @@ function processAuction($connect) {
         if($auction['stuff'] != 0) {
             if($auction['no2'] == 0) {
                 $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, 그러나 입찰자 부재";
-                pushAuctionLog($connect, $auctionLog);
+                pushAuctionLog($auctionLog);
             } else {
                 $trader['no'] = 0;
                 $trader['name'] = 'ⓝ암시장상인';
@@ -218,7 +218,7 @@ function processAuction($connect) {
                 }
                 pushGenLog($trader, $traderLog);
                 pushGenLog($bidder, $bidderLog);
-                pushAuctionLog($connect, $auctionLog);
+                pushAuctionLog($auctionLog);
             }
         } else {
             // 쌀 처리
@@ -236,7 +236,7 @@ function processAuction($connect) {
                         $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 구매, 그러나 입찰자 부재";
                     }
                     pushGenLog($trader, $traderLog);
-                    pushAuctionLog($connect, $auctionLog);
+                    pushAuctionLog($auctionLog);
                 }
             } else {
                 if($auction['no1'] == 0) {
@@ -293,7 +293,7 @@ function processAuction($connect) {
                     }
                     pushGenLog($trader, $traderLog);
                     pushGenLog($bidder, $bidderLog);
-                    pushAuctionLog($connect, $auctionLog);
+                    pushAuctionLog($auctionLog);
                 //구매거래
                 } else {
                     if($auction['amount'] > $bidder['rice'] - 1000) {
@@ -335,7 +335,7 @@ function processAuction($connect) {
                     }
                     pushGenLog($trader, $traderLog);
                     pushGenLog($bidder, $bidderLog);
-                    pushAuctionLog($connect, $auctionLog);
+                    pushAuctionLog($auctionLog);
                 }
             }
         }

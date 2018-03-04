@@ -4,7 +4,7 @@ include "func.php";
 //로그인 검사
 CheckLogin();
 $connect = dbConn();
-increaseRefresh($connect, "인사부", 1);
+increaseRefresh("인사부", 1);
 //훼섭 추방을 위해 갱신
 checkTurn($connect);
 

@@ -77,7 +77,7 @@ $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($con
 $info = MYDB_fetch_array($result);
 
 for($i=0; $i < 7; $i++) {
-    RegNation($connect, $name[$i], "800000", 99999, 99999, "오랑캐여 일어서라! 오랑캐 궐기!", $info['tch']+500, $eachCount, "병가", 0);
+    RegNation($name[$i], "800000", 99999, 99999, "오랑캐여 일어서라! 오랑캐 궐기!", $info['tch']+500, $eachCount, "병가", 0);
 }
 
 //////////////////////////외교//////////////////////////////////////////////////

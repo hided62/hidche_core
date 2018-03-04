@@ -2,7 +2,7 @@
 include "lib.php";
 include "func.php";
 $connect = dbConn();
-increaseRefresh($connect, "설문조사", 1);
+increaseRefresh("설문조사", 1);
 
 $query = "select no,userlevel,vote from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
