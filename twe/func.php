@@ -6,6 +6,7 @@ require_once 'func_gamerule.php';
 require_once 'func_process.php';
 require_once 'func_process_trick.php';
 require_once 'func_process_chief.php';
+require_once 'func_process_personnel.php';
 require_once 'func_npc.php';
 require_once 'func_tournament.php';
 require_once 'func_auction.php';
