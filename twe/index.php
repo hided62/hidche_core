@@ -21,7 +21,7 @@ if(!$userID){
     die();
 }
 
-$me = $db->queryFirstRow('select no,skin,userlevel,con,turntime,newmsg,newvote,map from general where owner = %i', $userID);
+$me = $db->queryFirstRow('select no,skin,con,turntime,newmsg,newvote,map from general where owner = %i', $userID);
 
 //그새 사망이면
 if($me === null) {
@@ -49,7 +49,7 @@ $query = "select plock from plock where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $plock = MYDB_fetch_array($result);
 
-$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+$con = checkLimit($me['con'], $admin['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
 if($me['skin'] < 1) {
@@ -172,12 +172,11 @@ echo "
     <tr><td colspan=5>【 국가방침 】<?php nationMsg($connect, $me['skin']); ?></td></tr>
     <tr><td colspan=5>【 접속자 】<?=onlinegen($connect);?></td></tr>
 <?php
-if($me['userlevel'] >= 5) {
+if(getUserGrade() >= 5) {
     echo "
     <tr><td colspan=5>
         <input type=button value=게임관리 onclick=location.replace('_admin1.php')>
         <input type=button value=회원관리 onclick=location.replace('_admin2.php')>
-        <input type=button value=특별회원 onclick=location.replace('_admin3.php')>
         <input type=button value=멀티관리 onclick=location.replace('_admin4.php')>
         <input type=button value=일제정보 onclick=window.open('_admin5.php')>
         <input type=button value=접속정보 onclick=window.open('_admin6.php')>

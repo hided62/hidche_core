@@ -1,6 +1,5 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._DB.php');
 require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 
 class _Chat {

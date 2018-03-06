@@ -10,11 +10,11 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,nation,userlevel,con from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,name,nation,con from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+$con = checkLimit($me['con'], $admin['conlimit']);
 if($con >= 2) { 
     //echo "<script>window.top.main.location.replace('index.php');</script>"; 
     echo 'index.php';//TODO:debug all and replace

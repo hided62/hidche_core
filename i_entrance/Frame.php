@@ -3,18 +3,16 @@ require_once('_common.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
-$rs = $DB->Select('NOTICE', 'SYSTEM', "NO='1'");
-$system = $DB->Get($rs);
+$db = getRootDB();
+$system = $db->queryFirstRow('SELECT `NOTICE` FROM `SYSTEM` WHERE `NO`=1');
 
-$rs = $DB->Select('ID, GRADE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
-$member = $DB->Get($rs);
+$member = $db->queryFirstRow('SELECT ID, GRADE FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
 
 ?>
 
 <?php include(MANAGE.W.FRAME); ?>
 <?php
 if($member['GRADE'] >= 6) {
-    include(DONATION.W.FRAME);
     include(MEMBER.W.FRAME);
 }
 ?>

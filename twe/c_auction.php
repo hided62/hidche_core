@@ -10,7 +10,7 @@ $query = "select turnterm from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,gold,rice,special,userlevel from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,name,gold,rice,special from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -42,7 +42,7 @@ $value = round($value / 10) * 10;
 if($term > 24) $term = 24;
 
 $valid = 1;
-if($me['userlevel'] >= 5 || ($me['special'] != 30 && $btCount < 1) || ($me['special'] == 30 && $btCount < 3)) {
+if(getUserGrade() >= 5 || ($me['special'] != 30 && $btCount < 1) || ($me['special'] == 30 && $btCount < 3)) {
 } else {
     $msg = "ㆍ<span class='ev_warning'>더이상 등록할 수 없습니다.</span>";
     $msg2 = "ㆍ<span class='ev_warning'>더이상 등록할 수 없습니다.</span>";

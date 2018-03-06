@@ -5,11 +5,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where owner='{$_SESSION['noMember']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
-
-if($me['userlevel'] < 5) {
+if(getUserGrade() < 5) {
     //echo "<script>location.replace('_admin2.php');</script>";
     echo '_admin2.php';//TODO:debug all and replace
 }
@@ -158,18 +154,6 @@ switch($btn) {
         }
         for($i=0; $i < sizeof($genlist); $i++) {
             $query = "update general set dex40=dex40+10000 where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
-        break;
-    case "특별회원 임명":
-        for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "update general set userlevel=3 where no='$genlist[$i]'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
-        break;
-    case "특별회원 해제":
-        for($i=0; $i < sizeof($genlist); $i++) {
-            $query = "update general set userlevel=1 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;

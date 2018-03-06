@@ -87,7 +87,6 @@ CREATE TABLE `general` (
 	`tnmt` INT(1) NULL DEFAULT '1',
 	`map` INT(1) NULL DEFAULT '0',
 	`myset` INT(1) NULL DEFAULT '3',
-	`userlevel` INT(1) NULL DEFAULT '1',
 	`tournament` INT(1) NULL DEFAULT '0',
 	`vote` INT(1) NULL DEFAULT '0',
 	`newvote` INT(1) NULL DEFAULT '0',

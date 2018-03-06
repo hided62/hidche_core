@@ -26,17 +26,16 @@ if($err == 1) {
         $response['result'] = 'FAIL';
         $response['msg'] = '이메일전송이 실패: '.$res['msg'];
     } else {
-        $rs = $DB->Select('EMAIL', 'EMAIL', "EMAIL='{$email}'");
-        $count = $DB->Count($rs);
-        if($count > 0) {
-            $DB->Delete('EMAIL', "EMAIL='{$email}'");
-        }
-        $DB->InsertArray('EMAIL', array(
+        getRootDB()->insertUpdate('EMAIL', [
             'EMAIL'   =>  $email,
             'CODE'    =>  $code,
             'VERIFIED'=>  0,
             'REG_DATE'=> _Time::DatetimeNow()
-        ));
+        ],[
+            'CODE'    =>  $code,
+            'VERIFIED'=>  0,
+            'REG_DATE'=> _Time::DatetimeNow()
+        ]);
 
         $response['result'] = 'SUCCESS';
         $response['msg'] = $email.'로 인증번호가 전송되었습니다. 이메일을 확인하세요.';

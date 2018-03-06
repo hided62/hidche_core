@@ -48,7 +48,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("시뮬", 2);
 
-$query = "select no,tournament,userlevel,con,turntime from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,tournament,con,turntime from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -56,10 +56,10 @@ $query = "select * from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $game = MYDB_fetch_array($result);
 
-$con = checkLimit($me['userlevel'], $me['con'], $game['conlimit']);
+$con = checkLimit($me['con'], $game['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-if($me['userlevel'] < 3) {
+if(getUserGrade() < 3) {
     echo "특별회원이 아닙니다.";
     exit();
 }

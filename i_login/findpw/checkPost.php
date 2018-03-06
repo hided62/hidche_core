@@ -20,6 +20,7 @@ $email = $_POST['email'];
 
 
 $response['type'] = $type;
+$db = getRootDB();
 
 if($type == 0) {
     $err = _Validation::CheckID($id);
@@ -30,8 +31,7 @@ if($type == 0) {
         $response['result'] = 'FAIL';
         $response['msg'] = '4~12글자로 입력해주세요.';
     } elseif($err == 0) {
-        $rs = $DB->Select('ID', 'MEMBER', "ID='{$id}'");
-        $count = $DB->Count($rs);
+        $count = $db->queryFirstField('SELECT count(id) FROM MEMBER WHERE ID=%s', $id);
         if($count == 1) {
             $response['result'] = 'SUCCESS';
             $response['msg'] = '존재하는 아이디입니다. ^^';
@@ -52,8 +52,7 @@ if($type == 0) {
         $response['result'] = 'FAIL';
         $response['msg'] = '입력이 충분치 않습니다!';
     } elseif($err == 0) {
-        $rs = $DB->Select('PID', 'MEMBER', "ID='{$id}' AND PID='{$pid}'");
-        $count = $DB->Count($rs);
+        $count = $db->queryFirstField('SELECT count(`NO`) FROM MEMBER WHERE ID = %s AND PID = %s', $id, $pid);
         if($count == 1) {
             $response['result'] = 'SUCCESS';
             $response['msg'] = '맞는 주민번호입니다. ^^';
@@ -68,8 +67,7 @@ if($type == 0) {
         $response['result'] = 'FAIL';
         $response['msg'] = '이메일이 올바르지 않습니다!';
     } elseif($err == 0) {
-        $rs = $DB->Select('EMAIL', 'MEMBER', "ID='{$id}' AND EMAIL='{$email}'");
-        $count = $DB->Count($rs);
+        $count = $db->queryFirstField('SELECT COUNT(`NO`) FROM MEMBER WHERE ID = %s AND EMAIL = %s', $id, $email);
         if($count == 1) {
             $response['result'] = 'SUCCESS';
             $response['msg'] = '맞는 이메일입니다. ^^';

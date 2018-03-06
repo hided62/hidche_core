@@ -1,8 +1,13 @@
 <?php
-    include "lib.php";
-    if(file_exists("d_setting/set.php")) error("이미 set.php가 생성되어 있습니다.<br><br>재설치하려면 해당 파일을 지우세요");
+include "lib.php";
 
-    @chmod(".",0707);
+if(getUserGrade(true) < 5){
+    die('관리자 아님');
+}
+
+if(file_exists("d_setting/conf.php")) error("이미 conf.php가 생성되어 있습니다.<br><br>재설치하려면 해당 파일을 지우세요");
+
+@chmod(".",0707);
 ?>
 
 <html>

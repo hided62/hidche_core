@@ -24,11 +24,12 @@ class _Session {
         return $_SESSION[$key];
     }
 
-    public function Login($noMember, $idMember) {
+    public function Login($noMember, $idMember, $grade) {
         $_SESSION['noMember'] = $noMember;
         $_SESSION['p_id'] = $idMember;
         $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
         $_SESSION['time'] = time();
+        $_SESSION['userGrade'] = $grade;
     }
 
     public function Logout() {

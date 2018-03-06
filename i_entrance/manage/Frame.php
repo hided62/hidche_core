@@ -51,6 +51,4 @@ require_once('_common.php');
 <font color=magenta>탈퇴신청시 1개월간 정보가 보존되며,
 1개월간 재가입이 불가능합니다.</font></pre>
     </div>
-    <div id="EntranceManage_0020">
-    </div>
 </div>

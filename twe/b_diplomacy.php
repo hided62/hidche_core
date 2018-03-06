@@ -10,7 +10,7 @@ $query = "select turnterm from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,nation,skin,map,userlevel from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,nation,skin,map from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -115,7 +115,7 @@ for($i=0; $i < $nationcount; $i++) {
                 case 0: $str = "<font color=red>★</font>"; break;
                 case 1: $str = "<font color=magenta>▲</font>"; break;
                 case 2:
-                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || $me['userlevel'] >= 4) { $str = "ㆍ"; }
+                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || getUserGrade() >= 5) { $str = "ㆍ"; }
                     else { $str = "?"; }
 //                    $str = "ㆍ";
                     break;
@@ -124,7 +124,7 @@ for($i=0; $i < $nationcount; $i++) {
                 case 5: $str = "<font color=cyan>◎</font>"; break;
                 case 6: $str = "<font color=cyan>◎</font>"; break;
                 case 7:
-                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || $me['userlevel'] >= 4) { $str = "<font color=green>@</font>"; }
+                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || getUserGrade() >= 5) { $str = "<font color=green>@</font>"; }
                     else { $str = "?"; }
 //                    $str = "<font color=limegreen>@</font>";
                     break;

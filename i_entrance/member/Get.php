@@ -10,41 +10,31 @@ use utilphp\util as util;
 // $_GET['select'] : 정렬선택
 $select = $_GET['select'];
 
-$rs = $DB->Select('GRADE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
-$member = $DB->Get($rs);
-$donCumul = [];
-$donDate = [];
+$db = getRootDB();
+$member = $db->queryFirstRow('SELECT `GRADE` FROM `MEMBER` WHERE `no` = %i', $SESSION->NoMember());
 if($member['GRADE'] < 6) {
     $response['result'] = 'FAIL';
     $response['msg'] = '운영자 권한이 없습니다.';
 } else {
-    $rs = $DB->Select('ID, CUMUL, DATE', 'DONATION', '1 ORDER BY NO');
-    while($DB->HasNext($rs)) {
-        $donation = $DB->Next($rs);
 
-        $donCumul[$donation['ID']] = $donation['CUMUL'];
-        $donDate[$donation['ID']]  = $donation['DATE'];
-    }
-
-    $whereStr = '';
+    $orderByStr = '';
     switch($select) {
-        case 0: $whereStr = '1 ORDER BY NO'; break;
-        case 1: $whereStr = '1 ORDER BY ID'; break;
-        case 2: $whereStr = '1 ORDER BY NAME'; break;
-        case 3: $whereStr = '1 ORDER BY PID'; break;
-        case 4: $whereStr = '1 ORDER BY IP'; break;
-        case 5: $whereStr = '1 ORDER BY GRADE DESC'; break;
-        case 6: $whereStr = '1 ORDER BY REG_NUM DESC'; break;
-        case 7: $whereStr = '1 ORDER BY REG_DATE DESC'; break;
+        case 0: $orderByStr = 'ORDER BY NO'; break;
+        case 1: $orderByStr = 'ORDER BY ID'; break;
+        case 2: $orderByStr = 'ORDER BY NAME'; break;
+        case 3: $orderByStr = 'ORDER BY PID'; break;
+        case 4: $orderByStr = 'ORDER BY IP'; break;
+        case 5: $orderByStr = 'ORDER BY GRADE DESC'; break;
+        case 6: $orderByStr = 'ORDER BY REG_NUM DESC'; break;
+        case 7: $orderByStr = 'ORDER BY REG_DATE DESC'; break;
     }
 
     $response['lists'] = '';
     $response['members'] = '<table id="EntranceMember_000500" class="bg0">';
 
-    $rs = $DB->Select('NO, ID, PID, NAME, IP, PICTURE, IMGSVR, GRADE, REG_NUM, REG_DATE, BLOCK_NUM, BLOCK_DATE, QUIT', 'MEMBER', $whereStr);
-    $count = $DB->Count($rs);
-    while($DB->HasNext($rs)) {
-        $member = $DB->Next($rs);
+    $members = $db->queryFirstRow('SELECT NO, ID, PID, NAME, IP, PICTURE, IMGSVR, GRADE, REG_NUM, REG_DATE, BLOCK_NUM, BLOCK_DATE, QUIT FROM MEMBER %l', $orderByStr);
+    $count = count($members);
+    foreach($members as $member){
         $member['PID'] = substr($member['PID'], 0, 8);
         $member['PICTURE'] = substr($member['PICTURE'], -8);
 
@@ -68,8 +58,6 @@ if($member['GRADE'] < 6) {
         <td class='EntranceMember_00050007'>{$member['REG_NUM']}</td>
         <td class='EntranceMember_00050008'>{$member['REG_DATE']}</td>
         <td class='EntranceMember_00050009'>{$member['GRADE']}</td>
-        <td class='EntranceMember_00050010'>".util::array_get($donCumul[$member['ID']],'0')."</td>
-        <td class='EntranceMember_00050011'>".util::array_get($donDate[$member['ID']],'')."</td>
         <td class='EntranceMember_00050012'>{$member['PICTURE']}</td>
         <td class='EntranceMember_00050013'>{$member['IMGSVR']}</td>
         <td class='EntranceMember_00050014'>{$member['QUIT']}</td>
@@ -79,8 +67,7 @@ if($member['GRADE'] < 6) {
 
     $response['count'] = "(0000/{$count})";
 
-    $rs = $DB->Select('REG, LOGIN', 'SYSTEM', "NO='1'");
-    $system = $DB->Get($rs);
+    $system = getRootDB()->queryFirstRow('SELECT `REG`, `LOGIN` FROM `SYSTEM` WHERE `NO`=1');
 
     $response['state'] = "가입: {$system['REG']}, 로그인: {$system['LOGIN']}";
 

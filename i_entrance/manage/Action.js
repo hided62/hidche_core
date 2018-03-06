@@ -20,7 +20,7 @@ function EntranceManage_Init() {
 function EntranceManage_Update() {
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+ENTRANCE+W+MANAGE+W+GET, {
+            HOME+I+ENTRANCE+W+MANAGE+W+'Get.php', {
             },
             function(response, textStatus) {
                 if(response.result == "SUCCESS") {
@@ -50,7 +50,6 @@ function EntranceManage_UpdateInfo(member) {
     $("#EntranceManage_0010").text(member.grade);
     $("#EntranceManage_001500").attr("src", member.picture0);
     $("#EntranceManage_001501").attr("src", member.picture1);
-    $("#EntranceManage_0020").html(member.donation);
 }
 
 function EntranceManage_ChangePw() {

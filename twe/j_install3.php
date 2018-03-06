@@ -2,6 +2,10 @@
 include "lib.php";
 include "func.php";
 
+if(getUserGrade(true) < 5){
+    die('관리자 아님');
+}
+
 $connect=dbConn();
 
 LogHistory(1);

@@ -23,7 +23,6 @@ EntranceMember_Init();
         <input id="EntranceMember_000604" type="button" value="로그인금지">
         <input id="EntranceMember_000605" type="button" value="탈퇴처리(1개월)">
         <input id="EntranceMember_000606" type="button" value="오래된계정(6개월)">
-        <input id="EntranceMember_000607" type="button" value="이미지업로드">
     </div>
     <div id="EntranceMember_0002" class="bg2 font2">
         선택:
@@ -63,8 +62,6 @@ EntranceMember_Init();
         <div id="EntranceMember_000407">등록</div>
         <div id="EntranceMember_000408">최근등록일</div>
         <div id="EntranceMember_000409">등급</div>
-        <div id="EntranceMember_000410">총참여</div>
-        <div id="EntranceMember_000411">최근참여일</div>
         <div id="EntranceMember_000412">사진</div>
         <div id="EntranceMember_000413">SVR</div>
         <div id="EntranceMember_000414">탈퇴</div>

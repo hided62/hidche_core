@@ -7,7 +7,7 @@ $connect = dbConn();
 increaseRefresh("베팅장", 1);
 checkTurn($connect);
 
-$query = "select no,tournament,userlevel,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,tournament,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -15,7 +15,7 @@ $query = "select conlimit,tournament,phase,tnmt_type,develcost,bet0,bet1,bet2,be
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+$con = checkLimit($me['con'], $admin['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
 switch($admin['tnmt_type']) {

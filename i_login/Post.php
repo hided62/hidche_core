@@ -5,6 +5,8 @@ require_once(ROOT.W.F_FUNC.W.'class._Session.php');
 require_once(ROOT.W.F_FUNC.W.'class._String.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 
+use utilphp\util as util;
+
 // 외부 파라미터
 // $_POST['id'] : ID
 // $_POST['pw'] : PW
@@ -20,18 +22,18 @@ $pw = substr($pw, 0, 32);
 $response['result'] = 'FAIL';
 
 $SESSION = new _Session();
-
-$rs = $DB->Select('NO, GRADE, QUIT', 'MEMBER', "ID='{$id}' AND PW='{$pw}'");
-if($DB->Count($rs) == 1) {
-    $member = $DB->Get($rs);
-
+$db = getRootDB();
+$member = $db->queryFirstRow('SELECT `NO`, `GRADE`, `QUIT` FROM `MEMBER` WHERE `ID` = %s AND `PW` = %s', $id, $pw);
+if($member) {
     if($member['QUIT'] != 'Y') {
-        $rs = $DB->Select('LOGIN', 'SYSTEM', "NO='1'");
-        $system = $DB->Get($rs);
+        $system = $db->queryFirstRow('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
 
         if($system['LOGIN'] == 'Y' || $member['GRADE'] >= 5) {
-            $SESSION->Login($member['NO'], $id);
-            $DB->Update('MEMBER', "CONMSG='{$conmsg}', IP='{$_SERVER['REMOTE_ADDR']}'", "NO='{$member['NO']}'");
+            $SESSION->Login($member['NO'], $id, $member['GRADE']);
+            $db->update('MEMBER', [
+                'CONMSG'=>$conmsg,
+                'IP'=>util::get_client_ip(true),
+            ], 'NO=%i', $member['NO']);
 
             $_SESSION['conmsg'] = $conmsg;//XXX: conmsg를 처리할 더 적절한 장소는?
 

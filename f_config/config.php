@@ -40,12 +40,9 @@ define('INC', 'Inc.php');
 define('APP', 'app');
 define('FUNC', 'func');
 define('DB', 'DB');
-define('DBS', 'DBS');
 define('SESSION', 'SESSION');
 define('CONFIG', 'config');
-define('SET', 'set');
 define('SETTING', 'SETTING');
-define('SETTINGS', 'SETTINGS');
 define('RETRIVAL', 'retrival');
 define('INSTALL', 'install');
 

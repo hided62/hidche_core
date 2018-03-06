@@ -14,28 +14,27 @@ $code = $_POST['code'];
 
 $response['result'] = 'FAIL';
 
+$db = getRootDB();
+
 $err = _Validation::CheckEmail($email);
 if($err == 1) {
     $response['result'] = 'FAIL';
     $response['msg'] = '이메일이 올바르지 않습니다!';
 } elseif($err == 0) {
-    $rs = $DB->Select('CODE', 'EMAIL', "EMAIL='{$email}'");
-    $count = $DB->Count($rs);
+    $cmpCode = $db->queryFirstField('SELECT CODE FROM EMAIL WHERE EMAIL = %s', $email);
 
-    if($count == 0) {
+    if(!$cmpCode) {
         $response['result'] = 'FAIL';
         $response['msg'] = '인증번호 전송 내역이 없습니다.';
-    } elseif($count == 1) {
-        $result = $DB->Get($rs);
-
-        if($result['CODE'] != $code) {
+    } else {
+        if($cmpCode != $code) {
             $response['result'] = 'FAIL';
             $response['msg'] = '인증번호가 일치하지 않습니다.';
         } else {
-            $DB->UpdateArray('EMAIL', array(
+            $db->update('EMAIL', [
                 'VERIFIED'=>  1,
                 'VRF_DATE'=> _Time::DatetimeNow()
-            ), "EMAIL='{$email}'");
+            ], 'EMAIL=%s', $email);
 
             $response['result'] = 'SUCCESS';
             $response['msg'] = '인증번호가 확인되었습니다.';

@@ -23,9 +23,9 @@ $email = $_POST['email'];
 $name = _String::NoSpecialCharacter($name);
 
 $response['type'] = $type;
+$db = getRootDB();
 
-$rs = $DB->Select('REG', 'SYSTEM', "NO='1'");
-$system = $DB->Get($rs);
+$system = $db->queryFirstRow('SELECT `REG` FROM `SYSTEM` WHERE `NO`=1');
 
 if($system['REG'] != 'Y') {
     $response['result'] = 'FAIL';
@@ -40,8 +40,7 @@ if($system['REG'] != 'Y') {
             $response['result'] = 'FAIL';
             $response['msg'] = '4~12글자로 입력해주세요.';
         } elseif($err == 0) {
-            $rs = $DB->Select('ID', 'MEMBER', "ID='{$id}'");
-            $count = $DB->Count($rs);
+            $count = $db->queryFirstField('SELECT COUNT(`ID`) FROM MEMBER WHERE ID = %s', $id);
             if($count == 0) {
                 $response['result'] = 'SUCCESS';
                 $response['msg'] = '사용할 수 있는 아이디입니다. ^^';
@@ -65,17 +64,6 @@ if($system['REG'] != 'Y') {
         } elseif($err == 0) {
             $response['result'] = 'SUCCESS';
             $response['msg'] = '사용할 수 있는 생년월일입니다. ^^';
-/*
-            $rs = $DB->Select('PID', 'MEMBER', "PID='{$pid}'");
-            $count = $DB->Count($rs);
-            if($count == 0) {
-                $response['result'] = 'SUCCESS';
-                $response['msg'] = '사용할 수 있는 주민번호입니다. ^^';
-            } else {
-                $response['result'] = 'FAIL';
-                $response['msg'] = '이미 가입된 주민번호입니다! 운영자에게 문의해보세요!';
-            }
-*/
         }
     } elseif($type == 2) {
         $err = _Validation::CheckName($name);
@@ -83,8 +71,7 @@ if($system['REG'] != 'Y') {
             $response['result'] = 'FAIL';
             $response['msg'] = '닉네임이 올바르지 않습니다!'." ($err)";
         } elseif($err == 0) {
-            $rs = $DB->Select('NAME', 'MEMBER', "NAME='{$name}'");
-            $count = $DB->Count($rs);
+            $count = $db->queryFirstField('SELECT COUNT(`NAME`) FROM MEMBER WHERE `NAME` = %s', $name);
             if($count == 0) {
                 $response['result'] = 'SUCCESS';
                 $response['name'] = $name;
@@ -100,8 +87,7 @@ if($system['REG'] != 'Y') {
             $response['result'] = 'FAIL';
             $response['msg'] = '이메일이 올바르지 않습니다!';
         } elseif($err == 0) {
-            $rs = $DB->Select('EMAIL', 'MEMBER', "EMAIL='{$email}'");
-            $count = $DB->Count($rs);
+            $count = $db->queryFirstField('SELECT COUNT(`NO`) FROM MEMBER WHERE EMAIL = %s', $email);
             if($count == 0) {
                 $response['result'] = 'SUCCESS';
                 $response['msg'] = $email.' 은(는) 사용할 수 있는 이메일입니다. ^^';

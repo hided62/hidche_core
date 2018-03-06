@@ -1,5 +1,9 @@
 <?php
-  require "lib.php";
+require "lib.php";
+
+if(getUserGrade(true) < 5){
+    die('관리자 아님');
+}
 ?>
 
 <html>

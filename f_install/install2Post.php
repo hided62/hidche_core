@@ -10,7 +10,7 @@ require_once(ROOT.W.F_FUNC.W.'class._Time.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 
 // 시스템정보 1개 등록
-$DB->InsertArray('SYSTEM', array(
+$db->insert('SYSTEM', array(
     'REG'     => 'N',
     'LOGIN'    => 'N',
     'CRT_DATE' => _Time::DatetimeNow(),
@@ -18,7 +18,7 @@ $DB->InsertArray('SYSTEM', array(
 ));
 
 // 운영자 1명 등록
-$DB->InsertArray('MEMBER', array(
+$db->insert('MEMBER', array(
     'ID'      => $id,
     'PW'      => $pw,
     'PID'     => '-',
@@ -31,9 +31,9 @@ $DB->InsertArray('MEMBER', array(
 
 
 // 부운영자 1명 등록
-$DB->InsertArray('MEMBER', array(
+$db->insert('MEMBER', array(
     'ID'      => 'viceadmin',
-    'PW'      => md5('12qw!@QWQPQP%12qw!@QWQPQP%'),
+    'PW'      => 'aZ',
     'PID'     => '-',
     'NAME'    => '부운영자',
     'EMAIL'   => 'nomail@nomail.com',

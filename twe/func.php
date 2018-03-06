@@ -64,11 +64,13 @@ function getUserID($forceExit=false){
  * @return int|null
  */
 function getUserGrade($forceExit=false){
-    $userID = getUserID($forceExit);
-    if(!$userID){
-        return null;
+    $userGrade = util::array_get($_SESSION['userGrade'], null);
+    if(!$userGrade && $forceExit){
+        header('Location:..');
+        die();
     }
-    return getRootDB()->queryFirstField('SELECT `GRADE` from `MEMBER` WHERE NO=%i', $userID);
+
+    return $userGrade;
 }
 
 /** 
@@ -76,7 +78,7 @@ function getUserGrade($forceExit=false){
  * 
  * @return int|null
  */
-function getGeneralID($forceExit=false){
+function getGeneralID($forceExit=false, $countLogin=true){
     $userID = getUserID();
     if(!$userID){ //유저id 없으면 어차피 의미 없음.
         return null;
@@ -97,7 +99,7 @@ function getGeneralID($forceExit=false){
         die();
     }
 
-    if($generalID){
+    if($generalID && $countLogin){
         //로그인으로 처리
         //XXX: 'get' 함수인데 update가 들어가있다.
         //TODO: 조금더 적절한 형태의 로그인 카운트를 생각해볼 것
@@ -230,13 +232,10 @@ function isSigned(){
 }
 
 
-function checkLimit($userlevel, $con, $conlimit) {
-    //TODO: 접속 제한의 기준을 새로 세울 것.
-    //운영자
-    if($userlevel >= 5) { return 0; }
-    //특회이면 3배
-    if($userlevel >= 3) { $conlimit *= 3; }
-    //접속률 이상이면 제한
+function checkLimit($con, $conlimit) {
+    if(getUserGrade()>=4){
+        return 0;
+    }
     if($con > $conlimit) {
         return 2;
     //접속제한 90%이면 경고문구
@@ -918,7 +917,7 @@ function generalInfo($connect, $no, $skin) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select block,userlevel,no,name,picture,imgsvr,injury,nation,city,troop,leader,leader2,power,power2,intel,intel2,explevel,experience,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,killturn,age,personal,special,specage,special2,specage2,mode,con,connect from general where no='$no'";
+    $query = "select block,no,name,picture,imgsvr,injury,nation,city,troop,leader,leader2,power,power2,intel,intel2,explevel,experience,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,killturn,age,personal,special,specage,special2,specage2,mode,con,connect from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -979,11 +978,6 @@ function generalInfo($connect, $no, $skin) {
 
     $remaining = substr($general['turntime'], 14, 2) - date('i');
     if($remaining < 0) { $remaining = 60 + $remaining; }
-
-    if($general['userlevel'] > 2) { $specUser = "<font color=cyan><b>특별</b></font>"; }
-    else                   { $specUser = "<font color=gray><b>일반</b></font>"; }
-    if($general['block'] > 0)     { $specUser = "<font color=red><b>블럭</b></font>"; }
-    $specUser = '';
 
     if($nation['color'] == "" || $skin < 1) { $nation['color'] = "000000"; }
 

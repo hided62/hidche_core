@@ -2,17 +2,13 @@
 require_once('_common.php');
 require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
-require_once(ROOT.W.F_CONFIG.W.'DBS'.PHP);
-require_once(ROOT.W.F_CONFIG.W.SETTINGS.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
 // 외부 파라미터
 
 $respone = [];
-
-$rs = $DB->Select('ID, PICTURE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
-
-$member = $DB->Get($rs);
+$db = getRootDB();
+$member = $db->queryFirstRow('SELECT ID, PICTURE FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
 
 
 
@@ -38,21 +34,18 @@ if($dt == $rf) {
     $response['msg'] = '1일 1회 변경 가능합니다!';
     $response['result'] = 'FAIL';
 } else {
-    $DB->Update('MEMBER', "PICTURE='', IMGSVR=0", "NO='{$SESSION->NoMember()}'");
-    if(file_exists($dest)){
-        @unlink($dest);
+    $db->update('MEMBER', [
+        'PICTURE'=>'',
+        'IMGSVR'=>0,
+    ], 'NO=%i', $SESSION->NoMember());
+    
+    //TODO: 각 세부 서버가 '열린 경우' 이미지를 갱신하도록 처리
+    //Token을 받아 처리하는 형식이면 가능할듯.
+    /*
+    for($i=0; $i < ; $i++) {
+                Update('general', "PICTURE='default.jpg', IMGSVR=0", "NPC=0 AND USER_ID='{$member['ID']}'");
     }
-
-    for($i=0; $i < $_serverCount; $i++) {
-        if($SETTINGS[$i]->IsExist()) {
-            $rs = $DBS[$i]->Select('IMG', 'game', "NO='1'");
-            $game = $DBS[$i]->Get($rs);
-            if($game['IMG'] > 0) {
-                // 엔장선택 제외하고 업데이트
-                $DBS[$i]->Update('general', "PICTURE='default.jpg', IMGSVR=0", "NPC=0 AND USER_ID='{$member['ID']}'");
-            }
-        }
-    }
+    */
 
     $response['msg'] = '제거에 성공했습니다!';
     $response['result'] = 'SUCCESS';

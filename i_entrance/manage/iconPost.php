@@ -1,8 +1,6 @@
 <?php
 require_once('_common.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
-require_once(ROOT.W.F_CONFIG.W.'DBS'.PHP);
-require_once(ROOT.W.F_CONFIG.W.SETTINGS.PHP);
 require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
 
 // 외부 파라미터
@@ -20,8 +18,8 @@ $imageType = $size[2];
 
 $availableImageType = array('.jpg'=>IMAGETYPE_JPEG, '.png'=>IMAGETYPE_PNG, '.gif'=>IMAGETYPE_GIF);
 
-$rs = $DB->Select('ID, PICTURE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
-$member = $DB->Get($rs);
+$db = getRootDB();
+$member = $db->queryFirstRow('SELECT `ID`, `PICTURE` FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
 
 
 $picName = $member['PICTURE'];
@@ -78,22 +76,14 @@ if(!is_uploaded_file($image['tmp_name'])) {
         $response['msg'] = '업로드에 실패했습니다!';
         $response['result'] = 'FAIL';
     } else {
-        if(file_exists($old_path)){
-            @unlink($old_path);
-        }
         $pic = "{$newPicName}?={$rf}";
-        $DB->Update('MEMBER', "PICTURE='{$pic}', IMGSVR=1", "NO='{$SESSION->NoMember()}'");
+        getRootDB()->update('MEMBER',[
+            'PICTURE' => $pic,
+            'IMGSVR' => 1
+        ], 'NO=%i', $SESSION->NoMember());
 
-        for($i=0; $i < $_serverCount; $i++) {
-            if($SETTINGS[$i]->IsExist()) {
-                $rs = $DBS[$i]->Select('IMG', 'game', "NO='1'");
-                $game = $DBS[$i]->Get($rs);
-                if($game['IMG'] > 0) {
-                    // 엔장선택 제외하고 업데이트
-                    $DBS[$i]->Update('general', "PICTURE='{$pic}', IMGSVR=1", "NPC=0 AND USER_ID='{$member['ID']}'");
-                }
-            }
-        }
+        //TODO: 각 서버에도 전파
+        //Update('general', "PICTURE='{$pic}', IMGSVR=1", "NPC=0 AND USER_ID='{$member['ID']}'");
 
         $response['msg'] = '업로드에 성공했습니다!';
         $response['result'] = 'SUCCESS';

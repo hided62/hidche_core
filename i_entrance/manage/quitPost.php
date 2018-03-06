@@ -11,17 +11,17 @@ $pw = $_POST['pw'];
 
 $response['result'] = 'FAIL';
 
-$rs = $DB->Select('PW', 'MEMBER', "NO='{$SESSION->NoMember()}'");
-$member = $DB->Get($rs);
+$db = getRootDB();
+$member = $db->queryFirstRow('SELECT `PW` FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
 
 if($member['PW'] != $pw) {
     $response['result'] = 'FAIL';
     $response['msg'] = '실패: 현재 비밀번호가 일치하지 않습니다.';
 } else {
-    $DB->UpdateArray('MEMBER', array(
+    $db->update('MEMBER', array(
         'QUIT'    =>  'Y',
         'REG_DATE'=> _Time::DatetimeNow()
-    ), "NO='{$SESSION->NoMember()}'");
+    ), 'NO=%i', $SESSION->NoMember());
 
 
     $SESSION->Logout();

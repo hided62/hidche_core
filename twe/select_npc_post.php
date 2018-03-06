@@ -81,9 +81,6 @@ if($admin['npcmode'] != 1) {
     exit;
 */
 } else {
-    //특회
-    $userlevel = $member['grade'];
-
     $query = "
         update general set
             name2='{$member['name']}',
@@ -94,7 +91,6 @@ if($admin['npcmode'] != 1) {
             mode=2,
             map=0,
             owner='$userID',
-            userlevel='{$userlevel}'
         where no='{$npcid}'
     ";
     MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");

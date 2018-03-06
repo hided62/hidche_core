@@ -10,11 +10,11 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select con,userlevel,turntime from general where owner='{$_SESSION['noMember']}'";
+$query = "select con,turntime from general where owner='{$_SESSION['noMember']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me['userlevel'], $me['con'], $admin['conlimit']);
+$con = checkLimit($me['con'], $admin['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
 if(!isset($type) || $type == 0) {
@@ -52,7 +52,6 @@ if(!isset($type) || $type == 0) {
             <option value=13>전특</option>
             <option value=14>연령</option>
             <option value=15>NPC</option>
-            <option value=16>특별</option>
         </select>
         <input type=submit value='정렬하기'></form>
     </td></tr>
@@ -80,7 +79,6 @@ switch($type) {
     case 13: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by special2 desc"; break;
     case 14: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by age desc"; break;
     case 15: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by npc desc"; break;
-    case 16: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by userlevel desc"; break;
 }
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);

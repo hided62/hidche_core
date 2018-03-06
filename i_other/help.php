@@ -236,10 +236,6 @@ if($category == 0) {
 <br>
 　<font class=bullet>☞</font> 생성할 캐릭터 이름을 입력합니다. 기본적으로는 닉네님으로 설정되어 있습니다. 매 기수마다 다른사람들이 알아보지 못하도록 숨어서 플레이(이하 잠입)하는 유저도 있습니다. 잠입의 묘미는 중수가 되면 저절로 아시게 될겁니다!<br>
 <br>
-<!--
-　<font class=bullet>☞</font> 서버 운영비를 지원하기 위해서 『참여』해주신 분들(이하 특별회원, 특회)은 특별히 전용 아이콘(이하 전콘)을 사용하실 수 있습니다. 체크를 하시면 됩니다.<br>
-<br>
--->
 　<font class=bullet>☞</font> 일반 장수 얼굴을 사용할때는 얼굴을 고릅니다. 각자의 개성을 나타낼 수 있도록 골라봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 장수의 성격을 선택합니다. 처음은 그냥 ????(랜덤)을 선택합니다.<br>
@@ -425,7 +421,6 @@ if($category == 0) {
 　<font class=bullet>☞</font> 내 장수 정보 표시<br>
 　<font class=bullet>☞</font> 캐릭터의 얼굴입니다.<br>
 　<font class=bullet>☞</font> 병력을 소유했을때, 해당 병력의 종류에 따른 그림<br>
-　<font class=bullet>☞</font> 회원분류 : 특별회원, 일반회원<br>
 　<font class=bullet>☞</font> 캐릭터 이름입니다.<br>
 　<font class=bullet>☞</font> 관직이 표시됩니다. 재야부터 군주까지 다양합니다.<br>
 　<font class=bullet>☞</font> 능력치에 따른 장수분류를 나타냅니다.<br>

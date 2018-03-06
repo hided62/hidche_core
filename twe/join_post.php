@@ -179,8 +179,6 @@ if($id_num) {
         $face = "default.jpg";
         $imgsvr = 0;
     }
-    //특회
-    $userlevel = $member['grade'];
 
     //성격 랜덤시
     if($character == 11) $character = rand()%10;
@@ -207,7 +205,6 @@ if($id_num) {
         'crew' => 0,
         'train' => 0,
         'atmos' => 0,
-        'userlevel' => $userlevel,
         'level' => 0,
         'turntime' => $turntime,
         'killturn' => 6,

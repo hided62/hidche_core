@@ -54,7 +54,7 @@ if(getBlockLevel() == 1 || getBlockLevel() == 3) {
 
 $conlimit = $db->queryFirstField('select conlimit from game where no=1');
 
-$me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`userlevel`,`con`,`picture`,`imgsvr` from `general` where `owner` = %i', getUserID());
+$me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr` from `general` where `owner` = %i', getUserID());
 
 if(!$me){
     resetSessionGeneralValues();
@@ -65,7 +65,7 @@ if(!$me){
     ]);
 }
 
-$con = checkLimit($me['userlevel'], $me['con'], $conlimit);
+$con = checkLimit($me['con'], $conlimit);
 if($con >= 2) { 
     returnJson([
         'result' => false,

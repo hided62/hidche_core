@@ -5,11 +5,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where owner='{$_SESSION['noMember']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
-
-if($me['userlevel'] < 5) {
+if(getUserGrade() < 5) {
     echo "
 <html>
 <head>

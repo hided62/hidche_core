@@ -2,8 +2,7 @@
 require_once('_common.php');
 require_once(ROOT.W.F_CONFIG.W.DB.PHP);
 
-$rs = $DB->Select('REG, LOGIN', 'SYSTEM', "NO='1'");
-$system = $DB->Get($rs);
+$system = getRootDB()->queryFirstRow('SELECT `REG`, `LOGIN` FROM `SYSTEM` WHERE `NO`=1');
 ?>
 
 <?php include(FINDPW.W.FRAME); ?>

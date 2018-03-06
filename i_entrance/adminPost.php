@@ -21,19 +21,20 @@ $notice = util::array_get($_POST['notice'], '');
 $server = util::array_get($_POST['server'], '');
 $select = util::array_get($_POST['select'], '');
 
+$db = getRootDB();
 
-$rs = $DB->Select('GRADE', 'MEMBER', "NO='{$SESSION->NoMember()}'");
-$member = $DB->Get($rs);
+$member = $db->queryFirstRow('SELECT `GRADE` FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
 
 function doServerModeSet($server, $select, &$response){
-    global $_serverDirs;
-    $serverDir = $_serverDirs[$server];
-    $serverPath = ROOT.W.$serverDir;
+    global $serverList;
+    $settingObj = $serverList[$server][2];
+
+    $serverDir = $settingObj->getShortName();
+    $serverPath = $settingObj->getBasePath();
     $realServerPath = realpath(dirname(__FILE__)).W.$serverPath;
 
     if($select == 0) { //폐쇄
         $templates = new League\Plates\Engine('templates');
-        
 
         //TODO: .htaccess가 서버 오픈에도 사용될 수 있으니 별도의 방법이 필요함
         $allow_ip = util::get_client_ip(false);
@@ -48,16 +49,16 @@ function doServerModeSet($server, $select, &$response){
 
         $htaccess = $templates->render('block_htaccess', 
             ['allow_ip' => $allow_ip, 'xforward_allow_ip' => $xforward_allow_ip]);
-        file_put_contents($realServerPath.'/.htaccess', $htaccess);
+        file_put_contents($serverPath.'/.htaccess', $htaccess);
     } elseif($select == 1) {//리셋
-        if(file_exists($realServerPath.W.D_SETTING.W.SET.PHP)){
-            @unlink($realServerPath.W.D_SETTING.W.SET.PHP);
+        if(file_exists($serverPath.W.D_SETTING.W.'conf.php')){
+            @unlink($serverPath.W.D_SETTING.W.'conf.php');
         }
         
-        $response['installURL'] = $serverPath.W."install.php";
+        $response['installURL'] = $serverDir.W."install.php";
     } elseif($select == 2) {//오픈
-        if(file_exists($realServerPath.'.htaccess')){
-            @unlink($realServerPath.'.htaccess');
+        if(file_exists($serverPath.'.htaccess')){
+            @unlink($serverPath.'.htaccess');
         }
     }
     return true;
@@ -72,7 +73,7 @@ function doAdminPost($member, $action, $notice, $server, $select){
     }
 
     if($action == 0) {
-        $DB->Update('SYSTEM', "NOTICE='{$notice}'", 'NO=1');
+        $db->update('SYSTEM', ['NOTICE'=>$notice], 'NO=1');
         $response['result'] = 'SUCCESS';
         return $response;
     } 
@@ -93,5 +94,4 @@ function doAdminPost($member, $action, $notice, $server, $select){
 
 $response = doAdminPost($member, $action, $notice, $server, $select);
 
-sleep(1);
 echo json_encode($response);

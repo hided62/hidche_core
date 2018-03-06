@@ -78,33 +78,3 @@ function Entrance_Logout() {
         )
     });
 }
-
-//TODO: 재설계
-function Entrance_Enter(serverDir) {
-    Popup_Wait(function() {
-        PostJSON(
-            HOME+I+ENTRANCE+W+"enterPost", {
-            },
-            function(response, textStatus) {
-                if(response.result == "SUCCESS") {
-                    var form = $("<form></form>");
-                    $(form).attr("action", HOME+serverDir);
-                    $(form).attr("method", "post");
-
-                    var id = $("<input type='hidden' name='id'>");
-                    $(id).attr("value", response.id);
-                    var pw = $("<input type='hidden' name='pw'>");
-                    $(pw).attr("value", response.pw);
-                    var conmsg = $("<input type='hidden' name='conmsg'>");
-                    $(conmsg).attr("value", response.conmsg);
-
-                    $(form).append(id).append(pw).append(conmsg);
-                    $("body").append(form);
-                    $(form).submit();
-                } else {
-                    Popup_WaitShow("입장 실패!");
-                }
-            }
-        )
-    });
-}

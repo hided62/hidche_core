@@ -5,11 +5,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select userlevel from general where owner='{$_SESSION['noMember']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
-
-if($me['userlevel'] < 5) {
+if(getUserGrade() < 5) {
     echo "
 <html>
 <head>
@@ -58,14 +54,14 @@ $admin = MYDB_fetch_array($result);
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
-        <td width=80 align=center rowspan=12>회원선택<br><br><font color=cyan>NPC</font><br><font color=skyblue>NPC유저</font><br><font color=blue>특별회원</font><br><font color=red>접속제한</font><br><b style=background-color:red;>블럭회원</b></td>
+        <td width=80 align=center rowspan=12>회원선택<br><br><font color=cyan>NPC</font><br><font color=skyblue>NPC유저</font><br><font color=red>접속제한</font><br><b style=background-color:red;>블럭회원</b></td>
         <td width=105 rowspan=12>
 <?php
 
 echo "
             <select name=genlist[] size=20 multiple style=color:white;background-color:black;font-size:13>";
 
-$query = "select no,name,npc,userlevel,block from general order by npc,binary(name)";
+$query = "select no,name,npc,block from general order by npc,binary(name)";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($result);
 
@@ -76,7 +72,6 @@ for($i=0; $i < $gencount; $i++) {
     if($general['npc']          >= 2) { $style .= "color:cyan;"; }
     elseif($general['npc']      == 1) { $style .= "color:skyblue;"; }
     if($general['con'] > $admin['conlimit']) { $style .= "color:red;"; }
-    if($general['userlevel'] > 2) { $style .= "color:blue;"; }
 
     echo "
                 <option value={$general['no']} $style>{$general['name']}</option>";
@@ -118,10 +113,6 @@ for($i=0; $i < 27; $i++) {
     <tr>
         <td align=center>이벤트2</td>
         <td><input type=submit name=btn value='보숙10000'><input type=submit name=btn value='궁숙10000'><input type=submit name=btn value='기숙10000'><input type=submit name=btn value='귀숙10000'><input type=submit name=btn value='차숙10000'></td>
-    </tr>
-    <tr>
-        <td align=center>특별회원</td>
-        <td><input type=submit name=btn value='특별회원 임명'><input type=submit name=btn value='특별회원 해제'></td>
     </tr>
     <tr>
         <td align=center>접속제한</td>

@@ -15,7 +15,6 @@ Entrance_AdminUpdate();
 
     <div id="Entrance_0002" class="bg0">
         <div id="Entrance_000200" class="bg2">회 원 관 리</div>
-        <input id="Entrance_000201" type="button" value="참 여 기 록">
         <input id="Entrance_000202" type="button" value="회 원 관 리">
         <input id="Entrance_000203" type="text" value="<?=$system['NOTICE'];?>">
         <input id="Entrance_000204" type="button" value="공 지 변 경">
@@ -30,19 +29,22 @@ Entrance_AdminUpdate();
         <div id="Entrance_000302">
 <?php
 $i = 0;
-foreach($_serverDirs as $serverDir) {
-    $serverPath = ROOT.W.$serverDir;
-    $realServerPath = realpath(dirname(__FILE__)).W.$serverPath;
+foreach($severList as $server) {
+
+    $settingObj = $server[2];
+
+    $serverPath = $settingObj->getBasePath();
+    $serverDir = $settingObj->getShortName();
     //TODO: .htaccess가 서버 오픈에도 사용될 수 있으니 별도의 방법이 필요함
     if(!is_dir($serverPath)){
         $state = '상태이상, 01';
     }
-    else if(!file_exists($realServerPath.'/index.php')){
+    else if(!file_exists($serverPath.'/index.php')){
         $state = '상태이상, 02';
     }
-    else if(file_exists($realServerPath.'/.htaccess')) {
+    else if(file_exists($serverPath.'/.htaccess')) {
         // 폐쇄중
-        if(file_exists($realServerPath.W.D_SETTING.W.SET.PHP)) {
+        if($settingObj->isExist()) {
             // 폐쇄중, 설정있음
             $state = '폐쇄중, 설정있음';
         } else {
@@ -51,7 +53,7 @@ foreach($_serverDirs as $serverDir) {
         }
     } else{
         // 오픈중
-        if(file_exists($realServerPath.W.D_SETTING.W.SET.PHP)) {
+        if($settingObj->isExist()) {
             // 서비스중
             $state = '서비스중';
         } else {
@@ -60,10 +62,6 @@ foreach($_serverDirs as $serverDir) {
         }
     } 
     
-    /*else {
-        // 이상함
-        $state = '상태이상, 03';
-    }*/
 ?>
             <div class="Entrance_ServerAdminList">
                 <div class="Entrance_ServerAdminListServer"><?=$serverDir;?></div>
@@ -79,7 +77,6 @@ foreach($_serverDirs as $serverDir) {
                 </div>
             </div>
 <?php
-    $i++;
 }
 ?>
         </div>
