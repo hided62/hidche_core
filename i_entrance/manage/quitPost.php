@@ -10,7 +10,7 @@ require_once(ROOT.'/f_config/SESSION.php');
 $pw = $_POST['pw'];
 
 $response['result'] = 'FAIL';
-
+//TODO: 즉시 탈퇴 처리하되, 
 $db = getRootDB();
 $member = $db->queryFirstRow('SELECT `PW` FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
 

@@ -21,10 +21,7 @@ $db->insert('SYSTEM', array(
 $db->insert('MEMBER', array(
     'ID'      => $id,
     'PW'      => $pw,
-    'PID'     => '-',
     'NAME'    => '운영자',
-    'EMAIL'   => 'nomail@nomail.com',
-    'IP'      => $_SERVER['REMOTE_ADDR'],
     'GRADE'   => 6,
     'REG_DATE' => _Time::DatetimeNow()
 ));
@@ -34,10 +31,7 @@ $db->insert('MEMBER', array(
 $db->insert('MEMBER', array(
     'ID'      => 'viceadmin',
     'PW'      => 'aZ',
-    'PID'     => '-',
     'NAME'    => '부운영자',
-    'EMAIL'   => 'nomail@nomail.com',
-    'IP'      => $_SERVER['REMOTE_ADDR'],
     'GRADE'   => 5,
     'REG_DATE' => _Time::DatetimeNow()
 ));
