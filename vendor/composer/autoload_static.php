@@ -15,8 +15,13 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
     public static $prefixLengthsPsr4 = array (
         'P' => 
         array (
+            'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'PHPMailer\\PHPMailer\\' => 20,
+        ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
         ),
         'L' => 
         array (
@@ -32,6 +37,10 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
     );
 
     public static $prefixDirsPsr4 = array (
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
@@ -39,6 +48,10 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
         'League\\Plates\\' => 
         array (
