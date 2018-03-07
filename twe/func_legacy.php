@@ -21,7 +21,6 @@ function printLimitMsg($turntime) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=css/common.css type=text/css>
 ";
-require('analytics.php');
 echo "
 </head>
 <body>

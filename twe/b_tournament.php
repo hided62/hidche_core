@@ -41,7 +41,7 @@ select { font-family:'굴림'; line-height:100%; }
 #bg1 { background-image:url(<?=$images;?>/back_green.jpg); }
 #bg2 { background-image:url(<?=$images;?>/back_blue.jpg); }
 </style>
-<?php require('analytics.php'); ?>
+
 </head>
 
 <body>

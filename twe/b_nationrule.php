@@ -11,7 +11,7 @@ increaseRefresh("국법", 1);
 <title>국법</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=css/common.css type=text/css>
-<?php require('analytics.php'); ?>
+
 </head>
 
 <body>

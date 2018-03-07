@@ -20,13 +20,11 @@ if($member['GRADE'] >= 6) {
 <div id="Entrance_00">
 
     <div id="Entrance_0007"><font color=orange size=6><?=$system['NOTICE'];?></font></div>
-    <div id="Entrance_0004">심의</div>
+    <div id="Entrance_0004"></div>
 <?php $banner_id = $member['ID']; ?>
     <div id="Entrance_0005">
-<?php include(ROOT.'/i_banner/banner.php'); ?>
     </div>
     <div id="Entrance_0006">
-<?php include(ROOT.'/i_banner/banner.php'); ?>
     </div>
 
     <div id="Entrance_0000" class="bg0">

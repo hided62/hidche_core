@@ -34,7 +34,7 @@ function out() {
     return confirm('정말 추방하시겠습니까?');
 }
 </script>
-<?php require('analytics.php'); ?>
+
 </head>
 
 <body>

@@ -49,7 +49,7 @@ function go(type) {
     }
 }
 </script>
-<?php require('analytics.php'); ?>
+
 </head>
 
 <body>

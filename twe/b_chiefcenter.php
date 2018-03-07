@@ -76,7 +76,7 @@ function turn(type) {
     else if(type == 1) location.replace('turn_pop_core.php');
 }
 </script>
-<?php require('analytics.php'); ?>
+
 </head>
 
 <body>

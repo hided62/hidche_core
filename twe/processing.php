@@ -142,7 +142,6 @@ $(function(){
 <link href="css/main.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet">
 ';
-require('analytics.php');
 echo '
 </head>
 <body>

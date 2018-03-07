@@ -10,13 +10,11 @@ $system = getRootDB()->queryFirstRow('SELECT `REG`, `LOGIN` FROM `SYSTEM` WHERE 
 
 <div id="Login_00">
 
-    <div id="Login_0000">심의</div>
+    <div id="Login_0000"></div>
 <?php $banner_id = 'none'; ?>
     <div id="Login_0002">
-<?php include(ROOT.'/i_banner/banner.php'); ?>
     </div>
     <div id="Login_0003">
-<?php include(ROOT.'/i_banner/banner.php'); ?>
     </div>
 
     <div class="Login_TopBottomButtons">

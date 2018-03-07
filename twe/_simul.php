@@ -1106,7 +1106,7 @@ select { background-color:black;color:white; }
 input { background-color:black;color:white; }
 -->
 </style>
-<?php require('analytics.php'); ?>
+
 </head>
 
 <body>

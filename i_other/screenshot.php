@@ -36,7 +36,7 @@ font { font-family:'맑은 고딕'; line-height:110%; }
 
 -->
 </style>
-<?php require('../i_banner/analytics.php'); ?>
+
     </head>
 
 <body>

@@ -8,7 +8,7 @@ header ("Location:i_entrance/entrance.php");
 
     <head>
         <title>삼국지 모의전투 유기체서버</title>
-<?php require('i_banner/analytics.php'); ?>
+
     </head>
 
     <frameset name="index" frameborder="0" border="0">

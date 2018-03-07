@@ -69,7 +69,7 @@ $(function(){
 <link href="css/normalize.css" rel="stylesheet">
 <link href="css/common.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet">
-<?php require('analytics.php'); ?>
+
 </head>
 
 <body>

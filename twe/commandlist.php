@@ -49,7 +49,7 @@ function myclock() {
     window.setTimeout("myclock();", 1000);
 }
 </script>
-<?php require('analytics.php'); ?>
+
 </head>
 <body OnLoad='myclock()'>
 <?php
