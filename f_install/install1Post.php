@@ -12,11 +12,11 @@ $mailPw = $_POST['mailPw'];
 $mailAddr = $_POST['mailAddr'];
 
 
-require_once(ROOT.W.F_FUNC.W.'class._DB.php');
-require_once(ROOT.W.F_FUNC.W.'class._String.php');
+require_once(ROOT.'/f_func/class._DB.php');
+require_once(ROOT.'/f_func/class._String.php');
 
-if(file_exists(ROOT.W.D_SETTING.W.'conf.php')) ErrorToScreen('이미 설치되어 있습니다. 재설치하려면 설정 파일을 지우세요.');
-if(fileperms(ROOT.W.D_SETTING.W) != 040707 && fileperms(ROOT.W.D_SETTING.W) != 040777) ErrorToScreen('설정 디렉토리 권한을 707 또는 777로 설정해주세요.');
+if(file_exists(ROOT.'/d_setting/conf.php')) ErrorToScreen('이미 설치되어 있습니다. 재설치하려면 설정 파일을 지우세요.');
+if(fileperms(ROOT.'/d_setting') != 040707 && fileperms(ROOT.'/d_setting') != 040777) ErrorToScreen('설정 디렉토리 권한을 707 또는 777로 설정해주세요.');
 
 $db = getRootDB();
 //로그 등 삭제
@@ -46,10 +46,10 @@ foreach($querys as $query) {
 }
 
 // 파일로 DB 정보 저장
-$file = @fopen(ROOT.W.D_SETTING.W.'conf.php', 'w') or ErrorToScreen('설정 실패. 디렉토리의 퍼미션을 707로 주십시요');
+$file = @fopen(ROOT.'/d_setting/conf.php', 'w') or ErrorToScreen('설정 실패. 디렉토리의 퍼미션을 707로 주십시요');
 @fwrite($file, "<?php /*\n{$dbHost}\n{$dbId}\n{$dbPw}\n{$dbName}\n{$mailHost}\n{$mailPort}\n{$mailId}\n{$mailPw}\n{$mailAddr}\n */\n") or ErrorToScreen('설정 실패. 디렉토리의 퍼미션을 707로 주십시요');
 @fclose($file);
-@chmod(ROOT.W.D_SETTING.W.'conf.php', 0604);
+@chmod(ROOT.'/d_setting/conf.php', 0604);
 
 ?>
 

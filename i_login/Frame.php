@@ -1,6 +1,6 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+require_once(ROOT.'/f_config/DB.php');
 
 $system = getRootDB()->queryFirstRow('SELECT `REG`, `LOGIN` FROM `SYSTEM` WHERE `NO`=1');
 ?>
@@ -13,10 +13,10 @@ $system = getRootDB()->queryFirstRow('SELECT `REG`, `LOGIN` FROM `SYSTEM` WHERE 
     <div id="Login_0000">심의</div>
 <?php $banner_id = 'none'; ?>
     <div id="Login_0002">
-<?php include(ROOT.W.'i_banner/banner.php'); ?>
+<?php include(ROOT.'/i_banner/banner.php'); ?>
     </div>
     <div id="Login_0003">
-<?php include(ROOT.W.'i_banner/banner.php'); ?>
+<?php include(ROOT.'/i_banner/banner.php'); ?>
     </div>
 
     <div class="Login_TopBottomButtons">

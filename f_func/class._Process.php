@@ -1,6 +1,6 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._Lock.php');
+require_once(ROOT.'/f_func/class._Lock.php');
 
 class _Process {
     private static $mutexLog = false;

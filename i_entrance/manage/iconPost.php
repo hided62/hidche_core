@@ -1,7 +1,7 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
-require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
+require_once(ROOT.'/f_config/DB.php');
+require_once(ROOT.'/f_config/SESSION.php');
 
 // 외부 파라미터
 // $_FILES['picture'] : 사진파일
@@ -33,7 +33,7 @@ else{
     $dt = '00000000';
 }
 
-$old_path = ROOT.W.D."pic/{$picName}";
+$old_path = ROOT.'/d_pic/'.$picName;
 
 
 $rf = date('Ymd');
@@ -65,7 +65,7 @@ if(!is_uploaded_file($image['tmp_name'])) {
 
     while(true){
         $newPicName = dechex(rand(0x000000f,0xfffffff)).$newExt; 
-        $dest = ROOT.W.D."pic/{$newPicName}";
+        $dest = ROOT.'/d_pic/'.$newPicName;
         if(file_exists($dest)){
             continue;
         }
@@ -95,8 +95,8 @@ sleep(1);
 /*
 echo "<script type='text/javascript'>
     alert('{$response['msg']}');
-    location.replace('".ROOT.W.I.ENTRANCE.W.ENTRANCE.PHP."');
+    location.replace('".ROOT.'/i_entrance/entrance.php'."');
 </script>";
 */
-echo ROOT.W.I.ENTRANCE.W.ENTRANCE.PHP;//TODO:debug all and replace
+echo ROOT.'/i_entrance/entrance.php';//TODO:debug all and replace
 

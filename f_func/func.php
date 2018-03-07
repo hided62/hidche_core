@@ -1,6 +1,13 @@
 <?php
 require(__dir__.'/../vendor/autoload.php');
 
+function SetHeaderNoCache(){
+    if(!headers_sent()) {
+        header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+    }
+}
+
 function CustomHeader() {
     //FIXME: 왜 Contect-Type이 text/html로 고정이지?!
     if(!headers_sent()) {

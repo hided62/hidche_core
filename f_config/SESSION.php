@@ -1,14 +1,14 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._Session.php');
+require_once(ROOT.'/f_func/class._Session.php');
 
 $SESSION = new _Session();
 
 if($SESSION->IsLoggedIn() == false) {
-//    echo('<script>window.top.entrance.location.replace("'.ROOT.W.'indexLogin.php");</script>');
-    header ("Location: ".ROOT.W.'i_login/login.php');
+//    echo('<script>window.top.entrance.location.replace("'.ROOT.'/indexLogin.php");</script>');
+    header ("Location: ".ROOT.'/i_login/login.php');
     exit(1);
-    //echo('<script>window.top.entrance.location.replace("'.ROOT.W.'i_login/login.php");</script>');
+    //echo('<script>window.top.entrance.location.replace("'.ROOT.'/i_login/login.php");</script>');
     //exit(1);
 }
 

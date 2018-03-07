@@ -1,6 +1,6 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._Setting.php');
+require_once(ROOT.'/f_func/class._Setting.php');
 
 define('POPUP', 'popup');
 
@@ -18,9 +18,9 @@ define('MANAGE', 'manage');
 define('ICON', 'icon');
 
 $serverList = [
-    'che'=>['체', 'white', new _Setting(__DIR__.ROOT.W.'che')],
-    'kwe'=>['퀘', 'yellow', new _Setting(__DIR__.ROOW.W.'kwe')],
-    'pwe'=>['풰', 'orange', new _Setting(__DIR__.ROOW.W.'pwe')],
-    'twe'=>['퉤', 'magenta', new _Setting(__DIR__.ROOW.W.'twe')],
-    'hwe'=>['훼', 'red', new _Setting(__DIR__.ROOW.W.'hwe')]
+    'che'=>['체', 'white', new _Setting(__DIR__.ROOT.'/che')],
+    'kwe'=>['퀘', 'yellow', new _Setting(__DIR__.ROOT.'/kwe')],
+    'pwe'=>['풰', 'orange', new _Setting(__DIR__.ROOT.'/pwe')],
+    'twe'=>['퉤', 'magenta', new _Setting(__DIR__.ROOT.'/twe')],
+    'hwe'=>['훼', 'red', new _Setting(__DIR__.ROOT.'/hwe')]
 ];

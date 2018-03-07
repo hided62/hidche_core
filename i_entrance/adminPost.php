@@ -1,8 +1,8 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
-require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
+require_once(ROOT.'/f_func/class._JSON.php');
+require_once(ROOT.'/f_config/DB.php');
+require_once(ROOT.'/f_config/SESSION.php');
 
 use utilphp\util as util;
 
@@ -51,8 +51,8 @@ function doServerModeSet($server, $select, &$response){
             ['allow_ip' => $allow_ip, 'xforward_allow_ip' => $xforward_allow_ip]);
         file_put_contents($serverPath.'/.htaccess', $htaccess);
     } elseif($select == 1) {//리셋
-        if(file_exists($serverPath.W.D_SETTING.W.'conf.php')){
-            @unlink($serverPath.W.D_SETTING.W.'conf.php');
+        if(file_exists($serverPath.'/d_setting/conf.php')){
+            @unlink($serverPath.'/d_setting/conf.php');
         }
         
         $response['installURL'] = $serverDir.W."install.php";

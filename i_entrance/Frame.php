@@ -1,7 +1,7 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
-require_once(ROOT.W.F_CONFIG.W.SESSION.PHP);
+require_once(ROOT.'/f_config/DB.php');
+require_once(ROOT.'/f_config/SESSION.php');
 
 $db = getRootDB();
 $system = $db->queryFirstRow('SELECT `NOTICE` FROM `SYSTEM` WHERE `NO`=1');
@@ -23,10 +23,10 @@ if($member['GRADE'] >= 6) {
     <div id="Entrance_0004">심의</div>
 <?php $banner_id = $member['ID']; ?>
     <div id="Entrance_0005">
-<?php include(ROOT.W.'i_banner/banner.php'); ?>
+<?php include(ROOT.'/i_banner/banner.php'); ?>
     </div>
     <div id="Entrance_0006">
-<?php include(ROOT.W.'i_banner/banner.php'); ?>
+<?php include(ROOT.'/i_banner/banner.php'); ?>
     </div>
 
     <div id="Entrance_0000" class="bg0">

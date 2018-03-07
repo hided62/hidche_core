@@ -35,7 +35,7 @@ require_once('_common.php');
     </div>
     <div id="EntranceManage_0016">
         <input id="EntranceManage_001600" type="text">
-        <form id="formIcon" action="<?=ROOT.W.I.ENTRANCE.W.MANAGE.W;?>iconPost.php" method="POST" enctype="multipart/form-data">
+        <form id="formIcon" action="<?=ROOT?>/i_entrance/manage/iconPost.php" method="POST" enctype="multipart/form-data">
         <input id="EntranceManage_001601" name="picture" type="file" size="15">
         </form>
         <input id="EntranceManage_001602" type="button" value="전콘변경">

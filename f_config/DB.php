@@ -1,6 +1,6 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_CONFIG.W.SETTING.PHP);
+require_once(ROOT.'/f_config/SETTING.php');
 
 if($SETTING->isExist()) {
     require_once($SETTING->getSettingFile());

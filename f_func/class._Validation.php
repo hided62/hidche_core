@@ -1,6 +1,6 @@
 <?php
 require(__dir__.'/../vendor/autoload.php');
-require_once(ROOT.W.F_FUNC.W.'class._String.php');
+require_once(ROOT.'/f_func/class._String.php');
 
 use utilphp\util as util;
 

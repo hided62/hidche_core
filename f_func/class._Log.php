@@ -1,17 +1,17 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
+require_once(ROOT.'/f_func/class._JSON.php');
 
 class _Log {
     private static $flagLog = true;
 
     public static function SetLog($type, $log) {
-        $filename = ROOT.W.D_LOG.W.$type."Log.txt";
+        $filename = ROOT.'/d_log/'.$type."Log.txt";
         if(_Log::$flagLog) AppendToFile($filename, $log."\n");
     }
 
     public static function GetWorldLog($type, $size=10) {
-        $filename = ROOT.W.D_LOG.W.$type."Log.txt";
+        $filename = ROOT.'/d_log/'.$type."Log.txt";
         if(_Log::$flagLog) {
             $content = ReadToFileBackward($filename, $size*150);
             $logs = explode("\n", $content);

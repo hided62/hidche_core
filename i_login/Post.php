@@ -1,9 +1,9 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
-require_once(ROOT.W.F_FUNC.W.'class._Session.php');
-require_once(ROOT.W.F_FUNC.W.'class._String.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+require_once(ROOT.'/f_func/class._JSON.php');
+require_once(ROOT.'/f_func/class._Session.php');
+require_once(ROOT.'/f_func/class._String.php');
+require_once(ROOT.'/f_config/DB.php');
 
 use utilphp\util as util;
 

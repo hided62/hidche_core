@@ -1,11 +1,11 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.W.F_FUNC.W.'class._JSON.php');
-require_once(ROOT.W.F_FUNC.W.'class._String.php');
-require_once(ROOT.W.F_FUNC.W.'class._Validation.php');
-require_once(ROOT.W.F_FUNC.W.'class._Time.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
-require_once(ROOT.W.F_CONFIG.W.'MAIL'.PHP);
+require_once(ROOT.'/f_func/class._JSON.php');
+require_once(ROOT.'/f_func/class._String.php');
+require_once(ROOT.'/f_func/class._Validation.php');
+require_once(ROOT.'/f_func/class._Time.php');
+require_once(ROOT.'/f_config/DB.php');
+require_once(ROOT.'/f_config/MAIL.php');
 
 // 외부 파라미터
 // $_POST['email'] : 이메일

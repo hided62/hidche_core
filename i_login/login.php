@@ -10,21 +10,21 @@ require_once('_common.php');
         <title>로그인</title>
 
         <!-- 스타일 -->
-        <link type="text/css" rel="stylesheet" href=<?=ROOT.W.F_CONFIG.W.CONFIG.CSS;?>>
-        <link type="text/css" rel="stylesheet" href=<?=ROOT.W.F_CONFIG.W.APP.CSS;?>>
+        <link type="text/css" rel="stylesheet" href='../f_config/config.css'>
+        <link type="text/css" rel="stylesheet" href='../f_config/app.css'>
 
-        <link type="text/css" rel="stylesheet" href=<?=ROOT.W.I.POPUP.W.STYLE;?>>
-        <link type="text/css" rel="stylesheet" href=<?=ROOT.W.I.LOGIN.W.STYLE;?>>
+        <link type="text/css" rel="stylesheet" href='../i_popup/Style.css'>
+        <link type="text/css" rel="stylesheet" href='../i_login/Style.css'>
 
         <!-- 액션 -->
-        <script type="text/javascript" src=<?=ROOT.W.E_LIB.W.JQUERY;?>></script>
-        <script type="text/javascript" src=<?=ROOT.W.E_LIB.W.MD5;?>></script>
-        <script type="text/javascript" src=<?=ROOT.W.F_CONFIG.W.CONFIG.JS;?>></script>
-        <script type="text/javascript" src=<?=ROOT.W.F_CONFIG.W.APP.JS;?>></script>
-        <script type="text/javascript" src=<?=ROOT.W.F_FUNC.W.FUNC.JS;?>></script>
+        <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
+        <script type="text/javascript" src='../e_lib/md5-min.js'></script>
+        <script type="text/javascript" src='../f_config/config.js'></script>
+        <script type="text/javascript" src='../f_config/app.js'></script>
+        <script type="text/javascript" src='../f_func/func.js'></script>
 
-        <script type="text/javascript" src=<?=ROOT.W.I.POPUP.W.ACTION;?>></script>
-        <script type="text/javascript" src=<?=ROOT.W.I.LOGIN.W.ACTION;?>></script>
+        <script type="text/javascript" src='../i_popup/Action.js'></script>
+        <script type="text/javascript" src='../i_login/Action.js'></script>
         <script type="text/javascript">
 $(document).ready(Login);
 
@@ -41,10 +41,9 @@ function Login() {
     Login_Update();
 }
         </script>
-<?php require('../i_banner/analytics.php'); ?>
     </head>
 
-    <body <?=BLOCKBODY;?>>
+    <body>
     </body>
 
 </html>

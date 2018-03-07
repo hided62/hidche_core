@@ -6,8 +6,8 @@ $id = $_POST['id'];
 $pw = $_POST['pw'];
 $pw = md5($pw.$pw);
 
-require_once(ROOT.W.F_FUNC.W.'class._Time.php');
-require_once(ROOT.W.F_CONFIG.W.DB.PHP);
+require_once(ROOT.'/f_func/class._Time.php');
+require_once(ROOT.'/f_config/DB.php');
 
 // 시스템정보 1개 등록
 $db->insert('SYSTEM', array(
