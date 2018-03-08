@@ -33,8 +33,8 @@ define('PHP', '.php');
 define('FRAME', 'Frame.php');
 define('STYLE', 'Style.css');
 define('ACTION', 'Action.js');
-define('POST', 'Post.php');
-define('GET', 'Get.php');
+//define('POST', 'Post.php');
+//define('GET', 'Get.php');
 define('INC', 'Inc.php');
 
 define('APP', 'app');

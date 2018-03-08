@@ -7,5 +7,3 @@ if($SETTING->isExist()) {
 } else {
     Error('설정 파일이 없습니다. 설정을 먼저 하십시요!');
 }
-
-

@@ -7,8 +7,10 @@ class _Setting {
     private $exist = 0;
 
     public function __construct($basepath) {
-        $this->basepath = realpath($basepath);
-        $this->settingFile = realpath($basepath.D_SETTING.W.'conf.php');
+        
+        $basepath = realpath($basepath);
+        $this->basepath = $basepath;
+        $this->settingFile = realpath($basepath.'/d_setting/conf.php');
 
         if(file_exists($this->settingFile)) {
             $this->exist = 1;
