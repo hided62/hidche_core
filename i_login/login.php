@@ -1,5 +1,12 @@
 <?php
 require_once('_common.php');
+require_once(ROOT.'/f_func/class._Session.php');
+
+$SESSION = new _Session();
+if($SESSION->IsLoggedIn()){
+    header(ROOT.'/i_entrance/Frame.php');
+    die();
+}
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +50,7 @@ function Login() {
         </script>
     </head>
 
-    <body>
+    <body style="background-image:url('<?=IMAGES.'/back7.jpg'?>');">
     </body>
 
 </html>

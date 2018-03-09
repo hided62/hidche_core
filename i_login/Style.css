@@ -3,14 +3,32 @@
 @import url("findpw/Style.css");
 @import url("join/Style.css");
 
+html{
+    width:100%;
+    height:100%;
+}
+
+body{
+    width:100%;
+    height:100%;
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-attachment: fixed;
+    background-position:center bottom;
+}
+
 #Login_00 {
-    width: 1024px; height: 815px;
+    width: 1024px; max-height: 100%;
     position: absolute; top: 0px; left: 50%;
     margin-left: -512px; /* DIV박스 크기의 1/2로 마진을 잡아줍니다. */
 }
 
-.Login_TopBottomButtons {
-    width: 1024px; height: 20px;
+.Login_TopButtons, .Login_BottomButtons {
+    width: 1024px; 
+    height: 20px;
+    position:fixed;
+    left:50%;
+    margin-left:-512px;
 }
 
 .Login_TopBottomButton {
@@ -20,30 +38,30 @@
     font-weight: bold;
 }
 
+.Login_TopBottons{
+    top:0;
+}
+
+.Login_BottomButtons{
+    bottom:0;
+}
+
 #Login_0000 {
     width: 52px; height: 52px;
     position: absolute; top: 30px; left: 10px;
-    border: 1px solid white;
-}
-
-#Login_0002 {
-    width: 160px; height: 600px;
-    position: absolute; top: 100px; left: -170px;
-}
-
-#Login_0003 {
-    width: 160px; height: 600px;
-    position: absolute; top: 100px; left: 1034px;
 }
 
 #Login_0001 {
     width: 1024px; height: 768px;
-    background-color: black; background-position: center; background-repeat: no-repeat;
 }
 
 #Login_000100 {
+    position:fixed;
     width: 350px; height: 230px;
-    position: absolute; left: 337px; top: 269px;
+    left:50%;
+    margin-left:-175px;
+    top:50%;
+    margin-top:-115px;
 }
 
 #Login_00010000 {
@@ -131,6 +149,8 @@
 
 #Login_000101 {
     width: 280px; height: 40px;
-    position: absolute; left: 700px; top: 720px;
-    padding-top: 10px;
+    position: fixed;
+    left:50%;
+    margin-left:150px;
+    bottom:60px;
 }
