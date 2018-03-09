@@ -152,6 +152,18 @@ getRootDB()->insert('member',[
     'name'=>$nickname,
     'reg_date'=>$nowDate
 ]);
+$userID = getRootDB()->insertId();
+
+getRootDB()->insert('member_log', [
+    'member_no'=>$userID,
+    'date'=>$nowDate,
+    'action_type'=>'reg',
+    'action'=>json_encode([
+        'type'=>'kakao',
+        'id'=>$kakaoID,
+        'email'=>$email, 'name'=>$nickname
+    ], JSON_UNESCAPED_UNICODE)
+]);
 
 returnJson([
     'result'=>true,
