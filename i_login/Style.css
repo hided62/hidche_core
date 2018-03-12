@@ -46,6 +46,25 @@ body{
     bottom:0;
 }
 
+
+#login_form{
+    position:fixed;
+    width:350px; height:230px;
+    left:50%;
+    margin-left:-550px;
+    top:50%;
+    margin-top:-115px;
+}
+
+#login_form_title{
+    padding:2px;
+    text-align:center;
+}
+
+#login_button{
+    width:100%;
+}
+
 #Login_0000 {
     width: 52px; height: 52px;
     position: absolute; top: 30px; left: 10px;
@@ -54,6 +73,7 @@ body{
 #Login_0001 {
     width: 1024px; height: 768px;
 }
+
 
 #Login_000100 {
     position:fixed;
