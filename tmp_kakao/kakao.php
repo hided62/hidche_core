@@ -3,11 +3,6 @@ require(__DIR__.'/conf.php');
 //https://devtalk.kakao.com/t/php-rest-api/14602/3
 //header('Content-Type: application/json; charset=utf-8');
 
-define('GET', 'GET');
-define('POST', 'POST');
-define('DELETE', 'DELETE');
-
-
 ///////////////////////////////////////////////////////////////////////////////
 
 
@@ -80,7 +75,7 @@ class Kakao_REST_API_Helper
     );
   }
 
-  public function request($api_path, $params = '', $http_method = GET)
+  public function request($api_path, $params = '', $http_method = 'GET')
   {
     if ($api_path != Story_Path::$UPLOAD_MULTI && is_array($params)) { // except for uploading
       $params = http_build_query($params);
@@ -88,7 +83,7 @@ class Kakao_REST_API_Helper
 
     $requestUrl = ($api_path == '/oauth/token' ? self::$OAUTH_HOST : self::$API_HOST) . $api_path;
 
-    if (($http_method == GET || $http_method == DELETE) && !empty($params)) {
+    if (($http_method == 'GET' || $http_method == 'DELETE') && !empty($params)) {
       $requestUrl .= '?'.$params;
     }
 
@@ -120,13 +115,13 @@ class Kakao_REST_API_Helper
       $opts[CURLOPT_HTTPHEADER] = $headers;
     }
 
-    if ($http_method == POST) {
+    if ($http_method == 'POST') {
       $opts[CURLOPT_POST] = true;
       if ($params) {
         $opts[CURLOPT_POSTFIELDS] = $params;
       }
-    } else if ($http_method == DELETE) {
-      $opts[CURLOPT_CUSTOMREQUEST] = DELETE;
+    } else if ($http_method == 'DELETE') {
+      $opts[CURLOPT_CUSTOMREQUEST] = 'DELETE';
     }
 
     $curl_session = curl_init();
@@ -156,7 +151,7 @@ class Kakao_REST_API_Helper
   ///////////////////////////////////////////////////////////////
 
   private function _create_or_refresh_access_token($params) {
-    return $this->request(User_Management_Path::$TOKEN, $params, POST);
+    return $this->request(User_Management_Path::$TOKEN, $params, 'POST');
   }
 
   public function create_access_token($authorization_code){
@@ -208,7 +203,7 @@ class Kakao_REST_API_Helper
   }
 
   public function update_profile($params) {
-    return $this->request(User_Management_Path::$UPDATE_PROFILE, $params, POST);
+    return $this->request(User_Management_Path::$UPDATE_PROFILE, $params, 'POST');
   }
 
   public function user_ids() {
