@@ -3,7 +3,7 @@ require(__dir__.'/../vendor/autoload.php');
 
 /**
  * 비밀번호 해시용 전역 SALT 반환
- * 비밀번호는 sha512(sha512(password|globalsalt)|usersalt); 순임
+ * 비밀번호는 sha512(usersalt|sha512(globalsalt|password|globalsalt)|usersalt); 순임
  * 
  * @return string
  */

@@ -86,6 +86,7 @@ $(document).ready( function () {
     $( "#main_form" ).submit(function(){
         var raw_password = $('#password').val();
         var salt = $('#global_salt').val();
+        console.log(salt + raw_password + salt);
         var hash_pw = sha512(salt + raw_password + salt);
 
         $.post({

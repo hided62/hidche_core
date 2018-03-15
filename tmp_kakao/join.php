@@ -97,7 +97,7 @@ if($canJoin != 'Y'){
                         </div>
                     </div>
 
-                    <input type="hidden" id="input_hash_salt1" name="global_salt" value="<?=getGlobalSalt()?>">
+                    <input type="hidden" id="global_salt" name="global_salt" value="<?=getGlobalSalt()?>">
                     <div class="form-group row">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
