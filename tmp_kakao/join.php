@@ -31,9 +31,9 @@ if($canJoin != 'Y'){
     <script src="../e_lib/bootstrap.bundle.min.js"></script>
     <script src="../e_lib/jquery.validate.min.js"></script>
     <script src="../e_lib/sha512.min.js"></script>
-    <script src="join.js"></script>
+    <script src="../js/join.js"></script>
     <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="join.css">
+    <link type="text/css" rel="stylesheet" href="../css/login.css">
 </head>
 <body>
     <div class="container">
@@ -110,11 +110,5 @@ if($canJoin != 'Y'){
         </div>
         </div>
     </div>
-    <?=_Time::DatetimeNow()?>
-    <?=util::array_get($_SESSION['access_token'])?><br>
-<?=util::array_get($_SESSION['expires'])?><br>
-<?=util::array_get($_SESSION['refresh_token'])?><br>
-<?=util::array_get($_SESSION['refresh_token_expires'])?><br>
-    <?=$_SESSION['tmpx']?>
 </body>
 </html>
