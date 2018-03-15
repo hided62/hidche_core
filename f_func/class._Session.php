@@ -1,17 +1,18 @@
 <?php
 require(__dir__.'/../vendor/autoload.php');
+use utilphp\util as util;
 
 class _Session {
     public function __construct() {
-        session_cache_limiter('nocache, must_revalidate');
+        //session_cache_limiter('nocache, must_revalidate');
 
         // 세션 변수의 등록
         session_start();
 
         //첫 등장
 
-        if(!isset($_SESSION['ip']) || $_SESSION['ip'] == '') {
-            $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+        if(!util::array_get($_SESSION['ip'])) {
+            $_SESSION['ip'] = util::get_client_ip(true);
             $_SESSION['time'] = time();
         }
     }
@@ -27,7 +28,7 @@ class _Session {
     public function Login($noMember, $idMember, $grade) {
         $_SESSION['noMember'] = $noMember;
         $_SESSION['p_id'] = $idMember;
-        $_SESSION['ip'] = $_SERVER['REMOTE_ADDR'];
+        $_SESSION['ip'] = util::get_client_ip(true);
         $_SESSION['time'] = time();
         $_SESSION['userGrade'] = $grade;
     }
@@ -35,6 +36,8 @@ class _Session {
     public function Logout() {
         unset($_SESSION['noMember']);
         unset($_SESSION['p_id']);
+        unset($_SESSION['time']);
+        unset($_SESSION['userGrade']);
     }
 
     public function IsLoggedIn() {

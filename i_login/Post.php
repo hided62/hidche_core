@@ -1,6 +1,5 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.'/f_func/class._JSON.php');
 require_once(ROOT.'/f_func/class._Session.php');
 require_once(ROOT.'/f_func/class._String.php');
 require_once(ROOT.'/f_config/DB.php');
@@ -51,7 +50,6 @@ if($member) {
     $response['msg'] = '로그인 실패! ID, PW를 확인해주세요.';
 }
 
-sleep(1);
 echo json_encode($response);
 
 

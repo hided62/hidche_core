@@ -1,6 +1,5 @@
 <?php
 require_once('_common.php');
-require_once(ROOT.'/f_func/class._JSON.php');
 
 class _Log {
     private static $flagLog = true;
