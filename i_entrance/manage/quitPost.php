@@ -23,7 +23,7 @@ if($member['PW'] != $pw) {
     ), 'NO=%i', $SESSION->NoMember());
 
 
-    $SESSION->Logout();
+    $SESSION->logout();
 
     $response['result'] = 'SUCCESS';
     $response['msg'] = "정상적으로 탈퇴신청 되었습니다.";

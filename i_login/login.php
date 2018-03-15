@@ -4,7 +4,7 @@ require_once(ROOT.'/f_func/class._Session.php');
 require_once(ROOT.'/f_config/DB.php');
 require_once(ROOT.'/tmp_kakao/conf.php');//TODO: kakao 가입 정식 적용하면 코드 변경
 $SESSION = new _Session();
-if($SESSION->IsLoggedIn()){
+if($SESSION->isLoggedIn()){
     header(ROOT.'/i_entrance/Frame.php');
     die();
 }

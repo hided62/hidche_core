@@ -28,7 +28,7 @@ if($member) {
         $system = $db->queryFirstRow('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
 
         if($system['LOGIN'] == 'Y' || $member['GRADE'] >= 5) {
-            $SESSION->Login($member['NO'], $id, $member['GRADE']);
+            $SESSION->login($member['NO'], $id, $member['GRADE']);
             $db->update('MEMBER', [
                 'CONMSG'=>$conmsg,
                 'IP'=>util::get_client_ip(true),

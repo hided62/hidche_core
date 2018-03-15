@@ -17,15 +17,15 @@ class _Session {
         }
     }
 
-    public function Set($key, $val) {
+    public function set($key, $val) {
         $_SESSION[$key] = $val;
     }
 
-    public function Get($key) {
-        return $_SESSION[$key];
+    public function get($key) {
+        return util::array_get($_SESSION[$key]);
     }
 
-    public function Login($noMember, $idMember, $grade) {
+    public function login($noMember, $idMember, $grade) {
         $_SESSION['noMember'] = $noMember;
         $_SESSION['p_id'] = $idMember;
         $_SESSION['ip'] = util::get_client_ip(true);
@@ -33,26 +33,23 @@ class _Session {
         $_SESSION['userGrade'] = $grade;
     }
 
-    public function Logout() {
+    public function logout() {
         unset($_SESSION['noMember']);
         unset($_SESSION['p_id']);
-        unset($_SESSION['time']);
         unset($_SESSION['userGrade']);
     }
 
-    public function IsLoggedIn() {
-        if(!isset($_SESSION['noMember'])){
-            return false;
-        }
-        if($_SESSION['noMember'] != 0) {
+    public function isLoggedIn() {
+        if($this->NoMember()){
             return true;
-        } else {
+        }
+        else{
             return false;
         }
     }
 
     public function NoMember() {
-        return $_SESSION['noMember'];
+        return $this->get('noMember');
     }
 
     public function __destruct() {

@@ -6,7 +6,7 @@ require_once(ROOT.'/f_config/SESSION.php');
 // 외부 파라미터
 
 
-$SESSION->Logout();
+$SESSION->logout();
 
 $response['result'] = 'SUCCESS';
 
