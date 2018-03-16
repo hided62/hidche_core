@@ -16,11 +16,11 @@ var serverTextInfo = "\
 ";
 
 var serverFullTemplate = "\
-<td colspan='4' class='Entrance_ServerListBlock'>- 장수 등록 마감 -</td>\
+<td colspan='4' class='server_full'>- 장수 등록 마감 -</td>\
 ";
 
 var serverCreateAndSelectTemplate = "\
-<td colspan='2' class='Entrance_ServerListNoRegister'>- 미 등 록 -</td>\
+<td colspan='2' class='not_registered'>- 미 등 록 -</td>\
 <td class='server_list_btn'>\
 <a href='<%serverPath%>/select_npc.php'><button class='general_select with_skin'>장수선택</button></a>\
 <a href='<%serverPath%>/join.php'><button class='general_create with_skin'>장수생성</button></a>\
@@ -28,7 +28,7 @@ var serverCreateAndSelectTemplate = "\
 ";
 
 var serverCreateTemplate = "\
-<td colspan='2' class='Entrance_ServerListNoRegister'>- 미 등 록 -</div>\
+<td colspan='2' class='not_registered'>- 미 등 록 -</div>\
 <td class='server_list_btn'>\
 <a href='<%serverPath%>/join.php'><button class='general_create with_skin'>장수생성</button></a>\
 </td>\
@@ -139,11 +139,6 @@ function Entrance_drawServerList(serverInfos){
             
         });
     });
-}
-
-function Entrance_ServerList(serverCount, servers) {
-    $("#Entrance_000002").html(servers);
-    $("#Entrance_000002").height(serverCount*64);
 }
 
 function Entrance_ServerListPosition() {
