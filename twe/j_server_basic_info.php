@@ -3,7 +3,7 @@ include "lib.php";
 include "func.php";
 
 if(!getUserID()){
-    jsonReturn([
+    returnJson([
         'game'=>'x',
         'me'=>'no'
     ]);
@@ -71,7 +71,6 @@ $game['npcCnt'] = $npcCnt;
 $generalID = getGeneralID(false, false);
 $userGrade = getUserGrade();
 $me = [
-    'blocked'=> ($userGrade == 0)
 ];
 
 if($generalID){
@@ -88,7 +87,7 @@ if($generalID){
 }
 
 //TODO: 이를 표현하는 방법은 '이전 버전'의 serverListPost.php를 참고할 것.
-jsonReturn([
+returnJson([
     'game'=>$game,
     'me'=>$me
 ]);
