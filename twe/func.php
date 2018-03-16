@@ -22,6 +22,8 @@ require_once('func_map.php');
 require_once('func_diplomacy.php');
 require_once('func_command.php');
 
+use utilphp\util as util;
+
 /** 
  * 0.0~1.0 사이의 랜덤 float
  * @return float

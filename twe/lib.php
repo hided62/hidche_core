@@ -300,7 +300,7 @@ function isDict(&$array){
 
 }
 
-function eraseNullValue(&$dict, $depth=512){
+function eraseNullValue($dict, $depth=512){
     //TODO:Test 추가
     if($dict === null){
         return null;
