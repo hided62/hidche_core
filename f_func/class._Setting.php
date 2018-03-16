@@ -4,7 +4,7 @@ require_once('_common.php');
 class _Setting {
     private $basepath;
     private $settingFile;
-    private $exist = 0;
+    private $exist = false;
 
     public function __construct($basepath) {
         
@@ -13,7 +13,7 @@ class _Setting {
         $this->settingFile = realpath($basepath.'/d_setting/conf.php');
 
         if(file_exists($this->settingFile)) {
-            $this->exist = 1;
+            $this->exist = true;
         }
     }
 

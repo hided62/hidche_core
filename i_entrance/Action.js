@@ -1,3 +1,28 @@
+var serverListTemplate = "\
+<div class='Entrance_ServerList' data-server='<%name%>'>\
+    <div class='Entrance_ServerListServer'><br>\
+        <span style='font-weight:bold;font-size:1.4em;color:<%color%>'><%korName%>섭</span>\
+        <span class='n_country'></span>\
+    </div>\
+    <div class='Entrance_ServerListDown'><br>- 폐 쇄 중 -</div>\
+</div>\
+";
+
+var serverFullTemplate = "\
+<div class='Entrance_ServerListBlock'>- 장수 등록 마감 -</div>\
+";
+
+var serverCreateAndSelectTemplate = "\
+<div class='Entrance_ServerListNoRegister'>- 미 등 록 -</div>\
+<input class='GeneralSelect' type='button' value='장수선택'>\
+<input class='GeneralCreate' type='button' value='장수생성'>\
+";
+
+var serverCreateTemplate = "\
+<div class='Entrance_ServerListNoRegister'>- 미 등 록 -</div>\
+<input class='GeneralCreate' type='button' value='장수생성'>\
+";
+
 function Entrance_Import() {
     ImportAction(HOME+I+ENTRANCE+W+MANAGE+W+ACTION);
 
@@ -22,7 +47,8 @@ function Entrance_UpdateServer() {
             },
             function(response, textStatus) {
                 if(response.result == "SUCCESS") {
-                    Entrance_ServerList(response.serverCount, response.servers);
+                    Entrance_drawServerList(response.server);
+                    //Entrance_ServerList(response.serverCount, response.servers);
                     Entrance_ServerListPosition();
                     Popup_WaitHide();
                 } else {
@@ -31,6 +57,18 @@ function Entrance_UpdateServer() {
             }
         )
     });
+}
+
+function Entrance_drawServerList(serverInfos){
+    var $serverList = $('#Entrance_000002');
+    $.each(serverInfos, function(idx, serverInfo){
+        var serverHtml = TemplateEngine(serverListTemplate, serverInfo);
+        $serverList.append(serverHtml);
+        if(!serverInfo.enable){
+            return;
+        }
+    });
+    $serverList.height(serverInfos.length *64);
 }
 
 function Entrance_ServerList(serverCount, servers) {

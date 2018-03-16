@@ -119,12 +119,19 @@
     line-height: 64px;
 }
 
+
 .Entrance_ServerListSelect {
     width: 120px; height: 32px;
     float: left;
 }
 
-.Entrance_ServerListLogin {
+.Entrance_ServerCreateAndSelect .GeneralCreate,
+.Entrance_ServerCreateAndSelect .GeneralSelect {
+    width: 120px; height: 32px;
+    float: left;
+}
+
+.GeneralCreate {
     width: 120px; height: 64px;
     float: left;
 }

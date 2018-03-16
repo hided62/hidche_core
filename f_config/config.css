@@ -36,9 +36,8 @@ div     {
     border-bottom-color: black;
 }
 
-/*
-div     {
-    width: 100px; height: 20px;
+
+.legacy_layout div     {
     border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
     padding: 0px;
     font-size: 13px;
@@ -46,7 +45,7 @@ div     {
     text-align: center;
     font-family: '맑은 고딕'; line-height: 110%;
 }
-*/
+
 font    { font-family: '맑은 고딕'; line-height: 110%; }
 /*
 input   {
