@@ -10,7 +10,7 @@ table   {
     text-align: center;
     font-family: '맑은 고딕'; line-height: 110%;
 }
-td      {
+th, td      {
     border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
     padding: 0px;
     font-size: 13px;
@@ -56,6 +56,15 @@ input   {
     line-height: 110%;
 }
 */
+
+input.with_skin   {
+    width: 100px; height: 18px;
+    background-color: black; color: white;
+    font-family: '맑은 고딕';
+    font-size: 13px;
+    line-height: 110%;
+}
+
 select  {
     width: 100px; height: 18px;
     background-color: black; color: white;

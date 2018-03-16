@@ -1,11 +1,11 @@
 var serverListTemplate = "\
-<div class='Entrance_ServerList' data-server='<%name%>'>\
-    <div class='Entrance_ServerListServer'><br>\
+<tr class='server_item bg0' data-server='<%name%>'>\
+    <td class='server_name'>\
         <span style='font-weight:bold;font-size:1.4em;color:<%color%>'><%korName%>섭</span>\
         <span class='n_country'></span>\
-    </div>\
-    <div class='Entrance_ServerListDown'><br>- 폐 쇄 중 -</div>\
-</div>\
+    </td>\
+    <td colspan='3' class='server_down'>- 폐 쇄 중 -</td>\
+</tr>\
 ";
 
 var serverFullTemplate = "\
@@ -14,13 +14,13 @@ var serverFullTemplate = "\
 
 var serverCreateAndSelectTemplate = "\
 <div class='Entrance_ServerListNoRegister'>- 미 등 록 -</div>\
-<input class='GeneralSelect' type='button' value='장수선택'>\
-<input class='GeneralCreate' type='button' value='장수생성'>\
+<input class='general_select' type='button' value='장수선택'>\
+<input class='general_create' type='button' value='장수생성'>\
 ";
 
 var serverCreateTemplate = "\
 <div class='Entrance_ServerListNoRegister'>- 미 등 록 -</div>\
-<input class='GeneralCreate' type='button' value='장수생성'>\
+<input class='general_create' type='button' value='장수생성'>\
 ";
 
 function Entrance_Import() {
@@ -32,8 +32,8 @@ function Entrance_Import() {
 function Entrance_Init() {
     EntranceManage_Init();
 
-    $("#Entrance_000101").click(Entrance_Manage);
-    $("#Entrance_000102").click(Entrance_Logout);
+    $("#btn_user_manage").click(Entrance_Manage);
+    $("#btn_logout").click(Entrance_Logout);
 }
 
 function Entrance_Update() {
@@ -49,7 +49,7 @@ function Entrance_UpdateServer() {
                 if(response.result == "SUCCESS") {
                     Entrance_drawServerList(response.server);
                     //Entrance_ServerList(response.serverCount, response.servers);
-                    Entrance_ServerListPosition();
+                    //Entrance_ServerListPosition();
                     Popup_WaitHide();
                 } else {
                     Popup_WaitShow("서버목록 로드 실패!");
@@ -60,7 +60,7 @@ function Entrance_UpdateServer() {
 }
 
 function Entrance_drawServerList(serverInfos){
-    var $serverList = $('#Entrance_000002');
+    var $serverList = $('#server_list');
     $.each(serverInfos, function(idx, serverInfo){
         var serverHtml = TemplateEngine(serverListTemplate, serverInfo);
         $serverList.append(serverHtml);
@@ -68,7 +68,6 @@ function Entrance_drawServerList(serverInfos){
             return;
         }
     });
-    $serverList.height(serverInfos.length *64);
 }
 
 function Entrance_ServerList(serverCount, servers) {

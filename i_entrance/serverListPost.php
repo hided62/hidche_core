@@ -4,8 +4,6 @@ require_once(ROOT.'/f_config/DB.php');
 require_once(ROOT.'/f_config/SESSION.php');
 
 // 외부 파라미터
-$response['serverCount'] = count($serverList);
-$response['servers'] = '';
 $response['server'] = [];
 
 foreach($serverList as $serverInfo){

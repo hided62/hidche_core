@@ -2,6 +2,57 @@
 
 @import url("manage/Style.css");
 
+#server_list_container{
+    width:800px;
+    position:absolute;
+    left:50%;
+    margin-left:-400px;
+}
+
+#server_list_table{
+    width:100%;
+}
+
+#server_list tr{
+    height:64px;
+}
+
+.server_create_and_select .general_create,
+.server_create_and_select .general_select {
+    width: 120px; height: 32px;
+    float: left;
+}
+
+.GeneralCreate {
+    width: 120px; height: 64px;
+    float: left;
+}
+
+
+#user_info {
+    margin-top:20px;
+    width: 800px; height: 130px;
+}
+
+.section_title {
+    height:50px;
+    line-height:50px;
+    font-size: 30px; font-weight: bold;
+    text-align: center;
+}
+
+#user_info input{
+    width: 200px; height: 50px;
+    margin: 10px 50px;
+}
+
+.center_ordered_items{
+    text-align:center;
+}
+
+/*Legacy*/
+
+
 #Entrance_00 {
     width: 800px;
     position: absolute; top: 50px; left: 50%;
@@ -26,9 +77,7 @@
 }
 
 #Entrance_0007 {
-    width: 800px; height: 50px;
-    position: absolute; top: -50px; left: 50%;
-    margin-left: -400px;
+    height: 50px;
     border: none;
 }
 
@@ -125,20 +174,8 @@
     float: left;
 }
 
-.Entrance_ServerCreateAndSelect .GeneralCreate,
-.Entrance_ServerCreateAndSelect .GeneralSelect {
-    width: 120px; height: 32px;
-    float: left;
-}
-
-.GeneralCreate {
-    width: 120px; height: 64px;
-    float: left;
-}
-
 #Entrance_000003 {
     width: 798px; height: 155px;
-    position: absolute; top: 138px; left: 0px;
     text-align: left;
 }
 
