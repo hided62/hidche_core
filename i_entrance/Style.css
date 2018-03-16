@@ -2,6 +2,11 @@
 
 @import url("manage/Style.css");
 
+#server_notice {
+    height: 50px;
+    border: none;
+}
+
 #server_list_container{
     width:800px;
     position:absolute;
@@ -76,10 +81,7 @@
     position: absolute; top: 62px; left: 810px;
 }
 
-#Entrance_0007 {
-    height: 50px;
-    border: none;
-}
+
 
 #Entrance_0000 {
     width: 800px; height: 134px;

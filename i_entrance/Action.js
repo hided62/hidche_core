@@ -65,8 +65,12 @@ function Entrance_drawServerList(serverInfos){
         var serverHtml = TemplateEngine(serverListTemplate, serverInfo);
         $serverList.append(serverHtml);
         if(!serverInfo.enable){
-            return;
+            return true;
         }
+
+        $.getJSON('../'+serverInfo.name+'/j_server_basic_info.php',{}, function(result){
+
+        });
     });
 }
 
