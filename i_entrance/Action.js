@@ -1,26 +1,45 @@
 var serverListTemplate = "\
-<tr class='server_item bg0' data-server='<%name%>'>\
+<tr class='server_item bg0 server_name_<%name%>' data-server='<%name%>'>\
     <td class='server_name'>\
-        <span style='font-weight:bold;font-size:1.4em;color:<%color%>'><%korName%>섭</span>\
+        <span style='font-weight:bold;font-size:1.4em;color:<%color%>'><%korName%>섭</span><br>\
         <span class='n_country'></span>\
     </td>\
-    <td colspan='3' class='server_down'>- 폐 쇄 중 -</td>\
+    <td colspan='4' class='server_down'>- 폐 쇄 중 -</td>\
 </tr>\
 ";
 
+var serverTextInfo = "\
+<td>\
+서기 <%year%>년 <%month%>월 (<span style='color:orange;'><%scenario%></span>)<br>\
+유저 : <%userCnt%> / <%maxUserCnt%>명 <span style='color:cyan;'>NPC : <%npcCnt%>명</span> (<span style='color:limegreen;'><%turnTerm%></span>)\
+</td>\
+";
+
 var serverFullTemplate = "\
-<div class='Entrance_ServerListBlock'>- 장수 등록 마감 -</div>\
+<td colspan='4' class='Entrance_ServerListBlock'>- 장수 등록 마감 -</td>\
 ";
 
 var serverCreateAndSelectTemplate = "\
-<div class='Entrance_ServerListNoRegister'>- 미 등 록 -</div>\
-<input class='general_select' type='button' value='장수선택'>\
-<input class='general_create' type='button' value='장수생성'>\
+<td colspan='2' class='Entrance_ServerListNoRegister'>- 미 등 록 -</td>\
+<td class='server_list_btn'>\
+<a href='<%serverPath%>/select_npc.php'><button class='general_select with_skin'>장수선택</button></a>\
+<a href='<%serverPath%>/join.php'><button class='general_create with_skin'>장수생성</button></a>\
+</td>\
 ";
 
 var serverCreateTemplate = "\
-<div class='Entrance_ServerListNoRegister'>- 미 등 록 -</div>\
-<input class='general_create' type='button' value='장수생성'>\
+<td colspan='2' class='Entrance_ServerListNoRegister'>- 미 등 록 -</div>\
+<td class='server_list_btn'>\
+<a href='<%serverPath%>/join.php'><button class='general_create with_skin'>장수생성</button></a>\
+</td>\
+";
+
+var serverLoginTemplate = "\
+<td><%picture%></td>\
+<td><%name%></td>\
+<td class='server_list_btn'>\
+<a href='<%serverPath%>/'><button class='general_login with_skin'>입장</button></a>\
+</td>\
 ";
 
 function Entrance_Import() {
@@ -62,14 +81,62 @@ function Entrance_UpdateServer() {
 function Entrance_drawServerList(serverInfos){
     var $serverList = $('#server_list');
     $.each(serverInfos, function(idx, serverInfo){
-        var serverHtml = TemplateEngine(serverListTemplate, serverInfo);
-        $serverList.append(serverHtml);
+        var $serverHtml = $(TemplateEngine(serverListTemplate, serverInfo));
+        $serverList.append($serverHtml);
         if(!serverInfo.enable){
             return true;
         }
 
-        $.getJSON('../'+serverInfo.name+'/j_server_basic_info.php',{}, function(result){
+        var serverPath = '../'+serverInfo.name;
 
+
+        $.getJSON('../'+serverInfo.name+'/j_server_basic_info.php',{}, function(result){
+            console.log(result);
+            console.log(result.game);
+            if(!result.game){
+                return;
+            }
+
+
+            var game= result.game;
+            //TODO: 서버 폐쇄 방식을 새롭게 변경
+            $serverHtml.find('.server_down').detach();
+
+            if(game.isUnited == 2){
+                $serverHtml.find('.n_country').html('§천하통일§');
+            }
+            else{
+                $serverHtml.find('.n_country').html('<{0}국 경쟁중>'.format(game.nationCnt));
+            }
+
+            $serverHtml.append(
+                TemplateEngine(serverTextInfo, game)
+            );
+
+            if(game.me){
+                var me = game.me;
+                me.serverPath = serverPath;
+                $serverHtml.append(
+                    TemplateEngine(serverLoginTemplate, me)
+                );
+            }
+            else if(game.userCnt >= game.maxUserCnt){
+                $serverHtml.append(
+                    TemplateEngine(serverFullTemplate, {})
+                );
+            }
+            else if(game.npcMode == 1){
+                $serverHtml.append(
+                    TemplateEngine(serverCreateAndSelectTemplate, {serverPath:serverPath})
+                ).addClass('server_create_and_select');
+            }
+            else{
+                $serverHtml.append(
+                    TemplateEngine(serverCreateTemplate, {serverPath:serverPath})
+                );
+            }
+
+            
         });
     });
 }

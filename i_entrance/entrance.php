@@ -63,12 +63,19 @@ if($member['GRADE'] >= 6) {
 <?php /*XXX:div라지만 누가봐도 표면 그냥 table인게 낫지 않겠음?*/ ?>
 <table id="server_list_table">
     <caption class="bg2 section_title with_border">서 버 선 택</caption>
+    <colgroup>
+        <col style="width:100px;" />
+        <col style="width:400px;" />
+        <col style="width:64px;" />
+        <col/>
+        <col style="width:120px;" />
+    </colgroup>
     <thead>
         <tr>
-            <th class="bg1" style="width:100px;">서 버</th>
+            <th class="bg1">서 버</th>
             <th class="bg1">정 보</th>
-            <th class="bg1" style="width:180px;">캐 릭 터</th>
-            <th class="bg1" style="width:120px;">선 택</th>
+            <th class="bg1" colspan="2">캐 릭 터</th>
+            <th class="bg1">선 택</th>
         </tr>
     </thead>
     <tbody id="server_list">

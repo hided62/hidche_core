@@ -22,17 +22,23 @@
     height:64px;
 }
 
-.server_create_and_select .general_create,
-.server_create_and_select .general_select {
+#server_list .server_create_and_select .general_create,
+#server_list .server_create_and_select .general_select {
     width: 120px; height: 32px;
     float: left;
 }
 
-.GeneralCreate {
+#server_list .general_create,
+#server_list .general_login {
     width: 120px; height: 64px;
     float: left;
 }
 
+.server_list_btn{
+    border:0;
+    margin:0;
+    padding:0;
+}
 
 #user_info {
     margin-top:20px;
@@ -149,12 +155,6 @@
 
 .Entrance_ServerListBlock {
     width: 298px; height: 64px;
-    float: left;
-    line-height: 64px;
-}
-
-.Entrance_ServerListNoRegister {
-    width: 178px; height: 64px;
     float: left;
     line-height: 64px;
 }

@@ -67,6 +67,7 @@ $game['turnTerm'] = getTurnTerm($game['turnTerm']);
 $game['scenario'] = getScenarioName($game['scenario']);
 $game['userCnt'] = $genCnt;
 $game['npcCnt'] = $npcCnt;
+$game['nationCnt'] = $nationCnt;
 
 $generalID = getGeneralID(false, false);
 $userGrade = getUserGrade();
