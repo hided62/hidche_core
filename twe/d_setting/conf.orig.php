@@ -7,11 +7,11 @@ require_once(__dir__.'/../../d_setting/conf.php');
  * @return MeekroDB 
  */
 function getDB(){
-    $host = '_host_';
-    $user = '_user_';
-    $password = '_password_';
-    $dbName = '_dbName_';
-    $port = _port_;
+    $host = '_tK_host_';
+    $user = '_tK_user_';
+    $password = '_tK_password_';
+    $dbName = '_tK_dbName_';
+    $port = _tK_port_;
     $encoding = 'utf8';
 
     static $uDB = NULL;
@@ -26,5 +26,5 @@ function getDB(){
 
 function getServPrefix()
 {
-    return '_prefix_';
+    return '_tK_prefix_';
 }

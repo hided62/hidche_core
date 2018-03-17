@@ -150,7 +150,7 @@ function hashPassword($salt, $password){
 }
 
 /**
- * 변환할 내용이 _key_ 형태로 작성된 단순한 템플릿 파일을 이용하여 결과물을 생성해주는 함수.
+ * 변환할 내용이 _tK_$key_ 형태로 작성된 단순한 템플릿 파일을 이용하여 결과물을 생성해주는 함수.
  */
 function generateFileUsingSimpleTemplate(string $srcFilePath, string $destFilePath, array $params, bool $canOverwrite=false){
     if($destFilePath === $srcFilePath){
@@ -168,7 +168,7 @@ function generateFileUsingSimpleTemplate(string $srcFilePath, string $destFilePa
 
     $text = file_get_contents($srcFilePath);
     foreach($params as $key => $value){
-        $text = str_replace("_{$key}_", $value);
+        $text = str_replace("_tK_{$key}_", $value);
     }
     file_put_contents($destFilePath, $text);
 

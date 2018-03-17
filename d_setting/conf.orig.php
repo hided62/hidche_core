@@ -8,7 +8,7 @@ require(__dir__.'/../vendor/autoload.php');
  * @return string
  */
 function getGlobalSalt(){
-    return '_globalSalt_';
+    return '_tK_globalSalt_';
 }
 
 /**
@@ -17,11 +17,11 @@ function getGlobalSalt(){
  * @return MeekroDB 
  */
 function getRootDB(){
-    $host = '_host_';
-    $user = '_user_';
-    $password = '_password_';
-    $dbName = '_dbName_';
-    $port = _port_;
+    $host = '_tK_host_';
+    $user = '_tK_user_';
+    $password = '_tK_password_';
+    $dbName = '_tK_dbName_';
+    $port = _tK_port_;
     $encoding = 'utf8';
 
     static $uDB = NULL;
@@ -35,16 +35,16 @@ function getRootDB(){
 }
 
 function newMailObj(){
-    $mailType = '_mailType_';
-    $mailSubType = '_mailSubType_';
+    $mailType = '_tK_mailType_';
+    $mailSubType = '_tK_mailSubType_';
     $checkAuth = _mailCheckAuth_;//boolean
-    $host = '_mailHost_';
-    $user = '_mailUser_';
-    $password = '_mailPassword_';
-    $address = '_mailAddress_';
-    $nickname = '_mailNickname_';
-    $port = _mailPort_;//number
-    $ignoreCert = _mailIgnoreCert_;//boolean
+    $host = '_tK_mailHost_';
+    $user = '_tK_mailUser_';
+    $password = '_tK_mailPassword_';
+    $address = '_tK_mailAddress_';
+    $nickname = '_tK_mailNickname_';
+    $port = _tK_mailPort_;//number
+    $ignoreCert = _tK_mailIgnoreCert_;//boolean
 
     if($mailType == 'smtp'){
         $objMail = new PHPMailer();
