@@ -7,10 +7,9 @@ require_once(ROOT.'/f_config/SESSION.php');
 
 
 $SESSION->logout();
+unset($_SESSION['access_token']);
+setcookie("hello", "", time()-3600);
 
-$response['result'] = 'SUCCESS';
-
-sleep(1);
-echo json_encode($response);
-
-
+echo json_encode([
+    'result'=>'SUCCESS'
+]);

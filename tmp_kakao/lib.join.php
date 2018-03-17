@@ -2,6 +2,7 @@
 require_once('_common.php');
 require_once(__dir__.'/../d_setting/conf.php');
 require_once(__dir__.'/../f_func/func.php');
+require(ROOT.'/f_func/class._Time.php');
 
 function checkUsernameDup($username){
     if(!$username){
@@ -48,9 +49,19 @@ function checkEmailDup($email){
         return '적절하지 않은 길이입니다.';
     }
 
-    $cnt = getRootDB()->queryFirstField('SELECT count(no) FROM member WHERE `email` = %s LIMIT 1', $email);
-    if($cnt != 0){
-        return '이미 사용중인 이메일입니다';
+    $userInfo = getRootDB()->queryFirstField('SELECT `no`, `delete_after` FROM member WHERE `email` = %s LIMIT 1', $email);
+    if($userInfo){
+        $nowDate = _Time::DatetimeNow();
+        if (!$userInfo['delete_after']) {
+            return '이미 사용중인 이메일입니다. 관리자에게 문의해주세요.';
+        }
+
+        if($userInfo['delete_after'] >= $userInfo){
+            return "삭제 요청된 계정입니다.[{$userInfo['delete_after']}]";
+        }
+
+        //$userInfo['delete_after'] < $userInfo
+        getRootDB()->delete('member', 'no=%i', $userInfo['no']);
     }
     return true;
 }

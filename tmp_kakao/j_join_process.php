@@ -28,7 +28,8 @@ if(!$access_token){
         'reason'=>'로그인 토큰 에러. 다시 카카오로그인을 수행해주세요.'
     ]);
 }
-if($refresh_token_expires < $nowDate){
+if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate))){
+    unset($_SESSION['access_token']);
     returnJson([
         'result'=>false,
         'reason'=>'로그인 토큰 만료.'.$refresh_token_expires.' 다시 카카오로그인을 수행해주세요.'
@@ -85,6 +86,7 @@ $restAPI = new Kakao_REST_API_Helper($access_token);
 if($expires < $nowDate){
     $result = $restAPI->refresh_access_token($refresh_token);
     if(!isset($refresh_token)){
+        unset($_SESSION['access_token']);
         returnJson([
             'result'=>false,
             'reason'=>'카카오 로그인 과정 중 추가 갱신 절차를 실패했습니다'
@@ -111,6 +113,15 @@ if(!$kakaoID && util::array_get($signupResult['msg'])!='already registered'){
 }
 
 $me = $restAPI->meWithEmail();
+$me['code'] = util::array_get($me['code'], 0);
+if ($me['code']< 0) {
+    $restAPI->unlink();
+    returnJson([
+        'result'=>false,
+        'reason'=>'카카오로그인이 정상적으로 수행되지 않았습니다.'
+    ]);
+}
+
 if(!util::array_get($me['kaccount_email_verified'],false)){
     $restAPI->unlink();
     returnJson([
@@ -120,6 +131,7 @@ if(!util::array_get($me['kaccount_email_verified'],false)){
 }
 
 $email = $me['kaccount_email'];
+$_SESSION['kaccount_email'] = $email;
 $emailChk = checkEmailDup($email);
 if($emailChk !== true){
     $restAPI->unlink();
@@ -130,8 +142,6 @@ if($emailChk !== true){
 }
 
 //모든 절차 종료. 등록.
-
-
 getRootDB()->insert('auth_kakao',[
     'id'=>$kakaoID,
     'access_token'=>$access_token,

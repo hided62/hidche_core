@@ -39,6 +39,7 @@ class Talk_Path
 {
   public static $TALK_PROFILE= "/v1/api/talk/profile";
   public static $TALK_TO_ME  = "/v2/api/talk/memo/send";
+  public static $TALK_TO_ME_DEFAULT  = "/v2/api/talk/memo/default/send";
 }
 
 class Push_Notification_Path
@@ -228,6 +229,10 @@ class Kakao_REST_API_Helper
 
   public function talk_profile() {
     return $this->request(Talk_Path::$TALK_PROFILE);
+  }
+
+  public function talk_to_me_default($req){
+    return $this->request(TalkPath::$TALK_TO_ME_DEFAULT, json_encode($req), 'POST');
   }
 
 

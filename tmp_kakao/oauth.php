@@ -1,6 +1,5 @@
 <?php
 require('_common.php');
-require(ROOT.'/f_config/DB.php');
 require(ROOT.'/f_func/class._Time.php');
 require('kakao.php');
 use utilphp\util as util;
@@ -42,23 +41,31 @@ $_SESSION['tmpx'] = json_encode($result,JSON_UNESCAPED_UNICODE);
 //echo "<br>\n";
 $me = $restAPI->meWithEmail();
 
-var_dump($me);
+$oauth_mode = 'login';
 
 $me['code'] = util::array_get($me['code'], 0);
 if($me['code']< 0){
     switch($me['msg']){
     case 'NotRegisteredUserException':
-        header('Location:join.php', true, 303);
-        die();
+        $oauth_mode = 'join';
+        break;
     default:
-        die('알 수 없는 에러:'.$me['msg']);
+        $oauth_mode = 'error';
     }
 }
+else{
+    $_SESSION['kaccount_email'] = $me['kaccount_email'];
+}
 
-
-
-//이메일 주소를 받아옴
-
-//
-//$db = getRootDB();
-//TODO: 로그인된 유저인지 확인해야함.
+?>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<script>
+opener.location.href="javascript:postOAuthResult('<?=$oauth_mode?>');";
+window.close();
+</script>
+</head>
+</html>
