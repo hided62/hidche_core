@@ -15,7 +15,7 @@ function CustomHeader() {
         header('Pragma: no-cache');
 //        header('Cache-Control: public');
 //        header('Pragma: public');
-        header('Content-Type: text/html; charset=utf-8');
+//        header('Content-Type: text/html; charset=utf-8');
     }
 //define(CURPATH, 'f_async');
 //define(FILE, substr(strrchr(__FILE__, "\\"), 1));
@@ -25,6 +25,22 @@ function getmicrotime() {
     $microtimestmp = explode(' ', microtime());
     return $microtimestmp[0] + $microtimestmp[1];
 }
+
+function logErrorByCustomHandler(int $errno , string $errstr, string $errfile, int $errline, array $errcontext){
+    if (!(error_reporting() & $errno)) {
+        // This error code is not included in error_reporting, so let it fall
+        // through to the standard PHP error handler
+        return false;
+    }
+
+    $date = date("Ymd_His");
+
+    file_put_contents(__DIR__.'/../d_log/err_log.txt',"$date, $errno, $errstr, $errfile, $errline\n");
+    
+    /* Don't execute PHP internal error handler */
+    return true;
+}
+set_error_handler("logErrorByCustomHandler");
 
 function Error($msg) {
     AppendToFile(ROOT.'/d_log/err.txt', $msg."\n");
