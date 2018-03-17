@@ -4,7 +4,6 @@ require('_common.php');
 require(__DIR__.'/../f_config/SETTING.php');
 use utilphp\util as util;
 
-session_start();
 
 function dbConnFail($params){
     returnJson([
@@ -142,5 +141,5 @@ if($result !== true){
 
 returnJson([
     'result'=>true,
-    'reason'=>'NYI'
+    'reason'=>'success'
 ]);

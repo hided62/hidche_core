@@ -4,8 +4,6 @@ require(ROOT.'/f_func/class._Time.php');
 
 use utilphp\util as util;
 
-session_start();
-
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -109,14 +107,16 @@ session_start();
                     <div class="form-group row">
                         <label for="nickname" class="col-sm-3 col-form-label">닉네임</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="nickname" id="nickname"  placeholder="닉네임"/>
+                            <input type="text" class="form-control" name="nickname" id="nickname"  placeholder="닉네임" value="운영자"/>
                         </div>
                     </div>
+
+                    <input type="hidden" id="global_salt" name="global_salt">
 
                     <div class="form-group row">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block login-button">관리자 생성</button>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block login-button">관리자 계정 생성</button>
                         </div>
                     </div>
                 </form>

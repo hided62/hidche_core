@@ -4,7 +4,6 @@ require('_common.php');
 require(__DIR__.'/../f_config/SETTING.php');
 use utilphp\util as util;
 
-session_start();
 
 function dbConnFail($params){
     returnJson([
@@ -34,7 +33,8 @@ $rootDB->error_handler = 'dbSQLFail';
 $memberCnt = $rootDB->queryFirstField('SELECT count(`NO`) from MEMBER');
 if($memberCnt === 0){
     returnJson([
-        'step'=>'admin'
+        'step'=>'admin',
+        'globalSalt'=>getGlobalSalt()
     ]);
 }
 
