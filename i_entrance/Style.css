@@ -19,22 +19,22 @@
 }
 
 #server_list tr{
-    height:64px;
+    height:66px;
 }
 
 #server_list .server_create_and_select .general_create,
 #server_list .server_create_and_select .general_select {
-    width: 120px; height: 32px;
+    width: 120px; height: 33px;
     float: left;
 }
 
 #server_list .general_create,
 #server_list .general_login {
-    width: 120px; height: 64px;
+    width: 120px; height: 66px;
     float: left;
 }
 
-.server_list_btn{
+.ignore_border{
     border:0;
     margin:0;
     padding:0;

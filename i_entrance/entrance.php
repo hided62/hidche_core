@@ -66,7 +66,7 @@ if($member['GRADE'] >= 6) {
     <colgroup>
         <col style="width:100px;" />
         <col style="width:400px;" />
-        <col style="width:64px;" />
+        <col style="width:66px;" />
         <col/>
         <col style="width:120px;" />
     </colgroup>

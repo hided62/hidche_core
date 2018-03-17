@@ -75,14 +75,14 @@ $me = [
 ];
 
 if($generalID){
-    $general = queryFirstRow('SELECT name, picture, imgsvr from general where no=%i', $generalID);
+    $general = $db->queryFirstRow('SELECT name, picture, imgsvr from general where no=%i', $generalID);
     if($general){
         $me['name'] = $general['name'];
 
-        if($me['imgsvr'] == 0) {
-            $me['picture'] = IMAGE.W.$me['PICTURE'];
+        if($general['imgsvr'] == 0) {
+            $me['picture'] = '../../image/'.$general['picture'];
         } else {
-            $me['picture'] = '../d_pic/'.$me['PICTURE'];
+            $me['picture'] = '../d_pic/'.$general['picture'];
         }
     }
 }
