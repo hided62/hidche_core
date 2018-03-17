@@ -25,11 +25,19 @@ $port = util::array_get($_POST['db_port']);
 $username = util::array_get($_POST['db_id']);
 $password = util::array_get($_POST['db_pw']);
 $dbName = util::array_get($_POST['db_name']);
+$servHost = util::array_get($_POST['serv_host']);
 
-if(!$host || !$port || !$username || !$password || !$dbName){
+if(!$host || !$port || !$username || !$password || !$dbName || !$servHost){
     returnJson([
         'result'=>false,
         'reason'=>'입력 값이 올바르지 않습니다'
+    ]);
+}
+
+if(!filter_var($servHost, FILTER_VALIDATE_URL)){
+	returnJson([
+        'result'=>false,
+        'reason'=>'접속 경로가 올바르지 않습니다.'
     ]);
 }
 
@@ -141,7 +149,8 @@ $result = generateFileUsingSimpleTemplate(
         'password'=>$password,
         'dbName'=>$dbName,
         'port'=>$port,
-        'globalSalt'=>$globalSalt
+        'globalSalt'=>$globalSalt,
+        'serverBasePath'=>$servHost
     ]
 );
 

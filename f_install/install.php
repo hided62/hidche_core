@@ -66,6 +66,14 @@ use utilphp\util as util;
                             <input type="text" class="form-control" name="db_name" id="db_name"  placeholder="DB명(예:sammo)"/>
                         </div>
                     </div>
+
+                    <div class="form-group row">
+                        <label for="serv_host" class="col-sm-3 col-form-label">접속 경로</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="serv_host" id="serv_host" placeholder="접속경로(예:http://www.example.com)"/>
+                        </div>
+                    </div>
+
                     <div class="form-group row">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">

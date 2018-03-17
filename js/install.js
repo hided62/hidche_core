@@ -43,14 +43,18 @@ function changeInstallMode(){
 
 $(document).ready( function () {
     changeInstallMode();
-
+    var parentPathname = location.pathname.split('/').slice(0,-2).join('/');
+    $('#serv_host').val(
+        [location.protocol, '//', location.host, parentPathname].join('')
+    );
     $('#db_form').validate({
         rules:{
             db_host:"required",
             db_port:"required",
             db_id:"required",
             db_pw:"required",
-            db_name:"required"
+            db_name:"required",
+            serv_host:"required"
         },
         errorElement: "div",
         errorPlacement: function ( error, element ) {
@@ -85,7 +89,8 @@ $(document).ready( function () {
                 db_port:$('#db_port').val(),
                 db_id:$('#db_id').val(),
                 db_pw:$('#db_pw').val(),
-                db_name:$('#db_name').val()
+                db_name:$('#db_name').val(),
+                serv_host:$('#serv_host').val()
             }
         }).then(function(result){
             var deferred = $.Deferred();
