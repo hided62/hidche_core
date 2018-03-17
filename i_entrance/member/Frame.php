@@ -17,12 +17,12 @@ EntranceMember_Init();
     <input id="EntranceMember_0001" type="button" value="돌아가기">
     <div id="EntranceMember_0006" class="bg2 font2">
         <div id="EntranceMember_000600"></div>
-        <input id="EntranceMember_000601" type="button" value="가입허용">
-        <input id="EntranceMember_000602" type="button" value="가입금지">
-        <input id="EntranceMember_000603" type="button" value="로그인허용">
-        <input id="EntranceMember_000604" type="button" value="로그인금지">
-        <input id="EntranceMember_000605" type="button" value="탈퇴처리(1개월)">
-        <input id="EntranceMember_000606" type="button" value="오래된계정(6개월)">
+        <input id="btn_allow_join" type="button" value="가입허용">
+        <input id="btn_deny_join" type="button" value="가입금지">
+        <input id="btn_allow_login" type="button" value="로그인허용">
+        <input id="btn_deny_login" type="button" value="로그인금지">
+        <input id="btn_process_withdraw" type="button" value="탈퇴처리(1개월)">
+        <input id="btn_process_scrub_olduser" type="button" value="오래된계정(6개월)">
     </div>
     <div id="EntranceMember_0002" class="bg2 font2">
         선택:

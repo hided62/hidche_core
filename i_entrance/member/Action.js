@@ -5,12 +5,12 @@ function EntranceMember_Init() {
     $("#EntranceMember_0001").click(EntranceMember_Back);
     $("#EntranceMember_000201").click(EntranceMember_Order);
 
-    $("#EntranceMember_000601").click(function() { EntranceMember_Post(8); });
-    $("#EntranceMember_000602").click(function() { EntranceMember_Post(9); });
-    $("#EntranceMember_000603").click(function() { EntranceMember_Post(10); });
-    $("#EntranceMember_000604").click(function() { EntranceMember_Post(11); });
-    $("#EntranceMember_000605").click(function() { EntranceMember_Post(12); });
-    $("#EntranceMember_000606").click(function() { EntranceMember_Post(13); });
+    $("#btn_allow_join").click(function() { EntranceMember_Post(8); });
+    $("#btn_deny_join").click(function() { EntranceMember_Post(9); });
+    $("#btn_allow_login").click(function() { EntranceMember_Post(10); });
+    $("#btn_deny_login").click(function() { EntranceMember_Post(11); });
+    $("#btn_process_withdraw").click(function() { EntranceMember_Post(12); });
+    $("#btn_process_scrub_olduser").click(function() { EntranceMember_Post(13); });
     $("#EntranceMember_000607").click(function() { EntranceMember_Post(14); });
 
     $("#EntranceMember_000301").click(function() { EntranceMember_Post(0); });
