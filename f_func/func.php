@@ -127,7 +127,7 @@ function returnJson($value, $noCache = true, $pretty = false, $die = true){
     header('Content-Type: application/json');
 
     if($noCache){
-        header('Expires: Sun, 01 Jan 2014 00:00:00 GMT');
+        header('Expires: Wed, 01 Jan 2014 00:00:00 GMT');
         header('Cache-Control: no-store, no-cache, must-revalidate');
         header('Cache-Control: post-check=0, pre-check=0', FALSE);
         header('Pragma: no-cache');
@@ -147,4 +147,30 @@ function returnJson($value, $noCache = true, $pretty = false, $die = true){
 
 function hashPassword($salt, $password){
     return hash('sha512', $salt.$password.$salt);
+}
+
+/**
+ * 변환할 내용이 _key_ 형태로 작성된 단순한 템플릿 파일을 이용하여 결과물을 생성해주는 함수.
+ */
+function generateFileUsingSimpleTemplate(string $srcFilePath, string $destFilePath, array $params, bool $canOverwrite=false){
+    if($destFilePath === $srcFilePath){
+        return 'invalid destFilePath';
+    }
+    if(!file_exists($srcFilePath)){
+        return 'srcFilePath is not exists';
+    }
+    if(file_exists($destFilePath) && !$canOverwrite){
+        return 'destFilePath is already exists';
+    }
+    if(!is_writable($destFilePath)){
+        return 'destFilePath is not writabble';
+    }
+
+    $text = file_get_contents($srcFilePath);
+    foreach($params as $key => $value){
+        $text = str_replace("_{$key}_", $value);
+    }
+    file_put_contents($destFilePath, $text);
+
+    return true;
 }
