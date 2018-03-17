@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `member_log`;
 DROP TABLE IF EXISTS `auth_kakao`;
 
 -- 시스템 테이블
-
+-- TODO:장기적으로는 key-value(json) storage 형태로 바꾸는게 나을 듯.
 CREATE TABLE `system` (
 	`NO` INT(11) NOT NULL AUTO_INCREMENT,
 	`REG` VARCHAR(1) NULL DEFAULT 'N',
