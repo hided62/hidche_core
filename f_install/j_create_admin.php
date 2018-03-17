@@ -55,7 +55,7 @@ $rootDB->insert('member',[
     'email' => null,
     'pw' => $finalPassword,
     'salt' => $userSalt,
-    'grade'=> 5,
+    'grade'=> 6,
     'name'=>$nickname,
     'reg_date'=>$nowDate
 ]);
