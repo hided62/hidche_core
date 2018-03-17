@@ -6,6 +6,9 @@ require(ROOT.'/f_func/class._Time.php');
 
 use utilphp\util as util;
 
+session_start();
+session_destroy();
+
 $username = util::array_get($_POST['username']);
 $password = util::array_get($_POST['password']);
 $nickname = util::array_get($_POST['nickname']);
