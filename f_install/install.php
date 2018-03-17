@@ -36,11 +36,16 @@ session_start();
                     <div class="form-group row">
                         <label for="db_host" class="col-sm-3 col-form-label">DB호스트</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="db_host" id="db_host"  placeholder="호스트:포트" value="localhost" />
+                            <input type="text" class="form-control" name="db_host" id="db_host"  placeholder="호스트" value="localhost" />
                         </div>
                     </div>
 
-
+                    <div class="form-group row">
+                        <label for="db_port" class="col-sm-3 col-form-label">DB포트</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="db_port" id="db_port"  placeholder="접속 포트" value="3306" />
+                        </div>
+                    </div>
                     
                     <div class="form-group row">
                         <label for="db_id" class="col-sm-3 col-form-label">DB계정명</label>

@@ -162,15 +162,45 @@ function generateFileUsingSimpleTemplate(string $srcFilePath, string $destFilePa
     if(file_exists($destFilePath) && !$canOverwrite){
         return 'destFilePath is already exists';
     }
-    if(!is_writable($destFilePath)){
-        return 'destFilePath is not writabble';
+    if(!is_writable(dirname($destFilePath))){
+        return 'destFilePath is not writable';
     }
 
     $text = file_get_contents($srcFilePath);
     foreach($params as $key => $value){
-        $text = str_replace("_tK_{$key}_", $value);
+        $text = str_replace("_tK_{$key}_", $value, $text);
     }
     file_put_contents($destFilePath, $text);
 
     return true;
+}
+
+/**
+ * '비교적' 안전한 int 변환
+ * null -> null
+ * int -> int
+ * float -> int
+ * numeric(int, float) 포함 -> int
+ * 기타 -> 예외처리
+ * 
+ * @return int|null
+ */
+function toInt($val, $force=false){
+    if($val === null){
+        return null;
+    }
+    if(is_int($val)){
+        return $val;
+    }
+    if(is_numeric($val)){
+        return intval($val);//
+    }
+    if($val === 'NULL' || $val === 'null'){
+        return null;
+    }
+
+    if($force){
+        return intval($val);
+    }
+    throw new InvalidArgumentException('올바르지 않은 타입형 :'.$val);
 }
