@@ -43,33 +43,12 @@ CREATE TABLE `member` (
 )
 ENGINE=InnoDB DEFAULT CHARSET=UTF8;
 
-
--- 인증 테이블
-CREATE TABLE `auth_kakao` (
-	`no` BIGINT(20) NOT NULL AUTO_INCREMENT,
-	`id` BIGINT(20) NOT NULL COMMENT 'after signup',
-	`access_token` CHAR(128) NOT NULL COMMENT 'after token',
-	`refresh_token` CHAR(128) NOT NULL,
-	`expires` DATETIME NOT NULL,
-	`refresh_token_expires` DATETIME NOT NULL,
-	`datetime` DATETIME NOT NULL,
-	`email` VARCHAR(128) NOT NULL,
-	PRIMARY KEY (`no`),
-	INDEX `access_token` (`access_token`),
-	INDEX `id` (`id`),
-	INDEX `expires` (`expires`),
-	INDEX `email` (`email`),
-	INDEX `refresh_expires` (`refresh_token_expires`),
-	INDEX `datetime` (`datetime`)
-)
-ENGINE=InnoDB DEFAULT CHARSET=UTF8;
-
 -- 로그인 로그 테이블
 CREATE TABLE `member_log` (
 	`id` BIGINT(20) NOT NULL AUTO_INCREMENT,
 	`member_no` INT(11) NOT NULL,
 	`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`action_type` ENUM('reg','try_login','login','logout','oauth','make_general','access_server') NOT NULL,
+	`action_type` ENUM('reg','try_login','login','logout','oauth','change_pw','make_general','access_server') NOT NULL,
 	`action` TEXT NULL DEFAULT NULL COMMENT 'JSON',
 	PRIMARY KEY (`id`),
 	INDEX `action` (`member_no`, `action_type`, `date`),

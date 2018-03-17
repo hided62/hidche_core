@@ -232,7 +232,11 @@ class Kakao_REST_API_Helper
   }
 
   public function talk_to_me_default($req){
-    return $this->request(TalkPath::$TALK_TO_ME_DEFAULT, json_encode($req), 'POST');
+    
+    $params = [
+      'template_object' => json_encode($req)
+    ];
+    return $this->request(Talk_Path::$TALK_TO_ME_DEFAULT, $params, 'POST');
   }
 
 

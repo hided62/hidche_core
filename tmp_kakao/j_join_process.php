@@ -1,7 +1,7 @@
 <?php
 require_once('_common.php');
 require('lib.join.php');
-require(ROOT.'/f_func/class._Time.php');
+require_once(ROOT.'/f_func/class._Time.php');
 require('kakao.php');
 
 use utilphp\util as util;
@@ -142,16 +142,6 @@ if($emailChk !== true){
 }
 
 //모든 절차 종료. 등록.
-getRootDB()->insert('auth_kakao',[
-    'id'=>$kakaoID,
-    'access_token'=>$access_token,
-    'refresh_token'=>$refresh_token,
-    'expires'=>$expires,
-    'refresh_token_expires'=>$refresh_token_expires,
-    'datetime'=>$nowDate,
-    'email'=>$email
-]);
-
 getRootDB()->insert('member',[
     'oauth_id' => $kakaoID,
     'oauth_type' => 'KAKAO',

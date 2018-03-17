@@ -53,7 +53,7 @@ function doLoginUsingOAuth(retry=false){
                 alert(obj.reason);
             }
             else{
-                getOAuthToken();
+                getOAuthToken('login');
             }
         }
         else{
@@ -70,6 +70,9 @@ function postOAuthResult(result){
         console.log('로그인모드');
         if(oauthMode=='change_pw'){
             sendTempPasswordToKakaoTalk();
+        }
+        else{
+            doLoginUsingOAuth();
         }
     }
     else{

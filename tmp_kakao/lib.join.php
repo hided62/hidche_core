@@ -2,7 +2,7 @@
 require_once('_common.php');
 require_once(__dir__.'/../d_setting/conf.php');
 require_once(__dir__.'/../f_func/func.php');
-require(ROOT.'/f_func/class._Time.php');
+require_once(ROOT.'/f_func/class._Time.php');
 
 function checkUsernameDup($username){
     if(!$username){

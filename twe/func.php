@@ -41,7 +41,7 @@ function randBool($prob = 0.5){
 }
 
 /** 
- * 로그인한 유저의 전역 id를 받아옴 
+ * 로그인한 유저의 전역 id(숫자)를 받아옴 
  *
  * @return int|null 
  */

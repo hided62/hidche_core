@@ -1,6 +1,118 @@
 <?php
 
 require('_common.php');
+require(ROOT.'/f_func/class._Session.php');
 require(ROOT.'/f_config/DB.php');
 require(ROOT.'/f_func/class._Time.php');
 require('kakao.php');
+
+use utilphp\util as util;
+$nowDate = _Time::DatetimeNow();
+
+$SESSION = new _Session();
+if(!$SESSION->isLoggedIn()){
+    returnJson([
+        'result'=>false,
+        'reason'=>'로그인이 되어있지 않습니다'
+    ]);
+}
+$userID = $SESSION->NoMember();
+$access_token = util::array_get($_SESSION['access_token']);
+$expires = util::array_get($_SESSION['expires']);
+$refresh_token = util::array_get($_SESSION['refresh_token']);
+$refresh_token_expires = util::array_get($_SESSION['refresh_token_expires']);
+
+if(!$access_token || !$expires){
+    returnJson([
+        'result'=>false,
+        'reason'=>'카카오로그인이 이루어지지 않았습니다.'
+    ]);
+}
+
+
+//TODO: join과 login의 동작이 비슷하다. helper class로 묶자.
+$restAPI = new Kakao_REST_API_Helper($access_token);
+
+if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate))){
+    returnJson([
+        'result'=>false,
+        'reason'=>'로그인 토큰 만료.'.$refresh_token_expires.' 다시 카카오로그인을 수행해주세요.'
+    ]);
+}
+
+if($expires < $nowDate){
+    unset($_SESSION['kaccount_email']);
+    $email = null;
+
+    $result = $restAPI->refresh_access_token($refresh_token);
+    if(!isset($refresh_token)){
+        returnJson([
+            'result'=>false,
+            'reason'=>'카카오 로그인 과정 중 추가 갱신 절차를 실패했습니다'
+        ]);
+    }
+
+    $access_token = $result['access_token'];
+    $expires = _Time::DatetimeFromNowSecond($nowDate, $result['expires_in']);
+    if(isset($result['refresh_token'])){
+        $refresh_token = util::array_get($result['refresh_token']);
+        $refresh_token_expires = _Time::DatetimeFromNowSecond($nowDate, $result['refresh_token_expires_in']);
+    }
+}
+
+getRootDB()->query("lock tables member write, member_log write");
+
+$isUser = getRootDB()->queryFirstRow(
+    'SELECT count(`no`) from member where no=%i',$userID);
+if(!$isUser){
+    returnJson([
+        'result'=>false,
+        'reason'=>'회원이 아닙니다. 관리자에게 문의해주세요.'
+    ]);
+}
+
+$newPassword = random_str(6);
+$tmpPassword = hashPassword(getGlobalSalt(), $newPassword);
+$newSalt = bin2hex(random_bytes(8));
+$newFinalPassword = hashPassword($newSalt, $tmpPassword);
+
+$sendResult = $restAPI->talk_to_me_default([
+  "object_type"=> "text",
+  "text"=> "임시 비밀번호는 $newPassword 입니다. 로그인 후 바로 다른 비밀번호로 변경해주세요.",
+  "link"=> [
+    "web_url"=> getServerBasepath(),
+    "mobile_web_url" => getServerBasepath()
+  ],
+  "button_title"=> "로그인 페이지 열기"
+]);
+$sendResult['code'] = util::array_get($sendResult['code'], 0);
+if($sendResult['code'] < 0){
+    returnJson([
+        'result'=>false,
+        'reason'=>'카카오톡 메시지를 보내지 못했습니다.'
+    ]);
+}
+
+getRootDB()->update('member', [
+    'pw'=>$newFinalPassword,
+    'salt'=>$newSalt
+],'no=%i', $userID);
+
+getRootDB()->insert('member_log', [
+    'member_no'=>$userID,
+    'date'=>$nowDate,
+    'action_type'=>'change_pw',
+    'action'=>json_encode([
+        'type'=>'kakao',
+        'no'=>$userID,
+        'token'=>$access_token
+    ], JSON_UNESCAPED_UNICODE)
+]);
+
+getRootDB()->query("unlock tables");
+
+
+returnJson([
+    'result'=>true,
+    'reason'=>'success'
+]);
