@@ -84,6 +84,9 @@ $(document).ready( function () {
     } );
 
     $( "#main_form" ).submit(function(){
+        if(!$("#main_form").valid()){
+            return;
+        }
         var raw_password = $('#password').val();
         var salt = $('#global_salt').val();
         console.log(salt + raw_password + salt);
