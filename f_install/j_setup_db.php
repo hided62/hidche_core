@@ -2,6 +2,7 @@
 
 require('_common.php');
 require(__DIR__.'/../f_config/SETTING.php');
+require(__DIR__.'/../f_func/class._Time.php');
 use utilphp\util as util;
 
 
@@ -117,7 +118,19 @@ $rootDB->error_handler = 'dbSQLFail';
 
 $mysqli_obj = $rootDB->get(); //로그인에 실패할 경우 자동으로 dbConnFail()이 실행됨.
 
-$mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/common_schema.sql'));
+if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/common_schema.sql'))){
+    do{
+        $mysqli_obj->store_result();
+    } while($mysqli_obj->next_result());
+}
+
+$rootDB->insert('system', array(
+    'REG'     => 'N',
+    'LOGIN'    => 'N',
+    'CRT_DATE' => _Time::DatetimeNow(),
+    'MDF_DATE' => _Time::DatetimeNow()
+));
+
 $globalSalt = bin2hex(random_bytes(16));
 
 $result = generateFileUsingSimpleTemplate(
