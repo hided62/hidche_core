@@ -2,7 +2,7 @@
 require_once('_common.php');
 require_once(ROOT.'/f_func/class._Session.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/tmp_kakao/conf.php');//TODO: kakao 가입 정식 적용하면 코드 변경
+require_once(ROOT.'/d_setting/conf_kakao.php');
 $SESSION = new _Session();
 if($SESSION->isLoggedIn()){
     header(ROOT.'/i_entrance/Frame.php');

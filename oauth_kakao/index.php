@@ -1,5 +1,5 @@
 <?php
-require('conf.php');
+require(__DIR__.'/../d_setting/conf_kakao.php');
 ?>
 <!DOCTYPE html>
 <html lang="ko">

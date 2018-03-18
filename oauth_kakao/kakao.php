@@ -1,5 +1,5 @@
 <?php
-require(__DIR__.'/conf.php');
+require(__DIR__.'/../d_setting/conf_kakao.php');
 //https://devtalk.kakao.com/t/php-rest-api/14602/3
 //header('Content-Type: application/json; charset=utf-8');
 
