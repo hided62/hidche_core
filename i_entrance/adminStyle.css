@@ -1,108 +1,35 @@
 @charset "utf-8";
 
+#admin_userlist{
+    margin-top:10px;
+}
+
 #server_admin_table{
     width:100%;
+    margin-top:30px;
+    margin-bottom:30px;
 }
 
-#Entrance_0002 {
-    width: 800px; height: 170px;
-    /*position: absolute; top: 304px; left: 0px;*/
+#server_admin_table input{
+    padding:2px 3px;
 }
 
-#Entrance_000200 {
-    width: 798px; height: 50px;
-    position: absolute; top: 0px; left: 0px;
-    font-size: 30px; font-weight: bold;
+#admin_userlist .center_ordered_items {
+    padding:10px;
 }
 
-#Entrance_000201 {
-    width: 200px; height: 50px;
-    position: absolute; top: 65px; left: 150px;
+#notice_edit{
+    vertical-align: top;
+    display:inline-block;
+    margin:0;
+    padding:0;
+    height:4em;
+    background:black;
+    color:white;
 }
 
-#Entrance_000202 {
-    width: 200px; height: 50px;
-    position: absolute; top: 65px; left: 450px;
-}
-
-#Entrance_000203 {
-    width: 590px; height: 20px;
-    position: absolute; top: 130px; left: 50px;
-}
-
-#Entrance_000204 {
-    width: 100px; height: 20px;
-    position: absolute; top: 130px; left: 650px;
-}
-
-
-#Entrance_0003 {
-    width: 800px; height: 176px;
-}
-
-#Entrance_000300 {
-    width: 798px; height: 50px;
-    font-size: 30px; font-weight: bold;
-}
-
-#Entrance_000301 {
-    width: 798px; height: 20px;
-    border: none;
-}
-
-#Entrance_00030000 {
-    width: 98px; height: 20px;
-}
-
-#Entrance_00030001 {
-    width: 198px; height: 20px;
-}
-
-#Entrance_00030002 {
-    width: 498px; height: 20px;
-}
-
-#Entrance_00030003 {
-    width: 118px; height: 20px;
-}
-
-#Entrance_000302 {
-    width: 798px;
-    border: none;
-}
-
-.Entrance_ServerAdminList {
-    width: 800px; height: 20px;
-    border: none;
-    float: left;
-}
-
-.Entrance_ServerAdminListServer {
-    width: 98px; height: 20px;
-    float: left;
-}
-
-.Entrance_ServerAdminListState {
-    width: 198px; height: 20px;
-    float: left;
-}
-
-.Entrance_ServerAdminListSelect {
-    width: 498px; height: 20px;
-    float: left;
-}
-
-.Entrance_ServerAdminListSelectButton1 {
-    width: 50px; height: 20px;
-    float: left;
-}
-
-.Entrance_ServerAdminListSelectButton2 {
-    width: 80px; height: 20px;
-    float: left;
-}
-
-.Entrance_ServerAdminListSelectButton3 {
-    width: 100px; height: 20px;
-    float: left;
+#notice_change_btn{
+    vertical-align: top;
+    display:inline-block;
+    height:4em;
 }

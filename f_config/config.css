@@ -57,8 +57,13 @@ input   {
 }
 */
 
+.obj_fill{
+    display:block;
+    width:100%;
+    height:100%;
+}
+
 button.with_skin {
-    width: 100px; height: 18px;
     background-color: black; color: white;
     font-family: '맑은 고딕';
     font-size: 13px;
@@ -66,7 +71,6 @@ button.with_skin {
 }
 
 input.with_skin   {
-    width: 100px; height: 18px;
     background-color: black; color: white;
     font-family: '맑은 고딕';
     font-size: 13px;

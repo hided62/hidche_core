@@ -72,7 +72,7 @@ function doAdminPost($member, $action, $notice, $server, $select){
     }
 
     if($action == 0) {
-        $db->update('SYSTEM', ['NOTICE'=>$notice], 'NO=1');
+        getRootDB()->update('SYSTEM', ['NOTICE'=>$notice], 'NO=1');
         $response['result'] = 'SUCCESS';
         return $response;
     } 

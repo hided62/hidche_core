@@ -3,8 +3,9 @@
 @import url("manage/Style.css");
 
 #server_notice {
-    height: 50px;
+    margin:10px 0;
     border: none;
+    text-align:center;
 }
 
 #server_list_container{

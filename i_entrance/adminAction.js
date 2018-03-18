@@ -1,22 +1,51 @@
 
 var serverAdminTemplate = '\
-<tr data-server_name="<%name%>\
-    <th><%korName%>(<%name%>)</th>\
+<tr class="bg0" data-server_name="<%name%>">\
+    <th style="color:<%color%>;"><%korName%>(<%name%>)</th>\
     <td><%status%></td>\
-    <td><input type="button" value="폐쇄" onclick="Entrance_AdminPost(0);"></td>\
-    <td><input type="button" value="오픈" onclick="Entrance_AdminPost(2);"></td>\
-    <td><input type="button" value="리셋" onclick="Entrance_AdminPost(1);"></td>\
-    <td><input type="button" class="Entrance_ServerAdminListSelectButton2" value="N로그인" onclick="Entrance_AdminNPCLogin();"></td>\
-    <td><input type="button" value="N생성" onclick="Entrance_AdminNPCCreate();"></td>\
-    <td><input type="button" value="폐쇄중로그인" onclick="Entrance_AdminClosedLogin();"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="폐쇄" onclick="Entrance_AdminPost(this, 0);"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="오픈" onclick="Entrance_AdminPost(this, 2);"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="리셋" onclick="Entrance_AdminPost(this, 1);"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="하드리셋" onclick="Entrance_AdminPost(this, 3);"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="폐쇄중 로그인" onclick="Entrance_AdminClosedLogin(this);"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="서버119" onclick="Entrance_AdminOpen119(this);"></td>\
 </tr>\
 ';
 
+
+function drawServerAdminList(serverList){
+    var $table = $('#server_admin_list');
+    $.each(serverList, function(idx, server){
+        console.log(server);
+        var status = '';
+        if(!server.valid){
+            status = '에러, {0}'.format(server.reason);
+        }
+        else if(!server.run){
+            status = '폐쇄됨';
+        }
+        else{
+            status = '운영 중';
+        }
+        server.status = status;
+
+        $table.append(
+            TemplateEngine(serverAdminTemplate, server)
+        );
+    });
+}
 
 $(function(){
     Entrance_AdminImport();
     Entrance_AdminInit();
     Entrance_AdminUpdate();
+
+    $.ajax({
+        cache:false,
+        type:'post',
+        url:'j_serverAdminStatus.php',
+        dataType:'json'
+    }).then(drawServerAdminList);
 });
 function Entrance_AdminImport() {
 }
@@ -25,7 +54,7 @@ function Entrance_AdminInit() {
     console.log('adminInit');
     $("#Entrance_000201").click(Entrance_Donation);
     $("#Entrance_000202").click(Entrance_Member);
-    $("#Entrance_000204").click(Entrance_AdminChangeNotice);
+    $("#notice_change_btn").click(Entrance_AdminChangeNotice);
 }
 
 function Entrance_AdminUpdate() {
@@ -44,7 +73,7 @@ function Entrance_Member() {
 }
 
 function Entrance_AdminChangeNotice() {
-    var notice = $("#Entrance_000203").val();
+    var notice = $("#notice_edit").val();
 
     Popup_Confirm('정말 실행하시겠습니까?', function() {
             Popup_Wait(function() {
@@ -55,8 +84,7 @@ function Entrance_AdminChangeNotice() {
                     },
                     function(response, textStatus) {
                         if(response.result == "SUCCESS") {
-                            Popup_WaitHide();
-                            Replace(ENTRANCE+PHP);
+                            location.reload();
                         } else {
                             Popup_WaitShow(response.msg);
                         }
@@ -66,7 +94,10 @@ function Entrance_AdminChangeNotice() {
     });
 }
 
-function Entrance_AdminPost(server, select) {
+function Entrance_AdminPost(caller, select) {
+    var $caller = $(caller);
+    var server = $caller.parents('tr').data('server_name');
+    
     Popup_Confirm('정말 실행하시겠습니까?', function() {
             Popup_Wait(function() {
                 PostJSON(
@@ -92,18 +123,26 @@ function Entrance_AdminPost(server, select) {
     });
 }
 
-function Entrance_AdminNPCLogin(serverDir) {
-    ReplaceFrame(serverDir+W+'npc_login'+PHP);
+function Entrance_AdminNPCLogin(caller) {
+    var $caller = $(caller);
+    var serverDir = $caller.parents('tr').data('server_name');
+    location.href = serverDir+W+'npc_login'+PHP;
 }
 
-function Entrance_AdminNPCCreate(serverDir) {
-    ReplaceFrame(serverDir+W+'npc_join'+PHP);
+function Entrance_AdminNPCCreate(caller) {
+    var $caller = $(caller);
+    var serverDir = $caller.parents('tr').data('server_name');
+    location.href = serverDir+W+'npc_join'+PHP;
 }
 
-function Entrance_AdminClosedLogin(serverDir) {
-    ReplaceFrame(serverDir+W+'npc_login'+PHP);
+function Entrance_AdminClosedLogin(caller) {
+    var $caller = $(caller);
+    var serverDir = $caller.parents('tr').data('server_name');
+    location.href = serverDir+W+'npc_login'+PHP;
 }
 
-function Entrance_AdminOpen119(serverDir) {
-    Open(serverDir+W+'_119'+PHP);
+function Entrance_AdminOpen119(caller) {
+    var $caller = $(caller);
+    var serverDir = $caller.parents('tr').data('server_name');
+    location.href = serverDir+W+'_119'+PHP;
 }

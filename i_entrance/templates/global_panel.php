@@ -1,6 +1,11 @@
-<div id="Entrance_0002" class="bg0">
-    <div id="Entrance_000200" class="bg2">회 원 관 리</div>
-    <input id="Entrance_000202" type="button" value="회 원 관 리">
-    <input id="Entrance_000203" type="text" value="<?=$notice?>">
-    <input id="Entrance_000204" type="button" value="공 지 변 경">
+<div id="admin_userlist">
+    <div class="bg2 section_title with_border">회 원 관 리</div>
+    <div class="center_ordered_items with_border bg0">
+        <a href="admin_userlist.php"><button class="with_skin" type="button">회원 관리</button></a>
+        <button id="btn_icon_scrub" class="with_skin" >전콘 정리</button>
+    </div>
+    <div class="center_ordered_items with_border bg0">
+            <textarea cols="80" rows="3" id="notice_edit" name="notice"><?=$notice?></textarea>
+            <button id="notice_change_btn" class="with_skin">공지 변경</button>
+    </div>
 </div>
