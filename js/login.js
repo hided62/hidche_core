@@ -52,7 +52,6 @@ $(document).ready( function () {
                 alert(obj.reason);
             }
             else{
-                alert('로그인!');
                 window.location.href = 'i_entrance/entrance.php';
             }
 

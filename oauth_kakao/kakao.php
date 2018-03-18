@@ -1,10 +1,16 @@
 <?php
-require(__DIR__.'/../d_setting/conf_kakao.php');
+
+if ((@include(__DIR__.'/../d_setting/conf_kakao.php')) === false) {
+  class KakaoKey{
+    const REST_KEY = '';
+    const ADMIN_KEY = '';
+    const REDIRECT_URI = '';
+  }
+}
 //https://devtalk.kakao.com/t/php-rest-api/14602/3
 //header('Content-Type: application/json; charset=utf-8');
 
 ///////////////////////////////////////////////////////////////////////////////
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
