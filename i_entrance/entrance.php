@@ -3,10 +3,12 @@ require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 require_once(ROOT.'/f_config/SESSION.php');
 
+$templates = new League\Plates\Engine('templates');
+
 $db = getRootDB();
 $system = $db->queryFirstRow('SELECT `NOTICE` FROM `SYSTEM` WHERE `NO`=1');
 $member = $db->queryFirstRow('SELECT ID, GRADE FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
-
+$userGrade = $member['GRADE'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -22,6 +24,8 @@ $member = $db->queryFirstRow('SELECT ID, GRADE FROM `MEMBER` WHERE `NO` = %i', $
         <link type="text/css" rel="stylesheet" href='../i_popup/Style.css'>
         <link type="text/css" rel="stylesheet" href='../i_entrance/Style.css'>
 
+
+
         <!-- 액션 -->
         <script type="text/javascript" src='../js/common.js'></script>
         <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
@@ -31,36 +35,32 @@ $member = $db->queryFirstRow('SELECT ID, GRADE FROM `MEMBER` WHERE `NO` = %i', $
 
         <script type="text/javascript" src='../i_popup/Action.js'></script>
         <script type="text/javascript" src='../i_entrance/Action.js'></script>
-        <script type="text/javascript">
-$(document).ready(Entrance);
 
-function Entrance() {
-    ImportView("body", "../i_popup/Frame.php");
-    //ImportView("body", FRAME);
+<?php if($userGrade >= 6): ?>
+        <!-- 운영자 -->
+        <link type="text/css" rel="stylesheet" href='adminStyle.css'>
+        <script type="text/javascript" src='adminAction.js'></script>
+<?php endif;?>
 
-    Popup_Import();
-    Popup_Init();
-    Popup_Update();
-
-    Entrance_Import();
-    Entrance_Init();
-    Entrance_Update();
-}
-        </script>
     </head>
     <body>
 <?php include(MANAGE.W.FRAME); ?>
 <?php
 if($member['GRADE'] >= 6) {
-    include(MEMBER.W.FRAME);
+    include('member/Frame.php');
 }
 ?>
 
 <div id="server_list_container">
 
+<?php
+if($userGrade >= 6){
+    echo $templates->render('global_panel',['notice'=>$system['NOTICE']]);
+}
+?>
+
 <div id="server_notice"><span style="color:orange;font-size:2em;"><?=$system['NOTICE'];?></span></div>
 
-<?php /*XXX:div라지만 누가봐도 표면 그냥 table인게 낫지 않겠음?*/ ?>
 <table id="server_list_table">
     <caption class="bg2 section_title with_border">서 버 선 택</caption>
     <colgroup>
@@ -105,10 +105,10 @@ if($member['GRADE'] >= 6) {
     </div>
 </div>
 
-
 <?php
-if($member['GRADE'] >= 6) {
-include(ADMIN.INC);
+if($userGrade >= 6){
+    echo $templates->render('server_panel',[]);
+    //include('adminInc.php');
 }
 ?>
 

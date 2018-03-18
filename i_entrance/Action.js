@@ -181,3 +181,16 @@ function Entrance_Logout() {
         )
     });
 }
+
+$(function(){
+    ImportView("body", "../i_popup/Frame.php");
+    //ImportView("body", FRAME);
+
+    Popup_Import();
+    Popup_Init();
+    Popup_Update();
+
+    Entrance_Import();
+    Entrance_Init();
+    Entrance_Update();
+});

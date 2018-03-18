@@ -1,8 +1,12 @@
 @charset "utf-8";
 
+#server_admin_table{
+    width:100%;
+}
+
 #Entrance_0002 {
     width: 800px; height: 170px;
-    position: absolute; top: 304px; left: 0px;
+    /*position: absolute; top: 304px; left: 0px;*/
 }
 
 #Entrance_000200 {
@@ -34,44 +38,36 @@
 
 #Entrance_0003 {
     width: 800px; height: 176px;
-    position: absolute; top: 494px; left: 0px;
 }
 
 #Entrance_000300 {
     width: 798px; height: 50px;
-    position: absolute; top: 0px; left: 0px;
     font-size: 30px; font-weight: bold;
 }
 
 #Entrance_000301 {
     width: 798px; height: 20px;
-    position: absolute; top: 52px; left: 0px;
     border: none;
 }
 
 #Entrance_00030000 {
     width: 98px; height: 20px;
-    position: absolute; top: 0px; left: 0px;
 }
 
 #Entrance_00030001 {
     width: 198px; height: 20px;
-    position: absolute; top: 0px; left: 100px;
 }
 
 #Entrance_00030002 {
     width: 498px; height: 20px;
-    position: absolute; top: 0px; left: 300px;
 }
 
 #Entrance_00030003 {
     width: 118px; height: 20px;
-    position: absolute; top: 0px; left: 680px;
 }
 
 #Entrance_000302 {
     width: 798px;
-    position: absolute; top: 74px; left: 0px;
     border: none;
 }
 
