@@ -17,7 +17,7 @@ class _Setting {
         }
     }
 
-    public function isExist() {
+    public function isExists() {
         return $this->exist;
     }
 

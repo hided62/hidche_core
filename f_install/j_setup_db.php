@@ -48,7 +48,7 @@ if(file_exists(ROOT.'/d_setting/conf.php') && is_dir(ROOT.'/d_setting/conf.php')
     ]);
 }
 
-if($SETTING->isExist()){
+if($SETTING->isExists()){
     returnJson([
         'result'=>false,
         'reason'=>'이미 conf.php 파일이 있습니다'

@@ -25,7 +25,7 @@ $db = getRootDB();
 $member = $db->queryFirstRow('SELECT `GRADE` FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
 
 function doServerModeSet($server, $select, &$response){
-    global $serverList;
+    $serverList = getServerConfigList();
     $settingObj = $serverList[$server][2];
 
     $serverDir = $settingObj->getShortName();

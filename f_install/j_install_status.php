@@ -17,7 +17,7 @@ function dbSQLFail($params){
     ]);
 }
 
-if(!$SETTING->isExist()){
+if(!$SETTING->isExists()){
     returnJson([
         'step'=>'config'
     ]);

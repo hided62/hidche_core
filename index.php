@@ -2,7 +2,7 @@
 require('_common.php');
 require(ROOT.'/f_config/SETTING.php');
 
-if(!$SETTING->isExist()){
+if(!$SETTING->isExists()){
     header ('Location:install.php');
     die();
 }

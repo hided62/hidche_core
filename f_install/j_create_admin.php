@@ -27,7 +27,7 @@ if(strlen($password)!=128){
     ]);
 }
 
-if(!$SETTING->isExist()){
+if(!$SETTING->isExists()){
     returnJson([
         'result'=>false,
         'reason'=>'DB 설정이 완료되지 않았습니다.'
