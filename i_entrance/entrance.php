@@ -13,7 +13,7 @@ $userGrade = $SESSION->getGrade();
 <html>
 
     <head>
-        <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+        <meta charset="UTF-8">
         <title>서버목록</title>
 
         <!-- 스타일 -->

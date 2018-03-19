@@ -10,7 +10,7 @@ $images = IMAGES;
 <html>
 
     <head>
-        <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+        <meta charset="UTF-8">
         <title>튜토리얼</title>
 
 <style type="text/css">

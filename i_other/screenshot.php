@@ -9,7 +9,7 @@ if($sel == 0) $sel = 1;
 <html>
 
     <head>
-        <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+        <meta charset="UTF-8">
         <title>스크린샷</title>
 
 <style type="text/css">
