@@ -57,7 +57,7 @@ $access_token = $SESSION->get('access_token');
                     <div class="form-group row">
                         <label for="username" class="col-sm-3 col-form-label">계정명</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="username" id="username"  placeholder="계정명"/>
+                            <input autocomplete="username" type="text" class="form-control" name="username" id="username"  placeholder="계정명"/>
                         </div>
                     </div>
 
@@ -65,7 +65,7 @@ $access_token = $SESSION->get('access_token');
                     <div class="form-group row">
                         <label for="password" class="col-sm-3 col-form-label">비밀번호</label>
                         <div class="col-sm-9">
-                            <input type="password" class="form-control" name="password" id="password"  placeholder="비밀번호"/>
+                            <input autocomplete="current-password" type="password" class="form-control" name="password" id="password"  placeholder="비밀번호"/>
                         </div>
                     </div>
 

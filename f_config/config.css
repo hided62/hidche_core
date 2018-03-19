@@ -36,6 +36,12 @@ div     {
     border-bottom-color: black;
 }
 
+.section_title {
+    height:50px;
+    line-height:50px;
+    font-size: 30px; font-weight: bold;
+    text-align: center;
+}
 
 .legacy_layout div     {
     border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;

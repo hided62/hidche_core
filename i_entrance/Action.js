@@ -44,14 +44,9 @@ var serverLoginTemplate = "\
 
 function Entrance_Import() {
     ImportAction("../i_entrance/manage/Action.js");
-
-    EntranceManage_Import();
 }
 
 function Entrance_Init() {
-    EntranceManage_Init();
-
-    $("#btn_user_manage").click(Entrance_Manage);
     $("#btn_logout").click(Entrance_Logout);
 }
 
@@ -157,12 +152,6 @@ function Entrance_ServerListPosition() {
     $("#Entrance_0002").css("top", top+"px");
     top = 20 + top + $("#Entrance_0002").height();
     $("#Entrance_0003").css("top", top+"px");
-}
-
-function Entrance_Manage() {
-    $("#Entrance_00").hide();
-    $("#EntranceManage_00").show();
-    EntranceManage_Update();
 }
 
 function Entrance_Logout() {

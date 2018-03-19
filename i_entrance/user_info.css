@@ -1,50 +1,120 @@
 @charset "utf-8";
 
+#user_info_container{
+    width:500px;
+    position:absolute;
+    left:50%;
+    margin-left:-250px;
+}
+
+#user_info_table{
+    width:100%;
+    margin-top:30px;
+}
+
+#user_info_table th{
+    padding:5px;
+}
+
+#btn_back1{
+    position:absolute;
+    right: 6px;
+    margin:6px;
+    height:40px;
+}
+
+#btn_delete_me{
+    bottom:0;
+    left:0;
+    margin:0 1px;
+    position:absolute;
+    width:100%;
+}
+
+#change_pw{
+    width:100%;
+}
+
+#image_upload_filename{
+    position:absolute;
+    height:16px;
+    left:10px;
+    width:150px;
+    top:16px;
+}
+
+#image_upload_fake_btn{
+    top:16px;
+    height:20px;
+    right:10px;
+    position:absolute;
+}
+
+#image_upload{
+    opacity: 0;
+    position:absolute;
+    top:16px;
+    height:22px;
+    left:0;
+    height:20px;
+    width:100%;
+}
+
+#slot_new_icon{
+    visibility: hidden;
+}
+
+
+#btn_image_submit{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:50%;
+    height:20px;
+}
+
+#btn_remove_icon{
+    position:absolute;
+    bottom:0;
+    right:0;
+    width:50%;
+    height:20px;
+}
+
 #EntranceManage_00 {
     width: 500px; height: 409px;
-    position: absolute;
-    top: 50px; left: 50%;
-    margin-left: -256px; /* DIV박스 크기의 1/2로 마진을 잡아줍니다. */
-    display: none;
     z-index: 2;
 }
 
 #EntranceManage_0000 {
     width: 498px; height: 50px;
-    position: absolute; top: 0px; left: 0px;
 }
 
 #EntranceManage_0001 {
     width: 100px; height: 30px;
-    position: absolute; top: 10px; left: 350px;
 }
 
 #EntranceManage_0002 {
     width: 498px; height: 25px;
-    position: absolute; top: 50px; left: 0px;
 }
 
 #EntranceManage_0003 {
     width: 98px; height: 84px;
-    position: absolute; top: 75px; left: 0px;
     line-height: 84px;
 }
 
 #EntranceManage_0004 {
     width: 148px; height: 84px;
-    position: absolute; top: 75px; left: 100px;
     line-height: 84px;
 }
 
 #EntranceManage_0005 {
     width: 98px; height: 84px;
-    position: absolute; top: 75px; left: 250px;
     line-height: 84px;
 }
 
 #EntranceManage_0006 {
     width: 148px; height: 84px;
-    position: absolute; top: 75px; left: 350px;
     text-align: left;
 }
 
@@ -66,116 +136,95 @@
 
 #EntranceManage_0007 {
     width: 98px; height: 64px;
-    position: absolute; top: 159px; left: 0px;
     line-height: 64px;
 }
 
 #EntranceManage_0008 {
     width: 148px; height: 64px;
-    position: absolute; top: 159px; left: 100px;
     line-height: 64px;
 }
 
 #EntranceManage_0009 {
     width: 98px; height: 64px;
-    position: absolute; top: 159px; left: 250px;
     line-height: 64px;
 }
 
 #EntranceManage_0010 {
     width: 148px; height: 64px;
-    position: absolute; top: 159px; left: 350px;
     line-height: 64px;
 }
 
 #EntranceManage_0011 {
     width: 98px; height: 20px;
-    position: absolute; top: 223px; left: 0px;
 }
 
 #EntranceManage_0012 {
     width: 148px; height: 20px;
-    position: absolute; top: 223px; left: 100px;
 }
 
 #EntranceManage_0013 {
     width: 248px; height: 20px;
-    position: absolute; top: 223px; left: 250px;
 }
 
 #EntranceManage_0014 {
     width: 98px; height: 64px;
-    position: absolute; top: 243px; left: 0px;
     line-height: 64px;
 }
 
 #EntranceManage_0015 {
     width: 148px; height: 64px;
-    position: absolute; top: 243px; left: 100px;
 }
 
 #EntranceManage_001500 {
     width: 64px; height: 64px;
-    position: absolute; top: 0px; left: 0px;
 }
 
 #EntranceManage_001501 {
     width: 64px; height: 64px;
-    position: absolute; top: 0px; left: 85px;
 }
 
 #EntranceManage_0016 {
     width: 248px; height: 64px;
-    position: absolute; top: 243px; left: 250px;
 }
 
 #EntranceManage_001600 {
     width: 100px; height: 16px;
-    position: absolute; top: 10px; left: 10px;
     display: none;
 }
 
 #EntranceManage_001601 {
     width: 70px; height: 20px;
-    position: absolute; top: 10px; left: 120px;
 }
 
 #EntranceManage_001602 {
     width: 85px; height: 20px;
-    position: absolute; top: 35px; left: 10px;
 }
 
 #EntranceManage_001603 {
     width: 85px; height: 20px;
-    position: absolute; top: 35px; left: 105px;
 }
 
 #EntranceManage_0017 {
     width: 98px; height: 100px;
-    position: absolute; top: 307px; left: 0px;
     line-height: 100px;
 }
 
 #EntranceManage_0018 {
     width: 398px; height: 100px;
-    position: absolute; top: 307px; left: 100px;
     text-align: left;
 }
 
 #EntranceManage_0019 {
     width: 149px; height: 20px;
-    position: absolute; top: 139px; left: 101px;
 }
 
 #EntranceManage_0020 {
     width: 500px; height: 20px;
-    position: absolute; top: 409px; left: -1px;
     border: none;
 }
 
 #EntranceManage_002000 {
     width: 500px;
-    position: absolute; top: 0px; left: 0px;
 }
 
 #EntranceManage_00200000 {
