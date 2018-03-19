@@ -28,8 +28,6 @@ $system = getRootDB()->queryFirstRow('SELECT `REG`, `LOGIN` FROM `SYSTEM` WHERE 
         <!-- 액션 -->
         <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
         <script type="text/javascript" src='../e_lib/md5-min.js'></script>
-        <script type="text/javascript" src='../f_config/config.js'></script>
-        <script type="text/javascript" src='../f_config/app.js'></script>
         <script type="text/javascript" src='../f_func/func.js'></script>
 
         <script type="text/javascript" src='../i_popup/Action.js'></script>
