@@ -6,9 +6,8 @@ require_once(ROOT.'/f_config/SESSION.php');
 $templates = new League\Plates\Engine('templates');
 
 $db = getRootDB();
-$system = $db->queryFirstRow('SELECT `NOTICE` FROM `SYSTEM` WHERE `NO`=1');
-$member = $db->queryFirstRow('SELECT ID, GRADE FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
-$userGrade = $member['GRADE'];
+$notice = $db->queryFirstField('SELECT `NOTICE` FROM `SYSTEM` WHERE `NO`=1');
+$userGrade = $SESSION->getGrade();
 ?>
 <!DOCTYPE html>
 <html>
@@ -44,7 +43,7 @@ $userGrade = $member['GRADE'];
     <body>
 <?php include("manage".W."Frame.php"); ?>
 <?php
-if($member['GRADE'] >= 6) {
+if($userGrade >= 6) {
     include('member/Frame.php');
 }
 ?>
@@ -53,11 +52,11 @@ if($member['GRADE'] >= 6) {
 
 <?php
 if($userGrade >= 6){
-    echo $templates->render('global_panel',['notice'=>$system['NOTICE']]);
+    echo $templates->render('global_panel',['notice'=>$notice]);
 }
 ?>
 
-<div id="server_notice"><span style="color:orange;font-size:2em;"><?=$system['NOTICE'];?></span></div>
+<div id="server_notice"><span style="color:orange;font-size:2em;"><?=$notice?></span></div>
 
 <table id="server_list_table">
     <caption class="bg2 section_title with_border">서 버 선 택</caption>

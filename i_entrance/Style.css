@@ -53,8 +53,9 @@
     text-align: center;
 }
 
-#user_info input{
-    width: 200px; height: 50px;
+#user_info button{
+    width: 200px;
+    height: 50px;
     margin: 10px 50px;
 }
 

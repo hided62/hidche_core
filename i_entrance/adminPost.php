@@ -19,8 +19,14 @@ $notice = util::array_get($_POST['notice'], '');
 $server = util::array_get($_POST['server'], '');
 
 $db = getRootDB();
+$userGrade = $SESSION->getGrade();
 
-$member = $db->queryFirstRow('SELECT `GRADE` FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
+if($userGrade < 6) {
+    returnJson([
+        'result'=>'FAIL',
+        'msg'=>'운영자 권한이 없습니다.'
+    ]);
+}
 
 function doServerModeSet($server, $action, &$response){
     $serverList = getServerConfigList();
@@ -48,6 +54,7 @@ function doServerModeSet($server, $action, &$response){
             ['allow_ip' => $allow_ip, 'xforward_allow_ip' => $xforward_allow_ip]);
         file_put_contents($serverPath.'/.htaccess', $htaccess);
     } elseif($action == 'reset') {//리셋
+        //FIXME: reset, reset_full 구현
         if(file_exists($serverPath.'/d_setting/conf.php')){
             @unlink($serverPath.'/d_setting/conf.php');
         }
@@ -63,13 +70,8 @@ function doServerModeSet($server, $action, &$response){
     return true;
 }
 
-function doAdminPost($member, $action, $notice, $server){
+function doAdminPost($action, $notice, $server){
     $response['result'] = 'FAIL';
-    if($member['GRADE'] < 6) {
-        $response['result'] = 'FAIL';
-        $response['msg'] = '운영자 권한이 없습니다.';
-        return $response;
-    }
 
     if($action == 'notice') {
         getRootDB()->update('SYSTEM', ['NOTICE'=>$notice], 'NO=1');
@@ -86,6 +88,6 @@ function doAdminPost($member, $action, $notice, $server){
 
 }
 
-$response = doAdminPost($member, $action, $notice, $server);
+$response = doAdminPost($action, $notice, $server);
 
 echo json_encode($response);

@@ -39,6 +39,10 @@ class _Session {
         unset($_SESSION['userGrade']);
     }
 
+    public function getGrade() {
+        return $_SESSION['userGrade'];
+    }
+
     public function isLoggedIn() {
         if($this->NoMember()){
             return true;
