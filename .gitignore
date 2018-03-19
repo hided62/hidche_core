@@ -123,3 +123,9 @@ conf.php
 d_setting/conf*.php
 err.txt
 !*/*.orig.php
+che/.htaccess
+kwe/.htaccess
+pwe/.htaccess
+twe/.htaccess
+hwe/.htaccess
+
