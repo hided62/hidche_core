@@ -3,10 +3,10 @@ var serverAdminTemplate = '\
 <tr class="bg0" data-server_name="<%name%>">\
     <th style="color:<%color%>;"><%korName%>(<%name%>)</th>\
     <td><%status%></td>\
-    <td><input class="with_skin obj_fill" type="button" value="폐쇄" onclick="Entrance_AdminPost(this, 0);"></td>\
-    <td><input class="with_skin obj_fill" type="button" value="오픈" onclick="Entrance_AdminPost(this, 2);"></td>\
-    <td><input class="with_skin obj_fill" type="button" value="리셋" onclick="Entrance_AdminPost(this, 1);"></td>\
-    <td><input class="with_skin obj_fill" type="button" value="하드리셋" onclick="Entrance_AdminPost(this, 3);"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="폐쇄" onclick="modifyServerStatus(this, \'close\');"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="오픈" onclick="modifyServerStatus(this, \'open\');"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="리셋" onclick="modifyServerStatus(this, \'reset\');"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="하드리셋" onclick="modifyServerStatus(this, \'reset_full\');"></td>\
     <td><input class="with_skin obj_fill" type="button" value="폐쇄중 로그인" onclick="Entrance_AdminClosedLogin(this);"></td>\
     <td><input class="with_skin obj_fill" type="button" value="서버119" onclick="Entrance_AdminOpen119(this);"></td>\
 </tr>\
@@ -79,7 +79,7 @@ function Entrance_AdminChangeNotice() {
             Popup_Wait(function() {
                 PostJSON(
                     HOME+I+ENTRANCE+W+ADMIN+POST, {
-                        action: 0,
+                        action: 'notice',
                         notice: notice
                     },
                     function(response, textStatus) {
@@ -94,7 +94,7 @@ function Entrance_AdminChangeNotice() {
     });
 }
 
-function Entrance_AdminPost(caller, select) {
+function modifyServerStatus(caller, action) {
     var $caller = $(caller);
     var server = $caller.parents('tr').data('server_name');
     
@@ -102,14 +102,13 @@ function Entrance_AdminPost(caller, select) {
             Popup_Wait(function() {
                 PostJSON(
                     HOME+I+ENTRANCE+W+ADMIN+POST, {
-                        action: 1,
                         server: server,
-                        select: select
+                        action: action
                     },
                     function(response, textStatus) {
                         if(response.result == "SUCCESS") {
                             Popup_WaitHide();
-                            if(select == 1) {
+                            if(action == 'reset') {
                                 ReplaceFrame(response.installURL);
                             } else {
                                 Replace(ENTRANCE+PHP);
