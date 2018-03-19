@@ -156,7 +156,6 @@ $db->insert('MEMBER', array(
 $response['result'] = 'SUCCESS';
 $response['msg'] = "정상적으로 회원 가입되었습니다. ID: {$id}";
 
-sleep(1);
 echo json_encode($response);
 
 ?>

@@ -29,7 +29,6 @@ if($member['PW'] != $pw) {
     $response['msg'] = "정상적으로 탈퇴신청 되었습니다.";
 }
 
-sleep(1);
 echo json_encode($response);
 
 

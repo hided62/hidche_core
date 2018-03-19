@@ -107,7 +107,6 @@ $db->update('MEMBER', ['PW'=>$pw], 'ID=%s', $id);
 $response['result'] = 'SUCCESS';
 $response['msg'] = "정상적으로 비번이 변경되었습니다. ID: {$id}";
 
-sleep(1);
 echo json_encode($response);
 
 

@@ -98,7 +98,6 @@ if($system['REG'] != 'Y') {
     }
 }
 
-sleep(1);
 echo json_encode($response);
 
 ?>

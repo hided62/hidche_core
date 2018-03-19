@@ -6,7 +6,6 @@ $registeredCount = getRootDB()->queryFirstField('SELECT COUNT(`NO`) AS CNT FROM 
 $response['registeredCount'] = $registeredCount;
 $response['result'] = 'SUCCESS';
 
-sleep(1);
 echo json_encode($response);
 
 

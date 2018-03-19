@@ -24,7 +24,6 @@ if($member['PW'] != $pw) {
     $response['msg'] = "정상적으로 비밀번호가 수정되었습니다.";
 }
 
-sleep(1);
 echo json_encode($response);
 
 

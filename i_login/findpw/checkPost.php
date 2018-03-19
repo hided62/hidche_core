@@ -77,7 +77,6 @@ if($type == 0) {
     }
 }
 
-sleep(1);
 echo json_encode($response);
 
 

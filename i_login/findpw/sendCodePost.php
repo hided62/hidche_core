@@ -41,7 +41,6 @@ if($err == 1) {
     }
 }
 
-//sleep(1);
 echo json_encode($response);
 
 

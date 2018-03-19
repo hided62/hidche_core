@@ -90,7 +90,6 @@ if(!is_uploaded_file($image['tmp_name'])) {
     }
 }
 
-sleep(1);
 
 /*
 echo "<script type='text/javascript'>
