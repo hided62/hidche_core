@@ -57,6 +57,8 @@ function doServerModeSet($server, $action, &$response){
         if(file_exists($serverPath.'/.htaccess')){
             @unlink($serverPath.'/.htaccess');
         }
+    } else{
+        return false;
     }
     return true;
 }
