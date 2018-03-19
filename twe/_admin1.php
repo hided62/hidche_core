@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 
 if(getUserGrade() < 5) {
-    echo "
+    echo "<!DOCTYPE html>
 <html>
 <head>
 <title>관리메뉴</title>
@@ -26,6 +26,7 @@ if(getUserGrade() < 5) {
 
 $admin = getAdmin($connect);
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>게임관리</title>

@@ -1,7 +1,7 @@
 <?php
 file_put_contents("logs/_db_bug.txt", $message."\n", FILE_APPEND);
 ?>
-
+<!DOCTYPE html>
 <html>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>

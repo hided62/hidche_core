@@ -10,7 +10,7 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $me = MYDB_fetch_array($result);
 
 if(getUserGrade() < 5) {
-    echo "
+    echo "<!DOCTYPE html>
 <html>
 <head>
 <title>관리메뉴</title>
@@ -41,6 +41,7 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>일제정보</title>

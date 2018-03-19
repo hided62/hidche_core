@@ -18,6 +18,7 @@ if($vote[0] == "") {
 }
 
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>설문조사</title>

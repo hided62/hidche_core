@@ -38,6 +38,7 @@ $general = MYDB_fetch_array($result);
 
 if($general['no'] > 0) {
     echo "
+<!DOCTYPE html>
 <html>
 <head>
 <title>관리메뉴</title>

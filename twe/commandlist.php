@@ -6,7 +6,7 @@ CheckLogin(1);
 $connect = dbConn();
 
 ?>
-
+<!DOCTYPE html>
 <html>
 <head>
 <title>커맨드리스트</title>

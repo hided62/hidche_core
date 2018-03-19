@@ -11,6 +11,7 @@ $connect = dbConn();
 
 if(getUserGrade() < 5) {
     echo "
+<!DOCTYPE html>
 <html>
 <head>
 <title>관리메뉴</title>

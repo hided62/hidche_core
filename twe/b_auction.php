@@ -41,6 +41,7 @@ if($me['skin'] < 1) {
 if($msg == "") $msg = "-";
 if($msg2 == "") $msg2 = "-";
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>거래장</title>

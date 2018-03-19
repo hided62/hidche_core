@@ -17,7 +17,7 @@ if(!$member) {
 
 $connect = dbConn();
 ?>
-
+<!DOCTYPE html>
 <html>
 <head>
 <title>NPC선택</title>

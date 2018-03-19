@@ -6,6 +6,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("국법", 1);
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>국법</title>

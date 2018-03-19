@@ -9,7 +9,7 @@ if(file_exists("d_setting/conf.php")) error("이미 conf.php가 생성되어 있
 
 @chmod(".",0707);
 ?>
-
+<!DOCTYPE html>
 <html>
 <head>
     <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>

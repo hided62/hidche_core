@@ -30,6 +30,7 @@ $str2 = getTournamentTime($connect);
 $str3 = getTournamentTerm($connect);
 
 ?>
+<!DOCTYPE html>
 <html>
 <?php if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다!"); } ?>
 <head>

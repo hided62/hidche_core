@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 
 if(getUserGrade() < 5) {
-    echo "
+    echo "<!DOCTYPE html>
 <html>
 <head>
 <title>관리메뉴</title>
@@ -28,6 +28,7 @@ $query = "select conlimit,conweight from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>회원관리</title>

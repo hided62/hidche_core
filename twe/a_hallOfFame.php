@@ -4,6 +4,7 @@ include "func.php";
 $connect = dbConn();
 increaseRefresh("명예의전당", 2);
 ?>
+<!DOCTYPE html>
 <html>
 
 <head>

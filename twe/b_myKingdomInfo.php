@@ -15,6 +15,7 @@ if($me['level'] == 0) {
     exit();
 }
 ?>
+<!DOCTYPE html>
 <html>
 
 <head>

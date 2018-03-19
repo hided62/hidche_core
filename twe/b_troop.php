@@ -19,6 +19,7 @@ if($me['skin'] < 1) {
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>

@@ -36,6 +36,7 @@ if($me['skin'] < 1) {
     $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
 ?>
+<!DOCTYPE html>
 <html>
 <?php if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다!"); } ?>
 <head>

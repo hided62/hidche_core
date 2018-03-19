@@ -1094,7 +1094,7 @@ switch($dex240) {
 }
 
 ?>
-
+<!DOCTYPE html>
 <html>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>

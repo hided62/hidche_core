@@ -22,6 +22,7 @@ if(!isset($type) || $type == 0) {
 }
 
 ?>
+<!DOCTYPE html>
 <html>
 
 <head>

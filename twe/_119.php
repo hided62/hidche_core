@@ -5,7 +5,8 @@ include "func.php";
 $connect=dbConn();
 
 if(getUserGrade() < 5) {
-    echo "
+    echo "<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <title>관리메뉴</title>
@@ -31,7 +32,7 @@ $query = "select plock from plock";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $plock = MYDB_fetch_array($result);
 ?>
-
+<!DOCTYPE html>
 <html>
 <head>
 <title>삼국지 모의전투 PHP (유기체서버)</title>

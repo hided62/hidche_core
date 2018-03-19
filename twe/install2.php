@@ -5,7 +5,7 @@ if(getUserGrade(true) < 5){
     die('관리자 아님');
 }
 ?>
-
+<!DOCTYPE html>
 <html>
 <head>
     <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>

@@ -17,6 +17,7 @@ $me = MYDB_fetch_array($result);
 $con = checkLimit($me['con'], $admin['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 ?>
+<!DOCTYPE html>
 <html>
 
 <head>

@@ -31,6 +31,7 @@ if($game['maxrefresh'] < $game['refresh']) { $game['maxrefresh'] = $game['refres
 if($game['maxonline'] == 0) { $game['maxonline'] = 1; }
 if($game['maxonline'] < $curonline) { $game['maxonline'] = $curonline; }
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>트래픽정보</title>

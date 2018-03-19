@@ -23,7 +23,7 @@ if(!$member) {
 $connect = dbConn();
 
 ?>
-
+<!DOCTYPE html>
 <html>
 <head>
 <title>장수생성</title>

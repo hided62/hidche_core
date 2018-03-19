@@ -6,7 +6,7 @@ CheckLogin();
 $connect = dbConn();
 
 if(getUserGrade() < 5) {
-    echo "
+    echo "<!DOCTYPE html>
 <html>
 <head>
 <title>관리메뉴</title>
@@ -30,6 +30,7 @@ if($type == 0) {
 $sel[$type] = "selected";
 
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>접속정보</title>

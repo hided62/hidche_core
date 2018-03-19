@@ -65,6 +65,7 @@ for($i=12; $i >= $lv; $i--) {
 }
 
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>

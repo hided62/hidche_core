@@ -10,6 +10,7 @@ if($type == 0) {
 $sel[$type] = "selected";
 
 ?>
+<!DOCTYPE html>
 <html>
 
 <head>

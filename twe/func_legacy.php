@@ -15,6 +15,7 @@ function CheckLogin($type=0) {
 
 function printLimitMsg($turntime) {
     echo "
+<!DOCTYPE html>
 <html>
 <head>
 <title>접속제한</title>

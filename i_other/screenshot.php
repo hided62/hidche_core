@@ -5,7 +5,7 @@ $images = IMAGES;
 
 if($sel == 0) $sel = 1;
 ?>
-
+<!DOCTYPE html>
 <html>
 
     <head>

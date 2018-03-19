@@ -7,7 +7,7 @@ if(getUserGrade(true) < 5){
 
 if(file_exists("d_setting/conf.php")) error("이미 conf.php가 생성되어 있습니다.<br><br>재설치하려면 해당 파일을 지우세요");
 ?>
-
+<!DOCTYPE html>
 <html>
 <head>
     <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
