@@ -1,6 +1,6 @@
 function Login_Import() {
-    ImportAction(HOME+I+LOGIN+W+FINDPW+W+ACTION);
-    ImportAction(HOME+I+LOGIN+W+JOIN+W+ACTION);
+    ImportAction("../i_login/findpw/Action.js");
+    ImportAction("../i_login/join/Action.js");
 
     LoginFindpw_Import();
     LoginJoin_Import();
@@ -82,7 +82,7 @@ function Login_Login() {
 
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+LOGIN+W+POST, {
+            "../i_login/Post.php", {
                 id: id,
                 pw: pw,
                 conmsg: conmsg
@@ -90,7 +90,7 @@ function Login_Login() {
             function(response, textStatus) {
                 if(response.result == "SUCCESS") {
                     Popup_WaitHide();
-                    ReplaceFrame(HOME);
+                    ReplaceFrame("../");
                 } else {
                     Popup_WaitShow(response.msg, function() {
                         $("#Login_00010010").focus();

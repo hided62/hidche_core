@@ -44,7 +44,7 @@ $userGrade = $member['GRADE'];
 
     </head>
     <body>
-<?php include(MANAGE.W.FRAME); ?>
+<?php include("manage".W."Frame.php"); ?>
 <?php
 if($member['GRADE'] >= 6) {
     include('member/Frame.php');
@@ -100,8 +100,8 @@ if($userGrade >= 6){
 <div id="user_info">
     <div class="bg2 section_title with_border">계 정 관 리</div>
     <div class="center_ordered_items with_border bg0">
-        <input id="btn_user_manage" class="with_skin" type="button" value="비밀번호 & 전콘 & 탈퇴">
-        <input id="btn_logout" class="with_skin" type="button" value="로 그 아 웃">
+        <button id="btn_user_manage" class="with_skin">비밀번호 &amp; 전콘 &amp; 탈퇴</button>
+        <button id="btn_logout" class="with_skin">로 그 아 웃</button>
     </div>
 </div>
 

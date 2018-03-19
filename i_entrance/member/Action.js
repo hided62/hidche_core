@@ -42,7 +42,7 @@ function EntranceMember_Order() {
 function EntranceMember_UpdateMember(select) {
     Popup_Wait(function() {
         GetJSON(
-            HOME+I+ENTRANCE+W+MEMBER+W+GET, {
+            "../../i_entrance/member/Get.php", {
                 select: select
             },
             function(response, textStatus) {
@@ -67,7 +67,7 @@ function EntranceMember_Post(select) {
     Popup_Confirm('정말 실행하시겠습니까?', function() {
         Popup_Wait(function() {
             PostJSON(
-                HOME+I+ENTRANCE+W+MEMBER+W+POST, {
+                "../../i_entrance/member/Post.php", {
                     select: select,
                     no: no
                 },

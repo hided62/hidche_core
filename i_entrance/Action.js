@@ -43,7 +43,7 @@ var serverLoginTemplate = "\
 ";
 
 function Entrance_Import() {
-    ImportAction(HOME+I+ENTRANCE+W+MANAGE+W+ACTION);
+    ImportAction("../i_entrance/manage/Action.js");
 
     EntranceManage_Import();
 }
@@ -62,7 +62,7 @@ function Entrance_Update() {
 function Entrance_UpdateServer() {
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+ENTRANCE+W+SERVERLIST+POST, {
+            "../i_entrance/serverListPost.php", {
             },
             function(response, textStatus) {
                 if(response.result == "SUCCESS") {
@@ -87,10 +87,10 @@ function Entrance_drawServerList(serverInfos){
             return true;
         }
 
-        var serverPath = '../'+serverInfo.name;
+        var serverPath = "../"+serverInfo.name;
 
 
-        $.getJSON('../'+serverInfo.name+'/j_server_basic_info.php',{}, function(result){
+        $.getJSON("../"+serverInfo.name+'/j_server_basic_info.php',{}, function(result){
             console.log(result);
             console.log(result.game);
             if(!result.game){
@@ -168,12 +168,12 @@ function Entrance_Manage() {
 function Entrance_Logout() {
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+ENTRANCE+W+LOGOUT+POST, {
+            "../i_entrance/logoutPost.php", {
             },
             function(response, textStatus) {
                 if(response.result == "SUCCESS") {
                     Popup_WaitHide();
-                    ReplaceFrame(HOME);
+                    ReplaceFrame("../");
                 } else {
                     Popup_WaitShow("로그아웃 실패!");
                 }
@@ -184,7 +184,7 @@ function Entrance_Logout() {
 
 $(function(){
     ImportView("body", "../i_popup/Frame.php");
-    //ImportView("body", FRAME);
+    //ImportView("body", "Frame.php");
 
     Popup_Import();
     Popup_Init();

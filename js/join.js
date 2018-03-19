@@ -110,7 +110,7 @@ $(document).ready( function () {
                 alert('정상적으로 가입되었습니다.');
             }
 
-            window.location.href = '../';
+            window.location.href = "../";
 
         });
         console.log('Yes!');

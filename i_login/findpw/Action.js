@@ -42,7 +42,7 @@ function LoginFindpw_Update() {
 
 function LoginFindpw_UpdateRegisteredCount() {
     GetJSON(
-        HOME+I+LOGIN+W+FINDPW+W+GET, { },
+        "../../i_login/findpw/Get.php", { },
         function(response, textStatus) {
             if(response.result == "SUCCESS") {
                 $("#LoginFindpw_000100").text(response.registeredCount);
@@ -94,7 +94,7 @@ function LoginFindpw_SendCode() {
 
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+LOGIN+W+FINDPW+W+"sendCode"+POST, {
+            "../../i_login/findpw/sendCodePost.php", {
                 email: email
             },
             function(response, textStatus) {
@@ -125,7 +125,7 @@ function LoginFindpw_VerifyCode() {
     } else if(code.length == 6) {
         Popup_Wait(function() {
             PostJSON(
-                HOME+I+LOGIN+W+FINDPW+W+"verifyCode"+POST, {
+                "../../i_login/findpw/verifyCodePost.php", {
                     email: email,
                     code: code
                 },
@@ -153,7 +153,7 @@ function LoginFindpw_Check(type) {
 
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+LOGIN+W+FINDPW+W+"check"+POST, {
+            "../../i_login/findpw/checkPost.php", {
                 type: type,
                 id: id,
                 pid1: pid1,
@@ -194,7 +194,7 @@ function LoginFindpw_Findpw() {
 
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+LOGIN+W+FINDPW+W+POST, {
+            "../../i_login/findpw/Post.php", {
                 id: id,
                 pid1: pid1,
                 pid2: pid2,

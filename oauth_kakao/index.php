@@ -57,7 +57,7 @@ function doLoginUsingOAuth(retry=false){
             }
         }
         else{
-            window.location.href = '../';
+            window.location.href = "../";
         }
     });
 }

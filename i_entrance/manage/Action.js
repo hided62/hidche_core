@@ -20,7 +20,7 @@ function EntranceManage_Init() {
 function EntranceManage_Update() {
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+ENTRANCE+W+MANAGE+W+'Get.php', {
+            "../../i_entrance/manage/Get.php", {
             },
             function(response, textStatus) {
                 if(response.result == "SUCCESS") {
@@ -82,7 +82,7 @@ function EntranceManage_ChangePw() {
     Popup_Confirm('정말 실행하시겠습니까?', function() {
         Popup_Wait(function() {
             PostJSON(
-                HOME+I+ENTRANCE+W+MANAGE+W+"password"+POST, {
+                "../../i_entrance/manage/passwordPost.php", {
                     pw: hex_md5(pw+""+pw),
                     newPw: hex_md5(pw1+""+pw1)
                 },
@@ -112,7 +112,7 @@ function EntranceManage_DeleteIcon() {
     Popup_Confirm('정말 실행하시겠습니까?', function() {
         Popup_Wait(function() {
             PostJSON(
-                HOME+I+ENTRANCE+W+MANAGE+W+"delete"+POST, {
+                "../../i_entrance/manage/deletePost.php", {
                 },
                 function(response, textStatus) {
                     Popup_WaitShow(response.msg, function() {
@@ -138,13 +138,13 @@ function EntranceManage_Quit() {
     Popup_Confirm('정말 탈퇴하시겠습니까?', function() {
         Popup_Wait(function() {
             PostJSON(
-                HOME+I+ENTRANCE+W+MANAGE+W+"quit"+POST, {
+                "../../i_entrance/manage/quitPost.php", {
                     pw: hex_md5(pw+""+pw)
                 },
                 function(response, textStatus) {
                     if(response.result == "SUCCESS") {
                         Popup_WaitShow(response.msg, function() {
-                            ReplaceFrame(HOME);
+                            ReplaceFrame("../../");
                         });
                     } else {
                         Popup_WaitShow(response.msg, function() {

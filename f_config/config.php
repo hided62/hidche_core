@@ -29,13 +29,6 @@ define('F_FUNC', 'f_func');
 
 define('JS', '.js');
 define('CSS', '.css');
-define('PHP', '.php');
-define('FRAME', 'Frame.php');
-define('STYLE', 'Style.css');
-define('ACTION', 'Action.js');
-//define('POST', 'Post.php');
-//define('GET', 'Get.php');
-define('INC', 'Inc.php');
 
 define('APP', 'app');
 define('FUNC', 'func');
@@ -43,7 +36,6 @@ define('DB', 'DB');
 define('SESSION', 'SESSION');
 define('CONFIG', 'config');
 define('SETTING', 'SETTING');
-define('RETRIVAL', 'retrival');
 define('INSTALL', 'install');
 
 define('SLEEP', 'sleep');

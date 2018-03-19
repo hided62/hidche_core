@@ -38,8 +38,8 @@ $system = getRootDB()->queryFirstRow('SELECT `REG`, `LOGIN` FROM `SYSTEM` WHERE 
 $(document).ready(Login);
 
 function Login() {
-    //ImportView("body", "<?=ROOT;?>"+W+I+POPUP+W+FRAME);
-    //ImportView("body", FRAME);
+    //ImportView("body", "<?=ROOT;?>/i_popup/Frame.php");
+    //ImportView("body", "Frame.php");
 
     Popup_Import();
     Popup_Init();

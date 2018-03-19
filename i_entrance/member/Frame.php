@@ -3,8 +3,8 @@ require_once('_common.php');
 ?>
 
 <script type="text/javascript">
-ImportStyle("<?=ROOT;?>"+W+I+ENTRANCE+W+MEMBER+W+STYLE);
-ImportAction("<?=ROOT;?>"+W+I+ENTRANCE+W+MEMBER+W+ACTION);
+ImportStyle("<?=ROOT;?>/i_entrance/member/Style.css");
+ImportAction("<?=ROOT;?>/i_entrance/member/Action.js");
 EntranceMember_Import();
 EntranceMember_Init();
 </script>

@@ -50,7 +50,7 @@ function LoginJoin_Update() {
 
 function LoginJoin_UpdateRegisteredCount() {
     GetJSON(
-        HOME+I+LOGIN+W+JOIN+W+GET, { },
+        "../../i_login/join/Get.php", { },
         function(response, textStatus) {
             if(response.result == "SUCCESS") {
                 $("#LoginJoin_000100").text(response.registeredCount);
@@ -110,7 +110,7 @@ function LoginJoin_SendCode() {
 
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+LOGIN+W+JOIN+W+"sendCode"+POST, {
+            "../../i_login/join/sendCodePost.php", {
                 email: email
             },
             function(response, textStatus) {
@@ -141,7 +141,7 @@ function LoginJoin_VerifyCode() {
     } else if(code.length == 6) {
         Popup_Wait(function() {
             PostJSON(
-                HOME+I+LOGIN+W+JOIN+W+"verifyCode"+POST, {
+                "../../i_login/join/verifyCodePost.php", {
                     email: email,
                     code: code
                 },
@@ -170,7 +170,7 @@ function LoginJoin_Check(type) {
 
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+LOGIN+W+JOIN+W+"check"+POST, {
+            "../../i_login/join/checkPost.php", {
                 type: type,
                 id: id,
                 pid1: pid1,
@@ -220,7 +220,7 @@ function LoginJoin_Join() {
 
     Popup_Wait(function() {
         PostJSON(
-            HOME+I+LOGIN+W+JOIN+W+POST, {
+            "../../i_login/join/Post.php", {
                 id: id,
                 pw: pw,
                 pid1: pid1,

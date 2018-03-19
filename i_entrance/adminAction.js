@@ -78,7 +78,7 @@ function Entrance_AdminChangeNotice() {
     Popup_Confirm('정말 실행하시겠습니까?', function() {
             Popup_Wait(function() {
                 PostJSON(
-                    HOME+I+ENTRANCE+W+ADMIN+POST, {
+                    "../i_entrance/adminPost.php", {
                         action: 'notice',
                         notice: notice
                     },
@@ -101,7 +101,7 @@ function modifyServerStatus(caller, action) {
     Popup_Confirm('정말 실행하시겠습니까?', function() {
             Popup_Wait(function() {
                 PostJSON(
-                    HOME+I+ENTRANCE+W+ADMIN+POST, {
+                    "../i_entrance/adminPost.php", {
                         server: server,
                         action: action
                     },
@@ -111,7 +111,7 @@ function modifyServerStatus(caller, action) {
                             if(action == 'reset') {
                                 ReplaceFrame(response.installURL);
                             } else {
-                                Replace(ENTRANCE+PHP);
+                                Replace("entrance.php");
                             }
                         } else {
                             Popup_WaitShow(response.msg);
@@ -125,23 +125,23 @@ function modifyServerStatus(caller, action) {
 function Entrance_AdminNPCLogin(caller) {
     var $caller = $(caller);
     var serverDir = $caller.parents('tr').data('server_name');
-    location.href = serverDir+W+'npc_login'+PHP;
+    location.href = serverDir+"/npc_login.php";
 }
 
 function Entrance_AdminNPCCreate(caller) {
     var $caller = $(caller);
     var serverDir = $caller.parents('tr').data('server_name');
-    location.href = serverDir+W+'npc_join'+PHP;
+    location.href = serverDir+"/npc_join.php";
 }
 
 function Entrance_AdminClosedLogin(caller) {
     var $caller = $(caller);
     var serverDir = $caller.parents('tr').data('server_name');
-    location.href = serverDir+W+'npc_login'+PHP;
+    location.href = serverDir+"/npc_login.php";
 }
 
 function Entrance_AdminOpen119(caller) {
     var $caller = $(caller);
     var serverDir = $caller.parents('tr').data('server_name');
-    location.href = serverDir+W+'_119'+PHP;
+    location.href = serverDir+"/_119.php";
 }
