@@ -9,6 +9,7 @@ if(!$SETTING->isExists()){
 
 require(ROOT.'/f_config/DB.php');
 require(ROOT.'/f_func/class._Session.php');
+require(ROOT.'/d_setting/conf_kakao.php');
 
 $SESSION = new _SESSION();
 
@@ -38,6 +39,78 @@ $access_token = $SESSION->get('access_token');
     <script src="js/login.js"></script>
     <link type="text/css" rel="stylesheet" href="e_lib/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="css/login.css">
+    <script>
+
+var oauthMode = null;
+
+function getOAuthToken(mode='login', scope_list = null){
+    oauthMode = mode;
+    var url = 'https://kauth.kakao.com/oauth/authorize?client_id=<?=KakaoKey::REST_KEY?>&redirect_uri=<?=KakaoKey::REDIRECT_URI?>&response_type=code';
+    if(Array.isArray(scope_list)){
+        url += '&scope='+scope_list.join(',');
+    }
+    else if(typeof scope_list === 'string' || scope_list instanceof String){
+        url += '&scope='+scope_list;
+    }
+
+    window.open(url,"KakaoAccountLogin","width=600,height=450");
+
+}
+
+function sendTempPasswordToKakaoTalk(retry=false){
+    $.post({
+        url:'j_change_pw.php',
+        dataType:'json'
+    }).then(function(obj){
+        if (!obj.result && retry) {
+            getOAuthToken('change_pw', 'talk_message');
+        }
+        else if(!obj.result){
+            alert(obj.reason);
+        }
+        else{
+            alert('임시 비밀번호가 카카오톡으로 전송되었습니다.');
+        }
+    });
+}
+
+function doLoginUsingOAuth(retry=false){
+    $.post({
+        url:'oauth_kakao/j_login_oauth.php',
+        dataType:'json'
+    }).then(function(obj){
+        if(!obj.result){
+            if(obj.noRetry || !retry){
+                alert(obj.reason);
+            }
+            else{
+                getOAuthToken('login');
+            }
+        }
+        else{
+            window.location.href = "./";
+        }
+    });
+}
+
+function postOAuthResult(result){
+    if(result == 'join'){
+        window.location.href = 'oauth_kakao/join.php';
+    }
+    else if(result == 'login'){
+        console.log('로그인모드');
+        if(oauthMode=='change_pw'){
+            sendTempPasswordToKakaoTalk();
+        }
+        else{
+            doLoginUsingOAuth();
+        }
+    }
+    else{
+        alert('예외 발생!');
+    }
+}
+</script>
 </head>
 <body>
     <div class="container">
@@ -71,12 +144,19 @@ $access_token = $SESSION->get('access_token');
 
                     <input type="hidden" id="global_salt" name="global_salt" value="<?=getGlobalSalt()?>">
                     <div class="form-group row">
-                        <div class="col-sm-3"></div>
+                        <div class="col-sm-3" style="position:relative;"><a href="javascript:doLoginUsingOAuth(true);"><img style="height:46px;margin-top:6px;" src="oauth_kakao/kakao_btn.png"></a></div>
                         <div class="col-sm-9">
                             <button type="submit" class="btn btn-primary btn-lg btn-block login-button">로그인</button>
                         </div>
                     </div>
                 </form>
+
+                <div class="form-group row">
+                    <div class="col-sm-3"><!--<a href="javascript:sendTempPasswordToKakaoTalk(true);">비밀번호 찾기<img src="oauth_kakao/kakao_to_me.png"></a>--></div>
+                    <div class="col-sm-9">
+                        
+                    </div>
+                </div>
             </div>
         </div>
         </div>
