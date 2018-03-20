@@ -90,5 +90,5 @@ if($generalID){
 //TODO: 이를 표현하는 방법은 '이전 버전'의 serverListPost.php를 참고할 것.
 returnJson([
     'game'=>$game,
-    'me'=>$me
+    'me'=>$me?$me:null
 ]);

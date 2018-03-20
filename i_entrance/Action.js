@@ -43,7 +43,6 @@ var serverLoginTemplate = "\
 ";
 
 function Entrance_Import() {
-    ImportAction("../i_entrance/manage/Action.js");
 }
 
 function Entrance_Init() {
@@ -108,7 +107,7 @@ function Entrance_drawServerList(serverInfos){
                 TemplateEngine(serverTextInfo, game)
             );
 
-            if(result.me){
+            if(result.me && result.me.length > 1){
                 var me = result.me;
                 me.serverPath = serverPath;
                 $serverHtml.append(

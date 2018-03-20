@@ -48,7 +48,7 @@ CREATE TABLE `member_log` (
 	`id` BIGINT(20) NOT NULL AUTO_INCREMENT,
 	`member_no` INT(11) NOT NULL,
 	`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	`action_type` ENUM('reg','try_login','login','logout','oauth','change_pw','make_general','access_server') NOT NULL,
+	`action_type` ENUM('reg','try_login','login','logout','oauth','change_pw','make_general','access_server','delete') NOT NULL,
 	`action` TEXT NULL DEFAULT NULL COMMENT 'JSON',
 	PRIMARY KEY (`id`),
 	INDEX `action` (`member_no`, `action_type`, `date`),

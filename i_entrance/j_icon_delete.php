@@ -43,14 +43,6 @@ if($dt == $rf) {
         'IMGSVR'=>0,
     ], 'NO=%i', $SESSION->NoMember());
     
-    //TODO: 각 세부 서버가 '열린 경우' 이미지를 갱신하도록 처리
-    //Token을 받아 처리하는 형식이면 가능할듯.
-    /*
-    for($i=0; $i < ; $i++) {
-                Update('general', "PICTURE='default.jpg', IMGSVR=0", "NPC=0 AND USER_ID='{$member['ID']}'");
-    }
-    */
-
     $servers = [];
 
     foreach(getServerConfigList() as $key=>$server){

@@ -68,9 +68,16 @@ function deleteIcon(){
 
 function changeIcon(e){
     e.preventDefault();
-    console.log('haha');
     var $icon = $('#image_upload');
+
+    if($icon[0].files.length == 0){
+        alert('파일을 선택해주세요');
+        return false;
+    }
     var icon = $icon[0].files[0];
+
+
+
     $.ajax({
         type:'post',
         url:'j_icon_change.php',
@@ -156,6 +163,40 @@ function changePassword(e){
     });
 }
 
+function deleteMe(){
+    var $form = $('#delete_me_form');
+
+    var pw = $('#delete_pw').val();
+
+    if(!pw){
+        alert('비밀번호를 입력해야 합니다.');
+        return;
+    }
+
+    var global_salt = $('#global_salt').val();
+
+    var password = sha512(global_salt+pw+global_salt);
+
+    $.ajax({
+        type:'post',
+        url:'j_delete_me.php',
+        dataType:'json',
+        data:{
+            pw:password
+        }
+    }).then(function(result){
+        if(!result.result){
+            alert(result.reason);
+        }
+        else{
+            alert('탈퇴 처리되었습니다.');
+            location.href='../';
+        }
+    },function(){
+        alert('알 수 없는 이유로 회원탈퇴에 실패했습니다.');
+    });
+}
+
 $(function(){
     $.ajax({
         type:'post',
@@ -180,28 +221,15 @@ $(function(){
     $('#change_pw_form').submit(changePassword);
 
     $('#change_icon_form').submit(changeIcon);
+
+    $('#delete_me_form').submit(function(e){
+        e.preventDefault();
+        if(confirm('한 달 동안 재 가입할 수 없습니다. 정말로 탈퇴할까요?')){
+            deleteMe(e);
+        }
+    });
 })
 
-
-
-function EntranceManage_Import() {
-}
-
-function EntranceManage_Init() {
-    $("#EntranceManage_0001").click(EntranceManage_Back);
-    $("#EntranceManage_000603").click(EntranceManage_ChangePw);
-    $("#EntranceManage_001600").attr("disabled", "true");
-    $("#EntranceManage_001601").change(EntranceManage_SelectIcon);
-    $("#EntranceManage_001602").click(EntranceManage_ChangeIcon);
-    $("#EntranceManage_001603").click(EntranceManage_DeleteIcon);
-    $("#EntranceManage_0019").click(EntranceManage_Quit);
-
-    if(navigator.userAgent.match('mozilla')) {
-        $("#EntranceManage_001601").css("left", "10px");
-    } else {
-        $("#EntranceManage_001600").show();
-    }
-}
 
 function EntranceManage_Update() {
     Popup_Wait(function() {
@@ -217,70 +245,6 @@ function EntranceManage_Update() {
                 }
             }
         )
-    });
-}
-
-function EntranceManage_Back() {
-    $("#EntranceManage_00").hide();
-    $("#Entrance_00").show();
-    Entrance_Update();
-}
-
-function EntranceManage_SelectIcon() {
-    $("#EntranceManage_001600").val($("#EntranceManage_001601").val());
-}
-
-function EntranceManage_UpdateInfo(member) {
-    $("#EntranceManage_0004").text(member.id);
-    $("#EntranceManage_0008").text(member.name);
-    $("#EntranceManage_0010").text(member.grade);
-    $("#EntranceManage_001500").attr("src", member.picture0);
-    $("#EntranceManage_001501").attr("src", member.picture1);
-}
-
-function EntranceManage_ChangePw() {
-    var pw = $("#EntranceManage_000600").val();
-    var pw1 = $("#EntranceManage_000601").val();
-    var pw2 = $("#EntranceManage_000602").val();
-
-    if(pw.length < 4 || pw.length > 12) {
-        Popup_Alert("비밀번호 길이가 부적합합니다!", function() {
-            $("#EntranceManage_000600").val("");
-            $("#EntranceManage_000600").focus();
-        });
-        return false;
-    }
-    if(pw1.length < 4 || pw1.length > 12) {
-        Popup_Alert("비밀번호 길이가 부적합합니다!", function() {
-            $("#EntranceManage_000601").val("");
-            $("#EntranceManage_000601").focus();
-        });
-        return false;
-    }
-    if(pw1 != pw2) {
-        Popup_Alert("비밀번호가 일치하지 않습니다!", function() {
-            $("#EntranceManage_000601").val("");
-            $("#EntranceManage_000601").focus();
-        });
-        return false;
-    }
-
-    Popup_Confirm('정말 실행하시겠습니까?', function() {
-        Popup_Wait(function() {
-            PostJSON(
-                "../../i_entrance/manage/passwordPost.php", {
-                    pw: hex_md5(pw+""+pw),
-                    newPw: hex_md5(pw1+""+pw1)
-                },
-                function(response, textStatus) {
-                    Popup_WaitShow(response.msg, function() {
-                        $("#EntranceManage_000600").val("");
-                        $("#EntranceManage_000601").val("");
-                        $("#EntranceManage_000602").val("");
-                    });
-                }
-            )
-        })
     });
 }
 
