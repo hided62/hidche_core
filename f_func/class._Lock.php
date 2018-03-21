@@ -2,7 +2,7 @@
 require_once('_common.php');
 
 class _Lock {
-    private static $l = ROOT.'/lock.txt';
+    private static $l = ROOT.'/d_log/lock.txt';
 
     public static function Busy() {
         $fp = fopen(_Lock::$l, 'r');
