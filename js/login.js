@@ -41,7 +41,7 @@ $(document).ready( function () {
         var hash_pw = sha512(salt + raw_password + salt);
 
         $.post({
-            url:'i_login/j_login.php',
+            url:'j_login.php',
             dataType:'json',
             data:{
                 'username':$('#username').val(),
