@@ -9,6 +9,15 @@ use utilphp\util as util;
  * 이 파일만 예외적으로 lib.php, func.php를 참조하지 않고 독자적으로 동작함.
  */
 
+function SetHeaderNoCache(){
+    if(!headers_sent()) {
+        header('Expires: Wed, 01 Jan 2014 00:00:00 GMT');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        header('Cache-Control: post-check=0, pre-check=0', FALSE);
+        header('Pragma: no-cache');
+    }
+}
+
 function parseJsonPost(){
     // http://thisinterestsme.com/receiving-json-post-data-via-php/
     // http://thisinterestsme.com/php-json-error-handling/
@@ -68,14 +77,11 @@ function parseJsonPost(){
 }
 
 function returnJson($value, $noCache = true, $pretty = false, $die = true){
-    header('Content-Type: application/json');
-
     if($noCache){
-        header('Expires: Sun, 01 Jan 2014 00:00:00 GMT');
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-        header('Cache-Control: post-check=0, pre-check=0', FALSE);
-        header('Pragma: no-cache');
+        SetHeaderNoCache();
     }
+    
+    header('Content-Type: application/json');
 
     if($pretty){
         $flag = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;

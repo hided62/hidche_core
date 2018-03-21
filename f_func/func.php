@@ -3,22 +3,16 @@ require(__dir__.'/../vendor/autoload.php');
 
 function SetHeaderNoCache(){
     if(!headers_sent()) {
-        header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
-        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Expires: Wed, 01 Jan 2014 00:00:00 GMT');
+        header('Cache-Control: no-store, no-cache, must-revalidate');
+        header('Cache-Control: post-check=0, pre-check=0', FALSE);
+        header('Pragma: no-cache');
     }
 }
 
 function CustomHeader() {
-    //FIXME: 왜 Contect-Type이 text/html로 고정이지?!
-    if(!headers_sent()) {
-        header('Cache-Control: no-cache');
-        header('Pragma: no-cache');
-//        header('Cache-Control: public');
-//        header('Pragma: public');
-//        header('Content-Type: text/html; charset=utf-8');
-    }
-//define(CURPATH, 'f_async');
-//define(FILE, substr(strrchr(__FILE__, "\\"), 1));
+    //xxx: CustomHeader를 제거하기 전까진 유지
+    SetHeaderNoCache();
 }
 
 function getmicrotime() {
@@ -124,14 +118,11 @@ function delExpiredInDir($dir, $t) {
 
 
 function returnJson($value, $noCache = true, $pretty = false, $die = true){
-    header('Content-Type: application/json');
-
     if($noCache){
-        header('Expires: Wed, 01 Jan 2014 00:00:00 GMT');
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-        header('Cache-Control: post-check=0, pre-check=0', FALSE);
-        header('Pragma: no-cache');
+        SetHeaderNoCache();
     }
+    
+    header('Content-Type: application/json');
 
     if($pretty){
         $flag = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
