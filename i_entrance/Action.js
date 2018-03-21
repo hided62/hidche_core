@@ -56,7 +56,7 @@ function Entrance_Update() {
 function Entrance_UpdateServer() {
     Popup_Wait(function() {
         PostJSON(
-            "../i_entrance/serverListPost.php", {
+            "../i_entrance/j_server_get_status.php", {
             },
             function(response, textStatus) {
                 if(response.result == "SUCCESS") {
