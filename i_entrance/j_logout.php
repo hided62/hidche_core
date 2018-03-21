@@ -10,6 +10,6 @@ $SESSION->logout();
 unset($_SESSION['access_token']);
 setcookie("hello", "", time()-3600);
 
-echo json_encode([
-    'result'=>'SUCCESS'
+returnJson([
+    'result'=>true
 ]);

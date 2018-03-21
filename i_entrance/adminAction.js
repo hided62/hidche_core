@@ -79,7 +79,7 @@ function Entrance_AdminChangeNotice() {
     Popup_Confirm('정말 실행하시겠습니까?', function() {
             Popup_Wait(function() {
                 PostJSON(
-                    "../i_entrance/adminPost.php", {
+                    "../i_entrance/j_server_change_status.php", {
                         action: 'notice',
                         notice: notice
                     },
@@ -102,7 +102,7 @@ function modifyServerStatus(caller, action) {
     Popup_Confirm('정말 실행하시겠습니까?', function() {
             Popup_Wait(function() {
                 PostJSON(
-                    "../i_entrance/adminPost.php", {
+                    "../i_entrance/j_server_change_status.php", {
                         server: server,
                         action: action
                     },

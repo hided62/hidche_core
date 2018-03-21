@@ -156,10 +156,10 @@ function Entrance_ServerListPosition() {
 function Entrance_Logout() {
     Popup_Wait(function() {
         PostJSON(
-            "../i_entrance/logoutPost.php", {
+            "../i_entrance/j_logout.php", {
             },
             function(response, textStatus) {
-                if(response.result == "SUCCESS") {
+                if(response.result) {
                     Popup_WaitHide();
                     ReplaceFrame("../");
                 } else {
