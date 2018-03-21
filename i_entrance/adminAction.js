@@ -44,7 +44,7 @@ $(function(){
     $.ajax({
         cache:false,
         type:'post',
-        url:'j_serverAdminStatus.php',
+        url:'j_server_get_admin_status.php',
         dataType:'json'
     }).then(drawServerAdminList);
 });
