@@ -3,38 +3,34 @@
 #EntranceMember_00 {
     width: 1100px; height: 20px;
     border: none;
-    position: absolute;
-    top: 20px; left: 50%;
-    margin-left: -550px; /* DIV박스 크기의 1/2로 마진을 잡아줍니다. */
-    display: none;
     z-index: 2;
 }
 
 #EntranceMember_0000 {
     width: 1098px; height: 50px;
-    position: absolute; top: 0px; left: 0px;
+    top: 0px; left: 0px;
 }
 
 #EntranceMember_0001 {
     width: 100px; height: 30px;
-    position: absolute; top: 10px; left: 750px;
+    top: 10px; left: 750px;
 }
 
 #EntranceMember_0006 {
     width: 1098px; height: 20px;
-    position: absolute; top: 52px; left: 0px;
+    top: 52px; left: 0px;
 }
 
 #EntranceMember_000600 {
     width: 200px; height: 20px;
-    position: absolute; top: 0px; left: 0px;
+    top: 0px; left: 0px;
     border: 0px;
     line-height: 20px;
 }
 
 #EntranceMember_0002 {
     width: 1098px; height: 20px;
-    position: absolute; top: 74px; left: 0px;
+    top: 74px; left: 0px;
 }
 
 #EntranceMember_000200 {
@@ -47,93 +43,93 @@
 
 #EntranceMember_0003 {
     width: 1098px; height: 20px;
-    position: absolute; top: 96px; left: 0px;
+    top: 96px; left: 0px;
 }
 
 #EntranceMember_0004 {
     width: 1100px; height: 20px;
-    position: absolute; top: 118px; left: 0px;
+    top: 118px; left: 0px;
     border: none;
 }
 
 #EntranceMember_000400 {
     width: 38px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000401 {
     width: 98px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000402 {
     width: 68px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000403 {
     width: 88px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000404 {
     width: 98px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000405 {
     width: 38px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000406 {
     width: 138px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000407 {
     width: 38px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000408 {
     width: 138px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000409 {
     width: 38px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000410 {
     width: 58px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000411 {
     width: 78px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000412 {
     width: 88px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000413 {
     width: 28px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_000414 {
     width: 38px; height: 20px;
-    float: left;
+    
 }
 
 #EntranceMember_0005 {
     width: 1100px; height: 20px;
-    position: absolute; top: 140px; left: 0px;
+    top: 140px; left: 0px;
     border: none;
 }
 

@@ -13,14 +13,97 @@ if($userGrade < 6){
     die();
 }
 ?>
+<!DOCTYPE html>
+<html>
 
+    <head>
+        <meta charset="UTF-8">
+        <title>유저 관리</title>
+
+        <!-- 스타일 -->
+        <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
+        <link type="text/css" rel="stylesheet" href='member/Style.css'>
+
+        <script type="text/javascript" src='../js/common.js'></script>
+        <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
+        <script type="text/javascript" src="../e_lib/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src='../f_func/func.js'></script>
+
+        <script type="text/javascript" src='../i_popup/Action.js'></script>
+        <script type="text/javascript" src='member/Action.js'></script>
 <script type="text/javascript">
-ImportStyle("<?=ROOT;?>/i_entrance/member/Style.css");
-ImportAction("<?=ROOT;?>/i_entrance/member/Action.js");
-EntranceMember_Import();
-EntranceMember_Init();
+$(function(){
+    EntranceMember_Import();
+    EntranceMember_Init();
+})
 </script>
+</head>
+<body>
+<div id="container">
+    <div class="card">
+        <div class="card-header">
+            회원 관리
+        </div>
+        <div class="card-body">
+            가입 허용&nbsp;
+            <div id="radios_allow_join" class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary">
+                    <input type="radio" name="allow_join" value="Y" id="allow_join_y" autocomplete="off">Y
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="allow_join" value="N" id="allow_join_n" autocomplete="off">N
+                </label>
+            </div>
 
+            로그인 허용&nbsp;
+            <div id="radios_allow_login" class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary">
+                    <input type="radio" name="allow_login" value="Y" id="allow_login_y" autocomplete="off">Y
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="allow_login" value="N" id="allow_login_n" autocomplete="off">N
+                </label>
+            </div>
+
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="button" class="btn btn-secondary">탈퇴 계정 정리(1개월+)</button>
+                <button type="button" class="btn btn-secondary">오래된 전콘 정리(1개월+)</button>
+                
+            </div>
+
+            <button type="button" class="btn btn-secondary">오래된 계정 정리(6개월+)</button>
+
+        </div>
+        <h6 class="card-header">회원 목록</h6>
+        <table class="table table-hover table-sm table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">코드</th>
+                    <th scope="col">유저명</th>
+                    <th scope="col">가입 방식</th>
+                    <th scope="col">EMAIL</th>
+                    <th scope="col">등급</th>
+                    <th scope="col">닉네임</th>
+                    <th scope="col">전콘</th>
+                    <th scope="col">가입일자</th>
+                    <th scope="col">최근 로그인</th>
+                    <th scope="col">탈퇴 신청</th>
+                    <th scope="col">명령</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">ㅁ</th>
+                    <td>ㅁ</td>
+                </tr>
+                <tr>
+                    <th scope="row">ㅁ</th>
+                    <td>ㅁ</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 <div id="EntranceMember_00">
     <div id="EntranceMember_0000" class="bg2 font4">
         회 원 정 보
@@ -81,3 +164,5 @@ EntranceMember_Init();
     <div id="EntranceMember_0005">
     </div>
 </div>
+</body>
+</html>

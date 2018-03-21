@@ -19,16 +19,3 @@
     <tbody id="server_admin_list">
     </tbody>
 </table>
-
-<!--
-<div id="Entrance_0003" class="bg0">
-    <div id="Entrance_000300" class="bg2">서 버 관 리</div>
-    <div id="Entrance_000301">
-        <div id="Entrance_00030000" class="bg1">서버(접속)</div>
-        <div id="Entrance_00030001" class="bg1">상 태</div>
-        <div id="Entrance_00030002" class="bg1">선 택</div>
-    </div>
-    <div id="Entrance_000302">
-    </div>
-</div>
--->

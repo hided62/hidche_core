@@ -39,11 +39,6 @@ $userGrade = $SESSION->getGrade();
 
     </head>
     <body>
-<?php
-if($userGrade >= 6) {
-    include('member/Frame.php');
-}
-?>
 
 <div id="server_list_container">
 
