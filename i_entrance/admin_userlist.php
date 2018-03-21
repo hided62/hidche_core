@@ -39,7 +39,7 @@ $(function(){
 </script>
 </head>
 <body>
-<div id="container">
+<div class="container">
     <div class="card">
         <div class="card-header">
             회원 관리
