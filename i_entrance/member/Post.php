@@ -63,6 +63,6 @@ if($member['GRADE'] < 6) {
     $response['result'] = 'SUCCESS';
 }
 
-echo json_encode($response);
+returnJson($response);
 
 

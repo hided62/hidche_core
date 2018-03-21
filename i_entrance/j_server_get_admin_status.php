@@ -7,6 +7,8 @@ require_once(ROOT.'/f_config/SESSION.php');
 
 $result = [];
 
+session_write_close();
+
 foreach (getServerConfigList() as $server) {
     list($serverKorName, $serverColor, $setting) = $server;
 

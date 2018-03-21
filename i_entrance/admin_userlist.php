@@ -6,6 +6,8 @@ require_once(ROOT.'/f_config/SESSION.php');
 $db = getRootDB();
 $userGrade = $SESSION->getGrade();
 
+session_write_close();
+
 if($userGrade < 6){
     header('Location:../');
     die();

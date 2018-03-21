@@ -20,6 +20,7 @@ $server = util::array_get($_POST['server'], '');
 
 $db = getRootDB();
 $userGrade = $SESSION->getGrade();
+session_write_close();
 
 if($userGrade < 6) {
     returnJson([

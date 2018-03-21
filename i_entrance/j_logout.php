@@ -8,6 +8,7 @@ require_once(ROOT.'/f_config/SESSION.php');
 
 $SESSION->logout();
 unset($_SESSION['access_token']);
+session_write_close();
 setcookie("hello", "", time()-3600);
 
 returnJson([
