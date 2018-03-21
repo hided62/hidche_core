@@ -9,6 +9,7 @@ var serverAdminTemplate = '\
     <td><input class="with_skin obj_fill" type="button" value="하드리셋" onclick="modifyServerStatus(this, \'reset_full\');"></td>\
     <td><input class="with_skin obj_fill" type="button" value="폐쇄중 로그인" onclick="Entrance_AdminClosedLogin(this);"></td>\
     <td><input class="with_skin obj_fill" type="button" value="서버119" onclick="Entrance_AdminOpen119(this);"></td>\
+    <td><input class="with_skin obj_fill" type="button" value="업데이트" onclick="Entrance_AdminOpen119(this);"></td>\
 </tr>\
 ';
 
@@ -144,4 +145,8 @@ function Entrance_AdminOpen119(caller) {
     var $caller = $(caller);
     var serverDir = $caller.parents('tr').data('server_name');
     location.href = serverDir+"/_119.php";
+}
+
+function tryServerUpdateAndUpgrade(caller){
+    var $caller = $(caller);
 }
