@@ -18,7 +18,7 @@ $db = getRootDB();
 $member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
 
 if(!$member['picture']){
-    $picture = IMAGE.W.'default.jpg';
+    $picture = IMAGE.'/default.jpg';
 }
 else{
     $picture = $member['picture'];
@@ -27,7 +27,7 @@ else{
     }
     $picture = '../d_pic/'.$picture;
     if(!file_exists($picture)){
-        $picture = IMAGE.W.$picture;
+        $picture = IMAGE.'/'.$picture;
     }
 }
 

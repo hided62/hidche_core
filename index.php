@@ -20,12 +20,7 @@ if($SESSION->isLoggedIn()){
     die();
 }
 
-$access_token = $SESSION->get('access_token');
-
-
 ?>
-
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -113,10 +108,11 @@ function postOAuthResult(result){
 </script>
 </head>
 <body>
+    <div class="vertical-center">
     <div class="container">
         <h1 class="row justify-content-md-center">삼국지 모의전투 HiD</h1>
         <div class="row justify-content-md-center">
-        <div class="col col-12 col-md-10 col-lg-7">
+        <div class="col" style="max-width:450px;">
         <div class="card">
             <h3 class="card-header">
                 로그인
@@ -128,39 +124,41 @@ function postOAuthResult(result){
                     
 
                     <div class="form-group row">
-                        <label for="username" class="col-sm-3 col-form-label">계정명</label>
-                        <div class="col-sm-9">
+                        <label for="username" class="col-sm-4 col-form-label">계정명</label>
+                        <div class="col-sm-8">
                             <input autocomplete="username" type="text" class="form-control" name="username" id="username"  placeholder="계정명"/>
                         </div>
                     </div>
 
                     
                     <div class="form-group row">
-                        <label for="password" class="col-sm-3 col-form-label">비밀번호</label>
-                        <div class="col-sm-9">
+                        <label for="password" class="col-sm-4 col-form-label">비밀번호</label>
+                        <div class="col-sm-8">
                             <input autocomplete="current-password" type="password" class="form-control" name="password" id="password"  placeholder="비밀번호"/>
                         </div>
                     </div>
 
                     <input type="hidden" id="global_salt" name="global_salt" value="<?=getGlobalSalt()?>">
                     <div class="form-group row">
-                        <div class="col-sm-3" style="position:relative;"><a href="javascript:doLoginUsingOAuth(true);"><img style="height:46px;margin-top:6px;" src="oauth_kakao/kakao_btn.png"></a></div>
-                        <div class="col-sm-9">
+                        <div class="col-sm-4" style="position:relative;"><a href="javascript:doLoginUsingOAuth(true);"><img style="height:46px;margin-top:6px;" src="oauth_kakao/kakao_btn.png"></a></div>
+                        <div class="col-sm-8">
                             <button type="submit" class="btn btn-primary btn-lg btn-block login-button">로그인</button>
                         </div>
                     </div>
                 </form>
-
+<!--
                 <div class="form-group row">
-                    <div class="col-sm-3"><!--<a href="javascript:sendTempPasswordToKakaoTalk(true);">비밀번호 찾기<img src="oauth_kakao/kakao_to_me.png"></a>--></div>
-                    <div class="col-sm-9">
+                    <div class="col-sm-4"><a href="javascript:sendTempPasswordToKakaoTalk(true);">비밀번호 찾기<img src="oauth_kakao/kakao_to_me.png"></a></div>
+                    <div class="col-sm-8">
                         
                     </div>
                 </div>
+-->
             </div>
         </div>
         </div>
         </div>
+    </div>
     </div>
 </body>
 </html>

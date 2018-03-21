@@ -34,7 +34,7 @@ function doServerModeSet($server, $action, &$response){
 
     $serverDir = $settingObj->getShortName();
     $serverPath = $settingObj->getBasePath();
-    $realServerPath = realpath(dirname(__FILE__)).W.$serverPath;
+    $realServerPath = realpath(dirname(__FILE__)).'/'.$serverPath;
 
     if($action == 'close') { //폐쇄
         $templates = new League\Plates\Engine('templates');
@@ -59,7 +59,7 @@ function doServerModeSet($server, $action, &$response){
             @unlink($serverPath.'/d_setting/conf.php');
         }
         
-        $response['installURL'] = $serverDir.W."install.php";
+        $response['installURL'] = $serverDir."/install.php";
     } elseif($action == 'open') {//오픈
         if(file_exists($serverPath.'/.htaccess')){
             @unlink($serverPath.'/.htaccess');
