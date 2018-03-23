@@ -36,7 +36,7 @@ if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate
     ]);
 }
 $secret_agree =util::array_get($_POST['secret_agree']);
-$username = util::array_get($_POST['username']);
+$username = mb_strtolower(util::array_get($_POST['username']), 'utf-8');
 $password = util::array_get($_POST['password']);
 $nickname = util::array_get($_POST['nickname']);
 

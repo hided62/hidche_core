@@ -9,7 +9,7 @@ use utilphp\util as util;
 session_start();
 session_destroy();
 
-$username = util::array_get($_POST['username']);
+$username = mb_strtolower(util::array_get($_POST['username']), 'utf-8');
 $password = util::array_get($_POST['password']);
 $nickname = util::array_get($_POST['nickname']);
 

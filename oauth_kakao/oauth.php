@@ -68,4 +68,7 @@ opener.location.href="javascript:postOAuthResult('<?=$oauth_mode?>');";
 window.close();
 </script>
 </head>
+<body>
+로그인 완료. 곧 페이지로 이동합니다.
+</body>
 </html>

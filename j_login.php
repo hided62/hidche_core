@@ -12,7 +12,7 @@ if($SESSION->isLoggedIn()){
     $SESSION->logout();
 }
 
-$username = util::array_get($_POST['username']);
+$username = mb_strtolower(util::array_get($_POST['username']), 'utf-8');
 $password = util::array_get($_POST['password']);
 
 if(!$username || !$password){

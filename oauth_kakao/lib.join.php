@@ -9,6 +9,7 @@ function checkUsernameDup($username){
         return '계정명을 입력해주세요';
     }
 
+    $username = mb_strtolower($username, 'utf-8');
     $length = strlen($username);
     if($length < 4 || $length > 64){
         return '적절하지 않은 길이입니다.';
@@ -26,7 +27,7 @@ function checkNicknameDup($nickname){
         return '닉네임을 입력해주세요';
     }
 
-    $length = strlen($nickname);
+    $length = mb_strlen($nickname, 'utf-8');
     if($length < 1 || $length > 6){
         return '적절하지 않은 길이입니다.';
     }
