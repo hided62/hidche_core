@@ -3,7 +3,6 @@ namespace sammo;
 
 require_once('_common.php');
 require_once(__dir__.'/../d_setting/conf.php');
-require_once(__dir__.'/../f_func/func.php');
 
 function checkUsernameDup($username){
     if(!$username){

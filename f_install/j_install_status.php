@@ -3,9 +3,6 @@ namespace sammo;
 
 
 require('_common.php');
-require(__DIR__.'/../f_config/SETTING.php');
-
-
 
 function dbConnFail($params){
     Json::die([
@@ -19,7 +16,7 @@ function dbSQLFail($params){
     ]);
 }
 
-if(!$SETTING->isExists()){
+if(!AppConf::getRoot()->isExists()){
     Json::die([
         'step'=>'config'
     ]);

@@ -46,7 +46,7 @@ if($dt == $rf) {
     
     $servers = [];
 
-    foreach(getServerConfigList() as $key=>$server){
+    foreach(AppConf::getList() as $key=>$server){
         $setting = $server[2];
         if($setting->isExists()){
             $servers[] = $key;

@@ -2,7 +2,7 @@
 namespace sammo;
 
 if(!defined('ROOT')){
-    define('ROOT', '..');
+    define('ROOT', '../..');
 }
 class Session {
 

@@ -3,9 +3,8 @@ namespace sammo;
 
 require('d_setting/conf_kakao.php');
 require('_common.php');
-require(ROOT.'/f_config/SETTING.php');
 
-if(!$SETTING->isExists()){
+if(!AppConf::getRoot()->isExists()){
     header ('Location:install.php');
     die();
 }

@@ -1,11 +1,8 @@
 <?php
 namespace sammo;
 
-require_once('_common.php');
-require_once(ROOT.'/f_config/SETTING.php');
-
-if($SETTING->isExists()) {
-    require_once($SETTING->getSettingFile());
+if(AppConf::getRoot()->isExists()) {
+    require_once(AppConf::getRoot()->getSettingFile());
 } else {
     Error('설정 파일이 없습니다. 설정을 먼저 하십시요!');
 }

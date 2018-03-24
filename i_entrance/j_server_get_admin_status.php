@@ -11,7 +11,7 @@ $result = [];
 
 session_write_close();
 
-foreach (getServerConfigList() as $server) {
+foreach (AppConf::getList() as $server) {
     list($serverKorName, $serverColor, $setting) = $server;
 
     $serverPath = $setting->getBasePath();

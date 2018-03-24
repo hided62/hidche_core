@@ -2,9 +2,6 @@
 namespace sammo;
 
 require('_common.php');
-require(__DIR__.'/../f_config/SETTING.php');
-
-
 
 function dbConnFail($params){
     Json::die([
@@ -48,7 +45,7 @@ if(file_exists(ROOT.'/d_setting/conf.php') && is_dir(ROOT.'/d_setting/conf.php')
     ]);
 }
 
-if($SETTING->isExists()){
+if(AppConf::getRoot()->isExists()){
     Json::die([
         'result'=>false,
         'reason'=>'이미 conf.php 파일이 있습니다'

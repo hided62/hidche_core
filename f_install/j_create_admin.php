@@ -3,9 +3,6 @@ namespace sammo;
 
 
 require('_common.php');
-require(__DIR__.'/../f_config/SETTING.php');
-
-
 
 session_start();
 session_destroy();
@@ -28,7 +25,7 @@ if(strlen($password)!=128){
     ]);
 }
 
-if(!$SETTING->isExists()){
+if(!AppConf::getRoot()->isExists()){
     Json::die([
         'result'=>false,
         'reason'=>'DB 설정이 완료되지 않았습니다.'
