@@ -84,6 +84,8 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'DB' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'DBHelper' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'DBTransaction' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
+        'FB' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
+        'FirePHP' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/FirePHP.class.php',
         'MeekroDB' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'MeekroDBEval' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'MeekroDBException' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',

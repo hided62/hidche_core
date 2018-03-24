@@ -9,6 +9,8 @@ return array(
     'DB' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'DBHelper' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'DBTransaction' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
+    'FB' => $vendorDir . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
+    'FirePHP' => $vendorDir . '/firephp/firephp-core/lib/FirePHPCore/FirePHP.class.php',
     'MeekroDB' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'MeekroDBEval' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'MeekroDBException' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
