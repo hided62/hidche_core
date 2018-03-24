@@ -158,8 +158,8 @@ function processWar($connect, $general, $city) {
                 $cityDef = getCityDef($city);
 
                 // 감소할 병사 수
-                $cityCrew = GameConst::armperphase + $myAtt - $cityDef;
-                $myCrew = GameConst::armperphase + $cityAtt - $myDef;
+                $cityCrew = GameConst::$armperphase + $myAtt - $cityDef;
+                $myCrew = GameConst::$armperphase + $cityAtt - $myDef;
                 if($cityCrew <= 0) { $cityCrew = rand() % 90 + 10; }
                 if($myCrew <= 0) { $myCrew = rand() % 90 + 10; }
 
@@ -632,8 +632,8 @@ function processWar($connect, $general, $city) {
                 $opAtt = getAtt($game, $oppose, $destnation['tech'], $opplbonus);
                 $opDef = getDef($game, $oppose, $destnation['tech']);
                 // 감소할 병사 수
-                $myCrew = GameConst::armperphase + $opAtt - $myDef;
-                $opCrew = GameConst::armperphase + $myAtt - $opDef;
+                $myCrew = GameConst::$armperphase + $opAtt - $myDef;
+                $opCrew = GameConst::$armperphase + $myAtt - $opDef;
                 if($myCrew <= 0) { $myCrew = rand() % 90 + 10; }
                 if($opCrew <= 0) { $opCrew = rand() % 90 + 10; }
                 //훈련 사기따라
@@ -1757,8 +1757,8 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         unset($genlog[1]);
         
         // 승전국 보상
-        $losenation['gold'] -= GameConst::basegold;
-        $losenation['rice'] -= GameConst::baserice;
+        $losenation['gold'] -= GameConst::$basegold;
+        $losenation['rice'] -= GameConst::$baserice;
         if($losenation['gold'] < 0) { $losenation['gold'] = 0; }
         if($losenation['rice'] < 0) { $losenation['rice'] = 0; }
         

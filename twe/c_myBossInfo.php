@@ -186,12 +186,12 @@ if($btn == "추방") {
         if($genlist != 0) {
             $valid = 0;
             switch($level) {
-            case 10: if($general['power'] >= GameConst::goodgenpower) { $valid = 1; } break;
-            case  9: if($general['intel'] >= GameConst::goodgenintel) { $valid = 1; } break;
-            case  8: if($general['power'] >= GameConst::goodgenpower) { $valid = 1; } break;
-            case  7: if($general['intel'] >= GameConst::goodgenintel) { $valid = 1; } break;
-            case  6: if($general['power'] >= GameConst::goodgenpower) { $valid = 1; } break;
-            case  5: if($general['intel'] >= GameConst::goodgenintel) { $valid = 1; } break;
+            case 10: if($general['power'] >= GameConst::$goodgenpower) { $valid = 1; } break;
+            case  9: if($general['intel'] >= GameConst::$goodgenintel) { $valid = 1; } break;
+            case  8: if($general['power'] >= GameConst::$goodgenpower) { $valid = 1; } break;
+            case  7: if($general['intel'] >= GameConst::$goodgenintel) { $valid = 1; } break;
+            case  6: if($general['power'] >= GameConst::$goodgenpower) { $valid = 1; } break;
+            case  5: if($general['intel'] >= GameConst::$goodgenintel) { $valid = 1; } break;
             default: $valid = 1; break;
             }
             if($valid == 1) {
@@ -233,8 +233,8 @@ if($btn == "추방") {
     if($genlist != 0) {
         $valid = 0;
         switch($level) {
-        case  4: if($general['power'] >= GameConst::goodgenpower) { $valid = 1; } break;
-        case  3: if($general['intel'] >= GameConst::goodgenintel) { $valid = 1; } break;
+        case  4: if($general['power'] >= GameConst::$goodgenpower) { $valid = 1; } break;
+        case  3: if($general['intel'] >= GameConst::$goodgenintel) { $valid = 1; } break;
         default: $valid = 1; break;
         }
         if($valid == 1) {

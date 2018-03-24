@@ -1545,7 +1545,7 @@ function msgprint($connect, $msg, $name, $picture, $imgsvr, $when, $num, $type) 
 
 function banner() {
 
-    return sprintf('<font size=2>%s / %s <br> %s</font>', GameConst::version, GameConst::banner, GameConst::helper);
+    return sprintf('<font size=2>%s / %s <br> %s</font>', GameConst::$version, GameConst::$banner, GameConst::$helper);
 }
 
 function addTurn($date, $turnterm=1) {
@@ -2773,7 +2773,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
 
 function checkAbility($connect, $general, $log) {
 
-    $limit = GameConst::upgradeLimit;
+    $limit = GameConst::$upgradeLimit;
 
     $query = "select no,leader,leader2,power,power2,intel,intel2 from general where no='{$general['no']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

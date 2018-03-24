@@ -728,7 +728,7 @@ function processAI($connect, $no) {
                         $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                         $SelGen = MYDB_fetch_array($result);
                         if($SelGen['no'] != 0) {
-                            $amount = floor(($nation[$type]-GameConst::baserice) / 5000)*10 + 10;
+                            $amount = floor(($nation[$type]-GameConst::$baserice) / 5000)*10 + 10;
                             if($amount > 100) $amount = 100;
                             // 포상
                             $command = EncodeCommand($type2, $SelGen['no'], $amount, 23);    // 금 1000단위 포상

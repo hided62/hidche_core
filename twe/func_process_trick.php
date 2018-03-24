@@ -220,8 +220,8 @@ function process_33($connect, &$general) {
 
             $nation['gold'] -= $gold;
             $nation['rice'] -= $rice;
-            if($nation['gold'] < GameConst::minNationalgold) { $gold += ($nation['gold'] - GameConst::minNationalgold); $nation['gold'] = GameConst::minNationalgold; }
-            if($nation['rice'] < GameConst::minNationalrice) { $rice += ($nation['rice'] - GameConst::minNationalrice); $nation['rice'] = GameConst::minNationalrice; }
+            if($nation['gold'] < GameConst::$minNationalgold) { $gold += ($nation['gold'] - GameConst::$minNationalgold); $nation['gold'] = GameConst::$minNationalgold; }
+            if($nation['rice'] < GameConst::$minNationalrice) { $rice += ($nation['rice'] - GameConst::$minNationalrice); $nation['rice'] = GameConst::$minNationalrice; }
             $query = "update nation set gold='{$nation['gold']}',rice='{$nation['rice']}' where nation='{$destcity['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $query = "update city set state=34 where city='$destination'";

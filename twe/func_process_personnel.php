@@ -779,7 +779,7 @@ function process_55($connect, &$general) {
             'name'=>$makename,
             'color'=>'#330000', 
             'gold'=>0, 
-            'rice'=>GameConst::baserice, 
+            'rice'=>GameConst::$baserice, 
             'rate'=>20, 
             'bill'=>100, 
             'tricklimit'=>36, 

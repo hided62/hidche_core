@@ -161,8 +161,8 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $cityDef = getCityDef($city);
 
                     // 감소할 병사 수
-                    $cityCrew = GameConst::armperphase + $myAtt - $cityDef;
-                    $myCrew = GameConst::armperphase + $cityAtt - $myDef;
+                    $cityCrew = GameConst::$armperphase + $myAtt - $cityDef;
+                    $myCrew = GameConst::$armperphase + $cityAtt - $myDef;
                     $cityweight = $myAtt - $cityDef;
                     $myweight = $cityAtt - $myDef;
 
@@ -351,8 +351,8 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $opAtt = getAtt($game, $oppose, $tech2, 0);
                     $opDef = getDef($game, $oppose, $tech2);
                     // 감소할 병사 수
-                    $myCrew = GameConst::armperphase + $opAtt - $myDef;
-                    $opCrew = GameConst::armperphase + $myAtt - $opDef;
+                    $myCrew = GameConst::$armperphase + $opAtt - $myDef;
+                    $opCrew = GameConst::$armperphase + $myAtt - $opDef;
                     //훈련 사기따라
                     $myCrew = getCrew($myCrew, $oppose['atmos'], $general['train']);
                     $opCrew = getCrew($opCrew, $general['atmos'], $oppose['train']);

@@ -196,7 +196,7 @@ function process_1($connect, &$general, $type) {
         $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$btype} 충분합니다. $dtype 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
-        if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
+        if($city['rate'] < GameConst::$develrate) { $city['rate'] = GameConst::$develrate; }
         $rate = $city['rate'] / 100;
 
         $score = getGeneralIntel($general, true, true, true, false) * $rate;
@@ -473,7 +473,7 @@ function process_5($connect, &$general, $type) {
         $log[] = "<C>●</>{$admin['month']}월:{$dtype}는 충분합니다. $dtype 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
-        if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
+        if($city['rate'] < GameConst::$develrate) { $city['rate'] = GameConst::$develrate; }
         $rate = $city['rate'] / 100;
 
         $score = getGeneralPower($general, true, true, true, false) * $rate;
@@ -654,7 +654,7 @@ function process_8($connect, &$general) {
         $log[] = "<C>●</>{$admin['month']}월:치안은 충분합니다. $dtype 강화 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
-        if($city['rate'] < GameConst::develrate) { $city['rate'] = GameConst::develrate; }
+        if($city['rate'] < GameConst::$develrate) { $city['rate'] = GameConst::$develrate; }
         $rate = $city['rate'] / 100;
 
         $score = getGeneralPower($general, true, true, true, false) * $rate;

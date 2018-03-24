@@ -60,14 +60,14 @@ function processGoldIncome($connect) {
         // 실제 지급량 계산
         $nation['gold'] += $income;
         // 기본량도 안될경우
-        if($nation['gold'] < GameConst::basegold) {
+        if($nation['gold'] < GameConst::$basegold) {
             $realoutcome = 0;
             // 실지급율
             $ratio = 0;
         //기본량은 넘지만 요구량이 안될경우
-        } elseif($nation['gold'] - GameConst::basegold < $outcome) {
-            $realoutcome = $nation['gold'] - GameConst::basegold;
-            $nation['gold'] = GameConst::basegold;
+        } elseif($nation['gold'] - GameConst::$basegold < $outcome) {
+            $realoutcome = $nation['gold'] - GameConst::$basegold;
+            $nation['gold'] = GameConst::$basegold;
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         } else {
@@ -352,14 +352,14 @@ function processRiceIncome($connect) {
         // 실제 지급량 계산
         $nation['rice'] += $income;
         // 기본량도 안될경우
-        if($nation['rice'] < GameConst::baserice) {
+        if($nation['rice'] < GameConst::$baserice) {
             $realoutcome = 0;
             // 실지급율
             $ratio = 0;
         //기본량은 넘지만 요구량이 안될경우
-        } elseif($nation['rice'] - GameConst::baserice < $outcome) {
-            $realoutcome = $nation['rice'] - GameConst::baserice;
-            $nation['rice'] = GameConst::baserice;
+        } elseif($nation['rice'] - GameConst::$baserice < $outcome) {
+            $realoutcome = $nation['rice'] - GameConst::$baserice;
+            $nation['rice'] = GameConst::$baserice;
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         } else {

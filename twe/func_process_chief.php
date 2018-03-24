@@ -28,14 +28,14 @@ function process_23($connect, &$general) {
     if($amount < 100) { $amount = 100; }
     if($what == 1) {
         $dtype = "금";
-        if($nation['gold']-GameConst::basegold < $amount) { $amount = $nation['gold'] - GameConst::basegold; }
+        if($nation['gold']-GameConst::$basegold < $amount) { $amount = $nation['gold'] - GameConst::$basegold; }
     } elseif($what == 2) {
         $dtype = "쌀";
-        if($nation['rice']-GameConst::baserice < $amount) { $amount = $nation['rice'] - GameConst::baserice; }
+        if($nation['rice']-GameConst::$baserice < $amount) { $amount = $nation['rice'] - GameConst::$baserice; }
     } else {
         $what = 2;
         $dtype = "쌀";
-        if($nation['rice']-GameConst::baserice < $amount) { $amount = $nation['rice'] - GameConst::baserice; }
+        if($nation['rice']-GameConst::$baserice < $amount) { $amount = $nation['rice'] - GameConst::$baserice; }
     }
 
     $query = "select no,nation,level,name,gold,rice from general where no='$who'";
@@ -372,8 +372,8 @@ function process_52($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $younation = MYDB_fetch_array($result);
 
-    if($gold > $mynation['gold']-GameConst::basegold) { $gold = $mynation['gold'] - GameConst::basegold; }
-    if($rice > $mynation['rice']-GameConst::baserice) { $rice = $mynation['rice'] - GameConst::basegold; }
+    if($gold > $mynation['gold']-GameConst::$basegold) { $gold = $mynation['gold'] - GameConst::$basegold; }
+    if($rice > $mynation['rice']-GameConst::$baserice) { $rice = $mynation['rice'] - GameConst::$basegold; }
 
     if($younation['nation'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:멸망한 국가입니다. 원조 실패. <1>$date</>";
@@ -955,7 +955,7 @@ function process_66($connect, &$general) {
         $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. 천도 실패. <1>$date</>";
     } elseif($nation['capset'] == 1) {
         $log[] = "<C>●</>{$admin['month']}월:다음 분기에 가능합니다. 천도 실패. <1>$date</>";
-    } elseif($nation['gold']-GameConst::basegold < $amount || $nation['rice']-GameConst::basegold < $amount) {
+    } elseif($nation['gold']-GameConst::$basegold < $amount || $nation['rice']-GameConst::$basegold < $amount) {
         $log[] = "<C>●</>{$admin['month']}월:물자가 부족합니다. 천도 실패. <1>$date</>";
     } elseif($term < 3) {
         $log[] = "<C>●</>{$admin['month']}월:천도중... ({$term}/3) <1>$date</>";
@@ -1040,7 +1040,7 @@ function process_67($connect, &$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 증축 실패. <1>$date</>";
     } elseif($nation['capset'] == 1) {
         $log[] = "<C>●</>{$admin['month']}월:다음 분기에 가능합니다. 증축 실패. <1>$date</>";
-    } elseif($nation['gold']-GameConst::basegold < $amount || $nation['rice']-GameConst::basegold < $amount) {
+    } elseif($nation['gold']-GameConst::$basegold < $amount || $nation['rice']-GameConst::$basegold < $amount) {
         $log[] = "<C>●</>{$admin['month']}월:물자가 부족합니다. 증축 실패. <1>$date</>";
     } elseif($term < 6) {
         $log[] = "<C>●</>{$admin['month']}월:증축중... ({$term}/6) <1>$date</>";
