@@ -19,8 +19,8 @@ $userGrade = $session->userGrade;
         <title>서버목록</title>
 
         <!-- 스타일 -->
-        <link type="text/css" rel="stylesheet" href='../f_config/config.css'>
-        <link type="text/css" rel="stylesheet" href='../f_config/app.css'>
+        <link type="text/css" rel="stylesheet" href='../css/config.css'>
+        <link type="text/css" rel="stylesheet" href='../css/app.css'>
 
         <link type="text/css" rel="stylesheet" href='../i_popup/Style.css'>
         <link type="text/css" rel="stylesheet" href='../i_entrance/Style.css'>
