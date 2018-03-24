@@ -40,7 +40,10 @@ var oauthMode = null;
 
 function getOAuthToken(mode='login', scope_list = null){
     oauthMode = mode;
-    var url = 'https://kauth.kakao.com/oauth/authorize?client_id=<?=KakaoKey::REST_KEY?>&redirect_uri=<?=KakaoKey::REDIRECT_URI?>&response_type=code';
+    var url = 'https://kauth.kakao.com/oauth/authorize?'\
+        'client_id=<?=KakaoKey::REST_KEY?>&'\
+        'redirect_uri=<?=KakaoKey::REDIRECT_URI?>&'\
+        'response_type=code';
     if(Array.isArray(scope_list)){
         url += '&scope='+scope_list.join(',');
     }
@@ -120,13 +123,11 @@ function postOAuthResult(result){
             <div class="card-body">
                 
                 <form id="main_form" method="post" action="#">
-                        
-                    
-
                     <div class="form-group row">
                         <label for="username" class="col-sm-4 col-form-label">계정명</label>
                         <div class="col-sm-8">
-                            <input autocomplete="username" type="text" class="form-control" name="username" id="username"  placeholder="계정명"/>
+                            <input autocomplete="username" type="text" class="form-control"
+                                name="username" id="username"  placeholder="계정명"/>
                         </div>
                     </div>
 
@@ -134,7 +135,8 @@ function postOAuthResult(result){
                     <div class="form-group row">
                         <label for="password" class="col-sm-4 col-form-label">비밀번호</label>
                         <div class="col-sm-8">
-                            <input autocomplete="current-password" type="password" class="form-control" name="password" id="password"  placeholder="비밀번호"/>
+                            <input autocomplete="current-password" type="password" 
+                                class="form-control" name="password" id="password"  placeholder="비밀번호"/>
                         </div>
                     </div>
 
