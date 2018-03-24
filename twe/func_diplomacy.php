@@ -1,7 +1,5 @@
 <?php
-require(__dir__.'/../vendor/autoload.php');
-
-
+namespace sammo;
 
 function checkScoutAvailable($messageInfo, $general, $srcGeneral, $startyear, $year){
     $nationID = $messageInfo['src']['nationID'];

@@ -1,7 +1,5 @@
 <?php
-require(__dir__.'/../vendor/autoload.php');
-
-
+namespace sammo;
 
 class Message{
     //기본 정보

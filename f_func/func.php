@@ -1,8 +1,6 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
-
 function CustomHeader() {
     //xxx: CustomHeader를 제거하기 전까진 유지
     WebUtil::setHeaderNoCache();
