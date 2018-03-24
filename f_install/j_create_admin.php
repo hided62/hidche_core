@@ -25,14 +25,13 @@ if(strlen($password)!=128){
     ]);
 }
 
-if(!AppConf::getRoot()->isExists()){
+if(!class_exists('RootDB')){
     Json::die([
         'result'=>false,
         'reason'=>'DB 설정이 완료되지 않았습니다.'
     ]);
 }
 
-require(__DIR__.'/../f_config/DB.php');
 $rootDB = RootDB::db();
 
 //초기 관리자 계정은 딱 하나만 있어야하므로, 중요함.

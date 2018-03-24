@@ -2,8 +2,6 @@
 namespace sammo;
 
 require('_common.php');
-require(ROOT.'/f_config/DB.php');
-require('kakao.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 

@@ -45,7 +45,7 @@ if(file_exists(ROOT.'/d_setting/RootDB.php') && is_dir(ROOT.'/d_setting/RootDB.p
     ]);
 }
 
-if(AppConf::getRoot()->isExists()){
+if(class_exists('RootDB')){
     Json::die([
         'result'=>false,
         'reason'=>'이미 RootDB.php 파일이 있습니다'

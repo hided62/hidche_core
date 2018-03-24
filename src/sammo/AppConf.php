@@ -7,7 +7,6 @@ if(!defined('ROOT')){
 
 class AppConf{
     private static $serverList = null;
-    private static $rootSetting = null;
 
     public static function getList(){
         if(self::$serverList === null){
@@ -22,10 +21,29 @@ class AppConf{
         return self::$serverList;
     }
 
-    public static function getRoot(){
-        if(self::$rootSetting === null){
-            self::$rootSetting = new Setting(ROOT);
+    /**
+     * DB 객체 생성
+     * 
+     * @return \MeekroDB 
+     */
+    public static function requireRootDB(){
+        if(!class_exists('RootDB')){
+            trigger_error('RootDB.php가 설정되지 않았습니다.', E_USER_ERROR);
+            die();
         }
-        return self::$rootSetting;
+        return RootDB::db();
+    }
+
+    /**
+     * DB 객체 생성
+     * 
+     * @return \MeekroDB 
+     */
+    public static function requireDB(){
+        if(!class_exists('DB')){
+            trigger_error('DB.php가 설정되지 않았습니다.', E_USER_ERROR);
+            die();
+        }
+        return DB::db();
     }
 }

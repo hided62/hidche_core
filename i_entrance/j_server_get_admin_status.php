@@ -4,7 +4,6 @@ namespace sammo;
 // 외부 파라미터
 
 require_once('_common.php');
-require_once(ROOT.'/f_config/DB.php');
 $session = Session::requireLogin();
 
 $result = [];

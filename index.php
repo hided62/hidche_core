@@ -3,12 +3,10 @@ namespace sammo;
 
 require('_common.php');
 
-if(!AppConf::getRoot()->isExists()){
+if(!class_exists('RootDB')){
     header ('Location:install.php');
     die();
 }
-
-require(ROOT.'/f_config/DB.php');
 
 
 $session = Session::Instance();

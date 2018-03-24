@@ -16,13 +16,12 @@ function dbSQLFail($params){
     ]);
 }
 
-if(!AppConf::getRoot()->isExists()){
+if(!class_exists('RootDB')){
     Json::die([
         'step'=>'config'
     ]);
 }
 
-require(__DIR__.'/../f_config/DB.php');
 $rootDB = RootDB::db();
 
 $rootDB->throw_exception_on_nonsql_error = false;

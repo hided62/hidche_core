@@ -2,7 +2,6 @@
 namespace sammo;
 
 require_once('_common.php');
-require_once(ROOT.'/f_config/DB.php');
 
 // 외부 파라미터
 $response['server'] = [];
