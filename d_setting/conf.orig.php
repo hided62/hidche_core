@@ -25,7 +25,7 @@ function getServerBasepath(){
 /**
  * DB 객체 생성
  * 
- * @return MeekroDB 
+ * @return \MeekroDB 
  */
 function getRootDB(){
     $host = '_tK_host_';
@@ -38,7 +38,7 @@ function getRootDB(){
     static $uDB = null;
 
     if($uDB === null){
-        $uDB = new MeekroDB($host,$user,$password,$dbName,$port,$encoding);
+        $uDB = new \MeekroDB($host,$user,$password,$dbName,$port,$encoding);
         $uDB->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
     }
 

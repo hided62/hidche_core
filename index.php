@@ -1,6 +1,7 @@
 <?php
 namespace sammo;
 
+require('d_setting/conf_kakao.php');
 require('_common.php');
 require(ROOT.'/f_config/SETTING.php');
 
@@ -11,10 +12,11 @@ if(!$SETTING->isExists()){
 
 require(ROOT.'/f_config/DB.php');
 require(ROOT.'/f_func/class._Session.php');
-require(ROOT.'/d_setting/conf_kakao.php');
+
 
 $SESSION = new _SESSION();
 
+use \kakao\KakaoKey as KakaoKey;
 
 
 if($SESSION->isLoggedIn()){

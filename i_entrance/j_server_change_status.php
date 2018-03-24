@@ -40,7 +40,7 @@ function doServerModeSet($server, $action, &$response){
     $realServerPath = realpath(dirname(__FILE__)).'/'.$serverPath;
 
     if($action == 'close') { //폐쇄
-        $templates = new League\Plates\Engine('templates');
+        $templates = new \League\Plates\Engine('templates');
 
         //TODO: .htaccess가 서버 오픈에도 사용될 수 있으니 별도의 방법이 필요함
         $allow_ip = util::get_client_ip(false);

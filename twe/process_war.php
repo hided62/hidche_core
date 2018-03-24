@@ -4,7 +4,7 @@ namespace sammo;
 
 function processWar($connect, $general, $city) {
 
-    $templates = new League\Plates\Engine('templates');
+    $templates = new \League\Plates\Engine('templates');
 
     global $_maximumatmos, $_maximumtrain, $_dexLimit;
     $date = substr($general['turntime'],11,5);

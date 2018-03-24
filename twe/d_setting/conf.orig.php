@@ -4,7 +4,7 @@ require_once(__dir__.'/../../d_setting/conf.php');
 /**
  * DB 객체 생성
  * 
- * @return MeekroDB 
+ * @return \MeekroDB 
  */
 function getDB(){
     $host = '_tK_host_';
@@ -17,7 +17,7 @@ function getDB(){
     static $uDB = null;
 
     if($uDB === null){
-        $uDB = new MeekroDB($host,$user,$password,$dbName,$port,$encoding);
+        $uDB = new \MeekroDB($host,$user,$password,$dbName,$port,$encoding);
         $uDB->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
     }
 

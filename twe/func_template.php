@@ -77,7 +77,7 @@ function allButton() {
         $call = "설문조사";
     }
 
-    $templates = new League\Plates\Engine('templates');
+    $templates = new \League\Plates\Engine('templates');
 
     return $templates->render('allButton', [
         'call' => $call,
@@ -156,7 +156,7 @@ function commandButton() {
 
 function getMapHtml(){
     //NOTE: 필요한가?
-    $templates = new League\Plates\Engine('templates');
+    $templates = new \League\Plates\Engine('templates');
 
     return $templates->render('map');
 }

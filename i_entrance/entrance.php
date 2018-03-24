@@ -5,7 +5,7 @@ require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 require_once(ROOT.'/f_config/SESSION.php');
 
-$templates = new League\Plates\Engine('templates');
+$templates = new \League\Plates\Engine('templates');
 
 $db = getRootDB();
 $notice = $db->queryFirstField('SELECT `NOTICE` FROM `SYSTEM` WHERE `NO`=1');

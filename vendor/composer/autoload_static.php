@@ -17,6 +17,10 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         array (
             'sammo\\' => 6,
         ),
+        'k' => 
+        array (
+            'kakao\\' => 6,
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
@@ -42,7 +46,11 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
     public static $prefixDirsPsr4 = array (
         'sammo\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/src',
+            0 => __DIR__ . '/../..' . '/src/sammo',
+        ),
+        'kakao\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/kakao',
         ),
         'Psr\\Log\\' => 
         array (

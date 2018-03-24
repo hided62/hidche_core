@@ -22,7 +22,7 @@ function getmicrotime() {
     return $microtimestmp[0] + $microtimestmp[1];
 }
 
-function logErrorByCustomHandler(int $errno , string $errstr, string $errfile, int $errline, array $errcontext){
+function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext){
     if (!(error_reporting() & $errno)) {
         // This error code is not included in error_reporting, so let it fall
         // through to the standard PHP error handler
@@ -36,7 +36,7 @@ function logErrorByCustomHandler(int $errno , string $errstr, string $errfile, i
     /* Don't execute PHP internal error handler */
     return true;
 }
-set_error_handler("logErrorByCustomHandler");
+set_error_handler("\sammo\logErrorByCustomHandler");
 
 function Error($msg) {
     AppendToFile(ROOT.'/d_log/err.txt', $msg."\n");

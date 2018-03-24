@@ -1,10 +1,11 @@
 <?php
 namespace sammo;
 
+require(__DIR__.'/../d_setting/conf_kakao.php');
 require('_common.php');
 require(ROOT.'/f_func/class._Time.php');
-require('kakao.php');
 
+use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 $auth_code = util::array_get($_GET['code']);
 if(!$auth_code){

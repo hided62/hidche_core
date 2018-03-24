@@ -2,6 +2,8 @@
 namespace sammo;
 
 require(__DIR__.'/../d_setting/conf_kakao.php');
+use \kakao\KakaoKey as KakaoKey;
+
 ?>
 <!DOCTYPE html>
 <html lang="ko">
