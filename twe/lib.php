@@ -11,8 +11,23 @@ class Autoloader
 {
     public static function register()
     {
+        static $isRegisterd = false;
+        if($isRegisterd){
+            return;
+        }
+        $isRegisterd = true;
         spl_autoload_register(function ($class) {
             $file = __DIR__.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php';
+            if (file_exists($file)) {
+                require $file;
+                return true;
+            }
+            return false;
+        });
+
+        spl_autoload_register(function ($class) {
+            $class = Util::array_last(explode('\\', $class));
+            $file = __DIR__."/d_setting/{$class}.php";
             if (file_exists($file)) {
                 require $file;
                 return true;

@@ -67,7 +67,7 @@ class Session {
         return $this;
     }
 
-    public function __set(string $name, mixed $value){
+    public function __set(string $name, $value){
         if(key_exists($key, self::PROTECED_NAMES)){
             trigger_error("{$name}은 외부에서 쓰기 금지된 Session 변수입니다.", E_USER_NOTICE);
             return;
@@ -76,7 +76,7 @@ class Session {
         $this->set($name, $value);        
     }
 
-    private function set(string $name, mixed $value){
+    private function set(string $name, $value){
         if($value === null){
             unset($_SESSION[$name]);
         }

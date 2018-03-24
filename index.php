@@ -39,9 +39,9 @@ var oauthMode = null;
 
 function getOAuthToken(mode='login', scope_list = null){
     oauthMode = mode;
-    var url = 'https://kauth.kakao.com/oauth/authorize?'\
-        'client_id=<?=KakaoKey::REST_KEY?>&'\
-        'redirect_uri=<?=KakaoKey::REDIRECT_URI?>&'\
+    var url = 'https://kauth.kakao.com/oauth/authorize?'+
+        'client_id=<?=KakaoKey::REST_KEY?>&'+
+        'redirect_uri=<?=KakaoKey::REDIRECT_URI?>&'+
         'response_type=code';
     if(Array.isArray(scope_list)){
         url += '&scope='+scope_list.join(',');
