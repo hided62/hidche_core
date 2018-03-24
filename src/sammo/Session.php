@@ -50,8 +50,8 @@ class Session {
 
         //첫 등장
 
-        if(!util::array_get($_SESSION['ip'])) {
-            $_SESSION['ip'] = util::get_client_ip(true);
+        if(!Util::array_get($_SESSION['ip'])) {
+            $_SESSION['ip'] = Util::get_client_ip(true);
             $_SESSION['time'] = time();
         }
     }
@@ -90,13 +90,13 @@ class Session {
     }
 
     private function get(string $name){
-        return util::array_get($_SESSION[$name]);
+        return Util::array_get($_SESSION[$name]);
     }
 
     public function login(int $userID, string $userName, int $grade) {
         $this->set('userID', $userID);
         $this->set('userName', $userName);
-        $this->set('ip', util::get_client_ip(true));
+        $this->set('ip', Util::get_client_ip(true));
         $this->set('time', time());
         $this->set('userGrade', $grade);
     }

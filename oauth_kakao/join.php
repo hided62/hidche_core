@@ -8,7 +8,7 @@ require_once(__dir__.'/../d_setting/conf.php');
 
 session_start();
 
-$access_token = util::array_get($_SESSION['access_token']);
+$access_token = Util::array_get($_SESSION['access_token']);
 if(!$access_token){
     header('Location:oauth_fail.html');
 }

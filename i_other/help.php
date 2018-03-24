@@ -4,7 +4,7 @@ namespace sammo;
 require_once('_common.php');
 
 
-$category = util::array_get($_GET['category'], 0);
+$category = Util::array_get($_GET['category'], 0);
 //FIXME: 겨우 category 구분을 위해 php를 써야하는가? JavaScript로 바꾸자
 $images = IMAGES;
 ?>

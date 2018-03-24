@@ -4,13 +4,13 @@ include "func.php";
 
 
 
-$turnterm = util::array_get($_POST['turnterm'],'0');
-$sync = util::array_get($_POST['sync'],'0');
-$scenario = util::array_get($_POST['scenario'],'0');
-$fiction = util::array_get($_POST['fiction'],'0');
-$extend = util::array_get($_POST['extend'],'0');
-$npcmode = util::array_get($_POST['npcmode'],'0');
-$img = util::array_get($_POST['img'],'0');
+$turnterm = Util::array_get($_POST['turnterm'],'0');
+$sync = Util::array_get($_POST['sync'],'0');
+$scenario = Util::array_get($_POST['scenario'],'0');
+$fiction = Util::array_get($_POST['fiction'],'0');
+$extend = Util::array_get($_POST['extend'],'0');
+$npcmode = Util::array_get($_POST['npcmode'],'0');
+$img = Util::array_get($_POST['img'],'0');
 
 if(Session::getUserGrade(true) < 5){
     die('관리자 아님');

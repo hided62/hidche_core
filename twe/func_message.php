@@ -116,13 +116,13 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
     $srcNation = getNationStaticInfo($src['nation_id']);
     $destNation = getNationStaticInfo($dest['nation_id']);
 
-    $src['nation'] = util::array_get($srcNation['name'], '재야');
-    $src['color'] = util::array_get($srcNation['color'], '#ffffff');
+    $src['nation'] = Util::array_get($srcNation['name'], '재야');
+    $src['color'] = Util::array_get($srcNation['color'], '#ffffff');
 
-    $dest['nation'] = util::array_get($destNation['name'], '재야');
-    $dest['color'] = util::array_get($destNation['color'], '#ffffff');
+    $dest['nation'] = Util::array_get($destNation['name'], '재야');
+    $dest['color'] = Util::array_get($destNation['color'], '#ffffff');
 
-    if(!$isSender && $mailBox < 9000 && util::array_get($msgOption['alert'], false)){
+    if(!$isSender && $mailBox < 9000 && Util::array_get($msgOption['alert'], false)){
         //TODO:newmsg보단 lastmsg로 datetime을 넣는게 더 나아보임
         getDB()->update('general', array(
             'newmsg' => true
@@ -207,7 +207,7 @@ function sendScoutMsg($src, $dest, $date) {
     }
 
     $nation = getNationStaticInfo($src['nation_id']);
-    $nationName = util::array_get($nation['name'], '재야');
+    $nationName = Util::array_get($nation['name'], '재야');
 
     if(!$dest || !$dest['id']){
         return false;
@@ -260,7 +260,7 @@ function getMailboxList(){
         $mailbox = $nationID + 9000;
         $nation = $nation['name'];
         $color = ('#'.$nation['color']).replace('##','#');//xxx: #기호 없는 이전 코드 대비용
-        $generals = util::array_get($generalNations[$nationID], []);
+        $generals = Util::array_get($generalNations[$nationID], []);
 
         return [
             "nationID"=>$nationID,

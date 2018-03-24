@@ -10,7 +10,7 @@ session_write_close(); // 이제 세션 안 쓴다
 
 $jsonPost = parseJsonPost();
 
-$reqSequence = toInt(util::array_get($jsonPost['sequence'], 0));
+$reqSequence = toInt(Util::array_get($jsonPost['sequence'], 0));
 
 
 $nationID = getDB()->queryFirstField(

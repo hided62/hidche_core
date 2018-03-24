@@ -19,8 +19,8 @@ session_write_close(); // 이제 세션 안 쓴다
 
 $jsonPost = parseJsonPost();
 
-$msgID = toInt(util::array_get($jsonPost['msgID'], null), false);
-$msgResponse = util::array_get($jsonPost['response'], null);
+$msgID = toInt(Util::array_get($jsonPost['msgID'], null), false);
+$msgResponse = Util::array_get($jsonPost['response'], null);
 
 if ($msgID === null || !is_bool($msgResponse)) {
     Json::die([
@@ -60,8 +60,8 @@ if ($validUntil < $date) {
     ]);
 }
 
-$msgOption = json_decode(util::array_get($messageInfo['option'], '{}'));
-$msgAction = util::array_get($msgOption['action'], null);
+$msgOption = json_decode(Util::array_get($messageInfo['option'], '{}'));
+$msgAction = Util::array_get($msgOption['action'], null);
 $messageInfo['option'] = $msgOption;
 
 $msgSrc = json_decode($messageInfo['src']);

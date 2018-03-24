@@ -8,12 +8,12 @@ include "func.php";
 
 $name       = $_POST['name'];
 $name       = StringUtil::NoSpecialCharacter($name);
-$pic        = util::array_get($_POST['pic'],'');
+$pic        = Util::array_get($_POST['pic'],'');
 $character  = $_POST['character'];
 
-$leader = util::array_get($_POST['leader'], 50);
-$power = util::array_get($_POST['power'], 50);
-$intel = util::array_get($_POST['intel'], 50);
+$leader = Util::array_get($_POST['leader'], 50);
+$power = Util::array_get($_POST['power'], 50);
+$intel = Util::array_get($_POST['intel'], 50);
 
 $mylog = [];
 

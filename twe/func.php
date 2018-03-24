@@ -54,7 +54,7 @@ function getGeneralID($forceExit=false, $countLogin=true){
     }
 
     $idKey = getServPrefix().'p_no';
-    $generalID = util::array_get($_SESSION[$idKey], null);
+    $generalID = Util::array_get($_SESSION[$idKey], null);
 
     if($generalID){
         return $generalID;
@@ -75,7 +75,7 @@ function getGeneralID($forceExit=false, $countLogin=true){
         $query=$db->query("update general set logcnt=logcnt+1 ,ip = %s_ip,lastconnect=%s_lastConnect,conmsg=%s_conmsg where owner= %s_userID",[
             'ip' => getenv("REMOTE_ADDR"),
             'lastConnect' => date('Y-m-d H:i:s'),
-            'conmsg' => util::array_get($_SESSION['conmsg'], ''),
+            'conmsg' => Util::array_get($_SESSION['conmsg'], ''),
             'userID' => $userID
         ]);
         $_SESSION[$idKey] = $generalID;
@@ -102,7 +102,7 @@ function getGeneralName($forceExit=false)
     }
 
     $nameKey = getServPrefix().'p_name';
-    $generalName = util::array_get($_SESSION[$nameKey], null);
+    $generalName = Util::array_get($_SESSION[$nameKey], null);
 
     if($generalName){
         return $generalName;
@@ -1797,7 +1797,7 @@ function increaseRefresh($type="", $cnt=1) {
 
     getDB()->query('UPDATE game set refresh=refresh+%i where `no`=1', $cnt);
 
-    if(!util::array_get($_SESSION['userID'], null)) {
+    if(!Util::array_get($_SESSION['userID'], null)) {
         getDB()->query('UPDATE general set `lastrefresh`=%s_date, `con`=`con`+%i_cnt, `connect`=`connect`+%i_cnt, refcnt=refcnt+%i_cnt, refresh=refresh+%i_cnt where `no`=%i_no',[
             'date'=>$date,
             'cnt'=>$cnt,

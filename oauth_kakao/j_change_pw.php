@@ -17,10 +17,10 @@ if(!$session->isLoggedIn()){
     ]);
 }
 $userID = $session->userID;
-$access_token = util::array_get($_SESSION['access_token']);
-$expires = util::array_get($_SESSION['expires']);
-$refresh_token = util::array_get($_SESSION['refresh_token']);
-$refresh_token_expires = util::array_get($_SESSION['refresh_token_expires']);
+$access_token = Util::array_get($_SESSION['access_token']);
+$expires = Util::array_get($_SESSION['expires']);
+$refresh_token = Util::array_get($_SESSION['refresh_token']);
+$refresh_token_expires = Util::array_get($_SESSION['refresh_token_expires']);
 
 if(!$access_token || !$expires){
     Json::die([
@@ -55,7 +55,7 @@ if($expires < $nowDate){
     $access_token = $result['access_token'];
     $expires = TimeUtil::DatetimeFromNowSecond($nowDate, $result['expires_in']);
     if(isset($result['refresh_token'])){
-        $refresh_token = util::array_get($result['refresh_token']);
+        $refresh_token = Util::array_get($result['refresh_token']);
         $refresh_token_expires = TimeUtil::DatetimeFromNowSecond($nowDate, $result['refresh_token_expires_in']);
     }
 }
@@ -85,7 +85,7 @@ $sendResult = $restAPI->talk_to_me_default([
   ],
   "button_title"=> "로그인 페이지 열기"
 ]);
-$sendResult['code'] = util::array_get($sendResult['code'], 0);
+$sendResult['code'] = Util::array_get($sendResult['code'], 0);
 if($sendResult['code'] < 0){
     Json::die([
         'result'=>false,

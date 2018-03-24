@@ -12,7 +12,7 @@ if($session->userGrade < 5){
     ]);
 }
 
-$scenarioIdx = toInt(util::array_get($_GET['scenarioIdx']));
+$scenarioIdx = toInt(Util::array_get($_GET['scenarioIdx']));
 
 if($scenarioIdx === null){
     Json::die([

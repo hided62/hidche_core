@@ -11,8 +11,8 @@ if($session->isLoggedIn()){
     $session->logout();
 }
 
-$username = mb_strtolower(util::array_get($_POST['username']), 'utf-8');
-$password = util::array_get($_POST['password']);
+$username = mb_strtolower(Util::array_get($_POST['username']), 'utf-8');
+$password = Util::array_get($_POST['password']);
 
 if(!$username || !$password){
     Json::die([

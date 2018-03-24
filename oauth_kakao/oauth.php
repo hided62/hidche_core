@@ -6,7 +6,7 @@ require('_common.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
-$auth_code = util::array_get($_GET['code']);
+$auth_code = Util::array_get($_GET['code']);
 if(!$auth_code){
     
     header('Location:oauth_fail.html');
@@ -25,13 +25,13 @@ $result = $restAPI->create_access_token($auth_code);
 
 
 
-if(util::array_get($result['expires_in'], -1) > 0){
+if(Util::array_get($result['expires_in'], -1) > 0){
     session_start();
     $restAPI->set_access_token($result['access_token']);
     $now = TimeUtil::DatetimeNow();
     $_SESSION['access_token'] = $result['access_token'];
     $_SESSION['expires'] = TimeUtil::DatetimeFromSecond($now, $result['expires_in']);
-    $_SESSION['refresh_token'] = util::array_get($result['refresh_token']);
+    $_SESSION['refresh_token'] = Util::array_get($result['refresh_token']);
     $_SESSION['refresh_token_expires'] = TimeUtil::DatetimeFromSecond($now, $result['refresh_token_expires_in']);
 }
 else{
@@ -45,7 +45,7 @@ $me = $restAPI->meWithEmail();
 
 $oauth_mode = 'login';
 
-$me['code'] = util::array_get($me['code'], 0);
+$me['code'] = Util::array_get($me['code'], 0);
 if($me['code']< 0){
     switch($me['msg']){
     case 'NotRegisteredUserException':

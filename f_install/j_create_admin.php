@@ -10,9 +10,9 @@ require(__DIR__.'/../f_config/SETTING.php');
 session_start();
 session_destroy();
 
-$username = mb_strtolower(util::array_get($_POST['username']), 'utf-8');
-$password = util::array_get($_POST['password']);
-$nickname = util::array_get($_POST['nickname']);
+$username = mb_strtolower(Util::array_get($_POST['username']), 'utf-8');
+$password = Util::array_get($_POST['password']);
+$nickname = Util::array_get($_POST['nickname']);
 
 if(!$username || !$password || !$nickname){
     Json::die([

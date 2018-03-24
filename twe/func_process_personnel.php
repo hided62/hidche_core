@@ -44,10 +44,10 @@ function process_22($connect, &$general) {
 
         sendScoutMsg([
             'id' => $general['no'],
-            'nation_id' => util::array_get($general['nation'], 0)
+            'nation_id' => Util::array_get($general['nation'], 0)
         ],[
             'id' => $you['no'],
-            'nation_id' => util::array_get($you['nation'], 0)
+            'nation_id' => Util::array_get($you['nation'], 0)
         ],$date);
 
         $general['intel2']++;

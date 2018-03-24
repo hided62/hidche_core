@@ -20,12 +20,12 @@ function dbSQLFail($params){
     ]);
 }
 
-$host = util::array_get($_POST['db_host']);
-$port = util::array_get($_POST['db_port']);
-$username = util::array_get($_POST['db_id']);
-$password = util::array_get($_POST['db_pw']);
-$dbName = util::array_get($_POST['db_name']);
-$servHost = util::array_get($_POST['serv_host']);
+$host = Util::array_get($_POST['db_host']);
+$port = Util::array_get($_POST['db_port']);
+$username = Util::array_get($_POST['db_id']);
+$password = Util::array_get($_POST['db_pw']);
+$dbName = Util::array_get($_POST['db_name']);
+$servHost = Util::array_get($_POST['serv_host']);
 
 if(!$host || !$port || !$username || !$password || !$dbName || !$servHost){
     Json::die([

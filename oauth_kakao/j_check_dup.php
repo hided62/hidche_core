@@ -9,14 +9,14 @@ require('lib.join.php');
 
 session_start();
 
-$access_token = util::array_get($_SESSION['access_token']);
+$access_token = Util::array_get($_SESSION['access_token']);
 if(!$access_token){
     Json::die('로그인 토큰 에러. 다시 로그인을 수행해주세요.');
 }
 
 
-$value = util::array_get($_POST['value']);
-switch(util::array_get($_POST['type'])){
+$value = Util::array_get($_POST['value']);
+switch(Util::array_get($_POST['type'])){
 case 'nickname':
     Json::die(checkNicknameDup($value));
 case 'username':

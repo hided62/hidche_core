@@ -16,9 +16,9 @@ function escapeIPv4($ip){
     return str_replace('.', '\\.', $ip);
 }
 
-$action = util::array_get($_POST['action'], '');
-$notice = util::array_get($_POST['notice'], '');
-$server = util::array_get($_POST['server'], '');
+$action = Util::array_get($_POST['action'], '');
+$notice = Util::array_get($_POST['notice'], '');
+$server = Util::array_get($_POST['server'], '');
 
 $db = getRootDB();
 $userGrade = $session->userGrade;
@@ -43,12 +43,12 @@ function doServerModeSet($server, $action, &$response){
         $templates = new \League\Plates\Engine('templates');
 
         //TODO: .htaccess가 서버 오픈에도 사용될 수 있으니 별도의 방법이 필요함
-        $allow_ip = util::get_client_ip(false);
-        if(util::starts_with($allow_ip, '192.168.') ||
-            util::starts_with($allow_ip, '10.'))
+        $allow_ip = Util::get_client_ip(false);
+        if(Util::starts_with($allow_ip, '192.168.') ||
+            Util::starts_with($allow_ip, '10.'))
         {
             //172.16~172.31은 코딩하기 귀찮으니까 안할거다
-            $allow_ip = util::get_client_ip(true);
+            $allow_ip = Util::get_client_ip(true);
         }
 
         $xforward_allow_ip = escapeIPv4($allow_ip);

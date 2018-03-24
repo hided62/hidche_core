@@ -101,7 +101,7 @@ session_cache_limiter('nocache, must_revalidate');//NOTE: 캐시가 가능하도
 session_start();
 
 //첫 등장
-if(!util::array_get($_SESSION['p_ip'], null)) {
+if(!Util::array_get($_SESSION['p_ip'], null)) {
     $_SESSION['p_ip'] = getenv("REMOTE_ADDR");
     $_SESSION['p_time'] = time();
 }
@@ -278,7 +278,7 @@ function dictToArray($dict, $keys){
     $result = [];
 
     foreach($keys as $key){
-        $result[] = util::array_get($dict[$key], null);
+        $result[] = Util::array_get($dict[$key], null);
     }
     return $result;
 }

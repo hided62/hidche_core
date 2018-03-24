@@ -24,11 +24,11 @@ if($canLogin != 'Y'){
 
 $nowDate = TimeUtil::DatetimeNow();
 
-$access_token = util::array_get($_SESSION['access_token']);
-$expires = util::array_get($_SESSION['expires']);
-$refresh_token = util::array_get($_SESSION['refresh_token']);
-$refresh_token_expires = util::array_get($_SESSION['refresh_token_expires']);
-$email = util::array_get($_SESSION['kaccount_email']);
+$access_token = Util::array_get($_SESSION['access_token']);
+$expires = Util::array_get($_SESSION['expires']);
+$refresh_token = Util::array_get($_SESSION['refresh_token']);
+$refresh_token_expires = Util::array_get($_SESSION['refresh_token_expires']);
+$email = Util::array_get($_SESSION['kaccount_email']);
 
 
 if(!$access_token || !$expires){
@@ -63,7 +63,7 @@ if($expires < $nowDate){
     $access_token = $result['access_token'];
     $expires = TimeUtil::DatetimeFromNowSecond($nowDate, $result['expires_in']);
     if(isset($result['refresh_token'])){
-        $refresh_token = util::array_get($result['refresh_token']);
+        $refresh_token = Util::array_get($result['refresh_token']);
         $refresh_token_expires = TimeUtil::DatetimeFromNowSecond($nowDate, $result['refresh_token_expires_in']);
     }
 }
@@ -71,7 +71,7 @@ if($expires < $nowDate){
 
 if(!$email){
     $me = $restAPI->meWithEmail();
-    $me['code'] = util::array_get($me['code'], 0);
+    $me['code'] = Util::array_get($me['code'], 0);
     if ($me['code']< 0) {
         Json::die([
             'result'=>false,
@@ -79,7 +79,7 @@ if(!$email){
         ]);
     }
 
-    if(!util::array_get($me['kaccount_email_verified'],false)){
+    if(!Util::array_get($me['kaccount_email_verified'],false)){
         $restAPI->unlink();
         Json::die([
             'result'=>false,
