@@ -1,9 +1,7 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
-
-class _String {
+class StringUtil {
     public static function GetStrLen($str) {
         $count = strlen($str);
         $len = 0;
@@ -157,7 +155,11 @@ class _String {
         return $str;
     }
 
-    static function Fill($str, $maxsize, $ch) {
+    //중간정렬
+    public static function staticFill($str, $maxsize, $ch) {
+        if(!$str){
+            $str = '';
+        }
         $size = strlen($str);
 
         $count = ($maxsize - $size) / 2;
@@ -171,12 +173,35 @@ class _String {
         }
         return $string;
     }
+    
+    public static function Fill($str, $maxsize, $ch) {
+        if(!$str){
+            $str = '';
+        }
+        $size = strlen($str);
 
-    static function Fill2($str, $maxsize, $ch='0') {
+        $count = ($maxsize - $size) / 2;
+        
+        $string = '';
+        for($i=0; $i < $count; $i++) {
+            $string = $string.$ch;
+        }
+        $string = $string.$str;
+        for($i=0; $i < $count; $i++) {
+            $string = $string.$ch;
+        }
+        return $string;
+    }
+
+    //우측정렬
+    public static function Fill2($str, $maxsize, $ch='0') {
+        if(!$str){
+            $str = '';
+        }
         $size = strlen($str);
 
         $count = ($maxsize - $size);
-		$string = '';
+        $string = '';
         for($i=0; $i < $count; $i++) {
             $string = $string.$ch;
         }
@@ -236,4 +261,3 @@ class _String {
         return $str;
     }
 }
-

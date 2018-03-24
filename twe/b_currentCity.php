@@ -53,7 +53,7 @@ if($me['level'] == 0) {
     echo "
                     <option value={$city['city']}";
     if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
-    echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
+    echo ">==================================================【".StringUtil::Fill($city['name'], 4, '_')."】";
     if($city['nation'] == 0) echo "공백지";
     elseif($me['nation'] == $city['nation']) echo "본국==";
     else echo "타국==";
@@ -69,7 +69,7 @@ if($me['level'] == 0) {
         echo "
                         <option value={$city['city']}";
         if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
-        echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
+        echo ">==================================================【".StringUtil::Fill($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
         else echo "타국==";
@@ -86,7 +86,7 @@ if($me['level'] == 0) {
         echo "
                         <option value={$city['city']}";
         if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
-        echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
+        echo ">==================================================【".StringUtil::Fill($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
         else echo "타국==";
@@ -112,7 +112,7 @@ if($myNation['level'] > 0) {
         echo "
                         <option value={$city['city']}";
         if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
-        echo ">==================================================【"._String::Fill($city['name'], 4, '_')."】";
+        echo ">==================================================【".StringUtil::Fill($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
         else echo "타국==";

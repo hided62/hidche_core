@@ -1603,11 +1603,11 @@ function process_31($connect, &$general) {
             $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 많은 정보를 얻었습니다. <1>$date</>";
             $msg[count($msg)] = "【<S>병종</>】";
-            for($i=0;  $i <= 5;  $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = _String::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
-            for($i=10; $i <= 14; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = _String::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
-            for($i=20; $i <= 27; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = _String::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
-            for($i=30; $i <= 38; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = _String::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
-            for($i=40; $i <= 43; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = _String::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
+            for($i=0;  $i <= 5;  $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = StringUtil::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
+            for($i=10; $i <= 14; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = StringUtil::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
+            for($i=20; $i <= 27; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = StringUtil::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
+            for($i=30; $i <= 38; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = StringUtil::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
+            for($i=40; $i <= 43; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = StringUtil::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
 
             $count = ceil(count($msg) / 8) * 8;
             for($i=$count; $i > 0; $i-=8) {

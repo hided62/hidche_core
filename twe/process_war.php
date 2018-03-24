@@ -380,7 +380,7 @@ function processWar($connect, $general, $city) {
             }
 
             $render_attacker = [
-                'crewtype' => _String::SubStr(getTypename($general['crewtype']), 0, 2),
+                'crewtype' => StringUtil::SubStr(getTypename($general['crewtype']), 0, 2),
                 'name'=> $general['name'],
                 'remain_crew' => $general['crew'],
                 'killed_crew' => -$mydeathnum
@@ -1257,13 +1257,13 @@ function processWar($connect, $general, $city) {
             }
 
             $render_attacker = [
-                'crewtype' => _String::SubStr(getTypename($general['crewtype']), 0, 2),
+                'crewtype' => StringUtil::SubStr(getTypename($general['crewtype']), 0, 2),
                 'name'=> $general['name'],
                 'remain_crew' => $general['crew'],
                 'killed_crew' => -$mydeathnum
             ];
             $render_defender = [
-                'crewtype' => _String::SubStr(getTypename($oppose['crewtype']), 0, 2),
+                'crewtype' => StringUtil::SubStr(getTypename($oppose['crewtype']), 0, 2),
                 'name'=> $oppose['name'],
                 'remain_crew' => $oppose['crew'],
                 'killed_crew' => -$opdeathnum

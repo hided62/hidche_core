@@ -1510,7 +1510,7 @@ function PushMsg($type, $nation, $picture, $imgsvr, $from, $fromcolor, $to, $toc
     else { $file = "_nation_msg{$nation}.txt"; }
     $fp = fopen("logs/{$file}", "a");
     //로그 파일에 기록
-    $str = "{$type}|"._String::Fill($from,12," ")."|"._String::Fill($to,12," ")."|".$date."|".$msg."|".$fromcolor."|".$tocolor."|".$picture."|".$imgsvr;
+    $str = "{$type}|".StringUtil::Fill($from,12," ")."|".StringUtil::Fill($to,12," ")."|".$date."|".$msg."|".$fromcolor."|".$tocolor."|".$picture."|".$imgsvr;
     fwrite($fp, "{$str}\n");
     fclose($fp);
 }
@@ -1599,11 +1599,11 @@ function addTurn($date, $turnterm=1) {
     if($day > $lastday[$month]) { $month++; $day = 1; }
     if($month >= 13) { $year++; $month = 1; }
 
-    $month = _String::Fill2($month, 2, "0");
-    $day   = _String::Fill2($day,   2, "0");
-    $hour  = _String::Fill2($hour,  2, "0");
-    $min   = _String::Fill2($min,   2, "0");
-    $sec   = _String::Fill2($sec,   2, "0");
+    $month = StringUtil::Fill2($month, 2, "0");
+    $day   = StringUtil::Fill2($day,   2, "0");
+    $hour  = StringUtil::Fill2($hour,  2, "0");
+    $min   = StringUtil::Fill2($min,   2, "0");
+    $sec   = StringUtil::Fill2($sec,   2, "0");
 
     return "{$year}-{$month}-{$day} {$hour}:{$min}:{$sec}";
 }
@@ -1635,11 +1635,11 @@ function add12Turn($date, $turnterm=1) {
     if($day > $lastday[$month]) { $month++; $day = 1; }
     if($month >= 13) { $year++; $month = 1; }
 
-    $month = _String::Fill2($month, 2, "0");
-    $day   = _String::Fill2($day,   2, "0");
-    $hour  = _String::Fill2($hour,  2, "0");
-    $min   = _String::Fill2($min,   2, "0");
-    $sec   = _String::Fill2($sec,   2, "0");
+    $month = StringUtil::Fill2($month, 2, "0");
+    $day   = StringUtil::Fill2($day,   2, "0");
+    $hour  = StringUtil::Fill2($hour,  2, "0");
+    $min   = StringUtil::Fill2($min,   2, "0");
+    $sec   = StringUtil::Fill2($sec,   2, "0");
 
     return "{$year}-{$month}-{$day} {$hour}:{$min}:{$sec}";
 }
@@ -1671,12 +1671,12 @@ function subTurn($date, $turnterm=1) {
     if($day <= 0) { $month--; $day = $lastday[$month]; }
     if($month <= 0) { $year--; $month = 12; }
 
-    $year  = _String::Fill2($year,  2, "0");
-    $month = _String::Fill2($month, 2, "0");
-    $day   = _String::Fill2($day,   2, "0");
-    $hour  = _String::Fill2($hour,  2, "0");
-    $min   = _String::Fill2($min,   2, "0");
-    $sec   = _String::Fill2($sec,   2, "0");
+    $year  = StringUtil::Fill2($year,  2, "0");
+    $month = StringUtil::Fill2($month, 2, "0");
+    $day   = StringUtil::Fill2($day,   2, "0");
+    $hour  = StringUtil::Fill2($hour,  2, "0");
+    $min   = StringUtil::Fill2($min,   2, "0");
+    $sec   = StringUtil::Fill2($sec,   2, "0");
 
     return "{$year}-{$month}-{$day} {$hour}:{$min}:{$sec}";
 }
@@ -1809,7 +1809,7 @@ function increaseRefresh($type="", $cnt=1) {
     $date2 = substr($date, 0, 10);
     $online = getOnlineNum();
     $fp = fopen("logs/_{$date2}_refresh.txt", "a");
-    $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['userName'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
+    $msg = StringUtil::Fill2($date,20," ").StringUtil::Fill2($_SESSION['userName'],13," ").StringUtil::Fill2($_SESSION['p_name'],13," ").StringUtil::Fill2($_SESSION['p_ip'],16," ").StringUtil::Fill2($type, 10, " ")." 동접자: {$online}";
     fwrite($fp, $msg."\n");
     fclose($fp);
 
@@ -1867,7 +1867,7 @@ function updateTraffic() {
     $date = date('Y-m-d H:i:s');
     $fp = fopen("logs/_traffic.txt", "a");
     //일시|년|월|총갱신|접속자|최다갱신자
-    $msg = _String::Fill2($date,20," ")."|"._String::Fill2($game['year'],3," ")."|"._String::Fill2($game['month'],2," ")."|"._String::Fill2($game['refresh'],8," ")."|"._String::Fill2($online,5," ")."|"._String::Fill2($user['name']."(".$user['refresh'].")",20," ");
+    $msg = StringUtil::Fill2($date,20," ")."|".StringUtil::Fill2($game['year'],3," ")."|".StringUtil::Fill2($game['month'],2," ")."|".StringUtil::Fill2($game['refresh'],8," ")."|".StringUtil::Fill2($online,5," ")."|".StringUtil::Fill2($user['name']."(".$user['refresh'].")",20," ");
     fwrite($fp, $msg."\n");
     fclose($fp);
 }

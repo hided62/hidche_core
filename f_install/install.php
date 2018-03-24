@@ -2,7 +2,6 @@
 namespace sammo;
 
 require('_common.php');
-require(ROOT.'/f_func/class._Time.php');
 
 
 

@@ -3,7 +3,6 @@ namespace sammo;
 
 require('_common.php');
 require(__DIR__.'/../f_config/SETTING.php');
-require(__DIR__.'/../f_func/class._Time.php');
 
 
 
@@ -136,8 +135,8 @@ if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/common_schema.sql'))
 $rootDB->insert('system', array(
     'REG'     => 'N',
     'LOGIN'    => 'N',
-    'CRT_DATE' => _Time::DatetimeNow(),
-    'MDF_DATE' => _Time::DatetimeNow()
+    'CRT_DATE' => TimeUtil::DatetimeNow(),
+    'MDF_DATE' => TimeUtil::DatetimeNow()
 ));
 
 $globalSalt = bin2hex(random_bytes(16));

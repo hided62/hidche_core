@@ -563,7 +563,7 @@ function processAI($connect, $no) {
                 $colors = GetNationColors();
                 $color = rand() % count($colors);
                 $command = EncodeCommand(0, $type, $color, 46);
-                $nationName = "㉿"._String::SubStr($general['name'], 1);
+                $nationName = "㉿".StringUtil::SubStr($general['name'], 1);
                 //건국
                 $query = "update general set turn0='$command',makenation='$nationName' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error("processAI08 ".MYDB_error($connect),"");

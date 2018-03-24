@@ -4,7 +4,6 @@ namespace sammo;
 
 require('_common.php');
 require(__DIR__.'/../f_config/SETTING.php');
-require(ROOT.'/f_func/class._Time.php');
 
 
 
@@ -52,7 +51,7 @@ if($memberCnt > 0){
 
 $userSalt = bin2hex(random_bytes(8));
 $finalPassword = hashPassword($userSalt, $password);
-$nowDate = _Time::DatetimeNow();
+$nowDate = TimeUtil::DatetimeNow();
 
 $rootDB->insert('member',[
     'oauth_type' => 'NONE',

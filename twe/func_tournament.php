@@ -900,7 +900,7 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $energy1 = round($energy1); $energy2 = round($energy2);
         $damage1 = round($damage1); $damage2 = round($damage2);
 
-        $log[] = "<S>●</> "._String::Fill2($phase, 2, "0")."合 : <C>"._String::Fill2($energy1, 3, "0")."</> <span class='ev_highlight'>(-"._String::Fill2($damage1, 3, "0").")</span> vs <span class='ev_highlight'>(-"._String::Fill2($damage2, 3, "0").")</span> <C>"._String::Fill2($energy2, 3, "0")."</>";
+        $log[] = "<S>●</> ".StringUtil::Fill2($phase, 2, "0")."合 : <C>".StringUtil::Fill2($energy1, 3, "0")."</> <span class='ev_highlight'>(-".StringUtil::Fill2($damage1, 3, "0").")</span> vs <span class='ev_highlight'>(-".StringUtil::Fill2($damage2, 3, "0").")</span> <C>".StringUtil::Fill2($energy2, 3, "0")."</>";
 
         if($energy1 <= 0 && $energy2 <= 0) {
             if($type == 0) { $sel = 2; break; }

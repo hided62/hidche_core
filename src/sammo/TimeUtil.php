@@ -1,9 +1,7 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
-
-class _Time {
+class TimeUtil {
     public static function DateToday() {
         return date('Y-m-d');
     }

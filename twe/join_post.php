@@ -7,7 +7,7 @@ include "func.php";
 
 
 $name       = $_POST['name'];
-$name       = _String::NoSpecialCharacter($name);
+$name       = StringUtil::NoSpecialCharacter($name);
 $pic        = util::array_get($_POST['pic'],'');
 $character  = $_POST['character'];
 
@@ -78,7 +78,7 @@ if($id_num) {
       history.go(-1)
       </script>");
     exit;
-} elseif(_String::GetStrLen($name) < 1) {
+} elseif(StringUtil::GetStrLen($name) < 1) {
     echo("<script>
       window.alert('이름이 짧습니다. 다시 가입해주세요!')
       history.go(-1)
@@ -90,7 +90,7 @@ if($id_num) {
       history.go(-1)
       </script>");
     exit;
-} elseif(_String::GetStrLen($name) > 6) {
+} elseif(StringUtil::GetStrLen($name) > 6) {
     echo("<script>
       window.alert('이름이 유효하지 않습니다. 다시 가입해주세요!')
       history.go(-1)

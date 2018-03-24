@@ -715,10 +715,10 @@ function command_Other($connect, $turn, $commandtype) {
 
 
 function EncodeCommand($fourth, $third, $double, $command) {
-    $str  = _String::Fill2($fourth, 4, "0");
-    $str .= _String::Fill2($third,  4, "0");
-    $str .= _String::Fill2($double, 4, "0");
-    $str .= _String::Fill2($command, 2, "0");
+    $str  = StringUtil::Fill2($fourth, 4, "0");
+    $str .= StringUtil::Fill2($third,  4, "0");
+    $str .= StringUtil::Fill2($double, 4, "0");
+    $str .= StringUtil::Fill2($command, 2, "0");
     return $str;
 }
 

@@ -4,7 +4,6 @@ namespace sammo;
 require_once('_common.php');
 require_once(__dir__.'/../d_setting/conf.php');
 require_once(__dir__.'/../f_func/func.php');
-require_once(ROOT.'/f_func/class._Time.php');
 
 function checkUsernameDup($username){
     if(!$username){
@@ -54,7 +53,7 @@ function checkEmailDup($email){
 
     $userInfo = getRootDB()->queryFirstField('SELECT `no`, `delete_after` FROM member WHERE `email` = %s LIMIT 1', $email);
     if($userInfo){
-        $nowDate = _Time::DatetimeNow();
+        $nowDate = TimeUtil::DatetimeNow();
         if (!$userInfo['delete_after']) {
             return '이미 사용중인 이메일입니다. 관리자에게 문의해주세요.';
         }

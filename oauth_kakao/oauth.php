@@ -3,7 +3,6 @@ namespace sammo;
 
 require(__DIR__.'/../d_setting/conf_kakao.php');
 require('_common.php');
-require(ROOT.'/f_func/class._Time.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
@@ -29,11 +28,11 @@ $result = $restAPI->create_access_token($auth_code);
 if(util::array_get($result['expires_in'], -1) > 0){
     session_start();
     $restAPI->set_access_token($result['access_token']);
-    $now = _Time::DatetimeNow();
+    $now = TimeUtil::DatetimeNow();
     $_SESSION['access_token'] = $result['access_token'];
-    $_SESSION['expires'] = _Time::DatetimeFromSecond($now, $result['expires_in']);
+    $_SESSION['expires'] = TimeUtil::DatetimeFromSecond($now, $result['expires_in']);
     $_SESSION['refresh_token'] = util::array_get($result['refresh_token']);
-    $_SESSION['refresh_token_expires'] = _Time::DatetimeFromSecond($now, $result['refresh_token_expires_in']);
+    $_SESSION['refresh_token_expires'] = TimeUtil::DatetimeFromSecond($now, $result['refresh_token_expires_in']);
 }
 else{
     die('알 수 없는 에러:'.$me['msg']);

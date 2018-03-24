@@ -4,11 +4,10 @@ namespace sammo;
 require(__DIR__.'/../d_setting/conf_kakao.php');
 require('_common.php');
 require(ROOT.'/f_config/DB.php');
-require(ROOT.'/f_func/class._Time.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
-$nowDate = _Time::DatetimeNow();
+$nowDate = TimeUtil::DatetimeNow();
 
 $session = Session::Instance();
 if(!$session->isLoggedIn()){
@@ -54,10 +53,10 @@ if($expires < $nowDate){
     }
 
     $access_token = $result['access_token'];
-    $expires = _Time::DatetimeFromNowSecond($nowDate, $result['expires_in']);
+    $expires = TimeUtil::DatetimeFromNowSecond($nowDate, $result['expires_in']);
     if(isset($result['refresh_token'])){
         $refresh_token = util::array_get($result['refresh_token']);
-        $refresh_token_expires = _Time::DatetimeFromNowSecond($nowDate, $result['refresh_token_expires_in']);
+        $refresh_token_expires = TimeUtil::DatetimeFromNowSecond($nowDate, $result['refresh_token_expires_in']);
     }
 }
 

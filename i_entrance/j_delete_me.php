@@ -2,7 +2,6 @@
 namespace sammo;
 
 require_once('_common.php');
-require_once(ROOT.'/f_func/class._Time.php');
 require_once(ROOT.'/f_config/DB.php');
 
 $session = Session::Instance();
@@ -47,7 +46,7 @@ if($userInfo['delete_after']){
 }
 
 $db->update('member',[
-    'delete_after'=>_Time::DatetimeFromNowMinute(60*24*30)
+    'delete_after'=>TimeUtil::DatetimeFromNowMinute(60*24*30)
 ], 'no=%i', $session->userID);
 
 if(!$db->affectedRows()){

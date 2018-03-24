@@ -2,8 +2,6 @@
 namespace sammo;
 
 require_once('_common.php');
-require_once(ROOT.'/f_func/class._String.php');
-require(ROOT.'/f_func/class._Time.php');
 require_once(ROOT.'/f_config/DB.php');
 
 
@@ -46,7 +44,7 @@ if(!$userInfo){
     ]);
 }
 
-$nowDate = _Time::DatetimeNow();
+$nowDate = TimeUtil::DatetimeNow();
 if($userInfo['delete_after']){
     if($userInfo['delete_after'] < $nowDate){
         getRootDB()->delete('member', 'no=%i', $userInfo['no']);

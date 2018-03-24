@@ -1,9 +1,7 @@
 <?php
 namespace sammo;
 
-require_once('_common.php');
-
-class _Setting {
+class Setting {
     private $basepath;
     private $settingFile;
     private $exist = false;
