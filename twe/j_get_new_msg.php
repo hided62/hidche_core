@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 include('lib.php');
 include('func.php');
 
@@ -8,9 +10,9 @@ $generalID = getGeneralID();
 
 session_write_close(); // 이제 세션 안 쓴다
 
-$jsonPost = parseJsonPost();
+$jsonPost = WebUtil::parseJsonPost();
 
-$reqSequence = toInt(Util::array_get($jsonPost['sequence'], 0));
+$reqSequence = Util::toInt(Util::array_get($jsonPost['sequence'], 0));
 
 
 $nationID = getDB()->queryFirstField(

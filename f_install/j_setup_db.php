@@ -141,7 +141,7 @@ $rootDB->insert('system', array(
 
 $globalSalt = bin2hex(random_bytes(16));
 
-$result = generateFileUsingSimpleTemplate(
+$result = Util::generateFileUsingSimpleTemplate(
     ROOT.'/d_setting/conf.orig.php',
     ROOT.'/d_setting/conf.php',[
         'host'=>$host,

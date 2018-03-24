@@ -71,10 +71,10 @@ if(!$isUser){
     ]);
 }
 
-$newPassword = random_str(6);
-$tmpPassword = hashPassword(getGlobalSalt(), $newPassword);
+$newPassword = Util::randomStr(6);
+$tmpPassword = Util::hashPassword(getGlobalSalt(), $newPassword);
 $newSalt = bin2hex(random_bytes(8));
-$newFinalPassword = hashPassword($newSalt, $tmpPassword);
+$newFinalPassword = Util::hashPassword($newSalt, $tmpPassword);
 
 $sendResult = $restAPI->talk_to_me_default([
   "object_type"=> "text",

@@ -50,7 +50,7 @@ if($memberCnt > 0){
 }
 
 $userSalt = bin2hex(random_bytes(8));
-$finalPassword = hashPassword($userSalt, $password);
+$finalPassword = Util::hashPassword($userSalt, $password);
 $nowDate = TimeUtil::DatetimeNow();
 
 $rootDB->insert('member',[

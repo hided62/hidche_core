@@ -126,13 +126,13 @@ if($id_num) {
     }
 
     //중, 소 공백지 개수
-    $citycount = toInt($db->queryFirstField("select count(city) from city where level>=5 and level<=6 and nation=0"));
+    $citycount = Util::toInt($db->queryFirstField("select count(city) from city where level>=5 and level<=6 and nation=0"));
 
     // 공백지에서만 태어나게
     if($citycount > 0) {
-        $city = toInt($db->queryFirstField("select city from city where level>=5 and level<=6 and nation=0 order by rand() limit 0,1"));
+        $city = Util::toInt($db->queryFirstField("select city from city where level>=5 and level<=6 and nation=0 order by rand() limit 0,1"));
     } else {
-        $city = toInt($db->queryFirstField("select city from city where level>=5 and level<=6 order by rand() limit 0,1"));
+        $city = Util::toInt($db->queryFirstField("select city from city where level>=5 and level<=6 order by rand() limit 0,1"));
     }
 
     $total  = rand() % 6;

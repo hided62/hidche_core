@@ -55,17 +55,17 @@ function getWorldMap($req){
     $db = getDB();
 
     $game = $db->queryFirstRow('select `startyear`, `year`, `month` from `game` where `no` = 1');
-    $startYear = toInt($game['startyear']);
-    $year = toInt($game['year']);
-    $month = toInt($game['month']);
+    $startYear = Util::toInt($game['startyear']);
+    $year = Util::toInt($game['year']);
+    $month = Util::toInt($game['month']);
 
     if($generalID && ($req->showMe || $req->neutralView)){
         $city = $db->queryFirstRow(
                 'select `city`, `nation` from `general` where `no`=%i',
                  $generalID);
 
-        $myCity = toInt($city['city']);
-        $myNation = toInt($city['nation']);
+        $myCity = Util::toInt($city['city']);
+        $myNation = Util::toInt($city['nation']);
 
         if(!$req->showMe){
             $myCity = null;
@@ -82,7 +82,7 @@ function getWorldMap($req){
     if($myNation){
         $spyList = $db->queryFirstField('select `spy` from `nation` where `nation`=%i', 
             $myNation);
-        $spyList = array_map('toInt', explode("|", $spyList));
+        $spyList = array_map('Util::toInt', explode("|", $spyList));
     }
     else{
         $spyList = [];
@@ -91,17 +91,17 @@ function getWorldMap($req){
     $nationList = [];
     foreach($db->query('select `nation`, `name`, `color`, `capital` from `nation`') as $row){
         $nationList[] = [
-            toInt($row['nation']), 
+            Util::toInt($row['nation']), 
             $row['name'], 
             $row['color'], 
-            toInt($row['capital'])
+            Util::toInt($row['capital'])
         ];
     }
 
     if($myNation){
         //굳이 타국 도시에 있는 아국 장수 리스트를 뽑을 이유가 없음. 일단 다 뽑자.
         $shownByGeneralList = 
-            array_map('toInt',
+            array_map('Util::toInt',
                 $db->queryFirstColumn('select distinct `city` from `general` where `nation` = %i',
                     $myNation));
     }
@@ -112,7 +112,7 @@ function getWorldMap($req){
     $cityList = [];
     foreach($db->query('select `city`, `level`, `state`, `nation`, `region`, `supply` from `city`') as $r){
         $cityList[] = 
-            array_map('toInt', [$r['city'], $r['level'], $r['state'], $r['nation'], $r['region'], $r['supply']]);
+            array_map('Util::toInt', [$r['city'], $r['level'], $r['state'], $r['nation'], $r['region'], $r['supply']]);
     }
 
     return [

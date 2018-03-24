@@ -15,7 +15,7 @@ include 'func.php';
 //읽기 전용이다. 빠르게 세션 끝내자
 session_write_close();
 
-$post = parseJsonPost();
+$post = WebUtil::parseJsonPost();
 
 if(!isset($post['genlist']) || !isset($post['msg'])){
     Json::die([

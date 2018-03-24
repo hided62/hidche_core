@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 include "lib.php";
 include "func.php";
 
@@ -34,7 +36,7 @@ $db->query("DROP TABLE IF EXISTS history");
 // 삭제
 unlink(__DIR__."/d_setting/conf.php");
 
-delInDir("logs");
-delInDir("data/session");
+FileUtil::delInDir("logs");
+FileUtil::delInDir("data/session");
 @unlink("data/connected.php");
 

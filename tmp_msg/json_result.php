@@ -26,9 +26,9 @@ function relayJson($filepath, $noCache = true, $die = true){
     }
 }
 
-$jsonPost = parseJsonPost();
+$jsonPost = WebUtil::parseJsonPost();
 
-$reqSequence = toInt(Util::array_get($jsonPost['sequence'], 0), true);
+$reqSequence = Util::toInt(Util::array_get($jsonPost['sequence'], 0), true);
 
 if($reqSequence === null){
     $reqSequence = 0;

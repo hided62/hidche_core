@@ -18,7 +18,7 @@ $defaultPost = [
     'neutralView' => false,
     'showMe' => true
 ];
-$post = array_merge($defaultPost, parseJsonPost());
+$post = array_merge($defaultPost, WebUtil::parseJsonPost());
 
 
 if($post['year']){
@@ -29,8 +29,8 @@ if($post['year']){
         ]);
     }
 
-    $post['year'] = toInt($post['year']);
-    $post['month'] = toInt($post['month']);
+    $post['year'] = Util::toInt($post['year']);
+    $post['month'] = Util::toInt($post['month']);
 }
 else{
     $post['year'] = null;

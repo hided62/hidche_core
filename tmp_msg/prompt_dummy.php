@@ -2,7 +2,7 @@
 require('../twe/lib.php');
 
 
-$jsonPost = parseJsonPost();
+$jsonPost = WebUtil::parseJsonPost();
 
 echo json_encode([
     'result'=>true,

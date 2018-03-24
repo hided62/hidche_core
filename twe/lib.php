@@ -44,7 +44,7 @@ require_once(__dir__.'/d_setting/conf.php');
 // 각종 변수
 define('STEP_LOG', true);
 define('PROCESS_LOG', true);
-$_startTime = getMicroTime();
+$_startTime = microtime(true);
 $_ver     = "서비스중";
 $x_version = "삼국지 모의전투 PHP HideD v0.1";
 $x_banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : 유기체(jwh1807@gmail.com), HideD(hided62@gmail.com)";
@@ -153,15 +153,6 @@ function Error($message, $url="") {
     exit;
 }
 
-function SetHeaderNoCache(){
-    if(!headers_sent()) {
-        header('Expires: Wed, 01 Jan 2014 00:00:00 GMT');
-        header('Cache-Control: no-store, no-cache, must-revalidate');
-        header('Cache-Control: post-check=0, pre-check=0', FALSE);
-        header('Pragma: no-cache');
-    }
-}
-
 // 게시판의 생성유무 검사
 function isTable($connect, $str, $dbname='') {
     if(!$dbname) {
@@ -181,65 +172,14 @@ function isTable($connect, $str, $dbname='') {
     return 0;
 }
 
-// 빈문자열 경우 1을 리턴
-function isblank($str) {
-    //FIXME: 리턴 값은 boolean이 더 적절하다.
-    $temp=str_replace("　","",$str);
-    $temp=str_replace("\n","",$temp);
-    $temp=strip_tags($temp);
-    $temp=str_replace("&nbsp;","",$temp);
-    $temp=str_replace(" ","",$temp);
-    if(preg_match("/[^[:space:]]/i",$temp)) return 0;
-    return 1;
-}
-
-function Debug($str) {
-    echo "<script>alert('$str');</script>";
-}
-
 function MessageBox($str) {
     echo "<script>alert('$str');</script>";
 }
 
-function getmicrotime() {
-    $microtimestmp = explode(' ', microtime());
-    return $microtimestmp[0] + $microtimestmp[1];
-}
-
 function PrintElapsedTime() {
     global $_startTime;
-    $_endTime = round(getMicroTime() - $_startTime, 3);
+    $_endTime = round(microtime(true) - $_startTime, 3);
     echo "<table width=1000 align=center style=font-size:10;><tr><td align=right>경과시간 : {$_endTime}초</td></tr></table>";
-}
-
-/**
- * '비교적' 안전한 int 변환
- * null -> null
- * int -> int
- * float -> int
- * numeric(int, float) 포함 -> int
- * 기타 -> 예외처리
- * 
- * @return int|null
- */
-function toInt($val, $force=false){
-    if($val === null){
-        return null;
-    }
-    if(is_int($val)){
-        return $val;
-    }
-    if(is_numeric($val)){
-        return intval($val);//
-    }
-    if($val === 'null' || $val === 'null'){
-        return null;
-    }
-
-    if($force){
-        return intval($val);
-    }
-    throw new InvalidArgumentException('올바르지 않은 타입형 :'.$val);
 }
 
 function LogText($prefix, $variable){
@@ -255,151 +195,6 @@ function LogText($prefix, $variable){
     fclose($fp);
 }
 
-function dict_map($callback, $dict){
-    $result = [];
-    foreach(array_keys($dict) as $key){
-        $result[$key] = ($callback)($dict[$key]);
-    }
-    return $result;
-}
-
-function ArrayToDict($arr, $keyName){
-    $result = [];
-
-    foreach($arr as $obj){
-        $key = $obj[$keyName];
-        $result[$key] = $obj;
-    }
-
-    return $result;
-}
-
-function dictToArray($dict, $keys){
-    $result = [];
-
-    foreach($keys as $key){
-        $result[] = Util::array_get($dict[$key], null);
-    }
-    return $result;
-}
-
-function isDict(&$array){
-    if(!is_array($array)){
-        //배열이 아니면 dictionary 조차 아님.
-        return false;
-    }
-    $idx = 0;
-    $jmp = 0;
-    foreach ($arr as $key=>&$value) {
-        if(is_string($key)){
-            return true;
-        }
-        $jmp = $key - $idx - 1;
-        $idx = $key;
-    }
-
-    if ($jmp * 5 >= count($array)){
-        //빈칸이 많으면 dictionary인걸로.
-        return true;
-    }
-    else{
-        return false;
-    }
-
-}
-
-function eraseNullValue($dict, $depth=512){
-    //TODO:Test 추가
-    if($dict === null){
-        return null;
-    }
-
-    if(is_array($dict) && empty($dict)){
-        return null;
-    }
-
-    if($depth <= 0){
-        return $dict;
-    }
-
-    foreach ($arr as $key=>$value) {
-        if($value === null){
-            unset($dict[$key]);
-        }
-        else if(isDict($value)){
-            $newValue = eraseNullKey($value, $depth - 1);
-            if($newValue === null){
-                unset($dict[$key]);
-            }
-            else{
-                $dict[$key] = $newValue;
-            }
-            
-        }
-    }
-
-    
-
-    return $dict;
-}
-
-function parseJsonPost(){
-    // http://thisinterestsme.com/receiving-json-post-data-via-php/
-    // http://thisinterestsme.com/php-json-error-handling/
-    if(strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') != 0){
-        throw new Exception('Request method must be POST!');
-    }
-    
-    //Make sure that the content type of the POST request has been set to application/json
-    $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
-    if(strcasecmp($contentType, 'application/json') != 0){
-        throw new Exception('Content type must be: application/json');
-    }
-    
-    //Receive the RAW post data.
-    $content = trim(file_get_contents("php://input"));
-    
-    //Attempt to decode the incoming RAW post data from JSON.
-    $decoded = json_decode($content, true);
-    
-    
-    $jsonError = json_last_error();
-    
-    //In some cases, this will happen.
-    if(is_null($decoded) && $jsonError == JSON_ERROR_NONE){
-        throw new Exception('Could not decode JSON!');
-    }
-    
-    //If an error exists.
-    if($jsonError != JSON_ERROR_NONE){
-        $error = 'Could not decode JSON! ';
-        
-        //Use a switch statement to figure out the exact error.
-        switch($jsonError){
-            case JSON_ERROR_DEPTH:
-                $error .= 'Maximum depth exceeded!';
-            break;
-            case JSON_ERROR_STATE_MISMATCH:
-                $error .= 'Underflow or the modes mismatch!';
-            break;
-            case JSON_ERROR_CTRL_CHAR:
-                $error .= 'Unexpected control character found';
-            break;
-            case JSON_ERROR_SYNTAX:
-                $error .= 'Malformed JSON';
-            break;
-            case JSON_ERROR_UTF8:
-                 $error .= 'Malformed UTF-8 characters found!';
-            break;
-            default:
-                $error .= 'Unknown error!';
-            break;
-        }
-        throw new Exception($error);
-    }
-
-    return $decoded;
-}
 
 if(isset($_POST) && count($_POST) > 0){
     LogText($_SERVER['REQUEST_URI'], $_POST);

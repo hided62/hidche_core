@@ -15,7 +15,6 @@ require_once 'func_auction.php';
 require_once 'func_string.php';
 require_once 'func_history.php';
 require_once 'func_legacy.php';
-require_once 'func_file.php';
 require_once 'func_converter.php';
 require_once 'func_time_event.php';
 require_once('func_template.php');
@@ -148,7 +147,7 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
 
     if($nationList === null){
         $nationAll = getDB()->query("select nation, name, color, type, level, capital from nation");
-        $nationList = ArrayToDict($nationAll, "nation");
+        $nationList = Util::convertArrayToDict($nationAll, "nation");
         $nationList[-1] = $nationAll;
     }
 
@@ -1463,7 +1462,7 @@ function onlinegen($connect) {
     $onlinegen = "";
     $generalID = getGeneralID();
     $nationID = getDB()->queryFirstField('select `nation` from `general` where `no` = %i', $generalID);
-    if($nationID !== null || toInt($nationID) === 0) {
+    if($nationID !== null || Util::toInt($nationID) === 0) {
         $query = "select onlinegen from game where no='1'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $game = MYDB_fetch_array($result);

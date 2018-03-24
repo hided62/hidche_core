@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 
 require(__DIR__.'/../f_func/func.php');
 require('func_install.php');
@@ -12,7 +14,7 @@ if($session->userGrade < 5){
     ]);
 }
 
-$scenarioIdx = toInt(Util::array_get($_GET['scenarioIdx']));
+$scenarioIdx = Util::toInt(Util::array_get($_GET['scenarioIdx']));
 
 if($scenarioIdx === null){
     Json::die([

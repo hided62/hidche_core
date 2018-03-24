@@ -80,7 +80,7 @@ if($nicknameChk !== true){
 }
 
 $userSalt = bin2hex(random_bytes(8));
-$finalPassword = hashPassword($userSalt, $password);
+$finalPassword = Util::hashPassword($userSalt, $password);
 
 //클라이언트 단에서 보내준 데이터 준비가 끝났다.
 $restAPI = new Kakao_REST_API_Helper($access_token);

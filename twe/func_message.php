@@ -141,7 +141,7 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
         'dest' => $dest['id'],
         'time' => $date,
         'valid_until' => $validUntil,
-        'message' => json_encode(eraseNullValue([
+        'message' => json_encode(Util::eraseNullValue([
             'src' => $src,
             'dest' =>$dest,
             'text' => $msg,

@@ -40,7 +40,7 @@ function acceptScout($messageInfo, $general, $msgResponse){
     $me = $general;
     $you = getDB()->queryFirstRow('SELECT `no`, `name`, `nation` FROM `general` WHERE `no` = %i', $messageInfo['src']['id']);
 
-    list($startyear, $year, $month, $killturn) = dictToArray(getDB()->queryFirstRow('SELECT `startyear`, `year`, `month`, `killturn` FROM `game` LIMIT 1'), ['startyear', 'year', 'month', `killturn`]);
+    list($startyear, $year, $month, $killturn) = Util::convertDictToArray(getDB()->queryFirstRow('SELECT `startyear`, `year`, `month`, `killturn` FROM `game` LIMIT 1'), ['startyear', 'year', 'month', `killturn`]);
 
     list($avaliableScout, $reason) = checkScoutAvailable($messageInfo, $general, $you, $startyear, $year);
 

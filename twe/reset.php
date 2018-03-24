@@ -23,8 +23,8 @@ $connect = @MYDB_connect($hostname,$user_id,$password) or Error("MySQL-DB Connec
 if(MYDB_error($connect)) Error(__LINE__.MYDB_error($connect),"");
 MYDB_select_db($dbname, $connect ) or Error("MySQL-DB Select<br>Error!!!","");
 
-delInDir("logs");
-delInDir("data/session");
+FileUtil::delInDir("logs");
+FileUtil::delInDir("data/session");
 @unlink("data/connected.php");
 
 

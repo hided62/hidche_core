@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 include 'lib.php';
 include 'func.php';
 
@@ -17,9 +19,9 @@ if (!$generalID) {
 
 session_write_close(); // 이제 세션 안 쓴다
 
-$jsonPost = parseJsonPost();
+$jsonPost = WebUtil::parseJsonPost();
 
-$msgID = toInt(Util::array_get($jsonPost['msgID'], null), false);
+$msgID = Util::toInt(Util::array_get($jsonPost['msgID'], null), false);
 $msgResponse = Util::array_get($jsonPost['response'], null);
 
 if ($msgID === null || !is_bool($msgResponse)) {
