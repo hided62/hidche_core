@@ -54,11 +54,11 @@ function getSingleMessage($messageID){
     return [true, $messageInfo];
 }
 
-function getRawMessage($mailbox, $msgType, $limit=30, $fromSeq=NULL){
+function getRawMessage($mailbox, $msgType, $limit=30, $fromSeq=null){
 
 
     $sql = 'select * from `message` where `mailbox` = %i_mailbox and `type` = %s_type and `valid_until` > now()';
-    if($fromSeq !== NULL){
+    if($fromSeq !== null){
         $sql .= ' and `id` > %i_id';
     }
     $sql .= ' ORDER BY `id` desc';
@@ -80,9 +80,9 @@ function getRawMessage($mailbox, $msgType, $limit=30, $fromSeq=NULL){
     }, $result);
 }
 
-function getMessage($msgType, $nationID=null, $limit=30, $fromSeq=NULL){
+function getMessage($msgType, $nationID=null, $limit=30, $fromSeq=null){
     $generalID = getGeneralID(false);
-    if($generalID === NULL){
+    if($generalID === null){
         return [];
     }
 

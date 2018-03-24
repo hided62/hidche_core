@@ -186,7 +186,7 @@ function toInt($val, $force=false){
     if(is_numeric($val)){
         return intval($val);//
     }
-    if($val === 'NULL' || $val === 'null'){
+    if(strtolower($val) === 'null'){
         return null;
     }
 

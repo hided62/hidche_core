@@ -21,7 +21,7 @@
 >
     <tbody><tr>
         <td width="64px" height="64px">
-            <?php if ($src['iconPath'] !== NULL): ?>
+            <?php if ($src['iconPath'] !== null): ?>
                 <img src="<?=$this->e(urlencode($src['iconPath']))?>">
             <?php else: ?>
                 <img src="/image/default.jpg"> <?php /*NOTE: image 폴더는 어느 단에서 다뤄야하는가? */?>

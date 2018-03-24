@@ -89,7 +89,7 @@ function commandButton() {
 
     $generalID = getGeneralID();
     
-    if($generalID === NULL){
+    if($generalID === null){
         return '';
     }
     $db = getDB();

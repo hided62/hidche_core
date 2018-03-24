@@ -14,9 +14,9 @@ function getDB(){
     $port = _tK_port_;
     $encoding = 'utf8';
 
-    static $uDB = NULL;
+    static $uDB = null;
 
-    if($uDB === NULL){
+    if($uDB === null){
         $uDB = new MeekroDB($host,$user,$password,$dbName,$port,$encoding);
         $uDB->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
     }

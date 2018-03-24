@@ -1343,7 +1343,7 @@ function pushHistory($history) {
 function getRawLog($path, $count, $line_length, $skin){
     //TODO: tail과 유사한 형태로 처리할 수 있는게 나을 듯. 그 이전에 파일 로그는 좀... ㅜㅜ
     if(!file_exists($path)){
-        return NULL;
+        return null;
     }
 
     $fp = fopen($path, 'r');

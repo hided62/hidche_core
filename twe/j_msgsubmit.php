@@ -132,7 +132,7 @@ if($destMailbox == 9999) {
     
     $destUser = $db->queryFirstRow('select `no`,`name`,`nation` from `general` where `no` = %s',$destMailbox);
 
-    if($destUser == NULL || empty($destUser)){
+    if($destUser == null || empty($destUser)){
         returnJson([
             'result' => false,
             'reason' => '존재하지 않는 유저입니다.',

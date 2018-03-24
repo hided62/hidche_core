@@ -230,7 +230,7 @@ function toInt($val, $force=false){
     if(is_numeric($val)){
         return intval($val);//
     }
-    if($val === 'NULL' || $val === 'null'){
+    if($val === 'null' || $val === 'null'){
         return null;
     }
 
