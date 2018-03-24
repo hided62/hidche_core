@@ -130,3 +130,5 @@ twe/.htaccess
 hwe/.htaccess
 
 d_pic/*.jpg
+d_setting/KakaoKey.php
+d_setting/RootDB.php

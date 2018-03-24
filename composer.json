@@ -6,7 +6,6 @@
        "GPL-2.0-or-later",
        "proprietary"
     ],
-    "version":"0.1.0-alpha",
     "require": {
         "brandonwamboldt/utilphp": "^1.1",
         "sergeytsalkov/meekrodb": "^2.3",
@@ -18,8 +17,14 @@
     },
     "autoload": {
         "psr-4": {
-            "sammo\\": "src/sammo",
-            "kakao\\": "src/kakao"
+            "sammo\\": [
+                "src/sammo",
+                "d_setting"
+            ],
+            "kakao\\": [
+                "src/kakao",
+                "d_setting"
+            ]
         }
     }
     

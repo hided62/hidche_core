@@ -47,10 +47,12 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'sammo\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/sammo',
+            1 => __DIR__ . '/../..' . '/d_setting',
         ),
         'kakao\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/kakao',
+            1 => __DIR__ . '/../..' . '/d_setting',
         ),
         'Psr\\Log\\' => 
         array (
