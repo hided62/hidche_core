@@ -467,14 +467,6 @@ function myNationInfo($connect) {
         
     }
 
-    if($me['skin'] == 0) {
-        $nation['tech'] = unfont($nation['tech']);
-        $nation['tricklimit'] = unfont($nation['tricklimit']);
-        $nation['surlimit'] = unfont($nation['surlimit']);
-        $nation['scout'] = unfont($nation['scout']);
-        $nation['war'] = unfont($nation['war']);
-    }
-
     echo "
         </td>
     </tr>
@@ -978,15 +970,6 @@ function generalInfo($connect, $no, $skin) {
     elseif($general['mode'] == 1) { $general['mode'] = "<font color=limegreen>수비 함(훈사60)</font>"; }
     else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
 
-    if($skin == 0) {
-        $general['age'] = unfont($general['age']);
-        $special = unfont($special);
-        $special2 = unfont($special2);
-        $atmos = unfont($atmos);
-        $train = unfont($train);
-        $general['mode'] = unfont($general['mode']);
-    }
-
     $weapImage = "{$images}/weap{$general['crewtype']}.jpg";
     if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; };
     $imageTemp = GetImageURL($general['imgsvr']);
@@ -1094,11 +1077,6 @@ function generalInfo2($connect, $no, $skin) {
             $dedication = "<font color=magenta>".getDed($general['dedication'])." ({$general['dedication']})</font>"; break;
         default:
             $dedication = getDed($general['dedication'])." ({$general['dedication']})"; break;
-    }
-
-    if($skin == 0) {
-        $experience = unfont($experience);
-        $dedication = unfont($dedication);
     }
 
     $dex0  = $general['dex0']  / $_dexLimit * 100;

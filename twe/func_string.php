@@ -8,15 +8,6 @@ function getFont($str) {
     return $str;
 }
 
-function unfont($str) {
-    $str = str_replace("<font color=cyan>", "", $str);
-    $str = str_replace("<font color=limegreen>", "", $str);
-    $str = str_replace("<font color=magenta>", "", $str);
-    $str = str_replace("<font color=red>", "", $str);
-    $str = str_replace("</font>", "", $str);
-    return $str;
-}
-
 function SQ2DQ($str) {
     return str_replace("'", "&#039;", $str);
 }
