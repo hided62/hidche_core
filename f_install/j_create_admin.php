@@ -25,7 +25,7 @@ if(strlen($password)!=128){
     ]);
 }
 
-if(!class_exists('sammo\RootDB')){
+if(!class_exists('\\sammo\\RootDB')){
     Json::die([
         'result'=>false,
         'reason'=>'DB 설정이 완료되지 않았습니다.'

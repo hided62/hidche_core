@@ -5,5 +5,5 @@ require('vendor/autoload.php');
 Json::die([
     'haha',
     RootDB::getServerBasepath(),
-    'RootDB'=>class_exists('sammo\\RootDB')
+    'RootDB'=>class_exists('\\sammo\\RootDB')
 ]);

@@ -27,7 +27,7 @@ class AppConf{
      * @return \MeekroDB 
      */
     public static function requireRootDB(){
-        if(!class_exists('sammo\RootDB')){
+        if(!class_exists('\\sammo\\RootDB')){
             trigger_error('RootDB.php가 설정되지 않았습니다.', E_USER_ERROR);
             die();
         }
@@ -40,7 +40,7 @@ class AppConf{
      * @return \MeekroDB 
      */
     public static function requireDB(){
-        if(!class_exists('sammo\DB')){
+        if(!class_exists('\\sammo\\DB')){
             trigger_error('DB.php가 설정되지 않았습니다.', E_USER_ERROR);
             die();
         }
