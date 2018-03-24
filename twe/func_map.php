@@ -26,7 +26,7 @@ function getHistoryMap($year, $month){
         return ['result'=>false, 'reason'=>'연 월이 지정되지 않음'];
     }
 
-    $map = getDB()->queryFirstField('select map from history where year=%i and month=%i',
+    $map = DB::db()->queryFirstField('select map from history where year=%i and month=%i',
         $year, 
         $month);
 
@@ -52,7 +52,7 @@ function getWorldMap($req){
 
     $generalID = getGeneralID(false);
 
-    $db = getDB();
+    $db = DB::db();
 
     $game = $db->queryFirstRow('select `startyear`, `year`, `month` from `game` where `no` = 1');
     $startYear = Util::toInt($game['startyear']);

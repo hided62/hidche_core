@@ -64,7 +64,7 @@ function RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,$gencount,$n
         if($nation != 0 && $level == 0) $level = 1;
         
     } elseif($year == $bornyear+14 && $year < $deadyear) {
-        $count = getDB()->queryFirstField('SELECT count(`no`) from `general` where `name` = %s' , $name);
+        $count = DB::db()->queryFirstField('SELECT count(`no`) from `general` where `name` = %s' , $name);
         if ($count == 0) {
             $turntime = getRandTurn($turnterm);
             if ($personal != "-") {
@@ -110,7 +110,7 @@ function RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,$gencount,$n
     }
 
     //장수
-    getDB()->insert('general',[
+    DB::db()->insert('general',[
         'npcid'=>$gencount,
         'npc'=>$npc,
         'npc_org'=>$npc,
@@ -1072,7 +1072,7 @@ function RegNation($name, $color, $gold, $rice, $scoutmsg, $tech, $gencount, $ty
     $type = NationCharCall($type);
     $totaltech = $tech * $gencount;
 
-    getDB()->insert('nation', [
+    DB::db()->insert('nation', [
         'name'=>$name,
         'color'=>$color,
         'gold'=>$gold,
@@ -1094,13 +1094,13 @@ function RegNation($name, $color, $gold, $rice, $scoutmsg, $tech, $gencount, $ty
 
 function RegCity($nation, $name, $cap=0) {
     $city = CityCall($name);
-    getDB()->update('city', [
+    DB::db()->update('city', [
         'nation'=>$nation,
         'city'=>$city
     ]);
 
     if($cap > 0){
-        getDB()->update('nation', ['capital'=>city], 'nation = %i', $nation);
+        DB::db()->update('nation', ['capital'=>city], 'nation = %i', $nation);
     }
     refreshNationStaticInfo();
 }

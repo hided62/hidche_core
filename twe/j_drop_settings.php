@@ -10,7 +10,7 @@ if(Session::getUserGrade(true) < 5){
 
 
 
-$db = getDB();
+$db = DB::db();
 
 // 관리자 테이블 삭제
 $db->query("DROP TABLE IF EXISTS game");
@@ -34,7 +34,7 @@ $db->query("DROP TABLE IF EXISTS statistic");
 $db->query("DROP TABLE IF EXISTS history");
 
 // 삭제
-unlink(__DIR__."/d_setting/conf.php");
+unlink(__DIR__."/d_setting/DB.php");
 
 FileUtil::delInDir("logs");
 FileUtil::delInDir("data/session");

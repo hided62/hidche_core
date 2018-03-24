@@ -16,7 +16,7 @@ if(!$session->isLoggedIn()) {
 // 외부 파라미터
 
 $respone = [];
-$db = getRootDB();
+$db = RootDB::db();
 $picName = $db->queryFirstField('SELECT picture FROM `MEMBER` WHERE `NO` = %i', $session->userID);
 
 if($picName && strlen($picName) > 11){

@@ -1,6 +1,5 @@
 <?php
 namespace kakao;
-require(__dir__.'/../vendor/autoload.php');
 
 class KakaoKey{
     const REST_KEY = '_tK_REST_API_KEY_';

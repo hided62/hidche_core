@@ -5,7 +5,7 @@ require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 
 $session = Session::requireLogin();
-$db = getRootDB();
+$db = RootDB::db();
 $userGrade = $session->userGrade;
 
 $session->setReadOnly();

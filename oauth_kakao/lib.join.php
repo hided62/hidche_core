@@ -2,7 +2,6 @@
 namespace sammo;
 
 require_once('_common.php');
-require_once(__dir__.'/../d_setting/conf.php');
 
 function checkUsernameDup($username){
     if(!$username){
@@ -15,7 +14,7 @@ function checkUsernameDup($username){
         return '적절하지 않은 길이입니다.';
     }
 
-    $cnt = getRootDB()->queryFirstField('SELECT count(no) FROM member WHERE `id` = %s LIMIT 1', $username);
+    $cnt = RootDB::db()->queryFirstField('SELECT count(no) FROM member WHERE `id` = %s LIMIT 1', $username);
     if($cnt != 0){
         return '이미 사용중인 계정명입니다';
     }
@@ -32,7 +31,7 @@ function checkNicknameDup($nickname){
         return '적절하지 않은 길이입니다.';
     }
 
-    $cnt = getRootDB()->queryFirstField('SELECT count(no) FROM member WHERE `name` = %s LIMIT 1', $nickname);
+    $cnt = RootDB::db()->queryFirstField('SELECT count(no) FROM member WHERE `name` = %s LIMIT 1', $nickname);
     if($cnt != 0){
         return '이미 사용중인 닉네임입니다';
     }
@@ -50,7 +49,7 @@ function checkEmailDup($email){
         return '적절하지 않은 길이입니다.';
     }
 
-    $userInfo = getRootDB()->queryFirstField('SELECT `no`, `delete_after` FROM member WHERE `email` = %s LIMIT 1', $email);
+    $userInfo = RootDB::db()->queryFirstField('SELECT `no`, `delete_after` FROM member WHERE `email` = %s LIMIT 1', $email);
     if($userInfo){
         $nowDate = TimeUtil::DatetimeNow();
         if (!$userInfo['delete_after']) {
@@ -62,7 +61,7 @@ function checkEmailDup($email){
         }
 
         //$userInfo['delete_after'] < $userInfo
-        getRootDB()->delete('member', 'no=%i', $userInfo['no']);
+        RootDB::db()->delete('member', 'no=%i', $userInfo['no']);
     }
     return true;
 }

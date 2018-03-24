@@ -23,7 +23,7 @@ $newPw = $_POST['new_pw'];
 
 $response['result'] = false;
 
-$db = getRootDB();
+$db = RootDB::db();
 
 $userInfo = $db->update('member',[
     'pw'=>$db->sqleval('sha2(concat(salt, %s, salt), 512)', $newPw)

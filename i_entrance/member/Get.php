@@ -11,7 +11,7 @@ $session = Session::requireLogin();
 // $_GET['select'] : 정렬선택
 $select = $_GET['select'];
 
-$db = getRootDB();
+$db = RootDB::db();
 $userGrade = $session->userGrade;
 if($userGrade < 6) {
     Json::die([
@@ -70,7 +70,7 @@ $response['members'] .= '</table>';
 
 $response['count'] = "(0000/{$count})";
 
-$system = getRootDB()->queryFirstRow('SELECT `REG`, `LOGIN` FROM `SYSTEM` WHERE `NO`=1');
+$system = RootDB::db()->queryFirstRow('SELECT `REG`, `LOGIN` FROM `SYSTEM` WHERE `NO`=1');
 
 $response['state'] = "가입: {$system['REG']}, 로그인: {$system['LOGIN']}";
 

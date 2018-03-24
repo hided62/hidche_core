@@ -28,42 +28,42 @@ switch($btn) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "블럭 해제":
-        getDB()->query('update general set block=0 where no IN %li', $genlist);
+        DB::db()->query('update general set block=0 where no IN %li', $genlist);
         break;
     case "1단계 블럭":
         $date = date('Y-m-d H:i:s');
-        $db = getDB();
+        $db = DB::db();
         $db->query('update general set block=1,killturn=24 where no IN %li',$genlist);
         //FIXME: subquery로 하는게 더 빠를 듯.
         $uid = $db->queryFirstColumn('select owner from general where no IN %li', $genlist);
-        getRootDB()->query('update MEMBER set block_num=block_num+1,block_date=%s where no IN %ls', $date, $uid);
+        RootDB::db()->query('update MEMBER set block_num=block_num+1,block_date=%s where no IN %ls', $date, $uid);
         break;
     case "2단계 블럭":
         $date = date('Y-m-d H:i:s');
-        $db = getDB();
+        $db = DB::db();
         $db->query('update general set gold=0,rice=0,block=2,killturn=24 where no IN %li',$genlist);
         $uid = $db->queryFirstColumn('select owner from general where no IN %li', $genlist);
-        getRootDB()->query('update MEMBER set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
+        RootDB::db()->query('update MEMBER set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
         break;
     case "3단계 블럭":
         $date = date('Y-m-d H:i:s');
-        $db = getDB();
+        $db = DB::db();
         $db->query('update general set gold=0,rice=0,block=3,killturn=24 where no IN %li',$genlist);
         $uid = $db->queryFirstColumn('select owner from general where no IN %li', $genlist);
-        getRootDB()->query('update MEMBER set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
+        RootDB::db()->query('update MEMBER set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
         break;
     case "무한삭턴":
-        getDB()->query('update general set killturn=8000 where no IN %li',$genlist);
+        DB::db()->query('update general set killturn=8000 where no IN %li',$genlist);
         break;
     case "강제 사망":
         $date = date('Y-m-d H:i:s');
-        getDB()->query('update general set turn0=0,killturn=0,turntime=%s where no IN %li',$date, $genlist);
+        DB::db()->query('update general set turn0=0,killturn=0,turntime=%s where no IN %li',$date, $genlist);
         break;
     case "특기 부여":
-        $admin = getDB()->queryFirstRow('select `year`, `month` from `game` where `no`=1');
+        $admin = DB::db()->queryFirstRow('select `year`, `month` from `game` where `no`=1');
 
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "특기 부여!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
@@ -84,7 +84,7 @@ switch($btn) {
         break;
     case "경험치1000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = $btn." 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
@@ -95,7 +95,7 @@ switch($btn) {
         break;
     case "공헌치1000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = $btn." 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
@@ -106,7 +106,7 @@ switch($btn) {
         break;
     case "보숙10000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "보병숙련도+10000 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
@@ -117,7 +117,7 @@ switch($btn) {
         break;
     case "궁숙10000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "궁병숙련도+10000 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
@@ -128,7 +128,7 @@ switch($btn) {
         break;
     case "기숙10000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "기병숙련도+10000 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
@@ -139,7 +139,7 @@ switch($btn) {
         break;
     case "귀숙10000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "귀병숙련도+10000 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
@@ -150,7 +150,7 @@ switch($btn) {
         break;
     case "차숙10000":
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "차병숙련도+10000 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
@@ -175,14 +175,14 @@ switch($btn) {
         //TODO:새 갠메 시스템으로 변경
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         break;
     case "무기지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "무기 회수!"; }
             else { $msg = getWeapName($weap)." 지급!"; }
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
@@ -199,7 +199,7 @@ switch($btn) {
     case "책지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "서적 회수!"; }
             else { $msg = getBookName($weap)." 지급!"; }
             // 상대에게 발송
@@ -217,7 +217,7 @@ switch($btn) {
     case "말지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "말 회수!"; }
             else { $msg = getHorseName($weap)." 지급!"; }
             // 상대에게 발송
@@ -235,7 +235,7 @@ switch($btn) {
     case "도구지급":
         $date = date('Y-m-d H:i:s');
         for($i=0; $i < sizeof($genlist); $i++) {
-            $you = getDB()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
+            $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "특수도구 회수!"; }
             else { $msg = getItemName($weap)." 지급!"; }
             // 상대에게 발송

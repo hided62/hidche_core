@@ -1,7 +1,6 @@
 <?php
 namespace sammo;
 
-require(__DIR__.'/../d_setting/conf_kakao.php');
 require('_common.php');
 require(ROOT.'/f_config/DB.php');
 require('kakao.php');
@@ -13,7 +12,7 @@ if($session->isLoggedIn()){
     $session->logout();
 }
 
-$canLogin = getRootDB()->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
+$canLogin = RootDB::db()->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
 if($canLogin != 'Y'){
     Json::die([
         'result'=>false,
@@ -92,7 +91,7 @@ if(!$email){
 }
 
 
-$userInfo = getRootDB()->queryFirstRow(
+$userInfo = RootDB::db()->queryFirstRow(
     'SELECT `no`, `id`, `name`, `grade`, `delete_after` from member where email=%s',$email);
 
 if(!$userInfo){
@@ -108,7 +107,7 @@ if($userInfo['delete_after']){
     if($userInfo['delete_after'] < $nowDate){
         $restAPI->unlink();
         unset($_SESSION['access_token']);
-        getRootDB()->delete('member', 'no=%i', $userInfo['no']);
+        RootDB::db()->delete('member', 'no=%i', $userInfo['no']);
         Json::die([
             'result'=>false,
             'reason'=>"기간 만기로 삭제되었습니다. 재 가입을 시도해주세요."

@@ -15,7 +15,7 @@ $jsonPost = WebUtil::parseJsonPost();
 $reqSequence = Util::toInt(Util::array_get($jsonPost['sequence'], 0));
 
 
-$nationID = getDB()->queryFirstField(
+$nationID = DB::db()->queryFirstField(
     'select `nation` from `general` where no = %i',
     $generalID
 );

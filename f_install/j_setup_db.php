@@ -38,17 +38,17 @@ if(!filter_var($servHost, FILTER_VALIDATE_URL)){
     ]);
 }
 
-if(file_exists(ROOT.'/d_setting/conf.php') && is_dir(ROOT.'/d_setting/conf.php')){
+if(file_exists(ROOT.'/d_setting/RootDB.php') && is_dir(ROOT.'/d_setting/RootDB.php')){
     Json::die([
         'result'=>false,
-        'reason'=>'d_setting/conf.php 가 디렉토리입니다'
+        'reason'=>'d_setting/RootDB.php 가 디렉토리입니다'
     ]);
 }
 
 if(AppConf::getRoot()->isExists()){
     Json::die([
         'result'=>false,
-        'reason'=>'이미 conf.php 파일이 있습니다'
+        'reason'=>'이미 RootDB.php 파일이 있습니다'
     ]);
 }
 
@@ -139,8 +139,8 @@ $rootDB->insert('system', array(
 $globalSalt = bin2hex(random_bytes(16));
 
 $result = Util::generateFileUsingSimpleTemplate(
-    ROOT.'/d_setting/conf.orig.php',
-    ROOT.'/d_setting/conf.php',[
+    ROOT.'/d_setting/RootDB.orig.php',
+    ROOT.'/d_setting/RootDB.php',[
         'host'=>$host,
         'user'=>$username,
         'password'=>$password,

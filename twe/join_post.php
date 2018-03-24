@@ -27,7 +27,7 @@ if(!$userID) {
 
 
 //회원 테이블에서 정보확인
-$member = getRootDB()->queryFirstRow("select no,id,picture,imgsvr,grade from MEMBER where no = %i", $userID);
+$member = RootDB::db()->queryFirstRow("select no,id,picture,imgsvr,grade from MEMBER where no = %i", $userID);
 
 if(!$member) {
     MessageBox("잘못된 접근입니다!!!");
@@ -37,10 +37,10 @@ if(!$member) {
 
 $date = date('Y-m-d H:i:s');
 //등록정보
-getRootDB()->query("update MEMBER set reg_num=reg_num+1,reg_date=%s where no=%i", $date, $userID);
+RootDB::db()->query("update MEMBER set reg_num=reg_num+1,reg_date=%s where no=%i", $date, $userID);
 
 $connect = dbConn();
-$db = getDB();
+$db = DB::db();
 ########## 동일 정보 존재여부 확인. ##########
 
 $admin = $db->queryFirstRow("select year,month,scenario,maxgeneral,turnterm,genius,img from game where no='1'");

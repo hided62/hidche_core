@@ -20,7 +20,7 @@ $action = Util::array_get($_POST['action'], '');
 $notice = Util::array_get($_POST['notice'], '');
 $server = Util::array_get($_POST['server'], '');
 
-$db = getRootDB();
+$db = RootDB::db();
 $userGrade = $session->userGrade;
 session_write_close();
 
@@ -58,8 +58,8 @@ function doServerModeSet($server, $action, &$response){
         file_put_contents($serverPath.'/.htaccess', $htaccess);
     } elseif($action == 'reset') {//리셋
         //FIXME: reset, reset_full 구현
-        if(file_exists($serverPath.'/d_setting/conf.php')){
-            @unlink($serverPath.'/d_setting/conf.php');
+        if(file_exists($serverPath.'/d_setting/DB.php')){
+            @unlink($serverPath.'/d_setting/DB.php');
         }
         
         $response['installURL'] = $serverDir."/install.php";
@@ -77,7 +77,7 @@ function doAdminPost($action, $notice, $server){
     $response['result'] = 'FAIL';
 
     if($action == 'notice') {
-        getRootDB()->update('SYSTEM', ['NOTICE'=>$notice], 'NO=1');
+        RootDB::db()->update('SYSTEM', ['NOTICE'=>$notice], 'NO=1');
         $response['result'] = 'SUCCESS';
         return $response;
     } 

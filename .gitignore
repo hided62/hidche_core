@@ -113,16 +113,9 @@ venv.bak/
 # 체섭 ignore
 logs/*.txt
 d_log/*.txt
-d_setting/set.php
-set.php
-config.php
 sess_*
 */logs/*.txt
-d_setting/set.php
-conf.php
-d_setting/conf*.php
 err.txt
-!*/*.orig.php
 che/.htaccess
 kwe/.htaccess
 pwe/.htaccess
@@ -130,5 +123,9 @@ twe/.htaccess
 hwe/.htaccess
 
 d_pic/*.jpg
+d_pic/*.gif
+d_pic/*.png
+
 d_setting/KakaoKey.php
 d_setting/RootDB.php
+*/d_setting/DB.php

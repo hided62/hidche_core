@@ -23,7 +23,7 @@ if(!AppConf::getRoot()->isExists()){
 }
 
 require(__DIR__.'/../f_config/DB.php');
-$rootDB = getRootDB();
+$rootDB = RootDB::db();
 
 $rootDB->throw_exception_on_nonsql_error = false;
 $rootDB->nonsql_error_handler = 'dbConnFail';
@@ -33,7 +33,7 @@ $memberCnt = $rootDB->queryFirstField('SELECT count(`NO`) from MEMBER');
 if($memberCnt === 0){
     Json::die([
         'step'=>'admin',
-        'globalSalt'=>getGlobalSalt()
+        'globalSalt'=>RootDB::getGlobalSalt()
     ]);
 }
 

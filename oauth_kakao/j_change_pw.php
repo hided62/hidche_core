@@ -1,7 +1,6 @@
 <?php
 namespace sammo;
 
-require(__DIR__.'/../d_setting/conf_kakao.php');
 require('_common.php');
 require(ROOT.'/f_config/DB.php');
 
@@ -60,9 +59,9 @@ if($expires < $nowDate){
     }
 }
 
-getRootDB()->query("lock tables member write, member_log write");
+RootDB::db()->query("lock tables member write, member_log write");
 
-$isUser = getRootDB()->queryFirstRow(
+$isUser = RootDB::db()->queryFirstRow(
     'SELECT count(`no`) from member where no=%i',$userID);
 if(!$isUser){
     Json::die([
@@ -72,7 +71,7 @@ if(!$isUser){
 }
 
 $newPassword = Util::randomStr(6);
-$tmpPassword = Util::hashPassword(getGlobalSalt(), $newPassword);
+$tmpPassword = Util::hashPassword(RootDB::getGlobalSalt(), $newPassword);
 $newSalt = bin2hex(random_bytes(8));
 $newFinalPassword = Util::hashPassword($newSalt, $tmpPassword);
 
@@ -80,8 +79,8 @@ $sendResult = $restAPI->talk_to_me_default([
   "object_type"=> "text",
   "text"=> "임시 비밀번호는 $newPassword 입니다. 로그인 후 바로 다른 비밀번호로 변경해주세요.",
   "link"=> [
-    "web_url"=> getServerBasepath(),
-    "mobile_web_url" => getServerBasepath()
+    "web_url"=> RootDB::getServerBasepath(),
+    "mobile_web_url" => RootDB::getServerBasepath()
   ],
   "button_title"=> "로그인 페이지 열기"
 ]);
@@ -93,12 +92,12 @@ if($sendResult['code'] < 0){
     ]);
 }
 
-getRootDB()->update('member', [
+RootDB::db()->update('member', [
     'pw'=>$newFinalPassword,
     'salt'=>$newSalt
 ],'no=%i', $userID);
 
-getRootDB()->insert('member_log', [
+RootDB::db()->insert('member_log', [
     'member_no'=>$userID,
     'date'=>$nowDate,
     'action_type'=>'change_pw',
@@ -109,7 +108,7 @@ getRootDB()->insert('member_log', [
     ], JSON_UNESCAPED_UNICODE)
 ]);
 
-getRootDB()->query("unlock tables");
+RootDB::db()->query("unlock tables");
 
 
 Json::die([

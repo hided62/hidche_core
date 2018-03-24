@@ -93,7 +93,7 @@ function LogHistory($isFirst=0) {
     $genStr = "";
     $cityStr = "";
 
-    $db = getDB();
+    $db = DB::db();
     foreach($db->query('select nation,color,name,power,gennum from nation where level>0 order by power desc') as $nation){
         $cityCount = $db->queryFirstField('select count(*) from city where nation = %i',$nation['nation']);
 

@@ -15,7 +15,7 @@ if(!$session->isLoggedIn()) {
 
 // 외부 파라미터
 
-$db = getRootDB();
+$db = RootDB::db();
 $member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $session->userID);
 
 if(!$member['picture']){
@@ -51,5 +51,5 @@ Json::die([
     'name'=>$member['name'],
     'grade'=>$grade,
     'picture'=>$picture,
-    'global_salt'=>getGlobalSalt()
+    'global_salt'=>RootDB::getGlobalSalt()
 ]);

@@ -57,7 +57,7 @@ function getTurnTerm($term) {
     return $str;
 }
 
-$db = getDB();
+$db = DB::db();
 
 $game = $db->queryFirstRow('SELECT isUnited, npcMode, year, month, scenario, maxgeneral as maxUserCnt, turnTerm from game where `no`=1');
 

@@ -25,7 +25,7 @@ if(!$pw){
 }
 
 //TODO: 탈퇴 처리하되 한달간 유지.
-$db = getRootDB();
+$db = RootDB::db();
 
 $userInfo = $db->queryFirstRow('SELECT oauth_id, oauth_type, email, delete_after FROM MEMBER '.
     'WHERE `no`=%i and pw=sha2(concat(salt, %s, salt), 512)',

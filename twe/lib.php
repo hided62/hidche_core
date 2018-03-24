@@ -39,7 +39,6 @@ ini_set("session.cache_expire", 10080);      // minutes
 ob_start();
 
 include "MYDB.php";
-require_once(__dir__.'/d_setting/conf.php');
 
 // 각종 변수
 define('STEP_LOG', true);
@@ -116,22 +115,13 @@ if($_SESSION['p_time']+3600 < time()) {
     $_SESSION['p_time'] = time();
 }
 
-/*
-// DB가 설정이 되었는지를 검사
-if(!file_exists(__DIR__."/d_setting/conf.php")&&!preg_match("/install/i",$_SERVER['PHP_SELF'])) {
-//    echo"<meta http-equiv=refresh content='0;url=../'>";
-    echo $_SERVER['PHP_SELF'].'//'.preg_match("/install/i",$_SERVER['PHP_SELF']);
-    exit;
-}
-*/
-
 /**
  * Session에 보관된 장수 정보를 제거함.
  * _prefix_p_no, _prefix_p_name 두 값임
  */
 function resetSessionGeneralValues(){
-    $idKey = getServPrefix().'p_no';
-    $nameKey = getServPrefix().'p_name';
+    $idKey = DB::prefix().'p_no';
+    $nameKey = DB::prefix().'p_name';
 
     unset($_SESSION[$idKey]);
     unset($_SESSION[$nameKey]);
@@ -140,9 +130,9 @@ function resetSessionGeneralValues(){
 // MySQL 데이타 베이스에 접근
 function dbConn($isRoot=false) {
     if($isRoot){
-        return getRootDB()->get();
+        return RootDB::db()->get();
     }
-    return getDB()->get();
+    return DB::db()->get();
 }
 
 // 에러 메세지 출력
@@ -156,7 +146,7 @@ function Error($message, $url="") {
 // 게시판의 생성유무 검사
 function isTable($connect, $str, $dbname='') {
     if(!$dbname) {
-        $f=@file("d_setting/conf.php") or Error("conf.php파일이 없습니다. DB설정을 먼저 하십시요");
+        $f=@file("d_setting/DB.php") or Error("DB.php파일이 없습니다. DB설정을 먼저 하십시요");
         for($i=1;$i<=4;$i++) $f[$i]=str_replace("\n","",$f[$i]);
         $dbname=$f[4];
     }

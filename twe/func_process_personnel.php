@@ -775,7 +775,7 @@ function process_55($connect, &$general) {
         $log[] = "<C>●</>{$admin['month']}월:재야가 된지 12시간이 지나야 합니다. 거병 실패. <1>$date</>";
     } else {
 
-        getDB()->insert('nation', [
+        DB::db()->insert('nation', [
             'name'=>$makename,
             'color'=>'#330000', 
             'gold'=>0, 
@@ -787,7 +787,7 @@ function process_55($connect, &$general) {
             'type'=>0, 
             'gennum'=>1
         ]);
-        $nationID = getDB()->insertId();
+        $nationID = DB::db()->insertId();
 
         refreshNationStaticInfo();
         $nation = getNationStaticInfo($nationID);

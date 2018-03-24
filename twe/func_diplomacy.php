@@ -1,5 +1,4 @@
 <?php
-require_once(__dir__.'/d_setting/conf.php');
 require(__dir__.'/../vendor/autoload.php');
 
 
@@ -7,7 +6,7 @@ require(__dir__.'/../vendor/autoload.php');
 function checkScoutAvailable($messageInfo, $general, $srcGeneral, $startyear, $year){
     $nationID = $messageInfo['src']['nationID'];
 
-    $srcNation = getDB()->queryFirstRow('SELECT `level`, `scout` FROM `nation` WHERE `nation` = %i', $nationID);
+    $srcNation = DB::db()->queryFirstRow('SELECT `level`, `scout` FROM `nation` WHERE `nation` = %i', $nationID);
 
     $realNationID = $srcGeneral['nation'];
 
@@ -38,9 +37,9 @@ function checkScoutAvailable($messageInfo, $general, $srcGeneral, $startyear, $y
 
 function acceptScout($messageInfo, $general, $msgResponse){
     $me = $general;
-    $you = getDB()->queryFirstRow('SELECT `no`, `name`, `nation` FROM `general` WHERE `no` = %i', $messageInfo['src']['id']);
+    $you = DB::db()->queryFirstRow('SELECT `no`, `name`, `nation` FROM `general` WHERE `no` = %i', $messageInfo['src']['id']);
 
-    list($startyear, $year, $month, $killturn) = Util::convertDictToArray(getDB()->queryFirstRow('SELECT `startyear`, `year`, `month`, `killturn` FROM `game` LIMIT 1'), ['startyear', 'year', 'month', `killturn`]);
+    list($startyear, $year, $month, $killturn) = Util::convertDictToArray(DB::db()->queryFirstRow('SELECT `startyear`, `year`, `month`, `killturn` FROM `game` LIMIT 1'), ['startyear', 'year', 'month', `killturn`]);
 
     list($avaliableScout, $reason) = checkScoutAvailable($messageInfo, $general, $you, $startyear, $year);
 
@@ -77,7 +76,7 @@ function acceptScout($messageInfo, $general, $msgResponse){
 
     //처리가 조금 다름.
 
-    $db = getDB();
+    $db = DB::db();
 
 
     if($me['level'] > 0){
@@ -167,7 +166,7 @@ function declineScout($messageInfo, $reason=null){
         $msg = "{$nationName}(으)로 등용 제의 거부";
     }
     
-    $db = getDB();
+    $db = DB::db();
     $db->query('UPDATE `message` SET `valid_until`=\'1234-11-22 11:22:33\' WHERE `id` = %i', $messageInfo['id']);
 
     sendRawMessage('private', false, $general['no'], $messageInfo['src'], $messageInfo['dest'], $msg, null, null, ['parent'=>$messageInfo['id']]);

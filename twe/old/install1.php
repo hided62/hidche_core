@@ -7,7 +7,7 @@ if(Session::getUserGrade(true) < 5){
     die('관리자 아님');
 }
 
-if(file_exists("d_setting/conf.php")) error("이미 conf.php가 생성되어 있습니다.<br><br>재설치하려면 해당 파일을 지우세요");
+if(file_exists("d_setting/DB.php")) error("이미 DBD.php가 생성되어 있습니다.<br><br>재설치하려면 해당 파일을 지우세요");
 ?>
 <!DOCTYPE html>
 <html>

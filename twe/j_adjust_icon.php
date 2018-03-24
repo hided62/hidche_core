@@ -22,8 +22,8 @@ if(!$generalID){
     ]);
 }
 
-$rootDB = getRootDB();
-$db = getDB();
+$rootDB = RootDB::db();
+$db = DB::db();
 
 $image = $rootDB->queryFirstRow('SELECT picture, imgsvr FROM `MEMBER` WHERE no = %i', $userID);
 

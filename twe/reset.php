@@ -16,7 +16,7 @@ $connect = dbConn();
 
 
 // 삭제
-unlink("d_setting/conf.php");
+unlink("d_setting/DB.php");
 
 // DB에 커넥트 하고 DB NAME으로 select DB
 $connect = @MYDB_connect($hostname,$user_id,$password) or Error("MySQL-DB Connect<br>Error!!!","");
@@ -77,12 +77,12 @@ if(!isTable($connect, "statistic",$dbname)) @MYDB_query($statistic_schema, $conn
 if(!isTable($connect, "history",$dbname)) @MYDB_query($history_schema, $connect) or Error("create history ".MYDB_error($connect),"");
 
 // 파일로 DB 정보 저장
-$file=@fopen("d_setting/conf.php","w") or Error("conf.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
-@fwrite($file,"<?php /*\n$hostname\n$user_id\n$password\n$dbname\n */\n") or Error("conf.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
+$file=@fopen("d_setting/DB.php","w") or Error("DB.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
+@fwrite($file,"<?php /*\n$hostname\n$user_id\n$password\n$dbname\n */\n") or Error("DB.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
 @fclose($file);
 @mkdir("data",0707);
 @chmod("data",0707);
-@chmod("d_setting/conf.php",0707);
+@chmod("d_setting/DB.php",0707);
 
 $temp=MYDB_fetch_array(MYDB_query("select count(*) from general where level = '1'", $connect));
 

@@ -9,7 +9,7 @@ $connect = dbConn();
 increaseRefresh("메인", 2);
 checkTurn($connect);
 
-$db = getDB();
+$db = DB::db();
 
 //로그인 검사
 if(!isSigned()){

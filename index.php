@@ -1,7 +1,6 @@
 <?php
 namespace sammo;
 
-require('d_setting/conf_kakao.php');
 require('_common.php');
 
 if(!AppConf::getRoot()->isExists()){
@@ -142,7 +141,7 @@ function postOAuthResult(result){
                         </div>
                     </div>
 
-                    <input type="hidden" id="global_salt" name="global_salt" value="<?=getGlobalSalt()?>">
+                    <input type="hidden" id="global_salt" name="global_salt" value="<?=RootDB::getGlobalSalt()?>">
                     <div class="form-group row">
                         <div class="col-sm-4" style="position:relative;"><a href="javascript:doLoginUsingOAuth(true);"><img style="height:46px;margin-top:6px;" src="oauth_kakao/kakao_btn.png"></a></div>
                         <div class="col-sm-8">

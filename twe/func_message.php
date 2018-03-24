@@ -1,5 +1,4 @@
 <?php
-require_once(__dir__.'/d_setting/conf.php');
 require(__dir__.'/../vendor/autoload.php');
 
 
@@ -45,7 +44,7 @@ class Message{
 }
 
 function getSingleMessage($messageID){
-    $messageInfo = getDB()->queryFirstRow('select * from `message` where `id` = %i', $messageID);
+    $messageInfo = DB::db()->queryFirstRow('select * from `message` where `id` = %i', $messageID);
 
     if (!$messageInfo) {
         return [false, '존재하지 않는 메시지'];
@@ -67,7 +66,7 @@ function getRawMessage($mailbox, $msgType, $limit=30, $fromSeq=null){
     }
 
     //TODO: table 네임의 prefix를 처리할 수 있도록 개선
-    $result = getDB()->query($sql, [
+    $result = DB::db()->query($sql, [
         'mailbox' => $mailbox,
         'type' => $msgType,
         'limit' => $limit,
@@ -124,7 +123,7 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
 
     if(!$isSender && $mailBox < 9000 && Util::array_get($msgOption['alert'], false)){
         //TODO:newmsg보단 lastmsg로 datetime을 넣는게 더 나아보임
-        getDB()->update('general', array(
+        DB::db()->update('general', array(
             'newmsg' => true
         ), 'no=%i', $dest['id']);
     }
@@ -133,7 +132,7 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
         unset($msgOption['alert']);
     }
 
-    getDB()->insert('message', array(
+    DB::db()->insert('message', array(
         'address' => $dest,
         'type' => $msgType,
         'is_sender' => $isSender,
@@ -231,7 +230,7 @@ function getMailboxList(){
         
     $generalNations = [];
 
-    foreach(getDB()->query('select `no`, `name`, `nation`, `level`, `npc` from `general` where `npc` < 2') as $general)
+    foreach(DB::db()->query('select `no`, `name`, `nation`, `level`, `npc` from `general` where `npc` < 2') as $general)
     {
         list($generalID, $generalName, $nationID, $level, $npc) = $general;
         if(!isset($generalNations[$nationID])){

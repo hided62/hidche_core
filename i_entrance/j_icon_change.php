@@ -28,7 +28,7 @@ $imageType = $size[2];
 
 $availableImageType = array('.jpg'=>IMAGETYPE_JPEG, '.png'=>IMAGETYPE_PNG, '.gif'=>IMAGETYPE_GIF);
 
-$db = getRootDB();
+$db = RootDB::db();
 $member = $db->queryFirstRow('SELECT `ID`, `PICTURE` FROM `MEMBER` WHERE `NO` = %i', $session->userID);
 
 
@@ -84,7 +84,7 @@ if(!is_uploaded_file($image['tmp_name'])) {
         $response['result'] = false;
     } else {
         $pic = "{$newPicName}?={$rf}";
-        getRootDB()->update('MEMBER',[
+        RootDB::db()->update('MEMBER',[
             'PICTURE' => $pic,
             'IMGSVR' => 1
         ], 'NO=%i', $session->userID);

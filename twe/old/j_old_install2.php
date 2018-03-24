@@ -374,7 +374,7 @@ function insertCity($name, $level, $pop2, $agri2, $comm2, $secu2, $def2, $wall2,
     case 8: $pop = 150000; $agri = 1000; $comm = 1000; $secu = 1000; $def = 5000; $wall = 5000; break;
     }
 
-    getDB()->insert('city',[
+    DB::db()->insert('city',[
         'name'=>$name, 
         'level'=>$level, 
         'path'=>$path, 

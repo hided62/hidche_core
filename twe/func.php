@@ -2,7 +2,6 @@
 namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
-require_once(__dir__.'/d_setting/conf.php');
 require_once 'process_war.php';
 require_once 'func_gamerule.php';
 require_once 'func_process.php';
@@ -52,14 +51,14 @@ function getGeneralID($forceExit=false, $countLogin=true){
         return null;
     }
 
-    $idKey = getServPrefix().'p_no';
+    $idKey = DB::prefix().'p_no';
     $generalID = Util::array_get($_SESSION[$idKey], null);
 
     if($generalID){
         return $generalID;
     }
 
-    $db = getDB();
+    $db = DB::db();
     //흠?
     $generalID = $db->queryFirstField('select no from general where owner = %i', $userID);
     if(!$generalID && $forceExit){
@@ -100,7 +99,7 @@ function getGeneralName($forceExit=false)
         return null;
     }
 
-    $nameKey = getServPrefix().'p_name';
+    $nameKey = DB::prefix().'p_name';
     $generalName = Util::array_get($_SESSION[$nameKey], null);
 
     if($generalName){
@@ -108,7 +107,7 @@ function getGeneralName($forceExit=false)
     }
 
     //흠?
-    $generalName = getDB()->queryFirstField('select name from general where no = %i', $generalID);
+    $generalName = DB::db()->queryFirstField('select name from general where no = %i', $generalID);
     if(!$generalName){
         //이게 말이 돼?
         resetSessionGeneralValues();
@@ -146,7 +145,7 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
     }
 
     if($nationList === null){
-        $nationAll = getDB()->query("select nation, name, color, type, level, capital from nation");
+        $nationAll = DB::db()->query("select nation, name, color, type, level, capital from nation");
         $nationList = Util::convertArrayToDict($nationAll, "nation");
         $nationList[-1] = $nationAll;
     }
@@ -215,7 +214,7 @@ function checkLimit($con, $conlimit) {
 }
 
 function getBlockLevel() {
-    return getDB()->queryFirstField('select block from general where no = %i', getGeneralID());
+    return DB::db()->queryFirstField('select block from general where no = %i', getGeneralID());
 }
 
 function getRandGenName() {
@@ -1412,14 +1411,14 @@ function MyHistory($connect, $no, $skin) {
 }
 
 function addHistory($me, $history) {
-    getDB()->query("update general set history=concat(%s, history) where no=%i",
+    DB::db()->query("update general set history=concat(%s, history) where no=%i",
         $history.'<br>', $me['no']);
 }
 
 function addNationHistory($nation, $history) {
     //FIXME: update 쿼리만으로도 구성 가능해보임.
     $nation['history'] = "{$nation['history']}{$history}<br>";
-    getDB()->query("update nation set history=concat(%s, history) where nation=%i",
+    DB::db()->query("update nation set history=concat(%s, history) where nation=%i",
         $history.'<br>', $nation['nation']);
 }
 
@@ -1433,13 +1432,13 @@ function adminMsg($connect, $skin=1) {
 }
 
 function getOnlineNum() {
-    return getDB()->queryFirstField('select `online` from `game` where `no`=1');
+    return DB::db()->queryFirstField('select `online` from `game` where `no`=1');
 }
 
 function onlinegen($connect) {
     $onlinegen = "";
     $generalID = getGeneralID();
-    $nationID = getDB()->queryFirstField('select `nation` from `general` where `no` = %i', $generalID);
+    $nationID = DB::db()->queryFirstField('select `nation` from `general` where `no` = %i', $generalID);
     if($nationID !== null || Util::toInt($nationID) === 0) {
         $query = "select onlinegen from game where no='1'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1772,10 +1771,10 @@ function CutDay($date) {
 function increaseRefresh($type="", $cnt=1) {
     $date = date('Y-m-d H:i:s');
 
-    getDB()->query('UPDATE game set refresh=refresh+%i where `no`=1', $cnt);
+    DB::db()->query('UPDATE game set refresh=refresh+%i where `no`=1', $cnt);
 
     if(!Util::array_get($_SESSION['userID'], null)) {
-        getDB()->query('UPDATE general set `lastrefresh`=%s_date, `con`=`con`+%i_cnt, `connect`=`connect`+%i_cnt, refcnt=refcnt+%i_cnt, refresh=refresh+%i_cnt where `no`=%i_no',[
+        DB::db()->query('UPDATE general set `lastrefresh`=%s_date, `con`=`con`+%i_cnt, `connect`=`connect`+%i_cnt, refcnt=refcnt+%i_cnt, refresh=refresh+%i_cnt where `no`=%i_no',[
             'date'=>$date,
             'cnt'=>$cnt,
             'owner'->getGeneralID()
@@ -1821,7 +1820,7 @@ function increaseRefresh($type="", $cnt=1) {
 
 function updateTraffic() {
     $online = getOnlineNum();
-    $db = getDB();
+    $db = DB::db();
     $game = $db->queryFirstRow('SELECT year,month,refresh,maxonline,maxrefresh from game where no=1');
 
     //최다갱신자
@@ -1893,12 +1892,12 @@ function CheckOverhead($connect) {
 }
 
 function isLock() {
-    return getDB()->queryFirstField("select plock from plock where no=1") != 0;
+    return DB::db()->queryFirstField("select plock from plock where no=1") != 0;
 }
 
 function tryLock() {
     //NOTE: 게임 로직과 관련한 모든 insert, update 함수들은 lock을 거칠것을 권장함.
-    $db = getDB();
+    $db = DB::db();
     //테이블 락
     $db->query("lock tables plock write");
     // 잠금
@@ -1916,7 +1915,7 @@ function tryLock() {
 function unlock() {
     // 풀림
     //NOTE: unlock에는 table lock이 필요없는가?
-    getDB()->query("update plock set plock=0 where no=1");
+    DB::db()->query("update plock set plock=0 where no=1");
 }
 
 function timeover($connect) {

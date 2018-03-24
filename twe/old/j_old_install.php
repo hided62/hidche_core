@@ -9,7 +9,7 @@ if(Session::getUserGrade(true) < 5){
     die('관리자 아님');
 }
 
-if(file_exists("d_setting/conf.php")) error("이미 conf.php가 생성되어 있습니다.<br><br>재설치하려면 해당 파일을 지우세요");
+if(file_exists("d_setting/DB.php")) error("이미 DB.php가 생성되어 있습니다.<br><br>재설치하려면 해당 파일을 지우세요");
 
 
 $hostname = Util::array_get($_POST['hostname'], '');
@@ -103,7 +103,7 @@ if(!isTable($connect, "history",$dbname)) @MYDB_query($history_schema, $connect)
 
 @mkdir("data",0707);
 @chmod("data",0707);
-@chmod("d_setting/conf.php",0707);
+@chmod("d_setting/DB.php",0707);
 
 $temp=MYDB_fetch_array(MYDB_query("select count(*) from general where level = '1'", $connect));
 

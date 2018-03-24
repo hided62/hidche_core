@@ -41,7 +41,7 @@ if(!isSigned()){
 }
 
 
-$db = getDB();
+$db = DB::db();
 
 $connect = dbConn();
 increaseRefresh('서신전달', 1);

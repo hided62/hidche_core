@@ -17,7 +17,7 @@ if(!$generalID){
     Json::die($result);
 }
 
-$generalInfo = getDB()->queryFirstRow('SELECT `nation`, `level` from `general` where `id`=%i', $generalID);
+$generalInfo = DB::db()->queryFirstRow('SELECT `nation`, `level` from `general` where `id`=%i', $generalID);
 if(!$generalInfo){
     Json::die($result);
 }

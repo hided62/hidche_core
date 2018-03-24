@@ -21,7 +21,7 @@ if(!$username || !$password){
     ]);
 }
 
-$canLogin = getRootDB()->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
+$canLogin = RootDB::db()->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
 if($canLogin != 'Y'){
     Json::die([
         'result'=>false,
@@ -29,7 +29,7 @@ if($canLogin != 'Y'){
     ]);
 }
 
-$userInfo = getRootDB()->queryFirstRow(
+$userInfo = RootDB::db()->queryFirstRow(
     'SELECT `no`, `id`, `name`, `grade`, `delete_after` '.
     'from member where id=%s_username AND '.
     'pw=sha2(concat(salt, %s_password, salt), 512)',[
@@ -47,7 +47,7 @@ if(!$userInfo){
 $nowDate = TimeUtil::DatetimeNow();
 if($userInfo['delete_after']){
     if($userInfo['delete_after'] < $nowDate){
-        getRootDB()->delete('member', 'no=%i', $userInfo['no']);
+        RootDB::db()->delete('member', 'no=%i', $userInfo['no']);
         Json::die([
             'result'=>false,
             'reason'=>"기간 만기로 삭제되었습니다. 재 가입을 시도해주세요."

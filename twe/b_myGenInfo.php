@@ -64,7 +64,7 @@ if($me['skin'] < 1) {
 </table>
 <?php
 
-$nationLevel = getDB()->queryFirstField('select level from nation where nation = %i', $me['nation']);
+$nationLevel = DB::db()->queryFirstField('select level from nation where nation = %i', $me['nation']);
 switch($type) {
     case  1: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by level desc"; break;
     case  2: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by dedication desc"; break;

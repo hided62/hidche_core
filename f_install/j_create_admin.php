@@ -33,7 +33,7 @@ if(!AppConf::getRoot()->isExists()){
 }
 
 require(__DIR__.'/../f_config/DB.php');
-$rootDB = getRootDB();
+$rootDB = RootDB::db();
 
 //초기 관리자 계정은 딱 하나만 있어야하므로, 중요함.
 $rootDB->query('LOCK TABLES member WRITE, member_log WRITE');

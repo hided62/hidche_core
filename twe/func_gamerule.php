@@ -1265,7 +1265,7 @@ function checkEmperior($connect) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $statGeneral = MYDB_fetch_array($result);
 
-            $nationHistory = getDB()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
+            $nationHistory = DB::db()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
 
             $query = "
                 insert into emperior (

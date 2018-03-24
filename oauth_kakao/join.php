@@ -2,7 +2,6 @@
 namespace sammo;
 
 require('_common.php');
-require_once(__dir__.'/../d_setting/conf.php');
 
 
 
@@ -13,7 +12,7 @@ if(!$access_token){
     header('Location:oauth_fail.html');
 }
 
-$canJoin = getRootDB()->queryFirstField('SELECT REG FROM `SYSTEM` WHERE `NO` = 1');
+$canJoin = RootDB::db()->queryFirstField('SELECT REG FROM `SYSTEM` WHERE `NO` = 1');
 if($canJoin != 'Y'){
     die('현재는 가입이 금지되어있습니다!');
 }
@@ -98,7 +97,7 @@ if($canJoin != 'Y'){
                         </div>
                     </div>
 
-                    <input type="hidden" id="global_salt" name="global_salt" value="<?=getGlobalSalt()?>">
+                    <input type="hidden" id="global_salt" name="global_salt" value="<?=RootDB::getGlobalSalt()?>">
                     <div class="form-group row">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">

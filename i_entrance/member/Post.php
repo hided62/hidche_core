@@ -11,7 +11,7 @@ $session = Session::requireLogin();
 $select = $_POST['select'];
 $no = $_POST['no'];
 
-$db = getRootDB();
+$db = RootDB::db();
 $member = $db->queryFirstRow('SELECT `GRADE` FROM `MEMBER` WHERE `NO` = %i', $session->userID);
 
 if($member['GRADE'] < 6) {

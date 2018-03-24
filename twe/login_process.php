@@ -8,7 +8,7 @@ include "func.php";
 
 
 
-$db = getDB();
+$db = DB::db();
 
 $userID = Session::getUserID();
 
@@ -37,8 +37,8 @@ case 3:
     MessageBox("절대 1계정만 사용하십시오! {$me['killturn']}시간 후 재등록 가능합니다."); break;
 }
 
-$_SESSION[getServPrefix().'p_no']     = Util::toInt($me['no']);
-$_SESSION[getServPrefix().'p_name']   = $me['name'];
+$_SESSION[DB::prefix().'p_no']     = Util::toInt($me['no']);
+$_SESSION[DB::prefix().'p_name']   = $me['name'];
 $_SESSION['p_time']   = time();
 
 $date = date('Y-m-d H:i:s');

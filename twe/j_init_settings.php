@@ -11,12 +11,12 @@ if(Session::getUserGrade(true) < 5){
 
 
 // 파일로 DB 정보 저장
-$file=@fopen("d_setting/conf.php","w") or Error("conf.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
-//@fwrite($file,"<?php /*\n$hostname\n$user_id\n$password\n$dbname\n */\n") or Error("conf.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
+$file=@fopen("d_setting/DB.php","w") or Error("DB.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
+//@fwrite($file,"<?php /*\n$hostname\n$user_id\n$password\n$dbname\n */\n") or Error("DB.php 파일 생성 실패<br><br>디렉토리의 퍼미션을 707로 주십시요","");
 @fclose($file);
 @mkdir("data",0707);
 @chmod("data",0707);
-//@chmod("d_setting/conf.php",0707);
+//@chmod("d_setting/DB.php",0707);
 
 $temp=MYDB_fetch_array(MYDB_query("select count(*) from general where level = '1'", $connect));
 

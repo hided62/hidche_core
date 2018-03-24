@@ -26,13 +26,13 @@ function changeInstallMode(){
         if(result.step == 'conn_fail'){
             $('#db_form_card').hide();
             $('#admin_form_card').hide();
-            alert('설치 이후 DB 설정이 변경된 것 같습니다. conf.php 파일의 설정을 확인해주십시오.');
+            alert('설치 이후 DB 설정이 변경된 것 같습니다. RootDB.php 파일의 설정을 확인해주십시오.');
             return;
         }
         if(result.step == 'sql_fail'){
             $('#db_form_card').hide();
             $('#admin_form_card').hide();
-            alert('DB가 제대로 설정되지 않았거나, 훼손된 것 같습니다. DB를 복구하거나 conf.php 파일을 삭제 후 재설치를 진행해 주십시오.');
+            alert('DB가 제대로 설정되지 않았거나, 훼손된 것 같습니다. DB를 복구하거나 RootDB.php 파일을 삭제 후 재설치를 진행해 주십시오.');
             return;
         }
 
@@ -100,7 +100,7 @@ $(document).ready( function () {
                 deferred.reject('fail');
             }
             else{
-                alert('conf.php가 생성되었습니다. 관리자 계정 생성을 진행합니다.');
+                alert('RootDB.php가 생성되었습니다. 관리자 계정 생성을 진행합니다.');
                 deferred.resolve();
             }
 

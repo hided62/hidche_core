@@ -1,7 +1,6 @@
 <?php
 namespace sammo;
 
-require(__DIR__.'/../d_setting/conf_kakao.php');
 require_once('_common.php');
 require('lib.join.php');
 require('kakao.php');
@@ -10,7 +9,7 @@ use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 session_start();
 
-$canJoin = getRootDB()->queryFirstField('SELECT REG FROM `SYSTEM` WHERE `NO` = 1');
+$canJoin = RootDB::db()->queryFirstField('SELECT REG FROM `SYSTEM` WHERE `NO` = 1');
 if($canJoin != 'Y'){
     Json::die([
         'result'=>false,
@@ -144,7 +143,7 @@ if($emailChk !== true){
 }
 
 //모든 절차 종료. 등록.
-getRootDB()->insert('member',[
+RootDB::db()->insert('member',[
     'oauth_id' => $kakaoID,
     'oauth_type' => 'KAKAO',
     'id' => $username,
@@ -154,9 +153,9 @@ getRootDB()->insert('member',[
     'name'=>$nickname,
     'reg_date'=>$nowDate
 ]);
-$userID = getRootDB()->insertId();
+$userID = RootDB::db()->insertId();
 
-getRootDB()->insert('member_log', [
+RootDB::db()->insert('member_log', [
     'member_no'=>$userID,
     'date'=>$nowDate,
     'action_type'=>'reg',
