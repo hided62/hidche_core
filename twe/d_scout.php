@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 //TODO: 등용장 재 디자인.
 //xxx: 일단 비활성화
 header('Location:msglist.php');

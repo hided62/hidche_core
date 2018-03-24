@@ -12,16 +12,16 @@ $generalID = getGeneralID();
 session_write_close();
 
 if(!$generalID){
-    returnJson($result);
+    Json::die($result);
 }
 
 $generalInfo = getDB()->queryFirstRow('SELECT `nation`, `level` from `general` where `id`=%i', $generalID);
 if(!$generalInfo){
-    returnJson($result);
+    Json::die($result);
 }
 
 $result['generalID'] = $generalID;
 $result['myNationID'] = $generalInfo['nation'];
 $result['isChief'] = ($generalInfo['level'] == 12);
 
-returnJson($result);
+Json::die($result);

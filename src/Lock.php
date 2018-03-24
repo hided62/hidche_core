@@ -1,11 +1,11 @@
 <?php
-require_once('_common.php');
+namespace sammo;
 
-class _Lock {
+class Lock {
     private static $l = ROOT.'/d_log/lock.txt';
 
     public static function Busy() {
-        $fp = fopen(_Lock::$l, 'r');
+        $fp = fopen(Lock::$l, 'r');
         $lock = fread($fp, 1);
         fclose($fp);
 
@@ -14,13 +14,13 @@ class _Lock {
     }
 
     private static function LockFile() {
-        $fp = fopen(_Lock::$l, 'r');
+        $fp = fopen(Lock::$l, 'r');
         $lock = fread($fp, 1);
         fclose($fp);
 
         if($lock == 1) return false;
 
-        $fp = fopen(_Lock::$l, 'w');
+        $fp = fopen(Lock::$l, 'w');
         if(!flock($fp, LOCK_EX)) { return false; }
         fwrite($fp, '1');
         fclose($fp);
@@ -30,13 +30,13 @@ class _Lock {
     }
 
     private static function UnlockFile() {
-        $fp = fopen(_Lock::$l, 'r');
+        $fp = fopen(Lock::$l, 'r');
         $lock = fread($fp, 1);
         fclose($fp);
 
         if($lock == 0) return false;
 
-        $fp = fopen(_Lock::$l, 'w');
+        $fp = fopen(Lock::$l, 'w');
         if(!flock($fp, LOCK_EX)) { return false; }
         fwrite($fp, '0');
         fclose($fp);
@@ -48,19 +48,19 @@ class _Lock {
     public static function Lock() {
 /*
         // 키 생성
-        $key = fileinode(_Lock::$l);
+        $key = fileinode(Lock::$l);
         // 뮤텍스 획득
         $mutex = sem_get($key);
         // 락 획득
         sem_acquire($mutex);
 */
         // 파일에 잠금 걸기
-        return _Lock::LockFile();
+        return Lock::LockFile();
     }
 
     public static function Unlock() {
         // 파일에 잠금 풀기
-        $res = _Lock::UnlockFile();
+        $res = Lock::UnlockFile();
 /*
         // 락 해제
         sem_release($mutex);

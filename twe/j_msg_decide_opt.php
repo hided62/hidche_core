@@ -4,12 +4,12 @@ include 'func.php';
 
 //{msgID: 1206, response: true}
 
-use utilphp\util as util;
+
 
 $generalID = getGeneralID();
 
 if (!$generalID) {
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'로그인하지 않음'
     ]);
@@ -23,7 +23,7 @@ $msgID = toInt(util::array_get($jsonPost['msgID'], null), false);
 $msgResponse = util::array_get($jsonPost['response'], null);
 
 if ($msgID === null || !is_bool($msgResponse)) {
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'올바르지 않은 인자'
     ]);
@@ -32,7 +32,7 @@ if ($msgID === null || !is_bool($msgResponse)) {
 
 $general = getDB()->queryFirstRow('select `no`, `name`, `nation`, `nations`, `level`, `npc`, `gold`, `rice`, `troop` from `general` where `no` = %i', $generalID);
 if(!$general){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'존재하지 않는 장수'
     ]);
@@ -41,7 +41,7 @@ if(!$general){
 $result = getSingleMessage($msgID, $general);
 
 if (!$result[0]) {
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>$result[1]
     ]);
@@ -54,7 +54,7 @@ $msgType = $messageInfo['type'];
 $validUntil = $messageInfo['valid_until'];
 $date = date('Y-m-d H:i:s');
 if ($validUntil < $date) {
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'만료된 메시지'
     ]);
@@ -70,7 +70,7 @@ $msgDest = json_decode($messageInfo['dest']);
 $messageInfo['dest'] = $msgDest;
 
 if (!$msgAction) {
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'응답 대상 메시지 아님'
     ]);
@@ -78,7 +78,7 @@ if (!$msgAction) {
 
 if ($msgType == 'diplomacy' && $msgSrc['nation_id'] != $msgDest['nation_id']) {
     //여기로 올일이 있나?
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'(버그) 외교 대상 동일'
     ]);
@@ -86,14 +86,14 @@ if ($msgType == 'diplomacy' && $msgSrc['nation_id'] != $msgDest['nation_id']) {
 
 if($msgType == 'diplomacy'){
     if($general['level'] < 6){
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>'외교 권한 없음'
         ]);
     }   
 
     if($general['nation'] != $msgDest['nation_id']){
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>'올바르지 않은 소속 국가'
         ]);
@@ -110,7 +110,7 @@ case 'ally':
     break;
     //TODO:기타 등등
 case '':
-    returnJson([]);
+    Json::die([]);
     break;
 default:
     //구현이 정상적으로 된 경우 이쪽으로 오지 않음
@@ -118,7 +118,7 @@ default:
 }
 
 
-returnJson([
+Json::die([
     'result' => $result[0],
     'reason' => $result[1]
 ]);

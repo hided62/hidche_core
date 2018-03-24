@@ -1,7 +1,9 @@
 <?php
+namespace sammo;
+
 require(__dir__.'/../vendor/autoload.php');
 
-use utilphp\util as util;
+
 
 /******************************************************************************
 체섭용 인클루드 파일
@@ -141,7 +143,7 @@ function SetHeaderNoCache(){
     }
 }
 
-function returnJson($value, $noCache = true, $pretty = false, $die = true){
+function Json::die($value, $noCache = true, $pretty = false, $die = true){
     if($noCache){
         SetHeaderNoCache();
     }

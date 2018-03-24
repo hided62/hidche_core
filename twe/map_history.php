@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 $year = $_GET['year'];
 $month = $_GET['month'];
 

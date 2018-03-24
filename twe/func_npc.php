@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 
 include('func_regnpc.php');
 

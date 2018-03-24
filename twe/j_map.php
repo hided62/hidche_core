@@ -1,8 +1,10 @@
 <?php
+namespace sammo;
+
 include 'lib.php';
 include 'func.php';
 
-use utilphp\util as util;
+
 
 getGeneralID();
 
@@ -21,7 +23,7 @@ $post = array_merge($defaultPost, parseJsonPost());
 
 if($post['year']){
     if($post['month'] < 1 || $post['month'] > 12){
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>'잘못된 개월 값'
         ]);
@@ -38,8 +40,8 @@ else{
 $result = getWorldMap($post);
 if($post['year'] && $post['month'] && $result['result']){
     //연감 자료는 캐싱 가능
-    returnJson($result, false);
+    Json::die($result, false);
 }
 else{
-    returnJson($result);
+    Json::die($result);
 }

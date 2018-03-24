@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 include "lib.php";
 include "func.php";
 // $turn, $command, $cost, $name, $nationname, $note, $double, $third, $fourth

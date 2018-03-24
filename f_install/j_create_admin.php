@@ -1,10 +1,12 @@
 <?php
+namespace sammo;
+
 
 require('_common.php');
 require(__DIR__.'/../f_config/SETTING.php');
 require(ROOT.'/f_func/class._Time.php');
 
-use utilphp\util as util;
+
 
 session_start();
 session_destroy();
@@ -14,21 +16,21 @@ $password = util::array_get($_POST['password']);
 $nickname = util::array_get($_POST['nickname']);
 
 if(!$username || !$password || !$nickname){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'입력값이 설정되지 않았습니다.'
     ]);
 }
 
 if(strlen($password)!=128){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'올바르지 않은 비밀번호 해시 포맷입니다.'
     ]);
 }
 
 if(!$SETTING->isExists()){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'DB 설정이 완료되지 않았습니다.'
     ]);
@@ -42,7 +44,7 @@ $rootDB->query('LOCK TABLES member WRITE, member_log WRITE');
 
 $memberCnt = $rootDB->queryFirstField('SELECT count(`NO`) from member');
 if($memberCnt > 0){
-    returnJson([
+    Json::die([
         'result'=>'false',
         'reason'=>'이미 계정이 생성되어 있습니다'
     ]);
@@ -76,7 +78,7 @@ $rootDB->insert('member_log', [
     ], JSON_UNESCAPED_UNICODE)
 ]);
 
-returnJson([
+Json::die([
     'result'=>true,
     'reason'=>'success'
 ]);

@@ -1,4 +1,5 @@
 <?php
+namespace sammo;
 
 function GetStuffName($stuff) {
     $type1 = $stuff % 10;

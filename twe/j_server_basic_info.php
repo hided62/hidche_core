@@ -3,7 +3,7 @@ include "lib.php";
 include "func.php";
 
 if(!getUserID()){
-    returnJson([
+    Json::die([
         'game'=>'x',
         'me'=>'no'
     ]);
@@ -88,7 +88,7 @@ if($generalID){
 }
 
 //TODO: 이를 표현하는 방법은 '이전 버전'의 serverListPost.php를 참고할 것.
-returnJson([
+Json::die([
     'game'=>$game,
     'me'=>$me?$me:null
 ]);

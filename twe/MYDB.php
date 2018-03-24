@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 
 function MYDB_connect($host, $id, $pw) {
     $conn = mysqli_connect($host, $id, $pw);

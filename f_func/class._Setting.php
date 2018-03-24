@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require_once('_common.php');
 
 class _Setting {

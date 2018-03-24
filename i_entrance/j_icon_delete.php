@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 require_once(ROOT.'/f_func/class._Session.php');
@@ -6,7 +8,7 @@ require_once(ROOT.'/f_func/class._Session.php');
 $SESSION = new _Session();
 
 if(!$SESSION->isLoggedIn()) {
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'로그인되지 않았습니다.'
     ]);
@@ -57,4 +59,4 @@ if($dt == $rf) {
     $response['result'] = true;
 }
 
-returnJson($response);
+Json::die($response);

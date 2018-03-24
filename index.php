@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require('_common.php');
 require(ROOT.'/f_config/SETTING.php');
 
@@ -13,7 +15,7 @@ require(ROOT.'/d_setting/conf_kakao.php');
 
 $SESSION = new _SESSION();
 
-use utilphp\util as util;
+
 
 if($SESSION->isLoggedIn()){
     header ('Location:i_entrance/entrance.php');

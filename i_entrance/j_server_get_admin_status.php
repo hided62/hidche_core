@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 // 외부 파라미터
 
 require_once('_common.php');
@@ -57,4 +59,4 @@ foreach (getServerConfigList() as $server) {
     $result[] = $state;
 }  
 
-returnJson($result);
+Json::die($result);

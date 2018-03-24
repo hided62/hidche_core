@@ -7,14 +7,14 @@ $generalID = getGeneralID();
 session_write_close();
 
 if(!$userID){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'로그인되지 않았습니다.'
     ]);
 }
 
 if(!$generalID){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'장수를 생성하지 않았습니다.'
     ]);
@@ -26,7 +26,7 @@ $db = getDB();
 $image = $rootDB->queryFirstRow('SELECT picture, imgsvr FROM `MEMBER` WHERE no = %i', $userID);
 
 if(!$image){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'회원 기록 정보가 없습니다'
     ]);
@@ -37,7 +37,7 @@ $db->update('general', [
     'imgsvr'=>$image['imgsvr']
 ], 'owner = %i and npc = 0', $userID);
 
-returnJson([
+Json::die([
     'result'=>true,
     'reason'=>'success'
 ]);

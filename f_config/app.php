@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require_once('_common.php');
 require_once(ROOT.'/f_func/class._Setting.php');
 

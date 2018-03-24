@@ -1,6 +1,6 @@
 <?php
 require('../twe/lib.php');
-use utilphp\util as util;
+
 /*
 원래대로라면 json을 돌려주는게 맞지만
 refresh를 반영해야하므로 php로 중계해서 반환함! 

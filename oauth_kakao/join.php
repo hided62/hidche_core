@@ -1,9 +1,11 @@
 <?php
+namespace sammo;
+
 require('_common.php');
 require(ROOT.'/f_func/class._Time.php');
 require_once(__dir__.'/../d_setting/conf.php');
 
-use utilphp\util as util;
+
 
 session_start();
 

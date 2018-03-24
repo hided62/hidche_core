@@ -1,20 +1,21 @@
 <?php
+namespace sammo;
 
 require('_common.php');
 require(__DIR__.'/../f_config/SETTING.php');
 require(__DIR__.'/../f_func/class._Time.php');
-use utilphp\util as util;
+
 
 
 function dbConnFail($params){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'DB 접속에 실패했습니다.'
     ]);
 }
 
 function dbSQLFail($params){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'SQL을 제대로 실행하지 못했습니다. DB상태를 확인해 주세요.'
     ]);
@@ -28,28 +29,28 @@ $dbName = util::array_get($_POST['db_name']);
 $servHost = util::array_get($_POST['serv_host']);
 
 if(!$host || !$port || !$username || !$password || !$dbName || !$servHost){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'입력 값이 올바르지 않습니다'
     ]);
 }
 
 if(!filter_var($servHost, FILTER_VALIDATE_URL)){
-	returnJson([
+	Json::die([
         'result'=>false,
         'reason'=>'접속 경로가 올바르지 않습니다.'
     ]);
 }
 
 if(file_exists(ROOT.'/d_setting/conf.php') && is_dir(ROOT.'/d_setting/conf.php')){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'d_setting/conf.php 가 디렉토리입니다'
     ]);
 }
 
 if($SETTING->isExists()){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'이미 conf.php 파일이 있습니다'
     ]);
@@ -57,42 +58,42 @@ if($SETTING->isExists()){
 
 //파일 권한 검사
 if(file_exists(ROOT.'/d_pic') && !is_dir(ROOT.'/d_pic')){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'d_pic 이 디렉토리가 아닙니다'
     ]);
 }
 
 if(file_exists(ROOT.'/d_log') && !is_dir(ROOT.'/d_log')){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'d_log 가 디렉토리가 아닙니다'
     ]);
 }
 
 if(!file_exists(ROOT.'/d_setting')){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'d_setting 이 존재하지 않습니다'
     ]);
 }
 
 if(!is_writable(ROOT.'/d_pic')){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'d_pic 디렉토리의 쓰기 권한이 없습니다'
     ]);
 }
 
 if(!is_writable(ROOT.'/d_log')){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'d_log 디렉토리의 쓰기 권한이 없습니다'
     ]);
 }
 
 if(!is_writable(ROOT.'/d_setting')){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'d_setting 디렉토리의 쓰기 권한이 없습니다.'
     ]);
@@ -155,13 +156,13 @@ $result = generateFileUsingSimpleTemplate(
 );
 
 if($result !== true){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>$result
     ]);
 }
 
-returnJson([
+Json::die([
     'result'=>true,
     'reason'=>'success'
 ]);

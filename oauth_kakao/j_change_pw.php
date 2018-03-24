@@ -1,4 +1,5 @@
 <?php
+namespace sammo;
 
 require('_common.php');
 require(ROOT.'/f_func/class._Session.php');
@@ -6,12 +7,12 @@ require(ROOT.'/f_config/DB.php');
 require(ROOT.'/f_func/class._Time.php');
 require('kakao.php');
 
-use utilphp\util as util;
+
 $nowDate = _Time::DatetimeNow();
 
 $SESSION = new _Session();
 if(!$SESSION->isLoggedIn()){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'로그인이 되어있지 않습니다'
     ]);
@@ -23,7 +24,7 @@ $refresh_token = util::array_get($_SESSION['refresh_token']);
 $refresh_token_expires = util::array_get($_SESSION['refresh_token_expires']);
 
 if(!$access_token || !$expires){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'카카오로그인이 이루어지지 않았습니다.'
     ]);
@@ -34,7 +35,7 @@ if(!$access_token || !$expires){
 $restAPI = new Kakao_REST_API_Helper($access_token);
 
 if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate))){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'로그인 토큰 만료.'.$refresh_token_expires.' 다시 카카오로그인을 수행해주세요.'
     ]);
@@ -46,7 +47,7 @@ if($expires < $nowDate){
 
     $result = $restAPI->refresh_access_token($refresh_token);
     if(!isset($refresh_token)){
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>'카카오 로그인 과정 중 추가 갱신 절차를 실패했습니다'
         ]);
@@ -65,7 +66,7 @@ getRootDB()->query("lock tables member write, member_log write");
 $isUser = getRootDB()->queryFirstRow(
     'SELECT count(`no`) from member where no=%i',$userID);
 if(!$isUser){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'회원이 아닙니다. 관리자에게 문의해주세요.'
     ]);
@@ -87,7 +88,7 @@ $sendResult = $restAPI->talk_to_me_default([
 ]);
 $sendResult['code'] = util::array_get($sendResult['code'], 0);
 if($sendResult['code'] < 0){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'카카오톡 메시지를 보내지 못했습니다.'
     ]);
@@ -112,7 +113,7 @@ getRootDB()->insert('member_log', [
 getRootDB()->query("unlock tables");
 
 
-returnJson([
+Json::die([
     'result'=>true,
     'reason'=>'success'
 ]);

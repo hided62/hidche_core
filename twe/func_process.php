@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 
 /**
  * 장수의 통솔을 받아옴

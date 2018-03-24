@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 require_once(ROOT.'/f_config/SESSION.php');
@@ -63,6 +65,6 @@ if($member['GRADE'] < 6) {
     $response['result'] = 'SUCCESS';
 }
 
-returnJson($response);
+Json::die($response);
 
 

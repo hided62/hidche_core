@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 
@@ -19,6 +21,6 @@ foreach(getServerConfigList() as $serverInfo){
 }
 
 $response['result'] = 'SUCCESS';
-returnJson($response);
+Json::die($response);
 
 

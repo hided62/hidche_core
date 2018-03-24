@@ -1,4 +1,12 @@
 {
+    "name":"sammo-hid/sammo",
+    "description":"삼국지 모의전투 HiD",
+    "license": [
+       "MIT",
+       "GPL-2.0-or-later",
+       "proprietary"
+    ],
+    "version":"0.1.0-alpha",
     "require": {
         "brandonwamboldt/utilphp": "^1.1",
         "sergeytsalkov/meekrodb": "^2.3",
@@ -7,5 +15,11 @@
         "leafo/scssphp": "^0.7.5",
         "monolog/monolog": "^1.23",
         "firephp/firephp-core": "^0.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "sammo\\": "src"
+        }
     }
+    
 }

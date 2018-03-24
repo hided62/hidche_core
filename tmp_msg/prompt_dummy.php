@@ -1,6 +1,6 @@
 <?php
 require('../twe/lib.php');
-use utilphp\util as util;
+
 
 $jsonPost = parseJsonPost();
 

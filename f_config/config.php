@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require(__dir__.'/../vendor/autoload.php');
 define('__LINE__',__FILE__." ".__FUNCTION__." ".__LINE__." : ");
 ob_start();

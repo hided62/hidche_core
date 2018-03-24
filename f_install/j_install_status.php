@@ -1,24 +1,26 @@
 <?php
+namespace sammo;
+
 
 require('_common.php');
 require(__DIR__.'/../f_config/SETTING.php');
-use utilphp\util as util;
+
 
 
 function dbConnFail($params){
-    returnJson([
+    Json::die([
         'step'=>'conn_fail'
     ]);
 }
 
 function dbSQLFail($params){
-    returnJson([
+    Json::die([
         'step'=>'sql_fail'
     ]);
 }
 
 if(!$SETTING->isExists()){
-    returnJson([
+    Json::die([
         'step'=>'config'
     ]);
 }
@@ -32,13 +34,13 @@ $rootDB->error_handler = 'dbSQLFail';
 
 $memberCnt = $rootDB->queryFirstField('SELECT count(`NO`) from MEMBER');
 if($memberCnt === 0){
-    returnJson([
+    Json::die([
         'step'=>'admin',
         'globalSalt'=>getGlobalSalt()
     ]);
 }
 
 
-returnJson([
+Json::die([
     'step'=>'done'
 ]);

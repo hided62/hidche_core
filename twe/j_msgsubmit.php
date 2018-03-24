@@ -1,8 +1,10 @@
 <?php
+namespace sammo;
+
 include 'lib.php';
 include 'func.php';
 
-use utilphp\util as util;
+
 
 /**
  * 메시지 전송 코드.
@@ -16,7 +18,7 @@ session_write_close();
 $post = parseJsonPost();
 
 if(!isset($post['genlist']) || !isset($post['msg'])){
-    returnJson([
+    Json::die([
         'result' => false,
         'reason' => '올바르지 않은 호출입니다.',
         'newSeq' => false
@@ -31,7 +33,7 @@ $date = $datetime->format('Y-m-d H:i:s');
 
 //로그인 검사
 if(!isSigned()){
-    returnJson([
+    Json::die([
         'result' => false,
         'reason' => '로그인되지 않았습니다.',
         'newSeq' => false
@@ -45,7 +47,7 @@ $connect = dbConn();
 increaseRefresh('서신전달', 1);
 
 if(getBlockLevel() == 1 || getBlockLevel() == 3) {
-    returnJson([
+    Json::die([
         'result' => false,
         'reason' => '차단되었습니다.',
         'newSeq' => false
@@ -58,7 +60,7 @@ $me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`con`,`picture`,`i
 
 if(!$me){
     resetSessionGeneralValues();
-    returnJson([
+    Json::die([
         'result' => false,
         'reason' => '로그인되지 않았습니다.',
         'newSeq' => false
@@ -67,7 +69,7 @@ if(!$me){
 
 $con = checkLimit($me['con'], $conlimit);
 if($con >= 2) { 
-    returnJson([
+    Json::die([
         'result' => false,
         'reason' => '접속 제한입니다.',
         'newSeq' => false
@@ -79,7 +81,7 @@ $msg = mb_substr($msg, 0, 99, 'UTF-8');
 $msg = trim($msg);
 
 if($msg == ''){
-    returnJson([
+    Json::die([
         'result' => true,
         'reason' => 'SUCCESS',
         'newSeq' => false
@@ -123,7 +125,7 @@ if($destMailbox == 9999) {
     $msg_interval = $datetime->getTimestamp() - $last_msg->getTimestamp();
     //NOTE: 여기서 유저 레벨을 구별할 코드가 필요할까?
     if($msg_interval < 2){
-        returnJson([
+        Json::die([
             'result' => false,
             'reason' => '개인메세지는 2초당 1건만 보낼 수 있습니다!',
             'newSeq' => false
@@ -133,7 +135,7 @@ if($destMailbox == 9999) {
     $destUser = $db->queryFirstRow('select `no`,`name`,`nation` from `general` where `no` = %s',$destMailbox);
 
     if($destUser == null || empty($destUser)){
-        returnJson([
+        Json::die([
             'result' => false,
             'reason' => '존재하지 않는 유저입니다.',
             'newSeq' => false
@@ -151,14 +153,14 @@ if($destMailbox == 9999) {
     sendMessage('private', $src, $dest, $msg, $date);
 }
 else{
-    returnJson([
+    Json::die([
         'result' => false,
         'reason' => '알 수 없는 에러',
         'newSeq' => false
     ]);
 }
 
-returnJson([
+Json::die([
     'result' => true,
     'reason' => 'SUCCESS',
     'newSeq' => true

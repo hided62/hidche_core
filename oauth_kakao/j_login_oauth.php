@@ -1,10 +1,12 @@
 <?php
+namespace sammo;
+
 require('_common.php');
 require(ROOT.'/f_func/class._Session.php');
 require(ROOT.'/f_config/DB.php');
 require(ROOT.'/f_func/class._Time.php');
 require('kakao.php');
-use utilphp\util as util;
+
 
 $SESSION = new _Session();
 if($SESSION->isLoggedIn()){
@@ -13,7 +15,7 @@ if($SESSION->isLoggedIn()){
 
 $canLogin = getRootDB()->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
 if($canLogin != 'Y'){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'현재는 로그인이 금지되어있습니다!',
         'noRetry'=>true
@@ -30,7 +32,7 @@ $email = util::array_get($_SESSION['kaccount_email']);
 
 
 if(!$access_token || !$expires){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'카카오로그인이 이루어지지 않았습니다.'
     ]);
@@ -40,7 +42,7 @@ if(!$access_token || !$expires){
 $restAPI = new Kakao_REST_API_Helper($access_token);
 
 if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate))){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'로그인 토큰 만료.'.$refresh_token_expires.' 다시 카카오로그인을 수행해주세요.'
     ]);
@@ -52,7 +54,7 @@ if($expires < $nowDate){
 
     $result = $restAPI->refresh_access_token($refresh_token);
     if(!isset($refresh_token)){
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>'카카오 로그인 과정 중 추가 갱신 절차를 실패했습니다'
         ]);
@@ -71,7 +73,7 @@ if(!$email){
     $me = $restAPI->meWithEmail();
     $me['code'] = util::array_get($me['code'], 0);
     if ($me['code']< 0) {
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>'카카오로그인이 정상적으로 수행되지 않았습니다.'
         ]);
@@ -79,7 +81,7 @@ if(!$email){
 
     if(!util::array_get($me['kaccount_email_verified'],false)){
         $restAPI->unlink();
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>'카카오 계정 이메일이 아직 인증되지 않았습니다'
         ]);
@@ -96,7 +98,7 @@ $userInfo = getRootDB()->queryFirstRow(
 if(!$userInfo){
     $restAPI->unlink();
     unset($_SESSION['access_token']);
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'카카오로그인에 해당하는 계정이 없습니다. 재 가입을 시도해주세요.'
     ]);
@@ -107,7 +109,7 @@ if($userInfo['delete_after']){
         $restAPI->unlink();
         unset($_SESSION['access_token']);
         getRootDB()->delete('member', 'no=%i', $userInfo['no']);
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>"기간 만기로 삭제되었습니다. 재 가입을 시도해주세요."
         ]);
@@ -115,7 +117,7 @@ if($userInfo['delete_after']){
     else{
         $restAPI->unlink();
         unset($_SESSION['access_token']);
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>"삭제 요청된 계정입니다.[{$userInfo['delete_after']}]"
         ]);
@@ -124,7 +126,7 @@ if($userInfo['delete_after']){
 }
 
 $SESSION->login($userInfo['no'], $userInfo['id'], $userInfo['grade']);
-returnJson([
+Json::die([
     'result'=>true,
     'reason'=>'로그인 되었습니다.'
 ]);

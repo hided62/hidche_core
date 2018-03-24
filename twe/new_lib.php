@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 //임시 땜빵 리팩터링.
 require_once "lib.php";
 

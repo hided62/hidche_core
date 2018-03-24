@@ -3,7 +3,7 @@ include "lib.php";
 include "schema.php";
 include "func.php";
 
-use utilphp\util as util;
+
 
 if(getUserGrade(true) < 5){
     die('관리자 아님');

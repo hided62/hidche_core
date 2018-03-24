@@ -1,16 +1,18 @@
 <?php
+namespace sammo;
+
 require_once('_common.php');
 require('lib.join.php');
 require_once(ROOT.'/f_func/class._Time.php');
 require('kakao.php');
 
-use utilphp\util as util;
+
 
 session_start();
 
 $canJoin = getRootDB()->queryFirstField('SELECT REG FROM `SYSTEM` WHERE `NO` = 1');
 if($canJoin != 'Y'){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'현재는 가입이 금지되어있습니다!'
     ]);
@@ -23,14 +25,14 @@ $expires = util::array_get($_SESSION['expires']);
 $refresh_token = util::array_get($_SESSION['refresh_token']);
 $refresh_token_expires = util::array_get($_SESSION['refresh_token_expires']);
 if(!$access_token){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'로그인 토큰 에러. 다시 카카오로그인을 수행해주세요.'
     ]);
 }
 if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate))){
     unset($_SESSION['access_token']);
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'로그인 토큰 만료.'.$refresh_token_expires.' 다시 카카오로그인을 수행해주세요.'
     ]);
@@ -41,21 +43,21 @@ $password = util::array_get($_POST['password']);
 $nickname = util::array_get($_POST['nickname']);
 
 if(!$username || !$password || !$nickname){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'입력값이 설정되지 않았습니다.'
     ]);
 }
 
 if(strlen($password)!=128){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'올바르지 않은 비밀번호 해시 포맷입니다.'
     ]);
 }
 
 if(!$secret_agree){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'약관에 동의해야 가입하실 수 있습니다.'
     ]);
@@ -63,7 +65,7 @@ if(!$secret_agree){
 
 $usernameChk = checkUsernameDup($username);
 if($usernameChk !== true){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>$usernameChk
     ]);
@@ -71,7 +73,7 @@ if($usernameChk !== true){
 
 $nicknameChk = checkNicknameDup($nickname);
 if($nicknameChk !== true){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>$nicknameChk
     ]);
@@ -87,7 +89,7 @@ if($expires < $nowDate){
     $result = $restAPI->refresh_access_token($refresh_token);
     if(!isset($refresh_token)){
         unset($_SESSION['access_token']);
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>'카카오 로그인 과정 중 추가 갱신 절차를 실패했습니다'
         ]);
@@ -106,7 +108,7 @@ $signupResult = $restAPI->signup();
 $kakaoID = util::array_get($signupResult['id']);
 
 if(!$kakaoID && util::array_get($signupResult['msg'])!='already registered'){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'카카오 로그인 과정 중 앱 연결 절차를 실패했습니다'.json_encode($signupResult)
     ]);
@@ -116,7 +118,7 @@ $me = $restAPI->meWithEmail();
 $me['code'] = util::array_get($me['code'], 0);
 if ($me['code']< 0) {
     $restAPI->unlink();
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'카카오로그인이 정상적으로 수행되지 않았습니다.'
     ]);
@@ -124,7 +126,7 @@ if ($me['code']< 0) {
 
 if(!util::array_get($me['kaccount_email_verified'],false)){
     $restAPI->unlink();
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'카카오 계정 이메일이 아직 인증되지 않았습니다'
     ]);
@@ -135,7 +137,7 @@ $_SESSION['kaccount_email'] = $email;
 $emailChk = checkEmailDup($email);
 if($emailChk !== true){
     $restAPI->unlink();
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>$emailChk
     ]);
@@ -165,7 +167,7 @@ getRootDB()->insert('member_log', [
     ], JSON_UNESCAPED_UNICODE)
 ]);
 
-returnJson([
+Json::die([
     'result'=>true,
     'reason'=>'success'
 ]);

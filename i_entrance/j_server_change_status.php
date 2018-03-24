@@ -1,9 +1,11 @@
 <?php
+namespace sammo;
+
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 require_once(ROOT.'/f_config/SESSION.php');
 
-use utilphp\util as util;
+
 
 // 외부 파라미터
 // $_POST['action'] : 'notice', 'open', 'close', 'reset', 'reset_full'
@@ -23,7 +25,7 @@ $userGrade = $SESSION->getGrade();
 session_write_close();
 
 if($userGrade < 6) {
-    returnJson([
+    Json::die([
         'result'=>'FAIL',
         'msg'=>'운영자 권한이 없습니다.'
     ]);

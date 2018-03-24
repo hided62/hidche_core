@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 require_once(ROOT.'/f_config/SESSION.php');
@@ -11,6 +13,6 @@ unset($_SESSION['access_token']);
 session_write_close();
 setcookie("hello", "", time()-3600);
 
-returnJson([
+Json::die([
     'result'=>true
 ]);

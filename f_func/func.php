@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require(__dir__.'/../vendor/autoload.php');
 
 function SetHeaderNoCache(){
@@ -114,26 +116,6 @@ function delExpiredInDir($dir, $t) {
     }
     closedir($handle);
     return $success;
-}
-
-
-function returnJson($value, $noCache = true, $pretty = false, $die = true){
-    if($noCache){
-        SetHeaderNoCache();
-    }
-    
-    header('Content-Type: application/json');
-
-    if($pretty){
-        $flag = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
-    }
-    else{
-        $flag = JSON_UNESCAPED_UNICODE;
-    }
-    echo json_encode($value, $flag); 
-    if($die){
-        die();
-    }
 }
 
 function hashPassword($salt, $password){

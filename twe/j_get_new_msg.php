@@ -2,7 +2,7 @@
 include('lib.php');
 include('func.php');
 
-use utilphp\util as util;
+
 
 $generalID = getGeneralID();
 
@@ -20,13 +20,13 @@ $nationID = getDB()->queryFirstField(
 
 
 if($nationID === null){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'소속 국가가 없습니다'
     ]);
 }
 
-returnJson([
+Json::die([
     'result'=>true,
     'private'=>getMessage('private', $nationID, 10, $reqSequence),
     'public'=>getMessage('public', $nationID, 20, $reqSequence),

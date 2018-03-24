@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 if(!defined('ROOT')){
     define('ROOT', '..');
 }

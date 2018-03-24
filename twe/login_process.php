@@ -1,10 +1,12 @@
 <?php
+namespace sammo;
+
 include "lib.php";
 include "func.php";
 
 //FIXME: 이 프로세스 전체가 필요없을 수 있다. session 디렉토리를 관리하지 않거나, 자동 로그인을 처리하는 방법을 생각할 것.
 
-use utilphp\util as util;
+
 
 $db = getDB();
 

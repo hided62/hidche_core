@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 file_put_contents("logs/_db_bug.txt", $message."\n", FILE_APPEND);
 ?>
 <!DOCTYPE html>

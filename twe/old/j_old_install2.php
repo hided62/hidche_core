@@ -2,7 +2,7 @@
 include "lib.php";
 include "func.php";
 
-use utilphp\util as util;
+
 
 $turnterm = util::array_get($_POST['turnterm'],'0');
 $sync = util::array_get($_POST['sync'],'0');

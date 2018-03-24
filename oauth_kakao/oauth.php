@@ -1,8 +1,10 @@
 <?php
+namespace sammo;
+
 require('_common.php');
 require(ROOT.'/f_func/class._Time.php');
 require('kakao.php');
-use utilphp\util as util;
+
 
 $auth_code = util::array_get($_GET['code']);
 if(!$auth_code){

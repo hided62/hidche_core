@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 require_once(ROOT.'/f_func/class._Session.php');
@@ -6,7 +8,7 @@ require_once(ROOT.'/f_func/class._Session.php');
 $SESSION = new _Session();
 
 if(!$SESSION->isLoggedIn()) {
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'로그인되지 않았습니다.'
     ]);
@@ -38,7 +40,7 @@ if(!$db->affectedRows()){
         ])
     ]);
 
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'현재 비밀번호가 일치하지 않습니다.'
     ]);
@@ -53,7 +55,7 @@ $db->insert('member_log', [
     ])
 ]);
 
-returnJson([
+Json::die([
     'result'=>true,
     'reason'=>'success'
 ]);

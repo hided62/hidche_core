@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 
 function processWar($connect, $general, $city) {
 

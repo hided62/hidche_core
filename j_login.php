@@ -5,7 +5,7 @@ require_once(ROOT.'/f_func/class._String.php');
 require(ROOT.'/f_func/class._Time.php');
 require_once(ROOT.'/f_config/DB.php');
 
-use utilphp\util as util;
+
 
 $SESSION = new _Session();
 if($SESSION->isLoggedIn()){
@@ -16,7 +16,7 @@ $username = mb_strtolower(util::array_get($_POST['username']), 'utf-8');
 $password = util::array_get($_POST['password']);
 
 if(!$username || !$password){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'올바르지 않은 입력입니다.'
     ]);
@@ -24,7 +24,7 @@ if(!$username || !$password){
 
 $canLogin = getRootDB()->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
 if($canLogin != 'Y'){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'현재는 로그인이 금지되어있습니다!'
     ]);
@@ -39,7 +39,7 @@ $userInfo = getRootDB()->queryFirstRow(
 ]);
 
 if(!$userInfo){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'아이디나 비밀번호가 올바르지 않습니다.'
     ]);
@@ -49,13 +49,13 @@ $nowDate = _Time::DatetimeNow();
 if($userInfo['delete_after']){
     if($userInfo['delete_after'] < $nowDate){
         getRootDB()->delete('member', 'no=%i', $userInfo['no']);
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>"기간 만기로 삭제되었습니다. 재 가입을 시도해주세요."
         ]);
     }
     else{
-        returnJson([
+        Json::die([
             'result'=>false,
             'reason'=>"삭제 요청된 계정입니다.[{$userInfo['delete_after']}]"
         ]);
@@ -64,7 +64,7 @@ if($userInfo['delete_after']){
 }
 
 $SESSION->login($userInfo['no'], $userInfo['id'], $userInfo['grade']);
-returnJson([
+Json::die([
     'result'=>true,
     'reason'=>'로그인 되었습니다.'
 ]);

@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 
 function CheckLogin($type=0) {
     if(!isset($_SESSION['noMember'])) {

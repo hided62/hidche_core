@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require_once('_common.php');
 require_once(ROOT.'/f_func/class._Time.php');
 require_once(ROOT.'/f_config/DB.php');
@@ -7,7 +9,7 @@ require_once(ROOT.'/f_func/class._Session.php');
 $SESSION = new _Session();
 
 if(!$SESSION->isLoggedIn()) {
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'로그인되지 않았습니다.'
     ]);
@@ -18,7 +20,7 @@ if(!$SESSION->isLoggedIn()) {
 $pw = $_POST['pw'];
 
 if(!$pw){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'패스워드를 입력해주세요.'
     ]);
@@ -32,14 +34,14 @@ $userInfo = $db->queryFirstRow('SELECT oauth_id, oauth_type, email, delete_after
     $SESSION->NoMember(), $pw);
 
 if(!$userInfo){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'현재 비밀번호가 일치하지 않습니다.'
     ]);
 }
 
 if($userInfo['delete_after']){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'이미 탈퇴 처리되어있습니다.'
     ]);
@@ -50,7 +52,7 @@ $db->update('member',[
 ], 'no=%i', $SESSION->NoMember());
 
 if(!$db->affectedRows()){
-    returnJson([
+    Json::die([
         'result'=>false,
         'reason'=>'알 수 없는 이유로 탈퇴에 실패했습니다.'
     ]);
@@ -67,7 +69,7 @@ $SESSION->logout();
 unset($_SESSION['access_token']);
 setcookie("hello", "", time()-3600);
 
-returnJson([
+Json::die([
     'result'=>true,
     'reason'=>'success'
 ]);

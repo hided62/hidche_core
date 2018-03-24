@@ -1,8 +1,10 @@
 <?php
+namespace sammo;
+
 include "lib.php";
 include "func.php";
 
-use utilphp\util as util;
+
 
 //로그인 검사
 

@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 include "lib.php";
 
 if(getUserGrade(true) < 5){

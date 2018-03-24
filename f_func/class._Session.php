@@ -1,6 +1,8 @@
 <?php
+namespace sammo;
+
 require(__dir__.'/../vendor/autoload.php');
-use utilphp\util as util;
+
 
 class _Session {
     public function __construct() {

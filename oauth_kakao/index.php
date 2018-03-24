@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require(__DIR__.'/../d_setting/conf_kakao.php');
 ?>
 <!DOCTYPE html>
