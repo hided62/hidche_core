@@ -1,5 +1,5 @@
 <?php
 namespace sammo;
 
-class util extends utilphp\util{
+class util extends \utilphp\util{
 };

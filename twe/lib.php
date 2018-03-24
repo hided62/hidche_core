@@ -3,6 +3,28 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 
+/**
+* https://php.net/manual/kr/language.oop5.autoload.php#120258
+* 현재 디렉토리 기준으로 php 파일 탐색.
+*/
+class Autoloader
+{
+    public static function register()
+    {
+        spl_autoload_register(function ($class) {
+            if(util::starts_with($class, 'sammo\\')){
+                $class = substr($class, strlen('sammo\\'));
+            }
+            $file = __DIR__.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php';
+            if (file_exists($file)) {
+                require $file;
+                return true;
+            }
+            return false;
+        });
+    }
+}
+Autoloader::register();
 
 
 /******************************************************************************
@@ -140,25 +162,6 @@ function SetHeaderNoCache(){
         header('Cache-Control: no-store, no-cache, must-revalidate');
         header('Cache-Control: post-check=0, pre-check=0', FALSE);
         header('Pragma: no-cache');
-    }
-}
-
-function Json::die($value, $noCache = true, $pretty = false, $die = true){
-    if($noCache){
-        SetHeaderNoCache();
-    }
-    
-    header('Content-Type: application/json');
-
-    if($pretty){
-        $flag = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT;
-    }
-    else{
-        $flag = JSON_UNESCAPED_UNICODE;
-    }
-    echo json_encode($value, $flag); 
-    if($die){
-        die();
     }
 }
 
