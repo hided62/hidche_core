@@ -20,14 +20,6 @@ if(!$username || !$password){
     ]);
 }
 
-$canLogin = RootDB::db()->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
-if($canLogin != 'Y'){
-    Json::die([
-        'result'=>false,
-        'reason'=>'현재는 로그인이 금지되어있습니다!'
-    ]);
-}
-
 $userInfo = RootDB::db()->queryFirstRow(
     'SELECT `no`, `id`, `name`, `grade`, `delete_after` '.
     'from member where id=%s_username AND '.
@@ -40,6 +32,14 @@ if(!$userInfo){
     Json::die([
         'result'=>false,
         'reason'=>'아이디나 비밀번호가 올바르지 않습니다.'
+    ]);
+}
+
+$canLogin = RootDB::db()->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
+if($canLogin != 'Y' && $userInfo['grade'] < 5){
+    Json::die([
+        'result'=>false,
+        'reason'=>'현재는 로그인이 금지되어있습니다!'
     ]);
 }
 
