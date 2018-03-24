@@ -3,7 +3,7 @@ namespace sammo;
 
 ob_start();
 require(__dir__.'/../vendor/autoload.php');
-require_once(__dir__.'/../f_func/func.php');
+require_once(__dir__.'/func.php');
 
 
 

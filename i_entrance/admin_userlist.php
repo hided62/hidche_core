@@ -28,7 +28,7 @@ if($userGrade < 6){
         <script type="text/javascript" src='../js/common.js'></script>
         <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
         <script type="text/javascript" src="../e_lib/bootstrap.bundle.min.js"></script>
-        <script type="text/javascript" src='../f_func/func.js'></script>
+        <script type="text/javascript" src='../js/func.js'></script>
 
         <script type="text/javascript" src='../i_popup/Action.js'></script>
         <script type="text/javascript" src='member/Action.js'></script>
