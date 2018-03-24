@@ -3,9 +3,8 @@ namespace sammo;
 
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/f_func/class._Session.php');
 
-$SESSION = new _Session();
+$SESSION = new Session();
 
 if(!$SESSION->isLoggedIn()) {
     Json::die([
@@ -28,11 +27,11 @@ $db = getRootDB();
 
 $userInfo = $db->update('member',[
     'pw'=>$db->sqleval('sha2(concat(salt, %s, salt), 512)', $newPw)
-], 'no=%i and pw=sha2(concat(salt, %s, salt), 512)', $SESSION->NoMember(), $pw);
+], 'no=%i and pw=sha2(concat(salt, %s, salt), 512)', $SESSION->noMember(), $pw);
 
 if(!$db->affectedRows()){
     $db->insert('member_log', [
-        'member_no'=>$SESSION->NoMember(),
+        'member_no'=>$SESSION->noMember(),
         'action_type'=>'change_pw',
         'action'=>json_encode([
             'type'=>'plain',
@@ -47,7 +46,7 @@ if(!$db->affectedRows()){
 }
 
 $db->insert('member_log', [
-    'member_no'=>$SESSION->NoMember(),
+    'member_no'=>$SESSION->noMember(),
     'action_type'=>'change_pw',
     'action'=>json_encode([
         'type'=>'plain',

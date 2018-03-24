@@ -4,12 +4,14 @@ namespace sammo;
 require(__dir__.'/../vendor/autoload.php');
 
 
-class _Session {
+class Session {
     public function __construct() {
         //session_cache_limiter('nocache, must_revalidate');
 
         // 세션 변수의 등록
-        session_start();
+        if (session_id() == ""){
+            session_start();
+        }
 
         //첫 등장
 
@@ -17,6 +19,24 @@ class _Session {
             $_SESSION['ip'] = util::get_client_ip(true);
             $_SESSION['time'] = time();
         }
+    }
+
+    public function writeClose(){
+        session_write_close();
+    }
+
+    public function __set(string $name, mixed $value){
+        if($value === null){
+            unset($_SESSION[$name]);
+        }
+        else{
+            $_SESSION[$name] = $value;
+        }
+        
+    }
+
+    public function __get(string $name){
+        return util::array_get($_SESSION[$name]);
     }
 
     public function set($key, $val) {
@@ -46,7 +66,7 @@ class _Session {
     }
 
     public function isLoggedIn() {
-        if($this->NoMember()){
+        if($this->noMember()){
             return true;
         }
         else{
@@ -54,7 +74,7 @@ class _Session {
         }
     }
 
-    public function NoMember() {
+    public function noMember() {
         return $this->get('noMember');
     }
 

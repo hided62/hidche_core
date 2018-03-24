@@ -11,7 +11,6 @@ if(!$SETTING->isExists()){
 }
 
 require(ROOT.'/f_config/DB.php');
-require(ROOT.'/f_func/class._Session.php');
 
 
 $SESSION = new _SESSION();

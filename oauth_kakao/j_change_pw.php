@@ -3,7 +3,6 @@ namespace sammo;
 
 require(__DIR__.'/../d_setting/conf_kakao.php');
 require('_common.php');
-require(ROOT.'/f_func/class._Session.php');
 require(ROOT.'/f_config/DB.php');
 require(ROOT.'/f_func/class._Time.php');
 
@@ -11,14 +10,14 @@ use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 $nowDate = _Time::DatetimeNow();
 
-$SESSION = new _Session();
+$SESSION = new Session();
 if(!$SESSION->isLoggedIn()){
     Json::die([
         'result'=>false,
         'reason'=>'로그인이 되어있지 않습니다'
     ]);
 }
-$userID = $SESSION->NoMember();
+$userID = $SESSION->noMember();
 $access_token = util::array_get($_SESSION['access_token']);
 $expires = util::array_get($_SESSION['expires']);
 $refresh_token = util::array_get($_SESSION['refresh_token']);

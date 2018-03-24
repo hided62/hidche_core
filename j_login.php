@@ -2,14 +2,13 @@
 namespace sammo;
 
 require_once('_common.php');
-require_once(ROOT.'/f_func/class._Session.php');
 require_once(ROOT.'/f_func/class._String.php');
 require(ROOT.'/f_func/class._Time.php');
 require_once(ROOT.'/f_config/DB.php');
 
 
 
-$SESSION = new _Session();
+$SESSION = new Session();
 if($SESSION->isLoggedIn()){
     $SESSION->logout();
 }

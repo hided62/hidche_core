@@ -3,14 +3,13 @@ namespace sammo;
 
 require(__DIR__.'/../d_setting/conf_kakao.php');
 require('_common.php');
-require(ROOT.'/f_func/class._Session.php');
 require(ROOT.'/f_config/DB.php');
 require(ROOT.'/f_func/class._Time.php');
 require('kakao.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
-$SESSION = new _Session();
+$SESSION = new Session();
 if($SESSION->isLoggedIn()){
     $SESSION->logout();
 }

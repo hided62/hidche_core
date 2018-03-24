@@ -3,9 +3,8 @@ namespace sammo;
 
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/f_func/class._Session.php');
 
-$SESSION = new _Session();
+$SESSION = new Session();
 
 if(!$SESSION->isLoggedIn()) {
     Json::die([
@@ -18,7 +17,7 @@ if(!$SESSION->isLoggedIn()) {
 
 $respone = [];
 $db = getRootDB();
-$picName = $db->queryFirstField('SELECT picture FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
+$picName = $db->queryFirstField('SELECT picture FROM `MEMBER` WHERE `NO` = %i', $SESSION->noMember());
 
 if($picName && strlen($picName) > 11){
     $dt = substr($picName, -8);
@@ -43,7 +42,7 @@ if($dt == $rf) {
     $db->update('MEMBER', [
         'PICTURE'=>'default.jpg',
         'IMGSVR'=>0,
-    ], 'NO=%i', $SESSION->NoMember());
+    ], 'NO=%i', $SESSION->noMember());
     
     $servers = [];
 

@@ -3,9 +3,8 @@ namespace sammo;
 
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/f_func/class._Session.php');
 
-$SESSION = new _Session();
+$SESSION = new Session();
 
 if(!$SESSION->isLoggedIn()) {
     Json::die([
@@ -17,7 +16,7 @@ if(!$SESSION->isLoggedIn()) {
 // 외부 파라미터
 
 $db = getRootDB();
-$member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
+$member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $SESSION->noMember());
 
 if(!$member['picture']){
     $picture = IMAGE.'/default.jpg';

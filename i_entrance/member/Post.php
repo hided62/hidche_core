@@ -12,7 +12,7 @@ $select = $_POST['select'];
 $no = $_POST['no'];
 
 $db = getRootDB();
-$member = $db->queryFirstRow('SELECT `GRADE` FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
+$member = $db->queryFirstRow('SELECT `GRADE` FROM `MEMBER` WHERE `NO` = %i', $SESSION->noMember());
 
 if($member['GRADE'] < 6) {
     $response['result'] = 'FAIL';

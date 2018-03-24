@@ -3,9 +3,8 @@ namespace sammo;
 
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/f_func/class._Session.php');
 
-$SESSION = new _Session();
+$SESSION = new Session();
 
 if(!$SESSION->isLoggedIn()) {
     Json::die([
@@ -30,7 +29,7 @@ $imageType = $size[2];
 $availableImageType = array('.jpg'=>IMAGETYPE_JPEG, '.png'=>IMAGETYPE_PNG, '.gif'=>IMAGETYPE_GIF);
 
 $db = getRootDB();
-$member = $db->queryFirstRow('SELECT `ID`, `PICTURE` FROM `MEMBER` WHERE `NO` = %i', $SESSION->NoMember());
+$member = $db->queryFirstRow('SELECT `ID`, `PICTURE` FROM `MEMBER` WHERE `NO` = %i', $SESSION->noMember());
 
 
 $picName = $member['PICTURE'];
@@ -88,7 +87,7 @@ if(!is_uploaded_file($image['tmp_name'])) {
         getRootDB()->update('MEMBER',[
             'PICTURE' => $pic,
             'IMGSVR' => 1
-        ], 'NO=%i', $SESSION->NoMember());
+        ], 'NO=%i', $SESSION->noMember());
 
         $servers = [];
 

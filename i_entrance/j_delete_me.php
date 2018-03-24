@@ -4,9 +4,8 @@ namespace sammo;
 require_once('_common.php');
 require_once(ROOT.'/f_func/class._Time.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/f_func/class._Session.php');
 
-$SESSION = new _Session();
+$SESSION = new Session();
 
 if(!$SESSION->isLoggedIn()) {
     Json::die([
@@ -31,7 +30,7 @@ $db = getRootDB();
 
 $userInfo = $db->queryFirstRow('SELECT oauth_id, oauth_type, email, delete_after FROM MEMBER '.
     'WHERE `no`=%i and pw=sha2(concat(salt, %s, salt), 512)',
-    $SESSION->NoMember(), $pw);
+    $SESSION->noMember(), $pw);
 
 if(!$userInfo){
     Json::die([
@@ -49,7 +48,7 @@ if($userInfo['delete_after']){
 
 $db->update('member',[
     'delete_after'=>_Time::DatetimeFromNowMinute(60*24*30)
-], 'no=%i', $SESSION->NoMember());
+], 'no=%i', $SESSION->noMember());
 
 if(!$db->affectedRows()){
     Json::die([
@@ -61,7 +60,7 @@ if(!$db->affectedRows()){
 
 
 $db->insert('member_log', [
-    'member_no'=>$SESSION->NoMember(),
+    'member_no'=>$SESSION->noMember(),
     'action_type'=>'delete'
 ]);
 
