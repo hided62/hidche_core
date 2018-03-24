@@ -1,7 +1,7 @@
 <?php
 namespace kakao;
 
-if (class_exists('KakaoKey') === false) {
+if (class_exists('sammo\KakaoKey') === false) {
   class KakaoKey{
     const REST_KEY = '';
     const ADMIN_KEY = '';

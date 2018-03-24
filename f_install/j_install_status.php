@@ -16,7 +16,7 @@ function dbSQLFail($params){
     ]);
 }
 
-if(!class_exists('RootDB')){
+if(!class_exists('sammo\RootDB')){
     Json::die([
         'step'=>'config'
     ]);

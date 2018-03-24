@@ -3,7 +3,7 @@ namespace sammo;
 
 require('_common.php');
 
-if(!class_exists('RootDB')){
+if(!class_exists('sammo\RootDB')){
     header ('Location:install.php');
     die();
 }

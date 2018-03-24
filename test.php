@@ -3,5 +3,7 @@ namespace sammo;
 require('vendor/autoload.php');
 
 Json::die([
-    'haha'
+    'haha',
+    RootDB::getServerBasepath(),
+    'RootDB'=>class_exists('sammo\RootDB')
 ]);
