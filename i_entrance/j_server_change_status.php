@@ -3,7 +3,7 @@ namespace sammo;
 
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/f_config/SESSION.php');
+$session = Session::requireLogin();
 
 
 
@@ -21,7 +21,7 @@ $notice = util::array_get($_POST['notice'], '');
 $server = util::array_get($_POST['server'], '');
 
 $db = getRootDB();
-$userGrade = $SESSION->getGrade();
+$userGrade = $session->userGrade;
 session_write_close();
 
 if($userGrade < 6) {

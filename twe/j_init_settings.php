@@ -3,7 +3,7 @@ include "lib.php";
 include "func.php";
 include "schema.php";
 
-if(getUserGrade(true) < 5){
+if(Session::getUserGrade(true) < 5){
     die('관리자 아님');
 }
 

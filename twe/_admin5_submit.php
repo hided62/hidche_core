@@ -7,7 +7,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-if(getUserGrade() < 5) {
+if(Session::getUserGrade() < 5) {
     //echo "<script>location.replace('_admin5.php');</script>";
     echo '_admin5.php';//TODO:debug all and replace
 }
@@ -15,10 +15,10 @@ if(getUserGrade() < 5) {
 switch($btn) {
     case "국가변경":
         if($nation == 0) {
-            $query = "update general set nation=0,level=0 where owner='{$_SESSION['noMember']}'";
+            $query = "update general set nation=0,level=0 where owner='{$_SESSION['userID']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            $query = "update general set nation='{$nation}',level=1 where owner='{$_SESSION['noMember']}'";
+            $query = "update general set nation='{$nation}',level=1 where owner='{$_SESSION['userID']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;

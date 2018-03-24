@@ -10,7 +10,7 @@ include "func.php";
 
 $db = getDB();
 
-$userID = getUserID();
+$userID = Session::getUserID();
 
 //회원 테이블에서 정보확인
 $me= $db->queryFirstRow('select no,name,nation,block,killturn from general where owner= %s', $userID);
@@ -44,7 +44,7 @@ $_SESSION['p_time']   = time();
 $date = date('Y-m-d H:i:s');
 
 //
-$query="update general set logcnt=logcnt+1,ip='{$_SESSION['p_ip']}',lastconnect='$date',conmsg='$conmsg' where owner='{$_SESSION['noMember']}'";
+$query="update general set logcnt=logcnt+1,ip='{$_SESSION['p_ip']}',lastconnect='$date',conmsg='$conmsg' where owner='{$_SESSION['userID']}'";
 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 $date = date('Y_m_d H:i:s');

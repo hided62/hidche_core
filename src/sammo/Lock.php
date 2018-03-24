@@ -1,6 +1,9 @@
 <?php
 namespace sammo;
 
+if(!defined('ROOT')){
+    define('ROOT', '..');
+}
 class Lock {
     private static $l = ROOT.'/d_log/lock.txt';
 

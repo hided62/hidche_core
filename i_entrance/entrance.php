@@ -3,13 +3,13 @@ namespace sammo;
 
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/f_config/SESSION.php');
+$session = Session::requireLogin();
 
 $templates = new \League\Plates\Engine('templates');
 
 $db = getRootDB();
 $notice = $db->queryFirstField('SELECT `NOTICE` FROM `SYSTEM` WHERE `NO`=1');
-$userGrade = $SESSION->getGrade();
+$userGrade = $session->userGrade;
 ?>
 <!DOCTYPE html>
 <html>

@@ -3,15 +3,15 @@ namespace sammo;
 
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/f_config/SESSION.php');
 
+$session = Session::requireLogin();
 $db = getRootDB();
-$userGrade = $SESSION->getGrade();
+$userGrade = $session->userGrade;
 
-session_write_close();
+$session->setReadOnly();
 
 if($userGrade < 6){
-    header('Location:../');
+    header('Location:'.ROOT);
     die();
 }
 ?>

@@ -5,7 +5,7 @@ include "lib.php";
 include "func.php";
 
 $connect = dbConn(true);
-$userID = getUserID();
+$userID = Session::getUserID();
 //회원 테이블에서 정보확인
 $query = "select no,name,picture,grade from MEMBER where no='$userID'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

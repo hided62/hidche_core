@@ -11,13 +11,13 @@ $query = "select develcost,vote,votecomment from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,vote,name,nation,horse,weap,book,item,npc from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,vote,name,nation,horse,weap,book,item,npc from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
 if($btn == "투표" && $me['vote'] == 0 && $sel > 0) {
     $develcost = $admin['develcost'] * 5;
-    $query = "update general set gold=gold+{$develcost},vote='{$sel}' where owner='{$_SESSION['noMember']}'";
+    $query = "update general set gold=gold+{$develcost},vote='{$sel}' where owner='{$_SESSION['userID']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     $log = array();
@@ -45,7 +45,7 @@ else if($btn == "댓글" && $comment != "") {
 
 }
 
-if(getUserGrade() < 5){
+if(Session::getUserGrade() < 5){
     echo "<!--<script>location.replace('a_vote.php');</script>"; //TODO:debug all and replace -->
     echo 'a_vote.php ';
     die();

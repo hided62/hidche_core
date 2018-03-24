@@ -8,7 +8,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("세력도시", 1);
 
-$query = "select no,nation,level,skin from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,nation,level,skin from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -59,7 +59,7 @@ if($me['skin'] < 1) {
     </td></tr>
 </table>
 <?php
-$query = "select nation from general where owner='{$_SESSION['noMember']}'";
+$query = "select nation from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

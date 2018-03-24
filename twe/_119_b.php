@@ -6,7 +6,7 @@ include "func.php";
 
 $connect=dbConn();
 
-if(getUserGrade() < 5){
+if(Session::getUserGrade() < 5){
     //echo "<script>location.replace('_119.php');</script>";
     echo '_119.php';//TODO:debug all and replace
 }

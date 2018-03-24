@@ -9,7 +9,7 @@ $connect = dbConn();
 
 $admin = getAdmin($connect);
 
-if(getUserGrade() < 5) {
+if(Session::getUserGrade() < 5) {
     //echo "<script>location.replace('_admin1.php');</script>";
     echo '_admin1.php';//TODO:debug all and replace
 }

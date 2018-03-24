@@ -9,7 +9,7 @@ $connect = dbConn();
 increaseRefresh("토너먼트", 1);
 checkTurn($connect);
 
-$query = "select no,tournament,con,turntime from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,tournament,con,turntime from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -53,7 +53,7 @@ select { font-family:'굴림'; line-height:100%; }
 </table>
 <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <?php
-if(getUserGrade() >= 5) {
+if(Session::getUserGrade() >= 5) {
     echo "
 <form method=post action=c_tournament.php>
     <tr><td colspan=8><input type=textarea size=150 style=color:white;background-color:black; name=msg><input type=submit name=btn value='메시지'></td></tr>

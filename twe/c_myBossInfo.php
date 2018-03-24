@@ -13,7 +13,7 @@ $query = "select startyear,year,month from game where no='1'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,nation,level from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,nation,level from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 $meLevel = $me['level'];

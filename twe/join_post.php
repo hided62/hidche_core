@@ -17,7 +17,7 @@ $intel = util::array_get($_POST['intel'], 50);
 
 $mylog = [];
 
-$userID = getUserID();
+$userID = Session::getUserID();
 
 if(!$userID) {
     MessageBox("잘못된 접근입니다!!!");

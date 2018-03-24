@@ -2,7 +2,7 @@
 include('lib.php');
 include('func.php');
 
-$userID = getUserID();
+$userID = Session::getUserID();
 $generalID = getGeneralID();
 session_write_close();
 

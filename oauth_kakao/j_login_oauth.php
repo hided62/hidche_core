@@ -9,9 +9,9 @@ require('kakao.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
-$SESSION = new Session();
-if($SESSION->isLoggedIn()){
-    $SESSION->logout();
+$session = Session::Instance();
+if($session->isLoggedIn()){
+    $session->logout();
 }
 
 $canLogin = getRootDB()->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
@@ -126,7 +126,7 @@ if($userInfo['delete_after']){
     
 }
 
-$SESSION->login($userInfo['no'], $userInfo['id'], $userInfo['grade']);
+$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade']);
 Json::die([
     'result'=>true,
     'reason'=>'로그인 되었습니다.'

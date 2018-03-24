@@ -13,12 +13,12 @@ if(!$SETTING->isExists()){
 require(ROOT.'/f_config/DB.php');
 
 
-$SESSION = new _SESSION();
+$session = Session::Instance();
 
 use \kakao\KakaoKey as KakaoKey;
 
 
-if($SESSION->isLoggedIn()){
+if($session->isLoggedIn()){
     header ('Location:i_entrance/entrance.php');
     die();
 }

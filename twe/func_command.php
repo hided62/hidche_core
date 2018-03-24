@@ -523,7 +523,7 @@ function processCommand($connect, $no) {
         if($general['npc'] >= 2 || $general['killturn'] > $admin['killturn']) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } elseif(floor($command[0]) == 0 && getUserGrade() < 5) {
+        } elseif(floor($command[0]) == 0 && Session::getUserGrade() < 5) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
@@ -674,7 +674,7 @@ function command_Single($connect, $turn, $command) {
     for($i=0; $i < $count; $i++) {
         $str .= ",turn{$turn[$i]}='{$command}'";
     }
-    $query = "update general set {$str} where owner='{$_SESSION['noMember']}'";
+    $query = "update general set {$str} where owner='{$_SESSION['userID']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //echo "<script>location.replace('commandlist.php');</script>";
     echo 'commandlist.php';//TODO:debug all and replace
@@ -684,7 +684,7 @@ function command_Single($connect, $turn, $command) {
 function command_Chief($connect, $turn, $command) {
     $command = EncodeCommand(0, 0, 0, $command);
 
-    $query = "select nation,level from general where owner='{$_SESSION['noMember']}'";
+    $query = "select nation,level from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

@@ -4,9 +4,9 @@ namespace sammo;
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 
-$SESSION = new Session();
+$session = Session::Instance();
 
-if(!$SESSION->isLoggedIn()) {
+if(!$session->isLoggedIn()) {
     Json::die([
         'result'=>false,
         'reason'=>'로그인되지 않았습니다.'
@@ -27,11 +27,11 @@ $db = getRootDB();
 
 $userInfo = $db->update('member',[
     'pw'=>$db->sqleval('sha2(concat(salt, %s, salt), 512)', $newPw)
-], 'no=%i and pw=sha2(concat(salt, %s, salt), 512)', $SESSION->noMember(), $pw);
+], 'no=%i and pw=sha2(concat(salt, %s, salt), 512)', $session->userID, $pw);
 
 if(!$db->affectedRows()){
     $db->insert('member_log', [
-        'member_no'=>$SESSION->noMember(),
+        'member_no'=>$session->userID,
         'action_type'=>'change_pw',
         'action'=>json_encode([
             'type'=>'plain',
@@ -46,7 +46,7 @@ if(!$db->affectedRows()){
 }
 
 $db->insert('member_log', [
-    'member_no'=>$SESSION->noMember(),
+    'member_no'=>$session->userID,
     'action_type'=>'change_pw',
     'action'=>json_encode([
         'type'=>'plain',

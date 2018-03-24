@@ -4,9 +4,9 @@ namespace sammo;
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 
-$SESSION = new Session();
+$session = Session::Instance();
 
-if(!$SESSION->isLoggedIn()) {
+if(!$session->isLoggedIn()) {
     Json::die([
         'result'=>false,
         'reason'=>'로그인되지 않았습니다.'
@@ -16,7 +16,7 @@ if(!$SESSION->isLoggedIn()) {
 // 외부 파라미터
 
 $db = getRootDB();
-$member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $SESSION->noMember());
+$member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $session->userID);
 
 if(!$member['picture']){
     $picture = IMAGE.'/default.jpg';

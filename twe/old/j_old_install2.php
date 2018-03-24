@@ -12,7 +12,7 @@ $extend = util::array_get($_POST['extend'],'0');
 $npcmode = util::array_get($_POST['npcmode'],'0');
 $img = util::array_get($_POST['img'],'0');
 
-if(getUserGrade(true) < 5){
+if(Session::getUserGrade(true) < 5){
     die('관리자 아님');
 }
 

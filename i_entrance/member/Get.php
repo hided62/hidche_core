@@ -3,7 +3,7 @@ namespace sammo;
 
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/f_config/SESSION.php');
+$session = Session::requireLogin();
 
 
 
@@ -12,7 +12,7 @@ require_once(ROOT.'/f_config/SESSION.php');
 $select = $_GET['select'];
 
 $db = getRootDB();
-$userGrade = $SESSION->getGrade();
+$userGrade = $session->userGrade;
 if($userGrade < 6) {
     Json::die([
         'result'=>'FAIL',

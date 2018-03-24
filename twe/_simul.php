@@ -50,7 +50,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("시뮬", 2);
 
-$query = "select no,tournament,con,turntime from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,tournament,con,turntime from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -61,7 +61,7 @@ $game = MYDB_fetch_array($result);
 $con = checkLimit($me['con'], $game['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-if(getUserGrade() < 3) {
+if(Session::getUserGrade() < 3) {
     echo "특별회원이 아닙니다.";
     exit();
 }

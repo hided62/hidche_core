@@ -6,7 +6,7 @@ include "func.php";
 
 $connect=dbConn();
 
-if(getUserGrade() < 5) {
+if(Session::getUserGrade() < 5) {
     echo "<!DOCTYPE html>
 <!DOCTYPE html>
 <html>

@@ -5,7 +5,7 @@ include "lib.php";
 include "func.php";
 include "schema.php";
 
-if(getUserGrade(true) < 5){
+if(Session::getUserGrade(true) < 5){
     echo '관리자 아님';
     die();
 }

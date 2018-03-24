@@ -8,7 +8,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("거래장", 2);
 
-$query = "select no,special,skin,con,turntime from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,special,skin,con,turntime from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -29,7 +29,7 @@ $bidCount = MYDB_num_rows($result);
 
 $btCount = $tradeCount + $bidCount;
 
-if(getUserGrade() >= 5 || ($me['special'] != 30 && $btCount < 1) || ($me['special'] == 30 && $btCount < 3)) {
+if(Session::getUserGrade() >= 5 || ($me['special'] != 30 && $btCount < 1) || ($me['special'] == 30 && $btCount < 3)) {
     $btn = "submit";
 } else {
     $btn = "hidden";

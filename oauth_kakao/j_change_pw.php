@@ -10,14 +10,14 @@ use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 $nowDate = _Time::DatetimeNow();
 
-$SESSION = new Session();
-if(!$SESSION->isLoggedIn()){
+$session = Session::Instance();
+if(!$session->isLoggedIn()){
     Json::die([
         'result'=>false,
         'reason'=>'로그인이 되어있지 않습니다'
     ]);
 }
-$userID = $SESSION->noMember();
+$userID = $session->userID;
 $access_token = util::array_get($_SESSION['access_token']);
 $expires = util::array_get($_SESSION['expires']);
 $refresh_token = util::array_get($_SESSION['refresh_token']);

@@ -4,9 +4,9 @@ namespace sammo;
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
 
-$SESSION = new Session();
+$session = Session::Instance();
 
-if(!$SESSION->isLoggedIn()) {
+if(!$session->isLoggedIn()) {
     Json::die([
         'result'=>false,
         'reason'=>'로그인되지 않았습니다.'
@@ -17,7 +17,7 @@ if(!$SESSION->isLoggedIn()) {
 
 $respone = [];
 $db = getRootDB();
-$picName = $db->queryFirstField('SELECT picture FROM `MEMBER` WHERE `NO` = %i', $SESSION->noMember());
+$picName = $db->queryFirstField('SELECT picture FROM `MEMBER` WHERE `NO` = %i', $session->userID);
 
 if($picName && strlen($picName) > 11){
     $dt = substr($picName, -8);
@@ -42,7 +42,7 @@ if($dt == $rf) {
     $db->update('MEMBER', [
         'PICTURE'=>'default.jpg',
         'IMGSVR'=>0,
-    ], 'NO=%i', $SESSION->noMember());
+    ], 'NO=%i', $session->userID);
     
     $servers = [];
 

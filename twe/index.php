@@ -17,7 +17,7 @@ if(!isSigned()){
     die();
 }
 
-$userID = getUserID();
+$userID = Session::getUserID();
 if(!$userID){
     header('Location:../');
     die();
@@ -33,13 +33,13 @@ if($me === null) {
 }
 
 if($me['newmsg'] == 1 && $me['newvote'] == 1) {
-    $query = "update general set newmsg=0,newvote=0 where owner='{$_SESSION['noMember']}'";
+    $query = "update general set newmsg=0,newvote=0 where owner='{$_SESSION['userID']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($me['newmsg'] == 1) {
-    $query = "update general set newmsg=0 where owner='{$_SESSION['noMember']}'";
+    $query = "update general set newmsg=0 where owner='{$_SESSION['userID']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($me['newvote'] == 1) {
-    $query = "update general set newvote=0 where owner='{$_SESSION['noMember']}'";
+    $query = "update general set newvote=0 where owner='{$_SESSION['userID']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
@@ -174,7 +174,7 @@ echo "
     <tr><td colspan=5>【 국가방침 】<?php nationMsg($connect, $me['skin']); ?></td></tr>
     <tr><td colspan=5>【 접속자 】<?=onlinegen($connect);?></td></tr>
 <?php
-if(getUserGrade() >= 5) {
+if(Session::getUserGrade() >= 5) {
     echo "
     <tr><td colspan=5>
         <input type=button value=게임관리 onclick=location.replace('_admin1.php')>

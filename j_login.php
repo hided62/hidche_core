@@ -8,9 +8,9 @@ require_once(ROOT.'/f_config/DB.php');
 
 
 
-$SESSION = new Session();
-if($SESSION->isLoggedIn()){
-    $SESSION->logout();
+$session = Session::Instance();
+if($session->isLoggedIn()){
+    $session->logout();
 }
 
 $username = mb_strtolower(util::array_get($_POST['username']), 'utf-8');
@@ -64,7 +64,7 @@ if($userInfo['delete_after']){
     
 }
 
-$SESSION->login($userInfo['no'], $userInfo['id'], $userInfo['grade']);
+$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade']);
 Json::die([
     'result'=>true,
     'reason'=>'로그인 되었습니다.'

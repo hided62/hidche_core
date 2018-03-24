@@ -43,47 +43,12 @@ function randBool($prob = 0.5){
 }
 
 /** 
- * 로그인한 유저의 전역 id(숫자)를 받아옴 
- *
- * @return int|null 
- */
-function getUserID($forceExit=false){
-    $userID = util::array_get($_SESSION['noMember'], null);
-    if(!$userID && $forceExit){
-        header('Location:..');
-        die();
-    }
-
-    if($userID == -1){
-        unset($_SESSION['noMember']);
-        header('Location:..');
-        die();
-    }
-
-    return $userID;
-}
-
-/**
- * 로그인 유저의 전역 grade를 받아옴
- * @return int|null
- */
-function getUserGrade($forceExit=false){
-    $userGrade = util::array_get($_SESSION['userGrade'], null);
-    if(!$userGrade && $forceExit){
-        header('Location:..');
-        die();
-    }
-
-    return $userGrade;
-}
-
-/** 
  * 로그인한 유저의 장수 id를 받아옴
  * 
  * @return int|null
  */
 function getGeneralID($forceExit=false, $countLogin=true){
-    $userID = getUserID();
+    $userID = Session::getUserID();
     if(!$userID){ //유저id 없으면 어차피 의미 없음.
         return null;
     }
@@ -237,7 +202,7 @@ function isSigned(){
 
 
 function checkLimit($con, $conlimit) {
-    if(getUserGrade()>=4){
+    if(Session::getUserGrade()>=4){
         return 0;
     }
     if($con > $conlimit) {
@@ -278,7 +243,7 @@ function getRandGenName() {
 function cityInfo($connect) {
     global $_basecolor, $_basecolor2, $images;
 
-    $query = "select no,city,skin from general where owner='{$_SESSION['noMember']}'";
+    $query = "select no,city,skin from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -393,7 +358,7 @@ function myNationInfo($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select skin,no,nation from general where owner='{$_SESSION['noMember']}'";
+    $query = "select skin,no,nation from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -579,7 +544,7 @@ function commandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where owner='{$_SESSION['noMember']}'";
+    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -813,7 +778,7 @@ function CoreCommandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,city,level from general where owner='{$_SESSION['noMember']}'";
+    $query = "select no,nation,city,level from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -903,7 +868,7 @@ function CoreCommandTable($connect) {
 }
 
 function myInfo($connect) {
-    $query = "select no,skin from general where owner='{$_SESSION['noMember']}'";
+    $query = "select no,skin from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -917,7 +882,7 @@ function generalInfo($connect, $no, $skin) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select skin from general where owner='{$_SESSION['noMember']}'";
+    $query = "select skin from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1100,7 +1065,7 @@ function generalInfo($connect, $no, $skin) {
 }
 
 function myInfo2($connect) {
-    $query = "select no,skin from general where owner='{$_SESSION['noMember']}'";
+    $query = "select no,skin from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1522,7 +1487,7 @@ function onlineNation($connect) {
 }
 
 function nationMsg($connect) {
-    $query = "select no,nation,skin from general where owner='{$_SESSION['noMember']}'";
+    $query = "select no,nation,skin from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1832,7 +1797,7 @@ function increaseRefresh($type="", $cnt=1) {
 
     getDB()->query('UPDATE game set refresh=refresh+%i where `no`=1', $cnt);
 
-    if(!util::array_get($_SESSION['noMember'], null)) {
+    if(!util::array_get($_SESSION['userID'], null)) {
         getDB()->query('UPDATE general set `lastrefresh`=%s_date, `con`=`con`+%i_cnt, `connect`=`connect`+%i_cnt, refcnt=refcnt+%i_cnt, refresh=refresh+%i_cnt where `no`=%i_no',[
             'date'=>$date,
             'cnt'=>$cnt,
@@ -1844,7 +1809,7 @@ function increaseRefresh($type="", $cnt=1) {
     $date2 = substr($date, 0, 10);
     $online = getOnlineNum();
     $fp = fopen("logs/_{$date2}_refresh.txt", "a");
-    $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['p_id'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
+    $msg = _String::Fill2($date,20," ")._String::Fill2($_SESSION['userName'],13," ")._String::Fill2($_SESSION['p_name'],13," ")._String::Fill2($_SESSION['p_ip'],16," ")._String::Fill2($type, 10, " ")." 동접자: {$online}";
     fwrite($fp, $msg."\n");
     fclose($fp);
 
@@ -1873,7 +1838,7 @@ function increaseRefresh($type="", $cnt=1) {
     if($str != "") {
         file_put_contents("logs/_{$date2}_ipcheck.txt",
             sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s\n",
-                $_SESSION['p_id'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
+                $_SESSION['userName'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
     }
 }
 
@@ -2088,7 +2053,7 @@ function checkTurn($connect) {
         return;
     }
 
-    $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
+    $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$_SESSION['userName'];
     pushLockLog($locklog);
 
     // 파일락 해제
@@ -2096,7 +2061,7 @@ function checkTurn($connect) {
     // 세마포어 해제
     //if(!@sem_release($sema)) { echo "치명적 에러! 유기체에게 문의하세요!"; exit(1); }
 
-    $locklog[0] = "- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
+    $locklog[0] = "- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$_SESSION['userName'];
     pushLockLog($locklog);
     
     //if(STEP_LOG) delStepLog();
@@ -2162,7 +2127,7 @@ function checkTurn($connect) {
         //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', preUpdateMonthly');
         $result = preUpdateMonthly($connect);
         if($result == false) {
-            $locklog[0] = "-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
+            $locklog[0] = "-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['userName'];
             pushLockLog($locklog);
 
             // 잡금 해제
@@ -2175,7 +2140,7 @@ function checkTurn($connect) {
         $dt = turnDate($connect, $nextTurn);
         $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
 
-        $locklog[0] = "-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
+        $locklog[0] = "-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$_SESSION['userName'];
         pushLockLog($locklog);
         // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
         if($admin['month'] == 1) {
@@ -2291,7 +2256,7 @@ function checkTurn($connect) {
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
     unlock();
 
-    $locklog[0] = "- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['p_id'];
+    $locklog[0] = "- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$_SESSION['userName'];
     pushLockLog($locklog);
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', finish');
@@ -2920,7 +2885,7 @@ function getAdmin($connect) {
 }
 
 function getMe($connect) {
-    $query = "select * from general where owner='{$_SESSION['noMember']}'";
+    $query = "select * from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error("접속자가 많아 접속을 중단합니다. 잠시후 갱신해주세요.<br>getMe : ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

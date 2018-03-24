@@ -3,7 +3,7 @@ namespace sammo;
 
 
 function CheckLogin($type=0) {
-    if(!isset($_SESSION['noMember'])) {
+    if(!isset($_SESSION['userID'])) {
         if($type == 0) {
             header('Location: ../');
             }

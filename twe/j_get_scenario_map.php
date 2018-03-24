@@ -1,12 +1,11 @@
 <?php
 
 require(__DIR__.'/../f_func/func.php');
-require(__DIR__.'/../f_config/SESSION.php');
 require('func_install.php');
 
+$session = Session::requireLogin();
 
-
-if($SESSION->getGrade() < 5){
+if($session->userGrade < 5){
     Json::die([
         'result'=>false,
         'reason'=>'충분한 권한을 가지고 있지 않습니다.'

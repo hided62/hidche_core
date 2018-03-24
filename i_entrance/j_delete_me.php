@@ -5,9 +5,9 @@ require_once('_common.php');
 require_once(ROOT.'/f_func/class._Time.php');
 require_once(ROOT.'/f_config/DB.php');
 
-$SESSION = new Session();
+$session = Session::Instance();
 
-if(!$SESSION->isLoggedIn()) {
+if(!$session->isLoggedIn()) {
     Json::die([
         'result'=>false,
         'reason'=>'로그인되지 않았습니다.'
@@ -30,7 +30,7 @@ $db = getRootDB();
 
 $userInfo = $db->queryFirstRow('SELECT oauth_id, oauth_type, email, delete_after FROM MEMBER '.
     'WHERE `no`=%i and pw=sha2(concat(salt, %s, salt), 512)',
-    $SESSION->noMember(), $pw);
+    $session->userID, $pw);
 
 if(!$userInfo){
     Json::die([
@@ -48,7 +48,7 @@ if($userInfo['delete_after']){
 
 $db->update('member',[
     'delete_after'=>_Time::DatetimeFromNowMinute(60*24*30)
-], 'no=%i', $SESSION->noMember());
+], 'no=%i', $session->userID);
 
 if(!$db->affectedRows()){
     Json::die([
@@ -60,11 +60,11 @@ if(!$db->affectedRows()){
 
 
 $db->insert('member_log', [
-    'member_no'=>$SESSION->noMember(),
+    'member_no'=>$session->userID,
     'action_type'=>'delete'
 ]);
 
-$SESSION->logout();
+$session->logout();
 unset($_SESSION['access_token']);
 setcookie("hello", "", time()-3600);
 

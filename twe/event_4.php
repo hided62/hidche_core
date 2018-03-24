@@ -14,7 +14,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-if(getUserGrade() < 5) {
+if(Session::getUserGrade() < 5) {
     echo "
 <html>
 <head>

@@ -14,7 +14,7 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,nation,con from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,name,nation,con from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -37,7 +37,7 @@ case 0:
             if($k >= 24) break;
             $query .= ",";
         }
-        $query .= " where owner='{$_SESSION['noMember']}'";
+        $query .= " where owner='{$_SESSION['userID']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 */
@@ -51,7 +51,7 @@ case 0:
             if($k >= 24) break;
         }
     }
-    $query .= " where owner='{$_SESSION['noMember']}'";
+    $query .= " where owner='{$_SESSION['userID']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     break;
 case 1:
@@ -69,7 +69,7 @@ case 1:
         if($k < 0) break;
         $query .= ",";
     }
-    $query .= " where owner='{$_SESSION['noMember']}'";
+    $query .= " where owner='{$_SESSION['userID']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     break;
 case 2:
@@ -87,7 +87,7 @@ case 2:
         if($i >= 24) break;
         $query .= ",";
     }
-    $query .= " where owner='{$_SESSION['noMember']}'";
+    $query .= " where owner='{$_SESSION['userID']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     break;
 }

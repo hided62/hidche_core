@@ -9,7 +9,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select no,nation,troop from general where owner='{$_SESSION['noMember']}'";
+$query = "select no,nation,troop from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

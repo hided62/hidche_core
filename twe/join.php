@@ -5,7 +5,7 @@ include "lib.php";
 include "func.php";
 require("new_lib.php");
 
-$userID = getUserID();
+$userID = Session::getUserID();
 
 if(!$userID) {
     MessageBox("잘못된 접근입니다!!!");

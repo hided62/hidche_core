@@ -3,7 +3,7 @@ namespace sammo;
 
 require_once('_common.php');
 require_once(ROOT.'/f_config/DB.php');
-require_once(ROOT.'/f_config/SESSION.php');
+$session = Session::requireLogin();
 
 // 외부 파라미터
 // $_POST['select'] : 처리종류
@@ -12,7 +12,7 @@ $select = $_POST['select'];
 $no = $_POST['no'];
 
 $db = getRootDB();
-$member = $db->queryFirstRow('SELECT `GRADE` FROM `MEMBER` WHERE `NO` = %i', $SESSION->noMember());
+$member = $db->queryFirstRow('SELECT `GRADE` FROM `MEMBER` WHERE `NO` = %i', $session->userID);
 
 if($member['GRADE'] < 6) {
     $response['result'] = 'FAIL';

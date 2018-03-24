@@ -2,7 +2,7 @@
 include "lib.php";
 include "func.php";
 
-if(!getUserID()){
+if(!Session::getUserID()){
     Json::die([
         'game'=>'x',
         'me'=>'no'
@@ -70,7 +70,7 @@ $game['npcCnt'] = $npcCnt;
 $game['nationCnt'] = $nationCnt;
 
 $generalID = getGeneralID(false, false);
-$userGrade = getUserGrade();
+$userGrade = Session::getUserGrade();
 $me = [
 ];
 

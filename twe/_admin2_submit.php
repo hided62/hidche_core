@@ -7,7 +7,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-if(getUserGrade() < 5) {
+if(Session::getUserGrade() < 5) {
     //echo "<script>location.replace('_admin2.php');</script>";
     echo '_admin2.php';//TODO:debug all and replace
 }
