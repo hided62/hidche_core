@@ -98,27 +98,6 @@ if($userGrade < 6){
                 </tr>
             </thead>
             <tbody id="user_list">
-                <tr data-id="2">
-                    <th scope="row">2</th>
-                    <td>hide_d</td>
-                    <td class="small">hided62<br>@gmail.com<br>(Kakao)</td>
-                    <td>일반<p class="small blocked" style="margin:0;">18-03-25<br>15:39:00</p></td>
-                    <td>Hide_D</td>
-                    <td><img src="../d_pic/186200d.jpg" width="64px" height="64px"></td>
-                    <td class="small">체:가나다라마바<br>퀘:가나다라마바<br>풰:가나다라마바<br>퉤:가나다라마바<br>훼:가나다라마바</td>
-                    <td class="small">18-03-25<br>15:39:00</td>
-                    <td class="small">18-03-25<br>15:39:00</td>
-                    <td class="small">18-03-25<br>15:39:00</td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="act_delete_user btn btn-danger btn-sm">강제<br>탈퇴</button>
-                            <button type="button" class="act_reset_pw btn btn-info btn-sm">암호<br>변경</button>
-                            <button type="button" class="act_block_user btn btn-warning btn-sm">유저<br>차단</button>
-                            <button type="button" class="act_unblock_user btn btn-secondary btn-sm">차단<br>해제</button>
-                            <button type="button" class="act_set_userlevel btn btn-primary btn-sm">별도<br>권한</button>
-                        </div>
-                    </td>
-                </tr>
             </tbody>
         </table>
     </div>
