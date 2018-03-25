@@ -90,9 +90,8 @@ if(!is_uploaded_file($image['tmp_name'])) {
 
         $servers = [];
 
-        foreach(AppConf::getList() as $key=>$server){
-            $setting = $server[2];
-            if($setting->isExists()){
+        foreach(AppConf::getList() as $key=>$setting){
+            if($setting->isRunning()){
                 $servers[] = $key;
             }
         }

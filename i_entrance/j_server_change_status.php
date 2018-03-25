@@ -33,7 +33,7 @@ if($userGrade < 6) {
 
 function doServerModeSet($server, $action, &$response){
     $serverList = AppConf::getList();
-    $settingObj = $serverList[$server][2];
+    $settingObj = $serverList[$server];
 
     $serverDir = $settingObj->getShortName();
     $serverPath = $settingObj->getBasePath();

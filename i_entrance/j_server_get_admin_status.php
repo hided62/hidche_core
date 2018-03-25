@@ -10,8 +10,9 @@ $result = [];
 
 session_write_close();
 
-foreach (AppConf::getList() as $server) {
-    list($serverKorName, $serverColor, $setting) = $server;
+foreach (AppConf::getList() as $setting) {
+    $serverColor = $setting->getColor();
+    $serverKorname = $setting->getKorName();
 
     $serverPath = $setting->getBasePath();
     $serverDir = $setting->getShortName();
@@ -34,7 +35,7 @@ foreach (AppConf::getList() as $server) {
             'run'=>false,
             'reason'=>'설정 파일 없음'
         ];
-    } elseif (file_exists($serverPath.'/.htaccess')) {
+    } elseif (!$setting->isRunning()) {
         // 폐쇄중
         $state = [
             'valid'=>true,

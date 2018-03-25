@@ -6,14 +6,13 @@ require_once('_common.php');
 // 외부 파라미터
 $response['server'] = [];
 
-foreach(AppConf::getList() as $serverInfo){
-    list($serverKorName, $serverColor, $setting) = $serverInfo;
+foreach(AppConf::getList() as $setting){
 
     $serverObj = [
-        'color'=>$serverColor,
-        'korName'=>$serverKorName,
+        'color'=>$setting->getColor(),
+        'korName'=>$setting->getKorName(),
         'name'=>$setting->getShortName(),
-        'enable'=>$setting->isExists()
+        'enable'=>$setting->isRunning()
     ];
 
     $response['server'][] = $serverObj;

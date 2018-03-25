@@ -8,14 +8,19 @@ if(!defined('ROOT')){
 class AppConf{
     private static $serverList = null;
 
+    /**
+     * 서버 설정 반환
+     * 
+     * @return \sammo\Setting[]
+     */
     public static function getList(){
         if(self::$serverList === null){
             self::$serverList = [
-                'che'=>['체', 'white', new Setting(ROOT.'/che')],
-                'kwe'=>['퀘', 'yellow', new Setting(ROOT.'/kwe')],
-                'pwe'=>['풰', 'orange', new Setting(ROOT.'/pwe')],
-                'twe'=>['퉤', 'magenta', new Setting(ROOT.'/twe')],
-                'hwe'=>['훼', 'red', new Setting(ROOT.'/hwe')]
+                'che'=>new Setting(ROOT.'/che', '체', 'white'),
+                'kwe'=>new Setting(ROOT.'/kwe', '퀘', 'yellow'),
+                'pwe'=>new Setting(ROOT.'/pwe', '풰', 'orange'),
+                'twe'=>new Setting(ROOT.'/twe', '퉤', 'magenta'),
+                'hwe'=>new Setting(ROOT.'/hwe', '훼', 'red')
             ];
         }
         return self::$serverList;
