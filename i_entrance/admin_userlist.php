@@ -23,20 +23,22 @@ if($userGrade < 6){
 
         <!-- 스타일 -->
         <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
-        <link type="text/css" rel="stylesheet" href='memberAdmin.css'>
+        <link type="text/css" rel="stylesheet" href='../css/admin_member.css'>
 
         <script type="text/javascript" src='../js/common.js'></script>
         <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
         <script type="text/javascript" src="../e_lib/bootstrap.bundle.min.js"></script>
         <script type="text/javascript" src='../js/func.js'></script>
 
-        <script type="text/javascript" src='memberAdmin.js'></script>
+        <script type="text/javascript" src='../js/admin_member.js'></script>
 </head>
 <body>
 <div class="container">
     <div class="card">
         <div class="card-header">
-            회원 관리
+            <a href="entrance.php"><button class="btn btn-primary" style="float:right;">돌아가기</button></a>
+            <h3>회원 관리</h3>
+            
         </div>
         <div class="card-body">
             가입 허용&nbsp;
@@ -61,7 +63,7 @@ if($userGrade < 6){
 
             <div class="btn-group" role="group">
                 <button onclick="changeSystem('scrub_deleted');" type="button" class="btn btn-secondary">탈퇴 계정 정리(1개월+)</button>
-                <button onclick="changeSystem('scrub_icon');"type="button" class="btn btn-secondary">전콘 정리(1개월+)</button>
+                <button onclick="changeSystem('scrub_icon');" type="button" class="btn btn-secondary">전콘 정리(1개월+)</button>
             </div>
 
             <button onclick="changeSystem('scrub_old_user');" type="button" class="btn btn-secondary">오래된 계정 정리(6개월+)</button>

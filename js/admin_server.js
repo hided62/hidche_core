@@ -76,22 +76,24 @@ function Entrance_Member() {
 function Entrance_AdminChangeNotice() {
     var notice = $("#notice_edit").val();
 
-    Popup_Confirm('정말 실행하시겠습니까?', function() {
-            Popup_Wait(function() {
-                PostJSON(
-                    "../i_entrance/j_server_change_status.php", {
-                        action: 'notice',
-                        notice: notice
-                    },
-                    function(response, textStatus) {
-                        if(response.result == "SUCCESS") {
-                            location.reload();
-                        } else {
-                            Popup_WaitShow(response.msg);
-                        }
-                    }
-                )
-            })
+    if(!confirm('정말 실행하시겠습니까?')){
+        return;
+    }
+
+    $.ajax({
+        type:'post',
+        url:'j_server_change_status.php',
+        dataType:'json',
+        data:{
+            action: 'notice',
+            notice: notice
+        }
+    }).then(function(response){
+        if(response.result == "SUCCESS") {
+            location.reload();
+        } else {
+            alert(response.msg);
+        }
     });
 }
 
@@ -99,28 +101,29 @@ function modifyServerStatus(caller, action) {
     var $caller = $(caller);
     var server = $caller.parents('tr').data('server_name');
     
-    Popup_Confirm('정말 실행하시겠습니까?', function() {
-            Popup_Wait(function() {
-                PostJSON(
-                    "../i_entrance/j_server_change_status.php", {
-                        server: server,
-                        action: action
-                    },
-                    function(response, textStatus) {
-                        if(response.result == "SUCCESS") {
-                            Popup_WaitHide();
-                            if(action == 'reset') {
-                                ReplaceFrame(response.installURL);
-                            } else {
-                                Replace("entrance.php");
-                            }
-                        } else {
-                            Popup_WaitShow(response.msg);
-                        }
-                    }
-                )
-            })
-    });
+    if(!confirm('정말 실행하시겠습니까?')){
+        return;
+    }
+    $.ajax({
+        type:'post',
+        url:'j_server_change_status.php.php',
+        dataType:'json',
+        data:{
+            server: server,
+            action: action
+        }
+    }).then(function(response) {
+            if(response.result == "SUCCESS") {
+                if(action == 'reset') {
+                    location.href = response.installURL;
+                } else {
+                    location.reload();
+                }
+            } else {
+                alert(response.msg);
+            }
+        }
+    );
 }
 
 function Entrance_AdminNPCLogin(caller) {

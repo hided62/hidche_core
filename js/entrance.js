@@ -42,33 +42,20 @@ var serverLoginTemplate = "\
 </td>\
 ";
 
-function Entrance_Import() {
-}
-
-function Entrance_Init() {
+$(function(){
     $("#btn_logout").click(Entrance_Logout);
-}
-
-function Entrance_Update() {
     Entrance_UpdateServer();
-}
+});
 
 function Entrance_UpdateServer() {
-    Popup_Wait(function() {
-        PostJSON(
-            "../i_entrance/j_server_get_status.php", {
-            },
-            function(response, textStatus) {
-                if(response.result == "SUCCESS") {
-                    Entrance_drawServerList(response.server);
-                    //Entrance_ServerList(response.serverCount, response.servers);
-                    //Entrance_ServerListPosition();
-                    Popup_WaitHide();
-                } else {
-                    Popup_WaitShow("서버목록 로드 실패!");
-                }
-            }
-        )
+    $.ajax({
+        type:'post',
+        url:"j_server_get_status.php",
+        dataType:'json',
+    }).then(function(response){
+        if(response.result == "SUCCESS") {
+            Entrance_drawServerList(response.server);
+        }
     });
 }
 
@@ -85,8 +72,6 @@ function Entrance_drawServerList(serverInfos){
 
 
         $.getJSON("../"+serverInfo.name+'/j_server_basic_info.php',{}, function(result){
-            console.log(result);
-            console.log(result.game);
             if(!result.game){
                 return;
             }
@@ -135,50 +120,16 @@ function Entrance_drawServerList(serverInfos){
     });
 }
 
-function Entrance_ServerListPosition() {
-    var heightTitle = $("#Entrance_000000").height();
-    var heightSub = $("#Entrance_000001").height();
-    var heightList = $("#Entrance_000002").height();
-    var heightComment = $("#Entrance_000003").height();
-    var top = heightTitle+heightSub+heightList+5;
-
-    $("#Entrance_000003").css("top", top+"px");
-    top += heightComment;
-    $("#Entrance_0000").height(top+2);
-    top = 20 + top;
-    $("#Entrance_0001").css("top", top+"px");
-    top = 20 + top + $("#Entrance_0001").height();
-    $("#Entrance_0002").css("top", top+"px");
-    top = 20 + top + $("#Entrance_0002").height();
-    $("#Entrance_0003").css("top", top+"px");
-}
-
 function Entrance_Logout() {
-    Popup_Wait(function() {
-        PostJSON(
-            "../i_entrance/j_logout.php", {
-            },
-            function(response, textStatus) {
-                if(response.result) {
-                    Popup_WaitHide();
-                    ReplaceFrame("../");
-                } else {
-                    Popup_WaitShow("로그아웃 실패!");
-                }
-            }
-        )
+    $.ajax({
+        type:'post',
+        url:"j_logout.php",
+        dataType:'json',
+    }).then(function(response) {
+        if(response.result) {
+            location.href="../";
+        } else {
+            alert('로그아웃 실패');
+        }
     });
 }
-
-$(function(){
-    ImportView("body", "../i_popup/Frame.php");
-    //ImportView("body", "Frame.php");
-
-    Popup_Import();
-    Popup_Init();
-    Popup_Update();
-
-    Entrance_Import();
-    Entrance_Init();
-    Entrance_Update();
-});

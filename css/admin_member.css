@@ -1,5 +1,12 @@
 @charset "utf-8";
 
+#btn_back1{
+    position:absolute;
+    right: 6px;
+    margin:6px;
+    height:40px;
+}
+
 #user_list_frame{
     min-width:920px;
 }

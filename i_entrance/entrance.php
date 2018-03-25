@@ -22,21 +22,18 @@ $userGrade = $session->userGrade;
         <link type="text/css" rel="stylesheet" href='../css/config.css'>
         <link type="text/css" rel="stylesheet" href='../css/app.css'>
 
-        <link type="text/css" rel="stylesheet" href='../i_popup/Style.css'>
-        <link type="text/css" rel="stylesheet" href='../i_entrance/Style.css'>
+        <link type="text/css" rel="stylesheet" href='../css/entrance.css'>
 
         <!-- 액션 -->
         <script type="text/javascript" src='../js/common.js'></script>
         <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
         <script type="text/javascript" src='../js/func.js'></script>
+        <script type="text/javascript" src='../js/entrance.js'></script>
 
-        <script type="text/javascript" src='../i_popup/Action.js'></script>
-        <script type="text/javascript" src='../i_entrance/Action.js'></script>
-
-<?php if($userGrade >= 6): ?>
+<?php if($userGrade >= 5): ?>
         <!-- 운영자 -->
-        <link type="text/css" rel="stylesheet" href='adminStyle.css'>
-        <script type="text/javascript" src='adminAction.js'></script>
+        <link type="text/css" rel="stylesheet" href='../css/admin_server.css'>
+        <script type="text/javascript" src='../js/admin_server.js'></script>
 <?php endif;?>
 
     </head>
@@ -45,7 +42,7 @@ $userGrade = $session->userGrade;
 <div id="server_list_container">
 
 <?php
-if($userGrade >= 6){
+if($userGrade >= 5){
     echo $templates->render('global_panel',['notice'=>$notice]);
 }
 ?>
@@ -97,9 +94,8 @@ if($userGrade >= 6){
 </div>
 
 <?php
-if($userGrade >= 6){
+if($userGrade >= 5){
     echo $templates->render('server_panel',[]);
-    //include('adminInc.php');
 }
 ?>
 
