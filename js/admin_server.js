@@ -106,7 +106,7 @@ function modifyServerStatus(caller, action) {
     }
     $.ajax({
         type:'post',
-        url:'j_server_change_status.php.php',
+        url:'j_server_change_status.php',
         dataType:'json',
         data:{
             server: server,

@@ -1,18 +1,24 @@
 <?php
 namespace sammo;
 
-// 외부 파라미터
-
 require_once('_common.php');
-$session = Session::requireLogin();
+
+$session = Session::Instance()->setReadOnly();
+
+if($session->userGrade < 5){
+    Json::die([
+        'result'=>false,
+        'reason'=>'권한이 부족합니다.'
+    ]);
+}
 
 $result = [];
 
-session_write_close();
+
 
 foreach (AppConf::getList() as $setting) {
     $serverColor = $setting->getColor();
-    $serverKorname = $setting->getKorName();
+    $serverKorName = $setting->getKorName();
 
     $serverPath = $setting->getBasePath();
     $serverDir = $setting->getShortName();
