@@ -14,7 +14,6 @@ if($session->userGrade < 5){
     ]);
 }
 
-$scenarioIdx = Util::toInt(Util::array_get($_GET['scenarioIdx']));
 
 if($scenarioIdx === null){
     Json::die([

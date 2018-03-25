@@ -1,8 +1,10 @@
 
+/*
 function showCityGeneral(cityIdx){
 
 }
-
+*/
+/*
 function loadScenarioPreview(scenarioIdx){
     $(function(){
         reloadWorldMap({
@@ -15,7 +17,18 @@ function loadScenarioPreview(scenarioIdx){
         });
     });
 }
+*/
 
+function loadScenarios(){
+    $.ajax({
+        method:'post',
+        url:'j_load_scenarios.php',
+        dataType:'json'
+    }).then(function(result){
+
+    });
+}
 $(function(){
-    loadScenarioPreview(8);
+    loadScenarios();
+    //loadScenarioPreview(8);
 })
