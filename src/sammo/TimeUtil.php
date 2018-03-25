@@ -10,6 +10,14 @@ class TimeUtil {
         return date('Y-m-d H:i:s');
     }
 
+    public static function DatetimeFromNowDay($day) {
+        return date('Y-m-d H:i:s', strtotime("{$day} days"));
+    }
+
+    public static function DatetimeFromNowHour($hour) {
+        return date('Y-m-d H:i:s', strtotime("{$hour} hours"));
+    }
+
     public static function DatetimeFromNowMinute($minute) {
         return date('Y-m-d H:i:s', strtotime("{$minute} minutes"));
     }

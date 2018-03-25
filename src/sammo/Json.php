@@ -17,6 +17,7 @@ class Json{
     }
 
     public static function die($value, $noCache = true, $pretty = false, $die = true){
+        //NOTE: REST 형식에 맞게, ok(), fail()로 쪼개는게 낫지 않을까 생각해봄.
         if($noCache){
             WebUtil::setHeaderNoCache();
         }

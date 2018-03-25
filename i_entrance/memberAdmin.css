@@ -1,5 +1,30 @@
 @charset "utf-8";
 
+#user_list_frame{
+    min-width:920px;
+}
+
+#user_list_frame td, #user_list_frame th{
+    text-align:center;
+    vertical-align: middle;
+}
+
+#user_list td button{
+    padding: 0.15rem 0.3rem;
+    line-height:1.1em;
+}
+
+p.small, td.small{
+    line-height:1.2em;
+}
+
+.hide_text{
+    display:none;
+}
+p.user_grade_0 {
+    display:block;
+    color:#E74C3C;
+}
 #EntranceMember_00 {
     width: 1100px; height: 20px;
     border: none;

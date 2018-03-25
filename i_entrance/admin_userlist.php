@@ -23,21 +23,14 @@ if($userGrade < 6){
 
         <!-- 스타일 -->
         <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
-        <link type="text/css" rel="stylesheet" href='member/Style.css'>
+        <link type="text/css" rel="stylesheet" href='memberAdmin.css'>
 
         <script type="text/javascript" src='../js/common.js'></script>
         <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
         <script type="text/javascript" src="../e_lib/bootstrap.bundle.min.js"></script>
         <script type="text/javascript" src='../js/func.js'></script>
 
-        <script type="text/javascript" src='../i_popup/Action.js'></script>
-        <script type="text/javascript" src='member/Action.js'></script>
-<script type="text/javascript">
-$(function(){
-    EntranceMember_Import();
-    EntranceMember_Init();
-})
-</script>
+        <script type="text/javascript" src='memberAdmin.js'></script>
 </head>
 <body>
 <div class="container">
@@ -49,121 +42,87 @@ $(function(){
             가입 허용&nbsp;
             <div id="radios_allow_join" class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-secondary">
-                    <input type="radio" name="allow_join" value="Y" id="allow_join_y" autocomplete="off">Y
+                    <input type="radio" name="allow_join" value="1" id="allow_join_y" autocomplete="off">Y
                 </label>
                 <label class="btn btn-secondary">
-                    <input type="radio" name="allow_join" value="N" id="allow_join_n" autocomplete="off">N
+                    <input type="radio" name="allow_join" value="0" id="allow_join_n" autocomplete="off">N
                 </label>
             </div>
 
             로그인 허용&nbsp;
             <div id="radios_allow_login" class="btn-group btn-group-toggle" data-toggle="buttons">
                 <label class="btn btn-secondary">
-                    <input type="radio" name="allow_login" value="Y" id="allow_login_y" autocomplete="off">Y
+                    <input type="radio" name="allow_login" value="1" id="allow_login_y" autocomplete="off">Y
                 </label>
                 <label class="btn btn-secondary">
-                    <input type="radio" name="allow_login" value="N" id="allow_login_n" autocomplete="off">N
+                    <input type="radio" name="allow_login" value="0" id="allow_login_n" autocomplete="off">N
                 </label>
             </div>
 
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" class="btn btn-secondary">탈퇴 계정 정리(1개월+)</button>
-                <button type="button" class="btn btn-secondary">오래된 전콘 정리(1개월+)</button>
-                
+            <div class="btn-group" role="group">
+                <button onclick="changeSystem('scrub_deleted');" type="button" class="btn btn-secondary">탈퇴 계정 정리(1개월+)</button>
+                <button onclick="changeSystem('scrub_icon');"type="button" class="btn btn-secondary">전콘 정리(1개월+)</button>
             </div>
 
-            <button type="button" class="btn btn-secondary">오래된 계정 정리(6개월+)</button>
+            <button onclick="changeSystem('scrub_old_user');" type="button" class="btn btn-secondary">오래된 계정 정리(6개월+)</button>
 
         </div>
         <h6 class="card-header">회원 목록</h6>
-        <table class="table table-hover table-sm table-striped">
+        <table id="user_list_frame" class="table table-hover table-sm table-striped">
+            <colgroup>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col>
+                <col style="width:200px;">
+            </colgroup>
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">코드</th>
                     <th scope="col">유저명</th>
-                    <th scope="col">가입 방식</th>
                     <th scope="col">EMAIL</th>
                     <th scope="col">등급</th>
                     <th scope="col">닉네임</th>
                     <th scope="col">전콘</th>
-                    <th scope="col">가입일자</th>
-                    <th scope="col">최근 로그인</th>
-                    <th scope="col">탈퇴 신청</th>
+                    <th scope="col">장수명</th>
+                    <th scope="col">가입<br>일자</th>
+                    <th scope="col">최근<br>로그인</th>
+                    <th scope="col">탈퇴<br>신청</th>
                     <th scope="col">명령</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <th scope="row">ㅁ</th>
-                    <td>ㅁ</td>
-                </tr>
-                <tr>
-                    <th scope="row">ㅁ</th>
-                    <td>ㅁ</td>
+            <tbody id="user_list">
+                <tr data-id="2">
+                    <th scope="row">2</th>
+                    <td>hide_d</td>
+                    <td class="small">hided62<br>@gmail.com<br>(Kakao)</td>
+                    <td>일반<p class="small blocked" style="margin:0;">18-03-25<br>15:39:00</p></td>
+                    <td>Hide_D</td>
+                    <td><img src="../d_pic/186200d.jpg" width="64px" height="64px"></td>
+                    <td class="small">체:가나다라마바<br>퀘:가나다라마바<br>풰:가나다라마바<br>퉤:가나다라마바<br>훼:가나다라마바</td>
+                    <td class="small">18-03-25<br>15:39:00</td>
+                    <td class="small">18-03-25<br>15:39:00</td>
+                    <td class="small">18-03-25<br>15:39:00</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="act_delete_user btn btn-danger btn-sm">강제<br>탈퇴</button>
+                            <button type="button" class="act_reset_pw btn btn-info btn-sm">암호<br>변경</button>
+                            <button type="button" class="act_block_user btn btn-warning btn-sm">유저<br>차단</button>
+                            <button type="button" class="act_unblock_user btn btn-secondary btn-sm">차단<br>해제</button>
+                            <button type="button" class="act_set_userlevel btn btn-primary btn-sm">별도<br>권한</button>
+                        </div>
+                    </td>
                 </tr>
             </tbody>
         </table>
     </div>
 </div>
-<div id="EntranceMember_00">
-    <div id="EntranceMember_0000" class="bg2 font4">
-        회 원 정 보
-        <font id="EntranceMember_000000">(0/0)</font>
-    </div>
-    <input id="EntranceMember_0001" type="button" value="돌아가기">
-    <div id="EntranceMember_0006" class="bg2 font2">
-        <div id="EntranceMember_000600"></div>
-        <input id="btn_allow_join" type="button" value="가입허용">
-        <input id="btn_deny_join" type="button" value="가입금지">
-        <input id="btn_allow_login" type="button" value="로그인허용">
-        <input id="btn_deny_login" type="button" value="로그인금지">
-        <input id="btn_process_withdraw" type="button" value="탈퇴처리(1개월)">
-        <input id="btn_process_scrub_olduser" type="button" value="오래된계정(6개월)">
-    </div>
-    <div id="EntranceMember_0002" class="bg2 font2">
-        선택:
-        <select id="EntranceMember_000200" size="1">
-            <option value="0">순서</option>
-            <option value="1">ID</option>
-            <option value="2">장수</option>
-            <option value="3">민번</option>
-            <option value="4">IP</option>
-            <option value="5">등급</option>
-            <option value="6">등록</option>
-            <option value="7">최근</option>
-        </select>
-        <input id="EntranceMember_000201" type="button" value="정렬">
-    </div>
-    <div id="EntranceMember_0003" class="bg2 font2">
-        선택:
-        <select id="EntranceMember_000300" size="1">
-        </select>
-        <input id="EntranceMember_000301" type="button" value="블럭회원">
-        <input id="EntranceMember_000302" type="button" value="일반회원">
-        <input id="EntranceMember_000303" type="button" value="참여회원">
-        <input id="EntranceMember_000304" type="button" value="유효회원">
-        <input id="EntranceMember_000305" type="button" value="특별회원">
-        <input id="EntranceMember_000306" type="button" value="전콘제거">
-        <input id="EntranceMember_000307" type="button" value="비번초기화">
-        <input id="EntranceMember_000308" type="button" value="회원삭제">
-    </div>
-    <div id="EntranceMember_0004" class="bg1">
-        <div id="EntranceMember_000400">순번</div>
-        <div id="EntranceMember_000401">ID</div>
-        <div id="EntranceMember_000402">민번</div>
-        <div id="EntranceMember_000403">닉네임</div>
-        <div id="EntranceMember_000404">IP</div>
-        <div id="EntranceMember_000405">블럭</div>
-        <div id="EntranceMember_000406">최근블럭일</div>
-        <div id="EntranceMember_000407">등록</div>
-        <div id="EntranceMember_000408">최근등록일</div>
-        <div id="EntranceMember_000409">등급</div>
-        <div id="EntranceMember_000412">사진</div>
-        <div id="EntranceMember_000413">SVR</div>
-        <div id="EntranceMember_000414">탈퇴</div>
-    </div>
-    <div id="EntranceMember_0005">
-    </div>
 </div>
 </body>
 </html>

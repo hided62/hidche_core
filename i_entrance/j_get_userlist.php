@@ -16,26 +16,45 @@ if($session->userGrade < 6){
 }
 
 $userList = [];
-foreach($db->query('SELECT * FROM MEMBER order by `no`') as $member){
-    $userID = $member['NO'];
-    $userName = $member['ID'];
-    $email = $member['EMAIL'];
-    $grade = $member['GRADE'];
-    $blockUntil = $member['BLOCK_DATE'];
+foreach($db->query('SELECT member.*, max(member_log.date) as loginDate from member 
+        left join member_log on member.`NO` = member_log.member_no and member_log.action_type="login"
+        group by member.no order by member.no asc') as $member){
 
-    $nickname = $member['NAME'];
     if($member['IMGSVR']){
-        $icon = RootDB::getServerBasepath().'/'.$member['PICTURE'];
+        $icon = RootDB::getServerBasepath().'/d_pic/'.$member['PICTURE'];
     }
     else{
-        $icon = IMAGES.'/'.$member['PICTURE'];
+        $icon = IMAGE.'/'.$member['PICTURE'];
     }
-    
-    $deleteAfter = $member['delete_after'];
-    
+
+    $userList[] = [
+        'userID'=>$member['NO'],
+        'userName'=>$member['ID'],
+        'email'=>$member['EMAIL'],
+        'authType'=>$member['oauth_type'],
+        'userGrade'=>$member['GRADE'],
+        'blockUntil'=>$member['BLOCK_DATE'],
+        'nickname'=>$member['NAME'],
+        'icon'=>$icon,
+        'joinDate'=>$member['REG_DATE'],
+        'loginDate'=>$member['loginDate'],
+        'deleteAfter'=>$member['delete_after']
+    ];
 }
 
 $serverList = [];
 foreach(AppConf::getList() as $serverName => $setting){
-    
+    if($setting->isRunning()){
+        $serverList[] = $serverName;
+    }
 }
+
+$system = $db->queryFirstRow('SELECT `REG`, `LOGIN` FROM `system` limit 1');
+
+Json::die([
+    'result'=>true,
+    'users'=>$userList,
+    'servers'=>$serverList,
+    'allowJoin'=>$system['REG']=='Y',
+    'allowLogin'=>$system['LOGIN']=='Y'
+]);
