@@ -3,7 +3,13 @@ namespace sammo;
 
 require_once('_common.php');
 
-$session = Session::requireLogin();
+$session = Session::Instance();
+if(!$session->isLoggedIn()){
+    //로그인 안했다니까...
+    Json::die([
+        'result'=>true
+    ]);
+}
 
 
 
@@ -17,7 +23,6 @@ RootDB::db()->insert('member_log',[
     ])
 ]);
 
-$session->access_token = null;
 $session->logout();
 $session->setReadOnly();
 setcookie("hello", "", time()-3600);

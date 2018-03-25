@@ -79,7 +79,7 @@ class Session {
     }
 
     public function __set(string $name, $value){
-        if(key_exists($key, self::PROTECED_NAMES)){
+        if(key_exists($key, $this->PROTECED_NAMES)){
             trigger_error("{$name}은 외부에서 쓰기 금지된 Session 변수입니다.", E_USER_NOTICE);
             return;
         }
@@ -110,6 +110,7 @@ class Session {
         $this->set('ip', Util::get_client_ip(true));
         $this->set('time', time());
         $this->set('userGrade', $grade);
+        $this->set('access_token', null);
         return $this;
     }
 
