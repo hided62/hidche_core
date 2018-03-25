@@ -4,6 +4,15 @@ namespace sammo;
 if(!defined('ROOT')){
     define('ROOT', '../..');
 }
+
+/**
+ * Session Wrapper. 내부적으로 $_SESSION을 이용
+ * 
+ * @property int    $userID    유저코드
+ * @property string $userName  유저명
+ * @property int    $userGrade 유저등급
+ * @property string $ip        IP
+ */
 class Session {
 
     const PROTECTED_NAMES = [
@@ -14,6 +23,8 @@ class Session {
         'userGrade'=>true, 
         'writeClosed'=>true
     ];
+
+    
 
     private $writeClosed = false;
 
@@ -99,6 +110,7 @@ class Session {
         $this->set('ip', Util::get_client_ip(true));
         $this->set('time', time());
         $this->set('userGrade', $grade);
+        return $this;
     }
 
     public function logout() {
@@ -106,6 +118,7 @@ class Session {
         $this->set('userName', null);
         $this->set('userGrade', null);
         $this->set('time', time());
+        return $this;
     }
 
     /**

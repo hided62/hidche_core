@@ -5,6 +5,7 @@ require('_common.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
+$RootDB = RootDB::db();
 $session = Session::Instance();
 if($session->isLoggedIn()){
     $session->logout();
@@ -89,7 +90,7 @@ if(!$email){
 }
 
 
-$userInfo = RootDB::db()->queryFirstRow(
+$userInfo = $RootDB->queryFirstRow(
     'SELECT `no`, `id`, `name`, `grade`, `delete_after` from member where email=%s',$email);
 
 if(!$userInfo){
@@ -105,7 +106,7 @@ if($userInfo['delete_after']){
     if($userInfo['delete_after'] < $nowDate){
         $restAPI->unlink();
         unset($_SESSION['access_token']);
-        RootDB::db()->delete('member', 'no=%i', $userInfo['no']);
+        $RootDB->delete('member', 'no=%i', $userInfo['no']);
         Json::die([
             'result'=>false,
             'reason'=>"기간 만기로 삭제되었습니다. 재 가입을 시도해주세요."
@@ -121,6 +122,15 @@ if($userInfo['delete_after']){
     }
     
 }
+
+$RootDB->insert('member_log',[
+    'member_no'=>$userInfo['no'],
+    'action_type'=>'login',
+    'action'=>Json::encode([
+        'ip'=>Util::get_client_ip(true),
+        'type'=>'kakao'
+    ])
+]);
 
 $session->login($userInfo['no'], $userInfo['id'], $userInfo['grade']);
 Json::die([
