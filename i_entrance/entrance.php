@@ -20,7 +20,6 @@ $userGrade = $session->userGrade;
 
         <!-- 스타일 -->
         <link type="text/css" rel="stylesheet" href='../css/config.css'>
-        <link type="text/css" rel="stylesheet" href='../css/app.css'>
 
         <link type="text/css" rel="stylesheet" href='../css/entrance.css'>
 

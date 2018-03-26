@@ -4,11 +4,11 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-if(!class_exists('\sammo\DB')){
-    header('Location:install_db.php');
-}
 if(Session::getUserGrade(true) < 5){
     die('관리자 아님');
+}
+if(Session::getUserGrade(true) == 5){
+    die('DB 리셋 권한을 가지고 있지 않습니다.');
 }
 
 ?>

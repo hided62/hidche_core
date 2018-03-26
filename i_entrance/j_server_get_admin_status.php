@@ -14,6 +14,7 @@ if($session->userGrade < 5){
 
 $result = [];
 
+$server = [];
 
 
 foreach (AppConf::getList() as $setting) {
@@ -60,9 +61,12 @@ foreach (AppConf::getList() as $setting) {
     $state = array_merge($state, [
         'name' => $serverDir,
         'korName' => $serverKorName,
-        'color' => $serverColor 
+        'color' => $serverColor,
     ]);
-    $result[] = $state;
+    $server[] = $state;
 }  
 
-Json::die($result);
+Json::die([
+    'server' => $server,
+    'grade' => $session->userGrade
+]);

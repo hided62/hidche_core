@@ -3,20 +3,20 @@ var serverAdminTemplate = '\
 <tr class="bg0" data-server_name="<%name%>">\
     <th style="color:<%color%>;"><%korName%>(<%name%>)</th>\
     <td><%status%></td>\
-    <td><input class="with_skin obj_fill" type="button" value="폐쇄" onclick="modifyServerStatus(this, \'close\');"></td>\
-    <td><input class="with_skin obj_fill" type="button" value="오픈" onclick="modifyServerStatus(this, \'open\');"></td>\
-    <td><input class="with_skin obj_fill" type="button" value="리셋" onclick="modifyServerStatus(this, \'reset\');"></td>\
-    <td><input class="with_skin obj_fill" type="button" value="하드리셋" onclick="modifyServerStatus(this, \'reset_full\');"></td>\
-    <td><input class="with_skin obj_fill" type="button" value="폐쇄중 로그인" onclick="Entrance_AdminClosedLogin(this);"></td>\
-    <td><input class="with_skin obj_fill" type="button" value="서버119" onclick="Entrance_AdminOpen119(this);"></td>\
-    <td><input class="with_skin obj_fill" type="button" value="업데이트" onclick="Entrance_AdminOpen119(this);"></td>\
+    <td><button class="valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'close\');">폐쇄</button></td>\
+    <td><button class="valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'open\');">오픈</button></td>\
+    <td><a class="just_link" href="../<%name%>/install.php"><button class="valid_if_set with_border obj_fill">리셋</button></a></td>\
+    <td><a class="just_link" href="../<%name%>/install_db.php"><button class="valid_if_set only_admin with_border obj_fill">하드리셋</button></a></td>\
+    <td><button class="valid_if_set with_border obj_fill" onclick="Entrance_AdminClosedLogin(this);">폐쇄중 로그인</button></td>\
+    <td><button class="valid_if_set with_border obj_fill" onclick="Entrance_AdminOpen119(this);">서버119</button></td>\
+    <td><button class="only_admin with_border obj_fill" onclick="Entrance_AdminOpen119(this);">업데이트</button></td>\
 </tr>\
 ';
 
 
 function drawServerAdminList(serverList){
     var $table = $('#server_admin_list');
-    $.each(serverList, function(idx, server){
+    $.each(serverList.server, function(idx, server){
         console.log(server);
         var status = '';
         if(!server.valid){
@@ -30,10 +30,15 @@ function drawServerAdminList(serverList){
         }
         server.status = status;
 
-        $table.append(
-            TemplateEngine(serverAdminTemplate, server)
-        );
+        var $tr = $(TemplateEngine(serverAdminTemplate, server));
+        $table.append($tr);
+        if(!server.valid){
+            $tr.find('.valid_if_set').css('background','#333333').prop('disabled', true);
+        }
     });
+    if(serverList.grade == 5){
+        $table.find('.only_admin').css('background','#333333').prop('disabled', true);
+    }
 }
 
 $(function(){

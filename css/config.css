@@ -19,6 +19,10 @@ th, td      {
     font-family: '맑은 고딕'; line-height: 110%;
 }
 
+a.just_link {
+    text-decoration: none;
+}
+
 div     {
     margin:0px;
     padding: 0px;
