@@ -10,7 +10,7 @@ class Scenario{
     private $data;
 
     public function __construct(int $scenarioIdx){
-        $scenarioPath = SCENARIO_PATH."/scenario_{$scenarioIdx}.json";
+        $scenarioPath = self::SCENARIO_PATH."/scenario_{$scenarioIdx}.json";
 
         $this->scenarioIdx = $scenarioIdx;
         $this->scenarioPath = $scenarioPath;
@@ -22,15 +22,108 @@ class Scenario{
         return $this->scenarioIdx;
     }
 
+    public function getYear(){
+        return Util::array_get($this->data['startYear']);
+    }
+
+    public function getTitle(){
+        return Util::array_get($this->data['title']);
+    }
+
+    public function getNPC(){
+        return Util::array_get($this->data['general']);
+    }
+
+    public function getNPCex(){
+        return Util::array_get($this->data['general_ex']);
+    }
+
+    public function getNation(){
+
+        $nationsRaw = Util::array_get($this->data['nation']);
+        if(!$nationsRaw){
+            return [];
+        }
+
+        $nations = [];
+        foreach($nationsRaw as $idx=>$nation){
+            list($name, $color, $gold, $rice, $infoText, $tech, $genCount, $type, $nationLevel, $cities) = $nation;
+            $nationID = $idx+1;
+
+            $nation['id'] = $nationID;
+
+            $nations[$nationID] = [
+                'id'=>$nationID,
+                'name'=>$name,
+                'color'=>$color,
+                'gold'=>$gold,
+                'rice'=>$rice,
+                'infoText'=>$infoText,
+                'tech'=>$tech,
+                'type'=>$type,
+                'nationLevel'=>$nationLevel,
+                'cities'=>$cities,
+                'generals'=>0
+            ];
+        }
+
+        $nations[0] = [
+            'id'=>0,
+            'name'=>'재야',
+            'color'=>'#ffffff',
+            'gold'=>0,
+            'rice'=>0,
+            'infoText'=>'재야',
+            'tech'=>0,
+            'type'=>'재야',
+            'nationLevel'=>0,
+            'cities'=>[],
+            'generals'=>0
+        ];
+
+        foreach(Util::array_get($this->data['general'], []) as $idx=>$general){
+            while(count($general) < 14){
+                $general[] = null;
+            }
+            list(
+                $a, $name, $npcname, $nationID, $specifiedCity, 
+                $leadership, $power, $intel, $birth, $death, 
+                $charDom, $charWar, $text
+            ) = $general;
+
+            if(array_key_exists($nationID, $nations)){
+                $nations[$nationID]['generals']++;
+            };
+        }
+
+        return $nations;
+    }
+
+    public function getScenarioBrief(){
+        $nations = [];
+
+        return [
+            'year'=>$this->getYear(),
+            'title'=>$this->getTitle(),
+            'npc_cnt'=>count($this->getNPC()),
+            'npcEx_cnt'=>count($this->getNPCex()),
+            'nation'=>$this->getNation()
+        ];
+    }
+
     /**
      * @return \sammo\Scenario[]
      */
     public static function getAllScenarios(){
         $result = [];
 
-        foreach(glob(SCENARIO_PATH.'/scenario_*.json') as $scenarioPath){
-            $scenarioName = pathinfo(basename($scenarioName), PATHINFO_FILENAME);
+        foreach(glob(self::SCENARIO_PATH.'/scenario_*.json') as $scenarioPath){
+            $scenarioName = pathinfo(basename($scenarioPath), PATHINFO_FILENAME);
             $scenarioIdx = Util::array_last(explode('_', $scenarioName));
+            
+            if(!is_numeric($scenarioIdx)){
+                continue;
+            }
             $scenarioIdx = Util::toInt($scenarioIdx);
 
             if($scenarioIdx === null){

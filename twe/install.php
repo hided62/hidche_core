@@ -94,13 +94,7 @@ if(Session::getUserGrade(true) < 5){
                     <div class="form-group row">
                         <label for="confirm_password" class="col-sm-3 col-form-label">시나리오 선택</label>
                         <div class="col-sm-9">
-                        <select class="form-control" size="1">
-                            <optgroup label="공백지">
-                                <option value="0">공백지</option>
-                            </optgroup>
-                            <optgroup label="역사모드">
-                                <option value="1">황건적의 난</option>
-                            </optgroup>
+                        <select class="form-control" size="1" id="scenario_sel">
                         </select>
                         
                         </div>
@@ -183,9 +177,9 @@ if(Session::getUserGrade(true) < 5){
                     <tr><th>설정</th><th>값</th>
                 </thead>
                 <tbody>
-                    <tr><th>일자</th><td ><span id="scenario_begin">180년 1월</span><small id="scenario_begin_with_sync"></small></td></tr>
+                    <tr><th>시작 연도</th><td ><span id="scenario_begin">180년</span><small id="scenario_begin_with_sync"></small></td></tr>
                     <tr><th>NPC 수</th><td><span id="scenario_npc"></span><span id="scenario_npc_extend"></span></td></tr>
-                    <tr><th>국가 수</th><td><span id="scenario_nation"></span></td></tr>
+                    <tr><th>국가</th><td><span id="scenario_nation"></span></td></tr>
                 </tbody>
                 <tfoot>
                     <tr><td colspan="2">
