@@ -1,8 +1,6 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
-
 /**
 * https://php.net/manual/kr/language.oop5.autoload.php#120258
 * 현재 디렉토리 기준으로 php 파일 탐색.
@@ -15,6 +13,18 @@ class Autoloader
         if($isRegisterd){
             return;
         }
+
+        //trick, 개인용 세팅의 경우 d_setting의 값을 우선시하도록 함.
+        spl_autoload_register(function ($class) {
+            $class = Util::array_last(explode('\\', $class));
+            $file = __DIR__."/d_setting/{$class}.php";
+            if (file_exists($file)) {
+                require $file;
+                return true;
+            }
+            return false;
+        });
+
         $isRegisterd = true;
         spl_autoload_register(function ($class) {
             $file = __DIR__.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php';
@@ -25,19 +35,12 @@ class Autoloader
             return false;
         });
 
-        spl_autoload_register(function ($class) {
-            $class = Util::array_last(explode('\\', $class));
-            $file = __DIR__."/d_setting/{$class}.php";
-            if (file_exists($file)) {
-                require $file;
-                return true;
-            }
-            return false;
-        });
+        
     }
 }
 Autoloader::register();
 
+require(__dir__.'/../vendor/autoload.php');
 
 /******************************************************************************
 체섭용 인클루드 파일

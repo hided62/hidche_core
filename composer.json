@@ -18,12 +18,12 @@
     "autoload": {
         "psr-4": {
             "sammo\\": [
-                "src/sammo",
-                "d_setting"
+                "d_setting",
+                "src/sammo"
             ],
             "kakao\\": [
-                "src/kakao",
-                "d_setting"
+                "d_setting",
+                "src/kakao"
             ]
         }
     }

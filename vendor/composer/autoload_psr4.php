@@ -6,8 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'sammo\\' => array($baseDir . '/src/sammo', $baseDir . '/d_setting'),
-    'kakao\\' => array($baseDir . '/src/kakao', $baseDir . '/d_setting'),
+    'sammo\\' => array($baseDir . '/d_setting', $baseDir . '/src/sammo'),
+    'kakao\\' => array($baseDir . '/d_setting', $baseDir . '/src/kakao'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
