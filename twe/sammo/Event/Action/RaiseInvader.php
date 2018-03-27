@@ -31,11 +31,11 @@ class RaiseInvader extends sammo\Event\Action{
     ];
 
     public function __construct(
-            $npcEachCount = -0.5,
-            int $specAvg = 150,
-            int $specDist = 20,
-            int $tech = -1,
-            int $dex = 0
+        $npcEachCount = -0.5,
+        int $specAvg = 150,
+        int $specDist = 20,
+        int $tech = -1,
+        int $dex = 0
     ){
         $this->npcEachCount = $npcEachCount;
         $this->specAvg = $specAvg;
@@ -62,7 +62,7 @@ class RaiseInvader extends sammo\Event\Action{
                 order by rand() limit 1', $nation, $oldCapital);
             $db->update('nation', ['capital'=>$newCapital], 'nation=%i', $nation);
 
-            $db->update('generals', ['city'=>$newCapital], 'nation=%i and city=%i', $nation, $city);
+            $db->update('general', ['city'=>$newCapital], 'nation=%i and city=%i', $nation, $city);
         }
 
         $generals = [];
