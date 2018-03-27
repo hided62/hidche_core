@@ -17,7 +17,7 @@ class ChangeCity extends sammo\Event\Action{
 
     private $queries;
     private $cities;
-    public function __construct(array $cities = null, $action){
+    public function __construct(array $cities = null, array $actions){
 
         //values 포맷은 key, value로 
         if($cities == null){
@@ -31,7 +31,7 @@ class ChangeCity extends sammo\Event\Action{
         $queries = [];
         foreach($actions as $key => $value){
             if(!key_exists($key, self::AVAILABLE_KEY)){
-                continue;
+                throw new \InvalidArgumentException('지원하지 않는 city 인자입니다 :'.$key);
             }
 
             if(!is_int($value) && !is_float($value) && !is_string($value)){
@@ -90,7 +90,7 @@ class ChangeCity extends sammo\Event\Action{
             return DB::db()->sqleval('least(%b, ROUND(%b * %d, 0))', $keyMax, $key, $value);
         }
         if(is_int($value)){
-            return DB::db()->sqleval('least(%b, %i)', $keyMax, $value);
+            return DB::db()->sqleval('least(%b, %i)', $keyMax, max(0, $value));
         }
 
         $matches = null;
