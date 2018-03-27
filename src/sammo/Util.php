@@ -169,6 +169,72 @@ class Util extends \utilphp\util{
         return $dict;
     }
 
+
+    /** 
+     * 0.0~1.0 사이의 랜덤 float
+     * @return float
+     */
+    public static function randF(){
+        return mt_rand() / mt_getrandmax();
+    }
+
+    /**
+     * $prob의 확률로 true를 반환
+     * @return boolean
+     */
+    public static function randBool($prob = 0.5){
+        return randF() < $prob;
+    }
     
+
+    /**
+     * $min과 $max 사이의 값으로 교정
+     */
+    public static function valueFit($value, $min, $max){
+        if($value < $min){
+            return $min;
+        }
+        if($value > $max){
+            return $max;
+        }
+        return $value;
+    }
+
+    /**
+     * 각 값의 비중에 따라 랜덤한 값을 선택
+     * 
+     * @param array 각 수치의 비중
+     * 
+     * @return object 선택된 랜덤 값의 key값. 단순 배열인 경우에는 index
+     */
+    public static function choiceRandomUsingWeight(array $items){
+        $sum = 0;
+        foreach($items as $value){
+            $sum += $value;
+        }
+
+        $rd = self::randF()*$sum;
+        foreach($items as $key=>$value){
+            if($rd <= $value){
+                return $key;
+            }
+            $rd -= $value;
+        }
+
+        //fallback. 이곳으로 빠지지 않음
+        end($items);
+        return key($items);
+    }
+
+    /**
+     * 배열의 아무거나 고름. Python의 random.choice()
+     * 
+     * @param array 선택하고자 하는 배열
+     * 
+     * @return object 선택된 value값.
+     */
+    public static function choiceRandom(array $items){
+        return $items[array_rand($items)];
+    }
 
 };
