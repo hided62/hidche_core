@@ -22,7 +22,7 @@
         "str:역사"
     ],
     "initialActions":[
-        "array:action form"
+        "array:event form"
     ],
     "events":[
         "array:event form"
