@@ -24,21 +24,7 @@ require_once('func_command.php');
 
 
 
-/** 
- * 0.0~1.0 사이의 랜덤 float
- * @return float
- */
-function randF(){
-    return mt_rand() / mt_getrandmax();
-}
 
-/**
- * $prob의 확률로 true를 반환
- * @return boolean
- */
-function randBool($prob = 0.5){
-    return randF() < $prob;
-}
 
 /** 
  * 로그인한 유저의 장수 id를 받아옴
