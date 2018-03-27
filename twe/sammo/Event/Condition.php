@@ -10,7 +10,13 @@ abstract class Condition{
             return $conditionChain;
         }
 
-        $className = 'sammo\\Event\\Condition\\'.$conditionChain[0];
+        $key = $conditionChain[0];
+        if(\array_key_exists(strtolower($key), Condition\Logic::AVAILABLE_LOGIC_NAME)){
+            //logic 단축 명령.
+            return new Condition\Logic($key, array_slice($conditionChain, 1));
+        }
+
+        $className = 'sammo\\Event\\Condition\\'.$key;
         if(class_exists($className)){
             $args = [];
 
