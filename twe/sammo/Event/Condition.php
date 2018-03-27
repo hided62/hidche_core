@@ -13,7 +13,8 @@ abstract class Condition{
         $key = $conditionChain[0];
         if(\array_key_exists(strtolower($key), Condition\Logic::AVAILABLE_LOGIC_NAME)){
             //logic 단축 명령.
-            return new Condition\Logic($key, array_slice($conditionChain, 1));
+            $ref = new \ReflectionClass('sammo\\Event\\Condition\\Logic');
+            return $ref->newInstanceArgs($conditionChain);
         }
 
         $className = 'sammo\\Event\\Condition\\'.$key;
