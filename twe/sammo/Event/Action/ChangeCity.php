@@ -1,5 +1,7 @@
 <?php
 namespace sammo\Event\Action;
+use sammo\Util;
+use sammo\DB;
 
 //기존 시나리오에서 개시 1월에 내정을 깎는 것을 모사.
 class ChangeCity extends sammo\Event\Action{
