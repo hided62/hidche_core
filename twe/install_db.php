@@ -72,9 +72,10 @@ if(Session::getUserGrade(true) == 5){
                     </div>
                     
                     <div class="form-group row">
-                        <label for="db_id" class="col-sm-3 col-form-label">DB계정명</label>
+                        <label for="db_id" class="col-sm-3 col-form-label">DB계정</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" name="db_id" id="db_id"  placeholder="DB계정"/>
+                            <small>관리 DB의 계정과는 다른 계정을 권장합니다.</small>
                         </div>
                     </div>
 
@@ -90,6 +91,7 @@ if(Session::getUserGrade(true) == 5){
                         <label for="db_name" class="col-sm-3 col-form-label">DB명</label>
                         <div class="col-sm-9">
                             <input type="text" class="form-control" name="db_name" id="db_name"  placeholder="DB명(예:sammo_che)"/>
+                            <small>관리 DB와는 다른 DB를 사용해야합니다.</small>
                         </div>
                     </div>
 

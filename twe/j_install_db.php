@@ -6,38 +6,77 @@ include "func.php";
 
 $session = Session::Instance()->setReadOnly();
 if($session->userGrade < 6){
-    die('관리자 아님');
+    Json::die([
+        'result'=>false,
+        'reason'=>'관리자 아님'
+    ]);
+}
+
+$fullReset  = Util::array_get($_POST['full_reset'], false);
+$host = Util::array_get($_POST['db_host']);
+$port = Util::array_get($_POST['db_port']);
+$username = Util::array_get($_POST['db_id']);
+$password = Util::array_get($_POST['db_pw']);
+$dbName = Util::array_get($_POST['db_name']);
+
+if(!$host || !$port || !$username || !$password || !$dbName){
+    Json::die([
+        'result'=>false,
+        'reason'=>'입력 값이 올바르지 않습니다'
+    ]);
+}
+
+if($fullReset && class_exists('\\sammo\\DB')){
+    $mysqli_obj = DB::db()->get();
+
+    if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/reset.sql'))){
+        do{
+            $mysqli_obj->store_result();
+        } while($mysqli_obj->next_result());
+    }
+}
+
+function dbConnFail($params){
+    Json::die([
+        'result'=>false,
+        'reason'=>'DB 접속에 실패했습니다.'
+    ]);
 }
 
 
+$db = new \MeekroDB($host,$username,$password,$dbName,$port,'utf8');
+$db->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
 
-$db = DB::db();
+$db->throw_exception_on_nonsql_error = false;
+$db->nonsql_error_handler = 'dbConnFail';
 
-// 관리자 테이블 삭제
-$db->query("DROP TABLE IF EXISTS game");
-// 장수 테이블 삭제
-$db->query("DROP TABLE IF EXISTS general");
-// 국가 테이블 삭제
-$db->query("DROP TABLE IF EXISTS nation");
-// 도시 테이블 삭제
-$db->query("DROP TABLE IF EXISTS city");
-// 부대 테이블 삭제
-$db->query("DROP TABLE IF EXISTS troop");
-// 외교 테이블 삭제
-$db->query("DROP TABLE IF EXISTS diplomacy");
-// 토너먼트 테이블 삭제
-$db->query("DROP TABLE IF EXISTS tournament");
-// 거래 테이블 삭제
-$db->query("DROP TABLE IF EXISTS auction");
-// 통계 테이블 삭제
-$db->query("DROP TABLE IF EXISTS statistic");
-// 연감 테이블 삭제
-$db->query("DROP TABLE IF EXISTS history");
 
-// 삭제
-unlink(__DIR__."/d_setting/DB.php");
+$mysqli_obj = $db->get(); //로그인에 실패할 경우 자동으로 dbConnFail()이 실행됨.
 
-FileUtil::delInDir("logs");
-FileUtil::delInDir("data/session");
-@unlink("data/connected.php");
+$prefix = basename(__DIR__);
 
+$result = Util::generateFileUsingSimpleTemplate(
+    __DIR__.'/d_setting/DB.orig.php',
+    __DIR__.'/d_setting/DB.php',[
+        'host'=>$host,
+        'user'=>$username,
+        'password'=>$password,
+        'dbName'=>$dbName,
+        'port'=>$port,
+        'prefix'=>$prefix
+    ], true
+);
+
+
+
+if($result !== true){
+    Json::die([
+        'result'=>false,
+        'reason'=>$result
+    ]);
+}
+
+Json::die([
+    'result'=>true,
+    'reason'=>'success'
+]);
