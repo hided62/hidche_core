@@ -174,7 +174,7 @@ if($id_num) {
     }
 
     //특회 전콘
-    if($admin['img'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "" && $pic == 1) {
+    if($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "" && $pic == 1) {
         $face = $member['picture'];
         $imgsvr = $member['imgsvr'];
     } else {

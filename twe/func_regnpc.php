@@ -8,7 +8,7 @@ function RegNPC($connect) {
     $admin = MYDB_fetch_array($result);
 
     $fiction = $admin['fiction'];    $turnterm = $admin['turnterm'];    $startyear = $admin['startyear'];    $year = $admin['year'];
-    $img = $admin['img'];
+    $img = $admin['show_img_level'];
 //                                                                    상성      이름       사진 국가  도시   통  무  지 급 출생 사망    꿈     특기
     RegGeneral($connect,0,0,$fiction,$turnterm,$startyear,$year,1001,   1,    "소제1",$img,1001,  0,    "-", 20, 11, 48, 0, 168, 190, "유지",    "-");
     RegGeneral($connect,0,0,$fiction,$turnterm,$startyear,$year,1002,   1,     "헌제",$img,1002,  0,    "-", 17, 13, 61, 0, 170, 250, "안전",    "-", "한 왕실을 구해줄 이는 진정 없는 것인가...");

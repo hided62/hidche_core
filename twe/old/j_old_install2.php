@@ -10,7 +10,7 @@ $scenario = Util::array_get($_POST['scenario'],'0');
 $fiction = Util::array_get($_POST['fiction'],'0');
 $extend = Util::array_get($_POST['extend'],'0');
 $npcmode = Util::array_get($_POST['npcmode'],'0');
-$img = Util::array_get($_POST['img'],'0');
+$img = Util::array_get($_POST['show_img_level'],'0');
 
 if(Session::getUserGrade(true) < 5){
     die('관리자 아님');

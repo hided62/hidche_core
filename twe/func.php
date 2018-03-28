@@ -956,7 +956,7 @@ function generalInfo($connect, $no, $skin) {
     else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
 
     $weapImage = "{$images}/weap{$general['crewtype']}.jpg";
-    if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; };
+    if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; };
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
@@ -1248,25 +1248,13 @@ function pushBatLog($general, $log) {
 }
 
 function pushAllLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/_alllog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
+    $text = join("\n", $log)."\n";
+    file_put_contents(__dir__.'/logs/_alllog.txt', $text, FILE_APPEND);
 }
 
 function pushHistory($history) {
-    $size = count($history);
-    if($size > 0) {
-        $fp = fopen("logs/_history.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $history[$i]."\n");
-        }
-        fclose($fp);
-    }
+    $text = join("\n", $history)."\n";
+    file_put_contents(__dir__.'/logs/_history.txt', $text, FILE_APPEND);
 }
 
 function getRawLog($path, $count, $line_length, $skin){

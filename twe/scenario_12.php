@@ -44,7 +44,7 @@ $query = "select startyear,year,month,turnterm,scenario,extend,fiction,img from 
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 $fiction = $admin['fiction'];    $turnterm = $admin['turnterm'];    $startyear = $admin['startyear'];    $year = $admin['year'];    $extend = $admin['extend'];
-$img = $admin['img'];
+$img = $admin['show_img_level'];
 //IF모드1 : 191년 백마장군의 위세
 
 //국가1 원소 국가2 공손찬 국가3 동탁 국가4 원술 국가5 유언 국가6 마등 국가7 유표

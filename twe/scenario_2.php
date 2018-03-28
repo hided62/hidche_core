@@ -44,7 +44,7 @@ $query = "select startyear,year,month,turnterm,scenario,extend,fiction,img from 
 $result = MYDB_query($query, $connect) or Error("scenario_190A ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 $fiction = $admin['fiction'];    $turnterm = $admin['turnterm'];    $startyear = $admin['startyear'];    $year = $admin['year'];    $extend = $admin['extend'];
-$img = $admin['img'];
+$img = $admin['show_img_level'];
 //역사모드2 : 190년 반동탁연합
 
 //국가1 동탁 국가2 원소 국가3 유표 국가4 조조 국가5 유언 국가6 원술 국가7 손견

@@ -231,7 +231,7 @@ for($i=0; $i < $nationcount; $i++) {
             </td>
         </tr>
 <?php
-if($admin['img'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "") {
+if($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "") {
     $imageTemp = GetImageURL($member['imgsvr']);
     echo "
         <tr>

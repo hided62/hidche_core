@@ -584,17 +584,18 @@ $emperior_schema = "
 $diplomacy_schema = "
 
   create table diplomacy (
-    no int(6) not null auto_increment,
-    me int(6) default 0,
-    you int(6) default 0,
-    state int(6) default 0,
-    term int(6) default 0,
-    dead int(8) default 0,
-    fixed char(128) default '',
-    reserved char(128) default '',
-    showing datetime,
+    `no` INT(6) NOT NULL AUTO_INCREMENT,
+    `me` INT(6) NOT NULL,
+    `you` INT(6) NOT NULL,
+    `state` INT(6) NULL DEFAULT '0',
+    `term` INT(6) NULL DEFAULT '0',
+    `dead` INT(8) NULL DEFAULT '0',
+    `fixed` CHAR(128) NULL DEFAULT '',
+    `reserved` CHAR(128) NULL DEFAULT '',
+    `showing` DATETIME NULL DEFAULT NULL,
 
-    PRIMARY KEY (no)
+    PRIMARY KEY (`no`),
+	  UNIQUE INDEX `me` (`me`, `you`)
     ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8
 
     ";
@@ -702,3 +703,17 @@ $history_schema = "
 
     ";
 
+///////////////////////////////////////////////////////////////////////////
+// 이벤트 핸들러 테이블
+///////////////////////////////////////////////////////////////////////////
+
+$event_schema = "
+    CREATE TABLE `event` (
+      `id` INT(11) NOT NULL AUTO_INCREMENT,
+      `condition` MEDIUMTEXT NOT NULL COMMENT 'json',
+      `action` MEDIUMTEXT NOT NULL COMMENT 'json',
+      PRIMARY KEY (`id`)
+    )
+    ENGINE=InnoDB
+    ";
+    

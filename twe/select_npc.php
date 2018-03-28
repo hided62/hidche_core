@@ -83,7 +83,7 @@ for($i=0; $i < $nationcount; $i++) {
             <td colspan=2 align=center id=bg1>장수 선택</td>
         </tr>
 <?php
-if($admin['img'] >= 3) {
+if($admin['show_img_level'] >= 3) {
 ?>
         <tr>
             <td width=498 align=right rowspan=2 height=64 id=bg1>장수</td>

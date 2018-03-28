@@ -45,7 +45,7 @@ $query = "select startyear,year,month,turnterm,scenario,extend,fiction,img from 
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 $fiction = $admin['fiction'];    $turnterm = $admin['turnterm'];    $startyear = $admin['startyear'];    $year = $admin['year'];    $extend = $admin['extend'];
-$img = $admin['img'];
+$img = $admin['show_img_level'];
 //역사모드1 : 184년 황건적의 난
 
 //////////////////////////국가1/////////////////////////////////////////////////

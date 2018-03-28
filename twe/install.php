@@ -143,20 +143,20 @@ if(Session::getUserGrade(true) < 5){
                     </div>
 
                     <div class="form-group row">
-                        <label for="img" class="col-sm-3 col-form-label">이미지 표기</label>
+                        <label for="show_img_level" class="col-sm-3 col-form-label">이미지 표기</label>
                         <div class="col-sm-9">
                             <div class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-secondary">
-                                    <input type="radio" name="img" value="0">안함
+                                    <input type="radio" name="show_img_level" value="0">안함
                                 </label>
                                 <label class="btn btn-secondary">
-                                    <input type="radio" name="img" value="1">전콘
+                                    <input type="radio" name="show_img_level" value="1">전콘
                                 </label>
                                 <label class="btn btn-secondary active">
-                                    <input type="radio" name="img" value="2" checked>전콘, 병종
+                                    <input type="radio" name="show_img_level" value="2" checked>전콘, 병종
                                 </label>
                                 <label class="btn btn-secondary">
-                                    <input type="radio" name="img" value="3">전콘, 병종, NPC
+                                    <input type="radio" name="show_img_level" value="3">전콘, 병종, NPC
                                 </label>
                             </div>
                         </div>

@@ -426,7 +426,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -476,7 +476,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -526,7 +526,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -576,7 +576,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -626,7 +626,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -860,7 +860,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -910,7 +910,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -960,7 +960,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -1010,7 +1010,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>
@@ -1060,7 +1060,7 @@ function calc(cost, formnum) {
             $cst = round($cst);
             $l = $color[$i];
             $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['img'] < 2) { $weapImage = "{$image}/default.jpg"; }
+            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
             echo "
     <tr height=64 bgcolor=$l>
         <td background={$weapImage} align=center></td>

@@ -44,7 +44,7 @@ $query = "select startyear,year,month,turnterm,scenario,extend,fiction,img from 
 $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 $fiction = $admin['fiction'];    $turnterm = $admin['turnterm'];    $startyear = $admin['startyear'];    $year = $admin['year'];    $extend = $admin['extend'];
-$img = $admin['img'];
+$img = $admin['show_img_level'];
 //역사모드4 : 196년 황제는 허도로
 
 //////////////////////////국가1/////////////////////////////////////////////////
