@@ -316,7 +316,7 @@ class Scenario{
         $remainGenerals = $this->buildGenerals($env);
 
         foreach($remainGenerals as $birth=>$actions){
-            $targetYear = $birth + 14;//FIXME: 14가 어디서 튀어나왔나?
+            $targetYear = $birth + \sammo\GameConst::$adultAge;
 
             $actions[] = ['DeleteEvent'];
             $this->events[] = [

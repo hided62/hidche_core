@@ -67,5 +67,7 @@ class GameConst{
     /** @var int 최저 병량(긴급시) */
     public static $minNationalRice = 0;
     /** @var float 군량 매매시 세율*/
-    public static $taxrate = 0.01;    
+    public static $taxrate = 0.01;   
+    /** @var float 성인 연령 */
+    public static $adultAge = 14;
 }

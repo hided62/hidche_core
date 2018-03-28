@@ -79,7 +79,7 @@ class NPC{
 
         $db = DB::db();
 
-        if($age == 14 && $month == 1){//FIXME: 14가 어디서 튀어나왔나?
+        if($age == \sammo\GameConst::$adultAge && $month == 1){//FIXME: 14가 어디서 튀어나왔나?
             \sammo\pushHistory(["<C>●</>1월:<Y>$name</>(이)가 성인이 되어 <S>등장</>했습니다."]);
         }
 
