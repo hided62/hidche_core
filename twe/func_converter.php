@@ -240,6 +240,7 @@ function SpecCall($call) {
         case '의술':    $type = 73; break;
         case '격노':    $type = 74; break;
         case '척사':    $type = 75; break;
+        default: $type = 0; break;
     }
     return $type;
 }
