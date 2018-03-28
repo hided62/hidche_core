@@ -363,9 +363,11 @@ class Scenario{
 
         $db->insert('event', $this->events);
 
+        pushHistory($this->history);
+
         refreshNationStaticInfo();
         foreach(getAllNationStaticInfo() as $nation){
-            SetNationFront($connect, $nation['nation']);
+            SetNationFront($db->get(), $nation['nation']);
         }
     }
 
