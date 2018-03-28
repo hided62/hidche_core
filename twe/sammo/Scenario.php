@@ -329,6 +329,13 @@ class Scenario{
             $event->tryRunEvent($env);
         }
 
+        $events = array_map(function($rawEvent){
+            return [
+                'cond'=>Json::encode($rawEvent['cond']),
+                'action'=>Json::encode($rawEvent['action'])
+            ];
+        }, $this->events);
+
         $db->insert('event', $this->events);
     }
 
