@@ -13,7 +13,7 @@ use sammo\DB;
  * event_2.php, 약한 이민족 : npcEachCount = -0.5, specAvg = 150, specDist = 20, tech = -1, dex = 0
  * event_3.php, 엄청 약한 이민족 : npcEachCount = 100, specAvg = 50, specDist = 5, tech = 0, dex = 0
  */
-class RaiseInvader extends sammo\Event\Action{
+class RaiseInvader extends \sammo\Event\Action{
     private $npcEachCount;
     private $specAvg;
     private $specDist;

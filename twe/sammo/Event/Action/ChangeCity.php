@@ -4,7 +4,7 @@ use sammo\Util;
 use sammo\DB;
 
 //기존 시나리오에서 개시 1월에 내정을 깎는 것을 모사.
-class ChangeCity extends sammo\Event\Action{
+class ChangeCity extends \sammo\Event\Action{
     const AVAILABLE_KEY = [
         'pop'=>true,
         'agri'=>true,
@@ -20,7 +20,7 @@ class ChangeCity extends sammo\Event\Action{
     private $queries;
     private $targetType = 'all';
     private $targetArgs = [];
-    public function __construct(array $target = null, array $actions){
+    public function __construct($target = null, array $actions){
 
         //values 포맷은 key, value로 
 
@@ -54,7 +54,7 @@ class ChangeCity extends sammo\Event\Action{
                 continue;
             }
 
-            $queries[$key] = $this->genSQLGeneric($value);
+            $queries[$key] = $this->genSQLGeneric($key, $value);
         }
         
         $this->queries = $queries;

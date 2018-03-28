@@ -2,7 +2,7 @@
 namespace sammo\Event\Action;
 
 //기존 event_4.php
-class CreateAdminNPC extends sammo\Event\Action{
+class CreateAdminNPC extends \sammo\Event\Action{
     public function __construct(){
         
     }

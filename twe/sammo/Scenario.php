@@ -9,6 +9,9 @@ class Scenario{
 
     private $data;
 
+    private $initialEvents;
+    private $events;
+
     public function __construct(int $scenarioIdx){
         $scenarioPath = self::SCENARIO_PATH."/scenario_{$scenarioIdx}.json";
 
@@ -16,6 +19,10 @@ class Scenario{
         $this->scenarioPath = $scenarioPath;
 
         $this->data = Json::decode(file_get_contents($scenarioPath));
+
+        $this->initialEvents = array_map(function($rawEvent){
+            return new \sammo\Event\EventHandler($rawEvent[0], array_slice($rawEvent, 1));
+        }, Util::array_get($this->data['initialEvents'], []));
     }
 
     public function getScenarioIdx(){

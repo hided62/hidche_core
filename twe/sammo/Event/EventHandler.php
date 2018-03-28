@@ -8,7 +8,7 @@ class EventHandler{
 
     public function __construct($rawCondition, $rawActions){
         $this->condition = Condition::build($rawCondition);
-        foreach($rawActions as $rawActio){
+        foreach($rawActions as $rawAction){
             $this->condition = Action::build($rawAction);
         }
         
