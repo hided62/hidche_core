@@ -18,17 +18,14 @@ class ChangeCity extends sammo\Event\Action{
     const REGEXP_MATH = '/^([\+\-\/\*])(\d+(\.\d+)?)$/'; //+30 [1]=기호, [2]=float
 
     private $queries;
-    private $cities;
-    public function __construct(array $cities = null, array $actions){
+    private $targetType;
+    private $targetArgs;
+    public function __construct(array $target = [], array $actions){
 
         //values 포맷은 key, value로 
-        if($cities == null){
-            //city가 null인 경우엔 모두
-            $cities = DB::db()->queryFirstColumn('SELECT city FROM city');    
-        }
-        else{
-            $cities = DB::db()->queryFirstColumn('SELECT city FROM city WHERE name IN (%ls)', $cities);
-        }
+
+        $this->targetType = $target[0];
+        $this->targetArgs = array_slice($target, 1);
 
         $queries = [];
         foreach($actions as $key => $value){
@@ -114,10 +111,42 @@ class ChangeCity extends sammo\Event\Action{
 
     }
 
+    private function getTargetCities($env){
+
+        $targetType = $this->targetType;
+        if($targetType == 'all'){
+            return DB::db()->queryFirstColumn('SELECT city FROM city');  
+        }
+
+        if($targetType == 'free'){
+            return DB::db()->queryFirstColumn('SELECT city FROM city WHERE nation = 0');
+        }
+
+        if($targetType == 'occupied'){
+            return DB::db()->queryFirstColumn('SELECT city FROM city WHERE nation != 0');
+        }
+
+        if($targetType == 'cities'){
+            if(is_numeric($this->targetArgs)){
+                return DB::db()->queryFirstColumn('SELECT city FROM city WHERE city IN (%ls)', $this->targetArgs);
+            }
+            else{
+                return DB::db()->queryFirstColumn('SELECT city FROM city WHERE name IN (%ls)', $this->targetArgs);
+            }
+            
+        }
+
+        throw new \InvalidArgumentException('올바르지 않은 cond 입니다.');
+    }
+
     public function run($env=null){
+
+        $target = $this->target;
+        $cities = $this->getTargetCities($env);
+
         DB::db()->update('city', 
             $this->queries
-        , 'city IN (%li)', $this->cities);
+        , 'city IN (%li)', $cities);
         return [__CLASS__, DB::db()->affectedRows()];
     }
 
