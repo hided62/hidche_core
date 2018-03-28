@@ -131,18 +131,18 @@ function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$p
     $experience = $age * 100;
     $dedication = $age * 100;
     $npc = 2;
-    $npcmatch = rand()%150 + 1;
+    $affinity = rand()%150 + 1;
     $picture = 'default.jpg';
     //장수
     @MYDB_query("
         insert into general (
-            npcid,npc,npc_org,npcmatch,name,picture,nation,city,
+            npcid,npc,npc_org,affinity,name,picture,nation,city,
             leader,power,intel,experience,dedication,
             level,gold,rice,crew,crewtype,train,atmos,
             weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
             makelimit
         ) values (
-            '$gencount','$npc','$npc','$npcmatch','$name','$picture','0',
+            '$gencount','$npc','$npc','$affinity','$name','$picture','0',
             '$city','$leader','$power','$intel','$experience','$dedication',
             '0','1000','1000','0','0','0','0',
             '0','0','0','$turntime','$killturn','$age','1',

@@ -15,7 +15,7 @@ CREATE TABLE `general` (
 	`npcid` INT(5) NULL DEFAULT NULL,
 	`npc` INT(1) NULL DEFAULT '0',
 	`npc_org` INT(1) NULL DEFAULT '0',
-	`npcmatch` INT(3) NULL DEFAULT '0',
+	`affinity` INT(3) NULL DEFAULT '0',
 	`bornyear` INT(3) NULL DEFAULT '180',
 	`deadyear` INT(3) NULL DEFAULT '300',
 	`newmsg` INT(1) NULL DEFAULT '0',

@@ -11,7 +11,7 @@ function RegGenerals($init,$life,$fiction,$turnterm,$startyear,$year,$npc_mark,$
     foreach($genLists as $genInfo){
         $genInfo[] = '';//$msg 대비
         list(
-            $npcmatch,$name,$img,$picture,$nation,
+            $affinity,$name,$img,$picture,$nation,
             $city,$leader,$power,$intel,$level,
             $bornyear,$deadyear,$personal,$special,
             $msg) = $genInfo;
@@ -19,14 +19,14 @@ function RegGenerals($init,$life,$fiction,$turnterm,$startyear,$year,$npc_mark,$
         $gencount += 1;
 
         RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,
-            $gencount,$npcmatch,$name,$img,$picture,$nation,
+            $gencount,$affinity,$name,$img,$picture,$nation,
             $city,$leader,$power,$intel,$level,
             $bornyear,$deadyear,$personal,$special,
             $msg);
     }
 }
 
-function RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,$gencount,$npcmatch,$name,$img,$picture,$nation,
+function RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,$gencount,$affinity,$name,$img,$picture,$nation,
                     $city,$leader,$power,$intel,$level,
                     $bornyear,$deadyear,$personal,$special,
                     $msg="") {
@@ -39,7 +39,7 @@ function RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,$gencount,$n
     } else {
         $city = CityCall($city);
     }
-    if($npcmatch == 0 || $fiction == 1) { $npcmatch = rand() % 150 + 1; }
+    if($affinity == 0 || $fiction == 1) { $affinity = rand() % 150 + 1; }
     if($life == 1) { $bornyear = 160; $deadyear = 300; }
     if($init != 0 && $startyear > $bornyear+14 && $startyear <= $deadyear) {
         if($deadyear <= $startyear+3) $deadyear += 5;
@@ -114,7 +114,7 @@ function RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,$gencount,$n
         'npcid'=>$gencount,
         'npc'=>$npc,
         'npc_org'=>$npc,
-        'npcmatch'=>$npcmatch,
+        'affinity'=>$affinity,
         'name'=>$name,
         'picture'=>$picture,
         'nation'=>$nation,
@@ -317,7 +317,7 @@ function processAI($connect, $no) {
         $isStart = 0;
     }
 
-    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,train,atmos,npc,npcmatch,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
+    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,train,atmos,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -460,7 +460,7 @@ function processAI($connect, $no) {
                 }
                 $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
                 $rulerCount = MYDB_num_rows($result);
-                if($rulerCount > 0 && $general['npcmatch'] != 999 && $general['makelimit'] == 0) {
+                if($rulerCount > 0 && $general['affinity'] != 999 && $general['makelimit'] == 0) {
                     $ruler = MYDB_fetch_array($result);
                     $command = EncodeCommand(0, 0, $ruler['nation'], 25); //임관
                 } else {
@@ -476,13 +476,13 @@ function processAI($connect, $no) {
                 $ratio = round($npcCount / ($nonCount + $npcCount) * 100);
                 $ratio = round($ratio * 1.0);
                 //NPC우선임관
-                $query = "select nation,ABS(IF(ABS(npcmatch-'{$general['npcmatch']}')>75,150-ABS(npcmatch-'{$general['npcmatch']}'),ABS(npcmatch-'{$general['npcmatch']}'))) as npcmatch2 from general where level=12 and npc>0 and nation not in (0{$general['nations']}0) order by npcmatch2,rand() limit 0,1";
+                $query = "select nation,ABS(IF(ABS(affinity-'{$general['affinity']}')>75,150-ABS(affinity-'{$general['affinity']}'),ABS(affinity-'{$general['affinity']}'))) as npcmatch2 from general where level=12 and npc>0 and nation not in (0{$general['nations']}0) order by npcmatch2,rand() limit 0,1";
                 $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
                 $rulerCount = MYDB_num_rows($result);
-                if($rulerCount > 0 && $general['npcmatch'] != 999 && rand()%100 < $ratio && $general['makelimit'] == 0) {  // 엔국 비율대로 임관(50% : 50%)
+                if($rulerCount > 0 && $general['affinity'] != 999 && rand()%100 < $ratio && $general['makelimit'] == 0) {  // 엔국 비율대로 임관(50% : 50%)
                     $ruler = MYDB_fetch_array($result);
                     $command = EncodeCommand(0, 0, $ruler['nation'], 25); //임관
-                } elseif($general['npcmatch'] != 999 && $general['makelimit'] == 0) {  // NPC국가 없으면 유저국 임관
+                } elseif($general['affinity'] != 999 && $general['makelimit'] == 0) {  // NPC국가 없으면 유저국 임관
                     $query = "select nation from general where level=12 and npc=0 order by rand() limit 0,1";
                     $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
                     $ruler = MYDB_fetch_array($result);

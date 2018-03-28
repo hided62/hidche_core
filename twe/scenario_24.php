@@ -263,18 +263,18 @@ function RegGeneral2($connect,$turnterm,$gencount,$name,$leader,$power,$intel,$p
     $experience = $age * 100;
     $dedication = $age * 100;
     $npc = 2;
-    $npcmatch = rand()%150 + 1;
+    $affinity = rand()%150 + 1;
     $picture = 'default.jpg';
     //장수
     @MYDB_query("
         insert into general (
-            npcid,npc,npc_org,npcmatch,name,picture,nation,level,city,
+            npcid,npc,npc_org,affinity,name,picture,nation,level,city,
             leader,power,intel,experience,dedication,
             gold,rice,crew,crewtype,train,atmos,
             weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
             makelimit
         ) values (
-            '$gencount','$npc','$npc','$npcmatch','$name','$picture','1','1','$city',
+            '$gencount','$npc','$npc','$affinity','$name','$picture','1','1','$city',
             '$leader','$power','$intel','$experience','$dedication',
             '2000','2000','0','0','0','0',
             '0','0','0','$turntime','$killturn','$age','1',
@@ -300,18 +300,18 @@ function RegGeneral3($connect,$turnterm,$gencount,$nation,$level,$name,$leader,$
     $experience = $age * 100;
     $dedication = $age * 100;
     $npc = 2;
-    $npcmatch = 999;
+    $affinity = 999;
     $picture = 'default.jpg';
     //장수
     @MYDB_query("
         insert into general (
-            npcid,npc,npc_org,npcmatch,name,picture,nation,city,
+            npcid,npc,npc_org,affinity,name,picture,nation,city,
             leader,power,intel,experience,dedication,
             level,gold,rice,crew,crewtype,train,atmos,
             weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
             makelimit
         ) values (
-            '$gencount','$npc','$npc','$npcmatch','$name','$picture','$nation','$city',
+            '$gencount','$npc','$npc','$affinity','$name','$picture','$nation','$city',
             '$leader','$power','$intel','$experience','$dedication',
             '$level','2000','2000','0','0','0','0',
             '0','0','0','$turntime','$killturn','$age','1',

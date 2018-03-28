@@ -351,7 +351,7 @@ function process_29($connect, &$general) {
             $npc = 3;
             $npcid = $admin['npccount'];
             $npccount = 10000 + $npcid;
-            $npcmatch = rand() % 150 + 1;
+            $affinity = rand() % 150 + 1;
             $picture = 'default.jpg';
             $turntime = getRandTurn($admin['turnterm']);
             $personal = rand() % 10;
@@ -367,14 +367,14 @@ function process_29($connect, &$general) {
 
             @MYDB_query("
                 insert into general (
-                    npcid,npc,npc_org,npcmatch,name,picture,nation,
+                    npcid,npc,npc_org,affinity,name,picture,nation,
                     city,leader,power,intel,experience,dedication,
                     level,gold,rice,crew,crewtype,train,atmos,tnmt,
                     weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
                     makelimit,bornyear,deadyear,
                     dex0, dex10, dex20, dex30, dex40
                 ) values (
-                    '$npccount','$npc','$npc','$npcmatch','$name','$picture','$scoutNation',
+                    '$npccount','$npc','$npc','$affinity','$name','$picture','$scoutNation',
                     '{$general['city']}','$leader','$power','$intel','{$avgGen['exp']}','{$avgGen['ded']}',
                     '$scoutLevel','100','100','0','0','0','0','0',
                     '0','0','0','$turntime','$killturn','$age','1','$personal','0','$specage','0','$specage2','',

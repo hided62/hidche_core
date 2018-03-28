@@ -991,13 +991,13 @@ $query = "update diplomacy set state=7,term=60 where you=6 and me=9";
 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 //////////////////////////외교 끝//////////////////////////////////////////////////
 
-function RegGenX($connect,$npcmatch,$name,$img,$picture,$nation,$city,$leader,$power,$intel,$level,$bornyear,$deadyear,$personal,$special,
+function RegGenX($connect,$affinity,$name,$img,$picture,$nation,$city,$leader,$power,$intel,$level,$bornyear,$deadyear,$personal,$special,
 $msg=""){
     static $gencount = 1000;
     $gencount += 1;
     global $connect, $fiction, $turnterm,$startyear, $year;
 
-    RegGeneral($connect,1,0,$fiction,$turnterm,$startyear,$year,$gencount,$npcmatch,$name,$img,$picture,$nation,
+    RegGeneral($connect,1,0,$fiction,$turnterm,$startyear,$year,$gencount,$affinity,$name,$img,$picture,$nation,
     $city,$leader,$power,$intel,$level,
     $bornyear,$deadyear,$personal,$special,
     $msg);

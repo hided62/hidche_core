@@ -185,7 +185,7 @@ if($id_num) {
     //성격 랜덤시
     if($character == 11) $character = rand()%10;
     //상성 랜덤
-    $npcmatch = rand()%150 + 1;
+    $affinity = rand()%150 + 1;
 
     ########## 회원정보 테이블에 입력값을 등록한다. ##########
     $db->insert('general', [
@@ -196,7 +196,7 @@ if($id_num) {
         'nation' => 0,
         'city' => $city,
         'troop' => 0,
-        'npcmatch' => $npcmatch,
+        'affinity' => $affinity,
         'leader' => $leader,
         'power' => $power,
         'intel' => $intel,
