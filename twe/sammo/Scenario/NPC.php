@@ -73,7 +73,7 @@ class NPC{
         if($this->death < $year){
             return true; //죽었으니 넘어간다.
         }
-        if($age < 14){
+        if($age < \sammo\GameConst::$adultAge){
             return false; //예약.
         }
 
