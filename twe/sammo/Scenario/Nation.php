@@ -17,8 +17,6 @@ class Nation{
     private $capital;
 
     private $cities = [];
-    private $generals = [];
-    private $generalsEx = [];
 
     public function __construct(
         int $id = null, 
@@ -50,22 +48,12 @@ class Nation{
         $this->id = $id;
     }
 
-    public function addNPC(NPC $npc, bool $isExtend=false){
-        if($isExtend){
-            $this->generalsEx[] = $npc;
-        }
-        else{
-            $this->generals[] = $npc;
-        }
-        
+    public function getID(){
+        return $this->id;
     }
 
     public function build($env=[]){
-        $npc_cnt = count($this->generals);
-        if($env['useExtentedGeneral']){
-            $npc_cnt += count($this->generalsEx);
-        }
-
+        //NOTE: NPC의 숫자는 아직 확정된 것이 아니다.
         $cities = array_map(function($cityName){
             return \sammo\CityHelper::getCityByName($cityName)['id'];
         }, $this->cities);
@@ -81,7 +69,7 @@ class Nation{
             'name'=>$this->name,
             'color'=>$this->color,
             'capital'=>$capital,
-            'gennum'=>$npc_cnt,
+            'gennum'=>0,
             'gold'=>$this->gold,
             'rice'=>$this->rice,
             'bill'=>100,
@@ -92,7 +80,7 @@ class Nation{
             'surlimit'=>72,
             'scoutmsg'=>$this->infoText,
             'tech'=>$this->tech,
-            'totaltech'=>$this->tech*$npc_cnt,
+            'totaltech'=>0,
             'level'=>$this->level,
             'type'=>$type,
         ]);
@@ -118,6 +106,18 @@ class Nation{
         $db->insert('diplomacy', $diplomacy);
     }
 
+    public function postBuild($env=[]){
+        $npc_cnt = count($this->generals);
+        if($env['useExtentedGeneral']){
+            $npc_cnt += count($this->generalsEx);
+        }
+
+        $db->update('nation', [
+            'gennum'=>$npc_cnt,
+            'totaltech'=>$this->tech*$npc_cnt
+        ], 'nation=%i', $this->id);
+    }
+
     public function getBrief(){
         return [
             'id'=>$this->id,
@@ -129,9 +129,7 @@ class Nation{
             'tech'=>$this->tech,
             'type'=>$this->type,
             'nationLevel'=>$this->nationLevel,
-            'cities'=>$this->cities,
-            'generals'=>count($this->generals),
-            'generalsEx'=>count($this->generalsEx)
+            'cities'=>$this->cities
         ];
     }
 }

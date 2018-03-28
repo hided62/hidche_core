@@ -79,7 +79,7 @@ class Scenario{
 
             $this->tmpGeneralQueue[$name] = $rawGeneral;
 
-            $general = new Scenario\NPC(
+            return new Scenario\NPC(
                 $affinity, 
                 $name, 
                 $pictureID, 
@@ -94,8 +94,6 @@ class Scenario{
                 $char, 
                 $text
             );
-
-            $this->nations[$nationID]->addNPC($general);
         }, Util::array_get($data['general'], []));
 
         $this->generalsEx = array_map(function($rawGeneral){
@@ -115,7 +113,7 @@ class Scenario{
 
             $this->tmpGeneralQueue[$name] = $rawGeneral;
 
-            $general = new Scenario\NPC(
+            return new Scenario\NPC(
                 $affinity, 
                 $name, 
                 $pictureID, 
@@ -131,7 +129,6 @@ class Scenario{
                 $text
             );
 
-            $this->nations[$nationID]->addNPC($general, true);
         }, Util::array_get($data['generalEx'], []));
 
         $this->initialEvents = array_map(function($rawEvent){
@@ -232,14 +229,40 @@ class Scenario{
 
     public function getScenarioBrief(){
         $nations = [];
+        $nationGeneralCnt = [];
+        $nationGeneralExCnt = [];
+
+        foreach($this->generals as $general){
+            $nationID = $general->nationID;
+            if(!key_exists($nationID, $nationGeneralCnt)){
+                $nationGeneralCnt[$nationID] = 1;
+            }
+            else{
+                $nationGeneralCnt[$nationID] += 1;
+            }
+        }
+
+        foreach($this->generalsEx as $general){
+            $nationID = $general->nationID;
+            if(!key_exists($nationID, $nationGeneralExCnt)){
+                $nationGeneralExCnt[$nationID] = 1;
+            }
+            else{
+                $nationGeneralExCnt[$nationID] += 1;
+            }
+        }
 
         return [
             'year'=>$this->getYear(),
             'title'=>$this->getTitle(),
             'npc_cnt'=>count($this->getNPC()),
             'npcEx_cnt'=>count($this->getNPCex()),
-            'nation'=>array_map(function($nation){
-                return $nation->getBrief();
+            'nation'=>array_map(function($nation) use ($nationGeneralCnt, $nationGeneralExCnt){
+                $brief = $nation->getBrief();
+                $brief['generals'] = Util::array_get($nationGeneralCnt[$nation->getID()], 0);
+                $brief['generalsEx'] = Util::array_get($nationGeneralExCnt[$nation->getID()], 0);
+
+                return $brief;
             },$this->getNation())
         ];
     }
@@ -339,6 +362,11 @@ class Scenario{
         }, $this->events);
 
         $db->insert('event', $this->events);
+
+        refreshNationStaticInfo();
+        foreach(getAllNationStaticInfo() as $nation){
+            SetNationFront($connect, $nation['nation']);
+        }
     }
 
     /**
