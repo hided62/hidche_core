@@ -9,7 +9,14 @@ class Scenario{
 
     private $data;
 
+    private $year;
+    private $title;
+
+    private $history;
+    
     private $nations;
+    private $diplomacy;
+
     private $generals;
     private $generalsEx;
 
@@ -22,18 +29,20 @@ class Scenario{
         $this->scenarioIdx = $scenarioIdx;
         $this->scenarioPath = $scenarioPath;
 
-        $this->data = Json::decode(file_get_contents($scenarioPath));
+        $data = Json::decode(file_get_contents($scenarioPath));
+        $this->data = $data;
 
-        $this->initialEvents = array_map(function($rawEvent){
-            return new \sammo\Event\EventHandler($rawEvent[0], array_slice($rawEvent, 1));
-        }, Util::array_get($this->data['initialEvents'], []));
+        $this->year = Util::array_get($data['startYear']);
+        $this->title = Util::array_get($data['title'] , '');
+
+        $this->history = Util::array_get($data['history'], []);
 
         $this->nations = [];
         $this->nations[0] = new Scenario\Nation(0, '재야', '#ffffff', 0, 0);
-        foreach (Util::array_get($this->data['nation'],[]) as $idx=>$nationRaw) {
-            list($name, $color, $gold, $rice, $infoText, $tech, $type, $nationLevel, $cities) = $nationRaw;
+        foreach (Util::array_get($data['nation'],[]) as $idx=>$rawNation) {
+            list($name, $color, $gold, $rice, $infoText, $tech, $type, $nationLevel, $cities) = $rawNation;
             $nationID = $idx+1;
-            
+
             $this->nations[$nationID] = new Scenario\Nation(
                 $nationID, 
                 $name, 
@@ -47,6 +56,52 @@ class Scenario{
                 $cities
             );
         }
+
+        $this->displomacy = Util::array_get($data['diplomacy'], []);
+
+        
+        $this->generals = array_map(function($rawGeneral){
+            while(count($rawGeneral) < 14){
+                $rawGeneral[] = null;
+            }
+
+            list(
+                $affinity, $name, $npcID, $nationID, $locatedCity, 
+                $leadership, $power, $intel, $birth, $death, $ego,
+                $char, $text
+            ) = $rawGeneral;
+
+            if(!key_exists($nationID, $this->nations)){
+                $nationID = 0;
+            }
+
+            $general = new Scenario\NPC(
+                $affinity, 
+                $name, 
+                $npcID, 
+                $nationID, 
+                $locatedCity, 
+                $leadership, 
+                $power, 
+                $intel, 
+                $birth, 
+                $death, 
+                $ego,
+                $char, 
+                $text
+            );
+
+            $this->nations[$nationID]->addNPC($general);
+        }, Util::array_get($data['general'], []));
+
+        $this->initialEvents = array_map(function($rawEvent){
+            return new \sammo\Event\EventHandler($rawEvent[0], array_slice($rawEvent, 1));
+        }, Util::array_get($data['initialEvents'], []));
+
+        $this->events = array_map(function($rawEvent){
+            return new \sammo\Event\EventHandler($rawEvent[0], array_slice($rawEvent, 1));
+        }, Util::array_get($data['events'], []));
+
     }
 
     public function getScenarioIdx(){
@@ -54,19 +109,19 @@ class Scenario{
     }
 
     public function getYear(){
-        return Util::array_get($this->data['startYear']);
+        return $this->year;
     }
 
     public function getTitle(){
-        return Util::array_get($this->data['title']);
+        return $this->title;
     }
 
     public function getNPC(){
-        return Util::array_get($this->data['general']);
+        return $this->generals;
     }
 
     public function getNPCex(){
-        return Util::array_get($this->data['general_ex']);
+        return $this->generalsEx;
     }
 
     public function getNation(){
@@ -145,6 +200,30 @@ class Scenario{
     public function buildGame($env=[]){
         //NOTE: 초기화가 되어있다고 가정함.
 
+
+        foreach($this->nations as $id=>$nation){
+            if($id == 0){
+                continue;
+            }
+            
+            $nation->build($env);
+        }
+        CityHelper::flushCache();
+        foreach($this->generals as $general){
+            $general->build($env);
+        }
+
+        if($env['useExtentedGeneral']){
+            foreach($this->generalsEx as $general){
+                $general->build($env);
+            }
+        }
+
+        //TODO: 외교를 추가해야함
+        foreach($this->initialEvents as $event){
+            $event->tryRunEvent($env);
+        }
+        //TODO: event를 전역 handler에 등록해야함.
     }
 
     /**

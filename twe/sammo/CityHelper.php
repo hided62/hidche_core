@@ -1,7 +1,5 @@
 <?php
-namespace sammo\Scenario;
-use \sammo\DB;
-use \sammo\Util;
+namespace sammo;
 
 class CityHelper{
     //Just Helper
