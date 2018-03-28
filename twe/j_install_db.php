@@ -4,7 +4,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-if(Session::getUserGrade(true) < 5){
+$session = Session::Instance()->setReadOnly();
+if($session->userGrade < 6){
     die('관리자 아님');
 }
 

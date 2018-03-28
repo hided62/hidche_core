@@ -22,7 +22,7 @@ if(Session::getUserGrade(true) == 5){
 <script src="../e_lib/bootstrap.bundle.min.js"></script>
 <script src="../e_lib/jquery.validate.min.js"></script>
 <script src="js/common.js"></script>
-<script src="js/install.js"></script>
+<script src="js/install_db.js"></script>
 <link rel="stylesheet" href="css/normalize.css" >
 <link rel="stylesheet" href="../e_lib/bootstrap.min.css">
 <link rel="stylesheet" href="css/install.css" >
