@@ -20,6 +20,8 @@ class Scenario{
     private $generals;
     private $generalsEx;
 
+    private $tmpGeneralQueue = [];
+
     private $initialEvents;
     private $events;
 
@@ -66,7 +68,7 @@ class Scenario{
             }
 
             list(
-                $affinity, $name, $npcID, $nationID, $locatedCity, 
+                $affinity, $name, $pictureID, $nationID, $locatedCity, 
                 $leadership, $power, $intel, $birth, $death, $ego,
                 $char, $text
             ) = $rawGeneral;
@@ -75,10 +77,12 @@ class Scenario{
                 $nationID = 0;
             }
 
+            $this->tmpGeneralQueue[$name] = $rawGeneral;
+
             $general = new Scenario\NPC(
                 $affinity, 
                 $name, 
-                $npcID, 
+                $pictureID, 
                 $nationID, 
                 $locatedCity, 
                 $leadership, 
@@ -94,12 +98,52 @@ class Scenario{
             $this->nations[$nationID]->addNPC($general);
         }, Util::array_get($data['general'], []));
 
+        $this->generalsEx = array_map(function($rawGeneral){
+            while(count($rawGeneral) < 14){
+                $rawGeneral[] = null;
+            }
+
+            list(
+                $affinity, $name, $pictureID, $nationID, $locatedCity, 
+                $leadership, $power, $intel, $birth, $death, $ego,
+                $char, $text
+            ) = $rawGeneral;
+
+            if(!key_exists($nationID, $this->nations)){
+                $nationID = 0;
+            }
+
+            $this->tmpGeneralQueue[$name] = $rawGeneral;
+
+            $general = new Scenario\NPC(
+                $affinity, 
+                $name, 
+                $pictureID, 
+                $nationID, 
+                $locatedCity, 
+                $leadership, 
+                $power, 
+                $intel, 
+                $birth, 
+                $death, 
+                $ego,
+                $char, 
+                $text
+            );
+
+            $this->nations[$nationID]->addNPC($general, true);
+        }, Util::array_get($data['generalEx'], []));
+
         $this->initialEvents = array_map(function($rawEvent){
             return new \sammo\Event\EventHandler($rawEvent[0], array_slice($rawEvent, 1));
         }, Util::array_get($data['initialEvents'], []));
 
         $this->events = array_map(function($rawEvent){
-            return new \sammo\Event\EventHandler($rawEvent[0], array_slice($rawEvent, 1));
+            //event는 여기서 풀지 않는다.
+            return [
+                'cond' => $rawEvent[0],
+                'action' => array_slice($rawEvent, 1)
+            ];
         }, Util::array_get($data['events'], []));
 
     }
@@ -125,6 +169,7 @@ class Scenario{
     }
 
     public function getNation(){
+        return $this->nations;
 
         $nationsRaw = Util::array_get($this->data['nation']);
         if(!$nationsRaw){
@@ -197,33 +242,92 @@ class Scenario{
         ];
     }
 
+    private function buildGenerals($env){
+        $remainGenerals = [];
+        foreach($this->generals as $general){
+            if($general->build($env)){
+                continue;
+            }
+
+            $rawGeneral = $this->tmpGeneralQueue[$general->$name];
+            $birth = $general->birth; 
+            if(!key_exists($birth, $remainGenerals)){
+                $remainGenerals[$birth] = [];
+            }
+            $remainGenerals[$birth][] = array_merge(['RegNPC'], $rawGeneral);
+        }
+
+        if($env['useExtentedGeneral']){
+            foreach($this->generalsEx as $general){
+                if($general->build($env)){
+                    continue;
+                }
+            }
+
+            $rawGeneral = $this->tmpGeneralQueue[$general->$name];
+            $birth = $general->birth;
+            if(!key_exists($birth, $remainGenerals)){
+                $remainGenerals[$birth] = [];
+            }
+            $remainGenerals[$birth][] = array_merge(['RegNPC'], $rawGeneral);
+        }
+        return $remainGenerals;
+    }
+
+    private function buildDiplomacy($env){
+        $db = DB::db();
+        foreach($this->diplomacy as $diplomacy){
+            list($me, $you, $state, $remain) = $diplomacy;
+            $db->update('diplomacy', [
+                'state'=>$state,
+                'remain'=>$remain
+            ], '(me = %i_me AND you = %i_you) OR (me = %i_you AND you = %i_me)', [
+                'me'=>$me,
+                'you'=>$you
+            ]);
+        }
+    }
+
     public function buildGame($env=[]){
         //NOTE: 초기화가 되어있다고 가정함.
 
+        /*
+        env로 사용된 것들,
+        게임 변수 : year, month
+        game 테이블 변수 : startyear, year, month, genius, turnterm, show_img_level, extend, fiction, npcmode
+        install 변수 : npcmode, show_img_level, extend, scenario, fiction
+        */
+
+        $db = DB::db();
 
         foreach($this->nations as $id=>$nation){
             if($id == 0){
                 continue;
             }
-            
+
             $nation->build($env);
         }
         CityHelper::flushCache();
-        foreach($this->generals as $general){
-            $general->build($env);
+
+        $remainGenerals = $this->buildGenerals($env);
+
+        foreach($remainGenerals as $birth=>$actions){
+            $targetYear = $birth + 14;//FIXME: 14가 어디서 튀어나왔나?
+
+            $actions[] = ['DeleteEvent'];
+            $this->events[] = [
+                'cond'=>['date', '==', $targetYear, '1'],
+                'action'=>$actions
+            ];
         }
 
-        if($env['useExtentedGeneral']){
-            foreach($this->generalsEx as $general){
-                $general->build($env);
-            }
-        }
+        $this->buildDiplomacy($env);
 
-        //TODO: 외교를 추가해야함
         foreach($this->initialEvents as $event){
             $event->tryRunEvent($env);
         }
-        //TODO: event를 전역 handler에 등록해야함.
+
+        $db->insert('event', $this->events);
     }
 
     /**

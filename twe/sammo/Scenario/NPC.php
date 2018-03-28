@@ -8,7 +8,7 @@ class NPC{
 
     public $affinity; 
     public $name; 
-    public $npcID; 
+    public $pictureID; 
     public $nationID; 
     public $locatedCity; 
     public $leadership; 
@@ -24,13 +24,13 @@ class NPC{
     public function __construct(
         int $affinity, 
         string $name, 
-        int $npcID, 
+        int $pictureID, 
         int $nationID, 
         string $locatedCity, 
         int $leadership, 
         int $power, 
         int $intel, 
-        int $birth = 150, 
+        int $birth = 160, 
         int $death = 300, 
         string $ego = null,
         string $char = null, 
@@ -38,7 +38,7 @@ class NPC{
     ){
         $this->affinity = $affinity;
         $this->name = $name;
-        $this->npcID = $npcID;
+        $this->pictureID = $pictureID;
         $this->nationID = $nationID;
         $this->locatedCity = $locatedCity;
         $this->leadership = $leadership;
@@ -60,6 +60,103 @@ class NPC{
 
 
     public function build($env=[]){
+        //scenario에 life==1인 경우 수명 제한이 없어지는 모양.
+        $nationID = $this->nationID;
+        if(!\sammo\getNationStaticInfo($nationID)){
+            $nationID = 0;
+        };
 
+        $year = $env['year'];
+        $month = $env['month'];
+        $age = $year - $this->birth;
+
+        if($this->death < $year){
+            return true; //죽었으니 넘어간다.
+        }
+        if($age < 14){
+            return false; //예약.
+        }
+
+        $db = DB::db();
+
+        if($age == 14 && $month == 1){//FIXME: 14가 어디서 튀어나왔나?
+            \sammo\pushHistory(["<C>●</>1월:<Y>$name</>(이)가 성인이 되어 <S>등장</>했습니다."]);
+        }
+
+        if($this->ego == null){
+            $this->ego = mt_rand(0, 9);//TODO: 나중에 성격을 따로 분리할 경우 클래스를 참조.
+        }
+        
+        $name = 'ⓝ'.$this->name;
+
+        if($env['show_img_level'] == 3 && $pictureID > 0){
+            $picture = "{$pictureID}.jpg";
+        }
+        else{
+            $picture = 'default.jpg';
+        }
+
+        $city = $this->city;
+        if($city === null){
+            if($nationID == 0){
+                $city = Util::choiceRandom(CityHelper::getAllCities())['id'];
+            }
+            else{
+                $city = Util::choiceRandom(CityHelper::getAllNationCities($nationID))['id'];
+            }
+        }
+
+        $experience = $age * 100;
+        $dedication = $age * 100;
+        $level = $nationID?1:0;
+
+        $turntime = \sammo\getRandTurn($env['turnterm']);
+
+        $killturn = ($this->death - $year) * 12 + mt_rand(0, 11);
+
+        $specage = $age + 1;
+        $specage2 = $age + 1;
+
+
+        $db->insert('general',[
+            'npcid'=>$db->sqleval('max(npcid)+1'),
+            'npc'=>2,
+            'npc_org'=>2,
+            'affinity'=>$this->affinity,
+            'name'=>$name,
+            'picture'=>$picture,
+            'nation'=>$nationID,
+            'city'=>$city,
+            'leader'=>$this->leader,
+            'power'=>$this->power,
+            'intel'=>$this->intel,
+            'experience'=>$experience,
+            'dedication'=>$dedication,
+            'level'=>$level,
+            'gold'=>1000,
+            'rice'=>1000,
+            'crew'=>0,
+            'crewtype'=>0,
+            'train'=>0,
+            'atmos'=>0,
+            'weap'=>0,
+            'book'=>0,
+            'horse'=>0,
+            'turntime'=>$turntime,
+            'killturn'=>$killturn,
+            'age'=>$age,
+            'belong'=>1,
+            'personal'=>$this->ego,
+            'special'=>$this->charDomestic,
+            'specage'=>$specage,
+            'special2'=>$this->charWar,
+            'specage2'=>$specage2,
+            'npcmsg'=>$this->text,
+            'makelimit'=>0,
+            'bornyear'=>$this->birth,
+            'deadyear'=>$this->death
+        ]);
+
+        return true; //생성되었다.
     }
 }
