@@ -54,7 +54,7 @@ class Scenario{
 
         $nations = [];
         foreach($nationsRaw as $idx=>$nation){
-            list($name, $color, $gold, $rice, $infoText, $tech, $genCount, $type, $nationLevel, $cities) = $nation;
+            list($name, $color, $gold, $rice, $infoText, $tech, $type, $nationLevel, $cities) = $nation;
             $nationID = $idx+1;
 
             $nation['id'] = $nationID;
@@ -116,6 +116,11 @@ class Scenario{
             'npcEx_cnt'=>count($this->getNPCex()),
             'nation'=>$this->getNation()
         ];
+    }
+
+    public function buildGame($env=[]){
+        //NOTE: 초기화가 되어있다고 가정함.
+
     }
 
     /**
