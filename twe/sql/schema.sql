@@ -342,21 +342,6 @@ create table troop (
   PRIMARY KEY (troop)
 ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
 
-###########################################################################
-## 토큰 테이블
-###########################################################################
-
-create table token (
-  token int(6) not null auto_increment,
-  id    char(16) not null,
-  leader int(3) not null,
-  power int(3) not null,
-  intel int(3) not null,
-
-  PRIMARY KEY (token),
-  KEY(id)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
-
 ##########################################################################
 ##  락 테이블
 ##########################################################################
