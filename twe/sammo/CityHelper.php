@@ -1,6 +1,7 @@
 <?php
 namespace sammo\Scenario;
 use \sammo\DB;
+use \sammo\Util;
 
 class CityHelper{
     //Just Helper
@@ -51,7 +52,7 @@ class CityHelper{
             self::generateCache();
         }
 
-        return self::$listByNation[$nationID];
+        return Util::array_get(self::$listByNation[$nationID], []);
     }
 
     public static function getCity(int $cityID){
