@@ -11,7 +11,7 @@
         ["int:국가", "int:국가", "int:외교종류", "int:기간"]
     ],
     "general":[
-        ["int:상성",       "str:장수명","int:금",  "int:쌀",    "str:도시(default:'-'랜덤)", "int:통", "int:무", "int:지", "int:관직", "int:생년", "int:몰년",    "str:내특",    "str:전특", "opt,str:대사"]
+        ["int:상성",       "str:장수명","int:금",  "int:쌀",    "str:도시(null:'랜덤)", "int:통", "int:무", "int:지", "int:관직", "int:생년", "int:몰년",    "str:내특",    "str:전특", "opt,str:대사"]
     ],
     "general_ex":[
     ],
