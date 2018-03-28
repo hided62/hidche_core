@@ -2036,7 +2036,7 @@ function checkTurn($connect) {
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', CheckOverhead');
     CheckOverhead($connect);
     //서버정보
-    $query = "select startyear,year,month,turntime,turnterm,scenario from game where no='1'";
+    $query = "select * from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -2092,10 +2092,23 @@ function checkTurn($connect) {
 
         $locklog[0] = "-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$_SESSION['userName'];
         pushLockLog($locklog);
+
+        // 이벤트 핸들러 동작
+        foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
+            $eventID = $rawEvent['id'];
+            $cond = Json::decode($rawEvent['cond']);
+            $action = Json::decode($rawEvent['action']);
+            $event = new Event\EventHandler($cond, $action);
+
+            $event->tryRunEvent(array_merge([
+                'currentEventID'=>$eventID
+            ], $admin));
+        }
+
         // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
         if($admin['month'] == 1) {
             // NPC 등장
-            if($admin['scenario'] > 0 && $admin['scenario'] < 20) { RegNPC($connect); }
+            //if($admin['scenario'] > 0 && $admin['scenario'] < 20) { RegNPC($connect); }
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processGoldIncome');
             processGoldIncome($connect);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processSpring');

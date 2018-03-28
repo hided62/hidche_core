@@ -296,6 +296,8 @@ class Scenario{
         게임 변수 : year, month
         game 테이블 변수 : startyear, year, month, genius, turnterm, show_img_level, extend, fiction, npcmode
         install 변수 : npcmode, show_img_level, extend, scenario, fiction
+
+        event변수 : currentEventID
         */
 
         $db = DB::db();
