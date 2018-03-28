@@ -9,6 +9,10 @@ class Scenario{
 
     private $data;
 
+    private $nations;
+    private $generals;
+    private $generalsEx;
+
     private $initialEvents;
     private $events;
 
@@ -23,6 +27,26 @@ class Scenario{
         $this->initialEvents = array_map(function($rawEvent){
             return new \sammo\Event\EventHandler($rawEvent[0], array_slice($rawEvent, 1));
         }, Util::array_get($this->data['initialEvents'], []));
+
+        $this->nations = [];
+        $this->nations[0] = new Scenario\Nation(0, '재야', '#ffffff', 0, 0);
+        foreach (Util::array_get($this->data['nation'],[]) as $idx=>$nationRaw) {
+            list($name, $color, $gold, $rice, $infoText, $tech, $type, $nationLevel, $cities) = $nationRaw;
+            $nationID = $idx+1;
+            
+            $this->nations[$nationID] = new Scenario\Nation(
+                $nationID, 
+                $name, 
+                $color, 
+                $gold, 
+                $rice, 
+                $infoText, 
+                $tech, 
+                $type, 
+                $nationLevel, 
+                $cities
+            );
+        }
     }
 
     public function getScenarioIdx(){
