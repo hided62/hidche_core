@@ -726,7 +726,25 @@
         "<C>●</>200년 1월:<L><b>【이벤트】</b></><G><b>관도</b></>에는 전운이 감돌고 있습니다."
     ],
     "initialEvents":[
-
+        [
+            true,
+            ["ChangeCity", "free", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80
+            }],
+            ["ChangeCity", "occupied", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80,
+                "def":"70%",
+                "wall":"70%"
+            }]
+        ]
     ],
     "events":[
 

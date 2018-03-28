@@ -725,7 +725,25 @@
         "<C>●</>213년 1월:<L><b>【이벤트】</b></>형주에 일었던 피바람은 <G><b>익주</b></>에서 다시 불어오고 있습니다."
     ],
     "initialEvents":[
-
+        [
+            true,
+            ["ChangeCity", "free", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80
+            }],
+            ["ChangeCity", "occupied", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80,
+                "def":"70%",
+                "wall":"70%"
+            }]
+        ]
     ],
     "events":[
 

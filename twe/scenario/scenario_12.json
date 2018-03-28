@@ -739,7 +739,25 @@
         "<C>●</>191년 1월:<L><b>【시나리오】</b></><G><b>병주</b></>에는 <Y>유비</>가 합세한 <Y>공손찬</>이 위용을 뽐냅니다!"
     ],
     "initialEvents":[
-
+        [
+            true,
+            ["ChangeCity", "free", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80
+            }],
+            ["ChangeCity", "occupied", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80,
+                "def":"70%",
+                "wall":"70%"
+            }]
+        ]
     ],
     "events":[
 

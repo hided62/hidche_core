@@ -18,14 +18,26 @@ class ChangeCity extends sammo\Event\Action{
     const REGEXP_MATH = '/^([\+\-\/\*])(\d+(\.\d+)?)$/'; //+30 [1]=기호, [2]=float
 
     private $queries;
-    private $targetType;
-    private $targetArgs;
-    public function __construct(array $target = [], array $actions){
+    private $targetType = 'all';
+    private $targetArgs = [];
+    public function __construct(array $target = null, array $actions){
 
         //values 포맷은 key, value로 
 
-        $this->targetType = $target[0];
-        $this->targetArgs = array_slice($target, 1);
+        if(!$target){
+            $this->targetType = 'all';
+        }
+        else if(is_string($target)){
+            $this->targetType = $target;
+        }
+        else if(is_array($target)){
+            $this->targetType = $target[0];
+            $this->targetArgs = array_slice($target, 1);
+        }
+        else{
+            throw new \InvalidArgumentException('올바르지 않은 targetType 입니다.');
+        }
+        
 
         $queries = [];
         foreach($actions as $key => $value){

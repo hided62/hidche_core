@@ -774,7 +774,25 @@
         "<C>●</>194년 1월:<L><b>【이벤트】</b></><G><b>강동</b></>에서는 <Y>손책</>이 웅크리고 있습니다."
     ],
     "initialEvents":[
-
+        [
+            true,
+            ["ChangeCity", "free", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80
+            }],
+            ["ChangeCity", "occupied", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80,
+                "def":"70%",
+                "wall":"70%"
+            }]
+        ]
     ],
     "events":[
 

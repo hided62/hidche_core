@@ -703,7 +703,25 @@
         "<C>●</>184년 1월:<Y><b>【황건적】</b></>전국 각지에서 황건적이 들고 일어서고 있습니다."   
     ],
     "initialEvents":[
-
+        [
+            true,
+            ["ChangeCity", "free", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80
+            }],
+            ["ChangeCity", "occupied", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80,
+                "def":"70%",
+                "wall":"70%"
+            }]
+        ]
     ],
     "events":[
 

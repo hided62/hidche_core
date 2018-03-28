@@ -717,7 +717,25 @@
         "<C>●</>228년 1월:<L><b>【이벤트】</b></><G><b>위</b></>의 <Y>조예</>는 이에 맞서 <Y>사마의</>를 보냅니다!"
     ],
     "initialEvents":[
-
+        [
+            true,
+            ["ChangeCity", "free", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80
+            }],
+            ["ChangeCity", "occupied", {
+                "pop":"70%",
+                "agri":"70%",
+                "comm":"70%",
+                "secu":"70%",
+                "rate":80,
+                "def":"70%",
+                "wall":"70%"
+            }]
+        ]
     ],
     "events":[
 
