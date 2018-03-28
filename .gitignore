@@ -31,3 +31,5 @@ d_setting/*.php
 */d_setting/*.php
 !*/d_setting/*.orig.php
 !*/d_setting/_*.php
+
+**/old/*
