@@ -238,7 +238,9 @@ class Scenario{
             'title'=>$this->getTitle(),
             'npc_cnt'=>count($this->getNPC()),
             'npcEx_cnt'=>count($this->getNPCex()),
-            'nation'=>$this->getNation()
+            'nation'=>array_map(function($nation){
+                return $nation->getBrief();
+            },$this->getNation())
         ];
     }
 

@@ -1,5 +1,7 @@
 <?php 
 
+namespace sammo;
+
 /**
  * Value Converter
  * 

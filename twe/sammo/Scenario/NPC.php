@@ -26,7 +26,7 @@ class NPC{
         string $name, 
         int $pictureID, 
         int $nationID, 
-        string $locatedCity, 
+        $locatedCity, //FIXME: 7.1로 올릴 때 ?string 으로 변경
         int $leadership, 
         int $power, 
         int $intel, 

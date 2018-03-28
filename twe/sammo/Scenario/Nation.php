@@ -117,4 +117,21 @@ class Nation{
         }
         $db->insert('diplomacy', $diplomacy);
     }
+
+    public function getBrief(){
+        return [
+            'id'=>$this->id,
+            'name'=>$this->name,
+            'color'=>$this->color,
+            'gold'=>$this->gold,
+            'rice'=>$this->rice,
+            'infoText'=>$this->infoText,
+            'tech'=>$this->tech,
+            'type'=>$this->type,
+            'nationLevel'=>$this->nationLevel,
+            'cities'=>$this->cities,
+            'generals'=>count($this->generals),
+            'generalsEx'=>count($this->generalsEx)
+        ];
+    }
 }
