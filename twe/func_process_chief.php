@@ -2244,7 +2244,7 @@ function process_81($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,colset,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,can_change_flag,name,type,tricklimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -2258,7 +2258,7 @@ function process_81($connect, &$general) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 국기변경 실패. <1>$date</>";
     } elseif($general['level'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 국기변경 실패. <1>$date</>";
-    } elseif($nation['colset'] <= 0) {
+    } elseif($nation['can_change_flag'] <= 0) {
         $log[] = "<C>●</>{$admin['month']}월:더이상 변경이 불가능합니다. 국기변경 실패. <1>$date</>";
     } else {
         $log[] = "<C>●</>{$admin['month']}월:<font color={$color}><b>국기</b></font>를 변경합니다. <1>$date</>";
@@ -2284,7 +2284,7 @@ function process_81($connect, &$general) {
         addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <font color={$color}><b>국기</b></font>를 변경");
 
         //국기변경
-        $query = "update nation set color='$color',colset=colset-1 where nation='{$nation['nation']}'";
+        $query = "update nation set color='$color',can_change_flag=can_change_flag-1 where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //경험치, 공헌치

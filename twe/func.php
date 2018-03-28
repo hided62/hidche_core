@@ -758,7 +758,7 @@ function CoreCommandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select level,colset from nation where nation='{$me['nation']}'";
+    $query = "select level,can_change_flag from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -832,7 +832,7 @@ function CoreCommandTable($connect) {
     addCommand("급습/1턴(전략{$term})", 78, $valid);
     commandGroup("", 1);
     commandGroup("====== 기 타 ======");
-    if($nation['colset'] > 0) {
+    if($nation['can_change_flag'] > 0) {
         addCommand("국기 변경", 81, 1);
     } else {
         addCommand("국기 변경", 81, 0);
