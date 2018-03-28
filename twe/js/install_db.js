@@ -37,7 +37,7 @@ $(document).ready( function () {
             url:'j_install_db.php',
             dataType:'json',
             data:{
-                full_reset:$('#full_reset').val(),
+                full_reset:$('#full_reset input:radio:checked').val(),
                 db_host:$('#db_host').val(),
                 db_port:$('#db_port').val(),
                 db_id:$('#db_id').val(),

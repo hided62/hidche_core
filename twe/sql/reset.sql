@@ -16,7 +16,7 @@ DROP TABLE IF EXISTS plock;
 # 게임 테이블 삭제
 DROP TABLE IF EXISTS game;
 
-# 외교 테이블 삭제
+# 메시지 테이블 삭제
 DROP TABLE IF EXISTS message;
 
 # 명전 테이블은 삭제하지 않음
