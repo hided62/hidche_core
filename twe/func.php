@@ -1522,224 +1522,49 @@ function banner() {
     return sprintf('<font size=2>%s / %s <br> %s</font>', GameConst::$version, GameConst::$banner, GameConst::$helper);
 }
 
-function addTurn($date, $turnterm=1) {
-    $lastday = array(0,31,28,31,30,31,30,31,31,30,31,30,31);
-
-    $year  = $date[0].$date[1].$date[2].$date[3];
-    $month = floor($date[5].$date[6]);
-    $day   = $date[8].$date[9];
-    $hour  = $date[11].$date[12];
-    $min   = $date[14].$date[15];
-    $sec   = $date[17].$date[18];
-
-    //윤년계산
-    if((($year % 4 == 0) && ($year % 100 != 0)) || ($year % 400 == 0)) { $lastday[2] = 29; }
-
-    if($turnterm == 0)     { $hour += 2; }
-    elseif($turnterm == 1) { $hour += 1; }
-    elseif($turnterm == 2) { $min += 30; }
-    elseif($turnterm == 3) { $min += 20; }
-    elseif($turnterm == 4) { $min += 10; }
-    elseif($turnterm == 5) { $min +=  5; }
-    elseif($turnterm == 6) { $min +=  2; }
-    elseif($turnterm == 7) { $min +=  1; }
-
-    if($min >= 60) { $min %= 60; $hour++; }
-    if($hour >= 24) { $hour %= 24; $day++; }
-    if($day > $lastday[$month]) { $month++; $day = 1; }
-    if($month >= 13) { $year++; $month = 1; }
-
-    $month = StringUtil::Fill2($month, 2, "0");
-    $day   = StringUtil::Fill2($day,   2, "0");
-    $hour  = StringUtil::Fill2($hour,  2, "0");
-    $min   = StringUtil::Fill2($min,   2, "0");
-    $sec   = StringUtil::Fill2($sec,   2, "0");
-
-    return "{$year}-{$month}-{$day} {$hour}:{$min}:{$sec}";
+function addTurn($date, int $turnterm, int $turn=1) {
+    $date = new \DateTime($date);
+    $target = $turnterm*$turn;
+    $date->add(new \DateInterval("PT{$target}M"));
+    return $date->format('Y-m-d H:i:s');
 }
 
-function add12Turn($date, $turnterm=1) {
-    $lastday = array(0,31,28,31,30,31,30,31,31,30,31,30,31);
-
-    $year  = $date[0].$date[1].$date[2].$date[3];
-    $month = floor($date[5].$date[6]);
-    $day   = $date[8].$date[9];
-    $hour  = $date[11].$date[12];
-    $min   = $date[14].$date[15];
-    $sec   = $date[17].$date[18];
-
-    //윤년계산
-    if((($year % 4 == 0) && ($year % 100 != 0)) || ($year % 400 == 0)) { $lastday[2] = 29; }
-
-    if($turnterm == 0)     { $day  +=  1; }
-    elseif($turnterm == 1) { $hour += 12; }
-    elseif($turnterm == 2) { $hour +=  6; }
-    elseif($turnterm == 3) { $hour +=  4; }
-    elseif($turnterm == 4) { $hour +=  2; }
-    elseif($turnterm == 5) { $hour +=  1; }
-    elseif($turnterm == 6) { $min  += 24; }
-    elseif($turnterm == 7) { $min  += 12; }
-
-    if($min >= 60) { $min %= 60; $hour++; }
-    if($hour >= 24) { $hour %= 24; $day++; }
-    if($day > $lastday[$month]) { $month++; $day = 1; }
-    if($month >= 13) { $year++; $month = 1; }
-
-    $month = StringUtil::Fill2($month, 2, "0");
-    $day   = StringUtil::Fill2($day,   2, "0");
-    $hour  = StringUtil::Fill2($hour,  2, "0");
-    $min   = StringUtil::Fill2($min,   2, "0");
-    $sec   = StringUtil::Fill2($sec,   2, "0");
-
-    return "{$year}-{$month}-{$day} {$hour}:{$min}:{$sec}";
+function subTurn($date, int $turnterm, int $turn=1) {
+    $date = new \DateTime($date);
+    $target = $turnterm*$turn;
+    $date->sub(new \DateInterval("PT{$target}M"));
+    return $date->format('Y-m-d H:i:s');
 }
 
-function subTurn($date, $turnterm=1) {
-    $lastday = array(0,31,28,31,30,31,30,31,31,30,31,30,31);
+function cutTurn($date, int $turnterm) {
+    $date = new \DateTime($date);
+    
+    $baseDate = new \DateTime($date->format('Y-m-d'));
+    $baseDate->sub(new \DateInterval("P1D"));
 
-    $year  = $date[0].$date[1].$date[2].$date[3];
-    $month = floor($date[5].$date[6]);
-    $day   = $date[8].$date[9];
-    $hour  = $date[11].$date[12];
-    $min   = $date[14].$date[15];
-    $sec   = $date[17].$date[18];
+    $diffMin = intdiv($date->getTimeStamp() - $baseDate->getTimeStamp(), 60);
+    $diffMin -= $diffMin % $turnterm;
 
-    if($turnterm == 0)     { $hour -= 2; }
-    elseif($turnterm == 1) { $hour -= 1; }
-    elseif($turnterm == 2) { $min -= 30; }
-    elseif($turnterm == 3) { $min -= 20; }
-    elseif($turnterm == 4) { $min -= 10; }
-    elseif($turnterm == 5) { $min -=  5; }
-    elseif($turnterm == 6) { $min -=  2; }
-    elseif($turnterm == 7) { $min -=  1; }
-
-    //윤년계산
-    if((($year % 4 == 0) && ($year % 100 != 0)) || ($year % 400 == 0)) { $lastday[2] = 29; }
-
-    if($min < 0) { $min = 60 + $min; $hour--; }
-    if($hour < 0) { $hour = 24 + $hour; $day--; }
-    if($day <= 0) { $month--; $day = $lastday[$month]; }
-    if($month <= 0) { $year--; $month = 12; }
-
-    $year  = StringUtil::Fill2($year,  2, "0");
-    $month = StringUtil::Fill2($month, 2, "0");
-    $day   = StringUtil::Fill2($day,   2, "0");
-    $hour  = StringUtil::Fill2($hour,  2, "0");
-    $min   = StringUtil::Fill2($min,   2, "0");
-    $sec   = StringUtil::Fill2($sec,   2, "0");
-
-    return "{$year}-{$month}-{$day} {$hour}:{$min}:{$sec}";
+    $baseDate->add(new \DateInterval("PT{$diffMin}M"));
+    return $baseDate->format('Y-m-d H:i:s');
 }
 
-function cutTurn($date, $turnterm=1) {
-    //          0123456789012345678
-    // $date = "2000-01-01 00:00:00";
-    // 0 : 120분, 1 : 60분, 2 : 30분, 3 : 10분, 4 : 5분
-    switch($turnterm) {
-        case 0:
-            $hour = $date[11].$date[12];
-            if($hour % 2 == 1) { $hour--; }
-            $date[11] = floor($hour / 10);
-            $date[12] = $hour % 10;
-            $date[14] = "0";
-            $date[15] = "0";
-            $date[17] = "0";
-            $date[18] = "0";
-            break;
-        case 1:
-            $date[14] = "0";
-            $date[15] = "0";
-            $date[17] = "0";
-            $date[18] = "0";
-            break;
-        case 2:
-            $min = $date[14].$date[15];
-            if($min < 30) { $min = 0; }
-            else { $min = 30; }
-            $date[14] = floor($min / 10);
-            $date[15] = $min % 10;
-            $date[17] = "0";
-            $date[18] = "0";
-            break;
-        case 3:
-            $min = $date[14].$date[15];
-            if($min < 20) { $min = 0; }
-            elseif($min < 40) { $min = 20; }
-            else { $min = 40; }
-            $date[14] = floor($min / 10);
-            $date[15] = $min % 10;
-            $date[17] = "0";
-            $date[18] = "0";
-            break;
-        case 4:
-            $min = $date[14].$date[15];
-            if($min < 10) { $min = 0; }
-            elseif($min < 20) { $min = 10; }
-            elseif($min < 30) { $min = 20; }
-            elseif($min < 40) { $min = 30; }
-            elseif($min < 50) { $min = 40; }
-            else { $min = 50; }
-            $date[14] = floor($min / 10);
-            $date[15] = $min % 10;
-            $date[17] = "0";
-            $date[18] = "0";
-            break;
-        case 5:
-            $min = $date[14].$date[15];
-            if($min < 5) { $min = 0; }
-            elseif($min < 10) { $min = 5; }
-            elseif($min < 15) { $min = 10; }
-            elseif($min < 20) { $min = 15; }
-            elseif($min < 25) { $min = 20; }
-            elseif($min < 30) { $min = 25; }
-            elseif($min < 35) { $min = 30; }
-            elseif($min < 40) { $min = 35; }
-            elseif($min < 45) { $min = 40; }
-            elseif($min < 50) { $min = 45; }
-            elseif($min < 55) { $min = 50; }
-            else { $min = 55; }
-            $date[14] = floor($min / 10);
-            $date[15] = $min % 10;
-            $date[17] = "0";
-            $date[18] = "0";
-            break;
-        case 6:
-            $min = $date[14].$date[15];
-            $min = floor($min / 2) * 2;
-            $date[14] = floor($min / 10);
-            $date[15] = $min % 10;
-            $date[17] = "0";
-            $date[18] = "0";
-            break;
-        case 7:
-            $date[17] = "0";
-            $date[18] = "0";
-            break;
+function cutDay($date, int $turnterm) {
+    $date = new \DateTime($date);
+    
+    $baseDate = new \DateTime($date->format('Y-m-d'));
+    $baseDate->sub(new \DateInterval("P1D"));
+
+    $baseGap = 60*24 / $turnterm;
+
+    $diffMin = intdiv($date->getTimeStamp() - $baseDate->getTimeStamp(), 60);
+    if($diffMin % $baseGap != 0){
+        $diffMin += $baseGap;
     }
+    $diffMin -= $diffMin % $baseGap;
 
-    return $date;
-}
-
-function CutDay($date) {
-    $hour = $date[11].$date[12];
-    if($hour >= 19) {
-        $date[11] = "0";
-        $date[12] = "1";
-
-        $date = add12Turn($date, 1);
-        $date = add12Turn($date, 1);
-    } elseif($hour < 07) {
-        $date[11] = "0";
-        $date[12] = "1";
-    } else {
-        $date[11] = "1";
-        $date[12] = "3";
-    }
-    $date[14] = "0";
-    $date[15] = "0";
-    $date[17] = "0";
-    $date[18] = "0";
-    return $date;
+    $baseDate->add(new \DateInterval("PT{$diffMin}M"));
+    return $baseDate->format('Y-m-d H:i:s');
 }
 
 function increaseRefresh($type="", $cnt=1) {
@@ -1822,51 +1647,24 @@ function updateTraffic() {
     fclose($fp);
 }
 
-function CheckOverhead($connect) {
+function CheckOverhead() {
     //서버정보
-    $query = "select conweight,turnterm,conlimit from game where no='1'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $db = DB::db();
+    $admin = $db->queryFirstRow('SELECT conweight, turnterm, conlimit from GAME LIMIT 1');
 
-    $onlineNumber = getOnlineNum();
-    switch($admin['turnterm']) {
-    case 0: $thr1 =  30; $thr2 =  60; $thr3 = 120; $con1 = 480; $con2 = 360; $con3 = 240; $con4 = 120; break;   // 120분턴
-    case 1: $thr1 =  30; $thr2 =  60; $thr3 = 120; $con1 = 480; $con2 = 360; $con3 = 240; $con4 = 120; break;   // 60분턴
-    case 2: $thr1 =  10; $thr2 =  20; $thr3 =  30; $con1 = 360; $con2 = 240; $con3 = 120; $con4 =  60; break;   // 30분턴
-    case 3: $thr1 =  10; $thr2 =  20; $thr3 =  30; $con1 = 240; $con2 = 180; $con3 = 120; $con4 =  60; break;   // 20분턴
-    case 4: $thr1 =  10; $thr2 =  20; $thr3 =  30; $con1 = 240; $con2 = 180; $con3 = 120; $con4 =  60; break;   // 10분턴
-    case 5: $thr1 =   5; $thr2 =  10; $thr3 =  20; $con1 = 120; $con2 =  90; $con3 =  60; $con4 =  30; break;   // 5분턴
-    case 6: $thr1 =   5; $thr2 =  10; $thr3 =  20; $con1 =  90; $con2 =  60; $con3 =  40; $con4 =  30; break;   // 2분턴
-    case 7: $thr1 =   5; $thr2 =  10; $thr3 =  20; $con1 =  90; $con2 =  60; $con3 =  40; $con4 =  30; break;   // 1분턴
-    }
+    $con = $admin['turnterm'] * 6;
+    $con *= $admin['conweight'] / 100;
 
-    $thr1 *= $admin['conweight'] / 100;
-    $thr2 *= $admin['conweight'] / 100;
-    $thr3 *= $admin['conweight'] / 100;
-    $con1 *= $admin['conweight'] / 100;
-    $con2 *= $admin['conweight'] / 100;
-    $con3 *= $admin['conweight'] / 100;
-    $con4 *= $admin['conweight'] / 100;
 
-    //if($onlineNumber > $thr2)  { $me['map']  = 1; }
-    if      ($onlineNumber > $thr3  && $admin['conlimit'] != $con4) {
-        $query = "update game set conlimit='$con4' where no='1'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } elseif($onlineNumber > $thr2  && $admin['conlimit'] != $con3) {
-        $query = "update game set conlimit='$con3' where no='1'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } elseif($onlineNumber > $thr1  && $admin['conlimit'] != $con2) {
-        $query = "update game set conlimit='$con2' where no='1'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } elseif($onlineNumber <= $thr1 && $admin['conlimit'] != $con1) {
-        $query = "update game set conlimit='$con1' where no='1'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } else {
+    if($con != $admin['conlimit']){
+        $db->update('game', [
+            'conlimit' => $con
+        ], true);
     }
 }
 
 function isLock() {
-    return DB::db()->queryFirstField("select plock from plock where no=1") != 0;
+    return DB::db()->queryFirstField("SELECT plock from plock limit 1") != 0;
 }
 
 function tryLock() {
@@ -1875,10 +1673,11 @@ function tryLock() {
     //테이블 락
     $db->query("lock tables plock write");
     // 잠금
-    $isUnlocked = $db->queryFirstField("select plock from plock where no=1") != 0;
-    if($isUnlocked){
-        $db->query("update plock set plock=1 where no=1");
-    }
+    $db->update('plock', [
+        'plock'=>1
+    ], true);
+
+    $isUnlocked = $db->affectedRows() > 0;
     
     //테이블 언락
     $db->query("unlock tables");
@@ -1892,21 +1691,12 @@ function unlock() {
     DB::db()->query("update plock set plock=0 where no=1");
 }
 
-function timeover($connect) {
-    $query = "select turnterm,TIMESTAMPDIFF(SECOND,turntime,now()) as diff from game where no=1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+function timeover() {
+    $admin = DB::db()->queryFirstRow(
+        'SELECT turnterm,TIMESTAMPDIFF(SECOND,turntime,now()) as diff from game limit 1'
+    );
 
-    switch($admin['turnterm']) {
-    case 0: $t = 20; break;   // 120분턴
-    case 1: $t = 10; break;   // 60분턴
-    case 2: $t = 10; break;   // 30분턴
-    case 3: $t = 10; break;   // 20분턴
-    case 4: $t = 10; break;   // 10분턴
-    case 5: $t =  5; break;   // 5분턴
-    case 6: $t =  2; break;   // 2분턴
-    case 7: $t =  1; break;   // 1분턴
-    }
+    $t = min($admin['turnterm'], 5);
 
     $term = $admin['diff'];
     if($term >= $t || $term < 0) { return 1; }
@@ -1919,15 +1709,15 @@ function checkDelay($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
     // 1턴이상 갱신 없었으면 서버 지연
-    switch($admin['turnterm']) {
-        case 0: $term = 120; $threshold = 1; break;
-        case 1: $term = 60;  $threshold = 1; break;
-        case 2: $term = 30;  $threshold = 1; break;
-        case 3: $term = 20;  $threshold = 1; break;
-        case 4: $term = 10;  $threshold = 2; break;
-        case 5: $term = 5;   $threshold = 3; break;
-        case 6: $term = 2;   $threshold = 3; break;
-        case 7: $term = 1;   $threshold = 3; break;
+    $term = $admin['turnterm'];
+    if($term >= 20){
+        $threshold = 1;
+    }
+    else if($term >= 10){
+        $threshold = 2;
+    }
+    else{
+        $threshold = 3;
     }
     //지연 해야할 밀린 턴 횟수
     $iter = floor($admin['offset'] / $term);
@@ -1988,8 +1778,8 @@ function updateOnline($connect) {
 }
 
 function checkTurn($connect) {
-    // 잦은 갱신 금지 현재 10초당 1회
-    if(!timeover($connect)) { return; }
+    // 잦은 갱신 금지 현재 5초당 1회
+    if(!timeover()) { return; }
     // 현재 처리중이면 접근 불가
 
     // 파일락 획득
@@ -2034,7 +1824,7 @@ function checkTurn($connect) {
     updateOnline($connect);
     //접속자 수 따라서 갱신제한 변경
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', CheckOverhead');
-    CheckOverhead($connect);
+    CheckOverhead();
     //서버정보
     $query = "select * from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2196,10 +1986,7 @@ function checkTurn($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 3턴 전 시간
-    $letterdate = $date;
-    $letterdate = subTurn($letterdate, $admin['turnterm']);
-    $letterdate = subTurn($letterdate, $admin['turnterm']);
-    $letterdate = subTurn($letterdate, $admin['turnterm']);
+    $letterdate = subTurn($date, $admin['turnterm'], 3);
     //기한 지난 외교 메세지 지움(3개월 유지)
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
     for($i=0; $i < 5; $i++) {
@@ -2278,16 +2065,7 @@ function turnDate($connect, $curtime) {
     $turn = $admin['starttime'];
     $curturn = cutTurn($curtime, $admin['turnterm']);
     $num = 0;
-    switch($admin['turnterm']) {
-        case 0: $term = 7200; break;
-        case 1: $term = 3600; break;
-        case 2: $term = 1800; break;
-        case 3: $term = 1200; break;
-        case 4: $term = 600; break;
-        case 5: $term = 300; break;
-        case 6: $term = 120; break;
-        case 7: $term = 60; break;
-    }
+    $term = $admin['turnterm']*60;
     $num = floor((strtotime($curturn) - strtotime($turn)) / $term);
 
     $year = $admin['startyear'] + floor($num / 12);
@@ -3150,36 +2928,14 @@ function TrickInjury($connect, $city, $type=0) {
 }
 
 function getRandTurn($term) {
-    switch($term) {
-        case 0: $randtime = rand() % 7200; break;
-        case 1: $randtime = rand() % 3600; break;
-        case 2: $randtime = rand() % 1800; break;
-        case 3: $randtime = rand() % 1200; break;
-        case 4: $randtime = rand() % 600; break;
-        case 5: $randtime = rand() % 300; break;
-        case 6: $randtime = rand() % 120; break;
-        case 7: $randtime = rand() % 60; break;
-        default:$randtime = rand() % 3600; break;
-    }
-
+    $randtime = $rand(0, 60 * $term - 1);
     $turntime = date('Y-m-d H:i:s', strtotime('now') + $randtime);
 
     return $turntime;
 }
 
 function getRandTurn2($term) {
-    switch($term) {
-        case 0: $randtime = rand() % 7200; break;
-        case 1: $randtime = rand() % 3600; break;
-        case 2: $randtime = rand() % 1800; break;
-        case 3: $randtime = rand() % 1200; break;
-        case 4: $randtime = rand() % 600; break;
-        case 5: $randtime = rand() % 300; break;
-        case 6: $randtime = rand() % 120; break;
-        case 7: $randtime = rand() % 60; break;
-        default:$randtime = rand() % 3600; break;
-    }
-
+    $randtime = $rand(0, 60 * $term - 1);
     $turntime = date('Y-m-d H:i:s', strtotime('now') - $randtime);
 
     return $turntime;

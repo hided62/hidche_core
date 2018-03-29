@@ -575,9 +575,7 @@ function process_61($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 3턴후
-        $date = addTurn($date, $admin['turnterm']);
-        $date = addTurn($date, $admin['turnterm']);
-        $date = addTurn($date, $admin['turnterm']);
+        $date = addTurn($date, $admin['turnterm'], 3);
         //조건 표시기한 설정
         $query = "update diplomacy set showing='{$date}' where me='{$general['nation']}' and you='{$younation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

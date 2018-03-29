@@ -54,11 +54,6 @@ $plock = MYDB_fetch_array($result);
 $con = checkLimit($me['con'], $admin['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-if($me['skin'] < 1) {
-    $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
-    $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
-}
-
 $scenario = getScenario();
 ?>
 <!DOCTYPE html>
@@ -102,8 +97,7 @@ if($admin['fiction'] == 0) { $fiction = "사실"; }
 else { $fiction = "가상"; $valid = 1; }
 if($admin['npcmode'] == 0) { $npcmode = "불가능"; }
 else { $npcmode = "가능"; $valid = 1; }
-if($me['skin'] > 0) { $color = "cyan"; }
-else { $color = "white"; }
+$color = "cyan";
 if($valid == 1) {
     echo "
     <tr height=30>

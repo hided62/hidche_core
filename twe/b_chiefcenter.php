@@ -31,11 +31,6 @@ if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretlim
 if($me['level'] >= 5) { $btn = "submit"; $btn2 = "button"; }
 else { $btn = "hidden"; $btn2 = "hidden"; }
 
-if($me['skin'] < 1) {
-    $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
-    $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
-}
-
 $date = date('Y-m-d H:i:s');
 
 // 명령 목록

@@ -21,16 +21,7 @@ function registerAuction($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    switch($admin['turnterm']) {
-    case 0: $unit = 7200; break;
-    case 1: $unit = 3600; break;
-    case 2: $unit = 1800; break;
-    case 3: $unit = 1200; break;
-    case 4: $unit = 600; break;
-    case 5: $unit = 300; break;
-    case 6: $unit = 120; break;
-    case 7: $unit = 60; break;
-    }
+    $unit = 60 * $admin['turnterm'];
 
     // 장수들 평금,평쌀
     $query = "select avg(gold) as gold, avg(rice) as rice,max(gold) as maxgold from general where npc<2";

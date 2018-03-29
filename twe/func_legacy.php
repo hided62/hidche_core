@@ -137,16 +137,7 @@ function info($connect, $type=0, $skin=1) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    switch($admin['turnterm']) {
-        case 0: $termtype="120분 턴"; break;
-        case 1: $termtype="60분 턴"; break;
-        case 2: $termtype="30분 턴"; break;
-        case 3: $termtype="20분 턴"; break;
-        case 4: $termtype="10분 턴"; break;
-        case 5: $termtype="5분 턴"; break;
-        case 6: $termtype="2분 턴"; break;
-        case 7: $termtype="1분 턴"; break;
-    }
+    $termtype = "{$admin['turnterm']}분 턴";
 
     $query = "select no from general where npc<2";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

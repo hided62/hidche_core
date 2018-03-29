@@ -44,17 +44,7 @@ function getScenarioName($scenario) {
 }
 
 function getTurnTerm($term) {
-    switch($term) {
-    case 0: $str = "120분 턴 서버"; break;
-    case 1: $str = "60분 턴 서버"; break;
-    case 2: $str = "30분 턴 서버"; break;
-    case 3: $str = "20분 턴 서버"; break;
-    case 4: $str = "10분 턴 서버"; break;
-    case 5: $str = "5분 턴 서버"; break;
-    case 6: $str = "2분 턴 서버"; break;
-    case 7: $str = "1분 턴 서버"; break;
-    }
-    return $str;
+    return "{$term}분 턴 서버";
 }
 
 $db = DB::db();

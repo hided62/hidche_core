@@ -26,16 +26,7 @@ $bidCount = MYDB_num_rows($result);
 
 $btCount = $tradeCount + $bidCount;
 
-switch($admin['turnterm']) {
-case 0: $unit = 7200; break;
-case 1: $unit = 3600; break;
-case 2: $unit = 1800; break;
-case 3: $unit = 1200; break;
-case 4: $unit = 600; break;
-case 5: $unit = 300; break;
-case 6: $unit = 120; break;
-case 7: $unit = 60; break;
-}
+$unit = $admin['turnterm'] * 60;
 
 $amount = round($amount / 10) * 10;
 $cost = round($cost / 10) * 10;

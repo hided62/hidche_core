@@ -379,7 +379,7 @@ create table game (
   gold_rate   int(3) default 100,
   rice_rate   int(3) default 100,
   city_rate   int(3) default 50,
-  turnterm    int(1) default 1,
+  turnterm    int(3) default 60,
   killturn    int(6) default 80,
   turntime    datetime,
   starttime   datetime,

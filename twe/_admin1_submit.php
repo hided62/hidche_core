@@ -59,15 +59,16 @@ switch($btn) {
     case "60분턴":
     case "120분턴":
         switch($btn) {
-        case   "1분턴": $turnterm = 7; $unit =   60; break;
-        case   "2분턴": $turnterm = 6; $unit =  120; break;
-        case   "5분턴": $turnterm = 5; $unit =  300; break;
-        case  "10분턴": $turnterm = 4; $unit =  600; break;
-        case  "20분턴": $turnterm = 3; $unit = 1200; break;
-        case  "30분턴": $turnterm = 2; $unit = 1800; break;
-        case  "60분턴": $turnterm = 1; $unit = 3600; break;
-        case "120분턴": $turnterm = 0; $unit = 7200; break;
+        case   "1분턴": $turnterm = 1; break;
+        case   "2분턴": $turnterm = 2; break;
+        case   "5분턴": $turnterm = 5; break;
+        case  "10분턴": $turnterm = 10; break;
+        case  "20분턴": $turnterm = 20; break;
+        case  "30분턴": $turnterm = 30; break;
+        case  "60분턴": $turnterm = 60; break;
+        case "120분턴": $turnterm = 120; break;
         }
+        $unit = $turnterm * 60;
         $turn = ($admin['year'] - $admin['startyear']) * 12 + $admin['month'] - 1;
         $starttime = date("Y-m-d H:i:s", strtotime($admin['turntime']) - $turn * $unit);
         $starttime = cutTurn($starttime, $turnterm);
