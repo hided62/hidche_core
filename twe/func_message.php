@@ -279,7 +279,7 @@ function getMailboxList(){
 // who : xxxx,xxxx(발신인, 수신인)
 function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
     //FIXME: 폐기
-    $query = "select skin,no,nation,name,picture,level from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation,name,picture,level from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -312,11 +312,11 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $dip = MYDB_fetch_array($result);
 
-        ShowMsg($me['skin'], $bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], $sndr['name'], $sndrnation['color'], $msg, $date, $num, $from, $term, $me['level'], $dip['reserved']);
+        ShowMsg($bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], $sndr['name'], $sndrnation['color'], $msg, $date, $num, $from, $term, $me['level'], $dip['reserved']);
     } elseif($category <= 8) {
         $rcvrnation = getNationStaticInfo($to);
 
-        ShowMsg($me['skin'], $bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], $rcvrnation['name'], $rcvrnation['color'], $msg, $date, $num, $from, $term, $me['level']);
+        ShowMsg($bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], $rcvrnation['name'], $rcvrnation['color'], $msg, $date, $num, $from, $term, $me['level']);
     } elseif($category <= 11) {
         $query = "select name,picture,nation from general where no='$to'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -328,7 +328,7 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
         } else {
             $rcvrnation = getNationStaticInfo($rcvr['nation']);
         }
-        ShowMsg($me['skin'], $bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], "{$rcvr['name']}:{$rcvrnation['name']}", $rcvrnation['color'], $msg, $date, $num, $from, $term);
+        ShowMsg($bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], "{$rcvr['name']}:{$rcvrnation['name']}", $rcvrnation['color'], $msg, $date, $num, $from, $term);
     }
 }
 
@@ -355,7 +355,7 @@ function MsgDip($connect, $bg) {
     if($nation['dip4']) { echo "\n"; DecodeMsg($connect, $nation['dip4'], $nation['dip4_type'], $nation['dip4_who'], $nation['dip4_when'], $bg, 4); }
 }
 
-function ShowMsg($skin, $bgcolor, $type, $picture, $imgsvr, $me, $mycolor, $you, $youcolor, $msg, $date, $num=0, $who=0, $when=0, $level=0, $note="") {
+function ShowMsg($bgcolor, $type, $picture, $imgsvr, $me, $mycolor, $you, $youcolor, $msg, $date, $num=0, $who=0, $when=0, $level=0, $note="") {
     if($msg == "") return;
 
     $msg = Tag2Code($msg);
@@ -382,14 +382,9 @@ function ShowMsg($skin, $bgcolor, $type, $picture, $imgsvr, $me, $mycolor, $you,
     case 10: $sign = ""; $corebutton = ""; break;
     case 11: $sign = ""; $site = "d_scout.php"; break;
     }
-    if($skin == 0) {
-        $bgcolor = "000000"; $picture = "";
-        $naming = "[{$me}{$sign}{$you}]";
-    } else {
-        $imageTemp = GetImageURL($imgsvr);
-        $naming = "[<font color=$mycolor>$me</font>{$sign}<font color=$youcolor>$you</font>]";
-        $picture = "<img src={$imageTemp}/{$picture}>";
-    }
+    $imageTemp = GetImageURL($imgsvr);
+    $naming = "[<font color=$mycolor>$me</font>{$sign}<font color=$youcolor>$you</font>]";
+    $picture = "<img src={$imageTemp}/{$picture}>";
     if($site != "") {
         $form = "<form name=scout method=post action={$site}>";
         $form2 = "</form>";

@@ -227,7 +227,7 @@ function getRandGenName() {
 function cityInfo($connect) {
     global $_basecolor, $_basecolor2, $images;
 
-    $query = "select no,city,skin from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,city from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -251,7 +251,7 @@ function cityInfo($connect) {
         $tradeStr = $city['trade'] . "%";
     }
 
-    if($nation['color'] == "" || $me['skin'] < 1) { $nation['color'] = "000000"; }
+    if($nation['color'] == "" ) { $nation['color'] = "000000"; }
     echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 {$city['name']}</td></tr>
     <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
@@ -291,9 +291,9 @@ function cityInfo($connect) {
     </tr>
     <tr>
         <td rowspan=2 align=center id=bg1><b>주민</b></td>
-        <td height=7 colspan=3>".bar($pop, $me['skin'])."</td>
+        <td height=7 colspan=3>".bar($pop)."</td>
         <td rowspan=2 align=center id=bg1><b>민심</b></td>
-        <td height=7>".bar($rate, $me['skin'])."</td>
+        <td height=7>".bar($rate)."</td>
         <td rowspan=2 align=center id=bg1><b>태수</b></td>
         <td rowspan=2 align=center>{$gen1['name']}</td>
     </tr>
@@ -303,11 +303,11 @@ function cityInfo($connect) {
     </tr>
     <tr>
         <td width=50  rowspan=2 align=center id=bg1><b>농업</b></td>
-        <td width=100 height=7>".bar($agri, $me['skin'])."</td>
+        <td width=100 height=7>".bar($agri)."</td>
         <td width=50  rowspan=2 align=center id=bg1><b>상업</b></td>
-        <td width=100 height=7>".bar($comm, $me['skin'])."</td>
+        <td width=100 height=7>".bar($comm)."</td>
         <td width=50  rowspan=2 align=center id=bg1><b>치안</b></td>
-        <td width=100 height=7>".bar($secu, $me['skin'])."</td>
+        <td width=100 height=7>".bar($secu)."</td>
         <td width=50  rowspan=2 align=center id=bg1><b>군사</b></td>
         <td rowspan=2 align=center>{$gen2['name']}</td>
     </tr>
@@ -318,11 +318,11 @@ function cityInfo($connect) {
     </tr>
     <tr>
         <td rowspan=2 align=center id=bg1><b>수비</b></td>
-        <td height=7>".bar($def, $me['skin'])."</td>
+        <td height=7>".bar($def)."</td>
         <td rowspan=2 align=center id=bg1><b>성벽</b></td>
-        <td height=7>".bar($wall, $me['skin'])."</td>
+        <td height=7>".bar($wall)."</td>
         <td rowspan=2 align=center id=bg1><b>시세</b></td>
-        <td height=7>".bar($trade, $me['skin'])."</td>
+        <td height=7>".bar($trade)."</td>
         <td rowspan=2 align=center id=bg1><b>시중</b></td>
         <td rowspan=2 align=center>{$gen3['name']}</td>
     </tr>
@@ -342,7 +342,7 @@ function myNationInfo($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select skin,no,nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -370,13 +370,8 @@ function myNationInfo($connect) {
     <tr>
         <td colspan=4 align=center ";
 
-    if($me['skin'] < 1) {
-        if($me['nation'] == 0) { echo "style=font-weight:bold;font-size:13px;>【재 야】"; }
-        else { echo "style=font-weight:bold;font-size:13px;>국가【 {$nation['name']} 】"; }
-    } else {
-        if($me['nation'] == 0) { echo "style=color:white;background-color:000000;font-weight:bold;font-size:13px;>【재 야】"; }
-        else { echo "style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>국가【 {$nation['name']} 】"; }
-    }
+    if($me['nation'] == 0) { echo "style=color:white;background-color:000000;font-weight:bold;font-size:13px;>【재 야】"; }
+    else { echo "style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>국가【 {$nation['name']} 】"; }
 
     echo "
         </td>
@@ -844,23 +839,19 @@ function CoreCommandTable($connect) {
 }
 
 function myInfo($connect) {
-    $query = "select no,skin from general where owner='{$_SESSION['userID']}'";
+    $query = "select no from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    generalInfo($connect, $me['no'], $me['skin']);
+    generalInfo($connect, $me['no']);
 }
 
-function generalInfo($connect, $no, $skin) {
+function generalInfo($connect, $no) {
     global $_basecolor, $_basecolor2, $image, $images;
 
     $query = "select img from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
-
-    $query = "select skin from general where owner='{$_SESSION['userID']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
 
     $query = "select block,no,name,picture,imgsvr,injury,nation,city,troop,leader,leader2,power,power2,intel,intel2,explevel,experience,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,killturn,age,personal,special,specage,special2,specage2,mode,con,connect from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -924,7 +915,7 @@ function generalInfo($connect, $no, $skin) {
     $remaining = substr($general['turntime'], 14, 2) - date('i');
     if($remaining < 0) { $remaining = 60 + $remaining; }
 
-    if($nation['color'] == "" || $skin < 1) { $nation['color'] = "000000"; }
+    if($nation['color'] == "") { $nation['color'] = "000000"; }
 
     if($general['age'] < 60)     { $general['age'] = "<font color=limegreen>{$general['age']} 세</font>"; }
     elseif($general['age'] < 80) { $general['age'] = "<font color=yellow>{$general['age']} 세</font>"; }
@@ -960,19 +951,19 @@ function generalInfo($connect, $no, $skin) {
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
-        <td width=64 height=64 align=center rowspan=3"; echo $skin>0?" background={$imageTemp}/{$general['picture']}":""; echo ">&nbsp;</td>
+        <td width=64 height=64 align=center rowspan=3 background={$imageTemp}/{$general['picture']}>&nbsp;</td>
         <td align=center colspan=9 height=16 style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$specUser} {$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>통솔</b></td>
         <td align=center>&nbsp;{$color}{$leader}</font>{$lbonus}&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general['leader2']), $skin, 20)."</td>
+        <td align=center width=45>".bar(expStatus($general['leader2']), 20)."</td>
         <td align=center id=bg1><b>무력</b></td>
         <td align=center>&nbsp;{$color}{$power}</font>&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general['power2']), $skin, 20)."</td>
+        <td align=center width=45>".bar(expStatus($general['power2']), 20)."</td>
         <td align=center id=bg1><b>지력</b></td>
         <td align=center>&nbsp;{$color}{$intel}</font>&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general['intel2']), $skin, 20)."</td>
+        <td align=center width=45>".bar(expStatus($general['intel2']), 20)."</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>명마</b></td>
@@ -983,7 +974,7 @@ function generalInfo($connect, $no, $skin) {
         <td align=center colspan=2><font size=1>$bookname</font></td>
     </tr>
     <tr>
-        <td align=center height=64 rowspan=3"; echo $skin>0?" background={$weapImage}":""; echo ">&nbsp;</td>
+        <td align=center height=64 rowspan=3 background={$weapImage}>&nbsp;</td>
         <td align=center id=bg1><b>자금</b></td>
         <td align=center colspan=2>{$general['gold']}</td>
         <td align=center id=bg1><b>군량</b></td>
@@ -1010,7 +1001,7 @@ function generalInfo($connect, $no, $skin) {
     <tr height=20>
         <td align=center id=bg1><b>Lv</b></td>
         <td align=center>&nbsp;{$general['explevel']}&nbsp;</td>
-        <td align=center colspan=5>".bar(getLevelPer($general['experience'], $general['explevel']), $skin, 20)."</td>
+        <td align=center colspan=5>".bar(getLevelPer($general['experience'], $general['explevel']), 20)."</td>
         <td align=center id=bg1><b>연령</b></td>
         <td align=center colspan=2>{$general['age']}</td>
     </tr>
@@ -1032,14 +1023,14 @@ function generalInfo($connect, $no, $skin) {
 }
 
 function myInfo2($connect) {
-    $query = "select no,skin from general where owner='{$_SESSION['userID']}'";
+    $query = "select no from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    generalInfo2($connect, $me['no'], $me['skin']);
+    generalInfo2($connect, $me['no']);
 }
 
-function generalInfo2($connect, $no, $skin) {
+function generalInfo2($connect, $no) {
     global $_basecolor, $_basecolor2, $image, $images, $_dexLimit;
 
     $query = "select personal,experience,dedication,firenum,warnum,killnum,deathnum,killcrew,deathcrew,belong,killnum*100/warnum as winrate,killcrew/deathcrew*100 as killrate,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
@@ -1120,27 +1111,27 @@ function generalInfo2($connect, $no, $skin) {
     <tr height=16>
         <td width=64 align=center id=bg1><b>보병</b></td>
         <td width=64>　　{$general['dex0']}</td>
-        <td width=366 align=center>".bar($dex0, $skin, 16)."</td>
+        <td width=366 align=center>".bar($dex0, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>궁병</b></td>
         <td>　　{$general['dex10']}</td>
-        <td align=center>".bar($dex10, $skin, 16)."</td>
+        <td align=center>".bar($dex10, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>기병</b></td>
         <td>　　{$general['dex20']}</td>
-        <td align=center>".bar($dex20, $skin, 16)."</td>
+        <td align=center>".bar($dex20, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>귀병</b></td>
         <td>　　{$general['dex30']}</td>
-        <td align=center>".bar($dex30, $skin, 16)."</td>
+        <td align=center>".bar($dex30, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>차병</b></td>
         <td>　　{$general['dex40']}</td>
-        <td align=center>".bar($dex40, $skin, 16)."</td>
+        <td align=center>".bar($dex40, 16)."</td>
     </tr>
 </table>";
 }
@@ -1257,7 +1248,7 @@ function pushHistory($history) {
     file_put_contents(__dir__.'/logs/_history.txt', $text, FILE_APPEND);
 }
 
-function getRawLog($path, $count, $line_length, $skin){
+function getRawLog($path, $count, $line_length){
     //TODO: tail과 유사한 형태로 처리할 수 있는게 나을 듯. 그 이전에 파일 로그는 좀... ㅜㅜ
     if(!file_exists($path)){
         return null;
@@ -1269,7 +1260,7 @@ function getRawLog($path, $count, $line_length, $skin){
     fclose($fp);
 }
 
-function TrickLog($count, $skin) {
+function TrickLog($count) {
     if(!file_exists("logs/_tricklog.txt")){
         return '';
     }
@@ -1279,11 +1270,11 @@ function TrickLog($count, $skin) {
     @fclose($fp);
     $log = explode("\n",$file);
     $str = "";
-    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
+    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i])."<br>"; }
     echo $str;
 }
 
-function AllLog($count, $skin) {
+function AllLog($count) {
     if(!file_exists("logs/_alllog.txt")){
         return '';
     }
@@ -1294,12 +1285,12 @@ function AllLog($count, $skin) {
     $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) {
-    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
+    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i])."<br>" : "<br>"; 
   	}
     echo $str;
 }
 
-function AuctionLog($count, $skin) {
+function AuctionLog($count) {
     if(!file_exists("logs/_auctionlog.txt")){
         return '';
     }
@@ -1309,11 +1300,11 @@ function AuctionLog($count, $skin) {
     @fclose($fp);
     $log = explode("\n",$file);
     $str = "";
-    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
+    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i])."<br>"; }
     echo $str;
 }
 
-function History($count, $skin) {
+function History($count) {
     if(!file_exists("logs/_history.txt")){
         return '';
     }
@@ -1324,12 +1315,12 @@ function History($count, $skin) {
     $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) {
-    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
+    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i])."<br>" : "<br>"; 
 	}
     echo $str;
 }
 
-function MyLog($no, $count, $skin) {
+function MyLog($no, $count) {
     if(!file_exists("logs/gen{$no}.txt")){
         return '';
     }
@@ -1340,12 +1331,12 @@ function MyLog($no, $count, $skin) {
     $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) {
-    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
+    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i])."<br>" : "<br>"; 
 	}
     echo $str;
 }
 
-function MyBatRes($no, $count, $skin) {
+function MyBatRes($no, $count) {
     if(!file_exists("logs/batres{$no}.txt")){
         return '';
     }
@@ -1356,12 +1347,12 @@ function MyBatRes($no, $count, $skin) {
     $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) {
-         $str .= isset($log[count($log)-2-$i]) ?  ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
+         $str .= isset($log[count($log)-2-$i]) ?  ConvertLog($log[count($log)-2-$i])."<br>" : "<br>"; 
     }
     echo $str;
 }
 
-function MyBatLog($no, $count, $skin) {
+function MyBatLog($no, $count) {
     if(!file_exists("logs/batlog{$no}.txt")){
         return '';
     }
@@ -1372,16 +1363,16 @@ function MyBatLog($no, $count, $skin) {
     $log = explode("\n",$file);
     $str = "";
     for($i=0; $i < $count; $i++) {
-         $str .= isset($log[count($log)-2-$i]) ?  ConvertLog($log[count($log)-2-$i], $skin)."<br>" : "<br>"; 
+         $str .= isset($log[count($log)-2-$i]) ?  ConvertLog($log[count($log)-2-$i])."<br>" : "<br>"; 
     }
     echo $str;
 }
 
-function MyHistory($connect, $no, $skin) {
+function MyHistory($connect, $no) {
     $query = "select history from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    echo ConvertLog($general['history'], $skin);
+    echo ConvertLog($general['history']);
 }
 
 function addHistory($me, $history) {
@@ -1396,12 +1387,12 @@ function addNationHistory($nation, $history) {
         $history.'<br>', $nation['nation']);
 }
 
-function adminMsg($connect, $skin=1) {
+function adminMsg($connect) {
     $query = "select msg from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    echo "운영자 메세지 : <font color="; echo $skin>0?"yellow":"white"; echo ">";
+    echo "운영자 메세지 : <font color=yellow>";
     echo $admin['msg']."</font>";
 }
 
@@ -1437,7 +1428,7 @@ function onlineNation($connect) {
 }
 
 function nationMsg($connect) {
-    $query = "select no,nation,skin from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1445,7 +1436,7 @@ function nationMsg($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    echo "<font color="; echo $me['skin']>0?"orange":"white"; echo ">".$nation['msg']."</font>";
+    echo "<font color=orange>".$nation['msg']."</font>";
 }
 
 

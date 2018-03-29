@@ -37,7 +37,7 @@ echo "
 }
 
 
-function bar($per, $skin=1, $h=7) {
+function bar($per, $h=7) {
     global $images;
     if($h == 7) { $bd = 0; $h =  7; $h2 =  5; }
     else        { $bd = 1; $h = 12; $h2 =  8; }
@@ -48,14 +48,10 @@ function bar($per, $skin=1, $h=7) {
     $str2 = "<td width=*% background={$images}/pr{$h2}.gif></td>";
     if($per <= 0) { $str1 = ""; }
     elseif($per >= 100) { $str2 = ""; }
-    if($skin == 0) {
-        $str = "-";
-    } else {
-        $str = "
-        <table width=100% height={$h} border={$bd} cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:1;>
-            <tr>{$str1}{$str2}</tr>
-        </table>";
-    }
+    $str = "
+    <table width=100% height={$h} border={$bd} cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:1;>
+        <tr>{$str1}{$str2}</tr>
+    </table>";
     return $str;
 }
 
@@ -132,7 +128,7 @@ function printCitysName($connect, $cityNo, $distance=1) {
 }
 
 
-function info($connect, $type=0, $skin=1) {
+function info($connect, $type=0) {
     $query = "select year,month,turnterm,maxgeneral from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -149,16 +145,16 @@ function info($connect, $type=0, $skin=1) {
 
     switch($type) {
     case 0:
-        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color="; echo $skin>0?"cyan":"white"; echo ">$termtype</font> 서버)<br> 등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color="; echo $skin>0?"cyan":"white"; echo ">NPC {$npccount} 명</font>";
+        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color=cyan>$termtype</font> 서버)<br> 등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color=cyan>NPC {$npccount} 명</font>";
         break;
     case 1:
-        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color="; echo $skin>0?"cyan":"white"; echo ">$termtype</font> 서버)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color="; echo $skin>0?"cyan":"white"; echo ">NPC {$npccount} 명</font>";
+        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color=cyan>$termtype</font> 서버)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color=cyan>NPC {$npccount} 명</font>";
         break;
     case 2:
-        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color="; echo $skin>0?"cyan":"white"; echo ">$termtype</font> 서버)";
+        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color=cyan>$termtype</font> 서버)";
         break;
     case 3:
-        echo "등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color="; echo $skin>0?"cyan":"white"; echo ">NPC {$npccount} 명</font>";
+        echo "등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color=cyan>NPC {$npccount} 명</font>";
         break;
     }
 }

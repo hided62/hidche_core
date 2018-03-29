@@ -7,10 +7,6 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select skin from general where owner='{$_SESSION['userID']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
-
 if(Session::getUserGrade() < 5) {
     echo "<!DOCTYPE html>
 <html>
@@ -98,7 +94,7 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php generalInfo($connect, $gen, $me['skin']); generalInfo2($connect, $gen, $me['skin']); ?>
+            <?php generalInfo($connect, $gen); generalInfo2($connect, $gen); ?>
         </td>
         <td valign=top>&nbsp;
         </td>
@@ -109,10 +105,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php MyLog($gen, 24, $me['skin']); ?>
+            <?php MyLog($gen, 24); ?>
         </td>
         <td valign=top>
-            <?php MyBatLog($gen, 24, $me['skin']); ?>
+            <?php MyBatLog($gen, 24); ?>
         </td>
     </tr>
     <tr>
@@ -121,10 +117,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php MyHistory($connect, $gen, $me['skin']); ?>
+            <?php MyHistory($connect, $gen); ?>
         </td>
         <td valign=top>
-            <?php MyBatRes($gen, 24, $me['skin']); ?>
+            <?php MyBatRes($gen, 24); ?>
         </td>
     </tr>
 </table>

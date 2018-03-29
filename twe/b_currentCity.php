@@ -8,7 +8,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("현재도시", 1);
 
-$query = "select skin,no,nation,level,city from general where owner='{$_SESSION['userID']}'";
+$query = "select no,nation,level,city from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -16,10 +16,6 @@ $query = "select nation,level,spy from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $myNation = MYDB_fetch_array($result);
 
-if($me['skin'] < 1) {
-    $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
-    $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -276,7 +272,7 @@ for($j=0; $j < $gencount; $j++) {
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "
     <tr>
-        <td align=center"; echo $me['skin']==2?" background={$imageTemp}/{$general['picture']}":""; echo " height=64></td>
+        <td align=center height=64></td>
         <td align=center>{$general['name']}</td>
         <td align=center>$leader</td>
         <td align=center>$power</td>

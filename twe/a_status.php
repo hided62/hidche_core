@@ -13,7 +13,7 @@ $query = "select conlimit from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select skin,map,con,turntime from general where owner='{$_SESSION['userID']}'";
+$query = "select map,con,turntime from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -53,7 +53,7 @@ $(function(){
 <table align=center width=1200 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr height=520>
         <td width=498 valign=top>
-            <?php AllLog(34, $me['skin']); ?>
+            <?php AllLog(34); ?>
         </td>
         <td width=698>
             <?=getMapHtml()?>
@@ -61,7 +61,7 @@ $(function(){
     </tr>
     <tr>
         <td colspan=2 valign=top>
-            <?php History(34, $me['skin']); ?>
+            <?php History(34); ?>
         </td>
     </tr>
 </table>

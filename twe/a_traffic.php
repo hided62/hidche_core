@@ -16,7 +16,7 @@ $file = @fread($fp, 1000);
 @fclose($fp);
 $log = explode("\n",$file);
 $str = "";
-for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i], $skin)."<br>"; }
+for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i])."<br>"; }
 echo $str;
 
 $curonline = getOnlineNum();

@@ -89,7 +89,6 @@ if($admin['npcmode'] != 1) {
             conmsg='',
             npc=1,
             killturn=6,
-            skin=1,
             mode=2,
             map=0,
             owner='$userID',

@@ -18,7 +18,7 @@ $query = "select nation from general where no='$gen'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
 
-$query = "select skin,no,nation,level,con,turntime,belong from general where owner='{$_SESSION['userID']}'";
+$query = "select no,nation,level,con,turntime,belong from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -50,10 +50,6 @@ if($type == 0) {
 }
 $sel[$type] = "selected";
 
-if($me['skin'] < 1) {
-    $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
-    $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -117,10 +113,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php generalInfo($connect, $gen, $me['skin']); generalInfo2($connect, $gen, $me['skin']); ?>
+            <?php generalInfo($connect, $gen); generalInfo2($connect, $gen); ?>
         </td>
         <td valign=top>
-            <?php MyHistory($connect, $gen, $me['skin']); ?>
+            <?php MyHistory($connect, $gen); ?>
         </td>
     </tr>
     <tr>
@@ -129,10 +125,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php MyBatLog($gen, 24, $me['skin']); ?>
+            <?php MyBatLog($gen, 24); ?>
         </td>
         <td valign=top>
-            <?php MyBatRes($gen, 24, $me['skin']); ?>
+            <?php MyBatRes($gen, 24); ?>
         </td>
     </tr>
 </table>

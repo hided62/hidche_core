@@ -23,7 +23,7 @@ if(!$userID){
     die();
 }
 
-$me = $db->queryFirstRow('select no,skin,con,turntime,newmsg,newvote,map from general where owner = %i', $userID);
+$me = $db->queryFirstRow('select no,con,turntime,newmsg,newvote,map from general where owner = %i', $userID);
 
 //그새 사망이면
 if($me === null) {
@@ -87,7 +87,7 @@ $(function(){
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=5><?=allButton()?></td></tr>
     <tr height=50>
-        <td colspan=5 align=center><font size=4>삼국지 모의전투 PHP 유기체서버 (<font color=<?=$me['skin']>0?"cyan":"white";?>><?=$scenario;?></font>)</font></td>
+        <td colspan=5 align=center><font size=4>삼국지 모의전투 PHP 유기체서버 (<font color=cyan><?=$scenario;?></font>)</font></td>
     </tr>
 <?php
 $valid = 0;
@@ -110,10 +110,10 @@ if($valid == 1) {
 ?>
 
     <tr height=30>
-        <td width=198 align=center><?php info($connect, 2, $me['skin']); ?></td>
+        <td width=198 align=center><?php info($connect, 2); ?></td>
         <td width=198 align=center>전체 접속자 수 : <?=$admin['online'];?> 명</td>
         <td width=198 align=center>턴당 갱신횟수 : <?=$admin['conlimit'];?>회</td>
-        <td width=398 colspan=2 align=center><?php info($connect, 3, $me['skin']); ?></td>
+        <td width=398 colspan=2 align=center><?php info($connect, 3); ?></td>
     </tr>
     <tr height=30>
         <td align=center>
@@ -164,8 +164,8 @@ echo "
     </tr>";
 ?>
     <tr><td colspan=5>접속중인 국가: <?=onlinenation($connect);?></td></tr>
-    <tr><td colspan=5><?php adminMsg($connect, $me['skin']); ?></td></tr>
-    <tr><td colspan=5>【 국가방침 】<?php nationMsg($connect, $me['skin']); ?></td></tr>
+    <tr><td colspan=5><?php adminMsg($connect); ?></td></tr>
+    <tr><td colspan=5>【 국가방침 】<?php nationMsg($connect); ?></td></tr>
     <tr><td colspan=5>【 접속자 】<?=onlinegen($connect);?></td></tr>
 <?php
 if(Session::getUserGrade() >= 5) {
@@ -201,7 +201,7 @@ if(Session::getUserGrade() >= 5) {
     </tr>
     <tr>
         <td width=646 align=right>
-            <font color=<?=$me['skin']>0?"cyan":"white";?>><b>←</b> Ctrl, Shift, 드래그로 복수선택 가능　　　　　반복&수정<b>→</b></font>
+            <font color=cyan><b>←</b> Ctrl, Shift, 드래그로 복수선택 가능　　　　　반복&수정<b>→</b></font>
             <select name=sel size=1 style=color:white;background-color:black;font-size:13px;>
                 <option value=1>1턴</option>
                 <option value=2>2턴</option>
@@ -239,11 +239,11 @@ if(Session::getUserGrade() >= 5) {
         <td width=498 align=center id=bg1><b>개인 기록</b></td>
     </tr>
     <tr>
-        <td width=498 ><?php AllLog(15, $me['skin']); ?></td>
-        <td width=498 ><?php MyLog($me['no'], 15, $me['skin']); ?></td>
+        <td width=498 ><?php AllLog(15); ?></td>
+        <td width=498 ><?php MyLog($me['no'], 15); ?></td>
     </tr>
     <tr><td width=998 colspan=2 align=center id=bg1><b>중원 정세</b></td></tr>
-    <tr><td width=998 colspan=2><?php History(15, $me['skin']); ?></td></tr>
+    <tr><td width=998 colspan=2><?php History(15); ?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr>

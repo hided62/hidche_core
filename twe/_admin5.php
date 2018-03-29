@@ -7,10 +7,6 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select skin from general where owner='{$_SESSION['userID']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
-
 if(Session::getUserGrade() < 5) {
     echo "<!DOCTYPE html>
 <html>
@@ -254,7 +250,7 @@ for($i=0; $i < $nationCount; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php TrickLog(20, $me['skin']); ?></td></tr>
+    <tr><td><?php TrickLog(20); ?></td></tr>
 </table>
 
 <table align=center width=1760 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px; id=bg0>

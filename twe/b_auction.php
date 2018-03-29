@@ -8,7 +8,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("거래장", 2);
 
-$query = "select no,special,skin,con,turntime from general where owner='{$_SESSION['userID']}'";
+$query = "select no,special,con,turntime from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -33,11 +33,6 @@ if(Session::getUserGrade() >= 5 || ($me['special'] != 30 && $btCount < 1) || ($m
     $btn = "submit";
 } else {
     $btn = "hidden";
-}
-
-if($me['skin'] < 1) {
-    $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
-    $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
 }
 
 if($msg == "") $msg = "-";
@@ -227,7 +222,7 @@ for($i=0; $i < $count; $i++) {
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td align=center id=bg2><font size=5>최 근 기 록</font></td></tr>
     <tr><td>
-    <?=AuctionLog(20, $me['skin']);?>
+    <?=AuctionLog(20);?>
     </td></tr>
     <tr><td align=center id=bg2><font size=5>도 움 말</font></td></tr>
     <tr><td>

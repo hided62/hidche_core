@@ -8,7 +8,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("부대편성", 1);
 
-$query = "select skin,no,nation,troop from general where owner='{$_SESSION['userID']}'";
+$query = "select no,nation,troop from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -16,10 +16,6 @@ $query = "select * from troop where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $troopcount = MYDB_num_rows($result);
 
-if($me['skin'] < 1) {
-    $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
-    $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
-}
 ?>
 <!DOCTYPE html>
 <html>

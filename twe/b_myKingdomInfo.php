@@ -33,7 +33,7 @@ if($me['level'] == 0) {
 </table>
 <br>
 <?php
-$query = "select nation,skin from general where owner='{$_SESSION['userID']}'";
+$query = "select nation from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -141,7 +141,7 @@ echo"
     </tr>
     <tr>
         <td align=center valign=top id=bg1>국가열전</td>
-        <td colspan=7 id=bg0>".ConvertLog($nation['history'], $me['skin'])."</td>
+        <td colspan=7 id=bg0>".ConvertLog($nation['history'])."</td>
     </tr>
 </table>
 <br>";

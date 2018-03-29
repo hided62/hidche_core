@@ -12,7 +12,7 @@ $query = "select turnterm from game where no=1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,nation,skin,map from general where owner='{$_SESSION['userID']}'";
+$query = "select no,nation,map from general where owner='{$_SESSION['userID']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -43,10 +43,6 @@ for($i=0; $i < $nationcount; $i++) {
     $cityStr .= "속령 $citycount<br>";
 }
 
-if($me['skin'] < 1) {
-    $tempColor = $_basecolor;   $tempColor2 = $_basecolor2; $tempColor3 = $_basecolor3; $tempColor4 = $_basecolor4;
-    $_basecolor = "000000";     $_basecolor2 = "000000";    $_basecolor3 = "000000";    $_basecolor4 = "000000";
-}
 ?>
 <!DOCTYPE html>
 <html>

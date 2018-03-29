@@ -79,7 +79,6 @@ CREATE TABLE `general` (
 	`specage` INT(2) NULL DEFAULT '0',
 	`special2` INT(2) NULL DEFAULT '0',
 	`specage2` INT(2) NULL DEFAULT '0',
-	`skin` INT(3) NULL DEFAULT '1',
 	`mode` INT(1) NULL DEFAULT '2',
 	`tnmt` INT(1) NULL DEFAULT '1',
 	`map` INT(1) NULL DEFAULT '0',
