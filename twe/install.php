@@ -43,7 +43,7 @@ if(Session::getUserGrade(true) < 5){
                     <div class="form-group row">
                         <label for="turnterm" class="col-sm-3 col-form-label">턴 시간(분)</label>
                         <div class="col-sm-9">
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <div id="turnterm" class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-secondary">
                                     <input type="radio" name="turnterm" value="120">120
                                 </label>
@@ -76,7 +76,7 @@ if(Session::getUserGrade(true) < 5){
                     <div class="form-group row">
                         <label for="sync" class="col-sm-3 col-form-label">시간 동기화</label>
                         <div class="col-sm-9" style="display: inline-flex;">
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <div id="sync" class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-secondary active">
                                     <input type="radio" name="sync" value="1" checked>Y
                                 </label>
@@ -94,7 +94,7 @@ if(Session::getUserGrade(true) < 5){
                     <div class="form-group row">
                         <label for="confirm_password" class="col-sm-3 col-form-label">시나리오 선택</label>
                         <div class="col-sm-9">
-                        <select class="form-control" size="1" id="scenario_sel">
+                        <select class="form-control" name="scenario" size="1" id="scenario_sel">
                         </select>
                         
                         </div>
@@ -103,7 +103,7 @@ if(Session::getUserGrade(true) < 5){
                     <div class="form-group row">
                         <label for="fiction" class="col-sm-3 col-form-label">NPC 상성</label>
                         <div class="col-sm-9">
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <div id="fiction" class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-secondary active">
                                     <input type="radio" name="fiction" value="0" checked>연의
                                 </label>
@@ -117,7 +117,7 @@ if(Session::getUserGrade(true) < 5){
                     <div class="form-group row">
                         <label for="extend" class="col-sm-3 col-form-label">확장 NPC</label>
                         <div class="col-sm-9">
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <div id="extend" class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-secondary active">
                                     <input type="radio" name="extend" value="1" checked>포함
                                 </label>
@@ -131,7 +131,7 @@ if(Session::getUserGrade(true) < 5){
                     <div class="form-group row">
                         <label for="npcmode" class="col-sm-3 col-form-label">NPC 빙의</label>
                         <div class="col-sm-9">
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <div id="npcmode" class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-secondary">
                                     <input type="radio" name="npcmode" value="1">가능
                                 </label>
@@ -145,7 +145,7 @@ if(Session::getUserGrade(true) < 5){
                     <div class="form-group row">
                         <label for="show_img_level" class="col-sm-3 col-form-label">이미지 표기</label>
                         <div class="col-sm-9">
-                            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <div id="show_img_level" class="btn-group btn-group-toggle" data-toggle="buttons">
                                 <label class="btn btn-secondary">
                                     <input type="radio" name="show_img_level" value="0">안함
                                 </label>
@@ -165,7 +165,7 @@ if(Session::getUserGrade(true) < 5){
                     <div class="form-group row">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block login-button">리셋 개시</button>
+                            <input type="submit" class="btn btn-primary btn-lg btn-block login-button" value="리셋 개시">
                         </div>
                     </div>
                 </form>

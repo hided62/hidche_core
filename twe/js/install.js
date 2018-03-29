@@ -102,8 +102,77 @@ function scenarioPreview(){
         ));
     });
 }
+
+function formSetup(){
+    $('#game_form').validate({
+        rules:{
+            turnterm:"required",
+            sync:"required",
+            scenario:"required",
+            fiction:"required",
+            extend:"required",
+            npcmode:"required",
+            show_img_level:"required",
+        },
+        errorElement: "div",
+        errorPlacement: function ( error, element ) {
+            // Add the `help-block` class to the error element
+            error.addClass( "invalid-feedback" );
+
+            if ( element.prop( "type" ) === "checkbox" ) {
+                error.insertAfter( element.parent( "label" ) );
+            } else {
+                error.insertAfter( element );
+            }
+        },
+        highlight: function ( element, errorClass, validClass ) {
+            $( element ).addClass( "is-invalid" ).removeClass( "is-valid" );
+        },
+        unhighlight: function (element, errorClass, validClass) {
+            $( element ).addClass( "is-valid" ).removeClass( "is-invalid" );
+        }
+    });
+    $('#game_form').submit(function(e){
+        e.preventDefault();
+        if(!$("#game_form").valid()){
+            return;
+        }
+        $.ajax({
+            cache:false,
+            type:'post',
+            url:'j_install.php',
+            dataType:'json',
+            data:{
+                turnterm:$('#turnterm input:radio:checked').val(),
+                sync:$('#sync input:radio:checked').val(),
+                scenario:$('#scenario_sel').val(),
+                fiction:$('#fiction input:radio:checked').val(),
+                extend:$('#extend input:radio:checked').val(),
+                npcmode:$('#npcmode input:radio:checked').val(),
+                show_img_level:$('#show_img_level input:radio:checked').val()
+            }
+        }).then(function(result){
+            var deferred = $.Deferred();
+
+            if(!result.result){
+                alert(result.reason);
+                deferred.reject('fail');
+            }
+            else{
+                alert('DB.php가 생성되었습니다.');
+                deferred.resolve();
+            }
+
+            return deferred.promise();
+        }).then(function(){
+            location.href = 'install.php';
+        });
+        
+    });
+}
+
 $(function(){
     loadScenarios();
     $('#scenario_sel').change(scenarioPreview);
-    //loadScenarioPreview(8);
+    formSetup();
 })
