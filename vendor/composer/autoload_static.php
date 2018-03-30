@@ -96,6 +96,13 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
                 0 => __DIR__ . '/..' . '/brandonwamboldt/utilphp/src',
             ),
         ),
+        'V' => 
+        array (
+            'Valitron' => 
+            array (
+                0 => __DIR__ . '/..' . '/vlucas/valitron/src',
+            ),
+        ),
     );
 
     public static $classMap = array (
