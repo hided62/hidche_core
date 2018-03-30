@@ -388,10 +388,10 @@ function calc(cost, formnum) {
         }
 
         $name = $this->name;
-        $att = $this->attack + $abil;
-        $def = $this->defence + $abil;
-        $spd = $this->speed;
-        $avd = $this->avoid;
+        $attack = $this->attack + $abil;
+        $defence = $this->defence + $abil;
+        $speed = $this->speed;
+        $avoid = $this->avoid;
         $weapImage = "{$images}/weap{$i}.jpg";
         if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
         
@@ -404,10 +404,10 @@ function calc(cost, formnum) {
 <tr height=64 bgcolor=$l>
     <td background={$weapImage} align=center></td>
     <td align=center>{$name}</td>
-    <td align=center>{$att}</td>
-    <td align=center>{$def}</td>
-    <td align=center>{$spd}</td>
-    <td align=center>{$avd}</td>
+    <td align=center>{$attack}</td>
+    <td align=center>{$defence}</td>
+    <td align=center>{$speed}</td>
+    <td align=center>{$avoid}</td>
     <td align=center>{$baseRiceShort}</td>
     <td align=center>{$baseCostShort}</td>
 <form name=form{$i} action=c_double.php>
@@ -595,10 +595,10 @@ function calc(cost, formnum) {
         }
 
         $name = $this->name;
-        $att = $this->attack + $abil;
-        $def = $this->defence + $abil;
-        $spd = $this->speed;
-        $avd = $this->avoid;
+        $attack = $this->attack + $abil;
+        $defence = $this->defence + $abil;
+        $speed = $this->speed;
+        $avoid = $this->avoid;
         $weapImage = "{$images}/weap{$i}.jpg";
         if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
         
@@ -611,10 +611,10 @@ function calc(cost, formnum) {
 <tr height=64 bgcolor=$l>
     <td background={$weapImage} align=center></td>
     <td align=center>{$name}</td>
-    <td align=center>{$att}</td>
-    <td align=center>{$def}</td>
-    <td align=center>{$spd}</td>
-    <td align=center>{$avd}</td>
+    <td align=center>{$attack}</td>
+    <td align=center>{$defence}</td>
+    <td align=center>{$speed}</td>
+    <td align=center>{$avoid}</td>
     <td align=center>{$baseRiceShort}</td>
     <td align=center>{$baseCostShort}</td>
 <form name=form{$i} action=c_double.php>

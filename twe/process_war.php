@@ -16,7 +16,7 @@ function processWar($connect, $general, $city) {
     $deadAmount['att'] = 0;
     $deadAmount['def'] = 0;
 
-    $warphase = getRate($game, $general['crewtype'], "spd");   //병종간 페이즈 수 얻기
+    $warphase = GameConst::byID($general['crewtype'])->speed;   //병종간 페이즈 수 얻기
 
     // 특기보정 : 돌격
     if($general['special2'] == 60) { $warphase += 1; }
@@ -291,7 +291,7 @@ function processWar($connect, $general, $city) {
                 }
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
-                $ratio2 = getRate($game, $general['crewtype'], "avd");   //회피율
+                $ratio2 = GameConst::byID($general['crewtype'])->avoid;   //회피율
                 //특기보정 : 궁병
                 if($general['special2'] == 51) { $ratio2 += 20; }
                 //도구 보정 : 둔갑천서, 태평요술
@@ -1115,7 +1115,7 @@ function processWar($connect, $general, $city) {
 
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
-                $ratio2 = getRate($game, $general['crewtype'], "avd");   //회피율
+                $ratio2 = GameConst::byID($general['crewtype'])->avoid;   //회피율
                 //특기보정 : 돌격, 궁병
                 if($oppose['special2'] == 60) { $ratio2 -= 100; }
                 if($general['special2'] == 51) { $ratio2 += 20; }
@@ -1137,7 +1137,7 @@ function processWar($connect, $general, $city) {
                 }
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
-                $ratio2 = getRate($game, $oppose['crewtype'], "avd");   //회피율
+                $ratio2 = GameConst::byID($oppose['crewtype'])->defence;   //회피율
                 // 특기보정 : 돌격, 궁병
                 if($general['special2'] == 60) { $ratio2 -= 100; }
                 if($oppose['special2'] == 51) { $ratio2 += 20; }
@@ -1545,7 +1545,7 @@ function getCrewtypeRice($game, $crewtype, $tech) {
 //////////////////////////////////////////////////////////////
 
 function getAtt($game, $general, $tech, $lbonus) {
-    $att = getRate($game, $general['crewtype'], "att") + getTechAbil($tech);
+    $att = GameConst::byID($general['crewtype'])->attack + getTechAbil($tech);
     
     $general['lbonus'] = $lbonus;
 
@@ -1564,7 +1564,7 @@ function getAtt($game, $general, $tech, $lbonus) {
 }
 
 function getDef($game, $general, $tech) {
-    $def = getRate($game, $general['crewtype'], "def") + getTechAbil($tech);
+    $def = GameConst::byID($general['crewtype'])->defence + getTechAbil($tech);
 
     $crew = ($general['crew'] / (7000 / 30)) + 70;    // 5000명일때 91점 7000명일때 100점 10000명일때 113점
     $def = $def * $crew / 100;
