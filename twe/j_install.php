@@ -55,17 +55,29 @@ if(120 % $turnterm != 0){
     ]);
 }
 
-$mysqli_obj = DB::db()->get();
+$db = DB::db();
+$mysqli_obj = $db->get();
 
+
+$scenarioObj = new Scenario($scenario);
 
 if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/reset.sql'))){
-    while ($mysqli_obj->next_result()) {;}
+    while (@$mysqli_obj->next_result()) {;}
 }
 
 if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/schema.sql'))){
-    while ($mysqli_obj->next_result()) {;}
+    while (@$mysqli_obj->next_result()) {;}
 }
 
+$db->insert('plock', [
+    'plock'=>0
+]);
+
+/*
+$db->insert('game', [
+
+]);
+*/
 //TODO:script
 $env = [
     
