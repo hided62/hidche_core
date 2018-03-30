@@ -402,43 +402,6 @@ create table game (
   bet8  int(8) default 0, bet9  int(8) default 0, bet10 int(8) default 0, bet11 int(8) default 0,
   bet12 int(8) default 0, bet13 int(8) default 0, bet14 int(8) default 0, bet15 int(8) default 0,
 
-  att0  int(3) default 0, def0  int(3) default 0, spd0  int(3) default 0, avd0  int(3) default 0, ric0  int(3) default 0, cst0  int(3) default 0,
-  att1  int(3) default 0, def1  int(3) default 0, spd1  int(3) default 0, avd1  int(3) default 0, ric1  int(3) default 0, cst1  int(3) default 0,
-  att2  int(3) default 0, def2  int(3) default 0, spd2  int(3) default 0, avd2  int(3) default 0, ric2  int(3) default 0, cst2  int(3) default 0,
-  att3  int(3) default 0, def3  int(3) default 0, spd3  int(3) default 0, avd3  int(3) default 0, ric3  int(3) default 0, cst3  int(3) default 0,
-  att4  int(3) default 0, def4  int(3) default 0, spd4  int(3) default 0, avd4  int(3) default 0, ric4  int(3) default 0, cst4  int(3) default 0,
-  att5  int(3) default 0, def5  int(3) default 0, spd5  int(3) default 0, avd5  int(3) default 0, ric5  int(3) default 0, cst5  int(3) default 0,
-
-  att10 int(3) default 0, def10 int(3) default 0, spd10 int(3) default 0, avd10 int(3) default 0, ric10 int(3) default 0, cst10 int(3) default 0,
-  att11 int(3) default 0, def11 int(3) default 0, spd11 int(3) default 0, avd11 int(3) default 0, ric11 int(3) default 0, cst11 int(3) default 0,
-  att12 int(3) default 0, def12 int(3) default 0, spd12 int(3) default 0, avd12 int(3) default 0, ric12 int(3) default 0, cst12 int(3) default 0,
-  att13 int(3) default 0, def13 int(3) default 0, spd13 int(3) default 0, avd13 int(3) default 0, ric13 int(3) default 0, cst13 int(3) default 0,
-  att14 int(3) default 0, def14 int(3) default 0, spd14 int(3) default 0, avd14 int(3) default 0, ric14 int(3) default 0, cst14 int(3) default 0,
-
-  att20 int(3) default 0, def20 int(3) default 0, spd20 int(3) default 0, avd20 int(3) default 0, ric20 int(3) default 0, cst20 int(3) default 0,
-  att21 int(3) default 0, def21 int(3) default 0, spd21 int(3) default 0, avd21 int(3) default 0, ric21 int(3) default 0, cst21 int(3) default 0,
-  att22 int(3) default 0, def22 int(3) default 0, spd22 int(3) default 0, avd22 int(3) default 0, ric22 int(3) default 0, cst22 int(3) default 0,
-  att23 int(3) default 0, def23 int(3) default 0, spd23 int(3) default 0, avd23 int(3) default 0, ric23 int(3) default 0, cst23 int(3) default 0,
-  att24 int(3) default 0, def24 int(3) default 0, spd24 int(3) default 0, avd24 int(3) default 0, ric24 int(3) default 0, cst24 int(3) default 0,
-  att25 int(3) default 0, def25 int(3) default 0, spd25 int(3) default 0, avd25 int(3) default 0, ric25 int(3) default 0, cst25 int(3) default 0,
-  att26 int(3) default 0, def26 int(3) default 0, spd26 int(3) default 0, avd26 int(3) default 0, ric26 int(3) default 0, cst26 int(3) default 0,
-  att27 int(3) default 0, def27 int(3) default 0, spd27 int(3) default 0, avd27 int(3) default 0, ric27 int(3) default 0, cst27 int(3) default 0,
-
-  att30 int(3) default 0, def30 int(3) default 0, spd30 int(3) default 0, avd30 int(3) default 0, ric30 int(3) default 0, cst30 int(3) default 0,
-  att31 int(3) default 0, def31 int(3) default 0, spd31 int(3) default 0, avd31 int(3) default 0, ric31 int(3) default 0, cst31 int(3) default 0,
-  att32 int(3) default 0, def32 int(3) default 0, spd32 int(3) default 0, avd32 int(3) default 0, ric32 int(3) default 0, cst32 int(3) default 0,
-  att33 int(3) default 0, def33 int(3) default 0, spd33 int(3) default 0, avd33 int(3) default 0, ric33 int(3) default 0, cst33 int(3) default 0,
-  att34 int(3) default 0, def34 int(3) default 0, spd34 int(3) default 0, avd34 int(3) default 0, ric34 int(3) default 0, cst34 int(3) default 0,
-  att35 int(3) default 0, def35 int(3) default 0, spd35 int(3) default 0, avd35 int(3) default 0, ric35 int(3) default 0, cst35 int(3) default 0,
-  att36 int(3) default 0, def36 int(3) default 0, spd36 int(3) default 0, avd36 int(3) default 0, ric36 int(3) default 0, cst36 int(3) default 0,
-  att37 int(3) default 0, def37 int(3) default 0, spd37 int(3) default 0, avd37 int(3) default 0, ric37 int(3) default 0, cst37 int(3) default 0,
-  att38 int(3) default 0, def38 int(3) default 0, spd38 int(3) default 0, avd38 int(3) default 0, ric38 int(3) default 0, cst38 int(3) default 0,
-
-  att40 int(3) default 0, def40 int(3) default 0, spd40 int(3) default 0, avd40 int(3) default 0, ric40 int(3) default 0, cst40 int(3) default 0,
-  att41 int(3) default 0, def41 int(3) default 0, spd41 int(3) default 0, avd41 int(3) default 0, ric41 int(3) default 0, cst41 int(3) default 0,
-  att42 int(3) default 0, def42 int(3) default 0, spd42 int(3) default 0, avd42 int(3) default 0, ric42 int(3) default 0, cst42 int(3) default 0,
-  att43 int(3) default 0, def43 int(3) default 0, spd43 int(3) default 0, avd43 int(3) default 0, ric43 int(3) default 0, cst43 int(3) default 0,
-
   PRIMARY KEY (no)
   ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
 
