@@ -12,23 +12,41 @@ if($session->userGrade < 5){
     ]);
 }
 
-$turnterm  = Util::toInt(Util::array_get($_POST['turnterm']));
-$sync = Util::toInt(Util::array_get($_POST['sync']));
-$scenario = Util::toInt(Util::array_get($_POST['scenario']));
-$fiction = Util::toInt(Util::array_get($_POST['fiction']));
-$extend = Util::toInt(Util::array_get($_POST['extend']));
-$npcmode = Util::toInt(Util::array_get($_POST['npcmode']));
-$show_img_level = Util::toInt(Util::array_get($_POST['show_img_level']));
-
-
-
-if($turnterm===null || $sync===null || $scenario===null || $fiction===null || $extend===null || $npcmode===null || $show_img_level===null){
+$v = new Validator($_POST);
+$v->rule('required', [
+    'turnterm',
+    'sync',
+    'scenario',
+    'fiction',
+    'extend',
+    'npcmode',
+    'show_img_level'
+])->rule('integer', [
+    'turnterm',
+    'sync',
+    'scenario',
+    'fiction',
+    'extend',
+    'npcmode',
+    'show_img_level'
+]);
+if(!$v->validate()){
+    $errors = array_values((array)$v->errors());
+    $errors = array_map(function($value){return join(', ', $value);}, $errors);
+    $errors = join(', ', $errors);
     Json::die([
         'result'=>false,
-        'reason'=>'입력 값이 올바르지 않습니다'
+        'reason'=>$errors
     ]);
 }
 
+$turnterm  = (int)$_POST['turnterm'];
+$sync = (int)$_POST['sync'];
+$scenario = (int)$_POST['scenario'];
+$fiction = (int)$_POST['fiction'];
+$extend = (int)$_POST['extend'];
+$npcmode = (int)$_POST['npcmode'];
+$show_img_level = (int)$_POST['show_img_level'];
 
 if(120 % $turnterm != 0){
     Json::die([
@@ -39,20 +57,13 @@ if(120 % $turnterm != 0){
 
 $mysqli_obj = DB::db()->get();
 
+
 if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/reset.sql'))){
-    do{
-        if(!$mysqli_obj->store_result()){
-            break;
-        }
-    } while($mysqli_obj->next_result());
+    while ($mysqli_obj->next_result()) {;}
 }
 
 if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/schema.sql'))){
-    do{
-        if(!$mysqli_obj->store_result()){
-            break;
-        }
-    } while($mysqli_obj->next_result());
+    while ($mysqli_obj->next_result()) {;}
 }
 
 //TODO:script

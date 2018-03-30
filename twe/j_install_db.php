@@ -30,11 +30,7 @@ if($fullReset && class_exists('\\sammo\\DB')){
     $mysqli_obj = DB::db()->get();
 
     if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/reset.sql'))){
-        do{
-            if(!$mysqli_obj->store_result()){
-                break;
-            }
-        } while($mysqli_obj->next_result());
+        while ($mysqli_obj->next_result()) {;}
     }
 }
 
