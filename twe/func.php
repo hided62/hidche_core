@@ -1549,13 +1549,19 @@ function cutDay($date, int $turnterm) {
     $baseGap = 60*24 / $turnterm;
 
     $diffMin = intdiv($date->getTimeStamp() - $baseDate->getTimeStamp(), 60);
-    if($diffMin % $baseGap != 0){
+
+    $timeAdjust = $diffMin % $baseGap;
+    $newMonth = intdiv($timeAdjust, $turnterm) + 1;
+
+    $yearPulled = false;
+    if($newMonth > 3){//3월 이후일때는
+        $yearPulled = true;
         $diffMin += $baseGap;
     }
-    $diffMin -= $diffMin % $baseGap;
+    $diffMin -= $timeAdjust;
 
     $baseDate->add(new \DateInterval("PT{$diffMin}M"));
-    return $baseDate->format('Y-m-d H:i:s');
+    return [$baseDate->format('Y-m-d H:i:s'), $yearPulled, $newMonth];
 }
 
 function increaseRefresh($type="", $cnt=1) {

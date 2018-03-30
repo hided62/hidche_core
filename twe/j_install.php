@@ -69,21 +69,61 @@ if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/schema.sql'))){
     while (@$mysqli_obj->next_result()) {;}
 }
 
+CityConst::build();
+
 $db->insert('plock', [
     'plock'=>0
 ]);
 
-/*
-$db->insert('game', [
 
-]);
-*/
-//TODO:script
+$turntime = date('Y-m-d H:i:s');
+$time = substr($turntime, 11, 2);
+if($sync == 0) {
+    // 현재 시간을 1월로 맞춤
+    $starttime = cutTurn($turntime, $turnterm);
+    $month = 1;
+    $year = $startyear;
+} else {
+    // 현재 시간과 동기화
+    list($starttime, $yearPulled, $month) = cutDay($turntime, $turnterm);
+    if($yearPulled){
+        $year = $startyear-1;
+    }
+    else{
+        $year = $startyear;
+    }
+}
+
+$killturn = 4800 / $turnterm;
+if($npcmode == 1) { $killturn = floor($killturn / 3); }
+
 $env = [
-    
+    'year'=> $year,
+    'month'=> $month,
+    'msg'=>'공지사항',//TODO:공지사항
+    'maxgeneral'=>500,
+    'normgeneral'=>300,
+    'maxnation'=>55,
+    'conlimit'=>300,
+    'gold_rate'=>100,
+    'rice_rate'=>100,
+    'turntime'=>$turntime,
+    'starttime'=>$starttime,
+    'turnterm'=>$turnterm,
+    'killturn'=>$killturn,
+    'genius'=>5,
+    'startyear'=>$startyear,
+    'scenario'=>$scenario,
+    'show_img_level'=>$show_img_level,
+    'npcmode'=>$npcmode,
+    'extend'=>$extend,
+    'fiction'=>$fiction
 ];
 
+$db->insert('game', $env);
+
+$scenario->build($env);
+
 Json::die([
-    'result'=>false,
-    'reason'=>'NYI'
+    'result'=>true
 ]);
