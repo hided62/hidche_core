@@ -25,7 +25,8 @@ class GameUnitDetail{
         int $rice,
         int $recruitType,
         int $recruitCondition,
-        bool $recruitFirst
+        bool $recruitFirst,
+        array $info
     ){
         $this->name = $name;
         $this->attack = $attack;
@@ -37,6 +38,7 @@ class GameUnitDetail{
         $this->recruitType = $recruitType;
         $this->recruitCondition = $recruitCondition;
         $this->recruitFirst = $recruitFirst;
+        $this->info = $info;
     }
 
     public function isValid($ownCities, $ownRegions, $relativeYear, $tech){

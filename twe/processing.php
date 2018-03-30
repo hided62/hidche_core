@@ -240,11 +240,6 @@ function command_11($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    //현재 도시
-    $query = "select city,region from city where city='{$me['city']}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $curCity = MYDB_fetch_array($result);
-
     $query = "select level,tech from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error("process53 ".MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
@@ -257,80 +252,14 @@ function command_11($connect, $turn, $command) {
         $lbonus = 0;
     }
 
-    $explain = GetExplain();
+    $ownCities = [];
+    $ownRegions = [];
+    $relativeYear = $admin['year'] - $admin['startyear'];
+    $tech = $nation['tech'];
 
-    if($admin['year'] < $admin['startyear']+3) {
-        //그 국가에서 그 병종 가능한지
-        $valid[0]  = 1;             $color[0]  = $_basecolor2;
-        $valid[10] = 1;             $color[10] = $_basecolor2;
-        $valid[20] = 1;             $color[20] = $_basecolor2;
-        $valid[30] = 1;             $color[30] = $_basecolor2;
-        $valid[40] = 1;             $color[40] = "red"; // 정란
-        $valid[41] = 1;             $color[41] = "red"; // 충차
-    } else {
-        // 아국 도시 구분
-        $query = "select city,level,region from city where nation='{$me['nation']}'";
-        $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-        $citycount = MYDB_num_rows($result);
-
-        for($i=0; $i < $citycount; $i++) {
-            $city = MYDB_fetch_array($result);
-            // 기술 1000 이상부터 지역병
-            if($nation['tech'] >= 1000) {
-                $myregion[$city['region']] = 1;
-            }
-            // 기술 2000 이상부터 이민족병
-            if($city['level'] == 4 && $nation['tech'] >= 2000) {
-                $mycity[$city['city']] = 1;
-            }
-            // 기술 3000 이상부터 특수병
-            if($city['level'] == 8 && $nation['tech'] >= 3000) {
-                $mycity[$city['city']] = 1;
-            }
-        }
-
-        //그 국가에서 그 병종 가능한지
-        $valid[0] = 1;              $color[0] = $_basecolor2;
-        $valid[1] = $myregion[2];   $color[1] = "limegreen";  // 청주병(중원)
-        $valid[2] = $myregion[7];   $color[2] = "limegreen";  // 수병(오월)
-        $valid[3] = $mycity[64];    $color[3] = "limegreen";  // 자객병(저)
-        $valid[4] = $mycity[3];     $color[4] = "limegreen";  // 근위병(낙양)
-        $valid[5] = $myregion[5];   $color[5] = "limegreen";  // 등갑병(남중)
-        $valid[10] = 1;             $color[10] = $_basecolor2;
-        $valid[11] = $myregion[8];  $color[11] = "limegreen"; // 궁기병(동이)
-        $valid[12] = $myregion[4];  $color[12] = "limegreen"; // 연노병(서촉)
-        $valid[13] = $mycity[6];    $color[13] = "limegreen"; // 강궁병(양양)
-        $valid[14] = $mycity[7];    $color[14] = "limegreen"; // 석궁병(건업)
-        $valid[20] = 1;             $color[20] = $_basecolor2;
-        $valid[21] = $myregion[1];  $color[21] = "limegreen"; // 백마병(하북)
-        $valid[22] = $myregion[3];  $color[22] = "limegreen"; // 중장기병(서북)
-        $valid[23] = $mycity[65];   $color[23] = "limegreen"; // 돌격기병(흉노)
-        $valid[24] = $mycity[63];   $color[24] = "limegreen"; // 철기병(강)
-        $valid[25] = $mycity[67];   $color[25] = "limegreen"; // 수렵기병(산월)
-        $valid[26] = $mycity[66];   $color[26] = "limegreen"; // 맹수병(남만)
-        $valid[27] = $mycity[2];    $color[27] = "limegreen"; // 호표기병(허창)
-        $valid[30] = 1;             $color[30] = $_basecolor2;
-        $valid[31] = $myregion[6];  $color[31] = "limegreen"; // 신귀병(초)
-        $valid[32] = $mycity[68];   $color[32] = "limegreen"; // 백귀병(오환)
-        $valid[33] = $mycity[69];   $color[33] = "limegreen"; // 흑귀병(왜)
-        $valid[34] = $mycity[4];    $color[34] = "limegreen"; // 악귀병(장안)
-        $valid[35] = 1;             $color[35] = $_basecolor2;// 남귀병
-        $valid[36] = $mycity[3];    $color[36] = "limegreen"; // 황귀병(낙양)
-        $valid[37] = $mycity[5];    $color[37] = "limegreen"; // 천귀병(성도)
-        $valid[38] = $mycity[1];    $color[38] = "limegreen"; // 마귀병(업)
-        $valid[40] = 1;             $color[40] = $_basecolor2;// 정란
-        $valid[41] = 1;             $color[41] = $_basecolor2;// 충차
-        $valid[42] = $mycity[1];    $color[42] = "limegreen"; // 벽력거(업)
-        $valid[43] = $mycity[5];    $color[43] = "limegreen"; // 목우(성도)
-
-        // 남귀병은 기술1등급부터
-        if($nation['tech'] < 1000) {
-            $valid[35] = 0;
-        }
-        // 충차는 기술1등급부터
-        if($nation['tech'] < 1000) {
-            $valid[41] = 0;
-        }
+    foreach(DB::db()->query('SELECT city, region from city where nation = %i', $me['nation']) as $city){
+        $ownCities[$city['city']] = 1;
+        $ownRegions[$city['region']] = 1;
     }
 
     $leader = floor($me['leader'] * (100 - $me['injury'])/100) + getHorseEff($me['horse']) + $lbonus;
@@ -406,254 +335,97 @@ function calc(cost, formnum) {
         <td width=300 align=center id=bg1>특징</td>
     </tr>";
 
-    echo "
-    <tr><td colspan=10>보병 계열</td></tr>";
-
-    for($i=0; $i <= 5; $i++) {
-        if($valid[$i] == 1) {
-            $ric = $admin["ric{$i}"] * $cost;
-            $cst = $admin["cst{$i}"] * $cost;
-            //성격 보정
-            $cst = CharCost($cst, $me['personal']);
-            //특기 보정 : 보병, 징병
-            if($me['special2'] == 50) { $cst *= 0.9; }
-            if($me['special2'] == 72) { $cst *= 0.5; }
-            $att = $admin["att{$i}"] + $abil;
-            $def = $admin["def{$i}"] + $abil;
-            $spd = $admin["spd{$i}"];
-            $avd = $admin["avd{$i}"];
-            $ric = round($ric);
-            $cst = round($cst);
-            $l = $color[$i];
-            $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
-            echo "
-    <tr height=64 bgcolor=$l>
-        <td background={$weapImage} align=center></td>
-        <td align=center>".getTypename($i)."</td>
-        <td align=center>{$att}</td>
-        <td align=center>{$def}</td>
-        <td align=center>{$spd}</td>
-        <td align=center>{$avd}</td>
-        <td align=center>{$ric}</td>
-        <td align=center>{$cst}</td>
-    <form name=form{$i} action=c_double.php>
-        <td valign=center>
-            <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($cst, $i)'><br>
-            <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=징병>
-            <input type=hidden name=third value={$i}>
-            <input type=hidden name=command value=$command>";
-
-            for($j=0; $j < sizeof($turn); $j++) {
-                echo "
-            <input type=hidden name=turn[] value=$turn[$j]>";
-            }
-            echo "
-        </td>
-    </form>
-        <td>$explain[$i]</td>
-    </tr>";
+    foreach(GameUnitConst::all() as $i=>$unit) {
+        if($i == 0){
+            echo '<tr><td colspan=10>보병 계열</td></tr>';
         }
-    }
-
-    echo "
-    <tr><td colspan=10>궁병 계열</td></tr>";
-
-    for($i=10; $i <= 14; $i++) {
-        if($valid[$i] == 1) {
-            $ric = $admin["ric{$i}"] * $cost;
-            $cst = $admin["cst{$i}"] * $cost;
-            //성격 보정
-            $cst = CharCost($cst, $me['personal']);
-            //특기 보정 : 궁병, 징병
-            if($me['special2'] == 51) { $cst *= 0.9; }
-            if($me['special2'] == 72) { $cst *= 0.5; }
-            $att = $admin["att{$i}"] + $abil;
-            $def = $admin["def{$i}"] + $abil;
-            $spd = $admin["spd{$i}"];
-            $avd = $admin["avd{$i}"];
-            $ric = round($ric);
-            $cst = round($cst);
-            $l = $color[$i];
-            $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
-            echo "
-    <tr height=64 bgcolor=$l>
-        <td background={$weapImage} align=center></td>
-        <td align=center>".getTypename($i)."</td>
-        <td align=center>{$att}</td>
-        <td align=center>{$def}</td>
-        <td align=center>{$spd}</td>
-        <td align=center>{$avd}</td>
-        <td align=center>{$ric}</td>
-        <td align=center>{$cst}</td>
-    <form name=form{$i} action=c_double.php>
-        <td valign=center>
-            <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($cst, $i)'><br>
-            <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=징병>
-            <input type=hidden name=third value={$i}>
-            <input type=hidden name=command value=$command>";
-
-            for($j=0; $j < sizeof($turn); $j++) {
-                echo "
-            <input type=hidden name=turn[] value=$turn[$j]>";
-            }
-            echo "
-        </td>
-    </form>
-        <td>$explain[$i]</td>
-    </tr>";
+        else if($i == 10){
+            echo '<tr><td colspan=10>궁병 계열</td></tr>';
         }
-    }
-
-    echo "
-    <tr><td colspan=10>기병 계열</td></tr>";
-
-    for($i=20; $i <= 27; $i++) {
-        if($valid[$i] == 1) {
-            $ric = $admin["ric{$i}"] * $cost;
-            $cst = $admin["cst{$i}"] * $cost;
-            //성격 보정
-            $cst = CharCost($cst, $me['personal']);
-            //특기 보정 : 기병, 징병
-            if($me['special2'] == 52) { $cst *= 0.9; }
-            if($me['special2'] == 72) { $cst *= 0.5; }
-            $att = $admin["att{$i}"] + $abil;
-            $def = $admin["def{$i}"] + $abil;
-            $spd = $admin["spd{$i}"];
-            $avd = $admin["avd{$i}"];
-            $ric = round($ric);
-            $cst = round($cst);
-            $l = $color[$i];
-            $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
-            echo "
-    <tr height=64 bgcolor=$l>
-        <td background={$weapImage} align=center></td>
-        <td align=center>".getTypename($i)."</td>
-        <td align=center>{$att}</td>
-        <td align=center>{$def}</td>
-        <td align=center>{$spd}</td>
-        <td align=center>{$avd}</td>
-        <td align=center>{$ric}</td>
-        <td align=center>{$cst}</td>
-    <form name=form{$i} action=c_double.php>
-        <td valign=center>
-            <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($cst, $i)'><br>
-            <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=징병>
-            <input type=hidden name=third value={$i}>
-            <input type=hidden name=command value=$command>";
-
-            for($j=0; $j < sizeof($turn); $j++) {
-                echo "
-            <input type=hidden name=turn[] value=$turn[$j]>";
-            }
-            echo "
-        </td>
-    </form>
-        <td>$explain[$i]</td>
-    </tr>";
+        else if($i == 20){
+            echo '<tr><td colspan=10>기병 계열</td></tr>';
         }
-    }
-
-    echo "
-    <tr><td colspan=10>귀병 계열</td></tr>";
-
-    for($i=30; $i <= 38; $i++) {
-        if($valid[$i] == 1) {
-            $ric = $admin["ric{$i}"] * $cost;
-            $cst = $admin["cst{$i}"] * $cost;
-            //성격 보정
-            $cst = CharCost($cst, $me['personal']);
-            //특기 보정 : 귀병, 징병
-            if($me['special2'] == 40) { $cst *= 0.9; }
-            if($me['special2'] == 72) { $cst *= 0.5; }
-            $att = $admin["att{$i}"] + $abil;
-            $def = $admin["def{$i}"] + $abil;
-            $spd = $admin["spd{$i}"];
-            $avd = $admin["avd{$i}"];
-            $ric = round($ric);
-            $cst = round($cst);
-            $l = $color[$i];
-            $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
-            echo "
-    <tr height=64 bgcolor=$l>
-        <td background={$weapImage} align=center></td>
-        <td align=center>".getTypename($i)."</td>
-        <td align=center>{$att}</td>
-        <td align=center>{$def}</td>
-        <td align=center>{$spd}</td>
-        <td align=center>{$avd}</td>
-        <td align=center>{$ric}</td>
-        <td align=center>{$cst}</td>
-    <form name=form{$i} action=c_double.php>
-        <td valign=center>
-            <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($cst, $i)'><br>
-            <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=징병>
-            <input type=hidden name=third value={$i}>
-            <input type=hidden name=command value=$command>";
-
-            for($j=0; $j < sizeof($turn); $j++) {
-                echo "
-            <input type=hidden name=turn[] value=$turn[$j]>";
-            }
-            echo "
-        </td>
-    </form>
-        <td>$explain[$i]</td>
-    </tr>";
+        else if($i == 30){
+            echo '<tr><td colspan=10>귀병 계열</td></tr>';
         }
-    }
-
-    echo "
-    <tr><td colspan=10>차 계열</td></tr>";
-
-    for($i=40; $i <= 43; $i++) {
-        if($valid[$i] == 1) {
-            $ric = $admin["ric{$i}"] * $cost;
-            $cst = $admin["cst{$i}"] * $cost;
-            //성격 보정
-            $cst = CharCost($cst, $me['personal']);
-            //특기 보정 : 공성, 징병
-            if($me['special2'] == 53) { $cst *= 0.9; }
-            if($me['special2'] == 72) { $cst *= 0.5; }
-            $att = $admin["att{$i}"] + $abil;
-            $def = $admin["def{$i}"] + $abil;
-            $spd = $admin["spd{$i}"];
-            $avd = $admin["avd{$i}"];
-            $ric = round($ric);
-            $cst = round($cst);
-            $l = $color[$i];
-            $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
-            echo "
-    <tr height=64 bgcolor=$l>
-        <td background={$weapImage} align=center></td>
-        <td align=center>".getTypename($i)."</td>
-        <td align=center>{$att}</td>
-        <td align=center>{$def}</td>
-        <td align=center>{$spd}</td>
-        <td align=center>{$avd}</td>
-        <td align=center>{$ric}</td>
-        <td align=center>{$cst}</td>
-    <form name=form{$i} action=c_double.php>
-        <td valign=center>
-            <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($cst, $i)'><br>
-            <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=징병>
-            <input type=hidden name=third value={$i}>
-            <input type=hidden name=command value=$command>";
-
-            for($j=0; $j < sizeof($turn); $j++) {
-                echo "
-            <input type=hidden name=turn[] value=$turn[$j]>";
-            }
-            echo "
-        </td>
-    </form>
-        <td>$explain[$i]</td>
-    </tr>";
+        else if($i == 40){
+            echo '<tr><td colspan=10>차병 계열</td></tr>';
         }
+
+        if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
+            continue; //TODO: 불가능한 병종도 보여줄 필요가 있음.
+        }
+        
+        if($unit->recruitType == 0){
+            $l = 'green';
+        }
+        else{
+            $l = 'limegreen';
+        }
+
+        $baseRice = $unit->rice * $cost;
+        $baseCost = $unit->cost * $cost;
+        $baseCost = CharCost($baseCost, $me['personal']);
+
+        $unitBaseType = intdiv($this->id, 10);
+        if($me['special2'] == 50 && $unitBaseType == 0){
+            $baseCost *= 0.9;
+        }
+        else if($me['special2'] == 51 && $unitBaseType == 1){
+            $baseCost *= 0.9;
+        }
+        else if($me['special2'] == 52 && $unitBaseType == 2){
+            $baseCost *= 0.9;
+        }
+        else if($me['special2'] == 53 && $unitBaseType == 3){
+            $baseCost *= 0.9;
+        }
+        else if($me['special2'] == 54 && $unitBaseType == 4){
+            $baseCost *= 0.9;
+        }
+        else if($me['special2'] == 72) { 
+            $baseCost *= 0.5; 
+        }
+
+        $name = $this->name;
+        $att = $this->attack + $abil;
+        $def = $this->defence + $abil;
+        $spd = $this->speed;
+        $avd = $this->avoid;
+        $weapImage = "{$images}/weap{$i}.jpg";
+        if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
+        
+        $baseRiceShort = round($baseRice, 1);
+        $baseCostShort = round($baseCost, 1);
+
+        $info = join('<br>', $this->info);
+
+        echo "
+<tr height=64 bgcolor=$l>
+    <td background={$weapImage} align=center></td>
+    <td align=center>{$name}</td>
+    <td align=center>{$att}</td>
+    <td align=center>{$def}</td>
+    <td align=center>{$spd}</td>
+    <td align=center>{$avd}</td>
+    <td align=center>{$baseRiceShort}</td>
+    <td align=center>{$baseCostShort}</td>
+<form name=form{$i} action=c_double.php>
+    <td valign=center>
+        <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($baseCost, $i)'><br>
+        <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=징병>
+        <input type=hidden name=third value={$i}>
+        <input type=hidden name=command value=$command>";
+
+        for($j=0; $j < sizeof($turn); $j++) {
+            echo "
+        <input type=hidden name=turn[] value=$turn[$j]>";
+        }
+        echo "
+    </td>
+</form>
+    <td>$info</td>
+    </tr>";
     }
 
     echo "
@@ -669,14 +441,9 @@ function command_12($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$_SESSION['userID']}'";
-    $result = MYDB_query($query, $connect) or Error("command_12 ".MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
-
-    //현재 도시
-    $query = "select city,region from city where city='{$me['city']}'";
+    $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$_SESSION['userID']}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $curCity = MYDB_fetch_array($result);
+    $me = MYDB_fetch_array($result);
 
     $query = "select level,tech from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error("process53 ".MYDB_error($connect),"");
@@ -690,80 +457,14 @@ function command_12($connect, $turn, $command) {
         $lbonus = 0;
     }
 
-    $explain = GetExplain();
+    $ownCities = [];
+    $ownRegions = [];
+    $relativeYear = $admin['year'] - $admin['startyear'];
+    $tech = $nation['tech'];
 
-    if($admin['year'] < $admin['startyear']+3) {
-        //그 국가에서 그 병종 가능한지
-        $valid[0]  = 1;             $color[0]  = $_basecolor2;
-        $valid[10] = 1;             $color[10] = $_basecolor2;
-        $valid[20] = 1;             $color[20] = $_basecolor2;
-        $valid[30] = 1;             $color[30] = $_basecolor2;
-        $valid[40] = 1;             $color[40] = "red"; // 정란
-        $valid[41] = 1;             $color[41] = "red"; // 충차
-    } else {
-        // 아국 도시 구분
-        $query = "select city,level,region from city where nation='{$me['nation']}'";
-        $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-        $citycount = MYDB_num_rows($result);
-
-        for($i=0; $i < $citycount; $i++) {
-            $city = MYDB_fetch_array($result);
-            // 기술 1000 이상부터 지역병
-            if($nation['tech'] >= 1000) {
-                $myregion[$city['region']] = 1;
-            }
-            // 기술 2000 이상부터 이민족병
-            if($city['level'] == 4 && $nation['tech'] >= 2000) {
-                $mycity[$city['city']] = 1;
-            }
-            // 기술 3000 이상부터 특수병
-            if($city['level'] == 8 && $nation['tech'] >= 3000) {
-                $mycity[$city['city']] = 1;
-            }
-        }
-
-        //그 국가에서 그 병종 가능한지
-        $valid[0] = 1;              $color[0] = $_basecolor2;
-        $valid[1] = $myregion[2];   $color[1] = "limegreen";  // 청주병(중원)
-        $valid[2] = $myregion[7];   $color[2] = "limegreen";  // 수병(오월)
-        $valid[3] = $mycity[64];    $color[3] = "limegreen";  // 자객병(저)
-        $valid[4] = $mycity[3];     $color[4] = "limegreen";  // 근위병(낙양)
-        $valid[5] = $myregion[5];   $color[5] = "limegreen";  // 등갑병(남중)
-        $valid[10] = 1;             $color[10] = $_basecolor2;
-        $valid[11] = $myregion[8];  $color[11] = "limegreen"; // 궁기병(동이)
-        $valid[12] = $myregion[4];  $color[12] = "limegreen"; // 연노병(서촉)
-        $valid[13] = $mycity[6];    $color[13] = "limegreen"; // 강궁병(양양)
-        $valid[14] = $mycity[7];    $color[14] = "limegreen"; // 석궁병(건업)
-        $valid[20] = 1;             $color[20] = $_basecolor2;
-        $valid[21] = $myregion[1];  $color[21] = "limegreen"; // 백마병(하북)
-        $valid[22] = $myregion[3];  $color[22] = "limegreen"; // 중장기병(서북)
-        $valid[23] = $mycity[65];   $color[23] = "limegreen"; // 돌격기병(흉노)
-        $valid[24] = $mycity[63];   $color[24] = "limegreen"; // 철기병(강)
-        $valid[25] = $mycity[67];   $color[25] = "limegreen"; // 수렵기병(산월)
-        $valid[26] = $mycity[66];   $color[26] = "limegreen"; // 맹수병(남만)
-        $valid[27] = $mycity[2];    $color[27] = "limegreen"; // 호표기병(허창)
-        $valid[30] = 1;             $color[30] = $_basecolor2;
-        $valid[31] = $myregion[6];  $color[31] = "limegreen"; // 신귀병(초)
-        $valid[32] = $mycity[68];   $color[32] = "limegreen"; // 백귀병(오환)
-        $valid[33] = $mycity[69];   $color[33] = "limegreen"; // 흑귀병(왜)
-        $valid[34] = $mycity[4];    $color[34] = "limegreen"; // 악귀병(장안)
-        $valid[35] = 1;             $color[35] = $_basecolor2;// 남귀병
-        $valid[36] = $mycity[3];    $color[36] = "limegreen"; // 황귀병(낙양)
-        $valid[37] = $mycity[5];    $color[37] = "limegreen"; // 천귀병(성도)
-        $valid[38] = $mycity[1];    $color[38] = "limegreen"; // 마귀병(업)
-        $valid[40] = 1;             $color[40] = $_basecolor2;// 정란
-        $valid[41] = 1;             $color[41] = $_basecolor2;// 충차
-        $valid[42] = $mycity[1];    $color[42] = "limegreen"; // 벽력거(업)
-        $valid[43] = $mycity[5];    $color[43] = "limegreen"; // 목우(성도)
-
-        // 남귀병은 기술1등급부터
-        if($nation['tech'] < 1000) {
-            $valid[35] = 0;
-        }
-        // 충차는 기술1등급부터
-        if($nation['tech'] < 1000) {
-            $valid[41] = 0;
-        }
+    foreach(DB::db()->query('SELECT city, region from city where nation = %i', $me['nation']) as $city){
+        $ownCities[$city['city']] = 1;
+        $ownRegions[$city['region']] = 1;
     }
 
     $leader = floor($me['leader'] * (100 - $me['injury'])/100) + getHorseEff($me['horse']) + $lbonus;
@@ -840,254 +541,98 @@ function calc(cost, formnum) {
         <td width=300 align=center id=bg1>특징</td>
     </tr>";
 
-    echo "
-    <tr><td colspan=10>보병 계열</td></tr>";
-
-    for($i=0; $i <= 5; $i++) {
-        if($valid[$i] == 1) {
-            $ric = $admin["ric{$i}"] * $cost;
-            $cst = $admin["cst{$i}"] * $cost;
-            //성격 보정
-            $cst = CharCost($cst, $me['personal']);
-            //특기 보정 : 보병, 징병
-            if($me['special2'] == 50) { $cst *= 0.9; }
-            if($me['special2'] == 72) { $cst *= 0.5; }
-            $att = $admin["att{$i}"] + $abil;
-            $def = $admin["def{$i}"] + $abil;
-            $spd = $admin["spd{$i}"];
-            $avd = $admin["avd{$i}"];
-            $ric = round($ric);
-            $cst = round($cst);
-            $l = $color[$i];
-            $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
-            echo "
-    <tr height=64 bgcolor=$l>
-        <td background={$weapImage} align=center></td>
-        <td align=center>".getTypename($i)."</td>
-        <td align=center>{$att}</td>
-        <td align=center>{$def}</td>
-        <td align=center>{$spd}</td>
-        <td align=center>{$avd}</td>
-        <td align=center>{$ric}</td>
-        <td align=center>{$cst}</td>
-    <form name=form{$i} action=c_double.php>
-        <td valign=center>
-            <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($cst, $i)'><br>
-            <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=모병>
-            <input type=hidden name=third value={$i}>
-            <input type=hidden name=command value=$command>";
-
-            for($j=0; $j < sizeof($turn); $j++) {
-                echo "
-            <input type=hidden name=turn[] value=$turn[$j]>";
-            }
-            echo "
-        </td>
-    </form>
-        <td>$explain[$i]</td>
-    </tr>";
+    
+    foreach(GameUnitConst::all() as $i=>$unit) {
+        if($i == 0){
+            echo '<tr><td colspan=10>보병 계열</td></tr>';
         }
-    }
-
-    echo "
-    <tr><td colspan=10>궁병 계열</td></tr>";
-
-    for($i=10; $i <= 14; $i++) {
-        if($valid[$i] == 1) {
-            $ric = $admin["ric{$i}"] * $cost;
-            $cst = $admin["cst{$i}"] * $cost;
-            //성격 보정
-            $cst = CharCost($cst, $me['personal']);
-            //특기 보정 : 궁병, 징병
-            if($me['special2'] == 51) { $cst *= 0.9; }
-            if($me['special2'] == 72) { $cst *= 0.5; }
-            $att = $admin["att{$i}"] + $abil;
-            $def = $admin["def{$i}"] + $abil;
-            $spd = $admin["spd{$i}"];
-            $avd = $admin["avd{$i}"];
-            $ric = round($ric);
-            $cst = round($cst);
-            $l = $color[$i];
-            $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
-            echo "
-    <tr height=64 bgcolor=$l>
-        <td background={$weapImage} align=center></td>
-        <td align=center>".getTypename($i)."</td>
-        <td align=center>{$att}</td>
-        <td align=center>{$def}</td>
-        <td align=center>{$spd}</td>
-        <td align=center>{$avd}</td>
-        <td align=center>{$ric}</td>
-        <td align=center>{$cst}</td>
-    <form name=form{$i} action=c_double.php>
-        <td valign=center>
-            <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($cst, $i)'><br>
-            <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=모병>
-            <input type=hidden name=third value={$i}>
-            <input type=hidden name=command value=$command>";
-
-            for($j=0; $j < sizeof($turn); $j++) {
-                echo "
-            <input type=hidden name=turn[] value=$turn[$j]>";
-            }
-            echo "
-        </td>
-    </form>
-        <td>$explain[$i]</td>
-    </tr>";
+        else if($i == 10){
+            echo '<tr><td colspan=10>궁병 계열</td></tr>';
         }
-    }
-
-    echo "
-    <tr><td colspan=10>기병 계열</td></tr>";
-
-    for($i=20; $i <= 27; $i++) {
-        if($valid[$i] == 1) {
-            $ric = $admin["ric{$i}"] * $cost;
-            $cst = $admin["cst{$i}"] * $cost;
-            //성격 보정
-            $cst = CharCost($cst, $me['personal']);
-            //특기 보정 : 기병, 징병
-            if($me['special2'] == 52) { $cst *= 0.9; }
-            if($me['special2'] == 72) { $cst *= 0.5; }
-            $att = $admin["att{$i}"] + $abil;
-            $def = $admin["def{$i}"] + $abil;
-            $spd = $admin["spd{$i}"];
-            $avd = $admin["avd{$i}"];
-            $ric = round($ric);
-            $cst = round($cst);
-            $l = $color[$i];
-            $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
-            echo "
-    <tr height=64 bgcolor=$l>
-        <td background={$weapImage} align=center></td>
-        <td align=center>".getTypename($i)."</td>
-        <td align=center>{$att}</td>
-        <td align=center>{$def}</td>
-        <td align=center>{$spd}</td>
-        <td align=center>{$avd}</td>
-        <td align=center>{$ric}</td>
-        <td align=center>{$cst}</td>
-    <form name=form{$i} action=c_double.php>
-        <td valign=center>
-            <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($cst, $i)'><br>
-            <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=모병>
-            <input type=hidden name=third value={$i}>
-            <input type=hidden name=command value=$command>";
-
-            for($j=0; $j < sizeof($turn); $j++) {
-                echo "
-            <input type=hidden name=turn[] value=$turn[$j]>";
-            }
-            echo "
-        </td>
-    </form>
-        <td>$explain[$i]</td>
-    </tr>";
+        else if($i == 20){
+            echo '<tr><td colspan=10>기병 계열</td></tr>';
         }
-    }
-
-    echo "
-    <tr><td colspan=10>귀병 계열</td></tr>";
-
-    for($i=30; $i <= 38; $i++) {
-        if($valid[$i] == 1) {
-            $ric = $admin["ric{$i}"] * $cost;
-            $cst = $admin["cst{$i}"] * $cost;
-            //성격 보정
-            $cst = CharCost($cst, $me['personal']);
-            //특기 보정 : 귀병, 징병
-            if($me['special2'] == 40) { $cst *= 0.9; }
-            if($me['special2'] == 72) { $cst *= 0.5; }
-            $att = $admin["att{$i}"] + $abil;
-            $def = $admin["def{$i}"] + $abil;
-            $spd = $admin["spd{$i}"];
-            $avd = $admin["avd{$i}"];
-            $ric = round($ric);
-            $cst = round($cst);
-            $l = $color[$i];
-            $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
-            echo "
-    <tr height=64 bgcolor=$l>
-        <td background={$weapImage} align=center></td>
-        <td align=center>".getTypename($i)."</td>
-        <td align=center>{$att}</td>
-        <td align=center>{$def}</td>
-        <td align=center>{$spd}</td>
-        <td align=center>{$avd}</td>
-        <td align=center>{$ric}</td>
-        <td align=center>{$cst}</td>
-    <form name=form{$i} action=c_double.php>
-        <td valign=center>
-            <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($cst, $i)'><br>
-            <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=모병>
-            <input type=hidden name=third value={$i}>
-            <input type=hidden name=command value=$command>";
-
-            for($j=0; $j < sizeof($turn); $j++) {
-                echo "
-            <input type=hidden name=turn[] value=$turn[$j]>";
-            }
-            echo "
-        </td>
-    </form>
-        <td>$explain[$i]</td>
-    </tr>";
+        else if($i == 30){
+            echo '<tr><td colspan=10>귀병 계열</td></tr>';
         }
-    }
-
-    echo "
-    <tr><td colspan=10>차 계열</td></tr>";
-
-    for($i=40; $i <= 43; $i++) {
-        if($valid[$i] == 1) {
-            $ric = $admin["ric{$i}"] * $cost;
-            $cst = $admin["cst{$i}"] * $cost;
-            //성격 보정
-            $cst = CharCost($cst, $me['personal']);
-            //특기 보정 : 공성, 징병
-            if($me['special2'] == 53) { $cst *= 0.9; }
-            if($me['special2'] == 72) { $cst *= 0.5; }
-            $att = $admin["att{$i}"] + $abil;
-            $def = $admin["def{$i}"] + $abil;
-            $spd = $admin["spd{$i}"];
-            $avd = $admin["avd{$i}"];
-            $ric = round($ric);
-            $cst = round($cst);
-            $l = $color[$i];
-            $weapImage = "{$images}/weap{$i}.jpg";
-            if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
-            echo "
-    <tr height=64 bgcolor=$l>
-        <td background={$weapImage} align=center></td>
-        <td align=center>".getTypename($i)."</td>
-        <td align=center>{$att}</td>
-        <td align=center>{$def}</td>
-        <td align=center>{$spd}</td>
-        <td align=center>{$avd}</td>
-        <td align=center>{$ric}</td>
-        <td align=center>{$cst}</td>
-    <form name=form{$i} action=c_double.php>
-        <td valign=center>
-            <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($cst, $i)'><br>
-            <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=모병>
-            <input type=hidden name=third value={$i}>
-            <input type=hidden name=command value=$command>";
-
-            for($j=0; $j < sizeof($turn); $j++) {
-                echo "
-            <input type=hidden name=turn[] value=$turn[$j]>";
-            }
-            echo "
-        </td>
-    </form>
-        <td>$explain[$i]</td>
-    </tr>";
+        else if($i == 40){
+            echo '<tr><td colspan=10>차병 계열</td></tr>';
         }
+
+        if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
+            continue; //TODO: 불가능한 병종도 보여줄 필요가 있음.
+        }
+        
+        if($unit->recruitType == 0){
+            $l = 'green';
+        }
+        else{
+            $l = 'limegreen';
+        }
+
+        $baseRice = $unit->rice * $cost;
+        $baseCost = $unit->cost * $cost;
+        $baseCost = CharCost($baseCost, $me['personal']);
+
+        $unitBaseType = intdiv($this->id, 10);
+        if($me['special2'] == 50 && $unitBaseType == 0){
+            $baseCost *= 0.9;
+        }
+        else if($me['special2'] == 51 && $unitBaseType == 1){
+            $baseCost *= 0.9;
+        }
+        else if($me['special2'] == 52 && $unitBaseType == 2){
+            $baseCost *= 0.9;
+        }
+        else if($me['special2'] == 53 && $unitBaseType == 3){
+            $baseCost *= 0.9;
+        }
+        else if($me['special2'] == 54 && $unitBaseType == 4){
+            $baseCost *= 0.9;
+        }
+        else if($me['special2'] == 72) { 
+            $baseCost *= 0.5; 
+        }
+
+        $name = $this->name;
+        $att = $this->attack + $abil;
+        $def = $this->defence + $abil;
+        $spd = $this->speed;
+        $avd = $this->avoid;
+        $weapImage = "{$images}/weap{$i}.jpg";
+        if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
+        
+        $baseRiceShort = round($baseRice, 1);
+        $baseCostShort = round($baseCost, 1);
+
+        $info = join('<br>', $this->info);
+
+        echo "
+<tr height=64 bgcolor=$l>
+    <td background={$weapImage} align=center></td>
+    <td align=center>{$name}</td>
+    <td align=center>{$att}</td>
+    <td align=center>{$def}</td>
+    <td align=center>{$spd}</td>
+    <td align=center>{$avd}</td>
+    <td align=center>{$baseRiceShort}</td>
+    <td align=center>{$baseCostShort}</td>
+<form name=form{$i} action=c_double.php>
+    <td valign=center>
+        <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($baseCost, $i)'><br>
+        <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=징병>
+        <input type=hidden name=third value={$i}>
+        <input type=hidden name=command value=$command>";
+
+        for($j=0; $j < sizeof($turn); $j++) {
+            echo "
+        <input type=hidden name=turn[] value=$turn[$j]>";
+        }
+        echo "
+    </td>
+</form>
+    <td>$info</td>
+    </tr>";
     }
 
     echo "
