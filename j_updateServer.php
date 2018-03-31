@@ -3,6 +3,21 @@ namespace sammo;
 
 require('_common.php');
 
+function getVersion($target=null){
+    if($target){
+        $command = sprintf('git describe %s --long --tags', escapeshellarg($target));
+    }
+    else{
+        $command = 'git describe --long --tags';
+    }
+    exec($command, $output);
+    if(is_array($output)){
+        $output = join('', $output);
+    }
+    return trim($output);
+    
+}
+
 $session = Session::requireLogin(null)->setReadOnly();
 if($session->userGrade < 6){
     Json::die([
@@ -67,7 +82,6 @@ if(!file_exists($server)){
 
 
 if($server == $baseServerName){
-
     exec("git pull 2>&1", $output);
     if($output && $output[0] != 'Already up-to-date.'){
         Json::die([
@@ -76,10 +90,17 @@ if($server == $baseServerName){
         ]);
     }
 
-    //TODO: 버전명을 기록.
+    $version = getVersion();
+    $result = Util::generateFileUsingSimpleTemplate(
+        __DIR__.'/'.$server.'/d_setting/VersionGit.orig.php',
+        __DIR__.'/'.$server.'/d_setting/VersionGit.php',[
+            'verionGit'=>$version
+        ], true
+    );
 
     Json::die([
         'result'=>true,
+        'version'=>$version
     ]);
 
 }
@@ -118,10 +139,15 @@ if(!$zip->extractTo($server)){
 $zip->close();
 @unlink($tmpFile);
 
-
-
-//TODO: 버전명을 기록.
+$version = getVersion();
+$result = Util::generateFileUsingSimpleTemplate(
+    __DIR__.'/'.$server.'/d_setting/VersionGit.orig.php',
+    __DIR__.'/'.$server.'/d_setting/VersionGit.php',[
+        'verionGit'=>$version
+    ], true
+);
 
 Json::die([
     'result'=>true,
+    'version'=>$version
 ]);
