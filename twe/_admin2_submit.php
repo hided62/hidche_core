@@ -4,15 +4,18 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 //로그인 검사
-CheckLogin();
-$connect = dbConn();
+$session = Session::requireLogin()->loginGame();
 
-if(Session::getUserGrade() < 5) {
-    //echo "<script>location.replace('_admin2.php');</script>";
-    echo '_admin2.php';//TODO:debug all and replace
+if($session->userGrade < 5) {
+    header('location:_admin2.php');
 }
 
-$generalID = getGeneralID();
+$generalID = $session->generalID;
+if(!$generalID){
+    header('location:_admin2.php');
+}
+
+$connect = dbConn();
 
 switch($btn) {
     case "전체 접속허용":

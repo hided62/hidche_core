@@ -96,11 +96,9 @@ $_taxrate = 0.01;   // 군량 매매시 세율
 //$images = "http://jwh1807.vipweb.kr/images";
 //$image = "http://jwh1807.vipweb.kr/image";
 $image1 = "../d_pic";
-    $images = "/images";
-    $image = "/image";
+$images = "/images";
+$image = "/image";
 
-unset($member);
-unset($setup);
 
 // Data, Icon, 세션디렉토리의 쓰기 권한이 없다면 에러 처리
 // 단, 폴더가 없는 경우라면 폴더를 생성 할 필요가 있음. 
@@ -112,26 +110,6 @@ if(is_dir(__DIR__."/data")){
 }
 
 session_cache_limiter('nocache, must_revalidate');//NOTE: 캐시가 가능하도록 설정해야 할 수도 있음. 주의!
-
-// 세션 변수의 등록
-//NOTE: ajax등의 경우에는 session_write_close로 빠르게 끝낼 수 있어야한다.
-session_start();
-
-//첫 등장
-if(!Util::array_get($_SESSION['p_ip'], null)) {
-    $_SESSION['p_ip'] = getenv("REMOTE_ADDR");
-    $_SESSION['p_time'] = time();
-}
-
-//id, 이름, 국가는 로그인에서
-//초과된 세션은 로그아웃(1시간)
-//TODO: 로그아웃 원리를 다시 확인
-if($_SESSION['p_time']+3600 < time()) {
-    resetSessionGeneralValues();
-    $_SESSION['p_time'] = time();
-} else {
-    $_SESSION['p_time'] = time();
-}
 
 /**
  * Session에 보관된 장수 정보를 제거함.

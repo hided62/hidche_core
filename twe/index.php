@@ -4,33 +4,28 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+$session = Session::Instance()->loginGame();
 
 $connect = dbConn();
-increaseRefresh("메인", 2);
+increaseRefresh("메인", 1);
 checkTurn($connect);
 
 $db = DB::db();
 
-//로그인 검사
-if(!isSigned()){
-    header('Location:../');
+if(!$session->userID){
+    header('Location:..');
     die();
 }
 
-$userID = Session::getUserID();
-if(!$userID){
-    header('Location:../');
-    die();
-}
-
-$me = $db->queryFirstRow('select no,con,turntime,newmsg,newvote,map from general where owner = %i', $userID);
+$me = $db->queryFirstRow('SELECT no,con,turntime,newmsg,newvote,map from general where owner = %i', $userID);
 
 //그새 사망이면
 if($me === null) {
-    resetSessionGeneralValues();
+    $session->loginGame();
     header('Location: ../');
     die();
 }
+$session->setReadOnly();
 
 if($me['newmsg'] == 1 && $me['newvote'] == 1) {
     $query = "update general set newmsg=0,newvote=0 where owner='{$_SESSION['userID']}'";

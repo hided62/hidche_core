@@ -3,15 +3,17 @@ namespace sammo;
 
 
 function CheckLogin($type=0) {
-    if(!isset($_SESSION['userID'])) {
-        if($type == 0) {
-            header('Location: ../');
-            }
-        else           { 
-            header('Location: index.php');
-         }
-        exit();
+    //TODO: 직접해라. setReadOnly() 호출이 필요하다.
+    if(Session::Instance()->loginGame()->generalID){
+       return; 
     }
+    if($type == 0) {
+        header('Location: ../');
+    }
+    else           { 
+        header('Location: index.php');
+    }
+    exit();
 }
 
 

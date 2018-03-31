@@ -21,7 +21,9 @@ class Session {
         'userID'=>true, 
         'userName'=>true, 
         'userGrade'=>true, 
-        'writeClosed'=>true
+        'writeClosed'=>true,
+        'generalID'=>true,
+        'generalName'=>true
     ];
 
     const GAME_KEY_DATE = '_g_loginDate';
@@ -31,11 +33,9 @@ class Session {
     
 
     private $writeClosed = false;
+    private $sessionID = null;
 
-    /**
-     * @return \sammo\Session
-     */
-    public static function Instance(){
+    public static function Instance(): Session{
         static $inst = null;
         if($inst === null){
             $inst = new Session();
@@ -43,10 +43,18 @@ class Session {
         return $inst;
     }
 
-    /**
-     * @return \sammo\Session
-     */
-    public static function requireLogin($movePath = ROOT){
+    public function restart(): Session{
+        //NOTE: logout 프로세스는 아예 세션을 날려버리기도 하므로, 항상 안전하게 session_restart가 가능함을 보장하지 않음.
+        ini_set('session.use_only_cookies', false);
+        ini_set('session.use_cookies', false);
+        ini_set('session.use_trans_sid', false);
+        ini_set('session.cache_limiter', null);
+        session_start($this->sessionID); // second session_start
+        $this->writeClosed = false;
+        return $this;
+    }
+
+    public static function requireLogin($movePath = ROOT): Session{
         $session = Session::Instance();
         if($session->isLoggedIn()){
             return $session;
@@ -71,6 +79,7 @@ class Session {
         // 세션 변수의 등록
         if (session_id() == ""){
             session_start();
+            $this->sessionID = session_id();
         }
 
         //첫 등장
@@ -81,10 +90,7 @@ class Session {
         }
     }
 
-    /**
-     * @return \sammo\Session
-     */
-    public function setReadOnly(){
+    public function setReadOnly(): Session{
         if(!$this->writeClosed){
             session_write_close();
             $this->writeClosed = true;
@@ -111,6 +117,12 @@ class Session {
     }
 
     public function __get(string $name){
+        if($name == 'generalID'){
+            return $this->get(DB::prefix().static::GAME_KEY_GENERAL_ID);
+        }
+        if($name == 'generalName'){
+            return $this->get(DB::prefix().static::GAME_KEY_GENERAL_NAME);
+        }
         return $this->get($name);
     }
 
@@ -118,7 +130,7 @@ class Session {
         return Util::array_get($_SESSION[$name]);
     }
 
-    public function login(int $userID, string $userName, int $grade) {
+    public function login(int $userID, string $userName, int $grade): Session {
         $this->set('userID', $userID);
         $this->set('userName', $userName);
         $this->set('ip', Util::get_client_ip(true));
@@ -129,7 +141,10 @@ class Session {
     }
 
 
-    public function logout() {
+    public function logout(): Session {
+        if($this->writeClosed){
+            $this->restart();
+        }
         $this->logoutGame();
         $this->set('userID', null);
         $this->set('userName', null);
@@ -138,7 +153,7 @@ class Session {
         return $this;
     }
 
-    public function loginGame(&$result = null){
+    public function loginGame(&$result = null): Session{
         $userID = $this->userID;
         if(!$userID){
             if($result !== null){
@@ -167,7 +182,7 @@ class Session {
             $generalID && $generalName && $loginDate && $deateTime
             && $loginDate + 600 > $now && $deadTime > $now
         ){
-            //로그인 정보는 5분간 유지한다.
+            //로그인 정보는 10분간 유지한다.
             if($result !== null){
                 $result = true;
             }
@@ -193,11 +208,28 @@ class Session {
 
         $generalID = $general['no'];
         $generalName = $general['name'];
+        $nextTurn = new \DateTime($general['turntime']);
+        $nextTurn = $nextTurn->getTimestamp();
+
+        $deadTime = $nextTurn + $general['killturn'] * $turnterm;
+        if($deadTime < $now){
+            if($result !== null){
+                $result = false;
+            }
+            return $this;
+        }
 
 
+        $this->set($prefix.static::GAME_KEY_DATE, $now);
+        $this->set($prefix.static::GAME_KEY_GENERAL_ID, $generalID);
+        $this->set($prefix.static::GAME_KEY_GENERAL_NAME, $generalName);
+        $this->set($prefix.static::GAME_KEY_EXPECTED_DEADTIME, $deadTime);
     }
 
-    public function logoutGame(){
+    public function logoutGame(): Session{
+        if($this->writeClosed){
+            $this->restart();
+        }
         $prefix = DB::prefix();
         $this->set($prefix.static::GAME_KEY_DATE, null);
         $this->set($prefix.static::GAME_KEY_GENERAL_ID, null);

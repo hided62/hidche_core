@@ -28,7 +28,7 @@ if(!isset($post['genlist']) || !isset($post['msg'])){
 
 $destMailbox = $post['dest_mailbox'];
 $msg = $post['msg'];
-$datetime = new DateTime();
+$datetime = new \DateTime();
 $date = $datetime->format('Y-m-d H:i:s');
 
 //로그인 검사
@@ -120,7 +120,7 @@ if($destMailbox == 9999) {
 
 // 개인 메세지
 } elseif($destMailbox > 0) {
-    $last_msg = new DateTime(Util::array_get($_SESSION['last_msg'], '0000-00-00'));
+    $last_msg = new \DateTime(Util::array_get($_SESSION['last_msg'], '0000-00-00'));
 
     $msg_interval = $datetime->getTimestamp() - $last_msg->getTimestamp();
     //NOTE: 여기서 유저 레벨을 구별할 코드가 필요할까?
