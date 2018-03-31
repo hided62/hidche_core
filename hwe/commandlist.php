@@ -4,7 +4,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 //로그인 검사
-CheckLogin(1);
+$session = Session::Instance()->loginGame()->setReadOnly();
+
 $connect = dbConn();
 
 ?>
@@ -15,6 +16,11 @@ $connect = dbConn();
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel=stylesheet href=css/common.css type=text/css>
 <script type="text/javascript">
+<?php
+if(!$session->isLoggedIn()){
+    echo 'window.parent.location.href = "../";';
+}
+?>
 function myclock() {
     lastday = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
 

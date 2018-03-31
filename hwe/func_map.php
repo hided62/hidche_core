@@ -1,5 +1,5 @@
 <?php
-
+namespace sammo;
 class MapRequest{
     public $year;
     public $month;
@@ -101,7 +101,7 @@ function getWorldMap($req){
     if($myNation){
         //굳이 타국 도시에 있는 아국 장수 리스트를 뽑을 이유가 없음. 일단 다 뽑자.
         $shownByGeneralList = 
-            array_map('Util::toInt',
+            array_map('\\sammo\\Util::toInt',
                 $db->queryFirstColumn('select distinct `city` from `general` where `nation` = %i',
                     $myNation));
     }
@@ -112,7 +112,7 @@ function getWorldMap($req){
     $cityList = [];
     foreach($db->query('select `city`, `level`, `state`, `nation`, `region`, `supply` from `city`') as $r){
         $cityList[] = 
-            array_map('Util::toInt', [$r['city'], $r['level'], $r['state'], $r['nation'], $r['region'], $r['supply']]);
+            array_map('\\sammo\\Util::toInt', [$r['city'], $r['level'], $r['state'], $r['nation'], $r['region'], $r['supply']]);
     }
 
     return [
