@@ -12,7 +12,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("베팅", 1);
 
-$query = "select tournament,phase,tnmt_type,develcost from game where no='1'";
+$query = "select tournament,phase,tnmt_type,develcost from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
@@ -34,7 +34,7 @@ for($i=0; $i < 16; $i++) {
             if($gold + 500 <= $me['gold'] && $gold + $mebet <= 1000 && $gold + $me['bet'] <= 1000) {
                 $query = "update general set gold=gold-'$gold',bet{$i}=bet{$i}+'$gold',betgold=betgold+'$gold' where owner='{$_SESSION['userID']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $query = "update game set bet{$i}=bet{$i}+'$gold' where no='1'";
+                $query = "update game set bet{$i}=bet{$i}+'$gold'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         }

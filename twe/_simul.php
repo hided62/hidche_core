@@ -54,7 +54,7 @@ $query = "select no,tournament,con,turntime from general where owner='{$_SESSION
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select * from game where no='1'";
+$query = "select * from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $game = MYDB_fetch_array($result);
 

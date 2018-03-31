@@ -26,7 +26,7 @@ if(Session::getUserGrade() < 5) {
     exit();
 }
 
-$query = "select conlimit,conweight from game where no=1";
+$query = "select conlimit,conweight from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 ?>

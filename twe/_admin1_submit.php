@@ -17,7 +17,7 @@ if(Session::getUserGrade() < 5) {
 switch($btn) {
     case "변경":
         $msg = addslashes(SQ2DQ($msg));
-        $query = "update game set msg='$msg' where no='1'";
+        $query = "update game set msg='$msg'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "요청":
@@ -31,23 +31,23 @@ switch($btn) {
         pushHistory($history);
         break;
     case "변경1":
-        $query = "update game set starttime='$starttime' where no='1'";
+        $query = "update game set starttime='$starttime'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "변경2":
-        $query = "update game set maxgeneral='$maxgeneral' where no='1'";
+        $query = "update game set maxgeneral='$maxgeneral'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "변경3":
-        $query = "update game set maxnation='$maxnation' where no='1'";
+        $query = "update game set maxnation='$maxnation'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "변경4":
-        $query = "update game set startyear='$startyear' where no='1'";
+        $query = "update game set startyear='$startyear'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "변경5":
-        $query = "update game set normgeneral='$gen_rate' where no='1'";
+        $query = "update game set normgeneral='$gen_rate'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "1분턴":
@@ -72,7 +72,7 @@ switch($btn) {
         $turn = ($admin['year'] - $admin['startyear']) * 12 + $admin['month'] - 1;
         $starttime = date("Y-m-d H:i:s", strtotime($admin['turntime']) - $turn * $unit);
         $starttime = cutTurn($starttime, $turnterm);
-        $query = "update game set turnterm='$turnterm',starttime='$starttime' where no='1'";
+        $query = "update game set turnterm='$turnterm',starttime='$starttime'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 턴시간이 길어지는 경우 랜덤턴 배정
         if($turnterm < $admin['turnterm']) {

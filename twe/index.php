@@ -43,11 +43,11 @@ if($me['newmsg'] == 1 && $me['newvote'] == 1) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-$query = "select develcost,online,conlimit,tournament,tnmt_type,turnterm,scenario,scenario_text,extend,fiction,npcmode,vote from game where no=1";
+$query = "select develcost,online,conlimit,tournament,tnmt_type,turnterm,scenario,scenario_text,extend,fiction,npcmode,vote from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select plock from plock where no=1";
+$query = "select plock from plock limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $plock = MYDB_fetch_array($result);
 

@@ -3,7 +3,7 @@ namespace sammo;
 
 
 function RegNPC($connect) {
-    $query = "select startyear,year,turnterm,scenario,extend,fiction,img from game where no='1'";
+    $query = "select startyear,year,turnterm,scenario,extend,fiction,img from game limit 1";
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 

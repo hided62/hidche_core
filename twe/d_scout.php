@@ -13,7 +13,7 @@ include "func.php";
 CheckLogin(1);
 $connect = dbConn();
 
-$query = "select startyear,year,month,killturn from game where no='1'";
+$query = "select startyear,year,month,killturn from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 

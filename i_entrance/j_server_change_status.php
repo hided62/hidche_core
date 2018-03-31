@@ -77,7 +77,7 @@ function doAdminPost($action, $notice, $server){
     $response['result'] = 'FAIL';
 
     if($action == 'notice') {
-        RootDB::db()->update('SYSTEM', ['NOTICE'=>$notice], 'NO=1');
+        RootDB::db()->update('SYSTEM', ['NOTICE'=>$notice], true);
         $response['result'] = 'SUCCESS';
         return $response;
     } 

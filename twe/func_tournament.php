@@ -3,7 +3,7 @@ namespace sammo;
 
 
 function processTournament($connect) {
-    $query = "select tournament,phase,tnmt_type,tnmt_auto,tnmt_time,now() as now,TIMESTAMPDIFF(SECOND,tnmt_time,now()) as offset from game where no=1";
+    $query = "select tournament,phase,tnmt_type,tnmt_auto,tnmt_time,now() as now,TIMESTAMPDIFF(SECOND,tnmt_time,now()) as offset from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -80,7 +80,7 @@ function processTournament($connect) {
                 if($betTerm > 3600) { $betTerm = 3600; }
                 //처리 초 더한 날짜
                 $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i + $betTerm);
-                $query = "update game set tournament='$tnmt',phase='$phase',tnmt_time='$dt' where no=1";
+                $query = "update game set tournament='$tnmt',phase='$phase',tnmt_time='$dt'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 return;
             }
@@ -92,7 +92,7 @@ function processTournament($connect) {
                 //지정시간대 넘어가면 중단 20~24시
                 if($hr < 20) {
                     $dt = substr($dt, 0, 11)."20:00:00";
-                    $query = "update game set tournament='$tnmt',phase='$phase',tnmt_time='$dt' where no=1";
+                    $query = "update game set tournament='$tnmt',phase='$phase',tnmt_time='$dt'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                     return;
                 }
@@ -100,13 +100,13 @@ function processTournament($connect) {
         }
 
         $second = $unit * $iter;
-        $query = "update game set tournament='$tnmt',phase='$phase',tnmt_time=DATE_ADD(tnmt_time, INTERVAL {$second} SECOND) where no=1";
+        $query = "update game set tournament='$tnmt',phase='$phase',tnmt_time=DATE_ADD(tnmt_time, INTERVAL {$second} SECOND)";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 }
 
 function getTournamentTerm($connect) {
-    $query = "select tnmt_auto from game where no=1";
+    $query = "select tnmt_auto from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -123,7 +123,7 @@ function getTournamentTerm($connect) {
 }
 
 function getTournamentTime($connect) {
-    $query = "select tournament,tnmt_time from game where no=1";
+    $query = "select tournament,tnmt_time from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -259,7 +259,7 @@ function startTournament($connect, $auto, $type) {
     default:$unit = 60; break;
     }
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
     
@@ -280,7 +280,7 @@ function startTournament($connect, $auto, $type) {
 }
 
 function fillLowGenAll($connect) {
-    $query = "select develcost from game where no='1'";
+    $query = "select develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -541,7 +541,7 @@ function finalFight($connect, $tnmt_type, $tnmt, $phase, $type) {
 }
 
 function setGift($connect, $tnmt_type, $tnmt, $phase) {
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -665,7 +665,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $general = MYDB_fetch_array($result);
     $no = ($general['grp'] - 20) * 2 + $general['grp_no'];
 
-    $query = "select bet{$no},bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from game where no=1";
+    $query = "select bet{$no},bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
     $bet = @round($admin['bet'] /  $admin["bet{$no}"], 2);
@@ -687,7 +687,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
 }
 
 function setRefund($connect) {
-    $query = "select develcost from game where no='1'";
+    $query = "select develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 

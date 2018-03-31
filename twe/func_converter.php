@@ -398,7 +398,7 @@ function getBill($dedication) {
 function getCost($armtype) {
     //FIXME: 정말로 side effect가 없으려면 query는 밖으로 이동해야함.
     //TODO: 병종 값이 column으로 들어있는건 전혀 옳지 않음. key->value 형태로 바꿔야함
-    return DB::db()->queryFirstColumn('select %b from game where no=1', sprintf('cst%d', $armtype));
+    return DB::db()->queryFirstColumn('select %b from game limit 1', sprintf('cst%d', $armtype));
 }
 
 function TechLimit($startyear, $year, $tech) {

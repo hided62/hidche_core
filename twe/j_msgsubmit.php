@@ -54,7 +54,7 @@ if(getBlockLevel() == 1 || getBlockLevel() == 3) {
     ]);
 }
 
-$conlimit = $db->queryFirstField('select conlimit from game where no=1');
+$conlimit = $db->queryFirstField('select conlimit from game limit 1');
 
 $me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr` from `general` where `owner` = %i', Session::getUserID());
 

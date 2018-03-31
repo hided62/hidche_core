@@ -68,7 +68,7 @@ function CoreTurnTable() {
 function allButton() {
     
     global $_basecolor2;
-    $npcmode = DB::db()->queryFirstField("select npcmode from game where no='1'");
+    $npcmode = DB::db()->queryFirstField("select npcmode from game limit 1");
     if($npcmode == 1) {
         $site = "a_npcList.php";
         $call = "빙의일람";

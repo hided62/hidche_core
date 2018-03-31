@@ -8,7 +8,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("내무부", 1);
 
-$query = "select conlimit from game where no=1";
+$query = "select conlimit from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
@@ -58,7 +58,7 @@ else { $btn = "hidden"; $read = "readonly"; }
         <td align=center id=bg1>비 고</td>
     </tr>
 <?php
-$query = "select year,month from game where no='1'";
+$query = "select year,month from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
@@ -175,7 +175,7 @@ $query = "select nation,name,color,type,msg,gold,rice,bill,rate,scout,war,scoutm
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
-$query = "select gold_rate,rice_rate from game where no='1'";
+$query = "select gold_rate,rice_rate from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 // 금 수지

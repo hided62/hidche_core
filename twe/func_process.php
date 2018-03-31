@@ -167,7 +167,7 @@ function process_1($connect, &$general, $type) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game where no='1'";
+    $query = "select startyear,year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -263,7 +263,7 @@ function process_3($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game where no='1'";
+    $query = "select startyear,year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -357,7 +357,7 @@ function process_4($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game where no='1'";
+    $query = "select startyear,year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -444,7 +444,7 @@ function process_5($connect, &$general, $type) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game where no='1'";
+    $query = "select startyear,year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -539,7 +539,7 @@ function process_7($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game where no='1'";
+    $query = "select startyear,year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -626,7 +626,7 @@ function process_8($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game where no='1'";
+    $query = "select startyear,year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -720,7 +720,7 @@ function process_9($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -811,7 +811,7 @@ function process_11($connect, &$general, $type) {
     if($type == 1) { $defaultatmos = $_defaultatmos; $defaulttrain = $_defaulttrain; }
     else { $defaultatmos = $_defaultatmos2; $defaulttrain = $_defaulttrain2; }
 
-    $query = "select year,month,startyear from game where no='1'";
+    $query = "select year,month,startyear from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -991,7 +991,7 @@ function process_13($connect, &$general) {
     global $_maxtrain, $_training, $_atmosing;
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1057,7 +1057,7 @@ function process_14($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1116,7 +1116,7 @@ function process_15($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1185,7 +1185,7 @@ function process_16($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game where no='1'";
+    $query = "select startyear,year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1272,7 +1272,7 @@ function process_17($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1309,7 +1309,7 @@ function process_21($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1375,7 +1375,7 @@ function process_26($connect, &$general) {
 
     $troop = getTroop($connect, $general['troop']);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1437,7 +1437,7 @@ function process_28($connect, &$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1497,7 +1497,7 @@ function process_30($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1560,7 +1560,7 @@ function process_31($connect, &$general) {
     $date = substr($general['turntime'],11,5);
     $msg = [];
 
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1683,7 +1683,7 @@ function process_41($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1748,7 +1748,7 @@ function process_42($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1965,7 +1965,7 @@ function process_43($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -2051,7 +2051,7 @@ function process_44($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -2138,7 +2138,7 @@ function process_48($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -2244,7 +2244,7 @@ function process_49($connect, &$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -2376,7 +2376,7 @@ function process_50($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select month from game where no='1'";
+    $query = "select month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -2399,7 +2399,7 @@ function process_99($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 

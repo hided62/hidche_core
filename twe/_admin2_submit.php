@@ -24,7 +24,7 @@ switch($btn) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "접속가중치":
-        $query = "update game set conweight='$conweight' where no='1'";
+        $query = "update game set conweight='$conweight'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "블럭 해제":
@@ -275,7 +275,7 @@ switch($btn) {
         }
         break;
     case "00턴":
-        $query = "select turnterm from game where no=1";
+        $query = "select turnterm from game limit 1";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $admin = MYDB_fetch_array($result);
 
@@ -287,7 +287,7 @@ switch($btn) {
         }
         break;
     case "랜덤턴":
-        $query = "select turnterm from game where no=1";
+        $query = "select turnterm from game limit 1";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $admin = MYDB_fetch_array($result);
 

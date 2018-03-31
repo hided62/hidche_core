@@ -307,7 +307,7 @@ function SetCrew($connect, $no, $personal, $gold, $leader, $genType, $tech, $reg
 }
 
 function processAI($connect, $no) {
-    $query = "select startyear,year,month,turnterm,scenario,gold_rate,rice_rate from game where no='1'";
+    $query = "select startyear,year,month,turnterm,scenario,gold_rate,rice_rate from game limit 1";
     $result = MYDB_query($query, $connect) or Error("processAI00 ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
     // 초반 여부
@@ -1109,7 +1109,7 @@ function RegCity($nation, $name, $cap=0) {
 function Promotion($connect, $nation, $level) {
     $lv = getNationChiefLevel($level);
 
-    $query = "select scenario,killturn from game where no='1'";
+    $query = "select scenario,killturn from game limit 1";
     $result = MYDB_query($query, $connect) or Error("processAI00 ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 

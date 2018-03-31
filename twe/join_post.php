@@ -43,7 +43,7 @@ $connect = dbConn();
 $db = DB::db();
 ########## 동일 정보 존재여부 확인. ##########
 
-$admin = $db->queryFirstRow("select year,month,scenario,maxgeneral,turnterm,genius,img from game where no='1'");
+$admin = $db->queryFirstRow("select year,month,scenario,maxgeneral,turnterm,genius,img from game limit 1");
 $gencount = $db->queryFirstField("select count(no) from general where npc<2");
 $id_num = $db->queryFirstField("select count(no) from general where owner= %i", $userID);
 $name_num = $db->queryFirstField("select count(no) from general where name= %s", $name);
@@ -120,7 +120,7 @@ if($id_num) {
     if($ratio == 50 && $admin['genius'] > 0) {
         $genius = 1;
 
-        $db->query("update game set genius=genius-1 where no='1'");
+        $db->query("update game set genius=genius-1");
     } else {
         $genius = 0;
     }

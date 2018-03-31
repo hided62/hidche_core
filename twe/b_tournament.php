@@ -13,7 +13,7 @@ $query = "select no,tournament,con,turntime from general where owner='{$_SESSION
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select conlimit,tournament,phase,tnmt_msg,tnmt_type,develcost,tnmt_trig from game where no=1";
+$query = "select conlimit,tournament,phase,tnmt_msg,tnmt_type,develcost,tnmt_trig from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
@@ -306,7 +306,7 @@ for($i=0; $i < 16; $i++) {
 echo"
                 </tr>";
 
-$query = "select tournament,bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from game where no=1";
+$query = "select tournament,bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $betting = MYDB_fetch_array($result);
 for($i=0; $i < 16; $i++) {

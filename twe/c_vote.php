@@ -7,7 +7,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select develcost,vote,votecomment from game where no='1'";
+$query = "select develcost,vote,votecomment from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
@@ -38,7 +38,7 @@ else if($btn == "댓글" && $comment != "") {
     if($admin['votecomment'] != "") { $admin['votecomment'] .= "|"; }
     $admin['votecomment'] .= "{$nation['name']}:{$me['name']}:{$comment}";
 
-    $query = "update game set votecomment='{$admin['votecomment']}' where no=1";
+    $query = "update game set votecomment='{$admin['votecomment']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     
@@ -57,18 +57,18 @@ if($btn == "수정") {
         $vote = explode("|", $admin['vote']);
         $vote[0] = addslashes(SQ2DQ($title));
         $admin['vote'] = implode("|", $vote);
-        $query = "update game set vote='{$admin['vote']}' where no='1'";
+        $query = "update game set vote='{$admin['vote']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 } elseif($btn == "추가") {
     if($str != "") {
         $str = addslashes(SQ2DQ($str));
         $admin['vote'] .= "|{$str}";
-        $query = "update game set vote='{$admin['vote']}' where no='1'";
+        $query = "update game set vote='{$admin['vote']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 } elseif($btn == "리셋") {
-    $query = "update game set voteopen=1,vote='',votecomment='' where no='1'";
+    $query = "update game set voteopen=1,vote='',votecomment=''";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     $query = "update general set vote='0'";
@@ -77,13 +77,13 @@ if($btn == "수정") {
     $query = "update general set newvote='1' where vote=0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "숨김") {
-    $query = "update game set voteopen=0 where no=1";
+    $query = "update game set voteopen=0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "전체통계만") {
-    $query = "update game set voteopen=1 where no=1";
+    $query = "update game set voteopen=1";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "전부") {
-    $query = "update game set voteopen=2 where no=1";
+    $query = "update game set voteopen=2";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 ?>

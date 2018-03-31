@@ -232,7 +232,7 @@ function GetExplain() {
 function command_11($connect, $turn, $command) {
     global $_basecolor, $_basecolor2, $images, $image;
     starter("징병");
-    $query = "select * from game where no='1'";
+    $query = "select * from game limit 1";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -437,7 +437,7 @@ function calc(cost, formnum) {
 function command_12($connect, $turn, $command) {
     global $_basecolor, $_basecolor2, $images, $image;
     starter("모병");
-    $query = "select * from game where no='1'";
+    $query = "select * from game limit 1";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -967,7 +967,7 @@ function command_25($connect, $turn, $command) {
 
     starter("임관");
 
-    $query = "select startyear,year from game where no='1'";
+    $query = "select startyear,year from game limit 1";
     $result = MYDB_query($query, $connect) or Error("command_46 ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1493,7 +1493,7 @@ function command_44($connect, $turn, $command) {
 function command_46($connect, $turn, $command) {
     starter("건국");
 
-    $query = "select maxnation from game where no='1'";
+    $query = "select maxnation from game limit 1";
     $result = MYDB_query($query, $connect) or Error("command_46 ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 

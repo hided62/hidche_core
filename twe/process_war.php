@@ -9,7 +9,7 @@ function processWar($connect, $general, $city) {
     global $_maximumatmos, $_maximumtrain, $_dexLimit;
     $date = substr($general['turntime'],11,5);
 
-    $query = "select * from game where no='1'";
+    $query = "select * from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $game = MYDB_fetch_array($result);
 
@@ -1588,7 +1588,7 @@ function getRate($game, $type, $dtype) {
 }
 
 function addConflict($connect, $city, $nationnum, $mykillnum) {
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
     $game = MYDB_fetch_array($result);
 

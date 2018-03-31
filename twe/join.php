@@ -183,7 +183,7 @@ window.abilityPowint = abilityPowint;
         <tr><td align=center><?php info($connect, 0, 1); ?></td></tr>
     </table>
 <?php
-$query = "select img,maxgeneral from game where no='1'";
+$query = "select img,maxgeneral from game limit 1";
 $result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 

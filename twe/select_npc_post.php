@@ -34,7 +34,7 @@ $npc = MYDB_fetch_array($result);
 
 ########## 동일 정보 존재여부 확인. ##########
 
-$query = "select year,month,maxgeneral,turnterm,genius,npcmode from game where no='1'";
+$query = "select year,month,maxgeneral,turnterm,genius,npcmode from game limit 1";
 $result = MYDB_query($query, $connect) or Error("join_post ".MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 

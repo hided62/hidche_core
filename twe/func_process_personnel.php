@@ -6,7 +6,7 @@ function process_22($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game where no='1'";
+    $query = "select startyear,year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -64,7 +64,7 @@ function process_25($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game where no='1'";
+    $query = "select startyear,year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -177,7 +177,7 @@ function process_29($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost,npccount,turnterm,scenario from game where no='1'";
+    $query = "select startyear,year,month,develcost,npccount,turnterm,scenario from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -387,7 +387,7 @@ function process_29($connect, &$general) {
             $npcid++;
 
             //npccount
-            $query = "update game set npccount={$npcid} where no='1'";
+            $query = "update game set npccount={$npcid}";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             //국가 기술력 그대로
@@ -431,7 +431,7 @@ function process_45($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game where no='1'";
+    $query = "select startyear,year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -544,7 +544,7 @@ function process_46($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game where no='1'";
+    $query = "select startyear,year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -628,7 +628,7 @@ function process_47($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game where no='1'";
+    $query = "select startyear,year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -689,7 +689,7 @@ function process_54($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -752,7 +752,7 @@ function process_55($connect, &$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game where no='1'";
+    $query = "select startyear,year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -836,7 +836,7 @@ function process_56($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -885,7 +885,7 @@ function process_57($connect, &$general) {
     $alllog = array();
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,killturn from game where no='1'";
+    $query = "select year,month,killturn from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 

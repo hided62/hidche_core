@@ -125,7 +125,7 @@ function printCitysName($connect, $cityNo, $distance=1) {
 
 
 function info($connect, $type=0) {
-    $query = "select year,month,turnterm,maxgeneral from game where no='1'";
+    $query = "select year,month,turnterm,maxgeneral from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 

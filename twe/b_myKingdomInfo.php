@@ -57,7 +57,7 @@ $query = "select sum(crew) as totcrew,sum(leader)*100 as maxcrew from general wh
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
 
-$query = "select gold_rate,rice_rate from game where no='1'";
+$query = "select gold_rate,rice_rate from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 // 금 수지

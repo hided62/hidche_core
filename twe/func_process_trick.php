@@ -7,7 +7,7 @@ function process_32($connect, &$general) {
     global $_firing, $_basefiring, $_firingpower;
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -129,7 +129,7 @@ function process_33($connect, &$general) {
     //탈취는 0까지 무제한
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -276,7 +276,7 @@ function process_34($connect, &$general) {
     global $_firing, $_basefiring, $_firingpower;
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -398,7 +398,7 @@ function process_35($connect, &$general) {
     global $_firing, $_basefiring, $_firingpower;
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -523,7 +523,7 @@ function process_36($connect, &$general) {
     global $_firing, $_basefiring, $_firingpower;
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game where no='1'";
+    $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 

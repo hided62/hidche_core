@@ -24,6 +24,10 @@ class Session {
         'writeClosed'=>true
     ];
 
+    const GAME_KEY_DATE = '_g_loginDate';
+    const GAME_KEY_GENERAL_ID = '_g_no';
+    const GAME_KEY_GENERAL_NAME = '_g_name';
+    const GAME_KEY_EXPECTED_DEADTIME = '_g_deadtime';
     
 
     private $writeClosed = false;
@@ -124,13 +128,84 @@ class Session {
         return $this;
     }
 
+
     public function logout() {
+        $this->logoutGame();
         $this->set('userID', null);
         $this->set('userName', null);
         $this->set('userGrade', null);
         $this->set('time', time());
         return $this;
     }
+
+    public function loginGame(&$result = null){
+        $userID = $this->userID;
+        if(!$userID){
+            if($result !== null){
+                $result = false;
+            }
+            return $this;
+        }
+
+        if(!class_exists('\\sammo\\DB')){
+            if($result !== null){
+                $result = false;
+            }
+            return $this;
+        }
+
+        $prefix = DB::prefix();
+        $db = DB::db();
+
+        $loginDate = $this->get($prefix.static::GAME_KEY_DATE);
+        $generalID = $this->get($prefix.static::GAME_KEY_GENERAL_ID);
+        $generalName = $this->get($prefix.static::GAME_KEY_GENERAL_NAME);
+        $deadTime = $this->get($prefix.static::GAME_KEY_EXPECTED_DEADTIME);
+
+        $now = time();
+        if(
+            $generalID && $generalName && $loginDate && $deateTime
+            && $loginDate + 600 > $now && $deadTime > $now
+        ){
+            //로그인 정보는 5분간 유지한다.
+            if($result !== null){
+                $result = true;
+            }
+            return $this;
+        }
+
+        if($generalID || $generalName || $loginDate || $deadTime){
+            $this->logoutGame();
+        }
+
+        $general = $db->queryFirstRow(
+            'SELECT `no`, `name`, `killturn`, `turntime` from general where `owner` = %i', 
+            $userID
+        );
+        if(!$general){
+            if($result !== null){
+                $result = false;
+            }
+            return $this;
+        }
+
+        $turnterm = $db->queryFirstField('SELECT turnterm from game limit 1');
+
+        $generalID = $general['no'];
+        $generalName = $general['name'];
+
+
+    }
+
+    public function logoutGame(){
+        $prefix = DB::prefix();
+        $this->set($prefix.static::GAME_KEY_DATE, null);
+        $this->set($prefix.static::GAME_KEY_GENERAL_ID, null);
+        $this->set($prefix.static::GAME_KEY_GENERAL_NAME, null);
+        $this->set($prefix.static::GAME_KEY_EXPECTED_DEADTIME, null);
+        return $this;
+    }
+
 
     /**
      * 로그인 유저의 전역 grade를 받아옴

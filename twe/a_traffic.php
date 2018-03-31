@@ -6,7 +6,7 @@ include "func.php";
 $connect = dbConn();
 increaseRefresh("갱신정보", 2);
 
-$query = "select year,month,refresh,maxrefresh,maxonline from game where no='1'";
+$query = "select year,month,refresh,maxrefresh,maxonline from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $game = MYDB_fetch_array($result);
 

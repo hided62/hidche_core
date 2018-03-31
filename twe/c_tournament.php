@@ -9,7 +9,7 @@ include "func.php";
 CheckLogin();
 $connect = dbConn();
 
-$query = "select tournament,phase,tnmt_type,develcost from game where no='1'";
+$query = "select tournament,phase,tnmt_type,develcost from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
@@ -189,7 +189,7 @@ if($btn == "자동개최설정" && Session::getUserGrade() >= 5) {
 } elseif($btn == "배정"         && Session::getUserGrade() >= 5) { final16set($connect);
 } elseif($btn == "베팅마감"     && Session::getUserGrade() >= 5) {
     $dt = date("Y-m-d H:i:s", time() + 60);
-    $query = "update game set tournament='7',phase='0',tnmt_time='$dt' where no=1";
+    $query = "update game set tournament='7',phase='0',tnmt_time='$dt'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "16강" && Session::getUserGrade() >= 5) { finalFight($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase'], 16);
 } elseif($btn == "8강"  && Session::getUserGrade() >= 5) { finalFight($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase'], 8);

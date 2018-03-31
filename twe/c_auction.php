@@ -8,7 +8,7 @@ CheckLogin();
 $connect = dbConn();
 increaseRefresh("입찰", 1);
 
-$query = "select turnterm from game where no=1";
+$query = "select turnterm from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 

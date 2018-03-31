@@ -63,7 +63,7 @@ function myCommandList($connect) {
     $date = date('Y-m-d H:i:s');
 
     // 명령 목록
-    $query = "select year,month,turnterm from game where no='1'";
+    $query = "select year,month,turnterm from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 

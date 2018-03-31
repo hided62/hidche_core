@@ -12,7 +12,7 @@ $query = "select no,special,con,turntime from general where owner='{$_SESSION['u
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select conlimit from game where no=1";
+$query = "select conlimit from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 

@@ -351,7 +351,7 @@ function preUpdateMonthly($connect) {
 
     if($result == false) { return false; }
 
-    $query = "select startyear,year,month,normgeneral from game where no='1'";
+    $query = "select startyear,year,month,normgeneral from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -439,7 +439,7 @@ function preUpdateMonthly($connect) {
     $ratio = 100;
     // 20 ~ 140원
     $develcost = ($admin['year'] - $admin['startyear'] + 10) * 2;
-    $query = "update game set gold_rate='$ratio',rice_rate='$ratio',city_rate='$rate',develcost='$develcost' where no='1'";
+    $query = "update game set gold_rate='$ratio',rice_rate='$ratio',city_rate='$rate',develcost='$develcost'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     //매달 사망자 수입 결산
@@ -500,7 +500,7 @@ function preUpdateMonthly($connect) {
 
 // 외교 로그처리, 외교 상태 처리
 function postUpdateMonthly($connect) {
-    $query = "select startyear,year,month,scenario from game where no='1'";
+    $query = "select startyear,year,month,scenario from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -648,7 +648,7 @@ group by A.nation
 
 
 function checkWander($connect) {
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -677,7 +677,7 @@ function checkWander($connect) {
 }
 
 function checkMerge($connect) {
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -791,7 +791,7 @@ function checkMerge($connect) {
 }
 
 function checkSurrender($connect) {
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -912,7 +912,7 @@ function checkSurrender($connect) {
 
 function updateNationState($connect) {
     $history = array();
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -989,7 +989,7 @@ function updateNationState($connect) {
 }
 
 function checkStatistic($connect) {
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1120,7 +1120,7 @@ function checkStatistic($connect) {
 }
 
 function checkEmperior($connect) {
-    $query = "select year,month,isUnited from game where no='1'";
+    $query = "select year,month,isUnited from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -1142,7 +1142,7 @@ function checkEmperior($connect) {
         if($count == $allcount) {
             addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(이)가 전토를 통일");
 
-            $query = "update game set isUnited=2,conlimit=conlimit*100 where no='1'";
+            $query = "update game set isUnited=2,conlimit=conlimit*100";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $query = "select no from general where npc<2 and age>=45";

@@ -32,7 +32,7 @@ function processSpring($connect) {
     $query = "update nation set gold=gold*0.99 where gold>1000 and gold<=10000";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    $query = "select year,month from game where no='1'";
+    $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -41,7 +41,7 @@ function processSpring($connect) {
 }
 
 function processGoldIncome($connect) {
-    $query = "select year,month,gold_rate from game where no='1'";
+    $query = "select year,month,gold_rate from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -332,7 +332,7 @@ function processFall($connect) {
 }
 
 function processRiceIncome($connect) {
-    $query = "select year,month,rice_rate from game where no='1'";
+    $query = "select year,month,rice_rate from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -513,7 +513,7 @@ function tradeRate($connect) {
 }
 
 function disaster($connect) {
-    $query = "select startyear,year,month from game where no='1'";
+    $query = "select startyear,year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
