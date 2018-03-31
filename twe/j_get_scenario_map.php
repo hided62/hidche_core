@@ -3,7 +3,6 @@ namespace sammo;
 
 
 require(__DIR__.'/../f_func/config.php');
-require('func_install.php');
 
 $session = Session::requireLogin();
 
