@@ -892,7 +892,7 @@ function generalInfo($connect, $no) {
         $level = $city['name']." ".$level;
     }
     $call = getCall($general['leader'], $general['power'], $general['intel']);
-    $typename = getTypename($general['crewtype']);
+    $typename = GameUnitConst::byId($general['crewtype'])->name;
     $weapname = getWeapName($general['weap']);
     $bookname = getBookName($general['book']);
     $horsename = getHorseName($general['horse']);

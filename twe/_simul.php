@@ -150,7 +150,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
         while($phase < $warphase) {
             // 장수가 없어서 도시 공격
             if($opposecount == 0) {
-                $msg .= "<C>●</>".getTypename($general['crewtype'])."(으)로 성을 <M>공격</>합니다.<br>";
+                $msg .= "<C>●</>".GameUnitConst::byID($general['crewtype'])->name."(으)로 성을 <M>공격</>합니다.<br>";
 
                 $mykillnum = 0; $mydeathnum = 0;
                 while($phase < $warphase) {
@@ -340,7 +340,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                 }
             // 장수 대결
             } else {
-                $msg .= "<C>●</>".getTypename($general['crewtype'])."(으)로 <Y>수비장수</>의 ".getTypename($oppose['crewtype'])."(을)를 공격합니다.<br>";
+                $msg .= "<C>●</>".GameUnitConst::byID($general['crewtype'])->name."(으)로 <Y>수비장수</>의 ".GameUnitConst::byID($oppose['crewtype'])->name."(을)를 공격합니다.<br>";
 
                 $mykillnum = 0; $mydeathnum = 0;
                 while($phase < $warphase) {

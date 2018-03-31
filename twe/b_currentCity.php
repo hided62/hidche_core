@@ -288,7 +288,7 @@ for($j=0; $j < $gencount; $j++) {
 
         echo "
         <td align=center>$mode</td>
-        <td align=center>".getTypename($general['crewtype'])."</td>
+        <td align=center>".GameUnitConst::byId($general['crewtype'])->name."</td>
         <td align=center>{$general['crew']}</td>
         <td align=center>{$general['train']}</td>
         <td align=center>{$general['atmos']}</td>";

@@ -52,12 +52,12 @@ function getTurn($connect, $general, $type, $font=1) {
             case 9:  $str[$i] = "물자 조달"; break; //조달
 
             case 11: //징병
-                $third = getTypename($command[2]);
+                $third = GameUnitConst::byID($command[2])->name;
                 $double = $command[1];
                 $str[$i] = "【{$third}】 {$double}00명 징병";
                 break;
             case 12: //모병
-                $third = getTypename($command[2]);
+                $third = GameUnitConst::byID($command[2])->name;
                 $double = $command[1];
                 $str[$i] = "【{$third}】 {$double}00명 모병";
                 break;

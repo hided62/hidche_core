@@ -953,7 +953,7 @@ function process_11($connect, &$general, $type) {
     } elseif($city['rate'] < 20) {
         $log[] = "<C>●</>{$admin['month']}월:민심이 낮아 주민들이 도망갑니다. $dtype 실패. <1>$date</>";
     } else {
-        $log[] = "<C>●</>{$admin['month']}월:".getTypename($armtype)."을(를) <C>{$crew}00</>명 {$dtype}했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:".GameUnitConst::byId($armtype)->name."을(를) <C>{$crew}00</>명 {$dtype}했습니다. <1>$date</>";
         $exp = $crew;
         $ded = $crew;
         // 숙련도 증가
@@ -1558,6 +1558,7 @@ function process_31($connect, &$general) {
     $log = array();
     $alllog = array();
     $date = substr($general['turntime'],11,5);
+    $msg = [];
 
     $query = "select year,month,develcost from game where no='1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1602,17 +1603,20 @@ function process_31($connect, &$general) {
         } else {
             $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 많은 정보를 얻었습니다. <1>$date</>";
-            $msg[count($msg)] = "【<S>병종</>】";
-            for($i=0;  $i <= 5;  $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = StringUtil::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
-            for($i=10; $i <= 14; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = StringUtil::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
-            for($i=20; $i <= 27; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = StringUtil::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
-            for($i=30; $i <= 38; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = StringUtil::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
-            for($i=40; $i <= 43; $i++) { if($typecount[$i] != 0) { $msg[count($msg)] = StringUtil::SubStr(getTypename($i), 0, 2).":$typecount[$i]"; } }
+            $msg[] = "【<S>병종</>】";
 
-            $count = ceil(count($msg) / 8) * 8;
-            for($i=$count; $i > 0; $i-=8) {
-                $log[] = "{$msg[$i-8]} {$msg[$i-7]} {$msg[$i-6]} {$msg[$i-5]} {$msg[$i-4]} {$msg[$i-3]} {$msg[$i-2]} {$msg[$i-1]}";
+            foreach(GameUnitConst::all() as $unit){
+                if($typecount[$unit->id] == 0){
+                    continue;
+                }
+
+                $unitStr = mb_substr($unit->name, 0, 2); 
+                $msg[] = "{$unitStr}:{$typecount[$unit->id]}";
             }
+
+            $log[] = join(' ', $msg);
+            $msg = [];
+            
             $log[] = "【<M>첩보</>】농업:{$city['agri']}, 상업:{$city['comm']}, 치안:{$city['secu']}, 수비:{$city['def']}, 성벽:{$city['wall']}";
             $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
 

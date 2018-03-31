@@ -1089,12 +1089,19 @@ function checkStatistic($connect) {
     $crewtype = '';
     $types = array(0, 1, 2, 3, 4, 5, 10, 11, 12, 13, 14, 20, 21, 22, 23, 24, 25, 26, 27, 30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 43);
     $count = count($types);
+    foreach(GameUnitConst::all() as $unit){
+        $userCnt = DB::db()->queryFirstField(
+            "SELECT count(*) as type from general where crewtype=%i and crew>=100",
+            $unit->id
+        );
+        $crewtype .= "{$unit->name}({$userCnt}), ";
+    }
     for($i=0; $i < $count; $i++) {
-        $query = "select count(*) as type from general where crewtype={$types[$i]} and crew>=100";
+        
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $general = MYDB_fetch_array($result);
 
-        $crewtype .= getTypeName($types[$i])."({$general['type']}), ";
+        
     }
 
     $query = "

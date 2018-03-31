@@ -317,7 +317,7 @@ function calc(cost, formnum) {
         <td colspan=10 align=center id=bg2>
             현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
             현재 통솔 : <input type=text style=text-align:right;color:white;background-color:black size=3 readonly value=$leader>
-            현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".getTypename($me['crewtype']).">
+            현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".GameUnitConst::byID($me['crewtype'])->name.">
             현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['crew']}>
             현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['gold']}>
         </td>
@@ -523,7 +523,7 @@ function calc(cost, formnum) {
         <td colspan=10 align=center id=bg2>
             현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
             현재 통솔 : <input type=text style=text-align:right;color:white;background-color:black size=3 readonly value=$leader>
-            현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".getTypename($me['crewtype']).">
+            현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".GameUnitConst::byID($me['crewtype'])->name.">
             현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['crew']}>
             현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['gold']}>
         </td>

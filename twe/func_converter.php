@@ -359,49 +359,6 @@ function getHonor($experience) {
     return $honor;
 }
 
-function getTypename($type) {
-    switch($type) {
-        case  0: $typename =     '보병'; break;
-        case  1: $typename =   '청주병'; break;
-        case  2: $typename =     '수병'; break;
-        case  3: $typename =   '자객병'; break;
-        case  4: $typename =   '근위병'; break;
-        case  5: $typename =   '등갑병'; break;
-
-        case 10: $typename =     '궁병'; break;
-        case 11: $typename =   '궁기병'; break;
-        case 12: $typename =   '연노병'; break;
-        case 13: $typename =   '강궁병'; break;
-        case 14: $typename =   '석궁병'; break;
-
-        case 20: $typename =     '기병'; break;
-        case 21: $typename =   '백마병'; break;
-        case 22: $typename = '중장기병'; break;
-        case 23: $typename = '돌격기병'; break;
-        case 24: $typename =   '철기병'; break;
-        case 25: $typename = '수렵기병'; break;
-        case 26: $typename =   '맹수병'; break;
-        case 27: $typename = '호표기병'; break;
-
-        case 30: $typename =     '귀병'; break;
-        case 31: $typename =   '신귀병'; break;
-        case 32: $typename =   '백귀병'; break;
-        case 33: $typename =   '흑귀병'; break;
-        case 34: $typename =   '악귀병'; break;
-        case 35: $typename =   '남귀병'; break;
-        case 36: $typename =   '황귀병'; break;
-        case 37: $typename =   '천귀병'; break;
-        case 38: $typename =   '마귀병'; break;
-
-        case 40: $typename =     '정란'; break;
-        case 41: $typename =     '충차'; break;
-        case 42: $typename =   '벽력거'; break;
-        case 43: $typename =     '목우'; break;
-    }
-    return $typename;
-}
-
-
 function getExpLevel($experience) {
     if($experience < 1000) {
         $level = floor($experience / 100);

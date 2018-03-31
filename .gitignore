@@ -33,3 +33,4 @@ d_setting/*.php
 !*/d_setting/_*.php
 
 **/old/*
+test.php

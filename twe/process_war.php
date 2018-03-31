@@ -133,8 +133,8 @@ function processWar($connect, $general, $city) {
             break;
         // 장수가 없어서 도시 공격
         } elseif($opposecount == 0) {
-            $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 ".getTypename($general['crewtype'])."(으)로 성벽을 공격합니다.";
-            $log[] = "<C>●</>".getTypename($general['crewtype'])."(으)로 성벽을 <M>공격</>합니다.";
+            $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 ".GameUnitConst::byId($general['crewtype'])->name."(으)로 성벽을 공격합니다.";
+            $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."(으)로 성벽을 <M>공격</>합니다.";
 
             $general['train'] += 1; //훈련 상승
             if($general['train'] > $_maximumtrain) { $general['train'] = $_maximumtrain; }
@@ -380,7 +380,7 @@ function processWar($connect, $general, $city) {
             }
 
             $render_attacker = [
-                'crewtype' => StringUtil::SubStr(getTypename($general['crewtype']), 0, 2),
+                'crewtype' => StringUtil::SubStr(GameUnitConst::byId($general['crewtype'])->name, 0, 2),
                 'name'=> $general['name'],
                 'remain_crew' => $general['crew'],
                 'killed_crew' => -$mydeathnum
@@ -494,14 +494,14 @@ function processWar($connect, $general, $city) {
                 break;
             // 공격 장수 병사 소진시 실패 처리
             } elseif($general['crew'] <= 0) {
-                $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".getTypename($general['crewtype'])."(이)가 퇴각했습니다.";
+                $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 $log[] = "<C>●</>퇴각했습니다.";
 
                 $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 break;
             } elseif($myRice <= round($general['crew']/100)) {
-                $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".getTypename($general['crewtype'])."(이)가 퇴각했습니다.";
+                $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
 
                 $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
@@ -511,9 +511,9 @@ function processWar($connect, $general, $city) {
         // 장수 대결
         } else {
             $oppose = MYDB_fetch_array($result);
-            $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".getTypename($general['crewtype'])."(와)과 <Y>{$oppose['name']}</>의 ".getTypename($oppose['crewtype'])."(이)가 대결합니다.";
-            $log[] = "<C>●</>".getTypename($general['crewtype'])."(으)로 <Y>{$oppose['name']}</>의 ".getTypename($oppose['crewtype'])."(을)를 <M>공격</>합니다.";
-            $opplog[count($opplog)] = "<C>●</>".getTypename($oppose['crewtype'])."(으)로 <Y>{$general['name']}</>의 ".getTypename($general['crewtype'])."(을)를 <M>수비</>합니다.";
+            $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(와)과 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 대결합니다.";
+            $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."(으)로 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(을)를 <M>공격</>합니다.";
+            $opplog[count($opplog)] = "<C>●</>".GameUnitConst::byId($oppose['crewtype'])->name."(으)로 <Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(을)를 <M>수비</>합니다.";
 
             $oppAtmos = 0;
             if($oppose['item'] == 3) {
@@ -1257,13 +1257,13 @@ function processWar($connect, $general, $city) {
             }
 
             $render_attacker = [
-                'crewtype' => StringUtil::SubStr(getTypename($general['crewtype']), 0, 2),
+                'crewtype' => StringUtil::SubStr(GameUnitConst::byId($general['crewtype'])->name, 0, 2),
                 'name'=> $general['name'],
                 'remain_crew' => $general['crew'],
                 'killed_crew' => -$mydeathnum
             ];
             $render_defender = [
-                'crewtype' => StringUtil::SubStr(getTypename($oppose['crewtype']), 0, 2),
+                'crewtype' => StringUtil::SubStr(GameUnitConst::byId($oppose['crewtype'])->name, 0, 2),
                 'name'=> $oppose['name'],
                 'remain_crew' => $oppose['crew'],
                 'killed_crew' => -$opdeathnum
@@ -1363,12 +1363,12 @@ function processWar($connect, $general, $city) {
             // 상대 병사 소진이나 쌀 소진시 다음 장수
             if($oppose['crew'] <= 0 || ($opRice <= round($oppose['crew']/100) && $general['crew'] > 0)) {
                 if($opRice <= round($oppose['crew']/100)) {
-                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$oppose['name']}</>의 ".getTypename($oppose['crewtype'])."(이)가 패퇴했습니다.";
-                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".getTypename($oppose['crewtype'])."(이)가 패퇴했습니다.";
+                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
+                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
                     $opplog[count($opplog)] = "<C>●</>군량 부족으로 패퇴합니다.";
                 } else {
-                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$oppose['name']}</>의 ".getTypename($oppose['crewtype'])."(이)가 전멸했습니다.";
-                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".getTypename($oppose['crewtype'])."(이)가 전멸했습니다.";
+                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 전멸했습니다.";
+                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 전멸했습니다.";
                     $opplog[count($opplog)] = "<C>●</>전멸했습니다.";
                 }
                 $opposecount--;
@@ -1401,13 +1401,13 @@ function processWar($connect, $general, $city) {
             // 공격 장수 병사 소진이나 쌀 소진시 실패 처리
             } elseif($general['crew'] <= 0 || $myRice <= round($general['crew']/100)) {
                 if($myRice <= round($general['crew']/100)) {
-                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".getTypename($general['crewtype'])."(이)가 퇴각했습니다.";
+                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                     $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
-                    $opplog[count($opplog)] = "<C>●</><Y>{$general['name']}</>의 ".getTypename($general['crewtype'])."(이)가 퇴각했습니다.";
+                    $opplog[count($opplog)] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 } else {
-                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".getTypename($general['crewtype'])."(이)가 퇴각했습니다.";
+                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                     $log[] = "<C>●</>퇴각했습니다.";
-                    $opplog[count($opplog)] = "<C>●</><Y>{$general['name']}</>의 ".getTypename($general['crewtype'])."(이)가 퇴각했습니다.";
+                    $opplog[count($opplog)] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 }
 
                 // 경험치 상승
