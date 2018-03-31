@@ -3,7 +3,7 @@ namespace sammo;
 
 require_once('_common.php');
 
-$session = Session::requireLogin();
+$session = Session::requireLogin(null);
 
 
 

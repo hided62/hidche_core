@@ -42,13 +42,23 @@ class Session {
     /**
      * @return \sammo\Session
      */
-    public static function requireLogin(string $path = ROOT){
+    public static function requireLogin($movePath = ROOT){
         $session = Session::Instance();
-        if(!$session->isLoggedIn()){
+        if($session->isLoggedIn()){
+            return $session;
+        }
+
+        $session->setReadOnly();
+
+        if(is_string($path)){
             header('Location:'.$path);
             die();
         }
-        return $session;
+
+        Json::die([
+            'result'=>false,
+            'reason'=>'로그인이 필요합니다.'
+        ]);
     }
 
     public function __construct() {

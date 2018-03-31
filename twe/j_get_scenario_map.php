@@ -4,7 +4,7 @@ namespace sammo;
 
 require(__DIR__.'/../f_func/config.php');
 
-$session = Session::requireLogin();
+$session = Session::requireLogin(null);
 
 if($session->userGrade < 5){
     Json::die([
