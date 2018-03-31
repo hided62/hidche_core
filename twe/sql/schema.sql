@@ -25,13 +25,13 @@ CREATE TABLE `general` (
 	`name2` CHAR(32) NULL DEFAULT NULL,
 	`nation` INT(6) NULL DEFAULT '0',
 	`nations` CHAR(64) NULL DEFAULT ',0,',
-	`city` INT(6) NULL DEFAULT '0',
+	`city` INT(6) NULL DEFAULT '3',
 	`troop` INT(6) NULL DEFAULT '0',
-	`leader` INT(3) NULL DEFAULT '0',
+	`leader` INT(3) NULL DEFAULT '50',
 	`leader2` INT(3) NULL DEFAULT '0',
-	`power` INT(3) NULL DEFAULT '0',
+	`power` INT(3) NULL DEFAULT '50',
 	`power2` INT(3) NULL DEFAULT '0',
-	`intel` INT(3) NULL DEFAULT '0',
+	`intel` INT(3) NULL DEFAULT '50',
 	`intel2` INT(3) NULL DEFAULT '0',
 	`injury` INT(2) NULL DEFAULT '0',
 	`experience` INT(6) NULL DEFAULT '0',
@@ -42,8 +42,8 @@ CREATE TABLE `general` (
 	`dex30` INT(8) NULL DEFAULT '0',
 	`dex40` INT(8) NULL DEFAULT '0',
 	`level` INT(2) NULL DEFAULT '0',
-	`gold` INT(6) NULL DEFAULT '0',
-	`rice` INT(6) NULL DEFAULT '0',
+	`gold` INT(6) NULL DEFAULT '1000',
+	`rice` INT(6) NULL DEFAULT '1000',
 	`crew` INT(5) NULL DEFAULT '0',
 	`crewtype` INT(2) NULL DEFAULT '0',
 	`train` INT(3) NULL DEFAULT '0',
@@ -160,9 +160,8 @@ CREATE TABLE `general` (
 	INDEX `npc` (`npc`),
 	INDEX `npcid` (`npcid`)
 )
-COLLATE='utf8_general_ci'
-ENGINE=InnoDB
-ROW_FORMAT=DYNAMIC;
+DEFAULT CHARSET=utf8mb4
+ENGINE=InnoDB;
 
 ###########################################################################
 ## 국가 테이블
@@ -282,7 +281,7 @@ create table nation (
   l8turn11 char(14) default '00000000000099', l7turn11 char(14) default '00000000000099', l6turn11 char(14) default '00000000000099', l5turn11 char(14) default '00000000000099',
 
   PRIMARY KEY (nation)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
+) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 도시 테이블
@@ -326,7 +325,7 @@ create table city (
 
   PRIMARY KEY (city),
   KEY (nation)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
+) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 부대 테이블
@@ -339,7 +338,7 @@ create table troop (
   no int(6) not null,
 
   PRIMARY KEY (troop)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
+) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ##########################################################################
 ##  락 테이블
@@ -350,7 +349,7 @@ create table plock (
   plock       int(1) default 0,
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
+  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ##########################################################################
 ## 게임 테이블
@@ -403,7 +402,7 @@ create table game (
   bet12 int(8) default 0, bet13 int(8) default 0, bet14 int(8) default 0, bet15 int(8) default 0,
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
+  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 메시지 테이블
@@ -421,7 +420,7 @@ CREATE TABLE `message` (
 	PRIMARY KEY (`id`),
 	INDEX `by_mailbox` (`mailbox`, `type`, `time`)
 )
-COLLATE='utf8_general_ci'
+DEFAULT CHARSET=utf8mb4
 ENGINE=InnoDB;
 
 ###########################################################################
@@ -438,7 +437,7 @@ create table if not exists hall (
   picture char(32) default '',
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
+  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 왕조 테이블
@@ -478,7 +477,7 @@ create table if not exists emperior (
   history text default '',
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=UTF8;
+  ) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 외교 테이블
@@ -496,7 +495,7 @@ create table diplomacy (
 
   PRIMARY KEY (`no`),
   UNIQUE INDEX `me` (`me`, `you`)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
+  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 토너먼트 테이블
@@ -521,7 +520,7 @@ create table tournament (
   gl   int(2) default 0,
   prmt int(1) default 0,
   PRIMARY KEY (seq)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
+  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 거래 테이블
@@ -541,7 +540,7 @@ create table auction (
   expire datetime,
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=UTF8;
+  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 통계 테이블
@@ -561,7 +560,7 @@ create table statistic (
   etc             text default '',
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=UTF8;
+  ) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 연감 테이블
@@ -579,7 +578,7 @@ create table history (
   city    text default '',
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=UTF8;
+  ) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 이벤트 핸들러 테이블
@@ -591,4 +590,5 @@ CREATE TABLE `event` (
   `action` MEDIUMTEXT NOT NULL COMMENT 'json',
   PRIMARY KEY (`id`)
 )
+DEFAULT CHARSET=utf8mb4
 ENGINE=InnoDB;

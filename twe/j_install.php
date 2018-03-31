@@ -69,11 +69,24 @@ if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/schema.sql'))){
     while (@$mysqli_obj->next_result()) {;}
 }
 
-CityConst::build();
 
 $db->insert('plock', [
-    'plock'=>0
+    'plock'=>1
 ]);
+
+foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
+    $db->insert('general', [
+        'owner'=>$admin['no'],
+        'name'=>$admin['name'],
+        'picture'=>$admin['picture'],
+        'imgsvr'=>$admin['imgsvr'],
+        'turntime'=>$turntime,
+        'killturn'=>null
+    ]);
+}
+
+CityConst::build();
+
 
 
 $turntime = date('Y-m-d H:i:s');
@@ -123,6 +136,10 @@ $env = [
 $db->insert('game', $env);
 
 $scenario->build($env);
+
+$db->update('plock', [
+    'plock'=>0
+], true);
 
 Json::die([
     'result'=>true
