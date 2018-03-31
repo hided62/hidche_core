@@ -11,7 +11,7 @@ var serverListTemplate = "\
 var serverTextInfo = "\
 <td>\
 서기 <%year%>년 <%month%>월 (<span style='color:orange;'><%scenario%></span>)<br>\
-유저 : <%userCnt%> / <%maxUserCnt%>명 <span style='color:cyan;'>NPC : <%npcCnt%>명</span> (<span style='color:limegreen;'><%turnTerm%></span>)\
+유저 : <%userCnt%> / <%maxUserCnt%>명 <span style='color:cyan;'>NPC : <%npcCnt%>명</span> (<span style='color:limegreen;'><%turnTerm%>분 턴 서버</span>)\
 </td>\
 ";
 
@@ -92,7 +92,7 @@ function Entrance_drawServerList(serverInfos){
                 TemplateEngine(serverTextInfo, game)
             );
 
-            if(result.me && result.me.length > 1){
+            if(result.me && result.me.name){
                 var me = result.me;
                 me.serverPath = serverPath;
                 $serverHtml.append(

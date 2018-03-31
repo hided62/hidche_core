@@ -1,5 +1,5 @@
 <?php
-
+namespace sammo;
 
 function getTurn($connect, $general, $type, $font=1) {
     $turn[0] = $general["turn0"];

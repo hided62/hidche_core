@@ -55,12 +55,49 @@ if(120 % $turnterm != 0){
     ]);
 }
 
+if(!file_exists(__dir__.'/logs') || !file_exists(__dir__.'/data')){
+    if(!is_writable(__dir__)){
+        Json::die([
+            'result'=>false,
+            'reason'=>'logs, data 디렉토리를 생성할 권한이 없습니다.'
+        ]);
+    }
+    mkdir(__dir__.'/logs', 0644);
+    mkdir(__dir__.'/data', 0644);
+}
+
+if(!is_writable(__dir__.'/logs')){
+    Json::die([
+        'result'=>false,
+        'reason'=>'logs 디렉토리의 쓰기 권한이 없습니다'
+    ]);
+}
+
+if(!is_writable(__dir__.'/data')){
+    Json::die([
+        'result'=>false,
+        'reason'=>'data 디렉토리의 쓰기 권한이 없습니다'
+    ]);
+}
+
+if(!file_exists(ROOT.'/logs/.htaccess')){
+    @file_put_contents(ROOT.'/logs/.htaccess', 'Deny from  all');
+}
+
+if(!file_exists(ROOT.'/data/.htaccess')){
+    @file_put_contents(ROOT.'/data/.htaccess', 'Deny from  all');
+}
+
+
 $db = DB::db();
 $mysqli_obj = $db->get();
 
 
 $scenarioObj = new Scenario($scenario, false);
 $startyear = $scenarioObj->getYear();
+
+FileUtil::delInDir("logs");
+FileUtil::delInDir("data");
 
 if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/reset.sql'))){
     while(true){
