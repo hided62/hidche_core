@@ -312,11 +312,8 @@ class Scenario{
             list($me, $you, $state, $remain) = $diplomacy;
             $db->update('diplomacy', [
                 'state'=>$state,
-                'remain'=>$remain
-            ], '(me = %i_me AND you = %i_you) OR (me = %i_you AND you = %i_me)', [
-                'me'=>$me,
-                'you'=>$you
-            ]);
+                'term'=>$remain
+            ], '(me = %i AND you = %i) OR (me = %i AND you = %i)', $me, $you, $you, $me);
         }
     }
 
