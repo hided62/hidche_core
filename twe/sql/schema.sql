@@ -356,7 +356,7 @@ create table plock (
 ##########################################################################
 
 CREATE TABLE `game` (
-	`no` INT(11) NOT NULL AUTO_INCREMENT,
+	`no` ENUM('1') NOT NULL DEFAULT '1',
 	`startyear` INT(3) NOT NULL,
 	`year` INT(3) NOT NULL,
 	`month` INT(3) NOT NULL,
