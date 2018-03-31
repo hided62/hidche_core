@@ -31,12 +31,9 @@ $v->rule('required', [
     'show_img_level'
 ]);
 if(!$v->validate()){
-    $errors = array_values((array)$v->errors());
-    $errors = array_map(function($value){return join(', ', $value);}, $errors);
-    $errors = join(', ', $errors);
     Json::die([
         'result'=>false,
-        'reason'=>$errors
+        'reason'=>$v->errorStr()
     ]);
 }
 

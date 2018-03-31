@@ -12,6 +12,7 @@
 
 logs/*.txt
 d_log/*.txt
+d_log/*.zip
 sess_*
 */logs/*.txt
 err.txt
