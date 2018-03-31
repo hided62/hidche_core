@@ -53,7 +53,7 @@ function dbConnFail($params){
 }
 
 
-$db = new \MeekroDB($host,$username,$password,$dbName,$port,'utf8');
+$db = new \MeekroDB($host,$username,$password,$dbName,$port,'utf8mb4');
 $db->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
 
 $db->throw_exception_on_nonsql_error = false;

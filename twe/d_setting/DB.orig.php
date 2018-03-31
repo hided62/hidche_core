@@ -9,7 +9,7 @@ class DB{
     private static $password = '_tK_password_';
     private static $dbName = '_tK_dbName_';
     private static $port = _tK_port_;
-    private static $encoding = 'utf8';
+    private static $encoding = 'utf8mb4';
 
     private static $prefix = '_tK_prefix_';
 

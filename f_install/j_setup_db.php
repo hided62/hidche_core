@@ -114,7 +114,7 @@ if(!file_exists(ROOT.'/d_setting/.htaccess')){
 
 //DB 접근 권한 검사
 
-$rootDB = new \MeekroDB($host,$username,$password,$dbName,$port,'utf8');
+$rootDB = new \MeekroDB($host,$username,$password,$dbName,$port,'utf8mb4');
 $rootDB->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
 
 $rootDB->throw_exception_on_nonsql_error = false;

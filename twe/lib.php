@@ -99,28 +99,15 @@ $image1 = "../d_pic";
 $images = "/images";
 $image = "/image";
 
-
-// Data, Icon, 세션디렉토리의 쓰기 권한이 없다면 에러 처리
-// 단, 폴더가 없는 경우라면 폴더를 생성 할 필요가 있음. 
-// data폴더가 없으면 data/session까지 생성
-if(is_dir(__DIR__."/data")){
-	if(!is_writable(__DIR__."/data")) Error("Data 디렉토리의 쓰기 권한이 없습니다!");
-}else{
-	mkdir(__DIR__."/data");
-}
-
-session_cache_limiter('nocache, must_revalidate');//NOTE: 캐시가 가능하도록 설정해야 할 수도 있음. 주의!
+session_cache_limiter('nocache');//NOTE: 캐시가 가능하도록 설정해야 할 수도 있음. 주의!
+//FIXME: 이곳에서 설정하면 안될 듯 하다. 옮기자.
 
 /**
  * Session에 보관된 장수 정보를 제거함.
  * _prefix_p_no, _prefix_p_name 두 값임
  */
 function resetSessionGeneralValues(){
-    $idKey = DB::prefix().'p_no';
-    $nameKey = DB::prefix().'p_name';
-
-    unset($_SESSION[$idKey]);
-    unset($_SESSION[$nameKey]);
+    Session::Instance()->logoutGame();
 }
 
 // MySQL 데이타 베이스에 접근

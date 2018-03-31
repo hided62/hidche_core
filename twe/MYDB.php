@@ -4,7 +4,7 @@ namespace sammo;
 
 function MYDB_connect($host, $id, $pw) {
     $conn = mysqli_connect($host, $id, $pw);
-    mysqli_query($conn, 'set names utf8');
+    mysqli_query($conn, 'set names utf8mb4');
     return $conn;
 }
 
