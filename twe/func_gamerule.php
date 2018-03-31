@@ -207,26 +207,20 @@ function SetNationFront($nationNo) {
     $adj = [];
 
     $db = DB::db();
-    $warNations = $db->queryFirstColumn(
-        'SELECT you from diplomacy where me = %i and (state=0 or (state=1 and term<=3))'
+    $enemyCities = $db->queryFirstColumn(
+        'SELECT city from city where nation IN 
+            (SELECT you from diplomacy where me = %i and (state=0 or (state=1 and term<=3)))'
         , $nationNo
     );
-    if($warNations) {
-        foreach($warNations as $warNation){
-            $enemyCities = $db->queryFirstColumn('SELECT city from city where nation=%i', $warNation);
-            foreach($enemyCities as $city){
-                foreach(CityConst::byID($city)->path as $adjCity){
-                    $adj[$adjCity] = 1;
-                }
-            }
+    if($enemyCities) {
+        foreach($enemyCities as $city){
+            $adj = array_merge($adj, CityConst::byID($city)->path);
         }
     } else {
         //평시이면 공백지
         //NOTE: if, else일 경우 NPC는 전쟁시에는 공백지로 출병하지 않는다는 뜻이 된다.
         foreach ($db->queryFirstColumn('SELECT city,path from city where nation=0') as $city) {
-            foreach(CityConst::byID($city)->path as $adjCity){
-                $adj[$adjCity] = 1;
-            }
+            $adj = array_merge($adj, CityConst::byID($city)->path);
         }
     }
 

@@ -124,7 +124,14 @@ $rootDB->error_handler = 'dbSQLFail';
 $mysqli_obj = $rootDB->get(); //로그인에 실패할 경우 자동으로 dbConnFail()이 실행됨.
 
 if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/common_schema.sql'))){
-    while (@$mysqli_obj->next_result()) {;}
+    while(true){
+        if (!$mysqli_obj->more_results()) {
+            break;
+        }
+        if(!$mysqli_obj->next_result()){
+            break;
+        }
+    }
 }
 
 $rootDB->insert('system', array(
