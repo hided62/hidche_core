@@ -5,7 +5,7 @@ include('lib.php');
 include('func.php');
 
 $userID = Session::getUserID();
-$generalID = getGeneralID();
+$generalID = Session::Instance()->generalID;
 session_write_close();
 
 if(!$userID){

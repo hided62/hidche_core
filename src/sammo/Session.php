@@ -182,7 +182,7 @@ class Session {
 
         $now = time();
         if(
-            $generalID && $generalName && $loginDate && $deateTime
+            $generalID && $generalName && $loginDate && $deadTime
             && $loginDate + 600 > $now && $deadTime > $now
         ){
             //로그인 정보는 10분간 유지한다.
@@ -225,8 +225,9 @@ class Session {
 
         $this->set($serverID.static::GAME_KEY_DATE, $now);
         $this->set($serverID.static::GAME_KEY_GENERAL_ID, $generalID);
-        $this->set($preserverIDfix.static::GAME_KEY_GENERAL_NAME, $generalName);
+        $this->set($serverID.static::GAME_KEY_GENERAL_NAME, $generalName);
         $this->set($serverID.static::GAME_KEY_EXPECTED_DEADTIME, $deadTime);
+        return $this;
     }
 
     public function logoutGame(): Session{

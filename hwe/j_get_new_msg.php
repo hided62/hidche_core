@@ -6,7 +6,7 @@ include('func.php');
 
 
 
-$generalID = getGeneralID();
+$generalID = Session::Instance()->generalID;
 
 session_write_close(); // 이제 세션 안 쓴다
 

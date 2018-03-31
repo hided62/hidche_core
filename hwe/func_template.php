@@ -89,7 +89,7 @@ function allButton() {
 function commandButton() {
     global $_basecolor, $_basecolor2;
 
-    $generalID = getGeneralID();
+    $generalID = Session::Instance()->generalID;
     
     if($generalID === null){
         return '';

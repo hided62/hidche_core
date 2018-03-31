@@ -78,7 +78,7 @@ function getRawMessage($mailbox, $msgType, $limit=30, $fromSeq=null){
 }
 
 function getMessage($msgType, $nationID=null, $limit=30, $fromSeq=null){
-    $generalID = getGeneralID(false);
+    $generalID = Session::Instance()->generalID;
     if($generalID === null){
         return [];
     }

@@ -8,7 +8,7 @@ include 'func.php';
 
 
 
-$generalID = getGeneralID();
+$generalID = Session::Instance()->generalID;
 
 if (!$generalID) {
     Json::die([

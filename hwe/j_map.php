@@ -4,9 +4,7 @@ namespace sammo;
 include 'lib.php';
 include 'func.php';
 
-
-
-getGeneralID();
+$session = Session::Instance()->loginGame()->setReadOnly();
 
 //읽기 전용이다. 빠르게 세션 끝내자
 session_write_close();

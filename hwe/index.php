@@ -17,7 +17,10 @@ if(!$session->userID){
     die();
 }
 
-$me = $db->queryFirstRow('SELECT no,con,turntime,newmsg,newvote,map from general where owner = %i', $userID);
+$me = $db->queryFirstRow(
+    'SELECT no,con,turntime,newmsg,newvote,map from general where owner = %i',
+    $session->userID
+);
 
 //그새 사망이면
 if($me === null) {
@@ -38,7 +41,7 @@ if($me['newmsg'] == 1 && $me['newvote'] == 1) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-$query = "select develcost,online,conlimit,tournament,tnmt_type,turnterm,scenario,scenario_text,extend,fiction,npcmode,vote from game limit 1";
+$query = "select develcost,online,conlimit,tournament,tnmt_type,turnterm,scenario,scenario_text,extended_general,fiction,npcmode,vote from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
@@ -86,7 +89,7 @@ $(function(){
     </tr>
 <?php
 $valid = 0;
-if($admin['extend'] == 0) { $extend = "표준"; }
+if($admin['extended_general'] == 0) { $extend = "표준"; }
 else { $extend = "확장"; $valid = 1; }
 if($admin['fiction'] == 0) { $fiction = "사실"; }
 else { $fiction = "가상"; $valid = 1; }

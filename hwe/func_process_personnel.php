@@ -1,5 +1,5 @@
 <?php
-
+namespace sammo;
 
 function process_22($connect, &$general) {
     $log = array();

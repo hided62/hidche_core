@@ -26,6 +26,7 @@ file_put_contents("logs/_db_bug.txt", $message."\n", FILE_APPEND);
     <tr><td align=center><font color=white size=3>잠시 후 아래의 버튼을 눌러주세요.</font></td></tr>
     <tr><td align=center><input type=button value='몇초간 지난 후 눌러주세요' onclick=location.replace('index.php')></td></tr>
     <tr><td align=center><?=$message;?></td></tr>
+    <tr><td><?php debug_print_backtrace(); ?></td></tr>
 </table>
 </body>
 </html>

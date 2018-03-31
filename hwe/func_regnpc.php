@@ -3,7 +3,7 @@ namespace sammo;
 
 
 function RegNPC($connect) {
-    $query = "select startyear,year,turnterm,scenario,extend,fiction,img from game limit 1";
+    $query = "select startyear,year,turnterm,scenario,extended_general,fiction,img from game limit 1";
     $result = MYDB_query($query, $connect) or Error("scenario_194A ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -502,7 +502,7 @@ function RegNPC($connect) {
     RegGeneral($connect,0,0,$fiction,$turnterm,$startyear,$year,1490,  50,     "황호",$img,1490,  0,    "-", 15, 17, 48, 0, 226, 263, "안전",    "-");
     RegGeneral($connect,0,0,$fiction,$turnterm,$startyear,$year,1491, 147,     "후성",$img,1491,  0,    "-", 56, 62, 33, 0, 158, 199, "정복",    "-");
 
-    if($admin['extend'] > 0) {
+    if($admin['extended_general'] > 0) {
     RegGeneral($connect,0,0,$fiction,$turnterm,$startyear,$year,1492, 123,     "가화",$img,1492,  0,    "-", 50, 66, 40, 0, 176, 224,    "-",    "-");
     RegGeneral($connect,0,0,$fiction,$turnterm,$startyear,$year,1493, 999,     "건석",$img,1493,  0,    "-", 21, 12, 61, 0, 155, 189,    "-",    "-");
     RegGeneral($connect,0,0,$fiction,$turnterm,$startyear,$year,1494, 999,     "견씨",$img,1494,  0,    "-", 35, 24, 58, 0, 182, 221,    "-",    "-");

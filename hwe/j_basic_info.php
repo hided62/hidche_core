@@ -9,7 +9,7 @@ $result = [
     "myNationID"=>null,
     "isChief"=>false
 ];
-$generalID = getGeneralID();
+$generalID = Session::Instance()->generalID;
 
 session_write_close();
 

@@ -75,7 +75,7 @@ function getGeneralID($forceExit=false, $countLogin=true){
  */
 function getGeneralName($forceExit=false)
 {
-    $generalID = getGeneralID();
+    $generalID = Session::Instance()->generalID;
     if(!$generalID){
         if($forceExit){
             header('Location:..');
@@ -177,7 +177,7 @@ function GetImageURL($imgsvr) {
  * @return bool
  */
 function isSigned(){
-    $generalID = getGeneralID();
+    $generalID = Session::Instance()->generalID;
     if(!$generalID){
         return false;
     }
@@ -200,7 +200,7 @@ function checkLimit($con, $conlimit) {
 }
 
 function getBlockLevel() {
-    return DB::db()->queryFirstField('select block from general where no = %i', getGeneralID());
+    return DB::db()->queryFirstField('select block from general where no = %i', Session::Instance()->generalID);
 }
 
 function getRandGenName() {
@@ -849,7 +849,7 @@ function myInfo($connect) {
 function generalInfo($connect, $no) {
     global $_basecolor, $_basecolor2, $image, $images;
 
-    $query = "select img from game limit 1";
+    $query = "select show_img_level from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -952,7 +952,7 @@ function generalInfo($connect, $no) {
     echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
         <td width=64 height=64 align=center rowspan=3 background={$imageTemp}/{$general['picture']}>&nbsp;</td>
-        <td align=center colspan=9 height=16 style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$specUser} {$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
+        <td align=center colspan=9 height=16 style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>통솔</b></td>
@@ -1402,20 +1402,16 @@ function getOnlineNum() {
 
 function onlinegen($connect) {
     $onlinegen = "";
-    $generalID = getGeneralID();
+    $generalID = Session::Instance()->generalID;
     $nationID = DB::db()->queryFirstField('select `nation` from `general` where `no` = %i', $generalID);
-    if($nationID !== null || Util::toInt($nationID) === 0) {
+    if($nationID === null || Util::toInt($nationID) === 0) {
         $query = "select onlinegen from game limit 1";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $game = MYDB_fetch_array($result);
 
         $onlinegen = $game['onlinegen'];
     } else {
-        $query = "select onlinegen from nation where nation='{$_SESSION['p_nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $nation = MYDB_fetch_array($result);
-
-        $onlinegen = $nation['onlinegen'];
+        $onlinegen = DB::db()->queryFirstField('select onlinegen from nation where nation=%i',$nationID);
     }
     return $onlinegen;
 }
@@ -1572,7 +1568,12 @@ function cutDay($date, int $turnterm) {
 }
 
 function increaseRefresh($type="", $cnt=1) {
-    $generalID = Session::
+    $session = Session::Instance();
+    $generalID = $session->generalID;
+    if(!$generalID){
+        $session->loginGame();
+    }
+    $generalID = $session->generalID;
     $date = date('Y-m-d H:i:s');
 
     DB::db()->query('UPDATE game set refresh=refresh+%i where `no`=1', $cnt);
@@ -1581,7 +1582,7 @@ function increaseRefresh($type="", $cnt=1) {
         DB::db()->query('UPDATE general set `lastrefresh`=%s_date, `con`=`con`+%i_cnt, `connect`=`connect`+%i_cnt, refcnt=refcnt+%i_cnt, refresh=refresh+%i_cnt where `no`=%i_no',[
             'date'=>$date,
             'cnt'=>$cnt,
-            'owner'->getGeneralID()
+            'owner'->Session::Instance()->generalID
         ]);
     }
 
@@ -1589,7 +1590,7 @@ function increaseRefresh($type="", $cnt=1) {
     $date2 = substr($date, 0, 10);
     $online = getOnlineNum();
     $fp = fopen("logs/_{$date2}_refresh.txt", "a");
-    $msg = StringUtil::Fill2($date,20," ").StringUtil::Fill2($_SESSION['userName'],13," ").StringUtil::Fill2($_SESSION['p_name'],13," ").StringUtil::Fill2($_SESSION['p_ip'],16," ").StringUtil::Fill2($type, 10, " ")." 동접자: {$online}";
+    $msg = StringUtil::Fill2($date,20," ").StringUtil::Fill2($session->userName,13," ").StringUtil::Fill2($session->generalName,13," ").StringUtil::Fill2($session->ip,16," ").StringUtil::Fill2($type, 10, " ")." 동접자: {$online}";
     fwrite($fp, $msg."\n");
     fclose($fp);
 

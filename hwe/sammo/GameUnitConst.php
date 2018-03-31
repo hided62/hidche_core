@@ -111,11 +111,11 @@ class GameUnitConst{
 
             if($recruitType == 1){
                 $info[] = "{$recruitCondition}지역 소유시 가능";
-                $recruitCondition = CityConst::byName($recruitCondition)->id;
+                $recruitCondition = CityConst::$regionMap[$recruitCondition];
             }
             else if($recruitType == 2){
                 $info[] = "{$recruitCondition} 소유시 가능";
-                $recruitCondition = CityConst::$regionMap[$recruitCondition]->id;
+                $recruitCondition = CityConst::byName($recruitCondition)->id;
             }
 
             

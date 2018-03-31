@@ -6,7 +6,7 @@ include('func.php');
 
 
 
-if(!getGeneralID()){
+if(!Session::Instance()->generalID){
     Json::die([
         "nation"=>[]
     ]);
