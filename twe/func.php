@@ -1551,8 +1551,6 @@ function cutDay($date, int $turnterm) {
     $baseGap = 12 * $turnterm;
 
     $diffMin = intdiv($date->getTimeStamp() - $baseDate->getTimeStamp(), 60);
-    
-    var_dump($diffMin);
 
     $timeAdjust = $diffMin % $baseGap;
     $newMonth = intdiv($timeAdjust, $turnterm) + 1;
