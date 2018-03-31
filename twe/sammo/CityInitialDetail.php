@@ -25,7 +25,7 @@ class CityInitialDetail{
         int $defence,
         int $wall,
         int $region,
-        int $path
+        array $path
     ){
         $this->id = $id;
         $this->name = $name;

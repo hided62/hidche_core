@@ -108,7 +108,7 @@ class Nation{
 
     public function postBuild($env=[]){
         $npc_cnt = count($this->generals);
-        if($env['useExtentedGeneral']){
+        if($env['extended_general']){
             $npc_cnt += count($this->generalsEx);
         }
 

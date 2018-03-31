@@ -60,6 +60,7 @@ $mysqli_obj = $db->get();
 
 
 $scenarioObj = new Scenario($scenario);
+$startyear = $scenarioObj->getYear();
 
 if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/reset.sql'))){
     while (@$mysqli_obj->next_result()) {;}
@@ -74,18 +75,8 @@ $db->insert('plock', [
     'plock'=>1
 ]);
 
-foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
-    $db->insert('general', [
-        'owner'=>$admin['no'],
-        'name'=>$admin['name'],
-        'picture'=>$admin['picture'],
-        'imgsvr'=>$admin['imgsvr'],
-        'turntime'=>$turntime,
-        'killturn'=>null
-    ]);
-}
-
 CityConst::build();
+
 
 
 
@@ -111,6 +102,8 @@ $killturn = 4800 / $turnterm;
 if($npcmode == 1) { $killturn = floor($killturn / 3); }
 
 $env = [
+    'scenario'=>$scenario,
+    'startyear'=>$startyear,
     'year'=> $year,
     'month'=> $month,
     'msg'=>'공지사항',//TODO:공지사항
@@ -125,17 +118,26 @@ $env = [
     'turnterm'=>$turnterm,
     'killturn'=>$killturn,
     'genius'=>5,
-    'startyear'=>$startyear,
-    'scenario'=>$scenario,
     'show_img_level'=>$show_img_level,
     'npcmode'=>$npcmode,
-    'extend'=>$extend,
+    'extended_general'=>$extend,
     'fiction'=>$fiction
 ];
 
+foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
+    $db->insert('general', [
+        'owner'=>$admin['no'],
+        'name'=>$admin['name'],
+        'picture'=>$admin['picture'],
+        'imgsvr'=>$admin['imgsvr'],
+        'turntime'=>$turntime,
+        'killturn'=>null
+    ]);
+}
+
 $db->insert('game', $env);
 
-$scenario->build($env);
+$scenarioObj->build($env);
 
 $db->update('plock', [
     'plock'=>0

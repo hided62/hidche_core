@@ -59,7 +59,7 @@ class Scenario{
             );
         }
 
-        $this->displomacy = Util::array_get($data['diplomacy'], []);
+        $this->diplomacy = Util::array_get($data['diplomacy'], []);
 
         
         $this->generals = array_map(function($rawGeneral){
@@ -132,14 +132,21 @@ class Scenario{
         }, Util::array_get($data['generalEx'], []));
 
         $this->initialEvents = array_map(function($rawEvent){
-            return new \sammo\Event\EventHandler($rawEvent[0], array_slice($rawEvent, 1));
+            $cond = $rawEvent[0];
+            $action = array_slice($rawEvent, 1);
+            return new \sammo\Event\EventHandler($cond, $action);
         }, Util::array_get($data['initialEvents'], []));
 
         $this->events = array_map(function($rawEvent){
-            //event는 여기서 풀지 않는다.
+            //event는 여기서 풀지 않는다. 평가만 한다.
+            $cond = $rawEvent[0];
+            $action = array_slice($rawEvent, 1);
+            
+            new \sammo\Event\EventHandler($cond, $action);
+            
             return [
-                'cond' => $rawEvent[0],
-                'action' => array_slice($rawEvent, 1)
+                'cond' => $cond,
+                'action' => $action
             ];
         }, Util::array_get($data['events'], []));
 
@@ -282,19 +289,19 @@ class Scenario{
             $remainGenerals[$birth][] = array_merge(['RegNPC'], $rawGeneral);
         }
 
-        if($env['useExtentedGeneral']){
+        if($env['extended_general']){
             foreach($this->generalsEx as $general){
                 if($general->build($env)){
                     continue;
                 }
-            }
 
-            $rawGeneral = $this->tmpGeneralQueue[$general->$name];
-            $birth = $general->birth;
-            if(!key_exists($birth, $remainGenerals)){
-                $remainGenerals[$birth] = [];
+                $rawGeneral = $this->tmpGeneralQueue[$general->$name];
+                $birth = $general->birth;
+                if(!key_exists($birth, $remainGenerals)){
+                    $remainGenerals[$birth] = [];
+                }
+                $remainGenerals[$birth][] = array_merge(['RegNPC'], $rawGeneral);
             }
-            $remainGenerals[$birth][] = array_merge(['RegNPC'], $rawGeneral);
         }
         return $remainGenerals;
     }
@@ -313,7 +320,7 @@ class Scenario{
         }
     }
 
-    public function buildGame($env=[]){
+    public function build($env=[]){
         //NOTE: 초기화가 되어있다고 가정함.
 
         /*
@@ -361,7 +368,11 @@ class Scenario{
             ];
         }, $this->events);
 
-        $db->insert('event', $this->events);
+        if(count($events) > 0){
+            $db->insert('event', $events);
+        }
+
+        
 
         pushHistory($this->history);
 

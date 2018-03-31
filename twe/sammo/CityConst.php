@@ -161,7 +161,7 @@ class CityConst{
     ];
 
     private static function _generate(){
-        if(static::$constID || static::$constName || static::$constCity || static::$constRegion){
+        if(static::$constID || static::$constName || static::$constRegion){
             return;
         }
 
@@ -336,7 +336,7 @@ class CityConst{
                 'wall2'=>$city->wall,
                 'region'=>$city->region
             ]);
-        }, static::$constID);
+        }, array_values(static::$constID));
 
         DB::db()->insert('city', $queries);
     }

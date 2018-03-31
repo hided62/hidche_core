@@ -159,13 +159,13 @@ function formSetup(){
                 deferred.reject('fail');
             }
             else{
-                alert('DB.php가 생성되었습니다.');
+                alert('게임이 리셋되었습니다.');
                 deferred.resolve();
             }
 
             return deferred.promise();
         }).then(function(){
-            location.href = 'install.php';
+            //location.href = 'install.php';
         });
         
     });
