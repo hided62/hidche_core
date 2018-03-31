@@ -4,7 +4,7 @@
 
 CREATE TABLE `general` (
 	`no` INT(11) NOT NULL AUTO_INCREMENT,
-	`owner` INT(11) NOT NULL DEFAULT '-1',
+	`owner` INT(11) NOT NULL DEFAULT '0',
 	`conmsg` CHAR(255) NOT NULL DEFAULT '',
 	`npcmsg` CHAR(255) NULL DEFAULT '',
 	`npcid` INT(5) NULL DEFAULT NULL,

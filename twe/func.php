@@ -1567,6 +1567,7 @@ function cutDay($date, int $turnterm) {
 }
 
 function increaseRefresh($type="", $cnt=1) {
+    $generalID = Session::
     $date = date('Y-m-d H:i:s');
 
     DB::db()->query('UPDATE game set refresh=refresh+%i where `no`=1', $cnt);

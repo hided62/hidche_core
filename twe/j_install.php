@@ -80,12 +80,19 @@ if(!is_writable(__dir__.'/data')){
     ]);
 }
 
-if(!file_exists(ROOT.'/logs/.htaccess')){
-    @file_put_contents(ROOT.'/logs/.htaccess', 'Deny from  all');
+if(!is_writable(__dir__.'/d_setting')){
+    Json::die([
+        'result'=>false,
+        'reason'=>'d_setting 디렉토리의 쓰기 권한이 없습니다'
+    ]);
 }
 
-if(!file_exists(ROOT.'/data/.htaccess')){
-    @file_put_contents(ROOT.'/data/.htaccess', 'Deny from  all');
+if(!file_exists(__dir__.'/logs/.htaccess')){
+    @file_put_contents(__dir__.'/logs/.htaccess', 'Deny from  all');
+}
+
+if(!file_exists(__dir__.'/data/.htaccess')){
+    @file_put_contents(__dir__.'/data/.htaccess', 'Deny from  all');
 }
 
 
@@ -98,6 +105,13 @@ $startyear = $scenarioObj->getYear();
 
 FileUtil::delInDir("logs");
 FileUtil::delInDir("data");
+
+$result = Util::generateFileUsingSimpleTemplate(
+    __DIR__.'/d_setting/UniqueConst.orig.php',
+    __DIR__.'/d_setting/UniqueConst.php',[
+        'serverID'=>DB::prefix().'_'.Util::randomStr(8)
+    ], true
+);
 
 if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/reset.sql'))){
     while(true){

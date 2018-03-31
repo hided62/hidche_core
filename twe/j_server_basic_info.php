@@ -25,21 +25,16 @@ $game['userCnt'] = $genCnt;
 $game['npcCnt'] = $npcCnt;
 $game['nationCnt'] = $nationCnt;
 
-$generalID = getGeneralID(false, false);
-$userGrade = $session->userGrade;
-$me = [
-];
+$me = [];
 
-if($generalID){
-    $general = $db->queryFirstRow('SELECT name, picture, imgsvr from general where no=%i', $generalID);
-    if($general){
-        $me['name'] = $general['name'];
+$general = $db->queryFirstRow('SELECT name, picture, imgsvr from general where owner=%i', $session->userID);
+if($general){
+    $me['name'] = $general['name'];
 
-        if($general['imgsvr'] == 0) {
-            $me['picture'] = '../../image/'.$general['picture'];
-        } else {
-            $me['picture'] = '../d_pic/'.$general['picture'];
-        }
+    if($general['imgsvr'] == 0) {
+        $me['picture'] = '../../image/'.$general['picture'];
+    } else {
+        $me['picture'] = '../d_pic/'.$general['picture'];
     }
 }
 

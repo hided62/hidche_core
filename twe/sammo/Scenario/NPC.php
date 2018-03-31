@@ -73,6 +73,7 @@ class NPC{
         $year = $env['year'];
         $month = $env['month'];
         $age = $year - $this->birth;
+        $name = $this->name;
 
         if($this->death < $year){
             return true; //죽었으니 넘어간다.

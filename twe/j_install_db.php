@@ -43,6 +43,12 @@ if($fullReset && class_exists('\\sammo\\DB')){
 if($fullReset){
     FileUtil::delInDir(__dir__."/logs");
     FileUtil::delInDir(__dir__."/data");
+    if(file_exists(__dir__.'/d_setting/DB.php')){
+        @unlink(__dir__.'/d_setting/DB.php');
+    }
+    if(file_exists(__dir__.'/d_setting/UniqueConst.php')){
+        @unlink(__dir__.'/d_setting/UniqueConst.php');
+    }
 }
 
 function dbConnFail($params){

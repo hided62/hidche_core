@@ -145,7 +145,10 @@ class Session {
         if($this->writeClosed){
             $this->restart();
         }
-        $this->logoutGame();
+        if(class_exists('\\sammo\\UniqueConst')){
+            $this->logoutGame();
+        }
+        
         $this->set('userID', null);
         $this->set('userName', null);
         $this->set('userGrade', null);
@@ -162,20 +165,20 @@ class Session {
             return $this;
         }
 
-        if(!class_exists('\\sammo\\DB')){
+        if(!class_exists('\\sammo\\DB') || !class_exists('\\sammo\\UniqueConst')){
             if($result !== null){
                 $result = false;
             }
             return $this;
         }
 
-        $prefix = DB::prefix();
+        $serverID = UniqueConst::$serverID;
         $db = DB::db();
 
-        $loginDate = $this->get($prefix.static::GAME_KEY_DATE);
-        $generalID = $this->get($prefix.static::GAME_KEY_GENERAL_ID);
-        $generalName = $this->get($prefix.static::GAME_KEY_GENERAL_NAME);
-        $deadTime = $this->get($prefix.static::GAME_KEY_EXPECTED_DEADTIME);
+        $loginDate = $this->get($serverID.static::GAME_KEY_DATE);
+        $generalID = $this->get($serverID.static::GAME_KEY_GENERAL_ID);
+        $generalName = $this->get($serverID.static::GAME_KEY_GENERAL_NAME);
+        $deadTime = $this->get($serverID.static::GAME_KEY_EXPECTED_DEADTIME);
 
         $now = time();
         if(
@@ -220,21 +223,21 @@ class Session {
         }
 
 
-        $this->set($prefix.static::GAME_KEY_DATE, $now);
-        $this->set($prefix.static::GAME_KEY_GENERAL_ID, $generalID);
-        $this->set($prefix.static::GAME_KEY_GENERAL_NAME, $generalName);
-        $this->set($prefix.static::GAME_KEY_EXPECTED_DEADTIME, $deadTime);
+        $this->set($serverID.static::GAME_KEY_DATE, $now);
+        $this->set($serverID.static::GAME_KEY_GENERAL_ID, $generalID);
+        $this->set($preserverIDfix.static::GAME_KEY_GENERAL_NAME, $generalName);
+        $this->set($serverID.static::GAME_KEY_EXPECTED_DEADTIME, $deadTime);
     }
 
     public function logoutGame(): Session{
         if($this->writeClosed){
             $this->restart();
         }
-        $prefix = DB::prefix();
-        $this->set($prefix.static::GAME_KEY_DATE, null);
-        $this->set($prefix.static::GAME_KEY_GENERAL_ID, null);
-        $this->set($prefix.static::GAME_KEY_GENERAL_NAME, null);
-        $this->set($prefix.static::GAME_KEY_EXPECTED_DEADTIME, null);
+        $serverID = UniqueConst::$serverID;
+        $this->set($serverID.static::GAME_KEY_DATE, null);
+        $this->set($serverID.static::GAME_KEY_GENERAL_ID, null);
+        $this->set($serverID.static::GAME_KEY_GENERAL_NAME, null);
+        $this->set($serverID.static::GAME_KEY_EXPECTED_DEADTIME, null);
         return $this;
     }
 
