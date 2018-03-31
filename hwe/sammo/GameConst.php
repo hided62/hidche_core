@@ -3,9 +3,9 @@ namespace sammo;
 
 class GameConst{
     /** @var string 버전 */
-    public static $version = "삼국지 모의전투 PHP HideD v0.1";
+    public static $title = "삼국지 모의전투 PHP HideD";
     /** @var string 코드 아래에 붙는 설명 코드 */
-    public static $banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : 유기체(jwh1807@gmail.com), HideD(hided62@gmail.com)";
+    public static $banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : HideD(hided62@gmail.com)";
     /** @var string 코드 아래에 붙는 설명 코드 */
     public static $helper = "도움 주신 분들";
     /** @var int 내정시 최하 민심 설정*/

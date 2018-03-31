@@ -1510,7 +1510,12 @@ function msgprint($connect, $msg, $name, $picture, $imgsvr, $when, $num, $type) 
 
 function banner() {
 
-    return sprintf('<font size=2>%s / %s <br> %s</font>', GameConst::$version, GameConst::$banner, GameConst::$helper);
+    return sprintf(
+        '<font size=2>%s %s / %s <br> %s</font>',
+        GameConst::$title,
+        VersionGit::$version,
+        GameConst::$banner,
+        GameConst::$helper);
 }
 
 function addTurn($date, int $turnterm, int $turn=1) {
