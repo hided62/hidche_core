@@ -59,7 +59,7 @@ $db = DB::db();
 $mysqli_obj = $db->get();
 
 
-$scenarioObj = new Scenario($scenario);
+$scenarioObj = new Scenario($scenario, false);
 $startyear = $scenarioObj->getYear();
 
 if($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/reset.sql'))){
@@ -118,6 +118,7 @@ if($npcmode == 1) { $killturn = floor($killturn / 3); }
 
 $env = [
     'scenario'=>$scenario,
+    'scenario_text'=>$scenarioObj->getTitle(),
     'startyear'=>$startyear,
     'year'=> $year,
     'month'=> $month,
