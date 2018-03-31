@@ -35,9 +35,9 @@ function RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,$gencount,$a
     //$name = "ⓝ".$name;
     $npc = 2;
     if($city == "-") {
-        $city = rand() % 94 + 1;
+        $city = rand(1, count(CityConst::all()));
     } else {
-        $city = CityCall($city);
+        $city = CityConst::byName($city)->id;
     }
     if($affinity == 0 || $fiction == 1) { $affinity = rand() % 150 + 1; }
     if($life == 1) { $bornyear = 160; $deadyear = 300; }
@@ -1069,6 +1069,7 @@ function processAI($connect, $no) {
 //$command = $fourth * 100000000 + $type * 100000 + $crew * 100 + 11;
 
 function RegNation($name, $color, $gold, $rice, $scoutmsg, $tech, $gencount, $type, $level) {
+    //TODO: 삭제
     $type = NationCharCall($type);
     $totaltech = $tech * $gencount;
 
@@ -1093,11 +1094,11 @@ function RegNation($name, $color, $gold, $rice, $scoutmsg, $tech, $gencount, $ty
 }
 
 function RegCity($nation, $name, $cap=0) {
-    $city = CityCall($name);
+    //TODO: 삭제
+    $city = CityConst::byName($name)->id;
     DB::db()->update('city', [
         'nation'=>$nation,
-        'city'=>$city
-    ]);
+    ], 'city=%i',$city);
 
     if($cap > 0){
         DB::db()->update('nation', ['capital'=>city], 'nation = %i', $nation);

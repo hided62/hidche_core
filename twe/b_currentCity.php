@@ -163,7 +163,7 @@ if($city['trade'] == 0) {
 echo "
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
-        <td colspan=12 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 {$city['name']}</td>
+        <td colspan=12 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td>
     </tr>
     <tr>
         <td align=center width=48 id=bg1>주민</td>

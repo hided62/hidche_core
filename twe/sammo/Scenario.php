@@ -25,19 +25,12 @@ class Scenario{
     private $initialEvents;
     private $events;
 
-    public function __construct(int $scenarioIdx){
-        $scenarioPath = self::SCENARIO_PATH."/scenario_{$scenarioIdx}.json";
+    private $initOK = false;
 
-        $this->scenarioIdx = $scenarioIdx;
-        $this->scenarioPath = $scenarioPath;
-
-        $data = Json::decode(file_get_contents($scenarioPath));
-        $this->data = $data;
-
-        $this->year = Util::array_get($data['startYear']);
-        $this->title = Util::array_get($data['title'] , '');
-
-        $this->history = Util::array_get($data['history'], []);
+    private function initFull(){
+        if($this->initOK){
+            return;
+        }
 
         $this->nations = [];
         $this->nations[0] = new Scenario\Nation(0, '재야', '#ffffff', 0, 0);
@@ -149,6 +142,25 @@ class Scenario{
                 'action' => $action
             ];
         }, Util::array_get($data['events'], []));
+    }
+
+    public function __construct(int $scenarioIdx, bool $lazyInit = true){
+        $scenarioPath = self::SCENARIO_PATH."/scenario_{$scenarioIdx}.json";
+
+        $this->scenarioIdx = $scenarioIdx;
+        $this->scenarioPath = $scenarioPath;
+
+        $data = Json::decode(file_get_contents($scenarioPath));
+        $this->data = $data;
+
+        $this->year = Util::array_get($data['startYear']);
+        $this->title = Util::array_get($data['title'] , '');
+
+        $this->history = Util::array_get($data['history'], []);
+
+        if(!$lazyInit){
+            $this->initFull();
+        }
 
     }
 
@@ -165,76 +177,23 @@ class Scenario{
     }
 
     public function getNPC(){
+        $this->initFull();
         return $this->generals;
     }
 
     public function getNPCex(){
+        $this->initFull();
         return $this->generalsEx;
     }
 
     public function getNation(){
+        $this->initFull();
         return $this->nations;
-
-        $nationsRaw = Util::array_get($this->data['nation']);
-        if(!$nationsRaw){
-            return [];
-        }
-
-        $nations = [];
-        foreach($nationsRaw as $idx=>$nation){
-            list($name, $color, $gold, $rice, $infoText, $tech, $type, $nationLevel, $cities) = $nation;
-            $nationID = $idx+1;
-
-            $nation['id'] = $nationID;
-
-            $nations[$nationID] = [
-                'id'=>$nationID,
-                'name'=>$name,
-                'color'=>$color,
-                'gold'=>$gold,
-                'rice'=>$rice,
-                'infoText'=>$infoText,
-                'tech'=>$tech,
-                'type'=>$type,
-                'nationLevel'=>$nationLevel,
-                'cities'=>$cities,
-                'generals'=>0
-            ];
-        }
-
-        $nations[0] = [
-            'id'=>0,
-            'name'=>'재야',
-            'color'=>'#ffffff',
-            'gold'=>0,
-            'rice'=>0,
-            'infoText'=>'재야',
-            'tech'=>0,
-            'type'=>'재야',
-            'nationLevel'=>0,
-            'cities'=>[],
-            'generals'=>0
-        ];
-
-        foreach(Util::array_get($this->data['general'], []) as $idx=>$general){
-            while(count($general) < 14){
-                $general[] = null;
-            }
-            list(
-                $a, $name, $npcname, $nationID, $specifiedCity, 
-                $leadership, $power, $intel, $birth, $death, 
-                $charDom, $charWar, $text
-            ) = $general;
-
-            if(array_key_exists($nationID, $nations)){
-                $nations[$nationID]['generals']++;
-            };
-        }
-
-        return $nations;
     }
 
     public function getScenarioBrief(){
+        $this->initFull();
+
         $nations = [];
         $nationGeneralCnt = [];
         $nationGeneralExCnt = [];
@@ -275,6 +234,8 @@ class Scenario{
     }
 
     private function buildGenerals($env){
+        $this->initFull();
+
         $remainGenerals = [];
         foreach($this->generals as $general){
             if($general->build($env)){
@@ -307,6 +268,8 @@ class Scenario{
     }
 
     private function buildDiplomacy($env){
+        $this->initFull();
+
         $db = DB::db();
         foreach($this->diplomacy as $diplomacy){
             list($me, $you, $state, $remain) = $diplomacy;
@@ -318,6 +281,8 @@ class Scenario{
     }
 
     public function build($env=[]){
+        $this->initFull();
+        
         //NOTE: 초기화가 되어있다고 가정함.
 
         /*

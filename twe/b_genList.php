@@ -71,8 +71,6 @@ for($i=0; $i < $troopCount; $i++) {
     $troopName[$troop['troop']] = $troop['name'];
 }
 
-$cityname = CityNameArray();
-
 switch($type) {
     case 1: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by gold desc"; break;
     case 2: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by rice desc"; break;
@@ -106,7 +104,7 @@ echo"
     </tr>";
 for($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
-    $city = $cityname[$general['city']];
+    $city = CityConst::byID($general['city'])->name;
     $troop = $troopName[$general['troop']] == "" ? "-" : $troopName[$general['troop']];
 
     if($general['level'] == 12) {

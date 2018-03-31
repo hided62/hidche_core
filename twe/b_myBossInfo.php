@@ -43,7 +43,6 @@ function out() {
 <br>
 
 <?php
-$cityNames = CityNameArray();
 
 $query = "select nation,name,level,color,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -167,7 +166,7 @@ echo "
     <tr><td colspan=4 align=center bgcolor=blue>수 뇌 부 임 명</td></tr>
     <tr>
         <td width=98  align=right id=bg1>".getLevel(12, $nation['level'])."</td>
-        <td width=398>{$general['name']} 【{$cityNames[$general['city']]}】</td>
+        <td width=398>{$general['name']} 【".CityConst::byID($general['city'])->name."】</td>
         <td width=98  align=right id=bg1>".getLevel(11, $nation['level'])."</td>
 <form method=post action=c_myBossInfo.php>
         <td width=398>
@@ -184,11 +183,11 @@ if($meLevel >= 5 && $nation['l11set'] == 0) {
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['level'] == 11) {
-            echo "<option style=color:red; selected value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option style=color:red; selected value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['level'] > 1) {
-            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
@@ -200,7 +199,7 @@ if($meLevel >= 5 && $nation['l11set'] == 0) {
     $query = "select name,city from general where nation='{$me['nation']}' and level='11'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    echo "{$general['name']} 【{$cityNames[$general['city']]}】";
+    echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
 }
 echo "
         </td>
@@ -235,11 +234,11 @@ for($i=10; $i >= $lv; $i--) {
         for($k=0; $k < $gencount; $k++) {
             $general = MYDB_fetch_array($result);
             if($general['level'] == $i) {
-                echo "<option style=color:red; selected value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+                echo "<option style=color:red; selected value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
             } elseif($general['level'] > 1) {
-                echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+                echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
             } else {
-                echo "<option value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+                echo "<option value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
             }
         }
 
@@ -251,7 +250,7 @@ for($i=10; $i >= $lv; $i--) {
         $query = "select name,city from general where nation='{$me['nation']}' and level={$i}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $general = MYDB_fetch_array($result);
-        echo "{$general['name']} 【{$cityNames[$general['city']]}】";
+        echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
     }
     echo "</td></form>";
     if($i % 2 == 1) { echo "</tr>"; }
@@ -284,7 +283,7 @@ if($meLevel >= 5) {
             if($region != 0) {
                 echo "</optgroup>";
             }
-            echo "<optgroup label=' 【 ".getRegion($city['region'])." 】 ' style=color:skyblue;>";
+            echo "<optgroup label=' 【 ".CityConst::$regionMap[$city['region']]." 】 ' style=color:skyblue;>";
             $region = $city['region'];
         }
 
@@ -304,11 +303,11 @@ if($meLevel >= 5) {
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['level'] == 4) {
-            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['level'] > 1) {
-            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
@@ -338,7 +337,7 @@ if($meLevel >= 5) {
             if($region != 0) {
                 echo "</optgroup>";
             }
-            echo "<optgroup label=' 【 ".getRegion($city['region'])." 】 ' style=color:skyblue;>";
+            echo "<optgroup label=' 【 ".CityConst::$regionMap[$city['region']]." 】 ' style=color:skyblue;>";
             $region = $city['region'];
         }
 
@@ -358,11 +357,11 @@ if($meLevel >= 5) {
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['level'] == 3) {
-            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['level'] > 1) {
-            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
@@ -392,7 +391,7 @@ if($meLevel >= 5) {
             if($region != 0) {
                 echo "</optgroup>";
             }
-            echo "<optgroup label=' 【 ".getRegion($city['region'])." 】 ' style=color:skyblue;>";
+            echo "<optgroup label=' 【 ".CityConst::$regionMap[$city['region']]." 】 ' style=color:skyblue;>";
             $region = $city['region'];
         }
 
@@ -412,11 +411,11 @@ if($meLevel >= 5) {
     for($i=0; $i < $count; $i++) {
         $general = MYDB_fetch_array($result);
         if($general['level'] == 2) {
-            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option style=color:red; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } elseif($general['level'] > 1) {
-            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option style=color:orange; value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         } else {
-            echo "<option value={$general['no']}>{$general['name']} 【{$cityNames[$general['city']]}】</option>";
+            echo "<option value={$general['no']}>{$general['name']} 【".CityConst::byID($general['city'])->name."】</option>";
         }
     }
 
@@ -469,13 +468,13 @@ for($j=0; $j < $citycount; $j++) {
     if($region != $city['region']) {
         echo "
     <tr><td colspan=5 height=3 id=bg1></td></tr>
-    <tr><td colspan=5 id=bg1><font size=4 color=skyblue> 【 ".getRegion($city['region'])." 】 </font></td></tr>";
+    <tr><td colspan=5 id=bg1><font size=4 color=skyblue> 【 ".CityConst::$regionMap[$city['region']]." 】 </font></td></tr>";
         $region = $city['region'];
     }
 
-    $gen1['name'] = $gen1['name']==""?"-":$gen1['name']." ({$gen1['belong']}년) 【{$cityNames[$gen1['city']]}】";
-    $gen2['name'] = $gen2['name']==""?"-":$gen2['name']." ({$gen2['belong']}년) 【{$cityNames[$gen2['city']]}】";
-    $gen3['name'] = $gen3['name']==""?"-":$gen3['name']." ({$gen3['belong']}년) 【{$cityNames[$gen3['city']]}】";
+    $gen1['name'] = $gen1['name']==""?"-":$gen1['name']." ({$gen1['belong']}년) 【".CityConst::byID($gen1['city'])->name."】";
+    $gen2['name'] = $gen2['name']==""?"-":$gen2['name']." ({$gen2['belong']}년) 【".CityConst::byID($gen2['city'])->name."】";
+    $gen3['name'] = $gen3['name']==""?"-":$gen3['name']." ({$gen3['belong']}년) 【".CityConst::byID($gen3['city'])->name."】";
     if($city['gen1set'] == 1) { $gen1['name'] = "<font color=orange>".$gen1['name']."</font>"; }
     if($city['gen2set'] == 1) { $gen2['name'] = "<font color=orange>".$gen2['name']."</font>"; }
     if($city['gen3set'] == 1) { $gen3['name'] = "<font color=orange>".$gen3['name']."</font>"; }

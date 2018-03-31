@@ -57,11 +57,9 @@ function bar($per, $h=7) {
 
 
 function OptionsForCitys() {
-    $citynames = CityNameArray();
-
-    for($i=1; $i <= 94; $i++) {
+    foreach(CityConst::all() as $city){
         echo "
-    <option value={$i}>{$citynames[$i]}</option>";
+        <option value={$city->id}>{$city->name}</option>";
     }
 }
 
@@ -108,23 +106,21 @@ function closeButton() {
 function printCitysName($connect, $cityNo, $distance=1) {
     $dist = distance($connect, $cityNo, $distance);
 
-    $citynames = CityNameArray();
-    $citynum = 94;
-
-    $citystr = "";
-    for($i=1; $i <= $citynum; $i++) {
-
-        if($dist[$i] == $distance) {
-            $citystr = $citystr.$citynames[$i].", ";
+    $cityList = [];
+    foreach(CityConst::all() as $city){
+        if($dist[$city->id] == $distance){
+            $cityList[] = $city->name;
         }
     }
+
+    $cityStr = join(', ', $cityList);
 
     switch($distance) {
     case 1: $color = "magenta"; break;
     case 2: $color = "orange"; break;
     default: $color = "yellow"; break;
     }
-    echo "{$distance}칸 떨어진 도시 : <font color={$color}><b>{$citystr}</b></font><br>";
+    echo "{$distance}칸 떨어진 도시 : <font color={$color}><b>{$cityStr}</b></font><br>";
 }
 
 

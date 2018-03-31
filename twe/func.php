@@ -253,7 +253,7 @@ function cityInfo($connect) {
 
     if($nation['color'] == "" ) { $nation['color'] = "000000"; }
     echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
-    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 {$city['name']}</td></tr>
+    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
     <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
 
     if($city['nation'] == 0) {

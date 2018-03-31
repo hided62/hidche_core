@@ -108,7 +108,7 @@ for($j=0; $j < $citycount; $j++) {
     echo "
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
-        <td colspan=12 style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=2>【 ".getRegion($city['region'])." | ".getCityLevel($city['level'])." 】 {$city['name']}</font></td>
+        <td colspan=12 style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=2>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</font></td>
     </tr>
     <tr>
         <td align=center width=48 id=bg1>주민</td>
