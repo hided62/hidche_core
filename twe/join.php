@@ -3,7 +3,6 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
-require("new_lib.php");
 
 $userID = Session::getUserID();
 
