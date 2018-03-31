@@ -34,7 +34,7 @@ $baseServerName = end(array_keys(AppConf::getList()));
 
 $targetDir =$target.':'.$baseServerName;
 
-if($server == $baseServerName || !key_exists($server, AppConf::getList())){
+if(!key_exists($server, AppConf::getList())){
     Json::die([
         'result'=>false,
         'reason'=>'불가능한 서버 이름입니다.'
@@ -63,6 +63,25 @@ if(!file_exists($server)){
         ]);
     }
     mkdir($server, 0644);
+}
+
+
+if($server == $baseServerName){
+
+    exec("git pull 2>&1", $output);
+    if($output && $output[0] != 'Already up-to-date.'){
+        Json::die([
+            'result'=>false,
+            'reason'=>'git pull 작업 : '.join(', ', $output)
+        ]);
+    }
+
+    //TODO: 버전명을 기록.
+
+    Json::die([
+        'result'=>true,
+    ]);
+
 }
 
 exec("git fetch 2>&1", $output);
