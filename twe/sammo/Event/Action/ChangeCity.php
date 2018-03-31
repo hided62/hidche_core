@@ -152,13 +152,11 @@ class ChangeCity extends \sammo\Event\Action{
     }
 
     public function run($env=null){
-
-        $target = $this->target;
         $cities = $this->getTargetCities($env);
 
         DB::db()->update('city', 
             $this->queries
-        , 'city IN (%li)', $cities);
+        , 'city IN %li', $cities);
         return [__CLASS__, DB::db()->affectedRows()];
     }
 

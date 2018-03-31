@@ -1,7 +1,7 @@
 <?php
 namespace sammo\Event\Condition;
 
-class ConstBool extends sammo\Event\Condition{
+class ConstBool extends \sammo\Event\Condition{
     private $fixedResult = true;
 
     public function __construct(bool $value){

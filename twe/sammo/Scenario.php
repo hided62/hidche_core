@@ -378,7 +378,7 @@ class Scenario{
 
         refreshNationStaticInfo();
         foreach(getAllNationStaticInfo() as $nation){
-            SetNationFront($db->get(), $nation['nation']);
+            SetNationFront($nation['nation']);
         }
     }
 

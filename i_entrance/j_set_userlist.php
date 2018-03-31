@@ -130,7 +130,7 @@ if($action == 'scrub_old_user'){
         $cnt = 0;
     }
     else{
-        $db->delete('member', 'no IN (%li)', $targetUser);
+        $db->delete('member', 'no IN %li', $targetUser);
         $cnt = $db->affectedRows();
     }
 

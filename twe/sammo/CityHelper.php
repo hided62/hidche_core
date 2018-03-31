@@ -23,7 +23,9 @@ class CityHelper{
         $listByNation = [];
         
         foreach (DB::db()->query('SELECT `city` as `id`, `name`, `level`, `nation` from city') as $city) {
-            $list[$city['id']] = $city;
+            $id = $city['id'];
+            $name = $city['name'];
+            $list[$id] = $city;
             $listInv[$city['name']] = $city;
 
             if(!key_exists($id, $listByNation)){

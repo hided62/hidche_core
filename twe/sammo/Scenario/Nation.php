@@ -59,7 +59,7 @@ class Nation{
         }, $this->cities);
         $capital = \sammo\CityHelper::getCityByName($this->capital)['id'];
 
-        $type = \sammo\NationCharCall($this->$type);
+        $type = \sammo\NationCharCall($this->type);
 
         $db = DB::db();
         $otherNations = $db->queryFirstColumn('SELECT nation FROM nation');
@@ -81,29 +81,32 @@ class Nation{
             'scoutmsg'=>$this->infoText,
             'tech'=>$this->tech,
             'totaltech'=>0,
-            'level'=>$this->level,
+            'level'=>$this->nationLevel,
             'type'=>$type,
         ]);
 
         $db->update('city', [
             'nation'=>$this->id
-        ], 'city IN (%li)', $cities);
+        ], 'city IN %li', $cities);
 
         
         $diplomacy = [];
         foreach($otherNations as $nation){
             $diplomacy[] = [
-                'me'=>$this->$id,
+                'me'=>$this->id,
                 'you'=>$nation,
                 'state'=>2
             ];
             $diplomacy[] = [
                 'me'=>$nation,
-                'you'=>$this->$id,
+                'you'=>$this->id,
                 'state'=>2
             ];
         }
-        $db->insert('diplomacy', $diplomacy);
+        if(count($diplomacy) > 0){
+            $db->insert('diplomacy', $diplomacy);
+        }
+        
     }
 
     public function postBuild($env=[]){

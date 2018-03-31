@@ -56,7 +56,7 @@ class RaiseInvader extends \sammo\Event\Action{
         $db = DB::db();
 
 
-        foreach($db->queryFirstColumn('SELECT capital, nation from nation WHERE capital in (%li)', $cities) as $row){
+        foreach($db->queryFirstColumn('SELECT capital, nation from nation WHERE capital in %li', $cities) as $row){
             list($oldCapital, $nation) = $row;
             $newCapital = $db->queryFirstRow('SELECT city from city where nation=%i and city !=%i \
                 order by rand() limit 1', $nation, $oldCapital);
@@ -66,7 +66,7 @@ class RaiseInvader extends \sammo\Event\Action{
         }
 
         $generals = [];
-        foreach($db->query('SELECT gen1, gen2, gen3 from city where city in (%li)', $cities) as $city){
+        foreach($db->query('SELECT gen1, gen2, gen3 from city where city in %li', $cities) as $city){
             list($gen1, $gen2, $gen3) = $city;
             if($gen1 != 0) $generals[]=$gen1;
             if($gen2 != 0) $generals[]=$gen2;
@@ -75,14 +75,14 @@ class RaiseInvader extends \sammo\Event\Action{
 
         $db->update('general', [
             'level'=>1
-        ], 'no in (%li)', $generals);
+        ], 'no in %li', $generals);
 
         $db->update('city', [
             'gen1'=>0,
             'gen2'=>0,
             'gen3'=>0,
             'nation'=>0
-        ], 'city in (%li)', $cities);
+        ], 'city in %li', $cities);
     }
 
     public function run($env=null){

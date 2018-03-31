@@ -2927,14 +2927,14 @@ function TrickInjury($connect, $city, $type=0) {
 }
 
 function getRandTurn($term) {
-    $randtime = $rand(0, 60 * $term - 1);
+    $randtime = rand(0, 60 * $term - 1);
     $turntime = date('Y-m-d H:i:s', strtotime('now') + $randtime);
 
     return $turntime;
 }
 
 function getRandTurn2($term) {
-    $randtime = $rand(0, 60 * $term - 1);
+    $randtime = rand(0, 60 * $term - 1);
     $turntime = date('Y-m-d H:i:s', strtotime('now') - $randtime);
 
     return $turntime;

@@ -1,5 +1,5 @@
 <?php
-
+namespace sammo;
 
 /**
  * 게임 룰에 해당하는 함수 모음
@@ -200,60 +200,41 @@ function addGenDex($connect, $no, $type, $exp) {
 
 
 //한국가의 전체 전방 설정
-function SetNationFront($connect, $nationNo) {
+function SetNationFront($nationNo) {
     if(!$nationNo) { return; }
     // 도시소유 국가와 선포,교전중인 국가
-    $query = "select me,you from diplomacy where me={$nationNo} and (state=0 or (state=1 and term<=3))";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $dipNum = MYDB_num_rows($result);
-    if($dipNum > 0) {
-        for($i=0; $i < $dipNum; $i++) {
-            $dip = MYDB_fetch_array($result);
+    
+    $adj = [];
 
-            $query = "select city,path from city where nation={$dip['you']}";
-            $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $cityNum = MYDB_num_rows($result2);
-            for($k=0; $k < $cityNum; $k++) {
-                $city = MYDB_fetch_array($result2);
-                $path = explode("|", $city['path']);
-                $cnt = count($path);
-                for($j=0; $j < $cnt; $j++) {
-                    $adj[$path[$j]] = 1;
+    $db = DB::db();
+    $warNations = $db->queryFirstColumn('SELECT you from diplomacy where me = %i and (state=0 or (state=1 and term<=3))');
+    if($warNations) {
+        foreach($warNations as $warNation){
+            $enemyCities = $db->queryFirstColumn('SELECT city from city where nation=%i', $warNation);
+            foreach($enemyCities as $city){
+                foreach(CityConst::byID($city)->path as $adjCity){
+                    $adj[$adjCity] = 1;
                 }
             }
         }
     } else {
-    //평시이면 공백지
-        $query = "select city,path from city where nation=0";
-        $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $cityNum = MYDB_num_rows($result2);
-        for($k=0; $k < $cityNum; $k++) {
-            $city = MYDB_fetch_array($result2);
-            $path = explode("|", $city['path']);
-            $cnt = count($path);
-            for($j=0; $j < $cnt; $j++) {
-                $adj[$path[$j]] = 1;
+        //평시이면 공백지
+        //NOTE: if, else일 경우 NPC는 전쟁시에는 공백지로 출병하지 않는다는 뜻이 된다.
+        foreach ($db->queryFirstColumn('SELECT city,path from city where nation=0') as $city) {
+            foreach(CityConst::byID($city)->path as $adjCity){
+                $adj[$adjCity] = 1;
             }
         }
     }
-    $str = "city=0"; $valid = 0;
-    $query = "select city from city where nation={$nationNo}";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $cityNum = MYDB_num_rows($result);
-    for($i=0; $i < $cityNum; $i++) {
-        $city = MYDB_fetch_array($result);
-        if(isset($city['city'])) {
-            if (isset($adj[$city['city']]) && ($adj[$city['city']] == 1)) {
-                $str .= " or city={$city['city']}";
-                $valid = 1;
-            }
-        }
-    }
-    $query = "update city set front=0 where nation={$nationNo}";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    if($valid == 1) {
-        $query = "update city set front=1 where {$str}";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+    $db->update('city', [
+        'front'=>0
+    ], 'nation=%i', $nationNo);
+
+    if($adj){
+        $db->update('city', [
+            'front'=>0
+        ], 'nation=%i and city in %li', $nationNo, array_keys($adj));
     }
 }
 
@@ -664,7 +645,7 @@ group by A.nation
         if($nation['level'] <= 0){
             continue;
         }
-        SetNationFront($connect, $nation['nation']);
+        SetNationFront($nation['nation']);
     }
 }
 

@@ -96,7 +96,7 @@ class NPC{
             $picture = 'default.jpg';
         }
 
-        $city = $this->city;
+        $city = $this->locatedCity;
         if($city === null){
             if($nationID == 0){
                 $city = Util::choiceRandom(CityHelper::getAllCities())['id'];
@@ -117,9 +117,10 @@ class NPC{
         $specage = $age + 1;
         $specage2 = $age + 1;
 
+        $npcID = $db->queryFirstField('SELECT max(npcid)+1 FROM general');
 
         $db->insert('general',[
-            'npcid'=>$db->sqleval('max(npcid)+1'),
+            'npcid'=>$npcID,
             'npc'=>2,
             'npc_org'=>2,
             'affinity'=>$this->affinity,
@@ -127,7 +128,7 @@ class NPC{
             'picture'=>$picture,
             'nation'=>$nationID,
             'city'=>$city,
-            'leader'=>$this->leader,
+            'leader'=>$this->leadership,
             'power'=>$this->power,
             'intel'=>$this->intel,
             'experience'=>$experience,

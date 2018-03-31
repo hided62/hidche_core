@@ -1806,7 +1806,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         for($i=0; $i < $dipCount; $i++) {
             $dip = MYDB_fetch_array($dipResult);
             //전방설정
-            SetNationFront($connect, $dip['you']);
+            SetNationFront($dip['you']);
         }
     // 멸망이 아니면
     } else {
@@ -1887,8 +1887,8 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         //전방설정
-        SetNationFront($connect, $nation['nation']);
-        SetNationFront($connect, $destnation['nation']);
+        SetNationFront($nation['nation']);
+        SetNationFront($destnation['nation']);
     } else {
         $query = "select name,nation from nation where nation='$conquerNation'";
         $conquerResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1910,8 +1910,8 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         //전방설정
-        SetNationFront($connect, $destnation['nation']);
-        SetNationFront($connect, $conquerNation);
+        SetNationFront($destnation['nation']);
+        SetNationFront($conquerNation);
     }
 
     pushGenLog($general, $log);

@@ -586,7 +586,7 @@ function processAI($connect, $no) {
             //외교 평시에 선포
             if($dipState == 0 && $attackable == 0) {
                 //전방 체크 먼저
-                SetNationFront($connect, $nation['nation']);
+                SetNationFront($nation['nation']);
 
                 $query = "select city from city where nation='{$general['nation']}' and front=1 limit 0,1";
                 $result = MYDB_query($query, $connect) or Error("processAI02 ".MYDB_error($connect),"");

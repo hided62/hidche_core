@@ -2,10 +2,14 @@
 namespace sammo\Event;
 
 abstract class Condition{
-    public abstract function __construct($args=null);
     public abstract function eval($env=null);
 
     public static function build($conditionChain){
+
+        if(is_bool($conditionChain)){
+            return new Condition\ConstBool($conditionChain);
+        }
+
         if(!is_array($conditionChain)){
             return $conditionChain;
         }
