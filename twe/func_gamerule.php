@@ -207,7 +207,10 @@ function SetNationFront($nationNo) {
     $adj = [];
 
     $db = DB::db();
-    $warNations = $db->queryFirstColumn('SELECT you from diplomacy where me = %i and (state=0 or (state=1 and term<=3))');
+    $warNations = $db->queryFirstColumn(
+        'SELECT you from diplomacy where me = %i and (state=0 or (state=1 and term<=3))'
+        , $nationNo
+    );
     if($warNations) {
         foreach($warNations as $warNation){
             $enemyCities = $db->queryFirstColumn('SELECT city from city where nation=%i', $warNation);
