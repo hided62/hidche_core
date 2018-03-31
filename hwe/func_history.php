@@ -1,32 +1,25 @@
 <?php
 namespace sammo;
 
-function getHistory($count, $year, $month, $isFirst=0) {
-    $fp = @fopen("logs/_history.txt", "r");
-    @fseek($fp, -$count*300, SEEK_END);
-    $file = @fread($fp, $count*300);
-    @fclose($fp);
-    $log = explode("\r\n",$file);
+function getHistory($year, $month) {
+    $db = DB::db();
 
-    $str = "";
-    $prefix = "</>{$year}년 {$month}월:";
-    for($i=0; $i < $count; $i++) {
-        $line = $log[count($log)-2-$i];
-        if($line == "") {
-            continue;
-        }
-        
-        if(strpos($line, $prefix) || $isFirst == 1) {
-            $str = ConvertLog($line).'<br>'.$str;
-        } else {
-            break;
-        }
+    $texts = [];
+    foreach(
+        $db->queryFirstColumn(
+            'SELECT `text` from full_history where year = %i and month = %i order by id desc', 
+            $year, 
+            $month
+        ) as $text
+    ){
+        $texts[] = ConvertLog($text);
     }
-    if($str == "") {
-        $str = "<C>●</>{$year}년 {$month}월: 기록 없음";
-        $str = ConvertLog($str);
+
+    if(!$texts){
+        return ConvertLog("<C>●</>{$year}년 {$month}월: 기록 없음");
     }
-    return $str;
+
+    return join('<br>', $texts);
 }
 
 function getGenHistory($count, $year, $month, $isFirst=0) {
@@ -64,24 +57,37 @@ function getGenHistory($count, $year, $month, $isFirst=0) {
 function LogHistory($isFirst=0) {
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', LogHistory Start');
 
+    $db = DB::db();
+    $obj = $db->queryFirstRow('SELECT year, month, startyear FROM game limit 1');
+
     //TODO: 새롭게 추가할 지도 값 받아오는 함수를 이용하여 재구성
     $map = getWorldMap([
+        'year'=>null,
+        'month'=>null,
         'neutralView'=>true,
-        'showMe'=>false
+        'showMe'=>false,
+        'aux'=>[]
     ]);
 
+
+    $map['month'] = $obj['month'];
+    $map['year'] = $obj['year'];
+    $map['startYear'] = $obj['startyear'];
     if($isFirst == 1){
-        $map['year'] -= 1;
-        $map['month'] = 12;
+        $map['month'] -= 1;
+        if($map['month'] == 0){
+            $map['month'] = 12;
+            $map['year'] -= 1;
+        }       
     }
 
-    $startYear = $map['startYear'];
+    $startYear = $obj['startyear'];
     $year = $map['year'];
     $month = $map['month'];
 
     $map_json = json_encode($map, JSON_UNESCAPED_UNICODE);
     
-    $log = getHistory(20, $year, $month, $isFirst);
+    $log = getHistory($year, $month);
     $genlog = getGenHistory(50, $year, $month, $isFirst);
 
     $nationStr = "";
@@ -89,7 +95,7 @@ function LogHistory($isFirst=0) {
     $genStr = "";
     $cityStr = "";
 
-    $db = DB::db();
+    
     foreach($db->query('select nation,color,name,power,gennum from nation where level>0 order by power desc') as $nation){
         $cityCount = $db->queryFirstField('select count(*) from city where nation = %i',$nation['nation']);
 

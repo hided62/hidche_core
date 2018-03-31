@@ -1243,9 +1243,17 @@ function pushAllLog($log) {
     file_put_contents(__dir__.'/logs/_alllog.txt', $text, FILE_APPEND);
 }
 
-function pushHistory($history) {
-    $text = join("\n", $history)."\n";
-    file_put_contents(__dir__.'/logs/_history.txt', $text, FILE_APPEND);
+function pushHistory($history, $year=null, $month=null) {
+    $db = DB::db();
+    if($year === null || $month === null){
+        $game = $db->queryFirstRow('SELECT year, month FROM game LIMIT 1');
+        $year = $game['year'];
+        $month = $game['month'];
+    }
+    $request = array_map(function($text) use ($year, $month) {
+        return ['year'=>$year, 'month'=>$month, 'text'=>$text];
+    }, $history);
+    $db->insert('full_history', $history);
 }
 
 function getRawLog($path, $count, $line_length){
@@ -1305,19 +1313,13 @@ function AuctionLog($count) {
 }
 
 function History($count) {
-    if(!file_exists("logs/_history.txt")){
-        return '';
+    $db = DB::db();
+
+    $texts = [];
+    foreach($db->queryFirstColumn('SELECT `text` from full_history order by id desc limit %i', $count) as $text){
+        $texts[] = ConvertLog($text);
     }
-    $fp = @fopen("logs/_history.txt", "r");
-    @fseek($fp, -300*$count, SEEK_END); //
-    $file = @fread($fp, $count*300);
-    @fclose($fp);
-    $log = explode("\n",$file);
-    $str = "";
-    for($i=0; $i < $count; $i++) {
-    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i])."<br>" : "<br>"; 
-	}
-    echo $str;
+    return join('<br>', $texts);
 }
 
 function MyLog($no, $count) {
@@ -2536,7 +2538,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
                 break;
             }
             pushAllLog($alllog);
-            pushHistory($history);
+            pushHistory($history, $admin['year'], $admin['month']);
         }
     }
     return $log;
@@ -2690,7 +2692,7 @@ function deleteNation($connect, $general) {
     $query = "delete from diplomacy where me='{$general['nation']}' or you='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    pushHistory($history);
+    pushHistory($history, $admin['year'], $admin['month']);
     refreshNationStaticInfo();
 }
 
@@ -2755,7 +2757,7 @@ function nextRuler($connect, $general) {
 
     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받았습니다";
 
-    pushHistory($history);
+    pushHistory($history, $admin['year'], $admin['month']);
     addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받음.");
     // 장수 삭제 및 부대처리는 checkTurn에서
 }

@@ -207,6 +207,8 @@ $db->update('plock', [
     'plock'=>0
 ], true);
 
+LogHistory(1);
+
 Json::die([
     'result'=>true
 ]);

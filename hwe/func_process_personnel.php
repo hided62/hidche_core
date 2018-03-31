@@ -618,7 +618,7 @@ function process_46($connect, &$general) {
         $log = uniqueItem($connect, $general, $log, 3);
     }
 
-    pushHistory($history);
+    pushHistory($history, $admin['year'], $admin['month']);
     pushAllLog($alllog);
     pushGenLog($general, $log);
 }
@@ -676,7 +676,7 @@ function process_47($connect, &$general) {
         $query = "update diplomacy set state='2',term='0' where me='{$general['nation']}' or you='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        pushHistory($history);
+        pushHistory($history, $admin['year'], $admin['month']);
 
         refreshNationStaticInfo();
     }
@@ -742,7 +742,7 @@ function process_54($connect, &$general) {
     }
     pushGenLog($general, $log);
     pushGenLog($nextruler, $youlog);
-    pushHistory($history);
+    pushHistory($history, $admin['year'], $admin['month']);
 }
 
 function process_55($connect, &$general) {
@@ -826,7 +826,7 @@ function process_55($connect, &$general) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
-    pushHistory($history);
+    pushHistory($history, $admin['year'], $admin['month']);
     pushAllLog($alllog);
     pushGenLog($general, $log);
 }
@@ -942,5 +942,5 @@ function process_57($connect, &$general) {
     pushGenLog($general, $log);
     pushGenLog($ruler, $youlog);
     pushAllLog($alllog);
-    pushHistory($history);
+    pushHistory($history, $admin['year'], $admin['month']);
 }

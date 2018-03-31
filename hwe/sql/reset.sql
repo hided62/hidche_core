@@ -37,5 +37,8 @@ DROP TABLE IF EXISTS statistic;
 # 연감 테이블 삭제
 DROP TABLE IF EXISTS history;
 
-# 연감 테이블 삭제
+# 이벤트 테이블 삭제
 DROP TABLE IF EXISTS event;
+
+# 전체 이벤트 테이블 삭제(연감 대체?)
+DROP TABLE IF EXISTS full_history;
