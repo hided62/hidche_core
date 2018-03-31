@@ -31,6 +31,8 @@ class Scenario{
         if($this->initOK){
             return;
         }
+        $this->initOK = true;
+        $data = $this->data;
 
         $this->nations = [];
         $this->nations[0] = new Scenario\Nation(0, '재야', '#ffffff', 0, 0);
@@ -96,7 +98,7 @@ class Scenario{
 
             list(
                 $affinity, $name, $pictureID, $nationID, $locatedCity, 
-                $leadership, $power, $intel, $birth, $death, $ego,
+                $leadership, $power, $intel, $level, $birth, $death, $ego,
                 $char, $text
             ) = $rawGeneral;
 
@@ -115,6 +117,7 @@ class Scenario{
                 $leadership, 
                 $power, 
                 $intel, 
+                $level,
                 $birth, 
                 $death, 
                 $ego,
@@ -242,7 +245,7 @@ class Scenario{
                 continue;
             }
 
-            $rawGeneral = $this->tmpGeneralQueue[$general->$name];
+            $rawGeneral = $this->tmpGeneralQueue[$general->name];
             $birth = $general->birth; 
             if(!key_exists($birth, $remainGenerals)){
                 $remainGenerals[$birth] = [];
@@ -256,7 +259,7 @@ class Scenario{
                     continue;
                 }
 
-                $rawGeneral = $this->tmpGeneralQueue[$general->$name];
+                $rawGeneral = $this->tmpGeneralQueue[$general->name];
                 $birth = $general->birth;
                 if(!key_exists($birth, $remainGenerals)){
                     $remainGenerals[$birth] = [];
@@ -282,7 +285,7 @@ class Scenario{
 
     public function build($env=[]){
         $this->initFull();
-        
+
         //NOTE: 초기화가 되어있다고 가정함.
 
         /*
@@ -325,7 +328,7 @@ class Scenario{
 
         $events = array_map(function($rawEvent){
             return [
-                'cond'=>Json::encode($rawEvent['cond']),
+                'condition'=>Json::encode($rawEvent['cond']),
                 'action'=>Json::encode($rawEvent['action'])
             ];
         }, $this->events);

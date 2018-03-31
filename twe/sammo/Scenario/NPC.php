@@ -14,6 +14,7 @@ class NPC{
     public $leadership; 
     public $power; 
     public $intel; 
+    public $level;
     public $birth; 
     public $death; 
     public $ego;
@@ -21,6 +22,7 @@ class NPC{
     public $charWar = 0; 
     public $text;
 
+    //[  1,     "헌제",1002,  1,    null, 17, 13, 61, 0, 170, 250, "안전",    null, "산 넘어 산이로구나..."],
     public function __construct(
         int $affinity, 
         string $name, 
@@ -30,11 +32,12 @@ class NPC{
         int $leadership, 
         int $power, 
         int $intel, 
+        int $level = 0,
         int $birth = 160, 
         int $death = 300, 
-        string $ego = null,
-        string $char = null, 
-        string $text = null
+        $ego = null,
+        $char = null, 
+        $text = null
     ){
         $this->affinity = $affinity;
         $this->name = $name;
@@ -44,6 +47,7 @@ class NPC{
         $this->leadership = $leadership;
         $this->power = $power;
         $this->intel = $intel;
+        $this->level = $level;
         $this->birth = $birth;
         $this->death = $death;
         $this->ego = $ego;
@@ -84,7 +88,10 @@ class NPC{
         }
 
         if($this->ego == null){
-            $this->ego = mt_rand(0, 9);//TODO: 나중에 성격을 따로 분리할 경우 클래스를 참조.
+            $ego = mt_rand(0, 9);//TODO: 나중에 성격을 따로 분리할 경우 클래스를 참조.
+        }
+        else{
+            $ego = \sammo\CharCall($this->ego);
         }
         
         $name = 'ⓝ'.$this->name;
@@ -108,7 +115,7 @@ class NPC{
 
         $experience = $age * 100;
         $dedication = $age * 100;
-        $level = $nationID?1:0;
+        $level = $nationID?1:$this->level;
 
         $turntime = \sammo\getRandTurn($env['turnterm']);
 
@@ -147,7 +154,7 @@ class NPC{
             'killturn'=>$killturn,
             'age'=>$age,
             'belong'=>1,
-            'personal'=>$this->ego,
+            'personal'=>$ego,
             'special'=>$this->charDomestic,
             'specage'=>$specage,
             'special2'=>$this->charWar,

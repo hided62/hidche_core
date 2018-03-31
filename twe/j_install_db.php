@@ -40,6 +40,10 @@ if($fullReset && class_exists('\\sammo\\DB')){
         }
     }
 }
+if($fullReset){
+    FileUtil::delInDir(__dir__."/logs");
+    FileUtil::delInDir(__dir__."/data");
+}
 
 function dbConnFail($params){
     Json::die([

@@ -9,6 +9,9 @@ class FileUtil{
                 if ($FolderOrFile == "." || $FolderOrFile == "..") {
                     continue;
                 }
+                if($FolderOrFile[0] == '.'){
+                    continue;
+                }
     
                 $filepath = sprintf('%s/%s', $dir, $FolderOrFile);
                 if (is_dir($filepath)) {
