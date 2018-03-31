@@ -1532,6 +1532,7 @@ function cutTurn($date, int $turnterm) {
     
     $baseDate = new \DateTime($date->format('Y-m-d'));
     $baseDate->sub(new \DateInterval("P1D"));
+    $baseDate->add(new \DateInterval("PT1H"));
 
     $diffMin = intdiv($date->getTimeStamp() - $baseDate->getTimeStamp(), 60);
     $diffMin -= $diffMin % $turnterm;
@@ -1545,10 +1546,13 @@ function cutDay($date, int $turnterm) {
     
     $baseDate = new \DateTime($date->format('Y-m-d'));
     $baseDate->sub(new \DateInterval("P1D"));
+    $baseDate->add(new \DateInterval("PT1H"));
 
-    $baseGap = 60*24 / $turnterm;
+    $baseGap = 12 * $turnterm;
 
     $diffMin = intdiv($date->getTimeStamp() - $baseDate->getTimeStamp(), 60);
+    
+    var_dump($diffMin);
 
     $timeAdjust = $diffMin % $baseGap;
     $newMonth = intdiv($timeAdjust, $turnterm) + 1;
