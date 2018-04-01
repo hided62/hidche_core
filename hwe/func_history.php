@@ -1,111 +1,134 @@
 <?php
 namespace sammo;
 
-
-
-function pushTrickLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/_tricklog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
-}
-
-function pushProcessLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $date = date('Y_m_d');
-        $fp = fopen("logs/_{$date}_processlog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
-}
+//File-based
 
 function delStepLog() {
     $date = date('Y_m_d');
     @unlink("logs/_{$date}_steplog.txt");
 }
 
+function pushRawFileLog($path, $lines){
+    if(!$lines){
+        return;
+    }
+    if(is_string($lines)){
+        $lines = [$lines];
+    }
+    $text = join("\n", $lines)."\n";
+    file_put_contents($path, $text, FILE_APPEND);
+}
+
+function getRawFileLogRecent(string $path, int $count, $expectedLineLength=null){
+    $tail = new FileTail($path);
+    return $tail->smart($count, $expectedLineLength, true);
+}
+
+function getRawFileLogAll(string $path){
+    if(!file_exists($path)){
+        return [];
+    }
+    return explode("\n", file_get_contents($path));
+}
+
+function getFormattedFileLogRecent(string $path, int $count, $expectedLineLength=null){
+    return array_map(function($text){
+        return ConvertLog($text);
+    }, getRawFileLogRecent($path, $count, $expectedLineLength));
+}
+
+function getFormattedFileLogAll(string $path){
+    return array_map(function($text){
+        return ConvertLog($text);
+    }, getRawFileLogAll($path));
+}
+
+function pushTnmtFightLog(int $group, $log) {
+    pushRawFileLog("logs/fight{$group}.txt", $log);
+}
+
+function getTnmtFightLogAll(int $group) {
+    return join('<br>',getFormattedFileLogAll("logs/fight{$group}.txt"));
+}
+
+function pushTrickLog($log) {
+    pushRawFileLog("logs/_tricklog.txt", $log);
+}
+
+function getTrickLogRecent($count) {
+    return join('<br>', getFormattedFileLogRecent("logs/_tricklog.txt", $count, 150));
+}
+
+function pushProcessLog($log) {
+    $date = date('Y_m_d');
+    pushRawFileLog("logs/_{$date}_processlog.txt", $log);
+}
+
+
 function pushStepLog($log) {
     $date = date('Y_m_d');
-    $fp = fopen("logs/_{$date}_steplog.txt", "a");
-    fwrite($fp, $log."\n");
-    fclose($fp);
+    pushRawFileLog("logs/_{$date}_steplog.txt", $log);
 }
 
 function pushLockLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $date = date('Y_m_d');
-        $fp = fopen("logs/_{$date}_locklog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
+    $date = date('Y_m_d');
+    pushRawFileLog("logs/_{$date}_locklog.txt", $log);
 }
 
 function pushAdminLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/_adminlog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
+    pushRawFileLog("logs/_adminlog.txt", $log);
 }
 
 function pushAuctionLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/_auctionlog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
+    pushRawFileLog("logs/_auctionlog.txt", $log);
+}
+
+function getAuctionLogRecent(int $count) {
+    return join('<br>', getFormattedFileLogRecent("logs/_auctionlog.txt", $count, 300));
 }
 
 function pushGenLog($general, $log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/gen{$general['no']}.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
+    $no = Util::toInt($general['no']);
+    pushRawFileLog("logs/gen{$no}.txt", $log);
+}
+
+function getGenLogRecent(int $no, int $count) {
+    return join('<br>', getFormattedFileLogRecent("logs/gen{$no}.txt", $count, 300));
 }
 
 function pushBatRes($general, $log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/batres{$general['no']}.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
+    $no = Util::toInt($general['no']);
+    pushRawFileLog("logs/batres{$no}.txt", $log);
+}
+
+function getBatResRecent(int $no, int $count) {
+    return join('<br>', getFormattedFileLogRecent("logs/batres{$no}.txt", $count, 300));
 }
 
 function pushBatLog($general, $log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/batlog{$general['no']}.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
+    $no = Util::toInt($general['no']);
+    pushRawFileLog("logs/batlog{$no}.txt", $log);
 }
 
+function getBatLogRecent(int $no, int $count) {
+    return join('<br>', getFormattedFileLogRecent("logs/batlog{$no}.txt", $count, 300));
+}
 
+//DB-based
+function pushNationHistory($nation, $history) {
+    DB::db()->query("UPDATE nation set history=concat(%s, history) where nation=%i",
+        $history.'<br>', $nation['nation']);
+}
+
+function pushGeneralHistory($me, $history) {
+    DB::db()->query("UPDATE general set history=concat(%s, history) where no=%i",
+        $history.'<br>', $me['no']);
+}
+
+function getGeneralHistoryAll(int $no) {
+    $history = DB::db()->queryFirstField('SELECT history FROM general WHERE `no`=%i',$no);
+    return ConvertLog($history);
+}
 
 function pushWorldHistory(array $history, $year=null, $month=null) {
     $db = DB::db();
@@ -169,7 +192,12 @@ function getGeneralPublicRecordRecent($count) {
     $db = DB::db();
 
     $texts = [];
-    foreach($db->queryFirstColumn('SELECT `text` from general_public_record order by id desc limit %i', $count) as $text){
+    foreach(
+        $db->queryFirstColumn(
+            'SELECT `text` from general_public_record order by id desc limit %i',
+            $count
+        ) as $text
+    ){
         $texts[] = ConvertLog($text);
     }
     return join('<br>', $texts);

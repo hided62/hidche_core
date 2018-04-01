@@ -56,10 +56,9 @@ function getGeneralID($forceExit=false, $countLogin=true){
         //로그인으로 처리
         //XXX: 'get' 함수인데 update가 들어가있다.
         //TODO: 조금더 적절한 형태의 로그인 카운트를 생각해볼 것
-        $query=$db->query("update general set logcnt=logcnt+1 ,ip = %s_ip,lastconnect=%s_lastConnect,conmsg=%s_conmsg where owner= %s_userID",[
+        $query=$db->query("update general set logcnt=logcnt+1 ,ip = %s_ip,lastconnect=%s_lastConnect where owner= %s_userID",[
             'ip' => getenv("REMOTE_ADDR"),
             'lastConnect' => date('Y-m-d H:i:s'),
-            'conmsg' => Util::array_get($_SESSION['conmsg'], ''),
             'userID' => $userID
         ]);
         $_SESSION[$idKey] = $generalID;
@@ -1136,113 +1135,6 @@ function generalInfo2($connect, $no) {
 </table>";
 }
 
-function getRawLog($path, $count, $line_length){
-    //TODO: tail과 유사한 형태로 처리할 수 있는게 나을 듯. 그 이전에 파일 로그는 좀... ㅜㅜ
-    if(!file_exists($path)){
-        return null;
-    }
-
-    $fp = fopen($path, 'r');
-    @fseek(fp, -$count * $line_length, SEEK_END);
-    $data = fread($fp, $count * $line_length);
-    fclose($fp);
-}
-
-function TrickLog($count) {
-    if(!file_exists("logs/_tricklog.txt")){
-        return '';
-    }
-    $fp = @fopen("logs/_tricklog.txt", "r");
-    @fseek($fp, -$count*150, SEEK_END);
-    $file = @fread($fp, $count*150);
-    @fclose($fp);
-    $log = explode("\n",$file);
-    $str = "";
-    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i])."<br>"; }
-    echo $str;
-}
-
-function AuctionLog($count) {
-    if(!file_exists("logs/_auctionlog.txt")){
-        return '';
-    }
-    $fp = @fopen("logs/_auctionlog.txt", "r");
-    @fseek($fp, -$count*300, SEEK_END);
-    $file = @fread($fp, $count*300);
-    @fclose($fp);
-    $log = explode("\n",$file);
-    $str = "";
-    for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i])."<br>"; }
-    echo $str;
-}
-
-function MyLog($no, $count) {
-    if(!file_exists("logs/gen{$no}.txt")){
-        return '';
-    }
-    $fp = @fopen("logs/gen{$no}.txt", "r");
-    @fseek($fp, -$count*300, SEEK_END);
-    $file = @fread($fp, $count*300);
-    @fclose($fp);
-    $log = explode("\n",$file);
-    $str = "";
-    for($i=0; $i < $count; $i++) {
-    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i])."<br>" : "<br>"; 
-	}
-    echo $str;
-}
-
-function MyBatRes($no, $count) {
-    if(!file_exists("logs/batres{$no}.txt")){
-        return '';
-    }
-    $fp = @fopen("logs/batres{$no}.txt", "r");
-    @fseek($fp, -$count*300, SEEK_END);
-    $file = @fread($fp, $count*300);
-    @fclose($fp);
-    $log = explode("\n",$file);
-    $str = "";
-    for($i=0; $i < $count; $i++) {
-         $str .= isset($log[count($log)-2-$i]) ?  ConvertLog($log[count($log)-2-$i])."<br>" : "<br>"; 
-    }
-    echo $str;
-}
-
-function MyBatLog($no, $count) {
-    if(!file_exists("logs/batlog{$no}.txt")){
-        return '';
-    }
-    $fp = @fopen("logs/batlog{$no}.txt", "r");
-    @fseek($fp, -$count*300, SEEK_END);
-    $file = @fread($fp, $count*300);
-    @fclose($fp);
-    $log = explode("\n",$file);
-    $str = "";
-    for($i=0; $i < $count; $i++) {
-         $str .= isset($log[count($log)-2-$i]) ?  ConvertLog($log[count($log)-2-$i])."<br>" : "<br>"; 
-    }
-    echo $str;
-}
-
-function MyHistory($connect, $no) {
-    $query = "select history from general where no='$no'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
-    echo ConvertLog($general['history']);
-}
-
-function addHistory($me, $history) {
-    DB::db()->query("update general set history=concat(%s, history) where no=%i",
-        $history.'<br>', $me['no']);
-}
-
-function addNationHistory($nation, $history) {
-    //FIXME: update 쿼리만으로도 구성 가능해보임.
-    $nation['history'] = "{$nation['history']}{$history}<br>";
-    DB::db()->query("update nation set history=concat(%s, history) where nation=%i",
-        $history.'<br>', $nation['nation']);
-}
-
 function adminMsg($connect) {
     $query = "select msg from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1445,10 +1337,19 @@ function increaseRefresh($type="", $cnt=1) {
     $date = date('Y_m_d H:i:s');
     $date2 = substr($date, 0, 10);
     $online = getOnlineNum();
-    $fp = fopen("logs/_{$date2}_refresh.txt", "a");
-    $msg = StringUtil::Fill2($date,20," ").StringUtil::Fill2($session->userName,13," ").StringUtil::Fill2($session->generalName,13," ").StringUtil::Fill2($session->ip,16," ").StringUtil::Fill2($type, 10, " ")." 동접자: {$online}";
-    fwrite($fp, $msg."\n");
-    fclose($fp);
+    file_put_contents(
+        "logs/_{$date2}_refresh.txt",
+        sprintf(
+            "%s, %s, %s, %s, %d\n",
+            $date,
+            $session->userName,
+            $session->generalName,
+            $session->ip,
+            $type,
+            $online
+        ),
+        FILE_APPEND
+    );
 
     $proxy_headers = array(
         'HTTP_VIA',
@@ -1473,9 +1374,17 @@ function increaseRefresh($type="", $cnt=1) {
         if(isset($_SERVER[$x])) $str .= "//{$x}:{$_SERVER[$x]}";
     }
     if($str != "") {
-        file_put_contents("logs/_{$date2}_ipcheck.txt",
-            sprintf("ID:%s//name:%s//REMOTE_ADDR:%s%s\n",
-                $_SESSION['userName'],$_SESSION['p_name'],$_SERVER['REMOTE_ADDR'],$str), FILE_APPEND);
+        $session = Session::Instance();
+        file_put_contents(
+            "logs/_{$date2}_ipcheck.txt",
+            sprintf(
+                "%s, %s, %s%s\n",
+                $session->userName,
+                $session->generalName,
+                $_SERVER['REMOTE_ADDR'],
+                $str
+            ),
+        FILE_APPEND);
     }
 }
 
@@ -1550,7 +1459,12 @@ function tryLock() {
 function unlock() {
     // 풀림
     //NOTE: unlock에는 table lock이 필요없는가?
-    DB::db()->query("update plock set plock=0");
+    $db = DB::db();
+    $db->query("lock tables plock write");
+    $db->update('plock', [
+        'plock'=>0
+    ], true);
+    $db->query("unlock tables");
 }
 
 function timeover() {
@@ -1897,7 +1811,7 @@ function addAge($connect) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special)."</></b>】(을)를 익혔습니다!";
-            addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special)."</></b>】(을)를 습득");
+            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special)."</></b>】(을)를 습득");
             pushGenLog($general, $log);
         }
 
@@ -1913,7 +1827,7 @@ function addAge($connect) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special2)."</></b>】(을)를 익혔습니다!";
-            addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special2)."</></b>】(을)를 습득");
+            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special2)."</></b>】(을)를 습득");
             pushGenLog($general, $log);
         }
     }
@@ -2188,7 +2102,7 @@ function updateTurntime($connect, $no) {
 
         $log[0] = "<C>●</>나이가 들어 <R>은퇴</>하고 자손에게 자리를 물려줍니다.";
         pushGenLog($general, $log);
-        addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:나이가 들어 은퇴하고, 자손에게 관직을 물려줌");
+        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:나이가 들어 은퇴하고, 자손에게 관직을 물려줌");
     }
 
     $turntime = addTurn($general['turntime'], $admin['turnterm']);
@@ -2337,7 +2251,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             case 0:
                 $log[] = "<C>●</><C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
-                addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getWeapName($it)."</>(을)를 습득");
+                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getWeapName($it)."</>(을)를 습득");
                 if($vote == 0) {
                     $history[0] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
@@ -2351,7 +2265,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             case 1:
                 $log[] = "<C>●</><C>".getBookName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
-                addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getBookName($it)."</>(을)를 습득");
+                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getBookName($it)."</>(을)를 습득");
                 if($vote == 0) {
                     $history[0] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
@@ -2365,7 +2279,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             case 2:
                 $log[] = "<C>●</><C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
-                addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getHorseName($it)."</>(을)를 습득");
+                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getHorseName($it)."</>(을)를 습득");
                 if($vote == 0) {
                     $history[0] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
@@ -2379,7 +2293,7 @@ function uniqueItem($connect, $general, $log, $vote=0) {
             case 3:
                 $log[] = "<C>●</><C>".getItemName($it)."</>(을)를 습득했습니다!";
                 $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
-                addHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getItemName($it)."</>(을)를 습득");
+                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getItemName($it)."</>(을)를 습득");
                 if($vote == 0) {
                     $history[0] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
@@ -2612,7 +2526,7 @@ function nextRuler($connect, $general) {
     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받았습니다";
 
     pushWorldHistory($history, $admin['year'], $admin['month']);
-    addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받음.");
+    pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받음.");
     // 장수 삭제 및 부대처리는 checkTurn에서
 }
 

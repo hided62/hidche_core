@@ -222,6 +222,11 @@ class Session {
             return $this;
         }
 
+        $db->update('general', [
+            'logcnt' => $db->sqleval('logcnt+1'),
+            'ip' => Util::get_client_ip(true),
+            'lastConnect' => date('Y-m-d H:i:s')
+        ], 'owner = %i', $userID);
 
         $this->set($serverID.static::GAME_KEY_DATE, $now);
         $this->set($serverID.static::GAME_KEY_GENERAL_ID, $generalID);

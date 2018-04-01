@@ -92,7 +92,6 @@ echo "
         <td align=center width=180>최근로그인</td>
         <td align=center width=129>IP</td>
         <td align=center width=100>ID</td>
-        <td align=center width=278>-</td>
     </tr>
     <tr>
 <?php
@@ -103,11 +102,10 @@ $genName = "";
 $genDate = "";
 $genIP   = "";
 $genID   = "";
-$conMsg  = "";
 for($i=0; $i < $ipCount; $i++) {
     $ip = MYDB_fetch_array($result);
 
-    $query = "select name,ip,lastconnect,owner,block,conmsg from general where ip like '{$ip['ip2']}%' and npc<2 order by ip";
+    $query = "select name,ip,lastconnect,owner,block from general where ip like '{$ip['ip2']}%' and npc<2 order by ip";
     $genResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($genResult);
     for($k=0; $k < $genCount; $k++) {
@@ -117,20 +115,17 @@ for($i=0; $i < $ipCount; $i++) {
         $genDate .= $gen['lastconnect']."<br>";
         $genIP   .= $gen['ip']."<br>";
         $genID   .= $gen['owner']."<br>";
-        $conMsg  .= $gen['conmsg']."<br>";
     }
     $genName .= "<br>";
     $genDate .= "<br>";
     $genIP   .= "<br>";
     $genID   .= "<br>";
-    $conMsg  .= "<br>";
 }
 echo "
         <td align=right>$genName</td>
         <td>$genDate</td>
         <td>$genIP</td>
         <td>$genID</td>
-        <td>$conMsg</td>";
 ?>
     </tr>
 </table>

@@ -33,8 +33,8 @@ if($ok == "수락" && $me['level'] < 12 && $nation['level'] > 0 && $nation['scou
     $youlog[] = "<C>●</><Y>{$me['name']}</> 등용에 성공했습니다.";
     $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>(이)가 <D><b>{$nation['name']}</b></>(으)로 <S>망명</>하였습니다.";
     $mylog[] = "<C>●</><D>{$nation['name']}</>(으)로 망명하여 수도로 이동합니다.";
-    addHistory($you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$me['name']}</> 등용에 성공");
-    addHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D>{$nation['name']}</>(으)로 망명");
+    pushGeneralHistory($you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$me['name']}</> 등용에 성공");
+    pushGeneralHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D>{$nation['name']}</>(으)로 망명");
 
     // 임관내역 추가
     $me['nations'] .= "{$nation['nation']},";

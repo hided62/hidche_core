@@ -75,8 +75,8 @@ if($ok == "수락") {
 
         $youlog[] = "<C>●</><D><b>{$mynation['name']}</b></>(와)과 <C>$when</>년 불가침에 성공했습니다.";
         $mylog[] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 <C>$when</>년 불가침에 합의했습니다.";
-        addHistory($you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 {$when}년 불가침 성공");
-        addHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 {$when}년 불가침 수락");
+        pushGeneralHistory($you, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 {$when}년 불가침 성공");
+        pushGeneralHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(와)과 {$when}년 불가침 수락");
 
         //국메로 저장
         $msg = "【외교】{$admin['year']}년 {$admin['month']}월:{$younation['name']}(와)과 {$when}년 불가침 합의, 비고: {$dip2['reserved']}";

@@ -91,10 +91,10 @@ function go(type) {
     </tr>
     <tr>
         <td valign=top>
-            <?php MyLog($me['no'], 24); ?>
+            <?=getGenLogRecent($me['no'], 24)?>
         </td>
         <td valign=top>
-            <?php MyBatLog($me['no'], 24); ?>
+            <?=getBatLogRecent($me['no'], 24)?>
         </td>
     </tr>
     <tr>
@@ -103,10 +103,10 @@ function go(type) {
     </tr>
     <tr>
         <td valign=top>
-            <?php MyHistory($connect, $me['no']); ?>
+            <?=getGeneralHistoryAll($me['no'])?>
         </td>
         <td valign=top>
-            <?php MyBatRes($me['no'], 24); ?>
+            <?=getBatResRecent($me['no'], 24)?>
         </td>
     </tr>
 </table>

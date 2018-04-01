@@ -10,15 +10,6 @@ $query = "select year,month,refresh,maxrefresh,maxonline from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $game = MYDB_fetch_array($result);
 
-$fp = @fopen("logs/_traffic.txt", "r");
-@fseek($fp, -1000, SEEK_END);
-$file = @fread($fp, 1000);
-@fclose($fp);
-$log = explode("\n",$file);
-$str = "";
-for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i])."<br>"; }
-echo $str;
-
 $curonline = getOnlineNum();
 for($i=0; $i < 11; $i++) {
     $parse = explode("|", $log[count($log)-12+$i]);

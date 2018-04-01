@@ -238,7 +238,7 @@ if(Session::getUserGrade() >= 5) {
     </tr>
     <tr>
         <td width=498 ><?php getGeneralPublicRecordRecent(15); ?></td>
-        <td width=498 ><?php MyLog($me['no'], 15); ?></td>
+        <td width=498 ><?=getGenLogRecent($me['no'], 15)?></td>
     </tr>
     <tr><td width=998 colspan=2 align=center id=bg1><b>중원 정세</b></td></tr>
     <tr><td width=998 colspan=2><?php getWorldHistoryRecent(15); ?></td></tr>

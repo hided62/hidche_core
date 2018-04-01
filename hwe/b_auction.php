@@ -222,7 +222,7 @@ for($i=0; $i < $count; $i++) {
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td align=center id=bg2><font size=5>최 근 기 록</font></td></tr>
     <tr><td>
-    <?=AuctionLog(20);?>
+    <?=getAuctionLogRecent(20);?>
     </td></tr>
     <tr><td align=center id=bg2><font size=5>도 움 말</font></td></tr>
     <tr><td>

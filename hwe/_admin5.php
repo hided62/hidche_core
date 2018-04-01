@@ -250,7 +250,7 @@ for($i=0; $i < $nationCount; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?php TrickLog(20); ?></td></tr>
+    <tr><td><?=getTrickLogRecent(20)?></td></tr>
 </table>
 
 <table align=center width=1760 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px; id=bg0>

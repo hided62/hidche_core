@@ -167,25 +167,6 @@ function printRow($k, $npc, $name, $abil, $game, $win, $draw, $lose, $gd, $gl, $
     echo "<tr align=center><td id=bg2>$k</td><td>$name</td><td>$abil</td><td>$game</td><td>$win</td><td>$draw</td><td>$lose</td><td>$gd</td><td>$gl</td></tr>";
 }
 
-function printFightLog($group) {
-    $fp = @fopen("logs/fight{$group}.txt", "r");
-    $file = @fread($fp, 3000);
-    @fclose($fp);
-    $log = explode("\n", $file);
-    $str = "";
-    for($i=0; $i < count($log); $i++) { $str .= ConvertLog($log[$i], 1)."<br>"; }
-    return substr($str, 0, -4);
-}
-
-function pushFightLog($group, $log) {
-    $fp = fopen("logs/fight{$group}.txt", "w");
-    $size = count($log);
-    for($i=0; $i < $size; $i++) {
-        fwrite($fp, $log[$i]."\n");
-    }
-    fclose($fp);
-}
-
 function printFighting($tournament, $phase) {
     $code = $tournament * 100 + $phase;
     if($code == 0) {
@@ -193,7 +174,7 @@ function printFighting($tournament, $phase) {
         echo "<td>&nbsp;</td>";
         echo "<td>&nbsp;</td>";
         echo "<td>&nbsp;</td>";
-        echo "<td>".printFightLog(50)."</td>";
+        echo "<td>".getTnmtFightLogAll(50)."</td>";
         echo "<td>&nbsp;</td>";
         echo "<td>&nbsp;</td>";
         echo "<td>&nbsp;</td>";
@@ -202,28 +183,28 @@ function printFighting($tournament, $phase) {
     } elseif($code <= 300) {
         echo "<tr valign=top>";
         for($i=0; $i < 8; $i++) {
-            echo "<td>".printFightLog($i)."</td>";
+            echo "<td>".getTnmtFightLogAll($i)."</td>";
         }
         echo "</tr>";
     } elseif($code < 400) {
     } elseif($code <= 500) {
         echo "<tr valign=top>";
         for($i=10; $i < 18; $i++) {
-            echo "<td>".printFightLog($i)."</td>";
+            echo "<td>".getTnmtFightLogAll($i)."</td>";
         }
         echo "</tr>";
     } elseif($code < 700) {
     } elseif($code <= 800) {
         echo "<tr valign=top>";
         for($i=20; $i < 28; $i++) {
-            echo "<td>".printFightLog($i)."</td>";
+            echo "<td>".getTnmtFightLogAll($i)."</td>";
         }
         echo "</tr>";
     } elseif($code <= 900) {
         echo "<tr valign=top>";
         for($i=30; $i < 34; $i++) {
             echo "<td>&nbsp;</td>";
-            echo "<td>".printFightLog($i)."</td>";
+            echo "<td>".getTnmtFightLogAll($i)."</td>";
         }
         echo "</tr>";
     } elseif($code <= 1000) {
@@ -231,7 +212,7 @@ function printFighting($tournament, $phase) {
         for($i=40; $i < 42; $i++) {
             echo "<td>&nbsp;</td>";
             echo "<td>&nbsp;</td>";
-            echo "<td>".printFightLog($i)."</td>";
+            echo "<td>".getTnmtFightLogAll($i)."</td>";
             echo "<td>&nbsp;</td>";
         }
         echo "</tr>";
@@ -239,13 +220,11 @@ function printFighting($tournament, $phase) {
 }
 
 function startTournament($connect, $auto, $type) {
-    for($i=0; $i < 8; $i++) {
-        @unlink("logs/fight{$i}.txt");
-        @unlink("logs/fight1{$i}.txt");
-        @unlink("logs/fight2{$i}.txt");
-        @unlink("logs/fight3{$i}.txt");
-        @unlink("logs/fight4{$i}.txt");
-        @unlink("logs/fight5{$i}.txt");
+    for($i=0; $i<50; $i++){
+        $filepath = "logs/fight{$i}.txt";
+        if(file_exists($filepath)){
+            @unlink($filepath);
+        }
     }
 
     switch($auto) {
@@ -639,8 +618,8 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $query = "select no from general where no={$general2['no']}";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen2 = MYDB_fetch_array($result);
-    addHistory($gen1, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 우승");
-    addHistory($gen2, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 준우승");
+    pushGeneralHistory($gen1, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 우승");
+    pushGeneralHistory($gen2, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>{$tp}</> 대회에서 준우승");
 
     $cost = $admin['develcost'] * 20;
     $cost2 = $admin['develcost'] * 12;
@@ -989,5 +968,5 @@ function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $log[] = "--------------- 다음경기 ---------------<br><S>☞</> <Y>{$gen1['name']}</> vs <Y>{$gen2['name']}</>";
     }
 
-    pushFightLog($group, $log);
+    pushTnmtFightLog($group, $log);
 }

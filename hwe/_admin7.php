@@ -105,10 +105,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php MyLog($gen, 24); ?>
+            <?=getGenLogRecent($gen, 24)?>
         </td>
         <td valign=top>
-            <?php MyBatLog($gen, 24); ?>
+            <?=getBatLogRecent($gen, 24)?>
         </td>
     </tr>
     <tr>
@@ -117,10 +117,10 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php MyHistory($connect, $gen); ?>
+            <?=getGeneralHistoryAll($gen)?>
         </td>
         <td valign=top>
-            <?php MyBatRes($gen, 24); ?>
+            <?=getBatResRecent($gen, 24)?>
         </td>
     </tr>
 </table>

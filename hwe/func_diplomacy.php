@@ -58,8 +58,8 @@ function acceptScout($messageInfo, $general, $msgResponse){
     $youlog[] = "<C>●</><Y>{$myName}</> 등용에 성공했습니다.";
     $alllog[] = "<C>●</>{$month}월:<Y>{$myName}</>(이)가 <D><b>{$nationName}</b></>(으)로 <S>망명</>하였습니다.";
     $mylog[] = "<C>●</><D>{$nationName}</>(으)로 망명하여 수도로 이동합니다.";
-    addHistory($you, "<C>●</>{$year}년 {$month}월:<Y>{$myName}</> 등용에 성공");
-    addHistory($me, "<C>●</>{$year}년 {$month}월:<D>{$nationName}</>(으)로 망명");
+    pushGeneralHistory($you, "<C>●</>{$year}년 {$month}월:<Y>{$myName}</> 등용에 성공");
+    pushGeneralHistory($me, "<C>●</>{$year}년 {$month}월:<D>{$nationName}</>(으)로 망명");
 
     $me['nations'] .= "{$nationID},";
 
