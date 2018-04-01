@@ -37,7 +37,7 @@ else{
     die('알 수 없는 에러:'.$me['msg']);
 }
 
-$_SESSION['tmpx'] = json_encode($result,JSON_UNESCAPED_UNICODE);
+$_SESSION['tmpx'] = Json::encode($result);
 
 //echo "<br>\n";
 $me = $restAPI->meWithEmail();

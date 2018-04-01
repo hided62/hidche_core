@@ -34,7 +34,7 @@ function getHistoryMap($year, $month){
         return ['result'=>false, 'reason'=>'연감이 저장되지 않음'];
     }
 
-    return json_decode($map, true);//까짓거 json_decode, json_encode 두번하지 뭐.
+    return Json::decode($map);//까짓거 json_decode, json_encode 두번하지 뭐.
 }
 
 /**

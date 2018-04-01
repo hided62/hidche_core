@@ -4,8 +4,8 @@ require('../twe/lib.php');
 
 $jsonPost = WebUtil::parseJsonPost();
 
-echo json_encode([
+Json::die([
     'result'=>true,
     'reason'=>'success',
     'msgID'=>1997
-], JSON_UNESCAPED_UNICODE);
+]);

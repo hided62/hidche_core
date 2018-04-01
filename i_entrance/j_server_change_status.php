@@ -93,4 +93,4 @@ function doAdminPost($action, $notice, $server){
 
 $response = doAdminPost($action, $notice, $server);
 
-echo json_encode($response);
+Json::die($response);

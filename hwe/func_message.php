@@ -130,7 +130,7 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
         unset($msgOption['alert']);
     }
 
-    DB::db()->insert('message', array(
+    DB::db()->insert('message', [
         'address' => $dest,
         'type' => $msgType,
         'is_sender' => $isSender,
@@ -138,13 +138,13 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
         'dest' => $dest['id'],
         'time' => $date,
         'valid_until' => $validUntil,
-        'message' => json_encode(Util::eraseNullValue([
+        'message' => Json::encode([
             'src' => $src,
             'dest' =>$dest,
             'text' => $msg,
             'option' => $msgOption
-        ]))
-    ));
+        ], Json::DELETE_NULL)
+    ]);
 }
 
 function sendMessage($msgType, $src, $dest, $msg, $date = null, $validUntil = null, $msgOption = null){

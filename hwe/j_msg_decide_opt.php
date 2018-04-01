@@ -62,13 +62,13 @@ if ($validUntil < $date) {
     ]);
 }
 
-$msgOption = json_decode(Util::array_get($messageInfo['option'], '{}'));
+$msgOption = Json::decode(Util::array_get($messageInfo['option'], '{}'));
 $msgAction = Util::array_get($msgOption['action'], null);
 $messageInfo['option'] = $msgOption;
 
-$msgSrc = json_decode($messageInfo['src']);
+$msgSrc = Json::decode($messageInfo['src']);
 $messageInfo['src'] = $msgSrc;
-$msgDest = json_decode($messageInfo['dest']);
+$msgDest = Json::decode($messageInfo['dest']);
 $messageInfo['dest'] = $msgDest;
 
 if (!$msgAction) {

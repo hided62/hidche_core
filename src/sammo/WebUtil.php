@@ -28,7 +28,7 @@ class WebUtil{
         $content = trim(file_get_contents("php://input"));
         
         //Attempt to decode the incoming RAW post data from JSON.
-        $decoded = json_decode($content, true);
+        $decoded = Json::decode($content);
         
         
         $jsonError = json_last_error();

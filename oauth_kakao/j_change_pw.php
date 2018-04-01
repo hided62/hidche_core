@@ -100,11 +100,11 @@ RootDB::db()->insert('member_log', [
     'member_no'=>$userID,
     'date'=>$nowDate,
     'action_type'=>'change_pw',
-    'action'=>json_encode([
+    'action'=>Json::encode([
         'type'=>'kakao',
         'no'=>$userID,
         'token'=>$access_token
-    ], JSON_UNESCAPED_UNICODE)
+    ])
 ]);
 
 RootDB::db()->query("unlock tables");

@@ -32,7 +32,7 @@ if(!$db->affectedRows()){
     $db->insert('member_log', [
         'member_no'=>$session->userID,
         'action_type'=>'change_pw',
-        'action'=>json_encode([
+        'action'=>Json::encode([
             'type'=>'plain',
             'result'=>false
         ])
@@ -47,7 +47,7 @@ if(!$db->affectedRows()){
 $db->insert('member_log', [
     'member_no'=>$session->userID,
     'action_type'=>'change_pw',
-    'action'=>json_encode([
+    'action'=>Json::encode([
         'type'=>'plain',
         'result'=>true
     ])

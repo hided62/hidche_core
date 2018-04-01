@@ -175,7 +175,7 @@ function getGeneralPublicRecordRecent($count) {
     return join('<br>', $texts);
 }
 
-function getGeneralPublicRecordWithDate($count, $year, $month, $isFirst=0) {
+function getGeneralPublicRecordWithDate($year, $month) {
     $db = DB::db();
 
     $texts = [];
@@ -225,10 +225,10 @@ function LogHistory($isFirst=0) {
     $year = $map['year'];
     $month = $map['month'];
 
-    $map_json = json_encode($map, JSON_UNESCAPED_UNICODE);
+    $map_json = Json::encode($map);
     
     $log = getWorldHistoryWithDate($year, $month);
-    $genlog = getGeneralPublicRecordWithDate(50, $year, $month, $isFirst);
+    $genlog = getGeneralPublicRecordWithDate($year, $month);
 
     $nationStr = "";
     $powerStr = "";

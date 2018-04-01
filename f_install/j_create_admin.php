@@ -65,12 +65,12 @@ $rootDB->insert('member_log', [
     'member_no'=>$userID,
     'date'=>$nowDate,
     'action_type'=>'reg',
-    'action'=>json_encode([
+    'action'=>Json::encode([
         'type'=>'none',
         'aux'=>'admin',
         'id'=>$username,
         'name'=>$nickname
-    ], JSON_UNESCAPED_UNICODE)
+    ])
 ]);
 
 Json::die([

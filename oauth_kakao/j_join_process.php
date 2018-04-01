@@ -108,7 +108,7 @@ $kakaoID = Util::array_get($signupResult['id']);
 if(!$kakaoID && Util::array_get($signupResult['msg'])!='already registered'){
     Json::die([
         'result'=>false,
-        'reason'=>'카카오 로그인 과정 중 앱 연결 절차를 실패했습니다'.json_encode($signupResult)
+        'reason'=>'카카오 로그인 과정 중 앱 연결 절차를 실패했습니다'.Json::encode($signupResult)
     ]);
 }
 
@@ -158,11 +158,11 @@ RootDB::db()->insert('member_log', [
     'member_no'=>$userID,
     'date'=>$nowDate,
     'action_type'=>'reg',
-    'action'=>json_encode([
+    'action'=>Json::encode([
         'type'=>'kakao',
         'id'=>$kakaoID,
         'email'=>$email, 'name'=>$nickname
-    ], JSON_UNESCAPED_UNICODE)
+    ])
 ]);
 
 Json::die([
