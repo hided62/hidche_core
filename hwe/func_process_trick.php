@@ -118,7 +118,7 @@ function process_32($connect, &$general) {
 
         $log = checkAbility($connect, $general, $log);
     }
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -266,7 +266,7 @@ function process_33($connect, &$general) {
 
         $log = checkAbility($connect, $general, $log);
     }
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -388,7 +388,7 @@ function process_34($connect, &$general) {
 
         $log = checkAbility($connect, $general, $log);
     }
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -512,7 +512,7 @@ function process_35($connect, &$general) {
 
         $log = checkAbility($connect, $general, $log);
     }
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -650,6 +650,6 @@ function process_36($connect, &$general) {
 
         $log = checkAbility($connect, $general, $log);
     }
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }

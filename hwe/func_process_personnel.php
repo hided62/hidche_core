@@ -168,7 +168,7 @@ function process_25($connect, &$general) {
         }
     }
 
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -422,7 +422,7 @@ function process_29($connect, &$general) {
         $log = uniqueItem($connect, $general, $log);
     }
 
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -535,7 +535,7 @@ function process_45($connect, &$general) {
         $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum',chemi='{$nation['chemi']}',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -618,8 +618,8 @@ function process_46($connect, &$general) {
         $log = uniqueItem($connect, $general, $log, 3);
     }
 
-    pushHistory($history, $admin['year'], $admin['month']);
-    pushAllLog($alllog);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -676,11 +676,11 @@ function process_47($connect, &$general) {
         $query = "update diplomacy set state='2',term='0' where me='{$general['nation']}' or you='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        pushHistory($history, $admin['year'], $admin['month']);
+        pushWorldHistory($history, $admin['year'], $admin['month']);
 
         refreshNationStaticInfo();
     }
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -742,7 +742,7 @@ function process_54($connect, &$general) {
     }
     pushGenLog($general, $log);
     pushGenLog($nextruler, $youlog);
-    pushHistory($history, $admin['year'], $admin['month']);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
 }
 
 function process_55($connect, &$general) {
@@ -826,8 +826,8 @@ function process_55($connect, &$general) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
-    pushHistory($history, $admin['year'], $admin['month']);
-    pushAllLog($alllog);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -875,7 +875,7 @@ function process_56($connect, &$general) {
 
         refreshNationStaticInfo();
     }
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -941,6 +941,6 @@ function process_57($connect, &$general) {
     }
     pushGenLog($general, $log);
     pushGenLog($ruler, $youlog);
-    pushAllLog($alllog);
-    pushHistory($history, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
 }

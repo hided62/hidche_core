@@ -276,7 +276,7 @@ function startTournament($connect, $auto, $type) {
     case 2: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>일기토</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>용사</span>들을 모집하고 있습니다!"; break;
     case 3: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>설전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>책사</span>들을 모집하고 있습니다!"; break;
     }
-    pushHistory($history, $admin['year'], $admin['month']);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
 }
 
 function fillLowGenAll($connect) {
@@ -646,7 +646,7 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     $cost2 = $admin['develcost'] * 12;
     $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회에서 <Y>{$general['name']}</>(이)가 <C>우승</>, <Y>{$general2['name']}</>(이)가 <C>준우승</>을 차지하여 천하에 이름을 떨칩니다!";
     $history[1] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회의 <S>우승자</>에게는 <C>{$cost}</>, <S>준우승자</>에겐 <C>{$cost2}</>의 <S>상금</>과 약간의 <S>명성</>이 주어집니다!";
-    pushHistory($history, $admin['year'], $admin['month']);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
 
     for($i=0; $i < count($genNo); $i++) {
         $general['no']   = $genNo[$i];

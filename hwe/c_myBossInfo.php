@@ -162,7 +162,7 @@ if($btn == "추방") {
         addHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D>{$nation['name']}</>에서 추방됨");
 
         pushGenLog($general, $log);
-        pushAllLog($alllog);
+        pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     }
 } elseif($btn == "임명" && $level >= 5 && $level <= 11) {
     $query = "select l{$level}set,level,chemi from nation where nation='{$me['nation']}'";

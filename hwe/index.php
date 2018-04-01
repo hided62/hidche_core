@@ -237,11 +237,11 @@ if(Session::getUserGrade() >= 5) {
         <td width=498 align=center id=bg1><b>개인 기록</b></td>
     </tr>
     <tr>
-        <td width=498 ><?php AllLog(15); ?></td>
+        <td width=498 ><?php getGeneralPublicRecordRecent(15); ?></td>
         <td width=498 ><?php MyLog($me['no'], 15); ?></td>
     </tr>
     <tr><td width=998 colspan=2 align=center id=bg1><b>중원 정세</b></td></tr>
-    <tr><td width=998 colspan=2><?php History(15); ?></td></tr>
+    <tr><td width=998 colspan=2><?php getWorldHistoryRecent(15); ?></td></tr>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr>

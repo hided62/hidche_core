@@ -41,4 +41,7 @@ DROP TABLE IF EXISTS history;
 DROP TABLE IF EXISTS event;
 
 # 전체 이벤트 테이블 삭제(연감 대체?)
-DROP TABLE IF EXISTS full_history;
+DROP TABLE IF EXISTS world_history;
+
+# 전체 이벤트 테이블 삭제(연감 대체?)
+DROP TABLE IF EXISTS general_public_record;

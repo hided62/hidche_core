@@ -136,8 +136,8 @@ function acceptScout($messageInfo, $general, $msgResponse){
 
     pushGenLog($me, $mylog);
     pushGenLog($you, $youlog);
-    pushAllLog($alllog);
-    pushHistory($alllog, $year, $month);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+    pushWorldHistory($alllog, $year, $month);
 
     return [true, 'success'];
 }

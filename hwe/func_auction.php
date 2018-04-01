@@ -82,8 +82,8 @@ function registerAuction($connect) {
 
             $alllog[0] = "<C>●</>{$admin['month']}월:<C>".GetStuffName($stuff)."</>(이)가 거래장에 등장했습니다!";
             $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【암시장】</b></><Y>ⓝ암시장상인</>(이)가 <C>".GetStuffName($stuff)."</>(을)를 판다는 소문이 돌고 있습니다!";
-            pushAllLog($alllog);
-            pushHistory($history, $admin['year'], $admin['month']);
+            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+            pushWorldHistory($history, $admin['year'], $admin['month']);
         }
     }
 */
@@ -205,8 +205,8 @@ function processAuction($connect) {
 
                     $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$auction['name2']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 구매했습니다!";
                     $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【암시장】</b></><Y>{$auction['name2']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 구매했습니다!";
-                    pushAllLog($alllog);
-                    pushHistory($history, $admin['year'], $admin['month']);
+                    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+                    pushWorldHistory($history, $admin['year'], $admin['month']);
                 }
                 pushGenLog($trader, $traderLog);
                 pushGenLog($bidder, $bidderLog);

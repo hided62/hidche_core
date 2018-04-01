@@ -443,7 +443,7 @@ function process_52($connect, &$general) {
 
 //      $log = checkAbility($connect, $general, $log);
     }
-    pushHistory($history, $admin['year'], $admin['month']);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -681,8 +681,8 @@ function process_62($connect, &$general) {
         PushMsg(3, $younation['nation'], $general['picture'], $general['imgsvr'], "{$general['name']}:{$nation['name']}▶", $nation['color'], $younation['name'], $younation['color'], $youmsg);
     }
 
-    pushHistory($history, $admin['year'], $admin['month']);
-    pushAllLog($alllog);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -899,8 +899,8 @@ function process_65($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-    pushHistory($history, $admin['year'], $admin['month']);
-    pushAllLog($alllog);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -985,8 +985,8 @@ function process_66($connect, &$general) {
         refreshNationStaticInfo();
     }
 
-    pushHistory($history, $admin['year'], $admin['month']);
-    pushAllLog($alllog);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -1072,8 +1072,8 @@ function process_67($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-    pushHistory($history, $admin['year'], $admin['month']);
-    pushAllLog($alllog);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -1171,8 +1171,8 @@ function process_68($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-    pushHistory($history, $admin['year'], $admin['month']);
-    pushAllLog($alllog);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -1271,8 +1271,8 @@ function process_71($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($history, $admin['year'], $admin['month']);
-//    pushAllLog($alllog);
+//    pushWorldHistory($history, $admin['year'], $admin['month']);
+//    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
@@ -1381,8 +1381,8 @@ function process_72($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($history, $admin['year'], $admin['month']);
-//    pushAllLog($alllog);
+//    pushWorldHistory($history, $admin['year'], $admin['month']);
+//    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
@@ -1507,8 +1507,8 @@ function process_73($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($history, $admin['year'], $admin['month']);
-//    pushAllLog($alllog);
+//    pushWorldHistory($history, $admin['year'], $admin['month']);
+//    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
@@ -1645,8 +1645,8 @@ function process_74($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($history, $admin['year'], $admin['month']);
-//    pushAllLog($alllog);
+//    pushWorldHistory($history, $admin['year'], $admin['month']);
+//    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
@@ -1766,8 +1766,8 @@ function process_75($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($history, $admin['year'], $admin['month']);
-//    pushAllLog($alllog);
+//    pushWorldHistory($history, $admin['year'], $admin['month']);
+//    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
@@ -1980,8 +1980,8 @@ function process_76($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($history, $admin['year'], $admin['month']);
-//    pushAllLog($alllog);
+//    pushWorldHistory($history, $admin['year'], $admin['month']);
+//    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
@@ -2103,8 +2103,8 @@ function process_77($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($history, $admin['year'], $admin['month']);
-//    pushAllLog($alllog);
+//    pushWorldHistory($history, $admin['year'], $admin['month']);
+//    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
@@ -2223,8 +2223,8 @@ function process_78($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-//    pushHistory($history, $admin['year'], $admin['month']);
-//    pushAllLog($alllog);
+//    pushWorldHistory($history, $admin['year'], $admin['month']);
+//    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushTrickLog($tricklog);
     pushGenLog($general, $log);
 }
@@ -2292,7 +2292,7 @@ function process_81($connect, &$general) {
         refreshNationStaticInfo();
     }
 
-    pushHistory($history, $admin['year'], $admin['month']);
-    pushAllLog($alllog);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }

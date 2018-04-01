@@ -53,7 +53,7 @@ $(function(){
 <table align=center width=1200 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr height=520>
         <td width=498 valign=top>
-            <?php AllLog(34); ?>
+            <?php getGeneralPublicRecordRecent(34); ?>
         </td>
         <td width=698>
             <?=getMapHtml()?>
@@ -61,7 +61,7 @@ $(function(){
     </tr>
     <tr>
         <td colspan=2 valign=top>
-            <?php History(34); ?>
+            <?php getWorldHistoryRecent(34); ?>
         </td>
     </tr>
 </table>

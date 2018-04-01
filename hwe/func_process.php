@@ -1426,7 +1426,7 @@ function process_26($connect, &$general) {
         $log = uniqueItem($connect, $general, $log);
     }
 
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -1674,7 +1674,7 @@ function process_31($connect, &$general) {
 
         $log = checkAbility($connect, $general, $log);
     }
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
@@ -2128,7 +2128,7 @@ function process_44($connect, &$general) {
 
         $log = checkAbility($connect, $general, $log);
     }
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 

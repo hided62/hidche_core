@@ -148,7 +148,7 @@ function RegGeneral($init,$life,$fiction,$turnterm,$startyear,$year,$gencount,$a
         'bornyear'=>$bornyear,
         'deadyear'=>$deadyear
     ]);
-    pushAllLog($alllog);
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
 }
 
 function SetDevelop($connect, $genType, $no, $city, $tech) {

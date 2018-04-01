@@ -1136,126 +1136,6 @@ function generalInfo2($connect, $no) {
 </table>";
 }
 
-function pushTrickLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/_tricklog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
-}
-
-function pushProcessLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $date = date('Y_m_d');
-        $fp = fopen("logs/_{$date}_processlog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
-}
-
-function delStepLog() {
-    $date = date('Y_m_d');
-    @unlink("logs/_{$date}_steplog.txt");
-}
-
-function pushStepLog($log) {
-    $date = date('Y_m_d');
-    $fp = fopen("logs/_{$date}_steplog.txt", "a");
-    fwrite($fp, $log."\n");
-    fclose($fp);
-}
-
-function pushLockLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $date = date('Y_m_d');
-        $fp = fopen("logs/_{$date}_locklog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
-}
-
-function pushAdminLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/_adminlog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
-}
-
-function pushAuctionLog($log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/_auctionlog.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
-}
-
-function pushGenLog($general, $log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/gen{$general['no']}.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
-}
-
-function pushBatRes($general, $log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/batres{$general['no']}.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
-}
-
-function pushBatLog($general, $log) {
-    $size = count($log);
-    if($size > 0) {
-        $fp = fopen("logs/batlog{$general['no']}.txt", "a");
-        for($i=0; $i < $size; $i++) {
-            fwrite($fp, $log[$i]."\n");
-        }
-        fclose($fp);
-    }
-}
-
-function pushAllLog($log) {
-    $text = join("\n", $log)."\n";
-    file_put_contents(__dir__.'/logs/_alllog.txt', $text, FILE_APPEND);
-}
-
-function pushHistory($history, $year=null, $month=null) {
-    $db = DB::db();
-    if($year === null || $month === null){
-        $game = $db->queryFirstRow('SELECT year, month FROM game LIMIT 1');
-        $year = $game['year'];
-        $month = $game['month'];
-    }
-    $request = array_map(function($text) use ($year, $month) {
-        return ['year'=>$year, 'month'=>$month, 'text'=>$text];
-    }, $history);
-    $db->insert('full_history', $history);
-}
-
 function getRawLog($path, $count, $line_length){
     //TODO: tail과 유사한 형태로 처리할 수 있는게 나을 듯. 그 이전에 파일 로그는 좀... ㅜㅜ
     if(!file_exists($path)){
@@ -1282,22 +1162,6 @@ function TrickLog($count) {
     echo $str;
 }
 
-function AllLog($count) {
-    if(!file_exists("logs/_alllog.txt")){
-        return '';
-    }
-    $fp = @fopen("logs/_alllog.txt", "r");
-    @fseek($fp, -$count*300, SEEK_END);
-    $file = @fread($fp, $count*300);
-    @fclose($fp);
-    $log = explode("\n",$file);
-    $str = "";
-    for($i=0; $i < $count; $i++) {
-    	 $str .= isset($log[count($log)-2-$i]) ? ConvertLog($log[count($log)-2-$i])."<br>" : "<br>"; 
-  	}
-    echo $str;
-}
-
 function AuctionLog($count) {
     if(!file_exists("logs/_auctionlog.txt")){
         return '';
@@ -1310,16 +1174,6 @@ function AuctionLog($count) {
     $str = "";
     for($i=0; $i < $count; $i++) { $str .= ConvertLog($log[count($log)-2-$i])."<br>"; }
     echo $str;
-}
-
-function History($count) {
-    $db = DB::db();
-
-    $texts = [];
-    foreach($db->queryFirstColumn('SELECT `text` from full_history order by id desc limit %i', $count) as $text){
-        $texts[] = ConvertLog($text);
-    }
-    return join('<br>', $texts);
 }
 
 function MyLog($no, $count) {
@@ -1923,7 +1777,7 @@ function checkTurn($connect) {
             addAge($connect);
             // 새해 알림
             $alllog[] = "<C>◆</>{$admin['month']}월:<C>{$admin['year']}</>년이 되었습니다.";
-            pushAllLog($alllog);
+            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
         } elseif($admin['month'] == 4) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
             updateQuaterly($connect);
@@ -2202,7 +2056,7 @@ function updateTurntime($connect, $no) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name2']}</>(이)가 <Y>{$general['name']}</>의 육체에서 <S>유체이탈</>합니다!";
-            pushAllLog($alllog);
+            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
 
             if($admin['isUnited'] == 0) {
                 CheckHall($connect, $no);
@@ -2315,7 +2169,7 @@ function updateTurntime($connect, $no) {
                 }
             }
 
-            pushAllLog($alllog);
+            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
 
             return;
         }
@@ -2330,7 +2184,7 @@ function updateTurntime($connect, $no) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <R>은퇴</>하고 그 자손이 유지를 이어받았습니다.";
-        pushAllLog($alllog);
+        pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
 
         $log[0] = "<C>●</>나이가 들어 <R>은퇴</>하고 자손에게 자리를 물려줍니다.";
         pushGenLog($general, $log);
@@ -2537,8 +2391,8 @@ function uniqueItem($connect, $general, $log, $vote=0) {
                 }
                 break;
             }
-            pushAllLog($alllog);
-            pushHistory($history, $admin['year'], $admin['month']);
+            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+            pushWorldHistory($history, $admin['year'], $admin['month']);
         }
     }
     return $log;
@@ -2692,7 +2546,7 @@ function deleteNation($connect, $general) {
     $query = "delete from diplomacy where me='{$general['nation']}' or you='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    pushHistory($history, $admin['year'], $admin['month']);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
     refreshNationStaticInfo();
 }
 
@@ -2757,7 +2611,7 @@ function nextRuler($connect, $general) {
 
     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받았습니다";
 
-    pushHistory($history, $admin['year'], $admin['month']);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
     addNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받음.");
     // 장수 삭제 및 부대처리는 checkTurn에서
 }

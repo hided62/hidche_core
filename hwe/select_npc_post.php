@@ -103,7 +103,7 @@ if($admin['npcmode'] != 1) {
     $log[0] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>의 육체에 <Y>{$member['name']}</>(이)가 <S>빙의</>됩니다!";
     addHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$me['name']}</>의 육체에 <Y>{$member['name']}</>(이)가 빙의되다.");
     pushGenLog($me, $mylog);
-    pushAllLog($log);
+    pushGeneralPublicRecord($log, $admin['year'], $admin['month']);
 
     $adminLog[0] = "가입 : {$me['name']} // {$id} // ".getenv("REMOTE_ADDR");
     pushAdminLog($adminLog);

@@ -609,7 +609,20 @@ ENGINE=InnoDB;
 
 
 ##전체 이벤트 기록 테이블
-CREATE TABLE `full_history` (
+CREATE TABLE `world_history` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`year` INT(4) NOT NULL,
+	`month` INT(2) NOT NULL,
+	`text` TEXT NOT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `date` (`year`, `month`, `id`)
+)
+DEFAULT CHARSET=utf8mb4
+ENGINE=InnoDB
+;
+
+##장수 동향 테이블
+CREATE TABLE `general_public_record` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`year` INT(4) NOT NULL,
 	`month` INT(2) NOT NULL,
