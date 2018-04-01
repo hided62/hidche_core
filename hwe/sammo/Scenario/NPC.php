@@ -75,7 +75,7 @@ class NPC{
         $age = $year - $this->birth;
         $name = $this->name;
 
-        if($this->death < $year){
+        if($this->death <= $year){
             return true; //죽었으니 넘어간다.
         }
         if($age < \sammo\GameConst::$adultAge){
