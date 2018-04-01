@@ -176,6 +176,9 @@ function getWorldHistoryWithDate($year, $month) {
 
 
 function pushGeneralPublicRecord(array $history, $year=null, $month=null) {
+    if(!$history){
+        return;
+    }
     $db = DB::db();
     if($year === null || $month === null){
         $game = $db->queryFirstRow('SELECT year, month FROM game LIMIT 1');

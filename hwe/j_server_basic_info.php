@@ -2,7 +2,6 @@
 namespace sammo;
 
 include "lib.php";
-include "func.php";
 
 $session = Session::Instance()->setReadOnly();
 if(!$session->userID){

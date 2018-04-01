@@ -70,7 +70,7 @@ CREATE TABLE `general` (
 	`deathcrew` INT(7) NULL DEFAULT '0',
 	`age` INT(3) NULL DEFAULT '20',
 	`startage` INT(3) NULL DEFAULT '20',
-	`history` TEXT NULL DEFAULT '',
+	`history` MEDIUMTEXT NULL DEFAULT '',
 	`belong` INT(2) NULL DEFAULT '1',
 	`betray` INT(2) NULL DEFAULT '0',
 	`personal` INT(2) NULL DEFAULT '0',
@@ -202,7 +202,7 @@ create table nation (
   level int(1) default 0,
   type int(2) default 0,
   rule text default '',
-  history text default '',
+  history mediumtext default '',
   dip0 char(150) default '', dip0_type int(4) default 0, dip0_who int(9) default 0, dip0_when datetime,
   dip1 char(150) default '', dip1_type int(4) default 0, dip1_who int(9) default 0, dip1_when datetime,
   dip2 char(150) default '', dip2_type int(4) default 0, dip2_who int(9) default 0, dip2_when datetime,
@@ -487,7 +487,7 @@ create table if not exists emperior (
   tiger   char(64) default '',
   eagle   char(64) default '',
   gen     text default '',
-  history text default '',
+  history mediumtext default '',
 
   PRIMARY KEY (no)
   ) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
@@ -582,7 +582,7 @@ create table history (
   no      int(6) not null auto_increment,
   year    int(4) default 0,
   month   int(2) default 0,
-  map     longtext default '',
+  map     mediumtext default '',
   log     text default '',
   genlog  text default '',
   nation  text default '',

@@ -116,7 +116,10 @@ class NPC{
 
         $experience = $age * 100;
         $dedication = $age * 100;
-        $level = $nationID?1:$this->level;
+        $level = $this->level;
+        if(!$level){
+            $level = $nationID?1:0;
+        }
 
         $turntime = \sammo\getRandTurn($env['turnterm']);
 

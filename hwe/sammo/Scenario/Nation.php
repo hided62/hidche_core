@@ -18,6 +18,8 @@ class Nation{
 
     private $cities = [];
 
+    private $generals = [];
+
     public function __construct(
         int $id = null, 
         string $name = '국가', 
@@ -118,12 +120,14 @@ class Nation{
         
     }
 
+    public function addGeneral(NPC $general){
+        $this->generals[] = $general;
+    }
+
     public function postBuild($env=[]){
         $npc_cnt = count($this->generals);
-        if($env['extended_general']){
-            $npc_cnt += count($this->generalsEx);
-        }
 
+        $db = DB::db();
         $db->update('nation', [
             'gennum'=>$npc_cnt,
             'totaltech'=>$this->tech*$npc_cnt

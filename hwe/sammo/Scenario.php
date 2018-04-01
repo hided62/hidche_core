@@ -242,6 +242,9 @@ class Scenario{
         $remainGenerals = [];
         foreach($this->generals as $general){
             if($general->build($env)){
+                if($general->nationID){
+                    $this->nations[$general->nationID]->addGeneral($general);
+                }
                 continue;
             }
 
@@ -256,6 +259,9 @@ class Scenario{
         if($env['extended_general']){
             foreach($this->generalsEx as $general){
                 if($general->build($env)){
+                    if($general->nationID){
+                        $this->nations[$general->nationID]->addGeneral($general);
+                    }
                     continue;
                 }
 
@@ -318,6 +324,14 @@ class Scenario{
                 'cond'=>['date', '==', $targetYear, '1'],
                 'action'=>$actions
             ];
+        }
+
+        foreach($this->nations as $id=>$nation){
+            if($id == 0){
+                continue;
+            }
+
+            $nation->postBuild($env);
         }
 
         $this->buildDiplomacy($env);
