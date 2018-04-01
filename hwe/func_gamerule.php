@@ -236,95 +236,67 @@ function SetNationFront($nationNo) {
 }
 
 function checkSupply($connect) {
-    include_once("queue.php");
+    $db = DB::db();
 
-    $query = "select city,nation,path from city";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $cityNum = MYDB_num_rows($result);
-    for($i=0; $i < $cityNum; $i++) {
-        $city = MYDB_fetch_array($result);
-        $cityPath[$city['city']] = $city['path'];
-        $cityNation[$city['city']] = $city['nation'];
-        $label[$city['city']] = 0;
+    $cities = [];
+    foreach($db->query('SELECT city, nation FROM city WHERE nation != 0') as $city){
+        $cities[$city['city']] = [
+
+            'id'=>$city['city'],
+            'nation'=>$city['nation'],
+            'supply'=>false
+        ];
     }
-
-    $select = 0;
-    $queue = new Queue(20);
-    $queue2 = new Queue(20);
-    $labelling = 0;
-    $marked = 0;
-    $comCount = array();
-
-    //모든 도시 마크할 때까지
-    while($marked < $cityNum) {
-        $queue->clear();    $queue2->clear();
-        $q = $queue;        $q2 = $queue2;
-
-        $labelling++;
-        //마크 되지 않은 도시부터 라벨링 시작
-        for($i=1; $i <= $cityNum; $i++) {
-            if($label[$i] == 0) {
-                $label[$i] = $labelling;
-                $labelMapping[$labelling] = $cityNation[$i];
-                isset($comCount[$cityNation[$i]]) ? $comCount[$cityNation[$i]]++ : $comCount[$cityNation[$i]] = 1;
-                $q->push($i);
-                $marked++;
-                break;
-            }
-        }
-
-        while($q->getSize() > 0 || $q2->getSize() > 0) {
-            while($q->getSize() > 0) {
-                $city = $q->pop();
-                unset($path);
-                $path = explode("|", $cityPath[$city]);
-                for($i=0; $i < count($path); $i++) {
-                    if($label[$path[$i]] == 0 && $cityNation[$path[$i]] == $cityNation[$city]) {
-                        $label[$path[$i]] = $labelling;
-                        $q2->push($path[$i]);
-                        $marked++;
-                    }
-                }
-            }
-            if($select == 0) {
-                $q2 = $queue;
-                $q = $queue2;
-            } else {
-                $q = $queue;
-                $q2 = $queue2;
-            }
-            $select = 1 - $select;
-        }
-    }
-
-    //공백지는 다 보급상태
-    $query = "update city set supply='1' where nation='0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //우선 다 미보급 상태로
-    $query = "update city set supply='0' where nation!='0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    //도시 있는 국가들
-
-    $str = "city='0'";
-
-    //TODO: in 을 쓰는게 낫다
+    
+    $queue = new \SplQueue();
     foreach(getAllNationStaticInfo() as $nation){
-        if($nation['level'] <= 0){
-            continue;
-        }
+        $queue->enqueue($cities[$nation['capital']]);
+    }
 
-        $lbl = $label[$nation['capital']];
+    while(!$queue->isEmpty()){
+        $city = $queue->dequeue();
 
-        for ($k=1; $k <= $cityNum; $k++) {
-            if ($lbl == $label[$k]) {
-                $str .= " or city='{$k}'";
+        $city['supply'] = true;
+
+        foreach(array_keys(CityConst::byID($city['id'])->path) as $connCityID){
+            $connCity = $cities[$connCityID];
+            if($connCity['nation'] != $city['nation']){
+                continue;
             }
+            if($connCity['supply']){
+                continue;
+            }
+            $queue->enqueue($connCity);
         }
     }
 
-    $query = "update city set supply='1' where {$str}";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('city',[
+        'supply'=>1
+    ], 'nation=0');
+
+    $supply = [];
+    $unsupply = [];
+
+    foreach($cities as $city){
+        if($city['supply']){
+            $supply[] = $city['id'];
+        }
+        else{
+            $unsupply[] = $city['id'];
+        }
+    }
+
+    if($supply){
+        $db->update('city', [
+            'supply'=>1
+        ], 'city IN %li', $supply);
+    }
+
+    if($unsupply){
+        $db->update('city', [
+            'supply'=>0
+        ], 'city IN %li', $unsupply);
+    }
 }
 
 

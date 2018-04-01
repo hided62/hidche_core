@@ -1819,26 +1819,49 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //수도였으면 긴급 천도
         if($destnation['capital'] == $city['city']) {
-            $dist = distance($connect, $city['city']);
+            $distList = searchDistance($city['city'], 99, true);
 
-            $query = "select city,name,pop from city where nation='{$destnation['nation']}' and city!='{$city['city']}'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $cityCount = MYDB_num_rows($result);
-            $minDist = 99;  $minCity = 0;   $minCityPop = 0;
-            for($i=0; $i < $cityCount; $i++) {
-                $nextCap = MYDB_fetch_array($result);
-                if($minDist > $dist[$nextCap['city']]) {
-                    $minDist = $dist[$nextCap['city']];
-                    $minCity = $nextCap['city'];
-                    $minCityPop = $nextCap['pop'];
-                    $minCityName = $nextCap['name'];
-                } elseif($minDist == $dist[$nextCap['city']] && $minCityPop < $nextCap['pop']) {
-                    $minDist = $dist[$nextCap['city']];
-                    $minCity = $nextCap['city'];
-                    $minCityPop = $nextCap['pop'];
-                    $minCityName = $nextCap['name'];
+            $cities = [];
+            foreach(
+                DB::db()->query(
+                    'SELECT city, pop FROM city WHERE nation=%i and city!=%i', 
+                    $destnation['nation'], 
+                    $city['city']
+                ) as $row
+            ){
+                $cities[$row['city']] = $row;
+            };
+
+            $distKeys = array_keys($distList);
+            sort($distKeys);
+
+            $minCity = 0;
+
+            foreach($distKeys as $dist){
+                $hasTarget = false;
+                $maxCityPop = 0;
+                
+                foreach($distList[$dist] as $cityID){
+                    $city = $cities[$cityID];
+                    if($city['nation'] != $destnation['nation']){
+                        continue;
+                    }
+
+                    if($city['pop'] <= $maxCityPop){
+                        continue;
+                    }
+                    
+                    $hasTarget = true;
+                    $minCity = $cityID;
+                    $maxCityPop = $city['pop'];
+                }
+
+                if($hasTarget){
+                    break;
                 }
             }
+
+            $minCityName = CityConst::byID($minCity)->name;
 
             $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<M><b>【긴급천도】</b></><D><b>{$destnation['name']}</b></>(이)가 수도가 함락되어 <G><b>$minCityName</b></>으로 긴급천도하였습니다.";
 

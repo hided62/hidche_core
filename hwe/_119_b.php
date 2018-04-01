@@ -53,4 +53,5 @@ case "락풀기":
 }
 
 //echo "<script>location.replace('_119.php');</script>";
-echo '_119.php';//TODO:debug all and replace
+//echo '_119.php';//TODO:debug all and replace
+header('Location:_119.php');

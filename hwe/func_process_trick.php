@@ -11,7 +11,7 @@ function process_32($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $dist = distance($connect, $general['city'], 5);
+    $dist = searchDistance($general['city'], 5, false);
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
@@ -82,7 +82,7 @@ function process_32($connect, &$general) {
         if($nation['type'] == 9) { $ratio += 10; }
 
         // 거리보정
-        $ratio /= $dist[$destination];
+        $ratio /= Util::array_get($dist[$destination], 99);
 
         if($ratio > $ratio2) {
             $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(이)가 불타고 있습니다.";
@@ -133,7 +133,7 @@ function process_33($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $dist = distance($connect, $general['city'], 5);
+    $dist = searchDistance($general['city'], 5, false);
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
@@ -208,7 +208,7 @@ function process_33($connect, &$general) {
         if($mynation['type'] == 9) { $ratio += 10; }
 
         // 거리보정
-        $ratio /= $dist[$destination];
+        $ratio /= Util::array_get($dist[$destination], 99);
 
         if($ratio > $ratio2) {
             $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에서 금과 쌀을 도둑맞았습니다.";
@@ -280,7 +280,7 @@ function process_34($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $dist = distance($connect, $general['city'], 5);
+    $dist = searchDistance($general['city'], 5, false);
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
@@ -351,7 +351,7 @@ function process_34($connect, &$general) {
         if($mynation['type'] == 9) { $ratio += 10; }
 
         // 거리보정
-        $ratio /= $dist[$destination];
+        $ratio /= Util::array_get($dist[$destination], 99);
 
         if($ratio > $ratio2) {
             $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$destcity['name']}</b></>의 성벽을 허물었습니다.";
@@ -402,7 +402,7 @@ function process_35($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $dist = distance($connect, $general['city'], 5);
+    $dist = searchDistance($general['city'], 5, false);
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
@@ -475,7 +475,7 @@ function process_35($connect, &$general) {
         if($mynation['type'] == 9) { $ratio += 10; }
 
         // 거리보정
-        $ratio /= $dist[$destination];
+        $ratio /= Util::array_get($dist[$destination], 99);
 
         if($ratio > $ratio2) {
             $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>의 백성들이 동요하고 있습니다.";
@@ -527,7 +527,7 @@ function process_36($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $dist = distance($connect, $general['city'], 5);
+    $dist = searchDistance($general['city'], 5, false);
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
@@ -603,7 +603,7 @@ function process_36($connect, &$general) {
         if($mynation['type'] == 9) { $ratio += 10; }
 
         // 거리보정
-        $ratio /= $dist[$destination];
+        $ratio /= Util::array_get($dist[$destination], 99);
 
         if($ratio > $ratio2) {
             $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(이)가 누군가에게 공격 받았습니다.";

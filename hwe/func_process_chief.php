@@ -930,7 +930,7 @@ function process_66($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $dist = distance($connect, $nation['capital'], 1);
+    $nearCities = searchDistance($nation['capital'], 1, false);
     $amount = $admin['develcost'] * 10;
 
     $code = $nation["l{$general['level']}term"];
@@ -950,7 +950,7 @@ function process_66($connect, &$general) {
         $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 천도 실패. <1>$date</>";
     } elseif($destcity['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국 영토가 아닙니다. 천도 실패. <1>$date</>";
-    } elseif($dist[$destcity['city']] != 1) {
+    } elseif($destcity['city'] == $nation['capital'] || !key_exists($destcity['city'], $nearCities)){
         $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. 천도 실패. <1>$date</>";
     } elseif($nation['capset'] == 1) {
         $log[] = "<C>●</>{$admin['month']}월:다음 분기에 가능합니다. 천도 실패. <1>$date</>";

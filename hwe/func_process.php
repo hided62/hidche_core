@@ -1505,7 +1505,7 @@ function process_30($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $dist = distance($connect, $general['city'], 3);
+    $dist = searchDistance($general['city'], 3, false);
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
@@ -1515,7 +1515,9 @@ function process_30($connect, &$general) {
 
     $cost = $admin['develcost'] * 5;
     
-    if($dist[$destination] > 3) {
+    if($destination == $general['city']){
+        $log[] = "<C>●</>{$admin['month']}월:같은 도시입니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
+    } elseif(!key_exists($dist[$destination], $dist)) {
         $log[] = "<C>●</>{$admin['month']}월:거리가 멉니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
     } elseif($general['gold'] < $cost) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
@@ -1564,7 +1566,7 @@ function process_31($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $dist = distance($connect, $general['city'], 2);
+    $dist = searchDistance($general['city'], 2, false);
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
@@ -1580,7 +1582,7 @@ function process_31($connect, &$general) {
         $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
     } elseif($general['nation'] == $city['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국입니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
-//    } elseif($dist[$destination] > 3) {
+//    } elseif(!key_exists($destination, $dist)) {
 //        $log[] = "<C>●</>{$admin['month']}월:너무 멉니다. <G><b>{$city['name']}</b></>에 첩보 실패. <1>$date</>";
     } else {
         $query = "select crew,crewtype from general where city='$destination' and nation='{$city['nation']}'";
@@ -1591,7 +1593,7 @@ function process_31($connect, &$general) {
             $gen = MYDB_fetch_array($result);
             if($gen['crew'] != 0) { $typecount[$gen['crewtype']]++; $crew += $gen['crew']; }
         }
-        if($dist[$destination] > 2) {
+        if(!key_exists($destination, $dist)) {
             $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 소문만 들을 수 있었습니다. <1>$date</>";
             $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";

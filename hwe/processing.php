@@ -716,7 +716,7 @@ function command_16($connect, $turn, $command) {
 </form>
 ";
 
-    printCitysName($connect, $currentcity['city'], 1);
+    printCitysName($currentcity['city'], 1);
 
     ender();
 }
@@ -755,7 +755,7 @@ function command_21($connect, $turn, $command) {
 </form>
 ";
 
-    printCitysName($connect, $currentcity['city'], 1);
+    printCitysName($currentcity['city'], 1);
 
     ender();
 }
@@ -1128,9 +1128,7 @@ echo "
 </form>
 ";
 
-printCitysName($connect, $currentcity['city'], 1);
-printCitysName($connect, $currentcity['city'], 2);
-printCitysName($connect, $currentcity['city'], 3);
+printCitysName($currentcity['city'], 3);
 
 ender();
 }
@@ -1173,8 +1171,7 @@ function command_31($connect, $turn, $command) {
 모든 도시가 가능하지만 많은 정보를 얻을 수 있는<br>
 ";
 
-    printCitysName($connect, $currentcity['city'], 1);
-    printCitysName($connect, $currentcity['city'], 2);
+    printCitysName($currentcity['city'], 2);
 
     ender();
 }
@@ -1212,8 +1209,7 @@ function command_32($connect, $turn, $command) {
 </form>
 ";
 
-    printCitysName($connect, $currentcity['city'], 1);
-    printCitysName($connect, $currentcity['city'], 2);
+    printCitysName($currentcity['city'], 2);
 
     ender();
 }
@@ -1251,8 +1247,7 @@ function command_33($connect, $turn, $command) {
 </form>
 ";
 
-    printCitysName($connect, $currentcity['city'], 1);
-    printCitysName($connect, $currentcity['city'], 2);
+    printCitysName($currentcity['city'], 2);
 
     ender();
 }
@@ -1290,8 +1285,7 @@ function command_34($connect, $turn, $command) {
 </form>
 ";
 
-    printCitysName($connect, $currentcity['city'], 1);
-    printCitysName($connect, $currentcity['city'], 2);
+    printCitysName($currentcity['city'], 2);
 
     ender();
 }
@@ -1329,8 +1323,7 @@ function command_35($connect, $turn, $command) {
 </form>
 ";
 
-    printCitysName($connect, $currentcity['city'], 1);
-    printCitysName($connect, $currentcity['city'], 2);
+    printCitysName($currentcity['city'], 2);
 
     ender();
 }
@@ -1368,8 +1361,7 @@ function command_36($connect, $turn, $command) {
 </form>
 ";
 
-    printCitysName($connect, $currentcity['city'], 1);
-    printCitysName($connect, $currentcity['city'], 2);
+    printCitysName($currentcity['city'], 2);
 
     ender();
 }

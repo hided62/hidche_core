@@ -105,24 +105,24 @@ function closeButton() {
 }
 
 
-function printCitysName($connect, $cityNo, $distance=1) {
-    $dist = distance($connect, $cityNo, $distance);
+function printCitysName(int $cityNo, int $maxDistance=1) {
+    $distanceList = searchDistance($cityNo, $maxDistance, true);
 
-    $cityList = [];
-    foreach(CityConst::all() as $city){
-        if($dist[$city->id] == $distance){
-            $cityList[] = $city->name;
+    for($dist = 1; $dist <= $maxDistance; $dist++){
+        $cityList = array_map(function($cityID){
+            return CityConst::byID($cityID)->name;
+        }, Util::array_get($distanceList[$dist], []));
+
+        $cityStr = join(', ', $cityList);
+
+        switch($dist) {
+            case 1: $color = "magenta"; break;
+            case 2: $color = "orange"; break;
+            default: $color = "yellow"; break;
         }
-    }
 
-    $cityStr = join(', ', $cityList);
-
-    switch($distance) {
-    case 1: $color = "magenta"; break;
-    case 2: $color = "orange"; break;
-    default: $color = "yellow"; break;
+        echo "{$distance}칸 떨어진 도시 : <span style='color:{$color};font-weight:bold;'>{$cityStr}</span><br>";
     }
-    echo "{$distance}칸 떨어진 도시 : <font color={$color}><b>{$cityStr}</b></font><br>";
 }
 
 

@@ -2530,51 +2530,48 @@ function nextRuler($connect, $general) {
     // 장수 삭제 및 부대처리는 checkTurn에서
 }
 
+/**
+ * $maxDist 이내의 도시를 검색하는 함수
+ * @param $from 기준 도시 코드
+ * @param $maxDist 검색하고자 하는 최대 거리
+ * @param $distForm 리턴 타입. true일 경우 $result[$dist] = [...$city] 이며, false일 경우 $result[$city] = $dist 임
+ */
+function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
+    $queue = new \SqlQueue();
 
-function distance($connect, $from, $maxDist=99) {
-    include_once("queue.php");
+    $cities = [];
+    $distanceList = [];
 
-    $query = "select city,path from city";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $cityNum = MYDB_num_rows($result);
-    for($i=0; $i < $cityNum; $i++) {
-        $city = MYDB_fetch_array($result);
-        $cityPath[$city['city']] = $city['path'];
-        $dist[$city['city']] = 99;
-    }
+    $queue->enqueue([$from, 0]);
 
-    $select = 0;
-    $queue = new Queue(20);
-    $queue2 = new Queue(20);
-    $q = $queue;
-    $q2 = $queue2;
-    $distance = $dist[$from] = 0;
-    $q->push($from);
-    while($q->getSize() > 0 || $q2->getSize() > 0) {
-        $distance++;
-        if($distance > $maxDist) return $dist;
-        while($q->getSize() > 0) {
-            $city = $q->pop();
-            unset($path);
-            $path = explode("|", $cityPath[$city]);
-            for($i=0; $i < count($path); $i++) {
-                if($dist[$path[$i]] > $distance) {
-                    $dist[$path[$i]] = $distance;
-                    $q2->push($path[$i]);
-                }
+    while(!$queue->isEmpty()){
+        list($cityID, $dist) = $queue->dequeue();
+
+        if(!key_exists($dist, $distanceList)){
+            $distanceList[$dist] = [];
+        }
+        $distanceList[$dist][] = $cityID;
+
+        $cities[$cityID] = $dist;
+        if($dist >= $maxDist){
+            return;
+        }
+
+        foreach(array_keys(CityConst::byID($cityID)->path) as $connCityID){
+            if(key_exists($connCityID, $cities)){
+                continue;
             }
+            $queue->enqueue([$connCityID, $dist+1]);
         }
-        if($select == 0) {
-            $q2 = $queue;
-            $q = $queue2;
-        } else {
-            $q = $queue;
-            $q2 = $queue2;
-        }
-        $select = 1 - $select;
     }
 
-    return $dist;
+    if($distForm){
+        unset($distanceList[0]);
+        return $distanceList;
+    }
+    else{
+        return $cities;
+    }
 }
 
 function isClose($connect, $nation1, $nation2) {
