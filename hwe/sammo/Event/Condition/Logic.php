@@ -1,7 +1,7 @@
 <?php
 namespace sammo\Event\Condition;
 
-class Logic extends sammo\Event\Condition{
+class Logic extends \sammo\Event\Condition{
     private $mode = 'and';
     private $conditions = [];
     const AVAILABLE_LOGIC_NAME = [

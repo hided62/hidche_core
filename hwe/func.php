@@ -1408,7 +1408,7 @@ function updateTraffic() {
         'maxonline'=>$game['maxonline']
     ], true);
 
-    $db->update('general', ['refresh'=>0]);
+    $db->update('general', ['refresh'=>0], true);
 
     $date = date('Y-m-d H:i:s');
     $fp = fopen("logs/_traffic.txt", "a");
@@ -1662,7 +1662,7 @@ function checkTurn($connect) {
         // 이벤트 핸들러 동작
         foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
             $eventID = $rawEvent['id'];
-            $cond = Json::decode($rawEvent['cond']);
+            $cond = Json::decode($rawEvent['condition']);
             $action = Json::decode($rawEvent['action']);
             $event = new Event\EventHandler($cond, $action);
 

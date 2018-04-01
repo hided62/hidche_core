@@ -321,7 +321,7 @@ class Scenario{
 
             $actions[] = ['DeleteEvent'];
             $this->events[] = [
-                'cond'=>['date', '==', $targetYear, '1'],
+                'cond'=>['Date', '==', $targetYear, '1'],
                 'action'=>$actions
             ];
         }

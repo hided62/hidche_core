@@ -1,7 +1,7 @@
 <?php
 namespace sammo\Event\Condition;
 
-class Date extends sammo\Event\Condition{
+class Date extends \sammo\Event\Condition{
 
     const AVAILABLE_CMP = [
         '=='=>true,

@@ -131,6 +131,9 @@ function getGeneralHistoryAll(int $no) {
 }
 
 function pushWorldHistory(array $history, $year=null, $month=null) {
+    if(!$history){
+        return;
+    }
     $db = DB::db();
     if($year === null || $month === null){
         $game = $db->queryFirstRow('SELECT year, month FROM game LIMIT 1');

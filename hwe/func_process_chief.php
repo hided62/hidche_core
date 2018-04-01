@@ -1,4 +1,5 @@
 <?php
+namespace sammo;
 
 function process_23($connect, &$general) {
     $log = array();
