@@ -2,6 +2,10 @@
 namespace sammo;
 
 class WebUtil{
+    public static function escapeIPv4($ip){
+        return str_replace('.', '\\.', $ip);
+    }
+
     public static function setHeaderNoCache(){
         if(!headers_sent()) {
             header('Expires: Wed, 01 Jan 2014 00:00:00 GMT');

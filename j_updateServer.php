@@ -98,6 +98,8 @@ if($server == $baseServerName){
         ], true
     );
 
+    AppConf::getList()[$server]->closeServer();
+
     Json::die([
         'server'=>$server,
         'result'=>true,
@@ -147,6 +149,9 @@ $result = Util::generateFileUsingSimpleTemplate(
         'verionGit'=>$version
     ], true
 );
+
+
+AppConf::getList()[$server]->closeServer();
 
 Json::die([
     'server'=>$server,

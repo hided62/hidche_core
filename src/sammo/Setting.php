@@ -89,6 +89,38 @@ class Setting {
         return $version;
 
     }
+
+    public function closeServer(){
+        if(!file_exists($this->basepath) || !is_dir($this->basepath)){
+            return false;
+        }
+        $templates = new \League\Plates\Engine(__dir__.'/templates');
+        //TODO: .htaccess가 서버 오픈에도 사용될 수 있으니 별도의 방법이 필요함
+        $allow_ip = Util::get_client_ip(false);
+        if(Util::starts_with($allow_ip, '192.168.') ||
+            Util::starts_with($allow_ip, '10.'))
+        {
+            //172.16~172.31은 코딩하기 귀찮으니까 안할거다
+            $allow_ip = Util::get_client_ip(true);
+        }
+
+        $xforward_allow_ip = WebUtil::escapeIPv4($allow_ip);
+
+        $htaccess = $templates->render('block_htaccess', 
+            ['allow_ip' => $allow_ip, 'xforward_allow_ip' => $xforward_allow_ip]);
+        file_put_contents($this->basepath.'/.htaccess', $htaccess);
+        return true;
+    }
+
+    public function openServer(){
+        if(!file_exists($this->basepath) || !is_dir($this->basepath)){
+            return false;
+        }
+        if(file_exists($this->basepath.'/.htaccess')){
+            @unlink($this->basepath.'/.htaccess');
+        }
+        return true;
+    }
 }
 
 
