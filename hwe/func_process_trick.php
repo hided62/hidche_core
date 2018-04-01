@@ -2,8 +2,9 @@
 
 
 function process_32($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     global $_firing, $_basefiring, $_firingpower;
     $date = substr($general['turntime'],11,5);
 
@@ -123,8 +124,9 @@ function process_32($connect, &$general) {
 }
 
 function process_33($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     global $_firing, $_basefiring, $_firingpower;
     //탈취는 0까지 무제한
     $date = substr($general['turntime'],11,5);
@@ -271,8 +273,9 @@ function process_33($connect, &$general) {
 }
 
 function process_34($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     global $_firing, $_basefiring, $_firingpower;
     $date = substr($general['turntime'],11,5);
 
@@ -393,8 +396,9 @@ function process_34($connect, &$general) {
 }
 
 function process_35($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     global $_firing, $_basefiring, $_firingpower;
     $date = substr($general['turntime'],11,5);
 
@@ -518,8 +522,9 @@ function process_35($connect, &$general) {
 
 function process_36($connect, &$general) {
     return process_99($connect, $general);
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     global $_firing, $_basefiring, $_firingpower;
     $date = substr($general['turntime'],11,5);
 

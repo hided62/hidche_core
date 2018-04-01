@@ -163,8 +163,9 @@ function CriticalScore($score, $type) {
 }
 
 function process_1($connect, &$general, $type) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select startyear,year,month,develcost from game limit 1";
@@ -259,8 +260,9 @@ function process_1($connect, &$general, $type) {
 }
 
 function process_3($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select startyear,year,month,develcost from game limit 1";
@@ -353,8 +355,9 @@ function process_3($connect, &$general) {
 }
 
 function process_4($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select startyear,year,month,develcost from game limit 1";
@@ -440,8 +443,9 @@ function process_4($connect, &$general) {
 }
 
 function process_5($connect, &$general, $type) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select startyear,year,month,develcost from game limit 1";
@@ -535,8 +539,9 @@ function process_5($connect, &$general, $type) {
 }
 
 function process_7($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select startyear,year,month,develcost from game limit 1";
@@ -622,8 +627,9 @@ function process_7($connect, &$general) {
 }
 
 function process_8($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select startyear,year,month,develcost from game limit 1";
@@ -716,8 +722,9 @@ function process_8($connect, &$general) {
 
 function process_9($connect, &$general) {
 
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game limit 1";
@@ -803,8 +810,9 @@ function process_9($connect, &$general) {
 
 function process_11($connect, &$general, $type) {
 
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     global $_defaultatmos, $_defaulttrain, $_defaultatmos2, $_defaulttrain2;
     $date = substr($general['turntime'],11,5);
 
@@ -986,8 +994,9 @@ function process_11($connect, &$general, $type) {
 }
 
 function process_13($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     global $_maxtrain, $_training, $_atmosing;
     $date = substr($general['turntime'],11,5);
 
@@ -1053,8 +1062,9 @@ function process_13($connect, &$general) {
 
 function process_14($connect, &$general) {
     global $_maxatmos, $_training;
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -1112,8 +1122,9 @@ function process_14($connect, &$general) {
 
 function process_15($connect, &$general) {
     global $_maxatmos, $_maxtrain;
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -1181,8 +1192,9 @@ function process_15($connect, &$general) {
 }
 
 function process_16($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select startyear,year,month from game limit 1";
@@ -1268,8 +1280,9 @@ function process_16($connect, &$general) {
 }
 
 function process_17($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -1305,8 +1318,9 @@ function process_17($connect, &$general) {
 }
 
 function process_21($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game limit 1";
@@ -1369,8 +1383,9 @@ function process_21($connect, &$general) {
 }
 
 function process_26($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $troop = getTroop($connect, $general['troop']);
@@ -1431,9 +1446,10 @@ function process_26($connect, &$general) {
 }
 
 function process_28($connect, &$general) {
-    $log = array();
-    $alllog = array();
-    $youlog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
+    $youlog = [];
 
     $date = substr($general['turntime'],11,5);
 
@@ -1493,8 +1509,9 @@ function process_28($connect, &$general) {
 }
 
 function process_30($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game limit 1";
@@ -1557,8 +1574,9 @@ function process_30($connect, &$general) {
 }
 
 function process_31($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
     $msg = [];
 
@@ -1681,8 +1699,9 @@ function process_31($connect, &$general) {
 }
 
 function process_41($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game limit 1";
@@ -1746,8 +1765,9 @@ function process_41($connect, &$general) {
 }
 
 function process_42($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -1963,8 +1983,9 @@ function process_42($connect, &$general) {
 }
 
 function process_43($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -2049,8 +2070,9 @@ function process_43($connect, &$general) {
 }
 
 function process_44($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -2136,8 +2158,9 @@ function process_44($connect, &$general) {
 
 
 function process_48($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -2240,8 +2263,9 @@ function process_48($connect, &$general) {
 }
 
 function process_49($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     global $_taxrate;
 
     $date = substr($general['turntime'],11,5);
@@ -2374,8 +2398,9 @@ function process_49($connect, &$general) {
 }
 
 function process_50($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select month from game limit 1";
@@ -2397,8 +2422,9 @@ function process_50($connect, &$general) {
 }
 
 function process_99($connect, &$general) {
-    $log = array();
-    $alllog = array();
+    $log = [];
+    $alllog = [];
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";

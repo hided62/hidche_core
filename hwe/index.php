@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$session = Session::Instance()->loginGame();
+$session = Session::Instance()->loginGame()->setReadOnly();
 
 $connect = dbConn();
 increaseRefresh("메인", 1);
@@ -24,11 +24,10 @@ $me = $db->queryFirstRow(
 
 //그새 사망이면
 if($me === null) {
-    $session->loginGame();
+    $session->logoutGame();
     header('Location: ../');
     die();
 }
-$session->setReadOnly();
 
 if($me['newmsg'] == 1 && $me['newvote'] == 1) {
     $query = "update general set newmsg=0,newvote=0 where owner='{$_SESSION['userID']}'";

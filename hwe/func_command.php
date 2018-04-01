@@ -456,7 +456,7 @@ function processCommand($connect, $no) {
     $query = "select month,killturn from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
-    $log = array();
+    $log = [];
 
     // 블럭자는 미실행. 삭턴 감소
     if($general['block'] == 2) {

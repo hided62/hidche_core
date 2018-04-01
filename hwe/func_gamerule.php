@@ -241,7 +241,6 @@ function checkSupply($connect) {
     $cities = [];
     foreach($db->query('SELECT city, nation FROM city WHERE nation != 0') as $city){
         $cities[$city['city']] = [
-
             'id'=>$city['city'],
             'nation'=>$city['nation'],
             'supply'=>false
@@ -250,15 +249,20 @@ function checkSupply($connect) {
     
     $queue = new \SplQueue();
     foreach(getAllNationStaticInfo() as $nation){
-        $city = $cities[$nation['capital']];
+        $capitalID = $nation['capital'];
+        if(!$capitalID){
+            continue;
+        }
+        $city = &$cities[$capitalID];
         $city['supply'] = true;
-        $queue->enqueue($city);
+        $queue->enqueue($city['id']);
     }
 
     while(!$queue->isEmpty()){
-        $city = $queue->dequeue();
+        $cityID = $queue->dequeue();
+        $city = &$cities[$cityID];
 
-        foreach(array_keys(CityConst::byID($city['id'])->path) as $connCityID){
+        foreach(array_keys(CityConst::byID($cityID)->path) as $connCityID){
             if(!key_exists($connCityID, $cities)){
                 continue;
             }
@@ -270,7 +274,7 @@ function checkSupply($connect) {
                 continue;
             }
             $connCity['supply'] = true;
-            $queue->enqueue($connCity);
+            $queue->enqueue($connCity['id']);
         }
     }
 
@@ -446,7 +450,7 @@ function preUpdateMonthly($connect) {
         $general = MYDB_fetch_array($result);
 
         unset($log);
-        $log = array();
+        $log = [];
         $log = checkDedication($connect, $general, $log);
         $log = checkExperience($connect, $general, $log);
         pushGenLog($general, $log);

@@ -20,7 +20,7 @@ if($btn == "투표" && $me['vote'] == 0 && $sel > 0) {
     $query = "update general set gold=gold+{$develcost},vote='{$sel}' where owner='{$_SESSION['userID']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    $log = array();
+    $log = [];
     $log = uniqueItem($connect, $me, $log, 1);
     pushGenLog($me, $log);
 }
