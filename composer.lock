@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4659ec09c50a2ccd1b53194b3f53890a",
+    "content-hash": "4b18f5660106f71d2aba7f1dcee07033",
     "packages": [
         {
             "name": "brandonwamboldt/utilphp",
@@ -453,6 +453,90 @@
                 "psr-3"
             ],
             "time": "2017-06-19T01:22:40+00:00"
+        },
+        {
+            "name": "php-extended/php-system",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-extended/php-system.git",
+                "reference": "66727d5dc0a665916bd7e08bcfb9820e7be1d20c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-extended/php-system/zipball/66727d5dc0a665916bd7e08bcfb9820e7be1d20c",
+                "reference": "66727d5dc0a665916bd7e08bcfb9820e7be1d20c",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PhpExtended\\System\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anastaszor",
+                    "role": "developer"
+                }
+            ],
+            "description": "A generic way to find informations about the running system",
+            "homepage": "https://github.com/php-extended/php-system",
+            "keywords": [
+                "operating system",
+                "os",
+                "php",
+                "system"
+            ],
+            "time": "2017-01-14T11:56:24+00:00"
+        },
+        {
+            "name": "php-extended/php-tail",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-extended/php-tail.git",
+                "reference": "eabf7bee64f8c30fe9b9e1176562fdb903c54ae7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-extended/php-tail/zipball/eabf7bee64f8c30fe9b9e1176562fdb903c54ae7",
+                "reference": "eabf7bee64f8c30fe9b9e1176562fdb903c54ae7",
+                "shasum": ""
+            },
+            "require": {
+                "php-extended/php-system": "^1.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PhpExtended\\Tail\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Anastaszor",
+                    "role": "developer"
+                }
+            ],
+            "description": "A smart way to tail files depending of the environment",
+            "homepage": "https://github.com/php-extended/php-tail",
+            "keywords": [
+                "cheat",
+                "mighty",
+                "naive",
+                "php",
+                "tail"
+            ],
+            "time": "2017-07-25T13:52:42+00:00"
         },
         {
             "name": "psr/http-message",

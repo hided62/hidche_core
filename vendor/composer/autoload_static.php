@@ -25,6 +25,8 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
+            'PhpExtended\\Tail\\' => 17,
+            'PhpExtended\\System\\' => 19,
         ),
         'M' => 
         array (
@@ -61,6 +63,14 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'Psr\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
+        'PhpExtended\\Tail\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-extended/php-tail/src',
+        ),
+        'PhpExtended\\System\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-extended/php-system/src',
         ),
         'Monolog\\' => 
         array (

@@ -10,6 +10,8 @@ return array(
     'kakao\\' => array($baseDir . '/d_setting', $baseDir . '/src/kakao'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
+    'PhpExtended\\Tail\\' => array($vendorDir . '/php-extended/php-tail/src'),
+    'PhpExtended\\System\\' => array($vendorDir . '/php-extended/php-system/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'League\\Plates\\' => array($vendorDir . '/league/plates/src'),
     'Leafo\\ScssPhp\\' => array($vendorDir . '/leafo/scssphp/src'),

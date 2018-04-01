@@ -14,7 +14,8 @@
         "leafo/scssphp": "^0.7.5",
         "monolog/monolog": "^1.23",
         "firephp/firephp-core": "^0.4.0",
-        "vlucas/valitron": "^1.4"
+        "vlucas/valitron": "^1.4",
+        "php-extended/php-tail": "^2.1"
     },
     "autoload": {
         "psr-4": {
