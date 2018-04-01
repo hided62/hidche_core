@@ -250,22 +250,26 @@ function checkSupply($connect) {
     
     $queue = new \SplQueue();
     foreach(getAllNationStaticInfo() as $nation){
-        $queue->enqueue($cities[$nation['capital']]);
+        $city = $cities[$nation['capital']];
+        $city['supply'] = true;
+        $queue->enqueue($city);
     }
 
     while(!$queue->isEmpty()){
         $city = $queue->dequeue();
 
-        $city['supply'] = true;
-
         foreach(array_keys(CityConst::byID($city['id'])->path) as $connCityID){
-            $connCity = $cities[$connCityID];
+            if(!key_exists($connCityID, $cities)){
+                continue;
+            }
+            $connCity = &$cities[$connCityID];
             if($connCity['nation'] != $city['nation']){
                 continue;
             }
             if($connCity['supply']){
                 continue;
             }
+            $connCity['supply'] = true;
             $queue->enqueue($connCity);
         }
     }

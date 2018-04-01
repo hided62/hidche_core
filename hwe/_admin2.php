@@ -74,7 +74,6 @@ for($i=0; $i < $gencount; $i++) {
     if($general['block']         > 0) { $style .= "background-color:red;"; }
     if($general['npc']          >= 2) { $style .= "color:cyan;"; }
     elseif($general['npc']      == 1) { $style .= "color:skyblue;"; }
-    if($general['con'] > $admin['conlimit']) { $style .= "color:red;"; }
 
     echo "
                 <option value={$general['no']} $style>{$general['name']}</option>";

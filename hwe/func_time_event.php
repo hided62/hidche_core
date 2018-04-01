@@ -374,7 +374,7 @@ function processRiceIncome($connect) {
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         }
-        $adminLog[count($adminLog)] = StringUtil::Fill2($nation['name'],12," ")." // 세곡 : ".StringUtil::Fill2($income,6," ")." // 세출 : ".StringUtil::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과곡 : ".tab2($nation['rice'],6," ");
+        $adminLog[] = StringUtil::Fill2($nation['name'],12," ")." // 세곡 : ".StringUtil::Fill2($income,6," ")." // 세출 : ".StringUtil::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과곡 : ".tab2($nation['rice'],6," ");
 
         $query = "select no,name,nation from general where nation='{$nation['nation']}' and level>='9'";
         $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -412,6 +412,10 @@ function processRiceIncome($connect) {
 }
 
 function getRiceIncome($connect, $nationNo, $rate, $admin_rate, $type) {
+    $level2 = [];
+    $level3 = [];
+    $level4 = [];
+
     $query = "select no,city from general where nation='$nationNo' and level=4"; // 태수
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
@@ -452,9 +456,9 @@ function getRiceIncome($connect, $nationNo, $rate, $admin_rate, $type) {
         $tax1 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
         $tax2 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
         //도시 관직 추가 세수
-        if($level4[$city['gen1']] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if($level3[$city['gen2']] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if($level2[$city['gen3']] == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if(Util::array_get($level4[$city['gen1']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if(Util::array_get($level3[$city['gen2']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if(Util::array_get($level2[$city['gen3']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
         //수도 추가 세수 130%~105%
         if($city['city'] == $nation['capital']) { $tax1 *= 1+(1/3/$nation['level']); $tax2 *= 1+(1/3/$nation['level']); }
         $income[0] += $tax1;
