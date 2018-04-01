@@ -270,7 +270,7 @@ function LogHistory($isFirst=0) {
         $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</font><br>";
         $powerStr .= "국력 {$nation['power']}<br>";
         $genStr .= "장수 {$nation['gennum']}<br>";
-        $cityStr .= "속령 $citycount<br>";
+        $cityStr .= "속령 $cityCount<br>";
     }
 
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', contents collected');

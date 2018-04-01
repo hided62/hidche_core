@@ -57,7 +57,13 @@ class Nation{
         $cities = array_map(function($cityName){
             return \sammo\CityHelper::getCityByName($cityName)['id'];
         }, $this->cities);
-        $capital = \sammo\CityHelper::getCityByName($this->capital)['id'];
+        if($this->capital){
+            $capital = \sammo\CityHelper::getCityByName($this->capital)['id'];
+        }
+        else{
+            $capital = 0;
+        }
+        
 
         $type = \sammo\NationCharCall($this->type);
 
@@ -85,9 +91,12 @@ class Nation{
             'type'=>$type,
         ]);
 
-        $db->update('city', [
-            'nation'=>$this->id
-        ], 'city IN %li', $cities);
+        if($cities){
+            $db->update('city', [
+                'nation'=>$this->id
+            ], 'city IN %li', $cities);
+        }
+        
 
         
         $diplomacy = [];
