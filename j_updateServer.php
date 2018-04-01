@@ -99,6 +99,7 @@ if($server == $baseServerName){
     );
 
     Json::die([
+        'server'=>$server,
         'result'=>true,
         'version'=>$version
     ]);
