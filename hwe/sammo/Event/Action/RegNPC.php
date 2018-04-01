@@ -11,7 +11,7 @@ class RegNPC extends \sammo\Event\Action{
         string $name, 
         int $pictureID, 
         int $nationID,
-        string $locatedCity, 
+        $locatedCity, 
         int $leadership, 
         int $power, 
         int $intel, 

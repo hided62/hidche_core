@@ -33,7 +33,7 @@ class Date extends \sammo\Event\Condition{
         $this->month = $month;
     }
 
-    public function eval(array $env=null){
+    public function eval($env=null){
         if($env === null){
             return [
                 'value'=>false,
@@ -50,7 +50,7 @@ class Date extends \sammo\Event\Condition{
         }
 
         $lhs = [
-            $this->$year,
+            $this->year,
             $this->month
         ];
         $rhs = [

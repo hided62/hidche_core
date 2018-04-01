@@ -33,21 +33,21 @@ function reloadWorldMap(option){
     var cityPosition = getCityPosition();
 
     //OBJ : startYear, year, month, cityList, nationList, spyList, shownByGeneralList, myCity
-    
-
-    var deferred;
 
     function checkReturnObject(obj){
         if(!obj.result){
-            deferred.reject();
-            return;
+            var obj = $.Deferred();
+            obj.reject('fail');
+            return obj.promise();
         }
 
         if(!$.isNumeric(obj.startYear)
             ||!$.isNumeric(obj.year)
-            ||!$.isNumeric(obj.month)){
-            deferred.reject();
-            return;
+            ||!$.isNumeric(obj.month)
+        ){
+            var obj = $.Deferred();
+            obj.reject('fail');
+            return obj.promise();
         }
 
         return obj;
@@ -504,7 +504,7 @@ function reloadWorldMap(option){
     }
 
     //deferred mode of jQuery. != promise-then.
-    deferred = $.ajax({
+    var deferred = $.ajax({
         url: option.targetJson,
         type: 'post',
         dataType:'json',

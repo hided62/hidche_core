@@ -2,22 +2,21 @@
 namespace sammo;
 
 include('lib.php');
-include('func.php');
 
 $result = [
     "generalID"=>null,
     "myNationID"=>null,
     "isChief"=>false
 ];
-$generalID = Session::Instance()->generalID;
+$session = Session::Instance()->loginGame()->setReadOnly();
 
-session_write_close();
+$generalID = $session->generalID;
 
 if(!$generalID){
     Json::die($result);
 }
 
-$generalInfo = DB::db()->queryFirstRow('SELECT `nation`, `level` from `general` where `id`=%i', $generalID);
+$generalInfo = DB::db()->queryFirstRow('SELECT `nation`, `level` from `general` where `no`=%i', $generalID);
 if(!$generalInfo){
     Json::die($result);
 }

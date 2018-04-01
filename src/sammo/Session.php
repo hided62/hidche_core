@@ -118,10 +118,10 @@ class Session {
 
     public function __get(string $name){
         if($name == 'generalID'){
-            return $this->get(DB::prefix().static::GAME_KEY_GENERAL_ID);
+            return $this->get(UniqueConst::$serverID.static::GAME_KEY_GENERAL_ID);
         }
         if($name == 'generalName'){
-            return $this->get(DB::prefix().static::GAME_KEY_GENERAL_NAME);
+            return $this->get(UniqueConst::$serverID.static::GAME_KEY_GENERAL_NAME);
         }
         return $this->get($name);
     }
