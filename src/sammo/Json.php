@@ -25,7 +25,7 @@ class Json{
         return json_decode($value, true);
     }
 
-    public static function die($value, $flag = NO_CACHE){
+    public static function die($value, $flag = self::NO_CACHE){
         //NOTE: REST 형식에 맞게, ok(), fail()로 쪼개는게 낫지 않을까 생각해봄.
         if($flag & static::NO_CACHE){
             WebUtil::setHeaderNoCache();
@@ -33,9 +33,6 @@ class Json{
         
         header('Content-Type: application/json');
     
-        echo Json::encode($value, $flag); 
-        if($die){
-            die();
-        }
+        die(Json::encode($value, $flag)); 
     }
 }

@@ -1,18 +1,62 @@
 
 var serverAdminTemplate = '\
-<tr class="bg0" data-server_name="<%name%>">\
+<tr class="bg0" data-server_name="<%name%>" data-is_root="<%isRoot%>">\
     <th style="color:<%color%>;"><%korName%>(<%name%>)</th>\
     <td><%status%></td>\
+    <td><%version%></td>\
     <td><button class="valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'close\');">폐쇄</button></td>\
     <td><button class="valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'open\');">오픈</button></td>\
     <td><a class="just_link" href="../<%name%>/install.php"><button class="valid_if_set with_border obj_fill">리셋</button></a></td>\
-    <td><a class="just_link" href="../<%name%>/install_db.php"><button class="valid_if_set only_admin with_border obj_fill">하드리셋</button></a></td>\
+    <td><a class="just_link" href="../<%name%>/install_db.php"><button class="valid_if_installed only_admin with_border obj_fill">하드리셋</button></a></td>\
     <td><button class="valid_if_set with_border obj_fill" onclick="Entrance_AdminClosedLogin(this);">폐쇄중 로그인</button></td>\
     <td><button class="valid_if_set with_border obj_fill" onclick="Entrance_AdminOpen119(this);">서버119</button></td>\
-    <td><button class="only_admin with_border obj_fill" onclick="Entrance_AdminOpen119(this);">업데이트</button></td>\
+    <td><button class="only_admin with_border obj_fill" onclick="serverUpdate(this);">업데이트</button></td>\
 </tr>\
 ';
 
+function serverUpdate(caller){
+    var $caller = $(caller);
+    var $tr = $caller.parents('tr');
+    var server = $tr.data('server_name');
+    var isRoot = $tr.data('is_root');
+
+    var target = 'master';
+
+    if(typeof isRoot !== 'boolean'){
+        isRoot = (isRoot != 'false');
+    };
+    
+    if(isRoot){
+        if(!confirm('서버 라이브러리, 루트 서버에 대해 git pull을 실행합니다.')){
+            return;
+        }
+    }
+    else{
+        target = prompt('가져올 git tree-ish 명을 입력해주세요.', target)
+        if(!target){
+            return;
+        }
+
+    }
+    
+    $.ajax({
+        type:'post',
+        url:'../j_updateServer.php',
+        dataType:'json',
+        data:{
+            server: server,
+            target: target
+        }
+    }).then(function(response) {
+            if(response.result) {
+                alert('{0} 서버가 {1} 버전으로 업데이트 되었습니다.'.format(response.server, response.version));
+                location.reload();
+            } else {
+                alert(response.reason);
+            }
+        }
+    );
+}
 
 function drawServerAdminList(serverList){
     var $table = $('#server_admin_list');
@@ -34,6 +78,9 @@ function drawServerAdminList(serverList){
         $table.append($tr);
         if(!server.valid){
             $tr.find('.valid_if_set').css('background','#333333').prop('disabled', true);
+        }
+        if(!server.installed){
+            $tr.find('.valid_if_installed').css('background','#333333').prop('disabled', true);
         }
     });
     if(serverList.grade == 5){

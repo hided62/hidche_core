@@ -17,6 +17,8 @@ $result = [];
 $server = [];
 
 
+$rootServer = end(AppConf::getList())->getShortName();
+
 foreach (AppConf::getList() as $setting) {
     $serverColor = $setting->getColor();
     $serverKorName = $setting->getKorName();
@@ -28,18 +30,24 @@ foreach (AppConf::getList() as $setting) {
         $state = [
             'valid'=>false,
             'run'=>false,
+            'installed'=>false,
+            'version'=>$setting->getVersion(),
             'reason'=>'디렉토리 없음'
         ];
     } elseif (!file_exists($serverPath.'/index.php')) {
         $state = [
             'valid'=>false,
             'run'=>false,
+            'installed'=>false,
+            'version'=>$setting->getVersion(),
             'reason'=>'index.php 없음'
         ];
     } elseif (!$setting->isExists()) {
         $state = [
             'valid'=>false,
             'run'=>false,
+            'installed'=>true,
+            'version'=>$setting->getVersion(),
             'reason'=>'설정 파일 없음'
         ];
     } elseif (!$setting->isRunning()) {
@@ -47,6 +55,8 @@ foreach (AppConf::getList() as $setting) {
         $state = [
             'valid'=>true,
             'run'=>false,
+            'installed'=>true,
+            'version'=>$setting->getVersion(),
             'reason'=>'폐쇄됨'
         ];
     } else {
@@ -54,6 +64,8 @@ foreach (AppConf::getList() as $setting) {
         $state = [
             'valid'=>true,
             'run'=>true,
+            'installed'=>true,
+            'version'=>$setting->getVersion(),
             'reason'=>'운영중'
         ];
     }
@@ -62,6 +74,7 @@ foreach (AppConf::getList() as $setting) {
         'name' => $serverDir,
         'korName' => $serverKorName,
         'color' => $serverColor,
+        'isRoot' => $serverDir == $rootServer
     ]);
     $server[] = $state;
 }  

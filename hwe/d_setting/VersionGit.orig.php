@@ -6,3 +6,4 @@ class VersionGit{
 
     private function __construct(){}
 }
+//{"version":"_tK_verionGit_"}

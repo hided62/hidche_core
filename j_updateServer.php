@@ -148,6 +148,7 @@ $result = Util::generateFileUsingSimpleTemplate(
 );
 
 Json::die([
+    'server'=>$server,
     'result'=>true,
     'version'=>$version
 ]);
