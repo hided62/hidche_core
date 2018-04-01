@@ -91,6 +91,8 @@ if($result !== true){
     ]);
 }
 
+AppConf::getList()[$prefix]->closeServer();
+
 Json::die([
     'result'=>true,
     'reason'=>'success'

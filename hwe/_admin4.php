@@ -125,7 +125,7 @@ echo "
         <td align=right>$genName</td>
         <td>$genDate</td>
         <td>$genIP</td>
-        <td>$genID</td>
+        <td>$genID</td>";
 ?>
     </tr>
 </table>

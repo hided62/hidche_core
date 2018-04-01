@@ -165,7 +165,7 @@ function formSetup(){
 
             return deferred.promise();
         }).then(function(){
-            //location.href = 'install.php';
+            location.href = '..';
         });
         
     });

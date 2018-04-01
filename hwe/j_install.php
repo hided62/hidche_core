@@ -209,6 +209,9 @@ $db->update('plock', [
 
 LogHistory(1);
 
+$prefix = DB::prefix();
+AppConf::getList()[$prefix]->closeServer();
+
 Json::die([
     'result'=>true
 ]);
