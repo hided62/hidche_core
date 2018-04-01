@@ -23,7 +23,7 @@ $myNation = MYDB_fetch_array($result);
 <head>
 <title>도시정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel=stylesheet href=css/common.css type=text/css>
+<link rel='stylesheet' href='css/common.css' type='text/css'>
 
 </head>
 

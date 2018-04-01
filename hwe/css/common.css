@@ -1,6 +1,9 @@
 @charset "UTF-8";
 
-
+html, body{
+    background-color:black;
+    color:white;
+}
 
 table { font-family:'맑은 고딕'; line-height:110%; }
 font { font-family:'맑은 고딕'; line-height:110%; }

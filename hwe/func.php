@@ -2599,7 +2599,9 @@ function isClose($connect, $nation1, $nation2) {
 
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($result);
-
+        if(!key_exists($city['city'], $barrier)){
+            continue;
+        }
         if($barrier[$city['city']] == 1) {
             $isClose = 1;
         }
