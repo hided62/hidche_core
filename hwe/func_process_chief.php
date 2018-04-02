@@ -655,7 +655,7 @@ function process_62($connect, &$general) {
         $log[] = "<C>●</>{$admin['month']}월:아국과 불가침중입니다. 선포 실패. <1>$date</>";
     } elseif($dipcount != 0) {
         $log[] = "<C>●</>{$admin['month']}월:상대국이 외교 진행중입니다. 선포 실패. <1>$date</>";
-    } elseif(!isClose($connect, $nation['nation'], $younation['nation'])) {
+    } elseif(!isClose($nation['nation'], $younation['nation'])) {
         $log[] = "<C>●</>{$admin['month']}월:인접하지 않았습니다. 선포 실패. <1>$date</>";
     } elseif($admin['year'] <= $admin['startyear']) {
         $log[] = "<C>●</>{$admin['month']}월:초반제한 해제 2년전부터 가능합니다. 선포 실패. <1>$date</>";

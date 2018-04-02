@@ -85,7 +85,7 @@ if($ok == "수락") {
         $mylog[] = "<C>●</>양국 국력이 너무 높습니다. 통합 실패.";
     } elseif($mynation['gennum']+$younation['gennum'] > $avgnation['gennum']+$stdnation['gennum']) {
         $mylog[] = "<C>●</>양국 장수가 많습니다. 통합 실패.";
-    } elseif(!isClose($connect, $younation['nation'], $mynation['nation'])) {
+    } elseif(!isClose($younation['nation'], $mynation['nation'])) {
         $mylog[] = "<C>●</>인접한 국가가 아니므로 불가능합니다. 통합 실패.";
     } elseif($dip['state'] == 0) {
         $mylog[] = "<C>●</>아국과 교전중입니다. 통합 실패.";

@@ -75,7 +75,7 @@ if($ok == "수락") {
         $mylog[] = "<C>●</>상대가 방랑군이므로 불가능합니다. 투항 실패.";
     } elseif($younation['power'] / $mynation['power'] <= 3) {
         $mylog[] = "<C>●</>아국과 상대국의 국력차이가 크지 않습니다. 투항 실패.";
-    } elseif($losecitynum != 0 && !isClose($connect, $younation['nation'], $mynation['nation'])) {
+    } elseif($losecitynum != 0 && !isClose($younation['nation'], $mynation['nation'])) {
         $mylog[] = "<C>●</>인접한 국가가 아니므로 불가능합니다. 투항 실패.";
     } elseif($dip['state'] == 0) {
         $mylog[] = "<C>●</>아국과 교전중입니다. 투항 실패.";

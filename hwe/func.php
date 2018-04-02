@@ -2574,40 +2574,23 @@ function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
     }
 }
 
-function isClose($connect, $nation1, $nation2) {
-    $isClose = 0;
-    // $nation1의 모든 도시
-    $query = "select path from city where nation='$nation1'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($result);
+function isClose($nation1, $nation2) {
+    $db = DB::db();
 
-    // 국가의 모든 도시 검색
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($result);
+    $nation1Cities = [];
+    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $nation1) as $city){
+        $nation1Cities[$city] = $city;
+    }
 
-        // 각 도시당 모든 인접 도시 플래그 세팅
-        $path = explode("|", $city['path']);
-        for($j=0; $j < count($path); $j++) {
-            $barrier[$path[$j]] = 1;
+    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $nation2) as $city){
+        foreach(array_keys(CityConst::byID($city)->$path) as $adjCity){
+            if(key_exists($adjCity, $nation1Cities)){
+                return true;
+            }
         }
     }
 
-    // $nation2의 모든 도시 선택
-    $query = "select city from city where nation='$nation2'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($result);
-
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($result);
-        if(!key_exists($city['city'], $barrier)){
-            continue;
-        }
-        if($barrier[$city['city']] == 1) {
-            $isClose = 1;
-        }
-    }
-
-    return $isClose;
+    return false;
 }
 
 function CharExperience($exp, $personal) {
