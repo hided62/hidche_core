@@ -1323,32 +1323,21 @@ function process_21($connect, &$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
 
-    $query = "select path from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
-
-    $path = explode("|", $city['path']);
+    $db = DB::db();
+    $admin = $db->queryFirstRow('SELECT year, month, develcost FROM game limit 1');
+    $city = CityConst::byID($general['city']);
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
+    $destCity = CityConst::byID($destination);
 
-    $query = "select name from city where city='$destination'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $destcity = MYDB_fetch_array($result);
 
-    for($i=0; $i < count($path); $i++) {
-        if($path[$i] == $destination) { $valid = 1; }
-    }
-
-    if(!$valid) {
-        $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 이동 실패. <1>$date</>";
+    if(!key_exists($destCity->id, $city->path)) {
+        $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destCity->name}</b></>(으)로 이동 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']) {
-        $log[] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destcity['name']}</b></>(으)로 이동 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destCity->name}</b></>(으)로 이동 실패. <1>$date</>";
     } else {
-        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(으)로 이동했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destCity->name}</b></>(으)로 이동했습니다. <1>$date</>";
         $exp = 50;
 
         // 성격 보정
@@ -1356,23 +1345,27 @@ function process_21($connect, &$general) {
 
         // 이동, 경험치 상승, 명성 상승, 사기 감소
         $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',gold=gold-'{$admin['develcost']}',city='$destination',atmos=atmos*0.95,leader2='{$general['leader2']}',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('general',[
+            'resturn'=>'SUCCESS',
+            'gold'=>$db->sqleval('gold - %i',$admin['develcost']),
+            'city'=>$destCity->id,
+            'atmos'=>$db->sqleval('atmos*0.95'),
+            'leader2'=>$general['leader2'],
+            'experience'=>$db->sqleval('experience + %i',$exp)
+        ], 'no = %i', $general['no']);
 
         if($general['level'] == 12) {
             $nation = getNationStaticInfo($general['nation']);
 
             if($nation['level'] == 0) {
-                $query = "update general set city='$destination' where nation='{$general['nation']}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-                $query = "select no,name from general where nation='{$general['nation']}' and level<'12'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $gencount = MYDB_num_rows($result);
-                $genlog[0] = "<C>●</>방랑군 세력이 <G><b>{$destcity['name']}</b></>(으)로 이동했습니다.";
-                for($j=0; $j < $gencount; $j++) {
-                    $gen = MYDB_fetch_array($result);
-                    pushGenLog($gen, $genlog);
+                $db->update('general', [
+                    'city'=>$destCity->id
+                ], 'nation = %i', $general['nation']);
+
+                $genlog = ["<C>●</>방랑군 세력이 <G><b>{$destCity->name}</b></>(으)로 이동했습니다."];
+                foreach($db->query('SELECT `no` FROM general WHERE nation=%i and `level`<12', $general['nation']) as $follower){
+                    pushGenLog($follower, $genlog);
                 }
             }
         }
