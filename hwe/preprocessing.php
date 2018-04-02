@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 //로그인 검사
-CheckLogin(1);
+CheckLoginWithGeneralID();
 $connect = dbConn();
 increaseRefresh("턴입력", 1);
 

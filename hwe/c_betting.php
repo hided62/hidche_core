@@ -8,7 +8,7 @@ include "func.php";
 
 
 //로그인 검사
-CheckLogin();
+CheckLoginWithGeneralID();
 $connect = dbConn();
 increaseRefresh("베팅", 1);
 

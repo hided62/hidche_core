@@ -2,18 +2,14 @@
 namespace sammo;
 
 
-function CheckLogin($type=0) {
-    //TODO: 직접해라. setReadOnly() 호출이 필요하다.
-    if(Session::Instance()->loginGame()->generalID){
-       return; 
+function CheckLoginWithGeneralID() {
+    $session = Session::requireLogin()->loginGame()->setReadOnly();
+    $generalID = $session->generalID;
+    if($generalID){
+       return $generalID; 
     }
-    if($type == 0) {
-        header('Location: ../');
-    }
-    else           { 
-        header('Location: index.php');
-    }
-    exit();
+    header('Locatoin:..');
+    die();
 }
 
 

@@ -6,7 +6,7 @@ include "func.php";
 // $btn, $msg
 
 //로그인 검사
-CheckLogin();
+CheckLoginWithGeneralID();
 $connect = dbConn();
 
 $query = "select tournament,phase,tnmt_type,develcost from game limit 1";

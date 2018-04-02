@@ -6,7 +6,7 @@ include "func.php";
 // $btn, $level, $genlist, $outlist
 
 //로그인 검사
-CheckLogin();
+CheckLoginWithGeneralID();
 $connect = dbConn();
 
 $query = "select startyear,year,month from game limit 1";

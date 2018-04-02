@@ -6,7 +6,7 @@ include "func.php";
 //로그인 검사
 
 
-CheckLogin(1);
+CheckLoginWithGeneralID();
 $connect = dbConn();
 increaseRefresh("턴반복", 1);
 

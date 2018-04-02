@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 //로그인 검사
-CheckLogin();
+CheckLoginWithGeneralID();
 $connect = dbConn();
 
 $query = "select no from general where owner='{$_SESSION['userID']}'";

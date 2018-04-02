@@ -6,7 +6,7 @@ include "func.php";
 // $btn, $msg, $scoutmsg, $rate, $bill, $secretlimit
 
 //로그인 검사
-CheckLogin();
+CheckLoginWithGeneralID();
 $connect = dbConn();
 
 $query = "select no,nation,level from general where owner='{$_SESSION['userID']}'";
