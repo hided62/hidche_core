@@ -1,46 +1,23 @@
 <?php
 namespace sammo;
 
-/**
-* https://php.net/manual/kr/language.oop5.autoload.php#120258
-* 현재 디렉토리 기준으로 php 파일 탐색.
-*/
-class Autoloader
-{
-    public static function register()
-    {
-        static $isRegisterd = false;
-        if($isRegisterd){
-            return;
+/** @var  \Composer\Autoload\ClassLoader $loader */
+$loader = require __dir__.'/../vendor/autoload.php';
+$loader->addPsr4('sammo\\', __DIR__.'/sammo', true);
+
+$loader->addClassMap((function(){
+    $d_settingMap = [];
+    foreach(glob(__dir__.'/d_setting/*.php') as $filepath){
+        $filename = basename($filepath);
+        if(Util::ends_with($filename, '.orig.php')){
+            continue;
         }
+        $classname = explode('.', $filename)[0];
+        $d_settingMap['sammo\\'.$classname] = $filepath;
+    };
+    return $d_settingMap;
+})());
 
-        //trick, 개인용 세팅의 경우 d_setting의 값을 우선시하도록 함.
-        spl_autoload_register(function ($class) {
-            $class = Util::array_last(explode('\\', $class));
-            $file = __DIR__."/d_setting/{$class}.php";
-            if (file_exists($file)) {
-                require $file;
-                return true;
-            }
-            return false;
-        });
-
-        $isRegisterd = true;
-        spl_autoload_register(function ($class) {
-            $file = __DIR__.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php';
-            if (file_exists($file)) {
-                require $file;
-                return true;
-            }
-            return false;
-        });
-
-        
-    }
-}
-Autoloader::register();
-
-require(__dir__.'/../vendor/autoload.php');
 
 /******************************************************************************
 체섭용 인클루드 파일
@@ -50,8 +27,6 @@ require(__dir__.'/../vendor/autoload.php');
 //    @header ("P3P : CP=\"ALL CURa ADMa DEVa TAIa OUR BUS IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC OTC\"");
 
 //디버그용 매크로
-define('__OLINE__',__LINE__);
-define('__LINE__',__FILE__." ".__FUNCTION__." ".__LINE__." : ");
 ini_set("session.cache_expire", 10080);      // minutes
 
 
@@ -105,60 +80,78 @@ session_cache_limiter('nocache');//NOTE: 캐시가 가능하도록 설정해야 
  * Session에 보관된 장수 정보를 제거함.
  * _prefix_p_no, _prefix_p_name 두 값임
  */
-function resetSessionGeneralValues(){
+function resetSessionGeneralValues()
+{
     Session::Instance()->logoutGame();
 }
 
 // MySQL 데이타 베이스에 접근
-function dbConn($isRoot=false) {
-    if($isRoot){
+function dbConn($isRoot=false)
+{
+    if ($isRoot) {
         return RootDB::db()->get();
     }
     return DB::db()->get();
 }
 
 // 에러 메세지 출력
-function Error($message, $url="") {
-    global $setup, $connect, $dir, $config_dir;
-    include "error.php";
-    if($connect) @MYDB_close($connect);
-    exit;
+function Error($message, $url="")
+{
+    if(!$url){
+        $url = $_SERVER['REQUEST_URI'];
+    }
+    WebUtil::setHeaderNoCache();
+    file_put_contents(__dir__."/logs/_db_bug.txt", "{\"url\":$url,\"msg\":\"$message\"}\n", FILE_APPEND);
+
+    $templates = new \League\Plates\Engine('templates');
+
+    die($templates->render('error', [
+        'message' => $msg
+    ]));
 }
 
 // 게시판의 생성유무 검사
-function isTable($connect, $str, $dbname='') {
-    if(!$dbname) {
+function isTable($connect, $str, $dbname='')
+{
+    if (!$dbname) {
         $f=@file("d_setting/DB.php") or Error("DB.php파일이 없습니다. DB설정을 먼저 하십시요");
-        for($i=1;$i<=4;$i++) $f[$i]=str_replace("\n","",$f[$i]);
+        for ($i=1;$i<=4;$i++) {
+            $f[$i]=str_replace("\n", "", $f[$i]);
+        }
         $dbname=$f[4];
     }
 
-    $result = MYDB_list_tables($dbname, $connect) or Error(__LINE__." : list_table error : ".MYDB_error($connect),"");
+    $result = MYDB_list_tables($dbname, $connect) or Error(__LINE__." : list_table error : ".MYDB_error($connect), "");
 
     $cnt = MYDB_num_rows($result);
-    for($i=0; $i < $cnt; $i++) {
+    for ($i=0; $i < $cnt; $i++) {
         $tablename = MYDB_fetch_row($result);
-        if($str == $tablename[0]) return 1;
+        if ($str == $tablename[0]) {
+            return 1;
+        }
     }
 
     return 0;
 }
 
-function MessageBox($str) {
+function MessageBox($str)
+{
     echo "<script>alert('$str');</script>";
 }
 
-function PrintElapsedTime() {
+function PrintElapsedTime()
+{
     global $_startTime;
     $_endTime = round(microtime(true) - $_startTime, 3);
     echo "<table width=1000 align=center style=font-size:10;><tr><td align=right>경과시간 : {$_endTime}초</td></tr></table>";
 }
 
-function LogText($prefix, $variable){
+function LogText($prefix, $variable)
+{
     $fp = fopen('logs/dbg_logs.txt', 'a+');
-    if($fp == false){
+    if ($fp == false) {
         $directory_name = dirname('logs/dbg_logs.txt');
-        if(!is_dir($directory_name)){
+        if (!is_dir($directory_name)) {
             mkdir($directory_name);
             $fp = fopen('logs/dbg_logs.txt', 'a+');
         }
@@ -168,9 +161,9 @@ function LogText($prefix, $variable){
 }
 
 
-if(isset($_POST) && count($_POST) > 0){
+if (isset($_POST) && count($_POST) > 0) {
     LogText($_SERVER['REQUEST_URI'], $_POST);
 }
-extract($_POST, EXTR_SKIP); 
+extract($_POST, EXTR_SKIP);
 //XXX: $_POST를 추출 없이 그냥 쓰는 경우가 많아서 일단 디버깅을 위해 씀!!!! 절대 production 서버에서 사용 금지!
 //todo: $_POST로 제공되는 데이터를 각 페이지마다 분석할것.

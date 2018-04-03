@@ -1,7 +1,6 @@
 <?php
 namespace sammo;
 
-require(__dir__.'/../vendor/autoload.php');
 require_once 'process_war.php';
 require_once 'func_gamerule.php';
 require_once 'func_process.php';

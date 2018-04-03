@@ -3,6 +3,7 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 
+WebUtil::setHeaderNoCache();
 $session = Session::requireLogin()->setReadOnly();
 
 $templates = new \League\Plates\Engine('templates');

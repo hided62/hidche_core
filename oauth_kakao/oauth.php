@@ -5,6 +5,8 @@ require(__dir__.'/../vendor/autoload.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
+WebUtil::setHeaderNoCache();
+
 $auth_code = Util::array_get($_GET['code']);
 if(!$auth_code){
     

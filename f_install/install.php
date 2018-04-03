@@ -3,8 +3,6 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 
-
-
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -35,14 +33,16 @@ require(__dir__.'/../vendor/autoload.php');
                     <div class="form-group row">
                         <label for="db_host" class="col-sm-3 col-form-label">DB호스트</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="db_host" id="db_host"  placeholder="호스트" value="localhost" />
+                            <input type="text" class="form-control" name="db_host" id="db_host" 
+                             placeholder="호스트" value="localhost" />
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label for="db_port" class="col-sm-3 col-form-label">DB포트</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="db_port" id="db_port"  placeholder="접속 포트" value="3306" />
+                            <input type="text" class="form-control" name="db_port" id="db_port" 
+                             placeholder="접속 포트" value="3306" />
                         </div>
                     </div>
                     
@@ -57,28 +57,32 @@ require(__dir__.'/../vendor/autoload.php');
                     <div class="form-group row">
                         <label for="db_pw" class="col-sm-3 col-form-label">DB비밀번호</label>
                         <div class="col-sm-9">
-                            <input type="password" class="form-control" name="db_pw" id="db_pw"  placeholder="DB비밀번호"/>
+                            <input type="password" class="form-control" name="db_pw" id="db_pw" 
+                             placeholder="DB비밀번호"/>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label for="db_name" class="col-sm-3 col-form-label">DB명</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="db_name" id="db_name"  placeholder="DB명(예:sammo)"/>
+                            <input type="text" class="form-control" name="db_name" id="db_name" 
+                             placeholder="DB명(예:sammo)"/>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label for="serv_host" class="col-sm-3 col-form-label">접속 경로</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="serv_host" id="serv_host" placeholder="접속경로(예:http://www.example.com)"/>
+                            <input type="text" class="form-control" name="serv_host" id="serv_host" 
+                            placeholder="접속경로(예:http://www.example.com)"/>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block login-button">설정 파일 생성</button>
+                            <button type="submit" 
+                            class="btn btn-primary btn-lg btn-block login-button">설정 파일 생성</button>
                         </div>
                     </div>
                 </form>
@@ -94,7 +98,8 @@ require(__dir__.'/../vendor/autoload.php');
                     <div class="form-group row">
                         <label for="username" class="col-sm-3 col-form-label">계정명</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="username" id="username"  placeholder="계정명"/>
+                            <input type="text" class="form-control" name="username" id="username"
+                              placeholder="계정명"/>
                         </div>
                     </div>
 
@@ -102,21 +107,24 @@ require(__dir__.'/../vendor/autoload.php');
                     <div class="form-group row">
                         <label for="password" class="col-sm-3 col-form-label">비밀번호</label>
                         <div class="col-sm-9">
-                            <input type="password" class="form-control" name="password" id="password"  placeholder="비밀번호"/>
+                            <input type="password" class="form-control" name="password" id="password" 
+                             placeholder="비밀번호"/>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label for="confirm_password" class="col-sm-3 col-form-label">비밀번호 확인</label>
                         <div class="col-sm-9">
-                            <input type="password" class="form-control" name="confirm_password" id="confirm_password"  placeholder="비밀번호 확인"/>
+                            <input type="password" class="form-control" name="confirm_password" id="confirm_password" 
+                             placeholder="비밀번호 확인"/>
                         </div>
                     </div>
 
                     <div class="form-group row">
                         <label for="nickname" class="col-sm-3 col-form-label">닉네임</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" name="nickname" id="nickname"  placeholder="닉네임" value="운영자"/>
+                            <input type="text" class="form-control" name="nickname" id="nickname" 
+                             placeholder="닉네임" value="운영자"/>
                         </div>
                     </div>
 
@@ -125,7 +133,8 @@ require(__dir__.'/../vendor/autoload.php');
                     <div class="form-group row">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block login-button">관리자 계정 생성</button>
+                            <button type="submit"
+                             class="btn btn-primary btn-lg btn-block login-button">관리자 계정 생성</button>
                         </div>
                     </div>
                 </form>

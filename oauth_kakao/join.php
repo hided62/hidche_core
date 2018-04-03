@@ -4,7 +4,7 @@ namespace sammo;
 require(__dir__.'/../vendor/autoload.php');
 
 
-
+WebUtil::setHeaderNoCache();
 $session = Session::Instance()->setReadOnly();
 
 $access_token = $session->access_token;
