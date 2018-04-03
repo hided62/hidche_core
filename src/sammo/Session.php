@@ -1,10 +1,6 @@
 <?php
 namespace sammo;
 
-if(!defined('ROOT')){
-    define('ROOT', '../..');
-}
-
 /**
  * Session Wrapper. 내부적으로 $_SESSION을 이용
  * 

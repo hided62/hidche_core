@@ -1,10 +1,6 @@
 <?php
 namespace sammo;
 
-if(!defined('ROOT')){
-    define('ROOT', '../..');
-}
-
 class AppConf{
     private static $serverList = null;
 

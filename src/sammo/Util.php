@@ -42,7 +42,10 @@ class Util extends \utilphp\util{
      * 
      * @return int|null
      */
-    public static function toInt($val, $force=false){
+    public static function toInt($val, $silent=false){
+        if(!isset($val)){
+            return null;
+        }
         if($val === null){
             return null;
         }
@@ -56,7 +59,10 @@ class Util extends \utilphp\util{
             return null;
         }
 
-        if($force){
+        if($silent){
+            if($val == null){
+                return null;
+            }
             return intval($val);
         }
         throw new InvalidArgumentException('올바르지 않은 타입형 :'.$val);
