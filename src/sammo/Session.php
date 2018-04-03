@@ -78,7 +78,7 @@ class Session {
     }
 
     public static function requireGameLogin($result = ROOT): Session{
-        $session = Session::requireLogin()->loginGame();
+        $session = Session::requireLogin($result)->loginGame();
 
         if($session->generalID){
             return $session;
