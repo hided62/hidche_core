@@ -6,6 +6,4 @@ include "func.php";
 
 
 
-if(!isSigned()){
-
-}
+$session = Session::requireGameLogin(null)->setReadOnly();

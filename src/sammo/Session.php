@@ -50,23 +50,41 @@ class Session {
         return $this;
     }
 
-    public static function requireLogin($movePath = ROOT): Session{
+    private static function die($result){
+        if(is_string($result)){
+            header('Location:'.$result);
+            die();
+        }
+
+        $jsonResult = [
+            'result'=>false,
+            'reason'=>'로그인이 필요합니다.'
+        ];
+
+        if(is_array($result)){
+            $jsonResult = array_merge($result, $jsonResult);
+        }
+
+        Json::die($jsonResult);
+    }
+
+    public static function requireLogin($result = ROOT): Session{
         $session = Session::Instance();
         if($session->isLoggedIn()){
             return $session;
         }
 
-        $session->setReadOnly();
+        static::die($result);
+    }
 
-        if(is_string($path)){
-            header('Location:'.$path);
-            die();
+    public static function requireGameLogin($movePath = ROOT): Session{
+        $session = Session::requireLogin()->loginGame();
+
+        if($session->generalID){
+            return $session;
         }
 
-        Json::die([
-            'result'=>false,
-            'reason'=>'로그인이 필요합니다.'
-        ]);
+        static::die($result);
     }
 
     public function __construct() {

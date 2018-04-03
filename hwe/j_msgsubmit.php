@@ -5,6 +5,9 @@ include 'lib.php';
 include 'func.php';
 
 
+$session = Session::requireGameLogin([
+    'newSeq' => false
+])->setReadOnly();
 
 /**
  * 메시지 전송 코드.
@@ -13,7 +16,6 @@ include 'func.php';
  */
 
 //읽기 전용이다. 빠르게 세션 끝내자
-session_write_close();
 
 $post = WebUtil::parseJsonPost();
 
@@ -30,16 +32,6 @@ $destMailbox = $post['dest_mailbox'];
 $msg = $post['msg'];
 $datetime = new \DateTime();
 $date = $datetime->format('Y-m-d H:i:s');
-
-//로그인 검사
-if(!isSigned()){
-    Json::die([
-        'result' => false,
-        'reason' => '로그인되지 않았습니다.',
-        'newSeq' => false
-    ]);
-}
-
 
 $db = DB::db();
 

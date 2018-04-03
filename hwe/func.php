@@ -21,93 +21,6 @@ require_once('func_map.php');
 require_once('func_diplomacy.php');
 require_once('func_command.php');
 
-
-
-
-
-/** 
- * 로그인한 유저의 장수 id를 받아옴
- * 
- * @return int|null
- */
-function getGeneralID($forceExit=false, $countLogin=true){
-    $userID = Session::getUserID();
-    if(!$userID){ //유저id 없으면 어차피 의미 없음.
-        return null;
-    }
-
-    $idKey = DB::prefix().'p_no';
-    $generalID = Util::array_get($_SESSION[$idKey], null);
-
-    if($generalID){
-        return $generalID;
-    }
-
-    $db = DB::db();
-    //흠?
-    $generalID = $db->queryFirstField('select no from general where owner = %i', $userID);
-    if(!$generalID && $forceExit){
-        header('Location:..');
-        die();
-    }
-
-    if($generalID && $countLogin){
-        //로그인으로 처리
-        //XXX: 'get' 함수인데 update가 들어가있다.
-        //TODO: 조금더 적절한 형태의 로그인 카운트를 생각해볼 것
-        $query=$db->query("update general set logcnt=logcnt+1 ,ip = %s_ip,lastconnect=%s_lastConnect where owner= %s_userID",[
-            'ip' => getenv("REMOTE_ADDR"),
-            'lastConnect' => date('Y-m-d H:i:s'),
-            'userID' => $userID
-        ]);
-        $_SESSION[$idKey] = $generalID;
-    }
-    
-    return $generalID;
-}
-
-/** 
- * 로그인한 유저의 장수명을 받아옴
- * 
- * @return string|null
- */
-function getGeneralName($forceExit=false)
-{
-    $generalID = Session::Instance()->generalID;
-    if(!$generalID){
-        if($forceExit){
-            header('Location:..');
-            die();
-        }
-
-        return null;
-    }
-
-    $nameKey = DB::prefix().'p_name';
-    $generalName = Util::array_get($_SESSION[$nameKey], null);
-
-    if($generalName){
-        return $generalName;
-    }
-
-    //흠?
-    $generalName = DB::db()->queryFirstField('select name from general where no = %i', $generalID);
-    if(!$generalName){
-        //이게 말이 돼?
-        resetSessionGeneralValues();
-        if($forceExit){
-            header('Location:..');
-            die();
-        }
-    }
-
-    if($generalName){
-        $_SESSION[$nameKey] = $generalName;
-    }
-
-    return $generalName;
-}
-
 /**
  * nationID를 이용하여 국가의 '어지간해선' 변경되지 않는 정보(이름, 색, 성향, 규모, 수도)를 반환해줌
  * 
@@ -162,26 +75,6 @@ function GetImageURL($imgsvr) {
         return $image1;
     }
 }
-
-/**
- * generalID를 이용해 각 서버 등록 여부를 확인함
- * 
- * FIXME: 현재의 구현으로는 session에 p_no가 남아있지만 general 테이블에서는 삭제되어있는 진풍경(!)이 펼쳐질 수도 있음.
- * 장수가 사망했을 때에 바로 테이블에서 삭제하는 것이 아니라 삭제 플래그를 설정하는 것이 나을 것임.
- * (퀘 섭등 NPC가 빙의할 경우에도 마찬가지!)
- * 
- * 세팅된 플래그는 새롭게 장수를 생성하거나, 새로 빙의할 때 초기화하는 것이 적절한 해결책일 것.
- * 
- * @return bool
- */
-function isSigned(){
-    $generalID = Session::Instance()->generalID;
-    if(!$generalID){
-        return false;
-    }
-    return true;
-}
-
 
 function checkLimit($con, $conlimit) {
     if(Session::getUserGrade()>=4){
