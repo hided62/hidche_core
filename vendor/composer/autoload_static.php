@@ -49,13 +49,11 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
     public static $prefixDirsPsr4 = array (
         'sammo\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/d_setting',
-            1 => __DIR__ . '/../..' . '/src/sammo',
+            0 => __DIR__ . '/../..' . '/src/sammo',
         ),
         'kakao\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/d_setting',
-            1 => __DIR__ . '/../..' . '/src/kakao',
+            0 => __DIR__ . '/../..' . '/src/kakao',
         ),
         'Psr\\Log\\' => 
         array (
