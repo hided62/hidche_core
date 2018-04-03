@@ -6,7 +6,6 @@ include "func.php";
 
 $session = Session::requireGameLogin();
 
-$connect = dbConn();
 increaseRefresh("메인", 1);
 
 $db = DB::db();
@@ -30,6 +29,7 @@ if($me === null) {
 $session->setReadOnly();
 
 //턴 실행.
+$connect = dbConn();
 checkTurn($connect);
 
 if($me['newmsg'] == 1 && $me['newvote'] == 1) {

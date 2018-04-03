@@ -76,14 +76,7 @@ $image = "/image";
 session_cache_limiter('nocache');//NOTE: 캐시가 가능하도록 설정해야 할 수도 있음. 주의!
 //FIXME: 이곳에서 설정하면 안될 듯 하다. 옮기자.
 
-/**
- * Session에 보관된 장수 정보를 제거함.
- * _prefix_p_no, _prefix_p_name 두 값임
- */
-function resetSessionGeneralValues()
-{
-    Session::Instance()->logoutGame();
-}
+ob_start();
 
 // MySQL 데이타 베이스에 접근
 function dbConn($isRoot=false)
@@ -101,9 +94,11 @@ function Error($message, $url="")
         $url = $_SERVER['REQUEST_URI'];
     }
     WebUtil::setHeaderNoCache();
-    file_put_contents(__dir__."/logs/_db_bug.txt", "{\"url\":$url,\"msg\":\"$message\"}\n", FILE_APPEND);
+    file_put_contents(__dir__."/logs/_db_bug.txt", "{\"url\":\"$url\",\"msg\":\"$message\"}\n", FILE_APPEND);
 
     $templates = new \League\Plates\Engine('templates');
+
+    ob_get_flush();
 
     die($templates->render('error', [
         'message' => $msg

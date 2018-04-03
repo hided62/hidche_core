@@ -77,7 +77,7 @@ class Session {
         static::die($result);
     }
 
-    public static function requireGameLogin($movePath = ROOT): Session{
+    public static function requireGameLogin($result = ROOT): Session{
         $session = Session::requireLogin()->loginGame();
 
         if($session->generalID){

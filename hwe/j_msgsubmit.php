@@ -51,7 +51,7 @@ $conlimit = $db->queryFirstField('select conlimit from game limit 1');
 $me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr` from `general` where `owner` = %i', Session::getUserID());
 
 if(!$me){
-    resetSessionGeneralValues();
+    $session->logoutGame();
     Json::die([
         'result' => false,
         'reason' => '로그인되지 않았습니다.',
