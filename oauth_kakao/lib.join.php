@@ -1,8 +1,6 @@
 <?php
 namespace sammo;
 
-require_once('_common.php');
-
 function checkUsernameDup($username){
     if(!$username){
         return '계정명을 입력해주세요';

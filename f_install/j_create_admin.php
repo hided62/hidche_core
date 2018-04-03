@@ -1,8 +1,7 @@
 <?php
 namespace sammo;
 
-
-require('_common.php');
+require(__dir__.'/../vendor/autoload.php');
 
 session_start();
 session_destroy();

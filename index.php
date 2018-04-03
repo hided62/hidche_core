@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-require('_common.php');
+require(__dir__.'/vendor/autoload.php');
 
 if(!class_exists('\\sammo\\RootDB')){
     header ('Location:install.php');

@@ -1,13 +1,13 @@
 <?php
 namespace sammo;
 
-require('_common.php');
+require(__dir__.'/../vendor/autoload.php');
 
 
 
-session_start();
+$session = Session::Instance()->setReadOnly();
 
-$access_token = Util::array_get($_SESSION['access_token']);
+$access_token = $session->access_token;
 if(!$access_token){
     header('Location:oauth_fail.html');
 }

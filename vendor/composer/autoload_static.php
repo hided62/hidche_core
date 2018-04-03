@@ -10,6 +10,7 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '870dc64919afa8b0f700701bb2c6a783' => __DIR__ . '/../..' . '/f_config/config.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -125,6 +126,8 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'MeekroDBEval' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'MeekroDBException' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'WhereClause' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
+        'kakao\\KakaoKey' => __DIR__ . '/../..' . '/d_setting/KakaoKey.php',
+        'sammo\\RootDB' => __DIR__ . '/../..' . '/d_setting/RootDB.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

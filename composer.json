@@ -27,7 +27,16 @@
                 "d_setting",
                 "src/kakao"
             ]
-        }
+        },
+        "classmap": [
+            "d_setting/"
+        ],
+        "exclude-from-classmap": [
+            "**/*.orig.php"
+        ],
+        "files":[
+            "f_config/config.php"
+        ]
     }
     
 }

@@ -54,7 +54,6 @@ define('__OLINE__',__LINE__);
 define('__LINE__',__FILE__." ".__FUNCTION__." ".__LINE__." : ");
 ini_set("session.cache_expire", 10080);      // minutes
 
-ob_start();
 
 include "MYDB.php";
 

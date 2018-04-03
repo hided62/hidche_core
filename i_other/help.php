@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-require_once('_common.php');
+require(__dir__.'/../vendor/autoload.php');
 
 
 $category = Util::array_get($_GET['category'], 0);
