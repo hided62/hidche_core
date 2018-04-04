@@ -73,10 +73,9 @@ $image1 = "../d_pic";
 $images = "/images";
 $image = "/image";
 
+ob_start();
 session_cache_limiter('nocache');//NOTE: 캐시가 가능하도록 설정해야 할 수도 있음. 주의!
 //FIXME: 이곳에서 설정하면 안될 듯 하다. 옮기자.
-
-ob_start();
 
 // 에러 메세지 출력
 function Error($message, $url="")
@@ -94,30 +93,6 @@ function Error($message, $url="")
     die($templates->render('error', [
         'message' => $msg
     ]));
-}
-
-// 게시판의 생성유무 검사
-function isTable($connect, $str, $dbname='')
-{
-    if (!$dbname) {
-        $f=@file("d_setting/DB.php") or Error("DB.php파일이 없습니다. DB설정을 먼저 하십시요");
-        for ($i=1;$i<=4;$i++) {
-            $f[$i]=str_replace("\n", "", $f[$i]);
-        }
-        $dbname=$f[4];
-    }
-
-    $result = MYDB_list_tables($dbname, $connect) or Error(__LINE__." : list_table error : ".MYDB_error($connect), "");
-
-    $cnt = MYDB_num_rows($result);
-    for ($i=0; $i < $cnt; $i++) {
-        $tablename = MYDB_fetch_row($result);
-        if ($str == $tablename[0]) {
-            return 1;
-        }
-    }
-
-    return 0;
 }
 
 function MessageBox($str)
@@ -149,7 +124,8 @@ function LogText($prefix, $variable)
 
 if (isset($_POST) && count($_POST) > 0) {
     LogText($_SERVER['REQUEST_URI'], $_POST);
+    extract($_GET, EXTR_SKIP);
+    extract($_POST, EXTR_SKIP);
+    //XXX: $_POST를 추출 없이 그냥 쓰는 경우가 많아서 일단 디버깅을 위해 씀!!!! 절대 production 서버에서 사용 금지!
+    //todo: $_POST로 제공되는 데이터를 각 페이지마다 분석할것.
 }
-extract($_POST, EXTR_SKIP);
-//XXX: $_POST를 추출 없이 그냥 쓰는 경우가 많아서 일단 디버깅을 위해 씀!!!! 절대 production 서버에서 사용 금지!
-//todo: $_POST로 제공되는 데이터를 각 페이지마다 분석할것.
