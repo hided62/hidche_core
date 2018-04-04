@@ -62,8 +62,9 @@ $db->insert('member_log', [
     'action_type'=>'delete'
 ]);
 
+
+$session->access_token = null;
 $session->logout();
-unset($_SESSION['access_token']);
 setcookie("hello", "", time()-3600);
 
 Json::die([

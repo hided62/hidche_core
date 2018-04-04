@@ -6,7 +6,7 @@ include "func.php";
 $connect = dbConn();
 increaseRefresh("설문조사", 1);
 
-$query = "select no,vote from general where owner='{$_SESSION['userID']}'";
+$query = "select no,vote from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

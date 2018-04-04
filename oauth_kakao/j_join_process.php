@@ -6,7 +6,7 @@ require('lib.join.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
-session_start();
+$session = Session::Instance();
 
 $canJoin = RootDB::db()->queryFirstField('SELECT REG FROM `SYSTEM` WHERE `NO` = 1');
 if($canJoin != 'Y'){
@@ -18,10 +18,10 @@ if($canJoin != 'Y'){
 
 $nowDate = TimeUtil::DatetimeNow();
 
-$access_token = Util::array_get($_SESSION['access_token']);
-$expires = Util::array_get($_SESSION['expires']);
-$refresh_token = Util::array_get($_SESSION['refresh_token']);
-$refresh_token_expires = Util::array_get($_SESSION['refresh_token_expires']);
+$access_token = Util::array_get($session->access_token);
+$expires = Util::array_get($session->expires);
+$refresh_token = Util::array_get($session->refresh_token);
+$refresh_token_expires = Util::array_get($session->refresh_token_expires);
 if(!$access_token){
     Json::die([
         'result'=>false,
@@ -29,7 +29,7 @@ if(!$access_token){
     ]);
 }
 if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate))){
-    unset($_SESSION['access_token']);
+    $session->access_token = null;
     Json::die([
         'result'=>false,
         'reason'=>'로그인 토큰 만료.'.$refresh_token_expires.' 다시 카카오로그인을 수행해주세요.'
@@ -86,7 +86,7 @@ $restAPI = new Kakao_REST_API_Helper($access_token);
 if($expires < $nowDate){
     $result = $restAPI->refresh_access_token($refresh_token);
     if(!isset($refresh_token)){
-        unset($_SESSION['access_token']);
+        $session->access_token = null;
         Json::die([
             'result'=>false,
             'reason'=>'카카오 로그인 과정 중 추가 갱신 절차를 실패했습니다'
@@ -131,7 +131,7 @@ if(!Util::array_get($me['kaccount_email_verified'],false)){
 }
 
 $email = $me['kaccount_email'];
-$_SESSION['kaccount_email'] = $email;
+$session->kaccount_email = $email;
 $emailChk = checkEmailDup($email);
 if($emailChk !== true){
     $restAPI->unlink();

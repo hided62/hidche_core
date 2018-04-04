@@ -172,7 +172,7 @@ function ender($type=0) {
 }
 
 function command_99($connect, $turn) {
-    $query = "select nation,level from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation,level from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -236,7 +236,7 @@ function command_11($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -441,7 +441,7 @@ function command_12($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -643,7 +643,7 @@ function calc(cost, formnum) {
 
 function command_15($connect, $turn, $command) {
     starter("재편성");
-    $query = "select no,nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
     $me = $general['no'];
@@ -684,7 +684,7 @@ function command_15($connect, $turn, $command) {
 
 function command_16($connect, $turn, $command) {
     starter("출병");
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -723,7 +723,7 @@ function command_16($connect, $turn, $command) {
 
 function command_21($connect, $turn, $command) {
     starter("이동");
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -764,7 +764,7 @@ function command_22($connect, $turn, $command) {
     die('비활성화됨');//TODO:등용장 대 디자인
     starter("등용");
 
-    $query = "select nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -823,7 +823,7 @@ function command_22($connect, $turn, $command) {
 
 function command_23($connect, $turn, $command) {
     starter("포상", 1);
-    $query = "select no,nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -893,7 +893,7 @@ function command_23($connect, $turn, $command) {
 
 function command_24($connect, $turn, $command) {
     starter("몰수", 1);
-    $query = "select no,nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -971,7 +971,7 @@ function command_25($connect, $turn, $command) {
     $result = MYDB_query($query, $connect) or Error("command_46 ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nations from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nations from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("command_27 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
     
@@ -1041,7 +1041,7 @@ function command_25($connect, $turn, $command) {
 function command_27($connect, $turn, $command) {
     starter("발령", 1);
 
-    $query = "select no,nation,level from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation,level from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("command_27 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1096,7 +1096,7 @@ function command_27($connect, $turn, $command) {
 
 function command_30($connect, $turn, $command) {
     starter("강행");
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -1135,7 +1135,7 @@ ender();
 
 function command_31($connect, $turn, $command) {
     starter("첩보");
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -1178,7 +1178,7 @@ function command_31($connect, $turn, $command) {
 
 function command_32($connect, $turn, $command) {
     starter("화계");
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -1216,7 +1216,7 @@ function command_32($connect, $turn, $command) {
 
 function command_33($connect, $turn, $command) {
     starter("탈취");
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -1254,7 +1254,7 @@ function command_33($connect, $turn, $command) {
 
 function command_34($connect, $turn, $command) {
     starter("파괴");
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -1292,7 +1292,7 @@ function command_34($connect, $turn, $command) {
 
 function command_35($connect, $turn, $command) {
     starter("선동");
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -1330,7 +1330,7 @@ function command_35($connect, $turn, $command) {
 
 function command_36($connect, $turn, $command) {
     starter("기습");
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -1368,7 +1368,7 @@ function command_36($connect, $turn, $command) {
 
 function command_43($connect, $turn, $command) {
     starter("증여");
-    $query = "select no,nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -1579,7 +1579,7 @@ function command_46($connect, $turn, $command) {
 function command_48($connect, $turn, $command) {
     starter("장비 매매");
 
-    $query = "select no,city,gold from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,city,gold from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("command_48 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
     $city = getCity($connect, $me['city'], "secu");
@@ -1689,7 +1689,7 @@ function command_49($connect, $turn, $command) {
 function command_51($connect, $turn, $command) {
     starter("항복 권고", 1);
 
-    $query = "select nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1740,7 +1740,7 @@ function command_51($connect, $turn, $command) {
 function command_52($connect, $turn, $command) {
     starter("원조", 1);
 
-    $query = "select nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1814,7 +1814,7 @@ function command_52($connect, $turn, $command) {
 function command_53($connect, $turn, $command) {
     starter("통합제의", 1);
 
-    $query = "select no,nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("command_53 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1878,7 +1878,7 @@ function command_53($connect, $turn, $command) {
 
 function command_54($connect, $turn, $command) {
     starter("선양");
-    $query = "select no,nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -1922,7 +1922,7 @@ function command_54($connect, $turn, $command) {
 function command_61($connect, $turn, $command) {
     starter("불가침", 1);
 
-    $query = "select nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2002,7 +2002,7 @@ function command_61($connect, $turn, $command) {
 function command_62($connect, $turn, $command) {
     starter("선전포고", 1);
 
-    $query = "select nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2065,7 +2065,7 @@ function command_62($connect, $turn, $command) {
 function command_63($connect, $turn, $command) {
     starter("종전", 1);
 
-    $query = "select nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2120,7 +2120,7 @@ function command_63($connect, $turn, $command) {
 function command_64($connect, $turn, $command) {
     starter("파기", 1);
 
-    $query = "select nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2174,7 +2174,7 @@ function command_64($connect, $turn, $command) {
 
 function command_65($connect, $turn, $command) {
     starter("초토화", 1);
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -2210,7 +2210,7 @@ echo "<br>
 
 function command_66($connect, $turn, $command) {
     starter("천도", 1);
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -2247,7 +2247,7 @@ echo "<br>
 
 function command_67($connect, $turn, $command) {
     starter("증축", 1);
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -2284,7 +2284,7 @@ echo "<br>
 
 function command_68($connect, $turn, $command) {
     starter("감축", 1);
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -2321,7 +2321,7 @@ echo "<br>
 
 function command_72($connect, $turn, $command) {
     starter("백성동원", 1);
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -2358,7 +2358,7 @@ echo "<br>
 
 function command_73($connect, $turn, $command) {
     starter("수몰", 1);
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -2395,7 +2395,7 @@ echo "<br>
 
 function command_74($connect, $turn, $command) {
     starter("허보", 1);
-    $query = "select city from general where owner='{$_SESSION['userID']}'";
+    $query = "select city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -2433,7 +2433,7 @@ echo "<br>
 function command_75($connect, $turn, $command) {
     starter("피장파장", 1);
 
-    $query = "select nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2489,7 +2489,7 @@ function command_75($connect, $turn, $command) {
 function command_77($connect, $turn, $command) {
     starter("이호경식", 1);
 
-    $query = "select nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2545,7 +2545,7 @@ function command_77($connect, $turn, $command) {
 function command_78($connect, $turn, $command) {
     starter("급습", 1);
 
-    $query = "select nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

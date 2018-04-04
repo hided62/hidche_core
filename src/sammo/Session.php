@@ -98,9 +98,9 @@ class Session {
 
         //첫 등장
 
-        if(!Util::array_get($_SESSION['ip'])) {
-            $_SESSION['ip'] = Util::get_client_ip(true);
-            $_SESSION['time'] = time();
+        if(!$this->get('ip')) {
+            $this->set('ip', Util::get_client_ip(true));
+            $this->set('time', time());
         }
     }
 

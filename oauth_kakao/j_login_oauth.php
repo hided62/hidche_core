@@ -22,11 +22,11 @@ if($canLogin != 'Y'){
 
 $nowDate = TimeUtil::DatetimeNow();
 
-$access_token = Util::array_get($_SESSION['access_token']);
-$expires = Util::array_get($_SESSION['expires']);
-$refresh_token = Util::array_get($_SESSION['refresh_token']);
-$refresh_token_expires = Util::array_get($_SESSION['refresh_token_expires']);
-$email = Util::array_get($_SESSION['kaccount_email']);
+$access_token = $session->access_token;
+$expires = $session->expires;
+$refresh_token = $session->refresh_token;
+$refresh_token_expires = $session->refresh_token_expires;
+$email = $session->kaccount_email;
 
 
 if(!$access_token || !$expires){
@@ -47,7 +47,7 @@ if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate
 }
 
 if($expires < $nowDate){
-    unset($_SESSION['kaccount_email']);
+    $session->kaccount_email = null;
     $email = null;
 
     $result = $restAPI->refresh_access_token($refresh_token);
@@ -86,7 +86,7 @@ if(!$email){
     }
     
     $email = $me['kaccount_email'];
-    $_SESSION['kaccount_email'] = $email;
+    $session->kaccount_email = $email;
 }
 
 
@@ -95,7 +95,7 @@ $userInfo = $RootDB->queryFirstRow(
 
 if(!$userInfo){
     $restAPI->unlink();
-    unset($_SESSION['access_token']);
+    $session->access_token = null;
     Json::die([
         'result'=>false,
         'reason'=>'카카오로그인에 해당하는 계정이 없습니다. 재 가입을 시도해주세요.'
@@ -105,7 +105,7 @@ if(!$userInfo){
 if($userInfo['delete_after']){
     if($userInfo['delete_after'] < $nowDate){
         $restAPI->unlink();
-        unset($_SESSION['access_token']);
+        $session->access_token = null;
         $RootDB->delete('member', 'no=%i', $userInfo['no']);
         Json::die([
             'result'=>false,
@@ -114,7 +114,7 @@ if($userInfo['delete_after']){
     }
     else{
         $restAPI->unlink();
-        unset($_SESSION['access_token']);
+        $session->access_token = null;
         Json::die([
             'result'=>false,
             'reason'=>"삭제 요청된 계정입니다.[{$userInfo['delete_after']}]"

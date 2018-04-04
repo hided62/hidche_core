@@ -8,7 +8,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $connect = dbConn();
 increaseRefresh("내정보", 1);
 
-$query = "select myset from general where owner='{$_SESSION['userID']}'";
+$query = "select myset from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -25,11 +25,11 @@ if($btn == "설정저장" && $me['myset'] > 0) {
         $submit = 'hidden';
     }
 
-    $query = "update general set myset=myset-1,map='$map',mode='$mode',tnmt='$tnmt' where owner='{$_SESSION['userID']}'";
+    $query = "update general set myset=myset-1,map='$map',mode='$mode',tnmt='$tnmt' where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-$query = "select no,map,mode,tnmt,myset from general where owner='{$_SESSION['userID']}'";
+$query = "select no,map,mode,tnmt,myset from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

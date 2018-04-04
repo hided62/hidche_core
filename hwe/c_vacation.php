@@ -13,7 +13,7 @@ $admin = MYDB_fetch_array($result);
 
 $admin['killturn'] *= 3;
 
-$query = "update general set killturn='{$admin['killturn']}' where owner='{$_SESSION['userID']}'";
+$query = "update general set killturn='{$admin['killturn']}' where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 //echo "<script>location.replace('b_myPage.php');</script>";

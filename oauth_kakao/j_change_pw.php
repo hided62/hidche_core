@@ -7,18 +7,15 @@ use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 $nowDate = TimeUtil::DatetimeNow();
 
-$session = Session::Instance();
-if(!$session->isLoggedIn()){
-    Json::die([
-        'result'=>false,
-        'reason'=>'로그인이 되어있지 않습니다'
-    ]);
-}
+$session = Session::requireLogin([
+    'reason'=>'로그인이 되어있지 않습니다'
+]);
+
 $userID = $session->userID;
-$access_token = Util::array_get($_SESSION['access_token']);
-$expires = Util::array_get($_SESSION['expires']);
-$refresh_token = Util::array_get($_SESSION['refresh_token']);
-$refresh_token_expires = Util::array_get($_SESSION['refresh_token_expires']);
+$access_token = $session->access_token;
+$expires = $session->expires;
+$refresh_token = $session->refresh_token;
+$refresh_token_expires = $session->refresh_token_expires;
 
 if(!$access_token || !$expires){
     Json::die([
@@ -39,7 +36,7 @@ if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate
 }
 
 if($expires < $nowDate){
-    unset($_SESSION['kaccount_email']);
+    $session->kaccount_email = null;
     $email = null;
 
     $result = $restAPI->refresh_access_token($refresh_token);

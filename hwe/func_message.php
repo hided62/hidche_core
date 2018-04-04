@@ -279,7 +279,7 @@ function getMailboxList(){
 // who : xxxx,xxxx(발신인, 수신인)
 function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
     //FIXME: 폐기
-    $query = "select no,nation,name,picture,level from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation,name,picture,level from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -340,7 +340,7 @@ function moveMsg($connect, $table, $msgtype, $msgnum, $msg, $type, $who, $when, 
 }
 
 function MsgDip($connect, $bg) {
-    $query = "select no,nation from general where owner='{$_SESSION['userID']}'";
+    $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

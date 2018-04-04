@@ -8,7 +8,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $connect = dbConn();
 increaseRefresh("세력정보", 1);
 
-$query = "select no,nation,level from general where owner='{$_SESSION['userID']}'";
+$query = "select no,nation,level from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -33,7 +33,7 @@ if($me['level'] == 0) {
 </table>
 <br>
 <?php
-$query = "select nation from general where owner='{$_SESSION['userID']}'";
+$query = "select nation from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

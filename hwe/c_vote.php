@@ -11,13 +11,13 @@ $query = "select develcost,vote,votecomment from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,vote,name,nation,horse,weap,book,item,npc from general where owner='{$_SESSION['userID']}'";
+$query = "select no,vote,name,nation,horse,weap,book,item,npc from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
 if($btn == "투표" && $me['vote'] == 0 && $sel > 0) {
     $develcost = $admin['develcost'] * 5;
-    $query = "update general set gold=gold+{$develcost},vote='{$sel}' where owner='{$_SESSION['userID']}'";
+    $query = "update general set gold=gold+{$develcost},vote='{$sel}' where owner='{$session->userID}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     $log = [];

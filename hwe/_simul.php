@@ -50,7 +50,7 @@ $rice = 0;
 $connect = dbConn();
 increaseRefresh("시뮬", 2);
 
-$query = "select no,tournament,con,turntime from general where owner='{$_SESSION['userID']}'";
+$query = "select no,tournament,con,turntime from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

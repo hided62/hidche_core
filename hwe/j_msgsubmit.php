@@ -7,15 +7,14 @@ include 'func.php';
 
 $session = Session::requireGameLogin([
     'newSeq' => false
-])->setReadOnly();
+]); 
+//NOTE: 전송 메시지 시간 계산을 위해 Session을 쓰기 가능 상태로 열어둠.
 
 /**
  * 메시지 전송 코드.
  * 
  * TODO: 장기적으로 ajax는 한곳에 모을 필요가 있을 듯.
  */
-
-//읽기 전용이다. 빠르게 세션 끝내자
 
 $post = WebUtil::parseJsonPost();
 
@@ -112,7 +111,7 @@ if($destMailbox == 9999) {
 
 // 개인 메세지
 } elseif($destMailbox > 0) {
-    $last_msg = new \DateTime(Util::array_get($_SESSION['last_msg'], '0000-00-00'));
+    $last_msg = new \DateTime($session->last_msg?:'0000-00-00');
 
     $msg_interval = $datetime->getTimestamp() - $last_msg->getTimestamp();
     //NOTE: 여기서 유저 레벨을 구별할 코드가 필요할까?
@@ -134,7 +133,7 @@ if($destMailbox == 9999) {
         ]);
     }
 
-    $_SESSION['last_msg'] = $date;
+    $session->last_msg = $date;
 
     $dest = [
         'id' => $destMailbox,

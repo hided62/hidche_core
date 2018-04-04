@@ -26,20 +26,20 @@ $result = $restAPI->create_access_token($auth_code);
 
 
 
-if(Util::array_get($result['expires_in'], -1) > 0){
-    session_start();
-    $restAPI->set_access_token($result['access_token']);
-    $now = TimeUtil::DatetimeNow();
-    $_SESSION['access_token'] = $result['access_token'];
-    $_SESSION['expires'] = TimeUtil::DatetimeFromSecond($now, $result['expires_in']);
-    $_SESSION['refresh_token'] = Util::array_get($result['refresh_token']);
-    $_SESSION['refresh_token_expires'] = TimeUtil::DatetimeFromSecond($now, $result['refresh_token_expires_in']);
-}
-else{
+if (Util::array_get($result['expires_in'], -1) <= 0) {
     die('알 수 없는 에러:'.$me['msg']);
 }
 
-$_SESSION['tmpx'] = Json::encode($result);
+$session = Session::Instance();
+
+$restAPI->set_access_token($result['access_token']);
+$now = TimeUtil::DatetimeNow();
+$session->access_token = $result['access_token'];
+$session->expires = TimeUtil::DatetimeFromSecond($now, $result['expires_in']);
+$session->refresh_token = Util::array_get($result['refresh_token']);
+$session->refresh_token_expires = TimeUtil::DatetimeFromSecond($now, $result['refresh_token_expires_in']);
+
+$session->tmpx = Json::encode($result);
 
 //echo "<br>\n";
 $me = $restAPI->meWithEmail();
@@ -57,7 +57,7 @@ if($me['code']< 0){
     }
 }
 else{
-    $_SESSION['kaccount_email'] = $me['kaccount_email'];
+    $session->kaccount_email = $me['kaccount_email'];
 }
 
 ?>

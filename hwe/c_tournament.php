@@ -13,7 +13,7 @@ $query = "select tournament,phase,tnmt_type,develcost from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,tournament from general where owner='{$_SESSION['userID']}'";
+$query = "select no,name,tournament from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

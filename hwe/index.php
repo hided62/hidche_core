@@ -35,13 +35,13 @@ $session->setReadOnly();
 
 
 if($me['newmsg'] == 1 && $me['newvote'] == 1) {
-    $query = "update general set newmsg=0,newvote=0 where owner='{$_SESSION['userID']}'";
+    $query = "update general set newmsg=0,newvote=0 where owner='{$session->userID}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($me['newmsg'] == 1) {
-    $query = "update general set newmsg=0 where owner='{$_SESSION['userID']}'";
+    $query = "update general set newmsg=0 where owner='{$session->userID}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($me['newvote'] == 1) {
-    $query = "update general set newvote=0 where owner='{$_SESSION['userID']}'";
+    $query = "update general set newvote=0 where owner='{$session->userID}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
