@@ -47,7 +47,7 @@ else if($btn == "댓글" && $comment != "") {
 
 }
 
-if(Session::getUserGrade() < 5){
+if($session->userGrade < 5){
     echo "<!--<script>location.replace('a_vote.php');</script>"; //TODO:debug all and replace -->
     echo 'a_vote.php ';
     die();

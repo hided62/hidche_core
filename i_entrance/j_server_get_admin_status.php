@@ -3,7 +3,7 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 
-$session = Session::Instance()->setReadOnly();
+$session = Session::requireLogin([])->setReadOnly();
 
 if($session->userGrade < 5){
     Json::die([

@@ -3,10 +3,8 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 
-$session = Session::requireLogin(null);
+$session = Session::requireLogin([])->setReadOnly();
 $db = RootDB::db();
-
-$session->setReadOnly();
 
 if($session->userGrade < 6){
     Json::die([

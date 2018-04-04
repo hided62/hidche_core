@@ -131,7 +131,7 @@ echo "
 <br>";
 
 // 첩보된 도시까지만 허용
-if($valid == 0 && Session::getUserGrade() < 5) {
+if($valid == 0 && $session->userGrade < 5) {
     $_REQUEST['citylist'] = $me['city'];
 }
 
@@ -282,7 +282,7 @@ for($j=0; $j < $gencount; $j++) {
         <td align=center>$intel</td>
         <td align=center>".getLevel($general['level'])."</td>";
     //아국장수이거나 보는 사람이 운영자일때 보여줌
-    if(($general['nation'] != 0 && $general['nation'] == $myNation['nation']) || Session::getUserGrade() >= 5) {
+    if(($general['nation'] != 0 && $general['nation'] == $myNation['nation']) || $session->userGrade >= 5) {
         switch($general['mode']) {
         case 0: $mode = "×"; break;
         case 1: $mode = "○"; break;

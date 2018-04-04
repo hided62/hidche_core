@@ -49,7 +49,7 @@ function captureKey(e) {
     <tr><td colspan=3 align=center id=bg2><font size=5>설 문 조 사 (<?=$admin['develcost']*5;?>금과 추첨으로 유니크템 증정!)</font></td></tr>
 <?php
 
-if(Session::getUserGrade() >= 5) {
+if($session->userGrade >= 5) {
     echo "
     <tr>
         <td width=48  align=center><input type=submit name=btn value='알림'></td>
@@ -88,7 +88,7 @@ for($i=1; $i < $voteTypeCount; $i++) {
         echo "
             <input type=radio name=sel value={$i}>
         ";
-    } elseif($admin['voteopen'] >= 1 || Session::getUserGrade() >= 5) {
+    } elseif($admin['voteopen'] >= 1 || $session->userGrade >= 5) {
         $query = "select no from general where vote='{$i}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $vCount = MYDB_num_rows($result);
@@ -124,7 +124,7 @@ echo "
     </tr>
 ";
 
-if(Session::getUserGrade() >= 5) {
+if($session->userGrade >= 5) {
     echo "
     <tr>
         <td align=center><input type=submit name=btn value='리셋'></td>
@@ -176,7 +176,7 @@ if($me['no'] > 0) {
     <tr><td colspan=3 align=center id=bg2><font size=5>
         전 체 통 계
 <?php
-if(Session::getUserGrade() >= 5) {
+if($session->userGrade >= 5) {
     echo "
         <input type=submit name=btn value='숨김'>
         <input type=submit name=btn value='전체통계만'>
@@ -185,7 +185,7 @@ if(Session::getUserGrade() >= 5) {
 echo "
     </font></td></tr>";
 
-if($admin['voteopen'] >= 1 || Session::getUserGrade() >= 5) {
+if($admin['voteopen'] >= 1 || $session->userGrade >= 5) {
     echo "
     <tr>
         <td width=98  align=center>전 체</td>
@@ -226,7 +226,7 @@ if($admin['voteopen'] >= 1 || Session::getUserGrade() >= 5) {
     ";
 }
 
-if($admin['voteopen'] >= 2 || Session::getUserGrade() >= 5) {
+if($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
     $query = "select no from general where nation=0 and npc<2";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $memCount = MYDB_num_rows($result);

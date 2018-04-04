@@ -170,7 +170,7 @@ echo "
     <tr><td colspan=5>【 국가방침 】<?php nationMsg(); ?></td></tr>
     <tr><td colspan=5>【 접속자 】<?=onlinegen();?></td></tr>
 <?php
-if(Session::getUserGrade() >= 5) {
+if($session->userGrade >= 5) {
     echo "
     <tr><td colspan=5>
         <input type=button value=게임관리 onclick=location.replace('_admin1.php')>

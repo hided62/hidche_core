@@ -32,7 +32,7 @@ $bidCount = MYDB_num_rows($result);
 
 $btCount = $tradeCount + $bidCount;
 
-if(Session::getUserGrade() >= 5 || ($me['special'] != 30 && $btCount < 1) || ($me['special'] == 30 && $btCount < 3)) {
+if($session->userGrade >= 5 || ($me['special'] != 30 && $btCount < 1) || ($me['special'] == 30 && $btCount < 3)) {
     $btn = "submit";
 } else {
     $btn = "hidden";

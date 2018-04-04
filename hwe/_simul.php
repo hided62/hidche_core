@@ -62,7 +62,7 @@ $game = MYDB_fetch_array($result);
 $con = checkLimit($me['con'], $game['conlimit']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-if(Session::getUserGrade() < 3) {
+if($session->userGrade < 3) {
     echo "특별회원이 아닙니다.";
     exit();
 }

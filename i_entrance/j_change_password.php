@@ -3,16 +3,7 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 
-$session = Session::Instance();
-
-if(!$session->isLoggedIn()) {
-    Json::die([
-        'result'=>false,
-        'reason'=>'로그인되지 않았습니다.'
-    ]);
-}
-
-session_write_close();
+$session = Session::requireLogin([])->setReadOnly();
 
 // 외부 파라미터
 // $_POST['old_pw'] : PW

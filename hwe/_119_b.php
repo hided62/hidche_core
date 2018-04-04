@@ -6,7 +6,7 @@ include "func.php";
 
 
 $session = Session::requireGameLogin()->setReadOnly();
-if(Session::getUserGrade() < 5){
+if($session->userGrade < 5){
     //echo "<script>location.replace('_119.php');</script>";
     echo '_119.php';//TODO:debug all and replace
 }

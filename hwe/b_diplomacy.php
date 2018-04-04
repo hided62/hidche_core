@@ -116,7 +116,7 @@ for($i=0; $i < $nationcount; $i++) {
                 case 0: $str = "<font color=red>★</font>"; break;
                 case 1: $str = "<font color=magenta>▲</font>"; break;
                 case 2:
-                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || Session::getUserGrade() >= 5) { $str = "ㆍ"; }
+                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || $session->userGrade >= 5) { $str = "ㆍ"; }
                     else { $str = "?"; }
 //                    $str = "ㆍ";
                     break;
@@ -125,7 +125,7 @@ for($i=0; $i < $nationcount; $i++) {
                 case 5: $str = "<font color=cyan>◎</font>"; break;
                 case 6: $str = "<font color=cyan>◎</font>"; break;
                 case 7:
-                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || Session::getUserGrade() >= 5) { $str = "<font color=green>@</font>"; }
+                    if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation'] || $session->userGrade >= 5) { $str = "<font color=green>@</font>"; }
                     else { $str = "?"; }
 //                    $str = "<font color=limegreen>@</font>";
                     break;

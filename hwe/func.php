@@ -77,7 +77,7 @@ function GetImageURL($imgsvr) {
 }
 
 function checkLimit($con, $conlimit) {
-    if(Session::getUserGrade()>=4){
+    if($session->userGrade>=4){
         return 0;
     }
     if($con > $conlimit) {

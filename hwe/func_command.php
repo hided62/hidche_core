@@ -532,7 +532,7 @@ function processCommand($no) {
         if($general['npc'] >= 2 || $general['killturn'] > $admin['killturn']) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } elseif(floor($command[0]) == 0 && Session::getUserGrade() < 5) {
+        } elseif(floor($command[0]) == 0 && $session->userGrade < 5) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
