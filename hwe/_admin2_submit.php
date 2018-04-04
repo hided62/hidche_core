@@ -75,7 +75,7 @@ switch($btn) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $general = MYDB_fetch_array($result);
 
-            $special2 = getSpecial2($connect, $general['leader'], $general['power'], $general['intel']);
+            $special2 = getSpecial2($general['leader'], $general['power'], $general['intel']);
 
             $query = "update general set specage2=age,special2='$special2' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

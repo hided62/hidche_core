@@ -1713,7 +1713,7 @@ function addAge($connect) {
 
         for($i=0; $i < $gencount; $i++) {
             $general = MYDB_fetch_array($result);
-            $special2 = getSpecial2($connect, $general['leader'], $general['power'], $general['intel'], 0, $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
+            $special2 = getSpecial2($general['leader'], $general['power'], $general['intel'], 0, $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
 
             $query = "update general set special2='$special2' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

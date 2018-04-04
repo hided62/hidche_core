@@ -4,7 +4,9 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$userID = Session::getUserID();
+$session = Session::requireLogin()->setReadOnly();
+
+$userID = $session->userID;
 
 if(!$userID) {
     MessageBox("잘못된 접근입니다!!!");

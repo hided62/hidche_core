@@ -126,7 +126,7 @@ function getSpecial($connect, $leader, $power, $intel) {
 // 60 돌격, 무쌍, 견고, 위압                         = 4 무장전투
 // 70 저격, 필살, 징병, 의술, 격노, 척사             = 6 공통전투
 
-function getSpecial2($connect, $leader, $power, $intel, $nodex=1, $dex0=0, $dex10=0, $dex20=0, $dex30=0, $dex40=0) {
+function getSpecial2($leader, $power, $intel, $nodex=1, $dex0=0, $dex10=0, $dex20=0, $dex30=0, $dex40=0) {
     $special2 = 70;
     // 숙련 10,000: 25%, 40,000: 50%, 100,000: 79%, 160,000: 100%
     $dex = sqrt($dex0 + $dex10 + $dex20 + $dex30 + $dex40);

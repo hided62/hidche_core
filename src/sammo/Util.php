@@ -189,7 +189,7 @@ class Util extends \utilphp\util{
      * @return boolean
      */
     public static function randBool($prob = 0.5){
-        return randF() < $prob;
+        return self::randF() < $prob;
     }
     
 

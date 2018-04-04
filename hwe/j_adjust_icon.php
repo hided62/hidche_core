@@ -2,25 +2,10 @@
 namespace sammo;
 
 include('lib.php');
-include('func.php');
 
-$userID = Session::getUserID();
-$generalID = Session::Instance()->generalID;
-session_write_close();
-
-if(!$userID){
-    Json::die([
-        'result'=>false,
-        'reason'=>'로그인되지 않았습니다.'
-    ]);
-}
-
-if(!$generalID){
-    Json::die([
-        'result'=>false,
-        'reason'=>'장수를 생성하지 않았습니다.'
-    ]);
-}
+$session = Session::requireGameLogin([])->setReadOnly();
+$userID = $session->userID;
+$generalID = $session->generalID;
 
 $rootDB = RootDB::db();
 $db = DB::db();
@@ -38,6 +23,14 @@ $db->update('general', [
     'picture'=>$image['picture'],
     'imgsvr'=>$image['imgsvr']
 ], 'owner = %i and npc = 0', $userID);
+
+$affected = $db->affectedRows();
+if($affected == 0){
+    Json::die([
+        'result'=>true,
+        'reason'=>'등록된 장수가 없습니다'
+    ]);    
+}
 
 Json::die([
     'result'=>true,
