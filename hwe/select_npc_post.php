@@ -4,9 +4,19 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+$v = new Validator($_POST);
+$v
+->rule('required', 'face')
+->rule('integer', 'face');
+if(!$v->validate()){
+    MessageBox($v->errorStr());
+    echo "<script>history.go(-1);</script>";
+    exit(1);
+}
+
 $session = Session::requireLogin()->setReadOnly();
 
-$face = $_POST['face'];//TODO: face를 user_id에서 general.no 값을 이용하도록 변경
+$face = (int)$_POST['face'];
 
 $userID = $session->userID;
 $rootDB = RootDB::db();
@@ -29,7 +39,7 @@ if(!$npc){
     exit();
 }
 
-$npcID = $npc['no'];
+
 ########## 동일 정보 존재여부 확인. ##########
 
 $admin = $db->queryFirstRow('SELECT year,month,maxgeneral,turnterm,genius,npcmode from game limit 1');
@@ -78,6 +88,7 @@ if($npc['npc'] != 2) {
 
 } */
 
+$npcID = $npc['no'];
 $db->update('general', [
     'name2'=>$session->userName,
     'npc'=>1,
@@ -94,6 +105,7 @@ if(!$affected){
     </script>");
     exit;
 }
+
 
 $me = [
     'no'=>$npcID
