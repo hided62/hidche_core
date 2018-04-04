@@ -5,7 +5,10 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("거래장", 2);
 
 $query = "select no,special,con,turntime from general where owner='{$session->userID}'";

@@ -5,7 +5,10 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("회의실", 1);
 
 $query = "select no,nation from general where owner='{$session->userID}'";

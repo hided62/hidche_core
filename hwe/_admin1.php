@@ -5,7 +5,6 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
 
 if(Session::getUserGrade() < 5) {
     echo "<!DOCTYPE html>
@@ -25,6 +24,9 @@ if(Session::getUserGrade() < 5) {
 
     exit();
 }
+
+$db = DB::db();
+$connect=$db->get();
 
 $admin = getAdmin($connect);
 ?>

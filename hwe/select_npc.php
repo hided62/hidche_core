@@ -5,12 +5,11 @@ include "lib.php";
 include "func.php";
 
 $session = Session::requireLogin()->setReadOnly();
-$connect = dbConn(true);
+$rootDB = RootDB::db();
+
 $userID = $session->userID;
 //회원 테이블에서 정보확인
-$query = "select no,name,picture,grade from MEMBER where no='$userID'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$member = MYDB_fetch_array($result);
+$member = $rootDB->queryFirstRow('select no,name,picture,grade from MEMBER where no=%i', $userID); MYDB_fetch_array($result);
 
 if(!$member) {
     MessageBox("잘못된 접근입니다!!!");
@@ -18,16 +17,16 @@ if(!$member) {
     exit(1);
 }
 
-$query = "select npcmode,maxgeneral,img from game limit 1";
-$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$admin = $rootDB->queryFirstRow('select npcmode,maxgeneral,show_img_level from game limit 1');
 
 if($admin['npcmode'] != 1) {
     header('Location:join.php');
     die();
 }
 
-$connect = dbConn();
+$db = DB::db();
+$connect=$db->get();
+
 ?>
 <!DOCTYPE html>
 <html>

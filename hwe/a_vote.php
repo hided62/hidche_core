@@ -3,7 +3,10 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("설문조사", 1);
 
 $query = "select no,vote from general where owner='{$session->userID}'";

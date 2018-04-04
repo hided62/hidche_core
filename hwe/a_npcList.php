@@ -3,7 +3,10 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("빙의일람", 2);
 
 if($type == 0) {

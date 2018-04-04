@@ -9,7 +9,10 @@ include "func.php";
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("베팅", 1);
 
 $query = "select tournament,phase,tnmt_type,develcost from game limit 1";

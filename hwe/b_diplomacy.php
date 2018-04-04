@@ -5,7 +5,10 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("중원정보", 1);
 
 $query = "select turnterm from game limit 1";

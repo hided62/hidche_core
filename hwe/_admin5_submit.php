@@ -5,12 +5,14 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
 
 if($session->userGrade < 5) {
     //echo "<script>location.replace('_admin5.php');</script>";
     echo '_admin5.php';//TODO:debug all and replace
 }
+
+$db = DB::db();
+$connect=$db->get();
 
 switch($btn) {
     case "국가변경":

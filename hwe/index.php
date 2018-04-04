@@ -9,6 +9,7 @@ $session = Session::requireGameLogin();
 increaseRefresh("메인", 1);
 
 $db = DB::db();
+$connect=$db->get();
 
 if(!$session->userID){
     header('Location:..');
@@ -21,7 +22,6 @@ $me = $db->queryFirstRow(
 );
 
 //턴 실행.
-$connect = dbConn();
 checkTurn($connect);
 
 //그새 사망이면

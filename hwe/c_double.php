@@ -7,7 +7,9 @@ include "func.php";
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
 
 if($command < 0) { $command = 0; }
 if($double < 0) { $double = 0; }

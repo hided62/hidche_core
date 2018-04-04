@@ -15,7 +15,8 @@ if(!$generalID){
     header('location:_admin2.php');
 }
 
-$connect = dbConn();
+$db = DB::db();
+$connect=$db->get();
 
 switch($btn) {
     case "전체 접속허용":

@@ -6,7 +6,10 @@ include "func.php";
 $yearmonth = $_POST['yearmonth'];
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("연감", 5);
 
 $query = "select startyear,year,month,conlimit from game limit 1";

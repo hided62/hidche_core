@@ -33,8 +33,8 @@ $datetime = new \DateTime();
 $date = $datetime->format('Y-m-d H:i:s');
 
 $db = DB::db();
+$connect=$db->get();
 
-$connect = dbConn();
 increaseRefresh('서신전달', 1);
 
 if(getBlockLevel() == 1 || getBlockLevel() == 3) {

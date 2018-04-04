@@ -5,7 +5,10 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("내정보", 1);
 
 $query = "select myset from general where owner='{$session->userID}'";

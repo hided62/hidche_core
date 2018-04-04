@@ -23,7 +23,8 @@ if(!$member) {
     exit(1);
 }
 
-$connect = dbConn();
+$db = DB::db();
+$connect=$db->get();
 
 ?>
 <!DOCTYPE html>

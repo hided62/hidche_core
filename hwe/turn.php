@@ -7,7 +7,10 @@ include "func.php";
 
 
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("턴반복", 1);
 
 $query = "select conlimit from game limit 1";

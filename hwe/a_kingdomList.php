@@ -5,7 +5,10 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("세력일람", 2);
 
 $query = "select conlimit from game limit 1";

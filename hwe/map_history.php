@@ -18,7 +18,9 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
 
 $query = "select map from history where year='$year' and month='$month'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

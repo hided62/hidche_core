@@ -78,15 +78,6 @@ session_cache_limiter('nocache');//NOTE: 캐시가 가능하도록 설정해야 
 
 ob_start();
 
-// MySQL 데이타 베이스에 접근
-function dbConn($isRoot=false)
-{
-    if ($isRoot) {
-        return RootDB::db()->get();
-    }
-    return DB::db()->get();
-}
-
 // 에러 메세지 출력
 function Error($message, $url="")
 {

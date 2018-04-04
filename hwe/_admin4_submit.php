@@ -5,12 +5,14 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
 
 if(Session::getUserGrade() < 5) {
     //echo "<script>location.replace('_admin4.php');</script>";
     echo '_admin4.php';//TODO:debug all and replace
 }
+
+$db = DB::db();
+$connect=$db->get();
 
 //NOTE: 왜 기능이 admin2와 admin4가 같이 있는가? 
 //NOTE: 왜 블럭 시 admin4에선 금쌀을 없애지 않는가?

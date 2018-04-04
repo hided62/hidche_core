@@ -4,12 +4,15 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$connect=dbConn();
+
 $session = Session::requireGameLogin()->setReadOnly();
 if(Session::getUserGrade() < 5){
     //echo "<script>location.replace('_119.php');</script>";
     echo '_119.php';//TODO:debug all and replace
 }
+
+$db = DB::db();
+$connect=$db->get();
 
 switch($btn) {
 case "분당김":

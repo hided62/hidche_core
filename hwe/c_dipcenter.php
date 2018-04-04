@@ -7,7 +7,9 @@ include "func.php";
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
 
 $query = "select no,nation,level from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

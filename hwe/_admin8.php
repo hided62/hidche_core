@@ -5,9 +5,8 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
 
-if(Session::getUserGrade() < 5) {
+if($session->userGrade() < 5) {
     echo "<!DOCTYPE html>
 <html>
 <head>
@@ -25,6 +24,9 @@ if(Session::getUserGrade() < 5) {
 
     exit();
 }
+
+$db = DB::db();
+$connect=$db->get();
 
 if($btn == '정렬하기') {
     $gen = 0;

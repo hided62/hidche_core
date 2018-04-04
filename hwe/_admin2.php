@@ -5,7 +5,6 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
 
 if(Session::getUserGrade() < 5) {
     echo "<!DOCTYPE html>
@@ -25,6 +24,9 @@ if(Session::getUserGrade() < 5) {
 
     exit();
 }
+
+$db = DB::db();
+$connect=$db->get();
 
 $query = "select conlimit,conweight from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

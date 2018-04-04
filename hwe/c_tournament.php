@@ -7,7 +7,9 @@ include "func.php";
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
 
 $query = "select tournament,phase,tnmt_type,develcost from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

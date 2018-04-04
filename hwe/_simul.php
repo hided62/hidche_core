@@ -47,7 +47,8 @@ $tch2 = array_fill(0,11, '');
 $dec = 0;
 $rice = 0;
 
-$connect = dbConn();
+$db = DB::db();
+$connect=$db->get();
 increaseRefresh("시뮬", 2);
 
 $query = "select no,tournament,con,turntime from general where owner='{$session->userID}'";

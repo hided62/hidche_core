@@ -3,7 +3,10 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
-$connect = dbConn();
+
+$db = DB::db();
+$connect=$db->get();
+
 increaseRefresh("갱신정보", 2);
 
 $query = "select year,month,refresh,maxrefresh,maxonline from game limit 1";

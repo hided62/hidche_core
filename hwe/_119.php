@@ -4,7 +4,6 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$connect=dbConn();
 $session = Session::requireGameLogin()->setReadOnly();
 if($session->userGrade < 5) {
     ?><!DOCTYPE html>
@@ -23,6 +22,9 @@ if($session->userGrade < 5) {
 <?php
     exit();
 }
+
+$db = DB::db();
+$connect=$db->get();
 
 $query = "select turntime,tnmt_time from game";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
