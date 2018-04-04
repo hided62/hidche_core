@@ -22,7 +22,7 @@ $me = $db->queryFirstRow(
 );
 
 //턴 실행.
-checkTurn($connect);
+checkTurn();
 
 //그새 사망이면
 if($me === null) {
@@ -112,10 +112,10 @@ if($valid == 1) {
 ?>
 
     <tr height=30>
-        <td width=198 align=center><?php info($connect, 2); ?></td>
+        <td width=198 align=center><?php info(2); ?></td>
         <td width=198 align=center>전체 접속자 수 : <?=$admin['online'];?> 명</td>
         <td width=198 align=center>턴당 갱신횟수 : <?=$admin['conlimit'];?>회</td>
-        <td width=398 colspan=2 align=center><?php info($connect, 3); ?></td>
+        <td width=398 colspan=2 align=center><?php info(3); ?></td>
     </tr>
     <tr height=30>
         <td align=center>
@@ -135,7 +135,7 @@ case 2:  $str = "일기토"; break;
 case 3:  $str = "설전"; break;
 }
 $str2 = getTournament($admin['tournament']);
-$str3 = getTournamentTime($connect);
+$str3 = getTournamentTime();
 if($admin['tournament'] == 0) { echo "<font color=magenta>현재 토너먼트 경기 없음</font>"; }
 else { echo "<marquee scrollamount=2>↑<font color=cyan>{$str}</font> {$str2} {$str3}↑</marquee>"; }
 
@@ -165,10 +165,10 @@ echo "
         </td>
     </tr>";
 ?>
-    <tr><td colspan=5>접속중인 국가: <?=onlinenation($connect);?></td></tr>
-    <tr><td colspan=5><?php adminMsg($connect); ?></td></tr>
-    <tr><td colspan=5>【 국가방침 】<?php nationMsg($connect); ?></td></tr>
-    <tr><td colspan=5>【 접속자 】<?=onlinegen($connect);?></td></tr>
+    <tr><td colspan=5>접속중인 국가: <?=onlinenation();?></td></tr>
+    <tr><td colspan=5><?php adminMsg(); ?></td></tr>
+    <tr><td colspan=5>【 국가방침 】<?php nationMsg(); ?></td></tr>
+    <tr><td colspan=5>【 접속자 】<?=onlinegen();?></td></tr>
 <?php
 if(Session::getUserGrade() >= 5) {
     echo "
@@ -199,7 +199,7 @@ if(Session::getUserGrade() >= 5) {
 <form name=form2 action=preprocessing.php method=post target=commandlist>
     <tr>
         <td rowspan=3 width=50 valign=top><?=turnTable()?></td>
-        <td width=646><?php cityInfo($connect); ?></td>
+        <td width=646><?php cityInfo(); ?></td>
     </tr>
     <tr>
         <td width=646 align=right>
@@ -222,7 +222,7 @@ if(Session::getUserGrade() >= 5) {
     </tr>
     <tr>
         <td width=646 align=right>
-            <?php commandTable($connect); ?>
+            <?php commandTable(); ?>
             <input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13px; value='실 행' onclick='refreshing(3,form2)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13px; value='갱 신' onclick='refreshing(0,0)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:160;font-size:13px; value='로그아웃' onclick=location.replace('logout_process.php')><br>
         </td>
     </tr>
@@ -230,8 +230,8 @@ if(Session::getUserGrade() >= 5) {
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
-        <td width=498><?php myNationInfo($connect); ?></td>
-        <td width=498><?php myInfo($connect); ?></td>
+        <td width=498><?php myNationInfo(); ?></td>
+        <td width=498><?php myInfo(); ?></td>
     </tr>
     <tr><td colspan=2><?=commandButton()?></td></tr>
 </table>

@@ -23,7 +23,7 @@ if(getBlockLevel() != 1 && getBlockLevel() != 3) {
     $msg = trim($msg);
     $reply = trim($reply);
 
-    $nation = getNation($connect, $me['nation']);
+    $nation = getNation($me['nation']);
 
     //새글 추가시
     if($num == -1 && $title != "" && $msg != "") {

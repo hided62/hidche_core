@@ -96,7 +96,7 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php generalInfo($connect, $gen); generalInfo2($connect, $gen); ?>
+            <?php generalInfo($gen); generalInfo2($gen); ?>
         </td>
         <td valign=top>&nbsp;
         </td>

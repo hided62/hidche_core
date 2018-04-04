@@ -10,7 +10,7 @@ $db = DB::db();
 $connect=$db->get();
 
 increaseRefresh("세력도", 2);
-checkTurn($connect);
+checkTurn();
 
 $query = "select conlimit from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

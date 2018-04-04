@@ -86,7 +86,7 @@ function abilityPowint() {
 // 20 인덕                                           = 1 통솔내정
 // 30 거상, 귀모                                     = 2 공통내정
 
-function getSpecial($connect, $leader, $power, $intel) {
+function getSpecial($leader, $power, $intel) {
     //통장
     if($leader*0.9 > $power && $leader*0.9 > $intel) {
         $type = array(20, 31);
@@ -188,7 +188,10 @@ function getGenDex($general, $type) {
     return $general["dex{$type}"];
 }
 
-function addGenDex($connect, $no, $type, $exp) {
+function addGenDex($no, $type, $exp) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $type = floor($type / 10) * 10;
     $dexType = "dex{$type}";
     if($type == 30) { $exp = round($exp * 0.90); }     //귀병은 90%효율
@@ -235,8 +238,9 @@ function SetNationFront($nationNo) {
     }
 }
 
-function checkSupply($connect) {
+function checkSupply() {
     $db = DB::db();
+    $connect=$db->get();
 
     $cities = [];
     foreach($db->query('SELECT city, nation FROM city WHERE nation != 0') as $city){
@@ -308,13 +312,16 @@ function checkSupply($connect) {
 }
 
 
-function updateYearly($connect) {
+function updateYearly() {
     //통계
-    checkStatistic($connect);
+    checkStatistic();
 }
 
 //관직 변경 해제
-function updateQuaterly($connect) {
+function updateQuaterly() {
+    $db = DB::db();
+    $connect=$db->get();
+
     //천도 제한 해제, 관직 변경 제한 해제
     $query = "update nation set capset='0',l12set='0',l11set='0',l10set='0',l9set='0',l8set='0',l7set='0',l6set='0',l5set='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -324,7 +331,10 @@ function updateQuaterly($connect) {
 }
 
 // 벌점 감소와 건국제한-1 전턴제한-1 외교제한-1, 1달마다 실행, 병사 있는 장수의 군량 감소, 수입비율 조정
-function preUpdateMonthly($connect) {
+function preUpdateMonthly() {
+    $db = DB::db();
+    $connect=$db->get();
+
     //연감 월결산
     $result = LogHistory();
     $history = array();
@@ -340,7 +350,7 @@ function preUpdateMonthly($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     //보급선 체크
-    checkSupply($connect);
+    checkSupply();
     //미보급도시 10% 감소
     $query = "update city set pop=pop*0.9,rate=rate*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,def=def*0.9,wall=wall*0.9 where supply='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -423,7 +433,7 @@ function preUpdateMonthly($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     //매달 사망자 수입 결산
-    processDeadIncome($connect, $ratio);
+    processDeadIncome($ratio);
 
     //계략, 전쟁표시 해제
     $query = "update city set state=0 where state=31 or state=33";
@@ -451,8 +461,8 @@ function preUpdateMonthly($connect) {
 
         unset($log);
         $log = [];
-        $log = checkDedication($connect, $general, $log);
-        $log = checkExperience($connect, $general, $log);
+        $log = checkDedication($general, $log);
+        $log = checkExperience($general, $log);
         pushGenLog($general, $log);
     }
 
@@ -479,7 +489,10 @@ function preUpdateMonthly($connect) {
 }
 
 // 외교 로그처리, 외교 상태 처리
-function postUpdateMonthly($connect) {
+function postUpdateMonthly() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select startyear,year,month,scenario from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -602,21 +615,21 @@ group by A.nation
     $query = "update diplomacy set state='0',term='6' where state='1' and term='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //3,4 기간 끝나면 통합
-    checkMerge($connect);
+    checkMerge();
     //5,6 기간 끝나면 합병
-    checkSurrender($connect);
+    checkSurrender();
     //초반이후 방랑군 자동 해체
     if($admin['year'] >= $admin['startyear']+3) {
-        checkWander($connect);
+        checkWander();
     }
     // 작위 업데이트
-    updateNationState($connect);
+    updateNationState();
     // 천통여부 검사
-    checkEmperior($connect);
+    checkEmperior();
     //토너먼트 개시
-    triggerTournament($connect);
+    triggerTournament();
     // 시스템 거래건 등록
-    registerAuction($connect);
+    registerAuction();
     //전방설정
     foreach(getAllNationStaticInfo() as $nation){
         if($nation['level'] <= 0){
@@ -627,7 +640,10 @@ group by A.nation
 }
 
 
-function checkWander($connect) {
+function checkWander() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -648,7 +664,7 @@ function checkWander($connect) {
 
         $log[0] = "<C>●</>초반 제한후 방랑군은 자동 해산됩니다.";
         pushGenLog($king, $log);
-        process_56($connect, $king);
+        process_56($king);
     }
 
     if($needRefresh){
@@ -656,7 +672,10 @@ function checkWander($connect) {
     }
 }
 
-function checkMerge($connect) {
+function checkMerge() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -770,7 +789,10 @@ function checkMerge($connect) {
     }
 }
 
-function checkSurrender($connect) {
+function checkSurrender() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -890,7 +912,10 @@ function checkSurrender($connect) {
     }
 }
 
-function updateNationState($connect) {
+function updateNationState() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $history = array();
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -968,7 +993,10 @@ function updateNationState($connect) {
     pushWorldHistory($history, $admin['year'], $admin['month']);
 }
 
-function checkStatistic($connect) {
+function checkStatistic() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -1084,6 +1112,7 @@ function checkStatistic($connect) {
         
     }
 
+
     $query = "
         insert into statistic (
             year, month,
@@ -1099,7 +1128,10 @@ function checkStatistic($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-function checkEmperior($connect) {
+function checkEmperior() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month,isUnited from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -1131,7 +1163,7 @@ function checkEmperior($connect) {
 
             for($i=0; $i < $count; $i++) {
                 $general = MYDB_fetch_array($result);
-                CheckHall($connect, $general['no']);
+                CheckHall($general['no']);
             }
 
             $query = "select nation,name,type,color,gold,rice,power,gennum from nation where nation='{$nation['nation']}'";

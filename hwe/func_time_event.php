@@ -6,9 +6,12 @@ namespace sammo;
 
  
 //1월마다 실행
-function processSpring($connect) {
+function processSpring() {
+    $db = DB::db();
+    $connect=$db->get();
+
     //인구 증가
-    popIncrease($connect);
+    popIncrease();
     // 1월엔 무조건 내정 1% 감소
     $query = "update city set dead=0,agri=agri*0.99,comm=comm*0.99,secu=secu*0.99,def=def*0.99,wall=wall*0.99";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -41,7 +44,10 @@ function processSpring($connect) {
     pushWorldHistory($history, $admin['year'], $admin['month']);
 }
 
-function processGoldIncome($connect) {
+function processGoldIncome() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month,gold_rate from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -54,9 +60,9 @@ function processGoldIncome($connect) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($nationresult);
 
-        $incomeList = getGoldIncome($connect, $nation['nation'], $nation['rate_tmp'], $admin['gold_rate'], $nation['type']);
+        $incomeList = getGoldIncome($nation['nation'], $nation['rate_tmp'], $admin['gold_rate'], $nation['type']);
         $income = $incomeList[0] + $incomeList[1];
-        $originoutcome = getGoldOutcome($connect, $nation['nation'], 100);    // 100%의 지급량
+        $originoutcome = getGoldOutcome($nation['nation'], 100);    // 100%의 지급량
         $outcome = round($originoutcome * $nation['bill'] / 100);   // 지급량에 따른 요구량
         // 실제 지급량 계산
         $nation['gold'] += $income;
@@ -114,7 +120,10 @@ function processGoldIncome($connect) {
     pushAdminLog($adminLog);
 }
 
-function popIncrease($connect) {
+function popIncrease() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select nation,rate_tmp,type from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($nationresult);
@@ -186,7 +195,10 @@ function popIncrease($connect) {
     }
 }
 
-function getGoldIncome($connect, $nationNo, $rate, $admin_rate, $type) {
+function getGoldIncome($nationNo, $rate, $admin_rate, $type) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $level2 = [];
     $level3 = [];
     $level4 = [];
@@ -250,13 +262,15 @@ function getGoldIncome($connect, $nationNo, $rate, $admin_rate, $type) {
     return $income;
 }
 
-function processDeadIncome($connect, $admin_rate) {
+function processDeadIncome($admin_rate) {
+    $db = DB::db();
+    $connect=$db->get();
 
     foreach(getAllNationStaticInfo() as $nation){
         if($nation['level'] <= 0){
             continue;
         }
-        $income = getDeadIncome($connect, $nation['nation'], $nation['type'], $admin_rate);
+        $income = getDeadIncome($nation['nation'], $nation['type'], $admin_rate);
 
 //  단기수입 금만적용
 //        $query = "update nation set gold=gold+'$income',rice=rice+'$income' where nation='{$nation['nation']}'";
@@ -268,7 +282,10 @@ function processDeadIncome($connect, $admin_rate) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-function getDeadIncome($connect, $nation, $type, $admin_rate) {
+function getDeadIncome($nation, $type, $admin_rate) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select dead from city where nation='$nation' and dead>'0' and supply='1'"; // 도시 목록
     $cityResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $cityCount = MYDB_num_rows($cityResult);
@@ -291,7 +308,10 @@ function getDeadIncome($connect, $nation, $type, $admin_rate) {
     return $income;
 }
 
-function getGoldOutcome($connect, $nation, $bill) {
+function getGoldOutcome($nation, $bill) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select dedication from general where nation='$nation'"; // 장수 목록
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
@@ -309,9 +329,12 @@ function getGoldOutcome($connect, $nation, $bill) {
 }
 
 //7월마다 실행
-function processFall($connect) {
+function processFall() {
+    $db = DB::db();
+    $connect=$db->get();
+
     //인구 증가
-    popIncrease($connect);
+    popIncrease();
     // 7월엔 무조건 내정 1% 감소
     $query = "update city set dead=0,agri=agri*0.99,comm=comm*0.99,secu=secu*0.99,def=def*0.99,wall=wall*0.99";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -337,7 +360,10 @@ function processFall($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-function processRiceIncome($connect) {
+function processRiceIncome() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month,rice_rate from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -350,9 +376,9 @@ function processRiceIncome($connect) {
     for($i=0; $i < $nationcount; $i++) {
         $nation = MYDB_fetch_array($nationresult);
 
-        $incomeList = getRiceIncome($connect, $nation['nation'], $nation['rate_tmp'], $admin['rice_rate'], $nation['type']);
+        $incomeList = getRiceIncome($nation['nation'], $nation['rate_tmp'], $admin['rice_rate'], $nation['type']);
         $income = $incomeList[0] + $incomeList[1];
-        $originoutcome = getRiceOutcome($connect, $nation['nation'], 100);    // 100%의 지급량
+        $originoutcome = getRiceOutcome($nation['nation'], 100);    // 100%의 지급량
         $outcome = round($originoutcome * $nation['bill'] / 100);   // 지급량에 따른 요구량
 
         // 실제 지급량 계산
@@ -411,7 +437,10 @@ function processRiceIncome($connect) {
     pushAdminLog($adminLog);
 }
 
-function getRiceIncome($connect, $nationNo, $rate, $admin_rate, $type) {
+function getRiceIncome($nationNo, $rate, $admin_rate, $type) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $level2 = [];
     $level3 = [];
     $level4 = [];
@@ -476,7 +505,10 @@ function getRiceIncome($connect, $nationNo, $rate, $admin_rate, $type) {
     return $income;
 }
 
-function getRiceOutcome($connect, $nation, $bill) {
+function getRiceOutcome($nation, $bill) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select dedication from general where nation='$nation'"; // 장수 목록
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
@@ -493,7 +525,10 @@ function getRiceOutcome($connect, $nation, $bill) {
     return $outcome;
 }
 
-function tradeRate($connect) {
+function tradeRate() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select city,level,trade from city"; // 도시 목록
     $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($cityresult);
@@ -522,7 +557,10 @@ function tradeRate($connect) {
     }
 }
 
-function disaster($connect) {
+function disaster() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select startyear,year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -660,14 +698,14 @@ function disaster($connect) {
                 $query = "update city set state='$state',pop=pop*{$ratio},rate=rate*{$ratio},agri=agri*{$ratio},comm=comm*{$ratio},secu=secu*{$ratio},def=def*{$ratio},wall=wall*{$ratio} where city='$disastercity[$i]'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         
-                TrickInjury($connect, $disastercity[$i], 1);
+                TrickInjury($disastercity[$i], 1);
             }
         } else {
             for($i=0; $i < count($disastercity); $i++) {
                 $ratio = 4 * $disasterratio[$i];
                 $ratio = (101 + $ratio) / 100.0; // 치안률 따라서 101~105%
         
-                $city = getCity($connect, $disastercity[$i]);
+                $city = getCity($disastercity[$i]);
                 $city['pop'] *= $ratio;   $city['rate'] *= $ratio;  $city['agri'] *= $ratio;
                 $city['comm'] *= $ratio;  $city['secu'] *= $ratio;  $city['def'] *= $ratio;
                 $city['wall'] *= $ratio;

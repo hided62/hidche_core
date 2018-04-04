@@ -1,7 +1,10 @@
 <?php
 namespace sammo;
 
-function getTurn($connect, $general, $type, $font=1) {
+function getTurn($general, $type, $font=1) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $turn[0] = $general["turn0"];
 
     if($type >= 1) {
@@ -72,7 +75,7 @@ function getTurn($connect, $general, $type, $font=1) {
                 break;
             case 16: //전쟁
                 $double = $command[1];
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
                 $str[$i] = "【{$city['name']}】(으)로 출병";
                 break;
             case 17: //소집해제
@@ -81,7 +84,7 @@ function getTurn($connect, $general, $type, $font=1) {
 
             case 21: //이동
                 $double = $command[1];
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
                 $str[$i] = "【{$city['name']}】(으)로 이동";
                 break;
             case 22: //등용
@@ -113,38 +116,38 @@ function getTurn($connect, $general, $type, $font=1) {
                 break;
             case 30: //강행
                 $double = $command[1];
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
                 $str[$i] = "【{$city['name']}】(으)로 강행";
                 break;
                 
             case 31: //첩보
                 $double = $command[1];
-                $city= getCity($connect, $double, "name");
+                $city= getCity($double, "name");
                 $str[$i] = "【{$city['name']}】에 첩보 실행";
                 break;
             case 32: //화계
                 $double = $command[1];
-                $city= getCity($connect, $double, "name");
+                $city= getCity($double, "name");
                 $str[$i] = "【{$city['name']}】에 화계 실행";
                 break;
             case 33: //탈취
                 $double = $command[1];
-                $city= getCity($connect, $double, "name");
+                $city= getCity($double, "name");
                 $str[$i] = "【{$city['name']}】에 탈취 실행";
                 break;
             case 34: //파괴
                 $double = $command[1];
-                $city= getCity($connect, $double, "name");
+                $city= getCity($double, "name");
                 $str[$i] = "【{$city['name']}】에 파괴 실행";
                 break;
             case 35: //선동
                 $double = $command[1];
-                $city= getCity($connect, $double, "name");
+                $city= getCity($double, "name");
                 $str[$i] = "【{$city['name']}】에 선동 실행";
                 break;
             case 36: //기습
                 $double = $command[1];
-                $city= getCity($connect, $double, "name");
+                $city= getCity($double, "name");
                 $str[$i] = "【{$city['name']}】에 기습 실행";
                 break;
 
@@ -250,7 +253,10 @@ function getTurn($connect, $general, $type, $font=1) {
     return $str;
 }
 
-function getCoreTurn($connect, $nation, $level) {
+function getCoreTurn($nation, $level) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $turn[0] = $nation["l{$level}turn0"];
     $turn[1] = $nation["l{$level}turn1"];
     $turn[2] = $nation["l{$level}turn2"];
@@ -303,7 +309,7 @@ function getCoreTurn($connect, $nation, $level) {
                 $query = "select name from general where no='$third'";
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
 
                 $str[$i] = "【{$general['name']}】【{$city['name']}】(으)로 발령";
                 break;
@@ -367,22 +373,22 @@ function getCoreTurn($connect, $nation, $level) {
                 break;
             case 65: //초토
                 $double = $command[1];
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
                 $str[$i] = "【{$city['name']}】(을)를 초토화";
                 break;
             case 66: //천도
                 $double = $command[1];
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
                 $str[$i] = "【{$city['name']}】(으)로 천도";
                 break;
             case 67: //증축
                 $double = $command[1];
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
                 $str[$i] = "【{$city['name']}】(을)를 증축";
                 break;
             case 68: //감축
                 $double = $command[1];
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
                 $str[$i] = "【{$city['name']}】(을)를 감축";
                 break;
             case 71: //필사즉생
@@ -390,17 +396,17 @@ function getCoreTurn($connect, $nation, $level) {
                 break;
             case 72: //백성동원
                 $double = $command[1];
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
                 $str[$i] = "【{$city['name']}】에 백성동원";
                 break;
             case 73: //수몰
                 $double = $command[1];
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
                 $str[$i] = "【{$city['name']}】(을)를 수몰";
                 break;
             case 74: //허보
                 $double = $command[1];
-                $city = getCity($connect, $double, "name");
+                $city = getCity($double, "name");
                 $str[$i] = "【{$city['name']}】에 허보";
                 break;
             case 75: //피장파장
@@ -448,7 +454,10 @@ function getCoreTurn($connect, $nation, $level) {
 }
 
 
-function processCommand($connect, $no) {
+function processCommand($no) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select npc,no,name,picture,imgsvr,nation,nations,city,troop,injury,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,belong,personal,special,special2,term,turn0,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
@@ -486,29 +495,29 @@ function processCommand($connect, $no) {
             }
 
             switch($corecommand[0]) {
-                case 23: process_23($connect, $general); break; //포상
-                case 24: process_24($connect, $general); break; //몰수
-                case 27: process_27($connect, $general); break; //발령
-                case 51: process_51($connect, $general); break; //항복권고
-                case 52: process_52($connect, $general); break; //원조
-                case 53: process_53($connect, $general); break; //통합제의
-                case 61: process_61($connect, $general); break; //불가침제의
-                case 62: process_62($connect, $general); break; //선전 포고
-                case 63: process_63($connect, $general); break; //종전 제의
-                case 64: process_64($connect, $general); break; //파기 제의
-                case 65: process_65($connect, $general); break; //초토화
-                case 66: process_66($connect, $general); break; //천도
-                case 67: process_67($connect, $general); break; //증축
-                case 68: process_68($connect, $general); break; //감축
-                case 71: process_71($connect, $general); break; //필사즉생
-                case 72: process_72($connect, $general); break; //백성동원
-                case 73: process_73($connect, $general); break; //수몰
-                case 74: process_74($connect, $general); break; //허보
-                case 75: process_75($connect, $general); break; //피장파장
-                case 76: process_76($connect, $general); break; //의병모집
-                case 77: process_77($connect, $general); break; //이호경식
-                case 78: process_78($connect, $general); break; //급습
-                case 81: process_81($connect, $general); break; //국기변경
+                case 23: process_23($general); break; //포상
+                case 24: process_24($general); break; //몰수
+                case 27: process_27($general); break; //발령
+                case 51: process_51($general); break; //항복권고
+                case 52: process_52($general); break; //원조
+                case 53: process_53($general); break; //통합제의
+                case 61: process_61($general); break; //불가침제의
+                case 62: process_62($general); break; //선전 포고
+                case 63: process_63($general); break; //종전 제의
+                case 64: process_64($general); break; //파기 제의
+                case 65: process_65($general); break; //초토화
+                case 66: process_66($general); break; //천도
+                case 67: process_67($general); break; //증축
+                case 68: process_68($general); break; //감축
+                case 71: process_71($general); break; //필사즉생
+                case 72: process_72($general); break; //백성동원
+                case 73: process_73($general); break; //수몰
+                case 74: process_74($general); break; //허보
+                case 75: process_75($general); break; //피장파장
+                case 76: process_76($general); break; //의병모집
+                case 77: process_77($general); break; //이호경식
+                case 78: process_78($general); break; //급습
+                case 81: process_81($general); break; //국기변경
                 case 99: break; //수뇌부휴식
             }
 
@@ -542,59 +551,62 @@ function processCommand($connect, $no) {
                 $log[] = "<C>●</>{$admin['month']}월:아무것도 실행하지 않았습니다. <1>$date</>";
                 pushGenLog($general, $log);
                 break;
-            case  1: process_1($connect, $general, 1); break; //농업
-            case  2: process_1($connect, $general, 2); break; //상업
-            case  3: process_3($connect, $general); break; //기술
-            case  4: process_4($connect, $general); break; //선정
-            case  5: process_5($connect, $general, 1); break; //수비
-            case  6: process_5($connect, $general, 2); break; //성벽
-            case  7: process_7($connect, $general); break; //정착 장려
-            case  8: process_8($connect, $general); break; //치안
-            case  9: process_9($connect, $general); break; //조달
+            case  1: process_1($general, 1); break; //농업
+            case  2: process_1($general, 2); break; //상업
+            case  3: process_3($general); break; //기술
+            case  4: process_4($general); break; //선정
+            case  5: process_5($general, 1); break; //수비
+            case  6: process_5($general, 2); break; //성벽
+            case  7: process_7($general); break; //정착 장려
+            case  8: process_8($general); break; //치안
+            case  9: process_9($general); break; //조달
 
-            case 11: process_11($connect, $general, 1); break; //징병
-            case 12: process_11($connect, $general, 2); break; //모병
-            case 13: process_13($connect, $general); break; //훈련
-            case 14: process_14($connect, $general); break; //사기진작
-            case 15: process_15($connect, $general); break; //전투태세
-            case 16: process_16($connect, $general); break; //전쟁
-            case 17: process_17($connect, $general); break; //소집해제
+            case 11: process_11($general, 1); break; //징병
+            case 12: process_11($general, 2); break; //모병
+            case 13: process_13($general); break; //훈련
+            case 14: process_14($general); break; //사기진작
+            case 15: process_15($general); break; //전투태세
+            case 16: process_16($general); break; //전쟁
+            case 17: process_17($general); break; //소집해제
 
-            case 21: process_21($connect, $general); break; //이동
-            //case 22: process_22($connect, $general); break; //등용 //TODO:등용장 재 디자인
-            case 25: process_25($connect, $general); break; //임관
-            case 26: process_26($connect, $general); break; //집합
-            case 28: process_28($connect, $general); break; //귀환
-            case 29: process_29($connect, $general); break; //인재탐색
-            case 30: process_30($connect, $general); break; //강행
+            case 21: process_21($general); break; //이동
+            //case 22: process_22($general); break; //등용 //TODO:등용장 재 디자인
+            case 25: process_25($general); break; //임관
+            case 26: process_26($general); break; //집합
+            case 28: process_28($general); break; //귀환
+            case 29: process_29($general); break; //인재탐색
+            case 30: process_30($general); break; //강행
             
-            case 31: process_31($connect, $general); break; //첩보
-            case 32: process_32($connect, $general); break; //화계
-            case 33: process_33($connect, $general); break; //탈취
-            case 34: process_34($connect, $general); break; //파괴
-            case 35: process_35($connect, $general); break; //선동
-            case 36: process_36($connect, $general); break; //기습
+            case 31: process_31($general); break; //첩보
+            case 32: process_32($general); break; //화계
+            case 33: process_33($general); break; //탈취
+            case 34: process_34($general); break; //파괴
+            case 35: process_35($general); break; //선동
+            case 36: process_36($general); break; //기습
 
-            case 41: process_41($connect, $general); break; //단련
-            case 42: process_42($connect, $general); break; //견문
-            case 43: process_43($connect, $general); break; //증여
-            case 44: process_44($connect, $general); break; //헌납
-            case 45: process_45($connect, $general); break; //하야
-            case 46: process_46($connect, $general); break; //건국
-            case 47: process_47($connect, $general); break; //방랑
-            case 48: process_48($connect, $general); break; //장비매매
-            case 49: process_49($connect, $general); break; //군량매매
-            case 50: process_50($connect, $general); break; //요양
+            case 41: process_41($general); break; //단련
+            case 42: process_42($general); break; //견문
+            case 43: process_43($general); break; //증여
+            case 44: process_44($general); break; //헌납
+            case 45: process_45($general); break; //하야
+            case 46: process_46($general); break; //건국
+            case 47: process_47($general); break; //방랑
+            case 48: process_48($general); break; //장비매매
+            case 49: process_49($general); break; //군량매매
+            case 50: process_50($general); break; //요양
 
-            case 54: process_54($connect, $general); break; //선양
-            case 55: process_55($connect, $general); break; //거병
-            case 56: process_56($connect, $general); break; //해산
-            case 57: process_57($connect, $general); break; //모반 시도
+            case 54: process_54($general); break; //선양
+            case 55: process_55($general); break; //거병
+            case 56: process_56($general); break; //해산
+            case 57: process_57($general); break; //모반 시도
         }
     }
 }
 
-function updateCommand($connect, $no, $type=0) {
+function updateCommand($no, $type=0) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select no,nation,level from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
@@ -626,7 +638,10 @@ where nation='{$general['nation']}'
 }
 
 
-function backupdateCommand($connect, $no, $type=0) {
+function backupdateCommand($no, $type=0) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select no,nation,level from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
@@ -666,7 +681,10 @@ where nation='{$general['nation']}'
 }
 
 
-function command_Single($connect, $turn, $command) {
+function command_Single($turn, $command) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $command = EncodeCommand(0, 0, 0, $command);
 
     $count = sizeof($turn);
@@ -681,7 +699,10 @@ function command_Single($connect, $turn, $command) {
 
 }
 
-function command_Chief($connect, $turn, $command) {
+function command_Chief($turn, $command) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $command = EncodeCommand(0, 0, 0, $command);
 
     $query = "select nation,level from general where owner='{$session->userID}'";
@@ -701,7 +722,10 @@ function command_Chief($connect, $turn, $command) {
     echo 'b_chiefcenter.php';//TODO:debug all and replace
 }
 
-function command_Other($connect, $turn, $commandtype) {
+function command_Other($turn, $commandtype) {
+    $db = DB::db();
+    $connect=$db->get();
+
     echo "<form name=form1 action=processing.php method=post target=_parent>";
     $count = sizeof($turn);
     for($i=0; $i < $count; $i++) {

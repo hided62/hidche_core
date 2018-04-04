@@ -8,4 +8,4 @@ $db = DB::db();
 $connect=$db->get();
 
 increaseRefresh("자동", 2);
-checkTurn($connect);
+checkTurn();

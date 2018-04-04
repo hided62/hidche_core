@@ -11,7 +11,7 @@ $connect=$db->get();
 
 increaseRefresh("인사부", 1);
 //훼섭 추방을 위해 갱신
-checkTurn($connect);
+checkTurn();
 
 $query = "select no,nation,level from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

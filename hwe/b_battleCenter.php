@@ -11,7 +11,7 @@ $connect=$db->get();
 
 increaseRefresh("감찰부", 2);
 //전투 추진을 위해 갱신
-checkTurn($connect);
+checkTurn();
 
 $query = "select conlimit from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -116,7 +116,7 @@ for($i=0; $i < $gencount; $i++) {
     </tr>
     <tr>
         <td valign=top>
-            <?php generalInfo($connect, $gen); generalInfo2($connect, $gen); ?>
+            <?php generalInfo($gen); generalInfo2($gen); ?>
         </td>
         <td valign=top>
             <?=getGeneralHistoryAll($gen)?>

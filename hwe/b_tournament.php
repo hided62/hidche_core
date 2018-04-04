@@ -10,7 +10,7 @@ $db = DB::db();
 $connect=$db->get();
 
 increaseRefresh("토너먼트", 1);
-checkTurn($connect);
+checkTurn();
 
 $query = "select no,tournament,con,turntime from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -161,8 +161,8 @@ if(Session::getUserGrade() >= 5) {
 }
 
 $str1 = getTournament($admin['tournament']);
-$str2 = getTournamentTime($connect);
-$str3 = getTournamentTerm($connect);
+$str2 = getTournamentTime();
+$str3 = getTournamentTerm();
 ?>
     <tr><td colspan=8>운영자 메세지 : <font color=orange size=5><?=$admin['tnmt_msg'];?></font></td></tr>
     <tr><td colspan=8 align=center><font color=white size=6><?=$tnmt_type;?> (<?=$str1.", ".$str2.", ".$str3;?>)</font></td></tr>

@@ -61,8 +61,8 @@ function go(type) {
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
         <td width=50%>
-            <?php myInfo($connect); ?>
-            <?php myInfo2($connect); ?>
+            <?php myInfo(); ?>
+            <?php myInfo2(); ?>
         </td>
         <td width=50% valign=top>
             <form name=form1 action=b_myPage.php method=post>

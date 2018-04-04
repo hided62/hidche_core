@@ -6,7 +6,7 @@ include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 
-$admin = getAdmin($connect);
+$admin = getAdmin();
 
 if(Session::getUserGrade() < 5) {
     //echo "<script>location.replace('_admin1.php');</script>";

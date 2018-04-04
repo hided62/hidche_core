@@ -23,7 +23,7 @@ if($btn == "투표" && $me['vote'] == 0 && $sel > 0) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     $log = [];
-    $log = uniqueItem($connect, $me, $log, 1);
+    $log = uniqueItem($me, $log, 1);
     pushGenLog($me, $log);
 }
 else if($btn == "댓글" && $comment != "") {

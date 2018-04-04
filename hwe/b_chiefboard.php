@@ -47,7 +47,7 @@ if($me['level'] < 5) {
 </table>
 <br>
 <?php
-$nation = getNation($connect, $me['nation']);
+$nation = getNation($me['nation']);
 
 //20개 메세지
 $index = $nation['coreindex'];
@@ -56,7 +56,7 @@ for($i=0; $i < 20; $i++) {
     $query = "select name,picture,imgsvr from general where no='$nation[$who]'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    if($nation["coreboard{$index}"] != '') { msgprint($connect, $nation["coreboard{$index}"], $general['name'], $general['picture'], $general['imgsvr'], $nation["coreboard{$index}_when"], $index, 1); }
+    if($nation["coreboard{$index}"] != '') { msgprint($nation["coreboard{$index}"], $general['name'], $general['picture'], $general['imgsvr'], $nation["coreboard{$index}_when"], $index, 1); }
     $index--;
     if($index < 0) { $index = 19; }
 }

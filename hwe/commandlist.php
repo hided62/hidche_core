@@ -62,11 +62,15 @@ function myclock() {
 </head>
 <body OnLoad='myclock()'>
 <?php
-myCommandList($connect);
+myCommandList();
 
-function myCommandList($connect) {
+function myCommandList() {
     global $_basecolor, $_basecolor2, $_basecolor3;
     global $images;
+
+    $db = DB::db();
+    $connect=$db->get();
+
     $date = date('Y-m-d H:i:s');
 
     // 명령 목록
@@ -77,7 +81,7 @@ function myCommandList($connect) {
     $query = "select no,turntime,term,turn0,turn1,turn2,turn3,turn4,turn5,turn6,turn7,turn8,turn9,turn10,turn11,turn12,turn13,turn14,turn15,turn16,turn17,turn18,turn19,turn20,turn21,turn22,turn23 from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
-    $turn = getTurn($connect, $me, 2);
+    $turn = getTurn($me, 2);
 
     echo "<table width=300 height=700 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
 <form name=clock>

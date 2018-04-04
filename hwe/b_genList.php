@@ -167,7 +167,7 @@ for($j=0; $j < $gencount; $j++) {
         echo "
         <td>
             <font size=1>";
-        $turn = getTurn($connect, $general, 1, 0);
+        $turn = getTurn($general, 1, 0);
 
         for($i=0; $i < 5; $i++) {
             $turn[$i] = StringUtil::SubStrForWidth($turn[$i], 0, 20);

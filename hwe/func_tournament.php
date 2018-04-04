@@ -2,7 +2,10 @@
 namespace sammo;
 
 
-function processTournament($connect) {
+function processTournament() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select tournament,phase,tnmt_type,tnmt_auto,tnmt_time,now() as now,TIMESTAMPDIFF(SECOND,tnmt_time,now()) as offset from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -32,44 +35,44 @@ function processTournament($connect) {
         for($i=0; $i < $iter; $i++) {
             switch($tnmt) {
             case 1: //신청 마감
-                fillLowGenAll($connect);
+                fillLowGenAll();
                 $tnmt = 2;  $phase = 0;
                 break;
             case 2: //예선중
-                qualify($connect, $type, $tnmt, $phase);        $phase++;
+                qualify($type, $tnmt, $phase);        $phase++;
                 if($phase >= 56) { $tnmt = 3; $phase = 0; }
                 break;
             case 3: //추첨중
-                selectionAll($connect, $type, $tnmt, $phase);   $phase+=8;
+                selectionAll($type, $tnmt, $phase);   $phase+=8;
                 if($phase >= 32) { $tnmt = 4; $phase = 0; }
                 break;
             case 4: //본선중
-                finallySingle($connect, $type, $tnmt, $phase);        $phase++;
+                finallySingle($type, $tnmt, $phase);        $phase++;
                 if($phase >= 6) { $tnmt = 5; $phase = 0; }
                 break;
             case 5: //배정중
-                final16set($connect);
+                final16set();
                 $tnmt = 6; $phase = 0;
                 break;
             case 6: //베팅중
                 $tnmt = 7; $phase = 0;
                 break;
             case 7: //16강중
-                finalFight($connect, $type, $tnmt, $phase, 16); $phase++;
+                finalFight($type, $tnmt, $phase, 16); $phase++;
                 if($phase >= 8) { $tnmt = 8; $phase = 0; }
                 break;
             case 8: //8강중
-                finalFight($connect, $type, $tnmt, $phase, 8);  $phase++;
+                finalFight($type, $tnmt, $phase, 8);  $phase++;
                 if($phase >= 4) { $tnmt = 9; $phase = 0; }
                 break;
             case 9: //4강중
-                finalFight($connect, $type, $tnmt, $phase, 4);  $phase++;
+                finalFight($type, $tnmt, $phase, 4);  $phase++;
                 if($phase >= 2) { $tnmt = 10; $phase = 0; }
                 break;
             case 10: //결승중
-                finalFight($connect, $type, $tnmt, $phase, 2);
+                finalFight($type, $tnmt, $phase, 2);
                 $tnmt = 0; $phase = 0;
-                setGift($connect, $type, $tnmt, $phase);
+                setGift($type, $tnmt, $phase);
                 $i = $iter;
                 break;
             }
@@ -105,7 +108,10 @@ function processTournament($connect) {
     }
 }
 
-function getTournamentTerm($connect) {
+function getTournamentTerm() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select tnmt_auto from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -122,7 +128,10 @@ function getTournamentTerm($connect) {
     return $str;
 }
 
-function getTournamentTime($connect) {
+function getTournamentTime() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select tournament,tnmt_time from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -219,7 +228,10 @@ function printFighting($tournament, $phase) {
     }
 }
 
-function startTournament($connect, $auto, $type) {
+function startTournament($auto, $type) {
+    $db = DB::db();
+    $connect=$db->get();
+
     for($i=0; $i<50; $i++){
         $filepath = "logs/fight{$i}.txt";
         if(file_exists($filepath)){
@@ -258,7 +270,10 @@ function startTournament($connect, $auto, $type) {
     pushWorldHistory($history, $admin['year'], $admin['month']);
 }
 
-function fillLowGenAll($connect) {
+function fillLowGenAll() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -358,12 +373,15 @@ function getTwo($tournament, $phase) {
     return $cand;
 }
 
-function qualify($connect, $tnmt_type, $tnmt, $phase) {
+function qualify($tnmt_type, $tnmt, $phase) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $cand = getTwo($tnmt, $phase);
 
     //각 그룹 페이즈 실행
     for($i=0; $i < 8; $i++) {
-        fight($connect, $tnmt_type, $tnmt, $phase, $i, $cand[0], $cand[1], 0);
+        fight($tnmt_type, $tnmt, $phase, $i, $cand[0], $cand[1], 0);
     }
     if($phase < 55) {
         $query = "update game set phase=phase+1";
@@ -384,15 +402,21 @@ function qualify($connect, $tnmt_type, $tnmt, $phase) {
     }
 }
 
-function qualifyAll($connect, $tnmt_type, $tnmt, $phase) {
+function qualifyAll($tnmt_type, $tnmt, $phase) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $start = $phase;
     $end = $phase - ($phase % 4) + 4;
     for($i=$start; $i < $end; $i++) {
-        qualify($connect, $tnmt_type, $tnmt, $i);
+        qualify($tnmt_type, $tnmt, $i);
     }
 }
 
-function selection($connect, $tnmt_type, $tnmt, $phase) {
+function selection($tnmt_type, $tnmt, $phase) {
+    $db = DB::db();
+    $connect=$db->get();
+
     //시드1 배정
     if($phase < 8) {
         $grp = $phase + 10;  $grp_no = 0;
@@ -427,20 +451,26 @@ function selection($connect, $tnmt_type, $tnmt, $phase) {
     }
 }
 
-function selectionAll($connect, $tnmt_type, $tnmt, $phase) {
+function selectionAll($tnmt_type, $tnmt, $phase) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $start = $phase;
     $end = $phase - ($phase % 8) + 8;
     for($i=$start; $i < $end; $i++) {
-        selection($connect, $tnmt_type, $tnmt, $i);
+        selection($tnmt_type, $tnmt, $i);
     }
 }
 
-function finallySingle($connect, $tnmt_type, $tnmt, $phase) {
+function finallySingle($tnmt_type, $tnmt, $phase) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $cand = getTwo($tnmt, $phase);
 
     //각 그룹 페이즈 실행
     for($i=10; $i < 18; $i++) {
-        fight($connect, $tnmt_type, $tnmt, $phase, $i, $cand[0], $cand[1], 0);
+        fight($tnmt_type, $tnmt, $phase, $i, $cand[0], $cand[1], 0);
     }
     if($phase < 5) {
         $query = "update game set phase=phase+1";
@@ -461,15 +491,21 @@ function finallySingle($connect, $tnmt_type, $tnmt, $phase) {
     }
 }
 
-function finallyAll($connect, $tnmt_type, $tnmt, $phase) {
+function finallyAll($tnmt_type, $tnmt, $phase) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $start = $phase;
     $end = $phase - ($phase % 2) + 2;
     for($i=$start; $i < $end; $i++) {
-        finallySingle($connect, $tnmt_type, $tnmt, $i);
+        finallySingle($tnmt_type, $tnmt, $i);
     }
 }
 
-function final16set($connect) {
+function final16set() {
+    $db = DB::db();
+    $connect=$db->get();
+
     //1조1-5조2, 2조1-6조2, 3조1-7조2, 4조1-8조2, 5조1-1조2, 6조1-2조2, 7조1-3조2, 8조1-4조2
     $grp  = Array(10, 14, 11, 15, 12, 16, 13, 17, 14, 10, 15, 11, 16, 12, 17, 13);
     $prmt = Array( 1,  2,  1,  2,  1,  2,  1,  2,  1,  2,  1,  2,  1,  2,  1,  2);
@@ -490,7 +526,10 @@ function final16set($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-function finalFight($connect, $tnmt_type, $tnmt, $phase, $type) {
+function finalFight($tnmt_type, $tnmt, $phase, $type) {
+    $db = DB::db();
+    $connect=$db->get();
+
     switch($type) {
     case 16: $offset = 20; $turn = 7; $next = 7; break;
     case  8: $offset = 30; $turn = 3; $next = 8; break;
@@ -499,7 +538,7 @@ function finalFight($connect, $tnmt_type, $tnmt, $phase, $type) {
     }
 
     $grp = $phase + $offset;
-    fight($connect, $tnmt_type, $tnmt, $phase, $grp, 0, 1, 1);
+    fight($tnmt_type, $tnmt, $phase, $grp, 0, 1, 1);
 
     $query = "update game set phase=phase+1";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -519,7 +558,10 @@ function finalFight($connect, $tnmt_type, $tnmt, $phase, $type) {
     }
 }
 
-function setGift($connect, $tnmt_type, $tnmt, $phase) {
+function setGift($tnmt_type, $tnmt, $phase) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month,develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -665,7 +707,10 @@ function setGift($connect, $tnmt_type, $tnmt, $phase) {
     }
 }
 
-function setRefund($connect) {
+function setRefund() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -700,7 +745,10 @@ function getLog($lvl1, $lvl2) {
 }
 
 //0 : 승무패, 1 : 승패
-function fight($connect, $tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
+function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select *,(ldr+pwr+itl)*7/15 as tot,h,w,b from tournament where grp='$group' and grp_no='$g1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen1 = MYDB_fetch_array($result);

@@ -2,7 +2,9 @@
 namespace sammo;
 
 
-function processWar($connect, $general, $city) {
+function processWar($general, $city) {
+    $db = DB::db();
+    $connect=$db->get();
 
     $templates = new \League\Plates\Engine('templates');
 
@@ -127,9 +129,9 @@ function processWar($connect, $general, $city) {
             $query = "update city set agri=agri*0.5,comm=comm*0.5,secu=secu*0.5 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $city = addConflict($connect, $city, $general['nation'], 1);
+            $city = addConflict($city, $general['nation'], 1);
 
-            ConquerCity($connect, $game, $general, $city, $nation, $destnation);
+            ConquerCity($game, $general, $city, $nation, $destnation);
             break;
         // 장수가 없어서 도시 공격
         } elseif($opposecount == 0) {
@@ -433,8 +435,8 @@ function processWar($connect, $general, $city) {
             $query = "update general set crew='{$general['crew']}',killcrew=killcrew+'$mykillnum',deathcrew=deathcrew+'$mydeathnum' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 숙련도 증가
-            addGenDex($connect, $general['no'], $general['crewtype'], $mykillnum);
-            addGenDex($connect, $general['no'], 40, $mydeathnum);
+            addGenDex($general['no'], $general['crewtype'], $mykillnum);
+            addGenDex($general['no'], 40, $mydeathnum);
             // 죽은수 기술로 누적
             $num = round($mydeathnum * 0.01);
             // 국가보정
@@ -472,7 +474,7 @@ function processWar($connect, $general, $city) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             //분쟁현황에 추가
-            $city = addConflict($connect, $city, $general['nation'], $mykillnum);
+            $city = addConflict($city, $general['nation'], $mykillnum);
 
             // 병사 소진시 성 함락
             if($city['def'] <= 0) {
@@ -490,7 +492,7 @@ function processWar($connect, $general, $city) {
                 unset($alllog);
                 unset($history);
 
-                ConquerCity($connect, $game, $general, $city, $nation, $destnation);
+                ConquerCity($game, $general, $city, $nation, $destnation);
                 break;
             // 공격 장수 병사 소진시 실패 처리
             } elseif($general['crew'] <= 0) {
@@ -1308,8 +1310,8 @@ function processWar($connect, $general, $city) {
             $query = "update general set injury='{$oppose['injury']}',crew='{$oppose['crew']}',killcrew=killcrew+'$opkillnum',deathcrew=deathcrew+'$opdeathnum' where no='{$oppose['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 숙련도 증가
-            addGenDex($connect, $oppose['no'], $oppose['crewtype'], $opkillnum * 0.9);
-            addGenDex($connect, $oppose['no'], $general['crewtype'], $opdeathnum * 0.9);
+            addGenDex($oppose['no'], $oppose['crewtype'], $opkillnum * 0.9);
+            addGenDex($oppose['no'], $general['crewtype'], $opdeathnum * 0.9);
             // 죽은수 기술로 누적
             $num = round($mydeathnum * 0.01);
             // 국가보정
@@ -1331,8 +1333,8 @@ function processWar($connect, $general, $city) {
             $query = "update general set injury='{$general['injury']}',crew='{$general['crew']}',killcrew=killcrew+'$mykillnum',deathcrew=deathcrew+'$mydeathnum' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 숙련도 증가
-            addGenDex($connect, $general['no'], $general['crewtype'], $mykillnum);
-            addGenDex($connect, $general['no'], $oppose['crewtype'], $mydeathnum);
+            addGenDex($general['no'], $general['crewtype'], $mykillnum);
+            addGenDex($general['no'], $oppose['crewtype'], $mydeathnum);
             // 죽은수 기술로 누적
             $num = round($opdeathnum * 0.01);
             // 국가보정
@@ -1436,7 +1438,7 @@ function processWar($connect, $general, $city) {
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $opexp = 0;
 
-                $opplog = checkAbility($connect, $oppose, $opplog);
+                $opplog = checkAbility($oppose, $opplog);
                 pushGenLog($oppose, $opplog);
                 pushBatLog($oppose, $oppbatlog);
                 pushBatRes($oppose, $oppbatres);
@@ -1491,7 +1493,7 @@ function processWar($connect, $general, $city) {
     $query = "update general set rice='{$general['rice']}',dedication=dedication+'$exp',experience=experience+'$exp' where no='{$general['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    $log = checkAbility($connect, $general, $log);
+    $log = checkAbility($general, $log);
     pushGenLog($general, $log);
     pushBatLog($general, $batlog);
     pushBatRes($general, $batres);
@@ -1587,7 +1589,10 @@ function getRate($game, $type, $dtype) {
     return $game[$t];
 }
 
-function addConflict($connect, $city, $nationnum, $mykillnum) {
+function addConflict($city, $nationnum, $mykillnum) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
     $game = MYDB_fetch_array($result);
@@ -1625,7 +1630,10 @@ function addConflict($connect, $city, $nationnum, $mykillnum) {
     return $city;
 }
 
-function DeleteConflict($connect, $nation) {
+function DeleteConflict($nation) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select city,conflict,conflict2 from city where conflict!=''";
     $result = MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
     $cityNum = MYDB_num_rows($result);
@@ -1655,7 +1663,10 @@ function DeleteConflict($connect, $nation) {
     }
 }
 
-function getConquerNation($connect, $city) {
+function getConquerNation($city) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $nationlist = explode("|", $city['conflict']);
     $killnum = explode("|", $city['conflict2']);
 
@@ -1669,7 +1680,10 @@ function getConquerNation($connect, $city) {
     return $nationlist[$index];
 }
 
-function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
+function ConquerCity($game, $general, $city, $nation, $destnation) {
+    $db = DB::db();
+    $connect=$db->get();
+
     global $_maximumatmos;
 
     if($destnation['nation'] > 0) {
@@ -1783,7 +1797,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
         }
         
         //분쟁기록 모두 지움
-        DeleteConflict($connect, $city['nation']);
+        DeleteConflict($city['nation']);
         // 전 장수 공헌 명성치 깎음
         $query = "update general set dedication=dedication*0.5,experience=experience*0.9 where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1894,7 +1908,7 @@ function ConquerCity($connect, $game, $general, $city, $nation, $destnation) {
     $general['atmos'] *= 1.1; //사기 증가
     if($general['atmos'] > $_maximumatmos) { $general['atmos'] = $_maximumatmos; }
 
-    $conquerNation = getConquerNation($connect, $city);
+    $conquerNation = getConquerNation($city);
 
     if($conquerNation == $general['nation']) {
         // 이동 및 사기 변경

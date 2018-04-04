@@ -42,7 +42,7 @@ $me = MYDB_fetch_array($result);
 </table>
 <br>
 <?php
-$nation = getNation($connect, $me['nation']);
+$nation = getNation($me['nation']);
 
 //20개 메세지
 $index = $nation['boardindex'];
@@ -51,7 +51,7 @@ for($i=0; $i < 20; $i++) {
     $query = "select name,picture,imgsvr from general where no='$nation[$who]'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    if($nation["board{$index}"] != '') { msgprint($connect, $nation["board{$index}"], $general['name'], $general['picture'], $general['imgsvr'], $nation["board{$index}_when"], $index, 0); }
+    if($nation["board{$index}"] != '') { msgprint($nation["board{$index}"], $general['name'], $general['picture'], $general['imgsvr'], $nation["board{$index}_when"], $index, 0); }
     $index--;
     if($index < 0) { $index = 19; }
 }

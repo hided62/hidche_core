@@ -1,7 +1,10 @@
 <?php
 
 
-function process_32($connect, &$general) {
+function process_32(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -98,7 +101,7 @@ function process_32($connect, &$general) {
             $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            TrickInjury($connect, $destination);
+            TrickInjury($destination);
             $exp = rand() % 100 + 201;
             $ded = rand() % 70 + 141;
         } else {
@@ -117,13 +120,16 @@ function process_32($connect, &$general) {
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
-function process_33($connect, &$general) {
+function process_33(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -247,7 +253,7 @@ function process_33($connect, &$general) {
             }
             $log[] = "<C>●</>금<C>$gold</> 쌀<C>$rice</>을 획득했습니다.";
 
-//            TrickInjury($connect, $destination);
+//            TrickInjury($destination);
             $exp = rand() % 100 + 201;
             $ded = rand() % 70 + 141;
         } else {
@@ -266,13 +272,16 @@ function process_33($connect, &$general) {
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
-function process_34($connect, &$general) {
+function process_34(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -370,7 +379,7 @@ function process_34($connect, &$general) {
             $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            TrickInjury($connect, $destination);
+            TrickInjury($destination);
             $exp = rand() % 100 + 201;
             $ded = rand() % 70 + 141;
         } else {
@@ -389,13 +398,16 @@ function process_34($connect, &$general) {
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
-function process_35($connect, &$general) {
+function process_35(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -495,7 +507,7 @@ function process_35($connect, &$general) {
             $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            TrickInjury($connect, $destination);
+            TrickInjury($destination);
             $exp = rand() % 100 + 201;
             $ded = rand() % 70 + 141;
         } else {
@@ -514,14 +526,18 @@ function process_35($connect, &$general) {
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
-function process_36($connect, &$general) {
-    return process_99($connect, $general);
+function process_36(&$general) {
+    return process_99($general);
+
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -632,7 +648,7 @@ function process_36($connect, &$general) {
             $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            TrickInjury($connect, $destination);
+            TrickInjury($destination);
             $exp = rand() % 100 + 201;
             $ded = rand() % 70 + 141;
         } else {
@@ -653,7 +669,7 @@ function process_36($connect, &$general) {
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='{$general['leader2']}',intel2='{$general['intel2']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);

@@ -78,8 +78,17 @@ if($btn == "판매") {
     if($valid == 1) {
         $msg = "ㆍ<span class='ev_success'>등록 성공.</span>";
         $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + $unit * $term);
-        $query = "insert into auction (type, no1, name1, stuff, amount, cost, value, topv, expire) values (0, '{$me['no']}', '{$me['name']}', '$stuff', '$amount', '$cost', '$cost', '$topv', '$date')";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->insert('auction', [
+            'type'=>0, 
+            'no1'=>$me['no'], 
+            'name1'=>$me['name'], 
+            'stuff'=>$stuff, 
+            'amount'=>$amount, 
+            'cost'=>$cost, 
+            'value'=>$cost, 
+            'topv'=>$topv, 
+            'expire'=>$date
+        ]);
     }
 } elseif($btn == "구매시도") {
     $query = "select no2,value,topv,expire,amount from auction where no='$sel'";

@@ -1,7 +1,10 @@
 <?php
 namespace sammo;
 
-function process_22($connect, &$general) {
+function process_22(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -55,12 +58,15 @@ function process_22($connect, &$general) {
         $query = "update general set resturn='SUCCESS',gold=gold-'$cost',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
 }
 
-function process_25($connect, &$general) {
+function process_25(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -164,9 +170,9 @@ function process_25($connect, &$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         if($where < 99) {
-            $log = uniqueItem($connect, $general, $log);
+            $log = uniqueItem($general, $log);
         } else {
-            $log = uniqueItem($connect, $general, $log, 2);
+            $log = uniqueItem($general, $log, 2);
         }
     }
 
@@ -174,7 +180,10 @@ function process_25($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_29($connect, &$general) {
+function process_29(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -421,15 +430,18 @@ function process_29($connect, &$general) {
         $query = "update general set resturn='SUCCESS',term='0',gold='$gold',leader2='{$general['leader2']}',power2='{$general['power2']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
-function process_45($connect, &$general) {
+function process_45(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -543,7 +555,10 @@ function process_45($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_46($connect, &$general) {
+function process_46(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -620,7 +635,7 @@ function process_46($connect, &$general) {
         $query = "update general set resturn='SUCCESS',dedication=dedication+'$ded', experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = uniqueItem($connect, $general, $log, 3);
+        $log = uniqueItem($general, $log, 3);
     }
 
     pushWorldHistory($history, $admin['year'], $admin['month']);
@@ -628,7 +643,10 @@ function process_46($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_47($connect, &$general) {
+function process_47(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -662,7 +680,7 @@ function process_47($connect, &$general) {
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【방랑】</b></><D><b>{$general['name']}</b></>은(는) <R>방랑</>의 길을 떠납니다.";
 
         //분쟁기록 모두 지움
-        DeleteConflict($connect, $general['nation']);
+        DeleteConflict($general['nation']);
         // 국명, 색깔 바꿈 국가 레벨 0, 성향리셋, 기술0
         $query = "update nation set name='{$general['name']}',color='330000',level='0',type='0',tech='0',totaltech='0',capital='0' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -690,7 +708,10 @@ function process_47($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_54($connect, &$general) {
+function process_54(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -752,7 +773,10 @@ function process_54($connect, &$general) {
     pushWorldHistory($history, $admin['year'], $admin['month']);
 }
 
-function process_55($connect, &$general) {
+function process_55(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -838,7 +862,10 @@ function process_55($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_56($connect, &$general) {
+function process_56(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -878,8 +905,8 @@ function process_56($connect, &$general) {
         }
 
         //분쟁기록 모두 지움
-        DeleteConflict($connect, $general['nation']);
-        deleteNation($connect, $general);
+        DeleteConflict($general['nation']);
+        deleteNation($general);
 
         refreshNationStaticInfo();
     }
@@ -888,7 +915,10 @@ function process_56($connect, &$general) {
 }
 
 
-function process_57($connect, &$general) {
+function process_57(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];

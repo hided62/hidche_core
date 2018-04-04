@@ -10,7 +10,7 @@ $db = DB::db();
 $connect=$db->get();
 
 increaseRefresh("베팅장", 1);
-checkTurn($connect);
+checkTurn();
 
 $query = "select no,tournament,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where owner='{$session->userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -31,8 +31,8 @@ case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "�
 }
 
 $str1 = getTournament($admin['tournament']);
-$str2 = getTournamentTime($connect);
-$str3 = getTournamentTerm($connect);
+$str2 = getTournamentTime();
+$str3 = getTournamentTerm();
 
 ?>
 <!DOCTYPE html>

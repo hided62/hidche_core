@@ -28,7 +28,7 @@ if(Session::getUserGrade() < 5) {
 $db = DB::db();
 $connect=$db->get();
 
-$admin = getAdmin($connect);
+$admin = getAdmin();
 ?>
 <!DOCTYPE html>
 <html>

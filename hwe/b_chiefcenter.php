@@ -57,7 +57,7 @@ $nation = MYDB_fetch_array($result);
 
 $lv = getNationChiefLevel($nation['level']);
 for($i=12; $i >= $lv; $i--) {
-    $turn[$i] = getCoreTurn($connect, $nation, $i);
+    $turn[$i] = getCoreTurn($nation, $i);
 
     $query = "select name,turntime,npc from general where level={$i} and nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -159,7 +159,7 @@ for($k=0; $k < 2; $k++) {
         <input type={$btn2} style=background-color:$_basecolor2;color:white;width:58;font-size:13px; value='미루기▼' onclick='turn(0)'>
         <input type={$btn2} style=background-color:$_basecolor2;color:white;width:58;font-size:13px; value='▲당기기' onclick='turn(1)'>
         <br>";
-        CoreCommandTable($connect);
+        CoreCommandTable();
         echo "<input type={$btn} style=background-color:$_basecolor2;color:white;width:55;font-size:13px; value='실 행'></td></tr></form>";
     }
 }

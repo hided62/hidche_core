@@ -1,7 +1,10 @@
 <?php
 namespace sammo;
 
-function process_23($connect, &$general) {
+function process_23(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -92,14 +95,17 @@ function process_23($connect, &$general) {
         $query = "update general set resturn='SUCCESS',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-//        $log = checkAbility($connect, $general, $log);
+//        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
     pushGenLog($gen, $genlog);
 }
 
 
-function process_24($connect, &$general) {
+function process_24(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -199,14 +205,17 @@ function process_24($connect, &$general) {
         $query = "update general set resturn='SUCCESS',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-//        $log = checkAbility($connect, $general, $log);
+//        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
     pushGenLog($gen, $genlog);
 }
 
 
-function process_27($connect, &$general) {
+function process_27(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -271,7 +280,7 @@ function process_27($connect, &$general) {
         $query = "update general set resturn='SUCCESS',experience=experience+'$exp',dedication=dedication+'$ded' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-//        $log = checkAbility($connect, $general, $log);
+//        $log = checkAbility($general, $log);
     }
 
     pushGenLog($general, $log);
@@ -279,7 +288,10 @@ function process_27($connect, &$general) {
 }
 
 
-function process_51($connect, &$general) {
+function process_51(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -329,7 +341,7 @@ function process_51($connect, &$general) {
         }
         //기존 메세지 한칸씩 뒤로 미룸
         for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg($connect, "nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
+            moveMsg("nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
         }
         //권고 서신시 장수번호/상대국 번호
         $me = $general['no'] * 10000 + $younation['nation'];
@@ -339,13 +351,16 @@ function process_51($connect, &$general) {
 
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//        $log = checkAbility($connect, $general, $log);
+//        $log = checkAbility($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_52($connect, &$general) {
+function process_52(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -448,13 +463,16 @@ function process_52($connect, &$general) {
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-//      $log = checkAbility($connect, $general, $log);
+//      $log = checkAbility($general, $log);
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
-function process_53($connect, &$general) {
+function process_53(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -504,7 +522,7 @@ function process_53($connect, &$general) {
         }
         //기존 메세지 한칸씩 뒤로 미룸
         for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg($connect, "nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
+            moveMsg("nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
         }
         //권고 서신시 장수번호/상대국 번호
         $me = $general['no'] * 10000 + $younation['nation'];
@@ -514,13 +532,16 @@ function process_53($connect, &$general) {
 
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//        $log = checkAbility($connect, $general, $log);
+//        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
 }
 
 
-function process_61($connect, &$general) {
+function process_61(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -574,7 +595,7 @@ function process_61($connect, &$general) {
         }
         //기존 메세지 한칸씩 뒤로 미룸
         for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg($connect, "nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
+            moveMsg("nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
         }
         //권고 서신시 장수번호/상대국 번호
         $me = $general['no'] * 10000 + $younation['nation'];
@@ -596,12 +617,15 @@ function process_61($connect, &$general) {
 
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//        $log = checkAbility($connect, $general, $log);
+//        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
 }
 
-function process_62($connect, &$general) {
+function process_62(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -696,7 +720,10 @@ function process_62($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_63($connect, &$general) {
+function process_63(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -746,7 +773,7 @@ function process_63($connect, &$general) {
         }
         //기존 메세지 한칸씩 뒤로 미룸
         for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg($connect, "nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
+            moveMsg("nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
         }
         //권고 서신시 장수번호/상대국 번호
         $me = $general['no'] * 10000 + $younation['nation'];
@@ -756,12 +783,15 @@ function process_63($connect, &$general) {
 
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//        $log = checkAbility($connect, $general, $log);
+//        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
 }
 
-function process_64($connect, &$general) {
+function process_64(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -811,7 +841,7 @@ function process_64($connect, &$general) {
         }
         //기존 메세지 한칸씩 뒤로 미룸
         for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg($connect, "nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
+            moveMsg("nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
         }
         //권고 서신시 장수번호/상대국 번호
         $me = $general['no'] * 10000 + $younation['nation'];
@@ -821,12 +851,15 @@ function process_64($connect, &$general) {
 
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//        $log = checkAbility($connect, $general, $log);
+//        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
 }
 
-function process_65($connect, &$general) {
+function process_65(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -917,7 +950,10 @@ function process_65($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_66($connect, &$general) {
+function process_66(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1004,7 +1040,10 @@ function process_66($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_67($connect, &$general) {
+function process_67(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1092,7 +1131,10 @@ function process_67($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_68($connect, &$general) {
+function process_68(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1192,7 +1234,10 @@ function process_68($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_71($connect, &$general) {
+function process_71(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1294,7 +1339,10 @@ function process_71($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_72($connect, &$general) {
+function process_72(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1405,7 +1453,10 @@ function process_72($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_73($connect, &$general) {
+function process_73(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1532,7 +1583,10 @@ function process_73($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_74($connect, &$general) {
+function process_74(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1671,7 +1725,10 @@ function process_74($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_75($connect, &$general) {
+function process_75(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1793,7 +1850,10 @@ function process_75($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_76($connect, &$general) {
+function process_76(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -2008,7 +2068,10 @@ function process_76($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_77($connect, &$general) {
+function process_77(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -2132,7 +2195,10 @@ function process_77($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_78($connect, &$general) {
+function process_78(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -2253,7 +2319,10 @@ function process_78($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_81($connect, &$general) {
+function process_81(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];

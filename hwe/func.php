@@ -115,15 +115,18 @@ function getRandGenName() {
 
 
 
-function cityInfo($connect) {
+function cityInfo() {
     global $_basecolor, $_basecolor2, $images;
+
+    $db = DB::db();
+    $connect=$db->get();
 
     $query = "select no,city from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
     // 도시 정보
-    $city = getCity($connect, $me['city']);
+    $city = getCity($me['city']);
 
     $nation = getNationStaticInfo($city['nation']);
 
@@ -226,8 +229,11 @@ function cityInfo($connect) {
 ";
 }
 
-function myNationInfo($connect) {
+function myNationInfo() {
     global $_basecolor, $_basecolor2, $images;
+
+    $db = DB::db();
+    $connect=$db->get();
 
     $query = "select startyear,year from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -401,7 +407,10 @@ function commandGroup($typename, $type=0) {
     }
 }
 
-function commandTable($connect) {
+function commandTable() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select startyear,year,develcost,scenario from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -410,8 +419,8 @@ function commandTable($connect) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $troop = getTroop($connect, $me['troop']);
-    $city = getCity($connect, $me['city']);
+    $troop = getTroop($me['troop']);
+    $city = getCity($me['city']);
 
     $nationcount = count(getAllNationStaticInfo());
 
@@ -635,7 +644,10 @@ function commandTable($connect) {
 ";
 }
 
-function CoreCommandTable($connect) {
+function CoreCommandTable() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -729,16 +741,22 @@ function CoreCommandTable($connect) {
 ";
 }
 
-function myInfo($connect) {
+function myInfo() {
+    $db = DB::db();
+    $connect=$db->get();
+    
     $query = "select no from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    generalInfo($connect, $me['no']);
+    generalInfo($me['no']);
 }
 
-function generalInfo($connect, $no) {
+function generalInfo($no) {
     global $_basecolor, $_basecolor2, $image, $images;
+
+    $db = DB::db();
+    $connect=$db->get();
 
     $query = "select show_img_level from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -763,7 +781,7 @@ function generalInfo($connect, $no) {
         $lbonus = "";
     }
 
-    $troop = getTroop($connect, $general['troop']);
+    $troop = getTroop($general['troop']);
 
     $level = getLevel($general['level'], $nation['level']);
     if($general['level'] == 2)     {
@@ -913,16 +931,22 @@ function generalInfo($connect, $no) {
 </table>";
 }
 
-function myInfo2($connect) {
+function myInfo2() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select no from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    generalInfo2($connect, $me['no']);
+    generalInfo2($me['no']);
 }
 
-function generalInfo2($connect, $no) {
+function generalInfo2($no) {
     global $_basecolor, $_basecolor2, $image, $images, $_dexLimit;
+
+    $db = DB::db();
+    $connect=$db->get();
 
     $query = "select personal,experience,dedication,firenum,warnum,killnum,deathnum,killcrew,deathcrew,belong,killnum*100/warnum as winrate,killcrew/deathcrew*100 as killrate,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1027,7 +1051,10 @@ function generalInfo2($connect, $no) {
 </table>";
 }
 
-function adminMsg($connect) {
+function adminMsg() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select msg from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -1040,7 +1067,10 @@ function getOnlineNum() {
     return DB::db()->queryFirstField('select `online` from `game` where `no`=1');
 }
 
-function onlinegen($connect) {
+function onlinegen() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $onlinegen = "";
     $generalID = Session::Instance()->generalID;
     $nationID = DB::db()->queryFirstField('select `nation` from `general` where `no` = %i', $generalID);
@@ -1056,14 +1086,20 @@ function onlinegen($connect) {
     return $onlinegen;
 }
 
-function onlineNation($connect) {
+function onlineNation() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select onlinenation from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $game = MYDB_fetch_array($result);
     return $game['onlinenation'];
 }
 
-function nationMsg($connect) {
+function nationMsg() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
@@ -1092,8 +1128,11 @@ function PushMsg($type, $nation, $picture, $imgsvr, $from, $fromcolor, $to, $toc
     fclose($fp);
 }
 
-function msgprint($connect, $msg, $name, $picture, $imgsvr, $when, $num, $type) {
+function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
     global $_basecolor2, $_basecolor4, $images;
+
+    $db = DB::db();
+    $connect=$db->get();
 
     $message = explode("|", $msg);
     $count = (count($message) - 2)/2;
@@ -1373,7 +1412,10 @@ function timeover() {
     else { return 0; }
 }
 
-function checkDelay($connect) {
+function checkDelay() {
+    $db = DB::db();
+    $connect=$db->get();
+
     //서버정보
     $query = "select turnterm,now() as now,TIMESTAMPDIFF(MINUTE,turntime,now()) as offset from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1402,7 +1444,10 @@ function checkDelay($connect) {
     }
 }
 
-function updateOnline($connect) {
+function updateOnline() {
+    $db = DB::db();
+    $connect=$db->get();
+
     //국가별 이름 매핑
     foreach(getAllNationStaticInfo() as $nation) {
         $nationname[$nation['nation']] = $nation['name'];
@@ -1447,7 +1492,10 @@ function updateOnline($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-function checkTurn($connect) {
+function checkTurn() {
+    $db = DB::db();
+    $connect=$db->get();
+
     // 잦은 갱신 금지 현재 5초당 1회
     if(!timeover()) { return; }
     // 현재 처리중이면 접근 불가
@@ -1490,10 +1538,10 @@ function checkTurn($connect) {
     }
     // 1턴이상 갱신 없었으면 서버 지연
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', checkDelay');
-    checkDelay($connect);
+    checkDelay();
     // 접속자수, 접속국가, 국가별 접속장수 갱신
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', checkDelay');
-    updateOnline($connect);
+    updateOnline();
     //접속자 수 따라서 갱신제한 변경
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', CheckOverhead');
     CheckOverhead();
@@ -1520,15 +1568,15 @@ function checkTurn($connect) {
             //if(PROCESS_LOG) pushProcessLog($processlog);
             
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
-            if($general['npc'] >= 2) { processAI($connect, $general['no']); }    // npc AI 처리
+            if($general['npc'] >= 2) { processAI($general['no']); }    // npc AI 처리
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', PreprocessCommand');
-            PreprocessCommand($connect, $general['no']);
+            PreprocessCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
-            processCommand($connect, $general['no']);
+            processCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateCommand');
-            updateCommand($connect, $general['no']);
+            updateCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateTurntime');
-            updateTurntime($connect, $general['no']);
+            updateTurntime($general['no']);
             
         }
         
@@ -1537,7 +1585,7 @@ function checkTurn($connect) {
         updateTraffic();
         // 1달마다 처리하는 것들, 벌점 감소 및 건국,전턴,합병 -1, 군량 소모
         //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', preUpdateMonthly');
-        $result = preUpdateMonthly($connect);
+        $result = preUpdateMonthly();
         if($result == false) {
             $locklog[0] = "-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$session->userName;
             pushLockLog($locklog);
@@ -1549,7 +1597,7 @@ function checkTurn($connect) {
         }
 
         // 그 시각 년도,월 저장
-        $dt = turnDate($connect, $nextTurn);
+        $dt = turnDate($nextTurn);
         $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
 
         $locklog[0] = "-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$session->userName;
@@ -1570,48 +1618,48 @@ function checkTurn($connect) {
         // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
         if($admin['month'] == 1) {
             // NPC 등장
-            //if($admin['scenario'] > 0 && $admin['scenario'] < 20) { RegNPC($connect); }
+            //if($admin['scenario'] > 0 && $admin['scenario'] < 20) { RegNPC(); }
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processGoldIncome');
-            processGoldIncome($connect);
+            processGoldIncome();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processSpring');
-            processSpring($connect);
+            processSpring();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateYearly');
-            updateYearly($connect);
+            updateYearly();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
-            updateQuaterly($connect);
+            updateQuaterly();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
-            disaster($connect);
+            disaster();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', tradeRate');
-            tradeRate($connect);
+            tradeRate();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', addAge');
-            addAge($connect);
+            addAge();
             // 새해 알림
             $alllog[] = "<C>◆</>{$admin['month']}월:<C>{$admin['year']}</>년이 되었습니다.";
             pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
         } elseif($admin['month'] == 4) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
-            updateQuaterly($connect);
+            updateQuaterly();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
-            disaster($connect);
+            disaster();
         } elseif($admin['month'] == 7) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processRiceIncome');
-            processRiceIncome($connect);
+            processRiceIncome();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processFall');
-            processFall($connect);
+            processFall();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
-            updateQuaterly($connect);
+            updateQuaterly();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
-            disaster($connect);
+            disaster();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', tradeRate');
-            tradeRate($connect);
+            tradeRate();
         } elseif($admin['month'] == 10) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
-            updateQuaterly($connect);
+            updateQuaterly();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
-            disaster($connect);
+            disaster();
         }
         //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', postUpdateMonthly');
-        postUpdateMonthly($connect);
+        postUpdateMonthly();
 
         // 다음달로 넘김
         $prevTurn = $nextTurn;
@@ -1625,7 +1673,7 @@ function checkTurn($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 그 시각 년도,월 저장
-    $dt = turnDate($connect, $prevTurn);
+    $dt = turnDate($prevTurn);
     $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
     // 현재시간의 월턴시간 이후 분단위 장수 처리
     do {
@@ -1640,15 +1688,15 @@ function checkTurn($connect) {
             //if(PROCESS_LOG) pushProcessLog($processlog);
             
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
-            if($general['npc'] >= 2) { processAI($connect, $general['no']); }    // npc AI 처리
+            if($general['npc'] >= 2) { processAI($general['no']); }    // npc AI 처리
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', PreprocessCommand');
-            PreprocessCommand($connect, $general['no']);
+            PreprocessCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
-            processCommand($connect, $general['no']);
+            processCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateCommand');
-            updateCommand($connect, $general['no']);
+            updateCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateTurntime');
-            updateTurntime($connect, $general['no']);
+            updateTurntime($general['no']);
         }
     } while($gencount > 0);
 
@@ -1670,10 +1718,10 @@ function checkTurn($connect) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //토너먼트 처리
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processTournament');
-    processTournament($connect);
+    processTournament();
     //거래 처리
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAuction');
-    processAuction($connect);
+    processAuction();
     // 잡금 해제
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
     unlock();
@@ -1686,7 +1734,10 @@ function checkTurn($connect) {
     return true;
 }
 
-function addAge($connect) {
+function addAge() {
+    $db = DB::db();
+    $connect=$db->get();
+
     //나이와 호봉 증가
     $query = "update general set age=age+1,belong=belong+1";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1702,7 +1753,7 @@ function addAge($connect) {
 
         for($i=0; $i < $gencount; $i++) {
             $general = MYDB_fetch_array($result);
-            $special = getSpecial($connect, $general['leader'], $general['power'], $general['intel']);
+            $special = getSpecial($general['leader'], $general['power'], $general['intel']);
             $query = "update general set special='$special' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -1729,7 +1780,10 @@ function addAge($connect) {
     }
 }
 
-function turnDate($connect, $curtime) {
+function turnDate($curtime) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select startyear,starttime,turnterm,year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -1754,7 +1808,10 @@ function turnDate($connect, $curtime) {
 }
 
 
-function triggerTournament($connect) {
+function triggerTournament() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select tournament,tnmt_trig from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -1764,11 +1821,14 @@ function triggerTournament($connect) {
         $type = rand() % 6; //  0 : 전력전, 1 : 통솔전, 2 : 일기토, 3 : 설전
         //전력전 50%, 통, 일, 설 각 17%
         if($type > 3) { $type = 0; }
-        startTournament($connect, $admin['tnmt_trig'], $type);
+        startTournament($admin['tnmt_trig'], $type);
     }
 }
 
-function PreprocessCommand($connect, $no) {
+function PreprocessCommand($no) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select no,name,city,injury,special2,item,turn0 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
@@ -1847,7 +1907,10 @@ function PreprocessCommand($connect, $no) {
 }
 
 
-function updateTurntime($connect, $no) {
+function updateTurntime($no) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month,isUnited,turnterm from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -1869,12 +1932,12 @@ function updateTurntime($connect, $no) {
             pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
 
             if($admin['isUnited'] == 0) {
-                CheckHall($connect, $no);
+                CheckHall($no);
             }
         } else {
             // 군주였으면 유지 이음
             if($general['level'] == 12) {
-                nextRuler($connect, $general);
+                nextRuler($general);
             }
 
             //도시의 태수, 군사, 시중직도 초기화
@@ -1987,7 +2050,7 @@ function updateTurntime($connect, $no) {
 
     if($general['age'] >= 80 && $general['npc'] == 0) {
         if($admin['isUnited'] == 0) {
-            CheckHall($connect, $no);
+            CheckHall($no);
         }
 
         $query = "update general set leader=leader*0.85,power=power*0.85,intel=intel*0.85,injury=0,experience=experience*0.5,dedication=dedication*0.5,firenum=0,warnum=0,killnum=0,deathnum=0,killcrew=0,deathcrew=0,age=20,specage=0,specage2=0,crew=crew*0.85,dex0=dex0*0.5,dex10=dex10*0.5,dex20=dex20*0.5,dex30=dex30*0.5,dex40=dex40*0.5 where no='$no'";
@@ -2007,7 +2070,10 @@ function updateTurntime($connect, $no) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-function CheckHall($connect, $no) {
+function CheckHall($no) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $type = array(
         "experience",
         "dedication",
@@ -2089,7 +2155,10 @@ function CheckHall($connect, $no) {
 }
 
 
-function uniqueItem($connect, $general, $log, $vote=0) {
+function uniqueItem($general, $log, $vote=0) {
+    $db = DB::db();
+    $connect=$db->get();
+
     if($general['npc'] >= 2 || $general['betray'] > 1) { return $log; }
     if($general['weap'] > 6 || $general['book'] > 6 || $general['horse'] > 6 || $general['item'] > 6) { return $log; }
 
@@ -2208,7 +2277,9 @@ function uniqueItem($connect, $general, $log, $vote=0) {
     return $log;
 }
 
-function checkAbility($connect, $general, $log) {
+function checkAbility($general, $log) {
+    $db = DB::db();
+    $connect=$db->get();
 
     $limit = GameConst::$upgradeLimit;
 
@@ -2255,7 +2326,10 @@ function checkAbility($connect, $general, $log) {
     return $log;
 }
 
-function checkDedication($connect, $general, $log) {
+function checkDedication($general, $log) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $dedlevel = getDedLevel($general['dedication']);
 
     $query = "update general set dedlevel='$dedlevel' where no='{$general['no']}'";
@@ -2272,7 +2346,10 @@ function checkDedication($connect, $general, $log) {
     return $log;
 }
 
-function checkExperience($connect, $general, $log) {
+function checkExperience($general, $log) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $explevel = getExpLevel($general['experience']);
 
     $query = "update general set explevel='$explevel' where no='{$general['no']}'";
@@ -2289,7 +2366,10 @@ function checkExperience($connect, $general, $log) {
     return $log;
 }
 
-function getAdmin($connect) {
+function getAdmin() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select * from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -2297,7 +2377,10 @@ function getAdmin($connect) {
     return $admin;
 }
 
-function getMe($connect) {
+function getMe() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select * from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("접속자가 많아 접속을 중단합니다. 잠시후 갱신해주세요.<br>getMe : ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
@@ -2305,7 +2388,10 @@ function getMe($connect) {
     return $me;
 }
 
-function getTroop($connect, $troop) {
+function getTroop($troop) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select * from troop where troop='$troop'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $troop = MYDB_fetch_array($result);
@@ -2313,7 +2399,10 @@ function getTroop($connect, $troop) {
     return $troop;
 }
 
-function getCity($connect, $city, $sel="*") {
+function getCity($city, $sel="*") {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select {$sel} from city where city='$city'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
@@ -2321,7 +2410,10 @@ function getCity($connect, $city, $sel="*") {
     return $city;
 }
 
-function getNation($connect, $nation) {
+function getNation($nation) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select * from nation where nation='$nation'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
@@ -2329,7 +2421,10 @@ function getNation($connect, $nation) {
     return $nation;
 }
 
-function deleteNation($connect, $general) {
+function deleteNation($general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -2360,7 +2455,10 @@ function deleteNation($connect, $general) {
     refreshNationStaticInfo();
 }
 
-function nextRuler($connect, $general) {
+function nextRuler($general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -2396,8 +2494,8 @@ function nextRuler($connect, $general) {
         // 아무도 없으면 국가 삭제
         if($corecount == 0) {
             //분쟁기록 모두 지움
-            DeleteConflict($connect, $general['nation']);
-            deleteNation($connect, $general);
+            DeleteConflict($general['nation']);
+            deleteNation($general);
             return;
         } else {
             $nextruler = MYDB_fetch_array($result);
@@ -2553,7 +2651,10 @@ function CharCritical($rate, $personal) {
     return $rate;
 }
 
-function TrickInjury($connect, $city, $type=0) {
+function TrickInjury($city, $type=0) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);

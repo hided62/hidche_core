@@ -1,7 +1,10 @@
 <?php
 namespace sammo;
 
-function SetDevelop($connect, $genType, $no, $city, $tech) {
+function SetDevelop($genType, $no, $city, $tech) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select rate,pop/pop2*100 as po,comm/comm2*100 as co,def/def2*100 as de,wall/wall2*100 as wa,secu/secu2*100 as se,agri/agri2*100 as ag from city where city='$city'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
@@ -77,7 +80,10 @@ function SetDevelop($connect, $genType, $no, $city, $tech) {
     return;
 }
 
-function SetCrew($connect, $no, $personal, $gold, $leader, $genType, $tech, $region, $city, $dex0, $dex10, $dex20, $dex30, $dex40) {
+function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city, $dex0, $dex10, $dex20, $dex30, $dex40) {
+    $db = DB::db();
+    $connect=$db->get();
+
     switch($genType) {
     case 0: //무장
     case 2: //무내정장
@@ -156,7 +162,10 @@ function SetCrew($connect, $no, $personal, $gold, $leader, $genType, $tech, $reg
     return;
 }
 
-function processAI($connect, $no) {
+function processAI($no) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select startyear,year,month,turnterm,scenario,gold_rate,rice_rate from game limit 1";
     $result = MYDB_query($query, $connect) or Error("processAI00 ".MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -387,17 +396,17 @@ function processAI($connect, $no) {
         //분기마다
         if($admin['month'] == 1 || $admin['month'] == 4 || $admin['month'] == 7 || $admin['month'] == 10) {
             //관직임명
-            Promotion($connect, $general['nation'], $nation['level']);
+            Promotion($general['nation'], $nation['level']);
         } elseif($admin['month'] == 12) {
             //세율
-            $nation['rate'] = TaxRate($connect, $general['nation']);
+            $nation['rate'] = TaxRate($general['nation']);
             //지급율
-            GoldBillRate($connect, $nation['nation'], $nation['rate'], $admin['gold_rate'], $nation['type'], $nation['gold']);
+            GoldBillRate($nation['nation'], $nation['rate'], $admin['gold_rate'], $nation['type'], $nation['gold']);
         } elseif($admin['month'] == 6) {
             //세율
-            $nation['rate'] = TaxRate($connect, $general['nation']);
+            $nation['rate'] = TaxRate($general['nation']);
             //지급율
-            RiceBillRate($connect, $nation['nation'], $nation['rate'], $admin['rice_rate'], $nation['type'], $nation['rice']);
+            RiceBillRate($nation['nation'], $nation['rate'], $admin['rice_rate'], $nation['type'], $nation['rice']);
         }
 
         //방랑군이냐 아니냐
@@ -889,7 +898,7 @@ function processAI($connect, $no) {
 
     switch($command) {
     case "00000000000001": //내정
-        SetDevelop($connect, $genType, $general['no'], $general['city'], $nation['tech']);
+        SetDevelop($genType, $general['no'], $general['city'], $nation['tech']);
         return;
     case "00000000000011": //징병
         $query = "select region from city where nation='{$general['nation']}' order by rand() limit 0,1";
@@ -907,7 +916,7 @@ function processAI($connect, $no) {
         if($selCity['city'] == 0) {
             $selCity['city'] = $general['city'];
         }
-        SetCrew($connect, $general['no'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $selRegion['region'], $selCity['city'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
+        SetCrew($general['no'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $selRegion['region'], $selCity['city'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
         return;
     default:
         $query = "update general set turn0='$command' where no='{$general['no']}'";
@@ -918,7 +927,10 @@ function processAI($connect, $no) {
 //종전하기, 지급율
 //$command = $fourth * 100000000 + $type * 100000 + $crew * 100 + 11;
 
-function Promotion($connect, $nation, $level) {
+function Promotion($nation, $level) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $lv = getNationChiefLevel($level);
 
     $query = "select scenario,killturn from game limit 1";
@@ -990,7 +1002,10 @@ function Promotion($connect, $nation, $level) {
     }
 }
 
-function TaxRate($connect, $nation) {
+function TaxRate($nation) {
+    $db = DB::db();
+    $connect=$db->get();
+
     //도시
     $query = "select city from city where nation='$nation'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1018,10 +1033,13 @@ function TaxRate($connect, $nation) {
     }
 }
 
-function GoldBillRate($connect, $nation, $rate, $gold_rate, $type, $gold) {
-    $incomeList = getGoldIncome($connect, $nation, $rate, $gold_rate, $type);
+function GoldBillRate($nation, $rate, $gold_rate, $type, $gold) {
+    $db = DB::db();
+    $connect=$db->get();
+
+    $incomeList = getGoldIncome($nation, $rate, $gold_rate, $type);
     $income = $gold + $incomeList[0] + $incomeList[1];
-    $outcome = getGoldOutcome($connect, $nation, 100);    // 100%의 지급량
+    $outcome = getGoldOutcome($nation, 100);    // 100%의 지급량
     $bill = floor($income / $outcome * 90); // 수입의 90% 만 지급
 
     if($bill < 20)  { $bill = 20; }
@@ -1031,10 +1049,13 @@ function GoldBillRate($connect, $nation, $rate, $gold_rate, $type, $gold) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-function RiceBillRate($connect, $nation, $rate, $rice_rate, $type, $rice) {
-    $incomeList = getRiceIncome($connect, $nation, $rate, $rice_rate, $type);
+function RiceBillRate($nation, $rate, $rice_rate, $type, $rice) {
+    $db = DB::db();
+    $connect=$db->get();
+
+    $incomeList = getRiceIncome($nation, $rate, $rice_rate, $type);
     $income = $rice + $incomeList[0] + $incomeList[1];
-    $outcome = getRiceOutcome($connect, $nation, 100);    // 100%의 지급량
+    $outcome = getRiceOutcome($nation, 100);    // 100%의 지급량
     $bill = floor($income / $outcome * 90); // 수입의 90% 만 지급
 
     if($bill < 20)  { $bill = 20; }

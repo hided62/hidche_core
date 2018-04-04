@@ -302,7 +302,7 @@ for($j=0; $j < $gencount; $j++) {
             echo "
         <td>
             <font size=1>";
-            $turn = getTurn($connect, $general, 1);
+            $turn = getTurn($general, 1);
 
             for($i=0; $i < 4; $i++) {
                 $k = $i+1;

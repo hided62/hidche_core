@@ -32,7 +32,7 @@ if($btn == "자동개최설정" && Session::getUserGrade() >= 5) {
     $query = "update game set tnmt_trig={$trig}";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "개최" && Session::getUserGrade() >= 5) {
-    startTournament($connect, $auto, $type);
+    startTournament($auto, $type);
 } elseif($btn == "중단" && Session::getUserGrade() >= 5) {
     $query = "update game set tnmt_auto=0, tournament=0, phase=0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -181,24 +181,24 @@ if($btn == "자동개최설정" && Session::getUserGrade() >= 5) {
 
     $query = "update game set tournament=2, phase=0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-} elseif($btn == "무명전부투입" && Session::getUserGrade() >= 5) { fillLowGenAll($connect);
-} elseif($btn == "예선"         && Session::getUserGrade() >= 5) { qualify($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "예선전부"     && Session::getUserGrade() >= 5) { qualifyAll($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "추첨"         && Session::getUserGrade() >= 5) { selection($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "추첨전부"     && Session::getUserGrade() >= 5) { selectionAll($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "본선"         && Session::getUserGrade() >= 5) { finallySingle($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "본선전부"     && Session::getUserGrade() >= 5) { finallyAll($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "배정"         && Session::getUserGrade() >= 5) { final16set($connect);
+} elseif($btn == "무명전부투입" && Session::getUserGrade() >= 5) { fillLowGenAll();
+} elseif($btn == "예선"         && Session::getUserGrade() >= 5) { qualify($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
+} elseif($btn == "예선전부"     && Session::getUserGrade() >= 5) { qualifyAll($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
+} elseif($btn == "추첨"         && Session::getUserGrade() >= 5) { selection($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
+} elseif($btn == "추첨전부"     && Session::getUserGrade() >= 5) { selectionAll($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
+} elseif($btn == "본선"         && Session::getUserGrade() >= 5) { finallySingle($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
+} elseif($btn == "본선전부"     && Session::getUserGrade() >= 5) { finallyAll($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
+} elseif($btn == "배정"         && Session::getUserGrade() >= 5) { final16set();
 } elseif($btn == "베팅마감"     && Session::getUserGrade() >= 5) {
     $dt = date("Y-m-d H:i:s", time() + 60);
     $query = "update game set tournament='7',phase='0',tnmt_time='$dt'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-} elseif($btn == "16강" && Session::getUserGrade() >= 5) { finalFight($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase'], 16);
-} elseif($btn == "8강"  && Session::getUserGrade() >= 5) { finalFight($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase'], 8);
-} elseif($btn == "4강"  && Session::getUserGrade() >= 5) { finalFight($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase'], 4);
-} elseif($btn == "결승" && Session::getUserGrade() >= 5) { finalFight($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase'], 2);
-} elseif($btn == "포상" && Session::getUserGrade() >= 5) { setGift($connect, $admin['tnmt_type'], $admin['tournament'], $admin['phase']);
-} elseif($btn == "회수" && Session::getUserGrade() >= 5) { setRefund($connect);
+} elseif($btn == "16강" && Session::getUserGrade() >= 5) { finalFight($admin['tnmt_type'], $admin['tournament'], $admin['phase'], 16);
+} elseif($btn == "8강"  && Session::getUserGrade() >= 5) { finalFight($admin['tnmt_type'], $admin['tournament'], $admin['phase'], 8);
+} elseif($btn == "4강"  && Session::getUserGrade() >= 5) { finalFight($admin['tnmt_type'], $admin['tournament'], $admin['phase'], 4);
+} elseif($btn == "결승" && Session::getUserGrade() >= 5) { finalFight($admin['tnmt_type'], $admin['tournament'], $admin['phase'], 2);
+} elseif($btn == "포상" && Session::getUserGrade() >= 5) { setGift($admin['tnmt_type'], $admin['tournament'], $admin['phase']);
+} elseif($btn == "회수" && Session::getUserGrade() >= 5) { setRefund();
 } elseif($btn == "메시지" && Session::getUserGrade() >= 5) {
     $msg = addslashes(SQ2DQ($msg));
     $query = "update game set tnmt_msg='$msg'";

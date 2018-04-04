@@ -162,7 +162,10 @@ function CriticalScore($score, $type) {
     return round($score * $ratio);
 }
 
-function process_1($connect, &$general, $type) {
+function process_1(&$general, $type) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -252,14 +255,17 @@ function process_1($connect, &$general, $type) {
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_3($connect, &$general) {
+function process_3(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -347,14 +353,17 @@ function process_3($connect, &$general) {
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_4($connect, &$general) {
+function process_4(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -435,14 +444,17 @@ function process_4($connect, &$general) {
         $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_5($connect, &$general, $type) {
+function process_5(&$general, $type) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -531,14 +543,17 @@ function process_5($connect, &$general, $type) {
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_7($connect, &$general) {
+function process_7(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -619,14 +634,17 @@ function process_7($connect, &$general) {
         $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_8($connect, &$general) {
+function process_8(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -713,14 +731,16 @@ function process_8($connect, &$general) {
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_9($connect, &$general) {
+function process_9(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
 
     $log = [];
     $alllog = [];
@@ -803,12 +823,14 @@ function process_9($connect, &$general) {
         }
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
 }
 
-function process_11($connect, &$general, $type) {
+function process_11(&$general, $type) {
+    $db = DB::db();
+    $connect=$db->get();
 
     $log = [];
     $alllog = [];
@@ -965,7 +987,7 @@ function process_11($connect, &$general, $type) {
         $exp = $crew;
         $ded = $crew;
         // 숙련도 증가
-        addGenDex($connect, $general['no'], $armtype, $crew);
+        addGenDex($general['no'], $armtype, $crew);
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -986,14 +1008,17 @@ function process_11($connect, &$general, $type) {
         $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',crewtype='$armtype',crew='{$general['crew']}',train='$train',atmos='$atmos',gold='{$general['gold']}',rice=rice-'$crew',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_13($connect, &$general) {
+function process_13(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1032,7 +1057,7 @@ function process_13($connect, &$general) {
         $exp = 100;
         $ded = 70;
         // 숙련도 증가
-        addGenDex($connect, $general['no'], $general['crewtype'], round($general['crew']/100));
+        addGenDex($general['no'], $general['crewtype'], round($general['crew']/100));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1053,14 +1078,17 @@ function process_13($connect, &$general) {
         $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_14($connect, &$general) {
+function process_14(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     global $_maxatmos, $_training;
     $log = [];
     $alllog = [];
@@ -1101,7 +1129,7 @@ function process_14($connect, &$general) {
         $exp = 100;
         $ded = 70;
         // 숙련도 증가
-        addGenDex($connect, $general['no'], $general['crewtype'], round($general['crew']/100));
+        addGenDex($general['no'], $general['crewtype'], round($general['crew']/100));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1113,14 +1141,17 @@ function process_14($connect, &$general) {
         $query = "update general set resturn='SUCCESS',atmos='$score',gold='$gold',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_15($connect, &$general) {
+function process_15(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     global $_maxatmos, $_maxtrain;
     $log = [];
     $alllog = [];
@@ -1174,7 +1205,7 @@ function process_15($connect, &$general) {
         $exp = 100 * 3;
         $ded = 70 * 3;
         // 숙련도 증가
-        addGenDex($connect, $general['no'], $general['crewtype'], round($general['crew']/100 * 3));
+        addGenDex($general['no'], $general['crewtype'], round($general['crew']/100 * 3));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1184,14 +1215,17 @@ function process_15($connect, &$general) {
         $query = "update general set resturn='SUCCESS',term='0',atmos='95',train='95',gold='$gold',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_16($connect, &$general) {
+function process_16(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1250,16 +1284,16 @@ function process_16($connect, &$general) {
     } elseif($general['nation'] == $destcity['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:본국입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
         pushGenLog($general, $log);
-        process_21($connect, $general);
+        process_21($general);
         return;
     } else {
         // 전쟁 표시
         $query = "update city set state=43,term=3 where city='{$destcity['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 숙련도 증가
-        addGenDex($connect, $general['no'], $general['crewtype'], round($general['crew']/100));
+        addGenDex($general['no'], $general['crewtype'], round($general['crew']/100));
         // 전투 처리
-        $dead = processWar($connect, $general, $destcity);
+        $dead = processWar($general, $destcity);
 
         // 기술력 따라서 보정
         $dead['att'] = round($dead['att'] * getTechCost($nation['tech']));
@@ -1273,13 +1307,16 @@ function process_16($connect, &$general) {
             $query = "update diplomacy set dead=dead+'{$dead['def']}' where you='{$nation['nation']}' and me='{$dnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
-        $log = uniqueItem($connect, $general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_17($connect, &$general) {
+function process_17(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1312,12 +1349,15 @@ function process_17($connect, &$general) {
         $query = "update general set resturn='SUCCESS',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
 }
 
-function process_21($connect, &$general) {
+function process_21(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1370,18 +1410,21 @@ function process_21($connect, &$general) {
             }
         }
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
 }
 
-function process_26($connect, &$general) {
+function process_26(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $troop = getTroop($connect, $general['troop']);
+    $troop = getTroop($general['troop']);
 
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1430,15 +1473,18 @@ function process_26($connect, &$general) {
         $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
-        $log = uniqueItem($connect, $general, $log);
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
     }
 
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
-function process_28($connect, &$general) {
+function process_28(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1494,14 +1540,17 @@ function process_28($connect, &$general) {
         $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',experience=experience+'$exp',dedication=dedication+'$ded' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
 
     pushGenLog($general, $log);
     //pushGenLog($you, $youlog);
 }
 
-function process_30($connect, &$general) {
+function process_30(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1561,12 +1610,15 @@ function process_30($connect, &$general) {
             }
         }
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
 }
 
-function process_31($connect, &$general) {
+function process_31(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1685,13 +1737,16 @@ function process_31($connect, &$general) {
         $query = "update nation set spy='$spy' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
-function process_41($connect, &$general) {
+function process_41(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1736,17 +1791,17 @@ function process_41($connect, &$general) {
 
         if($ratio < 33) {
             // 숙련도 증가
-            addGenDex($connect, $general['no'], $general['crewtype'], $crewexp);
+            addGenDex($general['no'], $general['crewtype'], $crewexp);
             $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도 향상이 <span class='ev_failed'>지지부진</span>했습니다. <1>$date</>";
         } elseif($ratio < 66) {
             $exp = $exp * 2;
             // 숙련도 증가
-            addGenDex($connect, $general['no'], $general['crewtype'], $crewexp * 2);
+            addGenDex($general['no'], $general['crewtype'], $crewexp * 2);
             $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도가 향상되었습니다. <1>$date</>";
         } else {
             $exp = $exp * 3;
             // 숙련도 증가
-            addGenDex($connect, $general['no'], $general['crewtype'], $crewexp * 3);
+            addGenDex($general['no'], $general['crewtype'], $crewexp * 3);
             $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도가 <S>일취월장</>했습니다. <1>$date</>";
         }
 
@@ -1757,7 +1812,10 @@ function process_41($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_42($connect, &$general) {
+function process_42(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -1971,11 +2029,14 @@ function process_42($connect, &$general) {
         break;
     }
 
-    $log = checkAbility($connect, $general, $log);
+    $log = checkAbility($general, $log);
     pushGenLog($general, $log);
 }
 
-function process_43($connect, &$general) {
+function process_43(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -2056,13 +2117,16 @@ function process_43($connect, &$general) {
         $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGenLog($general, $log);
     pushGenLog($gen, $genlog);
 }
 
-function process_44($connect, &$general) {
+function process_44(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -2143,14 +2207,17 @@ function process_44($connect, &$general) {
         $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
 }
 
 
-function process_48($connect, &$general) {
+function process_48(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -2160,7 +2227,7 @@ function process_48($connect, &$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $city = getCity($connect, $general['city']);
+    $city = getCity($general['city']);
 
     $command = DecodeCommand($general['turn0']);
     $type = $command[1];
@@ -2255,7 +2322,10 @@ function process_48($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_49($connect, &$general) {
+function process_49(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -2269,7 +2339,7 @@ function process_49($connect, &$general) {
 
     $nation = getNationStaticInfo($general['nation']);
 
-    $city = getCity($connect, $general['city']);
+    $city = getCity($general['city']);
 
     $command = DecodeCommand($general['turn0']);
     $type = $command[2];
@@ -2384,13 +2454,16 @@ function process_49($connect, &$general) {
             break;
         }
 
-        $log = checkAbility($connect, $general, $log);
+        $log = checkAbility($general, $log);
     }
 
     pushGenLog($general, $log);
 }
 
-function process_50($connect, &$general) {
+function process_50(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -2414,7 +2487,10 @@ function process_50($connect, &$general) {
     pushGenLog($general, $log);
 }
 
-function process_99($connect, &$general) {
+function process_99(&$general) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $log = [];
     $alllog = [];
     $history = [];

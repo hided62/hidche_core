@@ -109,7 +109,10 @@ function printCitysName(int $cityNo, int $maxDistance=1) {
 }
 
 
-function info($connect, $type=0) {
+function info($type=0) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select year,month,turnterm,maxgeneral from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);

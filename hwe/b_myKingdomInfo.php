@@ -64,14 +64,14 @@ $query = "select gold_rate,rice_rate from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 // 금 수지
-$deadIncome = getDeadIncome($connect, $nation['nation'], $nation['type'], $admin['gold_rate']);
+$deadIncome = getDeadIncome($nation['nation'], $nation['type'], $admin['gold_rate']);
 
-$goldincomeList  = getGoldIncome($connect, $nation['nation'], $nation['rate'], $admin['gold_rate'], $nation['type']);
+$goldincomeList  = getGoldIncome($nation['nation'], $nation['rate'], $admin['gold_rate'], $nation['type']);
 $goldincome  = $goldincomeList[0] + $goldincomeList[1] + $deadIncome;
-$goldoutcome = getGoldOutcome($connect, $nation['nation'], $nation['bill']);
-$riceincomeList = getRiceIncome($connect, $nation['nation'], $nation['rate'], $admin['rice_rate'], $nation['type']);
+$goldoutcome = getGoldOutcome($nation['nation'], $nation['bill']);
+$riceincomeList = getRiceIncome($nation['nation'], $nation['rate'], $admin['rice_rate'], $nation['type']);
 $riceincome  = $riceincomeList[0] + $riceincomeList[1];
-$riceoutcome = getRiceOutcome($connect, $nation['nation'], $nation['bill']);
+$riceoutcome = getRiceOutcome($nation['nation'], $nation['bill']);
 
 
 $budgetgold = $nation['gold'] + $goldincome - $goldoutcome + $deadIncome;

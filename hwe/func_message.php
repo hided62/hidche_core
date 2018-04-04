@@ -277,7 +277,10 @@ function getMailboxList(){
 
 // type : xx,xx(불가침기간,타입)
 // who : xxxx,xxxx(발신인, 수신인)
-function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
+function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
+    $db = DB::db();
+    $connect=$db->get();
+
     //FIXME: 폐기
     $query = "select no,nation,name,picture,level from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -333,13 +336,19 @@ function DecodeMsg($connect, $msg, $type, $who, $date, $bg, $num=0) {
 }
 
 
-function moveMsg($connect, $table, $msgtype, $msgnum, $msg, $type, $who, $when, $column, $value) {
+function moveMsg($table, $msgtype, $msgnum, $msg, $type, $who, $when, $column, $value) {
+    $db = DB::db();
+    $connect=$db->get();
+
     //TODO: moveMsg 쓰는 곳 모두 고쳐!!!
     $query = "update {$table} set {$msgtype}{$msgnum}='$msg',{$msgtype}{$msgnum}_type='$type',{$msgtype}{$msgnum}_who='$who',{$msgtype}{$msgnum}_when='$when' where {$column}='$value'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-function MsgDip($connect, $bg) {
+function MsgDip($bg) {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
@@ -348,11 +357,11 @@ function MsgDip($connect, $bg) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    if($nation['dip0']) { echo "\n"; DecodeMsg($connect, $nation['dip0'], $nation['dip0_type'], $nation['dip0_who'], $nation['dip0_when'], $bg, 0); }
-    if($nation['dip1']) { echo "\n"; DecodeMsg($connect, $nation['dip1'], $nation['dip1_type'], $nation['dip1_who'], $nation['dip1_when'], $bg, 1); }
-    if($nation['dip2']) { echo "\n"; DecodeMsg($connect, $nation['dip2'], $nation['dip2_type'], $nation['dip2_who'], $nation['dip2_when'], $bg, 2); }
-    if($nation['dip3']) { echo "\n"; DecodeMsg($connect, $nation['dip3'], $nation['dip3_type'], $nation['dip3_who'], $nation['dip3_when'], $bg, 3); }
-    if($nation['dip4']) { echo "\n"; DecodeMsg($connect, $nation['dip4'], $nation['dip4_type'], $nation['dip4_who'], $nation['dip4_when'], $bg, 4); }
+    if($nation['dip0']) { echo "\n"; DecodeMsg($nation['dip0'], $nation['dip0_type'], $nation['dip0_who'], $nation['dip0_when'], $bg, 0); }
+    if($nation['dip1']) { echo "\n"; DecodeMsg($nation['dip1'], $nation['dip1_type'], $nation['dip1_who'], $nation['dip1_when'], $bg, 1); }
+    if($nation['dip2']) { echo "\n"; DecodeMsg($nation['dip2'], $nation['dip2_type'], $nation['dip2_who'], $nation['dip2_when'], $bg, 2); }
+    if($nation['dip3']) { echo "\n"; DecodeMsg($nation['dip3'], $nation['dip3_type'], $nation['dip3_who'], $nation['dip3_when'], $bg, 3); }
+    if($nation['dip4']) { echo "\n"; DecodeMsg($nation['dip4'], $nation['dip4_type'], $nation['dip4_who'], $nation['dip4_when'], $bg, 4); }
 }
 
 function ShowMsg($bgcolor, $type, $picture, $imgsvr, $me, $mycolor, $you, $youcolor, $msg, $date, $num=0, $who=0, $when=0, $level=0, $note="") {

@@ -40,10 +40,10 @@ case "토너분지연":
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     break;
 case "금지급":
-    processGoldIncome($connect);
+    processGoldIncome();
     break;
 case "쌀지급":
-    processRiceIncome($connect);
+    processRiceIncome();
     break;
 case "락걸기":
     $query = "update plock set plock=1";

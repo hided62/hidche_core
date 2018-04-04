@@ -16,7 +16,10 @@ function GetStuffName($stuff) {
     return $str;
 }
 
-function registerAuction($connect) {
+function registerAuction() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $query = "select startyear,year,month,turnterm from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -137,7 +140,10 @@ function registerAuction($connect) {
     }
 }
 
-function processAuction($connect) {
+function processAuction() {
+    $db = DB::db();
+    $connect=$db->get();
+
     $date = date("Y-m-d H:i:s");
 
     $query = "select year,month from game limit 1";
