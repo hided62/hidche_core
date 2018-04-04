@@ -46,7 +46,7 @@ $tch2 = array_fill(0,11, '');
 $dec = 0;
 $rice = 0;
 
-CheckLoginWithGeneralID();
+$session = Session::requireGameLogin()->setReadOnly();
 $connect = dbConn();
 increaseRefresh("시뮬", 2);
 

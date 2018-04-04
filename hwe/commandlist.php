@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 //로그인 검사
-$session = Session::Instance()->loginGame()->setReadOnly();
+$session = Session::requireGameLogin()->setReadOnly();
 
 $connect = dbConn();
 

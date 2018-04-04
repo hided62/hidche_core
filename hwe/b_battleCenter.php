@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 //로그인 검사
-CheckLoginWithGeneralID();
+$session = Session::requireGameLogin()->setReadOnly();
 $connect = dbConn();
 increaseRefresh("감찰부", 2);
 //전투 추진을 위해 갱신

@@ -6,12 +6,8 @@ include "func.php";
 // $btn, $name, $troop
 
 //로그인 검사
-$session = Session::requireLogin()->loginGame()->setReadOnly();
+$session = Session::requireGameLogin()->setReadOnly();
 $generalID = $session->$generalID;
-if(!$generalID){
-    header('Location:..');
-    die();
-}
 
 $db = DB::db();
 

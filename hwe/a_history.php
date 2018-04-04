@@ -5,7 +5,7 @@ include "lib.php";
 include "func.php";
 $yearmonth = $_POST['yearmonth'];
 //로그인 검사
-CheckLoginWithGeneralID();
+$session = Session::requireGameLogin()->setReadOnly();
 $connect = dbConn();
 increaseRefresh("연감", 5);
 

@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 //로그인 검사
-CheckLoginWithGeneralID();
+$session = Session::requireGameLogin()->setReadOnly();
 $connect = dbConn();
 increaseRefresh("인사부", 1);
 //훼섭 추방을 위해 갱신

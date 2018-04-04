@@ -6,7 +6,7 @@ include "func.php";
 //로그인 검사
 
 
-CheckLoginWithGeneralID();
+$session = Session::requireGameLogin()->setReadOnly();
 $connect = dbConn();
 increaseRefresh("턴반복", 1);
 

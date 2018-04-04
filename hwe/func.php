@@ -1208,12 +1208,9 @@ function cutDay($date, int $turnterm) {
 }
 
 function increaseRefresh($type="", $cnt=1) {
-    $session = Session::Instance();
+    $session = Session::requireGameLogin();
     $generalID = $session->generalID;
-    if(!$generalID){
-        $session->loginGame();
-    }
-    $generalID = $session->generalID;
+
     $date = date('Y-m-d H:i:s');
 
     DB::db()->query('UPDATE game set refresh=refresh+%i where `no`=1', $cnt);
@@ -1222,7 +1219,7 @@ function increaseRefresh($type="", $cnt=1) {
         DB::db()->query('UPDATE general set `lastrefresh`=%s_date, `con`=`con`+%i_cnt, `connect`=`connect`+%i_cnt, refcnt=refcnt+%i_cnt, refresh=refresh+%i_cnt where `no`=%i_no',[
             'date'=>$date,
             'cnt'=>$cnt,
-            'owner'->Session::Instance()->generalID
+            'owner'->$session->generalID
         ]);
     }
 
@@ -1266,7 +1263,6 @@ function increaseRefresh($type="", $cnt=1) {
         if(isset($_SERVER[$x])) $str .= "//{$x}:{$_SERVER[$x]}";
     }
     if($str != "") {
-        $session = Session::Instance();
         file_put_contents(
             "logs/_{$date2}_ipcheck.txt",
             sprintf(

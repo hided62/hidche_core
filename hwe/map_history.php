@@ -17,7 +17,7 @@ if(!$year || !$month) {
 include "lib.php";
 include "func.php";
 //로그인 검사
-CheckLoginWithGeneralID();
+$session = Session::requireGameLogin()->setReadOnly();
 $connect = dbConn();
 
 $query = "select map from history where year='$year' and month='$month'";

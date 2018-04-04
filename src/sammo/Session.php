@@ -187,7 +187,6 @@ class Session {
         }
 
         $serverID = UniqueConst::$serverID;
-        $db = DB::db();
 
         $loginDate = $this->get($serverID.static::GAME_KEY_DATE);
         $generalID = $this->get($serverID.static::GAME_KEY_GENERAL_ID);
@@ -197,9 +196,9 @@ class Session {
         $now = time();
         if(
             $generalID && $generalName && $loginDate && $deadTime
-            && $loginDate + 600 > $now && $deadTime > $now
+            && $loginDate + 1800 > $now && $deadTime > $now
         ){
-            //로그인 정보는 10분간 유지한다.
+            //로그인 정보는 30분간 유지한다.
             if($result !== null){
                 $result = true;
             }
@@ -209,6 +208,8 @@ class Session {
         if($generalID || $generalName || $loginDate || $deadTime){
             $this->logoutGame();
         }
+
+        $db = DB::db();
 
         $general = $db->queryFirstRow(
             'SELECT `no`, `name`, `killturn`, `turntime` from general where `owner` = %i', 

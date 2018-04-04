@@ -6,7 +6,7 @@ include "func.php";
 // $msg
 
 //로그인 검사
-CheckLoginWithGeneralID();
+$session = Session::requireGameLogin()->setReadOnly();
 $connect = dbConn();
 
 $query = "select no,nation from general where owner='{$_SESSION['userID']}'";

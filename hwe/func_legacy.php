@@ -1,18 +1,6 @@
 <?php
 namespace sammo;
 
-
-function CheckLoginWithGeneralID() {
-    $session = Session::requireLogin()->loginGame()->setReadOnly();
-    $generalID = $session->generalID;
-    if($generalID){
-       return $generalID; 
-    }
-    header('Locatoin:..');
-    die();
-}
-
-
 function printLimitMsg($turntime) {
     echo "
 <!DOCTYPE html>
