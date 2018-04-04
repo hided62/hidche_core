@@ -3,13 +3,10 @@ namespace sammo;
 
 include "lib.php";
 
-$session = Session::Instance()->setReadOnly();
-if(!$session->userID){
-    Json::die([
-        'game'=>'x',
-        'me'=>'no'
-    ]);
-}
+$session = Session::requireLogin([
+    'game'=>'x',
+    'me'=>null
+])->setReadOnly();
 
 $db = DB::db();
 

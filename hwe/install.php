@@ -7,7 +7,9 @@ include "func.php";
 if(!class_exists('\sammo\DB')){
     header('Location:install_db.php');
 }
-if(Session::getUserGrade(true) < 5){
+
+$session = Session::requireLogin();
+if($session->userGrade < 5){
     die('관리자 아님');
 }
 

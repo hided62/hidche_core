@@ -1208,19 +1208,25 @@ function cutDay($date, int $turnterm) {
 }
 
 function increaseRefresh($type="", $cnt=1) {
-    $session = Session::requireGameLogin();
+    //FIXME: 로그인, 비로그인 시 처리가 명확하지 않음
+    $session = Session::Instance();
     $generalID = $session->generalID;
 
     $date = date('Y-m-d H:i:s');
 
-    DB::db()->query('UPDATE game set refresh=refresh+%i where `no`=1', $cnt);
+    $db = DB::db();
+    $db->update('game', [
+        'refresh'=>$db->sqleval('refresh+%i', $cnt)
+    ], true);
 
-    if(!Util::array_get($_SESSION['userID'], null)) {
-        DB::db()->query('UPDATE general set `lastrefresh`=%s_date, `con`=`con`+%i_cnt, `connect`=`connect`+%i_cnt, refcnt=refcnt+%i_cnt, refresh=refresh+%i_cnt where `no`=%i_no',[
-            'date'=>$date,
-            'cnt'=>$cnt,
-            'owner'->$session->generalID
-        ]);
+    if($generalID) {
+        $db->update('general', [
+            'lastrefresh'=>$date,
+            'con'=>$db->sqleval('con + %i', $cnt),
+            'connect'=>$db->sqleval('connect + %i', $cnt),
+            'refcnt'=>$db->sqleval('refcnt + %i', $cnt),
+            'refresh'=>$db->sqleval('refresh + %i', $cnt)
+        ], 'no=%i', $generalID);
     }
 
     $date = date('Y_m_d H:i:s');

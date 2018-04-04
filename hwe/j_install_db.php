@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$session = Session::Instance()->setReadOnly();
+$session = Session::requireLogin([])->setReadOnly();
 if($session->userGrade < 6){
     Json::die([
         'result'=>false,

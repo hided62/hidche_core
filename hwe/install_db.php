@@ -4,10 +4,12 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-if(Session::getUserGrade(true) < 5){
+$session = Session::requireLogin();
+
+if($session->userGrade < 5){
     die('관리자 아님');
 }
-if(Session::getUserGrade(true) == 5){
+if($session->userGrade == 5){
     die('DB 리셋 권한을 가지고 있지 않습니다.');
 }
 
@@ -39,7 +41,7 @@ if(Session::getUserGrade(true) == 5){
             </h3> 
             <div class="card-body">
                 <form id="db_form" method="post" action="#">
-<?php if(class_exists('\sammo\DB')): ?>
+<?php if(class_exists('\\sammo\\DB')): ?>
                     <div class="form-group row">
                         <label for="full_reset" class="col-sm-3 col-form-label">이전 DB 초기화</label>
                         <div class="col-sm-9" style="display: inline-flex;">

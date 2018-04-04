@@ -6,4 +6,4 @@ include "func.php";
 
 
 
-$session = Session::requireGameLogin(null)->setReadOnly();
+$session = Session::requireGameLogin([])->setReadOnly();

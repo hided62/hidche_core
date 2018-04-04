@@ -8,7 +8,7 @@ $result = [
     "myNationID"=>null,
     "isChief"=>false
 ];
-$session = Session::Instance()->loginGame()->setReadOnly();
+$session = Session::requireGameLogin([])->setReadOnly();
 
 $generalID = $session->generalID;
 

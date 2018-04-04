@@ -5,7 +5,7 @@ include 'lib.php';
 include 'func.php';
 
 //{msgID: 1206, response: true}
-
+$session = Session::requireGameLogin([])->setReadOnly();
 
 
 $generalID = Session::Instance()->generalID;

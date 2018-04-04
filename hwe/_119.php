@@ -5,9 +5,9 @@ include "lib.php";
 include "func.php";
 
 $connect=dbConn();
-
-if(Session::getUserGrade() < 5) {
-    echo "<!DOCTYPE html>
+$session = Session::requireGameLogin()->setReadOnly();
+if($session->userGrade < 5) {
+    ?><!DOCTYPE html>
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,12 +17,10 @@ if(Session::getUserGrade() < 5) {
 </head>
 <body>
 관리자가 아닙니다.<br>
-";
-    echo banner();
-    echo "
+    <?=banner()?>
 </body>
-</html>";
-
+</html>
+<?php
     exit();
 }
 

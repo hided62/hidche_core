@@ -7,7 +7,7 @@ include "func.php";
 //TODO: 이게 뭔지 분석
 
 $btn = $_POST['btn'];
-$userID = Session::getUserID();
+$session = Session::requireLogin()->setReadOnly();
 $connect = dbConn(true);
 
 //회원 테이블에서 정보확인

@@ -4,8 +4,9 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+$session = Session::requireLogin()->setReadOnly();
 $connect = dbConn(true);
-$userID = Session::getUserID();
+$userID = $session->userID;
 //회원 테이블에서 정보확인
 $query = "select no,name,picture,grade from MEMBER where no='$userID'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -15,6 +16,15 @@ if(!$member) {
     MessageBox("잘못된 접근입니다!!!");
     echo "<script>history.go(-1);</script>";
     exit(1);
+}
+
+$query = "select npcmode,maxgeneral,img from game limit 1";
+$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
+$admin = MYDB_fetch_array($result);
+
+if($admin['npcmode'] != 1) {
+    header('Location:join.php');
+    die();
 }
 
 $connect = dbConn();
@@ -36,15 +46,7 @@ $connect = dbConn();
         <tr><td align=center><?php info($connect, 0, 1); ?></td></tr>
     </table>
 <?php
-$query = "select npcmode,maxgeneral,img from game limit 1";
-$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
 
-if($admin['npcmode'] != 1) {
-    echo "<script>alert('잘못된 접근입니다!');</script>";
-    echo "<script>history.go(-1);</script>";
-    exit();
-}
 
 $query = "select no from general where npc<2";
 $result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");

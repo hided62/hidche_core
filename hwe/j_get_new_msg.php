@@ -4,11 +4,9 @@ namespace sammo;
 include('lib.php');
 include('func.php');
 
+$session = Session::requireGameLogin([])->setReadOnly();
 
-
-$generalID = Session::Instance()->generalID;
-
-session_write_close(); // 이제 세션 안 쓴다
+$generalID = $session->generalID;
 
 $jsonPost = WebUtil::parseJsonPost();
 

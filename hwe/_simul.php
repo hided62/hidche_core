@@ -4,6 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+$session = Session::requireGameLogin()->setReadOnly();
 
 
 //로그인 검사
@@ -46,7 +47,6 @@ $tch2 = array_fill(0,11, '');
 $dec = 0;
 $rice = 0;
 
-$session = Session::requireGameLogin()->setReadOnly();
 $connect = dbConn();
 increaseRefresh("시뮬", 2);
 

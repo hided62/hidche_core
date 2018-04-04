@@ -20,6 +20,10 @@ $me = $db->queryFirstRow(
     $session->userID
 );
 
+//턴 실행.
+$connect = dbConn();
+checkTurn($connect);
+
 //그새 사망이면
 if($me === null) {
     $session->logoutGame();
@@ -28,9 +32,7 @@ if($me === null) {
 }
 $session->setReadOnly();
 
-//턴 실행.
-$connect = dbConn();
-checkTurn($connect);
+
 
 if($me['newmsg'] == 1 && $me['newvote'] == 1) {
     $query = "update general set newmsg=0,newvote=0 where owner='{$_SESSION['userID']}'";
