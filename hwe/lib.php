@@ -109,21 +109,13 @@ function PrintElapsedTime()
 
 function LogText($prefix, $variable)
 {
-    $fp = fopen('logs/dbg_logs.txt', 'a+');
-    if ($fp == false) {
-        $directory_name = dirname('logs/dbg_logs.txt');
-        if (!is_dir($directory_name)) {
-            mkdir($directory_name);
-            $fp = fopen('logs/dbg_logs.txt', 'a+');
-        }
-    }
-    fwrite($fp, sprintf('%s : %s'."\n", $prefix, var_export($_POST, true)));
-    fclose($fp);
+    $text = sprintf('%s : %s'."\n", $prefix, var_export($variable, true));
+    file_put_contents(ROOT.'/d_log/dbg_logs.txt', $text, FILE_APPEND);
 }
 
 
 if (isset($_POST) && count($_POST) > 0) {
-    LogText($_SERVER['REQUEST_URI'], $_POST);
+    LogText($_SERVER['REQUEST_URI'], $_REQUEST);
     extract($_GET, EXTR_SKIP);
     extract($_POST, EXTR_SKIP);
     //XXX: $_POST를 추출 없이 그냥 쓰는 경우가 많아서 일단 디버깅을 위해 씀!!!! 절대 production 서버에서 사용 금지!
