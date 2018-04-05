@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$session = Session::requireGameLogin();
+$session = Session::requireLogin()->loginGame();
 
 increaseRefresh("메인", 1);
 
@@ -29,6 +29,9 @@ if($me === null) {
     $session->logoutGame();
     header('Location: ../');
     die();
+}
+if(!$session->generalID){
+    $session = Session::requireGameLogin();
 }
 $session->setReadOnly();
 

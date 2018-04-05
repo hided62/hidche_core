@@ -68,7 +68,7 @@ class Session {
         Json::die($jsonResult);
     }
 
-    public static function requireLogin($result = ROOT): Session{
+    public static function requireLogin($result = '..'): Session{
         $session = Session::Instance();
         if($session->isLoggedIn()){
             return $session;
@@ -77,7 +77,7 @@ class Session {
         static::die($result);
     }
 
-    public static function requireGameLogin($result = ROOT): Session{
+    public static function requireGameLogin($result = '..'): Session{
         $session = Session::requireLogin($result)->loginGame();
 
         if($session->generalID){
@@ -222,7 +222,9 @@ class Session {
             return $this;
         }
 
-        $turnterm = $db->queryFirstField('SELECT turnterm from game limit 1');
+        $gameInstance = $db->queryFirstRow('SELECT turnterm, isUnited from game limit 1');
+        $turnterm = $gameInstance['turnterm'];
+        $isUnited = $gameInstance['isUnited'] != 0;
 
         $generalID = $general['no'];
         $generalName = $general['name'];
@@ -230,11 +232,15 @@ class Session {
         $nextTurn = $nextTurn->getTimestamp();
 
         $deadTime = $nextTurn + $general['killturn'] * $turnterm;
-        if($deadTime < $now){
-            if($result !== null){
-                $result = false;
+        if($deadTime < $now && !$isUnited){
+            $locked = $db->queryFirstField('SELECT plock FROM plock LIMIT 1');
+            if(!$locked){
+                if($result !== null){
+                    $result = false;
+                }
+                return $this;
             }
-            return $this;
+            
         }
 
         $db->update('general', [
@@ -267,7 +273,7 @@ class Session {
      * 로그인 유저의 전역 grade를 받아옴
      * @return int|null
      */
-    public static function getUserGrade(bool $requireLogin = false, string $exitPath = ROOT){
+    public static function getUserGrade(bool $requireLogin = false, string $exitPath = '..'){
         if($requireLogin){
             $obj = self::requireLogin($exitPath);
         }
@@ -283,7 +289,7 @@ class Session {
      *
      * @return int|null 
      */
-    public static function getUserID(bool $requireLogin = false, string $exitPath = ROOT){
+    public static function getUserID(bool $requireLogin = false, string $exitPath = '..'){
         if($requireLogin){
             $obj = self::requireLogin($exitPath);
         }

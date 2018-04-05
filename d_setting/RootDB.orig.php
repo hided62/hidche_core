@@ -13,7 +13,7 @@ class RootDB{
 
     private static $globalSalt = '_tK_globalSalt_';
 
-    private static $serverWebPath = '_tK_serverBasePath';
+    public static $serverWebPath = '_tK_serverBasePath';
 
     private function __construct(){
 
