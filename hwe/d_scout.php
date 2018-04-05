@@ -12,6 +12,8 @@ include "func.php";
 
 $session = Session::requireGameLogin()->setReadOnly();
 
+//FIXME: 망했음. CriticalFailure. 재 구현.
+
 $db = DB::db();
 $connect=$db->get();
 

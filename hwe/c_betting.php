@@ -31,7 +31,7 @@ $me = MYDB_fetch_array($result);
 
 for($i=0; $i < 16; $i++) {
     if(${"btn{$i}"} == "베팅!") {
-        $gold = ${"gold{$i}"};
+        $gold = Util::toInt(${"gold{$i}"});
         $mebet = $me["bet{$i}"];
         if($gold >= 10 && $gold <= 1000) {
             if($gold + 500 <= $me['gold'] && $gold + $mebet <= 1000 && $gold + $me['bet'] <= 1000) {

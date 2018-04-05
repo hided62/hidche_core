@@ -33,16 +33,19 @@ if($btn == "국가방침") {
     $query = "update nation set scoutmsg='$scoutmsg' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "세율") {
+    $rate = (int)$rate;
     if($rate < 5)  { $rate = 5; }
     if($rate > 30) { $rate = 30; }
     $query = "update nation set rate='$rate' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "지급율") {
+    $bill = (int)$bill;
     if($bill < 20)  { $bill = 20; }
     if($bill > 200) { $bill = 200; }
     $query = "update nation set bill='$bill' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "기밀권한") {
+    $secretlimit = (int)$secretlimit;
     if($secretlimit < 1)   { $secretlimit = 1; }
     if($secretlimit > 99) { $secretlimit = 99; }
     $query = "update nation set secretlimit='$secretlimit' where nation='{$me['nation']}'";

@@ -5,6 +5,9 @@ include "lib.php";
 include "func.php";
 // $btn, $msg
 
+$gen = Util::toInt(Util::array_get($_POST['gen']));
+$sel = Util::toInt(Util::array_get($_POST['sel']));
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 
@@ -29,13 +32,15 @@ case 3: $tp = "intel";  $tp2 = "설전";   $tp3 = "intel"; break;
 if($me['tournament'] == 1 && $session->userGrade < 5) { echo "<script>location.replace('b_tournament.php');</script>"; exit(); }
 
 if($btn == "자동개최설정" && $session->userGrade >= 5) {
-    $query = "update game set tnmt_trig={$trig}";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('game', ['tnmt_trig'=>$trig], true);
 } elseif($btn == "개최" && $session->userGrade >= 5) {
     startTournament($auto, $type);
 } elseif($btn == "중단" && $session->userGrade >= 5) {
-    $query = "update game set tnmt_auto=0, tournament=0, phase=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('game', [
+        'tnmt_auto'=>0,
+        'tournament'=>0,
+        'phase'=>0
+    ], true);
 } elseif((($btn == "투입" || $btn == "무명투입" || $btn == "쪼렙투입" || $btn == "일반투입" || $btn == "굇수투입" || $btn == "랜덤투입") && $session->userGrade >= 5) || $btn == "참가") {
     if($btn == "투입") {
         $query = "select no,name,npc,leader,power,intel,explevel,gold,horse,weap,book from general where no='$gen'";

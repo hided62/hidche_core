@@ -9,6 +9,8 @@ $session = Session::requireGameLogin()->setReadOnly();
 $db = DB::db();
 $connect=$db->get();
 
+//FIXME: 망했음. CriticalFailure. 재 구현.
+
 $query = "select year,month from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);

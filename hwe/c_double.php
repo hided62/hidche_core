@@ -34,18 +34,17 @@ if($command == 46) {
     if($name == "") { $name = "무명"; }
     $name = StringUtil::SubStrForWidth($name, 0, 12);
 
-    $query = "update general set makenation='{$name}' where owner='{$session->userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        'makenation'=>$name
+    ], 'owner=%i', $session->userID);
 
     $count = sizeof($turn);
-    $str = "con=con";
-    for($i=0; $i < $count; $i++) {
-        $str .= ",turn{$turn[$i]}='{$comStr}'";
+    $query = ['con'=>$db->eval('con')];
+    foreach($turn as $turnIdx){
+        $query['turn'.$turnIdx] = $comStr;
     }
-    $query = "update general set {$str} where owner='{$session->userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //echo "<script>location.replace('index.php');</script>";
-    echo 'index.php';//TODO:debug all and replace
+    $db->upate('general', $query, 'owner=%i', $session->userID);
+    header('Location:index.php');
 //통합제의
 } elseif($command == 53) {
     $query = "select nation,level from general where owner='{$session->userID}'";

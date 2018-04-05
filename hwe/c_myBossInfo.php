@@ -5,6 +5,11 @@ include "lib.php";
 include "func.php";
 // $btn, $level, $genlist, $outlist
 
+$btn = Util::array_get($_POST['btn']);
+$level = Util::toInt(Util::array_get($_POST['level']));
+$genlist = Util::toInt(Util::array_get($_POST['genlist']));
+$outlist = Util::toInt(Util::array_get($_POST['outlist']));
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 
@@ -23,6 +28,13 @@ $meLevel = $me['level'];
 $query = "select no from general where nation='{$me['nation']}' and level=12";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $ruler = MYDB_fetch_array($result);
+
+//수뇌가 아니면 아무것도 할 수 없음
+if($meLevel < 5){
+    echo 'b_myBossInfo.php';//TODO:debug all and replace
+    exit();
+}
+
 
 if($btn == "임명") {
     $query = "select no,nation,level,leader,power,intel from general where no='$genlist'";
@@ -46,6 +58,12 @@ if($btn == "임명") {
         echo 'b_myBossInfo.php';//TODO:debug all and replace
         exit();
     }
+}
+
+//나와 대상 장수는 국가가 같아야 함
+if($me['nation'] != $general['nation']){
+    echo 'b_myBossInfo.php';//TODO:debug all and replace
+    exit();
 }
 
 if($btn == "추방") {
@@ -220,10 +238,16 @@ if($btn == "추방") {
     case 2: $lv = 3; break;
     }
 
-    $query = "select gen{$lv} from city where city='$citylist'";
+    $query = "select gen{$lv} from city where nation='{$me['nation']}' and city='$citylist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
+    if(!$city){
+        //echo "<script>location.replace('b_myBossInfo.php');</script>";
+        echo 'b_myBossInfo.php';//TODO:debug all and replace
+        die();
+    }
     $oldlist = $city["gen{$lv}"];
+
     if($oldlist != 0) {
         //기존 장수 일반으로
         $query = "update general set level=1 where no='$oldlist'";
@@ -239,6 +263,7 @@ if($btn == "추방") {
         case  3: if($general['intel'] >= GameConst::$goodgenintel) { $valid = 1; } break;
         default: $valid = 1; break;
         }
+
         if($valid == 1) {
             // 신임 장수의 원래 자리 해제
             $query = "update city set gen1=0 where gen1='$genlist'";

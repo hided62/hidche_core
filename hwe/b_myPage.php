@@ -12,28 +12,32 @@ $connect=$db->get();
 increaseRefresh("내정보", 1);
 
 $query = "select myset from general where owner='{$session->userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-if($me['myset'] > 0) {
+if ($me['myset'] > 0) {
     $submit = 'submit';
 } else {
     $submit = 'hidden';
 }
 
-if($btn == "설정저장" && $me['myset'] > 0) {
-    if($me['myset'] > 1) {
+if ($btn == "설정저장" && $me['myset'] > 0) {
+    if ($me['myset'] > 1) {
         $submit = 'submit';
     } else {
         $submit = 'hidden';
     }
 
-    $query = "update general set myset=myset-1,map='$map',mode='$mode',tnmt='$tnmt' where owner='{$session->userID}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        'myset'=>$db->sqleval('myset-1'),
+        'map'=>$map,
+        'mode'=>$mode,
+        'tnmt'=>$tnmt
+    ], 'owner=%i', $session->userID);
 }
 
 $query = "select no,map,mode,tnmt,myset from general where owner='{$session->userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
 ?>

@@ -34,15 +34,11 @@ $session->setReadOnly();
 
 
 
-if($me['newmsg'] == 1 && $me['newvote'] == 1) {
-    $query = "update general set newmsg=0,newvote=0 where owner='{$session->userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-} elseif($me['newmsg'] == 1) {
-    $query = "update general set newmsg=0 where owner='{$session->userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-} elseif($me['newvote'] == 1) {
-    $query = "update general set newvote=0 where owner='{$session->userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+if($me['newmsg'] == 1 || $me['newvote'] == 1) {
+    $db->update('general', [
+        'newmsg'=>0,
+        'newvote'=>0
+    ], 'owner=%i', $session->userID);
 }
 
 $query = "select develcost,online,conlimit,tournament,tnmt_type,turnterm,scenario,scenario_text,extended_general,fiction,npcmode,vote from game limit 1";

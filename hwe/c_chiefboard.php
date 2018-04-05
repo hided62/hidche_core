@@ -3,6 +3,10 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$title = Util::array_get($_POST['title']);
+$msg = Util::array_get($_POST['msg']);
+$num = Util::toInt(Util::array_get($_POST['num']));
 // $title, $msg, $num
 
 //로그인 검사

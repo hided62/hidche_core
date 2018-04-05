@@ -3,6 +3,9 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$sel = Util::toInt(Util::array_get($_POST['sel']));
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 
