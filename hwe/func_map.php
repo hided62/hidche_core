@@ -50,7 +50,8 @@ function getWorldMap($req){
         return getHistoryMap($req->year, $req->month);
     }
 
-    $generalID = Session::Instance()->generalID;
+    $session = Session::Instance();
+    $generalID = $session->generalID;
 
     $db = DB::db();
 
@@ -59,7 +60,7 @@ function getWorldMap($req){
     $year = Util::toInt($game['year']);
     $month = Util::toInt($game['month']);
 
-    if($generalID && ($req->showMe || $req->neutralView)){
+    if($generalID && ($req->showMe || !$req->neutralView)){
         $city = $db->queryFirstRow(
                 'select `city`, `nation` from `general` where `no`=%i',
                  $generalID);
@@ -70,7 +71,7 @@ function getWorldMap($req){
         if(!$req->showMe){
             $myCity = null;
         }
-        if(!$req->neutralView){
+        if($req->neutralView){
             $myNation = null;
         }
     }
