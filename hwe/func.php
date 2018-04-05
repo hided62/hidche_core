@@ -77,6 +77,7 @@ function GetImageURL($imgsvr) {
 }
 
 function checkLimit($con, $conlimit) {
+    $session = Session::Instance();
     if($session->userGrade>=4){
         return 0;
     }
@@ -116,6 +117,7 @@ function getRandGenName() {
 
 
 function cityInfo() {
+    $session = Session::Instance();
     global $_basecolor, $_basecolor2, $images;
 
     $db = DB::db();
@@ -145,7 +147,7 @@ function cityInfo() {
         $tradeStr = $city['trade'] . "%";
     }
 
-    if($nation['color'] == "" ) { $nation['color'] = "000000"; }
+    if($nation['color'] == "" ) { $nation['color'] = "#000000"; }
     echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
     <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
@@ -230,6 +232,7 @@ function cityInfo() {
 }
 
 function myNationInfo() {
+    $session = Session::Instance();
     global $_basecolor, $_basecolor2, $images;
 
     $db = DB::db();
@@ -408,6 +411,7 @@ function commandGroup($typename, $type=0) {
 }
 
 function commandTable() {
+    $session = Session::Instance();
     $db = DB::db();
     $connect=$db->get();
 
@@ -645,6 +649,7 @@ function commandTable() {
 }
 
 function CoreCommandTable() {
+    $session = Session::Instance();
     $db = DB::db();
     $connect=$db->get();
 
@@ -744,6 +749,7 @@ function CoreCommandTable() {
 function myInfo() {
     $db = DB::db();
     $connect=$db->get();
+    $session = Session::Instance();
     
     $query = "select no from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -824,7 +830,7 @@ function generalInfo($no) {
     $remaining = substr($general['turntime'], 14, 2) - date('i');
     if($remaining < 0) { $remaining = 60 + $remaining; }
 
-    if($nation['color'] == "") { $nation['color'] = "000000"; }
+    if($nation['color'] == "") { $nation['color'] = "#000000"; }
 
     if($general['age'] < 60)     { $general['age'] = "<font color=limegreen>{$general['age']} 세</font>"; }
     elseif($general['age'] < 80) { $general['age'] = "<font color=yellow>{$general['age']} 세</font>"; }
@@ -932,6 +938,7 @@ function generalInfo($no) {
 }
 
 function myInfo2() {
+    $session = Session::Instance();
     $db = DB::db();
     $connect=$db->get();
 
@@ -1097,6 +1104,7 @@ function onlineNation() {
 }
 
 function nationMsg() {
+    $session = Session::Instance();
     $db = DB::db();
     $connect=$db->get();
 
@@ -2380,6 +2388,7 @@ function getAdmin() {
 function getMe() {
     $db = DB::db();
     $connect=$db->get();
+    $session = Session::Instance();
 
     $query = "select * from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("접속자가 많아 접속을 중단합니다. 잠시후 갱신해주세요.<br>getMe : ".MYDB_error($connect),"");

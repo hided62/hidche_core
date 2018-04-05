@@ -836,7 +836,7 @@ function ConvertLog($str, $type=1) {
 function newColor($color) {
     switch($color) {
         case "":
-        case "330000":
+        case "#330000":
         case "#FF0000":
         case "#800000":
         case "#A0522D":
@@ -852,10 +852,10 @@ function newColor($color) {
         case "#7B68EE":
         case "#800080":
         case "#A9A9A9":
-        case "000000":
+        case "#000000":
             $color = "#FFFFFF"; break;
         default:
-            $color = "000000"; break;
+            $color = "#000000"; break;
     }
     return $color;
 }

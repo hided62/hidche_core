@@ -280,6 +280,7 @@ function getMailboxList(){
 function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
     $db = DB::db();
     $connect=$db->get();
+    $session = Session::Instance();
 
     //FIXME: 폐기
     $query = "select no,nation,name,picture,level from general where owner='{$session->userID}'";
@@ -300,7 +301,7 @@ function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
 
     if($sndr['nation'] == 0) {
         $sndrnation['name'] = '재야';
-        $sndrnation['color'] = 'FFFFFF';
+        $sndrnation['color'] = '#FFFFFF';
     } else {
         $sndrnation = getNationStaticInfo($sndr['nation']);
     }
@@ -327,7 +328,7 @@ function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
 
         if($rcvr['nation'] == 0) {
             $rcvrnation['name'] = '재야';
-            $rcvrnation['color'] = 'FFFFFF';
+            $rcvrnation['color'] = '#FFFFFF';
         } else {
             $rcvrnation = getNationStaticInfo($rcvr['nation']);
         }
@@ -348,6 +349,7 @@ function moveMsg($table, $msgtype, $msgnum, $msg, $type, $who, $when, $column, $
 function MsgDip($bg) {
     $db = DB::db();
     $connect=$db->get();
+    $session = Session::Instance();
 
     $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

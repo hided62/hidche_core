@@ -5,18 +5,25 @@ if (document.all) {
         var key_enter = 13; // 13 = 엔터
         if (key_f5 == event.keyCode) {
             event.keyCode=0;
-            refreshing(0,0);
+            refreshing(null, 0,0);
             return false;
         } else if(key_enter == event.keyCode) {
             event.keyCode=0;
-            refreshing(4,message);
+            refreshing(null, 4,message);
             return false;
         }
         return true;
     }
 }
 
-function refreshing(arg1, arg2) {
+function refreshing(obj, arg1, arg2) {
+    if(obj !== null){
+        var $obj = $(obj);
+        if($obj.find('button:disabled').length > 0){
+            console.log('locked');
+            return;
+        }
+    }
 //    if(term <= 0) {
     switch(arg1) {
         case 0: location.reload(); break;

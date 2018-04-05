@@ -216,13 +216,13 @@ if($session->userGrade >= 5) {
                 <option value=10>10턴</option>
                 <option value=11>11턴</option>
                 <option value=12>12턴</option>
-            </select><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:50;font-size:13px; value='반복' onclick='refreshing(2,0)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:80;font-size:13px; value='▼미루기' onclick='refreshing(2,1)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:80;font-size:13px; value='▲당기기' onclick='refreshing(2,2)'>
+            </select><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:50;font-size:13px; value='반복' onclick='refreshing(this, 2,0)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:80;font-size:13px; value='▼미루기' onclick='refreshing(this, 2,1)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:80;font-size:13px; value='▲당기기' onclick='refreshing(this, 2,2)'>
         </td>
     </tr>
     <tr>
         <td width=646 align=right>
             <?php commandTable(); ?>
-            <input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13px; value='실 행' onclick='refreshing(3,form2)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13px; value='갱 신' onclick='refreshing(0,0)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:160;font-size:13px; value='로그아웃' onclick=location.replace('logout_process.php')><br>
+            <input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:110;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=$_basecolor2;?>;color:white;width:160;font-size:13px; value='로그아웃' onclick=location.replace('logout_process.php')><br>
         </td>
     </tr>
 </form>

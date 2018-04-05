@@ -6,6 +6,7 @@ include "func.php";
 
 $db = DB::db();
 $connect=$db->get();
+$session = Session::requireGameLogin()->setReadOnly();
 
 increaseRefresh("설문조사", 1);
 

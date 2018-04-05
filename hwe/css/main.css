@@ -29,6 +29,30 @@ color:white;
     display:block;
 }
 
+.commandButton {
+    float:left;
+    width:111px;
+    height:30px;
+    font-weight:bold;
+    font-size:13px;
+    margin:0;
+    display:block;
+}
+
+.commandButton:disabled::before{
+    content:'【'
+}
+
+.commandButton:disabled::after{
+    content:'】'
+}
+
+.commandButton:disabled{
+    background-color:transparent !important;
+    color:gray !important;
+    border-color:transparent !important;
+}
+
 .toolbarButton2 {
     float:left;
     background-color:#225500;
