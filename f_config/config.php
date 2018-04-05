@@ -8,6 +8,10 @@ define('IMAGES', '../../images');
 
 define('ROOT', realpath(__dir__.'/..'));
 
+mb_internal_encoding("UTF-8");
+mb_http_output('UTF-8');
+mb_regex_encoding('UTF-8'); 
+
 function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext){
     if (!(error_reporting() & $errno)) {
         // This error code is not included in error_reporting, so let it fall
