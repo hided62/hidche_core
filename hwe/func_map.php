@@ -83,7 +83,13 @@ function getWorldMap($req){
     if($myNation){
         $spyList = $db->queryFirstField('select `spy` from `nation` where `nation`=%i', 
             $myNation);
-        $spyList = array_map('Util::toInt', explode("|", $spyList));
+        if($spyList){
+            $spyList = array_map('\sammo\Util::toInt', explode("|", $spyList));
+        }
+        else{
+            $spyList = [];
+        }
+        
     }
     else{
         $spyList = [];
