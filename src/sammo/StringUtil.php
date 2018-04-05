@@ -212,52 +212,19 @@ class StringUtil {
 
     public static function EscapeTag($str) {
         $str = htmlspecialchars($str);
-        $str = str_replace("\r\n", "<br>", $str);
-        $str = str_replace("\n", "<br>", $str);
+        $str = str_replace(["\r\n", "\r", "\n"], '<br>', $str);
 //        return nl2br(htmlspecialchars($str));
 //        return htmlspecialchars($str);
         return $str;
     }
 
-    public static function NoSpecialCharacter($str) {
-        $str = str_replace(" ", "", $str);
-        $str = str_replace("\"", "", $str);
-        $str = str_replace("'", "", $str);
-        $str = str_replace("ⓝ", "", $str);
-        $str = str_replace("ⓜ", "", $str);
-        $str = str_replace("ⓖ", "", $str);
-        $str = str_replace("\\", "", $str);
-        $str = str_replace("/", "", $str);
-        $str = str_replace("`", "", $str);
-        $str = str_replace("-", "", $str);
-        $str = str_replace("=", "", $str);
-        $str = str_replace("[", "", $str);
-        $str = str_replace("]", "", $str);
-        $str = str_replace(";", "", $str);
-        $str = str_replace(",", "", $str);
-        $str = str_replace(".", "", $str);
-        $str = str_replace("~", "", $str);
-        $str = str_replace("!", "", $str);
-        $str = str_replace("@", "", $str);
-        $str = str_replace("#", "", $str);
-        $str = str_replace("$", "", $str);
-        $str = str_replace("%", "", $str);
-        $str = str_replace("^", "", $str);
-        $str = str_replace("&", "", $str);
-        $str = str_replace("*", "", $str);
-        $str = str_replace("(", "", $str);
-        $str = str_replace(")", "", $str);
-        $str = str_replace("_", "", $str);
-        $str = str_replace("+", "", $str);
-        $str = str_replace("|", "", $str);
-        $str = str_replace("{", "", $str);
-        $str = str_replace("}", "", $str);
-        $str = str_replace(":", "", $str);
-        $str = str_replace("", "", $str);
-        $str = str_replace("<", "", $str);
-        $str = str_replace(">", "", $str);
-        $str = str_replace("?", "", $str);
-        $str = str_replace("　", "", $str);
-        return $str;
+    public static function removeSpecialCharacter($str) {
+        return str_replace([
+            ' ', '"', '\'', 'ⓝ', 'ⓜ', 'ⓖ', '\\', '/', '`', 
+            '-', '=', '[', ']', ';', ',', '.', '~', '!', '@', 
+            '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 
+            '|', '{', '}', ':', '', '<', '>', '?', '　'
+        ], '', $str);
     }
+
 }

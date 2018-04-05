@@ -17,10 +17,6 @@ class Json{
         return json_encode($value, $rawFlag); 
     }
 
-    public static function encodePack($value, $pretty = false){
-
-    }
-
     public static function decode($value){
         return json_decode($value, true);
     }

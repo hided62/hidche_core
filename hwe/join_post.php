@@ -44,7 +44,7 @@ $session = Session::requireLogin()->setReadOnly();
 //NOTE: 이 페이지에서는 세션에 데이터를 등록하지 않음. 로그인은 이후에.
 
 $name       = $_POST['name'];
-$name       = StringUtil::NoSpecialCharacter($name);
+$name       = StringUtil::removeSpecialCharacter($name);
 $pic        = (int)Util::array_get($_POST['pic'], 0);
 $character  = (int)Util::array_get($_POST['character'], 0);
 
