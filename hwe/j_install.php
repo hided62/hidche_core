@@ -48,7 +48,7 @@ $show_img_level = (int)$_POST['show_img_level'];
 if(120 % $turnterm != 0){
     Json::die([
         'result'=>false,
-        'turnterm은 120의 약수여야 합니다.'
+        'reason'=>'turnterm은 120의 약수여야 합니다.'
     ]);
 }
 
