@@ -5,13 +5,14 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
+$userID = Session::getUserID();
 
 $db = DB::db();
 $connect=$db->get();
 
 increaseRefresh("내정보", 1);
 
-$query = "select myset from general where owner='{$session->userID}'";
+$query = "select myset from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
@@ -33,10 +34,10 @@ if ($btn == "설정저장" && $me['myset'] > 0) {
         'map'=>$map,
         'mode'=>$mode,
         'tnmt'=>$tnmt
-    ], 'owner=%i', $session->userID);
+    ], 'owner=%i', $userID);
 }
 
-$query = "select no,map,mode,tnmt,myset from general where owner='{$session->userID}'";
+$query = "select no,map,mode,tnmt,myset from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 

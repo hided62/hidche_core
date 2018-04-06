@@ -4,6 +4,7 @@ namespace sammo;
 require(__dir__.'/../vendor/autoload.php');
 
 $session = Session::requireLogin([]);
+$userID = Session::getUserID();
 
 // 외부 파라미터
 // $_POST['pw'] : PW
@@ -21,7 +22,7 @@ $db = RootDB::db();
 
 $userInfo = $db->queryFirstRow('SELECT oauth_id, oauth_type, email, delete_after FROM MEMBER '.
     'WHERE `no`=%i and pw=sha2(concat(salt, %s, salt), 512)',
-    $session->userID, $pw);
+    $userID, $pw);
 
 if(!$userInfo){
     Json::die([
@@ -39,7 +40,7 @@ if($userInfo['delete_after']){
 
 $db->update('member',[
     'delete_after'=>TimeUtil::DatetimeFromNowMinute(60*24*30)
-], 'no=%i', $session->userID);
+], 'no=%i', $userID);
 
 if(!$db->affectedRows()){
     Json::die([
@@ -51,7 +52,7 @@ if(!$db->affectedRows()){
 
 
 $db->insert('member_log', [
-    'member_no'=>$session->userID,
+    'member_no'=>$userID,
     'action_type'=>'delete'
 ]);
 

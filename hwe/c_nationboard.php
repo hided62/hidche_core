@@ -10,12 +10,13 @@ $num = Util::toInt(Util::array_get($_POST['num']));
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
+$userID = Session::getUserID();
 
 $db = DB::db();
 $connect=$db->get();
 
 if(getBlockLevel() != 1 && getBlockLevel() != 3) {
-    $query = "select no,nation from general where owner='{$session->userID}'";
+    $query = "select no,nation from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

@@ -4,13 +4,14 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+$session = Session::requireGameLogin()->setReadOnly();
+$userID = Session::getUserID();
 $db = DB::db();
 $connect=$db->get();
-$session = Session::requireGameLogin()->setReadOnly();
 
 increaseRefresh("설문조사", 1);
 
-$query = "select no,vote from general where owner='{$session->userID}'";
+$query = "select no,vote from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

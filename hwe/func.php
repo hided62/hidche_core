@@ -117,13 +117,13 @@ function getRandGenName() {
 
 
 function cityInfo() {
-    $session = Session::getInstance();
     global $_basecolor, $_basecolor2, $images;
 
     $db = DB::db();
     $connect=$db->get();
+    $userID = Session::getUserID();
 
-    $query = "select no,city from general where owner='{$session->userID}'";
+    $query = "select no,city from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -232,17 +232,17 @@ function cityInfo() {
 }
 
 function myNationInfo() {
-    $session = Session::getInstance();
     global $_basecolor, $_basecolor2, $images;
 
     $db = DB::db();
     $connect=$db->get();
+    $userID = Session::getUserID();
 
     $query = "select startyear,year from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation from general where owner='{$session->userID}'";
+    $query = "select no,nation from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -411,15 +411,15 @@ function commandGroup($typename, $type=0) {
 }
 
 function commandTable() {
-    $session = Session::getInstance();
     $db = DB::db();
     $connect=$db->get();
+    $userID = Session::getUserID();
 
     $query = "select startyear,year,develcost,scenario from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where owner='{$session->userID}'";
+    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -649,15 +649,15 @@ function commandTable() {
 }
 
 function CoreCommandTable() {
-    $session = Session::getInstance();
     $db = DB::db();
     $connect=$db->get();
+    $userID = Session::getUserID();
 
     $query = "select develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select no,nation,city,level from general where owner='{$session->userID}'";
+    $query = "select no,nation,city,level from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -749,9 +749,9 @@ function CoreCommandTable() {
 function myInfo() {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::getInstance();
+    $userID = Session::getUserID();
     
-    $query = "select no from general where owner='{$session->userID}'";
+    $query = "select no from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -938,11 +938,11 @@ function generalInfo($no) {
 }
 
 function myInfo2() {
-    $session = Session::getInstance();
     $db = DB::db();
     $connect=$db->get();
+    $userID = Session::getUserID();
 
-    $query = "select no from general where owner='{$session->userID}'";
+    $query = "select no from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -1104,11 +1104,11 @@ function onlineNation() {
 }
 
 function nationMsg() {
-    $session = Session::getInstance();
     $db = DB::db();
     $connect=$db->get();
+    $userID = Session::getUserID();
 
-    $query = "select no,nation from general where owner='{$session->userID}'";
+    $query = "select no,nation from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -2388,9 +2388,9 @@ function getAdmin() {
 function getMe() {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::getInstance();
+    $userID = Session::getUserID();
 
-    $query = "select * from general where owner='{$session->userID}'";
+    $query = "select * from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error("접속자가 많아 접속을 중단합니다. 잠시후 갱신해주세요.<br>getMe : ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

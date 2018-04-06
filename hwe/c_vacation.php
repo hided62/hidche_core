@@ -5,6 +5,7 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
+$userID = Session::getUserID();
 
 $db = DB::db();
 $connect=$db->get();
@@ -15,7 +16,7 @@ $admin = MYDB_fetch_array($result);
 
 $admin['killturn'] *= 3;
 
-$query = "update general set killturn='{$admin['killturn']}' where owner='{$session->userID}'";
+$query = "update general set killturn='{$admin['killturn']}' where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 //echo "<script>location.replace('b_myPage.php');</script>";

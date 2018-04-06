@@ -10,8 +10,7 @@ $nowDate = TimeUtil::DatetimeNow();
 $session = Session::requireLogin([
     'reason'=>'로그인이 되어있지 않습니다'
 ]);
-
-$userID = $session->userID;
+$userID = Session::getUserID();
 $access_token = $session->access_token;
 $expires = $session->expires;
 $refresh_token = $session->refresh_token;

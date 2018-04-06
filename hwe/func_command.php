@@ -685,7 +685,7 @@ where nation='{$general['nation']}'
 function command_Single($turn, $command) {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::getInstance();
+    $userID = Session::getUserID();
 
     $command = EncodeCommand(0, 0, 0, $command);
 
@@ -694,7 +694,7 @@ function command_Single($turn, $command) {
     for($i=0; $i < $count; $i++) {
         $str .= ",turn{$turn[$i]}='{$command}'";
     }
-    $query = "update general set {$str} where owner='{$session->userID}'";
+    $query = "update general set {$str} where owner='{$userID}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //echo "<script>location.replace('commandlist.php');</script>";
     echo 'commandlist.php';//TODO:debug all and replace
@@ -704,11 +704,11 @@ function command_Single($turn, $command) {
 function command_Chief($turn, $command) {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::getInstance();
+    $userID = Session::getUserID();
 
     $command = EncodeCommand(0, 0, 0, $command);
 
-    $query = "select nation,level from general where owner='{$session->userID}'";
+    $query = "select nation,level from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

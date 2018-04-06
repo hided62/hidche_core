@@ -5,20 +5,21 @@ include "lib.php";
 include "func.php";
 
 $session = Session::requireLogin()->loginGame();
+$userID = Session::getUserID();
 
 increaseRefresh("메인", 1);
 
 $db = DB::db();
 $connect=$db->get();
 
-if(!$session->userID){
+if(!$userID){
     header('Location:..');
     die();
 }
 
 $me = $db->queryFirstRow(
     'SELECT no,con,turntime,newmsg,newvote,map from general where owner = %i',
-    $session->userID
+    $userID
 );
 
 //턴 실행.
@@ -34,14 +35,14 @@ if(!$session->generalID){
     $session = Session::requireGameLogin();
 }
 $session->setReadOnly();
-
+$userID = Session::getUserID();
 
 
 if($me['newmsg'] == 1 || $me['newvote'] == 1) {
     $db->update('general', [
         'newmsg'=>0,
         'newvote'=>0
-    ], 'owner=%i', $session->userID);
+    ], 'owner=%i', $userID);
 }
 
 $query = "select develcost,online,conlimit,tournament,tnmt_type,turnterm,scenario,scenario_text,extended_general,fiction,npcmode,vote from game limit 1";

@@ -8,6 +8,7 @@ include 'func.php';
 $session = Session::requireGameLogin([
     'newSeq' => false
 ]); 
+$userID = Session::getUserID();
 //NOTE: 전송 메시지 시간 계산을 위해 Session을 쓰기 가능 상태로 열어둠.
 
 /**
@@ -47,7 +48,7 @@ if(getBlockLevel() == 1 || getBlockLevel() == 3) {
 
 $conlimit = $db->queryFirstField('select conlimit from game limit 1');
 
-$me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr` from `general` where `owner` = %i', $session->userID);
+$me = $db->queryFirstRow('select `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr` from `general` where `owner` = %i', $userID);
 
 if(!$me){
     $session->logoutGame();

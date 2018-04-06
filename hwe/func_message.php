@@ -280,10 +280,10 @@ function getMailboxList(){
 function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::getInstance();
+    $userID = Session::getUserID();
 
     //FIXME: 폐기
-    $query = "select no,nation,name,picture,level from general where owner='{$session->userID}'";
+    $query = "select no,nation,name,picture,level from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
@@ -349,9 +349,9 @@ function moveMsg($table, $msgtype, $msgnum, $msg, $type, $who, $when, $column, $
 function MsgDip($bg) {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::getInstance();
+    $userID = Session::getUserID();
 
-    $query = "select no,nation from general where owner='{$session->userID}'";
+    $query = "select no,nation from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 

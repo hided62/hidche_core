@@ -4,12 +4,13 @@ namespace sammo;
 require(__dir__.'/../vendor/autoload.php');
 
 $session = Session::requireLogin([])->setReadOnly();
+$userID = Session::getUserID();
 
 // 외부 파라미터
 
 $respone = [];
 $db = RootDB::db();
-$picName = $db->queryFirstField('SELECT picture FROM `MEMBER` WHERE `NO` = %i', $session->userID);
+$picName = $db->queryFirstField('SELECT picture FROM `MEMBER` WHERE `NO` = %i', $userID);
 
 if($picName && strlen($picName) > 11){
     $dt = substr($picName, -8);
@@ -34,7 +35,7 @@ if($dt == $rf) {
     $db->update('MEMBER', [
         'PICTURE'=>'default.jpg',
         'IMGSVR'=>0,
-    ], 'NO=%i', $session->userID);
+    ], 'NO=%i', $userID);
     
     $servers = [];
 

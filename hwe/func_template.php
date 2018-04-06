@@ -90,13 +90,14 @@ function commandButton() {
     global $_basecolor, $_basecolor2;
 
     $session = Session::getInstance();
+    $userID = Session::getUserID();
     $generalID = $session->generalID;
     
     if($generalID === null){
         return '';
     }
     $db = DB::db();
-    $me = $db->queryFirstRow("select no,nation,level,belong from general where owner=%i", $session->userID);
+    $me = $db->queryFirstRow("select no,nation,level,belong from general where owner=%i", $userID);
 
     $nation = $db->queryFirstRow("select nation,color,secretlimit from nation where nation=%i",$me['nation']);
 

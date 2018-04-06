@@ -41,6 +41,7 @@ if(!$v->validate()){
 }
 
 $session = Session::requireLogin()->setReadOnly();
+$userID = Session::getUserID();
 //NOTE: 이 페이지에서는 세션에 데이터를 등록하지 않음. 로그인은 이후에.
 
 $name       = $_POST['name'];
@@ -54,7 +55,6 @@ $intel = (int)$_POST['intel'];
 
 $mylog = [];
 
-$userID = $session->userID;
 $rootDB = RootDB::db();
 //회원 테이블에서 정보확인
 $member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name` FROM MEMBER WHERE no=%i', $userID);

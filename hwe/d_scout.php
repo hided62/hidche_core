@@ -11,7 +11,7 @@ include "func.php";
 //로그인 검사
 
 $session = Session::requireGameLogin()->setReadOnly();
-
+$userID = Session::getUserID();
 //FIXME: 망했음. CriticalFailure. 재 구현.
 
 $db = DB::db();
@@ -21,7 +21,7 @@ $query = "select startyear,year,month,killturn from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,nation,nations,level,troop,npc,gold,rice from general where owner='{$session->userID}'";
+$query = "select no,name,nation,nations,level,troop,npc,gold,rice from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

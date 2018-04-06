@@ -4,11 +4,12 @@ namespace sammo;
 require(__dir__.'/../vendor/autoload.php');
 
 $session = Session::requireLogin([])->setReadOnly();
+$userID = Session::getUserID();
 
 // 외부 파라미터
 
 $db = RootDB::db();
-$member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $session->userID);
+$member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $userID);
 
 if(!$member['picture']){
     $picture = IMAGE.'/default.jpg';

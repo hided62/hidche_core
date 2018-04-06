@@ -5,8 +5,7 @@ include "lib.php";
 include "func.php";
 
 $session = Session::requireLogin()->setReadOnly();
-
-$userID = $session->userID;
+$userID = Session::getUserID();
 
 if(!$userID) {
     MessageBox("잘못된 접근입니다!!!");

@@ -7,6 +7,7 @@ include "func.php";
 
 
 $session = Session::requireGameLogin()->setReadOnly();
+$userID = Session::getUserID();
 
 $db = DB::db();
 $connect=$db->get();
@@ -17,7 +18,7 @@ $query = "select conlimit from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,name,nation,con from general where owner='{$session->userID}'";
+$query = "select no,name,nation,con from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -40,7 +41,7 @@ case 0:
             if($k >= 24) break;
             $query .= ",";
         }
-        $query .= " where owner='{$session->userID}'";
+        $query .= " where owner='{$userID}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 */
@@ -54,7 +55,7 @@ case 0:
             if($k >= 24) break;
         }
     }
-    $query .= " where owner='{$session->userID}'";
+    $query .= " where owner='{$userID}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     break;
 case 1:
@@ -72,7 +73,7 @@ case 1:
         if($k < 0) break;
         $query .= ",";
     }
-    $query .= " where owner='{$session->userID}'";
+    $query .= " where owner='{$userID}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     break;
 case 2:
@@ -90,7 +91,7 @@ case 2:
         if($i >= 24) break;
         $query .= ",";
     }
-    $query .= " where owner='{$session->userID}'";
+    $query .= " where owner='{$userID}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     break;
 }

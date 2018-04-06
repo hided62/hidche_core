@@ -4,8 +4,7 @@ namespace sammo;
 include('lib.php');
 
 $session = Session::requireGameLogin([])->setReadOnly();
-$userID = $session->userID;
-$generalID = $session->generalID;
+$userID = Session::getUserID();
 
 $rootDB = RootDB::db();
 $db = DB::db();

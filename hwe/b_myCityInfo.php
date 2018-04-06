@@ -5,13 +5,14 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
+$userID = Session::getUserID();
 
 $db = DB::db();
 $connect=$db->get();
 
 increaseRefresh("세력도시", 1);
 
-$query = "select no,nation,level from general where owner='{$session->userID}'";
+$query = "select no,nation,level from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -58,7 +59,7 @@ $sel[$type] = "selected";
     </td></tr>
 </table>
 <?php
-$query = "select nation from general where owner='{$session->userID}'";
+$query = "select nation from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

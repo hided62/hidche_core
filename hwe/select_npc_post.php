@@ -15,10 +15,9 @@ if(!$v->validate()){
 }
 
 $session = Session::requireLogin()->setReadOnly();
+$userID = Session::getUserID();
 
 $face = (int)$_POST['face'];
-
-$userID = $session->userID;
 $rootDB = RootDB::db();
 
 //회원 테이블에서 정보확인

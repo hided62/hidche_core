@@ -4,6 +4,7 @@ namespace sammo;
 require(__dir__.'/../vendor/autoload.php');
 
 $session = Session::requireLogin([])->setReadOnly();
+$userID = Session::getUserID();
 
 // 외부 파라미터
 // $_POST['old_pw'] : PW
@@ -17,11 +18,11 @@ $db = RootDB::db();
 
 $userInfo = $db->update('member',[
     'pw'=>$db->sqleval('sha2(concat(salt, %s, salt), 512)', $newPw)
-], 'no=%i and pw=sha2(concat(salt, %s, salt), 512)', $session->userID, $pw);
+], 'no=%i and pw=sha2(concat(salt, %s, salt), 512)', $userID, $pw);
 
 if(!$db->affectedRows()){
     $db->insert('member_log', [
-        'member_no'=>$session->userID,
+        'member_no'=>$userID,
         'action_type'=>'change_pw',
         'action'=>Json::encode([
             'type'=>'plain',
@@ -36,7 +37,7 @@ if(!$db->affectedRows()){
 }
 
 $db->insert('member_log', [
-    'member_no'=>$session->userID,
+    'member_no'=>$userID,
     'action_type'=>'change_pw',
     'action'=>Json::encode([
         'type'=>'plain',

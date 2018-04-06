@@ -7,6 +7,7 @@ $session = Session::requireLogin([
     'game'=>'x',
     'me'=>null
 ])->setReadOnly();
+$userID = Session::getUserID();
 
 $db = DB::db();
 
@@ -23,7 +24,7 @@ $game['nationCnt'] = $nationCnt;
 
 $me = [];
 
-$general = $db->queryFirstRow('SELECT name, picture, imgsvr from general where owner=%i', $session->userID);
+$general = $db->queryFirstRow('SELECT name, picture, imgsvr from general where owner=%i', $userID);
 if($general){
     $me['name'] = $general['name'];
 

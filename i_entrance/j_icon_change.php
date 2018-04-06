@@ -4,6 +4,7 @@ namespace sammo;
 require(__dir__.'/../vendor/autoload.php');
 
 $session = Session::requireLogin([])->setReadOnly();
+$userID = Session::getUserID();
 
 // 외부 파라미터
 // $_FILES['image_upload'] : 사진파일
@@ -21,7 +22,7 @@ $imageType = $size[2];
 $availableImageType = array('.jpg'=>IMAGETYPE_JPEG, '.png'=>IMAGETYPE_PNG, '.gif'=>IMAGETYPE_GIF);
 
 $db = RootDB::db();
-$member = $db->queryFirstRow('SELECT `ID`, `PICTURE` FROM `MEMBER` WHERE `NO` = %i', $session->userID);
+$member = $db->queryFirstRow('SELECT `ID`, `PICTURE` FROM `MEMBER` WHERE `NO` = %i', $userID);
 
 
 $picName = $member['PICTURE'];
@@ -79,7 +80,7 @@ if(!is_uploaded_file($image['tmp_name'])) {
         RootDB::db()->update('MEMBER',[
             'PICTURE' => $pic,
             'IMGSVR' => 1
-        ], 'NO=%i', $session->userID);
+        ], 'NO=%i', $userID);
 
         $servers = [];
 

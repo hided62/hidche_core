@@ -5,9 +5,9 @@ include "lib.php";
 include "func.php";
 
 $session = Session::requireLogin()->setReadOnly();
+$userID = Session::getUserID();
 $rootDB = RootDB::db();
 
-$userID = $session->userID;
 //회원 테이블에서 정보확인
 $member = $rootDB->queryFirstRow('select no,name,picture,grade from MEMBER where no=%i', $userID); MYDB_fetch_array($result);
 

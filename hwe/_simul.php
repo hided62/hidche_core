@@ -5,7 +5,7 @@ include "lib.php";
 include "func.php";
 
 $session = Session::requireGameLogin()->setReadOnly();
-
+$userID = Session::getUserID();
 
 //로그인 검사
 
@@ -51,7 +51,7 @@ $db = DB::db();
 $connect=$db->get();
 increaseRefresh("시뮬", 2);
 
-$query = "select no,tournament,con,turntime from general where owner='{$session->userID}'";
+$query = "select no,tournament,con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

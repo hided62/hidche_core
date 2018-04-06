@@ -9,14 +9,9 @@ $result = [
     "isChief"=>false
 ];
 $session = Session::requireGameLogin([])->setReadOnly();
+$userID = Session::getUserID();
 
-$generalID = $session->generalID;
-
-if(!$generalID){
-    Json::die($result);
-}
-
-$generalInfo = DB::db()->queryFirstRow('SELECT `nation`, `level` from `general` where `no`=%i', $generalID);
+$generalInfo = DB::db()->queryFirstRow('SELECT `no`, `nation`, `level` from `general` where `owner`=%i', $userID);
 if(!$generalInfo){
     Json::die($result);
 }

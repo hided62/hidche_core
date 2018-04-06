@@ -3,20 +3,17 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 
-$session = Session::getInstance();
-if(!$session->isLoggedIn()){
-    //로그인 안했다니까...
-    Json::die([
-        'result'=>true
-    ]);
-}
-
+$session = Session::requireLogin([
+    'result'=>true,
+    'reason'=>'로그인 되지 않았습니다'
+]);
+$userID = Session::getUserID();
 
 
 // 외부 파라미터
 
 RootDB::db()->insert('member_log',[
-    'member_no'=>$session->userID,
+    'member_no'=>$userID,
     'action_type'=>'logout',
     'action'=>Json::encode([
         'ip'=>Util::get_client_ip(true)
