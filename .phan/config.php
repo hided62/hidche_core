@@ -45,13 +45,17 @@ return [
         'vendor/'
     ],
 
+    'include_analysis_file_list' => [
+        'f_config/config.php',
+        'hwe/lib.php'
+    ],
+
     // A list of plugin files to execute.
     // See https://github.com/phan/phan/tree/master/.phan/plugins for even more.
     // (Pass these in as relative paths.
     // The 0.10.2 release will allow passing 'AlwaysReturnPlugin' if referring to a plugin that is bundled with Phan)
     'plugins' => [
         // checks if a function, closure or method unconditionally returns.
-        'AlwaysReturnPlugin',  // can also be written as 'vendor/phan/phan/.phan/plugins/AlwaysReturnPlugin.php'
         // Checks for syntactically unreachable statements in
         // the global scope or function bodies.
         'UnreachableCodePlugin',
