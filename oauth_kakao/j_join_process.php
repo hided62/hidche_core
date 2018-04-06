@@ -6,7 +6,7 @@ require('lib.join.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
-$session = Session::Instance();
+$session = Session::getInstance();
 
 $canJoin = RootDB::db()->queryFirstField('SELECT REG FROM `SYSTEM` WHERE `NO` = 1');
 if($canJoin != 'Y'){

@@ -6,7 +6,7 @@ include('func.php');
 
 $session = Session::requireGameLogin([])->setReadOnly();
 
-if(!Session::Instance()->generalID){
+if(!Session::getInstance()->generalID){
     Json::die([
         "nation"=>[]
     ]);

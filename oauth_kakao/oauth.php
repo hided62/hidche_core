@@ -30,7 +30,7 @@ if (Util::array_get($result['expires_in'], -1) <= 0) {
     die('알 수 없는 에러:'.$me['msg']);
 }
 
-$session = Session::Instance();
+$session = Session::getInstance();
 
 $restAPI->set_access_token($result['access_token']);
 $now = TimeUtil::DatetimeNow();

@@ -8,7 +8,7 @@ include 'func.php';
 $session = Session::requireGameLogin([])->setReadOnly();
 
 
-$generalID = Session::Instance()->generalID;
+$generalID = Session::getInstance()->generalID;
 
 if (!$generalID) {
     Json::die([

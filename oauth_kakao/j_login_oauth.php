@@ -6,7 +6,7 @@ require(__dir__.'/../vendor/autoload.php');
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 $RootDB = RootDB::db();
-$session = Session::Instance();
+$session = Session::getInstance();
 if($session->isLoggedIn()){
     $session->logout();
 }

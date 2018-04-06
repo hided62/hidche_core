@@ -4,7 +4,7 @@ namespace sammo;
 include 'lib.php';
 include 'func.php';
 
-$session = Session::Instance()->setReadOnly();
+$session = Session::getInstance()->setReadOnly();
 
 $defaultPost = [
     'year' => null,

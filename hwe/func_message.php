@@ -78,7 +78,7 @@ function getRawMessage($mailbox, $msgType, $limit=30, $fromSeq=null){
 }
 
 function getMessage($msgType, $nationID=null, $limit=30, $fromSeq=null){
-    $generalID = Session::Instance()->generalID;
+    $generalID = Session::getInstance()->generalID;
     if($generalID === null){
         return [];
     }
@@ -280,7 +280,7 @@ function getMailboxList(){
 function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::Instance();
+    $session = Session::getInstance();
 
     //FIXME: 폐기
     $query = "select no,nation,name,picture,level from general where owner='{$session->userID}'";
@@ -349,7 +349,7 @@ function moveMsg($table, $msgtype, $msgnum, $msg, $type, $who, $when, $column, $
 function MsgDip($bg) {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::Instance();
+    $session = Session::getInstance();
 
     $query = "select no,nation from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

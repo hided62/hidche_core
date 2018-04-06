@@ -77,7 +77,7 @@ function GetImageURL($imgsvr) {
 }
 
 function checkLimit($con, $conlimit) {
-    $session = Session::Instance();
+    $session = Session::getInstance();
     if($session->userGrade>=4){
         return 0;
     }
@@ -92,7 +92,7 @@ function checkLimit($con, $conlimit) {
 }
 
 function getBlockLevel() {
-    return DB::db()->queryFirstField('select block from general where no = %i', Session::Instance()->generalID);
+    return DB::db()->queryFirstField('select block from general where no = %i', Session::getInstance()->generalID);
 }
 
 function getRandGenName() {
@@ -117,7 +117,7 @@ function getRandGenName() {
 
 
 function cityInfo() {
-    $session = Session::Instance();
+    $session = Session::getInstance();
     global $_basecolor, $_basecolor2, $images;
 
     $db = DB::db();
@@ -232,7 +232,7 @@ function cityInfo() {
 }
 
 function myNationInfo() {
-    $session = Session::Instance();
+    $session = Session::getInstance();
     global $_basecolor, $_basecolor2, $images;
 
     $db = DB::db();
@@ -411,7 +411,7 @@ function commandGroup($typename, $type=0) {
 }
 
 function commandTable() {
-    $session = Session::Instance();
+    $session = Session::getInstance();
     $db = DB::db();
     $connect=$db->get();
 
@@ -649,7 +649,7 @@ function commandTable() {
 }
 
 function CoreCommandTable() {
-    $session = Session::Instance();
+    $session = Session::getInstance();
     $db = DB::db();
     $connect=$db->get();
 
@@ -749,7 +749,7 @@ function CoreCommandTable() {
 function myInfo() {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::Instance();
+    $session = Session::getInstance();
     
     $query = "select no from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -938,7 +938,7 @@ function generalInfo($no) {
 }
 
 function myInfo2() {
-    $session = Session::Instance();
+    $session = Session::getInstance();
     $db = DB::db();
     $connect=$db->get();
 
@@ -1079,7 +1079,7 @@ function onlinegen() {
     $connect=$db->get();
 
     $onlinegen = "";
-    $generalID = Session::Instance()->generalID;
+    $generalID = Session::getInstance()->generalID;
     $nationID = DB::db()->queryFirstField('select `nation` from `general` where `no` = %i', $generalID);
     if($nationID === null || Util::toInt($nationID) === 0) {
         $query = "select onlinegen from game limit 1";
@@ -1104,7 +1104,7 @@ function onlineNation() {
 }
 
 function nationMsg() {
-    $session = Session::Instance();
+    $session = Session::getInstance();
     $db = DB::db();
     $connect=$db->get();
 
@@ -1256,7 +1256,7 @@ function cutDay($date, int $turnterm) {
 
 function increaseRefresh($type="", $cnt=1) {
     //FIXME: 로그인, 비로그인 시 처리가 명확하지 않음
-    $session = Session::Instance();
+    $session = Session::getInstance();
     $generalID = $session->generalID;
 
     $date = date('Y-m-d H:i:s');
@@ -1519,7 +1519,7 @@ function checkTurn() {
         return;
     }
 
-    $session = Session::Instance();
+    $session = Session::getInstance();
 
     $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$session->userName;
     pushLockLog($locklog);
@@ -2388,7 +2388,7 @@ function getAdmin() {
 function getMe() {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::Instance();
+    $session = Session::getInstance();
 
     $query = "select * from general where owner='{$session->userID}'";
     $result = MYDB_query($query, $connect) or Error("접속자가 많아 접속을 중단합니다. 잠시후 갱신해주세요.<br>getMe : ".MYDB_error($connect),"");

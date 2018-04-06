@@ -455,7 +455,7 @@ function getCoreTurn($nation, $level) {
 
 
 function processCommand($no) {
-    $session = Session::Instance();
+    $session = Session::getInstance();
     $db = DB::db();
     $connect=$db->get();
 
@@ -685,7 +685,7 @@ where nation='{$general['nation']}'
 function command_Single($turn, $command) {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::Instance();
+    $session = Session::getInstance();
 
     $command = EncodeCommand(0, 0, 0, $command);
 
@@ -704,7 +704,7 @@ function command_Single($turn, $command) {
 function command_Chief($turn, $command) {
     $db = DB::db();
     $connect=$db->get();
-    $session = Session::Instance();
+    $session = Session::getInstance();
 
     $command = EncodeCommand(0, 0, 0, $command);
 

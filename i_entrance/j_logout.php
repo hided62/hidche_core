@@ -3,7 +3,7 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 
-$session = Session::Instance();
+$session = Session::getInstance();
 if(!$session->isLoggedIn()){
     //로그인 안했다니까...
     Json::die([

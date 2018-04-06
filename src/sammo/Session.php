@@ -31,7 +31,7 @@ class Session {
     private $writeClosed = false;
     private $sessionID = null;
 
-    public static function Instance(): Session{
+    public static function getInstance(): Session{
         static $inst = null;
         if($inst === null){
             $inst = new Session();
@@ -69,7 +69,7 @@ class Session {
     }
 
     public static function requireLogin($result = '..'): Session{
-        $session = Session::Instance();
+        $session = Session::getInstance();
         if($session->isLoggedIn()){
             return $session;
         }
@@ -278,7 +278,7 @@ class Session {
             $obj = self::requireLogin($exitPath);
         }
         else{
-            $obj = self::Instance();
+            $obj = self::getInstance();
         }
         
         return $obj->userGrade;
@@ -294,7 +294,7 @@ class Session {
             $obj = self::requireLogin($exitPath);
         }
         else{
-            $obj = self::Instance();
+            $obj = self::getInstance();
         }
         
         return $obj->userID;

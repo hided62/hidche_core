@@ -65,7 +65,7 @@ function myclock() {
 myCommandList();
 
 function myCommandList() {
-    $session = Session::Instance();
+    $session = Session::getInstance();
     global $_basecolor, $_basecolor2, $_basecolor3;
     global $images;
 

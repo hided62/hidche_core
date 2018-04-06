@@ -50,7 +50,7 @@ function getWorldMap($req){
         return getHistoryMap($req->year, $req->month);
     }
 
-    $session = Session::Instance();
+    $session = Session::getInstance();
     $generalID = $session->generalID;
 
     $db = DB::db();

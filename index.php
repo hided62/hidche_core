@@ -9,7 +9,7 @@ if(!class_exists('\\sammo\\RootDB')){
 }
 
 
-$session = Session::Instance();
+$session = Session::getInstance();
 
 use \kakao\KakaoKey as KakaoKey;
 

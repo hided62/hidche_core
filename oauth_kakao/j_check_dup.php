@@ -5,7 +5,7 @@ require(__dir__.'/../vendor/autoload.php');
 require('lib.join.php');
 
 
-$session = Session::Instance()->setReadOnly();
+$session = Session::getInstance()->setReadOnly();
 
 $access_token = $session->access_token;
 if(!$access_token){

@@ -5,7 +5,7 @@ require(__dir__.'/vendor/autoload.php');
 
 
 $RootDB = RootDB::db();
-$session = Session::Instance();
+$session = Session::getInstance();
 if($session->isLoggedIn()){
     $session->logout();
 }

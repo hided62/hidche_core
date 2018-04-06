@@ -5,7 +5,7 @@ require(__dir__.'/../vendor/autoload.php');
 
 
 WebUtil::setHeaderNoCache();
-$session = Session::Instance()->setReadOnly();
+$session = Session::getInstance()->setReadOnly();
 
 $access_token = $session->access_token;
 if(!$access_token){
