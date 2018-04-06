@@ -1857,6 +1857,7 @@ function process_76(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
+    $tricklog = [];
 
     $date = substr($general['turntime'],11,5);
 

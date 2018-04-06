@@ -256,7 +256,7 @@ function getMailboxList(){
         $nationID = $nation['nation'];
         $mailbox = $nationID + 9000;
         $nation = $nation['name'];
-        $color = ('#'.$nation['color']).replace('##','#');//xxx: #기호 없는 이전 코드 대비용
+        $color = $nation['color'];
         $generals = Util::array_get($generalNations[$nationID], []);
 
         return [

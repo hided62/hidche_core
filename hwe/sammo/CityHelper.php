@@ -21,6 +21,10 @@ class CityHelper{
         $list = [];
         $listInv = [];
         $listByNation = [];
+
+        '@phan-var array<int,mixed>|null $list';
+        '@phan-var array<string,mixed>|null $listInv';
+        '@phan-var array<int,mixed>|null $listByNation';
         
         foreach (DB::db()->query('SELECT `city` as `id`, `name`, `level`, `nation` from city') as $city) {
             $id = $city['id'];

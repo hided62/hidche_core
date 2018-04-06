@@ -254,6 +254,7 @@ function getCoreTurn($nation, $level) {
     $db = DB::db();
     $connect=$db->get();
     $str = [];
+    $turn = [];
 
     $turn[0] = $nation["l{$level}turn0"];
     $turn[1] = $nation["l{$level}turn1"];

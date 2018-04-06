@@ -91,7 +91,7 @@ function Error($message, $url="")
     ob_get_flush();
 
     die($templates->render('error', [
-        'message' => $msg
+        'message' => $message
     ]));
 }
 

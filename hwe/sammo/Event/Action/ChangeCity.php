@@ -20,7 +20,7 @@ class ChangeCity extends \sammo\Event\Action{
     private $queries;
     private $targetType = 'all';
     private $targetArgs = [];
-    public function __construct($target = null, array $actions){
+    public function __construct($target, array $actions){
 
         //values 포맷은 key, value로 
 
@@ -74,7 +74,7 @@ class ChangeCity extends \sammo\Event\Action{
 
         $matches = null;
         if(preg_match(self::REGEXP_PERCENT, $value, $matches)){
-            $value = round($matches[1], 0);
+            $value = (int)round((float)$matches[1], 0);
             return DB::db()->sqleval('%i', Util::valueFit($value, 0, 100));
         }
 
@@ -106,7 +106,7 @@ class ChangeCity extends \sammo\Event\Action{
 
         $matches = null;
         if(preg_match(self::REGEXP_PERCENT, $value, $matches)){
-            $value = round($matches[1], 0);
+            $value = (int)round((float)$matches[1], 0);
             return DB::db()->sqleval('ROUND(%b * %d, 0)', $keyMax, $value/100);
         }
 

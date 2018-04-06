@@ -109,7 +109,7 @@ function getSpecial($leader, $power, $intel) {
         $type = array(1, 2, 3, 31);
         $special = $type[array_rand($type)];
         // 거상, 귀모는 그중에 25% * 10% = 2.5%
-        if($special == 31 && randBool(0.9)) {
+        if($special == 31 && Util::randBool(0.9)) {
             $type = array(1, 2, 3);
             $special = $type[array_rand($type)];
         }
@@ -399,8 +399,7 @@ function preUpdateMonthly() {
         $query = "update general set crew=0,rice=0 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[0] = "<C>●</>군량이 모자라 병사들이 <R>소집해제</>되었습니다!";
-        pushGenLog($general, $log);
+        pushGenLog($general, ["<C>●</>군량이 모자라 병사들이 <R>소집해제</>되었습니다!"]);
     }
 
     //접률감소
@@ -472,11 +471,12 @@ function preUpdateMonthly() {
     $nationCount = MYDB_num_rows($result);
     for($i=0; $i < $nationCount; $i++) {
         $nation = MYDB_fetch_array($result);
-        $spy = "";  $k = 0; unset($citys);
-        if($nation['spy'] != "") { $citys = explode("|", $nation['spy']); }
+        $spy = "";  $k = 0; 
+        $citys = [];
+        if($nation['spy'] != "") { $citys = explode("|", (string)$nation['spy']); }
         while(count($citys)) {
             $citys[$k]--;
-            if($citys[$k]%10 != 0) { $spy .= "$citys[$k]"; }
+            if($citys[$k]%10 != 0) { $spy .= (string)$citys[$k]; }
             $k++;
             if($k >= count($citys)) { break; }
             if($citys[$k-1]%10 != 0) { $spy .= "|"; }
@@ -676,6 +676,10 @@ function checkMerge() {
     $db = DB::db();
     $connect=$db->get();
 
+    $mylog = [];
+    $youlog = [];
+    $history = [];
+
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
@@ -781,9 +785,10 @@ function checkMerge() {
         pushGenLog($me, $mylog);
         pushGenLog($you, $youlog);
         pushWorldHistory($history, $admin['year'], $admin['month']);
-        unset($mylog);
-        unset($youlog);
-        unset($history);
+
+        $mylog = [];
+        $youlog = [];
+        $history = [];
 
         refreshNationStaticInfo();
     }
@@ -802,6 +807,10 @@ function checkSurrender() {
     $dipcount = MYDB_num_rows($dipresult);
 
     for($i=0; $i < $dipcount; $i++) {
+        $mylog = [];
+        $youlog = [];
+        $history = [];
+
         $dip = MYDB_fetch_array($dipresult);
 
         // 아국군주
@@ -904,9 +913,6 @@ function checkSurrender() {
         pushGenLog($me, $mylog);
         pushGenLog($you, $youlog);
         pushWorldHistory($history, $admin['year'], $admin['month']);
-        unset($mylog);
-        unset($youlog);
-        unset($history);
 
         refreshNationStaticInfo();
     }
@@ -1000,6 +1006,9 @@ function checkStatistic() {
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
+
+    $nationHists = [];
+    $specialHists = [];
 
     $etc = '';
 
@@ -1212,6 +1221,7 @@ function checkEmperior() {
             $query = "select name,picture,killnum from general where nation='{$nation['nation']}' order by killnum desc limit 5";   // 오호장군
             $tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $tigernum = MYDB_num_rows($tigerresult);
+            $tigerstr = '';
             for($i=0; $i < $tigernum; $i++) {
                 $tiger = MYDB_fetch_array($tigerresult);
                 if($tiger['killnum'] > 0) {
@@ -1222,6 +1232,7 @@ function checkEmperior() {
             $query = "select name,picture,firenum from general where nation='{$nation['nation']}' order by firenum desc limit 7";   // 건안칠자
             $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $eaglenum = MYDB_num_rows($eagleresult);
+            $eaglestr = '';
             for($i=0; $i < $eaglenum; $i++) {
                 $eagle = MYDB_fetch_array($eagleresult);
                 if($eagle['firenum'] > 0) {

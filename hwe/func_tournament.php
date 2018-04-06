@@ -670,15 +670,16 @@ function setGift($tnmt_type, $tnmt, $phase) {
 
     $cost = $admin['develcost'] * 20;
     $cost2 = $admin['develcost'] * 12;
-    $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회에서 <Y>{$general['name']}</>(이)가 <C>우승</>, <Y>{$general2['name']}</>(이)가 <C>준우승</>을 차지하여 천하에 이름을 떨칩니다!";
-    $history[1] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회의 <S>우승자</>에게는 <C>{$cost}</>, <S>준우승자</>에겐 <C>{$cost2}</>의 <S>상금</>과 약간의 <S>명성</>이 주어집니다!";
+    $history = [
+        "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회에서 <Y>{$general['name']}</>(이)가 <C>우승</>, <Y>{$general2['name']}</>(이)가 <C>준우승</>을 차지하여 천하에 이름을 떨칩니다!",
+        "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>{$tp}</> 대회의 <S>우승자</>에게는 <C>{$cost}</>, <S>준우승자</>에겐 <C>{$cost2}</>의 <S>상금</>과 약간의 <S>명성</>이 주어집니다!"
+    ];
     pushWorldHistory($history, $admin['year'], $admin['month']);
 
     for($i=0; $i < count($genNo); $i++) {
         $general['no']   = $genNo[$i];
         $general['name'] = $genName[$i];
-        $log[0] = "<S>◆</><C>{$tp}</> 대회의 {$genCall[$genNo[$i]]}로 <C>{$genGold[$genNo[$i]]}</>의 <S>상금</>, 약간의 <S>명성</> 획득!";
-        pushGenLog($general, $log);
+        pushGenLog($general, ["<S>◆</><C>{$tp}</> 대회의 {$genCall[$genNo[$i]]}로 <C>{$genGold[$genNo[$i]]}</>의 <S>상금</>, 약간의 <S>명성</> 획득!"]);
     }
 
     //우승자 번호
@@ -766,10 +767,11 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     if($type == 0) { $turn = 10; }
     else           { $turn = 100; }
 
-    if($tnmt_type == 0)     { $tp = "tot"; $tp2 = "tt"; }
-    elseif($tnmt_type == 1) { $tp = "ldr"; $tp2 = "tl"; }
+    
+    if($tnmt_type == 1) { $tp = "ldr"; $tp2 = "tl"; }
     elseif($tnmt_type == 2) { $tp = "pwr"; $tp2 = "tp"; }
     elseif($tnmt_type == 3) { $tp = "itl"; $tp2 = "ti"; }
+    else /*$tnmt_type == 0*/{ $tp = "tot"; $tp2 = "tt"; } 
 
     $e1 = $energy1 = round($gen1[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
     $e2 = $energy2 = round($gen2[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);

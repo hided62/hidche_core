@@ -136,7 +136,7 @@ function acceptScout($messageInfo, $general, $msgResponse){
 
     pushGenLog($me, $mylog);
     pushGenLog($you, $youlog);
-    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $year, $month);
     pushWorldHistory($alllog, $year, $month);
 
     return [true, 'success'];
@@ -148,6 +148,12 @@ function declineScout($messageInfo, $reason=null){
         'name'=>$messageInfo['dest']['name']
     ];
     $you = ['no'=>$messageInfo['src']['id']];
+
+    $nation = getNationStaticInfo($messageInfo['src']['nationID']);
+    $generalID = $me['no'];
+    $nationID = $nation['nation'];
+    $nationName = $nation['name'];
+    $myName = $me['name'];
 
     $mylog = [];
     $youlog = [];
@@ -167,7 +173,7 @@ function declineScout($messageInfo, $reason=null){
     $db = DB::db();
     $db->query('UPDATE `message` SET `valid_until`=\'1234-11-22 11:22:33\' WHERE `id` = %i', $messageInfo['id']);
 
-    sendRawMessage('private', false, $general['no'], $messageInfo['src'], $messageInfo['dest'], $msg, null, null, ['parent'=>$messageInfo['id']]);
+    sendRawMessage('private', false, $you['no'], $messageInfo['src'], $messageInfo['dest'], $msg, null, null, ['parent'=>$messageInfo['id']]);
 
     pushGenLog($me, $mylog);
     pushGenLog($you, $youlog);

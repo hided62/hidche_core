@@ -104,7 +104,7 @@ function printCitysName(int $cityNo, int $maxDistance=1) {
             default: $color = "yellow"; break;
         }
 
-        echo "{$distance}칸 떨어진 도시 : <span style='color:{$color};font-weight:bold;'>{$cityStr}</span><br>";
+        echo "{$dist}칸 떨어진 도시 : <span style='color:{$color};font-weight:bold;'>{$cityStr}</span><br>";
     }
 }
 

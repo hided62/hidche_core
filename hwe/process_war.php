@@ -3,6 +3,8 @@ namespace sammo;
 
 
 function processWar($general, $city) {
+    '@phan-var array<string,int|string|null> $general';
+
     $db = DB::db();
     $connect=$db->get();
 
@@ -15,8 +17,24 @@ function processWar($general, $city) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $game = MYDB_fetch_array($result);
 
-    $deadAmount['att'] = 0;
-    $deadAmount['def'] = 0;
+    $year = $game['year'];
+    $month = $game['month'];
+
+    $log = [];
+    $batlog = [];
+    $batres = [];
+
+    $opplog = [];
+    $oppbatlog = [];
+    $oppbatres = [];
+
+    $alllog = [];
+    $history = [];
+
+    $deadAmount = [
+        'att'=>0,
+        'def'=>0
+    ];
 
     $warphase = GameUnitConst::byID($general['crewtype'])->speed;   //병종간 페이즈 수 얻기
 
@@ -92,8 +110,8 @@ function processWar($general, $city) {
     if($originCity['level'] == 2) { $genAtmosBonus += 5; }   // 출병도시가 진이면 공격자 공격보정
     if($city['level']       == 3) { $oppTrainBonus += 5; }   // 방어도시가 관이면 방어자 방어보정
 
-    $alllog[] = "<C>●</>{$game['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>(으)로 진격합니다.";
-    $log[] = "<C>●</>{$game['month']}월:<G><b>{$city['name']}</b></>(으)로 <M>진격</>합니다. <1>$date</>";
+    $alllog[] = "<C>●</>{$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>(으)로 진격합니다.";
+    $log[] = "<C>●</>{$month}월:<G><b>{$city['name']}</b></>(으)로 <M>진격</>합니다. <1>$date</>";
 
     // 목표 도시내에 목표 국가 소속 장수 중, 병사가 있는 능력치합+병사수 순으로 훈,사 60, 80 이상
     $query = "select no,name,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,leader+power+intel+weap+horse+book+crew/100 as sum,dex0,dex10,dex20,dex30,dex40 from general where city='{$city['city']}' and nation='{$city['nation']}' and nation!=0 and crew>'0' and rice>round(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2)) order by sum desc";
@@ -112,10 +130,10 @@ function processWar($general, $city) {
             $query = "update general set recwar='{$general['turntime']}',train='{$general['train']}',warnum=warnum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $alllog[] = "<C>●</>{$game['month']}월:병량 부족으로 <G><b>{$city['name']}</b></>의 수비병들이 <R>패퇴</>합니다.";
-            $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<M><b>【패퇴】</b></><D><b>{$destnation['name']}</b></>(이)가 병량 부족으로 <G><b>{$city['name']}</b></>(을)를 뺏기고 말았습니다.";
+            $alllog[] = "<C>●</>{$month}월:병량 부족으로 <G><b>{$city['name']}</b></>의 수비병들이 <R>패퇴</>합니다.";
+            $history[] = "<C>●</>{$year}년 {$month}월:<M><b>【패퇴】</b></><D><b>{$destnation['name']}</b></>(이)가 병량 부족으로 <G><b>{$city['name']}</b></>(을)를 뺏기고 말았습니다.";
             pushGenLog($general, $log);
-            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+            pushGeneralPublicRecord($alllog, $year, $month);
             pushWorldHistory($history);
             unset($log);
             unset($alllog);
@@ -135,7 +153,7 @@ function processWar($general, $city) {
             break;
         // 장수가 없어서 도시 공격
         } elseif($opposecount == 0) {
-            $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 ".GameUnitConst::byId($general['crewtype'])->name."(으)로 성벽을 공격합니다.";
+            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 ".GameUnitConst::byId($general['crewtype'])->name."(으)로 성벽을 공격합니다.";
             $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."(으)로 성벽을 <M>공격</>합니다.";
 
             $general['train'] += 1; //훈련 상승
@@ -395,8 +413,8 @@ function processWar($general, $city) {
             ];
 
             $res = $templates->render('small_war_log',[
-                'year'=>$game['year'],
-                'month'=>$game['month'],
+                'year'=>$year,
+                'month'=>$month,
                 'war_type'=>'siege',
                 'war_type_str'=>'성',
                 'me' => $render_attacker,
@@ -417,8 +435,7 @@ function processWar($general, $city) {
             $query = "update nation set rice='{$destnation['rice']}' where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $adminLog[0] = "성벽 쌀 소모 : $rice";
-            pushAdminLog($adminLog);
+            pushAdminLog(["성벽 쌀 소모 : $rice"]);
 
             //원래대로 스케일링
             $city['def'] = round($city['def'] / 10);
@@ -443,7 +460,7 @@ function processWar($general, $city) {
             if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $num *= 1.1; }
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $game['year'], $nation['tech'])) { $num = floor($num/4); }
+            if(TechLimit($game['startyear'], $year, $nation['tech'])) { $num = floor($num/4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 죽은수 기술로 누적
@@ -452,7 +469,7 @@ function processWar($general, $city) {
             if($destnation['type'] == 3 || $destnation['type'] == 13)                                                                               { $num *= 1.1; }
             if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $game['year'], $destnation['tech'])) { $num = floor($num/4); }
+            if(TechLimit($game['startyear'], $year, $destnation['tech'])) { $num = floor($num/4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //양국 평균 기술가격
@@ -484,26 +501,26 @@ function processWar($general, $city) {
                 pushGenLog($general, $log);
                 pushBatLog($general, $batlog);
                 pushBatRes($general, $batres);
-                pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-                pushWorldHistory($history, $admin['year'], $admin['month']);
-                unset($log);
-                unset($batlog);
-                unset($batres);
-                unset($alllog);
-                unset($history);
+                pushGeneralPublicRecord($alllog, $year, $month);
+                pushWorldHistory($history, $year, $month);
+                $log = [];
+                $batlog = [];
+                $batres = [];
+                $alllog = [];
+                $history = [];
 
                 ConquerCity($game, $general, $city, $nation, $destnation);
                 break;
             // 공격 장수 병사 소진시 실패 처리
             } elseif($general['crew'] <= 0) {
-                $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 $log[] = "<C>●</>퇴각했습니다.";
 
                 $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 break;
             } elseif($myRice <= round($general['crew']/100)) {
-                $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
 
                 $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
@@ -513,7 +530,7 @@ function processWar($general, $city) {
         // 장수 대결
         } else {
             $oppose = MYDB_fetch_array($result);
-            $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(와)과 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 대결합니다.";
+            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(와)과 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 대결합니다.";
             $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."(으)로 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(을)를 <M>공격</>합니다.";
             $opplog[] = "<C>●</>".GameUnitConst::byId($oppose['crewtype'])->name."(으)로 <Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(을)를 <M>수비</>합니다.";
 
@@ -1272,8 +1289,8 @@ function processWar($general, $city) {
             ];
 
             $res = $templates->render('small_war_log',[
-                'year'=>$game['year'],
-                'month'=>$game['month'],
+                'year'=>$year,
+                'month'=>$month,
                 'war_type'=>'attack',
                 'war_type_str'=>'공',
                 'me' => $render_attacker,
@@ -1281,8 +1298,8 @@ function processWar($general, $city) {
             ]);
 
             $oppres = $templates->render('small_war_log',[
-                'year'=>$game['year'],
-                'month'=>$game['month'],
+                'year'=>$year,
+                'month'=>$month,
                 'war_type'=>'defense',
                 'war_type_str'=>'수',
                 'me' => $render_defender,
@@ -1318,7 +1335,7 @@ function processWar($general, $city) {
             if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $num *= 1.1; }
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $game['year'], $nation['tech'])) { $num = floor($num/4); }
+            if(TechLimit($game['startyear'], $year, $nation['tech'])) { $num = floor($num/4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -1341,7 +1358,7 @@ function processWar($general, $city) {
             if($destnation['type'] == 3 || $destnation['type'] == 13)                                                                               { $num *= 1.1; }
             if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $game['year'], $destnation['tech'])) { $num = floor($num/4); }
+            if(TechLimit($game['startyear'], $year, $destnation['tech'])) { $num = floor($num/4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //양국 평균 기술가격
@@ -1365,11 +1382,11 @@ function processWar($general, $city) {
             // 상대 병사 소진이나 쌀 소진시 다음 장수
             if($oppose['crew'] <= 0 || ($opRice <= round($oppose['crew']/100) && $general['crew'] > 0)) {
                 if($opRice <= round($oppose['crew']/100)) {
-                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
                     $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
                     $opplog[] = "<C>●</>군량 부족으로 패퇴합니다.";
                 } else {
-                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 전멸했습니다.";
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 전멸했습니다.";
                     $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 전멸했습니다.";
                     $opplog[] = "<C>●</>전멸했습니다.";
                 }
@@ -1403,11 +1420,11 @@ function processWar($general, $city) {
             // 공격 장수 병사 소진이나 쌀 소진시 실패 처리
             } elseif($general['crew'] <= 0 || $myRice <= round($general['crew']/100)) {
                 if($myRice <= round($general['crew']/100)) {
-                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                     $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
                     $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 } else {
-                    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                     $log[] = "<C>●</>퇴각했습니다.";
                     $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 }
@@ -1445,7 +1462,7 @@ function processWar($general, $city) {
                 unset($opplog);
                 unset($oppbatlog);
                 unset($oppbatres);
-//                $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 }<G>{$city['name']}</> 공략에 실패했습니다. <1>$date</>";
+//                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 }<G>{$city['name']}</> 공략에 실패했습니다. <1>$date</>";
 //                $log[] = "<C>●</> <G>{$city['name']}</> 공략에 실패했습니다. <1>$date</>";
                 break;
             } else {
@@ -1497,7 +1514,7 @@ function processWar($general, $city) {
     pushGenLog($general, $log);
     pushBatLog($general, $batlog);
     pushBatRes($general, $batres);
-    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $year, $month);
     pushWorldHistory($history);
 
     return $deadAmount;
@@ -1593,16 +1610,16 @@ function addConflict($city, $nationnum, $mykillnum) {
     $db = DB::db();
     $connect=$db->get();
 
+    $nationlist = [];
+    $killnum = [];
+
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
     $game = MYDB_fetch_array($result);
 
-    if($city['conflict'] == "") {
-        unset($nationlist);
-        unset($killnum);
-    } else {
-        $nationlist = explode("|", $city['conflict']);
-        $killnum = explode("|", $city['conflict2']);
+    if($city['conflict']){
+        $nationlist = array_map('intval', explode("|", $city['conflict']));
+        $killnum = array_map('intval', explode("|", $city['conflict2']));
     }
 
     for($i=0; $i < count($nationlist); $i++) {
@@ -1611,8 +1628,7 @@ function addConflict($city, $nationnum, $mykillnum) {
     if($i != 0 && $i == count($nationlist)) { // 두번째 나라부터 분쟁 가담 메시지 출력
         $nation = getNationStaticInfo($nationnum);
 
-        $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<M><b>【분쟁】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다.";
-        pushWorldHistory($history);
+        pushWorldHistory(["<C>●</>{$game['year']}년 {$game['month']}월:<M><b>【분쟁】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다."]);
     }
 
     $nationlist[$i] = $nationnum;
@@ -1663,12 +1679,12 @@ function DeleteConflict($nation) {
     }
 }
 
-function getConquerNation($city) {
+function getConquerNation($city) : int {
     $db = DB::db();
     $connect=$db->get();
 
-    $nationlist = explode("|", (string)$city['conflict']);
-    $killnum = explode("|", (string)$city['conflict2']);
+    $nationlist = array_map('intval', explode("|", (string)$city['conflict']));
+    $killnum = array_map('intval', explode("|", (string)$city['conflict2']));
 
     $max = 0;
     for($i=0; $i < count($nationlist); $i++) {
@@ -1681,10 +1697,15 @@ function getConquerNation($city) {
 }
 
 function ConquerCity($game, $general, $city, $nation, $destnation) {
+    '@phan-var array<string,mixed> $city';
     $db = DB::db();
     $connect=$db->get();
 
     global $_maximumatmos;
+
+    $alllog = [];
+    $log = [];
+    $history = [];
 
     if($destnation['nation'] > 0) {
         $destnationName = "<D><b>{$destnation['name']}</b></>의";
@@ -1692,12 +1713,15 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         $destnationName = "공백지인";
     }
 
-    $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
+    $year = $game['year'];
+    $month = $game['month'];
+
+    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
     $log[] = "<C>●</><G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
-    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<S><b>【지배】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></>(을)를 지배했습니다.";
-    pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<G><b>{$city['name']}</b></>(을)를 <S>함락</>시킴");
-    pushNationHistory($nation, "<C>●</>{$game['year']}년 {$game['month']}월:<Y>{$general['name']}</>(이)가 {$destnationName} <G><b>{$city['name']}</b></>(을)를 <S>점령</>");
-    pushNationHistory($destnation, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>(이)가 <span class='ev_highlight'>함락</span>");
+    $history[] = "<C>●</>{$year}년 {$month}월:<S><b>【지배】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></>(을)를 지배했습니다.";
+    pushGeneralHistory($general, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>(을)를 <S>함락</>시킴");
+    pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<Y>{$general['name']}</>(이)가 {$destnationName} <G><b>{$city['name']}</b></>(을)를 <S>점령</>");
+    pushNationHistory($destnation, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>(이)가 <span class='ev_highlight'>함락</span>");
 
     $query = "select city from city where nation='{$city['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1710,8 +1734,8 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $losenation = MYDB_fetch_array($result);
 
-        $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>(이)가 멸망하였습니다.";
-        pushNationHistory($nation, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$losenation['name']}</b></>(을)를 정복");
+        $history[] = "<C>●</>{$year}년 {$month}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>(이)가 멸망하였습니다.";
+        pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>(을)를 정복");
 
         $query = "select no from general where nation='{$general['nation']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1728,7 +1752,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         $query = "select no,name,nation,npc,gold,rice from general where nation='{$city['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>{$losenation['name']}</b></>(이)가 <R>멸망</>했습니다.";
+        $genlog = ["<C>●</><D><b>{$losenation['name']}</b></>(이)가 <R>멸망</>했습니다."];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
 
@@ -1741,7 +1765,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
             
             pushGenLog($gen, $genlog);
             
-            pushGeneralHistory($gen, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$losenation['name']}</b></>(이)가 <R>멸망</>");
+            pushGeneralHistory($gen, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>(이)가 <R>멸망</>");
 
             $loseGeneralGold += $loseGold;
             $loseGeneralRice += $loseRice;
@@ -1751,7 +1775,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
                 || $nation['name'] == "남만족" || $nation['name'] == "산월족" || $nation['name'] == "오환족"
                 || $nation['name'] == "왜족") {
                 //등용장 미발부
-            } elseif(randBool(0.5)) {
+            } elseif(Util::randBool(0.5)) {
                 sendScoutMsg([
                     'id' => $ruler['no'],
                     'nation_id' => $ruler['nation']
@@ -1857,6 +1881,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
                 
                 foreach($distList[$dist] as $cityID){
                     $city = $cities[$cityID];
+                    '@phan-var array<string,mixed> $city';
                     if($city['nation'] != $destnation['nation']){
                         continue;
                     }
@@ -1877,13 +1902,13 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
 
             $minCityName = CityConst::byID($minCity)->name;
 
-            $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<M><b>【긴급천도】</b></><D><b>{$destnation['name']}</b></>(이)가 수도가 함락되어 <G><b>$minCityName</b></>으로 긴급천도하였습니다.";
+            $history[] = "<C>●</>{$year}년 {$month}월:<M><b>【긴급천도】</b></><D><b>{$destnation['name']}</b></>(이)가 수도가 함락되어 <G><b>$minCityName</b></>으로 긴급천도하였습니다.";
 
             //아국 수뇌부에게 로그 전달
             $query = "select no,name,nation from general where nation='{$destnation['nation']}' and level>='5'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gencount = MYDB_num_rows($result);
-            $genlog[0] = "<C>●</>수도가 함락되어 <G><b>$minCityName</b></>으로 <M>긴급천도</>합니다.";
+            $genlog = ["<C>●</>수도가 함락되어 <G><b>$minCityName</b></>으로 <M>긴급천도</>합니다."];
             for($i=0; $i < $gencount; $i++) {
                 $gen = MYDB_fetch_array($result);
                 pushGenLog($gen, $genlog);
@@ -1930,29 +1955,44 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         $query = "select name,nation from nation where nation='$conquerNation'";
         $conquerResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $conquerNationArray = MYDB_fetch_array($conquerResult);
+        
 
-        $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationArray['name']}</b></>(이)가 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>(을)를 양도받았습니다.";
-        pushNationHistory($nation, "<C>●</>{$game['year']}년 {$game['month']}월:<G><b>{$city['name']}</b></>(을)를 <D><b>{$conquerNationArray['name']}</b></>에 <Y>양도</>");
-        pushNationHistory($conquerNationArray, "<C>●</>{$game['year']}년 {$game['month']}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>(을)를 <S>양도</> 받음");
+
+        $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationArray['name']}</b></>(이)가 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>(을)를 양도받았습니다.";
+        pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>(을)를 <D><b>{$conquerNationArray['name']}</b></>에 <Y>양도</>");
+        pushNationHistory($conquerNationArray, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>(을)를 <S>양도</> 받음");
         // 이동X 및 사기 변경
         $query = "update general set atmos='{$general['atmos']}',killnum=killnum+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $query = [
+            'supply'=>1,
+            'term'=>0,
+            'conflict2'=>'',
+            'agri'=>$db->sqleval('agri*0.7'),
+            'comm'=>$db->sqleval('comm*0.7'),
+            'secu'=>$db->sqleval('secu*0.7'),
+            'nation'=>$conquerNation,
+            'gen1'=>0,
+            'gen2'=>0,
+            'gen3'=>0
+        ];
         if($city['level'] > 3) {
-            // 도시 소속 변경, 태수,군사,시중 초기화
-            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=1000,wall=1000,nation='$conquerNation',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $query['def'] = 1000;
+            $query['wall'] = 1000;
         } else {
             // 도시 소속 변경, 태수,군사,시중 초기화
-            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=def2/2,wall=wall2/2,nation='$conquerNation',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $query['def'] = $db->sqleval('def2/2');
+            $query['wall'] = $db->sqleval('wall2/2');
         }
+        $db->update('city', $query, 'city=%i', (int)$city['city']);
         //전방설정
         SetNationFront($destnation['nation']);
         SetNationFront($conquerNation);
     }
 
     pushGenLog($general, $log);
-    pushGeneralPublicRecord($alllog, $game['year'], $game['month']);
+    pushGeneralPublicRecord($alllog, $year, $month);
     pushWorldHistory($history);
 }
 

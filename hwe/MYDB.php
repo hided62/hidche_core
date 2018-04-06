@@ -9,6 +9,9 @@ function MYDB_num_rows($result) {
     return mysqli_num_rows($result);
 }
 
+/**
+ * @return mixed[]
+ */
 function MYDB_fetch_array($result) {
     return mysqli_fetch_array($result);
 }

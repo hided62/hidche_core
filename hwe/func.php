@@ -283,9 +283,9 @@ function myNationInfo() {
     </tr>
     <tr>
         <td width=68  align=center id=bg1><b>".getLevel(12, $nation['level'])."</b></td>
-        <td width=178 align=center>";echo $level12==''?"-":"{$level12['name']}"; echo "</td>
+        <td width=178 align=center>";echo $level12?$level12['name']:"-"; echo "</td>
         <td width=68  align=center id=bg1><b>".getLevel(11, $nation['level'])."</b></td>
-        <td width=178 align=center>";echo $level11==''?"-":"{$level11['name']}"; echo "</td>
+        <td width=178 align=center>";echo $level11?$level11['name']:"-"; echo "</td>
     </tr>
     <tr>
         <td align=center id=bg1><b>총주민</b></td>
@@ -2154,6 +2154,8 @@ function uniqueItem($general, $log, $vote=0) {
     $log = [];
     $alllog = [];
     $history = [];
+    $occupied = [];
+    $item = [];
 
     if($general['npc'] >= 2 || $general['betray'] > 1) { return $log; }
     if($general['weap'] > 6 || $general['book'] > 6 || $general['horse'] > 6 || $general['item'] > 6) { return $log; }
@@ -2204,8 +2206,8 @@ function uniqueItem($general, $log, $vote=0) {
 
             $nation = getNationStaticInfo($general['nation']);
 
-            if($nation == null) {
-                $nation['name'] = "재야";
+            if($nation === null) {
+                $nation = ['name' => "재야"];
             }
 
             switch($sel) {
@@ -2422,6 +2424,7 @@ function deleteNation($general) {
     $db = DB::db();
     $connect=$db->get();
 
+    $history = [];
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -2514,7 +2517,7 @@ function nextRuler($general) {
     $query = "update city set gen3=0 where gen3='{$nextruler['no']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받았습니다";
+    $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받았습니다"];
 
     pushWorldHistory($history, $admin['year'], $admin['month']);
     pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 유지를 이어 받음.");
@@ -2574,7 +2577,7 @@ function isClose($nation1, $nation2) {
     }
 
     foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $nation2) as $city){
-        foreach(array_keys(CityConst::byID($city)->$path) as $adjCity){
+        foreach(array_keys(CityConst::byID($city)->path) as $adjCity){
             if(key_exists($adjCity, $nation1Cities)){
                 return true;
             }
@@ -2651,6 +2654,7 @@ function CharCritical($rate, $personal) {
 function TrickInjury($city, $type=0) {
     $db = DB::db();
     $connect=$db->get();
+    $log = [];
 
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
