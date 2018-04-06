@@ -32,8 +32,10 @@ class AppConf
     public static function requireRootDB()
     {
         if (!class_exists('\\sammo\\RootDB')) {
-            trigger_error('RootDB.php가 설정되지 않았습니다.', E_USER_ERROR);
-            die();
+            if(!trigger_error('RootDB.php가 설정되지 않았습니다.', E_USER_ERROR)){
+                die();
+            }
+            
         }
         return RootDB::db();
     }
@@ -46,8 +48,10 @@ class AppConf
     public static function requireDB()
     {
         if (!class_exists('\\sammo\\DB')) {
-            trigger_error('DB.php가 설정되지 않았습니다.', E_USER_ERROR);
-            die();
+            if(!trigger_error('DB.php가 설정되지 않았습니다.', E_USER_ERROR)){
+                die();
+            }
+            
         }
         return DB::db();
     }

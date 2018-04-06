@@ -1,6 +1,5 @@
 <?php
 namespace sammo\Event\Action;
-use sammo\Util;
 use sammo\DB;
 
 /**
@@ -51,7 +50,7 @@ class RaiseInvader extends \sammo\Event\Action{
     private function moveCapital(){
         $cities = array_map(function ($value) {
             return $value;
-        }, INVADER_LIST);
+        }, static::INVADER_LIST);
 
         $db = DB::db();
 

@@ -1,7 +1,6 @@
 <?php
 namespace sammo\Scenario;
 use \sammo\DB;
-use \sammo\Util;
 
 class Nation{
     private $id;
@@ -14,7 +13,7 @@ class Nation{
     private $type;
     private $nationLevel;
 
-    private $capital;
+    private $capital = null;
 
     private $cities = [];
 
@@ -42,8 +41,10 @@ class Nation{
         $this->type = $type;
         $this->nationLevel = $nationLevel;
         $this->cities = $cities;
-        
-        $this->capital = count($cities)>0?$cities[0]:null;
+
+        if(count($cities)){
+            $this->capital = $this->cities[0];
+        }
     }
 
     public function setID(int $id){

@@ -3,6 +3,8 @@ namespace sammo\Event\Condition;
 
 class Logic extends \sammo\Event\Condition{
     private $mode = 'and';
+
+    /** @var \sammo\Event\Condition[] */
     private $conditions = [];
     const AVAILABLE_LOGIC_NAME = [
         'not'=>false, 
@@ -26,7 +28,7 @@ class Logic extends \sammo\Event\Condition{
     }
 
     public function eval($env=null){
-        switch($this->$mode){
+        switch($this->mode){
             case 'not':
                 return $this->logicNot($env);
             case 'and':
@@ -41,7 +43,7 @@ class Logic extends \sammo\Event\Condition{
     }
 
     private function logicNot($env){
-        $sub = self::_eval($this->conditions[0], $env);
+        $result = self::_eval($this->conditions[0], $env);
         $result['value'] = !$result['value'];
         $result['chain'][] = 'not';
         return $result;
@@ -55,7 +57,7 @@ class Logic extends \sammo\Event\Condition{
             $sub = self::_eval($cond, $env);
             $chain[] = $sub['chain'];
             if(!$sub['value']){
-                $result['value'] = false;
+                $value = false;
                 break;
             }
         }
@@ -74,7 +76,7 @@ class Logic extends \sammo\Event\Condition{
             $sub = self::_eval($cond, $env);
             $chain[] = $sub['chain'];
             if($sub['value']){
-                $result['value'] = true;
+                $value = true;
                 break;
             }
         }

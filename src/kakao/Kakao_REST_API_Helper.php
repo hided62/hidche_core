@@ -2,6 +2,7 @@
 namespace kakao;
 
 if (class_exists('\\kakao\\KakaoKey') === false) {
+    /** @suppress PhanRedefineClass */
     class KakaoKey
     {
         const REST_KEY = '';
@@ -106,12 +107,12 @@ class Kakao_REST_API_Helper
         if ($api_path != '/oauth/token') {
             if (in_array($api_path, self::$admin_apis)) {
                 if (!$this->admin_key) {
-                    throw new Exception('admin key should not be null or empty.');
+                    throw new \Exception('admin key should not be null or empty.');
                 }
                 $headers = array('Authorization: KakaoAK ' . $this->admin_key);
             } else {
                 if (!$this->access_token) {
-                    throw new Exception('access token should not be null or empty.');
+                    throw new \Exception('access token should not be null or empty.');
                 }
                 $headers = array('Authorization: Bearer ' . $this->access_token);
             }
@@ -134,7 +135,7 @@ class Kakao_REST_API_Helper
         $return_data = curl_exec($curl_session);
 
         if (curl_errno($curl_session)) {
-            throw new Exception(curl_error($curl_session));
+            throw new \Exception(curl_error($curl_session));
         } else {
             // 디버깅 시에 주석을 풀고 응답 내용 확인할 때
             //print_r(curl_getinfo($curl_session));

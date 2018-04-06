@@ -1,5 +1,6 @@
 <?php
 
+namespace sammo;
 
 function process_32(&$general) {
     $db = DB::db();

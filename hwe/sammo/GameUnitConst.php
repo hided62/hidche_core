@@ -18,22 +18,23 @@ class GameUnitConst{
         static::_generate();
         return static::$constID;
     }
-    public static function byID($id): GameUnitDetail{
+
+    public static function byID(int $id): GameUnitDetail{
         static::_generate();
         return static::$constID[$id];
     }
 
-    public static function byName($name): GameUnitDetail{
+    public static function byName(string $name): GameUnitDetail{
         static::_generate();
         return static::$constName[$name];
     }
 
-    public static function byCity($city): GameUnitDetail{
+    public static function byCity(int $city): GameUnitDetail{
         static::_generate();
         return static::$constCity[$city];
     }
 
-    public static function byRegion($region): GameUnitDetail{
+    public static function byRegion(int $region): GameUnitDetail{
         static::_generate();
         return static::$constRegion[$region];
     }

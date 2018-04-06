@@ -261,11 +261,12 @@ function startTournament($auto, $type) {
     $query = "truncate tournament";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
+    $history = [];
     switch($type) {
-    case 0: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>전력전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>영웅</span>들을 모집하고 있습니다!"; break;
-    case 1: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>통솔전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>명사</span>들을 모집하고 있습니다!"; break;
-    case 2: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>일기토</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>용사</span>들을 모집하고 있습니다!"; break;
-    case 3: $history[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>설전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>책사</span>들을 모집하고 있습니다!"; break;
+    case 0: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>전력전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>영웅</span>들을 모집하고 있습니다!"; break;
+    case 1: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>통솔전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>명사</span>들을 모집하고 있습니다!"; break;
+    case 2: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>일기토</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>용사</span>들을 모집하고 있습니다!"; break;
+    case 3: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>설전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>책사</span>들을 모집하고 있습니다!"; break;
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
 }
@@ -343,6 +344,7 @@ function fillLowGenAll() {
 //8 4강
 //9 결승
 function getTwo($tournament, $phase) {
+    $cand = [];
     switch($tournament) {
     case 2:
         //예선
@@ -746,6 +748,7 @@ function getLog($lvl1, $lvl2) {
 
 //0 : 승무패, 1 : 승패
 function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
+    $log = [];
     $db = DB::db();
     $connect=$db->get();
 

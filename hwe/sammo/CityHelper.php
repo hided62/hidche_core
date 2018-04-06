@@ -39,6 +39,9 @@ class CityHelper{
         self::$listByNation = $listByNation;
     }
 
+    /**
+     * @return array[]
+     */
     public static function getAllCities(){
         if(self::$list === null){
             self::generateCache();

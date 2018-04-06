@@ -1,7 +1,7 @@
 <?php
 namespace sammo\Event\Condition;
 
-class Interval extends sammo\Event\Condition{
+class Interval extends \sammo\Event\Condition{
     //TODO:구현
     public function __construct(...$args){
         throw new \BadMethodCallException('Not Yet Implmented.');

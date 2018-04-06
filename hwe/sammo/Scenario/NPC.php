@@ -97,6 +97,7 @@ class NPC{
         
         $name = 'ⓝ'.$this->name;
 
+        $pictureID = $this->pictureID;
         if($env['show_img_level'] == 3 && $pictureID > 0){
             $picture = "{$pictureID}.jpg";
         }
@@ -107,11 +108,13 @@ class NPC{
         $city = $this->locatedCity;
         if($city === null){
             if($nationID == 0){
-                $city = Util::choiceRandom(CityHelper::getAllCities())['id'];
+                $cityObj = Util::choiceRandom(CityHelper::getAllCities());
             }
             else{
-                $city = Util::choiceRandom(CityHelper::getAllNationCities($nationID))['id'];
+                $cityObj = Util::choiceRandom(CityHelper::getAllNationCities($nationID));
             }
+            '@phan-var array<string,string|int> $cityObj';
+            $city = $cityObj['id'];
         }
 
         $experience = $age * 100;

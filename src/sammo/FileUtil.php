@@ -40,7 +40,7 @@ class FileUtil
 
                 $filepath = sprintf('%s/%s', $dir, $FolderOrFile);
                 if (is_dir($filepath)) {
-                    delExpiredInDir($filepath, $t);
+                    static::delExpiredInDir($filepath, $t);
                 } // recursive
                 else {
                     $mt = filemtime($filepath);
@@ -51,7 +51,6 @@ class FileUtil
             }
             closedir($handle);
         }
-        
-        return $success;
+
     }
 }

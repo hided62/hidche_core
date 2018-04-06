@@ -597,6 +597,7 @@ function disaster() {
     }
 
     $disastername = "<G><b>{$disastername}</b></>";
+    $disaster = [];
 
     //재해 처리
     if(count($disastercity)) {
@@ -606,19 +607,19 @@ function disaster() {
         case 1:
             switch($disastertype) {
             case 0:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 역병이 발생하여 도시가 황폐해지고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 역병이 발생하여 도시가 황폐해지고 있습니다.";
                 $state = 4;
                 break;
             case 1:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
                 $state = 5;
                 break;
             case 2:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 추위가 풀리지 않아 얼어죽는 백성들이 늘어나고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 추위가 풀리지 않아 얼어죽는 백성들이 늘어나고 있습니다.";
                 $state = 3;
                 break;
             case 3:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 황건적이 출현해 도시를 습격하고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 황건적이 출현해 도시를 습격하고 있습니다.";
                 $state = 9;
                 break;
             }
@@ -627,19 +628,19 @@ function disaster() {
         case 4:
             switch($disastertype) {
             case 0:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 홍수로 인해 피해가 급증하고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 홍수로 인해 피해가 급증하고 있습니다.";
                 $state = 7;
                 break;
             case 1:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
                 $state = 5;
                 break;
             case 2:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 태풍으로 인해 피해가 속출하고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 태풍으로 인해 피해가 속출하고 있습니다.";
                 $state = 6;
                 break;
             case 3:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【호황】</b></>{$disastername}에 호황으로 도시가 번창하고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【호황】</b></>{$disastername}에 호황으로 도시가 번창하고 있습니다.";
                 $state = 2;
                 $isGood = 1;
                 break;
@@ -649,19 +650,19 @@ function disaster() {
         case 7:
             switch($disastertype) {
             case 0:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 메뚜기 떼가 발생하여 도시가 황폐해지고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 메뚜기 떼가 발생하여 도시가 황폐해지고 있습니다.";
                 $state = 8;
                 break;
             case 1:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
                 $state = 5;
                 break;
             case 2:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 흉년이 들어 굶어죽는 백성들이 늘어나고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 흉년이 들어 굶어죽는 백성들이 늘어나고 있습니다.";
                 $state = 8;
                 break;
             case 3:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【풍작】</b></>{$disastername}에 풍작으로 도시가 번창하고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【풍작】</b></>{$disastername}에 풍작으로 도시가 번창하고 있습니다.";
                 $state = 1;
                 $isGood = 1;
                 break;
@@ -671,19 +672,19 @@ function disaster() {
         case 10:
             switch($disastertype) {
             case 0:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 혹한으로 도시가 황폐해지고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 혹한으로 도시가 황폐해지고 있습니다.";
                 $state = 3;
                 break;
             case 1:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 지진으로 피해가 속출하고 있습니다.";
                 $state = 5;
                 break;
             case 2:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 눈이 많이 쌓여 도시가 황폐해지고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 눈이 많이 쌓여 도시가 황폐해지고 있습니다.";
                 $state = 3;
                 break;
             case 3:
-                $disaster[count($disaster)] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 황건적이 출현해 도시를 습격하고 있습니다.";
+                $disaster[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<M><b>【재난】</b></>{$disastername}에 황건적이 출현해 도시를 습격하고 있습니다.";
                 $state = 9;
                 break;
             }

@@ -163,7 +163,7 @@ function cityInfo() {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen1 = MYDB_fetch_array($result);
     } else {
-        $gen1['name'] = '-';
+        $gen1 = ['name'=>'-'];
     }
 
     if($city['gen2'] > 0) {
@@ -171,7 +171,7 @@ function cityInfo() {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen2 = MYDB_fetch_array($result);
     } else {
-        $gen2['name'] = '-';
+        $gen2 = ['name'=>'-'];
     }
 
     if($city['gen3'] > 0) {
@@ -179,7 +179,7 @@ function cityInfo() {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen3 = MYDB_fetch_array($result);
     } else {
-        $gen3['name'] = '-';
+        $gen3 = ['name'=>'-'];
     }
 
     echo "
@@ -687,11 +687,7 @@ function CoreCommandTable() {
     addCommand("몰수", 24, $valid);
     commandGroup("", 1);
     commandGroup("====== 외 교 ======");
-    if($citycount <= 4) {
-        addCommand("통합 제의", 53, $valid);
-    } else {
-        addCommand("통합 제의", 53, 0);
-    }
+    addCommand("통합 제의", 53, $valid);
 
     addCommand("항복 권고", 51, $valid);
     if($nation['level'] >= 2) {
@@ -705,11 +701,7 @@ function CoreCommandTable() {
     addCommand("파기 제의", 64, $valid);
     commandGroup("", 1);
     commandGroup("====== 특 수 ======");
-    if($citycount >= 5) {
-        addCommand("초토화", 65, $valid);
-    } else {
-        addCommand("초토화", 65, 0);
-    }
+    addCommand("초토화", 65, $valid);
     addCommand("천도/3턴(금쌀{$admin['develcost']}0)", 66, $valid);
     $cost = $admin['develcost'] * 500 + 60000;   // 7만~13만
     addCommand("증축/6턴(금쌀{$cost})", 67, $valid);
@@ -1282,7 +1274,7 @@ function increaseRefresh($type="", $cnt=1) {
     file_put_contents(
         "logs/_{$date2}_refresh.txt",
         sprintf(
-            "%s, %s, %s, %s, %d\n",
+            "%s, %s, %s, %s, %s, %d\n",
             $date,
             $session->userName,
             $session->generalName,
@@ -1455,6 +1447,7 @@ function checkDelay() {
 function updateOnline() {
     $db = DB::db();
     $connect=$db->get();
+    $nationname = [];
 
     //국가별 이름 매핑
     foreach(getAllNationStaticInfo() as $nation) {
@@ -1504,6 +1497,8 @@ function checkTurn() {
     $db = DB::db();
     $connect=$db->get();
 
+    $alllog = [];
+
     // 잦은 갱신 금지 현재 5초당 1회
     if(!timeover()) { return; }
     // 현재 처리중이면 접근 불가
@@ -1521,16 +1516,14 @@ function checkTurn() {
 
     $session = Session::getInstance();
 
-    $locklog[0] = "- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$session->userName;
-    pushLockLog($locklog);
+    pushLockLog(["- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$session->userName]);
 
     // 파일락 해제
     if(!flock($fp, LOCK_UN)) { return; }
     // 세마포어 해제
     //if(!@sem_release($sema)) { echo "치명적 에러! 유기체에게 문의하세요!"; exit(1); }
 
-    $locklog[0] = "- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$session->userName;
-    pushLockLog($locklog);
+    pushLockLog(["- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$session->userName]);
     
     //if(STEP_LOG) delStepLog();
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', 진입');
@@ -1595,8 +1588,7 @@ function checkTurn() {
         //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', preUpdateMonthly');
         $result = preUpdateMonthly();
         if($result == false) {
-            $locklog[0] = "-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$session->userName;
-            pushLockLog($locklog);
+            pushLockLog(["-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
 
             // 잡금 해제
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
@@ -1608,8 +1600,7 @@ function checkTurn() {
         $dt = turnDate($nextTurn);
         $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
 
-        $locklog[0] = "-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$session->userName;
-        pushLockLog($locklog);
+        pushLockLog(["-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
 
         // 이벤트 핸들러 동작
         foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
@@ -1734,8 +1725,7 @@ function checkTurn() {
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
     unlock();
 
-    $locklog[0] = "- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$session->userName;
-    pushLockLog($locklog);
+    pushLockLog(["- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', finish');
     
@@ -1765,9 +1755,8 @@ function addAge() {
             $query = "update general set special='$special' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special)."</></b>】(을)를 익혔습니다!";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special)."</></b>】(을)를 습득");
-            pushGenLog($general, $log);
+            pushGenLog($general, "<C>●</>특기 【<b><L>".getGenSpecial($special)."</></b>】(을)를 익혔습니다!");
         }
 
         $query = "select no,name,nation,leader,power,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where specage2<=age and special2='0'";
@@ -1781,9 +1770,8 @@ function addAge() {
             $query = "update general set special2='$special2' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $log[0] = "<C>●</>특기 【<b><L>".getGenSpecial($special2)."</></b>】(을)를 익혔습니다!";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special2)."</></b>】(을)를 습득");
-            pushGenLog($general, $log);
+            pushGenLog($general, "<C>●</>특기 【<b><L>".getGenSpecial($special2)."</></b>】(을)를 익혔습니다!");
         }
     }
 }
@@ -1810,9 +1798,8 @@ function turnDate($curtime) {
         $query = "update game set year='$year',month='$month'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    $value[0] = $year;
-    $value[1] = $month;
-    return $value;
+
+    return [$year, $month];
 }
 
 
@@ -1836,6 +1823,7 @@ function triggerTournament() {
 function PreprocessCommand($no) {
     $db = DB::db();
     $connect=$db->get();
+    $log = [];
 
     $query = "select no,name,city,injury,special2,item,turn0 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1849,8 +1837,7 @@ function PreprocessCommand($no) {
             $query = "update general set injury=0 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $log[0] = "<C>●</><C>의술</>을 펼쳐 스스로 치료합니다!";
-            pushGenLog($general, $log);
+            pushGenLog($general, "<C>●</><C>의술</>을 펼쳐 스스로 치료합니다!");
         }
             
         $query = "select no,name,injury from general where city='{$general['city']}' and injury>10 order by rand()";
@@ -1869,8 +1856,7 @@ function PreprocessCommand($no) {
                 $query = "update general set injury=0 where no='{$patient['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     
-                $log[0] = "<C>●</><Y>{$general['name']}</>(이)가 <C>의술</>로써 치료해줍니다!";
-                pushGenLog($patient, $log);
+                pushGenLog($patient, "<C>●</><Y>{$general['name']}</>(이)가 <C>의술</>로써 치료해줍니다!");
                 
                 if($patientName == "") {
                     $patientName = $patient['name'];
@@ -1878,12 +1864,11 @@ function PreprocessCommand($no) {
             }
 
             if($patientCount == 1) {
-                $log[0] = "<C>●</><C>의술</>을 펼쳐 도시의 장수 <Y>{$patientName}</>(을)를 치료합니다!";
+                pushGenLog($general, "<C>●</><C>의술</>을 펼쳐 도시의 장수 <Y>{$patientName}</>(을)를 치료합니다!");
             } else {
                 $patientCount -= 1;
-                $log[0] = "<C>●</><C>의술</>을 펼쳐 도시의 장수들 <Y>{$patientName}</> 외 <C>{$patientCount}</>명을 치료합니다!";
+                pushGenLog($general, "<C>●</><C>의술</>을 펼쳐 도시의 장수들 <Y>{$patientName}</> 외 <C>{$patientCount}</>명을 치료합니다!");
             }
-            pushGenLog($general, $log);
         }
     }
     
@@ -1918,6 +1903,7 @@ function PreprocessCommand($no) {
 function updateTurntime($no) {
     $db = DB::db();
     $connect=$db->get();
+    $alllog = [];
 
     $query = "select year,month,isUnited,turnterm from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2166,6 +2152,9 @@ function CheckHall($no) {
 function uniqueItem($general, $log, $vote=0) {
     $db = DB::db();
     $connect=$db->get();
+    $log = [];
+    $alllog = [];
+    $history = [];
 
     if($general['npc'] >= 2 || $general['betray'] > 1) { return $log; }
     if($general['weap'] > 6 || $general['book'] > 6 || $general['horse'] > 6 || $general['item'] > 6) { return $log; }
@@ -2540,7 +2529,7 @@ function nextRuler($general) {
  * @param $distForm 리턴 타입. true일 경우 $result[$dist] = [...$city] 이며, false일 경우 $result[$city] = $dist 임
  */
 function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
-    $queue = new \SqlQueue();
+    $queue = new \SplQueue();
 
     $cities = [];
     $distanceList = [];

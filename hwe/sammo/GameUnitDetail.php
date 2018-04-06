@@ -13,6 +13,7 @@ class GameUnitDetail{
     public $recruitType;
     public $recruitCondition;
     public $recruitFirst;
+    public $info;
 
     public function __construct(
         int $id,
@@ -62,7 +63,7 @@ class GameUnitDetail{
         }
 
         if($this->recruitType == 2){
-            $cityLevel = CityConst::byID($id)->level;
+            $cityLevel = CityConst::byID($this->id)->level;
             $cityLevel = CityConst::$regionMap[$cityLevel];
 
             if(!key_exists($this->recruitCondition, $ownCities)){

@@ -2,6 +2,7 @@
 namespace sammo;
 
 function getTurn($general, $type, $font=1) {
+    $str = [];
     $db = DB::db();
     $connect=$db->get();
 
@@ -256,6 +257,7 @@ function getTurn($general, $type, $font=1) {
 function getCoreTurn($nation, $level) {
     $db = DB::db();
     $connect=$db->get();
+    $str = [];
 
     $turn[0] = $nation["l{$level}turn0"];
     $turn[1] = $nation["l{$level}turn1"];

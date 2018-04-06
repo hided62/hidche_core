@@ -11,7 +11,8 @@ return [
     // If this is set to null,
     // then Phan assumes the PHP version which is closest to the minor version
     // of the php executable used to execute phan.
-    "target_php_version" => null,
+    "target_php_version" => '7.0',
+    'backward_compatibility_checks ' => false,
 
     'file_list' => [
         'f_config/config.php',

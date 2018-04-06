@@ -36,7 +36,11 @@ abstract class Condition{
         }
 
         //array의 첫번째 값이 Condition이 아닌 경우에는 그냥 배열로 처리함.
-        return array_map(static::build, $conditionChain);
+        $result = [];
+        foreach($conditionChain as $condition){
+            $result[] = static::build($condition);
+        }
+        return $result;
     }
 
     protected static function _eval($arg, $env=null){
@@ -47,7 +51,7 @@ abstract class Condition{
             ];
         }
         if($arg instanceof Condition){
-            return $arg->checkCondition($env);
+            return $arg->eval($env);
         }
         throw new \InvalidArgumentException('평가 인자는 boolean이거나 Condition 클래스여야 합니다.');
     }
