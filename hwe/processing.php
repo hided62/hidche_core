@@ -9,7 +9,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $db = DB::db();
 $connect=$db->get();
 
-$count = sizeof($turn);
+$count = count($turn);
 for($i=0; $i < $count; $i++) {
     if($turn[$i] == 100 || $turn[$i] == 99 || $turn[$i] == 98) {
     } elseif($turn[$i] >= 0 || $turn[$i] <= 23) {
@@ -184,7 +184,7 @@ function command_99($turn) {
     if($me['level'] >= 5) {
         $command = EncodeCommand(0, 0, 0, 99);
 
-        for($i=0; $i < sizeof($turn); $i++) {
+        for($i=0; $i < count($turn); $i++) {
             $query = "update nation set l{$me['level']}turn{$turn[$i]}='{$command}' where nation='{$me['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
@@ -426,7 +426,7 @@ function calc(cost, formnum) {
         <input type=hidden name=third value={$i}>
         <input type=hidden name=command value=$command>";
 
-        for($j=0; $j < sizeof($turn); $j++) {
+        for($j=0; $j < count($turn); $j++) {
             echo "
         <input type=hidden name=turn[] value=$turn[$j]>";
         }
@@ -637,7 +637,7 @@ function calc(cost, formnum) {
         <input type=hidden name=third value={$i}>
         <input type=hidden name=command value=$command>";
 
-        for($j=0; $j < sizeof($turn); $j++) {
+        for($j=0; $j < count($turn); $j++) {
             echo "
         <input type=hidden name=turn[] value=$turn[$j]>";
         }
@@ -687,7 +687,7 @@ function command_15($turn, $command) {
 <input type=text name=double size=3 maxlength=3 style=text-align:right;color:white;background-color:black>00명
 <input type=submit value=재편성>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -728,7 +728,7 @@ function command_16($turn, $command) {
 <input type=submit value=출병>
 <input type=hidden name=command value=$command>";
 
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -771,7 +771,7 @@ function command_21($turn, $command) {
 </select>
 <input type=submit value=이동>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -839,7 +839,7 @@ function command_22($turn, $command) {
 </select>
 <input type=submit value=등용>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -912,7 +912,7 @@ function command_23($turn, $command) {
 </select>
 <input type=submit value=포상>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -987,7 +987,7 @@ function command_24($turn, $command) {
 </select>
 <input type=submit value=몰수>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1064,7 +1064,7 @@ function command_25($turn, $command) {
 </select>
 <input type=submit value=임관>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1127,7 +1127,7 @@ function command_27($turn, $command) {
 </select>
 <input type=submit value=발령>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1168,7 +1168,7 @@ function command_30($turn, $command) {
 </select>
 <input type=submit value=강행>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
 <input type=hidden name=turn[] value=$turn[$i]>";
 }
@@ -1211,7 +1211,7 @@ function command_31($turn, $command) {
 </select>
 <input type=submit value=첩보>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1257,7 +1257,7 @@ function command_32($turn, $command) {
 </select>
 <input type=submit value=화계>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1299,7 +1299,7 @@ function command_33($turn, $command) {
 </select>
 <input type=submit value=탈취>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1341,7 +1341,7 @@ function command_34($turn, $command) {
 </select>
 <input type=submit value=파괴>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1383,7 +1383,7 @@ function command_35($turn, $command) {
 </select>
 <input type=submit value=선동>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1425,7 +1425,7 @@ function command_36($turn, $command) {
 </select>
 <input type=submit value=기습>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1502,7 +1502,7 @@ function command_43($turn, $command) {
 </select>
 <input type=submit value=증여>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1550,7 +1550,7 @@ function command_44($turn, $command) {
 </select>
 <input type=submit value=헌납>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1645,7 +1645,7 @@ function command_46($turn, $command) {
 </select>
 <input type=submit value=건국>
 <input type=hidden name=command value=$command>";
-        for($i=0; $i < sizeof($turn); $i++) {
+        for($i=0; $i < count($turn); $i++) {
             echo "
 <input type=hidden name=turn[] value=$turn[$i]>";
         }
@@ -1716,7 +1716,7 @@ function command_48($turn, $command) {
 </select>
 <input type=submit value=거래>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1764,7 +1764,7 @@ function command_49($turn, $command) {
 </select>
 <input type=submit value=거래>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1816,7 +1816,7 @@ function command_51($turn, $command) {
 </select>
 <input type=submit value=항복권고>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1898,7 +1898,7 @@ function command_52($turn, $command) {
 </select>
 <input type=submit value=원조>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -1962,7 +1962,7 @@ function command_53($turn, $command) {
         통합국명 : <input type=text name=nationname size=12 maxlength=6 style=text-align:right;color:white;background-color:black>
         <input type=submit value=통합제의>
         <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2013,7 +2013,7 @@ function command_54($turn, $command) {
 </select>
 <input type=submit value=선양>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2098,7 +2098,7 @@ function command_61($turn, $command) {
 비고 : <input type=text name=note size=45 maxlength=45 style=text-align:left;color:white;background-color:black>
 <input type=submit value=불가침>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2165,7 +2165,7 @@ function command_62($turn, $command) {
 </select>
 <input type=submit value=선전포고>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2224,7 +2224,7 @@ function command_63($turn, $command) {
 </select>
 <input type=submit value=종전제의>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2283,7 +2283,7 @@ function command_64($turn, $command) {
 </select>
 <input type=submit value=파기제의>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2322,7 +2322,7 @@ echo "<br>
 <input type=submit value=초토화>
 <input type=hidden name=command value=$command>";
 
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2363,7 +2363,7 @@ echo "<br>
 <input type=submit value=천도>
 <input type=hidden name=command value=$command>";
 
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2404,7 +2404,7 @@ echo "<br>
 <input type=submit value=증축>
 <input type=hidden name=command value=$command>";
 
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2445,7 +2445,7 @@ echo "<br>
 <input type=submit value=감축>
 <input type=hidden name=command value=$command>";
 
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2486,7 +2486,7 @@ echo "<br>
 <input type=submit value=백성동원>
 <input type=hidden name=command value=$command>";
 
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2527,7 +2527,7 @@ echo "<br>
 <input type=submit value=수몰>
 <input type=hidden name=command value=$command>";
 
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2568,7 +2568,7 @@ echo "<br>
 <input type=submit value=허보>
 <input type=hidden name=command value=$command>";
 
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2629,7 +2629,7 @@ function command_75($turn, $command) {
 </select>
 <input type=submit value=피장파장>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2689,7 +2689,7 @@ function command_77($turn, $command) {
 </select>
 <input type=submit value=이호경식>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2749,7 +2749,7 @@ function command_78($turn, $command) {
 </select>
 <input type=submit value=급습>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }
@@ -2807,7 +2807,7 @@ function command_81($turn, $command) {
 </select>
 <input type=submit value=국기변경>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < sizeof($turn); $i++) {
+    for($i=0; $i < count($turn); $i++) {
         echo "
             <input type=hidden name=turn[] value=$turn[$i]>";
     }

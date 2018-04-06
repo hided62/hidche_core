@@ -53,7 +53,7 @@ switch($btn) {
     //TODO:새 갠메 시스템으로 변경
         $date = date('Y-m-d H:i:s');
         $msg;
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
         }
         break;
 }

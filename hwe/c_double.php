@@ -39,7 +39,7 @@ if($command == 46) {
         'makenation'=>$name
     ], 'owner=%i', $userID);
 
-    $count = sizeof($turn);
+    $count = count($turn);
     $query = ['con'=>$db->eval('con')];
     foreach($turn as $turnIdx){
         $query['turn'.$turnIdx] = $comStr;
@@ -63,7 +63,7 @@ if($command == 46) {
         $query = "update general set makenation='{$nationname}' where level>=5 and nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $count = sizeof($turn);
+        $count = count($turn);
         $str = "type=type";
         for($i=0; $i < $count; $i++) {
             $str .= ",l{$me['level']}turn{$turn[$i]}='{$comStr}'";
@@ -89,7 +89,7 @@ if($command == 46) {
         $query = "update diplomacy set reserved='{$note}' where me='{$me['nation']}' and you='$double'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $count = sizeof($turn);
+        $count = count($turn);
         $str = "type=type";
         for($i=0; $i < $count; $i++) {
             $str .= ",l{$me['level']}turn{$turn[$i]}='{$comStr}'";
@@ -111,7 +111,7 @@ if($command == 46) {
     if(($command == 23 || $command == 24 || $command == 27) && $me['no'] == $third) {
     	// 자기자신에게 악용 금지
     } elseif($me['level'] >= 5) {
-        $count = sizeof($turn);
+        $count = count($turn);
         $str = "type=type";
         for($i=0; $i < $count; $i++) {
             $str .= ",l{$me['level']}turn{$turn[$i]}='{$comStr}'";
@@ -122,7 +122,7 @@ if($command == 46) {
     //echo "<script>location.replace('b_chiefcenter.php');</script>";
     echo 'b_chiefcenter.php';//TODO:debug all and replace
 } else {
-    $count = sizeof($turn);
+    $count = count($turn);
     $str = "con=con";
     for($i=0; $i < $count; $i++) {
         $str .= ",turn{$turn[$i]}='{$comStr}'";

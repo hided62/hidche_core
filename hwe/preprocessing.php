@@ -28,7 +28,7 @@ if($con >= 2) {
     exit();
  }
 
-$count = sizeof($turn);
+$count = count($turn);
 for($i=0; $i < $count; $i++) {
     if($turn[$i] == 100 || $turn[$i] == 99 || $turn[$i] == 98) {
     } elseif($turn[$i] >= 0 && $turn[$i] <= 23) {

@@ -148,8 +148,14 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
         ], Json::DELETE_NULL)
     ]);
 }
-
-function sendMessage($msgType, $src, $dest, $msg, $date = null, $validUntil = null, $msgOption = null){
+/**
+ * @param string $msgType
+ * @param mixed[] $src
+ * @param mixed[] $dest
+ * @param null|string $date
+ * @param null|string $validUntil
+ */
+function sendMessage($msgType, array $src, array $dest, $msg, $date = null, $validUntil = null, $msgOption = null){
     if($date === null){
         $date = (new \Datetime())->format('Y-m-d H:i:s');
     }

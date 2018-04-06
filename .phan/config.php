@@ -39,7 +39,8 @@ return [
         'hwe/func_time_event.php',
         'hwe/func_tournament.php',
         'hwe/process_war.php',
-        'hwe/func.php'
+        'hwe/func.php',
+        'vendor/sergeytsalkov/meekrodb/db.class.php'
     ],
 
     // A list of directories that should be parsed for class and

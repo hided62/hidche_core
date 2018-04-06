@@ -687,7 +687,7 @@ function command_Single($turn, $command) {
 
     $command = EncodeCommand(0, 0, 0, $command);
 
-    $count = sizeof($turn);
+    $count = count($turn);
     $str = "con=con";
     for($i=0; $i < $count; $i++) {
         $str .= ",turn{$turn[$i]}='{$command}'";
@@ -711,7 +711,7 @@ function command_Chief($turn, $command) {
     $me = MYDB_fetch_array($result);
 
     if($me['level'] >= 5) {
-        $count = sizeof($turn);
+        $count = count($turn);
         $str = "type=type";
         for($i=0; $i < $count; $i++) {
             $str .= ",l{$me['level']}turn{$turn[$i]}='{$command}'";
@@ -728,7 +728,7 @@ function command_Other($turn, $commandtype) {
     $connect=$db->get();
 
     echo "<form name=form1 action=processing.php method=post target=_parent>";
-    $count = sizeof($turn);
+    $count = count($turn);
     for($i=0; $i < $count; $i++) {
         echo "<input type=hidden name=turn[] value=$turn[$i]>";
     }

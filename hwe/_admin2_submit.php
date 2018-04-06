@@ -66,12 +66,12 @@ switch($btn) {
     case "특기 부여":
         $admin = DB::db()->queryFirstRow('select `year`, `month` from `game` where `no`=1');
 
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "특기 부여!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "select no,leader,power,intel from general where no='$genlist[$i]'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $general = MYDB_fetch_array($result);
@@ -87,90 +87,90 @@ switch($btn) {
         }
         break;
     case "경험치1000":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = $btn." 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set experience=experience+1000 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "공헌치1000":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = $btn." 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set dedication=dedication+1000 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "보숙10000":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "보병숙련도+10000 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set dex0=dex0+10000 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "궁숙10000":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "궁병숙련도+10000 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set dex10=dex10+10000 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "기숙10000":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "기병숙련도+10000 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set dex20=dex20+10000 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "귀숙10000":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "귀병숙련도+10000 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set dex30=dex30+10000 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "차숙10000":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             $msg = "차병숙련도+10000 지급!";
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set dex40=dex40+10000 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "접속 허용":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set con=0 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "접속 제한":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set con=1000 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
@@ -178,20 +178,20 @@ switch($btn) {
     case "메세지 전달":
         //TODO:새 갠메 시스템으로 변경
         $date = date('Y-m-d H:i:s');
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
         break;
     case "무기지급":
         $date = date('Y-m-d H:i:s');
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "무기 회수!"; }
             else { $msg = getWeapName($weap)." 지급!"; }
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             if($weap == 0) {
                 $query = "update general set weap='0' where no='$genlist[$i]'";
             } else {
@@ -202,14 +202,14 @@ switch($btn) {
         break;
     case "책지급":
         $date = date('Y-m-d H:i:s');
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "서적 회수!"; }
             else { $msg = getBookName($weap)." 지급!"; }
             // 상대에게 발송
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             if($weap == 0) {
                 $query = "update general set book='0' where no='$genlist[$i]'";
             } else {
@@ -220,14 +220,14 @@ switch($btn) {
         break;
     case "말지급":
         $date = date('Y-m-d H:i:s');
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "말 회수!"; }
             else { $msg = getHorseName($weap)." 지급!"; }
             // 상대에게 발송
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             if($weap == 0) {
                 $query = "update general set horse='0' where no='$genlist[$i]'";
             } else {
@@ -238,14 +238,14 @@ switch($btn) {
         break;
     case "도구지급":
         $date = date('Y-m-d H:i:s');
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $you = DB::db()->queryFirstRow('select `no`, `nation` from `general` where `no` = %i', $genlist[$i]);
             if($weap == 0) { $msg = "특수도구 회수!"; }
             else { $msg = getItemName($weap)." 지급!"; }
             // 상대에게 발송
             sendMessage('private', ['id'=>$generalID, 'nation_id'=>0], ['id'=>$you['no'], 'nation_id'=>$you['nation']], $msg);
         }
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             if($weap == 0) {
                 $query = "update general set item='0' where no='$genlist[$i]'";
             } else {
@@ -255,25 +255,25 @@ switch($btn) {
         }
         break;
     case "NPC해제":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set npc=1 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "하야입력":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set turn0='00000000000045' where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "방랑해산":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set turn0='00000000000047',turn1='00000000000056' where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         break;
     case "NPC설정":
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $query = "update general set npc=2 where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
@@ -283,7 +283,7 @@ switch($btn) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $admin = MYDB_fetch_array($result);
 
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $turntime = getRandTurn($admin['turnterm']);
             $cutTurn = cutTurn($turntime, $admin['turnterm']);
             $query = "update general set turntime='$cutTurn' where no='$genlist[$i]'";
@@ -295,7 +295,7 @@ switch($btn) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $admin = MYDB_fetch_array($result);
 
-        for($i=0; $i < sizeof($genlist); $i++) {
+        for($i=0; $i < count($genlist); $i++) {
             $turntime = getRandTurn($admin['turnterm']);
             $query = "update general set turntime='$turntime' where no='$genlist[$i]'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
