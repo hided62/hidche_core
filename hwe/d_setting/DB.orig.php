@@ -21,6 +21,7 @@ class DB{
      * DB 객체 생성
      * 
      * @return \MeekroDB 
+     * @suppress PhanTypeMismatchProperty
      */
     public static function db(){
         if(self::$uDB === null){

@@ -92,7 +92,7 @@ function getSpecial($leader, $power, $intel) {
         $type = array(20, 31);
         $special = $type[array_rand($type)];
         // 귀모는 50% * 5% = 2.5%
-        if($special == 31 && randBool(0.95)) {
+        if($special == 31 && Util::randBool(0.95)) {
             $special = 20;
         }
     //무장
@@ -100,7 +100,7 @@ function getSpecial($leader, $power, $intel) {
         $type = array(10, 11, 12, 31);
         $special = $type[array_rand($type)];
         // 귀모는 그중에 25% * 10% = 2.5%
-        if($special == 31 && randBool(0.9)) {
+        if($special == 31 && Util::randBool(0.9)) {
             $type = array(10, 11, 12);
             $special = $type[array_rand($type)];
         }

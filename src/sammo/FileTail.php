@@ -1,6 +1,6 @@
 <?php
 namespace sammo;
 
-class FileTail extends \PhpExtended\Tail\Tail{
-
+class FileTail extends \PhpExtended\Tail\Tail
+{
 };

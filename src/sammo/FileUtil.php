@@ -1,15 +1,17 @@
 <?php
 namespace sammo;
 
-class FileUtil{
-    public static function delInDir(string $dir) {
+class FileUtil
+{
+    public static function delInDir(string $dir)
+    {
         $handle = opendir($dir);
-        if($handle !== false){
-            while(false !== ($FolderOrFile = readdir($handle))) {
+        if ($handle !== false) {
+            while (false !== ($FolderOrFile = readdir($handle))) {
                 if ($FolderOrFile == "." || $FolderOrFile == "..") {
                     continue;
                 }
-                if($FolderOrFile[0] == '.'){
+                if ($FolderOrFile[0] == '.') {
                     continue;
                 }
     
@@ -27,7 +29,8 @@ class FileUtil{
         return true;
     }
 
-    function delExpiredInDir($dir, $t) {
+    public function delExpiredInDir($dir, $t)
+    {
         $handle = opendir($dir);
         if ($handle !== false) {
             while (false !== ($FolderOrFile = readdir($handle))) {
@@ -50,5 +53,5 @@ class FileUtil{
         }
         
         return $success;
-    }    
+    }
 }

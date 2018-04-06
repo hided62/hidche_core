@@ -1,16 +1,18 @@
 <?php
 namespace sammo;
 
-class AppConf{
+class AppConf
+{
     private static $serverList = null;
 
     /**
      * 서버 설정 반환
-     * 
+     *
      * @return \sammo\Setting[]
      */
-    public static function getList(){
-        if(self::$serverList === null){
+    public static function getList()
+    {
+        if (self::$serverList === null) {
             self::$serverList = [
                 'che'=>new Setting(ROOT.'/che', '체', 'white'),
                 'kwe'=>new Setting(ROOT.'/kwe', '퀘', 'yellow'),
@@ -24,11 +26,12 @@ class AppConf{
 
     /**
      * DB 객체 생성
-     * 
-     * @return \MeekroDB 
+     *
+     * @return \MeekroDB
      */
-    public static function requireRootDB(){
-        if(!class_exists('\\sammo\\RootDB')){
+    public static function requireRootDB()
+    {
+        if (!class_exists('\\sammo\\RootDB')) {
             trigger_error('RootDB.php가 설정되지 않았습니다.', E_USER_ERROR);
             die();
         }
@@ -37,11 +40,12 @@ class AppConf{
 
     /**
      * DB 객체 생성
-     * 
-     * @return \MeekroDB 
+     *
+     * @return \MeekroDB
      */
-    public static function requireDB(){
-        if(!class_exists('\\sammo\\DB')){
+    public static function requireDB()
+    {
+        if (!class_exists('\\sammo\\DB')) {
             trigger_error('DB.php가 설정되지 않았습니다.', E_USER_ERROR);
             die();
         }

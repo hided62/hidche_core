@@ -3,20 +3,20 @@ namespace sammo;
 
 /**
  * Session Wrapper. 내부적으로 $_SESSION을 이용
- * 
+ *
  * @property int    $userID    유저코드
  * @property string $userName  유저명
  * @property int    $userGrade 유저등급
  * @property string $ip        IP
  */
-class Session {
-
+class Session
+{
     const PROTECTED_NAMES = [
         'ip'=>true,
-        'time'=>true, 
-        'userID'=>true, 
-        'userName'=>true, 
-        'userGrade'=>true, 
+        'time'=>true,
+        'userID'=>true,
+        'userName'=>true,
+        'userGrade'=>true,
         'writeClosed'=>true,
         'generalID'=>true,
         'generalName'=>true
@@ -31,15 +31,17 @@ class Session {
     private $writeClosed = false;
     private $sessionID = null;
 
-    public static function getInstance(): Session{
+    public static function getInstance(): Session
+    {
         static $inst = null;
-        if($inst === null){
+        if ($inst === null) {
             $inst = new Session();
         }
         return $inst;
     }
 
-    public function restart(): Session{
+    public function restart(): Session
+    {
         //NOTE: logout 프로세스는 아예 세션을 날려버리기도 하므로, 항상 안전하게 session_restart가 가능함을 보장하지 않음.
         ini_set('session.use_only_cookies', false);
         ini_set('session.use_cookies', false);
@@ -50,8 +52,9 @@ class Session {
         return $this;
     }
 
-    private static function die($result){
-        if(is_string($result)){
+    private static function die($result)
+    {
+        if (is_string($result)) {
             header('Location:'.$result);
             die();
         }
@@ -61,90 +64,98 @@ class Session {
             'reason'=>'로그인이 필요합니다.'
         ];
 
-        if(is_array($result)){
+        if (is_array($result)) {
             $jsonResult = array_merge($result, $jsonResult);
         }
 
         Json::die($jsonResult);
     }
 
-    public static function requireLogin($result = '..'): Session{
+    public static function requireLogin($result = '..'): Session
+    {
         $session = Session::getInstance();
-        if($session->isLoggedIn()){
+        if ($session->isLoggedIn()) {
             return $session;
         }
 
         static::die($result);
     }
 
-    public static function requireGameLogin($result = '..'): Session{
+    public static function requireGameLogin($result = '..'): Session
+    {
         $session = Session::requireLogin($result)->loginGame();
 
-        if($session->generalID){
+        if ($session->generalID) {
             return $session;
         }
 
         static::die($result);
     }
 
-    public function __construct() {
+    public function __construct()
+    {
         //session_cache_limiter('nocache, must_revalidate');
 
         // 세션 변수의 등록
-        if (session_id() == ""){
+        if (session_id() == "") {
             session_start();
             $this->sessionID = session_id();
         }
 
         //첫 등장
 
-        if(!$this->get('ip')) {
+        if (!$this->get('ip')) {
             $this->set('ip', Util::get_client_ip(true));
             $this->set('time', time());
         }
     }
 
-    public function setReadOnly(): Session{
-        if(!$this->writeClosed){
+    public function setReadOnly(): Session
+    {
+        if (!$this->writeClosed) {
             session_write_close();
             $this->writeClosed = true;
-        }        
+        }
         return $this;
     }
 
-    public function __set(string $name, $value){
-        if(key_exists($name, $this->PROTECED_NAMES)){
+    public function __set(string $name, $value)
+    {
+        if (key_exists($name, $this->PROTECED_NAMES)) {
             trigger_error("{$name}은 외부에서 쓰기 금지된 Session 변수입니다.", E_USER_NOTICE);
             return;
         }
 
-        $this->set($name, $value);        
+        $this->set($name, $value);
     }
 
-    private function set(string $name, $value){
-        if($value === null){
+    private function set(string $name, $value)
+    {
+        if ($value === null) {
             unset($_SESSION[$name]);
-        }
-        else{
+        } else {
             $_SESSION[$name] = $value;
         }
     }
 
-    public function __get(string $name){
-        if($name == 'generalID'){
+    public function __get(string $name)
+    {
+        if ($name == 'generalID') {
             return $this->get(UniqueConst::$serverID.static::GAME_KEY_GENERAL_ID);
         }
-        if($name == 'generalName'){
+        if ($name == 'generalName') {
             return $this->get(UniqueConst::$serverID.static::GAME_KEY_GENERAL_NAME);
         }
         return $this->get($name);
     }
 
-    private function get(string $name){
+    private function get(string $name)
+    {
         return Util::array_get($_SESSION[$name]);
     }
 
-    public function login(int $userID, string $userName, int $grade): Session {
+    public function login(int $userID, string $userName, int $grade): Session
+    {
         $this->set('userID', $userID);
         $this->set('userName', $userName);
         $this->set('ip', Util::get_client_ip(true));
@@ -155,11 +166,12 @@ class Session {
     }
 
 
-    public function logout(): Session {
-        if($this->writeClosed){
+    public function logout(): Session
+    {
+        if ($this->writeClosed) {
             $this->restart();
         }
-        if(class_exists('\\sammo\\UniqueConst')){
+        if (class_exists('\\sammo\\UniqueConst')) {
             $this->logoutGame();
         }
         
@@ -170,17 +182,18 @@ class Session {
         return $this;
     }
 
-    public function loginGame(&$result = null): Session{
+    public function loginGame(&$result = null): Session
+    {
         $userID = $this->userID;
-        if(!$userID){
-            if($result !== null){
+        if (!$userID) {
+            if ($result !== null) {
                 $result = false;
             }
             return $this;
         }
 
-        if(!class_exists('\\sammo\\DB') || !class_exists('\\sammo\\UniqueConst')){
-            if($result !== null){
+        if (!class_exists('\\sammo\\DB') || !class_exists('\\sammo\\UniqueConst')) {
+            if ($result !== null) {
                 $result = false;
             }
             return $this;
@@ -194,29 +207,29 @@ class Session {
         $deadTime = $this->get($serverID.static::GAME_KEY_EXPECTED_DEADTIME);
 
         $now = time();
-        if(
+        if (
             $generalID && $generalName && $loginDate && $deadTime
             && $loginDate + 1800 > $now && $deadTime > $now
-        ){
+        ) {
             //로그인 정보는 30분간 유지한다.
-            if($result !== null){
+            if ($result !== null) {
                 $result = true;
             }
             return $this;
         }
 
-        if($generalID || $generalName || $loginDate || $deadTime){
+        if ($generalID || $generalName || $loginDate || $deadTime) {
             $this->logoutGame();
         }
 
         $db = DB::db();
 
         $general = $db->queryFirstRow(
-            'SELECT `no`, `name`, `killturn`, `turntime` from general where `owner` = %i', 
+            'SELECT `no`, `name`, `killturn`, `turntime` from general where `owner` = %i',
             $userID
         );
-        if(!$general){
-            if($result !== null){
+        if (!$general) {
+            if ($result !== null) {
                 $result = false;
             }
             return $this;
@@ -232,15 +245,14 @@ class Session {
         $nextTurn = $nextTurn->getTimestamp();
 
         $deadTime = $nextTurn + $general['killturn'] * $turnterm;
-        if($deadTime < $now && !$isUnited){
+        if ($deadTime < $now && !$isUnited) {
             $locked = $db->queryFirstField('SELECT plock FROM plock LIMIT 1');
-            if(!$locked){
-                if($result !== null){
+            if (!$locked) {
+                if ($result !== null) {
                     $result = false;
                 }
                 return $this;
             }
-            
         }
 
         $db->update('general', [
@@ -256,8 +268,9 @@ class Session {
         return $this;
     }
 
-    public function logoutGame(): Session{
-        if($this->writeClosed){
+    public function logoutGame(): Session
+    {
+        if ($this->writeClosed) {
             $this->restart();
         }
         $serverID = UniqueConst::$serverID;
@@ -273,44 +286,43 @@ class Session {
      * 로그인 유저의 전역 grade를 받아옴
      * @return int|null
      */
-    public static function getUserGrade(bool $requireLogin = false, string $exitPath = '..'){
-        if($requireLogin){
+    public static function getUserGrade(bool $requireLogin = false, string $exitPath = '..')
+    {
+        if ($requireLogin) {
             $obj = self::requireLogin($exitPath);
-        }
-        else{
+        } else {
             $obj = self::getInstance();
         }
         
         return $obj->userGrade;
     }
 
-    /** 
-     * 로그인한 유저의 전역 id(숫자)를 받아옴 
+    /**
+     * 로그인한 유저의 전역 id(숫자)를 받아옴
      *
-     * @return int|null 
+     * @return int|null
      */
-    public static function getUserID(bool $requireLogin = false, string $exitPath = '..'){
-        if($requireLogin){
+    public static function getUserID(bool $requireLogin = false, string $exitPath = '..')
+    {
+        if ($requireLogin) {
             $obj = self::requireLogin($exitPath);
-        }
-        else{
+        } else {
             $obj = self::getInstance();
         }
         
         return $obj->userID;
     }
 
-    public function isLoggedIn() {
-        if($this->userID){
+    public function isLoggedIn()
+    {
+        if ($this->userID) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
-    public function __destruct() {
+    public function __destruct()
+    {
     }
 }
-
-

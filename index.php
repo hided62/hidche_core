@@ -3,8 +3,8 @@ namespace sammo;
 
 require(__dir__.'/vendor/autoload.php');
 
-if(!class_exists('\\sammo\\RootDB')){
-    header ('Location:install.php');
+if (!class_exists('\\sammo\\RootDB')) {
+    header('Location:install.php');
     die();
 }
 
@@ -13,9 +13,8 @@ $session = Session::getInstance();
 
 use \kakao\KakaoKey as KakaoKey;
 
-
-if($session->isLoggedIn()){
-    header ('Location:i_entrance/entrance.php');
+if ($session->isLoggedIn()) {
+    header('Location:i_entrance/entrance.php');
     die();
 }
 
