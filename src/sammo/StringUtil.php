@@ -163,6 +163,7 @@ class StringUtil {
         $size = strlen($str);
 
         $count = ($maxsize - $size) / 2;
+        $string = '';
 
         for($i=0; $i < $count; $i++) {
             $string = $string.$ch;

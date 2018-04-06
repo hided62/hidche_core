@@ -65,7 +65,7 @@ class Util extends \utilphp\util{
             }
             return intval($val);
         }
-        throw new InvalidArgumentException('올바르지 않은 타입형 :'.$val);
+        throw new \InvalidArgumentException('올바르지 않은 타입형 :'.$val);
     }
 
     /**
@@ -125,7 +125,7 @@ class Util extends \utilphp\util{
         }
         $idx = 0;
         $jmp = 0;
-        foreach ($arr as $key=>&$value) {
+        foreach ($array as $key=>&$value) {
             if(is_string($key)){
                 return true;
             }
@@ -156,7 +156,7 @@ class Util extends \utilphp\util{
             return $dict;
         }
     
-        foreach ($arr as $key=>$value) {
+        foreach ($dict as $key=>$value) {
             if($value === null){
                 unset($dict[$key]);
             }
@@ -209,9 +209,9 @@ class Util extends \utilphp\util{
     /**
      * 각 값의 비중에 따라 랜덤한 값을 선택
      * 
-     * @param array 각 수치의 비중
+     * @param array $items 각 수치의 비중
      * 
-     * @return object 선택된 랜덤 값의 key값. 단순 배열인 경우에는 index
+     * @return int|string 선택된 랜덤 값의 key값. 단순 배열인 경우에는 index
      */
     public static function choiceRandomUsingWeight(array $items){
         $sum = 0;
@@ -235,7 +235,7 @@ class Util extends \utilphp\util{
     /**
      * 배열의 아무거나 고름. Python의 random.choice()
      * 
-     * @param array 선택하고자 하는 배열
+     * @param array $items 선택하고자 하는 배열
      * 
      * @return object 선택된 value값.
      */

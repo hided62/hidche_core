@@ -2,6 +2,11 @@
 namespace sammo;
 
 class WebUtil{
+
+    private function __construct(){
+
+    }
+
     public static function escapeIPv4($ip){
         return str_replace('.', '\\.', $ip);
     }
@@ -19,13 +24,13 @@ class WebUtil{
         // http://thisinterestsme.com/receiving-json-post-data-via-php/
         // http://thisinterestsme.com/php-json-error-handling/
         if(strcasecmp($_SERVER['REQUEST_METHOD'], 'POST') != 0){
-            throw new Exception('Request method must be POST!');
+            throw new \Exception('Request method must be POST!');
         }
         
         //Make sure that the content type of the POST request has been set to application/json
         $contentType = isset($_SERVER["CONTENT_TYPE"]) ? trim($_SERVER["CONTENT_TYPE"]) : '';
         if(strcasecmp($contentType, 'application/json') != 0){
-            throw new Exception('Content type must be: application/json');
+            throw new \Exception('Content type must be: application/json');
         }
         
         //Receive the RAW post data.
@@ -39,7 +44,7 @@ class WebUtil{
         
         //In some cases, this will happen.
         if(is_null($decoded) && $jsonError == JSON_ERROR_NONE){
-            throw new Exception('Could not decode JSON!');
+            throw new \Exception('Could not decode JSON!');
         }
         
         //If an error exists.
@@ -67,7 +72,7 @@ class WebUtil{
                     $error .= 'Unknown error!';
                 break;
             }
-            throw new Exception($error);
+            throw new \Exception($error);
         }
     
         return $decoded;
