@@ -36,6 +36,7 @@ return [
         'hwe/func_template.php',
         'hwe/func_time_event.php',
         'hwe/func_tournament.php',
+        'hwe/process_war.php',
         'hwe/func.php'
     ],
 

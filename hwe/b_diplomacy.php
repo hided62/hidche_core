@@ -37,7 +37,7 @@ for($i=0; $i < $nationcount; $i++) {
     $citycount = MYDB_num_rows($cityresult);
 
 
-    $nationnum[count($nationnum)] = $nation['nation'];
+    $nationnum[] = $nation['nation'];
     $nationname[$nation['nation']] = $nation['name'];
     $nationcolor[$nation['nation']] = $nation['color'];
 

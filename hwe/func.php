@@ -564,13 +564,11 @@ function commandTable() {
         addCommand("탈취(무력경험, 자금$develcost5, 군량$develcost5)", 33);
         addCommand("파괴(무력경험, 자금$develcost5, 군량$develcost5)", 34);
         addCommand("선동(통솔경험, 자금$develcost5, 군량$develcost5)", 35);
-    //    addCommand("기습(통, 무, 지, 자금$develcost10, 군량$develcost10)", 36);
     } else {
         addCommand("화계(지력경험, 자금$develcost5, 군량$develcost5)", 32, 0);
         addCommand("탈취(무력경험, 자금$develcost5, 군량$develcost5)", 33, 0);
         addCommand("파괴(무력경험, 자금$develcost5, 군량$develcost5)", 34, 0);
         addCommand("선동(통솔경험, 자금$develcost5, 군량$develcost5)", 35, 0);
-    //    addCommand("기습(통, 무, 지, 자금500, 군량500)", 36, 0);
     }
     commandGroup("", 1);
     commandGroup("========= 개 인 ==========");
@@ -1904,6 +1902,7 @@ function updateTurntime($no) {
     $db = DB::db();
     $connect=$db->get();
     $alllog = [];
+    $log = [];
 
     $query = "select year,month,isUnited,turnterm from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2195,7 +2194,7 @@ function uniqueItem($general, $log, $vote=0) {
             }
             for($i=7; $i <= 26; $i++) {
                 if($occupied[$i] == 0) {
-                    $item[count($item)] = $i;
+                    $item[] = $i;
                 }
             }
             $it = $item[rand() % count($item)];
@@ -2267,8 +2266,8 @@ function uniqueItem($general, $log, $vote=0) {
                 }
                 break;
             }
-            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-            pushWorldHistory($history, $admin['year'], $admin['month']);
+            pushGeneralPublicRecord($alllog, $game['year'], $game['month']);
+            pushWorldHistory($history, $game['year'], $game['month']);
         }
     }
     return $log;

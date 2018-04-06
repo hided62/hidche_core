@@ -1456,7 +1456,7 @@ function process_26(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         //부대원에게 로그 전달
-        $genlog[count($genlog)] = "<C>●</><S>{$troop['name']}</>의 부대원들은 <G><b>{$city['name']}</b></>(으)로 집합되었습니다.";
+        $genlog[] = "<C>●</><S>{$troop['name']}</>의 부대원들은 <G><b>{$city['name']}</b></>(으)로 집합되었습니다.";
 
         for($i=0; $i < $gencount; $i++) {
             $troopgen = MYDB_fetch_array($result);
@@ -1729,7 +1729,7 @@ function process_31(&$general) {
         }
         // 기존 첩보 목록에 없으면 새로 등록, 있으면 갱신
         if($exist == 0) {
-            $citys[count($citys)] = $destination * 10 + 3;
+            $citys[] = $destination * 10 + 3;
         } else {
             $citys[$i] = $destination * 10 + 3;
         }
@@ -2084,7 +2084,7 @@ function process_43(&$general) {
     } elseif($city['supply'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 증여 실패. <1>$date</>";
     } else {
-        $genlog[count($genlog)] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게서 $dtype <C>$amount</>을 증여 받았습니다.";
+        $genlog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게서 $dtype <C>$amount</>을 증여 받았습니다.";
         $log[] = "<C>●</>{$admin['month']}월:<Y>{$gen['name']}</>에게 $dtype <C>$amount</>을 증여했습니다. <1>$date</>";
 
         if($what == 1) {

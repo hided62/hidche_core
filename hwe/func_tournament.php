@@ -275,6 +275,9 @@ function fillLowGenAll() {
     $db = DB::db();
     $connect=$db->get();
 
+    $general = [];
+    $grpCount = [];
+
     $query = "select develcost from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);

@@ -9,7 +9,7 @@ function process_32(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_firing, $_basefiring, $_firingpower;
+    global $_firing, $_basefiring, $_firingbase, $_firingpower;
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game limit 1";
@@ -134,7 +134,7 @@ function process_33(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_firing, $_basefiring, $_firingpower;
+    global $_firing, $_basefiring, $_firingbase, $_firingpower;
     //탈취는 0까지 무제한
     $date = substr($general['turntime'],11,5);
 
@@ -286,7 +286,7 @@ function process_34(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_firing, $_basefiring, $_firingpower;
+    global $_firing, $_basefiring, $_firingbase, $_firingpower;
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game limit 1";
@@ -412,7 +412,7 @@ function process_35(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_firing, $_basefiring, $_firingpower;
+    global $_firing, $_basefiring, $_firingbase, $_firingpower;
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game limit 1";
@@ -525,149 +525,6 @@ function process_35(&$general) {
         $general['gold'] -= $admin['develcost']*5;
         $general['rice'] -= $admin['develcost']*5;
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log = checkAbility($general, $log);
-    }
-    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-    pushGenLog($general, $log);
-}
-
-function process_36(&$general) {
-    return process_99($general);
-
-    $db = DB::db();
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
-    global $_firing, $_basefiring, $_firingpower;
-    $date = substr($general['turntime'],11,5);
-
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
-    $dist = searchDistance($general['city'], 5, false);
-    $command = DecodeCommand($general['turn0']);
-    $destination = $command[1];
-
-    $query = "select * from city where city='$destination'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $destcity = MYDB_fetch_array($result);
-
-    $mynation = getNationStaticInfo($general['nation']);
-
-    $lbonus = setLeadershipBonus($general, $mynation['level']);
-
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
-
-    $query = "select state from diplomacy where me='{$general['nation']}' and you='{$destcity['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $dip = MYDB_fetch_array($result);
-
-    if(!$destcity) {
-        $log[] = "<C>●</>{$admin['month']}월:없는 도시입니다. 기습 실패. <1>$date</>";
-    } elseif($general['level'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>에 기습 실패. <1>$date</>";
-    } elseif($general['nation'] != $city['nation'] && $mynation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. <G><b>{$destcity['name']}</b></>에 기습 실패. <1>$date</>";
-    } elseif($city['supply'] == 0 && $mynation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>에 기습 실패. <1>$date</>";
-    } elseif($destcity['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:공백지입니다. <G><b>{$destcity['name']}</b></>에 기습 실패. <1>$date</>";
-    } elseif($general['gold'] < $admin['develcost']*5) {
-        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. <G><b>{$destcity['name']}</b></>에 기습 실패. <1>$date</>";
-    } elseif($general['rice'] < $admin['develcost']*5) {
-        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>에 기습 실패. <1>$date</>";
-    } elseif($general['nation'] == $destcity['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국입니다. <G><b>{$destcity['name']}</b></>에 기습 실패. <1>$date</>";
-    } elseif($dip['state'] >= 7) {
-        $log[] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 기습 실패. <1>$date</>";
-    } else {
-        $query = "select ROUND((leader+intel+power)*(100-injury)/100)+weap+horse+book as sum,weap,horse,book from general where city='$destination' and nation='{$destcity['nation']}' order by sum desc";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gen = MYDB_fetch_array($result);
-
-        $generalStatAll = getGeneralLeadership($general, true, true, true)
-         + getGeneralPower($general, true, true, true)
-         + getGeneralIntel($general, true, true, true);
-        $ratio = round((($generalStatAll - ($gen['sum']+getWeapEff($gen['weap'])+getHorseEff($gen['horse'])+getBookEff($gen['book']))) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
-        $ratio2 = rand() % 100;
-
-        if($general['item'] == 5) {
-            // 이추 사용
-            $ratio += 10;
-            $query = "update general set item=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
-            $general['item'] = 0;
-        } elseif($general['item'] == 6) {
-            // 향낭 사용
-            $ratio += 20;
-            $query = "update general set item=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
-            $general['item'] = 0;
-        } elseif($general['item'] >= 21 && $general['item'] <= 22) {
-            // 육도, 삼략 사용
-            $ratio += 20;
-        }
-
-        // 특기보정 : 신산, 귀모
-        if($general['special2'] == 41) { $ratio += 10; }
-        if($general['special'] == 31) { $ratio += 20; }
-
-        // 국가보정
-        if($mynation['type'] == 9) { $ratio += 10; }
-
-        // 거리보정
-        $ratio /= Util::array_get($dist[$destination], 99);
-
-        if($ratio > $ratio2) {
-            $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(이)가 누군가에게 공격 받았습니다.";
-            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 기습이 성공했습니다. <1>$date</>";
-
-            // 기습
-            $destcity['agri'] -= rand() % round($_firingpower/2) + $_firingbase;
-            $destcity['comm'] -= rand() % round($_firingpower/2) + $_firingbase;
-            $destcity['secu'] -= rand() % round($_firingpower/4) + $_firingbase;
-            $destcity['def'] -= rand() % round($_firingpower/2) + $_firingbase;
-            $destcity['wall'] -= rand() % round($_firingpower/2) + $_firingbase;
-            $destcity['rate'] -= rand() % round($_firingpower/50) + $_firingbase/50;
-            if($destcity['agri'] < 0) { $destcity['agri'] = 0; }
-            if($destcity['comm'] < 0) { $destcity['comm'] = 0; }
-            if($destcity['secu'] < 0) { $destcity['secu'] = 0; }
-            if($destcity['def'] < 0) { $destcity['def'] = 0; }
-            if($destcity['wall'] < 0) { $destcity['wall'] = 0; }
-            if($destcity['rate'] < 0) { $destcity['rate'] = 0; }
-            $query = "update city set state=32,agri='{$destcity['agri']}',comm='{$destcity['comm']}',secu='{$destcity['secu']}',def='{$destcity['def']}',wall='{$destcity['wall']}',rate='{$destcity['rate']}' where city='$destination'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            TrickInjury($destination);
-            $exp = rand() % 100 + 201;
-            $ded = rand() % 70 + 141;
-        } else {
-            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 기습이 실패했습니다. <1>$date</>";
-            $exp = rand() % 100 + 1;
-            $ded = rand() % 70 + 1;
-        }
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        $general['leader2']++;
-        $general['intel2']++;
-        $general['power2']++;
-        $general['gold'] -= $admin['develcost']*5;
-        $general['rice'] -= $admin['develcost']*5;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='{$general['leader2']}',intel2='{$general['intel2']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log = checkAbility($general, $log);

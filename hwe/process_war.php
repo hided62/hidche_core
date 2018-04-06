@@ -18,7 +18,7 @@ function processWar($general, $city) {
     $deadAmount['att'] = 0;
     $deadAmount['def'] = 0;
 
-    $warphase = GameConst::byID($general['crewtype'])->speed;   //병종간 페이즈 수 얻기
+    $warphase = GameUnitConst::byID($general['crewtype'])->speed;   //병종간 페이즈 수 얻기
 
     // 특기보정 : 돌격
     if($general['special2'] == 60) { $warphase += 1; }
@@ -216,15 +216,15 @@ function processWar($general, $city) {
                             $type = rand() % 3;
                             switch($type) {
                             case 0:
-                                $batlog[count($batlog)] = "<C>●</><D>급습</>을 <C>성공</>했다!";
+                                $batlog[] = "<C>●</><D>급습</>을 <C>성공</>했다!";
                                 $cityCrew *= 1.2;
                                 break;
                             case 1:
-                                $batlog[count($batlog)] = "<C>●</><D>위보</>를 <C>성공</>했다!";
+                                $batlog[] = "<C>●</><D>위보</>를 <C>성공</>했다!";
                                 $cityCrew *= 1.4;
                                 break;
                             case 2:
-                                $batlog[count($batlog)] = "<C>●</><D>혼란</>을 <C>성공</>했다!";
+                                $batlog[] = "<C>●</><D>혼란</>을 <C>성공</>했다!";
                                 $cityCrew *= 1.6;
                                 break;
                             }
@@ -232,15 +232,15 @@ function processWar($general, $city) {
                             $type = rand() % 3;
                             switch($type) {
                             case 0:
-                                $batlog[count($batlog)] = "<C>●</><D>급습</>을 <R>실패</>했다!";
+                                $batlog[] = "<C>●</><D>급습</>을 <R>실패</>했다!";
                                 $cityCrew /= 1.2;   $myCrew *= 1.2;
                                 break;
                             case 1:
-                                $batlog[count($batlog)] = "<C>●</><D>위보</>를 <R>실패</>했다!";
+                                $batlog[] = "<C>●</><D>위보</>를 <R>실패</>했다!";
                                 $cityCrew /= 1.4;   $myCrew *= 1.4;
                                 break;
                             case 2:
-                                $batlog[count($batlog)] = "<C>●</><D>혼란</>을 <R>실패</>했다!";
+                                $batlog[] = "<C>●</><D>혼란</>을 <R>실패</>했다!";
                                 $cityCrew /= 1.6;   $myCrew *= 1.6;
                                 break;
                             }
@@ -272,7 +272,7 @@ function processWar($general, $city) {
                 if($general['special2'] == 62) { $myCrew *= 0.90; }
                 $ratio = rand() % 100; // 0 ~ 99
                 if(($general['special2'] == 73 || $general['item'] == 23 || $general['item'] == 24) && $ratio > 80 && $avoid == 1) {
-                    $batlog[count($batlog)] = "<C>●</><C>치료</>했다!</>";
+                    $batlog[] = "<C>●</><C>치료</>했다!</>";
                     $myCrew /= 1.5; // 66%만 소모
                     $avoid = 0;
                 }
@@ -287,19 +287,19 @@ function processWar($general, $city) {
                 if($general['special2'] == 61) { $ratio += 10; }
                 if($general['special2'] == 71) { $ratio += 20; }
                 if($ratio >= $rd && $avoid == 1) {
-                    $batlog[count($batlog)] = "<C>●</><C>필살</>공격!</>";
+                    $batlog[] = "<C>●</><C>필살</>공격!</>";
                     $cityCrew = CriticalScore2($cityCrew);
                     $avoid = 0;
                 }
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
-                $ratio2 = GameConst::byID($general['crewtype'])->avoid;   //회피율
+                $ratio2 = GameUnitConst::byID($general['crewtype'])->avoid;   //회피율
                 //특기보정 : 궁병
                 if($general['special2'] == 51) { $ratio2 += 20; }
                 //도구 보정 : 둔갑천서, 태평요술
                 if($general['item'] == 26 || $general['item'] == 25) { $ratio2 += 20; }
                 if($ratio < $ratio2 && $avoid == 1) {
-                    $batlog[count($batlog)] = "<C>●</><C>회피</>했다!</>";
+                    $batlog[] = "<C>●</><C>회피</>했다!</>";
                     $myCrew /= 10; // 10%만 소모
                     $avoid = 0;
                 }
@@ -310,7 +310,7 @@ function processWar($general, $city) {
 
                 //특기보정 : 위압
                 if($general['special2'] == 63 && $phase == 1 && $general['crew'] >= 1000 && $general['atmos'] >= 90 && $general['train'] >= 90) {
-                    $batlog[count($batlog)] = "<C>●</>상대에게 <C>위압</>을 줬다!</>";
+                    $batlog[] = "<C>●</>상대에게 <C>위압</>을 줬다!</>";
                     $myCrew = 0;
                 }
 
@@ -362,7 +362,7 @@ function processWar($general, $city) {
                 $general['crew'] = round($general['crew']);
                 $cityCrew = round($cityCrew);
                 $myCrew = round($myCrew);
-                $batlog[count($batlog)] = "<C>●</> $phase : <Y1>【{$general['name']}】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$city['def']} (-$cityCrew)</> <Y1>【{$city['name']}】</>";
+                $batlog[] = "<C>●</> $phase : <Y1>【{$general['name']}】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$city['def']} (-$cityCrew)</> <Y1>【{$city['name']}】</>";
 
                 $mykillnum += $cityCrew; $mydeathnum += $myCrew;
 
@@ -404,8 +404,8 @@ function processWar($general, $city) {
             ]);
 
             $log[] = $res;//TODO: $log를 출력할 때 date에 대해선 숨겨야 함.
-            $batlog[count($batlog)] = $res;
-            $batres[count($batres)] = $res;
+            $batlog[] = $res;
+            $batres[] = $res;
             $deadAmount['att'] = $deadAmount['att'] + $mydeathnum;
             $deadAmount['def'] = $deadAmount['def'] + $mykillnum;
 
@@ -515,7 +515,7 @@ function processWar($general, $city) {
             $oppose = MYDB_fetch_array($result);
             $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(와)과 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 대결합니다.";
             $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."(으)로 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(을)를 <M>공격</>합니다.";
-            $opplog[count($opplog)] = "<C>●</>".GameUnitConst::byId($oppose['crewtype'])->name."(으)로 <Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(을)를 <M>수비</>합니다.";
+            $opplog[] = "<C>●</>".GameUnitConst::byId($oppose['crewtype'])->name."(으)로 <Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(을)를 <M>수비</>합니다.";
 
             $oppAtmos = 0;
             if($oppose['item'] == 3) {
@@ -523,7 +523,7 @@ function processWar($general, $city) {
                 $oppAtmos += 3;
                 $query = "update general set item=0 where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $opplog[count($opplog)] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
+                $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
                 $oppose['item'] = 0;
             } elseif($oppose['item'] >= 14 && $oppose['item'] <= 16) {
                 //의적주, 두강주, 보령압주 사용
@@ -538,7 +538,7 @@ function processWar($general, $city) {
                 $oppTrain += 3;
                 $query = "update general set item=0 where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $opplog[count($opplog)] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
+                $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
                 $oppose['item'] = 0;
             } elseif($oppose['item'] >= 12 && $oppose['item'] <= 13) {
                 //과실주, 이강주 사용
@@ -571,16 +571,16 @@ function processWar($general, $city) {
 //                    $log[] = "<C>●</><C>".getWeapName($general['weap'])."</>(을)를 사용!";
                 }
                 $log[] = "<C>●</>상대를 <C>저격</>했다!";
-                $batlog[count($batlog)] = "<C>●</>상대를 <C>저격</>했다!";
-                $opplog[count($opplog)] = "<C>●</>상대에게 <R>저격</>당했다!";
-                $oppbatlog[count($oppbatlog)] = "<C>●</>상대에게 <R>저격</>당했다!";
+                $batlog[] = "<C>●</>상대를 <C>저격</>했다!";
+                $opplog[] = "<C>●</>상대에게 <R>저격</>당했다!";
+                $oppbatlog[] = "<C>●</>상대에게 <R>저격</>당했다!";
                 // 부상
                 $oppose['injury'] += rand() % 41 + 20;   // 20 ~ 60
                 if($oppose['injury'] > 80) { $oppose['injury'] = 80; }
             } else if($general['item'] == 2 && $ratio <= 40) {
                 $query = "update general set item=0 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $batlog[count($batlog)] = "<C>●</><C>".getItemName($general['item'])."</>(이)가 빗나갑니다!";
+                $batlog[] = "<C>●</><C>".getItemName($general['item'])."</>(이)가 빗나갑니다!";
                 $general['item'] = 0;
             }
             $ratio = rand() % 100;
@@ -590,14 +590,14 @@ function processWar($general, $city) {
                 if($oppose['item'] == 2) {
                     $query = "update general set item=0 where no='{$oppose['no']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                    $opplog[count($opplog)] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
+                    $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
                     $oppose['item'] = 0;
                 } elseif($oppose['weap'] == 10 || $oppose['weap'] == 14 || $oppose['weap'] == 18 || $oppose['weap'] == 22) {
-//                    $opplog[count($opplog)] = "<C>●</><C>".getWeapName($oppose['weap'])."</>(을)를 사용!";
+//                    $opplog[] = "<C>●</><C>".getWeapName($oppose['weap'])."</>(을)를 사용!";
                 }
-                $oppbatlog[count($oppbatlog)] = "<C>●</>상대를 <C>저격</>했다!";
-                $opplog[count($opplog)] = "<C>●</>상대를 <C>저격</>했다!";
-                $batlog[count($batlog)] = "<C>●</>상대에게 <R>저격</>당했다!";
+                $oppbatlog[] = "<C>●</>상대를 <C>저격</>했다!";
+                $opplog[] = "<C>●</>상대를 <C>저격</>했다!";
+                $batlog[] = "<C>●</>상대에게 <R>저격</>당했다!";
                 $log[] = "<C>●</>상대에게 <R>저격</>당했다!";
                 // 부상
                 $general['injury'] += rand() % 41 + 20;   // 20 ~ 60
@@ -605,7 +605,7 @@ function processWar($general, $city) {
             } else if($oppose['item'] == 2 && $ratio <= 40) {
                 $query = "update general set item=0 where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $oppbatlog[count($oppbatlog)] = "<C>●</><C>".getItemName($oppose['item'])."</>(이)가 빗나갑니다!";
+                $oppbatlog[] = "<C>●</><C>".getItemName($oppose['item'])."</>(이)가 빗나갑니다!";
                 $oppose['item'] = 0;
             }
 
@@ -695,12 +695,12 @@ function processWar($general, $city) {
                                 $ratio = rand() % 100;
                                 // 특기보정 : 반계
                                 if($oppose['special2'] == 45 && $ratio > 70) {
-                                    $batlog[count($batlog)] = "<C>●</><D>위보</>를 <R>역으로</> 당했다!";
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><C>반계</>로 상대의 <D>위보</>를 되돌렸다!";
+                                    $batlog[] = "<C>●</><D>위보</>를 <R>역으로</> 당했다!";
+                                    $oppbatlog[] = "<C>●</><C>반계</>로 상대의 <D>위보</>를 되돌렸다!";
                                     $myCrew *= 1.2;
                                 } else {
-                                    $batlog[count($batlog)] = "<C>●</><D>위보</>를 <C>성공</>했다!";
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>위보</>에 당했다!";
+                                    $batlog[] = "<C>●</><D>위보</>를 <C>성공</>했다!";
+                                    $oppbatlog[] = "<C>●</><D>위보</>에 당했다!";
                                     $opCrew *= 1.2;
                                 }
                                 break;
@@ -708,12 +708,12 @@ function processWar($general, $city) {
                                 $ratio = rand() % 100;
                                 // 특기보정 : 반계
                                 if($oppose['special2'] == 45 && $ratio > 70) {
-                                    $batlog[count($batlog)] = "<C>●</><D>매복</>을 <R>역으로</> 당했다!";
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><C>반계</>로 상대의 <D>매복</>을 되돌렸다!";
+                                    $batlog[] = "<C>●</><D>매복</>을 <R>역으로</> 당했다!";
+                                    $oppbatlog[] = "<C>●</><C>반계</>로 상대의 <D>매복</>을 되돌렸다!";
                                     $myCrew *= 1.4;
                                 } else {
-                                    $batlog[count($batlog)] = "<C>●</><D>매복</>을 <C>성공</>했다!";
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>매복</>에 당했다!";
+                                    $batlog[] = "<C>●</><D>매복</>을 <C>성공</>했다!";
+                                    $oppbatlog[] = "<C>●</><D>매복</>에 당했다!";
                                     $opCrew *= 1.4;
                                 }
                                 break;
@@ -721,12 +721,12 @@ function processWar($general, $city) {
                                 $ratio = rand() % 100;
                                 // 특기보정 : 반계
                                 if($oppose['special2'] == 45 && $ratio > 70) {
-                                    $batlog[count($batlog)] = "<C>●</><D>반목</>을 <R>역으로</> 당했다!";
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><C>반계</>로 상대의 <D>반목</>을 되돌렸다!";
+                                    $batlog[] = "<C>●</><D>반목</>을 <R>역으로</> 당했다!";
+                                    $oppbatlog[] = "<C>●</><C>반계</>로 상대의 <D>반목</>을 되돌렸다!";
                                     $myCrew *= 1.6;
                                 } else {
-                                    $batlog[count($batlog)] = "<C>●</><D>반목</>을 <C>성공</>했다!";
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>반목</>에 당했다!";
+                                    $batlog[] = "<C>●</><D>반목</>을 <C>성공</>했다!";
+                                    $oppbatlog[] = "<C>●</><D>반목</>에 당했다!";
                                     $opCrew *= 1.6;
                                     // 특기보정 : 반계
                                     if($general['special2'] == 45) { $opCrew *= 2; }
@@ -736,12 +736,12 @@ function processWar($general, $city) {
                                 $ratio = rand() % 100;
                                 // 특기보정 : 반계
                                 if($oppose['special2'] == 45 && $ratio > 70) {
-                                    $batlog[count($batlog)] = "<C>●</><D>화계</>를 <R>역으로</> 당했다!";
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><C>반계</>로 상대의 <D>화계</>를 되돌렸다!";
+                                    $batlog[] = "<C>●</><D>화계</>를 <R>역으로</> 당했다!";
+                                    $oppbatlog[] = "<C>●</><C>반계</>로 상대의 <D>화계</>를 되돌렸다!";
                                     $myCrew *= 1.8;
                                 } else {
-                                    $batlog[count($batlog)] = "<C>●</><D>화계</>를 <C>성공</>했다!";
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>화계</>에 당했다!";
+                                    $batlog[] = "<C>●</><D>화계</>를 <C>성공</>했다!";
+                                    $oppbatlog[] = "<C>●</><D>화계</>에 당했다!";
                                     $opCrew *= 1.8;
                                 }
                                 break;
@@ -749,12 +749,12 @@ function processWar($general, $city) {
                                 $ratio = rand() % 100;
                                 // 특기보정 : 반계
                                 if($oppose['special2'] == 45 && $ratio > 70) {
-                                    $batlog[count($batlog)] = "<C>●</><D>혼란</>을 <R>역으로</> 당했다!";
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><C>반계</>로 상대의 <D>혼란</>을 되돌렸다!";
+                                    $batlog[] = "<C>●</><D>혼란</>을 <R>역으로</> 당했다!";
+                                    $oppbatlog[] = "<C>●</><C>반계</>로 상대의 <D>혼란</>을 되돌렸다!";
                                     $myCrew *= 2.0;
                                 } else {
-                                    $batlog[count($batlog)] = "<C>●</><D>혼란</>을 <C>성공</>했다!";
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>혼란</>에 당했다!";
+                                    $batlog[] = "<C>●</><D>혼란</>을 <C>성공</>했다!";
+                                    $oppbatlog[] = "<C>●</><D>혼란</>에 당했다!";
                                     $opCrew *= 2.0;
                                 }
                                 break;
@@ -763,28 +763,28 @@ function processWar($general, $city) {
                             $type = rand() % 5; // 0~4
                             switch($type) {
                             case 0:
-                                $batlog[count($batlog)] = "<C>●</><D>위보</>를 <R>실패</>했다!";
-                                $oppbatlog[count($oppbatlog)] = "<C>●</><D>위보</>를 간파했다!";
+                                $batlog[] = "<C>●</><D>위보</>를 <R>실패</>했다!";
+                                $oppbatlog[] = "<C>●</><D>위보</>를 간파했다!";
                                 $opCrew /= 1.1;   $myCrew *= 1.1;
                                 break;
                             case 1:
-                                $batlog[count($batlog)] = "<C>●</><D>매복</>을 <R>실패</>했다!";
-                                $oppbatlog[count($oppbatlog)] = "<C>●</><D>매복</>을 간파했다!";
+                                $batlog[] = "<C>●</><D>매복</>을 <R>실패</>했다!";
+                                $oppbatlog[] = "<C>●</><D>매복</>을 간파했다!";
                                 $opCrew /= 1.2;   $myCrew *= 1.2;
                                 break;
                             case 2:
-                                $batlog[count($batlog)] = "<C>●</><D>반목</>을 <R>실패</>했다!";
-                                $oppbatlog[count($oppbatlog)] = "<C>●</><D>반목</>을 간파했다!";
+                                $batlog[] = "<C>●</><D>반목</>을 <R>실패</>했다!";
+                                $oppbatlog[] = "<C>●</><D>반목</>을 간파했다!";
                                 $opCrew /= 1.3;   $myCrew *= 1.3;
                                 break;
                             case 3:
-                                $batlog[count($batlog)] = "<C>●</><D>화계</>를 <R>실패</>했다!";
-                                $oppbatlog[count($oppbatlog)] = "<C>●</><D>화계</>를 간파했다!";
+                                $batlog[] = "<C>●</><D>화계</>를 <R>실패</>했다!";
+                                $oppbatlog[] = "<C>●</><D>화계</>를 간파했다!";
                                 $opCrew /= 1.4;   $myCrew *= 1.4;
                                 break;
                             case 4:
-                                $batlog[count($batlog)] = "<C>●</><D>혼란</>을 <R>실패</>했다!";
-                                $oppbatlog[count($oppbatlog)] = "<C>●</><D>혼란</>을 간파했다!";
+                                $batlog[] = "<C>●</><D>혼란</>을 <R>실패</>했다!";
+                                $oppbatlog[] = "<C>●</><D>혼란</>을 간파했다!";
                                 $opCrew /= 1.5;   $myCrew *= 1.5;
                                 break;
                             }
@@ -836,12 +836,12 @@ function processWar($general, $city) {
                                 $ratio = rand() % 100;
                                 // 특기보정 : 반계
                                 if($general['special2'] == 45 && $ratio > 70) {
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>위보</>를 <R>역으로</> 당했다!";
-                                    $batlog[count($batlog)] = "<C>●</><C>반계</>로 상대의 <D>위보</>를 되돌렸다!";
+                                    $oppbatlog[] = "<C>●</><D>위보</>를 <R>역으로</> 당했다!";
+                                    $batlog[] = "<C>●</><C>반계</>로 상대의 <D>위보</>를 되돌렸다!";
                                     $opCrew *= 1.2;
                                 } else {
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>위보</>를 <C>성공</>했다!";
-                                    $batlog[count($batlog)] = "<C>●</><D>위보</>에 당했다!";
+                                    $oppbatlog[] = "<C>●</><D>위보</>를 <C>성공</>했다!";
+                                    $batlog[] = "<C>●</><D>위보</>에 당했다!";
                                     $myCrew *= 1.2;
                                 }
                                 break;
@@ -849,12 +849,12 @@ function processWar($general, $city) {
                                 $ratio = rand() % 100;
                                 // 특기보정 : 반계
                                 if($general['special2'] == 45 && $ratio > 70) {
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>매복</>을 <R>역으로</> 당했다!";
-                                    $batlog[count($batlog)] = "<C>●</><C>반계</>로 상대의 <D>매복</>을 되돌렸다!";
+                                    $oppbatlog[] = "<C>●</><D>매복</>을 <R>역으로</> 당했다!";
+                                    $batlog[] = "<C>●</><C>반계</>로 상대의 <D>매복</>을 되돌렸다!";
                                     $opCrew *= 1.4;
                                 } else {
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>매복</>을 <C>성공</>했다!";
-                                    $batlog[count($batlog)] = "<C>●</><D>매복</>에 당했다!";
+                                    $oppbatlog[] = "<C>●</><D>매복</>을 <C>성공</>했다!";
+                                    $batlog[] = "<C>●</><D>매복</>에 당했다!";
                                     $myCrew *= 1.4;
                                 }
                                 break;
@@ -862,12 +862,12 @@ function processWar($general, $city) {
                                 $ratio = rand() % 100;
                                 // 특기보정 : 반계
                                 if($general['special2'] == 45 && $ratio > 70) {
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>반목</>을 <R>역으로</> 당했다!";
-                                    $batlog[count($batlog)] = "<C>●</><C>반계</>로 상대의 <D>반목</>을 되돌렸다!";
+                                    $oppbatlog[] = "<C>●</><D>반목</>을 <R>역으로</> 당했다!";
+                                    $batlog[] = "<C>●</><C>반계</>로 상대의 <D>반목</>을 되돌렸다!";
                                     $opCrew *= 1.6;
                                 } else {
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>반목</>을 <C>성공</>했다!";
-                                    $batlog[count($batlog)] = "<C>●</><D>반목</>에 당했다!";
+                                    $oppbatlog[] = "<C>●</><D>반목</>을 <C>성공</>했다!";
+                                    $batlog[] = "<C>●</><D>반목</>에 당했다!";
                                     $myCrew *= 1.6;
                                     // 특기보정 : 반계
                                     if($oppose['special2'] == 45) { $myCrew *= 2; }
@@ -877,12 +877,12 @@ function processWar($general, $city) {
                                 $ratio = rand() % 100;
                                 // 특기보정 : 반계
                                 if($general['special2'] == 45 && $ratio > 70) {
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>화계</>를 <R>역으로</> 당했다!";
-                                    $batlog[count($batlog)] = "<C>●</><C>반계</>로 상대의 <D>화계</>을 되돌렸다!";
+                                    $oppbatlog[] = "<C>●</><D>화계</>를 <R>역으로</> 당했다!";
+                                    $batlog[] = "<C>●</><C>반계</>로 상대의 <D>화계</>을 되돌렸다!";
                                     $opCrew *= 1.8;
                                 } else {
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>화계</>를 <C>성공</>했다!";
-                                    $batlog[count($batlog)] = "<C>●</><D>화계</>에 당했다!";
+                                    $oppbatlog[] = "<C>●</><D>화계</>를 <C>성공</>했다!";
+                                    $batlog[] = "<C>●</><D>화계</>에 당했다!";
                                     $myCrew *= 1.8;
                                 }
                                 break;
@@ -890,12 +890,12 @@ function processWar($general, $city) {
                                 $ratio = rand() % 100;
                                 // 특기보정 : 반계
                                 if($general['special2'] == 45 && $ratio > 70) {
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>혼란</>을 <R>역으로</> 당했다!";
-                                    $batlog[count($batlog)] = "<C>●</><C>반계</>로 상대의 <D>혼란</>을 되돌렸다!";
+                                    $oppbatlog[] = "<C>●</><D>혼란</>을 <R>역으로</> 당했다!";
+                                    $batlog[] = "<C>●</><C>반계</>로 상대의 <D>혼란</>을 되돌렸다!";
                                     $opCrew *= 2.0;
                                 } else {
-                                    $oppbatlog[count($oppbatlog)] = "<C>●</><D>혼란</>을 <C>성공</>했다!";
-                                    $batlog[count($batlog)] = "<C>●</><D>혼란</>에 당했다!";
+                                    $oppbatlog[] = "<C>●</><D>혼란</>을 <C>성공</>했다!";
+                                    $batlog[] = "<C>●</><D>혼란</>에 당했다!";
                                     $myCrew *= 2.0;
                                 }
                                 break;
@@ -904,28 +904,28 @@ function processWar($general, $city) {
                             $type = rand() % 5; // 0~4
                             switch($type) {
                             case 0:
-                                $oppbatlog[count($oppbatlog)] = "<C>●</><D>위보</>를 <R>실패</>했다!";
-                                $batlog[count($batlog)] = "<C>●</><D>위보</>를 간파했다!";
+                                $oppbatlog[] = "<C>●</><D>위보</>를 <R>실패</>했다!";
+                                $batlog[] = "<C>●</><D>위보</>를 간파했다!";
                                 $myCrew /= 1.1;   $opCrew *= 1.1;
                                 break;
                             case 1:
-                                $oppbatlog[count($oppbatlog)] = "<C>●</><D>매복</>을 <R>실패</>했다!";
-                                $batlog[count($batlog)] = "<C>●</><D>매복</>을 간파했다!";
+                                $oppbatlog[] = "<C>●</><D>매복</>을 <R>실패</>했다!";
+                                $batlog[] = "<C>●</><D>매복</>을 간파했다!";
                                 $myCrew /= 1.2;   $opCrew *= 1.2;
                                 break;
                             case 2:
-                                $oppbatlog[count($oppbatlog)] = "<C>●</><D>반목</>을 <R>실패</>했다!";
-                                $batlog[count($batlog)] = "<C>●</><D>반목</>을 간파했다!";
+                                $oppbatlog[] = "<C>●</><D>반목</>을 <R>실패</>했다!";
+                                $batlog[] = "<C>●</><D>반목</>을 간파했다!";
                                 $myCrew /= 1.3;   $opCrew *= 1.3;
                                 break;
                             case 3:
-                                $oppbatlog[count($oppbatlog)] = "<C>●</><D>화계</>를 <R>실패</>했다!";
-                                $batlog[count($batlog)] = "<C>●</><D>화계</>를 간파했다!";
+                                $oppbatlog[] = "<C>●</><D>화계</>를 <R>실패</>했다!";
+                                $batlog[] = "<C>●</><D>화계</>를 간파했다!";
                                 $myCrew /= 1.4;   $opCrew *= 1.4;
                                 break;
                             case 4:
-                                $oppbatlog[count($oppbatlog)] = "<C>●</><D>혼란</>을 <R>실패</>했다!";
-                                $batlog[count($batlog)] = "<C>●</><D>혼란</>을 간파했다!";
+                                $oppbatlog[] = "<C>●</><D>혼란</>을 <R>실패</>했다!";
+                                $batlog[] = "<C>●</><D>혼란</>을 간파했다!";
                                 $myCrew /= 1.5;   $opCrew *= 1.5;
                                 break;
                             }
@@ -940,8 +940,8 @@ function processWar($general, $city) {
                     $r += $oppose['train'] + $oppTrain + $oppTrainBonus;
                     $ratio = rand() % 400;  // 최대 50% 저지
                     if($ratio < $r && $opAvoid == 1) {
-                        $batlog[count($batlog)] = "<C>●</><R>저지</>당했다!</>";
-                        $oppbatlog[count($oppbatlog)] = "<C>●</>상대를 <C>저지</>했다!</>";
+                        $batlog[] = "<C>●</><R>저지</>당했다!</>";
+                        $oppbatlog[] = "<C>●</>상대를 <C>저지</>했다!</>";
                         $opAvoid = 0;
                         continue;
                     }
@@ -1035,7 +1035,7 @@ function processWar($general, $city) {
                 }
                 $ratio = rand() % 100; // 0 ~ 99
                 if(($general['special2'] == 73 || $general['item'] == 23 || $general['item'] == 24) && $ratio > 80 && $myAvoid == 1) {
-                    $batlog[count($batlog)] = "<C>●</><C>치료</>했다!</>";
+                    $batlog[] = "<C>●</><C>치료</>했다!</>";
                     $myCrew /= 1.5; // 66%만 소모
                     $myAvoid = 0;
                 }
@@ -1054,7 +1054,7 @@ function processWar($general, $city) {
                 }
                 $ratio = rand() % 100; // 0 ~ 99
                 if(($oppose['special2'] == 73 || $oppose['item'] == 23 || $oppose['item'] == 24) && $ratio > 80 && $opAvoid == 1) {
-                    $oppbatlog[count($oppbatlog)] = "<C>●</><C>치료</>했다!</>";
+                    $oppbatlog[] = "<C>●</><C>치료</>했다!</>";
                     $opCrew /= 1.5; // 66%만 소모
                     $opAvoid = 0;
                 }
@@ -1069,16 +1069,16 @@ function processWar($general, $city) {
                 if($general['special2'] == 61) { $ratio += 10; }
                 if($general['special2'] == 71) { $ratio += 20; }
                 if($ratio >= $rd && $myAvoid == 1) {
-                    $batlog[count($batlog)] = "<C>●</><C>필살</>공격!</>";
-                    $oppbatlog[count($oppbatlog)] = "<C>●</>상대의 <R>필살</>공격!</>";
+                    $batlog[] = "<C>●</><C>필살</>공격!</>";
+                    $oppbatlog[] = "<C>●</>상대의 <R>필살</>공격!</>";
                     $opCrew = CriticalScore2($opCrew);
                     $myAvoid = 0;
 
                     // 특기보정 : 격노
                     if($oppose['special2'] == 74) {
                         if(rand() % 100 < 50) {
-                            $batlog[count($batlog)] = "<C>●</>필살 공격에 상대가 <R>격노</>했다!</>";
-                            $oppbatlog[count($oppbatlog)] = "<C>●</>상대의 필살 공격에 <C>격노</>했다!</>";
+                            $batlog[] = "<C>●</>필살 공격에 상대가 <R>격노</>했다!</>";
+                            $oppbatlog[] = "<C>●</>상대의 필살 공격에 <C>격노</>했다!</>";
                             $myCrew = CriticalScore2($myCrew);
                             $opAvoid = 0;
                         }
@@ -1093,22 +1093,22 @@ function processWar($general, $city) {
                 // 특기보정 : 필살
                 if($oppose['special2'] == 71) { $ratio += 20; }
                 if($ratio >= $rd && $opAvoid == 1) {
-                    $oppbatlog[count($oppbatlog)] = "<C>●</><C>필살</>공격!</>";
-                    $batlog[count($batlog)] = "<C>●</>상대의 <R>필살</>공격!</>";
+                    $oppbatlog[] = "<C>●</><C>필살</>공격!</>";
+                    $batlog[] = "<C>●</>상대의 <R>필살</>공격!</>";
                     $myCrew = CriticalScore2($myCrew);
                     $opAvoid = 0;
 
                     // 특기보정 : 격노
                     if($general['special2'] == 74) {
                         if(rand() % 100 < 33) {
-                            $oppbatlog[count($oppbatlog)] = "<C>●</>필살 공격에 상대가 <R>진노</>했다!</>";
-                            $batlog[count($batlog)] = "<C>●</>상대의 필살 공격에 <C>진노</>했다!</>";
+                            $oppbatlog[] = "<C>●</>필살 공격에 상대가 <R>진노</>했다!</>";
+                            $batlog[] = "<C>●</>상대의 필살 공격에 <C>진노</>했다!</>";
                             $opCrew = CriticalScore2($opCrew);
                             $myAvoid = 0;
                             $warphase++;
                         } elseif(rand() % 100 < 33) {
-                            $oppbatlog[count($oppbatlog)] = "<C>●</>필살 공격에 상대가 <R>격노</>했다!</>";
-                            $batlog[count($batlog)] = "<C>●</>상대의 필살 공격에 <C>격노</>했다!</>";
+                            $oppbatlog[] = "<C>●</>필살 공격에 상대가 <R>격노</>했다!</>";
+                            $batlog[] = "<C>●</>상대의 필살 공격에 <C>격노</>했다!</>";
                             $opCrew = CriticalScore2($opCrew);
                             $myAvoid = 0;
                         }
@@ -1117,7 +1117,7 @@ function processWar($general, $city) {
 
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
-                $ratio2 = GameConst::byID($general['crewtype'])->avoid;   //회피율
+                $ratio2 = GameUnitConst::byID($general['crewtype'])->avoid;   //회피율
                 //특기보정 : 돌격, 궁병
                 if($oppose['special2'] == 60) { $ratio2 -= 100; }
                 if($general['special2'] == 51) { $ratio2 += 20; }
@@ -1126,20 +1126,20 @@ function processWar($general, $city) {
                 if($ratio < $ratio2 && $myAvoid == 1) {
                     // 특기보정 : 격노
                     if($oppose['special2'] == 74 && rand() % 100 < 50) {
-                        $batlog[count($batlog)] = "<C>●</>회피 시도에 상대가 <R>격노</>했다!</>";
-                        $oppbatlog[count($oppbatlog)] = "<C>●</>상대의 회피 시도에 <C>격노</>했다!</>";
+                        $batlog[] = "<C>●</>회피 시도에 상대가 <R>격노</>했다!</>";
+                        $oppbatlog[] = "<C>●</>상대의 회피 시도에 <C>격노</>했다!</>";
                         $myCrew = CriticalScore2($myCrew);
                         $opAvoid = 0;
                     } else {
-                        $batlog[count($batlog)] = "<C>●</><C>회피</>했다!</>";
-                        $oppbatlog[count($oppbatlog)] = "<C>●</>상대가 <R>회피</>했다!</>";
+                        $batlog[] = "<C>●</><C>회피</>했다!</>";
+                        $oppbatlog[] = "<C>●</>상대가 <R>회피</>했다!</>";
                         $myCrew /= 10; // 10%만 소모
                         $myAvoid = 0;
                     }
                 }
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
-                $ratio2 = GameConst::byID($oppose['crewtype'])->defence;   //회피율
+                $ratio2 = GameUnitConst::byID($oppose['crewtype'])->defence;   //회피율
                 // 특기보정 : 돌격, 궁병
                 if($general['special2'] == 60) { $ratio2 -= 100; }
                 if($oppose['special2'] == 51) { $ratio2 += 20; }
@@ -1148,19 +1148,19 @@ function processWar($general, $city) {
                 if($ratio < $ratio2 && $opAvoid == 1) {
                     // 특기보정 : 격노
                     if($general['special2'] == 74 && rand() % 100 < 33) {
-                        $oppbatlog[count($oppbatlog)] = "<C>●</>회피 시도에 상대가 <R>진노</>했다!</>";
-                        $batlog[count($batlog)] = "<C>●</>상대의 회피 시도에 <C>진노</>했다!</>";
+                        $oppbatlog[] = "<C>●</>회피 시도에 상대가 <R>진노</>했다!</>";
+                        $batlog[] = "<C>●</>상대의 회피 시도에 <C>진노</>했다!</>";
                         $opCrew = CriticalScore2($opCrew);
                         $myAvoid = 0;
                         $warphase++;
                     } elseif($general['special2'] == 74 && rand() % 100 < 33) {
-                        $oppbatlog[count($oppbatlog)] = "<C>●</>회피 시도에 상대가 <R>격노</>했다!</>";
-                        $batlog[count($batlog)] = "<C>●</>상대의 회피 시도에 <C>격노</>했다!</>";
+                        $oppbatlog[] = "<C>●</>회피 시도에 상대가 <R>격노</>했다!</>";
+                        $batlog[] = "<C>●</>상대의 회피 시도에 <C>격노</>했다!</>";
                         $opCrew = CriticalScore2($opCrew);
                         $myAvoid = 0;
                     } else {
-                        $oppbatlog[count($oppbatlog)] = "<C>●</><C>회피</>했다!</>";
-                        $batlog[count($batlog)] = "<C>●</>상대가 <R>회피</>했다!</>";
+                        $oppbatlog[] = "<C>●</><C>회피</>했다!</>";
+                        $batlog[] = "<C>●</>상대가 <R>회피</>했다!</>";
                         $opCrew /= 10; // 10%만 소모
                         $opAvoid = 0;
                     }
@@ -1172,14 +1172,14 @@ function processWar($general, $city) {
 
                 //특기보정 : 위압
                 if($general['special2'] == 63 && $phase == 1 && $general['crew'] >= 1000 && $general['atmos'] >= 90 && $general['train'] >= 90) {
-                    $batlog[count($batlog)] = "<C>●</>상대에게 <C>위압</>을 줬다!</>";
-                    $oppbatlog[count($oppbatlog)] = "<C>●</>상대에게 <R>위압</>받았다!</>";
+                    $batlog[] = "<C>●</>상대에게 <C>위압</>을 줬다!</>";
+                    $oppbatlog[] = "<C>●</>상대에게 <R>위압</>받았다!</>";
                     $myCrew = 0;
                 }
                 //특기보정: 위압
                 if($oppose['special2'] == 63 && $phase == 1 && $oppose['crew'] >= 1000 && $oppose['atmos'] >= 90 && $oppose['train'] >= 90) {
-                    $batlog[count($batlog)] = "<C>●</>상대에게 <R>위압</>받았다!</>";
-                    $oppbatlog[count($oppbatlog)] = "<C>●</>상대에게 <C>위압</>을 줬다!</>";
+                    $batlog[] = "<C>●</>상대에게 <R>위압</>받았다!</>";
+                    $oppbatlog[] = "<C>●</>상대에게 <C>위압</>을 줬다!</>";
                     $opCrew = 0;
                 }
 
@@ -1227,8 +1227,8 @@ function processWar($general, $city) {
                 $oppose['crew'] = round($oppose['crew']);
                 $myCrew = round($myCrew);
                 $opCrew = round($opCrew);
-                $batlog[count($batlog)] = "<C>●</> $phase : <Y1>【{$general['name']}】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$oppose['crew']} (-$opCrew)</> <Y1>【{$oppose['name']}】</>";
-                $oppbatlog[count($oppbatlog)] = "<C>●</> $phase : <Y1>【{$oppose['name']}】</> <C>{$oppose['crew']} (-$opCrew)</> VS <C>{$general['crew']} (-$myCrew)</> <Y1>【{$general['name']}】</>";
+                $batlog[] = "<C>●</> $phase : <Y1>【{$general['name']}】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$oppose['crew']} (-$opCrew)</> <Y1>【{$oppose['name']}】</>";
+                $oppbatlog[] = "<C>●</> $phase : <Y1>【{$oppose['name']}】</> <C>{$oppose['crew']} (-$opCrew)</> VS <C>{$general['crew']} (-$myCrew)</> <Y1>【{$general['name']}】</>";
 
                 $mykillnum += $opCrew; $mydeathnum += $myCrew;
                 $opkillnum += $myCrew; $opdeathnum += $opCrew;
@@ -1290,11 +1290,11 @@ function processWar($general, $city) {
             ]);
 
             $log[] = $res;
-            $batlog[count($batlog)] = $res;
-            $batres[count($batres)] = $res;
-            $opplog[count($opplog)] = $oppres;
-            $oppbatlog[count($oppbatlog)] = $oppres;
-            $oppbatres[count($oppbatres)] = $oppres;
+            $batlog[] = $res;
+            $batres[] = $res;
+            $opplog[] = $oppres;
+            $oppbatlog[] = $oppres;
+            $oppbatres[] = $oppres;
 
             $deadAmount['att'] = $deadAmount['att'] + $mydeathnum;
             $deadAmount['def'] = $deadAmount['def'] + $opdeathnum;
@@ -1302,7 +1302,7 @@ function processWar($general, $city) {
             // 상대장수 부상
             $ratio = rand() % 100;
             if($ratio >= 95) {
-                $opplog[count($opplog)] = "<C>●</>전투중 <R>부상</>당했다!";
+                $opplog[] = "<C>●</>전투중 <R>부상</>당했다!";
                 $oppose['injury'] += rand() % 71 + 10;   // 10 ~ 80
                 if($oppose['injury'] > 80) { $oppose['injury'] = 80; }
             }
@@ -1367,11 +1367,11 @@ function processWar($general, $city) {
                 if($opRice <= round($oppose['crew']/100)) {
                     $alllog[] = "<C>●</>{$game['month']}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
                     $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
-                    $opplog[count($opplog)] = "<C>●</>군량 부족으로 패퇴합니다.";
+                    $opplog[] = "<C>●</>군량 부족으로 패퇴합니다.";
                 } else {
                     $alllog[] = "<C>●</>{$game['month']}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 전멸했습니다.";
                     $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 전멸했습니다.";
-                    $opplog[count($opplog)] = "<C>●</>전멸했습니다.";
+                    $opplog[] = "<C>●</>전멸했습니다.";
                 }
                 $opposecount--;
 
@@ -1405,11 +1405,11 @@ function processWar($general, $city) {
                 if($myRice <= round($general['crew']/100)) {
                     $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                     $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
-                    $opplog[count($opplog)] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                    $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 } else {
                     $alllog[] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                     $log[] = "<C>●</>퇴각했습니다.";
-                    $opplog[count($opplog)] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                    $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 }
 
                 // 경험치 상승
@@ -1547,7 +1547,7 @@ function getCrewtypeRice($game, $crewtype, $tech) {
 //////////////////////////////////////////////////////////////
 
 function getAtt($game, $general, $tech, $lbonus) {
-    $att = GameConst::byID($general['crewtype'])->attack + getTechAbil($tech);
+    $att = GameUnitConst::byID($general['crewtype'])->attack + getTechAbil($tech);
     
     $general['lbonus'] = $lbonus;
 
@@ -1566,7 +1566,7 @@ function getAtt($game, $general, $tech, $lbonus) {
 }
 
 function getDef($game, $general, $tech) {
-    $def = GameConst::byID($general['crewtype'])->defence + getTechAbil($tech);
+    $def = GameUnitConst::byID($general['crewtype'])->defence + getTechAbil($tech);
 
     $crew = ($general['crew'] / (7000 / 30)) + 70;    // 5000명일때 91점 7000명일때 100점 10000명일때 113점
     $def = $def * $crew / 100;
@@ -1667,8 +1667,8 @@ function getConquerNation($city) {
     $db = DB::db();
     $connect=$db->get();
 
-    $nationlist = explode("|", $city['conflict']);
-    $killnum = explode("|", $city['conflict2']);
+    $nationlist = explode("|", (string)$city['conflict']);
+    $killnum = explode("|", (string)$city['conflict2']);
 
     $max = 0;
     for($i=0; $i < count($nationlist); $i++) {
@@ -1952,7 +1952,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
     }
 
     pushGenLog($general, $log);
-    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+    pushGeneralPublicRecord($alllog, $game['year'], $game['month']);
     pushWorldHistory($history);
 }
 

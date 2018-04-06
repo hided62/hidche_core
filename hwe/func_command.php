@@ -6,6 +6,7 @@ function getTurn($general, $type, $font=1) {
     $db = DB::db();
     $connect=$db->get();
 
+    $turn = [];
     $turn[0] = $general["turn0"];
 
     if($type >= 1) {
@@ -146,11 +147,6 @@ function getTurn($general, $type, $font=1) {
                 $city= getCity($double, "name");
                 $str[$i] = "【{$city['name']}】에 선동 실행";
                 break;
-            case 36: //기습
-                $double = $command[1];
-                $city= getCity($double, "name");
-                $str[$i] = "【{$city['name']}】에 기습 실행";
-                break;
 
             case 41: //단련
                 $str[$i] = "숙련도를 단련";
@@ -283,7 +279,7 @@ function getCoreTurn($nation, $level) {
             case 23: //포상
                 $fourth = $command[3];
                 $third = $command[2];
-                $double = $command[1];
+                $double = (int)$command[1];
 
                 $query = "select name from general where no='$third'";
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -316,7 +312,7 @@ function getCoreTurn($nation, $level) {
                 $str[$i] = "【{$general['name']}】【{$city['name']}】(으)로 발령";
                 break;
             case 51: //항복권고
-                $double = $command[1];
+                $double = (int)$command[1];
 
                 $nation = getNationStaticInfo($double);
 
@@ -325,7 +321,7 @@ function getCoreTurn($nation, $level) {
             case 52: //원조
                 $fourth = $command[3];
                 $third = $command[2];
-                $double = $command[1];
+                $double = (int)$command[1];
 
                 $nation = getNationStaticInfo($double);
 
@@ -338,7 +334,7 @@ function getCoreTurn($nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                $double = $command[1];
+                $double = (int)$command[1];
 
                 $nation = getNationStaticInfo($double);
 
@@ -346,7 +342,7 @@ function getCoreTurn($nation, $level) {
                 break;
             case 61: //불가침제의
                 $third = $command[2];
-                $double = $command[1];
+                $double = (int)$command[1];
 
                 $nation = getNationStaticInfo($double);
 
@@ -422,14 +418,14 @@ function getCoreTurn($nation, $level) {
                 $str[$i] = "의병모집";
                 break;
             case 77: //이호경식
-                $double = $command[1];
+                $double = (int)$command[1];
 
                 $nation = getNationStaticInfo($double);
 
                 $str[$i] = "【{$nation['name']}】에 이호경식";
                 break;
             case 78: //급습
-                $double = $command[1];
+                $double = (int)$command[1];
 
                 $nation = getNationStaticInfo($double);
 
@@ -585,7 +581,6 @@ function processCommand($no) {
             case 33: process_33($general); break; //탈취
             case 34: process_34($general); break; //파괴
             case 35: process_35($general); break; //선동
-            case 36: process_36($general); break; //기습
 
             case 41: process_41($general); break; //단련
             case 42: process_42($general); break; //견문
@@ -752,10 +747,11 @@ function EncodeCommand($fourth, $third, $double, $command) {
 }
 
 function DecodeCommand($str) {
-    $command[3] = floor(substr($str, 0, 4));
-    $command[2] = floor(substr($str, 4, 4));
-    $command[1] = floor(substr($str, 8, 4));
-    $command[0] = floor(substr($str, 12, 2));
+    $command = [];
+    $command[3] = (int)(substr($str, 0, 4));
+    $command[2] = (int)(substr($str, 4, 4));
+    $command[1] = (int)(substr($str, 8, 4));
+    $command[0] = (int)(substr($str, 12, 2));
     return $command;
 }
 

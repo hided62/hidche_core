@@ -679,7 +679,7 @@ function processAI($no) {
                         $result = MYDB_query($query, $connect) or Error("processAI20 ".MYDB_error($connect),"");
                         $targetCity = MYDB_fetch_array($result);
                         //공백지이면 타겟에 포함
-                        if($targetCity['nation'] == 0) { $target[count($target)] = $targetCity['city']; }
+                        if($targetCity['nation'] == 0) { $target[] = $targetCity['city']; }
                     }
                     if(count($target) == 0 || $isStart == 1 || $nation['war'] == 1) { $command = EncodeCommand(0, 0, 0, 1); } //공격 가능도시가 없으면 내정
                     else { $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
@@ -850,7 +850,7 @@ function processAI($no) {
                         $dipResult = MYDB_query($query, $connect) or Error("processAI22 ".MYDB_error($connect),"");
                         $dip = MYDB_fetch_array($dipResult);
                         //전쟁중인 국가이면 타겟에 포함
-                        if($dip['state'] == 0) $target[count($target)] = $targetCity['city'];
+                        if($dip['state'] == 0) $target[] = $targetCity['city'];
                     }
                 }
                 if(count($target) == 0) {

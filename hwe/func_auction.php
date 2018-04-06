@@ -62,7 +62,7 @@ function registerAuction() {
             }
             for($i=7; $i <= 26; $i++) {
                 if($occupied[$i] == 0) {
-                    $item[count($item)] = $i;
+                    $item[] = $i;
                 }
             }
             $it = $item[rand() % count($item)];
@@ -143,6 +143,13 @@ function registerAuction() {
 function processAuction() {
     $db = DB::db();
     $connect=$db->get();
+
+    $trader = [];
+    $traderLog = [];
+    $auctionLog = [];
+    $bidderLog = [];
+    $alllog = [];
+    $history = [];
 
     $date = date("Y-m-d H:i:s");
 

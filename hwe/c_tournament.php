@@ -111,7 +111,7 @@ if($btn == "자동개최설정" && $session->userGrade >= 5) {
     }
     for($i=0; $i < 8; $i++) {
         if($occupied[$i] == 0) {
-            $map[count($map)] = $i;
+            $map[] = $i;
         }
     }
 

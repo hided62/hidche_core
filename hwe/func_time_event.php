@@ -83,7 +83,7 @@ function processGoldIncome() {
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         }
-        $adminLog[count($adminLog)] = StringUtil::Fill2($nation['name'],12," ")." // 세금 : ".StringUtil::Fill2($income,6," ")." // 세출 : ".StringUtil::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과금 : ".tab2($nation['gold'],6," ");
+        $adminLog[] = StringUtil::Fill2($nation['name'],12," ")." // 세금 : ".StringUtil::Fill2($income,6," ")." // 세출 : ".StringUtil::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과금 : ".tab2($nation['gold'],6," ");
 
         $query = "select no,name,nation from general where nation='{$nation['nation']}' and level>='9'";
         $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
