@@ -13,6 +13,31 @@ return [
     // of the php executable used to execute phan.
     "target_php_version" => null,
 
+    'file_list' => [
+        'f_config/config.php',
+        'hwe/MYDB.php',
+        'hwe/lib.php',
+        'hwe/func_auction.php',
+        'hwe/func_command.php',
+        'hwe/func_converter.php',
+        'hwe/func_diplomacy.php',
+        'hwe/func_gamerule.php',
+        'hwe/func_history.php',
+        'hwe/func_legacy.php',
+        'hwe/func_map.php',
+        'hwe/func_message.php',
+        'hwe/func_npc.php',
+        'hwe/func_process_chief.php',
+        'hwe/func_process_personnel.php',
+        'hwe/func_process_trick.php',
+        'hwe/func_process.php',
+        'hwe/func_string.php',
+        'hwe/func_template.php',
+        'hwe/func_time_event.php',
+        'hwe/func_tournament.php',
+        'hwe/func.php'
+    ],
+
     // A list of directories that should be parsed for class and
     // method information. After excluding the directories
     // defined in exclude_analysis_directory_list, the remaining
@@ -43,11 +68,6 @@ return [
     //       to `exclude_analysis_directory_list`.
     "exclude_analysis_directory_list" => [
         'vendor/'
-    ],
-
-    'include_analysis_file_list' => [
-        'f_config/config.php',
-        'hwe/lib.php'
     ],
 
     // A list of plugin files to execute.
