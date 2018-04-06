@@ -5,6 +5,7 @@ function process_23(&$general) {
     $db = DB::db();
     $connect=$db->get();
 
+    $genlog = [];
     $log = [];
     $alllog = [];
     $history = [];
@@ -106,6 +107,7 @@ function process_24(&$general) {
     $db = DB::db();
     $connect=$db->get();
 
+    $genlog = [];
     $log = [];
     $alllog = [];
     $history = [];
@@ -341,7 +343,7 @@ function process_51(&$general) {
         }
         //기존 메세지 한칸씩 뒤로 미룸
         for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg("nation", "dip", $i+1, $younatin["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
+            moveMsg("nation", "dip", $i+1, $younation["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
         }
         //권고 서신시 장수번호/상대국 번호
         $me = $general['no'] * 10000 + $younation['nation'];
@@ -429,9 +431,9 @@ function process_52(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
 
+        $genlog = ["<C>●</><D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원했습니다."];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
-            $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원했습니다.";
             pushGenLog($gen, $genlog);
         }
         pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원");
@@ -1241,6 +1243,7 @@ function process_71(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
+    $tricklog = [];
 
     $date = substr($general['turntime'],11,5);
 
@@ -1346,6 +1349,7 @@ function process_72(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
+    $tricklog = [];
 
     $date = substr($general['turntime'],11,5);
 
@@ -1460,6 +1464,7 @@ function process_73(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
+    $tricklog = [];
 
     $date = substr($general['turntime'],11,5);
 
@@ -1590,6 +1595,7 @@ function process_74(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
+    $tricklog = [];
 
     $date = substr($general['turntime'],11,5);
 
@@ -1685,20 +1691,21 @@ function process_74(&$general) {
         $query = "select city from city where nation='{$destcity['nation']}' and supply=1";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $cityCount = MYDB_num_rows($result);
+        $cities = [];
         for($i=0; $i < $cityCount; $i++) {
             $dCity = MYDB_fetch_array($result);
-            $citys[$i] = $dCity['city'];
+            $cities[$i] = $dCity['city'];
         }
         //상대국 유저 랜덤 배치
         $query = "select no,name from general where nation='{$destcity['nation']}' and city='{$destcity['city']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $count = MYDB_num_rows($result);
-        $opplog[0] = "<C>●</>상대국의 허보에 당했다! <1>$date</>";
+        $opplog = ["<C>●</>상대국의 허보에 당했다! <1>$date</>"];
         for($i=0; $i < $count; $i++) {
             $gen = MYDB_fetch_array($result);
-            $selCity = $citys[rand() % $cityCount];
+            $selCity = $cities[rand() % $cityCount];
             //현재도시이면 한번 다시 랜덤추첨
-            if($selCity == $destcity['city']) { $selCity = $citys[rand() % $cityCount]; }
+            if($selCity == $destcity['city']) { $selCity = $cities[rand() % $cityCount]; }
 
             $query = "update general set city={$selCity} where no='{$gen['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1732,6 +1739,7 @@ function process_75(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
+    $tricklog = [];
 
     $date = substr($general['turntime'],11,5);
 
@@ -2076,6 +2084,7 @@ function process_77(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
+    $tricklog = [];
 
     $date = substr($general['turntime'],11,5);
 
@@ -2203,6 +2212,7 @@ function process_78(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
+    $tricklog = [];
 
     $date = substr($general['turntime'],11,5);
 
@@ -2366,7 +2376,7 @@ function process_81(&$general) {
         $query = "select no,name from general where nation='{$general['nation']}' and no!='{$general['no']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $cnt = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><Y>{$general['name']}</>(이)가 <font color={$color}><b>국기</b></font>를 변경합니다.";
+        $genlog = ["<C>●</><Y>{$general['name']}</>(이)가 <font color={$color}><b>국기</b></font>를 변경합니다."];
         for($i=0; $i < $cnt; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);

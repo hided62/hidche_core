@@ -2,17 +2,17 @@
 namespace sammo;
 
 
-function getFont($str) {
+function getFont(string $str) {
     if(strlen($str) >= 22) { $str = "<font size=1>{$str}</font>"; }
 
     return $str;
 }
 
-function SQ2DQ($str) {
+function SQ2DQ(string $str) {
     return str_replace("'", "&#039;", $str);
 }
 
-function Tag2Code($str) {
+function Tag2Code(string $str) {
 //    return htmlspecialchars(nl2br(str_replace(" ", "&nbsp;", $str)));
 //    $str = str_replace("&", "&amp;", $str);
     $str = str_replace("'", "&#039;", $str);
@@ -24,14 +24,14 @@ function Tag2Code($str) {
     return nl2br($str);
 }
 
-function BadTag2Code($str) {
+function BadTag2Code(string $str) {
     /* FIXME: 제대로된 tag 변환 코드 사용 */
     $str = str_replace("<script", "<sorry", $str);
     $str = str_replace("<embed", "<sorry", $str);
     return $str;
 }
 
-function tab($str, $maxsize, $ch) {
+function tab(string $str, $maxsize, $ch) {
     $size = strlen($str);
 
     $string = '';
@@ -47,7 +47,7 @@ function tab($str, $maxsize, $ch) {
     return $string;
 }
 
-function tab2($str, $maxsize, $ch) {
+function tab2(string $str, $maxsize, $ch) {
     $size = strlen($str);
 
     $string = '';

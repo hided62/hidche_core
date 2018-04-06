@@ -388,20 +388,20 @@ function getLevelPer($exp, $level) {
     return $per;
 }
 
-function getBill($dedication) {
+function getBill(int $dedication) : int{
     for($level = 0; $dedication > (($level+1)*($level+1)*100); $level++) {
     }
 
     return ($level * 200 + 400);
 }
 
-function getCost(int $armtype) {
+function getCost(int $armtype) : int {
     //FIXME: 정말로 side effect가 없으려면 query는 밖으로 이동해야함.
     //TODO: 병종 값이 column으로 들어있는건 전혀 옳지 않음. key->value 형태로 바꿔야함
     return DB::db()->queryFirstColumn('select %b from game limit 1', sprintf('cst%d', $armtype));
 }
 
-function TechLimit($startyear, $year, $tech) {
+function TechLimit($startyear, $year, $tech) : int {
     $limit = 0;
     if($year < $startyear+ 5 && $tech >=  1000) { $limit = 1; }
     if($year < $startyear+10 && $tech >=  2000) { $limit = 1; }
@@ -418,7 +418,7 @@ function TechLimit($startyear, $year, $tech) {
     return $limit;
 }
 
-function getTechAbil($tech) {
+function getTechAbil($tech) : int{
     if($tech < 1000)      { $abil =   0; }
     elseif($tech < 2000)  { $abil =  25; }
     elseif($tech < 3000)  { $abil =  50; }
@@ -435,7 +435,7 @@ function getTechAbil($tech) {
     return $abil;
 }
 
-function getTechCost($tech) {
+function getTechCost($tech) : float{
     if($tech < 1000)      { $cost = 1.00; }
     elseif($tech < 2000)  { $cost = 1.15; }
     elseif($tech < 3000)  { $cost = 1.30; }
@@ -452,7 +452,7 @@ function getTechCost($tech) {
     return $cost;
 }
 
-function getTechCall($tech) {
+function getTechCall($tech) : string {
     if($tech < 1000)      { $str = '0등급'; }
     elseif($tech < 2000)  { $str = '1등급'; }
     elseif($tech < 3000)  { $str = '2등급'; }
@@ -469,7 +469,7 @@ function getTechCall($tech) {
     return $str;
 }
 
-function getDexCall($dex) {
+function getDexCall($dex) : string {
     if($dex < 2500)        { $str = '<font color="navy">F-</font>'; }
     elseif($dex <    7500) { $str = '<font color="navy">F</font>'; }
     elseif($dex <   15000) { $str = '<font color="navy">F+</font>'; }
@@ -504,7 +504,7 @@ function getDexCall($dex) {
     return $str;
 }
 
-function getDexLevel($dex) {
+function getDexLevel($dex) : int {
     if($dex < 2500)        { $lvl =  0; }
     elseif($dex <    7500) { $lvl =  1; }
     elseif($dex <   15000) { $lvl =  2; }
@@ -545,7 +545,7 @@ function getDexLog($dex1, $dex2) {
 }
 
 
-function getWeapName($weap) {
+function getWeapName($weap) : string {
     switch($weap) {
         case  0: $weapname = '-'; break;
         case  1: $weapname = '단도(+1)'; break;
@@ -579,7 +579,7 @@ function getWeapName($weap) {
     return $weapname;
 }
 
-function getWeapEff($weap) {
+function getWeapEff($weap) : int{
     switch($weap) {
         case  7: $weap =  7; break;
         case  8: $weap =  7; break;
@@ -606,7 +606,7 @@ function getWeapEff($weap) {
     return $weap;
 }
 
-function getBookName($book) {
+function getBookName($book) : string {
     switch($book) {
         case  0: $bookname = '-'; break;
         case  1: $bookname = '효경전(+1)'; break;
@@ -640,7 +640,7 @@ function getBookName($book) {
     return $bookname;
 }
 
-function getBookEff($book) {
+function getBookEff($book) : int {
     switch($book) {
         case  7: $book =  7; break;
         case  8: $book =  7; break;
@@ -667,7 +667,7 @@ function getBookEff($book) {
     return $book;
 }
 
-function getHorseName($horse) {
+function getHorseName($horse) : string {
     switch($horse) {
         case  0: $horsename = '-'; break;
         case  1: $horsename = '노기(+1)'; break;
@@ -701,7 +701,7 @@ function getHorseName($horse) {
     return $horsename;
 }
 
-function getHorseEff($horse) {
+function getHorseEff($horse) : int {
     switch($horse) {
         case  7: $horse =  7; break;
         case  8: $horse =  7; break;
@@ -728,7 +728,7 @@ function getHorseEff($horse) {
     return $horse;
 }
 
-function getItemName($item) {
+function getItemName($item) : string {
     switch($item) {
         case  0: $itemname = '-'; break;
         case  1: $itemname = '환약(치료)'; break;
@@ -762,7 +762,7 @@ function getItemName($item) {
     return $itemname;
 }
 
-function getItemCost2($weap) {
+function getItemCost2($weap) : int {
     switch($weap) {
         case  0: $weapcost = 0; break;
         case  1: $weapcost = 100; break;
@@ -776,7 +776,7 @@ function getItemCost2($weap) {
     return $weapcost;
 }
 
-function getItemCost($weap) {
+function getItemCost($weap) : int {
     switch($weap) {
         case  0: $weapcost = 0; break;
         case  1: $weapcost = 1000; break;
@@ -792,7 +792,7 @@ function getItemCost($weap) {
 
 
 
-function ConvertLog($str, $type=1) {
+function ConvertLog(string $str, $type=1) : string {
     //TODO: 이 함수는 없애야 한다. CSS로 대신하자
     if($type > 0) {
         $str = str_replace("<1>", "<font size=1>", $str);
@@ -833,7 +833,7 @@ function ConvertLog($str, $type=1) {
 
 
 
-function newColor($color) {
+function newColor($color) : string {
     switch($color) {
         case "":
         case "#330000":
@@ -860,6 +860,6 @@ function newColor($color) {
     return $color;
 }
 
-function backColor($color) {
+function backColor($color) : string {
     return newColor($color);
 }

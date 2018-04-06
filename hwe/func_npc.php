@@ -84,6 +84,7 @@ function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city
     $db = DB::db();
     $connect=$db->get();
 
+    $type = 0;
     switch($genType) {
     case 0: //무장
     case 2: //무내정장

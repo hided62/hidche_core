@@ -409,10 +409,6 @@ function process_29(&$general) {
             $gennum = $gencount;
             if($gencount < 10) $gencount = 10;
 
-            // 국가보정
-            if($nation['type'] == 11) { $term3 = round($term3 / 2); }
-            if($nation['type'] == 12) { $term3 = $term3 * 2; }
-
             //국가 기술력 그대로
             $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$general['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -462,11 +458,6 @@ function process_45(&$general) {
     } elseif($general['level'] == 12) {
         $log[] = "<C>●</>{$admin['month']}월:군주입니다. 하야 실패. <1>$date</>";
     } else {
-        $exp = 100;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
 
         $query = "select no from diplomacy where me='{$general['nation']}' and state>='3' and state<='4'";
         $dipresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -713,6 +704,7 @@ function process_54(&$general) {
     $connect=$db->get();
 
     $log = [];
+    $youlog = [];
     $alllog = [];
     $history = [];
     $date = substr($general['turntime'],11,5);
@@ -920,6 +912,7 @@ function process_57(&$general) {
     $connect=$db->get();
 
     $log = [];
+    $youlog = [];
     $alllog = [];
     $history = [];
     $date = substr($general['turntime'],11,5);

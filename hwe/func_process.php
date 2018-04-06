@@ -107,27 +107,41 @@ function getGeneralIntel(&$general, $withInjury, $withItem, $withStatAdjust, $us
  * @return array 계산된 실패, 성공 확률 ('succ' => 성공 확률, 'fail' => 실패 확률)
  */
 function CriticalRatioDomestic(&$general, $type) {
-    $leader = getGeneralLeadership($general, false, true, false, false);
-    $power = getGeneralPower($general, false, true, false, false);
-    $intel = getGeneralIntel($general, false, true, false, false);
+    $leader = getGeneralLeadership($general, false, true, true, false);
+    $power = getGeneralPower($general, false, true, true, false);
+    $intel = getGeneralIntel($general, false, true, true, false);
 
     $avg = ($leader+$power+$intel) / 3;
-    // 707010장수 18/21% 706515장수 16/27% 706020장수 14/33% xx50xx장수 10/50%
+    /*
+    * 능력치가 높아질 수록 성공 확률 감소. 실패 확률도 감소
+
+    * 무력 내정 기준(지력 내정 방식과 구조 동일)
+      756510(32%/30%), 707010(28%/25%), 657510(23%/20%)
+      106575(23%/20%), 107070(20%/17%), 107565(17%/15%)
+      506040(33%/30%), 505050(43%/40%), 504060(50%/50%)
+
+    * 통솔 내정 기준
+      756510(25%/22%), 707010(31%/28%), 657510(38%,35%), 
+      505050(50%,50%), 107070(50%,50%)
+    */
     switch($type) {
     case 0: $ratio = $avg / $leader; break;
     case 1: $ratio = $avg / $power;  break;
     case 2: $ratio = $avg / $intel; break;
     }
-    if($ratio > 1) $ratio = 1;
+    $ratio = min($ratio, 1.2);
 
-    $r['fail'] = (0.2 / $ratio - 0.1) * 100;
-    $r['succ'] = ($ratio - 0.5) * 100;
+    $fail = pow($ratio / 1.2, 1.4) - 0.3;
+    $succ = pow($ratio / 1.2, 1.5) - 0.25;
 
-    if($r['fail'] < 0) { $r['fail'] = 0; }
-    $r['succ'] += $r['fail'];
-    if($r['succ'] > 100) { $r['succ'] = 100; }
+    $fail = min(max($fail, 0), 0.5);
+    $succ = min(max($succ, 0), 0.5);
 
-    return $r;
+
+    return array(
+        'succ'=>$succ,
+        'fail'=>$fail
+    );
 }
 
 /**
@@ -1456,7 +1470,7 @@ function process_26(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         //부대원에게 로그 전달
-        $genlog[] = "<C>●</><S>{$troop['name']}</>의 부대원들은 <G><b>{$city['name']}</b></>(으)로 집합되었습니다.";
+        $genlog = ["<C>●</><S>{$troop['name']}</>의 부대원들은 <G><b>{$city['name']}</b></>(으)로 집합되었습니다."];
 
         for($i=0; $i < $gencount; $i++) {
             $troopgen = MYDB_fetch_array($result);
@@ -1602,7 +1616,7 @@ function process_30(&$general) {
                 $query = "select no,name from general where nation='{$general['nation']}' and level<'12'";
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $gencount = MYDB_num_rows($result);
-                $genlog[0] = "<C>●</>방랑군 세력이 <G><b>{$destcity['name']}</b></>(으)로 강행했습니다.";
+                $genlog = ["<C>●</>방랑군 세력이 <G><b>{$destcity['name']}</b></>(으)로 강행했습니다."];
                 for($j=0; $j < $gencount; $j++) {
                     $gen = MYDB_fetch_array($result);
                     pushGenLog($gen, $genlog);
@@ -1652,6 +1666,7 @@ function process_31(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $crew = 0;
+        $typecount = [];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
             if($gen['crew'] != 0) { $typecount[$gen['crewtype']]++; $crew += $gen['crew']; }
@@ -1720,20 +1735,21 @@ function process_31(&$general) {
         $query = "select spy from nation where nation='{$general['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($result);
-        if($nation['spy'] != "") { $citys = explode("|", $nation['spy']); }
-        for($i=0; $i < count($citys); $i++) {
-            if(floor($citys[$i]/10) == $destination) {
+        if($nation['spy'] != "") { $cities = explode("|", $nation['spy']); }
+        $exist = 0;
+        for($i=0; $i < count($cities); $i++) {
+            if(floor($cities[$i]/10) == $destination) {
                 $exist = 1;
                 break;
             }
         }
         // 기존 첩보 목록에 없으면 새로 등록, 있으면 갱신
         if($exist == 0) {
-            $citys[] = $destination * 10 + 3;
+            $cities[] = $destination * 10 + 3;
         } else {
-            $citys[$i] = $destination * 10 + 3;
+            $cities[$i] = $destination * 10 + 3;
         }
-        $spy = implode("|", $citys);
+        $spy = implode("|", $cities);
         $query = "update nation set spy='$spy' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -2037,6 +2053,7 @@ function process_43(&$general) {
     $db = DB::db();
     $connect=$db->get();
 
+    $genlog = [];
     $log = [];
     $alllog = [];
     $history = [];
@@ -2169,10 +2186,10 @@ function process_44(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 없습니다. 헌납 실패. <1>$date</>";
     } elseif($what == 2 && $general['rice'] <= 0) {
         $log[] = "<C>●</>{$admin['month']}월:군량이 없습니다. 헌납 실패. <1>$date</>";
-    } elseif($general['nation'] != $city['nation'] && $mynation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 증여 실패. <1>$date</>";
+    } elseif($general['nation'] != $city['nation'] && $nation['level'] != 0) {
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 헌납 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 증여 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 헌납 실패. <1>$date</>";
     } else {
 //        $alllog[] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>에서 장수들이 재산을 헌납 하고 있습니다.";
         $log[] = "<C>●</>{$admin['month']}월: $dtype <C>$amount</>을 헌납했습니다. <1>$date</>";

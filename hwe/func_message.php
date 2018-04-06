@@ -7,7 +7,9 @@ class Message{
     public $mailbox;
     public $type;
     public $isSender;
+    /** @var mixed[] */
     public $src;
+    /** @var mixed[] */
     public $dest;
     public $time;
     public $text;
@@ -35,7 +37,7 @@ class Message{
             $this->dest['nation_id'] = null;
         }
 
-        $this->datetime = $row['time'];
+        $this->time = $row['time'];
         $this->text = $db_message['text'];
         $this->option = $db_message['option'];
     }
@@ -119,7 +121,7 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
     $dest['nation'] = Util::array_get($destNation['name'], '재야');
     $dest['color'] = Util::array_get($destNation['color'], '#ffffff');
 
-    if(!$isSender && $mailBox < 9000 && Util::array_get($msgOption['alert'], false)){
+    if(!$isSender && $mailbox < 9000 && Util::array_get($msgOption['alert'], false)){
         //TODO:newmsg보단 lastmsg로 datetime을 넣는게 더 나아보임
         DB::db()->update('general', array(
             'newmsg' => true
@@ -149,7 +151,7 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
 
 function sendMessage($msgType, $src, $dest, $msg, $date = null, $validUntil = null, $msgOption = null){
     if($date === null){
-        $date = $datetime->format('Y-m-d H:i:s');
+        $date = (new \Datetime())->format('Y-m-d H:i:s');
     }
 
     if($validUntil === null){
@@ -252,7 +254,7 @@ function getMailboxList(){
         "color"=>"#ffffff"
     ];
 
-    $result = array_map(function($nation){
+    $result = array_map(function($nation) use ($generalNations) {
         $nationID = $nation['nation'];
         $mailbox = $nationID + 9000;
         $nation = $nation['name'];
@@ -300,6 +302,7 @@ function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
     $sndr = MYDB_fetch_array($result);
 
     if($sndr['nation'] == 0) {
+        $sndrnation = [];
         $sndrnation['name'] = '재야';
         $sndrnation['color'] = '#FFFFFF';
     } else {
@@ -327,6 +330,7 @@ function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
         $rcvr = MYDB_fetch_array($result);
 
         if($rcvr['nation'] == 0) {
+            $rcvrnation = [];
             $rcvrnation['name'] = '재야';
             $rcvrnation['color'] = '#FFFFFF';
         } else {

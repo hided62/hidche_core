@@ -571,6 +571,11 @@ function setGift($tnmt_type, $tnmt, $phase) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
+    $genNo = [];
+    $genName = [];
+    $genGold = [];
+    $genCall = [];
+
     switch($tnmt_type) {
     case 0: $tp = "전력전"; $tp2 = "tt"; break;
     case 1: $tp = "통솔전"; $tp2 = "tl"; break;
@@ -708,8 +713,7 @@ function setGift($tnmt_type, $tnmt, $phase) {
         $query = "update general set gold=gold+'$gold',betwingold=betwingold+'$gold',betwin=betwin+1 where no='{$gen['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //로그
-        $log[0] = "<S>◆</><C>{$tp}</> 대회의 베팅 당첨으로 <C>{$gold}</>의 <S>금</> 획득!";
-        pushGenLog($gen, $log);
+        pushGenLog($gen, ["<S>◆</><C>{$tp}</> 대회의 베팅 당첨으로 <C>{$gold}</>의 <S>금</> 획득!"]);
     }
 }
 

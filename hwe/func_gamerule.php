@@ -458,7 +458,6 @@ function preUpdateMonthly() {
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
 
-        unset($log);
         $log = [];
         $log = checkDedication($general, $log);
         $log = checkExperience($general, $log);
@@ -472,14 +471,14 @@ function preUpdateMonthly() {
     for($i=0; $i < $nationCount; $i++) {
         $nation = MYDB_fetch_array($result);
         $spy = "";  $k = 0; 
-        $citys = [];
-        if($nation['spy'] != "") { $citys = explode("|", (string)$nation['spy']); }
-        while(count($citys)) {
-            $citys[$k]--;
-            if($citys[$k]%10 != 0) { $spy .= (string)$citys[$k]; }
+        $cities = [];
+        if($nation['spy'] != "") { $cities = explode("|", (string)$nation['spy']); }
+        while(count($cities)) {
+            $cities[$k]--;
+            if($cities[$k]%10 != 0) { $spy .= (string)$cities[$k]; }
             $k++;
-            if($k >= count($citys)) { break; }
-            if($citys[$k-1]%10 != 0) { $spy .= "|"; }
+            if($k >= count($cities)) { break; }
+            if($cities[$k-1]%10 != 0) { $spy .= "|"; }
         }
         $query = "update nation set spy='$spy' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -496,6 +495,8 @@ function postUpdateMonthly() {
     $query = "select startyear,year,month,scenario from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
+
+    $history = [];
 
     //각 국가 전월 장수수 대비 당월 장수수로 단합도 산정
     //각 국가 장수수를 구하고 국력 산정
@@ -531,6 +532,7 @@ group by A.nation
 ";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationCount = MYDB_num_rows($result);
+    $genNum = [];
     for($i=0; $i < $nationCount; $i++) {
         $nation = MYDB_fetch_array($result);
         $genNum[$nation['nation']] = $nation['gennum'];
@@ -573,6 +575,7 @@ group by A.nation
     $query = "select me,you from diplomacy where state='1' and term<='1' and me<you";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dipCount = MYDB_num_rows($result);
+    
     for($i=0; $i < $dipCount; $i++) {
         $dip = MYDB_fetch_array($result);
         $nation1 = getNationStaticInfo($dip['me']);
@@ -585,7 +588,6 @@ group by A.nation
     $query = "select A.me as me,A.you as you,A.term as term1,B.term as term2 from diplomacy A, diplomacy B where A.me=B.you and A.you=B.me and A.state='0' and A.me<A.you";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dipCount = MYDB_num_rows($result);
-    $history = array();
     for($i=0; $i < $dipCount; $i++) {
         $dip = MYDB_fetch_array($result);
 
@@ -1009,6 +1011,8 @@ function checkStatistic() {
 
     $nationHists = [];
     $specialHists = [];
+    $personalHists = [];
+    $specialHists2 = [0];
 
     $etc = '';
 
@@ -1245,6 +1249,7 @@ function checkEmperior() {
             $query = "select no,name from general where nation='{$nation['nation']}' order by dedication desc";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gencount = MYDB_num_rows($result);
+            $gen = '';
             for($i=0; $i < $gencount; $i++) {
                 $general = MYDB_fetch_array($result);
                 $gen .= "{$general['name']}, ";
@@ -1301,7 +1306,7 @@ function checkEmperior() {
                 )";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>(이)가 전토를 통일하였습니다.";
+            $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>(이)가 전토를 통일하였습니다."];
             pushWorldHistory($history, $admin['year'], $admin['month']);
 
             //연감 월결산

@@ -16,32 +16,32 @@ function processSpring() {
     $query = "update city set dead=0,agri=agri*0.99,comm=comm*0.99,secu=secu*0.99,def=def*0.99,wall=wall*0.99";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    // 유지비 3% 거상 1.5%
-    $query = "update general set gold=gold*0.97 where gold>10000 and special!=30";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update general set gold=gold*0.985 where gold>10000 and special=30";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 유지비 1% 거상 0.5%
     $query = "update general set gold=gold*0.99 where gold>1000 and gold<=10000 and special!=30";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $query = "update general set gold=gold*0.995 where gold>1000 and gold<=10000 and special=30";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    // 유지비 5%
-    $query = "update nation set gold=gold*0.95 where gold>100000";
+    // 유지비 3% 거상 1.5%
+    $query = "update general set gold=gold*0.97 where gold>10000 and special!=30";
+    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $query = "update general set gold=gold*0.985 where gold>10000 and special=30";
+    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+    // 유지비 1%
+    $query = "update nation set gold=gold*0.99 where gold>1000 and gold<=10000";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 유지비 3%
     $query = "update nation set gold=gold*0.97 where gold>10000 and gold<=100000";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    // 유지비 1%
-    $query = "update nation set gold=gold*0.99 where gold>1000 and gold<=10000";
+    // 유지비 5%
+    $query = "update nation set gold=gold*0.95 where gold>100000";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     $query = "select year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $history[0] = "<R>★</>{$admin['year']}년 {$admin['month']}월: <S>모두들 즐거운 게임 하고 계신가요? ^^ <Y>삼국일보</> 애독해 주시고, <M>훼접</>은 삼가주세요~</>";
-    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushWorldHistory(["<R>★</>{$admin['year']}년 {$admin['month']}월: <S>모두들 즐거운 게임 하고 계신가요? ^^ <Y>삼국일보</> 애독해 주시고, <M>훼접</>은 삼가주세요~</>"], $admin['year'], $admin['month']);
 }
 
 function processGoldIncome() {
@@ -51,6 +51,7 @@ function processGoldIncome() {
     $query = "select year,month,gold_rate from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
+    $adminLog = [];
 
     $query = "select name,nation,gold,rate_tmp,bill,type from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -83,12 +84,17 @@ function processGoldIncome() {
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         }
-        $adminLog[] = StringUtil::Fill2($nation['name'],12," ")." // 세금 : ".StringUtil::Fill2($income,6," ")." // 세출 : ".StringUtil::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과금 : ".tab2($nation['gold'],6," ");
+        $adminLog[] = StringUtil::Fill2((string)$nation['name'],12," ")
+            ." // 세금 : ".StringUtil::Fill2((string)$income,6," ")
+            ." // 세출 : ".StringUtil::Fill2((string)$originoutcome,6," ")
+            ." // 실제 : ".tab2((string)$realoutcome,6," ")
+            ." // 지급율 : ".tab2((string)round($ratio*100,2),5," ")
+            ." % // 결과금 : ".tab2((string)$nation['gold'],6," ");
 
         $query = "select no,name,nation from general where nation='{$nation['nation']}' and level>='9'";
         $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $corecount = MYDB_num_rows($coreresult);
-        $corelog[0] = "<C>●</>이번 수입은 금 <C>$income</>입니다.";
+        $corelog = ["<C>●</>이번 수입은 금 <C>$income</>입니다."];
         for($j=0; $j < $corecount; $j++) {
             $coregen = MYDB_fetch_array($coreresult);
             pushGenLog($coregen, $corelog);
@@ -110,19 +116,20 @@ function processGoldIncome() {
             $query = "update general set gold='{$general['gold']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $log[0] = "<C>●</>봉급으로 금 <C>$gold</>을 받았습니다.";
-            pushGenLog($general, $log);
+            pushGenLog($general, ["<C>●</>봉급으로 금 <C>$gold</>을 받았습니다."]);
         }
     }
 
-    $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<W><b>【지급】</b></>봄이 되어 봉록에 따라 자금이 지급됩니다.";
-    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushWorldHistory(["<C>●</>{$admin['year']}년 {$admin['month']}월:<W><b>【지급】</b></>봄이 되어 봉록에 따라 자금이 지급됩니다."], $admin['year'], $admin['month']);
     pushAdminLog($adminLog);
 }
 
 function popIncrease() {
     $db = DB::db();
     $connect=$db->get();
+
+    $rate = [];
+    $type = [];
 
     $query = "select nation,rate_tmp,type from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -233,7 +240,7 @@ function getGoldIncome($nationNo, $rate, $admin_rate, $type) {
     $citycount = MYDB_num_rows($cityresult);
 
     //총 수입 구함
-    $income[0] = 0;    $income[1] = 0;  // income[0] : 세수, income[1] : 수비병 세수
+    $income = [0, 0];  // income[0] : 세수, income[1] : 수비병 세수
     for($j=0; $j < $citycount; $j++) {
         $city = MYDB_fetch_array($cityresult);
 
@@ -367,6 +374,7 @@ function processRiceIncome() {
     $query = "select year,month,rice_rate from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
+    $adminLog = [];
 
     $query = "select name,nation,rice,rate_tmp,bill,type from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -400,12 +408,17 @@ function processRiceIncome() {
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         }
-        $adminLog[] = StringUtil::Fill2($nation['name'],12," ")." // 세곡 : ".StringUtil::Fill2($income,6," ")." // 세출 : ".StringUtil::Fill2($originoutcome,6," ")." // 실제 : ".tab2($realoutcome,6," ")." // 지급율 : ".tab2(round($ratio*100,2),5," ")." % // 결과곡 : ".tab2($nation['rice'],6," ");
+        $adminLog[] = StringUtil::Fill2($nation['name'],12," ")
+            ." // 세곡 : ".StringUtil::Fill2((string)$income,6," ")
+            ." // 세출 : ".StringUtil::Fill2((string)$originoutcome,6," ")
+            ." // 실제 : ".tab2((string)$realoutcome,6," ")
+            ." // 지급율 : ".tab2((string)round($ratio*100,2),5," ")
+            ." % // 결과곡 : ".tab2((string)$nation['rice'],6," ");
 
         $query = "select no,name,nation from general where nation='{$nation['nation']}' and level>='9'";
         $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $corecount = MYDB_num_rows($coreresult);
-        $corelog[0] = "<C>●</>이번 수입은 쌀 <C>$income</>입니다.";
+        $corelog = ["<C>●</>이번 수입은 쌀 <C>$income</>입니다."];
         for($j=0; $j < $corecount; $j++) {
             $coregen = MYDB_fetch_array($coreresult);
             pushGenLog($coregen, $corelog);
@@ -427,13 +440,11 @@ function processRiceIncome() {
             $query = "update general set rice='{$general['rice']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $log[0] = "<C>●</>봉급으로 쌀 <C>$rice</>을 받았습니다.";
-            pushGenLog($general, $log);
+            pushGenLog($general, ["<C>●</>봉급으로 쌀 <C>$rice</>을 받았습니다."]);
         }
     }
 
-    $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<W><b>【지급】</b></>가을이 되어 봉록에 따라 군량이 지급됩니다.";
-    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushWorldHistory(["<C>●</>{$admin['year']}년 {$admin['month']}월:<W><b>【지급】</b></>가을이 되어 봉록에 따라 군량이 지급됩니다."], $admin['year'], $admin['month']);
     pushAdminLog($adminLog);
 }
 
@@ -474,7 +485,7 @@ function getRiceIncome($nationNo, $rate, $admin_rate, $type) {
     $citycount = MYDB_num_rows($cityresult);
 
     //총 수입 구함
-    $income[0] = 0;    $income[1] = 0;  // income[0] : 세수, income[1] : 수비병 세수
+    $income = [0, 0];  // income[0] : 세수, income[1] : 수비병 세수
     for($j=0; $j < $citycount; $j++) {
         $city = MYDB_fetch_array($cityresult);
 
@@ -581,6 +592,10 @@ function disaster() {
     if($admin['month'] == 4 && $disastertype == 3) { $isgood = 1; }
     if($admin['month'] == 7 && $disastertype == 3) { $isgood = 1; }
 
+    $disastercity = [];
+    $disasterratio = [];
+    $disastername = [];
+
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($cityresult);
         //호황 발생 도시 선택 ( 기본 3% 이므로 약 3개 도시 )
@@ -589,14 +604,13 @@ function disaster() {
         else { $ratio = 6 - round(1.0*$city['secu']/$city['secu2']*3); }    // 3 ~ 6%
 
         if(rand()%100+1 < $ratio) {
-            $idx = count($disastercity);
-            $disastercity[$idx] = $city['city'];
-            $disasterratio[$idx] = 1.0 * $city['secu'] / $city['secu2'];
-            $disastername .= $city['name']." ";
+            $disastercity[] = $city['city'];
+            $disasterratio[] = 1.0 * $city['secu'] / $city['secu2'];
+            $disastername[] = $city['name'];
         }
     }
 
-    $disastername = "<G><b>{$disastername}</b></>";
+    $disastername = "<G><b>".join(' ', $disastername)."</b></>";
     $disaster = [];
 
     //재해 처리
