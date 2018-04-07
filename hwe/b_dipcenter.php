@@ -206,12 +206,12 @@ else { $budgetricediff = "$budgetricediff"; }
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <form name=form1 method=post action=c_dipcenter.php>
     <tr><td colspan=2 height=10></td></tr>
-    <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 & 임관 권유 메세지</td></tr>
+    <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메세지</td></tr>
     <tr><td colspan=2 id=bg1>국가 방침 <input type=text <?=$read;?> maxlength=500 style=color:white;background-color:black;width:830; name=msg value='<?=$nation['msg'];?>'><input type=<?=$btn;?> name=btn value=국가방침></td></tr>
     <tr><td colspan=2 id=bg1>임관 권유 <input type=text <?=$read;?> maxlength=500 style=color:white;background-color:black;width:830; name=scoutmsg value='<?=$nation['scoutmsg'];?>'><input type=<?=$btn;?> name=btn value=임관권유></td></tr>
     <tr><td colspan=2>900 x 200px 넘는 크기를 점유할 시 통보없이 제한될 수 있습니다.</td></tr>
     <tr><td colspan=2 height=10></td></tr>
-    <tr><td colspan=2 align=center bgcolor=green>예 산 & 정 책</td></tr>
+    <tr><td colspan=2 align=center bgcolor=green>예 산 &amp; 정 책</td></tr>
     <tr>
         <td colspan=2>
             <table width=998 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>

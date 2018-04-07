@@ -203,7 +203,7 @@ if($session->userGrade >= 5) {
     </tr>
     <tr>
         <td width=646 align=right>
-            <font color=cyan><b>←</b> Ctrl, Shift, 드래그로 복수선택 가능　　　　　반복&수정<b>→</b></font>
+            <font color=cyan><b>←</b> Ctrl, Shift, 드래그로 복수선택 가능　　　　　반복&amp;수정<b>→</b></font>
             <select name=sel size=1 style=color:white;background-color:black;font-size:13px;>
                 <option value=1>1턴</option>
                 <option value=2>2턴</option>

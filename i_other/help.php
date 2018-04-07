@@ -16,7 +16,6 @@ $images = IMAGES;
         <title>튜토리얼</title>
 
 <style type="text/css">
-<!--
 
 body { color:white; background-color:black; border-width:1; border-color:gray; }
 table { font-family:'맑은 고딕'; line-height:110%; }
@@ -53,7 +52,6 @@ font { font-family:'맑은 고딕'; line-height:110%; }
   clear: both;
 }
 
--->
 </style>
 
     </head>
@@ -87,7 +85,7 @@ if($category == 0) {
         <td>
 <font class=intro>◈ 본 튜토리얼은 『삼국지 모의전투』(이하 삼모전) 『유기체서버』(이하 체섭)를 처음 접하시는 초보 유저(이하 뉴비)분들을 위한 길잡이입니다^^ 위에서부터 아래로 읽어나가며 따라하다보면 금방 뉴비신세는 벗어날 수 있답니다~ 세부사항은 『레퍼런스 게시판』을 참고하시면 됩니다! 그럼 시작해볼까요?<br>
 <br>
-◈ 우선 예약턴제 전략 웹게임인 『체섭』의 컨셉 & 모토를 이해해봅시다.</font><br>
+◈ 우선 예약턴제 전략 웹게임인 『체섭』의 컨셉 &amp; 모토를 이해해봅시다.</font><br>
 <br>
 <img src=<?=$images;?>/help_01_01.jpg class=leftFloat>
 <font class=title>『웹게임』이란?</font><br>
@@ -210,7 +208,7 @@ if($category == 0) {
 ?>
 
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>캐 릭 터 생 성 & 계 정 관 리</font></b></td></tr>
+    <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>캐 릭 터 생 성 &amp; 계 정 관 리</font></b></td></tr>
     <tr>
         <td>
 <font class=intro>◈ 각 서버의 특징을 알아봅시다.</font><br>
@@ -254,7 +252,7 @@ if($category == 0) {
 <br>
 <img src=<?=$images;?>/help_04_04.jpg class=leftFloat>
 <img src=<?=$images;?>/help_04_05.jpg class=rightFloat>
-　<font class=bullet>☞</font> 플레이에 들어가기에 앞서 계정관리를 살펴봅시다. 계정관리의 비번&전콘을 눌러봅시다.<br>
+　<font class=bullet>☞</font> 플레이에 들어가기에 앞서 계정관리를 살펴봅시다. 계정관리의 비번&amp;전콘을 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 비밀번호를 변경할 수 있습니다.<br>
 <br>
@@ -315,14 +313,14 @@ if($category == 0) {
 <br>
 　<font class=bullet>☞</font> 2턴에 요양을 입력해봅시다.<br>
 <br>
-　<font class=bullet>☞</font> 반복&수정에서 2턴을 고르고 반복을 눌러봅시다.<br>
+　<font class=bullet>☞</font> 반복&amp;수정에서 2턴을 고르고 반복을 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 무슨 기능인지 눈치 채셨나요? 2턴 반복을 선택한다면 1~2턴이 반복되어 24턴까지 자동 입력되는 기능입니다. 5턴 반복이라면 1~5턴이 반복되어서 6~10, 11~15, 16~20, 21~24 까지 자동 입력되게 됩니다! 아주 편리한 기능이죠.<br>
 <br>
 　<font class=bullet>☞</font> 이번엔 전체턴에 견문을 입력해봅시다. 1~24턴까지 견문이 입력될겁니다.<br>
 <br>
 <img src=<?=$images;?>/help_05_07.jpg class=leftFloat>
-　<font class=bullet>☞</font> 반복&수정에서 5턴 미루기를 선택해 봅시다. 1~5턴이 휴식으로 된것을 볼 수 있습니다.<br>
+　<font class=bullet>☞</font> 반복&amp;수정에서 5턴 미루기를 선택해 봅시다. 1~5턴이 휴식으로 된것을 볼 수 있습니다.<br>
 <br>
 　<font class=bullet>☞</font> 무슨 기능인지 눈치 채셨나요? 현재 입력된 1~24턴이 그대로 5칸이 6~24턴으로 밀리게 되고 공백칸은 휴식으로 채워지게 됩니다. 전체 턴 순서는 유지하면서도 끼워넣거나 할때 편리하게 이용할 수 있습니다. 당기기도 비슷한 기능이랍니다. 직접 해보세요!<br>
 <br>
@@ -493,7 +491,7 @@ if($category == 0) {
 <div class=clear></div>
 <br>
 <img src=<?=$images;?>/help_06_11.jpg class=rightFloat>
-　<font class=bullet>☞</font> 이번엔 내정보&설정을 눌러봅시다.<br>
+　<font class=bullet>☞</font> 이번엔 내정보&amp;설정을 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 오. 좀 더 자세한 정보가 보이는군요. 명성과 계급, 전투기록과 숙련도도 볼 수 있군요. 개인기록도 더 오래전 것까지 볼 수 있구요. 전투 결과나 자신의 열전(역사)도 볼 수 있답니다.<br>
 <br>
@@ -671,7 +669,7 @@ if($category == 0) {
 　<font class=bullet>☞</font> 첩보를 실행하고 개인기록을 확인하세요! 또한 첩보를 실행하면 3개월간 그 도시를 클릭하여 확인이 가능해요!<br>
 <br>
 <font class=title>전투 로그가 너무 길어서 지나가 버렸어요ㅠㅠ</font><br>
-　<font class=bullet>☞</font> 걱정하지 마세요^^ 메인화면 메뉴중 내정보&설정 부분을 클릭하면 더 많은 로그를 확인할 수 있어요!<br>
+　<font class=bullet>☞</font> 걱정하지 마세요^^ 메인화면 메뉴중 내정보&amp;설정 부분을 클릭하면 더 많은 로그를 확인할 수 있어요!<br>
 <br>
 <font class=title>다른도시는 볼 수 없나요?</font><br>
 　<font class=bullet>☞</font> 우리나라의 장수들이 있는 도시라면 도시의 자세한 정보와 도시에 있는 장수들을 볼 수 있어요!<br>
