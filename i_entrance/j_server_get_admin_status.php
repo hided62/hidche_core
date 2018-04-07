@@ -70,12 +70,12 @@ foreach (AppConf::getList() as $setting) {
         ];
     }
 
-    $state = array_merge($state, [
+    $state += [
         'name' => $serverDir,
         'korName' => $serverKorName,
         'color' => $serverColor,
         'isRoot' => $serverDir == $rootServer
-    ]);
+    ];
     $server[] = $state;
 }  
 

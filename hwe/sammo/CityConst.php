@@ -323,7 +323,7 @@ class CityConst{
         $queries = array_map(function(CityInitialDetail $city){ 
             $initValue = static::$buildInit[$city->level];
             $path = join('|', array_keys($city->path));
-            return array_merge(static::$buildInitCommon, $initValue, [
+            return [
                 'city'=>$city->id,
                 'name'=>$city->name,
                 'level'=>$city->level,
@@ -335,7 +335,7 @@ class CityConst{
                 'def2'=>$city->defence,
                 'wall2'=>$city->wall,
                 'region'=>$city->region
-            ]);
+            ] + $initValue + static::$buildInitCommon;
         }, array_values(static::$constID));
 
         DB::db()->insert('city', $queries);

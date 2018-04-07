@@ -1613,9 +1613,7 @@ function checkTurn() {
             $action = Json::decode($rawEvent['action']);
             $event = new Event\EventHandler($cond, $action);
 
-            $event->tryRunEvent(array_merge([
-                'currentEventID'=>$eventID
-            ], $admin));
+            $event->tryRunEvent(['currentEventID'=>$eventID] + $admin);
         }
 
         // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리

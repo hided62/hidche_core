@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$v = new Validator(array_merge($_POST, $_GET));
+$v = new Validator($_GET + $_POST);
 $v
 ->rule('required', [
     'name',

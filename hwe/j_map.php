@@ -13,7 +13,7 @@ $defaultPost = [
     'neutralView' => false,
     'showMe' => true
 ];
-$post = array_merge($defaultPost, WebUtil::parseJsonPost());
+$post = WebUtil::parseJsonPost() + $defaultPost;
 
 if(!$session->isLoggedIn() || !$session->generalID){
     $post['neutralView'] = true;

@@ -26,7 +26,7 @@ if($session->userGrade < 6){
     ]);
 }
 
-$request = array_merge($_POST, $_GET);
+$request = $_GET + $_POST;
 
 $tmpFile = 'd_log/arc.zip';
 

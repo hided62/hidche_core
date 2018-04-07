@@ -64,11 +64,11 @@ class Session
             'reason'=>'로그인이 필요합니다.'
         ];
 
-        if (is_array($result)) {
-            $jsonResult = array_merge($jsonResult, $result);
+        if (!is_array($result)) {
+            Json::die($jsonResult);
         }
 
-        Json::die($jsonResult);
+        Json::die($result + $jsonResult);
     }
 
     public static function requireLogin($result = '..'): Session
