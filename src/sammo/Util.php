@@ -3,6 +3,60 @@ namespace sammo;
 
 class Util extends \utilphp\util
 {
+    /**
+     * $_GET, $_POST에서 값을 가져오는 함수. Util::array_get($_POST[$name])을 축약 가능.
+     * 타입이 복잡해질 경우 이 함수를 통하지 않고 json으로 요청할 것을 권장.
+     * 
+     * @param string $name 가져오고자 하는 key 이름.
+     * @param string $type 가져오고자 하는 type. [string, int, float, bool, array, array_string, array_int]
+     * @return int|float|string|null
+     * @throws \InvalidArgumentException
+     */
+    public static function getReq(string $name, string $type = 'string'){
+        if(isset($_GET[$name])){
+            $value = $_GET[$name];
+        }
+        else if(isset($_POST[$name])){
+            $value = $_POST[$name];
+        }
+        else{
+            return null;
+        }
+
+        if(is_array($value)){
+            if($type === 'array_int'){
+                return array_map('intval', $value);
+            }
+
+            if($type === 'array_string'){
+                return array_map(function($item){
+                    return (string)$item;
+                }, $value);
+            }
+
+            if($type === 'array'){
+                return $value;
+            }
+
+            throw new \InvalidArgumentException('지원할 수 없는 type 지정. array 가 붙은 type이어야 합니다');
+        }
+
+        if($type === 'bool'){
+            return !!$value;
+        }
+        if($type === 'int'){
+            return (int)$value;
+        }
+        if($type === 'float'){
+            return (float)$value;
+        }
+        if($type === 'string'){
+            return (string)$value;
+        }
+
+        throw new \InvalidArgumentException('올바르지 않은 type 지정');
+    }
+
     public static function hashPassword($salt, $password)
     {
         return hash('sha512', $salt.$password.$salt);
