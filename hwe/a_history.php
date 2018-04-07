@@ -85,7 +85,7 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $histCount = MYDB_num_rows($result);
 for($i=0; $i < $histCount; $i++) {
     $history = MYDB_fetch_array($result);
-    $value = "".$history['year'].StringUtil::Fill2($history['month'], 2, "0");
+    $value = "".$history['year'].StringUtil::padStringAlignRight($history['month'], 2, "0");
     if($history['year'] == $year && $history['month'] == $month) {
         echo "
             <option selected value={$value}>{$history['year']}년 {$history['month']}월</option>";

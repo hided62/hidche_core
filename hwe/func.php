@@ -1121,7 +1121,7 @@ function PushMsg($type, $nation, $picture, $imgsvr, $from, $fromcolor, $to, $toc
     else { $file = "_nation_msg{$nation}.txt"; }
     $fp = fopen("logs/{$file}", "a");
     //로그 파일에 기록
-    $str = "{$type}|".StringUtil::Fill($from,12," ")."|".StringUtil::Fill($to,12," ")."|".$date."|".$msg."|".$fromcolor."|".$tocolor."|".$picture."|".$imgsvr;
+    $str = "{$type}|".StringUtil::padStringAlignRight($from,12," ")."|".StringUtil::padStringAlignRight($to,12," ")."|".$date."|".$msg."|".$fromcolor."|".$tocolor."|".$picture."|".$imgsvr;
     fwrite($fp, "{$str}\n");
     fclose($fp);
 }
@@ -1342,9 +1342,15 @@ function updateTraffic() {
     $db->update('general', ['refresh'=>0], true);
 
     $date = date('Y-m-d H:i:s');
-    $fp = fopen("logs/_traffic.txt", "a");
     //일시|년|월|총갱신|접속자|최다갱신자
-    $msg = StringUtil::Fill2($date,20," ")."|".StringUtil::Fill2($game['year'],3," ")."|".StringUtil::Fill2($game['month'],2," ")."|".StringUtil::Fill2($game['refresh'],8," ")."|".StringUtil::Fill2($online,5," ")."|".StringUtil::Fill2($user['name']."(".$user['refresh'].")",20," ");
+    file_put_contents(__dir__."logs/_traffic.txt",
+        StringUtil::padStringAlignRight($date,20," ")
+        ."|".StringUtil::padStringAlignRight($game['year'],3," ")
+        ."|".StringUtil::padStringAlignRight($game['month'],2," ")
+        ."|".StringUtil::padStringAlignRight($game['refresh'],8," ")
+        ."|".StringUtil::padStringAlignRight($online,5," ")
+        ."|".StringUtil::padStringAlignRight($user['name']."(".$user['refresh'].")",20," ")
+    , FILE_APPEND);
     fwrite($fp, $msg."\n");
     fclose($fp);
 }

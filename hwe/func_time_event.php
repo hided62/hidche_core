@@ -84,9 +84,9 @@ function processGoldIncome() {
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         }
-        $adminLog[] = StringUtil::Fill2((string)$nation['name'],12," ")
-            ." // 세금 : ".StringUtil::Fill2((string)$income,6," ")
-            ." // 세출 : ".StringUtil::Fill2((string)$originoutcome,6," ")
+        $adminLog[] = StringUtil::padStringAlignRight((string)$nation['name'],12," ")
+            ." // 세금 : ".StringUtil::padStringAlignRight((string)$income,6," ")
+            ." // 세출 : ".StringUtil::padStringAlignRight((string)$originoutcome,6," ")
             ." // 실제 : ".tab2((string)$realoutcome,6," ")
             ." // 지급율 : ".tab2((string)round($ratio*100,2),5," ")
             ." % // 결과금 : ".tab2((string)$nation['gold'],6," ");
@@ -408,9 +408,9 @@ function processRiceIncome() {
             // 실지급율
             $ratio = $realoutcome / $originoutcome;
         }
-        $adminLog[] = StringUtil::Fill2($nation['name'],12," ")
-            ." // 세곡 : ".StringUtil::Fill2((string)$income,6," ")
-            ." // 세출 : ".StringUtil::Fill2((string)$originoutcome,6," ")
+        $adminLog[] = StringUtil::padStringAlignRight($nation['name'],12," ")
+            ." // 세곡 : ".StringUtil::padStringAlignRight((string)$income,6," ")
+            ." // 세출 : ".StringUtil::padStringAlignRight((string)$originoutcome,6," ")
             ." // 실제 : ".tab2((string)$realoutcome,6," ")
             ." // 지급율 : ".tab2((string)round($ratio*100,2),5," ")
             ." % // 결과곡 : ".tab2((string)$nation['rice'],6," ");
