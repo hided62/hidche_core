@@ -9,7 +9,7 @@ class Util extends \utilphp\util
      * 
      * @param string $name 가져오고자 하는 key 이름.
      * @param string $type 가져오고자 하는 type. [string, int, float, bool, array, array_string, array_int]
-     * @return int|float|string|null
+     * @return int|float|string|array|null
      * @throws \InvalidArgumentException
      */
     public static function getReq(string $name, string $type = 'string'){
