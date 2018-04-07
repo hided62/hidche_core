@@ -11,6 +11,18 @@ if($session->userGrade < 5){
     echo '_119.php';//TODO:debug all and replace
 }
 
+$v = new Validator($_POST);
+$v->rule('integer', [
+    'minute',
+    'minutes2'
+]);
+if(!$v->validate()){
+    Error($v->errorStr());
+}
+
+$minute = Util::toInt(Util::array_get($_POST['minute']));
+$minute2 = Util::toInt(Util::array_get($_POST['minute2']));
+
 $db = DB::db();
 $connect=$db->get();
 

@@ -3,18 +3,6 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 
-function dbConnFail($params){
-    Json::die([
-        'step'=>'conn_fail'
-    ]);
-}
-
-function dbSQLFail($params){
-    Json::die([
-        'step'=>'sql_fail'
-    ]);
-}
-
 if(!class_exists('\\sammo\\RootDB')){
     Json::die([
         'step'=>'config'
@@ -24,11 +12,20 @@ if(!class_exists('\\sammo\\RootDB')){
 $rootDB = RootDB::db();
 
 $rootDB->throw_exception_on_nonsql_error = false;
-$rootDB->nonsql_error_handler = 'dbConnFail';
-$rootDB->error_handler = 'dbSQLFail';
+$rootDB->nonsql_error_handler = function($params){
+    Json::die([
+        'step'=>'conn_fail'
+    ]);
+};
+
+$rootDB->error_handler = function($params){
+    Json::die([
+        'step'=>'sql_fail'
+    ]);
+};
 
 $memberCnt = $rootDB->queryFirstField('SELECT count(`NO`) from MEMBER');
-if($memberCnt === 0){
+if($memberCnt == 0){
     Json::die([
         'step'=>'admin',
         'globalSalt'=>RootDB::getGlobalSalt()

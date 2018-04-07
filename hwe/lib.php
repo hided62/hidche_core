@@ -83,12 +83,12 @@ function Error($message, $url="")
     if(!$url){
         $url = $_SERVER['REQUEST_URI'];
     }
-    WebUtil::setHeaderNoCache();
     file_put_contents(__dir__."/logs/_db_bug.txt", "{\"url\":\"$url\",\"msg\":\"$message\"}\n", FILE_APPEND);
 
     $templates = new \League\Plates\Engine('templates');
 
     ob_get_flush();
+    WebUtil::setHeaderNoCache();
 
     die($templates->render('error', [
         'message' => $message

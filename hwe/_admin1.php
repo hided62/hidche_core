@@ -49,9 +49,6 @@ $admin = getAdmin();
     <tr><td width=110 align=right>중원정세추가</td>
         <td colspan=3><input type=textarea size=90 maxlength=80 style=color:white;background-color:black; name=log><input type=submit name=btn value=로그쓰기></td></td>
     </tr>
-    <tr><td width=110 align=right>쿼리 요청</td>
-        <td colspan=3><input type=textarea size=90 maxlength=150 style=color:white;background-color:black; name=q><input type=submit name=btn value=요청></td></td>
-    </tr>
     <tr>
         <td width=110 align=right>시작시간변경</td>
         <td width=285><input type=text size=20 maxlength=20 style=color:white;background-color:black;text-align:right; name=starttime value='<?=$admin['starttime'];?>'><input type=submit name=btn value=변경1></td>

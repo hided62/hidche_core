@@ -6,24 +6,31 @@ include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 
-$admin = getAdmin();
-
 if($session->userGrade < 5) {
     //echo "<script>location.replace('_admin1.php');</script>";
     echo '_admin1.php';//TODO:debug all and replace
 }
 
+$v = new Validator($_POST);
+$v->rule('integer', [
+    'maxgeneral',
+    'minutes2'
+])->rule('dateFormat', [
+    'starttime'
+]);
+if(!$v->validate()){
+    Error($v->errorStr());
+}
+
 $db = DB::db();
 $connect=$db->get();
+
+$admin = getAdmin();
 
 switch($btn) {
     case "변경":
         $msg = addslashes(SQ2DQ($msg));
         $query = "update game set msg='$msg'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        break;
-    case "요청":
-        $query = $q;
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "로그쓰기":
