@@ -3,169 +3,75 @@ namespace sammo;
 
 class StringUtil
 {
-    public static function GetStrLen($str)
+    /**
+     * 전각, 반각 길이 기준의 substr
+     * @param string $str 원본 문자열
+     * @param int $start 시작 너비. 일치하는 문자가 없을 경우 그 다음 문자부터. 음수의 경우 뒤에서부터.
+     * @param int|null $width 길이. null일 경우 끝까지.
+     */
+    public static function subStringForWidth(string $str, int $start = 0, $width = null)
     {
-        $count = strlen($str);
-        $len = 0;
-        for ($i=0; $i < $count;) {
-            $code = ord($str[$i]);
-
-            if ($code >= 0xf0) {
-                $len++;
-                $i += 4;
-            } elseif ($code >= 0xe0) {
-                $len++;
-                $i += 3;
-            } elseif ($code >= 0xc2) {
-                $len++;
-                $i += 2;
-            } else {
-                $len++;
-                $i += 1;
-            }
+        $length = mb_strwidth($str, 'UTF-8');
+        if($width === null){
+            $width = $length;
         }
-        return $len;
+
+        if($start < 0){
+            $start = $length - $start;
+        }
+
+        /* 길이를 직관적으로 알아낼 수 있는 방법은 '없다'.
+         * utf8의 경우 뒤에서부터 세는 것 전략이 가능하나 제외함. 
+         */
+
+        $currentPos = 0;
+        $currentWidth = 0;
+
+        $strings = static::splitString($str);
+        foreach($strings as $idx=>$char){
+            $charWidth = mb_strwidth($char, 'UTF-8');
+            if($currentPos+$charWidth > $start){
+                break;
+            }
+            $currentPos += $charWidth;
+        }
+
+        if($currentPos + $width >= $length){
+            return substr($str, $currentPos, null);
+        }
+
+        for($idx = $currentPos; $idx < count($strings); $idx++){
+            $char = $strings[$idx];
+
+            $charWidth = mb_strwidth($char, 'UTF-8');
+            if($currentWidth + $charWidth > $width){
+                break;
+            }
+            $currentWidth += $charWidth;
+        }
+
+        return substr($str, $currentPos, $currentWidth);
     }
 
-    public static function SubStr($str, $s, $l=1000)
+    public static function cutStringForWidth(string $str, int $width, string $endFill='..')
     {
-        $count = strlen($str);
-        $startByte = 0;
-        $isSet = 0;
-        $endByte = $count;
-        $len = 0;
-        for ($i=0; $i < $count;) {
-            $code = ord($str[$i]);
+        if(mb_strwidth($str) <= $width){
+            return $str;
+        }
 
-            if ($isSet == 0 && $len >= $s) {
-                $startByte = $i;
-                $isSet = 1;
-            }
-            if ($isSet == 1 && $len-$s >= $l) {
-                $endByte = $i;
+        $result = '';
+        $width -= mb_strwidth($endFill, 'UTF-8');
+
+        foreach(static::splitString($str) as $char){
+            $charWidth = mb_strwidth($char, 'UTF-8');
+            if($charWidth > $width){
                 break;
             }
-
-            if ($code >= 0xf0) {
-                $len++;
-                $i += 4;
-            } elseif ($code >= 0xe0) {
-                $len++;
-                $i += 3;
-            } elseif ($code >= 0xc2) {
-                $len++;
-                $i += 2;
-            } else {
-                $len++;
-                $i += 1;
-            }
+            $result .= $char;
+            $width -= $charWidth;
         }
-        $str = substr($str, $startByte, $endByte-$startByte);
-        return $str;
-    }
 
-    public static function SubStrForWidth($str, $s, $w)
-    {
-        $count = strlen($str);
-        $startByte = 0;
-        $isSet = 0;
-        $endByte = $count;
-        $last = 0;
-        $len = 0;
-        $width = 0;
-        for ($i=0; $i < $count;) {
-            $code = ord($str[$i]);
-
-            if ($isSet == 0 && $len >= $s) {
-                $startByte = $i;
-                $isSet = 1;
-                $width = 0;
-            }
-            if ($isSet == 1 && $width == $w) {
-                $endByte = $i;
-                break;
-            }
-            if ($isSet == 1 && $width > $w) {
-                $endByte = $i - $last;
-                break;
-            }
-
-            if ($code >= 0xf0) {
-                $len++;
-                $width += 2;
-                $last = 4;
-                $i += 4;
-            } elseif ($code >= 0xe0) {
-                $len++;
-                $width += 2;
-                $last = 3;
-                $i += 3;
-            } elseif ($code >= 0xc2) {
-                $len++;
-                $width += 2;
-                $last = 2;
-                $i += 2;
-            } else {
-                $len++;
-                $width += 1;
-                $last = 1;
-                $i += 1;
-            }
-        }
-        $str = substr($str, $startByte, $endByte-$startByte);
-        return $str;
-    }
-
-    public static function CutStrForWidth($str, $s, $w, $ch='..')
-    {
-        $isCut = 0;
-        $count = strlen($str);
-        $startByte = 0;
-        $isSet = 0;
-        $endByte = $count;
-        $last = 0;
-        $len = 0;
-        $width = 0;
-        for ($i=0; $i < $count;) {
-            $code = ord($str[$i]);
-
-            if ($isSet == 0 && $len >= $s) {
-                $startByte = $i;
-                $isSet = 1;
-                $width = 0;
-            }
-            if ($isSet == 1 && $width >= $w) {
-                $endByte = $i - $last;
-                $isCut = 1;
-                break;
-            }
-
-            if ($code >= 0xf0) {
-                $len++;
-                $width += 2;
-                $last = 4;
-                $i += 4;
-            } elseif ($code >= 0xe0) {
-                $len++;
-                $width += 2;
-                $last = 3;
-                $i += 3;
-            } elseif ($code >= 0xc2) {
-                $len++;
-                $width += 2;
-                $last = 2;
-                $i += 2;
-            } else {
-                $len++;
-                $width += 1;
-                $last = 1;
-                $i += 1;
-            }
-        }
-        if ($isCut != 0) {
-            $str = substr($str, $startByte, $endByte-$startByte) . $ch;
-        }
-        return $str;
+        return $result.$endFill;
     }
 
     function splitString($str, $l = 0) {
@@ -228,12 +134,10 @@ class StringUtil
         return static::padString($str, $maxsize, $ch, 0);
     }
 
-    public static function EscapeTag($str)
+    public static function escapeTag($str)
     {
         $str = htmlspecialchars($str);
         $str = str_replace(["\r\n", "\r", "\n"], '<br>', $str);
-//        return nl2br(htmlspecialchars($str));
-//        return htmlspecialchars($str);
         return $str;
     }
 

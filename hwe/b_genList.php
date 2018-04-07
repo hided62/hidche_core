@@ -171,7 +171,7 @@ for($j=0; $j < $gencount; $j++) {
         $turn = getTurn($general, 1, 0);
 
         for($i=0; $i < 5; $i++) {
-            $turn[$i] = StringUtil::SubStrForWidth($turn[$i], 0, 20);
+            $turn[$i] = StringUtil::subStringForWidth($turn[$i], 0, 20);
             $k = $i+1;
             echo "
                 &nbsp;$k : $turn[$i]  <br>";

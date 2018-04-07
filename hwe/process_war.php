@@ -400,7 +400,7 @@ function processWar($general, $city) {
             }
 
             $render_attacker = [
-                'crewtype' => StringUtil::SubStr(GameUnitConst::byId($general['crewtype'])->name, 0, 2),
+                'crewtype' => mb_substr(GameUnitConst::byId($general['crewtype'])->name, 0, 2),
                 'name'=> $general['name'],
                 'remain_crew' => $general['crew'],
                 'killed_crew' => -$mydeathnum
@@ -1276,13 +1276,13 @@ function processWar($general, $city) {
             }
 
             $render_attacker = [
-                'crewtype' => StringUtil::SubStr(GameUnitConst::byId($general['crewtype'])->name, 0, 2),
+                'crewtype' => mb_substr(GameUnitConst::byId($general['crewtype'])->name, 0, 2),
                 'name'=> $general['name'],
                 'remain_crew' => $general['crew'],
                 'killed_crew' => -$mydeathnum
             ];
             $render_defender = [
-                'crewtype' => StringUtil::SubStr(GameUnitConst::byId($oppose['crewtype'])->name, 0, 2),
+                'crewtype' => mb_substr(GameUnitConst::byId($oppose['crewtype'])->name, 0, 2),
                 'name'=> $oppose['name'],
                 'remain_crew' => $oppose['crew'],
                 'killed_crew' => -$opdeathnum

@@ -33,7 +33,7 @@ if($command == 46) {
     $name = str_replace(" ", "", $name);
     $name = str_replace("　", "뷁", $name);
     if($name == "") { $name = "무명"; }
-    $name = StringUtil::SubStrForWidth($name, 0, 12);
+    $name = StringUtil::subStringForWidth($name, 0, 12);
 
     $db->update('general', [
         'makenation'=>$name
@@ -58,7 +58,7 @@ if($command == 46) {
         $nationname = str_replace(" ", "", $nationname);
         $nationname = str_replace("　", "뷁", $nationname);
         if($nationname == "") { $nationname = "무명"; }
-        $nationname = StringUtil::SubStrForWidth($nationname, 0, 12);
+        $nationname = StringUtil::subStringForWidth($nationname, 0, 12);
 
         $query = "update general set makenation='{$nationname}' where level>=5 and nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -84,7 +84,7 @@ if($command == 46) {
         $note = str_replace("|", "", $note);
         $note = str_replace(" ", "", $note);
         $note = str_replace("　", "뷁", $note);
-        $note = StringUtil::SubStrForWidth($note, 0, 90);
+        $note = StringUtil::subStringForWidth($note, 0, 90);
 
         $query = "update diplomacy set reserved='{$note}' where me='{$me['nation']}' and you='$double'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

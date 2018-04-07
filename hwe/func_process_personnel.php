@@ -787,7 +787,7 @@ function process_55(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($result);
 
-    if($nationcount > 0) { $makename = StringUtil::SubStr("$nationcount".$general['name'], 0, 6); }
+    if($nationcount > 0) { $makename = mb_substr("$nationcount".$general['name'], 0, 6); }
     else { $makename = $general['name']; }
 
     if($general['level'] != 0) {
