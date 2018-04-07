@@ -3,7 +3,7 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
-$btn = Util::array_get($_POST['btn']);
+$btn = Util::getReq('btn');
 $yearmonth = $_POST['yearmonth'];
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

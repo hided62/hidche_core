@@ -35,10 +35,10 @@ if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate
         'reason'=>'로그인 토큰 만료.'.$refresh_token_expires.' 다시 카카오로그인을 수행해주세요.'
     ]);
 }
-$secret_agree =Util::array_get($_POST['secret_agree']);
-$username = mb_strtolower(Util::array_get($_POST['username']), 'utf-8');
-$password = Util::array_get($_POST['password']);
-$nickname = Util::array_get($_POST['nickname']);
+$secret_agree = Util::getReq('secret_agree', 'bool');
+$username = mb_strtolower(Util::getReq('username'), 'utf-8');
+$password = Util::getReq('password');
+$nickname = Util::getReq('nickname');
 
 if(!$username || !$password || !$nickname){
     Json::die([

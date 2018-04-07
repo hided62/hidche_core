@@ -3,12 +3,12 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 
-$host = Util::array_get($_POST['db_host']);
-$port = Util::array_get($_POST['db_port']);
-$username = Util::array_get($_POST['db_id']);
-$password = Util::array_get($_POST['db_pw']);
-$dbName = Util::array_get($_POST['db_name']);
-$servHost = Util::array_get($_POST['serv_host']);
+$host = Util::getReq('db_host');
+$port = Util::getReq('db_port', 'int');
+$username = Util::getReq('db_id');
+$password = Util::getReq('db_pw');
+$dbName = Util::getReq('db_name');
+$servHost = Util::getReq('serv_host');
 
 if(!$host || !$port || !$username || !$password || !$dbName || !$servHost){
     Json::die([

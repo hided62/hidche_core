@@ -65,7 +65,7 @@ class Session
         ];
 
         if (is_array($result)) {
-            $jsonResult = array_merge($result, $jsonResult);
+            $jsonResult = array_merge($jsonResult, $result);
         }
 
         Json::die($jsonResult);

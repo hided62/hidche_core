@@ -17,9 +17,9 @@ if($session->userGrade < 6){
 // $_POST['user_id'] : 유저 이름
 // $_POST['param'] : 추가 파라미터
 
-$action = Util::array_get($_POST['action']);
-$userID = Util::array_get($_POST['user_id']);
-$param = Util::array_get($_POST['param']);
+$action = Util::getReq('action');
+$userID = Util::getReq('user_id');
+$param = Util::getReq('param');
 
 if(!$action){
     Json::die([

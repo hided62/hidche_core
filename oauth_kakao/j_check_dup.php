@@ -13,8 +13,8 @@ if(!$access_token){
 }
 
 
-$value = Util::array_get($_POST['value']);
-switch(Util::array_get($_POST['type'])){
+$value = Util::getReq('value');
+switch(Util::getReq('type')){
 case 'nickname':
     Json::die(checkNicknameDup($value));
 case 'username':

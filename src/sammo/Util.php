@@ -3,27 +3,8 @@ namespace sammo;
 
 class Util extends \utilphp\util
 {
-    /**
-     * $_GET, $_POST에서 값을 가져오는 함수. Util::array_get($_POST[$name])을 축약 가능.
-     * 타입이 복잡해질 경우 이 함수를 통하지 않고 json으로 요청할 것을 권장.
-     * 
-     * @param string $name 가져오고자 하는 key 이름.
-     * @param string $type 가져오고자 하는 type. [string, int, float, bool, array, array_string, array_int]
-     * @param mixed $ifNull 만약 $_GET과 $_POST에 값이 없을 경우 반환하는 변수. 이 값은 $type을 검사하지 않음.
-     * @return int|float|string|array|null
-     * @throws \InvalidArgumentException
-     */
-    public static function getReq(string $name, string $type = 'string', $ifNull = null){
-        if(isset($_GET[$name])){
-            $value = $_GET[$name];
-        }
-        else if(isset($_POST[$name])){
-            $value = $_POST[$name];
-        }
-        else{
-            return $ifNull;
-        }
 
+    private static function _parseReq($value, string $type){
         if(is_array($value)){
             if($type === 'array_int'){
                 return array_map('intval', $value);
@@ -43,6 +24,10 @@ class Util extends \utilphp\util
         }
 
         if($type === 'bool'){
+            $value = strtolower($value);
+            if($value === 'false' || $value === 'no' || $value === 'n' || $value === 'x' || $value === 'null'){
+                return false;
+            }
             return !!$value;
         }
         if($type === 'int'){
@@ -56,6 +41,51 @@ class Util extends \utilphp\util
         }
 
         throw new \InvalidArgumentException('올바르지 않은 type 지정');
+    }
+
+    /**
+     * $_GET, $_POST에서 값을 가져오는 함수. Util::array_get($_POST[$name])을 축약 가능.
+     * 타입이 복잡해질 경우 이 함수를 통하지 않고 json으로 요청할 것을 권장.
+     * 
+     * @param string $name 가져오고자 하는 key 이름.
+     * @param string $type 가져오고자 하는 type. [string, int, float, bool, array, array_string, array_int]
+     * @param mixed $ifNotExists 만약 $_GET과 $_POST에 값이 없을 경우 반환하는 변수. 이 값은 $type을 검사하지 않음.
+     * @return int|float|string|array|null
+     * @throws \InvalidArgumentException
+     */
+    public static function getReq(string $name, string $type = 'string', $ifNotExists = null){
+        if(isset($_GET[$name])){
+            $value = $_GET[$name];
+        }
+        else if(isset($_POST[$name])){
+            $value = $_POST[$name];
+        }
+        else{
+            return $ifNotExists;
+        }
+
+        return static::_parseReq($value, $type);
+    }
+
+    /**
+     * $_POST에서 값을 가져오는 함수. Util::array_get($_POST[$name])을 축약 가능. $_GET에서도 가져올 수 있다면 getReq 사용.
+     * 타입이 복잡해질 경우 이 함수를 통하지 않고 json으로 요청할 것을 권장.
+     * 
+     * @param string $name 가져오고자 하는 key 이름.
+     * @param string $type 가져오고자 하는 type. [string, int, float, bool, array, array_string, array_int]
+     * @param mixed $ifNotExists 만약 $_GET과 $_POST에 값이 없을 경우 반환하는 변수. 이 값은 $type을 검사하지 않음.
+     * @return int|float|string|array|null
+     * @throws \InvalidArgumentException
+     */
+    public static function getPost(string $name, string $type = 'string', $ifNotExists = null){
+        if(isset($_POST[$name])){
+            $value = $_POST[$name];
+        }
+        else{
+            return $ifNotExists;
+        }
+
+        return static::_parseReq($value, $type);
     }
 
     public static function hashPassword($salt, $password)

@@ -217,13 +217,17 @@ function SetNationFront($nationNo) {
     );
     if($enemyCities) {
         foreach($enemyCities as $city){
-            $adj = array_merge($adj, CityConst::byID($city)->path);
+            foreach(CityConst::byID($city)->path as $adjKey=>$adjVal){
+                $adj[$adjKey] = $adjVal;
+            }
         }
     } else {
         //평시이면 공백지
         //NOTE: if, else일 경우 NPC는 전쟁시에는 공백지로 출병하지 않는다는 뜻이 된다.
         foreach ($db->queryFirstColumn('SELECT city,path from city where nation=0') as $city) {
-            $adj = array_merge($adj, CityConst::byID($city)->path);
+            foreach(CityConst::byID($city)->path as $adjKey=>$adjVal){
+                $adj[$adjKey] = $adjVal;
+            }
         }
     }
 

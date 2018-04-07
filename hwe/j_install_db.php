@@ -12,12 +12,12 @@ if($session->userGrade < 6){
     ]);
 }
 
-$fullReset  = Util::array_get($_POST['full_reset'], false);
-$host = Util::array_get($_POST['db_host']);
-$port = Util::array_get($_POST['db_port']);
-$username = Util::array_get($_POST['db_id']);
-$password = Util::array_get($_POST['db_pw']);
-$dbName = Util::array_get($_POST['db_name']);
+$fullReset  = Util::getReq('full_reset', 'bool', false);
+$host = Util::getReq('db_host');
+$port = Util::getReq('db_port', 'int');
+$username = Util::getReq('db_id');
+$password = Util::getReq('db_pw');
+$dbName = Util::getReq('db_name');
 
 if(!$host || !$port || !$username || !$password || !$dbName){
     Json::die([

@@ -12,9 +12,9 @@ $session = Session::requireLogin(null);
 // $_POST['notice'] : 공지
 // $_POST['server'] : 서버 인덱스
 
-$action = Util::array_get($_POST['action'], '');
-$notice = Util::array_get($_POST['notice'], '');
-$server = Util::array_get($_POST['server'], '');
+$action = Util::getReq('action', 'string', '');
+$notice = Util::getReq('notice', 'string', '');
+$server = Util::getReq('server', 'string', '');
 
 $db = RootDB::db();
 $userGrade = $session->userGrade;

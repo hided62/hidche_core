@@ -5,8 +5,8 @@ include "lib.php";
 include "func.php";
 // $btn, $msg
 
-$gen = Util::toInt(Util::array_get($_POST['gen']));
-$sel = Util::toInt(Util::array_get($_POST['sel']));
+$gen = Util::getReq('gen', 'int');
+$sel = Util::getReq('sel', 'int');
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

@@ -22,6 +22,8 @@ if(!$v->validate()){
     Error($v->errorStr());
 }
 
+
+
 $db = DB::db();
 $connect=$db->get();
 

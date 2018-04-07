@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$v = new Validator($_POST);
+$v = new Validator(array_merge($_POST, $_GET));
 $v
 ->rule('required', [
     'name',
@@ -44,14 +44,14 @@ $session = Session::requireLogin()->setReadOnly();
 $userID = Session::getUserID();
 //NOTE: 이 페이지에서는 세션에 데이터를 등록하지 않음. 로그인은 이후에.
 
-$name       = $_POST['name'];
+$name       = Util::getReq('name');
 $name       = StringUtil::removeSpecialCharacter($name);
-$pic        = (int)Util::array_get($_POST['pic'], 0);
-$character  = (int)Util::array_get($_POST['character'], 0);
+$pic        = Util::getReq('pic', 'int', 0);
+$character  = Util::getReq('character', 'int', 0);
 
-$leader = (int)$_POST['leader'];
-$power = (int)$_POST['power'];
-$intel = (int)$_POST['intel'];
+$leader = Util::getReq('leader', 'int', 50);
+$power = Util::getReq('power', 'int', 50);
+$intel = Util::getReq('intel', 'int', 50);
 
 $mylog = [];
 

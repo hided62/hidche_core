@@ -5,10 +5,11 @@ include "lib.php";
 include "func.php";
 // $btn, $level, $genlist, $outlist
 
-$btn = Util::array_get($_POST['btn']);
-$level = Util::toInt(Util::array_get($_POST['level']));
-$genlist = Util::toInt(Util::array_get($_POST['genlist']));
-$outlist = Util::toInt(Util::array_get($_POST['outlist']));
+$btn = Util::getReq('btn');
+$level = Util::getReq('level', 'int');
+$genlist = Util::getReq('genlist', 'int');
+$outlist = Util::getReq('outlist', 'int');
+$citylist = Util::getReq('citylist', 'int');
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

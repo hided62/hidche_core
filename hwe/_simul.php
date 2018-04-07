@@ -9,14 +9,14 @@ $userID = Session::getUserID();
 
 //로그인 검사
 
-$isgen = Util::array_get($_POST['isgen'], '');
-$tech1 = Util::array_get($_POST['tech1'], 0);
-$tech2 =Util::array_get($_POST['tech2'], 0);
-$dex10 = Util::array_get($_POST['dex10'], 0);
-$dex110 = Util::array_get($_POST['dex110'], 0);
-$dex120 = Util::array_get($_POST['dex120'], 0);
-$dex130 = Util::array_get($_POST['dex130'], 0);
-$dex140 = Util::array_get($_POST['dex140'], 0);
+$isgen = Util::getReq('isgen');
+$tech1 = Util::getReq('tech1', 'int', 0);
+$tech2 = Util::getReq('tech2', 'int', 0);
+$dex10 = Util::getReq('dex10', 'int', 0);
+$dex110 = Util::getReq('dex110', 'int', 0);
+$dex120 = Util::getReq('dex120', 'int', 0);
+$dex130 = Util::getReq('dex130', 'int', 0);
+$dex140 = Util::getReq('dex140', 'int', 0);
 
 $dx10 = array_fill(0, 20, '');
 $dx110 = array_fill(0, 20, '');
@@ -24,11 +24,11 @@ $dx120 = array_fill(0, 20, '');
 $dx130 = array_fill(0, 20, '');
 $dx140 = array_fill(0, 20, '');
 
-$dex20 = Util::array_get($_POST['dex20'], 0);
-$dex210 = Util::array_get($_POST['dex210'], 0);
-$dex220 = Util::array_get($_POST['dex220'], 0);
-$dex230 = Util::array_get($_POST['dex230'], 0);
-$dex240 = Util::array_get($_POST['dex240'], 0);
+$dex20 = Util::getReq('dex20', 'int', 0);
+$dex210 = Util::getReq('dex210', 'int', 0);
+$dex220 = Util::getReq('dex220', 'int', 0);
+$dex230 = Util::getReq('dex230', 'int', 0);
+$dex240 = Util::getReq('dex240', 'int', 0);
 
 $dx20 = array_fill(0, 20, '');
 $dx210 = array_fill(0, 20, '');

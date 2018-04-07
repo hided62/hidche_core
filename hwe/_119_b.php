@@ -20,8 +20,8 @@ if(!$v->validate()){
     Error($v->errorStr());
 }
 
-$minute = Util::toInt(Util::array_get($_POST['minute']));
-$minute2 = Util::toInt(Util::array_get($_POST['minute2']));
+$minute = Util::getReq('minute', 'int');
+$minute2 = Util::getReq('minute2', 'int');
 
 $db = DB::db();
 $connect=$db->get();
