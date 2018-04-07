@@ -9,10 +9,11 @@ class Util extends \utilphp\util
      * 
      * @param string $name 가져오고자 하는 key 이름.
      * @param string $type 가져오고자 하는 type. [string, int, float, bool, array, array_string, array_int]
+     * @param mixed $ifNull 만약 $_GET과 $_POST에 값이 없을 경우 반환하는 변수. 이 값은 $type을 검사하지 않음.
      * @return int|float|string|array|null
      * @throws \InvalidArgumentException
      */
-    public static function getReq(string $name, string $type = 'string'){
+    public static function getReq(string $name, string $type = 'string', $ifNull = null){
         if(isset($_GET[$name])){
             $value = $_GET[$name];
         }
@@ -20,7 +21,7 @@ class Util extends \utilphp\util
             $value = $_POST[$name];
         }
         else{
-            return null;
+            return $ifNull;
         }
 
         if(is_array($value)){
