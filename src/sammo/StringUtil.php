@@ -228,29 +228,6 @@ class StringUtil
         return static::padString($str, $maxsize, $ch, 0);
     }
 
-    /**
-     * 
-     */
-    public static function Fill($str, $maxsize, $ch)
-    {
-        if (!$str) {
-            $str = '';
-        }
-        $size = strlen($str);
-
-        $count = ($maxsize - $size) / 2;
-        
-        $string = '';
-        for ($i=0; $i < $count; $i++) {
-            $string = $string.$ch;
-        }
-        $string = $string.$str;
-        for ($i=0; $i < $count; $i++) {
-            $string = $string.$ch;
-        }
-        return $string;
-    }
-
     public static function EscapeTag($str)
     {
         $str = htmlspecialchars($str);
