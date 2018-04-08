@@ -62,8 +62,8 @@ $admin = getAdmin();
         <td width=285><input type=text size=3 maxlength=2 style=color:white;background-color:black;text-align:right; name=maxnation value=<?=$admin['maxnation'];?>><input type=submit name=btn value=변경3></td>
     </tr>
     <tr>
-        <td width=110 align=right>기준 장수수</td>
-        <td width=285><input type=text size=3 maxlength=3 style=color:white;background-color:black;text-align:right; name=gen_rate value=<?=$admin['normgeneral'];?>><input type=submit name=btn value=변경5></td>
+        <td width=110 align=right></td>
+        <td width=285></td>
         <td width=110 align=right>현재 수입률</td>
         <td width=285><?=$admin['gold_rate'];?>%</td>
     </tr>

@@ -22,6 +22,10 @@ if(!$v->validate()){
     Error($v->errorStr());
 }
 
+$log = Util::getReq('log');
+$starttime = Util::getReq('starttime', 'string', (new DateTime())->format('Y-m-d H:i:s'));
+$maxgeneral = Util::getReq('maxgeneral', 'int', 500);
+$maxnation = Util::getReq('maxnation', 'int', 55);
 
 
 $db = DB::db();
@@ -55,10 +59,6 @@ switch($btn) {
         break;
     case "변경4":
         $query = "update game set startyear='$startyear'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        break;
-    case "변경5":
-        $query = "update game set normgeneral='$gen_rate'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case "1분턴":

@@ -71,4 +71,11 @@ class GameConst
     public static $taxrate = 0.01;
     /** @var float 성인 연령 */
     public static $adultAge = 14;
+
+    /** @var int 초기 최대 장수수 */
+    public static $defaultMaxGeneral = 500;
+    /** @var int 초기 최대 국가 수 */
+    public static $defaultMaxNation = 55;
+    /** @var int 초기 최대 천재 수 */
+    public static $defaultMaxGenius = 5;
 }

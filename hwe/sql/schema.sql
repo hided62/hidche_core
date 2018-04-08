@@ -371,7 +371,6 @@ CREATE TABLE `game` (
 	`msg` TEXT NULL DEFAULT '',
 	`maxgeneral` INT(3) NULL DEFAULT '100',
 	`genius` INT(2) NULL DEFAULT '3',
-	`normgeneral` INT(3) NULL DEFAULT '100',
 	`maxnation` INT(3) NULL DEFAULT '50',
 	`gold_rate` INT(3) NULL DEFAULT '100',
 	`rice_rate` INT(3) NULL DEFAULT '100',

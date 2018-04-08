@@ -345,7 +345,7 @@ function preUpdateMonthly() {
 
     if($result == false) { return false; }
 
-    $query = "select startyear,year,month,normgeneral from game limit 1";
+    $query = "select startyear,year,month from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
@@ -424,11 +424,6 @@ function preUpdateMonthly() {
     $rate = round(($admin['year'] - $admin['startyear']) / 1.5) + 60;
     if($rate > 100) $rate = 100;
 
-    //금률 쌀률, 내정비용
-//    $query = "select count(*) as cnt from general";
-//    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//    $gencount = MYDB_fetch_array($result);    // 전체 등록자 수
-//    $ratio = 50 + round($gencount['cnt'] / $admin['normgeneral'] * 100 / 2); // 300명 등록시에 100% 지급
     $ratio = 100;
     // 20 ~ 140원
     $develcost = ($admin['year'] - $admin['startyear'] + 10) * 2;
