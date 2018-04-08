@@ -64,7 +64,7 @@ for($i=0; $i < 21; $i++) {
         $data[$k]   = $gen['data'];
         $color[$k]  = $gen['color'];
         $pic[$k]    = $gen['picture'];
-        if($color[$k] == "") $color[$k] = $_basecolor4;
+        if($color[$k] == "") $color[$k] = GameConst::$basecolor4;
         if($nation[$k] == "") $nation[$k] = "&nbsp;";
 /*
         if($pic[$k] == "") {

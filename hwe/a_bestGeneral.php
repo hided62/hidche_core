@@ -126,18 +126,18 @@ for($i=0; $i < 21; $i++) {
                 $name[$k] = "-";
                 $nation[$k] = "-";
                 $data[$k] = "-";
-                $color[$k] = $_basecolor4;
+                $color[$k] = GameConst::$basecolor4;
                 $pic[$k] = "";
             }
         } else {
             $name[$k]   = "???";
             $nation[$k] = "???";
             $data[$k]   = $gen['data'];
-            $color[$k]  = $_basecolor4;
+            $color[$k]  = GameConst::$basecolor4;
             $gen['imgsvr'] = 0;
             $pic[$k]    = "9999.jpg";
         }
-        if($color[$k] == "") $color[$k] = $_basecolor4;
+        if($color[$k] == "") $color[$k] = GameConst::$basecolor4;
         if($nation[$k] == "") $nation[$k] = "&nbsp;";
         if($pic[$k] == "") {
             echo "<td align=center>&nbsp;</td>";
@@ -222,7 +222,7 @@ for($i=0; $i < 4; $i++) {
             $color[$k] = "";
             $pic[$k] = "";
         }
-        if($color[$k] == "") $color[$k] = $_basecolor4;
+        if($color[$k] == "") $color[$k] = GameConst::$basecolor4;
         if($nation[$k] == "") $nation[$k] = "&nbsp;";
         if($pic[$k] == "") {
             echo "<td align=center>&nbsp;</td>";
@@ -270,7 +270,7 @@ for($i=0; $i < 4; $i++) {
             $color[$k] = "";
             $pic[$k] = "";
         }
-        if($color[$k] == "") $color[$k] = $_basecolor4;
+        if($color[$k] == "") $color[$k] = GameConst::$basecolor4;
         if($nation[$k] == "") $nation[$k] = "&nbsp;";
         if($pic[$k] == "") {
             echo "<td align=center>&nbsp;</td>";

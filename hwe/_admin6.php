@@ -46,11 +46,11 @@ $sel[$type] = "selected";
     <tr><td>접 속 정 보<br><?=closeButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
-            <option <?=$sel[0];?> value=0>접속률</option>
-            <option <?=$sel[1];?> value=1>총갱신</option>
-            <option <?=$sel[2];?> value=2>갱신/턴</option>
-            <option <?=$sel[3];?> value=3>총로그인</option>
-            <option <?=$sel[4];?> value=4>갱신/로그인</option>
+            <option <?=$sel[0]?> value=0>접속률</option>
+            <option <?=$sel[1]?> value=1>총갱신</option>
+            <option <?=$sel[2]?> value=2>갱신/턴</option>
+            <option <?=$sel[3]?> value=3>총로그인</option>
+            <option <?=$sel[4]?> value=4>갱신/로그인</option>
         </select>
         <input type=submit value='정렬하기'></form>
     </td></tr>

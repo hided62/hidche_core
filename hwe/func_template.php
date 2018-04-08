@@ -66,8 +66,6 @@ function CoreTurnTable() {
 
 
 function allButton() {
-    
-    global $_basecolor2;
     $npcmode = DB::db()->queryFirstField("select npcmode from game limit 1");
     if($npcmode == 1) {
         $site = "a_npcList.php";
@@ -87,8 +85,6 @@ function allButton() {
 
 
 function commandButton() {
-    global $_basecolor, $_basecolor2;
-
     $session = Session::getInstance();
     $userID = Session::getUserID();
     $generalID = $session->generalID;

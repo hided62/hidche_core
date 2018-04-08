@@ -10,8 +10,18 @@ $userID = Session::getUserID();
 //로그인 검사
 
 $isgen = Util::getReq('isgen');
+
+$leader1 = Util::getReq('leader1', 'int', 0);
+$power1 = Util::getReq('power1', 'int', 0);
+$intel1 = Util::getReq('intel1', 'int', 0);
+$type1 = Util::getReq('type1', 'int', 0);
+$crew1 = Util::getReq('crew1', 'int', 0);
+$train1 = Util::getReq('train1', 'int', 0);
+$atmos1 = Util::getReq('atmos1', 'int', 0);
+$level1 = Util::getReq('level1', 'int', 0);
+$explevel1 = Util::getReq('explevel1', 'int', 0);
 $tech1 = Util::getReq('tech1', 'int', 0);
-$tech2 = Util::getReq('tech2', 'int', 0);
+
 $dex10 = Util::getReq('dex10', 'int', 0);
 $dex110 = Util::getReq('dex110', 'int', 0);
 $dex120 = Util::getReq('dex120', 'int', 0);
@@ -24,6 +34,17 @@ $dx120 = array_fill(0, 20, '');
 $dx130 = array_fill(0, 20, '');
 $dx140 = array_fill(0, 20, '');
 
+$leader2 = Util::getReq('leader2', 'int', 0);
+$power2 = Util::getReq('power2', 'int', 0);
+$intel2 = Util::getReq('intel2', 'int', 0);
+$type2 = Util::getReq('type2', 'int', 0);
+$crew2 = Util::getReq('crew2', 'int', 0);
+$train2 = Util::getReq('train2', 'int', 0);
+$atmos2 = Util::getReq('atmos2', 'int', 0);
+$level2 = Util::getReq('level2', 'int', 0);
+$explevel2 = Util::getReq('explevel2', 'int', 0);
+$tech2 = Util::getReq('tech2', 'int', 0);
+
 $dex20 = Util::getReq('dex20', 'int', 0);
 $dex210 = Util::getReq('dex210', 'int', 0);
 $dex220 = Util::getReq('dex220', 'int', 0);
@@ -35,6 +56,11 @@ $dx210 = array_fill(0, 20, '');
 $dx220 = array_fill(0, 20, '');
 $dx230 = array_fill(0, 20, '');
 $dx240 = array_fill(0, 20, '');
+
+$def = Util::getReq('def', 'int', 0);
+$wall = Util::getReq('wall', 'int', 0);
+$atmos3 = Util::getReq('atmos3', 'int', 0);
+$train3 = Util::getReq('train3', 'int', 0);
 
 $sellevel1 = array_fill(0, 13, '');
 $sel1 = array_fill(0,44, '');
@@ -1104,10 +1130,8 @@ switch($dex240) {
 <title>전투시뮬레이션</title>
 <link rel=stylesheet href=css/common.css type=text/css>
 <style type="text/css">
-<!--
 select { background-color:black;color:white; }
 input { background-color:black;color:white; }
--->
 </style>
 
 </head>
@@ -1123,180 +1147,180 @@ input { background-color:black;color:white; }
     <tr>
         <td>관직
             <select name=level1 size=1>
-                <option <?=$sellevel1[1];?> value=1>일반</option>
-                <option <?=$sellevel1[5];?> value=5>제3모사</option>
-                <option <?=$sellevel1[6];?> value=6>제3장군</option>
-                <option <?=$sellevel1[7];?> value=7>제2모사</option>
-                <option <?=$sellevel1[8];?> value=8>제2장군</option>
-                <option <?=$sellevel1[9];?> value=9>제1모사</option>
-                <option <?=$sellevel1[10];?> value=10>제1장군</option>
-                <option <?=$sellevel1[11];?> value=11>참모</option>
-                <option <?=$sellevel1[12];?> value=12>군주</option>
+                <option <?=$sellevel1[1]?> value=1>일반</option>
+                <option <?=$sellevel1[5]?> value=5>제3모사</option>
+                <option <?=$sellevel1[6]?> value=6>제3장군</option>
+                <option <?=$sellevel1[7]?> value=7>제2모사</option>
+                <option <?=$sellevel1[8]?> value=8>제2장군</option>
+                <option <?=$sellevel1[9]?> value=9>제1모사</option>
+                <option <?=$sellevel1[10]?> value=10>제1장군</option>
+                <option <?=$sellevel1[11]?> value=11>참모</option>
+                <option <?=$sellevel1[12]?> value=12>군주</option>
             </select>
         </td>
         <td>관직
             <select name=level2 size=1>
-                <option <?=$sellevel2[1];?> value=1>일반</option>
-                <option <?=$sellevel2[5];?> value=5>제3모사</option>
-                <option <?=$sellevel2[6];?> value=6>제3장군</option>
-                <option <?=$sellevel2[7];?> value=7>제2모사</option>
-                <option <?=$sellevel2[8];?> value=8>제2장군</option>
-                <option <?=$sellevel2[9];?> value=9>제1모사</option>
-                <option <?=$sellevel2[10];?> value=10>제1장군</option>
-                <option <?=$sellevel2[11];?> value=11>참모</option>
-                <option <?=$sellevel2[12];?> value=12>군주</option>
+                <option <?=$sellevel2[1]?> value=1>일반</option>
+                <option <?=$sellevel2[5]?> value=5>제3모사</option>
+                <option <?=$sellevel2[6]?> value=6>제3장군</option>
+                <option <?=$sellevel2[7]?> value=7>제2모사</option>
+                <option <?=$sellevel2[8]?> value=8>제2장군</option>
+                <option <?=$sellevel2[9]?> value=9>제1모사</option>
+                <option <?=$sellevel2[10]?> value=10>제1장군</option>
+                <option <?=$sellevel2[11]?> value=11>참모</option>
+                <option <?=$sellevel2[12]?> value=12>군주</option>
             </select>
         </td>
         <td>-</td>
     <tr>
-        <td>Lv <input size=2 maxlength=2 name=explevel1 value=<?=$explevel1;?>></td>
-        <td>Lv <input size=2 maxlength=2 name=explevel2 value=<?=$explevel2;?>></td>
+        <td>Lv <input size=2 maxlength=2 name=explevel1 value=<?=$explevel1?>></td>
+        <td>Lv <input size=2 maxlength=2 name=explevel2 value=<?=$explevel2?>></td>
         <td>-</td>
     </tr>
     <tr>
-        <td>통솔 <input size=3 maxlength=3 name=leader1 value=<?=$leader1;?>></td>
-        <td>통솔 <input size=3 maxlength=3 name=leader2 value=<?=$leader2;?>></td>
+        <td>통솔 <input size=3 maxlength=3 name=leader1 value=<?=$leader1?>></td>
+        <td>통솔 <input size=3 maxlength=3 name=leader2 value=<?=$leader2?>></td>
         <td>-</td>
     </tr>
     <tr>
-        <td>무력 <input size=3 maxlength=3 name=power1 value=<?=$power1;?>></td>
-        <td>무력 <input size=3 maxlength=3 name=power2 value=<?=$power2;?>></td>
+        <td>무력 <input size=3 maxlength=3 name=power1 value=<?=$power1?>></td>
+        <td>무력 <input size=3 maxlength=3 name=power2 value=<?=$power2?>></td>
         <td>-</td>
     </tr>
     <tr>
-        <td>지력 <input size=3 maxlength=3 name=intel1 value=<?=$intel1;?>></td>
-        <td>지력 <input size=3 maxlength=3 name=intel2 value=<?=$intel2;?>></td>
+        <td>지력 <input size=3 maxlength=3 name=intel1 value=<?=$intel1?>></td>
+        <td>지력 <input size=3 maxlength=3 name=intel2 value=<?=$intel2?>></td>
         <td>-</td>
     </tr>
     <tr>
         <td>병종
             <select name=type1 size=1>
                 <option value=0>--------</option>
-                <option <?=$sel1[0];?> value=0>보병</option>
-                <option <?=$sel1[1];?> value=1>청주병</option>
-                <option <?=$sel1[2];?> value=2>수병</option>
-                <option <?=$sel1[3];?> value=3>자객병</option>
-                <option <?=$sel1[4];?> value=4>근위병</option>
-                <option <?=$sel1[5];?> value=5>등갑병</option>
+                <option <?=$sel1[0]?> value=0>보병</option>
+                <option <?=$sel1[1]?> value=1>청주병</option>
+                <option <?=$sel1[2]?> value=2>수병</option>
+                <option <?=$sel1[3]?> value=3>자객병</option>
+                <option <?=$sel1[4]?> value=4>근위병</option>
+                <option <?=$sel1[5]?> value=5>등갑병</option>
                 <option value=0>--------</option>
-                <option <?=$sel1[10];?> value=10>궁병</option>
-                <option <?=$sel1[11];?> value=11>궁기병</option>
-                <option <?=$sel1[12];?> value=12>연노병</option>
-                <option <?=$sel1[13];?> value=13>강궁병</option>
-                <option <?=$sel1[14];?> value=14>석궁병</option>
+                <option <?=$sel1[10]?> value=10>궁병</option>
+                <option <?=$sel1[11]?> value=11>궁기병</option>
+                <option <?=$sel1[12]?> value=12>연노병</option>
+                <option <?=$sel1[13]?> value=13>강궁병</option>
+                <option <?=$sel1[14]?> value=14>석궁병</option>
                 <option value=0>--------</option>
-                <option <?=$sel1[20];?> value=20>기병</option>
-                <option <?=$sel1[21];?> value=21>백마병</option>
-                <option <?=$sel1[22];?> value=22>중장기병</option>
-                <option <?=$sel1[23];?> value=23>돌격기병</option>
-                <option <?=$sel1[24];?> value=24>철기병</option>
-                <option <?=$sel1[25];?> value=25>수렵기병</option>
-                <option <?=$sel1[26];?> value=26>맹수병</option>
-                <option <?=$sel1[27];?> value=27>호표기병</option>
+                <option <?=$sel1[20]?> value=20>기병</option>
+                <option <?=$sel1[21]?> value=21>백마병</option>
+                <option <?=$sel1[22]?> value=22>중장기병</option>
+                <option <?=$sel1[23]?> value=23>돌격기병</option>
+                <option <?=$sel1[24]?> value=24>철기병</option>
+                <option <?=$sel1[25]?> value=25>수렵기병</option>
+                <option <?=$sel1[26]?> value=26>맹수병</option>
+                <option <?=$sel1[27]?> value=27>호표기병</option>
                 <option value=0>--------</option>
-                <option <?=$sel1[30];?> value=30>귀병</option>
-                <option <?=$sel1[31];?> value=31>신귀병</option>
-                <option <?=$sel1[32];?> value=32>백귀병</option>
-                <option <?=$sel1[33];?> value=33>흑귀병</option>
-                <option <?=$sel1[34];?> value=34>악귀병</option>
-                <option <?=$sel1[35];?> value=35>남귀병</option>
-                <option <?=$sel1[36];?> value=36>황귀병</option>
-                <option <?=$sel1[37];?> value=37>천귀병</option>
-                <option <?=$sel1[38];?> value=38>마귀병</option>
+                <option <?=$sel1[30]?> value=30>귀병</option>
+                <option <?=$sel1[31]?> value=31>신귀병</option>
+                <option <?=$sel1[32]?> value=32>백귀병</option>
+                <option <?=$sel1[33]?> value=33>흑귀병</option>
+                <option <?=$sel1[34]?> value=34>악귀병</option>
+                <option <?=$sel1[35]?> value=35>남귀병</option>
+                <option <?=$sel1[36]?> value=36>황귀병</option>
+                <option <?=$sel1[37]?> value=37>천귀병</option>
+                <option <?=$sel1[38]?> value=38>마귀병</option>
                 <option value=0>--------</option>
-                <option <?=$sel1[40];?> value=40>정란</option>
-                <option <?=$sel1[41];?> value=41>충차</option>
-                <option <?=$sel1[42];?> value=42>벽력거</option>
-                <option <?=$sel1[43];?> value=43>목우</option>
+                <option <?=$sel1[40]?> value=40>정란</option>
+                <option <?=$sel1[41]?> value=41>충차</option>
+                <option <?=$sel1[42]?> value=42>벽력거</option>
+                <option <?=$sel1[43]?> value=43>목우</option>
             </select>
         </td>
         <td>병종
             <select name=type2 size=1>
                 <option value=0>--------</option>
-                <option <?=$sel2[0];?> value=0>보병</option>
-                <option <?=$sel2[1];?> value=1>청주병</option>
-                <option <?=$sel2[2];?> value=2>수병</option>
-                <option <?=$sel2[3];?> value=3>자객병</option>
-                <option <?=$sel2[4];?> value=4>근위병</option>
-                <option <?=$sel2[5];?> value=5>등갑병</option>
+                <option <?=$sel2[0]?> value=0>보병</option>
+                <option <?=$sel2[1]?> value=1>청주병</option>
+                <option <?=$sel2[2]?> value=2>수병</option>
+                <option <?=$sel2[3]?> value=3>자객병</option>
+                <option <?=$sel2[4]?> value=4>근위병</option>
+                <option <?=$sel2[5]?> value=5>등갑병</option>
                 <option value=0>--------</option>
-                <option <?=$sel2[10];?> value=10>궁병</option>
-                <option <?=$sel2[11];?> value=11>궁기병</option>
-                <option <?=$sel2[12];?> value=12>연노병</option>
-                <option <?=$sel2[13];?> value=13>강궁병</option>
-                <option <?=$sel2[14];?> value=14>석궁병</option>
+                <option <?=$sel2[10]?> value=10>궁병</option>
+                <option <?=$sel2[11]?> value=11>궁기병</option>
+                <option <?=$sel2[12]?> value=12>연노병</option>
+                <option <?=$sel2[13]?> value=13>강궁병</option>
+                <option <?=$sel2[14]?> value=14>석궁병</option>
                 <option value=0>--------</option>
-                <option <?=$sel2[20];?> value=20>기병</option>
-                <option <?=$sel2[21];?> value=21>백마병</option>
-                <option <?=$sel2[22];?> value=22>중장기병</option>
-                <option <?=$sel2[23];?> value=23>돌격기병</option>
-                <option <?=$sel2[24];?> value=24>철기병</option>
-                <option <?=$sel2[25];?> value=25>수렵기병</option>
-                <option <?=$sel2[26];?> value=26>맹수병</option>
-                <option <?=$sel2[27];?> value=27>호표기병</option>
+                <option <?=$sel2[20]?> value=20>기병</option>
+                <option <?=$sel2[21]?> value=21>백마병</option>
+                <option <?=$sel2[22]?> value=22>중장기병</option>
+                <option <?=$sel2[23]?> value=23>돌격기병</option>
+                <option <?=$sel2[24]?> value=24>철기병</option>
+                <option <?=$sel2[25]?> value=25>수렵기병</option>
+                <option <?=$sel2[26]?> value=26>맹수병</option>
+                <option <?=$sel2[27]?> value=27>호표기병</option>
                 <option value=0>--------</option>
-                <option <?=$sel2[30];?> value=30>귀병</option>
-                <option <?=$sel2[31];?> value=31>신귀병</option>
-                <option <?=$sel2[32];?> value=32>백귀병</option>
-                <option <?=$sel2[33];?> value=33>흑귀병</option>
-                <option <?=$sel2[34];?> value=34>악귀병</option>
-                <option <?=$sel2[35];?> value=35>남귀병</option>
-                <option <?=$sel2[36];?> value=36>황귀병</option>
-                <option <?=$sel2[37];?> value=37>천귀병</option>
-                <option <?=$sel2[38];?> value=38>마귀병</option>
+                <option <?=$sel2[30]?> value=30>귀병</option>
+                <option <?=$sel2[31]?> value=31>신귀병</option>
+                <option <?=$sel2[32]?> value=32>백귀병</option>
+                <option <?=$sel2[33]?> value=33>흑귀병</option>
+                <option <?=$sel2[34]?> value=34>악귀병</option>
+                <option <?=$sel2[35]?> value=35>남귀병</option>
+                <option <?=$sel2[36]?> value=36>황귀병</option>
+                <option <?=$sel2[37]?> value=37>천귀병</option>
+                <option <?=$sel2[38]?> value=38>마귀병</option>
                 <option value=0>--------</option>
-                <option <?=$sel2[40];?> value=40>정란</option>
-                <option <?=$sel2[41];?> value=41>충차</option>
-                <option <?=$sel2[42];?> value=42>벽력거</option>
-                <option <?=$sel2[43];?> value=43>목우</option>
+                <option <?=$sel2[40]?> value=40>정란</option>
+                <option <?=$sel2[41]?> value=41>충차</option>
+                <option <?=$sel2[42]?> value=42>벽력거</option>
+                <option <?=$sel2[43]?> value=43>목우</option>
             </select>
         </td>
-        <td>성벽 <input size=4 maxlength=4 name=wall value=<?=$wall;?>></td>
+        <td>성벽 <input size=4 maxlength=4 name=wall value=<?=$wall?>></td>
     </tr>
     <tr>
-        <td>병력 <input size=5 maxlength=5 name=crew1 value=<?=$crew1;?>></td>
-        <td>병력 <input size=5 maxlength=5 name=crew2 value=<?=$crew2;?>></td>
-        <td>수비 <input size=4 maxlength=4 name=def value=<?=$def;?>></td>
+        <td>병력 <input size=5 maxlength=5 name=crew1 value=<?=$crew1?>></td>
+        <td>병력 <input size=5 maxlength=5 name=crew2 value=<?=$crew2?>></td>
+        <td>수비 <input size=4 maxlength=4 name=def value=<?=$def?>></td>
     </tr>
     <tr>
-        <td>훈련 <input size=3 maxlength=3 name=train1 value=<?=$train1;?>></td>
-        <td>훈련 <input size=3 maxlength=3 name=train2 value=<?=$train2;?>></td>
-        <td>훈련 <input size=3 maxlength=3 name=train3 value=<?=$train3;?>></td>
+        <td>훈련 <input size=3 maxlength=3 name=train1 value=<?=$train1?>></td>
+        <td>훈련 <input size=3 maxlength=3 name=train2 value=<?=$train2?>></td>
+        <td>훈련 <input size=3 maxlength=3 name=train3 value=<?=$train3?>></td>
     </tr>
     <tr>
-        <td>사기 <input size=3 maxlength=3 name=atmos1 value=<?=$atmos1;?>></td>
-        <td>사기 <input size=3 maxlength=3 name=atmos2 value=<?=$atmos2;?>></td>
-        <td>사기 <input size=3 maxlength=3 name=atmos3 value=<?=$atmos3;?>></td>
+        <td>사기 <input size=3 maxlength=3 name=atmos1 value=<?=$atmos1?>></td>
+        <td>사기 <input size=3 maxlength=3 name=atmos2 value=<?=$atmos2?>></td>
+        <td>사기 <input size=3 maxlength=3 name=atmos3 value=<?=$atmos3?>></td>
     </tr>
     <tr>
         <td>기술
             <select name=tech1 size=1>
-                <option <?=$tch1[0];?>     value=0>0등급</option>
-                <option <?=$tch1[1];?>  value=1000>1등급</option>
-                <option <?=$tch1[2];?>  value=2000>2등급</option>
-                <option <?=$tch1[3];?>  value=3000>3등급</option>
-                <option <?=$tch1[4];?>  value=4000>4등급</option>
-                <option <?=$tch1[5];?>  value=5000>5등급</option>
-                <option <?=$tch1[6];?>  value=6000>6등급</option>
-                <option <?=$tch1[7];?>  value=7000>7등급</option>
-                <option <?=$tch1[8];?>  value=8000>8등급</option>
-                <option <?=$tch1[9];?>  value=9000>9등급</option>
-                <option <?=$tch1[10];?> value=10000>10등급</option>
+                <option <?=$tch1[0]?>     value=0>0등급</option>
+                <option <?=$tch1[1]?>  value=1000>1등급</option>
+                <option <?=$tch1[2]?>  value=2000>2등급</option>
+                <option <?=$tch1[3]?>  value=3000>3등급</option>
+                <option <?=$tch1[4]?>  value=4000>4등급</option>
+                <option <?=$tch1[5]?>  value=5000>5등급</option>
+                <option <?=$tch1[6]?>  value=6000>6등급</option>
+                <option <?=$tch1[7]?>  value=7000>7등급</option>
+                <option <?=$tch1[8]?>  value=8000>8등급</option>
+                <option <?=$tch1[9]?>  value=9000>9등급</option>
+                <option <?=$tch1[10]?> value=10000>10등급</option>
             </select>
         </td>
         <td>기술
             <select name=tech2 size=1>
-                <option <?=$tch2[0];?>     value=0>0등급</option>
-                <option <?=$tch2[1];?>  value=1000>1등급</option>
-                <option <?=$tch2[2];?>  value=2000>2등급</option>
-                <option <?=$tch2[3];?>  value=3000>3등급</option>
-                <option <?=$tch2[4];?>  value=4000>4등급</option>
-                <option <?=$tch2[5];?>  value=5000>5등급</option>
-                <option <?=$tch2[6];?>  value=6000>6등급</option>
-                <option <?=$tch2[7];?>  value=7000>7등급</option>
-                <option <?=$tch2[8];?>  value=8000>8등급</option>
-                <option <?=$tch2[9];?>  value=9000>9등급</option>
-                <option <?=$tch2[10];?> value=10000>10등급</option>
+                <option <?=$tch2[0]?>     value=0>0등급</option>
+                <option <?=$tch2[1]?>  value=1000>1등급</option>
+                <option <?=$tch2[2]?>  value=2000>2등급</option>
+                <option <?=$tch2[3]?>  value=3000>3등급</option>
+                <option <?=$tch2[4]?>  value=4000>4등급</option>
+                <option <?=$tch2[5]?>  value=5000>5등급</option>
+                <option <?=$tch2[6]?>  value=6000>6등급</option>
+                <option <?=$tch2[7]?>  value=7000>7등급</option>
+                <option <?=$tch2[8]?>  value=8000>8등급</option>
+                <option <?=$tch2[9]?>  value=9000>9등급</option>
+                <option <?=$tch2[10]?> value=10000>10등급</option>
             </select>
         </td>
         <td>-</td>
@@ -1304,224 +1328,224 @@ input { background-color:black;color:white; }
     <tr>
         <td>보
             <select name=dex10 size=1>
-                <option <?=$dx10[0];?>       value=0>F</option>
-                <option <?=$dx10[1];?>    value=2500>E-</option>
-                <option <?=$dx10[2];?>    value=7500>E</option>
-                <option <?=$dx10[3];?>   value=15000>E+</option>
-                <option <?=$dx10[4];?>   value=25000>D-</option>
-                <option <?=$dx10[5];?>   value=37500>D</option>
-                <option <?=$dx10[6];?>   value=52500>D+</option>
-                <option <?=$dx10[7];?>   value=70000>C-</option>
-                <option <?=$dx10[8];?>   value=90000>C</option>
-                <option <?=$dx10[9];?>  value=112500>C+</option>
-                <option <?=$dx10[10];?> value=137500>B-</option>
-                <option <?=$dx10[11];?> value=165000>B</option>
-                <option <?=$dx10[12];?> value=195000>B+</option>
-                <option <?=$dx10[13];?> value=227500>A-</option>
-                <option <?=$dx10[14];?> value=262500>A</option>
-                <option <?=$dx10[15];?> value=300000>A+</option>
-                <option <?=$dx10[16];?> value=340000>S</option>
-                <option <?=$dx10[17];?> value=382500>SS</option>
-                <option <?=$dx10[18];?> value=427500>SSS</option>
+                <option <?=$dx10[0]?>       value=0>F</option>
+                <option <?=$dx10[1]?>    value=2500>E-</option>
+                <option <?=$dx10[2]?>    value=7500>E</option>
+                <option <?=$dx10[3]?>   value=15000>E+</option>
+                <option <?=$dx10[4]?>   value=25000>D-</option>
+                <option <?=$dx10[5]?>   value=37500>D</option>
+                <option <?=$dx10[6]?>   value=52500>D+</option>
+                <option <?=$dx10[7]?>   value=70000>C-</option>
+                <option <?=$dx10[8]?>   value=90000>C</option>
+                <option <?=$dx10[9]?>  value=112500>C+</option>
+                <option <?=$dx10[10]?> value=137500>B-</option>
+                <option <?=$dx10[11]?> value=165000>B</option>
+                <option <?=$dx10[12]?> value=195000>B+</option>
+                <option <?=$dx10[13]?> value=227500>A-</option>
+                <option <?=$dx10[14]?> value=262500>A</option>
+                <option <?=$dx10[15]?> value=300000>A+</option>
+                <option <?=$dx10[16]?> value=340000>S</option>
+                <option <?=$dx10[17]?> value=382500>SS</option>
+                <option <?=$dx10[18]?> value=427500>SSS</option>
             </select>
             궁
             <select name=dex110 size=1>
-                <option <?=$dx110[0];?>       value=0>F</option>
-                <option <?=$dx110[1];?>    value=2500>E-</option>
-                <option <?=$dx110[2];?>    value=7500>E</option>
-                <option <?=$dx110[3];?>   value=15000>E+</option>
-                <option <?=$dx110[4];?>   value=25000>D-</option>
-                <option <?=$dx110[5];?>   value=37500>D</option>
-                <option <?=$dx110[6];?>   value=52500>D+</option>
-                <option <?=$dx110[7];?>   value=70000>C-</option>
-                <option <?=$dx110[8];?>   value=90000>C</option>
-                <option <?=$dx110[9];?>  value=112500>C+</option>
-                <option <?=$dx110[10];?> value=137500>B-</option>
-                <option <?=$dx110[11];?> value=165000>B</option>
-                <option <?=$dx110[12];?> value=195000>B+</option>
-                <option <?=$dx110[13];?> value=227500>A-</option>
-                <option <?=$dx110[14];?> value=262500>A</option>
-                <option <?=$dx110[15];?> value=300000>A+</option>
-                <option <?=$dx110[16];?> value=340000>S</option>
-                <option <?=$dx110[17];?> value=382500>SS</option>
-                <option <?=$dx110[18];?> value=427500>SSS</option>
+                <option <?=$dx110[0]?>       value=0>F</option>
+                <option <?=$dx110[1]?>    value=2500>E-</option>
+                <option <?=$dx110[2]?>    value=7500>E</option>
+                <option <?=$dx110[3]?>   value=15000>E+</option>
+                <option <?=$dx110[4]?>   value=25000>D-</option>
+                <option <?=$dx110[5]?>   value=37500>D</option>
+                <option <?=$dx110[6]?>   value=52500>D+</option>
+                <option <?=$dx110[7]?>   value=70000>C-</option>
+                <option <?=$dx110[8]?>   value=90000>C</option>
+                <option <?=$dx110[9]?>  value=112500>C+</option>
+                <option <?=$dx110[10]?> value=137500>B-</option>
+                <option <?=$dx110[11]?> value=165000>B</option>
+                <option <?=$dx110[12]?> value=195000>B+</option>
+                <option <?=$dx110[13]?> value=227500>A-</option>
+                <option <?=$dx110[14]?> value=262500>A</option>
+                <option <?=$dx110[15]?> value=300000>A+</option>
+                <option <?=$dx110[16]?> value=340000>S</option>
+                <option <?=$dx110[17]?> value=382500>SS</option>
+                <option <?=$dx110[18]?> value=427500>SSS</option>
             </select>
             기
             <select name=dex120 size=1>
-                <option <?=$dx120[0];?>       value=0>F</option>
-                <option <?=$dx120[1];?>    value=2500>E-</option>
-                <option <?=$dx120[2];?>    value=7500>E</option>
-                <option <?=$dx120[3];?>   value=15000>E+</option>
-                <option <?=$dx120[4];?>   value=25000>D-</option>
-                <option <?=$dx120[5];?>   value=37500>D</option>
-                <option <?=$dx120[6];?>   value=52500>D+</option>
-                <option <?=$dx120[7];?>   value=70000>C-</option>
-                <option <?=$dx120[8];?>   value=90000>C</option>
-                <option <?=$dx120[9];?>  value=112500>C+</option>
-                <option <?=$dx120[10];?> value=137500>B-</option>
-                <option <?=$dx120[11];?> value=165000>B</option>
-                <option <?=$dx120[12];?> value=195000>B+</option>
-                <option <?=$dx120[13];?> value=227500>A-</option>
-                <option <?=$dx120[14];?> value=262500>A</option>
-                <option <?=$dx120[15];?> value=300000>A+</option>
-                <option <?=$dx120[16];?> value=340000>S</option>
-                <option <?=$dx120[17];?> value=382500>SS</option>
-                <option <?=$dx120[18];?> value=427500>SSS</option>
+                <option <?=$dx120[0]?>       value=0>F</option>
+                <option <?=$dx120[1]?>    value=2500>E-</option>
+                <option <?=$dx120[2]?>    value=7500>E</option>
+                <option <?=$dx120[3]?>   value=15000>E+</option>
+                <option <?=$dx120[4]?>   value=25000>D-</option>
+                <option <?=$dx120[5]?>   value=37500>D</option>
+                <option <?=$dx120[6]?>   value=52500>D+</option>
+                <option <?=$dx120[7]?>   value=70000>C-</option>
+                <option <?=$dx120[8]?>   value=90000>C</option>
+                <option <?=$dx120[9]?>  value=112500>C+</option>
+                <option <?=$dx120[10]?> value=137500>B-</option>
+                <option <?=$dx120[11]?> value=165000>B</option>
+                <option <?=$dx120[12]?> value=195000>B+</option>
+                <option <?=$dx120[13]?> value=227500>A-</option>
+                <option <?=$dx120[14]?> value=262500>A</option>
+                <option <?=$dx120[15]?> value=300000>A+</option>
+                <option <?=$dx120[16]?> value=340000>S</option>
+                <option <?=$dx120[17]?> value=382500>SS</option>
+                <option <?=$dx120[18]?> value=427500>SSS</option>
             </select>
             귀
             <select name=dex130 size=1>
-                <option <?=$dx130[0];?>       value=0>F</option>
-                <option <?=$dx130[1];?>    value=2500>E-</option>
-                <option <?=$dx130[2];?>    value=7500>E</option>
-                <option <?=$dx130[3];?>   value=15000>E+</option>
-                <option <?=$dx130[4];?>   value=25000>D-</option>
-                <option <?=$dx130[5];?>   value=37500>D</option>
-                <option <?=$dx130[6];?>   value=52500>D+</option>
-                <option <?=$dx130[7];?>   value=70000>C-</option>
-                <option <?=$dx130[8];?>   value=90000>C</option>
-                <option <?=$dx130[9];?>  value=112500>C+</option>
-                <option <?=$dx130[10];?> value=137500>B-</option>
-                <option <?=$dx130[11];?> value=165000>B</option>
-                <option <?=$dx130[12];?> value=195000>B+</option>
-                <option <?=$dx130[13];?> value=227500>A-</option>
-                <option <?=$dx130[14];?> value=262500>A</option>
-                <option <?=$dx130[15];?> value=300000>A+</option>
-                <option <?=$dx130[16];?> value=340000>S</option>
-                <option <?=$dx130[17];?> value=382500>SS</option>
-                <option <?=$dx130[18];?> value=427500>SSS</option>
+                <option <?=$dx130[0]?>       value=0>F</option>
+                <option <?=$dx130[1]?>    value=2500>E-</option>
+                <option <?=$dx130[2]?>    value=7500>E</option>
+                <option <?=$dx130[3]?>   value=15000>E+</option>
+                <option <?=$dx130[4]?>   value=25000>D-</option>
+                <option <?=$dx130[5]?>   value=37500>D</option>
+                <option <?=$dx130[6]?>   value=52500>D+</option>
+                <option <?=$dx130[7]?>   value=70000>C-</option>
+                <option <?=$dx130[8]?>   value=90000>C</option>
+                <option <?=$dx130[9]?>  value=112500>C+</option>
+                <option <?=$dx130[10]?> value=137500>B-</option>
+                <option <?=$dx130[11]?> value=165000>B</option>
+                <option <?=$dx130[12]?> value=195000>B+</option>
+                <option <?=$dx130[13]?> value=227500>A-</option>
+                <option <?=$dx130[14]?> value=262500>A</option>
+                <option <?=$dx130[15]?> value=300000>A+</option>
+                <option <?=$dx130[16]?> value=340000>S</option>
+                <option <?=$dx130[17]?> value=382500>SS</option>
+                <option <?=$dx130[18]?> value=427500>SSS</option>
             </select>
             차
             <select name=dex140 size=1>
-                <option <?=$dx140[0];?>       value=0>F</option>
-                <option <?=$dx140[1];?>    value=2500>E-</option>
-                <option <?=$dx140[2];?>    value=7500>E</option>
-                <option <?=$dx140[3];?>   value=15000>E+</option>
-                <option <?=$dx140[4];?>   value=25000>D-</option>
-                <option <?=$dx140[5];?>   value=37500>D</option>
-                <option <?=$dx140[6];?>   value=52500>D+</option>
-                <option <?=$dx140[7];?>   value=70000>C-</option>
-                <option <?=$dx140[8];?>   value=90000>C</option>
-                <option <?=$dx140[9];?>  value=112500>C+</option>
-                <option <?=$dx140[10];?> value=137500>B-</option>
-                <option <?=$dx140[11];?> value=165000>B</option>
-                <option <?=$dx140[12];?> value=195000>B+</option>
-                <option <?=$dx140[13];?> value=227500>A-</option>
-                <option <?=$dx140[14];?> value=262500>A</option>
-                <option <?=$dx140[15];?> value=300000>A+</option>
-                <option <?=$dx140[16];?> value=340000>S</option>
-                <option <?=$dx140[17];?> value=382500>SS</option>
-                <option <?=$dx140[18];?> value=427500>SSS</option>
+                <option <?=$dx140[0]?>       value=0>F</option>
+                <option <?=$dx140[1]?>    value=2500>E-</option>
+                <option <?=$dx140[2]?>    value=7500>E</option>
+                <option <?=$dx140[3]?>   value=15000>E+</option>
+                <option <?=$dx140[4]?>   value=25000>D-</option>
+                <option <?=$dx140[5]?>   value=37500>D</option>
+                <option <?=$dx140[6]?>   value=52500>D+</option>
+                <option <?=$dx140[7]?>   value=70000>C-</option>
+                <option <?=$dx140[8]?>   value=90000>C</option>
+                <option <?=$dx140[9]?>  value=112500>C+</option>
+                <option <?=$dx140[10]?> value=137500>B-</option>
+                <option <?=$dx140[11]?> value=165000>B</option>
+                <option <?=$dx140[12]?> value=195000>B+</option>
+                <option <?=$dx140[13]?> value=227500>A-</option>
+                <option <?=$dx140[14]?> value=262500>A</option>
+                <option <?=$dx140[15]?> value=300000>A+</option>
+                <option <?=$dx140[16]?> value=340000>S</option>
+                <option <?=$dx140[17]?> value=382500>SS</option>
+                <option <?=$dx140[18]?> value=427500>SSS</option>
             </select>
         </td>
         <td>보
             <select name=dex20 size=1>
-                <option <?=$dx20[0];?>       value=0>F</option>
-                <option <?=$dx20[1];?>    value=2500>E-</option>
-                <option <?=$dx20[2];?>    value=7500>E</option>
-                <option <?=$dx20[3];?>   value=15000>E+</option>
-                <option <?=$dx20[4];?>   value=25000>D-</option>
-                <option <?=$dx20[5];?>   value=37500>D</option>
-                <option <?=$dx20[6];?>   value=52500>D+</option>
-                <option <?=$dx20[7];?>   value=70000>C-</option>
-                <option <?=$dx20[8];?>   value=90000>C</option>
-                <option <?=$dx20[9];?>  value=112500>C+</option>
-                <option <?=$dx20[10];?> value=137500>B-</option>
-                <option <?=$dx20[11];?> value=165000>B</option>
-                <option <?=$dx20[12];?> value=195000>B+</option>
-                <option <?=$dx20[13];?> value=227500>A-</option>
-                <option <?=$dx20[14];?> value=262500>A</option>
-                <option <?=$dx20[15];?> value=300000>A+</option>
-                <option <?=$dx20[16];?> value=340000>S</option>
-                <option <?=$dx20[17];?> value=382500>SS</option>
-                <option <?=$dx20[18];?> value=427500>SSS</option>
+                <option <?=$dx20[0]?>       value=0>F</option>
+                <option <?=$dx20[1]?>    value=2500>E-</option>
+                <option <?=$dx20[2]?>    value=7500>E</option>
+                <option <?=$dx20[3]?>   value=15000>E+</option>
+                <option <?=$dx20[4]?>   value=25000>D-</option>
+                <option <?=$dx20[5]?>   value=37500>D</option>
+                <option <?=$dx20[6]?>   value=52500>D+</option>
+                <option <?=$dx20[7]?>   value=70000>C-</option>
+                <option <?=$dx20[8]?>   value=90000>C</option>
+                <option <?=$dx20[9]?>  value=112500>C+</option>
+                <option <?=$dx20[10]?> value=137500>B-</option>
+                <option <?=$dx20[11]?> value=165000>B</option>
+                <option <?=$dx20[12]?> value=195000>B+</option>
+                <option <?=$dx20[13]?> value=227500>A-</option>
+                <option <?=$dx20[14]?> value=262500>A</option>
+                <option <?=$dx20[15]?> value=300000>A+</option>
+                <option <?=$dx20[16]?> value=340000>S</option>
+                <option <?=$dx20[17]?> value=382500>SS</option>
+                <option <?=$dx20[18]?> value=427500>SSS</option>
             </select>
             궁
             <select name=dex210 size=1>
-                <option <?=$dx210[0];?>       value=0>F</option>
-                <option <?=$dx210[1];?>    value=2500>E-</option>
-                <option <?=$dx210[2];?>    value=7500>E</option>
-                <option <?=$dx210[3];?>   value=15000>E+</option>
-                <option <?=$dx210[4];?>   value=25000>D-</option>
-                <option <?=$dx210[5];?>   value=37500>D</option>
-                <option <?=$dx210[6];?>   value=52500>D+</option>
-                <option <?=$dx210[7];?>   value=70000>C-</option>
-                <option <?=$dx210[8];?>   value=90000>C</option>
-                <option <?=$dx210[9];?>  value=112500>C+</option>
-                <option <?=$dx210[10];?> value=137500>B-</option>
-                <option <?=$dx210[11];?> value=165000>B</option>
-                <option <?=$dx210[12];?> value=195000>B+</option>
-                <option <?=$dx210[13];?> value=227500>A-</option>
-                <option <?=$dx210[14];?> value=262500>A</option>
-                <option <?=$dx210[15];?> value=300000>A+</option>
-                <option <?=$dx210[16];?> value=340000>S</option>
-                <option <?=$dx210[17];?> value=382500>SS</option>
-                <option <?=$dx210[18];?> value=427500>SSS</option>
+                <option <?=$dx210[0]?>       value=0>F</option>
+                <option <?=$dx210[1]?>    value=2500>E-</option>
+                <option <?=$dx210[2]?>    value=7500>E</option>
+                <option <?=$dx210[3]?>   value=15000>E+</option>
+                <option <?=$dx210[4]?>   value=25000>D-</option>
+                <option <?=$dx210[5]?>   value=37500>D</option>
+                <option <?=$dx210[6]?>   value=52500>D+</option>
+                <option <?=$dx210[7]?>   value=70000>C-</option>
+                <option <?=$dx210[8]?>   value=90000>C</option>
+                <option <?=$dx210[9]?>  value=112500>C+</option>
+                <option <?=$dx210[10]?> value=137500>B-</option>
+                <option <?=$dx210[11]?> value=165000>B</option>
+                <option <?=$dx210[12]?> value=195000>B+</option>
+                <option <?=$dx210[13]?> value=227500>A-</option>
+                <option <?=$dx210[14]?> value=262500>A</option>
+                <option <?=$dx210[15]?> value=300000>A+</option>
+                <option <?=$dx210[16]?> value=340000>S</option>
+                <option <?=$dx210[17]?> value=382500>SS</option>
+                <option <?=$dx210[18]?> value=427500>SSS</option>
             </select>
             기
             <select name=dex220 size=1>
-                <option <?=$dx220[0];?>       value=0>F</option>
-                <option <?=$dx220[1];?>    value=2500>E-</option>
-                <option <?=$dx220[2];?>    value=7500>E</option>
-                <option <?=$dx220[3];?>   value=15000>E+</option>
-                <option <?=$dx220[4];?>   value=25000>D-</option>
-                <option <?=$dx220[5];?>   value=37500>D</option>
-                <option <?=$dx220[6];?>   value=52500>D+</option>
-                <option <?=$dx220[7];?>   value=70000>C-</option>
-                <option <?=$dx220[8];?>   value=90000>C</option>
-                <option <?=$dx220[9];?>  value=112500>C+</option>
-                <option <?=$dx220[10];?> value=137500>B-</option>
-                <option <?=$dx220[11];?> value=165000>B</option>
-                <option <?=$dx220[12];?> value=195000>B+</option>
-                <option <?=$dx220[13];?> value=227500>A-</option>
-                <option <?=$dx220[14];?> value=262500>A</option>
-                <option <?=$dx220[15];?> value=300000>A+</option>
-                <option <?=$dx220[16];?> value=340000>S</option>
-                <option <?=$dx220[17];?> value=382500>SS</option>
-                <option <?=$dx220[18];?> value=427500>SSS</option>
+                <option <?=$dx220[0]?>       value=0>F</option>
+                <option <?=$dx220[1]?>    value=2500>E-</option>
+                <option <?=$dx220[2]?>    value=7500>E</option>
+                <option <?=$dx220[3]?>   value=15000>E+</option>
+                <option <?=$dx220[4]?>   value=25000>D-</option>
+                <option <?=$dx220[5]?>   value=37500>D</option>
+                <option <?=$dx220[6]?>   value=52500>D+</option>
+                <option <?=$dx220[7]?>   value=70000>C-</option>
+                <option <?=$dx220[8]?>   value=90000>C</option>
+                <option <?=$dx220[9]?>  value=112500>C+</option>
+                <option <?=$dx220[10]?> value=137500>B-</option>
+                <option <?=$dx220[11]?> value=165000>B</option>
+                <option <?=$dx220[12]?> value=195000>B+</option>
+                <option <?=$dx220[13]?> value=227500>A-</option>
+                <option <?=$dx220[14]?> value=262500>A</option>
+                <option <?=$dx220[15]?> value=300000>A+</option>
+                <option <?=$dx220[16]?> value=340000>S</option>
+                <option <?=$dx220[17]?> value=382500>SS</option>
+                <option <?=$dx220[18]?> value=427500>SSS</option>
             </select>
             귀
             <select name=dex230 size=1>
-                <option <?=$dx230[0];?>       value=0>F</option>
-                <option <?=$dx230[1];?>    value=2500>E-</option>
-                <option <?=$dx230[2];?>    value=7500>E</option>
-                <option <?=$dx230[3];?>   value=15000>E+</option>
-                <option <?=$dx230[4];?>   value=25000>D-</option>
-                <option <?=$dx230[5];?>   value=37500>D</option>
-                <option <?=$dx230[6];?>   value=52500>D+</option>
-                <option <?=$dx230[7];?>   value=70000>C-</option>
-                <option <?=$dx230[8];?>   value=90000>C</option>
-                <option <?=$dx230[9];?>  value=112500>C+</option>
-                <option <?=$dx230[10];?> value=137500>B-</option>
-                <option <?=$dx230[11];?> value=165000>B</option>
-                <option <?=$dx230[12];?> value=195000>B+</option>
-                <option <?=$dx230[13];?> value=227500>A-</option>
-                <option <?=$dx230[14];?> value=262500>A</option>
-                <option <?=$dx230[15];?> value=300000>A+</option>
-                <option <?=$dx230[16];?> value=340000>S</option>
-                <option <?=$dx230[17];?> value=382500>SS</option>
-                <option <?=$dx230[18];?> value=427500>SSS</option>
+                <option <?=$dx230[0]?>       value=0>F</option>
+                <option <?=$dx230[1]?>    value=2500>E-</option>
+                <option <?=$dx230[2]?>    value=7500>E</option>
+                <option <?=$dx230[3]?>   value=15000>E+</option>
+                <option <?=$dx230[4]?>   value=25000>D-</option>
+                <option <?=$dx230[5]?>   value=37500>D</option>
+                <option <?=$dx230[6]?>   value=52500>D+</option>
+                <option <?=$dx230[7]?>   value=70000>C-</option>
+                <option <?=$dx230[8]?>   value=90000>C</option>
+                <option <?=$dx230[9]?>  value=112500>C+</option>
+                <option <?=$dx230[10]?> value=137500>B-</option>
+                <option <?=$dx230[11]?> value=165000>B</option>
+                <option <?=$dx230[12]?> value=195000>B+</option>
+                <option <?=$dx230[13]?> value=227500>A-</option>
+                <option <?=$dx230[14]?> value=262500>A</option>
+                <option <?=$dx230[15]?> value=300000>A+</option>
+                <option <?=$dx230[16]?> value=340000>S</option>
+                <option <?=$dx230[17]?> value=382500>SS</option>
+                <option <?=$dx230[18]?> value=427500>SSS</option>
             </select>
             차
             <select name=dex240 size=1>
-                <option <?=$dx240[0];?>       value=0>F</option>
-                <option <?=$dx240[1];?>    value=2500>E-</option>
-                <option <?=$dx240[2];?>    value=7500>E</option>
-                <option <?=$dx240[3];?>   value=15000>E+</option>
-                <option <?=$dx240[4];?>   value=25000>D-</option>
-                <option <?=$dx240[5];?>   value=37500>D</option>
-                <option <?=$dx240[6];?>   value=52500>D+</option>
-                <option <?=$dx240[7];?>   value=70000>C-</option>
-                <option <?=$dx240[8];?>   value=90000>C</option>
-                <option <?=$dx240[9];?>  value=112500>C+</option>
-                <option <?=$dx240[10];?> value=137500>B-</option>
-                <option <?=$dx240[11];?> value=165000>B</option>
-                <option <?=$dx240[12];?> value=195000>B+</option>
-                <option <?=$dx240[13];?> value=227500>A-</option>
-                <option <?=$dx240[14];?> value=262500>A</option>
-                <option <?=$dx240[15];?> value=300000>A+</option>
-                <option <?=$dx240[16];?> value=340000>S</option>
-                <option <?=$dx240[17];?> value=382500>SS</option>
-                <option <?=$dx240[18];?> value=427500>SSS</option>
+                <option <?=$dx240[0]?>       value=0>F</option>
+                <option <?=$dx240[1]?>    value=2500>E-</option>
+                <option <?=$dx240[2]?>    value=7500>E</option>
+                <option <?=$dx240[3]?>   value=15000>E+</option>
+                <option <?=$dx240[4]?>   value=25000>D-</option>
+                <option <?=$dx240[5]?>   value=37500>D</option>
+                <option <?=$dx240[6]?>   value=52500>D+</option>
+                <option <?=$dx240[7]?>   value=70000>C-</option>
+                <option <?=$dx240[8]?>   value=90000>C</option>
+                <option <?=$dx240[9]?>  value=112500>C+</option>
+                <option <?=$dx240[10]?> value=137500>B-</option>
+                <option <?=$dx240[11]?> value=165000>B</option>
+                <option <?=$dx240[12]?> value=195000>B+</option>
+                <option <?=$dx240[13]?> value=227500>A-</option>
+                <option <?=$dx240[14]?> value=262500>A</option>
+                <option <?=$dx240[15]?> value=300000>A+</option>
+                <option <?=$dx240[16]?> value=340000>S</option>
+                <option <?=$dx240[17]?> value=382500>SS</option>
+                <option <?=$dx240[18]?> value=427500>SSS</option>
             </select>
         </td>
         <td>-</td>
@@ -1530,11 +1554,11 @@ input { background-color:black;color:white; }
         <td>-</td>
         <td>
             <input type=submit name=isgen value=장수공격>
-            <?='<input type=submit name=isgen value=장수평균>';?>
+            <?='<input type=submit name=isgen value=장수평균>'?>
         </td>
         <td>
             <input type=submit name=isgen value=성벽공격>
-            <?='<input type=submit name=isgen value=성벽평균>';?>
+            <?='<input type=submit name=isgen value=성벽평균>'?>
         </td>
     </tr>
     <tr><td colspan=3>
@@ -1606,7 +1630,7 @@ function printSimul($game, $i) {
     $ric = $game["ric{$i}"];
     echo "
     <tr>
-        <td align=right>".getTypename($i)."</td>
+        <td align=right>".GameUnitConst::byId($i)->name."</td>
         <td align=center>$att</td>
         <td align=center>$def</td>
         <td align=center>$spd</td>

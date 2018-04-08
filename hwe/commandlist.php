@@ -65,7 +65,6 @@ function myclock() {
 myCommandList();
 
 function myCommandList() {
-    global $_basecolor, $_basecolor2, $_basecolor3;
     global $images;
 
     $db = DB::db();

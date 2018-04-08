@@ -3,6 +3,10 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+
+$weap = Util::getReq('weap', 'int');
+
 //로그인 검사
 $session = Session::requireLogin()->loginGame();
 

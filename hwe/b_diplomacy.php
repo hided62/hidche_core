@@ -84,7 +84,7 @@ $(function(){
 <?php
 echo "
     <tr>
-        <td align=center width=108 style=background-color:$_basecolor2;>&nbsp;</td>";
+        <td align=center width=108 style=background-color:".GameConst::$basecolor2.";>&nbsp;</td>";
 
 if($nationcount != 0) {
     $width = floor(888 / $nationcount);
@@ -133,7 +133,7 @@ for($i=0; $i < $nationcount; $i++) {
             }
         }
 
-        if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation']) { $backcolor = "style=background-color:$_basecolor3;"; }
+        if($nationnum[$i] == $me['nation'] || $nationnum[$k] == $me['nation']) { $backcolor = "style=background-color:".GameConst::$basecolor3.";"; }
         else { $backcolor = ""; }
 
         echo "

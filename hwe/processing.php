@@ -111,7 +111,6 @@ switch($commandtype) {
 
 function starter($name, $type=0) {
     //FIXME: 장기적으로 template로 변경해야함.
-    global $_basecolor2, $_basecolor4;
     global $images;
     echo '
 <!DOCTYPE html>
@@ -239,7 +238,7 @@ function command_11($turn, $command) {
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    global $_basecolor, $_basecolor2, $images, $image;
+    global $images, $image;
     starter("징병");
     $query = "select * from game limit 1";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
@@ -448,7 +447,7 @@ function command_12($turn, $command) {
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    global $_basecolor, $_basecolor2, $images, $image;
+    global $images, $image;
     starter("모병");
     $query = "select * from game limit 1";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
@@ -1000,7 +999,7 @@ function command_24($turn, $command) {
 }
 
 function command_25($turn, $command) {
-    global $_basecolor2, $_basecolor4, $images;
+    global $images;
 
     $db = DB::db();
     $connect=$db->get();

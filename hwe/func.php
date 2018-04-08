@@ -117,7 +117,7 @@ function getRandGenName() {
 
 
 function cityInfo() {
-    global $_basecolor, $_basecolor2, $images;
+    global $images;
 
     $db = DB::db();
     $connect=$db->get();
@@ -232,7 +232,7 @@ function cityInfo() {
 }
 
 function myNationInfo() {
-    global $_basecolor, $_basecolor2, $images;
+    global $images;
 
     $db = DB::db();
     $connect=$db->get();
@@ -749,7 +749,7 @@ function myInfo() {
 }
 
 function generalInfo($no) {
-    global $_basecolor, $_basecolor2, $image, $images;
+    global $image, $images;
 
     $db = DB::db();
     $connect=$db->get();
@@ -940,7 +940,7 @@ function myInfo2() {
 }
 
 function generalInfo2($no) {
-    global $_basecolor, $_basecolor2, $image, $images, $_dexLimit;
+    global $image, $images, $_dexLimit;
 
     $db = DB::db();
     $connect=$db->get();
@@ -1127,7 +1127,7 @@ function PushMsg($type, $nation, $picture, $imgsvr, $from, $fromcolor, $to, $toc
 }
 
 function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
-    global $_basecolor2, $_basecolor4, $images;
+    global $images;
 
     $db = DB::db();
     $connect=$db->get();

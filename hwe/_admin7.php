@@ -6,7 +6,7 @@ include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 
-if($session->userGrade() < 5) {
+if($session->userGrade < 5) {
     echo "<!DOCTYPE html>
 <html>
 <head>
@@ -51,10 +51,10 @@ $sel[$type] = "selected";
         <form name=form1 method=post>
         정렬순서 :
         <select name=type size=1>
-            <option <?=$sel[0];?> value=0>최근턴</option>
-            <option <?=$sel[1];?> value=1>최근전투</option>
-            <option <?=$sel[2];?> value=2>장수명</option>
-            <option <?=$sel[3];?> value=3>전투수</option>
+            <option <?=$sel[0]?> value=0>최근턴</option>
+            <option <?=$sel[1]?> value=1>최근전투</option>
+            <option <?=$sel[2]?> value=2>장수명</option>
+            <option <?=$sel[3]?> value=3>전투수</option>
         </select>
         <input type=submit name=btn value='정렬하기'>
         대상장수 :
