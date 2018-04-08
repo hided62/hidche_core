@@ -45,7 +45,8 @@ if(!$v->validate()){
 
 $server = basename($request['server']);
 $target = $request['target'];
-$baseServerName = end(array_keys(AppConf::getList()));
+
+$baseServerName = Util::array_last_key(AppConf::getList());
 
 $targetDir =$target.':'.$baseServerName;
 

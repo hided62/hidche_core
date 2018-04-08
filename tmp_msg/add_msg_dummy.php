@@ -1,4 +1,6 @@
 <?php
+namespace sammo;
+
 require('../hwe/lib.php');
 
 

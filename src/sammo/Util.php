@@ -3,6 +3,15 @@ namespace sammo;
 
 class Util extends \utilphp\util
 {
+
+    /**
+     * int 값 반환을 강제하는 부동소수점 반올림
+     * @param numeric $value
+     */
+    public static function round($value) : int{
+        return intval(round($value));
+    }
+
     private static function _parseReq($value, string $type)
     {
         if (is_array($value)) {
@@ -233,7 +242,11 @@ class Util extends \utilphp\util
         }
     }
 
-    public static function eraseNullValue($dict, $depth=512)
+    /**
+     * @param null|mixed|mixed[] $dict
+     * @return null|mixed|mixed[]
+     */
+    public static function eraseNullValue($dict, int $depth=512)
     {
         //TODO:Test 추가
         if ($dict === null) {
@@ -251,13 +264,17 @@ class Util extends \utilphp\util
         foreach ($dict as $key=>$value) {
             if ($value === null) {
                 unset($dict[$key]);
-            } elseif (Util::isDict($value)) {
-                $newValue = Util::eraseNullValue($value, $depth - 1);
-                if ($newValue === null) {
-                    unset($dict[$key]);
-                } else {
-                    $dict[$key] = $newValue;
-                }
+                continue;
+            } 
+            if (!Util::isDict($value)) {
+                continue;
+            }
+
+            $newValue = Util::eraseNullValue($value, $depth - 1);
+            if ($newValue === null) {
+                unset($dict[$key]);
+            } else {
+                $dict[$key] = $newValue;
             }
         }
     

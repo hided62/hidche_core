@@ -7,6 +7,7 @@ include "func.php";
 $title = Util::getReq('title');
 $msg = Util::getReq('msg');
 $num = Util::getReq('num');
+$reply = Util::getReq('reply');
 // $title, $msg, $num
 
 //로그인 검사

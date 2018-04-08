@@ -27,6 +27,9 @@ class WebUtil
         }
     }
 
+    /**
+     * @return null|mixed|mixed[]
+     */
     public static function parseJsonPost()
     {
         // http://thisinterestsme.com/receiving-json-post-data-via-php/

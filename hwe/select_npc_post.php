@@ -41,11 +41,19 @@ if(!$npc){
 
 ########## 동일 정보 존재여부 확인. ##########
 
-$admin = $db->queryFirstRow('SELECT year,month,maxgeneral,turnterm,genius,npcmode from game limit 1');
+list(
+    $year,
+    $month,
+    $maxgeneral,
+    $turnterm,
+    $genius,
+    $npcmode
+) = $db->queryFirstList('SELECT year,month,maxgeneral,turnterm,genius,npcmode from game limit 1');
+
 $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE noc<2');
 $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', $userID);
 
-if($admin['npcmode'] != 1) {
+if($npcmode != 1) {
     echo "<script>alert('잘못된 접근입니다!');</script>";
     echo "<script>history.go(-1);</script>";
     exit();
@@ -57,7 +65,7 @@ if($oldGeneral) {
       </script>");
     exit;
 }
-if($admin['maxgeneral'] <= $gencount) {
+if($maxgeneral <= $gencount) {
     echo("<script>
       window.alert('더이상 등록할 수 없습니다!')
       history.go(-1)
@@ -110,13 +118,11 @@ $me = [
     'no'=>$npcID
 ];
 
-$log[0] = "<C>●</>{$admin['month']}월:<Y>{$npc['name']}</>의 육체에 <Y>{$session->userName}</>(이)가 <S>빙의</>됩니다!";
-pushGeneralHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$npc['name']}</>의 육체에 <Y>{$session->userName}</>(이)가 빙의되다.");
-pushGenLog($me, $mylog);
-pushGeneralPublicRecord($log, $admin['year'], $admin['month']);
+pushGeneralHistory($me, "<C>●</>{$year}년 {$month}월:<Y>{$npc['name']}</>의 육체에 <Y>{$session->userName}</>(이)가 빙의되다.");
+//pushGenLog($me, $mylog);
+pushGeneralPublicRecord(["<C>●</>{$month}월:<Y>{$npc['name']}</>의 육체에 <Y>{$session->userName}</>(이)가 <S>빙의</>됩니다!"], $year, $month);
 
-$adminLog[0] = "가입 : {$session->userName} // {$id} // ".getenv("REMOTE_ADDR");
-pushAdminLog($adminLog);
+pushAdminLog(["가입 : {$session->userName} // {$id} // ".getenv("REMOTE_ADDR")]);
 
 $rootDB->insert('member_log', [
     'member_no' => $userID,

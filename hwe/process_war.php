@@ -428,8 +428,8 @@ function processWar($general, $city) {
             $deadAmount['def'] = $deadAmount['def'] + $mykillnum;
 
             // 도시쌀 소모 계산
-            $opexp = round($opexp / 50 * 0.8);
-            $rice = round($opexp * 5 * getCrewtypeRice($game, 0, 0) * ($game['city_rate']/100 - 0.2));
+            $opexp = intval(round($opexp / 50 * 0.8));
+            $rice = intval(round($opexp * 5 * getCrewtypeRice($game, 0, 0) * ($game['city_rate']/100 - 0.2)));
             $destnation['rice'] -= $rice;
             if($destnation['rice'] < 0) { $destnation['rice'] = 0; }
             $query = "update nation set rice='{$destnation['rice']}' where nation='{$destnation['nation']}'";
@@ -438,8 +438,8 @@ function processWar($general, $city) {
             pushAdminLog(["성벽 쌀 소모 : $rice"]);
 
             //원래대로 스케일링
-            $city['def'] = round($city['def'] / 10);
-            $city['wall'] = round($city['wall'] / 10);
+            $city['def'] = intval(round($city['def'] / 10));
+            $city['wall'] = intval(round($city['wall'] / 10));
             //내정 감소
             $dec = round($cityCrew / 10);
             $city['agri'] -= $dec;
@@ -455,7 +455,7 @@ function processWar($general, $city) {
             addGenDex($general['no'], $general['crewtype'], $mykillnum);
             addGenDex($general['no'], 40, $mydeathnum);
             // 죽은수 기술로 누적
-            $num = round($mydeathnum * 0.01);
+            $num = intval(round($mydeathnum * 0.01));
             // 국가보정
             if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $num *= 1.1; }
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }

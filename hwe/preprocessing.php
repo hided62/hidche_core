@@ -10,8 +10,15 @@ $userID = Session::getUserID();
 $db = DB::db();
 $connect=$db->get();
 
+$turn = Util::getReq('turn', 'array_int');
+$commandtype = Util::getReq('commandtype', 'int');
 
 increaseRefresh("턴입력", 1);
+
+if(!$turn || $commandtype === null){
+    header('location:index.php');
+    die();
+}
 
 $query = "select conlimit from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

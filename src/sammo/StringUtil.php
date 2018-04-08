@@ -37,7 +37,7 @@ class StringUtil
         }
 
         if($currentPos + $width >= $length){
-            return substr($str, $currentPos, null);
+            return substr($str, $currentPos);
         }
 
         for($idx = $currentPos; $idx < count($strings); $idx++){
@@ -74,7 +74,7 @@ class StringUtil
         return $result.$endFill;
     }
 
-    function splitString($str, $l = 0) {
+    public static function splitString($str, $l = 0) {
         //https://php.net/manual/kr/function.str-split.php#107658
         if ($l > 0) {
             $ret = array();
@@ -99,7 +99,7 @@ class StringUtil
         $chLen = mb_strwidth($ch, 'UTF-8');
 
         if($chLen == 0){
-            return padString($str, $maxsize, ' ', $position);
+            return static::padString($str, $maxsize, ' ', $position);
         }
 
         $textLen = mb_strwidth($str, 'UTF-8');

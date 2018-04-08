@@ -40,7 +40,7 @@ if($command == 46) {
     ], 'owner=%i', $userID);
 
     $count = count($turn);
-    $query = ['con'=>$db->eval('con')];
+    $query = ['con'=>$db->sqleval('con')];
     foreach($turn as $turnIdx){
         $query['turn'.$turnIdx] = $comStr;
     }

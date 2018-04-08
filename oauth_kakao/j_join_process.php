@@ -47,6 +47,8 @@ if(!$username || !$password || !$nickname){
     ]);
 }
 
+'@phan-var-force string $password';
+
 if(strlen($password)!=128){
     Json::die([
         'result'=>false,
