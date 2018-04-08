@@ -3,6 +3,26 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$v = new Validator($_POST + $_GET);
+$v->rule('integer', [
+    'amount',
+    'cost',
+    'topv',
+    'value',
+    'term',
+    'stuff',
+    'sel'
+]);
+
+$amount = Util::getReq('amount', 'int');
+$cost = Util::getReq('cost', 'int');
+$topv = Util::getReq('topv', 'int');
+$value = Util::getReq('value', 'int');
+$term = Util::getReq('term', 'int');
+$stuff = Util::getReq('stuff', 'int');
+$sel = Util::getReq('sel', 'int');
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

@@ -4,7 +4,27 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+
 // $btn0~15, $gold0~15
+
+$betTarget = -1;
+$betGold = -1;
+for($i=0;$i<16;$i++){
+    $textBtn = "btn{$i}";
+    $textGold = "gold{$i}";
+    $btn = Util::getReq($textBtn);
+    $gold = Util::getReq($textGold, 'int');
+    if($btn === "베팅!" && $gold){
+        $betTarget = $i;
+        $betGold = $gold;
+        break;
+    }
+}
+
+if($betTarget < 0 || $betGold < 10 || $betGold > 1000){
+    header('Location: b_betting.php');
+    exit();
+}
 
 
 //로그인 검사
@@ -12,40 +32,30 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
-$connect=$db->get();
 
 increaseRefresh("베팅", 1);
 
-$query = "select tournament,phase,tnmt_type,develcost from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
-
-if($admin['tournament'] != 6) {
-    //echo "<script>location.replace('b_betting.php');</script>";
-    echo 'b_betting.php';//TODO:debug all and replace
+$tournament = $db->queryFirstField('SELECT tournament FROM game LIMIT 1');
+if($tournament != 6) {
+    header('Location: b_betting.php');
     exit();
 }
 
-$query = "select gold,bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$bets = $db->queryFirstList('SELECT bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15,gold FROM general WHERE `owner`=%i', $userID);
+$myGold = array_pop($bets);
+$totalBet = array_sum($bets);
 
-for($i=0; $i < 16; $i++) {
-    if(${"btn{$i}"} == "베팅!") {
-        $gold = Util::toInt(${"gold{$i}"});
-        $mebet = $me["bet{$i}"];
-        if($gold >= 10 && $gold <= 1000) {
-            if($gold + 500 <= $me['gold'] && $gold + $mebet <= 1000 && $gold + $me['bet'] <= 1000) {
-                $query = "update general set gold=gold-'$gold',bet{$i}=bet{$i}+'$gold',betgold=betgold+'$gold' where owner='{$userID}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $query = "update game set bet{$i}=bet{$i}+'$gold'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            }
-        }
-    }
+//NOTE: 위 코드에서 $betTarget은 0~15의 정수임이 보장된다.
+$oldBet = $bets[$betTarget];
+if($betGold + 500 <= $myGold && $betGold + $oldBet <= 1000 && $betGold + $totalBet <= 1000) {
+    $db->update('general', [
+        'gold'=>$db->sqleval('gold - %i', $betGold),
+        "bet{$betTarget}"=>$db->sqleval("bet{$betTarget} + %i", $betGold),
+        'betgold'=>$db->sqleval('betgold + %i', $betGold)
+    ], 'owner = %i', $userID);
+    $db->update('game', [
+        "bet{$betTarget}"=>$db->sqleval("bet{$betTarget} + %i", $betGold)
+    ], true);
 }
 
-?>
-
-<!--<script>location.replace('b_betting.php');</script>//TODO:debug all and replace-->
-b_betting.php
+header('location: b_betting.php');

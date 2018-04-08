@@ -83,6 +83,9 @@ switch ($type) {
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $citycount = MYDB_num_rows($cityresult);
 
+$region = 0;
+$level = 0;
+
 for ($j=0; $j < $citycount; $j++) {
     $city = MYDB_fetch_array($cityresult);
     if ($city['city'] == $nation['capital']) {

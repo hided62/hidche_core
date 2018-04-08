@@ -50,6 +50,8 @@ $query = "select city,name,pop,pop2 from city where nation='{$nation['nation']}'
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $citycount = MYDB_num_rows($cityresult);
 
+$totalpop = 0;
+$maxpop = 0;
 for($j=0; $j < $citycount; $j++) {
     $city = MYDB_fetch_array($cityresult);
     if($city['city'] == $nation['capital']) { $cityname[$j] = "<font color=cyan>[{$city['name']}]</font>"; }

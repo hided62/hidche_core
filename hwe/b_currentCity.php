@@ -97,9 +97,9 @@ if($me['level'] == 0) {
 if($myNation['level'] > 0) {
     // 첩보도시도 목록에 추가
     $where = 'city=0';
-    $cities = explode("|", $myNation['spy']);
-    for($i=0; $i < count($cities); $i++) {
-        $city = intdiv($cities[$i], 10);
+    $cities = array_map('intval',explode("|", $myNation['spy']));
+    foreach($cities as $citySpy) {
+        $city = intdiv($citySpy, 10);
         $where .= " or city='{$city}'";
     }
 
