@@ -31,56 +31,74 @@ require(__dir__.'/../vendor/autoload.php');
             <div class="card-body">
                 <form id="db_form" method="post" action="#">
                     <div class="form-group row">
-                        <label for="db_host" class="col-sm-3 col-form-label">DB호스트</label>
-                        <div class="col-sm-9">
+                        <label for="db_host" class="col-sm-4 col-form-label">DB호스트</label>
+                        <div class="col-sm-8">
                             <input type="text" class="form-control" name="db_host" id="db_host" 
                              placeholder="호스트" value="localhost" />
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="db_port" class="col-sm-3 col-form-label">DB포트</label>
-                        <div class="col-sm-9">
+                        <label for="db_port" class="col-sm-4 col-form-label">DB포트</label>
+                        <div class="col-sm-8">
                             <input type="text" class="form-control" name="db_port" id="db_port" 
                              placeholder="접속 포트" value="3306" />
                         </div>
                     </div>
                     
                     <div class="form-group row">
-                        <label for="db_id" class="col-sm-3 col-form-label">DB계정명</label>
-                        <div class="col-sm-9">
+                        <label for="db_id" class="col-sm-4 col-form-label">DB계정명</label>
+                        <div class="col-sm-8">
                             <input type="text" class="form-control" name="db_id" id="db_id"  placeholder="DB계정"/>
                         </div>
                     </div>
 
                     
                     <div class="form-group row">
-                        <label for="db_pw" class="col-sm-3 col-form-label">DB비밀번호</label>
-                        <div class="col-sm-9">
+                        <label for="db_pw" class="col-sm-4 col-form-label">DB비밀번호</label>
+                        <div class="col-sm-8">
                             <input type="password" class="form-control" name="db_pw" id="db_pw" 
                              placeholder="DB비밀번호"/>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="db_name" class="col-sm-3 col-form-label">DB명</label>
-                        <div class="col-sm-9">
+                        <label for="db_name" class="col-sm-4 col-form-label">DB명</label>
+                        <div class="col-sm-8">
                             <input type="text" class="form-control" name="db_name" id="db_name" 
                              placeholder="DB명(예:sammo)"/>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <label for="serv_host" class="col-sm-3 col-form-label">접속 경로</label>
-                        <div class="col-sm-9">
+                        <label for="serv_host" class="col-sm-4 col-form-label">접속 경로</label>
+                        <div class="col-sm-8">
                             <input type="text" class="form-control" name="serv_host" id="serv_host" 
                             placeholder="접속경로(예:http://www.example.com)"/>
                         </div>
                     </div>
 
                     <div class="form-group row">
-                        <div class="col-sm-3"></div>
-                        <div class="col-sm-9">
+                        <label for="shared_icon_path" class="col-sm-4 col-form-label">공용 아이콘 주소</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="shared_icon_path" id="shared_icon_path" 
+                            placeholder="공용 아이콘 주소(웹 주소, 또는 접속 경로에 따른 상대 주소)"
+                            value="image/icons" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="game_image_path" class="col-sm-4 col-form-label">게임 이미지 주소</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" name="game_image_path" id="game_image_path" 
+                            placeholder="게임 이미지 주소(웹 주소, 또는 접속 경로에 따른 상대 주소)"
+                            value="image/game" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-sm-4"></div>
+                        <div class="col-sm-8">
                             <button type="submit" 
                             class="btn btn-primary btn-lg btn-block login-button">설정 파일 생성</button>
                         </div>

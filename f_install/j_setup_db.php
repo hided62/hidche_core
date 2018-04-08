@@ -9,8 +9,10 @@ $username = Util::getReq('db_id');
 $password = Util::getReq('db_pw');
 $dbName = Util::getReq('db_name');
 $servHost = Util::getReq('serv_host');
+$sharedIconPath = Util::getReq('shared_icon_path');
+$gameImagePath = Util::getReq('game_image_path');
 
-if(!$host || !$port || !$username || !$password || !$dbName || !$servHost){
+if(!$host || !$port || !$username || !$password || !$dbName || !$servHost || !$sharedIconPath || !$gameImagePath){
     Json::die([
         'result'=>false,
         'reason'=>'입력 값이 올바르지 않습니다'
@@ -39,10 +41,10 @@ if(class_exists('\\sammo\\RootDB')){
 }
 
 //파일 권한 검사
-if(file_exists(ROOT.'/d_pic') && !is_dir(ROOT.'/d_pic')){
+if(file_exists(AppConf::getUserIconPathFS()) && !is_dir(AppConf::getUserIconPathFS())){
     Json::die([
         'result'=>false,
-        'reason'=>'d_pic 이 디렉토리가 아닙니다'
+        'reason'=>AppConf::$userIconPath.' 이 디렉토리가 아닙니다'
     ]);
 }
 
@@ -60,10 +62,10 @@ if(!file_exists(ROOT.'/d_setting')){
     ]);
 }
 
-if(!is_writable(ROOT.'/d_pic')){
+if(!is_writable(AppConf::getUserIconPathFS())){
     Json::die([
         'result'=>false,
-        'reason'=>'d_pic 디렉토리의 쓰기 권한이 없습니다'
+        'reason'=>AppConf::$userIconPath.' 디렉토리의 쓰기 권한이 없습니다'
     ]);
 }
 
@@ -82,8 +84,8 @@ if(!is_writable(ROOT.'/d_setting')){
 }
 
 //기본 파일 생성
-if(!file_exists(ROOT.'/d_pic')){
-    mkdir(ROOT.'/d_pic');
+if(!file_exists(AppConf::getUserIconPathFS())){
+    mkdir(AppConf::getUserIconPathFS());
 }
 
 if(!file_exists(ROOT.'/d_log')){
@@ -141,6 +143,22 @@ $rootDB->insert('system', array(
 $globalSalt = bin2hex(random_bytes(16));
 
 $result = Util::generateFileUsingSimpleTemplate(
+    ROOT.'/d_setting/ServConfig.orig.php',
+    ROOT.'/d_setting/ServConfig.php',[
+        'serverBasePath'=>$servHost,
+        'sharedIconPath'=>$sharedIconPath,
+        'gameImagePath'=>$gameImagePath
+    ]
+, true);
+
+if($result !== true){
+    Json::die([
+        'result'=>false,
+        'reason'=>$result
+    ]);
+}
+
+$result = Util::generateFileUsingSimpleTemplate(
     ROOT.'/d_setting/RootDB.orig.php',
     ROOT.'/d_setting/RootDB.php',[
         'host'=>$host,
@@ -149,9 +167,8 @@ $result = Util::generateFileUsingSimpleTemplate(
         'dbName'=>$dbName,
         'port'=>$port,
         'globalSalt'=>$globalSalt,
-        'serverBasePath'=>$servHost
     ]
-);
+);    
 
 if($result !== true){
     Json::die([

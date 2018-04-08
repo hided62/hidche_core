@@ -2,7 +2,6 @@
 DROP TABLE IF EXISTS `system`;
 DROP TABLE IF EXISTS `member`;
 DROP TABLE IF EXISTS `member_log`;
-DROP TABLE IF EXISTS `auth_kakao`;
 
 -- 시스템 테이블
 -- TODO:장기적으로는 key-value(json) storage 형태로 바꾸는게 나을 듯.
@@ -15,7 +14,7 @@ CREATE TABLE `system` (
 	`MDF_DATE` DATETIME NULL DEFAULT NULL,
 	PRIMARY KEY (`NO`)
 )
-ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 회원 테이블
 CREATE TABLE `member` (
@@ -41,7 +40,7 @@ CREATE TABLE `member` (
 	UNIQUE INDEX `kauth_id` (`oauth_id`),
 	INDEX `delete_after` (`delete_after`)
 )
-ENGINE=InnoDB DEFAULT CHARSET=UTF8;
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 로그인 로그 테이블
 CREATE TABLE `member_log` (
@@ -54,4 +53,4 @@ CREATE TABLE `member_log` (
 	INDEX `action` (`member_no`, `action_type`, `date`),
 	INDEX `member` (`member_no`, `date`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=UTF8;
+ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;

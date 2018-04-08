@@ -3,7 +3,6 @@ namespace sammo;
 
 require(__dir__.'/../vendor/autoload.php');
 WebUtil::setHeaderNoCache();//FIXME: 이 파일에는 이럴 이유가 없다. javascript 기반으로 바꿔도 충분
-$images = IMAGES;
 
 if($sel == 0) $sel = 1;
 ?>
@@ -18,9 +17,9 @@ if($sel == 0) $sel = 1;
 body { color:white; background-color:black; border-width:1; border-color:gray; }
 table { font-family:'맑은 고딕'; line-height:110%; }
 font { font-family:'맑은 고딕'; line-height:110%; }
-#bg0 { background-image:url(<?=$images?>/back_walnut.jpg); }
-#bg1 { background-image:url(<?=$images?>/back_blue.jpg); }
-#bg2 { background-image:url(<?=$images?>/back_green.jpg); }
+#bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
+#bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_blue.jpg); }
+#bg2 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
 
 .leftFloat {
   float: left;
@@ -49,13 +48,13 @@ font { font-family:'맑은 고딕'; line-height:110%; }
     </tr>
     <tr>
         <td align=center>
-            <img src=<?=$images?>/screenshot_01.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=1')>
-            <img src=<?=$images?>/screenshot_02.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=2')>
-            <img src=<?=$images?>/screenshot_03.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=3')>
-            <img src=<?=$images?>/screenshot_04.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=4')>
-            <img src=<?=$images?>/screenshot_05.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=5')>
-            <img src=<?=$images?>/screenshot_06.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=6')>
-            <img src=<?=$images?>/screenshot_07.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=7')>
+            <img src=<?=ServConfig::$gameImagePath?>/screenshot_01.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=1')>
+            <img src=<?=ServConfig::$gameImagePath?>/screenshot_02.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=2')>
+            <img src=<?=ServConfig::$gameImagePath?>/screenshot_03.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=3')>
+            <img src=<?=ServConfig::$gameImagePath?>/screenshot_04.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=4')>
+            <img src=<?=ServConfig::$gameImagePath?>/screenshot_05.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=5')>
+            <img src=<?=ServConfig::$gameImagePath?>/screenshot_06.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=6')>
+            <img src=<?=ServConfig::$gameImagePath?>/screenshot_07.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=7')>
         </td>
     </tr>
     <tr>
@@ -77,7 +76,7 @@ case 7: echo "독 특 한 &nbsp; 커 뮤 니 티"; break;
     </tr>
     <tr>
         <td align=center>
-            <img src=<?=$images?>/screenshot_0<?=$sel?>.jpg style=border-style:ridge;>
+            <img src=<?=ServConfig::$gameImagePath?>/screenshot_0<?=$sel?>.jpg style=border-style:ridge;>
         </td>
     </tr>
 </table>

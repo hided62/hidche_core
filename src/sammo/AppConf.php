@@ -5,6 +5,9 @@ class AppConf
 {
     private static $serverList = null;
 
+    /** @var string 전용 아이콘 경로 */
+    public static $userIconPath = 'd_pic';
+
     /**
      * 서버 설정 반환
      *
@@ -54,5 +57,13 @@ class AppConf
             
         }
         return DB::db();
+    }
+
+    public static function getUserIconPathFS() : string{
+        return ROOT.'/'.static::$userIconPath;
+    }
+
+    public static function getUserIconPathWeb() : string{
+        return ServConfig::$serverWebPath.'/'.static::$userIconPath;
     }
 }

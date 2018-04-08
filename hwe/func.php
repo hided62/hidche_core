@@ -68,11 +68,10 @@ function getAllNationStaticInfo(){
 }
 
 function GetImageURL($imgsvr) {
-    global $image, $image1;
     if($imgsvr == 0) {
-        return $image;
+        return ServConfig::$sharedIconPath;
     } else {
-        return $image1;
+        return AppConf::getUserIconPathWeb();
     }
 }
 
@@ -117,8 +116,6 @@ function getRandGenName() {
 
 
 function cityInfo() {
-    global $images;
-
     $db = DB::db();
     $connect=$db->get();
     $userID = Session::getUserID();
@@ -232,8 +229,6 @@ function cityInfo() {
 }
 
 function myNationInfo() {
-    global $images;
-
     $db = DB::db();
     $connect=$db->get();
     $userID = Session::getUserID();
@@ -749,8 +744,6 @@ function myInfo() {
 }
 
 function generalInfo($no) {
-    global $image, $images;
-
     $db = DB::db();
     $connect=$db->get();
 
@@ -851,8 +844,8 @@ function generalInfo($no) {
     elseif($general['mode'] == 1) { $general['mode'] = "<font color=limegreen>수비 함(훈사60)</font>"; }
     else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
 
-    $weapImage = "{$images}/weap{$general['crewtype']}.jpg";
-    if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; };
+    $weapImage = ServConfig::$gameImagePath."/weap{$general['crewtype']}.jpg";
+    if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
@@ -940,7 +933,7 @@ function myInfo2() {
 }
 
 function generalInfo2($no) {
-    global $image, $images, $_dexLimit;
+    global $_dexLimit;
 
     $db = DB::db();
     $connect=$db->get();
@@ -1127,8 +1120,6 @@ function PushMsg($type, $nation, $picture, $imgsvr, $from, $fromcolor, $to, $toc
 }
 
 function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
-    global $images;
-
     $db = DB::db();
     $connect=$db->get();
 

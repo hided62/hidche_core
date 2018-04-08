@@ -4,6 +4,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+$select = Util::getReq('select', 'int', 0);
+
 $db = DB::db();
 $connect=$db->get();
 
@@ -28,12 +30,12 @@ increaseRefresh("왕조일람", 2);
 
 <?php
 
-if($select == 0) {
+if ($select == 0) {
     $query = "select * from emperior order by no desc";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
     $empcount = MYDB_num_rows($result);
 
-    for($i=0; $i < $empcount; $i++) {
+    for ($i=0; $i < $empcount; $i++) {
         $emperior = MYDB_fetch_array($result);
 
         echo "
@@ -76,10 +78,8 @@ if($select == 0) {
     }
 } else {
     $query = "select * from emperior where no='$select'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
     $emperior = MYDB_fetch_array($result);
-
-//background={$image}/{$emperior['l12pic']}
 
     echo "
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style='font-size:13px;word-break:break-all;color:white;' id=bg0>

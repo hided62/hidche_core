@@ -12,16 +12,21 @@ $db = RootDB::db();
 $member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $userID);
 
 if(!$member['picture']){
-    $picture = IMAGE.'/default.jpg';
+    $picture = ServConfig::$sharedIconPath.'/default.jpg';
 }
 else{
     $picture = $member['picture'];
     if(strlen($picture) > 11){
         $picture = substr($picture, 0, -10);
     }
-    $picture = '../d_pic/'.$picture;
-    if(!file_exists($picture)){
-        $picture = IMAGE.'/'.$picture;
+
+    $pictureFSPath = AppConf::getUserIconPathFS().'/'.$picture;
+
+    if(file_exists($pictureFSPath)){
+        $picture = AppConf::getUserIconPathWeb().'/'.$picture;
+    }
+    else{
+        $picture = ServConfig::$sharedIconPath.'/'.$picture;
     }
 }
 

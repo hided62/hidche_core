@@ -1,11 +1,6 @@
 <?php
 namespace sammo;
 
-define('IMAGE', '../../image');
-define('IMAGES', '../../images');
-//define('IMAGE', 'http://115.68.28.99/image');
-//define('IMAGES', 'http://115.68.28.99/images');
-
 define('ROOT', realpath(__dir__.'/..'));
 
 mb_internal_encoding("UTF-8");

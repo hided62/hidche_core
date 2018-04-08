@@ -19,10 +19,10 @@ foreach($db->query('SELECT member.*, max(member_log.date) as loginDate from memb
         group by member.no order by member.no asc') as $member){
 
     if($member['IMGSVR']){
-        $icon = RootDB::getServerBasepath().'/d_pic/'.$member['PICTURE'];
+        $icon = AppConf::getUserIconPathWeb().'/'.$member['PICTURE'];
     }
     else{
-        $icon = IMAGE.'/'.$member['PICTURE'];
+        $icon = ServConfig::$sharedIconPath.'/'.$member['PICTURE'];
     }
 
     $userList[] = [

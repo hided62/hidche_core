@@ -5,11 +5,11 @@ namespace sammo;
 $loader = require __dir__.'/../vendor/autoload.php';
 $loader->addPsr4('sammo\\', __DIR__.'/sammo', true);
 
-$loader->addClassMap((function(){
+$loader->addClassMap((function () {
     $d_settingMap = [];
-    foreach(glob(__dir__.'/d_setting/*.php') as $filepath){
+    foreach (glob(__dir__.'/d_setting/*.php') as $filepath) {
         $filename = basename($filepath);
-        if(Util::ends_with($filename, '.orig.php')){
+        if (Util::ends_with($filename, '.orig.php')) {
             continue;
         }
         $classname = explode('.', $filename)[0];
@@ -36,11 +36,6 @@ include "MYDB.php";
 define('STEP_LOG', true);
 define('PROCESS_LOG', true);
 $_startTime = microtime(true);
-$_ver     = "서비스중";
-$x_version = "삼국지 모의전투 PHP HideD v0.1";
-$x_banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : 유기체(jwh1807@gmail.com), HideD(hided62@gmail.com)";
-$x_helper = "도움 주신 분들";
-$x_develrate = 50;   // 내정시 최하 민심 설정
 $_upgradeLimit = 30;    // 능력치 상승 경험치
 $_dexLimit = 1000000;    // 숙련도 제한치
 $_defaultatmos = 40;  // 초기 사기치
@@ -61,13 +56,6 @@ $x_goodgenleader = 65;  // 명장,지장에 사용될 통솔 제한
 $x_goodgenpower = 65;  // 명장에 사용될 무력 제한
 $x_goodgenintel = 65;  // 지장에 사용될 지력 제한
 $_taxrate = 0.01;   // 군량 매매시 세율
-//$images = "http://115.68.28.99/images";
-//$image = "http://115.68.28.99/image";
-//$images = "http://jwh1807.vipweb.kr/images";
-//$image = "http://jwh1807.vipweb.kr/image";
-$image1 = "../d_pic";
-$images = "/images";
-$image = "/image";
 
 ob_start();
 session_cache_limiter('nocache');//NOTE: 캐시가 가능하도록 설정해야 할 수도 있음. 주의!
@@ -76,7 +64,7 @@ session_cache_limiter('nocache');//NOTE: 캐시가 가능하도록 설정해야 
 // 에러 메세지 출력
 function Error($message, $url="")
 {
-    if(!$url){
+    if (!$url) {
         $url = $_SERVER['REQUEST_URI'];
     }
     file_put_contents(__dir__."/logs/_db_bug.txt", "{\"url\":\"$url\",\"msg\":\"$message\"}\n", FILE_APPEND);

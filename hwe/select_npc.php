@@ -88,7 +88,7 @@ if($admin['show_img_level'] >= 3) {
 ?>
         <tr>
             <td width=498 align=right rowspan=2 height=64 id=bg1>장수</td>
-            <td width=498><img src=<?=$image?>/1001.jpg border=0 name=picture width=64 height=64></td>
+            <td width=498><img src=<?=ServConfig::$sharedIconPath?>/1001.jpg border=0 name=picture width=64 height=64></td>
         </tr>
 <?php
 }
@@ -133,7 +133,7 @@ function changeGen() {
     sel = Math.floor(Math.random() * <?=$count?>);
     document.form1.face.selectedIndex = sel;
     num = document.form1.face.value;
-    document.form1.picture.src="<?=$image?>" + "/"+ num +".jpg";
+    document.form1.picture.src="<?=ServConfig::$sharedIconPath?>" + "/"+ num +".jpg";
 }
 
 function selectGen() {

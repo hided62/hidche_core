@@ -13,15 +13,18 @@ $connect=$db->get();
 increaseRefresh("명장일람", 2);
 
 $query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $admin = MYDB_fetch_array($result);
 
 $query = "select con,turntime from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
 $con = checkLimit($me['con'], $admin['conlimit']);
-if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
+if ($con >= 2) {
+    printLimitMsg($me['turntime']);
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -47,13 +50,13 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <?php
-if(isset($btn) && $btn == "NPC 보기") {
+if (isset($btn) && $btn == "NPC 보기") {
     $sel = "npc>=2";
 } else {
     $sel = "npc<2";
 }
 
-foreach(getAllNationStaticInfo() as $nation){
+foreach (getAllNationStaticInfo() as $nation) {
     $nationName[$nation['nation']] = $nation['name'];
     $nationColor[$nation['nation']] = $nation['color'];
 }
@@ -81,8 +84,8 @@ $type = array(
     "베 팅 수 익 금",
     "베 팅 수 익 률"
 );
-for($i=0; $i < 21; $i++) {
-    switch($i) {
+for ($i=0; $i < 21; $i++) {
+    switch ($i) {
     case  0: $query = "select nation,no,name,picture,imgsvr,experience as data from general where $sel order by data desc limit 0,10"; break;
     case  1: $query = "select nation,no,name,picture,imgsvr,dedication as data from general where $sel order by data desc limit 0,10"; break;
     case  2: $query = "select nation,no,name,picture,imgsvr,firenum as data from general where $sel order by data desc limit 0,10"; break;
@@ -105,24 +108,24 @@ for($i=0; $i < 21; $i++) {
     case 19: $query = "select nation,no,name,picture,imgsvr,betwingold as data from general where $sel order by data desc limit 0,10"; break;
     case 20: $query = "select nation,no,name,picture,imgsvr,betwingold/betgold*10000 as data from general where $sel and betgold >= 1000 order by data desc limit 0,10"; break;
     }
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 
     echo "
     <tr><td align=center colspan=10 id=bg1><font size=4>$type[$i]</font></td></tr>
     <tr align=center id=bg2><td>1위</td><td>2위</td><td>3위</td><td>4위</td><td>5위</td><td>6위</td><td>7위</td><td>8위</td><td>9위</td><td>10위</td></tr>
     <tr>";
 
-    for($k=0; $k < 10; $k++) {
+    for ($k=0; $k < 10; $k++) {
         $gen = MYDB_fetch_array($result);
 
-        if($i != 2) {
-            if(isset($gen)) {
+        if ($i != 2) {
+            if (isset($gen)) {
                 $name[$k] = $gen['name'];
                 $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
                 $data[$k] = $gen['data'];
                 $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
                 $pic[$k] = $gen['picture'];
-            }else{
+            } else {
                 $name[$k] = "-";
                 $nation[$k] = "-";
                 $data[$k] = "-";
@@ -137,9 +140,13 @@ for($i=0; $i < 21; $i++) {
             $gen['imgsvr'] = 0;
             $pic[$k]    = "9999.jpg";
         }
-        if($color[$k] == "") $color[$k] = GameConst::$basecolor4;
-        if($nation[$k] == "") $nation[$k] = "&nbsp;";
-        if($pic[$k] == "") {
+        if ($color[$k] == "") {
+            $color[$k] = GameConst::$basecolor4;
+        }
+        if ($nation[$k] == "") {
+            $nation[$k] = "&nbsp;";
+        }
+        if ($pic[$k] == "") {
             echo "<td align=center>&nbsp;</td>";
         } else {
             $imageTemp = GetImageURL($gen['imgsvr']);
@@ -149,21 +156,25 @@ for($i=0; $i < 21; $i++) {
 
     echo "</tr><tr>";
 
-    for($k=0; $k < 10; $k++) {
+    for ($k=0; $k < 10; $k++) {
         echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$nation[$k]}</td>";
     }
 
     echo "</tr><tr>";
 
-    for($k=0; $k < 10; $k++) {
+    for ($k=0; $k < 10; $k++) {
         echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$name[$k]}</td>";
     }
 
     echo "</tr><tr>";
 
-    for($k=0; $k < 10; $k++) {
-        if($i == 5 || $i == 7 || $i == 20) { $data[$k] = floor($data[$k]/100).".".($data[$k]%100)." %"; }
-        if($i >= 13 && $i <= 16) { $data[$k] = floor($data[$k]/100).".".($data[$k]%100)." %"; }
+    for ($k=0; $k < 10; $k++) {
+        if ($i == 5 || $i == 7 || $i == 20) {
+            $data[$k] = floor($data[$k]/100).".".($data[$k]%100)." %";
+        }
+        if ($i >= 13 && $i <= 16) {
+            $data[$k] = floor($data[$k]/100).".".($data[$k]%100)." %";
+        }
         echo "<td align=center>{$data[$k]}</td>";
     }
     echo "</tr><tr><td colspan=10 height=5 id=bg1></td></tr>";
@@ -196,51 +207,55 @@ $func = array(
     "getItemName"
 );
 
-for($i=0; $i < 4; $i++) {
+for ($i=0; $i < 4; $i++) {
     echo "
     <tr><td align=center colspan=10 id=bg1><font size=4>$type[$i]</font></td></tr>
     <tr align=center id=bg2>";
-    for($k=26; $k > 16; $k--) {
+    for ($k=26; $k > 16; $k--) {
         $str = $func[$i]($k);
         echo "<td>".$str."</td>";
     }
 
     echo "</tr><tr>";
 
-    for($k=26; $k > 16; $k--) {
+    for ($k=26; $k > 16; $k--) {
         $query = "select nation,no,name,picture,imgsvr from general where {$call[$i]}={$k}";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
         $gen = MYDB_fetch_array($result);
-        if(isset($gen)) {
+        if (isset($gen)) {
             $name[$k] = $gen['name'];
             $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
             $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
             $pic[$k] = $gen['picture'];
-        }else{
+        } else {
             $name[$k] = "미발견";
             $nation[$k] = "-";
             $color[$k] = "";
             $pic[$k] = "";
         }
-        if($color[$k] == "") $color[$k] = GameConst::$basecolor4;
-        if($nation[$k] == "") $nation[$k] = "&nbsp;";
-        if($pic[$k] == "") {
+        if ($color[$k] == "") {
+            $color[$k] = GameConst::$basecolor4;
+        }
+        if ($nation[$k] == "") {
+            $nation[$k] = "&nbsp;";
+        }
+        if ($pic[$k] == "") {
             echo "<td align=center>&nbsp;</td>";
         } else {
-            $imageTemp = GetImageURL($gen['imgsvr']);
+            $imageTemp = GetImageURL($gen['imgsvr']??0);
             echo "<td align=center><img src={$imageTemp}/{$pic[$k]}></img></td>";
         }
     }
 
     echo "</tr><tr>";
 
-    for($k=26; $k > 16; $k--) {
+    for ($k=26; $k > 16; $k--) {
         echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$nation[$k]}</td>";
     }
 
     echo "</tr><tr>";
 
-    for($k=26; $k > 16; $k--) {
+    for ($k=26; $k > 16; $k--) {
         echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$name[$k]}</td>";
     }
 
@@ -248,47 +263,51 @@ for($i=0; $i < 4; $i++) {
 
     echo "
     <tr align=center id=bg2>";
-    for($k=16; $k > 6; $k--) {
+    for ($k=16; $k > 6; $k--) {
         $str = $func[$i]($k);
         echo "<td>".$str."</td>";
     }
 
     echo "</tr><tr>";
 
-    for($k=16; $k > 6; $k--) {
+    for ($k=16; $k > 6; $k--) {
         $query = "select nation,no,name,picture,imgsvr from general where {$call[$i]}={$k}";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
         $gen = MYDB_fetch_array($result);
-        if(isset($gen)) {
+        if (isset($gen)) {
             $name[$k] = $gen['name'];
             $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
             $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
             $pic[$k] = $gen['picture'];
-        }else{
+        } else {
             $name[$k] = "미발견";
             $nation[$k] = "-";
             $color[$k] = "";
             $pic[$k] = "";
         }
-        if($color[$k] == "") $color[$k] = GameConst::$basecolor4;
-        if($nation[$k] == "") $nation[$k] = "&nbsp;";
-        if($pic[$k] == "") {
+        if ($color[$k] == "") {
+            $color[$k] = GameConst::$basecolor4;
+        }
+        if ($nation[$k] == "") {
+            $nation[$k] = "&nbsp;";
+        }
+        if ($pic[$k] == "") {
             echo "<td align=center>&nbsp;</td>";
         } else {
-            $imageTemp = GetImageURL($gen['imgsvr']);
+            $imageTemp = GetImageURL($gen['imgsvr']??0);
             echo "<td align=center><img src={$imageTemp}/{$pic[$k]}></img></td>";
         }
     }
 
     echo "</tr><tr>";
 
-    for($k=16; $k > 6; $k--) {
+    for ($k=16; $k > 6; $k--) {
         echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$nation[$k]}</td>";
     }
 
     echo "</tr><tr>";
 
-    for($k=16; $k > 6; $k--) {
+    for ($k=16; $k > 6; $k--) {
         echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$name[$k]}</td>";
     }
 

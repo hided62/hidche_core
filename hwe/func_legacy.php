@@ -23,14 +23,13 @@ function printLimitMsg($turntime) {
 
 
 function bar($per, $h=7) {
-    global $images;
     if($h == 7) { $bd = 0; $h =  7; $h2 =  5; }
     else        { $bd = 1; $h = 12; $h2 =  8; }
 
     $per = round($per, 1);
     if($per < 1 || $per > 99) { $per = round($per); }
-    $str1 = "<td width={$per}% background={$images}/pb{$h2}.gif></td>";
-    $str2 = "<td width=*% background={$images}/pr{$h2}.gif></td>";
+    $str1 = "<td width={$per}% background=".ServConfig::$gameImagePath."/pb{$h2}.gif></td>";
+    $str2 = "<td width=*% background=".ServConfig::$gameImagePath."/pr{$h2}.gif></td>";
     if($per <= 0) { $str1 = ""; }
     elseif($per >= 100) { $str2 = ""; }
     $str = "

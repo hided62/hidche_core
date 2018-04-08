@@ -110,8 +110,6 @@ switch($commandtype) {
 }
 
 function starter($name, $type=0) {
-    //FIXME: 장기적으로 template로 변경해야함.
-    global $images;
     echo '
 <!DOCTYPE html>
 <html>
@@ -238,7 +236,6 @@ function command_11($turn, $command) {
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    global $images, $image;
     starter("징병");
     $query = "select * from game limit 1";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
@@ -400,8 +397,8 @@ function calc(cost, formnum) {
         $defence = $this->defence + $abil;
         $speed = $this->speed;
         $avoid = $this->avoid;
-        $weapImage = "{$images}/weap{$i}.jpg";
-        if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
+        $weapImage = ServConfig::$gameImagePath."/weap{$i}.jpg";
+        if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
         $baseCostShort = round($baseCost, 1);
@@ -447,7 +444,6 @@ function command_12($turn, $command) {
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    global $images, $image;
     starter("모병");
     $query = "select * from game limit 1";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
@@ -611,8 +607,8 @@ function calc(cost, formnum) {
         $defence = $this->defence + $abil;
         $speed = $this->speed;
         $avoid = $this->avoid;
-        $weapImage = "{$images}/weap{$i}.jpg";
-        if($admin['show_img_level'] < 2) { $weapImage = "{$image}/default.jpg"; }
+        $weapImage = ServConfig::$gameImagePath."/weap{$i}.jpg";
+        if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
         $baseCostShort = round($baseCost, 1);
@@ -999,8 +995,6 @@ function command_24($turn, $command) {
 }
 
 function command_25($turn, $command) {
-    global $images;
-
     $db = DB::db();
     $connect=$db->get();
     $userID = Session::getUserID();

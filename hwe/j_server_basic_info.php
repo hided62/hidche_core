@@ -31,7 +31,7 @@ if($general){
     if($general['imgsvr'] == 0) {
         $me['picture'] = '../../image/'.$general['picture'];
     } else {
-        $me['picture'] = '../d_pic/'.$general['picture'];
+        $me['picture'] = AppConf::getUserIconPathWeb().'/'.$general['picture'];
     }
 }
 

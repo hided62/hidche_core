@@ -20,7 +20,7 @@ else{
     $dt = '00000000';
 }
 
-$dest = ROOT.'/d_pic/'.$picName;
+$dest = AppConf::getUserIconPathFS().'/'.$picName;
 
 $rf = date('Ymd');
 

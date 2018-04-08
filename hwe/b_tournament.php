@@ -49,9 +49,9 @@ table { font-family:'맑은 고딕'; line-height:110%; }
 font { font-family:'맑은 고딕'; line-height:110%; }
 input { font-family:'맑은 고딕'; line-height:110%; height:20px }
 select { font-family:'굴림'; line-height:100%; }
-#bg0 { background-image:url(<?=$images?>/back_walnut.jpg); }
-#bg1 { background-image:url(<?=$images?>/back_green.jpg); }
-#bg2 { background-image:url(<?=$images?>/back_blue.jpg); }
+#bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
+#bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
+#bg2 { background-image:url(<?=ServConfig::$gameImagePath?>/back_blue.jpg); }
 </style>
 
 </head>

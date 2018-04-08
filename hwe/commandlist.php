@@ -65,8 +65,6 @@ function myclock() {
 myCommandList();
 
 function myCommandList() {
-    global $images;
-
     $db = DB::db();
     $connect=$db->get();
     $userID = Session::getUserID();

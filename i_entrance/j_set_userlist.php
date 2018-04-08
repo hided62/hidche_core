@@ -88,7 +88,7 @@ if($action == 'scrub_icon'){
 
     $cnt = 0;
 
-    foreach(glob(__DIR__.'/../d_pic/*.{jpg,png,gif}', GLOB_BRACE) as $filepath){
+    foreach(glob(AppConf::getUserIconPathFS().'/*.{jpg,png,gif}', GLOB_BRACE) as $filepath){
         $filename = basename($filepath);
         
         if (array_key_exists($filename, $usedIcon)) {

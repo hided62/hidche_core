@@ -1,7 +1,8 @@
 <?php
 namespace sammo;
 
-class RootDB{
+class RootDB
+{
     private static $uDB = null;
 
     private static $host = '_tK_host_';
@@ -13,21 +14,20 @@ class RootDB{
 
     private static $globalSalt = '_tK_globalSalt_';
 
-    public static $serverWebPath = '_tK_serverBasePath';
-
-    private function __construct(){
-
+    private function __construct()
+    {
     }
 
     /**
      * DB 객체 생성
-     * 
-     * @return \MeekroDB 
+     *
+     * @return \MeekroDB
      * @suppress PhanTypeMismatchProperty
      */
-    public static function db(){
-        if(self::$uDB === null){
-            self::$uDB = new \MeekroDB(self::$host,self::$user,self::$password,self::$dbName,self::$port,self::$encoding);
+    public static function db()
+    {
+        if (self::$uDB === null) {
+            self::$uDB = new \MeekroDB(self::$host, self::$user, self::$password, self::$dbName, self::$port, self::$encoding);
             self::$uDB->connect_options[MYSQLI_OPT_INT_AND_FLOAT_NATIVE] = true;
         }
         return self::$uDB;
@@ -36,19 +36,21 @@ class RootDB{
     /**
      * 비밀번호 해시용 전역 SALT 반환
      * 비밀번호는 sha512(usersalt|sha512(globalsalt|password|globalsalt)|usersalt); 순임
-     * 
+     *
      * @return string
      */
-    public static function getGlobalSalt(){
+    public static function getGlobalSalt()
+    {
         return self::$globalSalt;
     }
 
     /**
      * 서버 주소 반환. 서버의 경로가 하부 디렉토리인 경우에 하부 디렉토리까지 포함
-     * 
+     *
      * @return string
      */
-    public static function getServerBasepath(){
+    public static function getServerBasepath()
+    {
         //FIXME: 더 좋은 위치가 있을 것.
         return self::$globalSalt;
     }

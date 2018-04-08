@@ -3,6 +3,10 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$msg = Util::getReq('msg');
+$msg2 = Util::getReq('msg2');
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -105,7 +109,7 @@ for ($i=0; $i < $count; $i++) {
         $chk = 1;
     }
     $pv = round($auction['value'] * 100 / $auction['amount']) / 100 + 0.001;
-    $pv = substr($pv, 0, 4);
+    $pv = substr((string)$pv, 0, 4);
     if ($auction['stuff'] != 0) {
         $pv = '-';
     }

@@ -6,7 +6,7 @@ $(document).ready( function () {
             db_port:"required",
             db_id:"required",
             db_pw:"required",
-            db_name:"required",
+            db_name:"required"
         },
         errorElement: "div",
         errorPlacement: function ( error, element ) {

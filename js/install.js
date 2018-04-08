@@ -54,7 +54,9 @@ $(document).ready( function () {
             db_id:"required",
             db_pw:"required",
             db_name:"required",
-            serv_host:"required"
+            serv_host:"required",
+            shared_icon_path:"required",
+            game_image_path:"required"
         },
         errorElement: "div",
         errorPlacement: function ( error, element ) {
@@ -90,7 +92,9 @@ $(document).ready( function () {
                 db_id:$('#db_id').val(),
                 db_pw:$('#db_pw').val(),
                 db_name:$('#db_name').val(),
-                serv_host:$('#serv_host').val()
+                serv_host:$('#serv_host').val(),
+                shared_icon_path:$('#shared_icon_path').val(),
+                game_image_path:$('#game_image_path').val()
             }
         }).then(function(result){
             var deferred = $.Deferred();

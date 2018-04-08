@@ -6,7 +6,6 @@ require(__dir__.'/../vendor/autoload.php');
 WebUtil::setHeaderNoCache();
 $category = Util::array_get($_GET['category'], 0);
 //FIXME: 겨우 category 구분을 위해 php를 써야하는가? JavaScript로 바꾸자
-$images = IMAGES;
 ?>
 <!DOCTYPE html>
 <html>
@@ -20,9 +19,9 @@ $images = IMAGES;
 body { color:white; background-color:black; border-width:1; border-color:gray; }
 table { font-family:'맑은 고딕'; line-height:110%; }
 font { font-family:'맑은 고딕'; line-height:110%; }
-#bg0 { background-image:url(<?=$images?>/back_walnut.jpg); }
-#bg1 { background-image:url(<?=$images?>/back_blue.jpg); }
-#bg2 { background-image:url(<?=$images?>/back_green.jpg); }
+#bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
+#bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_blue.jpg); }
+#bg2 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
 
 .intro {
   font-size: 15px;
@@ -87,7 +86,7 @@ if ($category == 0) {
 <br>
 ◈ 우선 예약턴제 전략 웹게임인 『체섭』의 컨셉 &amp; 모토를 이해해봅시다.</font><br>
 <br>
-<img src=<?=$images?>/help_01_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_01_01.jpg class=leftFloat>
 <font class=title>『웹게임』이란?</font><br>
 　<font class=bullet>☞</font> 온라인게임과 달리 특별한 프로그램 설치 없이도 인터넷 브라우저상에서 바로 즐길 수 있는 게임들을 칭합니다. 그렇기 때문에 어딜가든 인터넷이 되는 곳이라면 언제든지 접속해서 플레이가 가능합니다. 심지어 모바일기기(휴대폰, PMP)에서도 가능합니다!<br>
 <br>
@@ -102,7 +101,7 @@ if ($category == 0) {
 <br>
 　<font class=bullet>☞</font> 체섭 입문을 권유하는 분들이 항상 하는 말씀 : 하루 5분 투자만으로도 가능한 게임!<br>
 <br>
-<img src=<?=$images; ?>/help_01_03.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_01_03.jpg class=rightFloat>
 <font class=title>『삼국지 모의전투』?</font><br>
 　<font class=bullet>☞</font> 동양인들이 열광하는 중국 삼국시대(서기 184년~280년)를 배경으로 하여, 유저 자신이 한명의 장수가 되어 다른 장수들과 각축을 벌이며 중원에서 활약하는 게임입니다.<br>
 <br>
@@ -115,7 +114,7 @@ if ($category == 0) {
 <br>
 　<font class=bullet>☞</font> 일반 MMORPG에서 길드장, 혈맹장을 즐겨 하신분들이라면 체섭에서의 수뇌부나 군주를 하면서 휘하 장수들을 거느리며 통솔하는 것에서 재미를 찾을 수 있을지도 모릅니다!<br>
 <br>
-<img src=<?=$images; ?>/help_01_02.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_01_02.jpg class=leftFloat>
 　<font class=bullet>☞</font> 힘들이지 않고 여유롭게, 캐릭터를 육성하거나 전투하는 재미를 찾을 수 있습니다!<br>
 <br>
 　<font class=bullet>☞</font> 온라인 게임을 하면서도 뭔지 모르게 외롭다거나, 심심하거나, 멍때리며 칼질만 하는 당신을 발견했다면... 삼모전만의 매력인 IRC 채팅(공개채널, 국가채널 등)을 즐기며 여유로운 게임을 겸해보세요! 몇시간이 훌쩍 지나는 것을 체험할 수 있습니다!<br>
@@ -137,7 +136,7 @@ if ($category == 0) {
         <td>
 <font class=intro>◈ 회원 가입을 해봅시다!</font><br>
 <br>
-<img src=<?=$images; ?>/help_02_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_02_01.jpg class=leftFloat>
 　<font class=bullet>☞</font> 아직 회원가입을 하지 않았다면 계정생성을 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 원하는 ID를 입력합니다.<br>
@@ -146,7 +145,7 @@ if ($category == 0) {
 <br>
 　<font class=bullet>☞</font> 확인을 위해 다시한번 PW를 입력합니다.<br>
 <br>
-<img src=<?=$images; ?>/help_02_02.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_02_02.jpg class=rightFloat>
 　<font class=bullet>※</font> 비밀번호는 가입하는 순간 암호화되어 저장되므로 운영자도 알 수 없습니다. 그래서 비밀번호 찾기 기능이 없지요. 비밀번호를 잊었을 경우, 운영자에게 요청하여 초기화는 가능합니다. 안심하셔도 좋습니다.<br>
 <br>
 　<font class=bullet>☞</font> 주민등록번호를 입력합니다.<br>
@@ -180,16 +179,16 @@ if ($category == 0) {
         <td>
 <font class=intro>◈ 웹게임에서 로그인은 굉장히 중요한 부분입니다. 잘 읽어주세요~</font><br>
 <br>
-<img src=<?=$images; ?>/help_03_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_03_01.jpg class=leftFloat>
 　<font class=bullet>☞</font> 로그인하는 순간 IP같은 몇가지 접속 정보가 서버에 기록됩니다. 특히 공공장소에서 접속 장소를 명시하지 않고 접속하는 경우, 멀티로 판단되어 캐릭터가 블럭되는 경우가 있으므로 주의해주세요!<br>
 <br>
 　<font class=bullet>☞</font> 한 가정에서 형과 동생, 직장에서 직장 동료들과 함께 플레이하는 경우는 특히 접속장소를 잘 적어주세요.<br>
 <br>
 　<font class=bullet>예시)</font> 자택/형, 삼모대학 도서관, 62사단 사지방 등<br>
 <br>
-<p align=center><img src=<?=$images; ?>/help_03_02.jpg>
-<img src=<?=$images; ?>/help_03_03.jpg>
-<img src=<?=$images; ?>/help_03_04.jpg></p>
+<p align=center><img src=<?=ServConfig::$gameImagePath?>/help_03_02.jpg>
+<img src=<?=ServConfig::$gameImagePath?>/help_03_03.jpg>
+<img src=<?=ServConfig::$gameImagePath?>/help_03_04.jpg></p>
 　<font class=bullet>☞</font> 위처럼, 한 IP에서 여러명이 접속해야하는 경우는 항상 멀티후보로 분류되므로 조심해야 합니다. 동생이 형의 계정으로 접속하여 대신 명령을 해준다든지(이하 대턴입력) 하는 등의 행동은 여러가지 분석정보에 의해서 적발될 수 있습니다.<br>
 <br>
 　<font class=bullet>☞</font> 한 IP에서 다수가 접속해야 하는 경우는 정황판단에 의해서 언제든지 블럭대상이 될 수 있음을 명심하시고, 블럭당할시에 이의제기는 받지 않습니다. 그만큼 확실히 멀티나 대턴이 확실하다고 판단되는 경우를 적발합니다.<br>
@@ -213,7 +212,7 @@ if ($category == 0) {
         <td>
 <font class=intro>◈ 각 서버의 특징을 알아봅시다.</font><br>
 <br>
-<img src=<?=$images; ?>/help_04_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_04_01.jpg class=leftFloat>
 　<font class=bullet>☞</font> 온라인 게임을 해보셨다면 익숙한 서버 선택 화면입니다. 체섭은 크게 유저들만 활동하는 메이져 서버인 체섭과 NPC들과 어울릴 수 있는 마이너 서버인 퀘풰퉤훼섭으로 분류됩니다. 마이너 서버들은 본래 테스트 서버 목적이므로 언제든지 리셋, 폐쇄될 수 있습니다.<br>
 <br>
 　<font class=bullet>☞</font> 체섭은 180년에 모두 공백지인 상태에서 유저들끼리 경쟁하는 가장 기본적인 방법의 삼모전입니다. 활동 유저도 가장 많고 그만큼 치열합니다. 대신 눈에 띄는 활약을 했다면 『명예의 전당』과 『왕조일람』에 그 명성을 영원히 남길 수 있습니다!<br>
@@ -227,7 +226,7 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 훼섭은 퉤섭과 비슷한 스타일이지만 고속진행이 특징입니다. 아침에 시작해서 밤에 통일되는 쾌속 서버! 휴가나 방학에 즐기면 좋습니다.<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_04_02.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_04_02.jpg class=rightFloat>
 <font class=intro>◈ 원하는 서버에 캐릭터를 생성해 봅시다.</font><br>
 <br>
 　<font class=bullet>☞</font> 마음에 드는 서버에서 장수생성을 클릭해봅시다. 저는 퉤섭을 찍어볼게요~<br>
@@ -245,13 +244,13 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 장수생성을 누릅시다.<br>
 <br>
 　<font class=bullet>☞</font> 다시 로그인 해봅시다. 캐릭터가 생성되었군요!<br>
-<img src=<?=$images; ?>/help_04_03.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_04_03.jpg class=leftFloat>
 <div class=clear></div>
 <br>
 <font class=intro>◈ 자신의 계정을 관리하는 방법을 알아봅시다.</font><br>
 <br>
-<img src=<?=$images; ?>/help_04_04.jpg class=leftFloat>
-<img src=<?=$images; ?>/help_04_05.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_04_04.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_04_05.jpg class=rightFloat>
 　<font class=bullet>☞</font> 플레이에 들어가기에 앞서 계정관리를 살펴봅시다. 계정관리의 비번&amp;전콘을 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 비밀번호를 변경할 수 있습니다.<br>
@@ -279,11 +278,11 @@ if ($category == 0) {
         <td>
 <font class=intro>◈ 가장 기본이 되는 턴입력을 해봅시다.</font><br>
 <br>
-<img src=<?=$images; ?>/help_05_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_01.jpg class=leftFloat>
 　<font class=bullet>☞</font> 중간에 보이는 세로 스크롤창에서 클릭, 드래그, Ctrl+클릭, Shift+클릭을 해봅시다. 클릭은 1개만 선택됩니다.<br>
 <br>
-<img src=<?=$images; ?>/help_05_03.jpg class=rightFloat>
-<img src=<?=$images; ?>/help_05_02.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_03.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_02.jpg class=rightFloat>
 　<font class=bullet>☞</font> 1턴 부분에서 버튼을 누른 후, 떼지 말고 5턴 부분까지 끌어봅시다. 여러개가 선택됩니다. 드래그라고 하지요.<br>
 <br>
 　<font class=bullet>☞</font> 이번엔 1턴을 클릭해봅시다. 그리고 Ctrl키를 누른 상태에서 3턴, 6턴을 눌러봅시다. 떨어져있는 여러가지를 선택할 수 있답니다.<br>
@@ -291,7 +290,7 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 이번엔 1턴 부분을 클릭해봅시다. 그리고 Shift키를 누른 상태에서 5턴 부분을 클릭해 봅시다. 드래그와 비슷한 기능이죠? 이처럼 여러가지 방법을 사용해서 예약할 턴을 선택할 수 있습니다.<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_05_04.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_04.jpg class=leftFloat>
 　<font class=bullet>☞</font> 간단하게 1턴, 3턴을 골라봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 우측에 보이는 콤보박스를 클릭하면 명령 목록이 쭉 나열됩니다. 휠이나 스크롤바를 사용하여 아래로 쭉 내려봅시다. ===개인=== 탭에 가장 먼저 보이는 견문을 선택합니다.
@@ -300,7 +299,7 @@ if ($category == 0) {
 <br>
 　<font class=bullet>☞</font> 가장 우측에 보이는 곳에 1, 3번째 칸에 견문이 입력되었을겁니다. 이처럼 원하는 턴을 선택하고, 원하는 명령을 선택하고, 실행을 눌러서 원하는 명령을 원하는 턴에 입력하는게 가장 기본적인 플레이 방법입니다.<br>
 <br>
-<img src=<?=$images; ?>/help_05_05.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_05.jpg class=leftFloat>
 　<font class=bullet>☞</font> 우측에 보이는 정보창(이하 예턴창)에서는 턴 순서, 게임시간, 실제시간, 명령이 보이게 됩니다. 방금 입력한대로 따르면 1턴이 197년 9월이고 실제 시간으로는 21시 30분에 실행된다는 뜻이네요^^<br>
 <br>
 　<font class=bullet>☞</font> 이처럼 자신의 턴시간에 자신이 예약해둔 명령이 실행되는 형태로 게임이 진행됩니다. 예약턴을 지정해놓고 잠을 자도 되고, 일을 해도 되고, IRC에 가서 전략을 토론하거나 잡담을 해도 되며, 심지어 멍때려도 됩니다!<br>
@@ -308,7 +307,7 @@ if ($category == 0) {
 <br>
 <font class=intro>◈ 고급 턴 입력 스킬을 공부해 봅시다.</font><br>
 <br>
-<img src=<?=$images; ?>/help_05_06.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_06.jpg class=leftFloat>
 　<font class=bullet>☞</font> 1턴에 견문을 입력해봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 2턴에 요양을 입력해봅시다.<br>
@@ -319,7 +318,7 @@ if ($category == 0) {
 <br>
 　<font class=bullet>☞</font> 이번엔 전체턴에 견문을 입력해봅시다. 1~24턴까지 견문이 입력될겁니다.<br>
 <br>
-<img src=<?=$images; ?>/help_05_07.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_07.jpg class=leftFloat>
 　<font class=bullet>☞</font> 반복&amp;수정에서 5턴 미루기를 선택해 봅시다. 1~5턴이 휴식으로 된것을 볼 수 있습니다.<br>
 <br>
 　<font class=bullet>☞</font> 무슨 기능인지 눈치 채셨나요? 현재 입력된 1~24턴이 그대로 5칸이 6~24턴으로 밀리게 되고 공백칸은 휴식으로 채워지게 됩니다. 전체 턴 순서는 유지하면서도 끼워넣거나 할때 편리하게 이용할 수 있습니다. 당기기도 비슷한 기능이랍니다. 직접 해보세요!<br>
@@ -345,7 +344,7 @@ if ($category == 0) {
         <td>
 <font class=intro>◈ 올턴 견문을 입력해놓으셨나요? 그럼 이제 각종 정보를 구경해볼까요?</font><br>
 <br>
-<img src=<?=$images; ?>/help_06_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_01.jpg class=leftFloat>
 <font class=title>세력도</font><br>
 　<font class=bullet>☞</font> 전체 지도와 장수동향, 정세동향을 볼 수 있습니다. 여기 나오는 정보들은 최신 소식이 가장 위에 나오는 형태이므로 아래에서 위로(↑방향) 읽는 것이 시간순서가 되겠지요^^<br>
 <br>
@@ -395,7 +394,7 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 현재 서버내의 접속현황을 확인할 수 있습니다.<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_06_03.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_03.jpg class=rightFloat>
 　<font class=bullet>☞</font> 1. 현재 토너먼트 진행상황을 알 수 있습니다.<br>
 　<font class=bullet>☞</font> 2. 서버의 과부하 상황을 알 수 있습니다.<br>
 　<font class=bullet>☞</font> 3. 서버의 시나리오 종류를 알 수 있습니다.<br>
@@ -416,7 +415,7 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 18. 1~24턴의 예약턴 표시<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_06_04.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_04.jpg class=rightFloat>
 　<font class=bullet>☞</font> 소속 국가 정보 : 현재는 재야이므로 당연히 없겠죠? ^^ (일반장수 튜토리얼)<br>
 　<font class=bullet>☞</font> 내 장수 정보 표시<br>
 　<font class=bullet>☞</font> 캐릭터의 얼굴입니다.<br>
@@ -446,7 +445,7 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 벌점 : 갱신(클릭)량에 따라서 벌점이 쌓입니다. 너무 무리한 갱신은 서버에 무리를 줄 수 있으므로 벌점이 너무 높으면 안되겠죠. 일반적으로 플레이하는 유저라면 신경쓰지 않아도 됩니다.<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_06_05.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_05.jpg class=rightFloat>
 　<font class=bullet>☞</font> 1. 국가정보창들 : 일반장수 튜토리얼 참고<br>
 　<font class=bullet>☞</font> 2. 장수동향 : 전체 장수들의 눈에 띄는 동향들이 표시됩니다.<br>
 　<font class=bullet>☞</font> 3. 개인기록 : 내 캐릭터의 명령 실행 결과들이 표시됩니다.<br>
@@ -460,27 +459,27 @@ if ($category == 0) {
 <div class=clear></div>
 <br>
 <font class=intro>◈ 인터페이스 구경 잘 하셨나요? ^^ 그럼 이제 갱신 버튼을 눌러볼까요?</font><br>
-<img src=<?=$images; ?>/help_06_06.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_06.jpg class=leftFloat>
 <br>
 　<font class=bullet>☞</font> 음? 뭐가 바뀐거지? 잘 살펴보시면 명령목록이 구경하시는동안 시간만큼 수행되어서 당겨진 것을 볼 수 있을겁니다. 5분턴 서버 기준으로 20분정도 구경을 하셨다면 약 4턴이 실행되었겠군요^^<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_06_07.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_07.jpg class=rightFloat>
 　<font class=bullet>☞</font> 개인기록을 보시면 4턴이 실행된동안의 결과가 기록되어있습니다. 하하핫! 동네 장사를 이겼군요!.<br>
 <br>
 　<font class=bullet>☞</font> 오오~ 레벨업 하는 모습도 보이는군요.<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_06_08.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_08.jpg class=leftFloat>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_06_09.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_09.jpg class=rightFloat>
 　<font class=bullet>☞</font> 자, 재야에서도 볼 수 있는 중원 정보를 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 각 국가별로 외교상황이나 장수 숫자를 살펴볼 수 있습니다. 한눈에 전체 정세를 파악할 때 유용하겠죠?<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_06_10.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_10.jpg class=rightFloat>
 　<font class=bullet>☞</font> 현재도시를 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 현재 자신이 소재하고 있는 도시의 정보를 볼 수 있습니다. 흠... 각종 수치들을 보니 아직 이 도시는 개발이 더딘 것 같군요. 뭐 우리나라가 아니므로 패스~<br>
@@ -490,7 +489,7 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 아악... 제 능력치가 빨간색인걸 보니 현재 부상을 입은 상태이군요. ㅠㅠ<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_06_11.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_11.jpg class=rightFloat>
 　<font class=bullet>☞</font> 이번엔 내정보&amp;설정을 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 오. 좀 더 자세한 정보가 보이는군요. 명성과 계급, 전투기록과 숙련도도 볼 수 있군요. 개인기록도 더 오래전 것까지 볼 수 있구요. 전투 결과나 자신의 열전(역사)도 볼 수 있답니다.<br>
@@ -516,17 +515,17 @@ if ($category == 0) {
         <td>
 <font class=intro>◈ 국가에 임관하여 일반장수가 되어서 국가를 강성하게 만들어 봅시다!</font><br>
 <br>
-<img src=<?=$images; ?>/help_07_01.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_07_01.jpg class=rightFloat>
 　<font class=bullet>☞</font> 1턴에 임관을 실행해봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 화면이 전환되면서 각국의 홍보문구가 나타납니다. 홍보문구를 보고 마음에 드는 국가를 선택해서 임관 버튼을 눌러봅시다. 손권을 돕고 싶으니 吳을 선택!<br>
 <br>
-<img src=<?=$images; ?>/help_07_02.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_07_02.jpg class=leftFloat>
 　<font class=bullet>☞</font> 1턴에 【吳】(으)로 임관이라고 입력된게 보이죠? 지루하게 어떻게 기다리느냐구요? 나중에 중요 장수가 되거나 수뇌부, 군주가 되면 정신이 없을정도로 시간이 촉박할겁니다. ㅎㅎ 이리저리 구경하면서 임관이 되길 기다려봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 1턴이 실행될즈음 중원정보나 현재도시를 들락날락 하거나 갱신 버튼을 눌러보면 임관명령 결과가 보이게 됩니다. 잘 임관 되었군요.<br>
 <br>
-<img src=<?=$images; ?>/help_07_03.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_07_03.jpg class=leftFloat>
 　<font class=bullet>☞</font> 이제 한 국가의 소속 장수이므로 신분도 일반이 되었고 국가를 강성하게 만들기 위해서 열심히 일을 해봅시다. 국가는 열심히 일한 장수들을 위해서 1월마다 자금을, 7월마다 군량을 지급하게 됩니다. 이 돈을 가지고 내정도 하고, 나중에 전쟁이 벌어지면 병사도 모으게 됩니다. 혹은 여유자금을 가지고 아이템을 구입하거나 베팅장에 투자를 할 수도 있습니다!(응?)<br>
 <br>
 　<font class=bullet>☞</font> 임관을 하게 되면 자동으로 수도(깃발에 별표시)로 이동하게 되는데요. 흠. 도시정보를 보니 농업, 수비가 부족하군요. 전체 선택후 명령목록에서 농업이나 수비를 선택합시다. 이 장수는 무력보다 지력이 높으므로 지력이 중요한 농지개간을 선택합니다. 실행을 누르면 올턴 농지개간이 입력!<br>
@@ -536,7 +535,7 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 국가방침에서 장수들에게 방침을 정해준다면 그대로 따르는것이 더 좋겠죠? 국가는 일사불란하게 장수들이 움직일 때 더욱 강성해지는 법!<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images; ?>/help_07_04.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_07_04.jpg class=rightFloat>
 　<font class=bullet>☞</font> 이제 국가 정보가 나타나는군요. 살펴볼까요?<br>
 　<font class=bullet>☞</font> 국가명<br>
 　<font class=bullet>☞</font> 성향 : 국가의 성향입니다. 성향마다 장점과 단점이 존재합니다.<br>
@@ -620,7 +619,7 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 특수병은 강력한 전투력 대신 자금과 군량 소모가 큰 특징이 있답니다.<br>
 　<font class=bullet>☞</font> 이민족병은 준수한 전투력과 더불어 자금과 군량 소모가 적은 특징이 있답니다.<br>
 　<font class=bullet>☞</font> 지역병은 일반병과 비슷한 능력에 기동력이나 회피율이 뛰어난 특징이 있답니다.<br>
-<img src=<?=$images; ?>/help_08_01.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_08_01.jpg class=rightFloat>
 　　---------- 보병계열 ----------<br>
 　　　　보병 : 특별한 조건이 없이 만들 수 있어요.<br>
 　　　청주병 : <font color=cyan>중원</font>지역에서 생산이 가능해요.<br>
