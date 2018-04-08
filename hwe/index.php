@@ -224,7 +224,7 @@ if ($session->userGrade >= 5) {
         <td width=698 height=520 colspan=2>
             <?=getMapHtml()?>
         </td>
-        <td width=298 rowspan=4><iframe seamless="seamless" sandbox="allow-same-origin allow-top-navigation allow-forms allow-scripts" name=commandlist src='commandlist.php' width=298 height=700 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
+        <td width=298 rowspan=4><iframe seamless="seamless" name=commandlist src='commandlist.php' width=298 height=700 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
     </tr>
 <form name=form2 action=preprocessing.php method=post target=commandlist>
     <tr>

@@ -17,7 +17,7 @@ $v->rule('integer', [
     'minutes2'
 ])->rule('dateFormat', [
     'starttime'
-]);
+], 'Y-m-d H:i:s');
 if (!$v->validate()) {
     Error($v->errorStr());
 }
@@ -117,5 +117,4 @@ switch ($btn) {
         break;
 }
 
-//echo "<script>location.replace('_admin1.php');</script>";
-echo '_admin1.php';//TODO:debug all and replace
+header('location:_admin1.php');

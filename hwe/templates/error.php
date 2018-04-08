@@ -22,10 +22,12 @@
         <button style='width:200px;height:2em;font-size:1.2em;' onclick="location.replace('index.php')">몇 초 뒤 눌러주세요</button>
     </div>
     <div class="with_border">
-        <?=$message?>
+        <?=$this->message?>
     </div>  
     <div class="with_border">
+        <pre>
         <?php debug_print_backtrace(); ?>
+</pre>
     </div>  
 </div>
 </body>

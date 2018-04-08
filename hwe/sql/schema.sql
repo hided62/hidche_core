@@ -54,7 +54,7 @@ CREATE TABLE `general` (
 	`turntime` DATETIME NULL DEFAULT NULL,
 	`recwar` DATETIME NULL DEFAULT NULL,
 	`makenation` CHAR(255) NULL DEFAULT NULL,
-	`makelimit` INT(2) NULL DEFAULT '24',
+	`makelimit` INT(2) NULL DEFAULT '0',
 	`killturn` INT(3) NULL DEFAULT NULL,
 	`lastconnect` DATETIME NULL DEFAULT NULL,
 	`lastrefresh` DATETIME NULL DEFAULT NULL,
