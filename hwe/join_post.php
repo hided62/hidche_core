@@ -258,7 +258,7 @@ if ($genius) {
 pushGenLog($me, $mylog);
 pushGeneralPublicRecord($log, $admin['year'], $admin['month']);
 
-$adminLog[0] = "가입 : {$name} // {$name} // {$id} // ".getenv("REMOTE_ADDR");
+$adminLog[0] = "가입 : {$userID} // {$name} // {$generalID}".getenv("REMOTE_ADDR");
 pushAdminLog($adminLog);
 
 $rootDB->insert('member_log', [
@@ -275,7 +275,7 @@ $rootDB->insert('member_log', [
 
 ?>
 <script>
-window.alert('정상적으로 회원 가입되었습니다. ID : <?=$id?> \n튜토리얼을 꼭 읽어보세요!');
+window.alert('정상적으로 회원 가입되었습니다. 장수명 : <?=$name?> \n튜토리얼을 꼭 읽어보세요!');
 </script>
 <script>location.replace('index.php');</script>
 

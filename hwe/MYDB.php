@@ -6,7 +6,7 @@ function MYDB_query($query, $connect)
     return mysqli_query($connect, $query);
 }
 
-function MYDB_num_rows($result) : int
+function MYDB_num_rows(\mysqli_result $result) : int
 {
     return mysqli_num_rows($result);
 }
@@ -14,27 +14,17 @@ function MYDB_num_rows($result) : int
 /**
  * @return mixed[]
  */
-function MYDB_fetch_array($result)
+function MYDB_fetch_array(\mysqli_result $result)
 {
     return mysqli_fetch_array($result);
 }
 
-function MYDB_fetch_row($result)
+function MYDB_fetch_row(\mysqli_result $result)
 {
     return mysqli_fetch_row($result);
-}
-
-function MYDB_list_tables($db, $connect)
-{
-    return mysqli_query($connect, "show tables");
 }
 
 function MYDB_error($connect)
 {
     return mysqli_error($connect);
-}
-
-function MYDB_close($connect)
-{
-    return mysqli_close($connect);
 }

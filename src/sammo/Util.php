@@ -6,7 +6,7 @@ class Util extends \utilphp\util
 
     /**
      * int 값 반환을 강제하는 부동소수점 반올림
-     * @param numeric $value
+     * @param int|float $value
      */
     public static function round($value) : int{
         return intval(round($value));

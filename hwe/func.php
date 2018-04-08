@@ -1342,8 +1342,6 @@ function updateTraffic() {
         ."|".StringUtil::padStringAlignRight($online,5," ")
         ."|".StringUtil::padStringAlignRight($user['name']."(".$user['refresh'].")",20," ")
     , FILE_APPEND);
-    fwrite($fp, $msg."\n");
-    fclose($fp);
 }
 
 function CheckOverhead() {

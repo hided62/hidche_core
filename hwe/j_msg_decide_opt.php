@@ -40,16 +40,16 @@ if(!$general){
     ]);
 }
 
-$result = getSingleMessage($msgID, $general);
+list($result, $messageInfo) = getSingleMessage($msgID, $general);
 
-if (!$result[0]) {
+if (!$result) {
     Json::die([
         'result'=>false,
-        'reason'=>$result[1]
+        'reason'=>$messageInfo
     ]);
 }
 
-$messageInfo = $result[1];
+'@phan-var-force mixed[] $result';
 
 $msgType = $messageInfo['type'];
 

@@ -138,6 +138,6 @@ $rootDB->insert('member_log', [
 
 ?>
 <script>
-    window.alert('정상적으로 회원 가입되었습니다. ID : <?=$id?>');
+    window.alert('정상적으로 회원 가입되었습니다. 장수명 : <?=$me['name']?>');
 </script>");
 <script>window.open('../i_other/help.php');</script>

@@ -740,10 +740,10 @@ function command_Other($turn, $commandtype) {
 
 
 function EncodeCommand($fourth, $third, $double, $command) {
-    $str  = StringUtil::padStringAlignRight($fourth, 4, "0");
-    $str .= StringUtil::padStringAlignRight($third,  4, "0");
-    $str .= StringUtil::padStringAlignRight($double, 4, "0");
-    $str .= StringUtil::padStringAlignRight($command, 2, "0");
+    $str  = StringUtil::padStringAlignRight((string)$fourth, 4, "0");
+    $str .= StringUtil::padStringAlignRight((string)$third,  4, "0");
+    $str .= StringUtil::padStringAlignRight((string)$double, 4, "0");
+    $str .= StringUtil::padStringAlignRight((string)$command, 2, "0");
     return $str;
 }
 

@@ -374,7 +374,7 @@ function calc(cost, formnum) {
         $baseCost = $unit->cost * $cost;
         $baseCost = CharCost($baseCost, $me['personal']);
 
-        $unitBaseType = intdiv($this->id, 10);
+        $unitBaseType = intdiv($unit->id, 10);
         if($me['special2'] == 50 && $unitBaseType == 0){
             $baseCost *= 0.9;
         }
@@ -394,18 +394,18 @@ function calc(cost, formnum) {
             $baseCost *= 0.5; 
         }
 
-        $name = $this->name;
-        $attack = $this->attack + $abil;
-        $defence = $this->defence + $abil;
-        $speed = $this->speed;
-        $avoid = $this->avoid;
+        $name = $unit->name;
+        $attack = $unit->attack + $abil;
+        $defence = $unit->defence + $abil;
+        $speed = $unit->speed;
+        $avoid = $unit->avoid;
         $weapImage = ServConfig::$gameImagePath."/weap{$i}.jpg";
         if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
         $baseCostShort = round($baseCost, 1);
 
-        $info = join('<br>', $this->info);
+        $info = join('<br>', $unit->info);
 
         echo "
 <tr height=64 bgcolor=$l>
@@ -584,7 +584,7 @@ function calc(cost, formnum) {
         $baseCost = $unit->cost * $cost;
         $baseCost = CharCost($baseCost, $me['personal']);
 
-        $unitBaseType = intdiv($this->id, 10);
+        $unitBaseType = intdiv($unit->id, 10);
         if($me['special2'] == 50 && $unitBaseType == 0){
             $baseCost *= 0.9;
         }
@@ -604,18 +604,18 @@ function calc(cost, formnum) {
             $baseCost *= 0.5; 
         }
 
-        $name = $this->name;
-        $attack = $this->attack + $abil;
-        $defence = $this->defence + $abil;
-        $speed = $this->speed;
-        $avoid = $this->avoid;
+        $name = $unit->name;
+        $attack = $unit->attack + $abil;
+        $defence = $unit->defence + $abil;
+        $speed = $unit->speed;
+        $avoid = $unit->avoid;
         $weapImage = ServConfig::$gameImagePath."/weap{$i}.jpg";
         if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
         $baseCostShort = round($baseCost, 1);
 
-        $info = join('<br>', $this->info);
+        $info = join('<br>', $unit->info);
 
         echo "
 <tr height=64 bgcolor=$l>
