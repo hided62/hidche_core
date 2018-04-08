@@ -48,7 +48,7 @@ function captureKey(e) {
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <form name=form1 action=c_vote.php method=post>
-    <tr><td colspan=3 align=center id=bg2><font size=5>설 문 조 사 (<?=$admin['develcost']*5;?>금과 추첨으로 유니크템 증정!)</font></td></tr>
+    <tr><td colspan=3 align=center id=bg2><font size=5>설 문 조 사 (<?=$admin['develcost']*5?>금과 추첨으로 유니크템 증정!)</font></td></tr>
 <?php
 
 if($session->userGrade >= 5) {

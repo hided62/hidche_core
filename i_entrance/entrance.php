@@ -30,11 +30,11 @@ $userGrade = $session->userGrade;
         <script type="text/javascript" src='../js/func.js'></script>
         <script type="text/javascript" src='../js/entrance.js'></script>
 
-<?php if($userGrade >= 5): ?>
+<?php if ($userGrade >= 5): ?>
         <!-- 운영자 -->
         <link type="text/css" rel="stylesheet" href='../css/admin_server.css'>
         <script type="text/javascript" src='../js/admin_server.js'></script>
-<?php endif;?>
+<?php endif; ?>
 
     </head>
     <body>
@@ -42,8 +42,8 @@ $userGrade = $session->userGrade;
 <div id="server_list_container">
 
 <?php
-if($userGrade >= 5){
-    echo $templates->render('global_panel',['notice'=>$notice]);
+if ($userGrade >= 5) {
+    echo $templates->render('global_panel', ['notice'=>$notice]);
 }
 ?>
 
@@ -94,8 +94,8 @@ if($userGrade >= 5){
 </div>
 
 <?php
-if($userGrade >= 5){
-    echo $templates->render('server_panel',[]);
+if ($userGrade >= 5) {
+    echo $templates->render('server_panel', []);
 }
 ?>
 

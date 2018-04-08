@@ -80,7 +80,7 @@ $(function(){
 </table>
 <br>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td colspan=<?=$nationcount+1;?> align=center bgcolor=blue>외 교 현 황</td></tr>
+    <tr><td colspan=<?=$nationcount+1?> align=center bgcolor=blue>외 교 현 황</td></tr>
 <?php
 echo "
     <tr>
@@ -144,7 +144,7 @@ for($i=0; $i < $nationcount; $i++) {
 ";
 }
 ?>
-    <tr><td colspan=<?=$nationcount+1;?> align=center>불가침 : <font color=limegreen>@</font>, 통합 : <font color=cyan>○</font>, 합병 : <font color=skyblue>◎</font>, 통상 : ㆍ, 선포 : <font color=magenta>▲</font>, 교전 : <font color=red>★</font></td></tr>
+    <tr><td colspan=<?=$nationcount+1?> align=center>불가침 : <font color=limegreen>@</font>, 통합 : <font color=cyan>○</font>, 합병 : <font color=skyblue>◎</font>, 통상 : ㆍ, 선포 : <font color=magenta>▲</font>, 교전 : <font color=red>★</font></td></tr>
 </table>
 <?php
 $query = "select city,name,conflict,conflict2 from city where conflict like '%|%'";

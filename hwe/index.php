@@ -12,7 +12,7 @@ increaseRefresh("메인", 1);
 $db = DB::db();
 $connect=$db->get();
 
-if(!$userID){
+if (!$userID) {
     header('Location:..');
     die();
 }
@@ -26,19 +26,19 @@ $me = $db->queryFirstRow(
 checkTurn();
 
 //그새 사망이면
-if($me === null) {
+if ($me === null) {
     $session->logoutGame();
     header('Location: ../');
     die();
 }
-if(!$session->generalID){
+if (!$session->generalID) {
     $session = Session::requireGameLogin();
 }
 $session->setReadOnly();
 $userID = Session::getUserID();
 
 
-if($me['newmsg'] == 1 || $me['newvote'] == 1) {
+if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
     $db->update('general', [
         'newmsg'=>0,
         'newvote'=>0
@@ -46,15 +46,18 @@ if($me['newmsg'] == 1 || $me['newvote'] == 1) {
 }
 
 $query = "select develcost,online,conlimit,tournament,tnmt_type,turnterm,scenario,scenario_text,extended_general,fiction,npcmode,vote from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $admin = MYDB_fetch_array($result);
 
 $query = "select plock from plock limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $plock = MYDB_fetch_array($result);
 
 $con = checkLimit($me['con'], $admin['conlimit']);
-if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
+if ($con >= 2) {
+    printLimitMsg($me['turntime']);
+    exit();
+}
 
 $scenario = $admin['scenario_text'];
 ?>
@@ -89,18 +92,30 @@ $(function(){
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=5><?=allButton()?></td></tr>
     <tr height=50>
-        <td colspan=5 align=center><font size=4>삼국지 모의전투 PHP 유기체서버 (<font color=cyan><?=$scenario;?></font>)</font></td>
+        <td colspan=5 align=center><font size=4>삼국지 모의전투 PHP 유기체서버 (<font color=cyan><?=$scenario?></font>)</font></td>
     </tr>
 <?php
 $valid = 0;
-if($admin['extended_general'] == 0) { $extend = "표준"; }
-else { $extend = "확장"; $valid = 1; }
-if($admin['fiction'] == 0) { $fiction = "사실"; }
-else { $fiction = "가상"; $valid = 1; }
-if($admin['npcmode'] == 0) { $npcmode = "불가능"; }
-else { $npcmode = "가능"; $valid = 1; }
+if ($admin['extended_general'] == 0) {
+    $extend = "표준";
+} else {
+    $extend = "확장";
+    $valid = 1;
+}
+if ($admin['fiction'] == 0) {
+    $fiction = "사실";
+} else {
+    $fiction = "가상";
+    $valid = 1;
+}
+if ($admin['npcmode'] == 0) {
+    $npcmode = "불가능";
+} else {
+    $npcmode = "가능";
+    $valid = 1;
+}
 $color = "cyan";
-if($valid == 1) {
+if ($valid == 1) {
     echo "
     <tr height=30>
         <td width=398 colspan=2 align=center><font color={$color}>{$scenario}</font></td>
@@ -113,22 +128,25 @@ if($valid == 1) {
 
     <tr height=30>
         <td width=198 align=center><?php info(2); ?></td>
-        <td width=198 align=center>전체 접속자 수 : <?=$admin['online'];?> 명</td>
-        <td width=198 align=center>턴당 갱신횟수 : <?=$admin['conlimit'];?>회</td>
+        <td width=198 align=center>전체 접속자 수 : <?=$admin['online']?> 명</td>
+        <td width=198 align=center>턴당 갱신횟수 : <?=$admin['conlimit']?>회</td>
         <td width=398 colspan=2 align=center><?php info(3); ?></td>
     </tr>
     <tr height=30>
         <td align=center>
 <?php
-if($plock['plock'] == 0) { echo "<marquee scrollamount=2><font color=cyan>서버 가동중</font></marquee>"; }
-else { echo "<font color=magenta>서버 동결중</font>"; }
+if ($plock['plock'] == 0) {
+    echo "<marquee scrollamount=2><font color=cyan>서버 가동중</font></marquee>";
+} else {
+    echo "<font color=magenta>서버 동결중</font>";
+}
 
 echo "
         </td>
         <td align=center>
 ";
 
-switch($admin['tnmt_type']) {
+switch ($admin['tnmt_type']) {
 case 0:  $str = "전력전"; break;
 case 1:  $str = "통솔전"; break;
 case 2:  $str = "일기토"; break;
@@ -136,8 +154,11 @@ case 3:  $str = "설전"; break;
 }
 $str2 = getTournament($admin['tournament']);
 $str3 = getTournamentTime();
-if($admin['tournament'] == 0) { echo "<font color=magenta>현재 토너먼트 경기 없음</font>"; }
-else { echo "<marquee scrollamount=2>↑<font color=cyan>{$str}</font> {$str2} {$str3}↑</marquee>"; }
+if ($admin['tournament'] == 0) {
+    echo "<font color=magenta>현재 토너먼트 경기 없음</font>";
+} else {
+    echo "<marquee scrollamount=2>↑<font color=cyan>{$str}</font> {$str2} {$str3}↑</marquee>";
+}
 
 echo "
         </td>
@@ -145,10 +166,13 @@ echo "
 ";
 
 $query = "select no from auction";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $auctionCount = MYDB_num_rows($result);
-if($auctionCount > 0) { echo "<marquee scrollamount=2><font color=cyan>{$auctionCount}건</font> 거래 진행중</marquee>"; }
-else { echo "<font color=magenta>진행중 거래 없음</font>"; }
+if ($auctionCount > 0) {
+    echo "<marquee scrollamount=2><font color=cyan>{$auctionCount}건</font> 거래 진행중</marquee>";
+} else {
+    echo "<font color=magenta>진행중 거래 없음</font>";
+}
 
 echo "
         </td>
@@ -157,20 +181,23 @@ echo "
 
 $vote = explode("|", $admin['vote']);
 $vote[0] = Tag2Code($vote[0]);
-if($vote[0] == "") { echo "<font color=magenta>진행중 설문 없음</font>"; }
-else { echo "<marquee scrollamount=3><font color=cyan>설문 진행중</font> : $vote[0]</marquee>"; }
+if ($vote[0] == "") {
+    echo "<font color=magenta>진행중 설문 없음</font>";
+} else {
+    echo "<marquee scrollamount=3><font color=cyan>설문 진행중</font> : $vote[0]</marquee>";
+}
 
 
 echo "
         </td>
     </tr>";
 ?>
-    <tr><td colspan=5>접속중인 국가: <?=onlinenation();?></td></tr>
+    <tr><td colspan=5>접속중인 국가: <?=onlinenation()?></td></tr>
     <tr><td colspan=5><?php adminMsg(); ?></td></tr>
     <tr><td colspan=5>【 국가방침 】<?php nationMsg(); ?></td></tr>
-    <tr><td colspan=5>【 접속자 】<?=onlinegen();?></td></tr>
+    <tr><td colspan=5>【 접속자 】<?=onlinegen()?></td></tr>
 <?php
-if($session->userGrade >= 5) {
+if ($session->userGrade >= 5) {
     echo "
     <tr><td colspan=5>
         <input type=button value=게임관리 onclick=location.replace('_admin1.php')>
@@ -217,13 +244,13 @@ if($session->userGrade >= 5) {
                 <option value=10>10턴</option>
                 <option value=11>11턴</option>
                 <option value=12>12턴</option>
-            </select><input type=button style=background-color:<?=GameConst::$basecolor2;?>;color:white;width:50;font-size:13px; value='반복' onclick='refreshing(this, 2,0)'><input type=button style=background-color:<?=GameConst::$basecolor2;?>;color:white;width:80;font-size:13px; value='▼미루기' onclick='refreshing(this, 2,1)'><input type=button style=background-color:<?=GameConst::$basecolor2;?>;color:white;width:80;font-size:13px; value='▲당기기' onclick='refreshing(this, 2,2)'>
+            </select><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:50;font-size:13px; value='반복' onclick='refreshing(this, 2,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:80;font-size:13px; value='▼미루기' onclick='refreshing(this, 2,1)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:80;font-size:13px; value='▲당기기' onclick='refreshing(this, 2,2)'>
         </td>
     </tr>
     <tr>
         <td width=646 align=right>
             <?php commandTable(); ?>
-            <input type=button style=background-color:<?=GameConst::$basecolor2;?>;color:white;width:110;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=GameConst::$basecolor2;?>;color:white;width:110;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=GameConst::$basecolor2;?>;color:white;width:160;font-size:13px; value='로그아웃' onclick=location.replace('logout_process.php')><br>
+            <input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160;font-size:13px; value='로그아웃' onclick=location.replace('logout_process.php')><br>
         </td>
     </tr>
 </form>
@@ -296,9 +323,16 @@ echo banner();
 <?php PrintElapsedTime(); ?>
 </div>
 <?php
-if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다!"); }
-if($me['newmsg'] == 1) { MessageBox("개인 서신이 도착했습니다!"); }
-if($me['newvote'] == 1) { $develcost = $admin['develcost']*5; MessageBox("설문조사에 참여하시면 금{$develcost}과 유니크템을 드립니다! (우측 상단 설문조사 메뉴)"); }
+if ($con == 1) {
+    MessageBox("접속제한이 얼마 남지 않았습니다!");
+}
+if ($me['newmsg'] == 1) {
+    MessageBox("개인 서신이 도착했습니다!");
+}
+if ($me['newvote'] == 1) {
+    $develcost = $admin['develcost']*5;
+    MessageBox("설문조사에 참여하시면 금{$develcost}과 유니크템을 드립니다! (우측 상단 설문조사 메뉴)");
+}
 ?>
 </body>
 </html>

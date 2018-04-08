@@ -13,34 +13,41 @@ $connect=$db->get();
 increaseRefresh("거래장", 2);
 
 $query = "select no,special,con,turntime from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
 $query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $admin = MYDB_fetch_array($result);
 
 $con = checkLimit($me['con'], $admin['conlimit']);
-if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
+if ($con >= 2) {
+    printLimitMsg($me['turntime']);
+    exit();
+}
 
 $query = "select no from auction where no1='{$me['no']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $tradeCount = MYDB_num_rows($result);
 
 $query = "select no from auction where no2='{$me['no']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $bidCount = MYDB_num_rows($result);
 
 $btCount = $tradeCount + $bidCount;
 
-if($session->userGrade >= 5 || ($me['special'] != 30 && $btCount < 1) || ($me['special'] == 30 && $btCount < 3)) {
+if ($session->userGrade >= 5 || ($me['special'] != 30 && $btCount < 1) || ($me['special'] == 30 && $btCount < 3)) {
     $btn = "submit";
 } else {
     $btn = "hidden";
 }
 
-if($msg == "") $msg = "-";
-if($msg2 == "") $msg2 = "-";
+if ($msg == "") {
+    $msg = "-";
+}
+if ($msg2 == "") {
+    $msg2 = "-";
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -73,21 +80,35 @@ if($msg2 == "") $msg2 = "-";
     </tr>
 <?php
 $query = "select * from auction where type=0 order by expire";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $count = MYDB_num_rows($result);
 
 $chk = 0;
-for($i=0; $i < $count; $i++) {
+for ($i=0; $i < $count; $i++) {
     $auction = MYDB_fetch_array($result);
     $itemname = GetStuffName($auction['stuff']);
-    $radio = ""; $alert = ""; $alert2 = "";
-    if($auction['no1'] == $me['no']) { $radio = " disabled"; }
-    elseif($auction['no2'] > 0 && $auction['amount'] * 2 <= $auction['value'] && $auction['stuff'] == 0) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
-    elseif($auction['no2'] > 0 && $auction['topv'] <= $auction['value']) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
-    elseif($chk == 0) { $radio = " checked"; $chk = 1; }
+    $radio = "";
+    $alert = "";
+    $alert2 = "";
+    if ($auction['no1'] == $me['no']) {
+        $radio = " disabled";
+    } elseif ($auction['no2'] > 0 && $auction['amount'] * 2 <= $auction['value'] && $auction['stuff'] == 0) {
+        $radio = " disabled";
+        $alert = "<font color=red>";
+        $alert2 = "</font>";
+    } elseif ($auction['no2'] > 0 && $auction['topv'] <= $auction['value']) {
+        $radio = " disabled";
+        $alert = "<font color=red>";
+        $alert2 = "</font>";
+    } elseif ($chk == 0) {
+        $radio = " checked";
+        $chk = 1;
+    }
     $pv = round($auction['value'] * 100 / $auction['amount']) / 100 + 0.001;
     $pv = substr($pv, 0, 4);
-    if($auction['stuff'] != 0) { $pv = '-'; }
+    if ($auction['stuff'] != 0) {
+        $pv = '-';
+    }
     echo "
     <tr align=center>
         <td>{$auction['no']}</td>
@@ -107,13 +128,13 @@ for($i=0; $i < $count; $i++) {
 ?>
     <tr height=25>
         <td align=center id=bg1>등록결과</td>
-        <td colspan=10><?=ConvertLog($msg);?></td>
+        <td colspan=10><?=ConvertLog($msg)?></td>
     </tr>
     <tr>
         <td align=center id=bg1>입찰등록</td>
         <td colspan=10>
             　지불할 금액: <input type=text style=color:white;background-color:black; size=6 maxlength=6 name=value>
-            <input type=<?=$btn;?> name=btn value='구매시도' onclick='return confirm("정말 입찰하시겠습니까?");'>
+            <input type=<?=$btn?> name=btn value='구매시도' onclick='return confirm("정말 입찰하시겠습니까?");'>
         </td>
     </tr>
     <tr>
@@ -126,7 +147,7 @@ for($i=0; $i < $count; $i++) {
             　판매량: <input type=text style=color:white;background-color:black; size=5 maxlength=5 name=amount value=1000>
             　시작가: <input type=text style=color:white;background-color:black; size=5 maxlength=5 name=cost value=500>
             　즉구가: <input type=text style=color:white;background-color:black; size=5 maxlength=5 name=topv value=2000>
-            <input type=<?=$btn;?> name=btn value='판매' onclick='return confirm("정말 판매하시겠습니까?");'>
+            <input type=<?=$btn?> name=btn value='판매' onclick='return confirm("정말 판매하시겠습니까?");'>
         </td>
     </tr>
     <tr>
@@ -157,21 +178,35 @@ for($i=0; $i < $count; $i++) {
     </tr>
 <?php
 $query = "select * from auction where type=1 order by expire";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $count = MYDB_num_rows($result);
 
 $chk = 0;
-for($i=0; $i < $count; $i++) {
+for ($i=0; $i < $count; $i++) {
     $auction = MYDB_fetch_array($result);
     $itemname = GetStuffName($auction['stuff']);
-    $radio = ""; $alert = ""; $alert2 = "";
-    if($auction['no1'] == $me['no']) { $radio = " disabled"; }
-    elseif($auction['no2'] > 0 && $auction['amount'] >= $auction['value'] * 2 && $auction['stuff'] == 0) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
-    elseif($auction['no2'] > 0 && $auction['topv'] >= $auction['value']) { $radio = " disabled"; $alert = "<font color=red>"; $alert2 = "</font>"; }
-    elseif($chk == 0) { $radio = " checked"; $chk = 1; }
+    $radio = "";
+    $alert = "";
+    $alert2 = "";
+    if ($auction['no1'] == $me['no']) {
+        $radio = " disabled";
+    } elseif ($auction['no2'] > 0 && $auction['amount'] >= $auction['value'] * 2 && $auction['stuff'] == 0) {
+        $radio = " disabled";
+        $alert = "<font color=red>";
+        $alert2 = "</font>";
+    } elseif ($auction['no2'] > 0 && $auction['topv'] >= $auction['value']) {
+        $radio = " disabled";
+        $alert = "<font color=red>";
+        $alert2 = "</font>";
+    } elseif ($chk == 0) {
+        $radio = " checked";
+        $chk = 1;
+    }
     $pv = round($auction['value'] * 100 / $auction['amount']) / 100 + 0.001;
     $pv = substr($pv, 0, 4);
-    if($auction['stuff'] != 0) { $pv = '-'; }
+    if ($auction['stuff'] != 0) {
+        $pv = '-';
+    }
     echo "
     <tr align=center>
         <td>{$auction['no']}</td>
@@ -191,13 +226,13 @@ for($i=0; $i < $count; $i++) {
 ?>
     <tr height=25>
         <td align=center id=bg1>등록결과</td>
-        <td colspan=10><?=ConvertLog($msg2);?></td>
+        <td colspan=10><?=ConvertLog($msg2)?></td>
     </tr>
     <tr>
         <td align=center id=bg1>입찰등록</td>
         <td colspan=10>
             　수령할 금액: <input type=text style=color:white;background-color:black; size=6 maxlength=6 name=value>
-            <input type=<?=$btn;?> name=btn value='판매시도' onclick='return confirm("정말 입찰하시겠습니까?");'>
+            <input type=<?=$btn?> name=btn value='판매시도' onclick='return confirm("정말 입찰하시겠습니까?");'>
         </td>
     </tr>
     <tr>
@@ -210,7 +245,7 @@ for($i=0; $i < $count; $i++) {
             　구입량: <input type=text style=color:white;background-color:black; size=5 maxlength=5 name=amount value=1000>
             　시작가: <input type=text style=color:white;background-color:black; size=5 maxlength=5 name=cost value=2000>
             　즉구가: <input type=text style=color:white;background-color:black; size=5 maxlength=5 name=topv value=500>
-            <input type=<?=$btn;?> name=btn value='구매' onclick='return confirm("정말 구매하시겠습니까?");'>
+            <input type=<?=$btn?> name=btn value='구매' onclick='return confirm("정말 구매하시겠습니까?");'>
         </td>
     </tr>
     <tr>
@@ -226,7 +261,7 @@ for($i=0; $i < $count; $i++) {
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td align=center id=bg2><font size=5>최 근 기 록</font></td></tr>
     <tr><td>
-    <?=getAuctionLogRecent(20);?>
+    <?=getAuctionLogRecent(20)?>
     </td></tr>
     <tr><td align=center id=bg2><font size=5>도 움 말</font></td></tr>
     <tr><td>

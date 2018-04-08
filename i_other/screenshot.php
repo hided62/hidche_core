@@ -15,14 +15,12 @@ if($sel == 0) $sel = 1;
         <title>스크린샷</title>
 
 <style type="text/css">
-<!--
-
 body { color:white; background-color:black; border-width:1; border-color:gray; }
 table { font-family:'맑은 고딕'; line-height:110%; }
 font { font-family:'맑은 고딕'; line-height:110%; }
-#bg0 { background-image:url(<?=$images;?>/back_walnut.jpg); }
-#bg1 { background-image:url(<?=$images;?>/back_blue.jpg); }
-#bg2 { background-image:url(<?=$images;?>/back_green.jpg); }
+#bg0 { background-image:url(<?=$images?>/back_walnut.jpg); }
+#bg1 { background-image:url(<?=$images?>/back_blue.jpg); }
+#bg2 { background-image:url(<?=$images?>/back_green.jpg); }
 
 .leftFloat {
   float: left;
@@ -35,8 +33,6 @@ font { font-family:'맑은 고딕'; line-height:110%; }
 .clear {
   clear: both;
 }
-
--->
 </style>
 
     </head>
@@ -53,13 +49,13 @@ font { font-family:'맑은 고딕'; line-height:110%; }
     </tr>
     <tr>
         <td align=center>
-            <img src=<?=$images;?>/screenshot_01.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=1')>
-            <img src=<?=$images;?>/screenshot_02.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=2')>
-            <img src=<?=$images;?>/screenshot_03.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=3')>
-            <img src=<?=$images;?>/screenshot_04.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=4')>
-            <img src=<?=$images;?>/screenshot_05.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=5')>
-            <img src=<?=$images;?>/screenshot_06.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=6')>
-            <img src=<?=$images;?>/screenshot_07.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=7')>
+            <img src=<?=$images?>/screenshot_01.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=1')>
+            <img src=<?=$images?>/screenshot_02.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=2')>
+            <img src=<?=$images?>/screenshot_03.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=3')>
+            <img src=<?=$images?>/screenshot_04.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=4')>
+            <img src=<?=$images?>/screenshot_05.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=5')>
+            <img src=<?=$images?>/screenshot_06.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=6')>
+            <img src=<?=$images?>/screenshot_07.jpg style=border-style:ridge;width:125px;height:75px; onclick=location.replace('screenshot.php?sel=7')>
         </td>
     </tr>
     <tr>
@@ -81,7 +77,7 @@ case 7: echo "독 특 한 &nbsp; 커 뮤 니 티"; break;
     </tr>
     <tr>
         <td align=center>
-            <img src=<?=$images;?>/screenshot_0<?=$sel;?>.jpg style=border-style:ridge;>
+            <img src=<?=$images?>/screenshot_0<?=$sel?>.jpg style=border-style:ridge;>
         </td>
     </tr>
 </table>

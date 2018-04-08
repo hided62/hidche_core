@@ -13,26 +13,29 @@ $connect=$db->get();
 increaseRefresh("암행부", 2);
 
 $query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $admin = MYDB_fetch_array($result);
 
 $query = "select no,nation,level,con,turntime,belong from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
 $query = "select level,secretlimit from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $nation = MYDB_fetch_array($result);
 
 $con = checkLimit($me['con'], $admin['conlimit']);
-if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
+if ($con >= 2) {
+    printLimitMsg($me['turntime']);
+    exit();
+}
 
-if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretlimit'])) {
+if ($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretlimit'])) {
     echo "수뇌부가 아니거나 사관년도가 부족합니다.";
     exit();
 }
 
-if($type == 0) {
+if ($type == 0) {
     $type = 7;
 }
 $sel[$type] = "selected";
@@ -40,7 +43,9 @@ $sel[$type] = "selected";
 ?>
 <!DOCTYPE html>
 <html>
-<?php if($con == 1) { MessageBox("접속제한이 얼마 남지 않았습니다!"); } ?>
+<?php if ($con == 1) {
+    MessageBox("접속제한이 얼마 남지 않았습니다!");
+} ?>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>암행부</title>
@@ -53,29 +58,29 @@ $sel[$type] = "selected";
     <tr><td>암 행 부<br><?=closeButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
-            <option <?=$sel[1];?> value=1>자금</option>
-            <option <?=$sel[2];?> value=2>군량</option>
-            <option <?=$sel[3];?> value=3>도시</option>
-            <option <?=$sel[4];?> value=4>병종</option>
-            <option <?=$sel[5];?> value=5>병사</option>
-            <option <?=$sel[6];?> value=6>삭제턴</option>
-            <option <?=$sel[7];?> value=7>턴</option>
-            <option <?=$sel[8];?> value=8>부대</option>
+            <option <?=$sel[1]?> value=1>자금</option>
+            <option <?=$sel[2]?> value=2>군량</option>
+            <option <?=$sel[3]?> value=3>도시</option>
+            <option <?=$sel[4]?> value=4>병종</option>
+            <option <?=$sel[5]?> value=5>병사</option>
+            <option <?=$sel[6]?> value=6>삭제턴</option>
+            <option <?=$sel[7]?> value=7>턴</option>
+            <option <?=$sel[8]?> value=8>부대</option>
         </select>
         <input type=submit value='정렬하기'></form>
     </td></tr>
 </table>
 <?php
 $query = "select troop,name from troop where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $troopCount = MYDB_num_rows($result);
 
-for($i=0; $i < $troopCount; $i++) {
+for ($i=0; $i < $troopCount; $i++) {
     $troop = MYDB_fetch_array($result);
     $troopName[$troop['troop']] = $troop['name'];
 }
 
-switch($type) {
+switch ($type) {
     case 1: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by gold desc"; break;
     case 2: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by rice desc"; break;
     case 3: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by city"; break;
@@ -85,7 +90,7 @@ switch($type) {
     case 7: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by turntime"; break;
     case 8: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by troop desc"; break;
 }
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $gencount = MYDB_num_rows($genresult);
 
 echo"
@@ -106,25 +111,25 @@ echo"
         <td width=58 align=center id=bg1>삭턴</td>
         <td width=58 align=center id=bg1>턴</td>
     </tr>";
-for($j=0; $j < $gencount; $j++) {
+for ($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
     $city = CityConst::byID($general['city'])->name;
     $troop = $troopName[$general['troop']] == "" ? "-" : $troopName[$general['troop']];
 
-    if($general['level'] == 12) {
+    if ($general['level'] == 12) {
         $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
+    } elseif ($general['level'] >= 5) {
         $lbonus = $nation['level'];
     } else {
         $lbonus = 0;
     }
-    if($lbonus > 0) {
+    if ($lbonus > 0) {
         $lbonus = "<font color=cyan>+{$lbonus}</font>";
     } else {
         $lbonus = "";
     }
 
-    if($general['injury'] > 0) {
+    if ($general['injury'] > 0) {
         $leader = floor($general['leader'] * (100 - $general['injury'])/100);
         $power = floor($general['power'] * (100 - $general['injury'])/100);
         $intel = floor($general['intel'] * (100 - $general['injury'])/100);
@@ -137,11 +142,15 @@ for($j=0; $j < $gencount; $j++) {
         $intel = "{$general['intel']}";
     }
 
-    if($general['npc'] >= 2) { $name = "<font color=cyan>{$general['name']}</font>"; }
-    elseif($general['npc'] == 1) { $name = "<font color=skyblue>{$general['name']}</font>"; }
-    else { $name =  "{$general['name']}"; }
+    if ($general['npc'] >= 2) {
+        $name = "<font color=cyan>{$general['name']}</font>";
+    } elseif ($general['npc'] == 1) {
+        $name = "<font color=skyblue>{$general['name']}</font>";
+    } else {
+        $name =  "{$general['name']}";
+    }
 
-    switch($general['mode']) {
+    switch ($general['mode']) {
     case 0: $mode = "×"; break;
     case 1: $mode = "○"; break;
     case 2: $mode = "◎"; break;
@@ -160,7 +169,7 @@ for($j=0; $j < $gencount; $j++) {
         <td align=center>{$general['crew']}</td>
         <td align=center>{$general['train']}</td>
         <td align=center>{$general['atmos']}</td>";
-    if($general['npc'] >= 2) {
+    if ($general['npc'] >= 2) {
         echo "
         <td>
             <font size=3>NPC 장수";
@@ -170,7 +179,7 @@ for($j=0; $j < $gencount; $j++) {
             <font size=1>";
         $turn = getTurn($general, 1, 0);
 
-        for($i=0; $i < 5; $i++) {
+        for ($i=0; $i < 5; $i++) {
             $turn[$i] = StringUtil::subStringForWidth($turn[$i], 0, 20);
             $k = $i+1;
             echo "
@@ -181,7 +190,7 @@ for($j=0; $j < $gencount; $j++) {
             </font>
         </td>
         <td align=center>{$general['killturn']}</td>
-        <td align=center>".substr($general['turntime'],14,5)."</td>
+        <td align=center>".substr($general['turntime'], 14, 5)."</td>
     </tr>";
 }
 echo "

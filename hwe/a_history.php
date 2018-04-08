@@ -109,13 +109,13 @@ $history = MYDB_fetch_array($result);
     <tr><td colspan=5 align=center id=bg1>중 원 지 도</td></tr>
     <tr height=520>
         <td width=698>
-            <iframe src='map_history.php?year=<?=$year;?>&month=<?=$month;?>' width=698 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
+            <iframe src='map_history.php?year=<?=$year?>&month=<?=$month?>' width=698 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
             </iframe>
         </td>
-        <td width=98 valign=top><?=$history['nation'];?></td>
-        <td width=78 valign=top><?=$history['power'];?></td>
-        <td width=58 valign=top><?=$history['gen'];?></td>
-        <td width=58 valign=top><?=$history['city'];?></td>
+        <td width=98 valign=top><?=$history['nation']?></td>
+        <td width=78 valign=top><?=$history['power']?></td>
+        <td width=58 valign=top><?=$history['gen']?></td>
+        <td width=58 valign=top><?=$history['city']?></td>
     </tr>
     <tr><td colspan=5 align=center id=bg1>중 원 정 세</td></tr>
     <tr>

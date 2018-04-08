@@ -7,7 +7,7 @@ include "func.php";
 $session = Session::requireLogin()->setReadOnly();
 $userID = Session::getUserID();
 
-if(!$userID) {
+if (!$userID) {
     MessageBox("잘못된 접근입니다!!!");
     echo "<script>history.go(-1);</script>";
     exit(1);
@@ -16,7 +16,7 @@ if(!$userID) {
 //회원 테이블에서 정보확인
 $member = RootDB::db()->queryFirstRow("select no,name,picture,imgsvr,grade from MEMBER where no= %i", $userID);
 
-if(!$member) {
+if (!$member) {
     MessageBox("잘못된 접근입니다!!!");
     echo "<script>history.go(-1);</script>";
     exit(1);
@@ -32,7 +32,7 @@ $connect=$db->get();
 <title>장수생성</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href="css/common.css">
-<script type="text/javascript" src=<?="../e_lib/jquery-3.2.1.min.js";?>></script>
+<script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 
 jQuery(function($){
@@ -186,14 +186,14 @@ window.abilityPowint = abilityPowint;
     </table>
 <?php
 $query = "select show_img_level,maxgeneral from game limit 1";
-$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect), "");
 $admin = MYDB_fetch_array($result);
 
 $query = "select no from general where npc<2";
-$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect), "");
 $gencount = MYDB_num_rows($result);
 
-if($gencount >= $admin['maxgeneral']) {
+if ($gencount >= $admin['maxgeneral']) {
     echo "<script>alert('더 이상 등록할 수 없습니다.');</script>";
     echo "<script>history.go(-1);</script>";
     exit();
@@ -204,12 +204,12 @@ if($gencount >= $admin['maxgeneral']) {
 <tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
 <?php
 $query = "select name,scoutmsg,color from nation";
-$nationresult = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
+$nationresult = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect), "");
 $nationcount = MYDB_num_rows($nationresult);
 
-for($i=0; $i < $nationcount; $i++) {
+for ($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($nationresult);
-    if($nation['scoutmsg'] == "") {
+    if ($nation['scoutmsg'] == "") {
         echo "
     <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:{newColor({$nation['color']})};background-color:{$nation['color']}>-</td></tr>";
     } else {
@@ -232,7 +232,7 @@ for($i=0; $i < $nationcount; $i++) {
             </td>
         </tr>
 <?php
-if($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "") {
+if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "") {
     $imageTemp = GetImageURL($member['imgsvr']);
     echo "
         <tr>
@@ -275,15 +275,15 @@ if($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture'] 
         </tr>
         <tr>
             <td width=498 align=right id=bg1>통솔</td>
-            <td colspan=2><input type="text" name="leader" id="leader" value="<?=$abil['leader'];?>"></td>
+            <td colspan=2><input type="text" name="leader" id="leader" value="<?=$abil['leader']?>"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>무력</td>
-            <td colspan=2><input type="text" name="power" id="power" value="<?=$abil['power'];?>"></td>
+            <td colspan=2><input type="text" name="power" id="power" value="<?=$abil['power']?>"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>지력</td>
-            <td colspan=2><input type="text" name="intel" id="intel" value="<?=$abil['intel'];?>"></td>
+            <td colspan=2><input type="text" name="intel" id="intel" value="<?=$abil['intel']?>"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>능력치 조정</td>
