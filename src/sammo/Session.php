@@ -141,9 +141,15 @@ class Session
     public function __get(string $name)
     {
         if ($name == 'generalID') {
+            if (!class_exists('\\sammo\\UniqueConst')){
+                return null;
+            }
             return $this->get(UniqueConst::$serverID.static::GAME_KEY_GENERAL_ID);
         }
         if ($name == 'generalName') {
+            if (!class_exists('\\sammo\\UniqueConst')){
+                return null;
+            }
             return $this->get(UniqueConst::$serverID.static::GAME_KEY_GENERAL_NAME);
         }
         return $this->get($name);
