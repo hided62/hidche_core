@@ -3,6 +3,11 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$ok = Util::getReq('ok');
+$when = Util::getReq('when', 'int');
+$gen = Util::getReq('gen', 'int'); //XXX: -_-;;;;;;;;;;;;
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

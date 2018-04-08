@@ -1735,7 +1735,10 @@ function process_31(&$general) {
         $query = "select spy from nation where nation='{$general['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $nation = MYDB_fetch_array($result);
-        if($nation['spy'] != "") { $cities = explode("|", $nation['spy']); }
+        if($nation['spy'] != "") 
+        { 
+            $cities = array_map('intval', explode("|", $nation['spy'])); 
+        }
         $exist = 0;
         for($i=0; $i < count($cities); $i++) {
             if(intdiv($cities[$i], 10) == $destination) {

@@ -168,7 +168,7 @@ if($ok == "수락" && $me['level'] < 12 && $nation['level'] > 0 && $nation['scou
 pushGenLog($me, $mylog);
 pushGenLog($you, $youlog);
 pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-pushWorldHistory($history, $admin['year'], $admin['month']);
+//pushWorldHistory($history, $admin['year'], $admin['month']);
 
 echo "<script>location.replace('msglist.php');</script>";
 

@@ -28,7 +28,7 @@ class WebUtil
     }
 
     /**
-     * @return null|mixed|mixed[]
+     * @return mixed|mixed[]
      */
     public static function parseJsonPost()
     {

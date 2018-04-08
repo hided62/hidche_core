@@ -17,7 +17,7 @@ $result = [];
 $server = [];
 
 
-$rootServer = end(AppConf::getList())->getShortName();
+$rootServer = Util::array_last(AppConf::getList())->getShortName();
 
 foreach (AppConf::getList() as $setting) {
     $serverColor = $setting->getColor();

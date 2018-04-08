@@ -4,7 +4,11 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+$btn = Util::getReq('btn');
 $sel = Util::getReq('sel', 'int');
+$comment = Util::getReq('comment');
+$title = Util::getReq('title');
+$str = Util::getReq('str');
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -38,7 +42,7 @@ else if($btn == "댓글" && $comment != "") {
 
     $nation = getNationStaticInfo($me['nation']);
     if($nation == null) { 
-        $nation['name'] = "재야"; 
+        $nation = ['name' => "재야"]; 
     }
 
     if($admin['votecomment'] != "") { $admin['votecomment'] .= "|"; }

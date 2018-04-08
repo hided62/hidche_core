@@ -3,6 +3,10 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$ok = Util::getReq('ok');
+$gen = Util::getReq('gen', 'int'); //XXX: -_-;;;;;;;;;;;;
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -64,6 +68,8 @@ for($i=0; $i < $warcount; $i++) {
         $valid = 0;
     }
 }
+
+$mylog = [];
 
 if($ok == "수락") {
     // 서신 보낸 후 멸망 했을때.

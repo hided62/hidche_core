@@ -28,6 +28,8 @@ if(!isset($post['genlist']) || !isset($post['msg'])){
 }
 
 
+'@phan-var mixed[] $post';
+
 $destMailbox = $post['dest_mailbox'];
 $msg = $post['msg'];
 $datetime = new \DateTime();
@@ -68,9 +70,7 @@ if($con >= 2) {
     ]);
  }
 
-//SubStrForWidth는 반각은 1, 전각은 2로 측정하는듯 보이나, 대부분 글자수 단위로 카운트 하고 있어 mb_substr로 처리함.
-$msg = mb_substr($msg, 0, 99, 'UTF-8');
-$msg = trim($msg);
+$msg = StringUtil::cutStringForWidth($msg, 100, '');
 
 if($msg == ''){
     Json::die([
@@ -89,7 +89,7 @@ $src = [
 
 // 전체 메세지
 if($destMailbox == 9999) {
-    sendMessage('public', $src, null, $msg, $date);
+    sendMessage('public', $src, [], $msg, $date);
 // 국가 메세지
 } elseif($destMailbox >= 9000) {
 
@@ -97,7 +97,7 @@ if($destMailbox == 9999) {
         $real_nation = $me['nation_id'];
     }
     else{
-        $real_nation = $dest - 9000;
+        $real_nation = $destMailbox - 9000;
     }
 
     if(!getNationStaticInfo($real_nation)){
@@ -138,8 +138,8 @@ if($destMailbox == 9999) {
 
     $dest = [
         'id' => $destMailbox,
-        'name' => $dest_user['name'],
-        'nation_id' => $dest_user['nation']
+        'name' => $destUser['name'],
+        'nation_id' => $destUser['nation']
     ];
 
     sendMessage('private', $src, $dest, $msg, $date);

@@ -787,7 +787,6 @@ function command_22($turn, $command) {
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    die('비활성화됨');//TODO:등용장 대 디자인
     starter("등용");
 
     $query = "select nation from general where owner='{$userID}'";
@@ -1563,38 +1562,47 @@ function command_46($turn, $command) {
 
     starter("건국");
 
-    $query = "select maxnation from game limit 1";
-    $result = MYDB_query($query, $connect) or Error("command_46 ".MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $maxnation = $db->queryFirstField('SELECT maxnation FROM game LIMIT 1');
 
-    $color = GetNationColors();
+    $colorUsed = [];
+    
+    foreach(GetNationColors() as $color){
+        $colorUsed[$color] = 0;
+    }
 
+    $nationCount = count(getAllNationStaticInfo());
     foreach(getAllNationStaticInfo() as $nation){
         if($nation['level'] <= 0){
             continue;
         }
-        $nationcolor[$i] = $nation['color'];
-    }
-    $validCount = count($color);
-    //등록된 색깔 가려내기
-    for($i=0; $i < count($color); $i++) {
-        $valid[$i] = 1;
-        for($j=0; $j < $nationcount; $j++) {
-            if($color[$i] == $nationcolor[$j]) {
-                $valid[$i] = 0;
-                $validCount--;
-            }
+
+        if(isset($nationcolor[$nation['color']])){
+            $nationcolor[$nation['color']] = 1;
         }
+        else{
+            $nationcolor[$nation['color']]++;
+        }
+        
     }
+
+    $colorUsedCnt = 0;
+    foreach($colorUsed as $color=>$used){
+        if($used){
+            continue;
+        }
+        $colorUsedCnt += 1;
+    }
+
     //색깔이 다 쓰였으면 그냥 모두 허용
-    if($validCount <= 0) {
-        for($i=0; $i < count($color); $i++) {
-            $valid[$i] = 1;
+    if($colorUsedCnt === count($colorUsed)){
+        foreach(array_keys($colorUsed) as $color){
+            $colorUsed[$color] = 0;
         }
     }
 
-    if($nationcount < $admin['maxnation']) {
-            echo "
+
+    if($nationCount < $maxnation) {
+?>
 현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.<br>
 
 - 법 가 : <font color=cyan>금수입↑ 치안↑</font> <font color=magenta>인구↓ 민심↓</font><br>
@@ -1613,15 +1621,16 @@ function command_46($turn, $command) {
 
 <form name=form1 action=c_double.php method=post>
 국명 : <input type=text name=name size=12 maxlength=6 style=text-align:right;color:white;background-color:black>
-색깔 : <select name=double size=1>";
-            for($i=0; $i < count($color); $i++) {
-                if($valid[$i]) {
-                    echo "
-    <option value={$i} style=background-color:{$color[$i]};color:".newColor($color[$i]).";>국가명</option>";
-                }
+색깔 : <select name=double size=1>
+<?php
+        foreach(GetNationColors() as $idx=>$color) {
+            if($colorUsed[$color] > 0){
+                continue;
             }
+            echo "<option value={$idx} style=background-color:{$color};color:".newColor($color).";>국가명</option>";
+        }
 
-        echo "
+?>
 </select>
 성향 : <select name=third size=1>
     <option value=1 style=background-color:black;color:white;>".getNationType(1)."</option>
@@ -1639,17 +1648,15 @@ function command_46($turn, $command) {
     <option value=13 style=background-color:black;color:white;>".getNationType(13)."</option>
 </select>
 <input type=submit value=건국>
-<input type=hidden name=command value=$command>";
+<input type=hidden name=command value=$command>
+<?php
         for($i=0; $i < count($turn); $i++) {
-            echo "
-<input type=hidden name=turn[] value=$turn[$i]>";
+            echo "<input type=hidden name=turn[] value=$turn[$i]>";
         }
 
-        echo "
-</form>";
+        echo "</form>";
     } else {
-        echo "
-더 이상 건국은 불가능합니다.<br>";
+        echo "더 이상 건국은 불가능합니다.<br>";
     }
     ender();
 }
@@ -2761,30 +2768,37 @@ function command_81($turn, $command) {
 
     starter("국기변경", 1);
 
-    $color = GetNationColors();
+    $colorUsed = [];
+    
+    foreach(GetNationColors() as $color){
+        $colorUsed[$color] = 0;
+    }
 
-     foreach(getAllNationStaticInfo() as $nation){
+    foreach(getAllNationStaticInfo() as $nation){
         if($nation['level'] <= 0){
             continue;
         }
 
-        $nationcolor[$i] = $nation['color'];
-    }
-    $validCount = count($color);
-    //등록된 색깔 가려내기
-    for($i=0; $i < count($color); $i++) {
-        $valid[$i] = 1;
-        for($j=0; $j < $nationcount; $j++) {
-            if($color[$i] == $nationcolor[$j]) {
-                $valid[$i] = 0;
-                $validCount--;
-            }
+        if(isset($nationcolor[$nation['color']])){
+            $nationcolor[$nation['color']] = 1;
+        }
+        else{
+            $nationcolor[$nation['color']]++;
         }
     }
+
+    $colorUsedCnt = 0;
+    foreach($colorUsed as $color=>$used){
+        if($used){
+            continue;
+        }
+        $colorUsedCnt += 1;
+    }
+
     //색깔이 다 쓰였으면 그냥 모두 허용
-    if($validCount <= 0) {
-        for($i=0; $i < count($color); $i++) {
-            $valid[$i] = 1;
+    if($colorUsedCnt === count($colorUsed)){
+        foreach(array_keys($colorUsed) as $color){
+            $colorUsed[$color] = 0;
         }
     }
 
@@ -2792,12 +2806,12 @@ function command_81($turn, $command) {
 국기를 변경합니다. 단 1회 가능합니다.<br>
 <form name=form1 action=c_double.php method=post>
 색깔 : <select name=double size=1>";
-            for($i=0; $i < count($color); $i++) {
-                if($valid[$i]) {
-                    echo "
-    <option value={$i} style=background-color:{$color[$i]};color:".newColor($color[$i]).";>국가명</option>";
-                }
-            }
+    foreach(GetNationColors() as $idx=>$color) {
+        if($colorUsed[$color] > 0){
+            continue;
+        }
+        echo "<option value={$idx} style=background-color:{$color};color:".newColor($color).";>국가명</option>";
+    }
     echo "
 </select>
 <input type=submit value=국기변경>

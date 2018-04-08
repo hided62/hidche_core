@@ -49,7 +49,7 @@ if (!$result) {
     ]);
 }
 
-'@phan-var-force mixed[] $result';
+'@phan-var-force mixed[] $messageInfo';
 
 $msgType = $messageInfo['type'];
 

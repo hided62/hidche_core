@@ -34,148 +34,7 @@ $connect=$db->get();
 <link href="../d_shared/common.css" red="stylesheet">
 <link rel='stylesheet' href="css/common.css">
 <script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
-<script type="text/javascript">
-
-jQuery(function($){
-
-var totalAbil = 150;
-var $leader = $('#leader');
-var $power = $('#power');
-var $intel = $('#intel');
-
-function abilityRand(){
-    var leader = Math.random()*65 + 10;
-    var power = Math.random()*65 + 10;
-    var intel = Math.random()*65 + 10;
-    var rate = leader + power + intel;
-
-    leader = Math.floor(leader / rate * totalAbil);
-    power = Math.floor(power / rate * totalAbil);
-    intel = Math.floor(intel / rate * totalAbil);
-    
-
-    while(leader+power+intel < totalAbil){
-        leader+=1;
-    }
-    
-    if(leader > 75 || power > 75 || intel > 75 || leader < 10 || power < 10 || intel < 10){
-        return abilityRand();
-    }
-
-    $leader.val(leader);
-    $power.val(power);
-    $intel.val(intel);
-}
-
-
-function abilityLeadpow(){
-    var leader = Math.random() * 6;
-    var power = Math.random() * 6;
-    var intel = Math.random() * 1;
-    var rate = leader + power + intel;
-
-    leader = Math.floor(leader / rate * totalAbil);
-    power = Math.floor(power / rate * totalAbil);
-    intel = Math.floor(intel / rate * totalAbil);
-    
-    while(leader+power+intel < totalAbil){
-        power+=1;
-    }
-    
-    if(intel < 10){
-        leader -= 10 - intel;
-        intel = 10;
-    }
-    
-    if(leader > 75){
-        power += leader - 75;
-        leader = 75;
-    }
-    
-    if(power > 75){
-        leader += power - 75;
-        power = 75;
-    }
-
-    $leader.val(leader);
-    $power.val(power);
-    $intel.val(intel);
-}
-
-function abilityLeadint(){
-    var leader = Math.random() * 6;
-    var power = Math.random() * 1;
-    var intel = Math.random() * 6;
-    var rate = leader + power + intel;
-
-    leader = Math.floor(leader / rate * totalAbil);
-    power = Math.floor(power / rate * totalAbil);
-    intel = Math.floor(intel / rate * totalAbil);
-
-    while(leader+power+intel < totalAbil){
-        intel+=1;
-    }
-
-    if(power < 10){
-        leader -= 10 - power;
-        power = 10;
-    }
-    
-    if(leader > 75){
-        intel += leader - 75;
-        leader = 75;
-    }
-    
-    if(intel > 75){
-        leader += intel - 75;
-        intel = 75;
-    }
-
-    $leader.val(leader);
-    $power.val(power);
-    $intel.val(intel);
-}
-
-function abilityPowint(){
-    var leader = Math.random() * 1;
-    var power = Math.random() * 6;
-    var intel = Math.random() * 6;
-    var rate = leader + power + intel;
-
-    leader = Math.floor(leader / rate * totalAbil);
-    power = Math.floor(power / rate * totalAbil);
-    intel = Math.floor(intel / rate * totalAbil);
-
-    while(leader+power+intel < totalAbil){
-        intel+=1;
-    }
-
-    if(leader < 10){
-        power -= 10 - leader;
-        leader = 10;
-    }
-    
-    if(power > 75){
-        intel += power - 75;
-        power = 75;
-    }
-    
-    if(intel > 75){
-        power += intel - 75;
-        intel = 75;
-    }
-
-    $leader.val(leader);
-    $power.val(power);
-    $intel.val(intel);
-}
-
-window.abilityRand = abilityRand;
-window.abilityLeadpow = abilityLeadpow;
-window.abilityLeadint = abilityLeadint;
-window.abilityPowint = abilityPowint;
-});
-</script>
+<script type="text/javascript" src="js/join.js"></script>
 
 </head>
 <body>
@@ -239,7 +98,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
         <tr>
             <td align=right id=bg1>전콘 사용 여부</td>
             <td width=64 height=64>
-                <img src={$imageTemp}/{$member['picture']} border=0>
+                <img src='{$imageTemp}/{$member['picture']}' border=0>
             </td>
             <td>
                 <input type=checkbox name=pic value=1 checked>사용
@@ -276,15 +135,15 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
         </tr>
         <tr>
             <td width=498 align=right id=bg1>통솔</td>
-            <td colspan=2><input type="text" name="leader" id="leader" value="<?=$abil['leader']?>"></td>
+            <td colspan=2><input type="number" name="leader" id="leader" value="50"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>무력</td>
-            <td colspan=2><input type="text" name="power" id="power" value="<?=$abil['power']?>"></td>
+            <td colspan=2><input type="number" name="power" id="power" value="50"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>지력</td>
-            <td colspan=2><input type="text" name="intel" id="intel" value="<?=$abil['intel']?>"></td>
+            <td colspan=2><input type="number" name="intel" id="intel" value="50"></td>
         </tr>
         <tr>
             <td width=498 align=right id=bg1>능력치 조정</td>

@@ -122,7 +122,7 @@ pushGeneralHistory($me, "<C>●</>{$year}년 {$month}월:<Y>{$npc['name']}</>의
 //pushGenLog($me, $mylog);
 pushGeneralPublicRecord(["<C>●</>{$month}월:<Y>{$npc['name']}</>의 육체에 <Y>{$session->userName}</>(이)가 <S>빙의</>됩니다!"], $year, $month);
 
-pushAdminLog(["가입 : {$session->userName} // {$id} // ".getenv("REMOTE_ADDR")]);
+pushAdminLog(["가입 : {$userID} // {$session->userName} // {$npcID} // ".getenv("REMOTE_ADDR")]);
 
 $rootDB->insert('member_log', [
     'member_no' => $userID,
@@ -131,13 +131,13 @@ $rootDB->insert('member_log', [
     'action'=>Json::encode([
         'server'=>DB::prefix(),
         'type'=>'npc',
-        'generalID'=>$me['no'],
-        'generalName'=>$me['name']
+        'generalID'=>$npc['no'],
+        'generalName'=>$npc['name']
     ])
 ]);
 
 ?>
 <script>
-    window.alert('정상적으로 회원 가입되었습니다. 장수명 : <?=$me['name']?>');
+    window.alert('정상적으로 회원 가입되었습니다. 장수명 : <?=$npc['name']?>');
 </script>");
 <script>window.open('../i_other/help.php');</script>

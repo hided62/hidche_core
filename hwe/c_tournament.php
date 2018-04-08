@@ -4,9 +4,12 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 // $btn, $msg
-
 $gen = Util::getReq('gen', 'int');
 $sel = Util::getReq('sel', 'int');
+
+//관리자용
+$auto = Util::getReq('gen', 'int');
+$type = Util::getReq('type', 'int');
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

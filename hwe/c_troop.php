@@ -4,14 +4,17 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 // $btn, $name, $troop
+$btn = Util::getReq('btn');
+$name = Util::getReq('name');
+$troop = Util::getReq('troop', 'int');
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
-$generalID = $session->$generalID;
+$userID = $session::getUserID();
 
 $db = DB::db();
 
-$me = $db->queryFirstRow('select no,nation,troop from general where no=%i', $generalID);
+$me = $db->queryFirstRow('SELECT `no`, nation, troop FROM general WHERE `owner`=%i', $userID);
 
 $name = trim($name);
 $name = addslashes(SQ2DQ($name));

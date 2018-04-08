@@ -4,6 +4,23 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 // $turn, $command, $cost, $name, $nationname, $note, $double, $third, $fourth
+$turn = Util::getReq('turn', 'array_int');
+$command = Util::getReq('command', 'int', 0);
+$cost = Util::getReq('cost', 'int');
+$name = Util::getReq('name');
+$nationname = Util::getReq('nationname', 'string', '');
+$note = Util::getReq('note', 'string', '');
+$double = Util::getReq('double', 'int', 0);
+$third = Util::getReq('third', 'int', 0);
+$fourth = Util::getReq('fourth', 'int', 0);
+
+if(!$turn){
+    $turn = [0];
+}
+
+'@phan-var int $double';
+'@phan-var int $third';
+'@phan-var int $fourth';
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -39,12 +56,11 @@ if($command == 46) {
         'makenation'=>$name
     ], 'owner=%i', $userID);
 
-    $count = count($turn);
-    $query = ['con'=>$db->sqleval('con')];
+    $query = [];
     foreach($turn as $turnIdx){
         $query['turn'.$turnIdx] = $comStr;
     }
-    $db->upate('general', $query, 'owner=%i', $userID);
+    $db->update('general', $query, 'owner=%i', $userID);
     header('Location:index.php');
 //통합제의
 } elseif($command == 53) {
@@ -122,15 +138,12 @@ if($command == 46) {
     //echo "<script>location.replace('b_chiefcenter.php');</script>";
     echo 'b_chiefcenter.php';//TODO:debug all and replace
 } else {
-    $count = count($turn);
-    $str = "con=con";
-    for($i=0; $i < $count; $i++) {
-        $str .= ",turn{$turn[$i]}='{$comStr}'";
+    $query = [];
+    foreach($turn as $turnIdx){
+        $query['turn'.$turnIdx] = $comStr;
     }
-    $query = "update general set {$str} where owner='{$userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //echo "<script>location.replace('index.php');</script>";
-    echo 'index.php';//TODO:debug all and replace
+    $db->update('general', $query, 'owner=%i', $userID);
+    header('Location:index.php');
 }
 
 

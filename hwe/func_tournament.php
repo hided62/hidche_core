@@ -940,12 +940,12 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         $damage1 = Util::round($damage1); $damage2 = Util::round($damage2);
 
         $log[] = '<S>●</> '
-            .StringUtil::padStringAlignRight($phase, 2, "0").'合 : '
-            .'<C>'.StringUtil::padStringAlignRight($energy1, 3, "0").'</>'
-            .'<span class="ev_highlight">(-'.StringUtil::padStringAlignRight($damage1, 3, "0").')</span>'
+            .StringUtil::padStringAlignRight((string)$phase, 2, "0").'合 : '
+            .'<C>'.StringUtil::padStringAlignRight((string)$energy1, 3, "0").'</>'
+            .'<span class="ev_highlight">(-'.StringUtil::padStringAlignRight((string)$damage1, 3, "0").')</span>'
             .' vs '
-            .'<span class="ev_highlight">(-'.StringUtil::padStringAlignRight($damage2, 3, "0").')</span>'
-            .'<C>'.StringUtil::padStringAlignRight($energy2, 3, "0").'</>';
+            .'<span class="ev_highlight">(-'.StringUtil::padStringAlignRight((string)$damage2, 3, "0").')</span>'
+            .'<C>'.StringUtil::padStringAlignRight((string)$energy2, 3, "0").'</>';
 
         if($energy1 <= 0 && $energy2 <= 0) {
             if($type == 0) { $sel = 2; break; }
