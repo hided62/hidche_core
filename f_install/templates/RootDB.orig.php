@@ -43,15 +43,4 @@ class RootDB
     {
         return self::$globalSalt;
     }
-
-    /**
-     * 서버 주소 반환. 서버의 경로가 하부 디렉토리인 경우에 하부 디렉토리까지 포함
-     *
-     * @return string
-     */
-    public static function getServerBasepath()
-    {
-        //FIXME: 더 좋은 위치가 있을 것.
-        return self::$globalSalt;
-    }
 }
