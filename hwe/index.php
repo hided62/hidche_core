@@ -79,6 +79,7 @@ $(function(){
     });
 });
 </script>
+<link href="../d_shared/common.css" red="stylesheet">
 <link href="css/normalize.css" rel="stylesheet">
 <link href="css/common.css" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
@@ -86,7 +87,7 @@ $(function(){
 
 
 </head>
-<body>
+<body class="img_back">
 
 <div id="container">
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>

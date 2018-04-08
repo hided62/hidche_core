@@ -31,6 +31,7 @@ $connect=$db->get();
 <head>
 <title>장수생성</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<link href="../d_shared/common.css" red="stylesheet">
 <link rel='stylesheet' href="css/common.css">
 <script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">

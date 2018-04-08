@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>에러</title>
 
+    <link type="text/css" rel="stylesheet" href='../d_shared/common.css'>
     <link rel='stylesheet' href='../css/config.css' type='text/css'>
 </head>
 <body>

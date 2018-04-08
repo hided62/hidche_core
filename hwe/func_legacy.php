@@ -9,7 +9,8 @@ function printLimitMsg($turntime) {
 <head>
 <title>접속제한</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel=stylesheet href=css/common.css type=text/css>
+<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css' type='text/css'>
 </head>
 <body>
 <font size=4><b>

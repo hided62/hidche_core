@@ -1128,7 +1128,8 @@ switch($dex240) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>전투시뮬레이션</title>
-<link rel=stylesheet href=css/common.css type=text/css>
+<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css' type='text/css'>
 <style type="text/css">
 select { background-color:black;color:white; }
 input { background-color:black;color:white; }

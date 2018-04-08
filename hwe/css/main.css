@@ -4,7 +4,7 @@ body {
 color:white;
  background-color:black;
   border-width:1px; 
-  border-color:gray; background-image:url('/images/back.jpg'); background-position:center; background-repeat:repeat-y; 
+  border-color:gray; background-position:center; background-repeat:repeat-y; 
 }
 
 #container {

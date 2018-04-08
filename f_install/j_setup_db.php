@@ -55,12 +55,42 @@ if(file_exists(ROOT.'/d_log') && !is_dir(ROOT.'/d_log')){
     ]);
 }
 
+if(file_exists(ROOT.'/d_shared') && !is_dir(ROOT.'/d_shared')){
+    Json::die([
+        'result'=>false,
+        'reason'=>'d_shared 가 디렉토리가 아닙니다'
+    ]);
+}
+
 if(!file_exists(ROOT.'/d_setting')){
     Json::die([
         'result'=>false,
         'reason'=>'d_setting 이 존재하지 않습니다'
     ]);
 }
+
+if (!file_exists(ROOT.'/d_log') || !file_exists(ROOT.'/d_shared') || !file_exists(AppConf::getUserIconPathFS())) {
+    if (!is_writable(ROOT)) {
+        Json::die([
+            'result'=>false,
+            'reason'=>'하위 디렉토리 생성 권한이 없습니다'
+        ]);
+    }
+
+    //기본 파일 생성
+    if(!file_exists(AppConf::getUserIconPathFS())){
+        mkdir(AppConf::getUserIconPathFS());
+    }
+
+    if(!file_exists(ROOT.'/d_log')){
+        mkdir(ROOT.'/d_log');
+    }
+
+    if(!file_exists(ROOT.'/d_shared')){
+        mkdir(ROOT.'/d_shared');
+    }
+}
+
 
 if(!is_writable(AppConf::getUserIconPathFS())){
     Json::die([
@@ -76,6 +106,13 @@ if(!is_writable(ROOT.'/d_log')){
     ]);
 }
 
+if(!is_writable(ROOT.'/d_shared')){
+    Json::die([
+        'result'=>false,
+        'reason'=>'d_shared 디렉토리의 쓰기 권한이 없습니다'
+    ]);
+}
+
 if(!is_writable(ROOT.'/d_setting')){
     Json::die([
         'result'=>false,
@@ -83,14 +120,7 @@ if(!is_writable(ROOT.'/d_setting')){
     ]);
 }
 
-//기본 파일 생성
-if(!file_exists(AppConf::getUserIconPathFS())){
-    mkdir(AppConf::getUserIconPathFS());
-}
 
-if(!file_exists(ROOT.'/d_log')){
-    mkdir(ROOT.'/d_log');
-}
 
 if(!file_exists(ROOT.'/d_log/.htaccess')){
     @file_put_contents(ROOT.'/d_log/.htaccess', 'Deny from  all');

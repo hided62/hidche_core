@@ -58,7 +58,8 @@ if ($msg2 == "") {
 <head>
 <title>거래장</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel=stylesheet href=css/common.css type=text/css>
+<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css' type='text/css'>
 
 </head>
 <body>

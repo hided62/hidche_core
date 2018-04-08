@@ -15,7 +15,8 @@ $connect=$db->get();
 <head>
 <title>커맨드리스트</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel=stylesheet href=css/common.css type=text/css>
+<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css' type='text/css'>
 <script type="text/javascript">
 <?php
 if(!$session->isLoggedIn()){

@@ -137,6 +137,7 @@ $(function(){
     });
 });
 </script>
+<link href="../d_shared/common.css" red="stylesheet">
 <link href="css/normalize.css" rel="stylesheet">
 <link href="css/common.css" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
@@ -144,7 +145,7 @@ $(function(){
 ';
 echo '
 </head>
-<body>
+<body class="img_back">
 <table class="bg0" align="center" width="1000" border="1" cellspacing="0" cellpadding="0" bordercolordark="gray" bordercolorlight="black" style="font-size:13px;word-break:break-all;">
     <tr><td class="bg1" align="center">'.$name.'</td></tr>
     <tr><td>

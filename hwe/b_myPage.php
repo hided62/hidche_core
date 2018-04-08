@@ -47,7 +47,8 @@ $me = MYDB_fetch_array($result);
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>내정보</title>
-<link rel=stylesheet href="css/common.css" type=text/css>
+<link href="../d_shared/common.css" red="stylesheet">
+<link rel=stylesheet href="css/common.css">
 <script type="text/javascript">
 function go(type) {
     if(type == 0){ 

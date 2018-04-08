@@ -20,6 +20,7 @@ $userGrade = $session->userGrade;
         <title>서버목록</title>
 
         <!-- 스타일 -->
+        <link type="text/css" rel="stylesheet" href='../d_shared/common.css'>
         <link type="text/css" rel="stylesheet" href='../css/config.css'>
 
         <link type="text/css" rel="stylesheet" href='../css/entrance.css'>

@@ -22,6 +22,8 @@ pwe/.htaccess
 twe/.htaccess
 hwe/.htaccess
 
+d_shared
+
 d_pic/*.jpg
 d_pic/*.gif
 d_pic/*.png

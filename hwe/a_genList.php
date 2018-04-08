@@ -34,7 +34,8 @@ if(!isset($type) || $type == 0) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>장수일람</title>
-<link rel=stylesheet href=css/common.css type=text/css>
+<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css' type='text/css'>
 <script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
 
 </head>
