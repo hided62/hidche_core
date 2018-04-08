@@ -3,7 +3,7 @@ namespace sammo;
 
 function GetStuffName($stuff) {
     $type1 = $stuff % 10;
-    $type2 = floor($stuff / 10);
+    $type2 = intdiv($stuff, 10);
 
     switch($type1) {
     case 0: $str = "쌀"; break;
@@ -180,7 +180,7 @@ function processAuction() {
                 $bidder = MYDB_fetch_array($result);
 
                 $sel1 = $auction['stuff'] % 10;
-                $sel2 = floor($auction['stuff'] / 10);
+                $sel2 = intdiv($auction['stuff'], 10);
                 switch($sel1) {
                 case 1: $type = "weap"; break;
                 case 2: $type = "book"; break;

@@ -3,6 +3,12 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$v = new Validator($_POST + $_GET);
+$v->rule('required', 'gen')
+->rule('integer', 'gen');
+
+$gen = Util::getReq('gen', 'int');
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

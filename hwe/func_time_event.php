@@ -155,18 +155,18 @@ function popIncrease() {
             $cityrate = 50;
 
             $ratio = 0.99;   // 공백지는 수비 빼고 약간씩 감소
-            $agri = floor($city['agri'] * $ratio);
-            $comm = floor($city['comm'] * $ratio);
-            $secu = floor($city['secu'] * $ratio);
+            $agri = intval($city['agri'] * $ratio);
+            $comm = intval($city['comm'] * $ratio);
+            $secu = intval($city['secu'] * $ratio);
             $def  = $city['def'];
             $wall = $city['wall'];
         } else {
             $ratio = (20 - $rate[$city['nation']])/200;  // 20일때 0% 0일때 10% 100일때 -40%
-            $agri = $city['agri'] + floor($city['agri'] * $ratio);  //내정도 증감
-            $comm = $city['comm'] + floor($city['comm'] * $ratio);
-            $secu = $city['secu'] + floor($city['secu'] * $ratio);
-            $def  = $city['def']  + floor($city['def']  * $ratio);
-            $wall = $city['wall'] + floor($city['wall'] * $ratio);
+            $agri = $city['agri'] + intval($city['agri'] * $ratio);  //내정도 증감
+            $comm = $city['comm'] + intval($city['comm'] * $ratio);
+            $secu = $city['secu'] + intval($city['secu'] * $ratio);
+            $def  = $city['def']  + intval($city['def']  * $ratio);
+            $wall = $city['wall'] + intval($city['wall'] * $ratio);
             $ratio = (30 - $rate[$city['nation']])/200;  // 20일때 5% 5일때 12.5% 50일때 -10%
             if($ratio >= 0) {
                 // 국가보정
@@ -180,7 +180,7 @@ function popIncrease() {
                 $ratio *= (1 - $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 경감
             }
 
-            $pop = $city['pop'] + floor($city['pop'] * $ratio) + 5000;  // 기본 5000명은 증가
+            $pop = $city['pop'] + (int)($city['pop'] * $ratio) + 5000;  // 기본 5000명은 증가
 
             $ratio = round($ratio*100, 2);
             $cityrate = $city['rate'];

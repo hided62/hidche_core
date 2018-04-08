@@ -986,7 +986,7 @@ function process_66(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 66) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 66;
     } else {
         $term = 1;
@@ -1075,7 +1075,7 @@ function process_67(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 67) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 67;
     } else {
         $term = 1;
@@ -1166,7 +1166,7 @@ function process_68(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 68) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 68;
     } else {
         $term = 1;
@@ -1275,7 +1275,7 @@ function process_71(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 71) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 71;
     } else {
         $term = 1;
@@ -1388,7 +1388,7 @@ function process_72(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 72) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 72;
     } else {
         $term = 1;
@@ -1507,7 +1507,7 @@ function process_73(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 73) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 73;
     } else {
         $term = 1;
@@ -1638,7 +1638,7 @@ function process_74(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 74) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 74;
     } else {
         $term = 1;
@@ -1778,7 +1778,7 @@ function process_75(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 75) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 75;
     } else {
         $term = 1;
@@ -1893,7 +1893,7 @@ function process_76(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 76) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 76;
     } else {
         $term = 1;
@@ -2121,7 +2121,7 @@ function process_77(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 77) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 77;
     } else {
         $term = 1;
@@ -2249,7 +2249,7 @@ function process_78(&$general) {
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 78) {
-        $term = floor($code/100) + 1;
+        $term = intdiv($code, 100) + 1;
         $code = $term * 100 + 78;
     } else {
         $term = 1;

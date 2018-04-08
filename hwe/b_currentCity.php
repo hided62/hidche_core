@@ -99,7 +99,7 @@ if($myNation['level'] > 0) {
     $where = 'city=0';
     $cities = explode("|", $myNation['spy']);
     for($i=0; $i < count($cities); $i++) {
-        $city = floor($cities[$i]/10);
+        $city = intdiv($cities[$i], 10);
         $where .= " or city='{$city}'";
     }
 
@@ -259,9 +259,9 @@ for($j=0; $j < $gencount; $j++) {
     }
 
     if($general['injury'] > 0) {
-        $leader = floor($general['leader'] * (100 - $general['injury'])/100);
-        $power = floor($general['power'] * (100 - $general['injury'])/100);
-        $intel = floor($general['intel'] * (100 - $general['injury'])/100);
+        $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
+        $power = intdiv($general['power'] * (100 - $general['injury']), 100);
+        $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
         $leader = "<font color=red>{$leader}</font>{$lbonus}";
         $power = "<font color=red>{$power}</font>";
         $intel = "<font color=red>{$intel}</font>";

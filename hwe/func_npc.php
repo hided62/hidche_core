@@ -154,7 +154,7 @@ function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city
     $cost = getCost($type) * getTechCost($tech);
     $cost = CharCost($cost, $personal);
 
-    $crew = floor($gold / $cost);
+    $crew = intdiv($gold, $cost);
     if($leader < $crew) { $crew = $leader; }
     $command = EncodeCommand(0, $type, $crew, 11);
 
@@ -577,7 +577,7 @@ function processAI($no) {
                         $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                         $SelGen = MYDB_fetch_array($result);
                         if($SelGen['no'] != 0) {
-                            $amount = floor($SelGen[$type] / 5000)*10 + 10;
+                            $amount = intdiv($SelGen[$type], 5000)*10 + 10;
                             if($amount > 100) $amount = 100;
                             // 몰수
                             $command = EncodeCommand($type2, $SelGen['no'], $amount, 24);    // 금,쌀 1000단위 몰수
@@ -588,7 +588,7 @@ function processAI($no) {
                         $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                         $SelGen = MYDB_fetch_array($result);
                         if($SelGen['no'] != 0) {
-                            $amount = floor(($nation[$type]-GameConst::$baserice) / 5000)*10 + 10;
+                            $amount = intdiv(($nation[$type]-GameConst::$baserice), 5000)*10 + 10;
                             if($amount > 100) $amount = 100;
                             // 포상
                             $command = EncodeCommand($type2, $SelGen['no'], $amount, 23);    // 금 1000단위 포상
@@ -637,7 +637,7 @@ function processAI($no) {
         }
         //국가 병량이 없을때 바로 헌납
         if($nation['rice'] < 2000 && $general['rice'] > 200) {
-            $amount = floor(($general['rice'] - 200)/100) + 1;
+            $amount = intdiv($general['rice'] - 200, 100) + 1;
             if($amount > 20) { $amount = 20; }
             $command = EncodeCommand(0, 2, $amount, 44);  //헌납
             $query = "update general set turn0='$command' where no='{$general['no']}'";
@@ -663,11 +663,11 @@ function processAI($no) {
             if($general['gold'] + $general['rice'] < 200) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달9
             elseif($general['rice'] > 100 && $city['rate'] < 95) { $command = EncodeCommand(0, 0, 0, 4); } //우선 선정
             elseif($general['gold'] < 100) {                                      //금없으면 쌀팜
-                $amount = floor(($general['rice'] - $general['gold']) / 100 / 2);   // 100단위
+                $amount = intdiv(($general['rice'] - $general['gold']), 100 / 2);   // 100단위
                 $command = EncodeCommand(0, 1, $amount, 49);                    //팜
             } elseif($general['gold'] < 700 && $general['rice'] < 700) { $command = EncodeCommand(0, 0, 0, 1); } //금쌀되면 내정
             elseif($general['rice'] < 100) {                                      //쌀없으면 쌀삼
-                $amount = floor(($general['gold'] - $general['rice']) / 100 / 2);  // 100단위
+                $amount = intdiv(($general['gold'] - $general['rice']), 100 / 2);  // 100단위
                 $command = EncodeCommand(0, 2, $amount, 49);                    //삼
             } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
             else {
@@ -743,12 +743,12 @@ function processAI($no) {
                         else { $command = EncodeCommand(0, 0, 0, 1); }
                     } elseif($general['rice'] < $resrc && $general['rice'] <= $general['gold']) {
                         //금이 더 많으면 매매
-                        $amount = floor(($general['gold'] - $general['rice']) / 100 / 2);  // 100단위
+                        $amount = intdiv(($general['gold'] - $general['rice']), 100 / 2);  // 100단위
                         if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }//삼
                         else { $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); }   // 내정, 조달
                     } elseif($general['gold'] < $resrc && $general['rice'] > $general['gold']) {
                         //쌀이 더 많으면 매매
-                        $amount = floor(($general['rice'] - $general['gold']) / 100 / 2);  // 100단위
+                        $amount = intdiv(($general['rice'] - $general['gold']), 100 / 2);  // 100단위
                         if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }//팜
                         else { $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); }   // 내정, 조달
                     //자원, 병사 모두 충족
@@ -777,11 +777,11 @@ function processAI($no) {
             elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] == 1) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['gold'] < $resrc) {                                   // 금없으면 쌀팜
-                $amount = floor(($general['rice'] - $general['gold']) / 100 / 2);   // 100단위
+                $amount = intdiv(($general['rice'] - $general['gold']), 100 / 2);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
             } elseif($general['rice'] < $resrc) {                                 // 쌀없으면 쌀삼
-                $amount = floor(($general['gold'] - $general['rice']) / 100 / 2);   // 100단위
+                $amount = intdiv(($general['gold'] - $general['rice']), 100 / 2);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
             } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
@@ -1041,7 +1041,7 @@ function GoldBillRate($nation, $rate, $gold_rate, $type, $gold) {
     $incomeList = getGoldIncome($nation, $rate, $gold_rate, $type);
     $income = $gold + $incomeList[0] + $incomeList[1];
     $outcome = getGoldOutcome($nation, 100);    // 100%의 지급량
-    $bill = floor($income / $outcome * 90); // 수입의 90% 만 지급
+    $bill = intval($income / $outcome * 90); // 수입의 90% 만 지급
 
     if($bill < 20)  { $bill = 20; }
     if($bill > 200) { $bill = 200; }
@@ -1057,7 +1057,7 @@ function RiceBillRate($nation, $rate, $rice_rate, $type, $rice) {
     $incomeList = getRiceIncome($nation, $rate, $rice_rate, $type);
     $income = $rice + $incomeList[0] + $incomeList[1];
     $outcome = getRiceOutcome($nation, 100);    // 100%의 지급량
-    $bill = floor($income / $outcome * 90); // 수입의 90% 만 지급
+    $bill = intval($income / $outcome * 90); // 수입의 90% 만 지급
 
     if($bill < 20)  { $bill = 20; }
     if($bill > 200) { $bill = 200; }

@@ -194,7 +194,7 @@ function processWar($general, $city) {
 
                 $avoid = 1;
                 // 병종간 특성
-                if(floor($general['crewtype']/10) == 3) {   // 귀병
+                if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
                     $int = round(getGeneralIntel($general, true, true, true, false));
                     if($general['crewtype'] == 30) {
                         $ratio2 = $int * 5;   // 0~500 즉 50%
@@ -460,7 +460,7 @@ function processWar($general, $city) {
             if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $num *= 1.1; }
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $year, $nation['tech'])) { $num = floor($num/4); }
+            if(TechLimit($game['startyear'], $year, $nation['tech'])) { $num = intdiv($num, 4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 죽은수 기술로 누적
@@ -469,7 +469,7 @@ function processWar($general, $city) {
             if($destnation['type'] == 3 || $destnation['type'] == 13)                                                                               { $num *= 1.1; }
             if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $year, $destnation['tech'])) { $num = floor($num/4); }
+            if(TechLimit($game['startyear'], $year, $destnation['tech'])) { $num = intdiv($num, 4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //양국 평균 기술가격
@@ -669,7 +669,7 @@ function processWar($general, $city) {
                 $myAvoid = 1;
                 $opAvoid = 1;
                 // 병종간 특성
-                if(floor($general['crewtype']/10) == 3) {   // 귀병
+                if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
                     $int = round(getGeneralIntel($general, true, true, true, false));
                     if($general['crewtype'] == 30) {
                         $ratio2 = $int * 5;   // 0~500 즉 50%
@@ -810,7 +810,7 @@ function processWar($general, $city) {
                 }
 
                 // 상대 장수 병종간 특성
-                if(floor($oppose['crewtype']/10) == 3) {   // 귀병
+                if(intdiv($oppose['crewtype'], 10) == 3) {   // 귀병
                     $int = round(getGeneralIntel($oppose, true, true, true, false));
                     if($oppose['crewtype'] == 30) {
                         $ratio2 = $int * 5;   // 0~500 즉 50%
@@ -966,44 +966,44 @@ function processWar($general, $city) {
 
                 // my 입장 상성
                 // 보병계열 > 궁병계열
-                if(floor($general['crewtype']/10) == 0 && floor($oppose['crewtype']/10) == 1) {
+                if(intdiv($general['crewtype'], 10) == 0 && intdiv($oppose['crewtype'], 10) == 1) {
                     $myCrew *= 0.8;
                     $opCrew *= 1.2;
                 }
                 // 궁병계열 > 기병계열
-                if(floor($general['crewtype']/10) == 1 && floor($oppose['crewtype']/10) == 2) {
+                if(intdiv($general['crewtype'], 10) == 1 && intdiv($oppose['crewtype'], 10) == 2) {
                     $myCrew *= 0.8;
                     $opCrew *= 1.2;
                 }
                 // 기병계열 > 보병계열
-                if(floor($general['crewtype']/10) == 2 && floor($oppose['crewtype']/10) == 0) {
+                if(intdiv($general['crewtype'], 10) == 2 && intdiv($oppose['crewtype'], 10) == 0) {
                     $myCrew *= 0.8;
                     $opCrew *= 1.2;
                 }
                 // 차병계열
-                if(floor($general['crewtype']/10) == 4) {
+                if(intdiv($general['crewtype'], 10) == 4) {
                     $myCrew *= 1.2;
                     $opCrew *= 0.8;
                 }
 
                 // op 입장 상성
                 // 보병계열 > 궁병계열
-                if(floor($oppose['crewtype']/10) == 0 && floor($general['crewtype']/10) == 1) {
+                if(intdiv($oppose['crewtype'], 10) == 0 && intdiv($general['crewtype'], 10) == 1) {
                     $opCrew *= 0.8;
                     $myCrew *= 1.2;
                 }
                 // 궁병계열 > 기병계열
-                if(floor($oppose['crewtype']/10) == 1 && floor($general['crewtype']/10) == 2) {
+                if(intdiv($oppose['crewtype'], 10) == 1 && intdiv($general['crewtype'], 10) == 2) {
                     $opCrew *= 0.8;
                     $myCrew *= 1.2;
                 }
                 // 기병계열 > 보병계열
-                if(floor($oppose['crewtype']/10) == 2 && floor($general['crewtype']/10) == 0) {
+                if(intdiv($oppose['crewtype'], 10) == 2 && intdiv($general['crewtype'], 10) == 0) {
                     $opCrew *= 0.8;
                     $myCrew *= 1.2;
                 }
                 // 차병계열
-                if(floor($oppose['crewtype']/10) == 4) {
+                if(intdiv($oppose['crewtype'], 10) == 4) {
                     $opCrew *= 1.2;
                     $myCrew *= 0.8;
                 }
@@ -1335,7 +1335,7 @@ function processWar($general, $city) {
             if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $num *= 1.1; }
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $year, $nation['tech'])) { $num = floor($num/4); }
+            if(TechLimit($game['startyear'], $year, $nation['tech'])) { $num = intdiv($num, 4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -1358,7 +1358,7 @@ function processWar($general, $city) {
             if($destnation['type'] == 3 || $destnation['type'] == 13)                                                                               { $num *= 1.1; }
             if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $year, $destnation['tech'])) { $num = floor($num/4); }
+            if(TechLimit($game['startyear'], $year, $destnation['tech'])) { $num = intdiv($num, 4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //양국 평균 기술가격
@@ -1430,9 +1430,9 @@ function processWar($general, $city) {
                 }
 
                 // 경험치 상승
-                if(floor($oppose['crewtype']/10) == 3) {   // 귀병
+                if(intdiv($oppose['crewtype'], 10) == 3) {   // 귀병
                     $oppose['intel2']++;
-                } elseif(floor($oppose['crewtype']/10) == 4) {   // 차병
+                } elseif(intdiv($oppose['crewtype'], 10) == 4) {   // 차병
                     $oppose['leader2']++;
                 } else {
                     $oppose['power2']++;
@@ -1489,9 +1489,9 @@ function processWar($general, $city) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 경험치 상승
-    if(floor($general['crewtype']/10) == 3) {   // 귀병
+    if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
         $general['intel2'] += $exp2;
-    } elseif(floor($general['crewtype']/10) == 4) {   // 차병
+    } elseif(intdiv($general['crewtype'], 10) == 4) {   // 차병
         $general['leader2'] += $exp2;
     } else {
         $general['power2'] += $exp2;
@@ -1568,9 +1568,9 @@ function getAtt($game, $general, $tech, $lbonus) {
     
     $general['lbonus'] = $lbonus;
 
-    if(floor($general['crewtype']/10) == 3) {   // 귀병 지100%
+    if(intdiv($general['crewtype'], 10) == 3) {   // 귀병 지100%
         $ratio = getGeneralIntel($general, true, true, true)*2 - 40;
-    } elseif(floor($general['crewtype']/10) == 4) {   // 차병 통100%
+    } elseif(intdiv($general['crewtype'], 10) == 4) {   // 차병 통100%
         $ratio = getGeneralLeadership($general, true, true, true)*2 - 40;
     } else {
         $ratio = getGeneralPower($general, true, true, true)*2 - 40; //10일때 -20, 70일때 100, 100일때 160
@@ -1756,8 +1756,8 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
 
-            $loseGold = floor($gen['gold'] * (rand()%30+20)/100.0);
-            $loseRice = floor($gen['rice'] * (rand()%30+20)/100.0);
+            $loseGold = intdiv($gen['gold'] * (rand()%30+20), 100);
+            $loseRice = intdiv($gen['rice'] * (rand()%30+20), 100);
             $genlog[1] = "<C>●</>도주하며 금<C>$loseGold</> 쌀<C>$loseRice</>을 분실했습니다.";
             
             $query = "update general set gold=gold-{$loseGold},rice=rice-{$loseRice} where no={$gen['no']}";
@@ -1803,8 +1803,8 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         $losenation['gold'] += $loseGeneralGold;
         $losenation['rice'] += $loseGeneralRice;
         
-        $losenation['gold'] = floor($losenation['gold'] / 2);
-        $losenation['rice'] = floor($losenation['gold'] / 2);
+        $losenation['gold'] = intdiv($losenation['gold'], 2);
+        $losenation['rice'] = intdiv($losenation['gold'], 2);
         
         // 기본량 제외 금쌀50% + 장수들 분실 금쌀50% 흡수
         $query = "update nation set gold=gold+'{$losenation['gold']}',rice=rice+'{$losenation['rice']}' where nation='{$general['nation']}'";

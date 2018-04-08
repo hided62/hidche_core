@@ -12,9 +12,9 @@ function abilityRand() {
     $power  = (rand()%100 + 1) / 100.0 + 1.0;
     $intel  = (rand()%100 + 1) / 100.0 + 1.0;
     $rate = $leader + $power + $intel;
-    $leader = floor($leader / $rate * $total);
-    $power  = floor($power  / $rate * $total);
-    $intel  = floor($intel  / $rate * $total);
+    $leader = intdiv($leader * $total, $rate);
+    $power  = intdiv($power  * $total, $rate);
+    $intel  = intdiv($intel  * $total, $rate);
 
     while($leader+$power+$intel < 150) {
         $leader++;
@@ -30,9 +30,9 @@ function abilityLeadpow() {
     $power  = (rand()%100 + 1) / 100.0 + 6.0;
     $intel  = (rand()%100 + 1) / 100.0 + 1.0;
     $rate = $leader + $power + $intel;
-    $leader = floor($leader / $rate * $total);
-    $power  = floor($power  / $rate * $total);
-    $intel  = floor($intel  / $rate * $total);
+    $leader = intdiv($leader * $total, $rate);
+    $power  = intdiv($power  * $total, $rate);
+    $intel  = intdiv($intel  * $total, $rate);
 
     while($leader+$power+$intel < 150) {
         $leader++;
@@ -47,9 +47,9 @@ function abilityLeadint() {
     $power  = (rand()%100 + 1) / 100.0 + 1.0;
     $intel  = (rand()%100 + 1) / 100.0 + 6.0;
     $rate = $leader + $power + $intel;
-    $leader = floor($leader / $rate * $total);
-    $power  = floor($power  / $rate * $total);
-    $intel  = floor($intel  / $rate * $total);
+    $leader = intdiv($leader * $total, $rate);
+    $power  = intdiv($power  * $total, $rate);
+    $intel  = intdiv($intel  * $total, $rate);
 
     while($leader+$power+$intel < 150) {
         $leader++;
@@ -64,9 +64,9 @@ function abilityPowint() {
     $power  = (rand()%100 + 1) / 100.0 + 6.0;
     $intel  = (rand()%100 + 1) / 100.0 + 6.0;
     $rate = $leader + $power + $intel;
-    $leader = floor($leader / $rate * $total);
-    $power  = floor($power  / $rate * $total);
-    $intel  = floor($intel  / $rate * $total);
+    $leader = intdiv($leader * $total, $rate);
+    $power  = intdiv($power  * $total, $rate);
+    $intel  = intdiv($intel  * $total, $rate);
 
     while($leader+$power+$intel < 150) {
         $leader++;
@@ -184,7 +184,7 @@ function getSpecial2($leader, $power, $intel, $nodex=1, $dex0=0, $dex10=0, $dex2
 }
 
 function getGenDex($general, $type) {
-    $type = floor($type / 10) * 10;
+    $type = intdiv($type, 10) * 10;
     return $general["dex{$type}"];
 }
 
@@ -192,7 +192,7 @@ function addGenDex($no, $type, $exp) {
     $db = DB::db();
     $connect=$db->get();
 
-    $type = floor($type / 10) * 10;
+    $type = intdiv($type, 10) * 10;
     $dexType = "dex{$type}";
     if($type == 30) { $exp = round($exp * 0.90); }     //귀병은 90%효율
     elseif($type == 40) { $exp = round($exp * 0.90); } //차병은 90%효율

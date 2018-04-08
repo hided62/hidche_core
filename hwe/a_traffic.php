@@ -272,8 +272,8 @@ function getTrafficColor($per)
 
 function getHex($dec)
 {
-    $hex = floor($dec * 255 / 100);
-    $code = getHexCode(floor($hex / 16));
+    $hex = intdiv($dec * 255, 100);
+    $code = getHexCode(intdiv($hex, 16));
     $code .= getHexCode($hex % 16);
     return $code;
 }

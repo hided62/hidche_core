@@ -299,8 +299,8 @@ function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
     // 4 : 합병, 5 : 통합, 6 : 불가침, 7 : 종전, 8 : 파기
     // 9 : 자신->타인, 10 : 타인 -> 자신, 11 : 등용
     $category = $type % 100;
-    $term = floor($type / 100);
-    $from = floor($who / 10000);
+    $term = intdiv($type, 100);
+    $from = intdiv($who, 10000);
     $to = $who % 10000;
 
     $query = "select name,picture,imgsvr,nation from general where no='$from'";

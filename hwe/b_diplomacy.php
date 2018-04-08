@@ -89,7 +89,7 @@ echo "
         <td align=center width=108 style=background-color:".GameConst::$basecolor2.";>&nbsp;</td>";
 
 if($nationcount != 0) {
-    $width = floor(888 / $nationcount);
+    $width = intdiv(888, $nationcount);
 }
 
 for($i=0; $i < $nationcount; $i++) {

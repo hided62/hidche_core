@@ -97,11 +97,20 @@ function LogText($prefix, $variable)
     file_put_contents(ROOT.'/d_log/dbg_logs.txt', $text, FILE_APPEND);
 }
 
+function extractSuperGlobals()
+{
+    if (isset($_POST) && count($_POST) > 0) {
+        LogText($_SERVER['REQUEST_URI'], $_POST);
+        
+        extract($_POST, EXTR_SKIP);
+    }
 
-if (isset($_POST) && count($_POST) > 0) {
-    LogText($_SERVER['REQUEST_URI'], $_REQUEST);
-    extract($_GET, EXTR_SKIP);
-    extract($_POST, EXTR_SKIP);
-    //XXX: $_POST를 추출 없이 그냥 쓰는 경우가 많아서 일단 디버깅을 위해 씀!!!! 절대 production 서버에서 사용 금지!
-    //todo: $_POST로 제공되는 데이터를 각 페이지마다 분석할것.
+    if (isset($_GET) && count($_GET) > 0) {
+        LogText($_SERVER['REQUEST_URI'], $_GET);
+        
+        extract($_POST, EXTR_SKIP);
+    }
 }
+
+
+extractSuperGlobals();

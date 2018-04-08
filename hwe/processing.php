@@ -269,7 +269,7 @@ function command_11($turn, $command) {
         $ownRegions[$city['region']] = 1;
     }
 
-    $leader = floor($me['leader'] * (100 - $me['injury'])/100) + getHorseEff($me['horse']) + $lbonus;
+    $leader = intdiv($me['leader'] * (100 - $me['injury']), 100) + getHorseEff($me['horse']) + $lbonus;
     $crew = $leader - round($me['crew']/100);
     $abil = getTechAbil($nation['tech']);
     $cost = getTechCost($nation['tech']);
@@ -477,7 +477,7 @@ function command_12($turn, $command) {
         $ownRegions[$city['region']] = 1;
     }
 
-    $leader = floor($me['leader'] * (100 - $me['injury'])/100) + getHorseEff($me['horse']) + $lbonus;
+    $leader = intdiv($me['leader'] * (100 - $me['injury']), 100) + getHorseEff($me['horse']) + $lbonus;
     $crew = $leader - round($me['crew']/100);
     $abil = getTechAbil($nation['tech']);
     $cost = getTechCost($nation['tech']);

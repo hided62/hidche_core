@@ -30,7 +30,7 @@ function processTournament() {
         }
 
         //업데이트 횟수
-        $iter = floor($admin['offset'] / $unit) + 1;
+        $iter = intdiv($admin['offset'], $unit) + 1;
 
         for($i=0; $i < $iter; $i++) {
             switch($tnmt) {
@@ -519,7 +519,7 @@ function final16set() {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $general = MYDB_fetch_array($result);
         //16강에 추가
-        $newGrp    = 20 + floor($i / 2);
+        $newGrp    = 20 + intdiv($i, 2);
         $newGrp_no = $i % 2;
         $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['ldr']}', '{$general['pwr']}', '{$general['itl']}', '{$general['lvl']}', '$newGrp', '$newGrp_no', '{$general['h']}', '{$general['w']}', '{$general['b']}')";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -552,7 +552,7 @@ function finalFight($tnmt_type, $tnmt, $phase, $type) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
     //x강에 추가
-    $newGrp    = floor($phase / 2) + $offset + 10;
+    $newGrp    = intdiv($phase, 2) + $offset + 10;
     $newGrp_no = $phase % 2;
     $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['ldr']}', '{$general['pwr']}', '{$general['itl']}', '{$general['lvl']}', '$newGrp', '$newGrp_no', '{$general['h']}', '{$general['w']}', '{$general['b']}')";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

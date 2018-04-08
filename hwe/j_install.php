@@ -162,7 +162,7 @@ if($sync == 0) {
 }
 
 $killturn = 4800 / $turnterm;
-if($npcmode == 1) { $killturn = floor($killturn / 3); }
+if($npcmode == 1) { $killturn = intdiv($killturn, 3); }
 
 $env = [
     'scenario'=>$scenario,

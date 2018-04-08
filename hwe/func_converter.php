@@ -361,7 +361,7 @@ function getHonor($experience) {
 
 function getExpLevel($experience) {
     if($experience < 1000) {
-        $level = floor($experience / 100);
+        $level = intdiv($experience, 100);
     } else {
         for($level = 0; $experience > (($level+1)*($level+1)*10); $level++) {
         }

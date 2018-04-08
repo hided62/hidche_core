@@ -204,7 +204,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
                     $avoid = 1;
                     // 병종간 특성
-                    if(floor($general['crewtype']/10) == 3) {   // 귀병
+                    if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
                         $int = $general['intel'] + getBookEff($general['book']);
                         if($general['crewtype'] == 30) {
                             $ratio2 = $int * 5;   // 0~500 즉 50%
@@ -394,7 +394,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $myAvoid = 1;
                     $opAvoid = 1;
                     // 병종간 특성
-                    if(floor($general['crewtype']/10) == 3) {   // 귀병
+                    if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
                         $int = $general['intel'] + getBookEff($general['book']);
                         if($general['crewtype'] == 30) {
                             $ratio2 = $int * 5;   // 0~500 즉 50%
@@ -476,7 +476,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     }
 
                     // 상대 장수 병종간 특성
-                    if(floor($oppose['crewtype']/10) == 3) {   // 귀병
+                    if(intdiv($oppose['crewtype'], 10) == 3) {   // 귀병
                         $int = $oppose['intel'] + getBookEff($oppose['book']);
                         if($oppose['crewtype'] == 30) {
                             $ratio2 = $int * 5;   // 0~500 즉 50%
@@ -571,44 +571,44 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
                     // my 입장 상성
                     // 보병계열 > 궁병계열
-                    if(floor($general['crewtype']/10) == 0 && floor($oppose['crewtype']/10) == 1) {
+                    if(intdiv($general['crewtype'], 10) == 0 && intdiv($oppose['crewtype'], 10) == 1) {
                         $myCrew *= 0.8;
                         $opCrew *= 1.2;
                     }
                     // 궁병계열 > 기병계열
-                    if(floor($general['crewtype']/10) == 1 && floor($oppose['crewtype']/10) == 2) {
+                    if(intdiv($general['crewtype'], 10) == 1 && intdiv($oppose['crewtype'], 10) == 2) {
                         $myCrew *= 0.8;
                         $opCrew *= 1.2;
                     }
                     // 기병계열 > 보병계열
-                    if(floor($general['crewtype']/10) == 2 && floor($oppose['crewtype']/10) == 0) {
+                    if(intdiv($general['crewtype'], 10) == 2 && intdiv($oppose['crewtype'], 10) == 0) {
                         $myCrew *= 0.8;
                         $opCrew *= 1.2;
                     }
                     // 차병계열
-                    if(floor($general['crewtype']/10) == 4) {
+                    if(intdiv($general['crewtype'], 10) == 4) {
                         $myCrew *= 1.2;
                         $opCrew *= 0.8;
                     }
 
                     // op 입장 상성
                     // 보병계열 > 궁병계열
-                    if(floor($oppose['crewtype']/10) == 0 && floor($general['crewtype']/10) == 1) {
+                    if(intdiv($oppose['crewtype'], 10) == 0 && intdiv($general['crewtype'], 10) == 1) {
                         $opCrew *= 0.8;
                         $myCrew *= 1.2;
                     }
                     // 궁병계열 > 기병계열
-                    if(floor($oppose['crewtype']/10) == 1 && floor($general['crewtype']/10) == 2) {
+                    if(intdiv($oppose['crewtype'], 10) == 1 && intdiv($general['crewtype'], 10) == 2) {
                         $opCrew *= 0.8;
                         $myCrew *= 1.2;
                     }
                     // 기병계열 > 보병계열
-                    if(floor($oppose['crewtype']/10) == 2 && floor($general['crewtype']/10) == 0) {
+                    if(intdiv($oppose['crewtype'], 10) == 2 && intdiv($general['crewtype'], 10) == 0) {
                         $opCrew *= 0.8;
                         $myCrew *= 1.2;
                     }
                     // 차병계열
-                    if(floor($oppose['crewtype']/10) == 4) {
+                    if(intdiv($oppose['crewtype'], 10) == 4) {
                         $opCrew *= 1.2;
                         $myCrew *= 0.8;
                     }

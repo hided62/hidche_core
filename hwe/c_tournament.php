@@ -177,7 +177,7 @@ if($btn == "자동개최설정" && $session->userGrade >= 5) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $general = MYDB_fetch_array($result);
 
-        $grp    = floor($code[$i] / 10);
+        $grp    = intdiv($code[$i], 10);
         $grp_no = $code[$i] % 10;
         $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['leader']}', '{$general['power']}', '{$general['intel']}', '{$general['explevel']}', '$grp', '$grp_no', '{$general['horse']}', '{$general['weap']}', '{$general['book']}')";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

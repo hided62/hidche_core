@@ -6,7 +6,7 @@ include "func.php";
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 
-if($session->userGrade < 5) {
+if ($session->userGrade < 5) {
     //echo "<script>location.replace('_admin1.php');</script>";
     echo '_admin1.php';//TODO:debug all and replace
 }
@@ -18,7 +18,7 @@ $v->rule('integer', [
 ])->rule('dateFormat', [
     'starttime'
 ]);
-if(!$v->validate()){
+if (!$v->validate()) {
     Error($v->errorStr());
 }
 
@@ -33,33 +33,35 @@ $connect=$db->get();
 
 $admin = getAdmin();
 
-switch($btn) {
+switch ($btn) {
     case "변경":
         $msg = addslashes(SQ2DQ($msg));
         $query = "update game set msg='$msg'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
         break;
     case "로그쓰기":
         $lognum = $admin['historyindex'] + 1;
-        if($lognum >= 29) { $lognum = 0; }
+        if ($lognum >= 29) {
+            $lognum = 0;
+        }
         $history[0] = "<R>★</><S>{$log}</>";
         pushWorldHistory($history);
         break;
     case "변경1":
         $query = "update game set starttime='$starttime'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
         break;
     case "변경2":
         $query = "update game set maxgeneral='$maxgeneral'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
         break;
     case "변경3":
         $query = "update game set maxnation='$maxnation'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
         break;
     case "변경4":
         $query = "update game set startyear='$startyear'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
         break;
     case "1분턴":
     case "2분턴":
@@ -69,7 +71,7 @@ switch($btn) {
     case "30분턴":
     case "60분턴":
     case "120분턴":
-        switch($btn) {
+        switch ($btn) {
         case   "1분턴": $turnterm = 1; break;
         case   "2분턴": $turnterm = 2; break;
         case   "5분턴": $turnterm = 5; break;
@@ -84,30 +86,30 @@ switch($btn) {
         $starttime = date("Y-m-d H:i:s", strtotime($admin['turntime']) - $turn * $unit);
         $starttime = cutTurn($starttime, $turnterm);
         $query = "update game set turnterm='$turnterm',starttime='$starttime'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
         // 턴시간이 길어지는 경우 랜덤턴 배정
-        if($turnterm < $admin['turnterm']) {
+        if ($turnterm < $admin['turnterm']) {
             $query = "select no from general";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
             $count = MYDB_num_rows($result);
-            for($i=0; $i < $count; $i++) {
+            for ($i=0; $i < $count; $i++) {
                 $gen = MYDB_fetch_array($result);
                 $turntime = getRandTurn($turnterm);
                 $query = "update general set turntime='$turntime' where no='{$gen['no']}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
             }
-        // 턴시간이 너무 멀리 떨어진 선수 제대로 보정
+            // 턴시간이 너무 멀리 떨어진 선수 제대로 보정
         } else {
             $query = "select no,turntime from general";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
             $count = MYDB_num_rows($result);
-            for($i=0; $i < $count; $i++) {
+            for ($i=0; $i < $count; $i++) {
                 $gen = MYDB_fetch_array($result);
-                $num = floor((strtotime($gen['turntime']) - strtotime($admin['turntime'])) / $unit);
-                if($num > 0) {
+                $num = intdiv((strtotime($gen['turntime']) - strtotime($admin['turntime'])), $unit);
+                if ($num > 0) {
                     $gen['turntime'] = date("Y-m-d H:i:s", strtotime($gen['turntime']) - $unit * $num);
                     $query = "update general set turntime='{$gen['turntime']}' where no='{$gen['no']}'";
-                    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
                 }
             }
         }
@@ -118,4 +120,3 @@ switch($btn) {
 
 //echo "<script>location.replace('_admin1.php');</script>";
 echo '_admin1.php';//TODO:debug all and replace
-

@@ -125,7 +125,7 @@ for ($i=0; $i < $nationcount; $i++) {
     }
 
     $term = $admin['year'] * 12 + $admin['month'] + $dip['term'];
-    $year = floor($term / 12);
+    $year = intdiv($term, 12);
     $month = $term % 12;
 
     if ($month == 0) {

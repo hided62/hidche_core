@@ -208,7 +208,7 @@ for ($i=0; $i < $count; $i++) {
         $chk = 1;
     }
     $pv = round($auction['value'] * 100 / $auction['amount']) / 100 + 0.001;
-    $pv = substr($pv, 0, 4);
+    $pv = substr((string)$pv, 0, 4);
     if ($auction['stuff'] != 0) {
         $pv = '-';
     }

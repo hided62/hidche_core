@@ -30,7 +30,7 @@ function getGeneralLeadership(&$general, $withInjury, $withItem, $withStatAdjust
     //$withStatAdjust는 통솔에서 미사용
 
     if($useFloor){
-        return floor($leadership);
+        return intval($leadership);
     }
     return $leadership;
     
@@ -62,7 +62,7 @@ function getGeneralPower(&$general, $withInjury, $withItem, $withStatAdjust, $us
     }
 
     if($useFloor){
-        return floor($power);
+        return intval($power);
     }
     return $power;
 }
@@ -93,7 +93,7 @@ function getGeneralIntel(&$general, $withInjury, $withItem, $withStatAdjust, $us
     }
     
     if($useFloor){
-        return floor($intel);
+        return intval($intel);
     }
     return $intel;
 }
@@ -350,7 +350,7 @@ function process_3(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         // 부드러운 기술 제한
-        if(TechLimit($admin['startyear'], $admin['year'], $nation['tech'])) { $score = floor($score/4); }
+        if(TechLimit($admin['startyear'], $admin['year'], $nation['tech'])) { $score = intdiv($score, 4); }
 
         //장수수 구함
         $query = "select no from general where nation='{$general['nation']}'";
@@ -887,11 +887,11 @@ function process_11(&$general, $type) {
     $cost = round($cost);
 
     //특기 보정 : 보병, 궁병, 기병, 귀병, 공성, 징병
-    if(floor($armtype/10) == 0 && $general['special2'] == 50) { $cost *= 0.9; }
-    if(floor($armtype/10) == 1 && $general['special2'] == 51) { $cost *= 0.9; }
-    if(floor($armtype/10) == 2 && $general['special2'] == 52) { $cost *= 0.9; }
-    if(floor($armtype/10) == 3 && $general['special2'] == 40) { $cost *= 0.9; }
-    if(floor($armtype/10) == 4 && $general['special2'] == 43) { $cost *= 0.9; }
+    if(intdiv($armtype, 10) == 0 && $general['special2'] == 50) { $cost *= 0.9; }
+    if(intdiv($armtype, 10) == 1 && $general['special2'] == 51) { $cost *= 0.9; }
+    if(intdiv($armtype, 10) == 2 && $general['special2'] == 52) { $cost *= 0.9; }
+    if(intdiv($armtype, 10) == 3 && $general['special2'] == 40) { $cost *= 0.9; }
+    if(intdiv($armtype, 10) == 4 && $general['special2'] == 43) { $cost *= 0.9; }
     if($general['special2'] == 72) { $cost *= 0.5; }
 
     if($type == 1) { $dtype = "징병"; }
@@ -974,7 +974,7 @@ function process_11(&$general, $type) {
     else { $valid = 0; }
 
     // 초반 제한중 차병 불가
-    if($admin['year'] < $admin['startyear']+3 && floor($armtype/10) == 4) {
+    if($admin['year'] < $admin['startyear']+3 && intdiv($armtype, 10) == 4) {
         $valid = 0;
     }
 
@@ -1061,7 +1061,7 @@ function process_13(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 훈련 실패. <1>$date</>";
     } elseif($general['train'] >= $_maxtrain) {
         $log[] = "<C>●</>{$admin['month']}월:병사들은 이미 정예병사들입니다. <1>$date</>";
-//    } elseif(floor($general['crewtype']/10) == 4) {
+//    } elseif(intdiv($general['crewtype'], 10) == 4) {
 //        $log[] = "<C>●</>{$admin['month']}월:병기는 훈련이 불가능합니다. <1>$date</>";
     } else {
         // 훈련시
@@ -1082,7 +1082,7 @@ function process_13(&$general) {
         $query = "update general set train='$score' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 사기 약간 감소
-        $score = floor($general['atmos'] * $_atmosing);
+        $score = intval($general['atmos'] * $_atmosing);
         if($score < 0 ) { $score = 0; }
         $query = "update general set atmos='$score' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1133,7 +1133,7 @@ function process_14(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 사기진작 실패. <1>$date</>";
     } elseif($general['atmos'] >= $_maxatmos) {
         $log[] = "<C>●</>{$admin['month']}월:이미 사기는 하늘을 찌를듯 합니다. <1>$date</>";
-//    } elseif(floor($general['crewtype']/10) == 4) {
+//    } elseif(intdiv($general['crewtype'], 10) == 4) {
 //        $log[] = "<C>●</>{$admin['month']}월:병기는 사기 진작이 불가능합니다. <1>$date</>";
     } else {
         $score = round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * $_training);
@@ -1185,7 +1185,7 @@ function process_15(&$general) {
     $city = MYDB_fetch_array($result);
 
     if($general['term']%100 == 15) {
-        $term = floor($general['term']/100) + 1;
+        $term = intdiv($general['term'], 100) + 1;
         $code = $term * 100 + 15;
     } else {
         $term = 1;
@@ -1738,7 +1738,7 @@ function process_31(&$general) {
         if($nation['spy'] != "") { $cities = explode("|", $nation['spy']); }
         $exist = 0;
         for($i=0; $i < count($cities); $i++) {
-            if(floor($cities[$i]/10) == $destination) {
+            if(intdiv($cities[$i], 10) == $destination) {
                 $exist = 1;
                 break;
             }
@@ -1796,7 +1796,7 @@ function process_41(&$general) {
     } elseif($crewexp == 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 모자랍니다. 단련 실패. <1>$date</>";
     } else {
-        $type = floor($general['crewtype'] / 10) * 10;
+        $type = intdiv($general['crewtype'], 10) * 10;
         switch($type) {
         case 0: $crewstr = '보병'; break;
         case 1: $crewstr = '궁병'; break;

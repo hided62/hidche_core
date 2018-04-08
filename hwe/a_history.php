@@ -15,47 +15,54 @@ $connect=$db->get();
 increaseRefresh("연감", 5);
 
 $query = "select startyear,year,month,conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $admin = MYDB_fetch_array($result);
 
 $query = "select map,con,turntime from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
 $con = checkLimit($me['con'], $admin['conlimit']);
-if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
+if ($con >= 2) {
+    printLimitMsg($me['turntime']);
+    exit();
+}
 
 $query = "select year,month from history order by no limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $history = MYDB_fetch_array($result);
 $s = ($history['year']*12) + $history['month'];
 
 $query = "select year,month from history order by no desc limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $history = MYDB_fetch_array($result);
 $e = ($history['year']*12) + $history['month'];
 
-if(!$yearmonth) {
+if (!$yearmonth) {
     $year = $admin['year'];
     $month = $admin['month'] - 1;
 } else {
     $year = substr($yearmonth, 0, 3) - 0;
     $month = substr($yearmonth, 3, 2) - 0;
 
-    if($btn == "◀◀ 이전달") {
+    if ($btn == "◀◀ 이전달") {
         $month -= 1;
-    } elseif($btn == "다음달 ▶▶") {
+    } elseif ($btn == "다음달 ▶▶") {
         $month += 1;
     }
 }
 $now = ($year*12) + $month;
 
-if($now < $s) { $now = $s; }
-if($now > $e) { $now = $e; }
+if ($now < $s) {
+    $now = $s;
+}
+if ($now > $e) {
+    $now = $e;
+}
 
-$year = floor($now / 12);
+$year = intdiv($now, 12);
 $month = $now % 12;
-if($month <= 0) {
+if ($month <= 0) {
     $year -= 1;
     $month += 12;
 }
@@ -82,12 +89,12 @@ if($month <= 0) {
         <select name=yearmonth size=1>
 <?php
 $query = "select year,month from history";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $histCount = MYDB_num_rows($result);
-for($i=0; $i < $histCount; $i++) {
+for ($i=0; $i < $histCount; $i++) {
     $history = MYDB_fetch_array($result);
     $value = "".$history['year'].StringUtil::padStringAlignRight($history['month'], 2, "0");
-    if($history['year'] == $year && $history['month'] == $month) {
+    if ($history['year'] == $year && $history['month'] == $month) {
         echo "
             <option selected value={$value}>{$history['year']}년 {$history['month']}월</option>";
     } else {
@@ -97,7 +104,7 @@ for($i=0; $i < $histCount; $i++) {
 }
 
 $query = "select log,genlog,nation,power,gen,city from history where year='$year' and month='$month'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $history = MYDB_fetch_array($result);
 ?>
         </select>

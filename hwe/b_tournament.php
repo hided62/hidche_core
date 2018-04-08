@@ -223,7 +223,7 @@ for ($i=0; $i < 2; $i++) {
     }
     if ($general['win'] > 0) {
         $line[$i] = "<font color=red>";
-        $cent[floor($i/2)] = "<font color=red>";
+        $cent[intdiv($i, 2)] = "<font color=red>";
     } else {
         $line[$i] = "<font color=white>";
     }
@@ -264,7 +264,7 @@ for ($i=0; $i < 4; $i++) {
     }
     if ($general['win'] > 0) {
         $line[$i] = "<font color=red>";
-        $cent[floor($i/2)] = "<font color=red>";
+        $cent[intdiv($i, 2)] = "<font color=red>";
     } else {
         $line[$i] = "<font color=white>";
     }
@@ -305,7 +305,7 @@ for ($i=0; $i < 8; $i++) {
     }
     if ($general['win'] > 0) {
         $line[$i] = "<font color=red>";
-        $cent[floor($i/2)] = "<font color=red>";
+        $cent[intdiv($i, 2)] = "<font color=red>";
     } else {
         $line[$i] = "<font color=white>";
     }
@@ -346,7 +346,7 @@ for ($i=0; $i < 16; $i++) {
     }
     if ($general['win'] > 0) {
         $line[$i] = "<font color=red>";
-        $cent[floor($i/2)] = "<font color=red>";
+        $cent[intdiv($i, 2)] = "<font color=red>";
     } else {
         $line[$i] = "<font color=white>";
     }

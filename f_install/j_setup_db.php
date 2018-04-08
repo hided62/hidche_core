@@ -180,6 +180,10 @@ $rootDB->insert('system', array(
 
 $globalSalt = bin2hex(random_bytes(16));
 
+'@phan-var-force string $servHost';
+'@phan-var-force string $sharedIconPath';
+'@phan-var-force string $gameImagePath';
+
 $sharedIconPath = WebUtil::resolveRelativePath($sharedIconPath, $servHost);
 $gameImagePath = WebUtil::resolveRelativePath($gameImagePath, $servHost);
 

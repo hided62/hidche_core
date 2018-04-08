@@ -796,9 +796,9 @@ function generalInfo($no) {
     $horsename = getHorseName($general['horse']);
     $itemname = getItemName($general['item']);
     if($general['injury'] > 0) {
-        $leader = floor($general['leader'] * (100 - $general['injury'])/100);
-        $power = floor($general['power'] * (100 - $general['injury'])/100);
-        $intel = floor($general['intel'] * (100 - $general['injury'])/100);
+        $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
+        $power = intdiv($general['power'] * (100 - $general['injury']), 100);
+        $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
     } else {
         $leader = $general['leader'];
         $power = $general['power'];
@@ -1426,7 +1426,7 @@ function checkDelay() {
         $threshold = 3;
     }
     //지연 해야할 밀린 턴 횟수
-    $iter = floor($admin['offset'] / $term);
+    $iter = intdiv($admin['offset'], $term);
     if($iter > $threshold) {
         $minute = $iter * $term;
         $query = "update game set turntime=DATE_ADD(turntime, INTERVAL $minute MINUTE),starttime=DATE_ADD(starttime, INTERVAL $minute MINUTE),tnmt_time=DATE_ADD(tnmt_time, INTERVAL $minute MINUTE)";
@@ -1780,9 +1780,9 @@ function turnDate($curtime) {
     $curturn = cutTurn($curtime, $admin['turnterm']);
     $num = 0;
     $term = $admin['turnterm']*60;
-    $num = floor((strtotime($curturn) - strtotime($turn)) / $term);
+    $num = intdiv((strtotime($curturn) - strtotime($turn)), $term);
 
-    $year = $admin['startyear'] + floor($num / 12);
+    $year = $admin['startyear'] + intdiv($num, 12);
     $month = 1 + (12+$num) % 12;
 
     // 바뀐 경우만 업데이트
@@ -2667,7 +2667,7 @@ function TrickInjury($city, $type=0) {
 
         $injury = rand() % 100;
         if($injury < 30) {  // 부상률 30%
-            $injury = floor($injury / 2) + 1;   // 부상 1~16
+            $injury = intdiv($injury, 2) + 1;   // 부상 1~16
 
             $query = "update general set crew=crew*0.98,atmos=atmos*0.98,train=train*0.98,injury=injury+'$injury' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
