@@ -218,7 +218,7 @@ class Util extends \utilphp\util
         }
         $idx = 0;
         $jmp = 0;
-        foreach ($array as $key=>&$value) {
+        foreach ($array as $key=>$value) {
             if (is_string($key)) {
                 return true;
             }
