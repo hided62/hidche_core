@@ -11,12 +11,6 @@
     text-align:center;
 }
 
-.map_detail .map_title{
-    background:
-        url('/images/ltitle.jpg') no-repeat left, 
-        url('/images/rtitle.jpg') no-repeat right;
-}
-
 .map_title_text{
     margin:auto;
     text-align:center;
@@ -27,50 +21,10 @@
     font-weight:bold;
 }
 
-.map_detail.map_spring .map_title_text{
-    background:
-        url('/images/ad.gif') no-repeat left, 
-        url('/images/spring.gif') no-repeat right;
-}
-
-.map_detail.map_summer .map_title_text{
-    background:
-        url('/images/ad.gif') no-repeat left, 
-        url('/images/summer.gif') no-repeat right;
-}
-
-.map_detail.map_fall .map_title_text{
-    background:
-        url('/images/ad.gif') no-repeat left, 
-        url('/images/fall.gif') no-repeat right;
-}
-
-.map_detail.map_winter .map_title_text{
-    background:
-        url('/images/ad.gif') no-repeat left, 
-        url('/images/winter.gif') no-repeat right;
-}
-
 .map_body{
     width:700px;
     height:500px;
     position:relative;
-}
-
-.map_spring .map_body{
-    background: url('/images/map1.jpg') no-repeat;
-}
-
-.map_summer .map_body{
-    background: url('/images/map2.jpg') no-repeat;
-}
-
-.map_fall .map_body{
-    background: url('/images/map3.jpg') no-repeat;
-}
-
-.map_winter .map_body{
-    background: url('/images/map4.jpg') no-repeat;
 }
 
 .world_map .city_tooltip{
@@ -135,7 +89,7 @@
 
 /*
 .map_detail .city_base.city_level_{0} .city_bg{
-    //$img = loadImg('/images/cast_{0}.gif');
+    //$img = loadImg('cast_{0}.gif');
     //$parent = cssSelect('.city_base');
     width: $img.width;
     height: $img.height;
@@ -222,7 +176,7 @@
 
 /*
 .map_detail .city_base.city_level_{0} .city_img{
-    //$img = loadImg('/images/cast_{0}.gif');
+    //$img = loadImg('cast_{0}.gif');
     //$parent = cssSelect('.city_base');
     width: $img.width;
     height: $img.height;

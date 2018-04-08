@@ -29,7 +29,7 @@ if($general){
     $me['name'] = $general['name'];
 
     if($general['imgsvr'] == 0) {
-        $me['picture'] = '../../image/'.$general['picture'];
+        $me['picture'] = ServConfig::getSharedIconPath().'/'.$general['picture'];
     } else {
         $me['picture'] = AppConf::getUserIconPathWeb().'/'.$general['picture'];
     }

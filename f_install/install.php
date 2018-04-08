@@ -83,7 +83,7 @@ require(__dir__.'/../vendor/autoload.php');
                         <div class="col-sm-8">
                             <input type="text" class="form-control" name="shared_icon_path" id="shared_icon_path" 
                             placeholder="공용 아이콘 주소(웹 주소, 또는 접속 경로에 따른 상대 주소)"
-                            value="image/icons" />
+                            value="../image/icons" />
                         </div>
                     </div>
 
@@ -92,7 +92,7 @@ require(__dir__.'/../vendor/autoload.php');
                         <div class="col-sm-8">
                             <input type="text" class="form-control" name="game_image_path" id="game_image_path" 
                             placeholder="게임 이미지 주소(웹 주소, 또는 접속 경로에 따른 상대 주소)"
-                            value="image/game" />
+                            value="../image/game" />
                         </div>
                     </div>
 

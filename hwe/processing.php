@@ -137,8 +137,8 @@ $(function(){
     });
 });
 </script>
-<link href="../d_shared/common.css" red="stylesheet">
 <link href="css/normalize.css" rel="stylesheet">
+<link href="../d_shared/common.css" red="stylesheet">
 <link href="css/common.css" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet">
