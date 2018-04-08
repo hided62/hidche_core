@@ -144,7 +144,7 @@ for($j=0; $j < $gencount; $j++) {
     elseif($general['npc'] == 1) { $name = "<font color=skyblue>{$general['name']}</font>"; }
     else { $name =  "{$general['name']}"; }
 
-    $general['connect'] = round($general['connect'] / 10, 0) * 10;
+    $general['connect'] = Util::round($general['connect'] / 10) * 10;
 
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "

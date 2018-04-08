@@ -130,7 +130,7 @@ function getSpecial2($leader, $power, $intel, $nodex=1, $dex0=0, $dex10=0, $dex2
     $special2 = 70;
     // 숙련 10,000: 25%, 40,000: 50%, 100,000: 79%, 160,000: 100%
     $dex = sqrt($dex0 + $dex10 + $dex20 + $dex30 + $dex40);
-    $dex = round($dex / 4);
+    $dex = Util::round($dex / 4);
     // 숙련 10,000: 75%, 40,000: 50%, 100,000: 21%, 160,000: 0%
     // 그중 20%만
     if($nodex == 0 && rand()%100 < 20 && rand()%100 > $dex) {
@@ -194,8 +194,8 @@ function addGenDex($no, $type, $exp) {
 
     $type = intdiv($type, 10) * 10;
     $dexType = "dex{$type}";
-    if($type == 30) { $exp = round($exp * 0.90); }     //귀병은 90%효율
-    elseif($type == 40) { $exp = round($exp * 0.90); } //차병은 90%효율
+    if($type == 30) { $exp = Util::round($exp * 0.90); }     //귀병은 90%효율
+    elseif($type == 40) { $exp = Util::round($exp * 0.90); } //차병은 90%효율
 
     $query = "update general set {$dexType}={$dexType}+{$exp} where no='$no'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -421,7 +421,7 @@ function preUpdateMonthly() {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     //도시훈사 180년 60, 220년 87, 240년 100
-    $rate = round(($admin['year'] - $admin['startyear']) / 1.5) + 60;
+    $rate = Util::round(($admin['year'] - $admin['startyear']) / 1.5) + 60;
     if($rate > 100) $rate = 100;
 
     $ratio = 100;
@@ -549,7 +549,7 @@ group by A.nation
         if($nation['chemi'] > 100) { $nation['chemi'] = 100; }
 
         //약간의 랜덤치 부여 (95% ~ 105%)
-        $nation['power'] = round($nation['power'] * (rand()%101 + 950) / 1000);
+        $nation['power'] = Util::round($nation['power'] * (rand()%101 + 950) / 1000);
         $query = "update nation set power='{$nation['power']}',gennum2='{$nation['gennum']}',chemi='{$nation['chemi']}' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
@@ -563,7 +563,7 @@ group by A.nation
         $genCount = $genNum[$dip['me']];
         // 25% 참여율일때 두당 10턴에 4000명 소모한다고 계산
         // 4000 / 10 * 0.25 = 100
-        $term = round($dip['dead'] / 100 / $genCount) + 1;
+        $term = Util::round($dip['dead'] / 100 / $genCount) + 1;
         if($dip['term'] > $term) { $term = $dip['term']; }
         if($term > 13) { $term = 13; }
         $query = "update diplomacy set term='{$term}' where (me='{$dip['me']}' and you='{$dip['you']}')";
@@ -746,7 +746,7 @@ function checkMerge() {
         $newGenCount = $gencount + $gencount2;
         if($newGenCount < 10) { $newGenCount = 10; }
         $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
-        $newTech = round($newTotalTech / $newGenCount);
+        $newTech = Util::round($newTotalTech / $newGenCount);
         // 자금 통합, 외교제한 5년, 기술유지
         $query = "update nation set name='{$you['makenation']}',gold=gold+'{$mynation['gold']}',rice=rice+'{$mynation['rice']}',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='{$younation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -775,9 +775,9 @@ function checkMerge() {
         // NPC들 일부 하야 (양국중 큰쪽 장수수의 90~110%만큼)
         $resignCount = 0;
         if($npccount >= $npccount2) {
-            $resignCount = round($npccount*(rand()%21+90)/100);
+            $resignCount = Util::round($npccount*(rand()%21+90)/100);
         } else {
-            $resignCount = round($npccount2*(rand()%21+90)/100);
+            $resignCount = Util::round($npccount2*(rand()%21+90)/100);
         }
         $resignCommand = EncodeCommand(0, 0, 0, 45); //하야
         $query = "update general set turn0='$resignCommand' where nation='{$you['nation']}' and npc>=2 order by rand() limit {$resignCount}";
@@ -867,7 +867,7 @@ function checkSurrender() {
         $newGenCount = $gencount + $gencount2;
         if($newGenCount < 10) { $newGenCount = 10; }
         $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
-        $newTech = round($newTotalTech / $newGenCount);
+        $newTech = Util::round($newTotalTech / $newGenCount);
         // 자금 통합, 외교제한 5년, 기술유지
         $query = "update nation set gold=gold+'{$mynation['gold']}',rice=rice+'{$mynation['rice']}',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='{$younation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -903,9 +903,9 @@ function checkSurrender() {
         // NPC들 일부 하야 (양국중 큰쪽 장수수의 90~110%만큼)
         $resignCount = 0;
         if($npccount >= $npccount2) {
-            $resignCount = round($npccount*(rand()%21+90)/100);
+            $resignCount = Util::round($npccount*(rand()%21+90)/100);
         } else {
-            $resignCount = round($npccount2*(rand()%21+90)/100);
+            $resignCount = Util::round($npccount2*(rand()%21+90)/100);
         }
         $resignCommand = EncodeCommand(0, 0, 0, 45); //하야
         $query = "update general set turn0='$resignCommand' where nation='{$you['nation']}' and npc>=2 order by rand() limit {$resignCount}";
@@ -1018,17 +1018,17 @@ function checkStatistic() {
     $query = "select avg(gold) as avggold, avg(rice) as avgrice, avg(dex0+dex10+dex20+dex30) as avgdex, max(dex0+dex10+dex20+dex30) as maxdex, avg(experience+dedication) as avgexpded, max(experience+dedication) as maxexpded from general";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    $general['avggold'] = round($general['avggold']);
-    $general['avgrice'] = round($general['avgrice']);
-    $general['avgdex'] = round($general['avgdex']);
-    $general['avgexpded'] = round($general['avgexpded']);
+    $general['avggold'] = Util::round($general['avggold']);
+    $general['avgrice'] = Util::round($general['avgrice']);
+    $general['avgdex'] = Util::round($general['avgdex']);
+    $general['avgexpded'] = Util::round($general['avgexpded']);
     $etc .= "평균 금/쌀 ({$general['avggold']}/{$general['avgrice']}), 평균/최고 숙련({$general['avgdex']}/{$general['maxdex']}), 평균/최고 경험공헌({$general['avgexpded']}/{$general['maxexpded']}), ";
 
     $query = "select min(tech) as mintech, max(tech) as maxtech, avg(tech) as avgtech, min(power) as minpower, max(power) as maxpower, avg(power) as avgpower from nation where level>0";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
-    $nation['avgtech'] = round($nation['avgtech']);
-    $nation['avgpower'] = round($nation['avgpower']);
+    $nation['avgtech'] = Util::round($nation['avgtech']);
+    $nation['avgpower'] = Util::round($nation['avgpower']);
     $etc .= "최저/평균/최고 기술({$nation['mintech']}/{$nation['avgtech']}/{$nation['maxtech']}), ";
     $etc .= "최저/평균/최고 국력({$nation['minpower']}/{$nation['avgpower']}/{$nation['maxpower']}), ";
     

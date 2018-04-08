@@ -25,7 +25,7 @@ function process_22(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $you = MYDB_fetch_array($result);
 
-    $cost = round($admin['develcost'] + ($you['experience'] + $you['dedication'])/1000) * 10;
+    $cost = Util::round($admin['develcost'] + ($you['experience'] + $you['dedication'])/1000) * 10;
 
     if(!$you) {
         $log[] = "<C>●</>{$admin['month']}월:없는 장수입니다. 등용 실패. <1>$date</>";
@@ -217,7 +217,7 @@ function process_29(&$general) {
         $query = "select no from general where nation!='{$general['nation']}' and npc=3";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $otherNpccount = MYDB_num_rows($result);
-        $otherNpccount = round(sqrt($otherNpccount + 1)) - 1;
+        $otherNpccount = Util::round(sqrt($otherNpccount + 1)) - 1;
         
         if($gencount <= 0) { $gencount = 1; }
         if($npccount <= 0) { $npccount = 1; }
@@ -314,17 +314,17 @@ function process_29(&$general) {
             }
             // 국내 최고능치 기준으로 랜덤성 스케일링
             if($avgGen['lpi'] > 210) {
-                $leader = round($leader * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
-                $power = round($power * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
-                $intel = round($intel * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
+                $leader = Util::round($leader * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
+                $power = Util::round($power * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
+                $intel = Util::round($intel * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
             } elseif($avgGen['lpi'] > 180) {
-                $leader = round($leader * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
-                $power = round($power * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
-                $intel = round($intel * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
+                $leader = Util::round($leader * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
+                $power = Util::round($power * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
+                $intel = Util::round($intel * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
             } else {
-                $leader = round($leader * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
-                $power = round($power * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
-                $intel = round($intel * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
+                $leader = Util::round($leader * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
+                $power = Util::round($power * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
+                $intel = Util::round($intel * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
             }
             $over1 = 0;
             $over2 = 0;
@@ -370,8 +370,8 @@ function process_29(&$general) {
             $bornyear = $admin['year'];
             $deadyear = $admin['year'] + 3;
             $age = 20;
-            $specage = round((80 - $age)/12) + $age;
-            $specage2 = round((80 - $age)/3) + $age;
+            $specage = Util::round((80 - $age)/12) + $age;
+            $specage2 = Util::round((80 - $age)/3) + $age;
             //$specage = $age + 1 + rand() % 3;
             //$specage2 = $age + 5 + rand() % 5;
             // 10년 ~ 50년

@@ -300,9 +300,9 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $cityCrew *= (rand() % 21 + 90)/100; // 90~110%
                     $myCrew *= (rand() % 21 + 90)/100; // 90~110%
 
-                    $general['crew'] -= round($myCrew);
-                    $city['def'] -= round($cityCrew);
-                    $city['wall'] -= round($cityCrew);
+                    $general['crew'] -= Util::round($myCrew);
+                    $city['def'] -= Util::round($cityCrew);
+                    $city['wall'] -= Util::round($cityCrew);
 
                     $tempMyCrew = $myCrew; $tempCityCrew = $cityCrew;
                     $tempGeneralCrew = $general['crew']; $tempCityDef = $city['def'];
@@ -310,14 +310,14 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     if($city['wall'] <= 0) { $city['wall'] = 0; }
 
                     if($city['def'] < 0) {
-                        $offset = round($tempCityDef*$tempMyCrew/$tempCityCrew);
+                        $offset =  Util::round($tempCityDef*$tempMyCrew/$tempCityCrew);
                         $myCrew += $offset;
                         $general['crew'] -= $offset;
                         $cityCrew += $tempCityDef;
                         $city['def'] = 0;
                     }
                     if($general['crew'] < 0) {
-                        $offset = round($tempGeneralCrew*$tempCityCrew/$tempMyCrew);
+                        $offset =  Util::round($tempGeneralCrew*$tempCityCrew/$tempMyCrew);
                         $cityCrew += $offset;
                         $city['def'] -= $offset;
                         $myCrew += $tempGeneralCrew;
@@ -326,9 +326,9 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
                     $exp += $cityCrew;
                     $opexp += $myCrew;
-                    $general['crew'] = round($general['crew']);
-                    $cityCrew = round($cityCrew);
-                    $myCrew = round($myCrew);
+                    $general['crew'] = Util::round($general['crew']);
+                    $cityCrew = Util::round($cityCrew);
+                    $myCrew =  Util::round($myCrew);
                     $myAtt = round($myAtt, 2);
                     $myDef = round($myDef, 2);
                     $cityAtt = round($cityAtt, 2);
@@ -342,14 +342,14 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                 }
 
                 // 도시쌀 소모 계산
-                $opexp = round($opexp / 50);
-                $rice = round($opexp * 4 * getCrewtypeRice($game, 0, 0) * ($train3/100 - 0.2));
+                $opexp =  Util::round($opexp / 50);
+                $rice = Util::round($opexp * 4 * getCrewtypeRice($game, 0, 0) * ($train3/100 - 0.2));
 
                 //원래대로 스케일링
-                $city['def'] = round($city['def'] / 10);
-                $city['wall'] = round($city['wall'] / 10);
+                $city['def'] = Util::round($city['def'] / 10);
+                $city['wall'] = Util::round($city['wall'] / 10);
                 //내정 감소
-                $dec = round($cityCrew / 10);
+                $dec =  Util::round($cityCrew / 10);
                 $city['agri'] -= $dec;
                 $city['comm'] -= $dec;
                 $city['secu'] -= $dec;
@@ -672,8 +672,8 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     $opCrew *= (rand() % 21 + 90)/100; // 90~110%
                     $myCrew *= (rand() % 21 + 90)/100; // 90~110%
 
-                    $general['crew'] -= round($myCrew);
-                    $oppose['crew'] -= round($opCrew);
+                    $general['crew'] -=  Util::round($myCrew);
+                    $oppose['crew'] -=  Util::round($opCrew);
                     $tempMyCrew = $myCrew; $tempOpCrew = $opCrew;
                     $tempGeneralCrew = $general['crew']; $tempOpposeCrew = $oppose['crew'];
                     if($general['crew'] <= 0 && $oppose['crew'] <= 0) {
@@ -681,13 +681,13 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                         $r2 = $tempOpposeCrew / $tempOpCrew;
 
                         if($r1 > $r2) {
-                            $offset = round($tempOpposeCrew*$tempMyCrew/$tempOpCrew);
+                            $offset =  Util::round($tempOpposeCrew*$tempMyCrew/$tempOpCrew);
                             $myCrew += $offset;
                             $general['crew'] -= $offset;
                             $opCrew += $tempOpposeCrew;
                             $oppose['crew'] = 0;
                         } else {
-                            $offset = round($tempGeneralCrew*$tempOpCrew/$tempMyCrew);
+                            $offset =  Util::round($tempGeneralCrew*$tempOpCrew/$tempMyCrew);
                             $opCrew += $offset;
                             $oppose['crew'] -= $offset;
                             $myCrew += $tempGeneralCrew;
@@ -695,14 +695,14 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                         }
                     } elseif($general['crew'] * $oppose['crew'] <= 0) {
                         if($oppose['crew'] < 0) {
-                            $offset = round($tempOpposeCrew*$tempMyCrew/$tempOpCrew);
+                            $offset = Util::round($tempOpposeCrew*$tempMyCrew/$tempOpCrew);
                             $myCrew += $offset;
                             $general['crew'] -= $offset;
                             $opCrew += $tempOpposeCrew;
                             $oppose['crew'] = 0;
                         }
                         if($general['crew'] < 0) {
-                            $offset = round($tempGeneralCrew*$tempOpCrew/$tempMyCrew);
+                            $offset = Util::round($tempGeneralCrew*$tempOpCrew/$tempMyCrew);
                             $opCrew += $offset;
                             $oppose['crew'] -= $offset;
                             $myCrew += $tempGeneralCrew;
@@ -712,10 +712,10 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
                     $exp += $opCrew;
                     $opexp += $myCrew;
-                    $general['crew'] = round($general['crew']);
-                    $oppose['crew'] = round($oppose['crew']);
-                    $myCrew = round($myCrew);
-                    $opCrew = round($opCrew);
+                    $general['crew'] = Util::round($general['crew']);
+                    $oppose['crew'] = Util::round($oppose['crew']);
+                    $myCrew = Util::round($myCrew);
+                    $opCrew = Util::round($opCrew);
                     $myAtt = round($myAtt, 2);
                     $myDef = round($myDef, 2);
                     $opAtt = round($opAtt, 2);
@@ -734,7 +734,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
         }
 
         // 공헌, 명성 상승
-        $exp = round($exp / 50);
+        $exp = Util::round($exp / 50);
         $ricing = ($exp * 5 * getCrewtypeRice($game, $general['crewtype'], $tech1));
         $msg .= "★ 【공격장수】공헌 상승 : $exp 쌀 소비 : {$exp}x5x".getCrewtypeRice($game, $general['crewtype'], $tech1)." = $ricing<br>";
 //        $msg2 .= "★ 【공격장수】공헌 상승 : $exp 쌀 소비 : {$exp}x5x".getCrewtypeRice($game, $general['crewtype'], $tech1)." = $ricing<br>";

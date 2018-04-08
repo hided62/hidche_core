@@ -74,7 +74,7 @@ class ChangeCity extends \sammo\Event\Action{
 
         $matches = null;
         if(preg_match(self::REGEXP_PERCENT, $value, $matches)){
-            $value = (int)round((float)$matches[1], 0);
+            $value = Util::round((float)$matches[1]);
             return DB::db()->sqleval('%i', Util::valueFit($value, 0, 100));
         }
 
@@ -106,7 +106,7 @@ class ChangeCity extends \sammo\Event\Action{
 
         $matches = null;
         if(preg_match(self::REGEXP_PERCENT, $value, $matches)){
-            $value = (int)round((float)$matches[1], 0);
+            $value = Util::round((float)$matches[1]);
             return DB::db()->sqleval('ROUND(%b * %d, 0)', $keyMax, $value/100);
         }
 

@@ -458,11 +458,11 @@ function commandTable() {
     if($nation['type'] == 2 || $nation['type'] == 4 || $nation['type'] == 7 || $nation['type'] == 10) { $develcostE *= 0.8;   $colorE = 1; }
     if($nation['type'] == 1 || $nation['type'] == 3 || $nation['type'] == 9)                                                                    { $develcostE *= 1.2;   $colorE = 2; }
 
-    $develcostA = round($develcostA);
-    $develcostB = round($develcostB);
-    $develcostC = round($develcostC);
-    $develcostD = round($develcostD);
-    $develcostE = round($develcostE);
+    $develcostA = Util::round($develcostA);
+    $develcostB = Util::round($develcostB);
+    $develcostC = Util::round($develcostC);
+    $develcostD = Util::round($develcostD);
+    $develcostE = Util::round($develcostE);
 
     echo "
 <select name=commandtype size=1 style=width:260px;color:white;background-color:black;font-size:12;>";
@@ -701,22 +701,22 @@ function CoreCommandTable() {
     addCommand("감축/6턴", 68, $valid);
     commandGroup("", 1);
     commandGroup("====== 전 략 ======");
-    $term = round(sqrt($genCount*8)*10);
+    $term = Util::round(sqrt($genCount*8)*10);
     addCommand("필사즉생/3턴(전략{$term})", 71, $valid);
-    $term = round(sqrt($genCount*4)*10);
+    $term = Util::round(sqrt($genCount*4)*10);
     addCommand("백성동원/1턴(전략{$term})", 72, $valid);
-    $term = round(sqrt($genCount*4)*10);
+    $term = Util::round(sqrt($genCount*4)*10);
     addCommand("수몰/3턴(전략{$term})", 73, $valid);
-    $term = round(sqrt($genCount*4)*10);
+    $term = Util::round(sqrt($genCount*4)*10);
     addCommand("허보/2턴(전략{$term})", 74, $valid);
-    $term = round(sqrt($genCount*2)*10);
+    $term = Util::round(sqrt($genCount*2)*10);
     if($term < 72) { $term = 72; }
     addCommand("피장파장/3턴(전략{$term})", 75, $valid);
-    $term = round(sqrt($genCount*10)*10);
+    $term = Util::round(sqrt($genCount*10)*10);
     addCommand("의병모집/3턴(전략{$term})", 76, $valid);
-    $term = round(sqrt($genCount*16)*10);
+    $term = Util::round(sqrt($genCount*16)*10);
     addCommand("이호경식/1턴(전략{$term})", 77, $valid);
-    $term = round(sqrt($genCount*16)*10);
+    $term = Util::round(sqrt($genCount*16)*10);
     addCommand("급습/1턴(전략{$term})", 78, $valid);
     commandGroup("", 1);
     commandGroup("====== 기 타 ======");
@@ -819,7 +819,7 @@ function generalInfo($no) {
     elseif($general['age'] < 80) { $general['age'] = "<font color=yellow>{$general['age']} 세</font>"; }
     else                  { $general['age'] = "<font color=red>{$general['age']} 세</font>"; }
 
-    $general['connect'] = round($general['connect'] / 10, 0) * 10;
+    $general['connect'] = Util::round($general['connect'] / 10) * 10;
     $special = $general['special'] == 0 ? "{$general['specage']}세" : "<font color=limegreen>".getGenSpecial($general['special'])."</font>";
     $special2 = $general['special2'] == 0 ? "{$general['specage2']}세" : "<font color=limegreen>".getGenSpecial($general['special2'])."</font>";
 
@@ -1838,7 +1838,7 @@ function PreprocessCommand($no) {
     
         if($patientCount > 0) {
             // 50% 확률로 치료
-            $patientCount = round($patientCount * 0.5);
+            $patientCount = Util::round($patientCount * 0.5);
     
             $patientName = "";
             for($i=0; $i < $patientCount; $i++) {
@@ -2165,9 +2165,9 @@ function uniqueItem($general, $log, $vote=0) {
     if($game['scenario'] == 0)  { $prob = $gen['cnt'] * 5; }  // 5~6개월에 하나씩 등장
     else { $prob = $gen['cnt']; }  // 1~2개월에 하나씩 등장
 
-    if($vote == 1) { $prob = round($gen['cnt'] * 0.7 / 3); }     // 투표율 70%, 투표 한번에 2~3개 등장
-    elseif($vote == 2) { $prob = round($gen['cnt'] / 10 / 2); }   // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
-    elseif($vote == 3) { $prob = round($gen['cnt'] / 10 / 4); }   // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
+    if($vote == 1) { $prob = Util::round($gen['cnt'] * 0.7 / 3); }     // 투표율 70%, 투표 한번에 2~3개 등장
+    elseif($vote == 2) { $prob = Util::round($gen['cnt'] / 10 / 2); }   // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
+    elseif($vote == 3) { $prob = Util::round($gen['cnt'] / 10 / 4); }   // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
 
     if($prob < 3) { $prob = 3; }
     //아이템 습득 상황
@@ -2588,7 +2588,7 @@ function CharExperience($exp, $personal) {
         case  4:    case  5:    case  7:    case 10:
             $exp *= 0.9; break;
     }
-    $exp = round($exp);
+    $exp = Util::round($exp);
 
     return $exp;
 }
@@ -2598,7 +2598,7 @@ function CharDedication($ded, $personal) {
         case 10:
             $ded *= 0.9; break;
     }
-    $ded = round($ded);
+    $ded = Util::round($ded);
 
     return $ded;
 }

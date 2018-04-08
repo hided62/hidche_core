@@ -57,7 +57,7 @@ function process_32(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $intelgen = MYDB_fetch_array($result);
 
-        $ratio = round(((getGeneralIntel($general, true, true, true, false) - getGeneralIntel($intelgen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = Util::round(((getGeneralIntel($general, true, true, true, false) - getGeneralIntel($intelgen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -187,7 +187,7 @@ function process_33(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -334,7 +334,7 @@ function process_34(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -462,7 +462,7 @@ function process_35(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
 
-        $ratio = round(((getGeneralLeadership($general, true, true, true) - getGeneralLeadership($gen, true, true, true)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = Util::round(((getGeneralLeadership($general, true, true, true) - getGeneralLeadership($gen, true, true, true)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -499,8 +499,8 @@ function process_35(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 선동이 성공했습니다. <1>$date</>";
 
             // 선동 최대 10
-            $destcity['secu'] -= rand() % round($_firingpower/2) + $_firingbase;
-            $destcity['rate'] -= rand() % round($_firingpower/50) + $_firingbase/50;
+            $destcity['secu'] -= rand() % Util::round($_firingpower/2) + $_firingbase;
+            $destcity['rate'] -= rand() % Util::round($_firingpower/50) + $_firingbase/50;
             if($destcity['secu'] < 0) { $destcity['secu'] = 0; }
             if($destcity['rate'] < 0) { $destcity['rate'] = 0; }
             $query = "update city set state=32,rate='{$destcity['rate']}',secu='{$destcity['secu']}' where city='$destination'";

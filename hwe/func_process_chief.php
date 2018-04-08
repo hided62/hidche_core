@@ -926,7 +926,7 @@ function process_65(&$general) {
         pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>의 <R>초토화</>를 명령");
 
         //외교제한 24
-        $amount = round($destcity['pop'] * 0.1);
+        $amount = Util::round($destcity['pop'] * 0.1);
         $query = "update nation set surlimit='24',gold=gold+'$amount',rice=rice+'$amount' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -1268,10 +1268,10 @@ function process_71(&$general) {
     $genCount = MYDB_num_rows($result);
     if($genCount < 10) { $genCount = 10; }
 
-    //$term2 = round($genCount / 10);
+    //$term2 = Util::round($genCount / 10);
     //if($term2 == 0) { $term2 = 1; }
     $term2 = 3;
-    $term3 = round(sqrt($genCount*8)*10);
+    $term3 = Util::round(sqrt($genCount*8)*10);
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 71) {
@@ -1324,7 +1324,7 @@ function process_71(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 국가보정
-        if($nation['type'] == 11) { $term3 = round($term3 / 2); }
+        if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
@@ -1381,10 +1381,10 @@ function process_72(&$general) {
     $genCount = MYDB_num_rows($result);
     if($genCount < 10) { $genCount = 10; }
 
-    //$term2 = round($genCount / 20);
+    //$term2 = Util::round($genCount / 20);
     //if($term2 == 0) { $term2 = 1; }
     $term2 = 1;
-    $term3 = round(sqrt($genCount*4)*10);
+    $term3 = Util::round(sqrt($genCount*4)*10);
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 72) {
@@ -1439,7 +1439,7 @@ function process_72(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 국가보정
-        if($nation['type'] == 11) { $term3 = round($term3 / 2); }
+        if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
@@ -1500,10 +1500,10 @@ function process_73(&$general) {
     $genCount = MYDB_num_rows($result);
     if($genCount < 10) { $genCount = 10; }
 
-    //$term2 = round($genCount / 20);
+    //$term2 = Util::round($genCount / 20);
     //if($term2 == 0) { $term2 = 1; }
     $term2 = 3;
-    $term3 = round(sqrt($genCount*4)*10);
+    $term3 = Util::round(sqrt($genCount*4)*10);
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 73) {
@@ -1570,7 +1570,7 @@ function process_73(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 국가보정
-        if($nation['type'] == 11) { $term3 = round($term3 / 2); }
+        if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
@@ -1631,10 +1631,10 @@ function process_74(&$general) {
     $genCount = MYDB_num_rows($result);
     if($genCount < 10) { $genCount = 10; }
 
-    //$term2 = round($genCount / 20);
+    //$term2 = Util::round($genCount / 20);
     //if($term2 == 0) { $term2 = 1; }
     $term2 = 2;
-    $term3 = round(sqrt($genCount*4)*10);
+    $term3 = Util::round(sqrt($genCount*4)*10);
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 74) {
@@ -1714,7 +1714,7 @@ function process_74(&$general) {
         }
 
         // 국가보정
-        if($nation['type'] == 11) { $term3 = round($term3 / 2); }
+        if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
@@ -1771,10 +1771,10 @@ function process_75(&$general) {
     $genCount = MYDB_num_rows($result);
     if($genCount < 10) { $genCount = 10; }
 
-    //$term2 = round($genCount / 40);
+    //$term2 = Util::round($genCount / 40);
     //if($term2 == 0) { $term2 = 1; }
     $term2 = 3;
-    $term3 = round(sqrt($genCount*2)*10);
+    $term3 = Util::round(sqrt($genCount*2)*10);
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 75) {
@@ -1839,7 +1839,7 @@ function process_75(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 국가보정
-        if($nation['type'] == 11) { $term3 = round($term3 / 2); }
+        if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한, 최소72
@@ -1886,10 +1886,10 @@ function process_76(&$general) {
     $genCount = MYDB_num_rows($result);
     if($genCount < 10) { $genCount = 10; }
 
-    //$term2 = round($genCount / 10);
+    //$term2 = Util::round($genCount / 10);
     //if($term2 == 0) { $term2 = 1; }
     $term2 = 3;
-    $term3 = round(sqrt($genCount*10)*10);
+    $term3 = Util::round(sqrt($genCount*10)*10);
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 76) {
@@ -1940,7 +1940,7 @@ function process_76(&$general) {
         $query = "select avg(gennum) as gennum from nation";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $avgNation = MYDB_fetch_array($result);
-        $gencount = 5 + round($avgNation['gennum'] / 10);
+        $gencount = 5 + Util::round($avgNation['gennum'] / 10);
 
         $query = "select avg(age) as age, max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0) as dex0, avg(dex10) as dex10, avg(dex20) as dex20, avg(dex30) as dex30, avg(dex40) as dex40 from general where nation='{$general['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1971,17 +1971,17 @@ function process_76(&$general) {
             }
             // 국내 최고능치 기준으로 랜덤성 스케일링
             if($avgGen['lpi'] > 210) {
-                $leader = round($leader * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
-                $power = round($power * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
-                $intel = round($intel * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
+                $leader = Util::round($leader * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
+                $power = Util::round($power * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
+                $intel = Util::round($intel * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
             } elseif($avgGen['lpi'] > 180) {
-                $leader = round($leader * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
-                $power = round($power * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
-                $intel = round($intel * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
+                $leader = Util::round($leader * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
+                $power = Util::round($power * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
+                $intel = Util::round($intel * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
             } else {
-                $leader = round($leader * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
-                $power = round($power * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
-                $intel = round($intel * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
+                $leader = Util::round($leader * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
+                $power = Util::round($power * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
+                $intel = Util::round($intel * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
             }
             $over1 = 0;
             $over2 = 0;
@@ -2059,7 +2059,7 @@ function process_76(&$general) {
         if($gencount < 10) $gencount = 10;
 
         // 국가보정
-        if($nation['type'] == 11) { $term3 = round($term3 / 2); }
+        if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한, 국가 기술력 그대로
@@ -2117,7 +2117,7 @@ function process_77(&$general) {
     if($genCount < 10) { $genCount = 10; }
 
     $term2 = 1;
-    $term3 = round(sqrt($genCount*16)*10);
+    $term3 = Util::round(sqrt($genCount*16)*10);
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 77) {
@@ -2187,7 +2187,7 @@ function process_77(&$general) {
         }
 
         // 국가보정
-        if($nation['type'] == 11) { $term3 = round($term3 / 2); }
+        if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
@@ -2245,7 +2245,7 @@ function process_78(&$general) {
     if($genCount < 10) { $genCount = 10; }
 
     $term2 = 1;
-    $term3 = round(sqrt($genCount*16)*10);
+    $term3 = Util::round(sqrt($genCount*16)*10);
 
     $code = $nation["l{$general['level']}term"];
     if($code%100 == 78) {
@@ -2312,7 +2312,7 @@ function process_78(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 국가보정
-        if($nation['type'] == 11) { $term3 = round($term3 / 2); }
+        if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한

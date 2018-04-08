@@ -68,7 +68,7 @@ function SetDevelop($genType, $no, $city, $tech) {
         $result = MYDB_query($query, $connect) or Error("processAI04 ".MYDB_error($connect),"");
         $genCount = MYDB_num_rows($result);
 
-        $ratio = round($genCount / 600 * 100);
+        $ratio = Util::round($genCount / 600 * 100);
 
         if(rand() % 100 < $ratio) {
             $command = EncodeCommand(0, 0, 0, 9);
@@ -333,8 +333,8 @@ function processAI($no) {
                 $query = "select nation from general where level=12 and npc>0";
                 $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
                 $npcCount = MYDB_num_rows($result);
-                $ratio = round($npcCount / ($nonCount + $npcCount) * 100);
-                $ratio = round($ratio * 1.0);
+                $ratio = Util::round($npcCount / ($nonCount + $npcCount) * 100);
+                $ratio = Util::round($ratio * 1.0);
                 //NPC우선임관
                 $query = "select nation,ABS(IF(ABS(affinity-'{$general['affinity']}')>75,150-ABS(affinity-'{$general['affinity']}'),ABS(affinity-'{$general['affinity']}'))) as npcmatch2 from general where level=12 and npc>0 and nation not in (0{$general['nations']}0) order by npcmatch2,rand() limit 0,1";
                 $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
@@ -355,7 +355,7 @@ function processAI($no) {
         case 2: case 3: //거병이나 견문 40%
             // 초반이면서 능력이 좋은놈 위주로 1%확률로 거병 (300명 재야시 2년간 약 10개 거병 예상)
             $prop = rand() % 100;
-            $ratio = round(($general['leader'] + $general['power'] + $general['intel']) / 3);
+            $ratio = Util::round(($general['leader'] + $general['power'] + $general['intel']) / 3);
             if($admin['startyear']+2 > $admin['year'] && $prop < $ratio && rand()%100 < 1 && $general['makelimit'] == 0) {
                 //거병
                 $command = EncodeCommand(0, 0, 0, 55);
@@ -798,9 +798,9 @@ function processAI($no) {
                 $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
                 $sumCity = MYDB_fetch_array($result);
                 // 현도시 인구 비율
-                $ratio  = round($city['pop'] / $sumCity['sum'] * 100);
+                $ratio  = Util::round($city['pop'] / $sumCity['sum'] * 100);
                 // 현도시 장수 비율
-                $ratio2 = round($genCount2 / $genCount * 100);
+                $ratio2 = Util::round($genCount2 / $genCount * 100);
                 $ratio3 = rand() % 100;
                 // 전체 인구 대비 확률로 현지에서 징병
                 if($city['pop'] > 40000 && 100 + $ratio - $ratio2 > $ratio3) {
@@ -868,7 +868,7 @@ function processAI($no) {
                         $query = "select city from city where nation='{$general['nation']}' and supply='1'";
                         $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                         $cityCount = MYDB_num_rows($result);
-                        $citySelect = rand() % (round($cityCount/5) + 1);
+                        $citySelect = rand() % (Util::round($cityCount/5) + 1);
 
                         $query = "select city,(def+wall)/(def2+wall2) as dev from city where nation='{$general['nation']}' and supply='1' order by dev limit {$citySelect},1";
                         $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");

@@ -270,7 +270,7 @@ function command_11($turn, $command) {
     }
 
     $leader = intdiv($me['leader'] * (100 - $me['injury']), 100) + getHorseEff($me['horse']) + $lbonus;
-    $crew = $leader - round($me['crew']/100);
+    $crew = $leader - Util::round($me['crew']/100);
     $abil = getTechAbil($nation['tech']);
     $cost = getTechCost($nation['tech']);
     echo "

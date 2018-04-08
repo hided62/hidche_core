@@ -58,7 +58,7 @@ function getGeneralPower(&$general, $withInjury, $withItem, $withStatAdjust, $us
     }
 
     if($withStatAdjust){
-        $power += round(getGeneralIntel($general, $withInjury, $withItem, false, false) / 4);
+        $power += Util::round(getGeneralIntel($general, $withInjury, $withItem, false, false) / 4);
     }
 
     if($useFloor){
@@ -89,7 +89,7 @@ function getGeneralIntel(&$general, $withInjury, $withItem, $withStatAdjust, $us
     }
 
     if($withStatAdjust){
-        $intel += round(getGeneralPower($general, $withInjury, $withItem, false, false) / 4);
+        $intel += Util::round(getGeneralPower($general, $withInjury, $withItem, false, false) / 4);
     }
     
     if($useFloor){
@@ -173,7 +173,7 @@ function CriticalScore($score, $type) {
         $ratio = (rand()%3 + 2)/10;     // 0.2~0.4
         break;
     }
-    return round($score * $ratio);
+    return Util::round($score * $ratio);
 }
 
 function process_1(&$general, $type) {
@@ -247,7 +247,7 @@ function process_1(&$general, $type) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
-            $score = round($score);
+            $score = Util::round($score);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} 하여 <C>$score</> 상승했습니다. <1>$date</>";
         }
 
@@ -338,7 +338,7 @@ function process_3(&$general) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
-            $score = round($score);
+            $score = Util::round($score);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 하여 <C>$score</> 상승했습니다. <1>$date</>";
         }
 
@@ -436,7 +436,7 @@ function process_4(&$general) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:선정을 <S>성공</>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
-            $score = round($score);
+            $score = Util::round($score);
             $log[] = "<C>●</>{$admin['month']}월:민심이 <C>$score</> 상승했습니다. <1>$date</>";
         }
 
@@ -535,7 +535,7 @@ function process_5(&$general, $type) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
-            $score = round($score);
+            $score = Util::round($score);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 하여 <C>$score</> 상승했습니다. <1>$date</>";
         }
 
@@ -626,7 +626,7 @@ function process_7(&$general) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:장려를 <S>성공</>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
         } else {
-            $score = round($score);
+            $score = Util::round($score);
             $log[] = "<C>●</>{$admin['month']}월:주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
         }
 
@@ -723,7 +723,7 @@ function process_8(&$general) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <S>성공</>하여 <C>$score</> 강화했습니다. <1>$date</>";
         } else {
-            $score = round($score);
+            $score = Util::round($score);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <C>$score</> 강화했습니다. <1>$date</>";
         }
 
@@ -801,7 +801,7 @@ function process_9(&$general) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:조달을 <S>성공</>하여 {$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
         } else {
-            $score = round($score);
+            $score = Util::round($score);
             $log[] = "<C>●</>{$admin['month']}월:{$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
         }
 
@@ -876,7 +876,7 @@ function process_11(&$general, $type) {
     if($armtype != $general['crewtype']) { $general['crew'] = 0; $general['train'] = $defaulttrain; $general['atmos'] = $defaultatmos; }
 
     if($crew*100 + $general['crew'] > getGeneralLeadership($general, true, true, true)*100) { 
-        $crew = round(getGeneralLeadership($general, true, true, true) - $general['crew']/100);
+        $crew = Util::round(getGeneralLeadership($general, true, true, true) - $general['crew']/100);
     }
     if($crew < 0) { $crew = 0; }
     $cost = $crew * getCost($armtype);
@@ -884,7 +884,7 @@ function process_11(&$general, $type) {
     $cost *= getTechCost($nation['tech']);
     //성격 보정
     $cost = CharCost($cost, $general['personal']);
-    $cost = round($cost);
+    $cost = Util::round($cost);
 
     //특기 보정 : 보병, 궁병, 기병, 귀병, 공성, 징병
     if(intdiv($armtype, 10) == 0 && $general['special2'] == 50) { $cost *= 0.9; }
@@ -1006,13 +1006,13 @@ function process_11(&$general, $type) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
-        $atmos = round(($general['atmos'] * $general['crew'] + $defaultatmos * $crew*100) / ($general['crew'] + $crew*100));
-        $train = round(($general['train'] * $general['crew'] + $defaulttrain * $crew*100) / ($general['crew'] + $crew*100));
+        $atmos = Util::round(($general['atmos'] * $general['crew'] + $defaultatmos * $crew*100) / ($general['crew'] + $crew*100));
+        $train = Util::round(($general['train'] * $general['crew'] + $defaulttrain * $crew*100) / ($general['crew'] + $crew*100));
         $general['crew'] += $crew*100;
         $general['gold'] -= $cost;
         // 주민수 감소        // 민심 김소
-        if($type == 1) { $city['rate'] = $city['rate'] - round(($crew*100 / $city['pop'])*100); }
-        else { $city['rate'] = $city['rate'] - round(($crew*100 / $city['pop'])*50); }
+        if($type == 1) { $city['rate'] = $city['rate'] - Util::round(($crew*100 / $city['pop'])*100); }
+        else { $city['rate'] = $city['rate'] - Util::round(($crew*100 / $city['pop'])*50); }
         if($city['rate'] < 0) { $city['rate'] = 0; }
         $query = "update city set pop=pop-({$crew}*100),rate='{$city['rate']}' where city='{$general['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1065,13 +1065,13 @@ function process_13(&$general) {
 //        $log[] = "<C>●</>{$admin['month']}월:병기는 훈련이 불가능합니다. <1>$date</>";
     } else {
         // 훈련시
-        $score = round(getGeneralLeadership($general, true, true, true) * 100 / $general['crew'] * $_training);
+        $score = Util::round(getGeneralLeadership($general, true, true, true) * 100 / $general['crew'] * $_training);
 
         $log[] = "<C>●</>{$admin['month']}월:훈련치가 <C>$score</> 상승했습니다. <1>$date</>";
         $exp = 100;
         $ded = 70;
         // 숙련도 증가
-        addGenDex($general['no'], $general['crewtype'], round($general['crew']/100));
+        addGenDex($general['no'], $general['crewtype'], Util::round($general['crew']/100));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1136,14 +1136,14 @@ function process_14(&$general) {
 //    } elseif(intdiv($general['crewtype'], 10) == 4) {
 //        $log[] = "<C>●</>{$admin['month']}월:병기는 사기 진작이 불가능합니다. <1>$date</>";
     } else {
-        $score = round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * $_training);
-        $gold = $general['gold'] - round($general['crew']/100);
+        $score = Util::round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * $_training);
+        $gold = $general['gold'] - Util::round($general['crew']/100);
 
         $log[] = "<C>●</>{$admin['month']}월:사기치가 <C>$score</> 상승했습니다. <1>$date</>";
         $exp = 100;
         $ded = 70;
         // 숙련도 증가
-        addGenDex($general['no'], $general['crewtype'], round($general['crew']/100));
+        addGenDex($general['no'], $general['crewtype'], Util::round($general['crew']/100));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1192,7 +1192,7 @@ function process_15(&$general) {
         $code = 100 + 15;
     }
 
-    $cost = round($general['crew']/100 * 3 * getTechCost($nation['tech']));
+    $cost = Util::round($general['crew']/100 * 3 * getTechCost($nation['tech']));
 
     if($general['level'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:재야입니다. 전투태세 실패. <1>$date</>";
@@ -1219,7 +1219,7 @@ function process_15(&$general) {
         $exp = 100 * 3;
         $ded = 70 * 3;
         // 숙련도 증가
-        addGenDex($general['no'], $general['crewtype'], round($general['crew']/100 * 3));
+        addGenDex($general['no'], $general['crewtype'], Util::round($general['crew']/100 * 3));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1287,7 +1287,7 @@ function process_16(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif($general['crew'] <= 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
-    } elseif($general['rice'] <= round($general['crew']/100)) {
+    } elseif($general['rice'] <= Util::round($general['crew']/100)) {
         $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif($dip['state'] != 0) {
         $log[] = "<C>●</>{$admin['month']}월:교전중인 국가가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
@@ -1305,13 +1305,13 @@ function process_16(&$general) {
         $query = "update city set state=43,term=3 where city='{$destcity['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 숙련도 증가
-        addGenDex($general['no'], $general['crewtype'], round($general['crew']/100));
+        addGenDex($general['no'], $general['crewtype'], Util::round($general['crew']/100));
         // 전투 처리
         $dead = processWar($general, $destcity);
 
         // 기술력 따라서 보정
-        $dead['att'] = round($dead['att'] * getTechCost($nation['tech']));
-        $dead['def'] = round($dead['def'] * getTechCost($dnation['tech']));
+        $dead['att'] = Util::round($dead['att'] * getTechCost($nation['tech']));
+        $dead['def'] = Util::round($dead['def'] * getTechCost($dnation['tech']));
 
         // 사상자 누적
         if($nation['nation'] > 0 && $dnation['nation'] > 0) {
@@ -1776,8 +1776,8 @@ function process_41(&$general) {
     $exp = $general['crew'] / 400;
     $crewexp = $general['crew'] * $general['train'] * $general['atmos'] / 20 / 10000;
     // 랜덤치
-    $exp = round($exp * (80 + rand() % 41)/100);   // 80 ~ 120%
-    $crewexp = round($crewexp * (80 + rand() % 41)/100);   // 80 ~ 120%
+    $exp = Util::round($exp * (80 + rand() % 41)/100);   // 80 ~ 120%
+    $crewexp = Util::round($crewexp * (80 + rand() % 41)/100);   // 80 ~ 120%
 
     // 성격 보정
     $exp = CharExperience($exp, $general['personal']);
@@ -2284,7 +2284,7 @@ function process_48(&$general) {
                 $query = "update general set resturn='SUCCESS',weap='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
-                $cost = round(getItemCost($general['weap']) / 2, 0);
+                $cost = Util::round(getItemCost($general['weap']) / 2);
                 $log[] = "<C>●</>{$admin['month']}월:<C>".getWeapName($general['weap'])."</>(을)를 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',weap='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2295,7 +2295,7 @@ function process_48(&$general) {
                 $query = "update general set resturn='SUCCESS',book='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
-                $cost = round(getItemCost($general['book']) / 2, 0);
+                $cost = Util::round(getItemCost($general['book']) / 2);
                 $log[] = "<C>●</>{$admin['month']}월:<C>".getBookName($general['book'])."</>(을)를 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',book='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2306,7 +2306,7 @@ function process_48(&$general) {
                 $query = "update general set resturn='SUCCESS',horse='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
-                $cost = round(getItemCost($general['horse']) / 2, 0);
+                $cost = Util::round(getItemCost($general['horse']) / 2);
                 $log[] = "<C>●</>{$admin['month']}월:<C>".getHorseName($general['horse'])."</>(을)를 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',horse='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2317,7 +2317,7 @@ function process_48(&$general) {
                 $query = "update general set resturn='SUCCESS',item='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
-                $cost = round(getItemCost2($general['item']) / 2, 0);
+                $cost = Util::round(getItemCost2($general['item']) / 2);
                 $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($general['item'])."</>(을)를 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',item='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2402,9 +2402,9 @@ function process_49(&$general) {
         }
     }
 
-    $cost = round($cost);
-    $amount = round($amount);
-    $tax = round($tax);
+    $cost = Util::round($cost);
+    $amount = Util::round($amount);
+    $tax = Util::round($tax);
 
     if($city['trade'] == 0 && $general['special'] != 30 && $general['npc'] < 2) {
         $log[] = "<C>●</>{$admin['month']}월:도시에 상인이 없습니다. $dtype 실패. <1>$date</>";

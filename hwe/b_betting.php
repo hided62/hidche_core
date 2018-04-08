@@ -267,7 +267,7 @@ for ($i=0; $i < 16; $i++) {
 }
 
 for ($i=0; $i < 16; $i++) {
-    $gold[$i] = round($myBet[$i] * $bet[$i]);
+    $gold[$i] = Util::round($myBet[$i] * $bet[$i]);
 }
 ?>
     </tr>

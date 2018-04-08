@@ -195,7 +195,7 @@ function processWar($general, $city) {
                 $avoid = 1;
                 // 병종간 특성
                 if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
-                    $int = round(getGeneralIntel($general, true, true, true, false));
+                    $int = Util::round(getGeneralIntel($general, true, true, true, false));
                     if($general['crewtype'] == 30) {
                         $ratio2 = $int * 5;   // 0~500 즉 50%
                     } elseif($general['crewtype'] == 31) {
@@ -332,9 +332,9 @@ function processWar($general, $city) {
                     $myCrew = 0;
                 }
 
-                $general['crew'] -= round($myCrew);
-                $city['def'] -= round($cityCrew);
-                $city['wall'] -= round($cityCrew);
+                $general['crew'] -= Util::round($myCrew);
+                $city['def'] -= Util::round($cityCrew);
+                $city['wall'] -= Util::round($cityCrew);
 
                 $tempMyCrew = $myCrew; $tempCityCrew = $cityCrew;
                 $tempGeneralCrew = $general['crew']; $tempCityDef = $city['def'];
@@ -346,13 +346,13 @@ function processWar($general, $city) {
                     $r2 = $tempCityDef / $tempCityCrew;
 
                     if($r1 > $r2) {
-                        $offset = round($tempCityDef*$tempMyCrew/$tempCityCrew);
+                        $offset = Util::round($tempCityDef*$tempMyCrew/$tempCityCrew);
                         $myCrew += $offset;
                         $general['crew'] -= $offset;
                         $cityCrew += $tempCityDef;
                         $city['def'] = 0;
                     } else {
-                        $offset = round($tempGeneralCrew*$tempCityCrew/$tempMyCrew);
+                        $offset = Util::round($tempGeneralCrew*$tempCityCrew/$tempMyCrew);
                         $cityCrew += $offset;
                         $city['def'] -= $offset;
                         $myCrew += $tempGeneralCrew;
@@ -360,14 +360,14 @@ function processWar($general, $city) {
                     }
                 } elseif($general['crew'] * $city['def'] <= 0) {
                     if($city['def'] < 0) {
-                        $offset = round($tempCityDef*$tempMyCrew/$tempCityCrew);
+                        $offset = Util::round($tempCityDef*$tempMyCrew/$tempCityCrew);
                         $myCrew += $offset;
                         $general['crew'] -= $offset;
                         $cityCrew += $tempCityDef;
                         $city['def'] = 0;
                     }
                     if($general['crew'] < 0) {
-                        $offset = round($tempGeneralCrew*$tempCityCrew/$tempMyCrew);
+                        $offset = Util::round($tempGeneralCrew*$tempCityCrew/$tempMyCrew);
                         $cityCrew += $offset;
                         $city['def'] -= $offset;
                         $myCrew += $tempGeneralCrew;
@@ -377,15 +377,15 @@ function processWar($general, $city) {
 
                 $exp += $cityCrew;
                 $opexp += $myCrew;
-                $general['crew'] = round($general['crew']);
-                $cityCrew = round($cityCrew);
-                $myCrew = round($myCrew);
+                $general['crew'] = Util::round($general['crew']);
+                $cityCrew = Util::round($cityCrew);
+                $myCrew = Util::round($myCrew);
                 $batlog[] = "<C>●</> $phase : <Y1>【{$general['name']}】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$city['def']} (-$cityCrew)</> <Y1>【{$city['name']}】</>";
 
                 $mykillnum += $cityCrew; $mydeathnum += $myCrew;
 
                 // 중간 쌀 체크
-                $myRice = round($exp / 50);
+                $myRice = Util::round($exp / 50);
                 // 성격 보정
                 $myRice = CharExperience($myRice, $general['personal']);
                 // 쌀 소모
@@ -393,7 +393,7 @@ function processWar($general, $city) {
                 // 결과 쌀
                 $myRice = $general['rice'] - $myRice;
 
-                if($myRice <= round($general['crew']/100)) { break; }
+                if($myRice <= Util::round($general['crew']/100)) { break; }
 
                 if($city['def'] <= 0) { break; }
                 if($general['crew'] <= 0) { break; }
@@ -428,8 +428,8 @@ function processWar($general, $city) {
             $deadAmount['def'] = $deadAmount['def'] + $mykillnum;
 
             // 도시쌀 소모 계산
-            $opexp = intval(round($opexp / 50 * 0.8));
-            $rice = intval(round($opexp * 5 * getCrewtypeRice($game, 0, 0) * ($game['city_rate']/100 - 0.2)));
+            $opexp = Util::round($opexp / 50 * 0.8);
+            $rice = Util::round($opexp * 5 * getCrewtypeRice($game, 0, 0) * ($game['city_rate']/100 - 0.2));
             $destnation['rice'] -= $rice;
             if($destnation['rice'] < 0) { $destnation['rice'] = 0; }
             $query = "update nation set rice='{$destnation['rice']}' where nation='{$destnation['nation']}'";
@@ -438,10 +438,10 @@ function processWar($general, $city) {
             pushAdminLog(["성벽 쌀 소모 : $rice"]);
 
             //원래대로 스케일링
-            $city['def'] = intval(round($city['def'] / 10));
-            $city['wall'] = intval(round($city['wall'] / 10));
+            $city['def'] = Util::round($city['def'] / 10);
+            $city['wall'] = Util::round($city['wall'] / 10);
             //내정 감소
-            $dec = round($cityCrew / 10);
+            $dec = Util::round($cityCrew / 10);
             $city['agri'] -= $dec;
             $city['comm'] -= $dec;
             $city['secu'] -= $dec;
@@ -455,7 +455,7 @@ function processWar($general, $city) {
             addGenDex($general['no'], $general['crewtype'], $mykillnum);
             addGenDex($general['no'], 40, $mydeathnum);
             // 죽은수 기술로 누적
-            $num = intval(round($mydeathnum * 0.01));
+            $num = Util::round($mydeathnum * 0.01);
             // 국가보정
             if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $num *= 1.1; }
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }
@@ -464,7 +464,7 @@ function processWar($general, $city) {
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 죽은수 기술로 누적
-            $num = round($mykillnum * 0.01);
+            $num = Util::round($mykillnum * 0.01);
             // 국가보정
             if($destnation['type'] == 3 || $destnation['type'] == 13)                                                                               { $num *= 1.1; }
             if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) { $num *= 0.9; }
@@ -476,14 +476,14 @@ function processWar($general, $city) {
             //$techRatio = (getTechCost($nation['tech']) + getTechCost($destnation['tech'])) / 2;
             $techRatio = 1.0;
             // 죽은수 도시 재정으로 누적 60%
-            $num = round(($mykillnum+$mydeathnum) * 0.6 * $techRatio);
+            $num = Util::round(($mykillnum+$mydeathnum) * 0.6 * $techRatio);
             // 국가보정
             if($destnation['type'] == 1)                            { $num *= 1.1; }
             if($destnation['type'] == 9 || $destnation['type'] == 10) { $num *= 0.9; }
             $query = "update city set dead=dead+'$num',def='{$city['def']}',wall='{$city['wall']}',agri='{$city['agri']}',comm='{$city['comm']}',secu='{$city['secu']}' where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 죽은수 도시 재정으로 누적 40%
-            $num = round(($mykillnum+$mydeathnum) * 0.4 * $techRatio);
+            $num = Util::round(($mykillnum+$mydeathnum) * 0.4 * $techRatio);
             // 국가보정
             if($nation['type'] == 1)                        { $num *= 1.1; }
             if($nation['type'] == 9 || $nation['type'] == 10) { $num *= 0.9; }
@@ -519,7 +519,7 @@ function processWar($general, $city) {
                 $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 break;
-            } elseif($myRice <= round($general['crew']/100)) {
+            } elseif($myRice <= Util::round($general['crew']/100)) {
                 $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                 $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
 
@@ -670,7 +670,7 @@ function processWar($general, $city) {
                 $opAvoid = 1;
                 // 병종간 특성
                 if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
-                    $int = round(getGeneralIntel($general, true, true, true, false));
+                    $int = Util::round(getGeneralIntel($general, true, true, true, false));
                     if($general['crewtype'] == 30) {
                         $ratio2 = $int * 5;   // 0~500 즉 50%
                     } elseif($general['crewtype'] == 31) {
@@ -811,7 +811,7 @@ function processWar($general, $city) {
 
                 // 상대 장수 병종간 특성
                 if(intdiv($oppose['crewtype'], 10) == 3) {   // 귀병
-                    $int = round(getGeneralIntel($oppose, true, true, true, false));
+                    $int = Util::round(getGeneralIntel($oppose, true, true, true, false));
                     if($oppose['crewtype'] == 30) {
                         $ratio2 = $int * 5;   // 0~500 즉 50%
                     } elseif($oppose['crewtype'] == 31) {
@@ -1200,8 +1200,8 @@ function processWar($general, $city) {
                     $opCrew = 0;
                 }
 
-                $general['crew'] -= round($myCrew);
-                $oppose['crew'] -= round($opCrew);
+                $general['crew'] -= Util::round($myCrew);
+                $oppose['crew'] -= Util::round($opCrew);
                 $tempMyCrew = $myCrew; $tempOpCrew = $opCrew;
                 $tempGeneralCrew = $general['crew']; $tempOpposeCrew = $oppose['crew'];
                 if($general['crew'] <= 0 && $oppose['crew'] <= 0) {
@@ -1209,13 +1209,13 @@ function processWar($general, $city) {
                     $r2 = $tempOpposeCrew / $tempOpCrew;
 
                     if($r1 > $r2) {
-                        $offset = round($tempOpposeCrew*$tempMyCrew/$tempOpCrew);
+                        $offset = Util::round($tempOpposeCrew*$tempMyCrew/$tempOpCrew);
                         $myCrew += $offset;
                         $general['crew'] -= $offset;
                         $opCrew += $tempOpposeCrew;
                         $oppose['crew'] = 0;
                     } else {
-                        $offset = round($tempGeneralCrew*$tempOpCrew/$tempMyCrew);
+                        $offset = Util::round($tempGeneralCrew*$tempOpCrew/$tempMyCrew);
                         $opCrew += $offset;
                         $oppose['crew'] -= $offset;
                         $myCrew += $tempGeneralCrew;
@@ -1223,14 +1223,14 @@ function processWar($general, $city) {
                     }
                 } elseif($general['crew'] * $oppose['crew'] <= 0) {
                     if($oppose['crew'] < 0) {
-                        $offset = round($tempOpposeCrew*$tempMyCrew/$tempOpCrew);
+                        $offset = Util::round($tempOpposeCrew*$tempMyCrew/$tempOpCrew);
                         $myCrew += $offset;
                         $general['crew'] -= $offset;
                         $opCrew += $tempOpposeCrew;
                         $oppose['crew'] = 0;
                     }
                     if($general['crew'] < 0) {
-                        $offset = round($tempGeneralCrew*$tempOpCrew/$tempMyCrew);
+                        $offset = Util::round($tempGeneralCrew*$tempOpCrew/$tempMyCrew);
                         $opCrew += $offset;
                         $oppose['crew'] -= $offset;
                         $myCrew += $tempGeneralCrew;
@@ -1240,10 +1240,10 @@ function processWar($general, $city) {
 
                 $exp += $opCrew;
                 $opexp += $myCrew;
-                $general['crew'] = round($general['crew']);
-                $oppose['crew'] = round($oppose['crew']);
-                $myCrew = round($myCrew);
-                $opCrew = round($opCrew);
+                $general['crew'] = Util::round($general['crew']);
+                $oppose['crew'] = Util::round($oppose['crew']);
+                $myCrew = Util::round($myCrew);
+                $opCrew = Util::round($opCrew);
                 $batlog[] = "<C>●</> $phase : <Y1>【{$general['name']}】</> <C>{$general['crew']} (-$myCrew)</> VS <C>{$oppose['crew']} (-$opCrew)</> <Y1>【{$oppose['name']}】</>";
                 $oppbatlog[] = "<C>●</> $phase : <Y1>【{$oppose['name']}】</> <C>{$oppose['crew']} (-$opCrew)</> VS <C>{$general['crew']} (-$myCrew)</> <Y1>【{$general['name']}】</>";
 
@@ -1251,7 +1251,7 @@ function processWar($general, $city) {
                 $opkillnum += $myCrew; $opdeathnum += $opCrew;
 
                 // 중간 쌀 체크
-                $myRice = round($exp / 50);
+                $myRice = Util::round($exp / 50);
                 // 성격 보정
                 $myRice = CharExperience($myRice, $general['personal']);
                 // 쌀 소모
@@ -1260,7 +1260,7 @@ function processWar($general, $city) {
                 $myRice = $general['rice'] - $myRice;
 
                 // 중간 쌀 체크
-                $opRice = round($opexp / 50 * 0.8);
+                $opRice = Util::round($opexp / 50 * 0.8);
                 // 성격 보정
                 $opRice = CharExperience($opRice, $oppose['personal']);
                 // 쌀 소모
@@ -1268,8 +1268,8 @@ function processWar($general, $city) {
                 // 결과 쌀
                 $opRice = $oppose['rice'] - $opRice;
 
-                if($opRice <= round($oppose['crew']/100)) { break; }
-                if($myRice <= round($general['crew']/100)) { break; }
+                if($opRice <= Util::round($oppose['crew']/100)) { break; }
+                if($myRice <= Util::round($general['crew']/100)) { break; }
 
                 if($oppose['crew'] <= 0) { break; }
                 if($general['crew'] <= 0) { break; }
@@ -1330,7 +1330,7 @@ function processWar($general, $city) {
             addGenDex($oppose['no'], $oppose['crewtype'], $opkillnum * 0.9);
             addGenDex($oppose['no'], $general['crewtype'], $opdeathnum * 0.9);
             // 죽은수 기술로 누적
-            $num = round($mydeathnum * 0.01);
+            $num = Util::round($mydeathnum * 0.01);
             // 국가보정
             if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $num *= 1.1; }
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }
@@ -1353,7 +1353,7 @@ function processWar($general, $city) {
             addGenDex($general['no'], $general['crewtype'], $mykillnum);
             addGenDex($general['no'], $oppose['crewtype'], $mydeathnum);
             // 죽은수 기술로 누적
-            $num = round($opdeathnum * 0.01);
+            $num = Util::round($opdeathnum * 0.01);
             // 국가보정
             if($destnation['type'] == 3 || $destnation['type'] == 13)                                                                               { $num *= 1.1; }
             if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) { $num *= 0.9; }
@@ -1365,14 +1365,14 @@ function processWar($general, $city) {
             //$techRatio = (getTechCost($nation['tech']) + getTechCost($destnation['tech'])) / 2;
             $techRatio = 1.0;
             // 죽은수 도시 재정으로 누적 60%
-            $num = round(($mykillnum+$mydeathnum) * 0.6 * $techRatio);
+            $num = Util::round(($mykillnum+$mydeathnum) * 0.6 * $techRatio);
             // 국가보정
             if($destnation['type'] == 1)                            { $num *= 1.1; }
             if($destnation['type'] == 9 || $destnation['type'] == 10) { $num *= 0.9; }
             $query = "update city set dead=dead+'$num' where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 죽은수 도시 재정으로 누적 40%
-            $num = round(($mykillnum+$mydeathnum) * 0.4 * $techRatio);
+            $num = Util::round(($mykillnum+$mydeathnum) * 0.4 * $techRatio);
             // 국가보정
             if($nation['type'] == 1)                        { $num *= 1.1; }
             if($nation['type'] == 9 || $nation['type'] == 10) { $num *= 0.9; }
@@ -1380,8 +1380,8 @@ function processWar($general, $city) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             // 상대 병사 소진이나 쌀 소진시 다음 장수
-            if($oppose['crew'] <= 0 || ($opRice <= round($oppose['crew']/100) && $general['crew'] > 0)) {
-                if($opRice <= round($oppose['crew']/100)) {
+            if($oppose['crew'] <= 0 || ($opRice <= Util::round($oppose['crew']/100) && $general['crew'] > 0)) {
+                if($opRice <= Util::round($oppose['crew']/100)) {
                     $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
                     $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
                     $opplog[] = "<C>●</>군량 부족으로 패퇴합니다.";
@@ -1400,7 +1400,7 @@ function processWar($general, $city) {
 
                 $exp2++;
                 // 상대장수 경험 등등 증가
-                $opexp = round($opexp / 50 * 0.8);
+                $opexp = Util::round($opexp / 50 * 0.8);
                 // 성격 보정
                 $opexp = CharExperience($opexp, $oppose['personal']);
                 // 쌀 소모
@@ -1418,8 +1418,8 @@ function processWar($general, $city) {
                 unset($oppbatlog);
                 unset($oppbatres);
             // 공격 장수 병사 소진이나 쌀 소진시 실패 처리
-            } elseif($general['crew'] <= 0 || $myRice <= round($general['crew']/100)) {
-                if($myRice <= round($general['crew']/100)) {
+            } elseif($general['crew'] <= 0 || $myRice <= Util::round($general['crew']/100)) {
+                if($myRice <= Util::round($general['crew']/100)) {
                     $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
                     $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
                     $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
@@ -1442,7 +1442,7 @@ function processWar($general, $city) {
                 if($oppose['atmos'] > $_maximumatmos) { $oppose['atmos'] = $_maximumatmos; }
 
                 // 상대장수 경험 등등 증가
-                $opexp = round($opexp / 50 * 0.8);
+                $opexp = Util::round($opexp / 50 * 0.8);
                 // 성격 보정
                 $opexp = CharExperience($opexp, $oppose['personal']);
                 // 쌀 소모
@@ -1478,7 +1478,7 @@ function processWar($general, $city) {
     }
 
     // 상대장수 경험 등등 증가(페이즈 초과시)
-    $opexp = round($opexp / 50 * 0.8);
+    $opexp = Util::round($opexp / 50 * 0.8);
     // 성격 보정
     $opexp = CharExperience($opexp, $oppose['personal']);
     // 쌀 소모
@@ -1500,7 +1500,7 @@ function processWar($general, $city) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 공헌, 명성 상승
-    $exp = round($exp / 50);
+    $exp = Util::round($exp / 50);
     // 성격 보정
     $exp = CharExperience($exp, $general['personal']);
     // 쌀 소모
@@ -1539,7 +1539,7 @@ function CriticalRatio2($leader, $power, $intel) {
 }
 
 function CriticalScore2($score) {
-    $score = round($score * (rand()%8 + 13)/10);    // 1.3~2.0
+    $score = Util::round($score * (rand()%8 + 13)/10);    // 1.3~2.0
     return $score;
 }
 
@@ -1633,7 +1633,7 @@ function addConflict($city, $nationnum, $mykillnum) {
 
     $nationlist[$i] = $nationnum;
     if($i == 0 || $city['def'] == 0) {    // 선타, 막타 보너스
-        $killnum[$i] += round($mykillnum * 1.05);
+        $killnum[$i] += Util::round($mykillnum * 1.05);
     } else {
         $killnum[$i] += $mykillnum;
     }

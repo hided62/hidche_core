@@ -64,7 +64,7 @@ function processGoldIncome() {
         $incomeList = getGoldIncome($nation['nation'], $nation['rate_tmp'], $admin['gold_rate'], $nation['type']);
         $income = $incomeList[0] + $incomeList[1];
         $originoutcome = getGoldOutcome($nation['nation'], 100);    // 100%의 지급량
-        $outcome = round($originoutcome * $nation['bill'] / 100);   // 지급량에 따른 요구량
+        $outcome = Util::round($originoutcome * $nation['bill'] / 100);   // 지급량에 따른 요구량
         // 실제 지급량 계산
         $nation['gold'] += $income;
         // 기본량도 안될경우
@@ -110,7 +110,7 @@ function processGoldIncome() {
         // 각 장수들에게 지급
         for($j=0; $j < $gencount; $j++) {
             $general = MYDB_fetch_array($genresult);
-            $gold = round(getBill($general['dedication'])*$ratio);
+            $gold = Util::round(getBill($general['dedication'])*$ratio);
             $general['gold'] += $gold;
 
             $query = "update general set gold='{$general['gold']}' where no='{$general['no']}'";
@@ -263,8 +263,8 @@ function getGoldIncome($nationNo, $rate, $admin_rate, $type) {
     if($type == 1)                                              { $income[0] *= 1.1; $income[1] *= 1.1; }
     if($type == 9 || $type == 10 || $type == 11)                { $income[0] *= 0.9; $income[1] *= 0.9; }
 
-    $income[0] = round($income[0] * ($admin_rate/100));
-    $income[1] = round($income[1] * ($admin_rate/100));
+    $income[0] = Util::round($income[0] * ($admin_rate/100));
+    $income[1] = Util::round($income[1] * ($admin_rate/100));
 
     return $income;
 }
@@ -310,7 +310,7 @@ function getDeadIncome($nation, $type, $admin_rate) {
         if($type == 1)                { $income *= 1.1; }
         if($type == 9 || $type == 10) { $income *= 0.9; }
 
-        $income = round($income * $admin_rate / 100);
+        $income = Util::round($income * $admin_rate / 100);
     }
     return $income;
 }
@@ -330,7 +330,7 @@ function getGoldOutcome($nation, $bill) {
         $outcome += getBill($general['dedication']);
     }
 
-    $outcome = round($outcome * $bill / 100);
+    $outcome = Util::round($outcome * $bill / 100);
 
     return $outcome;
 }
@@ -387,7 +387,7 @@ function processRiceIncome() {
         $incomeList = getRiceIncome($nation['nation'], $nation['rate_tmp'], $admin['rice_rate'], $nation['type']);
         $income = $incomeList[0] + $incomeList[1];
         $originoutcome = getRiceOutcome($nation['nation'], 100);    // 100%의 지급량
-        $outcome = round($originoutcome * $nation['bill'] / 100);   // 지급량에 따른 요구량
+        $outcome = Util::round($originoutcome * $nation['bill'] / 100);   // 지급량에 따른 요구량
 
         // 실제 지급량 계산
         $nation['rice'] += $income;
@@ -434,7 +434,7 @@ function processRiceIncome() {
         // 각 장수들에게 지급
         for($j=0; $j < $gencount; $j++) {
             $general = MYDB_fetch_array($genresult);
-            $rice = round(getBill($general['dedication'])*$ratio);
+            $rice = Util::round(getBill($general['dedication'])*$ratio);
             $general['rice'] += $rice;
 
             $query = "update general set rice='{$general['rice']}' where no='{$general['no']}'";
@@ -510,8 +510,8 @@ function getRiceIncome($nationNo, $rate, $admin_rate, $type) {
     if($type == 8)                              { $income[0] *= 1.1; $income[1] *= 1.1; }
     if($type == 2 || $type == 4 || $type == 13) { $income[0] *= 0.9; $income[1] *= 0.9; }
 
-    $income[0] = round($income[0] * ($admin_rate/100));
-    $income[1] = round($income[1] * ($admin_rate/100));
+    $income[0] = Util::round($income[0] * ($admin_rate/100));
+    $income[1] = Util::round($income[1] * ($admin_rate/100));
 
     return $income;
 }
@@ -531,7 +531,7 @@ function getRiceOutcome($nation, $bill) {
         $outcome += getBill($general['dedication']);
     }
 
-    $outcome = round($outcome * $bill / 100);
+    $outcome = Util::round($outcome * $bill / 100);
 
     return $outcome;
 }
@@ -600,8 +600,8 @@ function disaster() {
         $city = MYDB_fetch_array($cityresult);
         //호황 발생 도시 선택 ( 기본 3% 이므로 약 3개 도시 )
         //재해 발생 도시 선택 ( 기본 6% 이므로 약 6개 도시 )
-        if($isgood == 1) { $ratio = 3 + round(1.0*$city['secu']/$city['secu2']*3); }    // 3 ~ 6%
-        else { $ratio = 6 - round(1.0*$city['secu']/$city['secu2']*3); }    // 3 ~ 6%
+        if($isgood == 1) { $ratio = 3 + Util::round(1.0*$city['secu']/$city['secu2']*3); }    // 3 ~ 6%
+        else { $ratio = 6 - Util::round(1.0*$city['secu']/$city['secu2']*3); }    // 3 ~ 6%
 
         if(rand()%100+1 < $ratio) {
             $disastercity[] = $city['city'];

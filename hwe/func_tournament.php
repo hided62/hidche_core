@@ -708,7 +708,7 @@ function setGift($tnmt_type, $tnmt, $phase) {
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
         $gen = MYDB_fetch_array($result);
-        $gold = round($gen['bet'] * $bet);
+        $gold = Util::round($gen['bet'] * $bet);
         //금 지급
         $query = "update general set gold=gold+'$gold',betwingold=betwingold+'$gold',betwin=betwin+1 where no='{$gen['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -777,8 +777,8 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     elseif($tnmt_type == 3) { $tp = "itl"; $tp2 = "ti"; }
     else /*$tnmt_type == 0*/{ $tp = "tot"; $tp2 = "tt"; } 
 
-    $e1 = $energy1 = round($gen1[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
-    $e2 = $energy2 = round($gen2[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
+    $e1 = $energy1 = Util::round($gen1[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
+    $e2 = $energy2 = Util::round($gen2[$tp] * getLog($gen1['lvl'], $gen2['lvl']) * 10);
 
     //아이템 로그
     if($gen1['h'] > 6 && ($tnmt_type == 0 || $tnmt_type == 1)) {
@@ -837,18 +837,18 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     while($phase < $turn) {
         $phase++;
         //평타
-        $damage1 = round($gen2[$tp] * (rand() % 21 + 90) / 130);   // 90~110%
-        $damage2 = round($gen1[$tp] * (rand() % 21 + 90) / 130);   // 90~110%
+        $damage1 = Util::round($gen2[$tp] * (rand() % 21 + 90) / 130);   // 90~110%
+        $damage2 = Util::round($gen1[$tp] * (rand() % 21 + 90) / 130);   // 90~110%
         //보너스타
         $ratio = rand() % 100;
-        if($gen1[$tp] >= $ratio) { $damage2 += round($gen1[$tp] * (rand() % 41 + 10) / 130); }   // 10~50
+        if($gen1[$tp] >= $ratio) { $damage2 += Util::round($gen1[$tp] * (rand() % 41 + 10) / 130); }   // 10~50
         $ratio = rand() % 100;
-        if($gen2[$tp] >= $ratio) { $damage1 += round($gen2[$tp] * (rand() % 41 + 10) / 130); }   // 10~50
+        if($gen2[$tp] >= $ratio) { $damage1 += Util::round($gen2[$tp] * (rand() % 41 + 10) / 130); }   // 10~50
         $critical1 = 0; $critical2 = 0;
         //막판 분노
         $ratio = rand() % 300;
         if($e1 / 5 > $energy1 && $damage1 > $damage2 && $gen1[$tp] >= $ratio) {
-            $damage2 *= round((rand() % 301 + 200) / 100); // 200 ~ 500%
+            $damage2 *= Util::round((rand() % 301 + 200) / 100); // 200 ~ 500%
             $critical1 = 1;
             if    ($tnmt_type == 0) { switch(rand()%2) { case 0: $str = "전력"; break; case 1: $str = "집중"; break; } }
             elseif($tnmt_type == 1) { switch(rand()%2) { case 0: $str = "봉시진"; break; case 1: $str = "어린진"; break; } }
@@ -858,7 +858,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         }
         $ratio = rand() % 300;
         if($e2 / 5 > $energy2 && $damage2 > $damage1 && $gen2[$tp] >= $ratio) {
-            $damage1 *= round((rand() % 301 + 200) / 100); // 200 ~ 500%
+            $damage1 *= Util::round((rand() % 301 + 200) / 100); // 200 ~ 500%
             $critical2 = 1;
                 if($tnmt_type == 0) { switch(rand()%2) { case 0: $str = "전력"; break; case 1: $str = "집중"; break; } }
             elseif($tnmt_type == 1) { switch(rand()%2) { case 0: $str = "봉시진"; break; case 1: $str = "어린진"; break; } }
@@ -886,7 +886,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         } else {
             $ratio = rand() % 1000;
             if($critical1 == 0 && $gen1[$tp] >= $ratio) {
-                $damage2 *= round((rand() % 151 + 150) / 100); // 150 ~ 300%
+                $damage2 *= Util::round((rand() % 151 + 150) / 100); // 150 ~ 300%
                 $critical1 = 1;
                 if    ($tnmt_type == 0) { switch(rand()%6) { case 0: $str = "참격"; break; case 1: $str = "집중"; break; case 2: $str = "역공"; break; case 3: $str = "반격"; break; case 4: $str = "선제"; break; case 5: $str = "도발"; break; } }
                 elseif($tnmt_type == 1) { switch(rand()%6) { case 0: $str = "추행진"; break; case 1: $str = "학익진"; break; case 2: $str = "장사진"; break; case 3: $str = "형액진"; break; case 4: $str = "기형진"; break; case 5: $str = "구행진"; break; } }
@@ -896,7 +896,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
             }
             $ratio = rand() % 1000;
             if($critical2 == 0 && $gen2[$tp] >= $ratio) {
-                $damage1 *= round((rand() % 151 + 150) / 100); // 150 ~ 300%
+                $damage1 *= Util::round((rand() % 151 + 150) / 100); // 150 ~ 300%
                 $critical2 = 1;
                 if    ($tnmt_type == 0) { switch(rand()%6) { case 0: $str = "참격"; break; case 1: $str = "집중"; break; case 2: $str = "역공"; break; case 3: $str = "반격"; break; case 4: $str = "선제"; break; case 5: $str = "도발"; break; } }
                 elseif($tnmt_type == 1) { switch(rand()%6) { case 0: $str = "추행진"; break; case 1: $str = "학익진"; break; case 2: $str = "장사진"; break; case 3: $str = "형액진"; break; case 4: $str = "기형진"; break; case 5: $str = "구행진"; break; } }
@@ -915,29 +915,29 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
             $r2 = $tEnergy2 / $tDamage2;
 
             if($r1 > $r2) {
-                $offset = round($tEnergy2*$tDamage1/$tDamage2);
+                $offset = Util::round($tEnergy2*$tDamage1/$tDamage2);
                 $damage1 += $offset;    $energy1 -= $offset;
                 $damage2 += $tEnergy2;  $energy2 = 0;
             } else {
-                $offset = round($tEnergy1*$tDamage2/$tDamage1);
+                $offset = Util::round($tEnergy1*$tDamage2/$tDamage1);
                 $damage2 += $offset;    $energy2 -= $offset;
                 $damage1 += $tEnergy1;  $energy1 = 0;
             }
         } elseif($energy1 * $energy2 <= 0) {
             if($energy2 < 0) {
-                $offset = round($tEnergy2*$tDamage1/$tDamage2);
+                $offset = Util::round($tEnergy2*$tDamage1/$tDamage2);
                 $damage1 += $offset;    $energy1 -= $offset;
                 $damage2 += $tEnergy2;  $energy2 = 0;
             }
             if($energy1 < 0) {
-                $offset = round($tEnergy1*$tDamage2/$tDamage1);
+                $offset = Util::round($tEnergy1*$tDamage2/$tDamage1);
                 $damage2 += $offset;    $energy2 -= $offset;
                 $damage1 += $tEnergy1;  $energy1 = 0;
             }
         }
         $gd1 += $damage1;           $gd2 += $damage2;
-        $energy1 = round($energy1); $energy2 = round($energy2);
-        $damage1 = round($damage1); $damage2 = round($damage2);
+        $energy1 = Util::round($energy1); $energy2 = Util::round($energy2);
+        $damage1 = Util::round($damage1); $damage2 = Util::round($damage2);
 
         $log[] = '<S>●</> '
             .StringUtil::padStringAlignRight($phase, 2, "0").'合 : '
@@ -950,7 +950,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
         if($energy1 <= 0 && $energy2 <= 0) {
             if($type == 0) { $sel = 2; break; }
             else {
-                $energy1 = round($e1 / 2); $energy2 = round($e2 / 2);
+                $energy1 = Util::round($e1 / 2); $energy2 = Util::round($e2 / 2);
                 $log[] = "<S>●</> <span class='ev_highlight'>재대결</span>!";
             }
         }
@@ -970,7 +970,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     case 0:
         $log[] = "<S>●</> <Y>{$gen1['name']}</> <S>승리</>!";
 
-        $gl = round(($gd2 - $gd1) / 50);
+        $gl = Util::round(($gd2 - $gd1) / 50);
         $query = "update tournament set win=win+1,gl=gl+'$gl' where grp='$group' and grp_no='$g1'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $query = "update tournament set lose=lose+1,gl=gl-'$gl' where grp='$group' and grp_no='$g2'";
@@ -988,7 +988,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     case 1:
         $log[] = "<S>●</> <Y>{$gen2['name']}</> <S>승리</>!";
 
-        $gl = round(($gd1 - $gd2) / 50);
+        $gl = Util::round(($gd1 - $gd2) / 50);
         $query = "update tournament set win=win+1,gl=gl+'$gl' where grp='$group' and grp_no='$g2'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $query = "update tournament set lose=lose+1,gl=gl-'$gl' where grp='$group' and grp_no='$g1'";

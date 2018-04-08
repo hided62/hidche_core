@@ -75,8 +75,8 @@ function registerAuction() {
             if($cost < 5000)  { $cost = 5000; }
             if($topv < 10000) { $topv = 10000; }
 
-            $cost = round($cost / 10) * 10;
-            $topv = round($topv / 10) * 10;
+            $cost = Util::round($cost / 10) * 10;
+            $topv = Util::round($topv / 10) * 10;
 
             $term = 12;
             $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + $unit * $term);
@@ -105,9 +105,9 @@ function registerAuction() {
         if($cost <= $amount*0.8) { $cost = $amount*0.8; }
         if($cost >= $amount*1.2) { $cost = $amount*1.2; }
 
-        $amount = round($amount / 10) * 10;
-        $cost = round($cost / 10) * 10;
-        $topv = round($topv / 10) * 10;
+        $amount = Util::round($amount / 10) * 10;
+        $cost = Util::round($cost / 10) * 10;
+        $topv = Util::round($topv / 10) * 10;
 
         $term = 3 + rand() % 10;
         $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + $unit * $term);
@@ -129,9 +129,9 @@ function registerAuction() {
         if($cost <= $amount*0.8) { $cost = $amount*0.8; }
         if($cost >= $amount*1.2) { $cost = $amount*1.2; }
 
-        $amount = round($amount / 10) * 10;
-        $cost = round($cost / 10) * 10;
-        $topv = round($topv / 10) * 10;
+        $amount = Util::round($amount / 10) * 10;
+        $cost = Util::round($cost / 10) * 10;
+        $topv = Util::round($topv / 10) * 10;
 
         $term = 3 + rand() % 10;
         $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + $unit * $term);
@@ -198,7 +198,7 @@ function processAuction() {
                     $bidderLog[0] = "<S>◆</>{$auction['no']}번 거래 <M>유찰</>! 이미 아이템을 누군가가 가로챘습니다!";
                     $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>(을)를 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 아이템 이미 매진!";
                 } elseif($auction['value'] > $bidder['gold'] - 1000) {
-                    $gold = round($auction['value'] * 0.01);
+                    $gold = Util::round($auction['value'] * 0.01);
                     $bidder['gold'] -= $gold;
                     if($bidder['gold'] < 0) $bidder['gold'] = 0;
                     $query = "update general set gold='{$bidder['gold']}' where no='{$auction['no2']}'";
@@ -261,7 +261,7 @@ function processAuction() {
                 //판매거래
                 if($auction['type'] == 0) {
                     if($auction['amount'] > $trader['rice'] - 1000) {
-                        $gold = round($auction['value'] * 0.01);
+                        $gold = Util::round($auction['value'] * 0.01);
                         $trader['gold'] -= $gold;
                         if($trader['gold'] < 0) $trader['gold'] = 0;
                         $query = "update general set gold='{$trader['gold']}' where no='{$auction['no1']}'";
@@ -271,7 +271,7 @@ function processAuction() {
                         $bidderLog[0] = "<S>◆</>판매자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
                         $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 판매자 군량부족, 벌금 <C>{$gold}</>";
                     } elseif($auction['value'] > $bidder['gold'] - 1000) {
-                        $gold = round($auction['value'] * 0.01);
+                        $gold = Util::round($auction['value'] * 0.01);
                         $bidder['gold'] -= $gold;
                         if($bidder['gold'] < 0) $bidder['gold'] = 0;
                         $query = "update general set gold='{$bidder['gold']}' where no='{$auction['no2']}'";
@@ -302,7 +302,7 @@ function processAuction() {
                 //구매거래
                 } else {
                     if($auction['amount'] > $bidder['rice'] - 1000) {
-                        $gold = round($auction['value'] * 0.01);
+                        $gold = Util::round($auction['value'] * 0.01);
                         $bidder['gold'] -= $gold;
                         if($bidder['gold'] < 0) $bidder['gold'] = 0;
                         $query = "update general set gold='{$bidder['gold']}' where no='{$auction['no2']}'";
@@ -312,7 +312,7 @@ function processAuction() {
                         $bidderLog[0] = "<S>◆</>입찰자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
                         $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>(을)를 구매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>(으)로 입찰, 그러나 입찰자 군량부족, 벌금 <C>{$gold}</>";
                     } elseif($auction['value'] > $trader['gold'] - 1000) {
-                        $gold = round($auction['value'] * 0.01);
+                        $gold = Util::round($auction['value'] * 0.01);
                         $trader['gold'] -= $gold;
                         if($trader['gold'] < 0) $trader['gold'] = 0;
                         $query = "update general set gold='{$trader['gold']}' where no='{$auction['no1']}'";

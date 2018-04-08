@@ -159,11 +159,11 @@ if ($genius) {
     $specage2 = $age;
     $special2 = getSpecial2($leader, $power, $intel);
 } else {
-    $specage2 = round((80 - $age)/3) + $age;
+    $specage2 = Util::round((80 - $age)/3) + $age;
     $special2 = 0;
 }
 //내특
-$specage = round((80 - $age)/12) + $age;
+$specage = Util::round((80 - $age)/12) + $age;
 $special = 0;
 
 if ($admin['scenario'] > 0) {
