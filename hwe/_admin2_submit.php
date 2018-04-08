@@ -27,10 +27,6 @@ switch($btn) {
         $query = "update general set con=1000";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
-    case "접속가중치":
-        $query = "update game set conweight='$conweight'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        break;
     case "블럭 해제":
         DB::db()->query('update general set block=0 where no IN %li', $genlist);
         break;

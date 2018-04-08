@@ -23,10 +23,10 @@ if(!$v->validate()){
 }
 
 $log = Util::getReq('log');
-$starttime = Util::getReq('starttime', 'string', (new DateTime())->format('Y-m-d H:i:s'));
-$maxgeneral = Util::getReq('maxgeneral', 'int', 500);
-$maxnation = Util::getReq('maxnation', 'int', 55);
-
+$starttime = Util::getReq('starttime', 'string', (new \DateTime())->format('Y-m-d H:i:s'));
+$maxgeneral = Util::getReq('maxgeneral', 'int', GameConst::$defaultMaxGeneral);
+$maxnation = Util::getReq('maxnation', 'int', GameConst::$defaultMaxNation);
+$startyear = Util::getReq('startyear', 'int', GameConst::$defaultStartYear);
 
 $db = DB::db();
 $connect=$db->get();

@@ -78,4 +78,6 @@ class GameConst
     public static $defaultMaxNation = 55;
     /** @var int 초기 최대 천재 수 */
     public static $defaultMaxGenius = 5;
+    /** @var int 초기 시작 년도. 실제 값은 시나리오에서 정해지므로 딱히 의미는 없음. */
+    public static $defaultStartYear = 180;
 }

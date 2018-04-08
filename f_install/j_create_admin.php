@@ -7,7 +7,7 @@ session_start();
 session_destroy();
 
 $username = mb_strtolower(Util::getReq('username'), 'utf-8');
-$password = Util::getReq('password');
+$password = Util::getReq('password', 'string');
 $nickname = Util::getReq('nickname');
 
 if(!$username || !$password || !$nickname){
@@ -17,7 +17,7 @@ if(!$username || !$password || !$nickname){
     ]);
 }
 
-if(strlen($password)!=128){
+if(strlen((string)$password)!=128){
     Json::die([
         'result'=>false,
         'reason'=>'올바르지 않은 비밀번호 해시 포맷입니다.'

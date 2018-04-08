@@ -1358,10 +1358,9 @@ function updateTraffic() {
 function CheckOverhead() {
     //서버정보
     $db = DB::db();
-    $admin = $db->queryFirstRow('SELECT conweight, turnterm, conlimit from GAME LIMIT 1');
+    $admin = $db->queryFirstRow('SELECT turnterm, conlimit from GAME LIMIT 1');
 
     $con = $admin['turnterm'] * 6;
-    $con *= $admin['conweight'] / 100;
 
 
     if($con != $admin['conlimit']){

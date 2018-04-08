@@ -363,7 +363,6 @@ CREATE TABLE `game` (
 	`maxonline` INT(9) NULL DEFAULT '1',
 	`maxrefresh` INT(9) NULL DEFAULT '1',
 	`conlimit` INT(9) NULL DEFAULT '5',
-	`conweight` INT(3) NULL DEFAULT '100',
 	`develcost` INT(4) NULL DEFAULT '20',
 	`online` INT(9) NULL DEFAULT '0',
 	`onlinenation` VARCHAR(256) NULL DEFAULT '',
