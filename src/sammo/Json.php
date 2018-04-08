@@ -9,7 +9,7 @@ class Json
 
     public static function encode($value, $flag = 0)
     {
-        $rawFlag = JSON_UNESCAPED_UNICODE;
+        $rawFlag = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
         if ($flag & static::PRETTY) {
             $rawFlag |= JSON_PRETTY_PRINT;
         }

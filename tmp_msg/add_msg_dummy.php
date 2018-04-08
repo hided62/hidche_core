@@ -1,5 +1,5 @@
 <?php
-require('../twe/lib.php');
+require('../hwe/lib.php');
 
 
 $jsonPost = WebUtil::parseJsonPost();

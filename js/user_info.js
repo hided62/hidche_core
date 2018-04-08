@@ -198,6 +198,7 @@ function deleteMe(){
 }
 
 $(function(){
+    $('#slot_icon, #slot_new_icon').attr('src', pathConfig.sharedIcon+'/default.jpg');
     $.ajax({
         type:'post',
         url:'j_get_user_info.php',

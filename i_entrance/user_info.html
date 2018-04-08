@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html>
 
-        <head>
-                <meta charset="UTF-8">
-                <title>계정 관리</title>
-        
-                <!-- 스타일 -->
-                <link type="text/css" rel="stylesheet" href='../d_shared/common.css'>
-                <link type="text/css" rel="stylesheet" href='../css/config.css'>
-                <link type="text/css" rel="stylesheet" href='../css/user_info.css'>
-        
-                <!-- 액션 -->
-                <script type="text/javascript" src='../js/common.js'></script>
-                <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
-                <script type="text/javascript" src='../e_lib/sha512.min.js'></script>
-                <script type="text/javascript" src='../js/func.js'></script>
-                <script type="text/javascript" src='../js/user_info.js'></script>
-        </head>
+    <head>
+        <meta charset="UTF-8">
+        <title>계정 관리</title>
+
+        <!-- 스타일 -->
+        <link type="text/css" rel="stylesheet" href='../d_shared/common.css'>
+        <link type="text/css" rel="stylesheet" href='../css/config.css'>
+        <link type="text/css" rel="stylesheet" href='../css/user_info.css'>
+
+        <!-- 액션 -->
+        <script src='../d_shared/common_path.js'></script>
+        <script type="text/javascript" src='../js/common.js'></script>
+        <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
+        <script type="text/javascript" src='../e_lib/sha512.min.js'></script>
+        <script type="text/javascript" src='../js/func.js'></script>
+        <script type="text/javascript" src='../js/user_info.js'></script>
+    </head>
 <body>
 <div id="user_info_container">
 <table class="bg0" id="user_info_table">
@@ -95,8 +96,8 @@
         <tr>
             <th class="bg1">전용<br>아이콘</th>
             <td colspan="2" style="height:64px;">
-                <img width="64px" height="64px" id="slot_icon" src="../../image/default.jpg">
-                <img width="64px" height="64px" id="slot_new_icon" src="../../image/default.jpg">
+                <img width="64px" height="64px" id="slot_icon">
+                <img width="64px" height="64px" id="slot_new_icon">
             </td>
             <td colspan="3" style="position:relative;" >
                 <form name="change_icon_form" id="change_icon_form" method="post" enctype="multipart/form-data">

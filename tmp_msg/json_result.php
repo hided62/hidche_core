@@ -1,5 +1,7 @@
 <?php
-require('../twe/lib.php');
+namespace sammo;
+
+require('../hwe/lib.php');
 
 /*
 원래대로라면 json을 돌려주는게 맞지만

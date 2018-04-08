@@ -31,6 +31,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>세력도</title>
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
+<script src="../d_shared/common_path.js"></script>
 <script src="js/common.js"></script>
 <script src="js/base_map.js"></script>
 <script src="js/map.js"></script>

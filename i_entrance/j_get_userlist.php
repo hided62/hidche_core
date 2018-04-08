@@ -22,7 +22,7 @@ foreach($db->query('SELECT member.*, max(member_log.date) as loginDate from memb
         $icon = AppConf::getUserIconPathWeb().'/'.$member['PICTURE'];
     }
     else{
-        $icon = ServConfig::$sharedIconPath.'/'.$member['PICTURE'];
+        $icon = ServConfig::getSharedIconPath().'/'.$member['PICTURE'];
     }
 
     $userList[] = [

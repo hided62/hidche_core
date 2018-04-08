@@ -134,6 +134,7 @@ function redrawMsg(deferred){
                 }
 
                 msg.msgType = msgType;
+                msg.defaultIcon = pathConfig.sharedIcon+'/default.jpg';
                 var msgHtml = TemplateEngine(messageTemplate, msg);
                 
 

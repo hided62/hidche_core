@@ -223,28 +223,28 @@ function reloadWorldMap(isDetailMap, clickableAll, selectCallback, hrefTemplate)
             if('color' in city && city.color !== null){
                 var $bgObj = $('<div class="city_bg"></div>');
                 $cityObj.append($bgObj);
-                $bgObj.css({'background-image':'url(/images/b{0}.png)'.format(convColorValue(city.color))});
+                $bgObj.css({'background-image':'url({0}/b{1}.png)'.format(pathConfig.gameImage, convColorValue(city.color))});
             }
 
             var $linkObj = $('<a class="city_link"></a>');
             $linkObj.data({'text':city.text,'nation':city.nation,'id':city.id});
             $cityObj.append($linkObj);
 
-            var $imgObj = $('<div class="city_img"><img src="/images/cast_{0}.gif"><div class="city_filler"></div></div>'.format(city.level));
+            var $imgObj = $('<div class="city_img"><img src="{0}/cast_{1}.gif"><div class="city_filler"></div></div>'.format(pathConfig.gameImage, city.level));
             $linkObj.append($imgObj);
             
             
 
             if(city.state > 0){
-                var $stateObj = $('<div class="city_state"><img src="/images/event{0}.gif"></div>'.format(city.state));
+                var $stateObj = $('<div class="city_state"><img src="{0}/event{1}.gif"></div>'.format(pathConfig.gameImage, city.state));
                 $linkObj.append($stateObj);
             }
 
             if(city.nationId && city.nationId > 0){
                 var flagType = city.supply?'f':'d';
-                var $flagObj = $('<div class="city_flag"><img src="/images/{0}{1}.gif"></div>'.format(flagType, convColorValue(city.color)));
+                var $flagObj = $('<div class="city_flag"><img src="{0}/{1}{2}.gif"></div>'.format(pathConfig.gameImage, flagType, convColorValue(city.color)));
                 if(city.isCapital){
-                    var $capitalObj = $('<div class="city_capital"><img src="/images/event51.gif"></div>');
+                    var $capitalObj = $('<div class="city_capital"><img src="{0}/event51.gif"></div>'.format(pathConfig.gameImage));
                     $flagObj.append($capitalObj);
                 }
                 $imgObj.append($flagObj);

@@ -1,5 +1,7 @@
 <?php
-require('../twe/lib.php');
+namespace sammo;
+
+require('../hwe/lib.php');
 
 
 $jsonPost = WebUtil::parseJsonPost();

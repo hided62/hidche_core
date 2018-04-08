@@ -24,7 +24,7 @@
             <?php if ($src['iconPath'] !== null): ?>
                 <img src="<?=$this->e(urlencode($src['iconPath']))?>">
             <?php else: ?>
-                <img src="/image/default.jpg"> <?php /*NOTE: image 폴더는 어느 단에서 다뤄야하는가? */?>
+                <img src="<?=$this->imagePath?>/default.jpg">
             <?php endif; ?>
         </td>
         <td width="434px" valign="top">

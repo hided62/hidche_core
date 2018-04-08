@@ -126,6 +126,7 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'WhereClause' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'kakao\\KakaoKey' => __DIR__ . '/../..' . '/d_setting/KakaoKey.php',
         'sammo\\RootDB' => __DIR__ . '/../..' . '/d_setting/RootDB.php',
+        'sammo\\ServConfig' => __DIR__ . '/../..' . '/d_setting/ServConfig.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

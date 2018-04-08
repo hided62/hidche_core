@@ -17,4 +17,5 @@ return array(
     'WhereClause' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'kakao\\KakaoKey' => $baseDir . '/d_setting/KakaoKey.php',
     'sammo\\RootDB' => $baseDir . '/d_setting/RootDB.php',
+    'sammo\\ServConfig' => $baseDir . '/d_setting/ServConfig.php',
 );

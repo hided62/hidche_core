@@ -12,7 +12,7 @@ $db = RootDB::db();
 $member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $userID);
 
 if(!$member['picture']){
-    $picture = ServConfig::$sharedIconPath.'/default.jpg';
+    $picture = ServConfig::getSharedIconPath().'/default.jpg';
 }
 else{
     $picture = $member['picture'];
@@ -26,7 +26,7 @@ else{
         $picture = AppConf::getUserIconPathWeb().'/'.$picture;
     }
     else{
-        $picture = ServConfig::$sharedIconPath.'/'.$picture;
+        $picture = ServConfig::getSharedIconPath().'/'.$picture;
     }
 }
 
