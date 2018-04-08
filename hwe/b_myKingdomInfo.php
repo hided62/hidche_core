@@ -52,6 +52,7 @@ $citycount = MYDB_num_rows($cityresult);
 
 $totalpop = 0;
 $maxpop = 0;
+$cityname = [];
 for($j=0; $j < $citycount; $j++) {
     $city = MYDB_fetch_array($cityresult);
     if($city['city'] == $nation['capital']) { $cityname[$j] = "<font color=cyan>[{$city['name']}]</font>"; }

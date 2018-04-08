@@ -24,7 +24,7 @@ if ($me['level'] == 0) {
 if ($type == 0) {
     $type = 10;
 }
-$sel[$type] = "selected";
+$sel = [$type => "selected"];
 
 ?>
 <!DOCTYPE html>

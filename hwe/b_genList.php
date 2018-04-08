@@ -38,6 +38,7 @@ if ($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretli
 if ($type == 0) {
     $type = 7;
 }
+$sel = [];
 $sel[$type] = "selected";
 
 ?>
@@ -75,7 +76,7 @@ $sel[$type] = "selected";
 $query = "select troop,name from troop where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $troopCount = MYDB_num_rows($result);
-
+$troopName = [];
 for ($i=0; $i < $troopCount; $i++) {
     $troop = MYDB_fetch_array($result);
     $troopName[$troop['troop']] = $troop['name'];

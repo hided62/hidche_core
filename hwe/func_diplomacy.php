@@ -181,44 +181,44 @@ function declineScout($messageInfo, $reason=null){
     return [true, 'success'];
 }
 
-function acceptAlly($messageInfo, $general){
+function acceptAlly($messageInfo, $general, $msgResponse){
+    return [false, 'NYI'];
+}
+
+function declineAlly($messageInfo, $general, $msgResponse){
 
 }
 
-function declineAlly($messageInfo, $general){
+function acceptBreakAlly($messageInfo, $general, $msgResponse){
 
 }
 
-function acceptBreakAlly($messageInfo, $general){
+function declineBreakAlly($messageInfo, $general, $msgResponse){
 
 }
 
-function declineBreakAlly($messageInfo, $general){
+function acceptStopWar($messageInfo, $general, $msgResponse){
 
 }
 
-function acceptStopWar($messageInfo, $general){
-
-}
-
-function declineStopWar($messageInfo, $general){
-
-}
-
-
-function acceptMergeNations($messageInfo, $general){
-
-}
-
-function declineMergeNations($messageInfo, $general){
+function declineStopWar($messageInfo, $general, $msgResponse){
 
 }
 
 
-function acceptSurrender($messageInfo, $general){
+function acceptMergeNations($messageInfo, $general, $msgResponse){
 
 }
 
-function declineSurrender($messageInfo, $general){
+function declineMergeNations($messageInfo, $general, $msgResponse){
+
+}
+
+
+function acceptSurrender($messageInfo, $general, $msgResponse){
+
+}
+
+function declineSurrender($messageInfo, $general, $msgResponse){
 
 }

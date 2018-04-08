@@ -663,8 +663,7 @@ function checkWander() {
         $kingResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $king = MYDB_fetch_array($kingResult);
 
-        $log[0] = "<C>●</>초반 제한후 방랑군은 자동 해산됩니다.";
-        pushGenLog($king, $log);
+        pushGenLog($king, ["<C>●</>초반 제한후 방랑군은 자동 해산됩니다."]);
         process_56($king);
     }
 
@@ -722,7 +721,7 @@ function checkMerge() {
         $query = "select no,name,nation from general where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>{$mynation['name']}</b></>(와)과 통합에 성공했습니다.";
+        $genlog = ["<C>●</><D><b>{$mynation['name']}</b></>(와)과 통합에 성공했습니다."];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);
@@ -843,7 +842,7 @@ function checkSurrender() {
         $query = "select no,name,nation from general where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>{$mynation['name']}</b></> 합병에 성공했습니다.";
+        $genlog = ["<C>●</><D><b>{$mynation['name']}</b></> 합병에 성공했습니다."];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);
@@ -1243,7 +1242,7 @@ function checkEmperior() {
                 }
             }
 
-            $log[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월: <D><b>{$nation['name']}</b></>(이)가 전토를 통일하였습니다.";
+            $log = ["<C>●</>{$admin['year']}년 {$admin['month']}월: <D><b>{$nation['name']}</b></>(이)가 전토를 통일하였습니다."];
 
             $query = "select no,name from general where nation='{$nation['nation']}' order by dedication desc";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

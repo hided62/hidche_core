@@ -12,7 +12,7 @@ $userID = Session::getUserID();
 $pw = $_POST['old_pw'];
 $newPw = $_POST['new_pw'];
 
-$response['result'] = false;
+$response = ['result' => false];
 
 $db = RootDB::db();
 

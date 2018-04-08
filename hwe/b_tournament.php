@@ -63,6 +63,7 @@ select { font-family:'굴림'; line-height:100%; }
 <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <?php
 if ($session->userGrade >= 5) {
+    $sel = [];
     echo "
 <form method=post action=c_tournament.php>
     <tr><td colspan=8><input type=textarea size=150 style=color:white;background-color:black; name=msg><input type=submit name=btn value='메시지'></td></tr>
@@ -208,9 +209,11 @@ echo "
 
 $query = "select npc,name,win from tournament where grp>=50 order by grp, grp_no";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
+$cent = [];
 for ($i=0; $i < 1; $i++) {
     $cent[$i] = "<font color=white>";
 }
+$line = [];
 for ($i=0; $i < 2; $i++) {
     $general = MYDB_fetch_array($result);
     if ($general['name'] == "") {
@@ -372,6 +375,7 @@ echo"
 $query = "select tournament,bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $betting = MYDB_fetch_array($result);
+$bet = [];
 for ($i=0; $i < 16; $i++) {
     $bet[$i]  = @round($betting['bet'] /  $betting["bet{$i}"], 2);
     if ($bet[$i] == 0) {

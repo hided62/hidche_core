@@ -55,7 +55,7 @@ $dip = MYDB_fetch_array($result);
 
 $mylog = [];
 $youlog = [];
-$allog = [];
+$alllog = [];
 $history = [];
 
 if($ok == "수락") {

@@ -23,7 +23,9 @@ $me = MYDB_fetch_array($result);
 $query = "select nation,color,name,power,gennum from nation where level>0 order by power desc";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nationcount = MYDB_num_rows($result);
-$nationnum = array();
+$nationnum = [];
+$nationname = [];
+$nationcolor = [];
 
 $nationStr = "";
 $powerStr = "";
@@ -98,6 +100,8 @@ for($i=0; $i < $nationcount; $i++) {
 }
 echo "
     </tr>";
+
+$state = [];
 
 for($i=0; $i < $nationcount; $i++) {
     $query = "select you,state from diplomacy where me='$nationnum[$i]'";
@@ -199,6 +203,7 @@ for($i=0; $i < $citycount; $i++) {
 }
 
 function mySort($killnum) {
+    $seq = [];
     for($i=0; $i < count($killnum); $i++) {
         $seq[$i] = $i;
     }

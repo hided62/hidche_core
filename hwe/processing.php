@@ -1632,6 +1632,8 @@ function command_48($turn, $command) {
     $me = MYDB_fetch_array($result);
     $city = getCity($me['city'], "secu");
 
+    $color = [];
+
     for($i=1; $i <= 6; $i++) {
         if($city['secu'] >= $i*1000) {
             $color[$i] = "white";
@@ -2009,6 +2011,8 @@ function command_61($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
+    $diplomacy = [];
+
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
         $diplomacy[$dip['you']] = $dip['state'];
@@ -2094,6 +2098,8 @@ function command_62($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
+    $diplomacy = [];
+
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
         $diplomacy[$dip['you']] = $dip['state'];
@@ -2159,6 +2165,8 @@ function command_63($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
+    $diplomacy = [];
+
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
         $diplomacy[$dip['you']] = $dip['state'];
@@ -2217,6 +2225,8 @@ function command_64($turn, $command) {
     $query = "select you,state from diplomacy where me='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
+
+    $diplomacy = [];
 
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
@@ -2564,6 +2574,8 @@ function command_75($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
+    $diplomacy = [];
+
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
         $diplomacy[$dip['you']] = $dip['state'];
@@ -2624,6 +2636,8 @@ function command_77($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
+    $diplomacy = [];
+
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);
         $diplomacy[$dip['you']] = $dip['state'];
@@ -2683,6 +2697,8 @@ function command_78($turn, $command) {
     $query = "select you,state from diplomacy where me='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
+
+    $diplomacy = [];
 
     for($i=1; $i <= $count; $i++) {
         $dip = MYDB_fetch_array($result);

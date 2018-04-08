@@ -73,6 +73,8 @@ if($btn == "추방") {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
+    $alllog = [];
+
     //이미 지정했다면 무시
     if($nation["l{$meLevel}set"] == 0 && $general['level'] > 0 && $general['level'] < 12) {
         $query = "select no from diplomacy where me='{$general['nation']}' and state>='3' and state<='4'";

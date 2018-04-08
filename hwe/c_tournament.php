@@ -108,10 +108,12 @@ if($btn == "자동개최설정" && $session->userGrade >= 5) {
     $query = "select grp from tournament where grp<10 group by grp having count(*)=8";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $grpCount = MYDB_num_rows($result);
+    $occupied = [];
     for($i=0; $i < $grpCount; $i++) {
         $grp = MYDB_fetch_array($result);
         $occupied[$grp['grp']] = 1;
     }
+    $map = [];
     for($i=0; $i < 8; $i++) {
         if($occupied[$i] == 0) {
             $map[] = $i;
@@ -138,6 +140,7 @@ if($btn == "자동개최설정" && $session->userGrade >= 5) {
     }
 } elseif(($btn == "쪼렙전부투입" || $btn == "일반전부투입" || $btn == "굇수전부투입" || $btn == "랜덤전부투입") && $session->userGrade >= 5) {
     $z = 0;
+    $code = [];
     for($i=0; $i < 8; $i++) {
         $query = "select grp from tournament where grp='$i'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

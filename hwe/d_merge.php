@@ -80,7 +80,7 @@ for($i=0; $i < $warcount; $i++) {
 
 $mylog = [];
 $youlog = [];
-$allog = [];
+$alllog = [];
 $history = [];
 
 if($ok == "수락") {

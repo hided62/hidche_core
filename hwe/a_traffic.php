@@ -15,6 +15,12 @@ $game = MYDB_fetch_array($result);
 
 $log = [];
 
+$date = [];
+$year = [];
+$month = [];
+$refresh = [];
+$online = [];
+
 $curonline = getOnlineNum();
 for ($i=0; $i < 11; $i++) {
     $parse = explode("|", $log[count($log)-12+$i]);

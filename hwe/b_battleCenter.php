@@ -61,6 +61,7 @@ if ($btn == '정렬하기') {
 if ($type == 0) {
     $type = 0;
 }
+$sel = [];
 $sel[$type] = "selected";
 
 ?>

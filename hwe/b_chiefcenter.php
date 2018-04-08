@@ -57,6 +57,8 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $nation = MYDB_fetch_array($result);
 
 $lv = getNationChiefLevel($nation['level']);
+$turn = [];
+$gen = [];
 for($i=12; $i >= $lv; $i--) {
     $turn[$i] = getCoreTurn($nation, $i);
 
@@ -93,6 +95,11 @@ function turn(type) {
 $year = $admin['year'];
 $month = $admin['month'];
 $date = substr(date('Y-m-d H:i:s'), 14);
+
+$totaldate = [];
+$turntime = [];
+$turndate = [];
+
 for($i=12; $i >= $lv; $i--) {
     $totaldate[$i] = $gen[$i]['turntime'];
     $turntime[$i] = substr($gen[$i]['turntime'], 14);

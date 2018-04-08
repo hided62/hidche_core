@@ -50,6 +50,12 @@ $type = array(
     "베 팅 수 익 률"
 );
 for ($i=0; $i < 21; $i++) {
+    $name = [];
+    $nation = [];
+    $data = [];
+    $color = [];
+    $pic = [];
+    
     $query = "select * from hall where type={$i} order by rank";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 

@@ -106,6 +106,18 @@ if($isgen == "장수평균" || $isgen == "성벽평균") {
     $simulCount = 1;
 }
 
+$general = [
+    'no'=>1
+];
+$oppose = [
+    'no'=>2
+];
+$city = [
+    'gen1'=>0,
+    'gen2'=>0,
+    'gen3'=>0,
+];
+
 if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평균" || $isgen == "성벽평균") {
     $msg2 = "";
     for($i=0; $i < $simulCount; $i++) {

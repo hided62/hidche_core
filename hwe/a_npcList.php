@@ -4,6 +4,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+$type = Util::getReq('type', 'int', 1);
+
 $db = DB::db();
 $connect=$db->get();
 
@@ -12,6 +14,7 @@ increaseRefresh("빙의일람", 2);
 if($type == 0) {
     $type = 1;
 }
+$sel = [];
 $sel[$type] = "selected";
 
 ?>
@@ -44,6 +47,7 @@ $sel[$type] = "selected";
     </td></tr>
 </table>
 <?php
+$nationname = [];
 $nationname[0] = "-";
 foreach(getAllNationStaticInfo() as $nation){
     $nationname[$nation['nation']] = $nation['name'];

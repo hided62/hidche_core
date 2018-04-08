@@ -258,8 +258,7 @@ if ($genius) {
 pushGenLog($me, $mylog);
 pushGeneralPublicRecord($log, $admin['year'], $admin['month']);
 
-$adminLog[0] = "가입 : {$userID} // {$name} // {$generalID}".getenv("REMOTE_ADDR");
-pushAdminLog($adminLog);
+pushAdminLog(["가입 : {$userID} // {$name} // {$generalID}".getenv("REMOTE_ADDR")]);
 
 $rootDB->insert('member_log', [
     'member_no' => $userID,

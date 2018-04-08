@@ -65,6 +65,8 @@ if(!isset($type) || $type == 0) {
     </td></tr>
 </table>
 <?php
+$nationname = [];
+$nationlevel = [];
 $nationname[0] = "-";
 foreach(getAllNationStaticInfo() as $nation){
     $nationname[$nation['nation']] = $nation['name'];

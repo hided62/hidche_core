@@ -59,6 +59,7 @@ else { $btn = "hidden"; }
 
 $query = "select name,level,picture,imgsvr,belong from general where nation='{$nation['nation']}' and level>={$lv} order by level desc";
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$level = [];
 for($i=12; $i >= $lv; $i--) {
     $levels = MYDB_fetch_array($genresult);
     $level[$levels['level']] = $levels;
@@ -212,12 +213,13 @@ echo "
     </tr>
 ";
 
-$querys[10] = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$goodgenpower."' order by npc,binary(name)";
-$querys[9]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$goodgenintel."' order by npc,binary(name)";
-$querys[8]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$goodgenpower."' order by npc,binary(name)";
-$querys[7]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$goodgenintel."' order by npc,binary(name)";
-$querys[6]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$goodgenpower."' order by npc,binary(name)";
-$querys[5]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$goodgenintel."' order by npc,binary(name)";
+$queries = [];
+$queries[10] = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$goodgenpower."' order by npc,binary(name)";
+$queries[9]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$goodgenintel."' order by npc,binary(name)";
+$queries[8]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$goodgenpower."' order by npc,binary(name)";
+$queries[7]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$goodgenintel."' order by npc,binary(name)";
+$queries[6]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$goodgenpower."' order by npc,binary(name)";
+$queries[5]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$goodgenintel."' order by npc,binary(name)";
 
 for($i=10; $i >= $lv; $i--) {
     if($i % 2 == 0) { echo "<tr>"; }
@@ -232,7 +234,7 @@ for($i=10; $i >= $lv; $i--) {
             <select name=genlist size=1 style=color:white;background-color:black;>
                 <option value=0>____공석____</option>";
 
-        $query = $querys[$i];
+        $query = $queries[$i];
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
 
@@ -443,6 +445,7 @@ echo "
     </tr>
 ";
 
+$citylevel = [];
 $citylevel[1] = "수";
 $citylevel[2] = "진";
 $citylevel[3] = "관";

@@ -40,7 +40,7 @@ if(!$general){
     ]);
 }
 
-list($result, $messageInfo) = getSingleMessage($msgID, $general);
+list($result, $messageInfo) = getSingleMessage($msgID);
 
 if (!$result) {
     Json::die([
