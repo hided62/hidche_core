@@ -19,7 +19,7 @@ class RegNPC extends \sammo\Event\Action{
         int $death = 300, 
         $ego = null,
         string $char = '', 
-        string $text = ''
+        $text = ''
     ){
         $this->npc = new \sammo\Scenario\NPC(
             $affinity, 
@@ -34,7 +34,7 @@ class RegNPC extends \sammo\Event\Action{
             $death, 
             $ego, 
             $char, 
-            $text
+            $text?:''
         );
     }
 

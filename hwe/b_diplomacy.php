@@ -72,7 +72,7 @@ $(function(){
 });
 </script>
 <link href="css/normalize.css" rel="stylesheet">
-<link href="../d_shared/common.css" red="stylesheet">
+<link href="../d_shared/common.css" rel="stylesheet">
 <link href="css/common.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet">
 

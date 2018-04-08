@@ -23,7 +23,7 @@ class EventHandler{
 
         $resultAction = [];
         foreach($this->actions as $action){
-            $resultAction[] = $action->run();
+            $resultAction[] = $action->run($env);
         }
         $result['action'] = $resultAction;
 

@@ -11,6 +11,7 @@ $db = DB::db();
 $connect=$db->get();
 
 $turn = Util::getReq('turn', 'array_int');
+$sel = Util::getReq('sel', 'int');
 $commandtype = Util::getReq('commandtype', 'int');
 
 increaseRefresh("턴입력", 1);

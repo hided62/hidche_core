@@ -20,6 +20,7 @@ if(!$v->validate()){
     Error($v->errorStr());
 }
 
+$btn = Util::getReq('btn');
 $minute = Util::getReq('minute', 'int');
 $minute2 = Util::getReq('minute2', 'int');
 

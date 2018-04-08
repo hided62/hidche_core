@@ -39,6 +39,11 @@ function refreshing(obj, arg1, arg2) {
     }
 }
 
+function moveProcessing(commandtype, turn){
+    console.log(commandtype, turn);
+    $.redirect("processing.php",{ commandtype: commandtype, turn: turn}, 'post'); 
+}
+
 function go(type) {
     if(type == 1) location.replace('b_nationboard.php');
     else if(type == 2) location.replace('b_troop.php');

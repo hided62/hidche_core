@@ -68,6 +68,7 @@ $scenario = $admin['scenario_text'];
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
+<script src="../e_lib/jquery.redirect.js"></script>
 <script src="../d_shared/common_path.js"></script>
 <script src="js/common.js"></script>
 <script src="js/main.js"></script>
@@ -81,7 +82,7 @@ $(function(){
 });
 </script>
 <link href="css/normalize.css" rel="stylesheet">
-<link href="../d_shared/common.css" red="stylesheet">
+<link href="../d_shared/common.css" rel="stylesheet">
 <link href="css/common.css" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet">
@@ -223,7 +224,7 @@ if ($session->userGrade >= 5) {
         <td width=698 height=520 colspan=2>
             <?=getMapHtml()?>
         </td>
-        <td width=298 rowspan=4><iframe name=commandlist src='commandlist.php' width=298 height=700 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
+        <td width=298 rowspan=4><iframe seamless="seamless" sandbox="allow-same-origin allow-top-navigation allow-forms allow-scripts" name=commandlist src='commandlist.php' width=298 height=700 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
     </tr>
 <form name=form2 action=preprocessing.php method=post target=commandlist>
     <tr>

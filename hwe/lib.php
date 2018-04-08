@@ -102,13 +102,23 @@ function extractSuperGlobals()
     if (isset($_POST) && count($_POST) > 0) {
         LogText($_SERVER['REQUEST_URI'], $_POST);
         
-        extract($_POST, EXTR_SKIP);
+        foreach($_POST as $key=>$val){
+            if(isset($GLOBALS[$key])){
+                continue;
+            }
+            $GLOBALS[$key]=$val;
+        }
     }
 
     if (isset($_GET) && count($_GET) > 0) {
         LogText($_SERVER['REQUEST_URI'], $_GET);
         
-        extract($_POST, EXTR_SKIP);
+        foreach($_GET as $key=>$val){
+            if(isset($GLOBALS[$key])){
+                continue;
+            }
+            $GLOBALS[$key]=$val;
+        }
     }
 }
 

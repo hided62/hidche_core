@@ -4,6 +4,10 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 //로그인 검사
+
+$commandtype = Util::getReq('commandtype', 'int', 0);
+$turn = Util::getReq('turn', 'array_int', [0]);
+
 $session = Session::requireGameLogin()->setReadOnly();
 
 $db = DB::db();
@@ -120,7 +124,6 @@ function starter($name, $type=0) {
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
 <script src="../d_shared/common_path.js"></script>
 <script src="js/common.js"></script>
-<script src="js/main.js"></script>
 <script src="js/base_map.js"></script>
 <script src="js/map.js"></script>
 <script>
@@ -139,7 +142,7 @@ $(function(){
 });
 </script>
 <link href="css/normalize.css" rel="stylesheet">
-<link href="../d_shared/common.css" red="stylesheet">
+<link href="../d_shared/common.css" rel="stylesheet">
 <link href="css/common.css" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet">

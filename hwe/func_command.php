@@ -694,9 +694,8 @@ function command_Single($turn, $command) {
     }
     $query = "update general set {$str} where owner='{$userID}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //echo "<script>location.replace('commandlist.php');</script>";
-    echo 'commandlist.php';//TODO:debug all and replace
-
+    
+    header('location:commandlist.php');
 }
 
 function command_Chief($turn, $command) {
@@ -724,18 +723,36 @@ function command_Chief($turn, $command) {
 }
 
 function command_Other($turn, $commandtype) {
-    $db = DB::db();
-    $connect=$db->get();
 
-    echo "<form name=form1 action=processing.php method=post target=_parent>";
-    $count = count($turn);
-    for($i=0; $i < $count; $i++) {
-        echo "<input type=hidden name=turn[] value=$turn[$i]>";
+    $target = "processing.php?commandtype={$commandtype}";
+    foreach($turn as $turnItem){
+        $target.="&turn[]={$turnItem}";
     }
-    echo "<input type=hidden name=commandtype value={$commandtype}>";
-    echo "</form>";
-    echo "a";   // 없으면 파폭에서 아래 스크립트 실행 안됨
-    echo "<script>form1.submit();</script>";
+    $target.="&".mt_rand();
+    ?>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script>
+parent.moveProcessing(<?=$commandtype?>, <?=Json::encode($turn)?>);
+</script>
+</head>
+<body style="background-color:black;">
+
+</body>
+</html>
+<?php
+
+/*
+<form name='form1' action='processing.php' method='post' target=_parent>
+<?php foreach($turn as $turnItem): ?>
+    <input type='hidden' name='turn[]' value='<?=$turnItem?>'>
+<?php endforeach; ?>
+<input type=hidden name=commandtype value=<?=$commandtype?>>
+</form>&nbsp;
+<script>*/
 }
 
 
