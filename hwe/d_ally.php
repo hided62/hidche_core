@@ -60,6 +60,9 @@ $query = "select reserved from diplomacy where me='{$you['nation']}' and you='{$
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $dip2 = MYDB_fetch_array($result);
 
+$mylog = [];
+$youlog = [];
+
 if($ok == "수락") {
     // 서신 보낸 후 멸망,선양 등 했을때.
     if($me['level'] < 5) {

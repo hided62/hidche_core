@@ -44,8 +44,7 @@ switch ($btn) {
         if ($lognum >= 29) {
             $lognum = 0;
         }
-        $history[0] = "<R>★</><S>{$log}</>";
-        pushWorldHistory($history);
+        pushWorldHistory(["<R>★</><S>{$log}</>"]);
         break;
     case "변경1":
         $query = "update game set starttime='$starttime'";
@@ -113,8 +112,8 @@ switch ($btn) {
                 }
             }
         }
-        $history[] = "<R>★</>턴시간이 <C>$btn</>으로 변경됩니다.";
-        pushWorldHistory($history);
+        
+        pushWorldHistory(["<R>★</>턴시간이 <C>$btn</>으로 변경됩니다."]);
         break;
 }
 

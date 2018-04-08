@@ -14,7 +14,7 @@ return [
     "target_php_version" => '7.0',
     'backward_compatibility_checks ' => false,
     'ignore_undeclared_variables_in_global_scope' => false,
-    'minimum_severity'=>\Phan\Issue::SEVERITY_NORMAL,
+    'minimum_severity'=>\Phan\Issue::SEVERITY_LOW,
 
     'file_list' => [
         'f_config/config.php',

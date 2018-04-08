@@ -3,6 +3,9 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$nation = Util::getReq('nation', 'int');
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -18,11 +21,15 @@ $connect=$db->get();
 switch($btn) {
     case "국가변경":
         if($nation == 0) {
-            $query = "update general set nation=0,level=0 where owner='{$userID}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('general', [
+                'nation'=>0,
+                'level'=>0,
+            ], 'owner=%i', $userID);
         } else {
-            $query = "update general set nation='{$nation}',level=1 where owner='{$userID}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('general', [
+                'nation'=>$nation,
+                'level'=>1,
+            ], 'owner=%i', $userID);
         }
         break;
 }

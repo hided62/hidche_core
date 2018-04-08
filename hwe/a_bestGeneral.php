@@ -57,6 +57,8 @@ if (isset($btn) && $btn == "NPC 보기") {
     $sel = "npc<2";
 }
 
+$nationName = [];
+$nationColor = [];
 foreach (getAllNationStaticInfo() as $nation) {
     $nationName[$nation['nation']] = $nation['name'];
     $nationColor[$nation['nation']] = $nation['color'];
@@ -85,7 +87,14 @@ $type = array(
     "베 팅 수 익 금",
     "베 팅 수 익 률"
 );
+
+
 for ($i=0; $i < 21; $i++) {
+    $name = [];
+    $data = [];
+    $color = [];
+    $pic = [];
+
     switch ($i) {
     case  0: $query = "select nation,no,name,picture,imgsvr,experience as data from general where $sel order by data desc limit 0,10"; break;
     case  1: $query = "select nation,no,name,picture,imgsvr,dedication as data from general where $sel order by data desc limit 0,10"; break;
@@ -209,6 +218,11 @@ $func = array(
 );
 
 for ($i=0; $i < 4; $i++) {
+    $name = [];
+    $data = [];
+    $color = [];
+    $pic = [];
+
     echo "
     <tr><td align=center colspan=10 id=bg1><font size=4>$type[$i]</font></td></tr>
     <tr align=center id=bg2>";

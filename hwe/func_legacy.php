@@ -129,17 +129,13 @@ function info($type=0) {
 
     switch($type) {
     case 0:
-        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color=cyan>$termtype</font> 서버)<br> 등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color=cyan>NPC {$npccount} 명</font>";
-        break;
+        return "현재 : {$admin['year']}年 {$admin['month']}月 (<font color=cyan>$termtype</font> 서버)<br> 등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color=cyan>NPC {$npccount} 명</font>";
     case 1:
-        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color=cyan>$termtype</font> 서버)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color=cyan>NPC {$npccount} 명</font>";
-        break;
+        return "현재 : {$admin['year']}年 {$admin['month']}月 (<font color=cyan>$termtype</font> 서버)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color=cyan>NPC {$npccount} 명</font>";
     case 2:
-        echo "현재 : {$admin['year']}年 {$admin['month']}月 (<font color=cyan>$termtype</font> 서버)";
-        break;
+        return "현재 : {$admin['year']}年 {$admin['month']}月 (<font color=cyan>$termtype</font> 서버)";
     case 3:
-        echo "등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color=cyan>NPC {$npccount} 명</font>";
-        break;
+        return "등록 장수 : 유저 {$gencount} / {$admin['maxgeneral']} 명 + <font color=cyan>NPC {$npccount} 명</font>";
     }
 }
 

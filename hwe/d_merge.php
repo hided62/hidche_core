@@ -78,6 +78,11 @@ for($i=0; $i < $warcount; $i++) {
     }
 }
 
+$mylog = [];
+$youlog = [];
+$allog = [];
+$history = [];
+
 if($ok == "수락") {
     // 서신 보낸 후 멸망 했을때.
     if($me['level'] < 5) {

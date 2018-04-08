@@ -13,20 +13,7 @@ class ServConfig
 
     public static function getSharedIconPath() : string
     {
-        static $path = '';
-        if($path){
-            $path;
-        }
-
-        if (Util::starts_with('http', self::$sharedIconPath)
-            || Util::starts_with('//', self::$sharedIconPath))
-        {
-            $path = self::$sharedIconPath;
-        }
-        else{
-            $path = self::$serverWebPath.'/'.self::$sharedIconPath;
-        }
-        return $path;
+        return static::$sharedIconPath;
     }
     
     public static function getUserIconPath() : string
@@ -36,20 +23,7 @@ class ServConfig
 
     public static function getGameImagePath() : string
     {
-        static $path = '';
-        if($path){
-            $path;
-        }
-
-        if (Util::starts_with('http', self::$gameImagePath)
-            || Util::starts_with('//', self::$gameImagePath))
-        {
-            $path = self::$gameImagePath;
-        }
-        else{
-            $path = self::$serverWebPath.'/'.self::$gameImagePath;
-        }
-        return $path;
+        return static::$gameImagePath;
     }
 
 

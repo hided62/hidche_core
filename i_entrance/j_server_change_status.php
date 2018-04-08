@@ -53,7 +53,7 @@ function doServerModeSet($server, $action, &$response){
 }
 
 function doAdminPost($action, $notice, $server){
-    $response['result'] = 'FAIL';
+    $response = ['result' => 'FAIL'];
 
     if($action == 'notice') {
         RootDB::db()->update('SYSTEM', ['NOTICE'=>$notice], true);

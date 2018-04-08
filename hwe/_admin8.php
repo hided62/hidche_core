@@ -70,6 +70,8 @@ $sel[$type] = "selected";
     </tr>
 <?php
 
+$nationName = [];
+$nationColor = [];
 foreach (getAllNationStaticInfo() as $nation) {
     $nationName[$nation['nation']] = $nation['name'];
     $nationColor[$nation['nation']] = $nation['color'];

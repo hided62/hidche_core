@@ -33,6 +33,10 @@ $query = "select name,nation,level,capital,scout from nation where nation='{$you
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
+$mylog = [];
+$youlog = [];
+$allog = [];
+
 if($ok == "수락" && $me['level'] < 12 && $nation['level'] > 0 && $nation['scout'] == 0 && $me['nation'] != $nation['nation'] && $admin['year'] >= $admin['startyear']+3 && strpos($me['nations'], ",{$nation['nation']},") === false) {
     $youlog[] = "<C>●</><Y>{$me['name']}</> 등용에 성공했습니다.";
     $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$me['name']}</>(이)가 <D><b>{$nation['name']}</b></>(으)로 <S>망명</>하였습니다.";

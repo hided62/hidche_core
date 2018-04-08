@@ -47,10 +47,10 @@ if($expires < $nowDate){
     }
 
     $access_token = $result['access_token'];
-    $expires = TimeUtil::DatetimeFromNowSecond($nowDate, $result['expires_in']);
+    $expires = TimeUtil::DatetimeFromNowSecond($result['expires_in']);
     if(isset($result['refresh_token'])){
         $refresh_token = Util::array_get($result['refresh_token']);
-        $refresh_token_expires = TimeUtil::DatetimeFromNowSecond($nowDate, $result['refresh_token_expires_in']);
+        $refresh_token_expires = TimeUtil::DatetimeFromNowSecond($result['refresh_token_expires_in']);
     }
 }
 

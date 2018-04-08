@@ -53,6 +53,11 @@ $query = "select state from diplomacy where me='{$me['nation']}' and you='{$you[
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $dip = MYDB_fetch_array($result);
 
+$mylog = [];
+$youlog = [];
+$allog = [];
+$history = [];
+
 if($ok == "수락") {
     // 서신 보낸 후 멸망,선양 등 했을때.
     if($me['level'] < 5) {

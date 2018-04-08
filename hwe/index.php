@@ -129,10 +129,10 @@ if ($valid == 1) {
 ?>
 
     <tr height=30>
-        <td width=198 align=center><?php info(2); ?></td>
+        <td width=198 align=center><?=info(2)?></td>
         <td width=198 align=center>전체 접속자 수 : <?=$admin['online']?> 명</td>
         <td width=198 align=center>턴당 갱신횟수 : <?=$admin['conlimit']?>회</td>
-        <td width=398 colspan=2 align=center><?php info(3); ?></td>
+        <td width=398 colspan=2 align=center><?=info(3)?></td>
     </tr>
     <tr height=30>
         <td align=center>

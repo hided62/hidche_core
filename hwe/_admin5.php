@@ -39,6 +39,8 @@ if($type == 0) {
 if($type2 == 0) {
     $type2 = 0;
 }
+$sel = [];
+$sel2 = [];
 $sel[$type] = "selected";
 $sel2[$type2] = "selected";
 
@@ -60,33 +62,33 @@ $admin = MYDB_fetch_array($result);
     <tr><td>
         <form name=form1 method=post>정렬순서 :
         <select name=type size=1>
-            <option <?=$sel[0]?>   value=0>국력</option>
-            <option <?=$sel[1]?>   value=1>장수</option>
-            <option <?=$sel[2]?>   value=2>기술</option>
-            <option <?=$sel[3]?>   value=3>국고</option>
-            <option <?=$sel[4]?>   value=4>병량</option>
-            <option <?=$sel[5]?>   value=5>평금</option>
-            <option <?=$sel[6]?>   value=6>평쌀</option>
-            <option <?=$sel[7]?>   value=7>평통</option>
-            <option <?=$sel[8]?>   value=8>평무</option>
-            <option <?=$sel[9]?>   value=9>평지</option>
-            <option <?=$sel[10]?> value=10>평Lv</option>
-            <option <?=$sel[11]?> value=11>접속률</option>
-            <option <?=$sel[12]?> value=12>단기접</option>
-            <option <?=$sel[13]?> value=13>보숙</option>
-            <option <?=$sel[14]?> value=14>궁숙</option>
-            <option <?=$sel[15]?> value=15>기숙</option>
-            <option <?=$sel[16]?> value=16>귀숙</option>
-            <option <?=$sel[17]?> value=17>차숙</option>
+            <option <?=$sel[0]??''?>   value=0>국력</option>
+            <option <?=$sel[1]??''?>   value=1>장수</option>
+            <option <?=$sel[2]??''?>   value=2>기술</option>
+            <option <?=$sel[3]??''?>   value=3>국고</option>
+            <option <?=$sel[4]??''?>   value=4>병량</option>
+            <option <?=$sel[5]??''?>   value=5>평금</option>
+            <option <?=$sel[6]??''?>   value=6>평쌀</option>
+            <option <?=$sel[7]??''?>   value=7>평통</option>
+            <option <?=$sel[8]??''?>   value=8>평무</option>
+            <option <?=$sel[9]??''?>   value=9>평지</option>
+            <option <?=$sel[10]??''?> value=10>평Lv</option>
+            <option <?=$sel[11]??''?> value=11>접속률</option>
+            <option <?=$sel[12]??''?> value=12>단기접</option>
+            <option <?=$sel[13]??''?> value=13>보숙</option>
+            <option <?=$sel[14]??''?> value=14>궁숙</option>
+            <option <?=$sel[15]??''?> value=15>기숙</option>
+            <option <?=$sel[16]??''?> value=16>귀숙</option>
+            <option <?=$sel[17]??''?> value=17>차숙</option>
         </select>
         <select name=type2 size=1>
-            <option <?=$sel2[0]?> value=0>국력</option>
-            <option <?=$sel2[1]?> value=1>국가별성향</option>
-            <option <?=$sel2[2]?> value=2>국가성향</option>
-            <option <?=$sel2[3]?> value=3>장수성격</option>
-            <option <?=$sel2[4]?> value=4>장수특기</option>
-            <option <?=$sel2[5]?> value=5>병종수</option>
-            <option <?=$sel2[6]?> value=6>기타</option>
+            <option <?=$sel2[0]??''?> value=0>국력</option>
+            <option <?=$sel2[1]??''?> value=1>국가별성향</option>
+            <option <?=$sel2[2]??''?> value=2>국가성향</option>
+            <option <?=$sel2[3]??''?> value=3>장수성격</option>
+            <option <?=$sel2[4]??''?> value=4>장수특기</option>
+            <option <?=$sel2[5]??''?> value=5>병종수</option>
+            <option <?=$sel2[6]??''?> value=6>기타</option>
         </select>
         <input type=submit value='정렬하기'>
         </form>
