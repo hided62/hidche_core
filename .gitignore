@@ -29,11 +29,7 @@ d_pic/*.gif
 d_pic/*.png
 
 d_setting/*.php
-!d_setting/*.orig.php
-!d_setting/_*.php
 */d_setting/*.php
-!*/d_setting/*.orig.php
-!*/d_setting/_*.php
 
 **/old/*
 test.php

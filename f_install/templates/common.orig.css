@@ -1,0 +1,58 @@
+@charset "utf-8";
+
+.bg0    { background-image:url('_tK_gameImagePath_/back_walnut.jpg'); }
+.bg1    { background-image:url('_tK_gameImagePath_/back_green.jpg'); }
+.bg2    { background-image:url('_tK_gameImagePath_/back_blue.jpg'); }
+
+.img_back {background-image:url('_tK_gameImagePath_/back.jpg'); }
+
+/* 레거시. */
+#bg0    { background-image:url('_tK_gameImagePath_/back_walnut.jpg'); }
+#bg1    { background-image:url('_tK_gameImagePath_/back_green.jpg'); }
+#bg2    { background-image:url('_tK_gameImagePath_/back_blue.jpg'); }
+
+.map_detail .map_title{
+    background:
+        url('_tK_gameImagePath_/ltitle.jpg') no-repeat left, 
+        url('_tK_gameImagePath_/rtitle.jpg') no-repeat right;
+}
+
+.map_detail.map_spring .map_title_text{
+    background:
+        url('_tK_gameImagePath_/ad.gif') no-repeat left, 
+        url('_tK_gameImagePath_/spring.gif') no-repeat right;
+}
+
+.map_detail.map_summer .map_title_text{
+    background:
+        url('_tK_gameImagePath_/ad.gif') no-repeat left, 
+        url('_tK_gameImagePath_/summer.gif') no-repeat right;
+}
+
+.map_detail.map_fall .map_title_text{
+    background:
+        url('_tK_gameImagePath_/ad.gif') no-repeat left, 
+        url('_tK_gameImagePath_/fall.gif') no-repeat right;
+}
+
+.map_detail.map_winter .map_title_text{
+    background:
+        url('_tK_gameImagePath_/ad.gif') no-repeat left, 
+        url('_tK_gameImagePath_/winter.gif') no-repeat right;
+}
+
+.map_spring .map_body{
+    background: url('_tK_gameImagePath_/map1.jpg') no-repeat;
+}
+
+.map_summer .map_body{
+    background: url('_tK_gameImagePath_/map2.jpg') no-repeat;
+}
+
+.map_fall .map_body{
+    background: url('_tK_gameImagePath_/map3.jpg') no-repeat;
+}
+
+.map_winter .map_body{
+    background: url('_tK_gameImagePath_/map4.jpg') no-repeat;
+}

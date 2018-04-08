@@ -12,6 +12,11 @@ class WebUtil
         return str_replace('.', '\\.', $ip);
     }
 
+    public static function resolveRelativePath(string $path, string $basepath) : string
+    {
+        return \phpUri::parse($basepath)->join($path);
+    }
+
     public static function setHeaderNoCache()
     {
         if (!headers_sent()) {

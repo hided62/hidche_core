@@ -464,6 +464,32 @@
         ]
     },
     {
+        "name": "pguardiario/phpuri",
+        "version": "1.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/monkeysuffrage/phpuri.git",
+            "reference": "ad0a5ec033fe616cfef55578b9c7f2458be8fbfc"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/monkeysuffrage/phpuri/zipball/ad0a5ec033fe616cfef55578b9c7f2458be8fbfc",
+            "reference": "ad0a5ec033fe616cfef55578b9c7f2458be8fbfc",
+            "shasum": ""
+        },
+        "time": "2015-05-24T09:13:17+00:00",
+        "type": "project",
+        "installation-source": "dist",
+        "autoload": {
+            "files": [
+                "phpuri.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "description": "A php library for converting relative urls to absolute."
+    },
+    {
         "name": "php-extended/php-system",
         "version": "1.3.0",
         "version_normalized": "1.3.0.0",
