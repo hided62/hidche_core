@@ -238,7 +238,7 @@ class Message
                 'option' => $this->msgOption
             ])
         ]);
-        return $db->insertId();
+        return [$mailbox, $db->insertId()];
     }
 
     protected function sendToSender() : int{
@@ -274,11 +274,24 @@ class Message
         throw new \RuntimeException('이곳에 올 수 없습니다.');
     }
 
-    public function send(){
-        $sendID = $this->sendToSender();
+    public function send():int{
+        list($senderMailbox, $sendID) = $this->sendToSender();
         if($sendID){
-            $this->msgOption['relatedMessageID'] = $sendID;
+            $this->mailbox = $senderMailbox;
+            $this->isInboxMail = false;
+            $this->msgOption['senderMessageID'] = $sendID;
+            $this->$sendCnt=1;
         }
-        $this->sendToReceiver();
+        list($receiverMailbox, $receiveID) = $this->sendToReceiver();
+        if(!$receiveID){
+            $this->id = $sendID;
+            return $sendID;
+        }
+        $this->mailbox = $receiverMailbox;
+        $this->isInboxMail = true;
+        $this->id = $receisendID;
+        $this->$sendCnt=2;
+        $this->msgOption['receiverMessageID'] = $sendID;
+        return $receiveID;
     }
 }
