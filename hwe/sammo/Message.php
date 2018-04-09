@@ -124,29 +124,17 @@ class Message
         ];
 
         $action = Util::array_get($option['action'], null);
-        if($msgType === self::MSGTYPE_DIPLOMACY){
+        if ($msgType === self::MSGTYPE_DIPLOMACY) {
             $objMessage = new DiplomacticMessage(...$args);
-        }
-        else if($action === 'scout'){
+        } elseif ($action === 'scout') {
             $objMessage = new ScoutMessage(...$args);
-        }
-        else{
+        } else {
             $objMessage = new Message(...$args);
         }
 
         $objMessage->setSentInfo($row['mailbox'], $row['id']);
 
         return $objMessage;
-    }
-
-    public static function getMessageByID(int $messageID) : Message
-    {
-        $db = DB::db();
-        $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i', $messageID);
-        if (!$row) {
-            return null;
-        }
-        return static::buildFromArray($row);
     }
 
     protected static function isValidMailBox(int $mailbox): bool
@@ -174,6 +162,16 @@ class Message
         return false;
     }
 
+    public static function getMessageByID(int $messageID) : Message
+    {
+        $db = DB::db();
+        $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i', $messageID);
+        if (!$row) {
+            return null;
+        }
+        return static::buildFromArray($row);
+    }
+
     /**
      * @param int $mailbox 메일 사서함.
      * @param string $msgType 메일 타입. MSGTYPE 중 하나.
@@ -181,7 +179,7 @@ class Message
      * @param int $fromSeq 가져오고자 하는 위치. $fromSeq보다 '큰' seq만 가져온다. 따라서 0 이하이면 모두 가져옴.
      * @return Message[]
      */
-    protected static function getRawMessage(int $mailbox, string $msgType, int $limit=30, int $fromSeq = 0)
+    protected static function getMessagesFromMailBox(int $mailbox, string $msgType, int $limit=30, int $fromSeq = 0)
     {
         $db = DB::db();
 
