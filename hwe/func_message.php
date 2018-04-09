@@ -1,47 +1,7 @@
 <?php
 namespace sammo;
 
-class Message{
-    //기본 정보
-    public $id;
-    public $mailbox;
-    public $type;
-    public $isSender;
-    /** @var mixed[] */
-    public $src;
-    /** @var mixed[] */
-    public $dest;
-    public $time;
-    public $text;
-    public $option;
 
-    function __construct($row){
-        $db_message = $row['message'];
-        $this->id = $row['id'];
-        $this->mailbox = $row['mailbox'];
-        $this->type = $row['type'];
-        $this->isSender = $row['is_sender'] != 0;
-        $this->src = $db_message['src'];
-
-        if($this->src['nation'] === null){
-            $this->src['nation'] = '재야';
-            $this->src['color'] = '#FFFFFF';
-            $this->src['nation_id'] = null;
-        }
-
-        $this->dest = $db_message['dest'];
-
-        if($this->dest['nation'] === null){
-            $this->dest['nation'] = '재야';
-            $this->dest['color'] = '#FFFFFF';
-            $this->dest['nation_id'] = null;
-        }
-
-        $this->time = $row['time'];
-        $this->text = $db_message['text'];
-        $this->option = $db_message['option'];
-    }
-}
 
 function getSingleMessage($messageID){
     $messageInfo = DB::db()->queryFirstRow('select * from `message` where `id` = %i', $messageID);
@@ -135,7 +95,6 @@ function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date,
     DB::db()->insert('message', [
         'address' => $dest,
         'type' => $msgType,
-        'is_sender' => $isSender,
         'src' => $src['id'],
         'dest' => $dest['id'],
         'time' => $date,

@@ -1,0 +1,286 @@
+<?php
+namespace sammo;
+
+class Message
+{
+    const MAILBOX_PUBLIC = 9999;
+    const MAILBOX_NATIONAL = 9000;
+
+    const MSGTYPE_PUBLIC = 'public';
+    const MSGTYPE_PRIVATE = 'private';
+    const MSGTYPE_NATIONAL = 'national';
+    const MSGTYPE_DIPLOMACY = 'diplomacy';
+
+    //기본 정보
+    public $mailbox = null;
+    public $id = null;
+    public $isInboxMail = false;
+
+    protected $sendCnt = 0;
+    
+    public $msgType;
+    /** @var MessageTarget */
+    public $src;
+    /** @var MessageTarget */
+    public $dest;
+    public $msg;
+    /** @var \DateTime */
+    public $date;
+    /** @var \DateTime */
+    public $validUntil;
+    
+    public $msgOption;
+
+    public function __construct(
+        string $msgType,
+        MessageTarget $src,
+        MessageTarget $dest,
+        string $msg,
+        \DateTime $date,
+        \DateTime $validUntil,
+        array $msgOption
+    ) {
+        if (!static::isValidMsgType($msgType)) {
+            throw new \InvalidArgumentException('올바르지 않은 msgType');
+        }
+
+        $this->msgType = $msgType;
+        $this->src = $src;
+        $this->dest = $dest;
+        $this->msg = $msg;
+        $this->date = $date;
+        $this->validUntil = $validUntil;
+        $this->msgOption = $msgOption;
+    }
+
+    public function setSentInfo(int $mailbox, int $messageID) : this
+    {
+        if(!Message::isValidMailBox($mailbox)){
+            throw new \InvalidArgumentException('올바르지 않은 mailbox');
+        }
+
+        do{
+            if($mailbox === Message::MAILBOX_PUBLIC){
+                if($this->msgType !== Message::MSGTYPE_PUBLIC){
+                    throw new \InvalidArgumentException('올바르지 않은 mailbox, msgType !== MSGTYPE_PUBLIC');
+                }
+                $this->isInboxMail = true;
+                break;
+            }
+            if($mailbox > Message::MAILBOX_NATIONAL){
+                if($this->msgType === Message::MSGTYPE_DIPLOMACY){
+                    $this->isInboxMail = true;
+                    break;
+                }
+                if ($this->msgType !== Message::MSGTYPE_NATIONAL) {
+                    throw new \InvalidArgumentException('올바르지 않은 mailbox, msgType not in (MSGTYPE_DIPLOMACY, MSGTYPE_NATIONAL)');
+                }
+                if($this->dest->nationID + Message::MAILBOX_NATIONAL === $mailbox){
+                    $this->isInboxMail = true;
+                    break;
+                }
+                if($this->src->nationID + Message::MAILBOX_NATIONAL === $mailbox){
+                    $this->isInboxMail = false;
+                    break;
+                }
+                throw new \InvalidArgumentException('송신, 수신국 둘 중의 어느 메일함도 아닙니다');
+            }
+            if($this->msgType !== Message::MSGTYPE_PRIVATE){
+                throw new \InvalidArgumentException('올바르지 않은 mailbox, msgType !== MSGTYPE_PRIVATE');
+            }
+            if($this->dest->generalID === $mailbox){
+                $this->isInboxMail = true;
+                break;
+            }
+            if($this->src->generalID === $mailbox){
+                $this->isInboxMail = false;
+                break;
+            }
+            throw new \InvalidArgumentException('송신자, 수신자 둘 중의 어느 메일함도 아닙니다');
+        }while(false);
+
+        $this->id = $messageID;
+        $this->mailbox = $mailbox;
+        return $this;
+    }
+
+    public static function buildFromArray(array $row) : Message
+    {
+        $dbMessage = Json::decode($row['message']);
+
+        $msgType = $row['type'];
+        $src = MessageTarget::buildFromArray($dbMessage['src']);
+        $dest = MessageTarget::buildFromArray($dbMessage['dest']);
+        $option = Util::array_get($dbMessage['option'], []);
+
+        $args = [
+            $msgType,
+            $src,
+            $dest,
+            $dbMessage['text'],
+            new \DateTime($row['time']),
+            new \DateTime($row['valid_until']),
+            $option
+        ];
+
+        $action = Util::array_get($option['action'], null);
+        if($msgType === self::MSGTYPE_DIPLOMACY){
+            $objMessage = new DiplomacticMessage(...$args);
+        }
+        else if($action === 'scout'){
+            $objMessage = new ScoutMessage(...$args);
+        }
+        else{
+            $objMessage = new Message(...$args);
+        }
+
+        $objMessage->setSentInfo($row['mailbox'], $row['id']);
+
+        return $objMessage;
+    }
+
+    public static function getMessageByID(int $messageID) : Message
+    {
+        $db = DB::db();
+        $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i', $messageID);
+        if (!$row) {
+            return null;
+        }
+        return static::buildFromArray($row);
+    }
+
+    protected static function isValidMailBox(int $mailbox): bool
+    {
+        if ($mailbox > self::MAILBOX_PUBLIC) {
+            return false;
+        }
+        if ($mailbox == self::MAILBOX_NATIONAL) {
+            return false;
+        }
+        if ($mailbox <= 0) {
+            return false;
+        }
+        return true;
+    }
+
+    protected static function isValidMsgType(string $msgType): bool
+    {
+        switch ($msgType) {
+            case static::MSGTYPE_PUBLIC: return true;
+            case static::MSGTYPE_PRIVATE: return true;
+            case static::MSGTYPE_NATIONAL: return true;
+            case static::MSGTYPE_DIPLOMACY: return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param int $mailbox 메일 사서함.
+     * @param string $msgType 메일 타입. MSGTYPE 중 하나.
+     * @param int $limit 가져오고자 하는 수. 0 이하의 값이면 모두.
+     * @param int $fromSeq 가져오고자 하는 위치. $fromSeq보다 '큰' seq만 가져온다. 따라서 0 이하이면 모두 가져옴.
+     * @return Message[]
+     */
+    protected static function getRawMessage(int $mailbox, string $msgType, int $limit=30, int $fromSeq = 0)
+    {
+        $db = DB::db();
+
+        if (!static::isValidMsgType($msgType)) {
+            throw new \InvalidArgumentException('올바르지 않은 $msgType');
+        }
+
+        $where = new \WhereClause('and');
+        $where->add('mailbox = %i', $mailbox);
+        $where->add('type = %s', $msgType);
+        if ($fromSeq > 0) {
+            $where->add('id > %i', $fromSeq);
+        }
+
+        if ($limit > 0) {
+            $limitSql = $db->sqleval('LIMIT %i', $limit);
+        } else {
+            $limitSql = new \MeekroDBEval('');
+        }
+
+        return array_map(function ($row) {
+            return static::buildFromArray($row);
+        }, $db->query('SELECT * FROM `message` WHERE %l %?', $where, $limitSql));
+    }
+
+    protected function sendRaw(int $mailbox){
+        //NOTE:: 여기선 검증하지 않는다.
+
+
+        if($mailbox === self::MAILBOX_PUBLIC){
+            $src_id = $this->src->generalID;
+            $dest_id = self::MAILBOX_PUBLIC;
+        }
+        else if($mailbox > self::MAILBOX_NATIONAL){
+            $src_id = $this->src->nationID + self::MAILBOX_NATIONAL;
+            $dest_id = $this->dest->nationID + self::MAILBOX_NATIONAL;
+        }
+        else{
+            $src_id = $this->src->generalID;
+            $dest_id = $this->dest->generalID;
+        }
+
+
+        $db = DB::db();
+        $db->insert('message', [
+            'address' => $mailbox,
+            'type' => $this->msgType,
+            'src' => $src_id,
+            'dest' => $dest_id,
+            'time' => $this->date->format('Y-m-d H:i:s'),
+            'valid_until' => $this->validUntil->format('Y-m-d H:i:s'),
+            'message' => Json::encode([
+                'src' => $this->src->toArray(),
+                'dest' =>$this->dest->toArray(),
+                'text' => $this->msg,
+                'option' => $this->msgOption
+            ])
+        ]);
+        return $db->insertId();
+    }
+
+    protected function sendToSender() : int{
+        if($this->sendCnt > 0){
+            throw new \RuntimeException('이미 전송한 메일입니다.');
+        }
+        if($this->msgType === self::MSGTYPE_PRIVATE){
+            return $this->sendRaw($this->src->generalID);
+        }
+        if($this->msgType === self::MSGTYPE_NATIONAL && $this->src->nationID !== $this->dest->nationID){
+            return $this->sendRaw($this->src->nationID + self::MAILBOX_NATIONAL);
+        }
+        return 0;
+    }
+
+    protected function sendToReceiver() : int{
+        if($this->sendCnt > 1 || $this->isInboxMail){
+            throw new \RuntimeException('이미 전송한 메일입니다.');
+        }
+
+        if($this->msgType === self::MSGTYPE_PRIVATE){
+            return $this->sendRaw($this->dest->generalID);
+        }
+
+        if($this->msgType === self::MSGTYPE_NATIONAL || $this->msgType === self::MSGTYPE_DIPLOMACY){
+            return $this->sendRaw($this->dest->nationID + self::MAILBOX_NATIONAL);
+        }
+
+        if($this->msgType === self::MSGTYPE_PUBLIC){
+            return $this->sendRaw(self::MAILBOX_PUBLIC);
+        }
+
+        throw new \RuntimeException('이곳에 올 수 없습니다.');
+    }
+
+    public function send(){
+        $sendID = $this->sendToSender();
+        if($sendID){
+            $this->msgOption['relatedMessageID'] = $sendID;
+        }
+        $this->sendToReceiver();
+    }
+}
