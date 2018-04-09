@@ -251,7 +251,7 @@ class Message
         if($this->msgType === self::MSGTYPE_NATIONAL && $this->src->nationID !== $this->dest->nationID){
             return $this->sendRaw($this->src->nationID + self::MAILBOX_NATIONAL);
         }
-        return 0;
+        return [0, 0];
     }
 
     protected function sendToReceiver() : int{
