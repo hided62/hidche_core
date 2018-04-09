@@ -279,19 +279,20 @@ class Message
         if($sendID){
             $this->mailbox = $senderMailbox;
             $this->isInboxMail = false;
+            $this->id = $sendID;
             $this->msgOption['senderMessageID'] = $sendID;
-            $this->$sendCnt=1;
+            $this->$sendCnt = 1;
         }
         list($receiverMailbox, $receiveID) = $this->sendToReceiver();
         if(!$receiveID){
-            $this->id = $sendID;
             return $sendID;
         }
         $this->mailbox = $receiverMailbox;
         $this->isInboxMail = true;
-        $this->id = $receisendID;
-        $this->$sendCnt=2;
-        $this->msgOption['receiverMessageID'] = $sendID;
+        $this->id = $receiveID;
+        $this->msgOption['receiverMessageID'] = $receiveID;
+        $this->$sendCnt = 2;
+        
         return $receiveID;
     }
 }
