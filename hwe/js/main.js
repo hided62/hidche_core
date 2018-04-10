@@ -78,4 +78,8 @@ jQuery(function($){
         console.log(target, msg);
         return false;
     });
+
+    $('#mainBtnSubmit').click(function(){
+
+    });
 });

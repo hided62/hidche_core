@@ -253,7 +253,7 @@ if ($session->userGrade >= 5) {
     <tr>
         <td width=646 align=right>
             <?php commandTable(); ?>
-            <input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160;font-size:13px; value='로그아웃' onclick=location.replace('logout_process.php')><br>
+            <input id="mainBtnSubmit" type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160;font-size:13px; value='로그아웃' onclick=location.replace('logout_process.php')><br>
         </td>
     </tr>
 </form>
