@@ -1363,7 +1363,7 @@ function CheckOverhead() {
     $db = DB::db();
     $admin = $db->queryFirstRow('SELECT turnterm, conlimit from GAME LIMIT 1');
 
-    $con = $admin['turnterm'] * 6;
+    $con = Util::round(pow($admin['turnterm'], 0.6) * 3) * 10;
 
 
     if($con != $admin['conlimit']){
