@@ -37,7 +37,7 @@ if($canJoin != 'Y'){
 </head>
 <body>
     <div class="container">
-        <h1 class="row justify-content-md-center">삼국지 모의전투 HiD</h1>
+        <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
         <div class="row justify-content-md-center">
         <div class="col col-12 col-md-10 col-lg-7">
         <div class="card">

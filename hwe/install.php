@@ -31,7 +31,7 @@ if($session->userGrade < 5){
 </head>
 <body>
     <div class="container" style="min-width:720px;">
-        <h1 class="row justify-content-md-center">삼국지 모의전투 HiD 리셋</h1>
+        <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe 리셋</h1>
         <div class="row justify-content-md-center">
 
         <div class="col col-lg-8" >

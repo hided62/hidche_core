@@ -20,7 +20,7 @@ require(__dir__.'/../vendor/autoload.php');
 </head>
 <body>
     <div class="container">
-        <h1 class="row justify-content-md-center">삼국지 모의전투 HiD 설치</h1>
+        <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe 설치</h1>
         <div class="row justify-content-md-center">
 
         <div class="col col-12 col-md-10 col-lg-7">

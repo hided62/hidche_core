@@ -38,7 +38,7 @@ $plock = MYDB_fetch_array($result);
 <!DOCTYPE html>
 <html>
 <head>
-<title>삼국지 모의전투 PHP (유기체서버)</title>
+<title>삼국지 모의전투 HiDCHe</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>

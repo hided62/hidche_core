@@ -274,7 +274,7 @@ function processAI($no) {
         }
     }
 
-    //유기체메시지 출력 하루 6번
+    //운영자메시지 출력 하루 6번..?
     //특별 메세지 있는 경우 출력 하루 4번
     switch($admin['turnterm']) {
     case 0: $term = 1; break;

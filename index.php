@@ -24,7 +24,7 @@ if ($session->isLoggedIn()) {
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>삼국지 모의전투 HiD 서버</title>
+    <title>삼국지 모의전투 HiDCHe</title>
     <script src="e_lib/jquery-3.2.1.min.js"></script>
     <script src="e_lib/bootstrap.bundle.min.js"></script>
     <script src="e_lib/jquery.validate.min.js"></script>
@@ -111,7 +111,7 @@ function postOAuthResult(result){
 <body>
     <div class="vertical-center">
     <div class="container">
-        <h1 class="row justify-content-md-center">삼국지 모의전투 HiD</h1>
+        <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
         <div class="row justify-content-md-center">
         <div class="col" style="max-width:450px;">
         <div class="card">

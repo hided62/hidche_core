@@ -19,13 +19,6 @@ $loader->addClassMap((function () {
 })());
 
 
-/******************************************************************************
-체섭용 인클루드 파일
- ******************************************************************************/
-
-// W3C P3P 규약설정
-//    @header ("P3P : CP=\"ALL CURa ADMa DEVa TAIa OUR BUS IND PHY ONL UNI PUR FIN COM NAV INT DEM CNT STA POL HEA PRE LOC OTC\"");
-
 //디버그용 매크로
 ini_set("session.cache_expire", 10080);      // minutes
 

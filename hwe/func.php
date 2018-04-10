@@ -1527,7 +1527,7 @@ function checkTurn() {
     // 파일락 해제
     if(!flock($fp, LOCK_UN)) { return; }
     // 세마포어 해제
-    //if(!@sem_release($sema)) { echo "치명적 에러! 유기체에게 문의하세요!"; exit(1); }
+    //if(!@sem_release($sema)) { echo "치명적 에러! Hide_D에게 문의하세요!"; exit(1); }
 
     pushLockLog(["- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$session->userName]);
     

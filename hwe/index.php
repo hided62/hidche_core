@@ -89,7 +89,7 @@ $(function(){
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td colspan=5><?=allButton()?></td></tr>
     <tr height=50>
-        <td colspan=5 align=center><font size=4>삼국지 모의전투 PHP 유기체서버 (<font color=cyan><?=$scenario?></font>)</font></td>
+        <td colspan=5 align=center><font size=4>삼국지 모의전투 HiDCHe (<font color=cyan><?=$scenario?></font>)</font></td>
     </tr>
 <?php
 $valid = 0;
