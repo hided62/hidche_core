@@ -5,6 +5,12 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 
+$type = Util::getReq('type', 'int', 0);
+$sel = Util::getReq('sel', 'int', 1);
+
+if($sel <= 0 || $sel > 12){
+    $sel = 1;
+}
 
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -14,87 +20,47 @@ $connect=$db->get();
 
 increaseRefresh("턴반복", 1);
 
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$myActionCnt = $db->queryFirstField('SELECT con FROM general WHERE `owner`=%i', $userID);
+$conLimit = $db->queryFirstField('SELECT conlimit FROM game LIMIT 1');
 
-$query = "select no,name,nation,con from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
-
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($myActionCnt, $conLimit);
 if($con >= 2) { 
-    //echo "<script>window.top.main.location.replace('index.php');</script>"; 
-    echo 'index.php';//TODO:debug all and replace
+    echo "<script>window.top.main.location.replace('index.php');</script>"; 
+    //echo 'index.php';//TODO:debug all and replace
     exit();
  }
 
 switch($type) {
-case 0:
-/*
-    for($i=0; $i < $sel; $i++) {
-        $k = $i + $sel;
-        $query = "update general set ";
-        while(1) {
-            $query .= "turn{$k}=turn{$i}";
-            $k += $sel;
-            if($k >= 24) break;
-            $query .= ",";
-        }
-        $query .= " where owner='{$userID}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+case 0://반복
+    $valueMap = [];
+    foreach(range($sel, GameConst::$maxTurn - 1) as $idx){
+        $src = $idx % $sel;
+        $valueMap['turn'.$idx] = $db->sqleval('%b', 'turn'.$src);
     }
-*/
-    $query = "update general set ";
-    for($i=0; $i < $sel; $i++) {
-        $k = $i + $sel;
-        while(1) {
-            $query .= "turn{$k}=turn{$i}";
-            $k += $sel;
-            if($i < $sel-1 || $k < 24) { $query .= ","; }
-            if($k >= 24) break;
-        }
-    }
-    $query .= " where owner='{$userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', $valueMap, 'owner=%i', $userID);
     break;
 case 1:
-    $i = 23 - $sel;
-    $k = 23;
-    $query = "update general set ";
-    while(1) {
-        $query .= "turn{$k}=turn{$i},";
-        $i--; $k--;
-        if($i < 0) break;
+    $valueMap = [];
+    foreach(range(GameConst::$maxTurn -1, $sel, -1) as $idx){
+        $src = $idx - $sel;
+        $valueMap['turn'.$idx] = $db->sqleval('%b', 'turn'.$src);
     }
-    while(1) {
-        $query .= "turn{$k}=0";
-        $k--;
-        if($k < 0) break;
-        $query .= ",";
+    foreach(range($sel -1, 0, -1) as $idx){
+        $valueMap['turn'.$idx] = EncodeCommand(0, 0, 0, 0);
     }
-    $query .= " where owner='{$userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', $valueMap, 'owner=%i', $userID);
     break;
 case 2:
-    $i = 0;
-    $k = $sel;
-    $query = "update general set ";
-    while(1) {
-        $query .= "turn{$i}=turn{$k},";
-        $i++; $k++;
-        if($k >= 24) break;
+    $valueMap = [];
+    foreach(range(0, GameConst::$maxTurn - $sel - 1) as $idx){
+        $src = $idx + $sel;
+        $valueMap['turn'.$idx] = $db->sqleval('%b', 'turn'.$src);
     }
-    while(1) {
-        $query .= "turn{$i}=0";
-        $i++;
-        if($i >= 24) break;
-        $query .= ",";
+    foreach(range(GameConst::$maxTurn - $sel, GameConst::$maxTurn - 1) as $idx){
+        $valueMap['turn'.$idx] = EncodeCommand(0, 0, 0, 0);
     }
-    $query .= " where owner='{$userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', $valueMap, 'owner=%i', $userID);
     break;
 }
 
-//echo "<script>location.replace('commandlist.php');</script>";
-echo 'commandlist.php';//TODO:debug all and replace
+header('location:commandlist.php');

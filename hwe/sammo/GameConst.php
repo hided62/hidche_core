@@ -80,4 +80,7 @@ class GameConst
     public static $defaultMaxGenius = 5;
     /** @var int 초기 시작 년도. 실제 값은 시나리오에서 정해지므로 딱히 의미는 없음. */
     public static $defaultStartYear = 180;
+
+    /** @var int 최대 턴(현재는 DB상 24턴으로 고정) */
+    public static $maxTurn = 24;
 }
