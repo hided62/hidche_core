@@ -84,7 +84,7 @@ function pushAuctionLog($log) {
 }
 
 function getAuctionLogRecent(int $count) {
-    return join('<br>', getFormattedFileLogRecent("logs/_auctionlog.txt", $count, 300));
+    return join('<br>', array_reverse(getFormattedFileLogRecent("logs/_auctionlog.txt", $count, 300)));
 }
 
 function pushGenLog($general, $log) {
@@ -102,7 +102,7 @@ function pushBatRes($general, $log) {
 }
 
 function getBatResRecent(int $no, int $count) {
-    return join('<br>', getFormattedFileLogRecent("logs/batres{$no}.txt", $count, 300));
+    return join('<br>', array_reverse(getFormattedFileLogRecent("logs/batres{$no}.txt", $count, 300)));
 }
 
 function pushBatLog($general, $log) {
@@ -111,7 +111,7 @@ function pushBatLog($general, $log) {
 }
 
 function getBatLogRecent(int $no, int $count) {
-    return join('<br>', getFormattedFileLogRecent("logs/batlog{$no}.txt", $count, 300));
+    return join('<br>', array_reverse(getFormattedFileLogRecent("logs/batlog{$no}.txt", $count, 300)));
 }
 
 //DB-based
