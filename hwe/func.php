@@ -75,11 +75,25 @@ function GetImageURL($imgsvr) {
     }
 }
 
-function checkLimit($con, $conlimit) {
+/**
+ * @param null|int $con 장수의 벌점
+ * @param null|int $conlimit 최대 벌점
+ */
+function checkLimit($con = null, $conlimit = null) {
     $session = Session::getInstance();
     if($session->userGrade>=4){
         return 0;
     }
+
+    $db = DB::db();
+
+    if($con === null){
+        $con = $db->queryFirstField('SELECT con FROM general WHERE `owner`=%i', Session::getUserID());
+    }
+    if($conlimit === null){
+        $conlimit = $db->queryFirstField('SELECT conlimit FROM game LIMIT 1');
+    }
+
     if($con > $conlimit) {
         return 2;
     //접속제한 90%이면 경고문구
@@ -2143,7 +2157,6 @@ function CheckHall($no) {
 function uniqueItem($general, $log, $vote=0) {
     $db = DB::db();
     $connect=$db->get();
-    $log = [];
     $alllog = [];
     $history = [];
     $occupied = [];
@@ -2532,6 +2545,9 @@ function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
 
     while(!$queue->isEmpty()){
         list($cityID, $dist) = $queue->dequeue();
+        if(key_exists($cityID, $cities)){
+            continue;
+        }
 
         if(!key_exists($dist, $distanceList)){
             $distanceList[$dist] = [];
