@@ -239,6 +239,7 @@ function getGeneralPublicRecordWithDate($year, $month) {
     if(!$texts){
         return ConvertLog("<C>●</>{$month}월: 기록 없음");
     }
+    return join('<br>', $texts);
 }
 
 function LogHistory($isFirst=0) {
