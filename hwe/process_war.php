@@ -1862,7 +1862,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
             $cities = [];
             foreach(
                 DB::db()->query(
-                    'SELECT city, pop FROM city WHERE nation=%i and city!=%i', 
+                    'SELECT nation, city, pop FROM city WHERE nation=%i and city!=%i', 
                     $destnation['nation'], 
                     $city['city']
                 ) as $row
