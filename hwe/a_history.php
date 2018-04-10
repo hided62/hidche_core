@@ -74,8 +74,15 @@ if ($month <= 0) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>연감</title>
+<script src="../e_lib/jquery-3.2.1.min.js"></script>
+<script src="../d_shared/common_path.js"></script>
+<script src="js/common.js"></script>
+<script src="js/base_map.js"></script>
+<script src="js/map.js"></script>
+
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>
+<link href="css/map.css" rel="stylesheet">
 
 </head>
 
@@ -117,9 +124,8 @@ $history = MYDB_fetch_array($result);
     <tr><td colspan=5 align=center id=bg1>중 원 지 도</td></tr>
     <tr height=520>
         <td width=698>
-            <iframe src='map_history.php?year=<?=$year?>&month=<?=$month?>' width=698 height=520 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no>
-            </iframe>
-        </td>
+            <?=getMapHtml();?>
+            
         <td width=98 valign=top><?=$history['nation']?></td>
         <td width=78 valign=top><?=$history['power']?></td>
         <td width=58 valign=top><?=$history['gen']?></td>
@@ -142,7 +148,13 @@ $history = MYDB_fetch_array($result);
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>
+<script>
+reloadWorldMap({
+    targetJson:'map_history.php?year=<?=$year?>&month=<?=$month?>',
+    showMe:false,
+    neutralView:true
+});
+</script>
 <?php PrintElapsedTime(); ?>
 </body>
-
 </html>
