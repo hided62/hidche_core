@@ -2556,7 +2556,7 @@ function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
 
         $cities[$cityID] = $dist;
         if($dist >= $maxDist){
-            return;
+            continue;
         }
 
         foreach(array_keys(CityConst::byID($cityID)->path) as $connCityID){
