@@ -63,8 +63,7 @@ class GameUnitDetail{
         }
 
         if($this->recruitType == 2){
-            $cityLevel = CityConst::byID($this->id)->level;
-            $cityLevel = CityConst::$regionMap[$cityLevel];
+            $cityLevel = CityConst::byID($this->recruitCondition)->level;
 
             if(!key_exists($this->recruitCondition, $ownCities)){
                 return false;
