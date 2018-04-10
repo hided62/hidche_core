@@ -27,8 +27,7 @@ $btn = $_POST['btn'];
 
 //내가 수뇌부이어야함
 if($me['level'] < 5) {
-    //echo "<script>location.replace('b_myBossInfo.php');</script>";
-    echo 'b_myBossInfo.php';//TODO:debug all and replace
+    header('location:b_myBossInfo.php');
     exit();
 }
 
@@ -69,7 +68,5 @@ if($btn == "국가방침") {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
-//echo "<script>location.replace('b_dipcenter.php');</script>";
-echo 'b_dipcenter.php';//TODO:debug all and replace
-
+header('location:b_dipcenter.php');
 

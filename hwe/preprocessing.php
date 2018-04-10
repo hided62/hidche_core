@@ -17,7 +17,7 @@ $commandtype = Util::getReq('commandtype', 'int');
 increaseRefresh("턴입력", 1);
 
 if(!$turn || $commandtype === null){
-    header('location:index.php');
+    header('location:./');
     die();
 }
 
@@ -31,8 +31,7 @@ $me = MYDB_fetch_array($result);
 
 $con = checkLimit($me['con'], $admin['conlimit']);
 if($con >= 2) { 
-    //echo "<script>window.top.main.location.replace('index.php');</script>"; 
-    echo 'index.php';//TODO:debug all and replace
+    header('location:./');
     exit();
  }
 

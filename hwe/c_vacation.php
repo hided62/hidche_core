@@ -19,6 +19,6 @@ $admin['killturn'] *= 3;
 $query = "update general set killturn='{$admin['killturn']}' where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-//echo "<script>location.replace('b_myPage.php');</script>";
-echo 'b_myPage.php'; //TODO:debug all and replace
+
+header('location:b_myPage.php');
 

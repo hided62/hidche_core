@@ -8,7 +8,7 @@ include "func.php";
 $weap = Util::getReq('weap', 'int');
 
 //로그인 검사
-$session = Session::requireLogin()->loginGame();
+$session = Session::requireLogin()->loginGame()->setReadOnly();
 
 if($session->userGrade < 5) {
     header('location:_admin2.php');
@@ -303,6 +303,4 @@ switch($btn) {
         break;
 }
 
-//echo "<script>location.replace('_admin2.php');</script>";
-echo '_admin2.php';//TODO:debug all and replace
-
+header('location:_admin2.php');

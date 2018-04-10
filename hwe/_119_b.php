@@ -7,8 +7,8 @@ include "func.php";
 
 $session = Session::requireGameLogin()->setReadOnly();
 if($session->userGrade < 5){
-    //echo "<script>location.replace('_119.php');</script>";
-    echo '_119.php';//TODO:debug all and replace
+    header('location:_119.php');
+    die();
 }
 
 $v = new Validator($_POST);
@@ -68,6 +68,4 @@ case "락풀기":
     break;
 }
 
-//echo "<script>location.replace('_119.php');</script>";
-//echo '_119.php';//TODO:debug all and replace
 header('Location:_119.php');

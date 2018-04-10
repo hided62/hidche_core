@@ -377,10 +377,11 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "
 $betting = MYDB_fetch_array($result);
 $bet = [];
 for ($i=0; $i < 16; $i++) {
-    $bet[$i]  = @round($betting['bet'] /  $betting["bet{$i}"], 2);
-    if ($bet[$i] == 0) {
-        $bet[$i] = "∞";
+    if($betting['bet'] == 0){
+        $bet[$i] = '∞';
+        continue;
     }
+    $bet[$i]  = round($betting['bet'] /  $betting["bet{$i}"], 2);
 }
 
 echo "

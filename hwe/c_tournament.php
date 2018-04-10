@@ -33,7 +33,10 @@ case 2: $tp = "power";  $tp2 = "일기토"; $tp3 = "power"; break;
 case 3: $tp = "intel";  $tp2 = "설전";   $tp3 = "intel"; break;
 }
 
-if($me['tournament'] == 1 && $session->userGrade < 5) { echo "<script>location.replace('b_tournament.php');</script>"; exit(); }
+if($me['tournament'] == 1 && $session->userGrade < 5) { 
+    header('locatoin:b_tournament.php');
+    exit(); 
+}
 
 if($btn == "자동개최설정" && $session->userGrade >= 5) {
     $db->update('game', ['tnmt_trig'=>$trig], true);
@@ -101,7 +104,10 @@ if($btn == "자동개최설정" && $session->userGrade >= 5) {
         $general = MYDB_fetch_array($result);
 
         //{$admin['develcost']}원 참가비
-        if($general['gold'] < $admin['develcost']) { echo "<script>location.replace('b_tournament.php');</script>"; exit(1); }
+        if($general['gold'] < $admin['develcost']) { 
+            header('location:b_tournament.php');
+            exit(1); 
+        }
         $general['gold'] -= $admin['develcost'];
     }
 
@@ -216,7 +222,5 @@ if($btn == "자동개최설정" && $session->userGrade >= 5) {
     $query = "update game set tnmt_msg='$msg'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
-?>
 
-<!--<script>location.replace('b_tournament.php');</script> //TODO:debug all and replace -->
-b_tournament.php
+header('location:b_tournament.php');

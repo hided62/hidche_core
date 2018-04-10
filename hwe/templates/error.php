@@ -19,7 +19,7 @@
             &nbsp;&nbsp;&nbsp;운영자가 처리할 때까지 기다려주세요
     </main>
     <div class="with_border">
-        <button style='width:200px;height:2em;font-size:1.2em;' onclick="location.replace('index.php')">몇 초 뒤 눌러주세요</button>
+        <button style='width:200px;height:2em;font-size:1.2em;' onclick="location.replace('./')">몇 초 뒤 눌러주세요</button>
     </div>
     <div class="with_border">
         <?=$this->message?>

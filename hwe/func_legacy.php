@@ -71,7 +71,7 @@ function GetNationColors() {
 
 function backButton() {
     return "
-<input type=button value='돌아가기' onclick=location.replace('index.php')><br>
+<input type=button value='돌아가기' onclick=location.replace('./')><br>
 ";
 }
 

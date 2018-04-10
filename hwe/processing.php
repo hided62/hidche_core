@@ -191,8 +191,8 @@ function command_99($turn) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
-    //echo "<script>location.replace('b_chiefcenter.php');</script>";
-    echo 'b_chiefcenter.php';//TODO:debug all and replace
+
+    header('location:b_chiefcenter.php');
 }
 
 function command_11($turn, $command) {

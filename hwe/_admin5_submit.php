@@ -11,8 +11,8 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 if($session->userGrade < 5) {
-    //echo "<script>location.replace('_admin5.php');</script>";
-    echo '_admin5.php';//TODO:debug all and replace
+    header('location:_admin5.php');
+    die();
 }
 
 $db = DB::db();
@@ -34,7 +34,6 @@ switch($btn) {
         break;
 }
 
-//echo "<script>location.replace('_admin5.php');</script>";
-echo '_admin5.php';//TODO:debug all and replace
+header('location:_admin5.php');
 
 

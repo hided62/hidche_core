@@ -7,8 +7,8 @@ include "func.php";
 $session = Session::requireGameLogin()->setReadOnly();
 
 if($session->userGrade < 5) {
-    //echo "<script>location.replace('_admin4.php');</script>";
-    echo '_admin4.php';//TODO:debug all and replace
+    header('location:_admin4.php');
+    die();
 }
 
 $db = DB::db();
@@ -57,6 +57,5 @@ switch($btn) {
         break;
 }
 
-//echo "<script>location.replace('_admin4.php');</script>";
-echo '_admin4.php'; //TODO:debug all and replace
+header('location:_admin4.php');
 

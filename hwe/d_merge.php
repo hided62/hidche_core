@@ -148,5 +148,5 @@ pushGenLog($you, $youlog);
 pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
 pushWorldHistory($history, $admin['year'], $admin['month']);
 
-echo "<script>location.replace('msglist.php');</script>";
+header('location:msglist.php');
 

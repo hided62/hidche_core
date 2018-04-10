@@ -276,7 +276,7 @@ function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
 
     switch($bg) {
         case 2:
-        case 4: $bgcolor = "CC6600"; break;
+        case 4: $bgcolor = "#CC6600"; break;
     }
 
     if($category == 6) {

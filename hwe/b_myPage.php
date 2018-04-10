@@ -52,8 +52,7 @@ $me = MYDB_fetch_array($result);
 <script type="text/javascript">
 function go(type) {
     if(type == 0){ 
-        //location.replace('c_vacation.php');
-        console.log('c_vacation.php');//TODO:debug all and replace
+        location.replace('c_vacation.php');
     }
 }
 </script>

@@ -25,8 +25,7 @@ $conLimit = $db->queryFirstField('SELECT conlimit FROM game LIMIT 1');
 
 $con = checkLimit($myActionCnt, $conLimit);
 if($con >= 2) { 
-    echo "<script>window.top.main.location.replace('index.php');</script>"; 
-    //echo 'index.php';//TODO:debug all and replace
+    header('location:commandlist.php');
     exit();
  }
 

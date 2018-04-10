@@ -673,7 +673,7 @@ function process_47(&$general) {
         //분쟁기록 모두 지움
         DeleteConflict($general['nation']);
         // 국명, 색깔 바꿈 국가 레벨 0, 성향리셋, 기술0
-        $query = "update nation set name='{$general['name']}',color='330000',level='0',type='0',tech='0',totaltech='0',capital='0' where nation='{$general['nation']}'";
+        $query = "update nation set name='{$general['name']}',color='#330000',level='0',type='0',tech='0',totaltech='0',capital='0' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 본인 빼고 건국/임관제한
         $query = "update general set makelimit='12' where no!='{$general['no']}' and nation='{$general['nation']}'";

@@ -50,11 +50,4 @@ if(getBlockLevel() != 1 && getBlockLevel() != 3) {
     }
 }
 
-//echo "<script>location.replace('b_nationboard.php');</script>";
-echo 'b_nationboard.php';//TODO:debug all and replace
-
-?>
-
-</body>
-</html>
-
+header('location:b_nationboard.php');

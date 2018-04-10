@@ -7,8 +7,8 @@ include "func.php";
 $session = Session::requireGameLogin()->setReadOnly();
 
 if ($session->userGrade < 5) {
-    //echo "<script>location.replace('_admin1.php');</script>";
-    echo '_admin1.php';//TODO:debug all and replace
+    header('location:_admin1.php');
+    die();
 }
 
 $v = new Validator($_POST);

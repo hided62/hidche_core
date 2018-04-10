@@ -52,10 +52,4 @@ if(getBlockLevel() != 1 && getBlockLevel() != 3) {
     }
 }
 
-//echo "<script>location.replace('b_chiefboard.php');</script>";
-echo 'b_chiefboard.php';//TODO:debug all and replace
-?>
-
-</body>
-</html>
-
+header('location:b_chiefboard.php');

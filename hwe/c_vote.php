@@ -56,8 +56,7 @@ else if($btn == "댓글" && $comment != "") {
 }
 
 if($session->userGrade < 5){
-    echo "<!--<script>location.replace('a_vote.php');</script>"; //TODO:debug all and replace -->
-    echo 'a_vote.php ';
+    header('location:a_vote.php');
     die();
 }
 
@@ -96,7 +95,5 @@ if($btn == "수정") {
     $query = "update game set voteopen=2";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
-?>
 
-<!--<script>location.replace('a_vote.php');</script>"; //TODO:debug all and replace -->
-a_vote.php
+header('location:a_vote.php');

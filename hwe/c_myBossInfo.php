@@ -33,7 +33,7 @@ $ruler = MYDB_fetch_array($result);
 
 //수뇌가 아니면 아무것도 할 수 없음
 if($meLevel < 5){
-    echo 'b_myBossInfo.php';//TODO:debug all and replace
+    header('location:b_myBossInfo.php');
     exit();
 }
 
@@ -45,8 +45,8 @@ if($btn == "임명") {
 
     //임명할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($general['level'] == 12 || $meLevel < 5 || ($general['nation'] != $me['nation'] && $genlist != 0)) {
-        //echo "<script>location.replace('b_myBossInfo.php');</script>";
-        echo 'b_myBossInfo.php';//TODO:debug all and replace
+        
+        header('location:b_myBossInfo.php');
         exit();
     }
 } elseif($btn == "추방") {
@@ -56,15 +56,14 @@ if($btn == "임명") {
 
     //추방할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($general['level'] == 12 || $meLevel < 5 || ($general['nation'] != $me['nation'] && $outlist != 0)) {
-        //echo "<script>location.replace('b_myBossInfo.php');</script>";
-        echo 'b_myBossInfo.php';//TODO:debug all and replace
+        header('location:b_myBossInfo.php');
         exit();
     }
 }
 
 //나와 대상 장수는 국가가 같아야 함
 if($me['nation'] != $general['nation']){
-    echo 'b_myBossInfo.php';//TODO:debug all and replace
+    header('location:b_myBossInfo.php');
     exit();
 }
 
@@ -188,7 +187,11 @@ if($btn == "추방") {
         pushGenLog($general, $log);
         pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     }
-} elseif($btn == "임명" && $level >= 5 && $level <= 11) {
+    header('location:b_myBossInfo.php');
+    die();
+}
+
+if($btn == "임명" && $level >= 5 && $level <= 11) {
     $query = "select l{$level}set,level,chemi from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
@@ -235,7 +238,12 @@ if($btn == "추방") {
             }
         }
     }
-} elseif($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
+    header('location:b_myBossInfo.php');
+    die();
+} 
+
+
+if($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
     switch($level) {
     case 4: $lv = 1; break;
     case 3: $lv = 2; break;
@@ -246,8 +254,7 @@ if($btn == "추방") {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
     if(!$city){
-        //echo "<script>location.replace('b_myBossInfo.php');</script>";
-        echo 'b_myBossInfo.php';//TODO:debug all and replace
+        header('location:b_myBossInfo.php');
         die();
     }
     $oldlist = $city["gen{$lv}"];
@@ -283,9 +290,11 @@ if($btn == "추방") {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
+    header('location:b_myBossInfo.php');
+    die();
 }
 
-//echo "<script>location.replace('b_myBossInfo.php');</script>";
-echo 'b_myBossInfo.php';//TODO:debug all and replace
+
+header('location:b_myBossInfo.php');
 
 
