@@ -297,10 +297,7 @@ function processWar($general, $city) {
 
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio3(
-                    getGeneralLeadership($general, false, true, true, false), 
-                    getGeneralPower($general, false, true, true, false),
-                    getGeneralIntel($general, false, true, true, false));
+                $ratio = CriticalRatio3($general);
                 // 특기보정 : 무쌍, 필살
                 if($general['special2'] == 61) { $ratio += 10; }
                 if($general['special2'] == 71) { $ratio += 20; }
@@ -1078,10 +1075,7 @@ function processWar($general, $city) {
 
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio3(
-                    getGeneralLeadership($general, false, true, true, false),
-                    getGeneralPower($general, false, true, true, false),
-                    getGeneralIntel($general, false, true, true, false));
+                $ratio = CriticalRatio3($general);
                 // 특기보정 : 무쌍, 필살
                 if($general['special2'] == 61) { $ratio += 10; }
                 if($general['special2'] == 71) { $ratio += 20; }
@@ -1103,10 +1097,7 @@ function processWar($general, $city) {
                 }
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio3(
-                    getGeneralLeadership($oppose, false, true, true, false),
-                    getGeneralPower($oppose, false, true, true, false),
-                    getGeneralIntel($oppose, false, true, true, false));
+                $ratio = CriticalRatio3($oppose);
                 // 특기보정 : 필살
                 if($oppose['special2'] == 71) { $ratio += 20; }
                 if($ratio >= $rd && $opAvoid == 1) {
@@ -1520,8 +1511,39 @@ function processWar($general, $city) {
     return $deadAmount;
 }
 
-function CriticalRatio3($leader, $power, $intel) {
-    return 15; //15% 고정
+
+function CriticalRatio3($general) {
+    //  무장 무력 : 65 5%, 70 10%, 75 15%, 80 20%
+    //  지장 지력 : 65 5%, 70  8%, 75 10%, 80 13%
+    //충차장 통솔:  65 5%, 70  8%, 75 10%, 80 13%
+
+    $crewtype = intdiv($general['crewtype'], 10);
+
+    if($crewtype == 3){ //지장
+        $mainstat = getGeneralIntel($general, false, true, true, false);
+    }
+    else if($crewtype == 4){ //병기
+        $mainstat = getGeneralLeadership($general, false, true, true, false);
+    }
+    else{ //무장
+        $mainstat = getGeneralPower($general, false, true, true, false);
+    }
+
+    $ratio = max($mainstat - 65, 0);
+
+    if ($crewtype >= 3) {
+       $ratio /= 2;
+    }
+    else{
+        $ratio *= 0.7;
+    }
+
+    $ratio = round($ratio);
+    $ratio += 5;
+
+    if($ratio > 50) $ratio = 50;
+
+    return $ratio;
 }
 
 function CriticalRatio2($leader, $power, $intel) {
