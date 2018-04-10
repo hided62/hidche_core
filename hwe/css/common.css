@@ -48,6 +48,10 @@ select { font-family:'굴림'; line-height:100%; }
     content:"◆";
 }
 
+.small_war_log{
+    display:inline-block;
+}
+
 .small_war_log .war_type_attack{
     color:cyan;
 }

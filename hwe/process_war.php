@@ -412,14 +412,14 @@ function processWar($general, $city) {
                 'killed_crew' => -$mykillnum
             ];
 
-            $res = $templates->render('small_war_log',[
+            $res = str_replace(["\r\n", "\r", "\n"], '', $templates->render('small_war_log',[
                 'year'=>$year,
                 'month'=>$month,
                 'war_type'=>'siege',
                 'war_type_str'=>'성',
                 'me' => $render_attacker,
                 'you' => $render_defender,
-            ]);
+            ]));
 
             $log[] = $res;//TODO: $log를 출력할 때 date에 대해선 숨겨야 함.
             $batlog[] = $res;
@@ -1288,23 +1288,23 @@ function processWar($general, $city) {
                 'killed_crew' => -$opdeathnum
             ];
 
-            $res = $templates->render('small_war_log',[
+            $res = str_replace(["\r\n", "\r", "\n"], '', $templates->render('small_war_log',[
                 'year'=>$year,
                 'month'=>$month,
                 'war_type'=>'attack',
                 'war_type_str'=>'공',
                 'me' => $render_attacker,
                 'you' => $render_defender,
-            ]);
+            ]));
 
-            $oppres = $templates->render('small_war_log',[
+            $oppres = str_replace(["\r\n", "\r", "\n"], '', $templates->render('small_war_log',[
                 'year'=>$year,
                 'month'=>$month,
                 'war_type'=>'defense',
                 'war_type_str'=>'수',
                 'me' => $render_defender,
                 'you' => $render_attacker,
-            ]);
+            ]));
 
             $log[] = $res;
             $batlog[] = $res;

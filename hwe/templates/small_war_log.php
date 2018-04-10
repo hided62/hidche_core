@@ -16,9 +16,9 @@
         </span>
 
         <span class="crew_plate">
-            <span class="remain_crew"><?=$me['remain']?></span>
+            <span class="remain_crew"><?=$me['remain_crew']?></span>
             <span class="killed_plate">
-                (<span class="killed_crew"><?=$me['killed']?></span>)
+                (<span class="killed_crew"><?=$me['killed_crew']?></span>)
             </span>
         </span>
     </span>
@@ -27,9 +27,9 @@
 
     <span class="you">
         <span class="crew_plate">
-            <span class="remain_crew"><?=$you['remain']?></span>
+            <span class="remain_crew"><?=$you['remain_crew']?></span>
             <span class="killed_plate">
-                (<span class="killed_crew"><?=$you['killed']?></span>)
+                (<span class="killed_crew"><?=$you['killed_crew']?></span>)
             </span>
         </span>
 
