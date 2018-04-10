@@ -43,6 +43,19 @@ function getFormattedFileLogAll(string $path){
     }, getRawFileLogAll($path));
 }
 
+function eraseTnmtFightLogAll(){
+    foreach(range(0, 49) as $i){
+        eraseTnmtFightLog($i);
+    }
+}
+
+function eraseTnmtFightLog(int $group){
+    $filepath = "logs/fight{$group}.txt";
+    if(file_exists($filepath)){
+        @unlink($filepath);
+    }
+}
+
 function pushTnmtFightLog(int $group, $log) {
     pushRawFileLog("logs/fight{$group}.txt", $log);
 }

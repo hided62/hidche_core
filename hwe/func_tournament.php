@@ -232,12 +232,7 @@ function startTournament($auto, $type) {
     $db = DB::db();
     $connect=$db->get();
 
-    for($i=0; $i<50; $i++){
-        $filepath = "logs/fight{$i}.txt";
-        if(file_exists($filepath)){
-            @unlink($filepath);
-        }
-    }
+    eraseTnmtFightLogAll();
 
     switch($auto) {
     case 1: $unit = 60; break;
@@ -759,6 +754,8 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
     $log = [];
     $db = DB::db();
     $connect=$db->get();
+
+    eraseTnmtFightLog($group);
 
     $query = "select *,(ldr+pwr+itl)*7/15 as tot,h,w,b from tournament where grp='$group' and grp_no='$g1'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$session = Session::requireLogin()->loginGame();
+$session = Session::requireLogin()->loginGame()->setReadOnly();
 $userID = Session::getUserID();
 
 increaseRefresh("메인", 1);
@@ -31,12 +31,6 @@ if ($me === null) {
     header('Location: ../');
     die();
 }
-if (!$session->generalID) {
-    $session = Session::requireGameLogin();
-}
-$session->setReadOnly();
-$userID = Session::getUserID();
-
 
 if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
     $db->update('general', [
