@@ -93,7 +93,7 @@ function pushGenLog($general, $log) {
 }
 
 function getGenLogRecent(int $no, int $count) {
-    return join('<br>', getFormattedFileLogRecent("logs/gen{$no}.txt", $count, 300));
+    return join('<br>', array_reverse(getFormattedFileLogRecent("logs/gen{$no}.txt", $count, 300)));
 }
 
 function pushBatRes($general, $log) {

@@ -211,10 +211,10 @@ $call = array(
 );
 
 $func = array(
-    "getHorseName",
-    "getWeapName",
-    "getBookName",
-    "getItemName"
+    "\\sammo\\getHorseName",
+    "\\sammo\\getWeapName",
+    "\\sammo\\getBookName",
+    "\\sammo\\getItemName"
 );
 
 for ($i=0; $i < 4; $i++) {
