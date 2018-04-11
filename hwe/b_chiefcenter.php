@@ -105,8 +105,18 @@ for($i=12; $i >= $lv; $i--) {
     $turntime[$i] = substr($gen[$i]['turntime'], 14);
 }
 
+
+//FIXME: 각 칸을 div로 놓으면 네개씩 출력하는 삽질이 필요없다.
+
 for($k=0; $k < 2; $k++) {
     $l4 = 12 - $k;  $l3 = 10 - $k;  $l2 =  8 - $k;  $l1 =  6 - $k;
+
+    if(!isset($gen[$l4])){
+        $gen[$l4] = [
+            'npc'=>0,
+            'name'=>0
+        ];
+    }
 
     if    ($gen[$l4]['npc'] >= 2) { $gen[$l4]['name'] = "<font color=cyan>".$gen[$l4]['name']."</font>"; }
     elseif($gen[$l4]['npc'] == 1) { $gen[$l4]['name'] = "<font color=skyblue>".$gen[$l4]['name']."</font>"; }
@@ -129,19 +139,19 @@ for($k=0; $k < 2; $k++) {
     ";
 
     for($i=0; $i < 12; $i++) {
-        $turndate[$l4] = substr($totaldate[$l4], 11, 5);
-        $turndate[$l3] = substr($totaldate[$l3], 11, 5);
-        $turndate[$l2] = substr($totaldate[$l2], 11, 5);
-        $turndate[$l1] = substr($totaldate[$l1], 11, 5);
+        $turndate[$l4] = substr($totaldate[$l4]??'', 11, 5);
+        $turndate[$l3] = substr($totaldate[$l3]??'', 11, 5);
+        $turndate[$l2] = substr($totaldate[$l2]??'', 11, 5);
+        $turndate[$l1] = substr($totaldate[$l1]??'', 11, 5);
         $j = $i + 1;
-        $td4 = ($turndate[$l4] == "") ? "-" : $turndate[$l4];
-        $td3 = ($turndate[$l3] == "") ? "-" : $turndate[$l3];
-        $td2 = ($turndate[$l2] == "") ? "-" : $turndate[$l2];
-        $td1 = ($turndate[$l1] == "") ? "-" : $turndate[$l1];
-        $tn4 = ($turn[$l4][$i] == "") ? "-" : $turn[$l4][$i];
-        $tn3 = ($turn[$l3][$i] == "") ? "-" : $turn[$l3][$i];
-        $tn2 = ($turn[$l2][$i] == "") ? "-" : $turn[$l2][$i];
-        $tn1 = ($turn[$l1][$i] == "") ? "-" : $turn[$l1][$i];
+        $td4 = $turndate[$l4] ?: "-";
+        $td3 = $turndate[$l3] ?: "-";
+        $td2 = $turndate[$l2] ?: "-";
+        $td1 = $turndate[$l1] ?: "-";
+        $tn4 = $turn[$l4][$i] ?? "-";
+        $tn3 = $turn[$l3][$i] ?? "-";
+        $tn2 = $turn[$l2][$i] ?? "-";
+        $tn1 = $turn[$l1][$i] ?? "-";
         echo "
     <tr>
         <td width=28  align=center id=bg0><b>$j</b></td>
