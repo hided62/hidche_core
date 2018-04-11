@@ -1910,6 +1910,9 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
                 $maxCityPop = 0;
                 
                 foreach($distList[$dist] as $cityID){
+                    if(!key_exists($cityID, $cities)){
+                        continue;
+                    }
                     $city = $cities[$cityID];
                     '@phan-var array<string,mixed> $city';
                     if($city['nation'] != $destnation['nation']){
