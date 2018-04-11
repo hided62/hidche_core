@@ -193,30 +193,37 @@ for($i=0; $i < $nationcount; $i++) {
 >
     <tr><td colspan=2 align=center bgcolor=magenta>분 쟁 현 황</td></tr>
     <?php foreach($realConflict as list($cityID, $cityName, $conflict)): ?>
-        <tr>
-            <td align=center width=48><?=$cityName?></td>
-            <td width=948>
-                <table 
-                    border=0
-                    cellspacing=0 
-                    cellpadding=0
-                    bordercolordark='gray'
-                    bordercolorlight='black'
-                    style='font-size:13px;word-break:break-all;'
-                    class='bg0'
-                >
-                <?php foreach($conflict as $conflictItem): ?>
-                    <tr>
-                        <td width=98 align=right style=color:".newColor($nationcolor[$nationID]).";background-color:<?=$conflictItem['color']?>;><?=$conflictItem['name']?>&nbsp;</td>
-                        <td width=48 align=right><?=$conflictItem['percent']?>%&nbsp;</td>
-                        <td width='<?=$conflictItem['percent']?>%' style=background-color:<?=$conflictItem['color']?>;></td>
-                        <td width=*></td>
-                    </tr>
-                <?php endforeach; ?>
-                </table>
-        
-            </td>
-        </tr>
+    <tr>
+        <td align=center width=48><?=$cityName?></td>
+        <td width=948>
+            <table 
+                border=0
+                cellspacing=0 
+                cellpadding=0
+                bordercolordark='gray'
+                bordercolorlight='black'
+                style='font-size:13px;word-break:break-all;'
+                class='bg0'
+            >
+            <?php foreach($conflict as $item): ?>
+                <tr>
+                    <td 
+                        width=98
+                        align=right 
+                        style='color:<?=newColor($item['color'])?>;background-color:<?=$item['color']?>;'
+                    ><?=$item['name']?>&nbsp;</td>
+                    <td width=48 align=right><?=$item['percent']?>%&nbsp;</td>
+                    <td 
+                        width='<?=$item['percent']?>%'
+                        style='background-color:<?=$item['color']?>;'
+                    ></td>
+                    <td width=*></td>
+                </tr>
+            <?php endforeach; ?>
+            </table>
+    
+        </td>
+    </tr>
     <?php endforeach; ?>
     <tr><td colspan=2 height=5 id=bg1></td></tr>
 </table>
