@@ -1405,6 +1405,7 @@ function processWar($general, $city) {
                 pushGenLog($oppose, $opplog);
                 pushBatLog($oppose, $oppbatlog);
                 pushBatRes($oppose, $oppbatres);
+                unset($oppose);
                 unset($opplog);
                 unset($oppbatlog);
                 unset($oppbatres);
@@ -1468,16 +1469,20 @@ function processWar($general, $city) {
         }
     }
 
-    // 상대장수 경험 등등 증가(페이즈 초과시)
-    $opexp = Util::round($opexp / 50 * 0.8);
-    // 성격 보정
-    $opexp = CharExperience($opexp, $oppose['personal']);
-    // 쌀 소모
-    $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($oppose['crewtype'], $destnation['tech']));
-    if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
+    if(isset($oppose)){
+        //마지막 페이즈에 장수가 전멸하지 않은 경우. 쌀 소모 후속 처리
 
-    $query = "update general set rice='{$oppose['rice']}',experience=experience+'$opexp',dedication=dedication+'$opexp' where no='{$oppose['no']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        // 상대장수 경험 등등 증가(페이즈 초과시)
+        $opexp = Util::round($opexp / 50 * 0.8);
+        // 성격 보정
+        $opexp = CharExperience($opexp, $oppose['personal']);
+        // 쌀 소모
+        $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($oppose['crewtype'], $destnation['tech']));
+        if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
+
+        $query = "update general set rice='{$oppose['rice']}',experience=experience+'$opexp',dedication=dedication+'$opexp' where no='{$oppose['no']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    }
 
     // 경험치 상승
     if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
