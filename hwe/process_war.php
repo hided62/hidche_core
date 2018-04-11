@@ -86,7 +86,13 @@ function processWar($general, $city) {
 
     $query = "select nation,level,name,rice,capital,tech,type from nation where nation='{$city['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $destnation = MYDB_fetch_array($result);
+    $destnation = MYDB_fetch_array($result) ?: [
+        'nation'=>0,
+        'level'=>0,
+        'rice'=>2000,
+        'type'=>0,
+        'tech'=>0        
+    ];
 
     //장수수 구함
     $query = "select no from general where nation='{$general['nation']}'";
@@ -463,8 +469,12 @@ function processWar($general, $city) {
             // 죽은수 기술로 누적
             $num = Util::round($mykillnum * 0.01);
             // 국가보정
-            if($destnation['type'] == 3 || $destnation['type'] == 13)                                                                               { $num *= 1.1; }
-            if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) { $num *= 0.9; }
+            if($destnation['type'] == 3 || $destnation['type'] == 13){ 
+                $num *= 1.1; 
+            }
+            if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) {
+                $num *= 0.9;
+            }
             // 부드러운 기술 제한
             if(TechLimit($game['startyear'], $year, $destnation['tech'])) { $num = intdiv($num, 4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='{$destnation['nation']}'";

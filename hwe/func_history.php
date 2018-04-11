@@ -129,6 +129,9 @@ function getBatLogRecent(int $no, int $count) {
 
 //DB-based
 function pushNationHistory($nation, $history) {
+    if(!$nation || !$nation['nation']){
+        return;
+    }
     DB::db()->query("UPDATE nation set history=concat(%s, history) where nation=%i",
         $history.'<br>', $nation['nation']);
 }
