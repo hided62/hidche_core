@@ -2189,7 +2189,7 @@ function process_44(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 없습니다. 헌납 실패. <1>$date</>";
     } elseif($what == 2 && $general['rice'] <= 0) {
         $log[] = "<C>●</>{$admin['month']}월:군량이 없습니다. 헌납 실패. <1>$date</>";
-    } elseif($general['nation'] != $city['nation'] && $nation['level'] != 0) {
+    } elseif($general['nation'] != $city['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 헌납 실패. <1>$date</>";
     } elseif($city['supply'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 헌납 실패. <1>$date</>";
