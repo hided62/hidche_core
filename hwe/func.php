@@ -1348,7 +1348,7 @@ function updateTraffic() {
 
     $date = date('Y-m-d H:i:s');
     //일시|년|월|총갱신|접속자|최다갱신자
-    file_put_contents(__dir__."logs/_traffic.txt",
+    file_put_contents(__dir__."/logs/_traffic.txt",
         StringUtil::padStringAlignRight($date,20," ")
         ."|".StringUtil::padStringAlignRight($game['year'],3," ")
         ."|".StringUtil::padStringAlignRight($game['month'],2," ")

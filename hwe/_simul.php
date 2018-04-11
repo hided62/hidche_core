@@ -194,8 +194,8 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                 $mykillnum = 0; $mydeathnum = 0;
                 while($phase < $warphase) {
                     $phase++;
-                    $myAtt = getAtt($game, $general, $tech1, 0);
-                    $myDef = getDef($game, $general, $tech1);
+                    $myAtt = getAtt($general, $tech1, 0);
+                    $myDef = getDef($general, $tech1);
                     $cityAtt = getCityAtt($city);
                     $cityDef = getCityDef($city);
 
@@ -355,7 +355,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
                 // 도시쌀 소모 계산
                 $opexp =  Util::round($opexp / 50);
-                $rice = Util::round($opexp * 4 * getCrewtypeRice($game, 0, 0) * ($train3/100 - 0.2));
+                $rice = Util::round($opexp * 4 * getCrewtypeRice(0, 0) * ($train3/100 - 0.2));
 
                 //원래대로 스케일링
                 $city['def'] = Util::round($city['def'] / 10);
@@ -385,10 +385,10 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                 while($phase < $warphase) {
                     $phase++;
 
-                    $myAtt = getAtt($game, $general, $tech1, 0);
-                    $myDef = getDef($game, $general, $tech1);
-                    $opAtt = getAtt($game, $oppose, $tech2, 0);
-                    $opDef = getDef($game, $oppose, $tech2);
+                    $myAtt = getAtt($general, $tech1, 0);
+                    $myDef = getDef($general, $tech1);
+                    $opAtt = getAtt($oppose, $tech2, 0);
+                    $opDef = getDef($oppose, $tech2);
                     // 감소할 병사 수
                     $myCrew = GameConst::$armperphase + $opAtt - $myDef;
                     $opCrew = GameConst::$armperphase + $myAtt - $opDef;
@@ -747,9 +747,9 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
         // 공헌, 명성 상승
         $exp = Util::round($exp / 50);
-        $ricing = ($exp * 5 * getCrewtypeRice($game, $general['crewtype'], $tech1));
-        $msg .= "★ 【공격장수】공헌 상승 : $exp 쌀 소비 : {$exp}x5x".getCrewtypeRice($game, $general['crewtype'], $tech1)." = $ricing<br>";
-//        $msg2 .= "★ 【공격장수】공헌 상승 : $exp 쌀 소비 : {$exp}x5x".getCrewtypeRice($game, $general['crewtype'], $tech1)." = $ricing<br>";
+        $ricing = ($exp * 5 * getCrewtypeRice($general['crewtype'], $tech1));
+        $msg .= "★ 【공격장수】공헌 상승 : $exp 쌀 소비 : {$exp}x5x".getCrewtypeRice($general['crewtype'], $tech1)." = $ricing<br>";
+//        $msg2 .= "★ 【공격장수】공헌 상승 : $exp 쌀 소비 : {$exp}x5x".getCrewtypeRice($general['crewtype'], $tech1)." = $ricing<br>";
 
         $msg = ConvertLog($msg, 1);
 
@@ -771,11 +771,11 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
         $msg2 .= "{$simulCount}회 평균<br>";
         $msg2 .= "<S>★</>병사수 변화 : <C>-$mydeathnumSum</> vs <C>-$mykillnumSum</>　　　";
         $msg2 .= "<R>★</>【성벽】내정 감소량 : $expSum2 【성벽】쌀 소모 : $ricingSum2<br>";
-        $msg2 .= "★ 【공격장수】공헌 상승 : $expSum 쌀 소비 : {$expSum}x5x".getCrewtypeRice($game, $general['crewtype'], $tech1)." = $ricingSum<br>";
+        $msg2 .= "★ 【공격장수】공헌 상승 : $expSum 쌀 소비 : {$expSum}x5x".getCrewtypeRice($general['crewtype'], $tech1)." = $ricingSum<br>";
     } elseif($isgen == "장수평균") {
         $msg2 .= "{$simulCount}회 평균<br>";
         $msg2 .= "<S>★</>병사수 변화 : <C>-$mydeathnumSum</> vs <C>-$mykillnumSum</>　　　";
-        $msg2 .= "★ 【공격장수】공헌 상승 : $expSum 쌀 소비 : {$expSum}x5x".getCrewtypeRice($game, $general['crewtype'], $tech1)." = $ricingSum<br>";
+        $msg2 .= "★ 【공격장수】공헌 상승 : $expSum 쌀 소비 : {$expSum}x5x".getCrewtypeRice($general['crewtype'], $tech1)." = $ricingSum<br>";
     }
 
     $msg2 = ConvertLog($msg2, 1);

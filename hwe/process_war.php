@@ -172,8 +172,8 @@ function processWar($general, $city) {
                 } else {
                     $lbonus = 0;
                 }
-                $myAtt = getAtt($game, $general, $nation['tech'], $lbonus);
-                $myDef = getDef($game, $general, $nation['tech']);
+                $myAtt = getAtt($general, $nation['tech'], $lbonus);
+                $myDef = getDef($general, $nation['tech']);
                 $cityAtt = getCityAtt($city);
                 $cityDef = getCityDef($city);
 
@@ -386,7 +386,7 @@ function processWar($general, $city) {
                 // 성격 보정
                 $myRice = CharExperience($myRice, $general['personal']);
                 // 쌀 소모
-                $myRice = ($myRice * 5 * getCrewtypeRice($game, $general['crewtype'], $nation['tech']));
+                $myRice = ($myRice * 5 * getCrewtypeRice($general['crewtype'], $nation['tech']));
                 // 결과 쌀
                 $myRice = $general['rice'] - $myRice;
 
@@ -426,7 +426,7 @@ function processWar($general, $city) {
 
             // 도시쌀 소모 계산
             $opexp = Util::round($opexp / 50 * 0.8);
-            $rice = Util::round($opexp * 5 * getCrewtypeRice($game, 0, 0) * ($game['city_rate']/100 - 0.2));
+            $rice = Util::round($opexp * 5 * getCrewtypeRice(0, 0) * ($game['city_rate']/100 - 0.2));
             $destnation['rice'] -= $rice;
             if($destnation['rice'] < 0) { $destnation['rice'] = 0; }
             $query = "update nation set rice='{$destnation['rice']}' where nation='{$destnation['nation']}'";
@@ -635,8 +635,8 @@ function processWar($general, $city) {
                 } else {
                     $lbonus = 0;
                 }
-                $myAtt = getAtt($game, $general, $nation['tech'], $lbonus);
-                $myDef = getDef($game, $general, $nation['tech']);
+                $myAtt = getAtt($general, $nation['tech'], $lbonus);
+                $myDef = getDef($general, $nation['tech']);
 
                 if($oppose['level'] == 12) {
                     $opplbonus = $destnation['level'] * 2;
@@ -645,8 +645,8 @@ function processWar($general, $city) {
                 } else {
                     $opplbonus = 0;
                 }
-                $opAtt = getAtt($game, $oppose, $destnation['tech'], $opplbonus);
-                $opDef = getDef($game, $oppose, $destnation['tech']);
+                $opAtt = getAtt($oppose, $destnation['tech'], $opplbonus);
+                $opDef = getDef($oppose, $destnation['tech']);
                 // 감소할 병사 수
                 $myCrew = GameConst::$armperphase + $opAtt - $myDef;
                 $opCrew = GameConst::$armperphase + $myAtt - $opDef;
@@ -1246,7 +1246,7 @@ function processWar($general, $city) {
                 // 성격 보정
                 $myRice = CharExperience($myRice, $general['personal']);
                 // 쌀 소모
-                $myRice = ($myRice * 5 * getCrewtypeRice($game, $general['crewtype'], $nation['tech']));
+                $myRice = ($myRice * 5 * getCrewtypeRice($general['crewtype'], $nation['tech']));
                 // 결과 쌀
                 $myRice = $general['rice'] - $myRice;
 
@@ -1255,7 +1255,7 @@ function processWar($general, $city) {
                 // 성격 보정
                 $opRice = CharExperience($opRice, $oppose['personal']);
                 // 쌀 소모
-                $opRice = ($opRice * 5 * getCrewtypeRice($game, $oppose['crewtype'], $destnation['tech']));
+                $opRice = ($opRice * 5 * getCrewtypeRice($oppose['crewtype'], $destnation['tech']));
                 // 결과 쌀
                 $opRice = $oppose['rice'] - $opRice;
 
@@ -1395,7 +1395,7 @@ function processWar($general, $city) {
                 // 성격 보정
                 $opexp = CharExperience($opexp, $oppose['personal']);
                 // 쌀 소모
-                $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($game, $oppose['crewtype'], $destnation['tech']));
+                $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($oppose['crewtype'], $destnation['tech']));
                 if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
 
                 $query = "update general set deathnum=deathnum+1,rice='{$oppose['rice']}',experience=experience+'$opexp',dedication=dedication+'$opexp' where no='{$oppose['no']}'";
@@ -1437,7 +1437,7 @@ function processWar($general, $city) {
                 // 성격 보정
                 $opexp = CharExperience($opexp, $oppose['personal']);
                 // 쌀 소모
-                $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($game, $oppose['crewtype'], $destnation['tech']));
+                $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($oppose['crewtype'], $destnation['tech']));
                 if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
 
                 $query = "update general set rice='{$oppose['rice']}',leader2='{$oppose['leader2']}',power2='{$oppose['power2']}',intel2='{$oppose['intel2']}',atmos='{$oppose['atmos']}',experience=experience+'$opexp',dedication=dedication+'$opexp',killnum=killnum+1 where no='{$oppose['no']}'";
@@ -1473,7 +1473,7 @@ function processWar($general, $city) {
     // 성격 보정
     $opexp = CharExperience($opexp, $oppose['personal']);
     // 쌀 소모
-    $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($game, $oppose['crewtype'], $destnation['tech']));
+    $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($oppose['crewtype'], $destnation['tech']));
     if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
 
     $query = "update general set rice='{$oppose['rice']}',experience=experience+'$opexp',dedication=dedication+'$opexp' where no='{$oppose['no']}'";
@@ -1495,7 +1495,7 @@ function processWar($general, $city) {
     // 성격 보정
     $exp = CharExperience($exp, $general['personal']);
     // 쌀 소모
-    $general['rice'] -= ($exp * 5 * getCrewtypeRice($game, $general['crewtype'], $nation['tech']));
+    $general['rice'] -= ($exp * 5 * getCrewtypeRice($general['crewtype'], $nation['tech']));
     if($general['rice'] < 0) { $general['rice'] = 0; }
 
     $query = "update general set rice='{$general['rice']}',dedication=dedication+'$exp',experience=experience+'$exp' where no='{$general['no']}'";
@@ -1575,9 +1575,9 @@ function getCrew($crew, $youatmos, $mytrain) {
     return $crew;
 }
 
-function getCrewtypeRice($game, $crewtype, $tech) {
+function getCrewtypeRice($crewtype, $tech) {
     if(!$crewtype) { $crewtype = 0; }
-    $cost = $game["ric{$crewtype}"] / 10;
+    $cost = GameUnitConst::byID($crewtype)->rice / 10;
     return $cost * getTechCost($tech);
 }
 
@@ -1585,7 +1585,7 @@ function getCrewtypeRice($game, $crewtype, $tech) {
 // 표준 공 / 수 반환 수치는 약 0이 되게 (100~550)
 //////////////////////////////////////////////////////////////
 
-function getAtt($game, $general, $tech, $lbonus) {
+function getAtt($general, $tech, $lbonus) {
     $att = GameUnitConst::byID($general['crewtype'])->attack + getTechAbil($tech);
     
     $general['lbonus'] = $lbonus;
@@ -1604,7 +1604,7 @@ function getAtt($game, $general, $tech, $lbonus) {
     return $att;
 }
 
-function getDef($game, $general, $tech) {
+function getDef($general, $tech) {
     $def = GameUnitConst::byID($general['crewtype'])->defence + getTechAbil($tech);
 
     $crew = ($general['crew'] / (7000 / 30)) + 70;    // 5000명일때 91점 7000명일때 100점 10000명일때 113점
@@ -1633,15 +1633,17 @@ function addConflict($city, $nationnum, $mykillnum) {
     $connect=$db->get();
 
     $nationlist = [];
-    $killnum = [];
+    $killnum = [0];
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
-    $game = MYDB_fetch_array($result);
+    list($year, $month) = $db->queryFirstList('SELECT year, month FROM game LIMIT 1');
 
     if($city['conflict']){
         $nationlist = array_map('intval', explode("|", $city['conflict']));
         $killnum = array_map('intval', explode("|", $city['conflict2']));
+    }
+    else{
+        $nationlist = [$nationnum];
+        $killnum = [0];
     }
 
     for($i=0; $i < count($nationlist); $i++) {
@@ -1650,10 +1652,11 @@ function addConflict($city, $nationnum, $mykillnum) {
     if($i != 0 && $i == count($nationlist)) { // 두번째 나라부터 분쟁 가담 메시지 출력
         $nation = getNationStaticInfo($nationnum);
 
-        pushWorldHistory(["<C>●</>{$game['year']}년 {$game['month']}월:<M><b>【분쟁】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다."]);
+        pushWorldHistory(["<C>●</>{$year}년 {$month}월:<M><b>【분쟁】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다."]);
     }
 
     $nationlist[$i] = $nationnum;
+
     if($i == 0 || $city['def'] == 0) {    // 선타, 막타 보너스
         $killnum[$i] += Util::round($mykillnum * 1.05);
     } else {
