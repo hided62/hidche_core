@@ -41,11 +41,10 @@ function bar($per, $h=7) {
 }
 
 
-function OptionsForCitys() {
-    foreach(CityConst::all() as $city){
-        echo "
-        <option value={$city->id}>{$city->name}</option>";
-    }
+function optionsForCities() {
+    return join('', function($city){
+        return "<option value='{$city->id}'>{$city->name}</option>";
+    }, CityConst::all());
 }
 
 function Submit($url, $msg="", $msg2="") {
@@ -88,7 +87,7 @@ function closeButton() {
 }
 
 
-function printCitysName(int $cityNo, int $maxDistance=1) {
+function printCitiesBasedOnDistance(int $cityNo, int $maxDistance=1) {
     $distanceList = searchDistance($cityNo, $maxDistance, true);
 
     for($dist = 1; $dist <= $maxDistance; $dist++){

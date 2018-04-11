@@ -680,7 +680,7 @@ function command_16($turn, $command) {
 {$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -696,7 +696,7 @@ function command_16($turn, $command) {
 </form>
 ";
 
-    printCitysName($currentcity['city'], 1);
+    printCitiesBasedOnDistance($currentcity['city'], 1);
 
     ender();
 }
@@ -724,7 +724,7 @@ function command_21($turn, $command) {
 {$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -739,7 +739,7 @@ function command_21($turn, $command) {
 </form>
 ";
 
-    printCitysName($currentcity['city'], 1);
+    printCitiesBasedOnDistance($currentcity['city'], 1);
 
     ender();
 }
@@ -1077,7 +1077,7 @@ function command_27($turn, $command) {
  =>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -1118,7 +1118,7 @@ function command_30($turn, $command) {
 {$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -1133,7 +1133,7 @@ echo "
 </form>
 ";
 
-printCitysName($currentcity['city'], 3);
+printCitiesBasedOnDistance($currentcity['city'], 3);
 
 ender();
 }
@@ -1161,7 +1161,7 @@ function command_31($turn, $command) {
 {$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -1180,7 +1180,7 @@ function command_31($turn, $command) {
 모든 도시가 가능하지만 많은 정보를 얻을 수 있는<br>
 ";
 
-    printCitysName($currentcity['city'], 2);
+    printCitiesBasedOnDistance($currentcity['city'], 2);
 
     ender();
 }
@@ -1207,7 +1207,7 @@ function command_32($turn, $command) {
 {$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -1222,7 +1222,7 @@ function command_32($turn, $command) {
 </form>
 ";
 
-    printCitysName($currentcity['city'], 2);
+    printCitiesBasedOnDistance($currentcity['city'], 2);
 
     ender();
 }
@@ -1249,7 +1249,7 @@ function command_33($turn, $command) {
 {$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -1264,7 +1264,7 @@ function command_33($turn, $command) {
 </form>
 ";
 
-    printCitysName($currentcity['city'], 2);
+    printCitiesBasedOnDistance($currentcity['city'], 2);
 
     ender();
 }
@@ -1291,7 +1291,7 @@ function command_34($turn, $command) {
 {$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -1306,7 +1306,7 @@ function command_34($turn, $command) {
 </form>
 ";
 
-    printCitysName($currentcity['city'], 2);
+    printCitiesBasedOnDistance($currentcity['city'], 2);
 
     ender();
 }
@@ -1333,7 +1333,7 @@ function command_35($turn, $command) {
 {$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -1348,7 +1348,7 @@ function command_35($turn, $command) {
 </form>
 ";
 
-    printCitysName($currentcity['city'], 2);
+    printCitiesBasedOnDistance($currentcity['city'], 2);
 
     ender();
 }
@@ -1375,7 +1375,7 @@ function command_36($turn, $command) {
 {$currentcity['name']} =>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -1390,7 +1390,7 @@ function command_36($turn, $command) {
 </form>
 ";
 
-    printCitysName($currentcity['city'], 2);
+    printCitiesBasedOnDistance($currentcity['city'], 2);
 
     ender();
 }
@@ -2289,7 +2289,7 @@ echo "<br>
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -2330,7 +2330,7 @@ echo "<br>
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -2371,7 +2371,7 @@ echo "<br>
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -2412,7 +2412,7 @@ echo "<br>
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -2453,7 +2453,7 @@ echo "<br>
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -2494,7 +2494,7 @@ echo "<br>
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
@@ -2535,7 +2535,7 @@ echo "<br>
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>";
 
-    OptionsForCitys();
+    echo optionsForCities();
 
     echo "
 </select>
