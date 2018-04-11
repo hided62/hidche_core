@@ -191,7 +191,11 @@ echo "
 $query = "select npc,name,win from tournament where grp>=60 order by grp, grp_no";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 for ($i=0; $i < 1; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result) ?? [
+        'name'=>'',
+        'npc'=>0,
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -215,7 +219,13 @@ for ($i=0; $i < 1; $i++) {
 }
 $line = [];
 for ($i=0; $i < 2; $i++) {
-    $general = MYDB_fetch_array($result);
+    //FIXME: 다시 작성. null인 경우엔 어쩌려고?
+    $general = MYDB_fetch_array($result) ?? [
+        'name'=>'',
+        'npc'=>0,
+        'win'=>0
+    ];
+
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -256,7 +266,11 @@ for ($i=0; $i < 2; $i++) {
     $cent[$i] = "<font color=white>";
 }
 for ($i=0; $i < 4; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result) ?? [
+        'name'=>'',
+        'npc'=>0,
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -297,7 +311,11 @@ for ($i=0; $i < 4; $i++) {
     $cent[$i] = "<font color=white>";
 }
 for ($i=0; $i < 8; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result) ?? [
+        'name'=>'',
+        'npc'=>0,
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -338,7 +356,11 @@ for ($i=0; $i < 8; $i++) {
     $cent[$i] = "<font color=white>";
 }
 for ($i=0; $i < 16; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result) ?? [
+        'name'=>'',
+        'npc'=>0,
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
