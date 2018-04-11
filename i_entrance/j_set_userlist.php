@@ -13,9 +13,9 @@ if($session->userGrade < 6){
 }
 
 // 외부 파라미터
-// $_POST['action'] : 처리종류
-// $_POST['user_id'] : 유저 이름
-// $_POST['param'] : 추가 파라미터
+// action : 처리종류
+// user_id : 유저 이름
+// param : 추가 파라미터
 
 $action = Util::getReq('action');
 $userID = Util::getReq('user_id');

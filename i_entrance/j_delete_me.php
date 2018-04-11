@@ -8,7 +8,7 @@ $userID = Session::getUserID();
 
 // 외부 파라미터
 // $_POST['pw'] : PW
-$pw = $_POST['pw'];
+$pw = Util::getReq('pw');
 
 if(!$pw){
     Json::die([

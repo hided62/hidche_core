@@ -1,37 +1,42 @@
 <?php
 namespace sammo;
 
-$year = $_GET['year'];
-$month = $_GET['month'];
+include "lib.php";
+include "func.php";
+
+$year = Util::getReq('year', 'int');
+$month = Util::getReq('month', 'int');
 
 $url = '/a_history.php';
 
 if(!strpos($_SERVER['HTTP_REFERER'], $url)) {
-	exit(1);
+	Json::die([
+		'result'=>false,
+		'reason'=>'Invalid Referer'
+	]);
 }
 
 if(!$year || !$month) {
-	exit(1);
+	Json::die([
+		'result'=>false,
+		'reason'=>'year, month가 지정되지 않았습니다'
+	]);
 }
 
-include "lib.php";
-include "func.php";
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 
 $db = DB::db();
 $connect=$db->get();
 
-$query = "select map from history where year='$year' and month='$month'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$history = MYDB_fetch_array($result);
+$map = $db->queryFirstField('SELECT map FROM history WHERE year=%i AND month=%i', $year, $month);
 
-if(!$history['map']) {
-	exit(1);
+if(!$map){
+	Json::die([
+		'result'=>false,
+		'reason'=>'해당하는 연월의 지도가 없습니다'
+	]);
 }
 
-$map = $history['map'];
-$map = str_replace('<_quot_>', "'", $map);
-$map = str_replace('<_dquot_>', '"', $map);
-
-echo $map;
+Json::die(Json::decode($map));

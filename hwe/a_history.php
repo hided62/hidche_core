@@ -4,7 +4,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 $btn = Util::getReq('btn');
-$yearmonth = $_POST['yearmonth'];
+$yearmonth = Util::getReq('yearmonth');
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -38,6 +39,7 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "
 $history = MYDB_fetch_array($result);
 $e = ($history['year']*12) + $history['month'];
 
+//FIXME: $yearmonth가 올바르지 않을 경우에 처리가 필요.
 if (!$yearmonth) {
     $year = $admin['year'];
     $month = $admin['month'] - 1;

@@ -7,7 +7,7 @@ use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 WebUtil::setHeaderNoCache();
 
-$auth_code = Util::array_get($_GET['code']);
+$auth_code = Util::getReq('code');
 if(!$auth_code){
     
     header('Location:oauth_fail.html');

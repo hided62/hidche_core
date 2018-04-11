@@ -12,7 +12,7 @@ if($session->userGrade < 5){
 }
 
 
-$scenarioIdx = Util::toInt(Util::array_get($_GET['scenarioIdx']));
+$scenarioIdx = Util::getReq('scenarioIdx', 'int');
 
 if ($scenarioIdx !== null) {
     //TODO: preview 지도 출력
