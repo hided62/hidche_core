@@ -1590,7 +1590,7 @@ function process_30(&$general) {
     
     if($destination == $general['city']){
         $log[] = "<C>●</>{$admin['month']}월:같은 도시입니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
-    } elseif(!key_exists($dist[$destination], $dist)) {
+    } elseif(!key_exists($destination, $dist)) {
         $log[] = "<C>●</>{$admin['month']}월:거리가 멉니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
     } elseif($general['gold'] < $cost) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
