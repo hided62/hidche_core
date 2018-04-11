@@ -103,6 +103,9 @@ class StringUtil
         }
 
         $textLen = mb_strwidth($str, 'UTF-8');
+        if($maxsize <= $textLen){
+            return $str;
+        }
 
         $fillTextCnt = intdiv($maxsize - $textLen, $chLen);
 

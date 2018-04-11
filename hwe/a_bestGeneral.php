@@ -179,10 +179,13 @@ for ($i=0; $i < 21; $i++) {
     echo "</tr><tr>";
 
     for ($k=0; $k < 10; $k++) {
-        if ($i == 5 || $i == 7 || $i == 20) {
+        if($data[$k] === '-'){
+            //do Nothing
+        }
+        else if ($i == 5 || $i == 7 || $i == 20) {
             $data[$k] = intdiv($data[$k], 100).".".($data[$k]%100)." %";
         }
-        if ($i >= 13 && $i <= 16) {
+        else if ($i >= 13 && $i <= 16) {
             $data[$k] = intdiv($data[$k], 100).".".($data[$k]%100)." %";
         }
         echo "<td align=center>{$data[$k]}</td>";
