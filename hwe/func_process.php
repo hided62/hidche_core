@@ -1253,11 +1253,10 @@ function process_16(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
-    $query = "select path,nation,supply from city where city='{$general['city']}'";
+    $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $path = explode("|", $city['path']);
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
@@ -1273,15 +1272,18 @@ function process_16(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dip = MYDB_fetch_array($result);
 
-    for($i=0; $i < count($path); $i++) {
-        if($path[$i] == $destination) { $valid = 1; }
+    if(key_exists($destination, CityConst::byID($general['city'])->path)){
+        $nearCity = true;
+    }
+    else{
+        $nearCity = false;
     }
 
     if($admin['year'] < $admin['startyear']+3) {
         $log[] = "<C>●</>{$admin['month']}월:현재 초반 제한중입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
 //    } elseif($city['supply'] == 0) {
 //        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
-    } elseif(!$valid) {
+    } elseif(!$nearCity) {
         $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
     } elseif($general['level'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
