@@ -1767,7 +1767,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         $history[] = "<C>●</>{$year}년 {$month}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>(이)가 멸망하였습니다.";
         pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>(을)를 정복");
 
-        $query = "select no from general where nation='{$general['nation']}' and level='12'";
+        $query = "select no, nation from general where nation='{$general['nation']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $ruler = MYDB_fetch_array($result);
 
