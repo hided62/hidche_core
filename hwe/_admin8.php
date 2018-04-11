@@ -58,7 +58,7 @@ $sel[$type] = "selected";
         <form name=form1 method=post>
         정렬순서 :
         <select name=type size=1>
-            <option <?=$sel[0]?> value=0>상태</option>
+            <option <?=$sel[0]??''?> value=0>상태</option>
         </select>
         <input type=submit name=btn value='정렬하기'>
         </form>

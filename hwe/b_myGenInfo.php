@@ -44,21 +44,21 @@ $sel = [$type => "selected"];
     <tr><td>세 력 장 수<br><?=backButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
-            <option <?=$sel[1]?> value=1>관직</option>
-            <option <?=$sel[2]?> value=2>계급</option>
-            <option <?=$sel[3]?> value=3>명성</option>
-            <option <?=$sel[4]?> value=4>통솔</option>
-            <option <?=$sel[5]?> value=5>무력</option>
-            <option <?=$sel[6]?> value=6>지력</option>
-            <option <?=$sel[7]?> value=7>자금</option>
-            <option <?=$sel[8]?> value=8>군량</option>
-            <option <?=$sel[9]?> value=9>병사</option>
-            <option <?=$sel[10]?> value=10>벌점</option>
-            <option <?=$sel[11]?> value=11>성격</option>
-            <option <?=$sel[12]?> value=12>내특</option>
-            <option <?=$sel[13]?> value=13>전특</option>
-            <option <?=$sel[14]?> value=14>사관</option>
-            <option <?=$sel[15]?> value=15>NPC</option>
+            <option <?=$sel[1]??''?> value=1>관직</option>
+            <option <?=$sel[2]??''?> value=2>계급</option>
+            <option <?=$sel[3]??''?> value=3>명성</option>
+            <option <?=$sel[4]??''?> value=4>통솔</option>
+            <option <?=$sel[5]??''?> value=5>무력</option>
+            <option <?=$sel[6]??''?> value=6>지력</option>
+            <option <?=$sel[7]??''?> value=7>자금</option>
+            <option <?=$sel[8]??''?> value=8>군량</option>
+            <option <?=$sel[9]??''?> value=9>병사</option>
+            <option <?=$sel[10]??''?> value=10>벌점</option>
+            <option <?=$sel[11]??''?> value=11>성격</option>
+            <option <?=$sel[12]??''?> value=12>내특</option>
+            <option <?=$sel[13]??''?> value=13>전특</option>
+            <option <?=$sel[14]??''?> value=14>사관</option>
+            <option <?=$sel[15]??''?> value=15>NPC</option>
         </select>
         <input type=submit value='정렬하기'></form>
     </td></tr>

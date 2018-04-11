@@ -43,18 +43,18 @@ $sel = [$type => "selected"];
     <tr><td>세 력 도 시<br><?=backButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
-            <option <?=$sel[1]?> value=1>기본</option>
-            <option <?=$sel[2]?> value=2>인구</option>
-            <option <?=$sel[3]?> value=3>인구율</option>
-            <option <?=$sel[4]?> value=4>민심</option>
-            <option <?=$sel[5]?> value=5>농업</option>
-            <option <?=$sel[6]?> value=6>상업</option>
-            <option <?=$sel[7]?> value=7>치안</option>
-            <option <?=$sel[8]?> value=8>수비</option>
-            <option <?=$sel[9]?> value=9>성벽</option>
-            <option <?=$sel[10]?> value=10>시세</option>
-            <option <?=$sel[11]?> value=11>지역</option>
-            <option <?=$sel[12]?> value=12>규모</option>
+            <option <?=$sel[1]??''?> value=1>기본</option>
+            <option <?=$sel[2]??''?> value=2>인구</option>
+            <option <?=$sel[3]??''?> value=3>인구율</option>
+            <option <?=$sel[4]??''?> value=4>민심</option>
+            <option <?=$sel[5]??''?> value=5>농업</option>
+            <option <?=$sel[6]??''?> value=6>상업</option>
+            <option <?=$sel[7]??''?> value=7>치안</option>
+            <option <?=$sel[8]??''?> value=8>수비</option>
+            <option <?=$sel[9]??''?> value=9>성벽</option>
+            <option <?=$sel[10]??''?> value=10>시세</option>
+            <option <?=$sel[11]??''?> value=11>지역</option>
+            <option <?=$sel[12]??''?> value=12>규모</option>
         </select>
         <input type=submit value='정렬하기'></form>
     </td></tr>

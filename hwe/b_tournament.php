@@ -82,7 +82,7 @@ if ($session->userGrade >= 5) {
     }
 
     if ($admin['tournament'] == 0) {
-        echo "
+        ?>
             <select name=auto size=1 style=color:white;background-color:black;>
                 <option style=color:white; value=0>수동진행</option>
                 <option style=color:white; value=1>12분 05일</option>
@@ -101,18 +101,19 @@ if ($session->userGrade >= 5) {
             </select>
             <input type=submit name=btn value='개최'>
             <select name=trig size=1 style=color:white;background-color:black;>
-                <option style=color:white; value=0 {$sel[0]}>수동진행</option>
-                <option style=color:white; value=1 {$sel[1]}>12분 05일</option>
-                <option style=color:white; value=2 {$sel[2]}>07분 10시</option>
-                <option style=color:white; value=3 {$sel[3]}>03분 04시</option>
-                <option style=color:white; value=4 {$sel[4]}>01분 82분</option>
-                <option style=color:white; value=5 {$sel[5]}>30초 41분</option>
-                <option style=color:white; value=6 {$sel[6]}>15초 21분</option>
-                <option style=color:white; value=7 {$sel[7]}>05초 07분</option>
+                <option style=color:white; value=0 <?=$sel[0]??''?>>수동진행</option>
+                <option style=color:white; value=1 <?=$sel[1]??''?>>12분 05일</option>
+                <option style=color:white; value=2 <?=$sel[2]??''?>>07분 10시</option>
+                <option style=color:white; value=3 <?=$sel[3]??''?>>03분 04시</option>
+                <option style=color:white; value=4 <?=$sel[4]??''?>>01분 82분</option>
+                <option style=color:white; value=5 <?=$sel[5]??''?>>30초 41분</option>
+                <option style=color:white; value=6 <?=$sel[6]??''?>>15초 21분</option>
+                <option style=color:white; value=7 <?=$sel[7]??''?>>05초 07분</option>
             </select>
             <input type=submit name=btn value='자동개최설정'>
             <input type=submit name=btn value='포상'>
-            <input type=submit name=btn value='회수'>";
+            <input type=submit name=btn value='회수'>
+        <?php
     } else {
         echo "<input type=submit name=btn value='중단' onclick='return confirm(\"진짜 중단하시겠습니까?\")'>";
     }
