@@ -66,23 +66,46 @@ $sel = [$type => "selected"];
 <?php
 
 $nationLevel = DB::db()->queryFirstField('select level from nation where nation = %i', $me['nation']);
+$orderByText = '';//FIXME: 쿼리 재작성
 switch($type) {
-    case  1: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by level desc"; break;
-    case  2: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by dedication desc"; break;
-    case  3: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by experience desc"; break;
-    case  4: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by leader desc"; break;
-    case  5: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by power desc"; break;
-    case  6: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by intel desc"; break;
-    case  7: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by gold desc"; break;
-    case  8: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by rice desc"; break;
-    case  9: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by crew desc"; break;
-    case 10: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by connect desc"; break;
-    case 11: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by personal"; break;
-    case 12: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by special desc"; break;
-    case 13: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by special2 desc"; break;
-    case 14: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by belong desc"; break;
-    case 15: $query = "select npc,special,special2,personal,picture,imgsvr,name,level,dedication,experience,injury,leader,power,intel,gold,rice,belong,connect,killturn from general where nation='{$me['nation']}' order by npc desc"; break;
+    case  1: $orderByText = " order by level desc"; break;
+    case  2: $orderByText = " order by dedication desc"; break;
+    case  3: $orderByText = " order by experience desc"; break;
+    case  4: $orderByText = " order by leader desc"; break;
+    case  5: $orderByText = " order by power desc"; break;
+    case  6: $orderByText = " order by intel desc"; break;
+    case  7: $orderByText = " order by gold desc"; break;
+    case  8: $orderByText = " order by rice desc"; break;
+    case  9: $orderByText = " order by crew desc"; break;
+    case 10: $orderByText = " order by connect desc"; break;
+    case 11: $orderByText = " order by personal"; break;
+    case 12: $orderByText = " order by special desc"; break;
+    case 13: $orderByText = " order by special2 desc"; break;
+    case 14: $orderByText = " order by belong desc"; break;
+    case 15: $orderByText = " order by npc desc"; break;
 }
+$query = 
+    "select 
+        npc,
+        special,
+        special2,
+        personal,
+        picture,
+        imgsvr,
+        name,
+        level,
+        dedication,
+        experience,
+        injury,
+        leader,
+        power,
+        intel,
+        gold,
+        rice,
+        belong,
+        connect,
+        killturn
+    from general where nation='{$me['nation']}' ".$orderByText;
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);
 
@@ -143,7 +166,7 @@ for($j=0; $j < $gencount; $j++) {
     <tr>
         <td align=center background={$imageTemp}/{$general['picture']} height=64></td>
         <td align=center>$name</td>
-        <td align=center>"; echo getLevel($general['level'], $nation['level']); echo "</td>
+        <td align=center>"; echo getLevel($general['level'], $nationLevel); echo "</td>
         <td align=center>".getDed($general['dedication'])."</td>
         <td align=center>".getHonor($general['experience'])."</td>
         <td align=center>".getBill($general['dedication'])."</td>
