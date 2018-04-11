@@ -39,4 +39,4 @@ if(!$map){
 	]);
 }
 
-Json::die(Json::decode($map));
+Json::die($map, Json::PASS_THROUGH);

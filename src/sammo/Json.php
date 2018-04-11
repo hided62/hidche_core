@@ -6,6 +6,7 @@ class Json
     const PRETTY = 1;
     const DELETE_NULL = 2;
     const NO_CACHE = 4;
+    const PASS_THROUGH = 8;
 
     public static function encode($value, $flag = 0)
     {
@@ -33,6 +34,9 @@ class Json
         
         header('Content-Type: application/json');
     
+        if($flag & static::PASS_THROUGH){
+            die($value);
+        }
         die(Json::encode($value, $flag));
     }
 }
