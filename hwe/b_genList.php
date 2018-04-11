@@ -60,14 +60,14 @@ $sel[$type] = "selected";
     <tr><td>암 행 부<br><?=closeButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
-            <option <?=$sel[1]?> value=1>자금</option>
-            <option <?=$sel[2]?> value=2>군량</option>
-            <option <?=$sel[3]?> value=3>도시</option>
-            <option <?=$sel[4]?> value=4>병종</option>
-            <option <?=$sel[5]?> value=5>병사</option>
-            <option <?=$sel[6]?> value=6>삭제턴</option>
-            <option <?=$sel[7]?> value=7>턴</option>
-            <option <?=$sel[8]?> value=8>부대</option>
+            <option <?=$sel[1]??''?> value=1>자금</option>
+            <option <?=$sel[2]??''?> value=2>군량</option>
+            <option <?=$sel[3]??''?> value=3>도시</option>
+            <option <?=$sel[4]??''?> value=4>병종</option>
+            <option <?=$sel[5]??''?> value=5>병사</option>
+            <option <?=$sel[6]??''?> value=6>삭제턴</option>
+            <option <?=$sel[7]??''?> value=7>턴</option>
+            <option <?=$sel[8]??''?> value=8>부대</option>
         </select>
         <input type=submit value='정렬하기'></form>
     </td></tr>

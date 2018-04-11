@@ -15,6 +15,7 @@ $v->rule('integer', [
     'sel'
 ]);
 
+$btn = Util::getReq('btn');
 $amount = Util::getReq('amount', 'int');
 $cost = Util::getReq('cost', 'int');
 $topv = Util::getReq('topv', 'int');

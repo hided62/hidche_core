@@ -4,6 +4,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 // $btn, $msg
+$btn = Util::getReq('btn');
+$msg = Util::getReq('msg');
 $gen = Util::getReq('gen', 'int');
 $sel = Util::getReq('sel', 'int');
 
