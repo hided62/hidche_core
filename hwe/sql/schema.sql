@@ -319,8 +319,7 @@ create table city (
   state   int(2) default 0,
   region  int(2) default 0,
   term    int(1) default 0,
-  conflict    char(255) default '',
-  conflict2   char(255) default '',
+  conflict    varchar(500) default '{}'
 
   PRIMARY KEY (city),
   KEY (nation)

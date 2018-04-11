@@ -604,7 +604,7 @@ function process_46(&$general) {
         $nation = getNationStaticInfo($general['nation']);
 
         // 현 도시 소속지로
-        $query = "update city set nation='{$nation['nation']}',conflict='',conflict2='' where city='{$general['city']}'";
+        $query = "update city set nation='{$nation['nation']}',conflict='{}' where city='{$general['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $log[] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>(을)를 건국하였습니다. <1>$date</>";
@@ -685,7 +685,7 @@ function process_47(&$general) {
         $query = "update general set level=1 where nation='{$general['nation']}' and level <= 11";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 전 도시 공백지로
-        $query = "update city set nation='0',front='0',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='{$general['nation']}'";
+        $query = "update city set nation='0',front='0',gen1='0',gen2='0',gen3='0',conflict='{}' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 외교 리셋
         $query = "update diplomacy set state='2',term='0' where me='{$general['nation']}' or you='{$general['nation']}'";

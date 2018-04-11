@@ -382,7 +382,7 @@ function preUpdateMonthly() {
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
     //민심30이하 공백지 처리
-    $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='',conflict2='',term=0,front=0 where rate<='30' and supply='0'";
+    $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='{}',term=0,front=0 where rate<='30' and supply='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 우선 병사수/100 만큼 소비
@@ -440,7 +440,7 @@ function preUpdateMonthly() {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $query = "update city set term=term-1 where term>0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update city set conflict='',conflict2='' where term=0";
+    $query = "update city set conflict='{}' where term=0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $query = "update city set state=0 where state=41";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -753,7 +753,7 @@ function checkMerge() {
         $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 도시들 상대국 소속으로
-        $query = "update city set nation='{$you['nation']}',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='{$me['nation']}'";
+        $query = "update city set nation='{$you['nation']}',gen1='0',gen2='0',gen3='0',conflict='{}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 장수들 일반으로 하고 상대국 소속으로, 수도로 이동
         $query = "update general set belong=1,level=1,nation='{$you['nation']}' where nation='{$me['nation']}'";
@@ -884,7 +884,7 @@ function checkSurrender() {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $king = MYDB_fetch_array($result);
         // 아국 모든 도시들 상대국 소속으로
-        $query = "update city set nation='{$you['nation']}',gen1='0',gen2='0',gen3='0',conflict='',conflict2='' where nation='{$me['nation']}'";
+        $query = "update city set nation='{$you['nation']}',gen1='0',gen2='0',gen3='0',conflict='{}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 제의국 모든 장수들 공헌도0.95, 명성0.95
         $query = "update general set dedication=dedication*0.95,experience=experience*0.95 where nation='{$you['nation']}'";

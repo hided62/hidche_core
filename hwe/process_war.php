@@ -153,7 +153,7 @@ function processWar($general, $city) {
             $query = "update city set agri=agri*0.5,comm=comm*0.5,secu=secu*0.5 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $city = addConflict($city, $general['nation'], 1);
+            $city = addConflict($city, $general['nation'], 1);//NOTE: 이 경우 두 국가가 분쟁 중인 경우에는 병량패퇴의 이득이 없다.
 
             ConquerCity($game, $general, $city, $nation, $destnation);
             break;
@@ -1643,97 +1643,69 @@ function getRate($game, $type, $dtype) {
     return $game[$t];
 }
 
-function addConflict($city, $nationnum, $mykillnum) {
+function addConflict($city, $nationID, $mykillnum) {
     $db = DB::db();
-    $connect=$db->get();
 
     $nationlist = [];
     $killnum = [0];
 
     list($year, $month) = $db->queryFirstList('SELECT year, month FROM game LIMIT 1');
 
-    if($city['conflict']){
-        $nationlist = array_map('intval', explode("|", $city['conflict']));
-        $killnum = array_map('intval', explode("|", $city['conflict2']));
+    $conflict = Json::decode($city['conflict']);
+
+    if(!$conflict || $city['def'] == 0){ // 선타, 막타 보너스
+        $mykillnum *= 1.05;
+    }
+
+    if (!$conflict) {
+        $conflict[$nationID] = $mykillnum;
+    }
+    else if(key_exists($nationID, $conflict)){
+        $conflict[$nationID] += $mykillnum;
+        arsort($conflict);
     }
     else{
-        $nationlist = [$nationnum];
-        $killnum = [0];
-    }
+        $conflict[$nationID] = $mykillnum;
+        arsort($conflict);
 
-    for($i=0; $i < count($nationlist); $i++) {
-        if($nationlist[$i] == $nationnum) break;
-    }
-    if($i != 0 && $i == count($nationlist)) { // 두번째 나라부터 분쟁 가담 메시지 출력
-        $nation = getNationStaticInfo($nationnum);
-
+        $nation = getNationStaticInfo($nationID);
         pushWorldHistory(["<C>●</>{$year}년 {$month}월:<M><b>【분쟁】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다."]);
     }
+    
+    $rawConflict = Json::encode($conflict);
+    $city['conflict'] = $rawConflict;
 
-    $nationlist[$i] = $nationnum;
-
-    if($i == 0 || $city['def'] == 0) {    // 선타, 막타 보너스
-        $killnum[$i] += Util::round($mykillnum * 1.05);
-    } else {
-        $killnum[$i] += $mykillnum;
-    }
-    $city['conflict'] = implode("|", $nationlist);
-    $city['conflict2'] = implode("|", $killnum);
-
-    $query = "update city set conflict='{$city['conflict']}',conflict2='{$city['conflict2']}' where city='{$city['city']}'";
-    MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
+    $db->update('city', [
+        'conflict'=>$rawConflict
+    ], 'city=%i',$city['city']);
 
     return $city;
 }
 
 function DeleteConflict($nation) {
     $db = DB::db();
-    $connect=$db->get();
 
-    $query = "select city,conflict,conflict2 from city where conflict!=''";
-    $result = MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
-    $cityNum = MYDB_num_rows($result);
+    foreach($db->queryAllLists('SELECT city, conflict FROM city WHERE conflict!=%s', '{}') as list($cityID, $rawConflict)){
+        $conflict = Json::decode($rawConflict);
 
-    $nation = "$nation";
-    for($k=0; $k < $cityNum; $k++) {
-        $city = MYDB_fetch_array($result);
-
-        if(strpos($city['conflict'], $nation)) {
-            $nationlist = explode("|", $city['conflict']);
-            $killnum = explode("|", $city['conflict2']);
-
-            $count = count($nationlist);
-            for($i=0; $i < $count; $i++) {
-                if($nationlist[$i] == $nation) {
-                    unset($nationlist[$i]);
-                    unset($killnum[$i]);
-                    break;
-                }
-            }
-            $conflict = implode("|", $nationlist);
-            $conflict2 = implode("|", $killnum);
-
-            $query = "update city set conflict='$conflict',conflict2='$conflict2' where city='{$city['city']}'";
-            MYDB_query($query, $connect) or Error("addConflict ".MYDB_error($connect),"");
+        if(!$conflict || !is_array($conflict)){
+            continue;
         }
+        if(!key_exists(!$nation)){
+            continue;
+        }
+
+        unset($conflict[$nation]);
+
+        $db->update('city', [
+            'conflict'=>Json::encode($conflict)
+        ], 'city=%i', $cityID);
     }
 }
 
 function getConquerNation($city) : int {
-    $db = DB::db();
-    $connect=$db->get();
-
-    $nationlist = array_map('intval', explode("|", (string)$city['conflict']));
-    $killnum = array_map('intval', explode("|", (string)$city['conflict2']));
-
-    $max = 0;
-    for($i=0; $i < count($nationlist); $i++) {
-        if($max <= $killnum[$i]) {
-            $max = $killnum[$i];
-            $index = $i;
-        }
-    }
-    return $nationlist[$index];
+    $conflict = Json::decode($city['conflict']);
+    return array_first_key($conflict);
 }
 
 function ConquerCity($game, $general, $city, $nation, $destnation) {
@@ -1866,7 +1838,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         $query = "update general set dedication=dedication*0.5,experience=experience*0.9 where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 전 도시 공백지로
-        $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='',conflict2='',term=0 where nation='{$city['nation']}'";
+        $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='{}',term=0 where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 전 장수 소속 무소속으로, 재야로, 부대 탈퇴
         $query = "update general set nation='0',belong='0',level='0',troop='0' where nation='{$city['nation']}'";
@@ -1984,11 +1956,11 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         if($city['level'] > 3) {
             // 도시 소속 변경, 태수,군사,시중 초기화
-            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=1000,wall=1000,nation='{$general['nation']}',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
+            $query = "update city set supply=1,conflict='{}',term=0,agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=1000,wall=1000,nation='{$general['nation']}',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
             // 도시 소속 변경, 태수,군사,시중 초기화
-            $query = "update city set supply=1,conflict='',term=0,conflict2='',agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=def2/2,wall=wall2/2,nation='{$general['nation']}',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
+            $query = "update city set supply=1,conflict='{}',term=0,agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=def2/2,wall=wall2/2,nation='{$general['nation']}',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         //전방설정
@@ -2011,7 +1983,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         $query = [
             'supply'=>1,
             'term'=>0,
-            'conflict2'=>'',
+            'conflict'=>'{}',
             'agri'=>$db->sqleval('agri*0.7'),
             'comm'=>$db->sqleval('comm*0.7'),
             'secu'=>$db->sqleval('secu*0.7'),

@@ -49,6 +49,30 @@ for($i=0; $i < $nationcount; $i++) {
     $cityStr .= "속령 $citycount<br>";
 }
 
+$realConflict = [];
+foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE conflict!=%s', '{}') as list(
+    $cityID, 
+    $cityName, 
+    $rawConflict
+))
+{
+    $conflict = Json::decode($city['conflict']);
+    if (count($conflict)<2) {
+        continue;
+    }
+
+    $sum = array_sum($conflict);
+
+    foreach ($conflict as $nationID=>$killnum) {
+        $conflict['percent'] = round(100*$killnum / $sum, 1);
+        $conflict['name'] = $nationname[$nationID];
+        $conflict['color'] = $nationcolor[$nationID];
+    }
+
+    $realConflict[] = [$cityID, $cityName, $conflict];
+};
+
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -152,78 +176,53 @@ for($i=0; $i < $nationcount; $i++) {
 ?>
     <tr><td colspan=<?=$nationcount+1?> align=center>불가침 : <font color=limegreen>@</font>, 통합 : <font color=cyan>○</font>, 합병 : <font color=skyblue>◎</font>, 통상 : ㆍ, 선포 : <font color=magenta>▲</font>, 교전 : <font color=red>★</font></td></tr>
 </table>
-<?php
-$query = "select city,name,conflict,conflict2 from city where conflict like '%|%'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$citycount = MYDB_num_rows($result);
 
-if($citycount != 0) {
-    echo "
+<?php if ($realConflict) : ?>
+
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td colspan=2 align=center bgcolor=magenta>분 쟁 현 황</td></tr>";
-}
-
-for($i=0; $i < $citycount; $i++) {
-    $city = MYDB_fetch_array($result);
-
-    if($city['conflict'] != "") {
-        $nation = explode("|", $city['conflict']);
-        $killnum = explode("|", $city['conflict2']);
-
-        $seq = mySort($killnum);    // 큰 순서대로 순서를 구한다.
-
-        $sum = 0;
-        for($k=0; $k < count($killnum); $k++) {
-            $sum += $killnum[$k];
-        }
-        echo "
+<table
+    align='center'
+    width=1000 
+    border=1 
+    cellspacing=0 
+    cellpadding=0 
+    bordercolordark='gray' 
+    bordercolorlight='black' 
+    style='font-size:13px;word-break:break-all;' 
+    class='bg0'
+>
+    <tr><td colspan=2 align=center bgcolor=magenta>분 쟁 현 황</td></tr>
+    <?php foreach($realConflict as list($cityID, $cityName, $conflict)): ?>
         <tr>
-            <td align=center width=48>{$city['name']}</td>
-            <td width=948>";
-        for($k=0; $k < count($nation); $k++) {
-            $per = 100*$killnum[$seq[$k]] / $sum;
-            $graph1 = $per / 100 * 798;
-            $per = round($per, 1);
-            echo "
-                <table border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+            <td align=center width=48><?=$cityName?></td>
+            <td width=948>
+                <table 
+                    border=0
+                    cellspacing=0 
+                    cellpadding=0
+                    bordercolordark='gray'
+                    bordercolorlight='black'
+                    style='font-size:13px;word-break:break-all;'
+                    class='bg0'
+                >
+                <?php foreach($conflict as $conflictItem): ?>
                     <tr>
-                        <td width=98 align=right style=color:".newColor($nationcolor[$nation[$seq[$k]]]).";background-color:{$nationcolor[$nation[$seq[$k]]]};>{$nationname[$nation[$seq[$k]]]}&nbsp;</td>
-                        <td width=48 align=right>{$per}%&nbsp;</td>
-                        <td width=$graph1 style=background-color:{$nationcolor[$nation[$seq[$k]]]};></td>
+                        <td width=98 align=right style=color:".newColor($nationcolor[$nationID]).";background-color:<?=$conflictItem['color']?>;><?=$conflictItem['name']?>&nbsp;</td>
+                        <td width=48 align=right><?=$conflictItem['percent']?>%&nbsp;</td>
+                        <td width='<?=$conflictItem['percent']?>%' style=background-color:<?=$conflictItem['color']?>;></td>
                         <td width=*></td>
                     </tr>
-                </table>";
-        }
-        echo "
+                <?php endforeach; ?>
+                </table>
+        
             </td>
         </tr>
-        <tr><td colspan=2 height=5 id=bg1></td></tr>";
-    }
-}
-
-function mySort($killnum) {
-    $seq = [];
-    for($i=0; $i < count($killnum); $i++) {
-        $seq[$i] = $i;
-    }
-    for($i=0; $i < count($killnum); $i++) {
-        $max = 0;
-        for($k=0; $k < count($killnum); $k++) {
-            if($max < $killnum[$k]) {
-                $max = $killnum[$k];
-                $index = $k;
-            }
-        }
-        $seq[$i] = $index;
-        $killnum[$index] = 0;
-    }
-    return $seq;
-}
-
-?>
-
+    <?php endforeach; ?>
+    <tr><td colspan=2 height=5 id=bg1></td></tr>
 </table>
+
+<?php endif; ?> 
+
 <br>
 <table class="bg0" align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style="font-size:13px;word-break:break-all;">
     <tr>
