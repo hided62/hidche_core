@@ -42,9 +42,9 @@ function bar($per, $h=7) {
 
 
 function optionsForCities() {
-    return join('', function($city){
+    return join('', array_map(function($city){
         return "<option value='{$city->id}'>{$city->name}</option>";
-    }, CityConst::all());
+    }, CityConst::all()));
 }
 
 function Submit($url, $msg="", $msg2="") {
