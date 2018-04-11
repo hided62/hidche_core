@@ -11,6 +11,9 @@ if($session->userGrade < 5) {
     die();
 }
 
+$btn = Util::getReq('btn');
+$genlist = Util::getReq('genlist', 'int');
+
 $db = DB::db();
 $connect=$db->get();
 

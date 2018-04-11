@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-
+$btn = Util::getReq('btn');
 $weap = Util::getReq('weap', 'int');
 
 //로그인 검사

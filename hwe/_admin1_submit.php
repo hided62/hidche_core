@@ -22,6 +22,7 @@ if (!$v->validate()) {
     Error($v->errorStr());
 }
 
+$btn = Util::getReq('btn');
 $log = Util::getReq('log');
 $starttime = Util::getReq('starttime', 'string', (new \DateTime())->format('Y-m-d H:i:s'));
 $maxgeneral = Util::getReq('maxgeneral', 'int', GameConst::$defaultMaxGeneral);

@@ -23,8 +23,6 @@ $query = "select no,nation,level from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$btn = $_POST['btn'];
-
 //내가 수뇌부이어야함
 if($me['level'] < 5) {
     header('location:b_myBossInfo.php');
