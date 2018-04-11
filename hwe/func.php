@@ -2162,7 +2162,7 @@ function uniqueItem($general, $log, $vote=0) {
     $occupied = [];
     $item = [];
 
-    if($general['npc'] >= 2 || $general['betray'] > 1) { return $log; }
+    if($general['npc'] >= 2) { return $log; }
     if($general['weap'] > 6 || $general['book'] > 6 || $general['horse'] > 6 || $general['item'] > 6) { return $log; }
 
     $query = "select year,month,scenario from game limit 1";
