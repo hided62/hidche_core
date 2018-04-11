@@ -1029,10 +1029,10 @@ function processWar($general, $city) {
                 }
 
                 //레벨 보정
-                $myCrew = $myCrew * ((100 - $general['explevel']/3)/100);
-                $opCrew = $opCrew / ((100 - $general['explevel']/3)/100);
-                $myCrew = $myCrew / ((100 -  $oppose['explevel']/3)/100);
-                $opCrew = $opCrew * ((100 -  $oppose['explevel']/3)/100);
+                $myCrew = $myCrew * (max(1, 100 - $general['explevel']/3)/100);
+                $opCrew = $opCrew / (max(1, 100 - $general['explevel']/3)/100);
+                $myCrew = $myCrew / (max(1, 100 -  $oppose['explevel']/3)/100);
+                $opCrew = $opCrew * (max(1, 100 -  $oppose['explevel']/3)/100);
 
                 // 특기보정 : 기병, 돌격, 무쌍, 보병, 견고, 척사, 의술(청낭서, 태평청령)
                 if($general['special2'] == 52) { $opCrew *= 1.20; }
