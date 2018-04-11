@@ -1050,12 +1050,16 @@ function checkStatistic() {
         
         $nationName .= $nation['name'].'('.getNationType($nation['type']).'), ';
         $power_hist .= "{$nation['name']}({$nation['power']}/{$nation['gennum']}/{$city['cnt']}/{$city['pop']}/{$city['pop2']}/{$nation['goldrice']}/{$general['goldrice']}/{$general['abil']}/{$general['dex']}/{$general['expded']}), ";
+
+        if(!isset($nationHists[$nation['type']])){
+            $nationHists[$nation['type']] = 0;
+        }
         $nationHists[$nation['type']]++;
     }
 
     $nationHist = '';
     for($i=1; $i <= 13; $i++) {
-        if(!$nationHists[$i]) { $nationHists[$i] = '-'; }
+        if(!Util::array_get($nationHists[$i])) { $nationHists[$i] = '-'; }
         $nationHist .= getNationType($i)."({$nationHists[$i]}), ";
     }
 
@@ -1073,6 +1077,18 @@ function checkStatistic() {
     for($i=0; $i < $generalCount; $i++) {
         $general = MYDB_fetch_array($result);
 
+        if(!isset($personalHists[$general['personal']])){
+            $personalHists[$general['personal']] = 0;
+        }
+
+        if(!isset($specialHists[$general['special']])){
+            $specialHists[$general['special']] = 0;
+        }
+
+        if(!isset($specialHists2[$general['special2']])){
+            $specialHists2[$general['special2']] = 0;
+        }
+
         $personalHists[$general['personal']]++;
         $specialHists[$general['special']]++;
         $specialHists2[$general['special2']]++;
@@ -1082,14 +1098,14 @@ function checkStatistic() {
 
     $personalHist = '';
     for($i=0; $i < 11; $i++) {
-        if(!$personalHists[$i]) { $personalHists[$i] = '-'; }
+        if(!Util::array_get($personalHists[$i])) { $personalHists[$i] = '-'; }
         $personalHist .= getGenChar($i)."({$personalHists[$i]}), ";
     }
     $specialHist = '';
     for($i=0; $i < 40; $i++) {
         $call = getGenSpecial($i);
         if($call) {
-            if(!$specialHists[$i]) { $specialHists[$i] = '-'; }
+            if(!Util::array_get($specialHists[$i])) { $specialHists[$i] = '-'; }
 
             $specialHist .= $call."({$specialHists[$i]}), ";
         }
@@ -1099,7 +1115,7 @@ function checkStatistic() {
     for($i=40; $i < 80; $i++) {
         $call = getGenSpecial($i);
         if($call) {
-            if(!$specialHists2[$i]) { $specialHists2[$i] = '-'; }
+            if(!Util::array_get($specialHists2[$i])) { $specialHists2[$i] = '-'; }
 
             $specialHist .= $call."({$specialHists2[$i]}), ";
         }
