@@ -174,6 +174,7 @@ function getGenSpecial($type) {
         case 73: $call = '의술'; break;
         case 74: $call = '격노'; break;
         case 75: $call = '척사'; break;
+        default: $call = null;
     }
     return $call;
 }

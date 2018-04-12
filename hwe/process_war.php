@@ -1705,6 +1705,10 @@ function DeleteConflict($nation) {
 
 function getConquerNation($city) : int {
     $conflict = Json::decode($city['conflict']);
+    if(!$conflict){
+        //FIXME: 사실 이건 이상한 상황이다.
+        return 0;
+    }
     return Util::array_first_key($conflict);
 }
 
@@ -1861,12 +1865,10 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
     // 멸망이 아니면
     } else {
         // 태수,군사,시중은 일반으로...
-        $query = "update general set level='1' where no='{$city['gen1']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set level='1' where no='{$city['gen2']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set level='1' where no='{$city['gen3']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('general',[
+            'level'=>1
+        ], 'no IN %li',[$city['gen1'], $city['gen2'], $city['gen3']]);
+        
         //수도였으면 긴급 천도
         if($destnation['capital'] == $city['city']) {
             $distList = searchDistance($city['city'], 99, true);
@@ -1874,40 +1876,34 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
             $cities = [];
             foreach(
                 DB::db()->query(
-                    'SELECT nation, city, pop FROM city WHERE nation=%i and city!=%i', 
+                    'SELECT city, pop FROM city WHERE nation=%i and city!=%i', 
                     $destnation['nation'], 
                     $city['city']
                 ) as $row
             ){
-                $cities[$row['city']] = $row;
+                $cities[$row['city']] = $row['pop'];
             };
-
-            $distKeys = array_keys($distList);
-            sort($distKeys);
 
             $minCity = 0;
 
-            foreach($distKeys as $dist){
+            foreach($distList as $dist=>$distSubList){
                 $hasTarget = false;
                 $maxCityPop = 0;
                 
-                foreach($distList[$dist] as $cityID){
+                foreach($distSubList as $cityID){
                     if(!key_exists($cityID, $cities)){
                         continue;
                     }
-                    $city = $cities[$cityID];
+                    $cityPop = $cities[$cityID];
                     '@phan-var array<string,mixed> $city';
-                    if($city['nation'] != $destnation['nation']){
-                        continue;
-                    }
 
-                    if($city['pop'] <= $maxCityPop){
+                    if($cityPop < $maxCityPop){
                         continue;
                     }
                     
                     $hasTarget = true;
                     $minCity = $cityID;
-                    $maxCityPop = $city['pop'];
+                    $maxCityPop = $cityPop;
                 }
 
                 if($hasTarget){
@@ -1949,6 +1945,9 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
     if($general['atmos'] > $_maximumatmos) { $general['atmos'] = $_maximumatmos; }
 
     $conquerNation = getConquerNation($city);
+    if(!$conquerNation){
+        $conquerNation = $general['nation'];
+    }
 
     if($conquerNation == $general['nation']) {
         // 이동 및 사기 변경
