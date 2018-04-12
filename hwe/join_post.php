@@ -136,7 +136,7 @@ $pleader = 0;
 $ppower = 0;
 $pintel = 0;
 for ($statBonusCnt = 3 + mt_rand(0, 2); $statBonusCnt > 0; $statBonusCnt--) {
-    switch (Util::choiceRandomUsingWeight(array($leader, $power, $intel))) {
+    switch (Util::choiceRandomUsingWeight([$leader, $power, $intel])) {
     case 0:
         $pleader++;
         break;

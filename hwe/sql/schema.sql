@@ -192,7 +192,6 @@ create table nation (
   l5set int(1) default 0,
   scout int(1) default 0,
   war     int(1) default 0,
-  myset   int(1) default 3,
   tricklimit int(4) default 36,
   surlimit int(4) default 72,
   scoutmsg text default '',

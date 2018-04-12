@@ -272,11 +272,11 @@ function processWar($general, $city) {
                         }
                     }
                 } elseif($general['crewtype'] == 40) { // 정란
-                    $cityCrew = $cityCrew * 1.5;
+                    $cityCrew = $cityCrew * 1.8;
                 } elseif($general['crewtype'] == 41) { // 충차
-                    $cityCrew = $cityCrew * 2.0;
+                    $cityCrew = $cityCrew * 2.4;
                 } elseif($general['crewtype'] == 42) { // 벽력거
-                    $cityCrew = $cityCrew * 1.5;
+                    $cityCrew = $cityCrew * 1.8;
                 }
                 //군주 공격 보정 10%
                 if($general['level'] == 12) {
@@ -316,13 +316,14 @@ function processWar($general, $city) {
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
                 $ratio2 = GameUnitConst::byID($general['crewtype'])->avoid;   //회피율
+				$ratio2 = Util::round($ratio2 * $general['train'] / 100); //훈련 반영
                 //특기보정 : 궁병
                 if($general['special2'] == 51) { $ratio2 += 20; }
                 //도구 보정 : 둔갑천서, 태평요술
                 if($general['item'] == 26 || $general['item'] == 25) { $ratio2 += 20; }
                 if($ratio < $ratio2 && $avoid == 1) {
                     $batlog[] = "<C>●</><C>회피</>했다!</>";
-                    $myCrew /= 10; // 10%만 소모
+                    $myCrew /= 5; // 20%만 소모
                     $avoid = 0;
                 }
 
@@ -456,8 +457,8 @@ function processWar($general, $city) {
             $query = "update general set crew='{$general['crew']}',killcrew=killcrew+'$mykillnum',deathcrew=deathcrew+'$mydeathnum' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 숙련도 증가
-            addGenDex($general['no'], $general['crewtype'], $mykillnum);
-            addGenDex($general['no'], 40, $mydeathnum);
+            addGenDex($general['no'], $general['atmos'], $general['train'], $general['crewtype'], $mykillnum);
+            addGenDex($general['no'], $general['atmos'], $general['train'], 40, $mydeathnum);
             // 죽은수 기술로 누적
             $num = Util::round($mydeathnum * 0.01);
             // 국가보정
@@ -1137,6 +1138,7 @@ function processWar($general, $city) {
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
                 $ratio2 = GameUnitConst::byID($general['crewtype'])->avoid;   //회피율
+				$ratio2 = Util::round($ratio2 * $general['train'] / 100); //훈련 반영
                 //특기보정 : 돌격, 궁병
                 if($oppose['special2'] == 60) { $ratio2 -= 100; }
                 if($general['special2'] == 51) { $ratio2 += 20; }
@@ -1152,13 +1154,14 @@ function processWar($general, $city) {
                     } else {
                         $batlog[] = "<C>●</><C>회피</>했다!</>";
                         $oppbatlog[] = "<C>●</>상대가 <R>회피</>했다!</>";
-                        $myCrew /= 10; // 10%만 소모
+                        $myCrew /= 5; // 20%만 소모
                         $myAvoid = 0;
                     }
                 }
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
                 $ratio2 = GameUnitConst::byID($oppose['crewtype'])->defence;   //회피율
+				$ratio2 = Util::round($ratio2 * $oppose['train'] / 100); //훈련 반영
                 // 특기보정 : 돌격, 궁병
                 if($general['special2'] == 60) { $ratio2 -= 100; }
                 if($oppose['special2'] == 51) { $ratio2 += 20; }
@@ -1180,7 +1183,7 @@ function processWar($general, $city) {
                     } else {
                         $oppbatlog[] = "<C>●</><C>회피</>했다!</>";
                         $batlog[] = "<C>●</>상대가 <R>회피</>했다!</>";
-                        $opCrew /= 10; // 10%만 소모
+                        $opCrew /= 5; // 20%만 소모
                         $opAvoid = 0;
                     }
                 }
@@ -1329,8 +1332,8 @@ function processWar($general, $city) {
             $query = "update general set injury='{$oppose['injury']}',crew='{$oppose['crew']}',killcrew=killcrew+'$opkillnum',deathcrew=deathcrew+'$opdeathnum' where no='{$oppose['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 숙련도 증가
-            addGenDex($oppose['no'], $oppose['crewtype'], $opkillnum * 0.9);
-            addGenDex($oppose['no'], $general['crewtype'], $opdeathnum * 0.9);
+            addGenDex($oppose['no'], $general['atmos'], $general['train'], $oppose['crewtype'], $opkillnum * 0.9);
+            addGenDex($oppose['no'], $general['atmos'], $general['train'], $general['crewtype'], $opdeathnum * 0.9);
             // 죽은수 기술로 누적
             $num = Util::round($mydeathnum * 0.01);
             // 국가보정
@@ -1352,8 +1355,8 @@ function processWar($general, $city) {
             $query = "update general set injury='{$general['injury']}',crew='{$general['crew']}',killcrew=killcrew+'$mykillnum',deathcrew=deathcrew+'$mydeathnum' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 숙련도 증가
-            addGenDex($general['no'], $general['crewtype'], $mykillnum);
-            addGenDex($general['no'], $oppose['crewtype'], $mydeathnum);
+            addGenDex($general['no'], $general['atmos'], $general['train'], $general['crewtype'], $mykillnum);
+            addGenDex($general['no'], $general['atmos'], $general['train'], $oppose['crewtype'], $mydeathnum);
             // 죽은수 기술로 누적
             $num = Util::round($opdeathnum * 0.01);
             // 국가보정
@@ -1548,10 +1551,10 @@ function CriticalRatio3($general) {
     $ratio = max($mainstat - 65, 0);
 
     if ($crewtype >= 3) {
-       $ratio /= 2;
+       $ratio *= 0.4;
     }
     else{
-        $ratio *= 0.7;
+        $ratio *= 0.5;
     }
 
     $ratio = round($ratio);
@@ -1559,20 +1562,6 @@ function CriticalRatio3($general) {
 
     if($ratio > 50) $ratio = 50;
 
-    return $ratio;
-}
-
-function CriticalRatio2($leader, $power, $intel) {
-    // 707010장수 9% 706515장수 17% 706020장수 25% xx50xx장수 57%
-    if($leader <= $power && $leader <= $intel) {        // 통솔이 제일 낮은경우
-        $ratio = sqrt($leader/($leader+$power+$intel))*150 - 30;
-    } elseif($power < $leader && $power <= $intel) {    // 무력이 제일 낮은경우
-        $ratio = sqrt($power /($leader+$power+$intel))*150 - 30;
-    } elseif($intel < $leader && $intel < $power)  {    // 지력이 제일 낮은경우
-        $ratio = sqrt($intel /($leader+$power+$intel))*150 - 30;
-    }
-
-    if($ratio > 50) $ratio = 50;
     return $ratio;
 }
 

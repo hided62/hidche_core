@@ -132,9 +132,15 @@ function process_25(&$general) {
     } elseif(strpos($general['nations'], ",{$nation['nation']},") > 0) {
         $log[] = "<C>●</>{$admin['month']}월:이미 임관했었던 국가입니다. 임관 실패. <1>$date</>";
     } else {
-        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
-        $log[] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 임관했습니다. <1>$date</>";
-        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
+        if($where == 99 || $where == 98) {
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 어쩌다보니 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
+            $log[] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 랜덤으로 임관했습니다. <1>$date</>";
+            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
+        } else {
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
+            $log[] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 임관했습니다. <1>$date</>";
+            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
+        }
 
         if($gencount < 10) { $exp = 700; }
         else { $exp = 100; }
@@ -227,7 +233,7 @@ function process_29(&$general) {
         if(rand() % $criteria > 0) {
             $exp = 100;
             $ded = 70;
-            switch(rand()%3) {
+            switch(Util::choiceRandomUsingWeight([$general['leader'], $general['power'], $general['intel']])) {
             case 0: $general['leader2'] += 1; break;
             case 1: $general['power2'] += 1; break;
             case 2: $general['intel2'] += 1; break;
@@ -237,7 +243,7 @@ function process_29(&$general) {
             // 탐색 성공
             $exp = 200;
             $ded = 300;
-            switch(rand()%3) {
+            switch(Util::choiceRandomUsingWeight([$general['leader'], $general['power'], $general['intel']])) {
             case 0: $general['leader2'] += 3; break;
             case 1: $general['power2'] += 3; break;
             case 2: $general['intel2'] += 3; break;
