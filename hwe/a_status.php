@@ -59,7 +59,7 @@ $(function(){
 <table align=center width=1200 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr height=520>
         <td width=498 valign=top>
-            <?php getGeneralPublicRecordRecent(34); ?>
+            <?=getGeneralPublicRecordRecent(34)?>
         </td>
         <td width=698>
             <?=getMapHtml()?>
