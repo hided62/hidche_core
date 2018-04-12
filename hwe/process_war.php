@@ -1705,7 +1705,7 @@ function DeleteConflict($nation) {
 
 function getConquerNation($city) : int {
     $conflict = Json::decode($city['conflict']);
-    return array_first_key($conflict);
+    return Util::array_first_key($conflict);
 }
 
 function ConquerCity($game, $general, $city, $nation, $destnation) {
