@@ -152,7 +152,7 @@ $history = MYDB_fetch_array($result);
 </table>
 <script>
 reloadWorldMap({
-    targetJson:'map_history.php?year=<?=$year?>&month=<?=$month?>',
+    targetJson:'j_map_history.php?year=<?=$year?>&month=<?=$month?>',
     showMe:false,
     neutralView:true
 });

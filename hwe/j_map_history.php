@@ -25,7 +25,7 @@ if(!$year || !$month) {
 
 
 //로그인 검사
-$session = Session::requireGameLogin()->setReadOnly();
+$session = Session::requireGameLogin([])->setReadOnly();
 
 $db = DB::db();
 $connect=$db->get();
