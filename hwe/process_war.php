@@ -88,6 +88,7 @@ function processWar($general, $city) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destnation = MYDB_fetch_array($result) ?: [
         'nation'=>0,
+        'capital'=>0,
         'level'=>0,
         'rice'=>2000,
         'type'=>0,
@@ -1866,7 +1867,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         ], 'no IN %li',[$city['gen1'], $city['gen2'], $city['gen3']]);
         
         //수도였으면 긴급 천도
-        if($destnation['capital'] == $city['city']) {
+        if(!isset($destnation['capital']) && $destnation['capital'] == $city['city']) {
             $minCity = findNextCapital($city['city'], $destnation['nation']);
 
             $minCityName = CityConst::byID($minCity)->name;

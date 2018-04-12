@@ -462,7 +462,7 @@ create table if not exists emperior (
   special_hist    text default '',
   name    char(64) default '',
   type    char(64) default '',
-  color   char(6) default '',
+  color   char(7) default '',
   year    int(4) default 0,
   month   int(2) default 0,
   power   int(8) default 0,

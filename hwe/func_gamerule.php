@@ -1294,31 +1294,47 @@ function checkEmperior() {
 
             $nationHistory = DB::db()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
 
-            $query = "
-                insert into emperior (
-                    phase,
-                    nation_count, nation_name, nation_hist,
-                    gen_count, personal_hist, special_hist,
-                    name, type, color, year, month, power, gennum, citynum,
-                    pop, poprate, gold, rice,
-                    l12name, l12pic, l11name, l11pic,
-                    l10name, l10pic, l9name, l9pic,
-                    l8name, l8pic, l7name, l7pic,
-                    l6name, l6pic, l5name, l5pic,
-                    tiger, eagle, gen, history
-                ) values (
-                    '-',
-                    '$statNC', '{$statNation['nation_name']}', '{$statNation['nation_hist']}',
-                    '$statGC', '{$statGeneral['personal_hist']}', '{$statGeneral['special_hist']}',
-                    '{$nation['name']}', '{$nation['type']}', '{$nation['color']}', '{$admin['year']}', '{$admin['month']}', '{$nation['power']}', '{$nation['gennum']}', '$allcount',
-                    '$pop', '$poprate', '{$nation['gold']}', '{$nation['rice']}',
-                    '{$level12['name']}', '{$level12['picture']}', '{$level11['name']}', '{$level11['picture']}',
-                    '{$level10['name']}', '{$level10['picture']}', '{$level9['name']}', '{$level9['picture']}',
-                    '{$level8['name']}', '{$level8['picture']}', '{$level7['name']}', '{$level7['picture']}',
-                    '{$level6['name']}', '{$level6['picture']}', '{$level5['name']}', '{$level5['picture']}',
-                    '$tigerstr', '$eaglestr', '$gen', '{$nationHistory}'
-                )";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->insert('emperior', [
+                'phase'=>'-',
+                'nation_count'=>$statNC,
+                'nation_name'=>$statNation['nation_name'],
+                'nation_hist'=>$statNation['nation_hist'],
+                'gen_count'=>$statGC,
+                'personal_hist'=>$statGeneral['personal_hist'],
+                'special_hist'=>$statGeneral['special_hist'],
+                'name'=>$nation['name'],
+                'type'=>$nation['type'],
+                'color'=>$nation['color'],
+                'year'=>$admin['year'],
+                'month'=>$admin['month'],
+                'power'=>$nation['power'],
+                'gennum'=>$nation['gennum'],
+                'citynum'=>$allcount,
+                'pop'=>$pop,
+                'poprate'=>$poprate,
+                'gold'=>$nation['gold'],
+                'rice'=>$nation['rice'],
+                'l12name'=>$level12['name'],
+                'l12pic'=>$level12['picture'],
+                'l11name'=>$level11['name'],
+                'l11pic'=>$level11['picture'],
+                'l10name'=>$level10['name'],
+                'l10pic'=>$level10['picture'],
+                'l9name'=>$level9['name'],
+                'l9pic'=>$level9['picture'],
+                'l8name'=>$level8['name'],
+                'l8pic'=>$level8['picture'],
+                'l7name'=>$level7['name'],
+                'l7pic'=>$level7['picture'],
+                'l6name'=>$level6['name'],
+                'l6pic'=>$level6['picture'],
+                'l5name'=>$level5['name'],
+                'l5pic'=>$level5['picture'],
+                'tiger'=>$tigerstr,
+                'eagle'=>$eaglestr,
+                'gen'=>$gen,
+                'history'=>$nationHistory
+            ]);
 
             $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>(이)가 전토를 통일하였습니다."];
             pushWorldHistory($history, $admin['year'], $admin['month']);
