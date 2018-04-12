@@ -1871,45 +1871,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         
         //수도였으면 긴급 천도
         if($destnation['capital'] == $city['city']) {
-            $distList = searchDistance($city['city'], 99, true);
-
-            $cities = [];
-            foreach(
-                DB::db()->query(
-                    'SELECT city, pop FROM city WHERE nation=%i and city!=%i', 
-                    $destnation['nation'], 
-                    $city['city']
-                ) as $row
-            ){
-                $cities[$row['city']] = $row['pop'];
-            };
-
-            $minCity = 0;
-
-            foreach($distList as $dist=>$distSubList){
-                $hasTarget = false;
-                $maxCityPop = 0;
-                
-                foreach($distSubList as $cityID){
-                    if(!key_exists($cityID, $cities)){
-                        continue;
-                    }
-                    $cityPop = $cities[$cityID];
-                    '@phan-var array<string,mixed> $city';
-
-                    if($cityPop < $maxCityPop){
-                        continue;
-                    }
-                    
-                    $hasTarget = true;
-                    $minCity = $cityID;
-                    $maxCityPop = $cityPop;
-                }
-
-                if($hasTarget){
-                    break;
-                }
-            }
+            $minCity = findNextCapital($city['city'], $destnation['capital']);
 
             $minCityName = CityConst::byID($minCity)->name;
 
@@ -2010,3 +1972,42 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
     pushWorldHistory($history);
 }
 
+function findNextCapital(int $capitalID, int $nationID):int{
+    $distList = searchDistance($capitalID, 99, true);
+
+    $cities = [];
+    foreach(
+        DB::db()->query(
+            'SELECT city, pop FROM city WHERE nation=%i and city!=%i', 
+            $nationID, 
+            $capitalID
+        ) as $row
+    ){
+        $cities[$row['city']] = $row['pop'];
+    };
+
+    
+
+    foreach($distList as $dist=>$distSubList){
+        $maxCityPop = 0;
+        $minCity = 0;
+        
+        foreach($distSubList as $cityID){
+            if(!key_exists($cityID, $cities)){
+                continue;
+            }
+            $cityPop = $cities[$cityID];
+
+            if($cityPop < $maxCityPop){
+                continue;
+            }
+            $minCity = $cityID;
+            $maxCityPop = $cityPop;
+        }
+
+        if($minCity){
+            return $minCity;
+        }
+    }
+    throw new \RuntimeException('도시가 남지 않았는데 긴천을 시도하고 있습니다');
+}

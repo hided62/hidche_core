@@ -164,6 +164,7 @@ function sendMessage($msgType, array $src, array $dest, $msg, $date = null, $val
 
 function sendScoutMsg($src, $dest, $date) {
 
+    return false;
     //$msgType, $isSender, $mailbox, $src, $dest, $msg, $date, $validUntil, $msgOption
 
     if(!$src || !$src['id'] || !$src['nation_id']){
