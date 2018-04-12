@@ -7,6 +7,7 @@ mb_internal_encoding("UTF-8");
 mb_http_output('UTF-8');
 mb_regex_encoding('UTF-8'); 
 
+
 function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext){
     if (!(error_reporting() & $errno)) {
         // This error code is not included in error_reporting, so let it fall
@@ -15,10 +16,33 @@ function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, in
     }
 
     $date = date("Ymd_His");
+    $e = new \Exception();
 
-    file_put_contents(ROOT.'/d_log/err_log.txt',"$date, $errno, $errstr, $errfile, $errline\n", FILE_APPEND);
-    
-    /* Don't execute PHP internal error handler */
-    //return true;
+    $data = Json::encode([
+        'date'=>$date,
+        'errno'=>$errno,
+        'errstr'=>$errstr,
+        'aux'=>'error',
+        'trace'=>$e->getTraceAsString()
+    ], Json::PRETTY);
+
+    file_put_contents(ROOT.'/d_log/err_log.txt',"$data\n", FILE_APPEND);
 }
 set_error_handler("\sammo\logErrorByCustomHandler");
+
+
+function logExceptionByCustomHandler(\Throwable $e){
+
+    $date = date("Ymd_His");
+
+    $data = Json::encode([
+        'date'=>$date,
+        'errno'=>$e->getCode(),
+        'errstr'=>$e->getMessage(),
+        'aux'=>'exception',
+        'trace'=>$e->getTraceAsString()
+    ], Json::PRETTY);
+
+    file_put_contents(ROOT.'/d_log/err_log.txt',"$data\n", FILE_APPEND);
+}
+set_exception_handler('\\sammo\\logExceptionByCustomHandler');
