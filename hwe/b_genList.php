@@ -3,6 +3,9 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$type = Util::getReq('type', 'int');
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -116,7 +119,7 @@ echo"
 for ($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
     $city = CityConst::byID($general['city'])->name;
-    $troop = $troopName[$general['troop']] == "" ? "-" : $troopName[$general['troop']];
+    $troop = $troopName[$general['troop']]??'-';
 
     if ($general['level'] == 12) {
         $lbonus = $nation['level'] * 2;

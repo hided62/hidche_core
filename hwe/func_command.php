@@ -14,9 +14,9 @@ function getTurn($general, $type, $font=1) {
         $turn[2] = $general["turn2"];
         $turn[3] = $general["turn3"];
         $turn[4] = $general["turn4"];
-        $turn[5] = $general["turn5"];
     }
     if($type >= 2) {
+        $turn[5] = $general["turn5"];
         $turn[6] = $general["turn6"];
         $turn[7] = $general["turn7"];
         $turn[8] = $general["turn8"];

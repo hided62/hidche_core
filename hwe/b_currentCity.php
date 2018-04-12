@@ -3,6 +3,9 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$citylist = Util::getReq('citylist', 'int');
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -42,7 +45,9 @@ $myNation = MYDB_fetch_array($result);
             <form name=cityselect method=get>도시선택 :
                 <select name=citylist size=1 style=color:white;background-color:black;width:798;>
 <?php
-if(!array_key_exists('citylist', $_REQUEST) || $_REQUEST['citylist'] == '') { $_REQUEST['citylist'] = $me['city']; }
+if(!$citylist){
+    $citylist = $me['city'];
+}
 
 // 재야일때는 현재 도시만
 $valid = 0;
@@ -52,7 +57,7 @@ if($me['level'] == 0) {
     $city = MYDB_fetch_array($cityresult);
     echo "
                     <option value={$city['city']}";
-    if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
+    if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
     echo ">==================================================【".StringUtil::padString($city['name'], 4, '_')."】";
     if($city['nation'] == 0) echo "공백지";
     elseif($me['nation'] == $city['nation']) echo "본국==";
@@ -68,7 +73,7 @@ if($me['level'] == 0) {
         $city = MYDB_fetch_array($cityresult);
         echo "
                         <option value={$city['city']}";
-        if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
+        if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
         echo ">==================================================【".StringUtil::padString($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
@@ -85,7 +90,7 @@ if($me['level'] == 0) {
         $city = MYDB_fetch_array($cityresult);
         echo "
                         <option value={$city['city']}";
-        if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
+        if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
         echo ">==================================================【".StringUtil::padString($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
@@ -111,7 +116,7 @@ if($myNation['level'] > 0) {
         $city = MYDB_fetch_array($cityresult);
         echo "
                         <option value={$city['city']}";
-        if($city['city'] == $_REQUEST['citylist']) { echo " selected"; $valid = 1; }
+        if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
         echo ">==================================================【".StringUtil::padString($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
@@ -131,28 +136,21 @@ echo "
 </table>
 <br>";
 
+unset($city);
+
 // 첩보된 도시까지만 허용
 if($valid == 0 && $session->userGrade < 5) {
-    $_REQUEST['citylist'] = $me['city'];
+    $citylist = $me['city'];
 }
 
-$query = "select * from city where city='{$_REQUEST['citylist']}'"; // 도시 이름 목록
-$cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$city = MYDB_fetch_array($cityresult);
 
+$city = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $citylist);
 $nation = getNationStaticInfo($city['nation']);
 
-$query = "select name from general where no='{$city['gen1']}'"; // 태수 이름
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$gen1 = MYDB_fetch_array($genresult);
-
-$query = "select name from general where no='{$city['gen2']}'"; // 군사 이름
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$gen2 = MYDB_fetch_array($genresult);
-
-$query = "select name from general where no='{$city['gen3']}'"; // 시중 이름
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$gen3 = MYDB_fetch_array($genresult);
+//태수, 군사, 시중
+$gen1 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen1']);
+$gen2 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen2']);
+$gen3 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen3']);
 
 if($city['trade'] == 0) {
     $city['trade'] = "- ";
@@ -163,44 +161,43 @@ if($city['trade'] == 0) {
     <tr><td><?=backButton()?></td></tr>
 </table>
 
-<?php
-echo "
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
-        <td colspan=12 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td>
+        <td colspan=12 align=center style=color:"<?=newColor($nation['color'])?>"; bgcolor=<?=$nation['color']?>>【 <?=CityConst::$regionMap[$city['region']]?> | <?=CityConst::$levelMap[$city['level']]?> 】 <?=$city['name']?></td>
     </tr>
     <tr>
         <td align=center width=48 id=bg1>주민</td>
-        <td align=center width=112>{$city['pop']}/{$city['pop2']}</td>
+        <td align=center width=112><?=$city['pop']?>/<?=$city['pop2']?></td>
         <td align=center width=48 id=bg1>농업</td>
-        <td align=center width=108>{$city['agri']}/{$city['agri2']}</td>
+        <td align=center width=108><?=$city['agri']?>/<?=$city['agri2']?></td>
         <td align=center width=48 id=bg1>상업</td>
-        <td align=center width=108>{$city['comm']}/{$city['comm2']}</td>
+        <td align=center width=108><?=$city['comm']?>/<?=$city['comm2']?></td>
         <td align=center width=48 id=bg1>치안</td>
-        <td align=center width=108>{$city['secu']}/{$city['secu2']}</td>
+        <td align=center width=108><?=$city['secu']?>/<?=$city['secu2']?></td>
         <td align=center width=48 id=bg1>수비</td>
-        <td align=center width=108>{$city['def']}/{$city['def2']}</td>
+        <td align=center width=108><?=$city['def']?>/<?=$city['def2']?></td>
         <td align=center width=48 id=bg1>성벽</td>
-        <td align=center width=108>{$city['wall']}/{$city['wall2']}</td>
+        <td align=center width=108><?=$city['wall']?>/<?=$city['wall2']?></td>
     </tr>
     <tr>
         <td align=center id=bg1>민심</td>
-        <td align=center>{$city['rate']}</td>
+        <td align=center><?=$city['rate']?></td>
         <td align=center id=bg1>시세</td>
-        <td align=center>{$city['trade']}%</td>
+        <td align=center><?=$city['trade']?>%</td>
         <td align=center id=bg1>인구</td>
-        <td align=center>".round($city['pop']/$city['pop2']*100, 2)." %</td>
+        <td align=center><?=round($city['pop']/$city['pop2']*100, 2)?>%</td>
         <td align=center id=bg1>태수</td>
-        <td align=center>";echo $gen1['name']==''?"-":"{$gen1['name']}";echo "</td>
+        <td align=center><?=$gen1['name']??'-'?></td>
         <td align=center id=bg1>군사</td>
-        <td align=center>";echo $gen2['name']==''?"-":"{$gen2['name']}";echo "</td>
+        <td align=center><?=$gen2['name']??'-'?></td>
         <td align=center id=bg1>시중</td>
-        <td align=center>";echo $gen3['name']==''?"-":"{$gen3['name']}";echo "</td>
+        <td align=center><?=$gen3['name']??'-'?></td>
     </tr>
     <tr>
         <td align=center id=bg1>장수</td>
-        <td colspan=11>";
-    $query = "select name from general where city='{$city['city']}' and nation='{$city['nation']}'";    // 장수 목록
+        <td colspan=11>
+<?php
+    $query = "select name, npc from general where city='{$city['city']}' and nation='{$city['nation']}'";    // 장수 목록
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
     if($gencount == 0) echo "-";
@@ -208,11 +205,11 @@ echo "
         $general = MYDB_fetch_array($genresult);
         echo "{$general['name']}, ";
     }
-    echo "
+?>
         </td>
     </tr>
-</table>";
-
+</table>
+<?php
 $query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos,term,turn0,turn1,turn2,turn3,turn4,turn5 from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);

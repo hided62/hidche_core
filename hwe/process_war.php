@@ -1691,7 +1691,7 @@ function DeleteConflict($nation) {
         if(!$conflict || !is_array($conflict)){
             continue;
         }
-        if(!key_exists(!$nation)){
+        if(!key_exists($nation, $conflict)){
             continue;
         }
 
@@ -1705,10 +1705,6 @@ function DeleteConflict($nation) {
 
 function getConquerNation($city) : int {
     $conflict = Json::decode($city['conflict']);
-    if(!$conflict){
-        //FIXME: 사실 이건 이상한 상황이다.
-        return 0;
-    }
     return Util::array_first_key($conflict);
 }
 
@@ -1907,9 +1903,6 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
     if($general['atmos'] > $_maximumatmos) { $general['atmos'] = $_maximumatmos; }
 
     $conquerNation = getConquerNation($city);
-    if(!$conquerNation){
-        $conquerNation = $general['nation'];
-    }
 
     if($conquerNation == $general['nation']) {
         // 이동 및 사기 변경
