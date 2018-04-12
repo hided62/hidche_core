@@ -1,0 +1,34 @@
+{
+    "nation":[
+        {
+            "nationID":0,
+            "mailbox":9000,
+            "nation":"재야",
+            "color":"#ffffff",
+            "general":[
+                [31, "Hide_Dy"]   
+            ]
+        },
+        {
+            "nationID":1,
+            "mailbox":9001,
+            "nation":"연구소",
+            "color":"#ffd700",
+            "general":[
+                [11,"HideD", 1],
+                [12,"HideD2"]
+            ]
+        },
+        {
+            "nationID":2,
+            "mailbox":9002,
+            "nation":"연구소2",
+            "color":"#ff0000",
+            "general":[
+                [21,"Hide_Dx2", 1],
+                [22,"Hide_Dx3"]
+            ]
+        }
+    ]
+    
+}

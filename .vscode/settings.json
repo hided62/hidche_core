@@ -1,0 +1,24 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/logs/*.txt": true,
+        "**/session/sess*":true,
+        "/che":true,
+        "/kwe":true,
+        "/pwe":true,
+        "/twe":true,
+        
+    },
+    "search.exclude": {
+        "e_lib/*":true,
+        "vendor/*":true,
+        "/che":true,
+        "/kwe":true,
+        "/pwe":true,
+        "/twe":true,
+      },
+}

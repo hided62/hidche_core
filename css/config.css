@@ -1,0 +1,109 @@
+@charset "utf-8";
+
+*       { margin: 0px; padding: 0px; }
+body    { color:white; background-color:black; border-width:1; border-color:gray; }
+table   {
+    border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
+    padding: 0px;
+    font-size: 13px;
+    word-break: break-all;
+    text-align: center;
+    font-family: '맑은 고딕'; line-height: 110%;
+}
+th, td      {
+    border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
+    padding: 0px;
+    font-size: 13px;
+    word-break: break-all;
+    text-align: center;
+    font-family: '맑은 고딕'; line-height: 110%;
+}
+
+a.just_link {
+    text-decoration: none;
+}
+
+div     {
+    margin:0px;
+    padding: 0px;
+    word-break: break-all;
+    font-family: '맑은 고딕';
+}
+
+.with_border{
+    border: solid 1px;
+    border-spacing: 0px;
+    border-collapse: separate;
+    border-top-color: gray;
+    border-left-color: gray;
+    border-right-color: black;
+    border-bottom-color: black;
+}
+
+.section_title {
+    height:50px;
+    line-height:50px;
+    font-size: 30px; font-weight: bold;
+    text-align: center;
+}
+
+.legacy_layout div     {
+    border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
+    padding: 0px;
+    font-size: 13px;
+    word-break: break-all;
+    text-align: center;
+    font-family: '맑은 고딕'; line-height: 110%;
+}
+
+font    { font-family: '맑은 고딕'; line-height: 110%; }
+/*
+input   {
+    width: 100px; height: 18px;
+    background-color: black; color: white;
+    font-family: '맑은 고딕';
+    font-size: 13px;
+    line-height: 110%;
+}
+*/
+
+.obj_fill{
+    display:block;
+    width:100%;
+    height:100%;
+}
+
+button.with_skin {
+    background-color: black; color: white;
+    font-family: '맑은 고딕';
+    font-size: 13px;
+    line-height: 110%;
+}
+
+input.with_skin   {
+    background-color: black; color: white;
+    font-family: '맑은 고딕';
+    font-size: 13px;
+    line-height: 110%;
+}
+
+select  {
+    width: 100px; height: 18px;
+    background-color: black; color: white;
+    font-family: '맑은 고딕';
+    font-size: 13px;
+    line-height: 110%;
+}
+button  {
+    width: 100px; height: 20px;
+    background-color: black; color: white;
+    font-family: '맑은 고딕';
+    font-size: 13px;
+}
+
+.font0  { font-size: 10px; }
+.font1  { font-size: 13px; }
+.font2  { font-size: 15px; }
+.font3  { font-size: 20px; }
+.font4  { font-size: 30px; }
+.font5  { font-size: 50px; }

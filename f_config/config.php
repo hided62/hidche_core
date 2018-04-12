@@ -1,55 +1,84 @@
-<?
-define(__LINE__,__FILE__." ".__FUNCTION__." ".__LINE__." : ");
-ob_start();
+<?php
+namespace sammo;
 
-// 주요 환경변수들
-define(W, '/');
+define('ROOT', realpath(__dir__.'/..'));
 
-//define(IMAGE, '../../image');
-//define(IMAGES, '../../images');
-define(IMAGE, 'http://115.68.28.99/image');
-define(IMAGES, 'http://115.68.28.99/images');
+mb_internal_encoding("UTF-8");
+mb_http_output('UTF-8');
+mb_regex_encoding('UTF-8'); 
 
-define(JQUERY, 'jquery-1.6.4.min.js');
-define(MD5, 'md5-min.js');
+function getFriendlyErrorType($type) 
+{ 
+    switch($type) 
+    { 
+        case E_ERROR: // 1 // 
+            return 'E_ERROR'; 
+        case E_WARNING: // 2 // 
+            return 'E_WARNING'; 
+        case E_PARSE: // 4 // 
+            return 'E_PARSE'; 
+        case E_NOTICE: // 8 // 
+            return 'E_NOTICE'; 
+        case E_CORE_ERROR: // 16 // 
+            return 'E_CORE_ERROR'; 
+        case E_CORE_WARNING: // 32 // 
+            return 'E_CORE_WARNING'; 
+        case E_COMPILE_ERROR: // 64 // 
+            return 'E_COMPILE_ERROR'; 
+        case E_COMPILE_WARNING: // 128 // 
+            return 'E_COMPILE_WARNING'; 
+        case E_USER_ERROR: // 256 // 
+            return 'E_USER_ERROR'; 
+        case E_USER_WARNING: // 512 // 
+            return 'E_USER_WARNING'; 
+        case E_USER_NOTICE: // 1024 // 
+            return 'E_USER_NOTICE'; 
+        case E_STRICT: // 2048 // 
+            return 'E_STRICT'; 
+        case E_RECOVERABLE_ERROR: // 4096 // 
+            return 'E_RECOVERABLE_ERROR'; 
+        case E_DEPRECATED: // 8192 // 
+            return 'E_DEPRECATED'; 
+        case E_USER_DEPRECATED: // 16384 // 
+            return 'E_USER_DEPRECATED'; 
+    } 
+    return "{$type}"; 
+}
 
-define(D, 'd_');
-define(E, 'e_');
-define(F, 'f_');
-define(I, 'i_');
+function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext){
+    if (!(error_reporting() & $errno)) {
+        // This error code is not included in error_reporting, so let it fall
+        // through to the standard PHP error handler
+        return false;
+    }
 
-define(D_SESSION, 'd_session');
-define(D_SETTING, 'd_setting');
-define(D_CHAT, 'd_chat');
-define(D_LOG, 'd_log');
-define(E_LIB, 'e_lib');
-define(F_CONFIG, 'f_config');
-define(F_FUNC, 'f_func');
+    $date = date("Ymd_His");
+    $e = new \Exception();
 
-define(JS, '.js');
-define(CSS, '.css');
-define(PHP, '.php');
-define(FRAME, 'Frame.php');
-define(STYLE, 'Style.css');
-define(ACTION, 'Action.js');
-define(POST, 'Post.php');
-define(GET, 'Get.php');
-define(INC, 'Inc.php');
+    $data = Json::encode([
+        'date'=>$date,
+        'err'=>getFriendlyErrorType($errno),
+        'errstr'=>$errstr,
+        'trace'=>explode("\n", $e->getTraceAsString())
+    ], Json::PRETTY);
 
-define(APP, 'app');
-define(FUNC, 'func');
-define(DB, 'DB');
-define(SESSION, 'SESSION');
-define(CONFIG, 'config');
-define(SET, 'set');
-define(SETTING, 'SETTING');
-define(SETTINGS, 'SETTINGS');
-define(RETRIVAL, 'retrival');
-define(INSTALL, 'install');
+    file_put_contents(ROOT.'/d_log/err_log.txt',"$data\n", FILE_APPEND);
+}
+set_error_handler("\sammo\logErrorByCustomHandler");
 
-define(SLEEP, 'sleep');
 
-//define(BLOCKBODY, '');
-define(BLOCKBODY, 'oncontextmenu="return false" onselectstart="return false" ondragstart="return false"');
+function logExceptionByCustomHandler(\Throwable $e){
 
-?>
+    $date = date("Ymd_His");
+
+    $data = Json::encode([
+        'date'=>$date,
+        'err'=>get_class($e),
+        'errstr'=>$e->getMessage(),
+        'trace'=>explode("\n", $e->getTraceAsString())
+    ], Json::PRETTY);
+
+    file_put_contents(ROOT.'/d_log/err_log.txt',"$data\n", FILE_APPEND);
+    throw $e;
+}
+set_exception_handler('\\sammo\\logExceptionByCustomHandler');

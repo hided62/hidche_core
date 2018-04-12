@@ -1,0 +1,35 @@
+@charset "utf-8";
+
+#admin_userlist{
+    margin-top:10px;
+}
+
+#server_admin_table{
+    width:100%;
+    margin-top:30px;
+    margin-bottom:30px;
+}
+
+#server_admin_table input{
+    padding:2px 3px;
+}
+
+#admin_userlist .center_ordered_items {
+    padding:10px;
+}
+
+#notice_edit{
+    vertical-align: top;
+    display:inline-block;
+    margin:0;
+    padding:0;
+    height:4em;
+    background:black;
+    color:white;
+}
+
+#notice_change_btn{
+    vertical-align: top;
+    display:inline-block;
+    height:4em;
+}

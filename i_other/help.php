@@ -1,24 +1,27 @@
-<?
-require_once('_common.php');
+<?php
+namespace sammo;
 
-$images = IMAGES;
+require(__dir__.'/../vendor/autoload.php');
+
+WebUtil::setHeaderNoCache();
+$category = Util::getReq('category', 0);
+//FIXME: 겨우 category 구분을 위해 php를 써야하는가? JavaScript로 바꾸자
 ?>
-
+<!DOCTYPE html>
 <html>
 
     <head>
-        <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
+        <meta charset="UTF-8">
         <title>튜토리얼</title>
 
 <style type="text/css">
-<!--
 
 body { color:white; background-color:black; border-width:1; border-color:gray; }
 table { font-family:'맑은 고딕'; line-height:110%; }
 font { font-family:'맑은 고딕'; line-height:110%; }
-#bg0 { background-image:url(<?=$images;?>/back_walnut.jpg); }
-#bg1 { background-image:url(<?=$images;?>/back_blue.jpg); }
-#bg2 { background-image:url(<?=$images;?>/back_green.jpg); }
+#bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
+#bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_blue.jpg); }
+#bg2 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
 
 .intro {
   font-size: 15px;
@@ -48,43 +51,42 @@ font { font-family:'맑은 고딕'; line-height:110%; }
   clear: both;
 }
 
--->
 </style>
-<? require('../i_banner/analytics.php'); ?>
+
     </head>
 
-<body oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<body>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><font size=5 color=skyblue><b>도 움 말</b></font></td></tr>
 </table>
-<table align=center border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg1>
+<table align=center border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg1>
     <tr>
-        <td align=center><input type=button style=background-color:<?=$category==0?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='시작하기' onclick=location.replace('help.php?category=0')></td>
-        <td align=center><input type=button style=background-color:<?=$category==1?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='회원가입' onclick=location.replace('help.php?category=1')></td>
-        <td align=center><input type=button style=background-color:<?=$category==2?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='접속관리' onclick=location.replace('help.php?category=2')></td>
-        <td align=center><input type=button style=background-color:<?=$category==3?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='캐릭터생성' onclick=location.replace('help.php?category=3')></td>
-        <td align=center><input type=button style=background-color:<?=$category==4?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='명령입력' onclick=location.replace('help.php?category=4')></td>
-        <td align=center><input type=button style=background-color:<?=$category==5?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='인터페이스' onclick=location.replace('help.php?category=5')></td>
-        <td align=center><input type=button style=background-color:<?=$category==6?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='일반장수' onclick=location.replace('help.php?category=6')></td>
-        <td align=center><input type=button style=background-color:<?=$category==7?"red":"#225500";?>;color:white;width:123px;height:50px;font-weight:bold;font-size:13; value='FAQ' onclick=location.replace('help.php?category=7')></td>
+        <td align=center><input type=button style=background-color:<?=$category==0?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='시작하기' onclick=location.replace('help.php?category=0')></td>
+        <td align=center><input type=button style=background-color:<?=$category==1?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='회원가입' onclick=location.replace('help.php?category=1')></td>
+        <td align=center><input type=button style=background-color:<?=$category==2?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='접속관리' onclick=location.replace('help.php?category=2')></td>
+        <td align=center><input type=button style=background-color:<?=$category==3?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='캐릭터생성' onclick=location.replace('help.php?category=3')></td>
+        <td align=center><input type=button style=background-color:<?=$category==4?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='명령입력' onclick=location.replace('help.php?category=4')></td>
+        <td align=center><input type=button style=background-color:<?=$category==5?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='인터페이스' onclick=location.replace('help.php?category=5')></td>
+        <td align=center><input type=button style=background-color:<?=$category==6?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='일반장수' onclick=location.replace('help.php?category=6')></td>
+        <td align=center><input type=button style=background-color:<?=$category==7?"red":"#225500"?>;color:white;width:123px;height:50px;font-weight:bold;font-size:13px; value='FAQ' onclick=location.replace('help.php?category=7')></td>
     </tr>
 </table>
 
 
 
-<?
-if($category == 0) {
-?>
+<?php
+if ($category == 0) {
+    ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>시 작 하 기</font></b></td></tr>
     <tr>
         <td>
-<font class=intro>◈ 본 튜토리얼은 『삼국지 모의전투』(이하 삼모전) 『유기체서버』(이하 체섭)를 처음 접하시는 초보 유저(이하 뉴비)분들을 위한 길잡이입니다^^ 위에서부터 아래로 읽어나가며 따라하다보면 금방 뉴비신세는 벗어날 수 있답니다~ 세부사항은 『레퍼런스 게시판』을 참고하시면 됩니다! 그럼 시작해볼까요?<br>
+<font class=intro>◈ 본 튜토리얼은 『삼국지 모의전투』(이하 삼모전) 『HiDCHe』(구 유기체서버, 이하 체섭)를 처음 접하시는 초보 유저(이하 뉴비)분들을 위한 길잡이입니다^^ 위에서부터 아래로 읽어나가며 따라하다보면 금방 뉴비신세는 벗어날 수 있답니다~ 세부사항은 『레퍼런스 게시판』을 참고하시면 됩니다! 그럼 시작해볼까요?<br>
 <br>
-◈ 우선 예약턴제 전략 웹게임인 『체섭』의 컨셉 & 모토를 이해해봅시다.</font><br>
+◈ 우선 예약턴제 전략 웹게임인 『체섭』의 컨셉 &amp; 모토를 이해해봅시다.</font><br>
 <br>
-<img src=<?=$images;?>/help_01_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_01_01.jpg class=leftFloat>
 <font class=title>『웹게임』이란?</font><br>
 　<font class=bullet>☞</font> 온라인게임과 달리 특별한 프로그램 설치 없이도 인터넷 브라우저상에서 바로 즐길 수 있는 게임들을 칭합니다. 그렇기 때문에 어딜가든 인터넷이 되는 곳이라면 언제든지 접속해서 플레이가 가능합니다. 심지어 모바일기기(휴대폰, PMP)에서도 가능합니다!<br>
 <br>
@@ -99,7 +101,7 @@ if($category == 0) {
 <br>
 　<font class=bullet>☞</font> 체섭 입문을 권유하는 분들이 항상 하는 말씀 : 하루 5분 투자만으로도 가능한 게임!<br>
 <br>
-<img src=<?=$images;?>/help_01_03.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_01_03.jpg class=rightFloat>
 <font class=title>『삼국지 모의전투』?</font><br>
 　<font class=bullet>☞</font> 동양인들이 열광하는 중국 삼국시대(서기 184년~280년)를 배경으로 하여, 유저 자신이 한명의 장수가 되어 다른 장수들과 각축을 벌이며 중원에서 활약하는 게임입니다.<br>
 <br>
@@ -112,7 +114,7 @@ if($category == 0) {
 <br>
 　<font class=bullet>☞</font> 일반 MMORPG에서 길드장, 혈맹장을 즐겨 하신분들이라면 체섭에서의 수뇌부나 군주를 하면서 휘하 장수들을 거느리며 통솔하는 것에서 재미를 찾을 수 있을지도 모릅니다!<br>
 <br>
-<img src=<?=$images;?>/help_01_02.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_01_02.jpg class=leftFloat>
 　<font class=bullet>☞</font> 힘들이지 않고 여유롭게, 캐릭터를 육성하거나 전투하는 재미를 찾을 수 있습니다!<br>
 <br>
 　<font class=bullet>☞</font> 온라인 게임을 하면서도 뭔지 모르게 외롭다거나, 심심하거나, 멍때리며 칼질만 하는 당신을 발견했다면... 삼모전만의 매력인 IRC 채팅(공개채널, 국가채널 등)을 즐기며 여유로운 게임을 겸해보세요! 몇시간이 훌쩍 지나는 것을 체험할 수 있습니다!<br>
@@ -124,17 +126,17 @@ if($category == 0) {
 
 
 
-<?
-} elseif($category == 1) {
-?>
+<?php
+} elseif ($category == 1) {
+        ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>회 원 가 입</font></b></td></tr>
     <tr>
         <td>
 <font class=intro>◈ 회원 가입을 해봅시다!</font><br>
 <br>
-<img src=<?=$images;?>/help_02_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_02_01.jpg class=leftFloat>
 　<font class=bullet>☞</font> 아직 회원가입을 하지 않았다면 계정생성을 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 원하는 ID를 입력합니다.<br>
@@ -143,7 +145,7 @@ if($category == 0) {
 <br>
 　<font class=bullet>☞</font> 확인을 위해 다시한번 PW를 입력합니다.<br>
 <br>
-<img src=<?=$images;?>/help_02_02.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_02_02.jpg class=rightFloat>
 　<font class=bullet>※</font> 비밀번호는 가입하는 순간 암호화되어 저장되므로 운영자도 알 수 없습니다. 그래서 비밀번호 찾기 기능이 없지요. 비밀번호를 잊었을 경우, 운영자에게 요청하여 초기화는 가능합니다. 안심하셔도 좋습니다.<br>
 <br>
 　<font class=bullet>☞</font> 주민등록번호를 입력합니다.<br>
@@ -152,7 +154,7 @@ if($category == 0) {
 <br>
 　<font class=bullet>☞</font> 닉네임을 입력합니다.<br>
 <br>
-　<font class=bullet>※</font> 닉네임이란 게임 내에서 사용되는 캐릭터 이름이 아닙니다. 단지 온라인에서 본인의 이름처럼 사용할 수 있는 것이면 됩니다. 그냥 평소 온라인에서 즐겨 쓰는 닉네임을 사용하시면 좋습니다. IRC 등에서 본인을 나타낼 수있는 목적으로 충분합니다. 참고로 운영자는 유기체라는 닉네임을 사용합니다^^<br>
+　<font class=bullet>※</font> 닉네임이란 게임 내에서 사용되는 캐릭터 이름이 아닙니다. 단지 온라인에서 본인의 이름처럼 사용할 수 있는 것이면 됩니다. 그냥 평소 온라인에서 즐겨 쓰는 닉네임을 사용하시면 좋습니다. IRC 등에서 본인을 나타낼 수있는 목적으로 충분합니다. 참고로 운영자는 Hide_D라는 닉네임을 사용합니다^^<br>
 <br>
 　<font class=bullet>☞</font> 필독사항을 읽고 동의란에 체크를 합니다.<br>
 <br>
@@ -167,26 +169,26 @@ if($category == 0) {
 
 
 
-<?
-} elseif($category == 2) {
-?>
+<?php
+    } elseif ($category == 2) {
+        ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>접 속 관 리</font></b></td></tr>
     <tr>
         <td>
 <font class=intro>◈ 웹게임에서 로그인은 굉장히 중요한 부분입니다. 잘 읽어주세요~</font><br>
 <br>
-<img src=<?=$images;?>/help_03_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_03_01.jpg class=leftFloat>
 　<font class=bullet>☞</font> 로그인하는 순간 IP같은 몇가지 접속 정보가 서버에 기록됩니다. 특히 공공장소에서 접속 장소를 명시하지 않고 접속하는 경우, 멀티로 판단되어 캐릭터가 블럭되는 경우가 있으므로 주의해주세요!<br>
 <br>
 　<font class=bullet>☞</font> 한 가정에서 형과 동생, 직장에서 직장 동료들과 함께 플레이하는 경우는 특히 접속장소를 잘 적어주세요.<br>
 <br>
 　<font class=bullet>예시)</font> 자택/형, 삼모대학 도서관, 62사단 사지방 등<br>
 <br>
-<p align=center><img src=<?=$images;?>/help_03_02.jpg>
-<img src=<?=$images;?>/help_03_03.jpg>
-<img src=<?=$images;?>/help_03_04.jpg></p>
+<p align=center><img src=<?=ServConfig::$gameImagePath?>/help_03_02.jpg>
+<img src=<?=ServConfig::$gameImagePath?>/help_03_03.jpg>
+<img src=<?=ServConfig::$gameImagePath?>/help_03_04.jpg></p>
 　<font class=bullet>☞</font> 위처럼, 한 IP에서 여러명이 접속해야하는 경우는 항상 멀티후보로 분류되므로 조심해야 합니다. 동생이 형의 계정으로 접속하여 대신 명령을 해준다든지(이하 대턴입력) 하는 등의 행동은 여러가지 분석정보에 의해서 적발될 수 있습니다.<br>
 <br>
 　<font class=bullet>☞</font> 한 IP에서 다수가 접속해야 하는 경우는 정황판단에 의해서 언제든지 블럭대상이 될 수 있음을 명심하시고, 블럭당할시에 이의제기는 받지 않습니다. 그만큼 확실히 멀티나 대턴이 확실하다고 판단되는 경우를 적발합니다.<br>
@@ -200,17 +202,17 @@ if($category == 0) {
 
 
 
-<?
-} elseif($category == 3) {
-?>
+<?php
+    } elseif ($category == 3) {
+        ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
-    <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>캐 릭 터 생 성 & 계 정 관 리</font></b></td></tr>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+    <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>캐 릭 터 생 성 &amp; 계 정 관 리</font></b></td></tr>
     <tr>
         <td>
 <font class=intro>◈ 각 서버의 특징을 알아봅시다.</font><br>
 <br>
-<img src=<?=$images;?>/help_04_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_04_01.jpg class=leftFloat>
 　<font class=bullet>☞</font> 온라인 게임을 해보셨다면 익숙한 서버 선택 화면입니다. 체섭은 크게 유저들만 활동하는 메이져 서버인 체섭과 NPC들과 어울릴 수 있는 마이너 서버인 퀘풰퉤훼섭으로 분류됩니다. 마이너 서버들은 본래 테스트 서버 목적이므로 언제든지 리셋, 폐쇄될 수 있습니다.<br>
 <br>
 　<font class=bullet>☞</font> 체섭은 180년에 모두 공백지인 상태에서 유저들끼리 경쟁하는 가장 기본적인 방법의 삼모전입니다. 활동 유저도 가장 많고 그만큼 치열합니다. 대신 눈에 띄는 활약을 했다면 『명예의 전당』과 『왕조일람』에 그 명성을 영원히 남길 수 있습니다!<br>
@@ -224,7 +226,7 @@ if($category == 0) {
 　<font class=bullet>☞</font> 훼섭은 퉤섭과 비슷한 스타일이지만 고속진행이 특징입니다. 아침에 시작해서 밤에 통일되는 쾌속 서버! 휴가나 방학에 즐기면 좋습니다.<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_04_02.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_04_02.jpg class=rightFloat>
 <font class=intro>◈ 원하는 서버에 캐릭터를 생성해 봅시다.</font><br>
 <br>
 　<font class=bullet>☞</font> 마음에 드는 서버에서 장수생성을 클릭해봅시다. 저는 퉤섭을 찍어볼게요~<br>
@@ -233,10 +235,6 @@ if($category == 0) {
 <br>
 　<font class=bullet>☞</font> 생성할 캐릭터 이름을 입력합니다. 기본적으로는 닉네님으로 설정되어 있습니다. 매 기수마다 다른사람들이 알아보지 못하도록 숨어서 플레이(이하 잠입)하는 유저도 있습니다. 잠입의 묘미는 중수가 되면 저절로 아시게 될겁니다!<br>
 <br>
-<!--
-　<font class=bullet>☞</font> 서버 운영비를 지원하기 위해서 『참여』해주신 분들(이하 특별회원, 특회)은 특별히 전용 아이콘(이하 전콘)을 사용하실 수 있습니다. 체크를 하시면 됩니다.<br>
-<br>
--->
 　<font class=bullet>☞</font> 일반 장수 얼굴을 사용할때는 얼굴을 고릅니다. 각자의 개성을 나타낼 수 있도록 골라봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 장수의 성격을 선택합니다. 처음은 그냥 ????(랜덤)을 선택합니다.<br>
@@ -246,22 +244,18 @@ if($category == 0) {
 　<font class=bullet>☞</font> 장수생성을 누릅시다.<br>
 <br>
 　<font class=bullet>☞</font> 다시 로그인 해봅시다. 캐릭터가 생성되었군요!<br>
-<img src=<?=$images;?>/help_04_03.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_04_03.jpg class=leftFloat>
 <div class=clear></div>
 <br>
 <font class=intro>◈ 자신의 계정을 관리하는 방법을 알아봅시다.</font><br>
 <br>
-<img src=<?=$images;?>/help_04_04.jpg class=leftFloat>
-<img src=<?=$images;?>/help_04_05.jpg class=rightFloat>
-　<font class=bullet>☞</font> 플레이에 들어가기에 앞서 계정관리를 살펴봅시다. 계정관리의 비번&전콘을 눌러봅시다.<br>
+<img src=<?=ServConfig::$gameImagePath?>/help_04_04.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_04_05.jpg class=rightFloat>
+　<font class=bullet>☞</font> 플레이에 들어가기에 앞서 계정관리를 살펴봅시다. 계정관리의 비번&amp;전콘을 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 비밀번호를 변경할 수 있습니다.<br>
 <br>
-　<font class=bullet>☞</font> 닉네임은 함부로 변경할 수 없으며, 특별히 바꾸고 싶은 경우는 IRC에서 유기체에게 문의해 주세요~<br>
-<br>
-　<font class=bullet>☞</font> 참여하신 참여회원이라면 64x64크기의 자신만의 얼굴을 업로드하여 플레이할 수 있습니다.<br>
-<br>
-　<font class=bullet>☞</font> 아래에는 참여내역이 표시됩니다. 서버의 운영은 꽤 많은 자금이 드는 일이므로 유저 여러분들의 힘을 모아서 운영하고 있습니다. 몇천원도 좋습니다. 참여의 행복을 느껴보시고 참여회원의 혜택도 누려보세요~ 하지만 여긴 상업적 목적의 게임이 아니므로 참여의 댓가를 바라기보단 순수한 참여의 참뜻을 느껴보시길 바랍니다~^^ 참여해주신 분들에게 유기체는 항상 감사하게 생각하고 있습니다.<br>
+　<font class=bullet>☞</font> 닉네임은 함부로 변경할 수 없으며, 특별히 바꾸고 싶은 경우는 관리자에게 문의해 주세요~<br>
 <br>
 <font class=intro>◈ 자, 이제 본격적으로 게임에 들어가볼까요! 지금은 연습이므로 풰섭이나 퉤섭중에서 하나에 캐릭터를 생성하고 입장해봅시다.</font><br>
         </td>
@@ -270,21 +264,21 @@ if($category == 0) {
 
 
 
-<?
-} elseif($category == 4) {
-?>
+<?php
+    } elseif ($category == 4) {
+        ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>명 령 입 력</font></b></td></tr>
     <tr>
         <td>
 <font class=intro>◈ 가장 기본이 되는 턴입력을 해봅시다.</font><br>
 <br>
-<img src=<?=$images;?>/help_05_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_01.jpg class=leftFloat>
 　<font class=bullet>☞</font> 중간에 보이는 세로 스크롤창에서 클릭, 드래그, Ctrl+클릭, Shift+클릭을 해봅시다. 클릭은 1개만 선택됩니다.<br>
 <br>
-<img src=<?=$images;?>/help_05_03.jpg class=rightFloat>
-<img src=<?=$images;?>/help_05_02.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_03.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_02.jpg class=rightFloat>
 　<font class=bullet>☞</font> 1턴 부분에서 버튼을 누른 후, 떼지 말고 5턴 부분까지 끌어봅시다. 여러개가 선택됩니다. 드래그라고 하지요.<br>
 <br>
 　<font class=bullet>☞</font> 이번엔 1턴을 클릭해봅시다. 그리고 Ctrl키를 누른 상태에서 3턴, 6턴을 눌러봅시다. 떨어져있는 여러가지를 선택할 수 있답니다.<br>
@@ -292,7 +286,7 @@ if($category == 0) {
 　<font class=bullet>☞</font> 이번엔 1턴 부분을 클릭해봅시다. 그리고 Shift키를 누른 상태에서 5턴 부분을 클릭해 봅시다. 드래그와 비슷한 기능이죠? 이처럼 여러가지 방법을 사용해서 예약할 턴을 선택할 수 있습니다.<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_05_04.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_04.jpg class=leftFloat>
 　<font class=bullet>☞</font> 간단하게 1턴, 3턴을 골라봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 우측에 보이는 콤보박스를 클릭하면 명령 목록이 쭉 나열됩니다. 휠이나 스크롤바를 사용하여 아래로 쭉 내려봅시다. ===개인=== 탭에 가장 먼저 보이는 견문을 선택합니다.
@@ -301,7 +295,7 @@ if($category == 0) {
 <br>
 　<font class=bullet>☞</font> 가장 우측에 보이는 곳에 1, 3번째 칸에 견문이 입력되었을겁니다. 이처럼 원하는 턴을 선택하고, 원하는 명령을 선택하고, 실행을 눌러서 원하는 명령을 원하는 턴에 입력하는게 가장 기본적인 플레이 방법입니다.<br>
 <br>
-<img src=<?=$images;?>/help_05_05.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_05.jpg class=leftFloat>
 　<font class=bullet>☞</font> 우측에 보이는 정보창(이하 예턴창)에서는 턴 순서, 게임시간, 실제시간, 명령이 보이게 됩니다. 방금 입력한대로 따르면 1턴이 197년 9월이고 실제 시간으로는 21시 30분에 실행된다는 뜻이네요^^<br>
 <br>
 　<font class=bullet>☞</font> 이처럼 자신의 턴시간에 자신이 예약해둔 명령이 실행되는 형태로 게임이 진행됩니다. 예약턴을 지정해놓고 잠을 자도 되고, 일을 해도 되고, IRC에 가서 전략을 토론하거나 잡담을 해도 되며, 심지어 멍때려도 됩니다!<br>
@@ -309,19 +303,19 @@ if($category == 0) {
 <br>
 <font class=intro>◈ 고급 턴 입력 스킬을 공부해 봅시다.</font><br>
 <br>
-<img src=<?=$images;?>/help_05_06.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_06.jpg class=leftFloat>
 　<font class=bullet>☞</font> 1턴에 견문을 입력해봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 2턴에 요양을 입력해봅시다.<br>
 <br>
-　<font class=bullet>☞</font> 반복&수정에서 2턴을 고르고 반복을 눌러봅시다.<br>
+　<font class=bullet>☞</font> 반복&amp;수정에서 2턴을 고르고 반복을 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 무슨 기능인지 눈치 채셨나요? 2턴 반복을 선택한다면 1~2턴이 반복되어 24턴까지 자동 입력되는 기능입니다. 5턴 반복이라면 1~5턴이 반복되어서 6~10, 11~15, 16~20, 21~24 까지 자동 입력되게 됩니다! 아주 편리한 기능이죠.<br>
 <br>
 　<font class=bullet>☞</font> 이번엔 전체턴에 견문을 입력해봅시다. 1~24턴까지 견문이 입력될겁니다.<br>
 <br>
-<img src=<?=$images;?>/help_05_07.jpg class=leftFloat>
-　<font class=bullet>☞</font> 반복&수정에서 5턴 미루기를 선택해 봅시다. 1~5턴이 휴식으로 된것을 볼 수 있습니다.<br>
+<img src=<?=ServConfig::$gameImagePath?>/help_05_07.jpg class=leftFloat>
+　<font class=bullet>☞</font> 반복&amp;수정에서 5턴 미루기를 선택해 봅시다. 1~5턴이 휴식으로 된것을 볼 수 있습니다.<br>
 <br>
 　<font class=bullet>☞</font> 무슨 기능인지 눈치 채셨나요? 현재 입력된 1~24턴이 그대로 5칸이 6~24턴으로 밀리게 되고 공백칸은 휴식으로 채워지게 됩니다. 전체 턴 순서는 유지하면서도 끼워넣거나 할때 편리하게 이용할 수 있습니다. 당기기도 비슷한 기능이랍니다. 직접 해보세요!<br>
 <br>
@@ -336,17 +330,17 @@ if($category == 0) {
 
 
 
-<?
-} elseif($category == 5) {
-?>
+<?php
+    } elseif ($category == 5) {
+        ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>인 터 페 이 스</font></b></td></tr>
     <tr>
         <td>
 <font class=intro>◈ 올턴 견문을 입력해놓으셨나요? 그럼 이제 각종 정보를 구경해볼까요?</font><br>
 <br>
-<img src=<?=$images;?>/help_06_01.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_01.jpg class=leftFloat>
 <font class=title>세력도</font><br>
 　<font class=bullet>☞</font> 전체 지도와 장수동향, 정세동향을 볼 수 있습니다. 여기 나오는 정보들은 최신 소식이 가장 위에 나오는 형태이므로 아래에서 위로(↑방향) 읽는 것이 시간순서가 되겠지요^^<br>
 <br>
@@ -396,7 +390,7 @@ if($category == 0) {
 　<font class=bullet>☞</font> 현재 서버내의 접속현황을 확인할 수 있습니다.<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_06_03.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_03.jpg class=rightFloat>
 　<font class=bullet>☞</font> 1. 현재 토너먼트 진행상황을 알 수 있습니다.<br>
 　<font class=bullet>☞</font> 2. 서버의 과부하 상황을 알 수 있습니다.<br>
 　<font class=bullet>☞</font> 3. 서버의 시나리오 종류를 알 수 있습니다.<br>
@@ -417,12 +411,11 @@ if($category == 0) {
 　<font class=bullet>☞</font> 18. 1~24턴의 예약턴 표시<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_06_04.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_04.jpg class=rightFloat>
 　<font class=bullet>☞</font> 소속 국가 정보 : 현재는 재야이므로 당연히 없겠죠? ^^ (일반장수 튜토리얼)<br>
 　<font class=bullet>☞</font> 내 장수 정보 표시<br>
 　<font class=bullet>☞</font> 캐릭터의 얼굴입니다.<br>
 　<font class=bullet>☞</font> 병력을 소유했을때, 해당 병력의 종류에 따른 그림<br>
-　<font class=bullet>☞</font> 회원분류 : 특별회원, 일반회원<br>
 　<font class=bullet>☞</font> 캐릭터 이름입니다.<br>
 　<font class=bullet>☞</font> 관직이 표시됩니다. 재야부터 군주까지 다양합니다.<br>
 　<font class=bullet>☞</font> 능력치에 따른 장수분류를 나타냅니다.<br>
@@ -448,7 +441,7 @@ if($category == 0) {
 　<font class=bullet>☞</font> 벌점 : 갱신(클릭)량에 따라서 벌점이 쌓입니다. 너무 무리한 갱신은 서버에 무리를 줄 수 있으므로 벌점이 너무 높으면 안되겠죠. 일반적으로 플레이하는 유저라면 신경쓰지 않아도 됩니다.<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_06_05.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_05.jpg class=rightFloat>
 　<font class=bullet>☞</font> 1. 국가정보창들 : 일반장수 튜토리얼 참고<br>
 　<font class=bullet>☞</font> 2. 장수동향 : 전체 장수들의 눈에 띄는 동향들이 표시됩니다.<br>
 　<font class=bullet>☞</font> 3. 개인기록 : 내 캐릭터의 명령 실행 결과들이 표시됩니다.<br>
@@ -457,32 +450,32 @@ if($category == 0) {
 　<font class=bullet>☞</font> 6. 보낼 메세지를 입력합니다.<br>
 　<font class=bullet>☞</font> 7. 엔터나 버튼을 눌러서 메세지를 보냅니다.<br>
 　<font class=bullet>☞</font> 8. 전체 메세지, 국가 메세지, 개인 메세지가 표시됩니다.<br>
-　<font class=bullet>☞</font> 9. 현재 버젼과 유기체의 연락처, 도움주신분들입니다.<br>
+　<font class=bullet>☞</font> 9. 현재 버젼과 Hide_D의 연락처, 도움주신분들입니다.<br>
 　<font class=bullet>☞</font> 10. 좋은 건의나 패치에 도움 주신분들을 적어드립니다~<br>
 <div class=clear></div>
 <br>
 <font class=intro>◈ 인터페이스 구경 잘 하셨나요? ^^ 그럼 이제 갱신 버튼을 눌러볼까요?</font><br>
-<img src=<?=$images;?>/help_06_06.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_06.jpg class=leftFloat>
 <br>
 　<font class=bullet>☞</font> 음? 뭐가 바뀐거지? 잘 살펴보시면 명령목록이 구경하시는동안 시간만큼 수행되어서 당겨진 것을 볼 수 있을겁니다. 5분턴 서버 기준으로 20분정도 구경을 하셨다면 약 4턴이 실행되었겠군요^^<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_06_07.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_07.jpg class=rightFloat>
 　<font class=bullet>☞</font> 개인기록을 보시면 4턴이 실행된동안의 결과가 기록되어있습니다. 하하핫! 동네 장사를 이겼군요!.<br>
 <br>
 　<font class=bullet>☞</font> 오오~ 레벨업 하는 모습도 보이는군요.<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_06_08.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_08.jpg class=leftFloat>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_06_09.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_09.jpg class=rightFloat>
 　<font class=bullet>☞</font> 자, 재야에서도 볼 수 있는 중원 정보를 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 각 국가별로 외교상황이나 장수 숫자를 살펴볼 수 있습니다. 한눈에 전체 정세를 파악할 때 유용하겠죠?<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_06_10.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_10.jpg class=rightFloat>
 　<font class=bullet>☞</font> 현재도시를 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 현재 자신이 소재하고 있는 도시의 정보를 볼 수 있습니다. 흠... 각종 수치들을 보니 아직 이 도시는 개발이 더딘 것 같군요. 뭐 우리나라가 아니므로 패스~<br>
@@ -492,8 +485,8 @@ if($category == 0) {
 　<font class=bullet>☞</font> 아악... 제 능력치가 빨간색인걸 보니 현재 부상을 입은 상태이군요. ㅠㅠ<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_06_11.jpg class=rightFloat>
-　<font class=bullet>☞</font> 이번엔 내정보&설정을 눌러봅시다.<br>
+<img src=<?=ServConfig::$gameImagePath?>/help_06_11.jpg class=rightFloat>
+　<font class=bullet>☞</font> 이번엔 내정보&amp;설정을 눌러봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 오. 좀 더 자세한 정보가 보이는군요. 명성과 계급, 전투기록과 숙련도도 볼 수 있군요. 개인기록도 더 오래전 것까지 볼 수 있구요. 전투 결과나 자신의 열전(역사)도 볼 수 있답니다.<br>
 <br>
@@ -508,27 +501,27 @@ if($category == 0) {
 
 
 
-<?
-} elseif($category == 6) {
-?>
+<?php
+    } elseif ($category == 6) {
+        ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>일 반 장 수</font></b></td></tr>
     <tr>
         <td>
 <font class=intro>◈ 국가에 임관하여 일반장수가 되어서 국가를 강성하게 만들어 봅시다!</font><br>
 <br>
-<img src=<?=$images;?>/help_07_01.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_07_01.jpg class=rightFloat>
 　<font class=bullet>☞</font> 1턴에 임관을 실행해봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 화면이 전환되면서 각국의 홍보문구가 나타납니다. 홍보문구를 보고 마음에 드는 국가를 선택해서 임관 버튼을 눌러봅시다. 손권을 돕고 싶으니 吳을 선택!<br>
 <br>
-<img src=<?=$images;?>/help_07_02.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_07_02.jpg class=leftFloat>
 　<font class=bullet>☞</font> 1턴에 【吳】(으)로 임관이라고 입력된게 보이죠? 지루하게 어떻게 기다리느냐구요? 나중에 중요 장수가 되거나 수뇌부, 군주가 되면 정신이 없을정도로 시간이 촉박할겁니다. ㅎㅎ 이리저리 구경하면서 임관이 되길 기다려봅시다.<br>
 <br>
 　<font class=bullet>☞</font> 1턴이 실행될즈음 중원정보나 현재도시를 들락날락 하거나 갱신 버튼을 눌러보면 임관명령 결과가 보이게 됩니다. 잘 임관 되었군요.<br>
 <br>
-<img src=<?=$images;?>/help_07_03.jpg class=leftFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_07_03.jpg class=leftFloat>
 　<font class=bullet>☞</font> 이제 한 국가의 소속 장수이므로 신분도 일반이 되었고 국가를 강성하게 만들기 위해서 열심히 일을 해봅시다. 국가는 열심히 일한 장수들을 위해서 1월마다 자금을, 7월마다 군량을 지급하게 됩니다. 이 돈을 가지고 내정도 하고, 나중에 전쟁이 벌어지면 병사도 모으게 됩니다. 혹은 여유자금을 가지고 아이템을 구입하거나 베팅장에 투자를 할 수도 있습니다!(응?)<br>
 <br>
 　<font class=bullet>☞</font> 임관을 하게 되면 자동으로 수도(깃발에 별표시)로 이동하게 되는데요. 흠. 도시정보를 보니 농업, 수비가 부족하군요. 전체 선택후 명령목록에서 농업이나 수비를 선택합시다. 이 장수는 무력보다 지력이 높으므로 지력이 중요한 농지개간을 선택합니다. 실행을 누르면 올턴 농지개간이 입력!<br>
@@ -538,7 +531,7 @@ if($category == 0) {
 　<font class=bullet>☞</font> 국가방침에서 장수들에게 방침을 정해준다면 그대로 따르는것이 더 좋겠죠? 국가는 일사불란하게 장수들이 움직일 때 더욱 강성해지는 법!<br>
 <div class=clear></div>
 <br>
-<img src=<?=$images;?>/help_07_04.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_07_04.jpg class=rightFloat>
 　<font class=bullet>☞</font> 이제 국가 정보가 나타나는군요. 살펴볼까요?<br>
 　<font class=bullet>☞</font> 국가명<br>
 　<font class=bullet>☞</font> 성향 : 국가의 성향입니다. 성향마다 장점과 단점이 존재합니다.<br>
@@ -577,11 +570,11 @@ if($category == 0) {
 
 
 
-<?
-} elseif($category == 7) {
-?>
+<?php
+    } elseif ($category == 7) {
+        ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>F A Q</font></b></td></tr>
     <tr>
         <td>
@@ -622,7 +615,7 @@ if($category == 0) {
 　<font class=bullet>☞</font> 특수병은 강력한 전투력 대신 자금과 군량 소모가 큰 특징이 있답니다.<br>
 　<font class=bullet>☞</font> 이민족병은 준수한 전투력과 더불어 자금과 군량 소모가 적은 특징이 있답니다.<br>
 　<font class=bullet>☞</font> 지역병은 일반병과 비슷한 능력에 기동력이나 회피율이 뛰어난 특징이 있답니다.<br>
-<img src=<?=$images;?>/help_08_01.jpg class=rightFloat>
+<img src=<?=ServConfig::$gameImagePath?>/help_08_01.jpg class=rightFloat>
 　　---------- 보병계열 ----------<br>
 　　　　보병 : 특별한 조건이 없이 만들 수 있어요.<br>
 　　　청주병 : <font color=cyan>중원</font>지역에서 생산이 가능해요.<br>
@@ -671,7 +664,7 @@ if($category == 0) {
 　<font class=bullet>☞</font> 첩보를 실행하고 개인기록을 확인하세요! 또한 첩보를 실행하면 3개월간 그 도시를 클릭하여 확인이 가능해요!<br>
 <br>
 <font class=title>전투 로그가 너무 길어서 지나가 버렸어요ㅠㅠ</font><br>
-　<font class=bullet>☞</font> 걱정하지 마세요^^ 메인화면 메뉴중 내정보&설정 부분을 클릭하면 더 많은 로그를 확인할 수 있어요!<br>
+　<font class=bullet>☞</font> 걱정하지 마세요^^ 메인화면 메뉴중 내정보&amp;설정 부분을 클릭하면 더 많은 로그를 확인할 수 있어요!<br>
 <br>
 <font class=title>다른도시는 볼 수 없나요?</font><br>
 　<font class=bullet>☞</font> 우리나라의 장수들이 있는 도시라면 도시의 자세한 정보와 도시에 있는 장수들을 볼 수 있어요!<br>
@@ -730,7 +723,7 @@ if($category == 0) {
 　<font class=bullet>☞</font>소집해제: 현재 소유중인 병사를 해체하고 주민으로 돌려보냅니다.<br>
 　---------- 인 사 ----------<br>
 　<font class=bullet>☞</font>　　이동: 인접 도시로 이동합니다.<br>
-　<font class=bullet>☞</font>　　등용: 재야나 타국의 장수를 등용합니다. 서신은 개인메세지로 도착하며 상대 장수가 수락,거절을 하게 됩니다.<br>
+　<!--<font class=bullet>☞</font>　　등용: 재야나 타국의 장수를 등용합니다. 서신은 개인메세지로 도착하며 상대 장수가 수락,거절을 하게 됩니다.<br>--> <!--xxx:등용장 일단 끔-->
 　<font class=bullet>☞</font>　　집합: 현재 도시로 부대원들을 집합합니다. 부대장만 가능합니다.<br>
 　<font class=bullet>☞</font>　　귀환: 태수, 군사, 시중인 경우 자신의 도시로 귀환합니다.<br>
 　<font class=bullet>☞</font>　　임관: 국가에 사관을 합니다. 대상 국가의 군주가 있는 장소로 바로 이동합니다. 재야만 가능합니다.<br>
@@ -761,20 +754,20 @@ if($category == 0) {
 
 
 
-<?
-}
+<?php
+    }
 ?>
 
-<table align=center border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13;word-break:break-all; id=bg0>
+<table align=center border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr>
-        <td align=center><input type=button style=background-color:<?=$category==0?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='시작하기' onclick=location.replace('help.php?category=0')></td>
-        <td align=center><input type=button style=background-color:<?=$category==1?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='회원가입' onclick=location.replace('help.php?category=1')></td>
-        <td align=center><input type=button style=background-color:<?=$category==2?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='접속관리' onclick=location.replace('help.php?category=2')></td>
-        <td align=center><input type=button style=background-color:<?=$category==3?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='캐릭터생성' onclick=location.replace('help.php?category=3')></td>
-        <td align=center><input type=button style=background-color:<?=$category==4?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='명령입력' onclick=location.replace('help.php?category=4')></td>
-        <td align=center><input type=button style=background-color:<?=$category==5?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='인터페이스' onclick=location.replace('help.php?category=5')></td>
-        <td align=center><input type=button style=background-color:<?=$category==6?"red":"#225500";?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13; value='일반장수' onclick=location.replace('help.php?category=6')></td>
-        <td align=center><input type=button style=background-color:<?=$category==7?"red":"#225500";?>;color:white;width:123px;height:50px;font-weight:bold;font-size:13; value='FAQ' onclick=location.replace('help.php?category=7')></td>
+        <td align=center><input type=button style=background-color:<?=$category==0?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='시작하기' onclick=location.replace('help.php?category=0')></td>
+        <td align=center><input type=button style=background-color:<?=$category==1?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='회원가입' onclick=location.replace('help.php?category=1')></td>
+        <td align=center><input type=button style=background-color:<?=$category==2?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='접속관리' onclick=location.replace('help.php?category=2')></td>
+        <td align=center><input type=button style=background-color:<?=$category==3?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='캐릭터생성' onclick=location.replace('help.php?category=3')></td>
+        <td align=center><input type=button style=background-color:<?=$category==4?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='명령입력' onclick=location.replace('help.php?category=4')></td>
+        <td align=center><input type=button style=background-color:<?=$category==5?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='인터페이스' onclick=location.replace('help.php?category=5')></td>
+        <td align=center><input type=button style=background-color:<?=$category==6?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='일반장수' onclick=location.replace('help.php?category=6')></td>
+        <td align=center><input type=button style=background-color:<?=$category==7?"red":"#225500"?>;color:white;width:123px;height:50px;font-weight:bold;font-size:13px; value='FAQ' onclick=location.replace('help.php?category=7')></td>
     </tr>
 </table>
 </body>

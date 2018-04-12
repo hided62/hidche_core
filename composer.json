@@ -1,0 +1,41 @@
+{
+    "name":"sammo-hid/sammo",
+    "description":"삼국지 모의전투 HiDCHe",
+    "license": [
+       "MIT",
+       "GPL-2.0-or-later",
+       "proprietary"
+    ],
+    "require": {
+        "brandonwamboldt/utilphp": "^1.1",
+        "sergeytsalkov/meekrodb": "^2.3",
+        "league/plates": "^3.3",
+        "guzzlehttp/guzzle": "^6.3",
+        "leafo/scssphp": "^0.7.5",
+        "monolog/monolog": "^1.23",
+        "firephp/firephp-core": "^0.4.0",
+        "vlucas/valitron": "^1.4",
+        "php-extended/php-tail": "^2.1",
+        "pguardiario/phpuri": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "sammo\\": [
+                "src/sammo"
+            ],
+            "kakao\\": [
+                "src/kakao"
+            ]
+        },
+        "classmap": [
+            "d_setting/"
+        ],
+        "exclude-from-classmap": [
+            "**/*.orig.php"
+        ],
+        "files":[
+            "f_config/config.php"
+        ]
+    }
+    
+}

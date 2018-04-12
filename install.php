@@ -1,6 +1,4 @@
-<?
-require_once('_common.php');
+<?php
+namespace sammo;
 
-?>
-
-<meta HTTP-EQUIV="refresh" CONTENT="0; URL=f_install/install.php">
+header('location:f_install/install.php');

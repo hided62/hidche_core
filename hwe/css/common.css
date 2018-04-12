@@ -1,0 +1,128 @@
+@charset "UTF-8";
+
+html, body{
+    background-color:black;
+    color:white;
+}
+
+table { font-family:'맑은 고딕'; line-height:110%; }
+font { font-family:'맑은 고딕'; line-height:110%; }
+input { font-family:'맑은 고딕'; line-height:110%; height:20px }
+select { font-family:'굴림'; line-height:100%; }
+
+/* */
+
+.ev_warning{
+    color:orangered;
+}
+
+.ev_notice{
+    color:orangered;
+}
+
+.ev_succes{
+    color:lightgreen;
+}
+
+.ev_sell{
+    color:orange;
+}
+
+.ev_failed{
+    color:orangered;
+}
+
+.ev_highlight{
+    color:orangered;
+}
+
+/* TODO: 색상값이 아니라 의미에 따라 클래스 지정 */
+
+.o_bullet::before{
+    color:cyan;
+    content:"●";
+}
+
+.o_diamond::before{
+    color:orangered;
+    content:"◆";
+}
+
+.small_war_log{
+    display:inline-block;
+}
+
+.small_war_log .war_type_attack{
+    color:cyan;
+}
+
+.small_war_log .war_type_defense{
+    color:magenta;
+}
+
+.small_war_log .war_type_siege{
+    color:white;
+}
+
+
+
+.small_war_log .name_plate{
+    font-size: 0.75em;
+}
+
+.small_war_log .name_plate_cover{
+    color:yellow;
+}
+
+.small_war_log .crew_plate{
+    color:orangered;
+}
+
+.t_date{
+    font-size: 0.75em;
+}
+
+.t_red{
+    color:red;
+}
+
+.t_blue{
+    color:blue;
+}
+
+.t_green{
+    color:green;
+}
+
+.t_magenta{
+    color:magenta;
+}
+
+.t_cyan{
+    color:cyan;
+}
+
+.t_limegreen{
+    color:limegreen;
+}
+
+.t_skyblue{
+    color:skyblue;
+}
+
+.t_orangered{
+    color:orangered;
+}
+
+.t_yellow{
+    color:yellow;
+}
+
+.t_white{
+    color:white;
+}
+
+.float_left{
+    float:left;
+}
+

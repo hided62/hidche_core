@@ -1,0 +1,30 @@
+{
+    "title":"【모드명】 시나리오 명",
+    "life":0,
+    "fiction":0,
+    "nation":[
+        ["str:국가명", "#800000", "int:금", "int:쌀", "str:국가설명", "int:기술", "str:성향", "int:국가규모", 
+            ["str:소속도시"]
+        ]
+    ],
+    "diplomacy":[
+        ["int:국가", "int:국가", "int:외교종류", "int:기간"]
+    ],
+    "general":[
+        ["int:상성",       "str:장수명","int:금",  "int:쌀",    "str:도시(null:'랜덤)", "int:통", "int:무", "int:지", "int:관직", "int:생년", "int:몰년",    "str:내특",    "str:전특", "opt,str:대사"]
+    ],
+    "general_ex":[
+    ],
+    "cities":[
+
+    ],
+    "history":[
+        "str:역사"
+    ],
+    "initialActions":[
+        "array:event form"
+    ],
+    "events":[
+        "array:event form"
+    ]
+}

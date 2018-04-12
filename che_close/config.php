@@ -1,6 +1,0 @@
-<?
-localhost
-root
-root
-test
-?>
