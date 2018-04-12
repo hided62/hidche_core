@@ -7,6 +7,43 @@ mb_internal_encoding("UTF-8");
 mb_http_output('UTF-8');
 mb_regex_encoding('UTF-8'); 
 
+function getFriendlyErrorType($type) 
+{ 
+    switch($type) 
+    { 
+        case E_ERROR: // 1 // 
+            return 'E_ERROR'; 
+        case E_WARNING: // 2 // 
+            return 'E_WARNING'; 
+        case E_PARSE: // 4 // 
+            return 'E_PARSE'; 
+        case E_NOTICE: // 8 // 
+            return 'E_NOTICE'; 
+        case E_CORE_ERROR: // 16 // 
+            return 'E_CORE_ERROR'; 
+        case E_CORE_WARNING: // 32 // 
+            return 'E_CORE_WARNING'; 
+        case E_COMPILE_ERROR: // 64 // 
+            return 'E_COMPILE_ERROR'; 
+        case E_COMPILE_WARNING: // 128 // 
+            return 'E_COMPILE_WARNING'; 
+        case E_USER_ERROR: // 256 // 
+            return 'E_USER_ERROR'; 
+        case E_USER_WARNING: // 512 // 
+            return 'E_USER_WARNING'; 
+        case E_USER_NOTICE: // 1024 // 
+            return 'E_USER_NOTICE'; 
+        case E_STRICT: // 2048 // 
+            return 'E_STRICT'; 
+        case E_RECOVERABLE_ERROR: // 4096 // 
+            return 'E_RECOVERABLE_ERROR'; 
+        case E_DEPRECATED: // 8192 // 
+            return 'E_DEPRECATED'; 
+        case E_USER_DEPRECATED: // 16384 // 
+            return 'E_USER_DEPRECATED'; 
+    } 
+    return "{$type}"; 
+}
 
 function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, int $errline, array $errcontext){
     if (!(error_reporting() & $errno)) {
@@ -20,10 +57,9 @@ function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, in
 
     $data = Json::encode([
         'date'=>$date,
-        'errno'=>$errno,
+        'err'=>getFriendlyErrorType($errno),
         'errstr'=>$errstr,
-        'aux'=>'error',
-        'trace'=>$e->getTraceAsString()
+        'trace'=>explode("\n", $e->getTraceAsString())
     ], Json::PRETTY);
 
     file_put_contents(ROOT.'/d_log/err_log.txt',"$data\n", FILE_APPEND);
@@ -37,12 +73,12 @@ function logExceptionByCustomHandler(\Throwable $e){
 
     $data = Json::encode([
         'date'=>$date,
-        'errno'=>$e->getCode(),
+        'err'=>get_class($e),
         'errstr'=>$e->getMessage(),
-        'aux'=>'exception',
-        'trace'=>$e->getTraceAsString()
+        'trace'=>explode("\n", $e->getTraceAsString())
     ], Json::PRETTY);
 
     file_put_contents(ROOT.'/d_log/err_log.txt',"$data\n", FILE_APPEND);
+    throw $e;
 }
 set_exception_handler('\\sammo\\logExceptionByCustomHandler');
