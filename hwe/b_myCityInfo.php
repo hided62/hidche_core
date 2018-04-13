@@ -5,6 +5,9 @@ include "lib.php";
 include "func.php";
 
 $type = Util::getReq('type', 'int', 10);
+if ($type <= 0 || $type > 12) {
+    $type = 10;
+}
 
 extractMissingPostToGlobals();
 
@@ -26,9 +29,6 @@ if ($me['level'] == 0) {
     exit();
 }
 
-if ($type <= 0 || $type > 12) {
-    $type = 10;
-}
 $sel = [$type => "selected"];
 
 ?>

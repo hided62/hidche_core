@@ -12,6 +12,10 @@ $btn = Util::getReq('btn');
 $gen = Util::getReq('gen', 'int', 0);
 $type = Util::getReq('type', 'int', 0);
 
+if ($type < 0 || $type > 3) {
+    $type = 0;
+}
+
 extractMissingPostToGlobals();
 
 //로그인 검사
@@ -63,9 +67,6 @@ if ($btn == '정렬하기') {
     $gen = 0;
 }
 
-if ($type <= 0 || $type > 3) {
-    $type = 0;
-}
 $sel = [];
 $sel[$type] = "selected";
 

@@ -6,6 +6,7 @@ include "func.php";
 // $btn, $name, $troop
 $btn = Util::getReq('btn');
 $name = Util::getReq('name');
+$gen = Util::getReq('gen', 'int');
 $troop = Util::getReq('troop', 'int');
 
 extractMissingPostToGlobals();

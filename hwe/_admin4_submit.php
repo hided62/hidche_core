@@ -12,7 +12,7 @@ if($session->userGrade < 5) {
 }
 
 $btn = Util::getReq('btn');
-$genlist = Util::getReq('genlist', 'int');
+$genlist = Util::getReq('genlist', 'array_int');
 
 extractMissingPostToGlobals();
 

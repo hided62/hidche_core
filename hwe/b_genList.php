@@ -5,6 +5,9 @@ include "lib.php";
 include "func.php";
 
 $type = Util::getReq('type', 'int', 7);
+if ($type <= 0 || $type > 8) {
+    $type = 7;
+}
 
 extractMissingPostToGlobals();
 
@@ -40,9 +43,6 @@ if ($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretli
     exit();
 }
 
-if ($type <= 0 || $type > 8) {
-    $type = 7;
-}
 $sel = [];
 $sel[$type] = "selected";
 

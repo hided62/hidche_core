@@ -7,6 +7,13 @@ include "func.php";
 $type = Util::getReq('type', 'int', 0);
 $type2 = Util::getReq('type2', 'int', 0);
 
+if($type < 0 || $type > 17){
+    $type = 0;
+}
+if($type2 < 0 || $type2 > 6){
+    $type2 = 0;
+}
+
 extractMissingPostToGlobals();
 
 //로그인 검사
@@ -35,12 +42,6 @@ if($session->userGrade < 5) {
 $db = DB::db();
 $connect=$db->get();
 
-if($type == 0) {
-    $type = 0;
-}
-if($type2 == 0) {
-    $type2 = 0;
-}
 $sel = [];
 $sel2 = [];
 $sel[$type] = "selected";

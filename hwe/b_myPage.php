@@ -11,15 +11,15 @@ $tnmt = Util::getReq('tnmt', 'int', 1);
 
 extractMissingPostToGlobals();
 
-if($map < 0 && $map > 2){
+if($map < 0 || $map > 2){
     $map = 0;
 }
 
-if($mode < 0 && $mode > 2){
+if($mode < 0 || $mode > 2){
     $mode = 2;
 }
 
-if($tnmt < 0 && $tnmt > 1){
+if($tnmt < 0 || $tnmt > 1){
     $tnmt = 1;
 }
 
