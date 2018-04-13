@@ -863,7 +863,7 @@ function generalInfo($no) {
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
-        <td width=64 height=64 align=center rowspan=3 background={$imageTemp}/{$general['picture']}>&nbsp;</td>
+        <td width=64 height=64 align=center rowspan=3 style='background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;'>&nbsp;</td>
         <td align=center colspan=9 height=16 style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
     </tr>
     <tr height=16>

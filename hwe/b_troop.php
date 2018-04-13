@@ -93,7 +93,7 @@ for($i=0; $i < $troopcount; $i++) {
     <tr>
         <td align=center rowspan=2>&nbsp;</td>
         <td align=center >{$troop['name']}<br>【 $cityname 】</td>
-        <td height=64 background={$imageTemp}/{$picture}>&nbsp;</td>
+        <td height=64 style='background:no-repeat center url(\"{$imageTemp}/{$picture}\");background-size:64px;'>&nbsp;</td>
         <td rowspan=2 width=662>$genlist</td>
         <td rowspan=2>";
 
