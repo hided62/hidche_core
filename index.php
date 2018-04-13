@@ -53,15 +53,12 @@ function getOAuthToken(mode='login', scope_list = null){
 
 }
 
-function sendTempPasswordToKakaoTalk(retry=false){
+function sendTempPasswordToKakaoTalk(){
     $.post({
         url:'j_change_pw.php',
         dataType:'json'
     }).then(function(obj){
-        if (!obj.result && retry) {
-            getOAuthToken('change_pw', 'talk_message');
-        }
-        else if(!obj.result){
+        if(!obj.result){
             alert(obj.reason);
         }
         else{
@@ -70,18 +67,13 @@ function sendTempPasswordToKakaoTalk(retry=false){
     });
 }
 
-function doLoginUsingOAuth(retry=false){
+function doLoginUsingOAuth(){
     $.post({
         url:'oauth_kakao/j_login_oauth.php',
         dataType:'json'
     }).then(function(obj){
         if(!obj.result){
-            if(obj.noRetry || !retry){
-                alert(obj.reason);
-            }
-            else{
-                getOAuthToken('login');
-            }
+            alert(obj.reason);
         }
         else{
             window.location.href = "./";
@@ -140,7 +132,7 @@ function postOAuthResult(result){
 
                     <input type="hidden" id="global_salt" name="global_salt" value="<?=RootDB::getGlobalSalt()?>">
                     <div class="form-group row">
-                        <div class="col-sm-4" style="position:relative;"><a href="javascript:doLoginUsingOAuth(true);"><img style="height:46px;margin-top:6px;" src="oauth_kakao/kakao_btn.png"></a></div>
+                        <div class="col-sm-4" style="position:relative;"><a href="javascript:getOAuthToken('login');"><img style="height:46px;margin-top:6px;" src="oauth_kakao/kakao_btn.png"></a></div>
                         <div class="col-sm-8">
                             <button type="submit" class="btn btn-primary btn-lg btn-block login-button">로그인</button>
                         </div>
@@ -148,7 +140,7 @@ function postOAuthResult(result){
                 </form>
 <!--
                 <div class="form-group row">
-                    <div class="col-sm-4"><a href="javascript:sendTempPasswordToKakaoTalk(true);">비밀번호 찾기<img src="oauth_kakao/kakao_to_me.png"></a></div>
+                    <div class="col-sm-4"><a href="javascript:getOAuthToken('change_pw', 'talk_message');">비밀번호 찾기<img src="oauth_kakao/kakao_to_me.png"></a></div>
                     <div class="col-sm-8">
                         
                     </div>

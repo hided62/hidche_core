@@ -29,15 +29,12 @@ function getOAuthToken(mode='login', scope_list = null){
 
 }
 
-function sendTempPasswordToKakaoTalk(retry=false){
+function sendTempPasswordToKakaoTalk(){
     $.post({
         url:'j_change_pw.php',
         dataType:'json'
     }).then(function(obj){
-        if (!obj.result && retry) {
-            getOAuthToken('change_pw', 'talk_message');
-        }
-        else if(!obj.result){
+        if(!obj.result){
             alert(obj.reason);
         }
         else{
@@ -46,18 +43,13 @@ function sendTempPasswordToKakaoTalk(retry=false){
     });
 }
 
-function doLoginUsingOAuth(retry=false){
+function doLoginUsingOAuth(){
     $.post({
         url:'j_login_oauth.php',
         dataType:'json'
     }).then(function(obj){
         if(!obj.result){
-            if(obj.noRetry || !retry){
-                alert(obj.reason);
-            }
-            else{
-                getOAuthToken('login');
-            }
+            alert(obj.reason);
         }
         else{
             window.location.href = "../";
@@ -89,10 +81,10 @@ function postOAuthResult(result){
 </head>
 <body>
     
-    <a href="javascript:doLoginUsingOAuth(true);"><img src="kakao_btn.png"></a><br>
+    <a href="javascript:getOAuthToken('login');"><img src="kakao_btn.png"></a><br>
 <br>
     비밀번호 찾기<br>
-    <a href="javascript:sendTempPasswordToKakaoTalk(true);"><img src="kakao_to_me.png"></a>
+    <a href="javascript:getOAuthToken('change_pw', 'talk_message');"><img src="kakao_to_me.png"></a>
 <input type='hidden' name="login_mode" id="login_mode">
 </body>
 </html>
