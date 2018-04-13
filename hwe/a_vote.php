@@ -340,6 +340,7 @@ function getVoteColor($type)
     }
 
     switch ($type) {
+    default:
     case 0: $color = "black"; break;
     case 1: $color = "red"; break;
     case 2: $color = "orange"; break;

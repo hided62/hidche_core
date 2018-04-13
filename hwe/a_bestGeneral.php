@@ -55,6 +55,7 @@ if ($con >= 2) {
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <?php
 if (isset($btn) && $btn == "NPC 보기") {
+    //FIXME: query가 너무 적나라.
     $sel = "npc>=2";
 } else {
     $sel = "npc<2";

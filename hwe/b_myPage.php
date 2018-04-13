@@ -5,6 +5,21 @@ include "lib.php";
 include "func.php";
 
 $btn = Util::getReq('btn');
+$map = Util::getReq('map', 'int', 0);
+$mode = Util::getReq('mode', 'int', 2);
+$tnmt = Util::getReq('tnmt', 'int', 1);
+
+if($map < 0 && $map > 2){
+    $map = 0;
+}
+
+if($mode < 0 && $mode > 2){
+    $mode = 2;
+}
+
+if($tnmt < 0 && $tnmt > 1){
+    $tnmt = 1;
+}
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

@@ -3,6 +3,9 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$type = Util::getReq('type', 'int', 9);
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -13,17 +16,20 @@ $connect=$db->get();
 increaseRefresh("장수일람", 2);
 
 $query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $admin = MYDB_fetch_array($result);
 
 $query = "select con,turntime from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
 $con = checkLimit($me['con'], $admin['conlimit']);
-if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
+if ($con >= 2) {
+    printLimitMsg($me['turntime']);
+    exit();
+}
 
-if(!isset($type) || $type == 0) {
+if ($type <= 0 || $type > 15) {
     $type = 9;
 }
 
@@ -68,12 +74,12 @@ if(!isset($type) || $type == 0) {
 $nationname = [];
 $nationlevel = [];
 $nationname[0] = "-";
-foreach(getAllNationStaticInfo() as $nation){
+foreach (getAllNationStaticInfo() as $nation) {
     $nationname[$nation['nation']] = $nation['name'];
     $nationlevel[$nation['nation']] = $nation['level'];
 }
 
-switch($type) {
+switch ($type) { //FIXME:  $query 처리 조심.
     case  1: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by nation"; break;
     case  2: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by leader desc"; break;
     case  3: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by power desc"; break;
@@ -82,6 +88,7 @@ switch($type) {
     case  6: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by dedication desc"; break;
     case  7: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by level desc"; break;
     case  8: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by killturn"; break;
+    default:
     case  9: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by connect desc"; break;
     case 10: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by experience desc"; break;
     case 11: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by personal"; break;
@@ -90,7 +97,7 @@ switch($type) {
     case 14: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by age desc"; break;
     case 15: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by npc desc"; break;
 }
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $gencount = MYDB_num_rows($genresult);
 
 echo"
@@ -112,24 +119,24 @@ echo"
         <td width=45 align=center id=bg1>삭턴</td>
         <td width=84 align=center id=bg1>벌점</td>
     </tr>";
-for($j=0; $j < $gencount; $j++) {
+for ($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
     $nation = $nationname[$general['nation']];
 
-    if($general['level'] == 12) {
+    if ($general['level'] == 12) {
         $lbonus = $nationlevel[$general['nation']] * 2;
-    } elseif($general['level'] >= 5) {
+    } elseif ($general['level'] >= 5) {
         $lbonus = $nationlevel[$general['nation']];
     } else {
         $lbonus = 0;
     }
-    if($lbonus > 0) {
+    if ($lbonus > 0) {
         $lbonus = "<font color=cyan>+{$lbonus}</font>";
     } else {
         $lbonus = "";
     }
 
-    if($general['injury'] > 0) {
+    if ($general['injury'] > 0) {
         $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
         $power = intdiv($general['power'] * (100 - $general['injury']), 100);
         $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
@@ -142,9 +149,13 @@ for($j=0; $j < $gencount; $j++) {
         $intel = "{$general['intel']}";
     }
 
-    if($general['npc'] >= 2) { $name = "<font color=cyan>{$general['name']}</font>"; }
-    elseif($general['npc'] == 1) { $name = "<font color=skyblue>{$general['name']}</font>"; }
-    else { $name =  "{$general['name']}"; }
+    if ($general['npc'] >= 2) {
+        $name = "<font color=cyan>{$general['name']}</font>";
+    } elseif ($general['npc'] == 1) {
+        $name = "<font color=skyblue>{$general['name']}</font>";
+    } else {
+        $name =  "{$general['name']}";
+    }
 
     $general['connect'] = Util::round($general['connect'] / 10) * 10;
 
@@ -160,12 +171,15 @@ for($j=0; $j < $gencount; $j++) {
         <td align=center>{$nation}</td>
         <td align=center>".getHonor($general['experience'])."</td>
         <td align=center>".getDed($general['dedication'])."</td>
-        <td align=center>"; echo getLevel($general['level']); echo "</td>
+        <td align=center>";
+    echo getLevel($general['level']);
+    echo "</td>
         <td align=center>$leader</td>
         <td align=center>$power</td>
         <td align=center>$intel</td>
         <td align=center>{$general['killturn']}</td>
-        <td align=center>{$general['connect']}"; echo "<br>【".getConnect($general['connect'])."】</td>
+        <td align=center>{$general['connect']}";
+    echo "<br>【".getConnect($general['connect'])."】</td>
     </tr>";
 }
 echo "

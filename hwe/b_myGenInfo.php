@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$type = Util::getReq('type', 'int');
+$type = Util::getReq('type', 'int', 1);
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -25,7 +25,7 @@ if($me['level'] == 0) {
 }
 
 
-if($type == 0) {
+if($type <= 0 || $type > 15) {
     $type = 1;
 }
 $sel = [$type => "selected"];

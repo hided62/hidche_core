@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$type = Util::getReq('type', 'int');
+$type = Util::getReq('type', 'int', 7);
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -38,7 +38,7 @@ if ($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretli
     exit();
 }
 
-if ($type == 0) {
+if ($type <= 0 || $type > 8) {
     $type = 7;
 }
 $sel = [];

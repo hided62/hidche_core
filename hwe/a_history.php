@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 $btn = Util::getReq('btn');
-$yearmonth = Util::getReq('yearmonth');
+$yearmonth = Util::getReq('yearmonth', 'int');
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -44,8 +44,8 @@ if (!$yearmonth) {
     $year = $admin['year'];
     $month = $admin['month'] - 1;
 } else {
-    $year = substr($yearmonth, 0, 3) - 0;
-    $month = substr($yearmonth, 3, 2) - 0;
+    $year = intdiv($yearmonth, 100);
+    $month = $yearmonth % 100;
 
     if ($btn == "◀◀ 이전달") {
         $month -= 1;

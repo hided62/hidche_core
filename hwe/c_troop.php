@@ -17,7 +17,6 @@ $db = DB::db();
 $me = $db->queryFirstRow('SELECT `no`, nation, troop FROM general WHERE `owner`=%i', $userID);
 
 $name = trim($name);
-$name = addslashes(SQ2DQ($name));
 if($btn == "부 대 창 설" && $name != "" && $me['troop'] == 0) {
     $db->insert('troop',[
         'name'=>$name,

@@ -9,8 +9,8 @@ $v->rule('required', 'gen')
 ->rule('integer', 'gen');
 
 $btn = Util::getReq('btn');
-$gen = Util::getReq('gen', 'int');
-$type = Util::getReq('type', 'int');
+$gen = Util::getReq('gen', 'int', 0);
+$type = Util::getReq('type', 'int', 0);
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -61,7 +61,7 @@ if ($btn == '정렬하기') {
     $gen = 0;
 }
 
-if ($type == 0) {
+if ($type <= 0 || $type > 3) {
     $type = 0;
 }
 $sel = [];
@@ -96,6 +96,7 @@ $sel[$type] = "selected";
         <select name=gen size=1>
 <?php
 switch ($type) {
+    default:
     case 0: $query = "select no,name from general where nation='{$me['nation']}' order by turntime desc"; break;
     case 1: $query = "select no,name from general where nation='{$me['nation']}' order by recwar desc"; break;
     case 2: $query = "select no,name from general where nation='{$me['nation']}' order by npc,binary(name)"; break;

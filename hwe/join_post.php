@@ -53,8 +53,6 @@ $leader = Util::getReq('leader', 'int', 50);
 $power = Util::getReq('power', 'int', 50);
 $intel = Util::getReq('intel', 'int', 50);
 
-$mylog = [];
-
 $rootDB = RootDB::db();
 //회원 테이블에서 정보확인
 $member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name` FROM MEMBER WHERE no=%i', $userID);
@@ -179,7 +177,7 @@ if ($lastconnect >= $turntime) {
 }
 
 //특회 전콘
-if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "" && $pic == 1) {
+if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture'] != "" && $pic) {
     $face = $member['picture'];
     $imgsvr = $member['imgsvr'];
 } else {
@@ -235,12 +233,14 @@ $me = [
     'no'=>$generalID
 ];
 
+$log = [];
+$mylog = [];
+
 if ($genius) {
     $log[0] = "<C>●</>{$admin['month']}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>(이)라는 기재가 천하에 이름을 알립니다.";
     $log[1] = "<C>●</>{$admin['month']}월:<C>".getGenSpecial($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
 
-    $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【천재】</b></><G><b>{$cityname}</b></>에 천재가 등장했습니다.";
-    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushWorldHistory(["<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【천재】</b></><G><b>{$cityname}</b></>에 천재가 등장했습니다."], $admin['year'], $admin['month']);
 } else {
     $log[0] = "<C>●</>{$admin['month']}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>(이)라는 호걸이 천하에 이름을 알립니다.";
 }

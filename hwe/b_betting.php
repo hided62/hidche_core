@@ -28,6 +28,7 @@ if ($con >= 2) {
 }
 
 switch ($admin['tnmt_type']) {
+default: throw new \RuntimeException('Invalid tnmt_type');break;
 case 0: $tnmt_type = "<font color=cyan>전력전</font>"; $tp = "tot"; $tp2 = "종합"; $tp3 = "total"; break;
 case 1: $tnmt_type = "<font color=cyan>통솔전</font>"; $tp = "ldr"; $tp2 = "통솔"; $tp3 = "leader"; break;
 case 2: $tnmt_type = "<font color=cyan>일기토</font>"; $tp = "pwr"; $tp2 = "무력"; $tp3 = "power"; break;
@@ -96,6 +97,7 @@ $query = "select npc,name,win from tournament where grp>=50 order by grp, grp_no
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $cent = [];
 $line = [];
+$gen = [];
 for ($i=0; $i < 1; $i++) {
     $cent[$i] = "<font color=white>";
 }

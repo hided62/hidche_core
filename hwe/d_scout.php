@@ -10,6 +10,8 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 
+$gen = Util::getReq('gen', 'int');
+
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 //FIXME: 망했음. CriticalFailure. 재 구현.
