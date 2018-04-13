@@ -858,7 +858,7 @@ function generalInfo($no) {
     elseif($general['mode'] == 1) { $general['mode'] = "<font color=limegreen>수비 함(훈사60)</font>"; }
     else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
 
-    $weapImage = ServConfig::$gameImagePath."/weap{$general['crewtype']}.jpg";
+    $weapImage = ServConfig::$gameImagePath."/weap{$general['crewtype']}.png";
     if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
@@ -886,7 +886,7 @@ function generalInfo($no) {
         <td align=center colspan=2><font size=1>$bookname</font></td>
     </tr>
     <tr>
-        <td align=center height=64 rowspan=3 background={$weapImage}>&nbsp;</td>
+        <td align=center height=64 rowspan=3 style='background:no-repeat center url(\"{$weapImage}\");background-size:64px;'></td>
         <td align=center id=bg1><b>자금</b></td>
         <td align=center colspan=2>{$general['gold']}</td>
         <td align=center id=bg1><b>군량</b></td>
@@ -1156,7 +1156,7 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
         <td width=148 align=center id=bg1>$when</td>
     </tr>
     <tr>
-        <td width=64 height=64 valign=top><img src={$imageTemp}/{$picture} width=64 height=64 border=0></td>
+        <td width=64 height=64 valign=top><img width='64' height='64' src={$imageTemp}/{$picture} border=0></td>
         <td width=932 colspan=2>$message[1]</td>
     </tr>";
     for($i=0; $i < $count; $i++) {

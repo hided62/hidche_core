@@ -20,11 +20,11 @@
     data-id="<?=$id?>"
 >
     <tbody><tr>
-        <td width="64px" height="64px">
+        <td width="64" height="64">
             <?php if ($src['iconPath'] !== null): ?>
-                <img src="<?=$this->e(urlencode($src['iconPath']))?>">
+                <img width='64' height='64' src="<?=$this->e(urlencode($src['iconPath']))?>">
             <?php else: ?>
-                <img src="<?=$this->imagePath?>/default.jpg">
+                <img width='64' height='64' src="<?=$this->imagePath?>/default.jpg">
             <?php endif; ?>
         </td>
         <td width="434px" valign="top">

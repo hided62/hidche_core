@@ -363,7 +363,7 @@ function calc(cost, formnum) {
         $defence = $unit->defence + $abil;
         $speed = $unit->speed;
         $avoid = $unit->avoid;
-        $weapImage = ServConfig::$gameImagePath."/weap{$i}.jpg";
+        $weapImage = ServConfig::$gameImagePath."/weap{$i}.png";
         if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
@@ -373,7 +373,7 @@ function calc(cost, formnum) {
 
         echo "
 <tr height=64 bgcolor=$l>
-    <td background={$weapImage} align=center></td>
+    <td style='background:no-repeat center url(\"{$weapImage}\");background-size:64px;background-color:#222222;' align=center></td>
     <td align=center>{$name}</td>
     <td align=center>{$attack}</td>
     <td align=center>{$defence}</td>
@@ -573,7 +573,7 @@ function calc(cost, formnum) {
         $defence = $unit->defence + $abil;
         $speed = $unit->speed;
         $avoid = $unit->avoid;
-        $weapImage = ServConfig::$gameImagePath."/weap{$i}.jpg";
+        $weapImage = ServConfig::$gameImagePath."/weap{$i}.png";
         if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
@@ -583,7 +583,7 @@ function calc(cost, formnum) {
 
         echo "
 <tr height=64 bgcolor=$l>
-    <td background={$weapImage} align=center></td>
+    <td style='background:no-repeat center url(\"{$weapImage}\");background-size:64px;background-color:#222222;' align=center></td>
     <td align=center>{$name}</td>
     <td align=center>{$attack}</td>
     <td align=center>{$defence}</td>

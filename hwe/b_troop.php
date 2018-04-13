@@ -82,7 +82,7 @@ for($i=0; $i < $troopcount; $i++) {
     <tr>
         <td align=center rowspan=2><input "; echo $i==0?"checked ":""; echo "type=radio name=troop value='{$troop['troop']}'></td>
         <td align=center >{$troop['name']}<br>【 $cityname 】</td>
-        <td height=64 background={$imageTemp}/{$picture}>&nbsp;</td>
+        <td height=64 style='background:no-repeat center url(\"{$imageTemp}/{$picture}\");background-size:64px;'>&nbsp;</td>
         <td rowspan=2 width=662>$genlist</td>
         <td rowspan=2>$turn</td>
     </tr>

@@ -365,7 +365,7 @@ function ShowMsg($bgcolor, $type, $picture, $imgsvr, $me, $mycolor, $you, $youco
     }
     $imageTemp = GetImageURL($imgsvr);
     $naming = "[<font color=$mycolor>$me</font>{$sign}<font color=$youcolor>$you</font>]";
-    $picture = "<img src={$imageTemp}/{$picture}>";
+    $picture = "<img width='64' height='64' src={$imageTemp}/{$picture}>";
     if($site != "") {
         $form = "<form name=scout method=post action={$site}>";
         $form2 = "</form>";
