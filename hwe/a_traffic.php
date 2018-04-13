@@ -13,7 +13,7 @@ $query = "select year,month,refresh,maxrefresh,maxonline from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $game = MYDB_fetch_array($result);
 
-$log = [];
+$log = getRawFileLogRecent(__dir__.'/logs/_traffic.txt', 11, 100);
 
 $date = [];
 $year = [];
@@ -22,8 +22,9 @@ $refresh = [];
 $online = [];
 
 $curonline = getOnlineNum();
-for ($i=0; $i < 11; $i++) {
-    $parse = explode("|", $log[count($log)-12+$i]);
+$visibleLogs = min(11, count($log));
+for ($i=0; $i < $visibleLogs; $i++) {
+    $parse = explode("|", $log[count($log)-$visibleLogs+$i]);
     $date[$i]    = trim($parse[0]);
     $year[$i]    = trim($parse[1]);
     $month[$i]   = trim($parse[2]);
@@ -62,7 +63,7 @@ if ($game['maxonline'] < $curonline) {
         <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 량</font></td></tr>
 <?php
-for ($i=0; $i < 11; $i++) {
+for ($i=0; $i < $visibleLogs; $i++) {
     $w = round($refresh[$i] / $game['maxrefresh'] * 100, 1);
     if ($w >= 100) {
         $w -= 0.1;
@@ -132,7 +133,7 @@ $dt = date('H:i');
         <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 자</font></td></tr>
 <?php
-for ($i=0; $i < 11; $i++) {
+for ($i=0; $i < $visibleLogs; $i++) {
     $w = round($online[$i] / $game['maxonline'] * 100, 1);
     if ($w >= 100) {
         $w -= 0.1;

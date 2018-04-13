@@ -56,7 +56,7 @@ foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE confl
     $rawConflict
 ))
 {
-    $conflict = Json::decode($city['conflict']);
+    $conflict = Json::decode($rawConflict);
     if (count($conflict)<2) {
         continue;
     }

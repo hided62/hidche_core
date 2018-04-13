@@ -65,7 +65,7 @@ if(!is_uploaded_file($image['tmp_name'])) {
 
     while(true){
         $newPicName = dechex(rand(0x000000f,0xfffffff)).$newExt; 
-        $dest = AppConf::getUserIconPathFS().$newPicName;
+        $dest = AppConf::getUserIconPathFS().'/'.$newPicName;
         if(file_exists($dest)){
             continue;
         }
