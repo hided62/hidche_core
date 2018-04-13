@@ -19,9 +19,9 @@ class Message
     protected $sendCnt = 0;
     
     public $msgType;
-    /** @var MessageTarget */
+    /** @var \sammo\MessageTarget */
     public $src;
-    /** @var MessageTarget */
+    /** @var \sammo\MessageTarget */
     public $dest;
     public $msg;
     /** @var \DateTime */
