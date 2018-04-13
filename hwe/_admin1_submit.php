@@ -29,6 +29,8 @@ $maxgeneral = Util::getReq('maxgeneral', 'int', GameConst::$defaultMaxGeneral);
 $maxnation = Util::getReq('maxnation', 'int', GameConst::$defaultMaxNation);
 $startyear = Util::getReq('startyear', 'int', GameConst::$defaultStartYear);
 
+extractMissingPostToGlobals();
+
 $db = DB::db();
 $connect=$db->get();
 

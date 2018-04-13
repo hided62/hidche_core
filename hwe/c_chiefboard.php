@@ -10,6 +10,8 @@ $num = Util::getReq('num');
 $reply = Util::getReq('reply');
 // $title, $msg, $num
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

@@ -14,6 +14,8 @@ if($session->userGrade < 5) {
 $btn = Util::getReq('btn');
 $genlist = Util::getReq('genlist', 'int');
 
+extractMissingPostToGlobals();
+
 $db = DB::db();
 $connect=$db->get();
 

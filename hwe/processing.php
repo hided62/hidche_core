@@ -8,6 +8,8 @@ include "func.php";
 $commandtype = Util::getReq('commandtype', 'int', 0);
 $turn = Util::getReq('turn', 'array_int', [0]);
 
+extractMissingPostToGlobals();
+
 $session = Session::requireGameLogin()->setReadOnly();
 
 $db = DB::db();

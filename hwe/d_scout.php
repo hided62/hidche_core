@@ -12,6 +12,8 @@ include "func.php";
 
 $gen = Util::getReq('gen', 'int');
 
+extractMissingPostToGlobals();
+
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 //FIXME: 망했음. CriticalFailure. 재 구현.

@@ -7,6 +7,8 @@ include "func.php";
 $msg = Util::getReq('msg');
 $msg2 = Util::getReq('msg2');
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

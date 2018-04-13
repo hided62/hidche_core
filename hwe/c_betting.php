@@ -22,6 +22,11 @@ for($i=0;$i<16;$i++){
     }
 }
 
+if($betGold == -1){
+    extractMissingPostToGlobals();
+}
+
+
 if($betTarget < 0 || $betGold < 10 || $betGold > 1000){
     header('Location: b_betting.php');
     exit();

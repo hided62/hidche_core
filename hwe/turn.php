@@ -8,6 +8,8 @@ include "func.php";
 $type = Util::getReq('type', 'int', 0);
 $sel = Util::getReq('sel', 'int', 1);
 
+extractMissingPostToGlobals();
+
 if($sel <= 0 || $sel > 12){
     $sel = 1;
 }

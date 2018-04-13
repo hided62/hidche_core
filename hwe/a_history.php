@@ -6,6 +6,8 @@ include "func.php";
 $btn = Util::getReq('btn');
 $yearmonth = Util::getReq('yearmonth', 'int');
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

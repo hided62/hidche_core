@@ -7,6 +7,8 @@ include "func.php";
 $btn = Util::getReq('btn');
 $weap = Util::getReq('weap', 'int');
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireLogin()->loginGame()->setReadOnly();
 

@@ -14,6 +14,8 @@ $double = Util::getReq('double', 'int', 0);
 $third = Util::getReq('third', 'int', 0);
 $fourth = Util::getReq('fourth', 'int', 0);
 
+extractMissingPostToGlobals();
+
 if(!$turn){
     $turn = [0];
 }

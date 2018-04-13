@@ -7,6 +7,8 @@ include "func.php";
 $ok = Util::getReq('ok');
 $gen = Util::getReq('gen', 'int'); //XXX: -_-;;;;;;;;;;;;
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

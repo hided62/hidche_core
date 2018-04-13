@@ -8,6 +8,8 @@ $btn = Util::getReq('btn');
 $name = Util::getReq('name');
 $troop = Util::getReq('troop', 'int');
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = $session::getUserID();

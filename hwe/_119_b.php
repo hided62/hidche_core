@@ -24,6 +24,8 @@ $btn = Util::getReq('btn');
 $minute = Util::getReq('minute', 'int');
 $minute2 = Util::getReq('minute2', 'int');
 
+extractMissingPostToGlobals();
+
 $db = DB::db();
 $connect=$db->get();
 

@@ -9,6 +9,8 @@ $map = Util::getReq('map', 'int', 0);
 $mode = Util::getReq('mode', 'int', 2);
 $tnmt = Util::getReq('tnmt', 'int', 1);
 
+extractMissingPostToGlobals();
+
 if($map < 0 && $map > 2){
     $map = 0;
 }

@@ -6,6 +6,8 @@ include "func.php";
 
 $type = Util::getReq('type', 'int', 10);
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

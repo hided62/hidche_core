@@ -90,30 +90,33 @@ function LogText($prefix, $variable)
     file_put_contents(ROOT.'/d_log/dbg_logs.txt', $text, FILE_APPEND);
 }
 
-function extractSuperGlobals()
+function extractMissingPostToGlobals()
 {
+    $result = [];
     if (isset($_POST) && count($_POST) > 0) {
-        LogText($_SERVER['REQUEST_URI'], $_POST);
+        
         
         foreach($_POST as $key=>$val){
             if(isset($GLOBALS[$key])){
                 continue;
             }
+            $result[$key]=$val;
             $GLOBALS[$key]=$val;
         }
     }
 
     if (isset($_GET) && count($_GET) > 0) {
-        LogText($_SERVER['REQUEST_URI'], $_GET);
-        
         foreach($_GET as $key=>$val){
             if(isset($GLOBALS[$key])){
                 continue;
             }
+            $result[$key]=$val;
             $GLOBALS[$key]=$val;
         }
     }
+
+    if($result){
+        LogText($_SERVER['REQUEST_URI'], $result);
+    }
+    
 }
-
-
-extractSuperGlobals();
