@@ -245,7 +245,7 @@ class Message
         if($this->sendCnt > 0){
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
-        if($this->msgType === self::MSGTYPE_PRIVATE){
+        if($this->msgType === self::MSGTYPE_PRIVATE && $this->src->generalID !== $this->dest->generalID){
             return $this->sendRaw($this->src->generalID);
         }
         if($this->msgType === self::MSGTYPE_NATIONAL && $this->src->nationID !== $this->dest->nationID){
@@ -294,5 +294,20 @@ class Message
         $this->$sendCnt = 2;
         
         return $receiveID;
+    }
+
+    public function invalidate(array $newMsgOption=null){
+        if($newMsgOption !== null){
+            $this->msgOption = $newMsgOption;
+        }
+
+        $this->validUntil = new \DateTime('2000-12-31');
+        
+        $db = DB::db();
+        $db->update('message', [
+            'msgOption'=>Json::encode($this->msgOption),
+            'validUntil'=>$this->validUntil->format('Y-m-d H:i:s'),
+        ]);
+
     }
 }

@@ -8,11 +8,13 @@ class MessageTarget {
     public $nationID;
 
     /** @var string */
+    public $generalName;
+    /** @var string */
     public $nationName;
     /** @var string */
     public $color;
     
-    public function __construct(int $generalID, int $nationID, string $nationName, string $color){
+    public function __construct(int $generalID, string $generalName, int $nationID, string $nationName, string $color){
         
 
         if($mailbox > Message::MAILBOX_NATIONAL){
@@ -23,6 +25,7 @@ class MessageTarget {
         }
         
         $this->generalID = $generalID;
+        $this->generalName = $generalName;
         $this->nationID = $nationID;
         $this->nationName = $nationName;
         $this->color = $color;
@@ -36,12 +39,13 @@ class MessageTarget {
             $arr['nation_id'] = 0;
         }
 
-        return new MessageTarget($arr['id'], $arr['nation_id'], $arr['nation'], $arr['color']);
+        return new MessageTarget($arr['id'], $arr['name'], $arr['nation_id'], $arr['nation'], $arr['color']);
     }
 
     public function toArray() : array{
         return [
             'id'=>$this->generalID,
+            'name'=>$this->generalName,
             'nation_id'=>$this->nationID,
             'nation'=>$this->nationName,
             'color'=>$this->color
