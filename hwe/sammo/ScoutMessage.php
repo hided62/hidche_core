@@ -131,7 +131,7 @@ class ScoutMessage extends Message{
             throw \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
         }
 
-        list($result, $reason) = $this->checkDeclineValidation($receiverID);
+        list($result, $reason) = $this->checkScoutMessageValidation($receiverID);
 
         if($result === self::INVALID){
             pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} 등용 수락 불가."]);
