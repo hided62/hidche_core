@@ -64,9 +64,7 @@ class DiplomacticMessage extends Message{
             return [self::INVALID, '송신자가 외교서신을 처리할 수 없습니다.'];
         }
 
-        
-
-        if($general === null || $general['level'] < 5){
+        if(!$general || $general['level'] < 5){
             return [self::INVALID, '해당 국가의 수뇌가 아닙니다.'];
         }
 
@@ -92,15 +90,26 @@ class DiplomacticMessage extends Message{
 
         list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
 
-        $helper = new Engine\Diplomacy($this->src->nationID);
+        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
 
         switch($this->diplomaticType){
-            case self::TYPE_NO_AGGRESSION: break;
-            case self::TYPE_CANCEL_NA: break;
-            case self::TYPE_STOP_WAR: break;
-            case self::TYPE_MERGE: break;
-            case self::TYPE_SURRENDER: break;
-            default: throw \RuntimeException('diplomaticType이 올바르지 않음');
+            case self::TYPE_NO_AGGRESSION:
+                list($result, $reason) = $helper->noAggression();
+                break;
+            case self::TYPE_CANCEL_NA:
+                list($result, $reason) = $helper->cancelNA();
+                break;
+            case self::TYPE_STOP_WAR:
+                list($result, $reason) = $helper->stopWar();
+                break;
+            case self::TYPE_MERGE:
+                list($result, $reason) = $helper->acceptMerge();
+                break;
+            case self::TYPE_SURRENDER:
+                list($result, $reason) = $helper->acceptSurrender();
+                break;
+            default: 
+                throw \RuntimeException('diplomaticType이 올바르지 않음');
         }
 
 
@@ -112,17 +121,7 @@ class DiplomacticMessage extends Message{
             return $result;
         }
 
-        //방랑군이 아니어야함
-        //상대도 방랑군이 아니어야함
         
-        //불가침시 : 교전중이 아니어야함, 선포중이 아니어야함. 합병중이 아니어얗.
-        //불가침 파기시 : 불가침 중이어야함.
-        //종전시 : 교전중이거나 선포중이어야함.
-        //합병시 : 양국 다 외교제한이 지나지 않았어야함. 국력, 장수수가 적절해야함. 인접한 국가여야함. 서로 교전중이어선 안됨.
-        //        송신자가 선포, 전쟁중이어선 안됨. 송신자가 C국과 불가침인데 수신자가 C국과 전쟁중이면 안됨
-        //항복시 :  양국 다 외교제한이 지나지 않았어야함. 국력, 장수수가 적절해야함. 인접한 국가여야함. 서로 교전중이어선 안됨.
-        //        송신자가 선포, 전쟁중이어선 안됨. 송신자가 C국과 불가침인데 수신자가 C국과 전쟁중이면 안됨
-
         list(
             $year, 
             $month

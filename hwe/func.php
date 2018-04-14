@@ -2576,15 +2576,23 @@ function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
     }
 }
 
-function isClose($nation1, $nation2) {
+function isClose(int $nation1, int $nation2, bool $includeNoSupply=true) {
     $db = DB::db();
 
     $nation1Cities = [];
-    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $nation1) as $city){
+
+    if($includeNoSupply){
+        $supplySql = '';
+    }
+    else{
+        $supplySql = 'AND supply = 1';
+    }
+
+    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i %l', $nation1, $supplySql) as $city){
         $nation1Cities[$city] = $city;
     }
 
-    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $nation2) as $city){
+    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i %l', $nation2, $supplySql) as $city){
         foreach(array_keys(CityConst::byID($city)->path) as $adjCity){
             if(key_exists($adjCity, $nation1Cities)){
                 return true;
