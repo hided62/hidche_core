@@ -1,12 +1,7 @@
 <?php
 namespace sammo;
 
-class MessageTarget {
-    /** @var int */
-    public $generalID;
-    /** @var int */
-    public $nationID;
-
+class MessageTarget extends Target {
     /** @var string */
     public $generalName;
     /** @var string */
@@ -16,6 +11,7 @@ class MessageTarget {
     
     public function __construct(int $generalID, string $generalName, int $nationID, string $nationName, string $color){
         
+        parent::__construct($generalID, $nationID);
 
         if($mailbox > Message::MAILBOX_NATIONAL){
             $this->isGeneral = false;
@@ -24,9 +20,7 @@ class MessageTarget {
             $this->isGeneral = true;
         }
         
-        $this->generalID = $generalID;
         $this->generalName = $generalName;
-        $this->nationID = $nationID;
         $this->nationName = $nationName;
         $this->color = $color;
     }
