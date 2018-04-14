@@ -334,7 +334,7 @@ class ScoutMessage extends Message{
         $srcGeneral = $db->queryFirstRow('SELECT `name`, nation FROM nation WHERE `no`=%i', $srcGeneralID);
         $destGeneral = $db->queryFirstRow('SELECT `name`, nation, `level` FROM nation WHERE `no`=%i', $destGeneralID);
         if($date === null){
-            $date = new DateTime();
+            $date = new \DateTime();
         }
 
         if($destGeneral['level'] == 12){
