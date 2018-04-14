@@ -212,13 +212,13 @@ class ScoutMessage extends Message{
             }
 
             $setValues['betray'] = $db->sqleval('betray + 1');
-            $setValues['experience'] = $db->sqleval('experience * (1 - 0.1 * betray)');
-            $setValues['dedication'] = $db->sqleval('dedication * (1 - 0.1 * betray)');
+            $setValues['experience'] = $db->sqleval('experience * (1 - 0.1 * betray)');//XXX: 상수
+            $setValues['dedication'] = $db->sqleval('dedication * (1 - 0.1 * betray)');//XXX: 상수
         }
         else{
             //재야이면 100 100 증가
             $setValues['experience'] = $db->sqleval('experience + %i', 100);//XXX: 상수
-            $setValues['dedication'] = $db->sqleval('experience + %i', 100);
+            $setValues['dedication'] = $db->sqleval('experience + %i', 100);//XXX: 상수
         }
 
         if($me['npc'] < 2){
