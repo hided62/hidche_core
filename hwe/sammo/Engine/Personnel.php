@@ -36,7 +36,7 @@ class Personnel{
             $this->year, 
             $this->month, 
             $this->killturn
-        ) = $db->queryFirstList('SELECT startyear, year, month, killturn FROM game LIMIt 1');
+        ) = $db->queryFirstList('SELECT startyear, year, month, killturn FROM game LIMIT 1');
 
     }
 

@@ -7,14 +7,16 @@ class DiplomacticMessage extends Message{
     const DECLINED = -1;
     const INVALID = 0;
 
-    const TYPE_SURRENDER = 'surrender'; //항복
-    const TYPE_ALLY = 'ally'; //불가침
+    
+    const TYPE_NO_AGGRESSION = 'noAggression'; //불가침
+    const TYPE_CANCEL_NA = 'cancelNA'; //불가침 파기
+    const TYPE_STOP_WAR = 'stopWar'; //종전
     const TYPE_MERGE = 'merge'; //통합
-    const TYPE_CEASE = 'cease'; //종전
-    const TYPE_CANCEL = 'cancel'; //불가침 파기
+    const TYPE_SURRENDER = 'surrender'; //항복
     
 
     protected $diplomaticType = '';
+    protected $diplomacyName = '';
     protected $validDiplomacy = true;
 
     public function __construct(
@@ -32,15 +34,13 @@ class DiplomacticMessage extends Message{
         }
 
         $this->diplomaticType = Util::array_get($msgOption['action']);
-        if(array_search($this->diplomaticType, [
-                self::TYPE_SURRENDER,
-                self::TYPE_ALLY,
-                self::TYPE_MERGE,
-                self::TYPE_CEASE,
-                self::TYPE_CANCEL
-            ]) === false)
-        {
-            throw new \InvalidArgumentException('Invalid Diplomatic ActionType');
+        switch($this->diplomaticType){
+            case self::TYPE_NO_AGGRESSION: $this->diplomacyName = '불가침'; break;
+            case self::TYPE_CANCEL_NA: $this->diplomacyName = '불가침 파기'; break;
+            case self::TYPE_STOP_WAR: $this->diplomacyName = '종전'; break;
+            case self::TYPE_MERGE: $this->diplomacyName = '통합'; break;
+            case self::TYPE_SURRENDER: $this->diplomacyName = '투항'; break;
+            default: throw \RuntimeException('diplomaticType이 올바르지 않음');
         }
 
         parent::__construct(...func_get_args());
@@ -55,27 +55,63 @@ class DiplomacticMessage extends Message{
         }
     }
 
+    protected function checkDiplomaticMessageValidation(array $general){
+        if(!$this->validDiplomacy){
+            return [self::INVALID, '유효하지 않은 외교서신입니다.'];
+        }
+
+        if($this->mailbox !== $this->dest->nationID + static::MAILBOX_NATIONAL){
+            return [self::INVALID, '송신자가 외교서신을 처리할 수 없습니다.'];
+        }
+
+        
+
+        if($general === null || $general['level'] < 5){
+            return [self::INVALID, '해당 국가의 수뇌가 아닙니다.'];
+        }
+
+        return [self::ACCEPTED, ''];
+    }
+
     /**
      * @return int 수행 결과 반환, ACCEPTED(등용장 소모), DECLINED(등용장 소모), INVALID 중 반환
      */
-    public function agreeMessage(int $receiverID, string &$reason=null):int{
+    public function agreeMessage(int $receiverID):int{
         //NOTE: 올바른 유저가 agreeMessage() 호출을 한건지는 외부에서 체크 필요(Session->userID 등)
 
-        if(!$this->validScout){
-            if($reason !== null){
-                $reason = '이미 사용한 외교서신입니다';
-            }
-            return self::INVALID;
-        }
-        if($this->mailbox !== $this->dest->nationID + static::MAILBOX_NATIONAL){
-            if($reason !== null){
-                $reason = '송신자가 외교서신을 수락할 수 없습니다';
-            }
-            return self::INVALID;
+        if(!$this->id){
+            throw \RuntimeException('전송되지 않은 메시지에 수락 진행 중');
         }
 
-        //거절하지 않았어야함.
-        //수뇌여야함
+        $db = DB::db();
+        $general = $db->queryFirstRow(
+            'SELECT `name`, `level` FROM general WHERE `no`=%i AND nation=%i', 
+            $receiverID, 
+            $this->dest->nationID
+        );
+
+        list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
+
+        $helper = new Engine\Diplomacy($this->src->nationID);
+
+        switch($this->diplomaticType){
+            case self::TYPE_NO_AGGRESSION: break;
+            case self::TYPE_CANCEL_NA: break;
+            case self::TYPE_STOP_WAR: break;
+            case self::TYPE_MERGE: break;
+            case self::TYPE_SURRENDER: break;
+            default: throw \RuntimeException('diplomaticType이 올바르지 않음');
+        }
+
+
+        if($result !== self::ACCEPTED){
+            pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} {$this->diplomacyName} 실패."]);
+            if($result === self::DECLINED){
+                $this->_declineMessage();
+            }
+            return $result;
+        }
+
         //방랑군이 아니어야함
         //상대도 방랑군이 아니어야함
         
@@ -87,15 +123,59 @@ class DiplomacticMessage extends Message{
         //항복시 :  양국 다 외교제한이 지나지 않았어야함. 국력, 장수수가 적절해야함. 인접한 국가여야함. 서로 교전중이어선 안됨.
         //        송신자가 선포, 전쟁중이어선 안됨. 송신자가 C국과 불가침인데 수신자가 C국과 전쟁중이면 안됨
 
+        list(
+            $year, 
+            $month
+        ) = $db->queryFirstList('SELECT year, month FROM game LIMIT 1');
 
-        $db = DB::db();
-        $general = $db->queryFirstRow('SELECT nation, `no`, city, `level` FROM general WHERE `no`=%i', $receiverID);
 
+        $this->dest->generalID = $receiverID;
+        $this->dest->generalName = $general['name'];
+        $this->msgOption['used'] = true;
+        $this->invalidate();
+        $this->validDiplomacy = false;
+
+        $newMsg = new Message(
+            self::MSGTYPE_NATIONAL, 
+            $this->dest, 
+            $this->src, 
+            "【외교】{$year}년 {$month}월: {$this->src->nationName}이 {$this->dest->nationName}에게 제안한 {$this->diplomacyName} 동의.",
+            new \DateTime(),
+            new \DateTime('9999-12-31'),
+            Json::encode([
+                'related'=>$this->id
+            ])
+        );
+        $newMsg->send();
+
+        return self::ACCEPTED;
 
     }
 
-    public function declineMessage(string &$reason=null):int{
+    protected function _declineMessage(){
+        $this->msgOption['used'] = true;
+        $this->invalidate();
+        $this->validDiplomacy = false;
 
+        return self::DECLINED;
+    }
+
+    public function declineMessage(int $receiverID):int{
+        if(!$this->id){
+            throw \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
+        }
+
+        list($result, $reason) = $this->checkScoutMessageValidation($receiverID);
+
+        if($result === self::INVALID){
+            pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} {$this->diplomacyName} 거절 불가."]);
+            return $result;
+        }
+
+        pushGenLog(['no'=>$receiverID], "<C>●</><D>{$this->src->nationName}</>의 {$this->diplomacyName} 제안을 거절했습니다.");
+        pushGenLog(['no'=>$this->src->generalID], "<C>●</><Y>{$this->dest->nationName}</>(이)가 {$this->diplomacyName} 제안을 거절했습니다.");
+        $this->_declineMessage();  
+        return self::DECLINED;
     }
 
 }

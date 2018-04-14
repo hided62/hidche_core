@@ -123,7 +123,7 @@ class ScoutMessage extends Message{
         );
         $newMsg->send();
 
-        return self::ACCEPTED;
+        return self::DECLINED;
     }
 
     public function declineMessage(int $receiverID):int{
@@ -134,7 +134,7 @@ class ScoutMessage extends Message{
         list($result, $reason) = $this->checkScoutMessageValidation($receiverID);
 
         if($result === self::INVALID){
-            pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} 등용 수락 불가."]);
+            pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} 등용 취소 불가."]);
             return $result;
         }
 

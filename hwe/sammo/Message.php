@@ -305,7 +305,12 @@ class Message
         
         $db = DB::db();
         $db->update('message', [
-            'msgOption'=>Json::encode($this->msgOption),
+            'message' => Json::encode([
+                'src' => $this->src->toArray(),
+                'dest' =>$this->dest->toArray(),
+                'text' => $this->msg,
+                'option' => $this->msgOption
+            ]),
             'validUntil'=>$this->validUntil->format('Y-m-d H:i:s'),
         ]);
 
