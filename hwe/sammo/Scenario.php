@@ -35,7 +35,7 @@ class Scenario{
         $data = $this->data;
 
         $this->nations = [];
-        $this->nations[0] = new Scenario\Nation(0, '재야', '#ffffff', 0, 0);
+        $this->nations[0] = new Scenario\Nation(0, '재야', '#000000', 0, 0);
         foreach (Util::array_get($data['nation'],[]) as $idx=>$rawNation) {
             list($name, $color, $gold, $rice, $infoText, $tech, $type, $nationLevel, $cities) = $rawNation;
             $nationID = $idx+1;

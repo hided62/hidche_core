@@ -82,12 +82,12 @@ function redrawMsg(deferred){
                 var msg = this;
                 if(!msg.src.nation){
                     msg.src.nation = '재야';
-                    msg.src.color = '#ffffff';
+                    msg.src.color = '#000000';
                 }
 
                 if(!msg.dest.nation){
                     msg.dest.nation = '재야';
-                    msg.dest.color = '#ffffff';
+                    msg.dest.color = '#000000';
                 }
 
                 msg.src.colorType = isBrightColor(msg.src.color)?'bright':'dark';
@@ -186,10 +186,6 @@ function redrawMsg(deferred){
         .then(registerSequence)
         .then(refineMessageObjs)
         .then(printTemplate);
-
-
-
-
 }
 
 function refreshMailboxList(obj){

@@ -22,7 +22,7 @@ class Nation{
     public function __construct(
         int $id = null, 
         string $name = '국가', 
-        string $color = '#ffffff', 
+        string $color = '#000000', 
         int $gold = 0, 
         int $rice = 2000, 
         string $infoText = '국가 설명', 

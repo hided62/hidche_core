@@ -63,8 +63,8 @@ if (isset($btn) && $btn == "NPC 보기") {
     $sel = "npc<2";
 }
 
-$nationName = [];
-$nationColor = [];
+$nationName = ['재야'];
+$nationColor = ['#000000'];
 foreach (getAllNationStaticInfo() as $nation) {
     $nationName[$nation['nation']] = $nation['name'];
     $nationColor[$nation['nation']] = $nation['color'];
@@ -137,9 +137,9 @@ for ($i=0; $i < 21; $i++) {
         if ($i != 2) {
             if (isset($gen)) {
                 $name[$k] = $gen['name'];
-                $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
+                $nation[$k] = $nationName[$gen['nation']];
                 $data[$k] = $gen['data'];
-                $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
+                $color[$k] = $nationColor[$gen['nation']];
                 $pic[$k] = $gen['picture'];
             } else {
                 $name[$k] = "-";
@@ -248,8 +248,8 @@ for ($i=0; $i < 4; $i++) {
         $gen = MYDB_fetch_array($result);
         if (isset($gen)) {
             $name[$k] = $gen['name'];
-            $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
-            $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
+            $nation[$k] = $nationName[$gen['nation']];
+            $color[$k] = $nationColor[$gen['nation']];
             $pic[$k] = $gen['picture'];
         } else {
             $name[$k] = "미발견";
@@ -300,8 +300,8 @@ for ($i=0; $i < 4; $i++) {
         $gen = MYDB_fetch_array($result);
         if (isset($gen)) {
             $name[$k] = $gen['name'];
-            $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
-            $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
+            $nation[$k] = $nationName[$gen['nation']];
+            $color[$k] = $nationColor[$gen['nation']];
             $pic[$k] = $gen['picture'];
         } else {
             $name[$k] = "미발견";

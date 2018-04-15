@@ -24,7 +24,7 @@ require_once('func_command.php');
 /**
  * nationID를 이용하여 국가의 '어지간해선' 변경되지 않는 정보(이름, 색, 성향, 규모, 수도)를 반환해줌
  * 
- * @param int|null $nationID 국가 코드, -1인 경우 전체, null인 경우 수행하지 않음
+ * @param int|null $nationID 국가 코드, -1인 경우 전체, null인 경우 수행하지 않음. 0인 경우에는 재야임
  * @param bool $forceRefresh 강제 갱신 여부
  * 
  * @return array|null nationID에 해당하는 국가가 있을 경우 array 반환. 그외의 경우 null
@@ -32,13 +32,24 @@ require_once('func_command.php');
 function getNationStaticInfo($nationID, $forceRefresh=false)
 {
     static $nationList = null;
+    static $freeNation = [
+        'nation'=>0,
+        'name'=>'재야',
+        'color'=>'#000000',
+        'type'=>0,
+        'level'=>0,
+        'capital'=>0
+    ];
 
     if ($forceRefresh) {
         $nationList = null;
     }
 
-    if($nationID === null || $nationID == 0){
-        return null;
+    if ($nationID === null) {
+       return null;
+    }
+    if($nationID === 0){
+        return $freeNation;
     }
 
     if($nationList === null){
@@ -67,11 +78,11 @@ function getAllNationStaticInfo(){
     return getNationStaticInfo(-1);
 }
 
-function GetImageURL($imgsvr) {
+function GetImageURL($imgsvr, $filepath='') {
     if($imgsvr == 0) {
-        return ServConfig::$sharedIconPath;
+        return ServConfig::getSharedIconPath($filepath);
     } else {
-        return AppConf::getUserIconPathWeb();
+        return AppConf::getUserIconPathWeb($filepath);
     }
 }
 
@@ -156,6 +167,10 @@ function cityInfo() {
     } else {
         $trade = ($city['trade']-95) * 10;
         $tradeStr = $city['trade'] . "%";
+    }
+
+    if(!$nation){
+        $nation = getNationStaticInfo(0);
     }
 
     if($nation['color'] == "" ) { $nation['color'] = "#000000"; }
@@ -2210,10 +2225,6 @@ function uniqueItem($general, $log, $vote=0) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $nation = getNationStaticInfo($general['nation']);
-
-            if($nation === null) {
-                $nation = ['name' => "재야"];
-            }
 
             switch($sel) {
             case 0:
