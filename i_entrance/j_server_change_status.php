@@ -18,7 +18,7 @@ $server = Util::getReq('server', 'string', '');
 
 $db = RootDB::db();
 $userGrade = $session->userGrade;
-session_write_close();
+$session->setReadOnly();
 
 if($userGrade < 6) {
     Json::die([

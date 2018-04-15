@@ -20,7 +20,7 @@ $v
     'character',
     'pic'
 ])
-->rule('lengthBetween', 'name', [1, 6])
+->rule('lengthBetween', 'name', 1, 6)
 ->rule('min', [
     'leader',
     'power',
@@ -69,9 +69,9 @@ $db = DB::db();
 ########## 동일 정보 존재여부 확인. ##########
 
 $admin = $db->queryFirstRow('SELECT year,month,maxgeneral,turnterm,genius,npcmode from game limit 1');
-$gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE noc<2');
+$gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
 $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', $userID);
-$oldName = $db->queryFirstField('SELECT `no` FROM general WHERE `name`=%i', $name);
+$oldName = $db->queryFirstField('SELECT `no` FROM general WHERE `name`=%s', $name);
 
 if ($oldGeneral) {
     echo("<script>
