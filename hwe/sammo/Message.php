@@ -105,11 +105,24 @@ class Message
     }
 
     public function toArray():array{
+        if($this->msgType === Message::MSGTYPE_PUBLIC){
+            $src = $this->src->toArray();
+            $dest = [];
+        }
+        else if($this->msgType === Message::MSGTYPE_NATIONAL || $this->msgType === Message::MSGTYPE_DIPLOMACY){
+            $src = $this->src->toArray();
+            $dest = $this->dest->toArray();
+        }
+        else{
+            $src = $this->src->toArray();
+            $dest = $this->dest->toArray();
+        }
+
         return [
             'id'=>$this->id,
             'msgType'=>$this->msgType,
-            'src'=>($this->src)?($this->src->toArray()):[],
-            'dest'=>($this->dest)?($this->dest->toArray()):[],
+            'src'=>$src,
+            'dest'=>$dest,
             'text'=>$this->msg,
             'option'=>$this->msgOption,
             'time'=>$this->date->format('Y-m-d H:i:s')
@@ -215,7 +228,7 @@ class Message
 
         return array_map(function ($row) {
             return static::buildFromArray($row);
-        }, $db->query('SELECT * FROM `message` WHERE %l %?', $where, $limitSql));
+        }, $db->query('SELECT * FROM `message` WHERE %l ORDER BY id DESC %? ', $where, $limitSql));
     }
 
     protected function sendRaw(int $mailbox):array{

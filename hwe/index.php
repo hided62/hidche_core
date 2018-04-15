@@ -287,22 +287,16 @@ if ($session->userGrade >= 5) {
 <div id="message_board">
     <div class="board_side">
         <div class="board_header bg0">전체 메시지(최고99자)</div>
-        <section class="public_message">
-
-        </section>
+        <section class="public_message"></section>
         <div class="board_header bg0">개인 메시지(최고99자)</div>
-        <section class="private_message">
-            
-        </section>
+        <section class="private_message"></section>
     </div>
     <div class="board_side">
         <section class="diplomacy_message">
 
         </section>
         <div class="board_header bg0">국가 메시지(최고99자)</div>
-        <section class="national_message">
-
-        </section>
+        <section class="national_message"></section>
     </div>
 </div>
 <div style="clear:left;"><?=allButton()?><?=banner()?></div>

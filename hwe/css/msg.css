@@ -10,12 +10,16 @@
 /*임시용 끝*/
 
 #message_board section{
-    width:498px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    max-width:498px;
 }
 
 .msg_plate{
     width:100%;
-    border:groove 0.1em;
+    border-bottom:groove 0.1em;
+    border-left:groove 0.1em;
+    border-right:groove 0.1em;
     height:64px;
     font-size:12px;
     word-break:break-all;
@@ -34,6 +38,18 @@
 .msg_plate_national, .msg_plate_diplomacy{
     background-color:#00582c;
 
+}
+
+.public_message{
+    height:667px;
+}
+
+.private_message{
+    height:667px;
+}
+
+.national_message{
+    height:1350px;
 }
 
 .msg_icon{

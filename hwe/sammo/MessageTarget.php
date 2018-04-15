@@ -66,4 +66,15 @@ class MessageTarget extends Target {
             'icon'=>$this->icon
         ];
     }
+
+    public function toArrayLight() : array{
+        //TODO: 이걸 꼭 연관 배열로 보낼 이유가 없다.
+        //TODO: 아이콘도 축약 가능하다.
+        return [
+            'name'=>$this->generalName,
+            'nation'=>$this->nationName,
+            'color'=>$this->color,
+            'icon'=>$this->icon
+        ];
+    }
 }

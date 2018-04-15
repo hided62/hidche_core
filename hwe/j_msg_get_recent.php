@@ -27,21 +27,36 @@ if($nationID === null){
 $result = [];
 $result['result'] = true;
 
-$result['private'] = array_map(function(Message $msg){
+$nextSequence = $reqSequence;
+
+$result['private'] = array_map(function(Message $msg) use (&$nextSequence){
+    if($msg->id > $nextSequence){
+        $nextSequence = $msg->id;
+    }
     return $msg->toArray();
 }, Message::getMessagesFromMailBox($generalID, Message::MSGTYPE_PRIVATE, 10, $reqSequence));
 
-$result['public'] = array_map(function(Message $msg){
+$result['public'] = array_map(function(Message $msg)use (&$nextSequence){
+    if($msg->id > $nextSequence){
+        $nextSequence = $msg->id;
+    }
     return $msg->toArray();
-}, Message::getMessagesFromMailBox(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, 20, $reqSequence));
+}, Message::getMessagesFromMailBox(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, 10, $reqSequence));
 
-$result['national'] = array_map(function(Message $msg){
+$result['national'] = array_map(function(Message $msg)use (&$nextSequence){
+    if($msg->id > $nextSequence){
+        $nextSequence = $msg->id;
+    }
     return $msg->toArray();
 }, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, 20, $reqSequence));
 
-$result['diplomacy']= array_map(function(Message $msg){
+$result['diplomacy']= array_map(function(Message $msg)use (&$nextSequence){
+    if($msg->id > $nextSequence){
+        $nextSequence = $msg->id;
+    }
     return $msg->toArray();
 }, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, 10, 0));
 
+$result['sequence'] = $nextSequence;
 
 Json::die($result);

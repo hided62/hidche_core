@@ -21,7 +21,7 @@ if(!$v->validate()){
 }
 
 $mailbox = (int)$post['mailbox'];
-$text = StringUtil::cutStringForWidth($post['text'], 100, '');
+$text = StringUtil::cutStringForWidth($post['text'], 199, '');
 
 $session = Session::requireGameLogin([
     'msgID'=>null
