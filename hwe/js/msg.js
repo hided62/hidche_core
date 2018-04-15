@@ -48,7 +48,7 @@ function refreshMsg(){
 
 function fetchMsg(){
     return $.ajax({
-        url: 'json_result.php',
+        url: 'j_msg_get_recent.php',
         type: 'post',
         dataType:'json',
         contentType: 'application/json',
@@ -221,7 +221,7 @@ function refreshMailboxList(obj){
     $.each(obj.nation, function(){
         var nation = this;
         //console.log(nation);
-        var $optgroup = $('<optgroup label="{0}"></optgroup>'.format(nation.nation));
+        var $optgroup = $('<optgroup label="{0}"></optgroup>'.format(nation.name));
         $optgroup.css('background-color', nation.color);
 
         if(myNation.mailbox == nation.mailbox){
@@ -238,7 +238,8 @@ function refreshMailboxList(obj){
         $.each(nation.general, function(){
             var generalID = this[0];
             var generalName = this[1];
-            var isRuler = this.length>2;
+            var isNPC = !!(this[2] & 0x2);
+            var isRuler = !!(this[2] & 0x1);
 
             
 
@@ -358,13 +359,13 @@ function activateMessageForm(){
 jQuery(function($){
 
     //tmp_template.html은 추후 msg.js에 통합될 수 있음
-    var getTemplate = $.get('tmp_template.html',function(obj){
+    var getTemplate = $.get('js/templates/message.html',function(obj){
         messageTemplate = obj;
     });
 
     //basic_info.json은 세션값에 따라 동적으로 바뀌는 데이터임.
     var basicInfo = $.ajax({
-        url:'basic_info.json',
+        url:'j_basic_info.php',
         type: 'post',
         dataType:'json',
         contentType: 'application/json',
@@ -375,7 +376,7 @@ jQuery(function($){
     
     //sender_list.json 은 서버측에선 캐시 가능한 데이터임.
     var senderList = $.ajax({
-        url: 'sender_list.json',
+        url: 'j_msg_contact_list.php',
         type: 'post',
         dataType:'json',
         contentType: 'application/json',

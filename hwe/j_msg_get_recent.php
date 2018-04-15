@@ -8,7 +8,7 @@ $session = Session::requireGameLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
 $jsonPost = WebUtil::parseJsonPost();
-$reqSequence = Util::toInt(Util::array_get($jsonPost['sequence'], 0));
+$reqSequence = (int)Util::array_get($jsonPost['sequence'], 0);
 
 
 list($generalID, $nationID) = DB::db()->queryFirstList(
@@ -24,18 +24,24 @@ if($nationID === null){
     ]);
 }
 
-Json::die([
-    'result'=>true,
-    'private'=>array_map(function(Message $msg){
-        return $msg->toArray();
-    }, Message::getMessagesFromMailBox($generalID, Message::MSGTYPE_PRIVATE, 10, $reqSequence)),
-    'public'=>array_map(function(Message $msg){
-        return $msg->toArray();
-    }, Message::getMessagesFromMailBox(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, 20, $reqSequence)),
-    'national'=>array_map(function(Message $msg){
-        return $msg->toArray();
-    }, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, 20, $reqSequence)),
-    'diplomacy'=>array_map(function(Message $msg){
-        return $msg->toArray();
-    }, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, 10, 0)),
-]);
+$result = [];
+$result['result'] = true;
+
+$result['private'] = array_map(function(Message $msg){
+    return $msg->toArray();
+}, Message::getMessagesFromMailBox($generalID, Message::MSGTYPE_PRIVATE, 10, $reqSequence));
+
+$result['public'] = array_map(function(Message $msg){
+    return $msg->toArray();
+}, Message::getMessagesFromMailBox(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, 20, $reqSequence));
+
+$result['national'] = array_map(function(Message $msg){
+    return $msg->toArray();
+}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, 20, $reqSequence));
+
+$result['diplomacy']= array_map(function(Message $msg){
+    return $msg->toArray();
+}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, 10, 0));
+
+
+Json::die($result);

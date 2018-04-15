@@ -192,7 +192,7 @@ class Message
      * @param int $fromSeq 가져오고자 하는 위치. $fromSeq보다 '큰' seq만 가져온다. 따라서 0 이하이면 모두 가져옴.
      * @return Message[]
      */
-    protected static function getMessagesFromMailBox(int $mailbox, string $msgType, int $limit=30, int $fromSeq = 0)
+    public static function getMessagesFromMailBox(int $mailbox, string $msgType, int $limit=30, int $fromSeq = 0)
     {
         $db = DB::db();
 

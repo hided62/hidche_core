@@ -68,6 +68,7 @@ $scenario = $admin['scenario_text'];
 <script src="js/main.js"></script>
 <script src="js/base_map.js"></script>
 <script src="js/map.js"></script>
+<script src="js/msg.js"></script>
 <script>
 $(function(){
     reloadWorldMap({
@@ -80,14 +81,15 @@ $(function(){
 <link href="css/common.css" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet">
+<link href="css/msg.css" rel="stylesheet">
 
 
 </head>
 <body class="img_back">
 
 <div id="container">
+<div><?=allButton()?></div>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td colspan=5><?=allButton()?></td></tr>
     <tr height=50>
         <td colspan=5 align=center><font size=4>삼국지 모의전투 HiDCHe (<font color=cyan><?=$scenario?></font>)</font></td>
     </tr>
@@ -271,52 +273,39 @@ if ($session->userGrade >= 5) {
     <tr><td width=998 colspan=2 align=center id=bg1><b>중원 정세</b></td></tr>
     <tr><td width=998 colspan=2><?=getWorldHistoryRecent(15)?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
-    <tr>
-        <td colspan=2>
-            <div class="message_input_form bg0">
-                <select id="mailbox_list" size="1">
+<div class="message_input_form bg0">
+    <select id="mailbox_list" size="1">
 
-                        <select name="genlist" size="1" style="color:white;background-color:black;font-size:13">
-                </select>
-                <input type="textarea" id="msg_input" maxlength="99">
-                <button id="msg_submit">서신전달&amp;갱신</button>
-            </div>
-        </td>
-    </tr>
-    <tr><td colspan=2><?=allButton()?></td></tr>
-    <tr><td colspan=2>
-        <div id="message_board">
-            <div class="board_side">
-                <div class="board_header bg0">전체 메시지(최고99자)</div>
-                <section class="public_message">
+            <select name="genlist" size="1" style="color:white;background-color:black;font-size:13">
 
-                </section>
-                <div class="board_header bg0">개인 메시지(최고99자)</div>
-                <section class="private_message">
-                    
-                </section>
-            </div>
-            <div class="board_side">
-                <section class="diplomacy_message">
 
-                </section>
-                <div class="board_header bg0">국가 메시지(최고99자)</div>
-                <section class="national_message">
 
-                </section>
-            </div>
-        </div>
-    </td></tr>
-    <tr><td colspan=2>
+    </select>
+    <input type="textarea" id="msg_input" maxlength="99">
+    <button id="msg_submit">서신전달&amp;갱신</button>
+</div>
+<div id="message_board">
+    <div class="board_side">
+        <div class="board_header bg0">전체 메시지(최고99자)</div>
+        <section class="public_message">
 
-<?php
-echo allButton();
-echo banner();
-?>
+        </section>
+        <div class="board_header bg0">개인 메시지(최고99자)</div>
+        <section class="private_message">
+            
+        </section>
+    </div>
+    <div class="board_side">
+        <section class="diplomacy_message">
 
-    </td></tr>
-</table>
+        </section>
+        <div class="board_header bg0">국가 메시지(최고99자)</div>
+        <section class="national_message">
+
+        </section>
+    </div>
+</div>
+<div style="clear:left;"><?=allButton()?><?=banner()?></div>
 <?php PrintElapsedTime(); ?>
 </div>
 <?php
