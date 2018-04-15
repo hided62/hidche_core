@@ -10,7 +10,6 @@ function processWar($general, $city) {
 
     $templates = new \League\Plates\Engine('templates');
 
-    global $_maximumatmos, $_maximumtrain, $_dexLimit;
     $date = substr($general['turntime'],11,5);
 
     $query = "select * from game limit 1";
@@ -133,7 +132,7 @@ function processWar($general, $city) {
         // 장수가 없어서 도시 공격하려했으나 병량없을시
         if($opposecount == 0 && $destnation['nation'] > 0 && $destnation['rice'] <= 0 && $city['supply'] == 1) {
             $general['train'] += 1; //훈련 상승
-            if($general['train'] > $_maximumtrain) { $general['train'] = $_maximumtrain; }
+            if($general['train'] > GameConst::$maxTrainByWar) { $general['train'] = GameConst::$maxTrainByWar; }
             $query = "update general set recwar='{$general['turntime']}',train='{$general['train']}',warnum=warnum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -164,7 +163,7 @@ function processWar($general, $city) {
             $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."(으)로 성벽을 <M>공격</>합니다.";
 
             $general['train'] += 1; //훈련 상승
-            if($general['train'] > $_maximumtrain) { $general['train'] = $_maximumtrain; }
+            if($general['train'] > GameConst::$maxTrainByWar) { $general['train'] = GameConst::$maxTrainByWar; }
             $query = "update general set recwar='{$general['turntime']}',train='{$general['train']}',warnum=warnum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -575,9 +574,9 @@ function processWar($general, $city) {
             }
 
             $general['train'] += 1; //훈련 상승
-            if($general['train'] > $_maximumtrain) { $general['train'] = $_maximumtrain; }
+            if($general['train'] > GameConst::$maxTrainByWar) { $general['train'] = GameConst::$maxTrainByWar; }
             $oppose['train'] += 1; //훈련 상승
-            if($oppose['train'] > $_maximumtrain) { $oppose['train'] = $_maximumtrain; }
+            if($oppose['train'] > GameConst::$maxTrainByWar) { $oppose['train'] = GameConst::$maxTrainByWar; }
 
             $query = "update general set recwar='{$general['turntime']}',train='{$general['train']}',warnum=warnum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1398,7 +1397,7 @@ function processWar($general, $city) {
                 $opposecount--;
 
                 $general['atmos'] *= 1.1; //사기 증가
-                if($general['atmos'] > $_maximumatmos) { $general['atmos'] = $_maximumatmos; }
+                if($general['atmos'] > GameConst::$maxAtmosByWar) { $general['atmos'] = GameConst::$maxAtmosByWar; }
 
                 $query = "update general set atmos='{$general['atmos']}',killnum=killnum+1 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1445,7 +1444,7 @@ function processWar($general, $city) {
                 }
 
                 $oppose['atmos'] *= 1.1; //사기 증가
-                if($oppose['atmos'] > $_maximumatmos) { $oppose['atmos'] = $_maximumatmos; }
+                if($oppose['atmos'] > GameConst::$maxAtmosByWar) { $oppose['atmos'] = GameConst::$maxAtmosByWar; }
 
                 // 상대장수 경험 등등 증가
                 $opexp = Util::round($opexp / 50 * 0.8);
@@ -1703,8 +1702,6 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
     $db = DB::db();
     $connect=$db->get();
 
-    global $_maximumatmos;
-
     $alllog = [];
     $log = [];
     $history = [];
@@ -1890,7 +1887,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
     }
 
     $general['atmos'] *= 1.1; //사기 증가
-    if($general['atmos'] > $_maximumatmos) { $general['atmos'] = $_maximumatmos; }
+    if($general['atmos'] > GameConst::$maxAtmosByWar) { $general['atmos'] = GameConst::$maxAtmosByWar; }
 
     $conquerNation = getConquerNation($city);
 

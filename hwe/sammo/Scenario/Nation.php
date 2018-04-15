@@ -85,7 +85,7 @@ class Nation{
             'rate'=>15,
             'scout'=>0,
             'war'=>0,
-            'tricklimit'=>24,
+            'sabotagelimit'=>24,
             'surlimit'=>72,
             'scoutmsg'=>$this->infoText,
             'tech'=>$this->tech,

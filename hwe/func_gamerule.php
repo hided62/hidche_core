@@ -413,7 +413,7 @@ function preUpdateMonthly() {
     //건국제한, 전략제한, 외교제한-1
     $query = "update general set makelimit=makelimit-1 where makelimit>'0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update nation set tricklimit=tricklimit-1 where tricklimit>'0'";
+    $query = "update nation set sabotagelimit=sabotagelimit-1 where sabotagelimit>'0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $query = "update nation set surlimit=surlimit-1 where surlimit>'0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

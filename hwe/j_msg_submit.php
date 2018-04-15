@@ -7,10 +7,10 @@ include 'func.php';
 $post = WebUtil::parseJsonPost();
 '@phan-var mixed[] $post';
 
-$v = new Validator();
-$v->rule('required', ['mailbox','msg']);
+$v = new Validator($post);
+$v->rule('required', ['mailbox','text']);
 $v->rule('integer', 'mailbox');
-$v->rule('lengthMin', 'msg', 1);
+$v->rule('lengthMin', 'text', 1);
 
 if(!$v->validate()){
     Json::die([
@@ -21,7 +21,7 @@ if(!$v->validate()){
 }
 
 $mailbox = (int)$post['mailbox'];
-$text = StringUtil::cutStringForWidth($post['msg'], 100, '');
+$text = StringUtil::cutStringForWidth($post['text'], 100, '');
 
 $session = Session::requireGameLogin([
     'msgID'=>null

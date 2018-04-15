@@ -855,11 +855,10 @@ function process_11(&$general, $type) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_defaultatmos, $_defaulttrain, $_defaultatmos2, $_defaulttrain2;
     $date = substr($general['turntime'],11,5);
 
-    if($type == 1) { $defaultatmos = $_defaultatmos; $defaulttrain = $_defaulttrain; }
-    else { $defaultatmos = $_defaultatmos2; $defaulttrain = $_defaulttrain2; }
+    if($type == 1) { $defaultatmos = GameConst::$defaultAtmosLow; $defaulttrain = GameConst::$defaultTrainLow; }
+    else { $defaultatmos = GameConst::$defaultAtmosHigh; $defaulttrain = GameConst::$defaultTrainHigh; }
 
     $query = "select year,month,startyear from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1042,7 +1041,6 @@ function process_13(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_maxtrain, $_training, $_atmosing;
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -1065,13 +1063,13 @@ function process_13(&$general) {
 //        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 훈련 실패. <1>$date</>";
     } elseif($general['crew'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 훈련 실패. <1>$date</>";
-    } elseif($general['train'] >= $_maxtrain) {
+    } elseif($general['train'] >= GameConst::$maxTrainByCommand) {
         $log[] = "<C>●</>{$admin['month']}월:병사들은 이미 정예병사들입니다. <1>$date</>";
 //    } elseif(intdiv($general['crewtype'], 10) == 4) {
 //        $log[] = "<C>●</>{$admin['month']}월:병기는 훈련이 불가능합니다. <1>$date</>";
     } else {
         // 훈련시
-        $score = Util::round(getGeneralLeadership($general, true, true, true) * 100 / $general['crew'] * $_training);
+        $score = Util::round(getGeneralLeadership($general, true, true, true) * 100 / $general['crew'] * GameConst::$trainDelta);
 
         $log[] = "<C>●</>{$admin['month']}월:훈련치가 <C>$score</> 상승했습니다. <1>$date</>";
         $exp = 100;
@@ -1084,11 +1082,11 @@ function process_13(&$general) {
 
         // 훈련치 변경
         $score += $general['train'];
-        if($score > $_maxtrain) { $score = $_maxtrain; }
+        if($score > GameConst::$maxTrainByCommand) { $score = GameConst::$maxTrainByCommand; }
         $query = "update general set train='$score' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 사기 약간 감소
-        $score = intval($general['atmos'] * $_atmosing);
+        $score = intval($general['atmos'] * GameConst::$atmosSideEffectByTraining);
         if($score < 0 ) { $score = 0; }
         $query = "update general set atmos='$score' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1109,7 +1107,6 @@ function process_14(&$general) {
     $db = DB::db();
     $connect=$db->get();
 
-    global $_maxatmos, $_training;
     $log = [];
     $alllog = [];
     $history = [];
@@ -1137,12 +1134,12 @@ function process_14(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 사기진작 실패. <1>$date</>";
     } elseif($general['gold'] < $general['crew']/100) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 사기진작 실패. <1>$date</>";
-    } elseif($general['atmos'] >= $_maxatmos) {
+    } elseif($general['atmos'] >= GameConst::$maxAtmosByCommand) {
         $log[] = "<C>●</>{$admin['month']}월:이미 사기는 하늘을 찌를듯 합니다. <1>$date</>";
 //    } elseif(intdiv($general['crewtype'], 10) == 4) {
 //        $log[] = "<C>●</>{$admin['month']}월:병기는 사기 진작이 불가능합니다. <1>$date</>";
     } else {
-        $score = Util::round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * $_training);
+        $score = Util::round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * GameConst::$trainAtmos);
         $gold = $general['gold'] - Util::round($general['crew']/100);
 
         $log[] = "<C>●</>{$admin['month']}월:사기치가 <C>$score</> 상승했습니다. <1>$date</>";
@@ -1156,7 +1153,7 @@ function process_14(&$general) {
 
         // 사기치 변경        // 자금 감소        // 경험치 상승        // 공헌도, 명성 상승
         $score += $general['atmos'];
-        if($score > $_maxatmos) { $score = $_maxatmos; }
+        if($score > GameConst::$maxAtmosByCommand) { $score = GameConst::$maxAtmosByCommand; }
         $general['leader2']++;
         $query = "update general set resturn='SUCCESS',atmos='$score',gold='$gold',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1172,7 +1169,6 @@ function process_15(&$general) {
     $db = DB::db();
     $connect=$db->get();
 
-    global $_maxatmos, $_maxtrain;
     $log = [];
     $alllog = [];
     $history = [];
@@ -1255,7 +1251,7 @@ function process_16(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select nation,war,tricklimit,tech from nation where nation='{$general['nation']}'";
+    $query = "select nation,war,sabotagelimit,tech from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -1270,7 +1266,7 @@ function process_16(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $query = "select nation,tricklimit,tech from nation where nation='{$destcity['nation']}'";
+    $query = "select nation,sabotagelimit,tech from nation where nation='{$destcity['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dnation = MYDB_fetch_array($result);
 
@@ -2357,7 +2353,6 @@ function process_49(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_taxrate;
 
     $date = substr($general['turntime'],11,5);
 
@@ -2393,7 +2388,7 @@ function process_49(&$general) {
         //특기 보정 : 거상
         if($general['special'] == 30 && $city['trade'] > 100) { $cost = $amount * (6 * $city['trade']/100 - 5); } // 이익인 경우 5배 이득
         if($general['special'] == 30 && $city['trade'] < 100) { $cost = $amount * (0.2 * $city['trade']/100 + 0.8); } // 손해인 경우 1/5배 손해
-        $tax = $cost * $_taxrate;
+        $tax = $cost * GameConst::$exchangeFee;
         $cost = $cost - $tax;
     } elseif($type == 2) {
         $dtype = "군량 구입";
@@ -2401,11 +2396,11 @@ function process_49(&$general) {
         //특기 보정 : 거상
         if($general['special'] == 30 && $city['trade'] < 100) { $cost = $amount * (6 * $city['trade']/100 - 5); } // 이익인 경우 5배 이득
         if($general['special'] == 30 && $city['trade'] > 100) { $cost = $amount * (0.2 * $city['trade']/100 + 0.8); } // 손해인 경우 1/5배 손해
-        $tax = $cost * $_taxrate;
+        $tax = $cost * GameConst::$exchangeFee;
         $cost = $cost + $tax;
         if($general['gold'] < $cost) {
             $cost = $general['gold'];
-            $tax = $cost * $_taxrate;
+            $tax = $cost * GameConst::$exchangeFee;
             $amount = ($cost-$tax) * 100 / $city['trade'];
             //특기 보정 : 거상
             if($general['special'] == 30 && $city['trade'] < 100) { $amount = ($cost-$tax) / (6 * $city['trade']/100 - 5); } // 이익인 경우 5배 이득

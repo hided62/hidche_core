@@ -974,7 +974,7 @@ function command_25($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("command_27 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
     
-    $query = "select nation,name,color,scout,scoutmsg,tricklimit,gennum from nation order by gennum";
+    $query = "select nation,name,color,scout,scoutmsg,sabotagelimit,gennum from nation order by gennum";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 

@@ -4,7 +4,7 @@ namespace sammo;
 require_once 'process_war.php';
 require_once 'func_gamerule.php';
 require_once 'func_process.php';
-require_once 'func_process_trick.php';
+require_once 'func_process_sabotage.php';
 require_once 'func_process_chief.php';
 require_once 'func_process_personnel.php';
 require_once 'func_npc.php';
@@ -270,7 +270,7 @@ function myNationInfo() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,tricklimit,surlimit,tech,totaltech,level,type from nation where nation='{$me['nation']}'";
+    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,sabotagelimit,surlimit,tech,totaltech,level,type from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -350,14 +350,14 @@ function myNationInfo() {
     $nation['tech'] = "$techCall / {$nation['tech']}";
     
     if($me['nation']==0){
-        $nation['tricklimit'] = "<font color=white>해당 없음</font>";
+        $nation['sabotagelimit'] = "<font color=white>해당 없음</font>";
         $nation['surlimit'] = "<font color=white>해당 없음</font>";
         $nation['scout'] = "<font color=white>해당 없음</font>";
         $nation['war'] = "<font color=white>해당 없음</font>";
         $nation['power'] = "<font color=white>해당 없음</font>";
     } else {
-        if($nation['tricklimit'] != 0) { $nation['tricklimit'] = "<font color=red>{$nation['tricklimit']}턴</font>"; }
-        else { $nation['tricklimit'] = "<font color=limegreen>가 능</font>"; }
+        if($nation['sabotagelimit'] != 0) { $nation['sabotagelimit'] = "<font color=red>{$nation['sabotagelimit']}턴</font>"; }
+        else { $nation['sabotagelimit'] = "<font color=limegreen>가 능</font>"; }
     
         if($nation['surlimit'] != 0) { $nation['surlimit'] = "<font color=red>{$nation['surlimit']}턴</font>"; }
         else { $nation['surlimit'] = "<font color=limegreen>가 능</font>"; }
@@ -388,7 +388,7 @@ function myNationInfo() {
     </tr>
     <tr>
         <td align=center id=bg1><b>전 략</b></td>
-        <td align=center>{$nation['tricklimit']}</td>
+        <td align=center>{$nation['sabotagelimit']}</td>
         <td align=center id=bg1><b>외 교</b></td>
         <td align=center>{$nation['surlimit']}</td>
     </tr>
@@ -962,8 +962,6 @@ function myInfo2() {
 }
 
 function generalInfo2($no) {
-    global $_dexLimit;
-
     $db = DB::db();
     $connect=$db->get();
 
@@ -989,11 +987,11 @@ function generalInfo2($no) {
             $dedication = getDed($general['dedication'])." ({$general['dedication']})"; break;
     }
 
-    $dex0  = $general['dex0']  / $_dexLimit * 100;
-    $dex10 = $general['dex10'] / $_dexLimit * 100;
-    $dex20 = $general['dex20'] / $_dexLimit * 100;
-    $dex30 = $general['dex30'] / $_dexLimit * 100;
-    $dex40 = $general['dex40'] / $_dexLimit * 100;
+    $dex0  = $general['dex0']  / GameConst::$dexLimit * 100;
+    $dex10 = $general['dex10'] / GameConst::$dexLimit * 100;
+    $dex20 = $general['dex20'] / GameConst::$dexLimit * 100;
+    $dex30 = $general['dex30'] / GameConst::$dexLimit * 100;
+    $dex40 = $general['dex40'] / GameConst::$dexLimit * 100;
 
     if($dex0 > 100) { $dex0 = 100; }
     if($dex10 > 100) { $dex10 = 100; }
@@ -2678,7 +2676,7 @@ function CharCritical($rate, $personal) {
     return $rate;
 }
 
-function TrickInjury($city, $type=0) {
+function SabotageInjury($city, $type=0) {
     $db = DB::db();
     $connect=$db->get();
     $log = [];

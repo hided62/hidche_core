@@ -811,7 +811,7 @@ function process_55(&$general) {
             'rice'=>GameConst::$baserice, 
             'rate'=>20, 
             'bill'=>100, 
-            'tricklimit'=>36, 
+            'sabotagelimit'=>36, 
             'surlimit'=>72, 
             'type'=>0, 
             'gennum'=>1
