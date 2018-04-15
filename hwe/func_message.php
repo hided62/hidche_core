@@ -1,202 +1,11 @@
 <?php
 namespace sammo;
 
-
-
-function getSingleMessage($messageID){
-    $messageInfo = DB::db()->queryFirstRow('select * from `message` where `id` = %i', $messageID);
-
-    if (!$messageInfo) {
-        return [false, '존재하지 않는 메시지'];
-    }
-    
-    return [true, $messageInfo];
-}
-
-function getRawMessage($mailbox, $msgType, $limit=30, $fromSeq=null){
-
-
-    $sql = 'select * from `message` where `mailbox` = %i_mailbox and `type` = %s_type and `valid_until` > now()';
-    if($fromSeq !== null){
-        $sql .= ' and `id` > %i_id';
-    }
-    $sql .= ' ORDER BY `id` desc';
-    if($limit > 0){
-        $sql .= ' LIMIT %i_limit';
-    }
-
-    //TODO: table 네임의 prefix를 처리할 수 있도록 개선
-    $result = DB::db()->query($sql, [
-        'mailbox' => $mailbox,
-        'type' => $msgType,
-        'limit' => $limit,
-        'time' => $fromTime
-    ]);
-    
-    
-    return array_map(function ($row){
-        return new Message($row);
-    }, $result);
-}
-
-function getMessage($msgType, $nationID=null, $limit=30, $fromSeq=null){
-    $generalID = Session::getInstance()->generalID;
-    if($generalID === null){
-        return [];
-    }
-
-    if($msgType === 'public'){
-        return getRawMessage(9999, 'public', $limit, $fromSeq);
-    }
-    else if($msgType === 'private'){
-        return getRawMessage($generalID, 'private', $limit, $fromSeq);
-    }
-    else if($msgType === 'national'){
-        if($nationID === null){
-            return [];
-        }
-
-        return getRawMessage($nationID + 9000, 'national', $limit, $fromSeq);
-    }
-    else if($msgType === 'diplomacy'){
-        if($nationID === null){
-            return [];
-        }
-        
-        return getRawMessage($nationID + 9000, 'diplomacy', $limit, $fromSeq);
-    }
-    else{
-        return [];
-    }
-}
-
-function sendRawMessage($msgType, $isSender, $mailbox, $src, $dest, $msg, $date, $validUntil, $msgOption){
-    
-    $srcNation = getNationStaticInfo($src['nation_id']);
-    $destNation = getNationStaticInfo($dest['nation_id']);
-
-    $src['nation'] = Util::array_get($srcNation['name'], '재야');
-    $src['color'] = Util::array_get($srcNation['color'], '#ffffff');
-
-    $dest['nation'] = Util::array_get($destNation['name'], '재야');
-    $dest['color'] = Util::array_get($destNation['color'], '#ffffff');
-
-    if(!$isSender && $mailbox < 9000 && Util::array_get($msgOption['alert'], false)){
-        //TODO:newmsg보단 lastmsg로 datetime을 넣는게 더 나아보임
-        DB::db()->update('general', array(
-            'newmsg' => true
-        ), 'no=%i', $dest['id']);
-    }
-
-    if(isset($msgOption['alert'])){
-        unset($msgOption['alert']);
-    }
-
-    DB::db()->insert('message', [
-        'address' => $dest,
-        'type' => $msgType,
-        'src' => $src['id'],
-        'dest' => $dest['id'],
-        'time' => $date,
-        'valid_until' => $validUntil,
-        'message' => Json::encode([
-            'src' => $src,
-            'dest' =>$dest,
-            'text' => $msg,
-            'option' => $msgOption
-        ], Json::DELETE_NULL)
-    ]);
-}
-/**
- * @param string $msgType
- * @param mixed[] $src
- * @param mixed[] $dest
- * @param null|string $date
- * @param null|string $validUntil
- */
-function sendMessage($msgType, array $src, array $dest, $msg, $date = null, $validUntil = null, $msgOption = null){
-    if($date === null){
-        $date = (new \Datetime())->format('Y-m-d H:i:s');
-    }
-
-    if($validUntil === null){
-        $validUntil = '9999-12-31 12:59:59';
-    }
-
-    if($msgType === 'public'){
-        //dest는 필요하지 않음
-        $srcMailbox = null;
-        $destMailbox = 9999;
-        $dest['id'] = 9999;
-    }
-    else if($msgType === 'national'){
-        //dest는 nation_id만 필요함
-        $dest['id'] = $dest['nation_id'] + 9000;
-
-        if($src['nation_id'] === $dest['nation_id']){
-            $srcMailbox = null;
-        }
-        else{
-            $srcMailbox = $src['nation_id'] + 9000;
-        }
-        $destMailbox = $dest['nation_id'] + 9000;
-    }
-    else if($msgType === 'diplomacy'){
-        //NOTE:외교 서신의 경우 '동일한 내용'이 두번 가지 않으므로, 별도 처리가 필요함
-        $src['id'] = $dest['nation_id'] + 9000;
-        $dest['id'] = $dest['nation_id'] + 9000;
-        $destMailbox = $dest['id'];
-    }
-    else{
-        //dest는 id, name이 필수
-        $srcMailbox = $src['id'];
-        $destMailbox = $dest['id'];
-    }
-
-    if($srcMailbox !== null){
-        sendRawMessage($msgType, true, $srcMailbox, $src, $dest, $msg, $date, $validUntil, null);
-    }
-    sendRawMessage($msgType, false, $destMailbox, $src, $dest, $msg, $date, $validUntil, null);
-
-    return true;
-}
-
-
-function sendScoutMsg($src, $dest, $date) {
-
-    return false;
-    //$msgType, $isSender, $mailbox, $src, $dest, $msg, $date, $validUntil, $msgOption
-
-    if(!$src || !$src['id'] || !$src['nation_id']){
-        return false;
-    }
-
-    $nation = getNationStaticInfo($src['nation_id']);
-    $nationName = Util::array_get($nation['name'], '재야');
-
-    if(!$dest || !$dest['id']){
-        return false;
-    }
-
-    $msgType = 'private';
-    $option = [
-        "action" => "scout"
-    ];
-
-    $msg = "{$src['nation']}(으)로 망명 권유 서신";
-    $validUntil = "9999-12-31 12:59:59";//등용장의 시간 제한 없음
-    
-    sendRawMessage('private', false, $dest['id'], $src, $dest, $msg, $date, $validUntil, $option);
-
-    return true;
-}
-
-
 function getMailboxList(){
         
     $generalNations = [];
 
-    foreach(DB::db()->query('select `no`, `name`, `nation`, `level`, `npc` from `general` where `npc` < 2') as $general)
+    foreach(DB::db()->queryAllLists('select `no`, `name`, `nation`, `level`, `npc` from `general` where `npc` < 2') as $general)
     {
         list($generalID, $generalName, $nationID, $level, $npc) = $general;
         if(!isset($generalNations[$nationID])){
@@ -217,20 +26,20 @@ function getMailboxList(){
     $neutral = [
         "nation"=>0,
         "name"=>"재야",
-        "color"=>"#ffffff"
+        "color"=>"#000000"
     ];
 
     $result = array_map(function($nation) use ($generalNations) {
         $nationID = $nation['nation'];
-        $mailbox = $nationID + 9000;
-        $nation = $nation['name'];
+
+        $mailbox = $nationID + Message::MAILBOX_NATIONAL;
+        $nationName = $nation['name'];
         $color = $nation['color'];
         $generals = Util::array_get($generalNations[$nationID], []);
 
         return [
-            "nationID"=>$nationID,
             "mailbox"=>$mailbox,
-            "nation"=>$nationID,
+            "name"=>$nationName,
             "color"=>$color,
             "general"=>$generals
         ];
@@ -270,7 +79,7 @@ function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
     if($sndr['nation'] == 0) {
         $sndrnation = [];
         $sndrnation['name'] = '재야';
-        $sndrnation['color'] = '#FFFFFF';
+        $sndrnation['color'] = '#000000';
     } else {
         $sndrnation = getNationStaticInfo($sndr['nation']);
     }
@@ -298,7 +107,7 @@ function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
         if($rcvr['nation'] == 0) {
             $rcvrnation = [];
             $rcvrnation['name'] = '재야';
-            $rcvrnation['color'] = '#FFFFFF';
+            $rcvrnation['color'] = '#000000';
         } else {
             $rcvrnation = getNationStaticInfo($rcvr['nation']);
         }

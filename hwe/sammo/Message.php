@@ -104,6 +104,18 @@ class Message
         return $this;
     }
 
+    public function toArray():array{
+        return [
+            'id'=>$this->id,
+            'msgType'=>$this->msgType,
+            'src'=>($this->src)?($this->src->toArray()):[],
+            'dest'=>($this->dest)?($this->dest->toArray()):[],
+            'msg'=>$this->msg,
+            'msgOption'=>$this->msgOption,
+            'time'=>$this->date->format('Y-m-d H:i:s')
+        ];
+    }
+
     public static function buildFromArray(array $row) : Message
     {
         $dbMessage = Json::decode($row['message']);
@@ -165,7 +177,8 @@ class Message
     public static function getMessageByID(int $messageID) : Message
     {
         $db = DB::db();
-        $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i', $messageID);
+        $now = new \DateTime();
+        $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i AND ValidUntil', $messageID);
         if (!$row) {
             return null;
         }
@@ -232,8 +245,8 @@ class Message
             'time' => $this->date->format('Y-m-d H:i:s'),
             'valid_until' => $this->validUntil->format('Y-m-d H:i:s'),
             'message' => Json::encode([
-                'src' => $this->src->toArray(),
-                'dest' =>$this->dest->toArray(),
+                'src'=>($this->src)?($this->src->toArray()):[],
+                'dest'=>($this->dest)?($this->dest->toArray()):[],
                 'text' => $this->msg,
                 'option' => $this->msgOption
             ])

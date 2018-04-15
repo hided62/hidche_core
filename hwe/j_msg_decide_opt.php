@@ -17,12 +17,10 @@ if (!$generalID) {
     ]);
 }
 
-session_write_close(); // 이제 세션 안 쓴다
-
 $jsonPost = WebUtil::parseJsonPost();
 
-$msgID = Util::toInt(Util::array_get($jsonPost['msgID'], null), false);
-$msgResponse = Util::array_get($jsonPost['response'], null);
+$msgID = Util::toInt($jsonPost['msgID']??null);
+$msgResponse = $jsonPost['response']??null;
 
 if ($msgID === null || !is_bool($msgResponse)) {
     Json::die([
@@ -31,7 +29,13 @@ if ($msgID === null || !is_bool($msgResponse)) {
     ]);
 }
 
-
+$msg = Message::getMessageByID($msgID);
+if($msg === null){
+    Json::die([
+        'result'=>false,
+        'reason'=>'올바르지 않은 메시지'
+    ]);
+}
 $general = DB::db()->queryFirstRow('select `no`, `name`, `nation`, `nations`, `level`, `npc`, `gold`, `rice`, `troop` from `general` where `no` = %i', $generalID);
 if(!$general){
     Json::die([
