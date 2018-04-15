@@ -45,7 +45,7 @@ $myNation = MYDB_fetch_array($result);
     <tr>
         <td width=998>
             <form name=cityselect method=get>도시선택 :
-                <select name=citylist size=1 style=color:white;background-color:black;width:798;>
+                <select name=citylist size=1 style=color:white;background-color:black;width:798px;>
 <?php
 if(!$citylist){
     $citylist = $me['city'];

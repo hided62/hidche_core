@@ -102,7 +102,7 @@ for($i=0; $i < $troopcount; $i++) {
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $genCount = MYDB_num_rows($genresult);
                 echo "
-            <select name=gen size=3 style=color:white;background-color:black;font-size:13px;width:98;>";
+            <select name=gen size=3 style=color:white;background-color:black;font-size:13px;width:98px;>";
             for($k=0; $k < $genCount; $k++) {
                 $general = MYDB_fetch_array($genresult);
                 echo "
@@ -110,7 +110,7 @@ for($i=0; $i < $troopcount; $i++) {
             }
             echo "
             </select><br>
-            <input type=submit name=btn value='부 대 추 방' style=width:100;height:25;>";
+            <input type=submit name=btn value='부 대 추 방' style=width:100px;height:25px;>";
         } else {
             echo $turn;
         }

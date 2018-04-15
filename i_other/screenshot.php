@@ -14,7 +14,7 @@ if($sel == 0) $sel = 1;
         <title>스크린샷</title>
 
 <style type="text/css">
-body { color:white; background-color:black; border-width:1; border-color:gray; }
+body { color:white; background-color:black; border-width:1px; border-color:gray; }
 table { font-family:'맑은 고딕'; line-height:110%; }
 font { font-family:'맑은 고딕'; line-height:110%; }
 #bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }

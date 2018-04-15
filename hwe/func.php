@@ -175,8 +175,8 @@ function cityInfo() {
 
     if($nation['color'] == "" ) { $nation['color'] = "#000000"; }
     echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
-    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
-    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
+    <tr><td colspan=8 align=center style=height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
+    <tr><td colspan=8 align=center style=height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
 
     if($city['nation'] == 0) {
         echo "공 백 지";
@@ -494,7 +494,7 @@ function commandTable() {
     $develcostE = Util::round($develcostE);
 
     echo "
-<select name=commandtype size=1 style=width:260px;color:white;background-color:black;font-size:12;>";
+<select name=commandtype size=1 style=width:260px;color:white;background-color:black;font-size:12px;>";
     addCommand("휴 식", 0);
     addCommand("요 양", 50);
     commandGroup("========= 내 정 ==========");
@@ -1191,7 +1191,7 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
         <form name=reply_form{$num} method=post action=$board>
         <td width=64 align=center>댓글달기</td>
         <td width=932 colspan=2>
-            <input type=textarea name=reply maxlength=250 style=color:white;background-color:black;width:830;>
+            <input type=textarea name=reply maxlength=250 style=color:white;background-color:black;width:830px;>
             <input type=submit value=댓글달기>
             <input type=hidden name=num value=$num>
         </td>

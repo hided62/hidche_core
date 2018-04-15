@@ -57,7 +57,7 @@ if ($session->userGrade >= 5) {
     <tr>
         <td width=48  align=center><input type=submit name=btn value='알림'></td>
         <td width=98  align=center><input type=submit name=btn value='수정'></td>
-        <td width=848 align=left><input type=text name=title style=width:848;></td>
+        <td width=848 align=left><input type=text name=title style=width:848px;></td>
     </tr>
     ";
 }
@@ -132,7 +132,7 @@ if ($session->userGrade >= 5) {
     <tr>
         <td align=center><input type=submit name=btn value='리셋'></td>
         <td align=center><input type=submit name=btn value='추가'></td>
-        <td align=left><input type=text name=str style=width:848;></td>
+        <td align=left><input type=text name=str style=width:848px;></td>
     </tr>
     ";
 }
@@ -168,7 +168,7 @@ if ($me['no'] > 0) {
     <tr>
         <td width=108 colspan=2 align=center>-</td>
         <td width=83  align=center><input type=submit name=btn value='댓글'></td>
-        <td align=left><input type=text name=comment maxlength=60 style=width:798; onkeydown='return captureKey(event)'></td>
+        <td align=left><input type=text name=comment maxlength=60 style=width:798px; onkeydown='return captureKey(event)'></td>
     </tr>
     ";
 }
