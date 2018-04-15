@@ -209,8 +209,8 @@ class ScoutMessage extends Message{
             $destGeneralID, 
             $destGeneral['name'],
             $destGeneral['nation'],
-            Util::array_get($srcNationInfo['name'], ''), 
-            Util::array_get($srcNationInfo['color'], '')
+            $destNationInfo['name'], 
+            $destNationInfo['color']
         );
 
         $msg = "{$src->nationName}(으)로 망명 권유 서신";
