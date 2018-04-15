@@ -12,22 +12,18 @@ function getMailboxList(){
             $generalNations[$nationID] = [];
         }
 
-        $isChief = ($level == 12);
+        $obj = [$generalID, $generalName, 0];
 
-        $obj = [$generalID, $generalName];
-        if($isChief){
-            $obj[] = 1;
+        if($level == 12){
+            $obj[2] |= 1;
         }
 
-        //TODO: 빙의장 정보 추가
+        if($npc == 1){
+            $obj[2] |= 2;
+        }
+
         $generalNations[$nationID][] = $obj;
     }
-
-    $neutral = [
-        "nation"=>0,
-        "name"=>"재야",
-        "color"=>"#000000"
-    ];
 
     $result = array_map(function($nation) use ($generalNations) {
         $nationID = $nation['nation'];
@@ -43,7 +39,7 @@ function getMailboxList(){
             "color"=>$color,
             "general"=>$generals
         ];
-    }, array_merge([$neutral], getAllNationStaticInfo()));
+    }, array_merge([getNationStaticInfo(0)], getAllNationStaticInfo()));
 
     return $result;
 
