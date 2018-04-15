@@ -48,3 +48,13 @@ Database 수는 로그인 관리 서버 1개, 내부 서버 5개로, 총 6개의
 현재 카카오로그인 API KEY를 입력하는 작업이 설치과정에 추가되어있지 않습니다.
 
 <code>f_install/templates/KakaoKey.orig.php</code> 를 <code>d_setting/KakaoKey.php</code>로 복사한 후 API 키를 입력하여야 합니다.
+
+
+## 라이선스
+
+본 게임을 수정하거나 재배포할 경우 다음 중 하나의 라이선스를 선택하여 적용할 수 있습니다.
+
+* MIT License
+* GPL 2.0 또는 이후
+
+만약 별도의 라이선스를 적용하고자 할 경우 Hide_D에게 문의하여 주십시오.
