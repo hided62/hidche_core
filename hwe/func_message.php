@@ -72,13 +72,7 @@ function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $sndr = MYDB_fetch_array($result);
 
-    if($sndr['nation'] == 0) {
-        $sndrnation = [];
-        $sndrnation['name'] = '재야';
-        $sndrnation['color'] = '#000000';
-    } else {
-        $sndrnation = getNationStaticInfo($sndr['nation']);
-    }
+    $sndrnation = getNationStaticInfo($sndr['nation']);
 
     switch($bg) {
         case 2:
@@ -100,13 +94,7 @@ function DecodeMsg($msg, $type, $who, $date, $bg, $num=0) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $rcvr = MYDB_fetch_array($result);
 
-        if($rcvr['nation'] == 0) {
-            $rcvrnation = [];
-            $rcvrnation['name'] = '재야';
-            $rcvrnation['color'] = '#000000';
-        } else {
-            $rcvrnation = getNationStaticInfo($rcvr['nation']);
-        }
+        $rcvrnation = getNationStaticInfo($rcvr['nation']);
         ShowMsg($bgcolor, $category, $sndr['picture'], $sndr['imgsvr'], "{$sndr['name']}:{$sndrnation['name']}▶", $sndrnation['color'], "{$rcvr['name']}:{$rcvrnation['name']}", $rcvrnation['color'], $msg, $date, $num, $from, $term);
     }
 }

@@ -1468,13 +1468,13 @@ function checkDelay() {
 function updateOnline() {
     $db = DB::db();
     $connect=$db->get();
-    $nationname = [];
+    $nationname = ["재야"];
 
     //국가별 이름 매핑
     foreach(getAllNationStaticInfo() as $nation) {
         $nationname[$nation['nation']] = $nation['name'];
     }
-    $nationname[0] = "재야";
+
 
     //동접수
     $query = "select no,name,nation from general where lastrefresh > DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
