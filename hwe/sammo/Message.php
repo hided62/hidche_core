@@ -53,7 +53,7 @@ class Message
         $this->msgOption = $msgOption;
     }
 
-    public function setSentInfo(int $mailbox, int $messageID) : this
+    public function setSentInfo(int $mailbox, int $messageID) : self
     {
         if(!Message::isValidMailBox($mailbox)){
             throw new \InvalidArgumentException('올바르지 않은 mailbox');
@@ -110,8 +110,8 @@ class Message
             'msgType'=>$this->msgType,
             'src'=>($this->src)?($this->src->toArray()):[],
             'dest'=>($this->dest)?($this->dest->toArray()):[],
-            'msg'=>$this->msg,
-            'msgOption'=>$this->msgOption,
+            'text'=>$this->msg,
+            'option'=>$this->msgOption,
             'time'=>$this->date->format('Y-m-d H:i:s')
         ];
     }
@@ -218,7 +218,7 @@ class Message
         }, $db->query('SELECT * FROM `message` WHERE %l %?', $where, $limitSql));
     }
 
-    protected function sendRaw(int $mailbox){
+    protected function sendRaw(int $mailbox):array{
         //NOTE:: 여기선 검증하지 않는다.
 
 
@@ -238,7 +238,7 @@ class Message
 
         $db = DB::db();
         $db->insert('message', [
-            'address' => $mailbox,
+            'mailbox' => $mailbox,
             'type' => $this->msgType,
             'src' => $src_id,
             'dest' => $dest_id,
@@ -254,7 +254,7 @@ class Message
         return [$mailbox, $db->insertId()];
     }
 
-    private function sendToSender() : int{
+    private function sendToSender():array{
         if($this->sendCnt > 0){
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
@@ -267,7 +267,7 @@ class Message
         return [0, 0];
     }
 
-    private function sendToReceiver() : int{
+    private function sendToReceiver() : array{
         if($this->sendCnt > 1 || $this->isInboxMail){
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
@@ -295,7 +295,7 @@ class Message
                 $this->isInboxMail = false;
                 $this->id = $sendID;
                 $this->msgOption['senderMessageID'] = $sendID;
-                $this->$sendCnt = 1;
+                $this->sendCnt = 1;
             }
         }
         
@@ -307,7 +307,7 @@ class Message
         $this->isInboxMail = true;
         $this->id = $receiveID;
         $this->msgOption['receiverMessageID'] = $receiveID;
-        $this->$sendCnt = 2;
+        $this->sendCnt = 2;
         
         return $receiveID;
     }

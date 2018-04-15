@@ -73,18 +73,18 @@ $me['icon'] = GetImageURL($me['imgsvr'], $me['picture']);
 
 $srcNation = getNationStaticInfo($me['nation']);
 
-$src = new MessageTarget($me['no'], $me['name'], $me['nation'], $srcNation['name'], $srcNation['color'], $me['icon']);
+$src = new MessageTarget($me['no'], $me['name'], $srcNation['nation'], $srcNation['name'], $srcNation['color'], $me['icon']);
 
 // 전체 메세지
-if($mailbox == 9999) {
+if($mailbox == Message::MAILBOX_PUBLIC) {
     $msg = new Message(
         Message::MSGTYPE_PUBLIC, 
         $src, 
-        null,
+        $src,
         $text, 
         $now, 
         $unlimited, 
-        null
+        []
     );
     $msgID = $msg->send();
     Json::die([
@@ -97,13 +97,13 @@ if($mailbox == 9999) {
 } 
 
 // 국가 메세지
-if($destMailbox >= Message::MAILBOX_NATIONAL) {
+if($mailbox >= Message::MAILBOX_NATIONAL) {
 
     if($me['level'] < 5){
         $destNationID = $me['nation_id'];
     }
     else{
-        $destNationID = $destMailbox - Message::MAILBOX_NATIONAL;
+        $destNationID = $mailbox - Message::MAILBOX_NATIONAL;
     }
 
     $destNation = getNationStaticInfo($destNationID);
@@ -117,7 +117,7 @@ if($destMailbox >= Message::MAILBOX_NATIONAL) {
         $text,
         $now,
         $unlimited,
-        null
+        []
     );
     $msgID = $msg->send();
     Json::die([
@@ -128,7 +128,7 @@ if($destMailbox >= Message::MAILBOX_NATIONAL) {
 }
 
 // 개인 메세지
-if($destMailbox > 0) {
+if($mailbox > 0) {
     $lastMsg = new \DateTime($session->lastMsg??'0000-00-00');
 
     $msg_interval = $now->getTimestamp() - $lastMsg->getTimestamp();
@@ -143,9 +143,9 @@ if($destMailbox > 0) {
     
     $session->lastMsg = $now->format('Y-m-d H:i:s');
 
-    $destUser = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`con`,`picture`,`imgsvr` WHERE `no`=%i',$destMailbox);
+    $destUser = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`con`,`picture`,`imgsvr` FROM general WHERE `no`=%i',$mailbox);
 
-    if(!$destUser == null){
+    if(!$destUser){
         Json::die([
             'result' => false,
             'reason' => '존재하지 않는 유저입니다.',
@@ -171,7 +171,7 @@ if($destMailbox > 0) {
         $text,
         $now,
         $unlimited,
-        null
+        []
     );
     $msgID = $msg->send();
     Json::die([

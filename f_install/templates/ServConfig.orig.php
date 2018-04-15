@@ -11,7 +11,7 @@ class ServConfig
     public static $sharedIconPath = '_tK_sharedIconPath_';
     public static $gameImagePath = "_tK_gameImagePath_";
 
-    public static function getSharedIconPath(string $filepath) : string
+    public static function getSharedIconPath(string $filepath='') : string
     {
         if($filepath){
             return static::$sharedIconPath."/{$filepath}";
@@ -19,15 +19,12 @@ class ServConfig
         return static::$sharedIconPath;
     }
     
-    public static function getUserIconPath(string $filepath) : string
+    public static function getUserIconPath(string $filepath='') : string
     {
-        if($filepath){
-            return AppConf::getUserIconPathWeb()."/{$filepath}";
-        }
-        return AppConf::getUserIconPathWeb();
+        return AppConf::getUserIconPathWeb($filepath);
     }
 
-    public static function getGameImagePath(string $filepath) : string
+    public static function getGameImagePath(string $filepath='') : string
     {
         if($filepath){
             return static::$gameImagePath."/{$filepath}";

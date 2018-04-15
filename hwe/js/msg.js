@@ -339,7 +339,7 @@ function activateMessageForm(){
                 dataType:'json',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    mailbox:targetMailbox,
+                    mailbox:parseInt(targetMailbox),
                     text:text
                 })
             });
