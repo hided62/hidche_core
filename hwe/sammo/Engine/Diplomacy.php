@@ -1,6 +1,7 @@
 <?php
 namespace sammo\Engine;
 
+use \sammo\DB;
 use \sammo\DiplomacticMessage;
 
 //NOTE: A가 B에게 항복, 통합 서신을 보냈을 때 통합 후 대상이 A이므로 A가 주체임.
@@ -24,12 +25,12 @@ class Diplomacy{
 
         $db = DB::db();
         $srcNation = $db->queryFirstRow(
-            'SELECT nation, `name`, capital, gold, rice, surlimit, color, `level` FROM nation WHERE nation=%i',
+            'SELECT nation, `name`, `power`, capital, gold, rice, surlimit, color, `level` FROM nation WHERE nation=%i',
             $srcNationID
         );
 
         $destNation = $db->queryFirstRow(
-            'SELECT nation, `name`, capital, gold, rice, surlimit, color, `level` FROM nation WHERE nation=%i',
+            'SELECT nation, `name`, `power`, capital, gold, rice, surlimit, color, `level` FROM nation WHERE nation=%i',
             $destNationID
         );
 
@@ -96,6 +97,18 @@ class Diplomacy{
         if($this->srcToDestDiplomacy['state'] == 0 || $this->srcToDestDiplomacy['state'] == 0
             ||$this->destToSrcDiplomacy['state'] == 1 || $this->destToSrcDiplomacy['state'] == 1){
             return [DiplomacticMessage::DECLINED, '상대국과 선포, 전쟁 중입니다.'];
+        }
+
+        return $prev;
+    }
+
+    protected function checkNonAggressionTreaty(array $prev = [DiplomacticMessage::ACCEPTED, '']){
+        if($prev[0] !== DiplomacticMessage::ACCEPTED){
+            return $prev;
+        }
+
+        if($this->srcToDestDiplomacy['state'] !== 7 || $this->destToSrcDiplomacy['state'] !== 7){
+            return [DiplomacticMessage::DECLINED, '상대국과 불가침 중이 아닙니다.'];
         }
 
         return $prev;
@@ -172,12 +185,21 @@ class Diplomacy{
             return $prev;
         }
 
-        if(false){
-            return [DiplomacticMessage::DECLINED, '상대국이 전쟁 중입니다.'];
-        }
+        $db = \sammo\DB::db();
 
-        if(false){
-            return [DiplomacticMessage::DECLINED, '상대국이 합병 중입니다.'];
+        $states = $db->queryOneField(
+            'SELECT `state` FROM diplomacy WHERE me = %i AND you != %i AND `state` NOT IN (2, 7) GROUP BY `state` ORDER BY `state`',
+            $this->srcNation['nation'],
+            $this->destNation['nation']
+        );
+
+        foreach($states as $state){
+            if($state == 0 || $state == 1){
+                return [DiplomacticMessage::DECLINED, '상대국이 전쟁 중입니다.'];
+            }
+            if(3 <= $state && $state <= 6){
+                return [DiplomacticMessage::DECLINED, '상대국이 합병 중입니다.'];
+            }
         }
 
         return $prev;
@@ -188,30 +210,195 @@ class Diplomacy{
             return $prev;
         }
 
-        if(false){
+        $db = \sammo\DB::db();
+
+        $cnt = $db->queryFirstField(
+            'SELECT count(dest.you) FROM diplomacy src 
+            JOIN diplomacy dest ON src.you = dest.you AND src.me != dest.me
+            WHERE src.state = 7 AND dest.state IN (0, 1) AND src.me = %i AND dest.me = %i',
+            $this->srcNation['nation'],
+            $this->destNation['nation']
+        );
+
+        if($cnt > 0){
             return [DiplomacticMessage::DECLINED, '상대국이 본국의 교전국과 불가침중입니다.'];
         }
 
         return $prev;
     }
 
-    public function noAggression(int $destNation){
+    protected function checkMorePower(array $prev = [DiplomacticMessage::ACCEPTED, '']){
+        if($prev[0] !== DiplomacticMessage::ACCEPTED){
+            return $prev;
+        }
 
+        if($this->srcNation['power'] < $this->destNation['power'] * 3){
+            return [DiplomacticMessage::DECLINED, '상대국과 국력차가 크지 않습니다.'];
+        }
+
+        return $prev;
+    }
+
+    protected function checkMergePower(array $prev = [DiplomacticMessage::ACCEPTED, '']){
+        if($prev[0] !== DiplomacticMessage::ACCEPTED){
+            return $prev;
+        }
+
+        $db = DB::db();
+        list(
+            $powerAvg,
+            $powerStddev,
+            $genAvg,
+            $genStddev
+        ) = $db->queryFirstList(
+            'SELECT avg(`power`), std(`power`), avg(`gennum`), std(`gennum`) FROM nation WHERE `level` >= 1'
+        );
+        
+        $mergedPower = ($this->srcNation['power'] + $this->destNation['power'])/2;
+        $ZPower = ($mergedPower - $powerAvg) / $powerStddev;
+        if($ZPower >= -0.25){
+            return [DiplomacticMessage::DECLINED, '두 국가의 국력 평균이 상위 60% 보다 높습니다.'];
+        }
+
+        $mergedGeneral = ($this->srcNation['gennum'] + $this->destNation['gennum'])/2;
+        $ZGeneral = ($mergedGeneral - $genAvg) / $genStddev;
+        if($ZGeneral >= -0.67){
+            return [DiplomacticMessage::DECLINED, '두 국가의 장수수 평균이 상위 75% 보다 높습니다.'];
+        }
+
+        return $prev;
+    }
+
+    public function noAggression(int $when, string $option){
+        $chk = $this->checkValidNation();
+        $chk = $this->checkNotWar($chk);
+        $chk = $this->checkAlreadyMerging($chk);
+
+        list($result, $reason) = $chk;
+        if($result !== DiplomacticMessage::ACCEPTED){
+            return $chk;
+        }
+
+        $db = DB::db();
+        $db->update('diplomacy',[
+            'state'=>7,
+            'term'=>$when,
+            'fixed'=>$option
+        ],
+        '(me=%i AND you=%i) OR (you=%i AND me=%i)', 
+        $this->srcNation['nation'], $this->destNation['nation'],
+        $this->srcNation['nation'], $this->destNation['nation']);
+
+        return $chk;
     }
     
-    public function cancelNA(int $destNation){
-        
+    public function cancelNA(){
+        $chk = $this->checkValidNation();
+        $chk = $this->checkNonAggressionTreaty($chk);
+
+        list($result, $reason) = $chk;
+        if($result !== DiplomacticMessage::ACCEPTED){
+            return $chk;
+        }
+
+        $db = DB::db();
+        $db->update('diplomacy',[
+            'state'=>2,
+            'term'=>0,
+            'fixed'=>''
+        ],
+        '(me=%i AND you=%i) OR (you=%i AND me=%i)', 
+        $this->srcNation['nation'], $this->destNation['nation'],
+        $this->srcNation['nation'], $this->destNation['nation']);
+
+        return $chk;
     }
 
-    public function stopWar(int $destNation){
-        
+    public function stopWar(){
+        $chk = $this->checkValidNation();
+        $chk = $this->checkInWar($chk);
+
+        list($result, $reason) = $chk;
+        if($result !== DiplomacticMessage::ACCEPTED){
+            return $chk;
+        }
+
+        $db = DB::db();
+        $db->update('diplomacy',[
+            'state'=>2,
+            'term'=>0,
+            'fixed'=>''
+        ],
+        '(me=%i AND you=%i) OR (you=%i AND me=%i)', 
+        $this->srcNation['nation'], $this->destNation['nation'],
+        $this->srcNation['nation'], $this->destNation['nation']);
+
+        return $chk;
     }
 
-    public function acceptMerge(int $destNation){
-        
+    public function acceptMerge(int $srcGeneral,  int $destGeneral){
+        $chk = $this->checkValidNation();
+        $chk = $this->checkDiplomacyLimit($chk);
+        $chk = $this->checkContradictoryDiplomacy($chk);
+        $chk = $this->checkSrcNationHasNeutralDiplomacy($chk);
+        $chk = $this->checkStrictlyAdjacent($chk);
+        $chk = $this->checkMergePower($chk);
+
+        list($result, $reason) = $chk;
+        if($result !== DiplomacticMessage::ACCEPTED){
+            return $chk;
+        }
+
+        $db = DB::db();
+        $db->update('diplomacy',[
+            'state'=>4,
+            'term'=>24,
+            'fixed'=>''
+        ],
+        'me=%i AND you=%i', 
+        $this->srcNation['nation'], $this->destNation['nation']);
+
+        $db->update('diplomacy',[
+            'state'=>3,
+            'term'=>24,
+            'fixed'=>''
+        ],
+        'you=%i AND me=%i', 
+        $this->srcNation['nation'], $this->destNation['nation']);
+
+        return $chk;
     }
 
-    public function acceptSurrender(int $destNation){
-        
+    public function acceptSurrender(int $srcGeneral,  int $destGeneral){
+        $chk = $this->checkValidNation();
+        $chk = $this->checkDiplomacyLimit($chk);
+        $chk = $this->checkContradictoryDiplomacy($chk);
+        $chk = $this->checkSrcNationHasNeutralDiplomacy($chk);
+        $chk = $this->checkStrictlyAdjacent($chk);
+        $chk = $this->checkMorePower($chk);
+
+        list($result, $reason) = $chk;
+        if($result !== DiplomacticMessage::ACCEPTED){
+            return $chk;
+        }
+
+        $db = DB::db();
+        $db->update('diplomacy',[
+            'state'=>6,
+            'term'=>24,
+            'fixed'=>''
+        ],
+        'me=%i AND you=%i', 
+        $this->srcNation['nation'], $this->destNation['nation']);
+
+        $db->update('diplomacy',[
+            'state'=>5,
+            'term'=>24,
+            'fixed'=>''
+        ],
+        'you=%i AND me=%i', 
+        $this->srcNation['nation'], $this->destNation['nation']);
+
+        return $chk;
     }
 }

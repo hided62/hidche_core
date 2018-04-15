@@ -89,6 +89,19 @@ class ScoutMessage extends Message{
         $this->invalidate();
         $this->validScout = false;
 
+        pushGenLog(
+            ['no'=>$this->dest->generalID],
+            ["<C>●</><D>{$this->src->nationName}</>(으)로 망명하여 수도로 이동합니다."]);
+        pushGenLog(
+            ['no'=>$this->src->generalID], 
+            ["<C>●</><Y>{$this->dest->generalName}</> 등용에 성공했습니다."]
+        );
+        pushGeneralPublicRecord(
+            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(으)로 <S>망명</>하였습니다."], 
+            $helper->year, 
+            $helper->month
+        );
+
         $newMsg = new Message(
             self::MSGTYPE_PRIVATE, 
             $this->dest, 
@@ -209,6 +222,4 @@ class ScoutMessage extends Message{
 
         return new ScoutMessage(Message::MSGTYPE_PRIVATE, $src, $dest, $msg, $date, $validUntil, $msgOption);
     }
-
-
 }

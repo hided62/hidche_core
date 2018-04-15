@@ -1,6 +1,7 @@
 <?php
 namespace sammo\Engine;
 
+use \sammo\DB;
 use \sammo\ScoutMessage;
 
 /**
@@ -114,15 +115,6 @@ class Personnel{
             $originalNationGeneralCnt = 10;//XXX: 상수!
         }
 
-        //TODO: Logging 시스템 들어엎자.
-        $senderLog = [];
-        $receiverLog = [];
-        $generalPublicLog = [];
-
-        $senderLog[] = "<C>●</><Y>{$general['name']}</> 등용에 성공했습니다.";
-        $receiverLog[] = "<C>●</><D>{$this->nation['name']}</>(으)로 망명하여 수도로 이동합니다.";
-        $generalPublicLog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 <D><b>{$this->nation['name']}</b></>(으)로 <S>망명</>하였습니다.";
-
         // 국가 변경, 도시 변경, 일반으로, 수도로
         $setValues = [
             'belong'=>1,
@@ -207,11 +199,7 @@ class Personnel{
             // 부대 삭제
             $db->delete('troop', 'troop=%i', $general['troop']);
         }
-
-        pushGenLog($general, $receiverLog);
-        pushGenLog(['no'=>$this->src->generalID], $senderLog);
-        pushGeneralPublicRecord($generalPublicLog, $year, $month);
-
+        
         return [ScoutMessage::ACCEPTED, ''];
     }
 }
