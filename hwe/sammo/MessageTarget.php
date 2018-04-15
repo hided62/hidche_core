@@ -32,7 +32,10 @@ class MessageTarget extends Target {
         $this->icon = $icon;
     }
 
-    public static function buildFromArray(array $arr) : MessageTarget
+    /**
+     * @return MessageTarget
+     */
+    public static function buildFromArray($arr)
     {
         if(!$arr){
             return null;

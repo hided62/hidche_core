@@ -13,7 +13,10 @@ class Target {
         $this->nationID = $nationID;
     }
 
-    public static function buildFromArray(array $arr) : Target
+    /**
+     * @return Target
+     */
+    public static function buildFromArray($arr)
     {
         return new Target($arr['id'], $arr['nation_id']??0);
     }

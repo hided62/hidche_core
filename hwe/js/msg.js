@@ -31,7 +31,7 @@ var generalList = {};
 
 function responseMessage(msgID, response){
     $.ajax({
-        url: 'prompt_dummy.php',
+        url: 'j_decide_opt.php',
         type: 'post',
         dataType:'json',
         contentType: 'application/json',
@@ -334,7 +334,7 @@ function activateMessageForm(){
 
         if(text){
             deferred = $.ajax({
-                url:'add_msg_dummy.php',
+                url:'j_msg_submit.php',
                 type: 'post',
                 dataType:'json',
                 contentType: 'application/json',
