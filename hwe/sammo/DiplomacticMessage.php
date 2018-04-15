@@ -13,7 +13,6 @@ class DiplomacticMessage extends Message{
     const TYPE_STOP_WAR = 'stopWar'; //종전
     const TYPE_MERGE = 'merge'; //통합
     const TYPE_SURRENDER = 'surrender'; //항복
-    
 
     protected $diplomaticType = '';
     protected $diplomacyName = '';
@@ -71,6 +70,145 @@ class DiplomacticMessage extends Message{
         return [self::ACCEPTED, ''];
     }
 
+    protected function noAggression(){
+        $year = Util::array_get($this->msgOption['year']);
+        $option = Util::array_get($this->msgOption['option']);
+        if($year < 1 || $year > 30){
+            return [self::INVALID, '올바르지 않은 불가침 서신입니다.'];
+        }
+
+        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
+        $chk = $helper->noAggression($year, $option);
+        if($chk[0] !== self::ACCEPTED){
+            return $chk;
+        }
+
+        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>(와)과 <C>$when</>년 불가침에 성공했습니다.";
+        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>(와)과 <C>$when</>년 불가침에 합의했습니다.";
+        pushGenLog(['no'=>$this->dest->generalID], $mylog);
+        pushGenLog(['no'=>$this->src->generalID], $youlog);
+        pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 {$when}년 불가침 성공");
+        pushGeneralHistory(['no'=>$this->dest->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>(와)과 {$when}년 불가침 수락");
+
+        return $chk;
+    }
+
+    protected function cancelNA(){
+        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
+        $chk = $helper->noAggression();
+        if($chk[0] !== self::ACCEPTED){
+            return $chk;
+        }
+
+        $alllog[] = "<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(와)과 <M>조약 파기</>에 합의.";
+        $history[] = "<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【파기】</b></><D><b>{$this->dest->nationName}</b></>(이)가 <D><b>{$this->src->nationName}</b></>(와)과 불가침을 파기 하였습니다.";
+        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>(와)과 파기에 성공했습니다.";
+        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>(와)과 파기에 합의했습니다.";
+        pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 파기 성공");
+        pushGeneralHistory(['no'=>$this->dest->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>(와)과 파기 수락");
+
+        pushGenLog(['no'=>$this->dest->generalID], $mylog);
+        pushGenLog(['no'=>$this->src->generalID], $youlog);
+        pushGeneralPublicRecord($alllog, $helper->year, $helper->month);
+        pushWorldHistory($history, $helper->year, $helper->month);
+
+        return $chk;
+    }
+
+    protected function stopWar(){
+        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
+        $chk = $helper->noAggression();
+        if($chk[0] !== self::ACCEPTED){
+            return $chk;
+        }
+
+        $alllog[] = "<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(와)과 <M>종전 합의</> 하였습니다.";
+        $history[] = "<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【종전】</b></><D><b>{$this->dest->nationName}</b></>(이)가 <D><b>{$this->src->nationName}</b></>(와)과 <M>종전 합의</> 하였습니다.";
+        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>(와)과 종전에 성공했습니다.";
+        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>(와)과 종전에 합의했습니다.";
+        pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 종전 성공");
+        pushGeneralHistory(['no'=>$this->dest->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>(와)과 종전 수락");
+
+        pushGenLog(['no'=>$this->dest->generalID], $mylog);
+        pushGenLog(['no'=>$this->src->generalID], $youlog);
+        pushGeneralPublicRecord($alllog, $helper->year, $helper->month);
+        pushWorldHistory($history, $helper->year, $helper->month);
+
+        return $chk;
+    }
+
+    protected function acceptMerge(){
+        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
+        $chk = $helper->noAggression();
+        if($chk[0] !== self::ACCEPTED){
+            return $chk;
+        }
+
+        pushGeneralHistory(
+            ['no'=>$this->src->generalID],
+            ["<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 통합 시도"]
+        );
+        pushGeneralHistory(
+            ['no'=>$this->dest->generalID],
+            ["<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>(와)과 통합 시도"]
+        );
+        pushGenLog(
+            ['no'=>$this->dest->generalID],
+            ["<C>●</><D><b>{$this->src->nationName}</b></>(와)과 통합에 동의했습니다."]
+        );
+        pushGenLog(
+            ['no'=>$this->src->generalID],
+            ["<C>●</><D><b>{$this->dest->nationName}</b></>(이)가 통합에 동의했습니다."]
+        );
+        pushGeneralPublicRecord(
+            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(와)과 <M>통합</>에 동의하였습니다."],
+            $helper->year,
+            $helper->month);
+        pushWorldHistory(
+            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【통합시도】</b></><D><b>{$this->dest->nationName}</b></>(와)과 <D><b>{$this->src->nationName}</b></>(이)가 통합을 시도합니다."],
+            $helper->year, 
+            $helper->month
+        );
+
+        return $chk;
+    }
+
+    protected function acceptSurrender(){
+        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
+        $chk = $helper->noAggression();
+        if($chk[0] !== self::ACCEPTED){
+            return $chk;
+        }
+
+        pushGeneralHistory(
+            ['no'=>$this->src->generalID], 
+            "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 투항 제의"
+        );
+        pushGeneralHistory(
+            ['no'=>$this->dest->generalID],
+            "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>(으)로 투항 동의"
+        );
+        pushGenLog(
+            ['no'=>$this->dest->generalID], 
+            ["<C>●</><D><b>{$this->src->nationName}</b></>(으)로 투항에 동의했습니다."]
+        );
+        pushGenLog(
+            ['no'=>$this->src->generalID], 
+            ["<C>●</><D><b>{$this->dest->nationName}</b></>(이)가 투항에 동의했습니다."]
+        );
+        pushGeneralPublicRecord(
+            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(으)로 <M>투항</>에 동의하였습니다."], 
+            $helper->year, 
+            $helper->month);
+        pushWorldHistory(
+            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【투항시도】</b></><D><b>{$this->dest->nationName}</b></>(이)가 <D><b>{$this->src->nationName}</b></>(으)로 투항합니다."], 
+            $helper->year, 
+            $helper->month
+        );
+
+        return $chk;
+    }
+
     /**
      * @return int 수행 결과 반환, ACCEPTED(등용장 소모), DECLINED(등용장 소모), INVALID 중 반환
      */
@@ -89,30 +227,6 @@ class DiplomacticMessage extends Message{
         );
 
         list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
-
-        $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-
-        switch($this->diplomaticType){
-            case self::TYPE_NO_AGGRESSION:
-                list($result, $reason) = $helper->noAggression();
-                break;
-            case self::TYPE_CANCEL_NA:
-                list($result, $reason) = $helper->cancelNA();
-                break;
-            case self::TYPE_STOP_WAR:
-                list($result, $reason) = $helper->stopWar();
-                break;
-            case self::TYPE_MERGE:
-                list($result, $reason) = $helper->acceptMerge();
-                break;
-            case self::TYPE_SURRENDER:
-                list($result, $reason) = $helper->acceptSurrender();
-                break;
-            default: 
-                throw \RuntimeException('diplomaticType이 올바르지 않음');
-        }
-
-
         if($result !== self::ACCEPTED){
             pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} {$this->diplomacyName} 실패."]);
             if($result === self::DECLINED){
@@ -121,6 +235,33 @@ class DiplomacticMessage extends Message{
             return $result;
         }
 
+        switch($this->diplomaticType){
+            case self::TYPE_NO_AGGRESSION:
+                list($result, $reason) = $this->noAggression();
+                break;
+            case self::TYPE_CANCEL_NA:
+                list($result, $reason) = $this->cancelNA();
+                break;
+            case self::TYPE_STOP_WAR:
+                list($result, $reason) = $this->stopWar();
+                break;
+            case self::TYPE_MERGE:
+                list($result, $reason) = $this->acceptMerge();
+                break;
+            case self::TYPE_SURRENDER:
+                list($result, $reason) = $this->acceptSurrender();
+                break;
+            default: 
+                throw \RuntimeException('diplomaticType이 올바르지 않음');
+        }
+
+        if($result !== self::ACCEPTED){
+            pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} {$this->diplomacyName} 실패."]);
+            if($result === self::DECLINED){
+                $this->_declineMessage();
+            }
+            return $result;
+        }
         
         list(
             $year, 
@@ -142,7 +283,7 @@ class DiplomacticMessage extends Message{
             new \DateTime(),
             new \DateTime('9999-12-31'),
             Json::encode([
-                'related'=>$this->id
+                'delete'=>$this->id
             ])
         );
         $newMsg->send();

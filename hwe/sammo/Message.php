@@ -241,7 +241,7 @@ class Message
         return [$mailbox, $db->insertId()];
     }
 
-    protected function sendToSender() : int{
+    private function sendToSender() : int{
         if($this->sendCnt > 0){
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
@@ -254,7 +254,7 @@ class Message
         return [0, 0];
     }
 
-    protected function sendToReceiver() : int{
+    private function sendToReceiver() : int{
         if($this->sendCnt > 1 || $this->isInboxMail){
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
@@ -274,17 +274,20 @@ class Message
         throw new \RuntimeException('이곳에 올 수 없습니다.');
     }
 
-    public function send():int{
-        list($senderMailbox, $sendID) = $this->sendToSender();
-        if($sendID){
-            $this->mailbox = $senderMailbox;
-            $this->isInboxMail = false;
-            $this->id = $sendID;
-            $this->msgOption['senderMessageID'] = $sendID;
-            $this->$sendCnt = 1;
+    public function send(bool $sendDestOnly=false):int{
+        if(!$sendDestOnly){
+            list($senderMailbox, $sendID) = $this->sendToSender();
+            if($sendID){
+                $this->mailbox = $senderMailbox;
+                $this->isInboxMail = false;
+                $this->id = $sendID;
+                $this->msgOption['senderMessageID'] = $sendID;
+                $this->$sendCnt = 1;
+            }
         }
+        
         list($receiverMailbox, $receiveID) = $this->sendToReceiver();
-        if(!$receiveID){
+        if(!$receiveID && !$sendDestOnly){
             return $sendID;
         }
         $this->mailbox = $receiverMailbox;

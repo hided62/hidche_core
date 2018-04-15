@@ -104,16 +104,16 @@ class ScoutMessage extends Message{
 
         $newMsg = new Message(
             self::MSGTYPE_PRIVATE, 
-            $this->dest, 
+            $this->src, 
             $this->dest, 
             "{$scoutNation['name']}(으)로 등용 제의 수락",
             new \DateTime(),
             new \DateTime('9999-12-31'),
             Json::encode([
-                'related'=>$this->id
+                'delete'=>$this->id
             ])
         );
-        $newMsg->send();
+        $newMsg->send(true);
 
         return self::ACCEPTED;
     }
@@ -125,16 +125,16 @@ class ScoutMessage extends Message{
 
         $newMsg = new Message(
             self::MSGTYPE_PRIVATE, 
-            $this->dest, 
+            $this->src, 
             $this->dest, 
             "{$scoutNation['name']}(으)로 등용 제의 거부",
             new \DateTime(),
             new \DateTime('9999-12-31'),
             Json::encode([
-                'related'=>$this->id
+                'delete'=>$this->id
             ])
         );
-        $newMsg->send();
+        $newMsg->send(true);
 
         return self::DECLINED;
     }
