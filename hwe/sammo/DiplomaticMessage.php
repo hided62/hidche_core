@@ -72,7 +72,7 @@ class DiplomaticMessage extends Message{
 
     protected function noAggression(){
         $year = Util::array_get($this->msgOption['year']);
-        $option = Util::array_get($this->msgOption['option']);
+        $option = Util::array_get($this->msgOption['option'])??'';
         if($year < 1 || $year > 30){
             return [self::INVALID, '올바르지 않은 불가침 서신입니다.'];
         }

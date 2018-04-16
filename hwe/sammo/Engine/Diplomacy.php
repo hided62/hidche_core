@@ -79,7 +79,7 @@ class Diplomacy{
         }
 
         if(!$this->srcNation || !$this->destNation || !$this->valid){
-            return [ScoutMessage::DECLINED, '이미 멸망한 국가입니다.'];
+            return [DiplomaticMessage::DECLINED, '올바르지 않은 국가입니다.'];
         }
 
         if($this->srcNation['level'] == 0 || $this->destNation['level'] == 0){
