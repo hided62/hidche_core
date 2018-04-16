@@ -291,72 +291,87 @@ function process_27(&$general) {
 
 
 function process_51(&$general) {
+
     $db = DB::db();
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
     $date = substr($general['turntime'],11,5);
+    list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
-
-    $query = "select name,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    $command = DecodeCommand($nation["l{$general['level']}turn0"]);
-    $which = $command[1];
-
-    $query = "select nation,name,dip0,dip0_type,dip0_who,dip0_when,dip1,dip1_type,dip1_who,dip1_when,dip2,dip2_type,dip2_who,dip2_when,dip3,dip3_type,dip3_who,dip3_when,dip4,dip4_type,dip4_who,dip4_when from nation where nation='$which'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $younation = MYDB_fetch_array($result);
-
-    if($younation['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:멸망한 국가입니다. 권고 실패. <1>$date</>";
-    } elseif($general['level'] < 5) {
-        $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 권고 실패. <1>$date</>";
-    } elseif($city['nation'] != $general['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 권고 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 권고 실패. <1>$date</>";
-    } else {
-        $log[] = "<C>●</>{$admin['month']}월:<D><b>{$younation['name']}</b></>으로 항복 권고 서신을 보냈습니다.<1>$date</>";
-        $exp = 5;
-        $ded = 5;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        // 상대에게 발송
-        //먼저 삭제된 칸 중 가장 오래된 칸 찾음
-        $deleted = 4;
-        for($i=0; $i < 5; $i++) {
-            if($younation["dip{$i}"] == "") { $deleted = $i; }
-        }
-        //기존 메세지 한칸씩 뒤로 미룸
-        for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg("nation", "dip", $i+1, $younation["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
-        }
-        //권고 서신시 장수번호/상대국 번호
-        $me = $general['no'] * 10000 + $younation['nation'];
-        $date = date('Y-m-d H:i:s');
-        $query = "update nation set dip0='{$nation['name']}의 항복 권고 서신',dip0_type='4',dip0_who='$me',dip0_when='$date' where nation='{$younation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//        $log = checkAbility($general, $log);
+    if($general['level'] < 5 || $general['nation']==0) {
+        pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 권고 실패. <1>$date</>"]);
+        return;
     }
 
-    pushGenLog($general, $log);
+    $supply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i AND nation=%i', $general['city'], $general['nation']);
+    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['level']}turn0", $general['nation']);
+    
+    $command = DecodeCommand($myTurn);
+    $which = $command[1];
+
+    $srcNation = getNationStaticInfo($general['nation']);
+    $destNation = getNationStaticInfo($which);
+
+    if($destNation['nation'] == 0) {
+        pushGenLog($general, ["<C>●</>{$month}월:멸망한 국가입니다. 권고 실패. <1>$date</>"]);
+        return;
+    } 
+    
+    if($supply === null) {
+        pushGenLog($general, ["<C>●</>{$month}월:아국이 아닙니다. 권고 실패. <1>$date</>"]);
+        return;
+    } 
+    
+    if($supply === 0) {
+        pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 권고 실패. <1>$date</>"]);
+        return;
+    }
+    
+    $exp = 5;
+    $ded = 5;
+
+    // 성격 보정
+    $exp = CharExperience($exp, $general['personal']);
+    $ded = CharDedication($ded, $general['personal']);
+
+    // 상대에게 발송
+    $src = new MessageTarget(
+        $general['no'], 
+        $general['name'], 
+        $srcNation['nation'], 
+        $srcNation['name'], 
+        $srcNation['color'], 
+        GetImageURL($general['imgsvr'], $general['picture'])
+    );
+
+    $dest = new MessageTarget(
+        0,
+        '',
+        $destNation['nation'],
+        $destNation['name'],
+        $destNation['color']
+    );
+
+    $now = new \DateTime($date);
+    $validUntil = new \DateTime($date);
+    $validMinutes = max(30, $turnterm*3);
+    $validUntil->add(new \DateTimeInterval("PT{$validMinutes}M"));
+    
+    $msg = new DiplomaticMessage(
+        Message::MSGTYPE_DIPLOMACY,
+        $src,
+        $dest,
+        "{$srcNation['name']}의 항복 권고 서신",
+        $now,
+        $validUntil,
+        ['action'=>DiplomaticMessage::TYPE_SURRENDER]
+    );
+    $msg->send();
+
+    $db->update('general', [
+        'dedication'=>$db->sqleval('dedication+%i', $ded),
+        'experience'=>$db->sqleval('experience+%i', $exp)
+    ], 'no=%i', $general['no']);
+
+    pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>으로 항복 권고 서신을 보냈습니다.<1>$date</>"]);
 }
 
 function process_52(&$general) {
@@ -473,155 +488,186 @@ function process_52(&$general) {
 
 function process_53(&$general) {
     $db = DB::db();
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
     $date = substr($general['turntime'],11,5);
+    list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    if($general['level'] < 5 || $general['nation']==0) {
+        pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
+        return;
+    }
+    
+    $supply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i AND nation=%i', $general['city'], $general['nation']);
+    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['level']}turn0", $general['nation']);
 
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
-
-    $query = "select name,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    $command = DecodeCommand($nation["l{$general['level']}turn0"]);
+    $command = DecodeCommand($myTurn);
     $which = $command[1];
 
-    $query = "select nation,name,dip0,dip0_type,dip0_who,dip0_when,dip1,dip1_type,dip1_who,dip1_when,dip2,dip2_type,dip2_who,dip2_when,dip3,dip3_type,dip3_who,dip3_when,dip4,dip4_type,dip4_who,dip4_when from nation where nation='$which'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $younation = MYDB_fetch_array($result);
+    $srcNation = getNationStaticInfo($general['nation']);
+    $destNation = getNationStaticInfo($which);
 
-    if($younation['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:멸망한 국가입니다. 제의 실패. <1>$date</>";
-    } elseif($general['level'] < 5) {
-        $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>";
-    } elseif($city['nation'] != $general['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 제의 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 제의 실패. <1>$date</>";
-    } else {
-        $log[] = "<C>●</>{$admin['month']}월:<D><b>{$younation['name']}</b></>(으)로 통합 제의 서신을 보냈습니다.<1>$date</>";
-        $exp = 5;
-        $ded = 5;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        // 상대에게 발송
-        //먼저 삭제된 칸 중 가장 오래된 칸 찾음
-        $deleted = 4;
-        for($i=0; $i < 5; $i++) {
-            if($younation["dip{$i}"] == "") { $deleted = $i; }
-        }
-        //기존 메세지 한칸씩 뒤로 미룸
-        for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg("nation", "dip", $i+1, $younation["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
-        }
-        //권고 서신시 장수번호/상대국 번호
-        $me = $general['no'] * 10000 + $younation['nation'];
-        $date = date('Y-m-d H:i:s');
-        $query = "update nation set dip0='{$nation['name']}의 통합 제의 서신',dip0_type='5',dip0_who='$me',dip0_when='$date' where nation='{$younation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//        $log = checkAbility($general, $log);
+    if($destNation['nation'] == 0) {
+        pushGenLog($general, ["<C>●</>{$month}월:멸망한 국가입니다. 제의 실패. <1>$date</>"]);
+        return;
+    } 
+    
+    if($supply === null) {
+        pushGenLog($general, ["<C>●</>{$month}월:아국이 아닙니다. 제의 실패. <1>$date</>"]);
+        return;
     }
-    pushGenLog($general, $log);
+    
+    if($supply === 0) {
+        pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 제의 실패. <1>$date</>"]);
+        return;
+    }
+
+    $exp = 5;
+    $ded = 5;
+
+    // 성격 보정
+    $exp = CharExperience($exp, $general['personal']);
+    $ded = CharDedication($ded, $general['personal']);
+
+    // 상대에게 발송
+    $src = new MessageTarget(
+        $general['no'], 
+        $general['name'], 
+        $srcNation['nation'], 
+        $srcNation['name'], 
+        $srcNation['color'], 
+        GetImageURL($general['imgsvr'], $general['picture'])
+    );
+
+    $dest = new MessageTarget(
+        0,
+        '',
+        $destNation['nation'],
+        $destNation['name'],
+        $destNation['color']
+    );
+
+    $now = new \DateTime($date);
+    $validUntil = new \DateTime($date);
+    $validMinutes = max(30, $turnterm*3);
+    $validUntil->add(new \DateTimeInterval("PT{$validMinutes}M"));
+    
+    $msg = new DiplomaticMessage(
+        Message::MSGTYPE_DIPLOMACY,
+        $src,
+        $dest,
+        "{$srcNation['name']}의 통합 제의 서신",
+        $now,
+        $validUntil,
+        ['action'=>DiplomaticMessage::TYPE_SURRENDER]
+    );
+    $msg->send();
+
+    $db->update('general', [
+        'dedication'=>$db->sqleval('dedication+%i', $ded),
+        'experience'=>$db->sqleval('experience+%i', $exp)
+    ], 'no=%i', $general['no']);
+
+    pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>(으)로 통합 제의 서신을 보냈습니다.<1>$date</>"]);
 }
 
 
 function process_61(&$general) {
     $db = DB::db();
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
     $date = substr($general['turntime'],11,5);
+    list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
 
-    $query = "select year,month,develcost,turnterm from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
-
-    $query = "select gold,rice,name,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    $command = DecodeCommand($nation["l{$general['level']}turn0"]);
-    $when = $command[2];
-    $which = $command[1];
-
-    if($when < 1) { $when = 1; }
-    elseif($when > 20) { $when = 20; }
-
-    $query = "select nation,name,dip0,dip0_type,dip0_who,dip0_when,dip1,dip1_type,dip1_who,dip1_when,dip2,dip2_type,dip2_who,dip2_when,dip3,dip3_type,dip3_who,dip3_when,dip4,dip4_type,dip4_who,dip4_when from nation where nation='$which'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $younation = MYDB_fetch_array($result);
-
-    if($younation['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:멸망한 국가입니다. 제의 실패. <1>$date</>";
-    } elseif($general['level'] < 5) {
-        $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>";
-    } elseif($city['nation'] != $general['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 제의 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 제의 실패. <1>$date</>";
-    } else {
-        $log[] = "<C>●</>{$admin['month']}월:<D><b>{$younation['name']}</b></>으로 불가침 제의 서신을 보냈습니다.<1>$date</>";
-        $exp = 5;
-        $ded = 5;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        // 상대에게 발송
-        //먼저 삭제된 칸 중 가장 오래된 칸 찾음
-        $deleted = 4;
-        for($i=0; $i < 5; $i++) {
-            if($younation["dip{$i}"] == "") { $deleted = $i; }
-        }
-        //기존 메세지 한칸씩 뒤로 미룸
-        for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg("nation", "dip", $i+1, $younation["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
-        }
-        //권고 서신시 장수번호/상대국 번호
-        $me = $general['no'] * 10000 + $younation['nation'];
-        $type = $when * 100 + 6;
-        $date = date('Y-m-d H:i:s');
-        $query = "update nation set dip0='{$nation['name']}의 {$when}년 불가침 제의 서신',dip0_type='$type',dip0_who='$me',dip0_when='$date' where nation='{$younation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        // 3턴후
-        $date = addTurn($date, $admin['turnterm'], 3);
-        //조건 표시기한 설정
-        $query = "update diplomacy set showing='{$date}' where me='{$general['nation']}' and you='{$younation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        // $admin['develcost']*10씩 차감
-//        $amount = $admin['develcost'];
-//        $query = "update nation set gold=gold-'$amount',rice=rice-'$amount' where nation='{$general['nation']}'";
-//        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//        $log = checkAbility($general, $log);
+    if($general['level'] < 5 || $general['nation']==0) {
+        pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
+        return;
     }
-    pushGenLog($general, $log);
+
+    $supply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i AND nation=%i', $general['city'], $general['nation']);
+    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['level']}turn0", $general['nation']);
+
+    $command = DecodeCommand($myTurn);
+    $which = $command[1];
+    $when = Util::valueFit($command[2], 1, 20);
+
+    $srcNation = getNationStaticInfo($general['nation']);
+    $destNation = getNationStaticInfo($which);
+
+    if($destNation['nation'] == 0) {
+        pushGenLog($general, ["<C>●</>{$month}월:멸망한 국가입니다. 제의 실패. <1>$date</>"]);
+        return;
+    } 
+    
+    if($supply === null) {
+        pushGenLog($general, ["<C>●</>{$month}월:아국이 아닙니다. 제의 실패. <1>$date</>"]);
+        return;
+    }
+    
+    if($supply === 0) {
+        pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 제의 실패. <1>$date</>"]);
+        return;
+    }
+    
+    $exp = 5;
+    $ded = 5;
+
+    // 성격 보정
+    $exp = CharExperience($exp, $general['personal']);
+    $ded = CharDedication($ded, $general['personal']);
+
+    // 상대에게 발송
+    $src = new MessageTarget(
+        $general['no'], 
+        $general['name'], 
+        $srcNation['nation'], 
+        $srcNation['name'], 
+        $srcNation['color'], 
+        GetImageURL($general['imgsvr'], $general['picture'])
+    );
+
+    $dest = new MessageTarget(
+        0,
+        '',
+        $destNation['nation'],
+        $destNation['name'],
+        $destNation['color']
+    );
+
+    $now = new \DateTime($date);
+    $validUntil = new \DateTime($date);
+    $validMinutes = max(30, $turnterm*3);
+    $validUntil->add(new \DateTimeInterval("PT{$validMinutes}M"));
+
+    //FIXME: 현재 command가 숫자로만 이루어져 있어서 문자열을 처리할 수 없다.
+    //XXX: 으악.
+    //TODO: 커맨드 처리 방식을 json으로 변경
+    $option = $db->queryFirstField('SELECT reserved FROM diplomacy WHERE me=%i AND you=%i', $src->nationID, $dest->nationID);
+
+    $msg = new DiplomaticMessage(
+        Message::MSGTYPE_DIPLOMACY,
+        $src,
+        $dest,
+        "{$srcNation['name']}의 불가침 제의 서신",
+        $now,
+        $validUntil,
+        [
+            'action'=>DiplomaticMessage::TYPE_SURRENDER,
+            'year'=>$when,
+            'option'=>$option
+        ]
+    );
+    $msg->send();
+
+    //NOTE: 현재 내무부 외교란의 비고는 diplomacy가 기준이니까 유지할 필요는 있다.
+    //FIXME: 외교란도 message란의 diplomacy를 참조하든가 하도록.
+    $db->update('diplomacy', [
+        'showing'=>$validUntil->format('Y-m-d H:i:s')
+    ], 'me=%i AND you=%i', $src->nationID, $dest->nationID);
+    // 3턴후
+
+    $db->update('general', [
+        'dedication'=>$db->sqleval('dedication+%i', $ded),
+        'experience'=>$db->sqleval('experience+%i', $exp)
+    ], 'no=%i', $general['no']);
+
+    pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>으로 불가침 제의 서신을 보냈습니다.<1>$date</>"]);
 }
 
 function process_62(&$general) {
@@ -724,138 +770,168 @@ function process_62(&$general) {
 
 function process_63(&$general) {
     $db = DB::db();
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
     $date = substr($general['turntime'],11,5);
+    list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    if($general['level'] < 5 || $general['nation']==0) {
+        pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
+        return;
+    }
 
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
+    $supply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i AND nation=%i', $general['city'], $general['nation']);
+    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['level']}turn0", $general['nation']);
 
-    $query = "select name,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    $command = DecodeCommand($nation["l{$general['level']}turn0"]);
+    $command = DecodeCommand($myTurn);
     $which = $command[1];
 
-    $query = "select nation,name,dip0,dip0_type,dip0_who,dip0_when,dip1,dip1_type,dip1_who,dip1_when,dip2,dip2_type,dip2_who,dip2_when,dip3,dip3_type,dip3_who,dip3_when,dip4,dip4_type,dip4_who,dip4_when from nation where nation='$which'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $younation = MYDB_fetch_array($result);
+    $srcNation = getNationStaticInfo($general['nation']);
+    $destNation = getNationStaticInfo($which);
 
-    if($younation['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:멸망한 국가입니다. 제의 실패. <1>$date</>";
-    } elseif($general['level'] < 5) {
-        $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>";
-    } elseif($city['nation'] != $general['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 제의 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 제의 실패. <1>$date</>";
-    } else {
-        $log[] = "<C>●</>{$admin['month']}월:<D><b>{$younation['name']}</b></>으로 종전 제의 서신을 보냈습니다. <1>$date</>";
-        $exp = 5;
-        $ded = 5;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        // 상대에게 발송
-        //먼저 삭제된 칸 중 가장 오래된 칸 찾음
-        $deleted = 4;
-        for($i=0; $i < 5; $i++) {
-            if($younation["dip{$i}"] == "") { $deleted = $i; }
-        }
-        //기존 메세지 한칸씩 뒤로 미룸
-        for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg("nation", "dip", $i+1, $younation["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
-        }
-        //권고 서신시 장수번호/상대국 번호
-        $me = $general['no'] * 10000 + $younation['nation'];
-        $date = date('Y-m-d H:i:s');
-        $query = "update nation set dip0='{$nation['name']}의 종전 제의 서신',dip0_type='7',dip0_who='$me',dip0_when='$date' where nation='{$younation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//        $log = checkAbility($general, $log);
+    if($destNation['nation'] == 0) {
+        pushGenLog($general, ["<C>●</>{$month}월:멸망한 국가입니다. 제의 실패. <1>$date</>"]);
+        return;
+    } 
+    
+    if($supply === null) {
+        pushGenLog($general, ["<C>●</>{$month}월:아국이 아닙니다. 제의 실패. <1>$date</>"]);
+        return;
     }
-    pushGenLog($general, $log);
+    
+    if($supply === 0) {
+        pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 제의 실패. <1>$date</>"]);
+        return;
+    }
+    
+    $exp = 5;
+    $ded = 5;
+
+    // 성격 보정
+    $exp = CharExperience($exp, $general['personal']);
+    $ded = CharDedication($ded, $general['personal']);
+
+    // 상대에게 발송
+    $src = new MessageTarget(
+        $general['no'], 
+        $general['name'], 
+        $srcNation['nation'], 
+        $srcNation['name'], 
+        $srcNation['color'], 
+        GetImageURL($general['imgsvr'], $general['picture'])
+    );
+
+    $dest = new MessageTarget(
+        0,
+        '',
+        $destNation['nation'],
+        $destNation['name'],
+        $destNation['color']
+    );
+
+    $now = new \DateTime($date);
+    $validUntil = new \DateTime($date);
+    $validMinutes = max(30, $turnterm*3);
+    $validUntil->add(new \DateTimeInterval("PT{$validMinutes}M"));
+
+    $msg = new DiplomaticMessage(
+        Message::MSGTYPE_DIPLOMACY,
+        $src,
+        $dest,
+        "{$srcNation['name']}의 종전 제의 서신",
+        $now,
+        $validUntil,
+        ['action'=>DiplomaticMessage::TYPE_SURRENDER]
+    );
+    $msg->send();
+
+    $db->update('general', [
+        'dedication'=>$db->sqleval('dedication+%i', $ded),
+        'experience'=>$db->sqleval('experience+%i', $exp)
+    ], 'no=%i', $general['no']);
+
+    pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>으로 종전 제의 서신을 보냈습니다. <1>$date</>"]);
 }
 
 function process_64(&$general) {
     $db = DB::db();
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
     $date = substr($general['turntime'],11,5);
+    list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    if($general['level'] < 5 || $general['nation']==0) {
+        pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
+        return;
+    }
 
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
+    $supply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i AND nation=%i', $general['city'], $general['nation']);
+    $myTurn = $db->queryFirstField('SELECT %b FROM nation WHERE nation=%i', "l{$general['level']}turn0", $general['nation']);
 
-    $query = "select name,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    $command = DecodeCommand($nation["l{$general['level']}turn0"]);
+    $command = DecodeCommand($myTurn);
     $which = $command[1];
 
-    $query = "select nation,name,dip0,dip0_type,dip0_who,dip0_when,dip1,dip1_type,dip1_who,dip1_when,dip2,dip2_type,dip2_who,dip2_when,dip3,dip3_type,dip3_who,dip3_when,dip4,dip4_type,dip4_who,dip4_when from nation where nation='$which'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $younation = MYDB_fetch_array($result);
+    $srcNation = getNationStaticInfo($general['nation']);
+    $destNation = getNationStaticInfo($which);
 
-    if($younation['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:멸망한 국가입니다. 제의 실패. <1>$date</>";
-    } elseif($general['level'] < 5) {
-        $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>";
-    } elseif($city['nation'] != $general['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 제의 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 제의 실패. <1>$date</>";
-    } else {
-        $log[] = "<C>●</>{$admin['month']}월:<D><b>{$younation['name']}</b></>으로 파기 제의 서신을 보냈습니다. <1>$date</>";
-        $exp = 5;
-        $ded = 5;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        // 상대에게 발송
-        //먼저 삭제된 칸 중 가장 오래된 칸 찾음
-        $deleted = 4;
-        for($i=0; $i < 5; $i++) {
-            if($younation["dip{$i}"] == "") { $deleted = $i; }
-        }
-        //기존 메세지 한칸씩 뒤로 미룸
-        for($i=$deleted-1; $i >=0; $i--) {
-            moveMsg("nation", "dip", $i+1, $younation["dip{$i}"], $younation["dip{$i}_type"], $younation["dip{$i}_who"], $younation["dip{$i}_when"], "nation", $younation['nation']);
-        }
-        //권고 서신시 장수번호/상대국 번호
-        $me = $general['no'] * 10000 + $younation['nation'];
-        $date = date('Y-m-d H:i:s');
-        $query = "update nation set dip0='{$nation['name']}의 불가침 파기 서신',dip0_type='8',dip0_who='$me',dip0_when='$date' where nation='{$younation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-//        $log = checkAbility($general, $log);
+    if($destNation['nation'] == 0) {
+        pushGenLog($general, ["<C>●</>{$month}월:멸망한 국가입니다. 제의 실패. <1>$date</>"]);
+        return;
+    } 
+    
+    if($supply === null) {
+        pushGenLog($general, ["<C>●</>{$month}월:아국이 아닙니다. 제의 실패. <1>$date</>"]);
+        return;
     }
-    pushGenLog($general, $log);
+    
+    if($supply === 0) {
+        pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 제의 실패. <1>$date</>"]);
+        return;
+    }
+
+    $exp = 5;
+    $ded = 5;
+
+    // 성격 보정
+    $exp = CharExperience($exp, $general['personal']);
+    $ded = CharDedication($ded, $general['personal']);
+
+    // 상대에게 발송
+    $src = new MessageTarget(
+        $general['no'], 
+        $general['name'], 
+        $srcNation['nation'], 
+        $srcNation['name'], 
+        $srcNation['color'], 
+        GetImageURL($general['imgsvr'], $general['picture'])
+    );
+
+    $dest = new MessageTarget(
+        0,
+        '',
+        $destNation['nation'],
+        $destNation['name'],
+        $destNation['color']
+    );
+
+    $now = new \DateTime($date);
+    $validUntil = new \DateTime($date);
+    $validMinutes = max(30, $turnterm*3);
+    $validUntil->add(new \DateTimeInterval("PT{$validMinutes}M"));
+
+    $msg = new DiplomaticMessage(
+        Message::MSGTYPE_DIPLOMACY,
+        $src,
+        $dest,
+        "{$srcNation['name']}의 불가침 파기 제의 서신",
+        $now,
+        $validUntil,
+        ['action'=>DiplomaticMessage::TYPE_SURRENDER]
+    );
+    $msg->send();
+
+    $db->update('general', [
+        'dedication'=>$db->sqleval('dedication+%i', $ded),
+        'experience'=>$db->sqleval('experience+%i', $exp)
+    ], 'no=%i', $general['no']);
+
+    pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>(으)로 불가침 파기 제의 서신을 보냈습니다.<1>$date</>"]);
 }
 
 function process_65(&$general) {
