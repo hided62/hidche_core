@@ -117,14 +117,14 @@ for($k=0; $k < 2; $k++) {
         ];
     }
 
-    if    ($gen[$l4]['npc']??0 >= 2) { $gen[$l4]['name'] = "<font color=cyan>".($gen[$l4]['name']??'')."</font>"; }
-    elseif($gen[$l4]['npc']??0 == 1) { $gen[$l4]['name'] = "<font color=skyblue>".($gen[$l4]['name']??'')."</font>"; }
-    if    ($gen[$l3]['npc']??0 >= 2) { $gen[$l3]['name'] = "<font color=cyan>".($gen[$l3]['name']??'')."</font>"; }
-    elseif($gen[$l3]['npc']??0 == 1) { $gen[$l3]['name'] = "<font color=skyblue>".($gen[$l3]['name']??'')."</font>"; }
-    if    ($gen[$l2]['npc']??0 >= 2) { $gen[$l2]['name'] = "<font color=cyan>".($gen[$l2]['name']??'')."</font>"; }
-    elseif($gen[$l2]['npc']??0 == 1) { $gen[$l2]['name'] = "<font color=skyblue>".($gen[$l2]['name']??'')."</font>"; }
-    if    ($gen[$l1]['npc']??0 >= 2) { $gen[$l1]['name'] = "<font color=cyan>".($gen[$l1]['name']??'')."</font>"; }
-    elseif($gen[$l1]['npc']??0 == 1) { $gen[$l1]['name'] = "<font color=skyblue>".($gen[$l1]['name']??'')."</font>"; }
+    if    ($gen[$l4]['npc'] >= 2) { $gen[$l4]['name'] = "<font color=cyan>".($gen[$l4]['name']??'')."</font>"; }
+    elseif($gen[$l4]['npc'] == 1) { $gen[$l4]['name'] = "<font color=skyblue>".($gen[$l4]['name']??'')."</font>"; }
+    if    ($gen[$l3]['npc'] >= 2) { $gen[$l3]['name'] = "<font color=cyan>".($gen[$l3]['name']??'')."</font>"; }
+    elseif($gen[$l3]['npc'] == 1) { $gen[$l3]['name'] = "<font color=skyblue>".($gen[$l3]['name']??'')."</font>"; }
+    if    ($gen[$l2]['npc'] >= 2) { $gen[$l2]['name'] = "<font color=cyan>".($gen[$l2]['name']??'')."</font>"; }
+    elseif($gen[$l2]['npc'] == 1) { $gen[$l2]['name'] = "<font color=skyblue>".($gen[$l2]['name']??'')."</font>"; }
+    if    ($gen[$l1]['npc'] >= 2) { $gen[$l1]['name'] = "<font color=cyan>".($gen[$l1]['name']??'')."</font>"; }
+    elseif($gen[$l1]['npc'] == 1) { $gen[$l1]['name'] = "<font color=skyblue>".($gen[$l1]['name']??'')."</font>"; }
 
     echo "
     <tr>
