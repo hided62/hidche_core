@@ -164,7 +164,7 @@ for ($j=0; $j < $gencount; $j++) {
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "
     <tr>
-        <td align=center> width='64' height='64' src={$imageTemp}/{$general['picture']}></img></td>
+        <td align=center><img width='64' height='64' src={$imageTemp}/{$general['picture']}></img></td>
         <td align=center>$name</td>
         <td align=center>{$general['age']}세</td>
         <td align=center>".getGenChar($general['personal'])."</td>

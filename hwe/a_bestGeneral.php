@@ -166,7 +166,7 @@ for ($i=0; $i < 21; $i++) {
             echo "<td align=center>&nbsp;</td>";
         } else {
             $imageTemp = GetImageURL($gen['imgsvr']);
-            echo "<td align=center><img width='64' height='64' src={$imageTemp}/{$pic[$k]}></img></td>";
+            echo "<td align=center><img width='64' height='64' src={$imageTemp}/{$pic[$k]}></td>";
         }
     }
 
@@ -267,7 +267,7 @@ for ($i=0; $i < 4; $i++) {
             echo "<td align=center>&nbsp;</td>";
         } else {
             $imageTemp = GetImageURL($gen['imgsvr']??0);
-            echo "<td align=center> width='64' height='64' src={$imageTemp}/{$pic[$k]}></img></td>";
+            echo "<td align=center><img width='64' height='64' src={$imageTemp}/{$pic[$k]}></img></td>";
         }
     }
 
