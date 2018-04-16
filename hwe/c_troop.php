@@ -40,8 +40,9 @@ if($btn == "부 대 창 설" && $name != "" && $me['troop'] == 0) {
         'troop'=>0
     ], 'no=%i AND troop=(SELECT troop FROM troop WHERE no = %i)', $gen, $me['no']);
 } elseif($btn == "부 대 가 입" && $troop != 0) {
-    $troop = $db->queryFirstField('SELECT troop FROM troop WHERE no = %i', $troop);
-    if($troop){
+    $troopLeader = $db->queryFirstField('SELECT `no` FROM troop WHERE troop=%i', $troop);
+    $troopLeaderNation = $db->queryFirstField('SELECT `nation` FROM `general` WHERE `no`=%i AND `nation`=%i', $troopLeader, $me['nation']);
+    if($troopLeaderNation){
         $db->update('general', [
             'troop'=>$troop
         ], 'no=%i', $me['no']);
