@@ -139,7 +139,7 @@ class DiplomaticMessage extends Message{
 
     protected function acceptMerge(){
         $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->acceptMerge();
+        $chk = $helper->acceptMerge($this->src->generalID, $this->dest->generalID);
         if($chk[0] !== self::ACCEPTED){
             return $chk;
         }
@@ -175,7 +175,7 @@ class DiplomaticMessage extends Message{
 
     protected function acceptSurrender(){
         $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->acceptSurrender();
+        $chk = $helper->acceptSurrender($this->src->generalID, $this->dest->generalID);
         if($chk[0] !== self::ACCEPTED){
             return $chk;
         }
@@ -228,7 +228,7 @@ class DiplomaticMessage extends Message{
             $this->dest->nationID
         );
 
-        if(!$general){
+        if($general){
             $this->dest->generalID = $receiverID;
             $this->dest->generalName = $general['name'];
         }

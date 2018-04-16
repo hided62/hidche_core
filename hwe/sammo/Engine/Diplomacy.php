@@ -187,8 +187,8 @@ class Diplomacy{
 
         $db = \sammo\DB::db();
 
-        $states = $db->queryOneField(
-            'SELECT `state` FROM diplomacy WHERE me = %i AND you != %i AND `state` NOT IN (2, 7) GROUP BY `state` ORDER BY `state`',
+        $states = $db->queryFirstColumn(
+            'SELECT `state` FROM diplomacy WHERE `state` NOT IN (2, 7) AND me=%i AND you <>%i',
             $this->srcNation['nation'],
             $this->destNation['nation']
         );
