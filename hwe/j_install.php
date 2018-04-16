@@ -98,7 +98,7 @@ $mysqli_obj = $db->get();
 
 
 $scenarioObj = new Scenario($scenario, false);
-$startyear = $scenarioObj->getYear();
+$startyear = $scenarioObj->getYear()??GameConst::$defaultStartYear;
 
 FileUtil::delInDir("logs");
 FileUtil::delInDir("data");
