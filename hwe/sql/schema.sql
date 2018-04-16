@@ -280,8 +280,8 @@ create table nation (
 ###########################################################################
 ## trade 100 이 표준 시세
 create table city (
-  city   int(6) not null auto_increment,
-  name   char(64) not null,
+  `city` INT(6) NOT NULL AUTO_INCREMENT,
+	`name` CHAR(64) NOT NULL,
   level  int(1) default 0,
   upgrading int(1) default 0,
   nation int(6) default 0,
@@ -312,7 +312,7 @@ create table city (
   state   int(2) default 0,
   region  int(2) default 0,
   term    int(1) default 0,
-  conflict    varchar(500) default '{}'
+  conflict    varchar(500) default '{}',
 
   PRIMARY KEY (city),
   KEY (nation)
