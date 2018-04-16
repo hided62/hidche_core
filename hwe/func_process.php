@@ -521,7 +521,7 @@ function process_5(&$general, $type) {
         // 태수 보정
         if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
 
-        $rd = randF();
+        $rd = Util::randF();
         $r = CriticalRatioDomestic($general, 1);
         // 특기보정 : 수비, 축성
         if($type == 1 && $general['special'] == 11) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
@@ -1006,7 +1006,7 @@ function process_11(&$general, $type) {
         $exp = $crew;
         $ded = $crew;
         // 숙련도 증가
-        addGenDex($general['no'], GameConst::$maxatmos, GameConst::$maxtrain, $armtype, $crew);
+        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $armtype, $crew);
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1075,7 +1075,7 @@ function process_13(&$general) {
         $exp = 100;
         $ded = 70;
         // 숙련도 증가
-        addGenDex($general['no'], GameConst::$maxatmos, GameConst::$maxtrain, $general['crewtype'], Util::round($general['crew']/100));
+        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1139,14 +1139,14 @@ function process_14(&$general) {
 //    } elseif(intdiv($general['crewtype'], 10) == 4) {
 //        $log[] = "<C>●</>{$admin['month']}월:병기는 사기 진작이 불가능합니다. <1>$date</>";
     } else {
-        $score = Util::round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * GameConst::$trainAtmos);
+        $score = Util::round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * GameConst::$atmosDelta);
         $gold = $general['gold'] - Util::round($general['crew']/100);
 
         $log[] = "<C>●</>{$admin['month']}월:사기치가 <C>$score</> 상승했습니다. <1>$date</>";
         $exp = 100;
         $ded = 70;
         // 숙련도 증가
-        addGenDex($general['no'], GameConst::$maxatmos, GameConst::$maxtrain, $general['crewtype'], Util::round($general['crew']/100));
+        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1221,7 +1221,7 @@ function process_15(&$general) {
         $exp = 100 * 3;
         $ded = 70 * 3;
         // 숙련도 증가
-        addGenDex($general['no'], GameConst::$maxatmos, GameConst::$maxtrain, $general['crewtype'], Util::round($general['crew']/100 * 3));
+        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100 * 3));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1309,7 +1309,7 @@ function process_16(&$general) {
         $query = "update city set state=43,term=3 where city='{$destcity['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 숙련도 증가
-        addGenDex($general['no'], GameConst::$maxatmos, GameConst::$maxtrain, $general['crewtype'], Util::round($general['crew']/100));
+        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100));
         // 전투 처리
         $dead = processWar($general, $destcity);
 
@@ -1814,17 +1814,17 @@ function process_41(&$general) {
 
         if($ratio < 33) {
             // 숙련도 증가
-            addGenDex($general['no'], GameConst::$maxatmos, GameConst::$maxtrain, $general['crewtype'], $crewexp);
+            addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], $crewexp);
             $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도 향상이 <span class='ev_failed'>지지부진</span>했습니다. <1>$date</>";
         } elseif($ratio < 66) {
             $exp = $exp * 2;
             // 숙련도 증가
-            addGenDex($general['no'], GameConst::$maxatmos, GameConst::$maxtrain, $general['crewtype'], $crewexp * 2);
+            addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], $crewexp * 2);
             $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도가 향상되었습니다. <1>$date</>";
         } else {
             $exp = $exp * 3;
             // 숙련도 증가
-            addGenDex($general['no'], GameConst::$maxatmos, GameConst::$maxtrain, $general['crewtype'], $crewexp * 3);
+            addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], $crewexp * 3);
             $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도가 <S>일취월장</>했습니다. <1>$date</>";
         }
 

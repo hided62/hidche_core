@@ -353,7 +353,7 @@ function process_51(&$general) {
     $now = new \DateTime($date);
     $validUntil = new \DateTime($date);
     $validMinutes = max(30, $turnterm*3);
-    $validUntil->add(new \DateTimeInterval("PT{$validMinutes}M"));
+    $validUntil->add(new \DateInterval("PT{$validMinutes}M"));
     
     $msg = new DiplomaticMessage(
         Message::MSGTYPE_DIPLOMACY,
@@ -548,7 +548,7 @@ function process_53(&$general) {
     $now = new \DateTime($date);
     $validUntil = new \DateTime($date);
     $validMinutes = max(30, $turnterm*3);
-    $validUntil->add(new \DateTimeInterval("PT{$validMinutes}M"));
+    $validUntil->add(new \DateInterval("PT{$validMinutes}M"));
     
     $msg = new DiplomaticMessage(
         Message::MSGTYPE_DIPLOMACY,
@@ -557,7 +557,7 @@ function process_53(&$general) {
         "{$srcNation['name']}의 통합 제의 서신",
         $now,
         $validUntil,
-        ['action'=>DiplomaticMessage::TYPE_SURRENDER]
+        ['action'=>DiplomaticMessage::TYPE_MERGE]
     );
     $msg->send();
 
@@ -633,7 +633,7 @@ function process_61(&$general) {
     $now = new \DateTime($date);
     $validUntil = new \DateTime($date);
     $validMinutes = max(30, $turnterm*3);
-    $validUntil->add(new \DateTimeInterval("PT{$validMinutes}M"));
+    $validUntil->add(new \DateInterval("PT{$validMinutes}M"));
 
     //FIXME: 현재 command가 숫자로만 이루어져 있어서 문자열을 처리할 수 없다.
     //XXX: 으악.
@@ -648,7 +648,7 @@ function process_61(&$general) {
         $now,
         $validUntil,
         [
-            'action'=>DiplomaticMessage::TYPE_SURRENDER,
+            'action'=>DiplomaticMessage::TYPE_NO_AGGRESSION,
             'year'=>$when,
             'option'=>$option
         ]
@@ -830,7 +830,7 @@ function process_63(&$general) {
     $now = new \DateTime($date);
     $validUntil = new \DateTime($date);
     $validMinutes = max(30, $turnterm*3);
-    $validUntil->add(new \DateTimeInterval("PT{$validMinutes}M"));
+    $validUntil->add(new \DateInterval("PT{$validMinutes}M"));
 
     $msg = new DiplomaticMessage(
         Message::MSGTYPE_DIPLOMACY,
@@ -839,7 +839,7 @@ function process_63(&$general) {
         "{$srcNation['name']}의 종전 제의 서신",
         $now,
         $validUntil,
-        ['action'=>DiplomaticMessage::TYPE_SURRENDER]
+        ['action'=>DiplomaticMessage::TYPE_STOP_WAR]
     );
     $msg->send();
 
@@ -913,7 +913,7 @@ function process_64(&$general) {
     $now = new \DateTime($date);
     $validUntil = new \DateTime($date);
     $validMinutes = max(30, $turnterm*3);
-    $validUntil->add(new \DateTimeInterval("PT{$validMinutes}M"));
+    $validUntil->add(new \DateInterval("PT{$validMinutes}M"));
 
     $msg = new DiplomaticMessage(
         Message::MSGTYPE_DIPLOMACY,
@@ -922,7 +922,7 @@ function process_64(&$general) {
         "{$srcNation['name']}의 불가침 파기 제의 서신",
         $now,
         $validUntil,
-        ['action'=>DiplomaticMessage::TYPE_SURRENDER]
+        ['action'=>DiplomaticMessage::TYPE_CANCEL_NA]
     );
     $msg->send();
 

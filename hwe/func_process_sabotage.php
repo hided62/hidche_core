@@ -57,7 +57,7 @@ function process_32(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $intelgen = MYDB_fetch_array($result);
 
-        $ratio = Util::round(((getGeneralIntel($general, true, true, true, false) - getGeneralIntel($intelgen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$defaultSabotageProb)*100);
+        $ratio = Util::round(((getGeneralIntel($general, true, true, true, false) - getGeneralIntel($intelgen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -93,8 +93,8 @@ function process_32(&$general) {
             $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(이)가 불타고 있습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 화계가 성공했습니다. <1>$date</>";
 
-            $destcity['agri'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$defaultSabotageAmount;
-            $destcity['comm'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$defaultSabotageAmount;
+            $destcity['agri'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
+            $destcity['comm'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
             if($destcity['agri'] < 0) { $destcity['agri'] = 0; }
             if($destcity['comm'] < 0) { $destcity['comm'] = 0; }
             $query = "update city set state=32,agri='{$destcity['agri']}',comm='{$destcity['comm']}' where city='$destination'";
@@ -187,7 +187,7 @@ function process_33(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$defaultSabotageProb)*100);
+        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -224,8 +224,8 @@ function process_33(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 탈취가 성공했습니다. <1>$date</>";
 
             // 탈취 최대 400 * 8
-            $gold = (rand() % GameConst::$sabotageAmountCoef + GameConst::$defaultSabotageAmount) * $destcity['level'];
-            $rice = (rand() % GameConst::$sabotageAmountCoef + GameConst::$defaultSabotageAmount) * $destcity['level'];
+            $gold = (rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount) * $destcity['level'];
+            $rice = (rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount) * $destcity['level'];
 
             $nation['gold'] -= $gold;
             $nation['rice'] -= $rice;
@@ -334,7 +334,7 @@ function process_34(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$defaultSabotageProb)*100);
+        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -371,8 +371,8 @@ function process_34(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 파괴가 성공했습니다. <1>$date</>";
 
             // 파괴
-            $destcity['def'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$defaultSabotageAmount;
-            $destcity['wall'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$defaultSabotageAmount;
+            $destcity['def'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
+            $destcity['wall'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
             if($destcity['def'] < 100) { $destcity['def'] = 100; }
             if($destcity['wall'] < 100) { $destcity['wall'] = 100; }
             $query = "update city set state=34,def='{$destcity['def']}',wall='{$destcity['wall']}' where city='$destination'";
@@ -462,7 +462,7 @@ function process_35(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
 
-        $ratio = Util::round(((getGeneralLeadership($general, true, true, true) - getGeneralLeadership($gen, true, true, true)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$defaultSabotageProb)*100);
+        $ratio = Util::round(((getGeneralLeadership($general, true, true, true) - getGeneralLeadership($gen, true, true, true)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -499,8 +499,8 @@ function process_35(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 선동이 성공했습니다. <1>$date</>";
 
             // 선동 최대 10
-            $destcity['secu'] -= rand() % Util::round(GameConst::$sabotageAmountCoef/2) + GameConst::$defaultSabotageAmount;
-            $destcity['rate'] -= rand() % Util::round(GameConst::$sabotageAmountCoef/50) + GameConst::$defaultSabotageAmount/50;
+            $destcity['secu'] -= rand() % Util::round(GameConst::$sabotageAmountCoef/2) + GameConst::$sabotageDefaultAmount;
+            $destcity['rate'] -= rand() % Util::round(GameConst::$sabotageAmountCoef/50) + GameConst::$sabotageDefaultAmount/50;
             if($destcity['secu'] < 0) { $destcity['secu'] = 0; }
             if($destcity['rate'] < 0) { $destcity['rate'] = 0; }
             $query = "update city set state=32,rate='{$destcity['rate']}',secu='{$destcity['secu']}' where city='$destination'";

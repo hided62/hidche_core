@@ -46,6 +46,9 @@ function process_22(&$general) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
+        $msg = ScoutMessage::buildScoutMessage($general['no'], $who, $reason);
+        
+/*
         sendScoutMsg([
             'id' => $general['no'],
             'nation_id' => Util::array_get($general['nation'], 0)
@@ -53,7 +56,7 @@ function process_22(&$general) {
             'id' => $you['no'],
             'nation_id' => Util::array_get($you['nation'], 0)
         ],$date);
-
+ */
         $general['intel2']++;
         $query = "update general set resturn='SUCCESS',gold=gold-'$cost',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
