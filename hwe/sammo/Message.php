@@ -286,6 +286,10 @@ class Message
         }
 
         if($this->msgType === self::MSGTYPE_PRIVATE){
+            //XXX: 알림을 이런식으로 보내는게 맞는가에 대한 의문 있음
+            DB::db()->update('general', [
+                'newmsg'=>1
+            ], 'no=%i',$this->dest->generalID);
             return $this->sendRaw($this->dest->generalID);
         }
 
