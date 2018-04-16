@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-class DiplomacticMessage extends Message{
+class DiplomaticMessage extends Message{
 
     const ACCEPTED = 1;
     const DECLINED = -1;

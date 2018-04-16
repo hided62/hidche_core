@@ -18,7 +18,6 @@ require_once 'func_time_event.php';
 require_once('func_template.php');
 require_once('func_message.php');
 require_once('func_map.php');
-require_once('func_diplomacy.php');
 require_once('func_command.php');
 
 /**
@@ -1721,14 +1720,6 @@ function checkTurn() {
     $query = "update game set turntime='$date'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    // 3턴 전 시간
-    $letterdate = subTurn($date, $admin['turnterm'], 3);
-    //기한 지난 외교 메세지 지움(3개월 유지)
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
-    for($i=0; $i < 5; $i++) {
-        $query = "update nation set dip{$i}='',dip{$i}_who='0',dip{$i}_type='0',dip{$i}_when='' where dip{$i}_when < '$letterdate'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    }
     // 부상 과도 제한
     $query = "update general set injury='80' where injury>'80'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

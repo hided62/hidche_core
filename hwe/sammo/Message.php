@@ -67,7 +67,7 @@ class Message
                 $this->isInboxMail = true;
                 break;
             }
-            if($mailbox > Message::MAILBOX_NATIONAL){
+            if($mailbox >= Message::MAILBOX_NATIONAL){
                 if($this->msgType === Message::MSGTYPE_DIPLOMACY){
                     $this->isInboxMail = true;
                     break;
@@ -150,7 +150,7 @@ class Message
 
         $action = Util::array_get($option['action'], null);
         if ($msgType === self::MSGTYPE_DIPLOMACY) {
-            $objMessage = new DiplomacticMessage(...$args);
+            $objMessage = new DiplomaticMessage(...$args);
         } elseif ($action === 'scout') {
             $objMessage = new ScoutMessage(...$args);
         } else {
@@ -165,9 +165,6 @@ class Message
     protected static function isValidMailBox(int $mailbox): bool
     {
         if ($mailbox > self::MAILBOX_PUBLIC) {
-            return false;
-        }
-        if ($mailbox == self::MAILBOX_NATIONAL) {
             return false;
         }
         if ($mailbox <= 0) {
@@ -213,9 +210,12 @@ class Message
             throw new \InvalidArgumentException('올바르지 않은 $msgType');
         }
 
+        $date = (new \DateTime())->format('Y-m-d H:i:s');
+
         $where = new \WhereClause('and');
         $where->add('mailbox = %i', $mailbox);
         $where->add('type = %s', $msgType);
+        $where->add('valid_until > %s', $date);
         if ($fromSeq > 0) {
             $where->add('id > %i', $fromSeq);
         }
@@ -239,7 +239,7 @@ class Message
             $src_id = $this->src->generalID;
             $dest_id = self::MAILBOX_PUBLIC;
         }
-        else if($mailbox > self::MAILBOX_NATIONAL){
+        else if($mailbox >= self::MAILBOX_NATIONAL){
             $src_id = $this->src->nationID + self::MAILBOX_NATIONAL;
             $dest_id = $this->dest->nationID + self::MAILBOX_NATIONAL;
         }

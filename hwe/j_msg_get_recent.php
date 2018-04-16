@@ -20,7 +20,7 @@ list($generalID, $nationID) = DB::db()->queryFirstList(
 if($nationID === null){
     Json::die([
         'result'=>false,
-        'reason'=>'소속 국가가 없습니다'
+        'reason'=>'장수가 사망했습니다.'
     ]);
 }
 

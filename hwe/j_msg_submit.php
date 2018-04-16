@@ -100,7 +100,7 @@ if($mailbox == Message::MAILBOX_PUBLIC) {
 if($mailbox >= Message::MAILBOX_NATIONAL) {
 
     if($me['level'] < 5){
-        $destNationID = $me['nation_id'];
+        $destNationID = $me['nation'];
     }
     else{
         $destNationID = $mailbox - Message::MAILBOX_NATIONAL;
