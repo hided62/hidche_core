@@ -1854,7 +1854,7 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         ], 'no IN %li',[$city['gen1'], $city['gen2'], $city['gen3']]);
         
         //수도였으면 긴급 천도
-        if(!isset($destnation['capital']) && $destnation['capital'] == $city['city']) {
+        if(isset($destnation['capital']) && $destnation['capital'] == $city['city']) {
             $minCity = findNextCapital($city['city'], $destnation['nation']);
 
             $minCityName = CityConst::byID($minCity)->name;
