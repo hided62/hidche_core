@@ -76,6 +76,8 @@
 .board_side{
     width:50%;
     float:left;
+    border-left:groove 0.1em;
+    border-right:groove 0.1em;
 }
 
 .msg_body{

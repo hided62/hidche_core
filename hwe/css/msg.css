@@ -91,8 +91,11 @@
 }
 
 .board_side{
-    width:50%;
-    float:left;
+    width:498px;
+    display:inline-block;
+    border-left:groove 1px;
+    border-right:groove 1px;
+    border-bottom:groove 1px;
 }
 
 .msg_body{
