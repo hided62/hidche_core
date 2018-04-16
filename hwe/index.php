@@ -282,8 +282,10 @@ if ($session->userGrade >= 5) {
 
     </select>
     <input type="textarea" id="msg_input" maxlength="99">
-    <button id="msg_submit">서신전달&amp;갱신</button>
+    <button id="msg_submit">서신전달&amp;갱신</button><br>
+    내용 없이 '서신전달&amp;갱신'을 누르면 메세지창이 갱신됩니다.
 </div>
+<div><?=allButton()?></div>
 <div id="message_board">
     <div class="board_side">
         <div class="board_header bg0">전체 메시지(최고99자)</div>
