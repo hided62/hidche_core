@@ -56,6 +56,29 @@ class MessageTarget extends Target {
         );
     }
 
+    /**
+     * DB 부하 감수하고 일일히 찾아줌. 
+     * 게임 로직과 크게 연관이 없는 곳에서 메시지를 생성해야 할 경우에만 사용할 것을 권함.
+     * @return MessageTarget
+     */
+    public static function buildQuick(int $generalID){
+       $db = DB::db();
+       list(
+           $generalName, 
+           $nationID, 
+           $imgsvr, 
+           $picture
+        ) = $db->queryFirstList('SELECT `name`, nation, imgsvr, picture FROM general WHERE `no`=%i', $generalID); 
+
+        if($generalName === null){
+            return null;
+        }
+
+        $icon = GetImageURL($imgsvr, $picture);
+        $nation = getNationStaticInfo($nationID);
+        return new MessageTarget($generalID, $generalName, $nationID, $nation['name'], $nation['color'], $icon);
+    }
+
     public function toArray() : array{
         return [
             'id'=>$this->generalID,

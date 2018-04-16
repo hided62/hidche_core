@@ -9,7 +9,7 @@ $userID = Session::getUserID();
 $rootDB = RootDB::db();
 $db = DB::db();
 
-$image = $rootDB->queryFirstRow('SELECT picture, imgsvr FROM `MEMBER` WHERE no = %i', $userID);
+$image = $rootDB->queryFirstRow('SELECT picture, imgsvr FROM `member` WHERE no = %i', $userID);
 
 if(!$image){
     Json::die([

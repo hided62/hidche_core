@@ -9,7 +9,7 @@ $userID = Session::getUserID();
 $rootDB = RootDB::db();
 
 //회원 테이블에서 정보확인
-$member = $rootDB->queryFirstRow('select no,name,picture,grade from MEMBER where no=%i', $userID);
+$member = $rootDB->queryFirstRow('select no,name,picture,grade from member where no=%i', $userID);
 
 if(!$member) {
     MessageBox("잘못된 접근입니다!!!");

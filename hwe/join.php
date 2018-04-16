@@ -14,7 +14,7 @@ if (!$userID) {
 }
 
 //회원 테이블에서 정보확인
-$member = RootDB::db()->queryFirstRow("select no,name,picture,imgsvr,grade from MEMBER where no= %i", $userID);
+$member = RootDB::db()->queryFirstRow("select no,name,picture,imgsvr,grade from member where no= %i", $userID);
 
 if (!$member) {
     MessageBox("잘못된 접근입니다!!!");

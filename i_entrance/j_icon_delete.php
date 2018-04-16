@@ -10,7 +10,7 @@ $userID = Session::getUserID();
 
 $respone = [];
 $db = RootDB::db();
-$picName = $db->queryFirstField('SELECT picture FROM `MEMBER` WHERE `NO` = %i', $userID);
+$picName = $db->queryFirstField('SELECT picture FROM `member` WHERE `NO` = %i', $userID);
 
 if($picName && strlen($picName) > 11){
     $dt = substr($picName, -8);
@@ -32,7 +32,7 @@ if($dt == $rf) {
     $response['reason'] = '1일 1회 변경 가능합니다!';
     $response['result'] = false;
 } else {
-    $db->update('MEMBER', [
+    $db->update('member', [
         'PICTURE'=>'default.jpg',
         'IMGSVR'=>0,
     ], 'NO=%i', $userID);

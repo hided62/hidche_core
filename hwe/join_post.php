@@ -57,7 +57,7 @@ extractMissingPostToGlobals();
 
 $rootDB = RootDB::db();
 //회원 테이블에서 정보확인
-$member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name` FROM MEMBER WHERE no=%i', $userID);
+$member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name` FROM member WHERE no=%i', $userID);
 
 if (!$member) {
     MessageBox("잘못된 접근입니다!!!");
