@@ -24,6 +24,9 @@ $term = Util::getReq('term', 'int');
 $stuff = Util::getReq('stuff', 'int');
 $sel = Util::getReq('sel', 'int');
 
+$msg = '';
+$msg2 = '';
+
 extractMissingPostToGlobals();
 
 //로그인 검사

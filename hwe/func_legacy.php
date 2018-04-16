@@ -51,8 +51,8 @@ function Submit($url, $msg="", $msg2="") {
     echo "a";   // 파폭 버그 때문
     echo "
 <form method=post name=f1 action='{$url}'>
-    <input type=hidden name=msg value='{$msg}'>
-    <input type=hidden name=msg2 value='{$msg2}'>
+    <input type=hidden name=msg value=\"{$msg}\">
+    <input type=hidden name=msg2 value=\"{$msg2}\">
 </form>
 <script>f1.submit();</script>
     ";
