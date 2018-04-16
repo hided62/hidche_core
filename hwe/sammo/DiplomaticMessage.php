@@ -49,7 +49,7 @@ class DiplomaticMessage extends Message{
             $this->validDiplomacy = false;
         }
 
-        if($this->$validUntil < (new \DateTime())){
+        if($this->validUntil < (new \DateTime())){
             $this->validDiplomacy = false;
         }
     }
@@ -95,7 +95,7 @@ class DiplomaticMessage extends Message{
 
     protected function cancelNA(){
         $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->noAggression();
+        $chk = $helper->cancelNA();
         if($chk[0] !== self::ACCEPTED){
             return $chk;
         }
@@ -117,7 +117,7 @@ class DiplomaticMessage extends Message{
 
     protected function stopWar(){
         $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->noAggression();
+        $chk = $helper->stopWar();
         if($chk[0] !== self::ACCEPTED){
             return $chk;
         }
@@ -139,7 +139,7 @@ class DiplomaticMessage extends Message{
 
     protected function acceptMerge(){
         $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->noAggression();
+        $chk = $helper->acceptMerge();
         if($chk[0] !== self::ACCEPTED){
             return $chk;
         }
@@ -175,7 +175,7 @@ class DiplomaticMessage extends Message{
 
     protected function acceptSurrender(){
         $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->noAggression();
+        $chk = $helper->acceptSurrender();
         if($chk[0] !== self::ACCEPTED){
             return $chk;
         }
@@ -219,6 +219,8 @@ class DiplomaticMessage extends Message{
             throw \RuntimeException('전송되지 않은 메시지에 수락 진행 중');
         }
 
+        
+
         $db = DB::db();
         $general = $db->queryFirstRow(
             'SELECT `name`, `level` FROM general WHERE `no`=%i AND nation=%i', 
@@ -226,7 +228,20 @@ class DiplomaticMessage extends Message{
             $this->dest->nationID
         );
 
+        if(!$general){
+            $this->dest->generalID = $receiverID;
+            $this->dest->generalName = $general['name'];
+        }
+        
+
         list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
+        $db->update('diplomacy', [
+            'reserved'=>'',
+            'showing'=>null
+        ], '(me=%s AND you=%s) OR (you=%s AND me=%s)',
+            $this->src->nationID, $this->dest->nationID,
+            $this->src->nationID, $this->dest->nationID
+        );
         if($result !== self::ACCEPTED){
             pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} {$this->diplomacyName} 실패."]);
             if($result === self::DECLINED){
@@ -282,9 +297,9 @@ class DiplomaticMessage extends Message{
             "【외교】{$year}년 {$month}월: {$this->src->nationName}이 {$this->dest->nationName}에게 제안한 {$this->diplomacyName} 동의.",
             new \DateTime(),
             new \DateTime('9999-12-31'),
-            Json::encode([
+            [
                 'delete'=>$this->id
-            ])
+            ]
         );
         $newMsg->send();
 
@@ -305,7 +320,13 @@ class DiplomaticMessage extends Message{
             throw \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
         }
 
-        list($result, $reason) = $this->checkScoutMessageValidation($receiverID);
+        $db = DB::db();
+        $general = $db->queryFirstRow(
+            'SELECT `name`, `level` FROM general WHERE `no`=%i AND nation=%i', 
+            $receiverID, 
+            $this->dest->nationID
+        );
+        list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
 
         if($result === self::INVALID){
             pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} {$this->diplomacyName} 거절 불가."]);

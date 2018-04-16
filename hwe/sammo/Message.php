@@ -188,7 +188,7 @@ class Message
     {
         $db = DB::db();
         $now = new \DateTime();
-        $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i AND ValidUntil', $messageID);
+        $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i AND valid_until', $messageID);
         if (!$row) {
             return null;
         }
@@ -344,8 +344,8 @@ class Message
                 'text' => $this->msg,
                 'option' => $this->msgOption
             ]),
-            'validUntil'=>$this->validUntil->format('Y-m-d H:i:s'),
-        ]);
+            'valid_until'=>$this->validUntil->format('Y-m-d H:i:s'),
+        ], 'id=%i', $this->id);
 
     }
 }

@@ -12,7 +12,7 @@ function hexToRgb(hex) {
 
 function isBrightColor(color){
     color = hexToRgb(color);
-    if ((color.r*0.299 + color.g*0.587 + color.b*0.114) > 186){
+    if ((color.r*0.299 + color.g*0.587 + color.b*0.114) > 140){
         return true;
     }
     else{
@@ -31,7 +31,7 @@ var generalList = {};
 
 function responseMessage(msgID, response){
     $.ajax({
-        url: 'j_decide_opt.php',
+        url: 'j_msg_decide_opt.php',
         type: 'post',
         dataType:'json',
         contentType: 'application/json',

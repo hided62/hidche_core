@@ -7,6 +7,7 @@ include "func.php";
 $session = Session::requireLogin()->setReadOnly();
 $userID = Session::getUserID();
 $rootDB = RootDB::db();
+$db = DB::db();
 
 //회원 테이블에서 정보확인
 $member = $rootDB->queryFirstRow('select no,name,picture,grade from member where no=%i', $userID);
@@ -17,14 +18,14 @@ if(!$member) {
     exit(1);
 }
 
-$admin = $rootDB->queryFirstRow('select npcmode,maxgeneral,show_img_level from game limit 1');
+$admin = $db->queryFirstRow('select npcmode,maxgeneral,show_img_level from game limit 1');
 
 if($admin['npcmode'] != 1) {
     header('Location:join.php');
     die();
 }
 
-$db = DB::db();
+
 $connect=$db->get();
 
 ?>
