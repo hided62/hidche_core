@@ -6,6 +6,8 @@ include "func.php";
 
 $citylist = Util::getReq('citylist', 'int');
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -30,7 +32,8 @@ $myNation = MYDB_fetch_array($result);
 <head>
 <title>도시정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link href="../d_shared/common.css" rel="stylesheet">
+<link href="css/common.css" rel="stylesheet">
 
 </head>
 
@@ -43,7 +46,7 @@ $myNation = MYDB_fetch_array($result);
     <tr>
         <td width=998>
             <form name=cityselect method=get>도시선택 :
-                <select name=citylist size=1 style=color:white;background-color:black;width:798;>
+                <select name=citylist size=1 style=color:white;background-color:black;width:798px;>
 <?php
 if(!$citylist){
     $citylist = $me['city'];

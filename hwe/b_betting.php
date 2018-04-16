@@ -28,6 +28,7 @@ if ($con >= 2) {
 }
 
 switch ($admin['tnmt_type']) {
+default: throw new \RuntimeException('Invalid tnmt_type');break;
 case 0: $tnmt_type = "<font color=cyan>전력전</font>"; $tp = "tot"; $tp2 = "종합"; $tp3 = "total"; break;
 case 1: $tnmt_type = "<font color=cyan>통솔전</font>"; $tp = "ldr"; $tp2 = "통솔"; $tp3 = "leader"; break;
 case 2: $tnmt_type = "<font color=cyan>일기토</font>"; $tp = "pwr"; $tp2 = "무력"; $tp3 = "power"; break;
@@ -48,7 +49,7 @@ $str3 = getTournamentTerm();
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>베팅장</title>
 <style>
-body { color:white; background-color:black; border-width:1; border-color:gray; }
+body { color:white; background-color:black; border-width:1px; border-color:gray; }
 table { font-family:'맑은 고딕'; line-height:110%; }
 font { font-family:'맑은 고딕'; line-height:110%; }
 input { font-family:'맑은 고딕'; line-height:110%; height:20px }
@@ -64,12 +65,12 @@ select { font-family:'굴림'; line-height:100%; }
 <table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td>베 팅 장<br><?=closeButton()?></td></tr>
 </table>
-<table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10;word-break:break-all; id=bg0>
+<table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10px;word-break:break-all; id=bg0>
     <tr><td colspan=16><input type=button value='갱신' onclick='location.reload()'></td></tr>
     <tr><td colspan=16 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.", ".$str2.", ".$str3?>)</font></td></tr>
     <tr><td height=50 colspan=16 align=center id=bg2><font color=limegreen size=6>16강 상황</font><br><font color=orange size=3>(전체 금액 : <?=$admin['bet']?> / 내 투자 금액 : <?=$me['bet']?>)</font></td></tr>
 </table>
-<table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10;word-break:break-all; id=bg0>
+<table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10px;word-break:break-all; id=bg0>
     <tr align=center><td height=10 colspan=16></td></tr>
     <tr align=center>
 <?php
@@ -96,6 +97,7 @@ $query = "select npc,name,win from tournament where grp>=50 order by grp, grp_no
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $cent = [];
 $line = [];
+$gen = [];
 for ($i=0; $i < 1; $i++) {
     $cent[$i] = "<font color=white>";
 }

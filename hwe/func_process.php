@@ -1,7 +1,6 @@
 <?php
 namespace sammo;
 
-
 /**
  * 장수의 통솔을 받아옴
  * 
@@ -167,10 +166,10 @@ function setLeadershipBonus(&$general, $nationLevel){
 function CriticalScore($score, $type) {
     switch($type) {
     case 0:
-        $ratio = (rand()%9 + 20)/10;   // 2.0~2.8
+        $ratio = Util::randF()*0.8 + 2.2;   // 2.2~3.0
         break;
     case 1:
-        $ratio = (rand()%3 + 2)/10;     // 0.2~0.4
+        $ratio = Util::randF()*0.2 + 0.2;   // 0.2~0.4
         break;
     }
     return Util::round($score * $ratio);
@@ -230,20 +229,21 @@ function process_1(&$general, $type) {
         // 군사 보정
         if($general['level'] == 3 && $general['no'] == $city['gen2']) { $score *= 1.05; }
 
-        $rd = rand() % 100;
+        $rd = Util::randF();
         $r = CriticalRatioDomestic($general, 2);
 
         // 특기보정 : 경작, 상재
-        if($type == 1 && $general['special'] == 1) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
-        if($type == 2 && $general['special'] == 2) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
-
+        if($type == 1 && $general['special'] == 1) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($type == 2 && $general['special'] == 2) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        //민심 반영
+        if($city['rate'] < 80) { $r['succ'] *= $city['rate'] / 80; }
         //버그방지
         if($score < 1) $score = 1;
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
-        } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
+        } elseif($r['succ'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
@@ -323,10 +323,12 @@ function process_3(&$general) {
         // 군주, 참모, 모사 보정
         if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 9 || $general['level'] == 7 || $general['level'] == 5) { $score *= 1.05; }
 
-        $rd = rand() % 100;
-        $r = CriticalRatioDomestic($general, 0);
+        $rd = Util::randF();
+        $r = CriticalRatioDomestic($general, 2);
         // 특기보정 : 발명
-        if($general['special'] == 3) { $score *= 1.1; $admin['develcost'] *= 0.8; $r['succ'] += 10; }
+        if($general['special'] == 3) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        //민심 반영
+        if($city['rate'] < 80) { $r['succ'] *= $city['rate'] / 80; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -334,7 +336,7 @@ function process_3(&$general) {
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
-        } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
+        } elseif($r['succ'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
@@ -421,10 +423,10 @@ function process_4(&$general) {
         // 시중 보정
         if($general['level'] == 2 && $general['no'] == $city['gen3']) { $score *= 1.05; }
 
-        $rd = rand() % 100;
+        $rd = Util::randF();
         $r = CriticalRatioDomestic($general, 0);
         // 특기보정 : 인덕
-        if($general['special'] == 20) { $r['succ'] += 10; $admin['develcost'] *= 0.8; $score *= 1.1; }
+        if($general['special'] == 20) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -432,7 +434,7 @@ function process_4(&$general) {
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:선정을 <span class='ev_failed'>실패</span>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
-        } elseif($r['succ'] > $rd) {
+        } elseif($r['succ'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:선정을 <S>성공</>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
@@ -519,11 +521,13 @@ function process_5(&$general, $type) {
         // 태수 보정
         if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
 
-        $rd = rand() % 100;   // 현재 20%
-        $r = CriticalRatioDomestic($general, 0);
+        $rd = Util::randF();
+        $r = CriticalRatioDomestic($general, 1);
         // 특기보정 : 수비, 축성
-        if($type == 1 && $general['special'] == 11) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
-        if($type == 2 && $general['special'] == 10) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($type == 1 && $general['special'] == 11) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($type == 2 && $general['special'] == 10) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        //민심 반영
+        if($city['rate'] < 80) { $r['succ'] *= $city['rate'] / 80; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -531,7 +535,7 @@ function process_5(&$general, $type) {
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
-        } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
+        } elseif($r['succ'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
@@ -611,10 +615,10 @@ function process_7(&$general) {
         // 시중 보정
         if($general['level'] == 2 && $general['no'] == $city['gen3']) { $score *= 1.05; }
 
-        $rd = rand() % 100;   // 현재 20%
+        $rd = Util::randF();
         $r = CriticalRatioDomestic($general, 0);
         // 특기보정 : 인덕
-        if($general['special'] == 20) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($general['special'] == 20) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -622,7 +626,7 @@ function process_7(&$general) {
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:장려를 <span class='ev_failed'>실패</span>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
-        } elseif($r['succ'] > $rd) {
+        } elseif($r['succ'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:장려를 <S>성공</>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
         } else {
@@ -708,10 +712,12 @@ function process_8(&$general) {
         // 태수 보정
         if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
 
-        $rd = rand() % 100;   // 현재 20%
-        $r = CriticalRatioDomestic($general, 0);
+        $rd = Util::randF();
+        $r = CriticalRatioDomestic($general, 1);
         // 특기보정 : 통찰
-        if($general['special'] == 12) { $r['succ'] += 10; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($general['special'] == 12) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        //민심 반영
+        if($city['rate'] < 80) { $r['succ'] *= $city['rate'] / 80; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -719,7 +725,7 @@ function process_8(&$general) {
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <span class='ev_failed'>실패</span>하여 <C>$score</> 강화했습니다. <1>$date</>";
-        } elseif($city['rate'] >= 80 && $r['succ'] > $rd) {
+        } elseif($r['succ'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <S>성공</>하여 <C>$score</> 강화했습니다. <1>$date</>";
         } else {
@@ -821,7 +827,7 @@ function process_9(&$general) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
 
-        switch(rand()%3) {
+        switch(Util::choiceRandomUsingWeight([$general['leader'], $general['power'], $general['intel']])) {
             case 0:
                 $general['leader2']++;
                 $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
@@ -849,11 +855,10 @@ function process_11(&$general, $type) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_defaultatmos, $_defaulttrain, $_defaultatmos2, $_defaulttrain2;
     $date = substr($general['turntime'],11,5);
 
-    if($type == 1) { $defaultatmos = $_defaultatmos; $defaulttrain = $_defaulttrain; }
-    else { $defaultatmos = $_defaultatmos2; $defaulttrain = $_defaulttrain2; }
+    if($type == 1) { $defaultatmos = GameConst::$defaultAtmosLow; $defaulttrain = GameConst::$defaultTrainLow; }
+    else { $defaultatmos = GameConst::$defaultAtmosHigh; $defaulttrain = GameConst::$defaultTrainHigh; }
 
     $query = "select year,month,startyear from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1001,7 +1006,7 @@ function process_11(&$general, $type) {
         $exp = $crew;
         $ded = $crew;
         // 숙련도 증가
-        addGenDex($general['no'], $armtype, $crew);
+        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $armtype, $crew);
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1036,7 +1041,6 @@ function process_13(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_maxtrain, $_training, $_atmosing;
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month from game limit 1";
@@ -1059,30 +1063,30 @@ function process_13(&$general) {
 //        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 훈련 실패. <1>$date</>";
     } elseif($general['crew'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 훈련 실패. <1>$date</>";
-    } elseif($general['train'] >= $_maxtrain) {
+    } elseif($general['train'] >= GameConst::$maxTrainByCommand) {
         $log[] = "<C>●</>{$admin['month']}월:병사들은 이미 정예병사들입니다. <1>$date</>";
 //    } elseif(intdiv($general['crewtype'], 10) == 4) {
 //        $log[] = "<C>●</>{$admin['month']}월:병기는 훈련이 불가능합니다. <1>$date</>";
     } else {
         // 훈련시
-        $score = Util::round(getGeneralLeadership($general, true, true, true) * 100 / $general['crew'] * $_training);
+        $score = Util::round(getGeneralLeadership($general, true, true, true) * 100 / $general['crew'] * GameConst::$trainDelta);
 
         $log[] = "<C>●</>{$admin['month']}월:훈련치가 <C>$score</> 상승했습니다. <1>$date</>";
         $exp = 100;
         $ded = 70;
         // 숙련도 증가
-        addGenDex($general['no'], $general['crewtype'], Util::round($general['crew']/100));
+        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
         // 훈련치 변경
         $score += $general['train'];
-        if($score > $_maxtrain) { $score = $_maxtrain; }
+        if($score > GameConst::$maxTrainByCommand) { $score = GameConst::$maxTrainByCommand; }
         $query = "update general set train='$score' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 사기 약간 감소
-        $score = intval($general['atmos'] * $_atmosing);
+        $score = intval($general['atmos'] * GameConst::$atmosSideEffectByTraining);
         if($score < 0 ) { $score = 0; }
         $query = "update general set atmos='$score' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1103,7 +1107,6 @@ function process_14(&$general) {
     $db = DB::db();
     $connect=$db->get();
 
-    global $_maxatmos, $_training;
     $log = [];
     $alllog = [];
     $history = [];
@@ -1131,26 +1134,26 @@ function process_14(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 사기진작 실패. <1>$date</>";
     } elseif($general['gold'] < $general['crew']/100) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 사기진작 실패. <1>$date</>";
-    } elseif($general['atmos'] >= $_maxatmos) {
+    } elseif($general['atmos'] >= GameConst::$maxAtmosByCommand) {
         $log[] = "<C>●</>{$admin['month']}월:이미 사기는 하늘을 찌를듯 합니다. <1>$date</>";
 //    } elseif(intdiv($general['crewtype'], 10) == 4) {
 //        $log[] = "<C>●</>{$admin['month']}월:병기는 사기 진작이 불가능합니다. <1>$date</>";
     } else {
-        $score = Util::round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * $_training);
+        $score = Util::round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * GameConst::$atmosDelta);
         $gold = $general['gold'] - Util::round($general['crew']/100);
 
         $log[] = "<C>●</>{$admin['month']}월:사기치가 <C>$score</> 상승했습니다. <1>$date</>";
         $exp = 100;
         $ded = 70;
         // 숙련도 증가
-        addGenDex($general['no'], $general['crewtype'], Util::round($general['crew']/100));
+        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
         // 사기치 변경        // 자금 감소        // 경험치 상승        // 공헌도, 명성 상승
         $score += $general['atmos'];
-        if($score > $_maxatmos) { $score = $_maxatmos; }
+        if($score > GameConst::$maxAtmosByCommand) { $score = GameConst::$maxAtmosByCommand; }
         $general['leader2']++;
         $query = "update general set resturn='SUCCESS',atmos='$score',gold='$gold',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1166,7 +1169,6 @@ function process_15(&$general) {
     $db = DB::db();
     $connect=$db->get();
 
-    global $_maxatmos, $_maxtrain;
     $log = [];
     $alllog = [];
     $history = [];
@@ -1219,7 +1221,7 @@ function process_15(&$general) {
         $exp = 100 * 3;
         $ded = 70 * 3;
         // 숙련도 증가
-        addGenDex($general['no'], $general['crewtype'], Util::round($general['crew']/100 * 3));
+        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100 * 3));
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
@@ -1249,7 +1251,7 @@ function process_16(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $admin = MYDB_fetch_array($result);
 
-    $query = "select nation,war,tricklimit,tech from nation where nation='{$general['nation']}'";
+    $query = "select nation,war,sabotagelimit,tech from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -1264,7 +1266,7 @@ function process_16(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $query = "select nation,tricklimit,tech from nation where nation='{$destcity['nation']}'";
+    $query = "select nation,sabotagelimit,tech from nation where nation='{$destcity['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dnation = MYDB_fetch_array($result);
 
@@ -1307,7 +1309,7 @@ function process_16(&$general) {
         $query = "update city set state=43,term=3 where city='{$destcity['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 숙련도 증가
-        addGenDex($general['no'], $general['crewtype'], Util::round($general['crew']/100));
+        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100));
         // 전투 처리
         $dead = processWar($general, $destcity);
 
@@ -1812,17 +1814,17 @@ function process_41(&$general) {
 
         if($ratio < 33) {
             // 숙련도 증가
-            addGenDex($general['no'], $general['crewtype'], $crewexp);
+            addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], $crewexp);
             $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도 향상이 <span class='ev_failed'>지지부진</span>했습니다. <1>$date</>";
         } elseif($ratio < 66) {
             $exp = $exp * 2;
             // 숙련도 증가
-            addGenDex($general['no'], $general['crewtype'], $crewexp * 2);
+            addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], $crewexp * 2);
             $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도가 향상되었습니다. <1>$date</>";
         } else {
             $exp = $exp * 3;
             // 숙련도 증가
-            addGenDex($general['no'], $general['crewtype'], $crewexp * 3);
+            addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], $crewexp * 3);
             $log[] = "<C>●</>{$admin['month']}월:$crewstr 숙련도가 <S>일취월장</>했습니다. <1>$date</>";
         }
 
@@ -2351,7 +2353,6 @@ function process_49(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_taxrate;
 
     $date = substr($general['turntime'],11,5);
 
@@ -2387,7 +2388,7 @@ function process_49(&$general) {
         //특기 보정 : 거상
         if($general['special'] == 30 && $city['trade'] > 100) { $cost = $amount * (6 * $city['trade']/100 - 5); } // 이익인 경우 5배 이득
         if($general['special'] == 30 && $city['trade'] < 100) { $cost = $amount * (0.2 * $city['trade']/100 + 0.8); } // 손해인 경우 1/5배 손해
-        $tax = $cost * $_taxrate;
+        $tax = $cost * GameConst::$exchangeFee;
         $cost = $cost - $tax;
     } elseif($type == 2) {
         $dtype = "군량 구입";
@@ -2395,11 +2396,11 @@ function process_49(&$general) {
         //특기 보정 : 거상
         if($general['special'] == 30 && $city['trade'] < 100) { $cost = $amount * (6 * $city['trade']/100 - 5); } // 이익인 경우 5배 이득
         if($general['special'] == 30 && $city['trade'] > 100) { $cost = $amount * (0.2 * $city['trade']/100 + 0.8); } // 손해인 경우 1/5배 손해
-        $tax = $cost * $_taxrate;
+        $tax = $cost * GameConst::$exchangeFee;
         $cost = $cost + $tax;
         if($general['gold'] < $cost) {
             $cost = $general['gold'];
-            $tax = $cost * $_taxrate;
+            $tax = $cost * GameConst::$exchangeFee;
             $amount = ($cost-$tax) * 100 / $city['trade'];
             //특기 보정 : 거상
             if($general['special'] == 30 && $city['trade'] < 100) { $amount = ($cost-$tax) / (6 * $city['trade']/100 - 5); } // 이익인 경우 5배 이득
@@ -2458,7 +2459,7 @@ function process_49(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 경험치 상승
-        switch(rand()%3) {
+        switch(Util::choiceRandomUsingWeight([$general['leader'], $general['power'], $general['intel']])) {
         case 0:
             $general['leader2']++;
             $query = "update general set leader2='{$general['leader2']}' where no='{$general['no']}'";

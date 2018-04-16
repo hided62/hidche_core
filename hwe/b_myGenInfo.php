@@ -4,7 +4,12 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$type = Util::getReq('type', 'int');
+$type = Util::getReq('type', 'int', 1);
+if($type <= 0 || $type > 15) {
+    $type = 1;
+}
+
+extractMissingPostToGlobals();
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -24,10 +29,6 @@ if($me['level'] == 0) {
     exit();
 }
 
-
-if($type == 0) {
-    $type = 1;
-}
 $sel = [$type => "selected"];
 
 ?>
@@ -167,7 +168,7 @@ for($j=0; $j < $gencount; $j++) {
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "
     <tr>
-        <td align=center background={$imageTemp}/{$general['picture']} height=64></td>
+        <td align=center style='background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;' height=64></td>
         <td align=center>$name</td>
         <td align=center>"; echo getLevel($general['level'], $nationLevel); echo "</td>
         <td align=center>".getDed($general['dedication'])."</td>

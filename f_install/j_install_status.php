@@ -24,7 +24,7 @@ $rootDB->error_handler = function($params){
     ]);
 };
 
-$memberCnt = $rootDB->queryFirstField('SELECT count(`NO`) from MEMBER');
+$memberCnt = $rootDB->queryFirstField('SELECT count(`NO`) from member');
 if($memberCnt == 0){
     Json::die([
         'step'=>'admin',

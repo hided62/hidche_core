@@ -15,34 +15,36 @@ class GameConst
     public static $upgradeLimit = 30;
     /** @var int 숙련도 제한치*/
     public static $dexLimit = 1000000;
-    /** @var int 초기 사기치*/
-    public static $defaultatmos = 40;
-    /** @var int 초기 훈련치*/
-    public static $defaulttrain = 40;
-    /** @var int 초기 사기치*/
-    public static $defaultatmos2 = 70;
-    /** @var int 초기 훈련치*/
-    public static $defaulttrain2 = 70;
-    /** @var int 최대 훈련치*/
-    public static $maxtrain = 100;
-    /** @var int 인위적으로 올릴 수 있는 최대 사기치*/
-    public static $maxatmos = 100;
-    /** @var int 최대 사기치*/
-    public static $maximumatmos = 150;
-    /** @var int 최대 훈련치*/
-    public static $maximumtrain = 110;
+    /** @var int 초기 징병 사기치*/
+    public static $defaultAtmosLow = 40;
+    /** @var int 초기 징병 훈련치*/
+    public static $defaultTrainLow = 40;
+    /** @var int 초기 모병 사기치*/
+    public static $defaultAtmosHigh = 70;
+    /** @var int 초기 모병 훈련치*/
+    public static $defaultTrainHigh = 70;
+    /** @var int 사기진작으로 올릴 수 있는 최대 사기치*/
+    public static $maxAtmosByCommand = 100;
+    /** @var int 훈련으로 올릴 수 있는 최대 사기치*/
+    public static $maxTrainByCommand = 100;
+    /** @var int 전투로 올릴 수 있는 최대 사기치*/
+    public static $maxAtmosByWar = 150;
+    /** @var int 전투로 올릴 수 훈련치*/
+    public static $maxTrainByWar = 110;
     /** @var int 풀징병시 훈련 1회 상승량*/
-    public static $training = 30;
+    public static $trainDelta = 30;
+    /** @var int 풀징병시 훈련 1회 상승량*/
+    public static $atmosDelta = 30;
     /** @var float 훈련시 사기 감소율*/
-    public static $atmosing = 0.98;
+    public static $atmosSideEffectByTraining = 0.98;
     /** @var float 계략 기본 성공률*/
-    public static $basefiring = 0.25;
-    /** @var int 계략시 확률 가중치(수치가 클수록 변화가 적음 : (지력차/public static $firing + public static $basefiring)*/
-    public static $firing = 300;
+    public static $sabotageDefaultProb = 0.25;
+    /** @var int 계략시 확률 가중치(수치가 클수록 변화가 적음 : (지력차/$firing + $basefiring)*/
+    public static $sabotageProbCoefByStat = 300;
     /** @var int 계략시 기본 수치 감소량*/
-    public static $firingbase = 100;
-    /** @var int 계략시 수치 감소량(public static $firingbase ~ public static $firingpower)*/
-    public static $firingpower = 400;
+    public static $sabotageDefaultAmount = 100;
+    /** @var int 계략시 수치 감소량($firingbase ~ $firingpower)*/
+    public static $sabotageAmountCoef = 400;
     /** @var int 명장,지장에 사용될 통솔 제한*/
     public static $goodgenleader = 65;
     /** @var int 명장에 사용될 무력 제한*/
@@ -68,7 +70,7 @@ class GameConst
     /** @var int 최저 병량(긴급시) */
     public static $minNationalRice = 0;
     /** @var float 군량 매매시 세율*/
-    public static $taxrate = 0.01;
+    public static $exchangeFee = 0.01;
     /** @var float 성인 연령 */
     public static $adultAge = 14;
 

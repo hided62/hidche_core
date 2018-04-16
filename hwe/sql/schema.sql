@@ -20,8 +20,8 @@ CREATE TABLE `general` (
 	`refcnt` INT(6) NULL DEFAULT '1',
 	`picture` CHAR(32) NOT NULL,
 	`imgsvr` INT(1) NULL DEFAULT '0',
-	`name` CHAR(32) NOT NULL,
-	`name2` CHAR(32) NULL DEFAULT NULL,
+	`name` CHAR(32) NOT NULL COLLATE 'utf8mb4_bin',
+	`name2` CHAR(32) NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
 	`nation` INT(6) NULL DEFAULT '0',
 	`nations` CHAR(64) NULL DEFAULT ',0,',
 	`city` INT(6) NULL DEFAULT '3',
@@ -168,7 +168,7 @@ ENGINE=InnoDB;
 
 create table nation (
   nation  int(6) not null auto_increment,
-  `name` CHAR(64) NOT NULL COLLATE 'utf8_bin',
+  `name` CHAR(64) NOT NULL COLLATE 'utf8mb4_bin',
   color   char(10) not null,  can_change_flag int(1) default 1,
   onlinegen   varchar(1024) default '',
   msg     text default '',
@@ -192,8 +192,7 @@ create table nation (
   l5set int(1) default 0,
   scout int(1) default 0,
   war     int(1) default 0,
-  myset   int(1) default 3,
-  tricklimit int(4) default 36,
+  sabotagelimit int(4) default 36,
   surlimit int(4) default 72,
   scoutmsg text default '',
   tech int(8) default 0,  totaltech int(8) default 0,
@@ -203,12 +202,6 @@ create table nation (
   type int(2) default 0,
   rule text default '',
   history mediumtext default '',
-  dip0 char(150) default '', dip0_type int(4) default 0, dip0_who int(9) default 0, dip0_when datetime,
-  dip1 char(150) default '', dip1_type int(4) default 0, dip1_who int(9) default 0, dip1_when datetime,
-  dip2 char(150) default '', dip2_type int(4) default 0, dip2_who int(9) default 0, dip2_when datetime,
-  dip3 char(150) default '', dip3_type int(4) default 0, dip3_who int(9) default 0, dip3_when datetime,
-  dip4 char(150) default '', dip4_type int(4) default 0, dip4_who int(9) default 0, dip4_when datetime,
-  dip5 char(150) default '', dip5_type int(4) default 0, dip5_who int(9) default 0, dip5_when datetime,
   board0  text default '', board0_who  int(6) default 0, board0_when  datetime,
   board1  text default '', board1_who  int(6) default 0, board1_when  datetime,
   board2  text default '', board2_who  int(6) default 0, board2_when  datetime,
@@ -287,8 +280,8 @@ create table nation (
 ###########################################################################
 ## trade 100 이 표준 시세
 create table city (
-  city   int(6) not null auto_increment,
-  name   char(64) not null,
+  `city` INT(6) NOT NULL AUTO_INCREMENT,
+	`name` CHAR(64) NOT NULL,
   level  int(1) default 0,
   upgrading int(1) default 0,
   nation int(6) default 0,
@@ -319,7 +312,7 @@ create table city (
   state   int(2) default 0,
   region  int(2) default 0,
   term    int(1) default 0,
-  conflict    varchar(500) default '{}'
+  conflict    varchar(500) default '{}',
 
   PRIMARY KEY (city),
   KEY (nation)

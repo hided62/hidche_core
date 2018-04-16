@@ -29,10 +29,7 @@ class Validator extends \Valitron\Validator
      */
     public function rule($rule, $fields){
         $params = func_get_args();
-        if(count($params) > 2){
-            return parent::rule($rule, $fields, $params[2]);
-        }
-        return parent::rule($rule, $fields);
+        return parent::rule(...$params);
 
         
     }

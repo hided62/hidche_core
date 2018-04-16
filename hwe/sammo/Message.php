@@ -19,9 +19,9 @@ class Message
     protected $sendCnt = 0;
     
     public $msgType;
-    /** @var MessageTarget */
+    /** @var \sammo\MessageTarget */
     public $src;
-    /** @var MessageTarget */
+    /** @var \sammo\MessageTarget */
     public $dest;
     public $msg;
     /** @var \DateTime */
@@ -53,7 +53,7 @@ class Message
         $this->msgOption = $msgOption;
     }
 
-    public function setSentInfo(int $mailbox, int $messageID) : this
+    public function setSentInfo(int $mailbox, int $messageID) : self
     {
         if(!Message::isValidMailBox($mailbox)){
             throw new \InvalidArgumentException('올바르지 않은 mailbox');
@@ -67,7 +67,7 @@ class Message
                 $this->isInboxMail = true;
                 break;
             }
-            if($mailbox > Message::MAILBOX_NATIONAL){
+            if($mailbox >= Message::MAILBOX_NATIONAL){
                 if($this->msgType === Message::MSGTYPE_DIPLOMACY){
                     $this->isInboxMail = true;
                     break;
@@ -104,6 +104,31 @@ class Message
         return $this;
     }
 
+    public function toArray():array{
+        if($this->msgType === Message::MSGTYPE_PUBLIC){
+            $src = $this->src->toArray();
+            $dest = [];
+        }
+        else if($this->msgType === Message::MSGTYPE_NATIONAL || $this->msgType === Message::MSGTYPE_DIPLOMACY){
+            $src = $this->src->toArray();
+            $dest = $this->dest->toArray();
+        }
+        else{
+            $src = $this->src->toArray();
+            $dest = $this->dest->toArray();
+        }
+
+        return [
+            'id'=>$this->id,
+            'msgType'=>$this->msgType,
+            'src'=>$src,
+            'dest'=>$dest,
+            'text'=>$this->msg,
+            'option'=>$this->msgOption,
+            'time'=>$this->date->format('Y-m-d H:i:s')
+        ];
+    }
+
     public static function buildFromArray(array $row) : Message
     {
         $dbMessage = Json::decode($row['message']);
@@ -125,7 +150,7 @@ class Message
 
         $action = Util::array_get($option['action'], null);
         if ($msgType === self::MSGTYPE_DIPLOMACY) {
-            $objMessage = new DiplomacticMessage(...$args);
+            $objMessage = new DiplomaticMessage(...$args);
         } elseif ($action === 'scout') {
             $objMessage = new ScoutMessage(...$args);
         } else {
@@ -140,9 +165,6 @@ class Message
     protected static function isValidMailBox(int $mailbox): bool
     {
         if ($mailbox > self::MAILBOX_PUBLIC) {
-            return false;
-        }
-        if ($mailbox == self::MAILBOX_NATIONAL) {
             return false;
         }
         if ($mailbox <= 0) {
@@ -165,7 +187,8 @@ class Message
     public static function getMessageByID(int $messageID) : Message
     {
         $db = DB::db();
-        $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i', $messageID);
+        $now = new \DateTime();
+        $row = $db->queryFirstRow('SELECT * FROM `message` WHERE `id` = %i AND valid_until', $messageID);
         if (!$row) {
             return null;
         }
@@ -179,7 +202,7 @@ class Message
      * @param int $fromSeq 가져오고자 하는 위치. $fromSeq보다 '큰' seq만 가져온다. 따라서 0 이하이면 모두 가져옴.
      * @return Message[]
      */
-    protected static function getMessagesFromMailBox(int $mailbox, string $msgType, int $limit=30, int $fromSeq = 0)
+    public static function getMessagesFromMailBox(int $mailbox, string $msgType, int $limit=30, int $fromSeq = 0)
     {
         $db = DB::db();
 
@@ -187,9 +210,12 @@ class Message
             throw new \InvalidArgumentException('올바르지 않은 $msgType');
         }
 
+        $date = (new \DateTime())->format('Y-m-d H:i:s');
+
         $where = new \WhereClause('and');
         $where->add('mailbox = %i', $mailbox);
         $where->add('type = %s', $msgType);
+        $where->add('valid_until > %s', $date);
         if ($fromSeq > 0) {
             $where->add('id > %i', $fromSeq);
         }
@@ -202,10 +228,10 @@ class Message
 
         return array_map(function ($row) {
             return static::buildFromArray($row);
-        }, $db->query('SELECT * FROM `message` WHERE %l %?', $where, $limitSql));
+        }, $db->query('SELECT * FROM `message` WHERE %l ORDER BY id DESC %? ', $where, $limitSql));
     }
 
-    protected function sendRaw(int $mailbox){
+    protected function sendRaw(int $mailbox):array{
         //NOTE:: 여기선 검증하지 않는다.
 
 
@@ -213,7 +239,7 @@ class Message
             $src_id = $this->src->generalID;
             $dest_id = self::MAILBOX_PUBLIC;
         }
-        else if($mailbox > self::MAILBOX_NATIONAL){
+        else if($mailbox >= self::MAILBOX_NATIONAL){
             $src_id = $this->src->nationID + self::MAILBOX_NATIONAL;
             $dest_id = $this->dest->nationID + self::MAILBOX_NATIONAL;
         }
@@ -225,15 +251,15 @@ class Message
 
         $db = DB::db();
         $db->insert('message', [
-            'address' => $mailbox,
+            'mailbox' => $mailbox,
             'type' => $this->msgType,
             'src' => $src_id,
             'dest' => $dest_id,
             'time' => $this->date->format('Y-m-d H:i:s'),
             'valid_until' => $this->validUntil->format('Y-m-d H:i:s'),
             'message' => Json::encode([
-                'src' => $this->src->toArray(),
-                'dest' =>$this->dest->toArray(),
+                'src'=>($this->src)?($this->src->toArray()):[],
+                'dest'=>($this->dest)?($this->dest->toArray()):[],
                 'text' => $this->msg,
                 'option' => $this->msgOption
             ])
@@ -241,11 +267,11 @@ class Message
         return [$mailbox, $db->insertId()];
     }
 
-    protected function sendToSender() : int{
+    private function sendToSender():array{
         if($this->sendCnt > 0){
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
-        if($this->msgType === self::MSGTYPE_PRIVATE){
+        if($this->msgType === self::MSGTYPE_PRIVATE && $this->src->generalID !== $this->dest->generalID){
             return $this->sendRaw($this->src->generalID);
         }
         if($this->msgType === self::MSGTYPE_NATIONAL && $this->src->nationID !== $this->dest->nationID){
@@ -254,12 +280,16 @@ class Message
         return [0, 0];
     }
 
-    protected function sendToReceiver() : int{
+    private function sendToReceiver() : array{
         if($this->sendCnt > 1 || $this->isInboxMail){
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
 
         if($this->msgType === self::MSGTYPE_PRIVATE){
+            //XXX: 알림을 이런식으로 보내는게 맞는가에 대한 의문 있음
+            DB::db()->update('general', [
+                'newmsg'=>1
+            ], 'no=%i',$this->dest->generalID);
             return $this->sendRaw($this->dest->generalID);
         }
 
@@ -274,25 +304,48 @@ class Message
         throw new \RuntimeException('이곳에 올 수 없습니다.');
     }
 
-    public function send():int{
-        list($senderMailbox, $sendID) = $this->sendToSender();
-        if($sendID){
-            $this->mailbox = $senderMailbox;
-            $this->isInboxMail = false;
-            $this->id = $sendID;
-            $this->msgOption['senderMessageID'] = $sendID;
-            $this->$sendCnt = 1;
+    public function send(bool $sendDestOnly=false):int{
+        if(!$sendDestOnly){
+            list($senderMailbox, $sendID) = $this->sendToSender();
+            if($sendID){
+                $this->mailbox = $senderMailbox;
+                $this->isInboxMail = false;
+                $this->id = $sendID;
+                $this->msgOption['senderMessageID'] = $sendID;
+                $this->sendCnt = 1;
+            }
         }
+        
         list($receiverMailbox, $receiveID) = $this->sendToReceiver();
-        if(!$receiveID){
+        if(!$receiveID && !$sendDestOnly){
             return $sendID;
         }
         $this->mailbox = $receiverMailbox;
         $this->isInboxMail = true;
         $this->id = $receiveID;
         $this->msgOption['receiverMessageID'] = $receiveID;
-        $this->$sendCnt = 2;
+        $this->sendCnt = 2;
         
         return $receiveID;
+    }
+
+    public function invalidate(array $newMsgOption=null){
+        if($newMsgOption !== null){
+            $this->msgOption = $newMsgOption;
+        }
+
+        $this->validUntil = new \DateTime('2000-12-31');
+        
+        $db = DB::db();
+        $db->update('message', [
+            'message' => Json::encode([
+                'src' => $this->src->toArray(),
+                'dest' =>$this->dest->toArray(),
+                'text' => $this->msg,
+                'option' => $this->msgOption
+            ]),
+            'valid_until'=>$this->validUntil->format('Y-m-d H:i:s'),
+        ], 'id=%i', $this->id);
+
     }
 }

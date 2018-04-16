@@ -6,7 +6,9 @@ include "func.php";
 
 $btn = Util::getReq('btn');
 $gen = Util::getReq('gen', 'int', 0);
-$type = Util::getReq('type', 'int');
+$type = 0;
+
+extractMissingPostToGlobals();
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -38,9 +40,6 @@ if ($btn == '정렬하기') {
     $gen = 0;
 }
 
-if ($type == 0) {
-    $type = 0;
-}
 $sel[$type] = "selected";
 ?>
 <!DOCTYPE html>
@@ -82,9 +81,9 @@ foreach (getAllNationStaticInfo() as $nation) {
     $nationColor[$nation['nation']] = $nation['color'];
 }
 
-switch ($type) {
-case 0: $query = "select * from diplomacy where me < you order by state desc"; break;
-}
+
+$query = "select * from diplomacy where me < you order by state desc";
+
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $dipcount = MYDB_num_rows($result);
 for ($i=0; $i < $dipcount; $i++) {

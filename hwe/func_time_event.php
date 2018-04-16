@@ -713,7 +713,7 @@ function disaster() {
                 $query = "update city set state='$state',pop=pop*{$ratio},rate=rate*{$ratio},agri=agri*{$ratio},comm=comm*{$ratio},secu=secu*{$ratio},def=def*{$ratio},wall=wall*{$ratio} where city='$disastercity[$i]'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         
-                TrickInjury($disastercity[$i], 1);
+                SabotageInjury($disastercity[$i], 1);
             }
         } else {
             for($i=0; $i < count($disastercity); $i++) {

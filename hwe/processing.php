@@ -8,6 +8,8 @@ include "func.php";
 $commandtype = Util::getReq('commandtype', 'int', 0);
 $turn = Util::getReq('turn', 'array_int', [0]);
 
+extractMissingPostToGlobals();
+
 $session = Session::requireGameLogin()->setReadOnly();
 
 $db = DB::db();
@@ -361,7 +363,7 @@ function calc(cost, formnum) {
         $defence = $unit->defence + $abil;
         $speed = $unit->speed;
         $avoid = $unit->avoid;
-        $weapImage = ServConfig::$gameImagePath."/weap{$i}.jpg";
+        $weapImage = ServConfig::$gameImagePath."/weap{$i}.png";
         if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
@@ -371,7 +373,7 @@ function calc(cost, formnum) {
 
         echo "
 <tr height=64 bgcolor=$l>
-    <td background={$weapImage} align=center></td>
+    <td style='background:no-repeat center url(\"{$weapImage}\");background-size:64px;background-color:#222222;' align=center></td>
     <td align=center>{$name}</td>
     <td align=center>{$attack}</td>
     <td align=center>{$defence}</td>
@@ -571,7 +573,7 @@ function calc(cost, formnum) {
         $defence = $unit->defence + $abil;
         $speed = $unit->speed;
         $avoid = $unit->avoid;
-        $weapImage = ServConfig::$gameImagePath."/weap{$i}.jpg";
+        $weapImage = ServConfig::$gameImagePath."/weap{$i}.png";
         if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
@@ -581,7 +583,7 @@ function calc(cost, formnum) {
 
         echo "
 <tr height=64 bgcolor=$l>
-    <td background={$weapImage} align=center></td>
+    <td style='background:no-repeat center url(\"{$weapImage}\");background-size:64px;background-color:#222222;' align=center></td>
     <td align=center>{$name}</td>
     <td align=center>{$attack}</td>
     <td align=center>{$defence}</td>
@@ -972,7 +974,7 @@ function command_25($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("command_27 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
     
-    $query = "select nation,name,color,scout,scoutmsg,tricklimit,gennum from nation order by gennum";
+    $query = "select nation,name,color,scout,scoutmsg,sabotagelimit,gennum from nation order by gennum";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
@@ -1595,22 +1597,22 @@ function command_46($turn, $command) {
 ?>
 </select>
 성향 : <select name=third size=1>
-    <option value=1 style=background-color:black;color:white;>".getNationType(1)."</option>
-    <option value=2 style=background-color:black;color:white;>".getNationType(2)."</option>
-    <option value=10 style=background-color:black;color:white;>".getNationType(10)."</option>
-    <option value=3 style=background-color:black;color:white;>".getNationType(3)."</option>
-    <option value=4 style=background-color:black;color:white;>".getNationType(4)."</option>
-    <option value=5 style=background-color:black;color:white;>".getNationType(5)."</option>
-    <option value=6 style=background-color:black;color:white;>".getNationType(6)."</option>
-    <option value=7 style=background-color:black;color:white;>".getNationType(7)."</option>
-    <option value=8 style=background-color:black;color:white;>".getNationType(8)."</option>
-    <option selected value=9 style=background-color:black;color:white;>".getNationType(9)."</option>
-    <option value=11 style=background-color:black;color:white;>".getNationType(11)."</option>
-    <option value=12 style=background-color:black;color:white;>".getNationType(12)."</option>
-    <option value=13 style=background-color:black;color:white;>".getNationType(13)."</option>
+    <option value=1 style=background-color:black;color:white;><?=getNationType(1)?></option>
+    <option value=2 style=background-color:black;color:white;><?=getNationType(2)?></option>
+    <option value=10 style=background-color:black;color:white;><?=getNationType(10)?></option>
+    <option value=3 style=background-color:black;color:white;><?=getNationType(3)?></option>
+    <option value=4 style=background-color:black;color:white;><?=getNationType(4)?></option>
+    <option value=5 style=background-color:black;color:white;><?=getNationType(5)?></option>
+    <option value=6 style=background-color:black;color:white;><?=getNationType(6)?></option>
+    <option value=7 style=background-color:black;color:white;><?=getNationType(7)?></option>
+    <option value=8 style=background-color:black;color:white;><?=getNationType(8)?></option>
+    <option selected value=9 style=background-color:black;color:white;><?=getNationType(9)?></option>
+    <option value=11 style=background-color:black;color:white;><?=getNationType(11)?></option>
+    <option value=12 style=background-color:black;color:white;><?=getNationType(12)?></option>
+    <option value=13 style=background-color:black;color:white;><?=getNationType(13)?></option>
 </select>
 <input type=submit value=건국>
-<input type=hidden name=command value=$command>
+<input type=hidden name=command value=<?=$command?>>
 <?php
         for($i=0; $i < count($turn); $i++) {
             echo "<input type=hidden name=turn[] value=$turn[$i]>";

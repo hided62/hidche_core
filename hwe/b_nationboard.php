@@ -32,11 +32,11 @@ $me = MYDB_fetch_array($result);
     <tr><td>회 의 실<br><?=backButton()?></td></tr>
 <form name=form1 method=post action=c_nationboard.php>
     <tr><td align=center>
-        제목 <input type=textarea maxlength=50 name=title style=color:white;background-color:black;width:830;>
+        제목 <input type=textarea maxlength=50 name=title style=color:white;background-color:black;width:830px;>
         </td>
     </tr>
     <tr><td>
-        <textarea name=msg style=color:white;background-color:black;width:998;height:200;></textarea><br>
+        <textarea name=msg style=color:white;background-color:black;width:998px;height:200px;></textarea><br>
         <input type=submit value=저장하기>
         <input type=hidden name=num value=-1>
     </td></tr>

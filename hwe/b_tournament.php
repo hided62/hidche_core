@@ -28,6 +28,7 @@ if ($con >= 2) {
 }
 
 switch ($admin['tnmt_type']) {
+default: throw new \RuntimeException('invalid tnmt_type');
 case 0: $tnmt_type = "<font color=cyan>전력전</font>"; $tp = "tot"; $tp2 = "종합"; $tp3 = "total"; break;
 case 1: $tnmt_type = "<font color=cyan>통솔전</font>"; $tp = "ldr"; $tp2 = "통솔"; $tp3 = "leader"; break;
 case 2: $tnmt_type = "<font color=cyan>일기토</font>"; $tp = "pwr"; $tp2 = "무력"; $tp3 = "power"; break;
@@ -44,7 +45,7 @@ case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "�
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>토너먼트</title>
 <style>
-body { color:white; background-color:black; border-width:1; border-color:gray; }
+body { color:white; background-color:black; border-width:1px; border-color:gray; }
 table { font-family:'맑은 고딕'; line-height:110%; }
 font { font-family:'맑은 고딕'; line-height:110%; }
 input { font-family:'맑은 고딕'; line-height:110%; height:20px }
@@ -219,6 +220,7 @@ for ($i=0; $i < 1; $i++) {
     $cent[$i] = "<font color=white>";
 }
 $line = [];
+$gen = [];
 for ($i=0; $i < 2; $i++) {
     //FIXME: 다시 작성. null인 경우엔 어쩌려고?
     $general = MYDB_fetch_array($result) ?? [

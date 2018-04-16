@@ -9,7 +9,7 @@ $userID = Session::getUserID();
 // 외부 파라미터
 
 $db = RootDB::db();
-$member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `MEMBER` WHERE `NO` = %i', $userID);
+$member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture` FROM `member` WHERE `NO` = %i', $userID);
 
 if(!$member['picture']){
     $picture = ServConfig::getSharedIconPath().'/default.jpg';

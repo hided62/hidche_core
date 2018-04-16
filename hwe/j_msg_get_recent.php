@@ -1,0 +1,62 @@
+<?php
+namespace sammo;
+
+include('lib.php');
+include('func.php');
+
+$session = Session::requireGameLogin([])->setReadOnly();
+$userID = Session::getUserID();
+
+$jsonPost = WebUtil::parseJsonPost();
+$reqSequence = (int)Util::array_get($jsonPost['sequence'], 0);
+
+
+list($generalID, $nationID) = DB::db()->queryFirstList(
+    'select `no`, `nation` from `general` where owner = %i',
+    $userID
+);
+
+
+if($nationID === null){
+    Json::die([
+        'result'=>false,
+        'reason'=>'장수가 사망했습니다.'
+    ]);
+}
+
+$result = [];
+$result['result'] = true;
+
+$nextSequence = $reqSequence;
+
+$result['private'] = array_map(function(Message $msg) use (&$nextSequence){
+    if($msg->id > $nextSequence){
+        $nextSequence = $msg->id;
+    }
+    return $msg->toArray();
+}, Message::getMessagesFromMailBox($generalID, Message::MSGTYPE_PRIVATE, 10, $reqSequence));
+
+$result['public'] = array_map(function(Message $msg)use (&$nextSequence){
+    if($msg->id > $nextSequence){
+        $nextSequence = $msg->id;
+    }
+    return $msg->toArray();
+}, Message::getMessagesFromMailBox(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, 10, $reqSequence));
+
+$result['national'] = array_map(function(Message $msg)use (&$nextSequence){
+    if($msg->id > $nextSequence){
+        $nextSequence = $msg->id;
+    }
+    return $msg->toArray();
+}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, 20, $reqSequence));
+
+$result['diplomacy']= array_map(function(Message $msg)use (&$nextSequence){
+    if($msg->id > $nextSequence){
+        $nextSequence = $msg->id;
+    }
+    return $msg->toArray();
+}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, 10, 0));
+
+$result['sequence'] = $nextSequence;
+
+Json::die($result);

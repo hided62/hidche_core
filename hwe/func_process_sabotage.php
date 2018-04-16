@@ -9,7 +9,7 @@ function process_32(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_firing, $_basefiring, $_firingbase, $_firingpower;
+
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game limit 1";
@@ -57,7 +57,7 @@ function process_32(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $intelgen = MYDB_fetch_array($result);
 
-        $ratio = Util::round(((getGeneralIntel($general, true, true, true, false) - getGeneralIntel($intelgen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = Util::round(((getGeneralIntel($general, true, true, true, false) - getGeneralIntel($intelgen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -93,8 +93,8 @@ function process_32(&$general) {
             $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(이)가 불타고 있습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 화계가 성공했습니다. <1>$date</>";
 
-            $destcity['agri'] -= rand() % $_firingpower + $_firingbase;
-            $destcity['comm'] -= rand() % $_firingpower + $_firingbase;
+            $destcity['agri'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
+            $destcity['comm'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
             if($destcity['agri'] < 0) { $destcity['agri'] = 0; }
             if($destcity['comm'] < 0) { $destcity['comm'] = 0; }
             $query = "update city set state=32,agri='{$destcity['agri']}',comm='{$destcity['comm']}' where city='$destination'";
@@ -102,7 +102,7 @@ function process_32(&$general) {
             $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            TrickInjury($destination);
+            SabotageInjury($destination);
             $exp = rand() % 100 + 201;
             $ded = rand() % 70 + 141;
         } else {
@@ -134,7 +134,7 @@ function process_33(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_firing, $_basefiring, $_firingbase, $_firingpower;
+
     //탈취는 0까지 무제한
     $date = substr($general['turntime'],11,5);
 
@@ -187,7 +187,7 @@ function process_33(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -224,8 +224,8 @@ function process_33(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 탈취가 성공했습니다. <1>$date</>";
 
             // 탈취 최대 400 * 8
-            $gold = (rand() % $_firingpower + $_firingbase) * $destcity['level'];
-            $rice = (rand() % $_firingpower + $_firingbase) * $destcity['level'];
+            $gold = (rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount) * $destcity['level'];
+            $rice = (rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount) * $destcity['level'];
 
             $nation['gold'] -= $gold;
             $nation['rice'] -= $rice;
@@ -254,7 +254,7 @@ function process_33(&$general) {
             }
             $log[] = "<C>●</>금<C>$gold</> 쌀<C>$rice</>을 획득했습니다.";
 
-//            TrickInjury($destination);
+//            SabotageInjury($destination);
             $exp = rand() % 100 + 201;
             $ded = rand() % 70 + 141;
         } else {
@@ -286,7 +286,7 @@ function process_34(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_firing, $_basefiring, $_firingbase, $_firingpower;
+
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game limit 1";
@@ -334,7 +334,7 @@ function process_34(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $powergen = MYDB_fetch_array($result);
 
-        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -371,8 +371,8 @@ function process_34(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 파괴가 성공했습니다. <1>$date</>";
 
             // 파괴
-            $destcity['def'] -= rand() % $_firingpower + $_firingbase;
-            $destcity['wall'] -= rand() % $_firingpower + $_firingbase;
+            $destcity['def'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
+            $destcity['wall'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
             if($destcity['def'] < 100) { $destcity['def'] = 100; }
             if($destcity['wall'] < 100) { $destcity['wall'] = 100; }
             $query = "update city set state=34,def='{$destcity['def']}',wall='{$destcity['wall']}' where city='$destination'";
@@ -380,7 +380,7 @@ function process_34(&$general) {
             $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            TrickInjury($destination);
+            SabotageInjury($destination);
             $exp = rand() % 100 + 201;
             $ded = rand() % 70 + 141;
         } else {
@@ -412,7 +412,7 @@ function process_35(&$general) {
     $log = [];
     $alllog = [];
     $history = [];
-    global $_firing, $_basefiring, $_firingbase, $_firingpower;
+
     $date = substr($general['turntime'],11,5);
 
     $query = "select year,month,develcost from game limit 1";
@@ -458,11 +458,11 @@ function process_35(&$general) {
     } elseif($dip['state'] >= 7) {
         $log[] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
     } else {
-        $query = "select leader,horse,power,weap,intel,book,injury from general where city='$destination' and nation='{$destcity['nation']}' order by sum desc";
+        $query = "select leader,horse,power,weap,intel,book,injury from general where city='$destination' and nation='{$destcity['nation']}' order by leader desc";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gen = MYDB_fetch_array($result);
 
-        $ratio = Util::round(((getGeneralLeadership($general, true, true, true) - getGeneralLeadership($gen, true, true, true)) / $_firing - ($destcity['secu']/$destcity['secu2'])/5 + $_basefiring)*100);
+        $ratio = Util::round(((getGeneralLeadership($general, true, true, true) - getGeneralLeadership($gen, true, true, true)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
         $ratio2 = rand() % 100;
 
         if($general['item'] == 5) {
@@ -499,8 +499,8 @@ function process_35(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 선동이 성공했습니다. <1>$date</>";
 
             // 선동 최대 10
-            $destcity['secu'] -= rand() % Util::round($_firingpower/2) + $_firingbase;
-            $destcity['rate'] -= rand() % Util::round($_firingpower/50) + $_firingbase/50;
+            $destcity['secu'] -= rand() % Util::round(GameConst::$sabotageAmountCoef/2) + GameConst::$sabotageDefaultAmount;
+            $destcity['rate'] -= rand() % Util::round(GameConst::$sabotageAmountCoef/50) + GameConst::$sabotageDefaultAmount/50;
             if($destcity['secu'] < 0) { $destcity['secu'] = 0; }
             if($destcity['rate'] < 0) { $destcity['rate'] = 0; }
             $query = "update city set state=32,rate='{$destcity['rate']}',secu='{$destcity['secu']}' where city='$destination'";
@@ -508,7 +508,7 @@ function process_35(&$general) {
             $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            TrickInjury($destination);
+            SabotageInjury($destination);
             $exp = rand() % 100 + 201;
             $ded = rand() % 70 + 141;
         } else {

@@ -64,12 +64,12 @@ function getTnmtFightLogAll(int $group) {
     return join('<br>',getFormattedFileLogAll("logs/fight{$group}.txt"));
 }
 
-function pushTrickLog($log) {
-    pushRawFileLog("logs/_tricklog.txt", $log);
+function pushSabotageLog($log) {
+    pushRawFileLog("logs/_sabotagelog.txt", $log);
 }
 
-function getTrickLogRecent($count) {
-    return join('<br>', getFormattedFileLogRecent("logs/_tricklog.txt", $count, 150));
+function getSabotageLogRecent($count) {
+    return join('<br>', getFormattedFileLogRecent("logs/_sabotagelog.txt", $count, 150));
 }
 
 function pushProcessLog($log) {

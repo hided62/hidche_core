@@ -4,7 +4,11 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-$type = Util::getReq('type', 'int');
+$type = Util::getReq('type', 'int', 0);
+if($type < 0 || $type > 4){
+    $type = 0;
+}
+extractMissingPostToGlobals();
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -32,9 +36,6 @@ if($session->userGrade < 5) {
 $db = DB::db();
 $connect=$db->get();
 
-if($type == 0) {
-    $type = 0;
-}
 $sel[$type] = "selected";
 
 ?>

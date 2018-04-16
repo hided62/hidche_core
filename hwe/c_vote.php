@@ -10,6 +10,8 @@ $comment = Util::getReq('comment');
 $title = Util::getReq('title');
 $str = Util::getReq('str');
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -41,9 +43,6 @@ else if($btn == "댓글" && $comment != "") {
     $comment = addslashes(SQ2DQ($comment));
 
     $nation = getNationStaticInfo($me['nation']);
-    if($nation == null) { 
-        $nation = ['name' => "재야"]; 
-    }
 
     if($admin['votecomment'] != "") { $admin['votecomment'] .= "|"; }
     $admin['votecomment'] .= "{$nation['name']}:{$me['name']}:{$comment}";

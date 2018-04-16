@@ -6,6 +6,8 @@ include "func.php";
 
 $select = Util::getReq('select', 'int', 0);
 
+extractMissingPostToGlobals();
+
 $db = DB::db();
 $connect=$db->get();
 

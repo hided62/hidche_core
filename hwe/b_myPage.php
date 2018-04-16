@@ -5,6 +5,23 @@ include "lib.php";
 include "func.php";
 
 $btn = Util::getReq('btn');
+$map = Util::getReq('map', 'int', 0);
+$mode = Util::getReq('mode', 'int', 2);
+$tnmt = Util::getReq('tnmt', 'int', 1);
+
+extractMissingPostToGlobals();
+
+if($map < 0 || $map > 2){
+    $map = 0;
+}
+
+if($mode < 0 || $mode > 2){
+    $mode = 2;
+}
+
+if($tnmt < 0 || $tnmt > 1){
+    $tnmt = 1;
+}
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -89,11 +106,11 @@ function go(type) {
                 <input type=radio name=mode  value=1 <?=$me['mode']==1?"checked":""; ?>>○(훈사60)
                 <input type=radio name=mode  value=0 <?=$me['mode']==0?"checked":""; ?>>×
                 】<br><br>
-                &nbsp;&nbsp;&nbsp;&nbsp;<input type=<?=$submit?> name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160;height:30;font-size:13px; value=설정저장><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;<input type=<?=$submit?> name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px; value=설정저장><br>
                 &nbsp;&nbsp;&nbsp;&nbsp;∞<font color=orange>설정저장은 이달중 <?=$me['myset']?>회 남았습니다.</font><br><br>
             </form>
             &nbsp;&nbsp;&nbsp;&nbsp;휴 가 신 청<br>
-            &nbsp;&nbsp;&nbsp;&nbsp;<input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160;height:30;font-size:13px; value=휴가신청 onclick='go(0)'>
+            &nbsp;&nbsp;&nbsp;&nbsp;<input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px; value=휴가신청 onclick='go(0)'>
         </td>
     </tr>
     <tr>

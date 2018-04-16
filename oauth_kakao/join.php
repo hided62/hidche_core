@@ -12,7 +12,7 @@ if(!$access_token){
     header('Location:oauth_fail.html');
 }
 
-$canJoin = RootDB::db()->queryFirstField('SELECT REG FROM `SYSTEM` WHERE `NO` = 1');
+$canJoin = RootDB::db()->queryFirstField('SELECT REG FROM `system` WHERE `NO` = 1');
 if($canJoin != 'Y'){
     die('현재는 가입이 금지되어있습니다!');
 }

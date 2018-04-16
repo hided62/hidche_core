@@ -11,6 +11,8 @@ $genlist = Util::getReq('genlist', 'int');
 $outlist = Util::getReq('outlist', 'int');
 $citylist = Util::getReq('citylist', 'int');
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -43,6 +45,11 @@ if($btn == "임명") {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
+    if(!$general){
+        header('location:b_myBossInfo.php');
+        exit();
+    }
+
     //임명할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($general['level'] == 12 || $meLevel < 5 || ($general['nation'] != $me['nation'] && $genlist != 0)) {
         
@@ -53,6 +60,11 @@ if($btn == "임명") {
     $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr from general where no='$outlist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
+
+    if(!$general){
+        header('location:b_myBossInfo.php');
+        exit();
+    }
 
     //추방할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($general['level'] == 12 || $meLevel < 5 || ($general['nation'] != $me['nation'] && $outlist != 0)) {

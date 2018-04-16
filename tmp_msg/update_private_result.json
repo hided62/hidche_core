@@ -77,7 +77,7 @@
                 "used":false,
                 "result":false,
                 "until":[210, 9],
-                "action":"ally",
+                "action":"noAggression",
                 "allyYear":20,
                 "allyText":"메롱"
             }

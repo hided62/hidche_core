@@ -14,7 +14,7 @@ if (!$userID) {
 }
 
 //회원 테이블에서 정보확인
-$member = RootDB::db()->queryFirstRow("select no,name,picture,imgsvr,grade from MEMBER where no= %i", $userID);
+$member = RootDB::db()->queryFirstRow("select no,name,picture,imgsvr,grade from member where no= %i", $userID);
 
 if (!$member) {
     MessageBox("잘못된 접근입니다!!!");
@@ -98,7 +98,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
         <tr>
             <td align=right id=bg1>전콘 사용 여부</td>
             <td width=64 height=64>
-                <img src='{$imageTemp}/{$member['picture']}' border=0>
+                <img width='64' height='64' src='{$imageTemp}/{$member['picture']}' border=0>
             </td>
             <td>
                 <input type=checkbox name=pic value=1 checked>사용

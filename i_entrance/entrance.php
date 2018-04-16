@@ -9,7 +9,7 @@ $session = Session::requireLogin()->setReadOnly();
 $templates = new \League\Plates\Engine('templates');
 
 $db = RootDB::db();
-$notice = $db->queryFirstField('SELECT `NOTICE` FROM `SYSTEM` WHERE `NO`=1');
+$notice = $db->queryFirstField('SELECT `NOTICE` FROM `system` WHERE `NO`=1');
 $userGrade = $session->userGrade;
 ?>
 <!DOCTYPE html>

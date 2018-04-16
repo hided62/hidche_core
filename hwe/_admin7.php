@@ -6,7 +6,13 @@ include "func.php";
 
 $btn = Util::getReq('btn');
 $gen = Util::getReq('gen', 'int', 0);
-$type = Util::getReq('type', 'int');
+$type = Util::getReq('type', 'int', 0);
+
+if($type < 0 || $type > 3){
+    $type = 0;
+}
+
+extractMissingPostToGlobals();
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
@@ -38,9 +44,6 @@ if($btn == '정렬하기') {
     $gen = 0;
 }
 
-if($type == 0) {
-    $type = 0;
-}
 $sel[$type] = "selected";
 ?>
 <!DOCTYPE html>

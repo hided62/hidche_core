@@ -11,7 +11,7 @@ if($session->isLoggedIn()){
     $session->logout();
 }
 
-$canLogin = RootDB::db()->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
+$canLogin = RootDB::db()->queryFirstField('SELECT `LOGIN` FROM `system` WHERE `NO` = 1');
 if($canLogin != 'Y'){
     Json::die([
         'result'=>false,

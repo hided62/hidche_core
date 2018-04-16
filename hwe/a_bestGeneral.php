@@ -6,6 +6,8 @@ include "func.php";
 
 $btn = Util::getReq('btn');
 
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -55,13 +57,14 @@ if ($con >= 2) {
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
 <?php
 if (isset($btn) && $btn == "NPC 보기") {
+    //FIXME: query가 너무 적나라.
     $sel = "npc>=2";
 } else {
     $sel = "npc<2";
 }
 
-$nationName = [];
-$nationColor = [];
+$nationName = ['재야'];
+$nationColor = ['#000000'];
 foreach (getAllNationStaticInfo() as $nation) {
     $nationName[$nation['nation']] = $nation['name'];
     $nationColor[$nation['nation']] = $nation['color'];
@@ -134,9 +137,9 @@ for ($i=0; $i < 21; $i++) {
         if ($i != 2) {
             if (isset($gen)) {
                 $name[$k] = $gen['name'];
-                $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
+                $nation[$k] = $nationName[$gen['nation']];
                 $data[$k] = $gen['data'];
-                $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
+                $color[$k] = $nationColor[$gen['nation']];
                 $pic[$k] = $gen['picture'];
             } else {
                 $name[$k] = "-";
@@ -163,7 +166,7 @@ for ($i=0; $i < 21; $i++) {
             echo "<td align=center>&nbsp;</td>";
         } else {
             $imageTemp = GetImageURL($gen['imgsvr']);
-            echo "<td align=center><img src={$imageTemp}/{$pic[$k]}></img></td>";
+            echo "<td align=center><img width='64' height='64' src={$imageTemp}/{$pic[$k]}></td>";
         }
     }
 
@@ -245,8 +248,8 @@ for ($i=0; $i < 4; $i++) {
         $gen = MYDB_fetch_array($result);
         if (isset($gen)) {
             $name[$k] = $gen['name'];
-            $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
-            $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
+            $nation[$k] = $nationName[$gen['nation']];
+            $color[$k] = $nationColor[$gen['nation']];
             $pic[$k] = $gen['picture'];
         } else {
             $name[$k] = "미발견";
@@ -264,7 +267,7 @@ for ($i=0; $i < 4; $i++) {
             echo "<td align=center>&nbsp;</td>";
         } else {
             $imageTemp = GetImageURL($gen['imgsvr']??0);
-            echo "<td align=center><img src={$imageTemp}/{$pic[$k]}></img></td>";
+            echo "<td align=center><img width='64' height='64' src={$imageTemp}/{$pic[$k]}></img></td>";
         }
     }
 
@@ -297,8 +300,8 @@ for ($i=0; $i < 4; $i++) {
         $gen = MYDB_fetch_array($result);
         if (isset($gen)) {
             $name[$k] = $gen['name'];
-            $nation[$k] = $gen['nation'] == 0 ? "재야" : $nationName[$gen['nation']];
-            $color[$k] = $gen['nation'] == 0 ? "#FFFFFF" : $nationColor[$gen['nation']];
+            $nation[$k] = $nationName[$gen['nation']];
+            $color[$k] = $nationColor[$gen['nation']];
             $pic[$k] = $gen['picture'];
         } else {
             $name[$k] = "미발견";
@@ -316,7 +319,7 @@ for ($i=0; $i < 4; $i++) {
             echo "<td align=center>&nbsp;</td>";
         } else {
             $imageTemp = GetImageURL($gen['imgsvr']??0);
-            echo "<td align=center><img src={$imageTemp}/{$pic[$k]}></img></td>";
+            echo "<td align=center><img width='64' height='64' src={$imageTemp}/{$pic[$k]}></img></td>";
         }
     }
 

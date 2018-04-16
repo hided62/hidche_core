@@ -3,6 +3,11 @@ namespace sammo;
 
 class ScoutMessage extends Message{
 
+    const ACCEPTED = 1;
+    const DECLINED = -1;
+    const INVALID = 0;
+    protected $validScout = true;
+
     public function __construct(
         string $msgType,
         MessageTarget $src,
@@ -16,12 +21,144 @@ class ScoutMessage extends Message{
         if ($msgType !== self::MSGTYPE_PRIVATE){
             throw new \InvalidArgumentException('DiplomaticMessage msgType');
         }
-        parent::__construct(...func_get_args());
 
-        //TODO: 누가, 누구에게 보낸 건지 파싱
+        if(Util::array_get($msgOption['action']) !== 'scout'){
+            throw new \InvalidArgumentException('Action !== scout');
+        }
+
+        parent::__construct(...func_get_args());
+        
+        if(Util::array_get($msgOption['used'])){
+            $this->validScout = false;
+        }
+
+        if($this->validUntil <= new DateTime()){
+            $this->validScout = false;
+        }
     }
 
-    public static function generateScoutMessage(int $srcGeneralID, int $destGeneralID, &$reason = null, \DateTime $date = null): Message{
+    protected function checkScoutMessageValidation(int $receiverID){
+        if(!$this->validScout){
+            return [self::INVALID, '유효하지 않은 등용장입니다.'];
+        }
+        if($this->mailbox !== $this->dest->generalID){
+            return [self::INVALID, '송신자가 등용장을 처리할 수 없습니다.'];
+        }
+
+        if($this->mailbox !== $receiverID){
+            return [self::INVALID, '올바른 수신자가 아닙니다.'];
+        }
+
+        return [self::ACCEPTED, ''];
+    }
+
+    /**
+     * @return int 수행 결과 반환, ACCEPTED(등용장 소모), DECLINED(등용장 소모), INVALID 중 반환
+     */
+    public function agreeMessage(int $receiverID):int{
+        //NOTE: 올바른 유저가 agreeMessage() 호출을 한건지는 외부에서 체크 필요(Session->userID 등)
+
+        if(!$this->id){
+            throw \RuntimeException('전송되지 않은 메시지에 수락 진행 중');
+        }
+
+        list($result, $reason) = $this->checkScoutMessageValidation($receiverID);
+
+        if($result !== self::ACCEPTED){
+            pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} 등용 수락 불가."]);
+            if($result === self::DECLINED){
+                $this->_declineMessage();
+            }
+            return $result;
+        }
+
+        $helper = new Engine\Personnel($this->src->nationID);
+
+        list($result, $reason) = $helper->scoutGeneral($receiverID);
+
+        if($result !== self::ACCEPTED){
+            pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} 등용 수락 불가."]);
+            if($result === self::DECLINED){
+                $this->_declineMessage();
+            }
+            return $result;
+        }
+
+        //메시지 비 활성화
+        $this->msgOption['used'] = true;
+        $this->invalidate();
+        $this->validScout = false;
+
+        pushGenLog(
+            ['no'=>$this->dest->generalID],
+            ["<C>●</><D>{$this->src->nationName}</>(으)로 망명하여 수도로 이동합니다."]);
+        pushGenLog(
+            ['no'=>$this->src->generalID], 
+            ["<C>●</><Y>{$this->dest->generalName}</> 등용에 성공했습니다."]
+        );
+        pushGeneralPublicRecord(
+            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(으)로 <S>망명</>하였습니다."], 
+            $helper->year, 
+            $helper->month
+        );
+
+        $newMsg = new Message(
+            self::MSGTYPE_PRIVATE, 
+            $this->src, 
+            $this->dest, 
+            "{$scoutNation['name']}(으)로 등용 제의 수락",
+            new \DateTime(),
+            new \DateTime('9999-12-31'),
+            Json::encode([
+                'delete'=>$this->id
+            ])
+        );
+        $newMsg->send(true);
+
+        return self::ACCEPTED;
+    }
+
+    protected function _declineMessage(){
+        $this->msgOption['used'] = true;
+        $this->invalidate();
+        $this->validScout = false;
+
+        $newMsg = new Message(
+            self::MSGTYPE_PRIVATE, 
+            $this->src, 
+            $this->dest, 
+            "{$scoutNation['name']}(으)로 등용 제의 거부",
+            new \DateTime(),
+            new \DateTime('9999-12-31'),
+            Json::encode([
+                'delete'=>$this->id
+            ])
+        );
+        $newMsg->send(true);
+
+        return self::DECLINED;
+    }
+
+    public function declineMessage(int $receiverID):int{
+        if(!$this->id){
+            throw \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
+        }
+
+        list($result, $reason) = $this->checkScoutMessageValidation($receiverID);
+
+        if($result === self::INVALID){
+            pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} 등용 취소 불가."]);
+            return $result;
+        }
+
+        pushGenLog(['no'=>$receiverID], "<C>●</><D>{$this->src->nationName}</>(으)로 망명을 거부했습니다.");
+        pushGenLog(['no'=>$this->src->generalID], "<C>●</><Y>{$this->dest->generalName}</>(이)가 등용을 거부했습니다.");
+        $this->_declineMessage();        
+
+        return self::DECLINED;
+    }
+
+    public static function buildScoutMessage(int $srcGeneralID, int $destGeneralID, &$reason = null, \DateTime $date = null): Message{
         if($srcGeneralID == $destGeneralID){
             if($reason !== null){
                 $reason = '같은 장수에게 등용장을 보낼 수 없습니다';
@@ -30,10 +167,10 @@ class ScoutMessage extends Message{
         }
 
         $db = DB::db();
-        $srcGeneral = $db->queryFirstRow('SELECT nation FROM nation WHERE `no`=%i', $srcGeneralID);
-        $destGeneral = $db->queryFirstRow('SELECT nation, `level` FROM nation WHERE `no`=%i', $destGeneralID);
+        $srcGeneral = $db->queryFirstRow('SELECT `name`, nation FROM nation WHERE `no`=%i', $srcGeneralID);
+        $destGeneral = $db->queryFirstRow('SELECT `name`, nation, `level` FROM nation WHERE `no`=%i', $destGeneralID);
         if($date === null){
-            $date = new DateTime();
+            $date = new \DateTime();
         }
 
         if($destGeneral['level'] == 12){
@@ -62,6 +199,7 @@ class ScoutMessage extends Message{
 
         $src = new MessageTarget(
             $srcGeneralID, 
+            $srcGeneral['name'],
             $srcGeneral['nation'], 
             $srcNationInfo['name'], 
             $srcNationInfo['color']
@@ -69,9 +207,10 @@ class ScoutMessage extends Message{
 
         $dest = new MessageTarget(
             $destGeneralID, 
+            $destGeneral['name'],
             $destGeneral['nation'],
-            Util::array_get($srcNationInfo['name'], ''), 
-            Util::array_get($srcNationInfo['color'], '')
+            $destNationInfo['name'], 
+            $destNationInfo['color']
         );
 
         $msg = "{$src->nationName}(으)로 망명 권유 서신";
@@ -83,9 +222,4 @@ class ScoutMessage extends Message{
 
         return new ScoutMessage(Message::MSGTYPE_PRIVATE, $src, $dest, $msg, $date, $validUntil, $msgOption);
     }
-
-    public function send(){
-        $this->sendToReceiver();
-    }
-
 }

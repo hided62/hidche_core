@@ -21,7 +21,7 @@ $face = (int)$_POST['face'];
 $rootDB = RootDB::db();
 
 //회원 테이블에서 정보확인
-$member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name` FROM MEMBER WHERE no=%i', $userID);
+$member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name` FROM member WHERE no=%i', $userID);
 
 if(!$member) {
     MessageBox("잘못된 접근입니다!!!");
@@ -50,7 +50,7 @@ list(
     $npcmode
 ) = $db->queryFirstList('SELECT year,month,maxgeneral,turnterm,genius,npcmode from game limit 1');
 
-$gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE noc<2');
+$gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
 $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', $userID);
 
 if($npcmode != 1) {
@@ -139,5 +139,6 @@ $rootDB->insert('member_log', [
 ?>
 <script>
     window.alert('정상적으로 회원 가입되었습니다. 장수명 : <?=$npc['name']?>');
-</script>");
-<script>window.open('../i_other/help.php');</script>
+window.open('../i_other/help.php');
+location.href = './';
+</script>

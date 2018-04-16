@@ -3,6 +3,14 @@ namespace sammo;
 
 include "lib.php";
 include "func.php";
+
+$type = Util::getReq('type', 'int', 10);
+if ($type <= 0 || $type > 12) {
+    $type = 10;
+}
+
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -21,9 +29,6 @@ if ($me['level'] == 0) {
     exit();
 }
 
-if ($type == 0) {
-    $type = 10;
-}
 $sel = [$type => "selected"];
 
 ?>
@@ -66,19 +71,21 @@ $me = MYDB_fetch_array($result);
 
 $nation = getNationStaticInfo($me['nation']);  //국가정보
 
+$query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}'";
+
 switch ($type) {
-    case  1: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}'"; break;
-    case  2: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by pop desc"; break;
-    case  3: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by poprate desc"; break;
-    case  4: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by rate desc"; break;
-    case  5: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by agri desc"; break;
-    case  6: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by comm desc"; break;
-    case  7: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by secu desc"; break;
-    case  8: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by def desc"; break;
-    case  9: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by wall desc"; break;
-    case 10: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by trade desc"; break;
-    case 11: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by region,level desc"; break;
-    case 12: $query = "select *,pop/pop2 as poprate from city where nation='{$me['nation']}' order by level desc, region"; break;
+    case  1: break;
+    case  2: $query .= " order by pop desc"; break;
+    case  3: $query .= " order by poprate desc"; break;
+    case  4: $query .= " order by rate desc"; break;
+    case  5: $query .= " order by agri desc"; break;
+    case  6: $query .= " order by comm desc"; break;
+    case  7: $query .= " order by secu desc"; break;
+    case  8: $query .= " order by def desc"; break;
+    case  9: $query .= " order by wall desc"; break;
+    case 10: $query .= " order by trade desc"; break;
+    case 11: $query .= " order by region,level desc"; break;
+    case 12: $query .= " order by level desc, region"; break;
 }
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $citycount = MYDB_num_rows($cityresult);

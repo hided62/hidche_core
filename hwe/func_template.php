@@ -108,6 +108,9 @@ function commandButton() {
     if($me['level'] >= 2){
         $showSecret = true;
     }
+    else if($me['level']== 0){
+        $showSecret = false;
+    }
     else if($me['belong'] >= $nation['secretlimit']){
         $showSecret = true;
     }

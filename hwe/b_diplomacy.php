@@ -25,7 +25,6 @@ $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),""
 $nationcount = MYDB_num_rows($result);
 $nationnum = [];
 $nationname = [];
-$nationcolor = [];
 
 $nationStr = "";
 $powerStr = "";
@@ -41,7 +40,6 @@ for($i=0; $i < $nationcount; $i++) {
 
     $nationnum[] = $nation['nation'];
     $nationname[$nation['nation']] = $nation['name'];
-    $nationcolor[$nation['nation']] = $nation['color'];
 
     $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</font><br>";
     $powerStr .= "국력 {$nation['power']}<br>";
@@ -56,7 +54,7 @@ foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE confl
     $rawConflict
 ))
 {
-    $conflict = Json::decode($city['conflict']);
+    $conflict = Json::decode($rawConflict);
     if (count($conflict)<2) {
         continue;
     }
@@ -64,9 +62,10 @@ foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE confl
     $sum = array_sum($conflict);
 
     foreach ($conflict as $nationID=>$killnum) {
-        $conflict['percent'] = round(100*$killnum / $sum, 1);
-        $conflict['name'] = $nationname[$nationID];
-        $conflict['color'] = $nationcolor[$nationID];
+        $conflict[$nationID] = ['killnum'=>$killnum];
+        $conflict[$nationID]['percent'] = round(100*$killnum / $sum, 1);
+        $conflict[$nationID]['name'] = $nationname[$nationID];
+        $conflict[$nationID]['color'] = getNationStaticInfo($nationID)['color'];
     }
 
     $realConflict[] = [$cityID, $cityName, $conflict];
@@ -120,7 +119,7 @@ if($nationcount != 0) {
 
 for($i=0; $i < $nationcount; $i++) {
     echo "
-        <td align=center width={$width} style=background-color:{$nationcolor[$nationnum[$i]]};color:".newColor($nationcolor[$nationnum[$i]]).";>{$nationname[$nationnum[$i]]}</td>";
+        <td align=center width={$width} style=background-color:".getNationStaticInfo($nationnum[$i])['color'].";color:".newColor(getNationStaticInfo($nationnum[$i])['color']).";>{$nationname[$nationnum[$i]]}</td>";
 }
 echo "
     </tr>";
@@ -137,7 +136,7 @@ for($i=0; $i < $nationcount; $i++) {
     }
     echo "
     <tr>
-        <td align=center style=background-color:{$nationcolor[$nationnum[$i]]};color:".newColor($nationcolor[$nationnum[$i]]).";>{$nationname[$nationnum[$i]]}</td>";
+        <td align=center style=background-color:".getNationStaticInfo($nationnum[$i])['color'].";color:".newColor(getNationStaticInfo($nationnum[$i])['color']).";>{$nationname[$nationnum[$i]]}</td>";
 
     for($k=0; $k < $nationcount; $k++) {
         if($i == $k) {
@@ -202,7 +201,7 @@ for($i=0; $i < $nationcount; $i++) {
                 cellpadding=0
                 bordercolordark='gray'
                 bordercolorlight='black'
-                style='font-size:13px;word-break:break-all;'
+                style='font-size:13px;word-break:break-all;width:100%;'
                 class='bg0'
             >
             <?php foreach($conflict as $item): ?>
@@ -212,12 +211,10 @@ for($i=0; $i < $nationcount; $i++) {
                         align=right 
                         style='color:<?=newColor($item['color'])?>;background-color:<?=$item['color']?>;'
                     ><?=$item['name']?>&nbsp;</td>
-                    <td width=48 align=right><?=$item['percent']?>%&nbsp;</td>
-                    <td 
-                        width='<?=$item['percent']?>%'
-                        style='background-color:<?=$item['color']?>;'
-                    ></td>
-                    <td width=*></td>
+                    <td width=48 align=right><?=(float)$item['percent']?> %&nbsp;</td>
+                    <td width=*><div
+                        style='display:inline-block;width:<?=$item['percent']?>%;background-color:<?=$item['color']?>;'
+                    >&nbsp;</div></td>
                 </tr>
             <?php endforeach; ?>
             </table>

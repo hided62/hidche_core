@@ -58,7 +58,7 @@ $nation = MYDB_fetch_array($result);
 
 $lv = getNationChiefLevel($nation['level']);
 $turn = [];
-$gen = [];
+$gen = [[],[],[],[],[],[],[],[],[],[],[],[]];
 for($i=12; $i >= $lv; $i--) {
     $turn[$i] = getCoreTurn($nation, $i);
 
@@ -105,7 +105,6 @@ for($i=12; $i >= $lv; $i--) {
     $turntime[$i] = substr($gen[$i]['turntime'], 14);
 }
 
-
 //FIXME: 각 칸을 div로 놓으면 네개씩 출력하는 삽질이 필요없다.
 
 for($k=0; $k < 2; $k++) {
@@ -118,22 +117,22 @@ for($k=0; $k < 2; $k++) {
         ];
     }
 
-    if    ($gen[$l4]['npc'] >= 2) { $gen[$l4]['name'] = "<font color=cyan>".$gen[$l4]['name']."</font>"; }
-    elseif($gen[$l4]['npc'] == 1) { $gen[$l4]['name'] = "<font color=skyblue>".$gen[$l4]['name']."</font>"; }
-    if    ($gen[$l3]['npc'] >= 2) { $gen[$l3]['name'] = "<font color=cyan>".$gen[$l3]['name']."</font>"; }
-    elseif($gen[$l3]['npc'] == 1) { $gen[$l3]['name'] = "<font color=skyblue>".$gen[$l3]['name']."</font>"; }
-    if    ($gen[$l2]['npc'] >= 2) { $gen[$l2]['name'] = "<font color=cyan>".$gen[$l2]['name']."</font>"; }
-    elseif($gen[$l2]['npc'] == 1) { $gen[$l2]['name'] = "<font color=skyblue>".$gen[$l2]['name']."</font>"; }
-    if    ($gen[$l1]['npc'] >= 2) { $gen[$l1]['name'] = "<font color=cyan>".$gen[$l1]['name']."</font>"; }
-    elseif($gen[$l1]['npc'] == 1) { $gen[$l1]['name'] = "<font color=skyblue>".$gen[$l1]['name']."</font>"; }
+    if    ($gen[$l4]['npc'] >= 2) { $gen[$l4]['name'] = "<font color=cyan>".($gen[$l4]['name']??'')."</font>"; }
+    elseif($gen[$l4]['npc'] == 1) { $gen[$l4]['name'] = "<font color=skyblue>".($gen[$l4]['name']??'')."</font>"; }
+    if    ($gen[$l3]['npc'] >= 2) { $gen[$l3]['name'] = "<font color=cyan>".($gen[$l3]['name']??'')."</font>"; }
+    elseif($gen[$l3]['npc'] == 1) { $gen[$l3]['name'] = "<font color=skyblue>".($gen[$l3]['name']??'')."</font>"; }
+    if    ($gen[$l2]['npc'] >= 2) { $gen[$l2]['name'] = "<font color=cyan>".($gen[$l2]['name']??'')."</font>"; }
+    elseif($gen[$l2]['npc'] == 1) { $gen[$l2]['name'] = "<font color=skyblue>".($gen[$l2]['name']??'')."</font>"; }
+    if    ($gen[$l1]['npc'] >= 2) { $gen[$l1]['name'] = "<font color=cyan>".($gen[$l1]['name']??'')."</font>"; }
+    elseif($gen[$l1]['npc'] == 1) { $gen[$l1]['name'] = "<font color=skyblue>".($gen[$l1]['name']??'')."</font>"; }
 
     echo "
     <tr>
         <td align=center id=bg1>.</td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l4, $nation['level'])." : {$gen[$l4]['name']}</b></td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l3, $nation['level'])." : {$gen[$l3]['name']}</b></td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l2, $nation['level'])." : {$gen[$l2]['name']}</b></td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l1, $nation['level'])." : {$gen[$l1]['name']}</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l4, $nation['level'])." : ".($gen[$l4]['name']??'')."</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l3, $nation['level'])." : ".($gen[$l3]['name']??'')."</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l2, $nation['level'])." : ".($gen[$l2]['name']??'')."</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l1, $nation['level'])." : ".($gen[$l1]['name']??'')."</b></td>
         <td align=center id=bg1>.</td>
     </tr>
     ";
@@ -144,14 +143,14 @@ for($k=0; $k < 2; $k++) {
         $turndate[$l2] = substr($totaldate[$l2]??'', 11, 5);
         $turndate[$l1] = substr($totaldate[$l1]??'', 11, 5);
         $j = $i + 1;
-        $td4 = $turndate[$l4] ?: "-";
-        $td3 = $turndate[$l3] ?: "-";
-        $td2 = $turndate[$l2] ?: "-";
-        $td1 = $turndate[$l1] ?: "-";
-        $tn4 = $turn[$l4][$i] ?? "-";
-        $tn3 = $turn[$l3][$i] ?? "-";
-        $tn2 = $turn[$l2][$i] ?? "-";
-        $tn1 = $turn[$l1][$i] ?? "-";
+        $td4 = $turndate[$l4]??"-";
+        $td3 = $turndate[$l3]??"-";
+        $td2 = $turndate[$l2]??"-";
+        $td1 = $turndate[$l1]??"-";
+        $tn4 = $turn[$l4][$i]??"-";
+        $tn3 = $turn[$l3][$i]??"-";
+        $tn2 = $turn[$l2][$i]??"-";
+        $tn1 = $turn[$l1][$i]??"-";
         echo "
     <tr>
         <td width=28  align=center id=bg0><b>$j</b></td>
@@ -166,20 +165,20 @@ for($k=0; $k < 2; $k++) {
         <td width=28  align=center id=bg0><b>$j</b></td>
     </tr>
         ";
-        if($totaldate[$l4] != "") { $totaldate[$l4] = addTurn($totaldate[$l4], $admin['turnterm']); }
-        if($totaldate[$l3] != "") { $totaldate[$l3] = addTurn($totaldate[$l3], $admin['turnterm']); }
-        if($totaldate[$l2] != "") { $totaldate[$l2] = addTurn($totaldate[$l2], $admin['turnterm']); }
-        if($totaldate[$l1] != "") { $totaldate[$l1] = addTurn($totaldate[$l1], $admin['turnterm']); }
+        if($totaldate[$l4]??'') { $totaldate[$l4] = addTurn($totaldate[$l4], $admin['turnterm']); }
+        if($totaldate[$l3]??'') { $totaldate[$l3] = addTurn($totaldate[$l3], $admin['turnterm']); }
+        if($totaldate[$l2]??'') { $totaldate[$l2] = addTurn($totaldate[$l2], $admin['turnterm']); }
+        if($totaldate[$l1]??'') { $totaldate[$l1] = addTurn($totaldate[$l1], $admin['turnterm']); }
     }
     if($k == 0) {
         echo "<form action=processing.php method=post><tr><td colspan=5 align=right>";
         echo CoreTurnTable();
         echo "</td><td colspan=5>
-        <input type={$btn2} style=background-color:".GameConst::$basecolor2.";color:white;width:58;font-size:13px; value='미루기▼' onclick='turn(0)'>
-        <input type={$btn2} style=background-color:".GameConst::$basecolor2.";color:white;width:58;font-size:13px; value='▲당기기' onclick='turn(1)'>
+        <input type={$btn2} style=background-color:".GameConst::$basecolor2.";color:white;width:58px;font-size:13px; value='미루기▼' onclick='turn(0)'>
+        <input type={$btn2} style=background-color:".GameConst::$basecolor2.";color:white;width:58px;font-size:13px; value='▲당기기' onclick='turn(1)'>
         <br>";
         CoreCommandTable();
-        echo "<input type={$btn} style=background-color:".GameConst::$basecolor2.";color:white;width:55;font-size:13px; value='실 행'></td></tr></form>";
+        echo "<input type={$btn} style=background-color:".GameConst::$basecolor2.";color:white;width:55px;font-size:13px; value='실 행'></td></tr></form>";
     }
 }
 

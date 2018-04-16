@@ -18,7 +18,7 @@ $server = Util::getReq('server', 'string', '');
 
 $db = RootDB::db();
 $userGrade = $session->userGrade;
-session_write_close();
+$session->setReadOnly();
 
 if($userGrade < 6) {
     Json::die([
@@ -56,7 +56,7 @@ function doAdminPost($action, $notice, $server){
     $response = ['result' => 'FAIL'];
 
     if($action == 'notice') {
-        RootDB::db()->update('SYSTEM', ['NOTICE'=>$notice], true);
+        RootDB::db()->update('system', ['NOTICE'=>$notice], true);
         $response['result'] = 'SUCCESS';
         return $response;
     } 

@@ -188,7 +188,7 @@ function getGenDex($general, $type) {
     return $general["dex{$type}"];
 }
 
-function addGenDex($no, $type, $exp) {
+function addGenDex($no, $atmos, $train, $type, $exp) {
     $db = DB::db();
     $connect=$db->get();
 
@@ -196,6 +196,7 @@ function addGenDex($no, $type, $exp) {
     $dexType = "dex{$type}";
     if($type == 30) { $exp = Util::round($exp * 0.90); }     //귀병은 90%효율
     elseif($type == 40) { $exp = Util::round($exp * 0.90); } //차병은 90%효율
+    $exp = Util::round($exp * ($atmos+$train) / 200); // 사기 + 훈련 / 200
 
     $query = "update general set {$dexType}={$dexType}+{$exp} where no='$no'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -412,7 +413,7 @@ function preUpdateMonthly() {
     //건국제한, 전략제한, 외교제한-1
     $query = "update general set makelimit=makelimit-1 where makelimit>'0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update nation set tricklimit=tricklimit-1 where tricklimit>'0'";
+    $query = "update nation set sabotagelimit=sabotagelimit-1 where sabotagelimit>'0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $query = "update nation set surlimit=surlimit-1 where surlimit>'0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

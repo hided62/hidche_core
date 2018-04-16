@@ -81,18 +81,18 @@ echo "
 ";
 for($i=12; $i >= $lv; $i-=2) {
     $i1 = $i;   $i2 = $i - 1;
-    $imageTemp1 = GetImageURL($level[$i1]['imgsvr']);
-    $imageTemp2 = GetImageURL($level[$i2]['imgsvr']);
-    echo "
+    $imageTemp1 = GetImageURL($level[$i1]['imgsvr']??0);
+    $imageTemp2 = GetImageURL($level[$i2]['imgsvr']??0);
+    ?>
     <tr>
-        <td width=98 align=center id=bg1><font size=4>".getLevel($i1, $nation['level'])."</font></td>
-        <td width=64 height=64 background={$imageTemp1}/{$level[$i1]['picture']}>&nbsp;</td>
-        <td width=332><font size=4>";echo $level[$i1]['name']==''?"-":$level[$i1]['name']; echo " ({$level[$i1]['belong']}년)</font></td>
-        <td width=98 align=center id=bg1><font size=4>".getLevel($i2, $nation['level'])."</font></td>
-        <td width=64 height=64 background={$imageTemp2}/{$level[$i2]['picture']}>&nbsp;</td>
-        <td width=332><font size=4>";echo $level[$i2]['name']==''?"-":$level[$i2]['name']; echo " ({$level[$i2]['belong']}년)</font></td>
+        <td width=98 align=center id=bg1><font size=4><?=getLevel($i1, $nation['level'])?></font></td>
+        <td width=64 height=64 style='background:no-repeat center url("<?=$imageTemp1?>/<?=$level[$i1]['picture']??'default.jpg'?>");background-size:64px;'></td>
+        <td width=332><font size=4><?=$level[$i1]['name']??'-'?>(<?=$level[$i1]['belong']??'-'?>년)</font></td>
+        <td width=98 align=center id=bg1><font size=4><?=getLevel($i2, $nation['level'])?></font></td>
+        <td width=64 height=64 style='background:no-repeat center url("<?=$imageTemp2?>/<?=$level[$i2]['picture']??'default.jpg'?>");background-size:64px;'></td>
+        <td width=332><font size=4><?=$level[$i2]['name']??'-'?>(<?=$level[$i2]['belong']??'-'?>년)</font></td>
     </tr>
-    ";
+    <?php
 }
 
 echo "

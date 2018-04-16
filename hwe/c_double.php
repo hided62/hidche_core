@@ -14,6 +14,8 @@ $double = Util::getReq('double', 'int', 0);
 $third = Util::getReq('third', 'int', 0);
 $fourth = Util::getReq('fourth', 'int', 0);
 
+extractMissingPostToGlobals();
+
 if(!$turn){
     $turn = [0];
 }
@@ -33,9 +35,6 @@ if($command < 0) { $command = 0; }
 if($double < 0) { $double = 0; }
 if($third < 0)  { $third = 0; }
 if($fourth < 0) { $fourth = 0; }
-$double = Util::round($double);
-$third = Util::round($third);
-$fourth = Util::round($fourth);
 if($command > 99) { $command = 0; }
 if($double > 9999) { $double = 9999; }
 if($third > 9999)  { $third = 9999; }

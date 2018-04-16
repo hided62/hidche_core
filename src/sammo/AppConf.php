@@ -59,11 +59,19 @@ class AppConf
         return DB::db();
     }
 
-    public static function getUserIconPathFS() : string{
-        return ROOT.'/'.static::$userIconPath;
+    public static function getUserIconPathFS(string $filepath='') : string{
+        $path = ROOT.'/'.static::$userIconPath; 
+        if($filepath){
+            $path .= '/'.$filepath;
+        }
+        return $path;
     }
 
-    public static function getUserIconPathWeb() : string{
-        return ServConfig::$serverWebPath.'/'.static::$userIconPath;
+    public static function getUserIconPathWeb(string $filepath='') : string{
+        $path = ServConfig::$serverWebPath.'/'.static::$userIconPath;
+        if($filepath){
+            $path .= '/'.$filepath;
+        }
+        return $path;
     }
 }

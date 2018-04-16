@@ -32,7 +32,7 @@ return [
         'hwe/func_npc.php',
         'hwe/func_process_chief.php',
         'hwe/func_process_personnel.php',
-        'hwe/func_process_trick.php',
+        'hwe/func_process_sabotage.php',
         'hwe/func_process.php',
         'hwe/func_string.php',
         'hwe/func_template.php',

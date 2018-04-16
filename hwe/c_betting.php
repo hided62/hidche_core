@@ -7,6 +7,7 @@ include "func.php";
 
 // $btn0~15, $gold0~15
 
+//FIXME: 으악!!!!! 왜?! idx를 지정하고 gold를 지정하라고!
 $betTarget = -1;
 $betGold = -1;
 for($i=0;$i<16;$i++){
@@ -20,6 +21,11 @@ for($i=0;$i<16;$i++){
         break;
     }
 }
+
+if($betGold == -1){
+    extractMissingPostToGlobals();
+}
+
 
 if($betTarget < 0 || $betGold < 10 || $betGold > 1000){
     header('Location: b_betting.php');

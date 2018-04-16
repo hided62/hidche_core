@@ -6,14 +6,17 @@ include "func.php";
 
 $type = Util::getReq('type', 'int', 1);
 
+extractMissingPostToGlobals();
+
+if($type <= 0 || $type > 8){
+    $type = 1;
+}
+
 $db = DB::db();
 $connect=$db->get();
 
 increaseRefresh("빙의일람", 2);
 
-if($type == 0) {
-    $type = 1;
-}
 $sel = [];
 $sel[$type] = "selected";
 
@@ -49,11 +52,12 @@ $sel[$type] = "selected";
 <?php
 $nationname = [];
 $nationname[0] = "-";
-foreach(getAllNationStaticInfo() as $nation){
+foreach (getAllNationStaticInfo() as $nation) {
     $nationname[$nation['nation']] = $nation['name'];
 }
 
-switch($type) {
+switch ($type) {//FIXME: $query 처리 부실
+    default:
     case  1: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by binary(name)"; break;
     case  2: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by nation"; break;
     case  3: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by sum desc"; break;
@@ -63,7 +67,7 @@ switch($type) {
     case  7: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by experience"; break;
     case  8: $query = "select npc,nation,name,name2,special,special2,personal,leader,power,intel,leader+power+intel as sum,explevel,experience,dedication from general where npc=1 order by dedication"; break;
 }
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $gencount = MYDB_num_rows($genresult);
 
 echo"
@@ -82,13 +86,17 @@ echo"
         <td width=78  align=center id=bg1>명성</td>
         <td width=78  align=center id=bg1>계급</td>
     </tr>";
-for($j=0; $j < $gencount; $j++) {
+for ($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
     $nation = $nationname[$general['nation']];
 
-    if($general['npc'] >= 2) { $name = "<font color=cyan>{$general['name']}</font>"; }
-    elseif($general['npc'] == 1) { $name = "<font color=skyblue>{$general['name']}</font>"; }
-    else { $name =  "{$general['name']}"; }
+    if ($general['npc'] >= 2) {
+        $name = "<font color=cyan>{$general['name']}</font>";
+    } elseif ($general['npc'] == 1) {
+        $name = "<font color=skyblue>{$general['name']}</font>";
+    } else {
+        $name =  "{$general['name']}";
+    }
 
     echo "
     <tr>

@@ -4,7 +4,7 @@ namespace sammo;
 require_once 'process_war.php';
 require_once 'func_gamerule.php';
 require_once 'func_process.php';
-require_once 'func_process_trick.php';
+require_once 'func_process_sabotage.php';
 require_once 'func_process_chief.php';
 require_once 'func_process_personnel.php';
 require_once 'func_npc.php';
@@ -18,13 +18,12 @@ require_once 'func_time_event.php';
 require_once('func_template.php');
 require_once('func_message.php');
 require_once('func_map.php');
-require_once('func_diplomacy.php');
 require_once('func_command.php');
 
 /**
  * nationID를 이용하여 국가의 '어지간해선' 변경되지 않는 정보(이름, 색, 성향, 규모, 수도)를 반환해줌
  * 
- * @param int|null $nationID 국가 코드, -1인 경우 전체, null인 경우 수행하지 않음
+ * @param int|null $nationID 국가 코드, -1인 경우 전체, null인 경우 수행하지 않음. 0인 경우에는 재야임
  * @param bool $forceRefresh 강제 갱신 여부
  * 
  * @return array|null nationID에 해당하는 국가가 있을 경우 array 반환. 그외의 경우 null
@@ -32,13 +31,24 @@ require_once('func_command.php');
 function getNationStaticInfo($nationID, $forceRefresh=false)
 {
     static $nationList = null;
+    static $freeNation = [
+        'nation'=>0,
+        'name'=>'재야',
+        'color'=>'#000000',
+        'type'=>0,
+        'level'=>0,
+        'capital'=>0
+    ];
 
     if ($forceRefresh) {
         $nationList = null;
     }
 
-    if($nationID === null || $nationID == 0){
-        return null;
+    if ($nationID === null) {
+       return null;
+    }
+    if($nationID === 0){
+        return $freeNation;
     }
 
     if($nationList === null){
@@ -67,11 +77,11 @@ function getAllNationStaticInfo(){
     return getNationStaticInfo(-1);
 }
 
-function GetImageURL($imgsvr) {
+function GetImageURL($imgsvr, $filepath='') {
     if($imgsvr == 0) {
-        return ServConfig::$sharedIconPath;
+        return ServConfig::getSharedIconPath($filepath);
     } else {
-        return AppConf::getUserIconPathWeb();
+        return AppConf::getUserIconPathWeb($filepath);
     }
 }
 
@@ -158,10 +168,14 @@ function cityInfo() {
         $tradeStr = $city['trade'] . "%";
     }
 
+    if(!$nation){
+        $nation = getNationStaticInfo(0);
+    }
+
     if($nation['color'] == "" ) { $nation['color'] = "#000000"; }
     echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
-    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
-    <tr><td colspan=8 align=center style=height:20;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
+    <tr><td colspan=8 align=center style=height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
+    <tr><td colspan=8 align=center style=height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
 
     if($city['nation'] == 0) {
         echo "공 백 지";
@@ -255,7 +269,7 @@ function myNationInfo() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,tricklimit,surlimit,tech,totaltech,level,type from nation where nation='{$me['nation']}'";
+    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,sabotagelimit,surlimit,tech,totaltech,level,type from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -335,14 +349,14 @@ function myNationInfo() {
     $nation['tech'] = "$techCall / {$nation['tech']}";
     
     if($me['nation']==0){
-        $nation['tricklimit'] = "<font color=white>해당 없음</font>";
+        $nation['sabotagelimit'] = "<font color=white>해당 없음</font>";
         $nation['surlimit'] = "<font color=white>해당 없음</font>";
         $nation['scout'] = "<font color=white>해당 없음</font>";
         $nation['war'] = "<font color=white>해당 없음</font>";
         $nation['power'] = "<font color=white>해당 없음</font>";
     } else {
-        if($nation['tricklimit'] != 0) { $nation['tricklimit'] = "<font color=red>{$nation['tricklimit']}턴</font>"; }
-        else { $nation['tricklimit'] = "<font color=limegreen>가 능</font>"; }
+        if($nation['sabotagelimit'] != 0) { $nation['sabotagelimit'] = "<font color=red>{$nation['sabotagelimit']}턴</font>"; }
+        else { $nation['sabotagelimit'] = "<font color=limegreen>가 능</font>"; }
     
         if($nation['surlimit'] != 0) { $nation['surlimit'] = "<font color=red>{$nation['surlimit']}턴</font>"; }
         else { $nation['surlimit'] = "<font color=limegreen>가 능</font>"; }
@@ -373,7 +387,7 @@ function myNationInfo() {
     </tr>
     <tr>
         <td align=center id=bg1><b>전 략</b></td>
-        <td align=center>{$nation['tricklimit']}</td>
+        <td align=center>{$nation['sabotagelimit']}</td>
         <td align=center id=bg1><b>외 교</b></td>
         <td align=center>{$nation['surlimit']}</td>
     </tr>
@@ -479,7 +493,7 @@ function commandTable() {
     $develcostE = Util::round($develcostE);
 
     echo "
-<select name=commandtype size=1 style=width:260px;color:white;background-color:black;font-size:12;>";
+<select name=commandtype size=1 style=width:260px;color:white;background-color:black;font-size:12px;>";
     addCommand("휴 식", 0);
     addCommand("요 양", 50);
     commandGroup("========= 내 정 ==========");
@@ -858,12 +872,12 @@ function generalInfo($no) {
     elseif($general['mode'] == 1) { $general['mode'] = "<font color=limegreen>수비 함(훈사60)</font>"; }
     else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
 
-    $weapImage = ServConfig::$gameImagePath."/weap{$general['crewtype']}.jpg";
+    $weapImage = ServConfig::$gameImagePath."/weap{$general['crewtype']}.png";
     if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr>
-        <td width=64 height=64 align=center rowspan=3 background={$imageTemp}/{$general['picture']}>&nbsp;</td>
+        <td width=64 height=64 align=center rowspan=3 style='background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;'>&nbsp;</td>
         <td align=center colspan=9 height=16 style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
     </tr>
     <tr height=16>
@@ -886,7 +900,7 @@ function generalInfo($no) {
         <td align=center colspan=2><font size=1>$bookname</font></td>
     </tr>
     <tr>
-        <td align=center height=64 rowspan=3 background={$weapImage}>&nbsp;</td>
+        <td align=center height=64 rowspan=3 style='background:no-repeat center url(\"{$weapImage}\");background-size:64px;'></td>
         <td align=center id=bg1><b>자금</b></td>
         <td align=center colspan=2>{$general['gold']}</td>
         <td align=center id=bg1><b>군량</b></td>
@@ -947,8 +961,6 @@ function myInfo2() {
 }
 
 function generalInfo2($no) {
-    global $_dexLimit;
-
     $db = DB::db();
     $connect=$db->get();
 
@@ -974,11 +986,11 @@ function generalInfo2($no) {
             $dedication = getDed($general['dedication'])." ({$general['dedication']})"; break;
     }
 
-    $dex0  = $general['dex0']  / $_dexLimit * 100;
-    $dex10 = $general['dex10'] / $_dexLimit * 100;
-    $dex20 = $general['dex20'] / $_dexLimit * 100;
-    $dex30 = $general['dex30'] / $_dexLimit * 100;
-    $dex40 = $general['dex40'] / $_dexLimit * 100;
+    $dex0  = $general['dex0']  / GameConst::$dexLimit * 100;
+    $dex10 = $general['dex10'] / GameConst::$dexLimit * 100;
+    $dex20 = $general['dex20'] / GameConst::$dexLimit * 100;
+    $dex30 = $general['dex30'] / GameConst::$dexLimit * 100;
+    $dex40 = $general['dex40'] / GameConst::$dexLimit * 100;
 
     if($dex0 > 100) { $dex0 = 100; }
     if($dex10 > 100) { $dex10 = 100; }
@@ -1156,7 +1168,7 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
         <td width=148 align=center id=bg1>$when</td>
     </tr>
     <tr>
-        <td width=64 height=64 valign=top><img src={$imageTemp}/{$picture} width=64 height=64 border=0></td>
+        <td width=64 height=64 valign=top><img width='64' height='64' src={$imageTemp}/{$picture} border=0></td>
         <td width=932 colspan=2>$message[1]</td>
     </tr>";
     for($i=0; $i < $count; $i++) {
@@ -1176,7 +1188,7 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
         <form name=reply_form{$num} method=post action=$board>
         <td width=64 align=center>댓글달기</td>
         <td width=932 colspan=2>
-            <input type=textarea name=reply maxlength=250 style=color:white;background-color:black;width:830;>
+            <input type=textarea name=reply maxlength=250 style=color:white;background-color:black;width:830px;>
             <input type=submit value=댓글달기>
             <input type=hidden name=num value=$num>
         </td>
@@ -1453,13 +1465,13 @@ function checkDelay() {
 function updateOnline() {
     $db = DB::db();
     $connect=$db->get();
-    $nationname = [];
+    $nationname = ["재야"];
 
     //국가별 이름 매핑
     foreach(getAllNationStaticInfo() as $nation) {
         $nationname[$nation['nation']] = $nation['name'];
     }
-    $nationname[0] = "재야";
+
 
     //동접수
     $query = "select no,name,nation from general where lastrefresh > DATE_SUB(NOW(), INTERVAL 5 MINUTE)";
@@ -1708,14 +1720,6 @@ function checkTurn() {
     $query = "update game set turntime='$date'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    // 3턴 전 시간
-    $letterdate = subTurn($date, $admin['turnterm'], 3);
-    //기한 지난 외교 메세지 지움(3개월 유지)
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
-    for($i=0; $i < 5; $i++) {
-        $query = "update nation set dip{$i}='',dip{$i}_who='0',dip{$i}_type='0',dip{$i}_when='' where dip{$i}_when < '$letterdate'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    }
     // 부상 과도 제한
     $query = "update general set injury='80' where injury>'80'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2211,10 +2215,6 @@ function uniqueItem($general, $log, $vote=0) {
 
             $nation = getNationStaticInfo($general['nation']);
 
-            if($nation === null) {
-                $nation = ['name' => "재야"];
-            }
-
             switch($sel) {
             case 0:
                 $log[] = "<C>●</><C>".getWeapName($it)."</>(을)를 습득했습니다!";
@@ -2576,15 +2576,23 @@ function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
     }
 }
 
-function isClose($nation1, $nation2) {
+function isClose(int $nation1, int $nation2, bool $includeNoSupply=true) {
     $db = DB::db();
 
     $nation1Cities = [];
-    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $nation1) as $city){
+
+    if($includeNoSupply){
+        $supplySql = '';
+    }
+    else{
+        $supplySql = 'AND supply = 1';
+    }
+
+    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i %l', $nation1, $supplySql) as $city){
         $nation1Cities[$city] = $city;
     }
 
-    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $nation2) as $city){
+    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i %l', $nation2, $supplySql) as $city){
         foreach(array_keys(CityConst::byID($city)->path) as $adjCity){
             if(key_exists($adjCity, $nation1Cities)){
                 return true;
@@ -2659,7 +2667,7 @@ function CharCritical($rate, $personal) {
     return $rate;
 }
 
-function TrickInjury($city, $type=0) {
+function SabotageInjury($city, $type=0) {
     $db = DB::db();
     $connect=$db->get();
     $log = [];

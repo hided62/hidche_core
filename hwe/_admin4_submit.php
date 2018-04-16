@@ -12,7 +12,9 @@ if($session->userGrade < 5) {
 }
 
 $btn = Util::getReq('btn');
-$genlist = Util::getReq('genlist', 'int');
+$genlist = Util::getReq('genlist', 'array_int');
+
+extractMissingPostToGlobals();
 
 $db = DB::db();
 $connect=$db->get();
@@ -29,21 +31,21 @@ switch($btn) {
         $db->query('update general set block=1,killturn=24 where no IN %li',$genlist);
         //FIXME: subquery로 하는게 더 빠를 듯.
         $uid = $db->queryFirstColumn('select owner from general where no IN %li', $genlist);
-        RootDB::db()->query('update MEMBER set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
+        RootDB::db()->query('update member set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
         break;
     case "2단계 블럭":
         $date = date('Y-m-d H:i:s');
         $db = DB::db();
         $db->query('update general set block=2,killturn=24 where no IN %li',$genlist);
         $uid = $db->queryFirstColumn('select owner from general where no IN %li', $genlist);
-        RootDB::db()->query('update MEMBER set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
+        RootDB::db()->query('update member set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
         break;
     case "3단계 블럭":
         $date = date('Y-m-d H:i:s');
         $db = DB::db();
         $db->query('update general set block=3,killturn=24 where no IN %li',$genlist);
         $uid = $db->queryFirstColumn('select owner from general where no IN %li', $genlist);
-        RootDB::db()->query('update MEMBER set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
+        RootDB::db()->query('update member set block_num=block_num+1,block_date=%s where id IN %ls', $date, $uid);
         break;
     case "무한삭턴":
         DB::db()->query('update general set killturn=8000 where no IN %li',$genlist);

@@ -35,7 +35,7 @@ if(!$userInfo){
     ]);
 }
 
-$canLogin = $RootDB->queryFirstField('SELECT `LOGIN` FROM `SYSTEM` WHERE `NO` = 1');
+$canLogin = $RootDB->queryFirstField('SELECT `LOGIN` FROM `system` WHERE `NO` = 1');
 if($canLogin != 'Y' && $userInfo['grade'] < 5){
     Json::die([
         'result'=>false,

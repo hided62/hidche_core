@@ -29,12 +29,12 @@ function bar($per, $h=7) {
 
     $per = round($per, 1);
     if($per < 1 || $per > 99) { $per = Util::round($per); }
-    $str1 = "<td width={$per}% background=".ServConfig::$gameImagePath."/pb{$h2}.gif></td>";
-    $str2 = "<td width=*% background=".ServConfig::$gameImagePath."/pr{$h2}.gif></td>";
+    $str1 = "<td width='{$per}%' background=".ServConfig::$gameImagePath."/pb{$h2}.gif></td>";
+    $str2 = "<td width='*%' background=".ServConfig::$gameImagePath."/pr{$h2}.gif></td>";
     if($per <= 0) { $str1 = ""; }
     elseif($per >= 100) { $str2 = ""; }
     $str = "
-    <table width=100% height={$h} border={$bd} cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:1;>
+    <table width=100% height={$h} border={$bd} cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black>
         <tr>{$str1}{$str2}</tr>
     </table>";
     return $str;
@@ -51,8 +51,8 @@ function Submit($url, $msg="", $msg2="") {
     echo "a";   // 파폭 버그 때문
     echo "
 <form method=post name=f1 action='{$url}'>
-    <input type=hidden name=msg value='{$msg}'>
-    <input type=hidden name=msg2 value='{$msg2}'>
+    <input type=hidden name=msg value=\"{$msg}\">
+    <input type=hidden name=msg2 value=\"{$msg2}\">
 </form>
 <script>f1.submit();</script>
     ";

@@ -19,6 +19,8 @@ $username = Util::getReq('db_id');
 $password = Util::getReq('db_pw');
 $dbName = Util::getReq('db_name');
 
+extractMissingPostToGlobals();
+
 if(!$host || !$port || !$username || !$password || !$dbName){
     Json::die([
         'result'=>false,

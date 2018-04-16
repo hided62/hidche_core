@@ -8,7 +8,7 @@ use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 $session = Session::getInstance();
 
-$canJoin = RootDB::db()->queryFirstField('SELECT REG FROM `SYSTEM` WHERE `NO` = 1');
+$canJoin = RootDB::db()->queryFirstField('SELECT REG FROM `system` WHERE `NO` = 1');
 if($canJoin != 'Y'){
     Json::die([
         'result'=>false,

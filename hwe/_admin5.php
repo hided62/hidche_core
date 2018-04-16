@@ -7,6 +7,15 @@ include "func.php";
 $type = Util::getReq('type', 'int', 0);
 $type2 = Util::getReq('type2', 'int', 0);
 
+if($type < 0 || $type > 17){
+    $type = 0;
+}
+if($type2 < 0 || $type2 > 6){
+    $type2 = 0;
+}
+
+extractMissingPostToGlobals();
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 
@@ -33,12 +42,6 @@ if($session->userGrade < 5) {
 $db = DB::db();
 $connect=$db->get();
 
-if($type == 0) {
-    $type = 0;
-}
-if($type2 == 0) {
-    $type2 = 0;
-}
 $sel = [];
 $sel2 = [];
 $sel[$type] = "selected";
@@ -155,7 +158,7 @@ SELECT
     A.chemi,
     A.color,
     A.tech,
-    A.tricklimit,
+    A.sabotagelimit,
     A.gold,
     A.rice,
     COUNT(B.nation) AS gennum,
@@ -230,7 +233,7 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=center>&nbsp;{$gen['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$city['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['tech']}&nbsp;</td>
-        <td align=center>&nbsp;{$nation['tricklimit']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['sabotagelimit']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['gold']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['rice']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['avgg']}&nbsp;</td>
@@ -260,7 +263,7 @@ for($i=0; $i < $nationCount; $i++) {
 ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?=getTrickLogRecent(20)?></td></tr>
+    <tr><td><?=getSabotageLogRecent(20)?></td></tr>
 </table>
 
 <table align=center width=1760 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px; id=bg0>
