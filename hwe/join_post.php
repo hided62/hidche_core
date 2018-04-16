@@ -53,6 +53,8 @@ $leader = Util::getReq('leader', 'int', 50);
 $power = Util::getReq('power', 'int', 50);
 $intel = Util::getReq('intel', 'int', 50);
 
+$join = Util::getReq('join'); //쓸모 없음
+
 extractMissingPostToGlobals();
 
 $rootDB = RootDB::db();
