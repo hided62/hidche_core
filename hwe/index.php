@@ -211,6 +211,14 @@ if ($session->userGrade >= 5) {
     </td></tr>
 ";
 }
+else if($session->userGrade == 4){
+    echo "
+    <tr><td colspan=5>
+        <input type=button value=시뮬 onclick=window.open('_simul.php')>
+        <input type=button value=119 onclick=window.open('_119.php')>
+    </td></tr>
+";
+}
 
 ?>
 

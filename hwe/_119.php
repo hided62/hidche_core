@@ -5,7 +5,7 @@ include "lib.php";
 include "func.php";
 
 $session = Session::requireGameLogin()->setReadOnly();
-if($session->userGrade < 5) {
+if($session->userGrade < 4) {
     ?><!DOCTYPE html>
 <!DOCTYPE html>
 <html>
