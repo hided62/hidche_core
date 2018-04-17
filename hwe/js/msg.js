@@ -216,7 +216,8 @@ function refreshMailboxList(obj){
 
     generalList = {};
 
-    //TODO:수뇌인 경우 각국에 대해 외교 국메를 넣을 수 있어야함.
+    
+    
 
     $.each(obj.nation, function(){
         var nation = this;
@@ -284,6 +285,25 @@ function refreshMailboxList(obj){
     $favorite.append($lastContact);
     //TODO:운영자를 추가하는 코드도 넣을 것.
 
+    if(myGeneralLevel >= 5){
+        $.each(obj.nation, function(){
+            var nation = this;
+            //console.log(nation);
+            var $nation = $('<option value="{0}">{1}</option>'.format(nation.mailbox,nation.name));
+            $nation.css('color', nation.color);
+    
+            if(isBrightColor(nation.color)){
+                $nation.css('background-color', 'black');
+            }
+            else{
+                $nation.css('background-color', 'white');
+            }
+            $favorite.append($nation);
+        });
+        
+    }
+    
+
     $mailboxList.prepend($favorite);
 
     if(!oldSelected){
@@ -307,6 +327,7 @@ function registerGlobal(basicInfo){
     };
     myGeneralID = basicInfo.generalID;
     isChief = basicInfo.isChief;
+    myGeneralLevel = basicInfo.generalLevel;
 }
 
 function activateMessageForm(){
