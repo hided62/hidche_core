@@ -100,8 +100,8 @@ $mysqli_obj = $db->get();
 $scenarioObj = new Scenario($scenario, false);
 $startyear = $scenarioObj->getYear()??GameConst::$defaultStartYear;
 
-FileUtil::delInDir("logs");
-FileUtil::delInDir("data");
+FileUtil::delInDir(__dir__."/logs");
+FileUtil::delInDir(__dir__."/data");
 
 $result = Util::generateFileUsingSimpleTemplate(
     __DIR__.'/d_setting/UniqueConst.orig.php',

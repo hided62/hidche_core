@@ -1138,7 +1138,7 @@ function PushMsg($type, $nation, $picture, $imgsvr, $from, $fromcolor, $to, $toc
     $date = date('Y-m-d H:i:s');
     if($type == 1) { $file = "_all_msg.txt"; }
     else { $file = "_nation_msg{$nation}.txt"; }
-    $fp = fopen("logs/{$file}", "a");
+    $fp = fopen(__dir__."/logs/{$file}", "a");
     //로그 파일에 기록
     $str = "{$type}|".StringUtil::padStringAlignRight($from,12," ")."|".StringUtil::padStringAlignRight($to,12," ")."|".$date."|".$msg."|".$fromcolor."|".$tocolor."|".$picture."|".$imgsvr;
     fwrite($fp, "{$str}\n");
@@ -1287,7 +1287,7 @@ function increaseRefresh($type="", $cnt=1) {
     $date2 = substr($date, 0, 10);
     $online = getOnlineNum();
     file_put_contents(
-        "logs/_{$date2}_refresh.txt",
+        __dir__."/logs/_{$date2}_refresh.txt",
         sprintf(
             "%s, %s, %s, %s, %s, %d\n",
             $date,
@@ -1324,7 +1324,7 @@ function increaseRefresh($type="", $cnt=1) {
     }
     if($str != "") {
         file_put_contents(
-            "logs/_{$date2}_ipcheck.txt",
+            __dir__."/logs/_{$date2}_ipcheck.txt",
             sprintf(
                 "%s, %s, %s%s\n",
                 $session->userName,
