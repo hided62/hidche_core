@@ -116,6 +116,24 @@ for($k=0; $k < 2; $k++) {
             'name'=>0
         ];
     }
+    if(!isset($gen[$l3])){
+        $gen[$l3] = [
+            'npc'=>0,
+            'name'=>0
+        ];
+    }
+    if(!isset($gen[$l2])){
+        $gen[$l2] = [
+            'npc'=>0,
+            'name'=>0
+        ];
+    }
+    if(!isset($gen[$l1])){
+        $gen[$l1] = [
+            'npc'=>0,
+            'name'=>0
+        ];
+    }
 
     if    ($gen[$l4]['npc'] >= 2) { $gen[$l4]['name'] = "<font color=cyan>".($gen[$l4]['name']??'')."</font>"; }
     elseif($gen[$l4]['npc'] == 1) { $gen[$l4]['name'] = "<font color=skyblue>".($gen[$l4]['name']??'')."</font>"; }
