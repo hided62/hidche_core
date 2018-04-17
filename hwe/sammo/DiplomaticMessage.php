@@ -83,8 +83,8 @@ class DiplomaticMessage extends Message{
             return $chk;
         }
 
-        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>(와)과 <C>$when</>년 불가침에 성공했습니다.";
-        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>(와)과 <C>$when</>년 불가침에 합의했습니다.";
+        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>(와)과 <C>$helper->year</>년 불가침에 성공했습니다.";
+        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>(와)과 <C>$helper->year</>년 불가침에 합의했습니다.";
         pushGenLog(['no'=>$this->dest->generalID], $mylog);
         pushGenLog(['no'=>$this->src->generalID], $youlog);
         pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 {$when}년 불가침 성공");

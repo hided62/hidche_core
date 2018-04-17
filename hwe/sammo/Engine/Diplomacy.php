@@ -282,7 +282,7 @@ class Diplomacy{
         $db = DB::db();
         $db->update('diplomacy',[
             'state'=>7,
-            'term'=>$when,
+            'term'=>$when*12,
             'fixed'=>$option
         ],
         '(me=%i AND you=%i) OR (you=%i AND me=%i)', 
