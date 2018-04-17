@@ -556,15 +556,13 @@ function commandTable() {
     } else {
         addCommand("인재탐색(랜덤경험, 자금$develcost)", 29, 0);
     }
-    //TODO:등용장 재 디자인
-    //xxx:등용장 일단 끔
-    /*
+
     if($me['level'] >= 1 && $city['supply'] != 0) {
         addCommand("등용(자금{$develcost5}+장수가치)", 22);
     } else {
         addCommand("등용(자금{$develcost5}+장수가치)", 22, 0);
     }
-    */
+    
     if($me['no'] == $troop['no'] && $citycount > 0 && $city['supply'] != 0 && $city['nation'] == $me['nation']) {
         addCommand("집합(통솔경험)", 26);
     } else {
