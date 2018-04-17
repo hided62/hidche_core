@@ -1262,6 +1262,7 @@ function cutDay($date, int $turnterm) {
 function increaseRefresh($type="", $cnt=1) {
     //FIXME: 로그인, 비로그인 시 처리가 명확하지 않음
     $session = Session::getInstance();
+    $userID = $session->userID;
     $generalID = $session->generalID;
 
     $date = date('Y-m-d H:i:s');
@@ -1278,7 +1279,7 @@ function increaseRefresh($type="", $cnt=1) {
             'connect'=>$db->sqleval('connect + %i', $cnt),
             'refcnt'=>$db->sqleval('refcnt + %i', $cnt),
             'refresh'=>$db->sqleval('refresh + %i', $cnt)
-        ], 'owner=%i', $generalID);
+        ], 'owner=%i', $userID);
     }
 
     $date = date('Y_m_d H:i:s');
