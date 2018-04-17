@@ -290,13 +290,13 @@ function refreshMailboxList(obj){
             var nation = this;
             //console.log(nation);
             var $nation = $('<option value="{0}">{1}</option>'.format(nation.mailbox,nation.name));
-            $nation.css('color', nation.color);
+            $nation.css('background-color', nation.color);
     
             if(isBrightColor(nation.color)){
-                $nation.css('background-color', 'black');
+                $nation.css('color', 'black');
             }
             else{
-                $nation.css('background-color', 'white');
+                $nation.css('color', 'white');
             }
             $favorite.append($nation);
         });
