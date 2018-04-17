@@ -9,6 +9,11 @@
 }
 /*임시용 끝*/
 
+#message_board{
+    height:1370px;
+    position:relative;
+}
+
 #message_board section{
     overflow-y:auto;
     overflow-x:hidden;
@@ -91,10 +96,10 @@
 }
 
 .board_side{
+    position:absolute;
     height:1370px;
     width:498px;
     overflow-y: hidden;
-    display:inline-block;
     border-left:groove 1px;
     border-right:groove 1px;
     border-bottom:groove 1px;

@@ -286,12 +286,12 @@ if ($session->userGrade >= 5) {
     내용 없이 '서신전달&amp;갱신'을 누르면 메세지창이 갱신됩니다.
 </div>
 <div><?=allButton()?></div>
-<div id="message_board"><div class="board_side bg0">
+<div id="message_board"><div style="left:0;" class="board_side bg0">
         <div class="board_header bg0">전체 메시지(최고99자)</div>
         <section class="public_message"></section>
         <div class="board_header bg0">개인 메시지(최고99자)</div>
         <section class="private_message"></section>
-    </div><div class="board_side bg0">
+    </div><div style="right:0;" class="board_side bg0">
         <section class="diplomacy_message">
 
         </section>
