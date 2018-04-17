@@ -58,7 +58,7 @@ switch($commandtype) {
     case 17: command_Single($turn, 17); break; //소집해제
 
     case 21: command_21(    $turn, 21); break; //이동
-    //case 22: command_22(    $turn, 22); break; //등용 //TODO:등용장 재 디자인
+    case 22: command_22(    $turn, 22); break; //등용 //TODO:등용장 재 디자인
     case 23: command_23(    $turn, 23); break; //포상
     case 24: command_24(    $turn, 24); break; //몰수
     case 25: command_25(    $turn, 25); break; //임관
