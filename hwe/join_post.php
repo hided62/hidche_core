@@ -8,7 +8,6 @@ $v = new Validator($_POST + $_GET);
 $v
 ->rule('required', [
     'name',
-    'pic',
     'leader',
     'power',
     'intel'
@@ -18,7 +17,6 @@ $v
     'power',
     'intel',
     'character',
-    'pic'
 ])
 ->rule('lengthBetween', 'name', 1, 6)
 ->rule('min', [
@@ -46,7 +44,7 @@ $userID = Session::getUserID();
 
 $name       = Util::getReq('name');
 $name       = StringUtil::removeSpecialCharacter($name);
-$pic        = Util::getReq('pic', 'int', 0);
+$pic        = (int)Util::getReq('pic', 'bool', 0);
 $character  = Util::getReq('character', 'int', 0);
 
 $leader = Util::getReq('leader', 'int', 50);
