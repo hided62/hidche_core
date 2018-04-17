@@ -2208,7 +2208,7 @@ function uniqueItem($general, $log, $vote=0) {
                     $item[] = $i;
                 }
             }
-            $it = $item[rand() % count($item)];
+            $it = $item[rand() % count($item)]??0;
 
             $query = "update general set {$type}='$it' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
