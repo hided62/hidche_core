@@ -1522,7 +1522,7 @@ function checkTurn() {
 
     // 파일락 획득
     //FIXME:이미 DB 테이블로 lock을 시도하는데 이게 따로 필요한가?
-    $fp = fopen('lock.txt', 'r');
+    $fp = fopen(__dir__.'/lock.txt', 'r');
     if(!flock($fp, LOCK_EX)) {
          return; 
         }
