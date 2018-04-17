@@ -2,7 +2,7 @@
 namespace sammo;
 
 define('ROOT', realpath(__dir__.'/..'));
-
+date_default_timezone_set('Asia/Seoul');
 mb_internal_encoding("UTF-8");
 mb_http_output('UTF-8');
 mb_regex_encoding('UTF-8'); 
