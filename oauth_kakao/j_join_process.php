@@ -36,6 +36,8 @@ if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate
     ]);
 }
 $secret_agree = Util::getReq('secret_agree', 'bool');
+$secret_agree2 = Util::getReq('secret_agree2', 'bool');
+$third_use = Util::getReq('third_use', 'bool');
 $username = mb_strtolower(Util::getReq('username'), 'utf-8');
 $password = Util::getReq('password');
 $nickname = Util::getReq('nickname');
@@ -60,6 +62,13 @@ if(!$secret_agree){
     Json::die([
         'result'=>false,
         'reason'=>'약관에 동의해야 가입하실 수 있습니다.'
+    ]);
+}
+
+if(!$secret_agree2){
+    Json::die([
+        'result'=>false,
+        'reason'=>'개인정보 제공 및 이용에 대해 동의해야 가입하실 수 있습니다.'
     ]);
 }
 
@@ -149,6 +158,7 @@ RootDB::db()->insert('member',[
     'oauth_type' => 'KAKAO',
     'id' => $username,
     'email' => $email,
+    'third_use'=> $third_use,
     'pw' => $finalPassword,
     'salt' => $userSalt,
     'name'=>$nickname,

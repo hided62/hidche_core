@@ -41,7 +41,8 @@ $(document).ready( function () {
                     dataType: 'json'
                 }
             },
-            secret_agree: "required"
+            secret_agree: "required",
+            secret_agree2: "required"
         },
         messages: {
             username: {
@@ -62,7 +63,8 @@ $(document).ready( function () {
                 required: "닉네임을 입력해주세요",
                 maxlength: '닉네임은 {0}자를 넘을 수 없습니다'
             },
-            secret_agree: "동의해야만 가입하실 수 있습니다."
+            secret_agree: "동의해야만 가입하실 수 있습니다.",
+            secret_agree2: "동의해야만 가입하실 수 있습니다."
         },
         errorElement: "div",
         errorPlacement: function ( error, element ) {
@@ -97,6 +99,8 @@ $(document).ready( function () {
             dataType:'json',
             data:{
                 'secret_agree':$('#secret_agree').val(),
+                'secret_agree2':$('#secret_agree2').val(),
+                'third_use':$('#third_use').val(),
                 'username':$('#username').val(),
                 'password':hash_pw,
                 'nickname':$('#nickname').val(),
@@ -120,7 +124,11 @@ $(document).ready( function () {
 
 
 $(function($){
-    $.get('terms.html').then(function(txt){
-        $('#terms').html(txt);
+    $.get('terms.1.html').then(function(txt){
+        $('#terms1').html(txt);
+    });
+
+    $.get('terms.2.html').then(function(txt){
+        $('#terms2').html(txt);
     });
 });

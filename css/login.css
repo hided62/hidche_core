@@ -62,8 +62,21 @@ input::-webkit-input-placeholder {
 }
 
 
+.col-form-label{
+    text-align:center;
+}
+
 .terms{
-    max-height: 200px; overflow: auto;
+    max-height: 200px; overflow-y: auto;
+}
+
+.terms pre{
+    width:100%;
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
 .vertical-center {

@@ -39,7 +39,7 @@ if($canJoin != 'Y'){
     <div class="container">
         <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
         <div class="row justify-content-md-center">
-        <div class="col col-12 col-md-10 col-lg-7">
+        <div class="col col-12 col-md-12 col-lg-12">
         <div class="card">
             <h3 class="card-header">
                 회원가입
@@ -80,10 +80,10 @@ if($canJoin != 'Y'){
                     </div>
 
                     <div class="form-group row">
-                        <label for="username" class="col-sm-3 col-form-label">약관</label>
+                        <label for="username" class="col-sm-3 col-form-label">이용 약관</label>
                         <div class="col-sm-9">
                             <div class="card">
-                                <div class="card-body terms" id="terms">
+                                <div class="card-body terms" id="terms1">
                                     
                                 </div>
                             </div>
@@ -93,6 +93,34 @@ if($canJoin != 'Y'){
                                 <div class="invalid-feedback">
                                     동의해야만 가입하실 수 있습니다.
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="username" class="col-sm-3 col-form-label">개인정보 제공<br>및<br>이용에 대한 동의</label>
+                        <div class="col-sm-9">
+                            <div class="card">
+                                <div class="card-body terms" id="terms2">
+                                    
+                                </div>
+                            </div>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="secret_agree2" name="secret_agree2">
+                                <label class="custom-control-label" for="secret_agree2">동의합니다.</label>
+                                <div class="invalid-feedback">
+                                    동의해야만 가입하실 수 있습니다.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="username" class="col-sm-3 col-form-label">개인정보의 제3자 수집<br>이용 제공에 대한 동의<br>(선택)</label>
+                        <div class="col-sm-9">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="third_use" name="third_use">
+                                <label class="custom-control-label" for="third_use">동의합니다.</label>
                             </div>
                         </div>
                     </div>
