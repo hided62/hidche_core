@@ -67,7 +67,7 @@ $(function(){
     </tr>
     <tr>
         <td colspan=2 valign=top>
-            <?php getWorldHistoryRecent(34); ?>
+            <?=getWorldHistoryRecent(34)?>
         </td>
     </tr>
 </table>
