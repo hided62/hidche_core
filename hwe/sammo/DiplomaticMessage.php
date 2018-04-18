@@ -297,7 +297,7 @@ class DiplomaticMessage extends Message{
             self::MSGTYPE_NATIONAL, 
             $this->dest, 
             $this->src, 
-            "【외교】{$year}년 {$month}월: {$this->src->nationName}이 {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}{$this->diplomacyName} 동의.",
+            "【외교】{$year}년 {$month}월: {$this->src->nationName}(이)가 {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}{$this->diplomacyName} 동의.",
             new \DateTime(),
             new \DateTime('9999-12-31'),
             [
