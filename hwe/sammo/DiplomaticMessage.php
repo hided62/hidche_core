@@ -16,6 +16,7 @@ class DiplomaticMessage extends Message{
 
     protected $diplomaticType = '';
     protected $diplomacyName = '';
+    protected $diplomacyDetail = '';
     protected $validDiplomacy = true;
 
     public function __construct(
@@ -76,6 +77,8 @@ class DiplomaticMessage extends Message{
         if($year < 1 || $year > 30){
             return [self::INVALID, '올바르지 않은 불가침 서신입니다.'];
         }
+
+        $this->diplomacyDetail = "{$year}년";
 
         $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
         $chk = $helper->noAggression($year, $option);
@@ -294,7 +297,7 @@ class DiplomaticMessage extends Message{
             self::MSGTYPE_NATIONAL, 
             $this->dest, 
             $this->src, 
-            "【외교】{$year}년 {$month}월: {$this->src->nationName}이 {$this->dest->nationName}에게 제안한 {$this->diplomacyName} 동의.",
+            "【외교】{$year}년 {$month}월: {$this->src->nationName}이 {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}{$this->diplomacyName} 동의.",
             new \DateTime(),
             new \DateTime('9999-12-31'),
             [
