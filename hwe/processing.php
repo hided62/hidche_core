@@ -1789,7 +1789,7 @@ function command_51($turn, $command) {
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        if($myNation['power'] / $nation['power'] <= 3 || !isClose($me['nation'], $nation['nation'])) {
+        if($myNation['power'] <= $nation['power'] * 3 || !isClose($me['nation'], $nation['nation'])) {
             echo "<option style=color:{$nation['color']};background-color:red; value={$nation['nation']}>【 {$nation['name']} 】</option>";
         } else {
             echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
