@@ -644,7 +644,7 @@ function process_61(&$general) {
         Message::MSGTYPE_DIPLOMACY,
         $src,
         $dest,
-        "{$srcNation['name']}의 불가침 제의 서신",
+        "{$srcNation['name']}의 {$when}년 불가침 제의 서신",
         $now,
         $validUntil,
         [
