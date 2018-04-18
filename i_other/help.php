@@ -4,7 +4,7 @@ namespace sammo;
 require(__dir__.'/../vendor/autoload.php');
 
 WebUtil::setHeaderNoCache();
-$category = Util::getReq('category', 0);
+$category = Util::getReq('category', 'int', 0);
 //FIXME: 겨우 category 구분을 위해 php를 써야하는가? JavaScript로 바꾸자
 ?>
 <!DOCTYPE html>
