@@ -286,10 +286,24 @@ function processAI($no) {
     case 6: $term = 30; break;
     case 7: $term = 60; break;
     }
-    if($general['npcid'] == 2000 && rand()%(24*$term) < 6) {
-        PushMsg(1, 0, $general['picture'], $general['imgsvr'], "{$general['name']}:", $nation['color'], $nation['name'], $nation['color'], $general['npcmsg']);
-    } elseif($general['npcmsg'] != "" && rand()%(24*$term) < 3) {
-        PushMsg(1, 0, $general['picture'], $general['imgsvr'], "{$general['name']}:", $nation['color'], $nation['name'], $nation['color'], $general['npcmsg']);
+    if($general['npcmsg'] != "" && rand()%(24*$term) < 3) {
+        $src = new MessageTarget(
+            $general['no'], 
+            $general['name'],
+            $general['nation'],
+            $nation['name'],
+            $nation['color'],
+            GetImageURL($general['imgsvr'], $general['picture'])
+        );
+        $msg = new Message(
+            Message::MSGTYPE_PUBLIC, 
+            $src,
+            $src,
+            $general['npcmsg'],
+            new \DateTime(),
+            new \DateTime('9999-12-31')
+        );
+        $msg->send();
     }
 
     //재야인경우

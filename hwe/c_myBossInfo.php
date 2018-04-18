@@ -165,7 +165,23 @@ if($btn == "추방") {
             case 4: $str = "날 추방했으니 그 복수로 적국에 정보를 팔아 넘겨야겠군요. 그럼 이만."; break;
             }
 
-            PushMsg(1, 0, $general['picture'], $general['imgsvr'], "{$general['name']}:", $nation['color'], $nation['name'], $nation['color'], $str);
+            $src = new MessageTarget(
+                $general['no'], 
+                $general['name'],
+                $general['nation'],
+                $nation['name'],
+                $nation['color'],
+                GetImageURL($general['imgsvr'], $general['picture'])
+            );
+            $msg = new Message(
+                Message::MSGTYPE_PUBLIC, 
+                $src,
+                $src,
+                $str,
+                new \DateTime(),
+                new \DateTime('9999-12-31')
+            );
+            $msg->send();
         }
 
         //국가 기술력 그대로

@@ -1126,23 +1126,6 @@ function nationMsg() {
     echo "<font color=orange>".$nation['msg']."</font>";
 }
 
-
-function PushMsg($type, $nation, $picture, $imgsvr, $from, $fromcolor, $to, $tocolor, $msg) {
-    if($nation == 0) { $nation = 0; }
-    if($fromcolor == "") { $fromcolor = "#FFFFFF"; }
-    if($to == "") { $to = "재야"; }
-    if($tocolor == "") { $tocolor = "#FFFFFF"; }
-
-    $date = date('Y-m-d H:i:s');
-    if($type == 1) { $file = "_all_msg.txt"; }
-    else { $file = "_nation_msg{$nation}.txt"; }
-    $fp = fopen(__dir__."/logs/{$file}", "a");
-    //로그 파일에 기록
-    $str = "{$type}|".StringUtil::padStringAlignRight($from,12," ")."|".StringUtil::padStringAlignRight($to,12," ")."|".$date."|".$msg."|".$fromcolor."|".$tocolor."|".$picture."|".$imgsvr;
-    fwrite($fp, "{$str}\n");
-    fclose($fp);
-}
-
 function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
     $db = DB::db();
     $connect=$db->get();
