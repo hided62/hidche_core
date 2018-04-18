@@ -67,7 +67,7 @@ class Personnel{
             return [ScoutMessage::DECLINED, '군주는 등용장을 수락할 수 없습니다.'];
         }
 
-        if(strpos($general['nations'], ",{$this->nation['nation']},") >= 0){
+        if(strpos($general['nations'], ",{$this->nation['nation']},") > 0){
             return [ScoutMessage::DECLINED, '이미 임관했었던 국가입니다.'];
         }
 
