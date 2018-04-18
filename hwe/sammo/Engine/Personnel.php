@@ -180,7 +180,7 @@ class Personnel{
         }
 
         if($me['npc'] < 2){
-            $setValues['killturn'] = $killturn;
+            $setValues['killturn'] = $this->killturn;
         }
 
         $db->update('general', $setValues, 'no=%i', $generalID);
