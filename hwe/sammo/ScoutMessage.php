@@ -167,8 +167,8 @@ class ScoutMessage extends Message{
         }
 
         $db = DB::db();
-        $srcGeneral = $db->queryFirstRow('SELECT `name`, nation FROM nation WHERE `no`=%i', $srcGeneralID);
-        $destGeneral = $db->queryFirstRow('SELECT `name`, nation, `level` FROM nation WHERE `no`=%i', $destGeneralID);
+        $srcGeneral = $db->queryFirstRow('SELECT `name`, nation FROM general WHERE `no`=%i', $srcGeneralID);
+        $destGeneral = $db->queryFirstRow('SELECT `name`, nation, `level` FROM general WHERE `no`=%i', $destGeneralID);
         if($date === null){
             $date = new \DateTime();
         }
