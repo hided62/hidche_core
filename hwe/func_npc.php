@@ -573,25 +573,75 @@ function processAI($no) {
 
                     if($nation[$type] < 1000) {  // 몰수
                         // 몰수 대상
-                        $query = "select no,{$type} from general where nation='{$general['nation']}' and no!='{$general['no']}' and {$type}>3000 order by {$type} desc limit 0,1";
-                        $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-                        $SelGen = MYDB_fetch_array($result);
-                        if($SelGen['no'] != 0) {
-                            $amount = intdiv($SelGen[$type], 5000)*10 + 10;
-                            if($amount > 100) $amount = 100;
+                        list($npcGenID, $npcGenValue) = $db->queryFirstList(
+                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND %b>3000 AND npc >= 2 ORDER BY %b DESC LIMIT 1',
+                            $type,
+                            $general['nation'],
+                            $type,
+                            $type
+                        );
+
+                        list($userGenID, $userGenValue) = $db->queryFirstList(
+                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND %b>3000 AND npc < 2 ORDER BY %b DESC LIMIT 1',
+                            $type,
+                            $general['nation'],
+                            $type,
+                            $type
+                        );
+
+                        if($npcGenID === null && $userGenID === null){
+                            $genID = 0;
+                            $genValue = 0;
+                        }
+                        else if($npcGenID === null || $userGenValue > $npcGenValue * 4){
+                            $genID = $userGenID;
+                            $genValue = $userGenValue;
+                        }
+                        else{
+                            $genID = $npcGenID;
+                            $genValue = $npcGenValue;
+                        }
+
+                        if($genID){
+                            $amount = min(100, intdiv($genValue, 5000)*10 + 10);
                             // 몰수
-                            $command = EncodeCommand($type2, $SelGen['no'], $amount, 24);    // 금,쌀 1000단위 몰수
+                            $command = EncodeCommand($type2, $genID, $amount, 24);    // 금,쌀 1000단위 몰수
                         }
                     } else {    // 포상
                         // 포상 대상
-                        $query = "select no from general where nation='{$general['nation']}' and no!='{$general['no']}' and killturn>=5 order by {$type} limit 0,1";
-                        $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-                        $SelGen = MYDB_fetch_array($result);
-                        if($SelGen['no'] != 0) {
-                            $amount = intdiv(($nation[$type]-GameConst::$baserice), 5000)*10 + 10;
-                            if($amount > 100) $amount = 100;
+                        list($npcGenID, $npcGenValue) = $db->queryFirstList(
+                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc >= 2 ORDER BY %b ASC LIMIT 1',
+                            $type,
+                            $general['nation'],
+                            $type,
+                            $type
+                        );
+
+                        list($userGenID, $userGenValue) = $db->queryFirstList(
+                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc < 2 ORDER BY %b ASC LIMIT 1',
+                            $type,
+                            $general['nation'],
+                            $type,
+                            $type
+                        );
+
+                        if($npcGenID === null && $userGenID === null){
+                            $genID = 0;
+                            $genValue = 0;
+                        }
+                        else if($npcGenID === null || $userGenValue < $npcGenValue * 3){
+                            $genID = $userGenID;
+                            $genValue = $userGenValue;
+                        }
+                        else{
+                            $genID = $npcGenID;
+                            $genValue = $npcGenValue;
+                        }
+
+                        if ($genID) {
+                            $amount = min(100, intdiv(($nation[$type]-GameConst::$baserice), 5000)*10 + 10);
                             // 포상
-                            $command = EncodeCommand($type2, $SelGen['no'], $amount, 23);    // 금 1000단위 포상
+                            $command = EncodeCommand($type2, $genID, $amount, 23);    // 금,쌀 1000단위 포상
                         }
                     }
                 }
