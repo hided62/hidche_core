@@ -577,6 +577,7 @@ function processAI($no) {
                             'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND %b>3000 AND npc >= 2 ORDER BY %b DESC LIMIT 1',
                             $type,
                             $general['nation'],
+                            $general['no'],
                             $type,
                             $type
                         );
@@ -585,6 +586,7 @@ function processAI($no) {
                             'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND %b>3000 AND npc < 2 ORDER BY %b DESC LIMIT 1',
                             $type,
                             $general['nation'],
+                            $general['no'],
                             $type,
                             $type
                         );
@@ -613,6 +615,7 @@ function processAI($no) {
                             'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc >= 2 ORDER BY %b ASC LIMIT 1',
                             $type,
                             $general['nation'],
+                            $general['no'],
                             $type,
                             $type
                         );
@@ -621,6 +624,7 @@ function processAI($no) {
                             'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc < 2 ORDER BY %b ASC LIMIT 1',
                             $type,
                             $general['nation'],
+                            $general['no'],
                             $type,
                             $type
                         );
