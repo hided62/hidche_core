@@ -121,7 +121,7 @@ class Session
 
     public function __set(string $name, $value)
     {
-        if (key_exists($name, $this->PROTECED_NAMES)) {
+        if (key_exists($name, self::PROTECTED_NAMES)) {
             trigger_error("{$name}은 외부에서 쓰기 금지된 Session 변수입니다.", E_USER_NOTICE);
             return;
         }
