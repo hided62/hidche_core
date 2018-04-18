@@ -123,7 +123,9 @@ for($i=0; $i < $troopcount; $i++) {
     }
 }
 
-if($me['troop'] == 0) {
+if ($troopcount == 0) {
+}
+else if($me['troop'] == 0) {
     echo"
 <input type=submit name=btn value='부 대 가 입'>";
 } else {
