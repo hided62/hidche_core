@@ -860,6 +860,8 @@ function command_23($turn, $command) {
     <option value=8>800</option>
     <option value=9>900</option>
     <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
     <option value=20>2000</option>
     <option value=30>3000</option>
     <option value=40>4000</option>
@@ -935,6 +937,8 @@ function command_24($turn, $command) {
     <option value=8>800</option>
     <option value=9>900</option>
     <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
     <option value=20>2000</option>
     <option value=30>3000</option>
     <option value=40>4000</option>
@@ -1448,6 +1452,8 @@ function command_43($turn, $command) {
     <option value=8>800</option>
     <option value=9>900</option>
     <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
     <option value=20>2000</option>
     <option value=30>3000</option>
     <option value=40>4000</option>
@@ -1496,6 +1502,8 @@ function command_44($turn, $command) {
     <option value=8>800</option>
     <option value=9>900</option>
     <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
     <option value=20>2000</option>
     <option value=30>3000</option>
     <option value=40>4000</option>
@@ -1720,6 +1728,8 @@ function command_49($turn, $command) {
     <option value=8>800</option>
     <option value=9>900</option>
     <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
     <option value=20>2000</option>
     <option value=30>3000</option>
     <option value=40>4000</option>
