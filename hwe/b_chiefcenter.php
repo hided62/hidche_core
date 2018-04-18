@@ -58,13 +58,17 @@ $nation = MYDB_fetch_array($result);
 
 $lv = getNationChiefLevel($nation['level']);
 $turn = [];
-$gen = [[],[],[],[],[],[],[],[],[],[],[],[]];
+
 for($i=12; $i >= $lv; $i--) {
     $turn[$i] = getCoreTurn($nation, $i);
 
     $query = "select name,turntime,npc from general where level={$i} and nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen[$i] = MYDB_fetch_array($result);
+    $gen[$i] = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'turntime'=>''
+    ];
 }
 
 ?>
@@ -109,31 +113,6 @@ for($i=12; $i >= $lv; $i--) {
 
 for($k=0; $k < 2; $k++) {
     $l4 = 12 - $k;  $l3 = 10 - $k;  $l2 =  8 - $k;  $l1 =  6 - $k;
-
-    if(!isset($gen[$l4])){
-        $gen[$l4] = [
-            'npc'=>0,
-            'name'=>0
-        ];
-    }
-    if(!isset($gen[$l3])){
-        $gen[$l3] = [
-            'npc'=>0,
-            'name'=>0
-        ];
-    }
-    if(!isset($gen[$l2])){
-        $gen[$l2] = [
-            'npc'=>0,
-            'name'=>0
-        ];
-    }
-    if(!isset($gen[$l1])){
-        $gen[$l1] = [
-            'npc'=>0,
-            'name'=>0
-        ];
-    }
 
     if    ($gen[$l4]['npc'] >= 2) { $gen[$l4]['name'] = "<font color=cyan>".($gen[$l4]['name']??'')."</font>"; }
     elseif($gen[$l4]['npc'] == 1) { $gen[$l4]['name'] = "<font color=skyblue>".($gen[$l4]['name']??'')."</font>"; }
