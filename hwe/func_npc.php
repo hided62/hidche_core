@@ -627,15 +627,12 @@ function processAI($no) {
 
                         if($npcGenID === null && $userGenID === null){
                             $genID = 0;
-                            $genValue = 0;
                         }
                         else if($npcGenID === null || $userGenValue < $npcGenValue * 3){
                             $genID = $userGenID;
-                            $genValue = $userGenValue;
                         }
                         else{
                             $genID = $npcGenID;
-                            $genValue = $npcGenValue;
                         }
 
                         if ($genID) {
