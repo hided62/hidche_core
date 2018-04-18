@@ -80,7 +80,7 @@ if($me['nation'] != $general['nation']){
 }
 
 if($btn == "추방") {
-    $query = "select name,l{$meLevel}set,chemi from nation where nation='{$me['nation']}'";
+    $query = "select name,l{$meLevel}set,chemi,color from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
