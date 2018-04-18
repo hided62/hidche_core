@@ -187,7 +187,8 @@ function process_24(&$general) {
                 $src,
                 $str,
                 new \DateTime(),
-                new \DateTime('9999-12-31')
+                new \DateTime('9999-12-31'),
+                []
             );
             $msg->send();
         }
