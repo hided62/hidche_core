@@ -585,7 +585,7 @@ function processAI($no) {
                     if(rand() % 2 == 0) { $type = "gold"; $type2 = 1; }
                     else { $type = "rice"; $type2 = 2; }
 
-                    if($nation[$type] < 1000) {  // 몰수
+                    if($nation[$type] < $type2*2000) {  // 몰수
                         // 몰수 대상
                         list($npcGenID, $npcGenValue) = $db->queryFirstList(
                             'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND %b>3000 AND npc >= 2 ORDER BY %b DESC LIMIT 1',
