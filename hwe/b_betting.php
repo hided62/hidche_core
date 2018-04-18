@@ -102,7 +102,11 @@ for ($i=0; $i < 1; $i++) {
     $cent[$i] = "<font color=white>";
 }
 for ($i=0; $i < 2; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -143,7 +147,11 @@ for ($i=0; $i < 2; $i++) {
     $cent[$i] = "<font color=white>";
 }
 for ($i=0; $i < 4; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -229,7 +237,11 @@ for ($i=0; $i < 8; $i++) {
     $cent[$i] = "<font color=white>";
 }
 for ($i=0; $i < 16; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
