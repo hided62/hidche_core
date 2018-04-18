@@ -667,8 +667,10 @@ function processAI($no) {
                     }
                 }
             }
-            $query = "update nation set l{$general['level']}turn0='$command' where nation='{$general['nation']}'";
-            MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
+            if(isset($command)){
+                $query = "update nation set l{$general['level']}turn0='$command' where nation='{$general['nation']}'";
+                MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
+            }
         }
     }
 
