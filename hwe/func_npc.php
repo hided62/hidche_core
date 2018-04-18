@@ -636,7 +636,13 @@ function processAI($no) {
                         }
 
                         if ($genID) {
-                            $amount = min(100, intdiv(($nation[$type]-GameConst::$baserice), 5000)*10 + 10);
+                            if($genID === $npcGenID){
+                                $amount = min(100, intdiv(($nation[$type]-GameConst::$baserice), 5000)*10 + 10);
+                            }
+                            else{
+                                $amount = min(100, intdiv(($nation[$type]-GameConst::$baserice), 2000)*10 + 10);
+                            }
+                            
                             // 포상
                             $command = EncodeCommand($type2, $genID, $amount, 23);    // 금,쌀 1000단위 포상
                         }
