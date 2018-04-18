@@ -47,7 +47,7 @@ function process_22(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         $msg = ScoutMessage::buildScoutMessage($general['no'], $who, $reason);
-        $msg->send();
+        $msg->send(true);
         
         $general['intel2']++;
         $query = "update general set resturn='SUCCESS',gold=gold-'$cost',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
