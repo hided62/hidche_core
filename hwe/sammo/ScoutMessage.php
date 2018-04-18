@@ -96,6 +96,13 @@ class ScoutMessage extends Message{
             ['no'=>$this->src->generalID], 
             ["<C>●</><Y>{$this->dest->generalName}</> 등용에 성공했습니다."]
         );
+        pushGeneralHistory(
+            ['no'=>$this->src->generalID],
+            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y>{$this->dest->generalName}</> 등용에 성공"]);
+        pushGeneralHistory(
+            ['no'=>$this->dest->generalID],
+            ["<C>●</>{$helper->year}년 {$helper->month}월:<D>{$this->src->nationName}</>(으)로 망명"]
+        );
         pushGeneralPublicRecord(
             ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(으)로 <S>망명</>하였습니다."], 
             $helper->year, 
