@@ -77,7 +77,11 @@ select { font-family:'굴림'; line-height:100%; }
 $query = "select npc,name,win from tournament where grp>=60 order by grp, grp_no";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 for ($i=0; $i < 1; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -284,9 +288,11 @@ for ($i=0; $i < 16; $i++) {
 }
 
 for ($i=0; $i < 16; $i++) {
-    $bet[$i]  = @round($admin['bet'] /  $admin["bet{$i}"], 2);
-    if ($bet[$i] == 0) {
+    if($admin["bet{$i}"] == 0){
         $bet[$i] = "∞";
+    }
+    else{
+        $bet[$i]  = round($admin['bet'] /  $admin["bet{$i}"], 2);
     }
 }
 
