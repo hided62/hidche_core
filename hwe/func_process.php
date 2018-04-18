@@ -1821,7 +1821,7 @@ function process_41(&$general) {
     } elseif($crewexp == 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 모자랍니다. 단련 실패. <1>$date</>";
     } else {
-        $type = intdiv($general['crewtype'], 10) * 10;
+        $type = intdiv($general['crewtype'], 10);
         switch($type) {
         case 0: $crewstr = '보병'; break;
         case 1: $crewstr = '궁병'; break;
