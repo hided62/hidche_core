@@ -743,12 +743,12 @@ function processAI($no) {
                         else { $command = EncodeCommand(0, 0, 0, 1); }
                     } elseif($general['rice'] < $resrc && $general['rice'] <= $general['gold']) {
                         //금이 더 많으면 매매
-                        $amount = intdiv(($general['gold'] - $general['rice']), 100 / 2);  // 100단위
+                        $amount = intdiv(($general['gold'] - $general['rice']) / 2, 100);  // 100단위
                         if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }//삼
                         else { $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); }   // 내정, 조달
                     } elseif($general['gold'] < $resrc && $general['rice'] > $general['gold']) {
                         //쌀이 더 많으면 매매
-                        $amount = intdiv(($general['rice'] - $general['gold']), 100 / 2);  // 100단위
+                        $amount = intdiv(($general['rice'] - $general['gold']) / 2, 100);  // 100단위
                         if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }//팜
                         else { $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); }   // 내정, 조달
                     //자원, 병사 모두 충족
@@ -777,11 +777,11 @@ function processAI($no) {
             elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] == 1) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['gold'] < $resrc) {                                   // 금없으면 쌀팜
-                $amount = intdiv(($general['rice'] - $general['gold']), 100 / 2);   // 100단위
+                $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
             } elseif($general['rice'] < $resrc) {                                 // 쌀없으면 쌀삼
-                $amount = intdiv(($general['gold'] - $general['rice']), 100 / 2);   // 100단위
+                $amount = intdiv(($general['gold'] - $general['rice'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
             } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
