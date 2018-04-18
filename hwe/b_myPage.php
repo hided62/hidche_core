@@ -10,8 +10,8 @@ $tnmt = Util::getReq('tnmt', 'int', 1);
 
 extractMissingPostToGlobals();
 
-if($mode < 0 || $mode > 1){
-    $mode = 1;
+if($mode < 0 || $mode > 2){
+    $mode = 2;
 }
 
 if($tnmt < 0 || $tnmt > 1){
