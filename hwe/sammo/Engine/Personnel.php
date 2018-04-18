@@ -100,7 +100,7 @@ class Personnel{
         $isTroopLeader = false;
         if($general['troop']){
             $troopLeader = $db->queryFirstField('SELECT `no` FROM troop WHERE troop = %i', $general['troop']);
-            if($troopLeader == $receiverID){
+            if($troopLeader == $generalID){
                 $isTroopLeader = true;
             }
         }
@@ -183,7 +183,7 @@ class Personnel{
             $setValues['killturn'] = $killturn;
         }
 
-        $db->update('general', $setValues, 'no=%i', $receiverID);
+        $db->update('general', $setValues, 'no=%i', $generalID);
         $db->update('general', $setSenderValues, 'no=%i', $this->src->generalID);
         $db->update('nation', $setOriginalNationValues, 'nation=%i', $general['nation']);
         $db->update('nation', $setScoutNationValues, 'nation=%i', $this->nation['nation']);
