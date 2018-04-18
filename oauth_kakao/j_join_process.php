@@ -18,10 +18,10 @@ if($canJoin != 'Y'){
 
 $nowDate = TimeUtil::DatetimeNow();
 
-$access_token = Util::array_get($session->access_token);
-$expires = Util::array_get($session->expires);
-$refresh_token = Util::array_get($session->refresh_token);
-$refresh_token_expires = Util::array_get($session->refresh_token_expires);
+$access_token = $session->access_token;
+$expires = $session->expires;
+$refresh_token = $session->refresh_token;
+$refresh_token_expires = $session->refresh_token_expires;
 if(!$access_token){
     Json::die([
         'result'=>false,

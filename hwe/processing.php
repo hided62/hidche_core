@@ -594,7 +594,7 @@ function calc(cost, formnum) {
 <form name=form{$i} action=c_double.php>
     <td valign=center>
         <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($baseCost, $i)'><br>
-        <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=징병>
+        <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=모병>
         <input type=hidden name=third value={$i}>
         <input type=hidden name=command value=$command>";
 
