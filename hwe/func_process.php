@@ -13,6 +13,9 @@ namespace sammo;
  * @return int|float 계산된 능력치
  */
 function getGeneralLeadership(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+	if($general === null){
+		return 0;
+	}
     $leadership = $general['leader'];
     if($withInjury){
         $leadership *= (100 - $general['injury']) / 100;
@@ -47,6 +50,9 @@ function getGeneralLeadership(&$general, $withInjury, $withItem, $withStatAdjust
  * @return int|float 계산된 능력치
  */
 function getGeneralPower(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+	if($general === null){
+		return 0;
+	}
     $power = $general['power'];
     if($withInjury){
         $power *= (100 - $general['injury']) / 100;
@@ -78,6 +84,10 @@ function getGeneralPower(&$general, $withInjury, $withItem, $withStatAdjust, $us
  * @return int|float 계산된 능력치
  */
 function getGeneralIntel(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+	if($general === null){
+		return 0;
+	}
+	
     $intel = $general['intel'];
     if($withInjury){
         $intel *= (100 - $general['injury']) / 100;
