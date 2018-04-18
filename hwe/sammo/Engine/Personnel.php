@@ -51,7 +51,7 @@ class Personnel{
             return [ScoutMessage::INVALID, '초반제한 중입니다.'];
         }
         
-        if(!$this->nation['scout']){
+        if($this->nation['scout']){
             return [ScoutMessage::INVALID, '현재 임관금지 중인 국가입니다.'];
         }
 
