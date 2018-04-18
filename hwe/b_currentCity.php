@@ -307,7 +307,7 @@ for($j=0; $j < $gencount; $j++) {
             <font size=1>";
             $turn = getTurn($general, 1);
 
-            for($i=0; $i < 4; $i++) {
+            for($i=0; $i < 5; $i++) {
                 $k = $i+1;
                 echo "
                     &nbsp;&nbsp;$k : $turn[$i]<br>";
