@@ -1159,7 +1159,7 @@ function processWar($general, $city) {
                 }
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
-                $ratio2 = GameUnitConst::byID($oppose['crewtype'])->defence;   //회피율
+                $ratio2 = GameUnitConst::byID($oppose['crewtype'])->avoid;   //회피율
 				$ratio2 = Util::round($ratio2 * $oppose['train'] / 100); //훈련 반영
                 // 특기보정 : 돌격, 궁병
                 if($general['special2'] == 60) { $ratio2 -= 100; }
