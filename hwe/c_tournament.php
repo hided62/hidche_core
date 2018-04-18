@@ -60,7 +60,7 @@ if($btn == '참가') {
     }
     $map = [];
     for($i=0; $i < 8; $i++) {
-        if($occupied[$i] == 0) {
+        if(!Util::array_get($occupied[$i])) {
             $map[] = $i;
         }
     }
