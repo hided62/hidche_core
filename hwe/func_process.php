@@ -1758,6 +1758,9 @@ function process_31(&$general) {
         { 
             $cities = array_map('intval', explode("|", $nation['spy'])); 
         }
+        else{
+            $cities = [];
+        }
         $exist = 0;
         for($i=0; $i < count($cities); $i++) {
             if(intdiv($cities[$i], 10) == $destination) {
