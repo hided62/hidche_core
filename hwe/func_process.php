@@ -1683,7 +1683,16 @@ function process_31(&$general) {
         $typecount = [];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
-            if($gen['crew'] != 0) { $typecount[$gen['crewtype']]++; $crew += $gen['crew']; }
+            if($gen['crew'] != 0) {
+                if(!key_exists($gen['crewtype'], $typecount)){
+                    $typecount[$gen['crewtype']] = 1;
+                }
+                else{
+                    $typecount[$gen['crewtype']]+=1;
+                }
+                
+                $crew += $gen['crew'];
+            }
         }
         if(!key_exists($destination, $dist)) {
             $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
@@ -1699,13 +1708,9 @@ function process_31(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 많은 정보를 얻었습니다. <1>$date</>";
             $msg[] = "【<S>병종</>】";
 
-            foreach(GameUnitConst::all() as $unit){
-                if($typecount[$unit->id] == 0){
-                    continue;
-                }
-
-                $unitStr = mb_substr($unit->name, 0, 2); 
-                $msg[] = "{$unitStr}:{$typecount[$unit->id]}";
+            foreach($typecount as $crewtype->$cnt){
+                $crewtypeText = mb_substr(GameUnitConst::byID($crewtype)->name, 0, 2);
+                $msg[] = "{$crewtypeText}:{$cnt}";
             }
 
             $log[] = join(' ', $msg);
