@@ -47,7 +47,8 @@ class Session
         ini_set('session.use_cookies', false);
         ini_set('session.use_trans_sid', false);
         ini_set('session.cache_limiter', "none");
-        session_start($this->sessionID); // second session_start
+        session_id($this->sessionID);
+        session_start(); // second session_start
         $this->writeClosed = false;
         return $this;
     }
