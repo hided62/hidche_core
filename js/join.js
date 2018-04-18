@@ -98,9 +98,9 @@ $(document).ready( function () {
             url:'j_join_process.php',
             dataType:'json',
             data:{
-                'secret_agree':$('#secret_agree').val(),
-                'secret_agree2':$('#secret_agree2').val(),
-                'third_use':$('#third_use').val(),
+                'secret_agree':$('#secret_agree').prop("checked"),
+                'secret_agree2':$('#secret_agree2').prop("checked"),
+                'third_use':$('#third_use').prop("checked"),
                 'username':$('#username').val(),
                 'password':hash_pw,
                 'nickname':$('#nickname').val(),
