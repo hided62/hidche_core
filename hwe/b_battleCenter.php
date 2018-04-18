@@ -100,20 +100,23 @@ $sel[$type] = "selected";
 <?php
 switch ($type) {
     default:
-    case 0: $query = "select no,name from general where nation='{$me['nation']}' order by turntime desc"; break;
-    case 1: $query = "select no,name from general where nation='{$me['nation']}' order by recwar desc"; break;
-    case 2: $query = "select no,name from general where nation='{$me['nation']}' order by npc,binary(name)"; break;
-    case 3: $query = "select no,name from general where nation='{$me['nation']}' order by warnum desc"; break;
+    case 0: $query = "select no,name,npc from general where nation='{$me['nation']}' order by turntime desc"; break;
+    case 1: $query = "select no,name,npc from general where nation='{$me['nation']}' order by recwar desc"; break;
+    case 2: $query = "select no,name,npc from general where nation='{$me['nation']}' order by npc,binary(name)"; break;
+    case 3: $query = "select no,name,npc from general where nation='{$me['nation']}' order by warnum desc"; break;
 }
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $gencount = MYDB_num_rows($result);
-
+$npc = 0;
 for ($i=0; $i < $gencount; $i++) {
     $general = MYDB_fetch_array($result);
     // 선택 없으면 맨 처음 장수
     if ($gen == 0) {
         $gen = $general['no'];
     }
+	if($gen == $general['no']){
+		$npc = $general['npc'];
+	}
     if ($gen == $general['no']) {
         echo "
             <option selected value={$general['no']}>{$general['name']}</option>";
@@ -153,6 +156,19 @@ for ($i=0; $i < $gencount; $i++) {
             <?=getBatResRecent($gen, 24)?>
         </td>
     </tr>
+<?php if($npc > 1): ?>
+    <tr>
+        <td align=center id=bg1><font color=orange size=3>개인 기록</font></td>
+        <td align=center id=bg1><font color=orange size=3>&nbsp;</font></td>
+    </tr>
+    <tr>
+        <td valign=top>
+            <?=getGenLogRecent($gen, 24)?>
+        </td>
+        <td valign=top>
+        </td>
+    </tr>
+<?php endif; ?>
 </table>
 <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
     <tr><td><?=closeButton()?></td></tr>
