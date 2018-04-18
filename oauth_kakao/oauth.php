@@ -27,7 +27,7 @@ $result = $restAPI->create_access_token($auth_code);
 
 
 if (Util::array_get($result['expires_in'], -1) <= 0) {
-    die('알 수 없는 에러:'.$me['msg']);
+    die('알 수 없는 에러:'.$result['msg']);
 }
 
 $session = Session::getInstance();
