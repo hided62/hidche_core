@@ -1708,7 +1708,7 @@ function process_31(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 많은 정보를 얻었습니다. <1>$date</>";
             $msg[] = "【<S>병종</>】";
 
-            foreach($typecount as $crewtype->$cnt){
+            foreach($typecount as $crewtype=>$cnt){
                 $crewtypeText = mb_substr(GameUnitConst::byID($crewtype)->name, 0, 2);
                 $msg[] = "{$crewtypeText}:{$cnt}";
             }
