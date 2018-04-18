@@ -32,7 +32,7 @@ class ScoutMessage extends Message{
             $this->validScout = false;
         }
 
-        if($this->validUntil <= new DateTime()){
+        if($this->validUntil <= new \DateTime()){
             $this->validScout = false;
         }
     }
