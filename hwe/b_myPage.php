@@ -5,18 +5,13 @@ include "lib.php";
 include "func.php";
 
 $btn = Util::getReq('btn');
-$map = Util::getReq('map', 'int', 0);
 $mode = Util::getReq('mode', 'int', 2);
 $tnmt = Util::getReq('tnmt', 'int', 1);
 
 extractMissingPostToGlobals();
 
-if($map < 0 || $map > 2){
-    $map = 0;
-}
-
-if($mode < 0 || $mode > 2){
-    $mode = 2;
+if($mode < 0 || $mode > 1){
+    $mode = 1;
 }
 
 if($tnmt < 0 || $tnmt > 1){
@@ -51,13 +46,12 @@ if ($btn == "설정저장" && $me['myset'] > 0) {
 
     $db->update('general', [
         'myset'=>$db->sqleval('myset-1'),
-        'map'=>$map,
         'mode'=>$mode,
         'tnmt'=>$tnmt
     ], 'owner=%i', $userID);
 }
 
-$query = "select no,map,mode,tnmt,myset from general where owner='{$userID}'";
+$query = "select no,mode,tnmt,myset from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
@@ -91,11 +85,6 @@ function go(type) {
         </td>
         <td width=50% valign=top>
             <form name=form1 action=b_myPage.php method=post>
-                &nbsp;&nbsp;&nbsp;&nbsp;지도수준 【
-                <input type=radio name=map value=0 <?=$me['map']==0?"checked":""; ?>>상세
-                <input type=radio name=map value=1 <?=$me['map']==1?"checked":""; ?>>간단
-                <input type=radio name=map value=2 <?=$me['map']==2?"checked":""; ?>>생략
-                】<br><br>
                 &nbsp;&nbsp;&nbsp;&nbsp;토너먼트 【
                 <input type=radio name=tnmt value=0 <?=$me['tnmt']==0?"checked":""; ?>>수동참여
                 <input type=radio name=tnmt value=1 <?=$me['tnmt']==1?"checked":""; ?>>자동참여

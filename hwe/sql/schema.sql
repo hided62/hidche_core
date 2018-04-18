@@ -80,7 +80,6 @@ CREATE TABLE `general` (
 	`specage2` INT(2) NULL DEFAULT '0',
 	`mode` INT(1) NULL DEFAULT '2',
 	`tnmt` INT(1) NULL DEFAULT '1',
-	`map` INT(1) NULL DEFAULT '0',
 	`myset` INT(1) NULL DEFAULT '3',
 	`tournament` INT(1) NULL DEFAULT '0',
 	`vote` INT(1) NULL DEFAULT '0',
@@ -152,7 +151,7 @@ CREATE TABLE `general` (
 	`recturn` CHAR(14) NULL DEFAULT '',
 	`resturn` CHAR(14) NULL DEFAULT '',
 	PRIMARY KEY (`no`),
-	INDEX `nation` (`nation`),
+	INDEX `nation` (`nation`, `npc`)
 	INDEX `city` (`city`),
 	INDEX `turntime` (`turntime`, `no`),
 	INDEX `no_member` (`owner`),

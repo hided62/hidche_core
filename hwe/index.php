@@ -18,7 +18,7 @@ if (!$userID) {
 }
 
 $me = $db->queryFirstRow(
-    'SELECT no,con,turntime,newmsg,newvote,map from general where owner = %i',
+    'SELECT no,con,turntime,newmsg,newvote from general where owner = %i',
     $userID
 );
 

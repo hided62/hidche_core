@@ -16,7 +16,7 @@ $query = "select turnterm from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,nation,map from general where owner='{$userID}'";
+$query = "select no,nation from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 

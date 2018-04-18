@@ -101,7 +101,6 @@ $db->update('general', [
     'npc'=>1,
     'killturn'=>6,
     'mode'=>2,
-    'map'=>0,
     'owner'=>$userID
 ], 'no=%i and npc=2', $npcID);
 $affected = $db->affectedRows();
