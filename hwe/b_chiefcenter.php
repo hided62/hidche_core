@@ -70,6 +70,13 @@ for($i=12; $i >= $lv; $i--) {
         'turntime'=>''
     ];
 }
+for($i= $lv - 1; $i>=5; $i--){
+    $gen[$i] = [
+        'npc'=>0,
+        'name'=>'',
+        'turntime'=>''
+    ];
+}
 
 ?>
 <!DOCTYPE html>
