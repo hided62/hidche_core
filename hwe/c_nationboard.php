@@ -7,6 +7,7 @@ include "func.php";
 $title = Util::getReq('title');
 $msg = Util::getReq('msg');
 $num = Util::getReq('num', 'int');
+$reply = Util::getReq('reply');
 
 extractMissingPostToGlobals();
 
