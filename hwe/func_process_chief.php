@@ -772,8 +772,7 @@ function process_62(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //국메로 저장
-        $msg = "【외교】{$admin['year']}년 {$admin['month']}월:{$younation['name']}에 선전포고";
-        $youmsg = "【외교】{$admin['year']}년 {$admin['month']}월:{$nation['name']}에서 선전포고";
+        $text = "【외교】{$admin['year']}년 {$admin['month']}월:{$nation['name']}에서 {$younation['name']}에 선전포고";
 
         $src = new MessageTarget(
             $general['no'], 
@@ -794,7 +793,7 @@ function process_62(&$general) {
             Message::MSGTYPE_NATIONAL, 
             $src,
             $dest,
-            $str,
+            $text,
             new \DateTime($general['turntime']),
             new \DateTime('9999-12-31')
         );
