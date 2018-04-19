@@ -84,7 +84,7 @@ function reloadWorldMap(option){
         else if(month <= 6){
             $world_map.addClass('map_summer');
         }
-        else if(month <= 6){
+        else if(month <= 9){
             $world_map.addClass('map_fall');
         }
         else{
