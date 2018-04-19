@@ -1803,8 +1803,8 @@ function triggerTournament() {
 
     //현재 토너먼트 없고, 자동개시 걸려있을때, 40%확률
     if($admin['tournament'] == 0 && $admin['tnmt_trig'] > 0 && rand() % 100 < 40) {
-        $type = rand() % 6; //  0 : 전력전, 1 : 통솔전, 2 : 일기토, 3 : 설전
-        //전력전 50%, 통, 일, 설 각 17%
+        $type = rand() % 5; //  0 : 전력전, 1 : 통솔전, 2 : 일기토, 3 : 설전
+        //전력전 40%, 통, 일, 설 각 20%
         if($type > 3) { $type = 0; }
         startTournament($admin['tnmt_trig'], $type);
     }
