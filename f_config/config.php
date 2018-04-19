@@ -7,6 +7,9 @@ mb_internal_encoding("UTF-8");
 mb_http_output('UTF-8');
 mb_regex_encoding('UTF-8'); 
 
+ini_set("session.cache_expire", 10080);      // minutes
+ini_set("session.gc_maxlifetime", 604800);    // seconds
+
 function getFriendlyErrorType($type) 
 { 
     switch($type) 
