@@ -20,7 +20,7 @@ $db = RootDB::db();
 $userGrade = $session->userGrade;
 $session->setReadOnly();
 
-if($userGrade < 6) {
+if($userGrade < 5) {
     Json::die([
         'result'=>'FAIL',
         'msg'=>'운영자 권한이 없습니다.'
