@@ -75,7 +75,13 @@ function allButton() {
         $call = "설문조사";
     }
 
-    $templates = new \League\Plates\Engine('templates');
+    if(\file_exists("d_setting/templates/allButton.php")){
+        $templates = new \League\Plates\Engine('d_setting/templates');
+    }
+    else{
+        $templates = new \League\Plates\Engine('templates');
+    }
+    
 
     return $templates->render('allButton', [
         'call' => $call,

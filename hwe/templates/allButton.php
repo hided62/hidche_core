@@ -1,22 +1,22 @@
 <div class="buttonPlate bg1">
     <div>
-        <button class="toolbarButton" onclick="window.open('a_status.php')">세력도</button>
-        <button class="toolbarButton" onclick="window.open('a_kingdomList.php')">세력일람</button>
-        <button class="toolbarButton" onclick="window.open('a_genList.php')">장수일람</button>
-        <button class="toolbarButton" onclick="window.open('a_bestGeneral.php')">명장일람</button>
-        <button class="toolbarButton" onclick="window.open('a_history.php')">연감</button>
-        <button class="toolbarButton" onclick="window.open('a_hallOfFame.php')">명예의전당</button>
-        <button class="toolbarButton" onclick="window.open('a_emperior.php')">왕조일람</button>
-        <button class="toolbarButton" onclick="window.open('a_traffic.php')">접속량정보</button>
+        <a href="a_status.php" target="_blank"><button class="toolbarButton">세력도</button></a>
+        <a href="a_kingdomList.php" target="_blank"><button class="toolbarButton">세력일람</button></a>
+        <a href="a_genList.php" target="_blank"><button class="toolbarButton">장수일람</button></a>
+        <a href="a_bestGeneral.php" target="_blank"><button class="toolbarButton">명장일람</button></a>
+        <a href="a_history.php" target="_blank"><button class="toolbarButton">연감</button></a>
+        <a href="a_hallOfFame.php" target="_blank"><button class="toolbarButton">명예의전당</button></a>
+        <a href="a_emperior.php" target="_blank"><button class="toolbarButton">왕조일람</button></a>
+        <a href="a_traffic.php" target="_blank"><button class="toolbarButton">접속량정보</button></a>
     </div>
     <div>
-        <button class="toolbarButton2" onclick="window.open('/bbs/bbs/board.php?bo_table=0free')">삼모게시판</button>
-        <button class="toolbarButton" onclick="window.open('/bbs/bbs/board.php?bo_table=1news')">삼국일보</button>
-        <button class="toolbarButton" onclick="window.open('/bbs/bbs/board.php?bo_table=2reference')">레퍼런스</button>
-        <button class="toolbarButton" onclick="window.open('/bbs/bbs/board.php?bo_table=3patch')">패치게시판</button>
-        <button class="toolbarButton">-</button>
-        <button class="toolbarButton" onclick="window.open('/bbs/bbs/board.php?bo_table=4donation')">참여게시판</button>
-        <button class="toolbarButton" onclick="window.open('../i_other/help.php')">튜토리얼</button>
-        <button class="toolbarButton" onclick="window.open('<?=$site?>')"><?=$call?></button>
+        <a href="/bbs/board" target="_blank"><button class="toolbarButton2">삼모게시판</button></a>
+        <a href="/bbs/tip" target="_blank"><button class="toolbarButton">팁/강좌</button></a>
+        <a href="/bbs/news" target="_blank"><button class="toolbarButton">삼국 일보</button></a>
+        <a href="/bbs/history2" target="_blank"><button class="toolbarButton">개인 열전</button></a>
+        <a href="/bbs/history3" target="_blank"><button class="toolbarButton">국가 열전</button></a>
+        <a href="/bbs/patch" target="_blank"><button class="toolbarButton">패치 내역</button></a>
+        <a href="../i_other/help.php" target="_blank"><button class="toolbarButton">튜토리얼</button></a>
+        <a href="<?=$site?>" target="_blank"><button class="toolbarButton"><?=$call?></button></a>
     </div>
 </div>
