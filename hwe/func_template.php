@@ -101,7 +101,7 @@ function commandButton() {
     $db = DB::db();
     $me = $db->queryFirstRow("select no,nation,level,belong from general where owner=%i", $userID);
 
-    $nation = $db->queryFirstRow("select nation,color,secretlimit from nation where nation=%i",$me['nation']);
+    $nation = $db->queryFirstRow("select nation,level,color,secretlimit from nation where nation=%i",$me['nation']);
 
     if($nation['color'] == "") { $nation['color'] = "#000000"; }
 
@@ -125,6 +125,7 @@ function commandButton() {
         'bgColor'=>$bgColor,
         'fgColor'=>$fgColor,
         'meLevel'=>$me['level'],
+        'nationLevel'=>$nation['level'],
         'showSecret'=>$showSecret
     ]);
 }
