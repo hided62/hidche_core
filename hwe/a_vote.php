@@ -198,22 +198,19 @@ if ($admin['voteopen'] >= 1 || $session->userGrade >= 5) {
                 <tr>
     ";
 
-    $memCount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
-    if ($memCount == 0) {
-        $memCount = 1;
-    }
+    $memCount = max(1, $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2'));
 
     $totalVote = [];
-    $nationVoteCount = [[0]];
-    $nationVote = [[]];
+    $nationVoteCount = [];
+    $nationVote = [];
 
     foreach ($db->query("SELECT nation, vote, count(`no`) as cnt FROM general WHERE npc<2 GROUP BY nation, vote") as $row) {
         $nation = $row['nation'];
-        $vote = $row['vote'];
+        $ownVote = $row['vote'];
         $cnt = $row['cnt'];
 
-        if (!isset($totalVote[$vote])) {
-            $totalVote[$vote] = 0;
+        if (!isset($totalVote[$ownVote])) {
+            $totalVote[$ownVote] = 0;
         }
 
         if (!isset($nationVoteCount[$nation])) {
@@ -221,20 +218,20 @@ if ($admin['voteopen'] >= 1 || $session->userGrade >= 5) {
             $nationVote[$nation] = [];
         }
 
-        if (!isset($nationVote[$nation][$vote])) {
-            $nationVote[$nation][$vote] = 0;
+        if (!isset($nationVote[$nation][$ownVote])) {
+            $nationVote[$nation][$ownVote] = 0;
         }
 
-        $totalVote[$vote] += $cnt;
+        $totalVote[$ownVote] += $cnt;
         $nationVoteCount[$nation] += $cnt;
-        $nationVote[$nation][$vote] += $cnt;
+        $nationVote[$nation][$ownVote] += $cnt;
     }
 
     for ($i=0; $i < $voteTypeCount; $i++) {
-        $per = round(($totalVote[$i]??0) / $memCount * 100, 1);
+        $per = round(($totalVote[$i]??0) * 100 / $memCount, 1);
 //        if($per < 5) { $vote['cnt'] = "&nbsp;"; }
         echo "
-                    <td width={$per}% align=center style=color:".getNewColor($i)."; bgcolor=".getVoteColor($i).">{$totalVote[$i]}</td>
+        <td width={$per}% align=center style=color:".getNewColor($i)."; bgcolor=".getVoteColor($i).">{$totalVote[$i]}</td>
         ";
     }
 
@@ -293,8 +290,16 @@ if ($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
         $memCount = MYDB_num_rows($result);
 
+        
+
         $voteCount = $nationVoteCount[$nation['nation']] ?? 0;
-        $percentage = round($voteCount / $memCount * 100, 1);
+        if($memCount == 0){
+            $percentage = 100;
+        }
+        else{
+            $percentage = round($voteCount / $memCount * 100, 1);
+        }
+        
 
         echo "
     <tr>
