@@ -83,7 +83,7 @@ if(!file_exists($server)){
 
 
 if($server == $baseServerName){
-    exec("git -q pull 2>&1", $output);
+    exec("git pull -q 2>&1", $output);
     if($output && $output[0] != 'Already up-to-date.'){
         Json::die([
             'result'=>false,
