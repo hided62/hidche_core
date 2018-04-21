@@ -159,7 +159,7 @@ CREATE TABLE `general` (
 	INDEX `npcid` (`npcid`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=InnoDB;
+ENGINE=MyISAM;
 
 ###########################################################################
 ## 국가 테이블
@@ -272,7 +272,7 @@ create table nation (
   l8turn11 char(14) default '00000000000099', l7turn11 char(14) default '00000000000099', l6turn11 char(14) default '00000000000099', l5turn11 char(14) default '00000000000099',
 
   PRIMARY KEY (nation)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 도시 테이블
@@ -315,7 +315,7 @@ create table city (
 
   PRIMARY KEY (city),
   KEY (nation)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 부대 테이블
@@ -404,7 +404,7 @@ CREATE TABLE `game` (
 	`bet14` INT(8) NULL DEFAULT '0',
 	`bet15` INT(8) NULL DEFAULT '0',
 	PRIMARY KEY (`no`)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 메시지 테이블
