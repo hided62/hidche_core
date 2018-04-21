@@ -24,6 +24,8 @@ if(!$generalID){
 $db = DB::db();
 $connect=$db->get();
 
+$src = MessageTarget::buildQuick($session->generalID);
+
 switch($btn) {
     case "전체 접속허용":
         $db->update('general', [
@@ -96,8 +98,6 @@ switch($btn) {
         break;
     case "특기 부여":
         list($year, $month) = $db->queryFirstList('select `year`, `month` from `game` where `no`=1');
-
-        $src = MessageTarget::buildQuick($session->generalID);
         $text = "특기 부여!";
 
         foreach($db->query("SELECT `no`,leader,power,intel,dex0,dex10,dex20,dex30,dex40 FROM general WHERE `no` IN %li", $genlist) as $general){    
@@ -116,7 +116,6 @@ switch($btn) {
         
         break;
     case "경험치1000":
-        $src = MessageTarget::buildQuick($session->generalID);
         $text = $btn." 지급!";
         foreach($genlist as $generalID){
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
@@ -128,7 +127,6 @@ switch($btn) {
 
         break;
     case "공헌치1000":
-        $src = MessageTarget::buildQuick($session->generalID);
         $text = $btn." 지급!";
         foreach($genlist as $generalID){
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
@@ -140,7 +138,6 @@ switch($btn) {
 
         break;
     case "보숙10000":
-        $src = MessageTarget::buildQuick($session->generalID);
         $text = "보병숙련도+10000 지급!";
         foreach($genlist as $generalID){
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
@@ -151,7 +148,6 @@ switch($btn) {
         ], '`no` IN %li', $genlist);
         break;
     case "궁숙10000":
-        $src = MessageTarget::buildQuick($session->generalID);
         $text = "궁병숙련도+10000 지급!";
         foreach($genlist as $generalID){
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
