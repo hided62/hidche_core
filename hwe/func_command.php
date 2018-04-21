@@ -537,7 +537,8 @@ function processCommand($no) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
-        
+        //FIXME: 운영자 같이 사망하면 안되는 인물에 대한 처리가 필요
+
         //연속턴 아닌경우 텀 리셋
         if($general['term']%100 != $command[0]) {
             $query = "update general set term=0 where no='{$general['no']}'";
