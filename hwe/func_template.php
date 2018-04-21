@@ -135,7 +135,7 @@ function formatWounded(int $value, int $wound): string{
         return "$value";
     }
     $woundedValue = intdiv($value * (100 - $wound), 100);
-    return "<font color=red>$woundedvalue</font>";
+    return "<font color=red>$woundedValue</font>";
 }
 
 function formatDefenceMode(int $value): string{
