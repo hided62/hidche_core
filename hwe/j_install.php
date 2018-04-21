@@ -194,7 +194,7 @@ foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM membe
         'picture'=>$admin['picture'],
         'imgsvr'=>$admin['imgsvr'],
         'turntime'=>$turntime,
-        'killturn'=>null
+        'killturn'=>9999
     ]);
 }
 

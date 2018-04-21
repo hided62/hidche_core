@@ -3,7 +3,7 @@
     <a href='b_nationboard.php'><button class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>회 의 실</button></a>
     <a href='b_chiefboard.php'><button class='commandButton' <?=$meLevel>=5?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>기 밀 실</button></a>
     <a href='b_troop.php'><button class='commandButton' <?=($meLevel>=1&&$nationLevel>=1)?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>부대 편성</button></a>
-    <a href='b_myBossInfo.php'><button class='commandButton' <?=($meLevel>=1&&$nationLevel>=1)?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>인 사 부</button></a>
+    <a href='b_myBossInfo.php'><button class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>인 사 부</button></a>
     <a href='b_dipcenter.php'><button class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>내 무 부</button></a>
     <a href='b_chiefcenter.php'><button class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>사 령 부</button></a>
     <a href='b_genList.php' target='_blank'><button class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>암 행 부</button></a>
@@ -14,7 +14,7 @@
 <div>
 
     <a href='b_myKingdomInfo.php'><button class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>세력 정보</button></a>
-    <a href='b_myCityInfo.php'><button class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>세력 도시</button></a>
+    <a href='b_myCityInfo.php'><button class='commandButton' <?=($meLevel>=1&&$nationLevel>=1)?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>세력 도시</button></a>
     <a href='b_myGenInfo.php'><button class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>세력 장수</button></a>
     <a href='b_nationrule.php'><button class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>국 법</button></a>
     <a href='b_diplomacy.php'><button class='commandButton' style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>중원 정보</button></a>
