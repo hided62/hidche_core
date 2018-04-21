@@ -71,10 +71,10 @@ for ($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($nationresult);
     if ($nation['scoutmsg'] == "") {
         echo "
-    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:{newColor({$nation['color']})};background-color:{$nation['color']}>-</td></tr>";
+    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>-</td></tr>";
     } else {
         echo "
-    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:{newColor({$nation['color']})};background-color:{$nation['color']}>{$nation['scoutmsg']}</td></tr>";
+    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['scoutmsg']}</td></tr>";
     }
 }
 ?>
