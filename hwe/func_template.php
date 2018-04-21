@@ -130,7 +130,39 @@ function commandButton() {
     ]);
 }
 
+function formatWounded(int $value, int $wound): string{
+    if($wound == 0){
+        return "$value";
+    }
+    $woundedValue = intdiv($value * (100 - $wound), 100);
+    return "<font color=red>$woundedvalue</font>";
+}
 
+function formatDefenceMode(int $value): string{
+    switch($value) {
+    case 0: return "×"; break;
+    case 1: return "○"; break;
+    case 2: return "◎"; break;
+    }
+    return '??';
+}
+
+function formatLeadershipBonus(int $value): string{
+    if($value == 0){
+        return '';
+    }
+    return "<font color=cyan>+{$value}</font>";
+}
+
+function formatName(string $name, int $npc): string{
+    if($npc==1){
+        $name = "<font color='skyblue'>$name</font>";
+    }
+    else if($npc>1){
+        $name = "<font color='cyan'>$name</font>";
+    }
+    return $name;
+}
 
 function getMapHtml(){
     //NOTE: 필요한가?

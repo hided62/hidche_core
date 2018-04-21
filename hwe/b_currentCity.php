@@ -25,6 +25,8 @@ $query = "select nation,level,spy from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $myNation = MYDB_fetch_array($result);
 
+$templates = new \League\Plates\Engine('templates');
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -34,15 +36,28 @@ $myNation = MYDB_fetch_array($result);
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link href="../d_shared/common.css" rel="stylesheet">
 <link href="css/common.css" rel="stylesheet">
+<style>
+#general_list tr td{
+    text-align:center;
+}
 
+#general_list tr td:last-child{
+    text-align:left;
+    padding-left:1em;
+}
+
+.general_turn_text{
+    font-size:x-small;
+}
+</style>
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
     <tr><td>도 시 정 보<br><?=backButton()?></td></tr>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
     <tr>
         <td width=998>
             <form name=cityselect method=get>도시선택 :
@@ -160,44 +175,44 @@ if($city['trade'] == 0) {
 }
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
     <tr><td><?=backButton()?></td></tr>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg2>
     <tr>
         <td colspan=12 align=center style=color:"<?=newColor($nation['color'])?>"; bgcolor=<?=$nation['color']?>>【 <?=CityConst::$regionMap[$city['region']]?> | <?=CityConst::$levelMap[$city['level']]?> 】 <?=$city['name']?></td>
     </tr>
     <tr>
-        <td align=center width=48 id=bg1>주민</td>
+        <td align=center width=48 class=bg1>주민</td>
         <td align=center width=112><?=$city['pop']?>/<?=$city['pop2']?></td>
-        <td align=center width=48 id=bg1>농업</td>
+        <td align=center width=48 class=bg1>농업</td>
         <td align=center width=108><?=$city['agri']?>/<?=$city['agri2']?></td>
-        <td align=center width=48 id=bg1>상업</td>
+        <td align=center width=48 class=bg1>상업</td>
         <td align=center width=108><?=$city['comm']?>/<?=$city['comm2']?></td>
-        <td align=center width=48 id=bg1>치안</td>
+        <td align=center width=48 class=bg1>치안</td>
         <td align=center width=108><?=$city['secu']?>/<?=$city['secu2']?></td>
-        <td align=center width=48 id=bg1>수비</td>
+        <td align=center width=48 class=bg1>수비</td>
         <td align=center width=108><?=$city['def']?>/<?=$city['def2']?></td>
-        <td align=center width=48 id=bg1>성벽</td>
+        <td align=center width=48 class=bg1>성벽</td>
         <td align=center width=108><?=$city['wall']?>/<?=$city['wall2']?></td>
     </tr>
     <tr>
-        <td align=center id=bg1>민심</td>
+        <td align=center class=bg1>민심</td>
         <td align=center><?=$city['rate']?></td>
-        <td align=center id=bg1>시세</td>
+        <td align=center class=bg1>시세</td>
         <td align=center><?=$city['trade']?>%</td>
-        <td align=center id=bg1>인구</td>
+        <td align=center class=bg1>인구</td>
         <td align=center><?=round($city['pop']/$city['pop2']*100, 2)?>%</td>
-        <td align=center id=bg1>태수</td>
+        <td align=center class=bg1>태수</td>
         <td align=center><?=$gen1['name']??'-'?></td>
-        <td align=center id=bg1>군사</td>
+        <td align=center class=bg1>군사</td>
         <td align=center><?=$gen2['name']??'-'?></td>
-        <td align=center id=bg1>시중</td>
+        <td align=center class=bg1>시중</td>
         <td align=center><?=$gen3['name']??'-'?></td>
     </tr>
     <tr>
-        <td align=center id=bg1>장수</td>
+        <td align=center class=bg1>장수</td>
         <td colspan=11>
 <?php
     $query = "select name, npc from general where city='{$city['city']}' and nation='{$city['nation']}'";    // 장수 목록
@@ -212,6 +227,26 @@ if($city['trade'] == 0) {
         </td>
     </tr>
 </table>
+
+
+<br>
+<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<thead>
+    <tr>
+        <td width=64 align=center class=bg1>얼 굴</td>
+        <td width=98 align=center class=bg1>이 름</td>
+        <td width=48 align=center class=bg1>통솔</td>
+        <td width=48 align=center class=bg1>무력</td>
+        <td width=48 align=center class=bg1>지력</td>
+        <td width=78 align=center class=bg1>관 직</td>
+        <td width=28 align=center class=bg1>守</td>
+        <td width=78 align=center class=bg1>병 종</td>
+        <td width=78 align=center class=bg1>병 사</td>
+        <td width=48 align=center class=bg1>훈련</td>
+        <td width=48 align=center class=bg1>사기</td>
+        <td width=310 align=center class=bg1>명 령</td>
+    </tr></thead><tbody class='bg0' id='general_list'>
+
 <?php
 $query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos,term,turn0,turn1,turn2,turn3,turn4,turn5 from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -224,66 +259,116 @@ foreach(getAllNationStaticInfo() as $nation){
     $nationlevel[$nation['nation']] = $nation['level'];
 }
 
-if($gencount != 0) {
-    echo "
-<br>
-<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr>
-        <td width=64 align=center id=bg1>얼 굴</td>
-        <td width=98 align=center id=bg1>이 름</td>
-        <td width=48 align=center id=bg1>통솔</td>
-        <td width=48 align=center id=bg1>무력</td>
-        <td width=48 align=center id=bg1>지력</td>
-        <td width=78 align=center id=bg1>관 직</td>
-        <td width=28 align=center id=bg1>守</td>
-        <td width=78 align=center id=bg1>병 종</td>
-        <td width=78 align=center id=bg1>병 사</td>
-        <td width=48 align=center id=bg1>훈련</td>
-        <td width=48 align=center id=bg1>사기</td>
-        <td width=310 align=center id=bg1>명 령</td>
-    </tr>";
-}
 
 for($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
 
+    $nationInfo = getNationStaticInfo($general['nation']);
+
+    if($general['nation'] != 0 && $general['nation'] == $myNation['nation']){
+        $ourGeneral = true;
+    }
+    else{
+        $ourGeneral = false;
+    }
+
+    $isNPC = $general['npc']>1;
+    $wounded = $general['injury'];
+    
+
+    $name = $general['name'];
+    $nameText = formatName($name, $general['npc']);
+
+    $leadership = $general['leader'];
+    $power = $general['power'];
+    $intel = $general['intel'];
+
+    $leadershipText = formatWounded($leadership, $general['injury']);
+    $powerText = formatWounded($power, $general['injury']);
+    $intelText = formatWounded($intel, $general['injury']);
+
+    $level = $general['level'];
+    $levelText = getLevel($general['level']);
+
     if($general['level'] == 12) {
-        $lbonus = $nationlevel[$general['nation']] * 2;
+        $leadershipBonus = $nationInfo['level'] * 2;
     } elseif($general['level'] >= 5) {
-        $lbonus = $nationlevel[$general['nation']];
+        $leadershipBonus = $nationInfo['level'];
     } else {
-        $lbonus = 0;
+        $leadershipBonus = 0;
     }
-    if($lbonus > 0) {
-        $lbonus = "<font color=cyan>+{$lbonus}</font>";
-    } else {
-        $lbonus = "";
+    $leadershipBonusText = formatLeadershipBonus($leadershipBonus);
+
+    if($ourGeneral){
+        $defenceMode = $general['mode'];
+        $defenceModeText = formatDefenceMode($defenceMode);
+        $crewType = $general['crewtype'];
+        $crewTypeText = GameUnitConst::byId($crewType)->name;
+        $crew = $general['crew'];
+        $train = $general['train'];
+        $atmos = $general['atmos'];
+    }
+    else{
+        $defenceMode = 0;
+        $defenceModeText = '';
+        $crewType = 0;
+        $crewTypeText = '';
+        $crew = $general['crew'];
+        $train = -1;
+        $atmos = -1;
     }
 
-    if($general['injury'] > 0) {
-        $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
-        $power = intdiv($general['power'] * (100 - $general['injury']), 100);
-        $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
-        $leader = "<font color=red>{$leader}</font>{$lbonus}";
-        $power = "<font color=red>{$power}</font>";
-        $intel = "<font color=red>{$intel}</font>";
-    } else {
-        $leader = "{$general['leader']}{$lbonus}";
-        $power = "{$general['power']}";
-        $intel = "{$general['intel']}";
-    }
+    $nation = $general['nation'];
+    $nationName = $nationInfo['name'];
 
-    if($general['npc'] >= 2) { $general['name'] = "<font color=cyan>{$general['name']}</font>"; }
-    elseif($general['npc'] == 1) { $general['name'] = "<font color=skyblue>{$general['name']}</font>"; }
-    $imageTemp = GetImageURL($general['imgsvr']);
+    if($ourGeneral && !$isNPC){
+        $turnText = [];
+        foreach(getTurn($general, 1) as $turnIdx=>$turn){
+            $turnText[] = "{$turnIdx} : $turn";
+        }
+        $turnText = join('<br>', $turnText);
+    }
+    else{
+        $turnText = '';
+    }
+    
+    echo $templates->render('cityGeneral', [
+        'ourGeneral'=>$ourGeneral,
+        'isNPC'=>$isNPC,
+        'wounded'=>$wounded,
+        'name'=>$name,
+        'nameText'=>$nameText,
+        'leadership'=>$leadership,
+        'leadershipText'=>$leadershipText,
+        'leadershipBonus'=>$leadershipBonus,
+        'leadershipBonusText'=>$leadershipBonusText,
+        'level'=>$level,
+        'levelText'=>$levelText,
+        'power'=>$power,
+        'powerText'=>$powerText,
+        'intel'=>$intel,
+        'intelText'=>$intelText,
+        'defenceMode'=>$defenceMode,
+        'defenceModeText'=>$defenceModeText,
+        'crewType'=>$crewType,
+        'crewTypeText'=>$crewTypeText,
+        'crew'=>$crew,
+        'train'=>$train,
+        'atmos'=>$atmos,
+        'nation'=>$nation,
+        'nationName'=>$nationName,
+        'turnText'=>$turnText
+    ]);
+
+/*
     echo "
     <tr>
-        <td align=center height=64></td>
-        <td align=center>{$general['name']}</td>
-        <td align=center>$leader</td>
-        <td align=center>$power</td>
-        <td align=center>$intel</td>
-        <td align=center>".getLevel($general['level'])."</td>";
+        <td height=64></td>
+        <td>{$general['name']}</td>
+        <td>$leadership</td>
+        <td>$power</td>
+        <td>$intel</td>
+        <td>".getLevel($general['level'])."</td>";
     //아국장수이거나 보는 사람이 운영자일때 보여줌
     if(($general['nation'] != 0 && $general['nation'] == $myNation['nation']) || $session->userGrade >= 5) {
         switch($general['mode']) {
@@ -293,54 +378,45 @@ for($j=0; $j < $gencount; $j++) {
         }
 
         echo "
-        <td align=center>$mode</td>
-        <td align=center>".GameUnitConst::byId($general['crewtype'])->name."</td>
-        <td align=center>{$general['crew']}</td>
-        <td align=center>{$general['train']}</td>
-        <td align=center>{$general['atmos']}</td>";
+        <td>$mode</td>
+        <td>".GameUnitConst::byId($general['crewtype'])->name."</td>
+        <td>{$general['crew']}</td>
+        <td>{$general['train']}</td>
+        <td>{$general['atmos']}</td>";
         if($general['npc'] >= 2) {
             echo "
         <td>NPC 장수";
         } else {
             echo "
-        <td>
-            <font size=1>";
-            $turn = getTurn($general, 1);
-
-            for($i=0; $i < 5; $i++) {
-                $k = $i+1;
-                echo "
-                    &nbsp;&nbsp;$k : $turn[$i]<br>";
-            }
-            echo "
-            </font>";
+        <td class='general_turn_text'>$turnText";
         }
     } elseif($general['nation'] != 0) {
         echo "
-        <td align=center>?</td>
-        <td align=center>?</td>
-        <td align=center>{$general['crew']}</td>
-        <td align=center>?</td>
-        <td align=center>?</td>
+        <td>?</td>
+        <td>?</td>
+        <td>{$general['crew']}</td>
+        <td>?</td>
+        <td>?</td>
         <td>【{$nationname[$general['nation']]}】 장수";
     } else {
         echo "
-        <td align=center>?</td>
-        <td align=center>?</td>
-        <td align=center>{$general['crew']}</td>
-        <td align=center>?</td>
-        <td align=center>?</td>
+        <td>?</td>
+        <td>?</td>
+        <td>{$general['crew']}</td>
+        <td>?</td>
+        <td>?</td>
         <td>&nbsp; 재 야";
     }
 
     echo "
         </td>
-    </tr>";
+    </tr>";*/
 }
 ?>
+</tbody>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>
