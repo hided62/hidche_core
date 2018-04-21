@@ -205,7 +205,10 @@ if($meLevel >= 5 && $nation['l11set'] == 0) {
     $query = "select name,city from general where nation='{$me['nation']}' and level='11'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
+    if($general){
+        echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
+    }
+    
 }
 echo "
         </td>
@@ -257,7 +260,9 @@ for($i=10; $i >= $lv; $i--) {
         $query = "select name,city from general where nation='{$me['nation']}' and level={$i}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $general = MYDB_fetch_array($result);
-        echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
+        if($general){
+            echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
+        }
     }
     echo "</td></form>";
     if($i % 2 == 1) { echo "</tr>"; }

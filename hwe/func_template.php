@@ -101,10 +101,12 @@ function commandButton() {
     $db = DB::db();
     $me = $db->queryFirstRow("select no,nation,level,belong from general where owner=%i", $userID);
 
-    $nation = $db->queryFirstRow("select nation,level,color,secretlimit from nation where nation=%i",$me['nation']);
-
-    if($nation['color'] == "") { $nation['color'] = "#000000"; }
-
+    $nation = $db->queryFirstRow("select nation,level,color,secretlimit from nation where nation=%i",$me['nation'])??[
+        'nation'=>0,
+        'level'=>0,
+        'secretlimit'=>99,
+        'color'=>'#000000'
+    ];
 
     $bgColor = Util::array_get($nation['color'])?:'#000000';
     $fgColor = newColor($bgColor);
