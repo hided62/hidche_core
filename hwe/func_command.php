@@ -681,19 +681,21 @@ where nation='{$general['nation']}'
 
 
 function command_Single($turn, $command) {
+    if(!$turn){
+        header('location:commandlist.php');
+        return;
+    }
+
     $db = DB::db();
-    $connect=$db->get();
     $userID = Session::getUserID();
 
     $command = EncodeCommand(0, 0, 0, $command);
 
-    $count = count($turn);
-    $str = "con=con";
-    for($i=0; $i < $count; $i++) {
-        $str .= ",turn{$turn[$i]}='{$command}'";
+    $setValues = [];
+    foreach($turn as $turnIdx){
+        $setValues["turn{$turnIdx}"] = $command;
     }
-    $query = "update general set {$str} where owner='{$userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', $setValues, 'owner=%i',$userID);
     
     header('location:commandlist.php');
 }
