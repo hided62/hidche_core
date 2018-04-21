@@ -533,13 +533,11 @@ function processCommand($no) {
         if($general['npc'] >= 2 || $general['killturn'] > $admin['killturn']) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } elseif(intval($command[0]) == 0 && $session->userGrade < 5) {
+        } elseif($command[0] == 0) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } else {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn='{$admin['killturn']}' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
+        
         //연속턴 아닌경우 텀 리셋
         if($general['term']%100 != $command[0]) {
             $query = "update general set term=0 where no='{$general['no']}'";
