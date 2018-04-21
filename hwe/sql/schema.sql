@@ -151,7 +151,7 @@ CREATE TABLE `general` (
 	`recturn` CHAR(14) NULL DEFAULT '',
 	`resturn` CHAR(14) NULL DEFAULT '',
 	PRIMARY KEY (`no`),
-	INDEX `nation` (`nation`, `npc`)
+	INDEX `nation` (`nation`, `npc`),
 	INDEX `city` (`city`),
 	INDEX `turntime` (`turntime`, `no`),
 	INDEX `no_member` (`owner`),
