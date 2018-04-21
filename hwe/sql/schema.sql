@@ -595,7 +595,7 @@ create table history (
   month   int(2) default 0,
   map     mediumtext default '',
   log     text default '',
-  genlog  text default '',
+  genlog  mediumtext default '',
   nation  text default '',
   power   text default '',
   gen     text default '',
