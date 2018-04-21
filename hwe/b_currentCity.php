@@ -359,58 +359,6 @@ for($j=0; $j < $gencount; $j++) {
         'nationName'=>$nationName,
         'turnText'=>$turnText
     ]);
-
-/*
-    echo "
-    <tr>
-        <td height=64></td>
-        <td>{$general['name']}</td>
-        <td>$leadership</td>
-        <td>$power</td>
-        <td>$intel</td>
-        <td>".getLevel($general['level'])."</td>";
-    //아국장수이거나 보는 사람이 운영자일때 보여줌
-    if(($general['nation'] != 0 && $general['nation'] == $myNation['nation']) || $session->userGrade >= 5) {
-        switch($general['mode']) {
-        case 0: $mode = "×"; break;
-        case 1: $mode = "○"; break;
-        case 2: $mode = "◎"; break;
-        }
-
-        echo "
-        <td>$mode</td>
-        <td>".GameUnitConst::byId($general['crewtype'])->name."</td>
-        <td>{$general['crew']}</td>
-        <td>{$general['train']}</td>
-        <td>{$general['atmos']}</td>";
-        if($general['npc'] >= 2) {
-            echo "
-        <td>NPC 장수";
-        } else {
-            echo "
-        <td class='general_turn_text'>$turnText";
-        }
-    } elseif($general['nation'] != 0) {
-        echo "
-        <td>?</td>
-        <td>?</td>
-        <td>{$general['crew']}</td>
-        <td>?</td>
-        <td>?</td>
-        <td>【{$nationname[$general['nation']]}】 장수";
-    } else {
-        echo "
-        <td>?</td>
-        <td>?</td>
-        <td>{$general['crew']}</td>
-        <td>?</td>
-        <td>?</td>
-        <td>&nbsp; 재 야";
-    }
-
-    echo "
-        </td>
-    </tr>";*/
 }
 ?>
 </tbody>
