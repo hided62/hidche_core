@@ -74,6 +74,10 @@ $(function(){
     reloadWorldMap({
         hrefTemplate:'b_currentCity.php?citylist={0}'
     });
+
+    setInterval(function(){
+        refreshMsg();
+    }, 30000);
 });
 </script>
 <link href="css/normalize.css" rel="stylesheet">
