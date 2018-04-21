@@ -77,7 +77,7 @@ $(function(){
 
     setInterval(function(){
         refreshMsg();
-    }, 30000);
+    }, 10000);
 });
 </script>
 <link href="css/normalize.css" rel="stylesheet">

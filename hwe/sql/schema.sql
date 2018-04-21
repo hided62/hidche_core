@@ -419,7 +419,7 @@ CREATE TABLE `message` (
 	`valid_until` DATETIME NOT NULL DEFAULT '9999-12-31 23:59:59',
 	`message` TEXT NOT NULL COMMENT 'json',
 	PRIMARY KEY (`id`),
-	INDEX `by_mailbox` (`mailbox`, `type`, `time`)
+	INDEX `by_mailbox` (`mailbox`, `type`, `id`)
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=InnoDB;
