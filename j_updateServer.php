@@ -78,12 +78,12 @@ if(!file_exists($server)){
             'reason'=>$server.' 디렉토리가 없지만 생성할 권한이 없습니다.'
         ]);
     }
-    mkdir($server, 0644);
+    mkdir($server, 0755);
 }
 
 
 if($server == $baseServerName){
-    exec("git pull 2>&1", $output);
+    exec("git -q pull 2>&1", $output);
     if($output && $output[0] != 'Already up-to-date.'){
         Json::die([
             'result'=>false,
