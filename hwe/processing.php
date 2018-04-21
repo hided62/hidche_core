@@ -1552,7 +1552,7 @@ function command_46($turn, $command) {
             continue;
         }
 
-        if(isset($nationcolor[$nation['color']])){
+        if(!isset($nationcolor[$nation['color']])){
             $nationcolor[$nation['color']] = 1;
         }
         else{
