@@ -323,7 +323,8 @@ for($j=0; $j < $gencount; $j++) {
 
     if($ourGeneral && !$isNPC){
         $turnText = [];
-        foreach(getTurn($general, 1) as $turnIdx=>$turn){
+        foreach(getTurn($general, 1) as $turnRawIdx=>$turn){
+            $turnIdx = $turnRawIdx+1;
             $turnText[] = "{$turnIdx} : $turn";
         }
         $turnText = join('<br>', $turnText);
