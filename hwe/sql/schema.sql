@@ -437,7 +437,8 @@ create table if not exists hall (
   color char(12) default '',
   picture char(32) default '',
 
-  PRIMARY KEY (no)
+  PRIMARY KEY (no),
+  UNIQUE INDEX `type` (`type`, `rank`)
   ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
