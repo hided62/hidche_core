@@ -312,6 +312,8 @@ class Scenario{
 
             $nation->build($env);
         }
+        
+        refreshNationStaticInfo();
         CityHelper::flushCache();
 
         $remainGenerals = $this->buildGenerals($env);
