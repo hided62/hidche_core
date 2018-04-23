@@ -648,7 +648,7 @@ function processAI($no) {
                         if($npcGenID === null && $userGenID === null){
                             $genID = 0;
                         }
-                        else if($npcGenID === null || $userGenValue < $npcGenValue * 3){
+                        else if($npcGenID === null || ($userGenValue !== null && $userGenValue < $npcGenValue * 3)){
                             $genID = $userGenID;
                         }
                         else{
