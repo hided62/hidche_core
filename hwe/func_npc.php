@@ -261,6 +261,7 @@ function processAI($no) {
     }
 
     $tech = getTechCost($nation['tech']);
+    $resrc = $tech * 700;//XXX: 왜 700이지?
 
     if($general['atmos'] >= 90 && $general['train'] >= 90) {
         if($general['mode'] == 0) {
@@ -626,12 +627,13 @@ function processAI($no) {
                         }
                     } else {    // 포상
                         // 포상 대상
-                        list($npcGenID, $npcGenValue) = $db->queryFirstList(
-                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc >= 2 AND killturn > 5 AND leader >= 40 ORDER BY %b ASC LIMIT 1',
+                        list($npcGenID, $npcGenValue, $npcLeadership) = $db->queryFirstList(
+                            'SELECT `no`, %b, leader FROM general WHERE nation=%i AND `no`!=%i AND npc >= 2 AND killturn > 5 AND (leader >= 40 OR %b < %i) ORDER BY %b ASC LIMIT 1',
                             $type,
                             $general['nation'],
                             $general['no'],
                             $type,
+                            $resrc,
                             $type
                         );
 
@@ -640,7 +642,6 @@ function processAI($no) {
                             $type,
                             $general['nation'],
                             $general['no'],
-                            $type,
                             $type
                         );
 
@@ -657,6 +658,10 @@ function processAI($no) {
                         if ($genID) {
                             if($genID === $npcGenID){
                                 $amount = min(100, intdiv(($nation[$type]-GameConst::$baserice), 5000)*10 + 10);
+                                if($npcLeadership < 40){
+                                    $amount = min($amount, intdiv($resrc, 1000)*10 + 10);
+                                }
+                                
                             }
                             else{
                                 $amount = min(100, intdiv(($nation[$type]-GameConst::$baserice), 2000)*10 + 10);
@@ -709,8 +714,6 @@ function processAI($no) {
             MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
             return;
         }
-
-        $resrc = $tech * 700;//XXX: 왜 700이지?
 
         if($general['leader'] < 40){
             //무지장인데
