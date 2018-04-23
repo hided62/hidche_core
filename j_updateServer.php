@@ -152,7 +152,7 @@ $result = Util::generateFileUsingSimpleTemplate(
 );
 
 
-AppConf::getList()[$server]->closeServer();
+//AppConf::getList()[$server]->closeServer();
 
 Json::die([
     'server'=>$server,
