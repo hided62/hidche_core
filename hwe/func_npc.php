@@ -627,7 +627,7 @@ function processAI($no) {
                     } else {    // 포상
                         // 포상 대상
                         list($npcGenID, $npcGenValue) = $db->queryFirstList(
-                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc >= 2 ORDER BY %b ASC LIMIT 1',
+                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc >= 2 AND killturn > 5 AND leader >= 40 ORDER BY %b ASC LIMIT 1',
                             $type,
                             $general['nation'],
                             $general['no'],
@@ -636,7 +636,7 @@ function processAI($no) {
                         );
 
                         list($userGenID, $userGenValue) = $db->queryFirstList(
-                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc < 2 ORDER BY %b ASC LIMIT 1',
+                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc < 2 AND killturn > 5 ORDER BY %b ASC LIMIT 1',
                             $type,
                             $general['nation'],
                             $general['no'],
@@ -709,6 +709,43 @@ function processAI($no) {
             MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
             return;
         }
+
+        $resrc = $tech * 700;//XXX: 왜 700이지?
+
+        if($general['leader'] < 40){
+            //무지장인데
+            
+            if(
+                (($nation['rice'] - GameConst::$baserice) * 3 <= $general['rice'] && $general['rice'] >= $resrc + 2100) ||
+                ($general['rice'] >= 11000)
+            ){
+                //쌀을 많이 들고 있다면
+                $amount = $general['rice'] * 0.9;
+                $amount = intdiv(Util::valueFit($amount, $resrc + 700, 10000), 100);
+
+                $command = EncodeCommand(0, 2, $amount, 44);  //헌납
+                $db->update('general', [
+                    'turn0'=>$command
+                ], 'no=%i',$general['no']);
+                return;
+            }
+
+            if(
+                (($nation['gold'] - GameConst::$basegold) * 3 <= $general['gold'] && $general['gold'] >= $resrc + 2100) ||
+                ($general['gold'] >= 12000)
+            ){
+                //금을 많이 들고 있다면
+                $amount = $general['gold'] * 0.9;
+                $amount = intdiv(Util::valueFit($amount, $resrc + 700, 10000), 100);
+                
+                $command = EncodeCommand(0, 1, $amount, 44);  //헌납
+                $db->update('general', [
+                    'turn0'=>$command
+                ], 'no=%i',$general['no']);
+                return;
+            }
+        }
+
         //국가 병량이 없을때 바로 헌납
         if($nation['rice'] < 2000 && $general['rice'] > 200) {
             $amount = intdiv($general['rice'] - 200, 100) + 1;
@@ -727,7 +764,7 @@ function processAI($no) {
 //    ┃조┃        ┃쌀삼
 //   0┗━┻━━━━┻━━━> G
 //       100       700
-        $resrc = $tech * 700;
+        
         $target = array();
         // 평시거나 초반아니면서 공격가능 없으면서 병사 있으면 해제(25%)
         if($dipState == 0 && $isStart == 0 && $attackable == 0 && $general['crew'] > 0 && rand()% 100 < 25) {
