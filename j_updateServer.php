@@ -99,7 +99,7 @@ if($server == $baseServerName){
         ], true
     );
 
-    AppConf::getList()[$server]->closeServer();
+    //AppConf::getList()[$server]->closeServer();
 
     Json::die([
         'server'=>$server,
