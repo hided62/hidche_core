@@ -587,7 +587,7 @@ function processAI($no) {
                     if(rand() % 2 == 0) { $type = "gold"; $type2 = 1; }
                     else { $type = "rice"; $type2 = 2; }
 
-                    if($nation[$type] < $type2*2000) {  // 몰수
+                    if($nation[$type] < $type2*3000) {  // 몰수
                         // 몰수 대상
                         list($npcGenID, $npcGenValue) = $db->queryFirstList(
                             'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND %b>3000 AND npc >= 2 ORDER BY %b DESC LIMIT 1',
@@ -657,14 +657,14 @@ function processAI($no) {
 
                         if ($genID) {
                             if($genID === $npcGenID){
-                                $amount = min(100, intdiv(($nation[$type]-GameConst::$baserice), 5000)*10 + 10);
+                                $amount = min(100, intdiv(($nation[$type]-($type=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
                                 if($npcLeadership < 40){
                                     $amount = min($amount, intdiv($resrc, 1000)*10 + 10);
                                 }
                                 
                             }
                             else{
-                                $amount = min(100, intdiv(($nation[$type]-GameConst::$baserice), 2000)*10 + 10);
+                                $amount = min(100, intdiv(($nation[$type]-($type=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 2000)*10 + 10);
                             }
                             
                             // 포상
