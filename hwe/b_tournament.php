@@ -176,10 +176,16 @@ if ($session->userGrade >= 5) {
 
 $str1 = getTournament($admin['tournament']);
 $str2 = getTournamentTime();
+if($str2){
+    $str2 = ', '+$str2;
+}
 $str3 = getTournamentTerm();
+if($str3){
+    $str3 = ', '+$str3;
+}
 ?>
     <tr><td colspan=8>운영자 메세지 : <font color=orange size=5><?=$admin['tnmt_msg']?></font></td></tr>
-    <tr><td colspan=8 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.", ".$str2.", ".$str3?>)</font></td></tr>
+    <tr><td colspan=8 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.$str2.$str3?>)</font></td></tr>
     <tr><td colspan=8 align=center id=bg2><font color=magenta size=5>16강 승자전</font></td></tr>
     <tr><td height=10 colspan=8 align=center></td></tr>
 <?php

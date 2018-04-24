@@ -37,7 +37,13 @@ case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "�
 
 $str1 = getTournament($admin['tournament']);
 $str2 = getTournamentTime();
+if($str2){
+    $str2 = ', '+$str2;
+}
 $str3 = getTournamentTerm();
+if($str3){
+    $str3 = ', '+$str3;
+}
 
 ?>
 <!DOCTYPE html>
@@ -67,7 +73,7 @@ select { font-family:'굴림'; line-height:100%; }
 </table>
 <table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10px;word-break:break-all; id=bg0>
     <tr><td colspan=16><input type=button value='갱신' onclick='location.reload()'></td></tr>
-    <tr><td colspan=16 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.", ".$str2.", ".$str3?>)</font></td></tr>
+    <tr><td colspan=16 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.$str2.$str3?>)</font></td></tr>
     <tr><td height=50 colspan=16 align=center id=bg2><font color=limegreen size=6>16강 상황</font><br><font color=orange size=3>(전체 금액 : <?=$admin['bet']?> / 내 투자 금액 : <?=$me['bet']?>)</font></td></tr>
 </table>
 <table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10px;word-break:break-all; id=bg0>
