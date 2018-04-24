@@ -52,7 +52,10 @@ if($reserve_open){
     $reserve_open = new \DateTime($reserve_open);
     $db = DB::db();
 
-    ResetHelper::clearDB();
+    $clearResult = ResetHelper::clearDB();
+    if(!$clearResult['result']){
+        Json::die($clearResult);
+    }
 
     $scenarioObj = new Scenario($scenario, true);
     $db->delete('reserved_open', true);
