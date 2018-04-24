@@ -37,7 +37,7 @@ if(!$game){
         'reserved'=>[
             'scenarioName'=>$options['scenarioName'],
             'turnterm'=>$options['turnterm'],
-            'fictionMode'=>($options['fiction']?'연의':'가상'),
+            'fictionMode'=>($options['fiction']?'사실':'가상'),
             'npcMode'=>($options['npcmode']?'가능':'불가'),
             'openDatetime'=>$reserved['date']
         ],
