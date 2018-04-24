@@ -16,7 +16,7 @@ class ResetHelper{
         int $show_img_level,
         int $tournament_trig
     ):array{
-        
+        //FIXME: 분리할 것
         if(120 % $turnterm != 0){
             return [
                 'result'=>false,
