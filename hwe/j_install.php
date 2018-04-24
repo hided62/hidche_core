@@ -28,7 +28,8 @@ $v->rule('required', [
     'fiction',
     'extend',
     'npcmode',
-    'show_img_level'
+    'show_img_level',
+    'tournament_trig'
 ]);
 if(!$v->validate()){
     Json::die([
@@ -44,11 +45,19 @@ $fiction = (int)$_POST['fiction'];
 $extend = (int)$_POST['extend'];
 $npcmode = (int)$_POST['npcmode'];
 $show_img_level = (int)$_POST['show_img_level'];
+$tournament_trig = (int)$_POST['tournament_trig'];
 
 if(120 % $turnterm != 0){
     Json::die([
         'result'=>false,
         'reason'=>'turnterm은 120의 약수여야 합니다.'
+    ]);
+}
+
+if($tournament_trig < 0 || $tournament_trig > 7){
+    Json::die([
+        'result'=>false,
+        'reason'=>'올바르지 않은 토너먼트 주기입니다.'
     ]);
 }
 
@@ -184,7 +193,8 @@ $env = [
     'show_img_level'=>$show_img_level,
     'npcmode'=>$npcmode,
     'extended_general'=>$extend,
-    'fiction'=>$fiction
+    'fiction'=>$fiction,
+    'tnmt_trig'=>$tournament_trig
 ];
 
 foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
