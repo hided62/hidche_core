@@ -3,6 +3,13 @@ namespace sammo;
 
 include "lib.php";
 
+if(file_exists(__dir__.'/.htaccess')){
+    Json::die([
+        'game'=>null,
+        'me'=>null
+    ]);
+}
+
 $session = Session::requireLogin([
     'game'=>null,
     'me'=>null
