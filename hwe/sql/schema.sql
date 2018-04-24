@@ -644,3 +644,15 @@ CREATE TABLE `general_public_record` (
 DEFAULT CHARSET=utf8mb4
 ENGINE=InnoDB
 ;
+
+######
+# 예약 오픈 테이블
+CREATE TABLE `reserved_open` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`options` TEXT NULL DEFAULT NULL,
+	`date` DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `date` (`date`)
+)
+DEFAULT CHARSET=utf8mb4
+ENGINE=MyISAM;

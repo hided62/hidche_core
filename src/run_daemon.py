@@ -27,17 +27,28 @@ def main():
         break
 
     servList = []
+    autoResetList = []
     for path in glob.glob(basepath+'/*/d_setting/DB.php'):
         servPath = os.path.dirname(os.path.dirname(path))
+        servRelPath = os.path.relpath(servPath, basepath)
+
+        resetAbsPath = servPath + '/j_autoreset.php'
+        resetPath = webBase + '/' + servRelPath + '/j_autoreset.php'
+        if os.path.exists(resetAbsPath):
+            autoResetList.append(resetPath)
+
         if servPath in hiddenList:
             continue
 
-        servRelPath = os.path.relpath(servPath, basepath)
         webPath = webBase + '/' + servRelPath + '/proc.php'
+        
         servList.append(webPath)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(servList)) as executor:
         waiters=[]
+        for resetPath in autoResetList:
+            future = executor.submit(run, resetPath)
+            waiters.append(future)
         for _ in range(4):
             for webPath in servList:
                 future = executor.submit(run, webPath)

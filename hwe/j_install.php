@@ -51,14 +51,17 @@ $reserve_open = Util::getReq('reserve_open');
 if($reserve_open){
     $reserve_open = new \DateTime($reserve_open);
     $db = DB::db();
-    
+
     ResetHelper::clearDB();
 
+    $scenarioObj = new Scenario($scenario, true);
+    $db->delete('reserved_open', true);
     $db->insert('reserved_open', [
         'options'=>Json::encode([
             'turnterm'=>$turnterm,
             'sync'=>$sync,
             'scenario'=>$scenario,
+            'scenarioName'=>$scenarioObj->getTitle(),
             'fiction'=>$fiction,
             'extend'=>$extend,
             'npcmode'=>$npcmode,
