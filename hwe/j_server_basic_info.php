@@ -3,13 +3,6 @@ namespace sammo;
 
 include "lib.php";
 
-if(file_exists(__dir__.'/.htaccess')){
-    Json::die([
-        'game'=>null,
-        'me'=>null
-    ]);
-}
-
 $session = Session::requireLogin([
     'game'=>null,
     'me'=>null
@@ -25,9 +18,7 @@ if(!class_exists('\\sammo\\DB')){
 
 $db = DB::db();
 
-$game = $db->queryFirstRow('SELECT isUnited, npcMode, year, month, scenario, scenario_text, maxgeneral as maxUserCnt, turnTerm from game where `no`=1');
-
-if(!$game){
+if(file_exists(__dir__.'/.htaccess')){
     $reserved = $db->queryFirstRow(
         'SELECT * FROM reserved_open ORDER BY `date` ASC LIMIT 1'
     );
@@ -51,8 +42,11 @@ if(!$game){
         'game'=>null,
         'me'=>null
     ]);
-    
 }
+
+//TODO: 천통시에도 예약 오픈 알림이 필요..?
+
+$game = $db->queryFirstRow('SELECT isUnited, npcMode, year, month, scenario, scenario_text, maxgeneral as maxUserCnt, turnTerm from game where `no`=1');
 
 $nationCnt = $db->queryFirstField('SELECT count(`nation`) from nation where `level` > 0');
 $genCnt = $db->queryFirstField('SELECT count(`no`) from general where `npc` < 2');
