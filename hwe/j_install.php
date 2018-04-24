@@ -47,7 +47,33 @@ $npcmode = (int)$_POST['npcmode'];
 $show_img_level = (int)$_POST['show_img_level'];
 $tournament_trig = (int)$_POST['tournament_trig'];
 
-Json::die(ResetHelper::doReset(
+$reserve_open = Util::getReq('reserve_open');
+if($reserve_open){
+    $reserve_open = new \DateTime($reserve_open);
+    $db = DB::db();
+    
+    ResetHelper::clearDB();
+
+    $db->insert('reserved_open', [
+        'options'=>Json::encode([
+            'turnterm'=>$turnterm,
+            'sync'=>$sync,
+            'scenario'=>$scenario,
+            'fiction'=>$fiction,
+            'extend'=>$extend,
+            'npcmode'=>$npcmode,
+            'show_img_level'=>$show_img_level,
+            'tournament_trig'=>$tournament_trig
+        ]),
+        'date'=>$reserve_open->format('Y-m-d H:i:s')
+    ]);
+    Json::die([
+        'result'=>true,
+        'reason'=>'예약'
+    ]);
+}
+
+Json::die(ResetHelper::buildScenario(
     $turnterm,
     $sync,
     $scenario,

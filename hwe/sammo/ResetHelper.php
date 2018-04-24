@@ -6,31 +6,7 @@ class ResetHelper{
 
     }
 
-    static public function doReset(
-        int $turnterm,
-        int $sync,
-        int $scenario,
-        int $fiction,
-        int $extend,
-        int $npcmode,
-        int $show_img_level,
-        int $tournament_trig
-    ):array{
-        //FIXME: 분리할 것
-        if(120 % $turnterm != 0){
-            return [
-                'result'=>false,
-                'reason'=>'turnterm은 120의 약수여야 합니다.'
-            ];
-        }
-
-        if($tournament_trig < 0 || $tournament_trig > 7){
-            return [
-                'result'=>false,
-                'reason'=>'올바르지 않은 토너먼트 주기입니다.'
-            ];
-        }
-
+    static public function clearDB(){
         $servRoot = realpath(__dir__.'/../');
 
         if(!file_exists($servRoot.'/logs') || !file_exists($servRoot.'/data')){
@@ -73,13 +49,11 @@ class ResetHelper{
             @file_put_contents($servRoot.'/data/.htaccess', 'Deny from  all');
         }
 
+        $prefix = DB::prefix();
+        AppConf::getList()[$prefix]->closeServer();
 
         $db = DB::db();
         $mysqli_obj = $db->get();
-
-
-        $scenarioObj = new Scenario($scenario, false);
-        $startyear = $scenarioObj->getYear()??GameConst::$defaultStartYear;
 
         FileUtil::delInDir($servRoot."/logs");
         FileUtil::delInDir($servRoot."/data");
@@ -114,7 +88,48 @@ class ResetHelper{
             }
         }
 
+        
 
+        return [
+            'result'=>true
+        ];
+    }
+
+    static public function buildScenario(
+        int $turnterm,
+        int $sync,
+        int $scenario,
+        int $fiction,
+        int $extend,
+        int $npcmode,
+        int $show_img_level,
+        int $tournament_trig
+    ):array{
+        //FIXME: 분리할 것
+        if(120 % $turnterm != 0){
+            return [
+                'result'=>false,
+                'reason'=>'turnterm은 120의 약수여야 합니다.'
+            ];
+        }
+
+        if($tournament_trig < 0 || $tournament_trig > 7){
+            return [
+                'result'=>false,
+                'reason'=>'올바르지 않은 토너먼트 주기입니다.'
+            ];
+        }
+
+        $clearResult = self::clearDB();
+        if(!$clearResult['result']){
+            return $clearResult;
+        }
+
+        $scenarioObj = new Scenario($scenario, false);
+        $startyear = $scenarioObj->getYear()??GameConst::$defaultStartYear;
+
+
+        $db = DB::db();
         $db->insert('plock', [
             'plock'=>1
         ]);

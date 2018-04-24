@@ -197,6 +197,13 @@ if($session->userGrade < 5){
                     </div>
 
                     <div class="form-group row">
+                        <label for="reserve_open" class="col-sm-3 col-form-label">오픈 예약</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="reserve_open" id="reserve_open"  placeholder="YYYY-MM-DD hh:mm" value="" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
                             <input type="submit" class="btn btn-primary btn-lg btn-block login-button" value="리셋 개시">
