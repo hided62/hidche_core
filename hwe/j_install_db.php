@@ -93,6 +93,8 @@ if($result !== true){
     ]);
 }
 
+ResetHelper::clearDB();
+
 AppConf::getList()[$prefix]->closeServer();
 
 Json::die([

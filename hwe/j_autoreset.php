@@ -31,10 +31,6 @@ $result = ResetHelper::buildScenario(
     $options['tournament_trig']
 );
 
-if($result['result']){
-    $db->delete('reserved_open', 'id=%i', $reserved['id']);   
-}
-
 $result['affected']=1;
 
 $prefix = DB::prefix();
