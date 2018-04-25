@@ -277,17 +277,8 @@ function processAI($no) {
 
     //운영자메시지 출력 하루 6번..?
     //특별 메세지 있는 경우 출력 하루 4번
-    switch($admin['turnterm']) {
-    case 0: $term = 1; break;
-    case 1: $term = 1; break;
-    case 2: $term = 2; break;
-    case 3: $term = 3; break;
-    case 4: $term = 6; break;
-    case 5: $term = 12; break;
-    case 6: $term = 30; break;
-    case 7: $term = 60; break;
-    }
-    if($general['npcmsg'] != "" && rand()%(24*$term) < 3) {
+    $term = $admin['turnterm'];
+    if($general['npcmsg'] && Util::randBool($term / (6*60))) {
         $src = new MessageTarget(
             $general['no'], 
             $general['name'],
