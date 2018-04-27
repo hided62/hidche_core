@@ -14,6 +14,11 @@ function fillUserInfo(result){
     $('#slot_grade').html(result.grade);
     $('#slot_icon').attr('src', result.picture);
     $('#global_salt').val(result.global_salt);
+    $('#slot_join_date').html(result.join_date);
+    $('#slot_third_use').html(result.third_use?'○':'×');
+    if(result.third_use){
+        $('#third_use_disallow').show();
+    }
 }
 
 function changeIconPreview(){
@@ -62,6 +67,20 @@ function deleteIcon(){
         
     },function(){
         alert('알 수 없는 이유로 아이콘 삭제를 실패했습니다.');
+        location.reload();
+    });
+}
+
+function disallowThirdUse(){
+    $.ajax({
+        type:'post',
+        url:'j_disallow_third_use.php',
+        dataType:'json'
+    }).then(function(result){
+        alert('철회했습니다.');
+        location.reload();
+    },function(){
+        alert('알 수 없는 이유로 철회를 실패했습니다.');
         location.reload();
     });
 }
@@ -217,6 +236,12 @@ $(function(){
             deleteIcon();
         }
         return false;
+    });
+
+    $('#third_use_disallow').click(function(){
+        if(confirm('개인정보 3자 제공 동의를 철회할까요?')){
+            disallowThirdUse();
+        }
     });
 
     $('#change_pw_form').submit(changePassword);
