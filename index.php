@@ -36,7 +36,13 @@ if ($session->isLoggedIn()) {
 
 var oauthMode = null;
 
-function getOAuthToken(mode='login', scope_list = null){
+function getOAuthToken(mode, scope_list){
+    if(mode === undefined){
+        mode = 'login';
+    }
+    if(scope_list === undefined){
+        scope_list = null;
+    }
     oauthMode = mode;
     var url = 'https://kauth.kakao.com/oauth/authorize?'+
         'client_id=<?=KakaoKey::REST_KEY?>&'+
