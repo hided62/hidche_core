@@ -104,3 +104,13 @@ input::-webkit-input-placeholder {
 #btn_kakao_login:hover {
     background-image:url('../oauth_kakao/kakao_login_join_ov.png');
 } 
+
+#bottom_box{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    left:0;
+}
+#bottom_box .container{
+    text-align:center;
+}

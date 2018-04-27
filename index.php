@@ -151,5 +151,8 @@ function postOAuthResult(result){
         </div>
     </div>
     </div>
+    <div id="bottom_box">
+    <div class="container"><a href="oauth_kakao/terms.2.html">개인정보처리방침</a> &amp; <a href="oauth_kakao/terms.1.html">이용약관</a><br>© 2018  •  HideD
+    </div></div>
 </body>
 </html>
