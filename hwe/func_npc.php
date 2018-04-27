@@ -192,7 +192,14 @@ function processAI($no) {
 
     $query = "select nation,level,tech,gold,rice,rate,type,color,name,war from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error("processAI03 ".MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = MYDB_fetch_array($result)??[
+        'nation'=>0,
+        'color'=>'#000000',
+        'name'=>'재야',
+        'level'=>0,
+        'gold'=>0,
+        'rice'=>0,
+    ];
 
     $coreCommand = array();
     if($general['level'] >= 5) {

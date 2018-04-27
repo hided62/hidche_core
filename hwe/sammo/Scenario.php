@@ -64,7 +64,7 @@ class Scenario{
 
             list(
                 $affinity, $name, $pictureID, $nationID, $locatedCity, 
-                $leadership, $power, $intel, $birth, $death, $ego,
+                $leadership, $power, $intel, $level, $birth, $death, $ego,
                 $char, $text
             ) = $rawGeneral;
 
@@ -83,6 +83,7 @@ class Scenario{
                 $leadership, 
                 $power, 
                 $intel, 
+                $level, 
                 $birth, 
                 $death, 
                 $ego,
@@ -117,7 +118,7 @@ class Scenario{
                 $leadership, 
                 $power, 
                 $intel, 
-                $level,
+                $level, 
                 $birth, 
                 $death, 
                 $ego,
