@@ -55,7 +55,7 @@ class ScoutMessage extends Message{
     /**
      * @return int 수행 결과 반환, ACCEPTED(등용장 소모), DECLINED(등용장 소모), INVALID 중 반환
      */
-    public function agreeMessage(int $receiverID):int{
+    public function agreeMessage(int $receiverID, string &$reason):int{
         //NOTE: 올바른 유저가 agreeMessage() 호출을 한건지는 외부에서 체크 필요(Session->userID 등)
 
         if(!$this->id){
@@ -146,7 +146,7 @@ class ScoutMessage extends Message{
         return self::DECLINED;
     }
 
-    public function declineMessage(int $receiverID):int{
+    public function declineMessage(int $receiverID, string &$reason):int{
         if(!$this->id){
             throw \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
         }

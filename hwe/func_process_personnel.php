@@ -568,7 +568,7 @@ function process_46(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
-    $query = "select nation from nation where name='{$general['makenation']}'";
+    $query = "select nation from nation where nation!={$general['nation']} AND name='{$general['makenation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($result);
 

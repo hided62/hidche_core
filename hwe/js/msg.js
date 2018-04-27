@@ -42,7 +42,10 @@ function responseMessage(msgID, response){
     }).then(refreshMsg);
 }
 
-function refreshMsg(){
+function refreshMsg(result){
+    if(!result.result){
+        alert(result.reason);
+    }
     return redrawMsg(fetchMsg());
 }
 
