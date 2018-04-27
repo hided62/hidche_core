@@ -636,10 +636,12 @@ function processAI($no) {
                         );
 
                         list($userGenID, $userGenValue) = $db->queryFirstList(
-                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc < 2 AND killturn > 5 ORDER BY %b ASC LIMIT 1',
+                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc < 2 AND killturn > 5  AND (leader >= 40 OR %b < %i) ORDER BY %b ASC LIMIT 1',
                             $type,
                             $general['nation'],
                             $general['no'],
+                            $type,
+                            $type==='gold'?21000:3000,
                             $type
                         );
 
