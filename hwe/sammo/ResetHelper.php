@@ -61,7 +61,8 @@ class ResetHelper{
         $result = Util::generateFileUsingSimpleTemplate(
             $servRoot.'/d_setting/UniqueConst.orig.php',
             $servRoot.'/d_setting/UniqueConst.php',[
-                'serverID'=>DB::prefix().'_'.Util::randomStr(8)
+                'serverID'=>DB::prefix().'_'.Util::randomStr(8),
+                'serverName'=>AppConf::getList()[$prefix]->getKorName(),
             ], true
         );
 
