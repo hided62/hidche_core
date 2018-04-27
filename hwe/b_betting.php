@@ -38,11 +38,11 @@ case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "�
 $str1 = getTournament($admin['tournament']);
 $str2 = getTournamentTime();
 if($str2){
-    $str2 = ', '+$str2;
+    $str2 = ', '.$str2;
 }
 $str3 = getTournamentTerm();
 if($str3){
-    $str3 = ', '+$str3;
+    $str3 = ', '.$str3;
 }
 
 ?>
