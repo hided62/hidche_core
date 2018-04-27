@@ -27,6 +27,9 @@ class StringUtil
         $currentPos = 0;
         $currentWidth = 0;
 
+        $rawStart = 0;
+        $rawWidth = 0;
+
         $strings = static::splitString($str);
         foreach($strings as $idx=>$char){
             $charWidth = mb_strwidth($char, 'UTF-8');
@@ -34,10 +37,11 @@ class StringUtil
                 break;
             }
             $currentPos += $charWidth;
+            $rawStart += strlen($char);
         }
 
         if($currentPos + $width >= $length){
-            return substr($str, $currentPos);
+            return substr($str, $rawStart);
         }
 
         for($idx = $currentPos; $idx < count($strings); $idx++){
@@ -48,9 +52,10 @@ class StringUtil
                 break;
             }
             $currentWidth += $charWidth;
+            $rawWidth += strlen($char);
         }
 
-        return substr($str, $currentPos, $currentWidth);
+        return substr($str, $rawStart, $rawWidth);
     }
 
     public static function cutStringForWidth(string $str, int $width, string $endFill='..')
