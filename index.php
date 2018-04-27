@@ -50,7 +50,6 @@ function getOAuthToken(mode='login', scope_list = null){
     }
 
     window.open(url,"KakaoAccountLogin","width=600,height=450");
-
 }
 
 function sendTempPasswordToKakaoTalk(){
@@ -117,7 +116,7 @@ function postOAuthResult(result){
                         <label for="username" class="col-sm-4 col-form-label">계정명</label>
                         <div class="col-sm-8">
                             <input autocomplete="username" type="text" class="form-control"
-                                name="username" id="username"  placeholder="계정명"/>
+                                name="username" id="username" autofocus="autofocus" placeholder="계정명"/>
                         </div>
                     </div>
 
@@ -132,7 +131,7 @@ function postOAuthResult(result){
 
                     <input type="hidden" id="global_salt" name="global_salt" value="<?=RootDB::getGlobalSalt()?>">
                     <div class="form-group row">
-                        <div class="col-sm-4" style="position:relative;"><a href="javascript:getOAuthToken('login');"><img style="height:46px;margin-top:6px;" src="oauth_kakao/kakao_btn.png"></a></div>
+                        <div class="col-sm-4" style="position:relative;"><button type="button" onclick="getOAuthToken('login');" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
                         <div class="col-sm-8">
                             <button type="submit" class="btn btn-primary btn-lg btn-block login-button">로그인</button>
                         </div>

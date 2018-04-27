@@ -86,3 +86,21 @@ input::-webkit-input-placeholder {
     display: flex;
     align-items: center;
 }
+
+#btn_kakao_login{
+    cursor: pointer;
+    height:46px;
+    width:116px;
+    background-color: transparent;
+    color:transparent;
+    border:0;
+    background-size: 100%; /* To fill the dimensions of container (button), or */
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    margin-top:5px;
+    background-image:url('../oauth_kakao/kakao_login_join.png');
+}
+
+#btn_kakao_login:hover {
+    background-image:url('../oauth_kakao/kakao_login_join_ov.png');
+} 
