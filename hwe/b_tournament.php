@@ -177,11 +177,11 @@ if ($session->userGrade >= 5) {
 $str1 = getTournament($admin['tournament']);
 $str2 = getTournamentTime();
 if($str2){
-    $str2 = ', '+$str2;
+    $str2 = ', '.$str2;
 }
 $str3 = getTournamentTerm();
 if($str3){
-    $str3 = ', '+$str3;
+    $str3 = ', '.$str3;
 }
 ?>
     <tr><td colspan=8>운영자 메세지 : <font color=orange size=5><?=$admin['tnmt_msg']?></font></td></tr>
