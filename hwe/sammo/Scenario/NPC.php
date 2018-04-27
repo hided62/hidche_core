@@ -70,6 +70,11 @@ class NPC{
             $nationID = 0;
         };
 
+        $affinity = $this->affinity;
+        if(Util::array_get($env['fiction'],false) || $affinity === 0){
+            $affinity = mt_rand(1, 150);
+        }
+
         $year = $env['year'];
         $month = $env['month'];
         $age = $year - $this->birth;
@@ -137,7 +142,7 @@ class NPC{
             'npcid'=>$npcID,
             'npc'=>2,
             'npc_org'=>2,
-            'affinity'=>$this->affinity,
+            'affinity'=>$affinity,
             'name'=>$name,
             'picture'=>$picture,
             'nation'=>$nationID,
