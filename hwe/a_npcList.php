@@ -26,7 +26,7 @@ $sel[$type] = "selected";
 
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>빙의일람</title>
+<title><?=UniqueConst::$serverName?>: 빙의일람</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>
 

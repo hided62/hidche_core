@@ -32,7 +32,7 @@ $connect=$db->get();
 <!DOCTYPE html>
 <html>
 <head>
-<title>NPC선택</title>
+<title><?=UniqueConst::$serverName?>: NPC선택</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>

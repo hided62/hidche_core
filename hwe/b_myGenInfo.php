@@ -37,7 +37,7 @@ $sel = [$type => "selected"];
 
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>세력장수</title>
+<title><?=UniqueConst::$serverName?>: 세력장수</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>
 

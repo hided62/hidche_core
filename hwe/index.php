@@ -58,7 +58,7 @@ $scenario = $admin['scenario_text'];
 <!DOCTYPE html>
 <html>
 <head>
-<title>메인</title>
+<title><?=UniqueConst::$serverName?>: 메인</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <script src="../e_lib/jquery-3.2.1.min.js"></script>

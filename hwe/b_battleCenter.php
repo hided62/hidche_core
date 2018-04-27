@@ -75,7 +75,7 @@ $sel[$type] = "selected";
 <html>
 
 <head>
-<title>감찰부</title>
+<title><?=UniqueConst::$serverName?>: 감찰부</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>

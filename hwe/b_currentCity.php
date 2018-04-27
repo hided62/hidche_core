@@ -32,7 +32,7 @@ $templates = new \League\Plates\Engine('templates');
 <html>
 
 <head>
-<title>도시정보</title>
+<title><?=UniqueConst::$serverName?>: 도시정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link href="../d_shared/common.css" rel="stylesheet">
 <link href="css/common.css" rel="stylesheet">

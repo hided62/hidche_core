@@ -53,7 +53,7 @@ if($str3){
 } ?>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>베팅장</title>
+<title><?=UniqueConst::$serverName?>: 베팅장</title>
 <style>
 body { color:white; background-color:black; border-width:1px; border-color:gray; }
 table { font-family:'맑은 고딕'; line-height:110%; }

@@ -29,7 +29,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>세력도</title>
+<title><?=UniqueConst::$serverName?>: 세력도</title>
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
 <script src="../d_shared/common_path.js"></script>
 <script src="js/common.js"></script>

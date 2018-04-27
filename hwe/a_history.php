@@ -77,7 +77,7 @@ if ($month <= 0) {
 
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>연감</title>
+<title><?=UniqueConst::$serverName?>: 연감</title>
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
 <script src="../d_shared/common_path.js"></script>
 <script src="js/common.js"></script>

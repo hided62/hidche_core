@@ -28,7 +28,7 @@ if ($vote[0] == "") {
 <!DOCTYPE html>
 <html>
 <head>
-<title>설문조사</title>
+<title><?=UniqueConst::$serverName?>: 설문조사</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>

@@ -29,7 +29,7 @@ $connect=$db->get();
 <!DOCTYPE html>
 <html>
 <head>
-<title>장수생성</title>
+<title><?=UniqueConst::$serverName?>: 장수생성</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link href="../d_shared/common.css" rel="stylesheet">
 <link rel='stylesheet' href="css/common.css">
