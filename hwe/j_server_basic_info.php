@@ -35,7 +35,7 @@ if(file_exists(__dir__.'/.htaccess')){
         'reserved'=>[
             'scenarioName'=>$options['scenarioName'],
             'turnterm'=>$options['turnterm'],
-            'fictionMode'=>($options['fiction']?'사실':'가상'),
+            'fictionMode'=>($options['fiction']?'가상':'사실'),
             'npcMode'=>($options['npcmode']?'가능':'불가'),
             'openDatetime'=>$reserved['date']
         ],
