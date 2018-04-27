@@ -202,7 +202,6 @@ if ($select == 0) {
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

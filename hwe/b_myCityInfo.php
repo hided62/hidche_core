@@ -192,7 +192,6 @@ for ($j=0; $j < $citycount; $j++) {
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 
 </html>

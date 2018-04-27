@@ -333,7 +333,6 @@ if ($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

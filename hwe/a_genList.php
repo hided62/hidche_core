@@ -194,7 +194,6 @@ echo "
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 <script type="text/javascript">
 $(document).ready(function() {
     $("#viewType").val("<?=$type?>").attr("selected", "selected");

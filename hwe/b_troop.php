@@ -160,7 +160,6 @@ echo "
     <tr><td><?=banner()?> </td></tr>
 </table>
 </form>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

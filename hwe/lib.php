@@ -26,7 +26,6 @@ include "MYDB.php";
 // 각종 변수
 define('STEP_LOG', true);
 define('PROCESS_LOG', true);
-$_startTime = microtime(true);
 
 ob_start();
 session_cache_limiter('nocache');//NOTE: 캐시가 가능하도록 설정해야 할 수도 있음. 주의!
@@ -53,13 +52,6 @@ function Error($message='', $url="")
 function MessageBox($str)
 {
     echo "<script>alert('$str');</script>";
-}
-
-function PrintElapsedTime()
-{
-    global $_startTime;
-    $_endTime = round(microtime(true) - $_startTime, 3);
-    echo "<table width=1000 align=center style=font-size:10px;><tr><td align=right>경과시간 : {$_endTime}초</td></tr></table>";
 }
 
 function LogText($prefix, $variable)

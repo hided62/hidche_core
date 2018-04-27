@@ -1630,7 +1630,6 @@ if($isgen == "장수공격" || $isgen == "성벽공격") {
 </table>
 </form>
 </body>
-<?php PrintElapsedTime(); ?>
 </html>
 <?php
 

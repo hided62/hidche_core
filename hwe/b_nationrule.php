@@ -52,7 +52,6 @@ if($me['level'] >= 5) {
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

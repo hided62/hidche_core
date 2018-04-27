@@ -64,7 +64,6 @@ for($i=0; $i < 20; $i++) {
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

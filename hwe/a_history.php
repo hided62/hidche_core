@@ -159,6 +159,5 @@ reloadWorldMap({
     neutralView:true
 });
 </script>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>

@@ -308,6 +308,5 @@ if ($nation['war'] == 0) {
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>

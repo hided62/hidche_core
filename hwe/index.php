@@ -311,7 +311,6 @@ else if($session->userGrade == 4){
         <section class="national_message"></section>
  </div></div>
 <div style="clear:left;"><?=allButton()?><?=banner()?></div>
-<?php PrintElapsedTime(); ?>
 </div>
 <?php
 if ($con == 1) {

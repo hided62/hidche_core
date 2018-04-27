@@ -192,7 +192,6 @@ for($k=0; $k < 2; $k++) {
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

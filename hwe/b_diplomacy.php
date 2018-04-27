@@ -248,6 +248,5 @@ for($i=0; $i < $nationcount; $i++) {
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>

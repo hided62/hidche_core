@@ -166,11 +166,7 @@ function ender($type=0) {
     echo banner();
     echo "
     </td></tr>
-</table>";
-
-    PrintElapsedTime();
-
-    echo "
+</table>
 </body>
 </html>
 ";
