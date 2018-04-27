@@ -799,7 +799,7 @@ function process_62(&$general) {
             new \DateTime('9999-12-31'),
             []
         );
-        $msg->send(true);
+        $msg->send();
     }
 
     pushWorldHistory($history, $admin['year'], $admin['month']);
