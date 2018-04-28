@@ -15,7 +15,7 @@ $userID = Session::getUserID();
 $db = DB::db();
 $connect=$db->get();
 
-increaseRefresh("연감", 5);
+increaseRefresh("연감", 2);
 
 $query = "select startyear,year,month,conlimit from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
