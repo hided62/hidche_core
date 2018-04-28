@@ -20,7 +20,7 @@ function serverUpdate(caller){
     var server = $tr.data('server_name');
     var isRoot = $tr.data('is_root');
 
-    var target = 'master';
+    var target = 'origin/master';
 
     if(typeof isRoot !== 'boolean'){
         isRoot = (isRoot != 'false');
