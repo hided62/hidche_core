@@ -1002,11 +1002,17 @@ function generalInfo2($no) {
     if($dex30 > 100) { $dex30 = 100; }
     if($dex40 > 100) { $dex40 = 100; }
 
-    $general['dex0']  = getDexCall($general['dex0']);
-    $general['dex10'] = getDexCall($general['dex10']);
-    $general['dex20'] = getDexCall($general['dex20']);
-    $general['dex30'] = getDexCall($general['dex30']);
-    $general['dex40'] = getDexCall($general['dex40']);
+    $general['dex0_text']  = getDexCall($general['dex0']);
+    $general['dex10_text'] = getDexCall($general['dex10']);
+    $general['dex20_text'] = getDexCall($general['dex20']);
+    $general['dex30_text'] = getDexCall($general['dex30']);
+    $general['dex40_text'] = getDexCall($general['dex40']);
+
+    $general['dex0_short'] = sprintf('%.1fK', $general['dex0']/1000);
+    $general['dex10_short'] = sprintf('%.1fK', $general['dex10']/1000);
+    $general['dex20_short'] = sprintf('%.1fK', $general['dex20']/1000);
+    $general['dex30_short'] = sprintf('%.1fK', $general['dex30']/1000);
+    $general['dex40_short'] = sprintf('%.1fK', $general['dex40']/1000);
 
     echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
     <tr><td align=center colspan=6 id=bg1><b>추 가 정 보</b></td></tr>
@@ -1042,30 +1048,35 @@ function generalInfo2($no) {
     </tr>
 </table>
 <table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
-    <tr><td align=center colspan=3 id=bg1><b>숙 련 도</b></td></tr>
+    <tr><td align=center colspan=4 id=bg1><b>숙 련 도</b></td></tr>
     <tr height=16>
         <td width=64 align=center id=bg1><b>보병</b></td>
-        <td width=64>　　{$general['dex0']}</td>
-        <td width=366 align=center>".bar($dex0, 16)."</td>
+        <td width=40>　{$general['dex0_text']}</td>
+        <td width=60 align=right>{$general['dex0_short']}&nbsp;</td>
+        <td width=330 align=center>".bar($dex0, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>궁병</b></td>
-        <td>　　{$general['dex10']}</td>
+        <td>　{$general['dex10_text']}</td>
+        <td align=right>{$general['dex10_short']}&nbsp;</td>
         <td align=center>".bar($dex10, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>기병</b></td>
-        <td>　　{$general['dex20']}</td>
+        <td>　{$general['dex20_text']}</td>
+        <td align=right>{$general['dex20_short']}&nbsp;</td>
         <td align=center>".bar($dex20, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>귀병</b></td>
-        <td>　　{$general['dex30']}</td>
+        <td>　{$general['dex30_text']}</td>
+        <td align=right>{$general['dex30_short']}&nbsp;</td>
         <td align=center>".bar($dex30, 16)."</td>
     </tr>
     <tr height=16>
         <td align=center id=bg1><b>차병</b></td>
-        <td>　　{$general['dex40']}</td>
+        <td>　{$general['dex40_text']}</td>
+        <td align=right>{$general['dex40_short']}&nbsp;</td>
         <td align=center>".bar($dex40, 16)."</td>
     </tr>
 </table>";
