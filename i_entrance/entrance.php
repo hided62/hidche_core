@@ -20,6 +20,7 @@ $userGrade = $session->userGrade;
         <title>서버목록</title>
 
         <!-- 스타일 -->
+        <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
         <link type="text/css" rel="stylesheet" href='../d_shared/common.css'>
         <link type="text/css" rel="stylesheet" href='../css/config.css'>
 
@@ -30,6 +31,8 @@ $userGrade = $session->userGrade;
         <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
         <script type="text/javascript" src='../js/func.js'></script>
         <script type="text/javascript" src='../js/entrance.js'></script>
+        <script src="../d_shared/menu.js"></script>
+        <script src="../js/title.js"></script>
 
 <?php if ($userGrade >= 5): ?>
         <!-- 운영자 -->
@@ -39,6 +42,17 @@ $userGrade = $session->userGrade;
 
     </head>
     <body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="../">삼국지 모의전투 HiDCHe</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+    </ul>
+  </div>
+</nav>
 
 <div id="server_list_container">
 
