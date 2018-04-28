@@ -8,7 +8,7 @@ table   {
     font-size: 13px;
     word-break: break-all;
     text-align: center;
-    font-family: '맑은 고딕'; line-height: 110%;
+    font-family: '맑은 고딕';
 }
 th, td      {
     border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
@@ -16,7 +16,7 @@ th, td      {
     font-size: 13px;
     word-break: break-all;
     text-align: center;
-    font-family: '맑은 고딕'; line-height: 110%;
+    font-family: '맑은 고딕';
 }
 
 a.just_link {
@@ -53,19 +53,10 @@ div     {
     font-size: 13px;
     word-break: break-all;
     text-align: center;
-    font-family: '맑은 고딕'; line-height: 110%;
+    font-family: '맑은 고딕';;
 }
 
-font    { font-family: '맑은 고딕'; line-height: 110%; }
-/*
-input   {
-    width: 100px; height: 18px;
-    background-color: black; color: white;
-    font-family: '맑은 고딕';
-    font-size: 13px;
-    line-height: 110%;
-}
-*/
+font    { font-family: '맑은 고딕';}
 
 .obj_fill{
     display:block;
@@ -77,14 +68,12 @@ button.with_skin {
     background-color: black; color: white;
     font-family: '맑은 고딕';
     font-size: 13px;
-    line-height: 110%;
 }
 
 input.with_skin   {
     background-color: black; color: white;
     font-family: '맑은 고딕';
     font-size: 13px;
-    line-height: 110%;
 }
 
 select  {
@@ -92,7 +81,6 @@ select  {
     background-color: black; color: white;
     font-family: '맑은 고딕';
     font-size: 13px;
-    line-height: 110%;
 }
 button  {
     width: 100px; height: 20px;

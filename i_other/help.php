@@ -17,8 +17,8 @@ $category = Util::getReq('category', 'int', 0);
 <style type="text/css">
 
 body { color:white; background-color:black; border-width:1px; border-color:gray; }
-table { font-family:'맑은 고딕'; line-height:110%; }
-font { font-family:'맑은 고딕'; line-height:110%; }
+table { font-family:'맑은 고딕'; }
+font { font-family:'맑은 고딕'; }
 #bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
 #bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_blue.jpg); }
 #bg2 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }

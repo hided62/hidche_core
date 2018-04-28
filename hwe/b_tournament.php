@@ -46,9 +46,9 @@ case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "�
 <title><?=UniqueConst::$serverName?>: 토너먼트</title>
 <style>
 body { color:white; background-color:black; border-width:1px; border-color:gray; }
-table { font-family:'맑은 고딕'; line-height:110%; }
-font { font-family:'맑은 고딕'; line-height:110%; }
-input { font-family:'맑은 고딕'; line-height:110%; height:20px }
+table { font-family:'맑은 고딕'; }
+font { font-family:'맑은 고딕'; }
+input { font-family:'맑은 고딕'; height:20px }
 select { font-family:'굴림'; line-height:100%; }
 #bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
 #bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
