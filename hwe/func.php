@@ -1774,25 +1774,27 @@ function addAge() {
 
 function turnDate($curtime) {
     $db = DB::db();
-    $connect=$db->get();
 
-    $query = "select startyear,starttime,turnterm,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $db->queryFirstRow('SELECT startyear,starttime,turnterm,year,month from game limit 1');
 
     $turn = $admin['starttime'];
     $curturn = cutTurn($curtime, $admin['turnterm']);
-    $num = 0;
-    $term = $admin['turnterm']*60;
-    $num = intdiv((strtotime($curturn) - strtotime($turn)), $term);
+    $term = $admin['turnterm'];
+    
+    $num = intdiv((strtotime($curturn) - strtotime($turn)), $term*60);
 
-    $year = $admin['startyear'] + intdiv($num, 12);
-    $month = 1 + (12+$num) % 12;
+    $date = $admin['startyear'] * 12;
+    $date += $num;
+    
+    $year = intdiv($date, 12);
+    $month = 1 + $year % 12;    
 
     // 바뀐 경우만 업데이트
     if($admin['month'] != $month || $admin['year'] != $year) {
-        $query = "update game set year='$year',month='$month'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('game', [
+            'year'=>$year,
+            'month'=>$month
+        ], true);
     }
 
     return [$year, $month];
