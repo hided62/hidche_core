@@ -41,17 +41,20 @@ if($meLevel < 5){
 
 
 if($btn == "임명") {
-    $query = "select no,nation,level,leader,power,intel from general where no='$genlist'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
+    if($genlist !== 0){
+        $query = "select no,nation,level,leader,power,intel from general where no='$genlist'";
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $general = MYDB_fetch_array($result);
 
-    if(!$general){
-        header('location:b_myBossInfo.php');
-        exit();
+        if(!$general){
+            header('location:b_myBossInfo.php');
+            exit();
+        }
     }
+        
 
     //임명할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
-    if($general['level'] == 12 || $meLevel < 5 || ($general['nation'] != $me['nation'] && $genlist != 0)) {
+    if($meLevel < 5 || ($general['nation'] != $me['nation'] && $genlist != 0) || ($general['level'] == 12 && $genlist != 0)) {
         
         header('location:b_myBossInfo.php');
         exit();
@@ -74,7 +77,7 @@ if($btn == "임명") {
 }
 
 //나와 대상 장수는 국가가 같아야 함
-if($me['nation'] != $general['nation']){
+if($genlist != 0 && $me['nation'] != $general['nation']){
     header('location:b_myBossInfo.php');
     exit();
 }

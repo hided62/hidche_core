@@ -72,7 +72,7 @@ class ScoutMessage extends Message{
             return $result;
         }
 
-        $helper = new Engine\Personnel($this->src->nationID, $this->src->senderID);
+        $helper = new Engine\Personnel($this->src->nationID, $this->src->generalID);
 
         list($result, $reason) = $helper->scoutGeneral($receiverID);
 
@@ -116,9 +116,9 @@ class ScoutMessage extends Message{
             "{$this->src->nationName}(으)로 등용 제의 수락",
             new \DateTime(),
             new \DateTime('9999-12-31'),
-            Json::encode([
+            [
                 'delete'=>$this->id
-            ])
+            ]
         );
         $newMsg->send(true);
 
@@ -137,9 +137,9 @@ class ScoutMessage extends Message{
             "{$this->src->nationName}(으)로 등용 제의 거부",
             new \DateTime(),
             new \DateTime('9999-12-31'),
-            Json::encode([
+            [
                 'delete'=>$this->id
-            ])
+            ]
         );
         $newMsg->send(true);
 
