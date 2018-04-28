@@ -53,15 +53,36 @@ class NPC{
         $this->ego = $ego;
         $this->text = $text;
 
-        $char = \sammo\SpecCall($char);
-        if($char < 40){
-            $this->charDomestic = $char;
+        $general = [
+            'leader'=>$leadership,
+            'power'=>$power,
+            'intel'=>$intel
+        ];
+
+        if($char === '랜덤전특'){
+            $this->charWar = \sammo\SpecialityConst::pickSpecialWar($general);
+        }
+        else if($char === '랜덤내특'){
+            $this->charDomestic = \sammo\SpecialityConst::pickSpecialDomestic($general);
+        }
+        else if($char === '랜덤'){
+            if(Util::randBool(2/3)){
+                $this->charWar = \sammo\SpecialityConst::pickSpecialWar($general);
+            }
+            else{
+                $this->charDomestic = \sammo\SpecialityConst::pickSpecialDomestic($general);
+            }
         }
         else{
-            $this->charWar = $char;
-        }
+            $char = \sammo\SpecCall($char);
+            if($char < 40){
+                $this->charDomestic = $char;
+            }
+            else{
+                $this->charWar = $char;
+            }
+        }  
     }
-
 
     public function build($env=[]){
         //scenario에 life==1인 경우 수명 제한이 없어지는 모양.
@@ -69,6 +90,8 @@ class NPC{
         if(!\sammo\getNationStaticInfo($nationID)){
             $nationID = 0;
         };
+
+        $isFictionMode = (Util::array_get($env['fiction'], 0)!=0);
 
         $year = $env['year'];
         $month = $env['month'];
@@ -88,13 +111,27 @@ class NPC{
             \sammo\pushWorldHistory(["<C>●</>1월:<Y>$name</>(이)가 성인이 되어 <S>등장</>했습니다."], $year, $month);
         }
 
-        if($this->ego == null){
+        if($this->ego == null || $isFictionMode){
             $ego = mt_rand(0, 9);//TODO: 나중에 성격을 따로 분리할 경우 클래스를 참조.
         }
         else{
             $ego = \sammo\CharCall($this->ego);
         }
         
+        $affinity = $this->affinity;
+
+        $charWar = $this->charWar;
+        $charDomestic = $this->charDomestic;
+
+        if($affinity === 0 || $isFictionMode){
+            $affinity = mt_rand(1, 150);
+        }
+
+        if($isFictionMode){
+            $charWar = 0;
+            $charDomestic = 0;
+        }
+
         $name = 'ⓝ'.$this->name;
 
         $pictureID = $this->pictureID;
@@ -137,7 +174,7 @@ class NPC{
             'npcid'=>$npcID,
             'npc'=>2,
             'npc_org'=>2,
-            'affinity'=>$this->affinity,
+            'affinity'=>$affinity,
             'name'=>$name,
             'picture'=>$picture,
             'nation'=>$nationID,
@@ -162,9 +199,9 @@ class NPC{
             'age'=>$age,
             'belong'=>1,
             'personal'=>$ego,
-            'special'=>$this->charDomestic,
+            'special'=>$charDomestic,
             'specage'=>$specage,
-            'special2'=>$this->charWar,
+            'special2'=>$charWar,
             'specage2'=>$specage2,
             'npcmsg'=>$this->text,
             'makelimit'=>0,

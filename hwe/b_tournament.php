@@ -43,12 +43,12 @@ case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "�
 } ?>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>토너먼트</title>
+<title><?=UniqueConst::$serverName?>: 토너먼트</title>
 <style>
 body { color:white; background-color:black; border-width:1px; border-color:gray; }
-table { font-family:'맑은 고딕'; line-height:110%; }
-font { font-family:'맑은 고딕'; line-height:110%; }
-input { font-family:'맑은 고딕'; line-height:110%; height:20px }
+table { font-family:'맑은 고딕'; }
+font { font-family:'맑은 고딕'; }
+input { font-family:'맑은 고딕'; height:20px }
 select { font-family:'굴림'; line-height:100%; }
 #bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
 #bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
@@ -176,10 +176,16 @@ if ($session->userGrade >= 5) {
 
 $str1 = getTournament($admin['tournament']);
 $str2 = getTournamentTime();
+if($str2){
+    $str2 = ', '.$str2;
+}
 $str3 = getTournamentTerm();
+if($str3){
+    $str3 = ', '.$str3;
+}
 ?>
     <tr><td colspan=8>운영자 메세지 : <font color=orange size=5><?=$admin['tnmt_msg']?></font></td></tr>
-    <tr><td colspan=8 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.", ".$str2.", ".$str3?>)</font></td></tr>
+    <tr><td colspan=8 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.$str2.$str3?>)</font></td></tr>
     <tr><td colspan=8 align=center id=bg2><font color=magenta size=5>16강 승자전</font></td></tr>
     <tr><td height=10 colspan=8 align=center></td></tr>
 <?php
@@ -504,6 +510,5 @@ if ($admin['tournament'] == 2 || $admin['tournament'] == 3) {
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>

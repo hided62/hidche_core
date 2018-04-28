@@ -173,7 +173,24 @@ function process_24(&$general) {
             case 4: $str = "몰수로 인한 사기 저하는 몰수로 얻은 물자보다 더 손해란걸 모른단 말인가!"; break;
             }
 
-            PushMsg(1, 0, $gen['picture'], $gen['imgsvr'], "{$gen['name']}:", $nation['color'], $nation['name'], $nation['color'], $str);
+            $src = new MessageTarget(
+                $gen['no'], 
+                $gen['name'],
+                $gen['nation'],
+                $nation['name'],
+                $nation['color'],
+                GetImageURL($gen['imgsvr'], $gen['picture'])
+            );
+            $msg = new Message(
+                Message::MSGTYPE_PUBLIC, 
+                $src,
+                $src,
+                $str,
+                new \DateTime(),
+                new \DateTime('9999-12-31'),
+                []
+            );
+            $msg->send();
         }
 
         $genlog[] = "<C>●</>$dtype {$amount}을 몰수 당했습니다.";
@@ -644,7 +661,7 @@ function process_61(&$general) {
         Message::MSGTYPE_DIPLOMACY,
         $src,
         $dest,
-        "{$srcNation['name']}의 불가침 제의 서신",
+        "{$srcNation['name']}의 {$when}년 불가침 제의 서신",
         $now,
         $validUntil,
         [
@@ -756,11 +773,33 @@ function process_62(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //국메로 저장
-        $msg = "【외교】{$admin['year']}년 {$admin['month']}월:{$younation['name']}에 선전포고";
-        $youmsg = "【외교】{$admin['year']}년 {$admin['month']}월:{$nation['name']}에서 선전포고";
+        $text = "【외교】{$admin['year']}년 {$admin['month']}월:{$nation['name']}에서 {$younation['name']}에 선전포고";
 
-        PushMsg(2, $nation['nation'], $general['picture'], $general['imgsvr'], "{$general['name']}:{$nation['name']}▶", $nation['color'], $younation['name'], $younation['color'], $msg);
-        PushMsg(3, $younation['nation'], $general['picture'], $general['imgsvr'], "{$general['name']}:{$nation['name']}▶", $nation['color'], $younation['name'], $younation['color'], $youmsg);
+        $src = new MessageTarget(
+            $general['no'], 
+            $general['name'],
+            $general['nation'],
+            $nation['name'],
+            $nation['color'],
+            GetImageURL($general['imgsvr'], $general['picture'])
+        );
+        $dest = new MessageTarget(
+            0,
+            '',
+            $younation['nation'],
+            $younation['name'],
+            $younation['color']
+        );
+        $msg = new Message(
+            Message::MSGTYPE_NATIONAL, 
+            $src,
+            $dest,
+            $text,
+            new \DateTime($general['turntime']),
+            new \DateTime('9999-12-31'),
+            []
+        );
+        $msg->send();
     }
 
     pushWorldHistory($history, $admin['year'], $admin['month']);

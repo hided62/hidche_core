@@ -13,6 +13,9 @@ namespace sammo;
  * @return int|float 계산된 능력치
  */
 function getGeneralLeadership(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+	if($general === null){
+		return 0;
+	}
     $leadership = $general['leader'];
     if($withInjury){
         $leadership *= (100 - $general['injury']) / 100;
@@ -47,6 +50,9 @@ function getGeneralLeadership(&$general, $withInjury, $withItem, $withStatAdjust
  * @return int|float 계산된 능력치
  */
 function getGeneralPower(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+	if($general === null){
+		return 0;
+	}
     $power = $general['power'];
     if($withInjury){
         $power *= (100 - $general['injury']) / 100;
@@ -78,6 +84,10 @@ function getGeneralPower(&$general, $withInjury, $withItem, $withStatAdjust, $us
  * @return int|float 계산된 능력치
  */
 function getGeneralIntel(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+	if($general === null){
+		return 0;
+	}
+	
     $intel = $general['intel'];
     if($withInjury){
         $intel *= (100 - $general['injury']) / 100;
@@ -1673,7 +1683,16 @@ function process_31(&$general) {
         $typecount = [];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
-            if($gen['crew'] != 0) { $typecount[$gen['crewtype']]++; $crew += $gen['crew']; }
+            if($gen['crew'] != 0) {
+                if(!key_exists($gen['crewtype'], $typecount)){
+                    $typecount[$gen['crewtype']] = 1;
+                }
+                else{
+                    $typecount[$gen['crewtype']]+=1;
+                }
+                
+                $crew += $gen['crew'];
+            }
         }
         if(!key_exists($destination, $dist)) {
             $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>(을)를 살피는 것 같습니다.";
@@ -1689,13 +1708,9 @@ function process_31(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 많은 정보를 얻었습니다. <1>$date</>";
             $msg[] = "【<S>병종</>】";
 
-            foreach(GameUnitConst::all() as $unit){
-                if($typecount[$unit->id] == 0){
-                    continue;
-                }
-
-                $unitStr = mb_substr($unit->name, 0, 2); 
-                $msg[] = "{$unitStr}:{$typecount[$unit->id]}";
+            foreach($typecount as $crewtype=>$cnt){
+                $crewtypeText = mb_substr(GameUnitConst::byID($crewtype)->name, 0, 2);
+                $msg[] = "{$crewtypeText}:{$cnt}";
             }
 
             $log[] = join(' ', $msg);
@@ -1742,6 +1757,9 @@ function process_31(&$general) {
         if($nation['spy'] != "") 
         { 
             $cities = array_map('intval', explode("|", $nation['spy'])); 
+        }
+        else{
+            $cities = [];
         }
         $exist = 0;
         for($i=0; $i < count($cities); $i++) {
@@ -1803,7 +1821,7 @@ function process_41(&$general) {
     } elseif($crewexp == 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 모자랍니다. 단련 실패. <1>$date</>";
     } else {
-        $type = intdiv($general['crewtype'], 10) * 10;
+        $type = intdiv($general['crewtype'], 10);
         switch($type) {
         case 0: $crewstr = '보병'; break;
         case 1: $crewstr = '궁병'; break;

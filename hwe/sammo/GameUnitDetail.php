@@ -68,7 +68,7 @@ class GameUnitDetail{
             if(!key_exists($this->recruitCondition, $ownCities)){
                 return false;
             }
-            if($cityLevel == '특'){
+            if($cityLevel == CityConst::$levelMap['특']){
                 if ($tech < 3000) {
                     return false;
                 }

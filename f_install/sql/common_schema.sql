@@ -2,6 +2,7 @@
 DROP TABLE IF EXISTS `system`;
 DROP TABLE IF EXISTS `member`;
 DROP TABLE IF EXISTS `member_log`;
+DROP TABLE IF EXISTS `config`;
 
 -- 시스템 테이블
 -- TODO:장기적으로는 key-value(json) storage 형태로 바꾸는게 나을 듯.
@@ -25,6 +26,7 @@ CREATE TABLE `member` (
 	`EMAIL` VARCHAR(64) NULL DEFAULT NULL,
 	`PW` CHAR(128) NOT NULL,
 	`salt` CHAR(16) NOT NULL,
+	`third_use` INT(1) NOT NULL DEFAULT '0',
 	`NAME` VARCHAR(64) NOT NULL,
 	`PICTURE` VARCHAR(64) NULL DEFAULT 'default.jpg',
 	`IMGSVR` INT(1) NULL DEFAULT '0',
@@ -52,5 +54,14 @@ CREATE TABLE `member_log` (
 	PRIMARY KEY (`id`),
 	INDEX `action` (`member_no`, `action_type`, `date`),
 	INDEX `member` (`member_no`, `date`)
+)
+ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `config` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`key` VARCHAR(50) NOT NULL,
+	`value` VARCHAR(100) NULL DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `key` (`key`)
 )
 ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;

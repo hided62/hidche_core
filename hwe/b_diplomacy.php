@@ -16,7 +16,7 @@ $query = "select turnterm from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select no,nation,map from general where owner='{$userID}'";
+$query = "select no,nation from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -78,7 +78,7 @@ foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE confl
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>중원정보</title>
+<title><?=UniqueConst::$serverName?>: 중원 정보</title>
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
 <script src="../d_shared/common_path.js"></script>
 <script src="js/common.js"></script>
@@ -236,10 +236,10 @@ for($i=0; $i < $nationcount; $i++) {
         <td width=698 height=420>
             <?=getMapHtml()?>
         </td>
-        <td width=98 valign=top><?=$nationStr?></td>
+        <td width=101 valign=top><?=$nationStr?></td>
         <td width=78 valign=top><?=$powerStr?></td>
         <td width=58 valign=top><?=$genStr?></td>
-        <td width=58 valign=top><?=$cityStr?></td>
+        <td width=55 valign=top><?=$cityStr?></td>
     </tr>
 </table>
 <br>
@@ -248,6 +248,5 @@ for($i=0; $i < $nationcount; $i++) {
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>

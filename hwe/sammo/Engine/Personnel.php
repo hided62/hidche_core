@@ -11,6 +11,7 @@ use \sammo\ScoutMessage;
 class Personnel{
 
     protected $nation = null;//TODO: 상속체로 변경.
+    protected $senderID = null;
     public $valid = false;
 
     public $startYear = 0;
@@ -18,7 +19,7 @@ class Personnel{
     public $month = 0;
     public $killturn = 0;
 
-    public function __construct(int $nationID){
+    public function __construct(int $nationID, int $senderID){
         $db = DB::db();
         $nation = $db->queryFirstRow(
             'SELECT nation, `name`, `level`, capital, scout FROM nation WHERE nation=%i',
@@ -29,6 +30,7 @@ class Personnel{
             return;
         }
 
+        $this->senderID = $senderID;
         $this->nation = $nation;
         $this->valid = true;
 
@@ -51,7 +53,7 @@ class Personnel{
             return [ScoutMessage::INVALID, '초반제한 중입니다.'];
         }
         
-        if(!$this->nation['scout']){
+        if($this->nation['scout']){
             return [ScoutMessage::INVALID, '현재 임관금지 중인 국가입니다.'];
         }
 
@@ -67,7 +69,7 @@ class Personnel{
             return [ScoutMessage::DECLINED, '군주는 등용장을 수락할 수 없습니다.'];
         }
 
-        if(strpos($general['nations'], ",{$this->nation['nation']},") >= 0){
+        if(strpos($general['nations'], ",{$this->nation['nation']},") !== false){
             return [ScoutMessage::DECLINED, '이미 임관했었던 국가입니다.'];
         }
 
@@ -100,7 +102,7 @@ class Personnel{
         $isTroopLeader = false;
         if($general['troop']){
             $troopLeader = $db->queryFirstField('SELECT `no` FROM troop WHERE troop = %i', $general['troop']);
-            if($troopLeader == $receiverID){
+            if($troopLeader == $generalID){
                 $isTroopLeader = true;
             }
         }
@@ -179,12 +181,12 @@ class Personnel{
             $setValues['dedication'] = $db->sqleval('experience + %i', 100);//XXX: 상수
         }
 
-        if($me['npc'] < 2){
-            $setValues['killturn'] = $killturn;
+        if($general['npc'] < 2){
+            $setValues['killturn'] = $this->killturn;
         }
 
-        $db->update('general', $setValues, 'no=%i', $receiverID);
-        $db->update('general', $setSenderValues, 'no=%i', $this->src->generalID);
+        $db->update('general', $setValues, 'no=%i', $generalID);
+        $db->update('general', $setSenderValues, 'no=%i', $this->senderID);
         $db->update('nation', $setOriginalNationValues, 'nation=%i', $general['nation']);
         $db->update('nation', $setScoutNationValues, 'nation=%i', $this->nation['nation']);
         if($setOriginalCityValues){

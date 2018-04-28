@@ -17,7 +17,7 @@ $query = "select conlimit from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
-$query = "select map,con,turntime from general where owner='{$userID}'";
+$query = "select con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
@@ -29,7 +29,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>세력도</title>
+<title><?=UniqueConst::$serverName?>: 세력도</title>
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
 <script src="../d_shared/common_path.js"></script>
 <script src="js/common.js"></script>
@@ -67,7 +67,7 @@ $(function(){
     </tr>
     <tr>
         <td colspan=2 valign=top>
-            <?php getWorldHistoryRecent(34); ?>
+            <?=getWorldHistoryRecent(34)?>
         </td>
     </tr>
 </table>
@@ -75,7 +75,6 @@ $(function(){
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 
 </html>

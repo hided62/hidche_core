@@ -5,7 +5,7 @@ namespace sammo;
 
 function delStepLog() {
     $date = date('Y_m_d');
-    @unlink("logs/_{$date}_steplog.txt");
+    @unlink(__dir__."/logs/_{$date}_steplog.txt");
 }
 
 function pushRawFileLog($path, $lines){
@@ -50,81 +50,81 @@ function eraseTnmtFightLogAll(){
 }
 
 function eraseTnmtFightLog(int $group){
-    $filepath = "logs/fight{$group}.txt";
+    $filepath = __dir__."/logs/fight{$group}.txt";
     if(file_exists($filepath)){
         @unlink($filepath);
     }
 }
 
 function pushTnmtFightLog(int $group, $log) {
-    pushRawFileLog("logs/fight{$group}.txt", $log);
+    pushRawFileLog(__dir__."/logs/fight{$group}.txt", $log);
 }
 
 function getTnmtFightLogAll(int $group) {
-    return join('<br>',getFormattedFileLogAll("logs/fight{$group}.txt"));
+    return join('<br>',getFormattedFileLogAll(__dir__."/logs/fight{$group}.txt"));
 }
 
 function pushSabotageLog($log) {
-    pushRawFileLog("logs/_sabotagelog.txt", $log);
+    pushRawFileLog(__dir__."/logs/_sabotagelog.txt", $log);
 }
 
 function getSabotageLogRecent($count) {
-    return join('<br>', getFormattedFileLogRecent("logs/_sabotagelog.txt", $count, 150));
+    return join('<br>', getFormattedFileLogRecent(__dir__."/logs/_sabotagelog.txt", $count, 150));
 }
 
 function pushProcessLog($log) {
     $date = date('Y_m_d');
-    pushRawFileLog("logs/_{$date}_processlog.txt", $log);
+    pushRawFileLog(__dir__."/logs/_{$date}_processlog.txt", $log);
 }
 
 
 function pushStepLog($log) {
     $date = date('Y_m_d');
-    pushRawFileLog("logs/_{$date}_steplog.txt", $log);
+    pushRawFileLog(__dir__."/logs/_{$date}_steplog.txt", $log);
 }
 
 function pushLockLog($log) {
     $date = date('Y_m_d');
-    pushRawFileLog("logs/_{$date}_locklog.txt", $log);
+    pushRawFileLog(__dir__."/logs/_{$date}_locklog.txt", $log);
 }
 
 function pushAdminLog($log) {
-    pushRawFileLog("logs/_adminlog.txt", $log);
+    pushRawFileLog(__dir__."/logs/_adminlog.txt", $log);
 }
 
 function pushAuctionLog($log) {
-    pushRawFileLog("logs/_auctionlog.txt", $log);
+    pushRawFileLog(__dir__."/logs/_auctionlog.txt", $log);
 }
 
 function getAuctionLogRecent(int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent("logs/_auctionlog.txt", $count, 300)));
+    return join('<br>', array_reverse(getFormattedFileLogRecent(__dir__."/logs/_auctionlog.txt", $count, 300)));
 }
 
 function pushGenLog($general, $log) {
     $no = Util::toInt($general['no']);
-    pushRawFileLog("logs/gen{$no}.txt", $log);
+    pushRawFileLog(__dir__."/logs/gen{$no}.txt", $log);
 }
 
 function getGenLogRecent(int $no, int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent("logs/gen{$no}.txt", $count, 300)));
+    return join('<br>', array_reverse(getFormattedFileLogRecent(__dir__."/logs/gen{$no}.txt", $count, 300)));
 }
 
 function pushBatRes($general, $log) {
     $no = Util::toInt($general['no']);
-    pushRawFileLog("logs/batres{$no}.txt", $log);
+    pushRawFileLog(__dir__."/logs/batres{$no}.txt", $log);
 }
 
 function getBatResRecent(int $no, int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent("logs/batres{$no}.txt", $count, 300)));
+    return join('<br>', array_reverse(getFormattedFileLogRecent(__dir__."/logs/batres{$no}.txt", $count, 300)));
 }
 
 function pushBatLog($general, $log) {
     $no = Util::toInt($general['no']);
-    pushRawFileLog("logs/batlog{$no}.txt", $log);
+    pushRawFileLog(__dir__."/logs/batlog{$no}.txt", $log);
 }
 
 function getBatLogRecent(int $no, int $count) {
-    return join('<br>', array_reverse(getFormattedFileLogRecent("logs/batlog{$no}.txt", $count, 300)));
+    return join('<br>', array_reverse(getFormattedFileLogRecent(__dir__."/logs/batlog{$no}.txt", $count, 300)));
 }
 
 //DB-based

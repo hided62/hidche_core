@@ -30,6 +30,7 @@ d_pic/*.png
 
 d_setting/*.php
 */d_setting/*.php
+*/d_setting/templates/*.php
 
 **/old/*
 test.php

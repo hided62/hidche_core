@@ -42,6 +42,14 @@ var serverLoginTemplate = "\
 </td>\
 ";
 
+
+var serverReservedTemplate = "\
+<td colspan='4' class='server_reserved'>\
+- 오픈 일시 : <%openDatetime%> - <br>\
+<span style='color:orange;'><%scenarioName%></span> <span style='color:limegreen;'><%turnterm%>분 턴 서버</span><br>\
+(상성 설정:<%fictionMode%>), (빙의 여부:<%npcMode%>)</td>\
+";
+
 $(function(){
     $("#btn_logout").click(Entrance_Logout);
     Entrance_UpdateServer();
@@ -64,7 +72,7 @@ function Entrance_drawServerList(serverInfos){
     $.each(serverInfos, function(idx, serverInfo){
         var $serverHtml = $(TemplateEngine(serverListTemplate, serverInfo));
         $serverList.append($serverHtml);
-        if(!serverInfo.enable){
+        if(!serverInfo.exists){
             return true;
         }
 
@@ -72,6 +80,14 @@ function Entrance_drawServerList(serverInfos){
 
 
         $.getJSON("../"+serverInfo.name+'/j_server_basic_info.php',{}, function(result){
+            if(result.reserved){
+                $serverHtml.find('.server_down').detach();
+                $serverHtml.append(
+                    TemplateEngine(serverReservedTemplate, result.reserved)
+                );
+                return;
+            }
+
             if(!result.game){
                 return;
             }

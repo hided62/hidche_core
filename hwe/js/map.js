@@ -84,7 +84,7 @@ function reloadWorldMap(option){
         else if(month <= 6){
             $world_map.addClass('map_summer');
         }
-        else if(month <= 6){
+        else if(month <= 9){
             $world_map.addClass('map_fall');
         }
         else{
@@ -366,65 +366,8 @@ function reloadWorldMap(option){
 
         var $map_body = $('.world_map .map_body');
 
-        //터치스크린 탭
-
-        $objs.on('touchstart', function(e){
-            var $this = $(this);
-            
-            var touchMode = $this.data('touchMode');
-            if($tooltip_city.data('target') != $this.data('id')){
-                $this.data('touchMode', 1);
-            }
-            else if(touchMode === undefined){
-                $this.data('touchMode', 1);
-            }
-            else{
-                $this.data('touchMode', touchMode + 1);
-            }
-            $map_body.data('touchMode', 1);
-
-            $tooltip_city.data('target', $this.data('id'));
-            
-            
-        });
-        
-        $objs.on('touchend', function(e){    
-            var $this = $(this);
-            var position = $this.parent().position();
-            $tooltip_city.html($this.data('text'));
-            
-            var nation_text = $this.data('nation');
-            if(nation_text){
-                $tooltip_nation.html(nation_text).show();
-            }
-            else{
-                $tooltip_nation.html('').hide();
-            }
-            
-            $tooltip.css({'top': position.top + 25, 'left': position.left + 35}).show();
-            
-            var touchMode = $this.data('touchMode');
-            if(touchMode <= 1){
-                return false;
-            }
-
-            //xxx: touchend 다음 click 이벤트가 갈 수도 있고, 안 갈 수도 있다.
-            $this.data('touchMode', 0);
-        });
-
-        $map_body.on('touchend',function(e){
-            
-            //위의 touchend bind에 해당하지 않는 경우 -> 빈 지도 터치
-            $tooltip.hide();
-        });
-
         //Mouse over 모드 작동
-
         $map_body.on('mousemove', function(e){
-            if($(this).data('touchMode')){
-                return true;
-            }
-
             var parentOffset = $map_body.offset(); 
             var relX = e.pageX - parentOffset.left;
             var relY = e.pageY - parentOffset.top;
@@ -433,10 +376,6 @@ function reloadWorldMap(option){
         });
 
         $objs.on('mouseenter', function(e){
-            if($map_body.data('touchMode')){
-                return true;
-            }
-            
             var $this = $(this);
 
             $tooltip_city.data('target', $this.data('id'));
@@ -457,15 +396,7 @@ function reloadWorldMap(option){
         });
 
         $objs.on('click', function(e){
-            //xxx: touchend 다음 click 이벤트가 갈 수도 있고, 안 갈 수도 있다.
-            var touchMode = $(this).data('touchMode');
-            if(touchMode === undefined){
-                return;
-            }
-
-            if(touchMode === 1){
-                return false;
-            }
+            return;
         });
 
 

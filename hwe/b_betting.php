@@ -37,7 +37,13 @@ case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "�
 
 $str1 = getTournament($admin['tournament']);
 $str2 = getTournamentTime();
+if($str2){
+    $str2 = ', '.$str2;
+}
 $str3 = getTournamentTerm();
+if($str3){
+    $str3 = ', '.$str3;
+}
 
 ?>
 <!DOCTYPE html>
@@ -47,13 +53,13 @@ $str3 = getTournamentTerm();
 } ?>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>베팅장</title>
+<title><?=UniqueConst::$serverName?>: 베팅장</title>
 <style>
 body { color:white; background-color:black; border-width:1px; border-color:gray; }
-table { font-family:'맑은 고딕'; line-height:110%; }
-font { font-family:'맑은 고딕'; line-height:110%; }
-input { font-family:'맑은 고딕'; line-height:110%; height:20px }
-select { font-family:'굴림'; line-height:100%; }
+table { font-family:'맑은 고딕';}
+font { font-family:'맑은 고딕';}
+input { font-family:'맑은 고딕';height:20px }
+select { font-family:'굴림'; }
 #bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
 #bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
 #bg2 { background-image:url(<?=ServConfig::$gameImagePath?>/back_blue.jpg); }
@@ -67,7 +73,7 @@ select { font-family:'굴림'; line-height:100%; }
 </table>
 <table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10px;word-break:break-all; id=bg0>
     <tr><td colspan=16><input type=button value='갱신' onclick='location.reload()'></td></tr>
-    <tr><td colspan=16 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.", ".$str2.", ".$str3?>)</font></td></tr>
+    <tr><td colspan=16 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.$str2.$str3?>)</font></td></tr>
     <tr><td height=50 colspan=16 align=center id=bg2><font color=limegreen size=6>16강 상황</font><br><font color=orange size=3>(전체 금액 : <?=$admin['bet']?> / 내 투자 금액 : <?=$me['bet']?>)</font></td></tr>
 </table>
 <table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10px;word-break:break-all; id=bg0>
@@ -77,7 +83,11 @@ select { font-family:'굴림'; line-height:100%; }
 $query = "select npc,name,win from tournament where grp>=60 order by grp, grp_no";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 for ($i=0; $i < 1; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -102,7 +112,11 @@ for ($i=0; $i < 1; $i++) {
     $cent[$i] = "<font color=white>";
 }
 for ($i=0; $i < 2; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -143,7 +157,11 @@ for ($i=0; $i < 2; $i++) {
     $cent[$i] = "<font color=white>";
 }
 for ($i=0; $i < 4; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -184,7 +202,11 @@ for ($i=0; $i < 4; $i++) {
     $cent[$i] = "<font color=white>";
 }
 for ($i=0; $i < 8; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -225,7 +247,11 @@ for ($i=0; $i < 8; $i++) {
     $cent[$i] = "<font color=white>";
 }
 for ($i=0; $i < 16; $i++) {
-    $general = MYDB_fetch_array($result);
+    $general = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'win'=>0
+    ];
     if ($general['name'] == "") {
         $general['name'] = "-";
     }
@@ -268,9 +294,11 @@ for ($i=0; $i < 16; $i++) {
 }
 
 for ($i=0; $i < 16; $i++) {
-    $bet[$i]  = @round($admin['bet'] /  $admin["bet{$i}"], 2);
-    if ($bet[$i] == 0) {
+    if($admin["bet{$i}"] == 0){
         $bet[$i] = "∞";
+    }
+    else{
+        $bet[$i]  = round($admin['bet'] /  $admin["bet{$i}"], 2);
     }
 }
 
@@ -405,6 +433,5 @@ for ($i=0; $i < 4; $i++) {
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>

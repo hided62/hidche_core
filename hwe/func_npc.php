@@ -192,7 +192,15 @@ function processAI($no) {
 
     $query = "select nation,level,tech,gold,rice,rate,type,color,name,war from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error("processAI03 ".MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $nation = MYDB_fetch_array($result)??[
+        'nation'=>0,
+        'color'=>'#000000',
+        'name'=>'재야',
+        'level'=>0,
+        'gold'=>0,
+        'rice'=>0,
+        'tech'=>0,
+    ];
 
     $coreCommand = array();
     if($general['level'] >= 5) {
@@ -261,6 +269,7 @@ function processAI($no) {
     }
 
     $tech = getTechCost($nation['tech']);
+    $resrc = $tech * 700;//XXX: 왜 700이지?
 
     if($general['atmos'] >= 90 && $general['train'] >= 90) {
         if($general['mode'] == 0) {
@@ -276,20 +285,26 @@ function processAI($no) {
 
     //운영자메시지 출력 하루 6번..?
     //특별 메세지 있는 경우 출력 하루 4번
-    switch($admin['turnterm']) {
-    case 0: $term = 1; break;
-    case 1: $term = 1; break;
-    case 2: $term = 2; break;
-    case 3: $term = 3; break;
-    case 4: $term = 6; break;
-    case 5: $term = 12; break;
-    case 6: $term = 30; break;
-    case 7: $term = 60; break;
-    }
-    if($general['npcid'] == 2000 && rand()%(24*$term) < 6) {
-        PushMsg(1, 0, $general['picture'], $general['imgsvr'], "{$general['name']}:", $nation['color'], $nation['name'], $nation['color'], $general['npcmsg']);
-    } elseif($general['npcmsg'] != "" && rand()%(24*$term) < 3) {
-        PushMsg(1, 0, $general['picture'], $general['imgsvr'], "{$general['name']}:", $nation['color'], $nation['name'], $nation['color'], $general['npcmsg']);
+    $term = $admin['turnterm'];
+    if($general['npcmsg'] && Util::randBool($term / (6*60))) {
+        $src = new MessageTarget(
+            $general['no'], 
+            $general['name'],
+            $general['nation'],
+            $nation['name'],
+            $nation['color'],
+            GetImageURL($general['imgsvr'], $general['picture'])
+        );
+        $msg = new Message(
+            Message::MSGTYPE_PUBLIC, 
+            $src,
+            $src,
+            $general['npcmsg'],
+            new \DateTime(),
+            new \DateTime('9999-12-31'),
+            []
+        );
+        $msg->send();
     }
 
     //재야인경우
@@ -571,33 +586,98 @@ function processAI($no) {
                     if(rand() % 2 == 0) { $type = "gold"; $type2 = 1; }
                     else { $type = "rice"; $type2 = 2; }
 
-                    if($nation[$type] < 1000) {  // 몰수
+                    if($nation[$type] < $type2*3000) {  // 몰수
                         // 몰수 대상
-                        $query = "select no,{$type} from general where nation='{$general['nation']}' and no!='{$general['no']}' and {$type}>3000 order by {$type} desc limit 0,1";
-                        $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-                        $SelGen = MYDB_fetch_array($result);
-                        if($SelGen['no'] != 0) {
-                            $amount = intdiv($SelGen[$type], 5000)*10 + 10;
-                            if($amount > 100) $amount = 100;
+                        list($npcGenID, $npcGenValue) = $db->queryFirstList(
+                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND %b>3000 AND npc >= 2 ORDER BY %b DESC LIMIT 1',
+                            $type,
+                            $general['nation'],
+                            $general['no'],
+                            $type,
+                            $type
+                        );
+
+                        list($userGenID, $userGenValue) = $db->queryFirstList(
+                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND %b>3000 AND npc < 2 ORDER BY %b DESC LIMIT 1',
+                            $type,
+                            $general['nation'],
+                            $general['no'],
+                            $type,
+                            $type
+                        );
+
+                        if($npcGenID === null && $userGenID === null){
+                            $genID = 0;
+                            $genValue = 0;
+                        }
+                        else if($npcGenID === null || $userGenValue > $npcGenValue * 4){
+                            $genID = $userGenID;
+                            $genValue = $userGenValue;
+                        }
+                        else{
+                            $genID = $npcGenID;
+                            $genValue = $npcGenValue;
+                        }
+
+                        if($genID){
+                            $amount = min(100, intdiv($genValue, 5000)*10 + 10);
                             // 몰수
-                            $command = EncodeCommand($type2, $SelGen['no'], $amount, 24);    // 금,쌀 1000단위 몰수
+                            $command = EncodeCommand($type2, $genID, $amount, 24);    // 금,쌀 1000단위 몰수
                         }
                     } else {    // 포상
                         // 포상 대상
-                        $query = "select no from general where nation='{$general['nation']}' and no!='{$general['no']}' and killturn>=5 order by {$type} limit 0,1";
-                        $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-                        $SelGen = MYDB_fetch_array($result);
-                        if($SelGen['no'] != 0) {
-                            $amount = intdiv(($nation[$type]-GameConst::$baserice), 5000)*10 + 10;
-                            if($amount > 100) $amount = 100;
+                        list($npcGenID, $npcGenValue, $npcLeadership) = $db->queryFirstList(
+                            'SELECT `no`, %b, leader FROM general WHERE nation=%i AND `no`!=%i AND npc >= 2 AND killturn > 5 AND (leader >= 40 OR %b < %i) ORDER BY %b ASC LIMIT 1',
+                            $type,
+                            $general['nation'],
+                            $general['no'],
+                            $type,
+                            $resrc,
+                            $type
+                        );
+
+                        list($userGenID, $userGenValue) = $db->queryFirstList(
+                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc < 2 AND killturn > 5  AND (leader >= 40 OR %b < %i) ORDER BY %b ASC LIMIT 1',
+                            $type,
+                            $general['nation'],
+                            $general['no'],
+                            $type,
+                            ($type=='gold')?21000:3000,
+                            $type
+                        );
+
+                        if($npcGenID === null && $userGenID === null){
+                            $genID = 0;
+                        }
+                        else if($npcGenID === null || ($userGenValue !== null && $userGenValue < $npcGenValue * 3)){
+                            $genID = $userGenID;
+                        }
+                        else{
+                            $genID = $npcGenID;
+                        }
+
+                        if ($genID) {
+                            if($genID === $npcGenID){
+                                $amount = min(100, intdiv(($nation[$type]-($type=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
+                                if($npcLeadership < 40){
+                                    $amount = min($amount, intdiv($resrc, 1000)*10 + 10);
+                                }
+                                
+                            }
+                            else{
+                                $amount = min(100, intdiv(($nation[$type]-($type=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 2000)*10 + 10);
+                            }
+                            
                             // 포상
-                            $command = EncodeCommand($type2, $SelGen['no'], $amount, 23);    // 금 1000단위 포상
+                            $command = EncodeCommand($type2, $genID, $amount, 23);    // 금,쌀 1000단위 포상
                         }
                     }
                 }
             }
-            $query = "update nation set l{$general['level']}turn0='$command' where nation='{$general['nation']}'";
-            MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
+            if(isset($command)){
+                $query = "update nation set l{$general['level']}turn0='$command' where nation='{$general['nation']}'";
+                MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
+            }
         }
     }
 
@@ -635,6 +715,41 @@ function processAI($no) {
             MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
             return;
         }
+
+        if($general['leader'] < 40){
+            //무지장인데
+            
+            if(
+                (($nation['rice'] - GameConst::$baserice) * 3 <= $general['rice'] && $general['rice'] >= $resrc + 2100) ||
+                ($general['rice'] >= 11000)
+            ){
+                //쌀을 많이 들고 있다면
+                $amount = $general['rice'] * 0.9;
+                $amount = intdiv(Util::valueFit($amount, $resrc + 700, 10000), 100);
+
+                $command = EncodeCommand(0, 2, $amount, 44);  //헌납
+                $db->update('general', [
+                    'turn0'=>$command
+                ], 'no=%i',$general['no']);
+                return;
+            }
+
+            if(
+                (($nation['gold'] - GameConst::$basegold) * 3 <= $general['gold'] && $general['gold'] >= $resrc + 2100) ||
+                ($general['gold'] >= 12000)
+            ){
+                //금을 많이 들고 있다면
+                $amount = $general['gold'] * 0.9;
+                $amount = intdiv(Util::valueFit($amount, $resrc + 700, 10000), 100);
+                
+                $command = EncodeCommand(0, 1, $amount, 44);  //헌납
+                $db->update('general', [
+                    'turn0'=>$command
+                ], 'no=%i',$general['no']);
+                return;
+            }
+        }
+
         //국가 병량이 없을때 바로 헌납
         if($nation['rice'] < 2000 && $general['rice'] > 200) {
             $amount = intdiv($general['rice'] - 200, 100) + 1;
@@ -653,7 +768,7 @@ function processAI($no) {
 //    ┃조┃        ┃쌀삼
 //   0┗━┻━━━━┻━━━> G
 //       100       700
-        $resrc = $tech * 700;
+        
         $target = array();
         // 평시거나 초반아니면서 공격가능 없으면서 병사 있으면 해제(25%)
         if($dipState == 0 && $isStart == 0 && $attackable == 0 && $general['crew'] > 0 && rand()% 100 < 25) {
@@ -663,11 +778,11 @@ function processAI($no) {
             if($general['gold'] + $general['rice'] < 200) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달9
             elseif($general['rice'] > 100 && $city['rate'] < 95) { $command = EncodeCommand(0, 0, 0, 4); } //우선 선정
             elseif($general['gold'] < 100) {                                      //금없으면 쌀팜
-                $amount = intdiv(($general['rice'] - $general['gold']), 100 / 2);   // 100단위
+                $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 $command = EncodeCommand(0, 1, $amount, 49);                    //팜
             } elseif($general['gold'] < 700 && $general['rice'] < 700) { $command = EncodeCommand(0, 0, 0, 1); } //금쌀되면 내정
             elseif($general['rice'] < 100) {                                      //쌀없으면 쌀삼
-                $amount = intdiv(($general['gold'] - $general['rice']), 100 / 2);  // 100단위
+                $amount = intdiv(($general['gold'] - $general['rice'])/2, 100);  // 100단위
                 $command = EncodeCommand(0, 2, $amount, 49);                    //삼
             } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
             else {
@@ -743,12 +858,12 @@ function processAI($no) {
                         else { $command = EncodeCommand(0, 0, 0, 1); }
                     } elseif($general['rice'] < $resrc && $general['rice'] <= $general['gold']) {
                         //금이 더 많으면 매매
-                        $amount = intdiv(($general['gold'] - $general['rice']), 100 / 2);  // 100단위
+                        $amount = intdiv(($general['gold'] - $general['rice']) / 2, 100);  // 100단위
                         if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }//삼
                         else { $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); }   // 내정, 조달
                     } elseif($general['gold'] < $resrc && $general['rice'] > $general['gold']) {
                         //쌀이 더 많으면 매매
-                        $amount = intdiv(($general['rice'] - $general['gold']), 100 / 2);  // 100단위
+                        $amount = intdiv(($general['rice'] - $general['gold']) / 2, 100);  // 100단위
                         if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }//팜
                         else { $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); }   // 내정, 조달
                     //자원, 병사 모두 충족
@@ -777,11 +892,11 @@ function processAI($no) {
             elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] == 1) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['gold'] < $resrc) {                                   // 금없으면 쌀팜
-                $amount = intdiv(($general['rice'] - $general['gold']), 100 / 2);   // 100단위
+                $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
             } elseif($general['rice'] < $resrc) {                                 // 쌀없으면 쌀삼
-                $amount = intdiv(($general['gold'] - $general['rice']), 100 / 2);   // 100단위
+                $amount = intdiv(($general['gold'] - $general['rice'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
             } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정

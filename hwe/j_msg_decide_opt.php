@@ -44,16 +44,16 @@ if($msg === null){
         'reason'=>'올바르지 않은 메시지'
     ]);
 }
-
+$reason = 'success';
 if($msgResponse){
-    $result = $msg->agreeMessage($general['no']);
+    $result = $msg->agreeMessage($general['no'], $reason);
 }
 else{
-    $result = $msg->declineMessage($general['no']);
+    $result = $msg->declineMessage($general['no'], $reason);
 }
 
 
 Json::die([
     'result' => $result===DiplomaticMessage::ACCEPTED,
-    'reason' => 'result'
+    'reason' => $reason
 ]);

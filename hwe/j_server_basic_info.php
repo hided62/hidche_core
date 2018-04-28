@@ -4,12 +4,47 @@ namespace sammo;
 include "lib.php";
 
 $session = Session::requireLogin([
-    'game'=>'x',
+    'game'=>null,
     'me'=>null
 ])->setReadOnly();
 $userID = Session::getUserID();
 
+if(!class_exists('\\sammo\\DB')){
+    Json::die([
+        'game'=>null,
+        'me'=>null
+    ]);
+}
+
 $db = DB::db();
+
+if(file_exists(__dir__.'/.htaccess')){
+    $reserved = $db->queryFirstRow(
+        'SELECT * FROM reserved_open ORDER BY `date` ASC LIMIT 1'
+    );
+    if(!$reserved){
+        Json::die([
+            'game'=>null,
+            'me'=>null
+        ]);
+    }
+
+    $options = Json::decode($reserved['options']);
+
+    Json::die([
+        'reserved'=>[
+            'scenarioName'=>$options['scenarioName'],
+            'turnterm'=>$options['turnterm'],
+            'fictionMode'=>($options['fiction']?'가상':'사실'),
+            'npcMode'=>($options['npcmode']?'가능':'불가'),
+            'openDatetime'=>$reserved['date']
+        ],
+        'game'=>null,
+        'me'=>null
+    ]);
+}
+
+//TODO: 천통시에도 예약 오픈 알림이 필요..?
 
 $game = $db->queryFirstRow('SELECT isUnited, npcMode, year, month, scenario, scenario_text, maxgeneral as maxUserCnt, turnTerm from game where `no`=1');
 

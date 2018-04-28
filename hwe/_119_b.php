@@ -6,7 +6,7 @@ include "func.php";
 
 
 $session = Session::requireGameLogin()->setReadOnly();
-if($session->userGrade < 5){
+if($session->userGrade < 4){
     header('location:_119.php');
     die();
 }

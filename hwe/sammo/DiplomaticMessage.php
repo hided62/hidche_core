@@ -16,6 +16,7 @@ class DiplomaticMessage extends Message{
 
     protected $diplomaticType = '';
     protected $diplomacyName = '';
+    protected $diplomacyDetail = '';
     protected $validDiplomacy = true;
 
     public function __construct(
@@ -77,18 +78,20 @@ class DiplomaticMessage extends Message{
             return [self::INVALID, '올바르지 않은 불가침 서신입니다.'];
         }
 
+        $this->diplomacyDetail = "{$year}년";
+
         $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
         $chk = $helper->noAggression($year, $option);
         if($chk[0] !== self::ACCEPTED){
             return $chk;
         }
 
-        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>(와)과 <C>$when</>년 불가침에 성공했습니다.";
-        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>(와)과 <C>$when</>년 불가침에 합의했습니다.";
+        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>(와)과 <C>$year</>년 불가침에 성공했습니다.";
+        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>(와)과 <C>$year</>년 불가침에 합의했습니다.";
         pushGenLog(['no'=>$this->dest->generalID], $mylog);
         pushGenLog(['no'=>$this->src->generalID], $youlog);
-        pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 {$when}년 불가침 성공");
-        pushGeneralHistory(['no'=>$this->dest->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>(와)과 {$when}년 불가침 수락");
+        pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 {$year}년 불가침 성공");
+        pushGeneralHistory(['no'=>$this->dest->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>(와)과 {$year}년 불가침 수락");
 
         return $chk;
     }
@@ -212,7 +215,7 @@ class DiplomaticMessage extends Message{
     /**
      * @return int 수행 결과 반환, ACCEPTED(등용장 소모), DECLINED(등용장 소모), INVALID 중 반환
      */
-    public function agreeMessage(int $receiverID):int{
+    public function agreeMessage(int $receiverID, string &$reason):int{
         //NOTE: 올바른 유저가 agreeMessage() 호출을 한건지는 외부에서 체크 필요(Session->userID 등)
 
         if(!$this->id){
@@ -294,7 +297,7 @@ class DiplomaticMessage extends Message{
             self::MSGTYPE_NATIONAL, 
             $this->dest, 
             $this->src, 
-            "【외교】{$year}년 {$month}월: {$this->src->nationName}이 {$this->dest->nationName}에게 제안한 {$this->diplomacyName} 동의.",
+            "【외교】{$year}년 {$month}월: {$this->src->nationName}(이)가 {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}{$this->diplomacyName} 동의.",
             new \DateTime(),
             new \DateTime('9999-12-31'),
             [
@@ -315,7 +318,7 @@ class DiplomaticMessage extends Message{
         return self::DECLINED;
     }
 
-    public function declineMessage(int $receiverID):int{
+    public function declineMessage(int $receiverID, string &$reason):int{
         if(!$this->id){
             throw \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
         }

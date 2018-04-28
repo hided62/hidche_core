@@ -36,7 +36,13 @@ if ($session->isLoggedIn()) {
 
 var oauthMode = null;
 
-function getOAuthToken(mode='login', scope_list = null){
+function getOAuthToken(mode, scope_list){
+    if(mode === undefined){
+        mode = 'login';
+    }
+    if(scope_list === undefined){
+        scope_list = null;
+    }
     oauthMode = mode;
     var url = 'https://kauth.kakao.com/oauth/authorize?'+
         'client_id=<?=KakaoKey::REST_KEY?>&'+
@@ -50,7 +56,6 @@ function getOAuthToken(mode='login', scope_list = null){
     }
 
     window.open(url,"KakaoAccountLogin","width=600,height=450");
-
 }
 
 function sendTempPasswordToKakaoTalk(){
@@ -117,7 +122,7 @@ function postOAuthResult(result){
                         <label for="username" class="col-sm-4 col-form-label">계정명</label>
                         <div class="col-sm-8">
                             <input autocomplete="username" type="text" class="form-control"
-                                name="username" id="username"  placeholder="계정명"/>
+                                name="username" id="username" autofocus="autofocus" placeholder="계정명"/>
                         </div>
                     </div>
 
@@ -132,7 +137,7 @@ function postOAuthResult(result){
 
                     <input type="hidden" id="global_salt" name="global_salt" value="<?=RootDB::getGlobalSalt()?>">
                     <div class="form-group row">
-                        <div class="col-sm-4" style="position:relative;"><a href="javascript:getOAuthToken('login');"><img style="height:46px;margin-top:6px;" src="oauth_kakao/kakao_btn.png"></a></div>
+                        <div class="col-sm-4" style="position:relative;"><button type="button" onclick="getOAuthToken('login');" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
                         <div class="col-sm-8">
                             <button type="submit" class="btn btn-primary btn-lg btn-block login-button">로그인</button>
                         </div>
@@ -152,5 +157,8 @@ function postOAuthResult(result){
         </div>
     </div>
     </div>
+    <div id="bottom_box">
+    <div class="container"><a href="oauth_kakao/terms.2.html">개인정보처리방침</a> &amp; <a href="oauth_kakao/terms.1.html">이용약관</a><br>© 2018  •  HideD
+    </div></div>
 </body>
 </html>

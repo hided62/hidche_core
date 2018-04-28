@@ -64,7 +64,7 @@ class Scenario{
 
             list(
                 $affinity, $name, $pictureID, $nationID, $locatedCity, 
-                $leadership, $power, $intel, $birth, $death, $ego,
+                $leadership, $power, $intel, $level, $birth, $death, $ego,
                 $char, $text
             ) = $rawGeneral;
 
@@ -83,6 +83,7 @@ class Scenario{
                 $leadership, 
                 $power, 
                 $intel, 
+                $level, 
                 $birth, 
                 $death, 
                 $ego,
@@ -117,7 +118,7 @@ class Scenario{
                 $leadership, 
                 $power, 
                 $intel, 
-                $level,
+                $level, 
                 $birth, 
                 $death, 
                 $ego,
@@ -279,12 +280,14 @@ class Scenario{
     private function buildDiplomacy($env){
         $this->initFull();
 
+        $monthDiff = ($env['year'] * 12) + ($env['month'] - 1) - ($env['startyear'] * 12);
+
         $db = DB::db();
         foreach($this->diplomacy as $diplomacy){
             list($me, $you, $state, $remain) = $diplomacy;
             $db->update('diplomacy', [
                 'state'=>$state,
-                'term'=>$remain
+                'term'=>$remain - $monthDiff
             ], '(me = %i AND you = %i) OR (me = %i AND you = %i)', $me, $you, $you, $me);
         }
     }
@@ -312,6 +315,8 @@ class Scenario{
 
             $nation->build($env);
         }
+        
+        refreshNationStaticInfo();
         CityHelper::flushCache();
 
         $remainGenerals = $this->buildGenerals($env);
@@ -321,7 +326,7 @@ class Scenario{
 
             $actions[] = ['DeleteEvent'];
             $this->events[] = [
-                'cond'=>['Date', '==', $targetYear, '1'],
+                'cond'=>['Date', '>=', $targetYear, '1'],
                 'action'=>$actions
             ];
         }

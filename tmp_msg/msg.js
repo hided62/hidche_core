@@ -59,9 +59,6 @@ function fetchMsg(){
 }
 
 function redrawMsg(deferred){
-    
-    console.log(deferred);
-
     function registerSequence(obj){
         if(!obj.result){
             deferred.reject();

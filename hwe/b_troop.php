@@ -25,7 +25,7 @@ $troopcount = MYDB_num_rows($result);
 <html>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>부대편성</title>
+<title><?=UniqueConst::$serverName?>: 부대편성</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>
 
@@ -123,7 +123,9 @@ for($i=0; $i < $troopcount; $i++) {
     }
 }
 
-if($me['troop'] == 0) {
+if ($troopcount == 0) {
+}
+else if($me['troop'] == 0) {
     echo"
 <input type=submit name=btn value='부 대 가 입'>";
 } else {
@@ -158,7 +160,6 @@ echo "
     <tr><td><?=banner()?> </td></tr>
 </table>
 </form>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

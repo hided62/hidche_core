@@ -80,7 +80,6 @@ CREATE TABLE `general` (
 	`specage2` INT(2) NULL DEFAULT '0',
 	`mode` INT(1) NULL DEFAULT '2',
 	`tnmt` INT(1) NULL DEFAULT '1',
-	`map` INT(1) NULL DEFAULT '0',
 	`myset` INT(1) NULL DEFAULT '3',
 	`tournament` INT(1) NULL DEFAULT '0',
 	`vote` INT(1) NULL DEFAULT '0',
@@ -152,7 +151,7 @@ CREATE TABLE `general` (
 	`recturn` CHAR(14) NULL DEFAULT '',
 	`resturn` CHAR(14) NULL DEFAULT '',
 	PRIMARY KEY (`no`),
-	INDEX `nation` (`nation`),
+	INDEX `nation` (`nation`, `npc`),
 	INDEX `city` (`city`),
 	INDEX `turntime` (`turntime`, `no`),
 	INDEX `no_member` (`owner`),
@@ -160,7 +159,7 @@ CREATE TABLE `general` (
 	INDEX `npcid` (`npcid`)
 )
 DEFAULT CHARSET=utf8mb4
-ENGINE=InnoDB;
+ENGINE=MyISAM;
 
 ###########################################################################
 ## 국가 테이블
@@ -273,7 +272,7 @@ create table nation (
   l8turn11 char(14) default '00000000000099', l7turn11 char(14) default '00000000000099', l6turn11 char(14) default '00000000000099', l5turn11 char(14) default '00000000000099',
 
   PRIMARY KEY (nation)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 도시 테이블
@@ -316,7 +315,7 @@ create table city (
 
   PRIMARY KEY (city),
   KEY (nation)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 부대 테이블
@@ -329,7 +328,7 @@ create table troop (
   no int(6) not null,
 
   PRIMARY KEY (troop)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ##########################################################################
 ##  락 테이블
@@ -340,7 +339,7 @@ create table plock (
   plock       int(1) default 0,
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ##########################################################################
 ## 게임 테이블
@@ -405,7 +404,7 @@ CREATE TABLE `game` (
 	`bet14` INT(8) NULL DEFAULT '0',
 	`bet15` INT(8) NULL DEFAULT '0',
 	PRIMARY KEY (`no`)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 메시지 테이블
@@ -420,7 +419,7 @@ CREATE TABLE `message` (
 	`valid_until` DATETIME NOT NULL DEFAULT '9999-12-31 23:59:59',
 	`message` TEXT NOT NULL COMMENT 'json',
 	PRIMARY KEY (`id`),
-	INDEX `by_mailbox` (`mailbox`, `type`, `time`)
+	INDEX `by_mailbox` (`mailbox`, `type`, `id`)
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=InnoDB;
@@ -438,8 +437,9 @@ create table if not exists hall (
   color char(12) default '',
   picture char(32) default '',
 
-  PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+  PRIMARY KEY (no),
+  UNIQUE INDEX `type` (`type`, `rank`)
+  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 왕조 테이블
@@ -520,7 +520,7 @@ create table diplomacy (
 
   PRIMARY KEY (`no`),
   UNIQUE INDEX `me` (`me`, `you`)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 토너먼트 테이블
@@ -545,7 +545,7 @@ create table tournament (
   gl   int(2) default 0,
   prmt int(1) default 0,
   PRIMARY KEY (seq)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 거래 테이블
@@ -565,7 +565,7 @@ create table auction (
   expire datetime,
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 통계 테이블
@@ -596,7 +596,7 @@ create table history (
   month   int(2) default 0,
   map     mediumtext default '',
   log     text default '',
-  genlog  text default '',
+  genlog  mediumtext default '',
   nation  text default '',
   power   text default '',
   gen     text default '',
@@ -644,3 +644,15 @@ CREATE TABLE `general_public_record` (
 DEFAULT CHARSET=utf8mb4
 ENGINE=InnoDB
 ;
+
+######
+# 예약 오픈 테이블
+CREATE TABLE `reserved_open` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`options` TEXT NULL DEFAULT NULL,
+	`date` DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `date` (`date`)
+)
+DEFAULT CHARSET=utf8mb4
+ENGINE=MyISAM;

@@ -32,7 +32,7 @@ $connect=$db->get();
 <!DOCTYPE html>
 <html>
 <head>
-<title>NPC선택</title>
+<title><?=UniqueConst::$serverName?>: NPC선택</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>
@@ -71,10 +71,10 @@ for($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($nationresult);
     if($nation['scoutmsg'] == "") {
         echo "
-    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:{newColor({$nation['color']})};background-color:{$nation['color']}>-</td></tr>";
+    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>-</td></tr>";
     } else {
         echo "
-    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:{newColor({$nation['color']})};background-color:{$nation['color']}>{$nation['scoutmsg']}</td></tr>";
+    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['scoutmsg']}</td></tr>";
     }
 }
 ?>

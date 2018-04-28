@@ -30,7 +30,7 @@ if($meLevel == 0) {
 
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>인사부</title>
+<title><?=UniqueConst::$serverName?>: 인사부</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>
 <script type="text/javascript">
@@ -205,7 +205,10 @@ if($meLevel >= 5 && $nation['l11set'] == 0) {
     $query = "select name,city from general where nation='{$me['nation']}' and level='11'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-    echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
+    if($general){
+        echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
+    }
+    
 }
 echo "
         </td>
@@ -257,7 +260,9 @@ for($i=10; $i >= $lv; $i--) {
         $query = "select name,city from general where nation='{$me['nation']}' and level={$i}";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $general = MYDB_fetch_array($result);
-        echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
+        if($general){
+            echo "{$general['name']} 【".CityConst::byID($general['city'])->name."】";
+        }
     }
     echo "</td></form>";
     if($i % 2 == 1) { echo "</tr>"; }
@@ -504,6 +509,5 @@ for($j=0; $j < $citycount; $j++) {
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>

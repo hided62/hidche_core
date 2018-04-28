@@ -75,7 +75,13 @@ function allButton() {
         $call = "설문조사";
     }
 
-    $templates = new \League\Plates\Engine('templates');
+    if(\file_exists("d_setting/templates/allButton.php")){
+        $templates = new \League\Plates\Engine('d_setting/templates');
+    }
+    else{
+        $templates = new \League\Plates\Engine('templates');
+    }
+    
 
     return $templates->render('allButton', [
         'call' => $call,
@@ -95,10 +101,12 @@ function commandButton() {
     $db = DB::db();
     $me = $db->queryFirstRow("select no,nation,level,belong from general where owner=%i", $userID);
 
-    $nation = $db->queryFirstRow("select nation,color,secretlimit from nation where nation=%i",$me['nation']);
-
-    if($nation['color'] == "") { $nation['color'] = "#000000"; }
-
+    $nation = $db->queryFirstRow("select nation,level,color,secretlimit from nation where nation=%i",$me['nation'])??[
+        'nation'=>0,
+        'level'=>0,
+        'secretlimit'=>99,
+        'color'=>'#000000'
+    ];
 
     $bgColor = Util::array_get($nation['color'])?:'#000000';
     $fgColor = newColor($bgColor);
@@ -119,11 +127,44 @@ function commandButton() {
         'bgColor'=>$bgColor,
         'fgColor'=>$fgColor,
         'meLevel'=>$me['level'],
+        'nationLevel'=>$nation['level'],
         'showSecret'=>$showSecret
     ]);
 }
 
+function formatWounded(int $value, int $wound): string{
+    if($wound == 0){
+        return "$value";
+    }
+    $woundedValue = intdiv($value * (100 - $wound), 100);
+    return "<font color=red>$woundedValue</font>";
+}
 
+function formatDefenceMode(int $value): string{
+    switch($value) {
+    case 0: return "×"; break;
+    case 1: return "○"; break;
+    case 2: return "◎"; break;
+    }
+    return '??';
+}
+
+function formatLeadershipBonus(int $value): string{
+    if($value == 0){
+        return '';
+    }
+    return "<font color=cyan>+{$value}</font>";
+}
+
+function formatName(string $name, int $npc): string{
+    if($npc==1){
+        $name = "<font color='skyblue'>$name</font>";
+    }
+    else if($npc>1){
+        $name = "<font color='cyan'>$name</font>";
+    }
+    return $name;
+}
 
 function getMapHtml(){
     //NOTE: 필요한가?

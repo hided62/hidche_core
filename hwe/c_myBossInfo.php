@@ -20,7 +20,7 @@ $userID = Session::getUserID();
 $db = DB::db();
 $connect=$db->get();
 
-$query = "select startyear,year,month from game limit 1";
+$query = "select startyear,year,month,scenario from game limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $admin = MYDB_fetch_array($result);
 
@@ -41,17 +41,20 @@ if($meLevel < 5){
 
 
 if($btn == "임명") {
-    $query = "select no,nation,level,leader,power,intel from general where no='$genlist'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
+    if($genlist !== 0){
+        $query = "select no,nation,level,leader,power,intel from general where no='$genlist'";
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $general = MYDB_fetch_array($result);
 
-    if(!$general){
-        header('location:b_myBossInfo.php');
-        exit();
+        if(!$general){
+            header('location:b_myBossInfo.php');
+            exit();
+        }
     }
+        
 
     //임명할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
-    if($general['level'] == 12 || $meLevel < 5 || ($general['nation'] != $me['nation'] && $genlist != 0)) {
+    if($meLevel < 5 || ($general['nation'] != $me['nation'] && $genlist != 0) || ($general['level'] == 12 && $genlist != 0)) {
         
         header('location:b_myBossInfo.php');
         exit();
@@ -74,13 +77,13 @@ if($btn == "임명") {
 }
 
 //나와 대상 장수는 국가가 같아야 함
-if($me['nation'] != $general['nation']){
+if($genlist != 0 && $me['nation'] != $general['nation']){
     header('location:b_myBossInfo.php');
     exit();
 }
 
 if($btn == "추방") {
-    $query = "select name,l{$meLevel}set,chemi from nation where nation='{$me['nation']}'";
+    $query = "select name,l{$meLevel}set,chemi,color from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -165,7 +168,24 @@ if($btn == "추방") {
             case 4: $str = "날 추방했으니 그 복수로 적국에 정보를 팔아 넘겨야겠군요. 그럼 이만."; break;
             }
 
-            PushMsg(1, 0, $general['picture'], $general['imgsvr'], "{$general['name']}:", $nation['color'], $nation['name'], $nation['color'], $str);
+            $src = new MessageTarget(
+                $general['no'], 
+                $general['name'],
+                $general['nation'],
+                $nation['name'],
+                $nation['color'],
+                GetImageURL($general['imgsvr'], $general['picture'])
+            );
+            $msg = new Message(
+                Message::MSGTYPE_PUBLIC, 
+                $src,
+                $src,
+                $str,
+                new \DateTime(),
+                new \DateTime('9999-12-31'),
+                []
+            );
+            $msg->send();
         }
 
         //국가 기술력 그대로

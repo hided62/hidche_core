@@ -34,7 +34,7 @@ class Util extends \utilphp\util
 
         if ($type === 'bool') {
             $value = strtolower($value);
-            if ($value === 'false' || $value === 'no' || $value === 'n' || $value === 'x' || $value === 'null') {
+            if ($value === null || $value === '' || $value === 'off' || $value === 'false' || $value === 'no' || $value === 'n' || $value === 'x' || $value === 'null') {
                 return false;
             }
             return !!$value;

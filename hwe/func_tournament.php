@@ -117,7 +117,7 @@ function getTournamentTerm() {
     $admin = MYDB_fetch_array($result);
 
     switch($admin['tnmt_auto']) {
-    case 0: $str = '설정 안됨'; break;
+    case 0: $str = ''; break;
     case 1: $str = "경기당 12분"; break;
     case 2: $str = "경기당 7분"; break;
     case 3: $str = "경기당 3분"; break;

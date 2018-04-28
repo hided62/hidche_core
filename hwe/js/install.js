@@ -113,6 +113,7 @@ function formSetup(){
             extend:"required",
             npcmode:"required",
             show_img_level:"required",
+            tournament_trig:"required"
         },
         errorElement: "div",
         errorPlacement: function ( error, element ) {
@@ -149,7 +150,9 @@ function formSetup(){
                 fiction:$('#fiction input:radio:checked').val(),
                 extend:$('#extend input:radio:checked').val(),
                 npcmode:$('#npcmode input:radio:checked').val(),
-                show_img_level:$('#show_img_level input:radio:checked').val()
+                show_img_level:$('#show_img_level input:radio:checked').val(),
+                tournament_trig:$('#tournament_trig input:radio:checked').val(),
+                reserve_open:$('#reserve_open').val()
             }
         }).then(function(result){
             var deferred = $.Deferred();

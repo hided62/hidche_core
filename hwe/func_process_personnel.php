@@ -47,16 +47,8 @@ function process_22(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         $msg = ScoutMessage::buildScoutMessage($general['no'], $who, $reason);
+        $msg->send(true);
         
-/*
-        sendScoutMsg([
-            'id' => $general['no'],
-            'nation_id' => Util::array_get($general['nation'], 0)
-        ],[
-            'id' => $you['no'],
-            'nation_id' => Util::array_get($you['nation'], 0)
-        ],$date);
- */
         $general['intel2']++;
         $query = "update general set resturn='SUCCESS',gold=gold-'$cost',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -576,7 +568,7 @@ function process_46(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
-    $query = "select nation from nation where name='{$general['makenation']}'";
+    $query = "select nation from nation where nation!={$general['nation']} AND name='{$general['makenation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($result);
 

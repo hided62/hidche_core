@@ -48,27 +48,27 @@ if ($me['level'] >= 5) {
 <html>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>내무부</title>
+<title><?=UniqueConst::$serverName?>: 내무부</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
     <tr><td>내 무 부<br><?=backButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
     <tr><td colspan=9 align=center bgcolor=blue>외 교 관 계</td></tr>
     <tr>
-        <td width=100 align=center id=bg1>국 가 명</td>
-        <td width=50  align=center id=bg1>국력</td>
-        <td width=40  align=center id=bg1>장수</td>
-        <td width=40  align=center id=bg1>속령</td>
-        <td width=80  align=center id=bg1>상태</td>
-        <td width=60  align=center id=bg1>기간</td>
-        <td width=100 align=center id=bg1>종 료 시 점</td>
-        <td align=center id=bg1>비 고</td>
+        <td width=100 align=center class=bg1>국 가 명</td>
+        <td width=50  align=center class=bg1>국력</td>
+        <td width=40  align=center class=bg1>장수</td>
+        <td width=40  align=center class=bg1>속령</td>
+        <td width=80  align=center class=bg1>상태</td>
+        <td width=60  align=center class=bg1>기간</td>
+        <td width=100 align=center class=bg1>종 료 시 점</td>
+        <td align=center class=bg1>비 고</td>
     </tr>
 <?php
 $query = "select year,month from game limit 1";
@@ -220,65 +220,62 @@ if ($budgetricediff > 0) {
 }
 
 ?>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
 <form name=form1 method=post action=c_dipcenter.php>
     <tr><td colspan=2 height=10></td></tr>
     <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메세지</td></tr>
-    <tr><td colspan=2 id=bg1>국가 방침 <input type=text <?=$read?> maxlength=500 style=color:white;background-color:black;width:830px; name=msg value='<?=$nation['msg']?>'><input type=<?=$btn?> name=btn value=국가방침></td></tr>
-    <tr><td colspan=2 id=bg1>임관 권유 <input type=text <?=$read?> maxlength=500 style=color:white;background-color:black;width:830px; name=scoutmsg value='<?=$nation['scoutmsg']?>'><input type=<?=$btn?> name=btn value=임관권유></td></tr>
+    <tr><td colspan=2 class=bg1>국가 방침 <textarea <?=$read?> maxlength=1000 rows="5" style="color:white;background-color:black;width:830px;" name=msg><?=$nation['msg']?></textarea><input type=<?=$btn?> name=btn value=국가방침></td></tr>
+    <tr><td colspan=2 class=bg1>임관 권유 <input type=text <?=$read?> maxlength=500 style=color:white;background-color:black;width:830px; name=scoutmsg value='<?=$nation['scoutmsg']?>'><input type=<?=$btn?> name=btn value=임관권유></td></tr>
     <tr><td colspan=2>900 x 200px 넘는 크기를 점유할 시 통보없이 제한될 수 있습니다.</td></tr>
     <tr><td colspan=2 height=10></td></tr>
     <tr><td colspan=2 align=center bgcolor=green>예 산 &amp; 정 책</td></tr>
     <tr>
         <td colspan=2>
-            <table width=998 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-<?php
-echo "
+            <table width=998 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
                 <tr>
-                    <td colspan=2 align=center id=bg1>자금 예산</td>
-                    <td colspan=2 align=center id=bg1>병량 예산</td>
+                    <td colspan=2 align=center class=bg1>자금 예산</td>
+                    <td colspan=2 align=center class=bg1>병량 예산</td>
                 </tr>
                 <tr>
-                    <td width=248 align=right id=bg1>현 재&nbsp;&nbsp;&nbsp;</td>
-                    <td width=248 align=center>{$nation['gold']}</td>
-                    <td width=248 align=right id=bg1>현 재&nbsp;&nbsp;&nbsp;</td>
-                    <td width=248 align=center>{$nation['rice']}</td>
+                    <td width=248 align=right class=bg1>현 재&nbsp;&nbsp;&nbsp;</td>
+                    <td width=248 align=center><?=$nation['gold']?></td>
+                    <td width=248 align=right class=bg1>현 재&nbsp;&nbsp;&nbsp;</td>
+                    <td width=248 align=center><?=$nation['rice']?></td>
                 </tr>
                 <tr>
-                    <td align=right id=bg1>단기수입&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+$deadIncome</td>
-                    <td align=right id=bg1>둔전수입&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+$riceincomeList[1]</td>
+                    <td align=right class=bg1>단기수입&nbsp;&nbsp;&nbsp;</td>
+                    <td align=center>+<?=$deadIncome?></td>
+                    <td align=right class=bg1>둔전수입&nbsp;&nbsp;&nbsp;</td>
+                    <td align=center>+<?=$riceincomeList[1]?></td>
                 </tr>
                 <tr>
-                    <td align=right id=bg1>세 금&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+$goldincomeList[0]</td>
-                    <td align=right id=bg1>세 곡&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+$riceincomeList[0]</td>
+                    <td align=right class=bg1>세 금&nbsp;&nbsp;&nbsp;</td>
+                    <td align=center>+<?=$goldincomeList[0]?></td>
+                    <td align=right class=bg1>세 곡&nbsp;&nbsp;&nbsp;</td>
+                    <td align=center>+<?=$riceincomeList[0]?></td>
                 </tr>
                 <tr>
-                    <td align=right id=bg1>수입 / 지출&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+$goldincome / -$goldoutcome</td>
-                    <td align=right id=bg1>수입 / 지출&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>+$riceincome / -$riceoutcome</td>
+                    <td align=right class=bg1>수입 / 지출&nbsp;&nbsp;&nbsp;</td>
+                    <td align=center>+<?=$goldincome?> / -<?=$goldoutcome?></td>
+                    <td align=right class=bg1>수입 / 지출&nbsp;&nbsp;&nbsp;</td>
+                    <td align=center>+<?=$riceincome?> / -<?=$riceoutcome?></td>
                 </tr>
                 <tr>
-                    <td align=right id=bg1>국고 예산&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>{$budgetgold} ({$budgetgolddiff})</td>
-                    <td align=right id=bg1>병량 예산&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center>{$budgetrice} ({$budgetricediff})</td>
-                </tr>";
-?>
+                    <td align=right class=bg1>국고 예산&nbsp;&nbsp;&nbsp;</td>
+                    <td align=center><?=$budgetgold?> (<?=$budgetgolddiff?>)</td>
+                    <td align=right class=bg1>병량 예산&nbsp;&nbsp;&nbsp;</td>
+                    <td align=center><?=$budgetrice?> (<?=$budgetricediff?>)</td>
+                </tr>
                 <tr>
-                    <td align=right id=bg1>세율 (5 ~ 30%)&nbsp;&nbsp;&nbsp;</td>
+                    <td align=right class=bg1>세율 (5 ~ 30%)&nbsp;&nbsp;&nbsp;</td>
                     <td align=center><input type=text <?=$read?> name=rate style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['rate']?>>% <input type=<?=$btn?> name=btn value=세율></td>
-                    <td align=right id=bg1>봉급 지급율 (20 ~ 200%)&nbsp;&nbsp;&nbsp;</td>
+                    <td align=right class=bg1>봉급 지급율 (20 ~ 200%)&nbsp;&nbsp;&nbsp;</td>
                     <td align=center><input type=text <?=$read?> name=bill style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['bill']?>>% <input type=<?=$btn?> name=btn value=지급율></td>
                 </tr>
                 <tr>
-                    <td align=right id=bg1>기밀 권한 (1 ~ 99년)&nbsp;&nbsp;&nbsp;</td>
+                    <td align=right class=bg1>기밀 권한 (1 ~ 99년)&nbsp;&nbsp;&nbsp;</td>
                     <td align=center><input type=text <?=$read?> name=secretlimit style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['secretlimit']?>>년 <input type=<?=$btn?> name=btn value=기밀권한></td>
-                    <td align=right id=bg1>임관&전쟁 변경 가능</td>
+                    <td align=right class=bg1>임관&amp;전쟁 변경 가능</td>
                     <td align=center>무제한</td>
                 </tr>
                 <tr>
@@ -307,10 +304,9 @@ if ($nation['war'] == 0) {
     <tr><td colspan=2 height=10></td></tr>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>

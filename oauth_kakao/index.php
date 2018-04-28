@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+require(__dir__.'/../vendor/autoload.php');
+
 use \kakao\KakaoKey as KakaoKey;
 
 ?>

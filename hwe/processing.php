@@ -58,7 +58,7 @@ switch($commandtype) {
     case 17: command_Single($turn, 17); break; //소집해제
 
     case 21: command_21(    $turn, 21); break; //이동
-    //case 22: command_22(    $turn, 22); break; //등용 //TODO:등용장 재 디자인
+    case 22: command_22(    $turn, 22); break; //등용 //TODO:등용장 재 디자인
     case 23: command_23(    $turn, 23); break; //포상
     case 24: command_24(    $turn, 24); break; //몰수
     case 25: command_25(    $turn, 25); break; //임관
@@ -166,11 +166,7 @@ function ender($type=0) {
     echo banner();
     echo "
     </td></tr>
-</table>";
-
-    PrintElapsedTime();
-
-    echo "
+</table>
 </body>
 </html>
 ";
@@ -594,7 +590,7 @@ function calc(cost, formnum) {
 <form name=form{$i} action=c_double.php>
     <td valign=center>
         <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($baseCost, $i)'><br>
-        <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=징병>
+        <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=모병>
         <input type=hidden name=third value={$i}>
         <input type=hidden name=command value=$command>";
 
@@ -860,7 +856,10 @@ function command_23($turn, $command) {
     <option value=8>800</option>
     <option value=9>900</option>
     <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
     <option value=20>2000</option>
+    <option value=25>2500</option>
     <option value=30>3000</option>
     <option value=40>4000</option>
     <option value=50>5000</option>
@@ -935,7 +934,10 @@ function command_24($turn, $command) {
     <option value=8>800</option>
     <option value=9>900</option>
     <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
     <option value=20>2000</option>
+    <option value=25>2500</option>
     <option value=30>3000</option>
     <option value=40>4000</option>
     <option value=50>5000</option>
@@ -1448,7 +1450,10 @@ function command_43($turn, $command) {
     <option value=8>800</option>
     <option value=9>900</option>
     <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
     <option value=20>2000</option>
+    <option value=25>2500</option>
     <option value=30>3000</option>
     <option value=40>4000</option>
     <option value=50>5000</option>
@@ -1496,7 +1501,10 @@ function command_44($turn, $command) {
     <option value=8>800</option>
     <option value=9>900</option>
     <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
     <option value=20>2000</option>
+    <option value=25>2500</option>
     <option value=30>3000</option>
     <option value=40>4000</option>
     <option value=50>5000</option>
@@ -1540,7 +1548,7 @@ function command_46($turn, $command) {
             continue;
         }
 
-        if(isset($nationcolor[$nation['color']])){
+        if(!isset($nationcolor[$nation['color']])){
             $nationcolor[$nation['color']] = 1;
         }
         else{
@@ -1720,7 +1728,10 @@ function command_49($turn, $command) {
     <option value=8>800</option>
     <option value=9>900</option>
     <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
     <option value=20>2000</option>
+    <option value=25>2500</option>
     <option value=30>3000</option>
     <option value=40>4000</option>
     <option value=50>5000</option>
@@ -1774,7 +1785,7 @@ function command_51($turn, $command) {
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        if($myNation['power'] / $nation['power'] <= 3 || !isClose($me['nation'], $nation['nation'])) {
+        if($myNation['power'] <= $nation['power'] * 3 || !isClose($me['nation'], $nation['nation'])) {
             echo "<option style=color:{$nation['color']};background-color:red; value={$nation['nation']}>【 {$nation['name']} 】</option>";
         } else {
             echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
@@ -2758,13 +2769,8 @@ function command_81($turn, $command) {
         if($nation['level'] <= 0){
             continue;
         }
-
-        if(isset($nationcolor[$nation['color']])){
-            $nationcolor[$nation['color']] = 1;
-        }
-        else{
-            $nationcolor[$nation['color']]++;
-        }
+        
+        $colorUsed[$nation['color']]+=1;
     }
 
     $colorUsedCnt = 0;
@@ -2787,7 +2793,7 @@ function command_81($turn, $command) {
 <form name=form1 action=c_double.php method=post>
 색깔 : <select name=double size=1>";
     foreach(GetNationColors() as $idx=>$color) {
-        if($colorUsed[$color] > 0){
+        if($colorUsed[$color]>0){
             continue;
         }
         echo "<option value={$idx} style=background-color:{$color};color:".newColor($color).";>국가명</option>";

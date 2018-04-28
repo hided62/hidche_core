@@ -32,37 +32,43 @@ if($me['level'] < 5) {
 }
 
 if($btn == "국가방침") {
-    $msg = BadTag2Code(addslashes(SQ2DQ($msg)));
-    $query = "update nation set msg='$msg' where nation='{$me['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $msg == mb_substr($msg, 0, 1000);
+    //$msg = StringUtil::
+    $db->update('nation', [
+        'msg'=>BadTag2Code($msg)
+    ], 'nation=%i',$me['nation']);
 } elseif($btn == "임관권유") {
-    $scoutmsg = BadTag2Code(addslashes(SQ2DQ($scoutmsg)));
-    $query = "update nation set scoutmsg='$scoutmsg' where nation='{$me['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $scoutmsg == mb_substr($msg, 0, 500);
+    $db->update('nation', [
+        'scoutmsg'=>BadTag2Code($scoutmsg)
+    ], 'nation=%i',$me['nation']);
 } elseif($btn == "세율") {
     if($rate < 5)  { $rate = 5; }
     if($rate > 30) { $rate = 30; }
     $query = "update nation set rate='$rate' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "지급율") {
-    if($bill < 20)  { $bill = 20; }
-    if($bill > 200) { $bill = 200; }
-    $query = "update nation set bill='$bill' where nation='{$me['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $bill = Util::valueFit($bill, 20, 200);
+    $db->update('nation', [
+        'bill'=>$bill
+    ], 'nation=%i',$me['nation']);
 } elseif($btn == "기밀권한") {
-    if($secretlimit < 1)   { $secretlimit = 1; }
-    if($secretlimit > 99) { $secretlimit = 99; }
-    $query = "update nation set secretlimit='$secretlimit' where nation='{$me['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $secretlimit = Util::valueFit($secretlimit, 1, 99);
+    $db->update('nation', [
+        'secretlimit'=>$secretlimit
+    ], 'nation=%i',$me['nation']);
 } elseif($btn == "임관 금지") {
-    $query = "update nation set scout='1' where nation='{$me['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('nation', [
+        'scout'=>1
+    ], 'nation=%i',$me['nation']);
 } elseif($btn == "임관 허가") {
-    $query = "update nation set scout='0' where nation='{$me['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('nation', [
+        'scout'=>0
+    ], 'nation=%i',$me['nation']);
 } elseif($btn == "전쟁 금지") {
-    $query = "update nation set war='1' where nation='{$me['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('nation', [
+        'war'=>1
+    ], 'nation=%i',$me['nation']);
 } elseif($btn == "전쟁 허가") {
     $query = "update nation set war='0' where nation='{$me['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

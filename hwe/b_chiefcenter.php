@@ -58,13 +58,24 @@ $nation = MYDB_fetch_array($result);
 
 $lv = getNationChiefLevel($nation['level']);
 $turn = [];
-$gen = [[],[],[],[],[],[],[],[],[],[],[],[]];
+
 for($i=12; $i >= $lv; $i--) {
     $turn[$i] = getCoreTurn($nation, $i);
 
     $query = "select name,turntime,npc from general where level={$i} and nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen[$i] = MYDB_fetch_array($result);
+    $gen[$i] = MYDB_fetch_array($result)??[
+        'npc'=>0,
+        'name'=>'',
+        'turntime'=>''
+    ];
+}
+for($i= $lv - 1; $i>=5; $i--){
+    $gen[$i] = [
+        'npc'=>0,
+        'name'=>'',
+        'turntime'=>''
+    ];
 }
 
 ?>
@@ -72,7 +83,7 @@ for($i=12; $i >= $lv; $i--) {
 <html>
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>사령부</title>
+<title><?=UniqueConst::$serverName?>: 사령부</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>
 <script type="text/javascript">
@@ -109,13 +120,6 @@ for($i=12; $i >= $lv; $i--) {
 
 for($k=0; $k < 2; $k++) {
     $l4 = 12 - $k;  $l3 = 10 - $k;  $l2 =  8 - $k;  $l1 =  6 - $k;
-
-    if(!isset($gen[$l4])){
-        $gen[$l4] = [
-            'npc'=>0,
-            'name'=>0
-        ];
-    }
 
     if    ($gen[$l4]['npc'] >= 2) { $gen[$l4]['name'] = "<font color=cyan>".($gen[$l4]['name']??'')."</font>"; }
     elseif($gen[$l4]['npc'] == 1) { $gen[$l4]['name'] = "<font color=skyblue>".($gen[$l4]['name']??'')."</font>"; }
@@ -188,7 +192,6 @@ for($k=0; $k < 2; $k++) {
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 </html>
 

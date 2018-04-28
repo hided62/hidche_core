@@ -45,3 +45,5 @@ DROP TABLE IF EXISTS world_history;
 
 # 전체 이벤트 테이블 삭제(연감 대체?)
 DROP TABLE IF EXISTS general_public_record;
+
+DROP TABLE IF EXISTS reserved_open;

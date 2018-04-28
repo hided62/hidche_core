@@ -28,7 +28,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<title>세력일람</title>
+<title><?=UniqueConst::$serverName?>: 세력일람</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>
 
@@ -248,7 +248,6 @@ echo"
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
-<?php PrintElapsedTime(); ?>
 </body>
 
 </html>

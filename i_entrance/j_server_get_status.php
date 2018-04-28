@@ -12,6 +12,7 @@ foreach(AppConf::getList() as $setting){
         'color'=>$setting->getColor(),
         'korName'=>$setting->getKorName(),
         'name'=>$setting->getShortName(),
+        'exists'=>$setting->isExists(),
         'enable'=>$setting->isRunning()
     ];
 

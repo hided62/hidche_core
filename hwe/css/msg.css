@@ -9,6 +9,11 @@
 }
 /*임시용 끝*/
 
+#message_board{
+    height:1370px;
+    position:relative;
+}
+
 #message_board section{
     overflow-y:auto;
     overflow-x:hidden;
@@ -70,19 +75,32 @@
     color:white;
 }
 
+.message_input_form{
+    position:relative;
+}
+
 #msg_input{
     color:white;
     background-color:black;
     font-size:12px;
-    width:720px;
+    width:715px;
+    margin:0 2px;
     height:15px;
 }
 
+#msg_submit{
+    position:absolute;
+    right:0;
+    margin-right:2px;
+}
+
 #mailbox_list{
+    float:left;
     color:white;
     background-color:black;
     font-size:12px;
     width:160px;
+    height:20px;
 }
 
 .board_header{
@@ -91,10 +109,10 @@
 }
 
 .board_side{
+    position:absolute;
     height:1370px;
     width:498px;
     overflow-y: hidden;
-    display:inline-block;
     border-left:groove 1px;
     border-right:groove 1px;
     border-bottom:groove 1px;

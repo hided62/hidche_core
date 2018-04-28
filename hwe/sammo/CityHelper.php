@@ -29,13 +29,14 @@ class CityHelper{
         foreach (DB::db()->query('SELECT `city` as `id`, `name`, `level`, `nation` from city') as $city) {
             $id = $city['id'];
             $name = $city['name'];
+            $nationID = $city['nation'];
             $list[$id] = $city;
             $listInv[$city['name']] = $city;
 
-            if(!key_exists($id, $listByNation)){
-                $listByNation[$id] = [];
+            if(!key_exists($nationID, $listByNation)){
+                $listByNation[$nationID] = [];
             }
-            $listByNation[$id][] = $city;
+            $listByNation[$nationID][] = $city;
         }
 
         self::$list = $list;

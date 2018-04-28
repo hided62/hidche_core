@@ -19,7 +19,7 @@ function getVersion($target=null){
 }
 
 $session = Session::requireLogin(null)->setReadOnly();
-if($session->userGrade < 6){
+if($session->userGrade < 5){
     Json::die([
         'result'=>false,
         'reason'=>'권한이 충분하지 않습니다'
@@ -28,12 +28,13 @@ if($session->userGrade < 6){
 
 $request = $_POST + $_GET;
 
+$rootDB = RootDB::db();
 $tmpFile = 'd_log/arc.zip';
 
 $v = new Validator($request);
+
 $v->rule('required', [
-    'server',
-    'target'
+    'server'
 ])->rule('regex', 'target', '/^[0-9a-zA-Z^{}\\/\-_,.@]+$/');
 
 if(!$v->validate()){
@@ -43,8 +44,26 @@ if(!$v->validate()){
     ]);
 }
 
+$target = Util::getReq('target');
+
 $server = basename($request['server']);
-$target = $request['target'];
+if($session->userGrade <= 5 || !$target){
+    $target = Json::decode($rootDB->queryFirstField('SELECT `key`=%s FROM `config`', "git_path_$server"));
+    if($target){
+        $target = $target[0];
+    }
+}
+else{
+    $target = $request['target'];
+}
+
+if(!$target){
+    Json::die([
+        'result'=>false,
+        'reason'=>'git -ish target이 제대로 지정되지 않았습니다.'
+    ]);
+}
+
 
 $baseServerName = Util::array_last_key(AppConf::getList());
 
@@ -78,12 +97,12 @@ if(!file_exists($server)){
             'reason'=>$server.' 디렉토리가 없지만 생성할 권한이 없습니다.'
         ]);
     }
-    mkdir($server, 0644);
+    mkdir($server, 0755);
 }
 
 
 if($server == $baseServerName){
-    exec("git pull 2>&1", $output);
+    exec("git pull -q 2>&1", $output);
     if($output && $output[0] != 'Already up-to-date.'){
         Json::die([
             'result'=>false,
@@ -99,8 +118,6 @@ if($server == $baseServerName){
         ], true
     );
 
-    AppConf::getList()[$server]->closeServer();
-
     Json::die([
         'server'=>$server,
         'result'=>true,
@@ -109,13 +126,6 @@ if($server == $baseServerName){
 
 }
 
-exec("git fetch 2>&1", $output);
-if($output){
-    Json::die([
-        'result'=>false,
-        'reason'=>'git fetch 작업 : '.join(', ', $output)
-    ]);
-}
 $command = sprintf('git archive --format=zip -o %s %s', escapeshellarg($tmpFile), escapeshellarg($targetDir));
 exec("$command 2>&1", $output);
 if($output){
@@ -143,7 +153,7 @@ if(!$zip->extractTo($server)){
 $zip->close();
 @unlink($tmpFile);
 
-$version = getVersion();
+$version = getVersion($target);
 $result = Util::generateFileUsingSimpleTemplate(
     __DIR__.'/'.$server.'/d_setting/VersionGit.orig.php',
     __DIR__.'/'.$server.'/d_setting/VersionGit.php',[
@@ -151,8 +161,12 @@ $result = Util::generateFileUsingSimpleTemplate(
     ], true
 );
 
+$rootDB->insertUpdate('config', [
+    "key" => "git_path_$server",
+    "value" =>Json::encode([$target, $version])
+]);
 
-AppConf::getList()[$server]->closeServer();
+//AppConf::getList()[$server]->closeServer();
 
 Json::die([
     'server'=>$server,

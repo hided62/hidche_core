@@ -1,7 +1,8 @@
 <?php
 namespace sammo;
 
-function getTurn($general, $type, $font=1) {
+function getTurn(array $general, $type, $font=1) {
+    //TODO: 왜 'Type' 인가. 그냥 count로 하자.
     $str = [];
     $db = DB::db();
     $connect=$db->get();
@@ -532,13 +533,15 @@ function processCommand($no) {
         if($general['npc'] >= 2 || $general['killturn'] > $admin['killturn']) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } elseif(intval($command[0]) == 0 && $session->userGrade < 5) {
+        } elseif($command[0] == 0) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn='{$admin['killturn']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
+        //FIXME: 운영자 같이 사망하면 안되는 인물에 대한 처리가 필요
+
         //연속턴 아닌경우 텀 리셋
         if($general['term']%100 != $command[0]) {
             $query = "update general set term=0 where no='{$general['no']}'";
@@ -570,7 +573,7 @@ function processCommand($no) {
             case 17: process_17($general); break; //소집해제
 
             case 21: process_21($general); break; //이동
-            //case 22: process_22($general); break; //등용 //TODO:등용장 재 디자인
+            case 22: process_22($general); break; //등용 //TODO:등용장 재 디자인
             case 25: process_25($general); break; //임관
             case 26: process_26($general); break; //집합
             case 28: process_28($general); break; //귀환
@@ -681,19 +684,21 @@ where nation='{$general['nation']}'
 
 
 function command_Single($turn, $command) {
+    if(!$turn){
+        header('location:commandlist.php');
+        return;
+    }
+
     $db = DB::db();
-    $connect=$db->get();
     $userID = Session::getUserID();
 
     $command = EncodeCommand(0, 0, 0, $command);
 
-    $count = count($turn);
-    $str = "con=con";
-    for($i=0; $i < $count; $i++) {
-        $str .= ",turn{$turn[$i]}='{$command}'";
+    $setValues = [];
+    foreach($turn as $turnIdx){
+        $setValues["turn{$turnIdx}"] = $command;
     }
-    $query = "update general set {$str} where owner='{$userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', $setValues, 'owner=%i',$userID);
     
     header('location:commandlist.php');
 }

@@ -24,6 +24,8 @@ if(!$generalID){
 $db = DB::db();
 $connect=$db->get();
 
+$src = MessageTarget::buildQuick($session->generalID);
+
 switch($btn) {
     case "전체 접속허용":
         $db->update('general', [
@@ -96,12 +98,10 @@ switch($btn) {
         break;
     case "특기 부여":
         list($year, $month) = $db->queryFirstList('select `year`, `month` from `game` where `no`=1');
-
-        $src = MessageTarget::buildQuick($session->generalID);
         $text = "특기 부여!";
 
         foreach($db->query("SELECT `no`,leader,power,intel,dex0,dex10,dex20,dex30,dex40 FROM general WHERE `no` IN %li", $genlist) as $general){    
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($general['no']), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($general['no']), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
 
             $specialWar = SpecialityConst::pickSpecialWar($general);
@@ -116,10 +116,9 @@ switch($btn) {
         
         break;
     case "경험치1000":
-        $src = MessageTarget::buildQuick($session->generalID);
         $text = $btn." 지급!";
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
         $db->update('general',[
@@ -128,10 +127,9 @@ switch($btn) {
 
         break;
     case "공헌치1000":
-        $src = MessageTarget::buildQuick($session->generalID);
         $text = $btn." 지급!";
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
         $db->update('general',[
@@ -140,10 +138,9 @@ switch($btn) {
 
         break;
     case "보숙10000":
-        $src = MessageTarget::buildQuick($session->generalID);
         $text = "보병숙련도+10000 지급!";
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
         $db->update('general',[
@@ -151,10 +148,9 @@ switch($btn) {
         ], '`no` IN %li', $genlist);
         break;
     case "궁숙10000":
-        $src = MessageTarget::buildQuick($session->generalID);
         $text = "궁병숙련도+10000 지급!";
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
         $db->update('general',[
@@ -165,7 +161,7 @@ switch($btn) {
         $src = MessageTarget::buildQuick($session->generalID);
         $text = "기병숙련도+10000 지급!";
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
         $db->update('general',[
@@ -176,7 +172,7 @@ switch($btn) {
         $src = MessageTarget::buildQuick($session->generalID);
         $text = "귀병숙련도+10000 지급!";
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
         $db->update('general',[
@@ -187,7 +183,7 @@ switch($btn) {
         $src = MessageTarget::buildQuick($session->generalID);
         $text = "차병숙련도+10000 지급!";
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
         $db->update('general',[
@@ -207,7 +203,7 @@ switch($btn) {
     case "메세지 전달":
         $text = $msg;
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
         break;
@@ -221,7 +217,7 @@ switch($btn) {
         }
 
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
 
@@ -245,7 +241,7 @@ switch($btn) {
         }
 
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
 
@@ -269,7 +265,7 @@ switch($btn) {
         }
 
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
 
@@ -293,7 +289,7 @@ switch($btn) {
         }
 
         foreach($genlist as $generalID){
-            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new DateTime(), new DateTime('9999-12-31'), []);
+            $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);
         }
 

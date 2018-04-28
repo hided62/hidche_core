@@ -19,5 +19,6 @@ if(!$generalInfo){
 $result['generalID'] = $generalInfo['no'];
 $result['myNationID'] = $generalInfo['nation'];
 $result['isChief'] = ($generalInfo['level'] == 12);
+$result['generalLevel'] = $generalInfo['level'];
 
 Json::die($result);

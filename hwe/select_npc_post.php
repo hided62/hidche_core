@@ -95,13 +95,14 @@ if($npc['npc'] != 2) {
 
 } */
 
+$userNick = RootDB::db()->queryFirstField('SELECT `NAME` FROM member WHERE `NO`=%i',Session::getUserID());
+
 $npcID = $npc['no'];
 $db->update('general', [
-    'name2'=>$session->userName,
+    'name2'=>$userNick,
     'npc'=>1,
     'killturn'=>6,
     'mode'=>2,
-    'map'=>0,
     'owner'=>$userID
 ], 'no=%i and npc=2', $npcID);
 $affected = $db->affectedRows();
@@ -113,14 +114,13 @@ if(!$affected){
     exit;
 }
 
-
 $me = [
     'no'=>$npcID
 ];
 
-pushGeneralHistory($me, "<C>●</>{$year}년 {$month}월:<Y>{$npc['name']}</>의 육체에 <Y>{$session->userName}</>(이)가 빙의되다.");
+pushGeneralHistory($me, "<C>●</>{$year}년 {$month}월:<Y>{$npc['name']}</>의 육체에 <Y>{$userNick}</>(이)가 빙의되다.");
 //pushGenLog($me, $mylog);
-pushGeneralPublicRecord(["<C>●</>{$month}월:<Y>{$npc['name']}</>의 육체에 <Y>{$session->userName}</>(이)가 <S>빙의</>됩니다!"], $year, $month);
+pushGeneralPublicRecord(["<C>●</>{$month}월:<Y>{$npc['name']}</>의 육체에 <Y>{$userNick}</>(이)가 <S>빙의</>됩니다!"], $year, $month);
 
 pushAdminLog(["가입 : {$userID} // {$session->userName} // {$npcID} // ".getenv("REMOTE_ADDR")]);
 

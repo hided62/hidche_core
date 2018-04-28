@@ -62,8 +62,21 @@ input::-webkit-input-placeholder {
 }
 
 
+.col-form-label{
+    text-align:center;
+}
+
 .terms{
-    max-height: 200px; overflow: auto;
+    max-height: 200px; overflow-y: auto;
+}
+
+.terms pre{
+    width:100%;
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
 
 .vertical-center {
@@ -72,4 +85,32 @@ input::-webkit-input-placeholder {
 
     display: flex;
     align-items: center;
+}
+
+#btn_kakao_login{
+    cursor: pointer;
+    height:46px;
+    width:116px;
+    background-color: transparent;
+    color:transparent;
+    border:0;
+    background-size: 100%; /* To fill the dimensions of container (button), or */
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    margin-top:5px;
+    background-image:url('../oauth_kakao/kakao_login_join.png');
+}
+
+#btn_kakao_login:hover {
+    background-image:url('../oauth_kakao/kakao_login_join_ov.png');
+} 
+
+#bottom_box{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    left:0;
+}
+#bottom_box .container{
+    text-align:center;
 }

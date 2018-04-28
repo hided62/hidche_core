@@ -18,7 +18,7 @@ if (!$userID) {
 }
 
 $me = $db->queryFirstRow(
-    'SELECT no,con,turntime,newmsg,newvote,map from general where owner = %i',
+    'SELECT no,con,turntime,newmsg,newvote,`level` from general where owner = %i',
     $userID
 );
 
@@ -58,7 +58,7 @@ $scenario = $admin['scenario_text'];
 <!DOCTYPE html>
 <html>
 <head>
-<title>메인</title>
+<title><?=UniqueConst::$serverName?>: 메인</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <script src="../e_lib/jquery-3.2.1.min.js"></script>
@@ -74,6 +74,10 @@ $(function(){
     reloadWorldMap({
         hrefTemplate:'b_currentCity.php?citylist={0}'
     });
+
+    setInterval(function(){
+        refreshMsg();
+    }, 10000);
 });
 </script>
 <link href="css/normalize.css" rel="stylesheet">
@@ -211,6 +215,14 @@ if ($session->userGrade >= 5) {
     </td></tr>
 ";
 }
+else if($session->userGrade == 4){
+    echo "
+    <tr><td colspan=5>
+        <input type=button value=시뮬 onclick=window.open('_simul.php')>
+        <input type=button value=119 onclick=window.open('_119.php')>
+    </td></tr>
+";
+}
 
 ?>
 
@@ -249,7 +261,7 @@ if ($session->userGrade >= 5) {
     <tr>
         <td width=646 align=right>
             <?php commandTable(); ?>
-            <input id="mainBtnSubmit" type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;font-size:13px; value='로그아웃' onclick=location.replace('logout_process.php')><br>
+            <input id="mainBtnSubmit" type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;font-size:13px; value='로비로' onclick=location.replace('../')><br>
         </td>
     </tr>
 </form>
@@ -286,12 +298,12 @@ if ($session->userGrade >= 5) {
     내용 없이 '서신전달&amp;갱신'을 누르면 메세지창이 갱신됩니다.
 </div>
 <div><?=allButton()?></div>
-<div id="message_board"><div class="board_side bg0">
+<div id="message_board"><div style="left:0;" class="board_side bg0">
         <div class="board_header bg0">전체 메시지(최고99자)</div>
         <section class="public_message"></section>
         <div class="board_header bg0">개인 메시지(최고99자)</div>
         <section class="private_message"></section>
-    </div><div class="board_side bg0">
+    </div><div style="right:0;" class="board_side bg0">
         <section class="diplomacy_message">
 
         </section>
@@ -299,7 +311,6 @@ if ($session->userGrade >= 5) {
         <section class="national_message"></section>
  </div></div>
 <div style="clear:left;"><?=allButton()?><?=banner()?></div>
-<?php PrintElapsedTime(); ?>
 </div>
 <?php
 if ($con == 1) {

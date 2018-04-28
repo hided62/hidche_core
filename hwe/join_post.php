@@ -8,7 +8,6 @@ $v = new Validator($_POST + $_GET);
 $v
 ->rule('required', [
     'name',
-    'pic',
     'leader',
     'power',
     'intel'
@@ -18,7 +17,6 @@ $v
     'power',
     'intel',
     'character',
-    'pic'
 ])
 ->rule('lengthBetween', 'name', 1, 6)
 ->rule('min', [
@@ -46,7 +44,7 @@ $userID = Session::getUserID();
 
 $name       = Util::getReq('name');
 $name       = StringUtil::removeSpecialCharacter($name);
-$pic        = Util::getReq('pic', 'int', 0);
+$pic        = (int)Util::getReq('pic', 'bool', 0);
 $character  = Util::getReq('character', 'int', 0);
 
 $leader = Util::getReq('leader', 'int', 50);
@@ -59,7 +57,7 @@ extractMissingPostToGlobals();
 
 $rootDB = RootDB::db();
 //회원 테이블에서 정보확인
-$member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name` FROM member WHERE no=%i', $userID);
+$member = $rootDB->queryFirstRow('SELECT `no`, id, picture, grade, `name`, imgsvr FROM member WHERE no=%i', $userID);
 
 if (!$member) {
     MessageBox("잘못된 접근입니다!!!");
@@ -70,7 +68,7 @@ if (!$member) {
 $db = DB::db();
 ########## 동일 정보 존재여부 확인. ##########
 
-$admin = $db->queryFirstRow('SELECT year,month,maxgeneral,turnterm,genius,npcmode from game limit 1');
+$admin = $db->queryFirstRow('SELECT year,month,maxgeneral,scenario,show_img_level,turnterm,genius,npcmode from game limit 1');
 $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
 $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', $userID);
 $oldName = $db->queryFirstField('SELECT `no` FROM general WHERE `name`=%s', $name);

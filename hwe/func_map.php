@@ -51,7 +51,7 @@ function getWorldMap($req){
     }
 
     $session = Session::getInstance();
-    $generalID = $session->generalID;
+    $userID = $session->userID;
 
     $db = DB::db();
 
@@ -60,13 +60,18 @@ function getWorldMap($req){
     $year = Util::toInt($game['year']);
     $month = Util::toInt($game['month']);
 
-    if($generalID && ($req->showMe || !$req->neutralView)){
-        $city = $db->queryFirstRow(
-                'select `city`, `nation` from `general` where `no`=%i',
-                 $generalID);
+    $general = $db->queryFirstRow(
+        'select `no`, `city`, `nation` from `general` where `owner`=%i',
+         $userID);
 
-        $myCity = Util::toInt($city['city']);
-        $myNation = Util::toInt($city['nation']);
+
+    if($general && ($req->showMe || !$req->neutralView)){
+        if($session->generalID !== $general['no']){
+            $session->logoutGame()->loginGame();
+        }
+
+        $myCity = Util::toInt($general['city']);
+        $myNation = Util::toInt($general['nation']);
 
         if(!$req->showMe){
             $myCity = null;

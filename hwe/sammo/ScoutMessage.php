@@ -32,7 +32,7 @@ class ScoutMessage extends Message{
             $this->validScout = false;
         }
 
-        if($this->validUntil <= new DateTime()){
+        if($this->validUntil <= new \DateTime()){
             $this->validScout = false;
         }
     }
@@ -55,7 +55,7 @@ class ScoutMessage extends Message{
     /**
      * @return int 수행 결과 반환, ACCEPTED(등용장 소모), DECLINED(등용장 소모), INVALID 중 반환
      */
-    public function agreeMessage(int $receiverID):int{
+    public function agreeMessage(int $receiverID, string &$reason):int{
         //NOTE: 올바른 유저가 agreeMessage() 호출을 한건지는 외부에서 체크 필요(Session->userID 등)
 
         if(!$this->id){
@@ -72,7 +72,7 @@ class ScoutMessage extends Message{
             return $result;
         }
 
-        $helper = new Engine\Personnel($this->src->nationID);
+        $helper = new Engine\Personnel($this->src->nationID, $this->src->generalID);
 
         list($result, $reason) = $helper->scoutGeneral($receiverID);
 
@@ -96,6 +96,13 @@ class ScoutMessage extends Message{
             ['no'=>$this->src->generalID], 
             ["<C>●</><Y>{$this->dest->generalName}</> 등용에 성공했습니다."]
         );
+        pushGeneralHistory(
+            ['no'=>$this->src->generalID],
+            "<C>●</>{$helper->year}년 {$helper->month}월:<Y>{$this->dest->generalName}</> 등용에 성공");
+        pushGeneralHistory(
+            ['no'=>$this->dest->generalID],
+            "<C>●</>{$helper->year}년 {$helper->month}월:<D>{$this->src->nationName}</>(으)로 망명"
+        );
         pushGeneralPublicRecord(
             ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(으)로 <S>망명</>하였습니다."], 
             $helper->year, 
@@ -106,12 +113,12 @@ class ScoutMessage extends Message{
             self::MSGTYPE_PRIVATE, 
             $this->src, 
             $this->dest, 
-            "{$scoutNation['name']}(으)로 등용 제의 수락",
+            "{$this->src->nationName}(으)로 등용 제의 수락",
             new \DateTime(),
             new \DateTime('9999-12-31'),
-            Json::encode([
+            [
                 'delete'=>$this->id
-            ])
+            ]
         );
         $newMsg->send(true);
 
@@ -127,19 +134,19 @@ class ScoutMessage extends Message{
             self::MSGTYPE_PRIVATE, 
             $this->src, 
             $this->dest, 
-            "{$scoutNation['name']}(으)로 등용 제의 거부",
+            "{$this->src->nationName}(으)로 등용 제의 거부",
             new \DateTime(),
             new \DateTime('9999-12-31'),
-            Json::encode([
+            [
                 'delete'=>$this->id
-            ])
+            ]
         );
         $newMsg->send(true);
 
         return self::DECLINED;
     }
 
-    public function declineMessage(int $receiverID):int{
+    public function declineMessage(int $receiverID, string &$reason):int{
         if(!$this->id){
             throw \RuntimeException('전송되지 않은 메시지에 거절 진행 중');
         }
@@ -167,8 +174,8 @@ class ScoutMessage extends Message{
         }
 
         $db = DB::db();
-        $srcGeneral = $db->queryFirstRow('SELECT `name`, nation FROM nation WHERE `no`=%i', $srcGeneralID);
-        $destGeneral = $db->queryFirstRow('SELECT `name`, nation, `level` FROM nation WHERE `no`=%i', $destGeneralID);
+        $srcGeneral = $db->queryFirstRow('SELECT `name`, nation FROM general WHERE `no`=%i', $srcGeneralID);
+        $destGeneral = $db->queryFirstRow('SELECT `name`, nation, `level` FROM general WHERE `no`=%i', $destGeneralID);
         if($date === null){
             $date = new \DateTime();
         }
