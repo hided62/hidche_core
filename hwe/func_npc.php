@@ -199,6 +199,7 @@ function processAI($no) {
         'level'=>0,
         'gold'=>0,
         'rice'=>0,
+        'tech'=>0,
     ];
 
     $coreCommand = array();
