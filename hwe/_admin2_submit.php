@@ -191,12 +191,12 @@ switch($btn) {
         ], '`no` IN %li', $genlist);
         break;
     case "접속 허용":
-        $db->update('genera',[
+        $db->update('general',[
             'con'=>0
         ], '`no` IN %li', $genlist);
         break;
     case "접속 제한":
-        $db->update('genera',[
+        $db->update('general',[
             'con'=>1000
         ], '`no` IN %li', $genlist);
         break;
