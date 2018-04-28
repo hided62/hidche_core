@@ -642,7 +642,7 @@ function processAI($no) {
                             $general['nation'],
                             $general['no'],
                             $type,
-                            $type==='gold'?21000:3000,
+                            ($type=='gold')?21000:3000,
                             $type
                         );
 
