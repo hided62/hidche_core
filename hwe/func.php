@@ -644,7 +644,13 @@ function commandTable() {
     if($me['level'] == 12) {
         addCommand("선양", 54);
         if($citycount != 0) {
-            addCommand("방랑", 47);
+            if ($admin['year'] + 3 < $admin['startyear']) {
+                addCommand("방랑", 47, 0);
+            }
+            else{
+                addCommand("방랑", 47);
+            }
+            
             addCommand("해산", 56, 0);
         } else {
             addCommand("방랑", 47, 0);
