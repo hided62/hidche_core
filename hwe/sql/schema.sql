@@ -272,7 +272,7 @@ create table nation (
   l8turn11 char(14) default '00000000000099', l7turn11 char(14) default '00000000000099', l6turn11 char(14) default '00000000000099', l5turn11 char(14) default '00000000000099',
 
   PRIMARY KEY (nation)
-) ENGINE=MyISAM ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 도시 테이블
@@ -315,7 +315,7 @@ create table city (
 
   PRIMARY KEY (city),
   KEY (nation)
-) ENGINE=MyISAM ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 부대 테이블
@@ -328,7 +328,7 @@ create table troop (
   no int(6) not null,
 
   PRIMARY KEY (troop)
-) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ##########################################################################
 ##  락 테이블
@@ -339,7 +339,7 @@ create table plock (
   plock       int(1) default 0,
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ##########################################################################
 ## 게임 테이블
@@ -404,7 +404,7 @@ CREATE TABLE `game` (
 	`bet14` INT(8) NULL DEFAULT '0',
 	`bet15` INT(8) NULL DEFAULT '0',
 	PRIMARY KEY (`no`)
-) ENGINE=MyISAM ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 메시지 테이블
@@ -439,7 +439,7 @@ create table if not exists hall (
 
   PRIMARY KEY (no),
   UNIQUE INDEX `type` (`type`, `rank`)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 왕조 테이블
@@ -520,7 +520,7 @@ create table diplomacy (
 
   PRIMARY KEY (`no`),
   UNIQUE INDEX `me` (`me`, `you`)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 토너먼트 테이블
@@ -545,7 +545,7 @@ create table tournament (
   gl   int(2) default 0,
   prmt int(1) default 0,
   PRIMARY KEY (seq)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 거래 테이블
@@ -565,7 +565,7 @@ create table auction (
   expire datetime,
 
   PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=DYNAMIC DEFAULT CHARSET=utf8mb4;
+  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 통계 테이블
