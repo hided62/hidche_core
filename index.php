@@ -29,7 +29,10 @@ if ($session->isLoggedIn()) {
     <script src="e_lib/bootstrap.bundle.min.js"></script>
     <script src="e_lib/jquery.validate.min.js"></script>
     <script src="e_lib/sha512.min.js"></script>
+    <script src="d_shared/menu.js"></script>
+    <script src="js/common.js"></script>
     <script src="js/login.js"></script>
+    <script src="js/title.js"></script>
     <link type="text/css" rel="stylesheet" href="e_lib/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="css/login.css">
     <script>
@@ -106,6 +109,16 @@ function postOAuthResult(result){
 </script>
 </head>
 <body>
+<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+  <a class="navbar-brand" href=".">삼국지 모의전투 HiDCHe</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+    </ul>
+  </div>
+</nav>
     <div class="vertical-center">
     <div class="container">
         <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
