@@ -60,17 +60,17 @@ class NPC{
         ];
 
         if($char === '랜덤전특'){
-            $this->charWar = \sammo\Engine\SpecialityConst::pickSpecialWar($general);
+            $this->charWar = \sammo\SpecialityConst::pickSpecialWar($general);
         }
         else if($char === '랜덤내특'){
-            $this->charDomestic = \sammo\Engine\SpecialityConst::pickSpecialDomestic($general);
+            $this->charDomestic = \sammo\SpecialityConst::pickSpecialDomestic($general);
         }
         else if($char === '랜덤'){
             if(Util::randBool(2/3)){
-                $this->charWar = \sammo\Engine\SpecialityConst::pickSpecialWar($general);
+                $this->charWar = \sammo\SpecialityConst::pickSpecialWar($general);
             }
             else{
-                $this->charDomestic = \sammo\Engine\SpecialityConst::pickSpecialDomestic($general);
+                $this->charDomestic = \sammo\SpecialityConst::pickSpecialDomestic($general);
             }
         }
         else{
