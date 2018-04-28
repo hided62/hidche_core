@@ -236,10 +236,10 @@ for($i=0; $i < $nationcount; $i++) {
         <td width=698 height=420>
             <?=getMapHtml()?>
         </td>
-        <td width=98 valign=top><?=$nationStr?></td>
+        <td width=101 valign=top><?=$nationStr?></td>
         <td width=78 valign=top><?=$powerStr?></td>
         <td width=58 valign=top><?=$genStr?></td>
-        <td width=58 valign=top><?=$cityStr?></td>
+        <td width=55 valign=top><?=$cityStr?></td>
     </tr>
 </table>
 <br>
