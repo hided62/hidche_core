@@ -216,6 +216,13 @@ $result = Util::generateFileUsingSimpleTemplate(
     true
 );
 
+$result = Util::generateFileUsingSimpleTemplate(
+    __dir__.'/templates/menu.orig.js',
+    ROOT.'/d_shared/menu.js',
+    [],
+    true
+);
+
 if ($result !== true) {
     Json::die([
         'result'=>false,
