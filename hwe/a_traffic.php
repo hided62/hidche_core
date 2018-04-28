@@ -22,15 +22,15 @@ $refresh = [];
 $online = [];
 
 $curonline = getOnlineNum();
-$visibleLogs = min(11, count($log));
-for ($i=0; $i < $visibleLogs; $i++) {
-    $parse = explode("|", $log[count($log)-$visibleLogs+$i]);
-    $date[$i]    = trim($parse[0]);
-    $year[$i]    = trim($parse[1]);
-    $month[$i]   = trim($parse[2]);
-    $refresh[$i] = trim($parse[3]);
-    $online[$i]  = trim($parse[4]);
+foreach($log as $i=>$value){
+    $parse = Json::decode($value);
+    $date[$i]    = $parse[0];
+    $year[$i]    = $parse[1];
+    $month[$i]   = $parse[2];
+    $refresh[$i] = $parse[3];
+    $online[$i]  = $parse[4];
 }
+
 if ($game['maxrefresh'] == 0) {
     $game['maxrefresh'] = 1;
 }
@@ -63,7 +63,7 @@ if ($game['maxonline'] < $curonline) {
         <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 량</font></td></tr>
 <?php
-for ($i=0; $i < $visibleLogs; $i++) {
+foreach($log as $i=>$value){
     $w = round($refresh[$i] / $game['maxrefresh'] * 100, 1);
     if ($w >= 100) {
         $w -= 0.1;
@@ -133,7 +133,7 @@ $dt = date('H:i');
         <table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 자</font></td></tr>
 <?php
-for ($i=0; $i < $visibleLogs; $i++) {
+foreach($log as $i=>$value){
     $w = round($online[$i] / $game['maxonline'] * 100, 1);
     if ($w >= 100) {
         $w -= 0.1;

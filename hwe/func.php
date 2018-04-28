@@ -1349,12 +1349,14 @@ function updateTraffic() {
     $date = date('Y-m-d H:i:s');
     //일시|년|월|총갱신|접속자|최다갱신자
     file_put_contents(__dir__."/logs/_traffic.txt",
-        StringUtil::padStringAlignRight($date,20," ")
-        ."|".StringUtil::padStringAlignRight($game['year'],3," ")
-        ."|".StringUtil::padStringAlignRight($game['month'],2," ")
-        ."|".StringUtil::padStringAlignRight($game['refresh'],8," ")
-        ."|".StringUtil::padStringAlignRight($online,5," ")
-        ."|".StringUtil::padStringAlignRight($user['name']."(".$user['refresh'].")",20," ")
+        Json::encode([
+            $date,
+            $game['year'],
+            $game['month'],
+            $game['refresh'],
+            $online,
+            $user['name']."(".$user['refresh'].")"
+        ])."\n"
     , FILE_APPEND);
 }
 
