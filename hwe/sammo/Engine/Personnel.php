@@ -11,6 +11,7 @@ use \sammo\ScoutMessage;
 class Personnel{
 
     protected $nation = null;//TODO: 상속체로 변경.
+    protected $senderID = null;
     public $valid = false;
 
     public $startYear = 0;
@@ -18,7 +19,7 @@ class Personnel{
     public $month = 0;
     public $killturn = 0;
 
-    public function __construct(int $nationID){
+    public function __construct(int $nationID, int $senderID){
         $db = DB::db();
         $nation = $db->queryFirstRow(
             'SELECT nation, `name`, `level`, capital, scout FROM nation WHERE nation=%i',
@@ -29,6 +30,7 @@ class Personnel{
             return;
         }
 
+        $this->senderID = $senderID;
         $this->nation = $nation;
         $this->valid = true;
 
@@ -179,12 +181,12 @@ class Personnel{
             $setValues['dedication'] = $db->sqleval('experience + %i', 100);//XXX: 상수
         }
 
-        if($me['npc'] < 2){
+        if($general['npc'] < 2){
             $setValues['killturn'] = $this->killturn;
         }
 
         $db->update('general', $setValues, 'no=%i', $generalID);
-        $db->update('general', $setSenderValues, 'no=%i', $this->src->generalID);
+        $db->update('general', $setSenderValues, 'no=%i', $this->senderID);
         $db->update('nation', $setOriginalNationValues, 'nation=%i', $general['nation']);
         $db->update('nation', $setScoutNationValues, 'nation=%i', $this->nation['nation']);
         if($setOriginalCityValues){

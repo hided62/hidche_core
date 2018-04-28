@@ -2769,13 +2769,8 @@ function command_81($turn, $command) {
         if($nation['level'] <= 0){
             continue;
         }
-
-        if(isset($nationcolor[$nation['color']])){
-            $nationcolor[$nation['color']] = 1;
-        }
-        else{
-            $nationcolor[$nation['color']]++;
-        }
+        
+        $colorUsed[$nation['color']]+=1;
     }
 
     $colorUsedCnt = 0;
@@ -2798,7 +2793,7 @@ function command_81($turn, $command) {
 <form name=form1 action=c_double.php method=post>
 색깔 : <select name=double size=1>";
     foreach(GetNationColors() as $idx=>$color) {
-        if($colorUsed[$color] > 0){
+        if($colorUsed[$color]>0){
             continue;
         }
         echo "<option value={$idx} style=background-color:{$color};color:".newColor($color).";>국가명</option>";

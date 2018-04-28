@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-function getTurn($general, $type, $font=1) {
+function getTurn(array $general, $type, $font=1) {
     //TODO: 왜 'Type' 인가. 그냥 count로 하자.
     $str = [];
     $db = DB::db();

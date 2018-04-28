@@ -43,7 +43,7 @@ function responseMessage(msgID, response){
 }
 
 function refreshMsg(result){
-    if(!result.result){
+    if(result && !result.result){
         alert(result.reason);
     }
     return redrawMsg(fetchMsg());
@@ -62,8 +62,6 @@ function fetchMsg(){
 }
 
 function redrawMsg(deferred){
-    
-    console.log(deferred);
 
     function registerSequence(obj){
         if(!obj.result){

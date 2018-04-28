@@ -74,8 +74,8 @@ $sendResult = $restAPI->talk_to_me_default([
   "object_type"=> "text",
   "text"=> "임시 비밀번호는 $newPassword 입니다. 로그인 후 바로 다른 비밀번호로 변경해주세요.",
   "link"=> [
-    "web_url"=> RootDB::getServerBasepath(),
-    "mobile_web_url" => RootDB::getServerBasepath()
+    "web_url"=> ServConfig::getServerBasepath(),
+    "mobile_web_url" => ServConfig::getServerBasepath()
   ],
   "button_title"=> "로그인 페이지 열기"
 ]);

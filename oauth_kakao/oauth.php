@@ -27,7 +27,7 @@ $result = $restAPI->create_access_token($auth_code);
 
 
 if (Util::array_get($result['expires_in'], -1) <= 0) {
-    die('알 수 없는 에러:'.$result['msg']);
+    die('알 수 없는 에러:'.Util::array_get($result['msg'], ''));
 }
 
 $session = Session::getInstance();
@@ -48,7 +48,7 @@ $oauth_mode = 'login';
 
 $me['code'] = Util::array_get($me['code'], 0);
 if($me['code']< 0){
-    switch($me['msg']){
+    switch(Util::array_get($me['msg'])){
     case 'NotRegisteredUserException':
         $oauth_mode = 'join';
         break;
