@@ -280,12 +280,14 @@ class Scenario{
     private function buildDiplomacy($env){
         $this->initFull();
 
+        $monthDiff = ($env['year'] * 12) + ($env['month'] - 1) - ($env['startyear'] * 12);
+
         $db = DB::db();
         foreach($this->diplomacy as $diplomacy){
             list($me, $you, $state, $remain) = $diplomacy;
             $db->update('diplomacy', [
                 'state'=>$state,
-                'term'=>$remain
+                'term'=>$remain - $monthDiff
             ], '(me = %i AND you = %i) OR (me = %i AND you = %i)', $me, $you, $you, $me);
         }
     }

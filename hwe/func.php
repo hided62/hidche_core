@@ -1787,7 +1787,7 @@ function turnDate($curtime) {
     $date += $num;
     
     $year = intdiv($date, 12);
-    $month = 1 + $year % 12;    
+    $month = 1 + $date % 12;    
 
     // 바뀐 경우만 업데이트
     if($admin['month'] != $month || $admin['year'] != $year) {
