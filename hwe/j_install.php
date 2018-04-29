@@ -52,9 +52,18 @@ if($reserve_open){
     $reserve_open = new \DateTime($reserve_open);
     $db = DB::db();
 
-    $clearResult = ResetHelper::clearDB();
-    if(!$clearResult['result']){
-        Json::die($clearResult);
+    if (!$db->queryFirstField("SHOW TABLES LIKE 'game'")) {
+        $clearResult = ResetHelper::clearDB();
+        if(!$clearResult['result']){
+            Json::die($clearResult);
+        }
+    }
+
+    if (!$db->queryFirstField("SHOW TABLES LIKE 'reserved_open'")) {
+        Json::die([
+            'result'=>false,
+            'reason'=>'예약 테이블이 없음!'
+        ]);
     }
 
     $scenarioObj = new Scenario($scenario, true);

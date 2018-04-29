@@ -6,15 +6,67 @@ include "func.php";
 
 $db = DB::db();
 
-$reserved = $db->queryFirstRow(
-    'SELECT * FROM reserved_open WHERE `date` <= %s LIMIT 1',
-    (new \DateTime())->format('Y-m-d H:i:s')
-);
+$reserved = $db->queryFirstRow('SELECT `date`, options FROM reserved_open ORDER BY `date` ASC LIMIT 1');
 
 if(!$reserved){
     Json::die([
         'result'=>true,
-        'affected'=>0
+        'affected'=>0,
+        'status'=>'no_reserved'
+    ]);
+}
+
+$reservedDate = new \DateTime($reserved['date']);
+$now = new \DateTime();
+
+
+$status = 'not_yet';
+
+if ($db->queryFirstField("SHOW TABLES LIKE 'game'")) {
+    list($isUnited, $lastTurn) = $db->queryFirstList('SELECT isUnited, turntime FROM game LIMIT 1');
+}
+else{
+    $isUnited = 2;
+    $lastTurn = '2000-01-01';
+}
+
+if($lastTurn !== null){
+    $lastTurn = new \DateTime($lastTurn);
+}
+
+if($lastTurn === null){
+    //이미 리셋된 상태임
+}
+else if(file_exists(__dir__.'/.htaccess')){
+    //일단 서버는 닫혀 있음
+}
+else if(
+    $isUnited == 2 &&
+    $now->getTimestamp() - $lastTurn->getTimestamp() > $reservedDate->getTimestamp() - $now->getTimestamp()
+){
+    //정지 상태 & 중간 넘음
+    AppConf::getList()[DB::prefix()]->closeServer();
+    $status = 'closed';
+}
+else if(
+    $isUnited > 0 && 
+    $now->getTimestamp() - $lastTurn->getTimestamp() > ($reservedDate->getTimestamp() - $now->getTimestamp()) * 2
+){
+    //천통 & 비정지 상태 & 2/3 넘음
+    AppConf::getList()[DB::prefix()]->closeServer();
+    $status = 'closed';
+}
+else if($reservedDate->getTimestamp() - $now->getTimestamp() <= 60*10){
+    //어쨌든 간에 10분 남았다면.
+    AppConf::getList()[DB::prefix()]->closeServer();
+    $status = 'closed';
+}
+
+if($now < $reservedDate){
+    Json::die([
+        'result'=>true,
+        'affected'=>0,
+        'status'=>$status
     ]);
 }
 
