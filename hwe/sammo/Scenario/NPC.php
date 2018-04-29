@@ -107,8 +107,8 @@ class NPC{
 
         $db = DB::db();
 
-        if($age == \sammo\GameConst::$adultAge && $month == 1){
-            \sammo\pushWorldHistory(["<C>●</>1월:<Y>$name</>(이)가 성인이 되어 <S>등장</>했습니다."], $year, $month);
+        if($age == \sammo\GameConst::$adultAge){
+            \sammo\pushWorldHistory(["<C>●</>$month월:<Y>$name</>(이)가 성인이 되어 <S>등장</>했습니다."], $year, $month);
         }
 
         if($this->ego == null || $isFictionMode){
