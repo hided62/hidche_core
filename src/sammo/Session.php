@@ -72,25 +72,25 @@ class Session
         Json::die($result + $jsonResult);
     }
 
-    public static function requireLogin($result = '..'): Session
+    public static function requireLogin($actionOnError = '..'): Session
     {
         $session = Session::getInstance();
         if ($session->isLoggedIn()) {
             return $session;
         }
 
-        static::die($result);
+        static::die($actionOnError);
     }
 
-    public static function requireGameLogin($result = '..'): Session
+    public static function requireGameLogin($actionOnError = '..'): Session
     {
-        $session = Session::requireLogin($result)->loginGame();
+        $session = Session::requireLogin($actionOnError)->loginGame();
 
         if ($session->generalID) {
             return $session;
         }
 
-        static::die($result);
+        static::die($actionOnError);
     }
 
     public function __construct()
