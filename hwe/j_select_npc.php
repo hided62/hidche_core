@@ -83,7 +83,7 @@ if(!$db->affectedRows()){
     ]);
 }
 
-$db->delete('select_npc_token', 'owner=%i', $userID);
+$db->delete('select_npc_token', 'owner=%i or valid_until < %s', $userID, $now);
 
 pushGeneralHistory($pickedNPC, "<C>●</>{$year}년 {$month}월:<Y>{$pickedNPC['name']}</>의 육체에 <Y>{$userNick}</>(이)가 빙의되다.");
 //pushGenLog($me, $mylog);
