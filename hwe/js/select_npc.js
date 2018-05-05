@@ -8,6 +8,27 @@ var templateGeneralCard =
     <label><input <%keepCnt?"":disabled="disabled"%> type="checkbox" value="<%no%>" name="keep[]" class="keep_select">보관(<%keepCnt%>회)</label>\
 </div>';
 
+function pickGeneral(){
+    $btn = $(this);
+
+    $.post({
+        url:'j_select_npc.php',
+        dataType:'json',
+        data:{
+            pick:$btn.val()
+        }
+    }).then(function(result){
+        if(!result.result){
+            alert(result.reason);
+            location.refresh();
+        }
+
+        alert('빙의에 성공했습니다.');
+        location.href = './';
+    });
+    return false;
+}
+
 function updatePickMoreTimer(){
     var $btn = $('#btn_pick_more');
     var now = Date.now();
@@ -29,18 +50,18 @@ function printGenerals(value){
     $('#btn_pick_more').data('available', new Date(value.pickMoreFrom).getTime()).prop('disabled',true);
     $.each(value.pick, function(idx, cardData){
         cardData.iconPath = getIconPath(cardData.imgsvr, cardData.picture);
-        console.log(cardData);
 
         var $card = $(TemplateEngine(templateGeneralCard, cardData));
         console.log($card);
 
         $('.card_holder').append($card);
+        $card.find('.select_btn').click(pickGeneral);
     });
 
     updatePickMoreTimer();
 }
 
-jQuery(function($){
+$(function($){
 
 $.post('j_get_select_npc_token.php').then(function(value){
     if(!value.result){

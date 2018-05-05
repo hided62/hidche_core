@@ -6,141 +6,88 @@ include "func.php";
 
 $session = Session::requireLogin()->setReadOnly();
 $userID = Session::getUserID();
-$rootDB = RootDB::db();
 $db = DB::db();
 
-//회원 테이블에서 정보확인
-$member = $rootDB->queryFirstRow('select no,name,picture,grade from member where no=%i', $userID);
+list($npcmode, $maxgeneral) = $db->queryFirstList('SELECT npcmode,maxgeneral FROM game LIMIT 1');
 
-if(!$member) {
-    MessageBox("잘못된 접근입니다!!!");
-    echo "<script>history.go(-1);</script>";
-    exit(1);
-}
-
-$admin = $db->queryFirstRow('select npcmode,maxgeneral,show_img_level from game limit 1');
-
-if($admin['npcmode'] != 1) {
-    header('Location:join.php');
+if(!$npcmode) {
+    header('location:..');
     die();
 }
 
+$gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
 
-$connect=$db->get();
-
+$nations = $db->queryAllLists('SELECT `name`, scoutmsg, color FROM nation');
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title><?=UniqueConst::$serverName?>: NPC선택</title>
+<title><?=UniqueConst::$serverName?>: NPC빙의</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<link rel='stylesheet' href='css/normalize.css' type='text/css'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
+<link rel='stylesheet' href='../css/config.css' type='text/css'>
 <link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/select_npc.css' type='text/css'>
+<script type="text/javascript" src="../d_shared/common_path.js"></script>
+<script type="text/javascript" src="../js/common.js"></script>
+<script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
+<script src="js/select_npc.js"></script>
 
 </head>
 
-<body onLoad='changeGen()'>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-        <tr><td>장 수 선 택<br><?=backButton()?></td></tr>
-    </table>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-        <tr><td align=center><?=info(0)?></td></tr>
-    </table>
-<?php
 
-
-$query = "select no from general where npc<2";
-$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
-$gencount = MYDB_num_rows($result);
-
-if($gencount >= $admin['maxgeneral']) {
-    echo "<script>alert('더 이상 등록할 수 없습니다.');</script>";
-    echo "<script>history.go(-1);</script>";
-    exit();
-}
+<?php 
+if ($gencount >= $maxgeneral) {
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-<tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
-<?php
-$query = "select name,scoutmsg,color from nation";
-$nationresult = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect),"");
-$nationcount = MYDB_num_rows($nationresult);
-
-for($i=0; $i < $nationcount; $i++) {
-    $nation = MYDB_fetch_array($nationresult);
-    if($nation['scoutmsg'] == "") {
-        echo "
-    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>-</td></tr>";
-    } else {
-        echo "
-    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['scoutmsg']}</td></tr>";
-    }
-}
-?>
-</table>
-
-<form name=form1 method=post action=select_npc_post.php>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-        <tr>
-            <td colspan=2 align=center id=bg1>장수 선택</td>
-        </tr>
-<?php
-if($admin['show_img_level'] >= 3) {
-?>
-        <tr>
-            <td width=498 align=right rowspan=2 height=64 id=bg1>장수</td>
-            <td width=498><img src=<?=ServConfig::$sharedIconPath?>/1001.jpg border=0 name=picture width=64 height=64></td>
-        </tr>
-<?php
-}
-?>
-        <tr>
-            <td align=left colspan=2>
-                <select name=face size=1 style=color:white;background-color:black; value=1001 disabled>
-<?php
-$query  = "select no,name,leader,power,intel from general where npc=2";
-$result = MYDB_query($query,$connect);
-$count = MYDB_num_rows($result);
-
-for($i=0; $i < $count; $i++) {
-    $npc = MYDB_fetch_array($result);
-    $call = "{$npc['leader']} / {$npc['power']} / {$npc['intel']}";
-    echo "
-        <option value={$npc['no']}>{$npc['name']} 【{$call}】</option>";
-}
-?>
-
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td align=center colspan=2>
-                컴퓨터가 조작중이던 NPC장수를 조종하게 됩니다.<br>
-                80시간동안 휴식을 취하면 다시 컴퓨터가 조종하게 되고 장수의 소유권을 잃습니다.
-            </td>
-        </tr>
-        <tr>
-            <td align=center colspan=2><input type=button name=sel value=다른장수 onclick='changeGen()'><input type=submit name=join value=장수선택 onclick='return selectGen()'></td>
-        </tr>
-    </table>
-</form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-    <tr><td><?=backButton()?></td></tr>
-    <tr><td><?=banner()?> </td></tr>
-</table>
-</body>
-<script type="text/javascript">
-function changeGen() {
-    sel = Math.floor(Math.random() * <?=$count?>);
-    document.form1.face.selectedIndex = sel;
-    num = document.form1.face.value;
-    document.form1.picture.src="<?=ServConfig::$sharedIconPath?>" + "/"+ num +".jpg";
-}
-
-function selectGen() {
-    document.form1.face.disabled = false;
-    return true;
-}
+<body>
+<script>
+alert('더 이상 등록할 수 없습니다.');
+history.go(-1);
 </script>
+</body>
+</html>
+<?php
+    die();
+}
+?>
+<body>
+<div class="container">
+<div class="bg0 with_border legacy_layout">장 수 선 택<br><?=backButton()?></div>
+<table style="width:100%;" class="bg0 with_border">
+    <tr><td><?=info(0)?></td></tr>
+</table>
+
+
+<table style="width:100%;" class="bg0 with_border">
+<thead>
+<tr><th colspan=2 class="bg1">임관 권유 메세지</th></tr>
+</thead>
+<tbody>
+<?php foreach($nations as list($name, $scoutmsg, $color)): ?>
+
+<tr>
+    <td style='width:98px;color:<?=newColor($color)?>;background-color:<?=$color?>'><?=$name?></td>
+    <td style='color:<?=newColor($color)?>;background-color:<?=$color?>'><?=$scoutmsg?:'-'?></td>
+</tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+
+<div class="bg0">
+<div class="bg1 with_border legacy_layout font1" style="text-align:center;font-weight:bold;">장수 빙의</div>
+<div class="with_border legacy_layout" style="text-align:center;">
+<small id="valid_until">(<span id="valid_until_text"></span> 까지 유효)</small><br>
+<form class="card_holder">
+</form>
+</div>
+<div class="with_border legacy_layout" style="text-align:center">
+    <button id="btn_pick_more" disabled="disabled" class="with_skin with_border">다른 장수 보기</button><br>
+</div>
+<div class="with_border legacy_layout"><?=backButton()?></div>
+<div class="with_border legacy_layout"><?=banner()?></div>
+</div>
+</div>
+</body>
 </html>

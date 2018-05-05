@@ -1,3 +1,8 @@
+.container{
+    width:1000px;
+    margin:0 auto;
+}
+
 .card_holder{
     text-align:center;
 }
@@ -6,6 +11,18 @@
     display:inline-block;
 }
 
+.general_card h4 {
+    margin:0;
+}
+
+.general_card p {
+    margin:0;
+}
+
+
+.general_card .select_btn {
+    width:100%;
+}
 
 .general_card label {
     display: block;

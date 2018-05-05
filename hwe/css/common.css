@@ -3,11 +3,12 @@
 html, body{
     background-color:black;
     color:white;
+    line-height:1.3;
 }
 
 table { font-family:'맑은 고딕'; }
 font { font-family:'맑은 고딕'; }
-input { font-family:'맑은 고딕'; height:20px }
+input { font-family:'맑은 고딕'; font-size:13px; }
 select { font-family:'굴림'; line-height:100%; }
 
 /* */

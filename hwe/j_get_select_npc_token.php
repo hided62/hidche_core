@@ -31,13 +31,10 @@ if($oldGeneral !== null){
 }
 
 list(
-    $year,
-    $month,
     $maxgeneral,
     $turnterm,
-    $genius,
     $npcmode
-) = $db->queryFirstList('SELECT year,month,maxgeneral,turnterm,genius,npcmode from game limit 1');
+) = $db->queryFirstList('SELECT maxgeneral,turnterm,npcmode from game limit 1');
 
 if(!$npcmode){
     Json::die([
@@ -45,7 +42,6 @@ if(!$npcmode){
         'reason'=>'빙의 가능한 서버가 아닙니다'
     ]);
 }
-
 
 $token = $db->queryFirstRow('SELECT * FROM select_npc_token WHERE `owner`=%i AND `valid_until`>=%s', $userID, $now);
 $pickResult = [];
@@ -94,7 +90,7 @@ foreach($db->query('SELECT `no`, `name`, leader, power, intel, imgsvr, picture, 
     $general['special2'] = \sammo\SpecialityConst::WAR[$general['special2']][0]??'-';
     $candidates[$general['no']] = $general + ['keepCnt'=>KEEP_CNT];
     $allStat = $general['leader'] + $general['power'] + $general['intel'];
-    $weight[$general['no']] = pow($allStat, 1.7);
+    $weight[$general['no']] = pow($allStat, 1.5);
 }
 
 foreach($db->queryFirstColumn('SELECT pick_result FROM select_npc_token WHERE `owner`!=%i AND valid_until >=%s', $userID, $now) as $reserved){
@@ -124,8 +120,6 @@ $pickMoreMinute = max(PICK_MORE_MINUTE, intdiv($turnterm, 5));
 $validUntil = $oNow->add(new \DateInterval(sprintf('PT%dM', $validMinute)));
 $pickMoreFrom = $oNow->add(new \DateInterval(sprintf('PT%dM', $pickMoreMinute)));
 
-$db->query('LOCK TABLES select_npc_token WRITE');
-
 $db->delete('select_npc_token', 'valid_until < %s', $now);
 
 $inserted = 0;
@@ -154,8 +148,6 @@ else{
         $inserted = 1;
     }
 }
-
-$db->query('UNLOCK TABLES');
 
 if($inserted === 0){
     Json::die([
