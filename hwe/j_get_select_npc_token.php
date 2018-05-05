@@ -4,8 +4,8 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-const VALID_MINUTE = 5;
-const PICK_MORE_MINUTE = 2;
+const VALID_SECOND = 25;
+const PICK_MORE_SECOND = 10;
 const KEEP_CNT = 3;
 
 
@@ -114,11 +114,11 @@ while(count($pickResult) < $pickLimit){
 
 $newNonce = mt_rand(0, 0xfffffff);
 
-$validMinute = max(VALID_MINUTE, intdiv($turnterm, 2));
-$pickMoreMinute = max(PICK_MORE_MINUTE, intdiv($turnterm, 5));
+$validSecond = max(VALID_SECOND, $turnterm*25);
+$pickMoreSecond = max(PICK_MORE_SECOND, $turnterm*10);
 
-$validUntil = $oNow->add(new \DateInterval(sprintf('PT%dM', $validMinute)));
-$pickMoreFrom = $oNow->add(new \DateInterval(sprintf('PT%dM', $pickMoreMinute)));
+$validUntil = $oNow->add(new \DateInterval(sprintf('PT%dS', $validSecond)));
+$pickMoreFrom = $oNow->add(new \DateInterval(sprintf('PT%dS', $pickMoreSecond)));
 
 $db->delete('select_npc_token', 'valid_until < %s', $now);
 
