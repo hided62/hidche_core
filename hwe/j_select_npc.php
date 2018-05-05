@@ -72,8 +72,11 @@ if ($gencount >= $maxgeneral) {
 
 //등록 시작
 $db->update('general', [
+    'name2'=>$userNick,
+    'npc'=>1,
+    'killturn'=>6,
+    'mode'=>2,
     'owner'=>$userID,
-    'npc'=>1
 ], 'owner <= 0 AND npc = 2 AND no = %i', $pick);
 
 if(!$db->affectedRows()){
