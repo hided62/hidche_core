@@ -1,8 +1,9 @@
 @charset "utf-8";
 
-*       { margin: 0px; padding: 0px; }
-body    { color:white; background-color:black; border-width:1px; border-color:gray; }
-table   {
+body {
+    color:white; background-color:black; font-family: '맑은 고딕';
+}
+table {
     border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
     padding: 0px;
     font-size: 13px;
@@ -21,13 +22,6 @@ th, td      {
 
 a.just_link {
     text-decoration: none;
-}
-
-div     {
-    margin:0px;
-    padding: 0px;
-    word-break: break-all;
-    font-family: '맑은 고딕';
 }
 
 .with_border{
@@ -58,8 +52,6 @@ div     {
     font-family: '맑은 고딕';;
 }
 
-font    { font-family: '맑은 고딕';}
-
 .obj_fill{
     display:block;
     width:100%;
@@ -72,24 +64,18 @@ button.with_skin {
     font-size: 13px;
 }
 
+button.with_skin:disabled {
+    background-color:#333333;
+}
+
 input.with_skin   {
     background-color: black; color: white;
     font-family: '맑은 고딕';
     font-size: 13px;
 }
 
-select  {
-    width: 100px; height: 18px;
-    background-color: black; color: white;
-    font-family: '맑은 고딕';
-    font-size: 13px;
-}
-button  {
-    width: 100px; height: 20px;
-    background-color: black; color: white;
-    font-family: '맑은 고딕';
-    font-size: 13px;
-    line-height:1.3;
+input.with_skin:disabled {
+    background-color: #333333;
 }
 
 .font0  { font-size: 10px; }

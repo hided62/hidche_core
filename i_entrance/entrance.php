@@ -23,12 +23,12 @@ $userGrade = $session->userGrade;
         <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
         <link type="text/css" rel="stylesheet" href='../d_shared/common.css'>
         <link type="text/css" rel="stylesheet" href='../css/config.css'>
-
         <link type="text/css" rel="stylesheet" href='../css/entrance.css'>
 
         <!-- 액션 -->
         <script type="text/javascript" src='../js/common.js'></script>
         <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
+        <script type="text/javascript" src='../e_lib/bootstrap.bundle.min.js'></script>
         <script type="text/javascript" src='../js/func.js'></script>
         <script type="text/javascript" src='../js/entrance.js'></script>
         <script src="../d_shared/menu.js"></script>

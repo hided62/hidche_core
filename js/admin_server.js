@@ -4,13 +4,13 @@ var serverAdminTemplate = '\
     <th style="color:<%color%>;"><%korName%>(<%name%>)</th>\
     <td><%status%></td>\
     <td><%version%></td>\
-    <td><button class="valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'close\');">폐쇄</button></td>\
-    <td><button class="valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'open\');">오픈</button></td>\
-    <td><a class="just_link" href="../<%name%>/install.php"><button class="valid_if_set with_border obj_fill">리셋</button></a></td>\
-    <td><a class="just_link" href="../<%name%>/install_db.php"><button class="valid_if_installed only_admin with_border obj_fill">하드리셋</button></a></td>\
-    <td><button class="valid_if_set with_border obj_fill" onclick="Entrance_AdminClosedLogin(this);">폐쇄중 로그인</button></td>\
-    <td><button class="valid_if_set with_border obj_fill" onclick="Entrance_AdminOpen119(this);">서버119</button></td>\
-    <td><button class="only_admin with_border obj_fill" onclick="serverUpdate(this);">업데이트</button></td>\
+    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'close\');">폐쇄</button></td>\
+    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'open\');">오픈</button></td>\
+    <td><a class="just_link" href="../<%name%>/install.php"><button class="with_skin valid_if_set with_border obj_fill">리셋</button></a></td>\
+    <td><a class="just_link" href="../<%name%>/install_db.php"><button class="with_skin valid_if_installed only_admin with_border obj_fill">하드리셋</button></a></td>\
+    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminClosedLogin(this);">폐쇄중 로그인</button></td>\
+    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminOpen119(this);">서버119</button></td>\
+    <td><button class="with_skin only_admin with_border obj_fill" onclick="serverUpdate(this);">업데이트</button></td>\
 </tr>\
 ';
 
@@ -77,14 +77,14 @@ function drawServerAdminList(serverList){
         var $tr = $(TemplateEngine(serverAdminTemplate, server));
         $table.append($tr);
         if(!server.valid){
-            $tr.find('.valid_if_set').css('background','#333333').prop('disabled', true);
+            $tr.find('.valid_if_set').prop('disabled', true);
         }
         if(!server.installed){
-            $tr.find('.valid_if_installed').css('background','#333333').prop('disabled', true);
+            $tr.find('.valid_if_installed').prop('disabled', true);
         }
     });
     if(serverList.grade == 5){
-        $table.find('.only_admin').css('background','#333333').prop('disabled', true);
+        $table.find('.only_admin').prop('disabled', true);
     }
 }
 
