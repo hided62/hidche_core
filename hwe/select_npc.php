@@ -32,7 +32,7 @@ $nations = $db->queryAllLists('SELECT `name`, scoutmsg, color FROM nation');
 <script type="text/javascript" src="../d_shared/common_path.js"></script>
 <script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="../js/common.js?180505_2"></script>
-<script src="js/select_npc.js?180505_3"></script>
+<script src="js/select_npc.js?180505_4"></script>
 
 </head>
 

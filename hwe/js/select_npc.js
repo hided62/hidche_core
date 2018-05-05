@@ -72,7 +72,18 @@ function printGenerals(value){
     $('#outdate_token').hide();
     var time = Date.now() + value.pickMoreSeconds*1000;
     $('#btn_pick_more').data('available', time).prop('disabled',true);
-    $.each(value.pick, function(idx, cardData){
+
+    var pick = $.map(value.pick, function(value, key) {
+        return value;
+    });
+
+    pick.sort(function(lhs, rhs){
+        var lsum = lhs.leader+lhs.power+lhs.intel;
+        var rsum = rhs.leader+rhs.power+rhs.intel;
+        return lsum - rsum;
+    });
+    
+    $.each(pick, function(idx, cardData){
         cardData.iconPath = getIconPath(cardData.imgsvr, cardData.picture);
 
         var $card = $(TemplateEngine(templateGeneralCard, cardData));
