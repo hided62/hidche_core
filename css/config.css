@@ -3,6 +3,7 @@
 body {
     color:white; background-color:black; font-family: '맑은 고딕';
 }
+
 table {
     border: solid 1px; border-spacing: 0px; border-collapse: separate; border-top-color: gray; border-left-color: gray; border-right-color: black; border-bottom-color: black;
     padding: 0px;
@@ -25,6 +26,7 @@ a.just_link {
 }
 
 .with_border{
+    margin:0;
     border: solid 1px;
     border-spacing: 0px;
     border-collapse: separate;

@@ -1,0 +1,26 @@
+.card_holder{
+    text-align:center;
+}
+.general_card{
+    width:100px;
+    display:inline-block;
+}
+
+
+.general_card label {
+    display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+  }
+  
+.general_card input {
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    margin:0;
+    vertical-align: bottom;
+    position: relative;
+    top: -1px;
+    *overflow: hidden;
+  }
+  
