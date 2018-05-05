@@ -29,8 +29,29 @@ function pickGeneral(){
     return false;
 }
 
+function updateOutdateTimer(){
+    var $validUntilText = $('#valid_until_text');
+    var now = Date.now();
+    var validUntil = $validUntilText.data('until');
+    if(validUntil <= 0){
+        return;
+    }
+    else if(validUntil < now){
+        $validUntilText.data('until',0);
+        $('#valid_until').hide();
+        $('#outdate_token').show();
+        return;
+    }
+    else if(validUntil - now <= 30000){
+        $validUntilText.css('color', "rgb(255, {0}, {0})".format(255*(validUntil - now)/30000)); 
+    }
+
+    setTimeout(updateOutdateTimer, 1000);
+}
+
 function updatePickMoreTimer(){
     var $btn = $('#btn_pick_more');
+    
     var now = Date.now();
     var remain = ($btn.data('available') - now) / 1000;
     if(remain <= 0){
@@ -46,8 +67,10 @@ function updatePickMoreTimer(){
 
 function printGenerals(value){
     $('.card_holder').empty();
-    $('#valid_until_text').html(value.validUntil);
-    $('#btn_pick_more').data('available', new Date(value.pickMoreFrom).getTime()).prop('disabled',true);
+    $('#valid_until_text').html(value.validUntil).data('until', (new Date(value.validUntil)).getTime()).show().css('color','white');
+    $('#outdate_token').hide();
+    var time = Date.now() + value.pickMoreSeconds*1000;
+    $('#btn_pick_more').data('available', time).prop('disabled',true);
     $.each(value.pick, function(idx, cardData){
         cardData.iconPath = getIconPath(cardData.imgsvr, cardData.picture);
 
@@ -59,6 +82,7 @@ function printGenerals(value){
     });
 
     updatePickMoreTimer();
+    updateOutdateTimer();
 }
 
 $(function($){
@@ -90,6 +114,7 @@ $('#btn_pick_more').click(function(){
             alert(result.reason);
             location.refresh();
         }
+        console.log(result);
         printGenerals(result);
     });
 });

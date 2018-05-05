@@ -39,5 +39,10 @@
     position: relative;
     top: -1px;
     *overflow: hidden;
-  }
-  
+}
+
+
+#outdate_token{
+    color:red;
+    display:none;
+}

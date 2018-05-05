@@ -24,15 +24,15 @@ $nations = $db->queryAllLists('SELECT `name`, scoutmsg, color FROM nation');
 <head>
 <title><?=UniqueConst::$serverName?>: NPC빙의</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='css/normalize.css' type='text/css'>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='../css/config.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
-<link rel='stylesheet' href='css/select_npc.css' type='text/css'>
+<link rel='stylesheet' href='css/normalize.css?180505_2' type='text/css'>
+<link rel='stylesheet' href='../d_shared/common.css?180505_2' type='text/css'>
+<link rel='stylesheet' href='../css/config.css?180505_2' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180505_2' type='text/css'>
+<link rel='stylesheet' href='css/select_npc.css?180505_2' type='text/css'>
 <script type="text/javascript" src="../d_shared/common_path.js"></script>
-<script type="text/javascript" src="../js/common.js"></script>
 <script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
-<script src="js/select_npc.js"></script>
+<script type="text/javascript" src="../js/common.js?180505_2"></script>
+<script src="js/select_npc.js?180505_2"></script>
 
 </head>
 
@@ -78,7 +78,7 @@ history.go(-1);
 <div class="bg0">
 <div class="bg1 with_border legacy_layout font1" style="text-align:center;font-weight:bold;">장수 빙의</div>
 <div class="with_border legacy_layout" style="text-align:center;">
-<small id="valid_until">(<span id="valid_until_text"></span> 까지 유효)</small><br>
+<small id="valid_until">(<span id="valid_until_text"></span> 까지 유효)</small><small id="outdate_token">- 만료 -</small><br>
 <form class="card_holder">
 </form>
 </div>

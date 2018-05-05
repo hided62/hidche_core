@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
-const VALID_SECOND = 25;
+const VALID_SECOND = 90;
 const PICK_MORE_SECOND = 10;
 const KEEP_CNT = 3;
 
@@ -74,10 +74,14 @@ if($token && $refresh){
 }
 
 if($token && !$refresh){
+    $pickMoreFrom = (new \DateTime($token['pick_more_from']))->getTimestamp();
+    $nowT = $oNow->getTimestamp();
+
     Json::die([
         'result'=>true,
         'pick'=>Json::decode($token['pick_result']),
         'pickMoreFrom'=>$token['pick_more_from'],
+        'pickMoreSeconds'=>$pickMoreFrom-$nowT,
         'validUntil'=>$token['valid_until']
     ]);
 }
@@ -114,7 +118,7 @@ while(count($pickResult) < $pickLimit){
 
 $newNonce = mt_rand(0, 0xfffffff);
 
-$validSecond = max(VALID_SECOND, $turnterm*25);
+$validSecond = max(VALID_SECOND, $turnterm*40);
 $pickMoreSecond = max(PICK_MORE_SECOND, $turnterm*10);
 
 $validUntil = $oNow->add(new \DateInterval(sprintf('PT%dS', $validSecond)));
@@ -160,5 +164,6 @@ Json::die([
     'result'=>true,
     'pick'=>$pickResult,
     'pickMoreFrom'=>($inserted===-1)?$pickMoreFrom->format('Y-m-d H:i:s'):'2000-01-01 01:00:00',
+    'pickMoreSeconds'=>($inserted===-1)?$pickMoreSecond:0,
     'validUntil'=>$validUntil->format('Y-m-d H:i:s')
 ]);
