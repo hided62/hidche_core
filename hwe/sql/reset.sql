@@ -47,3 +47,5 @@ DROP TABLE IF EXISTS world_history;
 DROP TABLE IF EXISTS general_public_record;
 
 DROP TABLE IF EXISTS reserved_open;
+
+DROP TABLE IF EXISTS select_npc_token;

@@ -656,3 +656,19 @@ CREATE TABLE `reserved_open` (
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=MyISAM;
+
+######
+# 장수 선택 토큰
+CREATE TABLE `select_npc_token` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`owner` INT(11) NOT NULL,
+	`valid_until` DATETIME NOT NULL,
+	`pick_more_from` DATETIME NOT NULL,
+	`pick_result` TEXT NOT NULL COMMENT 'json',
+	`nonce` INT(11) NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `owner` (`owner`),
+	INDEX `valid_until` (`valid_until`)
+)
+DEFAULT CHARSET=utf8mb4
+ENGINE=MyISAM;
