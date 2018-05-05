@@ -82,6 +82,7 @@ function logExceptionByCustomHandler(\Throwable $e){
     ], Json::PRETTY);
 
     file_put_contents(ROOT.'/d_log/err_log.txt',"$data\n", FILE_APPEND);
+    echo $e->getTraceAsString();
     throw $e;
 }
 set_exception_handler('\\sammo\\logExceptionByCustomHandler');
