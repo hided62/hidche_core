@@ -32,7 +32,7 @@ $nations = $db->queryAllLists('SELECT `name`, scoutmsg, color FROM nation');
 <script type="text/javascript" src="../d_shared/common_path.js"></script>
 <script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="../js/common.js?180505_2"></script>
-<script src="js/select_npc.js?180505_2"></script>
+<script src="js/select_npc.js?180505_3"></script>
 
 </head>
 
@@ -78,7 +78,7 @@ history.go(-1);
 <div class="bg0">
 <div class="bg1 with_border legacy_layout font1" style="text-align:center;font-weight:bold;">장수 빙의</div>
 <div class="with_border legacy_layout" style="text-align:center;">
-<small id="valid_until">(<span id="valid_until_text"></span> 까지 유효)</small><small id="outdate_token">- 만료 -</small><br>
+<small id="valid_until">(<span id="valid_until_text"></span>까지 유효)</small><small id="outdate_token">- 만료 -</small><br>
 <form class="card_holder">
 </form>
 </div>

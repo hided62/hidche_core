@@ -67,7 +67,8 @@ function updatePickMoreTimer(){
 
 function printGenerals(value){
     $('.card_holder').empty();
-    $('#valid_until_text').html(value.validUntil).data('until', (new Date(value.validUntil)).getTime()).show().css('color','white');
+    $('#valid_until').show();
+    $('#valid_until_text').html(value.validUntil).data('until', (new Date(value.validUntil)).getTime()).css('color','white');
     $('#outdate_token').hide();
     var time = Date.now() + value.pickMoreSeconds*1000;
     $('#btn_pick_more').data('available', time).prop('disabled',true);
