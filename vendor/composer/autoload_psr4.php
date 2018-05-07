@@ -8,6 +8,8 @@ $baseDir = dirname($vendorDir);
 return array(
     'sammo\\' => array($baseDir . '/src/sammo'),
     'kakao\\' => array($baseDir . '/src/kakao'),
+    'Symfony\\Polyfill\\Php70\\' => array($vendorDir . '/symfony/polyfill-php70'),
+    'Symfony\\Component\\Lock\\' => array($vendorDir . '/symfony/lock'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'PhpExtended\\Tail\\' => array($vendorDir . '/php-extended/php-tail/src'),
