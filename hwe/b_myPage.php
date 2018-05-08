@@ -7,7 +7,8 @@ include "func.php";
 $btn = Util::getReq('btn');
 $mode = Util::getReq('mode', 'int', 2);
 $tnmt = Util::getReq('tnmt', 'int', 1);
-$detachNPC = Util::getReq('detachNPC', 'bool');
+//$detachNPC = Util::getReq('detachNPC', 'bool');
+$detachNPC = false;
 
 extractMissingPostToGlobals();
 
@@ -109,8 +110,8 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
             </form>
             휴 가 신 청<br>
             <a href="c_vacation.php"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>휴가 신청</button></a><br><br>
-            빙의 해제용 삭턴 조절<br>
-            <a href="b_myPage.php?detachNPC=1"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>빙의 해체 요청</button></a>
+            <!--빙의 해제용 삭턴 조절<br>
+            <a href="b_myPage.php?detachNPC=1"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>빙의 해체 요청</button></a>-->
         </td>
     </tr>
     <tr>
