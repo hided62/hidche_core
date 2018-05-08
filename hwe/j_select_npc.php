@@ -101,8 +101,8 @@ $rootDB->insert('member_log', [
     'action'=>Json::encode([
         'server'=>DB::prefix(),
         'type'=>'npc',
-        'generalID'=>$npc['no'],
-        'generalName'=>$npc['name']
+        'generalID'=>$pickedNPC['no'],
+        'generalName'=>$pickedNPC['name']
     ])
 ]);
 
