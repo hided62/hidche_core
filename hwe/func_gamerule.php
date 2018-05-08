@@ -257,12 +257,15 @@ function checkSupply() {
     }
     
     $queue = new \SplQueue();
-    foreach(getAllNationStaticInfo() as $nation){
+    foreach($db->query('SELECT capital, nation FROM nation WHERE `level` > 0') as $nation){
         $capitalID = $nation['capital'];
         if(!$capitalID){
             continue;
         }
         $city = &$cities[$capitalID];
+        if($nation['nation'] != $city['nation']){
+            continue;
+        }
         $city['supply'] = true;
         $queue->enqueue($city['id']);
     }
