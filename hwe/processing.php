@@ -279,7 +279,7 @@ function calc(cost, formnum) {
     form.cost.value = Math.round(crew * cost);
 }
 </script>
-<table class='tb_layout'>
+<table class='tb_layout' style='margin:auto;'>
     <tr>
         <td colspan=10 align=center id=bg2>
             현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
@@ -487,7 +487,7 @@ function calc(cost, formnum) {
     form.cost.value = Math.round(crew * cost * 2);
 }
 </script>
-<table class='tb_layout'>
+<table class='tb_layout' style='margin:auto;'>
     <tr><td align=center colspan=10>모병은 가격 2배의 자금이 소요됩니다.</td></tr>
     <tr>
         <td colspan=10 align=center id=bg2>
