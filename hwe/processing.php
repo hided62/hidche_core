@@ -152,7 +152,7 @@ $(function(){
 echo '
 </head>
 <body class="img_back">
-<table class="tb_layout bg0">
+<table class="tb_layout bg0" style="width:1000px;margin:auto;">
     <tr><td class="bg1" align="center">'.$name.'</td></tr>
     <tr><td>
 ';
