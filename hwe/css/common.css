@@ -37,7 +37,7 @@ table.tb_layout  {
 }
 
 .tb_layout td, .tb_layout th     {
-    border:groove 1px;
+    border:solid 1px gray;
     padding: 0px;
     word-break: break-all;
     font-family: '맑은 고딕';;
