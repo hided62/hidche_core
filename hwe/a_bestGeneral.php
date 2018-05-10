@@ -38,15 +38,15 @@ if ($con >= 2) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 명장일람</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>명 장 일 람<br><?=closeButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <form name=form1 action=a_bestGeneral.php method=post>
     <tr><td align=center>
         <input type=submit name=btn value='유저 보기'>
@@ -54,7 +54,7 @@ if ($con >= 2) {
     </td></tr>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <?php
 if (isset($btn) && $btn == "NPC 보기") {
     //FIXME: query가 너무 적나라.
@@ -202,7 +202,7 @@ for ($i=0; $i < 21; $i++) {
 echo "
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 ";
 
 $type = array(
@@ -340,7 +340,7 @@ for ($i=0; $i < 4; $i++) {
 
 ?>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

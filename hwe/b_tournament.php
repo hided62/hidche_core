@@ -44,24 +44,15 @@ case 3: $tnmt_type = "<font color=cyan>설전</font>";   $tp = "itl"; $tp2 = "�
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 토너먼트</title>
-<style>
-body { color:white; background-color:black; border-width:1px; border-color:gray; }
-table { font-family:'맑은 고딕'; }
-font { font-family:'맑은 고딕'; }
-input { font-family:'맑은 고딕'; height:20px }
-select { font-family:'굴림'; line-height:100%; }
-#bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
-#bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
-#bg2 { background-image:url(<?=ServConfig::$gameImagePath?>/back_blue.jpg); }
-</style>
-
+<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 </head>
 
 <body>
-<table align=center width=2000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=2000 class='tb_layout bg0'>
     <tr><td>삼모전 토너먼트<br><?=closeButton()?></td></tr>
 </table>
-<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center class='tb_layout bg0'>
 <?php
 if ($session->userGrade >= 5) {
     $sel = [];
@@ -193,7 +184,7 @@ if($str3){
 echo "
     <tr>
         <td colspan=8>
-            <table align=center width=2000 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+            <table align=center width=2000 class='bg0 mimic_flex'>
                <tr align=center>";
 
 $query = "select npc,name,win from tournament where grp>=60 order by grp, grp_no";
@@ -444,7 +435,7 @@ for ($i=0; $i < 8; $i++) {
     $grp = $i + 10;
     echo "
         <td>
-            <table align=center width=250 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+            <table align=center width=250 class='tb_layout bg0'>
                 <tr><td colspan=9 style=background-color:black;>{$num[$i]}조</td></tr>
                 <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$tp2}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>득</td></tr>";
 
@@ -470,7 +461,7 @@ for ($i=0; $i < 8; $i++) {
     $grp = $i;
     echo "
         <td>
-            <table align=center width=250 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+            <table align=center width=250 class='tb_layout bg0'>
                 <tr><td colspan=9 style=background-color:black;>{$num[$i]}조</td></tr>
                 <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$tp2}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>득</td></tr>";
 
@@ -506,7 +497,7 @@ if ($admin['tournament'] == 2 || $admin['tournament'] == 3) {
         </font>
     </td></tr>
 </table>
-<table align=center width=2000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=2000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

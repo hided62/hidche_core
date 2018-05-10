@@ -79,15 +79,15 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 내정보</title>
 <link href="../d_shared/common.css" rel="stylesheet">
-<link rel=stylesheet href="css/common.css">
+<link rel=stylesheet href="css/common.css?180511">
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>내 정 보<br><?=backButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=50%>
             <?php myInfo(); ?>
@@ -139,7 +139,7 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
         </td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

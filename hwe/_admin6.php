@@ -20,7 +20,7 @@ if($session->userGrade < 5) {
 <title>관리메뉴</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 </head>
 <body>
 관리자가 아닙니다.<br>
@@ -45,10 +45,10 @@ $sel[$type] = "selected";
 <title>접속정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>접 속 정 보<br><?=closeButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
@@ -61,7 +61,7 @@ $sel[$type] = "selected";
         <input type=submit value='정렬하기'></form>
     </td></tr>
 </table>
-<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center class='tb_layout bg0'>
     <tr id=bg1>
         <td align=center width=120>장수명</td>
         <td align=center width=50>접속률</td>
@@ -100,7 +100,7 @@ for($i=0; $i < $gencount; $i++) {
 
 ?>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

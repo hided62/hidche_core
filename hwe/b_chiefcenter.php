@@ -85,7 +85,7 @@ for($i= $lv - 1; $i>=5; $i--){
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 사령부</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 <script type="text/javascript">
 function turn(type) {
     if(type == 0) location.replace('turn_push_core.php');
@@ -96,10 +96,10 @@ function turn(type) {
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>사 령 부<input type=button value='갱신' onclick=location.replace('b_chiefcenter.php')><br><?=backButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=10 align=center bgcolor=skyblue>수뇌부 일정</td></tr>
     <tr><td colspan=10 align=center>
 <?php
@@ -188,7 +188,7 @@ for($k=0; $k < 2; $k++) {
 
 ?>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

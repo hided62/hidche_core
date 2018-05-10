@@ -85,13 +85,13 @@ if ($month <= 0) {
 <script src="js/map.js"></script>
 
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 <link href="css/map.css" rel="stylesheet">
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>연 감<br><?=closeButton()?></td></tr>
     <tr><td>
         <form name=form1 method=post>
@@ -124,7 +124,7 @@ $history = MYDB_fetch_array($result);
         </form>
     </td></tr>
 </table>
-<table align=center width=1000 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 height=520 class='tb_layout bg0'>
     <tr><td colspan=5 align=center id=bg1>중 원 지 도</td></tr>
     <tr height=520>
         <td width=698>
@@ -148,7 +148,7 @@ $history = MYDB_fetch_array($result);
         </td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

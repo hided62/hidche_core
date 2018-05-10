@@ -173,9 +173,9 @@ function cityInfo() {
     }
 
     if($nation['color'] == "" ) { $nation['color'] = "#000000"; }
-    echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
-    <tr><td colspan=8 align=center style=height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
-    <tr><td colspan=8 align=center style=height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
+    echo "<table style='width:100%;' class='tb_layout bg2'>
+    <tr><td colspan=8 style=text-align:center;height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
+    <tr><td colspan=8 style=text-align:center;height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
 
     if($city['nation'] == 0) {
         echo "공 백 지";
@@ -211,46 +211,46 @@ function cityInfo() {
         </b></td>
     </tr>
     <tr>
-        <td rowspan=2 align=center id=bg1><b>주민</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>주민</b></td>
         <td height=7 colspan=3>".bar($pop)."</td>
-        <td rowspan=2 align=center id=bg1><b>민심</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>민심</b></td>
         <td height=7>".bar($rate)."</td>
-        <td rowspan=2 align=center id=bg1><b>태수</b></td>
-        <td rowspan=2 align=center>{$gen1['name']}</td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>태수</b></td>
+        <td rowspan=2 style='text-align:center;'>{$gen1['name']}</td>
     </tr>
     <tr>
-        <td colspan=3 align=center>{$city['pop']}/{$city['pop2']}</td>
-        <td align=center>{$city['rate']}</td>
+        <td colspan=3 style='text-align:center;'>{$city['pop']}/{$city['pop2']}</td>
+        <td style='text-align:center;'>{$city['rate']}</td>
     </tr>
     <tr>
-        <td width=50  rowspan=2 align=center id=bg1><b>농업</b></td>
+        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>농업</b></td>
         <td width=100 height=7>".bar($agri)."</td>
-        <td width=50  rowspan=2 align=center id=bg1><b>상업</b></td>
+        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>상업</b></td>
         <td width=100 height=7>".bar($comm)."</td>
-        <td width=50  rowspan=2 align=center id=bg1><b>치안</b></td>
+        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>치안</b></td>
         <td width=100 height=7>".bar($secu)."</td>
-        <td width=50  rowspan=2 align=center id=bg1><b>군사</b></td>
-        <td rowspan=2 align=center>{$gen2['name']}</td>
+        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>군사</b></td>
+        <td rowspan=2 style='text-align:center;'>{$gen2['name']}</td>
     </tr>
     <tr>
-        <td align=center>{$city['agri']}/{$city['agri2']}</td>
-        <td align=center>{$city['comm']}/{$city['comm2']}</td>
-        <td align=center>{$city['secu']}/{$city['secu2']}</td>
+        <td style='text-align:center;'>{$city['agri']}/{$city['agri2']}</td>
+        <td style='text-align:center;'>{$city['comm']}/{$city['comm2']}</td>
+        <td style='text-align:center;'>{$city['secu']}/{$city['secu2']}</td>
     </tr>
     <tr>
-        <td rowspan=2 align=center id=bg1><b>수비</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>수비</b></td>
         <td height=7>".bar($def)."</td>
-        <td rowspan=2 align=center id=bg1><b>성벽</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>성벽</b></td>
         <td height=7>".bar($wall)."</td>
-        <td rowspan=2 align=center id=bg1><b>시세</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>시세</b></td>
         <td height=7>".bar($trade)."</td>
-        <td rowspan=2 align=center id=bg1><b>시중</b></td>
-        <td rowspan=2 align=center>{$gen3['name']}</td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>시중</b></td>
+        <td rowspan=2 style='text-align:center;'>{$gen3['name']}</td>
     </tr>
     <tr>
-        <td align=center>{$city['def']}/{$city['def2']}</td>
-        <td align=center>{$city['wall']}/{$city['wall2']}</td>
-        <td align=center>{$tradeStr}</td>
+        <td style='text-align:center;'>{$city['def']}/{$city['def2']}</td>
+        <td style='text-align:center;'>{$city['wall']}/{$city['wall2']}</td>
+        <td style='text-align:center;'>{$tradeStr}</td>
     </tr>
 </table>
 ";
@@ -289,43 +289,43 @@ function myNationInfo() {
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level11 = MYDB_fetch_array($genresult);
 
-    echo "<table width=498 height=190 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+    echo "<table width=498 class='tb_layout bg2 nation_info'>
     <tr>
-        <td colspan=4 align=center ";
+        <td colspan=4 ";
 
-    if($me['nation'] == 0) { echo "style=color:white;background-color:000000;font-weight:bold;font-size:13px;>【재 야】"; }
-    else { echo "style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>국가【 {$nation['name']} 】"; }
+    if($me['nation'] == 0) { echo "style='color:white;background-color:000000;font-weight:bold;font-size:13px;text-align:center;'>【재 야】"; }
+    else { echo "style='color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;text-align:center'>국가【 {$nation['name']} 】"; }
 
     echo "
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>성 향</b></td>
-        <td align=center colspan=3><font color=\"yellow\">".getNationType($nation['type'])."</font> (".getNationType2($nation['type']).")</td>
+        <td class='bg1 center'><b>성 향</b></td>
+        <td colspan=3 class='center'><font color=\"yellow\">".getNationType($nation['type'])."</font> (".getNationType2($nation['type']).")</td>
         </td>
     </tr>
     <tr>
-        <td width=68  align=center id=bg1><b>".getLevel(12, $nation['level'])."</b></td>
-        <td width=178 align=center>";echo $level12?$level12['name']:"-"; echo "</td>
-        <td width=68  align=center id=bg1><b>".getLevel(11, $nation['level'])."</b></td>
-        <td width=178 align=center>";echo $level11?$level11['name']:"-"; echo "</td>
+        <td width=68 class='bg1 center'><b>".getLevel(12, $nation['level'])."</b></td>
+        <td width=178 class='center'>";echo $level12?$level12['name']:"-"; echo "</td>
+        <td width=68 class='bg1 center'><b>".getLevel(11, $nation['level'])."</b></td>
+        <td width=178 class='center'>";echo $level11?$level11['name']:"-"; echo "</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>총주민</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"{$city['totpop']}/{$city['maxpop']}";echo "</td>
-        <td align=center id=bg1><b>총병사</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"{$general['totcrew']}/{$general['maxcrew']}"; echo "</td>
+        <td class='bg1 center'><b>총주민</b></td>
+        <td class='center'>";echo $me['nation']==0?"해당 없음":"{$city['totpop']}/{$city['maxpop']}";echo "</td>
+        <td class='bg1 center'><b>총병사</b></td>
+        <td class='center'>";echo $me['nation']==0?"해당 없음":"{$general['totcrew']}/{$general['maxcrew']}"; echo "</td>
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>국 고</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"{$nation['gold']}";echo "</td>
-        <td align=center id=bg1><b>병 량</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"{$nation['rice']}";echo "</td>
+        <td class='bg1 center'><b>국 고</b></td>
+        <td class='center'>";echo $me['nation']==0?"해당 없음":"{$nation['gold']}";echo "</td>
+        <td class='bg1 center'><b>병 량</b></td>
+        <td class='center'>";echo $me['nation']==0?"해당 없음":"{$nation['rice']}";echo "</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>지급율</b></td>
-        <td align=center>";
+        <td class='bg1 center'><b>지급율</b></td>
+        <td class='center'>";
     if($me['nation'] == 0) {
         echo "해당 없음";
     } else {
@@ -333,8 +333,8 @@ function myNationInfo() {
     }
     echo "
         </td>
-        <td align=center id=bg1><b>세 율</b></td>
-        <td align=center>";
+        <td class='bg1 center'><b>세 율</b></td>
+        <td class='center'>";
     if($me['nation'] == 0) {
         echo "해당 없음";
     } else {
@@ -374,28 +374,28 @@ function myNationInfo() {
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>속 령</b></td>
-        <td align=center>";echo $me['nation']==0?"-":"{$city['cnt']}"; echo "</td>
-        <td align=center id=bg1><b>장 수</b></td>
-        <td align=center>";echo $me['nation']==0?"-":"{$general['cnt']}"; echo "</td>
+        <td style='text-align:center;' class='bg1'><b>속 령</b></td>
+        <td style='text-align:center;'>";echo $me['nation']==0?"-":"{$city['cnt']}"; echo "</td>
+        <td style='text-align:center;' class='bg1'><b>장 수</b></td>
+        <td style='text-align:center;'>";echo $me['nation']==0?"-":"{$general['cnt']}"; echo "</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>국 력</b></td>
-        <td align=center>{$nation['power']}</td>
-        <td align=center id=bg1><b>기술력</b></td>
-        <td align=center>";echo $me['nation']==0?"-":"{$nation['tech']}"; echo "</td>
+        <td style='text-align:center;' class='bg1'><b>국 력</b></td>
+        <td style='text-align:center;'>{$nation['power']}</td>
+        <td style='text-align:center;' class='bg1'><b>기술력</b></td>
+        <td style='text-align:center;'>";echo $me['nation']==0?"-":"{$nation['tech']}"; echo "</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>전 략</b></td>
-        <td align=center>{$nation['sabotagelimit']}</td>
-        <td align=center id=bg1><b>외 교</b></td>
-        <td align=center>{$nation['surlimit']}</td>
+        <td style='text-align:center;' class='bg1'><b>전 략</b></td>
+        <td style='text-align:center;'>{$nation['sabotagelimit']}</td>
+        <td style='text-align:center;' class='bg1'><b>외 교</b></td>
+        <td style='text-align:center;'>{$nation['surlimit']}</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>임 관</b></td>
-        <td align=center>{$nation['scout']}</td>
-        <td align=center id=bg1><b>전 쟁</b></td>
-        <td align=center>{$nation['war']}</td>
+        <td style='text-align:center;' class='bg1'><b>임 관</b></td>
+        <td style='text-align:center;'>{$nation['scout']}</td>
+        <td style='text-align:center;' class='bg1'><b>전 쟁</b></td>
+        <td style='text-align:center;'>{$nation['war']}</td>
     </tr>
 </table>
 ";
@@ -879,75 +879,75 @@ function generalInfo($no) {
     $weapImage = ServConfig::$gameImagePath."/weap{$general['crewtype']}.png";
     if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
     $imageTemp = GetImageURL($general['imgsvr']);
-    echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+    echo "<table width=498 class='tb_layout bg2'>
     <tr>
-        <td width=64 height=64 align=center rowspan=3 style='background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;'>&nbsp;</td>
-        <td align=center colspan=9 height=16 style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
+        <td width=64 height=64 rowspan=3 style='text-align:center;background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;'>&nbsp;</td>
+        <td colspan=9 height=16 style=text-align:center;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
     </tr>
     <tr height=16>
-        <td align=center id=bg1><b>통솔</b></td>
-        <td align=center>&nbsp;{$color}{$leader}</font>{$lbonus}&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general['leader2']), 20)."</td>
-        <td align=center id=bg1><b>무력</b></td>
-        <td align=center>&nbsp;{$color}{$power}</font>&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general['power2']), 20)."</td>
-        <td align=center id=bg1><b>지력</b></td>
-        <td align=center>&nbsp;{$color}{$intel}</font>&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general['intel2']), 20)."</td>
+        <td style='text-align:center;' class='bg1'><b>통솔</b></td>
+        <td style='text-align:center;'>&nbsp;{$color}{$leader}</font>{$lbonus}&nbsp;</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($general['leader2']), 20)."</td>
+        <td style='text-align:center;' class='bg1'><b>무력</b></td>
+        <td style='text-align:center;'>&nbsp;{$color}{$power}</font>&nbsp;</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($general['power2']), 20)."</td>
+        <td style='text-align:center;' class='bg1'><b>지력</b></td>
+        <td style='text-align:center;'>&nbsp;{$color}{$intel}</font>&nbsp;</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($general['intel2']), 20)."</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>명마</b></td>
-        <td align=center colspan=2><font size=1>$horsename</font></td>
-        <td align=center id=bg1><b>무기</b></td>
-        <td align=center colspan=2><font size=1>$weapname</font></td>
-        <td align=center id=bg1><b>서적</b></td>
-        <td align=center colspan=2><font size=1>$bookname</font></td>
+        <td style='text-align:center;' class='bg1'><b>명마</b></td>
+        <td style='text-align:center;' colspan=2><font size=1>$horsename</font></td>
+        <td style='text-align:center;' class='bg1'><b>무기</b></td>
+        <td style='text-align:center;' colspan=2><font size=1>$weapname</font></td>
+        <td style='text-align:center;' class='bg1'><b>서적</b></td>
+        <td style='text-align:center;' colspan=2><font size=1>$bookname</font></td>
     </tr>
     <tr>
-        <td align=center height=64 rowspan=3 style='background:no-repeat center url(\"{$weapImage}\");background-size:64px;'></td>
-        <td align=center id=bg1><b>자금</b></td>
-        <td align=center colspan=2>{$general['gold']}</td>
-        <td align=center id=bg1><b>군량</b></td>
-        <td align=center colspan=2>{$general['rice']}</td>
-        <td align=center id=bg1><b>도구</b></td>
-        <td align=center colspan=2><font size=1>$itemname</font></td>
+        <td height=64 rowspan=3 style='text-align:center;background:no-repeat center url(\"{$weapImage}\");background-size:64px;'></td>
+        <td style='text-align:center;' class='bg1'><b>자금</b></td>
+        <td style='text-align:center;' colspan=2>{$general['gold']}</td>
+        <td style='text-align:center;' class='bg1'><b>군량</b></td>
+        <td style='text-align:center;' colspan=2>{$general['rice']}</td>
+        <td style='text-align:center;' class='bg1'><b>도구</b></td>
+        <td style='text-align:center;' colspan=2><font size=1>$itemname</font></td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>병종</b></td>
-        <td align=center colspan=2>$typename</td>
-        <td align=center id=bg1><b>병사</b></td>
-        <td align=center colspan=2>{$general['crew']}</td>
-        <td align=center id=bg1><b>성격</b></td>
-        <td align=center colspan=2>".getGenChar($general['personal'])."</td>
+        <td style='text-align:center;' class='bg1'><b>병종</b></td>
+        <td style='text-align:center;' colspan=2>$typename</td>
+        <td style='text-align:center;' class='bg1'><b>병사</b></td>
+        <td style='text-align:center;' colspan=2>{$general['crew']}</td>
+        <td style='text-align:center;' class='bg1'><b>성격</b></td>
+        <td style='text-align:center;' colspan=2>".getGenChar($general['personal'])."</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>훈련</b></td>
-        <td align=center colspan=2>$train</td>
-        <td align=center id=bg1><b>사기</b></td>
-        <td align=center colspan=2>$atmos</td>
-        <td align=center id=bg1><b>특기</b></td>
-        <td align=center colspan=2>$special / $special2</td>
+        <td style='text-align:center;' class='bg1'><b>훈련</b></td>
+        <td style='text-align:center;' colspan=2>$train</td>
+        <td style='text-align:center;' class='bg1'><b>사기</b></td>
+        <td style='text-align:center;' colspan=2>$atmos</td>
+        <td style='text-align:center;' class='bg1'><b>특기</b></td>
+        <td style='text-align:center;' colspan=2>$special / $special2</td>
     </tr>
     <tr height=20>
-        <td align=center id=bg1><b>Lv</b></td>
-        <td align=center>&nbsp;{$general['explevel']}&nbsp;</td>
-        <td align=center colspan=5>".bar(getLevelPer($general['experience'], $general['explevel']), 20)."</td>
-        <td align=center id=bg1><b>연령</b></td>
-        <td align=center colspan=2>{$general['age']}</td>
+        <td style='text-align:center;' class='bg1'><b>Lv</b></td>
+        <td style='text-align:center;'>&nbsp;{$general['explevel']}&nbsp;</td>
+        <td style='text-align:center;' colspan=5>".bar(getLevelPer($general['experience'], $general['explevel']), 20)."</td>
+        <td style='text-align:center;' class='bg1'><b>연령</b></td>
+        <td style='text-align:center;' colspan=2>{$general['age']}</td>
     </tr>
     <tr height=20>
-        <td align=center id=bg1><b>수비</b></td>
-        <td align=center colspan=3>{$general['mode']}</td>
-        <td align=center id=bg1><b>삭턴</b></td>
-        <td align=center colspan=2>{$general['killturn']} 턴</td>
-        <td align=center id=bg1><b>실행</b></td>
-        <td align=center colspan=2>$remaining 분 남음</td>
+        <td style='text-align:center;' class='bg1'><b>수비</b></td>
+        <td style='text-align:center;' colspan=3>{$general['mode']}</td>
+        <td style='text-align:center;' class='bg1'><b>삭턴</b></td>
+        <td style='text-align:center;' colspan=2>{$general['killturn']} 턴</td>
+        <td style='text-align:center;' class='bg1'><b>실행</b></td>
+        <td style='text-align:center;' colspan=2>$remaining 분 남음</td>
     </tr>
     <tr height=20>
-        <td align=center id=bg1><b>부대</b></td>
-        <td align=center colspan=3>{$troop['name']}</td>
-        <td align=center id=bg1><b>벌점</b></td>
-        <td align=center colspan=5>".getConnect($general['connect'])." {$general['connect']}({$general['con']})</td>
+        <td style='text-align:center;' class='bg1'><b>부대</b></td>
+        <td style='text-align:center;' colspan=3>{$troop['name']}</td>
+        <td style='text-align:center;' class='bg1'><b>벌점</b></td>
+        <td style='text-align:center;' colspan=5>".getConnect($general['connect'])." {$general['connect']}({$general['con']})</td>
     </tr>
 </table>";
 }
@@ -1014,70 +1014,70 @@ function generalInfo2($no) {
     $general['dex30_short'] = sprintf('%.1fK', $general['dex30']/1000);
     $general['dex40_short'] = sprintf('%.1fK', $general['dex40']/1000);
 
-    echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
-    <tr><td align=center colspan=6 id=bg1><b>추 가 정 보</b></td></tr>
+    echo "<table width=498 class='tb_layout bg2'>
+    <tr><td style='text-align:center;' colspan=6 class='bg1'><b>추 가 정 보</b></td></tr>
     <tr>
-        <td align=center id=bg1><b>명성</b></td>
-        <td align=center>$experience</td>
-        <td align=center id=bg1><b>계급</b></td>
-        <td align=center colspan=3>$dedication</td>
+        <td style='text-align:center;' class='bg1'><b>명성</b></td>
+        <td style='text-align:center;'>$experience</td>
+        <td style='text-align:center;' class='bg1'><b>계급</b></td>
+        <td style='text-align:center;' colspan=3>$dedication</td>
     </tr>
     <tr>
-        <td width=64 align=center id=bg1><b>전투</b></td>
-        <td width=132 align=center>{$general['warnum']}</td>
-        <td width=48 align=center id=bg1><b>계략</b></td>
-        <td width=98 align=center>{$general['firenum']}</td>
-        <td width=48 align=center id=bg1><b>사관</b></td>
-        <td width=98 align=center>{$general['belong']}년</td>
+        <td width=64 style='text-align:center;' class='bg1'><b>전투</b></td>
+        <td width=132 style='text-align:center;'>{$general['warnum']}</td>
+        <td width=48 style='text-align:center;' class='bg1'><b>계략</b></td>
+        <td width=98 style='text-align:center;'>{$general['firenum']}</td>
+        <td width=48 style='text-align:center;' class='bg1'><b>사관</b></td>
+        <td width=98 style='text-align:center;'>{$general['belong']}년</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>승률</b></td>
-        <td align=center>{$general['winrate']} %</td>
-        <td align=center id=bg1><b>승리</b></td>
-        <td align=center>{$general['killnum']}</td>
-        <td align=center id=bg1><b>패배</b></td>
-        <td align=center>{$general['deathnum']}</td>
+        <td style='text-align:center;' class='bg1'><b>승률</b></td>
+        <td style='text-align:center;'>{$general['winrate']} %</td>
+        <td style='text-align:center;' class='bg1'><b>승리</b></td>
+        <td style='text-align:center;'>{$general['killnum']}</td>
+        <td style='text-align:center;' class='bg1'><b>패배</b></td>
+        <td style='text-align:center;'>{$general['deathnum']}</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>살상률</b></td>
-        <td align=center>{$general['killrate']} %</td>
-        <td align=center id=bg1><b>사살</b></td>
-        <td align=center>{$general['killcrew']}</td>
-        <td align=center id=bg1><b>피살</b></td>
-        <td align=center>{$general['deathcrew']}</td>
+        <td style='text-align:center;' class='bg1'><b>살상률</b></td>
+        <td style='text-align:center;'>{$general['killrate']} %</td>
+        <td style='text-align:center;' class='bg1'><b>사살</b></td>
+        <td style='text-align:center;'>{$general['killcrew']}</td>
+        <td style='text-align:center;' class='bg1'><b>피살</b></td>
+        <td style='text-align:center;'>{$general['deathcrew']}</td>
     </tr>
 </table>
-<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
-    <tr><td align=center colspan=4 id=bg1><b>숙 련 도</b></td></tr>
+<table width=498 class='tb_layout bg2'>
+    <tr><td style='text-align:center;' colspan=4 class='bg1'><b>숙 련 도</b></td></tr>
     <tr height=16>
-        <td width=64 align=center id=bg1><b>보병</b></td>
+        <td width=64 style='text-align:center;' class='bg1'><b>보병</b></td>
         <td width=40>　{$general['dex0_text']}</td>
         <td width=60 align=right>{$general['dex0_short']}&nbsp;</td>
-        <td width=330 align=center>".bar($dex0, 16)."</td>
+        <td width=330 style='text-align:center;'>".bar($dex0, 16)."</td>
     </tr>
     <tr height=16>
-        <td align=center id=bg1><b>궁병</b></td>
+        <td style='text-align:center;' class='bg1'><b>궁병</b></td>
         <td>　{$general['dex10_text']}</td>
         <td align=right>{$general['dex10_short']}&nbsp;</td>
-        <td align=center>".bar($dex10, 16)."</td>
+        <td style='text-align:center;'>".bar($dex10, 16)."</td>
     </tr>
     <tr height=16>
-        <td align=center id=bg1><b>기병</b></td>
+        <td style='text-align:center;' class='bg1'><b>기병</b></td>
         <td>　{$general['dex20_text']}</td>
         <td align=right>{$general['dex20_short']}&nbsp;</td>
-        <td align=center>".bar($dex20, 16)."</td>
+        <td style='text-align:center;'>".bar($dex20, 16)."</td>
     </tr>
     <tr height=16>
-        <td align=center id=bg1><b>귀병</b></td>
+        <td style='text-align:center;' class='bg1'><b>귀병</b></td>
         <td>　{$general['dex30_text']}</td>
         <td align=right>{$general['dex30_short']}&nbsp;</td>
-        <td align=center>".bar($dex30, 16)."</td>
+        <td style='text-align:center;'>".bar($dex30, 16)."</td>
     </tr>
     <tr height=16>
-        <td align=center id=bg1><b>차병</b></td>
+        <td style='text-align:center;' class='bg1'><b>차병</b></td>
         <td>　{$general['dex40_text']}</td>
         <td align=right>{$general['dex40_short']}&nbsp;</td>
-        <td align=center>".bar($dex40, 16)."</td>
+        <td style='text-align:center;'>".bar($dex40, 16)."</td>
     </tr>
 </table>";
 }
@@ -1159,14 +1159,14 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
 
     $imageTemp = GetImageURL($imgsvr);
     echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table style='text-align:center;' width=1000 class='tb_layout bg0'>
     <tr>
-        <td width=64 align=center id=bg1><font size=1>$name</font></td>
-        <td width=772 align=center id=bg1><font size=4><b>$message[0]</b></font></td>
-        <td width=148 align=center id=bg1>$when</td>
+        <td width=64 style='text-align:center;' class='bg1'><font size=1>$name</font></td>
+        <td width=772 style='text-align:center;' class='bg1'><font size=4><b>$message[0]</b></font></td>
+        <td width=148 style='text-align:center;' class='bg1'>$when</td>
     </tr>
     <tr>
-        <td width=64 height=64 valign=top><img width='64' height='64' src={$imageTemp}/{$picture} border=0></td>
+        <td width=64 height=64 valign=top><img width='64' height='64' src={$imageTemp}/{$picture} border='0'></td>
         <td width=932 colspan=2>$message[1]</td>
     </tr>";
     for($i=0; $i < $count; $i++) {
@@ -1177,14 +1177,14 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
         $regen = MYDB_fetch_array($result);
         echo "
     <tr>
-        <td width=64 align=center><font size=1>{$regen['name']}</font></td>
+        <td width=64 style='text-align:center;'><font size=1>{$regen['name']}</font></td>
         <td width=932 colspan=2>$reply</td>
     </tr>";
     }
     echo "
     <tr>
         <form name=reply_form{$num} method=post action=$board>
-        <td width=64 align=center>댓글달기</td>
+        <td width=64 style='text-align:center;'>댓글달기</td>
         <td width=932 colspan=2>
             <input type=textarea name=reply maxlength=250 style=color:white;background-color:black;width:830px;>
             <input type=submit value=댓글달기>

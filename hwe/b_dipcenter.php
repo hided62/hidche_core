@@ -50,15 +50,15 @@ if ($me['level'] >= 5) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 내무부</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>내 무 부<br><?=backButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=9 align=center bgcolor=blue>외 교 관 계</td></tr>
     <tr>
         <td width=100 align=center class=bg1>국 가 명</td>
@@ -220,7 +220,7 @@ if ($budgetricediff > 0) {
 }
 
 ?>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <form name=form1 method=post action=c_dipcenter.php>
     <tr><td colspan=2 height=10></td></tr>
     <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메세지</td></tr>
@@ -231,7 +231,7 @@ if ($budgetricediff > 0) {
     <tr><td colspan=2 align=center bgcolor=green>예 산 &amp; 정 책</td></tr>
     <tr>
         <td colspan=2>
-            <table width=998 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+            <table width=998 class='tb_layout bg0'>
                 <tr>
                     <td colspan=2 align=center class=bg1>자금 예산</td>
                     <td colspan=2 align=center class=bg1>병량 예산</td>
@@ -304,7 +304,7 @@ if ($nation['war'] == 0) {
     <tr><td colspan=2 height=10></td></tr>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

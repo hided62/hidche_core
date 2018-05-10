@@ -11,6 +11,58 @@ font { font-family:'맑은 고딕'; }
 input { font-family:'맑은 고딕'; font-size:13px; }
 select { font-family:'굴림'; line-height:100%; }
 
+.center{
+    text-align:center;
+}
+
+table.mimic_flex{
+    border-collapse: collapse;
+    border:none;
+    padding:0;
+}
+
+.mimic_flex td, .mimic_flex th     {
+    border:none !important;
+    padding: 0px;
+    word-break: break-all;
+}
+
+
+table.tb_layout  {
+    border-collapse: collapse;
+    padding: 0px;
+    font-size: 13px;
+    word-break: break-all;
+    font-family: '맑은 고딕';
+}
+
+.tb_layout td, .tb_layout th     {
+    border:groove 1px;
+    padding: 0px;
+    word-break: break-all;
+    font-family: '맑은 고딕';;
+}
+
+div.bar_out{
+    position:relative;
+    border-top:solid 1px #888888;
+    border-bottom:solid 1px #333333;
+    padding:0;
+    margin:0;
+    width:100%;
+}
+
+div.bar_out div{
+    position:absolute;
+    left:0;
+    top:0;
+    height:100%;
+}
+
+div.bar_out div.bar_in{
+    width:100%;
+}
+
 /* */
 
 .ev_warning{

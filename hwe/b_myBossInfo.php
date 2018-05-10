@@ -32,7 +32,7 @@ if($meLevel == 0) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 인사부</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 <script type="text/javascript">
 function out() {
     return confirm('정말 추방하시겠습니까?');
@@ -42,7 +42,7 @@ function out() {
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>인 사 부<br><?=backButton()?></td></tr>
 </table>
 <br>
@@ -72,7 +72,7 @@ $query = "select name,picture,firenum from general where nation='{$nation['natio
 $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']} colspan=6>
             <font size=5>【 {$nation['name']} 】</font>
@@ -131,7 +131,7 @@ echo "
         </td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <form method=post action=c_myBossInfo.php>
     <tr><td colspan=6 height=5></td></tr>
     <tr><td colspan=2 align=center bgcolor=red>추 방</td></tr>
@@ -167,7 +167,7 @@ echo "
     </tr>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=4 height=5></td></tr>
     <tr><td colspan=4 align=center bgcolor=blue>수 뇌 부 임 명</td></tr>
     <tr>
@@ -270,7 +270,7 @@ for($i=10; $i >= $lv; $i--) {
 echo "
     <tr><td colspan=4>※ <font color=red>빨간색</font>은 현재 임명중인 장수, <font color=orange>노란색</font>은 다른 관직에 임명된 장수, 하얀색은 일반 장수를 뜻합니다.</td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=5 height=5></td></tr>
 ";
 if($meLevel >= 5) {
@@ -505,7 +505,7 @@ for($j=0; $j < $citycount; $j++) {
     <tr><td colspan=5>※ <font color=orange>노란색</font>은 변경 불가능, 하얀색은 변경 가능 관직입니다.</td></tr>
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

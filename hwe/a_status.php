@@ -47,16 +47,16 @@ $(function(){
 </script>
 <link href="../d_shared/common.css" rel="stylesheet">
 <link href="css/normalize.css" rel="stylesheet">
-<link href="css/common.css" rel="stylesheet">
+<link href="css/common.css?180511" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet">
 
 </head>
 
 <body>
-<table align=center width=1200 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1200 class='tb_layout bg0'>
     <tr><td>세 력 도<br><?=closeButton()?></td></tr>
 </table>
-<table align=center width=1200 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1200 height=520 class='tb_layout bg0'>
     <tr height=520>
         <td width=498 valign=top>
             <?=getGeneralPublicRecordRecent(34)?>
@@ -71,7 +71,7 @@ $(function(){
         </td>
     </tr>
 </table>
-<table align=center width=1200 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1200 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

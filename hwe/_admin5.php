@@ -26,7 +26,7 @@ if($session->userGrade < 5) {
 <title>관리메뉴</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 </head>
 <body>
 관리자가 아닙니다.<br>
@@ -57,10 +57,10 @@ $admin = MYDB_fetch_array($result);
 <title>일제정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>일 제 정 보<br><?=closeButton()?></td></tr>
     <tr><td>
         <form name=form1 method=post>정렬순서 :
@@ -115,7 +115,7 @@ for($i=1; $i <= $count; $i++) {
     </td></tr>
 </table>
 
-<table align=center width=1600 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px; id=bg0>
+<table align=center width=1600 class="tb_layout bg0">
     <tr id=bg1>
         <td align=center>국명</td>
         <td align=center>접률</td>
@@ -262,11 +262,11 @@ for($i=0; $i < $nationCount; $i++) {
 
 ?>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=getSabotageLogRecent(20)?></td></tr>
 </table>
 
-<table align=center width=1760 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px; id=bg0>
+<table align=center width=1760 class="tb_layout bg0">
     <tr id=bg1>
         <td width=30 align=center>년</td>
         <td width=30 align=center>월</td>
@@ -317,7 +317,7 @@ for($i=0; $i < $count; $i++) {
 ?>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

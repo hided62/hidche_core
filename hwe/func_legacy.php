@@ -10,7 +10,7 @@ function printLimitMsg($turntime) {
 <title>접속제한</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 </head>
 <body>
 <font size=4><b>
@@ -28,15 +28,11 @@ function bar($per, $h=7) {
     else        { $bd = 1; $h = 12; $h2 =  8; }
 
     $per = round($per, 1);
-    if($per < 1 || $per > 99) { $per = Util::round($per); }
-    $str1 = "<td width='{$per}%' background=".ServConfig::$gameImagePath."/pb{$h2}.gif></td>";
-    $str2 = "<td width='*%' background=".ServConfig::$gameImagePath."/pr{$h2}.gif></td>";
-    if($per <= 0) { $str1 = ""; }
-    elseif($per >= 100) { $str2 = ""; }
-    $str = "
-    <table width=100% height={$h} border={$bd} cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black>
-        <tr>{$str1}{$str2}</tr>
-    </table>";
+    
+    $str = "<div class='bar_out' style='height:{$h2}px;'>
+    <div class='bar_in' style='background:url(".ServConfig::$gameImagePath."/pr{$h2}.gif)'></div>
+    <div style='width:{$per}%;background:url(".ServConfig::$gameImagePath."/pb{$h2}.gif)'></div>
+    </div>";
     return $str;
 }
 

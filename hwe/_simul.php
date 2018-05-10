@@ -1141,7 +1141,7 @@ switch($dex240) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title>전투시뮬레이션</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 <style type="text/css">
 select { background-color:black;color:white; }
 input { background-color:black;color:white; }
@@ -1151,7 +1151,7 @@ input { background-color:black;color:white; }
 
 <body>
 <form method=post action=_simul.php>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr id=bg1>
         <td>공격장수</td>
         <td>상대장수</td>
@@ -1584,7 +1584,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격") {
 ?>
     </td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr id=bg1>
         <td align=right></td>
         <td align=center>공격</td>

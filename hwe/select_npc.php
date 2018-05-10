@@ -27,7 +27,7 @@ $nations = $db->queryAllLists('SELECT `name`, scoutmsg, color FROM nation');
 <link rel='stylesheet' href='css/normalize.css?180505_2' type='text/css'>
 <link rel='stylesheet' href='../d_shared/common.css?180505_2' type='text/css'>
 <link rel='stylesheet' href='../css/config.css?180505_2' type='text/css'>
-<link rel='stylesheet' href='css/common.css?180505_2' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 <link rel='stylesheet' href='css/select_npc.css?180505_2' type='text/css'>
 <script type="text/javascript" src="../d_shared/common_path.js"></script>
 <script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>

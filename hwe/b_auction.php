@@ -61,15 +61,15 @@ if ($msg2 == "") {
 <title><?=UniqueConst::$serverName?>: 거래장</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>거 래 장<br><?=closeButton()?></td></tr>
     <tr><td align=center id=bg2><font color=orange size=6><b>거 래 장</b></font><input type=button value='갱신' onclick=location.replace('b_auction.php')></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <form method=post action=c_auction.php>
     <tr><td colspan=11 align=center bgcolor=orange><font size=5>팝 니 다</font></td></tr>
     <tr align=center id=bg1>
@@ -167,7 +167,7 @@ for ($i=0; $i < $count; $i++) {
 </form>
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <form method=post action=c_auction.php>
     <tr><td colspan=11 align=center bgcolor=skyblue><font size=5>삽 니 다</font></td></tr>
     <tr align=center id=bg1>
@@ -265,7 +265,7 @@ for ($i=0; $i < $count; $i++) {
 </form>
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td align=center id=bg2><font size=5>최 근 기 록</font></td></tr>
     <tr><td>
     <?=getAuctionLogRecent(20)?>

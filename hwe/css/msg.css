@@ -22,9 +22,9 @@
 
 .msg_plate{
     width:100%;
-    border-bottom:groove 0.1em;
-    border-left:groove 0.1em;
-    border-right:groove 0.1em;
+    border-bottom:groove 0.1em gray;
+    border-left:groove 0.1em gray;
+    border-right:groove 0.1em gray;
     height:64px;
     font-size:12px;
     word-break:break-all;
@@ -61,7 +61,7 @@
     float:left;
     width:64px;
     height:64px;
-    border-right:groove 0.1em;
+    border-right:groove 0.1em gray;
 }
 
 .msg_time{
@@ -105,7 +105,7 @@
 
 .board_header{
     color:white;
-    border:groove 0.1em;
+    border:groove 0.1em gray;
 }
 
 .board_side{

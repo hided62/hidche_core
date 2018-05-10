@@ -20,12 +20,12 @@ increaseRefresh("왕조일람", 2);
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 왕조일람</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>역 대 왕 조<br>
         <input type=button value='창 닫기' onclick=window.close()><br>
     </td></tr>
@@ -43,7 +43,7 @@ if ($select == 0) {
 
         echo "
 <form action=a_emperior2.php method=post>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td bgcolor=skyblue align=center colspan=8>
             <font size=5>{$emperior['phase']}</font>
@@ -86,7 +86,7 @@ if ($select == 0) {
 
     echo "
 <form action=a_emperior2.php method=post>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td bgcolor=skyblue align=center colspan=6>
             <font size=5>{$emperior['phase']}</font>
@@ -198,7 +198,7 @@ if ($select == 0) {
 }
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

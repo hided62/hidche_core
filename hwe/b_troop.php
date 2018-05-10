@@ -27,22 +27,22 @@ $troopcount = MYDB_num_rows($result);
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 부대편성</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table width=1000 class='tb_layout bg0'>
     <tr><td>부 대 편 성<br><?=backButton()?></td></tr>
 </table>
 <form name=form1 method=post action=c_troop.php>
-<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table class='tb_layout bg0'>
     <tr>
-        <td align=center width=64  id=bg1>선 택</td>
-        <td align=center width=98  id=bg1>부 대 정 보</td>
-        <td align=center width=64  id=bg1>부 대 장</td>
-        <td align=center width=662 id=bg1 style=table-layout:fixed;word-break:break-all;>장 수</td>
-        <td align=center width=98  id=bg1 style=table-layout:fixed;word-break:break-all;>부대장행동</td>
+        <td width=64  class='bg1 center'>선 택</td>
+        <td width=98  class='bg1 center'>부 대 정 보</td>
+        <td width=64  class='bg1 center'>부 대 장</td>
+        <td width=662 class='bg1 center' style=table-layout:fixed;word-break:break-all;>장 수</td>
+        <td width=98  class='bg1 center' style=table-layout:fixed;word-break:break-all;>부대장행동</td>
     </tr>
 <?php
 for($i=0; $i < $troopcount; $i++) {
@@ -139,7 +139,7 @@ echo "
 <br>";
 
 echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=80 id=bg1>부 대 명</td>
         <td width=100><input type=text style=color:white;background-color:black; size=12 maxlength=6 name=name></td>";
@@ -155,7 +155,7 @@ echo "
 </table>";
 
 ?>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

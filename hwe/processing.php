@@ -145,14 +145,14 @@ $(function(){
 </script>
 <link href="css/normalize.css" rel="stylesheet">
 <link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css" rel="stylesheet">
+<link href="css/common.css?180511" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet">
 ';
 echo '
 </head>
 <body class="img_back">
-<table class="bg0" align="center" width="1000" border="1" cellspacing="0" cellpadding="0" bordercolordark="gray" bordercolorlight="black" style="font-size:13px;word-break:break-all;">
+<table class="tb_layout bg0">
     <tr><td class="bg1" align="center">'.$name.'</td></tr>
     <tr><td>
 ';
@@ -279,7 +279,7 @@ function calc(cost, formnum) {
     form.cost.value = Math.round(crew * cost);
 }
 </script>
-<table border=1 cellspacing=0 bordercolordark=gray bordercolorlight=black>
+<table class='tb_layout'>
     <tr>
         <td colspan=10 align=center id=bg2>
             현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
@@ -487,7 +487,7 @@ function calc(cost, formnum) {
     form.cost.value = Math.round(crew * cost * 2);
 }
 </script>
-<table border=1 cellspacing=0 bordercolordark=gray bordercolorlight=black>
+<table class='tb_layout'>
     <tr><td align=center colspan=10>모병은 가격 2배의 자금이 소요됩니다.</td></tr>
     <tr>
         <td colspan=10 align=center id=bg2>
@@ -1031,7 +1031,7 @@ function command_25($turn, $command) {
 
     echo "
 </form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
 {$scoutStr}
 </table>";

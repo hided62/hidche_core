@@ -13,7 +13,7 @@ if($session->userGrade < 4) {
 <title>관리메뉴</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 </head>
 <body>
 관리자가 아닙니다.<br>
@@ -41,7 +41,7 @@ $plock = MYDB_fetch_array($result);
 <title>삼국지 모의전투 HiDCHe</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 </head>
 <body>
     <form action=_119_b.php method=post>

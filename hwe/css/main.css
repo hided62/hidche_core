@@ -64,3 +64,7 @@ color:white;
     margin:0;
     display:block;
 }
+
+.nation_info td{
+    height:18px;
+}

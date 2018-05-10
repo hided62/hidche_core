@@ -16,7 +16,7 @@ $connect=$db->get();
 <title>커맨드리스트</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 <script type="text/javascript">
 <?php
 if(!$session->isLoggedIn()){
@@ -86,7 +86,7 @@ function myCommandList() {
     }
     $turn = getTurn($me, 2);
 
-    echo "<table width=300 height=700 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+    echo "<table width=300 height=700 class='tb_layout bg2'>
 <form name=clock>
     <tr>
         <td colspan=4 align=center id=bg0><b>- 명령 목록 - <input value='$date' type=text name=clock size=19 style=background-color:black;color:white;border-style:none;></b></td>

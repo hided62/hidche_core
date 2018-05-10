@@ -35,7 +35,7 @@ $templates = new \League\Plates\Engine('templates');
 <title><?=UniqueConst::$serverName?>: 도시정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css" rel="stylesheet">
+<link href="css/common.css?180511" rel="stylesheet">
 <style>
 #general_list tr td{
     text-align:center;
@@ -53,11 +53,11 @@ $templates = new \League\Plates\Engine('templates');
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>도 시 정 보<br><?=backButton()?></td></tr>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=998>
             <form name=cityselect method=get>도시선택 :
@@ -175,11 +175,11 @@ if($city['trade'] == 0) {
 }
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg2>
+<table align=center width=1000 class='tb_layout bg2'>
     <tr>
         <td colspan=12 align=center style=color:"<?=newColor($nation['color'])?>"; bgcolor=<?=$nation['color']?>>【 <?=CityConst::$regionMap[$city['region']]?> | <?=CityConst::$levelMap[$city['level']]?> 】 <?=$city['name']?></td>
     </tr>
@@ -230,7 +230,7 @@ if($city['trade'] == 0) {
 
 
 <br>
-<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center class='tb_layout bg0'>
 <thead>
     <tr>
         <td width=64 align=center class=bg1>얼 굴</td>
@@ -365,7 +365,7 @@ for($j=0; $j < $gencount; $j++) {
 </tbody>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

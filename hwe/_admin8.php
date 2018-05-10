@@ -20,7 +20,7 @@ if ($session->userGrade < 5) {
 <title>관리메뉴</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 </head>
 <body>
 관리자가 아닙니다.<br>
@@ -48,10 +48,10 @@ $sel[$type] = "selected";
 <title>외교정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>외 교 정 보<br><?=closeButton()?></td></tr>
     <tr><td>
         <form name=form1 method=post>
@@ -63,7 +63,7 @@ $sel[$type] = "selected";
         </form>
     </td></tr>
 </table>
-<table width=1000 align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table width=1000 align=center class='tb_layout bg0'>
     <tr><td colspan=9 align=center bgcolor=blue>외 교 관 계</td></tr>
     <tr>
         <td width=100 align=center id=bg1>국 가 명</td>
@@ -155,7 +155,7 @@ for ($i=0; $i < $dipcount; $i++) {
 }
 ?>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>
