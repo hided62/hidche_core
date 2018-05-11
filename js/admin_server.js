@@ -10,7 +10,7 @@ var serverAdminTemplate = '\
     <td><a class="just_link" href="../<%name%>/install_db.php"><button class="with_skin valid_if_installed only_admin with_border obj_fill">하드리셋</button></a></td>\
     <td><button class="with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminClosedLogin(this);">폐쇄중 로그인</button></td>\
     <td><button class="with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminOpen119(this);">서버119</button></td>\
-    <td><button class="with_skin only_admin with_border obj_fill" onclick="serverUpdate(this);">업데이트</button></td>\
+    <td><button class="with_skin with_border obj_fill" onclick="serverUpdate(this);">업데이트</button></td>\
 </tr>\
 ';
 
@@ -31,7 +31,12 @@ function serverUpdate(caller){
             return;
         }
     }
-    else{
+    else if(window.adminGrade < 6){
+        if (!confirm('다음 git tree-ish 주소로 업데이트를 시도합니다 : ' + target)) {
+            return;
+        }
+    }
+    else {
         target = prompt('가져올 git tree-ish 명을 입력해주세요.', target)
         if(!target){
             return;
@@ -83,7 +88,9 @@ function drawServerAdminList(serverList){
             $tr.find('.valid_if_installed').prop('disabled', true);
         }
     });
+    window.adminGrade = serverList.grade;
     if(serverList.grade == 5){
+        
         $table.find('.only_admin').prop('disabled', true);
     }
 }
