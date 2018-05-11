@@ -92,7 +92,7 @@ class KVStorage{
         if($onlyCache && $this->cacheData !== null && count($this->cacheData) > 0){
             return $this->cacheData;
         }
-        $result = $this->getAll();
+        $result = $this->getDBAll();
         if($this->cacheData !== null){
             $this->cacheData = $result;
         }
@@ -171,7 +171,7 @@ class KVStorage{
         {
             $result[$key] = Json::decode($value);
         }
-        return $value;
+        return $result;
     }
 
     private function getDBValues(array $keys): array{
