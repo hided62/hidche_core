@@ -58,15 +58,15 @@ else{
     $target = $request['target'];
 }
 
-if(!$target){
+$baseServerName = Util::array_last_key(AppConf::getList());
+
+if(!$target && $server != $baseServerName){
     Json::die([
         'result'=>false,
         'reason'=>'git -ish target이 제대로 지정되지 않았습니다.'
     ]);
 }
 
-
-$baseServerName = Util::array_last_key(AppConf::getList());
 
 $targetDir =$target.':'.$baseServerName;
 
