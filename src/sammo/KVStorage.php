@@ -22,6 +22,10 @@ class KVStorage{
         return $this->setValue($key, $value);
     }
 
+    public function __unset($key){
+        $this->deleteValue($key);
+    }
+
     public function resetCache(bool $disableCache=true):self{
         if($disableCache){
             $this->cacheData = null;
@@ -185,7 +189,7 @@ class KVStorage{
                 $result[$key] = null;
             }
         }
-        return $value;
+        return $result;
     }
 
     private function getDBValue($key){
