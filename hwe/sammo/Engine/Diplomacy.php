@@ -148,7 +148,7 @@ class Diplomacy{
             return $prev;
         }
 
-        if(!\sammo\isClose($this->srcNation['nation'], $this->destNation['nation'], false)){
+        if(!\sammo\isNeighbor($this->srcNation['nation'], $this->destNation['nation'], false)){
             return [DiplomaticMessage::DECLINED, '상대국의 도시들과 보급선이 이어지지 않았습니다.'];
         }
 
@@ -160,7 +160,7 @@ class Diplomacy{
             return $prev;
         }
 
-        if(!\sammo\isClose($this->srcNation['nation'], $this->destNation['nation'], true)){
+        if(!\sammo\isNeighbor($this->srcNation['nation'], $this->destNation['nation'], true)){
             return [DiplomaticMessage::DECLINED, '상대국의 도시와 인접하지 않았습니다.'];
         }
 

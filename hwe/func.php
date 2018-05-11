@@ -2579,7 +2579,7 @@ function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
     }
 }
 
-function isClose(int $nation1, int $nation2, bool $includeNoSupply=true) {
+function isNeighbor(int $nation1, int $nation2, bool $includeNoSupply=true) {
     $db = DB::db();
 
     $nation1Cities = [];

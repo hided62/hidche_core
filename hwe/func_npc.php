@@ -479,7 +479,7 @@ function processAI($no) {
                         for($i=0; $i < $nationCount; $i++) {
                             $youNation = MYDB_fetch_array($result);
 
-                            if(isClose($general['nation'], $youNation['nation'])) {
+                            if(isNeighbor($general['nation'], $youNation['nation'])) {
                                 $command = EncodeCommand(0, 0, $youNation['nation'], 62);
                                 $query = "update nation set l12turn0='$command' where nation='{$general['nation']}'";
                                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
