@@ -124,11 +124,11 @@ $(document).ready( function () {
 
 
 $(function($){
-    $.get('terms.1.html').then(function(txt){
+    $.get('../terms.1.html').then(function(txt){
         $('#terms1').html(txt);
     });
 
-    $.get('terms.2.html').then(function(txt){
+    $.get('../terms.2.html').then(function(txt){
         $('#terms2').html(txt);
     });
 });
