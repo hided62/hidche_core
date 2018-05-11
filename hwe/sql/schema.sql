@@ -672,3 +672,17 @@ CREATE TABLE `select_npc_token` (
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=MyISAM;
+
+###################
+# KV storage
+###################
+CREATE TABLE if not exists `storage` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`namespace` VARCHAR(40) NOT NULL,
+	`key` VARCHAR(40) NOT NULL,
+	`value` VARCHAR(100) NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `key` (`namespace`, `key`)
+)
+DEFAULT CHARSET=utf8mb4
+ENGINE=MyISAM;

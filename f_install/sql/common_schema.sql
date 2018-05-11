@@ -57,11 +57,16 @@ CREATE TABLE `member_log` (
 )
 ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `config` (
+###################
+# KV storage
+###################
+CREATE TABLE if not exists `storage` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`key` VARCHAR(50) NOT NULL,
-	`value` VARCHAR(100) NULL DEFAULT NULL,
+	`namespace` VARCHAR(40) NOT NULL,
+	`key` VARCHAR(40) NOT NULL,
+	`value` VARCHAR(100) NOT NULL,
 	PRIMARY KEY (`id`),
-	UNIQUE INDEX `key` (`key`)
+	UNIQUE INDEX `key` (`namespace`, `key`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+DEFAULT CHARSET=utf8mb4
+ENGINE=MyISAM;
