@@ -2,7 +2,6 @@
 DROP TABLE IF EXISTS `system`;
 DROP TABLE IF EXISTS `member`;
 DROP TABLE IF EXISTS `member_log`;
-DROP TABLE IF EXISTS `config`;
 
 -- 시스템 테이블
 -- TODO:장기적으로는 key-value(json) storage 형태로 바꾸는게 나을 듯.

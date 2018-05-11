@@ -1,6 +1,6 @@
 
 var serverAdminTemplate = '\
-<tr class="bg0" data-server_name="<%name%>" data-is_root="<%isRoot%>">\
+<tr class="bg0" data-server_name="<%name%>" data-is_root="<%isRoot%>" data-git-path="<%lastGitPath%>">\
     <th style="color:<%color%>;"><%korName%>(<%name%>)</th>\
     <td><%status%></td>\
     <td><%version%></td>\
@@ -20,7 +20,7 @@ function serverUpdate(caller){
     var server = $tr.data('server_name');
     var isRoot = $tr.data('is_root');
 
-    var target = 'origin/master';
+    var target = $tr.data('gitPath');
 
     if(typeof isRoot !== 'boolean'){
         isRoot = (isRoot != 'false');
