@@ -2,10 +2,12 @@
 namespace sammo;
 
 class KVStorage{
+    private $db = null;
     private $storNamespace;
     private $cacheData = null;
 
-    public function __construct(string $storNamespace, bool $cacheMode=false){
+    public function __construct(\MeekroDB $db, string $storNamespace, bool $cacheMode=false){
+        $this->db = $db;
         $this->storNamespace = $storNamespace;
         if($cacheMode){
             $this->cacheData = [];
@@ -157,9 +159,8 @@ class KVStorage{
     }
 
     private function getDBAll(): array{
-        $db = DB::db();
         $result = [];
-        foreach($db->queryAllLists(
+        foreach($this->db->queryAllLists(
             'SELECT `key`, `value` FROM storage WHERE `namespace`=%s',
             $this->storNamespace
         ) as list($key, $value))
@@ -170,9 +171,8 @@ class KVStorage{
     }
 
     private function getDBValues(array $keys): array{
-        $db = DB::db();
         $result = [];
-        foreach($db->queryAllLists(
+        foreach($this->db->queryAllLists(
             'SELECT `key`, `value` FROM storage WHERE `namespace`=%s AND `key` IN %ls', 
             $this->storNamespace, 
             $keys
@@ -189,8 +189,7 @@ class KVStorage{
     }
 
     private function getDBValue($key){
-        $db = DB::db();
-        $value = $db->queryFirstField(
+        $value = $this->db->queryFirstField(
             'SELECT `value` FROM storage WHERE `namespace`=%s AND `key`=%s',
             $this->storNamespace,
             $key
@@ -205,8 +204,7 @@ class KVStorage{
         if($value === null){
             return $this->deleteDBValue($key);
         }
-        $db = DB::db();
-        $db->insertUpdate('storage', [
+        $this->db->insertUpdate('storage', [
             'namespace'=>$this->storNamespace,
             'key'=>$key,
             'value'=>Json::encode($value)
@@ -215,8 +213,7 @@ class KVStorage{
     }
 
     private function deleteDBValue($key):self{
-        $db = DB::db();
-        $db->delete('storage', [
+        $this->db->delete('storage', [
             'namespace'=>$this->storNamespace,
             'key'=>$key
         ]);
@@ -224,8 +221,7 @@ class KVStorage{
     }
 
     private function resetDBNamespace():self{
-        $db = DB::db();
-        $db->delete('storage', [
+        $this->db->delete('storage', [
             'namespace'=>$this->storNamespace
         ]);
         return $this;
