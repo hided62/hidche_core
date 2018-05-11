@@ -4,7 +4,7 @@ namespace sammo;
 class KVStorage{
     private $storNamespace;
     private $cacheData = null;
-    
+
     public function __construct(string $storNamespace, bool $cacheMode=false){
         $this->storNamespace = $storNamespace;
         if($cacheMode){
@@ -28,6 +28,13 @@ class KVStorage{
             $this->cacheData = [];
         }
         return $this;
+    }
+
+    public function resetValues():self{
+        if($this->cacheData !== null){
+            $this->cacheData = [];
+        }
+        return $this->resetDBNamespace();
     }
 
     public function invalidateCacheValue($key):self{
@@ -212,6 +219,14 @@ class KVStorage{
         $db->delete('storage', [
             'namespace'=>$this->storNamespace,
             'key'=>$key
+        ]);
+        return $this;
+    }
+
+    private function resetDBNamespace():self{
+        $db = DB::db();
+        $db->delete('storage', [
+            'namespace'=>$this->storNamespace
         ]);
         return $this;
     }
