@@ -37,7 +37,7 @@ $userGrade = $session->userGrade;
 <?php if ($userGrade >= 5): ?>
         <!-- 운영자 -->
         <link type="text/css" rel="stylesheet" href='../css/admin_server.css'>
-        <script type="text/javascript" src='../js/admin_server.js'></script>
+        <script type="text/javascript" src='../js/admin_server.js?180512'></script>
 <?php endif; ?>
 
     </head>
