@@ -12,7 +12,7 @@ require(__dir__.'/../vendor/autoload.php');
         <!-- 스타일 -->
         <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
         <?=WebUtil::printCSS('../d_shared/common.css')?>
-        <?=WebUtil::printCSS('../css/admin_member.cs')?>
+        <?=WebUtil::printCSS('../css/admin_member.css')?>
 
         <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
         <?=WebUtil::printJS('../d_shared/common_path.js')?>
