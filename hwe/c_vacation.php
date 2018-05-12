@@ -8,6 +8,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game');
 $connect=$db->get();
 
 $query = "select killturn from game limit 1";

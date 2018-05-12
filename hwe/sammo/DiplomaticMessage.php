@@ -225,6 +225,8 @@ class DiplomaticMessage extends Message{
         
 
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game');
+
         $general = $db->queryFirstRow(
             'SELECT `name`, `level` FROM general WHERE `no`=%i AND nation=%i', 
             $receiverID, 

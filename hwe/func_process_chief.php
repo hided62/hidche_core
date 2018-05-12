@@ -3,6 +3,7 @@ namespace sammo;
 
 function process_23(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $genlog = [];
@@ -105,6 +106,7 @@ function process_23(&$general) {
 
 function process_24(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $genlog = [];
@@ -233,6 +235,7 @@ function process_24(&$general) {
 
 function process_27(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -310,6 +313,7 @@ function process_27(&$general) {
 function process_51(&$general) {
 
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $date = substr($general['turntime'],11,5);
     list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
 
@@ -393,6 +397,7 @@ function process_51(&$general) {
 
 function process_52(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -505,6 +510,7 @@ function process_52(&$general) {
 
 function process_53(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $date = substr($general['turntime'],11,5);
     list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
 
@@ -589,6 +595,7 @@ function process_53(&$general) {
 
 function process_61(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $date = substr($general['turntime'],11,5);
     list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
 
@@ -689,6 +696,7 @@ function process_61(&$general) {
 
 function process_62(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -809,6 +817,7 @@ function process_62(&$general) {
 
 function process_63(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $date = substr($general['turntime'],11,5);
     list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
 
@@ -892,6 +901,7 @@ function process_63(&$general) {
 
 function process_64(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $date = substr($general['turntime'],11,5);
     list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
 
@@ -975,6 +985,7 @@ function process_64(&$general) {
 
 function process_65(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1069,6 +1080,7 @@ function process_65(&$general) {
 
 function process_66(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1159,6 +1171,7 @@ function process_66(&$general) {
 
 function process_67(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1250,6 +1263,7 @@ function process_67(&$general) {
 
 function process_68(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1353,6 +1367,7 @@ function process_68(&$general) {
 
 function process_71(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1459,6 +1474,7 @@ function process_71(&$general) {
 
 function process_72(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1574,6 +1590,7 @@ function process_72(&$general) {
 
 function process_73(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1705,6 +1722,7 @@ function process_73(&$general) {
 
 function process_74(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1849,6 +1867,7 @@ function process_74(&$general) {
 
 function process_75(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1975,6 +1994,7 @@ function process_75(&$general) {
 
 function process_76(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -2194,6 +2214,7 @@ function process_76(&$general) {
 
 function process_77(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -2322,6 +2343,7 @@ function process_77(&$general) {
 
 function process_78(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -2447,6 +2469,7 @@ function process_78(&$general) {
 
 function process_81(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];

@@ -4,6 +4,7 @@ namespace sammo;
 
 function processTournament() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select tournament,phase,tnmt_type,tnmt_auto,tnmt_time,now() as now,TIMESTAMPDIFF(SECOND,tnmt_time,now()) as offset from game limit 1";
@@ -110,6 +111,7 @@ function processTournament() {
 
 function getTournamentTerm() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select tnmt_auto from game limit 1";
@@ -131,6 +133,7 @@ function getTournamentTerm() {
 
 function getTournamentTime() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select tournament,tnmt_time from game limit 1";
@@ -231,6 +234,7 @@ function printFighting($tournament, $phase) {
 
 function startTournament($auto, $type) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     eraseTnmtFightLogAll();
@@ -269,6 +273,7 @@ function startTournament($auto, $type) {
 
 function fillLowGenAll() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $general = [];
@@ -376,6 +381,7 @@ function getTwo($tournament, $phase) {
 
 function qualify($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $cand = getTwo($tnmt, $phase);
@@ -416,6 +422,7 @@ function qualifyAll($tnmt_type, $tnmt, $phase) {
 
 function selection($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     //시드1 배정
@@ -465,6 +472,7 @@ function selectionAll($tnmt_type, $tnmt, $phase) {
 
 function finallySingle($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $cand = getTwo($tnmt, $phase);
@@ -505,6 +513,7 @@ function finallyAll($tnmt_type, $tnmt, $phase) {
 
 function final16set() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     //1조1-5조2, 2조1-6조2, 3조1-7조2, 4조1-8조2, 5조1-1조2, 6조1-2조2, 7조1-3조2, 8조1-4조2
@@ -529,6 +538,7 @@ function final16set() {
 
 function finalFight($tnmt_type, $tnmt, $phase, $type) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     switch($type) {
@@ -561,6 +571,7 @@ function finalFight($tnmt_type, $tnmt, $phase, $type) {
 
 function setGift($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select year,month,develcost from game limit 1";
@@ -715,6 +726,7 @@ function setGift($tnmt_type, $tnmt, $phase) {
 
 function setRefund() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select develcost from game limit 1";

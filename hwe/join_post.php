@@ -66,6 +66,7 @@ if (!$member) {
 }
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game');
 ########## 동일 정보 존재여부 확인. ##########
 
 $admin = $db->queryFirstRow('SELECT year,month,maxgeneral,scenario,show_img_level,turnterm,genius,npcmode from game limit 1');

@@ -67,6 +67,7 @@ myCommandList();
 
 function myCommandList() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
     $userID = Session::getUserID();
 

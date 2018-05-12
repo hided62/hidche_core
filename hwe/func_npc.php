@@ -165,6 +165,7 @@ function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city
 
 function processAI($no) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select startyear,year,month,turnterm,scenario,gold_rate,rice_rate from game limit 1";
@@ -1045,6 +1046,7 @@ function processAI($no) {
 
 function Promotion($nation, $level) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $lv = getNationChiefLevel($level);

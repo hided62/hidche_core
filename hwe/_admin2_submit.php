@@ -22,6 +22,7 @@ if(!$generalID){
 }
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game');
 $connect=$db->get();
 
 $src = MessageTarget::buildQuick($session->generalID);

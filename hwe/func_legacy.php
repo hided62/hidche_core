@@ -106,6 +106,7 @@ function printCitiesBasedOnDistance(int $cityNo, int $maxDistance=1) {
 
 function info($type=0) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select year,month,turnterm,maxgeneral from game limit 1";

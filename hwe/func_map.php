@@ -54,6 +54,7 @@ function getWorldMap($req){
     $userID = $session->userID;
 
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
 
     $game = $db->queryFirstRow('select `startyear`, `year`, `month` from `game` where `no` = 1');
     $startYear = Util::toInt($game['startyear']);

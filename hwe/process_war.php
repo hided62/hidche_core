@@ -6,6 +6,7 @@ function processWar($general, $city) {
     '@phan-var array<string,int|string|null> $general';
 
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $templates = new \League\Plates\Engine('templates');
@@ -1634,6 +1635,7 @@ function getRate($game, $type, $dtype) {
 
 function addConflict($city, $nationID, $mykillnum) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
 
     $nationlist = [];
     $killnum = [0];

@@ -10,6 +10,7 @@ $userID = Session::getUserID();
 increaseRefresh("메인", 1);
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game');
 $connect=$db->get();
 
 if (!$userID) {

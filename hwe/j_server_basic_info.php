@@ -17,6 +17,7 @@ if(!class_exists('\\sammo\\DB')){
 }
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game');
 
 if(file_exists(__dir__.'/.htaccess')){
     $reserved = $db->queryFirstRow(

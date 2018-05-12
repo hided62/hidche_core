@@ -66,6 +66,8 @@ function CoreTurnTable() {
 
 
 function allButton() {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $npcmode = DB::db()->queryFirstField("select npcmode from game limit 1");
     if($npcmode == 1) {
         $site = "a_npcList.php";

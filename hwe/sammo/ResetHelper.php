@@ -89,7 +89,7 @@ class ResetHelper{
             }
         }
 
-        
+        (KVStorage::getStorage($db, 'game'))->resetValues();
 
         return [
             'result'=>true

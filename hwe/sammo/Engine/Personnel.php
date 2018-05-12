@@ -21,6 +21,7 @@ class Personnel{
 
     public function __construct(int $nationID, int $senderID){
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game');
         $nation = $db->queryFirstRow(
             'SELECT nation, `name`, `level`, capital, scout FROM nation WHERE nation=%i',
             $nationID

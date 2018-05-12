@@ -341,6 +341,7 @@ function updateQuaterly() {
 // 벌점 감소와 건국제한-1 전턴제한-1 외교제한-1, 1달마다 실행, 병사 있는 장수의 군량 감소, 수입비율 조정
 function preUpdateMonthly() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     //연감 월결산
@@ -493,6 +494,7 @@ function preUpdateMonthly() {
 // 외교 로그처리, 외교 상태 처리
 function postUpdateMonthly() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select startyear,year,month,scenario from game limit 1";
@@ -647,6 +649,7 @@ group by A.nation
 
 function checkWander() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select year,month from game limit 1";
@@ -678,6 +681,7 @@ function checkWander() {
 
 function checkMerge() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $mylog = [];
@@ -800,6 +804,7 @@ function checkMerge() {
 
 function checkSurrender() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select year,month from game limit 1";
@@ -924,6 +929,7 @@ function checkSurrender() {
 
 function updateNationState() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $history = array();
@@ -1005,6 +1011,7 @@ function updateNationState() {
 
 function checkStatistic() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select year,month from game limit 1";
@@ -1161,6 +1168,7 @@ function checkStatistic() {
 
 function checkEmperior() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $query = "select year,month,isUnited from game limit 1";

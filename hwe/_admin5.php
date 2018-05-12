@@ -39,6 +39,7 @@ if($session->userGrade < 5) {
 }
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game');
 $connect=$db->get();
 
 $sel = [];

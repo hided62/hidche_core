@@ -2,16 +2,28 @@
 namespace sammo;
 
 class KVStorage{
-    private $db = null;
+    private $db;
+    private $tableName;
     private $storNamespace;
     private $cacheData = null;
 
-    public function __construct(\MeekroDB $db, string $storNamespace, bool $cacheMode=false){
+    static private $storageList = [];
+
+    static public function getStorage(\MeekroDB $db, string $storNamespace, string $tableName='storage'):self{
+        $obj_id = spl_object_hash($db);
+        $fullKey = $obj_id.','.$storNamespace.','.$tableName;
+        if(key_exists($fullKey, static::$storageList)){
+            return static::$storageList[$fullKey];
+        }
+        $obj = new static($db, $storNamespace, $tableName);
+        static::$storageList[$fullKey] = $obj;
+        return $obj;
+    }
+
+    public function __construct(\MeekroDB $db, string $storNamespace, string $tableName='storage'){
         $this->db = $db;
         $this->storNamespace = $storNamespace;
-        if($cacheMode){
-            $this->cacheData = [];
-        }
+        $this->tableName = $tableName;
     }
 
     public function __get($key) {
@@ -24,6 +36,13 @@ class KVStorage{
 
     public function __unset($key){
         $this->deleteValue($key);
+    }
+
+    public function turnOnCache(): self{
+        if($this->cacheData === null){
+            $this->cacheData = [];
+        }
+        return $this;
     }
 
     public function resetCache(bool $disableCache=true):self{
@@ -66,17 +85,36 @@ class KVStorage{
         return $this;
     }
 
-    public function cacheAll():self{
+    public function cacheAll(bool $invalidateAll=true):self{
+        if(!$invalidateAll && $this->cacheData !== null && count($this->cacheData)>0){
+            return $this;
+        }
         $this->cacheData = $this->getDBAll();
         return $this;
     }
 
-    public function cacheValues(array $keys):self{
+    public function cacheValues(array $keys, bool $invalidateAll=false):self{
         if($this->cacheData === null){
             $this->cacheData = [];
         }
-        $values = $this->getDBValues($keys);
-        foreach($keys as $key){
+
+        if($invalidateAll){
+            $notExists = $keys;
+        }
+        else{
+            $notExists = [];
+            foreach($keys as $key){
+                if(!key_exists($key, $this->cacheData)){
+                    $notExists[] = $key;
+                }
+            }
+            if(!$notExists){
+                return $this;
+            }
+        }
+
+        $values = $this->getDBValues($notExists);
+        foreach($notExists as $key){
             if(key_exists($key, $values)){
                 $this->cacheData[$key] = $values[$key];
             }
@@ -95,6 +133,15 @@ class KVStorage{
         $result = $this->getDBAll();
         if($this->cacheData !== null){
             $this->cacheData = $result;
+        }
+        return $result;
+    }
+
+    public function getValuesAsArray(array $keys, bool $onlyCache=false): array{
+        $dictResult = $this->getValues($keys, $onlyCache);
+        $result = [];
+        foreach($keys as $key){
+            $result[] = $dictResult[$key]??null;
         }
         return $result;
     }
@@ -165,7 +212,8 @@ class KVStorage{
     private function getDBAll(): array{
         $result = [];
         foreach($this->db->queryAllLists(
-            'SELECT `key`, `value` FROM storage WHERE `namespace`=%s',
+            'SELECT `key`, `value` FROM %b WHERE `namespace`=%s',
+            $this->tableName,
             $this->storNamespace
         ) as list($key, $value))
         {
@@ -177,7 +225,8 @@ class KVStorage{
     private function getDBValues(array $keys): array{
         $result = [];
         foreach($this->db->queryAllLists(
-            'SELECT `key`, `value` FROM storage WHERE `namespace`=%s AND `key` IN %ls', 
+            'SELECT `key`, `value` FROM %b WHERE `namespace`=%s AND `key` IN %ls', 
+            $this->tableName,
             $this->storNamespace, 
             $keys
         ) as list($key, $value))
@@ -194,7 +243,8 @@ class KVStorage{
 
     private function getDBValue($key){
         $value = $this->db->queryFirstField(
-            'SELECT `value` FROM storage WHERE `namespace`=%s AND `key`=%s',
+            'SELECT `value` FROM %b WHERE `namespace`=%s AND `key`=%s',
+            $this->tableName,
             $this->storNamespace,
             $key
         );
@@ -208,7 +258,7 @@ class KVStorage{
         if($value === null){
             return $this->deleteDBValue($key);
         }
-        $this->db->insertUpdate('storage', [
+        $this->db->insertUpdate($this->tableName, [
             'namespace'=>$this->storNamespace,
             'key'=>$key,
             'value'=>Json::encode($value)
@@ -217,7 +267,7 @@ class KVStorage{
     }
 
     private function deleteDBValue($key):self{
-        $this->db->delete('storage', [
+        $this->db->delete($this->tableName, [
             'namespace'=>$this->storNamespace,
             'key'=>$key
         ]);
@@ -225,7 +275,7 @@ class KVStorage{
     }
 
     private function resetDBNamespace():self{
-        $this->db->delete('storage', [
+        $this->db->delete($this->tableName, [
             'namespace'=>$this->storNamespace
         ]);
         return $this;

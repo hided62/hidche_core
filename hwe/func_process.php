@@ -187,6 +187,7 @@ function CriticalScore($score, $type) {
 
 function process_1(&$general, $type) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -288,6 +289,7 @@ function process_1(&$general, $type) {
 
 function process_3(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -388,6 +390,7 @@ function process_3(&$general) {
 
 function process_4(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -479,6 +482,7 @@ function process_4(&$general) {
 
 function process_5(&$general, $type) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -580,6 +584,7 @@ function process_5(&$general, $type) {
 
 function process_7(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -671,6 +676,7 @@ function process_7(&$general) {
 
 function process_8(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -770,6 +776,7 @@ function process_8(&$general) {
 
 function process_9(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -860,6 +867,7 @@ function process_9(&$general) {
 
 function process_11(&$general, $type) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1046,6 +1054,7 @@ function process_11(&$general, $type) {
 
 function process_13(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1115,6 +1124,7 @@ function process_13(&$general) {
 
 function process_14(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1177,6 +1187,7 @@ function process_14(&$general) {
 
 function process_15(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1250,6 +1261,7 @@ function process_15(&$general) {
 
 function process_16(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1343,6 +1355,7 @@ function process_16(&$general) {
 
 function process_17(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1384,6 +1397,7 @@ function process_17(&$general) {
 
 function process_21(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1445,6 +1459,7 @@ function process_21(&$general) {
 
 function process_26(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1511,6 +1526,7 @@ function process_26(&$general) {
 
 function process_28(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1577,6 +1593,7 @@ function process_28(&$general) {
 
 function process_30(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1645,6 +1662,7 @@ function process_30(&$general) {
 
 function process_31(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1786,6 +1804,7 @@ function process_31(&$general) {
 
 function process_41(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -1855,6 +1874,7 @@ function process_41(&$general) {
 
 function process_42(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -2076,6 +2096,7 @@ function process_42(&$general) {
 
 function process_43(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $genlog = [];
@@ -2167,6 +2188,7 @@ function process_43(&$general) {
 
 function process_44(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -2258,6 +2280,7 @@ function process_44(&$general) {
 
 function process_48(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -2366,6 +2389,7 @@ function process_48(&$general) {
 
 function process_49(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -2503,6 +2527,7 @@ function process_49(&$general) {
 
 function process_50(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -2530,6 +2555,7 @@ function process_50(&$general) {
 
 function process_99(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];

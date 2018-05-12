@@ -4,6 +4,7 @@ namespace sammo;
 
 function process_32(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -129,6 +130,7 @@ function process_32(&$general) {
 
 function process_33(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -281,6 +283,7 @@ function process_33(&$general) {
 
 function process_34(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];
@@ -407,6 +410,7 @@ function process_34(&$general) {
 
 function process_35(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game');
     $connect=$db->get();
 
     $log = [];

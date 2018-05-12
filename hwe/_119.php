@@ -25,6 +25,7 @@ if($session->userGrade < 4) {
 }
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game');
 $connect=$db->get();
 
 $query = "select turntime,tnmt_time from game";

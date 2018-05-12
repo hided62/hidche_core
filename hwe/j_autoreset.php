@@ -5,7 +5,7 @@ include 'lib.php';
 include "func.php";
 
 $db = DB::db();
-
+$gameStor = KVStorage::getStorage($db, 'game');
 $reserved = $db->queryFirstRow('SELECT `date`, options FROM reserved_open ORDER BY `date` ASC LIMIT 1');
 
 if(!$reserved){

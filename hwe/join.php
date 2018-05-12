@@ -23,6 +23,7 @@ if (!$member) {
 }
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game');
 $connect=$db->get();
 
 ?>

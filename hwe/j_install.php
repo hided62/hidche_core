@@ -51,8 +51,8 @@ $reserve_open = Util::getReq('reserve_open');
 if($reserve_open){
     $reserve_open = new \DateTime($reserve_open);
     $db = DB::db();
-
-    if (!$db->queryFirstField("SHOW TABLES LIKE 'game'")) {
+    
+    if (!$db->queryFirstField("SHOW TABLES LIKE 'storage'")) {
         $clearResult = ResetHelper::clearDB();
         if(!$clearResult['result']){
             Json::die($clearResult);
