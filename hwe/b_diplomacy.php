@@ -184,8 +184,8 @@ for($i=0; $i < $nationcount; $i++) {
     <?php foreach($realConflict as list($cityID, $cityName, $conflict)): ?>
     <tr>
         <td align=center width=48><?=$cityName?></td>
-        <td width=948>
-            <table class='tb_layout bg0'>
+        <td style='width:948px;position:relative;'>
+            <table class='tb_layout bg0' style='width:100%;'>
             <?php foreach($conflict as $item): ?>
                 <tr>
                     <td 
