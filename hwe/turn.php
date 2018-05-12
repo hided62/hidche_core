@@ -24,9 +24,8 @@ $connect=$db->get();
 increaseRefresh("턴반복", 1);
 
 $myActionCnt = $db->queryFirstField('SELECT con FROM general WHERE `owner`=%i', $userID);
-$conLimit = $db->queryFirstField('SELECT conlimit FROM game LIMIT 1');
 
-$con = checkLimit($myActionCnt, $conLimit);
+$con = checkLimit($myActionCnt);
 if($con >= 2) { 
     header('location:commandlist.php');
     exit();

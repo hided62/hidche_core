@@ -13,9 +13,7 @@ function process_23(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -115,9 +113,7 @@ function process_24(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,scenario,startyear from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','scenario','startyear']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -252,9 +248,7 @@ function process_27(&$general) {
     $who = $command[2];
     $where = $command[1];
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -315,7 +309,7 @@ function process_51(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $date = substr($general['turntime'],11,5);
-    list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
+    list($year, $month, $turnterm) = $gameStor->getValuesAsArray(['year','month','turnterm']);
 
     if($general['level'] < 5 || $general['nation']==0) {
         pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 권고 실패. <1>$date</>"]);
@@ -406,9 +400,7 @@ function process_52(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -512,7 +504,7 @@ function process_53(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $date = substr($general['turntime'],11,5);
-    list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
+    list($year, $month, $turnterm) = $gameStor->getValuesAsArray(['year','month','turnterm']);
 
     if($general['level'] < 5 || $general['nation']==0) {
         pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
@@ -597,7 +589,7 @@ function process_61(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $date = substr($general['turntime'],11,5);
-    list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
+    list($year, $month, $turnterm) = $gameStor->getValuesAsArray(['year','month','turnterm']);
 
     if($general['level'] < 5 || $general['nation']==0) {
         pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
@@ -704,9 +696,7 @@ function process_62(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','startyear']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -819,7 +809,7 @@ function process_63(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $date = substr($general['turntime'],11,5);
-    list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
+    list($year, $month, $turnterm) = $gameStor->getValuesAsArray(['year','month','turnterm']);
 
     if($general['level'] < 5 || $general['nation']==0) {
         pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
@@ -993,9 +983,7 @@ function process_65(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1089,9 +1077,7 @@ function process_66(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1180,9 +1166,7 @@ function process_67(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1272,9 +1256,7 @@ function process_68(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1377,9 +1359,7 @@ function process_71(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1484,9 +1464,7 @@ function process_72(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1600,9 +1578,7 @@ function process_73(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1732,9 +1708,7 @@ function process_74(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1877,9 +1851,7 @@ function process_75(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2004,9 +1976,7 @@ function process_76(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost,npccount,turnterm from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear','year','month','develcost','npccount','turnterm']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2224,9 +2194,7 @@ function process_77(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2353,9 +2321,7 @@ function process_78(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2478,9 +2444,7 @@ function process_81(&$general) {
     
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month']);
 
     $query = "select nation from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

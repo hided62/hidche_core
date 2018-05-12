@@ -24,9 +24,7 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
-$query = "select tournament,phase,tnmt_type,develcost from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['tournament','phase','tnmt_type','develcost']);
 
 $query = "select no,name,tournament from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -94,15 +92,13 @@ if($session->userGrade < 5) {
 }
 
 if($btn == "자동개최설정") {
-    $db->update('game', ['tnmt_trig'=>$trig], true);
+    $gameStor->tnmt_trig = $trig;
 } elseif($btn == "개최") {
     startTournament($auto, $type);
 } elseif($btn == "중단") {
-    $db->update('game', [
-        'tnmt_auto'=>0,
-        'tournament'=>0,
-        'phase'=>0
-    ], true);
+    $gameStor->tnmt_auto = 0;
+    $gameStor->tournament = 0;
+    $gameStor->phase = 0;
 } elseif($btn == "투입" || $btn == "무명투입" || $btn == "쪼렙투입" || $btn == "일반투입" || $btn == "굇수투입" || $btn == "랜덤투입") {
     if($btn == "투입") {
         $query = "select no,name,npc,leader,power,intel,explevel,gold,horse,weap,book from general where no='$gen'";

@@ -47,7 +47,9 @@ if(file_exists(__dir__.'/.htaccess')){
 
 //TODO: 천통시에도 예약 오픈 알림이 필요..?
 
-$game = $db->queryFirstRow('SELECT isUnited, npcMode, year, month, scenario, scenario_text, maxgeneral as maxUserCnt, turnTerm from game where `no`=1');
+$game = $gameStor->getValues(['isUnited', 'npcMode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnTerm']);
+$game['maxUserCnt'] = $game['maxgeneral'];
+unset($game['maxgeneral']);
 
 $nationCnt = $db->queryFirstField('SELECT count(`nation`) from nation where `level` > 0');
 $genCnt = $db->queryFirstField('SELECT count(`no`) from general where `npc` < 2');

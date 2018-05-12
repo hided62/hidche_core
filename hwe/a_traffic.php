@@ -10,9 +10,7 @@ $connect=$db->get();
 
 increaseRefresh("갱신정보", 2);
 
-$query = "select year,month,refresh,maxrefresh,maxonline from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$game = MYDB_fetch_array($result);
+$game_env = $gameStor->getValues(['year','month','refresh','maxrefresh','maxonline']);
 
 $log = getRawFileLogRecent(__dir__.'/logs/_traffic.txt', 11, 100);
 
@@ -31,21 +29,21 @@ foreach($log as $i=>$value){
     $refresh[$i] = $parse[3];
     $online[$i]  = $parse[4];
 }
-$year[] = $game['year'];
-$month[] = $game['month'];
+$year[] = $game_env['year'];
+$month[] = $game_env['month'];
 $date[] = date('Y-m-d H:i:s');
 
-if ($game['maxrefresh'] == 0) {
-    $game['maxrefresh'] = 1;
+if ($game_env['maxrefresh'] == 0) {
+    $game_env['maxrefresh'] = 1;
 }
-if ($game['maxrefresh'] < $game['refresh']) {
-    $game['maxrefresh'] = $game['refresh'];
+if ($game_env['maxrefresh'] < $game_env['refresh']) {
+    $game_env['maxrefresh'] = $game_env['refresh'];
 }
-if ($game['maxonline'] == 0) {
-    $game['maxonline'] = 1;
+if ($game_env['maxonline'] == 0) {
+    $game_env['maxonline'] = 1;
 }
-if ($game['maxonline'] < $curonline) {
-    $game['maxonline'] = $curonline;
+if ($game_env['maxonline'] < $curonline) {
+    $game_env['maxonline'] = $curonline;
 }
 ?>
 <!DOCTYPE html>
@@ -91,9 +89,9 @@ span.out_bar{
         <table align=center class='tb_layout bg0'>
             <tr><td colspan=4 align=center id=bg2><font size=5>접 속 량</font></td></tr>
 <?php
-$refresh[] = $game['refresh'];
+$refresh[] = $game_env['refresh'];
 foreach($refresh as $i=>$value){
-    $w = round($value / $game['maxrefresh'] * 100, 1);
+    $w = round($value / $game_env['maxrefresh'] * 100, 1);
     $color = getTrafficColor($w);
     $dt = substr($date[$i], 11, 5); ?>
             <tr height=30>
@@ -116,7 +114,7 @@ foreach($refresh as $i=>$value){
 ?>
             <tr><td colspan=4 height=5 align=center id=bg1></td></tr>
             <tr>
-                <td colspan=4 height=30 align=center id=bg0>최고기록: <?=$game['maxrefresh']?></td>
+                <td colspan=4 height=30 align=center id=bg0>최고기록: <?=$game_env['maxrefresh']?></td>
             </tr>
 
 
@@ -128,7 +126,7 @@ foreach($refresh as $i=>$value){
 <?php
 $online[] = $curonline;
 foreach($online as $i=>$value){
-    $w = round($value / $game['maxonline'] * 100, 1);
+    $w = round($value / $game_env['maxonline'] * 100, 1);
     $color = getTrafficColor($w);
     $dt = substr($date[$i], 11, 5); ?>
             <tr height=30>
@@ -151,7 +149,7 @@ foreach($online as $i=>$value){
 ?>
             <tr><td colspan=4 height=5 align=center id=bg1></td></tr>
             <tr>
-                <td colspan=4 height=30 align=center id=bg0>최고기록: <?=$game['maxonline']?></td>
+                <td colspan=4 height=30 align=center id=bg0>최고기록: <?=$game_env['maxonline']?></td>
             </tr>
         </table>
     </td></tr>

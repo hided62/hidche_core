@@ -18,15 +18,11 @@ $connect=$db->get();
 
 increaseRefresh("명장일람", 2);
 
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
-
 $query = "select con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
     exit();
@@ -102,6 +98,7 @@ for ($i=0; $i < 21; $i++) {
     $color = [];
     $pic = [];
 
+    //FIXME: 쿼리에 index를 사용할 수 없는 녀석들이 있다. 그냥 모두 받아서 일괄 처리하는게 더 나을 수도 있음.
     switch ($i) {
     case  0: $query = "select nation,no,name,picture,imgsvr,experience as data from general where $sel order by data desc limit 0,10"; break;
     case  1: $query = "select nation,no,name,picture,imgsvr,dedication as data from general where $sel order by data desc limit 0,10"; break;

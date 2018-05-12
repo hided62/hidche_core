@@ -39,7 +39,6 @@ if($session->userGrade < 5) {
 }
 
 $db = DB::db();
-$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 $sel = [];
@@ -47,9 +46,6 @@ $sel2 = [];
 $sel[$type] = "selected";
 $sel2[$type2] = "selected";
 
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
 ?>
 <!DOCTYPE html>
 <html>

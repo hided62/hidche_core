@@ -60,9 +60,8 @@ if($betGold + 500 <= $myGold && $betGold + $oldBet <= 1000 && $betGold + $totalB
         "bet{$betTarget}"=>$db->sqleval("bet{$betTarget} + %i", $betGold),
         'betgold'=>$db->sqleval('betgold + %i', $betGold)
     ], 'owner = %i', $userID);
-    $db->update('game', [
-        "bet{$betTarget}"=>$db->sqleval("bet{$betTarget} + %i", $betGold)
-    ], true);
+
+    $gameStor->setValue("bet{$betTarget}", $gameStor->getValue("bet{$betTarget}") + $betGold);//TODO: +로 증가하는 storage값은 별도로 분리
 }
 
 header('location: b_betting.php');

@@ -22,10 +22,8 @@ $now = new \DateTime();
 
 $status = 'not_yet';
 
-if ($db->queryFirstField("SHOW TABLES LIKE 'game'")) {
-    list($isUnited, $lastTurn) = $db->queryFirstList('SELECT isUnited, turntime FROM game LIMIT 1');
-}
-else{
+list($isUnited, $lastTurn) = $gameStor->getValues(['isUnited', 'turntime']);
+if($isUnited === null || $lastTurn === null){
     $isUnited = 2;
     $lastTurn = '2000-01-01';
 }

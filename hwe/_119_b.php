@@ -28,32 +28,50 @@ extractMissingPostToGlobals();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
-
 switch($btn) {
 case "분당김":
-    $query = "update game set turntime=DATE_SUB(turntime, INTERVAL $minute MINUTE),starttime=DATE_SUB(starttime, INTERVAL $minute MINUTE),tnmt_time=DATE_SUB(tnmt_time, INTERVAL $minute MINUTE)";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update general set turntime=DATE_SUB(turntime, INTERVAL $minute MINUTE)";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update auction set expire=DATE_SUB(expire, INTERVAL $minute MINUTE)";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->cacheValues('turntime', 'starttime', 'tnmt_time');
+    $turntime = (new \DateTimeImmutable($gameStor->turntime))->sub(new \DateInterval("PT{$minute}M"));
+    $starttime = (new \DateTimeImmutable($gameStor->starttime))->sub(new \DateInterval("PT{$minute}M"));
+    $tnmt_time = (new \DateTimeImmutable($gameStor->tnmt_time))->sub(new \DateInterval("PT{$minute}M"));
+
+    $gameStor->turntime = $turntime->format('Y-m-d H:i:s');
+    $gameStor->starttime = $starttime->format('Y-m-d H:i:s');
+    $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
+
+    $db->update('general', [
+        'turntime'=>$db->sqleval('DATE_ADD(turntime, INTERVAL %i MINUTE)', $minute)
+    ], true);
+    $db->update('auction', [
+        'expire'=>$db->sqleval('DATE_ADD(expire, INTERVAL %i MINUTE)', $minute)
+    ], true);
     break;
 case "분지연":
-    $query = "update game set turntime=DATE_ADD(turntime, INTERVAL $minute MINUTE),starttime=DATE_ADD(starttime, INTERVAL $minute MINUTE),tnmt_time=DATE_ADD(tnmt_time, INTERVAL $minute MINUTE)";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update general set turntime=DATE_ADD(turntime, INTERVAL $minute MINUTE)";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "update auction set expire=DATE_ADD(expire, INTERVAL $minute MINUTE)";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->cacheValues('turntime', 'starttime', 'tnmt_time');
+    $turntime = (new \DateTimeImmutable($gameStor->turntime))->add(new \DateInterval("PT{$minute}M"));
+    $starttime = (new \DateTimeImmutable($gameStor->starttime))->add(new \DateInterval("PT{$minute}M"));
+    $tnmt_time = (new \DateTimeImmutable($gameStor->tnmt_time))->add(new \DateInterval("PT{$minute}M"));
+
+    $gameStor->turntime = $turntime->format('Y-m-d H:i:s');
+    $gameStor->starttime = $starttime->format('Y-m-d H:i:s');
+    $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
+
+    $db->update('general', [
+        'turntime'=>$db->sqleval('DATE_ADD(turntime, INTERVAL %i MINUTE)', $minute)
+    ], true);
+    $db->update('auction', [
+        'expire'=>$db->sqleval('DATE_ADD(expire, INTERVAL %i MINUTE)', $minute)
+    ], true);
     break;
 case "토너분당김":
-    $query = "update game set tnmt_time=DATE_SUB(tnmt_time, INTERVAL $minute2 MINUTE)";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $tnmt_time = new \DateTime($gameStor->tnmt_time);
+    $tnmt_time->sub(new \DateInterval("PT{$minute2}M"));
+    $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
     break;
 case "토너분지연":
-    $query = "update game set tnmt_time=DATE_ADD(tnmt_time, INTERVAL $minute2 MINUTE)";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $tnmt_time = new \DateTimeImmutable($gameStor->tnmt_time);
+    $tnmt_time->add(new \DateInterval("PT{$minute2}M"));
+    $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
     break;
 case "금지급":
     processGoldIncome();
@@ -62,12 +80,10 @@ case "쌀지급":
     processRiceIncome();
     break;
 case "락걸기":
-    $query = "update plock set plock=1";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('plock', ['plock'=>1], true);
     break;
 case "락풀기":
-    $query = "update plock set plock=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('plock', ['plock'=>0], true);
     break;
 }
 

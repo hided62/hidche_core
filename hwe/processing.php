@@ -198,9 +198,6 @@ function command_11($turn, $command) {
     $userID = Session::getUserID();
 
     starter("징병");
-    $query = "select * from game limit 1";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
 
     $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
@@ -220,7 +217,7 @@ function command_11($turn, $command) {
 
     $ownCities = [];
     $ownRegions = [];
-    $relativeYear = $admin['year'] - $admin['startyear'];
+    $relativeYear = $gameStor->year - $gameStor->startyear;
     $tech = $nation['tech'];
 
     foreach(DB::db()->query('SELECT city, region from city where nation = %i', $me['nation']) as $city){
@@ -359,7 +356,7 @@ function calc(cost, formnum) {
         $speed = $unit->speed;
         $avoid = $unit->avoid;
         $weapImage = ServConfig::$gameImagePath."/weap{$i}.png";
-        if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
+        if($gameStor->show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
         $baseCostShort = round($baseCost, 1);
@@ -407,9 +404,6 @@ function command_12($turn, $command) {
     $userID = Session::getUserID();
 
     starter("모병");
-    $query = "select * from game limit 1";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
 
     $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
@@ -429,7 +423,7 @@ function command_12($turn, $command) {
 
     $ownCities = [];
     $ownRegions = [];
-    $relativeYear = $admin['year'] - $admin['startyear'];
+    $relativeYear = $gameStor->year - $gameStor->startyear;
     $tech = $nation['tech'];
 
     foreach(DB::db()->query('SELECT city, region from city where nation = %i', $me['nation']) as $city){
@@ -570,7 +564,7 @@ function calc(cost, formnum) {
         $speed = $unit->speed;
         $avoid = $unit->avoid;
         $weapImage = ServConfig::$gameImagePath."/weap{$i}.png";
-        if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
+        if($gameStor->show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
         $baseCostShort = round($baseCost, 1);
@@ -969,10 +963,6 @@ function command_25($turn, $command) {
 
     starter("임관");
 
-    $query = "select startyear,year from game limit 1";
-    $result = MYDB_query($query, $connect) or Error("command_46 ".MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
     $query = "select no,nations from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error("command_27 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
@@ -1005,7 +995,7 @@ function command_25($turn, $command) {
             $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=900 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>".$nation['scoutmsg']."</td></tr>";
         }
 
-        if($admin['year'] < $admin['startyear']+3 && $nation['gennum'] >= 10) {
+        if($gameStor->year < $gameStor->startyear+3 && $nation['gennum'] >= 10) {
             echo "
     <option value={$nation['nation']} style=color:{$nation['color']};background-color:red;>【 {$nation['name']} 】</option>";
         } elseif($nation['scout'] == 1) {

@@ -68,7 +68,7 @@ function CoreTurnTable() {
 function allButton() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $npcmode = DB::db()->queryFirstField("select npcmode from game limit 1");
+    $npcmode = $gameStor->npcmode;
     if($npcmode == 1) {
         $site = "a_npcList.php";
         $call = "빙의일람";

@@ -22,7 +22,7 @@ $query = "select conlimit,tournament,phase,tnmt_type,develcost,bet0,bet1,bet2,be
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $admin = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
     exit();

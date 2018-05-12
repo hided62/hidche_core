@@ -89,7 +89,7 @@ function GetImageURL($imgsvr, $filepath='') {
  * @param null|int $con 장수의 벌점
  * @param null|int $conlimit 최대 벌점
  */
-function checkLimit($con = null, $conlimit = null) {
+function checkLimit($con = null) {
     $session = Session::getInstance();
     if($session->userGrade>=4){
         return 0;
@@ -101,9 +101,7 @@ function checkLimit($con = null, $conlimit = null) {
     if($con === null){
         $con = $db->queryFirstField('SELECT con FROM general WHERE `owner`=%i', Session::getUserID());
     }
-    if($conlimit === null){
-        $conlimit = $db->queryFirstField('SELECT conlimit FROM game LIMIT 1');
-    }
+    $conlimit = $gameStor->conlimit;
 
     if($con > $conlimit) {
         return 2;
@@ -1101,7 +1099,7 @@ function adminMsg() {
 }
 
 function getOnlineNum() {
-    return DB::db()->queryFirstField('select `online` from `game` where `no`=1');
+    return KVStorage::getStorage(DB::db(), 'game_env')->online;
 }
 
 function onlinegen() {
@@ -1277,9 +1275,7 @@ function increaseRefresh($type="", $cnt=1) {
 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $db->update('game', [
-        'refresh'=>$db->sqleval('refresh+%i', $cnt)
-    ], true);
+    $gameStor->refresh = $gameStor->refresh+$cnt; //TODO: +로 증가하는 값은 별도로 분리
 
     if($generalID) {
         $db->update('general', [
@@ -1348,7 +1344,7 @@ function updateTraffic() {
     $online = getOnlineNum();
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $game = $db->queryFirstRow('SELECT year,month,refresh,maxonline,maxrefresh from game limit 1');
+    $game = $gameStor->getValues(['year','month','refresh','maxonline','maxrefresh']);
 
     //최다갱신자
     $user = $db->queryFirstRow('select name,refresh from general order by refresh desc limit 1');
@@ -1359,11 +1355,9 @@ function updateTraffic() {
     if($game['maxonline'] < $online) {
         $game['maxonline'] = $online;
     }
-    $db->update('game',[
-        'refresh'=>0,
-        'maxrefresh'=>$game['maxrefresh'],
-        'maxonline'=>$game['maxonline']
-    ], true);
+    $gameStor->refresh = 0;
+    $gameStor->maxrefresh = $game['maxrefresh'];
+    $gameStor->maxonline = $game['maxonline'];
 
     $db->update('general', ['refresh'=>0], true);
 
@@ -1447,14 +1441,14 @@ function timeover() {
 function checkDelay() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     //서버정보
-    $query = "select turnterm,now() as now,TIMESTAMPDIFF(MINUTE,turntime,now()) as offset from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $now = new \DateTimeImmutable();
+    $turntime = new \DateTimeImmutable($gameStor->turntime);
+    $timeMinDiff = intdiv($now->getTimestamp() - $turntime->getTimestamp(), 60);
+    
     // 1턴이상 갱신 없었으면 서버 지연
-    $term = $admin['turnterm'];
+    $term = $gameStor->turnterm;
     if($term >= 20){
         $threshold = 1;
     }
@@ -1465,15 +1459,19 @@ function checkDelay() {
         $threshold = 3;
     }
     //지연 해야할 밀린 턴 횟수
-    $iter = intdiv($admin['offset'], $term);
+    $iter = intdiv($timeMinDiff, $term);
     if($iter > $threshold) {
         $minute = $iter * $term;
-        $query = "update game set turntime=DATE_ADD(turntime, INTERVAL $minute MINUTE),starttime=DATE_ADD(starttime, INTERVAL $minute MINUTE),tnmt_time=DATE_ADD(tnmt_time, INTERVAL $minute MINUTE)";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set turntime=DATE_ADD(turntime, INTERVAL $minute MINUTE) where turntime<=DATE_ADD(turntime, INTERVAL $term MINUTE)";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update auction set expire=DATE_ADD(expire, INTERVAL $minute MINUTE)";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $newTurntime = $turntime->add(new DateInterval("PT{$minute}M"));
+        $newNextTurntime = $turntime->add(new DateInterval("PT{$term}M"));
+        $gameStor->turntime = $newTurntime;
+
+        $db->update('general', [
+            'turntime'=> $db->sqleval('DATE_ADD(turntime, INTERVAL %i MINUTE)', $minute)
+        ], 'turntime<=DATE_ADD(turntime, INTERVAL %i MINUTE)', $term);
+        $db->update('auction', [
+            'expire'=> $db->sqleval('DATE_ADD(expire, INTERVAL %i MINUTE)', $minute)
+        ], true);
     }
 }
 
@@ -1583,14 +1581,11 @@ function checkTurn() {
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', CheckOverhead');
     CheckOverhead();
     //서버정보
-    $query = "select * from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
 
     $date = date('Y-m-d H:i:s');
     // 최종 처리 월턴의 다음 월턴시간 구함
-    $prevTurn = cutTurn($admin['turntime'], $admin['turnterm']);
-    $nextTurn = addTurn($prevTurn, $admin['turnterm']);
+    $prevTurn = cutTurn($gameStor->turntime, $gameStor->turnterm);
+    $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
     // 현재 턴 이전 월턴까지 모두처리.
     //최종 처리 이후 다음 월턴이 현재 시간보다 전이라면
     while($nextTurn <= $date) {
@@ -1634,10 +1629,9 @@ function checkTurn() {
         }
 
         // 그 시각 년도,월 저장
-        $dt = turnDate($nextTurn);
-        $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
+        list($gameStor->year, $gameStor->month) = turnDate($nextTurn);
 
-        pushLockLog(["-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
+        pushLockLog(["-- checkTurn() ".$gameStor->month."월 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
 
         // 이벤트 핸들러 동작
         foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
@@ -1646,13 +1640,12 @@ function checkTurn() {
             $action = Json::decode($rawEvent['action']);
             $event = new Event\EventHandler($cond, $action);
 
-            $event->tryRunEvent(['currentEventID'=>$eventID] + $admin);
+            $event->tryRunEvent(['currentEventID'=>$eventID] + $gameStor->getAll(true));
         }
 
         // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
-        if($admin['month'] == 1) {
+        if($gameStor->month == 1) {
             // NPC 등장
-            //if($admin['scenario'] > 0 && $admin['scenario'] < 20) { RegNPC(); }
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processGoldIncome');
             processGoldIncome();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processSpring');
@@ -1668,14 +1661,14 @@ function checkTurn() {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', addAge');
             addAge();
             // 새해 알림
-            $alllog[] = "<C>◆</>{$admin['month']}월:<C>{$admin['year']}</>년이 되었습니다.";
-            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-        } elseif($admin['month'] == 4) {
+            $alllog[] = "<C>◆</>{$gameStor->month}월:<C>{$gameStor->year}</>년이 되었습니다.";
+            pushGeneralPublicRecord($alllog, $gameStor->year, $gameStor->month);
+        } elseif($gameStor->month == 4) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
             updateQuaterly();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
             disaster();
-        } elseif($admin['month'] == 7) {
+        } elseif($gameStor->month == 7) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processRiceIncome');
             processRiceIncome();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processFall');
@@ -1686,7 +1679,7 @@ function checkTurn() {
             disaster();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', tradeRate');
             tradeRate();
-        } elseif($admin['month'] == 10) {
+        } elseif($gameStor->month == 10) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
             updateQuaterly();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
@@ -1697,18 +1690,16 @@ function checkTurn() {
 
         // 다음달로 넘김
         $prevTurn = $nextTurn;
-        $nextTurn = addTurn($prevTurn, $admin['turnterm']);
+        $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
     }
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
         
     // 이시각 정각 시까지 업데이트 완료했음
-    $query = "update game set turntime='$prevTurn'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->turntime = $prevTurn;
 
     // 그 시각 년도,월 저장
-    $dt = turnDate($prevTurn);
-    $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
+    list($gameStor->year, $gameStor->month) = turnDate($prevTurn);
     // 현재시간의 월턴시간 이후 분단위 장수 처리
     do {
         $query = "select no,name,turntime,turn0,npc from general where turntime<='$date' order by turntime";
@@ -1736,8 +1727,7 @@ function checkTurn() {
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
     
-    $query = "update game set turntime='$date'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->turntime = $date;
 
     // 부상 과도 제한
     $query = "update general set injury='80' where injury>'80'";

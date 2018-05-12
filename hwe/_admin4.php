@@ -29,9 +29,7 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$conlimit = $gameStor->conlimit;
 ?>
 <!DOCTYPE html>
 <html>
@@ -65,7 +63,7 @@ for($i=0; $i < $gencount; $i++) {
     if($general['block']         > 0) { $style .= "background-color:red;"; }
     if($general['npc']          >= 2) { $style .= "color:cyan;"; }
     elseif($general['npc']      == 1) { $style .= "color:skyblue;"; }
-    if($general['con'] > $admin['conlimit']) { $style .= "color:red;"; }
+    if($general['con'] > $conlimit) { $style .= "color:red;"; }
 
     echo "
                 <option value={$general['no']} $style>{$general['name']}</option>";

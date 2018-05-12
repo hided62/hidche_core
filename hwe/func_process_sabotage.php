@@ -13,9 +13,7 @@ function process_32(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $dist = searchDistance($general['city'], 5, false);
     $command = DecodeCommand($general['turn0']);
@@ -140,9 +138,7 @@ function process_33(&$general) {
     //탈취는 0까지 무제한
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $dist = searchDistance($general['city'], 5, false);
     $command = DecodeCommand($general['turn0']);
@@ -292,9 +288,7 @@ function process_34(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $dist = searchDistance($general['city'], 5, false);
     $command = DecodeCommand($general['turn0']);
@@ -419,9 +413,7 @@ function process_35(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','develcost']);
 
     $dist = searchDistance($general['city'], 5, false);
     $command = DecodeCommand($general['turn0']);

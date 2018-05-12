@@ -283,10 +283,7 @@ class DiplomaticMessage extends Message{
             return $result;
         }
         
-        list(
-            $year, 
-            $month
-        ) = $db->queryFirstList('SELECT year, month FROM game LIMIT 1');
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
 
 
         $this->dest->generalID = $receiverID;

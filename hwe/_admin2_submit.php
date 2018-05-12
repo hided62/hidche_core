@@ -98,7 +98,7 @@ switch($btn) {
         ], '`no` IN %li', $genlist);
         break;
     case "특기 부여":
-        list($year, $month) = $db->queryFirstList('select `year`, `month` from `game` where `no`=1');
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
         $text = "특기 부여!";
 
         foreach($db->query("SELECT `no`,leader,power,intel,dex0,dex10,dex20,dex30,dex40 FROM general WHERE `no` IN %li", $genlist) as $general){    
@@ -327,7 +327,7 @@ switch($btn) {
         ], '`no` IN %li', $genlist);
         break;
     case "00턴":
-        $turnterm = $db->queryFirstField('SELECT turnterm FROM game LIMIT 1');
+        $turnterm = $gameStor->turnterm;
 
         foreach($genlist as $generalID){
             $turntime = getRandTurn($turnterm);

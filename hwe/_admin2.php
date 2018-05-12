@@ -26,12 +26,7 @@ if($session->userGrade < 5) {
 }
 
 $db = DB::db();
-$gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
 ?>
 <!DOCTYPE html>
 <html>
@@ -60,13 +55,9 @@ $admin = MYDB_fetch_array($result);
 
 echo "
             <select name=genlist[] size=20 multiple style=color:white;background-color:black;font-size:13>";
+$generalList = $db->query('SELECT `no`, `name`, npc, `block` FROM general ORDER BY npc, binary(`name`)');
 
-$query = "select no,name,npc,block from general order by npc,binary(name)";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$gencount = MYDB_num_rows($result);
-
-for($i=0; $i < $gencount; $i++) {
-    $general = MYDB_fetch_array($result);
+foreach($generalList as $general){
     $style = "style=;";
     if($general['block']         > 0) { $style .= "background-color:red;"; }
     if($general['npc']          >= 2) { $style .= "color:cyan;"; }
