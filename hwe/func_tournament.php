@@ -173,11 +173,11 @@ function getTournament($tnmt) {
     return $tnmt;
 }
 
-function printRow($k, $npc, $name, $abil, $game, $win, $draw, $lose, $gd, $gl, $prmt) {
+function printRow($k, $npc, $name, $abil, $tgame, $win, $draw, $lose, $gd, $gl, $prmt) {
     if($prmt > 0) { $name = "<font color=orange>".$name."</font>"; }
     elseif($npc >= 2) { $name = "<font color=cyan>".$name."</font>"; }
     elseif($npc == 1) { $name = "<font color=skyblue>".$name."</font>"; }
-    echo "<tr align=center><td id=bg2>$k</td><td>$name</td><td>$abil</td><td>$game</td><td>$win</td><td>$draw</td><td>$lose</td><td>$gd</td><td>$gl</td></tr>";
+    echo "<tr align=center><td id=bg2>$k</td><td>$name</td><td>$abil</td><td>$tgame</td><td>$win</td><td>$draw</td><td>$lose</td><td>$gd</td><td>$gl</td></tr>";
 }
 
 function printFighting($tournament, $phase) {

@@ -1371,9 +1371,7 @@ function CheckOverhead() {
 
 
     if($con != $conlimit){
-        $db->update('game', [
-            'conlimit' => $con
-        ], true);
+        $gameStor->conlimit = $con;
     }
 }
 
@@ -1800,10 +1798,8 @@ function turnDate($curtime) {
 
     // 바뀐 경우만 업데이트
     if($admin['month'] != $month || $admin['year'] != $year) {
-        $db->update('game', [
-            'year'=>$year,
-            'month'=>$month
-        ], true);
+        $gameStor->year = $year;
+        $gameStor->month = $month;
     }
 
     return [$year, $month];

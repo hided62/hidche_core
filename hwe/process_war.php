@@ -15,10 +15,10 @@ function processWar($general, $city) {
 
     $query = "select * from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $game = MYDB_fetch_array($result);
+    $game_env = MYDB_fetch_array($result);
 
-    $year = $game['year'];
-    $month = $game['month'];
+    $year = $game_env['year'];
+    $month = $game_env['month'];
 
     $log = [];
     $batlog = [];
@@ -156,7 +156,7 @@ function processWar($general, $city) {
 
             $city = addConflict($city, $general['nation'], 1);//NOTE: 이 경우 두 국가가 분쟁 중인 경우에는 병량패퇴의 이득이 없다.
 
-            ConquerCity($game, $general, $city, $nation, $destnation);
+            ConquerCity($game_env, $general, $city, $nation, $destnation);
             break;
         // 장수가 없어서 도시 공격
         } elseif($opposecount == 0) {
@@ -191,13 +191,13 @@ function processWar($general, $city) {
                 if($myCrew <= 0) { $myCrew = rand() % 90 + 10; }
 
                 //훈련 사기따라
-                $myCrew = getCrew($myCrew, $game['city_rate']+$oppAtmosBonus, CharTrain($general['train']+$genTrain+$genTrainBonus, $general['personal']));
-                $cityCrew = getCrew($cityCrew, CharAtmos($general['atmos']+$genAtmos+$genAtmosBonus, $general['personal']), $game['city_rate']+$oppTrainBonus);
+                $myCrew = getCrew($myCrew, $game_env['city_rate']+$oppAtmosBonus, CharTrain($general['train']+$genTrain+$genTrainBonus, $general['personal']));
+                $cityCrew = getCrew($cityCrew, CharAtmos($general['atmos']+$genAtmos+$genAtmosBonus, $general['personal']), $game_env['city_rate']+$oppTrainBonus);
                 //숙련도 따라
                 $genDexAtt = getGenDex($general, $general['crewtype']);
                 $genDexDef = getGenDex($general, 40);
-                $cityCrew *= getDexLog($genDexAtt, ($game['city_rate']-60)*7200);
-                $myCrew *= getDexLog(($game['city_rate']-60)*7200, $genDexDef);
+                $cityCrew *= getDexLog($genDexAtt, ($game_env['city_rate']-60)*7200);
+                $myCrew *= getDexLog(($game_env['city_rate']-60)*7200, $genDexDef);
 
                 $avoid = 1;
                 // 병종간 특성
@@ -434,7 +434,7 @@ function processWar($general, $city) {
 
             // 도시쌀 소모 계산
             $opexp = Util::round($opexp / 50 * 0.8);
-            $rice = Util::round($opexp * 5 * getCrewtypeRice(0, 0) * ($game['city_rate']/100 - 0.2));
+            $rice = Util::round($opexp * 5 * getCrewtypeRice(0, 0) * ($game_env['city_rate']/100 - 0.2));
             $destnation['rice'] -= $rice;
             if($destnation['rice'] < 0) { $destnation['rice'] = 0; }
             $query = "update nation set rice='{$destnation['rice']}' where nation='{$destnation['nation']}'";
@@ -465,7 +465,7 @@ function processWar($general, $city) {
             if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $num *= 1.1; }
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $year, $nation['tech'])) { $num = intdiv($num, 4); }
+            if(TechLimit($game_env['startyear'], $year, $nation['tech'])) { $num = intdiv($num, 4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 죽은수 기술로 누적
@@ -478,7 +478,7 @@ function processWar($general, $city) {
                 $num *= 0.9;
             }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $year, $destnation['tech'])) { $num = intdiv($num, 4); }
+            if(TechLimit($game_env['startyear'], $year, $destnation['tech'])) { $num = intdiv($num, 4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //양국 평균 기술가격
@@ -518,7 +518,7 @@ function processWar($general, $city) {
                 $alllog = [];
                 $history = [];
 
-                ConquerCity($game, $general, $city, $nation, $destnation);
+                ConquerCity($game_env, $general, $city, $nation, $destnation);
                 break;
             // 공격 장수 병사 소진시 실패 처리
             } elseif($general['crew'] <= 0) {
@@ -1340,7 +1340,7 @@ function processWar($general, $city) {
             if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $num *= 1.1; }
             if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $year, $nation['tech'])) { $num = intdiv($num, 4); }
+            if(TechLimit($game_env['startyear'], $year, $nation['tech'])) { $num = intdiv($num, 4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$gencount' where nation='{$nation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
@@ -1363,7 +1363,7 @@ function processWar($general, $city) {
             if($destnation['type'] == 3 || $destnation['type'] == 13)                                                                               { $num *= 1.1; }
             if($destnation['type'] == 5 || $destnation['type'] == 6 || $destnation['type'] == 7 || $destnation['type'] == 8 || $destnation['type'] == 12) { $num *= 0.9; }
             // 부드러운 기술 제한
-            if(TechLimit($game['startyear'], $year, $destnation['tech'])) { $num = intdiv($num, 4); }
+            if(TechLimit($game_env['startyear'], $year, $destnation['tech'])) { $num = intdiv($num, 4); }
             $query = "update nation set totaltech=totaltech+'$num',tech=totaltech/'$destgencount' where nation='{$destnation['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             //양국 평균 기술가격
@@ -1628,9 +1628,9 @@ function getCityDef($city) {
     return $def;
 }
 
-function getRate($game, $type, $dtype) {
+function getRate($game_env, $type, $dtype) {
     $t = "{$dtype}{$type}";
-    return $game[$t];
+    return $game_env[$t];
 }
 
 function addConflict($city, $nationID, $mykillnum) {
@@ -1699,7 +1699,7 @@ function getConquerNation($city) : int {
     return Util::array_first_key($conflict);
 }
 
-function ConquerCity($game, $general, $city, $nation, $destnation) {
+function ConquerCity($game_env, $general, $city, $nation, $destnation) {
     '@phan-var array<string,mixed> $city';
     $db = DB::db();
     $connect=$db->get();
@@ -1714,8 +1714,8 @@ function ConquerCity($game, $general, $city, $nation, $destnation) {
         $destnationName = "공백지인";
     }
 
-    $year = $game['year'];
-    $month = $game['month'];
+    $year = $game_env['year'];
+    $month = $game_env['month'];
 
     $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
     $log[] = "<C>●</><G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";

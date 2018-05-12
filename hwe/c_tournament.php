@@ -79,8 +79,8 @@ if($btn == '참가') {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $grpCount = MYDB_num_rows($result);
     if($grpCount >= 8) {
-        $query = "update game set tournament=2, phase=0";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->tournament = 2;
+        $gameStor->phase = 0;
     }
     header('location:b_tournament.php');
     die(); 
