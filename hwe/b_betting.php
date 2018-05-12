@@ -18,9 +18,11 @@ $query = "select no,tournament,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+b
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-$query = "select conlimit,tournament,phase,tnmt_type,develcost,bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['tournament','phase','tnmt_type','develcost','bet0','bet1','bet2','bet3','bet4','bet5','bet6','bet7','bet8','bet9','bet10','bet11','bet12','bet13','bet14','bet15']);
+$admin['bet'] = 
+    $admin['bet0'] + $admin['bet1'] + $admin['bet2'] + $admin['bet3'] + $admin['bet4'] + 
+    $admin['bet5'] + $admin['bet6'] + $admin['bet7'] + $admin['bet8'] + $admin['bet9'] + 
+    $admin['bet10'] + $admin['bet11'] + $admin['bet12'] + $admin['bet13'] + $admin['bet14'] + $admin['bet15'];
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {

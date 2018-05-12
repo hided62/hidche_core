@@ -154,6 +154,7 @@ class KVStorage{
         $result = [];
         $notExists = [];
         
+        //TODO: DB Select에서 as를 쓸 수 있으면 좋을 듯.
         foreach($keys as $key){
             if(!key_exists($key, $this->cacheData)){
                 $notExists[] = $key;

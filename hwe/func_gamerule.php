@@ -1193,8 +1193,8 @@ function checkEmperior() {
         if($count == $allcount) {
             pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>(이)가 전토를 통일");
 
-            $query = "update game set isUnited=2,conlimit=conlimit*100";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $gameStor->isUnited = 2;
+            $gameStor->conlimit = $gameStor->conlimit*100;
 
             $query = "select no from general where npc<2 and age>=45";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

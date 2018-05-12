@@ -18,9 +18,7 @@ $query = "select no,tournament,con,turntime from general where owner='{$userID}'
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-$query = "select conlimit,tournament,phase,tnmt_msg,tnmt_type,develcost,tnmt_trig from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['tournament','phase','tnmt_msg','tnmt_type','develcost','tnmt_trig']);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {

@@ -1088,14 +1088,9 @@ function generalInfo2($no) {
 function adminMsg() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
+    $msg = $gameStor->msg;
 
-    $query = "select msg from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
-    echo "운영자 메세지 : <font color=yellow>";
-    echo $admin['msg']."</font>";
+    return "운영자 메세지 : <span style='color:yellow;'>$msg</span>";
 }
 
 function getOnlineNum() {
@@ -1105,17 +1100,12 @@ function getOnlineNum() {
 function onlinegen() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $onlinegen = "";
     $generalID = Session::getInstance()->generalID;
     $nationID = DB::db()->queryFirstField('select `nation` from `general` where `no` = %i', $generalID);
     if($nationID === null || Util::toInt($nationID) === 0) {
-        $query = "select onlinegen from game limit 1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $game = MYDB_fetch_array($result);
-
-        $onlinegen = $game['onlinegen'];
+        $onlinegen = $gameStor->onlinegen;
     } else {
         $onlinegen = DB::db()->queryFirstField('select onlinegen from nation where nation=%i',$nationID);
     }
@@ -1125,12 +1115,8 @@ function onlinegen() {
 function onlineNation() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
-    $query = "select onlinenation from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $game = MYDB_fetch_array($result);
-    return $game['onlinenation'];
+    return $gameStor->onlinenation;
 }
 
 function nationMsg() {
@@ -1344,20 +1330,20 @@ function updateTraffic() {
     $online = getOnlineNum();
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $game = $gameStor->getValues(['year','month','refresh','maxonline','maxrefresh']);
+    $game_env = $gameStor->getValues(['year','month','refresh','maxonline','maxrefresh']);
 
     //최다갱신자
     $user = $db->queryFirstRow('select name,refresh from general order by refresh desc limit 1');
 
-    if($game['maxrefresh'] < $game['refresh']) {
-        $game['maxrefresh'] = $game['refresh'];
+    if($game_env['maxrefresh'] < $game_env['refresh']) {
+        $game_env['maxrefresh'] = $game_env['refresh'];
     }
-    if($game['maxonline'] < $online) {
-        $game['maxonline'] = $online;
+    if($game_env['maxonline'] < $online) {
+        $game_env['maxonline'] = $online;
     }
     $gameStor->refresh = 0;
-    $gameStor->maxrefresh = $game['maxrefresh'];
-    $gameStor->maxonline = $game['maxonline'];
+    $gameStor->maxrefresh = $game_env['maxrefresh'];
+    $gameStor->maxonline = $game_env['maxonline'];
 
     $db->update('general', ['refresh'=>0], true);
 
@@ -1366,9 +1352,9 @@ function updateTraffic() {
     file_put_contents(__dir__."/logs/_traffic.txt",
         Json::encode([
             $date,
-            $game['year'],
-            $game['month'],
-            $game['refresh'],
+            $game_env['year'],
+            $game_env['month'],
+            $game_env['refresh'],
             $online,
             $user['name']."(".$user['refresh'].")"
         ])."\n"
@@ -1379,12 +1365,12 @@ function CheckOverhead() {
     //서버정보
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $admin = $db->queryFirstRow('SELECT turnterm, conlimit from game LIMIT 1');
+    list($turnterm, $conlimit) = $gameStor->getValuesAsArray(['turnterm', 'conlimit']);
 
-    $con = Util::round(pow($admin['turnterm'], 0.6) * 3) * 10;
+    $con = Util::round(pow($turnterm, 0.6) * 3) * 10;
 
 
-    if($con != $admin['conlimit']){
+    if($con != $conlimit){
         $db->update('game', [
             'conlimit' => $con
         ], true);
@@ -2187,13 +2173,13 @@ function uniqueItem($general, $log, $vote=0) {
 
     $query = "select year,month,scenario from game limit 1";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $game = MYDB_fetch_array($result);
+    $game_env = MYDB_fetch_array($result);
 
     $query = "select count(*) as cnt from general where npc<2";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen = MYDB_fetch_array($result);
 
-    if($game['scenario'] == 0)  { $prob = $gen['cnt'] * 5; }  // 5~6개월에 하나씩 등장
+    if($game_env['scenario'] == 0)  { $prob = $gen['cnt'] * 5; }  // 5~6개월에 하나씩 등장
     else { $prob = $gen['cnt']; }  // 1~2개월에 하나씩 등장
 
     if($vote == 1) { $prob = Util::round($gen['cnt'] * 0.7 / 3); }     // 투표율 70%, 투표 한번에 2~3개 등장
@@ -2234,63 +2220,63 @@ function uniqueItem($general, $log, $vote=0) {
             switch($sel) {
             case 0:
                 $log[] = "<C>●</><C>".getWeapName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getWeapName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$game_env['month']}월:<Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C>".getWeapName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             case 1:
                 $log[] = "<C>●</><C>".getBookName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getBookName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$game_env['month']}월:<Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C>".getBookName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             case 2:
                 $log[] = "<C>●</><C>".getHorseName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getHorseName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$game_env['month']}월:<Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C>".getHorseName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             case 3:
                 $log[] = "<C>●</><C>".getItemName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getItemName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$game_env['month']}월:<Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C>".getItemName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$game_env['year']}년 {$game_env['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             }
-            pushGeneralPublicRecord($alllog, $game['year'], $game['month']);
-            pushWorldHistory($history, $game['year'], $game['month']);
+            pushGeneralPublicRecord($alllog, $game_env['year'], $game_env['month']);
+            pushWorldHistory($history, $game_env['year'], $game_env['month']);
         }
     }
     return $log;

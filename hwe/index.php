@@ -40,9 +40,7 @@ if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
     ], 'owner=%i', $userID);
 }
 
-$query = "select develcost,online,conlimit,tournament,tnmt_type,turnterm,scenario,scenario_text,extended_general,fiction,npcmode,vote from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['develcost','online','conlimit','tournament','tnmt_type','turnterm','scenario','scenario_text','extended_general','fiction','npcmode','vote']);
 
 $query = "select plock from plock limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
@@ -196,7 +194,7 @@ echo "
     </tr>";
 ?>
     <tr><td colspan=5 style="text-align:left;">접속중인 국가: <?=onlinenation()?></td></tr>
-    <tr><td colspan=5 style="text-align:left;"><?php adminMsg(); ?></td></tr>
+    <tr><td colspan=5 style="text-align:left;"><?=adminMsg()?></td></tr>
     <tr><td colspan=5 style="text-align:left;">【 국가방침 】<?php nationMsg(); ?></td></tr>
     <tr><td colspan=5 style="text-align:left;">【 접속자 】<?=onlinegen()?></td></tr>
 <?php

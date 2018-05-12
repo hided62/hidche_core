@@ -47,18 +47,18 @@ if(file_exists(__dir__.'/.htaccess')){
 
 //TODO: 천통시에도 예약 오픈 알림이 필요..?
 
-$game = $gameStor->getValues(['isUnited', 'npcMode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnTerm']);
-$game['maxUserCnt'] = $game['maxgeneral'];
-unset($game['maxgeneral']);
+$game_env = $gameStor->getValues(['isUnited', 'npcMode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnTerm']);
+$game_env['maxUserCnt'] = $game_env['maxgeneral'];
+unset($game_env['maxgeneral']);
 
 $nationCnt = $db->queryFirstField('SELECT count(`nation`) from nation where `level` > 0');
 $genCnt = $db->queryFirstField('SELECT count(`no`) from general where `npc` < 2');
 $npcCnt = $db->queryFirstField('SELECT count(`no`) from general where `npc` >= 2');
 
-$game['scenario'] = $game['scenario_text'];
-$game['userCnt'] = $genCnt;
-$game['npcCnt'] = $npcCnt;
-$game['nationCnt'] = $nationCnt;
+$game_env['scenario'] = $game_env['scenario_text'];
+$game_env['userCnt'] = $genCnt;
+$game_env['npcCnt'] = $npcCnt;
+$game_env['nationCnt'] = $nationCnt;
 
 $me = [];
 
@@ -75,6 +75,6 @@ if($general){
 
 //TODO: 이를 표현하는 방법은 '이전 버전'의 serverListPost.php를 참고할 것.
 Json::die([
-    'game'=>$game,
+    'game'=>$game_env,
     'me'=>$me?:null
 ]);

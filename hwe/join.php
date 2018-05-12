@@ -47,9 +47,7 @@ $connect=$db->get();
         <tr><td align=center><?=info(0)?></td></tr>
     </table>
 <?php
-$query = "select show_img_level,maxgeneral from game limit 1";
-$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['show_img_level','maxgeneral']);
 
 $query = "select no from general where npc<2";
 $result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect), "");

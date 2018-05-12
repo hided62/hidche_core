@@ -18,7 +18,7 @@ $connect=$db->get();
 
 increaseRefresh("연감", 2);
 
-$admin = $gameStor->getValues(['startyear','year','month','conlimit']);
+$admin = $gameStor->getValues(['startyear','year','month']);
 
 $query = "select con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");

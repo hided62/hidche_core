@@ -202,9 +202,7 @@ function pushGeneralPublicRecord(array $history, $year=null, $month=null) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     if($year === null || $month === null){
-        $game = $db->queryFirstRow('SELECT year, month FROM game LIMIT 1');
-        $year = $game['year'];
-        $month = $game['month'];
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
     }
     $request = array_map(function($text) use ($year, $month) {
         return ['year'=>$year, 'month'=>$month, 'text'=>$text];
