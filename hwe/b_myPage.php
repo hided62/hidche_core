@@ -79,7 +79,7 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 내정보</title>
 <link href="../d_shared/common.css" rel="stylesheet">
-<link rel=stylesheet href="css/common.css?180511">
+<link rel=stylesheet href="css/common.css?180512">
 
 </head>
 

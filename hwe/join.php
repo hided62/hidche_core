@@ -32,7 +32,7 @@ $connect=$db->get();
 <title><?=UniqueConst::$serverName?>: 장수생성</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link href="../d_shared/common.css" rel="stylesheet">
-<link rel='stylesheet' href="css/common.css?180511">
+<link rel='stylesheet' href="css/common.css?180512">
 <script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
 <script type="text/javascript" src="js/join.js"></script>
 

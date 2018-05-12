@@ -13,7 +13,7 @@ if($sel == 0) $sel = 1;
         <meta charset="UTF-8">
         <title>스크린샷</title>
 <link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css?180511" rel="stylesheet">
+<link href="css/common.css?180512" rel="stylesheet">
 <style type="text/css">
 
 .leftFloat {

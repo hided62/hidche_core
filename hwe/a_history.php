@@ -85,7 +85,7 @@ if ($month <= 0) {
 <script src="js/map.js"></script>
 
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180512' type='text/css'>
 <link href="css/map.css" rel="stylesheet">
 
 </head>

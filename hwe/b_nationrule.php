@@ -18,7 +18,7 @@ increaseRefresh("국법", 1);
 <title><?=UniqueConst::$serverName?>: 국법</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180512' type='text/css'>
 
 </head>
 

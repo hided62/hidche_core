@@ -14,7 +14,7 @@ $category = Util::getReq('category', 'int', 0);
         <meta charset="UTF-8">
         <title>튜토리얼</title>
 <link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css?180511" rel="stylesheet">
+<link href="css/common.css?180512" rel="stylesheet">
 <style type="text/css">
 
 .intro {

@@ -32,7 +32,7 @@ if($meLevel == 0) {
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 인사부</title>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180512' type='text/css'>
 <script type="text/javascript">
 function out() {
     return confirm('정말 추방하시겠습니까?');

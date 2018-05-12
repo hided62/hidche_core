@@ -145,7 +145,7 @@ $(function(){
 </script>
 <link href="css/normalize.css" rel="stylesheet">
 <link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css?180511" rel="stylesheet">
+<link href="css/common.css?180512" rel="stylesheet">
 <link href="css/main.css" rel="stylesheet">
 <link href="css/map.css" rel="stylesheet">
 ';

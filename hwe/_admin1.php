@@ -13,7 +13,7 @@ if($session->userGrade < 5) {
 <title>관리메뉴</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180512' type='text/css'>
 </head>
 <body>
 관리자가 아닙니다.<br>
@@ -37,7 +37,7 @@ $admin = getAdmin();
 <title>게임관리</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css?180511' type='text/css'>
+<link rel='stylesheet' href='css/common.css?180512' type='text/css'>
 </head>
 <body>
 <table align=center width=1000 class="tb_layout bg0">
