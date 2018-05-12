@@ -27,7 +27,7 @@ $minute2 = Util::getReq('minute2', 'int');
 extractMissingPostToGlobals();
 
 $db = DB::db();
-$gameStor = KVStorage::getStorage($db, 'game');
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 switch($btn) {

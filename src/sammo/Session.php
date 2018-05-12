@@ -230,7 +230,7 @@ class Session
         }
 
         $db = DB::db();
-        $gameStor = KVStorage::getStorage($db, 'game');
+        $gameStor = KVStorage::getStorage($db, 'game_env');
 
         $general = $db->queryFirstRow(
             'SELECT `no`, `name`, `killturn`, `turntime` from general where `owner` = %i',

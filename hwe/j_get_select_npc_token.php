@@ -21,7 +21,7 @@ $oNow = new \DateTimeImmutable();
 $now = $oNow->format('Y-m-d H:i:s');
 
 $db = DB::db();
-$gameStor = KVStorage::getStorage($db, 'game');
+$gameStor = KVStorage::getStorage($db, 'game_env');
 
 $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', $userID);
 if($oldGeneral !== null){

@@ -151,7 +151,7 @@ function pushWorldHistory(array $history, $year=null, $month=null) {
         return;
     }
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     if($year === null || $month === null){
         $game = $db->queryFirstRow('SELECT year, month FROM game LIMIT 1');
         $year = $game['year'];
@@ -200,7 +200,7 @@ function pushGeneralPublicRecord(array $history, $year=null, $month=null) {
         return;
     }
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     if($year === null || $month === null){
         $game = $db->queryFirstRow('SELECT year, month FROM game LIMIT 1');
         $year = $game['year'];
@@ -251,7 +251,7 @@ function LogHistory($isFirst=0) {
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', LogHistory Start');
 
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $obj = $db->queryFirstRow('SELECT year, month, startyear FROM game limit 1');
 
     //TODO: 새롭게 추가할 지도 값 받아오는 함수를 이용하여 재구성

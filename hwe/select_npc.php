@@ -7,7 +7,7 @@ include "func.php";
 $session = Session::requireLogin()->setReadOnly();
 $userID = Session::getUserID();
 $db = DB::db();
-$gameStor = KVStorage::getStorage($db, 'game');
+$gameStor = KVStorage::getStorage($db, 'game_env');
 
 list($npcmode, $maxgeneral) = $db->queryFirstList('SELECT npcmode,maxgeneral FROM game LIMIT 1');
 

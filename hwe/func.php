@@ -96,7 +96,7 @@ function checkLimit($con = null, $conlimit = null) {
     }
 
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
 
     if($con === null){
         $con = $db->queryFirstField('SELECT con FROM general WHERE `owner`=%i', Session::getUserID());
@@ -259,7 +259,7 @@ function cityInfo() {
 
 function myNationInfo() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
@@ -437,7 +437,7 @@ function commandGroup($typename, $type=0) {
 
 function commandTable() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
@@ -678,7 +678,7 @@ function commandTable() {
 
 function CoreCommandTable() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
@@ -781,7 +781,7 @@ function myInfo() {
 
 function generalInfo($no) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $query = "select show_img_level from game limit 1";
@@ -1089,7 +1089,7 @@ function generalInfo2($no) {
 
 function adminMsg() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $query = "select msg from game limit 1";
@@ -1106,7 +1106,7 @@ function getOnlineNum() {
 
 function onlinegen() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $onlinegen = "";
@@ -1126,7 +1126,7 @@ function onlinegen() {
 
 function onlineNation() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $query = "select onlinenation from game limit 1";
@@ -1276,7 +1276,7 @@ function increaseRefresh($type="", $cnt=1) {
     $date = date('Y-m-d H:i:s');
 
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $db->update('game', [
         'refresh'=>$db->sqleval('refresh+%i', $cnt)
     ], true);
@@ -1347,7 +1347,7 @@ function increaseRefresh($type="", $cnt=1) {
 function updateTraffic() {
     $online = getOnlineNum();
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $game = $db->queryFirstRow('SELECT year,month,refresh,maxonline,maxrefresh from game limit 1');
 
     //최다갱신자
@@ -1384,7 +1384,7 @@ function updateTraffic() {
 function CheckOverhead() {
     //서버정보
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $admin = $db->queryFirstRow('SELECT turnterm, conlimit from game LIMIT 1');
 
     $con = Util::round(pow($admin['turnterm'], 0.6) * 3) * 10;
@@ -1432,7 +1432,7 @@ function unlock() {
 
 function timeover() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $admin = DB::db()->queryFirstRow(
         'SELECT turnterm,TIMESTAMPDIFF(SECOND,turntime,now()) as diff from game limit 1'
     );
@@ -1446,7 +1446,7 @@ function timeover() {
 
 function checkDelay() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     //서버정보
@@ -1479,7 +1479,7 @@ function checkDelay() {
 
 function updateOnline() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $nationname = ["재야"];
 
@@ -1529,7 +1529,7 @@ function updateOnline() {
 
 function checkTurn() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $alllog = [];
@@ -1572,6 +1572,7 @@ function checkTurn() {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         return;
     }
+    $gameStor->cacheAll();
     // 1턴이상 갱신 없었으면 서버 지연
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', checkDelay');
     checkDelay();
@@ -1627,6 +1628,7 @@ function checkTurn() {
 
             // 잡금 해제
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
+            $gameStor->resetCache(true);
             unlock();
             return false;
         }
@@ -1748,6 +1750,7 @@ function checkTurn() {
     processAuction();
     // 잡금 해제
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
+    $gameStor->resetCache(true);
     unlock();
 
     pushLockLog(["- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
@@ -1759,7 +1762,7 @@ function checkTurn() {
 
 function addAge() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     //나이와 호봉 증가
@@ -1804,7 +1807,7 @@ function addAge() {
 
 function turnDate($curtime) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $admin = $db->queryFirstRow('SELECT startyear,starttime,turnterm,year,month from game limit 1');
 
     $turn = $admin['starttime'];
@@ -1833,7 +1836,7 @@ function turnDate($curtime) {
 
 function triggerTournament() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $query = "select tournament,tnmt_trig from game limit 1";
@@ -1931,7 +1934,7 @@ function PreprocessCommand($no) {
 
 function updateTurntime($no) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $alllog = [];
     $log = [];
@@ -2182,7 +2185,7 @@ function CheckHall($no) {
 
 function uniqueItem($general, $log, $vote=0) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $alllog = [];
     $history = [];
@@ -2394,14 +2397,8 @@ function checkExperience($general, $log) {
 
 function getAdmin() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
-    $connect=$db->get();
-
-    $query = "select * from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
-    return $admin;
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    return $gameStor->getAll();
 }
 
 function getMe() {
@@ -2451,7 +2448,7 @@ function getNation($nation) {
 
 function deleteNation($general) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $history = [];
@@ -2487,7 +2484,7 @@ function deleteNation($general) {
 
 function nextRuler($general) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $query = "select year,month from game limit 1";
@@ -2695,7 +2692,7 @@ function CharCritical($rate, $personal) {
 
 function SabotageInjury($city, $type=0) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $log = [];
 

@@ -8,7 +8,7 @@ namespace sammo;
 //1월마다 실행
 function processSpring() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     //인구 증가
@@ -370,7 +370,7 @@ function processFall() {
 
 function processRiceIncome() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $query = "select year,month,rice_rate from game limit 1";
@@ -572,7 +572,7 @@ function tradeRate() {
 
 function disaster() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $query = "select startyear,year,month from game limit 1";

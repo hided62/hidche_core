@@ -21,7 +21,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
-$gameStor = KVStorage::getStorage($db, 'game');
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 $query = "select tournament,phase,tnmt_type,develcost from game limit 1";

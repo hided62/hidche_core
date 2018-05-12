@@ -74,7 +74,7 @@ $dec = 0;
 $rice = 0;
 
 $db = DB::db();
-$gameStor = KVStorage::getStorage($db, 'game');
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 increaseRefresh("시뮬", 2);
 

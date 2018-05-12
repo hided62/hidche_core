@@ -24,7 +24,7 @@ class Diplomacy{
         }
 
         $db = DB::db();
-        $gameStor = KVStorage::getStorage($db, 'game');
+        $gameStor = KVStorage::getStorage($db, 'game_env');
         $srcNation = $db->queryFirstRow(
             'SELECT nation, `name`, `power`, capital, gold, rice, surlimit, color, `level` FROM nation WHERE nation=%i',
             $srcNationID

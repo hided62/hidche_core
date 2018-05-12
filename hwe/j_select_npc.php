@@ -16,7 +16,7 @@ if(!$pick){
 $session = Session::requireLogin()->setReadOnly();
 $userID = Session::getUserID();
 $db = DB::db();
-$gameStor = KVStorage::getStorage($db, 'game');
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $rootDB = RootDB::db();
 
 $oNow = new \DateTimeImmutable();

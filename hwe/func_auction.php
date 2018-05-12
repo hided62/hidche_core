@@ -18,7 +18,7 @@ function GetStuffName($stuff) {
 
 function registerAuction() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $query = "select startyear,year,month,turnterm from game limit 1";
@@ -143,7 +143,7 @@ function registerAuction() {
 
 function processAuction() {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $trader = [];

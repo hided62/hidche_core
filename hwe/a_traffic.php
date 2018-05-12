@@ -5,7 +5,7 @@ include "lib.php";
 include "func.php";
 
 $db = DB::db();
-$gameStor = KVStorage::getStorage($db, 'game');
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("갱신정보", 2);

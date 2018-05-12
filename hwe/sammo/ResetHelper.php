@@ -89,7 +89,7 @@ class ResetHelper{
             }
         }
 
-        (KVStorage::getStorage($db, 'game'))->resetValues();
+        (KVStorage::getStorage($db, 'game_env'))->resetValues();
 
         return [
             'result'=>true
@@ -131,6 +131,7 @@ class ResetHelper{
 
 
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
         $db->insert('plock', [
             'plock'=>1
         ]);
@@ -194,7 +195,9 @@ class ResetHelper{
             ]);
         }
 
-        $db->insert('game', $env);
+        foreach($env as $key=>$value){
+            $gameStor->$key = $value;
+        }
 
         $scenarioObj->build($env);
 

@@ -193,7 +193,7 @@ function command_99($turn) {
 
 function command_11($turn, $command) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
@@ -402,7 +402,7 @@ function calc(cost, formnum) {
 
 function command_12($turn, $command) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
@@ -963,7 +963,7 @@ function command_24($turn, $command) {
 
 function command_25($turn, $command) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
@@ -1531,7 +1531,7 @@ function command_44($turn, $command) {
 
 function command_46($turn, $command) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     starter("건국");

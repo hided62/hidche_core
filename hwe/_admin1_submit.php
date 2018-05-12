@@ -33,7 +33,7 @@ $startyear = Util::getReq('startyear', 'int', GameConst::$defaultStartYear);
 extractMissingPostToGlobals();
 
 $db = DB::db();
-$gameStor = KVStorage::getStorage($db, 'game');
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 $admin = getAdmin();
