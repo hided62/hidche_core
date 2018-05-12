@@ -27,13 +27,13 @@ if($canJoin != 'Y'){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>회원가입</title>
-    <script src="../e_lib/jquery-3.2.1.min.js"></script>
-    <script src="../e_lib/bootstrap.bundle.min.js"></script>
-    <script src="../e_lib/jquery.validate.min.js"></script>
-    <script src="../e_lib/sha512.min.js"></script>
-    <script src="../js/join.js"></script>
-    <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="../css/login.css">
+    <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+    <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+    <?=WebUtil::printJS('../e_lib/jquery.validate.min.js')?>
+    <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
+    <?=WebUtil::printJS('../js/join.js')?>
+    <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+    <?=WebUtil::printCSS('../css/login.css')?>
 </head>
 <body>
     <div class="container">

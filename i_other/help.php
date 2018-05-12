@@ -13,8 +13,8 @@ $category = Util::getReq('category', 'int', 0);
     <head>
         <meta charset="UTF-8">
         <title>튜토리얼</title>
-<link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css?180512" rel="stylesheet">
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 <style type="text/css">
 
 .intro {

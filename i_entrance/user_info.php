@@ -1,3 +1,7 @@
+<?php
+namespace sammo;
+require(__dir__.'/../vendor/autoload.php');
+?>
 <!DOCTYPE html>
 <html>
 
@@ -6,21 +10,21 @@
         <title>계정 관리</title>
 
         <!-- 스타일 -->
-        <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
-        <link type="text/css" rel="stylesheet" href='../d_shared/common.css'>
-        <link type="text/css" rel="stylesheet" href='../css/config.css'>
-        <link type="text/css" rel="stylesheet" href='../css/user_info.css'>
+        <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+        <?=WebUtil::printCSS('../d_shared/common.css')?>
+        <?=WebUtil::printCSS('../css/config.css')?>
+        <?=WebUtil::printCSS('../css/user_info.css')?>
 
         <!-- 액션 -->
-        <script src='../d_shared/common_path.js'></script>
-        <script type="text/javascript" src='../js/common.js'></script>
-        <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
-        <script type="text/javascript" src='../e_lib/bootstrap.bundle.min.js'></script>
-        <script type="text/javascript" src='../e_lib/sha512.min.js'></script>
-        <script type="text/javascript" src='../js/func.js'></script>
-        <script type="text/javascript" src='../js/user_info.js'></script>
-        <script src="../d_shared/menu.js"></script>
-        <script src="../js/title.js"></script>
+        <?=WebUtil::printJS('../d_shared/common_path.js')?>
+        <?=WebUtil::printJS('../js/common.js')?>
+        <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+        <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+        <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
+        <?=WebUtil::printJS('../js/func.js')?>
+        <?=WebUtil::printJS('../js/user_info.js')?>
+        <?=WebUtil::printJS('../d_shared/menu.js')?>
+        <?=WebUtil::printJS('../js/title.js')?>
     </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">

@@ -64,9 +64,10 @@ function extractMissingPostToGlobals()
 {
     $result = [];
     if (isset($_POST) && count($_POST) > 0) {
-        
-        
         foreach($_POST as $key=>$val){
+            if(is_numeric($key)){
+                continue;
+            }
             if(isset($GLOBALS[$key])){
                 continue;
             }
@@ -77,6 +78,9 @@ function extractMissingPostToGlobals()
 
     if (isset($_GET) && count($_GET) > 0) {
         foreach($_GET as $key=>$val){
+            if(is_numeric($key)){
+                continue;
+            }
             if(isset($GLOBALS[$key])){
                 continue;
             }

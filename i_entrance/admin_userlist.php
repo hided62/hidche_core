@@ -1,3 +1,7 @@
+<?php
+namespace sammo;
+require(__dir__.'/../vendor/autoload.php');
+?>
 <!DOCTYPE html>
 <html>
 
@@ -6,17 +10,16 @@
         <title>유저 관리</title>
 
         <!-- 스타일 -->
-        <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
-        <link type="text/css" rel="stylesheet" href='../d_shared/common.css'>
-        <link type="text/css" rel="stylesheet" href='../css/admin_member.css'>
+        <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+        <?=WebUtil::printCSS('../d_shared/common.css')?>
+        <?=WebUtil::printCSS('../css/admin_member.cs')?>
 
-        <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
-        <script type="text/javascript" src="../e_lib/bootstrap.bundle.min.js"></script>
-        <script src='../d_shared/common_path.js'></script>
-        <script type="text/javascript" src='../js/common.js'></script>
-        <script type="text/javascript" src='../js/func.js'></script>
-
-        <script type="text/javascript" src='../js/admin_member.js'></script>
+        <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+        <?=WebUtil::printJS('../d_shared/common_path.js')?>
+        <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+        <?=WebUtil::printJS('../js/common.js')?>
+        <?=WebUtil::printJS('../js/func.js')?>
+        <?=WebUtil::printJS('../js/admin_member.js')?>
 </head>
 <body>
 <div class="container">

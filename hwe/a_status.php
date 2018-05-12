@@ -30,11 +30,11 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title><?=UniqueConst::$serverName?>: 세력도</title>
-<script src="../e_lib/jquery-3.2.1.min.js"></script>
-<script src="../d_shared/common_path.js"></script>
-<script src="js/common.js"></script>
-<script src="js/base_map.js"></script>
-<script src="js/map.js"></script>
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/base_map.js')?>
+<?=WebUtil::printJS('js/map.js')?>
 <script>
 $(function(){
 
@@ -45,10 +45,10 @@ $(function(){
 
 });
 </script>
-<link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/normalize.css" rel="stylesheet">
-<link href="css/common.css?180512" rel="stylesheet">
-<link href="css/map.css" rel="stylesheet">
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('css/map.css')?>
 
 </head>
 

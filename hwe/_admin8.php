@@ -14,22 +14,21 @@ extractMissingPostToGlobals();
 $session = Session::requireGameLogin()->setReadOnly();
 
 if ($session->userGrade < 5) {
-    echo "<!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>관리메뉴</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css?180512' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 </head>
 <body>
 관리자가 아닙니다.<br>
-";
-    echo banner();
-    echo "
+    <?=banner()?>
 </body>
-</html>";
-
+</html>
+<?php
     exit();
 }
 
@@ -47,8 +46,8 @@ $sel[$type] = "selected";
 <head>
 <title>외교정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css?180512' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 </head>
 <body>
 <table align=center width=1000 class='tb_layout bg0'>

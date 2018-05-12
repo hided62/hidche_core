@@ -12,8 +12,8 @@ if($sel == 0) $sel = 1;
     <head>
         <meta charset="UTF-8">
         <title>스크린샷</title>
-<link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css?180512" rel="stylesheet">
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 <style type="text/css">
 
 .leftFloat {

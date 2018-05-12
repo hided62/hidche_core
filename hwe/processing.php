@@ -116,18 +116,18 @@ switch($commandtype) {
 }
 
 function starter($name, $type=0) {
-    echo '
+?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>'.$name.'</title>
+<title><?=$name?></title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<script src="../e_lib/jquery-3.2.1.min.js"></script>
-<script src="../d_shared/common_path.js"></script>
-<script src="js/common.js"></script>
-<script src="js/base_map.js"></script>
-<script src="js/map.js"></script>
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/base_map.js')?>
+<?=WebUtil::printJS('js/map.js')?>
 <script>
 $(function(){
     var $target = $("form[name=form1] select[name=double]");
@@ -143,19 +143,17 @@ $(function(){
     });
 });
 </script>
-<link href="css/normalize.css" rel="stylesheet">
-<link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css?180512" rel="stylesheet">
-<link href="css/main.css" rel="stylesheet">
-<link href="css/map.css" rel="stylesheet">
-';
-echo '
+<?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('css/main.css')?>
+<?=WebUtil::printCSS('css/map.css')?>
 </head>
 <body class="img_back">
 <table class="tb_layout bg0" style="width:1000px;margin:auto;">
-    <tr><td class="bg1" align="center">'.$name.'</td></tr>
+    <tr><td class="bg1" align="center"><?=$name?></td></tr>
     <tr><td>
-';
+<?php
     if($type == 1) echo CoreBackButton();
     else echo backButton();
 }

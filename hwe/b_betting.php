@@ -54,8 +54,8 @@ if($str3){
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 베팅장</title>
-<link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css?180512" rel="stylesheet">
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 </head>
 
 <body>

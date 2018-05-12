@@ -83,14 +83,14 @@ $color = "cyan";
 <title><?=UniqueConst::$serverName?>: 메인</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<script src="../e_lib/jquery-3.2.1.min.js"></script>
-<script src="../e_lib/jquery.redirect.js"></script>
-<script src="../d_shared/common_path.js"></script>
-<script src="js/common.js"></script>
-<script src="js/main.js"></script>
-<script src="js/base_map.js"></script>
-<script src="js/map.js"></script>
-<script src="js/msg.js"></script>
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/main.js')?>
+<?=WebUtil::printJS('js/base_map.js')?>
+<?=WebUtil::printJS('js/map.js')?>
+<?=WebUtil::printJS('js/msg.js')?>
 <script>
 $(function(){
     reloadWorldMap({
@@ -102,12 +102,12 @@ $(function(){
     }, 10000);
 });
 </script>
-<link href="css/normalize.css" rel="stylesheet">
-<link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css?180512" rel="stylesheet">
-<link href="css/main.css?180511" rel="stylesheet">
-<link href="css/map.css" rel="stylesheet">
-<link href="css/msg.css?180511" rel="stylesheet">
+<?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('css/main.css')?>
+<?=WebUtil::printCSS('css/map.css')?>
+<?=WebUtil::printCSS('css/msg.css')?>
 
 
 </head>

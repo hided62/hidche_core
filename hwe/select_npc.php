@@ -24,15 +24,16 @@ $nations = $db->queryAllLists('SELECT `name`, scoutmsg, color FROM nation');
 <head>
 <title><?=UniqueConst::$serverName?>: NPC빙의</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='css/normalize.css?180505_2' type='text/css'>
-<link rel='stylesheet' href='../d_shared/common.css?180505_2' type='text/css'>
-<link rel='stylesheet' href='../css/config.css?180505_2' type='text/css'>
-<link rel='stylesheet' href='css/common.css?180512' type='text/css'>
-<link rel='stylesheet' href='css/select_npc.css?180505_2' type='text/css'>
-<script type="text/javascript" src="../d_shared/common_path.js"></script>
-<script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="../js/common.js?180505_2"></script>
-<script src="js/select_npc.js?180505_4"></script>
+<?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('../css/config.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('css/select_npc.css')?>
+
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../js/common.js')?>
+<?=WebUtil::printJS('js/select_npc.js')?>
 
 </head>
 
