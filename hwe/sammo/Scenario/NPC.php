@@ -161,6 +161,9 @@ class NPC{
             '@phan-var array<string,string|int> $cityObj';
             $city = $cityObj['id'];
         }
+        else{
+            $city = CityHelper::getCityByName($city)['id'];
+        }
 
         $experience = $age * 100;
         $dedication = $age * 100;
