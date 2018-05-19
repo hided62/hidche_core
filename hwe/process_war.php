@@ -1638,7 +1638,7 @@ function addConflict($city, $nationID, $mykillnum) {
     $nationlist = [];
     $killnum = [0];
 
-    list($year, $month) = $db->queryFirstList('SELECT year, month FROM game LIMIT 1');
+    list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
 
     $conflict = Json::decode($city['conflict']);
 

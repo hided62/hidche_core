@@ -109,9 +109,7 @@ function info($type=0) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select year,month,turnterm,maxgeneral from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'turnterm', 'maxgeneral']);
 
     $termtype = "{$admin['turnterm']}분 턴";
 

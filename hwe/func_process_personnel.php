@@ -11,9 +11,7 @@ function process_22(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear','year','month','develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -69,9 +67,7 @@ function process_25(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     $query = "select nation from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -193,9 +189,7 @@ function process_29(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost,npccount,turnterm,scenario from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear','year','month','develcost','npccount','turnterm','scenario']);
 
     $query = "select nation,name,level,gennum,scout from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -403,8 +397,7 @@ function process_29(&$general) {
             $npcid++;
 
             //npccount
-            $query = "update game set npccount={$npcid}";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $gameStor->npccount=$npcid;
 
             //국가 기술력 그대로
             $query = "select no from general where nation='{$general['nation']}'";
@@ -448,9 +441,7 @@ function process_45(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     $query = "select name,chemi from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -561,9 +552,7 @@ function process_46(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     $query = "select * from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -650,9 +639,7 @@ function process_47(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     $nation = getNationStaticInfo($general['nation']);
 
@@ -717,9 +704,7 @@ function process_54(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month']);
 
     $command = DecodeCommand($general['turn0']);
     $who = $command[1];
@@ -784,9 +769,7 @@ function process_55(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     $query = "select name from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -873,9 +856,7 @@ function process_56(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month']);
 
     $nation = getNationStaticInfo($general['nation']);
 
@@ -928,9 +909,7 @@ function process_57(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,killturn from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'killturn']);
 
     $query = "select nation,name from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

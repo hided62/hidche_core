@@ -59,13 +59,13 @@ ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 ###################
 # KV storage
 ###################
-CREATE TABLE if not exists `storage` (
+CREATE TABLE `storage` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`namespace` VARCHAR(40) NOT NULL,
 	`key` VARCHAR(40) NOT NULL,
-	`value` VARCHAR(100) NOT NULL,
+	`value` TEXT NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `key` (`namespace`, `key`)
 )
-DEFAULT CHARSET=utf8mb4
-ENGINE=MyISAM;
+COLLATE='utf8mb4_general_ci'
+ENGINE=MyISAM

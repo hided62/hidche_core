@@ -242,10 +242,9 @@ class Session
             }
             return $this;
         }
-
-        $gameInstance = $db->queryFirstRow('SELECT turnterm, isUnited from game limit 1');
-        $turnterm = $gameInstance['turnterm'];
-        $isUnited = $gameInstance['isUnited'] != 0;
+        
+        $turnterm = $gameStor->turnterm;
+        $isUnited = $gameStor->isUnited != 0;
 
         $generalID = $general['no'];
         $generalName = $general['name'];

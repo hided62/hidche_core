@@ -261,9 +261,7 @@ function myNationInfo() {
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    $query = "select startyear,year from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear','year']);
 
     $query = "select no,nation from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -439,9 +437,7 @@ function commandTable() {
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    $query = "select startyear,year,develcost,scenario from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost', 'scenario']);
 
     $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -680,9 +676,7 @@ function CoreCommandTable() {
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    $query = "select develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $develcost = $gameStor->develcost;
 
     $query = "select no,nation,city,level from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -729,8 +723,8 @@ function CoreCommandTable() {
     commandGroup("", 1);
     commandGroup("====== 특 수 ======");
     addCommand("초토화", 65, $valid);
-    addCommand("천도/3턴(금쌀{$admin['develcost']}0)", 66, $valid);
-    $cost = $admin['develcost'] * 500 + 60000;   // 7만~13만
+    addCommand("천도/3턴(금쌀{$develcost}0)", 66, $valid);
+    $cost = $develcost * 500 + 60000;   // 7만~13만
     addCommand("증축/6턴(금쌀{$cost})", 67, $valid);
     addCommand("감축/6턴", 68, $valid);
     commandGroup("", 1);
@@ -782,9 +776,7 @@ function generalInfo($no) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select show_img_level from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $show_img_level = $gameStor->show_img_level;
 
     $query = "select block,no,name,picture,imgsvr,injury,nation,city,troop,leader,leader2,power,power2,intel,intel2,explevel,experience,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,killturn,age,personal,special,specage,special2,specage2,mode,con,connect from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -880,7 +872,7 @@ function generalInfo($no) {
     else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
 
     $weapImage = ServConfig::$gameImagePath."/weap{$general['crewtype']}.png";
-    if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
+    if($show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "<table width=498 class='tb_layout bg2'>
     <tr>
@@ -1411,13 +1403,13 @@ function unlock() {
 function timeover() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $admin = DB::db()->queryFirstRow(
-        'SELECT turnterm,TIMESTAMPDIFF(SECOND,turntime,now()) as diff from game limit 1'
-    );
 
-    $t = min($admin['turnterm'], 5);
+    list($turnterm, $turntime) = $gameStor->getValuesAsArray(['turnterm', 'turntime']);
+    $diff = (new \DateTime())->getTimestamp() - (new \DateTime($turntime))->getTimestamp();
 
-    $term = $admin['diff'];
+    $t = min($turnterm, 5);
+
+    $term = $diff;
     if($term >= $t || $term < 0) { return 1; }
     else { return 0; }
 }
@@ -1495,8 +1487,7 @@ function updateOnline() {
 	        $onnationstr .= "【{$nationname[$key]}】, ";
 	
 	        if($key == 0) {
-	            $query = "update game set onlinegen='$onnation[0]'";
-	            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                $gameStor->onlinegen = $onnation[0];
 	        } else {
 	            $query = "update nation set onlinegen='$onnation[$key]' where nation='$key'";
 	            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1505,8 +1496,8 @@ function updateOnline() {
 	}
 
     //접속중인 국가
-    $query = "update game set online='$onlinenum',onlinenation='$onnationstr'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->online = $onlinenume;
+    $gameStor->onlinenation = $onnationstr;
 }
 
 function checkTurn() {
@@ -1546,12 +1537,8 @@ function checkTurn() {
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', 진입');
     
     //천통시에는 동결
-    $query = "select turntime from game where isUnited=2";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $down = MYDB_num_rows($result);
-    if($down > 0) {
-        $query = "update plock set plock=1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    if($gameStor->isUnited == 2) {
+        $db->update('plock', ['plock'=>1], true);
         return;
     }
     $gameStor->cacheAll();
@@ -1743,9 +1730,7 @@ function addAge() {
     $query = "update general set age=age+1,belong=belong+1";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     if($admin['year'] >= $admin['startyear']+3) {
         $query = "select no,name,nation,leader,power,intel from general where specage<=age and special='0'";
@@ -1782,7 +1767,7 @@ function addAge() {
 function turnDate($curtime) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $admin = $db->queryFirstRow('SELECT startyear,starttime,turnterm,year,month from game limit 1');
+    $admin = $gameStor->getValues(['startyear', 'starttime', 'turnterm', 'year', 'month']);
 
     $turn = $admin['starttime'];
     $curturn = cutTurn($curtime, $admin['turnterm']);
@@ -1809,11 +1794,8 @@ function turnDate($curtime) {
 function triggerTournament() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
-    $query = "select tournament,tnmt_trig from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['tournament', 'tnmt_trig']);
 
     //현재 토너먼트 없고, 자동개시 걸려있을때, 40%확률
     if($admin['tournament'] == 0 && $admin['tnmt_trig'] > 0 && rand() % 100 < 40) {
@@ -1911,9 +1893,7 @@ function updateTurntime($no) {
     $alllog = [];
     $log = [];
 
-    $query = "select year,month,isUnited,turnterm from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'isUnited', 'turnterm']);
 
     $query = "select no,name,name2,nation,troop,age,turntime,killturn,level,deadyear,npc,npc_org,affinity,npcid from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2167,9 +2147,7 @@ function uniqueItem($general, $log, $vote=0) {
     if($general['npc'] >= 2) { return $log; }
     if($general['weap'] > 6 || $general['book'] > 6 || $general['horse'] > 6 || $general['item'] > 6) { return $log; }
 
-    $query = "select year,month,scenario from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $game_env = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'scenario']);
 
     $query = "select count(*) as cnt from general where npc<2";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2426,9 +2404,7 @@ function deleteNation($general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $nation = getNationStaticInfo($general['nation']);
 
@@ -2459,9 +2435,7 @@ function nextRuler($general) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select nation,name from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2668,9 +2642,7 @@ function SabotageInjury($city, $type=0) {
     $connect=$db->get();
     $log = [];
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select no,name,nation from general where city='$city'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

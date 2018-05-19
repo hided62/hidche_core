@@ -1526,7 +1526,7 @@ function command_46($turn, $command) {
 
     starter("건국");
 
-    $maxnation = $db->queryFirstField('SELECT maxnation FROM game LIMIT 1');
+    $maxnation = $gameStor->maxnation;
 
     $colorUsed = [];
     

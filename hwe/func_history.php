@@ -248,7 +248,7 @@ function LogHistory($isFirst=0) {
 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $obj = $db->queryFirstRow('SELECT year, month, startyear FROM game limit 1');
+    $obj = $gameStor->getValues(['startyear', 'year', 'month']);
 
     //TODO: 새롭게 추가할 지도 값 받아오는 함수를 이용하여 재구성
     $map = getWorldMap([

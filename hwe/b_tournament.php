@@ -393,9 +393,11 @@ for ($i=0; $i < 16; $i++) {
 echo"
                 </tr>";
 
-$query = "select tournament,bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$betting = MYDB_fetch_array($result);
+$betting = $gameStor->getValues(['tournament','bet0','bet1','bet2','bet3','bet4','bet5','bet6','bet7','bet8','bet9','bet10','bet11','bet12','bet13','bet14','bet15']);
+$betting['bet'] = 0;
+for($i=0;$i<16;$i+=1){
+    $betting['bet'] += $betting['bet'.$i];
+}
 $bet = [];
 for ($i=0; $i < 16; $i++) {
     if($betting['bet'] == 0){

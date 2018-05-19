@@ -210,13 +210,11 @@ if($btn == "추방") {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
 
-        $query = "select year,month from game limit 1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $admin = MYDB_fetch_array($result);
-        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D>{$nation['name']}</>에서 추방됨");
+        list($year, $month) = $gameStor->getValuesAsArray(['year','month']);
+        pushGeneralHistory($general, "<C>●</>{$year}년 {$month}월:<D>{$nation['name']}</>에서 추방됨");
 
         pushGenLog($general, $log);
-        pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+        pushGeneralPublicRecord($alllog, $year, $month);
     }
     header('location:b_myBossInfo.php');
     die();

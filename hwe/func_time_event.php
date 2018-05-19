@@ -38,9 +38,7 @@ function processSpring() {
     $query = "update nation set gold=gold*0.95 where gold>100000";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     pushWorldHistory(["<R>★</>{$admin['year']}년 {$admin['month']}월: <S>모두들 즐거운 게임 하고 계신가요? ^^ <Y>삼국일보</> 애독해 주시고, <M>훼접</>은 삼가주세요~</>"], $admin['year'], $admin['month']);
 }
@@ -49,9 +47,7 @@ function processGoldIncome() {
     $db = DB::db();
     $connect=$db->get();
 
-    $query = "select year,month,gold_rate from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','gold_rate']);
     $adminLog = [];
 
     $query = "select name,nation,gold,rate_tmp,bill,type from nation";
@@ -373,9 +369,7 @@ function processRiceIncome() {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select year,month,rice_rate from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','rice_rate']);
     $adminLog = [];
 
     $query = "select name,nation,rice,rate_tmp,bill,type from nation";
@@ -575,9 +569,7 @@ function disaster() {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     //재난표시 초기화
     $query = "update city set state=0 where state<=10";

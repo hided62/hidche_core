@@ -9,7 +9,7 @@ $userID = Session::getUserID();
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-list($npcmode, $maxgeneral) = $db->queryFirstList('SELECT npcmode,maxgeneral FROM game LIMIT 1');
+list($npcmode, $maxgeneral) = $gameStor->getValuesAsArray(['npcmode', 'maxgeneral']);
 
 if(!$npcmode) {
     header('location:..');

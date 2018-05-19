@@ -35,7 +35,7 @@ list(
     $maxgeneral,
     $turnterm,
     $npcmode
-) = $db->queryFirstList('SELECT maxgeneral,turnterm,npcmode from game limit 1');
+) = $gameStor->getValuesAsArray(['maxgeneral', 'turnterm', 'npcmode']);
 
 if(!$npcmode){
     Json::die([

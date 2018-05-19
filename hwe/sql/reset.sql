@@ -13,9 +13,6 @@ DROP TABLE IF EXISTS troop;
 # 락 테이블 삭제
 DROP TABLE IF EXISTS plock;
 
-# 게임 테이블 삭제
-DROP TABLE IF EXISTS game;
-
 # 메시지 테이블 삭제
 DROP TABLE IF EXISTS message;
 

@@ -145,8 +145,8 @@ if ($session->userGrade >= 5) {
     ";
 }
 
-if ($admin['votecomment'] != "") {
-    $comment = explode("|", $admin['votecomment']);
+if ($admin['votecomment']) {
+    $comment = $admin['votecomment'];
     $commentCount = count($comment);
 } else {
     $commentCount = 0;
@@ -159,7 +159,7 @@ echo "
     </tr>
 ";
 for ($i=0; $i < $commentCount; $i++) {
-    $cmt = explode(":", $comment[$i]);
+    $cmt = $comment[$i];
     $cmt[2] = Tag2Code($cmt[2]);
     $j = $i+1;
     echo "

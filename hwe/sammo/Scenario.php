@@ -300,7 +300,7 @@ class Scenario{
         /*
         env로 사용된 것들,
         게임 변수 : year, month
-        game 테이블 변수 : startyear, year, month, genius, turnterm, show_img_level, extended_general, fiction, npcmode
+        gameStor 변수 : startyear, year, month, genius, turnterm, show_img_level, extended_general, fiction, npcmode
         install 변수 : npcmode, show_img_level, extended_general, scenario, fiction
 
         event변수 : currentEventID

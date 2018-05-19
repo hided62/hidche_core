@@ -2153,8 +2153,7 @@ function process_76(&$general) {
             $npcid++;
         }
         //npccount
-        $query = "update game set npccount={$npcid}";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->npccount=$npcid;
 
         //국가 기술력 그대로
         $query = "select no from general where nation='{$general['nation']}'";

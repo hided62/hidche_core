@@ -55,7 +55,7 @@ list(
     $month,
     $maxgeneral,
     $npcmode
-) = $db->queryFirstList('SELECT year,month,maxgeneral,npcmode from game limit 1');
+) = $gameStor->getValuesAsArray(['year', 'month', 'maxgeneral', 'npcmode']);
 
 if(!$npcmode){
     Json::die([

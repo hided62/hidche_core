@@ -350,9 +350,7 @@ function preUpdateMonthly() {
 
     if($result == false) { return false; }
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     //배신 횟수 최대 10회 미만
     $query = "update general set betray=9 where betray>9";
@@ -432,8 +430,10 @@ function preUpdateMonthly() {
     $ratio = 100;
     // 20 ~ 140원
     $develcost = ($admin['year'] - $admin['startyear'] + 10) * 2;
-    $query = "update game set gold_rate='$ratio',rice_rate='$ratio',city_rate='$rate',develcost='$develcost'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->gold_rate = $ratio;
+    $gameStor->rice_rate = $ratio;
+    $gameStor->city_rate = $rate;
+    $gameStor->develcost = $develcost;
 
     //매달 사망자 수입 결산
     processDeadIncome($ratio);
@@ -497,9 +497,7 @@ function postUpdateMonthly() {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select startyear,year,month,scenario from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'scenario']);
 
     $history = [];
 
@@ -652,9 +650,7 @@ function checkWander() {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $needRefresh = false;
 
@@ -688,9 +684,7 @@ function checkMerge() {
     $youlog = [];
     $history = [];
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select * from diplomacy where state='3' and term='0'";
     $dipresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -807,9 +801,7 @@ function checkSurrender() {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select * from diplomacy where state='5' and term='0'";
     $dipresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -933,9 +925,7 @@ function updateNationState() {
     $connect=$db->get();
 
     $history = array();
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select nation,name,level from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1014,9 +1004,7 @@ function checkStatistic() {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $nationHists = [];
     $specialHists = [];
@@ -1171,9 +1159,7 @@ function checkEmperior() {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select year,month,isUnited from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'isUnited']);
 
     $query = "select nation,name from nation where level>0";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

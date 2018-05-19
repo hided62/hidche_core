@@ -341,71 +341,6 @@ create table plock (
   PRIMARY KEY (no)
   ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
-##########################################################################
-## 게임 테이블
-##########################################################################
-
-CREATE TABLE `game` (
-	`no` ENUM('1') NOT NULL DEFAULT '1',
-	`startyear` INT(3) NOT NULL,
-	`year` INT(3) NOT NULL,
-	`month` INT(3) NOT NULL,
-	`refresh` INT(9) NULL DEFAULT '0',
-	`maxonline` INT(9) NULL DEFAULT '1',
-	`maxrefresh` INT(9) NULL DEFAULT '1',
-	`conlimit` INT(9) NULL DEFAULT '5',
-	`develcost` INT(4) NULL DEFAULT '20',
-	`online` INT(9) NULL DEFAULT '0',
-	`onlinenation` VARCHAR(256) NULL DEFAULT '',
-	`onlinegen` VARCHAR(1024) NULL DEFAULT '',
-	`msg` TEXT NULL DEFAULT '',
-	`maxgeneral` INT(3) NULL DEFAULT '100',
-	`genius` INT(2) NULL DEFAULT '3',
-	`maxnation` INT(3) NULL DEFAULT '50',
-	`gold_rate` INT(3) NULL DEFAULT '100',
-	`rice_rate` INT(3) NULL DEFAULT '100',
-	`city_rate` INT(3) NULL DEFAULT '50',
-	`turnterm` INT(3) NULL DEFAULT '60',
-	`killturn` INT(6) NULL DEFAULT '80',
-	`turntime` DATETIME NULL DEFAULT NULL,
-	`starttime` DATETIME NULL DEFAULT NULL,
-	`isUnited` INT(1) NULL DEFAULT '0',
-	`scenario` INT(4) NULL DEFAULT '0',
-	`scenario_text` VARCHAR(80) NULL DEFAULT '0',
-	`show_img_level` INT(2) NULL DEFAULT '0',
-	`extended_general` INT(1) NULL DEFAULT '0',
-	`fiction` INT(1) NULL DEFAULT '0',
-	`npcmode` INT(1) NULL DEFAULT '0',
-	`tnmt_auto` INT(2) NULL DEFAULT '0',
-	`tnmt_time` DATETIME NULL DEFAULT '2100-01-01 00:00:00',
-	`tournament` INT(2) NULL DEFAULT '0',
-	`phase` INT(2) NULL DEFAULT '0',
-	`tnmt_type` INT(2) NULL DEFAULT '0',
-	`tnmt_msg` CHAR(255) NULL DEFAULT '',
-	`tnmt_trig` INT(2) NULL DEFAULT '0',
-	`voteopen` INT(1) NULL DEFAULT '1',
-	`vote` TEXT NULL DEFAULT '',
-	`votecomment` TEXT NULL DEFAULT '',
-	`npccount` INT(4) NULL DEFAULT '0',
-	`bet0` INT(8) NULL DEFAULT '0',
-	`bet1` INT(8) NULL DEFAULT '0',
-	`bet2` INT(8) NULL DEFAULT '0',
-	`bet3` INT(8) NULL DEFAULT '0',
-	`bet4` INT(8) NULL DEFAULT '0',
-	`bet5` INT(8) NULL DEFAULT '0',
-	`bet6` INT(8) NULL DEFAULT '0',
-	`bet7` INT(8) NULL DEFAULT '0',
-	`bet8` INT(8) NULL DEFAULT '0',
-	`bet9` INT(8) NULL DEFAULT '0',
-	`bet10` INT(8) NULL DEFAULT '0',
-	`bet11` INT(8) NULL DEFAULT '0',
-	`bet12` INT(8) NULL DEFAULT '0',
-	`bet13` INT(8) NULL DEFAULT '0',
-	`bet14` INT(8) NULL DEFAULT '0',
-	`bet15` INT(8) NULL DEFAULT '0',
-	PRIMARY KEY (`no`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
-
 ###########################################################################
 ## 메시지 테이블
 ###########################################################################
@@ -676,13 +611,13 @@ ENGINE=MyISAM;
 ###################
 # KV storage
 ###################
-CREATE TABLE if not exists `storage` (
+CREATE TABLE `storage` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`namespace` VARCHAR(40) NOT NULL,
 	`key` VARCHAR(40) NOT NULL,
-	`value` VARCHAR(100) NOT NULL,
+	`value` TEXT NOT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `key` (`namespace`, `key`)
 )
-DEFAULT CHARSET=utf8mb4
-ENGINE=MyISAM;
+COLLATE='utf8mb4_general_ci'
+ENGINE=MyISAM

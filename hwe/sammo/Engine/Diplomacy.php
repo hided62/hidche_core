@@ -59,7 +59,7 @@ class Diplomacy{
             $this->startYear,
             $this->year, 
             $this->month
-        ) = $db->queryFirstList('SELECT startyear, year, month FROM game LIMIT 1');
+        ) = $gameStor->getValuesAsArray(['startyear', 'year', 'month']);
 
     }
 
