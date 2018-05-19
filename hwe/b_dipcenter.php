@@ -68,9 +68,7 @@ if ($me['level'] >= 5) {
         <td align=center class=bg1>비 고</td>
     </tr>
 <?php
-$query = "select year,month from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['year','month']);
 
 $query = "select nation,name,color,power,gennum from nation order by power desc";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
@@ -187,9 +185,7 @@ $query = "select nation,name,color,type,msg,gold,rice,bill,rate,scout,war,scoutm
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $nation = MYDB_fetch_array($result);
 
-$query = "select gold_rate,rice_rate from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['gold_rate','rice_rate']);
 // 금 수지
 $deadIncome = getDeadIncome($nation['nation'], $nation['type'], $admin['gold_rate']);
 

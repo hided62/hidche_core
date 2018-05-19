@@ -57,7 +57,7 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
     ], 'owner=%i', $userID);
 
     if($me['npc'] == 1 && $detachNPC){
-        $turnterm = $db->queryFirstField('SELECT turnterm FROM game LIMIT 1');
+        $turnterm = $gameStor->turnterm;
 
         if($turnterm < 10){
             $targetKillTurn = 30 / $turnterm;

@@ -48,11 +48,7 @@ else if($btn == "댓글" && $comment != "") {
     if($admin['votecomment'] != "") { $admin['votecomment'] .= "|"; }
     $admin['votecomment'] .= "{$nation['name']}:{$me['name']}:{$comment}";
 
-    $query = "update game set votecomment='{$admin['votecomment']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    
-
+    $gameStor->votecomment = $admin['votecomment'];
 }
 
 if($session->userGrade < 5){

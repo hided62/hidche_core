@@ -42,7 +42,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("베팅", 1);
 
-$tournament = $db->queryFirstField('SELECT tournament FROM game LIMIT 1');
+$tournament = $gameStor->tournament;
 if($tournament != 6) {
     header('Location: b_betting.php');
     exit();

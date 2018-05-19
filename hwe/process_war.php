@@ -13,9 +13,7 @@ function processWar($general, $city) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select * from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $game_env = MYDB_fetch_array($result);
+    $game_env = $gameStor->getAll();
 
     $year = $game_env['year'];
     $month = $game_env['month'];

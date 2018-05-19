@@ -66,9 +66,7 @@ $query = "select sum(crew) as totcrew,sum(leader)*100 as maxcrew from general wh
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
 
-$query = "select gold_rate,rice_rate from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['gold_rate','rice_rate']);
 // 금 수지
 $deadIncome = getDeadIncome($nation['nation'], $nation['type'], $admin['gold_rate']);
 

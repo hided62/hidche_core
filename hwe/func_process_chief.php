@@ -893,7 +893,7 @@ function process_64(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $date = substr($general['turntime'],11,5);
-    list($year, $month, $turnterm) = $db->queryFirstList('SELECT year,month,turnterm FROM game LIMIT 1');
+    list($year, $month, $turnterm) = $gameStor->getValuesAsArray(['year','month','turnterm']);
 
     if($general['level'] < 5 || $general['nation']==0) {
         pushGenLog($general, ["<C>●</>{$month}월:수뇌부가 아닙니다. 제의 실패. <1>$date</>"]);
