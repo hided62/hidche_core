@@ -180,7 +180,7 @@ echo "
         <td colspan=2 align=center>
 ";
 
-$vote = $admin['vote'];
+$vote = $admin['vote']?:[''];
 $vote[0] = Tag2Code($vote[0]);
 if ($vote[0] == "") {
     echo "<font color=magenta>진행중 설문 없음</font>";
