@@ -230,8 +230,17 @@ if ($admin['voteopen'] >= 1 || $session->userGrade >= 5) {
         $nationVote[$nation][$ownVote] += $cnt;
     }
 
+    $totalPer = 0;
     for ($i=0; $i < $voteTypeCount; $i++) {
         $per = round(($totalVote[$i]??0) * 100 / $memCount, 1);
+        if($i == $voteTypeCount-1){
+            $per = 100-$totalPer;
+        }
+        else{
+            $totalPer += $per;
+        }
+        
+        
 //        if($per < 5) { $vote['cnt'] = "&nbsp;"; }
 ?>
         <?php if($per == 0): ?>
@@ -269,8 +278,15 @@ if ($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
         <td>
     ";
 
+    $totalPer = 0;
     for ($i=0; $i < $voteTypeCount; $i++) {
         $per = round(Util::array_get($nationVote[0][$i], 0) / $memCount * 100, 1);
+        if($i == $voteTypeCount-1){
+            $per = 100-$totalPer;
+        }
+        else{
+            $totalPer += $per;
+        }
 //        if($per < 5) { $vote['cnt'] = "&nbsp;"; }
 ?>
             <?php if($per == 0): ?>
@@ -315,12 +331,20 @@ if ($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
         <td align=center>
         ";
 
+        $totalPer = 0;
         for ($k=0; $k < $voteTypeCount; $k++) {
             if($memCount == 0){
                 $per = 0;
             }
             else{
                 $per = round($nationVote[$nation['nation']][$k]??0 / $memCount * 100, 1);
+            }
+
+            if($i == $voteTypeCount-1){
+                $per = 100-$totalPer;
+            }
+            else{
+                $totalPer += $per;
             }
             
 //            if($per < 5) { $vote['cnt'] = "&nbsp;"; }
