@@ -35,11 +35,8 @@ if($btn == "투표" && $me['vote'] == 0 && $sel > 0) {
     $log = uniqueItem($me, $log, 1);
     pushGenLog($me, $log);
 }
-else if($btn == "댓글" && $comment != "") {
-    $comment = str_replace("|", " ", $comment);
-    $comment = str_replace(":", " ", $comment);
+else if($btn == "댓글" && trim($comment) != "") {
     $comment = trim($comment);
-    $comment = addslashes(SQ2DQ($comment));
 
     $nation = getNationStaticInfo($me['nation']);
 
@@ -58,13 +55,12 @@ if($session->userGrade < 5){
 
 if($btn == "수정") {
     if($title != "") {
-        $vote = $admin['vote'];
+        $vote = $admin['vote']?:[];
         $vote[0] = $title;
-        $gameStor->vote = $admin['vote'];
+        $gameStor->vote = $vote;
     }
 } elseif($btn == "추가") {
     if($str != "") {
-        //TODO:vote
         $admin['vote'][] = $str;
         $gameStor->vote=$admin['vote'];
     }

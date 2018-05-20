@@ -18,10 +18,7 @@ $me = MYDB_fetch_array($result);
 
 $admin = $gameStor->getValues(['develcost','voteopen','vote','votecomment']);
 
-$vote = explode("|", $admin['vote']);
-if ($vote[0] == "") {
-    $vote[0] = "-";
-}
+$vote = $admin['vote']?:['-'];
 
 ?>
 <!DOCTYPE html>
@@ -88,7 +85,7 @@ $allCount = MYDB_num_rows($result);
 
 $percentage = round($voteCount / $allCount * 100, 1);
 
-$voteTypeCount = count($vote);
+$voteTypeCount = count($vote) - 1;
 for ($i=1; $i < $voteTypeCount; $i++) {
     echo "
     <tr>
@@ -319,7 +316,13 @@ if ($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
         ";
 
         for ($k=0; $k < $voteTypeCount; $k++) {
-            $per = round($nationVote[$nation['nation']][$k] / $memCount * 100, 1);
+            if($memCount == 0){
+                $per = 0;
+            }
+            else{
+                $per = round($nationVote[$nation['nation']][$k]??0 / $memCount * 100, 1);
+            }
+            
 //            if($per < 5) { $vote['cnt'] = "&nbsp;"; }
 ?>
             <?php if($per == 0): ?>
