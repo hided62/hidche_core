@@ -127,8 +127,9 @@ class ResetHelper{
         }
 
         $scenarioObj = new Scenario($scenario, false);
-        $startyear = $scenarioObj->getYear()??GameConst::$defaultStartYear;
+        $scenarioObj->buildConf();
 
+        $startyear = $scenarioObj->getYear()??GameConst::$defaultStartYear;
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -159,6 +160,8 @@ class ResetHelper{
 
         $killturn = 4800 / $turnterm;
         if($npcmode == 1) { $killturn = intdiv($killturn, 3); }
+
+        
 
         $env = [
             'scenario'=>$scenario,

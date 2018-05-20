@@ -23,12 +23,12 @@ $v
     'leader',
     'power',
     'intel'
-], 10)
+], GameConst::$defaultStatMin)
 ->rule('max', [
     'leader',
     'power',
     'intel'
-], 75)
+], GameConst::$defaultStatMax)
 ->rule('min', 'character', 0)
 ->rule('max', 'character', 11);
 
@@ -109,9 +109,9 @@ if (mb_strlen($name) > 6) {
       </script>");
     exit;
 }
-if ($leader + $power + $intel > 150) {
+if ($leader + $power + $intel > GameConst::$defaultStatTotal) {
     echo("<script>
-      window.alert('능력치가 150을 넘어섰습니다. 다시 가입해주세요!')
+      window.alert('능력치가 ".GameConst::$defaultStatTotal."을 넘어섰습니다. 다시 가입해주세요!')
       history.go(-1)
       </script>");
     exit;

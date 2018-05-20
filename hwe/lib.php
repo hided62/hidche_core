@@ -7,11 +7,9 @@ $loader->addPsr4('sammo\\', __DIR__.'/sammo', true);
 
 $loader->addClassMap((function () {
     $d_settingMap = [];
-    foreach (glob(__dir__.'/d_setting/*.php') as $filepath) {
+    foreach (glob(__dir__.'/d_setting/*.orig.php') as $filepath) {
+        $filepath = str_replace('.orig.php', '.php', $filepath);
         $filename = basename($filepath);
-        if (Util::ends_with($filename, '.orig.php')) {
-            continue;
-        }
         $classname = explode('.', $filename)[0];
         $d_settingMap['sammo\\'.$classname] = $filepath;
     };

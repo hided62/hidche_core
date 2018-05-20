@@ -148,6 +148,24 @@ class Scenario{
         }, Util::array_get($data['events'], []));
     }
 
+    private function getGameConf(){
+        $defaultPath = self::SCENARIO_PATH."/default.json";
+        if(!file_exists($defaultPath)){
+            throw new \RuntimeException('기본 시나리오 설정 파일 없음!');
+        }
+        $default = Json::decode(file_get_contents($defaultPath));
+
+        $stat = [
+            'statTotal'=>$this->data['stat']['total']??$default['stat']['total'],
+            'statMin'=>$this->data['stat']['min']??$default['stat']['min'],
+            'statMax'=>$this->data['stat']['max']??$default['stat']['max'],
+            'statNPCMax'=>$this->data['stat']['npcMax']??$default['stat']['npcMax'],
+            'statChiefMin'=>$this->data['stat']['chiefMin']??$default['stat']['chiefMin'],
+        ];
+
+        $this->gameConf = array_merge($stat);
+    }
+
     public function __construct(int $scenarioIdx, bool $lazyInit = true){
         $scenarioPath = self::SCENARIO_PATH."/scenario_{$scenarioIdx}.json";
 
@@ -156,6 +174,8 @@ class Scenario{
 
         $data = Json::decode(file_get_contents($scenarioPath));
         $this->data = $data;
+
+        $this->getGameConf();
 
         $this->year = Util::array_get($data['startYear']);
         $this->title = Util::array_get($data['title'] , '');
@@ -292,7 +312,19 @@ class Scenario{
         }
     }
 
+    public function buildConf(){
+        $path = __dir__.'/../d_setting';
+        Util::generateFileUsingSimpleTemplate(
+            $path.'/GameCustomConst.orig.php',
+            $path.'/GameCustomConst.php',
+            $this->gameConf,
+            true
+        );
+    }
+
     public function build($env=[]){
+        
+
         $this->initFull();
 
         //NOTE: 초기화가 되어있다고 가정함.
@@ -305,6 +337,9 @@ class Scenario{
 
         event변수 : currentEventID
         */
+
+        
+
 
         $db = DB::db();
 

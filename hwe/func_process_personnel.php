@@ -276,37 +276,37 @@ function process_29(&$general) {
             if($admin['scenario'] == 0) {
                 switch($type) {
                 case 0: case 1:
-                    $leader = 65 + rand()%11;
-                    $intel = 10 + rand()%6;
-                    $power = 150 - $leader - $intel;
+                    $leader = GameConst::$defaultStatMax - 10 + rand()%11;
+                    $intel = GameConst::$defaultStatMin + rand()%6;
+                    $power = GameConst::$defaultStatTotal - $leader - $intel;
                     break;
                 case 2: case 3:
-                    $leader = 65 + rand()%11;
-                    $power = 10 + rand()%6;
-                    $intel = 150 - $leader - $power;
+                    $leader = GameConst::$defaultStatMax - 10 + rand()%11;
+                    $power = GameConst::$defaultStatMin + rand()%6;
+                    $intel = GameConst::$defaultStatTotal - $leader - $power;
                     break;
                 case 4: case 5: case 6: case 7: case 8: case 9:
-                    $leader = 10 + rand()%6;
-                    $power = 65 + rand()%11;
-                    $intel = 150 - $leader - $power;
+                    $leader = GameConst::$defaultStatMin + rand()%6;
+                    $power = GameConst::$defaultStatMax - 10 + rand()%11;
+                    $intel = GameConst::$defaultStatTotal - $leader - $power;
                     break;
                 }
             } else {
                 switch($type) {
                 case 0: case 1: case 2: case 3:
-                    $leader = 65 + rand()%11;
-                    $intel = 10 + rand()%6;
-                    $power = 150 - $leader - $intel;
+                    $leader = GameConst::$defaultStatMax - 10 + rand()%11;
+                    $intel = GameConst::$defaultStatMin + rand()%6;
+                    $power = GameConst::$defaultStatTotal - $leader - $intel;
                     break;
                 case 4: case 5: case 6: case 7:
-                    $leader = 65 + rand()%11;
-                    $power = 10 + rand()%6;
-                    $intel = 150 - $leader - $power;
+                    $leader = GameConst::$defaultStatMax - 10 + rand()%11;
+                    $power = GameConst::$defaultStatMin + rand()%6;
+                    $intel = GameConst::$defaultStatTotal - $leader - $power;
                     break;
                 case 8: case 9:
-                    $leader = 10 + rand()%6;
-                    $power = 65 + rand()%11;
-                    $intel = 150 - $leader - $power;
+                    $leader = GameConst::$defaultStatMin + rand()%6;
+                    $power = GameConst::$defaultStatMax - 10 + rand()%11;
+                    $intel = GameConst::$defaultStatTotal - $leader - $power;
                     break;
                 }
             }

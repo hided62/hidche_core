@@ -9,7 +9,8 @@
     "stat":{
         "total":220,
         "min":10,
-        "max":95
+        "max":95,
+        "npcMax":95
     },
     "general":[
         [0, "가규", -1, 0, null, 78, 61, 84, 0, 160, 300, null, null],

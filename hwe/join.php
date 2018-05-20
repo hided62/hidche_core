@@ -32,6 +32,11 @@ $connect=$db->get();
 <head>
 <title><?=UniqueConst::$serverName?>: 장수생성</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<script>
+var defaultStatTotal = <?=GameConst::$defaultStatTotal?>;
+var defaultStatMin = <?=GameConst::$defaultStatMin?>;
+var defaultStatMax = <?=GameConst::$defaultStatMax?>;
+</script>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
@@ -156,13 +161,13 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
         </tr>
         <tr>
             <td align=center colspan=3>
-                <font color=orange>모든 능력치는 ( 10 <= 능력치 <= 75 ) 사이로 잡으셔야 합니다.<br>
+                <font color=orange>모든 능력치는 ( 10 <= 능력치 <= <?=GameConst::$defaultStatMax?> ) 사이로 잡으셔야 합니다.<br>
                 그 외의 능력치는 가입되지 않습니다.</font>
             </td>
         </tr>
         <tr>
             <td align=center colspan=3>
-                능력치의 총합은 150입니다. 가입후 0~10의 능력치 보너스를 받게 됩니다.<br>
+                능력치의 총합은 <?=GameConst::$defaultStatTotal?>입니다. 가입후 0~10의 능력치 보너스를 받게 됩니다.<br>
                 임의의 도시에서 재야로 시작하며 건국과 임관은 게임 내에서 실행합니다.
             </td>
         </tr>

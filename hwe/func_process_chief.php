@@ -2059,19 +2059,19 @@ function process_76(&$general) {
             $type = rand() % 10;
             switch($type) {
             case 0: case 1: case 2: case 3:
-                $leader = 65 + rand()%11;
-                $intel = 10 + rand()%6;
-                $power = 150 - $leader - $intel;
+                $leader = GameConst::$defaultStatMax - 10 + rand()%11;
+                $intel = GameConst::$defaultStatMin + rand()%6;
+                $power = GameConst::$defaultStatTotal - $leader - $intel;
                 break;
             case 4: case 5: case 6: case 7:
-                $leader = 65 + rand()%11;
-                $power = 10 + rand()%6;
-                $intel = 150 - $leader - $power;
+                $leader = GameConst::$defaultStatMax - 10 + rand()%11;
+                $power = GameConst::$defaultStatMin + rand()%6;
+                $intel = GameConst::$defaultStatTotal - $leader - $power;
                 break;
             case 8: case 9:
-                $leader = 10 + rand()%6;
-                $power = 65 + rand()%11;
-                $intel = 150 - $leader - $power;
+                $leader = GameConst::$defaultStatMin + rand()%6;
+                $power = GameConst::$defaultStatMax - 10 + rand()%11;
+                $intel = GameConst::$defaultStatTotal - $leader - $power;
                 break;
             }
             // 국내 최고능치 기준으로 랜덤성 스케일링
@@ -2111,14 +2111,14 @@ function process_76(&$general) {
                 $power = $power + $over1 + $over2 + $over3;
             }
             // 너무 높은 능치는 제한
-            if($leader > 95) {
-                $leader = 95;
+            if($leader > GameConst::$defaultStatNPCMax) {
+                $leader = GameConst::$defaultStatNPCMax;
             }
-            if($power > 95) {
-                $power = 95;
+            if($power > GameConst::$defaultStatNPCMax) {
+                $power = GameConst::$defaultStatNPCMax;
             }
-            if($intel > 95) {
-                $intel = 95;
+            if($intel > GameConst::$defaultStatNPCMax) {
+                $intel = GameConst::$defaultStatNPCMax;
             }
 
             $npccount = 10000 + $npcid;

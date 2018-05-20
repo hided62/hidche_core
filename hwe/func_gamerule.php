@@ -5,77 +5,8 @@ namespace sammo;
  * 게임 룰에 해당하는 함수 모음
  */
 
-// 37.5 ~ 75
-function abilityRand() {
-    $total  = 150;
-    $leader = (rand()%100 + 1) / 100.0 + 1.0;
-    $power  = (rand()%100 + 1) / 100.0 + 1.0;
-    $intel  = (rand()%100 + 1) / 100.0 + 1.0;
-    $rate = $leader + $power + $intel;
-    $leader = intdiv($leader * $total, $rate);
-    $power  = intdiv($power  * $total, $rate);
-    $intel  = intdiv($intel  * $total, $rate);
 
-    while($leader+$power+$intel < 150) {
-        $leader++;
-    }
-
-    return array('leader' => $leader, 'power' => $power, 'intel' => $intel);
-}
-
-// 14 ~ 75
-function abilityLeadpow() {
-    $total  = 150;
-    $leader = (rand()%100 + 1) / 100.0 + 6.0;
-    $power  = (rand()%100 + 1) / 100.0 + 6.0;
-    $intel  = (rand()%100 + 1) / 100.0 + 1.0;
-    $rate = $leader + $power + $intel;
-    $leader = intdiv($leader * $total, $rate);
-    $power  = intdiv($power  * $total, $rate);
-    $intel  = intdiv($intel  * $total, $rate);
-
-    while($leader+$power+$intel < 150) {
-        $leader++;
-    }
-
-    return array('leader' => $leader, 'power' => $power, 'intel' => $intel);
-}
-
-function abilityLeadint() {
-    $total  = 150;
-    $leader = (rand()%100 + 1) / 100.0 + 6.0;
-    $power  = (rand()%100 + 1) / 100.0 + 1.0;
-    $intel  = (rand()%100 + 1) / 100.0 + 6.0;
-    $rate = $leader + $power + $intel;
-    $leader = intdiv($leader * $total, $rate);
-    $power  = intdiv($power  * $total, $rate);
-    $intel  = intdiv($intel  * $total, $rate);
-
-    while($leader+$power+$intel < 150) {
-        $leader++;
-    }
-
-    return array('leader' => $leader, 'power' => $power, 'intel' => $intel);
-}
-
-function abilityPowint() {
-    $total  = 150;
-    $leader = (rand()%100 + 1) / 100.0 + 1.0;
-    $power  = (rand()%100 + 1) / 100.0 + 6.0;
-    $intel  = (rand()%100 + 1) / 100.0 + 6.0;
-    $rate = $leader + $power + $intel;
-    $leader = intdiv($leader * $total, $rate);
-    $power  = intdiv($power  * $total, $rate);
-    $intel  = intdiv($intel  * $total, $rate);
-
-    while($leader+$power+$intel < 150) {
-        $leader++;
-    }
-
-    return array('leader' => $leader, 'power' => $power, 'intel' => $intel);
-}
-
-/**
+ /**
  * 게임 내부에 사용하는 유틸리티 함수들을 분리
  */
 
