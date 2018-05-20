@@ -335,10 +335,10 @@ if ($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
         for ($k=0; $k < $voteTypeCount; $k++) {
             if($memCount == 0){
                 $per = 0;
+                continue;
             }
-            else{
-                $per = round($nationVote[$nation['nation']][$k]??0 / $memCount * 100, 1);
-            }
+
+            $per = round($nationVote[$nation['nation']][$k]??0 / $memCount * 100, 1);
 
             if($i == $voteTypeCount-1){
                 $per = 100-$totalPer;
@@ -353,7 +353,7 @@ if ($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
             <?php elseif($per < 10): ?>
                 <div class='little_bar' style='width:<?=$per?>%;color:<?=getNewColor($k)?>;background-color:<?=getVoteColor($k)?>;'></div>
             <?php else:?>
-                <div class='little_bar' style='width:<?=$per?>%;color:<?=getNewColor($k)?>;background-color:<?=getVoteColor($k)?>;'><?=$nationVote[$nation['nation']][$k]?></div>
+                <div class='little_bar' style='width:<?=$per?>%;color:<?=getNewColor($k)?>;background-color:<?=getVoteColor($k)?>;'><?=$nationVote[$nation['nation']][$k]??0?></div>
             <?php endif;?>
 <?php
         }
