@@ -165,6 +165,8 @@ if ($genius) {
 $specage = Util::round((80 - $age)/12) + $age;
 $special = 0;
 
+$admin = $gameStor->getValues(['scenario', 'turnterm', 'show_img_level']);
+
 if ($admin['scenario'] > 0) {
     $specage2 = $age + 3;
     $specage = $age + 3;
