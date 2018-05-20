@@ -611,7 +611,7 @@ ENGINE=MyISAM;
 ###################
 # KV storage
 ###################
-CREATE TABLE `storage` (
+CREATE TABLE if not exists `storage` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`namespace` VARCHAR(40) NOT NULL,
 	`key` VARCHAR(40) NOT NULL,
