@@ -1438,8 +1438,8 @@ function checkDelay() {
     $iter = intdiv($timeMinDiff, $term);
     if($iter > $threshold) {
         $minute = $iter * $term;
-        $newTurntime = $turntime->add(new DateInterval("PT{$minute}M"));
-        $newNextTurntime = $turntime->add(new DateInterval("PT{$term}M"));
+        $newTurntime = $turntime->add(new \DateInterval("PT{$minute}M"));
+        $newNextTurntime = $turntime->add(new \DateInterval("PT{$term}M"));
         $gameStor->turntime = $newTurntime;
 
         $db->update('general', [
