@@ -144,14 +144,14 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
     echo "
             <select name=outlist size=1 style=color:white;background-color:black;>";
 
-    $query = "select no,name,level from general where nation='{$me['nation']}' and level!='12' and no!='{$me['no']}' order by npc,binary(name)";
+    $query = "select no,name,level,leader,power,intel,killturn from general where nation='{$me['nation']}' and level!='12' and no!='{$me['no']}' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
         echo "
-                <option value={$general['no']}>{$general['name']}</option>";
+                <option value={$general['no']}>{$general['name']} <small>({$general['leader']}/{$general['power']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
     }
 
     echo "
