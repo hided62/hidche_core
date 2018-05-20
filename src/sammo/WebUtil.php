@@ -89,10 +89,10 @@ class WebUtil
         return $decoded;
     }
 
-    public function printJS(string $path){
+    public static function printJS(string $path){
         //async, defer 옵션 고려
         $upath = \phpUri::parse($path);
-        $path = $upath->join();
+        $path = $upath->join('');
         if(!$upath->scheme && file_exists($upath->path)){
             $mtime = filemtime($upath->path);
             if($upath->query){
@@ -108,9 +108,9 @@ class WebUtil
         return "<script src='{$path}{$tail}'></script>\n";
     }
 
-    public function printCSS(string $path){
+    public static function printCSS(string $path){
         $upath = \phpUri::parse($path);
-        $path = $upath->join();
+        $path = $upath->join('');
         if(!$upath->scheme && file_exists($upath->path)){
             $mtime = filemtime($upath->path);
             if($upath->query){
