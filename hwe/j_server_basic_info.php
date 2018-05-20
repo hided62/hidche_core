@@ -47,11 +47,13 @@ if(file_exists(__dir__.'/.htaccess')){
 
 //TODO: 천통시에도 예약 오픈 알림이 필요..?
 
-$game_env = $gameStor->getValues(['isUnited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnTerm']);
+$game_env = $gameStor->getValues(['isUnited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm']);
 $game_env['maxUserCnt'] = $game_env['maxgeneral'];
 $game_env['npcMode'] = $game_env['npcmode'];
+$game_env['turnTerm'] = $game_env['turnterm'];
 unset($game_env['npcmode']);
 unset($game_env['maxgeneral']);
+unset($game_env['turnterm']);
 
 $nationCnt = $db->queryFirstField('SELECT count(`nation`) from nation where `level` > 0');
 $genCnt = $db->queryFirstField('SELECT count(`no`) from general where `npc` < 2');
