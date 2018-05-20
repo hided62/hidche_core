@@ -85,7 +85,7 @@ $allCount = MYDB_num_rows($result);
 
 $percentage = round($voteCount / $allCount * 100, 1);
 
-$voteTypeCount = count($vote) - 1;
+$voteTypeCount = count($vote);
 for ($i=1; $i < $voteTypeCount; $i++) {
     echo "
     <tr>
