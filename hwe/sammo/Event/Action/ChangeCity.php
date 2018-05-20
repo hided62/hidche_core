@@ -140,10 +140,10 @@ class ChangeCity extends \sammo\Event\Action{
 
         if($targetType == 'cities'){
             if(is_numeric($this->targetArgs)){
-                return DB::db()->queryFirstColumn('SELECT city FROM city WHERE city IN (%ls)', $this->targetArgs);
+                return DB::db()->queryFirstColumn('SELECT city FROM city WHERE city IN %ls', $this->targetArgs);
             }
             else{
-                return DB::db()->queryFirstColumn('SELECT city FROM city WHERE name IN (%ls)', $this->targetArgs);
+                return DB::db()->queryFirstColumn('SELECT city FROM city WHERE name IN %ls', $this->targetArgs);
             }
             
         }

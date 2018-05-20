@@ -1496,7 +1496,7 @@ function updateOnline() {
 	}
 
     //접속중인 국가
-    $gameStor->online = $onlinenume;
+    $gameStor->online = $onlinenum;
     $gameStor->onlinenation = $onnationstr;
 }
 

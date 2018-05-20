@@ -46,6 +46,7 @@ function processSpring() {
 function processGoldIncome() {
     $db = DB::db();
     $connect=$db->get();
+    $gameStor = new KVStorage($db, 'game_env');
 
     $admin = $gameStor->getValues(['year','month','gold_rate']);
     $adminLog = [];

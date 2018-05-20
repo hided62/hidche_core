@@ -138,6 +138,9 @@ class KVStorage{
     }
 
     public function getValuesAsArray(array $keys, bool $onlyCache=false): array{
+        if(!$keys){
+            return [];
+        }
         $dictResult = $this->getValues($keys, $onlyCache);
         $result = [];
         foreach($keys as $key){
@@ -147,6 +150,9 @@ class KVStorage{
     }
 
     public function getValues(array $keys, bool $onlyCache=false): array{
+        if(!$keys){
+            return [];
+        }
         if ($this->cacheData === null) {
             return $this->getDBValues($keys);
         }
@@ -224,7 +230,11 @@ class KVStorage{
     }
 
     private function getDBValues(array $keys): array{
+        if(!$keys){
+            return [];
+        }
         $result = [];
+        $keys = array_map('strval', $keys);
         foreach($this->db->queryAllLists(
             'SELECT `key`, `value` FROM %b WHERE `namespace`=%s AND `key` IN %ls', 
             $this->tableName,
@@ -243,6 +253,7 @@ class KVStorage{
     }
 
     private function getDBValue($key){
+        $key = (string)$key;
         $value = $this->db->queryFirstField(
             'SELECT `value` FROM %b WHERE `namespace`=%s AND `key`=%s',
             $this->tableName,
@@ -268,17 +279,18 @@ class KVStorage{
     }
 
     private function deleteDBValue($key):self{
-        $this->db->delete($this->tableName, [
-            'namespace'=>$this->storNamespace,
-            'key'=>$key
-        ]);
+        $key = (string)$key;
+        $this->db->delete(
+            $this->tableName,
+            '`namespace`=%s AND `key`=%s',
+            $this->storNamespace,
+            $key
+        );
         return $this;
     }
 
     private function resetDBNamespace():self{
-        $this->db->delete($this->tableName, [
-            'namespace'=>$this->storNamespace
-        ]);
+        $this->db->delete($this->tableName, 'namespace=%s', $this->storNamespace);
         return $this;
     }
 }

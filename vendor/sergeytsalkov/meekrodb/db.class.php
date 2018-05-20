@@ -645,6 +645,8 @@ class MeekroDB {
           'code' => $db->errno
         ));
       }
+
+      echo $sql."<br>\n";
       
       if ($this->throw_exception_on_error) {
         $e = new MeekroDBException($db->error, $sql, $db->errno);
