@@ -693,7 +693,7 @@ function setGift($tnmt_type, $tnmt, $phase) {
     $no = ($general['grp'] - 20) * 2 + $general['grp_no'];
 
 
-    $admin = $gameStor->getDBValues(['bet0','bet1','bet2','bet3','bet4','bet5','bet6','bet7','bet8','bet9','bet10','bet11','bet12','bet13','bet14','bet15']);
+    $admin = $gameStor->getValues(['bet0','bet1','bet2','bet3','bet4','bet5','bet6','bet7','bet8','bet9','bet10','bet11','bet12','bet13','bet14','bet15']);
     $admin['bet'] = array_sum($admin);
     $bet = @round($admin['bet'] /  $admin["bet{$no}"], 2);
 
