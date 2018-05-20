@@ -63,6 +63,7 @@ class KVStorage{
     }
 
     public function invalidateCacheValue($key):self{
+        $key = mb_strtolower($key);
         if($this->cacheData === null){
             return $this;
         }
@@ -76,6 +77,8 @@ class KVStorage{
         if($this->cacheData === null){
             return $this;
         }
+        $keys = array_map('mb_strtolower', $keys);
+        
         foreach($keys as $key){
             if(key_exists($key, $this->cacheData)){
                 unset($this->cacheData[$key]);
@@ -97,6 +100,7 @@ class KVStorage{
         if($this->cacheData === null){
             $this->cacheData = [];
         }
+        $keys = array_map('mb_strtolower', $keys);
 
         if($invalidateAll){
             $notExists = $keys;
@@ -141,6 +145,7 @@ class KVStorage{
         if(!$keys){
             return [];
         }
+        $keys = array_map('mb_strtolower', $keys);
         $dictResult = $this->getValues($keys, $onlyCache);
         $result = [];
         foreach($keys as $key){
@@ -153,6 +158,7 @@ class KVStorage{
         if(!$keys){
             return [];
         }
+        $keys = array_map('mb_strtolower', $keys);
         if ($this->cacheData === null) {
             return $this->getDBValues($keys);
         }
@@ -187,6 +193,7 @@ class KVStorage{
     }
 
     public function getValue($key, bool $onlyCache=false){
+        $key = mb_strtolower($key);
         if($this->cacheData !== null && ($onlyCache || key_exists($key, $this->cacheData))){
             return $this->cacheData[$key] ?? null;
         }
@@ -199,6 +206,7 @@ class KVStorage{
     }
 
     public function setValue($key, $value):self{
+        $key = mb_strtolower($key);
         if($value === null){
             return $this->deleteValue($key);
         }
@@ -210,6 +218,7 @@ class KVStorage{
     }
 
     public function deleteValue($key):self{
+        $key = mb_strtolower($key);
         if(isset($this->cacheData[$key])){
             unset($this->cacheData[$key]);
         }
@@ -234,7 +243,6 @@ class KVStorage{
             return [];
         }
         $result = [];
-        $keys = array_map('strval', $keys);
         foreach($this->db->queryAllLists(
             'SELECT `key`, `value` FROM %b WHERE `namespace`=%s AND `key` IN %ls', 
             $this->tableName,
@@ -252,8 +260,7 @@ class KVStorage{
         return $result;
     }
 
-    private function getDBValue($key){
-        $key = (string)$key;
+    private function getDBValue(string $key){
         $value = $this->db->queryFirstField(
             'SELECT `value` FROM %b WHERE `namespace`=%s AND `key`=%s',
             $this->tableName,
@@ -266,7 +273,7 @@ class KVStorage{
         return Json::decode($value);
     }
 
-    private function setDBValue($key, $value):self{
+    private function setDBValue(string $key, $value):self{
         if($value === null){
             return $this->deleteDBValue($key);
         }
@@ -278,8 +285,7 @@ class KVStorage{
         return $this;
     }
 
-    private function deleteDBValue($key):self{
-        $key = (string)$key;
+    private function deleteDBValue(string $key):self{
         $this->db->delete(
             $this->tableName,
             '`namespace`=%s AND `key`=%s',
