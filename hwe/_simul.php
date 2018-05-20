@@ -82,7 +82,7 @@ $query = "select no,tournament,con,turntime from general where owner='{$userID}'
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$game_env = $gameStor->getAll();
+$admin = $gameStor->getAll();
 
 $con = checkLimit($me['con']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
@@ -172,7 +172,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
             $opposecount = 0;
         }
 
-        $warphase = getRate($game_env, $general['crewtype'], "spd");   //병종간 페이즈 수 얻기
+        $warphase = getRate($admin, $general['crewtype'], "spd");   //병종간 페이즈 수 얻기
 
         // 우선 스케일링
         $city['def'] *= 10;
@@ -300,7 +300,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     }
                     //회피
                     $ratio = rand() % 100; // 0 ~ 99
-                    $ratio2 = getRate($game_env, $general['crewtype'], "avd");   //회피율
+                    $ratio2 = getRate($admin, $general['crewtype'], "avd");   //회피율
                     if($ratio < $ratio2 && $avoid == 1) {
                         $msg .= "<C>●</><C>회피</>했다!</><br>";
                         $myCrew /= 10; // 10%만 소모
@@ -664,7 +664,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     }
                     //회피
                     $ratio = rand() % 100; // 0 ~ 99
-                    $ratio2 = getRate($game_env, $general['crewtype'], "avd");   //회피율
+                    $ratio2 = getRate($admin, $general['crewtype'], "avd");   //회피율
                     if($ratio < $ratio2 && $myAvoid == 1) {
                         $msg .= "<C>●</><C>회피</>했다!</><br>";
                         $myCrew /= 10; // 10%만 소모
@@ -672,7 +672,7 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                     }
                     //회피
                     $ratio = rand() % 100; // 0 ~ 99
-                    $ratio2 = getRate($game_env, $oppose['crewtype'], "avd");   //회피율
+                    $ratio2 = getRate($admin, $oppose['crewtype'], "avd");   //회피율
                     if($ratio < $ratio2 && $opAvoid == 1) {
                         $msg .= "<C>●</>상대가 <R>회피</>했다!</><br>";
                         $opCrew /= 10; // 10%만 소모
@@ -801,8 +801,8 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
 
     $def = 7000;
     $wall = 7000;
-    $train3 = $game_env['city_rate'];
-    $atmos3 = $game_env['city_rate'];
+    $train3 = $admin['city_rate'];
+    $atmos3 = $admin['city_rate'];
 }
 
 switch($level1) {
@@ -1597,31 +1597,31 @@ if($isgen == "장수공격" || $isgen == "성벽공격") {
 
 <?php
     for($i=0; $i <= 5; $i++) {
-        printSimul($game_env, $i);
+        printSimul($admin, $i);
     }
     echo "
     <tr><td height=5 colspan=8 id=bg1></td></tr>";
 
     for($i=10; $i <= 14; $i++) {
-        printSimul($game_env, $i);
+        printSimul($admin, $i);
     }
     echo "
     <tr><td height=5 colspan=8 id=bg1></td></tr>";
 
     for($i=20; $i <= 27; $i++) {
-        printSimul($game_env, $i);
+        printSimul($admin, $i);
     }
     echo "
     <tr><td height=5 colspan=8 id=bg1></td></tr>";
 
     for($i=30; $i <= 38; $i++) {
-        printSimul($game_env, $i);
+        printSimul($admin, $i);
     }
     echo "
     <tr><td height=5 colspan=8 id=bg1></td></tr>";
 
     for($i=40; $i <= 43; $i++) {
-        printSimul($game_env, $i);
+        printSimul($admin, $i);
     }
     echo "
     <tr><td height=5 colspan=8 id=bg1></td></tr>";
@@ -1632,13 +1632,13 @@ if($isgen == "장수공격" || $isgen == "성벽공격") {
 </html>
 <?php
 
-function printSimul($game_env, $i) {
-    $att = $game_env["att{$i}"];
-    $def = $game_env["def{$i}"];
-    $spd = $game_env["spd{$i}"];
-    $avd = $game_env["avd{$i}"];
-    $cst = $game_env["cst{$i}"];
-    $ric = $game_env["ric{$i}"];
+function printSimul($admin, $i) {
+    $att = $admin["att{$i}"];
+    $def = $admin["def{$i}"];
+    $spd = $admin["spd{$i}"];
+    $avd = $admin["avd{$i}"];
+    $cst = $admin["cst{$i}"];
+    $ric = $admin["ric{$i}"];
     echo "
     <tr>
         <td align=right>".GameUnitConst::byId($i)->name."</td>

@@ -47,22 +47,22 @@ if(file_exists(__dir__.'/.htaccess')){
 
 //TODO: 천통시에도 예약 오픈 알림이 필요..?
 
-$game_env = $gameStor->getValues(['isUnited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm']);
-$game_env['maxUserCnt'] = $game_env['maxgeneral'];
-$game_env['npcMode'] = $game_env['npcmode'];
-$game_env['turnTerm'] = $game_env['turnterm'];
-unset($game_env['npcmode']);
-unset($game_env['maxgeneral']);
-unset($game_env['turnterm']);
+$admin = $gameStor->getValues(['isUnited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm']);
+$admin['maxUserCnt'] = $admin['maxgeneral'];
+$admin['npcMode'] = $admin['npcmode'];
+$admin['turnTerm'] = $admin['turnterm'];
+unset($admin['npcmode']);
+unset($admin['maxgeneral']);
+unset($admin['turnterm']);
 
 $nationCnt = $db->queryFirstField('SELECT count(`nation`) from nation where `level` > 0');
 $genCnt = $db->queryFirstField('SELECT count(`no`) from general where `npc` < 2');
 $npcCnt = $db->queryFirstField('SELECT count(`no`) from general where `npc` >= 2');
 
-$game_env['scenario'] = $game_env['scenario_text'];
-$game_env['userCnt'] = $genCnt;
-$game_env['npcCnt'] = $npcCnt;
-$game_env['nationCnt'] = $nationCnt;
+$admin['scenario'] = $admin['scenario_text'];
+$admin['userCnt'] = $genCnt;
+$admin['npcCnt'] = $npcCnt;
+$admin['nationCnt'] = $nationCnt;
 
 $me = [];
 
@@ -79,6 +79,6 @@ if($general){
 
 //TODO: 이를 표현하는 방법은 '이전 버전'의 serverListPost.php를 참고할 것.
 Json::die([
-    'game'=>$game_env,
+    'game'=>$admin,
     'me'=>$me?:null
 ]);
