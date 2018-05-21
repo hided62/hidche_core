@@ -128,18 +128,18 @@ for ($j=0; $j < $citycount; $j++) {
         <td colspan=12 style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=2>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</font></td>
     </tr>
     <tr>
-        <td align=center width=48 id=bg1>주민</td>
-        <td align=center width=112>{$city['pop']}/{$city['pop2']}</td>
-        <td align=center width=48 id=bg1>농업</td>
-        <td align=center width=108>{$city['agri']}/{$city['agri2']}</td>
-        <td align=center width=48 id=bg1>상업</td>
-        <td align=center width=108>{$city['comm']}/{$city['comm2']}</td>
-        <td align=center width=48 id=bg1>치안</td>
-        <td align=center width=108>{$city['secu']}/{$city['secu2']}</td>
-        <td align=center width=48 id=bg1>수비</td>
-        <td align=center width=108>{$city['def']}/{$city['def2']}</td>
-        <td align=center width=48 id=bg1>성벽</td>
-        <td align=center width=108>{$city['wall']}/{$city['wall2']}</td>
+        <td align=center width=46 id=bg1>주민</td>
+        <td align=center width=140>{$city['pop']}/{$city['pop2']}</td>
+        <td align=center width=46 id=bg1>농업</td>
+        <td align=center width=140>{$city['agri']}/{$city['agri2']}</td>
+        <td align=center width=46 id=bg1>상업</td>
+        <td align=center width=140>{$city['comm']}/{$city['comm2']}</td>
+        <td align=center width=46 id=bg1>치안</td>
+        <td align=center width=140>{$city['secu']}/{$city['secu2']}</td>
+        <td align=center width=46 id=bg1>수비</td>
+        <td align=center width=140>{$city['def']}/{$city['def2']}</td>
+        <td align=center width=46 id=bg1>성벽</td>
+        <td align=center width=140>{$city['wall']}/{$city['wall2']}</td>
     </tr>
     <tr>
         <td align=center id=bg1>민심</td>
