@@ -2076,17 +2076,17 @@ function process_76(&$general) {
             }
             // 국내 최고능치 기준으로 랜덤성 스케일링
             if($avgGen['lpi'] > 210) {
-                $leader = Util::round($leader * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
-                $power = Util::round($power * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
-                $intel = Util::round($intel * $avgGen['lpi'] / 150 * (60+rand()%31)/100);
+                $leader = Util::round($leader * $avgGen['lpi'] / GameConst::$defaultStatTotal * (60+rand()%31)/100);
+                $power = Util::round($power * $avgGen['lpi'] / GameConst::$defaultStatTotal * (60+rand()%31)/100);
+                $intel = Util::round($intel * $avgGen['lpi'] / GameConst::$defaultStatTotal * (60+rand()%31)/100);
             } elseif($avgGen['lpi'] > 180) {
-                $leader = Util::round($leader * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
-                $power = Util::round($power * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
-                $intel = Util::round($intel * $avgGen['lpi'] / 150 * (75+rand()%21)/100);
+                $leader = Util::round($leader * $avgGen['lpi'] / GameConst::$defaultStatTotal * (75+rand()%21)/100);
+                $power = Util::round($power * $avgGen['lpi'] / GameConst::$defaultStatTotal * (75+rand()%21)/100);
+                $intel = Util::round($intel * $avgGen['lpi'] / GameConst::$defaultStatTotal * (75+rand()%21)/100);
             } else {
-                $leader = Util::round($leader * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
-                $power = Util::round($power * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
-                $intel = Util::round($intel * $avgGen['lpi'] / 150 * (90+rand()%11)/100);
+                $leader = Util::round($leader * $avgGen['lpi'] / GameConst::$defaultStatTotal * (90+rand()%11)/100);
+                $power = Util::round($power * $avgGen['lpi'] / GameConst::$defaultStatTotal * (90+rand()%11)/100);
+                $intel = Util::round($intel * $avgGen['lpi'] / GameConst::$defaultStatTotal * (90+rand()%11)/100);
             }
             $over1 = 0;
             $over2 = 0;

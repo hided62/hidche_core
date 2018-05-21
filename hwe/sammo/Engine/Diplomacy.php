@@ -3,6 +3,7 @@ namespace sammo\Engine;
 
 use \sammo\DB;
 use \sammo\DiplomaticMessage;
+use \sammo\KVStorage;
 
 //NOTE: A가 B에게 항복, 통합 서신을 보냈을 때 통합 후 대상이 A이므로 A가 주체임.
 class Diplomacy{

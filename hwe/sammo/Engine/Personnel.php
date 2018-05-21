@@ -3,6 +3,7 @@ namespace sammo\Engine;
 
 use \sammo\DB;
 use \sammo\ScoutMessage;
+use \sammo\KVStorage;
 
 /**
  * 인사(등용, 추방, 임명, 망명) 헬퍼 클래스?
