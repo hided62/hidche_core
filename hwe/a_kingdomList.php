@@ -129,14 +129,14 @@ for($i=1; $i <= $count; $i++) {
         <td colspan=8 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 {$nation['name']} 】</td>
     </tr>
     <tr>
-        <td width=123 align=center id=bg1>성 향</td>
-        <td width=123 align=center><font color=yellow>".getNationType($nation['type'])."</font></td>
-        <td width=123 align=center id=bg1>작 위</td>
-        <td width=123 align=center>".getNationLevel($nation['level'])."</td>
-        <td width=123 align=center id=bg1>국 력</td>
-        <td width=123 align=center>{$nation['power']}</td>
-        <td width=123 align=center id=bg1>장수 / 속령</td>
-        <td width=123 align=center>{$gencount} / {$citycount}</td>
+        <td width=80 align=center id=bg1>성 향</td>
+        <td width=170 align=center><font color=yellow>".getNationType($nation['type'])."</font></td>
+        <td width=80 align=center id=bg1>작 위</td>
+        <td width=170 align=center>".getNationLevel($nation['level'])."</td>
+        <td width=80 align=center id=bg1>국 력</td>
+        <td width=17 align=center>{$nation['power']}</td>
+        <td width=80 align=center id=bg1>장수 / 속령</td>
+        <td width=170 align=center>{$gencount} / {$citycount}</td>
     </tr>
     <tr>
         <td align=center id=bg1>".getLevel(12, $nation['level'])."</td>
