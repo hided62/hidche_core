@@ -109,7 +109,7 @@ function processTournament() {
         $second = $unit * $iter;
         $gameStor->tournament = $tnmt;
         $gameStor->phase = $phase;
-        $gameStor->tnmt_time = (new \DateTimeImmutable($gameStor->tnmt_time))->add(new \DateInterval("PT{$second}S"))->format('Y-m-d H:i:s');
+        $gameStor->tnmt_time = (new \DateTimeImmutable($admin['tnmt_time']))->add(new \DateInterval("PT{$second}S"))->format('Y-m-d H:i:s');
     }
 }
 
@@ -255,7 +255,6 @@ function startTournament($auto, $type) {
     $gameStor->tournament = 1;
     $gameStor->tnmt_type = $type;
     $gameStor->phase = 0;
-    $gameStor->bet = 0;
     for($i=0;$i<16;$i+=1){
         $gameStor->setValue("bet{$i}", 0);
     }
