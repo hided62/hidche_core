@@ -27,6 +27,8 @@ class Scenario{
 
     private $initOK = false;
 
+    private $gameConf = null;
+
     private function initFull(){
         if($this->initOK){
             return;
@@ -148,7 +150,10 @@ class Scenario{
         }, Util::array_get($data['events'], []));
     }
 
-    private function getGameConf(){
+    public function getGameConf(){
+        if($this->gameConf){
+            return $this->gameConf;
+        }
         $defaultPath = self::SCENARIO_PATH."/default.json";
         if(!file_exists($defaultPath)){
             throw new \RuntimeException('기본 시나리오 설정 파일 없음!');
@@ -164,6 +169,7 @@ class Scenario{
         ];
 
         $this->gameConf = array_merge($stat);
+        return $this->gameConf;
     }
 
     public function __construct(int $scenarioIdx, bool $lazyInit = true){

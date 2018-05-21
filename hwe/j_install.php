@@ -78,7 +78,8 @@ if($reserve_open){
             'extend'=>$extend,
             'npcmode'=>$npcmode,
             'show_img_level'=>$show_img_level,
-            'tournament_trig'=>$tournament_trig
+            'tournament_trig'=>$tournament_trig,
+            'gameConf'=>$scenarioObj->getGameConf()
         ]),
         'date'=>$reserve_open->format('Y-m-d H:i:s')
     ]);

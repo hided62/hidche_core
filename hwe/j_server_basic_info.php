@@ -38,7 +38,8 @@ if(file_exists(__dir__.'/.htaccess')){
             'turnterm'=>$options['turnterm'],
             'fictionMode'=>($options['fiction']?'가상':'사실'),
             'npcMode'=>($options['npcmode']?'가능':'불가'),
-            'openDatetime'=>$reserved['date']
+            'openDatetime'=>$reserved['date'],
+            'gameConf'=>$options['gameConf']
         ],
         'game'=>null,
         'me'=>null
