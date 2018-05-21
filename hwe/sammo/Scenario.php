@@ -126,7 +126,7 @@ class Scenario{
                 $text
             );
 
-        }, Util::array_get($data['generalEx'], []));
+        }, Util::array_get($data['general_ex'], []));
 
         $this->initialEvents = array_map(function($rawEvent){
             $cond = $rawEvent[0];
