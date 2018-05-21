@@ -22,7 +22,7 @@ $now = new \DateTime();
 
 $status = 'not_yet';
 
-list($isUnited, $lastTurn) = $gameStor->getValues(['isUnited', 'turntime']);
+list($isUnited, $lastTurn) = $gameStor->getValuesAsArray(['isunited', 'turntime']);
 if($isUnited === null || $lastTurn === null){
     $isUnited = 2;
     $lastTurn = '2000-01-01';
