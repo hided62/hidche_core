@@ -141,7 +141,7 @@ require(__dir__.'/../vendor/autoload.php');
             <th class="bg1">도움말</th>
             <td colspan="5" style="text-align:left;padding:8px;">
                 <p style="line-height:1.2em;">
-                아이콘은 64 x 64픽셀, 10KB 이하의 jpg, gif, png 파일만 가능합니다.</p>
+                아이콘은 64 x 64픽셀 ~ 128 x 128픽셀 사이, 20KB 이하의 jpg, gif, png 파일만 가능합니다.</p>
                 <p style="margin-top:1em;color:magenta;line-height:1.2em;">탈퇴시 1개월간 정보가 보존되며, 1개월간 재가입이 불가능합니다.</span>
                 </p>
             </td>

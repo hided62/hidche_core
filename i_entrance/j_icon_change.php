@@ -48,15 +48,19 @@ if(!is_uploaded_file($image['tmp_name'])) {
     //확장자 검사
     $response['reason'] = 'jpg, gif, png 파일이 아닙니다!';
     $response['result'] = false;
-} elseif($image['size'] > 10000) {
+} elseif($image['size'] > 20480) {
     //파일크기 검사
-    $response['reason'] = '10kb 이하로 올려주세요!';
+    $response['reason'] = '20kb 이하로 올려주세요!';
     $response['result'] = false;
-} elseif($size[0] != 64 || $size[1] != 64) {
+}  elseif($size[0] < 64 || 128 < $size[0]) {
     //이미지크기 검사
-    $response['reason'] = '64x64 크기로 올려주세요!';
+    $response['reason'] = '64x64 ~ 128x128 사이여야 합니다.';
     $response['result'] = false;
-} elseif($dt == $rf) {
+} elseif($size[0] != $size[1]) {
+    //이미지크기 검사
+    $response['reason'] = '1:1 비율 이미지여야 합니다.';
+    $response['result'] = false;
+}elseif($dt == $rf) {
     //갱신날짜 검사
     $response['reason'] = '1일 1회 변경 가능합니다!';
     $response['result'] = false;
