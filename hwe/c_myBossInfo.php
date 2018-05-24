@@ -38,19 +38,20 @@ if($meLevel < 5){
     exit();
 }
 
-
 if($btn == "임명") {
-    if($genlist !== 0){
-        $query = "select no,nation,level,leader,power,intel from general where no='$genlist'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
-
-        if(!$general){
-            header('location:b_myBossInfo.php');
-            exit();
-        }
+    if(!$genlist){
+        header('location:b_myBossInfo.php');
+        exit();
     }
-        
+
+    $query = "select no,nation,level,leader,power,intel from general where no='$genlist'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $general = MYDB_fetch_array($result);
+
+    if(!$general){
+        header('location:b_myBossInfo.php');
+        exit();
+    }
 
     //임명할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($meLevel < 5 || ($general['nation'] != $me['nation'] && $genlist != 0) || ($general['level'] == 12 && $genlist != 0)) {
@@ -59,6 +60,10 @@ if($btn == "임명") {
         exit();
     }
 } elseif($btn == "추방") {
+    if(!$outlist){
+        header('location:b_myBossInfo.php');
+        exit();
+    }
     $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr from general where no='$outlist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
