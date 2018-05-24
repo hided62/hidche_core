@@ -7,9 +7,9 @@
     "diplomacy":[
     ],
     "stat":{
-        "total":240,
+        "total":220,
         "min":10,
-        "max":100,
+        "max":95,
         "npcMax":95
     },
     "general":[
