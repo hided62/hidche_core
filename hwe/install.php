@@ -20,14 +20,14 @@ if($session->userGrade < 5){
 <title>설치</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<script src="../e_lib/jquery-3.2.1.min.js"></script>
-<script src="../e_lib/bootstrap.bundle.min.js"></script>
-<script src="../e_lib/jquery.validate.min.js"></script>
-<script src="js/common.js"></script>
-<script src="js/install.js"></script>
-<link rel="stylesheet" href="css/normalize.css" >
-<link rel="stylesheet" href="../e_lib/bootstrap.min.css">
-<link rel="stylesheet" href="css/install.css" >
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../e_lib/jquery.validate.min.js')?>
+<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/install.js')?>
+<?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+<?=WebUtil::printCSS('css/install.css')?>
 </head>
 <body>
     <div class="container" style="min-width:720px;">

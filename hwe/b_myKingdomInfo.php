@@ -8,6 +8,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("세력정보", 1);
@@ -27,13 +28,13 @@ if($me['level'] == 0) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 세력정보</title>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>세 력 정 보<br><?=backButton()?></td></tr>
 </table>
 <br>
@@ -65,9 +66,7 @@ $query = "select sum(crew) as totcrew,sum(leader)*100 as maxcrew from general wh
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $general = MYDB_fetch_array($result);
 
-$query = "select gold_rate,rice_rate from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['gold_rate','rice_rate']);
 // 금 수지
 $deadIncome = getDeadIncome($nation['nation'], $nation['type'], $admin['gold_rate']);
 
@@ -89,7 +88,7 @@ if($budgetricediff > 0) { $budgetricediff = "+{$budgetricediff}"; }
 else { $budgetricediff = "$budgetricediff"; }
 
 echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+<table align=center width=1000 class='tb_layout bg2'>
     <tr>
         <td colspan=8 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 ";echo $me['nation']==0?"공 백 지":"{$nation['name']}";echo " 】</td>
     </tr>
@@ -156,7 +155,7 @@ echo"
 
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

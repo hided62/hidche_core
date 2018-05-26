@@ -8,6 +8,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("베팅장", 1);
@@ -17,11 +18,13 @@ $query = "select no,tournament,con,turntime,bet0+bet1+bet2+bet3+bet4+bet5+bet6+b
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-$query = "select conlimit,tournament,phase,tnmt_type,develcost,bet0,bet1,bet2,bet3,bet4,bet5,bet6,bet7,bet8,bet9,bet10,bet11,bet12,bet13,bet14,bet15,bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['tournament','phase','tnmt_type','develcost','bet0','bet1','bet2','bet3','bet4','bet5','bet6','bet7','bet8','bet9','bet10','bet11','bet12','bet13','bet14','bet15']);
+$admin['bet'] = 
+    $admin['bet0'] + $admin['bet1'] + $admin['bet2'] + $admin['bet3'] + $admin['bet4'] + 
+    $admin['bet5'] + $admin['bet6'] + $admin['bet7'] + $admin['bet8'] + $admin['bet9'] + 
+    $admin['bet10'] + $admin['bet11'] + $admin['bet12'] + $admin['bet13'] + $admin['bet14'] + $admin['bet15'];
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
     exit();
@@ -54,29 +57,20 @@ if($str3){
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 베팅장</title>
-<style>
-body { color:white; background-color:black; border-width:1px; border-color:gray; }
-table { font-family:'맑은 고딕';}
-font { font-family:'맑은 고딕';}
-input { font-family:'맑은 고딕';height:20px }
-select { font-family:'굴림'; }
-#bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
-#bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
-#bg2 { background-image:url(<?=ServConfig::$gameImagePath?>/back_blue.jpg); }
-</style>
-
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 </head>
 
 <body>
-<table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1120 class='tb_layout bg0'>
     <tr><td>베 팅 장<br><?=closeButton()?></td></tr>
 </table>
-<table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10px;word-break:break-all; id=bg0>
+<table align=center width=1120 class='tb_layout bg0'>
     <tr><td colspan=16><input type=button value='갱신' onclick='location.reload()'></td></tr>
     <tr><td colspan=16 align=center><font color=white size=6><?=$tnmt_type?> (<?=$str1.$str2.$str3?>)</font></td></tr>
     <tr><td height=50 colspan=16 align=center id=bg2><font color=limegreen size=6>16강 상황</font><br><font color=orange size=3>(전체 금액 : <?=$admin['bet']?> / 내 투자 금액 : <?=$me['bet']?>)</font></td></tr>
 </table>
-<table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:10px;word-break:break-all; id=bg0>
+<table align=center width=1120 class='mimic_flex bg0' style='border:solid 1px gray;font-size:10px;'>
     <tr align=center><td height=10 colspan=16></td></tr>
     <tr align=center>
 <?php
@@ -308,7 +302,7 @@ for ($i=0; $i < 16; $i++) {
 ?>
     </tr>
 </table>
-<table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1120 class='tb_layout bg0'>
     <tr align=center><td height=10 colspan=16></td></tr>
 <?php
 echo "
@@ -387,7 +381,7 @@ if ($admin['tournament'] == 6) {
     </tr>
     <tr align=center><td height=10 colspan=16></td></tr>
 </table>
-<table align=center width=1120 border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1120 class='tb_layout bg0'>
     <tr align=center><td height=50 colspan=4 id=bg2><font color=yellow size=6>토너먼트 랭킹</font></td></tr>
     <tr align=center><td colspan=4 id=bg2><font color=skyblue size=3>순위 / 장수명 / 능력치 / 경기수 / 승리 / 무승부 / 패배 / 집계점수 / 우승횟수</font></td></tr>
     <tr align=center>
@@ -402,7 +396,7 @@ for ($i=0; $i < 4; $i++) {
     $grp = $i;
     echo "
         <td>
-            <table align=center width=280 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+            <table align=center width=280 class='tb_layout bg0'>
                 <tr><td colspan=9 align=center style=color:white;background-color:black;><font size=4>{$type1[$i]}</font></td></tr>
                 <tr id=bg1><td align=center>순</td><td align=center>장수</td><td align=center>{$type2[$i]}</td><td align=center>경</td><td align=center>승</td><td align=center>무</td><td align=center>패</td><td align=center>점</td><td align=center>勝</td></tr>";
 
@@ -429,7 +423,7 @@ for ($i=0; $i < 4; $i++) {
         </td>
     </tr>
 </table>
-<table align=center width=1120 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1120 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

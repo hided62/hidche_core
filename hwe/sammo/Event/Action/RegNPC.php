@@ -18,7 +18,7 @@ class RegNPC extends \sammo\Event\Action{
         int $birth = 160, 
         int $death = 300, 
         $ego = null,
-        string $char = '', 
+        $char = '', 
         $text = ''
     ){
         $this->npc = new \sammo\Scenario\NPC(

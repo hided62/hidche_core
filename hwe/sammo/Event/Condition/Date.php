@@ -50,13 +50,15 @@ class Date extends \sammo\Event\Condition{
         }
 
         $lhs = [
-            $this->year,
-            $this->month
-        ];
-        $rhs = [
             $this->year!==null?(int)$env['year']:null,
             $this->month!==null?(int)$env['month']:null
         ];
+
+        $rhs = [
+            $this->year,
+            $this->month
+        ];
+        
         
         $value = false;
         switch($this->cmp){

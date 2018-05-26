@@ -151,10 +151,9 @@ function pushWorldHistory(array $history, $year=null, $month=null) {
         return;
     }
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     if($year === null || $month === null){
-        $game = $db->queryFirstRow('SELECT year, month FROM game LIMIT 1');
-        $year = $game['year'];
-        $month = $game['month'];
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
     }
     $request = array_map(function($text) use ($year, $month) {
         return ['year'=>$year, 'month'=>$month, 'text'=>$text];
@@ -199,10 +198,9 @@ function pushGeneralPublicRecord(array $history, $year=null, $month=null) {
         return;
     }
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     if($year === null || $month === null){
-        $game = $db->queryFirstRow('SELECT year, month FROM game LIMIT 1');
-        $year = $game['year'];
-        $month = $game['month'];
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
     }
     $request = array_map(function($text) use ($year, $month) {
         return ['year'=>$year, 'month'=>$month, 'text'=>$text];
@@ -249,7 +247,8 @@ function LogHistory($isFirst=0) {
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', LogHistory Start');
 
     $db = DB::db();
-    $obj = $db->queryFirstRow('SELECT year, month, startyear FROM game limit 1');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $obj = $gameStor->getValues(['startyear', 'year', 'month']);
 
     //TODO: 새롭게 추가할 지도 값 받아오는 함수를 이용하여 재구성
     $map = getWorldMap([

@@ -38,13 +38,13 @@ $sel = [$type => "selected"];
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 세력장수</title>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>세 력 장 수<br><?=backButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
@@ -114,7 +114,7 @@ $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect)
 $gencount = MYDB_num_rows($genresult);
 
 echo"
-<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center class='tb_layout bg0'>
     <tr>
         <td width=64 align=center id=bg1>얼 굴</td>
         <td width=98 align=center id=bg1>이 름</td>
@@ -191,7 +191,7 @@ for($j=0; $j < $gencount; $j++) {
 
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

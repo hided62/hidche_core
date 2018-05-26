@@ -23,12 +23,12 @@ $v
     'leader',
     'power',
     'intel'
-], 10)
+], GameConst::$defaultStatMin)
 ->rule('max', [
     'leader',
     'power',
     'intel'
-], 75)
+], GameConst::$defaultStatMax)
 ->rule('min', 'character', 0)
 ->rule('max', 'character', 11);
 
@@ -66,9 +66,10 @@ if (!$member) {
 }
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
+$gameStor->cacheValues(['year','month','maxgeneral','scenario','show_img_level','turnterm','genius','npcmode']);
 ########## 동일 정보 존재여부 확인. ##########
 
-$admin = $db->queryFirstRow('SELECT year,month,maxgeneral,scenario,show_img_level,turnterm,genius,npcmode from game limit 1');
 $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
 $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', $userID);
 $oldName = $db->queryFirstField('SELECT `no` FROM general WHERE `name`=%s', $name);
@@ -87,7 +88,7 @@ if ($oldName) {
       </script>");
     exit;
 }
-if ($admin['maxgeneral'] <= $gencount) {
+if ($gameStor->maxgeneral <= $gencount) {
     echo("<script>
       window.alert('더이상 등록할 수 없습니다!')
       history.go(-1)
@@ -108,9 +109,9 @@ if (mb_strlen($name) > 6) {
       </script>");
     exit;
 }
-if ($leader + $power + $intel > 150) {
+if ($leader + $power + $intel > GameConst::$defaultStatTotal) {
     echo("<script>
-      window.alert('능력치가 150을 넘어섰습니다. 다시 가입해주세요!')
+      window.alert('능력치가 ".GameConst::$defaultStatTotal."을 넘어섰습니다. 다시 가입해주세요!')
       history.go(-1)
       </script>");
     exit;
@@ -118,10 +119,8 @@ if ($leader + $power + $intel > 150) {
 
 $genius = Util::randBool(0.01);
 // 현재 1%
-if ($genius && $admin['genius'] > 0) {
-    $db->update('game', [
-        'genius'=>$db->sqleval('genius-1')
-    ], true);
+if ($genius && $gameStor->genius > 0) {
+    $gameStor->genius = $gameStor->genius-1;
 } else {
     $genius = false;
 }
@@ -165,6 +164,8 @@ if ($genius) {
 //내특
 $specage = Util::round((80 - $age)/12) + $age;
 $special = 0;
+
+$admin = $gameStor->getValues(['scenario', 'turnterm', 'show_img_level']);
 
 if ($admin['scenario'] > 0) {
     $specage2 = $age + 3;
@@ -239,14 +240,14 @@ $log = [];
 $mylog = [];
 
 if ($genius) {
-    $log[0] = "<C>●</>{$admin['month']}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>(이)라는 기재가 천하에 이름을 알립니다.";
-    $log[1] = "<C>●</>{$admin['month']}월:<C>".getGenSpecial($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
+    $log[0] = "<C>●</>{$gameStor->month}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>(이)라는 기재가 천하에 이름을 알립니다.";
+    $log[1] = "<C>●</>{$gameStor->month}월:<C>".getGenSpecial($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
 
-    pushWorldHistory(["<C>●</>{$admin['year']}년 {$admin['month']}월:<L><b>【천재】</b></><G><b>{$cityname}</b></>에 천재가 등장했습니다."], $admin['year'], $admin['month']);
+    pushWorldHistory(["<C>●</>{$gameStor->year}년 {$gameStor->month}월:<L><b>【천재】</b></><G><b>{$cityname}</b></>에 천재가 등장했습니다."], $gameStor->year, $gameStor->month);
 } else {
-    $log[0] = "<C>●</>{$admin['month']}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>(이)라는 호걸이 천하에 이름을 알립니다.";
+    $log[0] = "<C>●</>{$gameStor->month}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>(이)라는 호걸이 천하에 이름을 알립니다.";
 }
-pushGeneralHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$name}</>, <G>{$cityname}</>에서 큰 뜻을 품다.");
+pushGeneralHistory($me, "<C>●</>{$gameStor->year}년 {$gameStor->month}월:<Y>{$name}</>, <G>{$cityname}</>에서 큰 뜻을 품다.");
 $mylog[] = "<C>●</>삼국지 모의전투 PHP의 세계에 오신 것을 환영합니다 ^o^";
 $mylog[] = "<C>●</>처음 하시는 경우에는 <D>도움말</>을 참고하시고,";
 $mylog[] = "<C>●</>문의사항이 있으시면 게시판에 글을 남겨주시면 되겠네요~";
@@ -255,10 +256,10 @@ $mylog[] = "<C>●</>통솔 <C>$pleader</> 무력 <C>$ppower</> 지력 <C>$pinte
 $mylog[] = "<C>●</>연령은 <C>$age</>세로 시작합니다.";
 if ($genius) {
     $mylog[] = "<C>●</>축하합니다! 천재로 태어나 처음부터 <C>".getGenSpecial($special2)."</> 특기를 가지게 됩니다!";
-    pushGeneralHistory($me, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getGenSpecial($special2)."</> 특기를 가진 천재로 탄생.");
+    pushGeneralHistory($me, "<C>●</>{$gameStor->year}년 {$gameStor->month}월:<C>".getGenSpecial($special2)."</> 특기를 가진 천재로 탄생.");
 }
 pushGenLog($me, $mylog);
-pushGeneralPublicRecord($log, $admin['year'], $admin['month']);
+pushGeneralPublicRecord($log, $gameStor->year, $gameStor->month);
 
 pushAdminLog(["가입 : {$userID} // {$name} // {$generalID}".getenv("REMOTE_ADDR")]);
 

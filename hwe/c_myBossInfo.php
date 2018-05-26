@@ -18,11 +18,10 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
-$query = "select startyear,year,month,scenario from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['startyear','year','month','scenario']);
 
 $query = "select no,nation,level from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -39,19 +38,20 @@ if($meLevel < 5){
     exit();
 }
 
-
 if($btn == "임명") {
-    if($genlist !== 0){
-        $query = "select no,nation,level,leader,power,intel from general where no='$genlist'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
-
-        if(!$general){
-            header('location:b_myBossInfo.php');
-            exit();
-        }
+    if(!$genlist){
+        header('location:b_myBossInfo.php');
+        exit();
     }
-        
+
+    $query = "select no,nation,level,leader,power,intel from general where no='$genlist'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $general = MYDB_fetch_array($result);
+
+    if(!$general){
+        header('location:b_myBossInfo.php');
+        exit();
+    }
 
     //임명할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($meLevel < 5 || ($general['nation'] != $me['nation'] && $genlist != 0) || ($general['level'] == 12 && $genlist != 0)) {
@@ -60,6 +60,10 @@ if($btn == "임명") {
         exit();
     }
 } elseif($btn == "추방") {
+    if(!$outlist){
+        header('location:b_myBossInfo.php');
+        exit();
+    }
     $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr from general where no='$outlist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
@@ -211,13 +215,11 @@ if($btn == "추방") {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
 
-        $query = "select year,month from game limit 1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $admin = MYDB_fetch_array($result);
-        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D>{$nation['name']}</>에서 추방됨");
+        list($year, $month) = $gameStor->getValuesAsArray(['year','month']);
+        pushGeneralHistory($general, "<C>●</>{$year}년 {$month}월:<D>{$nation['name']}</>에서 추방됨");
 
         pushGenLog($general, $log);
-        pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+        pushGeneralPublicRecord($alllog, $year, $month);
     }
     header('location:b_myBossInfo.php');
     die();
@@ -245,12 +247,12 @@ if($btn == "임명" && $level >= 5 && $level <= 11) {
         if($genlist != 0) {
             $valid = 0;
             switch($level) {
-            case 10: if($general['power'] >= GameConst::$goodgenpower) { $valid = 1; } break;
-            case  9: if($general['intel'] >= GameConst::$goodgenintel) { $valid = 1; } break;
-            case  8: if($general['power'] >= GameConst::$goodgenpower) { $valid = 1; } break;
-            case  7: if($general['intel'] >= GameConst::$goodgenintel) { $valid = 1; } break;
-            case  6: if($general['power'] >= GameConst::$goodgenpower) { $valid = 1; } break;
-            case  5: if($general['intel'] >= GameConst::$goodgenintel) { $valid = 1; } break;
+            case 10: if($general['power'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
+            case  9: if($general['intel'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
+            case  8: if($general['power'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
+            case  7: if($general['intel'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
+            case  6: if($general['power'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
+            case  5: if($general['intel'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
             default: $valid = 1; break;
             }
             if($valid == 1) {
@@ -302,8 +304,8 @@ if($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
     if($genlist != 0) {
         $valid = 0;
         switch($level) {
-        case  4: if($general['power'] >= GameConst::$goodgenpower) { $valid = 1; } break;
-        case  3: if($general['intel'] >= GameConst::$goodgenintel) { $valid = 1; } break;
+        case  4: if($general['power'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
+        case  3: if($general['intel'] >= GameConst::$chiefStatMin) { $valid = 1; } break;
         default: $valid = 1; break;
         }
 

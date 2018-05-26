@@ -17,13 +17,13 @@ increaseRefresh("국법", 1);
 <head>
 <title><?=UniqueConst::$serverName?>: 국법</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>국 법<br><?=backButton()?></td></tr>
     <tr><td>
 

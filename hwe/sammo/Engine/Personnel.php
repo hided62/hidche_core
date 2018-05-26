@@ -3,6 +3,7 @@ namespace sammo\Engine;
 
 use \sammo\DB;
 use \sammo\ScoutMessage;
+use \sammo\KVStorage;
 
 /**
  * 인사(등용, 추방, 임명, 망명) 헬퍼 클래스?
@@ -21,6 +22,7 @@ class Personnel{
 
     public function __construct(int $nationID, int $senderID){
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
         $nation = $db->queryFirstRow(
             'SELECT nation, `name`, `level`, capital, scout FROM nation WHERE nation=%i',
             $nationID
@@ -39,7 +41,7 @@ class Personnel{
             $this->year, 
             $this->month, 
             $this->killturn
-        ) = $db->queryFirstList('SELECT startyear, year, month, killturn FROM game LIMIT 1');
+        ) = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'killturn']);
 
     }
 

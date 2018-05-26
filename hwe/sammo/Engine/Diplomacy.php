@@ -3,6 +3,7 @@ namespace sammo\Engine;
 
 use \sammo\DB;
 use \sammo\DiplomaticMessage;
+use \sammo\KVStorage;
 
 //NOTE: A가 B에게 항복, 통합 서신을 보냈을 때 통합 후 대상이 A이므로 A가 주체임.
 class Diplomacy{
@@ -24,6 +25,7 @@ class Diplomacy{
         }
 
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
         $srcNation = $db->queryFirstRow(
             'SELECT nation, `name`, `power`, capital, gold, rice, surlimit, color, `level` FROM nation WHERE nation=%i',
             $srcNationID
@@ -58,7 +60,7 @@ class Diplomacy{
             $this->startYear,
             $this->year, 
             $this->month
-        ) = $db->queryFirstList('SELECT startyear, year, month FROM game LIMIT 1');
+        ) = $gameStor->getValuesAsArray(['startyear', 'year', 'month']);
 
     }
 
@@ -148,7 +150,7 @@ class Diplomacy{
             return $prev;
         }
 
-        if(!\sammo\isClose($this->srcNation['nation'], $this->destNation['nation'], false)){
+        if(!\sammo\isNeighbor($this->srcNation['nation'], $this->destNation['nation'], false)){
             return [DiplomaticMessage::DECLINED, '상대국의 도시들과 보급선이 이어지지 않았습니다.'];
         }
 
@@ -160,7 +162,7 @@ class Diplomacy{
             return $prev;
         }
 
-        if(!\sammo\isClose($this->srcNation['nation'], $this->destNation['nation'], true)){
+        if(!\sammo\isNeighbor($this->srcNation['nation'], $this->destNation['nation'], true)){
             return [DiplomaticMessage::DECLINED, '상대국의 도시와 인접하지 않았습니다.'];
         }
 

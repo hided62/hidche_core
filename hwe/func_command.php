@@ -457,28 +457,27 @@ function getCoreTurn($nation, $level) {
 function processCommand($no) {
     $session = Session::getInstance();
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $query = "select npc,no,name,picture,imgsvr,nation,nations,city,troop,injury,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,belong,personal,special,special2,term,turn0,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
-
-    $query = "select month,killturn from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    
+    list($month, $killturn) = $gameStor->getValuesAsArray(['month', 'killturn']);
     $log = [];
 
     // 블럭자는 미실행. 삭턴 감소
     if($general['block'] == 2) {
         $date = substr($general['turntime'],11,5);
-        $log[] = "<C>●</>{$admin['month']}월:현재 멀티, 또는 비매너로 인한<R>블럭</> 대상자입니다. <1>$date</>";
+        $log[] = "<C>●</>{$month}월:현재 멀티, 또는 비매너로 인한<R>블럭</> 대상자입니다. <1>$date</>";
         pushGenLog($general, $log);
 
         $query = "update general set recturn='',resturn='BLOCK_2',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } elseif($general['block'] == 3) {
         $date = substr($general['turntime'],11,5);
-        $log[] = "<C>●</>{$admin['month']}월:현재 악성유저로 분류되어 <R>블럭, 발언권 무효</> 대상자입니다. <1>$date</>";
+        $log[] = "<C>●</>{$month}월:현재 악성유저로 분류되어 <R>블럭, 발언권 무효</> 대상자입니다. <1>$date</>";
         pushGenLog($general, $log);
 
         $query = "update general set recturn='',resturn='BLOCK_3',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
@@ -530,14 +529,14 @@ function processCommand($no) {
 
         $command = DecodeCommand($general['turn0']);
         //삭턴 처리
-        if($general['npc'] >= 2 || $general['killturn'] > $admin['killturn']) {
+        if($general['npc'] >= 2 || $general['killturn'] > $killturn) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } elseif($command[0] == 0) {
             $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn='{$admin['killturn']}' where no='{$general['no']}'";
+            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn='{$killturn}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
         //FIXME: 운영자 같이 사망하면 안되는 인물에 대한 처리가 필요
@@ -551,7 +550,7 @@ function processCommand($no) {
         switch($command[0]) {
             case 0: //휴식
                 $date = substr($general['turntime'],11,5);
-                $log[] = "<C>●</>{$admin['month']}월:아무것도 실행하지 않았습니다. <1>$date</>";
+                $log[] = "<C>●</>{$month}월:아무것도 실행하지 않았습니다. <1>$date</>";
                 pushGenLog($general, $log);
                 break;
             case  1: process_1($general, 1); break; //농업

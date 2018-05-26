@@ -16,6 +16,8 @@ $result = [];
 
 $server = [];
 
+$storage = new \sammo\KVStorage(RootDB::db(), 'git_path');
+$serverGitPath = $storage->getAll();
 
 $rootServer = Util::array_last(AppConf::getList())->getShortName();
 
@@ -74,7 +76,8 @@ foreach (AppConf::getList() as $setting) {
         'name' => $serverDir,
         'korName' => $serverKorName,
         'color' => $serverColor,
-        'isRoot' => $serverDir == $rootServer
+        'isRoot' => $serverDir == $rootServer,
+        'lastGitPath' => ($serverGitPath[$serverDir][0])??'origin/master'
     ];
     $server[] = $state;
 }  

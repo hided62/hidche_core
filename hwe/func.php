@@ -89,20 +89,19 @@ function GetImageURL($imgsvr, $filepath='') {
  * @param null|int $con 장수의 벌점
  * @param null|int $conlimit 최대 벌점
  */
-function checkLimit($con = null, $conlimit = null) {
+function checkLimit($con = null) {
     $session = Session::getInstance();
     if($session->userGrade>=4){
         return 0;
     }
 
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
 
     if($con === null){
         $con = $db->queryFirstField('SELECT con FROM general WHERE `owner`=%i', Session::getUserID());
     }
-    if($conlimit === null){
-        $conlimit = $db->queryFirstField('SELECT conlimit FROM game LIMIT 1');
-    }
+    $conlimit = $gameStor->conlimit;
 
     if($con > $conlimit) {
         return 2;
@@ -173,9 +172,9 @@ function cityInfo() {
     }
 
     if($nation['color'] == "" ) { $nation['color'] = "#000000"; }
-    echo "<table width=640 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
-    <tr><td colspan=8 align=center style=height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
-    <tr><td colspan=8 align=center style=height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
+    echo "<table style='width:100%;' class='tb_layout bg2'>
+    <tr><td colspan=8 style=text-align:center;height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
+    <tr><td colspan=8 style=text-align:center;height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
 
     if($city['nation'] == 0) {
         echo "공 백 지";
@@ -211,46 +210,46 @@ function cityInfo() {
         </b></td>
     </tr>
     <tr>
-        <td rowspan=2 align=center id=bg1><b>주민</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>주민</b></td>
         <td height=7 colspan=3>".bar($pop)."</td>
-        <td rowspan=2 align=center id=bg1><b>민심</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>민심</b></td>
         <td height=7>".bar($rate)."</td>
-        <td rowspan=2 align=center id=bg1><b>태수</b></td>
-        <td rowspan=2 align=center>{$gen1['name']}</td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>태수</b></td>
+        <td rowspan=2 style='text-align:center;'>{$gen1['name']}</td>
     </tr>
     <tr>
-        <td colspan=3 align=center>{$city['pop']}/{$city['pop2']}</td>
-        <td align=center>{$city['rate']}</td>
+        <td colspan=3 style='text-align:center;'>{$city['pop']}/{$city['pop2']}</td>
+        <td style='text-align:center;'>{$city['rate']}</td>
     </tr>
     <tr>
-        <td width=50  rowspan=2 align=center id=bg1><b>농업</b></td>
+        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>농업</b></td>
         <td width=100 height=7>".bar($agri)."</td>
-        <td width=50  rowspan=2 align=center id=bg1><b>상업</b></td>
+        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>상업</b></td>
         <td width=100 height=7>".bar($comm)."</td>
-        <td width=50  rowspan=2 align=center id=bg1><b>치안</b></td>
+        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>치안</b></td>
         <td width=100 height=7>".bar($secu)."</td>
-        <td width=50  rowspan=2 align=center id=bg1><b>군사</b></td>
-        <td rowspan=2 align=center>{$gen2['name']}</td>
+        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>군사</b></td>
+        <td rowspan=2 style='text-align:center;'>{$gen2['name']}</td>
     </tr>
     <tr>
-        <td align=center>{$city['agri']}/{$city['agri2']}</td>
-        <td align=center>{$city['comm']}/{$city['comm2']}</td>
-        <td align=center>{$city['secu']}/{$city['secu2']}</td>
+        <td style='text-align:center;'>{$city['agri']}/{$city['agri2']}</td>
+        <td style='text-align:center;'>{$city['comm']}/{$city['comm2']}</td>
+        <td style='text-align:center;'>{$city['secu']}/{$city['secu2']}</td>
     </tr>
     <tr>
-        <td rowspan=2 align=center id=bg1><b>수비</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>수비</b></td>
         <td height=7>".bar($def)."</td>
-        <td rowspan=2 align=center id=bg1><b>성벽</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>성벽</b></td>
         <td height=7>".bar($wall)."</td>
-        <td rowspan=2 align=center id=bg1><b>시세</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>시세</b></td>
         <td height=7>".bar($trade)."</td>
-        <td rowspan=2 align=center id=bg1><b>시중</b></td>
-        <td rowspan=2 align=center>{$gen3['name']}</td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>시중</b></td>
+        <td rowspan=2 style='text-align:center;'>{$gen3['name']}</td>
     </tr>
     <tr>
-        <td align=center>{$city['def']}/{$city['def2']}</td>
-        <td align=center>{$city['wall']}/{$city['wall2']}</td>
-        <td align=center>{$tradeStr}</td>
+        <td style='text-align:center;'>{$city['def']}/{$city['def2']}</td>
+        <td style='text-align:center;'>{$city['wall']}/{$city['wall2']}</td>
+        <td style='text-align:center;'>{$tradeStr}</td>
     </tr>
 </table>
 ";
@@ -258,12 +257,11 @@ function cityInfo() {
 
 function myNationInfo() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    $query = "select startyear,year from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear','year']);
 
     $query = "select no,nation from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -289,43 +287,43 @@ function myNationInfo() {
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level11 = MYDB_fetch_array($genresult);
 
-    echo "<table width=498 height=190 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+    echo "<table width=498 class='tb_layout bg2 nation_info'>
     <tr>
-        <td colspan=4 align=center ";
+        <td colspan=4 ";
 
-    if($me['nation'] == 0) { echo "style=color:white;background-color:000000;font-weight:bold;font-size:13px;>【재 야】"; }
-    else { echo "style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>국가【 {$nation['name']} 】"; }
+    if($me['nation'] == 0) { echo "style='color:white;background-color:000000;font-weight:bold;font-size:13px;text-align:center;'>【재 야】"; }
+    else { echo "style='color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;text-align:center'>국가【 {$nation['name']} 】"; }
 
     echo "
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>성 향</b></td>
-        <td align=center colspan=3><font color=\"yellow\">".getNationType($nation['type'])."</font> (".getNationType2($nation['type']).")</td>
+        <td class='bg1 center'><b>성 향</b></td>
+        <td colspan=3 class='center'><font color=\"yellow\">".getNationType($nation['type'])."</font> (".getNationType2($nation['type']).")</td>
         </td>
     </tr>
     <tr>
-        <td width=68  align=center id=bg1><b>".getLevel(12, $nation['level'])."</b></td>
-        <td width=178 align=center>";echo $level12?$level12['name']:"-"; echo "</td>
-        <td width=68  align=center id=bg1><b>".getLevel(11, $nation['level'])."</b></td>
-        <td width=178 align=center>";echo $level11?$level11['name']:"-"; echo "</td>
+        <td width=68 class='bg1 center'><b>".getLevel(12, $nation['level'])."</b></td>
+        <td width=178 class='center'>";echo $level12?$level12['name']:"-"; echo "</td>
+        <td width=68 class='bg1 center'><b>".getLevel(11, $nation['level'])."</b></td>
+        <td width=178 class='center'>";echo $level11?$level11['name']:"-"; echo "</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>총주민</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"{$city['totpop']}/{$city['maxpop']}";echo "</td>
-        <td align=center id=bg1><b>총병사</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"{$general['totcrew']}/{$general['maxcrew']}"; echo "</td>
+        <td class='bg1 center'><b>총주민</b></td>
+        <td class='center'>";echo $me['nation']==0?"해당 없음":"{$city['totpop']}/{$city['maxpop']}";echo "</td>
+        <td class='bg1 center'><b>총병사</b></td>
+        <td class='center'>";echo $me['nation']==0?"해당 없음":"{$general['totcrew']}/{$general['maxcrew']}"; echo "</td>
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>국 고</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"{$nation['gold']}";echo "</td>
-        <td align=center id=bg1><b>병 량</b></td>
-        <td align=center>";echo $me['nation']==0?"해당 없음":"{$nation['rice']}";echo "</td>
+        <td class='bg1 center'><b>국 고</b></td>
+        <td class='center'>";echo $me['nation']==0?"해당 없음":"{$nation['gold']}";echo "</td>
+        <td class='bg1 center'><b>병 량</b></td>
+        <td class='center'>";echo $me['nation']==0?"해당 없음":"{$nation['rice']}";echo "</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>지급율</b></td>
-        <td align=center>";
+        <td class='bg1 center'><b>지급율</b></td>
+        <td class='center'>";
     if($me['nation'] == 0) {
         echo "해당 없음";
     } else {
@@ -333,8 +331,8 @@ function myNationInfo() {
     }
     echo "
         </td>
-        <td align=center id=bg1><b>세 율</b></td>
-        <td align=center>";
+        <td class='bg1 center'><b>세 율</b></td>
+        <td class='center'>";
     if($me['nation'] == 0) {
         echo "해당 없음";
     } else {
@@ -374,28 +372,28 @@ function myNationInfo() {
         </td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>속 령</b></td>
-        <td align=center>";echo $me['nation']==0?"-":"{$city['cnt']}"; echo "</td>
-        <td align=center id=bg1><b>장 수</b></td>
-        <td align=center>";echo $me['nation']==0?"-":"{$general['cnt']}"; echo "</td>
+        <td style='text-align:center;' class='bg1'><b>속 령</b></td>
+        <td style='text-align:center;'>";echo $me['nation']==0?"-":"{$city['cnt']}"; echo "</td>
+        <td style='text-align:center;' class='bg1'><b>장 수</b></td>
+        <td style='text-align:center;'>";echo $me['nation']==0?"-":"{$general['cnt']}"; echo "</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>국 력</b></td>
-        <td align=center>{$nation['power']}</td>
-        <td align=center id=bg1><b>기술력</b></td>
-        <td align=center>";echo $me['nation']==0?"-":"{$nation['tech']}"; echo "</td>
+        <td style='text-align:center;' class='bg1'><b>국 력</b></td>
+        <td style='text-align:center;'>{$nation['power']}</td>
+        <td style='text-align:center;' class='bg1'><b>기술력</b></td>
+        <td style='text-align:center;'>";echo $me['nation']==0?"-":"{$nation['tech']}"; echo "</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>전 략</b></td>
-        <td align=center>{$nation['sabotagelimit']}</td>
-        <td align=center id=bg1><b>외 교</b></td>
-        <td align=center>{$nation['surlimit']}</td>
+        <td style='text-align:center;' class='bg1'><b>전 략</b></td>
+        <td style='text-align:center;'>{$nation['sabotagelimit']}</td>
+        <td style='text-align:center;' class='bg1'><b>외 교</b></td>
+        <td style='text-align:center;'>{$nation['surlimit']}</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>임 관</b></td>
-        <td align=center>{$nation['scout']}</td>
-        <td align=center id=bg1><b>전 쟁</b></td>
-        <td align=center>{$nation['war']}</td>
+        <td style='text-align:center;' class='bg1'><b>임 관</b></td>
+        <td style='text-align:center;'>{$nation['scout']}</td>
+        <td style='text-align:center;' class='bg1'><b>전 쟁</b></td>
+        <td style='text-align:center;'>{$nation['war']}</td>
     </tr>
 </table>
 ";
@@ -435,12 +433,11 @@ function commandGroup($typename, $type=0) {
 
 function commandTable() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    $query = "select startyear,year,develcost,scenario from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost', 'scenario']);
 
     $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -675,12 +672,11 @@ function commandTable() {
 
 function CoreCommandTable() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    $query = "select develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $develcost = $gameStor->develcost;
 
     $query = "select no,nation,city,level from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -727,8 +723,8 @@ function CoreCommandTable() {
     commandGroup("", 1);
     commandGroup("====== 특 수 ======");
     addCommand("초토화", 65, $valid);
-    addCommand("천도/3턴(금쌀{$admin['develcost']}0)", 66, $valid);
-    $cost = $admin['develcost'] * 500 + 60000;   // 7만~13만
+    addCommand("천도/3턴(금쌀{$develcost}0)", 66, $valid);
+    $cost = $develcost * 500 + 60000;   // 7만~13만
     addCommand("증축/6턴(금쌀{$cost})", 67, $valid);
     addCommand("감축/6턴", 68, $valid);
     commandGroup("", 1);
@@ -777,11 +773,10 @@ function myInfo() {
 
 function generalInfo($no) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select show_img_level from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $show_img_level = $gameStor->show_img_level;
 
     $query = "select block,no,name,picture,imgsvr,injury,nation,city,troop,leader,leader2,power,power2,intel,intel2,explevel,experience,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,killturn,age,personal,special,specage,special2,specage2,mode,con,connect from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -877,77 +872,77 @@ function generalInfo($no) {
     else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
 
     $weapImage = ServConfig::$gameImagePath."/weap{$general['crewtype']}.png";
-    if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
+    if($show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
     $imageTemp = GetImageURL($general['imgsvr']);
-    echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+    echo "<table width=498 class='tb_layout bg2'>
     <tr>
-        <td width=64 height=64 align=center rowspan=3 style='background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;'>&nbsp;</td>
-        <td align=center colspan=9 height=16 style=color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
+        <td width=64 height=64 rowspan=3 style='text-align:center;background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;'>&nbsp;</td>
+        <td colspan=9 height=16 style=text-align:center;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
     </tr>
     <tr height=16>
-        <td align=center id=bg1><b>통솔</b></td>
-        <td align=center>&nbsp;{$color}{$leader}</font>{$lbonus}&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general['leader2']), 20)."</td>
-        <td align=center id=bg1><b>무력</b></td>
-        <td align=center>&nbsp;{$color}{$power}</font>&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general['power2']), 20)."</td>
-        <td align=center id=bg1><b>지력</b></td>
-        <td align=center>&nbsp;{$color}{$intel}</font>&nbsp;</td>
-        <td align=center width=45>".bar(expStatus($general['intel2']), 20)."</td>
+        <td style='text-align:center;' class='bg1'><b>통솔</b></td>
+        <td style='text-align:center;'>&nbsp;{$color}{$leader}</font>{$lbonus}&nbsp;</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($general['leader2']), 20)."</td>
+        <td style='text-align:center;' class='bg1'><b>무력</b></td>
+        <td style='text-align:center;'>&nbsp;{$color}{$power}</font>&nbsp;</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($general['power2']), 20)."</td>
+        <td style='text-align:center;' class='bg1'><b>지력</b></td>
+        <td style='text-align:center;'>&nbsp;{$color}{$intel}</font>&nbsp;</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($general['intel2']), 20)."</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>명마</b></td>
-        <td align=center colspan=2><font size=1>$horsename</font></td>
-        <td align=center id=bg1><b>무기</b></td>
-        <td align=center colspan=2><font size=1>$weapname</font></td>
-        <td align=center id=bg1><b>서적</b></td>
-        <td align=center colspan=2><font size=1>$bookname</font></td>
+        <td style='text-align:center;' class='bg1'><b>명마</b></td>
+        <td style='text-align:center;' colspan=2><font size=1>$horsename</font></td>
+        <td style='text-align:center;' class='bg1'><b>무기</b></td>
+        <td style='text-align:center;' colspan=2><font size=1>$weapname</font></td>
+        <td style='text-align:center;' class='bg1'><b>서적</b></td>
+        <td style='text-align:center;' colspan=2><font size=1>$bookname</font></td>
     </tr>
     <tr>
-        <td align=center height=64 rowspan=3 style='background:no-repeat center url(\"{$weapImage}\");background-size:64px;'></td>
-        <td align=center id=bg1><b>자금</b></td>
-        <td align=center colspan=2>{$general['gold']}</td>
-        <td align=center id=bg1><b>군량</b></td>
-        <td align=center colspan=2>{$general['rice']}</td>
-        <td align=center id=bg1><b>도구</b></td>
-        <td align=center colspan=2><font size=1>$itemname</font></td>
+        <td height=64 rowspan=3 style='text-align:center;background:no-repeat center url(\"{$weapImage}\");background-size:64px;'></td>
+        <td style='text-align:center;' class='bg1'><b>자금</b></td>
+        <td style='text-align:center;' colspan=2>{$general['gold']}</td>
+        <td style='text-align:center;' class='bg1'><b>군량</b></td>
+        <td style='text-align:center;' colspan=2>{$general['rice']}</td>
+        <td style='text-align:center;' class='bg1'><b>도구</b></td>
+        <td style='text-align:center;' colspan=2><font size=1>$itemname</font></td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>병종</b></td>
-        <td align=center colspan=2>$typename</td>
-        <td align=center id=bg1><b>병사</b></td>
-        <td align=center colspan=2>{$general['crew']}</td>
-        <td align=center id=bg1><b>성격</b></td>
-        <td align=center colspan=2>".getGenChar($general['personal'])."</td>
+        <td style='text-align:center;' class='bg1'><b>병종</b></td>
+        <td style='text-align:center;' colspan=2>$typename</td>
+        <td style='text-align:center;' class='bg1'><b>병사</b></td>
+        <td style='text-align:center;' colspan=2>{$general['crew']}</td>
+        <td style='text-align:center;' class='bg1'><b>성격</b></td>
+        <td style='text-align:center;' colspan=2>".getGenChar($general['personal'])."</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>훈련</b></td>
-        <td align=center colspan=2>$train</td>
-        <td align=center id=bg1><b>사기</b></td>
-        <td align=center colspan=2>$atmos</td>
-        <td align=center id=bg1><b>특기</b></td>
-        <td align=center colspan=2>$special / $special2</td>
+        <td style='text-align:center;' class='bg1'><b>훈련</b></td>
+        <td style='text-align:center;' colspan=2>$train</td>
+        <td style='text-align:center;' class='bg1'><b>사기</b></td>
+        <td style='text-align:center;' colspan=2>$atmos</td>
+        <td style='text-align:center;' class='bg1'><b>특기</b></td>
+        <td style='text-align:center;' colspan=2>$special / $special2</td>
     </tr>
     <tr height=20>
-        <td align=center id=bg1><b>Lv</b></td>
-        <td align=center>&nbsp;{$general['explevel']}&nbsp;</td>
-        <td align=center colspan=5>".bar(getLevelPer($general['experience'], $general['explevel']), 20)."</td>
-        <td align=center id=bg1><b>연령</b></td>
-        <td align=center colspan=2>{$general['age']}</td>
+        <td style='text-align:center;' class='bg1'><b>Lv</b></td>
+        <td style='text-align:center;'>&nbsp;{$general['explevel']}&nbsp;</td>
+        <td style='text-align:center;' colspan=5>".bar(getLevelPer($general['experience'], $general['explevel']), 20)."</td>
+        <td style='text-align:center;' class='bg1'><b>연령</b></td>
+        <td style='text-align:center;' colspan=2>{$general['age']}</td>
     </tr>
     <tr height=20>
-        <td align=center id=bg1><b>수비</b></td>
-        <td align=center colspan=3>{$general['mode']}</td>
-        <td align=center id=bg1><b>삭턴</b></td>
-        <td align=center colspan=2>{$general['killturn']} 턴</td>
-        <td align=center id=bg1><b>실행</b></td>
-        <td align=center colspan=2>$remaining 분 남음</td>
+        <td style='text-align:center;' class='bg1'><b>수비</b></td>
+        <td style='text-align:center;' colspan=3>{$general['mode']}</td>
+        <td style='text-align:center;' class='bg1'><b>삭턴</b></td>
+        <td style='text-align:center;' colspan=2>{$general['killturn']} 턴</td>
+        <td style='text-align:center;' class='bg1'><b>실행</b></td>
+        <td style='text-align:center;' colspan=2>$remaining 분 남음</td>
     </tr>
     <tr height=20>
-        <td align=center id=bg1><b>부대</b></td>
-        <td align=center colspan=3>{$troop['name']}</td>
-        <td align=center id=bg1><b>벌점</b></td>
-        <td align=center colspan=5>".getConnect($general['connect'])." {$general['connect']}({$general['con']})</td>
+        <td style='text-align:center;' class='bg1'><b>부대</b></td>
+        <td style='text-align:center;' colspan=3>{$troop['name']}</td>
+        <td style='text-align:center;' class='bg1'><b>벌점</b></td>
+        <td style='text-align:center;' colspan=5>".getConnect($general['connect'])." {$general['connect']}({$general['con']})</td>
     </tr>
 </table>";
 }
@@ -1002,104 +997,107 @@ function generalInfo2($no) {
     if($dex30 > 100) { $dex30 = 100; }
     if($dex40 > 100) { $dex40 = 100; }
 
-    $general['dex0']  = getDexCall($general['dex0']);
-    $general['dex10'] = getDexCall($general['dex10']);
-    $general['dex20'] = getDexCall($general['dex20']);
-    $general['dex30'] = getDexCall($general['dex30']);
-    $general['dex40'] = getDexCall($general['dex40']);
+    $general['dex0_text']  = getDexCall($general['dex0']);
+    $general['dex10_text'] = getDexCall($general['dex10']);
+    $general['dex20_text'] = getDexCall($general['dex20']);
+    $general['dex30_text'] = getDexCall($general['dex30']);
+    $general['dex40_text'] = getDexCall($general['dex40']);
 
-    echo "<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
-    <tr><td align=center colspan=6 id=bg1><b>추 가 정 보</b></td></tr>
+    $general['dex0_short'] = sprintf('%.1fK', $general['dex0']/1000);
+    $general['dex10_short'] = sprintf('%.1fK', $general['dex10']/1000);
+    $general['dex20_short'] = sprintf('%.1fK', $general['dex20']/1000);
+    $general['dex30_short'] = sprintf('%.1fK', $general['dex30']/1000);
+    $general['dex40_short'] = sprintf('%.1fK', $general['dex40']/1000);
+
+    echo "<table width=498 class='tb_layout bg2'>
+    <tr><td style='text-align:center;' colspan=6 class='bg1'><b>추 가 정 보</b></td></tr>
     <tr>
-        <td align=center id=bg1><b>명성</b></td>
-        <td align=center>$experience</td>
-        <td align=center id=bg1><b>계급</b></td>
-        <td align=center colspan=3>$dedication</td>
+        <td style='text-align:center;' class='bg1'><b>명성</b></td>
+        <td style='text-align:center;'>$experience</td>
+        <td style='text-align:center;' class='bg1'><b>계급</b></td>
+        <td style='text-align:center;' colspan=3>$dedication</td>
     </tr>
     <tr>
-        <td width=64 align=center id=bg1><b>전투</b></td>
-        <td width=132 align=center>{$general['warnum']}</td>
-        <td width=48 align=center id=bg1><b>계략</b></td>
-        <td width=98 align=center>{$general['firenum']}</td>
-        <td width=48 align=center id=bg1><b>사관</b></td>
-        <td width=98 align=center>{$general['belong']}년</td>
+        <td width=64 style='text-align:center;' class='bg1'><b>전투</b></td>
+        <td width=132 style='text-align:center;'>{$general['warnum']}</td>
+        <td width=48 style='text-align:center;' class='bg1'><b>계략</b></td>
+        <td width=98 style='text-align:center;'>{$general['firenum']}</td>
+        <td width=48 style='text-align:center;' class='bg1'><b>사관</b></td>
+        <td width=98 style='text-align:center;'>{$general['belong']}년</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>승률</b></td>
-        <td align=center>{$general['winrate']} %</td>
-        <td align=center id=bg1><b>승리</b></td>
-        <td align=center>{$general['killnum']}</td>
-        <td align=center id=bg1><b>패배</b></td>
-        <td align=center>{$general['deathnum']}</td>
+        <td style='text-align:center;' class='bg1'><b>승률</b></td>
+        <td style='text-align:center;'>{$general['winrate']} %</td>
+        <td style='text-align:center;' class='bg1'><b>승리</b></td>
+        <td style='text-align:center;'>{$general['killnum']}</td>
+        <td style='text-align:center;' class='bg1'><b>패배</b></td>
+        <td style='text-align:center;'>{$general['deathnum']}</td>
     </tr>
     <tr>
-        <td align=center id=bg1><b>살상률</b></td>
-        <td align=center>{$general['killrate']} %</td>
-        <td align=center id=bg1><b>사살</b></td>
-        <td align=center>{$general['killcrew']}</td>
-        <td align=center id=bg1><b>피살</b></td>
-        <td align=center>{$general['deathcrew']}</td>
+        <td style='text-align:center;' class='bg1'><b>살상률</b></td>
+        <td style='text-align:center;'>{$general['killrate']} %</td>
+        <td style='text-align:center;' class='bg1'><b>사살</b></td>
+        <td style='text-align:center;'>{$general['killcrew']}</td>
+        <td style='text-align:center;' class='bg1'><b>피살</b></td>
+        <td style='text-align:center;'>{$general['deathcrew']}</td>
     </tr>
 </table>
-<table width=498 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
-    <tr><td align=center colspan=3 id=bg1><b>숙 련 도</b></td></tr>
+<table width=498 class='tb_layout bg2'>
+    <tr><td style='text-align:center;' colspan=4 class='bg1'><b>숙 련 도</b></td></tr>
     <tr height=16>
-        <td width=64 align=center id=bg1><b>보병</b></td>
-        <td width=64>　　{$general['dex0']}</td>
-        <td width=366 align=center>".bar($dex0, 16)."</td>
+        <td width=64 style='text-align:center;' class='bg1'><b>보병</b></td>
+        <td width=40>　{$general['dex0_text']}</td>
+        <td width=60 align=right>{$general['dex0_short']}&nbsp;</td>
+        <td width=330 style='text-align:center;'>".bar($dex0, 16)."</td>
     </tr>
     <tr height=16>
-        <td align=center id=bg1><b>궁병</b></td>
-        <td>　　{$general['dex10']}</td>
-        <td align=center>".bar($dex10, 16)."</td>
+        <td style='text-align:center;' class='bg1'><b>궁병</b></td>
+        <td>　{$general['dex10_text']}</td>
+        <td align=right>{$general['dex10_short']}&nbsp;</td>
+        <td style='text-align:center;'>".bar($dex10, 16)."</td>
     </tr>
     <tr height=16>
-        <td align=center id=bg1><b>기병</b></td>
-        <td>　　{$general['dex20']}</td>
-        <td align=center>".bar($dex20, 16)."</td>
+        <td style='text-align:center;' class='bg1'><b>기병</b></td>
+        <td>　{$general['dex20_text']}</td>
+        <td align=right>{$general['dex20_short']}&nbsp;</td>
+        <td style='text-align:center;'>".bar($dex20, 16)."</td>
     </tr>
     <tr height=16>
-        <td align=center id=bg1><b>귀병</b></td>
-        <td>　　{$general['dex30']}</td>
-        <td align=center>".bar($dex30, 16)."</td>
+        <td style='text-align:center;' class='bg1'><b>귀병</b></td>
+        <td>　{$general['dex30_text']}</td>
+        <td align=right>{$general['dex30_short']}&nbsp;</td>
+        <td style='text-align:center;'>".bar($dex30, 16)."</td>
     </tr>
     <tr height=16>
-        <td align=center id=bg1><b>차병</b></td>
-        <td>　　{$general['dex40']}</td>
-        <td align=center>".bar($dex40, 16)."</td>
+        <td style='text-align:center;' class='bg1'><b>차병</b></td>
+        <td>　{$general['dex40_text']}</td>
+        <td align=right>{$general['dex40_short']}&nbsp;</td>
+        <td style='text-align:center;'>".bar($dex40, 16)."</td>
     </tr>
 </table>";
 }
 
 function adminMsg() {
     $db = DB::db();
-    $connect=$db->get();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $msg = $gameStor->msg;
 
-    $query = "select msg from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
-    echo "운영자 메세지 : <font color=yellow>";
-    echo $admin['msg']."</font>";
+    return "운영자 메세지 : <span style='color:yellow;'>$msg</span>";
 }
 
 function getOnlineNum() {
-    return DB::db()->queryFirstField('select `online` from `game` where `no`=1');
+    return KVStorage::getStorage(DB::db(), 'game_env')->online;
 }
 
 function onlinegen() {
     $db = DB::db();
-    $connect=$db->get();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
 
     $onlinegen = "";
     $generalID = Session::getInstance()->generalID;
     $nationID = DB::db()->queryFirstField('select `nation` from `general` where `no` = %i', $generalID);
     if($nationID === null || Util::toInt($nationID) === 0) {
-        $query = "select onlinegen from game limit 1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $game = MYDB_fetch_array($result);
-
-        $onlinegen = $game['onlinegen'];
+        $onlinegen = $gameStor->onlinegen;
     } else {
         $onlinegen = DB::db()->queryFirstField('select onlinegen from nation where nation=%i',$nationID);
     }
@@ -1108,12 +1106,9 @@ function onlinegen() {
 
 function onlineNation() {
     $db = DB::db();
-    $connect=$db->get();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $query = "select onlinenation from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $game = MYDB_fetch_array($result);
-    return $game['onlinenation'];
+    return $gameStor->onlinenation;
 }
 
 function nationMsg() {
@@ -1148,14 +1143,14 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
 
     $imageTemp = GetImageURL($imgsvr);
     echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table style='text-align:center;' width=1000 class='tb_layout bg0'>
     <tr>
-        <td width=64 align=center id=bg1><font size=1>$name</font></td>
-        <td width=772 align=center id=bg1><font size=4><b>$message[0]</b></font></td>
-        <td width=148 align=center id=bg1>$when</td>
+        <td width=64 style='text-align:center;' class='bg1'><font size=1>$name</font></td>
+        <td width=772 style='text-align:center;' class='bg1'><font size=4><b>$message[0]</b></font></td>
+        <td width=148 style='text-align:center;' class='bg1'>$when</td>
     </tr>
     <tr>
-        <td width=64 height=64 valign=top><img width='64' height='64' src={$imageTemp}/{$picture} border=0></td>
+        <td width=64 height=64 valign=top><img width='64' height='64' src={$imageTemp}/{$picture} border='0'></td>
         <td width=932 colspan=2>$message[1]</td>
     </tr>";
     for($i=0; $i < $count; $i++) {
@@ -1166,14 +1161,14 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
         $regen = MYDB_fetch_array($result);
         echo "
     <tr>
-        <td width=64 align=center><font size=1>{$regen['name']}</font></td>
+        <td width=64 style='text-align:center;'><font size=1>{$regen['name']}</font></td>
         <td width=932 colspan=2>$reply</td>
     </tr>";
     }
     echo "
     <tr>
         <form name=reply_form{$num} method=post action=$board>
-        <td width=64 align=center>댓글달기</td>
+        <td width=64 style='text-align:center;'>댓글달기</td>
         <td width=932 colspan=2>
             <input type=textarea name=reply maxlength=250 style=color:white;background-color:black;width:830px;>
             <input type=submit value=댓글달기>
@@ -1257,9 +1252,8 @@ function increaseRefresh($type="", $cnt=1) {
     $date = date('Y-m-d H:i:s');
 
     $db = DB::db();
-    $db->update('game', [
-        'refresh'=>$db->sqleval('refresh+%i', $cnt)
-    ], true);
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $gameStor->refresh = $gameStor->refresh+$cnt; //TODO: +로 증가하는 값은 별도로 분리
 
     if($generalID) {
         $db->update('general', [
@@ -1327,22 +1321,21 @@ function increaseRefresh($type="", $cnt=1) {
 function updateTraffic() {
     $online = getOnlineNum();
     $db = DB::db();
-    $game = $db->queryFirstRow('SELECT year,month,refresh,maxonline,maxrefresh from game limit 1');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $admin = $gameStor->getValues(['year','month','refresh','maxonline','maxrefresh']);
 
     //최다갱신자
     $user = $db->queryFirstRow('select name,refresh from general order by refresh desc limit 1');
 
-    if($game['maxrefresh'] < $game['refresh']) {
-        $game['maxrefresh'] = $game['refresh'];
+    if($admin['maxrefresh'] < $admin['refresh']) {
+        $admin['maxrefresh'] = $admin['refresh'];
     }
-    if($game['maxonline'] < $online) {
-        $game['maxonline'] = $online;
+    if($admin['maxonline'] < $online) {
+        $admin['maxonline'] = $online;
     }
-    $db->update('game',[
-        'refresh'=>0,
-        'maxrefresh'=>$game['maxrefresh'],
-        'maxonline'=>$game['maxonline']
-    ], true);
+    $gameStor->refresh = 0;
+    $gameStor->maxrefresh = $admin['maxrefresh'];
+    $gameStor->maxonline = $admin['maxonline'];
 
     $db->update('general', ['refresh'=>0], true);
 
@@ -1351,9 +1344,9 @@ function updateTraffic() {
     file_put_contents(__dir__."/logs/_traffic.txt",
         Json::encode([
             $date,
-            $game['year'],
-            $game['month'],
-            $game['refresh'],
+            $admin['year'],
+            $admin['month'],
+            $admin['refresh'],
             $online,
             $user['name']."(".$user['refresh'].")"
         ])."\n"
@@ -1363,15 +1356,14 @@ function updateTraffic() {
 function CheckOverhead() {
     //서버정보
     $db = DB::db();
-    $admin = $db->queryFirstRow('SELECT turnterm, conlimit from game LIMIT 1');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    list($turnterm, $conlimit) = $gameStor->getValuesAsArray(['turnterm', 'conlimit']);
 
-    $con = Util::round(pow($admin['turnterm'], 0.6) * 3) * 10;
+    $con = Util::round(pow($turnterm, 0.6) * 3) * 10;
 
 
-    if($con != $admin['conlimit']){
-        $db->update('game', [
-            'conlimit' => $con
-        ], true);
+    if($con != $conlimit){
+        $gameStor->conlimit = $con;
     }
 }
 
@@ -1409,27 +1401,30 @@ function unlock() {
 }
 
 function timeover() {
-    $admin = DB::db()->queryFirstRow(
-        'SELECT turnterm,TIMESTAMPDIFF(SECOND,turntime,now()) as diff from game limit 1'
-    );
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $t = min($admin['turnterm'], 5);
+    list($turnterm, $turntime) = $gameStor->getValuesAsArray(['turnterm', 'turntime']);
+    $diff = (new \DateTime())->getTimestamp() - (new \DateTime($turntime))->getTimestamp();
 
-    $term = $admin['diff'];
+    $t = min($turnterm, 5);
+
+    $term = $diff;
     if($term >= $t || $term < 0) { return 1; }
     else { return 0; }
 }
 
 function checkDelay() {
     $db = DB::db();
-    $connect=$db->get();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
 
     //서버정보
-    $query = "select turnterm,now() as now,TIMESTAMPDIFF(MINUTE,turntime,now()) as offset from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $now = new \DateTimeImmutable();
+    $turntime = new \DateTimeImmutable($gameStor->turntime);
+    $timeMinDiff = intdiv($now->getTimestamp() - $turntime->getTimestamp(), 60);
+    
     // 1턴이상 갱신 없었으면 서버 지연
-    $term = $admin['turnterm'];
+    $term = $gameStor->turnterm;
     if($term >= 20){
         $threshold = 1;
     }
@@ -1440,20 +1435,25 @@ function checkDelay() {
         $threshold = 3;
     }
     //지연 해야할 밀린 턴 횟수
-    $iter = intdiv($admin['offset'], $term);
+    $iter = intdiv($timeMinDiff, $term);
     if($iter > $threshold) {
         $minute = $iter * $term;
-        $query = "update game set turntime=DATE_ADD(turntime, INTERVAL $minute MINUTE),starttime=DATE_ADD(starttime, INTERVAL $minute MINUTE),tnmt_time=DATE_ADD(tnmt_time, INTERVAL $minute MINUTE)";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set turntime=DATE_ADD(turntime, INTERVAL $minute MINUTE) where turntime<=DATE_ADD(turntime, INTERVAL $term MINUTE)";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update auction set expire=DATE_ADD(expire, INTERVAL $minute MINUTE)";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $newTurntime = $turntime->add(new \DateInterval("PT{$minute}M"));
+        $newNextTurntime = $turntime->add(new \DateInterval("PT{$term}M"));
+        $gameStor->turntime = $newTurntime->format('Y-m-d H:i:s');
+
+        $db->update('general', [
+            'turntime'=> $db->sqleval('DATE_ADD(turntime, INTERVAL %i MINUTE)', $minute)
+        ], 'turntime<=DATE_ADD(turntime, INTERVAL %i MINUTE)', $term);
+        $db->update('auction', [
+            'expire'=> $db->sqleval('DATE_ADD(expire, INTERVAL %i MINUTE)', $minute)
+        ], true);
     }
 }
 
 function updateOnline() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $nationname = ["재야"];
 
@@ -1487,8 +1487,7 @@ function updateOnline() {
 	        $onnationstr .= "【{$nationname[$key]}】, ";
 	
 	        if($key == 0) {
-	            $query = "update game set onlinegen='$onnation[0]'";
-	            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                $gameStor->onlinegen = $onnation[0];
 	        } else {
 	            $query = "update nation set onlinegen='$onnation[$key]' where nation='$key'";
 	            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1497,12 +1496,13 @@ function updateOnline() {
 	}
 
     //접속중인 국가
-    $query = "update game set online='$onlinenum',onlinenation='$onnationstr'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->online = $onlinenum;
+    $gameStor->onlinenation = $onnationstr;
 }
 
 function checkTurn() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $alllog = [];
@@ -1537,14 +1537,11 @@ function checkTurn() {
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', 진입');
     
     //천통시에는 동결
-    $query = "select turntime from game where isUnited=2";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $down = MYDB_num_rows($result);
-    if($down > 0) {
-        $query = "update plock set plock=1";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    if($gameStor->isUnited == 2) {
+        $db->update('plock', ['plock'=>1], true);
         return;
     }
+    $gameStor->cacheAll();
     // 1턴이상 갱신 없었으면 서버 지연
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', checkDelay');
     checkDelay();
@@ -1555,14 +1552,11 @@ function checkTurn() {
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', CheckOverhead');
     CheckOverhead();
     //서버정보
-    $query = "select * from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
 
     $date = date('Y-m-d H:i:s');
     // 최종 처리 월턴의 다음 월턴시간 구함
-    $prevTurn = cutTurn($admin['turntime'], $admin['turnterm']);
-    $nextTurn = addTurn($prevTurn, $admin['turnterm']);
+    $prevTurn = cutTurn($gameStor->turntime, $gameStor->turnterm);
+    $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
     // 현재 턴 이전 월턴까지 모두처리.
     //최종 처리 이후 다음 월턴이 현재 시간보다 전이라면
     while($nextTurn <= $date) {
@@ -1600,15 +1594,15 @@ function checkTurn() {
 
             // 잡금 해제
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
+            $gameStor->resetCache(true);
             unlock();
             return false;
         }
 
         // 그 시각 년도,월 저장
-        $dt = turnDate($nextTurn);
-        $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
+        list($gameStor->year, $gameStor->month) = turnDate($nextTurn);
 
-        pushLockLog(["-- checkTurn() ".$admin['month']."월 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
+        pushLockLog(["-- checkTurn() ".$gameStor->month."월 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
 
         // 이벤트 핸들러 동작
         foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
@@ -1617,13 +1611,12 @@ function checkTurn() {
             $action = Json::decode($rawEvent['action']);
             $event = new Event\EventHandler($cond, $action);
 
-            $event->tryRunEvent(['currentEventID'=>$eventID] + $admin);
+            $event->tryRunEvent(['currentEventID'=>$eventID] + $gameStor->getAll(true));
         }
 
         // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
-        if($admin['month'] == 1) {
+        if($gameStor->month == 1) {
             // NPC 등장
-            //if($admin['scenario'] > 0 && $admin['scenario'] < 20) { RegNPC(); }
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processGoldIncome');
             processGoldIncome();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processSpring');
@@ -1639,14 +1632,14 @@ function checkTurn() {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', addAge');
             addAge();
             // 새해 알림
-            $alllog[] = "<C>◆</>{$admin['month']}월:<C>{$admin['year']}</>년이 되었습니다.";
-            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-        } elseif($admin['month'] == 4) {
+            $alllog[] = "<C>◆</>{$gameStor->month}월:<C>{$gameStor->year}</>년이 되었습니다.";
+            pushGeneralPublicRecord($alllog, $gameStor->year, $gameStor->month);
+        } elseif($gameStor->month == 4) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
             updateQuaterly();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
             disaster();
-        } elseif($admin['month'] == 7) {
+        } elseif($gameStor->month == 7) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processRiceIncome');
             processRiceIncome();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processFall');
@@ -1657,7 +1650,7 @@ function checkTurn() {
             disaster();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', tradeRate');
             tradeRate();
-        } elseif($admin['month'] == 10) {
+        } elseif($gameStor->month == 10) {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
             updateQuaterly();
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
@@ -1668,18 +1661,16 @@ function checkTurn() {
 
         // 다음달로 넘김
         $prevTurn = $nextTurn;
-        $nextTurn = addTurn($prevTurn, $admin['turnterm']);
+        $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
     }
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
         
     // 이시각 정각 시까지 업데이트 완료했음
-    $query = "update game set turntime='$prevTurn'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->turntime = $prevTurn;
 
     // 그 시각 년도,월 저장
-    $dt = turnDate($prevTurn);
-    $admin['year'] = $dt[0]; $admin['month'] = $dt[1];
+    list($gameStor->year, $gameStor->month) = turnDate($prevTurn);
     // 현재시간의 월턴시간 이후 분단위 장수 처리
     do {
         $query = "select no,name,turntime,turn0,npc from general where turntime<='$date' order by turntime";
@@ -1707,8 +1698,7 @@ function checkTurn() {
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
     
-    $query = "update game set turntime='$date'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->turntime = $date;
 
     // 부상 과도 제한
     $query = "update general set injury='80' where injury>'80'";
@@ -1721,6 +1711,7 @@ function checkTurn() {
     processAuction();
     // 잡금 해제
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
+    $gameStor->resetCache(true);
     unlock();
 
     pushLockLog(["- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
@@ -1732,15 +1723,14 @@ function checkTurn() {
 
 function addAge() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     //나이와 호봉 증가
     $query = "update general set age=age+1,belong=belong+1";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     if($admin['year'] >= $admin['startyear']+3) {
         $query = "select no,name,nation,leader,power,intel from general where specage<=age and special='0'";
@@ -1776,8 +1766,8 @@ function addAge() {
 
 function turnDate($curtime) {
     $db = DB::db();
-
-    $admin = $db->queryFirstRow('SELECT startyear,starttime,turnterm,year,month from game limit 1');
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $admin = $gameStor->getValues(['startyear', 'starttime', 'turnterm', 'year', 'month']);
 
     $turn = $admin['starttime'];
     $curturn = cutTurn($curtime, $admin['turnterm']);
@@ -1793,10 +1783,8 @@ function turnDate($curtime) {
 
     // 바뀐 경우만 업데이트
     if($admin['month'] != $month || $admin['year'] != $year) {
-        $db->update('game', [
-            'year'=>$year,
-            'month'=>$month
-        ], true);
+        $gameStor->year = $year;
+        $gameStor->month = $month;
     }
 
     return [$year, $month];
@@ -1805,11 +1793,9 @@ function turnDate($curtime) {
 
 function triggerTournament() {
     $db = DB::db();
-    $connect=$db->get();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $query = "select tournament,tnmt_trig from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['tournament', 'tnmt_trig']);
 
     //현재 토너먼트 없고, 자동개시 걸려있을때, 40%확률
     if($admin['tournament'] == 0 && $admin['tnmt_trig'] > 0 && rand() % 100 < 40) {
@@ -1902,13 +1888,12 @@ function PreprocessCommand($no) {
 
 function updateTurntime($no) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $alllog = [];
     $log = [];
 
-    $query = "select year,month,isUnited,turnterm from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'isUnited', 'turnterm']);
 
     $query = "select no,name,name2,nation,troop,age,turntime,killturn,level,deadyear,npc,npc_org,affinity,npcid from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2152,6 +2137,7 @@ function CheckHall($no) {
 
 function uniqueItem($general, $log, $vote=0) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $alllog = [];
     $history = [];
@@ -2161,15 +2147,13 @@ function uniqueItem($general, $log, $vote=0) {
     if($general['npc'] >= 2) { return $log; }
     if($general['weap'] > 6 || $general['book'] > 6 || $general['horse'] > 6 || $general['item'] > 6) { return $log; }
 
-    $query = "select year,month,scenario from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $game = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'scenario']);
 
     $query = "select count(*) as cnt from general where npc<2";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen = MYDB_fetch_array($result);
 
-    if($game['scenario'] == 0)  { $prob = $gen['cnt'] * 5; }  // 5~6개월에 하나씩 등장
+    if($admin['scenario'] == 0)  { $prob = $gen['cnt'] * 5; }  // 5~6개월에 하나씩 등장
     else { $prob = $gen['cnt']; }  // 1~2개월에 하나씩 등장
 
     if($vote == 1) { $prob = Util::round($gen['cnt'] * 0.7 / 3); }     // 투표율 70%, 투표 한번에 2~3개 등장
@@ -2210,63 +2194,63 @@ function uniqueItem($general, $log, $vote=0) {
             switch($sel) {
             case 0:
                 $log[] = "<C>●</><C>".getWeapName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getWeapName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getWeapName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getWeapName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             case 1:
                 $log[] = "<C>●</><C>".getBookName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getBookName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getBookName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getBookName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             case 2:
                 $log[] = "<C>●</><C>".getHorseName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getHorseName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getHorseName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getHorseName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             case 3:
                 $log[] = "<C>●</><C>".getItemName($it)."</>(을)를 습득했습니다!";
-                $alllog[0] = "<C>●</>{$game['month']}월:<Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$game['year']}년 {$game['month']}월:<C>".getItemName($it)."</>(을)를 습득");
+                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getItemName($it)."</>(을)를 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$game['year']}년 {$game['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <C>".getItemName($it)."</>(을)를 습득했습니다!";
                 }
                 break;
             }
-            pushGeneralPublicRecord($alllog, $game['year'], $game['month']);
-            pushWorldHistory($history, $game['year'], $game['month']);
+            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+            pushWorldHistory($history, $admin['year'], $admin['month']);
         }
     }
     return $log;
@@ -2363,13 +2347,8 @@ function checkExperience($general, $log) {
 
 function getAdmin() {
     $db = DB::db();
-    $connect=$db->get();
-
-    $query = "select * from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
-    return $admin;
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    return $gameStor->getAll();
 }
 
 function getMe() {
@@ -2419,14 +2398,13 @@ function getNation($nation) {
 
 function deleteNation($general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $nation = getNationStaticInfo($general['nation']);
 
@@ -2454,11 +2432,10 @@ function deleteNation($general) {
 
 function nextRuler($general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select nation,name from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2568,7 +2545,7 @@ function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
     }
 }
 
-function isClose(int $nation1, int $nation2, bool $includeNoSupply=true) {
+function isNeighbor(int $nation1, int $nation2, bool $includeNoSupply=true) {
     $db = DB::db();
 
     $nation1Cities = [];
@@ -2661,12 +2638,11 @@ function CharCritical($rate, $personal) {
 
 function SabotageInjury($city, $type=0) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $log = [];
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select no,name,nation from general where city='$city'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

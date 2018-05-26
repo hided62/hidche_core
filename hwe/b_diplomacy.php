@@ -8,13 +8,10 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("중원정보", 1);
-
-$query = "select turnterm from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
 
 $query = "select no,nation from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -79,11 +76,11 @@ foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE confl
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title><?=UniqueConst::$serverName?>: 중원 정보</title>
-<script src="../e_lib/jquery-3.2.1.min.js"></script>
-<script src="../d_shared/common_path.js"></script>
-<script src="js/common.js"></script>
-<script src="js/base_map.js"></script>
-<script src="js/map.js"></script>
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/base_map.js')?>
+<?=WebUtil::printJS('js/map.js')?>
 <script>
 $(function(){
 
@@ -94,19 +91,19 @@ $(function(){
 
 });
 </script>
-<link href="css/normalize.css" rel="stylesheet">
-<link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css" rel="stylesheet">
-<link href="css/map.css" rel="stylesheet">
+<?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('css/map.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>중 원 정 보<br><?=backButton()?></td></tr>
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=<?=$nationcount+1?> align=center bgcolor=blue>외 교 현 황</td></tr>
 <?php
 echo "
@@ -179,31 +176,13 @@ for($i=0; $i < $nationcount; $i++) {
 <?php if ($realConflict) : ?>
 
 <br>
-<table
-    align='center'
-    width=1000 
-    border=1 
-    cellspacing=0 
-    cellpadding=0 
-    bordercolordark='gray' 
-    bordercolorlight='black' 
-    style='font-size:13px;word-break:break-all;' 
-    class='bg0'
->
+<table align='center' width=1000 class='tb_layout bg0'>
     <tr><td colspan=2 align=center bgcolor=magenta>분 쟁 현 황</td></tr>
     <?php foreach($realConflict as list($cityID, $cityName, $conflict)): ?>
     <tr>
         <td align=center width=48><?=$cityName?></td>
-        <td width=948>
-            <table 
-                border=0
-                cellspacing=0 
-                cellpadding=0
-                bordercolordark='gray'
-                bordercolorlight='black'
-                style='font-size:13px;word-break:break-all;width:100%;'
-                class='bg0'
-            >
+        <td style='width:948px;position:relative;'>
+            <table class='tb_layout bg0' style='width:100%;'>
             <?php foreach($conflict as $item): ?>
                 <tr>
                     <td 
@@ -228,7 +207,7 @@ for($i=0; $i < $nationcount; $i++) {
 <?php endif; ?> 
 
 <br>
-<table class="bg0" align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style="font-size:13px;word-break:break-all;">
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td colspan=5 align=center bgcolor=green><font size=3>중 원 지 도</font></td>
     </tr>
@@ -244,7 +223,7 @@ for($i=0; $i < $nationcount; $i++) {
 </table>
 <br>
 
-<table class="bg0" align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style="font-size:13px;word-break:break-all;">
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

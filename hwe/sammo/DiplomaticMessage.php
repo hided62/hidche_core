@@ -225,6 +225,8 @@ class DiplomaticMessage extends Message{
         
 
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+
         $general = $db->queryFirstRow(
             'SELECT `name`, `level` FROM general WHERE `no`=%i AND nation=%i', 
             $receiverID, 
@@ -281,10 +283,7 @@ class DiplomaticMessage extends Message{
             return $result;
         }
         
-        list(
-            $year, 
-            $month
-        ) = $db->queryFirstList('SELECT year, month FROM game LIMIT 1');
+        list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
 
 
         $this->dest->generalID = $receiverID;

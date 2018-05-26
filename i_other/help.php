@@ -13,15 +13,9 @@ $category = Util::getReq('category', 'int', 0);
     <head>
         <meta charset="UTF-8">
         <title>튜토리얼</title>
-
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 <style type="text/css">
-
-body { color:white; background-color:black; border-width:1px; border-color:gray; }
-table { font-family:'맑은 고딕'; }
-font { font-family:'맑은 고딕'; }
-#bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
-#bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_blue.jpg); }
-#bg2 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
 
 .intro {
   font-size: 15px;
@@ -56,10 +50,10 @@ font { font-family:'맑은 고딕'; }
     </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><font size=5 color=skyblue><b>도 움 말</b></font></td></tr>
 </table>
-<table align=center border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg1>
+<table class='tb_layout bg1'>
     <tr>
         <td align=center><input type=button style=background-color:<?=$category==0?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='시작하기' onclick=location.replace('help.php?category=0')></td>
         <td align=center><input type=button style=background-color:<?=$category==1?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='회원가입' onclick=location.replace('help.php?category=1')></td>
@@ -78,7 +72,7 @@ font { font-family:'맑은 고딕'; }
 if ($category == 0) {
     ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>시 작 하 기</font></b></td></tr>
     <tr>
         <td>
@@ -130,7 +124,7 @@ if ($category == 0) {
 } elseif ($category == 1) {
         ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>회 원 가 입</font></b></td></tr>
     <tr>
         <td>
@@ -173,7 +167,7 @@ if ($category == 0) {
     } elseif ($category == 2) {
         ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>접 속 관 리</font></b></td></tr>
     <tr>
         <td>
@@ -206,7 +200,7 @@ if ($category == 0) {
     } elseif ($category == 3) {
         ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>캐 릭 터 생 성 &amp; 계 정 관 리</font></b></td></tr>
     <tr>
         <td>
@@ -268,7 +262,7 @@ if ($category == 0) {
     } elseif ($category == 4) {
         ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>명 령 입 력</font></b></td></tr>
     <tr>
         <td>
@@ -334,7 +328,7 @@ if ($category == 0) {
     } elseif ($category == 5) {
         ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>인 터 페 이 스</font></b></td></tr>
     <tr>
         <td>
@@ -505,7 +499,7 @@ if ($category == 0) {
     } elseif ($category == 6) {
         ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>일 반 장 수</font></b></td></tr>
     <tr>
         <td>
@@ -574,7 +568,7 @@ if ($category == 0) {
     } elseif ($category == 7) {
         ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td height=50 bgcolor=yellow align=center><b><font color=black size=5>F A Q</font></b></td></tr>
     <tr>
         <td>
@@ -758,7 +752,7 @@ if ($category == 0) {
     }
 ?>
 
-<table align=center border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table class='tb_layout bg0'>
     <tr>
         <td align=center><input type=button style=background-color:<?=$category==0?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='시작하기' onclick=location.replace('help.php?category=0')></td>
         <td align=center><input type=button style=background-color:<?=$category==1?"red":"#225500"?>;color:white;width:125px;height:50px;font-weight:bold;font-size:13px; value='회원가입' onclick=location.replace('help.php?category=1')></td>

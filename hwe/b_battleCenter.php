@@ -23,15 +23,13 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("감찰부", 2);
 //전투 추진을 위해 갱신
 checkTurn();
-
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$gameStor->resetCache();
 
 $query = "select nation from general where no='$gen'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
@@ -45,7 +43,7 @@ $query = "select secretlimit from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $nation = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
     exit();
@@ -77,13 +75,13 @@ $sel[$type] = "selected";
 <head>
 <title><?=UniqueConst::$serverName?>: 감찰부</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>감 찰 부<br><?=closeButton()?></td></tr>
     <tr><td>
         <form name=form1 method=post>
@@ -131,7 +129,7 @@ for ($i=0; $i < $gencount; $i++) {
         </form>
     </td></tr>
 </table>
-<table width=1000 align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table width=1000 align=center class='tb_layout bg0'>
     <tr>
         <td width=50% align=center id=bg1><font color=skyblue size=3>장 수 정 보</font></td>
         <td width=50% align=center id=bg1><font color=orange size=3>장 수 열 전</font></td>
@@ -170,7 +168,7 @@ for ($i=0; $i < $gencount; $i++) {
     </tr>
 <?php endif; ?>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

@@ -15,8 +15,8 @@ $connect=$db->get();
 <head>
 <title>커맨드리스트</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 <script type="text/javascript">
 <?php
 if(!$session->isLoggedIn()){
@@ -67,15 +67,14 @@ myCommandList();
 
 function myCommandList() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
     $date = date('Y-m-d H:i:s');
 
     // 명령 목록
-    $query = "select year,month,turnterm from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year','month','turnterm']);
 
     $query = "select no,turntime,term,turn0,turn1,turn2,turn3,turn4,turn5,turn6,turn7,turn8,turn9,turn10,turn11,turn12,turn13,turn14,turn15,turn16,turn17,turn18,turn19,turn20,turn21,turn22,turn23 from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -86,7 +85,7 @@ function myCommandList() {
     }
     $turn = getTurn($me, 2);
 
-    echo "<table width=300 height=700 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+    echo "<table width=300 height=700 class='tb_layout bg2'>
 <form name=clock>
     <tr>
         <td colspan=4 align=center id=bg0><b>- 명령 목록 - <input value='$date' type=text name=clock size=19 style=background-color:black;color:white;border-style:none;></b></td>

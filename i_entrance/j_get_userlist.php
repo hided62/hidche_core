@@ -6,7 +6,7 @@ require(__dir__.'/../vendor/autoload.php');
 $session = Session::requireLogin([])->setReadOnly();
 $db = RootDB::db();
 
-if($session->userGrade < 6){
+if($session->userGrade < 5){
     Json::die([
         'result'=>false,
         'reason'=>'권한이 부족합니다'

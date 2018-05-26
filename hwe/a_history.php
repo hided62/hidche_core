@@ -13,19 +13,18 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("연감", 2);
 
-$query = "select startyear,year,month,conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['startyear','year','month']);
 
 $query = "select con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
     exit();
@@ -78,20 +77,20 @@ if ($month <= 0) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 연감</title>
-<script src="../e_lib/jquery-3.2.1.min.js"></script>
-<script src="../d_shared/common_path.js"></script>
-<script src="js/common.js"></script>
-<script src="js/base_map.js"></script>
-<script src="js/map.js"></script>
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/base_map.js')?>
+<?=WebUtil::printJS('js/map.js')?>
 
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
-<link href="css/map.css" rel="stylesheet">
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('css/map.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>연 감<br><?=closeButton()?></td></tr>
     <tr><td>
         <form name=form1 method=post>
@@ -124,7 +123,7 @@ $history = MYDB_fetch_array($result);
         </form>
     </td></tr>
 </table>
-<table align=center width=1000 height=520 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 height=520 class='tb_layout bg0'>
     <tr><td colspan=5 align=center id=bg1>중 원 지 도</td></tr>
     <tr height=520>
         <td width=698>
@@ -148,7 +147,7 @@ $history = MYDB_fetch_array($result);
         </td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

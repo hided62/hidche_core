@@ -116,18 +116,18 @@ switch($commandtype) {
 }
 
 function starter($name, $type=0) {
-    echo '
+?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>'.$name.'</title>
+<title><?=$name?></title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<script src="../e_lib/jquery-3.2.1.min.js"></script>
-<script src="../d_shared/common_path.js"></script>
-<script src="js/common.js"></script>
-<script src="js/base_map.js"></script>
-<script src="js/map.js"></script>
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/base_map.js')?>
+<?=WebUtil::printJS('js/map.js')?>
 <script>
 $(function(){
     var $target = $("form[name=form1] select[name=double]");
@@ -143,19 +143,17 @@ $(function(){
     });
 });
 </script>
-<link href="css/normalize.css" rel="stylesheet">
-<link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css" rel="stylesheet">
-<link href="css/main.css" rel="stylesheet">
-<link href="css/map.css" rel="stylesheet">
-';
-echo '
+<?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('css/main.css')?>
+<?=WebUtil::printCSS('css/map.css')?>
 </head>
 <body class="img_back">
-<table class="bg0" align="center" width="1000" border="1" cellspacing="0" cellpadding="0" bordercolordark="gray" bordercolorlight="black" style="font-size:13px;word-break:break-all;">
-    <tr><td class="bg1" align="center">'.$name.'</td></tr>
+<table class="tb_layout bg0" style="width:1000px;margin:auto;">
+    <tr><td class="bg1" align="center"><?=$name?></td></tr>
     <tr><td>
-';
+<?php
     if($type == 1) echo CoreBackButton();
     else echo backButton();
 }
@@ -195,13 +193,11 @@ function command_99($turn) {
 
 function command_11($turn, $command) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
     starter("징병");
-    $query = "select * from game limit 1";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
 
     $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
@@ -221,7 +217,7 @@ function command_11($turn, $command) {
 
     $ownCities = [];
     $ownRegions = [];
-    $relativeYear = $admin['year'] - $admin['startyear'];
+    $relativeYear = $gameStor->year - $gameStor->startyear;
     $tech = $nation['tech'];
 
     foreach(DB::db()->query('SELECT city, region from city where nation = %i', $me['nation']) as $city){
@@ -279,7 +275,7 @@ function calc(cost, formnum) {
     form.cost.value = Math.round(crew * cost);
 }
 </script>
-<table border=1 cellspacing=0 bordercolordark=gray bordercolorlight=black>
+<table class='tb_layout' style='margin:auto;'>
     <tr>
         <td colspan=10 align=center id=bg2>
             현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
@@ -360,7 +356,7 @@ function calc(cost, formnum) {
         $speed = $unit->speed;
         $avoid = $unit->avoid;
         $weapImage = ServConfig::$gameImagePath."/weap{$i}.png";
-        if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
+        if($gameStor->show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
         $baseCostShort = round($baseCost, 1);
@@ -403,13 +399,11 @@ function calc(cost, formnum) {
 
 function command_12($turn, $command) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
     starter("모병");
-    $query = "select * from game limit 1";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
 
     $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
@@ -429,7 +423,7 @@ function command_12($turn, $command) {
 
     $ownCities = [];
     $ownRegions = [];
-    $relativeYear = $admin['year'] - $admin['startyear'];
+    $relativeYear = $gameStor->year - $gameStor->startyear;
     $tech = $nation['tech'];
 
     foreach(DB::db()->query('SELECT city, region from city where nation = %i', $me['nation']) as $city){
@@ -487,7 +481,7 @@ function calc(cost, formnum) {
     form.cost.value = Math.round(crew * cost * 2);
 }
 </script>
-<table border=1 cellspacing=0 bordercolordark=gray bordercolorlight=black>
+<table class='tb_layout' style='margin:auto;'>
     <tr><td align=center colspan=10>모병은 가격 2배의 자금이 소요됩니다.</td></tr>
     <tr>
         <td colspan=10 align=center id=bg2>
@@ -570,7 +564,7 @@ function calc(cost, formnum) {
         $speed = $unit->speed;
         $avoid = $unit->avoid;
         $weapImage = ServConfig::$gameImagePath."/weap{$i}.png";
-        if($admin['show_img_level'] < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
+        if($gameStor->show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
         
         $baseRiceShort = round($baseRice, 1);
         $baseCostShort = round($baseCost, 1);
@@ -963,14 +957,11 @@ function command_24($turn, $command) {
 
 function command_25($turn, $command) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
     starter("임관");
-
-    $query = "select startyear,year from game limit 1";
-    $result = MYDB_query($query, $connect) or Error("command_46 ".MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
 
     $query = "select no,nations from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error("command_27 ".MYDB_error($connect),"");
@@ -1004,7 +995,7 @@ function command_25($turn, $command) {
             $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=900 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>".$nation['scoutmsg']."</td></tr>";
         }
 
-        if($admin['year'] < $admin['startyear']+3 && $nation['gennum'] >= 10) {
+        if($gameStor->year < $gameStor->startyear+3 && $nation['gennum'] >= 10) {
             echo "
     <option value={$nation['nation']} style=color:{$nation['color']};background-color:red;>【 {$nation['name']} 】</option>";
         } elseif($nation['scout'] == 1) {
@@ -1031,7 +1022,7 @@ function command_25($turn, $command) {
 
     echo "
 </form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
 {$scoutStr}
 </table>";
@@ -1530,11 +1521,12 @@ function command_44($turn, $command) {
 
 function command_46($turn, $command) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     starter("건국");
 
-    $maxnation = $db->queryFirstField('SELECT maxnation FROM game LIMIT 1');
+    $maxnation = $gameStor->maxnation;
 
     $colorUsed = [];
     
@@ -1785,7 +1777,7 @@ function command_51($turn, $command) {
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        if($myNation['power'] <= $nation['power'] * 3 || !isClose($me['nation'], $nation['nation'])) {
+        if($myNation['power'] <= $nation['power'] * 3 || !isNeighbor($me['nation'], $nation['nation'])) {
             echo "<option style=color:{$nation['color']};background-color:red; value={$nation['nation']}>【 {$nation['name']} 】</option>";
         } else {
             echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
@@ -1929,7 +1921,7 @@ function command_53($turn, $command) {
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        if($myNation['power']+$nation['power'] > $cond1 || $myNation['gennum']+$nation['gennum'] > $cond2 || !isClose($me['nation'], $nation['nation'])) {
+        if($myNation['power']+$nation['power'] > $cond1 || $myNation['gennum']+$nation['gennum'] > $cond2 || !isNeighbor($me['nation'], $nation['nation'])) {
             echo "<option style=color:{$nation['color']};background-color:red; value={$nation['nation']}>【 {$nation['name']} 】</option>";
         } else {
             echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";

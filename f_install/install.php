@@ -10,13 +10,13 @@ require(__dir__.'/../vendor/autoload.php');
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>설치</title>
-    <script src="../e_lib/jquery-3.2.1.min.js"></script>
-    <script src="../e_lib/bootstrap.bundle.min.js"></script>
-    <script src="../e_lib/jquery.validate.min.js"></script>
-    <script src="../e_lib/sha512.min.js"></script>
-    <script src="../js/install.js"></script>
-    <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="../css/install.css">
+    <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+    <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+    <?=WebUtil::printJS('../e_lib/jquery.validate.min.js')?>
+    <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
+    <?=WebUtil::printJS('../js/install.js')?>
+    <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+    <?=WebUtil::printCSS('../css/install.css')?>
 </head>
 <body>
     <div class="container">

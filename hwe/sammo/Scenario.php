@@ -27,6 +27,8 @@ class Scenario{
 
     private $initOK = false;
 
+    private $gameConf = null;
+
     private function initFull(){
         if($this->initOK){
             return;
@@ -126,7 +128,7 @@ class Scenario{
                 $text
             );
 
-        }, Util::array_get($data['generalEx'], []));
+        }, Util::array_get($data['general_ex'], []));
 
         $this->initialEvents = array_map(function($rawEvent){
             $cond = $rawEvent[0];
@@ -148,6 +150,28 @@ class Scenario{
         }, Util::array_get($data['events'], []));
     }
 
+    public function getGameConf(){
+        if($this->gameConf){
+            return $this->gameConf;
+        }
+        $defaultPath = self::SCENARIO_PATH."/default.json";
+        if(!file_exists($defaultPath)){
+            throw new \RuntimeException('기본 시나리오 설정 파일 없음!');
+        }
+        $default = Json::decode(file_get_contents($defaultPath));
+
+        $stat = [
+            'statTotal'=>$this->data['stat']['total']??$default['stat']['total'],
+            'statMin'=>$this->data['stat']['min']??$default['stat']['min'],
+            'statMax'=>$this->data['stat']['max']??$default['stat']['max'],
+            'statNPCMax'=>$this->data['stat']['npcMax']??$default['stat']['npcMax'],
+            'statChiefMin'=>$this->data['stat']['chiefMin']??$default['stat']['chiefMin'],
+        ];
+
+        $this->gameConf = array_merge($stat);
+        return $this->gameConf;
+    }
+
     public function __construct(int $scenarioIdx, bool $lazyInit = true){
         $scenarioPath = self::SCENARIO_PATH."/scenario_{$scenarioIdx}.json";
 
@@ -156,6 +180,8 @@ class Scenario{
 
         $data = Json::decode(file_get_contents($scenarioPath));
         $this->data = $data;
+
+        $this->getGameConf();
 
         $this->year = Util::array_get($data['startYear']);
         $this->title = Util::array_get($data['title'] , '');
@@ -292,7 +318,19 @@ class Scenario{
         }
     }
 
+    public function buildConf(){
+        $path = __dir__.'/../d_setting';
+        Util::generateFileUsingSimpleTemplate(
+            $path.'/GameCustomConst.orig.php',
+            $path.'/GameCustomConst.php',
+            $this->gameConf,
+            true
+        );
+    }
+
     public function build($env=[]){
+        
+
         $this->initFull();
 
         //NOTE: 초기화가 되어있다고 가정함.
@@ -300,11 +338,14 @@ class Scenario{
         /*
         env로 사용된 것들,
         게임 변수 : year, month
-        game 테이블 변수 : startyear, year, month, genius, turnterm, show_img_level, extended_general, fiction, npcmode
+        gameStor 변수 : startyear, year, month, genius, turnterm, show_img_level, extended_general, fiction, npcmode
         install 변수 : npcmode, show_img_level, extended_general, scenario, fiction
 
         event변수 : currentEventID
         */
+
+        
+
 
         $db = DB::db();
 

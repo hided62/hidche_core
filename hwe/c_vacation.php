@@ -8,16 +8,11 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
-$connect=$db->get();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 
-$query = "select killturn from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$killturn = $gameStor->killturn;
 
-$admin['killturn'] *= 3;
-
-$query = "update general set killturn='{$admin['killturn']}' where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$db->update('general', ['killturn'=>$killturn*3], 'owner=%i', $userID);
 
 
 header('location:b_myPage.php');

@@ -51,10 +51,19 @@ $reserve_open = Util::getReq('reserve_open');
 if($reserve_open){
     $reserve_open = new \DateTime($reserve_open);
     $db = DB::db();
+    
+    if (!$db->queryFirstField("SHOW TABLES LIKE 'storage'")) {
+        $clearResult = ResetHelper::clearDB();
+        if(!$clearResult['result']){
+            Json::die($clearResult);
+        }
+    }
 
-    $clearResult = ResetHelper::clearDB();
-    if(!$clearResult['result']){
-        Json::die($clearResult);
+    if (!$db->queryFirstField("SHOW TABLES LIKE 'reserved_open'")) {
+        Json::die([
+            'result'=>false,
+            'reason'=>'예약 테이블이 없음!'
+        ]);
     }
 
     $scenarioObj = new Scenario($scenario, true);
@@ -69,7 +78,8 @@ if($reserve_open){
             'extend'=>$extend,
             'npcmode'=>$npcmode,
             'show_img_level'=>$show_img_level,
-            'tournament_trig'=>$tournament_trig
+            'tournament_trig'=>$tournament_trig,
+            'gameConf'=>$scenarioObj->getGameConf()
         ]),
         'date'=>$reserve_open->format('Y-m-d H:i:s')
     ]);

@@ -22,9 +22,9 @@
 
 .msg_plate{
     width:100%;
-    border-bottom:groove 0.1em;
-    border-left:groove 0.1em;
-    border-right:groove 0.1em;
+    border-bottom:solid 1px gray;
+    border-left:solid 1px gray;
+    border-right:solid 1px gray;
     height:64px;
     font-size:12px;
     word-break:break-all;
@@ -61,7 +61,7 @@
     float:left;
     width:64px;
     height:64px;
-    border-right:groove 0.1em;
+    border-right:solid 1px gray;
 }
 
 .msg_time{
@@ -105,7 +105,7 @@
 
 .board_header{
     color:white;
-    border:groove 0.1em;
+    border:solid 1px gray;
 }
 
 .board_side{
@@ -113,9 +113,9 @@
     height:1370px;
     width:498px;
     overflow-y: hidden;
-    border-left:groove 1px;
-    border-right:groove 1px;
-    border-bottom:groove 1px;
+    border-left:solid 1px;
+    border-right:solid 1px;
+    border-bottom:solid 1px;
 }
 
 .msg_body{

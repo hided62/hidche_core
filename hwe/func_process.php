@@ -187,6 +187,7 @@ function CriticalScore($score, $type) {
 
 function process_1(&$general, $type) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -194,9 +195,7 @@ function process_1(&$general, $type) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
 
     if($type == 1)     { $dtype = "농지 개간"; $atype = "을"; $btype = "은"; $stype = "agri"; }
     elseif($type == 2) { $dtype = "상업 투자"; $atype = "를"; $btype = "는"; $stype = "comm"; }
@@ -288,6 +287,7 @@ function process_1(&$general, $type) {
 
 function process_3(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -295,9 +295,7 @@ function process_3(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
 
     $dtype = "기술 연구";
 
@@ -388,6 +386,7 @@ function process_3(&$general) {
 
 function process_4(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -395,9 +394,7 @@ function process_4(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
 
     $query = "select * from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -479,6 +476,7 @@ function process_4(&$general) {
 
 function process_5(&$general, $type) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -486,9 +484,7 @@ function process_5(&$general, $type) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
 
     if($type == 1) { $dtype = "수비 강화"; $stype = "def"; }
     elseif($type == 2) { $dtype = "성벽 보수"; $stype = "wall"; }
@@ -580,6 +576,7 @@ function process_5(&$general, $type) {
 
 function process_7(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -587,9 +584,7 @@ function process_7(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
 
     $query = "select * from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -671,6 +666,7 @@ function process_7(&$general) {
 
 function process_8(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -678,9 +674,7 @@ function process_8(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
 
     $dtype = "치안"; $stype = "secu";
 
@@ -770,6 +764,7 @@ function process_8(&$general) {
 
 function process_9(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -777,9 +772,7 @@ function process_9(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'develcost']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -860,6 +853,7 @@ function process_9(&$general) {
 
 function process_11(&$general, $type) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -870,9 +864,7 @@ function process_11(&$general, $type) {
     if($type == 1) { $defaultatmos = GameConst::$defaultAtmosLow; $defaulttrain = GameConst::$defaultTrainLow; }
     else { $defaultatmos = GameConst::$defaultAtmosHigh; $defaulttrain = GameConst::$defaultTrainHigh; }
 
-    $query = "select year,month,startyear from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     $query = "select level,tech from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1046,6 +1038,7 @@ function process_11(&$general, $type) {
 
 function process_13(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1053,9 +1046,7 @@ function process_13(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $nation = getNationStaticInfo($general['nation']);
 
@@ -1115,6 +1106,7 @@ function process_13(&$general) {
 
 function process_14(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1122,9 +1114,7 @@ function process_14(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $nation = getNationStaticInfo($general['nation']);
 
@@ -1177,6 +1167,7 @@ function process_14(&$general) {
 
 function process_15(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1184,9 +1175,7 @@ function process_15(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select nation,tech from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1250,6 +1239,7 @@ function process_15(&$general) {
 
 function process_16(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1257,9 +1247,7 @@ function process_16(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select startyear,year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     $query = "select nation,war,sabotagelimit,tech from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1343,6 +1331,7 @@ function process_16(&$general) {
 
 function process_17(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1350,9 +1339,7 @@ function process_17(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     if($general['crew'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 소집해제 실패. <1>$date</>";
@@ -1384,6 +1371,7 @@ function process_17(&$general) {
 
 function process_21(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1393,7 +1381,7 @@ function process_21(&$general) {
 
 
     $db = DB::db();
-    $admin = $db->queryFirstRow('SELECT year, month, develcost FROM game limit 1');
+    $admin = $gameStor->getValues(['year', 'month', 'develcost']);
     $city = CityConst::byID($general['city']);
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
@@ -1445,6 +1433,7 @@ function process_21(&$general) {
 
 function process_26(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1454,9 +1443,7 @@ function process_26(&$general) {
 
     $troop = getTroop($general['troop']);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select nation,name,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1511,6 +1498,7 @@ function process_26(&$general) {
 
 function process_28(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1520,9 +1508,7 @@ function process_28(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $nation = getNationStaticInfo($general['nation']);
 
@@ -1577,6 +1563,7 @@ function process_28(&$general) {
 
 function process_30(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1584,9 +1571,7 @@ function process_30(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'develcost']);
 
     $query = "select path from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1645,6 +1630,7 @@ function process_30(&$general) {
 
 function process_31(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1653,9 +1639,7 @@ function process_31(&$general) {
     $date = substr($general['turntime'],11,5);
     $msg = [];
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'develcost']);
 
     $dist = searchDistance($general['city'], 2, false);
     $command = DecodeCommand($general['turn0']);
@@ -1786,6 +1770,7 @@ function process_31(&$general) {
 
 function process_41(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1793,9 +1778,7 @@ function process_41(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'develcost']);
 
     $ratio = rand() % 100;
     $exp = $general['crew'] / 400;
@@ -1855,6 +1838,7 @@ function process_41(&$general) {
 
 function process_42(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -1862,9 +1846,7 @@ function process_42(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $type = rand() % 27 + 1;
     $exp = 30;
@@ -2076,6 +2058,7 @@ function process_42(&$general) {
 
 function process_43(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $genlog = [];
@@ -2084,9 +2067,7 @@ function process_43(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $command = DecodeCommand($general['turn0']);
     $what = $command[3];
@@ -2167,6 +2148,7 @@ function process_43(&$general) {
 
 function process_44(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -2174,9 +2156,7 @@ function process_44(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select name,gold,rice from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2258,6 +2238,7 @@ function process_44(&$general) {
 
 function process_48(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -2265,9 +2246,7 @@ function process_48(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $city = getCity($general['city']);
 
@@ -2366,6 +2345,7 @@ function process_48(&$general) {
 
 function process_49(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -2374,9 +2354,7 @@ function process_49(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $nation = getNationStaticInfo($general['nation']);
 
@@ -2503,6 +2481,7 @@ function process_49(&$general) {
 
 function process_50(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -2510,11 +2489,9 @@ function process_50(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $month = $gameStor->month;
 
-    $log[] = "<C>●</>{$admin['month']}월:건강 회복을 위해 요양합니다. <1>$date</>";
+    $log[] = "<C>●</>{$month}월:건강 회복을 위해 요양합니다. <1>$date</>";
     // 경험치 상승        // 공헌도, 명성 상승
     $exp = 10;
     $ded = 7;
@@ -2530,6 +2507,7 @@ function process_50(&$general) {
 
 function process_99(&$general) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $log = [];
@@ -2537,9 +2515,7 @@ function process_99(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
 
     $log[] = "<C>●</>{$admin['month']}월:아직 구현되지 않았습니다. <1>$date</>";
 

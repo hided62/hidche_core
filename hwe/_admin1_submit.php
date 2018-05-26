@@ -33,15 +33,14 @@ $startyear = Util::getReq('startyear', 'int', GameConst::$defaultStartYear);
 extractMissingPostToGlobals();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 $admin = getAdmin();
 
 switch ($btn) {
     case "변경":
-        $msg = addslashes(SQ2DQ($msg));
-        $query = "update game set msg='$msg'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
+        $gameStor->msg = $msg;
         break;
     case "로그쓰기":
         $lognum = $admin['historyindex'] + 1;
@@ -51,20 +50,16 @@ switch ($btn) {
         pushWorldHistory(["<R>★</><S>{$log}</>"]);
         break;
     case "변경1":
-        $query = "update game set starttime='$starttime'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
+        $gameStor->starttime = (new \DateTime($starttime))->format('Y-m-d H:i:s');
         break;
     case "변경2":
-        $query = "update game set maxgeneral='$maxgeneral'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
+        $gameStor->maxgeneral = $maxgeneral;
         break;
     case "변경3":
-        $query = "update game set maxnation='$maxnation'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
+        $gameStor->maxnation = $maxnation;
         break;
     case "변경4":
-        $query = "update game set startyear='$startyear'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
+        $gameStor->startyear = $startyear;
         break;
     case "1분턴":
     case "2분턴":
@@ -88,8 +83,8 @@ switch ($btn) {
         $turn = ($admin['year'] - $admin['startyear']) * 12 + $admin['month'] - 1;
         $starttime = date("Y-m-d H:i:s", strtotime($admin['turntime']) - $turn * $unit);
         $starttime = cutTurn($starttime, $turnterm);
-        $query = "update game set turnterm='$turnterm',starttime='$starttime'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
+        $gameStor->turnterm = $turnterm;
+        $gameStor->starttime = $starttime;
         // 턴시간이 길어지는 경우 랜덤턴 배정
         if ($turnterm < $admin['turnterm']) {
             $query = "select no from general";

@@ -31,8 +31,8 @@ if($meLevel == 0) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 인사부</title>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 <script type="text/javascript">
 function out() {
     return confirm('정말 추방하시겠습니까?');
@@ -42,7 +42,7 @@ function out() {
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>인 사 부<br><?=backButton()?></td></tr>
 </table>
 <br>
@@ -72,7 +72,7 @@ $query = "select name,picture,firenum from general where nation='{$nation['natio
 $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']} colspan=6>
             <font size=5>【 {$nation['name']} 】</font>
@@ -131,7 +131,7 @@ echo "
         </td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <form method=post action=c_myBossInfo.php>
     <tr><td colspan=6 height=5></td></tr>
     <tr><td colspan=2 align=center bgcolor=red>추 방</td></tr>
@@ -144,14 +144,14 @@ if($meLevel >= 5 && $nation["l{$meLevel}set"] == 0) {
     echo "
             <select name=outlist size=1 style=color:white;background-color:black;>";
 
-    $query = "select no,name,level from general where nation='{$me['nation']}' and level!='12' and no!='{$me['no']}' order by npc,binary(name)";
+    $query = "select no,name,level,leader,power,intel,killturn from general where nation='{$me['nation']}' and level!='12' and no!='{$me['no']}' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
         echo "
-                <option value={$general['no']}>{$general['name']}</option>";
+                <option value={$general['no']}>{$general['name']} <small>({$general['leader']}/{$general['power']}/{$general['intel']}, {$general['killturn']}턴)</small></option>";
     }
 
     echo "
@@ -167,7 +167,7 @@ echo "
     </tr>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=4 height=5></td></tr>
     <tr><td colspan=4 align=center bgcolor=blue>수 뇌 부 임 명</td></tr>
     <tr>
@@ -217,12 +217,12 @@ echo "
 ";
 
 $queries = [];
-$queries[10] = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$goodgenpower."' order by npc,binary(name)";
-$queries[9]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$goodgenintel."' order by npc,binary(name)";
-$queries[8]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$goodgenpower."' order by npc,binary(name)";
-$queries[7]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$goodgenintel."' order by npc,binary(name)";
-$queries[6]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$goodgenpower."' order by npc,binary(name)";
-$queries[5]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$goodgenintel."' order by npc,binary(name)";
+$queries[10] = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
+$queries[9]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
+$queries[8]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
+$queries[7]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
+$queries[6]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
+$queries[5]  = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
 
 for($i=10; $i >= $lv; $i--) {
     if($i % 2 == 0) { echo "<tr>"; }
@@ -270,7 +270,7 @@ for($i=10; $i >= $lv; $i--) {
 echo "
     <tr><td colspan=4>※ <font color=red>빨간색</font>은 현재 임명중인 장수, <font color=orange>노란색</font>은 다른 관직에 임명된 장수, 하얀색은 일반 장수를 뜻합니다.</td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=5 height=5></td></tr>
 ";
 if($meLevel >= 5) {
@@ -309,7 +309,7 @@ if($meLevel >= 5) {
                 <option value=0>____공석____</option>
     ";
 
-    $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$goodgenpower."' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and power>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
@@ -363,7 +363,7 @@ if($meLevel >= 5) {
                 <option value=0>____공석____</option>
     ";
 
-    $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$goodgenintel."' order by npc,binary(name)";
+    $query = "select no,name,level,city from general where nation='{$me['nation']}' and level!='12' and intel>='".GameConst::$chiefStatMin."' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($i=0; $i < $count; $i++) {
@@ -505,7 +505,7 @@ for($j=0; $j < $citycount; $j++) {
     <tr><td colspan=5>※ <font color=orange>노란색</font>은 변경 불가능, 하얀색은 변경 가능 관직입니다.</td></tr>
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

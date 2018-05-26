@@ -16,13 +16,10 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("암행부", 2);
-
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
 
 $query = "select no,nation,level,con,turntime,belong from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
@@ -32,7 +29,7 @@ $query = "select level,secretlimit from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $nation = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
     exit();
@@ -55,13 +52,13 @@ $sel[$type] = "selected";
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 암행부</title>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>암 행 부<br><?=closeButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
@@ -101,7 +98,7 @@ $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect)
 $gencount = MYDB_num_rows($genresult);
 
 echo"
-<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center class='tb_layout bg0'>
     <tr>
         <td width=98 align=center id=bg1>이 름</td>
         <td width=98 align=center id=bg1>통무지</td>
@@ -206,7 +203,7 @@ echo "
 
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

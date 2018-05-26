@@ -17,11 +17,10 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
-$query = "select develcost,vote,votecomment from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['develcost', 'cost', 'vote', 'votecomment']);
 
 $query = "select no,vote,name,nation,horse,weap,book,item,npc from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -36,22 +35,16 @@ if($btn == "투표" && $me['vote'] == 0 && $sel > 0) {
     $log = uniqueItem($me, $log, 1);
     pushGenLog($me, $log);
 }
-else if($btn == "댓글" && $comment != "") {
-    $comment = str_replace("|", " ", $comment);
-    $comment = str_replace(":", " ", $comment);
+else if($btn == "댓글" && trim($comment) != "") {
     $comment = trim($comment);
-    $comment = addslashes(SQ2DQ($comment));
 
     $nation = getNationStaticInfo($me['nation']);
 
-    if($admin['votecomment'] != "") { $admin['votecomment'] .= "|"; }
-    $admin['votecomment'] .= "{$nation['name']}:{$me['name']}:{$comment}";
-
-    $query = "update game set votecomment='{$admin['votecomment']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    
-
+    if(!$admin['votecomment']){
+        $admin['votecomment'] = [];
+    }
+    $admin['votecomment'][] = [$nation['name'],$me['name'],$comment];
+    $gameStor->votecomment = $admin['votecomment'];
 }
 
 if($session->userGrade < 5){
@@ -62,22 +55,19 @@ if($session->userGrade < 5){
 
 if($btn == "수정") {
     if($title != "") {
-        $vote = explode("|", $admin['vote']);
-        $vote[0] = addslashes(SQ2DQ($title));
-        $admin['vote'] = implode("|", $vote);
-        $query = "update game set vote='{$admin['vote']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $vote = $admin['vote']?:[];
+        $vote[0] = $title;
+        $gameStor->vote = $vote;
     }
 } elseif($btn == "추가") {
     if($str != "") {
-        $str = addslashes(SQ2DQ($str));
-        $admin['vote'] .= "|{$str}";
-        $query = "update game set vote='{$admin['vote']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $admin['vote'][] = $str;
+        $gameStor->vote=$admin['vote'];
     }
 } elseif($btn == "리셋") {
-    $query = "update game set voteopen=1,vote='',votecomment=''";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->voteopen=1;
+    $gameStor->vote='';
+    $gameStor->votecomment='';
 
     $query = "update general set vote='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -85,14 +75,11 @@ if($btn == "수정") {
     $query = "update general set newvote='1' where vote=0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 } elseif($btn == "숨김") {
-    $query = "update game set voteopen=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->voteopen = 0;
 } elseif($btn == "전체통계만") {
-    $query = "update game set voteopen=1";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->voteopen = 1;
 } elseif($btn == "전부") {
-    $query = "update game set voteopen=2";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->voteopen = 2;
 }
 
 header('location:a_vote.php');

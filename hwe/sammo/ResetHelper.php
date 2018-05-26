@@ -89,7 +89,7 @@ class ResetHelper{
             }
         }
 
-        
+        (KVStorage::getStorage($db, 'game_env'))->resetValues();
 
         return [
             'result'=>true
@@ -127,10 +127,12 @@ class ResetHelper{
         }
 
         $scenarioObj = new Scenario($scenario, false);
+        $scenarioObj->buildConf();
+
         $startyear = $scenarioObj->getYear()??GameConst::$defaultStartYear;
 
-
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
         $db->insert('plock', [
             'plock'=>1
         ]);
@@ -158,6 +160,8 @@ class ResetHelper{
 
         $killturn = 4800 / $turnterm;
         if($npcmode == 1) { $killturn = intdiv($killturn, 3); }
+
+        
 
         $env = [
             'scenario'=>$scenario,
@@ -194,7 +198,9 @@ class ResetHelper{
             ]);
         }
 
-        $db->insert('game', $env);
+        foreach($env as $key=>$value){
+            $gameStor->$key = $value;
+        }
 
         $scenarioObj->build($env);
 

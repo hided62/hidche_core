@@ -86,10 +86,6 @@ class NPC{
 
     public function build($env=[]){
         //scenario에 life==1인 경우 수명 제한이 없어지는 모양.
-        $nationID = $this->nationID;
-        if(!\sammo\getNationStaticInfo($nationID)){
-            $nationID = 0;
-        };
 
         $isFictionMode = (Util::array_get($env['fiction'], 0)!=0);
 
@@ -105,10 +101,22 @@ class NPC{
             return false; //예약.
         }
 
+        $isNewGeneral = ($age == \sammo\GameConst::$adultAge);
+
+        $nationID = $this->nationID;
+        if($isFictionMode && $isNewGeneral){
+            $nationID = 0;
+        }
+
+        if(!\sammo\getNationStaticInfo($nationID)){
+            $nationID = 0;
+        };
+
+
         $db = DB::db();
 
-        if($age == \sammo\GameConst::$adultAge && $month == 1){
-            \sammo\pushWorldHistory(["<C>●</>1월:<Y>$name</>(이)가 성인이 되어 <S>등장</>했습니다."], $year, $month);
+        if($isNewGeneral){
+            \sammo\pushWorldHistory(["<C>●</>{$month}월:<Y>{$name}</>(이)가 성인이 되어 <S>등장</>했습니다."], $year, $month);
         }
 
         if($this->ego == null || $isFictionMode){
@@ -144,7 +152,7 @@ class NPC{
 
         $city = $this->locatedCity;
         if($city === null){
-            if($nationID == 0){
+            if($nationID == 0 || !CityHelper::getAllNationCities($nationID)){
                 $cityObj = Util::choiceRandom(CityHelper::getAllCities());
             }
             else{
@@ -152,6 +160,9 @@ class NPC{
             }
             '@phan-var array<string,string|int> $cityObj';
             $city = $cityObj['id'];
+        }
+        else{
+            $city = CityHelper::getCityByName($city)['id'];
         }
 
         $experience = $age * 100;

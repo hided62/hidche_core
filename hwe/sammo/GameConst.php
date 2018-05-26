@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-class GameConst
+class GameConst extends GameCustomConst
 {
     /** @var string 버전 */
     public static $title = "삼국지 모의전투 PHP HiDCHe";
@@ -45,12 +45,6 @@ class GameConst
     public static $sabotageDefaultAmount = 100;
     /** @var int 계략시 수치 감소량($firingbase ~ $firingpower)*/
     public static $sabotageAmountCoef = 400;
-    /** @var int 명장,지장에 사용될 통솔 제한*/
-    public static $goodgenleader = 65;
-    /** @var int 명장에 사용될 무력 제한*/
-    public static $goodgenpower = 65;
-    /** @var int 지장에 사용될 지력 제한*/
-    public static $goodgenintel = 65;
     /** @var string 기본 배경색깔 푸른색*/
     public static $basecolor = "#000044";
     /** @var string 기본 배경색깔 초록색*/

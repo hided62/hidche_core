@@ -7,52 +7,47 @@ include "func.php";
 $session = Session::requireGameLogin()->setReadOnly();
 
 if($session->userGrade < 5) {
-    echo "<!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>관리메뉴</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 </head>
 <body>
 관리자가 아닙니다.<br>
-";
-    echo banner();
-    echo "
+    <?=banner()?>
 </body>
-</html>";
-
+</html>
+<?php
     exit();
 }
 
 $db = DB::db();
-$connect=$db->get();
 
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 <title>회원관리</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>회 원 관 리<br><?=backButton()?></td></tr>
 </table>
 <form name=form1 method=post action=_admin2_submit.php>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=80 align=center>접속제한</td>
         <td width=713 align=center><input type=submit name=btn value='전체 접속허용'><input type=submit name=btn value='전체 접속제한'></td>
     </tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=80 align=center rowspan=12>회원선택<br><br><font color=cyan>NPC</font><br><font color=skyblue>NPC유저</font><br><font color=red>접속제한</font><br><b style=background-color:red;>블럭회원</b></td>
         <td width=105 rowspan=12>
@@ -60,13 +55,9 @@ $admin = MYDB_fetch_array($result);
 
 echo "
             <select name=genlist[] size=20 multiple style=color:white;background-color:black;font-size:13>";
+$generalList = $db->query('SELECT `no`, `name`, npc, `block` FROM general ORDER BY npc, binary(`name`)');
 
-$query = "select no,name,npc,block from general order by npc,binary(name)";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$gencount = MYDB_num_rows($result);
-
-for($i=0; $i < $gencount; $i++) {
-    $general = MYDB_fetch_array($result);
+foreach($generalList as $general){
     $style = "style=;";
     if($general['block']         > 0) { $style .= "background-color:red;"; }
     if($general['npc']          >= 2) { $style .= "color:cyan;"; }
@@ -131,7 +122,7 @@ for($i=0; $i < 27; $i++) {
     </tr>
 </table>
 </form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

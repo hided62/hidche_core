@@ -34,13 +34,12 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("입찰", 1);
 
-$query = "select turnterm from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$turnterm = $gameStor->turnterm;
 
 $query = "select no,name,gold,rice,special from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
@@ -56,7 +55,7 @@ $bidCount = MYDB_num_rows($result);
 
 $btCount = $tradeCount + $bidCount;
 
-$unit = $admin['turnterm'] * 60;
+$unit = $turnterm * 60;
 
 $amount = Util::round($amount / 10) * 10;
 $cost = Util::round($cost / 10) * 10;

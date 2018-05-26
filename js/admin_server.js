@@ -1,16 +1,16 @@
 
 var serverAdminTemplate = '\
-<tr class="bg0" data-server_name="<%name%>" data-is_root="<%isRoot%>">\
+<tr class="bg0" data-server_name="<%name%>" data-is_root="<%isRoot%>" data-git-path="<%lastGitPath%>">\
     <th style="color:<%color%>;"><%korName%>(<%name%>)</th>\
     <td><%status%></td>\
     <td><%version%></td>\
-    <td><button class="valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'close\');">폐쇄</button></td>\
-    <td><button class="valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'open\');">오픈</button></td>\
-    <td><a class="just_link" href="../<%name%>/install.php"><button class="valid_if_set with_border obj_fill">리셋</button></a></td>\
-    <td><a class="just_link" href="../<%name%>/install_db.php"><button class="valid_if_installed only_admin with_border obj_fill">하드리셋</button></a></td>\
-    <td><button class="valid_if_set with_border obj_fill" onclick="Entrance_AdminClosedLogin(this);">폐쇄중 로그인</button></td>\
-    <td><button class="valid_if_set with_border obj_fill" onclick="Entrance_AdminOpen119(this);">서버119</button></td>\
-    <td><button class="only_admin with_border obj_fill" onclick="serverUpdate(this);">업데이트</button></td>\
+    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'close\');">폐쇄</button></td>\
+    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'open\');">오픈</button></td>\
+    <td><a class="just_link" href="../<%name%>/install.php"><button class="with_skin valid_if_set with_border obj_fill">리셋</button></a></td>\
+    <td><a class="just_link" href="../<%name%>/install_db.php"><button class="with_skin valid_if_installed only_admin with_border obj_fill">하드리셋</button></a></td>\
+    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminClosedLogin(this);">폐쇄중 로그인</button></td>\
+    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminOpen119(this);">서버119</button></td>\
+    <td><button class="with_skin with_border obj_fill" onclick="serverUpdate(this);">업데이트</button></td>\
 </tr>\
 ';
 
@@ -20,7 +20,7 @@ function serverUpdate(caller){
     var server = $tr.data('server_name');
     var isRoot = $tr.data('is_root');
 
-    var target = 'origin/master';
+    var target = $tr.data('gitPath');
 
     if(typeof isRoot !== 'boolean'){
         isRoot = (isRoot != 'false');
@@ -31,7 +31,12 @@ function serverUpdate(caller){
             return;
         }
     }
-    else{
+    else if(window.adminGrade < 6){
+        if (!confirm('다음 git tree-ish 주소로 업데이트를 시도합니다 : ' + target)) {
+            return;
+        }
+    }
+    else {
         target = prompt('가져올 git tree-ish 명을 입력해주세요.', target)
         if(!target){
             return;
@@ -77,14 +82,16 @@ function drawServerAdminList(serverList){
         var $tr = $(TemplateEngine(serverAdminTemplate, server));
         $table.append($tr);
         if(!server.valid){
-            $tr.find('.valid_if_set').css('background','#333333').prop('disabled', true);
+            $tr.find('.valid_if_set').prop('disabled', true);
         }
         if(!server.installed){
-            $tr.find('.valid_if_installed').css('background','#333333').prop('disabled', true);
+            $tr.find('.valid_if_installed').prop('disabled', true);
         }
     });
+    window.adminGrade = serverList.grade;
     if(serverList.grade == 5){
-        $table.find('.only_admin').css('background','#333333').prop('disabled', true);
+        
+        $table.find('.only_admin').prop('disabled', true);
     }
 }
 

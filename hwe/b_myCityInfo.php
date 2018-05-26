@@ -38,13 +38,13 @@ $sel = [$type => "selected"];
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 세력도시</title>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>세 력 도 시<br><?=backButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select name=type size=1>
@@ -123,23 +123,23 @@ for ($j=0; $j < $citycount; $j++) {
     }
 
     echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+<table align=center width=1000 class='tb_layout bg2'>
     <tr>
         <td colspan=12 style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=2>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</font></td>
     </tr>
     <tr>
-        <td align=center width=48 id=bg1>주민</td>
-        <td align=center width=112>{$city['pop']}/{$city['pop2']}</td>
-        <td align=center width=48 id=bg1>농업</td>
-        <td align=center width=108>{$city['agri']}/{$city['agri2']}</td>
-        <td align=center width=48 id=bg1>상업</td>
-        <td align=center width=108>{$city['comm']}/{$city['comm2']}</td>
-        <td align=center width=48 id=bg1>치안</td>
-        <td align=center width=108>{$city['secu']}/{$city['secu2']}</td>
-        <td align=center width=48 id=bg1>수비</td>
-        <td align=center width=108>{$city['def']}/{$city['def2']}</td>
-        <td align=center width=48 id=bg1>성벽</td>
-        <td align=center width=108>{$city['wall']}/{$city['wall2']}</td>
+        <td align=center width=46 id=bg1>주민</td>
+        <td align=center width=140>{$city['pop']}/{$city['pop2']}</td>
+        <td align=center width=46 id=bg1>농업</td>
+        <td align=center width=140>{$city['agri']}/{$city['agri2']}</td>
+        <td align=center width=46 id=bg1>상업</td>
+        <td align=center width=140>{$city['comm']}/{$city['comm2']}</td>
+        <td align=center width=46 id=bg1>치안</td>
+        <td align=center width=140>{$city['secu']}/{$city['secu2']}</td>
+        <td align=center width=46 id=bg1>수비</td>
+        <td align=center width=140>{$city['def']}/{$city['def2']}</td>
+        <td align=center width=46 id=bg1>성벽</td>
+        <td align=center width=140>{$city['wall']}/{$city['wall2']}</td>
     </tr>
     <tr>
         <td align=center id=bg1>민심</td>
@@ -188,7 +188,7 @@ for ($j=0; $j < $citycount; $j++) {
 }
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

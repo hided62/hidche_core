@@ -8,13 +8,10 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("사령부", 1);
-
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
 
 $query = "select no,nation,level,con,turntime,belong from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -24,7 +21,7 @@ $query = "select secretlimit from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $nation = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
 if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretlimit'])) {
@@ -38,9 +35,7 @@ else { $btn = "hidden"; $btn2 = "hidden"; }
 $date = date('Y-m-d H:i:s');
 
 // 명령 목록
-$query = "select year,month,turnterm from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['year','month','turnterm']);
 
 $query = "
     select nation,level,
@@ -84,8 +79,8 @@ for($i= $lv - 1; $i>=5; $i--){
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 사령부</title>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 <script type="text/javascript">
 function turn(type) {
     if(type == 0) location.replace('turn_push_core.php');
@@ -96,10 +91,10 @@ function turn(type) {
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>사 령 부<input type=button value='갱신' onclick=location.replace('b_chiefcenter.php')><br><?=backButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=10 align=center bgcolor=skyblue>수뇌부 일정</td></tr>
     <tr><td colspan=10 align=center>
 <?php
@@ -188,7 +183,7 @@ for($k=0; $k < 2; $k++) {
 
 ?>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

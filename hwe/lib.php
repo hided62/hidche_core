@@ -7,11 +7,9 @@ $loader->addPsr4('sammo\\', __DIR__.'/sammo', true);
 
 $loader->addClassMap((function () {
     $d_settingMap = [];
-    foreach (glob(__dir__.'/d_setting/*.php') as $filepath) {
+    foreach (glob(__dir__.'/d_setting/*.orig.php') as $filepath) {
+        $filepath = str_replace('.orig.php', '.php', $filepath);
         $filename = basename($filepath);
-        if (Util::ends_with($filename, '.orig.php')) {
-            continue;
-        }
         $classname = explode('.', $filename)[0];
         $d_settingMap['sammo\\'.$classname] = $filepath;
     };
@@ -64,9 +62,10 @@ function extractMissingPostToGlobals()
 {
     $result = [];
     if (isset($_POST) && count($_POST) > 0) {
-        
-        
         foreach($_POST as $key=>$val){
+            if(is_numeric($key)){
+                continue;
+            }
             if(isset($GLOBALS[$key])){
                 continue;
             }
@@ -77,6 +76,9 @@ function extractMissingPostToGlobals()
 
     if (isset($_GET) && count($_GET) > 0) {
         foreach($_GET as $key=>$val){
+            if(is_numeric($key)){
+                continue;
+            }
             if(isset($GLOBALS[$key])){
                 continue;
             }

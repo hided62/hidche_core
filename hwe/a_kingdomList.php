@@ -8,19 +8,16 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("세력일람", 2);
-
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
 
 $query = "select con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 ?>
 <!DOCTYPE html>
@@ -29,13 +26,13 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 세력일람</title>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>세 력 일 람<br><?=closeButton()?></td></tr>
 </table>
 <?php
@@ -127,19 +124,19 @@ for($i=1; $i <= $count; $i++) {
     else { $l5 = $level5['name']; }
 
     echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+<table align=center width=1000 class='tb_layout bg2'>
     <tr>
         <td colspan=8 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>【 {$nation['name']} 】</td>
     </tr>
     <tr>
-        <td width=123 align=center id=bg1>성 향</td>
-        <td width=123 align=center><font color=yellow>".getNationType($nation['type'])."</font></td>
-        <td width=123 align=center id=bg1>작 위</td>
-        <td width=123 align=center>".getNationLevel($nation['level'])."</td>
-        <td width=123 align=center id=bg1>국 력</td>
-        <td width=123 align=center>{$nation['power']}</td>
-        <td width=123 align=center id=bg1>장수 / 속령</td>
-        <td width=123 align=center>{$gencount} / {$citycount}</td>
+        <td width=80 align=center id=bg1>성 향</td>
+        <td width=170 align=center><font color=yellow>".getNationType($nation['type'])."</font></td>
+        <td width=80 align=center id=bg1>작 위</td>
+        <td width=170 align=center>".getNationLevel($nation['level'])."</td>
+        <td width=80 align=center id=bg1>국 력</td>
+        <td width=170 align=center>{$nation['power']}</td>
+        <td width=80 align=center id=bg1>장수 / 속령</td>
+        <td width=170 align=center>{$gencount} / {$citycount}</td>
     </tr>
     <tr>
         <td align=center id=bg1>".getLevel(12, $nation['level'])."</td>
@@ -209,7 +206,7 @@ $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect
 $citycount = MYDB_num_rows($cityresult);
 
 echo "
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg2>
+<table align=center width=1000 class='tb_layout bg2'>
     <tr>
         <td colspan=5 align=center>【 재 야 】</td>
     </tr>
@@ -244,7 +241,7 @@ echo"
 
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

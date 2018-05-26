@@ -20,24 +20,24 @@ $userGrade = $session->userGrade;
         <title>서버목록</title>
 
         <!-- 스타일 -->
-        <link type="text/css" rel="stylesheet" href="../e_lib/bootstrap.min.css">
-        <link type="text/css" rel="stylesheet" href='../d_shared/common.css'>
-        <link type="text/css" rel="stylesheet" href='../css/config.css'>
-
-        <link type="text/css" rel="stylesheet" href='../css/entrance.css'>
+        <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+        <?=WebUtil::printCSS('../d_shared/common.css')?>
+        <?=WebUtil::printCSS('../css/config.css')?>
+        <?=WebUtil::printCSS('../css/entrance.css')?>
 
         <!-- 액션 -->
-        <script type="text/javascript" src='../js/common.js'></script>
-        <script type="text/javascript" src='../e_lib/jquery-3.2.1.min.js'></script>
-        <script type="text/javascript" src='../js/func.js'></script>
-        <script type="text/javascript" src='../js/entrance.js'></script>
-        <script src="../d_shared/menu.js"></script>
-        <script src="../js/title.js"></script>
+        <?=WebUtil::printJS('../js/common.js')?>
+        <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+        <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+        <?=WebUtil::printJS('../js/func.js')?>
+        <?=WebUtil::printJS('../js/entrance.js')?>
+        <?=WebUtil::printJS('../d_shared/menu.js')?>
+        <?=WebUtil::printJS('../js/title.js')?>
 
 <?php if ($userGrade >= 5): ?>
         <!-- 운영자 -->
-        <link type="text/css" rel="stylesheet" href='../css/admin_server.css'>
-        <script type="text/javascript" src='../js/admin_server.js'></script>
+        <?=WebUtil::printCSS('../css/admin_server.css')?>
+        <?=WebUtil::printJS('../js/admin_server.js')?>
 <?php endif; ?>
 
     </head>
@@ -103,7 +103,7 @@ if ($userGrade >= 5) {
 <div id="user_info">
     <div class="bg2 section_title with_border">계 정 관 리</div>
     <div class="center_ordered_items with_border bg0">
-        <a href="user_info.html"><button id="btn_user_manage" class="with_skin">비밀번호 &amp; 전콘 &amp; 탈퇴</button></a>
+        <a href="user_info.php"><button id="btn_user_manage" class="with_skin">비밀번호 &amp; 전콘 &amp; 탈퇴</button></a>
         <button id="btn_logout" class="with_skin">로 그 아 웃</button>
     </div>
 </div>

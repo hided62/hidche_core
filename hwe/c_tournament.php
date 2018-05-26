@@ -21,11 +21,10 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
-$query = "select tournament,phase,tnmt_type,develcost from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['tournament','phase','tnmt_type','develcost']);
 
 $query = "select no,name,tournament from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -80,8 +79,8 @@ if($btn == '참가') {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $grpCount = MYDB_num_rows($result);
     if($grpCount >= 8) {
-        $query = "update game set tournament=2, phase=0";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->tournament = 2;
+        $gameStor->phase = 0;
     }
     header('location:b_tournament.php');
     die(); 
@@ -93,15 +92,13 @@ if($session->userGrade < 5) {
 }
 
 if($btn == "자동개최설정") {
-    $db->update('game', ['tnmt_trig'=>$trig], true);
+    $gameStor->tnmt_trig = $trig;
 } elseif($btn == "개최") {
     startTournament($auto, $type);
 } elseif($btn == "중단") {
-    $db->update('game', [
-        'tnmt_auto'=>0,
-        'tournament'=>0,
-        'phase'=>0
-    ], true);
+    $gameStor->tnmt_auto = 0;
+    $gameStor->tournament = 0;
+    $gameStor->phase = 0;
 } elseif($btn == "투입" || $btn == "무명투입" || $btn == "쪼렙투입" || $btn == "일반투입" || $btn == "굇수투입" || $btn == "랜덤투입") {
     if($btn == "투입") {
         $query = "select no,name,npc,leader,power,intel,explevel,gold,horse,weap,book from general where no='$gen'";
@@ -164,7 +161,7 @@ if($btn == "자동개최설정") {
     }
     $map = [];
     for($i=0; $i < 8; $i++) {
-        if($occupied[$i] == 0) {
+        if(!isset($occupied[$i]) || $occupied[$i] == 0) {
             $map[] = $i;
         }
     }
@@ -184,8 +181,8 @@ if($btn == "자동개최설정") {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $grpCount = MYDB_num_rows($result);
     if($grpCount >= 8) {
-        $query = "update game set tournament=2, phase=0";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->tournament=2;
+        $gameStor->phase=0;
     }
 
 } elseif($btn == "쪼렙전부투입" || $btn == "일반전부투입" || $btn == "굇수전부투입" || $btn == "랜덤전부투입") {
@@ -241,8 +238,8 @@ if($btn == "자동개최설정") {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-    $query = "update game set tournament=2, phase=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->tournament = 2;
+    $gameStor->phase = 0;
 } elseif($btn == "무명전부투입") { 
     fillLowGenAll();
 } elseif($btn == "예선") { 
@@ -261,8 +258,9 @@ if($btn == "자동개최설정") {
     final16set();
 } elseif($btn == "베팅마감") {
     $dt = date("Y-m-d H:i:s", time() + 60);
-    $query = "update game set tournament='7',phase='0',tnmt_time='$dt'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->tournament=7;
+    $gameStor->phase=0;
+    $gameStor->tnmt_time = $dt;
 } elseif($btn == "16강") { 
     finalFight($admin['tnmt_type'], $admin['tournament'], $admin['phase'], 16);
 } elseif($btn == "8강") { 
@@ -276,9 +274,7 @@ if($btn == "자동개최설정") {
 } elseif($btn == "회수") { 
     setRefund();
 } elseif($btn == "메시지") {
-    $msg = addslashes(SQ2DQ($msg));
-    $query = "update game set tnmt_msg='$msg'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->tnmt_msg = $msg;
 }
 
 header('location:b_tournament.php');

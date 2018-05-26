@@ -1,0 +1,9 @@
+{
+    "stat":{
+        "total":150,
+        "min":10,
+        "max":75,
+        "npcMax":95,
+        "chiefMin":65
+    }
+}

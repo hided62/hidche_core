@@ -165,11 +165,10 @@ function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city
 
 function processAI($no) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select startyear,year,month,turnterm,scenario,gold_rate,rice_rate from game limit 1";
-    $result = MYDB_query($query, $connect) or Error("processAI00 ".MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['startyear','year','month','turnterm','scenario','gold_rate','rice_rate']);
     // 초반 여부
     if($admin['startyear']+2 > $admin['year'] || ($admin['startyear']+2 == $admin['year'] && $admin['month'] < 5)) {
         $isStart = 1;
@@ -479,7 +478,7 @@ function processAI($no) {
                         for($i=0; $i < $nationCount; $i++) {
                             $youNation = MYDB_fetch_array($result);
 
-                            if(isClose($general['nation'], $youNation['nation'])) {
+                            if(isNeighbor($general['nation'], $youNation['nation'])) {
                                 $command = EncodeCommand(0, 0, $youNation['nation'], 62);
                                 $query = "update nation set l12turn0='$command' where nation='{$general['nation']}'";
                                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
@@ -1045,13 +1044,12 @@ function processAI($no) {
 
 function Promotion($nation, $level) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $lv = getNationChiefLevel($level);
 
-    $query = "select scenario,killturn from game limit 1";
-    $result = MYDB_query($query, $connect) or Error("processAI00 ".MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['scenario', 'killturn']);
 
     //우선 수뇌 해제 (승상 뺴고)
     $query = "update general set level=1 where level<11 and level>4 and nation='$nation'";

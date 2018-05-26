@@ -72,25 +72,25 @@ class Session
         Json::die($result + $jsonResult);
     }
 
-    public static function requireLogin($result = '..'): Session
+    public static function requireLogin($actionOnError = '..'): Session
     {
         $session = Session::getInstance();
         if ($session->isLoggedIn()) {
             return $session;
         }
 
-        static::die($result);
+        static::die($actionOnError);
     }
 
-    public static function requireGameLogin($result = '..'): Session
+    public static function requireGameLogin($actionOnError = '..'): Session
     {
-        $session = Session::requireLogin($result)->loginGame();
+        $session = Session::requireLogin($actionOnError)->loginGame();
 
         if ($session->generalID) {
             return $session;
         }
 
-        static::die($result);
+        static::die($actionOnError);
     }
 
     public function __construct()
@@ -230,6 +230,7 @@ class Session
         }
 
         $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
 
         $general = $db->queryFirstRow(
             'SELECT `no`, `name`, `killturn`, `turntime` from general where `owner` = %i',
@@ -241,10 +242,9 @@ class Session
             }
             return $this;
         }
-
-        $gameInstance = $db->queryFirstRow('SELECT turnterm, isUnited from game limit 1');
-        $turnterm = $gameInstance['turnterm'];
-        $isUnited = $gameInstance['isUnited'] != 0;
+        
+        $turnterm = $gameStor->turnterm;
+        $isUnited = $gameStor->isUnited != 0;
 
         $generalID = $general['no'];
         $generalName = $general['name'];

@@ -21,6 +21,7 @@
     right: 6px;
     margin:6px;
     height:40px;
+    line-height:40px;
 }
 
 #btn_delete_me{
@@ -37,15 +38,15 @@
 
 #image_upload_filename{
     position:absolute;
-    height:16px;
+    height:20px;
     left:10px;
     width:130px;
-    top:16px;
+    top:12px;
 }
 
 #image_upload_fake_btn{
-    top:16px;
-    height:20px;
+    top:12px;
+    height:22px;
     right:10px;
     position:absolute;
 }
@@ -53,8 +54,7 @@
 #image_upload{
     opacity: 0;
     position:absolute;
-    top:16px;
-    height:22px;
+    top:12px;
     left:0;
     height:20px;
     width:100%;
@@ -70,7 +70,6 @@
     bottom:0;
     left:0;
     width:50%;
-    height:20px;
 }
 
 #btn_remove_icon{
@@ -78,7 +77,6 @@
     bottom:0;
     right:0;
     width:50%;
-    height:20px;
 }
 
 #third_use_disallow{

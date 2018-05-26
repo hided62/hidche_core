@@ -10,6 +10,7 @@ $userID = Session::getUserID();
 increaseRefresh("메인", 1);
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 if (!$userID) {
@@ -39,65 +40,20 @@ if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
     ], 'owner=%i', $userID);
 }
 
-$query = "select develcost,online,conlimit,tournament,tnmt_type,turnterm,scenario,scenario_text,extended_general,fiction,npcmode,vote from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['develcost','online','conlimit','tournament','tnmt_type','turnterm','scenario','scenario_text','extended_general','fiction','npcmode','vote']);
 
 $query = "select plock from plock limit 1";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $plock = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
     exit();
 }
 
 $scenario = $admin['scenario_text'];
-?>
-<!DOCTYPE html>
-<html>
-<head>
-<title><?=UniqueConst::$serverName?>: 메인</title>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<script src="../e_lib/jquery-3.2.1.min.js"></script>
-<script src="../e_lib/jquery.redirect.js"></script>
-<script src="../d_shared/common_path.js"></script>
-<script src="js/common.js"></script>
-<script src="js/main.js"></script>
-<script src="js/base_map.js"></script>
-<script src="js/map.js"></script>
-<script src="js/msg.js"></script>
-<script>
-$(function(){
-    reloadWorldMap({
-        hrefTemplate:'b_currentCity.php?citylist={0}'
-    });
 
-    setInterval(function(){
-        refreshMsg();
-    }, 10000);
-});
-</script>
-<link href="css/normalize.css" rel="stylesheet">
-<link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css" rel="stylesheet">
-<link href="css/main.css" rel="stylesheet">
-<link href="css/map.css" rel="stylesheet">
-<link href="css/msg.css" rel="stylesheet">
-
-
-</head>
-<body class="img_back">
-
-<div id="container">
-<div><?=allButton()?></div>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
-    <tr height=50>
-        <td colspan=5 align=center><font size=4>삼국지 모의전투 HiDCHe (<font color=cyan><?=$scenario?></font>)</font></td>
-    </tr>
-<?php
 $valid = 0;
 if ($admin['extended_general'] == 0) {
     $extend = "표준";
@@ -118,25 +74,67 @@ if ($admin['npcmode'] == 0) {
     $valid = 1;
 }
 $color = "cyan";
-if ($valid == 1) {
-    echo "
-    <tr height=30>
-        <td width=398 colspan=2 align=center><font color={$color}>{$scenario}</font></td>
-        <td width=198 align=center><font color={$color}>NPC수 : {$extend}</font></td>
-        <td width=198 align=center><font color={$color}>NPC상성 : {$fiction}</font></td>
-        <td width=198 align=center><font color={$color}>NPC선택 : {$npcmode}</font></td>
-    </tr>";
-}
+
 ?>
+<!DOCTYPE html>
+<html>
+<head>
+<title><?=UniqueConst::$serverName?>: 메인</title>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/main.js')?>
+<?=WebUtil::printJS('js/base_map.js')?>
+<?=WebUtil::printJS('js/map.js')?>
+<?=WebUtil::printJS('js/msg.js')?>
+<script>
+$(function(){
+    reloadWorldMap({
+        hrefTemplate:'b_currentCity.php?citylist={0}'
+    });
+
+    setInterval(function(){
+        refreshMsg();
+    }, 10000);
+});
+</script>
+<?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('css/main.css')?>
+<?=WebUtil::printCSS('css/map.css')?>
+<?=WebUtil::printCSS('css/msg.css')?>
+
+
+</head>
+<body class="img_back">
+
+<div id="container">
+<div><?=allButton()?></div>
+<table class="tb_layout bg0" style="width:1000px;">
+    <tr height=50>
+        <td colspan=5 align=center><font size=4>삼국지 모의전투 HiDCHe (<font color=cyan><?=$scenario?></font>)</font></td>
+    </tr>
+<?php if ($valid == 1): ?>
+    <tr height=30>
+        <td width=398 colspan=2 align=center><font color=<?=$color?>><?=$scenario?></font></td>
+        <td width=198 align=center><font color=<?=$color?>>NPC수 : <?=$extend?></font></td>
+        <td width=198 align=center><font color=<?=$color?>>NPC상성 : <?=$fiction?></font></td>
+        <td width=198 align=center><font color=<?=$color?>>NPC선택 : <?=$npcmode?></font></td>
+    </tr>
+<?php endif; ?>
 
     <tr height=30>
-        <td width=198 align=center><?=info(2)?></td>
-        <td width=198 align=center>전체 접속자 수 : <?=$admin['online']?> 명</td>
-        <td width=198 align=center>턴당 갱신횟수 : <?=$admin['conlimit']?>회</td>
-        <td width=398 colspan=2 align=center><?=info(3)?></td>
+        <td width=198><?=info(2)?></td>
+        <td width=198>전체 접속자 수 : <?=$admin['online']?> 명</td>
+        <td width=198>턴당 갱신횟수 : <?=$admin['conlimit']?>회</td>
+        <td width=398 colspan=2><?=info(3)?></td>
     </tr>
     <tr height=30>
-        <td align=center>
+        <td>
 <?php
 if ($plock['plock'] == 0) {
     echo "<marquee scrollamount=2><font color=cyan>서버 가동중</font></marquee>";
@@ -182,7 +180,7 @@ echo "
         <td colspan=2 align=center>
 ";
 
-$vote = explode("|", $admin['vote']);
+$vote = $admin['vote']?:[''];
 $vote[0] = Tag2Code($vote[0]);
 if ($vote[0] == "") {
     echo "<font color=magenta>진행중 설문 없음</font>";
@@ -195,10 +193,10 @@ echo "
         </td>
     </tr>";
 ?>
-    <tr><td colspan=5>접속중인 국가: <?=onlinenation()?></td></tr>
-    <tr><td colspan=5><?php adminMsg(); ?></td></tr>
-    <tr><td colspan=5>【 국가방침 】<?php nationMsg(); ?></td></tr>
-    <tr><td colspan=5>【 접속자 】<?=onlinegen()?></td></tr>
+    <tr><td colspan=5 style="text-align:left;">접속중인 국가: <?=onlinenation()?></td></tr>
+    <tr><td colspan=5 style="text-align:left;"><?=adminMsg()?></td></tr>
+    <tr><td colspan=5 style="text-align:left;">【 국가방침 】<?php nationMsg(); ?></td></tr>
+    <tr><td colspan=5 style="text-align:left;">【 접속자 】<?=onlinegen()?></td></tr>
 <?php
 if ($session->userGrade >= 5) {
     echo "
@@ -227,7 +225,7 @@ else if($session->userGrade == 4){
 ?>
 
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
+<table class="tb_layout bg0" style="width:1000px;">
     <tr>
         <td width=698 height=520 colspan=2>
             <?=getMapHtml()?>
@@ -237,7 +235,7 @@ else if($session->userGrade == 4){
 <form name=form2 action=preprocessing.php method=post target=commandlist>
     <tr>
         <td rowspan=3 width=50 valign=top><?=turnTable()?></td>
-        <td width=646><?php cityInfo(); ?></td>
+        <td width=646 style="border:none;text-align:center;"><?php cityInfo(); ?></td>
     </tr>
     <tr>
         <td width=646 align=right>
@@ -259,31 +257,31 @@ else if($session->userGrade == 4){
         </td>
     </tr>
     <tr>
-        <td width=646 align=right>
+        <td width=646 align=right style="border:none;">
             <?php commandTable(); ?>
             <input id="mainBtnSubmit" type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;font-size:13px; value='로비로' onclick=location.replace('../')><br>
         </td>
     </tr>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
+<table class="tb_layout bg0" style="width:1000px;">
     <tr>
-        <td width=498><?php myNationInfo(); ?></td>
-        <td width=498><?php myInfo(); ?></td>
+        <td width=498 style="border:none;"><?php myNationInfo(); ?></td>
+        <td width=498 style="border:none;"><?php myInfo(); ?></td>
     </tr>
     <tr><td colspan=2><?=commandButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 style=font-size:13px;word-break:break-all; id=bg0>
+<table class="tb_layout bg0">
     <tr>
-        <td width=498 align=center id=bg1><b>장수 동향</b></td>
-        <td width=498 align=center id=bg1><b>개인 기록</b></td>
+        <td width=498 class='bg1 center'><b>장수 동향</b></td>
+        <td width=498 class='bg1 center'><b>개인 기록</b></td>
     </tr>
     <tr>
-        <td width=498 ><?=getGeneralPublicRecordRecent(15)?></td>
-        <td width=498 ><?=getGenLogRecent($me['no'], 15)?></td>
+        <td width=498 style="text-align:left;"><?=getGeneralPublicRecordRecent(15)?></td>
+        <td width=498 style="text-align:left;"><?=getGenLogRecent($me['no'], 15)?></td>
     </tr>
-    <tr><td width=998 colspan=2 align=center id=bg1><b>중원 정세</b></td></tr>
-    <tr><td width=998 colspan=2><?=getWorldHistoryRecent(15)?></td></tr>
+    <tr><td width=998 colspan=2 class='bg1 center'><b>중원 정세</b></td></tr>
+    <tr><td width=998 colspan=2 style="text-align:left;"><?=getWorldHistoryRecent(15)?></td></tr>
 </table>
 <div class="message_input_form bg0">
     <select id="mailbox_list" size="1">

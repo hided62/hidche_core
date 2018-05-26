@@ -13,19 +13,16 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("명장일람", 2);
-
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
 
 $query = "select con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
     exit();
@@ -37,16 +34,16 @@ if ($con >= 2) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 명장일람</title>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>명 장 일 람<br><?=closeButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <form name=form1 action=a_bestGeneral.php method=post>
     <tr><td align=center>
         <input type=submit name=btn value='유저 보기'>
@@ -54,7 +51,7 @@ if ($con >= 2) {
     </td></tr>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <?php
 if (isset($btn) && $btn == "NPC 보기") {
     //FIXME: query가 너무 적나라.
@@ -101,6 +98,7 @@ for ($i=0; $i < 21; $i++) {
     $color = [];
     $pic = [];
 
+    //FIXME: 쿼리에 index를 사용할 수 없는 녀석들이 있다. 그냥 모두 받아서 일괄 처리하는게 더 나을 수도 있음.
     switch ($i) {
     case  0: $query = "select nation,no,name,picture,imgsvr,experience as data from general where $sel order by data desc limit 0,10"; break;
     case  1: $query = "select nation,no,name,picture,imgsvr,dedication as data from general where $sel order by data desc limit 0,10"; break;
@@ -202,7 +200,7 @@ for ($i=0; $i < 21; $i++) {
 echo "
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 ";
 
 $type = array(
@@ -340,7 +338,7 @@ for ($i=0; $i < 4; $i++) {
 
 ?>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

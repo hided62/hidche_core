@@ -8,13 +8,10 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("내무부", 1);
-
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
 
 $query = "select no,nation,level,con,turntime,belong from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
@@ -24,7 +21,7 @@ $query = "select secretlimit from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $nation = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
     exit();
@@ -49,16 +46,16 @@ if ($me['level'] >= 5) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 내무부</title>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>내 무 부<br><?=backButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=9 align=center bgcolor=blue>외 교 관 계</td></tr>
     <tr>
         <td width=100 align=center class=bg1>국 가 명</td>
@@ -71,9 +68,7 @@ if ($me['level'] >= 5) {
         <td align=center class=bg1>비 고</td>
     </tr>
 <?php
-$query = "select year,month from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['year','month']);
 
 $query = "select nation,name,color,power,gennum from nation order by power desc";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
@@ -190,9 +185,7 @@ $query = "select nation,name,color,type,msg,gold,rice,bill,rate,scout,war,scoutm
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $nation = MYDB_fetch_array($result);
 
-$query = "select gold_rate,rice_rate from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['gold_rate','rice_rate']);
 // 금 수지
 $deadIncome = getDeadIncome($nation['nation'], $nation['type'], $admin['gold_rate']);
 
@@ -220,7 +213,7 @@ if ($budgetricediff > 0) {
 }
 
 ?>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <form name=form1 method=post action=c_dipcenter.php>
     <tr><td colspan=2 height=10></td></tr>
     <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메세지</td></tr>
@@ -231,7 +224,7 @@ if ($budgetricediff > 0) {
     <tr><td colspan=2 align=center bgcolor=green>예 산 &amp; 정 책</td></tr>
     <tr>
         <td colspan=2>
-            <table width=998 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+            <table width=998 class='tb_layout bg0'>
                 <tr>
                     <td colspan=2 align=center class=bg1>자금 예산</td>
                     <td colspan=2 align=center class=bg1>병량 예산</td>
@@ -304,7 +297,7 @@ if ($nation['war'] == 0) {
     <tr><td colspan=2 height=10></td></tr>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

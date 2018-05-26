@@ -7,6 +7,7 @@ include "func.php";
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("설문조사", 1);
@@ -15,14 +16,9 @@ $query = "select no,vote from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-$query = "select develcost,voteopen,vote,votecomment from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['develcost','voteopen','vote','votecomment']);
 
-$vote = explode("|", $admin['vote']);
-if ($vote[0] == "") {
-    $vote[0] = "-";
-}
+$vote = $admin['vote']?:['-'];
 
 ?>
 <!DOCTYPE html>
@@ -30,8 +26,17 @@ if ($vote[0] == "") {
 <head>
 <title><?=UniqueConst::$serverName?>: 설문조사</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<style>
+.little_bar{
+    float:left;
+    position:relative;
+    height:17px;
+    line-height:17px;
+    text-align:center;
+}
+</style>
 <script type="text/javascript">
 function captureKey(e) {
     if(e.keyCode == 13 && e.srcElement.type == 'text') {
@@ -44,10 +49,10 @@ function captureKey(e) {
 
 </head>
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>설 문 조 사<br><?=closeButton()?></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <form name=form1 action=c_vote.php method=post>
     <tr><td colspan=3 align=center id=bg2><font size=5>설 문 조 사 (<?=$admin['develcost']*5?>금과 추첨으로 유니크템 증정!)</font></td></tr>
 <?php
@@ -137,21 +142,21 @@ if ($session->userGrade >= 5) {
     ";
 }
 
-if ($admin['votecomment'] != "") {
-    $comment = explode("|", $admin['votecomment']);
+if ($admin['votecomment']) {
+    $comment = $admin['votecomment'];
     $commentCount = count($comment);
 } else {
     $commentCount = 0;
 }
 echo "
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td colspan=4 align=center id=bg1>댓 글</td>
     </tr>
 ";
 for ($i=0; $i < $commentCount; $i++) {
-    $cmt = explode(":", $comment[$i]);
+    $cmt = $comment[$i];
     $cmt[2] = Tag2Code($cmt[2]);
     $j = $i+1;
     echo "
@@ -175,7 +180,7 @@ if ($me['no'] > 0) {
 ?>
 </table>
 <br>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=3 align=center id=bg2><font size=5>
         전 체 통 계
 <?php
@@ -193,9 +198,7 @@ if ($admin['voteopen'] >= 1 || $session->userGrade >= 5) {
     <tr>
         <td width=98  align=center>전 체</td>
         <td width=128 align=center>{$voteCount} / {$allCount} ({$percentage} %)</td>
-        <td width=768 align=center>
-            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-                <tr>
+        <td width=768>
     ";
 
     $memCount = max(1, $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2'));
@@ -227,17 +230,29 @@ if ($admin['voteopen'] >= 1 || $session->userGrade >= 5) {
         $nationVote[$nation][$ownVote] += $cnt;
     }
 
+    $totalPer = 0;
     for ($i=0; $i < $voteTypeCount; $i++) {
         $per = round(($totalVote[$i]??0) * 100 / $memCount, 1);
+        if($i == $voteTypeCount-1){
+            $per = 100-$totalPer;
+        }
+        else{
+            $totalPer += $per;
+        }
+        
+        
 //        if($per < 5) { $vote['cnt'] = "&nbsp;"; }
-        echo "
-        <td width={$per}% align=center style=color:".getNewColor($i)."; bgcolor=".getVoteColor($i).">{$totalVote[$i]}</td>
-        ";
+?>
+        <?php if($per == 0): ?>
+        <?php elseif($per < 10): ?>
+            <div class='little_bar' style='width:<?=$per?>%;color:<?=getNewColor($i)?>;background-color:<?=getVoteColor($i)?>;'></div>
+        <?php else:?>
+            <div class='little_bar' style='width:<?=$per?>%;color:<?=getNewColor($i)?>;background-color:<?=getVoteColor($i)?>;'><?=$totalVote[$i]?></div>
+        <?php endif;?>
+<?php
     }
 
     echo "
-                </tr>
-            </table>
         </td>
     </tr>
     ";
@@ -260,22 +275,30 @@ if ($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
     <tr>
         <td align=center bgcolor=black>재 야</td>
         <td align=center>{$nationVoteCount[0]} / {$memCount} ({$percentage} %)</td>
-        <td align=center>
-            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-                <tr>
+        <td>
     ";
 
+    $totalPer = 0;
     for ($i=0; $i < $voteTypeCount; $i++) {
         $per = round(Util::array_get($nationVote[0][$i], 0) / $memCount * 100, 1);
+        if($i == $voteTypeCount-1){
+            $per = 100-$totalPer;
+        }
+        else{
+            $totalPer += $per;
+        }
 //        if($per < 5) { $vote['cnt'] = "&nbsp;"; }
-        echo "
-                    <td width={$per}% align=center style=color:".getNewColor($i)."; bgcolor=".getVoteColor($i).">{$nationVote[0][$i]}</td>
-        ";
+?>
+            <?php if($per == 0): ?>
+            <?php elseif($per < 10): ?>
+                <div class='little_bar' style='width:<?=$per?>%;color:<?=getNewColor($i)?>;background-color:<?=getVoteColor($i)?>;'></div>
+            <?php else:?>
+                <div class='little_bar' style='width:<?=$per?>%;color:<?=getNewColor($i)?>;background-color:<?=getVoteColor($i)?>;'><?=$nationVote[0][$i]?></div>
+            <?php endif;?>
+<?php
     }
 
     echo "
-                </tr>
-            </table>
         </td>
     </tr>
     ";
@@ -306,21 +329,36 @@ if ($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
         <td align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}>{$nation['name']}</td>
         <td align=center>{$voteCount} / {$memCount} ({$percentage} %)</td>
         <td align=center>
-            <table align=center width=100% height=100% border=0 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
-                <tr>
         ";
 
+        $totalPer = 0;
         for ($k=0; $k < $voteTypeCount; $k++) {
-            $per = round($nationVote[$nation['nation']][$k] / $memCount * 100, 1);
+            if($memCount == 0){
+                $per = 0;
+                continue;
+            }
+
+            $per = round($nationVote[$nation['nation']][$k]??0 / $memCount * 100, 1);
+
+            if($i == $voteTypeCount-1){
+                $per = 100-$totalPer;
+            }
+            else{
+                $totalPer += $per;
+            }
+            
 //            if($per < 5) { $vote['cnt'] = "&nbsp;"; }
-            echo "
-                    <td width={$per}% align=center style=color:".getNewColor($k)."; bgcolor=".getVoteColor($k).">{$nationVote[$nation['nation']][$k]}</td>
-            ";
+?>
+            <?php if($per == 0): ?>
+            <?php elseif($per < 10): ?>
+                <div class='little_bar' style='width:<?=$per?>%;color:<?=getNewColor($k)?>;background-color:<?=getVoteColor($k)?>;'></div>
+            <?php else:?>
+                <div class='little_bar' style='width:<?=$per?>%;color:<?=getNewColor($k)?>;background-color:<?=getVoteColor($k)?>;'><?=$nationVote[$nation['nation']][$k]??0?></div>
+            <?php endif;?>
+<?php
         }
 
         echo "
-                </tr>
-            </table>
         </td>
     </tr>
         ";
@@ -329,7 +367,7 @@ if ($admin['voteopen'] >= 2 || $session->userGrade >= 5) {
 ?>
 </form>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

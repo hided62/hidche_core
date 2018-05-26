@@ -23,6 +23,7 @@ if (!$member) {
 }
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 ?>
@@ -31,23 +32,27 @@ $connect=$db->get();
 <head>
 <title><?=UniqueConst::$serverName?>: 장수생성</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link href="../d_shared/common.css" rel="stylesheet">
-<link rel='stylesheet' href="css/common.css">
-<script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="js/join.js"></script>
+<script>
+var defaultStatTotal = <?=GameConst::$defaultStatTotal?>;
+var defaultStatMin = <?=GameConst::$defaultStatMin?>;
+var defaultStatMax = <?=GameConst::$defaultStatMax?>;
+</script>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/join.js')?>
 
 </head>
 <body>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+    <table align=center width=1000 class='tb_layout bg0'>
         <tr><td>장 수 생 성<br><?=backButton()?></td></tr>
     </table>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+    <table align=center width=1000 class='tb_layout bg0'>
         <tr><td align=center><?=info(0)?></td></tr>
     </table>
 <?php
-$query = "select show_img_level,maxgeneral from game limit 1";
-$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
+$admin = $gameStor->getValues(['show_img_level','maxgeneral']);
 
 $query = "select no from general where npc<2";
 $result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect), "");
@@ -60,7 +65,7 @@ if ($gencount >= $admin['maxgeneral']) {
 }
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
 <tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
 <?php
 $query = "select name,scoutmsg,color from nation";
@@ -81,7 +86,7 @@ for ($i=0; $i < $nationcount; $i++) {
 </table>
 
 <form name=form1 method=post action=join_post.php>
-    <table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+    <table align=center width=1000 class='tb_layout bg0'>
         <tr>
             <td colspan=3 align=center id=bg1>장수 생성</td>
         </tr>
@@ -98,7 +103,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
         <tr>
             <td align=right id=bg1>전콘 사용 여부</td>
             <td width=64 height=64>
-                <img width='64' height='64' src='{$imageTemp}/{$member['picture']}' border=0>
+                <img width='64' height='64' src='{$imageTemp}/{$member['picture']}' border='0'>
             </td>
             <td>
                 <input type=checkbox name=pic value=1 checked>사용
@@ -156,13 +161,13 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
         </tr>
         <tr>
             <td align=center colspan=3>
-                <font color=orange>모든 능력치는 ( 10 <= 능력치 <= 75 ) 사이로 잡으셔야 합니다.<br>
+                <font color=orange>모든 능력치는 ( 10 <= 능력치 <= <?=GameConst::$defaultStatMax?> ) 사이로 잡으셔야 합니다.<br>
                 그 외의 능력치는 가입되지 않습니다.</font>
             </td>
         </tr>
         <tr>
             <td align=center colspan=3>
-                능력치의 총합은 150입니다. 가입후 0~10의 능력치 보너스를 받게 됩니다.<br>
+                능력치의 총합은 <?=GameConst::$defaultStatTotal?>입니다. 가입후 0~10의 능력치 보너스를 받게 됩니다.<br>
                 임의의 도시에서 재야로 시작하며 건국과 임관은 게임 내에서 실행합니다.
             </td>
         </tr>
@@ -172,7 +177,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
         </tr>
     </table>
 </form>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

@@ -34,8 +34,8 @@ $templates = new \League\Plates\Engine('templates');
 <head>
 <title><?=UniqueConst::$serverName?>: 도시정보</title>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
-<link href="../d_shared/common.css" rel="stylesheet">
-<link href="css/common.css" rel="stylesheet">
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 <style>
 #general_list tr td{
     text-align:center;
@@ -53,11 +53,11 @@ $templates = new \League\Plates\Engine('templates');
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>도 시 정 보<br><?=backButton()?></td></tr>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=998>
             <form name=cityselect method=get>도시선택 :
@@ -175,27 +175,27 @@ if($city['trade'] == 0) {
 }
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg2>
+<table align=center width=1000 class='tb_layout bg2'>
     <tr>
         <td colspan=12 align=center style=color:"<?=newColor($nation['color'])?>"; bgcolor=<?=$nation['color']?>>【 <?=CityConst::$regionMap[$city['region']]?> | <?=CityConst::$levelMap[$city['level']]?> 】 <?=$city['name']?></td>
     </tr>
     <tr>
-        <td align=center width=48 class=bg1>주민</td>
-        <td align=center width=112><?=$city['pop']?>/<?=$city['pop2']?></td>
-        <td align=center width=48 class=bg1>농업</td>
-        <td align=center width=108><?=$city['agri']?>/<?=$city['agri2']?></td>
-        <td align=center width=48 class=bg1>상업</td>
-        <td align=center width=108><?=$city['comm']?>/<?=$city['comm2']?></td>
-        <td align=center width=48 class=bg1>치안</td>
-        <td align=center width=108><?=$city['secu']?>/<?=$city['secu2']?></td>
-        <td align=center width=48 class=bg1>수비</td>
-        <td align=center width=108><?=$city['def']?>/<?=$city['def2']?></td>
-        <td align=center width=48 class=bg1>성벽</td>
-        <td align=center width=108><?=$city['wall']?>/<?=$city['wall2']?></td>
+        <td align=center width=46 class=bg1>주민</td>
+        <td align=center width=140><?=$city['pop']?>/<?=$city['pop2']?></td>
+        <td align=center width=46 class=bg1>농업</td>
+        <td align=center width=140><?=$city['agri']?>/<?=$city['agri2']?></td>
+        <td align=center width=46 class=bg1>상업</td>
+        <td align=center width=140><?=$city['comm']?>/<?=$city['comm2']?></td>
+        <td align=center width=46 class=bg1>치안</td>
+        <td align=center width=140><?=$city['secu']?>/<?=$city['secu2']?></td>
+        <td align=center width=46 class=bg1>수비</td>
+        <td align=center width=140><?=$city['def']?>/<?=$city['def2']?></td>
+        <td align=center width=46 class=bg1>성벽</td>
+        <td align=center width=140><?=$city['wall']?>/<?=$city['wall2']?></td>
     </tr>
     <tr>
         <td align=center class=bg1>민심</td>
@@ -230,11 +230,11 @@ if($city['trade'] == 0) {
 
 
 <br>
-<table align=center border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center class='tb_layout bg0'>
 <thead>
     <tr>
         <td width=64 align=center class=bg1>얼 굴</td>
-        <td width=98 align=center class=bg1>이 름</td>
+        <td width=128 align=center class=bg1>이 름</td>
         <td width=48 align=center class=bg1>통솔</td>
         <td width=48 align=center class=bg1>무력</td>
         <td width=48 align=center class=bg1>지력</td>
@@ -244,7 +244,7 @@ if($city['trade'] == 0) {
         <td width=78 align=center class=bg1>병 사</td>
         <td width=48 align=center class=bg1>훈련</td>
         <td width=48 align=center class=bg1>사기</td>
-        <td width=310 align=center class=bg1>명 령</td>
+        <td width=280 align=center class=bg1>명 령</td>
     </tr></thead><tbody class='bg0' id='general_list'>
 
 <?php
@@ -365,7 +365,7 @@ for($j=0; $j < $gencount; $j++) {
 </tbody>
 </table>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; class=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

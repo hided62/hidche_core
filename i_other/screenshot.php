@@ -12,14 +12,9 @@ if($sel == 0) $sel = 1;
     <head>
         <meta charset="UTF-8">
         <title>스크린샷</title>
-
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
 <style type="text/css">
-body { color:white; background-color:black; border-width:1px; border-color:gray; }
-table { font-family:'맑은 고딕'; }
-font { font-family:'맑은 고딕'; }
-#bg0 { background-image:url(<?=ServConfig::$gameImagePath?>/back_walnut.jpg); }
-#bg1 { background-image:url(<?=ServConfig::$gameImagePath?>/back_blue.jpg); }
-#bg2 { background-image:url(<?=ServConfig::$gameImagePath?>/back_green.jpg); }
 
 .leftFloat {
   float: left;
@@ -37,10 +32,10 @@ font { font-family:'맑은 고딕'; }
     </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><font size=5 color=skyblue><b>스 크 린 샷</b></font></td></tr>
 </table>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td>
             ※ 크게 보고 싶은 스크린샷을 클릭하세요.

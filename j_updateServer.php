@@ -29,6 +29,7 @@ if($session->userGrade < 5){
 $request = $_POST + $_GET;
 
 $rootDB = RootDB::db();
+$storage = new \sammo\KVStorage($rootDB, 'git_path');
 $tmpFile = 'd_log/arc.zip';
 
 $v = new Validator($request);
@@ -48,7 +49,7 @@ $target = Util::getReq('target');
 
 $server = basename($request['server']);
 if($session->userGrade <= 5 || !$target){
-    $target = Json::decode($rootDB->queryFirstField('SELECT `key`=%s FROM `config`', "git_path_$server"));
+    $target = $storage->$server;
     if($target){
         $target = $target[0];
     }
@@ -57,15 +58,15 @@ else{
     $target = $request['target'];
 }
 
-if(!$target){
+$baseServerName = Util::array_last_key(AppConf::getList());
+
+if(!$target && $server != $baseServerName){
     Json::die([
         'result'=>false,
         'reason'=>'git -ish target이 제대로 지정되지 않았습니다.'
     ]);
 }
 
-
-$baseServerName = Util::array_last_key(AppConf::getList());
 
 $targetDir =$target.':'.$baseServerName;
 
@@ -118,6 +119,8 @@ if($server == $baseServerName){
         ], true
     );
 
+    $storage->$server = [null, $version];
+
     Json::die([
         'server'=>$server,
         'result'=>true,
@@ -161,11 +164,7 @@ $result = Util::generateFileUsingSimpleTemplate(
     ], true
 );
 
-$rootDB->insertUpdate('config', [
-    "key" => "git_path_$server",
-    "value" =>Json::encode([$target, $version])
-]);
-
+$storage->$server = [$target, $version];
 //AppConf::getList()[$server]->closeServer();
 
 Json::die([

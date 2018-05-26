@@ -1,7 +1,5 @@
 
 jQuery(function($){
-
-    var totalAbil = 150;
     var $leader = $('#leader');
     var $power = $('#power');
     var $intel = $('#intel');
@@ -12,16 +10,16 @@ jQuery(function($){
         var intel = Math.random()*65 + 10;
         var rate = leader + power + intel;
     
-        leader = Math.floor(leader / rate * totalAbil);
-        power = Math.floor(power / rate * totalAbil);
-        intel = Math.floor(intel / rate * totalAbil);
+        leader = Math.floor(leader / rate * defaultStatTotal);
+        power = Math.floor(power / rate * defaultStatTotal);
+        intel = Math.floor(intel / rate * defaultStatTotal);
         
     
-        while(leader+power+intel < totalAbil){
+        while(leader+power+intel < defaultStatTotal){
             leader+=1;
         }
         
-        if(leader > 75 || power > 75 || intel > 75 || leader < 10 || power < 10 || intel < 10){
+        if(leader > defaultStatMax || power > defaultStatMax || intel > defaultStatMax || leader < defaultStatMin || power < defaultStatMin || intel < defaultStatMin){
             return abilityRand();
         }
     
@@ -37,27 +35,32 @@ jQuery(function($){
         var intel = Math.random() * 1;
         var rate = leader + power + intel;
     
-        leader = Math.floor(leader / rate * totalAbil);
-        power = Math.floor(power / rate * totalAbil);
-        intel = Math.floor(intel / rate * totalAbil);
+        leader = Math.floor(leader / rate * defaultStatTotal);
+        power = Math.floor(power / rate * defaultStatTotal);
+        intel = Math.floor(intel / rate * defaultStatTotal);
         
-        while(leader+power+intel < totalAbil){
+        while(leader+power+intel < defaultStatTotal){
             power+=1;
         }
         
-        if(intel < 10){
-            leader -= 10 - intel;
-            intel = 10;
+        if(intel < defaultStatMin){
+            leader -= defaultStatMin - intel;
+            intel = defaultStatMin;
         }
         
-        if(leader > 75){
-            power += leader - 75;
-            leader = 75;
+        if(leader > defaultStatMax){
+            power += leader - defaultStatMax;
+            leader = defaultStatMax;
         }
         
-        if(power > 75){
-            leader += power - 75;
-            power = 75;
+        if(power > defaultStatMax){
+            leader += power - defaultStatMax;
+            power = defaultStatMax;
+        }
+
+        if(leader > defaultStatMax){
+            intel += leader - defaultStatMax;
+            leader = defaultStatMax;
         }
     
         $leader.val(leader);
@@ -71,27 +74,32 @@ jQuery(function($){
         var intel = Math.random() * 6;
         var rate = leader + power + intel;
     
-        leader = Math.floor(leader / rate * totalAbil);
-        power = Math.floor(power / rate * totalAbil);
-        intel = Math.floor(intel / rate * totalAbil);
+        leader = Math.floor(leader / rate * defaultStatTotal);
+        power = Math.floor(power / rate * defaultStatTotal);
+        intel = Math.floor(intel / rate * defaultStatTotal);
     
-        while(leader+power+intel < totalAbil){
+        while(leader+power+intel < defaultStatTotal){
             intel+=1;
         }
     
-        if(power < 10){
-            leader -= 10 - power;
-            power = 10;
+        if(power < defaultStatMin){
+            leader -= defaultStatMin - power;
+            power = defaultStatMin;
         }
         
-        if(leader > 75){
-            intel += leader - 75;
-            leader = 75;
+        if(leader > defaultStatMax){
+            intel += leader - defaultStatMax;
+            leader = defaultStatMax;
         }
         
-        if(intel > 75){
-            leader += intel - 75;
-            intel = 75;
+        if(intel > defaultStatMax){
+            leader += intel - defaultStatMax;
+            intel = defaultStatMax;
+        }
+
+        if(leader > defaultStatMax){
+            power += leader - defaultStatMax;
+            leader = defaultStatMax;
         }
     
         $leader.val(leader);
@@ -105,27 +113,32 @@ jQuery(function($){
         var intel = Math.random() * 6;
         var rate = leader + power + intel;
     
-        leader = Math.floor(leader / rate * totalAbil);
-        power = Math.floor(power / rate * totalAbil);
-        intel = Math.floor(intel / rate * totalAbil);
+        leader = Math.floor(leader / rate * defaultStatTotal);
+        power = Math.floor(power / rate * defaultStatTotal);
+        intel = Math.floor(intel / rate * defaultStatTotal);
     
-        while(leader+power+intel < totalAbil){
+        while(leader+power+intel < defaultStatTotal){
             intel+=1;
         }
     
-        if(leader < 10){
-            power -= 10 - leader;
-            leader = 10;
+        if(leader < defaultStatMin){
+            power -= defaultStatMin - leader;
+            leader = defaultStatMin;
         }
         
-        if(power > 75){
-            intel += power - 75;
-            power = 75;
+        if(power > defaultStatMax){
+            intel += power - defaultStatMax;
+            power = defaultStatMax;
         }
         
-        if(intel > 75){
-            power += intel - 75;
-            intel = 75;
+        if(intel > defaultStatMax){
+            power += intel - defaultStatMax;
+            intel = defaultStatMax;
+        }
+
+        if(power > defaultStatMax){
+            leader += power - defaultStatMax;
+            power = defaultStatMax;
         }
     
         $leader.val(leader);

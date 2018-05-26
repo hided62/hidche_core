@@ -119,3 +119,13 @@ var TemplateEngine = function (html, options) {
     catch (err) { console.error("'" + err.message + "'", " in \n\nCode:\n", code, "\n"); }
     return result;
 }
+
+function getIconPath(imgsvr,  picture){
+    // ../d_shared/common_path.js 필요
+    if(!imgsvr){
+        return pathConfig.sharedIcon+'/'+picture;
+    }
+    else{
+        return pathConfig.root+'/d_pic/'+picture;
+    }
+}

@@ -13,19 +13,16 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("장수일람", 2);
-
-$query = "select conlimit from game limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$admin = MYDB_fetch_array($result);
 
 $query = "select con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-$con = checkLimit($me['con'], $admin['conlimit']);
+$con = checkLimit($me['con']);
 if ($con >= 2) {
     printLimitMsg($me['turntime']);
     exit();
@@ -42,14 +39,15 @@ if ($type <= 0 || $type > 15) {
 <head>
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 장수일람</title>
-<link rel='stylesheet' href='../d_shared/common.css' type='text/css'>
-<link rel='stylesheet' href='css/common.css' type='text/css'>
-<script type="text/javascript" src="../e_lib/jquery-3.2.1.min.js"></script>
+<?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../d_shared/common_path.js')?>
 
 </head>
 
 <body>
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td>장 수 일 람<br><?=closeButton()?></td></tr>
     <tr><td><form name=form1 method=post>정렬순서 :
         <select id='viewType' name='type' size=1>
@@ -103,23 +101,23 @@ $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect)
 $gencount = MYDB_num_rows($genresult);
 
 echo"
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=64  align=center id=bg1>얼 굴</td>
-        <td width=100 align=center id=bg1>이 름</td>
-        <td width=50 align=center id=bg1>연령</td>
-        <td width=50 align=center id=bg1>성격</td>
-        <td width=90 align=center id=bg1>특기</td>
-        <td width=50 align=center id=bg1>레 벨</td>
-        <td width=100 align=center id=bg1>국 가</td>
-        <td width=60 align=center id=bg1>명 성</td>
-        <td width=60 align=center id=bg1>계 급</td>
-        <td width=80 align=center id=bg1>관 직</td>
+        <td width=140 align=center id=bg1>이 름</td>
+        <td width=45 align=center id=bg1>연령</td>
+        <td width=45 align=center id=bg1>성격</td>
+        <td width=80 align=center id=bg1>특기</td>
+        <td width=45 align=center id=bg1>레 벨</td>
+        <td width=140 align=center id=bg1>국 가</td>
+        <td width=55 align=center id=bg1>명 성</td>
+        <td width=55 align=center id=bg1>계 급</td>
+        <td width=75 align=center id=bg1>관 직</td>
         <td width=45 align=center id=bg1>통솔</td>
         <td width=45 align=center id=bg1>무력</td>
         <td width=45 align=center id=bg1>지력</td>
         <td width=45 align=center id=bg1>삭턴</td>
-        <td width=84 align=center id=bg1>벌점</td>
+        <td width=70 align=center id=bg1>벌점</td>
     </tr>";
 for ($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
@@ -190,7 +188,7 @@ echo "
 
 ?>
 
-<table align=center width=1000 border=1 cellspacing=0 cellpadding=0 bordercolordark=gray bordercolorlight=black style=font-size:13px;word-break:break-all; id=bg0>
+<table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

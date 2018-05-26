@@ -4,11 +4,13 @@ namespace sammo;
 
 function processTournament() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select tournament,phase,tnmt_type,tnmt_auto,tnmt_time,now() as now,TIMESTAMPDIFF(SECOND,tnmt_time,now()) as offset from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'tnmt_auto', 'tnmt_time']);
+    $now = new \DateTime();
+    $admin['now'] = $now->format('Y-m-d H:i:s');
+    $admin['offset'] = $now->getTimestamp() - (new \DateTime($admin['tnmt_time']))->getTimestamp();
 
     //수동일땐 무시
     if($admin['tnmt_auto'] == 0) { return; }
@@ -83,8 +85,9 @@ function processTournament() {
                 if($betTerm > 3600) { $betTerm = 3600; }
                 //처리 초 더한 날짜
                 $dt = date("Y-m-d H:i:s", strtotime($admin['tnmt_time']) + $unit * $i + $betTerm);
-                $query = "update game set tournament='$tnmt',phase='$phase',tnmt_time='$dt'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                $gameStor->tournament = $tnmt;
+                $gameStor->phase = $phase;
+                $gameStor->tnmt_time = $dt;
                 return;
             }
 
@@ -95,28 +98,29 @@ function processTournament() {
                 //지정시간대 넘어가면 중단 20~24시
                 if($hr < 20) {
                     $dt = substr($dt, 0, 11)."20:00:00";
-                    $query = "update game set tournament='$tnmt',phase='$phase',tnmt_time='$dt'";
-                    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                    $gameStor->tournament = $tnmt;
+                    $gameStor->phase = $phase;
+                    $gameStor->tnmt_time = $dt;
                     return;
                 }
             }
         }
 
         $second = $unit * $iter;
-        $query = "update game set tournament='$tnmt',phase='$phase',tnmt_time=DATE_ADD(tnmt_time, INTERVAL {$second} SECOND)";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->tournament = $tnmt;
+        $gameStor->phase = $phase;
+        $gameStor->tnmt_time = (new \DateTimeImmutable($admin['tnmt_time']))->add(new \DateInterval("PT{$second}S"))->format('Y-m-d H:i:s');
     }
 }
 
 function getTournamentTerm() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select tnmt_auto from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $tnmt_auto = $gameStor->tnmt_auto;
 
-    switch($admin['tnmt_auto']) {
+    switch($tnmt_auto) {
     case 0: $str = ''; break;
     case 1: $str = "경기당 12분"; break;
     case 2: $str = "경기당 7분"; break;
@@ -131,14 +135,11 @@ function getTournamentTerm() {
 
 function getTournamentTime() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select tournament,tnmt_time from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
-    $tnmt = $admin['tournament'];
-    $dt = substr($admin['tnmt_time'], 11, 5);
+    list($tnmt, $tnmt_time) = $gameStor->getValuesAsArray(['tournament', 'tnmt_time']);
+    $dt = substr($tnmt_time, 11, 5);
     switch($tnmt) {
     case 1: $tnmt = "개막시간 {$dt}"; break;
     case 2: $tnmt = "다음경기 {$dt}"; break;
@@ -170,11 +171,11 @@ function getTournament($tnmt) {
     return $tnmt;
 }
 
-function printRow($k, $npc, $name, $abil, $game, $win, $draw, $lose, $gd, $gl, $prmt) {
+function printRow($k, $npc, $name, $abil, $tgame, $win, $draw, $lose, $gd, $gl, $prmt) {
     if($prmt > 0) { $name = "<font color=orange>".$name."</font>"; }
     elseif($npc >= 2) { $name = "<font color=cyan>".$name."</font>"; }
     elseif($npc == 1) { $name = "<font color=skyblue>".$name."</font>"; }
-    echo "<tr align=center><td id=bg2>$k</td><td>$name</td><td>$abil</td><td>$game</td><td>$win</td><td>$draw</td><td>$lose</td><td>$gd</td><td>$gl</td></tr>";
+    echo "<tr align=center><td id=bg2>$k</td><td>$name</td><td>$abil</td><td>$tgame</td><td>$win</td><td>$draw</td><td>$lose</td><td>$gd</td><td>$gl</td></tr>";
 }
 
 function printFighting($tournament, $phase) {
@@ -231,6 +232,7 @@ function printFighting($tournament, $phase) {
 
 function startTournament($auto, $type) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     eraseTnmtFightLogAll();
@@ -246,12 +248,16 @@ function startTournament($auto, $type) {
     default:$unit = 60; break;
     }
 
-    $query = "select year,month from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month']);
     
-    $query = "update game set tnmt_auto='$auto',tnmt_time=DATE_ADD(now(), INTERVAL {$unit} MINUTE),tournament=1,tnmt_type='$type',phase=0,bet0=0,bet1=0,bet2=0,bet3=0,bet4=0,bet5=0,bet6=0,bet7=0,bet8=0,bet9=0,bet10=0,bet11=0,bet12=0,bet13=0,bet14=0,bet15=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->tnmt_auto = $auto;
+    $gameStor->tnmt_time = (new \DateTimeImmutable())->add(new \DateInterval("PT{$unit}M"))->format('Y-m-d H:i:s');
+    $gameStor->tournament = 1;
+    $gameStor->tnmt_type = $type;
+    $gameStor->phase = 0;
+    for($i=0;$i<16;$i+=1){
+        $gameStor->setValue("bet{$i}", 0);
+    }
     $query = "update general set tournament=0,bet0=0,bet1=0,bet2=0,bet3=0,bet4=0,bet5=0,bet6=0,bet7=0,bet8=0,bet9=0,bet10=0,bet11=0,bet12=0,bet13=0,bet14=0,bet15=0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $query = "truncate tournament";
@@ -269,14 +275,13 @@ function startTournament($auto, $type) {
 
 function fillLowGenAll() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $general = [];
     $grpCount = [];
 
-    $query = "select develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $develcost = $gameStor->develcost;
 
     $general['no'] = 0;
     $general['name'] = "무명장수";
@@ -293,7 +298,7 @@ function fillLowGenAll() {
     }
 
     //자동신청하고, 돈 있고, 아직 참가 안한 장수
-    $query = "select no,npc,name,leader,power,intel,explevel from general where tnmt='1' and tournament='0' and gold>='{$admin['develcost']}' order by rand() limit 0,64";
+    $query = "select no,npc,name,leader,power,intel,explevel from general where tnmt='1' and tournament='0' and gold>='{$develcost}' order by rand() limit 0,64";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
 
@@ -308,7 +313,7 @@ function fillLowGenAll() {
                 if($genCount > 0) {
                     $genCount--;
                     $gen = MYDB_fetch_array($result);
-                    $query = "update general set gold=gold-'{$admin['develcost']}',tournament='1' where no='{$gen['no']}'";
+                    $query = "update general set gold=gold-'{$develcost}',tournament='1' where no='{$gen['no']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                     $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('{$gen['no']}', '{$gen['npc']}', '{$gen['name']}', '{$gen['leader']}', '{$gen['power']}', '{$gen['intel']}', '{$gen['explevel']}', '$i', '$grpCount[$i]')";
@@ -327,8 +332,8 @@ function fillLowGenAll() {
         }
     }
 
-    $query = "update game set tournament=2, phase=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->tournament = 2;
+    $gameStor->phase = 0;
 }
 
 //0 경기없음
@@ -376,6 +381,7 @@ function getTwo($tournament, $phase) {
 
 function qualify($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $cand = getTwo($tnmt, $phase);
@@ -385,11 +391,10 @@ function qualify($tnmt_type, $tnmt, $phase) {
         fight($tnmt_type, $tnmt, $phase, $i, $cand[0], $cand[1], 0);
     }
     if($phase < 55) {
-        $query = "update game set phase=phase+1";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->phase+=1;
     } else {
-        $query = "update game set tournament=3, phase=0";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->phase=0;
+        $gameStor->tournament=3;
 
         for($i=0; $i < 8; $i++) {
             $query = "select grp,grp_no,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp='$i' order by gd desc, gl desc, seq limit 0,4";
@@ -416,6 +421,7 @@ function qualifyAll($tnmt_type, $tnmt, $phase) {
 
 function selection($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     //시드1 배정
@@ -444,18 +450,14 @@ function selection($tnmt_type, $tnmt, $phase) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     if($phase < 31) {
-        $query = "update game set phase=phase+1";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->phase+=1;
     } else {
-        $query = "update game set tournament=4, phase=0";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->tournamemt = 4;
+        $gameStor->phase=0;
     }
 }
 
 function selectionAll($tnmt_type, $tnmt, $phase) {
-    $db = DB::db();
-    $connect=$db->get();
-
     $start = $phase;
     $end = $phase - ($phase % 8) + 8;
     for($i=$start; $i < $end; $i++) {
@@ -465,6 +467,7 @@ function selectionAll($tnmt_type, $tnmt, $phase) {
 
 function finallySingle($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     $cand = getTwo($tnmt, $phase);
@@ -474,11 +477,10 @@ function finallySingle($tnmt_type, $tnmt, $phase) {
         fight($tnmt_type, $tnmt, $phase, $i, $cand[0], $cand[1], 0);
     }
     if($phase < 5) {
-        $query = "update game set phase=phase+1";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->phase+=1;
     } else {
-        $query = "update game set tournament=5, phase=0";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->tournament=5;
+        $gameStor->phase=0;
 
         for($i=10; $i < 18; $i++) {
             $query = "select grp,grp_no,win+draw+lose as game,win,draw,lose,gl,win*3+draw as gd from tournament where grp='$i' order by gd desc, gl desc, seq limit 0,2";
@@ -493,9 +495,6 @@ function finallySingle($tnmt_type, $tnmt, $phase) {
 }
 
 function finallyAll($tnmt_type, $tnmt, $phase) {
-    $db = DB::db();
-    $connect=$db->get();
-
     $start = $phase;
     $end = $phase - ($phase % 2) + 2;
     for($i=$start; $i < $end; $i++) {
@@ -505,6 +504,7 @@ function finallyAll($tnmt_type, $tnmt, $phase) {
 
 function final16set() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     //1조1-5조2, 2조1-6조2, 3조1-7조2, 4조1-8조2, 5조1-1조2, 6조1-2조2, 7조1-3조2, 8조1-4조2
@@ -523,12 +523,13 @@ function final16set() {
     $query = "update tournament set prmt=0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    $query = "update game set tournament=6, phase=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->tournament=6;
+    $gameStor->phase=0;
 }
 
 function finalFight($tnmt_type, $tnmt, $phase, $type) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
     switch($type) {
@@ -541,8 +542,7 @@ function finalFight($tnmt_type, $tnmt, $phase, $type) {
     $grp = $phase + $offset;
     fight($tnmt_type, $tnmt, $phase, $grp, 0, 1, 1);
 
-    $query = "update game set phase=phase+1";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->phase+=1;
 
     $query = "select * from tournament where grp='$grp' and win>0 and (grp_no=0 or grp_no=1)";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -554,18 +554,17 @@ function finalFight($tnmt_type, $tnmt, $phase, $type) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     if($phase >= $turn) {
-        $query = "update game set tournament='$next', phase=0";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gameStor->tournament = $next;
+        $gameStor->phase = 0;
     }
 }
 
 function setGift($tnmt_type, $tnmt, $phase) {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select year,month,develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+    $admin = $gameStor->getValues(['year', 'month', 'develcost']);
 
     $genNo = [];
     $genName = [];
@@ -656,8 +655,7 @@ function setGift($tnmt_type, $tnmt, $phase) {
     $general2 = MYDB_fetch_array($result);
 
     //자동진행 끝
-    $query = "update game set tnmt_auto=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->tnmt_auto = 0;
 
     //장수열전 기록
     $query = "select no from general where no={$general['no']}";
@@ -693,9 +691,9 @@ function setGift($tnmt_type, $tnmt, $phase) {
     $general = MYDB_fetch_array($result);
     $no = ($general['grp'] - 20) * 2 + $general['grp_no'];
 
-    $query = "select bet{$no},bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15 as bet from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
+
+    $admin = $gameStor->getValues(['bet0','bet1','bet2','bet3','bet4','bet5','bet6','bet7','bet8','bet9','bet10','bet11','bet12','bet13','bet14','bet15']);
+    $admin['bet'] = array_sum($admin);
     $bet = @round($admin['bet'] /  $admin["bet{$no}"], 2);
 
     //당첨칸에 베팅한 사람들만
@@ -715,14 +713,11 @@ function setGift($tnmt_type, $tnmt, $phase) {
 
 function setRefund() {
     $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select develcost from game limit 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $admin = MYDB_fetch_array($result);
-
     //16강자 명성 돈
-    $cost = $admin['develcost'];
+    $cost = $gameStor->develcost;
     $query = "select no from tournament where grp<10";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
@@ -733,8 +728,7 @@ function setRefund() {
     }
 
     //자동진행 끝
-    $query = "update game set tnmt_auto=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $gameStor->tnmt_auto = 0;
     //베팅금 환수
     $query = "update general set gold=gold+bet0+bet1+bet2+bet3+bet4+bet5+bet6+bet7+bet8+bet9+bet10+bet11+bet12+bet13+bet14+bet15";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

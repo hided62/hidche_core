@@ -38,10 +38,11 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("베팅", 1);
 
-$tournament = $db->queryFirstField('SELECT tournament FROM game LIMIT 1');
+$tournament = $gameStor->tournament;
 if($tournament != 6) {
     header('Location: b_betting.php');
     exit();
@@ -59,9 +60,8 @@ if($betGold + 500 <= $myGold && $betGold + $oldBet <= 1000 && $betGold + $totalB
         "bet{$betTarget}"=>$db->sqleval("bet{$betTarget} + %i", $betGold),
         'betgold'=>$db->sqleval('betgold + %i', $betGold)
     ], 'owner = %i', $userID);
-    $db->update('game', [
-        "bet{$betTarget}"=>$db->sqleval("bet{$betTarget} + %i", $betGold)
-    ], true);
+
+    $gameStor->setValue("bet{$betTarget}", $gameStor->getValue("bet{$betTarget}") + $betGold);//TODO: +로 증가하는 storage값은 별도로 분리
 }
 
 header('location: b_betting.php');
