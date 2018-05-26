@@ -21,6 +21,8 @@ class AppConf
                 'kwe'=>new Setting(ROOT.'/kwe', '퀘', 'yellow'),
                 'pwe'=>new Setting(ROOT.'/pwe', '풰', 'orange'),
                 'twe'=>new Setting(ROOT.'/twe', '퉤', 'magenta'),
+                'nya'=>new Setting(ROOT.'/nya', '냐', '#e67e22'),
+                'pya'=>new Setting(ROOT.'/pya', '퍄', '#9b59b6'),
                 'hwe'=>new Setting(ROOT.'/hwe', '훼', 'red')
             ];
         }

@@ -10,6 +10,8 @@
         "/che":true,
         "/kwe":true,
         "/pwe":true,
+        "/nya":true,
+        "/pya":true,
         "/twe":true,
         
     },
@@ -19,6 +21,8 @@
         "/che":true,
         "/kwe":true,
         "/pwe":true,
+        "/nya":true,
+        "/pya":true,
         "/twe":true,
       },
 }

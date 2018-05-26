@@ -94,6 +94,8 @@ if ($userGrade >= 5) {
 <span class="Entrance_Kwe">퀘섭</span> : 실제 장수가 되어 가상의 역사를 만들어 봅시다!<br>
 <span class="Entrance_Pwe">풰섭</span> : 실제 장수들과 어울려 사실적 역사를 체험해 봅시다!<br>
 <span class="Entrance_Twe">퉤섭</span> : 주로 패치사항 미리보기 테스트 서버입니다.<br>
+<span class="Entrance_Nya">냐섭</span> : 신 서버.<br>
+<span class="Entrance_Pya">퍄섭</span> : 신 서버2.<br>
 <span class="Entrance_Hwe">훼섭</span> : 1일천하 서버. 또는 운영자 테스트용 서버입니다.<br>
 </td>
         </tr>
