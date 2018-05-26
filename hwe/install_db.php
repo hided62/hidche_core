@@ -24,7 +24,7 @@ if($session->userGrade == 5){
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../e_lib/jquery.validate.min.js')?>
 <?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/install.js')?>
+<?=WebUtil::printJS('js/install_db.js')?>
 <?=WebUtil::printCSS('css/normalize.css')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('css/install.css')?>
