@@ -143,11 +143,16 @@ class NPC{
         $name = 'ⓝ'.$this->name;
 
         $picturePath = $this->picturePath;
-        if($env['show_img_level'] < 3){
+        if($env['show_img_level'] < 3 || $picturePath === null){
             $picturePath = 'default.jpg';
         }
         else if(is_numeric($picturePath)){
-            $picturePath = "{$picturePath}.jpg";
+            if($picturePath < 0){
+                $picturePath = 'default.jpg';
+            }
+            else{
+                $picturePath = "{$picturePath}.jpg";
+            }
         }
 
         $city = $this->locatedCity;

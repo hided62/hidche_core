@@ -39,8 +39,9 @@ function loadScenarios(){
 
         $.each(result.scenario, function(idx, value){
             var title = value.title || "-";
-            var titles = title.split(/【|[0-9]*】/);
-            var category = titles.length>2?titles[1]:'-';
+            var pat = /【(.*?)[0-9\-_\.a-zA-Z]*】/;
+            var category = pat.exec(title);
+            category = category?category[1]:'-';
 
             value.title = title;
             value.category = category;

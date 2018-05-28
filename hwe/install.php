@@ -154,10 +154,10 @@ if($session->userGrade < 5){
                                 <label class="btn btn-secondary">
                                     <input type="radio" name="show_img_level" value="1">전콘
                                 </label>
-                                <label class="btn btn-secondary active">
+                                <label class="btn btn-secondary">
                                     <input type="radio" name="show_img_level" value="2">전콘, 병종
                                 </label>
-                                <label class="btn btn-secondary">
+                                <label class="btn btn-secondary active">
                                     <input type="radio" name="show_img_level" value="3" checked>전콘, 병종, NPC
                                 </label>
                             </div>
