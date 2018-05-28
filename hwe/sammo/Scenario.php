@@ -15,6 +15,8 @@ class Scenario{
     private $history;
     
     private $nations;
+    private $nationsInv;
+
     private $diplomacy;
 
     private $generals;
@@ -36,13 +38,17 @@ class Scenario{
         $this->initOK = true;
         $data = $this->data;
 
+        $neutralNation = new Scenario\Nation(0, '재야', '#000000', 0, 0);
         $this->nations = [];
-        $this->nations[0] = new Scenario\Nation(0, '재야', '#000000', 0, 0);
+        $this->nations[0] = $neutralNation;
+        $this->nationsInv = [$neutralNation->getName() => $neutralNation];
+        
         foreach (Util::array_get($data['nation'],[]) as $idx=>$rawNation) {
             list($name, $color, $gold, $rice, $infoText, $tech, $type, $nationLevel, $cities) = $rawNation;
             $nationID = $idx+1;
 
-            $this->nations[$nationID] = new Scenario\Nation(
+            
+            $nation = new Scenario\Nation(
                 $nationID, 
                 $name, 
                 $color, 
@@ -54,6 +60,8 @@ class Scenario{
                 $nationLevel, 
                 $cities
             );
+            $this->nations[$nationID] = $nation;
+            $this->nationsInv[$nation->getName()] = $nation;
         }
 
         $this->diplomacy = Util::array_get($data['diplomacy'], []);
@@ -65,12 +73,18 @@ class Scenario{
             }
 
             list(
-                $affinity, $name, $pictureID, $nationID, $locatedCity, 
+                $affinity, $name, $picturePath, $nationName, $locatedCity, 
                 $leadership, $power, $intel, $level, $birth, $death, $ego,
                 $char, $text
             ) = $rawGeneral;
 
-            if(!key_exists($nationID, $this->nations)){
+            if(key_exists($nationName, $this->nationsInv)){
+                $nationID = $this->nationsInv[$nationName]->getID();
+            }
+            else if(key_exists($nationName, $this->nations)){
+                $nationID = (int)$nationName;
+            }
+            else{
                 $nationID = 0;
             }
 
@@ -79,7 +93,7 @@ class Scenario{
             return new Scenario\NPC(
                 $affinity, 
                 $name, 
-                $pictureID, 
+                $picturePath, 
                 $nationID, 
                 $locatedCity, 
                 $leadership, 
@@ -100,12 +114,18 @@ class Scenario{
             }
 
             list(
-                $affinity, $name, $pictureID, $nationID, $locatedCity, 
+                $affinity, $name, $picturePath, $nationName, $locatedCity, 
                 $leadership, $power, $intel, $level, $birth, $death, $ego,
                 $char, $text
             ) = $rawGeneral;
 
-            if(!key_exists($nationID, $this->nations)){
+            if(key_exists($nationName, $this->nationsInv)){
+                $nationID = $this->nationsInv[$nationName]->id;;
+            }
+            else if(key_exists($nationName, $this->nations)){
+                $nationID = (int)$nationName;
+            }
+            else{
                 $nationID = 0;
             }
 
@@ -114,7 +134,7 @@ class Scenario{
             return new Scenario\NPC(
                 $affinity, 
                 $name, 
-                $pictureID, 
+                $picturePath, 
                 $nationID, 
                 $locatedCity, 
                 $leadership, 

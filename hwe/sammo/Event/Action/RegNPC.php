@@ -9,7 +9,7 @@ class RegNPC extends \sammo\Event\Action{
     public function __construct(
         int $affinity, 
         string $name, 
-        int $pictureID, 
+        $picturePath, 
         int $nationID,
         $locatedCity, 
         int $leadership, 
@@ -24,7 +24,7 @@ class RegNPC extends \sammo\Event\Action{
         $this->npc = new \sammo\Scenario\NPC(
             $affinity, 
             $name, 
-            $pictureID, 
+            $picturePath, 
             $nationID, 
             $locatedCity, 
             $leadership, 

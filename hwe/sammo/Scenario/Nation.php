@@ -55,6 +55,10 @@ class Nation{
         return $this->id;
     }
 
+    public function getName(){
+        return $this->name;
+    }
+
     public function build($env=[]){
         //NOTE: NPC의 숫자는 아직 확정된 것이 아니다.
         $cities = array_map(function($cityName){

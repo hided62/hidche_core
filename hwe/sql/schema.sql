@@ -18,7 +18,7 @@ CREATE TABLE `general` (
 	`refresh` INT(6) NULL DEFAULT '0',
 	`logcnt` INT(6) NULL DEFAULT '1',
 	`refcnt` INT(6) NULL DEFAULT '1',
-	`picture` CHAR(32) NOT NULL,
+	`picture` VARCHAR(40) NOT NULL,
 	`imgsvr` INT(1) NULL DEFAULT '0',
 	`name` CHAR(32) NOT NULL COLLATE 'utf8mb4_bin',
 	`name2` CHAR(32) NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
@@ -370,7 +370,7 @@ create table if not exists hall (
   nation char(12) default '',
   data int(5) default 0,
   color char(12) default '',
-  picture char(32) default '',
+  picture varchar(40) default '',
 
   PRIMARY KEY (no),
   UNIQUE INDEX `type` (`type`, `rank`)

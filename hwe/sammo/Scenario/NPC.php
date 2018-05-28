@@ -8,7 +8,7 @@ class NPC{
 
     public $affinity; 
     public $name; 
-    public $pictureID; 
+    public $picturePath; 
     public $nationID; 
     public $locatedCity; 
     public $leadership; 
@@ -26,7 +26,7 @@ class NPC{
     public function __construct(
         int $affinity, 
         string $name, 
-        int $pictureID, 
+        $picturePath, 
         int $nationID, 
         $locatedCity, //FIXME: 7.1로 올릴 때 ?string 으로 변경
         int $leadership, 
@@ -41,7 +41,7 @@ class NPC{
     ){
         $this->affinity = $affinity;
         $this->name = $name;
-        $this->pictureID = $pictureID;
+        $this->picturePath = $picturePath;
         $this->nationID = $nationID;
         $this->locatedCity = $locatedCity;
         $this->leadership = $leadership;
@@ -142,12 +142,12 @@ class NPC{
 
         $name = 'ⓝ'.$this->name;
 
-        $pictureID = $this->pictureID;
-        if($env['show_img_level'] == 3 && $pictureID > 0){
-            $picture = "{$pictureID}.jpg";
+        $picturePath = $this->picturePath;
+        if($env['show_img_level'] < 3){
+            $picturePath = 'default.jpg';
         }
-        else{
-            $picture = 'default.jpg';
+        else if(is_numeric($picturePath)){
+            $picturePath = "{$picturePath}.jpg";
         }
 
         $city = $this->locatedCity;
@@ -187,7 +187,7 @@ class NPC{
             'npc_org'=>2,
             'affinity'=>$affinity,
             'name'=>$name,
-            'picture'=>$picture,
+            'picture'=>$picturePath,
             'nation'=>$nationID,
             'city'=>$city,
             'leader'=>$this->leadership,
