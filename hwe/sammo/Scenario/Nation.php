@@ -137,6 +137,13 @@ class Nation{
             'gennum'=>$npc_cnt,
             'totaltech'=>$this->tech*$npc_cnt
         ], 'nation=%i', $this->id);
+
+        //군주가 없는지 확인
+        $hasRuler = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i AND level=12');
+        if(!$hasRuler){
+            $newRuler = $db->queryFirstField('SELECT `no` FROM general WHERE nation=1 ORDER BY leader+power+intel DESC LIMIT 1');
+            $db->update('general',['level'=>12], 'no=%i', $newRuler);
+        }
     }
 
     public function getBrief(){

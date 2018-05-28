@@ -173,7 +173,7 @@ class NPC{
         $experience = $age * 100;
         $dedication = $age * 100;
         $level = $this->level;
-        if(!$level){
+        if(!$level || $isNewGeneral){
             $level = $nationID?1:0;
         }
 
