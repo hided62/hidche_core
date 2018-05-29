@@ -979,7 +979,7 @@ function command_25($turn, $command) {
 !!!는 방랑군을 포함한 랜덤임관입니다. 유니크를 기대하신다면!<br>
 ???는 방랑군을 제외한 랜덤임관입니다. 유니크 혜택은 없습니다.<br>
 임관 금지이거나 초기 제한중인 국가는 붉은색 배경으로 표시됩니다.<br>
-900px x 200px 넘는 높이를 점유할 시 통보없이 제한될 수 있습니다.<br>
+870px x 200px 넘는 높이를 점유할 시 통보없이 제한될 수 있습니다.<br>
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>
     <option value=99 style=color:white;background-color:black;>!!!</option>
@@ -990,9 +990,9 @@ function command_25($turn, $command) {
         $nation = MYDB_fetch_array($result);
 
         if($nation['scoutmsg'] == "") {
-            $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=900 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>-</td></tr>";
+            $scoutStr .= "<tr><td align=center width=130 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=870 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>-</td></tr>";
         } else {
-            $scoutStr .= "<tr><td align=center width=100 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=900 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>".$nation['scoutmsg']."</td></tr>";
+            $scoutStr .= "<tr><td align=center width=130 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=870 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>".$nation['scoutmsg']."</td></tr>";
         }
 
         if($gameStor->year < $gameStor->startyear+3 && $nation['gennum'] >= 10) {
@@ -1584,7 +1584,7 @@ function command_46($turn, $command) {
 - 명 가 : <font color=cyan>기술↑ 인구↑</font> <font color=magenta>쌀수입↓ 수성↓</font><br>
 
 <form name=form1 action=c_double.php method=post>
-국명 : <input type=text name=name size=12 maxlength=6 style=text-align:right;color:white;background-color:black>
+국명 : <input type=text name=name size=18 maxlength=9 style=text-align:right;color:white;background-color:black>
 색깔 : <select name=double size=1>
 <?php
         foreach(GetNationColors() as $idx=>$color) {
@@ -1930,7 +1930,7 @@ function command_53($turn, $command) {
 
     echo "
             </select>
-        통합국명 : <input type=text name=nationname size=12 maxlength=6 style=text-align:right;color:white;background-color:black>
+        통합국명 : <input type=text name=nationname size=18 maxlength=9 style=text-align:right;color:white;background-color:black>
         <input type=submit value=통합제의>
         <input type=hidden name=command value=$command>";
     for($i=0; $i < count($turn); $i++) {

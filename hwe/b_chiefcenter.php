@@ -152,16 +152,16 @@ for($k=0; $k < 2; $k++) {
         $tn1 = $turn[$l1][$i]??"-";
         echo "
     <tr>
-        <td width=28  align=center id=bg0><b>$j</b></td>
-        <td width=58  align=center bgcolor=black><b>$td4</b></td>
-        <td width=173 align=center height=24 style=table-layout:fixed; id=bg2>$tn4</td>
-        <td width=58  align=center bgcolor=black><b>$td3</b></td>
-        <td width=173 align=center height=24 style=table-layout:fixed; id=bg2>$tn3</td>
-        <td width=58  align=center bgcolor=black><b>$td2</b></td>
-        <td width=173 align=center height=24 style=table-layout:fixed; id=bg2>$tn2</td>
-        <td width=58  align=center bgcolor=black><b>$td1</b></td>
-        <td width=173 align=center height=24 style=table-layout:fixed; id=bg2>$tn1</td>
-        <td width=28  align=center id=bg0><b>$j</b></td>
+        <td width=20  align=center id=bg0><b>$j</b></td>
+        <td width=43  align=center bgcolor=black><b>$td4</b></td>
+        <td width=192 align=center height=24 style=table-layout:fixed; id=bg2>$tn4</td>
+        <td width=43  align=center bgcolor=black><b>$td3</b></td>
+        <td width=192 align=center height=24 style=table-layout:fixed; id=bg2>$tn3</td>
+        <td width=43  align=center bgcolor=black><b>$td2</b></td>
+        <td width=192 align=center height=24 style=table-layout:fixed; id=bg2>$tn2</td>
+        <td width=43  align=center bgcolor=black><b>$td1</b></td>
+        <td width=192 align=center height=24 style=table-layout:fixed; id=bg2>$tn1</td>
+        <td width=20  align=center id=bg0><b>$j</b></td>
     </tr>
         ";
         if($totaldate[$l4]??'') { $totaldate[$l4] = addTurn($totaldate[$l4], $admin['turnterm']); }

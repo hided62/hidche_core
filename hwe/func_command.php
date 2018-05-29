@@ -287,8 +287,8 @@ function getCoreTurn($nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                if($fourth == 1) { $str[$i] = "【{$general['name']}】에게 금 {$double}00을 포상"; }
-                else { $str[$i] = "【{$general['name']}】에게 쌀 {$double}00을 포상"; }
+                if($fourth == 1) { $str[$i] = "【{$general['name']}】에게 금 {$double}00 포상"; }
+                else { $str[$i] = "【{$general['name']}】에게 쌀 {$double}00 포상"; }
                 break;
             case 24: //몰수
                 $fourth = $command[3];
@@ -299,8 +299,8 @@ function getCoreTurn($nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                if($fourth == 1) { $str[$i] = "【{$general['name']}】에게서 금 {$double}00을 몰수"; }
-                else { $str[$i] = "【{$general['name']}】에게서 쌀 {$double}00을 몰수"; }
+                if($fourth == 1) { $str[$i] = "【{$general['name']}】의 금 {$double}00 몰수"; }
+                else { $str[$i] = "【{$general['name']}】의 쌀 {$double}00 몰수"; }
                 break;
             case 27: //발령
                 $third = $command[2];

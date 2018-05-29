@@ -28,7 +28,7 @@ $me = MYDB_fetch_array($result);
 </head>
 
 <body>
-<table align=center width=1000 class='tb_layout bg0'>
+<table width=1000 class='tb_layout bg0'>
     <tr><td>회 의 실<br><?=backButton()?></td></tr>
 <form name=form1 method=post action=c_nationboard.php>
     <tr><td align=center>

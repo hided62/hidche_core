@@ -68,7 +68,7 @@ if ($userGrade >= 5) {
     <caption class="bg2 section_title with_border">서 버 선 택</caption>
     <colgroup>
         <col style="width:100px;" />
-        <col style="width:400px;" />
+        <col style="width:375px;" />
         <col style="width:66px;" />
         <col/>
         <col style="width:120px;" />

@@ -58,7 +58,7 @@ if ($me['level'] >= 5) {
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=9 align=center bgcolor=blue>외 교 관 계</td></tr>
     <tr>
-        <td width=100 align=center class=bg1>국 가 명</td>
+        <td width=130 align=center class=bg1>국 가 명</td>
         <td width=50  align=center class=bg1>국력</td>
         <td width=40  align=center class=bg1>장수</td>
         <td width=40  align=center class=bg1>속령</td>
@@ -219,7 +219,7 @@ if ($budgetricediff > 0) {
     <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메세지</td></tr>
     <tr><td colspan=2 class=bg1>국가 방침 <textarea <?=$read?> maxlength=1000 rows="5" style="color:white;background-color:black;width:830px;" name=msg><?=$nation['msg']?></textarea><input type=<?=$btn?> name=btn value=국가방침></td></tr>
     <tr><td colspan=2 class=bg1>임관 권유 <input type=text <?=$read?> maxlength=500 style=color:white;background-color:black;width:830px; name=scoutmsg value='<?=$nation['scoutmsg']?>'><input type=<?=$btn?> name=btn value=임관권유></td></tr>
-    <tr><td colspan=2>900 x 200px 넘는 크기를 점유할 시 통보없이 제한될 수 있습니다.</td></tr>
+    <tr><td colspan=2>870 x 200px 넘는 크기를 점유할 시 통보없이 제한될 수 있습니다.</td></tr>
     <tr><td colspan=2 height=10></td></tr>
     <tr><td colspan=2 align=center bgcolor=green>예 산 &amp; 정 책</td></tr>
     <tr>

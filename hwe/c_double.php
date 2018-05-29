@@ -49,7 +49,7 @@ if($command == 46) {
     $name = str_replace(" ", "", $name);
     $name = str_replace("　", "뷁", $name);
     if($name == "") { $name = "무명"; }
-    $name = StringUtil::subStringForWidth($name, 0, 12);
+    $name = StringUtil::subStringForWidth($name, 0, 18);
 
     $db->update('general', [
         'makenation'=>$name
@@ -77,7 +77,7 @@ if($command == 53) {
         $nationname = str_replace(" ", "", $nationname);
         $nationname = str_replace("　", "뷁", $nationname);
         if($nationname == "") { $nationname = "무명"; }
-        $nationname = StringUtil::subStringForWidth($nationname, 0, 12);
+        $nationname = StringUtil::subStringForWidth($nationname, 0, 18);
 
         $query = "update general set makenation='{$nationname}' where level>=5 and nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

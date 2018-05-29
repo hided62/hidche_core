@@ -102,7 +102,7 @@ if (mb_strlen($name) < 1) {
       </script>");
     exit;
 }
-if (mb_strlen($name) > 6) {
+if (mb_strlen($name) > 9) {
     echo("<script>
       window.alert('이름이 유효하지 않습니다. 다시 가입해주세요!')
       history.go(-1)

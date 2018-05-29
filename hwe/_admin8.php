@@ -65,8 +65,8 @@ $sel[$type] = "selected";
 <table width=1000 align=center class='tb_layout bg0'>
     <tr><td colspan=9 align=center bgcolor=blue>외 교 관 계</td></tr>
     <tr>
-        <td width=100 align=center id=bg1>국 가 명</td>
-        <td width=100 align=center id=bg1>국 가 명</td>
+        <td width=130 align=center id=bg1>국 가 명</td>
+        <td width=130 align=center id=bg1>국 가 명</td>
         <td width=80  align=center id=bg1>상 태</td>
         <td width=60  align=center id=bg1>기 간</td>
         <td align=center id=bg1>비 고</td>

@@ -93,7 +93,7 @@ for ($i=0; $i < $nationcount; $i++) {
         <tr>
             <td width=498 align=right id=bg1>장수명</td>
             <td colspan=2>
-                <input type=text name=name maxlength=6 size=12 style=color:white;background-color:black; value=<?=$member['name']?>>(6글자 이내)
+                <input type=text name=name maxlength=9 size=18 style=color:white;background-color:black; value=<?=$member['name']?>>(9글자 이내)
             </td>
         </tr>
 <?php

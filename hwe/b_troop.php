@@ -31,6 +31,7 @@ $troopcount = MYDB_num_rows($result);
 </head>
 
 <body>
+<div style="width:1000px;margin:auto;">
 <table width=1000 class='tb_layout bg0'>
     <tr><td>부 대 편 성<br><?=backButton()?></td></tr>
 </table>
@@ -38,10 +39,10 @@ $troopcount = MYDB_num_rows($result);
 <table class='tb_layout bg0'>
     <tr>
         <td width=64  class='bg1 center'>선 택</td>
-        <td width=98  class='bg1 center'>부 대 정 보</td>
-        <td width=64  class='bg1 center'>부 대 장</td>
-        <td width=662 class='bg1 center' style=table-layout:fixed;word-break:break-all;>장 수</td>
-        <td width=98  class='bg1 center' style=table-layout:fixed;word-break:break-all;>부대장행동</td>
+        <td width=130  class='bg1 center'>부 대 정 보</td>
+        <td width=100  class='bg1 center'>부 대 장</td>
+        <td width=576 class='bg1 center' style=table-layout:fixed;word-break:break-all;>장 수</td>
+        <td width=130  class='bg1 center' style=table-layout:fixed;word-break:break-all;>부대장행동</td>
     </tr>
 <?php
 for($i=0; $i < $troopcount; $i++) {
@@ -82,7 +83,7 @@ for($i=0; $i < $troopcount; $i++) {
         <td align=center rowspan=2><input "; echo $i==0?"checked ":""; echo "type=radio name=troop value='{$troop['troop']}'></td>
         <td align=center >{$troop['name']}<br>【 $cityname 】</td>
         <td height=64 style='background:no-repeat center url(\"{$imageTemp}/{$picture}\");background-size:64px;'>&nbsp;</td>
-        <td rowspan=2 width=662>$genlist</td>
+        <td rowspan=2 width=62>$genlist</td>
         <td rowspan=2>$turn</td>
     </tr>
     <tr><td align=center><font size=2>【턴】".substr($turntime, 14)."</font></td><td align=center><font size=1>$name</font></td></tr>
@@ -93,7 +94,7 @@ for($i=0; $i < $troopcount; $i++) {
         <td align=center rowspan=2>&nbsp;</td>
         <td align=center >{$troop['name']}<br>【 $cityname 】</td>
         <td height=64 style='background:no-repeat center url(\"{$imageTemp}/{$picture}\");background-size:64px;'>&nbsp;</td>
-        <td rowspan=2 width=662>$genlist</td>
+        <td rowspan=2 width=576>$genlist</td>
         <td rowspan=2>";
 
         if($troop['no'] == $me['no']) {
@@ -101,7 +102,7 @@ for($i=0; $i < $troopcount; $i++) {
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $genCount = MYDB_num_rows($genresult);
                 echo "
-            <select name=gen size=3 style=color:white;background-color:black;font-size:13px;width:98px;>";
+            <select name=gen size=3 style=color:white;background-color:black;font-size:13px;width:128px;>";
             for($k=0; $k < $genCount; $k++) {
                 $general = MYDB_fetch_array($genresult);
                 echo "
@@ -109,7 +110,7 @@ for($i=0; $i < $troopcount; $i++) {
             }
             echo "
             </select><br>
-            <input type=submit name=btn value='부 대 추 방' style=width:100px;height:25px;>";
+            <input type=submit name=btn value='부 대 추 방' style=width:130px;height:25px;>";
         } else {
             echo $turn;
         }
@@ -138,10 +139,10 @@ echo "
 <br>";
 
 echo "
-<table align=center width=1000 class='tb_layout bg0'>
+<table width=1000 class='tb_layout bg0'>
     <tr>
         <td width=80 id=bg1>부 대 명</td>
-        <td width=100><input type=text style=color:white;background-color:black; size=12 maxlength=6 name=name></td>";
+        <td width=130><input type=text style=color:white;background-color:black; size=18 maxlength=9 name=name></td>";
 if($me['troop'] == 0) {
     echo "
         <td><input type=submit name=btn value='부 대 창 설'></td>";
@@ -154,11 +155,12 @@ echo "
 </table>";
 
 ?>
-<table align=center width=1000 class='tb_layout bg0'>
+<table width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>
 </form>
+</div>
 </body>
 </html>
 

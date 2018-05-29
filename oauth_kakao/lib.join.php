@@ -25,7 +25,7 @@ function checkNicknameDup($nickname){
     }
 
     $length = mb_strlen($nickname, 'utf-8');
-    if($length < 1 || $length > 6){
+    if($length < 1 || $length > 9){
         return '적절하지 않은 길이입니다.';
     }
 

@@ -28,7 +28,7 @@ $(document).ready( function () {
             },
             nickname:{
                 required: true,
-                maxlength: 6,
+                maxlength: 9,
                 remote: {
                     url: "j_check_dup.php",
                     type: "post",
