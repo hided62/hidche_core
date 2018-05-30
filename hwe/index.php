@@ -11,7 +11,6 @@ increaseRefresh("메인", 1);
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 if (!$userID) {
     header('Location:..');
@@ -42,9 +41,7 @@ if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
 
 $admin = $gameStor->getValues(['develcost','online','conlimit','tournament','tnmt_type','turnterm','scenario','scenario_text','extended_general','fiction','npcmode','vote']);
 
-$query = "select plock from plock limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$plock = MYDB_fetch_array($result);
+$plock = $db->queryFirstField('SELECT plock FROM plock LIMIT 1');
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -136,7 +133,7 @@ $(function(){
     <tr height=30>
         <td>
 <?php
-if ($plock['plock'] == 0) {
+if (!$plock) {
     echo "<marquee scrollamount=2><font color=cyan>서버 가동중</font></marquee>";
 } else {
     echo "<font color=magenta>서버 동결중</font>";
@@ -166,9 +163,7 @@ echo "
         <td align=center>
 ";
 
-$query = "select no from auction";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$auctionCount = MYDB_num_rows($result);
+$auctionCount = $db->queryFirstField('SELECT count(`no`) FROM auction');
 if ($auctionCount > 0) {
     echo "<marquee scrollamount=2><font color=cyan>{$auctionCount}건</font> 거래 진행중</marquee>";
 } else {

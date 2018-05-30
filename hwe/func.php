@@ -1441,6 +1441,9 @@ function checkDelay() {
         $newTurntime = $turntime->add(new \DateInterval("PT{$minute}M"));
         $newNextTurntime = $turntime->add(new \DateInterval("PT{$term}M"));
         $gameStor->turntime = $newTurntime->format('Y-m-d H:i:s');
+        $gameStor->starttime = (new \DateTimeImmutable($gameStor->starttime))
+            ->add(new \DateInterval("PT{$minute}M"))
+            ->format('Y-m-d H:i:s');
 
         $db->update('general', [
             'turntime'=> $db->sqleval('DATE_ADD(turntime, INTERVAL %i MINUTE)', $minute)
