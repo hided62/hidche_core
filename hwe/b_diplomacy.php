@@ -39,9 +39,9 @@ for($i=0; $i < $nationcount; $i++) {
     $nationname[$nation['nation']] = $nation['name'];
 
     $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</font><br>";
-    $powerStr .= "국력 {$nation['power']}<br>";
-    $genStr .= "장수 {$nation['gennum']}<br>";
-    $cityStr .= "속령 $citycount<br>";
+    $powerStr .= "{$nation['power']}<br>";
+    $genStr .= "{$nation['gennum']}<br>";
+    $cityStr .= "$citycount<br>";
 }
 
 $realConflict = [];
@@ -108,7 +108,7 @@ $(function(){
 <?php
 echo "
     <tr>
-        <td align=center width=108 style=background-color:".GameConst::$basecolor2.";>&nbsp;</td>";
+        <td align=center width=130 style=background-color:".GameConst::$basecolor2.";>&nbsp;</td>";
 
 if($nationcount != 0) {
     $width = intdiv(888, $nationcount);
@@ -186,7 +186,7 @@ for($i=0; $i < $nationcount; $i++) {
             <?php foreach($conflict as $item): ?>
                 <tr>
                     <td 
-                        width=98
+                        width=130
                         align=right 
                         style='color:<?=newColor($item['color'])?>;background-color:<?=$item['color']?>;'
                     ><?=$item['name']?>&nbsp;</td>
@@ -215,10 +215,10 @@ for($i=0; $i < $nationcount; $i++) {
         <td width=698 height=420>
             <?=getMapHtml()?>
         </td>
-        <td width=101 valign=top><?=$nationStr?></td>
-        <td width=78 valign=top><?=$powerStr?></td>
-        <td width=58 valign=top><?=$genStr?></td>
-        <td width=55 valign=top><?=$cityStr?></td>
+        <td width=139 valign=top><div style='background-color:#cccccc;color:black;text-align:center'>국명</div><?=$nationStr?></td>
+        <td width=70 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>국력</div><?=$powerStr?></td>
+        <td width=43 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>장수</div><?=$genStr?></td>
+        <td width=40 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>속령</div><?=$cityStr?></td>
     </tr>
 </table>
 <br>
