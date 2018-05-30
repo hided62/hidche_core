@@ -30,7 +30,7 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 switch($btn) {
 case "분당김":
-    $gameStor->cacheValues('turntime', 'starttime', 'tnmt_time');
+    $gameStor->cacheValues(['turntime', 'starttime', 'tnmt_time']);
     $turntime = (new \DateTimeImmutable($gameStor->turntime))->sub(new \DateInterval("PT{$minute}M"));
     $starttime = (new \DateTimeImmutable($gameStor->starttime))->sub(new \DateInterval("PT{$minute}M"));
     $tnmt_time = (new \DateTimeImmutable($gameStor->tnmt_time))->sub(new \DateInterval("PT{$minute}M"));
@@ -47,7 +47,7 @@ case "분당김":
     ], true);
     break;
 case "분지연":
-    $gameStor->cacheValues('turntime', 'starttime', 'tnmt_time');
+    $gameStor->cacheValues(['turntime', 'starttime', 'tnmt_time']);
     $turntime = (new \DateTimeImmutable($gameStor->turntime))->add(new \DateInterval("PT{$minute}M"));
     $starttime = (new \DateTimeImmutable($gameStor->starttime))->add(new \DateInterval("PT{$minute}M"));
     $tnmt_time = (new \DateTimeImmutable($gameStor->tnmt_time))->add(new \DateInterval("PT{$minute}M"));
