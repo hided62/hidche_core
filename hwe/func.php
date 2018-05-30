@@ -1145,13 +1145,13 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
     echo "
 <table style='text-align:center;' width=1000 class='tb_layout bg0'>
     <tr>
-        <td width=64 style='text-align:center;' class='bg1'><font size=1>$name</font></td>
-        <td width=772 style='text-align:center;' class='bg1'><font size=4><b>$message[0]</b></font></td>
+        <td width=90 style='text-align:center;' class='bg1'><font size=1>$name</font></td>
+        <td width=746 style='text-align:center;' class='bg1'><font size=4><b>$message[0]</b></font></td>
         <td width=148 style='text-align:center;' class='bg1'>$when</td>
     </tr>
     <tr>
-        <td width=64 height=64 valign=top><img width='64' height='64' src={$imageTemp}/{$picture} border='0'></td>
-        <td width=932 colspan=2>$message[1]</td>
+        <td width=90 height=64 valign=top><img width='64' height='64' src={$imageTemp}/{$picture} border='0'></td>
+        <td width=906 colspan=2>$message[1]</td>
     </tr>";
     for($i=0; $i < $count; $i++) {
         $who = Tag2Code($message[2+$i*2]);
@@ -1161,16 +1161,16 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
         $regen = MYDB_fetch_array($result);
         echo "
     <tr>
-        <td width=64 style='text-align:center;'><font size=1>{$regen['name']}</font></td>
-        <td width=932 colspan=2>$reply</td>
+        <td width=90 style='text-align:center;'><font size=1>{$regen['name']}</font></td>
+        <td width=906 colspan=2>$reply</td>
     </tr>";
     }
     echo "
     <tr>
         <form name=reply_form{$num} method=post action=$board>
-        <td width=64 style='text-align:center;'>댓글달기</td>
-        <td width=932 colspan=2>
-            <input type=textarea name=reply maxlength=250 style=color:white;background-color:black;width:830px;>
+        <td width=90 style='text-align:center;'>댓글달기</td>
+        <td width=906 colspan=2>
+            <input type=textarea name=reply maxlength=250 style=color:white;background-color:black;width:804px;>
             <input type=submit value=댓글달기>
             <input type=hidden name=num value=$num>
         </td>

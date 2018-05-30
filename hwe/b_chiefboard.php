@@ -33,6 +33,7 @@ if($me['level'] < 5) {
 </head>
 
 <body>
+<div style='width:1000px;margin:auto'>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td>기 밀 실<br><?=backButton()?></td></tr>
 <form name=form1 method=post action=c_chiefboard.php>
@@ -65,10 +66,11 @@ for($i=0; $i < 20; $i++) {
 
 ?>
 
-<table align=center width=1000 class='tb_layout bg0'>
+<table width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
+</div>
 </body>
 </html>
 
