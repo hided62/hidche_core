@@ -162,18 +162,18 @@ for ($i=0; $i < $commentCount; $i++) {
     echo "
     <tr>
         <td width=28  align=center>{$j}.</td>
-        <td width=83  align=center>{$cmt[0]}</td>
-        <td width=83  align=center>{$cmt[1]}</td>
-        <td width=788 align=left>&nbsp;{$cmt[2]}</td>
+        <td width=130  align=center>{$cmt[0]}</td>
+        <td width=130  align=center>{$cmt[1]}</td>
+        <td width=712 align=left>&nbsp;{$cmt[2]}</td>
     </tr>
     ";
 }
 if ($me['no'] > 0) {
     echo "
     <tr>
-        <td width=108 colspan=2 align=center>-</td>
-        <td width=83  align=center><input type=submit name=btn value='댓글'></td>
-        <td align=left><input type=text name=comment maxlength=60 style=width:798px; onkeydown='return captureKey(event)'></td>
+        <td width=158 colspan=2 align=center>-</td>
+        <td width=130  align=center><input type=submit name=btn value='댓글'></td>
+        <td align=left><input type=text name=comment maxlength=60 style=width:700px; onkeydown='return captureKey(event)'></td>
     </tr>
     ";
 }
@@ -196,9 +196,9 @@ echo "
 if ($admin['voteopen'] >= 1 || $session->userGrade >= 5) {
     echo "
     <tr>
-        <td width=98  align=center>전 체</td>
+        <td width=130  align=center>전 체</td>
         <td width=128 align=center>{$voteCount} / {$allCount} ({$percentage} %)</td>
-        <td width=768>
+        <td width=742>
     ";
 
     $memCount = max(1, $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2'));
