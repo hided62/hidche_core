@@ -378,7 +378,8 @@ if($isgen == "장수공격" || $isgen == "성벽공격" || $isgen == "장수평�
                 }
             // 장수 대결
             } else {
-                $msg .= "<C>●</>".GameUnitConst::byID($general['crewtype'])->name."(으)로 <Y>수비장수</>의 ".GameUnitConst::byID($oppose['crewtype'])->name."(을)를 공격합니다.<br>";
+                $josaUl = JosaUtil::pick(GameUnitConst::byID($oppose['crewtype'])->name, '을');
+                $msg .= "<C>●</>".GameUnitConst::byID($general['crewtype'])->name."(으)로 <Y>수비장수</>의 ".GameUnitConst::byID($oppose['crewtype'])->name."{$josaUl} 공격합니다.<br>";
 
                 $mykillnum = 0; $mydeathnum = 0;
                 while($phase < $warphase) {

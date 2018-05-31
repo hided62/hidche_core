@@ -45,7 +45,8 @@ function processWar($general, $city) {
         $genAtmos += 3;
         $query = "update general set item=0 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+        $josaUl = JosaUtil::pick($general['item'], '을');
+        $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
         $general['item'] = 0;
     } elseif($general['item'] >= 14 && $general['item'] <= 16) {
         //의적주, 두강주, 보령압주 사용
@@ -60,7 +61,8 @@ function processWar($general, $city) {
         $genTrain += 3;
         $query = "update general set item=0 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+        $josaUl = JosaUtil::pick($general['item'], '을');
+        $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
         $general['item'] = 0;
     } elseif($general['item'] >= 12 && $general['item'] <= 13) {
         //과실주, 이강주 사용
@@ -136,7 +138,8 @@ function processWar($general, $city) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $alllog[] = "<C>●</>{$month}월:병량 부족으로 <G><b>{$city['name']}</b></>의 수비병들이 <R>패퇴</>합니다.";
-            $history[] = "<C>●</>{$year}년 {$month}월:<M><b>【패퇴】</b></><D><b>{$destnation['name']}</b></>(이)가 병량 부족으로 <G><b>{$city['name']}</b></>(을)를 뺏기고 말았습니다.";
+            $josaUl = JosaUtil::pick($city['name'], '을');
+            $history[] = "<C>●</>{$year}년 {$month}월:<M><b>【패퇴】</b></><D><b>{$destnation['name']}</b></>(이)가 병량 부족으로 <G><b>{$city['name']}</b></>{$josaUl} 뺏기고 말았습니다.";
             pushGenLog($general, $log);
             pushGeneralPublicRecord($alllog, $year, $month);
             pushWorldHistory($history);
@@ -538,8 +541,10 @@ function processWar($general, $city) {
         } else {
             $oppose = MYDB_fetch_array($result);
             $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(와)과 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 대결합니다.";
-            $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."(으)로 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(을)를 <M>공격</>합니다.";
-            $opplog[] = "<C>●</>".GameUnitConst::byId($oppose['crewtype'])->name."(으)로 <Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(을)를 <M>수비</>합니다.";
+            $josaUl = JosaUtil::pick(GameUnitConst::byId($oppose['crewtype'])->name, '을');
+            $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."(으)로 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaUl} <M>공격</>합니다.";
+            $josaUl = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '을');
+            $opplog[] = "<C>●</>".GameUnitConst::byId($oppose['crewtype'])->name."(으)로 <Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaUl} <M>수비</>합니다.";
 
             $oppAtmos = 0;
             if($oppose['item'] == 3) {
@@ -547,7 +552,8 @@ function processWar($general, $city) {
                 $oppAtmos += 3;
                 $query = "update general set item=0 where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
+                $josaUl = JosaUtil::pick($oppose['item'], '을');
+                $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaUl} 사용!";
                 $oppose['item'] = 0;
             } elseif($oppose['item'] >= 14 && $oppose['item'] <= 16) {
                 //의적주, 두강주, 보령압주 사용
@@ -562,7 +568,8 @@ function processWar($general, $city) {
                 $oppTrain += 3;
                 $query = "update general set item=0 where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
+                $josaUl = JosaUtil::pick($oppose['item'], '을');
+                $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaUl} 사용!";
                 $oppose['item'] = 0;
             } elseif($oppose['item'] >= 12 && $oppose['item'] <= 13) {
                 //과실주, 이강주 사용
@@ -589,10 +596,12 @@ function processWar($general, $city) {
                 if($general['item'] == 2) {
                     $query = "update general set item=0 where no='{$general['no']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                    $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+                    $josaUl = JosaUtil::pick($general['item'], '을');
+                    $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
                     $general['item'] = 0;
                 } elseif($general['weap'] == 10 || $general['weap'] == 14 || $general['weap'] == 18 || $general['weap'] == 22) {
-//                    $log[] = "<C>●</><C>".getWeapName($general['weap'])."</>(을)를 사용!";
+//                    $josaUl = JosaUtil::pick($general['weap'], '을');
+//                    $log[] = "<C>●</><C>".getWeapName($general['weap'])."</>{$josaUl} 사용!";
                 }
                 $log[] = "<C>●</>상대를 <C>저격</>했다!";
                 $batlog[] = "<C>●</>상대를 <C>저격</>했다!";
@@ -614,10 +623,12 @@ function processWar($general, $city) {
                 if($oppose['item'] == 2) {
                     $query = "update general set item=0 where no='{$oppose['no']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                    $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>(을)를 사용!";
+                    $josaUl = JosaUtil::pick($oppose['item'], '을');
+                    $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaUl} 사용!";
                     $oppose['item'] = 0;
                 } elseif($oppose['weap'] == 10 || $oppose['weap'] == 14 || $oppose['weap'] == 18 || $oppose['weap'] == 22) {
-//                    $opplog[] = "<C>●</><C>".getWeapName($oppose['weap'])."</>(을)를 사용!";
+//                    $josaUl = JosaUtil::pick($oppose['weap'], '을');
+//                    $opplog[] = "<C>●</><C>".getWeapName($oppose['weap'])."</>{$josaUl} 사용!";
                 }
                 $oppbatlog[] = "<C>●</>상대를 <C>저격</>했다!";
                 $opplog[] = "<C>●</>상대를 <C>저격</>했다!";
@@ -1715,11 +1726,12 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
     $year = $admin['year'];
     $month = $admin['month'];
 
+    $josaUl = JosaUtil::pick($city['name'], '을');
     $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
     $log[] = "<C>●</><G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
-    $history[] = "<C>●</>{$year}년 {$month}월:<S><b>【지배】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></>(을)를 지배했습니다.";
-    pushGeneralHistory($general, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>(을)를 <S>함락</>시킴");
-    pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<Y>{$general['name']}</>(이)가 {$destnationName} <G><b>{$city['name']}</b></>(을)를 <S>점령</>");
+    $history[] = "<C>●</>{$year}년 {$month}월:<S><b>【지배】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></>{$josaUl} 지배했습니다.";
+    pushGeneralHistory($general, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <S>함락</>시킴");
+    pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<Y>{$general['name']}</>(이)가 {$destnationName} <G><b>{$city['name']}</b></>{$josaUl} <S>점령</>");
     pushNationHistory($destnation, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>(이)가 <span class='ev_highlight'>함락</span>");
 
     $query = "select city from city where nation='{$city['nation']}'";
@@ -1734,7 +1746,8 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $losenation = MYDB_fetch_array($result);
 
         $history[] = "<C>●</>{$year}년 {$month}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>(이)가 멸망하였습니다.";
-        pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>(을)를 정복");
+        $josaUl = JosaUtil::pick($losenation['name'], '을');
+        pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaUl} 정복");
 
         $query = "select no, nation from general where nation='{$general['nation']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1915,9 +1928,10 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         
 
 
-        $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationArray['name']}</b></>(이)가 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>(을)를 양도받았습니다.";
-        pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>(을)를 <D><b>{$conquerNationArray['name']}</b></>에 <Y>양도</>");
-        pushNationHistory($conquerNationArray, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>(을)를 <S>양도</> 받음");
+        $josaUl = JosaUtil::pick($city['name'], '을');
+        $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationArray['name']}</b></>(이)가 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>{$josaUl} 양도받았습니다.";
+        pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <D><b>{$conquerNationArray['name']}</b></>에 <Y>양도</>");
+        pushNationHistory($conquerNationArray, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>{$josaUl} <S>양도</> 받음");
         // 이동X 및 사기 변경
         $query = "update general set atmos='{$general['atmos']}',killnum=killnum+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

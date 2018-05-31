@@ -86,8 +86,11 @@ class DiplomaticMessage extends Message{
             return $chk;
         }
 
-        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>(와)과 <C>$year</>년 불가침에 성공했습니다.";
-        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>(와)과 <C>$year</>년 불가침에 합의했습니다.";
+        $josa = JosaUtil::pick($this->dest->nationName, '와');
+        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>{$josa} <C>$year</>년 불가침에 성공했습니다.";
+
+        $josa = JosaUtil::pick($this->src->nationName, '와');
+        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>{$josa} <C>$year</>년 불가침에 합의했습니다.";
         pushGenLog(['no'=>$this->dest->generalID], $mylog);
         pushGenLog(['no'=>$this->src->generalID], $youlog);
         pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 {$year}년 불가침 성공");
@@ -103,12 +106,25 @@ class DiplomaticMessage extends Message{
             return $chk;
         }
 
-        $alllog[] = "<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(와)과 <M>조약 파기</>에 합의.";
-        $history[] = "<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【파기】</b></><D><b>{$this->dest->nationName}</b></>(이)가 <D><b>{$this->src->nationName}</b></>(와)과 불가침을 파기 하였습니다.";
-        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>(와)과 파기에 성공했습니다.";
-        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>(와)과 파기에 합의했습니다.";
-        pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 파기 성공");
-        pushGeneralHistory(['no'=>$this->dest->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>(와)과 파기 수락");
+        $josaYi = JosaUtil::pick($this->dest->generalName, '이');
+        $josaWa = JosaUtil::pick($this->src->nationName, '와');
+        $alllog[] = "<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>{$josaYi} <D><b>{$this->src->nationName}</b></>{$josaWa} <M>조약 파기</>에 합의.";
+
+        $josaYi = JosaUtil::pick($this->dest->nationName, '이');
+        $josaWa = JosaUtil::pick($this->src->nationName, '와');
+        $history[] = "<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【파기】</b></><D><b>{$this->dest->nationName}</b></>{$josaYi} <D><b>{$this->src->nationName}</b></>{$josaWa} 불가침을 파기 하였습니다.";
+        
+        $josaWa = JosaUtil::pick($this->dest->nationName, '와');
+        $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>{$josaWa} 파기에 성공했습니다.";
+
+        $josaWa = JosaUtil::pick($this->src->nationName, '와');
+        $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>{$josaWa} 파기에 합의했습니다.";
+
+        $josaWa = JosaUtil::pick($this->dest->nationName, '와');
+        pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>{$josaWa} 파기 성공");
+
+        $josaWa = JosaUtil::pick($this->src->nationName, '와');
+        pushGeneralHistory(['no'=>$this->dest->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>{$josaWa} 파기 수락");
 
         pushGenLog(['no'=>$this->dest->generalID], $mylog);
         pushGenLog(['no'=>$this->src->generalID], $youlog);

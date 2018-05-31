@@ -97,7 +97,8 @@ function getTurn(array $general, $type, $font=1) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$general['name']}】(을)를 등용";
+                $josaUl = JosaUtil::pick($general['name'], '을');
+                $str[$i] = "【{$general['name']}】{$josaUl} 등용";
                 break;
             case 25: //임관
                 $double = $command[1];
@@ -182,7 +183,8 @@ function getTurn(array $general, $type, $font=1) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
 
-                $str[$i] = "【{$general['makenation']}】(을)를 건국";
+                $josaUl = JosaUtil::pick($general['makenation'], '을');
+                $str[$i] = "【{$general['makenation']}】{$josaUl} 건국";
                 break;
             case 47: //방랑
                 $str[$i] = "방랑";
@@ -198,13 +200,17 @@ function getTurn(array $general, $type, $font=1) {
                 } elseif($double == 300) {
                     $str[$i] = "도구를 판매";
                 } elseif($double < 100) {
-                    $str[$i] = "【".getWeapName($double)."】(을)를 구입";
+                    $josaUl = JosaUtil::pick(getWeapName($double), '을');
+                    $str[$i] = "【".getWeapName($double)."】{$josaUl} 구입";
                 } elseif($double < 200) {
-                    $str[$i] = "【".getBookName($double-100)."】(을)를 구입";
+                    $josaUl = JosaUtil::pick(getBookName($double-100), '을');
+                    $str[$i] = "【".getBookName($double-100)."】{$josaUl} 구입";
                 } elseif($double < 300) {
-                    $str[$i] = "【".getHorseName($double-200)."】(을)를 구입";
+                    $josaUl = JosaUtil::pick(getHorseName($double-200), '을');
+                    $str[$i] = "【".getHorseName($double-200)."】{$josaUl} 구입";
                 } elseif($double < 400) {
-                    $str[$i] = "【".getItemName($double-300)."】(을)를 구입";
+                    $josaUl = JosaUtil::pick(getItemName($double-300), '을');
+                    $str[$i] = "【".getItemName($double-300)."】{$josaUl} 구입";
                 }
                 break;
             case 49: //군량 매매
@@ -374,7 +380,8 @@ function getCoreTurn($nation, $level) {
             case 65: //초토
                 $double = $command[1];
                 $city = getCity($double, "name");
-                $str[$i] = "【{$city['name']}】(을)를 초토화";
+                $josaUl = JosaUtil::pick($city['name'], '을');
+                $str[$i] = "【{$city['name']}】{$josaUl} 초토화";
                 break;
             case 66: //천도
                 $double = $command[1];
@@ -384,12 +391,14 @@ function getCoreTurn($nation, $level) {
             case 67: //증축
                 $double = $command[1];
                 $city = getCity($double, "name");
-                $str[$i] = "【{$city['name']}】(을)를 증축";
+                $josaUl = JosaUtil::pick($city['name'], '을');
+                $str[$i] = "【{$city['name']}】{$josaUl} 증축";
                 break;
             case 68: //감축
                 $double = $command[1];
                 $city = getCity($double, "name");
-                $str[$i] = "【{$city['name']}】(을)를 감축";
+                $josaUl = JosaUtil::pick($city['name'], '을');
+                $str[$i] = "【{$city['name']}】{$josaUl} 감축";
                 break;
             case 71: //필사즉생
                 $str[$i] = "필사즉생";
@@ -402,7 +411,8 @@ function getCoreTurn($nation, $level) {
             case 73: //수몰
                 $double = $command[1];
                 $city = getCity($double, "name");
-                $str[$i] = "【{$city['name']}】(을)를 수몰";
+                $josaUl = JosaUtil::pick($city['name'], '을');
+                $str[$i] = "【{$city['name']}】{$josaUl} 수몰";
                 break;
             case 74: //허보
                 $double = $command[1];

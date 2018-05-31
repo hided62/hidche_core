@@ -64,14 +64,16 @@ function process_32(&$general) {
             $ratio += 10;
             $query = "update general set item=0 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+            $josaUl = JosaUtil::pick($general['item'], '을');
+            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
             $general['item'] = 0;
         } elseif($general['item'] == 6) {
             // 향낭 사용
             $ratio += 20;
             $query = "update general set item=0 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+            $josaUl = JosaUtil::pick($general['item'], '을');
+            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
             $general['item'] = 0;
         } elseif($general['item'] >= 21 && $general['item'] <= 22) {
             // 육도, 삼략 사용
@@ -193,14 +195,16 @@ function process_33(&$general) {
             $ratio += 10;
             $query = "update general set item=0 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+            $josaUl = JosaUtil::pick($general['item'], '을');
+            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
             $general['item'] = 0;
         } elseif($general['item'] == 6) {
             // 향낭 사용
             $ratio += 20;
             $query = "update general set item=0 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+            $josaUl = JosaUtil::pick($general['item'], '을');
+            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
             $general['item'] = 0;
         } elseif($general['item'] >= 21 && $general['item'] <= 22) {
             // 육도, 삼략 사용
@@ -339,14 +343,16 @@ function process_34(&$general) {
             $ratio += 10;
             $query = "update general set item=0 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+            $josaUl = JosaUtil::pick($general['item'], '을');
+            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
             $general['item'] = 0;
         } elseif($general['item'] == 6) {
             // 향낭 사용
             $ratio += 20;
             $query = "update general set item=0 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+            $josaUl = JosaUtil::pick($general['item'], '을');
+            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
             $general['item'] = 0;
         } elseif($general['item'] >= 21 && $general['item'] <= 22) {
             // 육도, 삼략 사용
@@ -466,14 +472,16 @@ function process_35(&$general) {
             $ratio += 10;
             $query = "update general set item=0 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+            $josaUl = JosaUtil::pick($general['item'], '을');
+            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
             $general['item'] = 0;
         } elseif($general['item'] == 6) {
             // 향낭 사용
             $ratio += 20;
             $query = "update general set item=0 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>(을)를 사용!";
+            $josaUl = JosaUtil::pick($general['item'], '을');
+            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
             $general['item'] = 0;
         } elseif($general['item'] >= 21 && $general['item'] <= 22) {
             // 육도, 삼략 사용
