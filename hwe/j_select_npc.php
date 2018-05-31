@@ -89,9 +89,10 @@ if(!$db->affectedRows()){
 
 $db->delete('select_npc_token', 'owner=%i or valid_until < %s', $userID, $now);
 
-pushGeneralHistory($pickedNPC, "<C>●</>{$year}년 {$month}월:<Y>{$pickedNPC['name']}</>의 육체에 <Y>{$userNick}</>(이)가 빙의되다.");
+$josaYi = JosaUtil::pick($userNick, '이');
+pushGeneralHistory($pickedNPC, "<C>●</>{$year}년 {$month}월:<Y>{$pickedNPC['name']}</>의 육체에 <Y>{$userNick}</>{$josaYi} 빙의되다.");
 //pushGenLog($me, $mylog);
-pushGeneralPublicRecord(["<C>●</>{$month}월:<Y>{$pickedNPC['name']}</>의 육체에 <Y>{$userNick}</>(이)가 <S>빙의</>됩니다!"], $year, $month);
+pushGeneralPublicRecord(["<C>●</>{$month}월:<Y>{$pickedNPC['name']}</>의 육체에 <Y>{$userNick}</>{$josaYi} <S>빙의</>됩니다!"], $year, $month);
 
 pushAdminLog(["가입 : {$userID} // {$session->userName} // {$pick} // ".getenv("REMOTE_ADDR")]);
 

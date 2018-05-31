@@ -82,9 +82,10 @@ function registerAuction() {
             $query = "insert into auction (type, no1, name1, stuff, amount, cost, value, topv, expire) values (0, '0', 'ⓝ암시장상인', '$stuff', '$amount', '$cost', '$cost', '$topv', '$date')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $alllog[0] = "<C>●</>{$admin['month']}월:<C>".GetStuffName($stuff)."</>(이)가 거래장에 등장했습니다!";
+            $josaYi = JosaUtil::pick(GetStuffName($stuff), '이');
+            $alllog[0] = "<C>●</>{$admin['month']}월:<C>".GetStuffName($stuff)."</>{$josaYi} 거래장에 등장했습니다!";
             $josaUl = JosaUtil::pick(GetStuffName($stuff), '을');
-            $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【암시장】</b></><Y>ⓝ암시장상인</>(이)가 <C>".GetStuffName($stuff)."</>{$josaUl} 판다는 소문이 돌고 있습니다!";
+            $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【암시장】</b></><Y>ⓝ암시장상인</>이 <C>".GetStuffName($stuff)."</>{$josaUl} 판다는 소문이 돌고 있습니다!";
             pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
             pushWorldHistory($history, $admin['year'], $admin['month']);
         }
@@ -163,11 +164,14 @@ function processAuction() {
     for($i=0; $i < $count2; $i++) {
         $auction = MYDB_fetch_array($result2);
 
+        $josaYi1 = JosaUtil::pick($auction['name1'], '이');
+        $josaYi2 = JosaUtil::pick($auction['name2'], '이');
+
         // 유닉템 처리
         if($auction['stuff'] != 0) {
             if($auction['no2'] == 0) {
                 $josaUl = JosaUtil::pick(GetStuffName($auction['stuff']), '을');
-                $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>{$josaUl} 판매, 그러나 입찰자 부재";
+                $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>{$josaYi1} <C>".GetStuffName($auction['stuff'])."</>{$josaUl} 판매, 그러나 입찰자 부재";
                 pushAuctionLog($auctionLog);
             } else {
                 $trader['no'] = 0;
@@ -198,7 +202,7 @@ function processAuction() {
                     $bidderLog[0] = "<S>◆</>{$auction['no']}번 거래 <M>유찰</>! 이미 아이템을 누군가가 가로챘습니다!";
                     $josaUl = JosaUtil::pick(GetStuffName($auction['stuff']), '을');
                     $josaRo = JosaUtil::pick($auction['value'], '로');
-                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>$josaUl 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 아이템 이미 매진!";
+                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>{$josaYi1} <C>".GetStuffName($auction['stuff'])."</>$josaUl 판매, <Y>{$auction['name2']}</>{$josaYi2} 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 아이템 이미 매진!";
                 } elseif($auction['value'] > $bidder['gold'] - 1000) {
                     $gold = Util::round($auction['value'] * 0.01);
                     $bidder['gold'] -= $gold;
@@ -210,21 +214,21 @@ function processAuction() {
                     $bidderLog[0] = "<S>◆</>입찰자의 자금 부족으로 {$auction['no']}번 <C>".GetStuffName($auction['stuff'])."</> 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
                     $josaUl = JosaUtil::pick(GetStuffName($auction['stuff']), '을');
                     $josaRo = JosaUtil::pick($auction['value'], '로');
-                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>$josaUl 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 입찰자 자금부족, 벌금 <C>{$gold}</>";
+                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>{$josaYi1} <C>".GetStuffName($auction['stuff'])."</>$josaUl 판매, <Y>{$auction['name2']}</>{$josaYi2} 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 입찰자 자금부족, 벌금 <C>{$gold}</>";
                 } else {
                     $josaUl = JosaUtil::pick(GetStuffName($auction['stuff']), '을');
                     $josaUlGold = JosaUtil::pick($auction['value'], '을');
                     $josaRo = JosaUtil::pick($auction['value'], '로');
                     $traderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 <C>".GetStuffName($auction['stuff'])."</>$josaUl 판매, 금 <C>{$auction['value']}</>{$josaUlGold} 획득!";
                     $bidderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 금 <C>{$auction['value']}</>{$josaUlGold} 지불, <C>".GetStuffName($auction['stuff'])."</> 구입!";
-                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <C>성사</> : <Y>{$auction['name1']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>$josaUl 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>{$josaRo} 구매";
+                    $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <C>성사</> : <Y>{$auction['name1']}</>{$josaYi1} <C>".GetStuffName($auction['stuff'])."</>$josaUl 판매, <Y>{$auction['name2']}</>{$josaYi2} 금 <C>{$auction['value']}</>{$josaRo} 구매";
                     $auctionLog[0] .= " <M>★ 아이템 거래 ★</>";
 
                     $query = "update general set gold=gold-'{$auction['value']}',{$type}='$sel2' where no='{$auction['no2']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-                    $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$auction['name2']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>$josaUl 구매했습니다!";
-                    $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【암시장】</b></><Y>{$auction['name2']}</>(이)가 <C>".GetStuffName($auction['stuff'])."</>$josaUl 구매했습니다!";
+                    $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$auction['name2']}</>{$josaYi2} <C>".GetStuffName($auction['stuff'])."</>$josaUl 구매했습니다!";
+                    $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【암시장】</b></><Y>{$auction['name2']}</>{$josaYi2} <C>".GetStuffName($auction['stuff'])."</>$josaUl 구매했습니다!";
                     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
                     pushWorldHistory($history, $admin['year'], $admin['month']);
                 }
@@ -244,10 +248,10 @@ function processAuction() {
                     $traderLog[0] = "<S>◆</>입찰자 부재로 {$auction['no']}번 거래 <M>유찰</>!";
                     if($auction['type'] == 0) {
                         $josaUlRice = JosaUtil::pick($auction['amount'], '을');
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>{$josaUlRice} 판매, 그러나 입찰자 부재";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>{$josaYi1} 쌀 <C>{$auction['amount']}</>{$josaUlRice} 판매, 그러나 입찰자 부재";
                     } else {
                         $josaUlRice = JosaUtil::pick($auction['amount'], '을');
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구매, 그러나 입찰자 부재";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>{$josaYi1} 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구매, 그러나 입찰자 부재";
                     }
                     pushGenLog($trader, $traderLog);
                     pushAuctionLog($auctionLog);
@@ -280,7 +284,7 @@ function processAuction() {
                         $josaRo = JosaUtil::pick($auction['value'], '로');
                         $traderLog[0] = "<S>◆</>판매자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
                         $bidderLog[0] = "<S>◆</>판매자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>{$josaUlRice} 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 판매자 군량부족, 벌금 <C>{$gold}</>";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>{$josaYi1} 쌀 <C>{$auction['amount']}</>{$josaUlRice} 판매, <Y>{$auction['name2']}</>{$josaYi2} 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 판매자 군량부족, 벌금 <C>{$gold}</>";
                     } elseif($auction['value'] > $bidder['gold'] - 1000) {
                         $gold = Util::round($auction['value'] * 0.01);
                         $bidder['gold'] -= $gold;
@@ -292,14 +296,14 @@ function processAuction() {
                         $josaRo = JosaUtil::pick($auction['value'], '로');
                         $traderLog[0] = "<S>◆</>입찰자의 자금 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
                         $bidderLog[0] = "<S>◆</>입찰자의 자금 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>{$josaUlRice} 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 입찰자 자금부족, 벌금 <C>{$gold}</>";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <M>유찰</> : <Y>{$auction['name1']}</>{$josaYi1} 쌀 <C>{$auction['amount']}</>{$josaUlRice} 판매, <Y>{$auction['name2']}</>{$josaYi2} 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 입찰자 자금부족, 벌금 <C>{$gold}</>";
                     } else {
                         $josaUlGold = JosaUtil::pick($auction['value'], '을');
                         $josaUlRice = JosaUtil::pick($auction['amount'], '을');
                         $josaRo = JosaUtil::pick($auction['value'], '로');
                         $traderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 쌀 <C>{$auction['amount']}</>{$josaUlRice} 판매, 금 <C>{$auction['value']}</>{$josaUlGold} 획득!";
                         $bidderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 금 <C>{$auction['value']}</>{$josaUlGold} 지불, 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구입!";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <C>성사</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>{$josaUlRice} 판매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>{$josaRo} 구매";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <span class='sell'>판매</span> <C>성사</> : <Y>{$auction['name1']}</>{$josaYi1} 쌀 <C>{$auction['amount']}</>{$josaUlRice} 판매, <Y>{$auction['name2']}</>{$josaYi2} 금 <C>{$auction['value']}</>{$josaRo} 구매";
                         if($auction['value'] >= $auction['amount'] * 2) {
                             $auctionLog[0] .= " <R>★ 최고가 거래 ★</>";
                         } elseif($auction['value'] >= $auction['topv']) {
@@ -328,7 +332,7 @@ function processAuction() {
                         $josaRo = JosaUtil::pick($auction['value'], '로');
                         $traderLog[0] = "<S>◆</>입찰자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
                         $bidderLog[0] = "<S>◆</>입찰자의 군량 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 입찰자 군량부족, 벌금 <C>{$gold}</>";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>{$josaYi1} 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구매, <Y>{$auction['name2']}</>{$josaYi2} 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 입찰자 군량부족, 벌금 <C>{$gold}</>";
                     } elseif($auction['value'] > $trader['gold'] - 1000) {
                         $gold = Util::round($auction['value'] * 0.01);
                         $trader['gold'] -= $gold;
@@ -340,14 +344,14 @@ function processAuction() {
                         $josaRo = JosaUtil::pick($auction['value'], '로');
                         $traderLog[0] = "<S>◆</>구매자의 자금 부족으로 {$auction['no']}번 거래 <M>유찰</>! 벌금 <C>{$gold}</>";
                         $bidderLog[0] = "<S>◆</>구매자의 자금 부족으로 {$auction['no']}번 거래 <M>유찰</>!";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 구매자 자금부족, 벌금 <C>{$gold}</>";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <M>유찰</> : <Y>{$auction['name1']}</>{$josaYi1} 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구매, <Y>{$auction['name2']}</>{$josaYi2} 금 <C>{$auction['value']}</>{$josaRo} 입찰, 그러나 구매자 자금부족, 벌금 <C>{$gold}</>";
                     } else {
                         $josaUlGold = JosaUtil::pick($auction['value'], '을');
                         $josaUlRice = JosaUtil::pick($auction['amount'], '을');
                         $josaRo = JosaUtil::pick($auction['value'], '로');
                         $traderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 금 <C>{$auction['value']}</>{$josaUlGold} 지불, 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구입!";
                         $bidderLog[0] = "<S>◆</>{$auction['no']}번 거래 <C>성사</>로 쌀 <C>{$auction['amount']}</>{$josaUlRice} 판매, 금 <C>{$auction['value']}</>{$josaUlGold} 획득!";
-                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <C>성사</> : <Y>{$auction['name1']}</>(이)가 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구매, <Y>{$auction['name2']}</>(이)가 금 <C>{$auction['value']}</>{$josaRo} 판매";
+                        $auctionLog[0] = "<S>◆</>{$admin['year']}년 {$admin['month']}월, {$auction['no']}번 <S>구매</> <C>성사</> : <Y>{$auction['name1']}</>{$josaYi1} 쌀 <C>{$auction['amount']}</>{$josaUlRice} 구매, <Y>{$auction['name2']}</>{$josaYi2} 금 <C>{$auction['value']}</>{$josaRo} 판매";
                         if($auction['value'] >= $auction['amount'] * 2) {
                             $auctionLog[0] .= " <R>★ 최고가 거래 ★</>";
                         } elseif($auction['value'] * 2 <= $auction['amount']) {

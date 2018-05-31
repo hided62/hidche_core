@@ -91,7 +91,8 @@ function process_32(&$general) {
         $ratio /= Util::array_get($dist[$destination], 99);
 
         if($ratio > $ratio2) {
-            $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(이)가 불타고 있습니다.";
+            $josaYi = JosaUtil::pick($destcity['name'], '이');
+            $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>{$josaYi} 불타고 있습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 화계가 성공했습니다. <1>$date</>";
 
             $destcity['agri'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;

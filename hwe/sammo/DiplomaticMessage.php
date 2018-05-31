@@ -141,8 +141,10 @@ class DiplomaticMessage extends Message{
             return $chk;
         }
 
-        $alllog[] = "<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(와)과 <M>종전 합의</> 하였습니다.";
-        $history[] = "<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【종전】</b></><D><b>{$this->dest->nationName}</b></>(이)가 <D><b>{$this->src->nationName}</b></>(와)과 <M>종전 합의</> 하였습니다.";
+        $josaYi = JosaUtil::pick($this->dest->generalName, '이');
+        $alllog[] = "<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>{$josaYi} <D><b>{$this->src->nationName}</b></>(와)과 <M>종전 합의</> 하였습니다.";
+        $josaYi = JosaUtil::pick($this->dest->nationName, '이');
+        $history[] = "<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【종전】</b></><D><b>{$this->dest->nationName}</b></>{$josaYi} <D><b>{$this->src->nationName}</b></>(와)과 <M>종전 합의</> 하였습니다.";
         $youlog[] = "<C>●</><D><b>{$this->dest->nationName}</b></>(와)과 종전에 성공했습니다.";
         $mylog[] = "<C>●</><D><b>{$this->src->nationName}</b></>(와)과 종전에 합의했습니다.";
         pushGeneralHistory(['no'=>$this->src->generalID], "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 종전 성공");
@@ -175,16 +177,19 @@ class DiplomaticMessage extends Message{
             ['no'=>$this->dest->generalID],
             ["<C>●</><D><b>{$this->src->nationName}</b></>(와)과 통합에 동의했습니다."]
         );
+        $josaYi = JosaUtil::pick($this->dest->nationName, '이');
         pushGenLog(
             ['no'=>$this->src->generalID],
-            ["<C>●</><D><b>{$this->dest->nationName}</b></>(이)가 통합에 동의했습니다."]
+            ["<C>●</><D><b>{$this->dest->nationName}</b></>{$josaYi} 통합에 동의했습니다."]
         );
+        $josaYi = JosaUtil::pick($this->dest->generalName, '이');
         pushGeneralPublicRecord(
-            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(와)과 <M>통합</>에 동의하였습니다."],
+            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>{$josaYi} <D><b>{$this->src->nationName}</b></>(와)과 <M>통합</>에 동의하였습니다."],
             $helper->year,
             $helper->month);
+            $josaYi = JosaUtil::pick($this->src->generalName, '이');
         pushWorldHistory(
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【통합시도】</b></><D><b>{$this->dest->nationName}</b></>(와)과 <D><b>{$this->src->nationName}</b></>(이)가 통합을 시도합니다."],
+            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【통합시도】</b></><D><b>{$this->dest->nationName}</b></>(와)과 <D><b>{$this->src->nationName}</b></>{$josaYi} 통합을 시도합니다."],
             $helper->year, 
             $helper->month
         );
@@ -212,16 +217,19 @@ class DiplomaticMessage extends Message{
             ['no'=>$this->dest->generalID], 
             ["<C>●</><D><b>{$this->src->nationName}</b></>{$josaRo} 투항에 동의했습니다."]
         );
+        $josaYi = JosaUtil::pick($this->dest->nationName, '이');
         pushGenLog(
             ['no'=>$this->src->generalID], 
-            ["<C>●</><D><b>{$this->dest->nationName}</b></>(이)가 투항에 동의했습니다."]
+            ["<C>●</><D><b>{$this->dest->nationName}</b></>{$josaYi} 투항에 동의했습니다."]
         );
+        $josaYi = JosaUtil::pick($this->dest->generalName, '이');
         pushGeneralPublicRecord(
-            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>{$josaRo} <M>투항</>에 동의하였습니다."], 
+            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>{$josaYi} <D><b>{$this->src->nationName}</b></>{$josaRo} <M>투항</>에 동의하였습니다."], 
             $helper->year, 
             $helper->month);
+        $josaYi = JosaUtil::pick($this->dest->nationName, '이');
         pushWorldHistory(
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【투항시도】</b></><D><b>{$this->dest->nationName}</b></>(이)가 <D><b>{$this->src->nationName}</b></>{$josaRo} 투항합니다."], 
+            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【투항시도】</b></><D><b>{$this->dest->nationName}</b></>{$josaYi} <D><b>{$this->src->nationName}</b></>{$josaRo} 투항합니다."], 
             $helper->year, 
             $helper->month
         );
@@ -309,11 +317,12 @@ class DiplomaticMessage extends Message{
         $this->invalidate();
         $this->validDiplomacy = false;
 
+        $josaYi = JosaUtil::pick($this->src->nationName, '이');
         $newMsg = new Message(
             self::MSGTYPE_NATIONAL, 
             $this->dest, 
             $this->src, 
-            "【외교】{$year}년 {$month}월: {$this->src->nationName}(이)가 {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}{$this->diplomacyName} 동의.",
+            "【외교】{$year}년 {$month}월: {$this->src->nationName}{$josaYi} {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}{$this->diplomacyName} 동의.",
             new \DateTime(),
             new \DateTime('9999-12-31'),
             [
@@ -352,8 +361,9 @@ class DiplomaticMessage extends Message{
             return $result;
         }
 
+        $josaYi = JosaUtil::pick($this->dest->nationName, '이');
         pushGenLog(['no'=>$receiverID], "<C>●</><D>{$this->src->nationName}</>의 {$this->diplomacyName} 제안을 거절했습니다.");
-        pushGenLog(['no'=>$this->src->generalID], "<C>●</><Y>{$this->dest->nationName}</>(이)가 {$this->diplomacyName} 제안을 거절했습니다.");
+        pushGenLog(['no'=>$this->src->generalID], "<C>●</><Y>{$this->dest->nationName}</>{$josaYi} {$this->diplomacyName} 제안을 거절했습니다.");
         $this->_declineMessage();  
         return self::DECLINED;
     }

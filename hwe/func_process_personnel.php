@@ -125,12 +125,13 @@ function process_25(&$general) {
     } elseif(strpos($general['nations'], ",{$nation['nation']},") > 0) {
         $log[] = "<C>●</>{$admin['month']}월:이미 임관했었던 국가입니다. 임관 실패. <1>$date</>";
     } else {
+        $josaYi = JosaUtil::pick($general['name'], '이');
         if($where == 99 || $where == 98) {
-            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 어쩌다보니 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 어쩌다보니 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 랜덤으로 임관했습니다. <1>$date</>";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
         } else {
-            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 임관했습니다. <1>$date</>";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
         }
@@ -262,8 +263,9 @@ function process_29(&$general) {
                 $scoutNation = $nation['nation'];
             }
             
+            $josaYi = JosaUtil::pick($general['name'], '이');
             $log[] = "<C>●</>{$admin['month']}월:<Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다! <1>$date</>";
-            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다!";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다!";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>$name</>(이)라는 <C>인재</>를 {$scoutType}");
 
             $query = "select max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0) as dex0, avg(dex10) as dex10, avg(dex20) as dex20, avg(dex30) as dex30, avg(dex40) as dex40 from general where nation='{$general['nation']}'";
@@ -476,8 +478,9 @@ function process_45(&$general) {
         }
 
         if($dipcount1 > 0) {
+            $josaYi = JosaUtil::pick($general['name'], '이');
             $josaUl = JosaUtil::pick($nation['name'], '을');
-            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 통합에 반대하며 <D><b>{$nation['name']}</b></>{$josaUl} <R>떠났</>습니다.";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 통합에 반대하며 <D><b>{$nation['name']}</b></>{$josaUl} <R>떠났</>습니다.";
             $log[] = "<C>●</>{$admin['month']}월:통합에 반대하며 <D><b>{$nation['name']}</b></>에서 떠났습니다. <1>$date</>";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:통합에 반대하며 <D><b>{$nation['name']}</b></>{$josaUl} 떠남");
 
@@ -485,8 +488,9 @@ function process_45(&$general) {
             $query = "update general set resturn='SUCCESS',belong=0,nation=0,level=0,makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } elseif($dipcount2 > 0) {
+            $josaYi = JosaUtil::pick($general['name'], '이');
             $josaUl = JosaUtil::pick($nation['name'], '을');
-            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 합병에 반대하며 <D><b>{$nation['name']}</b></>{$josaUl} <R>떠났</>습니다.";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 합병에 반대하며 <D><b>{$nation['name']}</b></>{$josaUl} <R>떠났</>습니다.";
             $log[] = "<C>●</>{$admin['month']}월:합병에 반대하며 <D><b>{$nation['name']}</b></>에서 떠났습니다. <1>$date</>";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:합병에 반대하며 <D><b>{$nation['name']}</b></>{$josaUl} 떠남");
 
@@ -494,7 +498,8 @@ function process_45(&$general) {
             $query = "update general set resturn='SUCCESS',belong=0,nation=0,level=0,makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>에서 <R>하야</>했습니다.";
+            $josaYi = JosaUtil::pick($general['name'], '이');
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <D><b>{$nation['name']}</b></>에서 <R>하야</>했습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>에서 하야했습니다. <1>$date</>";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에서 하야");
 
@@ -604,12 +609,15 @@ function process_46(&$general) {
         $query = "update city set nation='{$nation['nation']}',conflict='{}' where city='{$general['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
+        $josaYi = JosaUtil::pick($general['name'], '이');
         $josaUl = JosaUtil::pick($nation['name'], '을');
         $log[] = "<C>●</>{$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaUl} 건국하였습니다. <1>$date</>";
-        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에 국가를 건설하였습니다.";
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【건국】</b></>".getNationType($type)." <D><b>{$nation['name']}</b></>(이)가 새로이 등장하였습니다.";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <G><b>{$city['name']}</b></>에 국가를 건설하였습니다.";
+        $josaYi = JosaUtil::pick($nation['name'], '이');
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【건국】</b></>".getNationType($type)." <D><b>{$nation['name']}</b></>{$josaYi} 새로이 등장하였습니다.";
         pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaUl} 건국");
-        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>{$josaUl} 건국");
+        $josaYi = JosaUtil::pick($general['name'], '이');
+        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <D><b>{$nation['name']}</b></>{$josaUl} 건국");
 
         $exp = 1000;
         $ded = 1000;
@@ -661,8 +669,9 @@ function process_47(&$general) {
     } elseif($nation['level'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:이미 방랑군입니다. 방랑 실패.";
     } else {
+        $josaYi = JosaUtil::pick($general['name'], '이');
         $log[] = "<C>●</>{$admin['month']}월:영토를 버리고 방랑의 길을 떠납니다. <1>$date</>";
-        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 방랑의 길을 떠납니다.";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 방랑의 길을 떠납니다.";
         $josaUl = JosaUtil::pick($nation['name'], '을');
         pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaUl} 버리고 방랑");
 
@@ -749,13 +758,14 @@ function process_54(&$general) {
         $query = "update general set resturn='SUCCESS',level='1',experience=experience*0.7 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【선양】</b></><Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 군주 자리를 <Y>{$nextruler['name']}</>에게 선양했습니다.";
+        $josaYi = JosaUtil::pick($general['name'], '이');
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【선양】</b></><Y>{$general['name']}</>{$josaYi} <D><b>{$nation['name']}</b></>의 군주 자리를 <Y>{$nextruler['name']}</>에게 선양했습니다.";
         $log[] = "<C>●</>{$admin['month']}월:<Y>{$nextruler['name']}</>에게 군주의 자리를 물려줍니다. <1>$date</>";
         $youlog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게서 군주의 자리를 물려받습니다.";
 
         pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주자리를 <Y>{$nextruler['name']}</>에게 선양");
         pushGeneralHistory($nextruler, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주자리를 물려 받음");
-        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <Y>{$nextruler['name']}</>에게 선양");
+        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <Y>{$nextruler['name']}</>에게 선양");
     }
     pushGenLog($general, $log);
     pushGenLog($nextruler, $youlog);
@@ -824,11 +834,12 @@ function process_55(&$general) {
         $query = "update general set resturn='SUCCESS',belong=1,level=12,nation='{$nation['nation']}',dedication=dedication+'$ded', experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
+        $josaYi = JosaUtil::pick($general['name'], '이');
         $log[] = "<C>●</>{$admin['month']}월:거병에 성공하였습니다. <1>$date</>";
-        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에서 거병하였습니다.";
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【거병】</b></><D><b>{$general['name']}</b></>(이)가 세력을 결성하였습니다.";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <G><b>{$city['name']}</b></>에서 거병하였습니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【거병】</b></><D><b>{$general['name']}</b></>{$josaYi} 세력을 결성하였습니다.";
         pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$city['name']}</b></>에서 거병");
-        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>에서 거병");
+        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <G><b>{$city['name']}</b></>에서 거병");
 
         // 외교테이블 추가
         
@@ -873,8 +884,9 @@ function process_56(&$general) {
     } elseif($citycount != 0) {
         $log[] = "<C>●</>{$admin['month']}월:방랑군이 아닙니다. <1>$date</>";
     } else {
+        $josaYi = JosaUtil::pick($general['name'], '이');
         $log[] = "<C>●</>{$admin['month']}월:세력을 해산했습니다. <1>$date</>";
-        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 세력을 해산했습니다.";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 세력을 해산했습니다.";
         $josaUl = JosaUtil::pick($nation['name'], '을');
         pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaUl} 해산");
 
@@ -957,14 +969,15 @@ function process_57(&$general) {
         $query = "update general set level='1',experience=experience*0.7 where no='{$ruler['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
+        $josaYi = JosaUtil::pick($general['name'], '이');
         $log[] = "<C>●</>{$admin['month']}월:모반에 성공했습니다. <1>$date</>";
-        $youlog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게서 군주의 자리를 뺏겼습니다.";
-        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <M>모반</>에 성공했습니다.";
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【모반】</b></><Y>{$general['name']}</>(이)가 <D><b>{$nation['name']}</b></>의 군주 자리를 찬탈했습니다.";
+        $youlog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>에게 군주의 자리를 뺏겼습니다.";
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <M>모반</>에 성공했습니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【모반】</b></><Y>{$general['name']}</>{$josaYi} <D><b>{$nation['name']}</b></>의 군주 자리를 찬탈했습니다.";
 
         pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:모반으로 <D><b>{$nation['name']}</b></>의 군주자리를 찬탈");
         pushGeneralHistory($ruler, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$general['name']}</b></>의 모반으로 인해 <D><b>{$nation['name']}</b></>의 군주자리를 박탈당함");
-        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <Y>{$ruler['name']}</>에게서 군주자리를 찬탈");
+        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <Y>{$ruler['name']}</>에게서 군주자리를 찬탈");
     }
     pushGenLog($general, $log);
     pushGenLog($ruler, $youlog);

@@ -116,7 +116,8 @@ class NPC{
         $db = DB::db();
 
         if($isNewGeneral){
-            \sammo\pushWorldHistory(["<C>●</>{$month}월:<Y>{$name}</>(이)가 성인이 되어 <S>등장</>했습니다."], $year, $month);
+            $josaYi = JosaUtil::pick($name, '이');
+            \sammo\pushWorldHistory(["<C>●</>{$month}월:<Y>{$name}</>{$josaYi} 성인이 되어 <S>등장</>했습니다."], $year, $month);
         }
 
         if($this->ego == null || $isFictionMode){

@@ -118,7 +118,8 @@ function processWar($general, $city) {
     if($city['level']       == 3) { $oppTrainBonus += 5; }   // 방어도시가 관이면 방어자 방어보정
 
     $josaRo = JosaUtil::pick($city['name'], '로');
-    $alllog[] = "<C>●</>{$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>{$josaRo} 진격합니다.";
+    $josaYi = JosaUtil::pick($general['name'], '이');
+    $alllog[] = "<C>●</>{$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <G><b>{$city['name']}</b></>{$josaRo} 진격합니다.";
     $log[] = "<C>●</>{$month}월:<G><b>{$city['name']}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>";
 
     // 목표 도시내에 목표 국가 소속 장수 중, 병사가 있는 능력치합+병사수 순으로 훈,사 60, 80 이상
@@ -140,7 +141,8 @@ function processWar($general, $city) {
 
             $alllog[] = "<C>●</>{$month}월:병량 부족으로 <G><b>{$city['name']}</b></>의 수비병들이 <R>패퇴</>합니다.";
             $josaUl = JosaUtil::pick($city['name'], '을');
-            $history[] = "<C>●</>{$year}년 {$month}월:<M><b>【패퇴】</b></><D><b>{$destnation['name']}</b></>(이)가 병량 부족으로 <G><b>{$city['name']}</b></>{$josaUl} 뺏기고 말았습니다.";
+            $josaYi = JosaUtil::pick($general['name'], '이');
+            $history[] = "<C>●</>{$year}년 {$month}월:<M><b>【패퇴】</b></><D><b>{$destnation['name']}</b></>{$josaYi} 병량 부족으로 <G><b>{$city['name']}</b></>{$josaUl} 뺏기고 말았습니다.";
             pushGenLog($general, $log);
             pushGeneralPublicRecord($alllog, $year, $month);
             pushWorldHistory($history);
@@ -163,7 +165,8 @@ function processWar($general, $city) {
         // 장수가 없어서 도시 공격
         } elseif($opposecount == 0) {
             $josaRo = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '로');
-            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 ".GameUnitConst::byId($general['crewtype'])->name."{$josaRo} 성벽을 공격합니다.";
+            $josaYi = JosaUtil::pick($general['name'], '이');
+            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>{$josaYi} ".GameUnitConst::byId($general['crewtype'])->name."{$josaRo} 성벽을 공격합니다.";
             $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."{$josaRo} 성벽을 <M>공격</>합니다.";
 
             $general['train'] += 1; //훈련 상승
@@ -525,14 +528,16 @@ function processWar($general, $city) {
                 break;
             // 공격 장수 병사 소진시 실패 처리
             } elseif($general['crew'] <= 0) {
-                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                $josaYi = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '이');
+                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
                 $log[] = "<C>●</>퇴각했습니다.";
 
                 $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 break;
             } elseif($myRice <= Util::round($general['crew']/100)) {
-                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                $josaYi = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '이');
+                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
                 $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
 
                 $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
@@ -542,7 +547,8 @@ function processWar($general, $city) {
         // 장수 대결
         } else {
             $oppose = MYDB_fetch_array($result);
-            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(와)과 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 대결합니다.";
+            $josaYi = JosaUtil::pick(GameUnitConst::byId($oppose['crewtype'])->name, '이');
+            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(와)과 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 대결합니다.";
             $josaUl = JosaUtil::pick(GameUnitConst::byId($oppose['crewtype'])->name, '을');
             $josaRo = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '로');
             $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."{$josaRo} <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaUl} <M>공격</>합니다.";
@@ -616,7 +622,8 @@ function processWar($general, $city) {
             } else if($general['item'] == 2 && $ratio <= 40) {
                 $query = "update general set item=0 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $batlog[] = "<C>●</><C>".getItemName($general['item'])."</>(이)가 빗나갑니다!";
+                $josaYi = JosaUtil::pick($general['item'], '이');
+                $batlog[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaYi} 빗나갑니다!";
                 $general['item'] = 0;
             }
             $ratio = rand() % 100;
@@ -643,7 +650,8 @@ function processWar($general, $city) {
             } else if($oppose['item'] == 2 && $ratio <= 40) {
                 $query = "update general set item=0 where no='{$oppose['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $oppbatlog[] = "<C>●</><C>".getItemName($oppose['item'])."</>(이)가 빗나갑니다!";
+                $josaYi = JosaUtil::pick($oppose['item'], '이');
+                $oppbatlog[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaYi} 빗나갑니다!";
                 $oppose['item'] = 0;
             }
 
@@ -1399,12 +1407,14 @@ function processWar($general, $city) {
             // 상대 병사 소진이나 쌀 소진시 다음 장수
             if($oppose['crew'] <= 0 || ($opRice <= Util::round($oppose['crew']/100) && $general['crew'] > 0)) {
                 if($opRice <= Util::round($oppose['crew']/100)) {
-                    $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
-                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 패퇴했습니다.";
+                    $josaYi = JosaUtil::pick(GameUnitConst::byId($oppose['crewtype'])->name, '이');
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 패퇴했습니다.";
+                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 패퇴했습니다.";
                     $opplog[] = "<C>●</>군량 부족으로 패퇴합니다.";
                 } else {
-                    $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 전멸했습니다.";
-                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 전멸했습니다.";
+                    $josaYi = JosaUtil::pick(GameUnitConst::byId($oppose['crewtype'])->name, '이');
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 전멸했습니다.";
+                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 전멸했습니다.";
                     $opplog[] = "<C>●</>전멸했습니다.";
                 }
                 $opposecount--;
@@ -1438,13 +1448,15 @@ function processWar($general, $city) {
             // 공격 장수 병사 소진이나 쌀 소진시 실패 처리
             } elseif($general['crew'] <= 0 || $myRice <= Util::round($general['crew']/100)) {
                 if($myRice <= Util::round($general['crew']/100)) {
-                    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                    $josaYi = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '이');
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
                     $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
-                    $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                    $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
                 } else {
-                    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                    $josaYi = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '이');
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
                     $log[] = "<C>●</>퇴각했습니다.";
-                    $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(이)가 퇴각했습니다.";
+                    $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
                 }
 
                 // 경험치 상승
@@ -1480,7 +1492,8 @@ function processWar($general, $city) {
                 unset($opplog);
                 unset($oppbatlog);
                 unset($oppbatres);
-//                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 }<G>{$city['name']}</> 공략에 실패했습니다. <1>$date</>";
+//                $josaYi = JosaUtil::pick($general['name'], '이');
+//                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>{$josaYi} }<G>{$city['name']}</> 공략에 실패했습니다. <1>$date</>";
 //                $log[] = "<C>●</> <G>{$city['name']}</> 공략에 실패했습니다. <1>$date</>";
                 break;
             } else {
@@ -1672,7 +1685,8 @@ function addConflict($city, $nationID, $mykillnum) {
         arsort($conflict);
 
         $nation = getNationStaticInfo($nationID);
-        pushWorldHistory(["<C>●</>{$year}년 {$month}월:<M><b>【분쟁】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다."]);
+        $josaYi = JosaUtil::pick($nation['name'], '이');
+        pushWorldHistory(["<C>●</>{$year}년 {$month}월:<M><b>【분쟁】</b></><D><b>{$nation['name']}</b></>{$josaYi} <G><b>{$city['name']}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다."]);
     }
     
     $rawConflict = Json::encode($conflict);
@@ -1730,12 +1744,15 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
     $month = $admin['month'];
 
     $josaUl = JosaUtil::pick($city['name'], '을');
-    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
+    $josaYiNation = JosaUtil::pick($nation['name'], '이');
+    $josaYiGen = JosaUtil::pick($general['name'], '이');
+    $josaYiCity = JosaUtil::pick($city['name'], '이');
+    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>{$josaYiGen} <G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
     $log[] = "<C>●</><G><b>{$city['name']}</b></> 공략에 <S>성공</>했습니다.";
-    $history[] = "<C>●</>{$year}년 {$month}월:<S><b>【지배】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$city['name']}</b></>{$josaUl} 지배했습니다.";
+    $history[] = "<C>●</>{$year}년 {$month}월:<S><b>【지배】</b></><D><b>{$nation['name']}</b></>{$josaYiNation} <G><b>{$city['name']}</b></>{$josaUl} 지배했습니다.";
     pushGeneralHistory($general, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <S>함락</>시킴");
-    pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<Y>{$general['name']}</>(이)가 {$destnationName} <G><b>{$city['name']}</b></>{$josaUl} <S>점령</>");
-    pushNationHistory($destnation, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>(이)가 <span class='ev_highlight'>함락</span>");
+    pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<Y>{$general['name']}</>{$josaYiGen} {$destnationName} <G><b>{$city['name']}</b></>{$josaUl} <S>점령</>");
+    pushNationHistory($destnation, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>{$josaYiCity} <span class='ev_highlight'>함락</span>");
 
     $query = "select city from city where nation='{$city['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1748,8 +1765,9 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $losenation = MYDB_fetch_array($result);
 
-        $history[] = "<C>●</>{$year}년 {$month}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>(이)가 멸망하였습니다.";
+        $josaYi = JosaUtil::pick($losenation['name'], '이');
         $josaUl = JosaUtil::pick($losenation['name'], '을');
+        $history[] = "<C>●</>{$year}년 {$month}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>{$josaYi} 멸망하였습니다.";
         pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaUl} 정복");
 
         $query = "select no, nation from general where nation='{$general['nation']}' and level='12'";
@@ -1767,7 +1785,8 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $query = "select no,name,nation,npc,gold,rice from general where nation='{$city['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
-        $genlog = ["<C>●</><D><b>{$losenation['name']}</b></>(이)가 <R>멸망</>했습니다."];
+        $josaYi = JosaUtil::pick($losenation['name'], '이');
+        $genlog = ["<C>●</><D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>했습니다."];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
 
@@ -1780,7 +1799,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             
             pushGenLog($gen, $genlog);
             
-            pushGeneralHistory($gen, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>(이)가 <R>멸망</>");
+            pushGeneralHistory($gen, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>");
 
             $loseGeneralGold += $loseGold;
             $loseGeneralRice += $loseRice;
@@ -1875,7 +1894,8 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
 
             $minCityName = CityConst::byID($minCity)->name;
 
-            $history[] = "<C>●</>{$year}년 {$month}월:<M><b>【긴급천도】</b></><D><b>{$destnation['name']}</b></>(이)가 수도가 함락되어 <G><b>$minCityName</b></>으로 긴급천도하였습니다.";
+            $josaYi = JosaUtil::pick($destnation['name'], '이');
+            $history[] = "<C>●</>{$year}년 {$month}월:<M><b>【긴급천도】</b></><D><b>{$destnation['name']}</b></>{$josaYi} 수도가 함락되어 <G><b>$minCityName</b></>으로 긴급천도하였습니다.";
 
             //아국 수뇌부에게 로그 전달
             $query = "select no,name,nation from general where nation='{$destnation['nation']}' and level>='5'";
@@ -1932,7 +1952,8 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
 
 
         $josaUl = JosaUtil::pick($city['name'], '을');
-        $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationArray['name']}</b></>(이)가 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>{$josaUl} 양도받았습니다.";
+        $josaYi = JosaUtil::pick($conquerNationArray['name'], '이');
+        $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationArray['name']}</b></>{$josaYi} 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>{$josaUl} 양도받았습니다.";
         pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <D><b>{$conquerNationArray['name']}</b></>에 <Y>양도</>");
         pushNationHistory($conquerNationArray, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>{$josaUl} <S>양도</> 받음");
         // 이동X 및 사기 변경
