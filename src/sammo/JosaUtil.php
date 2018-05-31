@@ -517,14 +517,11 @@ class JosaUtil{
         return true;
     }
 
-    public static function check(string $text, string $type=''){
+    public static function check(string $text, string $type){
         JosaUtil::init();
         
         $htarget = preg_replace(JosaUtil::REG_INVALID_CHAR_W_HANJA, ' ', $text);
         $htarget = preg_replace(JosaUtil::REG_TARGET_CHAR, '$1', $htarget);
-
-        $target = preg_replace(JosaUtil::REG_INVALID_CHAR, ' ', $text);
-        $target = preg_replace(JosaUtil::REG_TARGET_CHAR, '$1', $target);
 
         if(!$htarget){
             return false;
@@ -543,8 +540,13 @@ class JosaUtil{
             if(\key_exists($hcode, \sammo\JosaUtil::$jongsungHanja)){
                 return true;
             }
-            return false;
+            if($hcode < JosaUtil::KO_START_CODE || JosaUtil::KO_FINISH_CODE < $hcode){
+                return false;
+            }
         }
+
+        $target = preg_replace(JosaUtil::REG_INVALID_CHAR, ' ', $text);
+        $target = preg_replace(JosaUtil::REG_TARGET_CHAR, '$1', $target);
 
         $code = StringUtil::splitString($target);
         $code = $code[count($code)-1];
