@@ -671,7 +671,8 @@ function checkMerge() {
             pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합에 성공");
         }
 
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통합】</b></><D><b>{$mynation['name']}</b></>(와)과 <D><b>{$younation['name']}</b></>(이)가 <D><b>{$you['makenation']}</b></>(으)로 통합하였습니다.";
+        $josaRo = JosaUtil::pick($you['makenation'], '로');
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통합】</b></><D><b>{$mynation['name']}</b></>(와)과 <D><b>{$younation['name']}</b></>(이)가 <D><b>{$you['makenation']}</b></>{$josaRo} 통합하였습니다.";
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>{$you['makenation']}</b></>에 혼란이 일고 있습니다.";
         pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합");
 
@@ -780,18 +781,19 @@ function checkSurrender() {
             pushGenLog($gen, $genlog);
             pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></> 합병에 성공");
         }
+        $josaRo = JosaUtil::pick($younation['name'], '로');
         //항복국 장수들 역사 기록 및 로그 전달
         $query = "select no,name,nation from general where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount2 = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>(으)로 항복하여 수도로 이동합니다.";
+        $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>{$josaRo} 항복하여 수도로 이동합니다.";
         for($i=0; $i < $gencount2; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);
-            pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>가 <D><b>{$younation['name']}</b></>(으)로 항복");
+            pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>가 <D><b>{$younation['name']}</b></>{$josaRo} 항복");
         }
 
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【투항】</b></><D><b>{$mynation['name']}</b></> (이)가 <D><b>{$younation['name']}</b></>(으)로 항복하였습니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【투항】</b></><D><b>{$mynation['name']}</b></> (이)가 <D><b>{$younation['name']}</b></>{$josaRo} 항복하였습니다.";
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>{$younation['name']}</b></>에 혼란이 일고 있습니다.";
         pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 합병");
 

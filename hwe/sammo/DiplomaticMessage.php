@@ -199,28 +199,29 @@ class DiplomaticMessage extends Message{
             return $chk;
         }
 
+        $josaRo = JosaUtil::pick($this->src->nationName, '로');
         pushGeneralHistory(
             ['no'=>$this->src->generalID], 
             "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>(와)과 투항 제의"
         );
         pushGeneralHistory(
             ['no'=>$this->dest->generalID],
-            "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>(으)로 투항 동의"
+            "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>{$josaRo} 투항 동의"
         );
         pushGenLog(
             ['no'=>$this->dest->generalID], 
-            ["<C>●</><D><b>{$this->src->nationName}</b></>(으)로 투항에 동의했습니다."]
+            ["<C>●</><D><b>{$this->src->nationName}</b></>{$josaRo} 투항에 동의했습니다."]
         );
         pushGenLog(
             ['no'=>$this->src->generalID], 
             ["<C>●</><D><b>{$this->dest->nationName}</b></>(이)가 투항에 동의했습니다."]
         );
         pushGeneralPublicRecord(
-            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(으)로 <M>투항</>에 동의하였습니다."], 
+            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>{$josaRo} <M>투항</>에 동의하였습니다."], 
             $helper->year, 
             $helper->month);
         pushWorldHistory(
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【투항시도】</b></><D><b>{$this->dest->nationName}</b></>(이)가 <D><b>{$this->src->nationName}</b></>(으)로 투항합니다."], 
+            ["<C>●</>{$helper->year}년 {$helper->month}월:<Y><b>【투항시도】</b></><D><b>{$this->dest->nationName}</b></>(이)가 <D><b>{$this->src->nationName}</b></>{$josaRo} 투항합니다."], 
             $helper->year, 
             $helper->month
         );

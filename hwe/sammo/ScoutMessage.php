@@ -89,9 +89,10 @@ class ScoutMessage extends Message{
         $this->invalidate();
         $this->validScout = false;
 
+        $josaRo = JosaUtil::pick($this->src->nationName, '로');
         pushGenLog(
             ['no'=>$this->dest->generalID],
-            ["<C>●</><D>{$this->src->nationName}</>(으)로 망명하여 수도로 이동합니다."]);
+            ["<C>●</><D>{$this->src->nationName}</>{$josaRo} 망명하여 수도로 이동합니다."]);
         pushGenLog(
             ['no'=>$this->src->generalID], 
             ["<C>●</><Y>{$this->dest->generalName}</> 등용에 성공했습니다."]
@@ -101,10 +102,10 @@ class ScoutMessage extends Message{
             "<C>●</>{$helper->year}년 {$helper->month}월:<Y>{$this->dest->generalName}</> 등용에 성공");
         pushGeneralHistory(
             ['no'=>$this->dest->generalID],
-            "<C>●</>{$helper->year}년 {$helper->month}월:<D>{$this->src->nationName}</>(으)로 망명"
+            "<C>●</>{$helper->year}년 {$helper->month}월:<D>{$this->src->nationName}</>{$josaRo} 망명"
         );
         pushGeneralPublicRecord(
-            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>(으)로 <S>망명</>하였습니다."], 
+            ["<C>●</>{$helper->month}월:<Y>{$this->dest->generalName}</>(이)가 <D><b>{$this->src->nationName}</b></>{$josaRo} <S>망명</>하였습니다."], 
             $helper->year, 
             $helper->month
         );
@@ -113,7 +114,7 @@ class ScoutMessage extends Message{
             self::MSGTYPE_PRIVATE, 
             $this->src, 
             $this->dest, 
-            "{$this->src->nationName}(으)로 등용 제의 수락",
+            "{$this->src->nationName}{$josaRo} 등용 제의 수락",
             new \DateTime(),
             new \DateTime('9999-12-31'),
             [
@@ -130,11 +131,12 @@ class ScoutMessage extends Message{
         $this->invalidate();
         $this->validScout = false;
 
+        $josaRo = JosaUtil::pick($this->src->nationName, '로');
         $newMsg = new Message(
             self::MSGTYPE_PRIVATE, 
             $this->src, 
             $this->dest, 
-            "{$this->src->nationName}(으)로 등용 제의 거부",
+            "{$this->src->nationName}{$josaRo} 등용 제의 거부",
             new \DateTime(),
             new \DateTime('9999-12-31'),
             [
@@ -158,7 +160,8 @@ class ScoutMessage extends Message{
             return $result;
         }
 
-        pushGenLog(['no'=>$receiverID], "<C>●</><D>{$this->src->nationName}</>(으)로 망명을 거부했습니다.");
+        $josaRo = JosaUtil::pick($this->src->nationName, '로');
+        pushGenLog(['no'=>$receiverID], "<C>●</><D>{$this->src->nationName}</>{$josaRo} 망명을 거부했습니다.");
         pushGenLog(['no'=>$this->src->generalID], "<C>●</><Y>{$this->dest->generalName}</>(이)가 등용을 거부했습니다.");
         $this->_declineMessage();        
 
@@ -220,7 +223,8 @@ class ScoutMessage extends Message{
             $destNationInfo['color']
         );
 
-        $msg = "{$src->nationName}(으)로 망명 권유 서신";
+        $josaRo = JosaUtil::pick($src->nationName, '로');
+        $msg = "{$src->nationName}{$josaRo} 망명 권유 서신";
         $validUntil = new \DateTime("9999-12-31 12:59:59");
 
         $msgOption = [

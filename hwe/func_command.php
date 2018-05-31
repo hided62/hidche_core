@@ -79,7 +79,8 @@ function getTurn(array $general, $type, $font=1) {
             case 16: //전쟁
                 $double = $command[1];
                 $city = getCity($double, "name");
-                $str[$i] = "【{$city['name']}】(으)로 출병";
+                $josaRo = JosaUtil::pick($city['name'], '로');
+                $str[$i] = "【{$city['name']}】{$josaRo} 출병";
                 break;
             case 17: //소집해제
                 $str[$i] = "소집 해제";
@@ -88,7 +89,8 @@ function getTurn(array $general, $type, $font=1) {
             case 21: //이동
                 $double = $command[1];
                 $city = getCity($double, "name");
-                $str[$i] = "【{$city['name']}】(으)로 이동";
+                $josaRo = JosaUtil::pick($city['name'], '로');
+                $str[$i] = "【{$city['name']}】{$josaRo} 이동";
                 break;
             case 22: //등용
                 $double = $command[1];
@@ -107,7 +109,8 @@ function getTurn(array $general, $type, $font=1) {
 
                 if(!$nation['name']) { $nation['name'] = '????'; }
 
-                $str[$i] = "【{$nation['name']}】(으)로 임관";
+                $josaRo = JosaUtil::pick($nation['name'], '로');
+                $str[$i] = "【{$nation['name']}】{$josaRo} 임관";
                 break;
             case 26: //집합
                 $str[$i] = "집합";
@@ -121,7 +124,8 @@ function getTurn(array $general, $type, $font=1) {
             case 30: //강행
                 $double = $command[1];
                 $city = getCity($double, "name");
-                $str[$i] = "【{$city['name']}】(으)로 강행";
+                $josaRo = JosaUtil::pick($city['name'], '로');
+                $str[$i] = "【{$city['name']}】{$josaRo} 강행";
                 break;
                 
             case 31: //첩보
@@ -316,8 +320,8 @@ function getCoreTurn($nation, $level) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $general = MYDB_fetch_array($result);
                 $city = getCity($double, "name");
-
-                $str[$i] = "【{$general['name']}】【{$city['name']}】(으)로 발령";
+                $josaRo = JosaUtil::pick($city['name'], '로');
+                $str[$i] = "【{$general['name']}】【{$city['name']}】{$josaRo} 발령";
                 break;
             case 51: //항복권고
                 $double = (int)$command[1];
@@ -345,8 +349,8 @@ function getCoreTurn($nation, $level) {
                 $double = (int)$command[1];
 
                 $nation = getNationStaticInfo($double);
-
-                $str[$i] = "【{$nation['name']}】에 【{$general['makenation']}】(으)로 통합 제의";
+                $josaRo = JosaUtil::pick($general['makenation'], '로');
+                $str[$i] = "【{$nation['name']}】에 【{$general['makenation']}】{$josaRo} 통합 제의";
                 break;
             case 61: //불가침제의
                 $third = $command[2];
@@ -386,7 +390,8 @@ function getCoreTurn($nation, $level) {
             case 66: //천도
                 $double = $command[1];
                 $city = getCity($double, "name");
-                $str[$i] = "【{$city['name']}】(으)로 천도";
+                $josaRo = JosaUtil::pick($city['name'], '로');
+                $str[$i] = "【{$city['name']}】{$josaRo} 천도";
                 break;
             case 67: //증축
                 $double = $command[1];

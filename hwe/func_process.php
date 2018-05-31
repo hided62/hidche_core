@@ -1279,26 +1279,27 @@ function process_16(&$general) {
         $nearCity = false;
     }
 
+    $josaRo = JosaUtil::pick($destcity['name'], '로');
     if($admin['year'] < $admin['startyear']+3) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 초반 제한중입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:현재 초반 제한중입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
 //    } elseif($city['supply'] == 0) {
-//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
     } elseif(!$nearCity) {
-        $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
     } elseif($general['level'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
     } elseif($general['crew'] <= 0) {
-        $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
     } elseif($general['rice'] <= Util::round($general['crew']/100)) {
-        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
     } elseif($dip['state'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:교전중인 국가가 아닙니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:교전중인 국가가 아닙니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
     } elseif($general['nation'] != $city['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:본국에서만 출병가능합니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:본국에서만 출병가능합니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
     } elseif($nation['war'] == 1) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 전쟁 금지입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:현재 전쟁 금지입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
     } elseif($general['nation'] == $destcity['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:본국입니다. <G><b>{$destcity['name']}</b></>(으)로 출병 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:본국입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 출병 실패. <1>$date</>";
         pushGenLog($general, $log);
         process_21($general);
         return;
@@ -1388,12 +1389,13 @@ function process_21(&$general) {
     $destCity = CityConst::byID($destination);
 
 
+    $josaRo = JosaUtil::pick($destCity->name, '로');
     if(!key_exists($destCity->id, $city->path)) {
-        $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destCity->name}</b></>(으)로 이동 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. <G><b>{$destCity->name}</b></>{$josaRo} 이동 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']) {
-        $log[] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destCity->name}</b></>(으)로 이동 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destCity->name}</b></>{$josaRo} 이동 실패. <1>$date</>";
     } else {
-        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destCity->name}</b></>(으)로 이동했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destCity->name}</b></>{$josaRo} 이동했습니다. <1>$date</>";
         $exp = 50;
 
         // 성격 보정
@@ -1419,7 +1421,7 @@ function process_21(&$general) {
                     'city'=>$destCity->id
                 ], 'nation = %i', $general['nation']);
 
-                $genlog = ["<C>●</>방랑군 세력이 <G><b>{$destCity->name}</b></>(으)로 이동했습니다."];
+                $genlog = ["<C>●</>방랑군 세력이 <G><b>{$destCity->name}</b></>{$josaRo} 이동했습니다."];
                 foreach($db->query('SELECT `no` FROM general WHERE nation=%i and `level`<12', $general['nation']) as $follower){
                     pushGenLog($follower, $genlog);
                 }
@@ -1471,7 +1473,8 @@ function process_26(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         //부대원에게 로그 전달
-        $genlog = ["<C>●</><S>{$troop['name']}</>의 부대원들은 <G><b>{$city['name']}</b></>(으)로 집합되었습니다."];
+        $josaRo = JosaUtil::pick($city['name'], '로');
+        $genlog = ["<C>●</><S>{$troop['name']}</>의 부대원들은 <G><b>{$city['name']}</b></>{$josaRo} 집합되었습니다."];
 
         for($i=0; $i < $gencount; $i++) {
             $troopgen = MYDB_fetch_array($result);
@@ -1537,7 +1540,8 @@ function process_28(&$general) {
             $city = MYDB_fetch_array($result);
         }
 
-        $log[] = "<C>●</>{$admin['month']}월:<G>{$city['name']}</>(으)로 귀환했습니다. <1>$date</>";
+        $josaRo = JosaUtil::pick($city['name'], '로');
+        $log[] = "<C>●</>{$admin['month']}월:<G>{$city['name']}</>{$josaRo} 귀환했습니다. <1>$date</>";
         $exp = 70;
         $ded = 100;
 
@@ -1587,14 +1591,15 @@ function process_30(&$general) {
 
     $cost = $admin['develcost'] * 5;
     
+    $josaRo = JosaUtil::pick($destcity['name'], '로');
     if($destination == $general['city']){
-        $log[] = "<C>●</>{$admin['month']}월:같은 도시입니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:같은 도시입니다. <G><b>{$destcity['name']}</b></>{$josaRo} 강행 실패. <1>$date</>";
     } elseif(!key_exists($destination, $dist)) {
-        $log[] = "<C>●</>{$admin['month']}월:거리가 멉니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:거리가 멉니다. <G><b>{$destcity['name']}</b></>{$josaRo} 강행 실패. <1>$date</>";
     } elseif($general['gold'] < $cost) {
-        $log[] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destcity['name']}</b></>(으)로 강행 실패. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:자금이 부족합니다. <G><b>{$destcity['name']}</b></>{$josaRo} 강행 실패. <1>$date</>";
     } else {
-        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(으)로 강행했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>{$josaRo} 강행했습니다. <1>$date</>";
         $exp = 100;
 
         // 성격 보정
@@ -1615,7 +1620,7 @@ function process_30(&$general) {
                 $query = "select no,name from general where nation='{$general['nation']}' and level<'12'";
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $gencount = MYDB_num_rows($result);
-                $genlog = ["<C>●</>방랑군 세력이 <G><b>{$destcity['name']}</b></>(으)로 강행했습니다."];
+                $genlog = ["<C>●</>방랑군 세력이 <G><b>{$destcity['name']}</b></>{$josaRo} 강행했습니다."];
                 for($j=0; $j < $gencount; $j++) {
                     $gen = MYDB_fetch_array($result);
                     pushGenLog($gen, $genlog);

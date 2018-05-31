@@ -117,8 +117,9 @@ function processWar($general, $city) {
     if($originCity['level'] == 2) { $genAtmosBonus += 5; }   // 출병도시가 진이면 공격자 공격보정
     if($city['level']       == 3) { $oppTrainBonus += 5; }   // 방어도시가 관이면 방어자 방어보정
 
-    $alllog[] = "<C>●</>{$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>(으)로 진격합니다.";
-    $log[] = "<C>●</>{$month}월:<G><b>{$city['name']}</b></>(으)로 <M>진격</>합니다. <1>$date</>";
+    $josaRo = JosaUtil::pick($city['name'], '로');
+    $alllog[] = "<C>●</>{$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>(이)가 <G><b>{$city['name']}</b></>{$josaRo} 진격합니다.";
+    $log[] = "<C>●</>{$month}월:<G><b>{$city['name']}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>";
 
     // 목표 도시내에 목표 국가 소속 장수 중, 병사가 있는 능력치합+병사수 순으로 훈,사 60, 80 이상
     $query = "select no,name,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,leader+power+intel+weap+horse+book+crew/100 as sum,dex0,dex10,dex20,dex30,dex40 from general where city='{$city['city']}' and nation='{$city['nation']}' and nation!=0 and crew>'0' and rice>round(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2)) order by sum desc";
@@ -161,8 +162,9 @@ function processWar($general, $city) {
             break;
         // 장수가 없어서 도시 공격
         } elseif($opposecount == 0) {
-            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 ".GameUnitConst::byId($general['crewtype'])->name."(으)로 성벽을 공격합니다.";
-            $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."(으)로 성벽을 <M>공격</>합니다.";
+            $josaRo = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '로');
+            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>(이)가 ".GameUnitConst::byId($general['crewtype'])->name."{$josaRo} 성벽을 공격합니다.";
+            $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."{$josaRo} 성벽을 <M>공격</>합니다.";
 
             $general['train'] += 1; //훈련 상승
             if($general['train'] > GameConst::$maxTrainByWar) { $general['train'] = GameConst::$maxTrainByWar; }
@@ -542,9 +544,10 @@ function processWar($general, $city) {
             $oppose = MYDB_fetch_array($result);
             $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(와)과 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."(이)가 대결합니다.";
             $josaUl = JosaUtil::pick(GameUnitConst::byId($oppose['crewtype'])->name, '을');
-            $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."(으)로 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaUl} <M>공격</>합니다.";
+            $josaRo = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '로');
+            $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."{$josaRo} <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaUl} <M>공격</>합니다.";
             $josaUl = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '을');
-            $opplog[] = "<C>●</>".GameUnitConst::byId($oppose['crewtype'])->name."(으)로 <Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaUl} <M>수비</>합니다.";
+            $opplog[] = "<C>●</>".GameUnitConst::byId($oppose['crewtype'])->name."{$josaRo} <Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaUl} <M>수비</>합니다.";
 
             $oppAtmos = 0;
             if($oppose['item'] == 3) {

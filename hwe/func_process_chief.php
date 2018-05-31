@@ -280,8 +280,9 @@ function process_27(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:아국 장수가 아닙니다. <Y>{$you['name']}</> 발령 실패. <1>$date</>";
     } else {
         $josaUl = JosaUtil::pick($you['name'], '을');
-        $log[] = "<C>●</>{$admin['month']}월:<Y>{$you['name']}</>{$josaUl} <G><b>{$destcity['name']}</b></>(으)로 발령했습니다. <1>$date</>";
-        $youlog[] = "<C>●</><Y>{$general['name']}</>에 의해 <G><b>{$destcity['name']}</b></>(으)로 발령됐습니다. <1>$date</>";
+        $josaRo = JosaUtil::pick($destcity['name'], '로');
+        $log[] = "<C>●</>{$admin['month']}월:<Y>{$you['name']}</>{$josaUl} <G><b>{$destcity['name']}</b></>{$josaRo} 발령했습니다. <1>$date</>";
+        $youlog[] = "<C>●</><Y>{$general['name']}</>에 의해 <G><b>{$destcity['name']}</b></>{$josaRo} 발령됐습니다. <1>$date</>";
         $exp = 1;
         $ded = 1;
 
@@ -461,14 +462,15 @@ function process_52(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
 
-        $genlog = ["<C>●</><D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원했습니다."];
+        $josaRo = JosaUtil::pick($younation['name'], '로');
+        $genlog = ["<C>●</><D><b>{$younation['name']}</b></>{$josaRo} 금<C>$gold</> 쌀<C>$rice</>을 지원했습니다."];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);
         }
-        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원");
-        pushNationHistory($mynation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>(으)로 금<C>$gold</> 쌀<C>$rice</>을 지원");
-        pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(으)로부터 금<C>$gold</> 쌀<C>$rice</>을 지원 받음");
+        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>{$josaRo} 금<C>$gold</> 쌀<C>$rice</>을 지원");
+        pushNationHistory($mynation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>{$josaRo} 금<C>$gold</> 쌀<C>$rice</>을 지원");
+        pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaRo}부터 금<C>$gold</> 쌀<C>$rice</>을 지원 받음");
 
         //상대국 수뇌부에게 로그 전달
         $query = "select no,name,nation from general where nation='$which' and level>='9'";
@@ -481,8 +483,8 @@ function process_52(&$general) {
             pushGenLog($gen, $genlog);
         }
 
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【원조】</b></><D><b>{$mynation['name']}</b></>에서 <D><b>{$younation['name']}</b></>(으)로 물자를 지원합니다.";
-        $log[] = "<C>●</>{$admin['month']}월:<D><b>{$younation['name']}</b></>(으)로 물자를 지원합니다. <1>$date</>";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【원조】</b></><D><b>{$mynation['name']}</b></>에서 <D><b>{$younation['name']}</b></>{$josaRo} 물자를 지원합니다.";
+        $log[] = "<C>●</>{$admin['month']}월:<D><b>{$younation['name']}</b></>{$josaRo} 물자를 지원합니다. <1>$date</>";
 
         $exp = 5;
         $ded = 5;
@@ -582,7 +584,8 @@ function process_53(&$general) {
         'experience'=>$db->sqleval('experience+%i', $exp)
     ], 'no=%i', $general['no']);
 
-    pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>(으)로 통합 제의 서신을 보냈습니다.<1>$date</>"]);
+    $josaRo = JosaUtil::pick($destNation['name'], '로');
+    pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>{$josaRo} 통합 제의 서신을 보냈습니다.<1>$date</>"]);
 }
 
 
@@ -971,7 +974,8 @@ function process_64(&$general) {
         'experience'=>$db->sqleval('experience+%i', $exp)
     ], 'no=%i', $general['no']);
 
-    pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>(으)로 불가침 파기 제의 서신을 보냈습니다.<1>$date</>"]);
+    $josaRo = JosaUtil::pick($destNation['name'], '로');
+    pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>{$josaRo} 불가침 파기 제의 서신을 보냈습니다.<1>$date</>"]);
 }
 
 function process_65(&$general) {
@@ -1128,7 +1132,8 @@ function process_66(&$general) {
         $query = "update nation set l{$general['level']}term={$code} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     } else {
-        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>(으)로 천도했습니다. <1>$date</>";
+        $josaRo = JosaUtil::pick($destcity['name'], '로');
+        $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>{$josaRo} 천도했습니다. <1>$date</>";
         $exp = 15;
         $ded = 15;
 
@@ -1136,10 +1141,10 @@ function process_66(&$general) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
-        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(으)로 <R>천도</>를 명령하였습니다.";
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<S><b>【천도】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>(으)로 천도하였습니다.";
-        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>(으)로 천도 명령");
-        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>(으)로 천도 명령");
+        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>{$josaRo} <R>천도</>를 명령하였습니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<S><b>【천도】</b></><D><b>{$nation['name']}</b></>(이)가 <G><b>{$destcity['name']}</b></>{$josaRo} 천도하였습니다.";
+        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<G><b>{$destcity['name']}</b></>{$josaRo} 천도 명령");
+        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>(이)가 <G><b>{$destcity['name']}</b></>{$josaRo} 천도 명령");
 
         //수도 변경
         $query = "update nation set l{$general['level']}term='0',capital='{$destcity['city']}',capset='1',gold=gold-'$amount',rice=rice-'$amount' where nation='{$general['nation']}'";

@@ -2326,11 +2326,13 @@ function checkDedication($general, $log) {
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     // 승급했다면
+    $josaRoDed = JosaUtil::pick(getDed($general['dedication']), '로');
+    $josaRoBill = JosaUtil::pick(getBill($general['dedication']), '로');
     if($general['dedlevel'] < $dedlevel) {
-        $log[] = "<C>●</><Y>".getDed($general['dedication'])."</>(으)로 <C>승급</>하여 봉록이 <C>".getBill($general['dedication'])."</>(으)로 <C>상승</>했습니다!";
+        $log[] = "<C>●</><Y>".getDed($general['dedication'])."</>{$josaRoDed} <C>승급</>하여 봉록이 <C>".getBill($general['dedication'])."</>{$josaRoBill} <C>상승</>했습니다!";
     // 강등했다면
     } elseif($general['dedlevel'] > $dedlevel) {
-        $log[] = "<C>●</><Y>".getDed($general['dedication'])."</>(으)로 <R>강등</>되어 봉록이 <C>".getBill($general['dedication'])."</>(으)로 <R>하락</>했습니다!";
+        $log[] = "<C>●</><Y>".getDed($general['dedication'])."</>{$josaRoDed} <R>강등</>되어 봉록이 <C>".getBill($general['dedication'])."</>{$josaRoBill} <R>하락</>했습니다!";
     }
 
     return $log;
