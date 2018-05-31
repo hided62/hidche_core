@@ -6,14 +6,17 @@ class JosaUtil{
     //TODO:한자 매핑 필요
     const KO_START_CODE = 44032;
     const KO_FINISH_CODE = 55203;
-    const REG_INVALID_CHAR = '/[^a-zA-Z0-9ㄱ-ㅎ가-힣\s]+/g';
-    const REG_TARGET_CHAR = '/^[\s\S]*?(\S*)\s*$/';
+    const REG_INVALID_CHAR = '/[^a-zA-Z0-9ㄱ-ㅎ가-힣\s]+/u';
+    const REG_TARGET_CHAR = '/^[\s\S]*?(\S*)\s*$/u';
 
     const PRE_REG_NORMAL_FIXED = [
         "check|[hm]ook|limit",
     ];
     const PRE_REG_SPECIAL_CHAR = [
-        "[ㄱ-ㄷㅁ-ㅎ036]",
+        "[ㄱ-ㄷㅁ-ㅎ]",
+        "^[036]",
+        "[^a-zA-Z][036]",
+        "[a-zA-Z]9",
         "^[mn]",
         "\\S[mn]e?",
         "\\S(?:[aeiom]|lu)b",
@@ -54,9 +57,9 @@ class JosaUtil{
         }
 
         JosaUtil::$init = true;
-        JosaUtil::$regNormalFixed = '/(?:'.join('|', JosaUtil::PRE_REG_NORMAL_FIXED).')$/i';
-        JosaUtil::$regSpecialChar = '(?:'.join('|', JosaUtil::PRE_REG_SPECIAL_CHAR).')$/i';
-        JosaUtil::$regSpecialRo = '/(?:'.join('|', JosaUtil::PRE_REG_SPECIAL_RO).')$/i';
+        JosaUtil::$regNormalFixed = '/(?:'.join('|', JosaUtil::PRE_REG_NORMAL_FIXED).')$/iu';
+        JosaUtil::$regSpecialChar = '/(?:'.join('|', JosaUtil::PRE_REG_SPECIAL_CHAR).')$/iu';
+        JosaUtil::$regSpecialRo = '/(?:'.join('|', JosaUtil::PRE_REG_SPECIAL_RO).')$/iu';
 
         $mapPostPosition = [];
 
@@ -65,7 +68,7 @@ class JosaUtil{
             $mapPostPosition[$key]=$key;
             $mapPostPosition[$val]=$key;
         }
-        JosaUti::$mapPostPosition = $mapPostPosition;
+        JosaUtil::$mapPostPosition = $mapPostPosition;
         
     }
 
@@ -98,58 +101,59 @@ class JosaUtil{
             return false;
         }
 
-        return false;
+        return true;
     }
 
     public static function check(string $text, string $type=''){
         JosaUtil::init();
-
+        
         $target = preg_replace(JosaUtil::REG_INVALID_CHAR, ' ', $text);
         $target = preg_replace(JosaUtil::REG_TARGET_CHAR, '$1', $target);
         $code = StringUtil::splitString($target);
-        $code = StringUtil::uniord($code[count($code)-1]);
+        $code = $code[count($code)-1];
+        $code = StringUtil::uniord($code);
 
         $isKorean = (JosaUtil::KO_START_CODE <= $code && $code <= JosaUtil::KO_FINISH_CODE);
-        $isRo = ($type == '으로' || $type == '로');
+        $isRo = ($type === '으로' || $type === '로');
 
-        return $isKorean ? JosaUtil::checkCode($code, $isRo) : JosaUtil::checkText($text, $isRo);
+        return $isKorean ? JosaUtil::checkCode($code, $isRo) : JosaUtil::checkText($target, $isRo);
     }
 
-    public static function pick(string $text, string $type, string $noJongsung=''){
+    public static function pick(string $text, string $wJongsung, string $woJongsung=''){
         /* NOTE:원본 코드와 인자 순서가 다름.
          * 원본은 pick('바람', '랑', '이랑'); 이었다면 JosaUtil::pick('바람', '이랑', '랑'); 으로 바뀜.
          * JosaUtil::pick('바람', '은', '는'); JosaUti::pick('바람', '이', '가');처럼 쓰기 위해서임.
          */
         JosaUtil::init();
 
-        if(!$noJongsung){
-            if(!key_exists($type, JosaUtil::$mapPostPosition)){
+        if(!$woJongsung){
+            if(!key_exists($wJongsung, JosaUtil::$mapPostPosition)){
                 throw new \InvalidArgumentException('올바르지 않은 조사 지정');
             }
-            $type = JosaUtil::$mapPostPosition[$type];
-            $noJongsung = JosaUtil::DEFAULT_POSTPOSITION[$type];
+            $wJongsung = JosaUtil::$mapPostPosition[$wJongsung];
+            $woJongsung = JosaUtil::DEFAULT_POSTPOSITION[$wJongsung];
         }
         
-        return JosaUtil::check($text, $type)?$type:$noJongsung;
+        return JosaUtil::check($text, $wJongsung)?$wJongsung:$woJongsung;
     }
 
-    public static function put(string $text, string $type, string $noJongsung=''){
-        return $text.JosaUtil::pick($text, $type, $noJongsung);
+    public static function put(string $text, string $wJongsung, string $woJongsung=''){
+        return $text.JosaUtil::pick($text, $wJongsung, $woJongsung);
     }
 
-    public static function fix(string $type, string $noJongsung=''){
+    public static function fix(string $wJongsung, string $woJongsung=''){
         JosaUtil::init();
 
-        if(!$noJongsung){
-            if(!key_exists($type, JosaUtil::$mapPostPosition)){
+        if(!$woJongsung){
+            if(!key_exists($wJongsung, JosaUtil::$mapPostPosition)){
                 throw new \InvalidArgumentException('올바르지 않은 조사 지정');
             }
-            $type = JosaUtil::$mapPostPosition[$type];
-            $noJongsung = JosaUtil::DEFAULT_POSTPOSITION[$type];
+            $wJongsung = JosaUtil::$mapPostPosition[$wJongsung];
+            $woJongsung = JosaUtil::DEFAULT_POSTPOSITION[$wJongsung];
         }
 
-        return function(string $text) use ($type, $noJongsung) {
-            return JosaUtil::put($text, $type, $noJongsung);
+        return function(string $text) use ($wJongsung, $woJongsung) {
+            return JosaUtil::put($text, $wJongsung, $woJongsung);
         };
     }
 }
