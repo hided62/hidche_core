@@ -427,7 +427,7 @@ function processWar($general, $city) {
                 'year'=>$year,
                 'month'=>$month,
                 'war_type'=>'siege',
-                'war_type_str'=>'성',
+                'war_type_str'=>'→',
                 'me' => $render_attacker,
                 'you' => $render_defender,
             ]));
@@ -1318,7 +1318,7 @@ function processWar($general, $city) {
                 'year'=>$year,
                 'month'=>$month,
                 'war_type'=>'attack',
-                'war_type_str'=>'공',
+                'war_type_str'=>'→',
                 'me' => $render_attacker,
                 'you' => $render_defender,
             ]));
@@ -1327,7 +1327,7 @@ function processWar($general, $city) {
                 'year'=>$year,
                 'month'=>$month,
                 'war_type'=>'defense',
-                'war_type_str'=>'수',
+                'war_type_str'=>'←',
                 'me' => $render_defender,
                 'you' => $render_attacker,
             ]));
