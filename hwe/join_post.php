@@ -239,13 +239,14 @@ $me = [
 $log = [];
 $mylog = [];
 
+$josaRa = JosaUtil::pick($name, '라');
 if ($genius) {
-    $log[0] = "<C>●</>{$gameStor->month}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>(이)라는 기재가 천하에 이름을 알립니다.";
+    $log[0] = "<C>●</>{$gameStor->month}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>{$josaRa}는 기재가 천하에 이름을 알립니다.";
     $log[1] = "<C>●</>{$gameStor->month}월:<C>".getGenSpecial($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
 
     pushWorldHistory(["<C>●</>{$gameStor->year}년 {$gameStor->month}월:<L><b>【천재】</b></><G><b>{$cityname}</b></>에 천재가 등장했습니다."], $gameStor->year, $gameStor->month);
 } else {
-    $log[0] = "<C>●</>{$gameStor->month}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>(이)라는 호걸이 천하에 이름을 알립니다.";
+    $log[0] = "<C>●</>{$gameStor->month}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>{$josaRa}는 호걸이 천하에 이름을 알립니다.";
 }
 pushGeneralHistory($me, "<C>●</>{$gameStor->year}년 {$gameStor->month}월:<Y>{$name}</>, <G>{$cityname}</>에서 큰 뜻을 품다.");
 $mylog[] = "<C>●</>삼국지 모의전투 PHP의 세계에 오신 것을 환영합니다 ^o^";

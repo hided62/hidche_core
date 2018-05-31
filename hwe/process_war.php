@@ -548,7 +548,8 @@ function processWar($general, $city) {
         } else {
             $oppose = MYDB_fetch_array($result);
             $josaYi = JosaUtil::pick(GameUnitConst::byId($oppose['crewtype'])->name, '이');
-            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."(와)과 <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 대결합니다.";
+            $josaWa = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '와');
+            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaWa} <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 대결합니다.";
             $josaUl = JosaUtil::pick(GameUnitConst::byId($oppose['crewtype'])->name, '을');
             $josaRo = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '로');
             $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."{$josaRo} <Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaUl} <M>공격</>합니다.";

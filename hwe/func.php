@@ -2429,7 +2429,8 @@ function deleteNation($general) {
 
     $nation = getNationStaticInfo($general['nation']);
 
-    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【멸망】</b></><D><b>{$nation['name']}</b></>은(는) <R>멸망</>했습니다.";
+    $josaUn = JosaUtil::pick($nation['name'], '은');
+    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【멸망】</b></><D><b>{$nation['name']}</b></>{$josaUn} <R>멸망</>했습니다.";
 
     // 전 장수 재야로    // 전 장수 소속 무소속으로
     $query = "update general set belong=0,troop=0,level=0,nation=0,makelimit=12 where nation='{$general['nation']}'";

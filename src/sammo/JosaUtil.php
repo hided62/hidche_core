@@ -44,6 +44,7 @@ class JosaUtil{
         "이나"=> "나",
         "을"=> "를",
         "으로"=> "로",
+        "이라"=> "라",
     ];
 
     const JONGSUNG_HANJA = [

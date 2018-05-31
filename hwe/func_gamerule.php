@@ -519,7 +519,8 @@ group by A.nation
         $name2 = $nation2['name'];
 
         $josaYi = JosaUtil::pick($name2, '이');
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【개전】</b></><D><b>$name1</b></>(와)과 <D><b>$name2</b></>{$josaYi} <R>전쟁</>을 시작합니다.";
+        $josaWa = JosaUtil::pick($name1, '와');
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【개전】</b></><D><b>$name1</b></>{$josaWa}과 <D><b>$name2</b></>{$josaYi} <R>전쟁</>을 시작합니다.";
     }
     //휴전국 로그
     $query = "select A.me as me,A.you as you,A.term as term1,B.term as term2 from diplomacy A, diplomacy B where A.me=B.you and A.you=B.me and A.state='0' and A.me<A.you";
@@ -535,8 +536,9 @@ group by A.nation
             $nation2 = getNationStaticInfo($dip['you']);
             $name2 = $nation2['name'];
 
+            $josaWa = JosaUtil::pick($name1, '와');
             $josaYi = JosaUtil::pick($name2, '이');
-            $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【휴전】</b></><D><b>$name1</b></>(와)과 <D><b>$name2</b></>{$josaYi} <S>휴전</>합니다.";
+            $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【휴전】</b></><D><b>$name1</b></>{$josaWa} <D><b>$name2</b></>{$josaYi} <S>휴전</>합니다.";
             //기한 되면 휴전으로
             $query = "update diplomacy set state='2',term='0' where (me='{$dip['me']}' and you='{$dip['you']}') or (me='{$dip['you']}' and you='{$dip['me']}')";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -659,26 +661,29 @@ function checkMerge() {
         $query = "select no,name,nation from general where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
-        $genlog = ["<C>●</><D><b>{$mynation['name']}</b></>(와)과 통합에 성공했습니다."];
+        $josaWa = JosaUtil::pick($mynation['name'], '와');
+        $genlog = ["<C>●</><D><b>{$mynation['name']}</b></>{$josaWa} 통합에 성공했습니다."];
         for($i=0; $i < $gencount; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);
-            pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합에 성공");
+            pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaWa} <D><b>{$you['makenation']}</b></>로 통합에 성공");
         }
         //항복국 장수들 역사 기록 및 로그 전달
         $query = "select no,name,nation from general where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount2 = MYDB_num_rows($result);
-        $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>(와)과 통합에 성공했습니다.";
+        $josaWa = JosaUtil::pick($younation['name'], '와');
+        $genlog[0] = "<C>●</><D><b>{$younation['name']}</b></>{$josaWa} 통합에 성공했습니다.";
         for($i=0; $i < $gencount2; $i++) {
             $gen = MYDB_fetch_array($result);
             pushGenLog($gen, $genlog);
-            pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합에 성공");
+            pushGeneralHistory($gen, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$younation['name']}</b></>{$josaWa} <D><b>{$you['makenation']}</b></>로 통합에 성공");
         }
 
         $josaRo = JosaUtil::pick($you['makenation'], '로');
         $josaYi = JosaUtil::pick($younation['name'], '이');
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통합】</b></><D><b>{$mynation['name']}</b></>(와)과 <D><b>{$younation['name']}</b></>{$josaYi} <D><b>{$you['makenation']}</b></>{$josaRo} 통합하였습니다.";
+        $josaWa = JosaUtil::pick($mynation['name'], '와');
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통합】</b></><D><b>{$mynation['name']}</b></>{$josaWa} <D><b>{$younation['name']}</b></>{$josaYi} <D><b>{$you['makenation']}</b></>{$josaRo} 통합하였습니다.";
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>{$you['makenation']}</b></>에 혼란이 일고 있습니다.";
         pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합");
 
@@ -800,9 +805,10 @@ function checkSurrender() {
         }
 
         $josaYi = JosaUtil::pick($mynation['name'], '이');
+        $josaWa = JosaUtil::pick($mynation['name'], '와');
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【투항】</b></><D><b>{$mynation['name']}</b></>{$josaYi} <D><b>{$younation['name']}</b></>{$josaRo} 항복하였습니다.";
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>{$younation['name']}</b></>에 혼란이 일고 있습니다.";
-        pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>(와)과 합병");
+        pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaWa} 합병");
 
         $newGenCount = $gencount + $gencount2;
         if($newGenCount < 10) { $newGenCount = 10; }

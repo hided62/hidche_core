@@ -108,6 +108,7 @@ function process_25(&$general) {
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
 
+    $josaUn = JosaUtil::pick($nation['name'], '은');
     if(!$nation) {
         $log[] = "<C>●</>{$admin['month']}월:임관할 국가가 없습니다. 임관 실패. <1>$date</>";
     } elseif($general['nation'] != 0) {
@@ -115,11 +116,11 @@ function process_25(&$general) {
     } elseif($nation['nation'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:없는 국가입니다. 임관 실패. <1>$date</>";
     } elseif($nation['level'] == 0 && $gencount >= 10) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 임관이 제한되고 있습니다. 임관 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 제한되고 있습니다. 임관 실패.";
     } elseif($admin['year'] < $admin['startyear']+3 && $gencount >= 10) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 임관이 제한되고 있습니다. 임관 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 제한되고 있습니다. 임관 실패.";
     } elseif($nation['scout'] == 1 && $general['npc'] < 5) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 임관이 금지되어 있습니다. 임관 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 금지되어 있습니다. 임관 실패.";
     } elseif($general['makelimit'] > 0 && $general['npc'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:재야가 된지 12턴이 지나야 합니다. 임관 실패. <1>$date</>";
     } elseif(strpos($general['nations'], ",{$nation['nation']},") > 0) {
@@ -196,12 +197,13 @@ function process_29(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
+    $josaUn = JosaUtil::pick($nation['name'], '은');
     if($general['level'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:재야입니다. 인재탐색 실패. <1>$date</>";
     } elseif($nation['level'] <= 0) {
         $log[] = "<C>●</>{$admin['month']}월:방랑군입니다. 인재탐색 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3 && $nation['gennum'] >= 10) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>은(는) 탐색이 제한되고 있습니다. 인재탐색 실패.";
+        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 탐색이 제한되고 있습니다. 인재탐색 실패.";
     } elseif($general['gold'] < $admin['develcost']) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 인재탐색 실패. <1>$date</>";
     } else {
@@ -264,9 +266,10 @@ function process_29(&$general) {
             }
             
             $josaYi = JosaUtil::pick($general['name'], '이');
-            $log[] = "<C>●</>{$admin['month']}월:<Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다! <1>$date</>";
-            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <Y>$name</>(이)라는 <C>인재</>를 {$scoutType}하였습니다!";
-            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>$name</>(이)라는 <C>인재</>를 {$scoutType}");
+            $josaRa = JosaUtil::pick($name, '라');
+            $log[] = "<C>●</>{$admin['month']}월:<Y>$name</>{$josaRa}는 <C>인재</>를 {$scoutType}하였습니다! <1>$date</>";
+            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <Y>$name</>{$josaRa}는 <C>인재</>를 {$scoutType}하였습니다!";
+            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>$name</>{$josaRa}는 <C>인재</>를 {$scoutType}");
 
             $query = "select max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0) as dex0, avg(dex10) as dex10, avg(dex20) as dex20, avg(dex30) as dex30, avg(dex40) as dex40 from general where nation='{$general['nation']}'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -675,7 +678,8 @@ function process_47(&$general) {
         $josaUl = JosaUtil::pick($nation['name'], '을');
         pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaUl} 버리고 방랑");
 
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【방랑】</b></><D><b>{$general['name']}</b></>은(는) <R>방랑</>의 길을 떠납니다.";
+        $josaUn = JosaUtil::pick($general['name'], '은');
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【방랑】</b></><D><b>{$general['name']}</b></>{$josaUn} <R>방랑</>의 길을 떠납니다.";
 
         //분쟁기록 모두 지움
         DeleteConflict($general['nation']);
