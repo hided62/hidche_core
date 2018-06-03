@@ -90,13 +90,13 @@ for ($i=0; $i < 21; $i++) {
 //    echo "</tr><tr>";
 
     for ($k=0; $k < 10; $k++) {
-        echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$nation[$k]}</td>";
+        echo "<td align=center style=background-color:{$color[$k]};font-size:80%;color:".newColor($color[$k]).">{$nation[$k]}</td>";
     }
 
     echo "</tr><tr>";
 
     for ($k=0; $k < 10; $k++) {
-        echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$name[$k]}</td>";
+        echo "<td align=center style=background-color:{$color[$k]};font-size:80%;color:".newColor($color[$k]).">{$name[$k]}</td>";
     }
 
     echo "</tr><tr>";
