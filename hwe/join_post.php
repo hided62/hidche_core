@@ -18,7 +18,7 @@ $v
     'intel',
     'character',
 ])
-->rule('lengthBetween', 'name', 1, 6)
+->rule('lengthBetween', 'name', 1, 9)
 ->rule('min', [
     'leader',
     'power',
