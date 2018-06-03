@@ -129,10 +129,10 @@ $history = MYDB_fetch_array($result);
         <td width=698>
             <?=getMapHtml();?>
             
-        <td width=98 valign=top><?=$history['nation']?></td>
-        <td width=78 valign=top><?=$history['power']?></td>
-        <td width=58 valign=top><?=$history['gen']?></td>
-        <td width=58 valign=top><?=$history['city']?></td>
+        <td width=139 valign=top><div style='background-color:#cccccc;color:black;text-align:center'>국명</div><?=$history['nation']?></td>
+        <td width=70 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>국력</div><?=$history['power']?></td>
+        <td width=43 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>장수</div><?=$history['gen']?></td>
+        <td width=40 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>속령</div><?=$history['city']?></td>
     </tr>
     <tr><td colspan=5 align=center id=bg1>중 원 정 세</td></tr>
     <tr>

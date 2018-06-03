@@ -290,9 +290,9 @@ function LogHistory($isFirst=0) {
         $cityCount = $db->queryFirstField('select count(*) from city where nation = %i',$nation['nation']);
 
         $nationStr .= "<font color=cyan>◆</font> <font style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</font><br>";
-        $powerStr .= "국력 {$nation['power']}<br>";
-        $genStr .= "장수 {$nation['gennum']}<br>";
-        $cityStr .= "속령 $cityCount<br>";
+        $powerStr .= "{$nation['power']}<br>";
+        $genStr .= "{$nation['gennum']}<br>";
+        $cityStr .= "$cityCount<br>";
     }
 
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', contents collected');
