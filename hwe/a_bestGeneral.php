@@ -171,13 +171,13 @@ for ($i=0; $i < 21; $i++) {
     echo "</tr><tr>";
 
     for ($k=0; $k < 10; $k++) {
-        echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$nation[$k]}</td>";
+        echo "<td align=center style=background-color:{$color[$k]};font-size:80%;color:".newColor($color[$k]).">{$nation[$k]}</td>";
     }
 
     echo "</tr><tr>";
 
     for ($k=0; $k < 10; $k++) {
-        echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$name[$k]}</td>";
+        echo "<td align=center style=background-color:{$color[$k]};font-size:80%;color:".newColor($color[$k]).">{$name[$k]}</td>";
     }
 
     echo "</tr><tr>";
@@ -272,13 +272,13 @@ for ($i=0; $i < 4; $i++) {
     echo "</tr><tr>";
 
     for ($k=26; $k > 16; $k--) {
-        echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$nation[$k]}</td>";
+        echo "<td align=center style=background-color:{$color[$k]};font-size:80%;color:".newColor($color[$k]).">{$nation[$k]}</td>";
     }
 
     echo "</tr><tr>";
 
     for ($k=26; $k > 16; $k--) {
-        echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$name[$k]}</td>";
+        echo "<td align=center style=background-color:{$color[$k]};font-size:80%;color:".newColor($color[$k]).">{$name[$k]}</td>";
     }
 
     echo "</tr><tr><td colspan=10 height=5 id=bg1></td></tr>";
@@ -324,13 +324,13 @@ for ($i=0; $i < 4; $i++) {
     echo "</tr><tr>";
 
     for ($k=16; $k > 6; $k--) {
-        echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$nation[$k]}</td>";
+        echo "<td align=center style=background-color:{$color[$k]};font-size:80%;color:".newColor($color[$k]).">{$nation[$k]}</td>";
     }
 
     echo "</tr><tr>";
 
     for ($k=16; $k > 6; $k--) {
-        echo "<td align=center style=background-color:{$color[$k]};color:".newColor($color[$k]).">{$name[$k]}</td>";
+        echo "<td align=center style=background-color:{$color[$k]};font-size:80%;color:".newColor($color[$k]).">{$name[$k]}</td>";
     }
 
     echo "</tr><tr><td colspan=10 height=5 id=bg1></td></tr>";
