@@ -6,7 +6,7 @@ require(__dir__.'/../vendor/autoload.php');
 WebUtil::setHeaderNoCache();
 $session = Session::requireLogin()->setReadOnly();
 
-$templates = new \League\Plates\Engine('templates');
+$templates = new \League\Plates\Engine(__dir__.'/templates');
 
 $db = RootDB::db();
 $notice = $db->queryFirstField('SELECT `NOTICE` FROM `system` WHERE `NO`=1');

@@ -134,7 +134,21 @@ function redrawMsg(deferred){
                     $('#last_contact').val(contactTarget).html(generalList[contactTarget].textName).show();
                 }
 
+                msg.nationID = obj.nationID;
+                msg.generalName = obj.generalName;
                 msg.msgType = msgType;
+
+                if(msg.src.nation_id == msg.dest.nation_id){
+                    msg.nationType = 'local';
+                }
+                else if(msg.nationID == msg.src.nation_id){
+                    msg.nationType = 'src';
+                }
+                else{
+                    msg.nationType = 'dest';
+                }
+                
+
                 msg.defaultIcon = pathConfig.sharedIcon+'/default.jpg';
                 var msgHtml = TemplateEngine(messageTemplate, msg);
                 

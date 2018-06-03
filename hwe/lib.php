@@ -37,7 +37,7 @@ function Error($message='', $url="")
     }
     file_put_contents(__dir__."/logs/_db_bug.txt", "{\"url\":\"$url\",\"msg\":\"$message\"}\n", FILE_APPEND);
 
-    $templates = new \League\Plates\Engine('templates');
+    $templates = new \League\Plates\Engine(__dir__.'/templates');
 
     ob_get_flush();
     WebUtil::setHeaderNoCache();

@@ -77,11 +77,11 @@ function allButton() {
         $call = "설문조사";
     }
 
-    if(\file_exists("d_setting/templates/allButton.php")){
-        $templates = new \League\Plates\Engine('d_setting/templates');
+    if(\file_exists(__dir__."/d_setting/templates/allButton.php")){
+        $templates = new \League\Plates\Engine(__dir__.'/d_setting/templates');
     }
     else{
-        $templates = new \League\Plates\Engine('templates');
+        $templates = new \League\Plates\Engine(__dir__.'/templates');
     }
     
 
@@ -113,7 +113,7 @@ function commandButton() {
     $bgColor = Util::array_get($nation['color'])?:'#000000';
     $fgColor = newColor($bgColor);
 
-    $templates = new \League\Plates\Engine('templates');
+    $templates = new \League\Plates\Engine(__dir__.'/templates');
     $showSecret = false;
     if($me['level'] >= 2){
         $showSecret = true;
@@ -170,7 +170,7 @@ function formatName(string $name, int $npc): string{
 
 function getMapHtml(){
     //NOTE: 필요한가?
-    $templates = new \League\Plates\Engine('templates');
+    $templates = new \League\Plates\Engine(__dir__.'/templates');
 
     return $templates->render('map');
 }

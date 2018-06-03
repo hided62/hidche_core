@@ -1,10 +1,10 @@
 <div 
-    class="msg_plate msg_plate_<%msgType%>"
+    class="msg_plate msg_plate_<%msgType%> msg_plate_<%nationType%>""
     id="msg_<%id%>"
     data-id="<%id%>"
 >
     <div class="msg_icon">
-        <%if(src.icon) { %>
+        <%if(src.icon){ %>
             <img width='64' height='64' src="<%encodeURI(src.icon)%>">
         <%} else {%>
             <img width='64' height='64' src="<%encodeURI(defaultIcon)%>">
@@ -13,15 +13,26 @@
     <div class="msg_body">
         <div class="msg_header">
             <%if(msgType == 'private') {%>
-                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span
+                <%if(src.name == generalName){%>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;">나</span
                 ><span class="msg_from_to">▶</span
                 ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;"><%e(dest.name)%>:<%e(dest.nation)%></span>
-            <%} else if(msgType == 'national' && src.nation_id == dest.nation_id){%>
-                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span>
-            <%} else if(msgType == 'national' || msgType == 'diplomacy'){%>
+                <%}else{%>
                 <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span
-                    ><span class="msg_from_to">▶</span
+                ><span class="msg_from_to">▶</span
+                ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;">나</span>
+                <%}%>
+            <%} else if(msgType == 'national' && src.nation_id == dest.nation_id){%>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%></span>
+            <%} else if(msgType == 'national' || msgType == 'diplomacy'){%>
+                <%if(src.nation_id == nationID){%>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%></span
+                ><span class="msg_from_to">▶</span
                 ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;"><%e(dest.nation)%></span>
+                <%}else{%>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span
+                ><span class="msg_from_to"></span>
+                <%}%>
             <%} else {%>
                 <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span>
             <%} %>

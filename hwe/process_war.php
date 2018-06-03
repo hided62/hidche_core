@@ -9,7 +9,7 @@ function processWar($general, $city) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $templates = new \League\Plates\Engine('templates');
+    $templates = new \League\Plates\Engine(__dir__.'/templates');
 
     $date = substr($general['turntime'],11,5);
 

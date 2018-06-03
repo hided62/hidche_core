@@ -35,6 +35,10 @@
     background-color:#5d1e1a;
 }
 
+.msg_plate_private.msg_plate_dest{
+    background-color:#5d461a;
+}
+
 .msg_plate_public{
     background-color:#141c65;
 
@@ -42,7 +46,14 @@
 
 .msg_plate_national, .msg_plate_diplomacy{
     background-color:#00582c;
+}
 
+.msg_plate_national.msg_plate_dest, .msg_plate_diplomacy.msg_plate_dest {
+    background-color:#704615;
+}
+
+.msg_plate_national.msg_plate_src, .msg_plate_diplomacy.msg_plate_src {
+    background-color:#70153b;
 }
 
 .public_message{

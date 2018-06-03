@@ -11,8 +11,8 @@ $jsonPost = WebUtil::parseJsonPost();
 $reqSequence = (int)Util::array_get($jsonPost['sequence'], 0);
 
 
-list($generalID, $nationID) = DB::db()->queryFirstList(
-    'select `no`, `nation` from `general` where owner = %i',
+list($generalID, $nationID, $generalName) = DB::db()->queryFirstList(
+    'select `no`, `nation`, `name` from `general` where owner = %i',
     $userID
 );
 
@@ -58,5 +58,6 @@ $result['diplomacy']= array_map(function(Message $msg)use (&$nextSequence){
 }, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, 10, 0));
 
 $result['sequence'] = $nextSequence;
-
+$result['nationID'] = $nationID;
+$result['generalName'] = $generalName;
 Json::die($result);
