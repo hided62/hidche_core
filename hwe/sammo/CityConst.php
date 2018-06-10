@@ -239,7 +239,7 @@ class CityConst{
         static::$constID = $constID;
         static::$constName = $constName;
         static::$constRegion = $constRegion;
-
+        
     }
 
     private static $buildInitCommon = [
@@ -317,8 +317,22 @@ class CityConst{
         ]
     ];
 
+    private static function test(){
+        static::_generate();
+
+        foreach(static::all() as $id=>$city){
+            foreach($city->path as $connId=>$connCityText){
+                $connCity = static::byID($connId);
+                if(!key_exists($id, $connCity->path)){
+                    throw new \RuntimeException(sprintf('도시 연결이 올바르지 않음! %s <=> %s', $city->name, $connCity->name));
+                }
+            }
+        }
+    }
+
     public static function build(){
         static::_generate();
+        static::test();
         
         $queries = array_map(function(CityInitialDetail $city){ 
             $initValue = static::$buildInit[$city->level];

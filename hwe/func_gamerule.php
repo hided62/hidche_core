@@ -176,48 +176,47 @@ function SetNationFront($nationNo) {
 
 function checkSupply() {
     $db = DB::db();
-    $connect=$db->get();
 
     $cities = [];
     foreach($db->query('SELECT city, nation FROM city WHERE nation != 0') as $city){
-        $cities[$city['city']] = [
-            'id'=>$city['city'],
-            'nation'=>$city['nation'],
-            'supply'=>false
-        ];
+        $newCity = new \stdClass();
+        $newCity->id = Util::toInt($city['city']);
+        $newCity->nation = Util::toInt($city['nation']);
+        $newCity->supply = false;
+
+        $cities[$newCity->id] = $newCity;
     }
     
     $queue = new \SplQueue();
-    foreach($db->query('SELECT capital, nation FROM nation WHERE `level` > 0') as $nation){
-        $capitalID = $nation['capital'];
-        if(!$capitalID){
+    foreach($db->queryAllLists('SELECT capital, nation FROM nation WHERE `level` > 0') as list($capitalID, $nationID)){
+        if(!key_exists($capitalID, $cities)){
             continue;
         }
-        $city = &$cities[$capitalID];
-        if($nation['nation'] != $city['nation']){
+        $city = $cities[$capitalID];
+        if($nationID != $city->nation){
             continue;
         }
-        $city['supply'] = true;
-        $queue->enqueue($city['id']);
+        $city->supply = true;
+        $queue->enqueue($city);
     }
 
     while(!$queue->isEmpty()){
-        $cityID = $queue->dequeue();
-        $city = &$cities[$cityID];
+        $cityLink = $queue->dequeue();
+        $city = CityConst::byID($cityLink->id);
 
-        foreach(array_keys(CityConst::byID($cityID)->path) as $connCityID){
+        foreach(array_keys($city->path) as $connCityID){
             if(!key_exists($connCityID, $cities)){
                 continue;
             }
-            $connCity = &$cities[$connCityID];
-            if($connCity['nation'] != $city['nation']){
+            $connCity = $cities[$connCityID];
+            if($connCity->nation != $cityLink->nation){
                 continue;
             }
-            if($connCity['supply']){
+            if($connCity->supply){
                 continue;
             }
-            $connCity['supply'] = true;
-            $queue->enqueue($connCity['id']);
+            $connCity->supply = true;
+            $queue->enqueue($connCity);
         }
     }
 
@@ -225,15 +224,15 @@ function checkSupply() {
         'supply'=>1
     ], 'nation=0');
 
+    $db->update('city',[
+        'supply'=>0
+    ], 'nation!=0');
+
     $supply = [];
-    $unsupply = [];
 
     foreach($cities as $city){
-        if($city['supply']){
-            $supply[] = $city['id'];
-        }
-        else{
-            $unsupply[] = $city['id'];
+        if($city->supply){
+            $supply[] = $city->id;
         }
     }
 
@@ -243,11 +242,6 @@ function checkSupply() {
         ], 'city IN %li', $supply);
     }
 
-    if($unsupply){
-        $db->update('city', [
-            'supply'=>0
-        ], 'city IN %li', $unsupply);
-    }
 }
 
 
