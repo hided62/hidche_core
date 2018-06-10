@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 //로그인 검사
-$session = Session::requireGameLogin()->setReadOnly();
+$session = Session::getInstance()->setReadOnly();
 
 $db = DB::db();
 $connect=$db->get();
@@ -19,7 +19,7 @@ $connect=$db->get();
 <?=WebUtil::printCSS('css/common.css')?>
 <script type="text/javascript">
 <?php
-if(!$session->isLoggedIn()){
+if(!$session->isGameLoggedIn()){
     echo 'window.parent.location.href = "../";';
 }
 ?>

@@ -329,6 +329,15 @@ class Session
         }
     }
 
+    public function isGameLoggedIn()
+    {
+        if ($this->generalID) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function __destruct()
     {
     }
