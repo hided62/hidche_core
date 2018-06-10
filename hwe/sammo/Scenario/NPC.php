@@ -1,6 +1,7 @@
 <?php
 namespace sammo\Scenario;
 use \sammo\Util;
+use \sammo\JosaUtil;
 use \sammo\DB;
 use \sammo\CityHelper;
 
