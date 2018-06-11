@@ -7,7 +7,6 @@ include "func.php";
 $session = Session::getInstance()->setReadOnly();
 
 $db = DB::db();
-$connect=$db->get();
 
 ?>
 <!DOCTYPE html>
@@ -68,7 +67,6 @@ myCommandList();
 function myCommandList() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
     $userID = Session::getUserID();
 
     $date = date('Y-m-d H:i:s');

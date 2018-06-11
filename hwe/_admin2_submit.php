@@ -19,6 +19,7 @@ if($session->userGrade < 5) {
 $generalID = $session->generalID;
 if(!$generalID){
     header('location:_admin2.php');
+    die();
 }
 
 $db = DB::db();

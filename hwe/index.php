@@ -25,6 +25,11 @@ $me = $db->queryFirstRow(
 //턴 실행.
 checkTurn();
 
+if(!$session->isGameLoggedIn()){
+    header('Location:..');
+    die();
+}
+
 //그새 사망이면
 if ($me === null) {
     $session->logoutGame();

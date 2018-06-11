@@ -320,7 +320,7 @@ class Session
         return $obj->userID;
     }
 
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         if ($this->userID) {
             return true;
@@ -329,7 +329,7 @@ class Session
         }
     }
 
-    public function isGameLoggedIn()
+    public function isGameLoggedIn(): bool
     {
         if ($this->generalID) {
             return true;

@@ -95,11 +95,10 @@ function allButton() {
 function commandButton() {
     $session = Session::getInstance();
     $userID = Session::getUserID();
-    $generalID = $session->generalID;
-    
-    if($generalID === null){
+    if(!$session->isGameLoggedIn()){
         return '';
     }
+    
     $db = DB::db();
     $me = $db->queryFirstRow("select no,nation,level,belong from general where owner=%i", $userID);
 
