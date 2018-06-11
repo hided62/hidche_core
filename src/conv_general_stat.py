@@ -17,8 +17,9 @@ nationLevelMap = {
     '방랑군':0
 }
 
-print(sys.argv[1])
-wb = xlrd.open_workbook(sys.argv[1])
+xlsxpath = sys.argv[1]
+print(xlsxpath)
+wb = xlrd.open_workbook(xlsxpath)
 
 def extractNationList(nationSheet):
     jsonNationList = []
@@ -78,10 +79,10 @@ def extractGeneralList(generalSheet, nationList={}):
             row[0] = int(row[0])
 
         #이름
-        row[1] = row[1].strip()
+        row[1] = str(row[1]).strip()
         if row[1] == '':
             continue
-        
+        print(row[1])
         #전콘
         row[2] = str(row[2]).strip()
         if row[2].isdigit():
@@ -144,19 +145,19 @@ nationInfo = extractNationList(wb.sheet_by_name('국가'))
 
 generalList = extractGeneralList(wb.sheet_by_name('장수 목록'), nationInfo)
 
+with open('%s.json'%xlsxpath, 'wt', encoding='utf-8') as fp:
+    fp.write('    "nation":[\n        ')
+    fp.write(',\n        '.join([json.dumps(nation, ensure_ascii=False) for nation in nationInfo]))
+    fp.write('\n    ],\n')
 
-print('    "nation":[\n        ', end='')
-print(',\n        '.join([json.dumps(nation, ensure_ascii=False) for nation in nationInfo]))
-print('    ],')
+    fp.write('    "diplomacy":[],\n')
 
-print('    "diplomacy":[],')
+    fp.write('    "general":[\n        ')
+    fp.write(',\n        '.join([json.dumps(general, ensure_ascii=False) for general in generalList]))
+    fp.write('\n    ],\n')
 
-print('    "general":[\n        ', end='')
-print(',\n        '.join([json.dumps(general, ensure_ascii=False) for general in generalList]))
-print('    ],')
-
-if '확장 장수 목록' in wb.sheet_names():
-    generalExList = extractGeneralList(wb.sheet_by_name('확장 장수 목록'), nationInfo)
-    print('    "general_ex":[\n        ', end='')
-    print(',\n        '.join([json.dumps(general, ensure_ascii=False) for general in generalExList]))
-    print('    ],')
+    if '확장 장수 목록' in wb.sheet_names():
+        generalExList = extractGeneralList(wb.sheet_by_name('확장 장수 목록'), nationInfo)
+        fp.write('    "general_ex":[\n        ')
+        fp.write(',\n        '.join([json.dumps(general, ensure_ascii=False) for general in generalExList]))
+        fp.write('\n    ],\n')

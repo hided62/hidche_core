@@ -183,12 +183,10 @@ function getTurn(array $general, $type, $font=1) {
                 $str[$i] = "하야";
                 break;
             case 46: //건국
-                $query = "select makenation from general where no='{$general['no']}'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $general = MYDB_fetch_array($result);
+                $nationName = $db->queryFirstField('SELECT makenation FROM general WHERE `no`=%i', $general['no'])??'';
 
-                $josaUl = JosaUtil::pick($general['makenation'], '을');
-                $str[$i] = "【{$general['makenation']}】{$josaUl} 건국";
+                $josaUl = JosaUtil::pick($nationName, '을');
+                $str[$i] = "【{$nationName}】{$josaUl} 건국";
                 break;
             case 47: //방랑
                 $str[$i] = "방랑";
@@ -342,15 +340,13 @@ function getCoreTurn($nation, $level) {
                 $str[$i] = "【{$nation['name']}】에게 국고 {$third} 병량 {$fourth} 원조";
                 break;
             case 53: //통합제의
-                $query = "select makenation from general where level='$level' and nation='{$nation['nation']}'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $general = MYDB_fetch_array($result);
+                $nationName = $db->queryFirstField('SELECT makenation FROM general WHERE `level`=%i AND `nation`=%i', $level, $nation['nation'])??'';
 
                 $double = (int)$command[1];
 
                 $nation = getNationStaticInfo($double);
-                $josaRo = JosaUtil::pick($general['makenation'], '로');
-                $str[$i] = "【{$nation['name']}】에 【{$general['makenation']}】{$josaRo} 통합 제의";
+                $josaRo = JosaUtil::pick($nationName, '로');
+                $str[$i] = "【{$nation['name']}】에 【{$nationName}】{$josaRo} 통합 제의";
                 break;
             case 61: //불가침제의
                 $third = $command[2];
