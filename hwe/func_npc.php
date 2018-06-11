@@ -329,58 +329,21 @@ function processAI($no) {
             $available = true;
 
             if($admin['startyear']+3 > $admin['year']){
-                //초기 임관 기간에서는 임관 가능한 국가가 적을수록 임관 시도가 적음
+                //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
+                $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
+                if(Util::randBool(1/$nationCnt)){
+                    //국가가 1개일 경우에는 '임관하지 않음'
+                    $available = false;
+                }
             }
 
-            if($general['affinity'] == 999){
+            if($general['affinity'] == 999 || !$available){
                 $command = EncodeCommand(0, 0, 0, 42); //견문
             }
             else{
                 //랜임 커맨드 입력.
                 $command = EncodeCommand(0, 0, 99, 25); //임관
             }
-            /*
-            if($admin['scenario'] == 0 || $admin['scenario'] >= 20 || !$admin['fiction']) {
-                // 가상모드엔 랜덤임관, 초반엔 부상 적은 군주 우선 70%
-                if($admin['startyear']+3 > $admin['year'] && rand()%100 < 70) {
-                    $query = "select nation from general where level=12 and nation not in (0{$general['nations']}0) order by injury,rand() limit 0,1";
-                } else {
-                    $query = "select nation from general where level=12 and nation not in (0{$general['nations']}0) order by rand() limit 0,1";
-                }
-                $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
-                $rulerCount = MYDB_num_rows($result);
-                if($rulerCount > 0 && $general['affinity'] != 999 && $general['makelimit'] == 0) {
-                    $ruler = MYDB_fetch_array($result);
-                    $command = EncodeCommand(0, 0, $ruler['nation'], 25); //임관
-                } else {
-                    $command = EncodeCommand(0, 0, 0, 42); //견문
-                }
-            } else {
-                $query = "select nation from general where level=12 and npc=0";
-                $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
-                $nonCount = MYDB_num_rows($result);
-                $query = "select nation from general where level=12 and npc>0";
-                $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
-                $npcCount = MYDB_num_rows($result);
-                $ratio = Util::round($npcCount / ($nonCount + $npcCount) * 100);
-                $ratio = Util::round($ratio * 1.0);
-                //NPC우선임관
-                $query = "select nation,ABS(IF(ABS(affinity-'{$general['affinity']}')>75,150-ABS(affinity-'{$general['affinity']}'),ABS(affinity-'{$general['affinity']}'))) as npcmatch2 from general where level=12 and npc>0 and nation not in (0{$general['nations']}0) order by npcmatch2,rand() limit 0,1";
-                $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
-                $rulerCount = MYDB_num_rows($result);
-                if($rulerCount > 0 && $general['affinity'] != 999 && rand()%100 < $ratio && $general['makelimit'] == 0) {  // 엔국 비율대로 임관(50% : 50%)
-                    $ruler = MYDB_fetch_array($result);
-                    $command = EncodeCommand(0, 0, $ruler['nation'], 25); //임관
-                } elseif($general['affinity'] != 999 && $general['makelimit'] == 0) {  // NPC국가 없으면 유저국 임관
-                    $query = "select nation from general where level=12 and npc=0 order by rand() limit 0,1";
-                    $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
-                    $ruler = MYDB_fetch_array($result);
-                    $command = EncodeCommand(0, 0, $ruler['nation'], 25); //임관
-                } else {
-                    $command = EncodeCommand(0, 0, 0, 42); //견문
-                }
-            }
-            */
             break;
         case 2: case 3: //거병이나 견문 40%
             // 초반이면서 능력이 좋은놈 위주로 1.5%확률로 거병 (300명 재야시 2년간 약 15개 거병 예상)

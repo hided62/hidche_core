@@ -76,39 +76,84 @@ function process_25(&$general) {
     $command = DecodeCommand($general['turn0']);
     $where = $command[1];
 
-    // 랜덤임관인 경우
-    if($where == 99) {
-        // 초반시 10명이하, 임관금지없음 국가
-        if($admin['year'] < $admin['startyear']+3) {
-            $query = "select name,nation,scout,level from nation where nation not in (0{$general['nations']}0) and gennum<".GameConst::$initialNationGenLimit." and scout=0 order by rand() limit 0,1";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $nation = MYDB_fetch_array($result);
-        } else {
-            $query = "select name,nation,scout,level from nation where nation not in (0{$general['nations']}0) and scout=0 order by rand() limit 0,1";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $nation = MYDB_fetch_array($result);
-        }
-    } elseif($where == 98) {
-        // 초반시 10명이하, 임관금지없음 국가, 방랑군 제외
-        if($admin['year'] < $admin['startyear']+3) {
-            $query = "select name,nation,scout,level from nation where nation not in (0{$general['nations']}0) and gennum<".GameConst::$initialNationGenLimit." and scout=0 and level>0 order by rand() limit 0,1";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $nation = MYDB_fetch_array($result);
-        } else {
-            $query = "select name,nation,scout,level from nation where nation not in (0{$general['nations']}0) and scout=0 and level>0 order by rand() limit 0,1";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $nation = MYDB_fetch_array($result);
-        }
-    } else {
-        $query = "select name,nation,scout,level from nation where nation='$where'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $nation = MYDB_fetch_array($result);
-    }
-    $query = "select no from general where nation='{$nation['nation']}'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($genresult);
+    $nation = null;
 
-    $josaUn = JosaUtil::pick($nation['name'], '은');
+    // 랜덤임관인 경우
+    if($general['npc'] > 2 && $where >= 98 && ($admin['scenario'] == 0 || $admin['scenario'] >= 20 || !$admin['fiction'])){
+        //'사실' 모드에서는 '성향'에 우선을 두되, 장수수, 랜덤에 비중을 둠
+        $nations = $db->query(
+            'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %s and gennum < %i and scout = 0',
+            '0'.$general['nations'].'0',
+            ($admin['year'] < $admin['startyear']+3)?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
+        );
+        shuffle($nations);
+
+        $allGen = array_sum(array_map(function($item) { 
+            return $item['gennum']; 
+        }, $nations));
+
+        $maxScore = 1<<30;
+
+        foreach($nations as $testNation){
+            $affinity = abs($general['affinity'] - $testNation['affinity']);
+            $affinity = min($affinity, abs($affinity - 150));
+
+            $score = log($affinity + 1, 2);//0~
+
+            //쉐킷쉐킷
+            $score += Util::randF();
+
+            $score += sqrt($testNation['gennum']/$allGen);
+
+            if($score < $maxScore){
+                $maxScore = $score;
+                $nation = $testNation;
+            }
+        }
+            
+    }
+    else if($where >= 98) {
+        //랜임
+        $nations = $db->query(
+            'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`injury` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %s and gennum < %i and scout = 0',
+            '0'.$general['nations'].'0',
+            ($admin['year'] < $admin['startyear']+3)?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
+        );
+        shuffle($nations);
+
+        $allGen = array_sum(array_map(function($item) { 
+            return $item['gennum']; 
+        }, $nations));
+
+        $randVals = [];
+        foreach($nations as $idx=>$testNation){
+            // 임관금지없음 국가, 방랑군 제외
+            if($where == 98 && $testNation['level'] == 0){
+                continue;
+            }
+
+            $score = 1;
+            if($admin['startyear']+3 > $admin['year']){
+                $score *= sqrt((100-$testNation['injury'])/100);
+            }
+
+            $score *= sqrt($allGen/$testNation['gennum']);
+            $randVals[$idx] = $score;
+        }
+
+        if($randVals){
+            $nation = $nations[Util::choiceRandomUsingWeight($randVals)];
+        }
+
+    } else {
+        $nation = $db->queryFirstRow('SELECT `name`,nation,scout,`level` FROM nation WHERE nation=%i', $where);
+    }
+
+    if($nation){
+        $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE nation=%i', $nation['nation']);
+        $josaUn = JosaUtil::pick($nation['name'], '은');
+    }
+    
     if(!$nation) {
         $log[] = "<C>●</>{$admin['month']}월:임관할 국가가 없습니다. 임관 실패. <1>$date</>";
     } elseif($general['nation'] != 0) {
