@@ -110,13 +110,13 @@ class Personnel{
         }
 
         $scoutNationGeneralCnt+=1;
-        if($scoutNationGeneralCnt < 10){
-            $scoutNationGeneralCnt = 10;//XXX: 상수!
+        if($scoutNationGeneralCnt < GameConst::$initialNationGenLimit){
+            $scoutNationGeneralCnt = GameConst::$initialNationGenLimit;
         }
 
         $originalNationGeneralCnt-=1;
-        if($originalNationGeneralCnt < 10){
-            $originalNationGeneralCnt = 10;//XXX: 상수!
+        if($originalNationGeneralCnt < GameConst::$initialNationGenLimit){
+            $originalNationGeneralCnt = GameConst::$initialNationGenLimit;
         }
 
         // 국가 변경, 도시 변경, 일반으로, 수도로

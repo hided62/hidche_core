@@ -366,7 +366,7 @@ function process_3(&$general) {
         $query = "select no from general where nation='{$general['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
-        if($gencount < 10) $gencount = 10;
+        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
         // 내정 상승
         $query = "update nation set totaltech=totaltech+'$score',tech=totaltech/'$gencount' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

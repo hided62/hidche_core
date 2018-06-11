@@ -1962,7 +1962,7 @@ function updateTurntime($no) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gencount = MYDB_num_rows($result);
             $gennum = $gencount;
-            if($gencount < 10) $gencount = 10;
+            if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
 
             $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$general['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

@@ -325,7 +325,22 @@ function processAI($no) {
         switch(rand()%5) {
         //임관 40%
         case 0: case 1:
-            if($admin['scenario'] == 0 || $admin['scenario'] >= 20) {
+
+            $available = true;
+
+            if($admin['startyear']+3 > $admin['year']){
+                //초기 임관 기간에서는 임관 가능한 국가가 적을수록 임관 시도가 적음
+            }
+
+            if($general['affinity'] == 999){
+                $command = EncodeCommand(0, 0, 0, 42); //견문
+            }
+            else{
+                //랜임 커맨드 입력.
+                $command = EncodeCommand(0, 0, 99, 25); //임관
+            }
+            /*
+            if($admin['scenario'] == 0 || $admin['scenario'] >= 20 || !$admin['fiction']) {
                 // 가상모드엔 랜덤임관, 초반엔 부상 적은 군주 우선 70%
                 if($admin['startyear']+3 > $admin['year'] && rand()%100 < 70) {
                     $query = "select nation from general where level=12 and nation not in (0{$general['nations']}0) order by injury,rand() limit 0,1";
@@ -365,12 +380,13 @@ function processAI($no) {
                     $command = EncodeCommand(0, 0, 0, 42); //견문
                 }
             }
+            */
             break;
         case 2: case 3: //거병이나 견문 40%
-            // 초반이면서 능력이 좋은놈 위주로 1%확률로 거병 (300명 재야시 2년간 약 10개 거병 예상)
+            // 초반이면서 능력이 좋은놈 위주로 1.5%확률로 거병 (300명 재야시 2년간 약 15개 거병 예상)
             $prop = rand() % 100;
             $ratio = Util::round(($general['leader'] + $general['power'] + $general['intel']) / 3);
-            if($admin['startyear']+2 > $admin['year'] && $prop < $ratio && rand()%100 < 1 && $general['makelimit'] == 0) {
+            if($admin['startyear']+2 > $admin['year'] && $prop < $ratio && rand()%200 < 3 && $general['makelimit'] == 0) {
                 //거병
                 $command = EncodeCommand(0, 0, 0, 55);
             } else {

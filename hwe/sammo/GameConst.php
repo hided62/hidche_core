@@ -68,6 +68,9 @@ class GameConst extends GameCustomConst
     /** @var float 성인 연령 */
     public static $adultAge = 14;
 
+    /** @var int 초기 제한시 장수 제한 */
+    public static $initialNationGenLimit = 10;
+
     /** @var int 초기 최대 장수수 */
     public static $defaultMaxGeneral = 500;
     /** @var int 초기 최대 국가 수 */

@@ -682,7 +682,7 @@ function checkMerge() {
         pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합");
 
         $newGenCount = $gencount + $gencount2;
-        if($newGenCount < 10) { $newGenCount = 10; }
+        if($newGenCount < GameConst::$initialNationGenLimit) { $newGenCount = GameConst::$initialNationGenLimit; }
         $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
         $newTech = Util::round($newTotalTech / $newGenCount);
         // 자금 통합, 외교제한 5년, 기술유지
@@ -805,7 +805,7 @@ function checkSurrender() {
         pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaWa} 합병");
 
         $newGenCount = $gencount + $gencount2;
-        if($newGenCount < 10) { $newGenCount = 10; }
+        if($newGenCount < GameConst::$initialNationGenLimit) { $newGenCount = GameConst::$initialNationGenLimit; }
         $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
         $newTech = Util::round($newTotalTech / $newGenCount);
         // 자금 통합, 외교제한 5년, 기술유지
@@ -932,7 +932,7 @@ function updateNationState() {
             refreshNationStaticInfo();
         }
         $gennum = $gencount;
-        if($gencount < 10) $gencount = 10;
+        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
         //기술 및 변경횟수 업데이트
         $query = "update nation set tech=totaltech/'$gencount',gennum='$gennum' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

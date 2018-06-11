@@ -67,7 +67,7 @@ function process_25(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'scenario', 'fiction']);
 
     $query = "select nation from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -80,7 +80,7 @@ function process_25(&$general) {
     if($where == 99) {
         // 초반시 10명이하, 임관금지없음 국가
         if($admin['year'] < $admin['startyear']+3) {
-            $query = "select name,nation,scout,level from nation where nation not in (0{$general['nations']}0) and gennum<10 and scout=0 order by rand() limit 0,1";
+            $query = "select name,nation,scout,level from nation where nation not in (0{$general['nations']}0) and gennum<".GameConst::$initialNationGenLimit." and scout=0 order by rand() limit 0,1";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $nation = MYDB_fetch_array($result);
         } else {
@@ -91,7 +91,7 @@ function process_25(&$general) {
     } elseif($where == 98) {
         // 초반시 10명이하, 임관금지없음 국가, 방랑군 제외
         if($admin['year'] < $admin['startyear']+3) {
-            $query = "select name,nation,scout,level from nation where nation not in (0{$general['nations']}0) and gennum<10 and scout=0 and level>0 order by rand() limit 0,1";
+            $query = "select name,nation,scout,level from nation where nation not in (0{$general['nations']}0) and gennum<".GameConst::$initialNationGenLimit." and scout=0 and level>0 order by rand() limit 0,1";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $nation = MYDB_fetch_array($result);
         } else {
@@ -115,9 +115,9 @@ function process_25(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:재야가 아닙니다. 임관 실패. <1>$date</>";
     } elseif($nation['nation'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:없는 국가입니다. 임관 실패. <1>$date</>";
-    } elseif($nation['level'] == 0 && $gencount >= 10) {
+    } elseif($nation['level'] == 0 && $gencount >= GameConst::$initialNationGenLimit) {
         $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 제한되고 있습니다. 임관 실패.";
-    } elseif($admin['year'] < $admin['startyear']+3 && $gencount >= 10) {
+    } elseif($admin['year'] < $admin['startyear']+3 && $gencount >= GameConst::$initialNationGenLimit) {
         $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 제한되고 있습니다. 임관 실패.";
     } elseif($nation['scout'] == 1 && $general['npc'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 금지되어 있습니다. 임관 실패.";
@@ -137,7 +137,7 @@ function process_25(&$general) {
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
         }
 
-        if($gencount < 10) { $exp = 700; }
+        if($gencount < GameConst::$initialNationGenLimit) { $exp = 700; }
         else { $exp = 100; }
         $ded = 0;
         
@@ -165,7 +165,7 @@ function process_25(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $gennum = $gencount;
-        if($gencount < 10) $gencount = 10;
+        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
 
         $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -202,7 +202,7 @@ function process_29(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:재야입니다. 인재탐색 실패. <1>$date</>";
     } elseif($nation['level'] <= 0) {
         $log[] = "<C>●</>{$admin['month']}월:방랑군입니다. 인재탐색 실패. <1>$date</>";
-    } elseif($admin['year'] < $admin['startyear']+3 && $nation['gennum'] >= 10) {
+    } elseif($admin['year'] < $admin['startyear']+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit) {
         $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 탐색이 제한되고 있습니다. 인재탐색 실패.";
     } elseif($general['gold'] < $admin['develcost']) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 인재탐색 실패. <1>$date</>";
@@ -409,7 +409,7 @@ function process_29(&$general) {
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $gencount = MYDB_num_rows($result);
             $gennum = $gencount;
-            if($gencount < 10) $gencount = 10;
+            if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
 
             //국가 기술력 그대로
             $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$general['nation']}'";
@@ -540,7 +540,7 @@ function process_45(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $gennum = $gencount;
-        if($gencount < 10) $gencount = 10;
+        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
 
         $nation['chemi'] -= 1;
         if($nation['chemi'] < 0) { $nation['chemi'] = 0; }

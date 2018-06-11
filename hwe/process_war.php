@@ -99,12 +99,12 @@ function processWar($general, $city) {
     $query = "select no from general where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
-    if($gencount < 10) $gencount = 10;
+    if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
     //장수수 구함
     $query = "select no from general where nation='{$destnation['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destgencount = MYDB_num_rows($result);
-    if($destgencount < 10) $destgencount = 10;
+    if($destgencount < GameConst::$initialNationGenLimit) $destgencount = GameConst::$initialNationGenLimit;
 
     $genAtmosBonus = 0;   $genTrainBonus = 0;
     $oppAtmosBonus = 0;   $oppTrainBonus = 0;

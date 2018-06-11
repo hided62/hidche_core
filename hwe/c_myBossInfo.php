@@ -200,7 +200,7 @@ if($btn == "추방") {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $gennum = $gencount;
-        if($gencount < 10) $gencount = 10;
+        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
 
         $nation['chemi'] -= 1;
         if($nation['chemi'] < 0) { $nation['chemi'] = 0; }

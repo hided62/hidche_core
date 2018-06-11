@@ -995,7 +995,7 @@ function command_25($turn, $command) {
             $scoutStr .= "<tr><td align=center width=130 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=870 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>".$nation['scoutmsg']."</td></tr>";
         }
 
-        if($gameStor->year < $gameStor->startyear+3 && $nation['gennum'] >= 10) {
+        if($gameStor->year < $gameStor->startyear+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit) {
             echo "
     <option value={$nation['nation']} style=color:{$nation['color']};background-color:red;>【 {$nation['name']} 】</option>";
         } elseif($nation['scout'] == 1) {

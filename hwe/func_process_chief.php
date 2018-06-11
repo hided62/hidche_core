@@ -1400,7 +1400,7 @@ function process_71(&$general) {
     $query = "select no from general where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
-    if($genCount < 10) { $genCount = 10; }
+    if($genCount < GameConst::$initialNationGenLimit) { $genCount = GameConst::$initialNationGenLimit; }
 
     //$term2 = Util::round($genCount / 10);
     //if($term2 == 0) { $term2 = 1; }
@@ -1515,7 +1515,7 @@ function process_72(&$general) {
     $query = "select no from general where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
-    if($genCount < 10) { $genCount = 10; }
+    if($genCount < GameConst::$initialNationGenLimit) { $genCount = GameConst::$initialNationGenLimit; }
 
     //$term2 = Util::round($genCount / 20);
     //if($term2 == 0) { $term2 = 1; }
@@ -1636,7 +1636,7 @@ function process_73(&$general) {
     $query = "select no from general where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
-    if($genCount < 10) { $genCount = 10; }
+    if($genCount < GameConst::$initialNationGenLimit) { $genCount = GameConst::$initialNationGenLimit; }
 
     //$term2 = Util::round($genCount / 20);
     //if($term2 == 0) { $term2 = 1; }
@@ -1769,7 +1769,7 @@ function process_74(&$general) {
     $query = "select no from general where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
-    if($genCount < 10) { $genCount = 10; }
+    if($genCount < GameConst::$initialNationGenLimit) { $genCount = GameConst::$initialNationGenLimit; }
 
     //$term2 = Util::round($genCount / 20);
     //if($term2 == 0) { $term2 = 1; }
@@ -1911,7 +1911,7 @@ function process_75(&$general) {
     $query = "select no from general where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
-    if($genCount < 10) { $genCount = 10; }
+    if($genCount < GameConst::$initialNationGenLimit) { $genCount = GameConst::$initialNationGenLimit; }
 
     //$term2 = Util::round($genCount / 40);
     //if($term2 == 0) { $term2 = 1; }
@@ -2028,7 +2028,7 @@ function process_76(&$general) {
     $query = "select no from general where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
-    if($genCount < 10) { $genCount = 10; }
+    if($genCount < GameConst::$initialNationGenLimit) { $genCount = GameConst::$initialNationGenLimit; }
 
     //$term2 = Util::round($genCount / 10);
     //if($term2 == 0) { $term2 = 1; }
@@ -2202,7 +2202,7 @@ function process_76(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($result);
         $gennum = $gencount;
-        if($gencount < 10) $gencount = 10;
+        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
 
         // 국가보정
         if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
@@ -2259,7 +2259,7 @@ function process_77(&$general) {
     $query = "select no from general where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
-    if($genCount < 10) { $genCount = 10; }
+    if($genCount < GameConst::$initialNationGenLimit) { $genCount = GameConst::$initialNationGenLimit; }
 
     $term2 = 1;
     $term3 = Util::round(sqrt($genCount*16)*10);
@@ -2389,7 +2389,7 @@ function process_78(&$general) {
     $query = "select no from general where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
-    if($genCount < 10) { $genCount = 10; }
+    if($genCount < GameConst::$initialNationGenLimit) { $genCount = GameConst::$initialNationGenLimit; }
 
     $term2 = 1;
     $term3 = Util::round(sqrt($genCount*16)*10);
