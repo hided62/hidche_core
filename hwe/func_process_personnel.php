@@ -116,16 +116,19 @@ function process_25(&$general) {
     }
     else if($where >= 98) {
         //랜임
+        $generals = [];
+        foreach($db->queryAllLists('SELECT count(no), nation FROM general WHERE npc <= 2 AND nation > 0 GROUP BY nation') as list($cnt, $nation)){
+            $generals[$nation] = $cnt;
+        }
+
+        $allGen = array_sum($generals);
+
         $nations = $db->query(
             'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`injury` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %li and gennum < %i and scout = 0',
             $joinedNations,
             ($admin['year'] < $admin['startyear']+3)?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
         );
         shuffle($nations);
-
-        $allGen = array_sum(array_map(function($item) { 
-            return $item['gennum']; 
-        }, $nations));
 
         $randVals = [];
         foreach($nations as $idx=>$testNation){
@@ -139,7 +142,7 @@ function process_25(&$general) {
                 $score *= sqrt((100-max(30, $testNation['injury']))/100);
             }
 
-            $score *= sqrt($allGen/$testNation['gennum']);
+            $score *= sqrt($allGen/$generals[$testNation['nation']]);
             $randVals[$idx] = $score;
         }
 
