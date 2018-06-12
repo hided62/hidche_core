@@ -71,7 +71,7 @@ class Personnel{
             return [ScoutMessage::DECLINED, '군주는 등용장을 수락할 수 없습니다.'];
         }
 
-        if(strpos($general['nations'], ",{$this->nation['nation']},") !== false){
+        if(in_array($this->nation['nation'], Json::decode($general['nations']))){
             return [ScoutMessage::DECLINED, '이미 임관했었던 국가입니다.'];
         }
 
@@ -119,13 +119,16 @@ class Personnel{
             $originalNationGeneralCnt = GameConst::$initialNationGenLimit;
         }
 
+        $joinedNations = Json::decode($general['nations']);
+        $joinedNations[] = $this->nation['nation'];
+
         // 국가 변경, 도시 변경, 일반으로, 수도로
         $setValues = [
             'belong'=>1,
             'level'=>1,
             'nation'=>$this->nation['nation'],
             'city'=>$this->nation['capital'],
-            'nations'=>$db->sqleval('CONCAT(nations, %s)', "{$this->nation['nation']},"),
+            'nations'=>Json::encode($joinedNations),
             'troop'=>0,
         ];
 

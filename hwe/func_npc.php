@@ -309,12 +309,11 @@ function processAI($no) {
     //재야인경우
     if($general['npc'] == 5 && $general['level'] == 0) {
         // 오랑캐는 바로 임관
-        $query = "select nation from general where level=12 and npc=5 and nation not in (0{$general['nations']}0) order by rand() limit 0,1";
-        $result = MYDB_query($query, $connect) or Error("processAI06 ".MYDB_error($connect),"");
-        $rulerCount = MYDB_num_rows($result);
-        if($rulerCount > 0) {
-            $ruler = MYDB_fetch_array($result);
-            $command = EncodeCommand(0, 0, $ruler['nation'], 25); //임관
+
+        $rulerNation = $db->queryFirstField('SELECT nation FROM general WHERE `level`=12 AND npc=5 and nation not in %li ORDER BY RAND() limit 1', Json::decode($general['nations']));
+        
+        if($ruler) {
+            $command = EncodeCommand(0, 0, $rulerNation, 25); //임관
         } else {
             $command = EncodeCommand(0, 0, 0, 42); //견문
         }
@@ -328,7 +327,7 @@ function processAI($no) {
 
             $available = true;
 
-            if($admin['startyear']+3 > $admin['year']){
+            if($admin['startyear']+2 > $admin['year']){
                 //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
                 $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
                 if(Util::randBool(1/$nationCnt)){
@@ -346,10 +345,10 @@ function processAI($no) {
             }
             break;
         case 2: case 3: //거병이나 견문 40%
-            // 초반이면서 능력이 좋은놈 위주로 1.5%확률로 거병 (300명 재야시 2년간 약 15개 거병 예상)
-            $prop = rand() % 100;
+            // 초반이면서 능력이 좋은놈 위주로 1.5%확률로 거병
+            $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) * 2 / 3;
             $ratio = Util::round(($general['leader'] + $general['power'] + $general['intel']) / 3);
-            if($admin['startyear']+2 > $admin['year'] && $prop < $ratio && rand()%200 < 3 && $general['makelimit'] == 0) {
+            if($admin['startyear']+2 > $admin['year'] && $prop < $ratio && Util::randBool(0.01) && $general['makelimit'] == 0) {
                 //거병
                 $command = EncodeCommand(0, 0, 0, 55);
             } else {

@@ -78,12 +78,14 @@ function process_25(&$general) {
 
     $nation = null;
 
+    $joinedNations = Json::decode($general['nations']);
+
     // 랜덤임관인 경우
     if($general['npc'] > 2 && $where >= 98 && ($admin['scenario'] == 0 || $admin['scenario'] >= 20 || !$admin['fiction'])){
         //'사실' 모드에서는 '성향'에 우선을 두되, 장수수, 랜덤에 비중을 둠
         $nations = $db->query(
-            'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %s and gennum < %i and scout = 0',
-            '0'.$general['nations'].'0',
+            'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %li and gennum < %i and scout = 0',
+            $joinedNations,
             ($admin['year'] < $admin['startyear']+3)?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
         );
         shuffle($nations);
@@ -115,8 +117,8 @@ function process_25(&$general) {
     else if($where >= 98) {
         //랜임
         $nations = $db->query(
-            'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`injury` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %s and gennum < %i and scout = 0',
-            '0'.$general['nations'].'0',
+            'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`injury` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %li and gennum < %i and scout = 0',
+            $joinedNations,
             ($admin['year'] < $admin['startyear']+3)?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
         );
         shuffle($nations);
@@ -133,7 +135,7 @@ function process_25(&$general) {
             }
 
             $score = 1;
-            if($admin['startyear']+3 > $admin['year']){
+            if($admin['startyear']+3 > $admin['year'] && $general['npc'] > 2){
                 $score *= sqrt((100-$testNation['injury'])/100);
             }
 
@@ -168,7 +170,7 @@ function process_25(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 금지되어 있습니다. 임관 실패.";
     } elseif($general['makelimit'] > 0 && $general['npc'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:재야가 된지 12턴이 지나야 합니다. 임관 실패. <1>$date</>";
-    } elseif(strpos($general['nations'], ",{$nation['nation']},") > 0) {
+    } elseif(in_array($nation['nation'], $joinedNations)) {
         $log[] = "<C>●</>{$admin['month']}월:이미 임관했었던 국가입니다. 임관 실패. <1>$date</>";
     } else {
         $josaYi = JosaUtil::pick($general['name'], '이');
@@ -195,15 +197,23 @@ function process_25(&$general) {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $king = MYDB_fetch_array($result);
 
+        
         // NPC초반시 임관기록 추가 안함
         if($general['npc'] > 1 && $admin['year'] < $admin['startyear']+3) {
         } else {
-            $general['nations'] .= "{$nation['nation']},";
+            $joinedNations[] = $nation['nation'];
         }
 
         // 국적 바꾸고 등급 일반으로        // 명성 상승
-        $query = "update general set resturn='SUCCESS',nation='{$nation['nation']}',nations='{$general['nations']}',level='1',experience=experience+'$exp',city='{$king['city']}',belong=1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('general', [
+            'resturn'=>'SUCCESS',
+            'nation'=>$nation['nation'],
+            'nations'=>Json::encode($joinedNations),
+            'level'=>1,
+            'experience'=>$db->sqleval('experience + %i', $exp),
+            'city'=>$king['city'],
+            'belong'=>1
+        ], 'no=%i', $general['no']);
 
         //국가 기술력 그대로
         $query = "select no from general where nation='{$nation['nation']}'";

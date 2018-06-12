@@ -967,6 +967,8 @@ function command_25($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("command_27 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
     
+    $joinedNations = Json::decode($me['nations']);
+
     $query = "select nation,name,color,scout,scoutmsg,sabotagelimit,gennum from nation order by gennum";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
@@ -1001,7 +1003,7 @@ function command_25($turn, $command) {
         } elseif($nation['scout'] == 1) {
             echo "
     <option value={$nation['nation']} style=color:{$nation['color']};background-color:red;>【 {$nation['name']} 】</option>";
-        } elseif(strpos($me['nations'], ",{$nation['nation']},") > 0) {
+        } elseif(in_array($nation['nation'], $joinedNations)) {
             /*
             echo "
     <option value={$nation['nation']} style=color:{$nation['color']};background-color:red; disabled>【 {$nation['name']} 】</option>";

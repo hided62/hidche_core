@@ -23,7 +23,7 @@ CREATE TABLE `general` (
 	`name` CHAR(32) NOT NULL COLLATE 'utf8mb4_bin',
 	`name2` CHAR(32) NULL DEFAULT NULL COLLATE 'utf8mb4_bin',
 	`nation` INT(6) NULL DEFAULT '0',
-	`nations` CHAR(64) NULL DEFAULT ',0,',
+	`nations` VARCHAR(64) NOT NULL DEFAULT '[0]',
 	`city` INT(6) NULL DEFAULT '3',
 	`troop` INT(6) NULL DEFAULT '0',
 	`leader` INT(3) NULL DEFAULT '50',
