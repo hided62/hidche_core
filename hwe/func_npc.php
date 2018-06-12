@@ -334,7 +334,7 @@ function processAI($no) {
                 if($nationCnt == 0 || $notFullNationCnt == 0){
                     $available = false;
                 }
-                else if(Util::randBool(sqrt(1 / $nationCnt / $notFullNationCnt))){
+                else if(Util::randBool(pow(1 / $nationCnt / pow($notFullNationCnt, 3), 1/4))){
                     //국가가 1개일 경우에는 '임관하지 않음'
                     $available = false;
                 }
