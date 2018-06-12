@@ -321,7 +321,7 @@ function processAI($no) {
         MYDB_query($query, $connect) or Error("processAI07 ".MYDB_error($connect),"");
         return;
     } elseif($general['npc'] < 5 && $general['level'] == 0) {
-        switch(Util::choiceRandomUsingWeight([10, 40, 20, 30])) {
+        switch(Util::choiceRandomUsingWeight([13, 40, 20, 27])) {
         //임관 10%
         case 0:
 

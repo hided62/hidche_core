@@ -136,7 +136,7 @@ function process_25(&$general) {
 
             $score = 1;
             if($admin['startyear']+3 > $admin['year'] && $general['npc'] > 2){
-                $score *= sqrt((100-$testNation['injury'])/100);
+                $score *= sqrt((100-max(30, $testNation['injury']))/100);
             }
 
             $score *= sqrt($allGen/$testNation['gennum']);
