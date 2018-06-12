@@ -321,9 +321,9 @@ function processAI($no) {
         MYDB_query($query, $connect) or Error("processAI07 ".MYDB_error($connect),"");
         return;
     } elseif($general['npc'] < 5 && $general['level'] == 0) {
-        switch(rand()%5) {
-        //임관 40%
-        case 0: case 1:
+        switch(Util::choiceRandomUsingWeight([10, 40, 20, 30])) {
+        //임관 10%
+        case 0:
 
             $available = true;
 
@@ -344,7 +344,7 @@ function processAI($no) {
                 $command = EncodeCommand(0, 0, 99, 25); //임관
             }
             break;
-        case 2: case 3: //거병이나 견문 40%
+        case 1: //거병이나 견문 40%
             // 초반이면서 능력이 좋은놈 위주로 1%확률로 거병
             $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
             $ratio = ($general['leader'] + $general['power'] + $general['intel']) / 3;
@@ -356,9 +356,12 @@ function processAI($no) {
                 $command = EncodeCommand(0, 0, 0, 42);
             }
             break;
-        case 4: //이동 20%
+        case 2: //이동 20%
             $paths = explode("|", $city['path']);
             $command = EncodeCommand(0, 0, $paths[rand()%count($paths)], 21);
+            break;
+        default:
+            $command = EncodeCommand(0, 0, 0, 42);
             break;
         }
         $query = "update general set turn0='$command' where no='{$general['no']}'";
