@@ -327,7 +327,7 @@ function processAI($no) {
 
             $available = true;
 
-            if($admin['startyear']+2 > $admin['year']){
+            if($admin['startyear']+3 > $admin['year']){
                 //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
                 $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
                 $notFullNationCnt = $db->queryFirstField('SELECT count(nation) FROM nation WHERE gennum < %i', GameConst::$initialNationGenLimit);
