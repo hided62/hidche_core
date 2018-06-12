@@ -345,8 +345,8 @@ function processAI($no) {
             }
             break;
         case 2: case 3: //거병이나 견문 40%
-            // 초반이면서 능력이 좋은놈 위주로 1.5%확률로 거병
-            $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) * 2 / 3;
+            // 초반이면서 능력이 좋은놈 위주로 1%확률로 거병
+            $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
             $ratio = Util::round(($general['leader'] + $general['power'] + $general['intel']) / 3);
             if($admin['startyear']+2 > $admin['year'] && $prop < $ratio && Util::randBool(0.01) && $general['makelimit'] == 0) {
                 //거병
