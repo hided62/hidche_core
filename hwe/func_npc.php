@@ -330,7 +330,11 @@ function processAI($no) {
             if($admin['startyear']+2 > $admin['year']){
                 //초기 임관 기간에서는 국가가 적을수록 임관 시도가 적음
                 $nationCnt = $db->queryFirstField('SELECT count(nation) FROM nation');
-                if(Util::randBool(1/$nationCnt)){
+                $notFullNationCnt = $db->queryFirstField('SELECT count(nation) FROM nation WHERE gennum < %i', GameConst::$initialNationGenLimit);
+                if($nationCnt == 0 || $notFullNationCnt == 0){
+                    $available = false;
+                }
+                else if(Util::randBool(sqrt(1 / $nationCnt / $notFullNationCnt))){
                     //국가가 1개일 경우에는 '임관하지 않음'
                     $available = false;
                 }
@@ -345,10 +349,10 @@ function processAI($no) {
             }
             break;
         case 1: //거병이나 견문 40%
-            // 초반이면서 능력이 좋은놈 위주로 1%확률로 거병
+            // 초반이면서 능력이 좋은놈 위주로 1.25%확률로 거병
             $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
             $ratio = ($general['leader'] + $general['power'] + $general['intel']) / 3;
-            if($admin['startyear']+2 > $admin['year'] && $prop < $ratio && Util::randBool(0.01) && $general['makelimit'] == 0) {
+            if($admin['startyear']+2 > $admin['year'] && $prop < $ratio && Util::randBool(0.0125) && $general['makelimit'] == 0) {
                 //거병
                 $command = EncodeCommand(0, 0, 0, 55);
             } else {
