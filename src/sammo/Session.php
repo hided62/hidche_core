@@ -244,7 +244,7 @@ class Session
         }
         
         $turnterm = $gameStor->turnterm;
-        $isUnited = $gameStor->isUnited != 0;
+        $isUnited = $gameStor->isunited != 0;
 
         $generalID = $general['no'];
         $generalName = $general['name'];

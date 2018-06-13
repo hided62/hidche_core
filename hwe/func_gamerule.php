@@ -1100,13 +1100,13 @@ function checkEmperior() {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $admin = $gameStor->getValues(['year', 'month', 'isUnited']);
+    $admin = $gameStor->getValues(['year', 'month', 'isunited']);
 
     $query = "select nation,name from nation where level>0";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
-    if($count == 1 && $admin['isUnited'] == 0) {
+    if($count == 1 && $admin['isunited'] == 0) {
         $nation = MYDB_fetch_array($result);
 
         $query = "select city from city where nation='{$nation['nation']}'";
@@ -1123,7 +1123,7 @@ function checkEmperior() {
 
             pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일");
 
-            $gameStor->isUnited = 2;
+            $gameStor->isunited = 2;
             $gameStor->conlimit = $gameStor->conlimit*100;
 
             $query = "select no from general where npc<2 and age>=45";

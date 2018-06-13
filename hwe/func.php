@@ -1540,7 +1540,7 @@ function checkTurn() {
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', 진입');
     
     //천통시에는 동결
-    if($gameStor->isUnited == 2) {
+    if($gameStor->isunited == 2) {
         $db->update('plock', ['plock'=>1], true);
         return;
     }
@@ -1901,7 +1901,7 @@ function updateTurntime($no) {
     $alllog = [];
     $log = [];
 
-    $admin = $gameStor->getValues(['year', 'month', 'isUnited', 'turnterm']);
+    $admin = $gameStor->getValues(['year', 'month', 'isunited', 'turnterm']);
 
     $query = "select no,name,name2,nation,troop,age,turntime,killturn,level,deadyear,npc,npc_org,affinity,npcid from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1920,7 +1920,7 @@ function updateTurntime($no) {
             $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name2']}</>{$josaYi} <Y>{$general['name']}</>의 육체에서 <S>유체이탈</>합니다!";
             pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
 
-            if($admin['isUnited'] == 0) {
+            if($admin['isunited'] == 0) {
                 CheckHall($no);
             }
         } else {
@@ -2039,7 +2039,7 @@ function updateTurntime($no) {
     }
 
     if($general['age'] >= 80 && $general['npc'] == 0) {
-        if($admin['isUnited'] == 0) {
+        if($admin['isunited'] == 0) {
             CheckHall($no);
         }
 
