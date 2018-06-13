@@ -514,7 +514,7 @@ group by A.nation
 
         $josaYi = JosaUtil::pick($name2, '이');
         $josaWa = JosaUtil::pick($name1, '와');
-        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【개전】</b></><D><b>$name1</b></>{$josaWa}과 <D><b>$name2</b></>{$josaYi} <R>전쟁</>을 시작합니다.";
+        $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【개전】</b></><D><b>$name1</b></>{$josaWa} <D><b>$name2</b></>{$josaYi} <R>전쟁</>을 시작합니다.";
     }
     //휴전국 로그
     $query = "select A.me as me,A.you as you,A.term as term1,B.term as term2 from diplomacy A, diplomacy B where A.me=B.you and A.you=B.me and A.state='0' and A.me<A.you";
