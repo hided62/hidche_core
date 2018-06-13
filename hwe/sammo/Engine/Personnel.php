@@ -5,7 +5,7 @@ use \sammo\DB;
 use \sammo\ScoutMessage;
 use \sammo\KVStorage;
 use \sammo\Json;
-
+use \sammo\GameConst;
 /**
  * 인사(등용, 추방, 임명, 망명) 헬퍼 클래스?
  * Nation 클래스가 있고 그걸 상속한 구조가 더 나을지도?
