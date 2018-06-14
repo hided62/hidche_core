@@ -7,6 +7,7 @@ class Scenario{
     private $scenarioIdx;
     private $scenarioPath;
 
+    private $iconPath = '.';
     private $data;
 
     private $year;
@@ -189,6 +190,7 @@ class Scenario{
         ];
 
         $this->gameConf = array_merge($stat);
+        $this->iconPath = $this->data['iconPath']??$default['iconPath'];
         return $this->gameConf;
     }
 
@@ -224,6 +226,10 @@ class Scenario{
 
     public function getTitle(){
         return $this->title;
+    }
+
+    public function getIconPath(){
+        return $this->iconPath;
     }
 
     public function getNPC(){
@@ -285,6 +291,17 @@ class Scenario{
 
     private function buildGenerals($env){
         $this->initFull();
+
+        
+        try{
+            $text = \file_get_contents(ServConfig::getSharedIconPath('../hook/list.json?1'));
+            $storedIcons = Json::decode($text);
+        }
+        catch(\Exception $e){
+            $storedIcons = [];
+        }
+
+        $env['stored_icons'] = $storedIcons;
 
         $remainGenerals = [];
         foreach($this->generals as $general){

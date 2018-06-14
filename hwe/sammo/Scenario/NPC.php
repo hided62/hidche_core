@@ -145,7 +145,7 @@ class NPC{
         $name = 'ⓝ'.$this->name;
 
         $picturePath = $this->picturePath;
-        if($env['show_img_level'] < 3 || $picturePath === null){
+        if($env['show_img_level'] < 3){
             $picturePath = 'default.jpg';
         }
         else if(is_numeric($picturePath)){
@@ -155,6 +155,22 @@ class NPC{
             else{
                 $picturePath = "{$picturePath}.jpg";
             }
+        }
+        else if($picturePath !== null){
+            $picturePath = ($env['icon_path']??'.').'/'.$picturePath;
+        }
+        else if($picturePath === null && \key_exists('stored_icons', $env)){
+            $target = $env['stored_icons']??[];
+            $target = $target[$env['icon_path']??'.']??[];
+            $picturePath = $target[$this->name]??null;
+            if($picturePath){
+                $picturePath = ($env['icon_path']??'.').'/'.$picturePath;
+            }
+        }
+
+
+        if($picturePath === null){
+            $picturePath = 'default.jpg';
         }
 
         $city = $this->locatedCity;

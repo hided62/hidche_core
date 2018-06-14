@@ -166,6 +166,7 @@ class ResetHelper{
         $env = [
             'scenario'=>$scenario,
             'scenario_text'=>$scenarioObj->getTitle(),
+            'icon_path'=>$scenarioObj->getIconPath(),
             'startyear'=>$startyear,
             'year'=> $year,
             'month'=> $month,
