@@ -21,8 +21,46 @@ xlsxpath = sys.argv[1]
 print(xlsxpath)
 wb = xlrd.open_workbook(xlsxpath)
 
+def parseConfig(configSheet):
+    result = {}
+    for i in range(1, configSheet.nrows):
+        row = configSheet.row_values(i)
+        if len(row) < 4:
+            continue
+        varName = row[0]
+        value = row[3]
+
+        if isinstance(value, float) and float(int(value)) == value:
+            value = int(value)
+        elif value == '':
+            continue
+
+        if isinstance(value, str):
+            values = value.split('\n')
+            if len(values) > 1:
+                value = values
+
+        varNames = varName.split('.')
+        target = result
+        for idx, name in enumerate(varNames):
+            if idx + 1 == len(varNames):
+                target[name] = value
+                break
+            if not name in target:
+                target[name] = {}
+            target = target[name]
+    
+    if 'useCharSetting' in result:
+        if result['useCharSetting'] > 0:
+            result['fiction'] = 0
+        else:
+            result['fiction'] = 1
+        del result['useCharSetting']
+    return result
+
 def extractNationList(nationSheet):
     jsonNationList = []
+    nationChiefInfo = {}
 
     for i in range(1, nationSheet.nrows):
         row = nationSheet.row_values(i)
@@ -33,10 +71,18 @@ def extractNationList(nationSheet):
             name, color, gold, rice, desc, tech, nationType, nationLevel = row
             cities = ''
         else:
-            row = row[:9]
-            name, color, gold, rice, desc, tech, nationType, nationLevel, cities = row
+            name, color, gold, rice, desc, tech, nationType, nationLevel, cities = row[:9]
 
-
+        nationChiefInfo[name] = {}
+        if len(row) >= 10:
+            cheif0 = str(row[9])
+            if cheif0:
+                nationChiefInfo[name][cheif0] = 12
+        if len(row) >= 11:
+            cheif1 = str(row[10])
+            if cheif1:
+                nationChiefInfo[name][cheif1] = 11
+        
         
         cities = list(map(str.strip, row[8].split(',')))
         
@@ -56,15 +102,16 @@ def extractNationList(nationSheet):
         
         jsonNationList.append([name, color, gold, rice, desc, tech, nationType, nationLevel, cities])
 
-    return jsonNationList
+    return jsonNationList, nationChiefInfo
     
 
-def extractGeneralList(generalSheet, nationList={}):
+def extractGeneralList(generalSheet, nationList={}, nationChiefInfo={}):
     nationInv = {'재야':0}
     for idx, nation in enumerate(nationList, 1):
         nationInv[nation[0]] = idx
 
     json_general_list = []
+    names = {}
     for i in range(1, generalSheet.nrows):
         row = generalSheet.row_values(i)
         if len(row) < 10:
@@ -90,13 +137,17 @@ def extractGeneralList(generalSheet, nationList={}):
         elif row[2] == '':
             row[2] = None
         
+        level = 0
+
         #국가
         
         row[3] = str(row[3]).strip()
         if row[3] in nationInv:
             pass
+            level = 1
         elif row[3].isdigit() and 0 < int(row[3]) < len(nationList):
             row[3] = nationList[row[3]][0]
+            level = 1
         else:
             row[3] = 0
 
@@ -136,16 +187,39 @@ def extractGeneralList(generalSheet, nationList={}):
         if row[12] == '':
             row.pop()
 
-        row.insert(8, 0)
+        if level and row[3] in nationChiefInfo:
+            nationCheifDetail = nationChiefInfo[row[3]]
+            if row[1] in nationCheifDetail:
+                level = nationCheifDetail[row[1]]
+        
+        row.insert(8, level)
         json_general_list.append(row)
-    return json_general_list
+
+        if row[1] in names:
+            raise RuntimeError('%s가 이미 있습니다!'%row[1])
+        names[row[1]] = 1
+    return json_general_list, names
 
 
-nationInfo = extractNationList(wb.sheet_by_name('국가'))
+if '환경 변수' in wb.sheet_names():
+    config = parseConfig(wb.sheet_by_name('환경 변수'))
+else:
+    config = {
+        'title':'타이틀'
+    }
 
-generalList = extractGeneralList(wb.sheet_by_name('장수 목록'), nationInfo)
+if '국가' in wb.sheet_names():
+    nationInfo, nationChiefInfo = extractNationList(wb.sheet_by_name('국가'))
+else:
+    nationInfo = []
+    nationChiefInfo = {}
+
+generalList, names = extractGeneralList(wb.sheet_by_name('장수 목록'), nationInfo, nationChiefInfo)
 
 with open('%s.json'%xlsxpath, 'wt', encoding='utf-8') as fp:
+    fp.write(json.dumps(config, ensure_ascii=False, indent='    ')[:-2])
+    fp.write(',\n')
+        
     fp.write('    "nation":[\n        ')
     fp.write(',\n        '.join([json.dumps(nation, ensure_ascii=False) for nation in nationInfo]))
     fp.write('\n    ],\n')
@@ -154,10 +228,16 @@ with open('%s.json'%xlsxpath, 'wt', encoding='utf-8') as fp:
 
     fp.write('    "general":[\n        ')
     fp.write(',\n        '.join([json.dumps(general, ensure_ascii=False) for general in generalList]))
-    fp.write('\n    ],\n')
+    fp.write('\n    ]')
 
     if '확장 장수 목록' in wb.sheet_names():
-        generalExList = extractGeneralList(wb.sheet_by_name('확장 장수 목록'), nationInfo)
-        fp.write('    "general_ex":[\n        ')
+        generalExList, names2 = extractGeneralList(wb.sheet_by_name('확장 장수 목록'), nationInfo, nationChiefInfo)
+
+        for name in names2:
+            if name in names:
+                raise RuntimeError('%s가 일반 장수 및 확장 장수에 모두 있습니다!'%name)
+
+        fp.write(',\n    "general_ex":[\n        ')
         fp.write(',\n        '.join([json.dumps(general, ensure_ascii=False) for general in generalExList]))
-        fp.write('\n    ],\n')
+        fp.write('\n    ]')
+    fp.write('\n}')
