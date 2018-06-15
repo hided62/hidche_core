@@ -170,7 +170,7 @@ class ScoutMessage extends Message{
         return self::DECLINED;
     }
 
-    public static function buildScoutMessage(int $srcGeneralID, int $destGeneralID, &$reason = null, \DateTime $date = null): Message{
+    public static function buildScoutMessage(int $srcGeneralID, int $destGeneralID, &$reason = null, \DateTime $date = null){
         if($srcGeneralID == $destGeneralID){
             if($reason !== null){
                 $reason = '같은 장수에게 등용장을 보낼 수 없습니다';
