@@ -150,13 +150,16 @@ class NPC{
         }
         else if(is_numeric($picturePath)){
             if($picturePath < 0){
-                $picturePath = 'default.jpg';
+                $picturePath = null;
+            }
+            else if(\key_exists($picturePath, $env['stored_icons']['.']??[])){
+                $picturePath = $env['stored_icons']['.'][$picturePath];
             }
             else{
-                $picturePath = "{$picturePath}.jpg";
+                $picturePath = null;
             }
         }
-        else if($picturePath !== null){
+        else if($picturePath !== null && in_array($picturePath, $env['stored_icons'][$env['icon_path']??'.']??[])){
             $picturePath = ($env['icon_path']??'.').'/'.$picturePath;
         }
         else if($picturePath === null && \key_exists('stored_icons', $env)){
