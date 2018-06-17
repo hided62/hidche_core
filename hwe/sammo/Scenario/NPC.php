@@ -177,6 +177,9 @@ class NPC{
         }
 
         $city = $this->locatedCity;
+        if($city !== null){
+            $city = CityHelper::getCityByName($city)['id']??null;
+        }
         if($city === null){
             if($nationID == 0 || !CityHelper::getAllNationCities($nationID)){
                 $cityObj = Util::choiceRandom(CityHelper::getAllCities());
@@ -187,9 +190,7 @@ class NPC{
             '@phan-var array<string,string|int> $cityObj';
             $city = $cityObj['id'];
         }
-        else{
-            $city = CityHelper::getCityByName($city)['id'];
-        }
+        
 
         $experience = $age * 100;
         $dedication = $age * 100;

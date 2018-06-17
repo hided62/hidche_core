@@ -76,7 +76,11 @@ class CityHelper{
             self::generateCache();
         }
 
-        return self::$listInv[$cityName];
+        $city = self::$listInv[$cityName]??null;
+        if($city === null){
+            trigger_error("$cityName 에 해당하는 도시가 없습니다.");
+        }
+        return $city;
     }
 
     
