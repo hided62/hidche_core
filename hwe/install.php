@@ -9,7 +9,14 @@ if(!class_exists('\sammo\DB')){
 }
 
 $session = Session::requireLogin();
-if($session->userGrade < 5){
+
+$serverName = DB::prefix();
+$serverAcl = $session->acl[$serverName]??[];
+$allowReset = in_array('reset', $serverAcl);
+$allowFullReset = in_array('fullReset',$serverAcl);
+$allowReset |= $allowFullReset;
+
+if($session->userGrade < 5 && !$allowReset){
     die('관리자 아님');
 }
 

@@ -8,6 +8,7 @@ namespace sammo;
  * @property string $userName  유저명
  * @property int    $userGrade 유저등급
  * @property string $ip        IP
+ * @property array  $acl       권한
  */
 class Session
 {
@@ -19,7 +20,8 @@ class Session
         'userGrade'=>true,
         'writeClosed'=>true,
         'generalID'=>true,
-        'generalName'=>true
+        'generalName'=>true,
+        'acl'=>true
     ];
 
     const GAME_KEY_DATE = '_g_loginDate';
@@ -161,13 +163,14 @@ class Session
         return Util::array_get($_SESSION[$name]);
     }
 
-    public function login(int $userID, string $userName, int $grade): Session
+    public function login(int $userID, string $userName, int $grade, array $acl): Session
     {
         $this->set('userID', $userID);
         $this->set('userName', $userName);
         $this->set('ip', Util::get_client_ip(true));
         $this->set('time', time());
         $this->set('userGrade', $grade);
+        $this->set('acl', $acl);
         $this->set('access_token', null);
         return $this;
     }
@@ -185,6 +188,7 @@ class Session
         $this->set('userID', null);
         $this->set('userName', null);
         $this->set('userGrade', null);
+        $this->set('acl', null);
         $this->set('time', time());
         return $this;
     }

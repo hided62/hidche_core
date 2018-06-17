@@ -18,50 +18,55 @@ $server = Util::getReq('server', 'string', '');
 
 $db = RootDB::db();
 $userGrade = $session->userGrade;
+$acl = $session->acl;
 $session->setReadOnly();
 
-if($userGrade < 5) {
+if($userGrade < 5 && !$acl) {
     Json::die([
         'result'=>'FAIL',
         'msg'=>'운영자 권한이 없습니다.'
     ]);
 }
 
-function doServerModeSet($server, $action, &$response){
+function doServerModeSet($server, $action, &$response, $session){
+    
     $serverList = AppConf::getList();
     $settingObj = $serverList[$server];
+    $serverAcl = $session->acl[$server]??[];
+    $userGrade = $session->userGrade;
 
     $serverDir = $settingObj->getShortName();
     $serverPath = $settingObj->getBasePath();
     $realServerPath = realpath(dirname(__FILE__)).'/'.$serverPath;
 
-    if($action == 'close') { //폐쇄
+    if($action == 'close' && ($userGrade >= 5 || in_array('openClose', $serverAcl))) { //폐쇄
         return $settingObj->closeServer();
-    } elseif($action == 'reset') {//리셋
+    } elseif($action == 'reset' && $userGrade >= 6) {//리셋
         //FIXME: reset, reset_full 구현
         if(file_exists($serverPath.'/d_setting/DB.php')){
             @unlink($serverPath.'/d_setting/DB.php');
         }
         
         $response['installURL'] = $serverDir."/install.php";
-    } elseif($action == 'open') {//오픈
+    } elseif($action == 'open' && ($userGrade >= 5 || in_array('openClose', $serverAcl))) {//오픈
         return $settingObj->openServer();
     } else{
+        $response['msg'] = '올바르지 않은 요청입니다';
         return false;
     }
     return true;
 }
 
-function doAdminPost($action, $notice, $server){
+function doAdminPost($action, $notice, $server, $session){
     $response = ['result' => 'FAIL'];
 
-    if($action == 'notice') {
+    if($action == 'notice' && ($userGrade >= 5 || in_array('notice', $serverAcl))) {
         RootDB::db()->update('system', ['NOTICE'=>$notice], true);
         $response['result'] = 'SUCCESS';
         return $response;
     } 
     
-    if(doServerModeSet($server, $action, $response)){
+    if(doServerModeSet($server, $action, $response, $session)){
         $response['result'] = 'SUCCESS';
         return $response;
     }
@@ -70,6 +75,6 @@ function doAdminPost($action, $notice, $server){
 
 }
 
-$response = doAdminPost($action, $notice, $server);
+$response = doAdminPost($action, $notice, $server, $session);
 
 Json::die($response);

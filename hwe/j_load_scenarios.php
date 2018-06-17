@@ -4,7 +4,14 @@ namespace sammo;
 require "lib.php";
 require "func.php";
 $session = Session::requireLogin([])->setReadOnly();
-if($session->userGrade < 5){
+
+$serverName = DB::prefix();
+$serverAcl = $session->acl[$serverName]??[];
+$allowReset = in_array('reset', $serverAcl);
+$allowFullReset = in_array('fullReset',$serverAcl);
+$allowReset |= $allowFullReset;
+
+if($session->userGrade < 5 && !$allowReset){
     Json::die([
         'result'=>false,
         'reason'=>'관리자가 아닙니다.'

@@ -5,7 +5,21 @@ include "lib.php";
 include "func.php";
 
 $session = Session::requireLogin([])->setReadOnly();
-if($session->userGrade < 5){
+
+if(!class_exists('\\sammo\\DB')){
+    Json::die([
+        'result'=>false,
+        'reason'=>'DB리셋 필요'
+    ]);
+}
+
+$serverName = DB::prefix();
+$serverAcl = $session->acl[$serverName]??[];
+$allowReset = in_array('reset', $serverAcl);
+$allowFullReset = in_array('fullReset',$serverAcl);
+$allowReset |= $allowFullReset;
+
+if($session->userGrade < 5 && !$allowReset){
     Json::die([
         'result'=>false,
         'reason'=>'관리자 아님'
@@ -35,6 +49,30 @@ if(!$v->validate()){
     Json::die([
         'result'=>false,
         'reason'=>$v->errorStr()
+    ]);
+}
+
+$allowReset = true;
+if($session->userGrade < 5 && !$allowFullReset){
+    //리셋 가능한 조건인지 테스트
+    $allowReset = false;
+
+    if(file_exists(__dir__.'/.htaccess')){
+        $allowReset = true;
+    }
+    else{
+        $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        if($gameStor->isunited){
+            $allowReset = true;
+        }
+    }
+}
+
+if(!$allowReset){
+    Json::die([
+        'result'=>false,
+        'reason'=>'부족한 권한: 서버가 닫혀있거나, 천통되어 있을 경우에만 리셋 가능합니다.'
     ]);
 }
 
@@ -83,6 +121,7 @@ if($reserve_open){
         ]),
         'date'=>$reserve_open->format('Y-m-d H:i:s')
     ]);
+    AppConf::getList()[DB::prefix()]->closeServer();
     Json::die([
         'result'=>true,
         'reason'=>'예약'

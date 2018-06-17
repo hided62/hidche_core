@@ -4,8 +4,7 @@ namespace sammo;
 require(__dir__.'/../vendor/autoload.php');
 
 $session = Session::requireLogin([])->setReadOnly();
-
-if($session->userGrade < 5){
+if($session->userGrade < 5 && !$session->acl){
     Json::die([
         'result'=>false,
         'reason'=>'권한이 부족합니다.'
@@ -83,6 +82,7 @@ foreach (AppConf::getList() as $setting) {
 }  
 
 Json::die([
+    'acl' => $session->acl,
     'server' => $server,
     'grade' => $session->userGrade
 ]);

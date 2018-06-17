@@ -44,12 +44,12 @@ require(__dir__.'/../vendor/autoload.php');
         <a href="entrance.php"><button id="btn_back1" class="with_skin">돌아가기</button></a>
     </caption>
     <colgroup>
-        <col style="width:80px;" />
-        <col style="width:80px;"/>
-        <col style="width:80px;"/>
-        <col style="width:80px;"/>
-        <col style="width:80px;"/>
-        <col/>
+        <col style="width:80px;min-width:80px;" />
+        <col style="width:80px;min-width:80px;"/>
+        <col style="width:80px;min-width:80px;"/>
+        <col style="width:80px;min-width:80px;"/>
+        <col style="width:80px;min-width:80px;"/>
+        <col style="min-width:80px;"/>
     </colgroup>
     <thead>
         <tr>
@@ -59,19 +59,24 @@ require(__dir__.'/../vendor/autoload.php');
     <tbody>
         <tr>
             <th class="bg1">ID</th>
-            <td>
+            <td colspan="5">
                 <span id="slot_id"></span>
-                
             </td>
+        </tr>
+        <tr>
             <th class="bg1">닉네임</th>
-            <td style="height:36px;">
+            <td colspan="5" style="height:36px;">
                 <span id="slot_nickname"></span>
             </td>
+        </tr>
+        <tr>
             <th class="bg1">등급</th>
-            <td>
+            <td colspan="2">
                 <span id="slot_grade"></span>
             </td>
-            
+            <td colspan="3">
+                <span id="slot_acl"></span>
+            </td>
         </tr>
         <tr>
             <th class="bg1">가입일시</th>

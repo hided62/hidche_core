@@ -11,6 +11,7 @@ $templates = new \League\Plates\Engine(__dir__.'/templates');
 $db = RootDB::db();
 $notice = $db->queryFirstField('SELECT `NOTICE` FROM `system` WHERE `NO`=1');
 $userGrade = $session->userGrade;
+$acl = $session->acl;
 ?>
 <!DOCTYPE html>
 <html>
@@ -34,7 +35,7 @@ $userGrade = $session->userGrade;
         <?=WebUtil::printJS('../d_shared/menu.js')?>
         <?=WebUtil::printJS('../js/title.js')?>
 
-<?php if ($userGrade >= 5): ?>
+<?php if ($userGrade >= 5 || $acl): ?>
         <!-- 운영자 -->
         <?=WebUtil::printCSS('../css/admin_server.css')?>
         <?=WebUtil::printJS('../js/admin_server.js')?>
@@ -110,8 +111,9 @@ if ($userGrade >= 5) {
     </div>
 </div>
 
+
 <?php
-if ($userGrade >= 5) {
+if ($userGrade >= 5 || $acl) {
     echo $templates->render('server_panel', []);
 }
 ?>

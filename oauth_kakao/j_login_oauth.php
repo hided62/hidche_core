@@ -91,7 +91,7 @@ if(!$email){
 
 
 $userInfo = $RootDB->queryFirstRow(
-    'SELECT `no`, `id`, `name`, `grade`, `delete_after` from member where email=%s',$email);
+    'SELECT `no`, `id`, `name`, `grade`, `delete_after`, `acl` from member where email=%s',$email);
 
 if(!$userInfo){
     $restAPI->unlink();
@@ -132,7 +132,7 @@ $RootDB->insert('member_log',[
     ])
 ]);
 
-$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade']);
+$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], Json::decode($userInfo['acl']??'{}'));
 Json::die([
     'result'=>true,
     'reason'=>'로그인 되었습니다.'

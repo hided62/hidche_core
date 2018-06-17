@@ -21,7 +21,7 @@ if(!$username || !$password){
 }
 
 $userInfo = $RootDB->queryFirstRow(
-    'SELECT `no`, `id`, `name`, `grade`, `delete_after` '.
+    'SELECT `no`, `id`, `name`, `grade`, `delete_after`, `acl` '.
     'from member where id=%s_username AND '.
     'pw=sha2(concat(salt, %s_password, salt), 512)',[
         'username'=>$username,
@@ -72,7 +72,7 @@ $RootDB->insert('member_log',[
 
 
 
-$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade']);
+$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], Json::decode($userInfo['acl']??'{}'));
 Json::die([
     'result'=>true,
     'reason'=>'로그인 되었습니다.'

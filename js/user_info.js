@@ -12,6 +12,7 @@ function fillUserInfo(result){
     $('#slot_id').html(result.id);
     $('#slot_nickname').html(result.name);
     $('#slot_grade').html(result.grade);
+    $('#slot_acl').html(result.acl);
     $('#slot_icon').attr('src', result.picture);
     $('#global_salt').val(result.global_salt);
     $('#slot_join_date').html(result.join_date);

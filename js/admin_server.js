@@ -1,16 +1,16 @@
 
 var serverAdminTemplate = '\
-<tr class="bg0" data-server_name="<%name%>" data-is_root="<%isRoot%>" data-git-path="<%lastGitPath%>">\
+<tr class="bg0 server_admin_<%name%>" data-server_name="<%name%>" data-is_root="<%isRoot%>" data-git-path="<%lastGitPath%>">\
     <th style="color:<%color%>;"><%korName%>(<%name%>)</th>\
     <td><%status%></td>\
     <td><%version%></td>\
-    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'close\');">폐쇄</button></td>\
-    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'open\');">오픈</button></td>\
-    <td><a class="just_link" href="../<%name%>/install.php"><button class="with_skin valid_if_set with_border obj_fill">리셋</button></a></td>\
-    <td><a class="just_link" href="../<%name%>/install_db.php"><button class="with_skin valid_if_installed only_admin with_border obj_fill">하드리셋</button></a></td>\
-    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminClosedLogin(this);">폐쇄중 로그인</button></td>\
-    <td><button class="with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminOpen119(this);">서버119</button></td>\
-    <td><button class="with_skin with_border obj_fill" onclick="serverUpdate(this);">업데이트</button></td>\
+    <td><button class="serv_act_close with_skin valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'close\');">폐쇄</button></td>\
+    <td><button class="serv_act_open with_skin valid_if_set with_border obj_fill" onclick="modifyServerStatus(this, \'open\');">오픈</button></td>\
+    <td><a class="just_link" href="../<%name%>/install.php"><button class="serv_act_reset with_skin valid_if_set with_border obj_fill">리셋</button></a></td>\
+    <td><a class="just_link" href="../<%name%>/install_db.php"><button class="serv_act_hard_reset with_skin valid_if_installed only_admin with_border obj_fill">하드리셋</button></a></td>\
+    <td><button class="serv_act_login_close with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminClosedLogin(this);">폐쇄중 로그인</button></td>\
+    <td><button class="serv_act_119 with_skin valid_if_set with_border obj_fill" onclick="Entrance_AdminOpen119(this);">서버119</button></td>\
+    <td><button class="serv_act_update with_skin with_border obj_fill" onclick="serverUpdate(this);">업데이트</button></td>\
 </tr>\
 ';
 
@@ -81,12 +81,38 @@ function drawServerAdminList(serverList){
 
         var $tr = $(TemplateEngine(serverAdminTemplate, server));
         $table.append($tr);
+        if(serverList.grade < 4){
+            $tr.find('button').prop('disabled', true);
+        }
         if(!server.valid){
             $tr.find('.valid_if_set').prop('disabled', true);
         }
         if(!server.installed){
             $tr.find('.valid_if_installed').prop('disabled', true);
         }
+
+        var aclByServer = serverList.acl[server.name];
+        $.each(aclByServer, function(idx, action){
+            console.log(action);
+            if(action == 'update'){
+                if(!server.installed){
+                    return true;
+                }
+                $tr.find('.serv_act_update').prop('disabled', false);
+            }
+            else if(action == 'openClose'){
+                if(!server.valid){
+                    return true;
+                }
+                $tr.find('.serv_act_open, .serv_act_close').prop('disabled', false);
+            }
+            else if(action == 'reset'){
+                if(!server.installed){
+                    return true;
+                }
+                $tr.find('.serv_act_reset').prop('disabled', false);
+            }
+        });
     });
     window.adminGrade = serverList.grade;
     if(serverList.grade == 5){
