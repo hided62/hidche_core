@@ -44,7 +44,7 @@ if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
     ], 'owner=%i', $userID);
 }
 
-$admin = $gameStor->getValues(['develcost','online','conlimit','tournament','tnmt_type','turnterm','scenario','scenario_text','extended_general','fiction','npcmode','vote']);
+$admin = $gameStor->getValues(['develcost','online','conlimit','tournament','tnmt_type','turnterm','scenario','scenario_text','extended_general','fiction','npcmode','vote','vote_title']);
 
 $plock = $db->queryFirstField('SELECT plock FROM plock LIMIT 1');
 
@@ -181,11 +181,11 @@ echo "
 ";
 
 $vote = $admin['vote']?:[''];
-$vote[0] = Tag2Code($vote[0]);
+$vote_title = Tag2Code($admin['vote_title']??'-');
 if ($vote[0] == "") {
     echo "<font color=magenta>진행중 설문 없음</font>";
 } else {
-    echo "<marquee scrollamount=3><font color=cyan>설문 진행중</font> : $vote[0]</marquee>";
+    echo "<marquee scrollamount=3><font color=cyan>설문 진행중</font> : $vote_title</marquee>";
 }
 
 
