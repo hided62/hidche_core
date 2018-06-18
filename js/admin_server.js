@@ -25,13 +25,25 @@ function serverUpdate(caller){
     if(typeof isRoot !== 'boolean'){
         isRoot = (isRoot != 'false');
     };
+
+    var allowFullUpdate = (server in window.aclList && window.aclList[server].indexOf('fullUpdate')>=0);
+    allowFullUpdate |= window.adminGrade > 5;
+
+    var allowUpdate = (server in window.aclList && window.aclList[server].indexOf('update')>=0);
+    allowUpdate |= window.adminGrade >= 5;
+    allowUpdate |= allowFullUpdate;
     
+    if(!allowUpdate){
+        alert('권한이 없습니다!');
+        return;
+    }
+
     if(isRoot){
         if(!confirm('서버 라이브러리, 루트 서버에 대해 git pull을 실행합니다.')){
             return;
         }
     }
-    else if(window.adminGrade < 6){
+    else if(!allowFullUpdate){
         if (!confirm('다음 git tree-ish 주소로 업데이트를 시도합니다 : ' + target)) {
             return;
         }
@@ -94,7 +106,7 @@ function drawServerAdminList(serverList){
         var aclByServer = serverList.acl[server.name];
         $.each(aclByServer, function(idx, action){
             console.log(action);
-            if(action == 'update'){
+            if(action == 'update' || action == 'fullUpdate'){
                 if(!server.installed){
                     return true;
                 }
@@ -115,8 +127,8 @@ function drawServerAdminList(serverList){
         });
     });
     window.adminGrade = serverList.grade;
-    if(serverList.grade == 5){
-        
+    window.aclList = serverList.acl;
+    if(serverList.grade <= 5){
         $table.find('.only_admin').prop('disabled', true);
     }
 }

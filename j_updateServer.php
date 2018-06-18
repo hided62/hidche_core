@@ -19,12 +19,6 @@ function getVersion($target=null){
 }
 
 $session = Session::requireLogin(null)->setReadOnly();
-if($session->userGrade < 5){
-    Json::die([
-        'result'=>false,
-        'reason'=>'권한이 충분하지 않습니다'
-    ]);
-}
 
 $request = $_POST + $_GET;
 
@@ -48,7 +42,24 @@ if(!$v->validate()){
 $target = Util::getReq('target');
 
 $server = basename($request['server']);
-if($session->userGrade <= 5 || !$target){
+
+$allowFullUpdate = in_array('fullUpdate', $session->acl[$server]??[]);
+$allowFullUpdate |= $session->userGrade >= 6;
+
+$allowUpdate = in_array('update', $session->acl[$server]??[]);
+$allowUpdate |= $session->userGrade >= 5;
+$allowUpdate |= $allowFullUpdate;
+
+
+if(!$allowUpdate){
+    Json::die([
+        'result'=>false,
+        'reason'=>'권한이 충분하지 않습니다'
+    ]);
+}
+
+
+if(!$allowFullUpdate || !$target){
     $target = $storage->$server;
     if($target){
         $target = $target[0];
