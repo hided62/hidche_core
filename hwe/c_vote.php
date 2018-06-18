@@ -16,6 +16,9 @@ extractMissingPostToGlobals();
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
+$isVoteAdmin = in_array('vote', $session->acl[DB::prefix()]??[]);
+$isVoteAdmin |= $session->userGrade >= 5;
+
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
@@ -47,7 +50,7 @@ else if($btn == "댓글" && trim($comment) != "") {
     $gameStor->votecomment = $admin['votecomment'];
 }
 
-if($session->userGrade < 5){
+if(!$isVoteAdmin){
     header('location:a_vote.php');
     die();
 }
