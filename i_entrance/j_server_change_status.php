@@ -60,7 +60,10 @@ function doServerModeSet($server, $action, &$response, $session){
 function doAdminPost($action, $notice, $server, $session){
     $response = ['result' => 'FAIL'];
 
-    if($action == 'notice' && ($userGrade >= 5 || in_array('notice', $serverAcl))) {
+    $globalAcl = $session->acl['global']??[];
+    $userGrade = $session->userGrade;
+
+    if($action == 'notice' && ($userGrade >= 5 || in_array('notice', $globalAcl))) {
         RootDB::db()->update('system', ['NOTICE'=>$notice], true);
         $response['result'] = 'SUCCESS';
         return $response;
