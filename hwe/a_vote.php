@@ -19,8 +19,8 @@ $query = "select no,vote from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
-$admin = $gameStor->getValues(['develcost','voteopen','vote','votecomment']);
-
+$admin = $gameStor->getValues(['develcost','voteopen','vote_title','vote','votecomment']);
+$vote_title = $admin['vote_title']??'-';
 $vote = $admin['vote']?:['-'];
 
 ?>
@@ -70,11 +70,11 @@ if ($isVoteAdmin) {
     ";
 }
 
-$vote[0] = Tag2Code($vote[0]);
+$vote_title = Tag2Code($vote_title);
 echo "
     <tr>
         <td colspan=2 width=148 align=center id=bg1>제 목</td>
-        <td width=848 align=left>&nbsp;{$vote[0]}</td>
+        <td width=848 align=left>&nbsp;{$vote_title}</td>
     </tr>
 ";
 

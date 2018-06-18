@@ -23,7 +23,7 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
-$admin = $gameStor->getValues(['develcost', 'cost', 'vote', 'votecomment']);
+$admin = $gameStor->getValues(['develcost', 'cost', 'vote_title', 'vote', 'votecomment']);
 
 $query = "select no,vote,name,nation,horse,weap,book,item,npc from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -58,19 +58,21 @@ if(!$isVoteAdmin){
 
 if($btn == "수정") {
     if($title != "") {
-        $vote = $admin['vote']?:[];
-        $vote[0] = $title;
-        $gameStor->vote = $vote;
+        $gameStor->vote_title = $title;
     }
 } elseif($btn == "추가") {
     if($str != "") {
+        if(!$admin['vote']){
+            $admin['vote'] = [];
+        }
         $admin['vote'][] = $str;
         $gameStor->vote=$admin['vote'];
     }
 } elseif($btn == "리셋") {
     $gameStor->voteopen=1;
-    $gameStor->vote='';
-    $gameStor->votecomment='';
+    $gameStor->vote=['-'];
+    $gameStor->vote_title = '-';
+    $gameStor->votecomment=[];
 
     $query = "update general set vote='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
