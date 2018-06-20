@@ -17,7 +17,8 @@
         "vlucas/valitron": "^1.4",
         "php-extended/php-tail": "^2.1",
         "pguardiario/phpuri": "^1.0",
-        "symfony/lock": "^4.1"
+        "symfony/lock": "^4.1",
+        "ezyang/htmlpurifier": "^4.10"
     },
     "autoload": {
         "psr-4": {

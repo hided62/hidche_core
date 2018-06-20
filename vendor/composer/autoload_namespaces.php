@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'utilphp\\' => array($vendorDir . '/brandonwamboldt/utilphp/src'),
+    'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
 );

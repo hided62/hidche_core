@@ -9,6 +9,7 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
     public static $files = array (
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '5b154887902198b16314243c6e0e3e19' => __DIR__ . '/..' . '/pguardiario/phpuri/phpuri.php',
         '870dc64919afa8b0f700701bb2c6a783' => __DIR__ . '/../..' . '/f_config/config.php',
@@ -120,6 +121,13 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
             'utilphp\\' => 
             array (
                 0 => __DIR__ . '/..' . '/brandonwamboldt/utilphp/src',
+            ),
+        ),
+        'H' => 
+        array (
+            'HTMLPurifier' => 
+            array (
+                0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
             ),
         ),
     );
