@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a329d39be5161c87438d41f9adf4417b",
+    "content-hash": "1414d4ab0c85125f75e200bf7231489d",
     "packages": [
         {
             "name": "brandonwamboldt/utilphp",
@@ -90,16 +90,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.3.2",
+            "version": "6.3.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "68d0ea14d5a3f42a20e87632a5f84931e2709c90"
+                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/68d0ea14d5a3f42a20e87632a5f84931e2709c90",
-                "reference": "68d0ea14d5a3f42a20e87632a5f84931e2709c90",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/407b0cb880ace85c9b63c5f9551db498cb2d50ba",
+                "reference": "407b0cb880ace85c9b63c5f9551db498cb2d50ba",
                 "shasum": ""
             },
             "require": {
@@ -109,7 +109,7 @@
             },
             "require-dev": {
                 "ext-curl": "*",
-                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4",
+                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
                 "psr/log": "^1.0"
             },
             "suggest": {
@@ -151,7 +151,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2018-03-26T16:33:04+00:00"
+            "time": "2018-04-22T15:46:56+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -271,16 +271,16 @@
         },
         {
             "name": "leafo/scssphp",
-            "version": "v0.7.5",
+            "version": "v0.7.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/leafo/scssphp.git",
-                "reference": "8b538d828bbb75276974605c4a1a435e939da74e"
+                "reference": "585f6ae84de62ffecf69c23805f25d78d7e4b794"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/leafo/scssphp/zipball/8b538d828bbb75276974605c4a1a435e939da74e",
-                "reference": "8b538d828bbb75276974605c4a1a435e939da74e",
+                "url": "https://api.github.com/repos/leafo/scssphp/zipball/585f6ae84de62ffecf69c23805f25d78d7e4b794",
+                "reference": "585f6ae84de62ffecf69c23805f25d78d7e4b794",
                 "shasum": ""
             },
             "require": {
@@ -319,7 +319,7 @@
                 "scss",
                 "stylesheet"
             ],
-            "time": "2018-02-09T02:04:21+00:00"
+            "time": "2018-05-24T02:18:53+00:00"
         },
         {
             "name": "league/plates",
@@ -455,54 +455,6 @@
             "time": "2017-06-19T01:22:40+00:00"
         },
         {
-            "name": "paragonie/random_compat",
-            "version": "v2.0.12",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "258c89a6b97de7dfaf5b8c7607d0478e236b04fb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/258c89a6b97de7dfaf5b8c7607d0478e236b04fb",
-                "reference": "258c89a6b97de7dfaf5b8c7607d0478e236b04fb",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*|5.*"
-            },
-            "suggest": {
-                "ext-libsodium": "Provides a modern crypto API that can be used to generate random bytes."
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "lib/random.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Paragon Initiative Enterprises",
-                    "email": "security@paragonie.com",
-                    "homepage": "https://paragonie.com"
-                }
-            ],
-            "description": "PHP 5.x polyfill for random_bytes() and random_int() from PHP 7",
-            "keywords": [
-                "csprng",
-                "pseudorandom",
-                "random"
-            ],
-            "time": "2018-04-04T21:24:14+00:00"
-        },
-        {
             "name": "pguardiario/phpuri",
             "version": "1.0",
             "source": {
@@ -528,16 +480,16 @@
         },
         {
             "name": "php-extended/php-system",
-            "version": "1.3.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-extended/php-system.git",
-                "reference": "66727d5dc0a665916bd7e08bcfb9820e7be1d20c"
+                "url": "https://gitlab.com/php-extended/php-system.git",
+                "reference": "9e6b3c2009ef56dc123efc43900e40cdf217ace0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-extended/php-system/zipball/66727d5dc0a665916bd7e08bcfb9820e7be1d20c",
-                "reference": "66727d5dc0a665916bd7e08bcfb9820e7be1d20c",
+                "url": "https://gitlab.com/api/v4/projects/php-extended%2Fphp-system/repository/archive.zip?sha=9e6b3c2009ef56dc123efc43900e40cdf217ace0",
+                "reference": "9e6b3c2009ef56dc123efc43900e40cdf217ace0",
                 "shasum": ""
             },
             "type": "library",
@@ -553,31 +505,31 @@
             "authors": [
                 {
                     "name": "Anastaszor",
-                    "role": "developer"
+                    "role": "Developer"
                 }
             ],
             "description": "A generic way to find informations about the running system",
-            "homepage": "https://github.com/php-extended/php-system",
+            "homepage": "https://gitlab.com/php-extended/php-system",
             "keywords": [
                 "operating system",
                 "os",
                 "php",
                 "system"
             ],
-            "time": "2017-01-14T11:56:24+00:00"
+            "time": "2018-06-07T06:03:27+00:00"
         },
         {
             "name": "php-extended/php-tail",
-            "version": "2.1.1",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/php-extended/php-tail.git",
-                "reference": "eabf7bee64f8c30fe9b9e1176562fdb903c54ae7"
+                "url": "https://gitlab.com/php-extended/php-tail.git",
+                "reference": "19fbd3a79ccc071954f28296b2c44754335304a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-extended/php-tail/zipball/eabf7bee64f8c30fe9b9e1176562fdb903c54ae7",
-                "reference": "eabf7bee64f8c30fe9b9e1176562fdb903c54ae7",
+                "url": "https://gitlab.com/api/v4/projects/php-extended%2Fphp-tail/repository/archive.zip?sha=19fbd3a79ccc071954f28296b2c44754335304a0",
+                "reference": "19fbd3a79ccc071954f28296b2c44754335304a0",
                 "shasum": ""
             },
             "require": {
@@ -596,11 +548,11 @@
             "authors": [
                 {
                     "name": "Anastaszor",
-                    "role": "developer"
+                    "role": "Developer"
                 }
             ],
             "description": "A smart way to tail files depending of the environment",
-            "homepage": "https://github.com/php-extended/php-tail",
+            "homepage": "https://gitlab.com/php-extended/php-tail",
             "keywords": [
                 "cheat",
                 "mighty",
@@ -608,7 +560,7 @@
                 "php",
                 "tail"
             ],
-            "time": "2017-07-25T13:52:42+00:00"
+            "time": "2018-06-07T06:04:58+00:00"
         },
         {
             "name": "psr/http-message",
@@ -752,22 +704,21 @@
         },
         {
             "name": "symfony/lock",
-            "version": "v3.4.9",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/lock.git",
-                "reference": "3a707193326d31603824706e34a95af899a59788"
+                "reference": "a1df50492e927ad00ca271f29adb2949a14f2a5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/lock/zipball/3a707193326d31603824706e34a95af899a59788",
-                "reference": "3a707193326d31603824706e34a95af899a59788",
+                "url": "https://api.github.com/repos/symfony/lock/zipball/a1df50492e927ad00ca271f29adb2949a14f2a5a",
+                "reference": "a1df50492e927ad00ca271f29adb2949a14f2a5a",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.5.9|>=7.0.8",
-                "psr/log": "~1.0",
-                "symfony/polyfill-php70": "~1.0"
+                "php": "^7.1.3",
+                "psr/log": "~1.0"
             },
             "require-dev": {
                 "predis/predis": "~1.0"
@@ -775,7 +726,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.4-dev"
+                    "dev-master": "4.1-dev"
                 }
             },
             "autoload": {
@@ -810,96 +761,40 @@
                 "redlock",
                 "semaphore"
             ],
-            "time": "2018-04-29T14:44:26+00:00"
-        },
-        {
-            "name": "symfony/polyfill-php70",
-            "version": "v1.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/polyfill-php70.git",
-                "reference": "77454693d8f10dd23bb24955cffd2d82db1007a6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-php70/zipball/77454693d8f10dd23bb24955cffd2d82db1007a6",
-                "reference": "77454693d8f10dd23bb24955cffd2d82db1007a6",
-                "shasum": ""
-            },
-            "require": {
-                "paragonie/random_compat": "~1.0|~2.0",
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.8-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php70\\": ""
-                },
-                "files": [
-                    "bootstrap.php"
-                ],
-                "classmap": [
-                    "Resources/stubs"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nicolas Grekas",
-                    "email": "p@tchwork.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "https://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony polyfill backporting some PHP 7.0+ features to lower PHP versions",
-            "homepage": "https://symfony.com",
-            "keywords": [
-                "compatibility",
-                "polyfill",
-                "portable",
-                "shim"
-            ],
-            "time": "2018-04-26T10:06:28+00:00"
+            "time": "2018-05-30T07:26:09+00:00"
         },
         {
             "name": "vlucas/valitron",
-            "version": "v1.4.2",
+            "version": "v1.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/valitron.git",
-                "reference": "87775d76268beda2afa085bdd6e44b17e98907c6"
+                "reference": "3c5463315bfa23b17f8949b100a960d035234e43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/vlucas/valitron/zipball/87775d76268beda2afa085bdd6e44b17e98907c6",
-                "reference": "87775d76268beda2afa085bdd6e44b17e98907c6",
+                "url": "https://api.github.com/repos/vlucas/valitron/zipball/3c5463315bfa23b17f8949b100a960d035234e43",
+                "reference": "3c5463315bfa23b17f8949b100a960d035234e43",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "^4.8.35 || ^5.5 || ^6.5"
+            },
+            "suggest": {
+                "ext-mbstring": "It can support the multiple bytes string length."
             },
             "type": "library",
             "autoload": {
-                "psr-0": {
-                    "Valitron": "src/"
+                "psr-4": {
+                    "Valitron\\": "src/Valitron"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "BSD"
+                "BSD-3-Clause"
             ],
             "authors": [
                 {
@@ -915,7 +810,7 @@
                 "validation",
                 "validator"
             ],
-            "time": "2017-10-30T23:15:06+00:00"
+            "time": "2018-05-06T10:45:26+00:00"
         }
     ],
     "packages-dev": [],

@@ -78,6 +78,11 @@ class Validator
     protected $validUrlPrefixes = array('http://', 'https://', 'ftp://');
 
     /**
+     * @var bool
+     */
+    protected $stop_on_first_fail = false;
+
+    /**
      * Setup validation
      *
      * @param  array                     $data
@@ -173,9 +178,9 @@ class Validator
      */
     protected function validateEquals($field, $value, array $params)
     {
-        $field2 = $params[0];
-
-        return isset($this->_fields[$field2]) && $value == $this->_fields[$field2];
+        // extract the second field value, this accounts for nested array values
+        list($field2Value, $multiple) = $this->getPart($this->_fields, explode('.', $params[0]));
+        return isset($field2Value) && $value == $field2Value;
     }
 
     /**
@@ -189,9 +194,9 @@ class Validator
      */
     protected function validateDifferent($field, $value, array $params)
     {
-        $field2 = $params[0];
-
-        return isset($this->_fields[$field2]) && $value != $this->_fields[$field2];
+        // extract the second field value, this accounts for nested array values
+        list($field2Value, $multiple) = $this->getPart($this->_fields, explode('.', $params[0]));
+        return isset($field2Value) && $value != $field2Value;
     }
 
     /**
@@ -246,7 +251,7 @@ class Validator
     {
         if (isset($params[0]) && (bool) $params[0]){
             //strict mode
-            return preg_match('/^-?([0-9])+$/i', $value);
+            return preg_match('/^([0-9]|-[1-9]|-?[1-9][0-9]*)$/i', $value);
         }
 
         return filter_var($value, \FILTER_VALIDATE_INT) !== false;
@@ -498,6 +503,26 @@ class Validator
     protected function validateEmail($field, $value)
     {
         return filter_var($value, \FILTER_VALIDATE_EMAIL) !== false;
+    }
+
+    /**
+     * Validate that a field is a valid e-mail address and the domain name is active
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateEmailDNS($field, $value)
+    {
+        if ($this->validateEmail($field, $value)) {
+            $domain = ltrim(stristr($value, '@'), '@') . '.';
+            if (function_exists('idn_to_ascii') && defined('INTL_IDNA_VARIANT_UTS46')) {
+                $domain = idn_to_ascii($domain, 0, INTL_IDNA_VARIANT_UTS46);
+            }
+            return checkdnsrr($domain, 'ANY');
+        }
+
+        return false;
     }
 
     /**
@@ -945,6 +970,7 @@ class Validator
      */
     public function validate()
     {
+    	$set_to_break = false;
         foreach ($this->_validations as $v) {
             foreach ($v['fields'] as $field) {
                  list($values, $multiple) = $this->getPart($this->_fields, explode('.', $field));
@@ -979,11 +1005,24 @@ class Validator
 
                 if (!$result) {
                     $this->error($field, $v['message'], $v['params']);
+                    if($this->stop_on_first_fail) {
+                    	$set_to_break = true;
+                    	break;
+                    }
                 }
             }
+            if($set_to_break) break;
         }
 
         return count($this->errors()) === 0;
+    }
+
+    /**
+     * Should the validation stop a rule is failed
+     * @param bool $stop
+     */
+    public function stopOnFirstFail($stop = true) {
+    	$this->stop_on_first_fail = (bool) $stop;
     }
 
     /**
@@ -1092,7 +1131,7 @@ class Validator
     }
 
     /**
-     * Returns true if either a valdiator with the given name has been
+     * Returns true if either a validator with the given name has been
      * registered or there is a default validator by that name.
      *
      * @param string    $name
@@ -1160,6 +1199,8 @@ class Validator
     }
 
     /**
+     * Add label to rule
+     *
      * @param  string $value
      * @internal param array $labels
      * @return $this
@@ -1173,6 +1214,8 @@ class Validator
     }
 
     /**
+     * Add labels to rules
+     *
      * @param  array  $labels
      * @return $this
      */

@@ -6,21 +6,14 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'ArithmeticError' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/ArithmeticError.php',
-    'AssertionError' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/AssertionError.php',
     'DB' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'DBHelper' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'DBTransaction' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
-    'DivisionByZeroError' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/DivisionByZeroError.php',
-    'Error' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/Error.php',
     'FB' => $vendorDir . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
     'FirePHP' => $vendorDir . '/firephp/firephp-core/lib/FirePHPCore/FirePHP.class.php',
     'MeekroDB' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'MeekroDBEval' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'MeekroDBException' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
-    'ParseError' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/ParseError.php',
-    'SessionUpdateTimestampHandlerInterface' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/SessionUpdateTimestampHandlerInterface.php',
-    'TypeError' => $vendorDir . '/symfony/polyfill-php70/Resources/stubs/TypeError.php',
     'WhereClause' => $vendorDir . '/sergeytsalkov/meekrodb/db.class.php',
     'kakao\\KakaoKey' => $baseDir . '/d_setting/KakaoKey.php',
     'sammo\\RootDB' => $baseDir . '/d_setting/RootDB.php',

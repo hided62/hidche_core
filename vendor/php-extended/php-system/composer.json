@@ -2,7 +2,7 @@
 	"name" : "php-extended/php-system",
 	"description" : "A generic way to find informations about the running system",
 	"type" : "library",
-	"homepage" : "https://github.com/php-extended/php-system",
+	"homepage" : "https://gitlab.com/php-extended/php-system",
 	"license" : "MIT",
 	"authors" : [{
 			"name" : "Anastaszor",
@@ -10,8 +10,8 @@
 		}
 	],
 	"support" : {
-		"issues" : "https://github.com/php-extended/php-system/issues",
-		"source" : "https://github.com/php-extended/php-system"
+		"issues" : "https://gitlab.com/php-extended/php-system/issues",
+		"source" : "https://gitlab.com/php-extended/php-system"
 	},
 	"autoload" : {
 		"psr-4" : {

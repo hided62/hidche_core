@@ -31,18 +31,13 @@ trait BlockingStoreTestTrait
      * This test is time sensible: the $clockDelay could be adjust.
      *
      * @requires extension pcntl
+     * @requires extension posix
      * @requires function pcntl_sigwaitinfo
      */
     public function testBlockingLocks()
     {
         // Amount a microsecond used to order async actions
         $clockDelay = 50000;
-
-        if (\PHP_VERSION_ID < 50600 || defined('HHVM_VERSION_ID')) {
-            $this->markTestSkipped('The PHP engine does not keep resource in child forks');
-
-            return;
-        }
 
         /** @var StoreInterface $store */
         $store = $this->getStore();

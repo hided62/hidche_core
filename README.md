@@ -7,7 +7,7 @@
 
 * Apache2
   * <code>mpm_event</code> 권장
-* PHP 7.0 이상 
+* PHP 7.2 이상 
   * <code>php-fpm</code> 권장
   * php에서 curl을 실행가능해야 합니다.
 * MySQL 5.6 이상, 또는 MariaDB 10.0 이상
@@ -32,13 +32,13 @@ sudo -u www-data git clone ssh://git@storage.hided.net:2525/devsam/core.git
 git clone ssh://git@storage.hided.net:2525/devsam/image.git
 ```
 
-> 이미지는 별도의 업데이트 기능을 제공하지 않습니다. 수동으로 <code>git pull</code>을 해야합니다.
+> 이미지는 git hook을 이용한 업데이트 기능을 제공하지만 아직 범용성 있는 설계가 되어있진 않습니다.
 
 ### 설치
 
 이후 해당 경로를 웹 브라우저를 통해 접근하여 설치를 진행할 수 있습니다.
 
-Database 수는 로그인 관리 서버 1개, 내부 서버 5개로, 총 6개의 Database가 필요합니다. 내부 설정을 고쳐서 서버 수를 늘리거나 줄일 경우 그에 맞는 Database 수가 필요합니다. 또한 Database마다 관리할 별도의 계정을 만드는 것을 추천합니다.
+Database 수는 로그인 관리 서버 1개, 내부 서버 7개로, 총 8개의 Database가 필요합니다. 내부 설정을 고쳐서 서버 수를 늘리거나 줄일 경우 그에 맞는 Database 수가 필요합니다. 또한 Database마다 관리할 별도의 계정을 만드는 것을 추천합니다.
 
 설치 이후에는 서버관리 페이지에서 **업데이트** 명령을 통해 원 클릭 업데이트가 가능합니다.
 
