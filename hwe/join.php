@@ -161,7 +161,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
         </tr>
         <tr>
             <td align=center colspan=3>
-                <font color=orange>모든 능력치는 ( 10 <= 능력치 <= <?=GameConst::$defaultStatMax?> ) 사이로 잡으셔야 합니다.<br>
+                <font color=orange>모든 능력치는 ( <?=GameConst::$defaultStatMin?> <= 능력치 <= <?=GameConst::$defaultStatMax?> ) 사이로 잡으셔야 합니다.<br>
                 그 외의 능력치는 가입되지 않습니다.</font>
             </td>
         </tr>
