@@ -144,7 +144,7 @@ function SetNationFront($nationNo) {
     $db = DB::db();
     $enemyCities = $db->queryFirstColumn(
         'SELECT city from city where nation IN 
-            (SELECT you from diplomacy where me = %i and (state=0 or (state=1 and term<=3)))'
+            (SELECT you from diplomacy where me = %i and (state=0 or (state=1 and term<=5)))'
         , $nationNo
     );
     if($enemyCities) {
