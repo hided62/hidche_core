@@ -994,9 +994,7 @@ function NPCStaffWork($general, $nation, $dipState){
     foreach ($npcCivilGeneralsID as $id){
         $avgNpcCivilRes += $nationGenerals[$id][$resName];
     }
-    if($npcCivilGeneralsID){
-        $avgNpcCivilRes /= max(1, count($npcCivilGeneralsID));
-    }
+    $avgNpcCivilRes /= max(1, count($npcCivilGeneralsID));
     
 
 
@@ -1063,7 +1061,7 @@ function NPCStaffWork($general, $nation, $dipState){
 
         if($compNpcWar && $compNpcWar[$resName] < 21000){
             $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
-            $commandList[EncodeCommand($resType, $compNpcWar['no'], $amount, 23)] = 2;
+            $commandList[EncodeCommand($resType, $compNpcWar['no'], $amount, 23)] = 3;
         }
         if($compNpcCivil && $compNpcCivil[$resName] < $minRes){
             $amount = intdiv($minRes+99, 100);
