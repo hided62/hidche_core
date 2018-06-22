@@ -91,11 +91,11 @@ if ($btn == "판매") {
         $msg = "ㆍ<span class='ev_warning'>시작판매가는 50% ~ 200% 이어야 합니다.</span>";
         $valid = 0;
     }
-    if ($topv < $amount*1.1 || $topv > $amount * 2) {
+    if ($topv * 10 < $amount * 11 || $topv > $amount * 2) {
         $msg = "ㆍ<span class='ev_warning'>즉시판매가는 110% ~ 200% 이어야 합니다.</span>";
         $valid = 0;
     }
-    if ($topv < $cost*1.1) {
+    if ($topv * 10 < $cost * 11) {
         $msg = "ㆍ<span class='ev_warning'>즉시판매가는 시작판매가의 110% 이상이어야 합니다.</span>";
         $valid = 0;
     }
