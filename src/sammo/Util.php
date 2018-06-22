@@ -281,6 +281,23 @@ class Util extends \utilphp\util
         return $dict;
     }
 
+    /**
+     * key=>value pair를 보존한 섞기
+     */
+    public static function shuffle_assoc(&$array) {
+        $keys = array_keys($array);
+
+        shuffle($keys);
+
+        foreach($keys as $key) {
+            $new[$key] = $array[$key];
+        }
+
+        $array = $new;
+
+        return true;
+    }
+
 
     /**
      * 0.0~1.0 사이의 랜덤 float
