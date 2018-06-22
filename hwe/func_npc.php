@@ -228,7 +228,7 @@ function processAI($no) {
     // 전쟁준비 선포중이면 2상태
     if($dipCount > 0) { $dipState = 2; }
 
-    $query = "select no from diplomacy where me='{$general['nation']}' and state=1 and term<=3";
+    $query = "select no from diplomacy where me='{$general['nation']}' and state=1 and term<=5";
     $result = MYDB_query($query, $connect) or Error("processAI04 ".MYDB_error($connect),"");
     $dipCount = MYDB_num_rows($result);
     // 교전 직전이면 3상태
@@ -484,184 +484,11 @@ function processAI($no) {
 
     //방랑군 아니고, 입력된 턴이 없을때 수뇌부가 할일
     if($nation['level'] != 0 && $general['level'] >= 5 && $rulerCommand == 0) {
-        $query = "select A.no,A.name,A.nation,B.nation from general A, city B where A.city=B.city and A.nation='{$general['nation']}' and B.nation!='{$general['nation']}' and A.no!='{$general['no']}' order by rand() limit 0,1";
-        $result = MYDB_query($query, $connect) or Error("processAI11 ".MYDB_error($connect),"");
-        $curGen = MYDB_fetch_array($result);
-
-        if($curGen['no'] != 0) {          // 타도시에 있는 경우 국내로 발령
-            if($dipState >= 3) {
-                $query = "select city from city where nation='{$general['nation']}' and front=1 and supply=1 order by rand() limit 0,1";
-                $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-                $selCity = MYDB_fetch_array($result);
-                if($selCity['city'] > 0) {
-                    // 발령
-                    $command = EncodeCommand(0, $curGen['no'], $selCity['city'], 27);
-                } else {
-                    // 발령
-                    $command = EncodeCommand(0, $curGen['no'], $city['city'], 27);
-                }
-            } else {
-                // 발령
-                $command = EncodeCommand(0, $curGen['no'], $city['city'], 27);
-            }
-            $query = "update nation set l{$general['level']}turn0='$command' where nation='{$general['nation']}'";
-            MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
-        } elseif($dipState <= 1) {      // 평시엔 균등 발령만
-            //발령, 최소장수 도시 선택, 최다장수도시의 장수 선택
-            $query = "select B.city,count(*) as cnt,((B.agri+B.comm+B.secu+B.def+B.wall)/(B.agri2+B.comm2+B.secu2+B.def2+B.wall2)+(B.pop/B.pop2))/2*100 as dev from general A, city B where A.city=B.city and A.nation='{$general['nation']}' and B.nation='{$general['nation']}' and B.supply=1 group by A.city";
-            $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-            $cityCount = MYDB_num_rows($result);
-            //도시 2개 이상일때만
-            if($cityCount > 1) {
-                $min = 500; $minCity = 0;
-                $max = 0;   $maxCity = 0;
-                $devCity = 0;
-                for($i=0; $i < $cityCount; $i++) {
-                    $curCity = MYDB_fetch_array($result);
-                    if($curCity['cnt'] >= $max) { $max = $curCity['cnt']; $maxCity = $curCity['city']; }
-                    if($curCity['cnt'] <= $min) { $min = $curCity['cnt']; $minCity = $curCity['city']; }
-                    if($curCity['dev'] < 70) { $devCity = $curCity['city']; }    // 개발이 안된 곳 우선
-                }
-                if($devCity != 0) { $minCity = $devCity; }
-                if($maxCity != $minCity) {
-                    $query = "select no from general where city='$maxCity' and nation='{$general['nation']}' and no!='{$general['no']}' and npc>=2 limit 0,1";
-                    $result = MYDB_query($query, $connect) or Error("processAI11 ".MYDB_error($connect),"");
-                    $curGen = MYDB_fetch_array($result);
-
-                    if($curGen['no'] != 0) {
-                        // 발령
-                        $command = EncodeCommand(0, $curGen['no'], $minCity, 27);
-                        $query = "update nation set l{$general['level']}turn0='$command' where nation='{$general['nation']}'";
-                        MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
-                    }
-                    //계속 진행
-                }
-            }
-        } else {
-            // 병사있고 쌀있고 후방에 있는 장수
-            $query = "select A.no from general A, city B where A.city=B.city and A.nation='{$general['nation']}' and B.nation='{$general['nation']}' and B.front=0 and A.crew>700 and A.rice>700*{$tech} order by A.npc,A.crew desc limit 0,1";
-            $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-            $selGen = MYDB_fetch_array($result);
-            // 전방 도시, 30% 확률로 태수 있는 전방으로 발령
-            if(rand()%100 < 30) {
-                $query = "select city from city where nation='{$general['nation']}' and front=1 and supply=1 order by gen1 desc,rand() limit 0,1";
-            } else {
-                $query = "select city from city where nation='{$general['nation']}' and front=1 and supply=1 order by rand() limit 0,1";
-            }
-            $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-            $selCity = MYDB_fetch_array($result);
-            if($selGen['no'] > 0 && $selCity['city'] > 0 && rand() % 100 < 80) {    // 80% 확률
-                // 발령
-                $command = EncodeCommand(0, $selGen['no'], $selCity['city'], 27);
-            } else {
-                //병사 없고 인구없는 전방에 있는 장수
-                $query = "select A.no from general A, city B where A.city=B.city and A.nation='{$general['nation']}' and B.nation='{$general['nation']}' and B.pop<40000 and B.front=1 and A.crew<700 order by A.npc,A.crew limit 0,1";
-                $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-                $selGen = MYDB_fetch_array($result);
-                // 인구많은도시
-                $query = "select city from city where nation='{$general['nation']}' and supply=1 order by pop desc limit 0,1";
-                $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-                $selCity = MYDB_fetch_array($result);
-                if($selGen['no'] > 0 && $selCity['city'] > 0 && rand() % 100 < 80) {    // 80% 확률
-                    // 발령
-                    $command = EncodeCommand(0, $selGen['no'], $selCity['city'], 27);
-                } else {
-                    // 발령할 장수 없으면 몰포
-                    if(rand() % 2 == 0) { $type = "gold"; $type2 = 1; }
-                    else { $type = "rice"; $type2 = 2; }
-
-                    if($nation[$type] < $type2*3000) {  // 몰수
-                        // 몰수 대상
-                        list($npcGenID, $npcGenValue) = $db->queryFirstList(
-                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND %b>3000 AND npc >= 2 ORDER BY %b DESC LIMIT 1',
-                            $type,
-                            $general['nation'],
-                            $general['no'],
-                            $type,
-                            $type
-                        );
-
-                        list($userGenID, $userGenValue) = $db->queryFirstList(
-                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND %b>3000 AND npc < 2 ORDER BY %b DESC LIMIT 1',
-                            $type,
-                            $general['nation'],
-                            $general['no'],
-                            $type,
-                            $type
-                        );
-
-                        if($npcGenID === null && $userGenID === null){
-                            $genID = 0;
-                            $genValue = 0;
-                        }
-                        else if($npcGenID === null || $userGenValue > $npcGenValue * 4){
-                            $genID = $userGenID;
-                            $genValue = $userGenValue;
-                        }
-                        else{
-                            $genID = $npcGenID;
-                            $genValue = $npcGenValue;
-                        }
-
-                        if($genID){
-                            $amount = min(100, intdiv($genValue, 5000)*10 + 10);
-                            // 몰수
-                            $command = EncodeCommand($type2, $genID, $amount, 24);    // 금,쌀 1000단위 몰수
-                        }
-                    } else {    // 포상
-                        // 포상 대상
-                        list($npcGenID, $npcGenValue, $npcLeadership) = $db->queryFirstList(
-                            'SELECT `no`, %b, leader FROM general WHERE nation=%i AND `no`!=%i AND npc >= 2 AND killturn > 5 AND (leader >= 40 OR %b < %i) ORDER BY %b ASC LIMIT 1',
-                            $type,
-                            $general['nation'],
-                            $general['no'],
-                            $type,
-                            $resrc,
-                            $type
-                        );
-
-                        list($userGenID, $userGenValue) = $db->queryFirstList(
-                            'SELECT `no`, %b FROM general WHERE nation=%i AND `no`!=%i AND npc < 2 AND killturn > 5  AND (leader >= 40 OR %b < %i) ORDER BY %b ASC LIMIT 1',
-                            $type,
-                            $general['nation'],
-                            $general['no'],
-                            $type,
-                            ($type=='gold')?21000:3000,
-                            $type
-                        );
-
-                        if($npcGenID === null && $userGenID === null){
-                            $genID = 0;
-                        }
-                        else if($npcGenID === null || ($userGenValue !== null && $userGenValue < $npcGenValue * 3)){
-                            $genID = $userGenID;
-                        }
-                        else{
-                            $genID = $npcGenID;
-                        }
-
-                        if ($genID) {
-                            if($genID === $npcGenID){
-                                $amount = min(100, intdiv(($nation[$type]-($type=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
-                                if($npcLeadership < 40){
-                                    $amount = min($amount, intdiv($resrc, 1000)*10 + 10);
-                                }
-                                
-                            }
-                            else{
-                                $amount = min(100, intdiv(($nation[$type]-($type=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 2000)*10 + 10);
-                            }
-                            
-                            // 포상
-                            $command = EncodeCommand($type2, $genID, $amount, 23);    // 금,쌀 1000단위 포상
-                        }
-                    }
-                }
-            }
-            if(isset($command)){
-                $query = "update nation set l{$general['level']}turn0='$command' where nation='{$general['nation']}'";
-                MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
-            }
+        $command = NPCStaffWork($general, $nation, $dipState);
+        if($command){
+            $db->update('nation', [
+                "l{$general['level']}turn0"=>$command
+            ], 'nation=%i', $general['nation']);
         }
     }
 
@@ -1024,6 +851,391 @@ function processAI($no) {
         return;
     }
 }
+
+
+function NPCStaffWork($general, $nation, $dipState){
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $admin = $gameStor->getValues(['startyear','year','month','turnterm','scenario','gold_rate','rice_rate', 'develcost']);
+
+    $nationCities = [];
+    $frontCitiesID = [];
+    $frontImportantCitiesID = [];
+    $supplyCitiesID = [];
+    $backupCitiesID = [];
+
+    $tech = getTechCost($nation['tech']);
+    
+    foreach ($db->query('SELECT * FROM city WHERE nation = %i', $general['nation']) as $nationCity) {
+        $nationCity['generals'] = [];
+        $cityID = $nationCity['city'];
+        $dev = 
+            ($nationCity['agri'] + $nationCity['comm'] + $nationCity['secu'] + $nationCity['def'] + $nationCity['wall'])/
+            ($nationCity['agri'] + $nationCity['comm'] + $nationCity['secu'] + $nationCity['def'] + $nationCity['wall']);
+        $dev += $nationCity['pop'] / $nationCity['pop2'];
+        $dev /= 50;
+
+        $nationCity['dev'] = $dev;
+
+        $nationCities[$cityID] = $nationCity;
+        
+        if($nationCity['supply']){
+            $supplyCitiesID[] = $cityID;
+            if($nationCity['front']){
+                $frontCitiesID[] = $cityID;
+                if($nationCity['gen1']){
+                    $frontImportantCitiesID[] = $cityID;
+                }
+            }
+            else{
+                $backupCitiesID[] = $cityID;
+            }
+        }
+    }
+    Util::shuffle_assoc($nationCities);
+    shuffle($frontCitiesID);
+    shuffle($supplyCitiesID);
+
+    $nationGenerals = [];
+    $lostGeneralsID = [];
+
+    $userGeneralsID = [];
+    $npcWarGeneralsID = [];
+    $npcCivilGeneralsID = [];
+
+
+    $commandList = [];
+
+    foreach($db->query('SELECT * FROM general WHERE nation = %i', $general['nation']) as $nationGeneral) {
+        $cityID = $nationGeneral['city'];
+        $generalID = $nationGeneral['no'];
+
+        if($generalID == $general['no']){
+            continue;
+        }
+
+        if(key_exists($cityID, $nationCities)){
+            $nationCities[$cityID]['generals'][] = $generalID;
+            if(!$nationCities[$cityID]['supply']){
+                $lostGeneralsID[] = $generalID;    
+            }
+        }
+        else{
+            $lostGeneralsID[] = $generalID;
+        }
+
+        if($nationGeneral['npc']<2 && $nationGeneral['killturn'] >= 5){
+            $userGeneralsID[] = $generalID;
+        }
+        else if($nationGeneral['leader']>=40 && $nationGeneral['killturn'] >= 5){
+            $npcWarGeneralsID[] = $generalID;
+        }
+        else{
+            //삭턴이 몇 안남은 장수는 '내정장 npc'로 처리
+            $npcCivilGeneralsID[] = $generalID;
+        }
+
+        $nationGenerals[$generalID] = $nationGeneral;
+    }
+    Util::shuffle_assoc($nationGenerals);
+    shuffle($lostGeneralsID);
+
+    uasort($nationCities, function($lhs, $rhs){ 
+        //키 순서를 지키지 않지만, 원래부터 random order를 목표로 하므로 크게 신경쓰지 않는다.
+        return count($lhs['generals']) - count($rhs['generals']);
+    });
+
+
+    //타 도시에 있는 '유저장' 발령
+    foreach($lostGeneralsID as $lostGeneralID){
+        $lostGeneral = $nationGenerals[$lostGeneralID];
+        if($lostGeneral['npc'] < 2){
+            if($dipState >= 3 && $frontCitiesID){
+                $selCityID = Util::choiceRandom($frontCitiesID);
+            }
+            else{
+                $selCityID = Util::choiceRandom($supplyCitiesID);
+            }
+            $commandList[EncodeCommand(0, $lostGeneralID, $selCityID, 27)] = 200;
+        }
+    }
+
+    
+    $resBaseType = [['gold', 1], ['rice', 2]];
+    [$resName, $resType] = Util::choiceRandom($resBaseType);
+
+    usort($userGeneralsID, function($lhs, $rhs) use ($nationGenerals, $resName){
+        return $nationGenerals[$lhs][$resName] - $nationGenerals[$rhs][$resName];
+    });
+
+    usort($npcWarGeneralsID, function($lhs, $rhs) use ($nationGenerals, $resName){
+        return $nationGenerals[$lhs][$resName] - $nationGenerals[$rhs][$resName];
+    });
+
+    usort($npcCivilGeneralsID, function($lhs, $rhs) use ($nationGenerals, $resName){
+        return $nationGenerals[$lhs][$resName] - $nationGenerals[$rhs][$resName];
+    });
+
+    $avgUserRes = 0;
+    foreach ($userGeneralsID as $id){
+        $avgUserRes += $nationGenerals[$id][$resName];
+    }
+    $avgUserRes /= max(1, count($userGeneralsID));
+
+    $avgNpcWarRes = 0;
+    foreach ($npcWarGeneralsID as $id){
+        $avgNpcWarRes += $nationGenerals[$id][$resName];
+    }
+    $avgNpcWarRes /= max(1, count($npcWarGeneralsID));
+
+    $avgNpcCivilRes = 0;
+    foreach ($npcCivilGeneralsID as $id){
+        $avgNpcCivilRes += $nationGenerals[$id][$resName];
+    }
+    if($npcCivilGeneralsID){
+        $avgNpcCivilRes /= max(1, count($npcCivilGeneralsID));
+    }
+    
+
+
+    //금쌀이 부족한 '유저장' 먼저 포상
+    if ($nation[$resName] > ($resName=='gold'?1:2)*3000 && $userGeneralsID) {
+        $compUser = $nationGenerals[$userGeneralsID[0]];
+        $compRes = $compUser[$resName];
+
+        $work = false;
+        if ($compRes < $avgNpcWarRes*3) {
+            $work = true;
+        } elseif ($compRes < $avgNpcCivilRes * 4) {
+            $work = true;
+        }
+
+        if($compUser[$resName] < 21000){
+            if($work){
+                $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 2000)*10 + 10);
+                $commandList[EncodeCommand($resType, $userGeneralsID[0], $amount, 23)] = 40;    // 금,쌀 1000단위 포상
+            }
+            else{
+                $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
+                $commandList[EncodeCommand($resType, $userGeneralsID[0], $amount, 23)] = 1;    // 금,쌀 1000단위 포상
+            }
+            
+        }
+    }
+
+    $minRes = $admin['develcost'] * 24 * $tech;
+
+    if($nation[$resName] < ($resName=='gold'?1:2)*3000) {  // 몰수
+        // 몰수 대상
+        $compUser = $userGeneralsID?$nationGenerals[end($userGeneralsID)]:null;
+        $compNpcWar = $npcWarGeneralsID?$nationGenerals[end($npcWarGeneralsID)]:null; 
+        $compNpcCivil = $npcCivilGeneralsID?$nationGenerals[end($npcCivilGeneralsID)]:null;
+        
+        $compUserRes = $compUser[$resName]??0;
+        $compNpcWarRes = $compNpcWar[$resName]*5??0;
+        $compNpcCivilRes = $compNpcCivil[$resName]*10??0;
+
+        [$compRes, $compGenID] = max(
+            [$compNpcCivilRes, $compNpcCivil['no']??null],
+            [$compNpcWarRes, $compNpcWar['no']??null],
+            [$compUserRes, $compUser['no']??null]
+        );
+
+        if($compGenID){
+            $targetGeneral = $nationGenerals[$compGenID];
+            if($compGenID === ($compNpcCivil['no']??null)){
+                $amount = intdiv($targetGeneral[$resName] - $minRes * 3, 100);
+            }
+            else{
+                $amount = min(100, intdiv($targetGeneral[$resName], 5000)*10 + 10);
+            }
+            
+            if($amount > 0){
+                $commandList[EncodeCommand($resType, $compGenID, $amount, 24)] = 3;
+            }
+            
+        }
+    } else{    // 포상
+        $compNpcWar = $npcWarGeneralsID?$nationGenerals[$npcWarGeneralsID[0]]:null; 
+        $compNpcCivil = $npcCivilGeneralsID?$nationGenerals[$npcCivilGeneralsID[0]]:null;
+
+        if($compNpcWar && $compNpcWar[$resName] < 21000){
+            $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
+            $commandList[EncodeCommand($resType, $compNpcWar['no'], $amount, 23)] = 2;
+        }
+        if($compNpcCivil && $compNpcCivil[$resName] < $minRes){
+            $amount = intdiv($minRes+99, 100);
+            $commandList[EncodeCommand($resType, $compNpcCivil['no'], $amount, 23)] = 2;
+        }
+    }
+
+    //고립 도시 장수 발령
+    foreach($lostGeneralsID as $lostGeneralID){
+        $lostGeneral = $nationGenerals[$lostGeneralID];
+        if($lostGeneral['npc']<2){
+            //고립 유저 장수는 이미 세팅했음
+            continue;
+        }
+        if($dipState >= 3 && $frontCitiesID){
+            $selCityID = Util::choiceRandom($frontCitiesID);
+        }
+        else{
+            $selCityID = Util::choiceRandom($supplyCitiesID);
+        }
+        //고립된 장수가 많을 수록 발령 확률 증가
+        $commandList[EncodeCommand(0, $lostGeneralID, $selCityID, 27)] = sqrt(count($lostGeneralsID)) * 10;
+    }
+
+    // 평시엔 균등 발령만
+    if($dipState <= 1 && count($supplyCitiesID) > 1) {
+        $targetCity = null;
+        $minCity = null;
+        $maxCity = null;
+        foreach($nationCities as $nationCity){
+            if($nationCity['supply']){
+                $minCity = $nationCity;
+                break;
+            }
+        }
+
+        //reverse_order T_T
+        $maxCity = end($nationCities);
+        while($maxCity['city'] !== $minCity['city']){
+            if($nationCity['supply']){
+                break;
+            }
+            $maxCity = prev($nationCities);
+        }
+
+        foreach($nationCities as $nationCity){
+            if($nationCity['city'] == $maxCity['city']){
+                break;
+            }
+            if(!$nationCity['supply']){
+                continue;
+            }
+            if($nationCity['dev'] < 70){
+                $targetCity = $nationCity;
+                break;
+            }
+        }
+
+        if($targetCity === null || (count($targetCity['generals']) >= count($maxCity['generals']) - 1)){
+            $targetCity = $minCity;
+        }
+
+        if(count($targetCity['generals']) < count($maxCity['generals']) - 2){
+            //세명 이상 차이나야 함
+            $targetGeneral = $nationGenerals[Util::choiceRandom($maxCity['generals'])];
+            if($targetGeneral['npc']>=2 || $maxCity['dev'] >= 95){
+                //유저장은 의도가 있을 것이므로 삽나지 않는 이상 발령 안함!
+                $commandList[EncodeCommand(0, $targetGeneral['no'], $targetCity['city'], 27)] = 5;
+            }
+            
+        }
+    }
+
+    // 병사있고 쌀있고 후방에 있는 장수
+    if($frontCitiesID){
+        $workRemain = 5;
+        foreach($nationGenerals as $nationGeneral){
+            $generalCity = $nationCities[$nationGeneral['city']]??null;
+            if(!$generalCity){
+                continue;
+            }
+            if($nationGeneral['crew'] < 2000){
+                continue;
+            }
+            if($nationGeneral['rice'] < 700 * $tech){
+                continue;
+            }
+            if($generalCity['front']){
+                continue;
+            }
+    
+            $score = 5;
+            if($nationGeneral['npc']<2){
+                $score *= 8;
+            }
+    
+            if(Util::randF(0.3) && $frontImportantCitiesID){
+                $targetCityID = Util::choiceRandom($frontImportantCitiesID);
+            }
+            else{
+                $targetCityID = Util::choiceRandom($frontCitiesID);
+            }
+            
+            $commandList[EncodeCommand(0, $nationGeneral['no'], $targetCityID, 27)] = $score;
+
+            if($nationGeneral['npc']<2){
+                $workRemain -= 5;
+            }
+            else{
+                $workRemain--;
+            }
+
+            if($workRemain <= 0){
+                break;
+            }
+        }
+    }
+
+    //병사 없고 인구없는 전방에 있는 장수
+    if($frontCitiesID && $backupCitiesID){
+        $workRemain = 5;
+        foreach($nationGenerals as $nationGeneral){
+            $generalCity = $nationCities[$nationGeneral['city']]??null;
+            if(!$generalCity){                
+                continue;
+            }
+            if($nationGeneral['crew'] >= 1000){
+                continue;
+            }
+            if($nationGeneral['rice'] < 700 * $tech){
+                continue;
+            }
+            if(!$generalCity['front']){
+                continue;
+            }
+    
+            $score = 5;
+            if($nationGeneral['npc']<2){
+                $score *= 8;
+            }
+    
+            $popTrial = 5;
+            for($popTrial = 0; $popTrial < 5; $popTrial++){
+                $targetCity = $nationCities[Util::choiceRandom($backupCitiesID)];
+                if($targetCity['pop'] < 33000 + $nationGeneral['leader']){
+                    continue;
+                }
+                if (Util::randF($targetCity['pop'] / $targetCity['pop2'])) {
+                    break;
+                }
+            }
+            
+            
+            $commandList[EncodeCommand(0, $nationGeneral['no'], $targetCity['city'], 27)] = $score;
+
+            if($nationGeneral['npc']<2){
+                $workRemain -= 5;
+            }
+            else{
+                $workRemain--;
+            }
+
+            if($workRemain <= 0){
+                break;
+            }
+        }
+    }
+
+    if(!$commandList)return 0;
+    return Util::choiceRandomUsingWeight($commandList);
+}
+
 //종전하기, 지급율
 //$command = $fourth * 100000000 + $type * 100000 + $crew * 100 + 11;
 
