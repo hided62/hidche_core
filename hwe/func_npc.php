@@ -1139,10 +1139,13 @@ function NPCStaffWork($general, $nation, $dipState){
 
     // 병사있고 쌀있고 후방에 있는 장수
     if($frontCitiesID){
-        $workRemain = 5;
+        $workRemain = 3;
         foreach($nationGenerals as $nationGeneral){
             $generalCity = $nationCities[$nationGeneral['city']]??null;
             if(!$generalCity){
+                if(!in_array($nationGeneral['no'], $lostGeneralsID)){
+                    trigger_error('쓔?');
+                } 
                 continue;
             }
             if($nationGeneral['crew'] < 2000){
@@ -1157,7 +1160,7 @@ function NPCStaffWork($general, $nation, $dipState){
     
             $score = 5;
             if($nationGeneral['npc']<2){
-                $score *= 8;
+                $score *= 4;
             }
     
             if(Util::randF(0.3) && $frontImportantCitiesID){
@@ -1167,13 +1170,15 @@ function NPCStaffWork($general, $nation, $dipState){
                 $targetCityID = Util::choiceRandom($frontCitiesID);
             }
             
-            $commandList[EncodeCommand(0, $nationGeneral['no'], $targetCityID, 27)] = $score;
+            $command = EncodeCommand(0, $nationGeneral['no'], $targetCityID, 27);
 
-            if($nationGeneral['npc']<2){
-                $workRemain -= 5;
+            if($nationGeneral['npc']<2 && ($workRemain&2)){
+                $workRemain ^= 2;
+                $commandList[$command] = $score;
             }
-            else{
-                $workRemain--;
+            else if($nationGeneral['npc']>=2 && ($workRemain&1)){
+                $workRemain ^= 1;
+                $commandList[$command] = $score;
             }
 
             if($workRemain <= 0){
@@ -1184,7 +1189,7 @@ function NPCStaffWork($general, $nation, $dipState){
 
     //병사 없고 인구없는 전방에 있는 장수
     if($frontCitiesID && $backupCitiesID){
-        $workRemain = 5;
+        $workRemain = 3;
         foreach($nationGenerals as $nationGeneral){
             $generalCity = $nationCities[$nationGeneral['city']]??null;
             if(!$generalCity){                
@@ -1202,7 +1207,7 @@ function NPCStaffWork($general, $nation, $dipState){
     
             $score = 5;
             if($nationGeneral['npc']<2){
-                $score *= 8;
+                $score *= 4;
             }
     
             $popTrial = 5;
@@ -1217,13 +1222,15 @@ function NPCStaffWork($general, $nation, $dipState){
             }
             
             
-            $commandList[EncodeCommand(0, $nationGeneral['no'], $targetCity['city'], 27)] = $score;
+            $command = EncodeCommand(0, $nationGeneral['no'], $targetCity['city'], 27);
 
-            if($nationGeneral['npc']<2){
-                $workRemain -= 5;
+            if($nationGeneral['npc']<2 && ($workRemain&2)){
+                $workRemain ^= 2;
+                $commandList[$command] = $score;
             }
-            else{
-                $workRemain--;
+            else if($nationGeneral['npc']>=2 && ($workRemain&1)){
+                $workRemain ^= 1;
+                $commandList[$command] = $score;
             }
 
             if($workRemain <= 0){
