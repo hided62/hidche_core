@@ -1143,9 +1143,6 @@ function NPCStaffWork($general, $nation, $dipState){
         foreach($nationGenerals as $nationGeneral){
             $generalCity = $nationCities[$nationGeneral['city']]??null;
             if(!$generalCity){
-                if(!in_array($nationGeneral['no'], $lostGeneralsID)){
-                    trigger_error('쓔?');
-                } 
                 continue;
             }
             if($nationGeneral['crew'] < 2000){
@@ -1155,6 +1152,9 @@ function NPCStaffWork($general, $nation, $dipState){
                 continue;
             }
             if($generalCity['front']){
+                continue;
+            }
+            if($nationGeneral['train'] * $nationGeneral['atmos'] < 75 * 75){
                 continue;
             }
     
@@ -1202,6 +1202,9 @@ function NPCStaffWork($general, $nation, $dipState){
                 continue;
             }
             if(!$generalCity['front']){
+                continue;
+            }
+            if($generalCity['pop'] - 33000 > $nationGeneral['leader']){
                 continue;
             }
     
