@@ -599,19 +599,30 @@ function processWar($general, $city) {
             $query = "update general set recwar='{$general['turntime']}',train='{$oppose['train']}',warnum=warnum+1 where no='{$oppose['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $ratio = rand() % 100;
             //특기보정 : 저격(수극), 활무기저격
-            if(($general['special2'] == 70 && $ratio <= 33) || ($general['item'] == 2 && $ratio <= 20) || (($general['weap'] == 10 || $general['weap'] == 14 || $general['weap'] == 18 || $general['weap'] == 22) && $ratio <= 20)) {
+            $snipe = false;
+            $snipeItem = false;
+            if(!$snipe && $general['special2'] == 70 && Util::randF(1/3)){
+                $snipe = true;
+            }
+            if(!$snipe && in_array($general['weap'], [10, 14, 18, 22]) && Util::randF(1/5)){
+                $snipe = true;
+            }
+            if(!$snipe && $general['item'] == 2){
+                if(Util::randF(1/5)){
+                    $snipe = true;
+                    $snipeItem = true;
+                }
+                //수극을 사용했지만 저격 실패한 케이스도 '필요하면' 넣을 것.(밸런스)       
+                
+            }
+            if($snipe) {
                 //수극 사용
-                if($general['item'] == 2) {
-                    $query = "update general set item=0 where no='{$general['no']}'";
-                    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                if($snipeItem) {
                     $josaUl = JosaUtil::pick($general['item'], '을');
                     $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
                     $general['item'] = 0;
-                } elseif($general['weap'] == 10 || $general['weap'] == 14 || $general['weap'] == 18 || $general['weap'] == 22) {
-//                    $josaUl = JosaUtil::pick($general['weap'], '을');
-//                    $log[] = "<C>●</><C>".getWeapName($general['weap'])."</>{$josaUl} 사용!";
+                    $db->update('general', ['item'=>0], 'no=%i', $general['no']);
                 }
                 $log[] = "<C>●</>상대를 <C>저격</>했다!";
                 $batlog[] = "<C>●</>상대를 <C>저격</>했다!";
@@ -620,26 +631,37 @@ function processWar($general, $city) {
                 // 부상
                 $oppose['injury'] += rand() % 41 + 20;   // 20 ~ 60
                 if($oppose['injury'] > 80) { $oppose['injury'] = 80; }
-            } else if($general['item'] == 2 && $ratio <= 40) {
-                $query = "update general set item=0 where no='{$general['no']}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            }
+            else if($snipeItem) {
+                $db->update('general', ['item'=>0], 'no=%i', $general['no']);
                 $josaYi = JosaUtil::pick($general['item'], '이');
                 $batlog[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaYi} 빗나갑니다!";
                 $general['item'] = 0;
             }
-            $ratio = rand() % 100;
+
             //특기보정 : 저격(수극), 활무기저격
-            if(($oppose['special2'] == 70 && $ratio <= 33) || ($oppose['item'] == 2 && $ratio <= 20) || (($oppose['weap'] == 10 || $oppose['weap'] == 14 || $oppose['weap'] == 18 || $oppose['weap'] == 22) && $ratio <= 20)) {
+            $snipe = false;
+            $snipeItem = false;
+            if(!$snipe && $oppose['special2'] == 70 && Util::randF(1/3)){
+                $snipe = true;
+            }
+            if(!$snipe && in_array($oppose['weap'], [10, 14, 18, 22]) && Util::randF(1/5)){
+                $snipe = true;
+            }
+            if(!$snipe && $oppose['item'] == 2){
+                if(Util::randF(1/5)){
+                    $snipe = true;
+                    $snipeItem = true;
+                }
+                //수극을 사용했지만 저격 실패한 케이스도 '필요하면' 넣을 것.(밸런스)       
+            }
+            if($snipe) {
                 //수극 사용
-                if($oppose['item'] == 2) {
-                    $query = "update general set item=0 where no='{$oppose['no']}'";
-                    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                if($snipeItem) {
                     $josaUl = JosaUtil::pick($oppose['item'], '을');
-                    $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaUl} 사용!";
+                    $log[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaUl} 사용!";
                     $oppose['item'] = 0;
-                } elseif($oppose['weap'] == 10 || $oppose['weap'] == 14 || $oppose['weap'] == 18 || $oppose['weap'] == 22) {
-//                    $josaUl = JosaUtil::pick($oppose['weap'], '을');
-//                    $opplog[] = "<C>●</><C>".getWeapName($oppose['weap'])."</>{$josaUl} 사용!";
+                    $db->update('general', ['item'=>0], 'no=%i', $oppose['no']);
                 }
                 $oppbatlog[] = "<C>●</>상대를 <C>저격</>했다!";
                 $opplog[] = "<C>●</>상대를 <C>저격</>했다!";
@@ -648,11 +670,11 @@ function processWar($general, $city) {
                 // 부상
                 $general['injury'] += rand() % 41 + 20;   // 20 ~ 60
                 if($general['injury'] > 80) { $general['injury'] = 80; }
-            } else if($oppose['item'] == 2 && $ratio <= 40) {
-                $query = "update general set item=0 where no='{$oppose['no']}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            }
+            else if($snipeItem) {
+                $db->update('general', ['item'=>0], 'no=%i', $oppose['no']);
                 $josaYi = JosaUtil::pick($oppose['item'], '이');
-                $oppbatlog[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaYi} 빗나갑니다!";
+                $batlog[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaYi} 빗나갑니다!";
                 $oppose['item'] = 0;
             }
 
