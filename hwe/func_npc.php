@@ -908,7 +908,7 @@ function NPCStaffWork($general, $nation, $dipState){
 
     $commandList = [];
 
-    foreach($db->query('SELECT * FROM general WHERE nation = %i', $general['nation']) as $nationGeneral) {
+    foreach($db->query('SELECT `no`, nation, city, npc, `gold`, `rice`, leader, `power`, intel, killturn, crew, train, atmos, `level` FROM general WHERE nation = %i', $general['nation']) as $nationGeneral) {
         $cityID = $nationGeneral['city'];
         $generalID = $nationGeneral['no'];
 
