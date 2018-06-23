@@ -972,6 +972,8 @@ function command_25($turn, $command) {
     $query = "select nation,name,color,scout,scoutmsg,sabotagelimit,gennum from nation order by gennum";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
+    
+    $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation ORDER BY rand()');
 
     echo "
 국가에 임관합니다.<br>
@@ -988,18 +990,7 @@ function command_25($turn, $command) {
     <option value=98 style=color:white;background-color:black;>???</option>";
 
     $scoutStr = "";
-    for($i=1; $i <= $count; $i++) {
-        $nation = MYDB_fetch_array($result);
-
-        $scoutStr .= 
-            "<tr>"
-            ."<td align=center width=130 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>"
-            .$nation['name']
-            ."</td>"
-            ."<td width=870 style='color:".newColor($nation['color']).";background-color:{$nation['color']};overflow:hidden;max-width:870px;max-height:200px'>"
-            .($nation['scoutmsg']?:'-')
-            .'</td></tr>';
-
+    foreach($nationList as $nation){
         if($gameStor->year < $gameStor->startyear+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit) {
             echo "
     <option value={$nation['nation']} style=color:{$nation['color']};background-color:red;>【 {$nation['name']} 】</option>";
@@ -1026,11 +1017,8 @@ function command_25($turn, $command) {
     }
 
     echo "
-</form>
-<table align=center width=1000 class='tb_layout bg0'>
-<tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
-{$scoutStr}
-</table>";
+</form>";
+    echo getInvitationList($nationList);
 
     ender();
 }

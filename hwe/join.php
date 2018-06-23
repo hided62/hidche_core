@@ -63,27 +63,11 @@ if ($gencount >= $admin['maxgeneral']) {
     echo "<script>history.go(-1);</script>";
     exit();
 }
-?>
 
-<table align=center width=1000 class='tb_layout bg0'>
-<tr><td align=center colspan=2 id=bg1>임관 권유 메세지</td></tr>
-<?php
-$query = "select name,scoutmsg,color from nation";
-$nationresult = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect), "");
-$nationcount = MYDB_num_rows($nationresult);
+$nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation ORDER BY rand()');
 
-for ($i=0; $i < $nationcount; $i++) {
-    $nation = MYDB_fetch_array($nationresult);
-    if ($nation['scoutmsg'] == "") {
-        echo "
-    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>-</td></tr>";
-    } else {
-        echo "
-    <tr><td align=center width=98 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['name']}</td><td width=898 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>{$nation['scoutmsg']}</td></tr>";
-    }
-}
+echo getInvitationList($nationList);
 ?>
-</table>
 
 <form name=form1 method=post action=join_post.php>
     <table align=center width=1000 class='tb_layout bg0'>

@@ -18,7 +18,7 @@ if(!$npcmode) {
 
 $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
 
-$nations = $db->queryAllLists('SELECT `name`, scoutmsg, color FROM nation');
+$nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation ORDER BY rand()');
 ?>
 <!DOCTYPE html>
 <html>
@@ -61,21 +61,7 @@ history.go(-1);
     <tr><td><?=info(0)?></td></tr>
 </table>
 
-
-<table style="width:100%;" class="bg0 with_border">
-<thead>
-<tr><th colspan=2 class="bg1">임관 권유 메세지</th></tr>
-</thead>
-<tbody>
-<?php foreach($nations as list($name, $scoutmsg, $color)): ?>
-
-<tr>
-    <td style='width:98px;color:<?=newColor($color)?>;background-color:<?=$color?>'><?=$name?></td>
-    <td style='color:<?=newColor($color)?>;background-color:<?=$color?>'><?=$scoutmsg?:'-'?></td>
-</tr>
-<?php endforeach; ?>
-</tbody>
-</table>
+<?=getInvitationList($nationList)?>
 
 <div class="bg0">
 <div class="bg1 with_border legacy_layout font1" style="text-align:center;font-weight:bold;">장수 빙의</div>

@@ -216,7 +216,7 @@ if ($budgetricediff > 0) {
 <table align=center width=1000 class='tb_layout bg0'>
 <form name=form1 method=post action=c_dipcenter.php>
     <tr><td colspan=2 height=10></td></tr>
-    <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메세지</td></tr>
+    <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메시지</td></tr>
     <tr><td colspan=2 class=bg1>국가 방침 <textarea <?=$read?> maxlength=16000 rows="5" style="color:white;background-color:black;width:830px;" name=msg><?=$nation['msg']?></textarea><input type=<?=$btn?> name=btn value=국가방침></td></tr>
     <tr><td colspan=2 class=bg1>임관 권유 <input type=text <?=$read?> maxlength=1000 style=color:white;background-color:black;width:830px; name=scoutmsg value='<?=$nation['scoutmsg']?>'><input type=<?=$btn?> name=btn value=임관권유></td></tr>
     <tr><td colspan=2>870 x 200px 넘는 크기를 점유할 시 통보없이 제한될 수 있습니다.</td></tr>

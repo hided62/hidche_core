@@ -173,3 +173,14 @@ function getMapHtml(){
 
     return $templates->render('map');
 }
+
+function getInvitationList(array $nationList){
+    $templates = new \League\Plates\Engine(__dir__.'/templates');
+
+    foreach($nationList as &$nation){
+        $nation['textColor'] = newColor($nation['color']);
+    }
+    return $templates->render('invitationList', [
+        'nationList'=>$nationList
+    ]);
+}
