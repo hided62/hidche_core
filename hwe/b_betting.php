@@ -297,7 +297,13 @@ for ($i=0; $i < 16; $i++) {
 }
 
 for ($i=0; $i < 16; $i++) {
-    $gold[$i] = Util::round($myBet[$i] * $bet[$i]);
+    if(!is_numeric($bet[$i])){
+        $gold[$i] = 0;
+    }
+    else{
+        $gold[$i] = Util::round($myBet[$i] * $bet[$i]);
+    }
+    
 }
 ?>
     </tr>
