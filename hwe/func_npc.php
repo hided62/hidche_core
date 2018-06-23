@@ -1092,14 +1092,21 @@ function NPCStaffWork($general, $nation, $dipState){
         $minCity = null;
         $maxCity = null;
         foreach($nationCities as $nationCity){
+            if($nationCity['dev']>=95){
+                continue;
+            }
             if($nationCity['supply']){
                 $minCity = $nationCity;
                 break;
             }
+            
         }
 
         //reverse_order T_T
         $maxCity = end($nationCities);
+        if(!$minCity){
+            $minCity = $maxCity;
+        }
         while($maxCity['city'] !== $minCity['city']){
             if($nationCity['supply']){
                 break;
