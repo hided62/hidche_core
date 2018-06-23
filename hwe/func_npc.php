@@ -1029,7 +1029,7 @@ function NPCStaffWork($general, $nation, $dipState){
             $work = true;
         }
         
-        if($compUser[$resName] < 21000){
+        if((($isWarUser || $resName == 'gold') && $compUser[$resName] < 21000) || ($compUser[$resName] < 5000)){
             if($work){
                 $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 2000)*10 + 10);
                 $commandList[EncodeCommand($resType, $userGeneralsID[0], $amount, 23)] = 40;    // 금,쌀 1000단위 포상
