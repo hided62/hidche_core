@@ -39,16 +39,14 @@ if($meLevel < 5){
 }
 
 if($btn == "임명") {
-    if(!$genlist){
-        header('location:b_myBossInfo.php');
-        exit();
+    if($genlist==0){
+        $general = [];
+    }
+    else{
+        $general = $db->queryFirstRow('SELECT `no`,nation,`level`,leader,`power`,intel FROM general WHERE no = %i', $genlist);
     }
 
-    $query = "select no,nation,level,leader,power,intel from general where no='$genlist'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
-
-    if(!$general){
+    if($genlist != 0 && !$general){
         header('location:b_myBossInfo.php');
         exit();
     }
@@ -241,7 +239,7 @@ if($btn == "임명" && $level >= 5 && $level <= 11) {
         $nation['chemi'] -= 1;
         if($nation['chemi'] < 0) { $nation['chemi'] = 0; }
 
-        $query = "update nation set chemi='{$nation['chemi']}' where nation='{$general['nation']}'";
+        $query = "update nation set chemi='{$nation['chemi']}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //기존 장수 일반으로
