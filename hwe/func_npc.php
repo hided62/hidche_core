@@ -702,11 +702,11 @@ function processAI($no) {
             if($general['gold'] + $general['rice'] < $resrc*2) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달
             elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] == 1) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
-            elseif($general['gold'] < $resrc) {                                   // 금없으면 쌀팜
+            elseif($general['gold'] < $resrc || ($general['gold'] < $resrc *2 && $general['rice'] > $resrc * 6)) {                                   // 금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
-            } elseif($general['rice'] < $resrc) {                                 // 쌀없으면 쌀삼
+            } elseif($general['rice'] < $resrc || ($general['rice'] < $resrc *2 && $general['gold'] > $resrc * 6)) {                                 // 쌀없으면 쌀삼
                 $amount = intdiv(($general['gold'] - $general['rice'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
