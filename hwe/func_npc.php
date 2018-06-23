@@ -268,7 +268,7 @@ function processAI($no) {
     }
 
     $tech = getTechCost($nation['tech']);
-    $resrc = $tech * 1000;//XXX: 왜 1000이지?
+    $resrc = $tech * 700;//XXX: 왜 700이지?
 
     if($general['atmos'] >= 90 && $general['train'] >= 90) {
         if($general['mode'] == 0) {
@@ -655,13 +655,13 @@ function processAI($no) {
 //     ┃        ┃
 //     ┃  쌀팜  ┃ 공격
 //     ┃        ┃
-//1000t┣━━━━╋━━━━━━━━━
+// 700t┣━━━━╋━━━━━━━━━
 //     ┃내조  ↗┃
 //     ┃    ↗  ┃
 //     ┣━┓내조┃  쌀삼
 //     ┃**┃    ┃
 //   0 ┗━┻━━━━━━━> G
-//             1000t
+//              700t
 
                 } else {                // 공격인 경우
                     if($general['crew'] < 1000 && $general['gold'] >= $resrc && $general['rice'] >= $resrc) { //자원되고, 병사없을때
@@ -1153,7 +1153,7 @@ function NPCStaffWork($general, $nation, $dipState){
             if($nationGeneral['crew'] < 2000){
                 continue;
             }
-            if($nationGeneral['rice'] < 1000 * $tech){
+            if($nationGeneral['rice'] < 700 * $tech){
                 continue;
             }
             if($generalCity['front']){
@@ -1203,7 +1203,7 @@ function NPCStaffWork($general, $nation, $dipState){
             if($nationGeneral['crew'] >= 1000){
                 continue;
             }
-            if($nationGeneral['rice'] < 1000 * $tech){
+            if($nationGeneral['rice'] < 700 * $tech){
                 continue;
             }
             if(!$generalCity['front']){
