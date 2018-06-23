@@ -1116,15 +1116,12 @@ function nationMsg() {
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    $query = "select no,nation from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
+    $msg = $db->queryFirstField(
+        'SELECT msg FROM nation WHERE nation = (SELECT nation FROM general WHERE `owner` = %i)',
+        $userID
+    );
 
-    $query = "select msg from nation where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    echo "<font color=orange>".$nation['msg']."</font>";
+    return $msg?:'';
 }
 
 function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
