@@ -999,17 +999,36 @@ function NPCStaffWork($general, $nation, $dipState){
 
 
     //금쌀이 부족한 '유저장' 먼저 포상
-    if ($nation[$resName] > ($resName=='gold'?1:2)*3000 && $userGeneralsID) {
-        $compUser = $nationGenerals[$userGeneralsID[0]];
+    while ($nation[$resName] > ($resName=='gold'?1:2)*3000 && $userGeneralsID) {
+        $isWarUser = null;
+        
+        foreach($userGeneralsID as $userGeneralID){
+            $compUser = $nationGenerals[$userGeneralID];
+            if($compUser['leader'] >= 50){
+                $isWarUser = true;
+                break;
+            }
+            if(Util::randF(0.2)){
+                $isWarUser = false;
+                break;
+            }
+        }
+
+        if($isWarUser === null){
+            break;
+        }
+
         $compRes = $compUser[$resName];
 
         $work = false;
-        if ($compRes < $avgNpcWarRes*3) {
+        if(!$isWarUser){
+            $work = false;
+        } else if ($compRes < $avgNpcWarRes*3) {
             $work = true;
         } elseif ($compRes < $avgNpcCivilRes * 4) {
             $work = true;
         }
-
+        
         if($compUser[$resName] < 21000){
             if($work){
                 $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 2000)*10 + 10);
@@ -1021,6 +1040,7 @@ function NPCStaffWork($general, $nation, $dipState){
             }
             
         }
+        break;
     }
 
     $minRes = $admin['develcost'] * 24 * $tech;
@@ -1091,6 +1111,7 @@ function NPCStaffWork($general, $nation, $dipState){
         $targetCity = null;
         $minCity = null;
         $maxCity = null;
+        $maxDevCity = null;
         foreach($nationCities as $nationCity){
             if($nationCity['dev']>=95){
                 continue;
@@ -1127,8 +1148,25 @@ function NPCStaffWork($general, $nation, $dipState){
             }
         }
 
+        foreach ($nationCities as $nationCity) {
+            if(!$nationCity['supply']){
+                continue;
+            }
+            if(count($nationCity['generals']) == 0){
+                continue;
+            }
+            if($maxDevCity === null || $maxDevCity['dev'] < $nationCity['dev']){
+                $maxDevCity = $nationCity;
+            }
+        }
+
         if($targetCity === null || (count($targetCity['generals']) >= count($maxCity['generals']) - 1)){
             $targetCity = $minCity;
+        }
+
+        if($maxDevCity['dev'] >= 95 && $targetCity['city'] != $maxDevCity['city'] && $targetCity['dev'] <= 70){
+            $targetGeneral = $nationGenerals[Util::choiceRandom($maxDevCity['generals'])];
+            $commandList[EncodeCommand(0, $targetGeneral['no'], $targetCity['city'], 27)] = 2;
         }
 
         if(count($targetCity['generals']) < count($maxCity['generals']) - 2){
