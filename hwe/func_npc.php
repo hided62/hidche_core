@@ -268,7 +268,7 @@ function processAI($no) {
     }
 
     $tech = getTechCost($nation['tech']);
-    $resrc = $tech * 700;//XXX: 왜 700이지?
+    $resrc = $tech * 1000;//XXX: 왜 1000이지?
 
     if($general['atmos'] >= 90 && $general['train'] >= 90) {
         if($general['mode'] == 0) {
@@ -536,7 +536,7 @@ function processAI($no) {
             ){
                 //쌀을 많이 들고 있다면
                 $amount = $general['rice'] * 0.9;
-                $amount = intdiv(Util::valueFit($amount, $resrc + 700, 10000), 100);
+                $amount = intdiv(Util::valueFit($amount, $resrc + 1000, 10000), 100);
 
                 $command = EncodeCommand(0, 2, $amount, 44);  //헌납
                 $db->update('general', [
@@ -551,7 +551,7 @@ function processAI($no) {
             ){
                 //금을 많이 들고 있다면
                 $amount = $general['gold'] * 0.9;
-                $amount = intdiv(Util::valueFit($amount, $resrc + 700, 10000), 100);
+                $amount = intdiv(Util::valueFit($amount, $resrc + 1000, 10000), 100);
                 
                 $command = EncodeCommand(0, 1, $amount, 44);  //헌납
                 $db->update('general', [
@@ -573,12 +573,12 @@ function processAI($no) {
 
 //   R
 //    ┃  ┃     공격/내정
-// 700┃쌀┣━━━━┓
+// 500┃쌀┣━━━━┓
 //    ┃팜┃        ┃
-// 100┣━┫  내정  ┣━━━
+// 100┣━┫  내정   ┣━━━
 //    ┃조┃        ┃쌀삼
 //   0┗━┻━━━━┻━━━> G
-//       100       700
+//       100       500
         
         $target = array();
         // 평시거나 초반아니면서 공격가능 없으면서 병사 있으면 해제(25%)
@@ -591,7 +591,7 @@ function processAI($no) {
             elseif($general['gold'] < 100) {                                      //금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 $command = EncodeCommand(0, 1, $amount, 49);                    //팜
-            } elseif($general['gold'] < 700 && $general['rice'] < 700) { $command = EncodeCommand(0, 0, 0, 1); } //금쌀되면 내정
+            } elseif($general['gold'] < 500 && $general['rice'] < 500) { $command = EncodeCommand(0, 0, 0, 1); } //금쌀되면 내정
             elseif($general['rice'] < 100) {                                      //쌀없으면 쌀삼
                 $amount = intdiv(($general['gold'] - $general['rice'])/2, 100);  // 100단위
                 $command = EncodeCommand(0, 2, $amount, 49);                    //삼
@@ -655,16 +655,16 @@ function processAI($no) {
 //     ┃        ┃
 //     ┃  쌀팜  ┃ 공격
 //     ┃        ┃
-// 700t┣━━━━╋━━━━━━━━━
+//1000t┣━━━━╋━━━━━━━━━
 //     ┃내조  ↗┃
 //     ┃    ↗  ┃
 //     ┣━┓내조┃  쌀삼
 //     ┃**┃    ┃
 //   0 ┗━┻━━━━━━━> G
-//              700t
+//             1000t
 
                 } else {                // 공격인 경우
-                    if($general['crew'] < 700 && $general['gold'] >= $resrc && $general['rice'] >= $resrc) { //자원되고, 병사없을때
+                    if($general['crew'] < 1000 && $general['gold'] >= $resrc && $general['rice'] >= $resrc) { //자원되고, 병사없을때
                         if($city['pop'] > 40000) { $command = EncodeCommand(0, 0, 0, 11); }
                         else { $command = EncodeCommand(0, 0, 0, 1); }
                     } elseif($general['rice'] < $resrc && $general['rice'] <= $general['gold']) {
@@ -678,9 +678,9 @@ function processAI($no) {
                         if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }//팜
                         else { $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); }   // 내정, 조달
                     //자원, 병사 모두 충족
-                    } elseif($general['crew'] >= 700 && $general['train'] < 90) {
+                    } elseif($general['crew'] >= 1000 && $general['train'] < 90) {
                         $command = EncodeCommand(0, 0, 0, 13);  //훈련
-                    } elseif($general['crew'] >= 700 && $general['atmos'] < 90) {
+                    } elseif($general['crew'] >= 1000 && $general['atmos'] < 90) {
                         $command = EncodeCommand(0, 0, 0, 14);  //사기진작
                     } else {
                         //공격
@@ -693,10 +693,10 @@ function processAI($no) {
 //     ┃  ┃
 //     ┃쌀┃
 //     ┃팜┃ 공격
-// 700t┣━╋━━━━━
+//1000t┣━╋━━━━━
 //     ┃조┃ 쌀삼
 //    0┗━┻━━━━━> G
-//        700t
+//       1000t
 
         //전시일때
             if($general['gold'] + $general['rice'] < $resrc*2) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달
@@ -711,7 +711,7 @@ function processAI($no) {
                 if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
             } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
-            elseif($general['crew'] < 700 && $general['gold'] >= $resrc && $general['rice'] >= $resrc) {
+            elseif($general['crew'] < 1000 && $general['gold'] >= $resrc && $general['rice'] >= $resrc) {
                 $query = "select no from general where nation='{$general['nation']}'";
                 $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
                 $genCount = MYDB_num_rows($result);
@@ -750,13 +750,13 @@ function processAI($no) {
                         $command = EncodeCommand(0, 0, 0, 7);  //인구 안되면 정장
                     }
                 }
-            } elseif($general['crew'] >= 700 && $general['train'] < 90) {
+            } elseif($general['crew'] >= 1000 && $general['train'] < 90) {
                 if($general['atmos'] >= 90 && $general['train'] >= 60 && $general['mode'] == 0) {
                     $query = "update general set mode=1 where no='{$general['no']}'";
                     MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
                 }
                 $command = EncodeCommand(0, 0, 0, 13);  //훈련
-            } elseif($general['crew'] >= 700 && $general['atmos'] < 90) {
+            } elseif($general['crew'] >= 1000 && $general['atmos'] < 90) {
                 if($general['atmos'] >= 60 && $general['train'] >= 90 && $general['mode'] == 0) {
                     $query = "update general set mode=1 where no='{$general['no']}'";
                     MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
@@ -1153,7 +1153,7 @@ function NPCStaffWork($general, $nation, $dipState){
             if($nationGeneral['crew'] < 2000){
                 continue;
             }
-            if($nationGeneral['rice'] < 700 * $tech){
+            if($nationGeneral['rice'] < 1000 * $tech){
                 continue;
             }
             if($generalCity['front']){
@@ -1203,7 +1203,7 @@ function NPCStaffWork($general, $nation, $dipState){
             if($nationGeneral['crew'] >= 1000){
                 continue;
             }
-            if($nationGeneral['rice'] < 700 * $tech){
+            if($nationGeneral['rice'] < 1000 * $tech){
                 continue;
             }
             if(!$generalCity['front']){
