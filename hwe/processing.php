@@ -991,11 +991,14 @@ function command_25($turn, $command) {
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        if($nation['scoutmsg'] == "") {
-            $scoutStr .= "<tr><td align=center width=130 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=870 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>-</td></tr>";
-        } else {
-            $scoutStr .= "<tr><td align=center width=130 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td><td width=870 style=color:".newColor($nation['color']).";background-color:{$nation['color']}>".$nation['scoutmsg']."</td></tr>";
-        }
+        $scoutStr .= 
+            "<tr>"
+            ."<td align=center width=130 style=color:".newColor($nation['color']).";background-color:{$nation['color']};>"
+            .$nation['name']
+            ."</td>"
+            ."<td width=870 style='color:".newColor($nation['color']).";background-color:{$nation['color']};overflow:hidden;max-width:870px;max-height:200px'>"
+            .($nation['scoutmsg']?:'-')
+            .'</td></tr>';
 
         if($gameStor->year < $gameStor->startyear+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit) {
             echo "

@@ -58,14 +58,14 @@ if(!$isVoteAdmin){
 
 if($btn == "수정") {
     if($title != "") {
-        $gameStor->vote_title = $title;
+        $gameStor->vote_title = WebUtil::htmlPurify($title);
     }
 } elseif($btn == "추가") {
     if($str != "") {
         if(!$admin['vote']){
             $admin['vote'] = [];
         }
-        $admin['vote'][] = $str;
+        $admin['vote'][] = WebUtil::htmlPurify($str);
         $gameStor->vote=$admin['vote'];
     }
 } elseif($btn == "리셋") {

@@ -24,13 +24,6 @@ function Tag2Code(string $str) {
     return nl2br($str);
 }
 
-function BadTag2Code(string $str) {
-    /* FIXME: 제대로된 tag 변환 코드 사용 */
-    $str = str_replace("<script", "<sorry", $str);
-    $str = str_replace("</script", "</sorry", $str);
-    return $str;
-}
-
 function tab(string $str, $maxsize, $ch) {
     $size = strlen($str);
 

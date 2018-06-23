@@ -125,4 +125,14 @@ class WebUtil
         }
         return "<link rel='stylesheet' type='text/css' href='{$path}{$tail}' />\n";
     }
+
+    public static function htmlPurify(?string $text): string{
+        if(!$text){
+            return '';
+        }
+
+        $config = \HTMLPurifier_HTML5Config::createDefault();
+        $purifier = new \HTMLPurifier($config);
+        return $purifier->purify($text);
+    }
 }

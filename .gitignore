@@ -43,3 +43,4 @@ test.php
 /twe
 
 phpinfo.php
+vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/*
