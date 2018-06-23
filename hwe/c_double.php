@@ -44,12 +44,12 @@ $comStr = EncodeCommand($fourth, $third, $double, $command);
 
 // 건국
 if($command == 46) {
-    $name = addslashes(SQ2DQ($name));
-    $name = str_replace("|", "", $name);
-    $name = str_replace(" ", "", $name);
-    $name = str_replace("　", "뷁", $name);
-    if($name == "") { $name = "무명"; }
+    $name = htmlspecialchars($name);
+    $name = StringUtil::removeSpecialCharacter($name);
     $name = StringUtil::subStringForWidth($name, 0, 18);
+    $name = WebUtil::htmlPurify($name);
+    $name = StringUtil::textStrip($name);
+    if($name == "") { $name = "무명"; }
 
     $db->update('general', [
         'makenation'=>$name
@@ -72,15 +72,16 @@ if($command == 53) {
     $me = MYDB_fetch_array($result);
 
     if($me['level'] >= 5) {
-        $nationname = addslashes(SQ2DQ($nationname));
-        $nationname = str_replace("|", "", $nationname);
-        $nationname = str_replace(" ", "", $nationname);
-        $nationname = str_replace("　", "뷁", $nationname);
-        if($nationname == "") { $nationname = "무명"; }
+        $nationname = htmlspecialchars($nationname);
+        $nationname = StringUtil::removeSpecialCharacter($nationname);
         $nationname = StringUtil::subStringForWidth($nationname, 0, 18);
-
-        $query = "update general set makenation='{$nationname}' where level>=5 and nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $nationname = WebUtil::htmlPurify($nationname);
+        $nationname = StringUtil::textStrip($nationname);
+        if($nationname == "") { $nationname = "무명"; }
+        
+        $db->update('general', [
+            'makenation'=>$nationname
+        ], 'level>=5 and nation=%i', $me['nation']);
 
         $count = count($turn);
         $str = "type=type";
@@ -101,11 +102,11 @@ if($command == 61) {
     $me = MYDB_fetch_array($result);
 
     if($me['level'] >= 5) {
-        $note = addslashes(SQ2DQ($note));
-        $note = str_replace("|", "", $note);
-        $note = str_replace(" ", "", $note);
-        $note = str_replace("　", "뷁", $note);
+        $note = htmlspecialchars($note);
+        $note = StringUtil::removeSpecialCharacter($note);
         $note = StringUtil::subStringForWidth($note, 0, 90);
+        $note = WebUtil::htmlPurify($note);
+        $note = StringUtil::textStrip($note);
 
         $query = "update diplomacy set reserved='{$note}' where me='{$me['nation']}' and you='$double'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

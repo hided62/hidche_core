@@ -150,13 +150,18 @@ class StringUtil
         return $str;
     }
 
+    public static function textStrip(?string $str):string{
+        if(!$str){
+            return '';
+        }
+        return preg_replace('/^[\pZ\pC]+|[\pZ\pC]+$/u','',$str);
+    }
+
     public static function removeSpecialCharacter($str)
     {
         return str_replace([
-            ' ', '"', '\'', 'ⓝ', 'ⓜ', 'ⓖ', '\\', '/', '`',
-            '-', '=', '[', ']', ';', ',', '.', '~', '!', '@',
-            '#', '$', '%', '^', '&', '*', '(', ')', '_', '+',
-            '|', '{', '}', ':', '', '<', '>', '?', '　'
+            '"', '\'', 'ⓝ', 'ⓜ', 'ⓖ', '\\', '/', '`', '#',
+            '-', '#', '|'
         ], '', $str);
     }
 

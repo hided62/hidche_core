@@ -663,8 +663,13 @@ function process_46(&$general) {
     } elseif($city['level'] != 5 && $city['level'] != 6) {
         $log[] = "<C>●</>{$admin['month']}월:중, 소 도시에서만 가능합니다. 건국 실패. <1>$date</>";
     } else {
-        $query = "update nation set name='{$general['makenation']}',color='$color',level=1,type='$type',capital='{$general['city']}' where nation='{$general['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('nation', [
+            'name'=>$general['makenation'],
+            'color'=>$color,
+            'level'=>1,
+            'type'=>$type,
+            'capital'=>$general['city'],
+        ], 'nation=%i', $general['nation']);
 
         refreshNationStaticInfo();
         $nation = getNationStaticInfo($general['nation']);

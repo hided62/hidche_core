@@ -43,7 +43,10 @@ $userID = Session::getUserID();
 //NOTE: 이 페이지에서는 세션에 데이터를 등록하지 않음. 로그인은 이후에.
 
 $name       = Util::getReq('name');
+$name       = htmlspecialchars($name);
 $name       = StringUtil::removeSpecialCharacter($name);
+$name       = WebUtil::htmlPurify($name);
+$name       = StringUtil::textStrip($name);
 $pic        = (int)Util::getReq('pic', 'bool', 0);
 $character  = Util::getReq('character', 'int', 0);
 
