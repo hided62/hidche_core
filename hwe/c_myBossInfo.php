@@ -52,8 +52,7 @@ if($btn == "임명") {
     }
 
     //임명할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
-    if($meLevel < 5 || ($general['nation'] != $me['nation'] && $genlist != 0) || ($general['level'] == 12 && $genlist != 0)) {
-        
+    if($meLevel < 5 || ($genlist != 0 && $general['nation'] != $me['nation']) || ($genlist != 0 && $general['level'] == 12)) {
         header('location:b_myBossInfo.php');
         exit();
     }
