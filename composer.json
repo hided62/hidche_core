@@ -18,7 +18,8 @@
         "php-extended/php-tail": "^2.1",
         "pguardiario/phpuri": "^1.0",
         "symfony/lock": "^4.1",
-        "ezyang/htmlpurifier": "^4.10"
+        "ezyang/htmlpurifier": "^4.10",
+        "xemlock/htmlpurifier-html5": "^0.1.7"
     },
     "autoload": {
         "psr-4": {

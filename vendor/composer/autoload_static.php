@@ -7,9 +7,9 @@ namespace Composer\Autoload;
 class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
 {
     public static $files = array (
+        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
-        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '5b154887902198b16314243c6e0e3e19' => __DIR__ . '/..' . '/pguardiario/phpuri/phpuri.php',
         '870dc64919afa8b0f700701bb2c6a783' => __DIR__ . '/../..' . '/f_config/config.php',
@@ -138,6 +138,14 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'DBTransaction' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'FB' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
         'FirePHP' => __DIR__ . '/..' . '/firephp/firephp-core/lib/FirePHPCore/FirePHP.class.php',
+        'HTMLPurifier_AttrDef_HTML_Bool2' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrDef/HTML/Bool2.php',
+        'HTMLPurifier_AttrDef_Regexp' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/AttrDef/Regexp.php',
+        'HTMLPurifier_ChildDef_Details' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/Details.php',
+        'HTMLPurifier_ChildDef_Figure' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/Figure.php',
+        'HTMLPurifier_ChildDef_Media' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/Media.php',
+        'HTMLPurifier_ChildDef_Picture' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/ChildDef/Picture.php',
+        'HTMLPurifier_HTML5Config' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTML5Config.php',
+        'HTMLPurifier_HTML5Definition' => __DIR__ . '/..' . '/xemlock/htmlpurifier-html5/library/HTMLPurifier/HTML5Definition.php',
         'MeekroDB' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'MeekroDBEval' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
         'MeekroDBException' => __DIR__ . '/..' . '/sergeytsalkov/meekrodb/db.class.php',
