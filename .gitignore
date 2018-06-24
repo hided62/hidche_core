@@ -15,6 +15,7 @@ d_log/*.txt
 d_log/*.zip
 sess_*
 */logs/*.txt
+*/logs/*/*.txt
 err.txt
 che/.htaccess
 kwe/.htaccess

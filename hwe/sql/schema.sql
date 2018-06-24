@@ -398,15 +398,25 @@ ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 ## 왕조 테이블
 ###########################################################################
 
-CREATE TABLE if not exists `ng_games` (
+CREATE TABLE `ng_games` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL,
 	`date` DATETIME NOT NULL,
-	`united` INT(1) NOT NULL DEFAULT '0',
+	`winner_nation` INT(11) NULL DEFAULT NULL,
 	`aux` TEXT NOT NULL COMMENT 'json',
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `server_id` (`server_id`),
 	INDEX `date` (`date`)
+)
+ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `ng_old_nations` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`server_id` CHAR(20) NOT NULL DEFAULT '0',
+	`nation` INT(11) NOT NULL DEFAULT '0',
+	`data` LONGTEXT NOT NULL DEFAULT '0' COMMENT 'json',
+	PRIMARY KEY (`id`),
+	INDEX `server_id` (`server_id`, `nation`)
 )
 ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
