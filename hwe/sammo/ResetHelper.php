@@ -55,13 +55,15 @@ class ResetHelper{
         $db = DB::db();
         $mysqli_obj = $db->get();
 
-        FileUtil::delInDir($servRoot."/logs");
-        FileUtil::delInDir($servRoot."/data");
+        $serverID = DB::prefix().'_'.Util::randomStr(12);
+
+        mkdir($servRoot.'/logs/'.$serverID, 0644);
+        mkdir($servRoot.'/data/'.$serverID, 0644);
 
         $result = Util::generateFileUsingSimpleTemplate(
             $servRoot.'/d_setting/UniqueConst.orig.php',
             $servRoot.'/d_setting/UniqueConst.php',[
-                'serverID'=>DB::prefix().'_'.Util::randomStr(8),
+                'serverID'=>$serverID,
                 'serverName'=>AppConf::getList()[$prefix]->getKorName(),
             ], true
         );

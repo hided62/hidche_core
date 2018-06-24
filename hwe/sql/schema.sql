@@ -376,9 +376,40 @@ create table if not exists hall (
   UNIQUE INDEX `type` (`type`, `rank`)
   ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE if not exists `ng_hall` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`server_id` CHAR(20) NOT NULL,
+	`scenario` INT(11) NOT NULL,
+	`general_no` INT(11) NOT NULL,
+	`type` INT(11) NOT NULL,
+	`value` INT(11) NOT NULL,
+	`owner` INT(11) NULL DEFAULT NULL,
+	`aux` TEXT NOT NULL DEFAULT '{}',
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `server_general` (`server_id`, `type`, `general_no`),
+	UNIQUE INDEX `owner` (`owner`, `server_id`),
+	INDEX `server_show` (`server_id`, `type`, `value`),
+	INDEX `scenario` (`scenario`, `type`, `value`)
+)
+ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+
 ###########################################################################
 ## 왕조 테이블
 ###########################################################################
+
+CREATE TABLE if not exists `ng_games` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`server_id` CHAR(20) NOT NULL,
+	`date` DATETIME NOT NULL,
+	`united` INT(1) NOT NULL DEFAULT '0',
+	`aux` TEXT NOT NULL COMMENT 'json',
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `server_id` (`server_id`),
+	INDEX `date` (`date`)
+)
+ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
 create table if not exists emperior (
   no      int(6) not null auto_increment,
   phase   char(255) default '',
