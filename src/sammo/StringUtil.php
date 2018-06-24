@@ -143,10 +143,27 @@ class StringUtil
         return static::padString($str, $maxsize, $ch, 0);
     }
 
-    public static function escapeTag($str)
+    public static function escapeTag(?string $str):string
     {
+        if(!$str){
+            return '';
+        }
         $str = htmlspecialchars($str);
         $str = str_replace(["\r\n", "\r", "\n"], '<br>', $str);
+        return $str;
+    }
+
+    public static function neutralize(?string $str, ?int $maxLen = null){
+        if(!$str){
+            return '';
+        }
+        if($maxLen && $maxLen > 0){
+            $str = StringUtil::subStringForWidth($str, 0, $maxLen);
+        }
+        $str = htmlspecialchars($str);
+        $str = StringUtil::removeSpecialCharacter($str);
+        $str = WebUtil::htmlPurify($str);
+        $str = StringUtil::textStrip($str);
         return $str;
     }
 

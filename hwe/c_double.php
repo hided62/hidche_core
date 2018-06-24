@@ -44,11 +44,7 @@ $comStr = EncodeCommand($fourth, $third, $double, $command);
 
 // 건국
 if($command == 46) {
-    $name = htmlspecialchars($name);
-    $name = StringUtil::removeSpecialCharacter($name);
-    $name = StringUtil::subStringForWidth($name, 0, 18);
-    $name = WebUtil::htmlPurify($name);
-    $name = StringUtil::textStrip($name);
+    $name = StringUtil::neutralize($name);
     if($name == "") { $name = "무명"; }
 
     $db->update('general', [
@@ -72,11 +68,7 @@ if($command == 53) {
     $me = MYDB_fetch_array($result);
 
     if($me['level'] >= 5) {
-        $nationname = htmlspecialchars($nationname);
-        $nationname = StringUtil::removeSpecialCharacter($nationname);
-        $nationname = StringUtil::subStringForWidth($nationname, 0, 18);
-        $nationname = WebUtil::htmlPurify($nationname);
-        $nationname = StringUtil::textStrip($nationname);
+        $nationname = StringUtil::neutralize($nationname, 18);
         if($nationname == "") { $nationname = "무명"; }
         
         $db->update('general', [
@@ -102,11 +94,7 @@ if($command == 61) {
     $me = MYDB_fetch_array($result);
 
     if($me['level'] >= 5) {
-        $note = htmlspecialchars($note);
-        $note = StringUtil::removeSpecialCharacter($note);
-        $note = StringUtil::subStringForWidth($note, 0, 90);
-        $note = WebUtil::htmlPurify($note);
-        $note = StringUtil::textStrip($note);
+        $note = StringUtil::neutralize($note, 90);
 
         $query = "update diplomacy set reserved='{$note}' where me='{$me['nation']}' and you='$double'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
