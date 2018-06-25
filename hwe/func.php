@@ -1916,10 +1916,6 @@ function updateTurntime($no) {
             $josaYi = JosaUtil::pick($general['name2'], '이');
             $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name2']}</>{$josaYi} <Y>{$general['name']}</>의 육체에서 <S>유체이탈</>합니다!";
             pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-
-            if($admin['isunited'] == 0) {
-                CheckHall($no);
-            }
         } else {
             // 군주였으면 유지 이음
             if($general['level'] == 12) {
@@ -2060,9 +2056,10 @@ function updateTurntime($no) {
 
 function CheckHall($no) {
     $db = DB::db();
-    $connect=$db->get();
 
-    $type = array(
+
+
+    $types = array(
         "experience",
         "dedication",
         "firenum",
@@ -2086,25 +2083,27 @@ function CheckHall($no) {
         "betrate"
     );
 
-    $query = "select name,nation,picture,
-        experience,dedication,warnum,firenum,killnum,
-        killnum/warnum*10000 as winrate,killcrew,killcrew/deathcrew*10000 as killrate,
-        dex0,dex10,dex20,dex30,dex40,
-        ttw/(ttw+ttd+ttl)*10000 as ttrate, ttw+ttd+ttl as tt,
-        tlw/(tlw+tld+tll)*10000 as tlrate, tlw+tld+tll as tl,
-        tpw/(tpw+tpd+tpl)*10000 as tprate, tpw+tpd+tpl as tp,
-        tiw/(tiw+tid+til)*10000 as tirate, tiw+tid+til as ti,
-        betgold, betwin, betwingold, betwingold/betgold*10000 as betrate
-        from general where no='$no'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
+    $general = $db->queryFirstRow('SELECT name,name2,owner,nation,picture,imgsvr,
+    experience,dedication,warnum,firenum,killnum,
+    killnum/warnum*10000 as winrate,killcrew,killcrew/deathcrew*10000 as killrate,
+    dex0,dex10,dex20,dex30,dex40,
+    ttw/(ttw+ttd+ttl)*10000 as ttrate, ttw+ttd+ttl as tt,
+    tlw/(tlw+tld+tll)*10000 as tlrate, tlw+tld+tll as tl,
+    tpw/(tpw+tpd+tpl)*10000 as tprate, tpw+tpd+tpl as tp,
+    tiw/(tiw+tid+til)*10000 as tirate, tiw+tid+til as ti,
+    betgold, betwin, betwingold, betwingold/betgold*10000 as betrate
+    from general where no=%i', $no);
+
+    if(!$general){
+        return;
+    }
 
     $nation = getNationStaticInfo($general['nation']);
 
-    for($k=0; $k < 21; $k++) {
-        $query = "select * from hall where type='$k' order by data desc";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $count = MYDB_num_rows($result);
+    $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
+
+    foreach($types as $idx=>$typeName) {
+        
 
         //승률,살상률인데 10회 미만 전투시 스킵
         if(($k == 5 || $k == 7) && $general['warnum']<10) { continue; }
@@ -2119,26 +2118,32 @@ function CheckHall($no) {
         //수익률인데 1000미만시 스킵
         if($k == 20 && $general['betgold'] < 1000) { continue; }
 
-        $rank = 10;
-        for($i=0; $i < $count; $i++) {
-            $ranker = MYDB_fetch_array($result);
+        $aux = [
+            'nationName'=>$nation['name'],
+            'bgColor'=>$nation['color'],
+            'fgColor'=>newColor($nation['color']),
+            'picture'=>$general['picture'],
+            'imgsvr'=>$general['imgsvr'],
+            'date'=>date('Y-m-d H:i:s'),
+            'owner_name'=>$general['name2'],
+            'server_id'=>UniqueConst::$serverID,
+            'printValue'=>$general['value']
+        ];
+        $jsonAux = Json::encode($aux);
 
-            if($general[$type[$k]] >= $ranker['data']) {
-                $rank = $i;
-                break;
-            }
-        }
-        for($i=8; $i >= $rank; $i--) {
-            $j = $i + 1;
-            $query = "select * from hall where type='$k' and rank='$i'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $ranker = MYDB_fetch_array($result);
-
-            $query = "update hall set name='{$ranker['name']}', nation='{$ranker['nation']}', data='{$ranker['data']}', color='{$ranker['color']}', picture='{$ranker['picture']}' where type='$k' and rank='$j'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
-        $query = "update hall set name='{$general['name']}', nation='{$nation['name']}', data='{$general[$type[$k]]}', color='{$nation['color']}', picture='{$general['picture']}' where type='$k' and rank='$rank'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->insertUpdate('ng_hall', [
+            'server_id'=>UniqueConst::$serverID,
+            'type'=>$idx,
+            'general_no'=>$no,
+            'value'=>$general[$typeName],
+            'owner'=>$general['owner']??null,
+            'serverIdx'=>$serverCnt,
+            'serverName'=>UniqueConst::$serverName,
+            'aux'=>$jsonAux
+        ],[
+            'value'=>$general[$typeName],
+            'aux'=>$jsonAux
+        ]);
     }
 }
 

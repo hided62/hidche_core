@@ -44,15 +44,3 @@ function getMailboxList(){
     return $result;
 
 }
-
-
-//Legacy
-
-function moveMsg($table, $msgtype, $msgnum, $msg, $type, $who, $when, $column, $value) {
-    $db = DB::db();
-    $connect=$db->get();
-
-    //TODO: moveMsg 쓰는 곳 모두 고쳐!!!
-    $query = "update {$table} set {$msgtype}{$msgnum}='$msg',{$msgtype}{$msgnum}_type='$type',{$msgtype}{$msgnum}_who='$who',{$msgtype}{$msgnum}_when='$when' where {$column}='$value'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-}

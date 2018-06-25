@@ -92,12 +92,12 @@ if ($userGrade >= 5) {
 계정은 한번 등록으로 계속 사용합니다. 각 서버 리셋시 캐릭터만 새로 생성하면 됩니다.<br>
 <br>
 <span class="Entrance_Che">체섭</span> : 메인서버입니다. 천하통일에 도전하여 왕조일람과 명예의전당에 올라봅시다! (주로 1턴=60분)<br>
-<span class="Entrance_Kwe">퀘섭</span> : 실제 장수가 되어 가상의 역사를 만들어 봅시다!<br>
-<span class="Entrance_Pwe">풰섭</span> : 실제 장수들과 어울려 사실적 역사를 체험해 봅시다!<br>
-<span class="Entrance_Twe">퉤섭</span> : 주로 패치사항 미리보기 테스트 서버입니다.<br>
-<span class="Entrance_Nya">냐섭</span> : 신 서버.<br>
-<span class="Entrance_Pya">퍄섭</span> : 신 서버2.<br>
-<span class="Entrance_Hwe">훼섭</span> : 1일천하 서버. 또는 운영자 테스트용 서버입니다.<br>
+<span class="Entrance_Kwe">퀘섭</span> : 마이너 서버 그룹1. 비교적 느린 시간으로 운영됩니다.<br>
+<span class="Entrance_Pwe">풰섭</span> : 마이너 서버 그룹1. 비교적 느린 시간으로 운영됩니다.<br>
+<span class="Entrance_Twe">퉤섭</span> : 마이너 서버 그룹2. 비교적 빠른 시간으로 운영됩니다.<br>
+<span class="Entrance_Nya">냐섭</span> : 마이너 서버 그룹3. 독특한 컨셉 위주로 운영됩니다.<br>
+<span class="Entrance_Pya">퍄섭</span> : 마이너 서버 그룹3. 독특한 컨셉 위주로 운영됩니다.<br>
+<span class="Entrance_Hwe">훼섭</span> : 운영자 테스트 서버입니다. 기습적으로 열리고, 닫힐 수 있습니다.<br>
 </td>
         </tr>
     </tfoot>

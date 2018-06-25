@@ -1,0 +1,76 @@
+
+.rankView {
+    width:1100px;
+    margin:auto;
+    position:relative;
+    font-size:13px;
+}
+
+.rankView h3{
+    text-align:center;
+    margin:0;
+    padding:2px;
+    border-bottom:1px solid gray;
+}
+
+.rankView ul{
+    list-style:none;
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    box-sizing: border-box;
+    margin-top:-1px;
+    margin-bottom:-1px;
+}
+
+.rankView li{
+    display:inline-block;
+    vertical-align: top;
+    width:110px;
+    height:149px;
+    text-align:center;
+    border-right:1px solid gray;
+    border-top:1px solid gray;
+    margin:0;
+    box-sizing: border-box;
+}
+
+.rankView li.no_value{
+    height:128px;
+}
+
+.rankView .no_value .hall_value{
+    display:none;
+}
+
+.rankView .hall_nation{
+    font-size:11px;
+    border-top:1px solid gray;
+    border-bottom:1px solid gray;
+}
+
+.rankView .hall_name{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    resize: vertical;
+    font-size:11px;
+    height:28px;
+}
+
+.rankView .hall_name p{
+    padding:0;
+    margin:0;
+}
+
+.rankView .hall_owner{
+    font-size:95%;
+}
+
+.rankView .hall_value{
+    line-height:13px;
+    box-sizing: border-box;
+    border-top:1px solid gray;
+    padding-top:3px;
+    padding-bottom:3px;
+}

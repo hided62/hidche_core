@@ -6,6 +6,7 @@ include "func.php";
 
 $year = Util::getReq('year', 'int');
 $month = Util::getReq('month', 'int');
+$serverID = Util::getReq('server_id', 'string', null);
 
 extractMissingPostToGlobals();
 
@@ -26,13 +27,17 @@ if(!$year || !$month) {
 }
 
 
+if(!$serverID){
+	$serverID = UniqueConst::$serverID;
+}
+
 //로그인 검사
 $session = Session::requireGameLogin([])->setReadOnly();
 
 $db = DB::db();
 $connect=$db->get();
 
-$map = $db->queryFirstField('SELECT map FROM history WHERE year=%i AND month=%i', $year, $month);
+$map = $db->queryFirstField('SELECT map FROM history WHERE server_id=%s AND year=%i AND month=%i', $serverID, $year, $month);
 
 if(!$map){
 	Json::die([

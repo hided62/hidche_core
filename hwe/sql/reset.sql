@@ -31,9 +31,6 @@ DROP TABLE IF EXISTS auction;
 # 통계 테이블 삭제
 DROP TABLE IF EXISTS statistic;
 
-# 연감 테이블 삭제
-DROP TABLE IF EXISTS history;
-
 # 이벤트 테이블 삭제
 DROP TABLE IF EXISTS event;
 

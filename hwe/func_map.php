@@ -1,12 +1,14 @@
 <?php
 namespace sammo;
 class MapRequest{
+    public $serverID;
     public $year;
     public $month;
     public $aux;
     public $neutralView;
     public $showMe;
     function __construct($obj){
+        $this->serverID = Util::array_get($obj['serverID'], null);
         $this->year = Util::array_get($obj['year']);
         $this->month = Util::array_get($obj['month']);
         $this->aux = Util::array_get($obj['aux'],[]);
@@ -19,14 +21,20 @@ class MapRequest{
 /**
  * @param int $year
  * @param int $month
+ * @param string|null $serverID
  * @return mixed
  */
-function getHistoryMap($year, $month){
+function getHistoryMap($year, $month, ?string $serverID=null){
     if(!$year || !$month){
         return ['result'=>false, 'reason'=>'연 월이 지정되지 않음'];
     }
 
-    $map = DB::db()->queryFirstField('select map from history where year=%i and month=%i',
+    if($serverID === null){
+        $serverID = UniqueConst::$serverID;
+    }
+
+    $map = DB::db()->queryFirstField('SELECT map FROM history WHERE server_id = %s AND year=%i and month=%i',
+        $serverID,
         $year, 
         $month);
 
@@ -47,7 +55,7 @@ function getWorldMap($req){
     }
     
     if($req->year && $req->month){
-        return getHistoryMap($req->year, $req->month);
+        return getHistoryMap($req->year, $req->month, $req->serverID??null);
     }
 
     $session = Session::getInstance();

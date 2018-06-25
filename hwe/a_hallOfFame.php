@@ -4,10 +4,12 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 
+$session = Session::getInstance()->setReadOnly();
+
 $db = DB::db();
 $connect=$db->get();
 
-increaseRefresh("명예의전당", 2);
+increaseRefresh("명예의전당", 1);
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,16 +19,16 @@ increaseRefresh("명예의전당", 2);
 <title><?=UniqueConst::$serverName?>: 명예의 전당</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-
+<?=WebUtil::printCSS('css/hallOfFrame.css')?>
 </head>
 
 <body>
-<table align=center width=1000 class='tb_layout bg0'>
+<table align=center width=1100 class='tb_layout bg0'>
     <tr><td>명 예 의 전 당<br><?=closeButton()?></td></tr>
 </table>
-<table align=center width=1000 class='tb_layout bg0'>
+<div style="margin:auto;width=1100px;">
 <?php
-$type = array(
+$types = array(
     "명 성",
     "계 급",
     "계 략 성 공",
@@ -49,72 +51,37 @@ $type = array(
     "베 팅 수 익 금",
     "베 팅 수 익 률"
 );
-for ($i=0; $i < 21; $i++) {
-    $name = [];
-    $nation = [];
-    $data = [];
-    $color = [];
-    $pic = [];
-    
-    $query = "select * from hall where type={$i} order by rank";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 
-    echo "
-    <tr><td align=center colspan=10 id=bg1><font size=4>$type[$i]</font></td></tr>
-    <tr align=center id=bg2><td>1위</td><td>2위</td><td>3위</td><td>4위</td><td>5위</td><td>6위</td><td>7위</td><td>8위</td><td>9위</td><td>10위</td></tr>
-    <tr>";
+$templates = new \League\Plates\Engine('templates');
 
-    for ($k=0; $k < 10; $k++) {
-        $gen = MYDB_fetch_array($result);
-        $name[$k]   = $gen['name'];
-        $nation[$k] = $gen['nation'];
-        $data[$k]   = $gen['data'];
-        $color[$k]  = $gen['color'];
-        $pic[$k]    = $gen['picture'];
-        if ($color[$k] == "") {
-            $color[$k] = GameConst::$basecolor4;
+foreach($types as $idx=>$typeName) {
+    $hallResult = $db->query('SELECT * FROM ng_hall WHERE server_id = %s AND `type`=%i ORDER BY `value` DESC LIMIT 10', UniqueConst::$serverID, $idx);
+
+    $hallResult = array_map(function($general){
+        $aux = Json::decode($general['aux']);
+        $general += $aux;
+        if(!key_exists('color', $general)){
+            $general['color'] = GameConst::$basecolor4;
+            $general['fgColor'] = newColor($general['color']);
         }
-        if ($nation[$k] == "") {
-            $nation[$k] = "&nbsp;";
+        if(key_exists('picture', $general)){
+            $imageTemp = GetImageURL($general['imgsvr']);
+            $general['pictureFullPath'] = "$imageTemp/{$general['picture']}";
         }
-        /*
-                if($pic[$k] == "") {
-                    echo "<td align=center>&nbsp;</td>";
-                } else {
-                    $imageTemp = GetImageURL($gen['imgsvr']);
-                    echo "<td align=center><img width='64' height='64' src={$imageTemp}/{$pic[$k]}></img></td>";
-                }
-        */
-    }
-
-//    echo "</tr><tr>";
-
-    for ($k=0; $k < 10; $k++) {
-        echo "<td align=center style=background-color:{$color[$k]};font-size:80%;color:".newColor($color[$k]).">{$nation[$k]}</td>";
-    }
-
-    echo "</tr><tr>";
-
-    for ($k=0; $k < 10; $k++) {
-        echo "<td align=center style=background-color:{$color[$k]};font-size:80%;color:".newColor($color[$k]).">{$name[$k]}</td>";
-    }
-
-    echo "</tr><tr>";
-
-    for ($k=0; $k < 10; $k++) {
-        if ($i == 5 || $i == 7 || $i == 20) {
-            $data[$k] = intdiv($data[$k], 100).".".($data[$k]%100)." %";
+        else{
+            $general['pictureFullPath'] = GetImageURL(0)."/default.jpg";
         }
-        if ($i >= 13 && $i <= 16) {
-            $data[$k] = intdiv($data[$k], 100).".".($data[$k]%100)." %";
-        }
-        echo "<td align=center>{$data[$k]}</td>";
-    }
-    echo "</tr><tr><td colspan=10 height=5 id=bg1></td></tr>";
+        return $general;
+    }, $hallResult);
+
+    echo $templates->render('hallOfFrame', [
+        'typeName'=>$typeName,
+        'generals'=>$hallResult
+    ]);
 }
 ?>
-</table>
-<table align=center width=1000 class='tb_layout bg0'>
+</div>
+<table align=center width=1100 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>
 </table>

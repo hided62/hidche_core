@@ -94,7 +94,8 @@ class ResetHelper{
         (KVStorage::getStorage($db, 'game_env'))->resetValues();
 
         return [
-            'result'=>true
+            'result'=>true,
+            'serverID'=>$serverID
         ];
     }
 
@@ -128,6 +129,8 @@ class ResetHelper{
             return $clearResult;
         }
 
+        $serverID = $clearResult['serverID'];
+        
         $scenarioObj = new Scenario($scenario, false);
         $scenarioObj->buildConf();
 
@@ -204,6 +207,14 @@ class ResetHelper{
         foreach($env as $key=>$value){
             $gameStor->$key = $value;
         }
+
+        $db->insert('ng_games', [
+            'server_id'=>$serverID,
+            'date'=>$turntime,
+            'winner_nation'=>null,
+            'scenario'=>$scenario,
+            'env'=>Json::encode($env)
+        ]);  
 
         $scenarioObj->build($env);
 

@@ -298,6 +298,7 @@ function LogHistory($isFirst=0) {
     if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', contents collected');
     
     $db->insert('history', [
+        'server_id' => UniqueConst::$serverID,
         'year' => $year,
         'month' => $month,
         'map' => $map_json,

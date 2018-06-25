@@ -30,15 +30,11 @@ if ($con >= 2) {
     exit();
 }
 
-$query = "select year,month from history order by no limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$history = MYDB_fetch_array($result);
-$s = ($history['year']*12) + $history['month'];
+[$s_year, $s_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month ASC LIMIT 1', UniqueConst::$serverID);
+$s = $s_year * 12 + $s_month;
 
-$query = "select year,month from history order by no desc limit 1";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$history = MYDB_fetch_array($result);
-$e = ($history['year']*12) + $history['month'];
+[$e_year, $e_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year DESC, month DESC LIMIT 1', UniqueConst::$serverID);
+$e = $e_year * 12 + $e_month;
 
 //FIXME: $yearmonth가 올바르지 않을 경우에 처리가 필요.
 if (!$yearmonth) {
@@ -98,24 +94,19 @@ if ($month <= 0) {
         <input type=submit name=btn value="◀◀ 이전달">
         <select name=yearmonth size=1>
 <?php
-$query = "select year,month from history";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$histCount = MYDB_num_rows($result);
-for ($i=0; $i < $histCount; $i++) {
-    $history = MYDB_fetch_array($result);
-    $value = "".$history['year'].StringUtil::padStringAlignRight($history['month'], 2, "0");
-    if ($history['year'] == $year && $history['month'] == $month) {
+$dates = $db->queryAllLists('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month DESC', UniqueConst::$serverID);
+foreach($dates as [$hYear, $hMonth]){
+    $value = "".$hYear.StringUtil::padStringAlignRight($hMonth, 2, "0");
+    if ($hYear == $year && $hMonth == $month) {
         echo "
-            <option selected value={$value}>{$history['year']}년 {$history['month']}월</option>";
+            <option selected value={$value}>{$hYear}년 {$hMonth}월</option>";
     } else {
         echo "
-            <option value={$value}>{$history['year']}년 {$history['month']}월</option>";
+            <option value={$value}>{$hYear}년 {$hMonth}월</option>";
     }
 }
 
-$query = "select log,genlog,nation,power,gen,city from history where year='$year' and month='$month'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$history = MYDB_fetch_array($result);
+$history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM history WHERE server_id = %s AND year = %i AND month = %i', UniqueConst::$serverID, $year, $month);
 ?>
         </select>
         <input type=submit name=btn value='조회하기'>
