@@ -17,7 +17,6 @@
     list-style:none;
     margin:0;
     padding:0;
-    overflow:hidden;
     box-sizing: border-box;
     margin-top:-1px;
     margin-bottom:-1px;
@@ -38,6 +37,25 @@
 .rankView li.no_value{
     height:128px;
 }
+
+.rankView li.has_server {
+    height:168px;
+}
+
+.rankView li.no_value.has_server {
+    height:146px;
+}
+
+.rankView .hall_server{
+    border-top:1px solid gray;
+}
+
+.rankView .tooltip .tooltiptext{
+    width:220px;
+    margin-left: -110px;
+}
+
+
 
 .rankView .no_value .hall_value{
     display:none;

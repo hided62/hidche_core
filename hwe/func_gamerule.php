@@ -1126,7 +1126,7 @@ function checkEmperior() {
             $gameStor->isunited = 2;
             $gameStor->conlimit = $gameStor->conlimit*100;
 
-            $query = "select no from general where npc<2 and age>=45";
+            $query = "select no from general where npc<2 and age>=40";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $count = MYDB_num_rows($result);
 

@@ -1,13 +1,18 @@
 <div class="rankView bg0" style="border:1px solid gray;">
 <h3 class="rankType bg1"><?=$typeName?></h3>
 <ul>
-<?php foreach($generals as $rank=>$general): ?><li <?=(key_exists("rankName", $general))?"class='no_value'":''?>>
+<?php foreach($generals as $rank=>$general): ?><li class='<?=(key_exists("rankName", $general))?'no_value':''?> <?=(key_exists("serverName", $general))?'has_server':''?>'>
     <div class="hall_rank bg2 with_border">
         <?=$general['rankName']??(($rank+1).'위')?>
     </div>
     <div class="hall_img"><img width="64" height="64" src="<?=$general['pictureFullPath']?>"></div>
-    <?php if(key_exists("serverName")): ?>
-    <div class="hall_server"><?=$general['serverName']?><?=$general['serverIdx']?>기</div>
+    <?php if(key_exists("serverName",$general)): ?>
+    <div class="hall_server tooltip"><?=$general['serverName']?><?=$general['serverIdx']?>기
+        <span class="tooltiptext">
+            <?=$general['scenarioName']?><br>
+            <?=substr($general['startTime'], 0, 10)?> ~ <?=substr($general['unitedTime'], 0, 10)?>
+        </span>
+    </div>
     <?php endif;?>
     <div class="hall_nation" style="background-color:<?=$general['bgColor']?>;color:<?=$general['fgColor']?>;"><?=$general['nationName']??'-'?></div>
     <div class="hall_name" style="background-color:<?=$general['bgColor']?>;color:<?=$general['fgColor']?>;"><p><?=$general['name']??'-'?>

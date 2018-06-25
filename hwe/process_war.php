@@ -1805,13 +1805,16 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
         //멸망국 장수들 역사 기록 및 로그 전달
-        $query = "select no,name,nation,npc,gold,rice from general where nation='{$city['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
         $josaYi = JosaUtil::pick($losenation['name'], '이');
         $genlog = ["<C>●</><D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>했습니다."];
-        for($i=0; $i < $gencount; $i++) {
-            $gen = MYDB_fetch_array($result);
+
+
+        // 국가 백업
+        $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $city['nation']);
+        $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $city['nation']);
+        $oldNation['generals'] = $oldNationGenerals;
+
+        foreach($oldNationGenerals as $gen){
 
             $loseGold = intdiv($gen['gold'] * (rand()%30+20), 100);
             $loseRice = intdiv($gen['rice'] * (rand()%30+20), 100);
@@ -1823,6 +1826,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             pushGenLog($gen, $genlog);
             
             pushGeneralHistory($gen, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaYi} <R>멸망</>");
+            pushOldNationStop($gen['no'], $city['nation']);
 
             $loseGeneralGold += $loseGold;
             $loseGeneralRice += $loseRice;
@@ -1833,7 +1837,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
                 || $nation['name'] == "왜족") {
                 //등용장 미발부
             } elseif(Util::randBool(0.5)) {
-                $msg = ScoutMessage::buildScoutMessage($general['no'], $gen['no'], $reason);
+                $msg = ScoutMessage::buildScoutMessage($general['no'], $gen['no']);
                 if($msg){
                     $msg->send(true);
                 }
@@ -1874,6 +1878,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             pushGenLog($gen, $genlog);
         }
         
+        
         //분쟁기록 모두 지움
         DeleteConflict($city['nation']);
         // 전 장수 공헌 명성치 깎음
@@ -1892,8 +1897,6 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $query = "delete from diplomacy where me='{$city['nation']}' or you='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         
-        // 국가 백업
-        $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $city['nation']);
         $db->insert('ng_old_nations', [
             'server_id'=>UniqueConst::$serverID,
             'nation'=>$city['nation'],

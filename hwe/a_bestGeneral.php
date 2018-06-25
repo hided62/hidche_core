@@ -26,7 +26,7 @@ increaseRefresh("명장일람", 1);
 <title><?=UniqueConst::$serverName?>: 명장일람</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-<?=WebUtil::printCSS('css/hallOfFrame.css')?>
+<?=WebUtil::printCSS('css/hallOfFame.css')?>
 </head>
 
 <body>
@@ -160,7 +160,7 @@ foreach($generals as $general){
         $general['rankName'] = $itemName;
         $general['value'] = $itemCode;
         $itemTypes[$itemIdx][5][$itemCode] = $general;
-    }    
+    }
 }
 
 foreach($itemTypes as [$itemNameType, $itemType, $itemFunc, $itemMinCode, $itemMaxCode, $itemOwners]){

@@ -363,7 +363,7 @@ ENGINE=InnoDB;
 ## 명전 테이블
 ###########################################################################
 
-CREATE TABLE if not exists `ng_hall` (
+CREATE TABLE `ng_hall` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL,
 	`scenario` INT(11) NOT NULL,
@@ -378,7 +378,7 @@ CREATE TABLE if not exists `ng_hall` (
 	INDEX `server_show` (`server_id`, `type`, `value`),
 	INDEX `scenario` (`scenario`, `type`, `value`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
 
 ###########################################################################
@@ -398,15 +398,16 @@ CREATE TABLE if not exists `ng_games` (
 )
 ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE if not exists `ng_old_nations` (
+CREATE TABLE `ng_old_nations` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL DEFAULT '0',
 	`nation` INT(11) NOT NULL DEFAULT '0',
 	`data` LONGTEXT NOT NULL DEFAULT '0' COMMENT 'json',
+	`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	PRIMARY KEY (`id`),
 	INDEX `server_id` (`server_id`, `nation`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
 create table if not exists emperior (
   no      int(6) not null auto_increment,
@@ -546,7 +547,7 @@ CREATE TABLE if not exists `history` (
 	PRIMARY KEY (`no`),
 	INDEX `server_id` (`server_id`, `year`, `month`)
 )
-ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
 ###########################################################################
 ## 이벤트 핸들러 테이블

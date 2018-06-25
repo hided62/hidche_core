@@ -2056,8 +2056,7 @@ function updateTurntime($no) {
 
 function CheckHall($no) {
     $db = DB::db();
-
-
+    $gameStor = KVStorage::getStorage($db, 'game_env');
 
     $types = array(
         "experience",
@@ -2085,63 +2084,69 @@ function CheckHall($no) {
 
     $general = $db->queryFirstRow('SELECT name,name2,owner,nation,picture,imgsvr,
     experience,dedication,warnum,firenum,killnum,
-    killnum/warnum*10000 as winrate,killcrew,killcrew/deathcrew*10000 as killrate,
+    killnum/warnum as winrate,killcrew,killcrew/deathcrew as killrate,
     dex0,dex10,dex20,dex30,dex40,
-    ttw/(ttw+ttd+ttl)*10000 as ttrate, ttw+ttd+ttl as tt,
-    tlw/(tlw+tld+tll)*10000 as tlrate, tlw+tld+tll as tl,
-    tpw/(tpw+tpd+tpl)*10000 as tprate, tpw+tpd+tpl as tp,
-    tiw/(tiw+tid+til)*10000 as tirate, tiw+tid+til as ti,
-    betgold, betwin, betwingold, betwingold/betgold*10000 as betrate
+    ttw/(ttw+ttd+ttl) as ttrate, ttw+ttd+ttl as tt,
+    tlw/(tlw+tld+tll) as tlrate, tlw+tld+tll as tl,
+    tpw/(tpw+tpd+tpl) as tprate, tpw+tpd+tpl as tp,
+    tiw/(tiw+tid+til) as tirate, tiw+tid+til as ti,
+    betgold, betwin, betwingold, betwingold/betgold as betrate
     from general where no=%i', $no);
 
     if(!$general){
         return;
     }
 
+    $unitedDate = date('Y-m-d H:i:s');
     $nation = getNationStaticInfo($general['nation']);
 
     $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
+
+    [$scenarioIdx, $scenarioName, $startTime] = $gameStor->getValuesAsArray(['scenario', 'scenario_text', 'starttime']);
 
     foreach($types as $idx=>$typeName) {
         
 
         //승률,살상률인데 10회 미만 전투시 스킵
-        if(($k == 5 || $k == 7) && $general['warnum']<10) { continue; }
+        if(($typeName === 'winrate' || $typeName === 'killrate') && $general['warnum']<10) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($k == 13 && $general['tt'] < 50) { continue; }
+        if($typeName === 'ttrate' && $general['tt'] < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($k == 14 && $general['tl'] < 50) { continue; }
+        if($typeName === 'tlrate' && $general['tl'] < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($k == 15 && $general['tp'] < 50) { continue; }
+        if($typeName === 'tprate' && $general['tp'] < 50) { continue; }
         //토너승률인데 50회 미만시 스킵
-        if($k == 16 && $general['ti'] < 50) { continue; }
+        if($typeName === 'tirate' && $general['ti'] < 50) { continue; }
         //수익률인데 1000미만시 스킵
-        if($k == 20 && $general['betgold'] < 1000) { continue; }
+        if($typeName === 'betrate' && $general['betgold'] < 1000) { continue; }
 
         $aux = [
+            'name'=>$general['name'],
             'nationName'=>$nation['name'],
             'bgColor'=>$nation['color'],
             'fgColor'=>newColor($nation['color']),
             'picture'=>$general['picture'],
             'imgsvr'=>$general['imgsvr'],
-            'date'=>date('Y-m-d H:i:s'),
+            'startTime'=>$startTime,
+            'unitedTime'=>$unitedDate,
             'owner_name'=>$general['name2'],
-            'server_id'=>UniqueConst::$serverID,
-            'printValue'=>$general['value']
+            'serverID'=>UniqueConst::$serverID,
+            'serverIdx'=>$serverCnt,
+            'serverName'=>UniqueConst::$serverName,
+            'scenarioName'=>$scenarioName,
         ];
         $jsonAux = Json::encode($aux);
 
         $db->insertUpdate('ng_hall', [
             'server_id'=>UniqueConst::$serverID,
-            'type'=>$idx,
+            'scenario'=>$scenarioIdx,
             'general_no'=>$no,
-            'value'=>$general[$typeName],
+            'type'=>$idx,
+            'value'=>$general[$typeName]??0,
             'owner'=>$general['owner']??null,
-            'serverIdx'=>$serverCnt,
-            'serverName'=>UniqueConst::$serverName,
             'aux'=>$jsonAux
         ],[
-            'value'=>$general[$typeName],
+            'value'=>$general[$typeName]??0,
             'aux'=>$jsonAux
         ]);
     }

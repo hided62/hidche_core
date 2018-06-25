@@ -127,6 +127,34 @@ function getBatLogRecent(int $no, int $count) {
     return join('<br>', array_reverse(getFormattedFileLogRecent(__dir__."/logs/".UniqueConst::$serverID."/batlog{$no}.txt", $count, 300)));
 }
 
+function pushOldNationStop(int $no, int $nationNo){
+    $logPrefixList = ['batres', 'gen', 'batlog'];
+
+    $result = [];
+    foreach($logPrefixList as $logPrefix){
+        $path = __dir__."/logs/".UniqueConst::$serverID."/{$logPrefix}{$no}.txt";
+        if(file_exists($path)){
+            $fileLen = @filesize($path);
+        }
+        else{
+            $fileLen = 0;
+        }
+        $result[$logPrefix] = $fileLen;
+    }
+
+    $baseStopPath = __dir__."/logs/".UniqueConst::$serverID."/stop{$no}.txt";
+    if(file_exists($baseStopPath)){
+        $oldValues = Json::decode(file_get_contents($baseStopPath));
+    }
+    else{
+        $oldValues = [];
+    }
+
+    $oldValues[$nationNo] = $result;
+
+    file_put_contents($baseStopPath, Json::encode($oldValues, Json::PRETTY));
+}
+
 //DB-based
 function pushNationHistory($nation, $history) {
     if(!$nation || !$nation['nation']){
