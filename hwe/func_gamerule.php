@@ -1247,6 +1247,12 @@ function checkEmperior() {
                 'data'=>Json::encode($oldNation)
             ]);
 
+            $noNationGeneral = $db->query('SELECT * FROM general WHERE nation=0');
+            $db->insert('ng_old_nations', [
+                'server_id'=>UniqueConst::$serverID,
+                'nation'=>0,
+                'data'=>Json::encode($noNationGeneral)
+            ]);
 
             $nationHistory = DB::db()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
 
