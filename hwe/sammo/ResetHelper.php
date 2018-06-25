@@ -57,8 +57,8 @@ class ResetHelper{
 
         $serverID = DB::prefix().'_'.date("ymd").'_'.Util::randomStr(4);
 
-        mkdir($servRoot.'/logs/'.$serverID, 0644);
-        mkdir($servRoot.'/data/'.$serverID, 0644);
+        mkdir($servRoot.'/logs/'.$serverID, 0744);
+        mkdir($servRoot.'/data/'.$serverID, 0744);
 
         $result = Util::generateFileUsingSimpleTemplate(
             $servRoot.'/d_setting/UniqueConst.orig.php',
