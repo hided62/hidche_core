@@ -213,6 +213,7 @@ class ResetHelper{
             'date'=>$turntime,
             'winner_nation'=>null,
             'scenario'=>$scenario,
+            'scenario_name'=>$scenarioObj->getTitle(),
             'env'=>Json::encode($env)
         ]);  
 
