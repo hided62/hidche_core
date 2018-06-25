@@ -583,7 +583,7 @@ function processCommand($no) {
             case 17: process_17($general); break; //소집해제
 
             case 21: process_21($general); break; //이동
-            case 22: process_22($general); break; //등용 //TODO:등용장 재 디자인
+            case 22: process_22($general); break; //등용
             case 25: process_25($general); break; //임관
             case 26: process_26($general); break; //집합
             case 28: process_28($general); break; //귀환

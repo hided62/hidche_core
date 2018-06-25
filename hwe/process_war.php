@@ -1833,14 +1833,10 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
                 || $nation['name'] == "왜족") {
                 //등용장 미발부
             } elseif(Util::randBool(0.5)) {
-                //TODO:등용장 보낼것
-                /*sendScoutMsg([
-                    'id' => $ruler['no'],
-                    'nation_id' => $ruler['nation']
-                ],[
-                    'id' => $gen['no'],
-                    'nation_id' => $gen['nation']
-                ],$general['turntime']);*/
+                $msg = ScoutMessage::buildScoutMessage($general['no'], $gen['no'], $reason);
+                if($msg){
+                    $msg->send(true);
+                }
             }
 
             //NPC인 경우 10% 확률로 임관(엔장, 인재, 의병)

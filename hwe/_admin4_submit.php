@@ -13,11 +13,11 @@ if($session->userGrade < 5) {
 
 $btn = Util::getReq('btn');
 $genlist = Util::getReq('genlist', 'array_int');
+$msg = Util::getReq('msg','string', '메시지');
 
 extractMissingPostToGlobals();
 
 $db = DB::db();
-$connect=$db->get();
 
 //NOTE: 왜 기능이 admin2와 admin4가 같이 있는가? 
 //NOTE: 왜 블럭 시 admin4에선 금쌀을 없애지 않는가?
@@ -57,7 +57,20 @@ switch($btn) {
     case "메세지 전달":
     //TODO:새 갠메 시스템으로 변경
         $date = date('Y-m-d H:i:s');
+        $src = MessageTarget::buildQuick($session->generalID);
         for($i=0; $i < count($genlist); $i++) {
+            $msgObj = new Message(
+                Message::MSGTYPE_PRIVATE,
+                $src,
+                MessageTarget::buildQuick($genlist[$i]),
+                $msg,
+                new DateTime(),
+                new \DateTime('9999-12-31'),
+                []
+            );
+            if($msgObj){
+                $msgObj->send(true);
+            }
         }
         break;
 }
