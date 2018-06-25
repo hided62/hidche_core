@@ -55,7 +55,7 @@ class ResetHelper{
         $db = DB::db();
         $mysqli_obj = $db->get();
 
-        $serverID = DB::prefix().'_'.Util::randomStr(12);
+        $serverID = DB::prefix().'_'.date("ymd").'_'.Util::randomStr(4);
 
         mkdir($servRoot.'/logs/'.$serverID, 0644);
         mkdir($servRoot.'/data/'.$serverID, 0644);
