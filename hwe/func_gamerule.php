@@ -1178,6 +1178,10 @@ function checkEmperior() {
             $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $level5 = MYDB_fetch_array($genresult);
 
+            $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
+            $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $nation['nation']);
+            $oldNation['generals'] = $oldNationGenerals;
+
             $query = "select name,picture,killnum from general where nation='{$nation['nation']}' order by killnum desc limit 5";   // 오호장군
             $tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $tigernum = MYDB_num_rows($tigerresult);
@@ -1233,6 +1237,16 @@ function checkEmperior() {
             $query = "select gen_count,personal_hist,special_hist from statistic order by no desc limit 0,1";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $statGeneral = MYDB_fetch_array($result);
+
+            $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
+            $oldNation['generals'] = $db->query('SELECT * FROM general WHERE nation=%i', $nation['nation']);
+
+            $db->insert('ng_old_nations', [
+                'server_id'=>UniqueConst::$serverID,
+                'nation'=>$city['nation'],
+                'data'=>Json::encode($oldNation)
+            ]);
+
 
             $nationHistory = DB::db()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
 
