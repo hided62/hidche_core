@@ -1305,8 +1305,11 @@ function Promotion($nation, $level) {
     $query = "update general set level=1 where level<11 and level>4 and nation='$nation'";
     MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
 
+    $maxBelong = $db->queryFirstField('SELECT max(belong) FROM `general` WHERE nation=%i', $nation);
+    $maxBelong = min($maxBelong - 1, 3);
+
     //유저 후보 선택
-    $query = "select no from general where nation='$nation' and npc<2 and level=1 and belong>=3 and killturn>='{$admin['killturn']}' order by rand() limit 0,1";
+    $query = "select no from general where nation='$nation' and npc<2 and level=1 and belong>=$maxBelong and killturn>='{$admin['killturn']}' order by rand() limit 0,1";
     $result = MYDB_query($query, $connect) or Error("Promotion_00 ".MYDB_error($connect),"");
     $userCandidate = MYDB_fetch_array($result);
     // 유저수뇌 안함
