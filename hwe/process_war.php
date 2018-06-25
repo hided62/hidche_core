@@ -1891,6 +1891,14 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         // 외교 삭제
         $query = "delete from diplomacy where me='{$city['nation']}' or you='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        
+        // 국가 백업
+        $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $city['nation']);
+        $db->insert('ng_old_nations', [
+            'server_id'=>UniqueConst::$serverID,
+            'nation'=>$city['nation'],
+            'data'=>Json::encode($oldNation)
+        ]);
         // 국가 삭제
         $query = "delete from nation where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
