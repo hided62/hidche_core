@@ -363,7 +363,7 @@ ENGINE=InnoDB;
 ## 명전 테이블
 ###########################################################################
 
-CREATE TABLE `ng_hall` (
+CREATE TABLE if not exists `ng_hall` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL,
 	`scenario` INT(11) NOT NULL,
@@ -398,7 +398,7 @@ CREATE TABLE if not exists `ng_games` (
 )
 ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `ng_old_nations` (
+CREATE TABLE if not exists `ng_old_nations` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL DEFAULT '0',
 	`nation` INT(11) NOT NULL DEFAULT '0',
