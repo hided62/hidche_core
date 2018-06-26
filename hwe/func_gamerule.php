@@ -1243,7 +1243,7 @@ function checkEmperior() {
 
             $db->insert('ng_old_nations', [
                 'server_id'=>UniqueConst::$serverID,
-                'nation'=>$city['nation'],
+                'nation'=>$nation['nation'],
                 'data'=>Json::encode($oldNation)
             ]);
 
