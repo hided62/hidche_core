@@ -1812,7 +1812,10 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         // 국가 백업
         $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $city['nation']);
         $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $city['nation']);
-        $oldNation['generals'] = $oldNationGenerals;
+        $oldNation['generals'] = array_map(function($gen){
+            //다른 코드와는 다르게 공용으로 쓰므로 남겨둠
+            return $gen['no'];
+        }, $oldNationGenerals);
 
         foreach($oldNationGenerals as $gen){
 

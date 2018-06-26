@@ -688,7 +688,7 @@ function checkMerge() {
 
         // 국가 백업
         $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $me['nation']);
-        $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $me['nation']);
+        $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $me['nation']);
         $oldNation['generals'] = $oldNationGenerals;
 
         // 자금 통합, 외교제한 5년, 기술유지
@@ -700,7 +700,7 @@ function checkMerge() {
             'nation'=>$me['nation'],
             'data'=>Json::encode($oldNation)
         ]);
-        
+
         $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 도시들 상대국 소속으로
@@ -818,7 +818,7 @@ function checkSurrender() {
 
         // 국가 백업
         $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $me['nation']);
-        $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $me['nation']);
+        $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $me['nation']);
         $oldNation['generals'] = $oldNationGenerals;
 
         $newGenCount = $gencount + $gencount2;
@@ -1143,6 +1143,45 @@ function checkStatistic() {
 
 }
 
+
+function convForOldGeneral(array $general, int $year, int $month){
+    return [
+        'server_id'=>UniqueConst::$serverID,
+        'general_no'=>$general['no'],
+        'owner'=>$general['owner'],
+        'name'=>$general['name'],
+        'last_yearmonth'=>$year*100+$month,
+        'turntime'=>$general['turntime'],
+        'data'=>Json::encode($general)
+    ];
+}
+
+function storeOldGeneral(int $no, int $year, int $month){
+    $db = DB::db();
+    $general = $db->queryFirstRow('SELECT * FROM general WHERE `no` = %i', $no);
+    if(!$general){
+        return;
+    }
+    $data = convForOldGeneral($general, $year, $month);
+    $db->insertUpdate(
+        'ng_old_generals',
+        $data,
+        $data
+    );
+}
+
+function storeOldGenerals(int $nation, int $year, int $month){
+    $db = DB::db();
+    foreach($db->query('SELECT * FROM general WHERE nation = %i',$nation) as $general){
+        $data = convForOldGeneral($general, $year, $month);
+        $db->insertUpdate(
+            'ng_old_generals',
+            $data,
+            $data
+        );
+    }
+}
+
 function checkEmperior() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -1229,7 +1268,7 @@ function checkEmperior() {
     $level5 = MYDB_fetch_array($genresult);
 
     $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
-    $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $nation['nation']);
+    $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
     $oldNation['generals'] = $oldNationGenerals;
 
     $query = "select name,picture,killnum from general where nation='{$nation['nation']}' order by killnum desc limit 5";   // 오호장군
@@ -1291,13 +1330,16 @@ function checkEmperior() {
     $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
     $oldNation['generals'] = $db->query('SELECT * FROM general WHERE nation=%i', $nation['nation']);
 
+    storeOldGenerals(0, $admin['year'], $admin['month']);
+    storeOldGenerals($nation['nation'], $admin['year'], $admin['month']);
+
     $db->insert('ng_old_nations', [
         'server_id'=>UniqueConst::$serverID,
         'nation'=>$nation['nation'],
         'data'=>Json::encode($oldNation)
     ]);
 
-    $noNationGeneral = $db->query('SELECT * FROM general WHERE nation=0');
+    $noNationGeneral = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=0');
     $db->insert('ng_old_nations', [
         'server_id'=>UniqueConst::$serverID,
         'nation'=>0,

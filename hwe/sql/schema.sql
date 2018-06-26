@@ -410,6 +410,22 @@ CREATE TABLE IF NOT EXISTS `ng_old_nations` (
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
+CREATE TABLE IF NOT EXISTS `ng_old_generals` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`server_id` CHAR(20) NOT NULL,
+	`general_no` INT(11) NOT NULL,
+	`owner` INT(11) NULL DEFAULT NULL,
+	`name` VARCHAR(32) NOT NULL,
+	`last_yearmonth` INT(11) NOT NULL,
+	`turntime` DATETIME NOT NULL,
+	`data` MEDIUMTEXT NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `by_no` (`server_id`, `general_no`),
+	INDEX `by_name` (`server_id`, `name`),
+	INDEX `owner` (`owner`, `server_id`)
+)
+ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
+
 CREATE TABLE IF NOT EXISTS `emperior` (
 	`no` INT(6) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NULL DEFAULT '',

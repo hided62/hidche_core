@@ -1917,6 +1917,9 @@ function updateTurntime($no) {
             $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name2']}</>{$josaYi} <Y>{$general['name']}</>의 육체에서 <S>유체이탈</>합니다!";
             pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
         } else {
+
+            storeOldGeneral($general['no'], $admin['year'], $admin['month']);
+
             // 군주였으면 유지 이음
             if($general['level'] == 12) {
                 nextRuler($general);
@@ -2444,7 +2447,7 @@ function deleteNation($general) {
     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【멸망】</b></><D><b>{$nation['name']}</b></>{$josaUn} <R>멸망</>했습니다.";
 
     $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $general['nation']);
-    $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $general['nation']);
+    $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $general['nation']);
     $oldNation['generals'] = $oldNationGenerals;
 
     // 전 장수 재야로    // 전 장수 소속 무소속으로
