@@ -127,7 +127,7 @@ foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
 
     usort($typeGenerals, function($lhs, $rhs){
         //내림차순
-        return $rhs['value'] - $lhs['value'];
+        return -($lhs['value'] <=> $rhs['value']);
     });
 
     echo $templates->render('hallOfFrame', [
