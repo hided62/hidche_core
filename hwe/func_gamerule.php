@@ -943,53 +943,79 @@ function updateNationState() {
 function checkStatistic() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $admin = $gameStor->getValues(['year', 'month']);
 
     $nationHists = [];
     $specialHists = [];
     $personalHists = [];
-    $specialHists2 = [0];
+    $specialHists2 = [];
+    $crewtypeHists = [];
 
     $etc = '';
 
-    $query = "select avg(gold) as avggold, avg(rice) as avgrice, avg(dex0+dex10+dex20+dex30) as avgdex, max(dex0+dex10+dex20+dex30) as maxdex, avg(experience+dedication) as avgexpded, max(experience+dedication) as maxexpded from general";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
-    $general['avggold'] = Util::round($general['avggold']);
-    $general['avgrice'] = Util::round($general['avgrice']);
-    $general['avgdex'] = Util::round($general['avgdex']);
-    $general['avgexpded'] = Util::round($general['avgexpded']);
-    $etc .= "평균 금/쌀 ({$general['avggold']}/{$general['avgrice']}), 평균/최고 숙련({$general['avgdex']}/{$general['maxdex']}), 평균/최고 경험공헌({$general['avgexpded']}/{$general['maxexpded']}), ";
+    $auxData = [
+        'generals'=>[],
+        'nations'=>[],
+    ];
 
-    $query = "select min(tech) as mintech, max(tech) as maxtech, avg(tech) as avgtech, min(power) as minpower, max(power) as maxpower, avg(power) as avgpower from nation where level>0";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-    $nation['avgtech'] = Util::round($nation['avgtech']);
-    $nation['avgpower'] = Util::round($nation['avgpower']);
-    $etc .= "최저/평균/최고 기술({$nation['mintech']}/{$nation['avgtech']}/{$nation['maxtech']}), ";
-    $etc .= "최저/평균/최고 국력({$nation['minpower']}/{$nation['avgpower']}/{$nation['maxpower']}), ";
+    $avgGeneral = $db->queryFirstRow(
+        'SELECT avg(gold) as avggold, avg(rice) as avgrice, avg(dex0+dex10+dex20+dex30) as avgdex, 
+        max(dex0+dex10+dex20+dex30) as maxdex, avg(experience+dedication) as avgexpded, max(experience+dedication) as maxexpded
+        FROM general'
+    );
+    $auxData['generals']['avg'] = $avgGeneral;
+
+    $avgGeneral['avggold'] = Util::round($avgGeneral['avggold']);
+    $avgGeneral['avgrice'] = Util::round($avgGeneral['avgrice']);
+    $avgGeneral['avgdex'] = Util::round($avgGeneral['avgdex']);
+    $avgGeneral['avgexpded'] = Util::round($avgGeneral['avgexpded']);
+    $etc .= "평균 금/쌀 ({$avgGeneral['avggold']}/{$avgGeneral['avgrice']}), 평균/최고 숙련({$avgGeneral['avgdex']}/{$avgGeneral['maxdex']}), 평균/최고 경험공헌({$avgGeneral['avgexpded']}/{$avgGeneral['maxexpded']}), ";
+
+    $avgNation = $db->queryFirstRow(
+        'SELECT min(tech) as mintech, max(tech) as maxtech, avg(tech) as avgtech,
+        min(power) as minpower, max(power) as maxpower, avg(power) as avgpower from nation where level>0');
+    $auxData['nations']['avg'] = $avgNation;
+
+    $avgNation['avgtech'] = Util::round($avgNation['avgtech']);
+    $avgNation['avgpower'] = Util::round($avgNation['avgpower']);
+    $etc .= "최저/평균/최고 기술({$avgNation['mintech']}/{$avgNation['avgtech']}/{$avgNation['maxtech']}), ";
+    $etc .= "최저/평균/최고 국력({$avgNation['minpower']}/{$avgNation['avgpower']}/{$avgNation['maxpower']}), ";
     
     $nationName = '';
-    $power_hist = '';
+    $powerHist = '';
 
-    $query = "select nation,name,type,power,gennum,round((gold+rice)/100) as goldrice from nation where level>0 order by power desc";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationCount = MYDB_num_rows($result);
-    for($i=0; $i < $nationCount; $i++) {
-        $nation = MYDB_fetch_array($result);
+    $nations = Util::convertArrayToDict(
+        $db->query(
+            'SELECT nation,name,type,power,gennum,gold+rice as goldrice from nation where level>0 order by power desc', 'nation'
+        ),
+        'nation'
+    );
+    $nationCount = count($nations);
 
-        $query = "select sum(leader+power+intel) as abil,round(sum(gold+rice)/100) as goldrice,round(sum(dex0+dex10+dex20+dex30)/1000) as dex,round(sum(experience+dedication)/100) as expded from general where nation='{$nation['nation']}'";
-        $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result2);
+    $nationGeneralInfos = Util::convertArrayToDict(
+        $db->query(
+            'SELECT nation, sum(leader+power+intel) as abil,sum(gold+rice) as goldrice,
+            sum(dex0+dex10+dex20+dex30) as dex,sum(experience+dedication) as expded
+            from general GROUP BY nation'
+        ),
+        'nation'
+    );
 
-        $query = "select count(*) as cnt,round(sum(pop)/100) as pop,round(sum(pop2)/100) as pop2 from city where nation='{$nation['nation']}'";
-        $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $city = MYDB_fetch_array($result2);
+    $nationCityInfos = Util::convertArrayToDict(
+        $db->query('SELECT nation, count(*) as cnt, sum(pop) as pop,sum(pop2) as pop2 from city GROUP BY nation'),
+        'nation'
+    );
+
+    foreach($nations as $nationNo=>&$nation) {
+        $general = $nationGeneralInfos[$nationNo];
+        $city = $nationCityInfos[$nationNo];
         
+        $nation['generalInfo'] = $general;
+        $nation['cityInfo'] = $city;
+
         $nationName .= $nation['name'].'('.getNationType($nation['type']).'), ';
-        $power_hist .= "{$nation['name']}({$nation['power']}/{$nation['gennum']}/{$city['cnt']}/{$city['pop']}/{$city['pop2']}/{$nation['goldrice']}/{$general['goldrice']}/{$general['abil']}/{$general['dex']}/{$general['expded']}), ";
+        $powerHist .= "{$nation['name']}({$nation['power']}/{$nation['gennum']}/{$city['cnt']}/{$city['pop']}/{$city['pop2']}/{$nation['goldrice']}/{$general['goldrice']}/{$general['abil']}/{$general['dex']}/{$general['expded']}), ";
 
         if(!isset($nationHists[$nation['type']])){
             $nationHists[$nation['type']] = 0;
@@ -997,26 +1023,21 @@ function checkStatistic() {
         $nationHists[$nation['type']]++;
     }
 
+    $auxData['nations']['all'] = $nations;
+
     $nationHist = '';
     for($i=1; $i <= 13; $i++) {
         if(!Util::array_get($nationHists[$i])) { $nationHists[$i] = '-'; }
         $nationHist .= getNationType($i)."({$nationHists[$i]}), ";
     }
 
-    $query = "select no from general where npc <= 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $genCount = MYDB_num_rows($result);
+    $generals = $db->query('SELECT `no`,npc,personal,special,special2,crewtype FROM general');
 
-    $query = "select no from general where npc > 1";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $npcCount = MYDB_num_rows($result);
+    $genCount = 0;
+    $npcCount = 0;
+    $generalCount = count($generals);
 
-    $query = "select personal,special,special2 from general";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $generalCount = MYDB_num_rows($result);
-    for($i=0; $i < $generalCount; $i++) {
-        $general = MYDB_fetch_array($result);
-
+    foreach($generals as $general) {
         if(!isset($personalHists[$general['personal']])){
             $personalHists[$general['personal']] = 0;
         }
@@ -1029,70 +1050,73 @@ function checkStatistic() {
             $specialHists2[$general['special2']] = 0;
         }
 
+        if($general['npc'] < 2){
+            $genCount+=1;
+        }
+        else{
+            $npcCount+=1;
+        }
+
         $personalHists[$general['personal']]++;
         $specialHists[$general['special']]++;
         $specialHists2[$general['special2']]++;
     }
 
+    foreach($db->queryAllLists(
+        'SELECT crewtype, count(crewtype) AS cnt FROM general WHERE crew>=100 OR deathnum>0 GROUP BY crewtype'
+        ) as [$crewtype, $cnt]
+    ){
+        $crewtypeHists[$crewtype] = $cnt;
+    }
+
+    $auxData['generals']['hists'] = [
+        'personal' => $personalHists,
+        'special' => $specialHists,
+        'special2' => $specialHists2,
+        'crewtype' => $crewtypeHists,
+        'userCnt' => $genCount,
+        'npcCnt' => $npcCount,
+    ];
+
     $generalCountStr = "{$generalCount}({$genCount}+{$npcCount})";
 
-    $personalHist = '';
-    for($i=0; $i < 11; $i++) {
-        if(!Util::array_get($personalHists[$i])) { $personalHists[$i] = '-'; }
-        $personalHist .= getGenChar($i)."({$personalHists[$i]}), ";
-    }
-    $specialHist = '';
-    for($i=0; $i < 40; $i++) {
-        $call = getGenSpecial($i);
-        if($call) {
-            if(!Util::array_get($specialHists[$i])) { $specialHists[$i] = '-'; }
+    $personalHistStr = join(', ', array_map(function($histPair){
+        [$histKey, $cnt] = $histPair;
+        return getGenChar($histKey).'('.$cnt.')';
+    }, Util::convertDictToArray($personalHists)));
 
-            $specialHist .= $call."({$specialHists[$i]}), ";
-        }
-    }
-    $specialHist .= '// ';
-    $specialHist .= "-({$specialHists2[0]}), ";
-    for($i=40; $i < 80; $i++) {
-        $call = getGenSpecial($i);
-        if($call) {
-            if(!Util::array_get($specialHists2[$i])) { $specialHists2[$i] = '-'; }
+    $specialHistsStr = join(', ', array_map(function($histPair){
+        [$histKey, $cnt] = $histPair;
+        return getGenSpecial($histKey).'('.$cnt.')';
+    }, Util::convertDictToArray($specialHists)));
 
-            $specialHist .= $call."({$specialHists2[$i]}), ";
-        }
-    }
+    $specialHists2Str = join(', ', array_map(function($histPair){
+        [$histKey, $cnt] = $histPair;
+        return getGenSpecial($histKey).'('.$cnt.')';
+    }, Util::convertDictToArray($specialHists2)));
 
-    $crewtype = '';
-    $types = array(0, 1, 2, 3, 4, 5, 10, 11, 12, 13, 14, 20, 21, 22, 23, 24, 25, 26, 27, 30, 31, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 43);
-    $count = count($types);
-    foreach(GameUnitConst::all() as $unit){
-        $userCnt = DB::db()->queryFirstField(
-            "SELECT count(*) as type from general where crewtype=%i and crew>=100",
-            $unit->id
-        );
-        $crewtype .= "{$unit->name}({$userCnt}), ";
-    }
-    for($i=0; $i < $count; $i++) {
-        
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
+    $specialHistsAllStr = "$specialHistsStr // $specialHists2Str";
 
-        
-    }
+    $crewtypeHistsStr = join(', ', array_map(function($histPair){
+        [$histKey, $cnt] = $histPair;
+        return getGenSpecial($histKey).'('.$cnt.')';
+    }, Util::convertDictToArray($crewtypeHists)));
+    
+    $db->insert('statistic', [
+        'year'=>$admin['year'],
+        'month'=>$admin['month'],
+        'nation_count'=>$nationCount,
+        'nation_name'=>$nationName,
+        'nation_hist'=>$nationHist,
+        'gen_count'=>$generalCountStr,
+        'personal_hist'=>$personalHistStr,
+        'special_hist'=>$specialHistsAllStr,
+        'power_hist'=>$powerHist,
+        'crewtype'=>$crewtypeHistsStr,
+        'etc'=>$etc,
+        'aux'=>Json::encode($auxData)
+    ]);
 
-
-    $query = "
-        insert into statistic (
-            year, month,
-            nation_count, nation_name, nation_hist,
-            gen_count, personal_hist, special_hist, power_hist,
-            crewtype, etc
-        ) values (
-            '{$admin['year']}', '{$admin['month']}',
-            '$nationCount', '$nationName', '$nationHist',
-            '$generalCountStr', '$personalHist', '$specialHist', '$power_hist',
-            '$crewtype', '$etc'
-        )";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 }
 
 function checkEmperior() {
@@ -1106,204 +1130,209 @@ function checkEmperior() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
-    if($count == 1 && $admin['isunited'] == 0) {
-        $nation = MYDB_fetch_array($result);
+    if ($count != 1 || $admin['isunited'] != 0) {
+       return;
+    }
 
-        $query = "select city from city where nation='{$nation['nation']}'";
+    checkStatistic();
+
+    $nation = MYDB_fetch_array($result);
+
+    $query = "select city from city where nation='{$nation['nation']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $count = MYDB_num_rows($result);
+
+    $query = "select city from city";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $allcount = MYDB_num_rows($result);
+
+    if($count == $allcount) {
+
+        $josaYi = JosaUtil::pick($nation['name'], '이');
+
+        pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일");
+
+        $gameStor->isunited = 2;
+        $gameStor->conlimit = $gameStor->conlimit*100;
+
+        $query = "select no from general where npc<2 and age>=40";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $count = MYDB_num_rows($result);
 
-        $query = "select city from city";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $allcount = MYDB_num_rows($result);
-
-        if($count == $allcount) {
-
-            $josaYi = JosaUtil::pick($nation['name'], '이');
-
-            pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일");
-
-            $gameStor->isunited = 2;
-            $gameStor->conlimit = $gameStor->conlimit*100;
-
-            $query = "select no from general where npc<2 and age>=40";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $count = MYDB_num_rows($result);
-
-            for($i=0; $i < $count; $i++) {
-                $general = MYDB_fetch_array($result);
-                CheckHall($general['no']);
-            }
-
-            $query = "select nation,name,type,color,gold,rice,power,gennum from nation where nation='{$nation['nation']}'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $nation = MYDB_fetch_array($result);
-
-            $query = "select SUM(pop) as totalpop,SUM(pop2) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
-            $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $city = MYDB_fetch_array($cityresult);
-            $pop = "{$city['totalpop']} / {$city['maxpop']}";
-            $poprate = round($city['totalpop']/$city['maxpop']*100, 2);
-            $poprate .= " %";
-
-            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='12'";
-            $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $level12 = MYDB_fetch_array($genresult);
-
-            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='11'";
-            $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $level11 = MYDB_fetch_array($genresult);
-
-            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='10'";
-            $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $level10 = MYDB_fetch_array($genresult);
-
-            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='9'";
-            $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $level9 = MYDB_fetch_array($genresult);
-
-            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='8'";
-            $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $level8 = MYDB_fetch_array($genresult);
-
-            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='7'";
-            $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $level7 = MYDB_fetch_array($genresult);
-
-            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='6'";
-            $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $level6 = MYDB_fetch_array($genresult);
-
-            $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='5'";
-            $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $level5 = MYDB_fetch_array($genresult);
-
-            $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
-            $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $nation['nation']);
-            $oldNation['generals'] = $oldNationGenerals;
-
-            $query = "select name,picture,killnum from general where nation='{$nation['nation']}' order by killnum desc limit 5";   // 오호장군
-            $tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $tigernum = MYDB_num_rows($tigerresult);
-            $tigerstr = '';
-            for($i=0; $i < $tigernum; $i++) {
-                $tiger = MYDB_fetch_array($tigerresult);
-                if($tiger['killnum'] > 0) {
-                    $tigerstr .= "{$tiger['name']}【{$tiger['killnum']}】, ";
-                }
-            }
-
-            $query = "select name,picture,firenum from general where nation='{$nation['nation']}' order by firenum desc limit 7";   // 건안칠자
-            $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $eaglenum = MYDB_num_rows($eagleresult);
-            $eaglestr = '';
-            for($i=0; $i < $eaglenum; $i++) {
-                $eagle = MYDB_fetch_array($eagleresult);
-                if($eagle['firenum'] > 0) {
-                    $eaglestr .= "{$eagle['name']}【{$eagle['firenum']}】, ";
-                }
-            }
-
-            $log = ["<C>●</>{$admin['year']}년 {$admin['month']}월: <D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다."];
-
-            $query = "select no,name from general where nation='{$nation['nation']}' order by dedication desc";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $gencount = MYDB_num_rows($result);
-            $gen = '';
-            for($i=0; $i < $gencount; $i++) {
-                $general = MYDB_fetch_array($result);
-                $gen .= "{$general['name']}, ";
-
-                pushGenLog($general, $log);
-            }
-
-            $nation['type'] = getNationType($nation['type']);
-
-            $query = "select MAX(nation_count) as nc,MAX(gen_count) as gc from statistic";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $stat = MYDB_fetch_array($result);
-
-            $query = "select count(*) as cnt from general";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $gencount = MYDB_fetch_array($result);
-
-            $statNC = "1 / {$stat['nc']}";
-            $statGC = "{$gencount['cnt']} / {$stat['gc']}";
-
-            $query = "select nation_count,nation_name,nation_hist from statistic where nation_count='{$stat['nc']}' limit 0,1";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $statNation = MYDB_fetch_array($result);
-
-            $query = "select gen_count,personal_hist,special_hist from statistic order by no desc limit 0,1";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $statGeneral = MYDB_fetch_array($result);
-
-            $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
-            $oldNation['generals'] = $db->query('SELECT * FROM general WHERE nation=%i', $nation['nation']);
-
-            $db->insert('ng_old_nations', [
-                'server_id'=>UniqueConst::$serverID,
-                'nation'=>$nation['nation'],
-                'data'=>Json::encode($oldNation)
-            ]);
-
-            $noNationGeneral = $db->query('SELECT * FROM general WHERE nation=0');
-            $db->insert('ng_old_nations', [
-                'server_id'=>UniqueConst::$serverID,
-                'nation'=>0,
-                'data'=>Json::encode($noNationGeneral)
-            ]);
-
-            $nationHistory = DB::db()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
-
-            $db->insert('emperior', [
-                'phase'=>'-',
-                'server_id'=>UniqueConst::$serverID,
-                'nation_count'=>$statNC,
-                'nation_name'=>$statNation['nation_name'],
-                'nation_hist'=>$statNation['nation_hist'],
-                'gen_count'=>$statGC,
-                'personal_hist'=>$statGeneral['personal_hist'],
-                'special_hist'=>$statGeneral['special_hist'],
-                'name'=>$nation['name'],
-                'type'=>$nation['type'],
-                'color'=>$nation['color'],
-                'year'=>$admin['year'],
-                'month'=>$admin['month'],
-                'power'=>$nation['power'],
-                'gennum'=>$nation['gennum'],
-                'citynum'=>$allcount,
-                'pop'=>$pop,
-                'poprate'=>$poprate,
-                'gold'=>$nation['gold'],
-                'rice'=>$nation['rice'],
-                'l12name'=>$level12['name'],
-                'l12pic'=>$level12['picture'],
-                'l11name'=>$level11['name'],
-                'l11pic'=>$level11['picture'],
-                'l10name'=>$level10['name'],
-                'l10pic'=>$level10['picture'],
-                'l9name'=>$level9['name'],
-                'l9pic'=>$level9['picture'],
-                'l8name'=>$level8['name'],
-                'l8pic'=>$level8['picture'],
-                'l7name'=>$level7['name'],
-                'l7pic'=>$level7['picture'],
-                'l6name'=>$level6['name'],
-                'l6pic'=>$level6['picture'],
-                'l5name'=>$level5['name'],
-                'l5pic'=>$level5['picture'],
-                'tiger'=>$tigerstr,
-                'eagle'=>$eaglestr,
-                'gen'=>$gen,
-                'history'=>$nationHistory
-            ]);
-
-            $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다."];
-            pushWorldHistory($history, $admin['year'], $admin['month']);
-
-            //연감 월결산
-            LogHistory();
+        for($i=0; $i < $count; $i++) {
+            $general = MYDB_fetch_array($result);
+            CheckHall($general['no']);
         }
+
+        $query = "select nation,name,type,color,gold,rice,power,gennum from nation where nation='{$nation['nation']}'";
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $nation = MYDB_fetch_array($result);
+
+        $query = "select SUM(pop) as totalpop,SUM(pop2) as maxpop from city where nation='{$nation['nation']}'"; // 도시 이름 목록
+        $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $city = MYDB_fetch_array($cityresult);
+        $pop = "{$city['totalpop']} / {$city['maxpop']}";
+        $poprate = round($city['totalpop']/$city['maxpop']*100, 2);
+        $poprate .= " %";
+
+        $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='12'";
+        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $level12 = MYDB_fetch_array($genresult);
+
+        $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='11'";
+        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $level11 = MYDB_fetch_array($genresult);
+
+        $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='10'";
+        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $level10 = MYDB_fetch_array($genresult);
+
+        $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='9'";
+        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $level9 = MYDB_fetch_array($genresult);
+
+        $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='8'";
+        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $level8 = MYDB_fetch_array($genresult);
+
+        $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='7'";
+        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $level7 = MYDB_fetch_array($genresult);
+
+        $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='6'";
+        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $level6 = MYDB_fetch_array($genresult);
+
+        $query = "select name,picture,belong from general where nation='{$nation['nation']}' and level='5'";
+        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $level5 = MYDB_fetch_array($genresult);
+
+        $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
+        $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $nation['nation']);
+        $oldNation['generals'] = $oldNationGenerals;
+
+        $query = "select name,picture,killnum from general where nation='{$nation['nation']}' order by killnum desc limit 5";   // 오호장군
+        $tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $tigernum = MYDB_num_rows($tigerresult);
+        $tigerstr = '';
+        for($i=0; $i < $tigernum; $i++) {
+            $tiger = MYDB_fetch_array($tigerresult);
+            if($tiger['killnum'] > 0) {
+                $tigerstr .= "{$tiger['name']}【{$tiger['killnum']}】, ";
+            }
+        }
+
+        $query = "select name,picture,firenum from general where nation='{$nation['nation']}' order by firenum desc limit 7";   // 건안칠자
+        $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $eaglenum = MYDB_num_rows($eagleresult);
+        $eaglestr = '';
+        for($i=0; $i < $eaglenum; $i++) {
+            $eagle = MYDB_fetch_array($eagleresult);
+            if($eagle['firenum'] > 0) {
+                $eaglestr .= "{$eagle['name']}【{$eagle['firenum']}】, ";
+            }
+        }
+
+        $log = ["<C>●</>{$admin['year']}년 {$admin['month']}월: <D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다."];
+
+        $query = "select no,name from general where nation='{$nation['nation']}' order by dedication desc";
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gencount = MYDB_num_rows($result);
+        $gen = '';
+        for($i=0; $i < $gencount; $i++) {
+            $general = MYDB_fetch_array($result);
+            $gen .= "{$general['name']}, ";
+
+            pushGenLog($general, $log);
+        }
+
+        $nation['type'] = getNationType($nation['type']);
+
+        $query = "select MAX(nation_count) as nc,MAX(gen_count) as gc from statistic";
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $stat = MYDB_fetch_array($result);
+
+        $query = "select count(*) as cnt from general";
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gencount = MYDB_fetch_array($result);
+
+        $statNC = "1 / {$stat['nc']}";
+        $statGC = "{$gencount['cnt']} / {$stat['gc']}";
+
+        $query = "select nation_count,nation_name,nation_hist from statistic where nation_count='{$stat['nc']}' limit 0,1";
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $statNation = MYDB_fetch_array($result);
+
+        $query = "select gen_count,personal_hist,special_hist,aux from statistic order by no desc limit 0,1";
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $statGeneral = MYDB_fetch_array($result);
+
+        $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
+        $oldNation['generals'] = $db->query('SELECT * FROM general WHERE nation=%i', $nation['nation']);
+
+        $db->insert('ng_old_nations', [
+            'server_id'=>UniqueConst::$serverID,
+            'nation'=>$nation['nation'],
+            'data'=>Json::encode($oldNation)
+        ]);
+
+        $noNationGeneral = $db->query('SELECT * FROM general WHERE nation=0');
+        $db->insert('ng_old_nations', [
+            'server_id'=>UniqueConst::$serverID,
+            'nation'=>0,
+            'data'=>Json::encode($noNationGeneral)
+        ]);
+
+        $nationHistory = DB::db()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
+
+        $db->insert('emperior', [
+            'phase'=>'-',
+            'server_id'=>UniqueConst::$serverID,
+            'nation_count'=>$statNC,
+            'nation_name'=>$statNation['nation_name'],
+            'nation_hist'=>$statNation['nation_hist'],
+            'gen_count'=>$statGC,
+            'personal_hist'=>$statGeneral['personal_hist'],
+            'special_hist'=>$statGeneral['special_hist'],
+            'name'=>$nation['name'],
+            'type'=>$nation['type'],
+            'color'=>$nation['color'],
+            'year'=>$admin['year'],
+            'month'=>$admin['month'],
+            'power'=>$nation['power'],
+            'gennum'=>$nation['gennum'],
+            'citynum'=>$allcount,
+            'pop'=>$pop,
+            'poprate'=>$poprate,
+            'gold'=>$nation['gold'],
+            'rice'=>$nation['rice'],
+            'l12name'=>$level12['name'],
+            'l12pic'=>$level12['picture'],
+            'l11name'=>$level11['name'],
+            'l11pic'=>$level11['picture'],
+            'l10name'=>$level10['name'],
+            'l10pic'=>$level10['picture'],
+            'l9name'=>$level9['name'],
+            'l9pic'=>$level9['picture'],
+            'l8name'=>$level8['name'],
+            'l8pic'=>$level8['picture'],
+            'l7name'=>$level7['name'],
+            'l7pic'=>$level7['picture'],
+            'l6name'=>$level6['name'],
+            'l6pic'=>$level6['picture'],
+            'l5name'=>$level5['name'],
+            'l5pic'=>$level5['picture'],
+            'tiger'=>$tigerstr,
+            'eagle'=>$eaglestr,
+            'gen'=>$gen,
+            'history'=>$nationHistory,
+            'aux'=>$statGeneral['aux']
+        ]);
+
+        $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【통일】</b></><D><b>{$nation['name']}</b></>{$josaYi} 전토를 통일하였습니다."];
+        pushWorldHistory($history, $admin['year'], $admin['month']);
+
+        //연감 월결산
+        LogHistory();
     }
 }

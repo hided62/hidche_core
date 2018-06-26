@@ -363,7 +363,7 @@ ENGINE=InnoDB;
 ## 명전 테이블
 ###########################################################################
 
-CREATE TABLE if not exists `ng_hall` (
+CREATE TABLE IF NOT EXISTS `ng_hall` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL,
 	`scenario` INT(11) NOT NULL,
@@ -385,7 +385,7 @@ ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 ## 왕조 테이블
 ###########################################################################
 
-CREATE TABLE if not exists `ng_games` (
+CREATE TABLE IF NOT EXISTS `ng_games` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL,
 	`date` DATETIME NOT NULL,
@@ -399,7 +399,7 @@ CREATE TABLE if not exists `ng_games` (
 )
 ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE if not exists `ng_old_nations` (
+CREATE TABLE IF NOT EXISTS `ng_old_nations` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL DEFAULT '0',
 	`nation` INT(11) NOT NULL DEFAULT '0',
@@ -410,42 +410,51 @@ CREATE TABLE if not exists `ng_old_nations` (
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
-create table if not exists emperior (
-  no      int(6) not null auto_increment,
-  phase   char(255) default '',
-  nation_count    char(64) default '',
-  nation_name     text default '',
-  nation_hist     text default '',
-  gen_count       char(64) default '',
-  personal_hist   text default '',
-  special_hist    text default '',
-  name    char(64) default '',
-  type    char(64) default '',
-  color   char(7) default '',
-  year    int(4) default 0,
-  month   int(2) default 0,
-  power   int(8) default 0,
-  gennum  int(3) default 0,
-  citynum int(3) default 0,
-  pop     char(255) default 0,
-  poprate char(255) default '',
-  gold    int(9) default 0,
-  rice    int(9) default 0,
-  l12name char(64) default '', l12pic char(32) default '',
-  l11name char(64) default '', l11pic char(32) default '',
-  l10name char(64) default '', l10pic char(32) default '',
-  l9name  char(64) default '', l9pic char(32) default '',
-  l8name  char(64) default '', l8pic char(32) default '',
-  l7name  char(64) default '', l7pic char(32) default '',
-  l6name  char(64) default '', l6pic char(32) default '',
-  l5name  char(64) default '', l5pic char(32) default '',
-  tiger   char(64) default '',
-  eagle   char(64) default '',
-  gen     text default '',
-  history mediumtext default '',
-
-  PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS `emperior` (
+	`no` INT(6) NOT NULL AUTO_INCREMENT,
+	`server_id` CHAR(20) NULL DEFAULT '',
+	`phase` CHAR(255) NULL DEFAULT '',
+	`nation_count` CHAR(64) NULL DEFAULT '',
+	`nation_name` TEXT NULL DEFAULT '',
+	`nation_hist` TEXT NULL DEFAULT '',
+	`gen_count` CHAR(64) NULL DEFAULT '',
+	`personal_hist` TEXT NULL DEFAULT '',
+	`special_hist` TEXT NULL DEFAULT '',
+	`name` CHAR(64) NULL DEFAULT '',
+	`type` CHAR(64) NULL DEFAULT '',
+	`color` CHAR(7) NULL DEFAULT '',
+	`year` INT(4) NULL DEFAULT '0',
+	`month` INT(2) NULL DEFAULT '0',
+	`power` INT(8) NULL DEFAULT '0',
+	`gennum` INT(3) NULL DEFAULT '0',
+	`citynum` INT(3) NULL DEFAULT '0',
+	`pop` CHAR(255) NULL DEFAULT '0',
+	`poprate` CHAR(255) NULL DEFAULT '',
+	`gold` INT(9) NULL DEFAULT '0',
+	`rice` INT(9) NULL DEFAULT '0',
+	`l12name` CHAR(64) NULL DEFAULT '',
+	`l12pic` CHAR(32) NULL DEFAULT '',
+	`l11name` CHAR(64) NULL DEFAULT '',
+	`l11pic` CHAR(32) NULL DEFAULT '',
+	`l10name` CHAR(64) NULL DEFAULT '',
+	`l10pic` CHAR(32) NULL DEFAULT '',
+	`l9name` CHAR(64) NULL DEFAULT '',
+	`l9pic` CHAR(32) NULL DEFAULT '',
+	`l8name` CHAR(64) NULL DEFAULT '',
+	`l8pic` CHAR(32) NULL DEFAULT '',
+	`l7name` CHAR(64) NULL DEFAULT '',
+	`l7pic` CHAR(32) NULL DEFAULT '',
+	`l6name` CHAR(64) NULL DEFAULT '',
+	`l6pic` CHAR(32) NULL DEFAULT '',
+	`l5name` CHAR(64) NULL DEFAULT '',
+	`l5pic` CHAR(32) NULL DEFAULT '',
+	`tiger` CHAR(64) NULL DEFAULT '',
+	`eagle` CHAR(64) NULL DEFAULT '',
+	`gen` TEXT NULL DEFAULT '',
+	`history` MEDIUMTEXT NULL DEFAULT '',
+	`aux` MEDIUMTEXT NULL DEFAULT '' COMMENT 'json',
+	PRIMARY KEY (`no`)
+) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 외교 테이블
@@ -513,27 +522,28 @@ create table auction (
 ###########################################################################
 ## 통계 테이블
 ###########################################################################
-create table statistic (
-  no              int(6) not null auto_increment,
-  year            int(4) default 0,
-  month           int(2) default 0,
-  nation_count    int(2) default 0,
-  nation_name     text default '',
-  nation_hist     text default '',
-  gen_count       varchar(32) default '',
-  personal_hist   text default '',
-  special_hist    text default '',
-  power_hist      text default '',
-  crewtype        text default '',
-  etc             text default '',
-
-  PRIMARY KEY (no)
-  ) ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `statistic` (
+	`no` INT(6) NOT NULL AUTO_INCREMENT,
+	`year` INT(4) NULL DEFAULT '0',
+	`month` INT(2) NULL DEFAULT '0',
+	`nation_count` INT(2) NULL DEFAULT '0',
+	`nation_name` TEXT NULL DEFAULT '',
+	`nation_hist` TEXT NULL DEFAULT '',
+	`gen_count` VARCHAR(32) NULL DEFAULT '',
+	`personal_hist` TEXT NULL DEFAULT '',
+	`special_hist` TEXT NULL DEFAULT '',
+	`power_hist` TEXT NULL DEFAULT '',
+	`crewtype` TEXT NULL DEFAULT '',
+	`etc` TEXT NULL DEFAULT '',
+	`aux` TEXT NULL DEFAULT '' COMMENT 'json',
+	PRIMARY KEY (`no`)
+)
+ENGINE=INNODB ROW_FORMAT=COMPRESSED DEFAULT CHARSET=utf8mb4;
 
 ###########################################################################
 ## 연감 테이블
 ###########################################################################
-CREATE TABLE if not exists `history` (
+CREATE TABLE IF NOT EXISTS `history` (
 	`no` INT(6) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL DEFAULT '',
 	`year` INT(4) NULL DEFAULT '0',
@@ -621,7 +631,7 @@ ENGINE=MyISAM;
 ###################
 # KV storage
 ###################
-CREATE TABLE if not exists `storage` (
+CREATE TABLE IF NOT EXISTS `storage` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`namespace` VARCHAR(40) NOT NULL,
 	`key` VARCHAR(40) NOT NULL,

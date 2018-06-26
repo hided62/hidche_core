@@ -791,7 +791,10 @@ function getItemCost($weap) : int {
 
 
 
-function ConvertLog(string $str, $type=1) : string {
+function ConvertLog(?string $str, $type=1) : string {
+    if(!$str){
+        return '';
+    }
     //TODO: 이 함수는 없애야 한다. CSS로 대신하자
     if($type > 0) {
         $str = str_replace("<1>", "<font size=1>", $str);

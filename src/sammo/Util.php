@@ -187,11 +187,11 @@ class Util extends \utilphp\util
         return $str;
     }
 
-    public static function mapWithDict($callback, $dict)
+    public static function mapWithKey($callback, $dict)
     {
         $result = [];
         foreach (array_keys($dict) as $key) {
-            $result[$key] = ($callback)($dict[$key]);
+            $result[$key] = ($callback)($key, $dict[$key]);
         }
         return $result;
     }
@@ -208,13 +208,19 @@ class Util extends \utilphp\util
         return $result;
     }
 
-    public static function convertDictToArray($dict, $keys)
+    public static function convertDictToArray($dict, bool $withKey=true)
     {
         $result = [];
     
-        foreach ($keys as $key) {
-            $result[] = Util::array_get($dict[$key], null);
+        foreach($dict as $key=>$value){
+            if($withKey){
+                $result[] = [$key, $value];
+            }
+            else{
+                $result[] = $value;
+            }
         }
+        
         return $result;
     }
 
