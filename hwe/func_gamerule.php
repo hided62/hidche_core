@@ -1282,8 +1282,11 @@ function checkEmperior() {
 
     $nationHistory = DB::db()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
 
+    $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
+    $serverName = UniqueConst::$serverName;
+
     $db->insert('emperior', [
-        'phase'=>'-',
+        'phase'=>$serverName.$serverCnt.'기',
         'server_id'=>UniqueConst::$serverID,
         'nation_count'=>$statNC,
         'nation_name'=>$statNation['nation_name'],
