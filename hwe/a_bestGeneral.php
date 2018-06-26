@@ -127,12 +127,12 @@ foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
 
     usort($typeGenerals, function($lhs, $rhs){
         //내림차순
-        return -($lhs['value'] - $rhs['value']);
+        return $rhs['value'] - $lhs['value'];
     });
 
     echo $templates->render('hallOfFrame', [
         'typeName'=>$typeName,
-        'generals'=>array_slice($typeGenerals, 0, 10, true)
+        'generals'=>array_slice($typeGenerals, 0, 10)
     ]);
 }
 ?>
