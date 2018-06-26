@@ -973,7 +973,7 @@ function command_25($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     
-    $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation ORDER BY rand()');
+    $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg,gennum FROM nation ORDER BY rand()');
 
     echo "
 국가에 임관합니다.<br>
