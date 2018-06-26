@@ -1331,7 +1331,7 @@ function checkEmperior() {
     $statGeneral = MYDB_fetch_array($result);
 
     $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
-    $oldNation['generals'] = $db->query('SELECT * FROM general WHERE nation=%i', $nation['nation']);
+    $oldNation['generals'] = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
 
     storeOldGenerals(0, $admin['year'], $admin['month']);
     storeOldGenerals($nation['nation'], $admin['year'], $admin['month']);
@@ -1339,6 +1339,7 @@ function checkEmperior() {
     $db->insert('ng_old_nations', [
         'server_id'=>UniqueConst::$serverID,
         'nation'=>$nation['nation'],
+        'history'=>'',
         'data'=>Json::encode($oldNation)
     ]);
 
@@ -1346,7 +1347,11 @@ function checkEmperior() {
     $db->insert('ng_old_nations', [
         'server_id'=>UniqueConst::$serverID,
         'nation'=>0,
-        'data'=>Json::encode($noNationGeneral)
+        'data'=>Json::encode([
+            'nation'=>0,
+            'name'=>'재야',
+            'generals'=>$noNationGeneral
+        ])
     ]);
 
     $nationHistory = DB::db()->queryFirstField('SELECT `history` FROM `nation` WHERE `nation` = %i', $nation['nation']);
