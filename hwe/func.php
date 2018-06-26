@@ -2120,7 +2120,7 @@ function CheckHall($no) {
         //수익률인데 1000미만시 스킵
         if($typeName === 'betrate' && $general['betgold'] < 1000) { continue; }
 
-        if($general[$typename]<=0){
+        if($general[$typeName]<=0){
             continue;
         }
 
