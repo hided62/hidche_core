@@ -17,7 +17,7 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
-increaseRefresh("연감", 2);
+increaseRefresh("연감", 1);
 
 $admin = $gameStor->getValues(['startyear','year','month']);
 
@@ -99,7 +99,7 @@ if ($month <= 0) {
         <input type=submit name=btn value="◀◀ 이전달">
         <select name=yearmonth size=1>
 <?php
-$dates = $db->queryAllLists('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month DESC', $serverID);
+$dates = $db->queryAllLists('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month ASC', $serverID);
 foreach($dates as [$hYear, $hMonth]){
     $value = "".$hYear.StringUtil::padStringAlignRight($hMonth, 2, "0");
     if ($hYear == $year && $hMonth == $month) {
