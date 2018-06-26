@@ -42,7 +42,7 @@ if ($select == 0) {
         $emperior = MYDB_fetch_array($result);
 
         echo "
-<form action=a_emperior.php method=post>
+<form action=a_emperior.php method=get>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td bgcolor=skyblue align=center colspan=8>
@@ -88,9 +88,10 @@ if ($select == 0) {
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td bgcolor=skyblue align=center colspan=6>
+            <form action=a_emperior.php method=get>
             <font size=5>{$emperior['phase']}</font>
             <input type=submit value='전체보기'>
-            <input type=hidden name=select value='0'>
+            </form>
         </td>
     </tr>
     <tr>
