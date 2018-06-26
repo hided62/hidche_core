@@ -172,6 +172,6 @@ function postOAuthResult(result){
     </div>
     <div id="bottom_box">
     <div class="container"><a href="terms.2.html">개인정보처리방침</a> &amp; <a href="terms.1.html">이용약관</a><br>© 2018  •  HideD
-    </div></div>
+    <br>크롬와 파이어폭스에 최적화되어있습니다.</div></div>
 </body>
 </html>
