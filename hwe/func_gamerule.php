@@ -1258,6 +1258,7 @@ function checkEmperior() {
 
             $db->insert('emperior', [
                 'phase'=>'-',
+                'server_id'=>UniqueConst::$serverID,
                 'nation_count'=>$statNC,
                 'nation_name'=>$statNation['nation_name'],
                 'nation_hist'=>$statNation['nation_hist'],

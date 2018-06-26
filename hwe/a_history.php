@@ -5,6 +5,7 @@ include "lib.php";
 include "func.php";
 $btn = Util::getReq('btn');
 $yearmonth = Util::getReq('yearmonth', 'int');
+$serverID = Util::getReq('server_id', 'string', null);
 
 extractMissingPostToGlobals();
 
@@ -30,10 +31,14 @@ if ($con >= 2) {
     exit();
 }
 
-[$s_year, $s_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month ASC LIMIT 1', UniqueConst::$serverID);
+if(!$serverID){
+    $serverID = UniqueConst::$serverID;
+}
+
+[$s_year, $s_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month ASC LIMIT 1', $serverID);
 $s = $s_year * 12 + $s_month;
 
-[$e_year, $e_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year DESC, month DESC LIMIT 1', UniqueConst::$serverID);
+[$e_year, $e_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year DESC, month DESC LIMIT 1', $serverID);
 $e = $e_year * 12 + $e_month;
 
 //FIXME: $yearmonth가 올바르지 않을 경우에 처리가 필요.
@@ -94,7 +99,7 @@ if ($month <= 0) {
         <input type=submit name=btn value="◀◀ 이전달">
         <select name=yearmonth size=1>
 <?php
-$dates = $db->queryAllLists('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month DESC', UniqueConst::$serverID);
+$dates = $db->queryAllLists('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month DESC', $serverID);
 foreach($dates as [$hYear, $hMonth]){
     $value = "".$hYear.StringUtil::padStringAlignRight($hMonth, 2, "0");
     if ($hYear == $year && $hMonth == $month) {
@@ -106,7 +111,7 @@ foreach($dates as [$hYear, $hMonth]){
     }
 }
 
-$history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM history WHERE server_id = %s AND year = %i AND month = %i', UniqueConst::$serverID, $year, $month);
+$history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM history WHERE server_id = %s AND year = %i AND month = %i', $serverID, $year, $month);
 ?>
         </select>
         <input type=submit name=btn value='조회하기'>
@@ -144,7 +149,7 @@ $history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM hist
 </table>
 <script>
 reloadWorldMap({
-    targetJson:'j_map_history.php?year=<?=$year?>&month=<?=$month?>',
+    targetJson:'j_map_history.php?year=<?=$year?>&month=<?=$month?>&server_id=<?=$serverID?>',
     showMe:false,
     neutralView:true
 });
