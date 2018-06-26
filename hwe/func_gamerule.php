@@ -685,10 +685,22 @@ function checkMerge() {
         if($newGenCount < GameConst::$initialNationGenLimit) { $newGenCount = GameConst::$initialNationGenLimit; }
         $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
         $newTech = Util::round($newTotalTech / $newGenCount);
+
+        // 국가 백업
+        $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $me['nation']);
+        $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $me['nation']);
+        $oldNation['generals'] = $oldNationGenerals;
+
         // 자금 통합, 외교제한 5년, 기술유지
         $query = "update nation set name='{$you['makenation']}',gold=gold+'{$mynation['gold']}',rice=rice+'{$mynation['rice']}',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='{$younation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //국가 삭제
+        $db->insert('ng_old_nations', [
+            'server_id'=>UniqueConst::$serverID,
+            'nation'=>$me['nation'],
+            'data'=>Json::encode($oldNation)
+        ]);
+        
         $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 도시들 상대국 소속으로
@@ -804,6 +816,11 @@ function checkSurrender() {
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>【혼란】</b></>통합에 반대하는 세력들로 인해 <D><b>{$younation['name']}</b></>에 혼란이 일고 있습니다.";
         pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>{$josaWa} 합병");
 
+        // 국가 백업
+        $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $me['nation']);
+        $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $me['nation']);
+        $oldNation['generals'] = $oldNationGenerals;
+
         $newGenCount = $gencount + $gencount2;
         if($newGenCount < GameConst::$initialNationGenLimit) { $newGenCount = GameConst::$initialNationGenLimit; }
         $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
@@ -818,6 +835,13 @@ function checkSurrender() {
         $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='{$you['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //국가 삭제
+
+        $db->insert('ng_old_nations', [
+            'server_id'=>UniqueConst::$serverID,
+            'nation'=>$me['nation'],
+            'data'=>Json::encode($oldNation)
+        ]);
+
         $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 군주가 있는 위치 구함

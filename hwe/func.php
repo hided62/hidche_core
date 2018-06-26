@@ -2443,6 +2443,10 @@ function deleteNation($general) {
     $josaUn = JosaUtil::pick($nation['name'], '은');
     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【멸망】</b></><D><b>{$nation['name']}</b></>{$josaUn} <R>멸망</>했습니다.";
 
+    $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $general['nation']);
+    $oldNationGenerals = $db->query('SELECT * FROM general WHERE nation=%i', $general['nation']);
+    $oldNation['generals'] = $oldNationGenerals;
+
     // 전 장수 재야로    // 전 장수 소속 무소속으로
     $query = "update general set belong=0,troop=0,level=0,nation=0,makelimit=12 where nation='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2453,6 +2457,13 @@ function deleteNation($general) {
     $query = "delete from troop where nation='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 국가 삭제
+
+    $db->insert('ng_old_nations', [
+        'server_id'=>UniqueConst::$serverID,
+        'nation'=>$general['nation'],
+        'data'=>Json::encode($oldNation)
+    ]);
+
     $query = "delete from nation where nation='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 외교 삭제
