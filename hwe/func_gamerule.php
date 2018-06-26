@@ -1199,7 +1199,7 @@ function checkEmperior() {
 
     $nation = MYDB_fetch_array($result);
 
-    $count = $db->queryFirstField('SELECT count(city) WHERE nation=%i', $nation['nation']);
+    $count = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i', $nation['nation']);
     if(!$count){
         return;
     }
