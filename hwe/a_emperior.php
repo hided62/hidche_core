@@ -41,50 +41,62 @@ if ($select == 0) {
     for ($i=0; $i < $empcount; $i++) {
         $emperior = MYDB_fetch_array($result);
 
-        echo "
-<form action=a_emperior.php method=get>
+?>
+
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td bgcolor=skyblue align=center colspan=8>
-            <font size=5>{$emperior['phase']}</font>
+        <form action=a_emperior.php method=get>
+            <font size=5><?=$emperior['phase']?></font>
+            
             <input type=submit value='자세히'>
-            <input type=hidden name=select value='{$emperior['no']}'>
+            <input type=hidden name=select value='<?=$emperior['no']?>'>
+            
+            <?php if($emperior['server_id']): ?>
+            <a href="a_history.php?server_id=<?=$emperior['server_id']?>"><button type="button">역사 보기</button></a>
+            <?php endif ?>
+        </form>
         </td>
     </tr>
     <tr>
-        <td align=center style=color:".newColor($emperior['color'])."; bgcolor={$emperior['color']} colspan=8>
-            <font size=5>{$emperior['name']} ({$emperior['year']}年 {$emperior['month']}月)</font>
+        <td align=center style=color:".newColor($emperior['color'])."; bgcolor=<?=$emperior['color']?> colspan=8>
+            <font size=5><?=$emperior['name']?> (<?=$emperior['year']?>年 <?=$emperior['month']?>月)</font>
         </td>
     </tr>
     <tr>
         <td id=bg1 align=center width=80>국 력</td>
-        <td align=center width=170>{$emperior['power']}</td>
+        <td align=center width=170><?=$emperior['power']?></td>
         <td id=bg1 align=center width=80>장 수</td>
-        <td align=center width=170>{$emperior['gennum']}</td>
+        <td align=center width=170><?=$emperior['gennum']?></td>
         <td id=bg1 align=center width=80>속 령</td>
-        <td align=center width=170>{$emperior['citynum']}</td>
+        <td align=center width=170><?=$emperior['citynum']?></td>
         <td id=bg1 align=center width=80>성 향</td>
-        <td align=center width=170>{$emperior['type']}</td>
+        <td align=center width=170><?=$emperior['type']?></td>
     </tr>
     <tr>
         <td id=bg1 align=center>황 제</td>
-        <td align=center>{$emperior['l12name']}</td>
+        <td align=center><?=$emperior['l12name']?></td>
         <td id=bg1 align=center>승 상</td>
-        <td align=center>{$emperior['l11name']}</td>
+        <td align=center><?=$emperior['l11name']?></td>
         <td id=bg1 align=center>위 장 군</td>
-        <td align=center>{$emperior['l10name']}</td>
+        <td align=center><?=$emperior['l10name']?></td>
         <td id=bg1 align=center>사 공</td>
-        <td align=center>{$emperior['l9name']}</td>
+        <td align=center><?=$emperior['l9name']?></td>
     </tr>
 </table>
-</form>
+
+
+
+<?php
+    }
+?>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>
 </body>
-</html>";
-    }
+</html>
+<?php
     die();
 }
 

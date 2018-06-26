@@ -17,7 +17,13 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
-increaseRefresh("연감", 1);
+if(!$serverID){
+    $serverID = UniqueConst::$serverID;
+}
+
+if($serverID === UniqueConst::$serverID){
+    increaseRefresh("연감", 1);
+}
 
 $admin = $gameStor->getValues(['startyear','year','month']);
 
@@ -31,9 +37,7 @@ if ($con >= 2) {
     exit();
 }
 
-if(!$serverID){
-    $serverID = UniqueConst::$serverID;
-}
+
 
 [$s_year, $s_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month ASC LIMIT 1', $serverID);
 $s = $s_year * 12 + $s_month;
@@ -42,7 +46,11 @@ $s = $s_year * 12 + $s_month;
 $e = $e_year * 12 + $e_month;
 
 //FIXME: $yearmonth가 올바르지 않을 경우에 처리가 필요.
-if (!$yearmonth) {
+if($serverID !== UniqueConst::$serverID && !$yearmonth){
+    $year = $s_year;
+    $month = $s_month;
+}
+else if (!$yearmonth) {
     $year = $admin['year'];
     $month = $admin['month'] - 1;
 } else {
