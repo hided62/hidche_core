@@ -1339,7 +1339,6 @@ function checkEmperior() {
     $db->insert('ng_old_nations', [
         'server_id'=>UniqueConst::$serverID,
         'nation'=>$nation['nation'],
-        'history'=>'',
         'data'=>Json::encode($oldNation)
     ]);
 
