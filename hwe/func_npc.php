@@ -1008,7 +1008,7 @@ function NPCStaffWork($general, $nation, $dipState){
                 $isWarUser = true;
                 break;
             }
-            if(Util::randF(0.2)){
+            if(Util::randBool(0.2)){
                 $isWarUser = false;
                 break;
             }
@@ -1206,7 +1206,7 @@ function NPCStaffWork($general, $nation, $dipState){
                 $score *= 4;
             }
     
-            if(Util::randF(0.3) && $frontImportantCitiesID){
+            if(Util::randBool(0.3) && $frontImportantCitiesID){
                 $targetCityID = Util::choiceRandom($frontImportantCitiesID);
             }
             else{
@@ -1262,7 +1262,7 @@ function NPCStaffWork($general, $nation, $dipState){
                 if($targetCity['pop'] < 33000 + $nationGeneral['leader']){
                     continue;
                 }
-                if (Util::randF($targetCity['pop'] / $targetCity['pop2'])) {
+                if (Util::randBool($targetCity['pop'] / $targetCity['pop2'])) {
                     break;
                 }
             }

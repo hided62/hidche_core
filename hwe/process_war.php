@@ -602,14 +602,14 @@ function processWar($general, $city) {
             //특기보정 : 저격(수극), 활무기저격
             $snipe = false;
             $snipeItem = false;
-            if(!$snipe && $general['special2'] == 70 && Util::randF(1/3)){
+            if(!$snipe && $general['special2'] == 70 && Util::randBool(1/3)){
                 $snipe = true;
             }
-            if(!$snipe && in_array($general['weap'], [10, 14, 18, 22]) && Util::randF(1/5)){
+            if(!$snipe && in_array($general['weap'], [10, 14, 18, 22]) && Util::randBool(1/5)){
                 $snipe = true;
             }
             if(!$snipe && $general['item'] == 2){
-                if(Util::randF(1/5)){
+                if(Util::randBool(1/5)){
                     $snipe = true;
                     $snipeItem = true;
                 }
@@ -642,14 +642,14 @@ function processWar($general, $city) {
             //특기보정 : 저격(수극), 활무기저격
             $snipe = false;
             $snipeItem = false;
-            if(!$snipe && $oppose['special2'] == 70 && Util::randF(1/3)){
+            if(!$snipe && $oppose['special2'] == 70 && Util::randBool(1/3)){
                 $snipe = true;
             }
-            if(!$snipe && in_array($oppose['weap'], [10, 14, 18, 22]) && Util::randF(1/5)){
+            if(!$snipe && in_array($oppose['weap'], [10, 14, 18, 22]) && Util::randBool(1/5)){
                 $snipe = true;
             }
             if(!$snipe && $oppose['item'] == 2){
-                if(Util::randF(1/5)){
+                if(Util::randBool(1/5)){
                     $snipe = true;
                     $snipeItem = true;
                 }
