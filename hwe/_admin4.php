@@ -53,12 +53,7 @@ $conlimit = $gameStor->conlimit;
 echo "
             <select name=genlist[] size=20 multiple style=color:white;background-color:black;font-size:13>";
 
-$query = "select no,name,npc,block from general where ip!='' order by npc,ip";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$gencount = MYDB_num_rows($result);
-
-for($i=0; $i < $gencount; $i++) {
-    $general = MYDB_fetch_array($result);
+foreach($db->query('SELECT no,name,npc,block,con from general where ip!=\'\' order by npc,ip') as $general){
     $style = "style=;";
     if($general['block']         > 0) { $style .= "background-color:red;"; }
     if($general['npc']          >= 2) { $style .= "color:cyan;"; }

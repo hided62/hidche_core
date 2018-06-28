@@ -618,7 +618,7 @@ ENGINE=InnoDB
 
 ######
 # 예약 오픈 테이블
-CREATE TABLE `reserved_open` (
+CREATE TABLE IF NOT EXISTS `reserved_open` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`options` TEXT NULL DEFAULT NULL,
 	`date` DATETIME NULL DEFAULT NULL,

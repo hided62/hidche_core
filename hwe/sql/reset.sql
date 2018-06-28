@@ -41,5 +41,14 @@ DROP TABLE IF EXISTS world_history;
 DROP TABLE IF EXISTS general_public_record;
 
 DROP TABLE IF EXISTS reserved_open;
+CREATE TABLE `reserved_open` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`options` TEXT NULL DEFAULT NULL,
+	`date` DATETIME NULL DEFAULT NULL,
+	PRIMARY KEY (`id`),
+	INDEX `date` (`date`)
+)
+DEFAULT CHARSET=utf8mb4
+ENGINE=MyISAM;
 
 DROP TABLE IF EXISTS select_npc_token;

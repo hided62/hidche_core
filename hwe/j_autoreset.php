@@ -6,6 +6,15 @@ include "func.php";
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
+
+if (!$db->queryFirstField("SHOW TABLES LIKE 'reserved_open'")) {
+    Json::die([
+        'result'=>true,
+        'affected'=>0,
+        'status'=>'no_reserved_table'
+    ]);
+}
+
 $reserved = $db->queryFirstRow('SELECT `date`, options FROM reserved_open ORDER BY `date` ASC LIMIT 1');
 
 if(!$reserved){
