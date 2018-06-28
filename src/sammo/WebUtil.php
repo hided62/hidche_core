@@ -65,22 +65,22 @@ class WebUtil
             //Use a switch statement to figure out the exact error.
             switch ($jsonError) {
                 case JSON_ERROR_DEPTH:
-                    $error .= 'Maximum depth exceeded!';
+                    $error .= 'Maximum depth exceeded! : '.$content;
                 break;
                 case JSON_ERROR_STATE_MISMATCH:
-                    $error .= 'Underflow or the modes mismatch!';
+                    $error .= 'Underflow or the modes mismatch! : '.$content;
                 break;
                 case JSON_ERROR_CTRL_CHAR:
-                    $error .= 'Unexpected control character found';
+                    $error .= 'Unexpected control character found : '.$content;
                 break;
                 case JSON_ERROR_SYNTAX:
-                    $error .= 'Malformed JSON';
+                    $error .= 'Malformed JSON : '.$content;
                 break;
                 case JSON_ERROR_UTF8:
-                     $error .= 'Malformed UTF-8 characters found!';
+                     $error .= 'Malformed UTF-8 characters found! : '.$content;
                 break;
                 default:
-                    $error .= 'Unknown error!';
+                    $error .= 'Unknown error! : '.$content;
                 break;
             }
             throw new \Exception($error);
