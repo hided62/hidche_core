@@ -39,7 +39,11 @@ $sel = [$type => "selected"];
 <meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
 <title><?=UniqueConst::$serverName?>: 세력도시</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('../e_lib/jquery-ui.min.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/jquery-ui.min.js')?>
+<?=WebUtil::printJS('js/ext.expand_city.js')?>
 
 </head>
 
