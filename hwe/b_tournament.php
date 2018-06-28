@@ -400,7 +400,7 @@ for($i=0;$i<16;$i+=1){
 }
 $bet = [];
 for ($i=0; $i < 16; $i++) {
-    if($betting['bet'] == 0){
+    if($betting["bet{$i}"] == 0){
         $bet[$i] = '∞';
         continue;
     }
