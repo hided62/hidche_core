@@ -76,7 +76,7 @@ foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE confl
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title><?=UniqueConst::$serverName?>: 중원 정보</title>
-<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/base_map.js')?>

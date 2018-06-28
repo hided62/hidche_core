@@ -32,7 +32,7 @@ $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation 
 <?=WebUtil::printCSS('css/select_npc.css')?>
 
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../js/common.js')?>
 <?=WebUtil::printJS('js/select_npc.js')?>
 

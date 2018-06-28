@@ -18,7 +18,7 @@ require(__dir__.'/../vendor/autoload.php');
         <!-- 액션 -->
         <?=WebUtil::printJS('../d_shared/common_path.js')?>
         <?=WebUtil::printJS('../js/common.js')?>
-        <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+        <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
         <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
         <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
         <?=WebUtil::printJS('../js/func.js')?>

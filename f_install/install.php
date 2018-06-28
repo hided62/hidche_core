@@ -10,7 +10,7 @@ require(__dir__.'/../vendor/autoload.php');
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>설치</title>
-    <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+    <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
     <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
     <?=WebUtil::printJS('../e_lib/jquery.validate.min.js')?>
     <?=WebUtil::printJS('../e_lib/sha512.min.js')?>

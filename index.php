@@ -25,7 +25,7 @@ if ($session->isLoggedIn()) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>삼국지 모의전투 HiDCHe</title>
-    <?=WebUtil::printJS('e_lib/jquery-3.2.1.min.js')?>
+    <?=WebUtil::printJS('e_lib/jquery-3.3.1.min.js')?>
     <?=WebUtil::printJS('e_lib/bootstrap.bundle.min.js')?>
     <?=WebUtil::printJS('e_lib/jquery.validate.min.js')?>
     <?=WebUtil::printJS('e_lib/sha512.min.js')?>

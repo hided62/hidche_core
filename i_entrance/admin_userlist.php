@@ -14,7 +14,7 @@ require(__dir__.'/../vendor/autoload.php');
         <?=WebUtil::printCSS('../d_shared/common.css')?>
         <?=WebUtil::printCSS('../css/admin_member.css')?>
 
-        <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+        <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
         <?=WebUtil::printJS('../d_shared/common_path.js')?>
         <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
         <?=WebUtil::printJS('../js/common.js')?>

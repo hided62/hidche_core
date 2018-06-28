@@ -41,7 +41,7 @@ $sel = [$type => "selected"];
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('../e_lib/jquery-ui.min.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/jquery-ui.min.js')?>
 <?=WebUtil::printJS('js/ext.expand_city.js')?>
 

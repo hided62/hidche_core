@@ -12,7 +12,7 @@ use \kakao\KakaoKey as KakaoKey;
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>카카오 로그인하기</title>
-    <?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+    <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <script>
 
 var oauthMode = null;

@@ -37,7 +37,7 @@ else{
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/hallOfFame.css')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.2.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
 <?=WebUtil::printJs('js/hallOfFame.js')?>
 </head>
