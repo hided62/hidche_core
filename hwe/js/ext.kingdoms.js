@@ -1,27 +1,7 @@
-// ==UserScript==
-// @name       체섭 세력일람 장수 분류 툴
-// @namespace  https://hided.net
-// @updateURL  https://hided.net/gs_script/62che/kingdoms.tamper.js
-// @version    0.973
-// @description  세력일람에서 무장, 지장, 충차장, 무지장, 범장으로 나누어서 숫자와 목록을 나타내줍니다.
-// @match      http://62che.com/sam/*/a_kingdomList.php
-// @match      http://www.62che.com/sam/*/a_kingdomList.php
-// @match      http://222.122.81.157/sam/che/a_kingdomList.php
-// @match      http://sam-tm.com/che/*/a_kingdomList.php
-// @match      http://www.sam-tm.com/che/*/a_kingdomList.php
-// @match      http://49.236.145.24/che/*/a_kingdomList.php
-// @copyright  2014+, Hide_D
-
-// @require		http://code.jquery.com/jquery-2.1.1.min.js
-
-// ==/UserScript==
-
 $(function(){
-    if(unsafeWindow){
-        unsafeWindow.$ = $;
-    }
     
-    var basicPath = document.location.pathname.substr(0,9);
+    var basicPath = document.location.pathname;
+    basicPath = basicPath.substring(0, basicPath.lastIndexOf('/'))+'/';
     var headTbl = $('table:eq(0)');
     var $userFrame;
     
@@ -214,24 +194,24 @@ $(function(){
     
     $userFrame = $('<div id="on_mover" style="position:absolute;">'+
         '<table align="center" border="1" cellspacing="0" cellpadding="0" bordercolordark="gray" '+
-        'bordercolorlight="black" style="font-size:13;word-break:break-all;background-image:url(http://jwh1807.vipweb.kr/images/back_walnut.jpg)"><thead><tr>'+
-        '<td width="64" align="center" id="bg1">얼 굴</td>'+
-        '<td width="100" align="center" id="bg1">이 름</td>'+
-        '<td width="50" align="center" id="bg1">연령</td>'+
-        '<td width="50" align="center" id="bg1">성격</td>'+
-        '<td width="90" align="center" id="bg1">특기</td>'+
-        '<td width="50" align="center" id="bg1">레 벨</td>'+
-        '<td width="100" align="center" id="bg1">국 가</td>'+
-        '<td width="60" align="center" id="bg1">명 성</td>'+
-        '<td width="60" align="center" id="bg1">계 급</td>'+
-        '<td width="80" align="center" id="bg1">관 직</td>'+
-        '<td width="45" align="center" id="bg1">통솔</td>'+
-        '<td width="45" align="center" id="bg1">무력</td>'+
-        '<td width="45" align="center" id="bg1">지력</td>'+
-        '<td width="45" align="center" id="bg1">삭턴</td>'+
-        '<td width="84" align="center" id="bg1">벌점</td>'+
+        'bordercolorlight="black" style="font-size:13;word-break:break-all;background-image:url(https://sam.hided.net/image/game/back_walnut.jpg)"><thead><tr>'+
+        '<td width="64" align="center" class="bg1">얼 굴</td>'+
+        '<td width="100" align="center" class="bg1">이 름</td>'+
+        '<td width="50" align="center" class="bg1">연령</td>'+
+        '<td width="50" align="center" class="bg1">성격</td>'+
+        '<td width="90" align="center" class="bg1">특기</td>'+
+        '<td width="50" align="center" class="bg1">레 벨</td>'+
+        '<td width="100" align="center" class="bg1">국 가</td>'+
+        '<td width="60" align="center" class="bg1">명 성</td>'+
+        '<td width="60" align="center" class="bg1">계 급</td>'+
+        '<td width="80" align="center" class="bg1">관 직</td>'+
+        '<td width="45" align="center" class="bg1">통솔</td>'+
+        '<td width="45" align="center" class="bg1">무력</td>'+
+        '<td width="45" align="center" class="bg1">지력</td>'+
+        '<td width="45" align="center" class="bg1">삭턴</td>'+
+        '<td width="84" align="center" class="bg1">벌점</td>'+
     '</tr></thead><tbody class="content" style="background-color:black;"></tbody></table></div>');
-    $userFrame.find('thead td').css('background-image','url(http://jwh1807.vipweb.kr/images/back_green.jpg)');
+    $userFrame.find('thead td').css('background-image','url(https://sam.hided.net/image/game/back_green.jpg)');
     $userFrame.css('width','1000px').css('margin','0').css('padding','0').css('left','50%').css('margin-left','-500px');
     $userFrame.css('box-shadow','0px 0px 7px 3px rgba(255,255,255,50)');
     $userFrame.hide();
