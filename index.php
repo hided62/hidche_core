@@ -58,7 +58,7 @@ function getOAuthToken(mode, scope_list){
         url += '&scope='+scope_list;
     }
 
-    window.open(url,"KakaoAccountLogin","width=600,height=450");
+    window.open(url,"KakaoAccountLogin","width=600,height=450,resizable=yes,scrollbars=yes");
 }
 
 function sendTempPasswordToKakaoTalk(){

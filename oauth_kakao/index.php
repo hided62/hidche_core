@@ -27,7 +27,7 @@ function getOAuthToken(mode='login', scope_list = null){
         url += '&scope='+scope_list;
     }
 
-    window.open(url,"KakaoAccountLogin","width=600,height=450");
+    window.open(url,"KakaoAccountLogin","width=600,height=450,resizable=yes,scrollbars=yes");
 
 }
 
