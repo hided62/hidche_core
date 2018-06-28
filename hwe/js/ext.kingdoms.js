@@ -5,7 +5,7 @@ $(function(){
     var headTbl = $('table:eq(0)');
     var $userFrame;
     
-    var 국가테이블= $('table:gt(0):lt(-3)');
+    var 국가테이블= $('table:gt(0):lt(-2)');
     
     var getUserType = function(통,무,지){
         var 총 = 통+무+지;
