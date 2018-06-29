@@ -1,15 +1,20 @@
 @charset "utf-8";
-
+/*
 .bg0    { background-image:url('_tK_gameImagePath_/back_walnut.jpg'); }
 .bg1    { background-image:url('_tK_gameImagePath_/back_green.jpg'); }
 .bg2    { background-image:url('_tK_gameImagePath_/back_blue.jpg'); }
+*/
+
+.bg0    { background-color:#28140B; }
+.bg1    { background-color:#0F2121; }
+.bg2    { background-color:#141133; }
 
 .img_back {background-image:url('_tK_gameImagePath_/back.jpg'); }
 
 /* 레거시. */
-#bg0    { background-image:url('_tK_gameImagePath_/back_walnut.jpg'); }
-#bg1    { background-image:url('_tK_gameImagePath_/back_green.jpg'); }
-#bg2    { background-image:url('_tK_gameImagePath_/back_blue.jpg'); }
+#bg0    { background-color:#28140B; }
+#bg1    { background-color:#0F2121; }
+#bg2    { background-color:#141133; }
 
 .map_detail .map_title{
     background:
