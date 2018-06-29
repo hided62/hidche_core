@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+/* font-boostring Block */
+html * {max-height:1000000px;}
+
+
 html, body{
     background-color:black;
     color:white;
