@@ -31,7 +31,9 @@ $connect=$db->get();
 <html>
 <head>
 <title><?=UniqueConst::$serverName?>: 장수생성</title>
-<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <script>
 var defaultStatTotal = <?=GameConst::$defaultStatTotal?>;
 var defaultStatMin = <?=GameConst::$defaultStatMin?>;

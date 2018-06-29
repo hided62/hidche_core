@@ -84,7 +84,9 @@ if ($month <= 0) {
 <html>
 
 <head>
-<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><?=UniqueConst::$serverName?>: 연감</title>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>

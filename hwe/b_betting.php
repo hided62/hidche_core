@@ -55,7 +55,9 @@ if($str3){
     MessageBox("접속제한이 얼마 남지 않았습니다!");
 } ?>
 <head>
-<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><?=UniqueConst::$serverName?>: 베팅장</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>

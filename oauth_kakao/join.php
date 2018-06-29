@@ -26,6 +26,7 @@ if($canJoin != 'Y'){
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>회원가입</title>
     <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
     <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>

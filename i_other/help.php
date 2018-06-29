@@ -11,7 +11,9 @@ $category = Util::getReq('category', 'int', 0);
 <html>
 
     <head>
-        <meta charset="UTF-8">
+    <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>튜토리얼</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>

@@ -24,7 +24,9 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <html>
 
 <head>
-<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><?=UniqueConst::$serverName?>: 세력일람</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>

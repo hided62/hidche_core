@@ -24,7 +24,9 @@ $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation 
 <html>
 <head>
 <title><?=UniqueConst::$serverName?>: NPC빙의</title>
-<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=utf-8'>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <?=WebUtil::printCSS('css/normalize.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('../css/config.css')?>
