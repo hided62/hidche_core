@@ -24,7 +24,7 @@ increaseRefresh("명장일람", 1);
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="viewport" content="width=1136, initial-scale=1" />
+<meta name="viewport" content="width=1136" />
 <title><?=UniqueConst::$serverName?>: 명장일람</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>

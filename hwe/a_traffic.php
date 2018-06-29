@@ -52,7 +52,7 @@ if ($admin['maxonline'] < $curonline) {
 <title><?=UniqueConst::$serverName?>: 트래픽정보</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="viewport" content="width=1024, initial-scale=1" />
+<meta name="viewport" content="width=1024" />
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <style>
