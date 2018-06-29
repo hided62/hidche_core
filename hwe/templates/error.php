@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=1024, initial-scale=1" />
     <title>에러</title>
 
     <link type="text/css" rel="stylesheet" href='../d_shared/common.css'>

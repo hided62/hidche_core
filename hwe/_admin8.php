@@ -21,7 +21,7 @@ if ($session->userGrade < 5) {
 <title>관리메뉴</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=1024, initial-scale=1" />
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 </head>
@@ -49,7 +49,7 @@ $sel[$type] = "selected";
 <title>외교정보</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=1024, initial-scale=1" />
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 </head>
