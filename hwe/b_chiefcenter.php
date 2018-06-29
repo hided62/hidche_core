@@ -78,7 +78,7 @@ for($i= $lv - 1; $i>=5; $i--){
 <html>
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 사령부</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>

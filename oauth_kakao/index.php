@@ -10,7 +10,7 @@ use \kakao\KakaoKey as KakaoKey;
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024" />
     <title>카카오 로그인하기</title>
     <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>

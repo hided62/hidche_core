@@ -78,7 +78,7 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
 <html>
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 내정보</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>

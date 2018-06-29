@@ -13,7 +13,7 @@ if($session->userGrade < 5) {
 <head>
 <title>관리메뉴</title>
 <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -35,7 +35,7 @@ $db = DB::db();
 <head>
 <title>회원관리</title>
 <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>

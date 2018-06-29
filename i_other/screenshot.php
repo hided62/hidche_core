@@ -11,7 +11,7 @@ if($sel == 0) $sel = 1;
 
     <head>
     <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
         <title>스크린샷</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>

@@ -748,7 +748,7 @@ function command_Other($turn, $commandtype) {
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
     <script>
 parent.moveProcessing(<?=$commandtype?>, <?=Json::encode($turn)?>);

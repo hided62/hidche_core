@@ -23,7 +23,7 @@ if ($session->isLoggedIn()) {
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>삼국지 모의전투 HiDCHe</title>
     <?=WebUtil::printJS('e_lib/jquery-3.3.1.min.js')?>

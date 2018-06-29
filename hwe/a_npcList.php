@@ -26,7 +26,7 @@ $sel[$type] = "selected";
 
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 빙의일람</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>

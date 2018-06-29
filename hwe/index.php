@@ -83,7 +83,7 @@ $color = "cyan";
 <head>
 <title><?=UniqueConst::$serverName?>: 메인</title>
 <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
