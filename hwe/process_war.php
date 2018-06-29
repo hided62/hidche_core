@@ -146,9 +146,9 @@ function processWar($general, $city) {
             pushGenLog($general, $log);
             pushGeneralPublicRecord($alllog, $year, $month);
             pushWorldHistory($history);
-            unset($log);
-            unset($alllog);
-            unset($history);
+            $log = [];
+            $alllog = [];
+            $history= [];
 
             //패퇴시 병량보충
             $destnation['rice'] += 500;
@@ -1464,10 +1464,10 @@ function processWar($general, $city) {
                 pushGenLog($oppose, $opplog);
                 pushBatLog($oppose, $oppbatlog);
                 pushBatRes($oppose, $oppbatres);
-                unset($oppose);
-                unset($opplog);
-                unset($oppbatlog);
-                unset($oppbatres);
+                $oppose = null;
+                $opplog = [];
+                $oppbatlog = [];
+                $oppbatres = [];
             // 공격 장수 병사 소진이나 쌀 소진시 실패 처리
             } elseif($general['crew'] <= 0 || $myRice <= Util::round($general['crew']/100)) {
                 if($myRice <= Util::round($general['crew']/100)) {
@@ -1512,21 +1512,21 @@ function processWar($general, $city) {
                 pushGenLog($oppose, $opplog);
                 pushBatLog($oppose, $oppbatlog);
                 pushBatRes($oppose, $oppbatres);
-                unset($opplog);
-                unset($oppbatlog);
-                unset($oppbatres);
-//                $josaYi = JosaUtil::pick($general['name'], '이');
-//                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>{$josaYi} }<G>{$city['name']}</> 공략에 실패했습니다. <1>$date</>";
-//                $log[] = "<C>●</> <G>{$city['name']}</> 공략에 실패했습니다. <1>$date</>";
+                $opplog = [];
+                $oppbatlog = [];
+                $oppbatres = [];
+    //          $josaYi = JosaUtil::pick($general['name'], '이');
+    //          $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>{$josaYi} }<G>{$city['name']}</> 공략에 실패했습니다. <1>$date</>";
+    //          $log[] = "<C>●</> <G>{$city['name']}</> 공략에 실패했습니다. <1>$date</>";
                 break;
             } else {
                 // 무승부일때 로그 남김
                 pushGenLog($oppose, $opplog);
                 pushBatLog($oppose, $oppbatlog);
                 pushBatRes($oppose, $oppbatres);
-                unset($opplog);
-                unset($oppbatlog);
-                unset($oppbatres);
+                $opplog = [];
+                $oppbatlog = [];
+                $oppbatres = [];
             }
         }
     }
