@@ -156,7 +156,10 @@ function pushOldNationStop(int $no, int $nationNo){
 }
 
 //DB-based
-function pushNationHistory($nation, $history) {
+function pushNationHistory($nation, ?string $history) {
+    if(!$history){
+        return;
+    }
     if(!$nation || !$nation['nation']){
         return;
     }
@@ -164,7 +167,10 @@ function pushNationHistory($nation, $history) {
         $history.'<br>', $nation['nation']);
 }
 
-function pushGeneralHistory($me, $history) {
+function pushGeneralHistory($me, ?string $history) {
+    if(!$history){
+        return;
+    }
     DB::db()->query("UPDATE general set history=concat(%s, history) where no=%i",
         $history.'<br>', $me['no']);
 }
@@ -174,7 +180,7 @@ function getGeneralHistoryAll(int $no) {
     return ConvertLog($history);
 }
 
-function pushWorldHistory(array $history, $year=null, $month=null) {
+function pushWorldHistory(?array $history, $year=null, $month=null) {
     if(!$history){
         return;
     }
@@ -221,7 +227,7 @@ function getWorldHistoryWithDate($year, $month) {
 }
 
 
-function pushGeneralPublicRecord(array $history, $year=null, $month=null) {
+function pushGeneralPublicRecord(?array $history, $year=null, $month=null) {
     if(!$history){
         return;
     }
