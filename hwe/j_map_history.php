@@ -6,7 +6,7 @@ include "func.php";
 
 $year = Util::getReq('year', 'int');
 $month = Util::getReq('month', 'int');
-$serverID = Util::getReq('server_id', 'string', null);
+$serverID = Util::getReq('serverID', 'string', null);
 
 extractMissingPostToGlobals();
 

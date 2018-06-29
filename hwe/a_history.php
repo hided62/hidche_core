@@ -5,7 +5,7 @@ include "lib.php";
 include "func.php";
 $btn = Util::getReq('btn');
 $yearmonth = Util::getReq('yearmonth', 'int');
-$serverID = Util::getReq('server_id', 'string', null);
+$serverID = Util::getReq('serverID', 'string', null);
 
 extractMissingPostToGlobals();
 
@@ -159,7 +159,7 @@ $history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM hist
 </table>
 <script>
 reloadWorldMap({
-    targetJson:'j_map_history.php?year=<?=$year?>&month=<?=$month?>&server_id=<?=$serverID?>',
+    targetJson:'j_map_history.php?year=<?=$year?>&month=<?=$month?>&serverID=<?=$serverID?>',
     showMe:false,
     neutralView:true
 });

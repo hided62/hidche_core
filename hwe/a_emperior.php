@@ -55,7 +55,7 @@ if ($select == 0) {
             <input type=hidden name=select value='<?=$emperior['no']?>'>
             
             <?php if($emperior['server_id']): ?>
-            <a href="a_history.php?server_id=<?=$emperior['server_id']?>"><button type="button">역사 보기</button></a>
+            <a href="a_history.php?serverID=<?=$emperior['server_id']?>"><button type="button">역사 보기</button></a>
             <?php endif ?>
         </form>
         </td>
