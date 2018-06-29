@@ -1,40 +1,19 @@
-// ==UserScript==
-// @name       체섭 집합 도우미
-// @namespace  https://hided.net
-// @version    0.933
-// @author     Hide_D
-// @updateURL  https://hided.net/gs_script/62che/plugin_troop.tamper.js
-// @description  부대 편성에서 암행부를 연동해 편리하게 볼 수 있습니다.
-// @match      http://62che.com/sam/*/b_troop.php
-// @match      http://www.62che.com/sam/*/b_troop.php
-// @match	   http://222.122.81.157/sam/*/b_troop.php
-// @match	   http://sam-tm.com/che/*/b_troop.php
-// @match	   http://www.sam-tm.com/che/*/b_troop.php
-// @copyright  2014+, HideD
-
-// @require		http://code.jquery.com/jquery-1.11.1.min.js
-
-// ==/UserScript==
-
-//바뀐건 없다
 $(function(){
     
     var userList = {};
     var groupList = {};
     var tGroup = [];
-    var basicPath = document.location.pathname.substr(0,9);
+    var basicPath = document.location.pathname;
+    basicPath = basicPath.substring(0, basicPath.lastIndexOf('/'))+'/';
     
     var $userFrame;
     
-    if(unsafeWindow){
-        unsafeWindow.$ = $;
-        unsafeWindow.groupList = groupList;
-        unsafeWindow.userList = userList;
-    }
+    window.groupList = groupList;
+    window.userList = userList;
     
     var aGroup = {};
     
-    $('table:eq(1) tr:gt(0):lt(-1)').each(function(idx){
+    $('#troop_list tbody > tr').each(function(idx){
         var $this = $(this);
         //console.log(this);
         //console.log($this);
@@ -141,11 +120,11 @@ $(function(){
                     }
                 });
                 
-                tmpUsers.find("tr:gt(0)").each(function(idx){
+                tmpUsers.find("tbody > tr").each(function(idx){
                     var $this = $(this);
                     
                     
-                    var $부대 = $this.children().eq(2);
+                    var $부대 = $this.children('.i_troop');
                     
                     var 부대 = $.trim($부대.text());
                     
@@ -155,23 +134,15 @@ $(function(){
                     }
                     $부대.remove();
                     
-                    var $name = $this.children('td:eq(0)');
+                    var $name = $this.children('.i_name');
                     $name.addClass('nameplate');
     
-                    var name = $name.html();
+                    var name = $name.find('.t_name').text();
                     
-                    var $tmpFont = $name.find('font');
-                    if($tmpFont.length>0){
-                        name = $tmpFont.text();
-                    }
-                    else{
-                        name = $.trim(name.substr(0,name.indexOf('<br>Lv ')));
-                    }
-                    
-                    var $도시 = $this.children().eq(4);
+                    var $도시 = $this.children('.i_city');
                     var 도시 = $.trim($도시.text());
                     
-                    var $턴 = $this.children().eq(12);
+                    var $턴 = $this.children('.i_action');
                     //console.log($턴);
                     var 턴0 = $턴.text().split(':');
                     var 턴 = parseInt(턴0[0])*60 + parseInt(턴0[1]);
@@ -253,23 +224,22 @@ $(function(){
     
     
     $userFrame = $('<div id="on_mover" style="position:absolute;">'+
-        '<table align="center" border="1" cellspacing="0" cellpadding="0" bordercolordark="gray" '+
-        'bordercolorlight="black" style="font-size:13;word-break:break-all;background-image:url(http://jwh1807.vipweb.kr/images/back_walnut.jpg)"><thead><tr>'+
-        '<td width="98" align="center">이 름</td>'+
-        '<td width="98" align="center"">통무지</td>'+
-        '<td width="58" align="center">자 금</td>'+
-        '<td width="58" align="center">군 량</td>'+
-        '<td width="48" align="center">도시</td>'+
-        '<td width="28" align="center">守</td>'+
-        '<td width="58" align="center">병 종</td>'+
-        '<td width="68" align="center">병 사</td>'+
-        '<td width="48" align="center">훈련</td>'+
-        '<td width="48" align="center">사기</td>'+
-        '<td width="148" align="center">명 령</td>'+
-        '<td width="58" align="center">삭턴</td>'+
-        '<td width="58" align="center">턴</td>'+
-    '</tr></thead><tbody class="content" style="background-color:black;"></tbody></table></div>');
-    $userFrame.find('thead td').css('background-image','url(http://jwh1807.vipweb.kr/images/back_green.jpg)');
+        '<table class="tb_layout bg0" style="width:100%;"><thead><tr>'+
+        '<td width="98" align="center" class="bg1">이 름</td>'+
+        '<td width="98" align="center" class="bg1"">통무지</td>'+
+        '<td width="58" align="center" class="bg1">자 금</td>'+
+        '<td width="58" align="center" class="bg1">군 량</td>'+
+        '<td width="48" align="center" class="bg1">도시</td>'+
+        '<td width="28" align="center" class="bg1">守</td>'+
+        '<td width="58" align="center" class="bg1">병 종</td>'+
+        '<td width="68" align="center" class="bg1">병 사</td>'+
+        '<td width="48" align="center" class="bg1">훈련</td>'+
+        '<td width="48" align="center" class="bg1">사기</td>'+
+        '<td width="148" align="center" class="bg1">명 령</td>'+
+        '<td width="58" align="center" class="bg1">삭턴</td>'+
+        '<td width="58" align="center" class="bg1">턴</td>'+
+    '</tr></thead><tbody class="content"></tbody></table></div>');
+    $userFrame.find('thead td');
     $userFrame.css('width','900px').css('margin','0').css('padding','0').css('left','50%').css('margin-left','-450px');
     $userFrame.hide();
     

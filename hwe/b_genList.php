@@ -56,7 +56,7 @@ $sel[$type] = "selected";
 <title><?=UniqueConst::$serverName?>: 암행부</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-
+<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 </head>
 
 <body>
@@ -99,24 +99,28 @@ switch ($type) {
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $gencount = MYDB_num_rows($genresult);
 
-echo"
-<table align=center class='tb_layout bg0'>
+?>
+<table align=center id='general_list' class='tb_layout bg0'>
+    <thead>
     <tr>
-        <td width=98 align=center id=bg1>이 름</td>
-        <td width=98 align=center id=bg1>통무지</td>
-        <td width=98 align=center id=bg1>부 대</td>
-        <td width=58 align=center id=bg1>자 금</td>
-        <td width=58 align=center id=bg1>군 량</td>
-        <td width=48 align=center id=bg1>도시</td>
-        <td width=28 align=center id=bg1>守</td>
-        <td width=58 align=center id=bg1>병 종</td>
-        <td width=68 align=center id=bg1>병 사</td>
-        <td width=48 align=center id=bg1>훈련</td>
-        <td width=48 align=center id=bg1>사기</td>
-        <td width=148 align=center id=bg1>명 령</td>
-        <td width=58 align=center id=bg1>삭턴</td>
-        <td width=58 align=center id=bg1>턴</td>
-    </tr>";
+        <td width=98 align=center class=bg1>이 름</td>
+        <td width=98 align=center class=bg1>통무지</td>
+        <td width=98 align=center class=bg1>부 대</td>
+        <td width=58 align=center class=bg1>자 금</td>
+        <td width=58 align=center class=bg1>군 량</td>
+        <td width=48 align=center class=bg1>도시</td>
+        <td width=28 align=center class=bg1>守</td>
+        <td width=58 align=center class=bg1>병 종</td>
+        <td width=68 align=center class=bg1>병 사</td>
+        <td width=48 align=center class=bg1>훈련</td>
+        <td width=48 align=center class=bg1>사기</td>
+        <td width=148 align=center class=bg1>명 령</td>
+        <td width=58 align=center class=bg1>삭턴</td>
+        <td width=58 align=center class=bg1>턴</td>
+    </tr>
+    </thead>
+    <tbody>
+<?php
 for ($j=0; $j < $gencount; $j++) {
     $general = MYDB_fetch_array($genresult);
     $city = CityConst::byID($general['city'])->name;
@@ -164,24 +168,24 @@ for ($j=0; $j < $gencount; $j++) {
 
     echo "
     <tr>
-        <td align=center>$name<br>Lv ".getExpLevel($general['experience'])."</td>
-        <td align=center>{$leader}∥{$power}∥{$intel}</td>
-        <td align=center>$troop</td>
-        <td align=center>{$general['gold']}</td>
-        <td align=center>{$general['rice']}</td>
-        <td align=center>$city</td>
+        <td class='i_name' align=center><span class='t_name'>$name</span><br>Lv <span class='t_explevel'>".getExpLevel($general['experience'])."</span></td>
+        <td class='i_stat' align=center>{$leader}∥{$power}∥{$intel}</td>
+        <td class='i_troop' align=center>$troop</td>
+        <td class='i_gold' align=center>{$general['gold']}</td>
+        <td class='i_rice' align=center>{$general['rice']}</td>
+        <td class='i_city' align=center>$city</td>
         <td align=center>$mode</td>
-        <td align=center>".GameUnitConst::byId($general['crewtype'])->name."</td>
-        <td align=center>{$general['crew']}</td>
-        <td align=center>{$general['train']}</td>
-        <td align=center>{$general['atmos']}</td>";
+        <td class='i_crewtype' align=center>".GameUnitConst::byId($general['crewtype'])->name."</td>
+        <td class='i_crew' align=center>{$general['crew']}</td>
+        <td class='i_train' align=center>{$general['train']}</td>
+        <td class='i_atmos' align=center>{$general['atmos']}</td>";
     if ($general['npc'] >= 2) {
         echo "
-        <td>
+        <td class='i_action'>
             <font size=3>NPC 장수";
     } else {
         echo "
-        <td>
+        <td class='i_action'>
             <font size=1>";
         $turn = getTurn($general, 1, 0);
 
@@ -196,10 +200,11 @@ for ($j=0; $j < $gencount; $j++) {
             </font>
         </td>
         <td align=center>{$general['killturn']}</td>
-        <td align=center>".substr($general['turntime'], 14, 5)."</td>
+        <td class='i_turntime' align=center>".substr($general['turntime'], 14, 5)."</td>
     </tr>";
 }
 echo "
+</tbody>
 </table>
 ";
 

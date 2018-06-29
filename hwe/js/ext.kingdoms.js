@@ -193,8 +193,7 @@ $(function(){
     }
     
     $userFrame = $('<div id="on_mover" style="position:absolute;">'+
-        '<table align="center" border="1" cellspacing="0" cellpadding="0" bordercolordark="gray" '+
-        'bordercolorlight="black" style="font-size:13;word-break:break-all;background-image:url(https://sam.hided.net/image/game/back_walnut.jpg)"><thead><tr>'+
+        '<table class="tb_layout bg0" style="width:100%;"><thead><tr>'+
         '<td width="64" align="center" class="bg1">얼 굴</td>'+
         '<td width="100" align="center" class="bg1">이 름</td>'+
         '<td width="50" align="center" class="bg1">연령</td>'+
@@ -210,8 +209,8 @@ $(function(){
         '<td width="45" align="center" class="bg1">지력</td>'+
         '<td width="45" align="center" class="bg1">삭턴</td>'+
         '<td width="84" align="center" class="bg1">벌점</td>'+
-    '</tr></thead><tbody class="content" style="background-color:black;"></tbody></table></div>');
-    $userFrame.find('thead td').css('background-image','url(https://sam.hided.net/image/game/back_green.jpg)');
+    '</tr></thead><tbody class="content"></tbody></table></div>');
+    $userFrame.find('thead td');
     $userFrame.css('width','1000px').css('margin','0').css('padding','0').css('left','50%').css('margin-left','-500px');
     $userFrame.css('box-shadow','0px 0px 7px 3px rgba(255,255,255,50)');
     $userFrame.hide();

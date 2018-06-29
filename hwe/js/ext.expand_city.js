@@ -100,9 +100,9 @@ $(function() {
             
             $('#inner_table').attr('border','1').attr('cellspacing',"0").attr('cellpadding',"0")
             .attr('bordercolordark',"gray").attr('bordercolorlight',"black").attr('align','center')
-            .css('background-image','url(http://jwh1807.vipweb.kr/images/back_walnut.jpg)').css('font-size','13px').css('width','290px');
+            .css('font-size','13px').css('width','290px');
 
-            $('#inner_table thead tr').css('background-image','url(http://jwh1807.vipweb.kr/images/back_green.jpg)');
+            $('#inner_table thead tr');
             
             $('#fake_form').submit(function(){
                 return false;
@@ -256,7 +256,6 @@ $(function() {
             var subList = subCityGroupList[groupName];
             
             var $group = $('<tr><td colspan="4" style="color:skyblue;">【 '+groupName+' 】</td></tr>');
-            $group.css('background-image','url(http://jwh1807.vipweb.kr/images/back_green.jpg)');
             $innerContent.append($group);
             
             subList.sort(function(a,b){
@@ -530,12 +529,12 @@ $(function() {
     var loadUser = function(){
         $.each(cityList,function(idx,val){
             if(typeof val.users == "undefined"){
-                val.obj.append('<tr><td colspan="12"><table align="center" class="cityUser" border="1" cellspacing="0" cellpadding="0" bordercolordark="gray" bordercolorlight="black" style="font-size:13;word-break:break-all;" id="bg0">'+
+                val.obj.append('<tr><td colspan="12"><table align="center" class="tb_layout cityUser bg0">'+
                                '<thead><tr>'+
-                               '<td width="100" align="center" id="bg1">이 름</td><td width="100" align="center" id="bg1">통무지</td><td width="100" align="center" id="bg1">부 대</td><td width="60" align="center" id="bg1">자 금</td>'+
-                               '<td width="60" align="center" id="bg1">군 량</td><td width="30" align="center" id="bg1">守</td><td width="60" align="center" id="bg1">병 종</td>'+
-                               '<td width="60" align="center" id="bg1">병 사</td><td width="50" align="center" id="bg1">훈련</td><td width="50" align="center" id="bg1">사기</td><td width="150" align="center" id="bg1">명 령</td>'+
-                               '<td width="60" align="center" id="bg1">삭턴</td><td width="60" align="center" id="bg1">턴</td>'+
+                               '<td width="100" align="center" class="bg1">이 름</td><td width="100" align="center" class="bg1">통무지</td><td width="100" align="center" class="bg1">부 대</td><td width="60" align="center" class="bg1">자 금</td>'+
+                               '<td width="60" align="center" class="bg1">군 량</td><td width="30" align="center" class="bg1">守</td><td width="60" align="center" class="bg1">병 종</td>'+
+                               '<td width="60" align="center" class="bg1">병 사</td><td width="50" align="center" class="bg1">훈련</td><td width="50" align="center" class="bg1">사기</td><td width="150" align="center" class="bg1">명 령</td>'+
+                               '<td width="60" align="center" class="bg1">삭턴</td><td width="60" align="center" class="bg1">턴</td>'+
                                '</tr></thead>'+
                                '<tbody class="cityUserBody"></tbody></table></td></tr>');
                 
@@ -548,41 +547,26 @@ $(function() {
         
         
         $.get(basicPath+'b_genList.php',function(rawData){
-            $html = $(rawData);
             var cnt =0;
             
-            var tmpUsers = {};
-            $html.each(function(idx){
-                if(this.tagName == "TABLE"){
-                    cnt+=1;
-                    if(cnt==2){
-                        tmpUsers = $(this);
-                        return false;
-                    }
-                }
-            });
+            var $helper = $('#helper_genlist');
+            $helper.html('').append($.parseHTML(rawData));
+
+            var tmpUsers = $('#general_list tbody tr');
             
-            tmpUsers.find("tr:gt(0)").each(function(idx){
+            tmpUsers.each(function(idx){
                 var $this = $(this);
                 
-                var $city = $this.children('td:eq(5)');
+                var $city = $this.children('.i_city');
                 $city.remove();
                 var cityName = $.trim($city.text());
                 
-                var $name = $this.children('td:eq(0)');
+                var $name = $this.children('.i_name');
                 $name.addClass('nameplate');
 
-				var name = $name.html();
-                
-                var $tmpFont = $name.find('font');
-                if($tmpFont.length>0){
-                    name = $tmpFont.text();
-                }
-                else{
-                    name = $.trim(name.substr(0,name.indexOf('<br>Lv ')));
-                }
-                
-                var $work = $this.children('td:eq(10)');
+				var name = $name.find('.t_name').html();
+                                
+                var $work = $this.children('.i_action');
                 
                 var cityInfo = cityList[cityName];
                 if(typeof cityInfo == 'undefined'){
@@ -597,7 +581,7 @@ $(function() {
                 
                 
                 
-                var $stat = $this.children('td:eq(1)');
+                var $stat = $this.children('.i_stat');
                 var stat = $stat.text();
                 
                 var is수뇌 = stat.indexOf('+')>=0;

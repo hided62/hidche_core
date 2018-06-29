@@ -30,6 +30,8 @@ $troopcount = MYDB_num_rows($result);
 <title><?=UniqueConst::$serverName?>: 부대편성</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
+<?=WebUtil::printJS('js/ext.plugin_troop.js')?>
 </head>
 
 <body>
@@ -38,7 +40,8 @@ $troopcount = MYDB_num_rows($result);
     <tr><td>부 대 편 성<br><?=backButton()?></td></tr>
 </table>
 <form name=form1 method=post action=c_troop.php>
-<table class='tb_layout bg0'>
+<table id="troop_list" class='tb_layout bg0'>
+    <thead>
     <tr>
         <td width=64  class='bg1 center'>선 택</td>
         <td width=130  class='bg1 center'>부 대 정 보</td>
@@ -46,6 +49,8 @@ $troopcount = MYDB_num_rows($result);
         <td width=576 class='bg1 center' style=table-layout:fixed;word-break:break-all;>장 수</td>
         <td width=130  class='bg1 center' style=table-layout:fixed;word-break:break-all;>부대장행동</td>
     </tr>
+    </thead>
+    <tbody>
 <?php
 for($i=0; $i < $troopcount; $i++) {
     $troop = MYDB_fetch_array($result);
@@ -124,7 +129,8 @@ for($i=0; $i < $troopcount; $i++) {
     <tr><td colspan=5>";
     }
 }
-
+echo "</tbody>
+<tfoot>";
 if ($troopcount == 0) {
 }
 else if($me['troop'] == 0) {
@@ -137,6 +143,7 @@ else if($me['troop'] == 0) {
 
 echo "
 </td></tr>
+</tfoot>
 </table>
 <br>";
 

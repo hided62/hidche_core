@@ -199,6 +199,6 @@ for ($j=0; $j < $citycount; $j++) {
     <tr><td><?=banner()?></td></tr>
 </table>
 </body>
-
+<div id="helper_genlist" style="display:none;"></div>
 </html>
 
