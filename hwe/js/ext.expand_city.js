@@ -415,7 +415,7 @@ $(function() {
                         //console.log(this);
                         var $this = $(this);
                         
-                        var username = $this.attr('username');
+                        var username = $this.data('username');
                         
                         var userInfo = userList[username];
                         if(!userInfo){
@@ -586,7 +586,7 @@ $(function() {
                 
                 var is수뇌 = stat.indexOf('+')>=0;
                 
-                $this.attr('username',name);
+                $this.data('username',name);
                 
                 if(cityList[cityName].$태수.text() == name){
                     cityList[cityName].$태수.css('color','lightgreen');
@@ -670,7 +670,7 @@ $(function() {
                 cityName = cityName.replace("[","");
                 cityName = cityName.replace("]","");
                 
-                $this.attr('cityname',cityName);
+                $this.data('cityname',cityName);
                 
                 cityInfo.지역 = cityLoc;
                 cityInfo.규모 = citySize;
@@ -814,7 +814,7 @@ $(function() {
             var arCity = [];
             $('.cityInfo').each(function(){
                 var $this = $(this);
-                var cityName = $this.attr('cityname');
+                var cityName = $this.data('cityname');
                 
                 var cityInfo = cityList[cityName];
                 arCity.push(cityInfo);
