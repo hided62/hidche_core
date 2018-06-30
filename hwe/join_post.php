@@ -281,7 +281,7 @@ $rootDB->insert('member_log', [
 
 ?>
 <script>
-window.alert('정상적으로 회원 가입되었습니다. 장수명 : <?=$name?> \n튜토리얼을 꼭 읽어보세요!');
+window.alert('정상적으로 회원 가입되었습니다. 장수명 : <?=$name?> \n위키와 팁/강좌 게시판을 꼭 읽어보세요!');
 </script>
 <script>location.replace('./');</script>
 
