@@ -194,7 +194,7 @@ for ($j=0; $j < $citycount; $j++) {
 }
 ?>
 
-<table align=center width=1000 class='tb_layout bg0'>
+<table align=center width=1000 class='tb_layout bg0 anchor'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?></td></tr>
 </table>

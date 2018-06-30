@@ -823,8 +823,7 @@ $(function() {
             arCity = mergeSort(arCity,callback);
             //console.log(arCity);
             
-            var tmp = $('table');
-            var $anchor = tmp.eq(tmp.length-2);
+            var $anchor = $('.anchor');
             //console.log($anchor);
             
             $('body > br').remove();
