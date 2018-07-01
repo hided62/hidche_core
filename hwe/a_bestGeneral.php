@@ -69,22 +69,83 @@ $types = [
     }],
     ["전 투 횟 수", "int", function($v){$v['value'] = $v['warnum']; return $v; }],
     ["승 리", "int", function($v){$v['value'] = $v['killnum']; return $v; }],
-    ["승 률", "percent", function($v){$v['value'] = $v['killnum'] / max(1, $v['warnum']); return $v; }],
+    ["승 률", "percent", function($v){
+        if($v['warnum'] < 10){
+            $v['value'] = 0;
+        }
+        else{
+            $v['value'] = $v['killnum'] / max(1, $v['warnum']);
+        }
+        return $v;
+    }],
     ["사 살", "int", function($v){$v['value'] = $v['killcrew']; return $v; }],
-    ["살 상 률", "percent", function($v){$v['value'] = $v['killcrew'] / max(1, $v['deathcrew']); return $v; }],
+    ["살 상 률", "percent", function($v){
+        if($v['warnum'] < 10){
+            $v['value'] = 0;
+        }
+        else{
+            $v['value'] = $v['killcrew'] / max(1, $v['deathcrew']);
+        }
+        return $v;
+    }],
     ["보 병 숙 련 도", "int", function($v){$v['value'] = $v['dex0']; return $v; }],
     ["궁 병 숙 련 도", "int", function($v){$v['value'] = $v['dex10']; return $v; }],
     ["기 병 숙 련 도", "int", function($v){$v['value'] = $v['dex20']; return $v; }],
     ["귀 병 숙 련 도", "int", function($v){$v['value'] = $v['dex30']; return $v; }],
     ["차 병 숙 련 도", "int", function($v){$v['value'] = $v['dex40']; return $v; }],
-    ["전 력 전 승 률", "percent", function($v){$v['value'] = $v['ttw']/max(1, $v['ttw']+$v['ttd']+$v['ttl']); return $v; }],
-    ["통 솔 전 승 률", "percent", function($v){$v['value'] = $v['tlw']/max(1, $v['tlw']+$v['tld']+$v['tll']); return $v; }],
-    ["일 기 토 승 률", "percent", function($v){$v['value'] = $v['tpw']/max(1, $v['tpw']+$v['tpd']+$v['tpl']); return $v; }],
-    ["설 전 승 률", "percent", function($v){$v['value'] = $v['tiw']/max(1, $v['tiw']+$v['tid']+$v['til']); return $v; }],
+    ["전 력 전 승 률", "percent", function($v){
+        $totalCnt = $v['ttw']+$v['ttd']+$v['ttl'];
+        if($totalCnt < 50){
+            $v['value'] = 0;
+        }
+        else{
+            $v['value'] = $v['ttw']/max(1, $totalCnt); 
+        }
+        return $v; 
+    }],
+    ["통 솔 전 승 률", "percent", function($v){
+        $totalCnt = $v['tlw']+$v['tld']+$v['tll'];
+        if($totalCnt < 50){
+            $v['value'] = 0;
+        }
+        else{
+            $v['value'] = $v['tlw']/max(1, $totalCnt);
+        }
+        return $v; 
+    }],
+    ["일 기 토 승 률", "percent", function($v){
+        $totalCnt = $v['tpw']+$v['tpd']+$v['tpl'];
+        if($totalCnt < 50){
+            $v['value'] = 0;
+        }
+        else{
+            $v['value'] = $v['tpw']/max(1, $totalCnt);
+        }
+        return $v;
+    }],
+    ["설 전 승 률", "percent", function($v){
+        $totalCnt = $v['tiw']+$v['tid']+$v['til'];
+        if($totalCnt < 50){
+            $v['value'] = 0;
+        }
+        else{
+            $v['value'] = $v['tiw']/max(1, $totalCnt);
+        }
+        
+        return $v;
+    }],
     ["베 팅 투 자 액", "int", function($v){$v['value'] = $v['betgold']; return $v; }],
     ["베 팅 당 첨", "int", function($v){$v['value'] = $v['betwin']; return $v; }],
     ["베 팅 수 익 금", "int", function($v){$v['value'] = $v['betwingold']; return $v; }],
-    ["베 팅 수 익 률", "percent", function($v){$v['value'] = $v['betwingold']/max(1, $v['betgold']); return $v; }],
+    ["베 팅 수 익 률", "percent", function($v){
+        if($v['getgold'] < 1000){
+            $v['value'] = 0;
+        }
+        else{
+            $v['value'] = $v['betwingold']/max(1, $v['betgold']);
+        }
+        return $v;
+    }],
 ];
 
 $generals = array_map(function($general) use($nationColor, $nationName) {
@@ -114,9 +175,14 @@ $generals = array_map(function($general) use($nationColor, $nationName) {
 $templates = new \League\Plates\Engine('templates');
 
 foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
-    $typeGenerals = array_map(function($general) use($typeValue, $typeFunc){
+    $validCnt = 0;
+    $typeGenerals = array_map(function($general) use($typeValue, $typeFunc, $validCnt){
         $general = ($typeFunc)($general);
         $value = $general['value'];
+
+        if($value > 0){
+            $validCnt+=1;
+        }
 
         if($typeValue == 'percent'){
             $general['printValue'] = number_format($value*100, 2).'%';
@@ -132,9 +198,10 @@ foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
         return -($lhs['value'] <=> $rhs['value']);
     });
 
+
     echo $templates->render('hallOfFrame', [
         'typeName'=>$typeName,
-        'generals'=>array_slice($typeGenerals, 0, 10)
+        'generals'=>array_slice($typeGenerals, 0, min(10, $validCnt))
     ]);
 }
 ?>
