@@ -1910,8 +1910,14 @@ function updateTurntime($no) {
         if($general['npc'] == 1 && $general['deadyear'] > $admin['year']) {
             $general['killturn'] = ($general['deadyear'] - $admin['year']) * 12;
             $general['npc'] = $general['npc_org'];
-            $query = "update general set owner=-1,npc='{$general['npc']}',killturn='{$general['killturn']}',mode=2 where no='$no'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+            $db->update('general', [
+                'owner'=>-1,
+                'npc'=>$general['npc_org'],
+                'killturn'=>$general['killturn'],
+                'mode'=>2,
+                'name2'=>null
+            ], 'no=%i',$no);
 
             $josaYi = JosaUtil::pick($general['name2'], '이');
             $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name2']}</>{$josaYi} <Y>{$general['name']}</>의 육체에서 <S>유체이탈</>합니다!";
