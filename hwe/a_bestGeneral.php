@@ -176,7 +176,7 @@ $templates = new \League\Plates\Engine('templates');
 
 foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
     $validCnt = 0;
-    $typeGenerals = array_map(function($general) use($typeValue, $typeFunc, $validCnt){
+    $typeGenerals = array_map(function($general) use($typeValue, $typeFunc, &$validCnt){
         $general = ($typeFunc)($general);
         $value = $general['value'];
 
