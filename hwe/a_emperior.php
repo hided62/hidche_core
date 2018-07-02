@@ -6,11 +6,11 @@ include "func.php";
 
 $select = Util::getReq('select', 'int', 0);
 
-extractMissingPostToGlobals();
-
 $db = DB::db();
-$connect=$db->get();
 
+$templates = new \League\Plates\Engine('templates');
+$templates->registerFunction('ConvertLog', '\sammo\ConvertLog');
+$templates->registerFunction('newColor', '\sammo\newColor');
 increaseRefresh("왕조일람", 1);
 ?>
 <!DOCTYPE html>
@@ -36,12 +36,7 @@ increaseRefresh("왕조일람", 1);
 <?php
 
 if ($select == 0) {
-    $query = "select * from emperior order by no desc";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $empcount = MYDB_num_rows($result);
-
-    for ($i=0; $i < $empcount; $i++) {
-        $emperior = MYDB_fetch_array($result);
+    foreach($db->query('SELECT * FROM emperior ORDER BY `no` DESC') as $emperior){
 
 ?>
 
@@ -100,6 +95,7 @@ if ($select == 0) {
 }
 
 $emperior = $db->queryFirstRow('SELECT * FROM emperior WHERE `no`=%i',$select);
+$serverID = $emperior['server_id']??($emperior['serverID']??null);
 
 ?>
 <table align=center width=1000 class='tb_layout bg0'>
@@ -209,6 +205,31 @@ $emperior = $db->queryFirstRow('SELECT * FROM emperior WHERE `no`=%i',$select);
         <td colspan=5><?=ConvertLog($emperior['history'], 1)?></td>
     </tr>
 </table>
+
+<?php
+if($serverID){
+    $nations = $db->query('SELECT * FROM ng_old_nations WHERE server_id=%s ORDER BY date DESC', $serverID);
+    foreach($nations as $nation){
+        if(!$nation['nation']??null){
+            continue;
+        }
+        $nation += Json::decode($nation['data']);
+
+        $nation['typeName'] = getNationType($nation['type']);
+        $nation['levelName'] = getNationLevel($nation['level']);
+        if($nation['generals']){
+            $generals = $db->query('SELECT `general_no`, `name` FROM ng_old_generals WHERE server_id=%s AND general_no IN %li', $serverID, $nation['generals']);
+            $nation['generalsFull'] = $generals;
+        }
+        else{
+            $nation['generalsFull'] = [];
+        }
+        
+        
+        echo $templates->render('oldNation', $nation);
+    }
+}
+?>
 
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
