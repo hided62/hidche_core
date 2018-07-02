@@ -90,3 +90,77 @@ input.with_skin:disabled {
 caption.section_title {
     caption-side:top;
 }
+
+
+.samButton{
+    float:left;
+    display:block;
+    padding:0;
+    margin:0;
+    text-decoration: none;
+    position:relative;
+}
+
+a.samButton.disabled {
+    pointer-events: none;
+    cursor: default;
+}
+
+.samButtonOuter{
+    display: table;
+    border: outset 2px white;
+    box-sizing: border-box;
+    font-weight:bold;
+    padding: 1px 6px;
+    width:125px;
+    height:30px;
+    background-color:#000000;
+    color:#ffffff;
+}
+
+.samButtonOuter:active{
+    border: inset 2px white;
+}
+
+
+.samButtonInner{
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    user-select: none;
+}
+
+.samToolbarButton > .samButtonOuter{
+    width:125px;
+    height:30px;
+    background-color:#225500;
+    color:white;
+}
+
+.samToolbarButton2 > .samButtonOuter{
+    width:125px;
+    height:30px;
+    background-color:#225500;
+    color:magenta;
+}
+
+.samCommandButton > .samButtonOuter{
+    width:111px;
+    height:30px;
+}
+
+.samCommandButton.disabled > .samButtonOuter{
+    background-color:transparent !important;
+    color:gray !important;
+    border-color:transparent !important;
+}
+
+.samCommandButton.disabled > .samButtonOuter > .samButtonInner::before{
+    content:'【'
+}
+
+.samCommandButton.disabled > .samButtonOuter > .samButtonInner::after{
+    content:'】'
+}

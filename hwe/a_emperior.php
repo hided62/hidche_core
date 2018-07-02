@@ -29,7 +29,7 @@ increaseRefresh("왕조일람", 1);
 <body>
 <table align=center width=1000 class="tb_layout bg0">
     <tr><td>역 대 왕 조<br>
-        <input type=button value='창 닫기' onclick=window.close()><br>
+        <button onclick=window.close()>창 닫기</button><br>
     </td></tr>
 </table>
 
@@ -48,16 +48,13 @@ if ($select == 0) {
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td bgcolor=skyblue align=center colspan=8>
-        <form action=a_emperior.php method=get>
             <font size=5><?=$emperior['phase']?></font>
             
-            <input type=submit value='자세히'>
-            <input type=hidden name=select value='<?=$emperior['no']?>'>
+            <a href="a_emperior.php?select=<?=$emperior['no']?>"><button>자세히</button></a>
             
             <?php if($emperior['server_id']): ?>
-            <a href="a_history.php?serverID=<?=$emperior['server_id']?>"><button type="button">역사 보기</button></a>
+            <a href="a_history.php?serverID=<?=$emperior['server_id']?>"><button>역사 보기</button></a>
             <?php endif ?>
-        </form>
         </td>
     </tr>
     <tr>
@@ -108,10 +105,8 @@ $emperior = $db->queryFirstRow('SELECT * FROM emperior WHERE `no`=%i',$select);
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td bgcolor=skyblue align=center colspan=6>
-            <form action=a_emperior.php method=get>
             <font size=5><?=$emperior['phase']?></font>
-            <input type=submit value='전체보기'>
-            </form>
+            <a href="a_emperior.php"><button>전체보기</button></a>
         </td>
     </tr>
     <tr>
