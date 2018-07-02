@@ -12,7 +12,7 @@ $db = DB::db();
 increaseRefresh("명예의전당", 1);
 
 $scenarioList= [];
-foreach($db->query('SELECT distinct(scenario_name) as name, count(scenario) as cnt, scenario from ng_games order by scenario asc') as $scenarioInfo){
+foreach($db->query('SELECT scenario_name as name, count(scenario) as cnt, scenario from ng_games group by scenario order by scenario asc') as $scenarioInfo){
     $scenarioList[$scenarioInfo['scenario']] = $scenarioInfo;
 }
 
