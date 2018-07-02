@@ -94,10 +94,15 @@ foreach($types as $idx=>[$typeName, $typeValue]) {
     $hallResult = array_map(function($general)use($typeValue){
         $aux = Json::decode($general['aux']);
         $general += $aux;
-        if(!key_exists('color', $general)){
-            $general['bgColor'] = GameConst::$basecolor4;
-            
+        if(!key_exists('bgColor', $general)){
+            if(!key_exists('color', $general)){
+                $general['bgColor'] = GameConst::$basecolor4;
+            }
+            else{
+                $general['bgColor'] = $general['color'];
+            }
         }
+        
         if(!key_exists('fgColor', $general)){
             $general['fgColor'] = newColor($general['bgColor']);
         }
