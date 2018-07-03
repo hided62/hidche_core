@@ -224,7 +224,10 @@ if($serverID){
         else{
             $nation['generalsFull'] = [];
         }
-        
+
+        if(key_exists('aux', $nation)){
+            $nation += $nation['aux'];
+        }
         
         echo $templates->render('oldNation', $nation);
     }

@@ -1816,6 +1816,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             //다른 코드와는 다르게 공용으로 쓰므로 남겨둠
             return $gen['no'];
         }, $oldNationGenerals);
+        $oldNation['aux'] = Json::decode($oldNation['aux']);
 
         foreach($oldNationGenerals as $gen){
 

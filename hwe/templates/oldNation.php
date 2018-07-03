@@ -32,15 +32,15 @@
         </tr>
         <tr>
             <td class="bg1">최대 영토 수</td>
-            <td><?=count($cities??[])?></td>
+            <td><?=count($maxCities??[])?></td>
             <td class="bg1">최대 병력 수</td>
-            <td><?=$maxArmy??0?>명</td>
+            <td><?=$maxCrew??0?>명</td>
             <td class="bg1">최대 국력</td>
             <td><?=$maxPower??0?></td>
         </tr>
         <tr>
             <td valign=top class="bg1"> 최대영토</td>
-            <td colspan=5><?=join(', ',$cities??[])?></td>
+            <td colspan=5><?=join(', ',$maxCities??[])?></td>
         </tr>
         <tr>
             <td valign=top class="bg1"> 장수명단</td>

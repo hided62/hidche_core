@@ -427,6 +427,15 @@ function postUpdateMonthly() {
 
     $history = [];
 
+    //도시 수 측정
+    $cityNations = [];
+    foreach($db->queryAllLists('SELECT city, name, nation FROM city') as [$cityID, $cityName, $cityNation]){
+        if(!key_exists($cityNation, $cityNations)){
+            $cityNations[$cityNation] = [];
+        }
+        $cityNations[$cityNation][] = $cityName;
+    }
+
     //각 국가 전월 장수수 대비 당월 장수수로 단합도 산정
     //각 국가 장수수를 구하고 국력 산정
 //    $query = "select nation,gennum from nation where level>0";
@@ -438,33 +447,32 @@ function postUpdateMonthly() {
 // 접속률
 // 숙련도
 // 명성,공헌
-    $query = "
-select
-A.nation,
-A.gennum, A.gennum2, A.chemi,
-round((
-    round(((A.gold+A.rice)+(select sum(gold+rice) from general where nation=A.nation))/100)
-    +A.tech
-    +if(A.level=0,0,(
-        select round(
-            sum(pop)*sum(pop+agri+comm+secu+wall+def)/sum(pop2+agri2+comm2+secu2+wall2+def2)/100
-        ) from city where nation=A.nation and supply=1
-    ))
-    +(select sum(leader+power+intel) from general where nation=A.nation)
-    +(select round(sum(dex0+dex10+dex20+dex30+dex40)/1000) from general where nation=A.nation)
-    +(select round(sum(experience+dedication)/100) from general where nation=A.nation)
-    +(select round(avg(connect)) from general where nation=A.nation)
-)/10)
-as power
-from nation A
-group by A.nation
-";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationCount = MYDB_num_rows($result);
-    $genNum = [];
-    for($i=0; $i < $nationCount; $i++) {
-        $nation = MYDB_fetch_array($result);
+    $nations = $db->query('SELECT
+    A.nation,
+    A.gennum, A.gennum2, A.chemi, A.aux,
+    round((
+        round(((A.gold+A.rice)+(select sum(gold+rice) from general where nation=A.nation))/100)
+        +A.tech
+        +if(A.level=0,0,(
+            select round(
+                sum(pop)*sum(pop+agri+comm+secu+wall+def)/sum(pop2+agri2+comm2+secu2+wall2+def2)/100
+            ) from city where nation=A.nation and supply=1
+        ))
+        +(select sum(leader+power+intel) from general where nation=A.nation)
+        +(select round(sum(dex0+dex10+dex20+dex30+dex40)/1000) from general where nation=A.nation)
+        +(select round(sum(experience+dedication)/100) from general where nation=A.nation)
+        +(select round(avg(connect)) from general where nation=A.nation)
+    )/10)
+    as power,
+    (select sum(crew) from general where nation=A.nation) as totalCrew
+    from nation A
+    group by A.nation');
+    foreach($nations as $nation) {
         $genNum[$nation['nation']] = $nation['gennum'];
+
+        $aux = Json::decode($nation['aux']);
+        
+        
 
         if($nation['gennum'] > $nation['gennum2']) {
             // 장수가 증가했을때
@@ -479,9 +487,21 @@ group by A.nation
         if($nation['chemi'] > 100) { $nation['chemi'] = 100; }
 
         //약간의 랜덤치 부여 (95% ~ 105%)
+        
         $nation['power'] = Util::round($nation['power'] * (rand()%101 + 950) / 1000);
-        $query = "update nation set power='{$nation['power']}',gennum2='{$nation['gennum']}',chemi='{$nation['chemi']}' where nation='{$nation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $aux['maxPower'] = max($aux['maxPower']??0, $nation['power']);
+        $aux['maxCrew'] = max($aux['maxCrew']??0, Util::toInt($nation['totalCrew']));
+
+        if(count($cityNations[$nation['nation']]??[]) > count($aux['maxCities']??[])){
+            $aux['maxCities'] = $cityNations[$nation['nation']];
+        }
+
+        $db->update('nation', [
+            'power'=>$nation['power'],
+            'gennum2'=>$nation['gennum'],
+            'chemi'=>$nation['chemi'],
+            'aux'=>Json::encode($aux)
+        ], 'nation=%i', $nation['nation']);
     }
 
     // 전쟁기한 세팅
@@ -690,6 +710,7 @@ function checkMerge() {
         $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $me['nation']);
         $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $me['nation']);
         $oldNation['generals'] = $oldNationGenerals;
+        $oldNation['aux'] = Json::decode($oldNation['aux']);
 
         // 자금 통합, 외교제한 5년, 기술유지
         $query = "update nation set name='{$you['makenation']}',gold=gold+'{$mynation['gold']}',rice=rice+'{$mynation['rice']}',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='{$younation['nation']}'";
@@ -820,6 +841,7 @@ function checkSurrender() {
         $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $me['nation']);
         $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $me['nation']);
         $oldNation['generals'] = $oldNationGenerals;
+        $oldNation['aux'] = Json::decode($oldNation['aux']);
 
         $newGenCount = $gencount + $gencount2;
         if($newGenCount < GameConst::$initialNationGenLimit) { $newGenCount = GameConst::$initialNationGenLimit; }
@@ -1332,6 +1354,7 @@ function checkEmperior() {
 
     $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nation['nation']);
     $oldNation['generals'] = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nation['nation']);
+    $oldNation['aux'] = Json::decode($oldNation['aux']);
 
     storeOldGenerals(0, $admin['year'], $admin['month']);
     storeOldGenerals($nation['nation'], $admin['year'], $admin['month']);

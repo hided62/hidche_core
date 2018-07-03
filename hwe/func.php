@@ -2455,6 +2455,7 @@ function deleteNation($general) {
     $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $general['nation']);
     $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $general['nation']);
     $oldNation['generals'] = $oldNationGenerals;
+    $oldNation['aux'] = Json::decode($oldNation['aux']);
 
     // 전 장수 재야로    // 전 장수 소속 무소속으로
     $query = "update general set belong=0,troop=0,level=0,nation=0,makelimit=12 where nation='{$general['nation']}'";
