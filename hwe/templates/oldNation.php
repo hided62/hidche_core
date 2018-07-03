@@ -17,8 +17,8 @@
         <tr>
             <td class="bg1">성향</td>
             <td><?=$typeName?></td>
-            <td class="bg1">멸망 시기</td>
-            <td><?=$last_year??0?>년 <?=$last_month??0?>월</td>
+            <td class="bg1">-</td>
+            <td>-</td>
             <td class="bg1">일자</td>
             <td><?=$date?></td>
         </tr>
