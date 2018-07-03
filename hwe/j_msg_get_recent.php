@@ -7,8 +7,7 @@ include('func.php');
 $session = Session::requireGameLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
-$jsonPost = WebUtil::parseJsonPost();
-$reqSequence = (int)Util::array_get($jsonPost['sequence'], 0);
+$reqSequence = Util::getReq('sequence', 'int', null);
 
 
 list($generalID, $nationID, $generalName) = DB::db()->queryFirstList(

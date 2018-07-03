@@ -17,7 +17,7 @@ if (!$generalID) {
     ]);
 }
 
-$jsonPost = WebUtil::parseJsonPost();
+$jsonPost = Json::decode(Util::getReq('data', 'string', '{}'));
 
 $msgID = Util::toInt($jsonPost['msgID']??null);
 $msgResponse = $jsonPost['response']??null;

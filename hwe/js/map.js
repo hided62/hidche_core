@@ -439,14 +439,15 @@ function reloadWorldMap(option){
         url: option.targetJson,
         type: 'post',
         dataType:'json',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            neutralView:option.neutralView,
-            year:option.year,
-            month:option.month,
-            showMe:option.showMe,
-            aux:option.aux
-        })
+        data: {
+            data: JSON.stringify({
+                neutralView:option.neutralView,
+                year:option.year,
+                month:option.month,
+                showMe:option.showMe,
+                aux:option.aux
+            })
+        }
     });
 
     deferred

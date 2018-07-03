@@ -13,7 +13,7 @@ $defaultPost = [
     'neutralView' => false,
     'showMe' => true
 ];
-$post = WebUtil::parseJsonPost() + $defaultPost;
+$post = Json::decode(Util::getReq('data', 'string', '{}'));
 
 if(!$session->isGameLoggedIn()){
     $post['neutralView'] = true;

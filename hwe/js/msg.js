@@ -34,11 +34,12 @@ function responseMessage(msgID, response){
         url: 'j_msg_decide_opt.php',
         type: 'post',
         dataType:'json',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            msgID:msgID,
-            response:response
-        })
+        data: {
+            data: JSON.stringify({
+                msgID:msgID,
+                response:response
+            })
+        }
     }).then(refreshMsg);
 }
 
@@ -54,10 +55,9 @@ function fetchMsg(){
         url: 'j_msg_get_recent.php',
         type: 'post',
         dataType:'json',
-        contentType: 'application/json',
-        data: JSON.stringify({
+        data: {
             sequence:sequence
-        })
+        }
     });
 }
 
@@ -373,11 +373,12 @@ function activateMessageForm(){
                 url:'j_msg_submit.php',
                 type: 'post',
                 dataType:'json',
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    mailbox:parseInt(targetMailbox),
-                    text:text
-                })
+                data: {
+                    data: JSON.stringify({
+                        mailbox:parseInt(targetMailbox),
+                        text:text
+                    })
+                }
             });
         }
         else{
@@ -404,10 +405,6 @@ jQuery(function($){
         url:'j_basic_info.php',
         type: 'post',
         dataType:'json',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            
-        })
     }).then(registerGlobal);
     
     //sender_list.json 은 서버측에선 캐시 가능한 데이터임.
@@ -415,10 +412,6 @@ jQuery(function($){
         url: 'j_msg_contact_list.php',
         type: 'post',
         dataType:'json',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            
-        })
     });
 
     var MessageList = fetchMsg();
