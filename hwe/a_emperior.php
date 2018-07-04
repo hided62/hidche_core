@@ -32,14 +32,18 @@ increaseRefresh("왕조일람", 1);
 
 $showCurrentNation = true;
 
-foreach($db->query('SELECT * FROM emperior ORDER BY `no` DESC') as $emperior){
-    $serverID = $emperior['server_id']??($emperior['serverID']??null);
-    if($showCurrentNation && $serverID == UniqueConst::$serverID){
+$emperiors = $db->query('SELECT * FROM emperior ORDER BY `no` DESC');
+
+if($emperiors){
+    $serverID = $emperior[0]['server_id']??($emperior[0]['serverID']??null);
+    if($serverID == UniqueConst::$serverID){
         $showCurrentNation = false;
     }
-    if ($showCurrentNation) {
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-        [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+}
+
+if ($showCurrentNation) {
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
 ?>
 
 <table align=center width=1000 style="margin-top:10px;" class='tb_layout bg0'>
@@ -55,9 +59,10 @@ foreach($db->query('SELECT * FROM emperior ORDER BY `no` DESC') as $emperior){
 </table>
 
 <?php
-        $showCurrentNation = false;
-        continue;
-    }
+}
+
+foreach($emperiors as $emperior){
+    $serverID = $emperior['server_id']??($emperior['serverID']??null);
 ?>
 
 <table align=center width=1000 style="margin-top:10px;" class='tb_layout bg0'>
@@ -102,7 +107,7 @@ foreach($db->query('SELECT * FROM emperior ORDER BY `no` DESC') as $emperior){
 
 
 <?php
-    }
+}
 ?>
 
 <table style="margin-top:10px;" align=center width=1000 class='tb_layout bg0'>
