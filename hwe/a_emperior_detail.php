@@ -173,14 +173,27 @@ if($showServers){
         $nation['typeName'] = getNationType($nation['type']);
         $nation['levelName'] = getNationLevel($nation['level']);
         if($nation['generals']){
-            $generals = $db->query('SELECT `general_no`, `name` FROM ng_old_generals WHERE server_id=%s AND general_no IN %li', $serverID, $nation['generals']);
-            $nation['generalsFull'] = $generals;
+            $generals = $db->query('SELECT `general_no`, `name`, `last_yearmonth` FROM ng_old_generals WHERE server_id=%s AND general_no IN %li', $serverID, $nation['generals']);
+
+            if(count($generals) != $nation['generals'] && $serverID == UniqueConst::$serverID){
+                $liveGenerals = $nation['generals'];
+                foreach($generals as $general){
+                    if(in_array($general['general_no'], $nation['generals'])){
+                        unset($nation['generals'][$general['general_no']]);
+                    }
+                }
+                $liveGenerals = $db->query('SELECT `no`as`general_no`, `name` FROM general WHERE no IN %li', $liveGenerals);
+                $nation['generalsFull'] = array_merge($liveGenerals, $generals);
+            }
+            else{
+                $nation['generalsFull'] = $generals;
+            }
         }
         else{
             $nation['generalsFull'] = [];
         }
 
-        if(key_exists('aux', $nation)){
+        if(key_exists('aux', $nation) && !is_array($nation['aux'])){
             $nation += Json::decode($nation['aux']);
         }
         
