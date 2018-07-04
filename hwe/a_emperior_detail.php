@@ -181,7 +181,7 @@ if($showServers){
         }
 
         if(key_exists('aux', $nation)){
-            $nation += $nation['aux'];
+            $nation += Json::decode($nation['aux']);
         }
         
         echo $templates->render('oldNation', $nation);
