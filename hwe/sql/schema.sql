@@ -199,7 +199,7 @@ CREATE TABLE `nation` (
 	`tech` INT(8) NULL DEFAULT '0',
 	`totaltech` INT(8) NULL DEFAULT '0',
 	`power` INT(8) NULL DEFAULT '0',
-	`spy` CHAR(255) NULL DEFAULT '',
+	`spy` CHAR(255) NOT NULL DEFAULT '{}',
 	`level` INT(1) NULL DEFAULT '0',
 	`type` INT(2) NULL DEFAULT '0',
 	`rule` TEXT NULL DEFAULT '',

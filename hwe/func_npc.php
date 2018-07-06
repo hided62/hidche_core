@@ -361,7 +361,7 @@ function processAI($no) {
             }
             break;
         case 2: //이동 20%
-            $paths = explode("|", $city['path']);
+            $paths = explode('|', $city['path']);
             $command = EncodeCommand(0, 0, $paths[rand()%count($paths)], 21);
             break;
         default:
@@ -429,7 +429,7 @@ function processAI($no) {
                 return;
             } elseif(rand()%4 > 0) {
                 //이동
-                $paths = explode("|", $city['path']);
+                $paths = explode('|', $city['path']);
                 $command = EncodeCommand(0, 0, $paths[rand()%count($paths)], 21);
                 $query = "update general set turn0='$command' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
@@ -600,7 +600,7 @@ function processAI($no) {
                 //현도시가 전방이면 공격 가능성 체크
                 if($city['front'] > 0) {
                     //주변도시 체크
-                    $paths = explode("|", $city['path']);
+                    $paths = explode('|', $city['path']);
                     for($i=0; $i < count($paths); $i++) {
                         $query = "select city,nation from city where city='$paths[$i]'";
                         $result = MYDB_query($query, $connect) or Error("processAI20 ".MYDB_error($connect),"");
@@ -766,7 +766,7 @@ function processAI($no) {
                 $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1);   // 준비는 됐으나 아직 선포중이면 내정, 조달
             } else {
                 //공격 & 내정
-                $paths = explode("|", $city['path']);
+                $paths = explode('|', $city['path']);
                 for($i=0; $i < count($paths); $i++) {
                     $query = "select city,nation from city where city='$paths[$i]'";
                     $result = MYDB_query($query, $connect) or Error("processAI21 ".MYDB_error($connect),"");

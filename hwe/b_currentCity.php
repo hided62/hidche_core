@@ -21,9 +21,7 @@ $query = "select no,nation,level,city from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select nation,level,spy from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$myNation = MYDB_fetch_array($result);
+$myNation = $db->queryFirstRow('SELECT nation,level,spy FROM nation WHERE nation=%i', $me['nation']);
 
 $templates = new \League\Plates\Engine('templates');
 
@@ -121,27 +119,34 @@ if($me['level'] == 0) {
 
 if($myNation['level'] > 0) {
     // 첩보도시도 목록에 추가
-    $where = 'city=0';
-    $cities = array_map('intval',explode("|", $myNation['spy']));
-    foreach($cities as $citySpy) {
-        $city = intdiv($citySpy, 10);
-        $where .= " or city='{$city}'";
+
+    $rawSpy = $myNation['spy'];
+
+    if($rawSpy == ''){
+        $spyCities = [];
+    }
+    else if(strpos($rawSpy, '|') !== false || is_integer($rawSpy)){
+        //TODO: 0.8 버전 이후에는 삭제할 것. 이후 버전은 json으로 변경됨.
+        $spyCities = array_map(function($val){
+            $val = intval($val);
+            return intdiv($val, 10);
+        }, 'intval',explode('|', $myNation['spy']));
+    }
+    else{
+        $spyCities = array_keys(Json::decode($rawSpy));
     }
 
-    $query = "select city,name,nation from city where {$where}";
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($cityresult);
 
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($cityresult);
-        echo "
-                        <option value={$city['city']}";
-        if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
-        echo ">==================================================【".StringUtil::padString($city['name'], 4, '_')."】";
-        if($city['nation'] == 0) echo "공백지";
-        elseif($me['nation'] == $city['nation']) echo "본국==";
-        else echo "타국==";
-        echo "============================================</option>";
+    if($spyCities){
+        foreach ($db->query('SELECT city,name,nation FROM city WHERE city in %li', $spyCities) as $city) {
+            echo "<option value={$city['city']}";
+            if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
+            echo ">==================================================【".StringUtil::padString($city['name'], 4, '_')."】";
+            if($city['nation'] == 0) echo "공백지";
+            elseif($me['nation'] == $city['nation']) echo "본국==";
+            else echo "타국==";
+            echo "============================================</option>";
+        }
     }
 
 }

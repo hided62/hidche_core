@@ -119,23 +119,11 @@ function reloadWorldMap(option){
             };
         }
 
-        function convertSpyList(arr){
-            var result = [];
-            arr.forEach(function(v){
-                var cityId = (v / 10) | 0;
-                var spy = v % 10;
-                result[cityId] = spy;
-            });
-            return result;
-        }
-
-        
-
         var cityList = obj.cityList.map(toCityObj);
         var nationList = obj.nationList.map(toNationObj);
         nationList = convertDictById(nationList); //array of object -> dict
 
-        var spyList = convertSpyList(obj.spyList);//Array -> Dict
+        var spyList = obj.spyList;
         var shownByGeneralList = convertSet(obj.shownByGeneralList);//Array -> Set
 
         var myCity = obj.myCity;

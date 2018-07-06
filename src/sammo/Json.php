@@ -3,10 +3,11 @@ namespace sammo;
 
 class Json
 {
-    const PRETTY = 1;
-    const DELETE_NULL = 2;
-    const NO_CACHE = 4;
-    const PASS_THROUGH = 8;
+    const PRETTY = 1 << 0;
+    const DELETE_NULL = 1 << 1;
+    const NO_CACHE = 1 << 2;
+    const PASS_THROUGH = 1 << 3;
+    const EMPTY_ARRAY_IS_DICT = 1 << 4;
 
     public static function encode($value, $flag = 0)
     {
@@ -17,12 +18,22 @@ class Json
         if ($flag & static::DELETE_NULL) {
             $value = Util::eraseNullValue($value);
         }
+
+        if(($flag & static::EMPTY_ARRAY_IS_DICT) && $value === []){
+            $value = (object)null;
+        }
         return json_encode($value, $rawFlag);
     }
 
     public static function decode($value)
     {
         return json_decode($value, true);
+    }
+
+    public static function decodeObj($value){
+        //NOTE: 구 코드가 모두 '배열'을 가정하기 때문에 decode는 연관배열로 반환하였으나, 
+        //호환을 위해서는object로 반환하는 것이 더 나을것
+        return json_decode($value);
     }
 
     public static function die($value, $flag = self::NO_CACHE)

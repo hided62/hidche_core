@@ -1743,32 +1743,32 @@ function process_31(&$general) {
         $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "select spy from nation where nation='{$general['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $nation = MYDB_fetch_array($result);
-        if($nation['spy'] != "") 
-        { 
-            $cities = array_map('intval', explode("|", $nation['spy'])); 
+
+
+        $rawSpy = $db->queryFirstField('SELECT spy FROM nation WHERE nation = %i', $general['nation']);
+        
+        if($rawSpy == ''){
+            $spyInfo = [];
         }
-        else{
-            $cities = [];
-        }
-        $exist = 0;
-        for($i=0; $i < count($cities); $i++) {
-            if(intdiv($cities[$i], 10) == $destination) {
-                $exist = 1;
-                break;
+        else if(strpos($rawSpy, '|') !== false || is_integer($rawSpy)){
+            //TODO: 0.8 버전 이후에는 삭제할 것. 이후 버전은 json으로 변경됨.
+            $spyInfo = [];
+            foreach(explode('|', $rawSpy) as $value){
+                $value = intval($value);
+                $cityNo = intdiv($value, 10);
+                $remainMonth = $value % 10;
+                $spyInfo[$cityNo] = $remainMonth;
             }
         }
-        // 기존 첩보 목록에 없으면 새로 등록, 있으면 갱신
-        if($exist == 0) {
-            $cities[] = $destination * 10 + 3;
-        } else {
-            $cities[$i] = $destination * 10 + 3;
+        else{
+            $spyInfo = Json::decode($rawSpy);
         }
-        $spy = implode("|", $cities);
-        $query = "update nation set spy='$spy' where nation='{$general['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $spyInfo[$destination] = 3;
+
+        $db->update('nation', [
+            'spy'=>Json::encode($spyInfo, Json::EMPTY_ARRAY_IS_DICT)
+        ], 'nation=%i', $general['nation']);
 
         $log = checkAbility($general, $log);
     }

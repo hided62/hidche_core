@@ -395,23 +395,33 @@ function preUpdateMonthly() {
     }
 
     //첩보-1
-    $query = "select nation,spy from nation where spy!=''";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationCount = MYDB_num_rows($result);
-    for($i=0; $i < $nationCount; $i++) {
-        $nation = MYDB_fetch_array($result);
-        $spy = "";  $k = 0; 
-        $cities = [];
-        if($nation['spy'] != "") { $cities = explode("|", (string)$nation['spy']); }
-        while(count($cities)) {
-            $cities[$k]--;
-            if($cities[$k]%10 != 0) { $spy .= (string)$cities[$k]; }
-            $k++;
-            if($k >= count($cities)) { break; }
-            if($cities[$k-1]%10 != 0) { $spy .= "|"; }
+    foreach($db->queryAllLists("SELECT nation, spy FROM nation WHERE spy!='' AND spy!='{}'") as [$nationNo, $rawSpy]){
+        if (strpos($rawSpy, '|') !== false || is_integer($rawSpy)) {
+           //TODO: 0.8 버전 이후에는 삭제할 것. 이후 버전은 json으로 변경됨.
+           $spyInfo = [];
+           foreach(explode('|', $rawSpy) as $value){
+               $value = intval($value);
+               $cityNo = intdiv($value, 10);
+               $remainMonth = $value % 10;
+               $spyInfo[$cityNo] = $remainMonth;
+           }
         }
-        $query = "update nation set spy='$spy' where nation='{$nation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        else{
+            $spyInfo = Json::decode($rawSpy);
+        }
+
+        foreach($spyInfo as $cityNo => $remainMonth){
+            if($remainMonth <= 1){
+                unset($spyInfo[$cityNo]);
+            }
+            else{
+                $spyInfo[$cityNo] -= 1;
+            }
+        }
+
+        $db->update('nation', [
+            'spy'=>Json::encode($spyInfo, Json::EMPTY_ARRAY_IS_DICT)
+        ], 'nation=%i', $nationNo);
     }
     
     return true;

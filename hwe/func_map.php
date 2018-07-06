@@ -94,19 +94,29 @@ function getWorldMap($req){
         $myNation = null;
     }
 
+    $spyInfo = (object)null;
+
     if($myNation){
-        $spyList = $db->queryFirstField('select `spy` from `nation` where `nation`=%i', 
+        $rawSpy = $db->queryFirstField('select `spy` from `nation` where `nation`=%i', 
             $myNation);
-        if($spyList){
-            $spyList = array_map('\sammo\Util::toInt', explode("|", $spyList));
+
+        if(strpos($rawSpy, '|') !== false || is_integer($rawSpy)){
+            //NOTE: 0.8 이전 데이터가 남아있으므로, 0.8버전으로 마이그레이션 이후에도 이곳은 삭제하면 안됨
+            $spyInfo = [];
+            foreach(explode('|', $rawSpy) as $value){
+                $value = intval($value);
+                $cityNo = intdiv($value, 10);
+                $remainMonth = $value % 10;
+                $spyInfo[$cityNo] = $remainMonth;
+            }
         }
-        else{
-            $spyList = [];
+        else if($rawSpy != ''){
+            $spyInfo = Json::decode($rawSpy);
         }
-        
     }
-    else{
-        $spyList = [];
+
+    if(!$spyInfo){
+        $spyInfo = (object)null;
     }
 
     $nationList = [];
@@ -142,7 +152,7 @@ function getWorldMap($req){
         'month' => $month,
         'cityList' => $cityList,
         'nationList' => $nationList,
-        'spyList' => $spyList,
+        'spyList' => $spyInfo,
         'shownByGeneralList' => $shownByGeneralList,
         'myCity' => $myCity,
         'myNation' => $myNation,

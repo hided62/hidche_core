@@ -1128,7 +1128,7 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
     $db = DB::db();
     $connect=$db->get();
 
-    $message = explode("|", $msg);
+    $message = explode('|', $msg);
     $count = (count($message) - 2)/2;
     $message[0] = Tag2Code($message[0]);
     $message[1] = Tag2Code($message[1]);
