@@ -100,7 +100,7 @@ function getWorldMap($req){
         $rawSpy = $db->queryFirstField('select `spy` from `nation` where `nation`=%i', 
             $myNation);
 
-        if(strpos($rawSpy, '|') !== false || is_integer($rawSpy)){
+        if(strpos($rawSpy, '|') !== false || is_numeric($rawSpy)){
             //NOTE: 0.8 이전 데이터가 남아있으므로, 0.8버전으로 마이그레이션 이후에도 이곳은 삭제하면 안됨
             $spyInfo = [];
             foreach(explode('|', $rawSpy) as $value){
