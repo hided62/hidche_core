@@ -564,7 +564,7 @@ $(function() {
                 var $name = $this.children('.i_name');
                 $name.addClass('nameplate');
 
-				var name = $name.find('.t_name').html();
+				var name = $name.find('.t_name').text();
                                 
                 var $work = $this.children('.i_action');
                 
