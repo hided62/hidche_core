@@ -33,6 +33,7 @@ increaseRefresh("명장일람", 1);
 
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 </head>
 
 <body>

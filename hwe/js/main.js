@@ -82,11 +82,4 @@ jQuery(function($){
     $('#mainBtnSubmit').click(function(){
 
     });
-
-    $('.obj_tooltip').tooltip({
-        title:function(){
-            return $(this).find('.tooltiptext').html();
-        },
-        html:true
-    })
 });

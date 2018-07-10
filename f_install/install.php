@@ -15,6 +15,7 @@ require(__dir__.'/../vendor/autoload.php');
     <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
     <?=WebUtil::printJS('../e_lib/jquery.validate.min.js')?>
     <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
+    <?=WebUtil::printJS('../js/common.js')?>
     <?=WebUtil::printJS('../js/install.js')?>
     <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
     <?=WebUtil::printCSS('../css/install.css')?>

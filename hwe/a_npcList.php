@@ -29,8 +29,13 @@ $sel[$type] = "selected";
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 빙의일람</title>
+<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
+
+<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 
 </head>
 
@@ -107,7 +112,7 @@ for ($j=0; $j < $gencount; $j++) {
         <td align=center>Lv {$general['explevel']}</td>
         <td align=center>{$nation}</td>
         <td align=center>".getGenChar($general['personal'])."</td>
-        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general['special2'])."</td>
+        <td align=center>".displaySpecialInfo($general['special'])." / ".displaySpecialInfo($general['special2'])."</td>
         <td align=center>{$general['sum']}</td>
         <td align=center>{$general['leader']}</td>
         <td align=center>{$general['power']}</td>

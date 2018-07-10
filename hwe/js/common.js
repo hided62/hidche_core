@@ -129,3 +129,12 @@ function getIconPath(imgsvr,  picture){
         return pathConfig.root+'/d_pic/'+picture;
     }
 }
+
+jQuery(function($){
+    $('.obj_tooltip').tooltip({
+        title:function(){
+            return $(this).find('.tooltiptext').html();
+        },
+        html:true
+    });
+});

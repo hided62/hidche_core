@@ -47,6 +47,7 @@ if ($type <= 0 || $type > 15) {
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 
 </head>
 
@@ -170,7 +171,7 @@ for ($j=0; $j < $gencount; $j++) {
         <td align=center>$name</td>
         <td align=center>{$general['age']}세</td>
         <td align=center>".getGenChar($general['personal'])."</td>
-        <td align=center>".getGenSpecial($general['special'])." / ".getGenSpecial($general['special2'])."</td>
+        <td align=center>".displaySpecialInfo($general['special'])." / ".displaySpecialInfo($general['special2'])."</td>
         <td align=center>Lv ".getExpLevel($general['experience'])."</td>
         <td align=center>{$nation}</td>
         <td align=center>".getHonor($general['experience'])."</td>

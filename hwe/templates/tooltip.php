@@ -2,4 +2,4 @@
     <span class="tooltiptext">
         <?=$info??''?>
     </span>
-</div>
+</span>

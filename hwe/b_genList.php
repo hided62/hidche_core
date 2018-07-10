@@ -59,6 +59,7 @@ $sel[$type] = "selected";
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 </head>
 
 <body>
