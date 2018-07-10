@@ -898,7 +898,7 @@ function process_11(&$general, $type) {
     if(intdiv($armtype, 10) == 1 && $general['special2'] == 51) { $cost *= 0.9; }
     if(intdiv($armtype, 10) == 2 && $general['special2'] == 52) { $cost *= 0.9; }
     if(intdiv($armtype, 10) == 3 && $general['special2'] == 40) { $cost *= 0.9; }
-    if(intdiv($armtype, 10) == 4 && $general['special2'] == 43) { $cost *= 0.9; }
+    if(intdiv($armtype, 10) == 4 && $general['special2'] == 53) { $cost *= 0.9; }
     if($general['special2'] == 72) { $cost *= 0.5; }
 
     if($type == 1) { $dtype = "징병"; }
