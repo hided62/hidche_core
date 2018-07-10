@@ -3,10 +3,18 @@ var templateGeneralCard =
     <h4 class="bg1 with_border"><%name%></h4>\
     <h4><img src="<%iconPath%>" height=64 width=64></h4>\
     <p><%leader%> / <%power%> / <%intel%><br>\
-    <%special%> / <%special2%></p>\
+    <%specialText%> / <%special2Text%></p>\
     <button type="subject" class="with_skin with_border select_btn" value="<%no%>" name="pick">빙의하기</button>\
     <label><input <%keepCnt?"":disabled="disabled"%> type="checkbox" value="<%no%>" name="keep[]" class="keep_select">보관(<%keepCnt%>회)</label>\
 </div>';
+
+var templateSpecial = 
+'<span class="obj_tooltip" data-toggle="tooltip" data-placement="top"><%text%>\
+    <span class="tooltiptext">\
+        <%info%>\
+    </span>\
+</span>\
+';
 
 function pickGeneral(){
     $btn = $(this);
@@ -85,12 +93,38 @@ function printGenerals(value){
     
     $.each(pick, function(idx, cardData){
         cardData.iconPath = getIconPath(cardData.imgsvr, cardData.picture);
+        if(cardData.special in specialInfo){
+            cardData.specialText = TemplateEngine(templateSpecial, {
+                text:cardData.special,
+                info:specialInfo[cardData.special]
+            });
+        }
+        else{
+            cardData.specialText = special;
+        }
+
+        if(cardData.special2 in specialInfo){
+            cardData.special2Text = TemplateEngine(templateSpecial, {
+                text:cardData.special2,
+                info:specialInfo[cardData.special2]
+            });
+        }
+        else{
+            cardData.special2Text = cardData.special2;
+        }
+        
 
         var $card = $(TemplateEngine(templateGeneralCard, cardData));
         console.log($card);
 
         $('.card_holder').append($card);
         $card.find('.select_btn').click(pickGeneral);
+        $card.find('.obj_tooltip').tooltip({
+            title:function(){
+                return $(this).find('.tooltiptext').html();
+            },
+            html:true
+        });
     });
 
     updatePickMoreTimer();

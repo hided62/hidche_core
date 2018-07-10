@@ -27,15 +27,35 @@ $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation 
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
-<?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('../css/config.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/select_npc.css')?>
 
+<script>
+var specialInfo = 
+<?php
+$specialAll = [];
+foreach (SpecialityConst::DOMESTIC as $id=>$values) {
+   $name = $values[0];
+   $text = getSpecialInfo($id);
+   $specialAll[$name] = $text;
+}
+foreach (SpecialityConst::WAR as $id=>$values) {
+    $name = $values[0];
+    $text = getSpecialInfo($id);
+    $specialAll[$name] = $text;
+}
+echo Json::encode($specialAll);
+?>
+;    
+</script>
+
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../js/common.js')?>
+<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/select_npc.js')?>
 
 </head>
