@@ -87,6 +87,7 @@ $color = "cyan";
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/jquery.redirect.js')?>
+<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/main.js')?>
@@ -105,6 +106,7 @@ $(function(){
 });
 </script>
 <?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/main.css')?>

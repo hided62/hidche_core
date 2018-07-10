@@ -29,6 +29,7 @@
     font-size:12px;
     word-break:break-all;
     color:white;
+    box-sizing: content-box;
 }
 
 .msg_plate_private{
@@ -117,16 +118,18 @@
 .board_header{
     color:white;
     border:solid 1px gray;
+    box-sizing: content-box;
 }
 
 .board_side{
     position:absolute;
     height:1370px;
-    width:498px;
+    width:50%;
     overflow-y: hidden;
-    border-left:solid 1px;
-    border-right:solid 1px;
-    border-bottom:solid 1px;
+    border-left:solid 1px gray;
+    border-right:solid 1px gray;
+    border-bottom:solid 1px gray;
+    box-sizing: content-box;
 }
 
 .msg_body{
