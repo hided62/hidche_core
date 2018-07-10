@@ -490,7 +490,7 @@ function commandTable() {
     $develcostE = Util::round($develcostE);
 
     echo "
-<select name=commandtype size=1 style=width:260px;color:white;background-color:black;font-size:12px;>";
+<select name=commandtype size=1 style='height:20px;width:260px;color:white;background-color:black;font-size:12px;'>";
     addCommand("휴 식", 0);
     addCommand("요 양", 50);
     commandGroup("========= 내 정 ==========");
@@ -699,7 +699,7 @@ function CoreCommandTable() {
     if($city['supply'] == 0) { $valid = 0; }
 
     echo "
-<select name=commandtype size=1 style=color:white;background-color:black;font-size:13>";
+<select name=commandtype size=1 style='height:20px;color:white;background-color:black;font-size:13px;>";
     addCommand("휴 식", 99);
     commandGroup("", 1);
     commandGroup("====== 인 사 ======");
@@ -847,8 +847,8 @@ function generalInfo($no) {
     else                  { $general['age'] = "<font color=red>{$general['age']} 세</font>"; }
 
     $general['connect'] = Util::round($general['connect'] / 10) * 10;
-    $special = $general['special'] == 0 ? "{$general['specage']}세" : "<font color=limegreen>".getGenSpecial($general['special'])."</font>";
-    $special2 = $general['special2'] == 0 ? "{$general['specage2']}세" : "<font color=limegreen>".getGenSpecial($general['special2'])."</font>";
+    $special = $general['special'] == 0 ? "{$general['specage']}세" : "<font color=limegreen>".displaySpecialInfo($general['special'])."</font>";
+    $special2 = $general['special2'] == 0 ? "{$general['specage2']}세" : "<font color=limegreen>".displaySpecialInfo($general['special2'])."</font>";
 
     switch($general['personal']) {
         case  2:    case  4:

@@ -105,7 +105,6 @@ $(function(){
     }, 10000);
 });
 </script>
-<?=WebUtil::printCSS('css/normalize.css')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -289,7 +288,7 @@ else if($session->userGrade == 4){
 <div class="message_input_form bg0">
     <select id="mailbox_list" size="1">
 
-            <select name="genlist" size="1" style="color:white;background-color:black;font-size:13">
+            <select name="genlist" size="1" style="color:white;background-color:black;font-size:13px">
 
 
 

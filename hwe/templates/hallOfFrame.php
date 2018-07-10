@@ -1,4 +1,4 @@
-<div class="rankView bg0" style="border:1px solid gray;">
+<div class="rankView bg0" style="outline-style:solid;outline-width:1px;outline-color: gray;">
 <h3 class="rankType bg1"><?=$typeName?></h3>
 <ul>
 <?php foreach($generals as $rank=>$general): ?><li class='<?=(key_exists("rankName", $general))?'no_value':''?> <?=(key_exists("serverName", $general))?'has_server':''?>'>
@@ -7,7 +7,7 @@
     </div>
     <div class="hall_img"><img width="64" height="64" src="<?=$general['pictureFullPath']?>"></div>
     <?php if(key_exists("serverName",$general)): ?>
-    <div class="hall_server tooltip"><?=$general['serverName']?><?=$general['serverIdx']?>기
+    <div class="hall_server obj_tooltip" data-toggle="tooltip" data-placement="top"><?=$general['serverName']?><?=$general['serverIdx']?>기
         <span class="tooltiptext">
             <?=$general['scenarioName']?><br>
             <?=substr($general['startTime'], 0, 10)?> ~ <?=substr($general['unitedTime'], 0, 10)?>

@@ -4,4 +4,11 @@ jQuery(function($){
         $.redirect('a_hallOfFame.php', {scenarioIdx:scenarioIdx}, 'get');
     })
     //$.redirect("processing.php",{ commandtype: commandtype, turn: turn}, 'post'); 
+
+    $('.obj_tooltip').tooltip({
+        title:function(){
+            return $(this).find('.tooltiptext').html();
+        },
+        html:true
+    })
 });

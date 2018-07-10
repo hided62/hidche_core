@@ -55,7 +55,7 @@ $conlimit = $gameStor->conlimit;
 <?php
 
 echo "
-            <select name=genlist[] size=20 multiple style=color:white;background-color:black;font-size:13>";
+            <select name=genlist[] size=20 multiple style='color:white;background-color:black;font-size:13px'>";
 
 foreach($db->query('SELECT no,name,npc,block,con from general where ip!=\'\' order by npc,ip') as $general){
     $style = "style=;";

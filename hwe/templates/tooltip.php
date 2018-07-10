@@ -1,7 +1,5 @@
-<div class="tooltip"><?=$text?>
-    <?php if(isset($info)):?>
+<span class="obj_tooltip" data-toggle="tooltip" data-placement="top"><?=$text??''?>
     <span class="tooltiptext">
-        <?=$info?>
+        <?=$info??''?>
     </span>
-    <?php endif;?>
 </div>

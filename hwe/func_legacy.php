@@ -31,7 +31,7 @@ function bar($per, $h=7) {
 
     $per = round($per, 1);
     
-    $str = "<div class='bar_out' style='height:{$h2}px;'>
+    $str = "<div class='bar_out' style='height:{$h}px;'>
     <div class='bar_in' style='background:url(".ServConfig::$gameImagePath."/pr{$h2}.gif)'></div>
     <div style='width:{$per}%;background:url(".ServConfig::$gameImagePath."/pb{$h2}.gif)'></div>
     </div>";

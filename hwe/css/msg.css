@@ -17,19 +17,17 @@
 #message_board section{
     overflow-y:auto;
     overflow-x:hidden;
-    max-width:498px;
 }
 
 .msg_plate{
     width:100%;
-    border-bottom:solid 1px gray;
-    border-left:solid 1px gray;
-    border-right:solid 1px gray;
+    outline-style:solid;
+    outline-width:1px;
+    outline-color: gray;
     height:64px;
     font-size:12px;
     word-break:break-all;
     color:white;
-    box-sizing: content-box;
 }
 
 .msg_plate_private{
@@ -97,7 +95,8 @@
     font-size:12px;
     width:715px;
     margin:0 2px;
-    height:15px;
+    height:20px;
+    border:solid 1px gray;
 }
 
 #msg_submit{
@@ -117,8 +116,9 @@
 
 .board_header{
     color:white;
-    border:solid 1px gray;
-    box-sizing: content-box;
+    outline-style:solid;
+    outline-width:1px;
+    outline-color: gray;
 }
 
 .board_side{
@@ -126,10 +126,9 @@
     height:1370px;
     width:50%;
     overflow-y: hidden;
-    border-left:solid 1px gray;
-    border-right:solid 1px gray;
-    border-bottom:solid 1px gray;
-    box-sizing: content-box;
+    outline-style:solid;
+    outline-width:1px;
+    outline-color: gray;
 }
 
 .msg_body{
