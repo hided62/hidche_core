@@ -12,6 +12,8 @@ class CityInitialDetail{
     public $defence;
     public $wall;
     public $region;
+    public $posX;
+    public $posY;
     public $path;
 
     public function __construct(
@@ -25,6 +27,8 @@ class CityInitialDetail{
         int $defence,
         int $wall,
         int $region,
+        int $posX,
+        int $posY,
         array $path
     ){
         $this->id = $id;
@@ -37,6 +41,8 @@ class CityInitialDetail{
         $this->defence = $defence;
         $this->wall = $wall;
         $this->region = $region;
+        $this->posX = $posX;
+        $this->posY = $posY;
         $this->path = $path;
     }
 
