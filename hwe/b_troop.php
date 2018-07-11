@@ -125,7 +125,8 @@ for($i=0; $i < $troopcount; $i++) {
         echo "
         </td>
     </tr>
-    <tr><td align=center><font size=2>【턴】".substr($turntime, 14)."</font></td><td align=center><font size=1>$name</font></td></tr>";
+    <tr><td align=center><font size=2>【턴】".substr($turntime, 14)."</font></td><td align=center><font size=1>$name</font></td></tr>
+    <tr><td colspan=5></td></tr>";
     }
 }
 echo "</tbody>
