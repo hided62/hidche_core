@@ -1,7 +1,7 @@
 <?php
 namespace sammo;
 
-class GameConst extends GameCustomConst
+class GameConstBase
 {
     /** @var string 버전 */
     public static $title = "삼국지 모의전투 PHP HiDCHe";

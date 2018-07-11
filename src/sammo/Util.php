@@ -129,6 +129,53 @@ class Util extends \utilphp\util
     }
 
     /**
+     * params에 맞도록 class를 생성해주는 함수
+     */
+    public static function generatePHPClassFile(string $destFilePath, array $params, ?string $srcClassName=null, string $namespace='sammo'){
+        if ($destFilePath === $srcFilePath) {
+            return 'invalid destFilePath';
+        }
+        if (!is_writable(dirname($destFilePath))) {
+            return 'destFilePath is not writable';
+        }
+
+        $newClassName = basename($destFilePath, '.php');
+        $newClassName = basename($newClassName, '.orig');
+        $head = [];
+        $head[] = '<?php';
+        $head[] = "namespace $namespace;";
+        if($srcClassName === null){
+            $head[] = "class $newClassName";
+        }
+        else{
+            $head[] = "class $newClassName extends $srcClassName";
+        }
+        
+        $head[] = '{';
+        $head[] = '';
+        $head = join("\n", $head);
+
+        $body = [];
+        foreach($params as $key=>$value){
+
+            if(!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/',$key)){
+                return "$key is not valid variable name";
+            }
+
+            $body[] = '    public static $'.$key.' = '.var_export($value, true).';';
+        }
+        $tail = "\n}";
+
+        if(file_exists($destFilePath)){
+            unlink($destFilePath);
+        }
+        $result = file_put_contents($destFilePath, $head.join("\n", $body).$tail, LOCK_EX);
+        assert($result);
+        
+        return true;
+    }
+
+    /**
      * '비교적' 안전한 int 변환
      * null -> null
      * int -> int

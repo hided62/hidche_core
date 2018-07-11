@@ -182,14 +182,14 @@ class Scenario{
         $default = Json::decode(file_get_contents($defaultPath));
 
         $stat = [
-            'statTotal'=>$this->data['stat']['total']??$default['stat']['total'],
-            'statMin'=>$this->data['stat']['min']??$default['stat']['min'],
-            'statMax'=>$this->data['stat']['max']??$default['stat']['max'],
-            'statNPCMax'=>$this->data['stat']['npcMax']??$default['stat']['npcMax'],
-            'statChiefMin'=>$this->data['stat']['chiefMin']??$default['stat']['chiefMin'],
+            'defaultStatTotal'=>$this->data['stat']['total']??$default['stat']['total'],
+            'defaultStatMin'=>$this->data['stat']['min']??$default['stat']['min'],
+            'defaultStatMax'=>$this->data['stat']['max']??$default['stat']['max'],
+            'defaultStatNPCMax'=>$this->data['stat']['npcMax']??$default['stat']['npcMax'],
+            'chiefStatMin'=>$this->data['stat']['chiefMin']??$default['stat']['chiefMin'],
         ];
 
-        $this->gameConf = array_merge($stat, $this->data['map']??[]);
+        $this->gameConf = array_merge($stat, $this->data['map']??[], $this->data['const']??[]);
 
         $this->iconPath = $this->data['iconPath']??$default['iconPath'];
         return $this->gameConf;
@@ -358,12 +358,7 @@ class Scenario{
 
     public function buildConf(){
         $path = __dir__.'/../d_setting';
-        Util::generateFileUsingSimpleTemplate(
-            $path.'/GameCustomConst.orig.php',
-            $path.'/GameCustomConst.php',
-            $this->gameConf,
-            true
-        );
+        Util::generatePHPClassFile($path.'/GameConst.php', $this->gameConf, 'GameConstBase', 'sammo');
 
         $mapPath = __dir__.'/../scenario/map';
         $unitPath = __dir__.'/../scenario/unit';
