@@ -128,7 +128,7 @@ function redrawMsg(deferred){
             var $msgs = msgSource.map(function(msg){
 
                 var contactTarget = (msg.src.id != myGeneralID) ? msg.src.id : msg.dest.id;
-                if(needRefreshLastContact && contactTarget != myGeneralID)
+                if(needRefreshLastContact && contactTarget != myGeneralID && contactTarget in generalList)
                 {
                     needRefreshLastContact = false;
                     $('#last_contact').val(contactTarget).html(generalList[contactTarget].textName).show();
