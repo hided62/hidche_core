@@ -170,7 +170,7 @@ for ($j=0; $j < $gencount; $j++) {
         <td align=center><img width='64' height='64' src={$imageTemp}/{$general['picture']}></img></td>
         <td align=center>$name</td>
         <td align=center>{$general['age']}세</td>
-        <td align=center>".getGenChar($general['personal'])."</td>
+        <td align=center>".displayCharInfo($general['personal'])."</td>
         <td align=center>".displaySpecialInfo($general['special'])." / ".displaySpecialInfo($general['special2'])."</td>
         <td align=center>Lv ".getExpLevel($general['experience'])."</td>
         <td align=center>{$nation}</td>

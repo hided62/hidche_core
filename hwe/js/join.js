@@ -150,4 +150,17 @@ jQuery(function($){
     window.abilityLeadpow = abilityLeadpow;
     window.abilityLeadint = abilityLeadint;
     window.abilityPowint = abilityPowint;
+
+    var $charInfoText = $('#charInfoText');
+    var $selChar = $('#selChar');
+    $selChar.change(function(){
+        var $this = $(this);
+        var char = $this.val();
+        if(char in charInfoText){
+            $charInfoText.html(charInfoText[char]);
+        }
+        else{
+            $charInfoText.html('');
+        }
     });
+});

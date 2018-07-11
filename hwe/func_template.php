@@ -64,6 +64,18 @@ function CoreTurnTable() {
 ";
 }
 
+function displayCharInfo(?int $type):string{
+    $info = getCharInfo($type);
+    $text = getGenChar($type);
+
+    $templates = new \League\Plates\Engine(__dir__.'/templates');
+
+    return $templates->render('tooltip', [
+        'text'=>$text,
+        'info'=>$info,
+    ]);
+}
+
 function displaySpecialInfo(?int $type):string{
     $info = getSpecialInfo($type);
     $text = getGenSpecial($type);
@@ -75,6 +87,19 @@ function displaySpecialInfo(?int $type):string{
         'info'=>$info,
     ]);
 }
+
+function displayItemInfo(?int $type):string{
+    $info = getItemInfo($type);
+    $text = getItemName($type);
+
+    $templates = new \League\Plates\Engine(__dir__.'/templates');
+
+    return $templates->render('tooltip', [
+        'text'=>$text,
+        'info'=>$info,
+    ]);
+}
+
 
 function allButton() {
     $db = DB::db();

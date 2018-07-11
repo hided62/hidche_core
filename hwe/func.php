@@ -821,7 +821,7 @@ function generalInfo($no) {
     $weapname = getWeapName($general['weap']);
     $bookname = getBookName($general['book']);
     $horsename = getHorseName($general['horse']);
-    $itemname = getItemName($general['item']);
+    $itemname = displayItemInfo($general['item']);
     if($general['injury'] > 0) {
         $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
         $power = intdiv($general['power'] * (100 - $general['injury']), 100);
@@ -913,7 +913,7 @@ function generalInfo($no) {
         <td style='text-align:center;' class='bg1'><b>병사</b></td>
         <td style='text-align:center;' colspan=2>{$general['crew']}</td>
         <td style='text-align:center;' class='bg1'><b>성격</b></td>
-        <td style='text-align:center;' colspan=2>".getGenChar($general['personal'])."</td>
+        <td style='text-align:center;' colspan=2>".displayCharInfo($general['personal'])."</td>
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>훈련</b></td>

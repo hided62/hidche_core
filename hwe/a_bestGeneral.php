@@ -218,7 +218,7 @@ $itemTypes = [
     ["명 마", 'horse', function($v){return getHorseName($v);}, 7, 26, []],
     ["명 검", 'weap', function($v){return getWeapName($v);}, 7, 26, []],
     ["명 서", 'book', function($v){return getBookName($v);}, 7, 26, []],
-    ["도 구", 'item', function($v){return getItemName($v);}, 7, 26, []],
+    ["도 구", 'item', function($v){return displayItemInfo($v);}, 7, 26, []],
 ];
 
 $simpleItemTypes = array_map(function($itemType){return $itemType[1];}, $itemTypes);

@@ -38,11 +38,24 @@ $connect=$db->get();
 var defaultStatTotal = <?=GameConst::$defaultStatTotal?>;
 var defaultStatMin = <?=GameConst::$defaultStatMin?>;
 var defaultStatMax = <?=GameConst::$defaultStatMax?>;
+
+var charInfoText = <?php
+
+$charInfoText = [];
+for($i=0;$i<=9;$i++){
+    //XXX:하드코딩 금지!
+    $charInfoText[$i] = getCharInfo($i);
+}
+echo Json::encode((object)$charInfoText);
+?>;
 </script>
+<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/join.js')?>
 
 </head>
@@ -106,7 +119,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
         <tr>
             <td width=498 align=right id=bg1>성격</td>
             <td colspan=2>
-                <select name=character size=1 maxlength=15 style=color:white;background-color:black;>
+                <select id="selChar" name=character size=1 maxlength=15 style=color:white;background-color:black;>
                     <option selected value=11>????</option>
 <!--
                     <option value=10>은둔</option>
@@ -121,7 +134,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
                     <option value=2>의협</option>
                     <option value=1>대의</option>
                     <option value=0>왕좌</option>
-                </select> ※보정은 도움말 참고
+                </select> <span id="charInfoText"></span>
             </td>
         </tr>
         <tr>
