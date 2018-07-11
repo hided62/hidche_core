@@ -24,7 +24,7 @@
     outline-style:solid;
     outline-width:1px;
     outline-color: gray;
-    height:64px;
+    min-height:64px;
     font-size:12px;
     word-break:break-all;
     color:white;
