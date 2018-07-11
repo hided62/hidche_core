@@ -1180,11 +1180,10 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
 function banner() {
 
     return sprintf(
-        '<font size=2>%s %s / %s <br> %s</font>',
+        '<font size=2>%s %s / %s</font>',
         GameConst::$title,
         VersionGit::$version,
-        GameConst::$banner,
-        GameConst::$helper);
+        GameConst::$banner);
 }
 
 function addTurn($date, int $turnterm, int $turn=1) {
