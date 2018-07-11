@@ -9,6 +9,10 @@ class GameConstBase
     public static $banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : HideD(hided62@gmail.com)";
     /** @var string 코드 아래에 붙는 설명 코드 */
     public static $helper = "도움 주신 분들";
+    /** @var string mapName 사용중인 지도명 */
+    public static $mapName = 'che';
+    /** @var string unitSet 사용중인 유닛셋 */
+    public static $unitSet = 'che';
     /** @var int 내정시 최하 민심 설정*/
     public static $develrate = 50;
     /** @var int 능력치 상승 경험치*/

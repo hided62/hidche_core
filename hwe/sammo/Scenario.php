@@ -358,12 +358,13 @@ class Scenario{
 
     public function buildConf(){
         $path = __dir__.'/../d_setting';
-        Util::generatePHPClassFile($path.'/GameConst.php', $this->gameConf, 'GameConstBase', 'sammo');
 
         $mapPath = __dir__.'/../scenario/map';
         $unitPath = __dir__.'/../scenario/unit';
         $mapName = $this->gameConf['mapName']??'che';
         $unitSet = $this->gameConf['unitSet']??'che';
+        $this->gameConf['mapName'] = $mapName;
+        $this->gameConf['unitSet'] = $unitSet;
 
         if(!file_exists("$mapPath/$mapName.php")){
             throw new \RuntimeException('맵 파일이 올바르게 지정되지 않음! : '.$mapName);
@@ -371,6 +372,8 @@ class Scenario{
         if(!file_exists("$unitPath/$unitSet.php")){
             throw new \RuntimeException('유닛 파일이 올바르게 지정되지 않음! : '.$unitSet);
         }
+
+        Util::generatePHPClassFile($path.'/GameConst.php', $this->gameConf, 'GameConstBase', 'sammo');
 
         copy("$mapPath/$mapName.php", $path.'/CityConst.php');
         copy("$unitPath/$unitSet.php", $path.'/GameUnitConst.php');
