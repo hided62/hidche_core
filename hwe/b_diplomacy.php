@@ -45,11 +45,11 @@ for($i=0; $i < $nationcount; $i++) {
 }
 
 $realConflict = [];
-foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE conflict!=%s', '{}') as list(
+foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE conflict!=%s', '{}') as [
     $cityID, 
     $cityName, 
     $rawConflict
-))
+])
 {
     $conflict = Json::decode($rawConflict);
     if (count($conflict)<2) {

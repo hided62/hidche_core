@@ -37,12 +37,12 @@ class Personnel{
         $this->nation = $nation;
         $this->valid = true;
 
-        list(
+        [
             $this->startYear,
             $this->year, 
             $this->month, 
             $this->killturn
-        ) = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'killturn']);
+        ] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'killturn']);
 
     }
 

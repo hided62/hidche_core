@@ -186,7 +186,7 @@ class CityConst{
         }
 
         foreach(static::$initCity as $rawCity){
-            list(
+            [
                 $id,
                 $name,
                 $level,
@@ -198,7 +198,7 @@ class CityConst{
                 $wall,
                 $region,
                 $path
-            ) = $rawCity;
+            ] = $rawCity;
 
             $level = static::$levelMap[$level];
             $population *= 100;

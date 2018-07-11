@@ -300,7 +300,7 @@ class Diplomacy{
         $chk = $this->checkValidNation();
         $chk = $this->checkNonAggressionTreaty($chk);
 
-        list($result, $reason) = $chk;
+        [$result, $reason] = $chk;
         if($result !== DiplomaticMessage::ACCEPTED){
             return $chk;
         }
@@ -322,7 +322,7 @@ class Diplomacy{
         $chk = $this->checkValidNation();
         $chk = $this->checkInWar($chk);
 
-        list($result, $reason) = $chk;
+        [$result, $reason] = $chk;
         if($result !== DiplomaticMessage::ACCEPTED){
             return $chk;
         }

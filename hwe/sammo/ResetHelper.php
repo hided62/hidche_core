@@ -154,7 +154,7 @@ class ResetHelper{
             $year = $startyear;
         } else {
             // 현재 시간과 동기화
-            list($starttime, $yearPulled, $month) = cutDay($turntime, $turnterm);
+            [$starttime, $yearPulled, $month] = cutDay($turntime, $turnterm);
             if($yearPulled){
                 $year = $startyear-1;
             }

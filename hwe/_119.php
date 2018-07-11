@@ -30,7 +30,7 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
-list($turntime, $tnmt_time) = $gameStor->getValuesAsArray(['turntime','tnmt_time']);
+[$turntime, $tnmt_time] = $gameStor->getValuesAsArray(['turntime','tnmt_time']);
 
 $query = "select plock from plock";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
