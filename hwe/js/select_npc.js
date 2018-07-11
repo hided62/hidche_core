@@ -100,7 +100,7 @@ function printGenerals(value){
             });
         }
         else{
-            cardData.specialText = special;
+            cardData.specialText = cardData.special;
         }
 
         if(cardData.special2 in specialInfo){
