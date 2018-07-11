@@ -121,7 +121,7 @@ function printGenerals(value){
         $card.find('.select_btn').click(pickGeneral);
         $card.find('.obj_tooltip').tooltip({
             title:function(){
-                return $(this).find('.tooltiptext').html();
+                return $.trim($(this).find('.tooltiptext').html());
             },
             html:true
         });

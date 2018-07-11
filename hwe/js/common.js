@@ -133,7 +133,7 @@ function getIconPath(imgsvr,  picture){
 jQuery(function($){
     $('.obj_tooltip').tooltip({
         title:function(){
-            return $(this).find('.tooltiptext').html();
+            return $.trim($(this).find('.tooltiptext').html());
         },
         html:true
     });
