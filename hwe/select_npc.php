@@ -47,6 +47,7 @@ foreach (SpecialityConst::WAR as $id=>$values) {
     $text = getSpecialInfo($id);
     $specialAll[$name] = $text;
 }
+$specialAll['-'] = '없음';
 echo Json::encode($specialAll);
 ?>
 ;    
