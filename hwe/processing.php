@@ -128,7 +128,7 @@ function starter($name, $type=0) {
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/base_map.js')?>
+<?=WebUtil::printJS('d_shared/base_map.js')?>
 <?=WebUtil::printJS('js/map.js')?>
 <script>
 $(function(){

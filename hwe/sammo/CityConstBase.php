@@ -1,14 +1,14 @@
 <?php
 namespace sammo;
 
-class CityConst{
-    private function __construct(){
+class CityConstBase{
+    protected function __construct(){
 
     }
 
-    private static $constID = null;
-    private static $constName = null;
-    private static $constRegion = null;
+    protected static $constID = null;
+    protected static $constName = null;
+    protected static $constRegion = null;
 
 
     public static $regionMap = [
@@ -55,7 +55,7 @@ class CityConst{
         return static::$constRegion[$region];
     }
 
-    private static $initCity = [
+    protected static $initCity = [
         //id,  도시, 규모, 인구, 농,  상, 치, 성, 수,(x100)지역, x,  y, 연결도시
         [ 1,   '업', '특', 6205,125,113,100,117,122, '하북', 345, 130, ['남피', '복양', '호관', '계교', '관도']], 
         [ 2, '허창', '특', 5876,121,124,100,117,125, '중원', 330, 215, ['완', '진류', '초', '호로', '사수', '관도']], 
@@ -153,7 +153,7 @@ class CityConst{
         [94, '유구', '수',  921, 17, 18, 20, 37, 37, '동이', 625, 435, ['대', '왜']]
     ];
 
-    private static function _generate(){
+    protected static function _generate(){
         if(static::$constID || static::$constName || static::$constRegion){
             return;
         }
@@ -239,7 +239,7 @@ class CityConst{
         
     }
 
-    private static $buildInitCommon = [
+    protected static $buildInitCommon = [
         'rate'=>50,
         'trade'=>100,
         'gen1'=>0,
@@ -247,7 +247,7 @@ class CityConst{
         'gen3'=>0
     ];
 
-    private static $buildInit = [
+    protected static $buildInit = [
         '수'=>[
             'pop' =>  5000,
             'agri'=>   100,
@@ -314,7 +314,7 @@ class CityConst{
         ]
     ];
 
-    private static function test(){
+    protected static function test(){
         static::_generate();
 
         foreach(static::all() as $id=>$city){
@@ -330,20 +330,6 @@ class CityConst{
     public static function build(){
         static::_generate();
         static::test();
-        
-        $cityPositions = [];
-        foreach(static::$constID as $city){
-            $cityPositions[$city->id] = [
-                $city->name,
-                $city->posX,
-                $city->posY
-            ];
-        }
-        Util::generateFileUsingSimpleTemplate(
-            __dir__.'/templates/base_map.orig.js',
-            __dir__.'/d_shared/base_map.js',
-            ['cityPosition'=>Json::encode($cityPositions)]
-        );
 
         $queries = array_map(function(CityInitialDetail $city){ 
             $initValue = static::$buildInit[$city->level];
@@ -364,5 +350,7 @@ class CityConst{
         }, array_values(static::$constID));
 
         DB::db()->insert('city', $queries);
+
+        return $cityPositions;
     }
 }

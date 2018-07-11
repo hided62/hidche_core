@@ -143,6 +143,19 @@ class ResetHelper{
         ]);
 
         CityConst::build();
+        $cityPositions = [];
+        foreach(CityConst::all() as $city){
+            $cityPositions[$city->id] = [
+                $city->name,
+                $city->posX,
+                $city->posY
+            ];
+        }
+        Util::generateFileUsingSimpleTemplate(
+            __dir__.'/../templates/base_map.orig.js',
+            __dir__.'/../d_shared/base_map.js',
+            ['cityPosition'=>Json::encode($cityPositions)]
+        );
 
 
         $turntime = date('Y-m-d H:i:s');

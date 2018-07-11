@@ -84,7 +84,7 @@ function process_25(&$general) {
     $joinedNations = Json::decode($general['nations']);
 
     // 랜덤임관인 경우
-    if($general['npc'] > 2 && $where >= 98 && ($admin['scenario'] == 0 || $admin['scenario'] >= 20 || !$admin['fiction'])){
+    if($general['npc'] > 2 && $where >= 98 && ($admin['scenario'] < 100 || $admin['scenario'] >= 2000 || !$admin['fiction'])){
         //'사실' 모드에서는 '성향'에 우선을 두되, 장수수, 랜덤에 비중을 둠
         $nations = $db->query(
             'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %li and gennum < %i and scout = 0',
@@ -339,7 +339,7 @@ function process_29(&$general) {
             // 체섭시 무장 20%, 지장 20%, 무지장 60%
             // 마이너 무장 40%, 지장 40%, 무지장 20%
             $type = rand() % 10;
-            if($admin['scenario'] == 0) {
+            if($admin['scenario'] < 100) {
                 switch($type) {
                 case 0: case 1:
                     $leader = GameConst::$defaultStatMax - 10 + rand()%11;

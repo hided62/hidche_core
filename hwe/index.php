@@ -91,7 +91,7 @@ $color = "cyan";
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/main.js')?>
-<?=WebUtil::printJS('js/base_map.js')?>
+<?=WebUtil::printJS('d_shared/base_map.js')?>
 <?=WebUtil::printJS('js/map.js')?>
 <?=WebUtil::printJS('js/msg.js')?>
 <script>

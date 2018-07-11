@@ -31,7 +31,7 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/base_map.js')?>
+<?=WebUtil::printJS('d_shared/base_map.js')?>
 <?=WebUtil::printJS('js/map.js')?>
 <script>
 $(function(){

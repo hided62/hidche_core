@@ -189,7 +189,8 @@ class Scenario{
             'statChiefMin'=>$this->data['stat']['chiefMin']??$default['stat']['chiefMin'],
         ];
 
-        $this->gameConf = array_merge($stat);
+        $this->gameConf = array_merge($stat, $this->data['map']??[]);
+
         $this->iconPath = $this->data['iconPath']??$default['iconPath'];
         return $this->gameConf;
     }
@@ -363,6 +364,21 @@ class Scenario{
             $this->gameConf,
             true
         );
+
+        $mapPath = __dir__.'/../scenario/map';
+        $unitPath = __dir__.'/../scenario/unit';
+        $mapName = $this->gameConf['mapName']??'che';
+        $unitSet = $this->gameConf['unitSet']??'che';
+
+        if(!file_exists("$mapPath/$mapName.php")){
+            throw new \RuntimeException('맵 파일이 올바르게 지정되지 않음! : '.$mapName);
+        }
+        if(!file_exists("$unitPath/$unitSet.php")){
+            throw new \RuntimeException('유닛 파일이 올바르게 지정되지 않음! : '.$unitSet);
+        }
+
+        copy("$mapPath/$mapName.php", $path.'/CityConst.php');
+        copy("$unitPath/$unitSet.php", $path.'/GameUnitConst.php');
     }
 
     public function build($env=[]){

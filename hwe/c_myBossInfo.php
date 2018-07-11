@@ -163,7 +163,7 @@ if($btn == "추방") {
         $query = "update city set gen3='0' where gen3='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        if($general['npc'] >= 2 && ($admin['scenario'] == 0 || rand()%100 == 0)) {
+        if($general['npc'] >= 2 && ($admin['scenario'] < 100 || rand()%100 == 0)) {
             switch(rand()%5) {
             case 0: $str = "날 버리다니... 곧 전장에서 복수해주겠다..."; break;
             case 1: $str = "추방이라... 내가 무얼 잘못했단 말인가..."; break;
