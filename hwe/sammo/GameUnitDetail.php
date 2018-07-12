@@ -11,9 +11,10 @@ class GameUnitDetail{
     public $avoid;
     public $cost;
     public $rice;
-    public $recruitType;
-    public $recruitCondition;
-    public $recruitFirst;
+    public $reqTech;
+    public $reqCities;
+    public $reqRegions;
+    public $reqYear;
     public $info;
 
     public function __construct(
@@ -26,9 +27,10 @@ class GameUnitDetail{
         int $avoid,
         int $cost,
         int $rice,
-        int $recruitType,
-        int $recruitCondition,
-        bool $recruitFirst,
+        int $reqTech,
+        ?array $reqCities,
+        ?array $reqRegions,
+        int $reqYear,
         array $info
     ){
         $this->name = $name;
@@ -39,47 +41,45 @@ class GameUnitDetail{
         $this->avoid = $avoid;
         $this->cost = $cost;
         $this->rice = $rice;
-        $this->recruitType = $recruitType;
-        $this->recruitCondition = $recruitCondition;
-        $this->recruitFirst = $recruitFirst;
+        $this->reqTech = $reqTech;
+        $this->reqCities = $reqCities;
+        $this->reqRegions = $reqRegions;
+        $this->reqYear = $reqYear;
         $this->info = $info;
     }
 
     public function isValid($ownCities, $ownRegions, $relativeYear, $tech){
-        if($relativeYear < 3 && !$this->recruitFirst){
+        if($relativeYear < $this->reqYear){
             return false;
         }
 
-        if($this->recruitType == 0){
-            if($tech < $this->recruitCondition){
+        if($tech < $this->reqTech){
+            return false;
+        }
+
+        if($this->reqCities !== null){
+            $valid = false;
+            foreach($this->reqCities as $reqCity){
+                if(\key_exists($reqCity, $ownCities)){
+                    $valid = true;
+                    break;
+                }
+            }
+            if(!$valid){
                 return false;
             }
         }
 
-        if($this->recruitType == 1){
-            if(!key_exists($this->recruitCondition, $ownRegions)){
-                return false;
-            }
-            if ($tech < 1000) {
-                return false;
-            }
-        }
-
-        if($this->recruitType == 2){
-            $cityLevel = CityConst::byID($this->recruitCondition)->level;
-
-            if(!key_exists($this->recruitCondition, $ownCities)){
-                return false;
-            }
-            if($cityLevel == CityConst::$levelMap['특']){
-                if ($tech < 3000) {
-                    return false;
+        if($this->reqRegions !== null){
+            $valid = false;
+            foreach($this->reqRegions as $reqRegion){
+                if(\key_exists($reqRegion, $ownRegions)){
+                    $valid = true;
+                    break;
                 }
             }
-            else{ //if($cityLevel == '이')
-                if ($tech < 2000) {
-                    return false;
-                }
+            if(!$valid){
+                return false;
             }
         }
 
