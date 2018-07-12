@@ -3,6 +3,7 @@ namespace sammo;
 
 class GameUnitDetail{
     public $id;
+    public $armType;
     public $name;
     public $attack;
     public $defence;
@@ -17,6 +18,7 @@ class GameUnitDetail{
 
     public function __construct(
         int $id,
+        int $armType,
         string $name, 
         int $attack,
         int $defence,
@@ -30,6 +32,7 @@ class GameUnitDetail{
         array $info
     ){
         $this->name = $name;
+        $this->armType = $armType;
         $this->attack = $attack;
         $this->defence = $defence;
         $this->speed = $speed;

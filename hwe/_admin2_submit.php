@@ -93,7 +93,7 @@ switch($btn) {
     case "강제 사망":
         $date = date('Y-m-d H:i:s');
         $db->update('general', [
-            'turn0'=>0,
+            'turn0'=>EncodeCommand(0, 0, 0, 0),
             'killturn'=>0,
             'turntime'=>$date,
         ], '`no` IN %li', $genlist);
@@ -314,13 +314,13 @@ switch($btn) {
         break;
     case "하야입력":
         $db->update('general', [
-            'turn0'=>'00000000000045'
+            'turn0'=>EncodeCommand(0, 0, 0, 45)
         ], '`no` IN %li', $genlist);
         break;
     case "방랑해산":
         $db->update('general', [
-            'turn0'=>'00000000000047',
-            'turn1'=>'00000000000056'
+            'turn0'=>EncodeCommand(0, 0, 0, 47),
+            'turn1'=>EncodeCommand(0, 0, 0, 56)
         ], '`no` IN %li', $genlist);
         break;
     case "NPC설정":

@@ -107,6 +107,8 @@ function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city
             }
         }
 
+        
+
         switch($sel) {
         case 0:
             $type = 0; //보병
@@ -181,7 +183,7 @@ function processAI($no) {
     $general = MYDB_fetch_array($result);
 
     // 입력된 턴이 있으면 그것 실행
-    if($general['turn0'] != "00000000000000") {
+    if($general['turn0'] != EncodeCommand(0, 0, 0, 0)) {
         return;
     }
 
@@ -824,10 +826,10 @@ function processAI($no) {
     }
 
     switch($command) {
-    case "00000000000001": //내정
+    case EncodeCommand(0, 0, 0, 1): //내정
         SetDevelop($genType, $general['no'], $general['city'], $nation['tech']);
         return;
-    case "00000000000011": //징병
+    case EncodeCommand(0, 0, 0, 11): //징병
         $query = "select region from city where nation='{$general['nation']}' order by rand() limit 0,1";
         $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
         $selRegion = MYDB_fetch_array($result);

@@ -52,7 +52,7 @@ switch($btn) {
         break;
     case "강제 사망":
         $date = date('Y-m-d H:i:s');
-        DB::db()->query('update general set turn0=0,killturn=0,turntime=%s where no IN %li',$date, $genlist);
+        DB::db()->query('update general set turn0=%s,killturn=0,turntime=%s where no IN %li',EncodeCommand(0, 0, 0, 0),$date, $genlist);
         break;
     case "메세지 전달":
     //TODO:새 갠메 시스템으로 변경

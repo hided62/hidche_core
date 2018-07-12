@@ -628,7 +628,7 @@ function updateCommand($no, $type=0) {
 update general set
 turn0=turn1,turn1=turn2,turn2=turn3,turn3=turn4,turn4=turn5,turn5=turn6,turn6=turn7,turn7=turn8,turn8=turn9,
 turn9=turn10,turn10=turn11,turn11=turn12,turn12=turn13,turn13=turn14,turn14=turn15,turn15=turn16,turn16=turn17,
-turn17=turn18,turn18=turn19,turn19=turn20,turn20=turn21,turn21=turn22,turn22=turn23,turn23='00000000000000'
+turn17=turn18,turn18=turn19,turn19=turn20,turn20=turn21,turn21=turn22,turn22=turn23,turn23='".EncodeCommand(0, 0, 0, 0)."'
 where no='{$general['no']}'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -642,7 +642,7 @@ update nation set
 {$turn}4={$turn}5,{$turn}5={$turn}6,
 {$turn}6={$turn}7,{$turn}7={$turn}8,
 {$turn}8={$turn}9,{$turn}9={$turn}10,
-{$turn}10={$turn}11,{$turn}11='00000000000099'
+{$turn}10={$turn}11,{$turn}11='".EncodeCommand(0, 0, 0, 99)."'
 where nation='{$general['nation']}'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -672,7 +672,7 @@ turn9=turn8,turn8=turn7,
 turn7=turn6,turn6=turn5,
 turn5=turn4,turn4=turn3,
 turn3=turn2,turn2=turn1,
-turn1=turn0,turn0='00000000000000'
+turn1=turn0,turn0='".EncodeCommand(0, 0, 0, 0)."'
 where no='$no'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -685,7 +685,7 @@ update nation set
 {$turn}7={$turn}6,{$turn}6={$turn}5,
 {$turn}5={$turn}4,{$turn}4={$turn}3,
 {$turn}3={$turn}2,{$turn}2={$turn}1,
-{$turn}1={$turn}0,{$turn}0='00000000000099'
+{$turn}1={$turn}0,{$turn}0='".EncodeCommand(0, 0, 0, 99)."'
 where nation='{$general['nation']}'
 ";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -772,19 +772,10 @@ parent.moveProcessing(<?=$commandtype?>, <?=Json::encode($turn)?>);
 
 
 function EncodeCommand($fourth, $third, $double, $command) {
-    $str  = StringUtil::padStringAlignRight((string)$fourth, 4, "0");
-    $str .= StringUtil::padStringAlignRight((string)$third,  4, "0");
-    $str .= StringUtil::padStringAlignRight((string)$double, 4, "0");
-    $str .= StringUtil::padStringAlignRight((string)$command, 2, "0");
-    return $str;
+    return Json::encode($command, $double, $third, $fourth);
 }
 
 function DecodeCommand($str) {
-    $command = [];
-    $command[3] = (int)(substr($str, 0, 4));
-    $command[2] = (int)(substr($str, 4, 4));
-    $command[1] = (int)(substr($str, 8, 4));
-    $command[0] = (int)(substr($str, 12, 2));
-    return $command;
+    return Json::decode($str);
 }
 
