@@ -9,6 +9,7 @@ class GameUnitDetail{
     public $defence;
     public $speed;
     public $avoid;
+    public $magicCoef;
     public $cost;
     public $rice;
     public $reqTech;
@@ -25,6 +26,7 @@ class GameUnitDetail{
         int $defence,
         int $speed,
         int $avoid,
+        float $magicCoef,
         int $cost,
         int $rice,
         int $reqTech,
@@ -39,6 +41,7 @@ class GameUnitDetail{
         $this->defence = $defence;
         $this->speed = $speed;
         $this->avoid = $avoid;
+        $this->magicCoef = $magicCoef;
         $this->cost = $cost;
         $this->rice = $rice;
         $this->reqTech = $reqTech;
