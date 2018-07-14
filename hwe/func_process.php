@@ -861,11 +861,6 @@ function process_11(&$general, $type) {
 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
     $date = substr($general['turntime'],11,5);
 
     if($type === '징병') { 
@@ -877,26 +872,14 @@ function process_11(&$general, $type) {
         $defaulttrain = GameConst::$defaultTrainHigh;
     }
 
-    $admin = $gameStor->getValues(['startyear', 'year', 'month']);
+    [$startYear, $year, $month] = $gameStor->getValuesAsArray(['startyear, year, month']);
 
-    $actLog = new ActionLogger($general['no'], $general['nation'], $admin['year'], $admin['month']);
-
-    [$nationLevel, $tech] = $db->queryFirstList('SELECT `level`,tech FROM nation WHERE nation=%i', $general['nation']);
-
-    $lbonus = setLeadershipBonus($general, $nationLevel);
-
-    $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general['city']);
+    $actLog = new ActionLogger($general['no'], $general['nation'], $year, $month);
 
     $command = DecodeCommand($general['turn0']);
     $armtype = $command[2];
-    $crew = $command[1];
-
-    $armTypeObj = GameUnitConst::byID($armType);
-    if($armTypeObj === null){
-        $log[] = "<C>●</>{$admin['month']}월:병종 코드 에러. $dtype 실패. <1>$date</>";
-        pushGenLog($general, $log);
-        return;
-    }
+    $rawCrew = $command[1];
+    
 
     if($armtype != $general['crewtype']) {
         $general['crew'] = 0;
@@ -904,14 +887,45 @@ function process_11(&$general, $type) {
         $general['atmos'] = $defaultatmos;
     }
 
+    if($general['crew'] != 0) { 
+        $dtype = "추가".$type; 
+    }
+    else {
+        $dtype = $type;
+    }
+
+    if(!$general['nation']){
+        $actLog->pushGeneralActionLog("재야입니다. $dtype 실패. <1>$date</>");
+        return;
+    }
+
+    $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general['city']);
+
+    if($city['nation'] != $general['nation']){
+        $actLog->pushGeneralActionLog("아국이 아닙니다. $dtype 실패. <1>$date</>");
+        return;
+    }
+
+    $armTypeObj = GameUnitConst::byID($armType);
+    if($armTypeObj === null){
+        $actLog->pushGeneralActionLog("병종 코드 에러. $type 실패. <1>$date</>");
+        return;
+    }
+
+    [$nationLevel, $tech] = $db->queryFirstList('SELECT `level`,tech FROM nation WHERE nation=%i', $general['nation']);
+
+    $lbonus = setLeadershipBonus($general, $nationLevel);
+
     //NOTE: 입력 변수는 100명 단위임
-    $crew *= 100;
+    $crew = $rawCrew * 100;
 
     if($crew + $general['crew'] > getGeneralLeadership($general, true, true, true)*100) { 
-        $crew = getGeneralLeadership($general, true, true, true) * 100 - $general['crew'];
+        $crew = max(0, getGeneralLeadership($general, true, true, true) * 100 - $general['crew']);
     }
-    if($crew < 0) {
-        $crew = 0;
+
+    if($crew <= 0) {
+        $actLog->pushGeneralActionLog("더이상 $dtype 할 수 없습니다. $dtype 실패. <1>$date</>");
+        return;
     }
 
     $cost = $armTypeObj->costWithTech($tech, $crew);
@@ -926,13 +940,12 @@ function process_11(&$general, $type) {
     else if($general['special2'] == 40 && $armTypeObj->armType == GameUnitConstBase::T_WIZARD) { $cost *= 0.9; }
     else if($general['special2'] == 53 && $armTypeObj->armType == GameUnitConstBase::T_SIEGE) { $cost *= 0.9; }
     
-    
-
-    if($general['crew'] != 0) { 
-        $dtype = "추가".$type; 
+    if($general['gold'] < $cost){
+        $actLog->pushGeneralActionLog("자금이 모자랍니다. $dtype 실패. <1>$date</>");
     }
-    else {
-        $dtype = $type;
+
+    if($general['rice'] < $crew) {
+        $actLog->pushGeneralActionLog("군량이 모자랍니다. $dtype 실패. <1>$date</>");
     }
 
     $ownCities = [];
@@ -943,62 +956,66 @@ function process_11(&$general, $type) {
     }
     $valid = $armTypeObj->isValid($ownCities, $ownRegions, $admin['year'] - $admin['startyear'], $tech);
 
-    if($general['level'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
-    } elseif($city['nation'] != $general['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
-//    } elseif($city['supply'] == 0) {
-//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
-    } elseif($crew <= 0) {
-        $log[] = "<C>●</>{$admin['month']}월:더이상 $dtype 할 수 없습니다. $dtype 실패. <1>$date</>";
-    } elseif($general['gold'] < $cost) {
-        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
-    } elseif($general['rice'] < $crew) {
-        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. $dtype 실패. <1>$date</>";
-    } elseif($valid == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 $dtype 할 수 없는 병종입니다. $dtype 실패. <1>$date</>";
-    } elseif($city['pop']-30000 < $crew) {    // 주민 30000명 이상만 가능
-        $log[] = "<C>●</>{$admin['month']}월:주민이 모자랍니다. $dtype 실패. <1>$date</>";
-    } elseif($city['rate'] < 20) {
-        $log[] = "<C>●</>{$admin['month']}월:민심이 낮아 주민들이 도망갑니다. $dtype 실패. <1>$date</>";
-    } else {
-        $log[] = "<C>●</>{$admin['month']}월:".$armTypeObj->name."을(를) <C>{$crew}</>명 {$dtype}했습니다. <1>$date</>";
-        $exp = $crew;
-        $ded = $crew;
-        // 숙련도 증가
-        addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $armtype, $crew);
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        $atmos = Util::round(($general['atmos'] * $general['crew'] + $defaultatmos * $crew) / ($general['crew'] + $crew));
-        $train = Util::round(($general['train'] * $general['crew'] + $defaulttrain * $crew) / ($general['crew'] + $crew));
-        $general['crew'] += $crew;
-        $general['gold'] -= $cost;
-        // 주민수 감소        // 민심 감소
-        if($type === '징병') {
-            $city['rate'] = $city['rate'] - Util::round(($crew / $city['pop'])); 
-        }
-        else {
-            $city['rate'] = $city['rate'] - Util::round(($crew / $city['pop'])/2); 
-        }
-        if($city['rate'] < 0) { $city['rate'] = 0; }
-
-        $db->update('city', [
-            'pop'=>$db->sqleval('pop-%i', $crew),
-            'rate'=>$city['rate']
-        ], 'city = %i',$general['city']);
-
-        // 통솔경험, 병종 변경, 병사수 변경, 훈련치 변경, 사기치 변경, 자금 군량 하락, 공헌도, 명성 상승
-        $general['leader2']++;
-        $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',crewtype='$armtype',crew='{$general['crew']}',train='$train',atmos='$atmos',gold='{$general['gold']}',rice=rice-'$crew',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log = checkAbility($general, $log);
-        $log = uniqueItem($general, $log);
+    if(!$valid) {
+        $actLog->pushGeneralActionLog("현재 $dtype 할 수 없는 병종입니다. $dtype 실패. <1>$date</>");
+        return;
     }
+    
+    if($city['pop']-30000 < $crew) {    // 주민 30000명 이상만 가능
+        $actLog->pushGeneralActionLog("주민이 모자랍니다. $dtype 실패. <1>$date</>");
+        return;
+    }
+    if($city['rate'] < 20) {
+        $actLog->pushGeneralActionLog("민심이 낮아 주민들이 도망갑니다. $dtype 실패. <1>$date</>");
+        return;
+    }
+    
+    $actLog->pushGeneralActionLog($armTypeObj->name."을(를) <C>{$crew}</>명 {$dtype}했습니다. <1>$date</>");
+    $exp = Util::round($crew / 100);
+    $ded = Util::round($crew / 100);
+    // 숙련도 증가
+    addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $armtype, $crew);
 
-    pushGenLog($general, $log);
+    // 성격 보정
+    $exp = CharExperience($exp, $general['personal']);
+    $ded = CharDedication($ded, $general['personal']);
+
+    $atmos = Util::round(($general['atmos'] * $general['crew'] + $defaultatmos * $crew) / ($general['crew'] + $crew));
+    $train = Util::round(($general['train'] * $general['crew'] + $defaulttrain * $crew) / ($general['crew'] + $crew));
+    $general['crew'] += $crew;
+    $general['gold'] -= $cost;
+    // 주민수 감소        // 민심 감소
+    if($type === '징병') {
+        $city['rate'] -= Util::round($crew / $city['pop']); 
+    }
+    else {
+        $city['rate'] -= Util::round($crew / 2 / $city['pop']); 
+    }
+    if($city['rate'] < 0) { $city['rate'] = 0; }
+
+    $db->update('city', [
+        'pop'=>$db->sqleval('pop-%i', $crew),
+        'rate'=>$city['rate']
+    ], 'city = %i',$general['city']);
+
+    // 통솔경험, 병종 변경, 병사수 변경, 훈련치 변경, 사기치 변경, 자금 군량 하락, 공헌도, 명성 상승
+    $general['leader2']++;
+    $db->update('general', [
+        'resturn'=>'SUCCESS',
+        'leader2'=>$general['leader2'],
+        'crewtype'=>$armTypeObj->id,
+        'crew'=>$general['crew'],
+        'train'=>$train,
+        'atmos'=>$atmos,
+        'gold'=>$general['gold'],
+        'rice'=>$db->sqleval('rice - %i', Util::round($crew/100)),
+        'dedication'=>$db->sqleval('dedication + %i', $ded),
+        'experience'=>$db->sqleval('experience + %i', $exp)
+    ], 'no=%i', $general['no']);
+
+    checkAbilityEx($general['no'], $actLog);
+    $log = uniqueItem($general, []);//TODO: uniqueItem 재 구현
+    $actLog->pushGeneralActionLog($log, ActionLogger::RAWTEXT);
 }
 
 function process_13(&$general) {

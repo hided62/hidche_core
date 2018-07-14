@@ -2166,6 +2166,7 @@ function CheckHall($no) {
 
 
 function uniqueItem($general, $log, $vote=0) {
+    //TODO: uniqueItem 재 구현
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
@@ -2292,6 +2293,69 @@ function uniqueItem($general, $log, $vote=0) {
         }
     }
     return $log;
+}
+
+function checkAbilityEx(int $generalID, ActionLogger $actLog){
+    $db = DB::db();
+    $general = $db->queryFirstRow('SELECT leader,leader2,power,power2,intel,intel2 FROM general WHERE no = %i',$generalID);
+
+    if(!$general){
+        return;
+    }
+
+    if($general['leader2'] < 0){
+        $general->updqte('general',[
+            'leader2'=>$db->sqleval('leader2 + %i', GameConst::$upgradeLimit),
+            'leader'=>$db->sqleval('leader - 1')
+        ]);
+        $actLog->pushGeneralActionLog('<R>통솔</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
+        return;
+    }
+
+    if($general['power2'] < 0){
+        $general->updqte('general',[
+            'power2'=>$db->sqleval('power2 + %i', GameConst::$upgradeLimit),
+            'power'=>$db->sqleval('power - 1')
+        ]);
+        $actLog->pushGeneralActionLog('<R>무력</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
+        return;
+    }
+
+    if($general['intel2'] < 0){
+        $general->updqte('general',[
+            'intel2'=>$db->sqleval('intel2 + %i', GameConst::$upgradeLimit),
+            'intel'=>$db->sqleval('intel - 1')
+        ]);
+        $actLog->pushGeneralActionLog('<R>지력</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
+        return;
+    }
+
+    if($general['leader2'] >= GameConst::$upgradeLimit){
+        $general->updqte('general',[
+            'leader2'=>$db->sqleval('leader2 - %i', GameConst::$upgradeLimit),
+            'leader'=>$db->sqleval('leader + 1')
+        ]);
+        $actLog->pushGeneralActionLog('<R>통솔</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
+        return;
+    }
+
+    if($general['power2'] >= GameConst::$upgradeLimit){
+        $general->updqte('general',[
+            'power2'=>$db->sqleval('power2 - %i', GameConst::$upgradeLimit),
+            'power'=>$db->sqleval('power + 1')
+        ]);
+        $actLog->pushGeneralActionLog('<R>무력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
+        return;
+    }
+
+    if($general['intel2'] >= GameConst::$upgradeLimit){
+        $general->updqte('general',[
+            'intel2'=>$db->sqleval('intel2 - %i', GameConst::$upgradeLimit),
+            'intel'=>$db->sqleval('intel + 1')
+        ]);
+        $actLog->pushGeneralActionLog('<R>지력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
+        return;
+    }
 }
 
 function checkAbility($general, $log) {
