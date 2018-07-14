@@ -4,15 +4,17 @@ namespace sammo;
 class GameUnitConstBase{
     protected function __construct(){
 
-    }
+    }    
 
-    const T_CASTLE = 0;
-    const T_FOOTMAN = 1;
-    const T_ARCHER = 2;
-    const T_CAVALRY = 3;
-    const T_WIZARD = 4;
-    const T_SIEGE = 5;
-    const T_MISC = 6;
+    const T_CASTLE = -1;
+    const T_MISC = -2;
+    const T_FOOTMAN = 0;
+    const T_ARCHER = 1;
+    const T_CAVALRY = 2;
+    const T_WIZARD = 3;
+    const T_SIEGE = 4;
+    
+    
 
     protected static $constID = null;
     protected static $constName = null;

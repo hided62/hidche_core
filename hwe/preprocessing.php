@@ -57,8 +57,8 @@ switch($commandtype) {
     case  8: command_Single($turn, 8); break; //치안 강화
     case  9: command_Single($turn, 9); break; //자금 조달
 
-//    case 11: command_11(    $turn, 11); break; //징병
-//    case 12: command_12(    $turn, 12); break; //모병
+//    case 11: command_11(    $turn, 11, false); break; //징병
+//    case 12: command_11(    $turn, 12, true); break; //모병
     case 13: command_Single($turn, 13); break; //훈련
     case 14: command_Single($turn, 14); break; //사기진작
     case 15: command_Single($turn, 0); break; //전투태세

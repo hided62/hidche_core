@@ -49,8 +49,8 @@ switch($commandtype) {
     case  8: command_Single($turn, 8); break; //치안 강화
     case  9: command_Single($turn, 9); break; //자금 조달
 
-    case 11: command_11(    $turn, 11); break; //징병
-    case 12: command_12(    $turn, 12); break; //모병
+    case 11: command_11(    $turn, 11, false); break; //징병
+    case 12: command_11(    $turn, 12, true); break; //모병
     case 13: command_Single($turn, 13); break; //훈련
     case 14: command_Single($turn, 14); break; //사기진작
     //case 15: command_Single($turn, 0); break; //전투태세 
@@ -193,416 +193,125 @@ function command_99($turn) {
     header('location:b_chiefcenter.php');
 }
 
-function command_11($turn, $command) {
+function command_11($turn, $command, bool $is모병 = false) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
     $userID = Session::getUserID();
 
-    starter("징병");
+    $me = $db->queryFirstRow(
+        'SELECT no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold 
+        from general where owner=%i',
+        $userID
+    );
 
-    $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
+    [$nationLevel, $tech] = $db->queryFirstList('SELECT level,tech FROM nation WHERE nation=%i', $me['nation']);
 
-    $query = "select level,tech from nation where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("process53 ".MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    if($me['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($me['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = setLeadershipBonus($general, $nationLevel);
 
     $ownCities = [];
     $ownRegions = [];
-    $relativeYear = $gameStor->year - $gameStor->startyear;
-    $tech = $nation['tech'];
+    [$year, $startYear] = $gameStor->getValuesAsArray(['year','startyear']);
+
+    $relativeYear = $year - $startyear;
 
     foreach(DB::db()->query('SELECT city, region from city where nation = %i', $me['nation']) as $city){
         $ownCities[$city['city']] = 1;
         $ownRegions[$city['region']] = 1;
     }
 
-    $leader = intdiv($me['leader'] * (100 - $me['injury']), 100) + getHorseEff($me['horse']) + $lbonus;
-    $crew = $leader - Util::round($me['crew']/100);
+    $leader = getGeneralLeadership($general, true, true, true);
+    $maxCrew = $leader - Util::round($me['crew']/100);
     $abil = getTechAbil($nation['tech']);
-    $cost = getTechCost($nation['tech']);
-    echo "
-<font size=2>병사를 모집합니다. 훈련과 사기치는 낮지만 가격이 저렴합니다.<br>
-가능한 수보다 많게 입력하면 가능한 최대 병사를 모집합니다.<br>
-이미 병사가 있는 경우 추가징병되며, 병종이 다를경우는 기존의 병사는 소집해제됩니다.<br>
-현재 징병 가능한 병종은 <font color=green>녹색</font>으로 표시되며,<br>
-현재 징병 가능한 특수병종은 <font color=limegreen>초록색</font>으로 표시됩니다.<br>
-<script type='text/javascript'>
-function calc(cost, formnum) {
-    switch(formnum) {
-        case 0: form = document.form0; break;
-        case 1: form = document.form1; break;
-        case 2: form = document.form2; break;
-        case 3: form = document.form3; break;
-        case 4: form = document.form4; break;
-        case 5: form = document.form5; break;
-        case 10: form = document.form10; break;
-        case 11: form = document.form11; break;
-        case 12: form = document.form12; break;
-        case 13: form = document.form13; break;
-        case 14: form = document.form14; break;
-        case 20: form = document.form20; break;
-        case 21: form = document.form21; break;
-        case 22: form = document.form22; break;
-        case 23: form = document.form23; break;
-        case 24: form = document.form24; break;
-        case 25: form = document.form25; break;
-        case 26: form = document.form26; break;
-        case 27: form = document.form27; break;
-        case 30: form = document.form30; break;
-        case 31: form = document.form31; break;
-        case 32: form = document.form32; break;
-        case 33: form = document.form33; break;
-        case 34: form = document.form34; break;
-        case 35: form = document.form35; break;
-        case 36: form = document.form36; break;
-        case 37: form = document.form37; break;
-        case 38: form = document.form38; break;
-        case 40: form = document.form40; break;
-        case 41: form = document.form41; break;
-        case 42: form = document.form42; break;
-        case 43: form = document.form43; break;
-    }
-    crew = form.double.value;
-    form.cost.value = Math.round(crew * cost);
-}
-</script>
-<table class='tb_layout' style='margin:auto;'>
-    <tr>
-        <td colspan=10 align=center id=bg2>
-            현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
-            현재 통솔 : <input type=text style=text-align:right;color:white;background-color:black size=3 readonly value=$leader>
-            현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".GameUnitConst::byID($me['crewtype'])->name.">
-            현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['crew']}>
-            현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['gold']}>
-        </td>
-    </tr>
-    <tr>
-        <td width=64 align=center id=bg1>사진</td>
-        <td width=64 align=center id=bg1>병종</td>
-        <td width=40 align=center id=bg1>공격</td>
-        <td width=40 align=center id=bg1>방어</td>
-        <td width=40 align=center id=bg1>기동</td>
-        <td width=40 align=center id=bg1>회피</td>
-        <td width=40 align=center id=bg1>군량</td>
-        <td width=40 align=center id=bg1>가격</td>
-        <td width=130 align=center id=bg1>병사수</td>
-        <td width=300 align=center id=bg1>특징</td>
-    </tr>";
 
-    foreach(GameUnitConst::all() as $i=>$unit) {
-        if($i == 0){
-            echo '<tr><td colspan=10>보병 계열</td></tr>';
-        }
-        else if($i == 10){
-            echo '<tr><td colspan=10>궁병 계열</td></tr>';
-        }
-        else if($i == 20){
-            echo '<tr><td colspan=10>기병 계열</td></tr>';
-        }
-        else if($i == 30){
-            echo '<tr><td colspan=10>귀병 계열</td></tr>';
-        }
-        else if($i == 40){
-            echo '<tr><td colspan=10>차병 계열</td></tr>';
-        }
+    $armTypes = [];
 
-        if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
-            continue; //TODO: 불가능한 병종도 보여줄 필요가 있음.
-        }
+    foreach(GameUnitConst::allType() as $armType => $armName){
+        $armTypeCrews = [];
         
-        if($unit->recruitType == 0){
-            $l = 'green';
-        }
-        else{
-            $l = 'limegreen';
-        }
+        foreach(GameUnitConst::byType($armType) as $unit){
+            $crewObj = new stdClass;
+            if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
+                continue; //TODO: 불가능한 병종도 보여줄 필요가 있음.
+            }
 
-        $baseRice = $unit->rice * $cost;
-        $baseCost = $unit->cost * $cost;
-        $baseCost = CharCost($baseCost, $me['personal']);
-
-        $unitBaseType = intdiv($unit->id, 10);
-        if($me['special2'] == 50 && $unitBaseType == 0){
-            $baseCost *= 0.9;
-        }
-        else if($me['special2'] == 51 && $unitBaseType == 1){
-            $baseCost *= 0.9;
-        }
-        else if($me['special2'] == 52 && $unitBaseType == 2){
-            $baseCost *= 0.9;
-        }
-        else if($me['special2'] == 53 && $unitBaseType == 3){
-            $baseCost *= 0.9;
-        }
-        else if($me['special2'] == 54 && $unitBaseType == 4){
-            $baseCost *= 0.9;
-        }
-        else if($me['special2'] == 72) { 
-            $baseCost *= 0.5; 
-        }
-
-        $name = $unit->name;
-        $attack = $unit->attack + $abil;
-        $defence = $unit->defence + $abil;
-        $speed = $unit->speed;
-        $avoid = $unit->avoid;
-        $weapImage = ServConfig::$gameImagePath."/weap{$i}.png";
-        if($gameStor->show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
-        
-        $baseRiceShort = round($baseRice, 1);
-        $baseCostShort = round($baseCost, 1);
-
-        $info = join('<br>', $unit->info);
-
-        echo "
-<tr height=64 bgcolor=$l>
-    <td style='background:no-repeat center url(\"{$weapImage}\");background-size:64px;background-color:#222222;' align=center></td>
-    <td align=center>{$name}</td>
-    <td align=center>{$attack}</td>
-    <td align=center>{$defence}</td>
-    <td align=center>{$speed}</td>
-    <td align=center>{$avoid}</td>
-    <td align=center>{$baseRiceShort}</td>
-    <td align=center>{$baseCostShort}</td>
-<form name=form{$i} action=c_double.php>
-    <td valign=center>
-        <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($baseCost, $i)'><br>
-        <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=징병>
-        <input type=hidden name=third value={$i}>
-        <input type=hidden name=command value=$command>";
-
-        for($j=0; $j < count($turn); $j++) {
-            echo "
-        <input type=hidden name=turn[] value=$turn[$j]>";
-        }
-        echo "
-    </td>
-</form>
-    <td>$info</td>
-    </tr>";
-    }
-
-    echo "
-</table>";
-
-    ender();
-}
-
-function command_12($turn, $command) {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-    $userID = Session::getUserID();
-
-    starter("모병");
-
-    $query = "select no,nation,level,personal,special2,level,city,crew,horse,injury,leader,crewtype,gold from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
-
-    $query = "select level,tech from nation where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error("process53 ".MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    if($me['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($me['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
-
-    $ownCities = [];
-    $ownRegions = [];
-    $relativeYear = $gameStor->year - $gameStor->startyear;
-    $tech = $nation['tech'];
-
-    foreach(DB::db()->query('SELECT city, region from city where nation = %i', $me['nation']) as $city){
-        $ownCities[$city['city']] = 1;
-        $ownRegions[$city['region']] = 1;
-    }
-
-    $leader = intdiv($me['leader'] * (100 - $me['injury']), 100) + getHorseEff($me['horse']) + $lbonus;
-    $crew = $leader - round($me['crew']/100);
-    $abil = getTechAbil($nation['tech']);
-    $cost = getTechCost($nation['tech']);
-    echo "
-<font size=2>병사를 모집합니다. 훈련과 사기치는 높지만 자금이 많이 듭니다.<br>
-가능한 수보다 많게 입력하면 가능한 최대 병사를 모집합니다.<br>
-이미 병사가 있는 경우 추가징병되며, 병종이 다를경우는 기존의 병사는 소집해제됩니다.<br>
-현재 모병 가능한 병종은 <font color=green>녹색</font>으로 표시되며,<br>
-현재 모병 가능한 특수병종은 <font color=limegreen>초록색</font>으로 표시됩니다.<br>
-<script type='text/javascript'>
-function calc(cost, formnum) {
-    switch(formnum) {
-        case 0: form = document.form0; break;
-        case 1: form = document.form1; break;
-        case 2: form = document.form2; break;
-        case 3: form = document.form3; break;
-        case 4: form = document.form4; break;
-        case 5: form = document.form5; break;
-        case 10: form = document.form10; break;
-        case 11: form = document.form11; break;
-        case 12: form = document.form12; break;
-        case 13: form = document.form13; break;
-        case 14: form = document.form14; break;
-        case 20: form = document.form20; break;
-        case 21: form = document.form21; break;
-        case 22: form = document.form22; break;
-        case 23: form = document.form23; break;
-        case 24: form = document.form24; break;
-        case 25: form = document.form25; break;
-        case 26: form = document.form26; break;
-        case 27: form = document.form27; break;
-        case 30: form = document.form30; break;
-        case 31: form = document.form31; break;
-        case 32: form = document.form32; break;
-        case 33: form = document.form33; break;
-        case 34: form = document.form34; break;
-        case 35: form = document.form35; break;
-        case 36: form = document.form36; break;
-        case 37: form = document.form37; break;
-        case 38: form = document.form38; break;
-        case 40: form = document.form40; break;
-        case 41: form = document.form41; break;
-        case 42: form = document.form42; break;
-        case 43: form = document.form43; break;
-    }
-    crew = form.double.value;
-    form.cost.value = Math.round(crew * cost * 2);
-}
-</script>
-<table class='tb_layout' style='margin:auto;'>
-    <tr><td align=center colspan=10>모병은 가격 2배의 자금이 소요됩니다.</td></tr>
-    <tr>
-        <td colspan=10 align=center id=bg2>
-            현재 기술력 : <input type=text style=text-align:right;color:white;background-color:black size=5 readonly value=".getTechCall($nation['tech']).">
-            현재 통솔 : <input type=text style=text-align:right;color:white;background-color:black size=3 readonly value=$leader>
-            현재 병종 : <input type=text size=8 style=text-align:right;color:white;background-color:black readonly value=".GameUnitConst::byID($me['crewtype'])->name.">
-            현재 병사 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['crew']}>
-            현재 자금 : <input type=text size=5 style=text-align:right;color:white;background-color:black readonly value={$me['gold']}>
-        </td>
-    </tr>
-    <tr>
-        <td width=64 align=center id=bg1>사진</td>
-        <td width=64 align=center id=bg1>병종</td>
-        <td width=40 align=center id=bg1>공격</td>
-        <td width=40 align=center id=bg1>방어</td>
-        <td width=40 align=center id=bg1>기동</td>
-        <td width=40 align=center id=bg1>회피</td>
-        <td width=40 align=center id=bg1>군량</td>
-        <td width=40 align=center id=bg1>가격</td>
-        <td width=130 align=center id=bg1>병사수</td>
-        <td width=300 align=center id=bg1>특징</td>
-    </tr>";
-
+            $crewObj->id = $unit->id;
+            
+            if($unit->reqTech == 0){
+                $crewObj->bgcolor = 'green';
+            }
+            else{
+                $crewObj->bgcolor = 'limegreen';
+            }
     
-    foreach(GameUnitConst::all() as $i=>$unit) {
-        if($i == 0){
-            echo '<tr><td colspan=10>보병 계열</td></tr>';
-        }
-        else if($i == 10){
-            echo '<tr><td colspan=10>궁병 계열</td></tr>';
-        }
-        else if($i == 20){
-            echo '<tr><td colspan=10>기병 계열</td></tr>';
-        }
-        else if($i == 30){
-            echo '<tr><td colspan=10>귀병 계열</td></tr>';
-        }
-        else if($i == 40){
-            echo '<tr><td colspan=10>차병 계열</td></tr>';
-        }
+            $crewObj->baseRice = $unit->rice * getTechCost($tech);
+            $crewObj->baseCost = CharCost($unit->getTechCost($tech), $me['personal']);
 
-        if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
-            continue; //TODO: 불가능한 병종도 보여줄 필요가 있음.
-        }
-        
-        if($unit->recruitType == 0){
-            $l = 'green';
-        }
-        else{
-            $l = 'limegreen';
-        }
+            $armType = $unit->armType;
+            if($me['special2'] == 50 && $armType == GameUnitConst::T_FOOTMAN){
+                $crewObj->baseCost *= 0.9;
+            }
+            else if($me['special2'] == 51 && $armType == GameUnitConst::T_ARCHER){
+                $crewObj->baseCost *= 0.9;
+            }
+            else if($me['special2'] == 52 && $armType == GameUnitConst::T_CAVALRY){
+                $crewObj->baseCost *= 0.9;
+            }
+            else if($me['special2'] == 53 && $armType == GameUnitConst::T_WIZARD){
+                $crewObj->baseCost *= 0.9;
+            }
+            else if($me['special2'] == 54 && $armType == GameUnitConst::T_SIEGE){
+                $crewObj->baseCost *= 0.9;
+            }
+            else if($me['special2'] == 72) { 
+                $crewObj->baseCost *= 0.5; 
+            }
+    
+            $crewObj->name = $unit->name;
+            $crewObj->attack = $unit->attack + $abil;
+            $crewObj->defence = $unit->defence + $abil;
+            $crewObj->speed = $unit->speed;
+            $crewObj->avoid = $unit->avoid;
+            if($gameStor->show_img_level < 2) { 
+                $crewObj->img = ServConfig::$sharedIconPath."/default.jpg"; 
+            }
+            else{
+                $crewObj->img = ServConfig::$gameImagePath."/weap{$unit->id}.png";
+            }
+            
+            $crewObj->baseRiceShort = round($crewObj->baseRice, 1);
+            $crewObj->baseCostShort = round($crewObj->baseCost, 1);
+    
+            $crewObj->info = join('<br>', $unit->info);
 
-        $baseRice = $unit->rice * $cost;
-        $baseCost = $unit->cost * $cost;
-        $baseCost = CharCost($baseCost, $me['personal']);
 
-        $unitBaseType = intdiv($unit->id, 10);
-        if($me['special2'] == 50 && $unitBaseType == 0){
-            $baseCost *= 0.9;
+            $armTypeCrews[] = $crewObj;
         }
-        else if($me['special2'] == 51 && $unitBaseType == 1){
-            $baseCost *= 0.9;
-        }
-        else if($me['special2'] == 52 && $unitBaseType == 2){
-            $baseCost *= 0.9;
-        }
-        else if($me['special2'] == 53 && $unitBaseType == 3){
-            $baseCost *= 0.9;
-        }
-        else if($me['special2'] == 54 && $unitBaseType == 4){
-            $baseCost *= 0.9;
-        }
-        else if($me['special2'] == 72) { 
-            $baseCost *= 0.5; 
-        }
-
-        $name = $unit->name;
-        $attack = $unit->attack + $abil;
-        $defence = $unit->defence + $abil;
-        $speed = $unit->speed;
-        $avoid = $unit->avoid;
-        $weapImage = ServConfig::$gameImagePath."/weap{$i}.png";
-        if($gameStor->show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; }
-        
-        $baseRiceShort = round($baseRice, 1);
-        $baseCostShort = round($baseCost, 1);
-
-        $info = join('<br>', $unit->info);
-
-        echo "
-<tr height=64 bgcolor=$l>
-    <td style='background:no-repeat center url(\"{$weapImage}\");background-size:64px;background-color:#222222;' align=center></td>
-    <td align=center>{$name}</td>
-    <td align=center>{$attack}</td>
-    <td align=center>{$defence}</td>
-    <td align=center>{$speed}</td>
-    <td align=center>{$avoid}</td>
-    <td align=center>{$baseRiceShort}</td>
-    <td align=center>{$baseCostShort}</td>
-<form name=form{$i} action=c_double.php>
-    <td valign=center>
-        <input type=text name=double maxlength=3 size=3 value=$crew style=text-align:right;color:white;background-color:black>00명<input type=button value=계산 onclick='calc($baseCost, $i)'><br>
-        <input type=text name=cost maxlength=5 size=5 readonly style=text-align:right;color:white;background-color:black>원 <input type=submit value=모병>
-        <input type=hidden name=third value={$i}>
-        <input type=hidden name=command value=$command>";
-
-        for($j=0; $j < count($turn); $j++) {
-            echo "
-        <input type=hidden name=turn[] value=$turn[$j]>";
-        }
-        echo "
-    </td>
-</form>
-    <td>$info</td>
-    </tr>";
+        $armTypes[] = [$armName, $armTypeCrews];
+    }
+    if($is모병){
+        $commandName = '모병';
+        starter("모병");
+    }
+    else{
+        $commandName = '징병';
+        starter("징병");
     }
 
-    echo "
-</table>";
+    $templates = new \League\Plates\Engine('templates');
+    echo $templates->render('recruitCrewForm', [
+        'command'=>$command,
+        'commandName'=>$commandName,
+        'techLevelText'=>getTechCall($tech),
+        'tech'=>$tech,
+        'leader'=>$leader,
+        'crewTypeName'=>GameUnitConst::byId($general['crewtype'])->name,
+        'crew'=>$general['crew'],
+        'maxCrew'=>$maxCrew,
+        'gold'=>$general['gold'],
+        'turn'=>$turn,
+        'armTypes'=>$armTypes,
+    ]);
+
 
     ender();
 }

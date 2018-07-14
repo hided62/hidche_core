@@ -115,22 +115,31 @@ function getSpecial2($leader, $power, $intel, $nodex=1, $dex0=0, $dex10=0, $dex2
 }
 
 function getGenDex($general, $type) {
-    $type = intdiv($type, 10) * 10;
-    return $general["dex{$type}"];
+    $ntype = GameUnitCons::byId($type)->armType * 10;
+    return $general["dex{$ntype}"]??0;
 }
 
 function addGenDex($no, $atmos, $train, $type, $exp) {
     $db = DB::db();
-    $connect=$db->get();
 
-    $type = intdiv($type, 10) * 10;
-    $dexType = "dex{$type}";
-    if($type == 30) { $exp = Util::round($exp * 0.90); }     //귀병은 90%효율
-    elseif($type == 40) { $exp = Util::round($exp * 0.90); } //차병은 90%효율
-    $exp = Util::round($exp * ($atmos+$train) / 200); // 사기 + 훈련 / 200
+    $armType = GameUnitConst::byId($type)->armType;
+    if($armType < 0){
+        return;
+    }
+    
+    $ntype = $armType*10;
+    $dexType = "dex{$ntype}";
+    if($armType == GameUnitConst::T_WIZARD) {
+        $exp = Util::round($exp * 0.90); 
+    }
+    else if($armType == GameUnitConst::T_SIEGE) {
+        $exp = Util::round($exp * 0.90);
+    }
+    $exp = Util::round($exp * ($atmos + $train) / 200); // 사기 + 훈련 / 200
 
-    $query = "update general set {$dexType}={$dexType}+{$exp} where no='$no'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        $dexType=>$db->sqleval('%b + %i', $dexType, $exp)
+    ], 'no=%i', $no);
 }
 
 
