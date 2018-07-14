@@ -42,6 +42,16 @@ class ActionLogger{
         }
     }
 
+    public function rollback(){
+        $this->generalHistoryLog = [];
+        $this->generalActionLog = [];
+        $this->generalBattleResultLog = [];
+        $this->generalBattleDetailLog = [];
+        $this->nationalHistoryLog = [];
+        $this->globalHistoryLog = [];
+        $this->globalActionLog = [];
+    }
+
     public function flush(){
         $db = DB::db();
 
