@@ -20,6 +20,14 @@ class GameUnitConstBase{
     protected static $constRegion = null;
     protected static $constType = null;
 
+    protected static $typeData = [
+        GameUnitConstBase::T_FOOTMAN => '보병',
+        GameUnitConstBase::T_ARCHER => '궁병',
+        GameUnitConstBase::T_CAVALRY => '기병',
+        GameUnitConstBase::T_WIZARD => '귀병',
+        GameUnitConstBase::T_SIEGE => '차병',
+    ];
+
     protected static $_buildData = [
         [ 0, GameUnitConstBase::T_FOOTMAN, '보병',     100, 150, 7, 10,  9,  9,    0, null,     null,     0, ['표준적인 보병입니다.','보병은 방어특화입니다.']],
         [ 1, GameUnitConstBase::T_FOOTMAN, '청주병',   100, 200, 7, 10, 10, 11, 1000, null,     ['중원'], 0, ['저렴하고 튼튼합니다.']],
@@ -67,27 +75,34 @@ class GameUnitConstBase{
         return static::$constID;
     }
 
-    public static function byID(int $id): GameUnitDetail{
-        static::_generate();
-        return static::$constID[$id];
+    public static function allType(): array{
+        return static::$typeData;
     }
 
-    public static function byName(string $name): GameUnitDetail{
+    public static function byID(int $id): ?GameUnitDetail{
         static::_generate();
-        return static::$constName[$name];
+        return static::$constID[$id]??null;
+    }
+
+    public static function byName(string $name): ?GameUnitDetail{
+        static::_generate();
+        return static::$constName[$name]??null;
     }
 
     public static function byCity(int $city): array{
         static::_generate();
-        return static::$constCity[$city];
+        return static::$constCity[$city]??[];
     }
 
     public static function byRegion(int $region): array{
         static::_generate();
-        return static::$constRegion[$region];
+        return static::$constRegion[$region]??[];
     }
 
+    
+
     public static function byType(int $type): array{
+        static::_generate();
         if(!key_exists($type, static::$constType)){
             return [];
         }
@@ -125,22 +140,24 @@ class GameUnitConstBase{
                 $info
              ] = $rawUnit;
 
-            //0인 경우는 기술치이다.
-            if(!$recruitFirst){
-                $info[] = "일정 시간이 지나야 사용 가능";
+            if($reqYear > 0){
+                $info[] = "{$reqYear}년 경과 후 사용 가능";
             }
 
-            if($recruitType == 1){
-                $info[] = "{$recruitCondition}지역 소유시 가능";
-                $recruitCondition = CityConst::$regionMap[$recruitCondition];
-            }
-            else if($recruitType == 2){
-                $info[] = "{$recruitCondition} 소유시 가능";
-                $recruitCondition = CityConst::byName($recruitCondition)->id;
+            if($reqTech > 0){
+                $info[] = "기술력 {$reqTech} 이상 필요";
             }
 
+            $reqCities = array_map(function($reqCity) use (&$info){
+                $info[] = "{$reqCity} 소유시 가능";
+                return CityConst::byName($reqCity)->id;
+            }, $reqCities);
+
+            $reqRegions = array_map(function($reqRegion) use (&$info){
+                $info[] = "{$reqRegion} 지역 소유시 가능";
+                return CityConst::$regionMap[$reqRegion];
+            }, $reqRegions);
             
-
             $unit = new GameUnitDetail(
                 $id,
                 $armType,
@@ -165,18 +182,20 @@ class GameUnitConstBase{
             }
             $constType[$armType][] = $unit;
 
-            if($recruitType == 1){
-                if(!key_exists($recruitCondition, $constRegion)){
-                    $constRegion[$recruitCondition] = [];
+            foreach($unit->reqCities as $reqCity){
+                if(!key_exists($reqCity, $constCity)){
+                    $constCity[$reqCity] = [];
                 }
-                $constRegion[$recruitCondition][] = $unit;
+                $constCity[$reqCity][] = $unit;
             }
-            if($recruitType == 2){
-                if(!key_exists($recruitCondition, $constCity)){
-                    $constCity[$recruitCondition] = [];
+
+            foreach($unit->reqRegions as $reqRegion){
+                if(!key_exists($reqRegion, $constRegion)){
+                    $constRegion[$reqRegion] = [];
                 }
-                $constCity[$recruitCondition][] = $unit;
+                $constRegion[$reqRegion][] = $unit;
             }
+
         }
 
         static::$constID = $constID;

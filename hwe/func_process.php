@@ -852,6 +852,13 @@ function process_9(&$general) {
 }
 
 function process_11(&$general, $type) {
+    if($type == 1){
+        $type = '징병';
+    }
+    else{
+        $type = '모병';
+    }
+
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
@@ -861,129 +868,80 @@ function process_11(&$general, $type) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    if($type == 1) { $defaultatmos = GameConst::$defaultAtmosLow; $defaulttrain = GameConst::$defaultTrainLow; }
-    else { $defaultatmos = GameConst::$defaultAtmosHigh; $defaulttrain = GameConst::$defaultTrainHigh; }
+    if($type === '징병') { 
+        $defaultatmos = GameConst::$defaultAtmosLow;
+        $defaulttrain = GameConst::$defaultTrainLow;
+    }
+    else {
+        $defaultatmos = GameConst::$defaultAtmosHigh;
+        $defaulttrain = GameConst::$defaultTrainHigh;
+    }
 
     $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
-    $query = "select level,tech from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
+    $actLog = new ActionLogger($general['no'], $general['nation'], $admin['year'], $admin['month']);
 
-    $lbonus = setLeadershipBonus($general, $nation['level']);
+    [$nationLevel, $tech] = $db->queryFirstList('SELECT `level`,tech FROM nation WHERE nation=%i', $general['nation']);
 
-    $query = "select * from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
+    $lbonus = setLeadershipBonus($general, $nationLevel);
+
+    $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general['city']);
 
     $command = DecodeCommand($general['turn0']);
     $armtype = $command[2];
     $crew = $command[1];
 
-    if($armtype != $general['crewtype']) { $general['crew'] = 0; $general['train'] = $defaulttrain; $general['atmos'] = $defaultatmos; }
-
-    if($crew*100 + $general['crew'] > getGeneralLeadership($general, true, true, true)*100) { 
-        $crew = Util::round(getGeneralLeadership($general, true, true, true) - $general['crew']/100);
+    $armTypeObj = GameUnitConst::byID($armType);
+    if($armTypeObj === null){
+        $log[] = "<C>●</>{$admin['month']}월:병종 코드 에러. $dtype 실패. <1>$date</>";
+        pushGenLog($general, $log);
+        return;
     }
-    if($crew < 0) { $crew = 0; }
-    $cost = $crew * getCost($armtype);
-    //기술로 가격
-    $cost *= getTechCost($nation['tech']);
+
+    if($armtype != $general['crewtype']) {
+        $general['crew'] = 0;
+        $general['train'] = $defaulttrain;
+        $general['atmos'] = $defaultatmos;
+    }
+
+    //NOTE: 입력 변수는 100명 단위임
+    $crew *= 100;
+
+    if($crew + $general['crew'] > getGeneralLeadership($general, true, true, true)*100) { 
+        $crew = getGeneralLeadership($general, true, true, true) * 100 - $general['crew'];
+    }
+    if($crew < 0) {
+        $crew = 0;
+    }
+
+    $cost = $armTypeObj->costWithTech($tech, $crew);
     //성격 보정
-    $cost = CharCost($cost, $general['personal']);
-    $cost = Util::round($cost);
+    $cost = Util::round(CharCost($cost, $general['personal']));
 
-    //특기 보정 : 보병, 궁병, 기병, 귀병, 공성, 징병
-    if(intdiv($armtype, 10) == 0 && $general['special2'] == 50) { $cost *= 0.9; }
-    if(intdiv($armtype, 10) == 1 && $general['special2'] == 51) { $cost *= 0.9; }
-    if(intdiv($armtype, 10) == 2 && $general['special2'] == 52) { $cost *= 0.9; }
-    if(intdiv($armtype, 10) == 3 && $general['special2'] == 40) { $cost *= 0.9; }
-    if(intdiv($armtype, 10) == 4 && $general['special2'] == 53) { $cost *= 0.9; }
+    //특기 보정 : 징병, 보병, 궁병, 기병, 귀병, 공성
     if($general['special2'] == 72) { $cost *= 0.5; }
+    else if($general['special2'] == 50 && $armTypeObj->armType == GameUnitConstBase::T_FOOTMAN) { $cost *= 0.9; }
+    else if($general['special2'] == 51 && $armTypeObj->armType == GameUnitConstBase::T_ARCHER) { $cost *= 0.9; }
+    else if($general['special2'] == 52 && $armTypeObj->armType == GameUnitConstBase::T_CAVALRY) { $cost *= 0.9; }
+    else if($general['special2'] == 40 && $armTypeObj->armType == GameUnitConstBase::T_WIZARD) { $cost *= 0.9; }
+    else if($general['special2'] == 53 && $armTypeObj->armType == GameUnitConstBase::T_SIEGE) { $cost *= 0.9; }
+    
+    
 
-    if($type == 1) { $dtype = "징병"; }
-    elseif($type == 2) { $dtype = "모병"; $cost *= 2; }
-    if($general['crew'] != 0) { $dtype = "추가".$dtype; }
-
-    //현재 가능한지 검사
-    switch($armtype) {
-        case 0:  case 10:  case 20:  case 30: case 35: // 보병 궁병 기병 귀병 남귀병
-            $sel = 0; break;
-
-        case  1: $sel = 1; $rg =  2; break; // 청주병(중원)
-        case  2: $sel = 1; $rg =  7; break; // 수병(오월)
-        case  3: $sel = 2; $ct = 64; break; // 자객병(저)
-        case  4: $sel = 2; $ct =  3; break; // 근위병(낙양)
-        case  5: $sel = 1; $rg =  5; break; // 등갑병(남중)
-
-        case 11: $sel = 1; $rg =  8; break; // 궁기병(동이)
-        case 12: $sel = 1; $rg =  4; break; // 연노병(서촉)
-        case 13: $sel = 2; $ct =  6; break; // 강궁병(양양)
-        case 14: $sel = 2; $ct =  7; break; // 석궁병(건업)
-
-        case 21: $sel = 1; $rg =  1; break; // 백마병(하북)
-        case 22: $sel = 1; $rg =  3; break; // 중장기병(서북)
-        case 23: $sel = 2; $ct = 65; break; // 돌격기병(흉노)
-        case 24: $sel = 2; $ct = 63; break; // 철기병(강)
-        case 25: $sel = 2; $ct = 67; break; // 수렵기병(산월)
-        case 26: $sel = 2; $ct = 66; break; // 맹수병(남만)
-        case 27: $sel = 2; $ct =  2; break; // 호표기병(허창)
-
-        case 31: $sel = 1; $rg =  6; break; // 신귀병(초)
-        case 32: $sel = 2; $ct = 68; break; // 백귀병(오환)
-        case 33: $sel = 2; $ct = 69; break; // 흑귀병(왜)
-        case 34: $sel = 2; $ct =  4; break; // 악귀병(장안)
-        case 36: $sel = 2; $ct =  3; break; // 황귀병(낙양)
-        case 37: $sel = 2; $ct =  5; break; // 천귀병(성도)
-        case 38: $sel = 2; $ct =  1; break; // 마귀병(업)
-
-        case 40: $sel = 0; break; // 정란
-        case 41: $sel = 0; break; // 충차
-        case 42: $sel = 2; $ct =  1; break; // 벽력거(업)
-        case 43: $sel = 2; $ct =  5; break; // 목우(성도)
-
-        default: $sel = 0; $armtype = 0; break;
+    if($general['crew'] != 0) { 
+        $dtype = "추가".$type; 
     }
-    if($sel == 0) {
-        // 남귀병은 기술1등급부터
-        // 충차는 기술1등급부터
-        if($armtype == 35 && $nation['tech'] < 1000) {
-            $cnt = 0;
-        } elseif($armtype == 41 && $nation['tech'] < 1000) {
-            $cnt = 0;
-        } else {
-            $cnt = 1;
-        }
-    } elseif($sel == 1) {
-        $query = "select city,level from city where nation='{$general['nation']}' and region='$rg'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $cnt = MYDB_num_rows($result);
-        $rgcity = MYDB_fetch_array($result);
-        // 기술 1000 이상부터 지역병
-        if($cnt > 0 && $nation['tech'] < 1000) {
-            $cnt = 0;
-        }
-    } else {
-        $query = "select city,level from city where nation='{$general['nation']}' and city='$ct'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $cnt = MYDB_num_rows($result);
-        $ctcity = MYDB_fetch_array($result);
-        // 기술 2000 이상부터 이민족병
-        if($cnt > 0 && $ctcity['level'] == 4 && $nation['tech'] < 2000) {
-            $cnt = 0;
-        }
-        // 기술 3000 이상부터 특수병
-        if($cnt > 0 && $ctcity['level'] == 8 && $nation['tech'] < 3000) {
-            $cnt = 0;
-        }
+    else {
+        $dtype = $type;
     }
-    if($cnt > 0) { $valid = 1; }
-    else { $valid = 0; }
 
-    // 초반 제한중 차병 불가
-    if($admin['year'] < $admin['startyear']+3 && intdiv($armtype, 10) == 4) {
-        $valid = 0;
+    $ownCities = [];
+    $ownRegions = [];
+    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $me['nation']) as $ownCity){
+        $ownCities[$ownCity] = 1;
+        $ownRegions[CityConst::byId($ownCity)->region] = 1;
     }
+    $valid = $armTypeObj->isValid($ownCities, $ownRegions, $admin['year'] - $admin['startyear'], $tech);
 
     if($general['level'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
@@ -999,12 +957,12 @@ function process_11(&$general, $type) {
         $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. $dtype 실패. <1>$date</>";
     } elseif($valid == 0) {
         $log[] = "<C>●</>{$admin['month']}월:현재 $dtype 할 수 없는 병종입니다. $dtype 실패. <1>$date</>";
-    } elseif($city['pop']-30000 < $crew*100) {    // 주민 30000명 이상만 가능
+    } elseif($city['pop']-30000 < $crew) {    // 주민 30000명 이상만 가능
         $log[] = "<C>●</>{$admin['month']}월:주민이 모자랍니다. $dtype 실패. <1>$date</>";
     } elseif($city['rate'] < 20) {
         $log[] = "<C>●</>{$admin['month']}월:민심이 낮아 주민들이 도망갑니다. $dtype 실패. <1>$date</>";
     } else {
-        $log[] = "<C>●</>{$admin['month']}월:".GameUnitConst::byId($armtype)->name."을(를) <C>{$crew}00</>명 {$dtype}했습니다. <1>$date</>";
+        $log[] = "<C>●</>{$admin['month']}월:".$armTypeObj->name."을(를) <C>{$crew}</>명 {$dtype}했습니다. <1>$date</>";
         $exp = $crew;
         $ded = $crew;
         // 숙련도 증가
@@ -1013,16 +971,23 @@ function process_11(&$general, $type) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
-        $atmos = Util::round(($general['atmos'] * $general['crew'] + $defaultatmos * $crew*100) / ($general['crew'] + $crew*100));
-        $train = Util::round(($general['train'] * $general['crew'] + $defaulttrain * $crew*100) / ($general['crew'] + $crew*100));
-        $general['crew'] += $crew*100;
+        $atmos = Util::round(($general['atmos'] * $general['crew'] + $defaultatmos * $crew) / ($general['crew'] + $crew));
+        $train = Util::round(($general['train'] * $general['crew'] + $defaulttrain * $crew) / ($general['crew'] + $crew));
+        $general['crew'] += $crew;
         $general['gold'] -= $cost;
-        // 주민수 감소        // 민심 김소
-        if($type == 1) { $city['rate'] = $city['rate'] - Util::round(($crew*100 / $city['pop'])*100); }
-        else { $city['rate'] = $city['rate'] - Util::round(($crew*100 / $city['pop'])*50); }
+        // 주민수 감소        // 민심 감소
+        if($type === '징병') {
+            $city['rate'] = $city['rate'] - Util::round(($crew / $city['pop'])); 
+        }
+        else {
+            $city['rate'] = $city['rate'] - Util::round(($crew / $city['pop'])/2); 
+        }
         if($city['rate'] < 0) { $city['rate'] = 0; }
-        $query = "update city set pop=pop-({$crew}*100),rate='{$city['rate']}' where city='{$general['city']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $db->update('city', [
+            'pop'=>$db->sqleval('pop-%i', $crew),
+            'rate'=>$city['rate']
+        ], 'city = %i',$general['city']);
 
         // 통솔경험, 병종 변경, 병사수 변경, 훈련치 변경, 사기치 변경, 자금 군량 하락, 공헌도, 명성 상승
         $general['leader2']++;

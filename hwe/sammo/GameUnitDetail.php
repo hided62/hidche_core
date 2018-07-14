@@ -48,6 +48,10 @@ class GameUnitDetail{
         $this->info = $info;
     }
 
+    public function costWithTech(int $tech, int $crew=100):float{
+        return $this->cost * getTechCost($tech) * $crew / 100;
+    }
+
     public function isValid($ownCities, $ownRegions, $relativeYear, $tech){
         if($relativeYear < $this->reqYear){
             return false;
