@@ -877,11 +877,11 @@ function process_11(&$general, $type) {
     $actLog = new ActionLogger($general['no'], $general['nation'], $year, $month);
 
     $command = DecodeCommand($general['turn0']);
-    $armtype = $command[2];
+    $crewType = $command[2];
     $rawCrew = $command[1];
     
 
-    if($armtype != $general['crewtype']) {
+    if($crewType != $general['crewtype']) {
         $general['crew'] = 0;
         $general['train'] = $defaulttrain;
         $general['atmos'] = $defaultatmos;
@@ -906,8 +906,8 @@ function process_11(&$general, $type) {
         return;
     }
 
-    $armTypeObj = GameUnitConst::byID($armType);
-    if($armTypeObj === null){
+    $crewTypeObj = GameUnitConst::byID($crewType);
+    if($crewTypeObj === null){
         $actLog->pushGeneralActionLog("병종 코드 에러. $type 실패. <1>$date</>");
         return;
     }
@@ -928,17 +928,17 @@ function process_11(&$general, $type) {
         return;
     }
 
-    $cost = $armTypeObj->costWithTech($tech, $crew);
+    $cost = $crewTypeObj->costWithTech($tech, $crew);
     //성격 보정
     $cost = Util::round(CharCost($cost, $general['personal']));
 
     //특기 보정 : 징병, 보병, 궁병, 기병, 귀병, 공성
     if($general['special2'] == 72) { $cost *= 0.5; }
-    else if($general['special2'] == 50 && $armTypeObj->armType == GameUnitConstBase::T_FOOTMAN) { $cost *= 0.9; }
-    else if($general['special2'] == 51 && $armTypeObj->armType == GameUnitConstBase::T_ARCHER) { $cost *= 0.9; }
-    else if($general['special2'] == 52 && $armTypeObj->armType == GameUnitConstBase::T_CAVALRY) { $cost *= 0.9; }
-    else if($general['special2'] == 40 && $armTypeObj->armType == GameUnitConstBase::T_WIZARD) { $cost *= 0.9; }
-    else if($general['special2'] == 53 && $armTypeObj->armType == GameUnitConstBase::T_SIEGE) { $cost *= 0.9; }
+    else if($general['special2'] == 50 && $crewTypeObj->armType == GameUnitConstBase::T_FOOTMAN) { $cost *= 0.9; }
+    else if($general['special2'] == 51 && $crewTypeObj->armType == GameUnitConstBase::T_ARCHER) { $cost *= 0.9; }
+    else if($general['special2'] == 52 && $crewTypeObj->armType == GameUnitConstBase::T_CAVALRY) { $cost *= 0.9; }
+    else if($general['special2'] == 40 && $crewTypeObj->armType == GameUnitConstBase::T_WIZARD) { $cost *= 0.9; }
+    else if($general['special2'] == 53 && $crewTypeObj->armType == GameUnitConstBase::T_SIEGE) { $cost *= 0.9; }
     
     if($general['gold'] < $cost){
         $actLog->pushGeneralActionLog("자금이 모자랍니다. $dtype 실패. <1>$date</>");
@@ -954,7 +954,7 @@ function process_11(&$general, $type) {
         $ownCities[$ownCity] = 1;
         $ownRegions[CityConst::byId($ownCity)->region] = 1;
     }
-    $valid = $armTypeObj->isValid($ownCities, $ownRegions, $admin['year'] - $admin['startyear'], $tech);
+    $valid = $crewTypeObj->isValid($ownCities, $ownRegions, $admin['year'] - $admin['startyear'], $tech);
 
     if(!$valid) {
         $actLog->pushGeneralActionLog("현재 $dtype 할 수 없는 병종입니다. $dtype 실패. <1>$date</>");
@@ -970,11 +970,11 @@ function process_11(&$general, $type) {
         return;
     }
     
-    $actLog->pushGeneralActionLog($armTypeObj->name."을(를) <C>{$crew}</>명 {$dtype}했습니다. <1>$date</>");
+    $actLog->pushGeneralActionLog($crewTypeObj->name."을(를) <C>{$crew}</>명 {$dtype}했습니다. <1>$date</>");
     $exp = Util::round($crew / 100);
     $ded = Util::round($crew / 100);
     // 숙련도 증가
-    addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $armtype, $crew);
+    addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $crewType, $crew);
 
     // 성격 보정
     $exp = CharExperience($exp, $general['personal']);
@@ -1003,7 +1003,7 @@ function process_11(&$general, $type) {
     $db->update('general', [
         'resturn'=>'SUCCESS',
         'leader2'=>$general['leader2'],
-        'crewtype'=>$armTypeObj->id,
+        'crewtype'=>$crewTypeObj->id,
         'crew'=>$general['crew'],
         'train'=>$train,
         'atmos'=>$atmos,
