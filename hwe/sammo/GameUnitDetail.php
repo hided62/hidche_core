@@ -16,6 +16,8 @@ class GameUnitDetail{
     public $reqCities;
     public $reqRegions;
     public $reqYear;
+    public $attackCoef;
+    public $defenceCoef;
     public $info;
 
     public function __construct(
@@ -33,6 +35,8 @@ class GameUnitDetail{
         ?array $reqCities,
         ?array $reqRegions,
         int $reqYear,
+        array $attackCoef,
+        array $defenceCoef,
         array $info
     ){
         $this->name = $name;
@@ -48,11 +52,29 @@ class GameUnitDetail{
         $this->reqCities = $reqCities;
         $this->reqRegions = $reqRegions;
         $this->reqYear = $reqYear;
+        $this->attackCoef = $attackCoef;
+        $this->defenceCoef = $defenceCoef;
         $this->info = $info;
     }
 
     public function costWithTech(int $tech, int $crew=100):float{
         return $this->cost * getTechCost($tech) * $crew / 100;
+    }
+
+    public function getAttackCoef($armType):float{
+        if($armType instanceof GameUnitDetail){
+            $armType = $armType->armType;
+        }
+        assert(is_numeric($armType), '$armType should be int or GameUnitDetail');
+        return $this->attackCoef[$armType]??1;
+    }
+
+    public function getDefenceCoef($armType):float{
+        if($armType instanceof GameUnitDetail){
+            $armType = $armType->armType;
+        }
+        assert(is_numeric($armType), '$armType should be int or GameUnitDetail');
+        return $this->defenceCoef[$armType]??1;
     }
 
     public function isValid($ownCities, $ownRegions, $relativeYear, $tech){
