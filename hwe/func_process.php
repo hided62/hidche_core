@@ -1042,14 +1042,10 @@ function process_13(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:재야입니다. 훈련 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 훈련 실패. <1>$date</>";
-//    } elseif($city['supply'] == 0) {
-//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 훈련 실패. <1>$date</>";
     } elseif($general['crew'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 훈련 실패. <1>$date</>";
     } elseif($general['train'] >= GameConst::$maxTrainByCommand) {
         $log[] = "<C>●</>{$admin['month']}월:병사들은 이미 정예병사들입니다. <1>$date</>";
-//    } elseif(intdiv($general['crewtype'], 10) == 4) {
-//        $log[] = "<C>●</>{$admin['month']}월:병기는 훈련이 불가능합니다. <1>$date</>";
     } else {
         // 훈련시
         $score = Util::round(getGeneralLeadership($general, true, true, true) * 100 / $general['crew'] * GameConst::$trainDelta);
@@ -1110,16 +1106,12 @@ function process_14(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:재야입니다. 사기진작 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 사기진작 실패. <1>$date</>";
-//    } elseif($city['supply'] == 0) {
-//        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 사기진작 실패. <1>$date</>";
     } elseif($general['crew'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 사기진작 실패. <1>$date</>";
     } elseif($general['gold'] < $general['crew']/100) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 사기진작 실패. <1>$date</>";
     } elseif($general['atmos'] >= GameConst::$maxAtmosByCommand) {
         $log[] = "<C>●</>{$admin['month']}월:이미 사기는 하늘을 찌를듯 합니다. <1>$date</>";
-//    } elseif(intdiv($general['crewtype'], 10) == 4) {
-//        $log[] = "<C>●</>{$admin['month']}월:병기는 사기 진작이 불가능합니다. <1>$date</>";
     } else {
         $score = Util::round(getGeneralLeadership($general, true, true, true)*100 / $general['crew'] * GameConst::$atmosDelta);
         $gold = $general['gold'] - Util::round($general['crew']/100);
@@ -1794,14 +1786,7 @@ function process_41(&$general) {
     } elseif($crewexp == 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 모자랍니다. 단련 실패. <1>$date</>";
     } else {
-        $type = intdiv($general['crewtype'], 10);
-        switch($type) {
-        case 0: $crewstr = '보병'; break;
-        case 1: $crewstr = '궁병'; break;
-        case 2: $crewstr = '기병'; break;
-        case 3: $crewstr = '귀병'; break;
-        case 4: $crewstr = '차병'; break;
-        }
+        $crewstr = GameUnitConst::$typeData[GameUnitConst::byID($general['crewtype']->armType)];
 
         if($ratio < 33) {
             // 숙련도 증가

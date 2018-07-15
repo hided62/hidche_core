@@ -85,6 +85,8 @@ function processWar($general, $city) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
+    setLeadershipBonus($general, $nation['level']);
+
     $query = "select nation,level,name,rice,capital,tech,type from nation where nation='{$city['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destnation = MYDB_fetch_array($result) ?: [
@@ -165,10 +167,11 @@ function processWar($general, $city) {
             break;
         // 장수가 없어서 도시 공격
         } elseif($opposecount == 0) {
-            $josaRo = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '로');
+            $opposeCrewType = GameUnitConst::byId(GameUnitConst::T_CASTLE);
+            $josaRo = JosaUtil::pick($generalCrewType->name, '로');
             $josaYi = JosaUtil::pick($general['name'], '이');
-            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>{$josaYi} ".GameUnitConst::byId($general['crewtype'])->name."{$josaRo} 성벽을 공격합니다.";
-            $log[] = "<C>●</>".GameUnitConst::byId($general['crewtype'])->name."{$josaRo} 성벽을 <M>공격</>합니다.";
+            $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>{$josaYi} {$generalCrewType->name}{$josaRo} 성벽을 공격합니다.";
+            $log[] = "<C>●</>{$generalCrewType->name}{$josaRo} 성벽을 <M>공격</>합니다.";
 
             $general['train'] += 1; //훈련 상승
             if($general['train'] > GameConst::$maxTrainByWar) { $general['train'] = GameConst::$maxTrainByWar; }
@@ -179,17 +182,10 @@ function processWar($general, $city) {
             while($phase < $warphase) {
                 $phase++;
 
-                if($general['level'] == 12) {
-                    $lbonus = $nation['level'] * 2;
-                } elseif($general['level'] >= 5) {
-                    $lbonus = $nation['level'];
-                } else {
-                    $lbonus = 0;
-                }
-                $myAtt = getAtt($general, $nation['tech'], $lbonus);
-                $myDef = getDef($general, $nation['tech']);
-                $cityAtt = getCityAtt($city);
-                $cityDef = getCityDef($city);
+                $myAtt = $generalCrewType->getComputedAttack($general, $nation['tech']);
+                $myDef = $generalCrewType->getComputedDefence($general, $nation['tech']);
+                $cityAtt = $opposeCrewType->getComputedAttack($city, $destnation['tech']);
+                $cityDef = $opposeCrewType->getComputedDefence($city, $destnation['tech']);
 
                 // 감소할 병사 수
                 $cityCrew = GameConst::$armperphase + $myAtt - $cityDef;
@@ -206,35 +202,19 @@ function processWar($general, $city) {
                 $cityCrew *= getDexLog($genDexAtt, ($admin['city_rate']-60)*7200);
                 $myCrew *= getDexLog(($admin['city_rate']-60)*7200, $genDexDef);
 
+                $cityCrew *= $generalCrewType->getAttackCoef($opposeCrewType);
+                $myCrew *= $generalCrewType->getDefenceCoef($opposeCrewType);
+
                 $avoid = 1;
                 // 병종간 특성
-                if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
+                if($generalCrewType->magicCoef) {
                     $int = Util::round(getGeneralIntel($general, true, true, true, false));
-                    if($general['crewtype'] == 30) {
-                        $ratio2 = $int * 5;   // 0~500 즉 50%
-                    } elseif($general['crewtype'] == 31) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($general['crewtype'] == 32) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($general['crewtype'] == 33) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($general['crewtype'] == 34) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($general['crewtype'] == 35) {
-                        $ratio2 = $int * 8;   // 0~800 즉 80%
-                    } elseif($general['crewtype'] == 36) {
-                        $ratio2 = $int * 8;   // 0~800 즉 80%
-                    } elseif($general['crewtype'] == 37) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($general['crewtype'] == 38) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    }
+                    $ratio2 = $int / 100 * $generalCrewType->magicCoef;
 
                     // 특기보정 : 신산
-                    if($general['special2'] == 41) { $ratio2 += 200; }
+                    if($general['special2'] == 41) { $ratio2 += 0.2; }
 
-                    $ratio = rand() % 1000; // 0~999
-                    if($ratio <= $ratio2) {
+                    if(Util::randBool($ratio2)) {
                         $ratio = rand() % 100; // 0~99
                         // 특기보정 : 귀병, 신산, 환술, 신중
                         if($general['special2'] == 40) { $ratio += 20; }
@@ -278,13 +258,8 @@ function processWar($general, $city) {
                             }
                         }
                     }
-                } elseif($general['crewtype'] == 40) { // 정란
-                    $cityCrew = $cityCrew * 1.8;
-                } elseif($general['crewtype'] == 41) { // 충차
-                    $cityCrew = $cityCrew * 2.4;
-                } elseif($general['crewtype'] == 42) { // 벽력거
-                    $cityCrew = $cityCrew * 1.8;
                 }
+
                 //군주 공격 보정 10%
                 if($general['level'] == 12) {
                     $cityCrew = $cityCrew * 1.10;
@@ -311,7 +286,7 @@ function processWar($general, $city) {
 
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio3($general);
+                $ratio = $generalCrewType->getCriticalRatio($general);
                 // 특기보정 : 무쌍, 필살
                 if($general['special2'] == 61) { $ratio += 10; }
                 if($general['special2'] == 71) { $ratio += 20; }
@@ -322,7 +297,7 @@ function processWar($general, $city) {
                 }
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
-                $ratio2 = GameUnitConst::byID($general['crewtype'])->avoid;   //회피율
+                $ratio2 = $generalCrewType->avoid;   //회피율
 				$ratio2 = Util::round($ratio2 * $general['train'] / 100); //훈련 반영
                 //특기보정 : 궁병
                 if($general['special2'] == 51) { $ratio2 += 20; }
@@ -401,7 +376,7 @@ function processWar($general, $city) {
                 // 성격 보정
                 $myRice = CharExperience($myRice, $general['personal']);
                 // 쌀 소모
-                $myRice = ($myRice * 5 * getCrewtypeRice($general['crewtype'], $nation['tech']));
+                $myRice = ($myRice * 5 * getCrewtypeRice($generalCrewType, $nation['tech']));
                 // 결과 쌀
                 $myRice = $general['rice'] - $myRice;
 
@@ -412,7 +387,7 @@ function processWar($general, $city) {
             }
 
             $render_attacker = [
-                'crewtype' => mb_substr(GameUnitConst::byId($general['crewtype'])->name, 0, 2),
+                'crewtype' => mb_substr($generalCrewType->name, 0, 2),
                 'name'=> $general['name'],
                 'remain_crew' => $general['crew'],
                 'killed_crew' => -$mydeathnum
@@ -441,7 +416,7 @@ function processWar($general, $city) {
 
             // 도시쌀 소모 계산
             $opexp = Util::round($opexp / 50 * 0.8);
-            $rice = Util::round($opexp * 5 * getCrewtypeRice(0, 0) * ($admin['city_rate']/100 - 0.2));
+            $rice = Util::round($opexp * 5 * getCrewtypeRice($opposeCrewType, 0) * ($admin['city_rate']/100 - 0.2));
             $destnation['rice'] -= $rice;
             if($destnation['rice'] < 0) { $destnation['rice'] = 0; }
             $query = "update nation set rice='{$destnation['rice']}' where nation='{$destnation['nation']}'";
@@ -529,16 +504,16 @@ function processWar($general, $city) {
                 break;
             // 공격 장수 병사 소진시 실패 처리
             } elseif($general['crew'] <= 0) {
-                $josaYi = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '이');
-                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
+                $josaYi = JosaUtil::pick($generalCrewType->name, '이');
+                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 {$generalCrewType->name}{$josaYi} 퇴각했습니다.";
                 $log[] = "<C>●</>퇴각했습니다.";
 
                 $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 break;
             } elseif($myRice <= Util::round($general['crew']/100)) {
-                $josaYi = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '이');
-                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
+                $josaYi = JosaUtil::pick($generalCrewType->name, '이');
+                $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 {$generalCrewType->name}{$josaYi} 퇴각했습니다.";
                 $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
 
                 $query = "update general set deathnum=deathnum+1 where no='{$general['no']}'";
@@ -548,8 +523,9 @@ function processWar($general, $city) {
         // 장수 대결
         } else {
             $oppose = MYDB_fetch_array($result);
-
+            setLeadershipBonus($oppose, $destnation['level']);
             $opposeCrewType = GameUnitConst::byId($oppose['crewtype']);
+
             $josaYi = JosaUtil::pick($opposeCrewType->name, '이');
             $josaWa = JosaUtil::pick($opposeCrewType->name, '와');
             $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".$opposeCrewType->name."{$josaWa} <Y>{$oppose['name']}</>의 ".$opposeCrewType->name."{$josaYi} 대결합니다.";
@@ -686,25 +662,11 @@ function processWar($general, $city) {
             while($phase < $warphase) {
                 $phase++;
 
-                if($general['level'] == 12) {
-                    $lbonus = $nation['level'] * 2;
-                } elseif($general['level'] >= 5) {
-                    $lbonus = $nation['level'];
-                } else {
-                    $lbonus = 0;
-                }
-                $myAtt = getAtt($general, $nation['tech'], $lbonus);
-                $myDef = getDef($general, $nation['tech']);
+                $myAtt = $generalCrewType->getComputedAttack($general, $nation['tech']);
+                $myDef = $generalCrewType->getComputedDefence($general, $nation['tech']);
 
-                if($oppose['level'] == 12) {
-                    $opplbonus = $destnation['level'] * 2;
-                } elseif($oppose['level'] >= 5) {
-                    $opplbonus = $destnation['level'];
-                } else {
-                    $opplbonus = 0;
-                }
-                $opAtt = getAtt($oppose, $destnation['tech'], $opplbonus);
-                $opDef = getDef($oppose, $destnation['tech']);
+                $opAtt = $opposeCrewType->getComputedAttack($oppose, $destnation['tech']);
+                $opDef = $opposeCrewType->getComputedAttack($oppose, $destnation['tech']);
                 // 감소할 병사 수
                 $myCrew = GameConst::$armperphase + $opAtt - $myDef;
                 $opCrew = GameConst::$armperphase + $myAtt - $opDef;
@@ -724,33 +686,14 @@ function processWar($general, $city) {
                 $myAvoid = 1;
                 $opAvoid = 1;
                 // 병종간 특성
-                if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
+                if($generalCrewType->magicCoef) {
                     $int = Util::round(getGeneralIntel($general, true, true, true, false));
-                    if($general['crewtype'] == 30) {
-                        $ratio2 = $int * 5;   // 0~500 즉 50%
-                    } elseif($general['crewtype'] == 31) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($general['crewtype'] == 32) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($general['crewtype'] == 33) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($general['crewtype'] == 34) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($general['crewtype'] == 35) {
-                        $ratio2 = $int * 8;   // 0~800 즉 80%
-                    } elseif($general['crewtype'] == 36) {
-                        $ratio2 = $int * 8;   // 0~800 즉 80%
-                    } elseif($general['crewtype'] == 37) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($general['crewtype'] == 38) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    }
+                    $ratio2 = $int / 100 * $generalCrewType->magicCoef;
 
                     // 특기보정 : 신산
-                    if($general['special2'] == 41) { $ratio2 += 200; }
+                    if($general['special2'] == 41) { $ratio2 += 0.2; }
 
-                    $ratio = rand() % 1000; // 0~999
-                    if($ratio <= $ratio2) {
+                    if(Util::randBool($ratio2)) {
                         $ratio = rand() % 100;
                         // 특기보정 : 귀병, 신산, 환술, 신중
                         if($general['special2'] == 40) { $ratio += 20; }
@@ -865,33 +808,14 @@ function processWar($general, $city) {
                 }
 
                 // 상대 장수 병종간 특성
-                if(intdiv($oppose['crewtype'], 10) == 3) {   // 귀병
+                if($opposeCrewType->magicCoef) {
                     $int = Util::round(getGeneralIntel($oppose, true, true, true, false));
-                    if($oppose['crewtype'] == 30) {
-                        $ratio2 = $int * 5;   // 0~500 즉 50%
-                    } elseif($oppose['crewtype'] == 31) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($oppose['crewtype'] == 32) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($oppose['crewtype'] == 33) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($oppose['crewtype'] == 34) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($oppose['crewtype'] == 35) {
-                        $ratio2 = $int * 8;   // 0~800 즉 80%
-                    } elseif($oppose['crewtype'] == 36) {
-                        $ratio2 = $int * 8;   // 0~800 즉 80%
-                    } elseif($oppose['crewtype'] == 37) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    } elseif($oppose['crewtype'] == 38) {
-                        $ratio2 = $int * 6;   // 0~600 즉 60%
-                    }
+                    $ratio2 = $int / 100 * $opposeCrewType->magicCoef;
 
                     // 특기보정 : 신산
-                    if($oppose['special2'] == 41) { $ratio2 += 200; }
+                    if($oppose['special2'] == 41) { $ratio2 += 0.2; }
 
-                    $ratio = rand() % 1000; // 0~999
-                    if($ratio <= $ratio2) {
+                    if(Util::randBool($ratio2)) {
                         $ratio = rand() % 100;
                         // 특기보정 : 귀병, 신산, 환술, 신중
                         if($oppose['special2'] == 40) { $ratio += 20; }
@@ -1006,6 +930,7 @@ function processWar($general, $city) {
                 }
 
                 // 특기보정: 돌격
+                //XXX: 목우!!!!
                 if($oppose['crewtype'] == 43 && $general['special2'] != 60) { // 목우
                     $r = 0;
                     $r += $oppose['atmos'] + $oppAtmos + $oppAtmosBonus;
@@ -1019,49 +944,8 @@ function processWar($general, $city) {
                     }
                 }
 
-                // my 입장 상성
-                // 보병계열 > 궁병계열
-                if(intdiv($general['crewtype'], 10) == 0 && intdiv($oppose['crewtype'], 10) == 1) {
-                    $myCrew *= 0.8;
-                    $opCrew *= 1.2;
-                }
-                // 궁병계열 > 기병계열
-                if(intdiv($general['crewtype'], 10) == 1 && intdiv($oppose['crewtype'], 10) == 2) {
-                    $myCrew *= 0.8;
-                    $opCrew *= 1.2;
-                }
-                // 기병계열 > 보병계열
-                if(intdiv($general['crewtype'], 10) == 2 && intdiv($oppose['crewtype'], 10) == 0) {
-                    $myCrew *= 0.8;
-                    $opCrew *= 1.2;
-                }
-                // 차병계열
-                if(intdiv($general['crewtype'], 10) == 4) {
-                    $myCrew *= 1.2;
-                    $opCrew *= 0.8;
-                }
-
-                // op 입장 상성
-                // 보병계열 > 궁병계열
-                if(intdiv($oppose['crewtype'], 10) == 0 && intdiv($general['crewtype'], 10) == 1) {
-                    $opCrew *= 0.8;
-                    $myCrew *= 1.2;
-                }
-                // 궁병계열 > 기병계열
-                if(intdiv($oppose['crewtype'], 10) == 1 && intdiv($general['crewtype'], 10) == 2) {
-                    $opCrew *= 0.8;
-                    $myCrew *= 1.2;
-                }
-                // 기병계열 > 보병계열
-                if(intdiv($oppose['crewtype'], 10) == 2 && intdiv($general['crewtype'], 10) == 0) {
-                    $opCrew *= 0.8;
-                    $myCrew *= 1.2;
-                }
-                // 차병계열
-                if(intdiv($oppose['crewtype'], 10) == 4) {
-                    $opCrew *= 1.2;
-                    $myCrew *= 0.8;
-                }
+                $opCrew *= $generalCrewType->getAttackCoef($opposeCrewType);
+                $myCrew *= $generalCrewType->getDefenceCoef($opposeCrewType);
 
                 //군주 공격 보정 10%
                 if($general['level'] == 12) {
@@ -1099,8 +983,7 @@ function processWar($general, $city) {
                 if($general['special2'] == 50) { $myCrew *= 0.90; }
                 if($general['special2'] == 62) { $myCrew *= 0.90; }
                 if($general['special2'] == 75) {
-                    if($oppose['crewtype'] != 0 && $oppose['crewtype'] != 10 && $oppose['crewtype'] != 20 &&
-                        $oppose['crewtype'] != 30 && $oppose['crewtype'] != 40 && $oppose['crewtype'] != 41)
+                    if($opposeCrewType->reqCities || $opposeCrewType->reqRegions)
                     {
                         $opCrew *= 1.1; $myCrew *= 0.9;
                     }
@@ -1118,8 +1001,7 @@ function processWar($general, $city) {
                 if($oppose['special2'] == 50) { $opCrew *= 0.80; }
                 if($oppose['special2'] == 62) { $myCrew *= 1.10; }
                 if($oppose['special2'] == 75) {
-                    if($general['crewtype'] != 0 && $general['crewtype'] != 10 && $general['crewtype'] != 20 &&
-                        $general['crewtype'] != 30 && $general['crewtype'] != 40 && $general['crewtype'] != 41)
+                    if($generalCrewType->reqCities || $generalCrewType->reqRegions)
                     {
                         $myCrew *= 1.1; $opCrew *= 0.9;
                     }
@@ -1133,7 +1015,7 @@ function processWar($general, $city) {
 
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio3($general);
+                $ratio = $generalCrewType->getCriticalRatio($general);
                 // 특기보정 : 무쌍, 필살
                 if($general['special2'] == 61) { $ratio += 10; }
                 if($general['special2'] == 71) { $ratio += 20; }
@@ -1155,7 +1037,7 @@ function processWar($general, $city) {
                 }
                 //크리
                 $rd = rand() % 100; // 0 ~ 99
-                $ratio = CriticalRatio3($oppose);
+                $ratio = $opposeCrewType->getCriticalRatio($oppose);
                 // 특기보정 : 필살
                 if($oppose['special2'] == 71) { $ratio += 20; }
                 if($ratio >= $rd && $opAvoid == 1) {
@@ -1183,7 +1065,7 @@ function processWar($general, $city) {
 
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
-                $ratio2 = GameUnitConst::byID($general['crewtype'])->avoid;   //회피율
+                $ratio2 = $generalCrewType->avoid;   //회피율
 				$ratio2 = Util::round($ratio2 * $general['train'] / 100); //훈련 반영
                 //특기보정 : 돌격, 궁병
                 if($oppose['special2'] == 60) { $ratio2 -= 100; }
@@ -1206,7 +1088,7 @@ function processWar($general, $city) {
                 }
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
-                $ratio2 = GameUnitConst::byID($oppose['crewtype'])->avoid;   //회피율
+                $ratio2 = $opposeCrewType->avoid;   //회피율
 				$ratio2 = Util::round($ratio2 * $oppose['train'] / 100); //훈련 반영
                 // 특기보정 : 돌격, 궁병
                 if($general['special2'] == 60) { $ratio2 -= 100; }
@@ -1306,7 +1188,7 @@ function processWar($general, $city) {
                 // 성격 보정
                 $myRice = CharExperience($myRice, $general['personal']);
                 // 쌀 소모
-                $myRice = ($myRice * 5 * getCrewtypeRice($general['crewtype'], $nation['tech']));
+                $myRice = ($myRice * 5 * getCrewtypeRice($generalCrewType, $nation['tech']));
                 // 결과 쌀
                 $myRice = $general['rice'] - $myRice;
 
@@ -1315,7 +1197,7 @@ function processWar($general, $city) {
                 // 성격 보정
                 $opRice = CharExperience($opRice, $oppose['personal']);
                 // 쌀 소모
-                $opRice = ($opRice * 5 * getCrewtypeRice($oppose['crewtype'], $destnation['tech']));
+                $opRice = ($opRice * 5 * getCrewtypeRice($opposeCrewType, $destnation['tech']));
                 // 결과 쌀
                 $opRice = $oppose['rice'] - $opRice;
 
@@ -1327,13 +1209,13 @@ function processWar($general, $city) {
             }
 
             $render_attacker = [
-                'crewtype' => mb_substr(GameUnitConst::byId($general['crewtype'])->name, 0, 2),
+                'crewtype' => mb_substr($generalCrewType->name, 0, 2),
                 'name'=> $general['name'],
                 'remain_crew' => $general['crew'],
                 'killed_crew' => -$mydeathnum
             ];
             $render_defender = [
-                'crewtype' => mb_substr(GameUnitConst::byId($oppose['crewtype'])->name, 0, 2),
+                'crewtype' => mb_substr($opposeCrewType->name, 0, 2),
                 'name'=> $oppose['name'],
                 'remain_crew' => $oppose['crew'],
                 'killed_crew' => -$opdeathnum
@@ -1433,14 +1315,14 @@ function processWar($general, $city) {
             // 상대 병사 소진이나 쌀 소진시 다음 장수
             if($oppose['crew'] <= 0 || ($opRice <= Util::round($oppose['crew']/100) && $general['crew'] > 0)) {
                 if($opRice <= Util::round($oppose['crew']/100)) {
-                    $josaYi = JosaUtil::pick(GameUnitConst::byId($oppose['crewtype'])->name, '이');
-                    $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 패퇴했습니다.";
-                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 패퇴했습니다.";
+                    $josaYi = JosaUtil::pick($opposeCrewType->name, '이');
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 {$opposeCrewType->name}{$josaYi} 패퇴했습니다.";
+                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 {$opposeCrewType->name}{$josaYi} 패퇴했습니다.";
                     $opplog[] = "<C>●</>군량 부족으로 패퇴합니다.";
                 } else {
-                    $josaYi = JosaUtil::pick(GameUnitConst::byId($oppose['crewtype'])->name, '이');
-                    $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 전멸했습니다.";
-                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 ".GameUnitConst::byId($oppose['crewtype'])->name."{$josaYi} 전멸했습니다.";
+                    $josaYi = JosaUtil::pick($opposeCrewType->name, '이');
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$oppose['name']}</>의 {$opposeCrewType->name}{$josaYi} 전멸했습니다.";
+                    $log[] = "<C>●</><Y>{$oppose['name']}</>의 {$opposeCrewType->name}{$josaYi} 전멸했습니다.";
                     $opplog[] = "<C>●</>전멸했습니다.";
                 }
                 $opposecount--;
@@ -1457,7 +1339,7 @@ function processWar($general, $city) {
                 // 성격 보정
                 $opexp = CharExperience($opexp, $oppose['personal']);
                 // 쌀 소모
-                $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($oppose['crewtype'], $destnation['tech']));
+                $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($opposeCrewType, $destnation['tech']));
                 if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
 
                 $query = "update general set deathnum=deathnum+1,rice='{$oppose['rice']}',experience=experience+'$opexp',dedication=dedication+'$opexp' where no='{$oppose['no']}'";
@@ -1474,21 +1356,21 @@ function processWar($general, $city) {
             // 공격 장수 병사 소진이나 쌀 소진시 실패 처리
             } elseif($general['crew'] <= 0 || $myRice <= Util::round($general['crew']/100)) {
                 if($myRice <= Util::round($general['crew']/100)) {
-                    $josaYi = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '이');
-                    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
+                    $josaYi = JosaUtil::pick($generalCrewType->name, '이');
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 {$generalCrewType->name}{$josaYi} 퇴각했습니다.";
                     $log[] = "<C>●</>군량 부족으로 퇴각합니다.";
-                    $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
+                    $opplog[] = "<C>●</><Y>{$general['name']}</>의 {$generalCrewType->name}{$josaYi} 퇴각했습니다.";
                 } else {
-                    $josaYi = JosaUtil::pick(GameUnitConst::byId($general['crewtype'])->name, '이');
-                    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
+                    $josaYi = JosaUtil::pick($generalCrewType->name, '이');
+                    $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 {$generalCrewType->name}{$josaYi} 퇴각했습니다.";
                     $log[] = "<C>●</>퇴각했습니다.";
-                    $opplog[] = "<C>●</><Y>{$general['name']}</>의 ".GameUnitConst::byId($general['crewtype'])->name."{$josaYi} 퇴각했습니다.";
+                    $opplog[] = "<C>●</><Y>{$general['name']}</>의 {$generalCrewType->name}{$josaYi} 퇴각했습니다.";
                 }
 
                 // 경험치 상승
-                if(intdiv($oppose['crewtype'], 10) == 3) {   // 귀병
+                if($opposeCrewType->armType == GameUnitConst::T_WIZARD) {   // 귀병
                     $oppose['intel2']++;
-                } elseif(intdiv($oppose['crewtype'], 10) == 4) {   // 차병
+                } elseif($opposeCrewType->armType == GameUnitConst::T_SIEGE) {   // 차병
                     $oppose['leader2']++;
                 } else {
                     $oppose['power2']++;
@@ -1502,7 +1384,7 @@ function processWar($general, $city) {
                 // 성격 보정
                 $opexp = CharExperience($opexp, $oppose['personal']);
                 // 쌀 소모
-                $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($oppose['crewtype'], $destnation['tech']));
+                $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($opposeCrewType, $destnation['tech']));
                 if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
 
                 $query = "update general set rice='{$oppose['rice']}',leader2='{$oppose['leader2']}',power2='{$oppose['power2']}',intel2='{$oppose['intel2']}',atmos='{$oppose['atmos']}',experience=experience+'$opexp',dedication=dedication+'$opexp',killnum=killnum+1 where no='{$oppose['no']}'";
@@ -1542,7 +1424,7 @@ function processWar($general, $city) {
         // 성격 보정
         $opexp = CharExperience($opexp, $oppose['personal']);
         // 쌀 소모
-        $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($oppose['crewtype'], $destnation['tech']));
+        $oppose['rice'] -= ($opexp * 5 * getCrewtypeRice($opposeCrewType, $destnation['tech']));
         if($oppose['rice'] < 0) { $oppose['rice'] = 0; }
 
         $query = "update general set rice='{$oppose['rice']}',experience=experience+'$opexp',dedication=dedication+'$opexp' where no='{$oppose['no']}'";
@@ -1550,9 +1432,9 @@ function processWar($general, $city) {
     }
 
     // 경험치 상승
-    if(intdiv($general['crewtype'], 10) == 3) {   // 귀병
+    if($generalCrewType->armType == GameUnitConst::T_WIZARD) {   // 귀병
         $general['intel2'] += $exp2;
-    } elseif(intdiv($general['crewtype'], 10) == 4) {   // 차병
+    } elseif($generalCrewType->armType == GameUnitConst::T_SIEGE) {   // 차병
         $general['leader2'] += $exp2;
     } else {
         $general['power2'] += $exp2;
@@ -1565,7 +1447,7 @@ function processWar($general, $city) {
     // 성격 보정
     $exp = CharExperience($exp, $general['personal']);
     // 쌀 소모
-    $general['rice'] -= ($exp * 5 * getCrewtypeRice($general['crewtype'], $nation['tech']));
+    $general['rice'] -= ($exp * 5 * getCrewtypeRice($generalCrewType, $nation['tech']));
     if($general['rice'] < 0) { $general['rice'] = 0; }
 
     $query = "update general set rice='{$general['rice']}',dedication=dedication+'$exp',experience=experience+'$exp' where no='{$general['no']}'";
@@ -1579,41 +1461,6 @@ function processWar($general, $city) {
     pushWorldHistory($history);
 
     return $deadAmount;
-}
-
-
-function CriticalRatio3($general) {
-    //  무장 무력 : 65 5%, 70 10%, 75 15%, 80 20%
-    //  지장 지력 : 65 5%, 70  8%, 75 10%, 80 13%
-    //충차장 통솔:  65 5%, 70  8%, 75 10%, 80 13%
-
-    $crewtype = intdiv($general['crewtype'], 10);
-
-    if($crewtype == 3){ //지장
-        $mainstat = getGeneralIntel($general, false, true, true, false);
-    }
-    else if($crewtype == 4){ //병기
-        $mainstat = getGeneralLeadership($general, false, true, true, false);
-    }
-    else{ //무장
-        $mainstat = getGeneralPower($general, false, true, true, false);
-    }
-
-    $ratio = max($mainstat - 65, 0);
-
-    if ($crewtype >= 3) {
-       $ratio *= 0.4;
-    }
-    else{
-        $ratio *= 0.5;
-    }
-
-    $ratio = round($ratio);
-    $ratio += 5;
-
-    if($ratio > 50) $ratio = 50;
-
-    return $ratio;
 }
 
 function CriticalScore2($score) {
@@ -1632,52 +1479,13 @@ function getCrew($crew, $youatmos, $mytrain) {
 }
 
 function getCrewtypeRice($crewtype, $tech) {
-    if(!$crewtype) { $crewtype = 0; }
-    $cost = GameUnitConst::byID($crewtype)->rice / 10;
+    $cost = $crewtype->rice / 10;
     return $cost * getTechCost($tech);
 }
 
 //////////////////////////////////////////////////////////////
 // 표준 공 / 수 반환 수치는 약 0이 되게 (100~550)
 //////////////////////////////////////////////////////////////
-
-function getAtt($general, $tech, $lbonus) {
-    $att = GameUnitConst::byID($general['crewtype'])->attack + getTechAbil($tech);
-    
-    $general['lbonus'] = $lbonus;
-
-    if(intdiv($general['crewtype'], 10) == 3) {   // 귀병 지100%
-        $ratio = getGeneralIntel($general, true, true, true)*2 - 40;
-    } elseif(intdiv($general['crewtype'], 10) == 4) {   // 차병 통100%
-        $ratio = getGeneralLeadership($general, true, true, true)*2 - 40;
-    } else {
-        $ratio = getGeneralPower($general, true, true, true)*2 - 40; //10일때 -20, 70일때 100, 100일때 160
-    }
-    if($ratio <  10) { $ratio = 10; }
-    if($ratio > 100) { $ratio = 50 + $ratio/2; }    // 100보다 큰 경우는 상승률 1/2
-    $att = $att * $ratio / 100;
-
-    return $att;
-}
-
-function getDef($general, $tech) {
-    $def = GameUnitConst::byID($general['crewtype'])->defence + getTechAbil($tech);
-
-    $crew = ($general['crew'] / (7000 / 30)) + 70;    // 5000명일때 91점 7000명일때 100점 10000명일때 113점
-    $def = $def * $crew / 100;
-
-    return $def;
-}
-
-function getCityAtt($city) {
-    $att = ($city['def']*0.1 + $city['wall']*0.9) / 500 + 200;    //50000일때 300점 100000일때 400점
-    return $att;
-}
-
-function getCityDef($city) {
-    $def = ($city['def']*0.1 + $city['wall']*0.9) / 500 + 200;
-    return $def;
-}
 
 function getRate($admin, $type, $dtype) {
     $t = "{$dtype}{$type}";

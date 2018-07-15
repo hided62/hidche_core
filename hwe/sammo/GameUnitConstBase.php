@@ -32,6 +32,15 @@ class GameUnitConstBase{
 
     protected static $_buildData = [
         [
+            -1, self::T_CASTLE, '성벽',
+            100, 100, 7, 0, 0,   99,  9,    
+            999999, null,     null,     999999, 
+            [],//성벽은 공격할 수 없다.
+            [],
+            ['성벽입니다.','생성할 수 없습니다.']
+        ],
+
+        [
             0, self::T_FOOTMAN, '보병',
             100, 150, 7, 10, 0,   9,  9,    
             0, null,     null,     0, 
