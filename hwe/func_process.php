@@ -956,7 +956,7 @@ function process_11(&$general, $type) {
         $ownCities[$ownCity] = 1;
         $ownRegions[CityConst::byId($ownCity)->region] = 1;
     }
-    $valid = $crewTypeObj->isValid($ownCities, $ownRegions, $admin['year'] - $admin['startyear'], $tech);
+    $valid = $crewTypeObj->isValid($ownCities, $ownRegions, $year - $startyear, $tech);
 
     if(!$valid) {
         $actLog->pushGeneralActionLog("현재 $dtype 할 수 없는 병종입니다. $dtype 실패. <1>$date</>");
