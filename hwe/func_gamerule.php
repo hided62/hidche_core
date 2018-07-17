@@ -116,7 +116,7 @@ function getSpecial2($leader, $power, $intel, $nodex=1, $dex0=0, $dex10=0, $dex2
 
 function getGenDex($general, $type) {
     //XXX: 지금은 동작하지만.. 병종 구성이 보궁기귀차 에서 바뀌면...
-    $ntype = GameUnitCons::byId($type)->armType * 10;
+    $ntype = GameUnitConst::byId($type)->armType * 10;
     return $general["dex{$ntype}"]??0;
 }
 
