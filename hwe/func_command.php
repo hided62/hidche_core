@@ -772,7 +772,7 @@ parent.moveProcessing(<?=$commandtype?>, <?=Json::encode($turn)?>);
 
 
 function EncodeCommand($fourth, $third, $double, $command) {
-    return Json::encode($command, $double, $third, $fourth);
+    return Json::encode([$command, $double, $third, $fourth]);
 }
 
 function DecodeCommand($str) {

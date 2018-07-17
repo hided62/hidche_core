@@ -183,7 +183,7 @@ function processAI($no) {
     $general = MYDB_fetch_array($result);
 
     // 입력된 턴이 있으면 그것 실행
-    if($general['turn0'] != EncodeCommand(0, 0, 0, 0)) {
+    if(DecodeCommand($general['turn0'])[0] != 0) {
         return;
     }
 

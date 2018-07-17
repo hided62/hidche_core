@@ -1870,7 +1870,7 @@ function PreprocessCommand($no) {
             $josaUl = JosaUtil::pick($general['item'], '을');
             $log[0] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용하여 치료합니다!";
             pushGenLog($general, $log);
-        } elseif($general['injury'] > 10 && $general['item'] == 1 && $general['turn0'] != EncodeCommand(0, 0, 0, 50)) {
+        } elseif($general['injury'] > 10 && $general['item'] == 1 && DecodeCommand($general['turn0'])[0] != 50) {
             //환약 사용
             $query = "update general set injury=0,item=0 where no='$no'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
