@@ -192,6 +192,10 @@ class Scenario{
         $this->gameConf = array_merge($stat, $this->data['map']??[], $this->data['const']??[]);
 
         $this->iconPath = $this->data['iconPath']??$default['iconPath'];
+
+        $this->gameConf['mapName'] = $this->gameConf['mapName']??'che';
+        $this->gameConf['unitSet'] = $this->gameConf['unitSet']??'che';
+
         return $this->gameConf;
     }
 
@@ -246,6 +250,14 @@ class Scenario{
     public function getNation(){
         $this->initFull();
         return $this->nations;
+    }
+    
+    public function getMapTheme(){
+        return $this->gameConf['mapName'];
+    }
+
+    public function getUnitSet(){
+        return $this->gameConf['unitSet'];
     }
 
     public function getScenarioBrief(){
@@ -361,10 +373,10 @@ class Scenario{
 
         $mapPath = __dir__.'/../scenario/map';
         $unitPath = __dir__.'/../scenario/unit';
-        $mapName = $this->gameConf['mapName']??'che';
-        $unitSet = $this->gameConf['unitSet']??'che';
-        $this->gameConf['mapName'] = $mapName;
-        $this->gameConf['unitSet'] = $unitSet;
+
+        $mapName = $this->gameConf['mapName'];
+        $unitSet = $this->gameConf['unitSet'];
+
 
         if(!file_exists("$mapPath/$mapName.php")){
             throw new \RuntimeException('맵 파일이 올바르게 지정되지 않음! : '.$mapName);

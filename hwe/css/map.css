@@ -27,6 +27,30 @@
     position:relative;
 }
 
+.map_body .map_bglayer1{
+    width:100%;
+    height:100%;
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+.map_body .map_bglayer2{
+    width:100%;
+    height:100%;
+    position:absolute;
+    left:0;
+    top:0;
+}
+
+.map_body .map_bgroad{
+    width:100%;
+    height:100%;
+    position:absolute;
+    left:0;
+    top:0;
+}
+
 .world_map .city_tooltip{
     position: absolute;
     z-index:6;

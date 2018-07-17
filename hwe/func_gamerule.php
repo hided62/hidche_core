@@ -1402,6 +1402,10 @@ function checkEmperior() {
     $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
     $serverName = UniqueConst::$serverName;
 
+    $db->update('ng_games', [
+        'winner_nation'=>$nation['nation']
+    ], 'server_id=%s', UniqueConst::$serverID);
+
     $db->insert('emperior', [
         'phase'=>$serverName.$serverCnt.'기',
         'server_id'=>UniqueConst::$serverID,

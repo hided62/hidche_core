@@ -13,6 +13,8 @@ $connect=$db->get();
 
 increaseRefresh("중원정보", 1);
 
+$mapTheme = $gameStor->map_theme??'che';
+
 $query = "select no,nation from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
@@ -214,7 +216,7 @@ for($i=0; $i < $nationcount; $i++) {
     </tr>
     <tr>
         <td width=698 height=420>
-            <?=getMapHtml()?>
+            <?=getMapHtml($mapTheme)?>
         </td>
         <td width=139 valign=top><div style='background-color:#cccccc;color:black;text-align:center'>국명</div><?=$nationStr?></td>
         <td width=70 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>국력</div><?=$powerStr?></td>

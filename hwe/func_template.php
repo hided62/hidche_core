@@ -203,11 +203,18 @@ function formatName(string $name, int $npc): string{
     return $name;
 }
 
-function getMapHtml(){
-    //NOTE: 필요한가?
+function getMapHtml(?string $mapTheme=null){
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 
-    return $templates->render('map');
+    if($mapTheme === null){
+        $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $mapTheme = $gameStor->map_theme??'che';
+    }
+
+    return $templates->render('map', [
+        'mapTheme'=>$mapTheme
+    ]);
 }
 
 function getInvitationList(array $nationList){

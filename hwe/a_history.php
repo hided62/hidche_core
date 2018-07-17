@@ -25,7 +25,7 @@ if($serverID === UniqueConst::$serverID){
     increaseRefresh("연감", 1);
 }
 
-$admin = $gameStor->getValues(['startyear','year','month']);
+$admin = $gameStor->getValues(['startyear','year','month','map_theme']);
 
 $query = "select con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
@@ -44,6 +44,13 @@ $s = $s_year * 12 + $s_month;
 
 [$e_year, $e_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year DESC, month DESC LIMIT 1', $serverID);
 $e = $e_year * 12 + $e_month;
+
+if($serverID !== UniqueConst::$serverID){
+    $mapTheme = $db->queryFirstColumn('SELECT map_theme FROM ng_games WHERE server_id=%s', $serverID)??'che';
+}
+else{
+    $mapTheme = $admin['map_theme']??'che';
+}
 
 //FIXME: $yearmonth가 올바르지 않을 경우에 처리가 필요.
 if($serverID !== UniqueConst::$serverID && !$yearmonth){
@@ -91,7 +98,7 @@ if ($month <= 0) {
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('d_shared/base_map.js')?>
+<?=WebUtil::printJS("js/map/theme_{$mapTheme}.js")?>
 <?=WebUtil::printJS('js/map.js')?>
 
 <?=WebUtil::printCSS('../d_shared/common.css')?>
@@ -133,7 +140,7 @@ $history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM hist
     <tr><td colspan=5 align=center id=bg1>중 원 지 도</td></tr>
     <tr height=520>
         <td width=698>
-            <?=getMapHtml();?>
+            <?=getMapHtml($mapTheme);?>
             
         <td width=139 valign=top><div style='background-color:#cccccc;color:black;text-align:center'>국명</div><?=$history['nation']?></td>
         <td width=70 valign=top style='text-align:center'><div style='background-color:#cccccc;color:black;'>국력</div><?=$history['power']?></td>

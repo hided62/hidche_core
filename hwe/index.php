@@ -44,7 +44,7 @@ if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
     ], 'owner=%i', $userID);
 }
 
-$admin = $gameStor->getValues(['develcost','online','conlimit','tournament','tnmt_type','turnterm','scenario','scenario_text','extended_general','fiction','npcmode','vote','vote_title']);
+$admin = $gameStor->getValues(['develcost','online','conlimit','tournament','tnmt_type','turnterm','scenario','scenario_text','extended_general','fiction','npcmode','vote','vote_title','map_theme']);
 
 $plock = $db->queryFirstField('SELECT plock FROM plock LIMIT 1');
 
@@ -76,7 +76,7 @@ if ($admin['npcmode'] == 0) {
     $valid = 1;
 }
 $color = "cyan";
-
+$mapTheme = $admin['map_theme'];
 ?>
 <!DOCTYPE html>
 <html>
@@ -230,7 +230,7 @@ else if($session->userGrade == 4){
 <table class="tb_layout bg0" style="width:1000px;">
     <tr>
         <td width=698 height=520 colspan=2>
-            <?=getMapHtml()?>
+            <?=getMapHtml($mapTheme)?>
         </td>
         <td width=298 rowspan=4><iframe seamless="seamless" name=commandlist src='commandlist.php' width=298 height=700 frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
     </tr>

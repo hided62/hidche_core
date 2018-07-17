@@ -188,6 +188,7 @@ class ResetHelper{
             'startyear'=>$startyear,
             'year'=> $year,
             'month'=> $month,
+            'map_theme' => $scenarioObj->getMapTheme(),
             'msg'=>'공지사항',//TODO:공지사항
             'maxgeneral'=>GameConst::$defaultMaxGeneral,
             'maxnation'=>GameConst::$defaultMaxNation,
@@ -225,6 +226,7 @@ class ResetHelper{
             'server_id'=>$serverID,
             'date'=>$turntime,
             'winner_nation'=>null,
+            'map_theme'=>$scenarioObj->getMapTheme(),
             'scenario'=>$scenario,
             'scenario_name'=>$scenarioObj->getTitle(),
             'env'=>Json::encode($env)

@@ -41,18 +41,44 @@
         url('_tK_gameImagePath_/winter.gif') no-repeat right;
 }
 
-.map_spring .map_body{
-    background: url('_tK_gameImagePath_/map1.jpg') no-repeat;
+/*체 지도*/
+.map_theme_che.map_spring .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/che/map_spring.jpg') no-repeat;
 }
 
-.map_summer .map_body{
-    background: url('_tK_gameImagePath_/map2.jpg') no-repeat;
+.map_theme_che.map_summer .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/che/map_summer.jpg') no-repeat;
 }
 
-.map_fall .map_body{
-    background: url('_tK_gameImagePath_/map3.jpg') no-repeat;
+.map_theme_che.map_fall .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/che/map_fall.jpg') no-repeat;
 }
 
-.map_winter .map_body{
-    background: url('_tK_gameImagePath_/map4.jpg') no-repeat;
+.map_theme_che.map_winter .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/che/map_winter.jpg') no-repeat;
+}
+
+.map_theme_che .map_bgroad{
+    background: url('_tK_gameImagePath_/map/che/che_road.png') no-repeat;
+}
+
+/*미니체 지도*/
+.map_theme_miniche.map_spring .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/che/map_spring.jpg') no-repeat;
+}
+
+.map_theme_miniche.map_summer .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/che/map_summer.jpg') no-repeat;
+}
+
+.map_theme_miniche.map_fall .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/che/map_fall.jpg') no-repeat;
+}
+
+.map_theme_miniche.map_winter .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/che/map_winter.jpg') no-repeat;
+}
+
+.map_theme_miniche .map_bgroad{
+    background: url('_tK_gameImagePath_/map/che/miniche_road.png') no-repeat;
 }

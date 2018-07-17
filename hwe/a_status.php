@@ -14,6 +14,8 @@ $connect=$db->get();
 increaseRefresh("세력도", 2);
 checkTurn();
 
+$mapTheme = $gameStor->map_theme??'che';
+
 $query = "select con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
@@ -60,7 +62,7 @@ $(function(){
             <?=getGeneralPublicRecordRecent(34)?>
         </td>
         <td width=698>
-            <?=getMapHtml()?>
+            <?=getMapHtml($mapTheme)?>
         </td>
     </tr>
     <tr>

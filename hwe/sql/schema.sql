@@ -551,6 +551,7 @@ CREATE TABLE IF NOT EXISTS `ng_games` (
 	`server_id` CHAR(20) NOT NULL,
 	`date` DATETIME NOT NULL,
 	`winner_nation` INT(11) NULL DEFAULT NULL,
+	`map` VARCHAR(50) NULL DEFAULT NULL,
 	`scenario` INT(11) NOT NULL,
 	`scenario_name` TEXT NOT NULL,
 	`env` TEXT NOT NULL COMMENT 'json',
