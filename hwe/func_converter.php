@@ -615,7 +615,7 @@ function getDexLog($dex1, $dex2) {
 }
 
 
-function getWeapName($weap) : string {
+function getWeapName($weap) : ?string {
     switch($weap) {
         case  0: $weapname = '-'; break;
         case  1: $weapname = '단도(+1)'; break;
@@ -649,7 +649,7 @@ function getWeapName($weap) : string {
     return $weapname;
 }
 
-function getWeapEff($weap) : int{
+function getWeapEff($weap) : ?int{
     switch($weap) {
         case  7: $weap =  7; break;
         case  8: $weap =  7; break;
@@ -676,7 +676,7 @@ function getWeapEff($weap) : int{
     return $weap;
 }
 
-function getBookName($book) : string {
+function getBookName($book) : ?string {
     switch($book) {
         case  0: $bookname = '-'; break;
         case  1: $bookname = '효경전(+1)'; break;
@@ -710,7 +710,7 @@ function getBookName($book) : string {
     return $bookname;
 }
 
-function getBookEff($book) : int {
+function getBookEff($book) : ?int {
     switch($book) {
         case  7: $book =  7; break;
         case  8: $book =  7; break;
@@ -737,7 +737,7 @@ function getBookEff($book) : int {
     return $book;
 }
 
-function getHorseName($horse) : string {
+function getHorseName($horse) : ?string {
     switch($horse) {
         case  0: $horsename = '-'; break;
         case  1: $horsename = '노기(+1)'; break;
@@ -771,7 +771,7 @@ function getHorseName($horse) : string {
     return $horsename;
 }
 
-function getHorseEff($horse) : int {
+function getHorseEff($horse) : ?int {
     switch($horse) {
         case  7: $horse =  7; break;
         case  8: $horse =  7; break;
