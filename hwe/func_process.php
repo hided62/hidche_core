@@ -952,7 +952,7 @@ function process_11(&$general, $type) {
 
     $ownCities = [];
     $ownRegions = [];
-    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $me['nation']) as $ownCity){
+    foreach($db->queryFirstColumn('SELECT city FROM city WHERE nation = %i', $general['nation']) as $ownCity){
         $ownCities[$ownCity] = 1;
         $ownRegions[CityConst::byId($ownCity)->region] = 1;
     }
