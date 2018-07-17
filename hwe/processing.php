@@ -251,7 +251,7 @@ function command_11($turn, $command, bool $is모병 = false) {
             }
     
             $crewObj->baseRice = $unit->rice * getTechCost($tech);
-            $crewObj->baseCost = CharCost(getTechCost($tech), $me['personal']);
+            $crewObj->baseCost = CharCost($unit->costWithTech($tech), $me['personal']);
 
             $armType = $unit->armType;
             if($me['special2'] == 50 && $armType == GameUnitConst::T_FOOTMAN){
