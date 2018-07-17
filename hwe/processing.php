@@ -221,7 +221,7 @@ function command_11($turn, $command, bool $is모병 = false) {
 
     $leader = getGeneralLeadership($me, true, true, true);
     $maxCrew = $leader - Util::round($me['crew']/100);
-    $abil = getTechAbil($nation['tech']);
+    $abil = getTechAbil($tech);
 
     $armTypes = [];
 
@@ -229,7 +229,7 @@ function command_11($turn, $command, bool $is모병 = false) {
         $armTypeCrews = [];
         
         foreach(GameUnitConst::byType($armType) as $unit){
-            $crewObj = new stdClass;
+            $crewObj = new \stdClass;
             if(!$unit->isValid($ownCities, $ownRegions, $relativeYear, $tech)){
                 continue; //TODO: 불가능한 병종도 보여줄 필요가 있음.
             }
@@ -244,7 +244,7 @@ function command_11($turn, $command, bool $is모병 = false) {
             }
     
             $crewObj->baseRice = $unit->rice * getTechCost($tech);
-            $crewObj->baseCost = CharCost($unit->getTechCost($tech), $me['personal']);
+            $crewObj->baseCost = CharCost(getTechCost($tech), $me['personal']);
 
             $armType = $unit->armType;
             if($me['special2'] == 50 && $armType == GameUnitConst::T_FOOTMAN){
@@ -275,7 +275,7 @@ function command_11($turn, $command, bool $is모병 = false) {
                 $crewObj->img = ServConfig::$sharedIconPath."/default.jpg"; 
             }
             else{
-                $crewObj->img = ServConfig::$gameImagePath."/weap{$unit->id}.png";
+                $crewObj->img = ServConfig::$gameImagePath."/weap".$unit->id.".png";
             }
             
             $crewObj->baseRiceShort = round($crewObj->baseRice, 1);
@@ -304,6 +304,7 @@ function command_11($turn, $command, bool $is모병 = false) {
         'techLevelText'=>getTechCall($tech),
         'tech'=>$tech,
         'leader'=>$leader,
+        'crewType'=>GameUnitConst::byId($me['crewtype'])->id,
         'crewTypeName'=>GameUnitConst::byId($me['crewtype'])->name,
         'crew'=>$me['crew'],
         'maxCrew'=>$maxCrew,

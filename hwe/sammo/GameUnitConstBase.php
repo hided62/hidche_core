@@ -451,6 +451,7 @@ class GameUnitConstBase{
         static::$constName = $constName;
         static::$constCity = $constCity;
         static::$constRegion = $constRegion;
+        static::$constType = $constType;
         
     }
 }

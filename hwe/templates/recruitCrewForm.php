@@ -1,12 +1,12 @@
 <script>
 var currentTech = <?=$tech?>;
-var leadership = <?=$leadership?>;
+var leader = <?=$leader?>;
 var currentCrewType = <?=$crewType?>;
 var currentCrew = <?=$crew?>
 var currentGold = <?=$gold?>;
 var is모병 = <?=($commandName=='모병')?'true':'false'?>;
 
-function calc(id) {
+window.calc = function(id) {
     var $obj = $('#crewType{0}'.format(id));
     var crew = $obj.find('.form_double').val();
     var baseCost = $obj.data('cost');
@@ -60,6 +60,7 @@ function calc(id) {
 </thead>
 <tbody>
 <?php foreach($armTypes as [$armName,$armTypeCrews]): ?>
+    <tr><td colspan=10><?=$armName?> 계열</td></tr>
     <?php foreach($armTypeCrews as $crewObj): ?>
         <tr 
             id="crewType<?=$crewObj->id?>"
@@ -67,7 +68,7 @@ function calc(id) {
             data-rice="<?=$crewObj->baseRice?>"
             data-cost="<?=$crewObj->baseCost?>"
         >
-            <td style='background-no-repeat center url("<?=$crewObj->img?>;backround-size:64px;background-color:#222222;'></td>
+            <td style='background-no-repeat center url("<?=$crewObj->img?>");backround-size:64px;background-color:#222222;'></td>
             <td style='text-align:center;vertical-align:middle;'><?=$crewObj->name?></td>
             <td style='text-align:center;vertical-align:middle;'><?=$crewObj->attack?></td>
             <td style='text-align:center;vertical-align:middle;'><?=$crewObj->defence?></td>

@@ -39,6 +39,7 @@ class GameUnitDetail{
         array $defenceCoef,
         array $info
     ){
+        $this->id = $id;
         $this->name = $name;
         $this->armType = $armType;
         $this->attack = $attack;
