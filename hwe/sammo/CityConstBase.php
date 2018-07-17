@@ -350,7 +350,5 @@ class CityConstBase{
         }, array_values(static::$constID));
 
         DB::db()->insert('city', $queries);
-
-        return $cityPositions;
     }
 }

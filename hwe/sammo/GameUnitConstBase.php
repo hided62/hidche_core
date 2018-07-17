@@ -365,6 +365,7 @@ class GameUnitConstBase{
                 $defence,
                 $speed,
                 $avoid,
+                $magicCoef,
                 $cost,
                 $rice,
                 $reqTech,
@@ -384,15 +385,19 @@ class GameUnitConstBase{
                 $info[] = "기술력 {$reqTech} 이상 필요";
             }
 
-            $reqCities = array_map(function($reqCity) use (&$info){
-                $info[] = "{$reqCity} 소유시 가능";
-                return CityConst::byName($reqCity)->id;
-            }, $reqCities);
+            if($reqCities !== null){
+                $reqCities = array_map(function($reqCity) use (&$info){
+                    $info[] = "{$reqCity} 소유시 가능";
+                    return CityConst::byName($reqCity)->id;
+                }, $reqCities);
+            }
 
-            $reqRegions = array_map(function($reqRegion) use (&$info){
-                $info[] = "{$reqRegion} 지역 소유시 가능";
-                return CityConst::$regionMap[$reqRegion];
-            }, $reqRegions);
+            if($reqRegions !== null){
+                $reqRegions = array_map(function($reqRegion) use (&$info){
+                    $info[] = "{$reqRegion} 지역 소유시 가능";
+                    return CityConst::$regionMap[$reqRegion];
+                }, $reqRegions);
+            }
             
             $unit = new GameUnitDetail(
                 $id,
@@ -402,6 +407,7 @@ class GameUnitConstBase{
                 $defence,
                 $speed,
                 $avoid,
+                $magicCoef,
                 $cost,
                 $rice,
                 $reqTech,
@@ -420,18 +426,23 @@ class GameUnitConstBase{
             }
             $constType[$armType][] = $unit;
 
-            foreach($unit->reqCities as $reqCity){
-                if(!key_exists($reqCity, $constCity)){
-                    $constCity[$reqCity] = [];
+            if($unit->reqCities){
+                foreach($unit->reqCities as $reqCity){
+                    if(!key_exists($reqCity, $constCity)){
+                        $constCity[$reqCity] = [];
+                    }
+                    $constCity[$reqCity][] = $unit;
                 }
-                $constCity[$reqCity][] = $unit;
             }
+            
 
-            foreach($unit->reqRegions as $reqRegion){
-                if(!key_exists($reqRegion, $constRegion)){
-                    $constRegion[$reqRegion] = [];
+            if($unit->reqRegions){
+                foreach($unit->reqRegions as $reqRegion){
+                    if(!key_exists($reqRegion, $constRegion)){
+                        $constRegion[$reqRegion] = [];
+                    }
+                    $constRegion[$reqRegion][] = $unit;
                 }
-                $constRegion[$reqRegion][] = $unit;
             }
 
         }

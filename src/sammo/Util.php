@@ -132,9 +132,6 @@ class Util extends \utilphp\util
      * params에 맞도록 class를 생성해주는 함수
      */
     public static function generatePHPClassFile(string $destFilePath, array $params, ?string $srcClassName=null, string $namespace='sammo'){
-        if ($destFilePath === $srcFilePath) {
-            return 'invalid destFilePath';
-        }
         if (!is_writable(dirname($destFilePath))) {
             return 'destFilePath is not writable';
         }
