@@ -205,6 +205,13 @@ function command_11($turn, $command, bool $is모병 = false) {
     );
 
     [$nationLevel, $tech] = $db->queryFirstList('SELECT level,tech FROM nation WHERE nation=%i', $me['nation']);
+    if(!$nationLevel){
+        $nationLevel = 0;
+    }
+
+    if(!$tech){
+        $tech = 0;
+    }
 
     $lbonus = setLeadershipBonus($me, $nationLevel);
 

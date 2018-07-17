@@ -2,7 +2,7 @@
 var currentTech = <?=$tech?>;
 var leader = <?=$leader?>;
 var currentCrewType = <?=$crewType?>;
-var currentCrew = <?=$crew?>
+var currentCrew = <?=$crew?>;
 var currentGold = <?=$gold?>;
 var is모병 = <?=($commandName=='모병')?'true':'false'?>;
 
@@ -12,7 +12,7 @@ window.calc = function(id) {
     var baseCost = $obj.data('cost');
     var $cost = $obj.find('.form_cost');
 
-    var cost = crew * baseCost.val();
+    var cost = crew * baseCost;
     if(is모병){
         cost *= 2;
     }
@@ -68,7 +68,7 @@ window.calc = function(id) {
             data-rice="<?=$crewObj->baseRice?>"
             data-cost="<?=$crewObj->baseCost?>"
         >
-            <td style='background-no-repeat center url("<?=$crewObj->img?>");backround-size:64px;background-color:#222222;'></td>
+            <td style='background:#222222 no-repeat center url("<?=$crewObj->img?>");background-size:64px'></td>
             <td style='text-align:center;vertical-align:middle;'><?=$crewObj->name?></td>
             <td style='text-align:center;vertical-align:middle;'><?=$crewObj->attack?></td>
             <td style='text-align:center;vertical-align:middle;'><?=$crewObj->defence?></td>
