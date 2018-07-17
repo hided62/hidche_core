@@ -942,10 +942,12 @@ function process_11(&$general, $type) {
     
     if($general['gold'] < $cost){
         $actLog->pushGeneralActionLog("자금이 모자랍니다. $dtype 실패. <1>$date</>");
+        return;
     }
 
-    if($general['rice'] < $crew) {
+    if($general['rice'] < $crew / 100) {
         $actLog->pushGeneralActionLog("군량이 모자랍니다. $dtype 실패. <1>$date</>");
+        return;
     }
 
     $ownCities = [];
