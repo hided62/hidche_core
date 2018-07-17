@@ -109,7 +109,7 @@ class ActionLogger{
             return;
         }
 
-        $text = $this->formatText($formatType);
+        $text = $this->formatText($text, $formatType);
         $this->generalHistoryLog[] = $text;
     }
 
@@ -124,7 +124,7 @@ class ActionLogger{
             return;
         }
 
-        $text = $this->formatText($formatType);
+        $text = $this->formatText($text, $formatType);
         $this->generalActionLog[] = $text;
     }
 
@@ -139,7 +139,7 @@ class ActionLogger{
             return;
         }
 
-        $text = $this->formatText($formatType);
+        $text = $this->formatText($text, $formatType);
         $this->generalBattleResultLog[] = $text;
     }
 
@@ -154,7 +154,7 @@ class ActionLogger{
             return;
         }
 
-        $text = $this->formatText($formatType);
+        $text = $this->formatText($text, $formatType);
         $this->generalBattleDetailLog[] = $text;
     }
 
@@ -169,7 +169,7 @@ class ActionLogger{
             return;
         }
 
-        $text = $this->formatText($formatType);
+        $text = $this->formatText($text, $formatType);
         $this->nationalHistoryLog[] = $text;
     }
 
@@ -184,7 +184,7 @@ class ActionLogger{
             return;
         }
 
-        $text = $this->formatText($formatType);
+        $text = $this->formatText($text, $formatType);
         $this->globalActionLog[] = $text;
     }
 
@@ -199,7 +199,7 @@ class ActionLogger{
             return;
         }
 
-        $text = $this->formatText($formatType);
+        $text = $this->formatText($text, $formatType);
         $this->globalHistoryLog[] = $text;
     }
 
