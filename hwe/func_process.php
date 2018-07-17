@@ -872,7 +872,7 @@ function process_11(&$general, $type) {
         $defaulttrain = GameConst::$defaultTrainHigh;
     }
 
-    [$startYear, $year, $month] = $gameStor->getValuesAsArray(['startyear, year, month']);
+    [$startYear, $year, $month] = $gameStor->getValuesAsArray(['startyear', 'year', 'month']);
 
     $actLog = new ActionLogger($general['no'], $general['nation'], $year, $month);
 

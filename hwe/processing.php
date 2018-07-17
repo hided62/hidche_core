@@ -217,7 +217,7 @@ function command_11($turn, $command, bool $is모병 = false) {
 
     $ownCities = [];
     $ownRegions = [];
-    [$year, $startYear] = $gameStor->getValuesAsArray(['year','startyear']);
+    [$year, $startyear] = $gameStor->getValuesAsArray(['year','startyear']);
 
     $relativeYear = $year - $startyear;
 
