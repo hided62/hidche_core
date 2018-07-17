@@ -94,6 +94,15 @@
     background:transparent;
 }
 
+.world_map .city_detail_name{
+    background-color:rgba(0,0,0,0.5);
+    font-size:10px;
+    position:absolute;
+    white-space:nowrap;
+    left:70%;
+    bottom:-10px;
+    color:white;
+}
 
 .city_base{
     position:absolute;
@@ -337,6 +346,8 @@
 }
 
 /* Basic */
+
+
 
 .world_map.map_basic .city_filler{
     position:absolute;

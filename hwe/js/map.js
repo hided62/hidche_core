@@ -276,6 +276,9 @@ function reloadWorldMap(option){
                 }
                 $imgObj.append($flagObj);
             }
+
+            var $nameObj = $('<span class="city_detail_name">{0}</span>'.format(city.name));
+            $imgObj.append($nameObj);
          
 
             $map_body.append($cityObj);
@@ -336,6 +339,8 @@ function reloadWorldMap(option){
                 $imgObj.append($capitalObj);
             }
 
+            var $nameObj = $('<span class="city_detail_name">{0}</span>'.format(city.name));
+            $imgObj.append($nameObj);
 
             $map_body.append($cityObj);
         });
