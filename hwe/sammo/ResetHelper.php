@@ -226,7 +226,7 @@ class ResetHelper{
             'server_id'=>$serverID,
             'date'=>$turntime,
             'winner_nation'=>null,
-            'map_theme'=>$scenarioObj->getMapTheme(),
+            'map'=>$scenarioObj->getMapTheme(),
             'scenario'=>$scenario,
             'scenario_name'=>$scenarioObj->getTitle(),
             'env'=>Json::encode($env)
