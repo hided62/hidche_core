@@ -206,7 +206,7 @@ function command_11($turn, $command, bool $is모병 = false) {
 
     [$nationLevel, $tech] = $db->queryFirstList('SELECT level,tech FROM nation WHERE nation=%i', $me['nation']);
 
-    $lbonus = setLeadershipBonus($general, $nationLevel);
+    $lbonus = setLeadershipBonus($me, $nationLevel);
 
     $ownCities = [];
     $ownRegions = [];
@@ -219,7 +219,7 @@ function command_11($turn, $command, bool $is모병 = false) {
         $ownRegions[$city['region']] = 1;
     }
 
-    $leader = getGeneralLeadership($general, true, true, true);
+    $leader = getGeneralLeadership($me, true, true, true);
     $maxCrew = $leader - Util::round($me['crew']/100);
     $abil = getTechAbil($nation['tech']);
 
@@ -304,10 +304,10 @@ function command_11($turn, $command, bool $is모병 = false) {
         'techLevelText'=>getTechCall($tech),
         'tech'=>$tech,
         'leader'=>$leader,
-        'crewTypeName'=>GameUnitConst::byId($general['crewtype'])->name,
-        'crew'=>$general['crew'],
+        'crewTypeName'=>GameUnitConst::byId($me['crewtype'])->name,
+        'crew'=>$me['crew'],
         'maxCrew'=>$maxCrew,
-        'gold'=>$general['gold'],
+        'gold'=>$me['gold'],
         'turn'=>$turn,
         'armTypes'=>$armTypes,
     ]);
