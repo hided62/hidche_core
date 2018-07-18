@@ -173,7 +173,9 @@ reloadWorldMap({
     targetJson:'j_map_history.php?year=<?=$year?>&month=<?=$month?>&serverID=<?=$serverID?>',
     showMe:false,
     neutralView:true,
-    useCachedMap:false
+    useCachedMap:false,
+    year:<?=$year?>,
+    month:<?=$month?>,
 });
 </script>
 </body>

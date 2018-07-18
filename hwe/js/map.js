@@ -21,7 +21,10 @@ function reloadWorldMap(option){
         aux:null, //기타 넣고 싶은 값을 입력
         neutralView:false, //clickable, 소속 국가, 첩보 여부 등을 반환여부를 설정
         showMe:true, //반환 값에 본인이 위치한 도시 값을 반환하도록 설정. neutralView와 별개
-        targetJson:'j_map.php'
+        targetJson:'j_map.php',
+
+        //기타 보조 값
+        startYear:null,
     };
     
     option = $.extend(defaultOption, option);
@@ -35,6 +38,7 @@ function reloadWorldMap(option){
     var cityPosition = getCityPosition();
 
     var storedOldMapKey = 'sam.{0}.map'.format(serverNick);
+    var storedStartYear = 'sam.{0}.startYear'.format(serverNick);
     //OBJ : startYear, year, month, cityList, nationList, spyList, shownByGeneralList, myCity
 
     function checkReturnObject(obj){
@@ -55,6 +59,7 @@ function reloadWorldMap(option){
 
         if(useCachedMap){
             localStorage.setItem(storedOldMapKey, JSON.stringify([serverID, obj]));
+            localStorage.setItem(storedStartYear, JSON.stringify(obj.startYear));
         }
         
         $world_map.removeClass('draw_required');
@@ -99,7 +104,6 @@ function reloadWorldMap(option){
         else{
             $world_map.addClass('map_winter');
         }
-        console.log('haha?');
 
         $map_title.html('{0}年 {1}月'.format(year, month));
 
@@ -481,32 +485,50 @@ function reloadWorldMap(option){
         .then(setCityClickable)
         .then(saveCityInfo);    
 
-    if(useCachedMap && $world_map.hasClass('draw_required')){
-        //일단 불러옴
-        do{
-            var storedMap = localStorage.getItem(storedOldMapKey);
-            if(!storedMap){
-                break;
-            }
-            storedMap = JSON.parse(storedMap);
-            var storedServerID = storedMap[0];
-            if(storedServerID != serverID){
-                break;
-            }
+    if($world_map.hasClass('draw_required')){
+        if(useCachedMap){
+            //일단 불러옴
+            do{
+                var storedMap = localStorage.getItem(storedOldMapKey);
+                if(!storedMap){
+                    break;
+                }
+                storedMap = JSON.parse(storedMap);
+                var storedServerID = storedMap[0];
+                if(storedServerID != serverID){
+                    break;
+                }
 
-            storedMap = storedMap[1];
-            storedMap = setMapBackground(storedMap);
-            storedMap = convertCityObjs(storedMap);
-            if(isDetailMap){
-                storedMap = drawDetailWorldMap(storedMap);
+                storedMap = storedMap[1];
+                storedMap = setMapBackground(storedMap);
+                storedMap = convertCityObjs(storedMap);
+                if(isDetailMap){
+                    storedMap = drawDetailWorldMap(storedMap);
+                }
+                else{
+                    storedMap = drawBasicWorldMap(storedMap);
+                }
+                storedMap = setMouseWork(storedMap);
+                storedMap = setCityClickable(storedMap);
+                storedMap = saveCityInfo(storedMap);
+            }while(false);
+        }
+        else if(option.year && option.month){
+            var startYear = localStorage.getItem(storedStartYear);
+            if(startYear){
+                startYear = JSON.parse(startYear);  
             }
             else{
-                storedMap = drawBasicWorldMap(storedMap);
+                startYear = option.year;
             }
-            storedMap = setMouseWork(storedMap);
-            storedMap = setCityClickable(storedMap);
-            storedMap = saveCityInfo(storedMap);
-        }while(false);
+            var tmp = {
+                year : option.year,
+                month : option.month,
+                startYear : startYear
+            };
+            setMapBackground(tmp);
+        }
+        
         
     }
 }
