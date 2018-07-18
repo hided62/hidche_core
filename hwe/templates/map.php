@@ -7,6 +7,11 @@
         <div class="map_bglayer1"></div>
         <div class="map_bglayer2"></div>
         <div class="map_bgroad"></div>
+        <div class="map_button_stack">
+        <button type="button" class="btn btn-primary map_toggle_cityname btn-xs" data-toggle="button" aria-pressed="false" autocomplete="off">
+            도시명 표기
+        </button>
+        </div>
         <div class="city_tooltip">
             <div class="city_name">
 
@@ -15,6 +20,5 @@
 
             </div>
         </div>
-        
     </div>
 </div>

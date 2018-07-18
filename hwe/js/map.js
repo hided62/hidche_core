@@ -420,6 +420,25 @@ function reloadWorldMap(option){
         return obj;
     }
 
+    var $hideCityNameBtn = $world_map.find('.map_toggle_cityname');
+    if(localStorage.getItem('sam.hideMapCityName') == 'yes'){
+        $world_map.addClass('hide_cityname');
+        $hideCityNameBtn.addClass('active').attr('aria-pressed', 'true');
+    }
+
+    $hideCityNameBtn.click(function(){
+        //이전 상태 확인
+        var state = !$hideCityNameBtn.hasClass('active');
+        if(state){
+            $world_map.addClass('hide_cityname');
+            localStorage.setItem('sam.hideMapCityName', 'yes');
+        }
+        else{
+            $world_map.removeClass('hide_cityname');
+            localStorage.setItem('sam.hideMapCityName', 'no');
+        }
+    });
+
     if(isDetailMap){
         $world_map.addClass('map_detail');
     }
