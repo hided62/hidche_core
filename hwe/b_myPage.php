@@ -81,7 +81,11 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 내정보</title>
+<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
+<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 
 </head>
