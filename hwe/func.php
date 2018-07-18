@@ -2307,7 +2307,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
         $db->update('general',[
             'leader2'=>$db->sqleval('leader2 + %i', GameConst::$upgradeLimit),
             'leader'=>$db->sqleval('leader - 1')
-        ]);
+        ], 'no=%i', $generalID);
         $actLog->pushGeneralActionLog('<R>통솔</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
         return;
     }
@@ -2316,7 +2316,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
         $db->update('general',[
             'power2'=>$db->sqleval('power2 + %i', GameConst::$upgradeLimit),
             'power'=>$db->sqleval('power - 1')
-        ]);
+        ], 'no=%i', $generalID);
         $actLog->pushGeneralActionLog('<R>무력</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
         return;
     }
@@ -2325,7 +2325,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
         $db->update('general',[
             'intel2'=>$db->sqleval('intel2 + %i', GameConst::$upgradeLimit),
             'intel'=>$db->sqleval('intel - 1')
-        ]);
+        ], 'no=%i', $generalID);
         $actLog->pushGeneralActionLog('<R>지력</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
         return;
     }
@@ -2334,7 +2334,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
         $db->update('general',[
             'leader2'=>$db->sqleval('leader2 - %i', GameConst::$upgradeLimit),
             'leader'=>$db->sqleval('leader + 1')
-        ]);
+        ], 'no=%i', $generalID);
         $actLog->pushGeneralActionLog('<R>통솔</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
         return;
     }
@@ -2343,7 +2343,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
         $db->update('general',[
             'power2'=>$db->sqleval('power2 - %i', GameConst::$upgradeLimit),
             'power'=>$db->sqleval('power + 1')
-        ]);
+        ], 'no=%i', $generalID);
         $actLog->pushGeneralActionLog('<R>무력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
         return;
     }
@@ -2352,7 +2352,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
         $db->update('general',[
             'intel2'=>$db->sqleval('intel2 - %i', GameConst::$upgradeLimit),
             'intel'=>$db->sqleval('intel + 1')
-        ]);
+        ], 'no=%i', $generalID);
         $actLog->pushGeneralActionLog('<R>지력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
         return;
     }
