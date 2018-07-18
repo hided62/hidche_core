@@ -80,6 +80,7 @@ foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE confl
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 중원 정보</title>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('d_shared/base_map.js')?>
@@ -94,7 +95,7 @@ $(function(){
 
 });
 </script>
-<?=WebUtil::printCSS('css/normalize.css')?>
+<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/map.css')?>
