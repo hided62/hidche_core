@@ -2304,7 +2304,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
     }
 
     if($general['leader2'] < 0){
-        $general->update('general',[
+        $db->update('general',[
             'leader2'=>$db->sqleval('leader2 + %i', GameConst::$upgradeLimit),
             'leader'=>$db->sqleval('leader - 1')
         ]);
@@ -2313,7 +2313,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
     }
 
     if($general['power2'] < 0){
-        $general->update('general',[
+        $db->update('general',[
             'power2'=>$db->sqleval('power2 + %i', GameConst::$upgradeLimit),
             'power'=>$db->sqleval('power - 1')
         ]);
@@ -2322,7 +2322,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
     }
 
     if($general['intel2'] < 0){
-        $general->update('general',[
+        $db->update('general',[
             'intel2'=>$db->sqleval('intel2 + %i', GameConst::$upgradeLimit),
             'intel'=>$db->sqleval('intel - 1')
         ]);
@@ -2331,7 +2331,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
     }
 
     if($general['leader2'] >= GameConst::$upgradeLimit){
-        $general->update('general',[
+        $db->update('general',[
             'leader2'=>$db->sqleval('leader2 - %i', GameConst::$upgradeLimit),
             'leader'=>$db->sqleval('leader + 1')
         ]);
@@ -2340,7 +2340,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
     }
 
     if($general['power2'] >= GameConst::$upgradeLimit){
-        $general->update('general',[
+        $db->update('general',[
             'power2'=>$db->sqleval('power2 - %i', GameConst::$upgradeLimit),
             'power'=>$db->sqleval('power + 1')
         ]);
@@ -2349,7 +2349,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
     }
 
     if($general['intel2'] >= GameConst::$upgradeLimit){
-        $general->update('general',[
+        $db->update('general',[
             'intel2'=>$db->sqleval('intel2 - %i', GameConst::$upgradeLimit),
             'intel'=>$db->sqleval('intel + 1')
         ]);
