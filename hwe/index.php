@@ -244,7 +244,7 @@ else if($session->userGrade == 4){
     </tr>
     <tr>
         <td width=646 align=right>
-            <font color=cyan><b>←</b> Ctrl, Shift, 드래그로 복수선택 가능　　　　　반복&amp;수정<b>→</b></font>
+            <font color=cyan><b>←</b> Ctrl, Shift, 드래그로 복수선택 가능　　반복&amp;수정<b>→</b></font>
             <select name=sel size=1 style=color:white;background-color:black;font-size:13px;>
                 <option value=1>1턴</option>
                 <option value=2>2턴</option>
@@ -258,7 +258,7 @@ else if($session->userGrade == 4){
                 <option value=10>10턴</option>
                 <option value=11>11턴</option>
                 <option value=12>12턴</option>
-            </select><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:50px;font-size:13px; value='반복' onclick='refreshing(this, 2,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:80px;font-size:13px; value='▼미루기' onclick='refreshing(this, 2,1)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:80px;font-size:13px; value='▲당기기' onclick='refreshing(this, 2,2)'>
+            </select><input type=button style='background-color:<?=GameConst::$basecolor2?>;color:white;width:70px;font-size:13px;margin-left:1ch;margin-right:2ch;' value='반복' onclick='refreshing(this, 2,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:80px;font-size:13px; value='▼미루기' onclick='refreshing(this, 2,1)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:80px;font-size:13px; value='▲당기기' onclick='refreshing(this, 2,2)'>
         </td>
     </tr>
     <tr>
