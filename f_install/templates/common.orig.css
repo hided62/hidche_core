@@ -65,20 +65,25 @@
 /*미니체 지도*/
 .map_theme_miniche.map_spring .map_bglayer1{
     background: url('_tK_gameImagePath_/map/che/bg_spring.jpg') no-repeat;
+    background-size: 700px 500px;
 }
 
 .map_theme_miniche.map_summer .map_bglayer1{
     background: url('_tK_gameImagePath_/map/che/bg_summer.jpg') no-repeat;
+    background-size: 700px 500px;
 }
 
 .map_theme_miniche.map_fall .map_bglayer1{
     background: url('_tK_gameImagePath_/map/che/bg_fall.jpg') no-repeat;
+    background-size: 700px 500px;
 }
 
 .map_theme_miniche.map_winter .map_bglayer1{
     background: url('_tK_gameImagePath_/map/che/bg_winter.jpg') no-repeat;
+    background-size: 700px 500px;
 }
 
 .map_theme_miniche .map_bgroad{
     background: url('_tK_gameImagePath_/map/che/miniche_road.png') no-repeat;
+    background-size: 700px 500px;
 }
