@@ -46,7 +46,7 @@ $s = $s_year * 12 + $s_month;
 $e = $e_year * 12 + $e_month;
 
 if($serverID !== UniqueConst::$serverID){
-    $mapTheme = $db->queryFirstColumn('SELECT map FROM ng_games WHERE server_id=%s', $serverID)??'che';
+    $mapTheme = $db->queryFirstColumn('SELECT map FROM ng_games WHERE server_id=%s', $serverID)?:'che';
 }
 else{
     $mapTheme = $admin['map_theme']??'che';
