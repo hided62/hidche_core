@@ -37,11 +37,14 @@ if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 <?=WebUtil::printJS('d_shared/base_map.js')?>
 <?=WebUtil::printJS('js/map.js')?>
 <script>
+window.serverNick = '<?=DB::prefix()?>';
+window.serverID = '<?=UniqueConst::$serverID?>';
 $(function(){
 
     reloadWorldMap({
         neutralView:true,
-        showMe:true
+        showMe:true,
+        useCachedMap:true
     });
 
 });

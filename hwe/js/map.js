@@ -13,6 +13,7 @@ function reloadWorldMap(option){
         clickableAll:false, //어떤 경우든 클릭을 가능하게 함. 해당 동작의 동작 가능성 여부와는 별도.
         selectCallback:null, //callback을 지정시 clickable과 관계 없이 해당 함수를 실행. 
         hrefTemplate:'#', //도시가 클릭가능할 경우 지정할 href값. {0}은 도시 id로 변환됨
+        useCachedMap:false, //맵 캐시를 사용
 
         //아래부터는 post query에 들어갈 녀석
         year:null, //year값, 연감등에 사용
@@ -25,6 +26,7 @@ function reloadWorldMap(option){
     
     option = $.extend(defaultOption, option);
 
+    var useCachedMap = option.useCachedMap;
     var isDetailMap = option.isDetailMap;
     var clickableAll = option.clickableAll;
     var selectCallback = option.selectCallback;
@@ -32,6 +34,7 @@ function reloadWorldMap(option){
 
     var cityPosition = getCityPosition();
 
+    var storedOldMapKey = 'sam.{0}.map'.format(serverNick);
     //OBJ : startYear, year, month, cityList, nationList, spyList, shownByGeneralList, myCity
 
     function checkReturnObject(obj){
@@ -49,6 +52,12 @@ function reloadWorldMap(option){
             obj.reject('fail');
             return obj.promise();
         }
+
+        if(useCachedMap){
+            localStorage.setItem(storedOldMapKey, JSON.stringify([serverID, obj]));
+        }
+        
+        $world_map.removeClass('draw_required');
 
         return obj;
     }
@@ -90,6 +99,7 @@ function reloadWorldMap(option){
         else{
             $world_map.addClass('map_winter');
         }
+        console.log('haha?');
 
         $map_title.html('{0}年 {1}月'.format(year, month));
 
@@ -470,5 +480,34 @@ function reloadWorldMap(option){
         .then(setMouseWork)
         .then(setCityClickable)
         .then(saveCityInfo);    
+
+    if(useCachedMap && $world_map.hasClass('draw_required')){
+        //일단 불러옴
+        do{
+            var storedMap = localStorage.getItem(storedOldMapKey);
+            if(!storedMap){
+                break;
+            }
+            storedMap = JSON.parse(storedMap);
+            var storedServerID = storedMap[0];
+            if(storedServerID != serverID){
+                break;
+            }
+
+            storedMap = storedMap[1];
+            storedMap = setMapBackground(storedMap);
+            storedMap = convertCityObjs(storedMap);
+            if(isDetailMap){
+                storedMap = drawDetailWorldMap(storedMap);
+            }
+            else{
+                storedMap = drawBasicWorldMap(storedMap);
+            }
+            storedMap = setMouseWork(storedMap);
+            storedMap = setCityClickable(storedMap);
+            storedMap = saveCityInfo(storedMap);
+        }while(false);
+        
+    }
 }
 

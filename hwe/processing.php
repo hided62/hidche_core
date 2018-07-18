@@ -131,6 +131,8 @@ function starter($name, $type=0) {
 <?=WebUtil::printJS('d_shared/base_map.js')?>
 <?=WebUtil::printJS('js/map.js')?>
 <script>
+window.serverNick = '<?=DB::prefix()?>';
+window.serverID = '<?=UniqueConst::$serverID?>';
 $(function(){
     var $target = $("form[name=form1] select[name=double]");
     console.log($target);
@@ -138,6 +140,7 @@ $(function(){
         isDetailMap:false,
         clickableAll:true,
         neutralView:true,
+        useCachedMap:true,
         selectCallback:function(city){
             $target.val(city.id);
             return false;

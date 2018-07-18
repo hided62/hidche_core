@@ -86,11 +86,14 @@ foreach ($db->queryAllLists('SELECT city, `name`, conflict FROM city WHERE confl
 <?=WebUtil::printJS('d_shared/base_map.js')?>
 <?=WebUtil::printJS('js/map.js')?>
 <script>
+window.serverNick = '<?=DB::prefix()?>';
+window.serverID = '<?=UniqueConst::$serverID?>';
 $(function(){
 
     reloadWorldMap({
         neutralView:true,
-        showMe:true
+        showMe:true,
+        useCachedMap:true
     });
 
 });

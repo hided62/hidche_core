@@ -167,10 +167,13 @@ $history = $db->queryFirstRow('SELECT log,genlog,nation,power,gen,city FROM hist
     <tr><td><?=banner()?> </td></tr>
 </table>
 <script>
+window.serverNick = '<?=DB::prefix()?>';
+window.serverID = '<?=UniqueConst::$serverID?>';
 reloadWorldMap({
     targetJson:'j_map_history.php?year=<?=$year?>&month=<?=$month?>&serverID=<?=$serverID?>',
     showMe:false,
-    neutralView:true
+    neutralView:true,
+    useCachedMap:false
 });
 </script>
 </body>

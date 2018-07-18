@@ -1,4 +1,4 @@
-<div class="world_map map_theme_<?=$mapTheme?>">
+<div class="world_map map_theme_<?=$mapTheme?> draw_required">
     <div class="map_title">
         <span class="map_title_text">
         </span>

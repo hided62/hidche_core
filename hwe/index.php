@@ -95,9 +95,12 @@ $mapTheme = $admin['map_theme'];
 <?=WebUtil::printJS('js/map.js')?>
 <?=WebUtil::printJS('js/msg.js')?>
 <script>
+window.serverNick = '<?=DB::prefix()?>';
+window.serverID = '<?=UniqueConst::$serverID?>';
 $(function(){
     reloadWorldMap({
-        hrefTemplate:'b_currentCity.php?citylist={0}'
+        hrefTemplate:'b_currentCity.php?citylist={0}',
+        useCachedMap:true
     });
 
     setInterval(function(){
