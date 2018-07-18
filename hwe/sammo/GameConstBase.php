@@ -6,7 +6,7 @@ class GameConstBase
     /** @var string 버전 */
     public static $title = "삼국지 모의전투 PHP HiDCHe";
     /** @var string 코드 아래에 붙는 설명 코드 */
-    public static $banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : HideD(hided62@gmail.com) / <a href='https://sam.hided.net/wiki/hidche/credit' target='_blank'>Credit</a>";
+    public static $banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : HideD(hided62@gmail.com) / <a href='https://sam.hided.net/wiki/hidche/credit' target='_blank' style='color:white;text-decoration: underline;'>Credit</a>";
     /** @var string mapName 사용중인 지도명 */
     public static $mapName = 'che';
     /** @var string unitSet 사용중인 유닛셋 */
