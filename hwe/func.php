@@ -524,7 +524,7 @@ function commandTable() {
         addCommand("첩보(통솔경험, 자금$develcost3, 군량$develcost3)", 31);
         addCommand("징병(통솔경험)", 11);
         addCommand("모병(통솔경험, 자금x2)", 12);
-        addCommand("훈련(통솔경험, 사기↓)", 13);
+        addCommand("훈련(통솔경험)", 13);
         addCommand("사기진작(통솔경험, 자금↓)", 14);
         //addCommand("전투태세/3턴(통솔경험, 자금↓)", 15);
         addCommand("출병", 16);
@@ -532,7 +532,7 @@ function commandTable() {
         addCommand("첩보(통솔경험, 자금$develcost3, 군량$develcost3)", 31, 0);
         addCommand("징병(통솔경험)", 11, 0);
         addCommand("모병(통솔경험, 자금x2)", 12, 0);
-        addCommand("훈련(통솔경험, 사기↓)", 13, 0);
+        addCommand("훈련(통솔경험)", 13, 0);
         addCommand("사기진작(통솔경험, 자금↓)", 14, 0);
         //addCommand("전투태세/3턴(통솔경험, 자금↓)", 15, 0);
         addCommand("출병", 16, 0);
