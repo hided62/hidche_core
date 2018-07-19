@@ -150,7 +150,7 @@ if($btn == "추방") {
                     'makelimit'=>12,
                     'gold'=>$general['gold'],
                     'rice'=>$general['rice'],
-                    'dedication'=>$db->sqleval('dedication * (1 - 0.1*betray'),
+                    'dedication'=>$db->sqleval('dedication * (1 - 0.1*betray)'),
                 ], 'no=%i', $general['no']);
             }
         }
