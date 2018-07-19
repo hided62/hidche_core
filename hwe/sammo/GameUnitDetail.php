@@ -156,6 +156,9 @@ class GameUnitDetail{
     }
 
     public function isValid($ownCities, $ownRegions, $relativeYear, $tech){
+        //음수 없음
+        $relativeYear = max(0, $relativeYear);
+
         if($relativeYear < $this->reqYear){
             return false;
         }
