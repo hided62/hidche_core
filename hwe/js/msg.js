@@ -150,6 +150,7 @@ function redrawMsg(deferred){
                 
 
                 msg.defaultIcon = pathConfig.sharedIcon+'/default.jpg';
+                msg.level = myGeneralLevel;
                 var msgHtml = TemplateEngine(messageTemplate, msg);
                 
 
@@ -331,18 +332,18 @@ function refreshMailboxList(obj){
 
 function registerGlobal(basicInfo){
     
-    myNation = {
+    window.myNation = {
         'id':basicInfo.myNationID,
         'mailbox':basicInfo.myNationID+9000,
         'color':'#000000',
         'nation':'재야'
     };
-    lastMsg = {
+    window.lastMsg = {
         id : basicInfo.lastContact
     };
-    myGeneralID = basicInfo.generalID;
-    isChief = basicInfo.isChief;
-    myGeneralLevel = basicInfo.generalLevel;
+    window.myGeneralID = basicInfo.generalID;
+    window.isChief = basicInfo.isChief;
+    window.myGeneralLevel = basicInfo.generalLevel;
 }
 
 function activateMessageForm(){
