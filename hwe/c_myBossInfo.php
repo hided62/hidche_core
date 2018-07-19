@@ -134,8 +134,25 @@ if($btn == "추방") {
             $log[] = "<C>●</><D><b>{$nation['name']}</b></>에서 <R>추방</>당하였습니다.";
 
             // 재야로, 국가 무소속으로, 명성/공헌 N*10%감소
-            $query = "update general set level=0,nation=0,belong=0,betray=betray+1,makelimit='12',gold='{$general['gold']}',rice='{$general['rice']}',dedication=dedication*(1-0.1*betray),experience=experience*(1-0.1*betray) where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            if($admin['year'] <= $admin['startyear'] && $general['npc'] < 2){
+                $db->update('general', [
+                    'level'=>0,
+                    'nation'=>0,
+                    'belong'=>0,
+                ], 'no=%i', $general['no']);
+            }
+            else{
+                $db->update('general', [
+                    'level'=>0,
+                    'nation'=>0,
+                    'belong'=>0,
+                    'betray'=>$db->sqleval('betray + 1'),
+                    'makelimit'=>12,
+                    'gold'=>$general['gold'],
+                    'rice'=>$general['rice'],
+                    'dedication'=>$db->sqleval('dedication * (1 - 0.1*betray'),
+                ], 'no=%i', $general['no']);
+            }
         }
         // 부대 처리
         $query = "select no from troop where troop='{$general['troop']}'";
