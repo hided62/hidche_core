@@ -527,13 +527,13 @@ function processWar($general, $city) {
             $opposeCrewType = GameUnitConst::byId($oppose['crewtype']);
 
             $josaYi = JosaUtil::pick($opposeCrewType->name, '이');
-            $josaWa = JosaUtil::pick($opposeCrewType->name, '와');
+            $josaWa = JosaUtil::pick($generalCrewType->name, '와');
             $alllog[] = "<C>●</>{$month}월:<Y>{$general['name']}</>의 ".$generalCrewType->name."{$josaWa} <Y>{$oppose['name']}</>의 ".$opposeCrewType->name."{$josaYi} 대결합니다.";
             $josaUl = JosaUtil::pick($opposeCrewType->name, '을');
-            $josaRo = JosaUtil::pick($opposeCrewType->name, '로');
-            $log[] = "<C>●</>".$opposeCrewType->name."{$josaRo} <Y>{$oppose['name']}</>의 ".$opposeCrewType->name."{$josaUl} <M>공격</>합니다.";
-            $josaUl = JosaUtil::pick($opposeCrewType->name, '을');
-            $opplog[] = "<C>●</>".$opposeCrewType->name."{$josaRo} <Y>{$general['name']}</>의 ".$opposeCrewType->name."{$josaUl} <M>수비</>합니다.";
+            $josaRo = JosaUtil::pick($generalCrewType->name, '로');
+            $log[] = "<C>●</>".$generalCrewType->name."{$josaRo} <Y>{$oppose['name']}</>의 ".$opposeCrewType->name."{$josaUl} <M>공격</>합니다.";
+            $josaUl = JosaUtil::pick($generalCrewType->name, '을');
+            $opplog[] = "<C>●</>".$opposeCrewType->name."{$josaRo} <Y>{$general['name']}</>의 ".$generalCrewType->name."{$josaUl} <M>수비</>합니다.";
 
             $oppAtmos = 0;
             if($oppose['item'] == 3) {
