@@ -180,7 +180,7 @@ class ResetHelper{
         $killturn = 4800 / $turnterm;
         if($npcmode == 1) { $killturn = intdiv($killturn, 3); }
 
-        
+        $develcost = ($year - $startyear + 10) * 2;
 
         $env = [
             'scenario'=>$scenario,
@@ -196,6 +196,7 @@ class ResetHelper{
             'conlimit'=>300,
             'gold_rate'=>100,
             'rice_rate'=>100,
+            'develcost'=>$develcost,
             'turntime'=>$turntime,
             'starttime'=>$starttime,
             'turnterm'=>$turnterm,
