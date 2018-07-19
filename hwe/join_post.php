@@ -170,7 +170,7 @@ $special = 0;
 
 $admin = $gameStor->getValues(['scenario', 'turnterm', 'show_img_level']);
 
-if ($admin['scenario'] > 0) {
+if ($admin['scenario'] >= 1000) {
     $specage2 = $age + 3;
     $specage = $age + 3;
 }
