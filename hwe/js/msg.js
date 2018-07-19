@@ -150,7 +150,12 @@ function redrawMsg(deferred){
                 
 
                 msg.defaultIcon = pathConfig.sharedIcon+'/default.jpg';
-                msg.level = myGeneralLevel;
+                if(msgType == 'diplomacy'){
+                    msg.allowButton = myGeneralLevel>4;
+                }
+                else{
+                    msg.allowButton = true;
+                }
                 var msgHtml = TemplateEngine(messageTemplate, msg);
                 
 
