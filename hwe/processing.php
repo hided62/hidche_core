@@ -705,7 +705,7 @@ function command_25($turn, $command) {
 !!!는 방랑군을 포함한 랜덤임관입니다. 유니크를 기대하신다면!<br>
 ???는 방랑군을 제외한 랜덤임관입니다. 유니크 혜택은 없습니다.<br>
 임관 금지이거나 초기 제한중인 국가는 붉은색 배경으로 표시됩니다.<br>
-870px x 200px 넘는 높이를 점유할 시 통보없이 제한될 수 있습니다.<br>
+870px x 200px를 넘어서는 내용은 표시되지 않습니다.<br>
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>
     <option value=99 style=color:white;background-color:black;>!!!</option>
