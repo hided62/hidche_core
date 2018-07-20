@@ -1788,7 +1788,7 @@ function process_41(&$general) {
     } elseif($crewexp == 0) {
         $log[] = "<C>●</>{$admin['month']}월:병사가 모자랍니다. 단련 실패. <1>$date</>";
     } else {
-        $crewstr = GameUnitConst::$typeData[GameUnitConst::byID($general['crewtype'])->armType];
+        $crewstr = GameUnitConst::allType()[GameUnitConst::byID($general['crewtype'])->armType];
 
         if($ratio < 33) {
             // 숙련도 증가
