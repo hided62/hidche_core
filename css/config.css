@@ -61,6 +61,7 @@ a.just_link {
 }
 
 button.with_skin {
+    padding:0 4px;
     background-color: black; color: white;
     font-family: '맑은 고딕';
     font-size: 13px;
