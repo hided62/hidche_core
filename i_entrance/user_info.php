@@ -46,12 +46,12 @@ require(__dir__.'/../vendor/autoload.php');
         <a href="entrance.php"><button id="btn_back1" class="with_skin">돌아가기</button></a>
     </caption>
     <colgroup>
-        <col style="width:80px;min-width:80px;" />
-        <col style="width:80px;min-width:80px;"/>
-        <col style="width:80px;min-width:80px;"/>
-        <col style="width:80px;min-width:80px;"/>
-        <col style="width:80px;min-width:80px;"/>
-        <col style="min-width:80px;"/>
+        <col style="width:90px;min-width:90px;" />
+        <col style="width:90px;min-width:90px;"/>
+        <col style="width:90px;min-width:90px;"/>
+        <col style="width:90px;min-width:90px;"/>
+        <col style="width:90px;min-width:90px;"/>
+        <col style="min-width:90px;"/>
     </colgroup>
     <thead>
         <tr>
