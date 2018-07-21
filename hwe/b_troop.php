@@ -74,7 +74,8 @@ for($i=0; $i < $troopcount; $i++) {
             $turn = "";
             for($k=0; $k < 5; $k++) {
                 $m = $k+1;
-                if($general["turn{$k}"] == 26) {
+                $turnK = DecodeCommand($general["turn{$k}"]);
+                if($turnK[0] == 26) {
                     $turn .= "&nbsp;$m : 집합<br>";
                 } else {
                     $turn .= "&nbsp;$m : ∼<br>";
