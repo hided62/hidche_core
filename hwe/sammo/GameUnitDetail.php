@@ -152,7 +152,7 @@ class GameUnitDetail{
         $ratio = max($mainstat - 65, 0);
         $ratio *= $coef;
 
-        return max(50, $ratio);
+        return min(50, $ratio);
     }
 
     public function isValid($ownCities, $ownRegions, $relativeYear, $tech){
