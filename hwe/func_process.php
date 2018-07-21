@@ -917,8 +917,7 @@ function process_11(&$general, $type) {
     $lbonus = setLeadershipBonus($general, $nationLevel);
 
     //NOTE: 입력 변수는 100명 단위임
-    $crew = $rawCrew * 100;
-
+    $crew = $rawCrew * 100;	
     if($crew + $general['crew'] > getGeneralLeadership($general, true, true, true)*100) { 
         $crew = max(0, getGeneralLeadership($general, true, true, true) * 100 - $general['crew']);
     }
@@ -929,6 +928,9 @@ function process_11(&$general, $type) {
     }
 
     $cost = $crewTypeObj->costWithTech($tech, $crew);
+	if($type === '모병') { 
+		$cost *= 2;
+	}
     //성격 보정
     $cost = Util::round(CharCost($cost, $general['personal']));
 
@@ -976,7 +978,7 @@ function process_11(&$general, $type) {
     $exp = Util::round($crew / 100);
     $ded = Util::round($crew / 100);
     // 숙련도 증가
-    addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $crewType, $crew);
+    addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $crewType, $crew/100);
 
     // 성격 보정
     $exp = CharExperience($exp, $general['personal']);
