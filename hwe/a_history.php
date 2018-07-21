@@ -15,7 +15,6 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 if(!$serverID){
     $serverID = UniqueConst::$serverID;
@@ -27,9 +26,7 @@ if($serverID === UniqueConst::$serverID){
 
 $admin = $gameStor->getValues(['startyear','year','month','map_theme']);
 
-$query = "select con,turntime from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT con, turntime FROM general WHERE owner = %i', $userID);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -41,6 +38,11 @@ if ($con >= 2) {
 
 [$s_year, $s_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year ASC, month ASC LIMIT 1', $serverID);
 $s = $s_year * 12 + $s_month;
+
+if($s_year === null){
+    echo '인자 에러';
+    exit();
+}
 
 [$e_year, $e_month] = $db->queryFirstList('SELECT year, month FROM history WHERE server_id = %s ORDER BY year DESC, month DESC LIMIT 1', $serverID);
 $e = $e_year * 12 + $e_month;
