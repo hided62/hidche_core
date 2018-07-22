@@ -990,17 +990,17 @@ function process_11(&$general, $type) {
     $general['gold'] -= $cost;
     // 주민수 감소        // 민심 감소
     if($type === '징병') {
-        $city['rate'] -= Util::round($crew / $city['pop']); 
+        $city['rate'] -= Util::round(($crew / $city['pop'])*100); 
     }
     else {
-        $city['rate'] -= Util::round($crew / 2 / $city['pop']); 
+        $city['rate'] -= Util::round(($crew / 2 / $city['pop'])*100); 
     }
     if($city['rate'] < 0) { $city['rate'] = 0; }
 
     $db->update('city', [
         'pop'=>$db->sqleval('pop-%i', $crew),
         'rate'=>$city['rate']
-    ], 'city = %i',$general['city']);
+    ], 'city = %i', $general['city']);
 
     // 통솔경험, 병종 변경, 병사수 변경, 훈련치 변경, 사기치 변경, 자금 군량 하락, 공헌도, 명성 상승
     $general['leader2']++;
