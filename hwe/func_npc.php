@@ -445,37 +445,40 @@ function processAI($no) {
             }
         } else {
             //외교 평시에 선포
-            if($dipState == 0 && $attackable == 0) {
-                //전방 체크 먼저
+
+            do{
+                if($dipState != 0){
+                    break;
+                }
+                if($attackable != 0){
+                    break;
+                }
+
                 SetNationFront($nation['nation']);
 
-                $query = "select city from city where nation='{$general['nation']}' and front=1 limit 0,1";
-                $result = MYDB_query($query, $connect) or Error("processAI02 ".MYDB_error($connect),"");
-                $frontCount = MYDB_num_rows($result);
-                //근접 공백지 없을때
-                if($frontCount == 0) {
-                    $query = "select (sum(pop/10)+sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(pop2/10)+sum(agri2)+sum(comm2)+sum(secu2)+sum(def2)+sum(wall2))*100 as dev from city where nation='{$general['nation']}'";
-                    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                    $devRate = MYDB_fetch_array($result);
-                    //내정이 80% 이상일때
-                    if($devRate['dev'] > 80) {
-                        $query = "select nation from nation where level>0 order by rand()";
-                        $result = MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
-                        $nationCount = MYDB_num_rows($result);
-                        for($i=0; $i < $nationCount; $i++) {
-                            $youNation = MYDB_fetch_array($result);
-
-                            if(isNeighbor($general['nation'], $youNation['nation'])) {
-                                $command = EncodeCommand(0, 0, $youNation['nation'], 62);
-                                $query = "update nation set l12turn0='$command' where nation='{$general['nation']}'";
-                                MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
-                                $rulerCommand = 1;
-                                break;
-                            }
-                        }
-                    }
+                $frontCount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND front=1', $general['nation']);
+                if($frontCount > 0){
+                    break;
                 }
-            }
+
+                $devRate = $db->queryFirstField('SELECT (sum(pop/10)+sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(pop2/10)+sum(agri2)+sum(comm2)+sum(secu2)+sum(def2)+sum(wall2)) from city where nation=%i', $general['nation']);
+                if($devRate < 0.8){
+                    break;
+                }
+
+                $nations = $db->queryFirstColumn('SELECT nation FROM nation WHERE level>0');
+                shuffle($nations);
+                foreach($nations as $youNationID){
+                    if(!isNeighbor($general['nation'], $youNationID)){
+                        continue;
+                    }
+                    $command = EncodeCommand(0, 0, $youNationID, 62);
+                    $db->update('nation', [
+                        'l12turn0'=>$command
+                    ], 'nation=%i', $general['nation']);
+                    break;
+                }
+            }while(false);
         }
     }
 
