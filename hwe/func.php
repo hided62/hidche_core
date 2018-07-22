@@ -424,7 +424,7 @@ function addCommand($typename, $value, $valid = 1, $color=0) {
 function commandGroup($typename, $type=0) {
     if($type == 0) {
         echo "
-    <optgroup label='{$typename}' style=color:skyblue;background-color:black;>";
+    <optgroup label='{$typename}' style='color:skyblue;background-color:black;'>";
     } else {
         echo "
     </optgroup>";
@@ -699,7 +699,8 @@ function CoreCommandTable() {
     if($city['supply'] == 0) { $valid = 0; }
 
     echo "
-<select name=commandtype size=1 style='height:20px;color:white;background-color:black;font-size:13px;>";
+<select name=commandtype size=1 style='height:20px;color:white;background-color:black;font-size:13px;'>";
+    commandGroup("====== 휴 식 ======");
     addCommand("휴 식", 99);
     commandGroup("", 1);
     commandGroup("====== 인 사 ======");
