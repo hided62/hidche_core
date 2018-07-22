@@ -466,18 +466,18 @@ function processAI($no) {
                     break;
                 }
 
-                $nations = $db->queryFirstColumn('SELECT nation FROM nation WHERE level>0');
-                shuffle($nations);
-                foreach($nations as $youNationID){
+                $nations = [];
+                foreach ($db->queryAllLists('SELECT nation, power FROM nation WHERE level>0') as [$youNationID, $youNationPower]) {
                     if(!isNeighbor($general['nation'], $youNationID)){
                         continue;
                     }
-                    $command = EncodeCommand(0, 0, $youNationID, 62);
-                    $db->update('nation', [
-                        'l12turn0'=>$command
-                    ], 'nation=%i', $general['nation']);
-                    break;
+                    $nations[$youNationID] = sqrt(1/$youNationPower);
                 }
+                $youNationID = Util::choiceRandomUsingWeight($nations);
+                $command = EncodeCommand(0, 0, $youNationID, 62);
+                $db->update('nation', [
+                    'l12turn0'=>$command
+                ], 'nation=%i', $general['nation']);
             }while(false);
         }
     }
