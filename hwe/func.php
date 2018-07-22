@@ -2665,6 +2665,9 @@ function searchDistance(int $from, int $maxDist=99, bool $distForm = false) {
 }
 
 function isNeighbor(int $nation1, int $nation2, bool $includeNoSupply=true) {
+    if($nation1 === $nation2){
+        return false;
+    }
     $db = DB::db();
 
     $nation1Cities = [];

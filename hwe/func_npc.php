@@ -210,12 +210,9 @@ function processAI($no) {
         $coreCommand = MYDB_fetch_array($result);
     }
 
-    $attackable = 0;
-    $query = "select city from city where nation='{$general['nation']}' and supply='1' and front=1";
-    $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
-    $cityCount = MYDB_num_rows($result);
+    $cityCount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND supply=1 AND front=1', $general['nation']);
     // 공격가능도시 있으면 1
-    if($cityCount > 0) { $attackable = 1; }
+    $attackable = $cityCount > 0;
 
     $dipState = 0;
     $query = "select no from diplomacy where me='{$general['nation']}' and state=1 and term>8";
@@ -379,7 +376,7 @@ function processAI($no) {
     //군주가 할일
     if($general['level'] == 12) {
         //오랑캐인데 공격 못하면 바로 방랑/해산
-        if($general['npc'] == 5 && $dipState == 0 && $attackable == 0) {
+        if($general['npc'] == 5 && $dipState == 0 && !$attackable) {
             //방랑군이냐 아니냐
             if($nation['level'] == 0) {
                 // 해산
@@ -450,7 +447,7 @@ function processAI($no) {
                 if($dipState != 0){
                     break;
                 }
-                if($attackable != 0){
+                if($attackable){
                     break;
                 }
 
@@ -471,7 +468,10 @@ function processAI($no) {
                     if(!isNeighbor($general['nation'], $youNationID)){
                         continue;
                     }
-                    $nations[$youNationID] = sqrt(1/$youNationPower);
+                    $nations[$youNationID] = 1/sqrt($youNationPower+1);
+                }
+                if(!$nations){
+                    break;
                 }
                 $youNationID = Util::choiceRandomUsingWeight($nations);
                 $command = EncodeCommand(0, 0, $youNationID, 62);
@@ -587,7 +587,7 @@ function processAI($no) {
         
         $target = array();
         // 평시거나 초반아니면서 공격가능 없으면서 병사 있으면 해제(25%)
-        if($dipState == 0 && $isStart == 0 && $attackable == 0 && $general['crew'] > 0 && rand()% 100 < 25) {
+        if($dipState == 0 && $isStart == 0 && !$attackable && $general['crew'] > 0 && rand()% 100 < 25) {
             $command = EncodeCommand(0, 0, 0, 17);    //소집해제
         } elseif($dipState <= 1 || $isStart == 1) {
         //평시이거나 선포있어도 초반이면
