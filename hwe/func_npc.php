@@ -478,6 +478,7 @@ function processAI($no) {
                 $db->update('nation', [
                     'l12turn0'=>$command
                 ], 'nation=%i', $general['nation']);
+                $rulerCommand = 1;
             }while(false);
         }
     }
