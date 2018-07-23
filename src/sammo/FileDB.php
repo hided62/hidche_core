@@ -5,7 +5,7 @@ namespace sammo;
 use \Medoo\Medoo;
 
 class FileDB{
-    public static function DB(string $path, ?string $schemaPath = null) : Medoo{
+    public static function db(string $path, ?string $schemaPath = null) : Medoo{
         //Note: reference count 적용. MySQL의 것과 다르게 동작함.
         $db = new Medoo([
             'database_type' => 'sqlite',
@@ -14,6 +14,7 @@ class FileDB{
         if($schemaPath){
             $db->query(\file_get_contents($schemaPath));
         }
+
         return $db;
     }
 }
