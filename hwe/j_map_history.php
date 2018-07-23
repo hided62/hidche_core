@@ -8,8 +8,6 @@ $year = Util::getReq('year', 'int');
 $month = Util::getReq('month', 'int');
 $serverID = Util::getReq('serverID', 'string', null);
 
-extractMissingPostToGlobals();
-
 $url = '/a_history.php';
 
 if(!strpos($_SERVER['HTTP_REFERER'], $url)) {
