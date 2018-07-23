@@ -45,3 +45,4 @@ test.php
 
 phpinfo.php
 vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/*
+*.sqlite3
