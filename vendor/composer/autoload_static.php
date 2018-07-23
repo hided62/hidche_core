@@ -42,6 +42,7 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'M' => 
         array (
             'Monolog\\' => 8,
+            'Medoo\\' => 6,
         ),
         'L' => 
         array (
@@ -92,6 +93,10 @@ class ComposerStaticInit67b09c83b85c3bc0027caefe5bba171a
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Medoo\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/catfan/medoo/src',
         ),
         'League\\Plates\\' => 
         array (

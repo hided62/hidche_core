@@ -15,6 +15,7 @@ return array(
     'PhpExtended\\Tail\\' => array($vendorDir . '/php-extended/php-tail/src'),
     'PhpExtended\\System\\' => array($vendorDir . '/php-extended/php-system/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'Medoo\\' => array($vendorDir . '/catfan/medoo/src'),
     'League\\Plates\\' => array($vendorDir . '/league/plates/src'),
     'Leafo\\ScssPhp\\' => array($vendorDir . '/leafo/scssphp/src'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),

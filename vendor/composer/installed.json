@@ -48,6 +48,67 @@
         ]
     },
     {
+        "name": "catfan/medoo",
+        "version": "v1.5.7",
+        "version_normalized": "1.5.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/catfan/Medoo.git",
+            "reference": "8d90cba0e8ff176028847527d0ea76fe41a06ecf"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/catfan/Medoo/zipball/8d90cba0e8ff176028847527d0ea76fe41a06ecf",
+            "reference": "8d90cba0e8ff176028847527d0ea76fe41a06ecf",
+            "shasum": ""
+        },
+        "require": {
+            "ext-pdo": "*",
+            "php": ">=5.4"
+        },
+        "suggest": {
+            "ext-pdo_dblib": "For MSSQL or Sybase database on Linux/UNIX platform",
+            "ext-pdo_mysql": "For MySQL or MariaDB database",
+            "ext-pdo_oci": "For Oracle database",
+            "ext-pdo_oci8": "For Oracle version 8 database",
+            "ext-pdo_pqsql": "For PostgreSQL database",
+            "ext-pdo_sqlite": "For SQLite database",
+            "ext-pdo_sqlsrv": "For MSSQL database"
+        },
+        "time": "2018-06-14T18:59:08+00:00",
+        "type": "framework",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Medoo\\": "/src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Angel Lai",
+                "email": "angel@catfan.me"
+            }
+        ],
+        "description": "The lightest PHP database framework to accelerate development",
+        "homepage": "https://medoo.in",
+        "keywords": [
+            "database",
+            "lightweight",
+            "mariadb",
+            "mssql",
+            "mysql",
+            "oracle",
+            "php framework",
+            "postgresql",
+            "sql",
+            "sqlite"
+        ]
+    },
+    {
         "name": "ezyang/htmlpurifier",
         "version": "v4.10.0",
         "version_normalized": "4.10.0.0",
@@ -323,17 +384,17 @@
     },
     {
         "name": "leafo/scssphp",
-        "version": "v0.7.6",
-        "version_normalized": "0.7.6.0",
+        "version": "v0.7.7",
+        "version_normalized": "0.7.7.0",
         "source": {
             "type": "git",
             "url": "https://github.com/leafo/scssphp.git",
-            "reference": "585f6ae84de62ffecf69c23805f25d78d7e4b794"
+            "reference": "1d656f8c02a3a69404bba6b28ec4e06edddf0f49"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/leafo/scssphp/zipball/585f6ae84de62ffecf69c23805f25d78d7e4b794",
-            "reference": "585f6ae84de62ffecf69c23805f25d78d7e4b794",
+            "url": "https://api.github.com/repos/leafo/scssphp/zipball/1d656f8c02a3a69404bba6b28ec4e06edddf0f49",
+            "reference": "1d656f8c02a3a69404bba6b28ec4e06edddf0f49",
             "shasum": ""
         },
         "require": {
@@ -343,7 +404,7 @@
             "phpunit/phpunit": "~4.6",
             "squizlabs/php_codesniffer": "~2.5"
         },
-        "time": "2018-05-24T02:18:53+00:00",
+        "time": "2018-07-22T01:22:08+00:00",
         "bin": [
             "bin/pscss"
         ],
@@ -774,17 +835,17 @@
     },
     {
         "name": "symfony/lock",
-        "version": "v4.1.0",
-        "version_normalized": "4.1.0.0",
+        "version": "v4.1.1",
+        "version_normalized": "4.1.1.0",
         "source": {
             "type": "git",
             "url": "https://github.com/symfony/lock.git",
-            "reference": "a1df50492e927ad00ca271f29adb2949a14f2a5a"
+            "reference": "d508b5dd92272cb74300396ecaadde969d0f7976"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/symfony/lock/zipball/a1df50492e927ad00ca271f29adb2949a14f2a5a",
-            "reference": "a1df50492e927ad00ca271f29adb2949a14f2a5a",
+            "url": "https://api.github.com/repos/symfony/lock/zipball/d508b5dd92272cb74300396ecaadde969d0f7976",
+            "reference": "d508b5dd92272cb74300396ecaadde969d0f7976",
             "shasum": ""
         },
         "require": {
@@ -794,7 +855,7 @@
         "require-dev": {
             "predis/predis": "~1.0"
         },
-        "time": "2018-05-30T07:26:09+00:00",
+        "time": "2018-06-21T11:15:46+00:00",
         "type": "library",
         "extra": {
             "branch-alias": {
