@@ -49,6 +49,45 @@ function getFriendlyErrorType($type)
     return "{$type}"; 
 }
 
+function getExceptionTraceAsString($exception) {
+    //https://gist.github.com/abtris/1437966
+    $rtn = "";
+    $count = 0;
+    $rtn = [];
+    foreach ($exception->getTrace() as $frame) {
+        $args = "";
+        if (isset($frame['args'])) {
+            $args = array();
+            foreach ($frame['args'] as $arg) {
+                if (is_string($arg)) {
+                    $args[] = "'" . $arg . "'";
+                } elseif (is_array($arg)) {
+                    $args[] = "Array";
+                } elseif (is_null($arg)) {
+                    $args[] = 'NULL';
+                } elseif (is_bool($arg)) {
+                    $args[] = ($arg) ? "true" : "false";
+                } elseif (is_object($arg)) {
+                    $args[] = get_class($arg);
+                } elseif (is_resource($arg)) {
+                    $args[] = get_resource_type($arg);
+                } else {
+                    $args[] = $arg;
+                }   
+            }   
+            $args = join(", ", $args);
+        }
+        $rtn[] = sprintf( "#%s %s(%s): %s(%s)",
+                                 $count,
+                                 isset($frame['file']) ? $frame['file'] : 'unknown file',
+                                 isset($frame['line']) ? $frame['line'] : 'unknown line',
+                                 (isset($frame['class']))  ? $frame['class'].$frame['type'].$frame['function'] : $frame['function'],
+                                 $args );
+        $count++;
+    }
+    return $rtn;
+}
+
 function logError(string $err, string $errstr, array $trace){
     $fdb = FileDB::db(ROOT.'/d_log/err_log.sqlite3', ROOT.'/f_install/sql/err_log.sql');
     $date = date("Ymd_His");
@@ -77,7 +116,7 @@ function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, in
     logError(
         getFriendlyErrorType($errno),
         $errstr,
-        explode("\n", $e->getTraceAsString())
+        getExceptionTraceAsString($e)
     );
 }
 set_error_handler("\sammo\logErrorByCustomHandler");
@@ -87,7 +126,7 @@ function logExceptionByCustomHandler(\Throwable $e){
     logError(
         get_class($e),
         $e->getMessage(),
-        explode("\n", $e->getTraceAsString())
+        getExceptionTraceAsString($e)
     );
     
     echo $e->getTraceAsString();
