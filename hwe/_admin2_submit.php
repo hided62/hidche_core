@@ -6,6 +6,8 @@ include "func.php";
 
 $btn = Util::getReq('btn');
 $weap = Util::getReq('weap', 'int');
+$genlist = Util::getReq('genlist', 'array_int');
+$msg = Util::getReq('msg', 'string');
 
 extractMissingPostToGlobals();
 

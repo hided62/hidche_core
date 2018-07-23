@@ -1,5 +1,8 @@
 <table id="server_admin_table">
-<caption class="bg2 section_title with_border">서 버 관 리</caption>
+<caption class="bg2 section_title with_border">
+    서 버 관 리
+    <a id="showErrorLog" href="../showErrorLog.php" style="display:none;" class="btn btn-primary btn-sm" role="button">에러 로그 확인</a>
+ </caption>
 <colgroup>
     <col style="width:65px;">
     <col style="width:135px;">

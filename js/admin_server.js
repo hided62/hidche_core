@@ -77,6 +77,11 @@ function serverUpdate(caller){
 
 function drawServerAdminList(serverList){
     var $table = $('#server_admin_list');
+    var $showErrorLog = $('#showErrorLog');
+
+    if(serverList.grade >= 5){
+        $showErrorLog.show();
+    }
     $.each(serverList.server, function(idx, server){
         console.log(server);
         var status = '';
@@ -103,7 +108,10 @@ function drawServerAdminList(serverList){
             $tr.find('.valid_if_installed').prop('disabled', true);
         }
 
+        
+
         var aclByServer = serverList.acl[server.name];
+
         $.each(aclByServer, function(idx, action){
             console.log(action);
             if(action == 'update' || action == 'fullUpdate'){
@@ -111,6 +119,7 @@ function drawServerAdminList(serverList){
                     return true;
                 }
                 $tr.find('.serv_act_update').prop('disabled', false);
+                $showErrorLog.show();
             }
             else if(action == 'openClose'){
                 if(!server.valid){
