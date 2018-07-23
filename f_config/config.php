@@ -59,7 +59,7 @@ function logError(string $err, string $errstr, array $trace){
 
     $fdb->insert('err_log', [
         'date'=>$date,
-        'err'=>getFriendlyErrorType($errno),
+        'err'=>$err,
         'errstr'=>$errstr,
         'trace'=>Json::encode($trace)
     ]);
