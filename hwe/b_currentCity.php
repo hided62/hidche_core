@@ -170,7 +170,7 @@ if($valid == 0 && $session->userGrade < 5) {
 
 
 $city = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $citylist);
-$nation = getNationStaticInfo($city['nation']);
+$cityNation = getNationStaticInfo($city['nation']);
 
 //태수, 군사, 시중
 $gen1 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen1']);
@@ -180,81 +180,7 @@ $gen3 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $cit
 if($city['trade'] == 0) {
     $city['trade'] = "- ";
 }
-?>
 
-<table align=center width=1000 class='tb_layout bg0'>
-    <tr><td><?=backButton()?></td></tr>
-</table>
-
-<table align=center width=1000 class='tb_layout bg2'>
-    <tr>
-        <td colspan=12 align=center style=color:"<?=newColor($nation['color'])?>"; bgcolor=<?=$nation['color']?>>【 <?=CityConst::$regionMap[$city['region']]?> | <?=CityConst::$levelMap[$city['level']]?> 】 <?=$city['name']?></td>
-    </tr>
-    <tr>
-        <td align=center width=46 class=bg1>주민</td>
-        <td align=center width=140><?=$city['pop']?>/<?=$city['pop2']?></td>
-        <td align=center width=46 class=bg1>농업</td>
-        <td align=center width=140><?=$city['agri']?>/<?=$city['agri2']?></td>
-        <td align=center width=46 class=bg1>상업</td>
-        <td align=center width=140><?=$city['comm']?>/<?=$city['comm2']?></td>
-        <td align=center width=46 class=bg1>치안</td>
-        <td align=center width=140><?=$city['secu']?>/<?=$city['secu2']?></td>
-        <td align=center width=46 class=bg1>수비</td>
-        <td align=center width=140><?=$city['def']?>/<?=$city['def2']?></td>
-        <td align=center width=46 class=bg1>성벽</td>
-        <td align=center width=140><?=$city['wall']?>/<?=$city['wall2']?></td>
-    </tr>
-    <tr>
-        <td align=center class=bg1>민심</td>
-        <td align=center><?=$city['rate']?></td>
-        <td align=center class=bg1>시세</td>
-        <td align=center><?=$city['trade']?>%</td>
-        <td align=center class=bg1>인구</td>
-        <td align=center><?=round($city['pop']/$city['pop2']*100, 2)?>%</td>
-        <td align=center class=bg1>태수</td>
-        <td align=center><?=$gen1['name']??'-'?></td>
-        <td align=center class=bg1>군사</td>
-        <td align=center><?=$gen2['name']??'-'?></td>
-        <td align=center class=bg1>시중</td>
-        <td align=center><?=$gen3['name']??'-'?></td>
-    </tr>
-    <tr>
-        <td align=center class=bg1>장수</td>
-        <td colspan=11>
-<?php
-    $query = "select name, npc from general where city='{$city['city']}' and nation='{$city['nation']}'";    // 장수 목록
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($genresult);
-    if($gencount == 0) echo "-";
-    for($i=0; $i < $gencount; $i++) {
-        $general = MYDB_fetch_array($genresult);
-        echo "{$general['name']}, ";
-    }
-?>
-        </td>
-    </tr>
-</table>
-
-
-<br>
-<table align=center class='tb_layout bg0'>
-<thead>
-    <tr>
-        <td width=64 align=center class=bg1>얼 굴</td>
-        <td width=128 align=center class=bg1>이 름</td>
-        <td width=48 align=center class=bg1>통솔</td>
-        <td width=48 align=center class=bg1>무력</td>
-        <td width=48 align=center class=bg1>지력</td>
-        <td width=78 align=center class=bg1>관 직</td>
-        <td width=28 align=center class=bg1>守</td>
-        <td width=78 align=center class=bg1>병 종</td>
-        <td width=78 align=center class=bg1>병 사</td>
-        <td width=48 align=center class=bg1>훈련</td>
-        <td width=48 align=center class=bg1>사기</td>
-        <td width=280 align=center class=bg1>명 령</td>
-    </tr></thead><tbody class='bg0' id='general_list'>
-
-<?php
 $query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos,term,turn0,turn1,turn2,turn3,turn4,turn5 from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);
@@ -265,6 +191,9 @@ foreach(getAllNationStaticInfo() as $nation){
     $nationname[$nation['nation']] = $nation['name'];
     $nationlevel[$nation['nation']] = $nation['level'];
 }
+
+//도시명	오	적군	0/0(0)	병장(총)	0/0(4)	90병장	0/0	60병장	0/0	수비○	0/0
+$generalsFormat = [];
 
 
 for($j=0; $j < $gencount; $j++) {
@@ -340,7 +269,7 @@ for($j=0; $j < $gencount; $j++) {
         $turnText = '';
     }
     
-    echo $templates->render('cityGeneral', [
+    $generalsFormat[] = [
         'ourGeneral'=>$ourGeneral,
         'isNPC'=>$isNPC,
         'wounded'=>$wounded,
@@ -366,7 +295,159 @@ for($j=0; $j < $gencount; $j++) {
         'nation'=>$nation,
         'nationName'=>$nationName,
         'turnText'=>$turnText
-    ]);
+    ];
+}
+
+$generalsName = array_map(function($gen){return $gen['name'];}, $generalsFormat);
+
+$enemyCrew = 0;
+$enemyCnt = 0;
+$enemyArmedCnt = 0;
+$crew90 = 0;
+$gen90 = 0;
+$crew80 = 0;
+$gen80 = 0;
+$crew60 = 0;
+$gen60 = 0;
+
+$crewDef = 0;
+$genDef = 0 ;
+
+$crewTotal = 0;
+$armedGenTotal = 0;
+$genTotal = 0;
+
+
+foreach($generalsFormat as $general){
+    if($general['nation'] == 0){
+        continue;
+    }
+    if($general['nation'] != $myNation['nation']){
+        $enemyCnt += 1;
+        $enemyCrew += $general['crew'];
+        if($general['crew'] > 0){
+            $enemyArmedCnt += 1;
+        }
+        continue;
+    }
+
+    $crewTotal += $general['crew'];
+    $genTotal += 1;
+
+    if($general['crew'] == 0){
+        continue;
+    }
+    $armedGenTotal += 1;
+
+    if($general['train'] >= 90 && $general['atmos'] >= 90){
+        $crew90 += $general['crew'];
+        $gen90 += 1;
+    }
+
+    $chkDef = false;
+    if($general['train'] >= 80 && $general['atmos'] >= 80){
+        $crew80 += $general['crew'];
+        $gen80 += 1;
+        if($general['defenceMode'] == 2){
+            $crewDef += $general['crew'];
+            $genDef += 1;
+            $chkDef = true;
+        }
+    }
+
+    if($general['train'] >= 60 && $general['atmos'] >= 60){
+        $crew60 += $general['crew'];
+        $gen60 += 1;
+
+        if($general['defenceMode'] == 1 && !$chkDef){
+            $crewDef += $general['crew'];
+            $genDef += 1;
+            $chkDef = true;
+        }
+    }
+
+}
+
+?>
+
+<table align=center width=1000 class='tb_layout bg0'>
+    <tr><td><?=backButton()?></td></tr>
+</table>
+
+<table align=center width=1000 class='tb_layout bg2'>
+    <tr>
+        <td colspan=11 align=center style='color:<?=newColor($cityNation['color'])?>; background:<?=$cityNation['color']?>'>【 <?=CityConst::$regionMap[$city['region']]?> | <?=CityConst::$levelMap[$city['level']]?> 】 <?=$city['name']?></td>
+        <td style='color:<?=newColor($cityNation['color'])?>; background:<?=$cityNation['color']?>' class='center'><?=date('m-d H:i:s')?></td>
+    </tr>
+    <tr>
+        <td align=center width=48 class=bg1>주민</td>
+        <td align=center width=112><?=$city['pop']?>/<?=$city['pop2']?></td>
+        <td align=center width=48 class=bg1>농업</td>
+        <td align=center width=108><?=$city['agri']?>/<?=$city['agri2']?></td>
+        <td align=center width=48 class=bg1>상업</td>
+        <td align=center width=108><?=$city['comm']?>/<?=$city['comm2']?></td>
+        <td align=center width=48 class=bg1>치안</td>
+        <td align=center width=108><?=$city['secu']?>/<?=$city['secu2']?></td>
+        <td align=center width=48 class=bg1>수비</td>
+        <td align=center width=108><?=$city['def']?>/<?=$city['def2']?></td>
+        <td align=center width=48 class=bg1>성벽</td>
+        <td align=center width=108><?=$city['wall']?>/<?=$city['wall2']?></td>
+    </tr>
+    <tr>
+        <td align=center class=bg1>민심</td>
+        <td align=center><?=$city['rate']?></td>
+        <td align=center class=bg1>시세</td>
+        <td align=center><?=$city['trade']?>%</td>
+        <td align=center class=bg1>인구</td>
+        <td align=center><?=round($city['pop']/$city['pop2']*100, 2)?>%</td>
+        <td align=center class=bg1>태수</td>
+        <td align=center><?=$gen1['name']??'-'?></td>
+        <td align=center class=bg1>군사</td>
+        <td align=center><?=$gen2['name']??'-'?></td>
+        <td align=center class=bg1>시중</td>
+        <td align=center><?=$gen3['name']??'-'?></td>
+    </tr>
+    <tr>
+        <td align=center class=bg1>도시명</td>
+        <td align=center><?=$city['name']?></td>
+        <td align=center class=bg1>적군</td>
+        <td align=center><?=number_format($enemyCrew)?>/<?=number_format($enemyArmedCnt)?>(<?=number_format($enemyCnt)?>)</td>
+        <td align=center class=bg1>병장(총)</td>
+        <td align=center><?=number_format($crewTotal)?>/<?=number_format($armedGenTotal)?>(<?=number_format($genTotal)?>)</td>
+        <td align=center class=bg1>90병장</td>
+        <td align=center><?=number_format($crew90)?>/<?=number_format($gen90)?></td>
+        <td align=center class=bg1>60병장</td>
+        <td align=center><?=number_format($crew60)?>/<?=number_format($gen60)?></td>
+        <td align=center class=bg1>수비○</td>
+        <td align=center><?=number_format($crewDef)?>/<?=number_format($genDef)?></td>
+    </tr>
+    <tr>
+        <td align=center class=bg1>장수</td>
+        <td colspan=11><?=join(', ', $generalsName)?></td>
+    </tr>
+</table>
+
+<br>
+<table align=center class='tb_layout bg0'>
+<thead>
+    <tr>
+        <td width=64 align=center class=bg1>얼 굴</td>
+        <td width=128 align=center class=bg1>이 름</td>
+        <td width=48 align=center class=bg1>통솔</td>
+        <td width=48 align=center class=bg1>무력</td>
+        <td width=48 align=center class=bg1>지력</td>
+        <td width=78 align=center class=bg1>관 직</td>
+        <td width=28 align=center class=bg1>守</td>
+        <td width=78 align=center class=bg1>병 종</td>
+        <td width=78 align=center class=bg1>병 사</td>
+        <td width=48 align=center class=bg1>훈련</td>
+        <td width=48 align=center class=bg1>사기</td>
+        <td width=280 align=center class=bg1>명 령</td>
+    </tr></thead>
+    <tbody class='bg0' id='general_list'>
+<?php
+foreach($generalsFormat as $general){
+    echo $templates->render('cityGeneral', $general);
 }
 ?>
 </tbody>

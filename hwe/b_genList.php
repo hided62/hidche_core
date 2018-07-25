@@ -9,8 +9,6 @@ if ($type <= 0 || $type > 8) {
     $type = 7;
 }
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
@@ -19,7 +17,7 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
-increaseRefresh("암행부", 2);
+increaseRefresh("암행부", 1);
 
 $query = "select no,nation,level,con,turntime,belong from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
@@ -43,6 +41,8 @@ if ($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretli
 $sel = [];
 $sel[$type] = "selected";
 
+$templates = new \League\Plates\Engine('templates');
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -65,7 +65,7 @@ $sel[$type] = "selected";
 <body>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td>암 행 부<br><?=closeButton()?></td></tr>
-    <tr><td><form name=form1 method=post>정렬순서 :
+    <tr><td><form name=form1 method=get>정렬순서 :
         <select name=type size=1>
             <option <?=$sel[1]??''?> value=1>자금</option>
             <option <?=$sel[2]??''?> value=2>군량</option>
@@ -80,54 +80,28 @@ $sel[$type] = "selected";
     </td></tr>
 </table>
 <?php
-$query = "select troop,name from troop where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$troopCount = MYDB_num_rows($result);
 $troopName = [];
-for ($i=0; $i < $troopCount; $i++) {
-    $troop = MYDB_fetch_array($result);
-    $troopName[$troop['troop']] = $troop['name'];
+foreach($db->queryAllLists('SELECT troop, name FROM troop WHERE nation=%i', $me['nation']) as [$troopID, $tName]){
+    $troopName[$troopID] = $tName;
 }
 
+$orderSQL = '';
 switch ($type) {
-    case 1: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by gold desc"; break;
-    case 2: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by rice desc"; break;
-    case 3: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by city"; break;
-    case 4: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by crewtype desc"; break;
-    case 5: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by crew desc"; break;
-    case 6: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by killturn"; break;
-    case 7: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by turntime"; break;
-    case 8: $query = "select npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general where nation='{$me['nation']}' order by troop desc"; break;
+    case 1: $orderSQL = "order by gold desc"; break;
+    case 2: $orderSQL = "order by rice desc"; break;
+    case 3: $orderSQL = "order by city"; break;
+    case 4: $orderSQL = "order by crewtype desc"; break;
+    case 5: $orderSQL = "order by crew desc"; break;
+    case 6: $orderSQL = "order by killturn"; break;
+    case 7: $orderSQL = "order by turntime"; break;
+    case 8: $orderSQL = "order by troop desc"; break;
 }
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$gencount = MYDB_num_rows($genresult);
 
-?>
-<table align=center id='general_list' class='tb_layout bg0'>
-    <thead>
-    <tr>
-        <td width=98 align=center class=bg1>이 름</td>
-        <td width=98 align=center class=bg1>통무지</td>
-        <td width=98 align=center class=bg1>부 대</td>
-        <td width=58 align=center class=bg1>자 금</td>
-        <td width=58 align=center class=bg1>군 량</td>
-        <td width=48 align=center class=bg1>도시</td>
-        <td width=28 align=center class=bg1>守</td>
-        <td width=58 align=center class=bg1>병 종</td>
-        <td width=68 align=center class=bg1>병 사</td>
-        <td width=48 align=center class=bg1>훈련</td>
-        <td width=48 align=center class=bg1>사기</td>
-        <td width=148 align=center class=bg1>명 령</td>
-        <td width=58 align=center class=bg1>삭턴</td>
-        <td width=58 align=center class=bg1>턴</td>
-    </tr>
-    </thead>
-    <tbody>
-<?php
-for ($j=0; $j < $gencount; $j++) {
-    $general = MYDB_fetch_array($genresult);
-    $city = CityConst::byID($general['city'])->name;
-    $troop = $troopName[$general['troop']]??'-';
+$generals = $db->query('SELECT npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general WHERE nation = %i %l', $me['nation'], $orderSQL);
+
+foreach ($generals as &$general) {
+    $general['cityText'] = CityConst::byID($general['city'])->name;
+    $general['troopText'] = $troopName[$general['troop']]??'-';
 
     if ($general['level'] == 12) {
         $lbonus = $nation['level'] * 2;
@@ -137,81 +111,128 @@ for ($j=0; $j < $gencount; $j++) {
         $lbonus = 0;
     }
     if ($lbonus > 0) {
-        $lbonus = "<font color=cyan>+{$lbonus}</font>";
+        $lbonusText = "<font color=cyan>+{$lbonus}</font>";
     } else {
-        $lbonus = "";
+        $lbonusText = "";
     }
+    $general['lbonus'] = $lbonus;
+    $general['lbonusText'] = $lbonusText;
 
     if ($general['injury'] > 0) {
         $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
         $power = intdiv($general['power'] * (100 - $general['injury']), 100);
         $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
-        $leader = "<font color=red>{$leader}</font>{$lbonus}";
+        $leader = "<font color=red>{$leader}</font>{$lbonusText}";
         $power = "<font color=red>{$power}</font>";
         $intel = "<font color=red>{$intel}</font>";
     } else {
-        $leader = "{$general['leader']}{$lbonus}";
+        $leader = "{$general['leader']}{$lbonusText}";
         $power = "{$general['power']}";
         $intel = "{$general['intel']}";
     }
+
+    $general['leaderText'] = $leader;
+    $general['powerText'] = $power;
+    $general['intelText'] = $intel;
+
+    $general['expLevelText'] = getExpLevel($general['experience']);
 
     if ($general['npc'] >= 2) {
         $name = "<font color=cyan>{$general['name']}</font>";
     } elseif ($general['npc'] == 1) {
         $name = "<font color=skyblue>{$general['name']}</font>";
     } else {
-        $name =  "{$general['name']}";
+        $name =  $general['name'];
     }
+    //TODO: npc 코드를 일원화
+    $general['nameText'] = $name;
 
     switch ($general['mode']) {
     case 0: $mode = "×"; break;
     case 1: $mode = "○"; break;
     case 2: $mode = "◎"; break;
     }
+    $general['modeText'] = $mode;
+    $general['crewtypeText'] = GameUnitConst::byId($general['crewtype'])->name;
 
-    echo "
-    <tr>
-        <td class='i_name' align=center><span class='t_name'>$name</span><br>Lv <span class='t_explevel'>".getExpLevel($general['experience'])."</span></td>
-        <td class='i_stat' align=center>{$leader}∥{$power}∥{$intel}</td>
-        <td class='i_troop' align=center>$troop</td>
-        <td class='i_gold' align=center>{$general['gold']}</td>
-        <td class='i_rice' align=center>{$general['rice']}</td>
-        <td class='i_city' align=center>$city</td>
-        <td align=center>$mode</td>
-        <td class='i_crewtype' align=center>".GameUnitConst::byId($general['crewtype'])->name."</td>
-        <td class='i_crew' align=center>{$general['crew']}</td>
-        <td class='i_train' align=center>{$general['train']}</td>
-        <td class='i_atmos' align=center>{$general['atmos']}</td>";
-    if ($general['npc'] >= 2) {
-        echo "
-        <td class='i_action'>
-            <font size=3>NPC 장수";
-    } else {
-        echo "
-        <td class='i_action'>
-            <font size=1>";
+    
+    if ($general['npc'] < 2) {
+        $turntext = [];
         $turn = getTurn($general, 1, 0);
 
         for ($i=0; $i < 5; $i++) {
             $turn[$i] = StringUtil::subStringForWidth($turn[$i], 0, 20);
             $k = $i+1;
-            echo "
-                &nbsp;$k : $turn[$i]  <br>";
+            $turntext[] = "&nbsp;$k : $turn[$i]";
         }
+        $general['turntext'] = join("<br>\n", $turntext);
     }
-    echo "
-            </font>
-        </td>
-        <td align=center>{$general['killturn']}</td>
-        <td class='i_turntime' align=center>".substr($general['turntime'], 14, 5)."</td>
-    </tr>";
 }
-echo "
+
+
+$genCnt = count($generals);
+$totalGold = 0;
+$totalRice = 0;
+$crew90 = 0;
+$gen90 = 0;
+$crew80 = 0;
+$gen80 = 0;
+$crew60 = 0;
+$gen60 = 0;
+$crewTotal = 0;
+//$genTotal = 0;
+foreach($generals as $general){
+    $totalGold += $general['gold'];
+    $totalRice += $general['rice'];
+
+    $crewTotal += $general['crew'];
+
+    if($general['crew'] == 0){
+        continue;
+    }
+    if($general['train'] >= 90 && $general['atmos'] >= 90){
+        $crew90 += $general['crew'];
+        $gen90 += 1;
+    }
+
+    if($general['train'] >= 80 && $general['atmos'] >= 80){
+        $crew80 += $general['crew'];
+        $gen80 += 1;
+    }
+
+    if($general['train'] >= 60 && $general['atmos'] >= 60){
+        $crew60 += $general['crew'];
+        $gen60 += 1;
+    }
+}
+?>
+
+<table style='width:1000px;margin:5px auto' class='tb_layout bg0'>
+<thead>
+<colgroup>
+<col style="width:120px;"><col>
+<col style="width:120px;"><col>
+<col style="width:120px;"><col>
+<col style="width:120px;"><col>
+</colgroup>
+</thead>
+<tbody>
+<tr>
+<td class='bg1'>전체 금</td><td><?=number_format($totalGold)?></td>
+<td class='bg1'>전체 쌀</td><td><?=number_format($totalRice)?></td>
+<td class='bg1'>평균 금</td><td><?=number_format($totalGold/$genCnt, 2)?></td>
+<td class='bg1'>평균 쌀</td><td><?=number_format($totalRice/$genCnt, 2)?></td>
+</tr>
+<tr>
+<td class='bg1'>전체 병력/장수</td><td><?=number_format($crewTotal)?>/<?=number_format($genCnt)?></td>
+<td class='bg1'>훈사 90 병력/장수</td><td><?=number_format($crew90)?>/<?=number_format($gen90)?></td>
+<td class='bg1'>훈사 80 병력/장수</td><td><?=number_format($crew80)?>/<?=number_format($gen80)?></td>
+<td class='bg1'>훈사 60 병력/장수</td><td><?=number_format($crew60)?>/<?=number_format($gen60)?></td>
+</tr>
 </tbody>
 </table>
-";
 
-?>
+<?=$templates->render('generalList', ['generals'=>$generals])?>
 
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td><?=closeButton()?></td></tr>
