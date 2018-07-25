@@ -148,9 +148,9 @@ foreach ($generals as &$general) {
     $general['nameText'] = $name;
 
     switch ($general['mode']) {
-    case 0: $mode = "×"; break;
-    case 1: $mode = "○"; break;
-    case 2: $mode = "◎"; break;
+        case 0: $mode = "×"; break;
+        case 1: $mode = "○"; break;
+        case 2: $mode = "◎"; break;
     }
     $general['modeText'] = $mode;
     $general['crewtypeText'] = GameUnitConst::byId($general['crewtype'])->name;
@@ -168,7 +168,7 @@ foreach ($generals as &$general) {
         $general['turntext'] = join("<br>\n", $turntext);
     }
 }
-
+unset($general);
 
 $genCnt = count($generals);
 $totalGold = 0;
