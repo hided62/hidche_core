@@ -85,22 +85,22 @@ foreach (getAllNationStaticInfo() as $nation) {
 }
 
 switch ($type) { //FIXME:  $query 처리 조심.
-    case  1: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by nation"; break;
-    case  2: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by leader desc"; break;
-    case  3: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by power desc"; break;
-    case  4: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by intel desc"; break;
-    case  5: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by experience desc"; break;
-    case  6: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by dedication desc"; break;
-    case  7: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by level desc"; break;
-    case  8: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by killturn"; break;
+    case  1: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by nation"; break;
+    case  2: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by leader desc"; break;
+    case  3: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by power desc"; break;
+    case  4: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by intel desc"; break;
+    case  5: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by experience desc"; break;
+    case  6: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by dedication desc"; break;
+    case  7: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by level desc"; break;
+    case  8: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by killturn"; break;
     default:
-    case  9: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by connect desc"; break;
-    case 10: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by experience desc"; break;
-    case 11: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by personal"; break;
-    case 12: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by special desc"; break;
-    case 13: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by special2 desc"; break;
-    case 14: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by age desc"; break;
-    case 15: $query = "select picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by npc desc"; break;
+    case  9: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by connect desc"; break;
+    case 10: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by experience desc"; break;
+    case 11: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by personal"; break;
+    case 12: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by special desc"; break;
+    case 13: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by special2 desc"; break;
+    case 14: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by age desc"; break;
+    case 15: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by npc desc"; break;
 }
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $gencount = MYDB_num_rows($genresult);
@@ -136,20 +136,20 @@ for ($j=0; $j < $gencount; $j++) {
         $lbonus = 0;
     }
     if ($lbonus > 0) {
-        $lbonus = "<font color=cyan>+{$lbonus}</font>";
+        $lbonusText = "<font color=cyan>+{$lbonus}</font>";
     } else {
-        $lbonus = "";
+        $lbonusText = "";
     }
 
     if ($general['injury'] > 0) {
         $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
         $power = intdiv($general['power'] * (100 - $general['injury']), 100);
         $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
-        $leader = "<font color=red>{$leader}</font>{$lbonus}";
+        $leader = "<font color=red>{$leader}</font>{$lbonusText}";
         $power = "<font color=red>{$power}</font>";
         $intel = "<font color=red>{$intel}</font>";
     } else {
-        $leader = "{$general['leader']}{$lbonus}";
+        $leader = "{$general['leader']}{$lbonusText}";
         $power = "{$general['power']}";
         $intel = "{$general['intel']}";
     }
@@ -166,7 +166,14 @@ for ($j=0; $j < $gencount; $j++) {
 
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "
-    <tr>
+    <tr data-general-id='{$general['no']}' 
+        data-general-wounded='{$general['injury']}' 
+        data-general-leadership='{$general['leader']}'
+        data-general-leadership-bonus='{$lbonus}'
+        data-general-power='{$general['power']}'
+        data-general-intel='{$general['intel']}'
+        data-is-npc='".($general['npc']>=2?'true':'false')."'
+    >
         <td align=center><img width='64' height='64' src={$imageTemp}/{$general['picture']}></img></td>
         <td align=center>$name</td>
         <td align=center>{$general['age']}세</td>

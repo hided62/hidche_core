@@ -9,19 +9,33 @@ $(function(){
     
     var getUserType = function(통,무,지){
         var 총 = 통+무+지;
-               
-        if(통 < 총*0.2)	{
+        if(통 < 40){
+            if(무+지 < 통){
+                return "무능";
+            }
             return "무지";
-        }else if(무 < 총*0.2)	{
-            return "지";
-        }else if(지 < 총*0.2)	{
-            return "무";
-        }else{
+        }
+
+        var 최대능력치 = Math.max(통, 무, 지);
+        var 능력치2합 = Math.min(통+무, 무+지, 지+통);
+        if(최대능력치 >= 70 && 능력치2합 >= 최대능력치 * 1.6){
             return "만능";
         }
+
+        if(무 >= 60 && 지 < 무*0.8){
+            return "무";
+        }
+        if(지 >= 60 && 무 < 지*0.8){
+            return "지";
+        }
+
+        
+
+        return "평범";
     };
     
     function formatScore(x) {
+        console.log(x);
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
     
@@ -53,27 +67,31 @@ $(function(){
                     var 장수명 = $.trim($tds.eq(1).text());
                     var 국가 = $.trim($tds.eq(6).text());
                     
+                    var 부상 = $this.data('general-wounded');
+
                     장수.html = $this.clone();
                     장수.장수명 = 장수명;
                     장수.국가 = 국가;
                     장수.벌점 = parseInt($tds.eq(-1).text());
-                    장수.통 = parseInt($tds.eq(10).text().split('+')[0]);
-                    장수.무 = parseInt($tds.eq(11).text().split('+')[0]);
-                    장수.지 = parseInt($tds.eq(12).text().split('+')[0]);
+                    장수.통 = parseInt($this.data('general-leadership'));
+                    장수.무 = parseInt($this.data('general-power'));
+                    장수.지 = parseInt($this.data('general-intel'));
                     장수.삭턴 = parseInt($tds.eq(-2).text());
                     장수.종류 = getUserType(장수.통, 장수.무, 장수.지);
-                    장수.의병 = 장수명[0]=="ⓜ" || 장수명[0]=="ⓖ";
+                    장수.NPC = $this.data('is-npc');
+                    
                     if(!(국가 in 국가별)){
                         국가별[국가] = {};
+                        국가별[국가].무능 = [];
+                        국가별[국가].무지 = [];
                         국가별[국가].무 = [];
                         국가별[국가].지 = [];
-                        국가별[국가].충차 = [];
-                        국가별[국가].무지 = [];
                         국가별[국가].만능 = [];
-                        //국가별[국가].의병 = [];
+                        국가별[국가].평범 = [];
+                        //국가별[국가].NPC = [];
                     }
                     
-                    //if(장수.의병) 국가별[국가].의병.push(장수);
+                    //if(장수.NPC) 국가별[국가].NPC.push(장수);
                     국가별[국가][장수.종류].push(장수);
                     
                     장수.html.hide();
@@ -93,8 +111,11 @@ $(function(){
                     
                     var total = 0;
                     var 전투유저장수 = 0;
-                    var 삭턴장수 = 0;
                     var 통솔합 = 0;
+                    var 삭턴장수 = 0;
+
+                    var 전투N장수 = 0;
+                    var N장통솔합 = 0;
                     $td.html('<p class="sum" style="margin:0;font-weight:bold;color:yellow;text-align:center"></p>');
                     $td.css('text-indent','-5.8em').css('padding-left','5.8em');
                     for(var 종류명 in 국가정보){
@@ -130,15 +151,18 @@ $(function(){
                         $.each(테이블,function(idx,val){
 							                      
                             var 종능 = val.통 + val.무 + val.지;
-                            if(종류명 == '무' || 종류명 == '지' || 종류명 == '충차'){
-                                if(val.삭턴 >= 80 && !val.의병){
-                                    전투유저장수+=1;
+                            console.log(val);
+                            if(종류명 != '무능' && 종류명 != '무지'){
+                                if(val.삭턴 >= 80 && !val.NPC){
+                                    전투유저장수 += 1;
                                     
-                                    if(종능 > 150)         통솔합 += val.통;
-                                    else if(종능/0.75 >= 150)통솔합 += parseInt(val.통/0.75);
-                                    else if(종능/0.55 >= 150)통솔합 += parseInt(val.통/0.55);
-                                    else if(종능/0.35 >= 150)통솔합 += parseInt(val.통/0.35);
-                                    else if(종능/0.15 >= 150)통솔합 += parseInt(val.통/0.15);
+                                    통솔합 += val.통;
+                                }
+                                
+                                if(val.삭턴 > 5 && val.NPC){
+                                    전투N장수 += 1;
+
+                                    N장통솔합 += val.통;
                                 }
                             }
                             
@@ -146,11 +170,11 @@ $(function(){
                             var $obj2 = $('<span></span>');
                             $obj.html(val.장수명);
                             
-                            if(!val.의병 && val.삭턴 < 80){
+                            if(!val.NPC && val.삭턴 < 80){
                                 $obj.css('text-decoration','line-through');
                                 삭턴장수+=1;
                             }
-                            if(val.의병){
+                            if(val.NPC){
                                 $obj.css('color','cyan');
                             }
                             if(val.벌점 >= 1500) $obj.css('color','yellow');
@@ -179,7 +203,7 @@ $(function(){
                         $td.append($p);
                     }
                     
-                    var result = "* 총("+total+"), 전투장("+전투유저장수+", 약 "+formatScore(통솔합*100)+"명), 삭턴장("+삭턴장수+") *";
+                    var result = "* 총("+total+"), 전투장("+전투유저장수+", 약 "+formatScore(통솔합*100)+"명), 전투N장("+전투N장수+", 약 "+formatScore(N장통솔합*100)+"명), 삭턴장("+삭턴장수+") *";
                     $tbl.find('.sum').html(result);
                     
                     
@@ -226,7 +250,7 @@ $(function(){
         $btn.prop("disabled",true);
         var $tr0 = $('table:eq(0) tr:eq(0)');
     	$tr0.append('<td><strong>*벌점 순 정렬*</strong><br><span style="color:yellow">벌점 1500점 이상</span>, <span style="color:lightgreen">벌점 200점 이상</span>, '+
-                    '<span style="text-decoration:line-through">삭턴 장</span>, <span style="color:cyan">ⓝ장</span>'+'<br><strong>전투장 :</strong> 무장 + 지장 + 충차장 - 삭턴자(무,지,충) </td>');
+                    '<span style="text-decoration:line-through">삭턴장</span>, <span style="color:cyan">ⓝ장</span>'+'<br><strong>전투장 :</strong> 만능장 + 무장 + 지장 + 평범장 - 삭턴자(만능, 무, 지, 평범) </td>');
     });
     
     
