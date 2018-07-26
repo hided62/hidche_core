@@ -84,4 +84,6 @@ class GameConstBase
 
     /** @var int 최대 턴(현재는 DB상 24턴으로 고정) */
     public static $maxTurn = 24;
+
+    public static $statGradeLevel = 5;
 }

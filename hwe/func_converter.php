@@ -355,22 +355,32 @@ function getLevel($level, $nlevel=8) {
 
 function getCall($leader, $power, $intel) {
     $call = '평범';
-    if($leader >= GameConst::$chiefStatMin && $power >= GameConst::$chiefStatMin && $intel >= GameConst::$chiefStatMin) {
-        $call = '만능';
-    } elseif($leader >= GameConst::$chiefStatMin && $power >= GameConst::$chiefStatMin) {
-        $call = '용장';
-    } elseif($leader >= GameConst::$chiefStatMin && $intel >= GameConst::$chiefStatMin) {
-        $call = '지장';
-    } elseif($power >= GameConst::$chiefStatMin && $intel >= GameConst::$chiefStatMin) {
-        $call = '명장';
-    } elseif($leader >= GameConst::$chiefStatMin) {
-        $call = '명사';
-    } elseif($power >= GameConst::$chiefStatMin) {
-        $call = '용맹';
-    } elseif($intel >= GameConst::$chiefStatMin) {
-        $call = '현명';
+
+    if($leader < 40){
+        if($power + $intel < $leader){
+            return '아둔';
+        }
+        if($intel >= GameConst::$chiefStatMin && $power < $intel * 0.8){
+            return '학자';
+        }
+        if($power >= GameConst::$chiefStatMin && $intel < $power * 0.8){
+            return '장사';
+        }
+        return '명사';
     }
-    return $call;
+
+    $maxStat = max($leader, $power, $intel);
+    $sum2Stat = min($leader+$power, $power+$intel, $intel+$leader);
+    if($maxStat >= GameConst::$chiefStatMin + GameConst::$statGradeLevel && $sum2Stat >= $maxStat * 1.7){
+        return '만능';
+    }
+    if($power >= GameConst::$chiefStatMin - GameConst::$statGradeLevel && $intel < $power * 0.8){
+        return '용장';
+    }
+    if($intel >= GameConst::$chiefStatMin - GameConst::$statGradeLevel && $power < $intel * 0.8){
+        return '명장';
+    }
+    return '평범';
 }
 
 function getDed($dedication) {
