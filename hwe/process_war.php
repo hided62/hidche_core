@@ -298,7 +298,8 @@ function processWar($general, $city) {
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
                 $ratio2 = $generalCrewType->avoid;   //회피율
-				$ratio2 = Util::round($ratio2 * $general['train'] / 100); //훈련 반영
+                $ratio2 = Util::round($ratio2 * $general['train'] / 100); //훈련 반영
+                LogText('avoid0', [date("Ymd_His"), $generalCrewType->id, $general, $ratio2]);
                 //특기보정 : 궁병
                 if($general['special2'] == 51) { $ratio2 += 20; }
                 //도구 보정 : 둔갑천서, 태평요술
@@ -1066,7 +1067,8 @@ function processWar($general, $city) {
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
                 $ratio2 = $generalCrewType->avoid;   //회피율
-				$ratio2 = Util::round($ratio2 * $general['train'] / 100); //훈련 반영
+                $ratio2 = Util::round($ratio2 * $general['train'] / 100); //훈련 반영
+                LogText('avoid1', [date("Ymd_His"), $generalCrewType->id, $general, $ratio2]);
                 //특기보정 : 돌격, 궁병
                 if($oppose['special2'] == 60) { $ratio2 -= 100; }
                 if($general['special2'] == 51) { $ratio2 += 20; }
@@ -1089,7 +1091,8 @@ function processWar($general, $city) {
                 //회피
                 $ratio = rand() % 100; // 0 ~ 99
                 $ratio2 = $opposeCrewType->avoid;   //회피율
-				$ratio2 = Util::round($ratio2 * $oppose['train'] / 100); //훈련 반영
+                $ratio2 = Util::round($ratio2 * $oppose['train'] / 100); //훈련 반영
+                LogText('avoid2', [date("Ymd_His"), $opposeCrewType->id, $oppose, $ratio2]);
                 // 특기보정 : 돌격, 궁병
                 if($general['special2'] == 60) { $ratio2 -= 100; }
                 if($oppose['special2'] == 51) { $ratio2 += 20; }
