@@ -5,10 +5,13 @@ include "lib.php";
 include "func.php";
 //로그인 검사
 
-$commandtype = Util::getReq('commandtype', 'int', 0);
-$turn = Util::getReq('turn', 'array_int', [0]);
+$commandtype = Util::getReq('commandtype', 'int');
+$turn = Util::getReq('turn', 'array_int');
 
-extractMissingPostToGlobals();
+if(!$turn || $commandtype === null){
+    header('location:commandlist.php');
+    die();
+}
 
 $session = Session::requireGameLogin()->setReadOnly();
 

@@ -14,11 +14,9 @@ $turn = Util::getReq('turn', 'array_int');
 $sel = Util::getReq('sel', 'int');
 $commandtype = Util::getReq('commandtype', 'int');
 
-extractMissingPostToGlobals();
-
 increaseRefresh("턴입력", 1);
 
-if(!$turn || $commandtype === null){
+if(!$turn || $commandtype === null || $sel === null){
     header('location:commandlist.php');
     die();
 }
