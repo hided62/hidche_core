@@ -240,10 +240,10 @@ else if($session->userGrade == 4){
 <form name=form2 action=preprocessing.php method=post target=commandlist>
     <tr>
         <td rowspan=3 width=50 valign=top><?=turnTable()?></td>
-        <td width=646 style="border:none;text-align:center;"><?php cityInfo(); ?></td>
+        <td style="width:650px;border:none;text-align:center;"><?php cityInfo(); ?></td>
     </tr>
     <tr>
-        <td width=646 align=right>
+        <td style='width:650px;' align=right>
             <font color=cyan><b>←</b> Ctrl, Shift, 드래그로 복수선택 가능　　반복&amp;수정<b>→</b></font>
             <select name=sel size=1 style=color:white;background-color:black;font-size:13px;>
                 <option value=1>1턴</option>
@@ -262,7 +262,7 @@ else if($session->userGrade == 4){
         </td>
     </tr>
     <tr>
-        <td width=646 align=right style="border:none;">
+        <td align=right style="'width:650px;border:none;">
             <?php commandTable(); ?>
             <input id="mainBtnSubmit" type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;font-size:13px; value='로비로' onclick=location.replace('../')><br>
         </td>
