@@ -233,7 +233,7 @@ function command_11($turn, $command, bool $is모병 = false) {
     }
 
     $leader = getGeneralLeadership($me, true, true, true);
-    $maxCrew = $leader - Util::round($me['crew']/100);
+    $fullLeader = getGeneralLeadership($me, false, true, true);
     $abil = getTechAbil($tech);
 
     $armTypes = [];
@@ -317,10 +317,10 @@ function command_11($turn, $command, bool $is모병 = false) {
         'techLevelText'=>getTechCall($tech),
         'tech'=>$tech,
         'leader'=>$leader,
+        'fullLeader'=>$fullLeader,
         'crewType'=>GameUnitConst::byId($me['crewtype'])->id,
         'crewTypeName'=>GameUnitConst::byId($me['crewtype'])->name,
         'crew'=>$me['crew'],
-        'maxCrew'=>$maxCrew,
         'gold'=>$me['gold'],
         'turn'=>$turn,
         'armTypes'=>$armTypes,
