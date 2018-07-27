@@ -67,9 +67,9 @@
                         style=text-align:right;color:white;background-color:black>원 
                     
             </td>
-            <td style='position:relative;'><input 
+            <td style='position:relative;height:64px;'><input 
             type=submit value='<?=$commandName?>' class='submit_btn'
-            style='width:100%;height:70%;display:block;position: absolute;left:0;top:15%;'
+            style='width:100%;height:44px;margin:10px 0;display:block;position: absolute;left:0;top:0;'
             ></td>
             <td><?=$crewObj->info?></td>
         </tr>
