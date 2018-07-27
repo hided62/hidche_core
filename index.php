@@ -134,8 +134,8 @@ function postOAuthResult(result){
                 
                 <form id="main_form" method="post" action="#">
                     <div class="form-group row">
-                        <label for="username" class="col-sm-4 col-form-label">계정명</label>
-                        <div class="col-sm-8">
+                        <label for="username" class="col-5 col-md-4 col-form-label">계정명</label>
+                        <div class="col-7 col-md-8">
                             <input autocomplete="username" type="text" class="form-control"
                                 name="username" id="username" autofocus="autofocus" placeholder="계정명"/>
                         </div>
@@ -143,8 +143,8 @@ function postOAuthResult(result){
 
                     
                     <div class="form-group row">
-                        <label for="password" class="col-sm-4 col-form-label">비밀번호</label>
-                        <div class="col-sm-8">
+                        <label for="password" class="col-5 col-md-4 col-form-label">비밀번호</label>
+                        <div class="col-7 col-md-8">
                             <input autocomplete="current-password" type="password" 
                                 class="form-control" name="password" id="password"  placeholder="비밀번호"/>
                         </div>
@@ -152,8 +152,8 @@ function postOAuthResult(result){
 
                     <input type="hidden" id="global_salt" name="global_salt" value="<?=RootDB::getGlobalSalt()?>">
                     <div class="form-group row">
-                        <div class="col-sm-4" style="position:relative;"><button type="button" onclick="getOAuthToken('login');" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
-                        <div class="col-sm-8">
+                        <div class="col-5 col-md-4 " style="position:relative;"><button type="button" onclick="getOAuthToken('login');" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
+                        <div class="col-7 col-md-8">
                             <button type="submit" class="btn btn-primary btn-lg btn-block login-button">로그인</button>
                         </div>
                     </div>
