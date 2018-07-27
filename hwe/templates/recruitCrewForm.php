@@ -127,7 +127,7 @@ $(function(){
 
     $('.btn_half').click(function(){
         var $this = $(this);
-        var $parent = $this.parents('.input_form');
+        var $parent = $this.closest('.input_form');
         var crewtype = parseInt($parent.data('crewtype'));
         var $input = $parent.find('.form_double:eq(0)');
 
@@ -139,7 +139,7 @@ $(function(){
 
     $('.btn_fill').click(function(){
         var $this = $(this);
-        var $parent = $this.parents('.input_form');
+        var $parent = $this.closest('.input_form');
         var crewtype = parseInt($parent.data('crewtype'));
         var $input = $parent.find('.form_double:eq(0)');
 
@@ -154,7 +154,7 @@ $(function(){
 
     $('.btn_full').click(function(){
         var $this = $(this);
-        var $parent = $this.parents('.input_form');
+        var $parent = $this.closest('.input_form');
         var crewtype = parseInt($parent.data('crewtype'));
         var $input = $parent.find('.form_double:eq(0)');
 
@@ -166,9 +166,9 @@ $(function(){
 
     $('.submit_btn').click(function(){
         var $this = $(this);
-        var $parent = $this.parents('.input_form');
+        var $parent = $this.closest('tr').find('.input_form');
         var crewtype = parseInt($parent.data('crewtype'));
-        var $input = $parent.find('.form_double:eq(0)');
+        var $input = $parent.find('.form_double');
 
         $formCrewtype.val(crewtype);
         $formAmount.val($input.val());
