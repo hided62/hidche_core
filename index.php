@@ -120,6 +120,7 @@ function postOAuthResult(result){
     </ul>
   </div>
 </nav>
+<div class="full-content">
     <div class="vertical-center">
     <div class="container">
         <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
@@ -171,6 +172,7 @@ function postOAuthResult(result){
         </div>
     </div>
     </div>
+</div>
     <div id="bottom_box">
     <div class="container"><a href="terms.2.html">개인정보처리방침</a> &amp; <a href="terms.1.html">이용약관</a><br>© 2018  •  HideD
     <br>크롬과 파이어폭스에 최적화되어있습니다.</div></div>
