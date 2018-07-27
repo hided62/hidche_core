@@ -4,16 +4,16 @@
         <td width=98 class='bg1 center'>이 름</td>
         <td width=98 class='bg1 center'>통무지</td>
         <td width=98 class='bg1 center'>부 대</td>
-        <td width=58 class='bg1 center'>자 금</td>
-        <td width=58 class='bg1 center'>군 량</td>
+        <td width=53 class='bg1 center'>자 금</td>
+        <td width=53 class='bg1 center'>군 량</td>
         <td width=48 class='bg1 center'>도시</td>
         <td width=28 class='bg1 center'>守</td>
         <td width=58 class='bg1 center'>병 종</td>
-        <td width=68 class='bg1 center'>병 사</td>
-        <td width=48 class='bg1 center'>훈련</td>
-        <td width=48 class='bg1 center'>사기</td>
-        <td width=148 class='bg1 center'>명 령</td>
-        <td width=58 class='bg1 center'>삭턴</td>
+        <td width=63 class='bg1 center'>병 사</td>
+        <td width=43 class='bg1 center'>훈련</td>
+        <td width=43 class='bg1 center'>사기</td>
+        <td width=188 class='bg1 center'>명 령</td>
+        <td width=43 class='bg1 center'>삭턴</td>
         <td width=58 class='bg1 center'>턴</td>
     </tr>
 </thead>

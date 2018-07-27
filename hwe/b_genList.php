@@ -161,7 +161,7 @@ foreach ($generals as &$general) {
         $turn = getTurn($general, 1, 0);
 
         for ($i=0; $i < 5; $i++) {
-            $turn[$i] = StringUtil::subStringForWidth($turn[$i], 0, 27);
+            $turn[$i] = StringUtil::subStringForWidth($turn[$i], 0, 37);
             $k = $i+1;
             $turntext[] = "&nbsp;$k : $turn[$i]";
         }
