@@ -77,7 +77,7 @@ function getExceptionTraceAsString($exception) {
             }   
             $args = join(", ", $args);
         }
-        $rtn[] = sprintf( "#%s %s(%s): %s(%s)",
+        $rtn[] = sprintf( "#%s %s:%s %s(%s)",
                                  $count,
                                  isset($frame['file']) ? $frame['file'] : 'unknown file',
                                  isset($frame['line']) ? $frame['line'] : 'unknown line',
