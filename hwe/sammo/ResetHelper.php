@@ -154,7 +154,11 @@ class ResetHelper{
         Util::generateFileUsingSimpleTemplate(
             __dir__.'/../templates/base_map.orig.js',
             __dir__.'/../d_shared/base_map.js',
-            ['cityPosition'=>Json::encode($cityPositions)],
+            [
+                'cityPosition'=>Json::encode($cityPositions),
+                'regionMap'=>Json::encode(CityConst::$regionMap),
+                'levelMap'=>Json::encode(CityConst::$levelMap),
+            ],
             true
         );
 

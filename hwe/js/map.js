@@ -143,37 +143,6 @@ function reloadWorldMap(option){
         var myCity = obj.myCity;
         var myNation = obj.myNation;
 
-        function formatCityInfo(city) {
-            var region_str = '';
-            var level_str = '';
-            switch(city.region) {
-                case 1: region_str = "【하북|"; break;
-                case 2: region_str = "【중원|"; break;
-                case 3: region_str = "【서북|"; break;
-                case 4: region_str = "【서촉|"; break;
-                case 5: region_str = "【남중|"; break;
-                case 6: region_str = "【　초|"; break;
-                case 7: region_str = "【오월|"; break;
-                case 8: region_str = "【동이|"; break;
-            }
-        
-            switch(city.level) {
-                case 1: level_str = "수】"; break;
-                case 2: level_str = "진】"; break;
-                case 3: level_str = "관】"; break;
-                case 4: level_str = "이】"; break;
-                case 5: level_str = "소】"; break;
-                case 6: level_str = "중】"; break;
-                case 7: level_str = "대】"; break;
-                case 8: level_str = "특】"; break;
-            }
-
-            city.text = region_str + level_str + city.name;
-            city.region_str = region_str;
-            city.level_str = level_str;
-
-            return city;
-        }
 
         function mergePositionInfo(city){
             var id = city.id;
