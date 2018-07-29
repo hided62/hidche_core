@@ -14,7 +14,7 @@ function formatCityInfo(city) {
     var region_str = regionMap[city.region];
     var level_str = levelMap[city.level];
     
-    city.text = region_str + level_str + city.name;
+    city.text = '【' + region_str + '|' + level_str + '】' + city.name;
     city.region_str = region_str;
     city.level_str = level_str;
 
