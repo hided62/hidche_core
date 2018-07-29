@@ -12,13 +12,58 @@ $connect=$db->get();
 
 increaseRefresh("부대편성", 1);
 
-$query = "select no,nation,troop from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,nation,troop FROM general WHERE owner=%i', $userID);
 
-$query = "select * from troop where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$troopcount = MYDB_num_rows($result);
+$troops = [];
+foreach($db->query('SELECT troop,name,no FROM troop WHERE nation = %i', $me['nation']) as $rawTroop){
+    $troops[$rawTroop['troop']] = [
+        'troop'=>$rawTroop['troop'],
+        'name'=>$rawTroop['name'],
+        'no'=>$rawTroop['no'],
+        'users'=>[]
+    ];
+}
+
+foreach($db->query(
+    'SELECT no,name,turntime,troop,city FROM general WHERE troop!=0 AND nation = %i ORDER BY turntime ASC',
+    $me['nation']
+) as $general
+){
+    if(!key_exists($general['troop'], $troops)){
+        trigger_error("올바르지 않은 부대 소속 {$general['no']}, {$general['name']} : {$general['troop']}");
+        continue;
+    }
+
+    $general['cityText'] = CityConst::byID($general['city'])->name;
+
+    $troops[$general['troop']]['users'][] = $general;
+}
+
+if($troops){
+    foreach($db->query(
+        'SELECT no,name,picture,imgsvr,turntime,city,turn0,turn1,turn2,turn3,turn4,turn5,troop FROM general WHERE no IN (%li)',
+        array_column($troops, 'no')
+    ) as $troopLeader
+    ){
+        $imageTemp = GetImageURL($troopLeader['imgsvr']);
+        
+        $troopLeader['pictureFullPath'] = "$imageTemp/{$troopLeader['picture']}";
+        $troopLeader['cityText'] = CityConst::byID($troopLeader['city'])->name;
+
+        $troopLeader['turnText'] = join('<br>', [
+            '1 : '.((DecodeCommand($troopLeader['turn0'])[0] == 26)?'집합':'~'),
+            '2 : '.((DecodeCommand($troopLeader['turn1'])[0] == 26)?'집합':'~'),
+            '3 : '.((DecodeCommand($troopLeader['turn2'])[0] == 26)?'집합':'~'),
+            '4 : '.((DecodeCommand($troopLeader['turn3'])[0] == 26)?'집합':'~'),
+            '5 : '.((DecodeCommand($troopLeader['turn4'])[0] == 26)?'집합':'~'),
+        ]);
+        $troops[$troopLeader['troop']]['leader'] = $troopLeader;
+    }
+}
+
+uasort($troops, function($lhs, $rhs){
+    return $lhs['leader']['turntime']<=>$rhs['leader']['turntime'];
+})
 
 ?>
 <!DOCTYPE html>
@@ -30,6 +75,7 @@ $troopcount = MYDB_num_rows($result);
 <title><?=UniqueConst::$serverName?>: 부대편성</title>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
+<?=WebUtil::printCSS('css/troops.css')?>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('js/ext.plugin_troop.js')?>
 </head>
@@ -50,121 +96,97 @@ $troopcount = MYDB_num_rows($result);
         <td width=130  class='bg1 center' style=table-layout:fixed;word-break:break-all;>부대장행동</td>
     </tr>
     </thead>
+    <tfoot><tr><td colspan='5'>
+    <?php if(!$troops): ?>
+    <?php elseif($me['troop'] == 0): ?>
+        <input type=submit name=btn value='부 대 가 입'>
+    <?php else: ?>
+        <input type=submit name=btn value='부 대 탈 퇴' onclick='return confirm(\"정말 부대를 탈퇴하시겠습니까?\")'>
+    <?php endif;?>
+    </td></tr></tfoot>
     <tbody>
 <?php
-for($i=0; $i < $troopcount; $i++) {
-    $troop = MYDB_fetch_array($result);
+foreach ($troops as $troopNo=>$troop) {
+    $troopLeader = $troop['leader'];
+    $genlistText = [];
+    $cityText = $troopLeader['cityText'];
+    $cityID = $troopLeader['city'];
+    $leaderID = $troopLeader['no'];
 
-    $genlist = "";
-    $query = "select no,name,picture,imgsvr,turntime,city,turn0,turn1,turn2,turn3,turn4,turn5 from general where troop='{$troop['troop']}'";
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($genresult);
-    for($j=0; $j < $gencount; $j++) {
-        $general = MYDB_fetch_array($genresult);
-        $genlist .= $general['name'].", ";
-        if($troop['no'] == $general['no']) {
-            $picture = $general['picture'];
-            $imageTemp = GetImageURL($general['imgsvr']);
-            $name = $general['name'];
-            $turntime = $general['turntime'];
-            $query = "select name from city where city='{$general['city']}'";
-            $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $city = MYDB_fetch_array($cityresult);
-            $cityname = $city['name'];
-            $turn = "";
-            for($k=0; $k < 5; $k++) {
-                $m = $k+1;
-                $turnK = DecodeCommand($general["turn{$k}"]);
-                if($turnK[0] == 26) {
-                    $turn .= "&nbsp;$m : 집합<br>";
-                } else {
-                    $turn .= "&nbsp;$m : ∼<br>";
-                }
-            }
+    foreach ($troop['users'] as $troopUser) {
+        $spanClass = 'troopUser';
+        if ($troopUser['city'] !== $cityID) {
+            $spanClass.= ' diffCity';
         }
+        if ($troopUser['no'] == $leaderID) {
+            $spanClass.= ' leader';
+        }
+        $genlistText[] = "<span class='$spanClass' data-general-id='{$troopUser['no']}'
+            ><span class='generalName'>{$troopUser['name']}</span><span class='cityText'>【{$troopUser['cityText']}】</span
+            ></span>";
     }
-    $genlist .= "({$gencount}명)";
 
-    if($me['troop'] == 0) {
-        echo "
+    $genlistText = sprintf('%s (%d명)', join(', ', $genlistText), count($genlistText)); ?>
+
+<?php if ($me['troop'] == 0): ?>
     <tr>
-        <td align=center rowspan=2><input "; echo $i==0?"checked ":""; echo "type=radio name=troop value='{$troop['troop']}'></td>
-        <td align=center >{$troop['name']}<br>【 $cityname 】</td>
-        <td height=64 style='background:no-repeat center url(\"{$imageTemp}/{$picture}\");background-size:64px;'>&nbsp;</td>
-        <td rowspan=2 width=62>$genlist</td>
-        <td rowspan=2>$turn</td>
+        <td align=center rowspan=2><input type='radio' name='troop' value='<?=$troop['troop']?>'></td>
+        <td align=center><?=$troop['name']?><br>【 <?=$cityText?> 】</td>
+        <td height=64 style='background:no-repeat center url("<?=$troopLeader['pictureFullPath']?>");background-size:64px;'>&nbsp;</td>
+        <td rowspan=2 width=62><?=$genlistText?></td>
+        <td rowspan=2><?=$troopLeader['turnText']?></td>
     </tr>
-    <tr><td align=center><font size=2>【턴】".substr($turntime, 14)."</font></td><td align=center><font size=1>$name</font></td></tr>
-    <tr><td colspan=5>";
-    } else {
-        echo "
+    <tr>
+        <td align=center><font size=2>【턴】 <?=substr($troopLeader['turntime'], 14)?></font></td>
+        <td align=center><font size=1><?=$troopLeader['name']?></font></td></tr>
+    <tr><td colspan=5>
+
+<?php else: ?>
     <tr>
         <td align=center rowspan=2>&nbsp;</td>
-        <td align=center >{$troop['name']}<br>【 $cityname 】</td>
-        <td height=64 style='background:no-repeat center url(\"{$imageTemp}/{$picture}\");background-size:64px;'>&nbsp;</td>
-        <td rowspan=2 width=576>$genlist</td>
-        <td rowspan=2>";
-
-        if($troop['no'] == $me['no']) {
-            $query = "select no,name from general where troop='{$troop['troop']}' and no!='{$me['no']}' order by binary(name)";
-            $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $genCount = MYDB_num_rows($genresult);
-                echo "
+        <td align=center ><?=$troop['name']?><br>【 <?=$cityText?> 】</td>
+        <td height=64 style='background:no-repeat center url("<?=$troopLeader['pictureFullPath']?>");background-size:64px;'>&nbsp;</td>
+        <td rowspan=2 width=62><?=$genlistText?></td>
+        <td rowspan=2>
+        <?php if ($me['no'] == $troopLeader['no']): ?>
             <select name=gen size=3 style=color:white;background-color:black;font-size:13px;width:128px;>";
-            for($k=0; $k < $genCount; $k++) {
-                $general = MYDB_fetch_array($genresult);
-                echo "
-                <option value={$general['no']}>{$general['name']}</option>";
-            }
-            echo "
+                <?php foreach ($troop['users'] as $troopUser): ?>
+                    <?php if ($troopUser['no'] == $me['no']) {
+        continue;
+    } ?>
+                    <option value='<?=$troopUser['no']?>'><?=$troopUser['name']?></option>
+                <?php endforeach; ?>
             </select><br>
-            <input type=submit name=btn value='부 대 추 방' style=width:130px;height:25px;>";
-        } else {
-            echo $turn;
-        }
-
-        echo "
+            <input type=submit name=btn value='부 대 추 방' style=width:130px;height:25px;>
+        <?php else: ?>
+            <?=$troopLeader['turnText']?>
+        <?php endif; ?>
         </td>
     </tr>
-    <tr><td align=center><font size=2>【턴】".substr($turntime, 14)."</font></td><td align=center><font size=1>$name</font></td></tr>
-    <tr><td colspan=5></td></tr>";
-    }
-}
-echo "</tbody>
-<tfoot><tr><td>";
-if ($troopcount == 0) {
-}
-else if($me['troop'] == 0) {
-    echo"
-<input type=submit name=btn value='부 대 가 입'>";
-} else {
-    echo"
-<input type=submit name=btn value='부 대 탈 퇴' onclick='return confirm(\"정말 부대를 탈퇴하시겠습니까?\")'>";
-}
+    <tr><td align=center><font size=2>【턴】 <?=substr($troopLeader['turntime'], 14)?></font></td>
+    <td align=center><font size=1><?=$troopLeader['name']?></font></td></tr>
+    <tr><td colspan=5></td></tr>
+<?php endif;
 
-echo "
-</td></tr>
-</tfoot>
+} //foreach ($troops as $troopNo=>$troop) {
+?>
+
+</tbody>
+
 </table>
-<br>";
-
-echo "
+<br>
 <table width=1000 class='tb_layout bg0'>
     <tr>
         <td width=80 id=bg1>부 대 명</td>
-        <td width=130><input type=text style=color:white;background-color:black; size=18 maxlength=9 name=name></td>";
-if($me['troop'] == 0) {
-    echo "
-        <td><input type=submit name=btn value='부 대 창 설'></td>";
-} else {
-    echo "
-        <td><input type=submit name=btn value='부 대 변 경'></td>";
-}
-echo "
+        <td width=130><input type=text style=color:white;background-color:black; size=18 maxlength=9 name=name></td>
+    <?php if($me['troop'] == 0): ?>
+        <td><input type=submit name=btn value='부 대 창 설'></td>
+    <?php else: ?>
+        <td><input type=submit name=btn value='부 대 변 경'></td>
+    <?php endif; ?>
     </tr>
-</table>";
+</table>
 
-?>
 <table width=1000 class='tb_layout bg0'>
     <tr><td><?=backButton()?></td></tr>
     <tr><td><?=banner()?> </td></tr>

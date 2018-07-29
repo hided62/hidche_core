@@ -156,7 +156,8 @@ CREATE TABLE `general` (
 	INDEX `turntime` (`turntime`, `no`),
 	INDEX `no_member` (`owner`),
 	INDEX `npc` (`npc`),
-	INDEX `npcid` (`npcid`)
+	INDEX `npcid` (`npcid`),
+	INDEX `troop` (`troop`, `turntime`)
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=MyISAM;

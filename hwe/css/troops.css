@@ -1,0 +1,23 @@
+#troop_list .cityText{
+    display:none;
+}
+
+#troop_list .diffCity .cityText{
+    display:inline;
+}
+
+#troop_list .diffCity {
+    color:red;
+}
+
+#troop_list .leader{
+    color:lightgreen;
+}
+
+#troop_list .leader::before{
+    content:'*';
+}
+
+#troop_list .leader::after{
+    content:'*';
+}
