@@ -41,7 +41,7 @@ foreach($db->query(
 
 if($troops){
     foreach($db->query(
-        'SELECT no,name,picture,imgsvr,turntime,city,turn0,turn1,turn2,turn3,turn4,turn5,troop FROM general WHERE no IN (%li)',
+        'SELECT no,name,picture,imgsvr,turntime,city,turn0,turn1,turn2,turn3,turn4,turn5,troop FROM general WHERE no IN %li',
         array_column($troops, 'no')
     ) as $troopLeader
     ){
