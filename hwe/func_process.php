@@ -974,7 +974,8 @@ function process_11(&$general, $type) {
         return;
     }
     
-    $actLog->pushGeneralActionLog($crewTypeObj->name."을(를) <C>{$crew}</>명 {$dtype}했습니다. <1>$date</>");
+    $josaUl = JosaUtil::pick($crewTypeObj->name, '을');
+    $actLog->pushGeneralActionLog($crewTypeObj->name."{$josaUl} <C>{$crew}</>명 {$dtype}했습니다. <1>$date</>");
     $exp = Util::round($crew / 100);
     $ded = Util::round($crew / 100);
     // 숙련도 증가

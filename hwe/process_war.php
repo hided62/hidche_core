@@ -198,7 +198,7 @@ function processWar($general, $city) {
                 $cityCrew = getCrew($cityCrew, CharAtmos($general['atmos']+$genAtmos+$genAtmosBonus, $general['personal']), $admin['city_rate']+$oppTrainBonus);
                 //숙련도 따라
                 $genDexAtt = getGenDex($general, $general['crewtype']);
-                $genDexDef = getGenDex($general, 40);
+                $genDexDef = getGenDex($general, GameUnitConst::T_CASTLE);
                 $cityCrew *= getDexLog($genDexAtt, ($admin['city_rate']-60)*7200);
                 $myCrew *= getDexLog(($admin['city_rate']-60)*7200, $genDexDef);
 
@@ -442,7 +442,7 @@ function processWar($general, $city) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 숙련도 증가
             addGenDex($general['no'], $general['atmos'], $general['train'], $general['crewtype'], $mykillnum);
-            addGenDex($general['no'], $general['atmos'], $general['train'], 40, $mydeathnum);
+            addGenDex($general['no'], $general['atmos'], $general['train'], GameUnitConstBase::T_CASTLE, $mydeathnum);
             // 죽은수 기술로 누적
             $num = Util::round($mydeathnum * 0.01);
             // 국가보정

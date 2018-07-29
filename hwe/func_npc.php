@@ -84,6 +84,9 @@ function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city
     $db = DB::db();
     $connect=$db->get();
 
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    [$startyear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
+
     $type = 0;
     switch($genType) {
     case 0: //무장
@@ -109,45 +112,38 @@ function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city
 
         
 
+        $type = GameUnitConst::DEFAULT_CREWTYPE;
         switch($sel) {
         case 0:
-            $type = 0; //보병
-                if($tech >= 3000 && $city   ==  3) { $type =  4; } //근위병
-            elseif($tech >= 2000 && $city   == 64) { $type =  3; } //자객병
-            elseif($tech >= 1000 && $region ==  2) { $type =  1; } //청주병
-            elseif($tech >= 1000 && $region ==  5) { $type =  5; } //등갑병
-            elseif($tech >= 1000 && $region ==  7) { $type =  2; } //수병
+            foreach(GameUnitConst::byType(GameUnitConst::T_FOOTMAN) as $crewtype){
+                if($crewtype->isValid([$city], [$region], $year-$startyear, $tech)){
+                    $type = $crewtype->id;
+                }
+            }
             break;
         case 1:
-            $type = 10; //궁병
-                if($tech >= 3000 && $city   ==  7) { $type = 14; } //석궁병
-            elseif($tech >= 3000 && $city   ==  6) { $type = 13; } //강궁병
-            elseif($tech >= 1000 && $region ==  4) { $type = 12; } //연노병
-            elseif($tech >= 1000 && $region ==  8) { $type = 11; } //궁기병
+            foreach(GameUnitConst::byType(GameUnitConst::T_ARCHER) as $crewtype){
+                if($crewtype->isValid([$city], [$region], $year-$startyear, $tech)){
+                    $type = $crewtype->id;
+                }
+            }
             break;
         case 2:
-            $type = 20; //기병
-                if($tech >= 3000 && $city   ==  2) { $type = 27; } //호표기병
-            elseif($tech >= 2000 && $city   == 63) { $type = 24; } //철기병
-            elseif($tech >= 2000 && $city   == 67) { $type = 25; } //수렵기병
-            elseif($tech >= 2000 && $city   == 65) { $type = 23; } //돌격기병
-            elseif($tech >= 2000 && $city   == 66) { $type = 26; } //맹수병
-            elseif($tech >= 1000 && $region ==  1) { $type = 21; } //백마병
-            elseif($tech >= 1000 && $region ==  3) { $type = 22; } //중장기병
+            foreach(GameUnitConst::byType(GameUnitConst::T_CAVALRY) as $crewtype){
+                if($crewtype->isValid([$city], [$region], $year-$startyear, $tech)){
+                    $type = $crewtype->id;
+                }
+            }
             break;
         }
         break;
     case 1: //지장
     case 3: //지내정장
-        $type = 30; //귀병
-            if($tech >= 3000 && $city   ==  4) { $type = 34; } //악귀병
-        elseif($tech >= 3000 && $city   ==  5) { $type = 37; } //천귀병
-        elseif($tech >= 3000 && $city   ==  1) { $type = 38; } //마귀병
-        elseif($tech >= 2000 && $city   == 69) { $type = 33; } //흑귀병
-        elseif($tech >= 2000 && $city   == 68) { $type = 32; } //백귀병
-        elseif($tech >= 1000 && $region ==  6) { $type = 31; } //신귀병
-        elseif($tech >= 3000 && $city   ==  3) { $type = 36; } //황귀병
-        elseif($tech >= 1000 && rand()%100 < 50) { $type = 35; } //남귀병
+        foreach(GameUnitConst::byType(GameUnitConst::T_WIZARD) as $crewtype){
+            if($crewtype->isValid([$city], [$region], $year-$startyear, $tech)){
+                $type = $crewtype->id;
+            }
+        }
         break;
     }
 
