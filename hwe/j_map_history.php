@@ -17,7 +17,7 @@ if(!strpos($_SERVER['HTTP_REFERER'], $url)) {
 	]);
 }
 
-if(!$year || !$month) {
+if($year === null || !$month) {
 	Json::die([
 		'result'=>false,
 		'reason'=>'year, month가 지정되지 않았습니다'
