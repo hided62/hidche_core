@@ -87,3 +87,14 @@
     background: url('_tK_gameImagePath_/map/che/miniche_road.png') no-repeat;
     background-size: 700px 500px;
 }
+
+/*루드라사움 지도*/
+.map_theme_ludo_rathowm .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/ludo_rathowm/back.jpg') no-repeat;
+    background-size: 700px 500px;
+}
+
+.map_theme_ludo_rathowm .map_bgroad{
+    background: url('_tK_gameImagePath_/map/ludo_rathowm/road.png') no-repeat;
+    background-size: 700px 500px;
+}
