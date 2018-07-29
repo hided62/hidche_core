@@ -69,7 +69,7 @@
     position: absolute;
     z-index:6;
     display:none;
-    width:120px;
+    min-width:120px;
     border: 0.02em gray solid;
 }
 .world_map .city_name{
