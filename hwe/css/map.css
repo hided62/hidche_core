@@ -71,6 +71,7 @@
     display:none;
     min-width:120px;
     border: 0.02em gray solid;
+    white-space: nowrap;
 }
 .world_map .city_name{
     background-color: rgb(30, 164, 255);
