@@ -222,6 +222,7 @@ $db->insert('general', [
     'turntime' => $turntime,
     'killturn' => 6,
     'lastconnect' => $lastconnect,
+    'crewtype'=>GameUnitConst::DEFAULT_CREWTYPE,
     'makelimit' => 0,
     'age' => $age,
     'startage' => $age,
