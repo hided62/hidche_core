@@ -98,3 +98,29 @@
     background: url('_tK_gameImagePath_/map/ludo_rathowm/road.png') no-repeat;
     background-size: 700px 500px;
 }
+
+.map_theme_ludo_rathowm.map_detail.map_spring .map_title_text{
+    background:
+        url('_tK_gameImagePath_/spring.gif') no-repeat right;
+}
+
+.map_theme_ludo_rathowm.map_detail.map_summer .map_title_text{
+    background:
+        url('_tK_gameImagePath_/summer.gif') no-repeat right;
+}
+
+.map_theme_ludo_rathowm.map_detail.map_fall .map_title_text{
+    background:
+        url('_tK_gameImagePath_/fall.gif') no-repeat right;
+}
+
+.map_theme_ludo_rathowm.map_detail.map_winter .map_title_text{
+    background:
+        url('_tK_gameImagePath_/winter.gif') no-repeat right;
+}
+
+.world_map.map_theme_ludo_rathowm .map_title .map_title_text::before {
+    color:white;
+    content:'LP';
+    margin-right:1ch;
+}

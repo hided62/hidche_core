@@ -13,6 +13,8 @@ class GameUnitConstBase{
     const T_CAVALRY = 2;
     const T_WIZARD = 3;
     const T_SIEGE = 4;
+
+    const DEFAULT_CREWTYPE = 0;
     
     
 

@@ -216,7 +216,8 @@ class ResetHelper{
                 'picture'=>$admin['picture'],
                 'imgsvr'=>$admin['imgsvr'],
                 'turntime'=>$turntime,
-                'killturn'=>9999
+                'killturn'=>9999,
+                'crewtype'=>GameUnitConst::DEFAULT_CREWTYPE
             ]);
         }
 

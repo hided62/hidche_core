@@ -4,6 +4,7 @@ use \sammo\Util;
 use \sammo\JosaUtil;
 use \sammo\DB;
 use \sammo\CityHelper;
+use \sammo\GameUnitConst;
 
 class NPC{
 
@@ -226,7 +227,7 @@ class NPC{
             'gold'=>1000,
             'rice'=>1000,
             'crew'=>0,
-            'crewtype'=>0,
+            'crewtype'=>GameUnitConst::DEFAULT_CREWTYPE,
             'train'=>0,
             'atmos'=>0,
             'weap'=>0,

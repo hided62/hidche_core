@@ -37,7 +37,6 @@ if($third < 0)  { $third = 0; }
 if($fourth < 0) { $fourth = 0; }
 if($command > 99) { $command = 0; }
 if($double > 9999) { $double = 9999; }
-if($third > 9999)  { $third = 9999; }
 if($fourth > 9999) { $fourth = 9999; }
 
 $comStr = EncodeCommand($fourth, $third, $double, $command);
