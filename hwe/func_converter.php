@@ -445,18 +445,14 @@ function getExpLevel($experience) {
     if($experience < 1000) {
         $level = intdiv($experience, 100);
     } else {
-        for($level = 0; $experience > (($level+1)*($level+1)*10); $level++) {
-        }
+        $level = Util::toInt(sqrt($experience/10));
     }
 
     return $level;
 }
 
 function getDedLevel($dedication) {
-    for($level = 0; $dedication > (($level+1)*($level+1)*100); $level++) {
-    }
-
-    return $level;
+    return Util::toInt(sqrt($dedication/100));
 }
 
 function expStatus($exp) {
