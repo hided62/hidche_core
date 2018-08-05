@@ -814,8 +814,8 @@ function process_9(&$general) {
             $log[] = "<C>●</>{$admin['month']}월:{$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
         }
 
-        $exp = $score * 0.7;
-        $ded = $score * 1.0;
+        $exp = $score * 0.7 / 3;
+        $ded = $score * 1.0 / 3;
 
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
