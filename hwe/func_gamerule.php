@@ -125,6 +125,10 @@ function addGenDex($no, $atmos, $train, $type, $exp) {
     $db = DB::db();
 
     $armType = GameUnitConst::byId($type)->armType;
+    if($armType == GameUnitConst::T_CASTLE){
+        $armType = GameUnitConst::T_SIEGE;
+    }
+
     if($armType < 0){
         return;
     }
