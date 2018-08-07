@@ -230,6 +230,8 @@ with open('%s.json'%xlsxpath, 'wt', encoding='utf-8') as fp:
     fp.write(',\n        '.join([json.dumps(general, ensure_ascii=False) for general in generalList]))
     fp.write('\n    ]')
 
+    names2 = []
+    names3 = []
     if '확장 장수 목록' in wb.sheet_names():
         generalExList, names2 = extractGeneralList(wb.sheet_by_name('확장 장수 목록'), nationInfo, nationChiefInfo)
 
@@ -240,4 +242,19 @@ with open('%s.json'%xlsxpath, 'wt', encoding='utf-8') as fp:
         fp.write(',\n    "general_ex":[\n        ')
         fp.write(',\n        '.join([json.dumps(general, ensure_ascii=False) for general in generalExList]))
         fp.write('\n    ]')
+
+    if '빙의 불가 장수 목록' in wb.sheet_names():
+        generalNeutralList, names3 = extractGeneralList(wb.sheet_by_name('빙의 불가 장수 목록'), nationInfo, nationChiefInfo)
+
+        for name in names3:
+            if name in names:
+                raise RuntimeError('%s가 일반 장수 및 빙의 불가 장수에 모두 있습니다!'%name)
+        for name in names3:
+            if name in names2:
+                raise RuntimeError('%s가 확장 장수 및 빙의 불가 장수에 모두 있습니다!'%name)
+
+        fp.write(',\n    "general_neutral":[\n        ')
+        fp.write(',\n        '.join([json.dumps(general, ensure_ascii=False) for general in generalNeutralList]))
+        fp.write('\n    ]')
+
     fp.write('\n}')
