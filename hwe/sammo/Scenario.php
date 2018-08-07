@@ -22,6 +22,7 @@ class Scenario{
 
     private $generals;
     private $generalsEx;
+    private $generalsNeutral;
 
     private $tmpGeneralQueue = [];
 
@@ -151,6 +152,50 @@ class Scenario{
 
         }, Util::array_get($data['general_ex'], []));
 
+        $this->generalsNeutral = array_map(function($rawGeneral){
+            while(count($rawGeneral) < 14){
+                $rawGeneral[] = null;
+            }
+
+            list(
+                $affinity, $name, $picturePath, $nationName, $locatedCity, 
+                $leadership, $power, $intel, $level, $birth, $death, $ego,
+                $char, $text
+            ) = $rawGeneral;
+
+            if(key_exists($nationName, $this->nationsInv)){
+                $nationID = $this->nationsInv[$nationName]->id;;
+            }
+            else if(key_exists($nationName, $this->nations)){
+                $nationID = (int)$nationName;
+            }
+            else{
+                $nationID = 0;
+            }
+
+            $this->tmpGeneralQueue[$name] = $rawGeneral;
+
+            $npc = new Scenario\NPC(
+                $affinity, 
+                $name, 
+                $picturePath, 
+                $nationID, 
+                $locatedCity, 
+                $leadership, 
+                $power, 
+                $intel, 
+                $level, 
+                $birth, 
+                $death, 
+                $ego,
+                $char, 
+                $text
+            );
+            $npc->npc = 6;
+            return $npc;
+
+        }, Util::array_get($data['general_neutral'], []));
+
         $this->initialEvents = array_map(function($rawEvent){
             $cond = $rawEvent[0];
             $action = array_slice($rawEvent, 1);
@@ -247,6 +292,11 @@ class Scenario{
         return $this->generalsEx;
     }
 
+    public function getNPCneutral(){
+        $this->initFull();
+        return $this->generalsNeutral;
+    }
+
     public function getNation(){
         $this->initFull();
         return $this->nations;
@@ -266,6 +316,7 @@ class Scenario{
         $nations = [];
         $nationGeneralCnt = [];
         $nationGeneralExCnt = [];
+        $nationGeneralNeutralCnt = [];
 
         foreach($this->generals as $general){
             $nationID = $general->nationID;
@@ -287,15 +338,27 @@ class Scenario{
             }
         }
 
+        foreach($this->generalsNeutral as $general){
+            $nationID = $general->nationID;
+            if(!key_exists($nationID, $nationGeneralNeutralCnt)){
+                $nationGeneralNeutralCnt[$nationID] = 1;
+            }
+            else{
+                $nationGeneralNeutralCnt[$nationID] += 1;
+            }
+        }
+
         return [
             'year'=>$this->getYear(),
             'title'=>$this->getTitle(),
             'npc_cnt'=>count($this->getNPC()),
             'npcEx_cnt'=>count($this->getNPCex()),
+            'npcNeutral_cnt'=>count($this->getNPCneutral()),
             'nation'=>array_map(function($nation) use ($nationGeneralCnt, $nationGeneralExCnt){
                 $brief = $nation->getBrief();
                 $brief['generals'] = Util::array_get($nationGeneralCnt[$nation->getID()], 0);
                 $brief['generalsEx'] = Util::array_get($nationGeneralExCnt[$nation->getID()], 0);
+                $brief['generalsNeutral'] = Util::array_get($nationGeneralNeutralCnt[$nation->getID()], 0);
 
                 return $brief;
             },$this->getNation())
@@ -350,6 +413,23 @@ class Scenario{
                 $remainGenerals[$birth][] = array_merge(['RegNPC'], $rawGeneral);
             }
         }
+
+        foreach($this->generalsNeutral as $general){
+            if($general->build($env)){
+                if($general->nationID){
+                    $this->nations[$general->nationID]->addGeneral($general);
+                }
+                continue;
+            }
+
+            $rawGeneral = $this->tmpGeneralQueue[$general->name];
+            $birth = $general->birth; 
+            if(!key_exists($birth, $remainGenerals)){
+                $remainGenerals[$birth] = [];
+            }
+            $remainGenerals[$birth][] = array_merge(['RegNeutralNPC'], $rawGeneral);
+        }
+        
         return $remainGenerals;
     }
 
