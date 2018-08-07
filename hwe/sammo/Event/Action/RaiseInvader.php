@@ -90,13 +90,13 @@ class RaiseInvader extends \sammo\Event\Action{
 
         if($npcEachCount < 0){
             $npcEachCount = 
-                $db->queryFirstField('SELECT count(no) from general where npc<5') / count(self::INVADER_LIST);
+                $db->queryFirstField('SELECT count(no) from general where npc < 9') / count(self::INVADER_LIST);
             $npcEachCount /= -1 * $this->npcEachCount;
         }
 
         $specAvg = $this->specAvg;
         if($specAvg < 0){
-            $specAvg = $db->queryFirstField('SELECT avg(sum(`leader` + `power` + `intel`)) from general where npc<5');
+            $specAvg = $db->queryFirstField('SELECT avg(sum(`leader` + `power` + `intel`)) from general where npc < 9');
             $specAvg /= -1 * $this->specAvg;
         }
 

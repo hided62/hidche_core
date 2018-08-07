@@ -2017,7 +2017,7 @@ function updateTurntime($no) {
             default: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <R>사망</>했습니다."; break;
             }
             // 엔피씨,엠피씨,의병 사망로그
-            if($general['npc'] == 2) {
+            if($general['npc'] == 2 || $general['npc'] == 6) {
                 $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <R>사망</>했습니다.";
             } elseif($general['npc'] >= 3) {
                 switch(rand()%10) {

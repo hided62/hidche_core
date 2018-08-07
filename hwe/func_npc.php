@@ -302,10 +302,10 @@ function processAI($no) {
     }
 
     //재야인경우
-    if($general['npc'] == 5 && $general['level'] == 0) {
+    if($general['npc'] == 9 && $general['level'] == 0) {
         // 오랑캐는 바로 임관
 
-        $rulerNation = $db->queryFirstField('SELECT nation FROM general WHERE `level`=12 AND npc=5 and nation not in %li ORDER BY RAND() limit 1', Json::decode($general['nations']));
+        $rulerNation = $db->queryFirstField('SELECT nation FROM general WHERE `level`=12 AND npc=9 and nation not in %li ORDER BY RAND() limit 1', Json::decode($general['nations']));
         
         if($ruler) {
             $command = EncodeCommand(0, 0, $rulerNation, 25); //임관
@@ -315,7 +315,7 @@ function processAI($no) {
         $query = "update general set turn0='$command' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error("processAI07 ".MYDB_error($connect),"");
         return;
-    } elseif($general['npc'] < 5 && $general['level'] == 0) {
+    } elseif($general['npc'] != 9 && $general['level'] == 0) {
         switch(Util::choiceRandomUsingWeight([11.4, 40, 20, 28.6])) {
         //임관 10%
         case 0:
@@ -372,7 +372,7 @@ function processAI($no) {
     //군주가 할일
     if($general['level'] == 12) {
         //오랑캐인데 공격 못하면 바로 방랑/해산
-        if($general['npc'] == 5 && $dipState == 0 && !$attackable) {
+        if($general['npc'] == 9 && $dipState == 0 && !$attackable) {
             //방랑군이냐 아니냐
             if($nation['level'] == 0) {
                 // 해산

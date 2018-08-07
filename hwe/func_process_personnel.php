@@ -172,9 +172,9 @@ function process_25(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 제한되고 있습니다. 임관 실패.";
     } elseif($admin['year'] < $admin['startyear']+3 && $gencount >= GameConst::$initialNationGenLimit) {
         $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 제한되고 있습니다. 임관 실패.";
-    } elseif($nation['scout'] == 1 && $general['npc'] < 5) {
+    } elseif($nation['scout'] == 1 && $general['npc'] != 9) {
         $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 금지되어 있습니다. 임관 실패.";
-    } elseif($general['makelimit'] > 0 && $general['npc'] < 5) {
+    } elseif($general['makelimit'] > 0 && $general['npc'] != 9) {
         $log[] = "<C>●</>{$admin['month']}월:재야가 된지 12턴이 지나야 합니다. 임관 실패. <1>$date</>";
     } elseif(in_array($nation['nation'], $joinedNations)) {
         $log[] = "<C>●</>{$admin['month']}월:이미 임관했었던 국가입니다. 임관 실패. <1>$date</>";

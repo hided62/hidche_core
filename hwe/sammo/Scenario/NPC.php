@@ -22,6 +22,7 @@ class NPC{
     public $ego;
     public $charDomestic = 0; 
     public $charWar = 0; 
+    public $npc = 2;
     public $text;
 
     //[  1,     "헌제",1002,  1,    null, 17, 13, 61, 0, 170, 250, "안전",    null, "산 넘어 산이로구나..."],
@@ -211,8 +212,8 @@ class NPC{
 
         $db->insert('general',[
             'npcid'=>$npcID,
-            'npc'=>2,
-            'npc_org'=>2,
+            'npc'=>$this->npc,
+            'npc_org'=>$this->npc,
             'affinity'=>$affinity,
             'name'=>$name,
             'picture'=>$picturePath,
