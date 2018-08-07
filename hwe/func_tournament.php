@@ -298,7 +298,7 @@ function fillLowGenAll() {
     }
 
     //자동신청하고, 돈 있고, 아직 참가 안한 장수
-    $query = "select no,npc,name,leader,power,intel,explevel from general where tnmt='1' and tournament='0' and gold>='{$develcost}' order by rand() limit 0,64";
+    $query = "select no,npc,name,leader,power,intel,explevel from general where tnmt='1' and tournament='0' order by rand() limit 0,64";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $genCount = MYDB_num_rows($result);
 
@@ -313,7 +313,7 @@ function fillLowGenAll() {
                 if($genCount > 0) {
                     $genCount--;
                     $gen = MYDB_fetch_array($result);
-                    $query = "update general set gold=gold-'{$develcost}',tournament='1' where no='{$gen['no']}'";
+                    $query = "update general set tournament='1' where no='{$gen['no']}'";
                     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
                     $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('{$gen['no']}', '{$gen['npc']}', '{$gen['name']}', '{$gen['leader']}', '{$gen['power']}', '{$gen['intel']}', '{$gen['explevel']}', '$i', '$grpCount[$i]')";

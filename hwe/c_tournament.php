@@ -38,9 +38,13 @@ case 3: $tp = "intel";  $tp2 = "설전";   $tp3 = "intel"; break;
 }
 
 if($btn == '참가') {
-    $query = "select no,name,npc,leader,power,intel,explevel,gold,horse,weap,book from general where no='{$me['no']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
+
+    if($db->queryFirstField('SELECT `no` FROM tournament WHERE `no`=%i', $me['no'])){
+        header('location:b_tournament.php');
+        exit(1); 
+    }
+
+    $general = $db->queryFirstRow('SELECT no,name,npc,leader,power,intel,explevel,gold,horse,weap,book FROM general WHERE `no`=%i', $me['no']);
 
     //{$admin['develcost']}원 참가비
     if($general['gold'] < $admin['develcost']) { 
