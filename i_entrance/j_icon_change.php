@@ -48,9 +48,9 @@ if(!is_uploaded_file($image['tmp_name'])) {
     //확장자 검사
     $response['reason'] = 'jpg, gif, png 파일이 아닙니다!';
     $response['result'] = false;
-} elseif($image['size'] > 20480) {
+} elseif($image['size'] > 30720) {
     //파일크기 검사
-    $response['reason'] = '20kb 이하로 올려주세요!';
+    $response['reason'] = '30kb 이하로 올려주세요!';
     $response['result'] = false;
 }  elseif($size[0] < 64 || 128 < $size[0]) {
     //이미지크기 검사
