@@ -668,7 +668,7 @@ function processWar($general, $city) {
                 $myDef = $generalCrewType->getComputedDefence($general, $nation['tech']);
 
                 $opAtt = $opposeCrewType->getComputedAttack($oppose, $destnation['tech']);
-                $opDef = $opposeCrewType->getComputedAttack($oppose, $destnation['tech']);
+                $opDef = $opposeCrewType->getComputedDefence($oppose, $destnation['tech']);
                 // 감소할 병사 수
                 $myCrew = GameConst::$armperphase + $opAtt - $myDef;
                 $opCrew = GameConst::$armperphase + $myAtt - $opDef;
