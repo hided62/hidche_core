@@ -45,7 +45,7 @@ function processWar($general, $city) {
         $genAtmos += 3;
         $query = "update general set item=0 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $josaUl = JosaUtil::pick($general['item'], '을');
+        $josaUl = JosaUtil::pick(getItemName($general['item']), '을');
         $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
         $general['item'] = 0;
     } elseif($general['item'] >= 14 && $general['item'] <= 16) {

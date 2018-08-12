@@ -3,28 +3,132 @@ namespace sammo;
 
 
 function processWar_NG(
-    $rawGeneral,
-    callable $getNextTarget, 
-    int $city, 
-    string $time
-){
+    array $rawAttacker,
+    array $rawAttackerCity,
+    array $rawAttackerNation,
+    callable $getNextDefender, 
+    array $rawDefendercity, 
+    array $rawDefenderNation,
+    string $time,
+    array $env
+):array{
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $year = $env['year'];
+    $month = $env['month'];
 
-    $admin = $gameStor->getAll();
-    //year, month
+    $attacker = new WarUnitGeneral($rawAttacker, $rawAttackerCity, $rawAttackerNation, true, $year, $month);
+    $logger = $attacker->getLogger();
 
-    $year = $admin['year'];
-    $month = $admin['month'];
+    $attacker->useBattleInitItem();
+    
+    $attackerNationUpdate = [];
+    $defenderNationUpdate = [];
 
-    $attacker = new WarUnit($rawGeneral['no'], $rawGeneral['nation'], $year, $month);
+    $city = new WarUnitCity($rawDefendercity, $rawDefenderNation, $year, $month);
 
-    $deadAmount = [
-        'att'=>0,
-        'def'=>0
-    ];
+    $maxPhase = $attacker->getMaxPhase();
+
+    $defender = ($getNextDefender)(null);
+    $conquerCity = false;
+    
+    $josaRo = JosaUtil::pick($city->name, '로');
+    $josaYi = JosaUtil::pick($attacker->name, '이');
+    $logger->pushGlobalActionLog("<D><b>{$rawAttackerNation['name']}</b></>의 <Y>{$attacker->name}</>{$josaYi} <G><b>{$city->name}</b></>{$josaRo} 진격합니다.");
+    $logger->pushGeneralActionLog("<G><b>{$city->name}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
+
+    for($currPhase = 0; $currPhase <= $maxPhase; $currPhase+=1){
+        if($defender !== null && $defender->getPhase() == 0){
+            $defender->setPrePhase($currPhase);
+
+            $attacker->addTrain(1);
+            $defender->addTrain(1);
+
+            $josaWa = JosaUtil::pick($attacker->getCrewType()->name, '와');
+            $josaYi = JosaUtil::pick($defender->getCrewType()->name, '이');
+            $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewType()->name}{$josaWa} <Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 대결합니다.");
+            $josaUl = JosaUtil::pick($defender->getCrewType()->name, '을');
+            $josaRo = JosaUtil::pick($attacker->getCrewType()->name, '로');
+            $attacker->getLogger()->pushGeneralActionLog("{$attacker->getCrewType()->name}{$josaRo} <Y>{$defender->name}</>의 {$defender->getCrewType()->name}{$josaUl} <M>공격</>합니다.");
+            $defender->getLogger()->pushGeneralActionLog("{$defender->getCrewType()->name}{$josaRo} <Y>{$attacker->name}</>의 {$attacker->getCrewType()->name}{$josaUl} <M>수비</>합니다.");
+
+            $defender->useBattleInitItem();
+
+            $attacker->setOppose($defender);
+            $defender->setOppose($attacker);
+
+            $attacker->useActiveItem();
+            $defender->useActiveItem();
+            //TODO: 수극 류 아이템 사용
+        }
+        else if($defender === null && $rawDefenderNation['rice'] > 0){
+            $defender = $city;
+            
+            $defender->setPrePhase($currPhase);
+
+            $josaYi = JosaUtil::pick($attacker->getName(), '이');
+            $josaRo = JosaUtil::pick($attacker->getCrewType()->name, '로');
+            $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>{$josaYi} {$attacker->getCrewType()->name}{$josaRo} 성벽을 공격합니다.");
+            $logger->pushGeneralActionLog("<C>●</>{$generalCrewType->name}{$josaRo} 성벽을 <M>공격</>합니다.", ActionLogger::PLAIN);
+
+            $defender->useBattleInitItem();
+
+            $attacker->setOppose($defender);
+            $defender->setOppose($attacker);
+        }
+        else if($defender === null){
+            $defender = $city;
+            $conquerCity = true;
+            //TODO: 병량 패퇴를 여기에 넣어야 하는가?
+            break;
+        }
+
+        $attacker->computeWarPower();
+        $defender->computeWarPower();
+
+        
+        //TODO: 1합씩 공격(마법도 여기에서)
+
+        //TODO: 쌀 소모 반영
+
+        //TODO: 전투 로그 기록(여기서??)
+
+        $attacker->addPhase();
+        if($defender->continueWar($noRice)){
+            $defender->addPhase();
+        }
+        else{
+            if($defender === $city){
+                $conquerCity = true;
+                break;
+            }
+
+            $josaYi = JosaUtil::pick($defender->getCrewType()->name, '이');
+            $logger->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 퇴각했습니다.");
+
+            $defender = ($getNextDefender)($defender);
+            if($defender === null){
+                continue;
+            }
+            if(!($defender instanceof WarUnitGeneral)){
+                throw new \RuntimeException('다음 수비자를 받아오는데 실패');
+            }
+            
+        }
+        
+    }
+
+    //TODO: 전투 종료
+
+    if($conquerCity){
+        //TODO: 도시 정복 처리
+    }
+
+    //TODO: 공격자 경험치? (여기서?)
+
+    //TODO: DB 처리를 위한 반영
+
+
 }
 
 
