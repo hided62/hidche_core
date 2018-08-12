@@ -1,7 +1,6 @@
 <?php
 namespace sammo;
 
-
 function processWar($general, $city) {
     '@phan-var array<string,int|string|null> $general';
 
