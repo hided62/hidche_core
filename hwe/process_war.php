@@ -640,7 +640,7 @@ function processWar($general, $city) {
                 //수극 사용
                 if($snipeItem) {
                     $josaUl = JosaUtil::pick($oppose['item'], '을');
-                    $log[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaUl} 사용!";
+                    $opplog[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaUl} 사용!";
                     $oppose['item'] = 0;
                     $db->update('general', ['item'=>0], 'no=%i', $oppose['no']);
                 }
@@ -655,7 +655,7 @@ function processWar($general, $city) {
             else if($snipeItem) {
                 $db->update('general', ['item'=>0], 'no=%i', $oppose['no']);
                 $josaYi = JosaUtil::pick($oppose['item'], '이');
-                $batlog[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaYi} 빗나갑니다!";
+                $oppbatlog[] = "<C>●</><C>".getItemName($oppose['item'])."</>{$josaYi} 빗나갑니다!";
                 $oppose['item'] = 0;
             }
 
