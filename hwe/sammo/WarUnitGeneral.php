@@ -20,6 +20,8 @@ class WarUnitGeneral extends WarUnit{
     protected $genAtmosBonus = 0;
     protected $genTrainBonus = 0;
 
+    protected $sniped = false;
+
 
     function __construct($raw, $rawCity, $rawNation, $isAttacker, $year, $month){
         setLeadershipBonus($raw, $rawNation['level']);
@@ -60,14 +62,6 @@ class WarUnitGeneral extends WarUnit{
         return $this->raw['name'];
     }
     
-    function getCrewType():GameUnitDetail{
-        return $this->crewType;
-    }
-
-    function getLogger():ActionLogger{
-        return $this->logger;
-    }
-
     function getSpecialDomestic():int{
         return $this->raw['special'];
     }
@@ -98,7 +92,85 @@ class WarUnitGeneral extends WarUnit{
         $this->updatedVar['atmos'] = true;
     }
 
+    protected function getWarPowerMultiplyBySpecialWar():array{
+        //TODO: 장기적으로 if문이 아니라 객체를 이용하여 처리해야함
+        $myWarPowerMultiply = 1.0;
+        $opposeWarPowerMultiply = 1.0;
 
+        $specialWar = $this->getSpecialWar();
+
+        if($specialWar == 52){
+            $myWarPowerMultiply *= 1.20;
+        }
+        else if($specialWar == 60){
+            $myWarPowerMultiply *= 1.10;
+        }
+        else if($specialWar == 61){
+            $myWarPowerMultiply *= 1.10;
+        }
+        else if($specialWar == 50){
+            $opposeWarPowerMultiply *= 0.9;
+        }
+        else if($specialWar == 62){
+            $opposeWarPowerMultiply *= 0.9;
+        }
+        else if($specialWar == 75){
+            $opposeCrewType = $this->oppose->getCrewType();
+            if($opposeCrewType->reqCities || $opposeCrewType->reqRegions){
+                $myWarPowerMultiply *= 1.1;
+                $opposeWarPowerMultiply *= 0.9;
+            }
+        }
+
+
+        return [$myWarPowerMultiply, $opposeWarPowerMultiply];
+    }
+
+    function computeWarPower(){
+        [$warPower,$opposeWarPowerMultiply] = parent::computeWarPower();
+
+        $genLevel = $this->raw['level'];
+
+        if($this->isAttacker){
+            if($genLevel == 12){
+                $warPower *= 1.10;
+            }
+            else if($genLevel == 11 | $genLevel == 10 || $genLevel == 8 || $genLevel == 6){
+                $warPower *= 1.05;
+            }
+        }
+        else{
+            if($genLevel == 12){
+                $opposeWarPowerMultiply *= 0.90;
+            }
+            else if($genLevel == 11 || $genLevel == 9 || $genLevel == 7 || $genLevel == 5){
+                $opposeWarPowerMultiply *= 0.95;
+            }
+            else if($genLevel == 4 && $this->raw['no'] == $this->rawCity['gen1']){
+                $opposeWarPowerMultiply *= 0.95;
+            }
+            else if($genLevel == 3 && $this->raw['no'] == $this->rawCity['gen2']){
+                $opposeWarPowerMultiply *= 0.95;
+            }
+            else if($genLevel == 2 && $this->raw['no'] == $this->rawCity['gen3']){
+                $opposeWarPowerMultiply *= 0.95;
+            }
+        }
+
+        $expLevel = $this->raw['explevel'];
+        $warPower /= max(0.01, 1 - $expLevel / 300);
+        $opposeWarPowerMultiply *= max(0.01, 1 - $expLevel / 300);
+
+        [$specialMyWarPowerMultiply, $specialOpposeWarPowerMultiply] = $this->getWarPowerMultiplyBySpecialWar();
+        $warPower *= $specialMyWarPowerMultiply;
+        $opposeWarPowerMultiply *= $specialOpposeWarPowerMultiply;
+
+        $this->warPower = $warPower;
+        $this->oppose->setWarPowerMultiply($opposeWarPowerMultiply);
+        return [$warPower,$opposeWarPowerMultiply];
+    }
+
+    ///전투 개시 시에 작동하여 1회에만 작동하는 아이템
     function useBattleInitItem():bool{
         $item = $this->getItem();
 
@@ -147,10 +219,72 @@ class WarUnitGeneral extends WarUnit{
             $this->raw['item'] = 0;
             $this->updatedVar['item'] = true;
             $josaUl = JosaUtil::pick($itemName, '을');
-            $this->getLogger()->generalActionLog("<C>●</><C>{$itemName}</>{$josaUl} 사용!");
+            $this->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
         }
 
         return $itemActivated;
+    }
+
+    ///전투 개시 시에 작동하여 매 장수마다 작동하는 스킬
+    function checkBattleBeginSkill():bool{
+        $skillResult = false;
+        if (!$this->sniped  && $this->oppose instanceof WarUnitGeneral) {
+            if($this->raw['special2'] == 70 && Util::randBool(1/3)){
+                $snipe = true;
+            }
+
+            if($snipe){
+                $this->sniped = true;
+                $skillResult = true;
+            }
+        }
+        return $skillResult;
+    }
+
+    ///전투 개시 시에 작동하여 매 장수마다 작동하는 아이템
+    function checkBattleBeginItem():bool{
+        $item = $this->getItem();
+        if(!$item){
+            return false;
+        }
+
+        $itemActivated = false;
+        $itemConsumed = false;
+        $itemName = getItemName($item);
+
+        if($item == 2){
+            if(!$this->sniped && $this->oppose instanceof WarUnitGeneral && Util::randBool(1/5)){
+                $itemActivated = true;
+                $itemConsumed = true;
+                $this->sniped = true;
+            }
+        }
+
+        if($itemConsumed){
+            $this->raw['item'] = 0;
+            $this->updatedVar['item'] = true;
+            $josaUl = JosaUtil::pick($itemName, '을');
+            $this->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
+        }
+        
+        return $itemActivated;
+    }
+
+    function tryWound():bool{
+        if(Util::randBool(0.95)){
+            return false;
+        }
+
+        $wound = max(80, $this->raw['injury'] + rand(10, 80));
+        if($wound < $this->raw['injury']){
+            return false;
+        }
+
+        $this->raw['injury'] = $wound;
+        $this->updatedVar['injury'] = true;
+        $this->getLogger()->pushGeneralActionLog("전투중 <R>부상</>당했다!", ActionLogger::PLAIN);
+
+        return true;
     }
 
     function continueWar(&$noRice):bool{

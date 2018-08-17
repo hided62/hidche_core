@@ -22,6 +22,7 @@ class WarUnit{
 
     protected $oppose;
     protected $warPower;
+    protected $warPowerMultiply = 1.0;
 
     private function __construct(){
     }
@@ -46,7 +47,7 @@ class WarUnit{
         return 'EMPTY';
     }
 
-    function getCrewType():GameUnitConst{
+    function getCrewType():GameUnitDetail{
         return $this->crewType;
     }
 
@@ -67,7 +68,7 @@ class WarUnit{
     }
 
     function getMaxPhase():int{
-        return 1;
+        return $this->getCrewType()->speed;
     }
 
     function setPrePhase(int $phase){
@@ -83,6 +84,22 @@ class WarUnit{
         
     }
 
+    function getWarPower(){
+        return $this->warPower * $this->warPowerMultiply;
+    }
+
+    function getRawWarPower(){
+        return $this->warPower;
+    }
+
+    function getWarPowerMultiply(){
+        return $this->warPowerMultiply;
+    }
+    
+    function setWarPowerMultiply($multiply = 1.0){
+        $this->warPowerMultiply = $multiply;
+    }
+
     function computeWarPower(){
         $oppose = $this->oppose;
 
@@ -90,6 +107,8 @@ class WarUnit{
         $opDef = $oppose->getCrewType()->getComputedDefence($oppose->getRaw(), $oppose->getRawNation()['tech']);
         // 감소할 병사 수
         $warPower = GameConst::$armperphase + $myAtt - $opDef;
+        $opposeWarPowerMultiply = 1.0;
+
         if($warPower <= 0){
             //FIXME: 0으로 잡을때 90~100이면, 1은 너무 억울하지 않나?
             $warPower = rand(90, 100);
@@ -110,14 +129,14 @@ class WarUnit{
         $genDexAtt = getGenDex($this->getRaw(), $this->getCrewType()->id);
         $oppDexDef = getGenDex($oppose->getRaw(), $this->getCrewType()->id);
         $warPower *= getDexLog($genDexAtt, $oppDexDef);
+        
         $warPower *= $this->getCrewType()->getAttackCoef($oppose->getCrewType());
-        //FIXME : 이대로면 서로의 '공격력'만 반영됨 getDefenceCoef는 어따씀?
+        $opposeWarPowerMultiply *= $this->getCrewType()->getDefenceCoef($oppose->getCrewType());
 
-        //TODO:관직 보정 (상속받은 쪽에서..?)
-        //TODO:레벨 보정 (상속받은 쪽에서..?)
-        //TODO:특기 보정 (상속받은 쪽에서..?)
         $this->warPower = $warPower;
-        return $warPower;
+        $this->oppose->setWarPowerMultiply($opposeWarPowerMultiply);
+
+        return [$warPower, $opposeWarPowerMultiply];
     }
 
     function addTrain(int $train){
@@ -138,6 +157,14 @@ class WarUnit{
         return 100;
     }
 
+    function addWin(){
+        //TODO: 1승 로그 추가
+    }
+
+    function addLose(){
+        //TODO: 1패 로그 추가
+    }
+
     function getCharacter(){
         //TODO: 나머지에 구현
         return 0;
@@ -147,11 +174,43 @@ class WarUnit{
         return false;
     }
 
-    function useActiveItem():bool{
+    function checkBattleBeginSkill():bool{
         return false;
     }
 
+    function checkBattleBeginItem():bool{
+        return false;
+    }
+
+    function applyBattleBeginSkillAndItem(){
+        return false;
+    }
+
+    function checkActiveSkill():bool{
+        return false;
+    }
+
+    function checkActiveItem():bool{
+        return false;
+    }
+
+    function applyActiveSkillAndItem():bool{
+        return false;
+    }
+
+    function getHP():int{
+        return 1;
+    }
+
     function decreaseHP(int $damage):int{
+        return false;
+    }
+
+    function tryAttackInPhase():int{
+        return 0;
+    }
+
+    function tryWound():bool{
         return false;
     }
 

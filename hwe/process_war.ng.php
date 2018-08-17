@@ -38,73 +38,132 @@ function processWar_NG(
     $logger->pushGeneralActionLog("<G><b>{$city->name}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
 
     for($currPhase = 0; $currPhase <= $maxPhase; $currPhase+=1){
-        if($defender !== null && $defender->getPhase() == 0){
+
+        if($defender === null){
+            $defender = $city;
+            
+            if($rawDefenderNation['rice'] <= 0){
+                $conquerCity = true;
+                break;
+            }
+        }
+
+        if($defender->getPhase() == 0){
             $defender->setPrePhase($currPhase);
 
             $attacker->addTrain(1);
             $defender->addTrain(1);
 
-            $josaWa = JosaUtil::pick($attacker->getCrewType()->name, '와');
-            $josaYi = JosaUtil::pick($defender->getCrewType()->name, '이');
-            $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewType()->name}{$josaWa} <Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 대결합니다.");
-            $josaUl = JosaUtil::pick($defender->getCrewType()->name, '을');
-            $josaRo = JosaUtil::pick($attacker->getCrewType()->name, '로');
-            $attacker->getLogger()->pushGeneralActionLog("{$attacker->getCrewType()->name}{$josaRo} <Y>{$defender->name}</>의 {$defender->getCrewType()->name}{$josaUl} <M>공격</>합니다.");
-            $defender->getLogger()->pushGeneralActionLog("{$defender->getCrewType()->name}{$josaRo} <Y>{$attacker->name}</>의 {$attacker->getCrewType()->name}{$josaUl} <M>수비</>합니다.");
+            if($defender instanceof WarUnitGeneral){
+                $josaWa = JosaUtil::pick($attacker->getCrewType()->name, '와');
+                $josaYi = JosaUtil::pick($defender->getCrewType()->name, '이');
+                $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewType()->name}{$josaWa} <Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 대결합니다.");
+                $josaUl = JosaUtil::pick($defender->getCrewType()->name, '을');
+                $josaRo = JosaUtil::pick($attacker->getCrewType()->name, '로');
+                $attacker->getLogger()->pushGeneralActionLog("{$attacker->getCrewType()->name}{$josaRo} <Y>{$defender->name}</>의 {$defender->getCrewType()->name}{$josaUl} <M>공격</>합니다.");
+                $defender->getLogger()->pushGeneralActionLog("{$defender->getCrewType()->name}{$josaRo} <Y>{$attacker->name}</>의 {$attacker->getCrewType()->name}{$josaUl} <M>수비</>합니다.");
+            }
+            else{
+                $josaYi = JosaUtil::pick($attacker->getName(), '이');
+                $josaRo = JosaUtil::pick($attacker->getCrewType()->name, '로');
+                $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>{$josaYi} {$attacker->getCrewType()->name}{$josaRo} 성벽을 공격합니다.");
+                $logger->pushGeneralActionLog("<C>●</>{$generalCrewType->name}{$josaRo} 성벽을 <M>공격</>합니다.", ActionLogger::PLAIN);
+            }
 
             $defender->useBattleInitItem();
 
             $attacker->setOppose($defender);
             $defender->setOppose($attacker);
 
-            $attacker->useActiveItem();
-            $defender->useActiveItem();
-            //TODO: 수극 류 아이템 사용
-        }
-        else if($defender === null && $rawDefenderNation['rice'] > 0){
-            $defender = $city;
-            
-            $defender->setPrePhase($currPhase);
+            $attacker->checkBattleBeginSkill();
+            $defender->checkBattleBeginSkill();
 
-            $josaYi = JosaUtil::pick($attacker->getName(), '이');
-            $josaRo = JosaUtil::pick($attacker->getCrewType()->name, '로');
-            $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>{$josaYi} {$attacker->getCrewType()->name}{$josaRo} 성벽을 공격합니다.");
-            $logger->pushGeneralActionLog("<C>●</>{$generalCrewType->name}{$josaRo} 성벽을 <M>공격</>합니다.", ActionLogger::PLAIN);
+            $attacker->checkBattleBeginItem();
+            $defender->checkBattleBeginItem();
 
-            $defender->useBattleInitItem();
-
-            $attacker->setOppose($defender);
-            $defender->setOppose($attacker);
-        }
-        else if($defender === null){
-            $defender = $city;
-            $conquerCity = true;
-            //TODO: 병량 패퇴를 여기에 넣어야 하는가?
-            break;
+            $attacker->applyBattleBeginSkillAndItem();
+            $defender->applyBattleBeginSkillAndItem();
         }
 
         $attacker->computeWarPower();
         $defender->computeWarPower();
 
-        
-        //TODO: 1합씩 공격(마법도 여기에서)
+        $attacker->checkActiveSkill();
+        $defender->checkActiveSkill();
 
-        //TODO: 쌀 소모 반영
+        $attacker->checkActiveItem();
+        $defender->checkActiveItem();
+
+        $attacker->applyActiveSkillAndItem();
+        $defender->applyActiveSkillAndItem();
+
+        $killedDefender = $attacker->tryAttackInPhase();
+        $killedAttacker = $defender->tryAttackInPhase();
+        //NOTE: 쌀 소모는 tryAttackInPhase 내에서 반영
+
+        $attackerHP = $attacker->getHP();
+        $defenderHP = $defender->getHP();
+
+        if($killedAttacker > $attackerHP || $killedDefender > $defenderHP){
+            $killedAttackerRatio = $attackerHP / $killedAttacker;
+            $killedDefenderRatio = $defenderHP / $killedDefender;
+
+            if($killedDefenderRatio < $killedAttackerRatio){
+                //수비자가 더 병력 부족
+                $killedAttacker *= $killedDefenderRatio;
+                $killedDefender = $defenderHP;
+                break;
+            }
+            else{
+                //공격자가 더 병력 부족
+                $killedDefender *= $killedAttackerRatio;
+                $killedAttacker = $attackerHP;
+                break;
+            }
+        }
 
         //TODO: 전투 로그 기록(여기서??)
 
+        $attacker->decreaseHP(ceil($killedAttacker));
+        $defender->decreaseHP(ceil($killedDefender));
+
         $attacker->addPhase();
-        if($defender->continueWar($noRice)){
-            $defender->addPhase();
+        $defender->addPhase();
+
+        //TODO: 기술로그 반영등은 이전 코드와 달리 동적으로 매 페이즈마다 추가 계산
+
+        if(!$attacker->continueWar($noRice)){
+            //TODO: 퇴각해야함
+            $attacker->addLose();
+            $defender->addWin();
+            
+            $attacker->tryWound();
+            $defender->tryWound();
+
+            $josaYi = JosaUtil::pick($attacker->getCrewType()->name, '이');
+            $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewType()->name}{$josaYi} 퇴각했습니다.");
+            $attacker->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
+            $defender->getLogger()->pushGeneralActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewType()->name}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
+
+            break;
         }
-        else{
+
+        if(!$defender->continueWar($noRice)){
+            $attacker->addWin();
+            $defender->addLose();
+
+            $attacker->tryWound();
+            $defender->tryWound();
+
             if($defender === $city){
                 $conquerCity = true;
                 break;
             }
 
             $josaYi = JosaUtil::pick($defender->getCrewType()->name, '이');
-            $logger->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 퇴각했습니다.");
+            $logger->pushGlobalActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 퇴각했습니다.");
+            $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
+            $defender->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
 
             $defender = ($getNextDefender)($defender);
             if($defender === null){
@@ -112,22 +171,33 @@ function processWar_NG(
             }
             if(!($defender instanceof WarUnitGeneral)){
                 throw new \RuntimeException('다음 수비자를 받아오는데 실패');
-            }
-            
+            }            
         }
+
+        
         
     }
 
     //TODO: 전투 종료
 
-    if($conquerCity){
-        //TODO: 도시 정복 처리
+    if (!$conquerCity) {
+    }
+
+    $conquerNation = false;
+    //TODO: 도시 정복 처리
+    //TODO: 패퇴면 메시지 별도
+    if($rawDefenderNation['rice'] <= 0){
     }
 
     //TODO: 공격자 경험치? (여기서?)
 
     //TODO: DB 처리를 위한 반영
 
+    
+    if(!$conquerNation){
+    }
+
+    //TODO:국가 정복 처리
 
 }
 
