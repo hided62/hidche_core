@@ -2706,6 +2706,19 @@ function CharExperience($exp, $personal) {
     return $exp;
 }
 
+function getCharExpMultiplier($personal):float{
+    static $table = [
+        0 => 1.1,
+        1 => 1.1,
+        4 => 0.9,
+        5 => 0.9,
+        6 => 1.1,
+        7 => 0.9,
+        10 => 0.9
+    ];
+    return $table[$personal] ?? 1;
+}
+
 function CharDedication($ded, $personal) {
     switch($personal) {
         case 10:
@@ -2714,6 +2727,13 @@ function CharDedication($ded, $personal) {
     $ded = Util::round($ded);
 
     return $ded;
+}
+
+function getCharDedMultiplier($personal):float{
+    static $table = [
+        10 => 0.9
+    ];
+    return $table[$personal] ?? 1;
 }
 
 function CharAtmos($atmos, $personal) {

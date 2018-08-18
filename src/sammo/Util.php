@@ -12,6 +12,14 @@ class Util extends \utilphp\util
         return intval(round($value));
     }
 
+    /**
+     * int 값으로 강제로 설정하는 부동소수점 반올림
+     * @param int|float $value
+     */
+    public static function setRound(&$value) : void{
+        $value = static::round($value);
+    }
+
     private static function _parseReq($value, string $type)
     {
         if (is_array($value)) {
