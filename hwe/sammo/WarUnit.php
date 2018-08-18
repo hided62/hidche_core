@@ -8,7 +8,7 @@ class WarUnit{
     protected $crewType;
 
     protected $killed = 0;
-    protected $death = 0;
+    protected $dead = 0;
 
     protected $isAttacker = false;
 
@@ -53,6 +53,14 @@ class WarUnit{
 
     function getLogger():ActionLogger{
         return $this->logger;
+    }
+
+    function getKilled():int{
+        return $this->killed;
+    }
+
+    function getDead():int{
+        return $this->dead;
     }
 
     function getSpecialDomestic():int{
@@ -146,21 +154,23 @@ class WarUnit{
     }
 
     function getComputedTrain(){
-        //TODO: 나머지에 구현
-        return 100;
+        return GameConst::$maxTrainByCommand;
     }
 
     function getComputeAtmos(){
-        //TODO: 나머지에 구현
-        return 100;
+        return GameConst::$maxAtmosByCommand;
     }
 
     function addWin(){
-        //TODO: 1승 로그 추가
+        throw new NotInheritedMethodException();
     }
 
     function addLose(){
-        //TODO: 1패 로그 추가
+        throw new NotInheritedMethodException();
+    }
+
+    function finishBattle(){
+        throw new NotInheritedMethodException();
     }
 
     function getCharacter(){
@@ -188,24 +198,24 @@ class WarUnit{
         return false;
     }
 
-    function checkActiveItem():bool{
-        return false;
-    }
-
-    function applyActiveSkillAndItem():bool{
+    function applyActiveSkill():bool{
         return false;
     }
 
     function getHP():int{
-        return 1;
+        throw new NotInheritedMethodException();
     }
 
     function decreaseHP(int $damage):int{
-        return false;
+        throw new NotInheritedMethodException();
+    }
+
+    function increaseKilled(int $damage):int{
+        throw new NotInheritedMethodException();
     }
 
     function tryAttackInPhase():int{
-        return 0;
+        return $this->getWarPower();
     }
 
     function tryWound():bool{

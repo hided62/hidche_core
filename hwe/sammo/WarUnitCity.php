@@ -7,8 +7,6 @@ class WarUnitCity extends WarUnit{
     protected $logger;
     protected $crewType;
 
-    protected $killed = 0;
-    protected $death = 0;
     protected $rice = 0;
 
     protected $updatedVar = [];
@@ -20,6 +18,7 @@ class WarUnitCity extends WarUnit{
     function __construct($raw, $rawNation, $year, $month){
         $this->raw = $raw;
         $this->rawNation = $rawNation;
+
         $this->isAttacker = false;
 
         $this->logger = new ActionLogger(0, $raw['nation'], $year, $month);
@@ -27,7 +26,7 @@ class WarUnitCity extends WarUnit{
 
         $this->def = $raw['def'] * 10;
         $this->wall = $raw['wall'] * 10;
-        $this->rice = $rawNation['rice'];
+        $this->rice = $this->rawNation['rice'];
 
         $this->crewType = GameUnitConst::byID(GameUnitConst::T_CASTLE);
     }
@@ -38,6 +37,11 @@ class WarUnitCity extends WarUnit{
 
     function getName():string{
         return $this->raw['name'];
+    }
+
+    function tryAttackInPhase():int{
+        $warPower = $this->getWarPower();
+        $warPower *= Util::randRange(0.9, 1.1);
     }
 
     function continueWar(&$noRice):bool{

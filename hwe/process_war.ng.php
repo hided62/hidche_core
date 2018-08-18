@@ -3,29 +3,20 @@ namespace sammo;
 
 
 function processWar_NG(
-    array $rawAttacker,
-    array $rawAttackerCity,
-    array $rawAttackerNation,
+    WarUnitGeneral $attacker,
     callable $getNextDefender, 
-    array $rawDefendercity, 
-    array $rawDefenderNation,
+    WarUnitCity $city,
     string $time,
-    array $env
+    int $relYear
 ):array{
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 
-    $year = $env['year'];
-    $month = $env['month'];
-
-    $attacker = new WarUnitGeneral($rawAttacker, $rawAttackerCity, $rawAttackerNation, true, $year, $month);
     $logger = $attacker->getLogger();
 
     $attacker->useBattleInitItem();
     
     $attackerNationUpdate = [];
     $defenderNationUpdate = [];
-
-    $city = new WarUnitCity($rawDefendercity, $rawDefenderNation, $year, $month);
 
     $maxPhase = $attacker->getMaxPhase();
 
@@ -34,15 +25,16 @@ function processWar_NG(
     
     $josaRo = JosaUtil::pick($city->name, '로');
     $josaYi = JosaUtil::pick($attacker->name, '이');
-    $logger->pushGlobalActionLog("<D><b>{$rawAttackerNation['name']}</b></>의 <Y>{$attacker->name}</>{$josaYi} <G><b>{$city->name}</b></>{$josaRo} 진격합니다.");
+
+    $logger->pushGlobalActionLog("<D><b>{$attacker->getRawNation()['name']}</b></>의 <Y>{$attacker->name}</>{$josaYi} <G><b>{$city->name}</b></>{$josaRo} 진격합니다.");
     $logger->pushGeneralActionLog("<G><b>{$city->name}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
 
-    for($currPhase = 0; $currPhase <= $maxPhase; $currPhase+=1){
+    for($currPhase = 0; $currPhase < $maxPhase; $currPhase+=1){
 
         if($defender === null){
             $defender = $city;
             
-            if($rawDefenderNation['rice'] <= 0){
+            if($city->getRawNation()['rice'] <= 0 && $city->getRaw()['supply'] == 1){
                 $conquerCity = true;
                 break;
             }
@@ -91,46 +83,50 @@ function processWar_NG(
         $attacker->checkActiveSkill();
         $defender->checkActiveSkill();
 
-        $attacker->checkActiveItem();
-        $defender->checkActiveItem();
+        $attacker->applyActiveSkill();
+        $defender->applyActiveSkill();
 
-        $attacker->applyActiveSkillAndItem();
-        $defender->applyActiveSkillAndItem();
-
-        $killedDefender = $attacker->tryAttackInPhase();
-        $killedAttacker = $defender->tryAttackInPhase();
-        //NOTE: 마법, 기술, 쌀 소모는 tryAttackInPhase 내에서 반영
+        $deadDefender = $attacker->tryAttackInPhase();
+        $deadAttacker = $defender->tryAttackInPhase();
+        //NOTE: 마법은 tryAttackInPhase 내에서 반영
 
         $attackerHP = $attacker->getHP();
         $defenderHP = $defender->getHP();
 
-        if($killedAttacker > $attackerHP || $killedDefender > $defenderHP){
-            $killedAttackerRatio = $killedAttacker / $attackerHP;
-            $killedDefenderRatio = $killedDefender / $defenderHP;
+        if($deadAttacker > $attackerHP || $deadDefender > $defenderHP){
+            $deadAttackerRatio = $deadAttacker / $attackerHP;
+            $deadDefenderRatio = $deadDefender / $defenderHP;
 
-            if($killedDefenderRatio > $killedAttackerRatio){
+            if($deadDefenderRatio > $deadAttackerRatio){
                 //수비자가 더 병력 부족
-                $killedAttacker /= $killedDefenderRatio;
-                $killedDefender = $defenderHP;
+                $deadAttacker /= $deadDefenderRatio;
+                $deadDefender = $defenderHP;
                 break;
             }
             else{
                 //공격자가 더 병력 부족
-                $killedDefender /= $killedAttackerRatio;
-                $killedAttacker = $attackerHP;
+                $deadDefender /= $deadAttackerRatio;
+                $deadAttacker = $attackerHP;
                 break;
             }
         }
 
-        //TODO: 전투 로그 기록(여기서??)
+        $deadAttacker = min(ceil($deadAttacker), $attackerHP);
+        $deadDefender = min(ceil($deadDefender), $defenderHP);        
 
-        $attacker->decreaseHP(ceil($killedAttacker));
-        $defender->decreaseHP(ceil($killedDefender));
+        $attacker->decreaseHP($deadAttacker);
+        $defender->decreaseHP($deadDefender);
+
+        $attacker->increaseKilled($deadDefender);
+        $defender->increaseKilled($deadAttacker);
+        //TODO: 기술, 쌀 소모 반영등은 이전 코드와 달리 동적으로 매 페이즈마다 추가 계산
+
+        //TODO: 로그 출력
 
         $attacker->addPhase();
         $defender->addPhase();
 
-        //TODO: 기술로그 반영등은 이전 코드와 달리 동적으로 매 페이즈마다 추가 계산
+        
 
         if(!$attacker->continueWar($noRice)){
             //TODO: 퇴각해야함
@@ -156,6 +152,7 @@ function processWar_NG(
             $defender->tryWound();
 
             if($defender === $city){
+                $attacker->addLevelExp(1000);
                 $conquerCity = true;
                 break;
             }
@@ -165,11 +162,10 @@ function processWar_NG(
             $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
             $defender->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
 
+            $defender->finishBattle();
             $defender = ($getNextDefender)($defender, true);
-            if($defender === null){
-                continue;
-            }
-            if(!($defender instanceof WarUnitGeneral)){
+
+            if($defender !== null && !($defender instanceof WarUnitGeneral)){
                 throw new \RuntimeException('다음 수비자를 받아오는데 실패');
             }            
         }
@@ -177,32 +173,18 @@ function processWar_NG(
     }
 
     //TODO: 전투 종료
+    $attacker->finishBattle();
+    $defender->finishBattle();
+
     ($getNextDefender)($defender, false);
+    //NOTE: 공격자의 applyDB는 함수 호출자가 실행
 
-    if (!$conquerCity) {
+    if(!$conquerCity){
+        return false;
     }
 
-    $conquerNation = false;
-    //TODO: 도시 정복 처리
-    //TODO: 패퇴면 메시지 별도
-    if($rawDefenderNation['rice'] <= 0){
-    }
+    return true;
 
-    //TODO: 공격자 경험치? (여기서?)
-
-    //TODO: DB 처리를 위한 반영
-
-    
-    if(!$conquerNation){
-    }
-
-    //TODO:국가 정복 처리는 밖에서 하자
-
-}
-
-function getCrewtypeRice($crewtype, $tech) {
-    $cost = $crewtype->rice / 10;
-    return $cost * getTechCost($tech);
 }
 
 //////////////////////////////////////////////////////////////

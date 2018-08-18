@@ -9,8 +9,6 @@ class WarUnitGeneral extends WarUnit{
     protected $logger;
     protected $crewType;
 
-    protected $killed = 0;
-    protected $death = 0;
     protected $win = 0;
 
     protected $updatedVar = [];
@@ -90,6 +88,55 @@ class WarUnitGeneral extends WarUnit{
     function addAtmos(int $atmos){
         $this->raw['atmos'] += $atmos;
         $this->updatedVar['atmos'] = true;
+    }
+
+    function addWin(){
+        $this->win += 1;
+
+        $this->raw['atmos'] = min($this->raw['atmos'] * 1.1, GameConst::$maxAtmosByWar);
+        $this->updatedVar['atmos'] = true;
+
+        $this->addStatExp(1);
+    }
+
+    function addStatExp(int $value = 1){
+        if($this->crewType->armType == GameUnitConst::T_WIZARD) {   // 귀병
+            $this->raw['intel2'] += $value;
+            $this->updatedVar['intel2'] = true;
+        } elseif($this->crewType->armType == GameUnitConst::T_SIEGE) {   // 차병
+            $this->raw['leader2'] += $value;
+            $this->updatedVar['leader2'] = true;
+        } else {
+            $this->raw['power2'] += $value;
+            $this->updatedVar['power2'] = true;
+        }
+    }
+
+    function addLevelExp(float $value){
+        $value *= getCharExpMultiplier($this->getCharacter());
+        $this->raw['experience'] += $value;
+        $this->updatedVar['experience'] = true;
+    }
+
+    function addDedication(float $value){
+        $value *= getCharDedMultiplier($this->getCharacter());
+        $this->raw['dedication'] += $value;
+        $this->updatedVar['dedication'] = true;
+    }
+
+    function addLose(){
+
+        $this->addStatExp(1);
+        //TODO: 1패 로그 추가
+    }
+
+    function finishBattle(){
+        //TODO: 전투 종료 처리. 경험치 등
+
+        
+        Util::setRound($this->raw['rice']);
+        Util::setRound($this->raw['experience']);
+        Util::setRound($this->raw['dedication']);
     }
 
     protected function getWarPowerMultiplyBySpecialWar():array{
@@ -268,6 +315,47 @@ class WarUnitGeneral extends WarUnit{
         }
         
         return $itemActivated;
+    }
+
+    function getHP():int{
+        return $this->raw['crew'];
+    }
+
+    function decreaseHP(int $damage):int{
+        $damage = min($damage, $this->raw['crew']);
+        $this->raw['crew'] -= $damage;
+
+        //TODO: 죽은 만큼 숙련도 변경
+
+        return $this->raw['crew'];
+    }
+
+    function increaseKilled(int $damage):int{
+
+        $this->addLevelExp($damage / 50);
+
+        $rice = $damage / 100;
+        if(!$this->isAttacker){
+            $rice *= 0.8;
+        }
+
+        $rice *= getCharExpMultiplier($this->getCharacter());
+        $rice *= $this->crewType->rice;
+        $rice *= getTechCost($this->rawNation['tech']);
+
+        $rice = min($this->raw['rice'], $rice);
+        $this->raw['rice'] -= $rice;
+        $this->updatedVar['rice'] = true;
+        //TODO: 죽인 만큼 숙련도 변경
+        //TODO: 죽인 만큼 쌀 소모
+
+        $this->killed += $damage;
+        return $this->killed;
+    }
+
+    function tryAttackInPhase():int{
+        //TODO
+        return 0;
     }
 
     function tryWound():bool{
