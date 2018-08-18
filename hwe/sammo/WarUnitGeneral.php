@@ -476,6 +476,10 @@ class WarUnitGeneral extends WarUnit{
         $specialWar = $this->getSpecialWar();
         $item = $this->getItem();
 
+        if($specialWar == 73 && Util::randBool(0.2)){
+            $this->activateSkill('치료');
+        }
+
         if(
             !$this->hasActivatedSkill('특수') &&
             Util::randBool($this->getComputedCriticalRatio())
@@ -502,6 +506,14 @@ class WarUnitGeneral extends WarUnit{
         ){
             $this->activateSkill('위압');
             $activated = true;
+        }
+
+        if(
+            ($item == 23 || $item == 24) &&
+            !$this->hasActivatedSkill('치료') &&
+            Util::randBool(0.2)
+        ){
+            $this->activateSkill('치료');
         }
 
         return $activated;
