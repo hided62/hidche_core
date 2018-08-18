@@ -11,14 +11,22 @@ class WarUnitCity extends WarUnit{
     protected $trainAtmos;
 
     protected $rice = 0;
+    public $cityRate;
 
     protected $updatedVar = [];
 
-    function __construct($raw, $rawNation, $year, $month){
+    protected $year;
+    protected $month;
+
+    function __construct($raw, $rawNation, $year, $month, $cityRate){
         $this->raw = $raw;
         $this->rawNation = $rawNation;
 
+        $this->year = $year;
+        $this->month = $month;
+
         $this->isAttacker = false;
+        $this->cityRate = $cityRate;
 
         $this->logger = new ActionLogger(0, $raw['nation'], $year, $month);
         $this->crewType = GameUnitConst::byID($raw['crewtype']);
@@ -39,7 +47,7 @@ class WarUnitCity extends WarUnit{
         return $this->raw['name'];
     }
 
-    function tryAttackInPhase():int{
+    function calcDamage():int{
         $warPower = $this->getWarPower();
         $warPower *= Util::randRange(0.9, 1.1);
     }
@@ -89,6 +97,37 @@ class WarUnitCity extends WarUnit{
         $this->updatedVar['secu'] = true;
     }
 
+    function addConflict():bool{
+        $conflict = Json::decode($this->raw['conflict']);
+        $opposeNation = $this->getOppose()->getRawNation();
+
+        $nationID = $opposeNation['nation'];
+        $newConflict = false;
+        
+        $dead = $this->dead;
+
+        if(!$conflict || $this->getHP() == 0){ // 선타, 막타 보너스
+            $dead *= 1.05;
+        }
+
+        if(!$conflict){
+            $conflict = [$nationID => $dead];
+        }
+        else if(key_exists($nationID, $conflict)){
+            $conflict[$nationID] += $dead;
+            arsort($conflict);
+        }
+        else{
+            $conflict[$nationID] = $dead;
+            arsort($conflict);
+            $newConflict = true;
+        }
+
+        $this->raw['conflict'] = Json::encode($conflict);
+        $this->updatedVar['conflict'] = true;
+
+        return $newConflict;
+    }
     
 
     function applyDB($db):bool{

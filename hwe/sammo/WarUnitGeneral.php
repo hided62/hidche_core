@@ -355,7 +355,11 @@ class WarUnitGeneral extends WarUnit{
         $this->dead += $damage;
         $this->raw['crew'] -= $damage;
 
-        
+        $addDex = $damage;
+        if(!$this->isAttacker){
+            $addDex *= 0.9;
+        }
+        $this->addDex($this->oppose->getCrewType(), $addDex);
 
         return $this->raw['crew'];
     }
@@ -375,14 +379,18 @@ class WarUnitGeneral extends WarUnit{
         $rice = min($this->raw['rice'], $rice);
         $this->raw['rice'] -= $rice;
         $this->updatedVar['rice'] = true;
-        //TODO: 죽인 만큼 숙련도 변경
-        //TODO: 죽인 만큼 쌀 소모
+        
+        $addDex = $damage;
+        if(!$this->isAttacker){
+            $addDex *= 0.9;
+        }
+        $this->addDex($this->oppose->getCrewType(), $addDex);
 
         $this->killed += $damage;
         return $this->killed;
     }
 
-    function tryAttackInPhase():int{
+    function calcDamage():int{
         //TODO
         return 0;
     }
@@ -416,9 +424,45 @@ class WarUnitGeneral extends WarUnit{
         return true;
     }
 
-    function finishBattle(){
-        //TODO: 전투 종료 처리. 경험치 등
+    ///checkAbility의 method 버전
+    function checkStatChange():bool{
+        //FIXME: 장기적으로는 General 클래스가 별도로 있어야 함
+        $logger = $this->getLogger();
+        $limit = GameConst::$upgradeLimit;
 
+        $table = [
+            ['통솔', 'leader'],
+            ['무력', 'power'],
+            ['지력', 'intel'],
+        ];
+
+        $result = false;
+
+        foreach($table as [$statNickName, $statName]){
+            $statExpName = $statName.'2';
+
+            if($this->raw[$statExpName] < 0){
+                $logger->pushGeneralActionLog("<R>{$statNickName}</>이 <C>1</> 떨어졌습니다!", ActionLogger::PLAIN);
+                $this->raw[$statExpName] += $limit;
+                $this->updatedVar[$statExpName] = true;
+                $this->raw[$statName] -= 1;
+                $this->updatedVar[$statName] = true;
+                $result = true;
+            }
+            else if($this->raw[$statExpName] >= $limit){
+                $logger->pushGeneralActionLog("<R>{$statNickName}</>이 <C>1</> 올랐습니다!", ActionLogger::PLAIN);
+                $this->raw[$statExpName] -= $limit;
+                $this->updatedVar[$statExpName] = true;
+                $this->raw[$statName] += 1;
+                $this->updatedVar[$statName] = true;
+                $result = true;
+            }
+        }
+
+        return $result;
+    }
+
+    function finishBattle(){
         if($this->isAttacker){
             $this->raw['recwar'] = $this->raw['turntime'];
         }
@@ -436,6 +480,8 @@ class WarUnitGeneral extends WarUnit{
         Util::setRound($this->raw['rice']);
         Util::setRound($this->raw['experience']);
         Util::setRound($this->raw['dedication']);
+
+        $this->checkStatChange();
     }
 
     /**

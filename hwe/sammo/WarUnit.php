@@ -24,6 +24,8 @@ class WarUnit{
     protected $warPower;
     protected $warPowerMultiply = 1.0;
 
+    protected $activatedSkill = [];
+
     private function __construct(){
     }
     
@@ -99,6 +101,10 @@ class WarUnit{
         $this->oppose = $oppose;
     }
 
+    function getOppose():?WarUnit{
+        return $this->oppose;
+    }
+
     function getWarPower(){
         return $this->warPower * $this->warPowerMultiply;
     }
@@ -124,9 +130,11 @@ class WarUnit{
         $warPower = GameConst::$armperphase + $myAtt - $opDef;
         $opposeWarPowerMultiply = 1.0;
 
-        if($warPower <= 0){
-            //FIXME: 0으로 잡을때 90~100이면, 1은 너무 억울하지 않나?
-            $warPower = rand(90, 100);
+        if($warPower < 100){
+            //최소 전투력 50 보장
+            $warPower = max(0, $warPower);
+            $warPower = ($warPower + 100) / 2;
+            $warPower = rand($warPower, 100);
         }
 
         $warPower *= CharAtmos(
@@ -139,8 +147,20 @@ class WarUnit{
             $oppose->getCharacter()
         );
 
-        $genDexAtt = getGenDex($this->getRaw(), $this->getCrewType()->id);
-        $oppDexDef = getGenDex($oppose->getRaw(), $this->getCrewType()->id);
+        if($this instanceof WarUnitGeneral){
+            $genDexAtt = getGenDex($this->getRaw(), $this->getCrewType()->id);
+        }
+        else{
+            $genDexAtt = ($this->cityRate - 60) * 7200;
+        }
+        
+        if($this instanceof WarUnitGeneral){
+            $oppDexDef = getGenDex($oppose->getRaw(), $this->getCrewType()->id);
+        }
+        else{
+            $oppDexDef = ($this->cityRate - 60) * 7200;
+        }
+        
         $warPower *= getDexLog($genDexAtt, $oppDexDef);
         
         $warPower *= $this->getCrewType()->getAttackCoef($oppose->getCrewType());
@@ -189,6 +209,11 @@ class WarUnit{
         return false;
     }
 
+    function beginPhase():void{
+        $this->activatedSkill = [];
+        $this->computeWarPower();
+    }
+
     function checkBattleBeginSkill():bool{
         return false;
     }
@@ -198,6 +223,18 @@ class WarUnit{
     }
 
     function applyBattleBeginSkillAndItem():bool{
+        return false;
+    }
+
+    function hasActivatedSkill(string $skillName):bool{
+        return $this->activatedSkill[$skillName] ?? false;
+    }
+
+    function deactivateSkill(string $skillName):bool{
+        $this->activatedSkill[$skillName] = false;
+    }
+
+    function checkPreActiveSkill():bool{
         return false;
     }
 
@@ -227,7 +264,7 @@ class WarUnit{
         throw new NotInheritedMethodException();
     }
 
-    function tryAttackInPhase():int{
+    function calcDamage():int{
         return $this->getWarPower();
     }
 

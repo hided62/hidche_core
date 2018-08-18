@@ -35,7 +35,8 @@ function processWar_NG(
             $defender = $city;
             
             if($city->getRawNation()['rice'] <= 0 && $city->getRaw()['supply'] == 1){
-                $attacker->setOppose(null);
+                $attacker->setOppose($defender);
+                $defender->setOppose($attacker);
                 $attacker->addTrain(1);
                 $attacker->addWin();
                 $conquerCity = true;
@@ -80,21 +81,25 @@ function processWar_NG(
             $defender->applyBattleBeginSkillAndItem();
         }
 
-        $attacker->computeWarPower();
-        $defender->computeWarPower();
+        $attacker->beginPhase();
+        $defender->beginPhase();
+
+        $attacker->checkPreActiveSkill();
+        $defender->checkPreActiveSkill();
 
         $attacker->checkActiveSkill();
         $defender->checkActiveSkill();
+        //NOTE: 마법은 checkActiveSkill, checkPostActiveSkill 내에서 반영
 
         $attacker->checkPostActiveSkill();
         $defender->checkPostActiveSkill();
+        //NOTE: 반계류 등의 스킬을 post에서 반영
 
         $attacker->applyActiveSkill();
         $defender->applyActiveSkill();
 
-        $deadDefender = $attacker->tryAttackInPhase();
-        $deadAttacker = $defender->tryAttackInPhase();
-        //NOTE: 마법은 tryAttackInPhase 내에서 반영
+        $deadDefender = $attacker->calcDamage();
+        $deadAttacker = $defender->calcDamage();
 
         $attackerHP = $attacker->getHP();
         $defenderHP = $defender->getHP();
@@ -189,9 +194,17 @@ function processWar_NG(
         
     }
 
-    //TODO: 전투 종료
     $attacker->finishBattle();
     $defender->finishBattle();
+
+    if($defender instanceof WarUnitCity){
+        $newConflict = $defender->addConflict();
+        if($newConflict){
+            $nationName = $attacker->getRawNation()['name'];
+            $josaYi = JosaUtil::pick($nationName, '이');
+            $logger->pushGlobalHistoryLog("<M><b>【분쟁】</b></><D><b>{$nationName}</b></>{$josaYi} <G><b>{$defender->getName()}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다.");
+        }
+    }
 
     ($getNextDefender)($defender, false);
     //NOTE: 공격자의 applyDB는 함수 호출자가 실행
@@ -202,51 +215,6 @@ function processWar_NG(
 
     return true;
 
-}
-
-//////////////////////////////////////////////////////////////
-// 표준 공 / 수 반환 수치는 약 0이 되게 (100~550)
-//////////////////////////////////////////////////////////////
-
-function addConflict($city, $nationID, $mykillnum) {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-
-    $nationlist = [];
-    $killnum = [0];
-
-    list($year, $month) = $gameStor->getValuesAsArray(['year', 'month']);
-
-    $conflict = Json::decode($city['conflict']);
-
-    if(!$conflict || $city['def'] == 0){ // 선타, 막타 보너스
-        $mykillnum *= 1.05;
-    }
-
-    if (!$conflict) {
-        $conflict[$nationID] = $mykillnum;
-    }
-    else if(key_exists($nationID, $conflict)){
-        $conflict[$nationID] += $mykillnum;
-        arsort($conflict);
-    }
-    else{
-        $conflict[$nationID] = $mykillnum;
-        arsort($conflict);
-
-        $nation = getNationStaticInfo($nationID);
-        $josaYi = JosaUtil::pick($nation['name'], '이');
-        pushWorldHistory(["<C>●</>{$year}년 {$month}월:<M><b>【분쟁】</b></><D><b>{$nation['name']}</b></>{$josaYi} <G><b>{$city['name']}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다."]);
-    }
-    
-    $rawConflict = Json::encode($conflict);
-    $city['conflict'] = $rawConflict;
-
-    $db->update('city', [
-        'conflict'=>$rawConflict
-    ], 'city=%i',$city['city']);
-
-    return $city;
 }
 
 function DeleteConflict($nation) {
