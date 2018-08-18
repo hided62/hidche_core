@@ -35,6 +35,9 @@ function processWar_NG(
             $defender = $city;
             
             if($city->getRawNation()['rice'] <= 0 && $city->getRaw()['supply'] == 1){
+                $attacker->setOppose(null);
+                $attacker->addTrain(1);
+                $attacker->addWin();
                 $conquerCity = true;
                 break;
             }
@@ -47,18 +50,18 @@ function processWar_NG(
             $defender->addTrain(1);
 
             if($defender instanceof WarUnitGeneral){
-                $josaWa = JosaUtil::pick($attacker->getCrewType()->name, '와');
-                $josaYi = JosaUtil::pick($defender->getCrewType()->name, '이');
-                $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewType()->name}{$josaWa} <Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 대결합니다.");
-                $josaUl = JosaUtil::pick($defender->getCrewType()->name, '을');
-                $josaRo = JosaUtil::pick($attacker->getCrewType()->name, '로');
-                $attacker->getLogger()->pushGeneralActionLog("{$attacker->getCrewType()->name}{$josaRo} <Y>{$defender->name}</>의 {$defender->getCrewType()->name}{$josaUl} <M>공격</>합니다.");
-                $defender->getLogger()->pushGeneralActionLog("{$defender->getCrewType()->name}{$josaRo} <Y>{$attacker->name}</>의 {$attacker->getCrewType()->name}{$josaUl} <M>수비</>합니다.");
+                $josaWa = JosaUtil::pick($attacker->getCrewTypeName(), '와');
+                $josaYi = JosaUtil::pick($defender->getCrewTypeName(), '이');
+                $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaWa} <Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 대결합니다.");
+                $josaUl = JosaUtil::pick($defender->getCrewTypeName(), '을');
+                $josaRo = JosaUtil::pick($attacker->getCrewTypeName(), '로');
+                $attacker->getLogger()->pushGeneralActionLog("{$attacker->getCrewTypeName()}{$josaRo} <Y>{$defender->name}</>의 {$defender->getCrewTypeName()}{$josaUl} <M>공격</>합니다.");
+                $defender->getLogger()->pushGeneralActionLog("{$defender->getCrewTypeName()}{$josaRo} <Y>{$attacker->name}</>의 {$attacker->getCrewTypeName()}{$josaUl} <M>수비</>합니다.");
             }
             else{
                 $josaYi = JosaUtil::pick($attacker->getName(), '이');
-                $josaRo = JosaUtil::pick($attacker->getCrewType()->name, '로');
-                $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>{$josaYi} {$attacker->getCrewType()->name}{$josaRo} 성벽을 공격합니다.");
+                $josaRo = JosaUtil::pick($attacker->getCrewTypeName(), '로');
+                $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>{$josaYi} {$attacker->getCrewTypeName()}{$josaRo} 성벽을 공격합니다.");
                 $logger->pushGeneralActionLog("<C>●</>{$generalCrewType->name}{$josaRo} 성벽을 <M>공격</>합니다.", ActionLogger::PLAIN);
             }
 
@@ -82,6 +85,9 @@ function processWar_NG(
 
         $attacker->checkActiveSkill();
         $defender->checkActiveSkill();
+
+        $attacker->checkPostActiveSkill();
+        $defender->checkPostActiveSkill();
 
         $attacker->applyActiveSkill();
         $defender->applyActiveSkill();
@@ -119,7 +125,8 @@ function processWar_NG(
 
         $attacker->increaseKilled($deadDefender);
         $defender->increaseKilled($deadAttacker);
-        //TODO: 기술, 쌀 소모 반영등은 이전 코드와 달리 동적으로 매 페이즈마다 추가 계산
+        //TODO: 쌀 소모 반영등은 이전 코드와 달리 동적으로 매 페이즈마다 추가 계산
+        //NOTE: 기술, 도시 사망자 수는 '전투 종료 후' 외부에서 반영.
 
         //TODO: 로그 출력
 
@@ -136,10 +143,10 @@ function processWar_NG(
             $attacker->tryWound();
             $defender->tryWound();
 
-            $josaYi = JosaUtil::pick($attacker->getCrewType()->name, '이');
-            $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewType()->name}{$josaYi} 퇴각했습니다.");
+            $josaYi = JosaUtil::pick($attacker->getCrewTypeName(), '이');
+            $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaYi} 퇴각했습니다.");
             $attacker->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
-            $defender->getLogger()->pushGeneralActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewType()->name}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
+            $defender->getLogger()->pushGeneralActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
 
             break;
         }
@@ -157,9 +164,9 @@ function processWar_NG(
                 break;
             }
 
-            $josaYi = JosaUtil::pick($defender->getCrewType()->name, '이');
-            $logger->pushGlobalActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 퇴각했습니다.");
-            $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
+            $josaYi = JosaUtil::pick($defender->getCrewTypeName(), '이');
+            $logger->pushGlobalActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 퇴각했습니다.");
+            $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
             $defender->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
 
             $defender->finishBattle();

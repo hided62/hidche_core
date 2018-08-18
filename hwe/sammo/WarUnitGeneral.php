@@ -25,8 +25,8 @@ class WarUnitGeneral extends WarUnit{
         setLeadershipBonus($raw, $rawNation['level']);
 
         $this->raw = $raw;
-        $this->rawCity = $rawCity;
-        $this->rawNation = $rawNation;
+        $this->rawCity = $rawCity; //read-only
+        $this->rawNation = $rawNation; //read-only
         $this->isAttacker = $isAttacker;
 
         $this->logger = new ActionLogger($this->raw['no'], $this->raw['nation'], $year, $month);
@@ -64,6 +64,12 @@ class WarUnitGeneral extends WarUnit{
         return $this->raw['special'];
     }
 
+    function setOppose(?WarUnit $oppose){
+        $this->oppose = $oppose;
+        $this->raw['warnum'] += 1;
+        $this->updatedVar['warnum'] = true;
+    }
+
     function getSpecialWar():int{
         return $this->raw['special2'];
     }
@@ -92,6 +98,8 @@ class WarUnitGeneral extends WarUnit{
 
     function addWin(){
         $this->win += 1;
+        $this->raw['killnum'] += 1;
+        $this->updatedVar['killnum'] = true;
 
         $this->raw['atmos'] = min($this->raw['atmos'] * 1.1, GameConst::$maxAtmosByWar);
         $this->updatedVar['atmos'] = true;
@@ -125,19 +133,14 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function addLose(){
+        $this->raw['deathnum'] += 1;
+        $this->updatedVar['deathnum'] = true;
 
         $this->addStatExp(1);
         //TODO: 1패 로그 추가
     }
 
-    function finishBattle(){
-        //TODO: 전투 종료 처리. 경험치 등
-
-        
-        Util::setRound($this->raw['rice']);
-        Util::setRound($this->raw['experience']);
-        Util::setRound($this->raw['dedication']);
-    }
+    
 
     protected function getWarPowerMultiplyBySpecialWar():array{
         //TODO: 장기적으로 if문이 아니라 객체를 이용하여 처리해야함
@@ -323,6 +326,8 @@ class WarUnitGeneral extends WarUnit{
 
     function decreaseHP(int $damage):int{
         $damage = min($damage, $this->raw['crew']);
+
+        $this->dead += $damage;
         $this->raw['crew'] -= $damage;
 
         //TODO: 죽은 만큼 숙련도 변경
@@ -331,7 +336,6 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function increaseKilled(int $damage):int{
-
         $this->addLevelExp($damage / 50);
 
         $rice = $damage / 100;
@@ -385,6 +389,28 @@ class WarUnitGeneral extends WarUnit{
             return false;
         }
         return true;
+    }
+
+    function finishBattle(){
+        //TODO: 전투 종료 처리. 경험치 등
+
+        if($this->isAttacker){
+            $this->raw['recwar'] = $this->raw['turntime'];
+        }
+        else{
+            $this->raw['recwar'] = $this->oppose->getRaw()['turntime'];
+        }
+        $this->updatedVar['recwar'] = true;
+        
+
+        $this->raw['killcrew'] += $this->killed;
+        $this->updatedVar['killcrew'] = true;
+        $this->raw['deathcrew'] += $this->dead;
+        $this->updatedVar['deathcrew'] = true;
+        
+        Util::setRound($this->raw['rice']);
+        Util::setRound($this->raw['experience']);
+        Util::setRound($this->raw['dedication']);
     }
 
     /**

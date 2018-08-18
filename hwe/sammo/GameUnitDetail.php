@@ -58,6 +58,10 @@ class GameUnitDetail{
         $this->info = $info;
     }
 
+    public function getShortName():string{
+        return StringUtil::subStringForWidth($this->name, 0, 4);
+    }
+
     public function costWithTech(int $tech, int $crew=100):float{
         return $this->cost * getTechCost($tech) * $crew / 100;
     }

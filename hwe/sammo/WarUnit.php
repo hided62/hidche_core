@@ -51,6 +51,14 @@ class WarUnit{
         return $this->crewType;
     }
 
+    function getCrewTypeName():string{
+        return $this->getCrewType()->name;
+    }
+
+    function getCrewTypeShortName():string{
+        return $this->getCrewType()->getShortName();
+    }
+
     function getLogger():ActionLogger{
         return $this->logger;
     }
@@ -87,9 +95,8 @@ class WarUnit{
         $this->currPhase += 1;
     }
 
-    function setOppose(WarUnit $oppose){
+    function setOppose(?WarUnit $oppose){
         $this->oppose = $oppose;
-        
     }
 
     function getWarPower(){
@@ -198,6 +205,10 @@ class WarUnit{
         return false;
     }
 
+    function checkPostActiveSkill():bool{
+        return false;
+    }
+
     function applyActiveSkill():bool{
         return false;
     }
@@ -207,10 +218,12 @@ class WarUnit{
     }
 
     function decreaseHP(int $damage):int{
+        $this->dead += $damage;
         throw new NotInheritedMethodException();
     }
 
     function increaseKilled(int $damage):int{
+        $this->killed += $damage;
         throw new NotInheritedMethodException();
     }
 
