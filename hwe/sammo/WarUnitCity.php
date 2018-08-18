@@ -59,6 +59,7 @@ class WarUnitCity extends WarUnit{
         $damage = min($damage, $this->hp);
         $this->dead += $damage;
         $this->hp -= $damage;
+        $this->trainAtmos -= $damage / 2;
     }
 
     function continueWar(&$noRice):bool{
