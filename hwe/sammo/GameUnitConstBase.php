@@ -281,7 +281,7 @@ class GameUnitConstBase{
             41, self::T_SIEGE, '충차',     
             150, 100, 6,  0, 0,  20,  5, 
             1000, null,     null,     3, 
-            [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>1.8],
+            [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>2.4],
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2],
             ['엄청난 위력으로 성벽을 부수어버립니다.']
         ],
