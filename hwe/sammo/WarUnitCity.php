@@ -2,8 +2,6 @@
 namespace sammo;
 
 class WarUnitCity extends WarUnit{
-    protected $raw;
-    
     protected $logger;
     protected $crewType;
 
@@ -30,11 +28,11 @@ class WarUnitCity extends WarUnit{
         $this->logger = new ActionLogger(0, $raw['nation'], $year, $month, false);
         $this->crewType = GameUnitConst::byID($raw['crewtype']);
 
-        $this->rice = $this->rawNation['rice'];
+        $this->rice = $this->getNationVar('rice');
 
         $this->crewType = GameUnitConst::byID(GameUnitConst::T_CASTLE);
 
-        $this->hp = $this->raw['def'] * 10; 
+        $this->hp = $this->getVar('def') * 10; 
 
         //수비자 보정
         if($raw['level'] == 1){
@@ -45,17 +43,14 @@ class WarUnitCity extends WarUnit{
         }
     }
 
-    function getRaw():array{
-        return $this->raw;
-    }
-
     function getName():string{
-        return $this->raw['name'];
+        return $this->getVar('name');
     }
 
     function calcDamage():int{
         $warPower = $this->getWarPower();
         $warPower *= Util::randRange(0.9, 1.1);
+        return Util::round($warPower);
     }
 
     function increaseKilled(int $damage):int{
@@ -79,7 +74,8 @@ class WarUnitCity extends WarUnit{
         $damage = min($damage, $this->hp);
         $this->dead += $damage;
         $this->hp -= $damage;
-        $this->raw['wall'] = max(0, $this->raw['wall'] - $damage / 20);
+        $this->increaseVarWithLimit('wall', -$damage/20, 0);
+        
         return $this->hp;
     }
 
@@ -101,36 +97,28 @@ class WarUnitCity extends WarUnit{
     }
 
     function heavyDecreseWealth(){
-        $this->raw['agri'] *= 0.5;
-        $this->updatedVar['agri'] = true;
-        $this->raw['comm'] *= 0.5;
-        $this->updatedVar['comm'] = true;
-        $this->raw['secu'] *= 0.5;
-        $this->updatedVar['secu'] = true;
+        $this->multiplyVar('agri', 0.5);
+        $this->multiplyVar('comm', 0.5);
+        $this->multiplyVar('secu', 0.5);
     }
 
     function finishBattle(){
-        $this->raw['def'] = Util::round($this->hp / 10);
-        $this->updatedVar['def'] = true;
-        Util::setRound($this->raw['wall']);
-        $this->updatedVar['wall'] = true;
+        $this->updateVar('def', Util::round($this->hp / 10));
+        $this->updateVar('wall', Util::round($this->getVar('wall')));
 
         //NOTE: 전투로 인한 사망자는 여기서 처리하지 않음
 
         $decWealth = $this->dead / 10;
-        $this->raw['agri'] = max(0, Util::round($this->raw['agri'] - $decWealth));
-        $this->updatedVar['agri'] = true;
-        $this->raw['comm'] = max(0, Util::round($this->raw['comm'] - $decWealth));
-        $this->updatedVar['comm'] = true;
-        $this->raw['secu'] = max(0, Util::round($this->raw['secu'] - $decWealth));
-        $this->updatedVar['secu'] = true;
+        $this->increaseVarWithLimit('agri', -$decWealth, 0);
+        $this->increaseVarWithLimit('comm', -$decWealth, 0);
+        $this->increaseVarWithLimit('secu', -$decWealth, 0);
     }
 
     function addConflict():bool{
-        $conflict = Json::decode($this->raw['conflict']);
-        $opposeNation = $this->getOppose()->getRawNation();
+        $conflict = Json::decode($this->getVar('conflict'));
+        $oppose = $this->getOppose();
 
-        $nationID = $opposeNation['nation'];
+        $nationID = $oppose->getNationVar('nation');
         $newConflict = false;
         
         $dead = $this->dead;
@@ -152,8 +140,7 @@ class WarUnitCity extends WarUnit{
             $newConflict = true;
         }
 
-        $this->raw['conflict'] = Json::encode($conflict);
-        $this->updatedVar['conflict'] = true;
+        $this->updateVar('conflict', Json::encode($conflict));
 
         return $newConflict;
     }

@@ -26,15 +26,17 @@ function processWar_NG(
     $josaRo = JosaUtil::pick($city->name, '로');
     $josaYi = JosaUtil::pick($attacker->name, '이');
 
-    $logger->pushGlobalActionLog("<D><b>{$attacker->getRawNation()['name']}</b></>의 <Y>{$attacker->name}</>{$josaYi} <G><b>{$city->name}</b></>{$josaRo} 진격합니다.");
+    $logger->pushGlobalActionLog("<D><b>{$attacker->getNationVar('name')}</b></>의 <Y>{$attacker->name}</>{$josaYi} <G><b>{$city->name}</b></>{$josaRo} 진격합니다.");
     $logger->pushGeneralActionLog("<G><b>{$city->name}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
 
-    for($currPhase = 0; $currPhase < $maxPhase; $currPhase+=1){
+    $battleBegin = false;
 
+    for($currPhase = 0; $currPhase < $maxPhase; $currPhase+=1){
+        $battleBegin = true;
         if($defender === null){
             $defender = $city;
             
-            if($city->getRawNation()['rice'] <= 0 && $city->getRaw()['supply'] == 1){
+            if($city->getNationVar('rice') <= 0 && $city->getVar('supply') == 1){
                 //병량 패퇴
                 $attacker->setOppose($defender);
                 $defender->setOppose($attacker);
@@ -175,6 +177,8 @@ function processWar_NG(
         }
 
         if(!$defender->continueWar($noRice)){
+            $battleBegin = false;
+
             $attacker->logBattleResult();
             $defender->logBattleResult();
 
@@ -213,21 +217,28 @@ function processWar_NG(
         
     }
 
+    $attacker->finishBattle();
+
+    if(!$battleBegin){
+        // 마지막 페이즈까지 갔지만, '갱신된 수비자'와 전투하지 않았다.
+        return false;
+    }
+
     if($currPhase == $maxPhase){
+        //마지막 페이즈의 전투 마무리
         $attacker->tryWound();
         $defender->tryWound();
 
         $attacker->logBattleResult();
         $defender->logBattleResult();
     }
-
-    $attacker->finishBattle();
+    
     $defender->finishBattle();
 
     if($defender instanceof WarUnitCity){
         $newConflict = $defender->addConflict();
         if($newConflict){
-            $nationName = $attacker->getRawNation()['name'];
+            $nationName = $attacker->getNationVar('name');
             $josaYi = JosaUtil::pick($nationName, '이');
             $logger->pushGlobalHistoryLog("<M><b>【분쟁】</b></><D><b>{$nationName}</b></>{$josaYi} <G><b>{$defender->getName()}</b></> 공략에 가담하여 분쟁이 발생하고 있습니다.");
         }
@@ -236,12 +247,7 @@ function processWar_NG(
     ($getNextDefender)($defender, false);
     //NOTE: 공격자의 applyDB는 함수 호출자가 실행
 
-    if(!$conquerCity){
-        return false;
-    }
-
-    return true;
-
+    return $conquerCity;
 }
 
 function DeleteConflict($nation) {

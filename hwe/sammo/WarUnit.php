@@ -2,6 +2,7 @@
 namespace sammo;
 
 class WarUnit{
+    protected $raw;
     protected $rawNation;
 
     protected $logger;
@@ -30,11 +31,77 @@ class WarUnit{
     }
     
     function getRaw():array{
-        return [];
+        return $this->raw;
     }
 
     function getRawNation():array{
         return $this->rawNation;
+    }
+
+    function getVar(string $key){
+        return $this->raw[$key];
+    }
+
+    function updateVar(string $key, $value){
+        if($this->raw[$key] === $value){
+            return;
+        }
+        $this->raw[$key] = $value;
+        $this->updatedVar[$key] = true;
+    }
+
+    function updateVarWithLimit(string $key, $value, $min = null, $max = null){
+        if($min !== null && $value < $min){
+            $value = $min;
+        }
+        if($max !== null && $value > $max){
+            $value = $max;
+        }
+        $this->updateVar($key, $value);
+    }
+
+    function increaseVar(string $key, $value)
+    {
+        if($value === 0){
+            return;
+        }
+        $this->raw[$key] += $value;
+        $this->updatedVar[$key] = true;
+    }
+
+    function increaseVarWithLimit(string $key, $value, $min = null, $max = null){
+        $targetValue = $this->raw[$key] + $value;
+        if($min !== null && $targetValue < $min){
+            $value = $min;
+        }
+        if($max !== null && $targetValue > $max){
+            $value = $max;
+        }
+        $this->updateVar($key, $targetValue);
+    }
+
+    function multiplyVar(string $key, $value)
+    {
+        if($value === 1){
+            return;
+        }
+        $this->raw[$key] *= $value;
+        $this->updatedVar[$key] = true;
+    }
+
+    function multiplyVarWithLimit(string $key, $value, $min = null, $max = null){
+        $targetValue = $this->raw[$key] * $value;
+        if($min !== null && $targetValue < $min){
+            $value = $min;
+        }
+        if($max !== null && $targetValue > $max){
+            $value = $max;
+        }
+        $this->updateVar($key, $targetValue);
+    }
+
+    function getNationVar(string $key):array{
+        return $this->rawNation[$key];
     }
 
     function getPhase():int{
@@ -103,6 +170,7 @@ class WarUnit{
 
     function setOppose(?WarUnit $oppose){
         $this->oppose = $oppose;
+        $this->activatedSkill = [];
     }
 
     function getOppose():?WarUnit{
@@ -128,8 +196,8 @@ class WarUnit{
     function computeWarPower(){
         $oppose = $this->oppose;
 
-        $myAtt = $this->getCrewType()->getComputedAttack($this->getRaw(), $this->getRawNation()['tech']);
-        $opDef = $oppose->getCrewType()->getComputedDefence($oppose->getRaw(), $oppose->getRawNation()['tech']);
+        $myAtt = $this->getCrewType()->getComputedAttack($this->getRaw(), $this->getNationVar('tech'));
+        $opDef = $oppose->getCrewType()->getComputedDefence($oppose->getRaw(), $oppose->getNationVar('tech'));
         // 감소할 병사 수
         $warPower = GameConst::$armperphase + $myAtt - $opDef;
         $opposeWarPowerMultiply = 1.0;
@@ -238,6 +306,10 @@ class WarUnit{
         return $this->activatedSkill[$skillName] ?? false;
     }
 
+    function activateSkill(string $skillName):bool{
+        $this->activatedSkill[$skillName] = true;
+    }
+
     function deactivateSkill(string $skillName):bool{
         $this->activatedSkill[$skillName] = false;
     }
@@ -291,7 +363,7 @@ class WarUnit{
     }
 
     function applyDB($db):bool{
-        return false;
+        throw new NotInheritedMethodException();
     }
 
 
