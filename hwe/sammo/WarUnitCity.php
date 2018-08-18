@@ -2,49 +2,43 @@
 namespace sammo;
 
 class WarUnitCity extends WarUnit{
-    protected $logger;
-    protected $crewType;
-
     protected $hp;
 
-    protected $rice = 0;
-    public $cityRate;
-
-    protected $updatedVar = [];
-
-    protected $year;
-    protected $month;
+    protected $cityRate;
 
     function __construct($raw, $rawNation, $year, $month, $cityRate){
         $this->raw = $raw;
         $this->rawNation = $rawNation;
 
-        $this->year = $year;
-        $this->month = $month;
-
         $this->isAttacker = false;
         $this->cityRate = $cityRate;
 
-        $this->logger = new ActionLogger(0, $raw['nation'], $year, $month, false);
-        $this->crewType = GameUnitConst::byID($raw['crewtype']);
-
-        $this->rice = $this->getNationVar('rice');
-
+        $this->logger = new ActionLogger(
+            0, 
+            $this->getVar('nation'), 
+            $year, 
+            $month, 
+            false
+        );
         $this->crewType = GameUnitConst::byID(GameUnitConst::T_CASTLE);
 
         $this->hp = $this->getVar('def') * 10; 
 
         //수비자 보정
-        if($raw['level'] == 1){
+        if($this->getCityVar('level') == 1){
             $this->trainBonus += 5;
         }
-        else if($raw['level'] == 3){
+        else if($this->getCityVar('level') == 3){
             $this->trainBonus += 5;
         }
     }
 
     function getName():string{
         return $this->getVar('name');
+    }
+
+    function getCityVar(string $key){
+        return $this->raw[$key];
     }
 
     function calcDamage():int{
@@ -94,6 +88,7 @@ class WarUnitCity extends WarUnit{
     }
 
     function addLose(){
+        //NOTE: 도시 정복은 외부에서 처리함
     }
 
     function heavyDecreseWealth(){

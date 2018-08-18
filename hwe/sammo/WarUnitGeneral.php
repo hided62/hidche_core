@@ -4,13 +4,6 @@ namespace sammo;
 class WarUnitGeneral extends WarUnit{
     protected $rawCity;
 
-    protected $logger;
-    protected $crewType;
-
-    protected $win = 0;
-
-    protected $updatedVar = [];
-
     function __construct($raw, $rawCity, $rawNation, $isAttacker, $year, $month){
         setLeadershipBonus($raw, $rawNation['level']);
 
@@ -107,17 +100,49 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function getComputedAtmos(){
-        return GameConst::$maxAtmosByCommand;
+        $train = $this->getVar('atmos');
+        $train += $this->trainBonus;
+        
+        return $train;
     }
 
-    function getComputedAvoidRatio(){
+    function getComputedCriticalRatio():float{
+        $critialRatio = $this->getCrewType()->getCriticalRatio($this->getRaw());
+
+        $specialWar = $this->getSpecialWar();
+        $item = $this->getItem();
+
+        if($this->isAttacker && $specialWar == 61){
+            $critialRatio += 0.1;
+        }
+        if($specialWar == 71){
+            $critialRatio += 0.2;
+        }
+        return $critialRatio;
+    }
+
+    function getComputedAvoidRatio():float{
+        $specialWar = $this->getSpecialWar();
+        $item = $this->getItem();
+
         $avoidRatio = $this->getCrewType()->avoid / 100;
+        $avoidRatio *= $this->getComputedTrain() / 100;
+
+        //특기보정 : 궁병
+        if($specialWar == 51){
+            $avoidRatio += 0.2;
+        }
+
+        //도구 보정 : 둔갑천서, 태평요술
+        if($item == 26 || $item == 25){
+            $avoidRatio += 0.2;
+        }
+
+        return $avoidRatio;
     }
 
     function addWin(){
-        $this->win += 1;
         $this->increaseVar('killnum', 1);
-
         $this->multiplyVarWithLimit('atmos', 1.1, null, GameConst::$maxAtmosByWar);
 
         $this->addStatExp(1);
@@ -425,15 +450,61 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function checkPreActiveSkill():bool{
-        return false;
+        $activated = false;
+
+        $oppose = $this->getOppose();
+        $specialWar = $this->getSpecialWar();
+        $item = $this->getItem();
+
+        return $activated;
     }
 
     function checkActiveSkill():bool{
-        return false;
+        $activated = false;
+
+        $oppose = $this->getOppose();
+        $specialWar = $this->getSpecialWar();
+        $item = $this->getItem();
+
+        return $activated;
     }
 
     function checkPostActiveSkill():bool{
-        return false;
+        $activated = false;
+
+        $oppose = $this->getOppose();
+        $specialWar = $this->getSpecialWar();
+        $item = $this->getItem();
+
+        if(
+            !$this->hasActivatedSkill('특수') &&
+            Util::randBool($this->getComputedCriticalRatio())
+        ){
+            $this->activateSkill('특수');
+            $this->activateSkill('필살');
+        }
+
+
+        if(
+            !$this->hasActivatedSkill('특수') &&
+            Util::randBool($this->getComputedAvoidRatio())
+        ){
+            $this->activateSkill('특수');
+            $this->activateSkill('회피');
+        }
+
+        if(
+            $specialWar == 63 &&
+            $this->getPhase() == 0 &&
+            $this->getHP() >= 1000 &&
+            $this->getComputedAtmos() >= 90 &&
+            $this->getComputedTrain() >= 90
+        ){
+            $this->activateSkill('위압');
+            $activated = true;
+        }
+
+        return $activated;
     }
 
     function applyActiveSkill():bool{

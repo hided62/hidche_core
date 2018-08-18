@@ -260,7 +260,11 @@ class WarUnit{
         return GameConst::$maxAtmosByCommand;
     }
 
-    function getComputedAvoidRatio(){
+    function getComputedCriticalRatio():float{
+        return $this->getCrewType()->getCriticalRatio($this->getRaw());
+    }
+
+    function getComputedAvoidRatio():float{
         return $this->getCrewType()->avoid / 100;
     }
 
