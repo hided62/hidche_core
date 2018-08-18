@@ -546,7 +546,7 @@ class WarUnitGeneral extends WarUnit{
                 }
 
                 $magic = Util::choiceRandom(['위보', '매복', '반목', '화계', '혼란']);
-                $this->activateSkill($magic);
+                $this->activateSkill('계략시도', $magic);
                 if(Util::randBool($magicSuccessRatio)){
                     $this->activateSkill('계략');
                 }
