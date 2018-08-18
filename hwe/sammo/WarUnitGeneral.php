@@ -112,8 +112,10 @@ class WarUnitGeneral extends WarUnit{
         $specialWar = $this->getSpecialWar();
         $item = $this->getItem();
 
-        if($this->isAttacker && $specialWar == 61){
-            $critialRatio += 0.1;
+        if($specialWar == 61){
+            if($this->isAttacker){
+                $critialRatio += 0.1;
+            }
         }
         if($specialWar == 71){
             $critialRatio += 0.2;
@@ -186,19 +188,36 @@ class WarUnitGeneral extends WarUnit{
         $specialWar = $this->getSpecialWar();
 
         if($specialWar == 52){
-            $myWarPowerMultiply *= 1.20;
+            if($this->isAttacker){
+                $myWarPowerMultiply *= 1.20;
+            }
+            else{
+                $myWarPowerMultiply *= 1.10;
+            }
+            
         }
-        else if($specialWar == 60){
+        else if($specialWar == 60 && $this->isAttacker){
             $myWarPowerMultiply *= 1.10;
         }
         else if($specialWar == 61){
             $myWarPowerMultiply *= 1.10;
         }
         else if($specialWar == 50){
-            $opposeWarPowerMultiply *= 0.9;
+            if($this->isAttacker){
+                $opposeWarPowerMultiply *= 0.9;
+            }
+            else{
+                $opposeWarPowerMultiply *= 0.8;
+            }
         }
         else if($specialWar == 62){
-            $opposeWarPowerMultiply *= 0.9;
+            if ($this->isAttacker) {
+                $opposeWarPowerMultiply *= 0.9;
+            }
+            else{
+                $myWarPowerMultiply *= 1.1;
+            }
+            
         }
         else if($specialWar == 75){
             $opposeCrewType = $this->oppose->getCrewType();
@@ -456,6 +475,20 @@ class WarUnitGeneral extends WarUnit{
         $specialWar = $this->getSpecialWar();
         $item = $this->getItem();
 
+        if(
+            !$this->hasActivatedSkill('특수') &&
+            !$this->isAttacker &&
+            $this->getCrewTypeName() == '목우'
+        ){
+            //XXX: 병종에 특수 스킬이 달려있도록 설정해야함
+            $ratio = $this->getComputedAtmos() + $this->getComputedTrain();
+            if(Util::randBool($ratio / 400)){
+                $this->activateSkill('특수');
+                $this->activateSkill('저지');
+                $activated = true;
+            }
+        }
+
         return $activated;
     }
 
@@ -465,6 +498,32 @@ class WarUnitGeneral extends WarUnit{
         $oppose = $this->getOppose();
         $specialWar = $this->getSpecialWar();
         $item = $this->getItem();
+
+        if ($specialWar == 60 && $oppose->hasActivatedSkill('저지')) {
+            $oppose->deactivateSkill('저지');
+            $oppose->deactivateSkill('특수');
+            $activated = true;
+        }
+
+        if(
+            !$this->hasActivatedSkill('특수') &&
+            Util::randBool($this->getComputedCriticalRatio())
+        ){
+            $this->activateSkill('특수');
+            $this->activateSkill('필살');
+            $activated = true;
+        }
+
+
+        if(
+            !$this->hasActivatedSkill('특수') &&
+            Util::randBool($this->getComputedAvoidRatio())
+        ){
+            $this->activateSkill('특수');
+            $this->activateSkill('회피시도');
+            $this->activateSkill('회피');
+            $activated = true;
+        }
 
         return $activated;
     }
@@ -478,23 +537,37 @@ class WarUnitGeneral extends WarUnit{
 
         if($specialWar == 73 && Util::randBool(0.2)){
             $this->activateSkill('치료');
+            $activated = true;
+        }
+
+        if($specialWar == 74 && $oppose->hasActivatedSkill('필살')){
+            if($this->isAttacker){
+                if(Util::randBool(1/3)){
+                    $this->activateSkill('진노');
+                    $this->activateSkill('격노');
+                    $activated = true;
+                }
+                else if(Util::randBool(1/4)){
+                    $this->activateSkill('격노');
+                    $activated = true;
+                }
+            }
+            else{
+                if(Util::randBool(1/2)){
+                    $this->activateSkill('격노');
+                    $activated = true;
+                }
+            }
         }
 
         if(
-            !$this->hasActivatedSkill('특수') &&
-            Util::randBool($this->getComputedCriticalRatio())
+            $specialWar == 74 &&
+            $oppose->hasActivatedSkill('회피') &&
+            Util::randBool(0.5)
         ){
-            $this->activateSkill('특수');
-            $this->activateSkill('필살');
-        }
-
-
-        if(
-            !$this->hasActivatedSkill('특수') &&
-            Util::randBool($this->getComputedAvoidRatio())
-        ){
-            $this->activateSkill('특수');
-            $this->activateSkill('회피');
+            $oppose->deactivateSkill('회피');
+            $this->activateSkill('격노');
+            $activated = true;
         }
 
         if(
@@ -514,12 +587,24 @@ class WarUnitGeneral extends WarUnit{
             Util::randBool(0.2)
         ){
             $this->activateSkill('치료');
+            $activated = true;
         }
 
         return $activated;
     }
 
     function applyActiveSkill():bool{
+        $oppose = $this->getOppose();
+        if($this->hasActivatedSkill('저지')){
+            $this->setWarPowerMultiply(0);
+            $oppose->setWarPowerMultiply(0);
+
+            $this->getLogger()->pushGeneralBattleDetailLog('상대를 <C>저지</>했다!</>');
+            $oppose->getLogger()->pushGeneralBattleDetailLog('저지</>당했다!</>');
+            //저지는 특수함.
+            return true;
+        }
+        
         return false;
     }
 

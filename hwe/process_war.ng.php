@@ -142,13 +142,17 @@ function processWar_NG(
         //NOTE: 기술, 도시 사망자 수는 '전투 종료 후' 외부에서 반영.
 
         $phaseNickname = $currPhase + 1;
-        $attacker->getLogger()->pushGeneralBattleDetailLog(
-            "$phaseNickname : <Y1>【{$attacker->getName()}】</> <C>{$attacker->getHP()} (-$deadAttacker)</> VS <C>{$defender->getHP()} (-$deadDefender)</> <Y1>【{$defender->getName()}】</>"
-        );
 
-        $defender->getLogger()->pushGeneralBattleDetailLog(
-            "$phaseNickname : <Y1>【{$defender->getName()}】</> <C>{$defender->getHP()} (-$deadDefender)</> VS <C>{$attacker->getHP()} (-$deadAttacker)</> <Y1>【{$attacker->getName()}】</>"
-        );
+        if($deadAttacker > 0 || $deadDefender > 0){
+            $attacker->getLogger()->pushGeneralBattleDetailLog(
+                "$phaseNickname : <Y1>【{$attacker->getName()}】</> <C>{$attacker->getHP()} (-$deadAttacker)</> VS <C>{$defender->getHP()} (-$deadDefender)</> <Y1>【{$defender->getName()}】</>"
+            );
+    
+            $defender->getLogger()->pushGeneralBattleDetailLog(
+                "$phaseNickname : <Y1>【{$defender->getName()}】</> <C>{$defender->getHP()} (-$deadDefender)</> VS <C>{$attacker->getHP()} (-$deadAttacker)</> <Y1>【{$attacker->getName()}】</>"
+            );
+        }
+        
 
         $attacker->addPhase();
         $defender->addPhase();
