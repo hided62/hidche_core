@@ -474,17 +474,17 @@ class WarUnitGeneral extends WarUnit{
         $oppose = $this->getOppose();
         $specialWar = $this->getSpecialWar();
         $item = $this->getItem();
+        $crewType = $this->getCrewType();
 
         if(
             !$this->hasActivatedSkill('특수') &&
             !$this->isAttacker &&
-            $this->getCrewTypeName() == '목우'
+            $crewType->name == '목우'
         ){
             //XXX: 병종에 특수 스킬이 달려있도록 설정해야함
             $ratio = $this->getComputedAtmos() + $this->getComputedTrain();
             if(Util::randBool($ratio / 400)){
-                $this->activateSkill('특수');
-                $this->activateSkill('저지');
+                $this->activateSkill('특수', '저지');
                 $activated = true;
             }
         }
@@ -498,10 +498,10 @@ class WarUnitGeneral extends WarUnit{
         $oppose = $this->getOppose();
         $specialWar = $this->getSpecialWar();
         $item = $this->getItem();
+        $crewType = $this->getCrewType();
 
         if ($specialWar == 60 && $oppose->hasActivatedSkill('저지')) {
-            $oppose->deactivateSkill('저지');
-            $oppose->deactivateSkill('특수');
+            $oppose->deactivateSkill('특수', '저지');
             $activated = true;
         }
 
@@ -509,20 +509,51 @@ class WarUnitGeneral extends WarUnit{
             !$this->hasActivatedSkill('특수') &&
             Util::randBool($this->getComputedCriticalRatio())
         ){
-            $this->activateSkill('특수');
-            $this->activateSkill('필살');
+            $this->activateSkill('특수', '필살');
             $activated = true;
         }
-
 
         if(
             !$this->hasActivatedSkill('특수') &&
             Util::randBool($this->getComputedAvoidRatio())
         ){
-            $this->activateSkill('특수');
-            $this->activateSkill('회피시도');
-            $this->activateSkill('회피');
+            $this->activateSkill('특수', '회피시도', '회피');
             $activated = true;
+        }
+
+        //계략
+        if($crewType->magicCoef){
+            $magicRatio = getGeneralIntel($general, true, true, true, false) / 100;
+            $magicRatio *= $crewType->magicCoef;
+
+            if($specialWar == 41){
+                $magicRatio += 0.2;
+            }
+
+            if(Util::randBool($magicRatio)){
+                $magicSuccessRatio = 0.3;
+                if($specialWar == 40){
+                    $magicSuccessRatio += 0.2;
+                }
+                if($specialWar == 41){
+                    $magicSuccessRatio += 0.2;
+                }
+                if($specialWar == 42){
+                    $magicSuccessRatio += 0.1;
+                }
+                if($specialWar == 44){
+                    $magicSuccessRatio += 1;
+                }
+
+                $magic = Util::choiceRandom(['위보', '매복', '반목', '화계', '혼란']);
+                $this->activateSkill($magic);
+                if(Util::randBool($magicSuccessRatio)){
+                    $this->activateSkill('계략');
+                }
+                else{
+                    $this->activateSkill('계략실패');
+                }
+            }
         }
 
         return $activated;
@@ -534,6 +565,7 @@ class WarUnitGeneral extends WarUnit{
         $oppose = $this->getOppose();
         $specialWar = $this->getSpecialWar();
         $item = $this->getItem();
+        $crewType = $this->getCrewType();
 
         if($specialWar == 73 && Util::randBool(0.2)){
             $this->activateSkill('치료');
@@ -543,8 +575,7 @@ class WarUnitGeneral extends WarUnit{
         if($specialWar == 74 && $oppose->hasActivatedSkill('필살')){
             if($this->isAttacker){
                 if(Util::randBool(1/3)){
-                    $this->activateSkill('진노');
-                    $this->activateSkill('격노');
+                    $this->activateSkill('진노', '격노');
                     $activated = true;
                 }
                 else if(Util::randBool(1/4)){
@@ -587,6 +618,17 @@ class WarUnitGeneral extends WarUnit{
             Util::randBool(0.2)
         ){
             $this->activateSkill('치료');
+            $activated = true;
+        }
+
+        //계략
+        if(
+            $specialWar == 45 &&
+            $oppose->hasActivatedSkill('계략') &&
+            Util::randBool(0.3)
+        ){
+            $this->activateSkill('반계');
+            $oppose->deactivateSkill('계략');
             $activated = true;
         }
 

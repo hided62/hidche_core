@@ -310,12 +310,16 @@ class WarUnit{
         return $this->activatedSkill[$skillName] ?? false;
     }
 
-    function activateSkill(string $skillName):bool{
-        $this->activatedSkill[$skillName] = true;
+    function activateSkill(... $skillNames):bool{
+        foreach($skillNames as $skillName){
+            $this->activatedSkill[$skillName] = true;
+        }
     }
 
-    function deactivateSkill(string $skillName):bool{
-        $this->activatedSkill[$skillName] = false;
+    function deactivateSkill(... $skillNames):bool{
+        foreach($skillNames as $skillName){
+            $this->activatedSkill[$skillName] = false;
+        }
     }
 
     function checkPreActiveSkill():bool{
