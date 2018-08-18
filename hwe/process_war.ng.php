@@ -35,10 +35,16 @@ function processWar_NG(
             $defender = $city;
             
             if($city->getRawNation()['rice'] <= 0 && $city->getRaw()['supply'] == 1){
+                //병량 패퇴
                 $attacker->setOppose($defender);
                 $defender->setOppose($attacker);
+
                 $attacker->addTrain(1);
+
                 $attacker->addWin();
+                $defender->addLose();
+                $defender->heavyDecreseWealth();
+
                 $conquerCity = true;
                 break;
             }
@@ -130,18 +136,25 @@ function processWar_NG(
 
         $attacker->increaseKilled($deadDefender);
         $defender->increaseKilled($deadAttacker);
-        //TODO: 쌀 소모 반영등은 이전 코드와 달리 동적으로 매 페이즈마다 추가 계산
+
         //NOTE: 기술, 도시 사망자 수는 '전투 종료 후' 외부에서 반영.
 
-        //TODO: 로그 출력
+        $phaseNickname = $currPhase + 1;
+        $attacker->getLogger()->pushGeneralBattleDetailLog(
+            "$phaseNickname : <Y1>【{$attacker->getName()}】</> <C>{$attacker->getHP()} (-$deadAttacker)</> VS <C>{$defender->getHP()} (-$deadDefender)</> <Y1>【{$defender->getName()}】</>"
+        );
+
+        $defender->getLogger()->pushGeneralBattleDetailLog(
+            "$phaseNickname : <Y1>【{$defender->getName()}】</> <C>{$defender->getHP()} (-$deadDefender)</> VS <C>{$attacker->getHP()} (-$deadAttacker)</> <Y1>【{$attacker->getName()}】</>"
+        );
 
         $attacker->addPhase();
         $defender->addPhase();
 
-        
-
         if(!$attacker->continueWar($noRice)){
-            //TODO: 퇴각해야함
+            $attacker->logBattleResult();
+            $defender->logBattleResult();
+
             $attacker->addLose();
             $defender->addWin();
             
@@ -162,6 +175,9 @@ function processWar_NG(
         }
 
         if(!$defender->continueWar($noRice)){
+            $attacker->logBattleResult();
+            $defender->logBattleResult();
+
             $attacker->addWin();
             $defender->addLose();
 
@@ -175,13 +191,16 @@ function processWar_NG(
             }
 
             $josaYi = JosaUtil::pick($defender->getCrewTypeName(), '이');
-            $logger->pushGlobalActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 퇴각했습니다.");
-            $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
+            
             if($noRice){
-                $defender->getLogger()->pushGeneralActionLog("군량 부족으로 퇴각합니다.", ActionLogger::PLAIN);
+                $logger->pushGlobalActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 패퇴했습니다.");
+            $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 패퇴했습니다.", ActionLogger::PLAIN);
+                $defender->getLogger()->pushGeneralActionLog("군량 부족으로 패퇴합니다.", ActionLogger::PLAIN);
             }
             else{
-                $defender->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
+                $logger->pushGlobalActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 전멸했습니다.");
+            $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 전멸했습니다.", ActionLogger::PLAIN);
+                $defender->getLogger()->pushGeneralActionLog("전멸했습니다.", ActionLogger::PLAIN);
             }
 
             $defender->finishBattle();
@@ -192,6 +211,14 @@ function processWar_NG(
             }            
         }
         
+    }
+
+    if($currPhase == $maxPhase){
+        $attacker->tryWound();
+        $defender->tryWound();
+
+        $attacker->logBattleResult();
+        $defender->logBattleResult();
     }
 
     $attacker->finishBattle();

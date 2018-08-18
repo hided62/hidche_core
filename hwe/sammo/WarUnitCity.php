@@ -8,7 +8,6 @@ class WarUnitCity extends WarUnit{
     protected $crewType;
 
     protected $hp;
-    protected $trainAtmos;
 
     protected $rice = 0;
     public $cityRate;
@@ -28,15 +27,22 @@ class WarUnitCity extends WarUnit{
         $this->isAttacker = false;
         $this->cityRate = $cityRate;
 
-        $this->logger = new ActionLogger(0, $raw['nation'], $year, $month);
+        $this->logger = new ActionLogger(0, $raw['nation'], $year, $month, false);
         $this->crewType = GameUnitConst::byID($raw['crewtype']);
 
         $this->rice = $this->rawNation['rice'];
 
         $this->crewType = GameUnitConst::byID(GameUnitConst::T_CASTLE);
 
-        $this->hp = $this->raw['def'] * 10;; 
-        $this->trainAtmos = $this->raw['wall'] * 10;
+        $this->hp = $this->raw['def'] * 10; 
+
+        //수비자 보정
+        if($raw['level'] == 1){
+            $this->trainBonus += 5;
+        }
+        else if($raw['level'] == 3){
+            $this->trainBonus += 5;
+        }
     }
 
     function getRaw():array{
@@ -57,6 +63,14 @@ class WarUnitCity extends WarUnit{
         return $this->killed;
     }
 
+    function getComputedTrain(){
+        return $this->cityRate + $this->trainBonus;
+    }
+
+    function getComputedAtmos(){
+        return $this->cityRate + $this->atmosBonus;
+    }
+
     function getHP():int{
         return $this->hp;
     }
@@ -65,7 +79,7 @@ class WarUnitCity extends WarUnit{
         $damage = min($damage, $this->hp);
         $this->dead += $damage;
         $this->hp -= $damage;
-        $this->trainAtmos = max(0, $this->trainAtmos - $damage / 2);
+        $this->raw['wall'] = max(0, $this->raw['wall'] - $damage / 20);
         return $this->hp;
     }
 
@@ -80,10 +94,25 @@ class WarUnitCity extends WarUnit{
         return true;
     }
 
+    function addWin(){
+    }
+
+    function addLose(){
+    }
+
+    function heavyDecreseWealth(){
+        $this->raw['agri'] *= 0.5;
+        $this->updatedVar['agri'] = true;
+        $this->raw['comm'] *= 0.5;
+        $this->updatedVar['comm'] = true;
+        $this->raw['secu'] *= 0.5;
+        $this->updatedVar['secu'] = true;
+    }
+
     function finishBattle(){
         $this->raw['def'] = Util::round($this->hp / 10);
         $this->updatedVar['def'] = true;
-        $this->raw['wall'] = Util::round($this->trainAtmos / 10);
+        Util::setRound($this->raw['wall']);
         $this->updatedVar['wall'] = true;
 
         //NOTE: 전투로 인한 사망자는 여기서 처리하지 않음

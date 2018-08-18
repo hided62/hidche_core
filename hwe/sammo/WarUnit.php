@@ -14,11 +14,11 @@ class WarUnit{
 
     protected $updatedVar = [];
 
-    protected $genAtmos = 0;
-    protected $genTrain = 0;
-
     protected $currPhase = 0;
     protected $prePhase = 0;
+
+    protected $atmosBonus = 0;
+    protected $trainBonus = 0;
 
     protected $oppose;
     protected $warPower;
@@ -47,6 +47,10 @@ class WarUnit{
 
     function getName():string{
         return 'EMPTY';
+    }
+
+    function isAttacker():bool{
+        return $this->isAttacker;
     }
 
     function getCrewType():GameUnitDetail{
@@ -184,8 +188,12 @@ class WarUnit{
         return GameConst::$maxTrainByCommand;
     }
 
-    function getComputeAtmos(){
+    function getComputedAtmos(){
         return GameConst::$maxAtmosByCommand;
+    }
+
+    function getComputedAvoidRatio(){
+        return $this->getCrewType()->avoid / 100;
     }
 
     function addWin(){
@@ -276,6 +284,10 @@ class WarUnit{
         //전투가 가능하면 true
         $noRice = false;
         return false;
+    }
+
+    function logBattleResult(){
+        $this->getLogger()->pushBattleResultTemplate($this, $this->getOppose());
     }
 
     function applyDB($db):bool{

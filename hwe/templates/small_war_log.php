@@ -1,9 +1,4 @@
-<div class="small_war_log"
-    ><span class="o_diamond"></span
-    ><span class="date"
-        ><span class="year"><?=$year?></span>년 
-        <span class="month"><?=$month?></span>월: 
-    </span>
+<div class="small_war_log">
     
     <span class="me">
         <span class="name_plate">

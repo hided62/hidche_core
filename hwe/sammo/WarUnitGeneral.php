@@ -13,11 +13,6 @@ class WarUnitGeneral extends WarUnit{
 
     protected $updatedVar = [];
 
-    protected $genAtmos = 0;
-    protected $genTrain = 0;
-    protected $genAtmosBonus = 0;
-    protected $genTrainBonus = 0;
-
     protected $sniped = false;
 
 
@@ -35,19 +30,19 @@ class WarUnitGeneral extends WarUnit{
         if($isAttacker){
             //공격자 보정
             if($rawCity['level'] == 2){
-                $this->genAtmosBonus += 5;
+                $this->atmosBonus += 5;
             }
             if($rawNation['capital'] == $rawCity['city']){
-                $this->genAtmosBonus += 5;
+                $this->atmosBonus += 5;
             }
         }
         else{
             //수비자 보정
             if($rawCity['level'] == 1){
-                $this->genTrainBonus += 5;
+                $this->trainBonus += 5;
             }
             else if($rawCity['level'] == 3){
-                $this->genTrainBonus += 5;
+                $this->trainBonus += 5;
             }
         }
     }
@@ -94,6 +89,21 @@ class WarUnitGeneral extends WarUnit{
     function addAtmos(int $atmos){
         $this->raw['atmos'] += $atmos;
         $this->updatedVar['atmos'] = true;
+    }
+
+    function getComputedTrain(){
+        $train = $this->raw['train'];
+        $train += $this->trainBonus;
+        
+        return $train;
+    }
+
+    function getComputedAtmos(){
+        return GameConst::$maxAtmosByCommand;
+    }
+
+    function getComputedAvoidRatio(){
+        $avoidRatio = $this->getCrewType()->avoid / 100;
     }
 
     function addWin(){
@@ -233,34 +243,34 @@ class WarUnitGeneral extends WarUnit{
 
         if($item == 3){
             //탁주 사용
-            $this->genAtmos += 3;
+            $this->addAtmos(3);
             $itemActivated = true;
             $itemConsumed = true;
         }
         else if($item >= 14 && $item <= 16){
             //의적주, 두강주, 보령압주 사용
-            $this->genAtmos += 5;
+            $this->addAtmos(5);
             $itemActivated = true;
         }
         else if($item >= 19 && $item <= 20){
             //춘화첩, 초선화 사용
-            $this->genAtmos += 7;
+            $this->addAtmos(7);
             $itemActivated = true;
         }
         else if($item == 4){
             //청주 사용
-            $this->genTrain += 3;
+            $this->addTrain(3);
             $itemActivated = true;
             $itemConsumed = true;
         }
         else if($item >= 12 && $item <= 13){
             //과실주, 이강주 사용
-            $this->genTrain += 5;
+            $this->addTrain(5);
             $itemActivated = true;
         }
         else if($item >= 18 && $item <= 18){
             //철벽서, 단결도 사용
-            $this->genTrain += 7;
+            $this->addTrain(7);
             $itemActivated = true;
         }
 
@@ -340,7 +350,7 @@ class WarUnitGeneral extends WarUnit{
         else if($armType == GameUnitConst::T_SIEGE) {
             $exp *= 0.9;
         }
-        $exp *= ($this->getComputedTrain() + $this->getComputeAtmos()) / 200;
+        $exp *= ($this->getComputedTrain() + $this->getComputedAtmos()) / 200;
 
         $ntype = $armType*10;
         $dexType = "dex{$ntype}";

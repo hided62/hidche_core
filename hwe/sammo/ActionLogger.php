@@ -143,7 +143,7 @@ class ActionLogger{
         $this->generalBattleResultLog[] = $text;
     }
 
-    public function pushGeneralBattleDetailLog($text, int $formatType = self::RAWTEXT){
+    public function pushGeneralBattleDetailLog($text, int $formatType = self::PLAIN){
         if(!$text){
             return;
         }
@@ -241,6 +241,57 @@ class ActionLogger{
         }
         
         return $text;
+    }
+
+    public function pushBattleResultTemplate(
+        WarUnit $me,
+        WarUnit $oppose
+    ){
+        if($me instanceof WarUnitCity){
+            return;
+        }
+
+        $templates = new \League\Plates\Engine(__dir__.'/../templates');
+
+        $render_me = [
+            'crewtype' => $me->getCrewTypeShortName(),
+            'name' => $me->getName(),
+            'remain_crew' => $me->getHP(),
+            'killed_crew' => $me->getDead()
+        ];
+
+        $render_oppose = [
+            'crewtype' => $oppose->getCrewTypeShortName(),
+            'name' => $oppose->getName(),
+            'remain_crew' => $oppose->getHP(),
+            'killed_crew' => $oppose->getDead()
+        ];
+
+        if(!$me->isAttacker()){
+            $warType = 'defense';
+            $warTypeStr = '←';
+        }
+        else if($oppose instanceof WarUnitCity){
+            $warType = 'siege';
+            $warTypeStr = '→';
+        }
+        else{
+            $warType = 'attack';
+            $warTypeStr = '→';
+        }
+
+        $res = str_replace(["\r\n", "\r", "\n"], '', $templates->render('small_war_log',[
+            'year'=>$this->year,
+            'month'=>$this->month,
+            'war_type'=>$warType,
+            'war_type_str'=>$warTypeStr,
+            'me' => $render_me,
+            'you' => $render_oppose,
+        ]));
+
+        $this->pushGeneralBattleResultLog($res, self::EVENT_YEAR_MONTH);
+        $this->pushGeneralBattleDetailLog($res, self::EVENT_YEAR_MONTH);
+        $this->pushGeneralActionLog($res, self::EVENT_YEAR_MONTH);
     }
 
 }

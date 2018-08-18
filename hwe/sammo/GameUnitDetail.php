@@ -85,7 +85,7 @@ class GameUnitDetail{
     public function getComputedAttack(array $general, int $tech){
         if($this->armType == GameUnitConst::T_CASTLE){
             assert(isset($general['def']) && isset($general['wall']), '도시 정보가 입력되어야 함');
-            return ($general['def']*0.1 + $general['wall']*0.9) / 500 + 200;
+            return ($general['def'] + $general['wall']*9) / 500 + 200;
         }
 
         if($this->armType == GameUnitConst::T_WIZARD){
@@ -117,7 +117,7 @@ class GameUnitDetail{
     public function getComputedDefence(array $general, int $tech){
         if($this->armType == GameUnitConst::T_CASTLE){
             assert(isset($general['def']) && isset($general['wall']), '도시 정보가 입력되어야 함');
-            return ($general['def']*0.1 + $general['wall']*0.9) / 500 + 200;
+            return ($general['def'] + $general['wall']*9) / 500 + 200;
         }
         $def = $this->defence + getTechAbil($tech);
         $crew = ($general['crew'] / (7000 / 30)) + 70;
