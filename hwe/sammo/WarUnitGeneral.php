@@ -137,7 +137,6 @@ class WarUnitGeneral extends WarUnit{
         $this->updatedVar['deathnum'] = true;
 
         $this->addStatExp(1);
-        //TODO: 1패 로그 추가
     }
 
     
@@ -324,13 +323,39 @@ class WarUnitGeneral extends WarUnit{
         return $this->raw['crew'];
     }
 
+    function addDex(GameUnitDetail $crewType, float $exp){
+        $armType = $crewType->armType;
+
+        if($armType == GameUnitConst::T_CASTLE){
+            $armType = GameUnitConst::T_SIEGE;
+        }
+
+        if($armType < 0){
+            return;
+        }
+
+        if($armType == GameUnitConst::T_WIZARD) {
+            $exp *= 0.9;
+        }
+        else if($armType == GameUnitConst::T_SIEGE) {
+            $exp *= 0.9;
+        }
+        $exp *= ($this->getComputedTrain() + $this->getComputeAtmos()) / 200;
+
+        $ntype = $armType*10;
+        $dexType = "dex{$ntype}";
+
+        $this->raw[$dexType] += $exp;
+        $this->updatedVar[$dexType] = true;
+    }
+
     function decreaseHP(int $damage):int{
         $damage = min($damage, $this->raw['crew']);
 
         $this->dead += $damage;
         $this->raw['crew'] -= $damage;
 
-        //TODO: 죽은 만큼 숙련도 변경
+        
 
         return $this->raw['crew'];
     }
@@ -367,7 +392,7 @@ class WarUnitGeneral extends WarUnit{
             return false;
         }
 
-        $wound = max(80, $this->raw['injury'] + rand(10, 80));
+        $wound = min(80, $this->raw['injury'] + Util::randRangeInt(10, 80));
         if($wound < $this->raw['injury']){
             return false;
         }
@@ -384,7 +409,7 @@ class WarUnitGeneral extends WarUnit{
             $noRice = false;
             return false;
         }
-        if($this->raw['rice'] <= 0){
+        if($this->raw['rice'] <= $this->getHP() / 100){
             $noRice = true;
             return false;
         }

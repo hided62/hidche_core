@@ -44,8 +44,6 @@ class WarUnitCity extends WarUnit{
         $warPower *= Util::randRange(0.9, 1.1);
     }
 
-    
-
     function increaseKilled(int $damage):int{
         $this->killed += $damage;
         return $this->killed;
@@ -59,7 +57,8 @@ class WarUnitCity extends WarUnit{
         $damage = min($damage, $this->hp);
         $this->dead += $damage;
         $this->hp -= $damage;
-        $this->trainAtmos -= $damage / 2;
+        $this->trainAtmos = max(0, $this->trainAtmos - $damage / 2);
+        return $this->hp;
     }
 
     function continueWar(&$noRice):bool{
@@ -79,8 +78,7 @@ class WarUnitCity extends WarUnit{
         $this->raw['wall'] = Util::round($this->trainAtmos / 10);
         $this->updatedVar['wall'] = true;
 
-        $this->raw['dead'] += $this->dead;
-        $this->updatedVar['dead'] = true;
+        //NOTE: 전투로 인한 사망자는 여기서 처리하지 않음
 
         $decWealth = $this->dead / 10;
         $this->raw['agri'] = max(0, Util::round($this->raw['agri'] - $decWealth));

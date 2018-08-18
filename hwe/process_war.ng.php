@@ -145,7 +145,12 @@ function processWar_NG(
 
             $josaYi = JosaUtil::pick($attacker->getCrewTypeName(), '이');
             $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaYi} 퇴각했습니다.");
-            $attacker->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
+            if($noRice){
+                $attacker->getLogger()->pushGeneralActionLog("군량 부족으로 퇴각합니다.", ActionLogger::PLAIN);
+            }
+            else{
+                $attacker->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
+            }
             $defender->getLogger()->pushGeneralActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
 
             break;
@@ -167,7 +172,12 @@ function processWar_NG(
             $josaYi = JosaUtil::pick($defender->getCrewTypeName(), '이');
             $logger->pushGlobalActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 퇴각했습니다.");
             $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
-            $defender->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
+            if($noRice){
+                $defender->getLogger()->pushGeneralActionLog("군량 부족으로 퇴각합니다.", ActionLogger::PLAIN);
+            }
+            else{
+                $defender->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
+            }
 
             $defender->finishBattle();
             $defender = ($getNextDefender)($defender, true);
