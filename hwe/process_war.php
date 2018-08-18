@@ -1492,11 +1492,6 @@ function getCrewtypeRice($crewtype, $tech) {
 // 표준 공 / 수 반환 수치는 약 0이 되게 (100~550)
 //////////////////////////////////////////////////////////////
 
-function getRate($admin, $type, $dtype) {
-    $t = "{$dtype}{$type}";
-    return $admin[$t];
-}
-
 function addConflict($city, $nationID, $mykillnum) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');

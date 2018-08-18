@@ -299,5 +299,21 @@ class WarUnitGeneral extends WarUnit{
         return true;
     }
 
+    /**
+     * @param \MeekroDB $db
+     */
+    function applyDB($db):bool{
+        $updateVals = [];
+        foreach(array_keys($this->updatedVar) as $key){
+            $updateVals[$key] = $this->raw[$key];
+        }
+
+        if(!$updateVals){
+            return false;
+        }
+        
+        $db->update('general', $updateVals, 'no=%i', $this->raw['no']);
+        return $db->affectedRows() > 0;
+    }
 
 }

@@ -353,12 +353,30 @@ class Util extends \utilphp\util
 
 
     /**
-     * 0.0~1.0 사이의 랜덤 float
+     * [0.0, 1.0] 사이의 선형 랜덤 float
      * @return float
      */
     public static function randF()
     {
         return mt_rand() / mt_getrandmax();
+    }
+
+    /**
+     * [min, max] 사이의 선형 랜덤 float
+     * @return float
+     */
+    public static function randRange(float $min, float $max)
+    {
+        return static::randF()*($max - $min) + $min;
+    }
+
+    /**
+     * [min, max] 사이의 선형 랜덤 int
+     * 현재는 rand(min, max)와 동일
+     * @return int
+     */
+    public static function randRangeInt(int $min, int $max){
+        return mt_rand($min, $max);
     }
 
     /**

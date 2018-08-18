@@ -29,7 +29,7 @@ function processWar_NG(
 
     $maxPhase = $attacker->getMaxPhase();
 
-    $defender = ($getNextDefender)(null);
+    $defender = ($getNextDefender)(null, true);
     $conquerCity = false;
     
     $josaRo = JosaUtil::pick($city->name, '로');
@@ -99,24 +99,24 @@ function processWar_NG(
 
         $killedDefender = $attacker->tryAttackInPhase();
         $killedAttacker = $defender->tryAttackInPhase();
-        //NOTE: 쌀 소모는 tryAttackInPhase 내에서 반영
+        //NOTE: 마법, 기술, 쌀 소모는 tryAttackInPhase 내에서 반영
 
         $attackerHP = $attacker->getHP();
         $defenderHP = $defender->getHP();
 
         if($killedAttacker > $attackerHP || $killedDefender > $defenderHP){
-            $killedAttackerRatio = $attackerHP / $killedAttacker;
-            $killedDefenderRatio = $defenderHP / $killedDefender;
+            $killedAttackerRatio = $killedAttacker / $attackerHP;
+            $killedDefenderRatio = $killedDefender / $defenderHP;
 
-            if($killedDefenderRatio < $killedAttackerRatio){
+            if($killedDefenderRatio > $killedAttackerRatio){
                 //수비자가 더 병력 부족
-                $killedAttacker *= $killedDefenderRatio;
+                $killedAttacker /= $killedDefenderRatio;
                 $killedDefender = $defenderHP;
                 break;
             }
             else{
                 //공격자가 더 병력 부족
-                $killedDefender *= $killedAttackerRatio;
+                $killedDefender /= $killedAttackerRatio;
                 $killedAttacker = $attackerHP;
                 break;
             }
@@ -165,7 +165,7 @@ function processWar_NG(
             $attacker->getLogger()->pushGeneralActionLog("<Y>{$defender->getName()}</>의 {$defender->getCrewType()->name}{$josaYi} 퇴각했습니다.", ActionLogger::PLAIN);
             $defender->getLogger()->pushGeneralActionLog("퇴각했습니다.", ActionLogger::PLAIN);
 
-            $defender = ($getNextDefender)($defender);
+            $defender = ($getNextDefender)($defender, true);
             if($defender === null){
                 continue;
             }
@@ -173,12 +173,11 @@ function processWar_NG(
                 throw new \RuntimeException('다음 수비자를 받아오는데 실패');
             }            
         }
-
-        
         
     }
 
     //TODO: 전투 종료
+    ($getNextDefender)($defender, false);
 
     if (!$conquerCity) {
     }
@@ -197,14 +196,13 @@ function processWar_NG(
     if(!$conquerNation){
     }
 
-    //TODO:국가 정복 처리
+    //TODO:국가 정복 처리는 밖에서 하자
 
 }
 
 
 function CriticalScore2($score) {
-    $score = Util::round($score * (rand()%8 + 13)/10);    // 1.3~2.0
-    return $score;
+    return Util::round($score * Util::randRange(1.3, 2.0));
 }
 
 //0 0 : 100 100 이면 최고 무한대 차이
@@ -225,11 +223,6 @@ function getCrewtypeRice($crewtype, $tech) {
 //////////////////////////////////////////////////////////////
 // 표준 공 / 수 반환 수치는 약 0이 되게 (100~550)
 //////////////////////////////////////////////////////////////
-
-function getRate($admin, $type, $dtype) {
-    $t = "{$dtype}{$type}";
-    return $admin[$t];
-}
 
 function addConflict($city, $nationID, $mykillnum) {
     $db = DB::db();

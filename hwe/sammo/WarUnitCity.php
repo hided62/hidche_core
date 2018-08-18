@@ -51,4 +51,18 @@ class WarUnitCity extends WarUnit{
         return true;
     }
 
+    function applyDB($db):bool{
+        $updateVals = [];
+        foreach(array_keys($this->updatedVar) as $key){
+            $updateVals[$key] = $this->raw[$key];
+        }
+
+        if(!$updateVals){
+            return false;
+        }
+        
+        $db->update('city', $updateVals, 'city=%i', $this->raw['city']);
+        return $db->affectedRows() > 0;
+    }
+
 }

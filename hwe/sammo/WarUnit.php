@@ -182,7 +182,7 @@ class WarUnit{
         return false;
     }
 
-    function applyBattleBeginSkillAndItem(){
+    function applyBattleBeginSkillAndItem():bool{
         return false;
     }
 
@@ -217,6 +217,10 @@ class WarUnit{
     function continueWar(&$noRice):bool{
         //전투가 가능하면 true
         $noRice = false;
+        return false;
+    }
+
+    function applyDB($db):bool{
         return false;
     }
 
