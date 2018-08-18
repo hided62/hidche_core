@@ -200,21 +200,6 @@ function processWar_NG(
 
 }
 
-
-function CriticalScore2($score) {
-    return Util::round($score * Util::randRange(1.3, 2.0));
-}
-
-//0 0 : 100 100 이면 최고 무한대 차이
-//30 30 : 100 100 이면 최고 3.3배 차이
-//60 60 : 100 100 이면 최고 1.6배 차이
-function getCrew($crew, $youatmos, $mytrain) {
-    $ratio = $youatmos / $mytrain;
-    $crew = $crew * $ratio;
-
-    return $crew;
-}
-
 function getCrewtypeRice($crewtype, $tech) {
     $cost = $crewtype->rice / 10;
     return $cost * getTechCost($tech);

@@ -114,16 +114,14 @@ class WarUnit{
             $warPower = rand(90, 100);
         }
 
-        $warPower = getCrew(
-            $warPower, 
-            CharAtmos(
-                $this->getComputedAtmos(), 
-                $this->getCharacter()
-            ), 
-            CharTrain(
-                $oppose->getComputedTrain(), 
-                $oppose->getCharacter()
-            )
+        $warPower *= CharAtmos(
+            $this->getComputedAtmos(), 
+            $this->getCharacter()
+        );
+        
+        $warPower /= CharTrain(
+            $oppose->getComputedTrain(), 
+            $oppose->getCharacter()
         );
 
         $genDexAtt = getGenDex($this->getRaw(), $this->getCrewType()->id);
@@ -225,6 +223,10 @@ class WarUnit{
     }
 
 
+    function criticalDamage():float{
+        //전특, 병종에 따라 필살 데미지가 달라질지도 모르므로 static 함수는 아닌 것으로
+        return Util::randRange(1.3, 2.0);
+    }
 
 
 }
