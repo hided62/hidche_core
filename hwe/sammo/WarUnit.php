@@ -193,6 +193,10 @@ class WarUnit{
         $this->warPowerMultiply = $multiply;
     }
 
+    function multiplyWarPowerMultiply($multiply){
+        $this->warPowerMultiply *= $multiply;
+    }
+
     function computeWarPower(){
         $oppose = $this->oppose;
 
@@ -334,8 +338,7 @@ class WarUnit{
         return false;
     }
 
-    function applyActiveSkill():bool{
-        return false;
+    function applyActiveSkill(){
     }
 
     function getHP():int{

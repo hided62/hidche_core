@@ -4,6 +4,8 @@ namespace sammo;
 class WarUnitGeneral extends WarUnit{
     protected $rawCity;
 
+    protected $bonusPhase = 0;
+
     function __construct($raw, $rawCity, $rawNation, $isAttacker, $year, $month){
         setLeadershipBonus($raw, $rawNation['level']);
 
@@ -81,7 +83,7 @@ class WarUnitGeneral extends WarUnit{
         if($this->getSpecialWar() == 60){
             $phase += 1;
         }
-        return $phase;
+        return $phase + $bonusPhase;
     }
 
     function addTrain(int $train){
@@ -509,7 +511,7 @@ class WarUnitGeneral extends WarUnit{
             !$this->hasActivatedSkill('특수') &&
             Util::randBool($this->getComputedCriticalRatio())
         ){
-            $this->activateSkill('특수', '필살');
+            $this->activateSkill('특수', '필살시도', '필살');
             $activated = true;
         }
 
@@ -593,12 +595,27 @@ class WarUnitGeneral extends WarUnit{
 
         if(
             $specialWar == 74 &&
-            $oppose->hasActivatedSkill('회피') &&
-            Util::randBool(0.5)
+            $oppose->hasActivatedSkill('회피')
         ){
-            $oppose->deactivateSkill('회피');
-            $this->activateSkill('격노');
-            $activated = true;
+            if($this->isAttacker){
+                if(Util::randBool(1/3)){
+                    $this->activateSkill('진노', '격노');
+                    $oppose->deactivateSkill('회피');
+                    $activated = true;
+                }
+                else if(Util::randBool(1/4)){
+                    $this->activateSkill('격노');
+                    $oppose->deactivateSkill('회피');
+                    $activated = true;
+                }
+            }
+            else{
+                if(Util::randBool(1/2)){
+                    $this->activateSkill('격노');
+                    $oppose->deactivateSkill('회피');
+                    $activated = true;
+                }
+            }
         }
 
         if(
@@ -632,22 +649,178 @@ class WarUnitGeneral extends WarUnit{
             $activated = true;
         }
 
+        if(
+            $specialWar == 42 && 
+            $this->hasActivatedSkill('계략')
+        ){
+            $this->warPowerMultiply *= 1.3;
+        }
+
+        if(
+            $specialWar == 43 && 
+            $this->hasActivatedSkill('계략')
+        ){
+            $this->warPowerMultiply *= 1.5;
+        }
+
         return $activated;
     }
 
-    function applyActiveSkill():bool{
+    function applyActiveSkill(){
         $oppose = $this->getOppose();
+        $crewType = $this->getCrewType();
+
+        $specialWar = $this->getSpecialWar();
+
+        $thisLogger = $this->getLogger();
+        $opposeLogger = $oppose->getLogger();
+
         if($this->hasActivatedSkill('저지')){
             $this->setWarPowerMultiply(0);
             $oppose->setWarPowerMultiply(0);
 
-            $this->getLogger()->pushGeneralBattleDetailLog('상대를 <C>저지</>했다!</>');
-            $oppose->getLogger()->pushGeneralBattleDetailLog('저지</>당했다!</>');
+            $thisLogger->pushGeneralBattleDetailLog('상대를 <C>저지</>했다!</>');
+            $opposeLogger->pushGeneralBattleDetailLog('저지</>당했다!</>');
             //저지는 특수함.
-            return true;
+            return;
         }
-        
-        return false;
+
+        yield true;
+
+        //계략 세트
+        if($this->hasActivatedSkill('계략')){
+            $table = [
+                '위보'=>1.2,
+                '매복'=>1.4,
+                '반목'=>1.6,
+                '화계'=>1.8,
+                '혼란'=>2.0
+            ];
+            if($specialWar == 45){
+                $table['반목'] *= 2;
+            }
+            foreach($table as $skillKey => $skillMultiply){
+                if($this->hasActivatedSkill($skillKey)){
+                    $josaUl = \sammo\JosaUtil::pick($skillKey, '을');
+                    $thisLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>{$josaUl} <C>성공</>했다!");
+                    $opposeLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>에 당했다!");
+
+                    $this->multiplyWarPowerMultiply($skillMultiply);
+                    break;
+                }
+            }
+        }
+
+        yield true;
+
+        //반계 세트
+        if($this->hasActivatedSkill('반계')){
+            $table = [
+                '위보'=>1.2,
+                '매복'=>1.4,
+                '반목'=>1.6,
+                '화계'=>1.8,
+                '혼란'=>2.0
+            ];
+            foreach($table as $skillKey => $skillMultiply){
+                if($oppose->hasActivatedSkill($skillKey)){
+                    $josaUl = \sammo\JosaUtil::pick($skillKey, '을');
+                    $thisLogger->pushGeneralBattleDetailLog("<C>●</><C>반계</>로 상대의 <D>{$skillKey}</>{$josaUl} 되돌렸다!");
+                    $opposeLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>{$josaUl} <R>역으로</> 당했다!");
+
+                    $this->multiplyWarPowerMultiply($skillMultiply);
+                    break;
+                }
+            }
+        }
+
+        yield true;
+
+        //계략 실패 세트
+        if($this->hasActivatedSkill('계략실패')){
+            $table = [
+                '위보'=>1.1,
+                '매복'=>1.2,
+                '반목'=>1.3,
+                '화계'=>1.4,
+                '혼란'=>1.5
+            ];
+            foreach($table as $skillKey => $skillMultiply){
+                if($this->hasActivatedSkill($skillKey)){
+                    $josaUl = \sammo\JosaUtil::pick($skillKey, '을');
+                    $thisLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>{$josaUl} <C>실패</>했다!");
+                    $opposeLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>{$josaUl} 간파했다!");
+
+                    $this->multiplyWarPowerMultiply($skillMultiply);
+                    $oppose->multiplyWarPowerMultiply(1/$skillMultiply);
+                    break;
+                }
+            }
+        }
+
+        yield true;
+
+        if($this->hasActivatedSkill('치료')){
+            $thisLogger->pushGeneralBattleDetailLog("<C>치료</>했다!</>");
+            $oppose->multiplyWarPowerMultiply(1/1.5);
+        }
+
+        yield true;
+
+        if($this->hasActivatedSkill('필살')){
+            $thisLogger->pushGeneralBattleDetailLog('<C>필살</>공격!</>');
+            $opposeLogger->pushGeneralBattleDetailLog('상대의 <R>필살</>공격!</>');
+
+            $this->multiplyWarPowerMultiply($this->criticalDamage());
+        }
+
+        yield true;
+
+        if($this->hasActivatedSkill('회피')){
+            $thisLogger->pushGeneralBattleDetailLog('회피</>했다!</>');
+            $opposeLogger->pushGeneralBattleDetailLog('상대가 <R>회피</>했다!</>"');
+
+            $this->multiplyWarPowerMultiply(0.2);
+        }
+
+        yield true;
+
+        if($this->hasActivatedSkill('진노')){
+            if($oppose->hasActivatedSkill('필살')){
+                $thisLogger->pushGeneralBattleDetailLog('상대의 필살 공격에 <C>진노</>했다!</>');
+                $opposeLogger->pushGeneralBattleDetailLog('필살 공격에 상대가 <R>진노</>했다!</>');
+            }
+            else if($oppose->hasActivatedSkill('회피시도')){
+                $thisLogger->pushGeneralBattleDetailLog('상대의 회피 시도에 <C>진노</>했다!</>');
+                $opposeLogger->pushGeneralBattleDetailLog('회피 시도에 상대가 <R>진노</>했다!</>');
+            }
+            
+            $this->bonusPhase += 1;
+            $this->multiplyWarPowerMultiply($this->criticalDamage());
+        }
+        else if($this->hasActivatedSkill('격노')){
+            if($oppose->hasActivatedSkill('필살')){
+                $thisLogger->pushGeneralBattleDetailLog('상대의 필살 공격에 <C>격노</>했다!</>');
+                $opposeLogger->pushGeneralBattleDetailLog('필살 공격에 상대가 <R>격노</>했다!</>');
+            }
+            else if($oppose->hasActivatedSkill('회피시도')){
+                $thisLogger->pushGeneralBattleDetailLog('상대의 회피 시도에 <C>격노</>했다!</>');
+                $opposeLogger->pushGeneralBattleDetailLog('회피 시도에 상대가 <R>격노</>했다!</>');
+            }
+
+            $this->multiplyWarPowerMultiply($this->criticalDamage());
+        }
+
+        yield true;
+
+        if($this->hasActivatedSkill('위압')){
+            $thisLogger->pushGeneralBattleDetailLog('상대에게 <C>위압</>을 줬다!</>');
+            $opposeLogger->pushGeneralBattleDetailLog('상대에게 <R>위압</>받았다!</>');
+
+            $oppose->setWarPowerMultiply(0);
+        }
+
+        yield true;
     }
 
     function tryWound():bool{

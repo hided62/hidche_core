@@ -18,8 +18,6 @@ function processWar_NG(
     $attackerNationUpdate = [];
     $defenderNationUpdate = [];
 
-    $maxPhase = $attacker->getMaxPhase();
-
     $defender = ($getNextDefender)(null, true);
     $conquerCity = false;
     
@@ -31,7 +29,7 @@ function processWar_NG(
 
     $battleBegin = false;
 
-    for($currPhase = 0; $currPhase < $maxPhase; $currPhase+=1){
+    for($currPhase = 0; $currPhase < $attacker->getMaxPhase(); $currPhase+=1){
         $battleBegin = true;
         if($defender === null){
             $defender = $city;
@@ -103,8 +101,12 @@ function processWar_NG(
         $defender->checkPostActiveSkill();
         //NOTE: 반계류 등의 스킬을 post에서 반영
 
-        $attacker->applyActiveSkill();
-        $defender->applyActiveSkill();
+        $activeSkillIterator = new AppendIterator();
+        $activeSkillIterator->append($attacker->applyActiveSkill());
+        $activeSkillIterator->append($defender->applyActiveSkill());
+        foreach($activeSkillIterator as $b){
+            //doNothing
+        }
 
         $deadDefender = $attacker->calcDamage();
         $deadAttacker = $defender->calcDamage();
@@ -120,13 +122,11 @@ function processWar_NG(
                 //수비자가 더 병력 부족
                 $deadAttacker /= $deadDefenderRatio;
                 $deadDefender = $defenderHP;
-                break;
             }
             else{
                 //공격자가 더 병력 부족
                 $deadDefender /= $deadAttackerRatio;
                 $deadAttacker = $attackerHP;
-                break;
             }
         }
 
