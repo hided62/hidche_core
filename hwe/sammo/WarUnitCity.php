@@ -41,12 +41,6 @@ class WarUnitCity extends WarUnit{
         return $this->raw[$key];
     }
 
-    function calcDamage():int{
-        $warPower = $this->getWarPower();
-        $warPower *= Util::randRange(0.9, 1.1);
-        return Util::round($warPower);
-    }
-
     function increaseKilled(int $damage):int{
         $this->killed += $damage;
         return $this->killed;
@@ -82,13 +76,6 @@ class WarUnitCity extends WarUnit{
 
         //도시 성벽은 쌀이 소모된다고 항복하지 않음
         return true;
-    }
-
-    function addWin(){
-    }
-
-    function addLose(){
-        //NOTE: 도시 정복은 외부에서 처리함
     }
 
     function heavyDecreseWealth(){

@@ -74,6 +74,10 @@ class WarUnitGeneral extends WarUnit{
         return $this->getVar('special2');
     }
 
+    function getCharacter():int{
+        return $this->getVar('personal');
+    }
+
     function getItem():int{
         return $this->getVar('item');
     }
@@ -102,10 +106,10 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function getComputedAtmos(){
-        $train = $this->getVar('atmos');
-        $train += $this->trainBonus;
+        $atmos = $this->getVar('atmos');
+        $atmos += $this->atmosBonus;
         
-        return $train;
+        return $atmos;
     }
 
     function getComputedCriticalRatio():float{
@@ -491,6 +495,17 @@ class WarUnitGeneral extends WarUnit{
             }
         }
 
+        if(
+            $specialWar == 63 &&
+            $this->getPhase() == 0 &&
+            $this->getHP() >= 1000 &&
+            $this->getComputedAtmos() >= 90 &&
+            $this->getComputedTrain() >= 90
+        ){
+            $this->activateSkill('위압');
+            $activated = true;
+        }
+
         return $activated;
     }
 
@@ -616,17 +631,6 @@ class WarUnitGeneral extends WarUnit{
                     $activated = true;
                 }
             }
-        }
-
-        if(
-            $specialWar == 63 &&
-            $this->getPhase() == 0 &&
-            $this->getHP() >= 1000 &&
-            $this->getComputedAtmos() >= 90 &&
-            $this->getComputedTrain() >= 90
-        ){
-            $this->activateSkill('위압');
-            $activated = true;
         }
 
         if(

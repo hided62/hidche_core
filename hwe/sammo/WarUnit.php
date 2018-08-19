@@ -273,19 +273,16 @@ class WarUnit{
     }
 
     function addWin(){
-        throw new NotInheritedMethodException();
     }
 
     function addLose(){
-        throw new NotInheritedMethodException();
     }
 
     function finishBattle(){
         throw new NotInheritedMethodException();
     }
 
-    function getCharacter(){
-        //TODO: 나머지에 구현
+    function getCharacter():int{
         return 0;
     }
 
@@ -356,7 +353,9 @@ class WarUnit{
     }
 
     function calcDamage():int{
-        return $this->getWarPower();
+        $warPower = $this->getWarPower();
+        $warPower *= Util::randRange(0.9, 1.1);
+        return Util::round($warPower);
     }
 
     function tryWound():bool{
