@@ -784,7 +784,7 @@ class WarUnitGeneral extends WarUnit{
             $thisLogger->pushGeneralBattleDetailLog('회피</>했다!</>');
             $opposeLogger->pushGeneralBattleDetailLog('상대가 <R>회피</>했다!</>"');
 
-            $this->multiplyWarPowerMultiply(0.2);
+            $oppose->multiplyWarPowerMultiply(0.2);
         }
 
         yield true;
