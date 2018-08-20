@@ -2,6 +2,88 @@
 namespace sammo;
 
 
+function processWar_DB(array $rawAttacker, array $rawDefenderCity){
+
+    $db = DB::db();
+    $rawAttackerCity = $db->queryFullColumns('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
+    $rawAttackerNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $rawAttacker['nation']);
+
+    if($rawDefenderCity['nation'] == 0){
+        $rawDefenderNation =  [
+            'nation'=>0,
+            'capital'=>0,
+            'level'=>0,
+            'rice'=>2000,
+            'type'=>0,
+            'tech'=>0        
+        ];
+    }
+    else{
+        $rawDefenderNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $rawDefenderCity['nation']);
+    }
+
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    [$year, $month, $cityRate] = $gameStor->getValuesAsArray('year', 'month', 'city_rate');
+
+    $attacker = new WarUnitGeneral($rawAttacker, $rawAttackerCity, $rawAttackerNation, true, $year, $month);
+
+    $city = new WarUnitCity($rawDefenderCity, $rawAttackerNation, $year, $month, $cityRate);
+
+    $defenderList = $db->query('SELECT no,name,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,dex0,dex10,dex20,dex30,dex40 FROM general WHERE city=%i AND nation=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))');
+
+    usort($defenderList, function($lhs, $rhs){
+        return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
+    });
+
+    $iterDefender = new \ArrayIterator($defenderList);
+
+    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($iterDefender) {
+        if($prevDefender !== null){
+            $prevDefender->applyDB($db);
+        }
+
+        if(!$reqNext){
+            return null;
+        }
+
+        if(!$iterDefender->valid()){
+            return null;
+        }
+
+        $retVal = $iterDefender->current();
+        $iterDefender->next();
+        return $retVal;
+    };
+
+    $totalDead = $attacker->getKilled() + $attacker->getDead();
+
+    //TODO: 국가 성향 반영
+    $db->update('city', [
+        'dead' => $db->sqleval('dead + %i', $totalDead * 0.4)
+    ], 'city=%i', $rawAttackerCity['city']);
+
+    $db->update('city', [
+        'dead' => $db->sqleval('dead + %i', $totalDead * 0.6)
+    ], 'city=%i', $rawDefenderCity['city']);
+
+    //TODO: 국가에 기술력 반영
+
+    //TODO: 도시 점령(얘가 처리하는게 맞나?)
+    //TODO: 국가 정복(얘가 처리하는게 맞나?)
+}
+
+function extractBattleOrder($general){
+    return (
+        $general['leader'] +
+        $general['power'] +
+        $general['intel'] +
+        $general['weap'] +
+        $general['horse'] +
+        $general['book'] +
+        $general['crew'] / 100
+    );
+}
+
 function processWar_NG(
     WarUnitGeneral $attacker,
     callable $getNextDefender, 
@@ -15,6 +97,8 @@ function processWar_NG(
 
     $attacker->useBattleInitItem();
     
+    $date = substr($attacker->getVar('turntime'),11,5);
+
     $attackerNationUpdate = [];
     $defenderNationUpdate = [];
 
