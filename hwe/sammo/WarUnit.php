@@ -26,6 +26,7 @@ class WarUnit{
     protected $warPowerMultiply = 1.0;
 
     protected $activatedSkill = [];
+    protected $isFinished = false;
 
     private function __construct(){
     }
@@ -72,10 +73,10 @@ class WarUnit{
     function increaseVarWithLimit(string $key, $value, $min = null, $max = null){
         $targetValue = $this->raw[$key] + $value;
         if($min !== null && $targetValue < $min){
-            $value = $min;
+            $targetValue = $min;
         }
         if($max !== null && $targetValue > $max){
-            $value = $max;
+            $targetValue = $max;
         }
         $this->updateVar($key, $targetValue);
     }
@@ -92,10 +93,10 @@ class WarUnit{
     function multiplyVarWithLimit(string $key, $value, $min = null, $max = null){
         $targetValue = $this->raw[$key] * $value;
         if($min !== null && $targetValue < $min){
-            $value = $min;
+            $targetValue = $min;
         }
         if($max !== null && $targetValue > $max){
-            $value = $max;
+            $targetValue = $max;
         }
         $this->updateVar($key, $targetValue);
     }

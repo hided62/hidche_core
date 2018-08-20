@@ -533,7 +533,7 @@ function processCommand($no) {
             }
 
             //장수정보 재로드
-            $query = "select npc,no,name,picture,imgsvr,nation,nations,city,troop,injury,affinity,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,belong,personal,special,special2,term,turn0,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
+            $query = "select npc,no,name,picture,imgsvr,nation,nations,city,troop,injury,affinity,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,belong,personal,special,special2,term,turn0,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar from general where no='$no'";
             $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $general = MYDB_fetch_array($result);
         }

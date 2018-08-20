@@ -556,7 +556,7 @@ class WarUnitGeneral extends WarUnit{
 
         //계략
         if($crewType->magicCoef){
-            $magicRatio = getGeneralIntel($general, true, true, true, false) / 100;
+            $magicRatio = getGeneralIntel($this->raw, true, true, true, false) / 100;
             $magicRatio *= $crewType->magicCoef;
 
             if($specialWar == 41){
@@ -931,7 +931,12 @@ class WarUnitGeneral extends WarUnit{
         return $result;
     }
 
-    function finishBattle(){        
+    function finishBattle(){    
+        if($this->isFinished){
+            return;
+        }
+        $this->isFinished = true;
+
         $this->increaseVar('killcrew', $this->killed);
         $this->increaseVar('deathcrew', $this->dead);
         

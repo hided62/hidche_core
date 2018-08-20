@@ -186,11 +186,7 @@ function processWar_NG(
     $logger->pushGlobalActionLog("<D><b>{$attacker->getNationVar('name')}</b></>의 <Y>{$attacker->getName()}</>{$josaYi} <G><b>{$city->getName()}</b></>{$josaRo} 진격합니다.");
     $logger->pushGeneralActionLog("<G><b>{$city->getName()}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
 
-    $battleBegin = false;
-
     for($currPhase = 0; $currPhase < $attacker->getMaxPhase(); $currPhase+=1){
-        $battleBegin = true;
-
         if($defender === null){
             $defender = $city;
             
@@ -346,7 +342,6 @@ function processWar_NG(
         }
 
         if(!$defender->continueWar($noRice)){
-            $battleBegin = false;
 
             $attacker->logBattleResult();
             $defender->logBattleResult();
@@ -376,22 +371,23 @@ function processWar_NG(
                 $defender->getLogger()->pushGeneralActionLog("전멸했습니다.", ActionLogger::PLAIN);
             }
 
+            if($currPhase + 1 == $attacker->getMaxPhase()){
+                break;
+            }
+
             $defender->finishBattle();
             $defender = ($getNextDefender)($defender, true);
 
             if($defender !== null && !($defender instanceof WarUnitGeneral)){
                 throw new \RuntimeException('다음 수비자를 받아오는데 실패');
-            }            
+            }
+            
         }
         
     }
 
     $attacker->finishBattle();
-
-    if(!$battleBegin){
-        // 마지막 페이즈까지 갔지만, '갱신된 수비자'와 전투하지 않았다.
-        return false;
-    }
+    $defender->finishBattle();
 
     if($currPhase == $attacker->getMaxPhase()){
         //마지막 페이즈의 전투 마무리
@@ -402,8 +398,6 @@ function processWar_NG(
         $defender->logBattleResult();
     }
     
-    $defender->finishBattle();
-
     if($defender instanceof WarUnitCity){
         $newConflict = $defender->addConflict();
         if($newConflict){

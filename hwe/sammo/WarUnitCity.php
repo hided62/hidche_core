@@ -85,7 +85,12 @@ class WarUnitCity extends WarUnit{
     }
 
     function finishBattle(){
-        $this->updateVar('def', Util::round($this->hp / 10));
+        if($this->isFinished){
+            return;
+        }
+        $this->isFinished = true;
+        
+        $this->updateVar('def', Util::round($this->getHP() / 10));
         $this->updateVar('wall', Util::round($this->getVar('wall')));
 
         //NOTE: 전투로 인한 사망자는 여기서 처리하지 않음

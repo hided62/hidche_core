@@ -69,12 +69,12 @@ class ActionLogger{
         }
 
         if($this->generalBattleResultLog){
-            pushGenLog(['no'=>$this->generalId], $this->generalBattleResultLog);
+            pushBatRes(['no'=>$this->generalId], $this->generalBattleResultLog);
             $this->generalBattleResultLog = [];
         }
 
         if($this->generalBattleDetailLog){
-            pushGenLog(['no'=>$this->generalId], $this->generalBattleDetailLog);
+            pushBatLog(['no'=>$this->generalId], $this->generalBattleDetailLog);
             $this->generalBattleDetailLog = [];
         }
 
