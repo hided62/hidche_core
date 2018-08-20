@@ -60,6 +60,7 @@ function getWorldMap($req){
 
     $session = Session::getInstance();
     $userID = $session->userID;
+    $userGrade = $session->userGrade;
 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -144,6 +145,13 @@ function getWorldMap($req){
     foreach($db->query('select `city`, `level`, `state`, `nation`, `region`, `supply` from `city`') as $r){
         $cityList[] = 
             array_map('\\sammo\\Util::toInt', [$r['city'], $r['level'], $r['state'], $r['nation'], $r['region'], $r['supply']]);
+    }
+
+    if(($req->showMe || !$req->neutralView) && $userGrade >= 5){
+        $spyInfo = [];
+        foreach($cityList as $tmpCity){
+            $spyInfo[$tmpCity[0]] = 1;
+        }
     }
 
     return [
