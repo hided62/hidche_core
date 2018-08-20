@@ -124,7 +124,7 @@ class WarUnitGeneral extends WarUnit{
                 $critialRatio += 0.1;
             }
         }
-        if($specialWar == 71){
+        else if($specialWar == 71){
             $critialRatio += 0.2;
         }
         return $critialRatio;
@@ -194,7 +194,12 @@ class WarUnitGeneral extends WarUnit{
 
         $specialWar = $this->getSpecialWar();
 
-        if($specialWar == 52){
+        if($specialWar == 53){
+            if($this->getOppose() instanceof WarUnitCity){
+                $myWarPowerMultiply *= 2;
+            }
+        }
+        else if($specialWar == 52){
             if($this->isAttacker){
                 $myWarPowerMultiply *= 1.20;
             }
@@ -203,8 +208,11 @@ class WarUnitGeneral extends WarUnit{
             }
             
         }
-        else if($specialWar == 60 && $this->isAttacker){
-            $myWarPowerMultiply *= 1.10;
+        else if($specialWar == 60){
+            if($this->isAttacker){
+                $myWarPowerMultiply *= 1.10;
+            }
+            
         }
         else if($specialWar == 61){
             $myWarPowerMultiply *= 1.10;
@@ -271,8 +279,15 @@ class WarUnitGeneral extends WarUnit{
         }
 
         $expLevel = $this->getVar('explevel');
-        $warPower /= max(0.01, 1 - $expLevel / 300);
-        $opposeWarPowerMultiply *= max(0.01, 1 - $expLevel / 300);
+
+        if($this->getOppose() instanceof WarUnitCity){
+            $warPower *= 1 + $expLevel / 600;
+        }
+        else{
+            $warPower /= max(0.01, 1 - $expLevel / 300);
+            $opposeWarPowerMultiply *= max(0.01, 1 - $expLevel / 300);
+        }
+        
 
         [$specialMyWarPowerMultiply, $specialOpposeWarPowerMultiply] = $this->getWarPowerMultiplyBySpecialWar();
         $warPower *= $specialMyWarPowerMultiply;
@@ -349,7 +364,7 @@ class WarUnitGeneral extends WarUnit{
             !$this->hasActivateSkill('저격') &&
             Util::randBool(1/3)
         ) {
-            $oppose->activateSkill('저격');
+            $this->activateSkill('저격');
             $skillResult = true;
         }
         
@@ -393,7 +408,7 @@ class WarUnitGeneral extends WarUnit{
         $result = false;
         $oppose = $this->getOppose();
 
-        if($this->hasActivatedSkill('저격')){
+        if($oppose->hasActivatedSkill('저격')){
             $result = true;
 
             $oppose->getLogger()->pushGeneralActionLog("상대를 <C>저격</>했다!", ActionLogger::PLAIN);
@@ -401,7 +416,7 @@ class WarUnitGeneral extends WarUnit{
             $this->getLogger()->pushGeneralActionLog("상대에게 <R>저격</>당했다!", ActionLogger::PLAIN);
             $this->getLogger()->pushGeneralBattleDetailLog("상대에게 <R>저격</>당했다!", ActionLogger::PLAIN);
 
-            $oppose->increaseVarWithLimit('injury', Util::randRangeInt(20, 60), null, 80);
+            $this->increaseVarWithLimit('injury', Util::randRangeInt(20, 60), null, 80);
         }
 
         return $result;
@@ -469,7 +484,7 @@ class WarUnitGeneral extends WarUnit{
         if(!$this->isAttacker){
             $addDex *= 0.9;
         }
-        $this->addDex($this->oppose->getCrewType(), $addDex);
+        $this->addDex($this->getCrewType(), $addDex);
 
         $this->killed += $damage;
         return $this->killed;
@@ -549,7 +564,7 @@ class WarUnitGeneral extends WarUnit{
             }
 
             if(Util::randBool($magicRatio)){
-                $magicSuccessRatio = 0.3;
+                $magicSuccessRatio = 0.7;
                 if($specialWar == 40){
                     $magicSuccessRatio += 0.2;
                 }
@@ -563,8 +578,14 @@ class WarUnitGeneral extends WarUnit{
                     $magicSuccessRatio += 1;
                 }
 
-                $magic = Util::choiceRandom(['위보', '매복', '반목', '화계', '혼란']);
+                if($oppose instanceof WarUnitCity){
+                    $magic = Util::choiceRandom(['급습', '위보',' 혼란']);
+                }
+                else{
+                    $magic = Util::choiceRandom(['위보', '매복', '반목', '화계', '혼란']);
+                }
                 $this->activateSkill('계략시도', $magic);
+                
                 if(Util::randBool($magicSuccessRatio)){
                     $this->activateSkill('계략');
                 }
@@ -572,6 +593,12 @@ class WarUnitGeneral extends WarUnit{
                     $this->activateSkill('계략실패');
                 }
             }
+        }
+
+        //의술
+        if($specialWar == 73 && Util::randBool(0.2)){
+            $this->activateSkill('치료');
+            $activated = true;
         }
 
         return $activated;
@@ -584,11 +611,6 @@ class WarUnitGeneral extends WarUnit{
         $specialWar = $this->getSpecialWar();
         $item = $this->getItem();
         $crewType = $this->getCrewType();
-
-        if($specialWar == 73 && Util::randBool(0.2)){
-            $this->activateSkill('치료');
-            $activated = true;
-        }
 
         if($specialWar == 74 && $oppose->hasActivatedSkill('필살')){
             if($this->isAttacker){
@@ -694,16 +716,29 @@ class WarUnitGeneral extends WarUnit{
 
         //계략 세트
         if($this->hasActivatedSkill('계략')){
-            $table = [
+            $tableToGeneral = [
                 '위보'=>1.2,
                 '매복'=>1.4,
                 '반목'=>1.6,
                 '화계'=>1.8,
                 '혼란'=>2.0
             ];
+            $tableToCity = [
+                '급습'=>1.2,
+                '위보'=>1.4,
+                '혼란'=>1.6
+            ];
             if($specialWar == 45){
-                $table['반목'] *= 2;
+                $tableToGeneral['반목'] *= 2;
             }
+
+            if($oppose instanceof WarUnitCity){
+                $table = $tableToCity;
+            }
+            else{
+                $table = $tableToGeneral;
+            }
+
             foreach($table as $skillKey => $skillMultiply){
                 if($this->hasActivatedSkill($skillKey)){
                     $josaUl = \sammo\JosaUtil::pick($skillKey, '을');
@@ -743,13 +778,24 @@ class WarUnitGeneral extends WarUnit{
 
         //계략 실패 세트
         if($this->hasActivatedSkill('계략실패')){
-            $table = [
+            $tableToGeneral = [
                 '위보'=>1.1,
                 '매복'=>1.2,
                 '반목'=>1.3,
                 '화계'=>1.4,
                 '혼란'=>1.5
             ];
+            $tableToCity = [
+                '급습'=>1.1,
+                '위보'=>1.2,
+                '혼란'=>1.3
+            ];
+            if($oppose instanceof WarUnitCity){
+                $table = $tableToCity;
+            }
+            else{
+                $table = $tableToGeneral;
+            }
             foreach($table as $skillKey => $skillMultiply){
                 if($this->hasActivatedSkill($skillKey)){
                     $josaUl = \sammo\JosaUtil::pick($skillKey, '을');
@@ -840,7 +886,7 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function continueWar(&$noRice):bool{
-        if($this->getVar('crew') <= 0){
+        if($this->getHP() <= 0){
             $noRice = false;
             return false;
         }

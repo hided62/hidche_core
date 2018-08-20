@@ -103,7 +103,7 @@ class WarUnitCity extends WarUnit{
         $nationID = $oppose->getNationVar('nation');
         $newConflict = false;
         
-        $dead = $this->dead;
+        $dead = max(1, $this->dead);
 
         if(!$conflict || $this->getHP() == 0){ // 선타, 막타 보너스
             $dead *= 1.05;
