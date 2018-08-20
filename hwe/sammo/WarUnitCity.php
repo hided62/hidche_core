@@ -139,6 +139,7 @@ class WarUnitCity extends WarUnit{
         }
         
         $db->update('city', $updateVals, 'city=%i', $this->raw['city']);
+        $this->getLogger()->rollback(); //수비 도시의 로그는 기록하지 않음
         return $db->affectedRows() > 0;
     }
 

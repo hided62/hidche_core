@@ -6,24 +6,32 @@ function processWar_DB(array $rawAttacker, array $rawDefenderCity){
 
     $db = DB::db();
     $rawAttackerCity = $db->queryFullColumns('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
-    $rawAttackerNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $rawAttacker['nation']);
 
-    if($rawDefenderCity['nation'] == 0){
+    $attackerNationID = $rawAttacker['nation'];
+    $defenderNationID = $rawDefenderCity['nation'];
+
+    $rawAttackerNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,totaltech,gencount,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
+
+    if($defenderNationID == 0){
         $rawDefenderNation =  [
             'nation'=>0,
+            'name'=>'재야',
             'capital'=>0,
             'level'=>0,
+            'gold'=>0,
             'rice'=>2000,
             'type'=>0,
-            'tech'=>0        
+            'tech'=>0,
+            'totaltech'=>0,
+            'gencount'=>1     
         ];
     }
     else{
-        $rawDefenderNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $rawDefenderCity['nation']);
+        $rawDefenderNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,totaltech,gencount,tech,`type`,gold,rice FROM nation WHERE nation = %i', $defenderNationID);
     }
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    [$year, $month, $cityRate] = $gameStor->getValuesAsArray('year', 'month', 'city_rate');
+    [$startYear, $year, $month, $cityRate] = $gameStor->getValuesAsArray('startyear', 'year', 'month', 'city_rate');
 
     $attacker = new WarUnitGeneral($rawAttacker, $rawAttackerCity, $rawAttackerNation, true, $year, $month);
 
@@ -55,9 +63,29 @@ function processWar_DB(array $rawAttacker, array $rawDefenderCity){
         return $retVal;
     };
 
+    $conquerCity = processWar_NG($attacker, $getNextDefender, $city, $year - $startYear);
+
+    $attacker->applyDB($db);
+
+    //NOTE: $rawAttackerNation과 $rawDefenderNation은 전투중에 '바뀌지 않음'을 전제로 하고 있다. (현재 구현도 그렇게 되어있음)
+
+    $rawDefenderCity = $city->getRaw();
+    $updateAttackerNation = [];
+    $updateDefenderNation = [];
+
+    if($city->getPhase() > 0 && $city->getVar('supply')){
+        $rice = $city->getKilled() / 10 * 0.8;
+        $rice *= \sammo\getCrewtypeRice($city->getCrewType(), 0);
+        $rice *= $cityRate / 100 - 0.2;
+
+        $updateDefenderNation['rice'] = max(0, $rawDefenderNation['rice'] - $rice);
+    }
+    else if($conquerCity && $city->getVar('supply')){
+        $updateDefenderNation['rice'] = $rawDefenderNation['rice'] + $rice;
+    }
+
     $totalDead = $attacker->getKilled() + $attacker->getDead();
 
-    //TODO: 국가 성향 반영
     $db->update('city', [
         'dead' => $db->sqleval('dead + %i', $totalDead * 0.4)
     ], 'city=%i', $rawAttackerCity['city']);
@@ -66,10 +94,41 @@ function processWar_DB(array $rawAttacker, array $rawDefenderCity){
         'dead' => $db->sqleval('dead + %i', $totalDead * 0.6)
     ], 'city=%i', $rawDefenderCity['city']);
 
-    //TODO: 국가에 기술력 반영
+    $attackerIncTech = $attacker->getDead() * 0.01 * getNationTechMultiplier($rawAttackerNation['type']);
+    $defenderIncTech = $attacker->getKilled() * 0.01 * getNationTechMultiplier($rawDefenderNation['type']);
 
-    //TODO: 도시 점령(얘가 처리하는게 맞나?)
-    //TODO: 국가 정복(얘가 처리하는게 맞나?)
+    $attackerTotalTech = $rawAttackerNation['totaltech'] + $attackerIncTech;
+    $defenderTotalTech = $rawDefenderNation['totaltech'] + $defenderIncTech;
+
+    $updateAttackerNation['totaltech'] = Utill::round($attackerTotalTech);
+    $updateDefenderNation['totaltech'] = Utill::round($defenderTotalTech);
+
+    $updateAttackerNation['tech'] = Util::round($attackerTotalTech / $rawAttackerNation['gencount']);
+    $updateDefenderNation['tech'] = Util::round($defenderTotalTech / $rawDefenderNation['gencount']);
+
+    $db->update('nation', $updateAttackerNation, 'nation=%i', $attackerNationID);
+    $db->update('nation', $updateDefenderNation, 'nation=%i', $defenderNationID);
+
+    if(!$conquerCity){
+        return [$attacker->getKilled(), $attacker->getDead()];
+    }
+
+    //XXX: 새 도시점령 코드 작성하기 전까지 유지
+    $rawAttackerCity = $db->queryFullColumns('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
+    $rawAttackerNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $attackerNationID);
+
+    if($defenderNationID !== 0){
+        $rawDefenderNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $defenderNationID);
+    }
+    
+    ConquerCity([
+        'startyear'=>$startYear,
+        'year'=>$year,
+        'month'=>$month,
+        'city_rate'=>$cityRate
+    ], $attacker->getRaw(), $city->getRaw(), $rawAttackerNation, $rawDefenderNation);
+
+    return [$attacker->getKilled(), $attacker->getDead()];
 }
 
 function extractBattleOrder($general){
@@ -88,7 +147,6 @@ function processWar_NG(
     WarUnitGeneral $attacker,
     callable $getNextDefender, 
     WarUnitCity $city,
-    string $time,
     int $relYear
 ):array{
     $templates = new \League\Plates\Engine(__dir__.'/templates');
@@ -118,7 +176,7 @@ function processWar_NG(
         if($defender === null){
             $defender = $city;
             
-            if($city->getNationVar('rice') <= 0 && $city->getVar('supply') == 1){
+            if($city->getNationVar('rice') <= 0 && $city->getVar('supply')){
                 //병량 패퇴
                 $attacker->setOppose($defender);
                 $defender->setOppose($attacker);
@@ -222,8 +280,6 @@ function processWar_NG(
 
         $attacker->increaseKilled($deadDefender);
         $defender->increaseKilled($deadAttacker);
-
-        //NOTE: 기술, 도시 사망자 수는 '전투 종료 후' 외부에서 반영.
 
         $phaseNickname = $currPhase + 1;
 
@@ -333,7 +389,6 @@ function processWar_NG(
     }
 
     ($getNextDefender)($defender, false);
-    //NOTE: 공격자의 applyDB는 함수 호출자가 실행
 
     return $conquerCity;
 }
@@ -393,30 +448,22 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
     pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<Y>{$general['name']}</>{$josaYiGen} {$destnationName} <G><b>{$city['name']}</b></>{$josaUl} <S>점령</>");
     pushNationHistory($destnation, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>{$josaYiCity} <span class='ev_highlight'>함락</span>");
 
-    $query = "select city from city where nation='{$city['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($result);
+    $citycount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation = %i', $city['nation']);
 
     // 국가 멸망시
     //TODO: 국가 멸망 코드를 별도로 작성
     if($citycount == 1 && $city['nation'] != 0) {
-        $query = "select nation,name,gold,rice from nation where nation='{$city['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $losenation = MYDB_fetch_array($result);
+        $losenation = $destnation;
 
         $josaYi = JosaUtil::pick($losenation['name'], '이');
         $josaUl = JosaUtil::pick($losenation['name'], '을');
         $history[] = "<C>●</>{$year}년 {$month}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>{$josaYi} 멸망하였습니다.";
         pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaUl} 정복");
 
-        $query = "select no, nation from general where nation='{$general['nation']}' and level='12'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $ruler = MYDB_fetch_array($result);
+        $ruler = $db->queryFirstRow('SELECT no, nation from general where nation=%i and level=12', $general['nation']);
 
         //다굴치는 나라들 전방설정을 위해 미리 얻어옴
-        $query = "select you from diplomacy where me='{$losenation['nation']}' and state<2";
-        $dipResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $dipCount = MYDB_num_rows($dipResult);
+        $dipCount = $db->queryFirstField('SELECT count(you) FROM diplomacy WHERE me = %i', $losenation['nation']);
 
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
@@ -452,11 +499,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             $loseGeneralRice += $loseRice;
             
             //모두 등용장 발부
-            if($nation['name'] == "강족" || $nation['name'] == "저족" || $nation['name'] == "흉노족"
-                || $nation['name'] == "남만족" || $nation['name'] == "산월족" || $nation['name'] == "오환족"
-                || $nation['name'] == "왜족") {
-                //등용장 미발부
-            } elseif(Util::randBool(0.5)) {
+            if(Util::randBool(0.5)) {
                 $msg = ScoutMessage::buildScoutMessage($general['no'], $gen['no']);
                 if($msg){
                     $msg->send(true);

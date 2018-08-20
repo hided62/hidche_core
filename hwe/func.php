@@ -2719,6 +2719,47 @@ function getCharExpMultiplier($personal):float{
     return $table[$personal] ?? 1;
 }
 
+function getNationTechMultiplier($nationType):float{
+    static $table = [
+        3 => 1.1,
+        5 => 0.9,
+        6 => 0.9,
+        7 => 0.9,
+        8 => 0.9,
+        12 => 0.9,
+        13 => 1.1,
+    ];
+    return $table[$nationType] ?? 1;
+}
+
+function getNationWallMultiplier($nationType):float{
+    static $table = [
+        3 => 1.1,
+        5 => 1.1,
+        10 => 1.1,
+        11 => 1.1,
+        4 => 0.9,
+        7 => 0.9,
+        8 => 0.9,
+        13 => 0.9,
+    ];
+    return $table[$nationType] ?? 1;
+}
+
+function getNationPeopleMultiplier($nationType):float{
+    static $table = [
+        1 => 0.9,
+        2 => 1.1,
+        3 => 0.9,
+        4 => 1.1,
+        7 => 1.1,
+        9 => 0.9,
+        10 => 1.1,
+    ];
+    return $table[$nationType] ?? 1;
+}
+
+
 function CharDedication($ded, $personal) {
     switch($personal) {
         case 10:

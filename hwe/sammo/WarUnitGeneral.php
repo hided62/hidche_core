@@ -18,7 +18,8 @@ class WarUnitGeneral extends WarUnit{
             $this->getVar('no'), 
             $this->getVar('nation'), 
             $year, 
-            $month
+            $month,
+            false
         );
         $this->crewType = GameUnitConst::byID($this->getVar('crewtype'));
 
@@ -909,6 +910,7 @@ class WarUnitGeneral extends WarUnit{
         }
         
         $db->update('general', $updateVals, 'no=%i', $this->raw['no']);
+        $this->getLogger()->flush();
         return $db->affectedRows() > 0;
     }
 
