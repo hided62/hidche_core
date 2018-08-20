@@ -8,7 +8,9 @@ class WarUnit{
     protected $logger;
     protected $crewType;
 
+    protected $killedCurr = 0;
     protected $killed = 0;
+    protected $deadCurr = 0;
     protected $dead = 0;
 
     protected $isAttacker = false;
@@ -145,6 +147,14 @@ class WarUnit{
         return $this->dead;
     }
 
+    function getKilledCurrentBattle():int{
+        return $this->killedCurr;
+    }
+
+    function getDeadCurrentBattle():int{
+        return $this->deadCurr;
+    }
+
     function getSpecialDomestic():int{
         return 0;
     }
@@ -171,6 +181,8 @@ class WarUnit{
 
     function setOppose(?WarUnit $oppose){
         $this->oppose = $oppose;
+        $this->killedCurr = 0;
+        $this->deadCurr = 0;
         $this->activatedSkill = [];
     }
 

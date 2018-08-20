@@ -37,15 +37,20 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
 
     $city = new WarUnitCity($rawDefenderCity, $rawAttackerNation, $year, $month, $cityRate);
 
-    $defenderList = $db->query('SELECT no,name,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar FROM general WHERE city=%i AND nation=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))', $city->getVar('nation'), $city->getVar('city'));
+    $defenderList = $db->query('SELECT no,name,nation,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))', $city->getVar('nation'), $city->getVar('city'));
+
+    if(!$defenderList){
+        $defenderList = [];
+    }
 
     usort($defenderList, function($lhs, $rhs){
         return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
     });
 
     $iterDefender = new \ArrayIterator($defenderList);
+    $iterDefender->rewind();
 
-    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $db) {
+    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $rawDefenderCity, $rawDefenderNation, $year, $month, $db) {
         if($prevDefender !== null){
             $prevDefender->applyDB($db);
         }
@@ -58,7 +63,7 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
             return null;
         }
 
-        $retVal = $iterDefender->current();
+        $retVal = new WarUnitGeneral($iterDefender->current(), $rawDefenderCity, $rawDefenderNation, false, $year, $month);
         $iterDefender->next();
         return $retVal;
     };
@@ -278,8 +283,8 @@ function processWar_NG(
         $defenderHP = $defender->getHP();
 
         if($deadAttacker > $attackerHP || $deadDefender > $defenderHP){
-            $deadAttackerRatio = $deadAttacker / $attackerHP;
-            $deadDefenderRatio = $deadDefender / $defenderHP;
+            $deadAttackerRatio = $deadAttacker / max(1, $attackerHP);
+            $deadDefenderRatio = $deadDefender / max(1, $defenderHP);
 
             if($deadDefenderRatio > $deadAttackerRatio){
                 //수비자가 더 병력 부족

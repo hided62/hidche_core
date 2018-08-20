@@ -43,6 +43,7 @@ class WarUnitCity extends WarUnit{
 
     function increaseKilled(int $damage):int{
         $this->killed += $damage;
+        $this->killedCurr += $damage;
         return $this->killed;
     }
 
@@ -61,6 +62,7 @@ class WarUnitCity extends WarUnit{
     function decreaseHP(int $damage):int{
         $damage = min($damage, $this->hp);
         $this->dead += $damage;
+        $this->deadCurr += $damage;
         $this->hp -= $damage;
         $this->increaseVarWithLimit('wall', -$damage/20, 0);
         
@@ -89,7 +91,7 @@ class WarUnitCity extends WarUnit{
             return;
         }
         $this->isFinished = true;
-        
+
         $this->updateVar('def', Util::round($this->getHP() / 10));
         $this->updateVar('wall', Util::round($this->getVar('wall')));
 

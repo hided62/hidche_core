@@ -257,14 +257,14 @@ class ActionLogger{
             'crewtype' => $me->getCrewTypeShortName(),
             'name' => $me->getName(),
             'remain_crew' => $me->getHP(),
-            'killed_crew' => $me->getDead()
+            'killed_crew' => -$me->getDeadCurrentBattle()
         ];
 
         $render_oppose = [
             'crewtype' => $oppose->getCrewTypeShortName(),
             'name' => $oppose->getName(),
             'remain_crew' => $oppose->getHP(),
-            'killed_crew' => $oppose->getDead()
+            'killed_crew' => -$oppose->getDeadCurrentBattle()
         ];
 
         if(!$me->isAttacker()){

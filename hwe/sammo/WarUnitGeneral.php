@@ -58,7 +58,7 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function setOppose(?WarUnit $oppose){
-        $this->oppose = $oppose;
+        parent::setOppose($oppose);
         $this->increaseVar('warnum', 1);
 
         if($this->isAttacker){
@@ -67,8 +67,6 @@ class WarUnitGeneral extends WarUnit{
         else if($oppose !== null){
             $this->updateVar('recwar', $oppose->getVar('turntime'));
         }
-        
-        $this->activatedSkill = [];
     }
 
     function getSpecialWar():int{
@@ -361,7 +359,7 @@ class WarUnitGeneral extends WarUnit{
         if (
             $specialWar == 70 &&
             $this->oppose instanceof WarUnitGeneral &&
-            !$this->hasActivateSkill('저격') &&
+            !$this->hasActivatedSkill('저격') &&
             Util::randBool(1/3)
         ) {
             $this->activateSkill('저격');
@@ -386,7 +384,7 @@ class WarUnitGeneral extends WarUnit{
         if(
             $item == 2 &&
             $this->oppose instanceof WarUnitGeneral &&
-            !$this->hasActivateSkill('저격') &&
+            !$this->hasActivatedSkill('저격') &&
             Util::randBool(1/5)
         ){
                 $itemActivated = true;
@@ -455,6 +453,7 @@ class WarUnitGeneral extends WarUnit{
         $damage = min($damage, $this->getVar('crew'));
 
         $this->dead += $damage;
+        $this->deadCurr += $damage;
         $this->increaseVar('crew', -$damage);
 
         $addDex = $damage;
@@ -487,6 +486,7 @@ class WarUnitGeneral extends WarUnit{
         $this->addDex($this->getCrewType(), $addDex);
 
         $this->killed += $damage;
+        $this->killedCurr += $damage;
         return $this->killed;
     }
 
