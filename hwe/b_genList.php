@@ -153,7 +153,7 @@ foreach ($generals as &$general) {
         case 2: $mode = "◎"; break;
     }
     $general['modeText'] = $mode;
-    $general['crewtypeText'] = GameUnitConst::byId($general['crewtype'])->name;
+    $general['crewtypeText'] = GameUnitConst::byId($general['crewtype'])->name??'-';
 
     
     if ($general['npc'] < 2) {
