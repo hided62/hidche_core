@@ -384,41 +384,14 @@ function getCall($leader, $power, $intel) {
 }
 
 function getDed($dedication) {
-    if($dedication < 1 ) $level2 = '무품관';
-    elseif($dedication < 10*10) $level2 = '30품관';
-    elseif($dedication < 20*20) $level2 = '29품관';
-    elseif($dedication < 30*30) $level2 = '28품관';
-    elseif($dedication < 40*40) $level2 = '27품관';
-    elseif($dedication < 50*50) $level2 = '26품관';
-    elseif($dedication < 60*60) $level2 = '25품관';
-    elseif($dedication < 70*70) $level2 = '24품관';
-    elseif($dedication < 80*80) $level2 = '23품관';
-    elseif($dedication < 90*90) $level2 = '22품관';
-    elseif($dedication < 100*100) $level2 = '21품관';
-    elseif($dedication < 110*110) $level2 = '20품관';
-    elseif($dedication < 120*120) $level2 = '19품관';
-    elseif($dedication < 130*130) $level2 = '18품관';
-    elseif($dedication < 140*140) $level2 = '17품관';
-    elseif($dedication < 150*150) $level2 = '16품관';
-    elseif($dedication < 160*160) $level2 = '15품관';
-    elseif($dedication < 170*170) $level2 = '14품관';
-    elseif($dedication < 180*180) $level2 = '13품관';
-    elseif($dedication < 190*190) $level2 = '12품관';
-    elseif($dedication < 200*200) $level2 = '11품관'; // 40000
-    elseif($dedication < 210*210) $level2 = '10품관'; // 44100
-    elseif($dedication < 220*220) $level2 =  '9품관'; // 48400
-    elseif($dedication < 230*230) $level2 =  '8품관'; // 52900
-    elseif($dedication < 240*240) $level2 =  '7품관'; // 57600
-    elseif($dedication < 250*250) $level2 =  '6품관'; // 62500
-    elseif($dedication < 260*260) $level2 =  '5품관'; // 67600
-    elseif($dedication < 270*270) $level2 =  '4품관'; // 72900
-    elseif($dedication < 280*280) $level2 =  '3품관'; // 78400
-    elseif($dedication < 290*290) $level2 =  '2품관'; // 84100
-    else {
-        $level2 = '1품관';
+    $dedLevel = getDedLevel($dedication);
+    if($dedLevel == 0){
+        return '무품관';
     }
 
-    return $level2;
+    //{$maxDedLevel}품관 ~ 1품관
+    $dedInvLevel = GameConst::$maxDedLevel - $dedLevel + 1;
+    return "{$dedInvLevel}품관";
 }
 
 
@@ -452,7 +425,13 @@ function getExpLevel($experience) {
 }
 
 function getDedLevel($dedication) {
-    return Util::toInt(sqrt($dedication/100));
+    $level = Util::valueFit(
+        ceil(sqrt($dedication) / 10), 
+        0, 
+        GameConst::$maxDedLevel
+    );
+
+    return $level;
 }
 
 function expStatus($exp) {
@@ -467,9 +446,7 @@ function getLevelPer($exp, $level) {
 }
 
 function getBill(int $dedication) : int{
-    for($level = 0; $dedication > (($level+1)*($level+1)*100); $level++) {
-    }
-
+    $level = getDedLevel($dedication);
     return ($level * 200 + 400);
 }
 
@@ -477,72 +454,40 @@ function getCost(int $armtype) : int {
     return GameUnitConst::byID($armtype)->cost;
 }
 
-function TechLimit($startyear, $year, $tech) : int {
-    $limit = 0;
-    if($year < $startyear+ 5 && $tech >=  1000) { $limit = 1; }
-    if($year < $startyear+10 && $tech >=  2000) { $limit = 1; }
-    if($year < $startyear+15 && $tech >=  3000) { $limit = 1; }
-    if($year < $startyear+20 && $tech >=  4000) { $limit = 1; }
-    if($year < $startyear+25 && $tech >=  5000) { $limit = 1; }
-    if($year < $startyear+30 && $tech >=  6000) { $limit = 1; }
-    if($year < $startyear+35 && $tech >=  7000) { $limit = 1; }
-    if($year < $startyear+40 && $tech >=  8000) { $limit = 1; }
-    if($year < $startyear+45 && $tech >=  9000) { $limit = 1; }
-    if($year < $startyear+50 && $tech >= 10000) { $limit = 1; }
-    if($year < $startyear+55 && $tech >= 11000) { $limit = 1; }
-    if($year < $startyear+60 && $tech >= 12000) { $limit = 1; }
-    return $limit;
+function getTechLevel($tech):int{
+    return Util::valueFit(
+        floor($tech / 1000),
+        0, 
+        GameConst::$maxTechLevel
+    );
+}
+
+function TechLimit($startyear, $year, $tech) : bool {
+
+    $relYear = $startyear - $year;
+
+    $relMaxTech = Util::valueFit(
+        floor($relYear / 5) + 1,
+        1, 
+        GameConst::$maxTechLevel
+    );
+
+    $techLevel = getTechLevel($tech);
+
+    return $techLevel >= $relMaxTech;
 }
 
 function getTechAbil($tech) : int{
-    if($tech < 1000)      { $abil =   0; }
-    elseif($tech < 2000)  { $abil =  25; }
-    elseif($tech < 3000)  { $abil =  50; }
-    elseif($tech < 4000)  { $abil =  75; }
-    elseif($tech < 5000)  { $abil = 100; }
-    elseif($tech < 6000)  { $abil = 125; }
-    elseif($tech < 7000)  { $abil = 150; }
-    elseif($tech < 8000)  { $abil = 175; }
-    elseif($tech < 9000)  { $abil = 200; }
-    elseif($tech < 10000) { $abil = 225; }
-    elseif($tech < 11000) { $abil = 250; }
-    elseif($tech < 12000) { $abil = 275; }
-    else                  { $abil = 300; }
-    return $abil;
+    return getTechLevel($tech) * 25;
 }
 
 function getTechCost($tech) : float{
-    if($tech < 1000)      { $cost = 1.00; }
-    elseif($tech < 2000)  { $cost = 1.15; }
-    elseif($tech < 3000)  { $cost = 1.30; }
-    elseif($tech < 4000)  { $cost = 1.45; }
-    elseif($tech < 5000)  { $cost = 1.60; }
-    elseif($tech < 6000)  { $cost = 1.75; }
-    elseif($tech < 7000)  { $cost = 1.90; }
-    elseif($tech < 8000)  { $cost = 2.05; }
-    elseif($tech < 9000)  { $cost = 2.20; }
-    elseif($tech < 10000) { $cost = 2.35; }
-    elseif($tech < 11000) { $cost = 2.50; }
-    elseif($tech < 12000) { $cost = 2.65; }
-    else                  { $cost = 2.80; }
-    return $cost;
+    return 1 + getTechLevel($tech) * 0.15;
 }
 
 function getTechCall($tech) : string {
-    if($tech < 1000)      { $str = '0등급'; }
-    elseif($tech < 2000)  { $str = '1등급'; }
-    elseif($tech < 3000)  { $str = '2등급'; }
-    elseif($tech < 4000)  { $str = '3등급'; }
-    elseif($tech < 5000)  { $str = '4등급'; }
-    elseif($tech < 6000)  { $str = '5등급'; }
-    elseif($tech < 7000)  { $str = '6등급'; }
-    elseif($tech < 8000)  { $str = '7등급'; }
-    elseif($tech < 9000)  { $str = '8등급'; }
-    elseif($tech < 10000) { $str = '9등급'; }
-    elseif($tech < 11000) { $str = '10등급'; }
-    elseif($tech < 12000) { $str = '11등급'; }
-    else                  { $str = '12등급'; }
-    return $str;
+    $techLevel = getTechLevel($tech);
+    return "{$techLevel}등급";
 }
 
 function getDexCall($dex) : string {

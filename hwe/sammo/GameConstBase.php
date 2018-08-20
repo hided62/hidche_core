@@ -69,6 +69,10 @@ class GameConstBase
     public static $exchangeFee = 0.01;
     /** @var float 성인 연령 */
     public static $adultAge = 14;
+    /** @var int 최대 계급 */
+    public static $maxDedLevel = 30;
+    /** @var int 최대 기술 레벨 */
+    public static $maxTechLevel = 12;
 
     /** @var int 초기 제한시 장수 제한 */
     public static $initialNationGenLimit = 10;
