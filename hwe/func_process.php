@@ -1289,20 +1289,7 @@ function process_16(&$general) {
         // 숙련도 증가
         addGenDex($general['no'], GameConst::$maxAtmosByCommand, GameConst::$maxTrainByCommand, $general['crewtype'], Util::round($general['crew']/100));
         // 전투 처리
-        $dead = processWar($general, $destcity);
-
-        // 기술력 따라서 보정
-        $dead['att'] = Util::round($dead['att'] * getTechCost($nation['tech']));
-        $dead['def'] = Util::round($dead['def'] * getTechCost($dnation['tech']));
-
-        // 사상자 누적
-        if($nation['nation'] > 0 && $dnation['nation'] > 0) {
-            $query = "update diplomacy set dead=dead+'{$dead['att']}' where me='{$nation['nation']}' and you='{$dnation['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            $query = "update diplomacy set dead=dead+'{$dead['def']}' where you='{$nation['nation']}' and me='{$dnation['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
+        processWar($general, $destcity);
         $log = uniqueItem($general, $log);
     }
 
