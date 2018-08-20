@@ -5,12 +5,12 @@ namespace sammo;
 function processWar(array $rawAttacker, array $rawDefenderCity){
 
     $db = DB::db();
-    $rawAttackerCity = $db->queryFullColumns('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
+    $rawAttackerCity = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
 
     $attackerNationID = $rawAttacker['nation'];
     $defenderNationID = $rawDefenderCity['nation'];
 
-    $rawAttackerNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,totaltech,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
+    $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,totaltech,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
 
     if($defenderNationID == 0){
         $rawDefenderNation =  [
@@ -27,17 +27,17 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
         ];
     }
     else{
-        $rawDefenderNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,totaltech,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $defenderNationID);
+        $rawDefenderNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,totaltech,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $defenderNationID);
     }
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    [$startYear, $year, $month, $cityRate] = $gameStor->getValuesAsArray('startyear', 'year', 'month', 'city_rate');
+    [$startYear, $year, $month, $cityRate] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'city_rate']);
 
     $attacker = new WarUnitGeneral($rawAttacker, $rawAttackerCity, $rawAttackerNation, true, $year, $month);
 
     $city = new WarUnitCity($rawDefenderCity, $rawAttackerNation, $year, $month, $cityRate);
 
-    $defenderList = $db->query('SELECT no,name,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,dex0,dex10,dex20,dex30,dex40 FROM general WHERE city=%i AND nation=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))');
+    $defenderList = $db->query('SELECT no,name,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar FROM general WHERE city=%i AND nation=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))', $city->getVar('nation'), $city->getVar('city'));
 
     usort($defenderList, function($lhs, $rhs){
         return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
@@ -45,7 +45,7 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
 
     $iterDefender = new \ArrayIterator($defenderList);
 
-    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($iterDefender) {
+    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $db) {
         if($prevDefender !== null){
             $prevDefender->applyDB($db);
         }
@@ -111,8 +111,8 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
     $attackerTotalTech = $rawAttackerNation['totaltech'] + $attackerIncTech;
     $defenderTotalTech = $rawDefenderNation['totaltech'] + $defenderIncTech;
 
-    $updateAttackerNation['totaltech'] = Utill::round($attackerTotalTech);
-    $updateDefenderNation['totaltech'] = Utill::round($defenderTotalTech);
+    $updateAttackerNation['totaltech'] = Util::round($attackerTotalTech);
+    $updateDefenderNation['totaltech'] = Util::round($defenderTotalTech);
 
     $updateAttackerNation['tech'] = Util::round($attackerTotalTech / max(GameConst::$initialNationGenLimit, $rawAttackerNation['gennum']));
     $updateDefenderNation['tech'] = Util::round($defenderTotalTech / max(GameConst::$initialNationGenLimit, $rawDefenderNation['gennum']));
@@ -133,11 +133,11 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
     }
 
     //XXX: 새 도시점령 코드 작성하기 전까지 유지
-    $rawAttackerCity = $db->queryFullColumns('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
-    $rawAttackerNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $attackerNationID);
+    $rawAttackerCity = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
+    $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $attackerNationID);
 
     if($defenderNationID !== 0){
-        $rawDefenderNation = $db->queryFullColumns('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $defenderNationID);
+        $rawDefenderNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $defenderNationID);
     }
     
     ConquerCity([
@@ -165,7 +165,7 @@ function processWar_NG(
     callable $getNextDefender, 
     WarUnitCity $city,
     int $relYear
-):array{
+):bool{
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 
     $logger = $attacker->getLogger();
@@ -180,11 +180,11 @@ function processWar_NG(
     $defender = ($getNextDefender)(null, true);
     $conquerCity = false;
     
-    $josaRo = JosaUtil::pick($city->name, '로');
-    $josaYi = JosaUtil::pick($attacker->name, '이');
+    $josaRo = JosaUtil::pick($city->getName(), '로');
+    $josaYi = JosaUtil::pick($attacker->getName(), '이');
 
-    $logger->pushGlobalActionLog("<D><b>{$attacker->getNationVar('name')}</b></>의 <Y>{$attacker->name}</>{$josaYi} <G><b>{$city->name}</b></>{$josaRo} 진격합니다.");
-    $logger->pushGeneralActionLog("<G><b>{$city->name}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
+    $logger->pushGlobalActionLog("<D><b>{$attacker->getNationVar('name')}</b></>의 <Y>{$attacker->getName()}</>{$josaYi} <G><b>{$city->getName()}</b></>{$josaRo} 진격합니다.");
+    $logger->pushGeneralActionLog("<G><b>{$city->getName()}</b></>{$josaRo} <M>진격</>합니다. <1>$date</>");
 
     $battleBegin = false;
 
@@ -227,10 +227,10 @@ function processWar_NG(
                 $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaWa} <Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 대결합니다.");
                 $josaRo = JosaUtil::pick($attacker->getCrewTypeName(), '로');
                 $josaUl = JosaUtil::pick($defender->getCrewTypeName(), '을');
-                $attacker->getLogger()->pushGeneralActionLog("{$attacker->getCrewTypeName()}{$josaRo} <Y>{$defender->name}</>의 {$defender->getCrewTypeName()}{$josaUl} <M>공격</>합니다.");
+                $attacker->getLogger()->pushGeneralActionLog("{$attacker->getCrewTypeName()}{$josaRo} <Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaUl} <M>공격</>합니다.");
                 $josaRo = JosaUtil::pick($defender->getCrewTypeName(), '로');
                 $josaUl = JosaUtil::pick($attacker->getCrewTypeName(), '을');
-                $defender->getLogger()->pushGeneralActionLog("{$defender->getCrewTypeName()}{$josaRo} <Y>{$attacker->name}</>의 {$attacker->getCrewTypeName()}{$josaUl} <M>수비</>합니다.");
+                $defender->getLogger()->pushGeneralActionLog("{$defender->getCrewTypeName()}{$josaRo} <Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaUl} <M>수비</>합니다.");
             }
             else{
                 $josaYi = JosaUtil::pick($attacker->getName(), '이');
@@ -268,7 +268,7 @@ function processWar_NG(
         $defender->checkPostActiveSkill();
         //NOTE: 반계류 등의 스킬을 post에서 반영
 
-        $activeSkillIterator = new AppendIterator();
+        $activeSkillIterator = new \AppendIterator();
         $activeSkillIterator->append($attacker->applyActiveSkill());
         $activeSkillIterator->append($defender->applyActiveSkill());
         foreach($activeSkillIterator as $b){
@@ -393,7 +393,7 @@ function processWar_NG(
         return false;
     }
 
-    if($currPhase == $maxPhase){
+    if($currPhase == $attacker->getMaxPhase()){
         //마지막 페이즈의 전투 마무리
         $attacker->tryWound();
         $defender->tryWound();

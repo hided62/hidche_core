@@ -49,7 +49,7 @@ class WarUnitGeneral extends WarUnit{
         return $this->getVar('name');
     }
 
-    function getCityVar(string $key):array{
+    function getCityVar(string $key){
         return $this->rawCity[$key];
     }
     
@@ -88,7 +88,7 @@ class WarUnitGeneral extends WarUnit{
         if($this->getSpecialWar() == 60){
             $phase += 1;
         }
-        return $phase + $bonusPhase;
+        return $phase + $this->bonusPhase;
     }
 
     function addTrain(int $train){

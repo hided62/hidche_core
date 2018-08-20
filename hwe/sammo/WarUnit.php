@@ -100,7 +100,7 @@ class WarUnit{
         $this->updateVar($key, $targetValue);
     }
 
-    function getNationVar(string $key):array{
+    function getNationVar(string $key){
         return $this->rawNation[$key];
     }
 
@@ -311,13 +311,13 @@ class WarUnit{
         return $this->activatedSkill[$skillName] ?? false;
     }
 
-    function activateSkill(... $skillNames):bool{
+    function activateSkill(... $skillNames){
         foreach($skillNames as $skillName){
             $this->activatedSkill[$skillName] = true;
         }
     }
 
-    function deactivateSkill(... $skillNames):bool{
+    function deactivateSkill(... $skillNames){
         foreach($skillNames as $skillName){
             $this->activatedSkill[$skillName] = false;
         }
@@ -336,6 +336,7 @@ class WarUnit{
     }
 
     function applyActiveSkill(){
+        yield true;
     }
 
     function getHP():int{
