@@ -37,7 +37,7 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
 
     $city = new WarUnitCity($rawDefenderCity, $rawAttackerNation, $year, $month, $cityRate);
 
-    $defenderList = $db->query('SELECT no,name,nation,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,level,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))', $city->getVar('nation'), $city->getVar('city'));
+    $defenderList = $db->query('SELECT no,name,nation,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))', $city->getVar('nation'), $city->getVar('city'));
 
     if(!$defenderList){
         $defenderList = [];
@@ -139,10 +139,10 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
 
     //XXX: 새 도시점령 코드 작성하기 전까지 유지
     $rawAttackerCity = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
-    $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $attackerNationID);
+    $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,totaltech,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
 
     if($defenderNationID !== 0){
-        $rawDefenderNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,tech,`type` FROM nation WHERE nation = %i', $defenderNationID);
+        $rawDefenderNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,totaltech,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $defenderNationID);
     }
     
     ConquerCity([
@@ -484,10 +484,8 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $history[] = "<C>●</>{$year}년 {$month}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>{$josaYi} 멸망하였습니다.";
         pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaUl} 정복");
 
-        $ruler = $db->queryFirstRow('SELECT no, nation from general where nation=%i and level=12', $general['nation']);
-
         //다굴치는 나라들 전방설정을 위해 미리 얻어옴
-        $dipCount = $db->queryFirstField('SELECT count(you) FROM diplomacy WHERE me = %i', $losenation['nation']);
+        $dipNations = $db->queryFirstColumn('SELECT you FROM diplomacy WHERE me = %i', $losenation['nation']);
 
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
@@ -593,10 +591,9 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $query = "delete from nation where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아까 얻어온 다굴국들 전방설정
-        for($i=0; $i < $dipCount; $i++) {
-            $dip = MYDB_fetch_array($dipResult);
+        foreach($dipNations as $dip){
             //전방설정
-            SetNationFront($dip['you']);
+            SetNationFront($dip);
         }
     // 멸망이 아니면
     } else {
