@@ -828,8 +828,8 @@ class WarUnitGeneral extends WarUnit{
         yield true;
 
         if($this->hasActivatedSkill('회피')){
-            $thisLogger->pushGeneralBattleDetailLog('회피</>했다!</>');
-            $opposeLogger->pushGeneralBattleDetailLog('상대가 <R>회피</>했다!</>"');
+            $thisLogger->pushGeneralBattleDetailLog('<C>회피</>했다!</>');
+            $opposeLogger->pushGeneralBattleDetailLog('상대가 <R>회피</>했다!</>');
 
             $oppose->multiplyWarPowerMultiply(0.2);
         }
