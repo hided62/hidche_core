@@ -66,12 +66,6 @@ function process_23(&$general) {
     } else {
         $genlog[] = "<C>●</>$dtype <C>$amount</>을 포상으로 받았습니다.";
         $log[] = "<C>●</>{$admin['month']}월:<Y>{$gen['name']}</>에게 $dtype <C>$amount</>을 수여했습니다. <1>$date</>";
-        $exp = 1;
-        $ded = 1;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
 
         if($what == 1) {
             $gen['gold'] += $amount;
@@ -91,8 +85,7 @@ function process_23(&$general) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
 
-        // 경험치 상승
-        $query = "update general set resturn='SUCCESS',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 //        $log = checkAbility($general, $log);
@@ -193,12 +186,6 @@ function process_24(&$general) {
 
         $genlog[] = "<C>●</>$dtype {$amount}을 몰수 당했습니다.";
         $log[] = "<C>●</>{$admin['month']}월:<Y>{$gen['name']}</>에게서 $dtype <C>$amount</>을 몰수했습니다. <1>$date</>";
-        $exp = 1;
-        $ded = 1;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
 
         if($what == 1) {
             $gen['gold'] -= $amount;
@@ -219,7 +206,7 @@ function process_24(&$general) {
         }
 
         // 경험치 상승
-        $query = "update general set resturn='SUCCESS',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 //        $log = checkAbility($general, $log);
@@ -283,19 +270,13 @@ function process_27(&$general) {
         $josaRo = JosaUtil::pick($destcity['name'], '로');
         $log[] = "<C>●</>{$admin['month']}월:<Y>{$you['name']}</>{$josaUl} <G><b>{$destcity['name']}</b></>{$josaRo} 발령했습니다. <1>$date</>";
         $youlog[] = "<C>●</><Y>{$general['name']}</>에 의해 <G><b>{$destcity['name']}</b></>{$josaRo} 발령됐습니다. <1>$date</>";
-        $exp = 1;
-        $ded = 1;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
 
         // 발령
         $query = "update general set city='$where' where no='{$you['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 경험치 상승
-        $query = "update general set resturn='SUCCESS',experience=experience+'$exp',dedication=dedication+'$ded' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
 //        $log = checkAbility($general, $log);
@@ -342,13 +323,6 @@ function process_51(&$general) {
         return;
     }
     
-    $exp = 5;
-    $ded = 5;
-
-    // 성격 보정
-    $exp = CharExperience($exp, $general['personal']);
-    $ded = CharDedication($ded, $general['personal']);
-
     // 상대에게 발송
     $src = new MessageTarget(
         $general['no'], 
@@ -382,11 +356,6 @@ function process_51(&$general) {
         ['action'=>DiplomaticMessage::TYPE_SURRENDER]
     );
     $msg->send();
-
-    $db->update('general', [
-        'dedication'=>$db->sqleval('dedication+%i', $ded),
-        'experience'=>$db->sqleval('experience+%i', $exp)
-    ], 'no=%i', $general['no']);
 
     pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>으로 항복 권고 서신을 보냈습니다.<1>$date</>"]);
 }
@@ -538,13 +507,6 @@ function process_53(&$general) {
         return;
     }
 
-    $exp = 5;
-    $ded = 5;
-
-    // 성격 보정
-    $exp = CharExperience($exp, $general['personal']);
-    $ded = CharDedication($ded, $general['personal']);
-
     // 상대에게 발송
     $src = new MessageTarget(
         $general['no'], 
@@ -578,11 +540,6 @@ function process_53(&$general) {
         ['action'=>DiplomaticMessage::TYPE_MERGE]
     );
     $msg->send();
-
-    $db->update('general', [
-        'dedication'=>$db->sqleval('dedication+%i', $ded),
-        'experience'=>$db->sqleval('experience+%i', $exp)
-    ], 'no=%i', $general['no']);
 
     $josaRo = JosaUtil::pick($destNation['name'], '로');
     pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>{$josaRo} 통합 제의 서신을 보냈습니다.<1>$date</>"]);
@@ -625,13 +582,6 @@ function process_61(&$general) {
         return;
     }
     
-    $exp = 5;
-    $ded = 5;
-
-    // 성격 보정
-    $exp = CharExperience($exp, $general['personal']);
-    $ded = CharDedication($ded, $general['personal']);
-
     // 상대에게 발송
     $src = new MessageTarget(
         $general['no'], 
@@ -681,11 +631,6 @@ function process_61(&$general) {
         'showing'=>$validUntil->format('Y-m-d H:i:s')
     ], 'me=%i AND you=%i', $src->nationID, $dest->nationID);
     // 3턴후
-
-    $db->update('general', [
-        'dedication'=>$db->sqleval('dedication+%i', $ded),
-        'experience'=>$db->sqleval('experience+%i', $exp)
-    ], 'no=%i', $general['no']);
 
     pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>으로 불가침 제의 서신을 보냈습니다.<1>$date</>"]);
 }
@@ -752,12 +697,6 @@ function process_62(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:초반제한 해제 2년전부터 가능합니다. 선포 실패. <1>$date</>";
     } else {
         $log[] = "<C>●</>{$admin['month']}월:<D><b>{$younation['name']}</b></>으로 선전 포고 했습니다.<1>$date</>";
-        $exp = 5;
-        $ded = 5;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
 
         $josaYi = JosaUtil::pick($general['name'], '이');
         $josaYiNation = JosaUtil::pick($nation['name'], '이');
@@ -773,9 +712,6 @@ function process_62(&$general) {
         MYDB_query($query, $connect) or Error("ally ".MYDB_error($connect),"");
         $query = "update diplomacy set state='1',term='24' where me='{$younation['nation']}' and you='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error("ally ".MYDB_error($connect),"");
-
-        $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //국메로 저장
         $text = "【외교】{$admin['year']}년 {$admin['month']}월:{$nation['name']}에서 {$younation['name']}에 선전포고";
@@ -846,13 +782,6 @@ function process_63(&$general) {
         pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 제의 실패. <1>$date</>"]);
         return;
     }
-    
-    $exp = 5;
-    $ded = 5;
-
-    // 성격 보정
-    $exp = CharExperience($exp, $general['personal']);
-    $ded = CharDedication($ded, $general['personal']);
 
     // 상대에게 발송
     $src = new MessageTarget(
@@ -887,11 +816,6 @@ function process_63(&$general) {
         ['action'=>DiplomaticMessage::TYPE_STOP_WAR]
     );
     $msg->send();
-
-    $db->update('general', [
-        'dedication'=>$db->sqleval('dedication+%i', $ded),
-        'experience'=>$db->sqleval('experience+%i', $exp)
-    ], 'no=%i', $general['no']);
 
     pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>으로 종전 제의 서신을 보냈습니다. <1>$date</>"]);
 }
@@ -931,13 +855,6 @@ function process_64(&$general) {
         return;
     }
 
-    $exp = 5;
-    $ded = 5;
-
-    // 성격 보정
-    $exp = CharExperience($exp, $general['personal']);
-    $ded = CharDedication($ded, $general['personal']);
-
     // 상대에게 발송
     $src = new MessageTarget(
         $general['no'], 
@@ -971,11 +888,6 @@ function process_64(&$general) {
         ['action'=>DiplomaticMessage::TYPE_CANCEL_NA]
     );
     $msg->send();
-
-    $db->update('general', [
-        'dedication'=>$db->sqleval('dedication+%i', $ded),
-        'experience'=>$db->sqleval('experience+%i', $exp)
-    ], 'no=%i', $general['no']);
 
     $josaRo = JosaUtil::pick($destNation['name'], '로');
     pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>{$josaRo} 불가침 파기 제의 서신을 보냈습니다.<1>$date</>"]);
@@ -1036,12 +948,6 @@ function process_65(&$general) {
     } else {
         $josaUl = JosaUtil::pick($destcity['name'], '을');
         $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>{$josaUl} 초토화했습니다. <1>$date</>";
-        $exp = 5;
-        $ded = 5;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
 
         $josaYi = JosaUtil::pick($general['name'], '이');
         $josaYiNation = JosaUtil::pick($nation['name'], '이');
@@ -1062,10 +968,6 @@ function process_65(&$general) {
 
         //성 공백지로
         $query = "update city set pop=pop*0.1,rate=50,agri=agri*0.1,comm=comm*0.1,secu=secu*0.1,nation='0',front='0',gen1='0',gen2='0',gen3='0',conflict='{}' where city='{$destcity['city']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        //경험치, 공헌치
-        $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //전장수 10% 삭감
@@ -1140,12 +1042,6 @@ function process_66(&$general) {
     } else {
         $josaRo = JosaUtil::pick($destcity['name'], '로');
         $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>{$josaRo} 천도했습니다. <1>$date</>";
-        $exp = 15;
-        $ded = 15;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
 
         $josaYi = JosaUtil::pick($general['name'], '이');
         $josaYiNation = JosaUtil::pick($nation['name'], '이');
@@ -1157,10 +1053,6 @@ function process_66(&$general) {
 
         //수도 변경
         $query = "update nation set l{$general['level']}term='0',capital='{$destcity['city']}',capset='1',gold=gold-'$amount',rice=rice-'$amount' where nation='{$general['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        //경험치, 공헌치
-        $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         refreshNationStaticInfo();
