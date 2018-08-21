@@ -21,6 +21,12 @@ function getGeneralLeadership(&$general, $withInjury, $withItem, $withStatAdjust
         $leadership *= (100 - $general['injury']) / 100;
     }
 
+    if($withStatAdjust){
+        if($general['special2'] == 72){
+            $leadership *= 1.15;
+        }
+    }
+
     if(isset($general['lbonus'])){
         $leadership += $general['lbonus'];
     }
