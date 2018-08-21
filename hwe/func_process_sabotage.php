@@ -87,6 +87,9 @@ function process_32(&$general) {
         // 국가보정
         if($nation['type'] == 9) { $ratio += 10; }
 
+        // 보급 끊김
+        if(!$destcity['supply']){ $ratio += 10; }
+
         // 거리보정
         $ratio /= Util::array_get($dist[$destination], 99);
 
@@ -134,6 +137,14 @@ function process_33(&$general) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
+    [$year, $month, $develCost] = $gameStor->getValuesAsArray(['year', 'month', 'develcost']);
+    $logger = new \sammo\ActionLogger($general['no'], $general['nation'], $year, $month);
+
+    $srcCity = $general['city'];
+    $destCity = DecodeCommand($general['turn0'])[1];
+
+
+
     $log = [];
     $alllog = [];
     $history = [];
@@ -147,7 +158,7 @@ function process_33(&$general) {
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
-    $query = "select name,level,nation,secu,secu2 from city where city='$destination'";
+    $query = "select name,level,nation,secu,secu2,supply,agri,comm from city where city='$destination'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
@@ -219,6 +230,9 @@ function process_33(&$general) {
         // 국가보정
         if($mynation['type'] == 9) { $ratio += 10; }
 
+        // 보급 끊김
+        if(!$destcity['supply']){ $ratio += 10; }
+
         // 거리보정
         $ratio /= Util::array_get($dist[$destination], 99);
 
@@ -230,14 +244,26 @@ function process_33(&$general) {
             $gold = (rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount) * $destcity['level'];
             $rice = (rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount) * $destcity['level'];
 
-            $nation['gold'] -= $gold;
-            $nation['rice'] -= $rice;
-            if($nation['gold'] < GameConst::$minNationalGold) { $gold += ($nation['gold'] - GameConst::$minNationalGold); $nation['gold'] = GameConst::$minNationalGold; }
-            if($nation['rice'] < GameConst::$minNationalRice) { $rice += ($nation['rice'] - GameConst::$minNationalRice); $nation['rice'] = GameConst::$minNationalRice; }
-            $query = "update nation set gold='{$nation['gold']}',rice='{$nation['rice']}' where nation='{$destcity['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update city set state=34 where city='$destination'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            if($destcity['supply']){
+                $nation['gold'] -= $gold;
+                $nation['rice'] -= $rice;
+                if($nation['gold'] < GameConst::$minNationalGold) { $gold += ($nation['gold'] - GameConst::$minNationalGold); $nation['gold'] = GameConst::$minNationalGold; }
+                if($nation['rice'] < GameConst::$minNationalRice) { $rice += ($nation['rice'] - GameConst::$minNationalRice); $nation['rice'] = GameConst::$minNationalRice; }
+                $query = "update nation set gold='{$nation['gold']}',rice='{$nation['rice']}' where nation='{$destcity['nation']}'";
+                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                $db->update('city', [
+                    'state'=>34
+                ], 'city=%i', $destcity['city']);
+            }
+            else{
+                $db->update('city', [
+                    'comm'=>max(0, $destcity['comm'] - $gold / 12),
+                    'agri'=>max(0, $destcity['agri'] - $rice / 12),
+                    'state'=>34
+                ], 'city=%i', $destcity['city']);
+            }
+            
+            
             $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             // 본국으로 회수, 재야이면 본인이 소유
@@ -299,7 +325,7 @@ function process_34(&$general) {
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
-    $query = "select name,nation,def,wall,secu,secu2 from city where city='$destination'";
+    $query = "select name,nation,def,wall,secu,secu2,supply from city where city='$destination'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
@@ -367,6 +393,9 @@ function process_34(&$general) {
         // 국가보정
         if($mynation['type'] == 9) { $ratio += 10; }
 
+        // 보급 끊김
+        if(!$destcity['supply']){ $ratio += 10; }
+
         // 거리보정
         $ratio /= Util::array_get($dist[$destination], 99);
 
@@ -426,7 +455,7 @@ function process_35(&$general) {
     $command = DecodeCommand($general['turn0']);
     $destination = $command[1];
 
-    $query = "select name,nation,rate,secu,secu2 from city where city='$destination'";
+    $query = "select name,nation,rate,secu,secu2,supply from city where city='$destination'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
@@ -495,6 +524,9 @@ function process_35(&$general) {
 
         // 국가보정
         if($mynation['type'] == 9) { $ratio += 10; }
+
+        // 보급 끊김
+        if(!$destcity['supply']){ $ratio += 10; }
 
         // 거리보정
         $ratio /= Util::array_get($dist[$destination], 99);
