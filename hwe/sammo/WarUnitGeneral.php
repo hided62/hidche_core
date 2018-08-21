@@ -501,19 +501,6 @@ class WarUnitGeneral extends WarUnit{
         $crewType = $this->getCrewType();
 
         if(
-            !$this->hasActivatedSkill('특수') &&
-            !$this->isAttacker &&
-            $crewType->name == '목우'
-        ){
-            //XXX: 병종에 특수 스킬이 달려있도록 설정해야함
-            $ratio = $this->getComputedAtmos() + $this->getComputedTrain();
-            if(Util::randBool($ratio / 400)){
-                $this->activateSkill('특수', '저지');
-                $activated = true;
-            }
-        }
-
-        if(
             $specialWar == 63 &&
             $this->getPhase() == 0 &&
             $this->getHP() >= 1000 &&
@@ -530,6 +517,11 @@ class WarUnitGeneral extends WarUnit{
             $activated = true;
         }
 
+        if($specialWar == 60){
+            $oppose->activateSkill('회피불가');
+            $oppose->activateSkill('저지불가');
+        }
+
         return $activated;
     }
 
@@ -541,9 +533,18 @@ class WarUnitGeneral extends WarUnit{
         $item = $this->getItem();
         $crewType = $this->getCrewType();
 
-        if ($specialWar == 60 && $oppose->hasActivatedSkill('저지')) {
-            $oppose->deactivateSkill('특수', '저지');
-            $activated = true;
+        if(
+            !$this->hasActivatedSkill('특수') &&
+            !$this->hasActivatedSkill('저지불가') &&
+            !$this->isAttacker &&
+            $crewType->name == '목우'
+        ){
+            //XXX: 병종에 특수 스킬이 달려있도록 설정해야함
+            $ratio = $this->getComputedAtmos() + $this->getComputedTrain();
+            if(Util::randBool($ratio / 400)){
+                $this->activateSkill('특수', '저지');
+                $activated = true;
+            }
         }
 
         if(
@@ -557,6 +558,7 @@ class WarUnitGeneral extends WarUnit{
 
         if(
             !$this->hasActivatedSkill('특수') &&
+            !$this->hasActivatedSkill('회피불가') &&
             Util::randBool($this->getComputedAvoidRatio())
         ){
             $this->activateSkill('특수', '회피시도', '회피');
@@ -715,12 +717,18 @@ class WarUnitGeneral extends WarUnit{
         $opposeLogger = $oppose->getLogger();
 
         if($this->hasActivatedSkill('저지')){
+            
+            $this->addDex($oppose->getCrewType(), $oppose->getWarPower() * 0.5);
+            $this->addDex($this->getCrewType(), $this->getWarPower() * 0.5);
+
             $this->setWarPowerMultiply(0);
             $oppose->setWarPowerMultiply(0);
 
             $thisLogger->pushGeneralBattleDetailLog('상대를 <C>저지</>했다!</>');
             $opposeLogger->pushGeneralBattleDetailLog('저지</>당했다!</>');
             //저지는 특수함.
+
+            
             return;
         }
 
