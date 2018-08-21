@@ -387,9 +387,10 @@ class WarUnitGeneral extends WarUnit{
             !$this->hasActivatedSkill('저격') &&
             Util::randBool(1/5)
         ){
-                $itemActivated = true;
-                $itemConsumed = true;
-                $this->activateSkill('저격');
+            //수극
+            $itemActivated = true;
+            $itemConsumed = true;
+            $this->activateSkill('저격', '수극');
         }
 
         if($itemConsumed){
@@ -414,7 +415,13 @@ class WarUnitGeneral extends WarUnit{
             $this->getLogger()->pushGeneralActionLog("상대에게 <R>저격</>당했다!", ActionLogger::PLAIN);
             $this->getLogger()->pushGeneralBattleDetailLog("상대에게 <R>저격</>당했다!", ActionLogger::PLAIN);
 
-            $this->increaseVarWithLimit('injury', Util::randRangeInt(20, 60), null, 80);
+            if($oppose->hasActivatedSkill('수극')){
+                $this->increaseVarWithLimit('injury', Util::randRangeInt(20, 40), null, 80);
+            }
+            else{
+                $this->increaseVarWithLimit('injury', Util::randRangeInt(20, 60), null, 80);
+            }
+            
         }
 
         return $result;
