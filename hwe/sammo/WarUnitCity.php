@@ -97,7 +97,7 @@ class WarUnitCity extends WarUnit{
 
         //NOTE: 전투로 인한 사망자는 여기서 처리하지 않음
 
-        $decWealth = $this->dead / 100;
+        $decWealth = $this->getKilled() / 10;
         $this->increaseVarWithLimit('agri', -$decWealth, 0);
         $this->increaseVarWithLimit('comm', -$decWealth, 0);
         $this->increaseVarWithLimit('secu', -$decWealth, 0);
