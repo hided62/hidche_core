@@ -583,7 +583,7 @@ class WarUnitGeneral extends WarUnit{
                     $magicSuccessRatio += 1;
                 }
                 if($this->hasActivatedSkill('계략약화')){
-                    $magicSuccessRatio -= 0.2;
+                    $magicSuccessRatio -= 0.1;
                 }
 
                 if($oppose instanceof WarUnitCity){
