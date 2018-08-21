@@ -40,6 +40,7 @@ function CharCall($call) {
         case '정복';    $type = 4; break;
         case '패권';    $type = 3; break;
         case '의협';    $type = 2; break;
+        default:
         case '대의';    $type = 1; break;
         case '왕좌';    $type = 0; break;
     }
