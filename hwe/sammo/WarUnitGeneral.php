@@ -94,7 +94,7 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function addAtmos(int $atmos){
-        $this->increaseVarWithLimit('atmos', $train, 0, GameConst::$maxAtmosByWar);
+        $this->increaseVarWithLimit('atmos', $atmos, 0, GameConst::$maxAtmosByWar);
     }
 
     function getComputedTrain(){
