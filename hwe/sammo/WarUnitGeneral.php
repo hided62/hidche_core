@@ -223,15 +223,6 @@ class WarUnitGeneral extends WarUnit{
                 $opposeWarPowerMultiply *= 0.8;
             }
         }
-        else if($specialWar == 62){
-            if ($this->isAttacker) {
-                $opposeWarPowerMultiply *= 0.9;
-            }
-            else{
-                $myWarPowerMultiply *= 1.1;
-            }
-            
-        }
         else if($specialWar == 75){
             $opposeCrewType = $this->oppose->getCrewType();
             if($opposeCrewType->reqCities || $opposeCrewType->reqRegions){
@@ -529,6 +520,12 @@ class WarUnitGeneral extends WarUnit{
             $activated = true;
         }
 
+        if($specialWar == 62){
+            $oppose->activateSkill('필살불가');
+            $oppose->activateSkill('계략약화');
+            $activated = true;
+        }
+
         return $activated;
     }
 
@@ -547,6 +544,7 @@ class WarUnitGeneral extends WarUnit{
 
         if(
             !$this->hasActivatedSkill('특수') &&
+            !$this->hasActivatedSkill('필살불가') &&
             Util::randBool($this->getComputedCriticalRatio())
         ){
             $this->activateSkill('특수', '필살시도', '필살');
@@ -583,6 +581,9 @@ class WarUnitGeneral extends WarUnit{
                 }
                 if($specialWar == 44){
                     $magicSuccessRatio += 1;
+                }
+                if($this->hasActivatedSkill('계략약화')){
+                    $magicSuccessRatio -= 0.2;
                 }
 
                 if($oppose instanceof WarUnitCity){
