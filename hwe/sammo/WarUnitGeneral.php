@@ -135,10 +135,6 @@ class WarUnitGeneral extends WarUnit{
         $avoidRatio = $this->getCrewType()->avoid / 100;
         $avoidRatio *= $this->getComputedTrain() / 100;
 
-        if($this->getOppose()->getCrewType()->armType == GameUnitConst::T_FOOTMAN){
-            $avoidRatio -= 0.05;
-        }
-
         //특기보정 : 궁병
         if($specialWar == 51){
             $avoidRatio += 0.2;
@@ -147,6 +143,10 @@ class WarUnitGeneral extends WarUnit{
         //도구 보정 : 둔갑천서, 태평요술
         if($item == 26 || $item == 25){
             $avoidRatio += 0.2;
+        }
+
+        if($this->getOppose()->getCrewType()->armType == GameUnitConst::T_FOOTMAN){
+            $avoidRatio *= 0.75;
         }
 
         return $avoidRatio;
