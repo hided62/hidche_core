@@ -1813,7 +1813,7 @@ function PreprocessCommand($no) {
     $connect=$db->get();
     $log = [];
 
-    $query = "select no,name,city,injury,special2,item,turn0 from general where no='$no'";
+    $query = "select no,name,city,injury,special2,item,turn0,rice,crew from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -1888,6 +1888,27 @@ function PreprocessCommand($no) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
     }
+
+    
+    if($general['crew'] >= 100){
+        $newRice = $general['rice'] - $general['crew'] / 100;
+        if($newRice >= 0){
+            $db->update('general', [
+                'rice'=>Util::round($newRice)
+            ], 'no=%i',$general['no']);
+        }
+        else{
+            $db->update('city', [
+                'pop'=>$db->sqleval('pop + %i', $general['crew'])
+            ], 'city=%i', $general['city']);
+            $db->update('general', [
+                'crew'=>0,
+                'rice'=>0
+            ], 'no=%i',$general['no']);
+            pushGenLog($general, ["<C>●</>군량이 모자라 병사들이 <R>소집해제</>되었습니다!"]);
+        }
+    }
+
 }
 
 

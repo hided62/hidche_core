@@ -329,27 +329,6 @@ function preUpdateMonthly() {
     $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='{}',term=0,front=0 where rate<='30' and supply='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-    // 우선 병사수/100 만큼 소비
-    $query = "update general set rice=rice-round(crew/100) where crew>=100";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    // 쌀이 마이너스인 장수들 소집해제
-    $query = "select no,name,rice,crew,city from general where rice<0";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($result);
-    for($i=0; $i < $gencount; $i++) {
-        $general = MYDB_fetch_array($result);
-
-        // 주민으로 돌아감
-        $query = "update city set pop=pop+'{$general['crew']}' where city='{$general['city']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $query = "update general set crew=0,rice=0 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        pushGenLog($general, ["<C>●</>군량이 모자라 병사들이 <R>소집해제</>되었습니다!"]);
-    }
-
     //접률감소
     $query = "update general set connect=floor(connect*0.99)";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
