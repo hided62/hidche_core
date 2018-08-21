@@ -465,7 +465,7 @@ function getTechLevel($tech):int{
 
 function TechLimit($startyear, $year, $tech) : bool {
 
-    $relYear = $startyear - $year;
+    $relYear = $year - $startyear;
 
     $relMaxTech = Util::valueFit(
         floor($relYear / 5) + 1,
