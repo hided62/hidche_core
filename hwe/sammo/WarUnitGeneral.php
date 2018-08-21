@@ -718,8 +718,8 @@ class WarUnitGeneral extends WarUnit{
 
         if($this->hasActivatedSkill('저지')){
             
-            $this->addDex($oppose->getCrewType(), $oppose->getWarPower() * 0.5);
-            $this->addDex($this->getCrewType(), $this->getWarPower() * 0.5);
+            $this->addDex($oppose->getCrewType(), $oppose->getWarPower() * 0.5 * 0.9);
+            $this->addDex($this->getCrewType(), $this->getWarPower() * 0.5 * 0.9);
 
             $this->setWarPowerMultiply(0);
             $oppose->setWarPowerMultiply(0);
