@@ -819,7 +819,7 @@ class WarUnitGeneral extends WarUnit{
             foreach($table as $skillKey => $skillMultiply){
                 if($this->hasActivatedSkill($skillKey)){
                     $josaUl = \sammo\JosaUtil::pick($skillKey, '을');
-                    $thisLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>{$josaUl} <C>실패</>했다!");
+                    $thisLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>{$josaUl} <R>실패</>했다!");
                     $opposeLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>{$josaUl} 간파했다!");
 
                     $this->multiplyWarPowerMultiply($skillMultiply);
