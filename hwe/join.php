@@ -84,7 +84,7 @@ $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation 
 echo getInvitationList($nationList);
 ?>
 
-<form name=form1 method=post action=join_post.php>
+<form id='join_form' name=form1 method=post action=join_post.php>
     <table align=center width=1000 class='tb_layout bg0'>
         <tr>
             <td colspan=3 align=center id=bg1>장수 생성</td>

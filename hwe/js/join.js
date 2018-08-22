@@ -163,4 +163,14 @@ jQuery(function($){
             $charInfoText.html('');
         }
     });
+
+    $('#join_form').submit(function(){
+        var currentStatTotal = parseInt($leader.val()) + parseInt($power.val()) + parseInt($leader.val());
+        if(currentStatTotal < defaultStatTotal){
+            if(!confirm('현재 능력치 총합은 {0}으로, {1}보다 낮습니다. 장수 생성을 진행할까요?'.format(currentStatTotal, defaultStatTotal))){
+                return false;
+            }
+        }
+        return true;
+    });
 });
