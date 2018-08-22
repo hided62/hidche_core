@@ -211,6 +211,13 @@ function process_32(&$general) {
         return;
     }
 
+    if($srcItemScore){
+        $itemName = getItemName($general['item']);
+        $josaUl = JosaUtil::pick($itemName, '을');
+        $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
+        $general['item'] = 0;
+    }
+
     $josaYi = JosaUtil::pick($destCityName, '이');
     $logger->pushGlobalActionLog("<G><b>{$destCityName}</b></>{$josaYi} 불타고 있습니다.");
     $josaYi = JosaUtil::pick($sabotageName, '이');
@@ -243,6 +250,7 @@ function process_32(&$general) {
         'resturn'=>'SUCCESS',
         'gold'=>$general['gold'],
         'rice'=>$general['rice'],
+        'item'=>$general['item'],
         'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
         'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
     ], 'no=%i', $general['no']);
@@ -338,6 +346,13 @@ function process_33(&$general) {
         return;
     }
 
+    if($srcItemScore){
+        $itemName = getItemName($general['item']);
+        $josaUl = JosaUtil::pick($itemName, '을');
+        $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
+        $general['item'] = 0;
+    }
+
     $logger->pushGlobalActionLog("<G><b>{$destCityName}</b></>에서 금과 쌀을 도둑맞았습니다.");
     $josaYi = JosaUtil::pick($sabotageName, '이');
     $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 성공했습니다. <1>$date</>");
@@ -404,6 +419,7 @@ function process_33(&$general) {
         'resturn'=>'SUCCESS',
         'gold'=>$general['gold'],
         'rice'=>$general['rice'],
+        'item'=>$general['item'],
         'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
         'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
     ], 'no=%i', $general['no']);
@@ -497,6 +513,13 @@ function process_34(&$general) {
         return;
     }
 
+    if($srcItemScore){
+        $itemName = getItemName($general['item']);
+        $josaUl = JosaUtil::pick($itemName, '을');
+        $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
+        $general['item'] = 0;
+    }
+
     $logger->pushGlobalActionLog("누군가가 <G><b>{$destCityName}</b></>의 성벽을 허물었습니다.");
     $josaYi = JosaUtil::pick($sabotageName, '이');
     $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 성공했습니다. <1>$date</>");
@@ -529,6 +552,7 @@ function process_34(&$general) {
         'resturn'=>'SUCCESS',
         'gold'=>$general['gold'],
         'rice'=>$general['rice'],
+        'item'=>$general['item'],
         'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
         'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
     ], 'no=%i', $general['no']);
@@ -624,6 +648,13 @@ function process_35(&$general) {
         return;
     }
 
+    if($srcItemScore){
+        $itemName = getItemName($general['item']);
+        $josaUl = JosaUtil::pick($itemName, '을');
+        $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
+        $general['item'] = 0;
+    }
+
     $logger->pushGlobalActionLog("<G><b>{$destCityName}</b></>의 백성들이 동요하고 있습니다.");
     $josaYi = JosaUtil::pick($sabotageName, '이');
     $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 성공했습니다. <1>$date</>");
@@ -656,6 +687,7 @@ function process_35(&$general) {
         'resturn'=>'SUCCESS',
         'gold'=>$general['gold'],
         'rice'=>$general['rice'],
+        'item'=>$general['item'],
         'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
         'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
     ], 'no=%i', $general['no']);
