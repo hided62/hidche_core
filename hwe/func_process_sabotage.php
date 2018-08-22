@@ -81,6 +81,7 @@ function calcSabotageDefendScore(string $statType, array $generalList, array $ci
         }
     }
 
+    $cityScore = $city['secu'] / $city['secu2'] / 5;
     $supplyScore = $city['supply'] ? 0.1 : 0;
     
     return [
