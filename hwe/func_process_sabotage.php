@@ -395,7 +395,7 @@ function process_33(&$general) {
     // 본국으로 회수, 재야이면 본인이 소유
     if($general['nation'] != 0) {
         $db->update('nation', [
-            'gold' => $db->sqleval('gold + $i', $gold),
+            'gold' => $db->sqleval('gold + %i', $gold),
             'rice' => $db->sqleval('rice + %i', $rice)
         ], 'nation=%i', $srcNationID);
     } else {
