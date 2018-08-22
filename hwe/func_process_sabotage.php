@@ -143,7 +143,7 @@ function process_32(&$general) {
     $srcCityID = $general['city'];
     $destCityID = DecodeCommand($general['turn0'])[1];
 
-    $dist = searchDistance($srcCity, 5, false);
+    $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
     $destCity = $db->queryFirstRow('SELECT city,name,nation,supply,agri,comm FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
@@ -267,7 +267,7 @@ function process_33(&$general) {
     $srcCityID = $general['city'];
     $destCityID = DecodeCommand($general['turn0'])[1];
 
-    $dist = searchDistance($srcCity, 5, false);
+    $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
     $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
@@ -428,7 +428,7 @@ function process_34(&$general) {
     $srcCityID = $general['city'];
     $destCityID = DecodeCommand($general['turn0'])[1];
 
-    $dist = searchDistance($srcCity, 5, false);
+    $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
     $destCity = $db->queryFirstRow('SELECT city,name,nation,def,wall,secu,secu2,supply FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
@@ -553,7 +553,7 @@ function process_35(&$general) {
     $srcCityID = $general['city'];
     $destCityID = DecodeCommand($general['turn0'])[1];
 
-    $dist = searchDistance($srcCity, 5, false);
+    $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
     $destCity = $db->queryFirstRow('SELECT city,name,nation,rate,secu,secu2,supply FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
