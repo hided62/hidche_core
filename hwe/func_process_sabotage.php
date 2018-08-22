@@ -175,7 +175,7 @@ function process_32(&$general) {
         $destGenScore,
         $destCityScore,
         $destSupplyScore
-    ] = calcSabotageDefendScore($statType, $city, $generalList, $destNation);
+    ] = calcSabotageDefendScore($statType, $destCity, $generalList, $destNation);
 
     $sabotageProb = (
         GameConst::$sabotageDefaultProb 
@@ -302,7 +302,7 @@ function process_33(&$general) {
         $destGenScore,
         $destCityScore,
         $destSupplyScore
-    ] = calcSabotageDefendScore($statType, $city, $generalList, $destNation);
+    ] = calcSabotageDefendScore($statType, $destCity, $generalList, $destNation);
 
     $sabotageProb = (
         GameConst::$sabotageDefaultProb 
@@ -461,7 +461,7 @@ function process_34(&$general) {
         $destGenScore,
         $destCityScore,
         $destSupplyScore
-    ] = calcSabotageDefendScore($statType, $city, $generalList, $destNation);
+    ] = calcSabotageDefendScore($statType, $destCity, $generalList, $destNation);
 
     $sabotageProb = (
         GameConst::$sabotageDefaultProb 
@@ -588,7 +588,7 @@ function process_35(&$general) {
         $destGenScore,
         $destCityScore,
         $destSupplyScore
-    ] = calcSabotageDefendScore($statType, $city, $generalList, $destNation);
+    ] = calcSabotageDefendScore($statType, $destCity, $generalList, $destNation);
 
     $sabotageProb = (
         GameConst::$sabotageDefaultProb 
