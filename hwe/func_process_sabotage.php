@@ -668,7 +668,11 @@ function process_35(&$general) {
 
     // 선동 최대 10
     $secuAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['secu']);
-    $rateAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) / 50, null, $destCity['rate']);
+    $rateAmount = Util::valueFit(
+        Util::round(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) / 50),
+        null, 
+        $destCity['rate']
+    );
     $destCity['secu'] -= $secuAmount;
     $destCity['rate'] -= $rateAmount;
     
