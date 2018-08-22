@@ -64,6 +64,32 @@ function calcSabotageAttackScore(string $statType, array $general, array $nation
     ];
 }
 
+function calcSabotageDefendScore(string $statType, array $generalList, array $city, array $nation):array{
+    $maxGenScore = 0;
+
+    foreach ($generalList as $general) {
+        setLeadershipBonus($general, $nation['level']);
+        
+        if ($statType === 'leader') {
+            $maxGenScore = max($maxGenScore, getGeneralLeadership($general, true, true, true));
+        } elseif ($statType === 'power') {
+            $maxGenScore = max($maxGenScore, getGeneralPower($general, true, true, true));
+        } elseif ($statType === 'intel') {
+            $maxGenScore = max($maxGenScore, getGeneralIntel($general, true, true, true));
+        } else {
+            throw new MustNotBeReachedException();
+        }
+    }
+
+    $supplyScore = $city['supply'] ? 0.1 : 0;
+    
+    return [
+        ($maxGenScore / GameConst::$sabotageProbCoefByStat),
+        $cityScore,
+        $supplyScore
+    ];
+}
+
 function checkSabotageFailCondition($general, $srcCity, $destCity, $reqGold, $reqRice, $dipState):?string{
     $srcNationID = $general['nation'];
     $destNationID = $destCity['nation'];
@@ -96,36 +122,6 @@ function checkSabotageFailCondition($general, $srcCity, $destCity, $reqGold, $re
         return '불가침국입니다.';
     }
     return null;
-}
-
-function calcSabotageDefendScore(string $statType, array $generalList, array $city, array $nation):array{
-    $maxGenScore = 0;
-
-    foreach($generalList as $general){
-        setLeadershipBonus($general, $nation['level']);
-        
-        if($statType === 'leader'){
-            $maxGenScore = max($maxGenScore, getGeneralLeadership($general, true, true, true));
-        }
-        else if($statType === 'power'){
-            $maxGenScore = max($maxGenScore, getGeneralPower($general, true, true, true));
-        }
-        else if($statType === 'intel'){
-            $maxGenScore = max($maxGenScore, getGeneralIntel($general, true, true, true));
-        }
-        else{
-            throw new MustNotBeReachedException();
-        }
-    }
-
-    $cityScore = $city['secu'] / $city['secu2'] / 5;
-    $supplyScore = $city['supply'] ? 0.1 : 0;
-    
-    return [
-        ($maxGenScore / GameConst::$sabotageProbCoefByStat), 
-        $city['secu'] / $city['secu2'] / 5,
-        $supplyScore
-    ];
 }
 
 function process_32(&$general) {
@@ -394,12 +390,14 @@ function process_33(&$general) {
         ], 'city=%i', $destCityID);
     }
     
-    // 본국으로 회수, 재야이면 본인이 소유
+    // 본국으로 일부 회수, 재야이면 본인이 전량 소유
     if($general['nation'] != 0) {
         $db->update('nation', [
-            'gold' => $db->sqleval('gold + %i', $gold),
-            'rice' => $db->sqleval('rice + %i', $rice)
+            'gold' => $db->sqleval('gold + %i', Util::round($gold * 0.7)),
+            'rice' => $db->sqleval('rice + %i', Util::round($rice * 0.7))
         ], 'nation=%i', $srcNationID);
+        $general['gold'] += $gold - Util::round($gold * 0.7);
+        $general['rice'] += $rice - Util::round($rice * 0.7);
     } else {
         $general['gold'] += $gold;
         $general['rice'] += $rice;
