@@ -397,7 +397,7 @@ function process_33(&$general) {
         $db->update('nation', [
             'gold' => $db->sqleval('gold + $i', $gold),
             'rice' => $db->sqleval('rice + %i', $rice)
-        ], $srcNationID);
+        ], 'nation=%i', $srcNationID);
     } else {
         $general['gold'] += $gold;
         $general['rice'] += $rice;
