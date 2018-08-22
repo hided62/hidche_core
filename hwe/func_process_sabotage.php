@@ -18,6 +18,8 @@ function calcSabotageAttackScore(string $statType, array $general, array $nation
         throw new MustNotBeReachedException();
     }
 
+    $genScore /= GameConst::$sabotageProbCoefByStat;
+
     $specialScore = 0;
 
     if($general['special'] == 31){
