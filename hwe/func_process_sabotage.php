@@ -360,7 +360,7 @@ function process_33(&$general) {
     $rice = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'];
 
     if($destCity['supply']){
-        [$destNationGold, $destNationRice] = $db->queryFirstList('SELECT gold,rice FROM nation WHERE nation=%i', $destCityID);
+        [$destNationGold, $destNationRice] = $db->queryFirstList('SELECT gold,rice FROM nation WHERE nation=%i', $destNationID);
 
         $destNationGold -= $gold;
         $destNationRice -= $rice;
