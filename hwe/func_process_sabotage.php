@@ -234,7 +234,7 @@ function process_32(&$general) {
 
     $injuryCount = SabotageInjury($destCityID);
 
-    $logger->pushGeneralActionLog("도시의 농업이 <C>{$agriAmount}</>, 상업이 <C>{$commAmount}</>만큼 감소하고, 장수 {$injuryCount}명이 부상 당했습니다.", ActionLogger::PLAIN);
+    $logger->pushGeneralActionLog("도시의 농업이 <C>{$agriAmount}</>, 상업이 <C>{$commAmount}</>만큼 감소하고, 장수 <C>{$injuryCount}</>명이 부상 당했습니다.", ActionLogger::PLAIN);
 
     $exp = Util::randRangeInt(201, 300);
     $exp *= getCharExpMultiplier($general['personal']);
@@ -543,7 +543,7 @@ function process_34(&$general) {
 
     $injuryCount = SabotageInjury($destCityID);
 
-    $logger->pushGeneralActionLog("도시의 수비가 <C>{$defAmount}</>, 성벽이 <C>{$wallAmount}</>만큼 감소하고, 장수 {$injuryCount}명이 부상 당했습니다.", ActionLogger::PLAIN);
+    $logger->pushGeneralActionLog("도시의 수비가 <C>{$defAmount}</>, 성벽이 <C>{$wallAmount}</>만큼 감소하고, 장수 <C>{$injuryCount}</>명이 부상 당했습니다.", ActionLogger::PLAIN);
 
     $exp = Util::randRangeInt(201, 300);
     $exp *= getCharExpMultiplier($general['personal']);
@@ -684,7 +684,7 @@ function process_35(&$general) {
 
     $injuryCount = SabotageInjury($destCityID);
 
-    $logger->pushGeneralActionLog("도시의 치안이 <C>{$secuAmount}</>, 민심이 <C>{$rateAmount}</>만큼 감소하고, 장수 {$injuryCount}명이 부상 당했습니다.", ActionLogger::PLAIN);
+    $logger->pushGeneralActionLog("도시의 치안이 <C>{$secuAmount}</>, 민심이 <C>{$rateAmount}</>만큼 감소하고, 장수 <C>{$injuryCount}</>명이 부상 당했습니다.", ActionLogger::PLAIN);
 
     $exp = Util::randRangeInt(201, 300);
     $exp *= getCharExpMultiplier($general['personal']);
