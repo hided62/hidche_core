@@ -40,13 +40,13 @@ class GameConstBase
     /** @var float 훈련시 사기 감소율*/
     public static $atmosSideEffectByTraining = 1;
     /** @var float 계략 기본 성공률*/
-    public static $sabotageDefaultProb = 0.25;
+    public static $sabotageDefaultProb = 0.15;
     /** @var int 계략시 확률 가중치(수치가 클수록 변화가 적음 : (지력차/$firing + $basefiring)*/
     public static $sabotageProbCoefByStat = 300;
-    /** @var int 계략시 기본 수치 감소량*/
-    public static $sabotageDefaultAmount = 100;
-    /** @var int 계략시 수치 감소량($firingbase ~ $firingpower)*/
-    public static $sabotageAmountCoef = 400;
+    /** @var int 계략시 최소 수치 감소량*/
+    public static $sabotageDamageMin = 100;
+    /** @var int 계략시 최대 수치 감소량*/
+    public static $sabotageDamageMax = 500;
     /** @var string 기본 배경색깔 푸른색*/
     public static $basecolor = "#000044";
     /** @var string 기본 배경색깔 초록색*/

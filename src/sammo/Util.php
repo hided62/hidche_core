@@ -400,12 +400,12 @@ class Util extends \utilphp\util
     /**
      * $min과 $max 사이의 값으로 교정
      */
-    public static function valueFit($value, $min, $max)
+    public static function valueFit($value, $min = null, $max = null)
     {
-        if ($value < $min) {
+        if ($min !== null && $value < $min) {
             return $min;
         }
-        if ($value > $max) {
+        if ($max !== null && $value > $max) {
             return $max;
         }
         return $value;

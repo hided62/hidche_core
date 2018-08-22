@@ -2,570 +2,663 @@
 
 namespace sammo;
 
+function calcSabotageAttackScore(string $statType, array $general, array $nation):array{
+    setLeadershipBonus($general, $nation['level']);
+
+    if($statType === 'leader'){
+        $genScore = getGeneralLeadership($general, true, true, true);
+    }
+    else if($statType === 'power'){
+        $genScore = getGeneralPower($general, true, true, true);
+    }
+    else if($statType === 'intel'){
+        $genScore = getGeneralIntel($general, true, true, true);
+    }
+    else{
+        throw new MustNotBeReachedException();
+    }
+
+    $specialScore = 0;
+
+    if($general['special'] == 31){
+        //귀모
+        $specialScore += 0.2;
+    }
+    if($general['special2'] == 41){
+        //신산
+        $specialScore += 0.1;
+    }
+
+    if($general['item'] == 21){
+        //육도
+        $specialScore += 0.2;
+    }
+    else if($general['item'] == 22){
+        //삼략
+        $specialScore += 0.2;
+    }
+
+    $itemScore = 0;
+    if($general['item'] == 5){
+        //이추
+        $itemScore += 0.1;
+    }
+    else if($general['item'] == 6){
+        //향낭
+        $itemScore += 0.2;
+    }
+    
+
+    $nationScore = 0;
+    if($nation['type'] == 9){
+        $nationScore = 0.1;
+    }
+
+    return [
+        $genScore,
+        $specialScore,
+        $itemScore,
+        $nationScore,
+    ];
+}
+
+function checkSabotageFailCondition($general, $srcCity, $destCity, $reqGold, $reqRice, $dipState):?string{
+    $srcNationID = $general['nation'];
+    $destNationID = $destCity['nation'];
+
+    if(!$destCity){
+        return '없는 도시입니다.';
+    }
+    if(!$general['level'] == 0){
+        return '재야입니다.';
+    }
+    if($srcNationID != $srcCity['nation']){
+        return '아국이 아닙니다.';
+    }
+    if(!$srcCity['supply']){
+        return '고립된 도시입니다.';
+    }
+    if($destNationID == 0){
+        return '공백지입니다.';
+    }
+    if($general['gold'] < $reqGold){
+        return '자금이 모자랍니다.';
+    }
+    if($general['rice'] < $reqRice){
+        return '군량이 모자랍니다.';
+    }
+    if($srcNationID == $destNationID){
+        return '아국입니다.';
+    }
+    if($dipState >= 7){
+        return '불가침국입니다.';
+    }
+    return null;
+}
+
+function calcSabotageDefendScore(string $statType, array $generalList, array $city, array $nation):array{
+    $maxGenScore = 0;
+
+    foreach($generalList as $general){
+        setLeadershipBonus($general, $nation['level']);
+        
+        if($statType === 'leader'){
+            $maxGenScore = max($maxGenScore, getGeneralLeadership($general, true, true, true));
+        }
+        else if($statType === 'power'){
+            $maxGenScore = max($maxGenScore, getGeneralPower($general, true, true, true));
+        }
+        else if($statType === 'intel'){
+            $maxGenScore = max($maxGenScore, getGeneralIntel($general, true, true, true));
+        }
+        else{
+            throw new MustNotBeReachedException();
+        }
+    }
+
+    $cityScore = $city['secu'] / $city['secu2'] / 5;
+    $supplyScore = $city['supply'] ? 0.1 : 0;
+    
+    return [
+        ($maxGenScore / GameConst::$sabotageProbCoefByStat), 
+        $city['secu'] / $city['secu2'] / 5,
+        $supplyScore
+    ];
+}
+
 function process_32(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
 
     $date = substr($general['turntime'],11,5);
+    $sabotageName = '화계';
+    $statType = 'intel';
 
-    $admin = $gameStor->getValues(['year','month','develcost']);
+    [$year, $month, $develCost] = $gameStor->getValuesAsArray(['year','month','develcost']);
+    $logger = new ActionLogger($general['no'], $general['nation'], $year, $month);
 
-    $dist = searchDistance($general['city'], 5, false);
-    $command = DecodeCommand($general['turn0']);
-    $destination = $command[1];
+    $reqGold = $develCost * 5;
+    $reqRice = $develCost * 5;
+    
+    $srcCityID = $general['city'];
+    $destCityID = DecodeCommand($general['turn0'])[1];
 
-    $query = "select * from city where city='$destination'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $destcity = MYDB_fetch_array($result);
+    $dist = searchDistance($srcCity, 5, false);
+    $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,nation,supply,agri,comm FROM city WHERE city=%i',$destCityID);
+    $destCityName = $destCity['name']??null;
 
-    $nation = getNationStaticInfo($general['nation']);
+    $srcNationID = $general['nation'];
+    $destNationID = $destCity['nation'];
 
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
+    $dipState = $db->queryFirstField('SELECT `state` FROM diplomacy WHERE me=%i AND you=%i', $srcNationID, $destNationID);
 
-    $query = "select state from diplomacy where me='{$general['nation']}' and you='{$destcity['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $dip = MYDB_fetch_array($result);
-
-    if(!$destcity) {
-        $log[] = "<C>●</>{$admin['month']}월:없는 도시입니다. 화계 실패. <1>$date</>";
-    } elseif($general['level'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>에 화계 실패. <1>$date</>";
-    } elseif($general['nation'] != $city['nation'] && $nation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. <G><b>{$destcity['name']}</b></>에 화계 실패. <1>$date</>";
-    } elseif($city['supply'] == 0 && $nation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>에 화계 실패. <1>$date</>";
-    } elseif($destcity['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:공백지입니다. <G><b>{$destcity['name']}</b></>에 화계 실패. <1>$date</>";
-    } elseif($general['gold'] < $admin['develcost']*5) {
-        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. <G><b>{$destcity['name']}</b></>에 화계 실패. <1>$date</>";
-    } elseif($general['rice'] < $admin['develcost']*5) {
-        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>에 화계 실패. <1>$date</>";
-    } elseif($general['nation'] == $destcity['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국입니다. <G><b>{$destcity['name']}</b></>에 화계 실패. <1>$date</>";
-    } elseif($dip['state'] >= 7) {
-        $log[] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 화계 실패. <1>$date</>";
-    } else {
-        $query = "select leader,horse,power,weap,intel,book,injury from general where city='$destination' and nation='{$destcity['nation']}' order by intel desc";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $intelgen = MYDB_fetch_array($result);
-
-        $ratio = Util::round(((getGeneralIntel($general, true, true, true, false) - getGeneralIntel($intelgen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
-        $ratio2 = rand() % 100;
-
-        if($general['item'] == 5) {
-            // 이추 사용
-            $ratio += 10;
-            $query = "update general set item=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $josaUl = JosaUtil::pick($general['item'], '을');
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
-            $general['item'] = 0;
-        } elseif($general['item'] == 6) {
-            // 향낭 사용
-            $ratio += 20;
-            $query = "update general set item=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $josaUl = JosaUtil::pick($general['item'], '을');
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
-            $general['item'] = 0;
-        } elseif($general['item'] >= 21 && $general['item'] <= 22) {
-            // 육도, 삼략 사용
-            $ratio += 20;
-        }
-
-        // 특기보정 : 신산, 귀모
-        if($general['special2'] == 41) { $ratio += 10; }
-        if($general['special'] == 31) { $ratio += 20; }
-
-        // 국가보정
-        if($nation['type'] == 9) { $ratio += 10; }
-
-        // 보급 끊김
-        if(!$destcity['supply']){ $ratio += 10; }
-
-        // 거리보정
-        $ratio /= Util::array_get($dist[$destination], 99);
-
-        if($ratio > $ratio2) {
-            $josaYi = JosaUtil::pick($destcity['name'], '이');
-            $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>{$josaYi} 불타고 있습니다.";
-            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 화계가 성공했습니다. <1>$date</>";
-
-            $destcity['agri'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
-            $destcity['comm'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
-            if($destcity['agri'] < 0) { $destcity['agri'] = 0; }
-            if($destcity['comm'] < 0) { $destcity['comm'] = 0; }
-            $query = "update city set state=32,agri='{$destcity['agri']}',comm='{$destcity['comm']}' where city='$destination'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            SabotageInjury($destination);
-            $exp = rand() % 100 + 201;
-            $ded = rand() % 70 + 141;
-        } else {
-            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 화계가 실패했습니다. <1>$date</>";
-            $exp = rand() % 100 + 1;
-            $ded = rand() % 70 + 1;
-        }
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        $general['intel2']++;
-        $general['gold'] -= $admin['develcost']*5;
-        $general['rice'] -= $admin['develcost']*5;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log = checkAbility($general, $log);
+    $failReason = checkSabotageFailCondition($general, $srcCity, $destCity, $reqGold, $reqRice, $dipState);
+    if($failReason !== null){
+        $logger->pushGeneralActionLog("{$failReason} {$sabotageName} 실패. <1>{$date}</>");
+        return;
     }
-    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-    pushGenLog($general, $log);
+
+    $srcNation = getNationStaticInfo($srcNationID);
+    $destNation = getNationStaticInfo($destNationID);
+
+    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level WHERE city=%i and nation=%i', $city['city'], $city['nation']);
+
+    [
+        $srcGenScore,
+        $srcSpecialScore,
+        $srcItemScore,
+        $srcNationScore,
+    ] = calcSabotageAttackScore($statType, $general, $srcNation);
+
+    [
+        $destGenScore,
+        $destCityScore,
+        $destSupplyScore
+    ] = calcSabotageDefendScore($statType, $city, $generalList, $destNation);
+
+    $sabotageProb = (
+        GameConst::$sabotageDefaultProb 
+        + ($srcGenScore + $srcSpecialScore + $srcItemScore + $srcNationScore) 
+        - ($destGenScore + $destCityScore + $destSupplyScore)
+    );
+
+    // 거리보정
+    $sabotageProb /= Util::array_get($dist[$destCityID], 99);
+
+    if(!Util::randBool($sabotageProb)){
+        $josaYi = JosaUtil::pick($sabotageName, '이');
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 실패했습니다. <1>$date</>");
+
+        $exp = Util::randRangeInt(1, 100);
+        $exp *= getCharExpMultiplier($general['personal']);
+        $ded = Util::randRangeInt(1, 70);
+        $ded *= getCharDedMultiplier($general['personal']);
+
+        $general[$statType.'2'] += 1;
+        $general['gold'] -= $reqGold;
+        $general['rice'] -= $reqRice;
+        $db->update('general', [
+            ($statType.'2') => $general[$statType.'2'],
+            'resturn'=>'SUCCESS',
+            'gold'=>$general['gold'],
+            'rice'=>$general['rice'],
+            'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
+            'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
+        ], 'no=%i', $general['no']);
+
+        checkAbilityEx($general['no'], $logger);
+        return;
+    }
+
+    $josaYi = JosaUtil::pick($destCityName, '이');
+    $logger->pushGlobalActionLog("<G><b>{$destCityName}</b></>{$josaYi} 불타고 있습니다.");
+    $josaYi = JosaUtil::pick($sabotageName, '이');
+    $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 성공했습니다. <1>$date</>");
+
+    $destCity['agri'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax);
+    $destCity['comm'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax);
+    if($destCity['agri'] < 0) { $destCity['agri'] = 0; }
+    if($destCity['comm'] < 0) { $destCity['comm'] = 0; }
+
+    $db->update('city', [
+        'state'=>32,
+        'agri'=>$destCity['agri'],
+        'comm'=>$destCity['comm']
+    ], 'city=%i', $destCityID);
+
+    SabotageInjury($destCityID);
+
+    $exp = Util::randRangeInt(201, 300);
+    $exp *= getCharExpMultiplier($general['personal']);
+    $ded = Util::randRangeInt(141, 210);
+    $ded *= getCharDedMultiplier($general['personal']);
+
+    $general[$statType.'2'] += 1;
+    $general['gold'] -= $reqGold;
+    $general['rice'] -= $reqRice;
+    $db->update('general', [
+        'firenum' => $db->sqleval('firenum + 1'),
+        ($statType.'2') => $general[$statType.'2'],
+        'resturn'=>'SUCCESS',
+        'gold'=>$general['gold'],
+        'rice'=>$general['rice'],
+        'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
+        'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
+    ], 'no=%i', $general['no']);
+
+    checkAbilityEx($general['no'], $logger);
 }
 
 function process_33(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
-    [$year, $month, $develCost] = $gameStor->getValuesAsArray(['year', 'month', 'develcost']);
-    $logger = new \sammo\ActionLogger($general['no'], $general['nation'], $year, $month);
+    $date = substr($general['turntime'],11,5);
+    $sabotageName = '탈취';
+    $statType = 'power';
 
-    $srcCity = $general['city'];
-    $destCity = DecodeCommand($general['turn0'])[1];
+    [$year, $month, $develCost] = $gameStor->getValuesAsArray(['year','month','develcost']);
+    $logger = new ActionLogger($general['no'], $general['nation'], $year, $month);
 
+    $reqGold = $develCost * 5;
+    $reqRice = $develCost * 5;
 
+    $srcCityID = $general['city'];
+    $destCityID = DecodeCommand($general['turn0'])[1];
 
-    $log = [];
-    $alllog = [];
-    $history = [];
+    $dist = searchDistance($srcCity, 5, false);
+    $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm FROM city WHERE city=%i',$destCityID);
+    $destCityName = $destCity['name']??null;
+
+    $srcNationID = $general['nation'];
+    $destNationID = $destCity['nation'];
 
     //탈취는 0까지 무제한
-    $date = substr($general['turntime'],11,5);
 
-    $admin = $gameStor->getValues(['year','month','develcost']);
+    $srcNation = getNationStaticInfo($srcNationID);
+    $dipState = $db->queryFirstField('SELECT `state` FROM diplomacy WHERE me=%i AND you=%i', $srcNationID, $destNationID);
 
-    $dist = searchDistance($general['city'], 5, false);
-    $command = DecodeCommand($general['turn0']);
-    $destination = $command[1];
-
-    $query = "select name,level,nation,secu,secu2,supply,agri,comm from city where city='$destination'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $destcity = MYDB_fetch_array($result);
-
-    $query = "select gold,rice from nation where nation='{$destcity['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    $mynation = getNationStaticInfo($general['nation']);
-
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
-
-    $query = "select state from diplomacy where me='{$general['nation']}' and you='{$destcity['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $dip = MYDB_fetch_array($result);
-
-    if(!$destcity) {
-        $log[] = "<C>●</>{$admin['month']}월:없는 도시입니다. 탈취 실패. <1>$date</>";
-    } elseif($general['level'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>에 탈취 실패. <1>$date</>";
-    } elseif($general['nation'] != $city['nation'] && $mynation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. <G><b>{$destcity['name']}</b></>에 탈취 실패. <1>$date</>";
-    } elseif($city['supply'] == 0 && $mynation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>에 탈취 실패. <1>$date</>";
-    } elseif($destcity['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:공백지입니다. <G><b>{$destcity['name']}</b></>에 탈취 실패. <1>$date</>";
-    } elseif($general['gold'] < $admin['develcost']*5) {
-        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. <G><b>{$destcity['name']}</b></>에 탈취 실패. <1>$date</>";
-    } elseif($general['rice'] < $admin['develcost']*5) {
-        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>에 탈취 실패. <1>$date</>";
-    } elseif($general['nation'] == $destcity['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국입니다. <G><b>{$destcity['name']}</b></>에 탈취 실패. <1>$date</>";
-    } elseif($dip['state'] >= 7) {
-        $log[] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 탈취 실패. <1>$date</>";
-    } else {
-        $query = "select leader,horse,power,weap,intel,book,injury from general where city='$destination' and nation='{$destcity['nation']}' order by power desc";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $powergen = MYDB_fetch_array($result);
-
-        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
-        $ratio2 = rand() % 100;
-
-        if($general['item'] == 5) {
-            // 이추 사용
-            $ratio += 10;
-            $query = "update general set item=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $josaUl = JosaUtil::pick($general['item'], '을');
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
-            $general['item'] = 0;
-        } elseif($general['item'] == 6) {
-            // 향낭 사용
-            $ratio += 20;
-            $query = "update general set item=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $josaUl = JosaUtil::pick($general['item'], '을');
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
-            $general['item'] = 0;
-        } elseif($general['item'] >= 21 && $general['item'] <= 22) {
-            // 육도, 삼략 사용
-            $ratio += 20;
-        }
-
-        // 특기보정 : 신산, 귀모
-        if($general['special2'] == 41) { $ratio += 10; }
-        if($general['special'] == 31) { $ratio += 20; }
-
-        // 국가보정
-        if($mynation['type'] == 9) { $ratio += 10; }
-
-        // 보급 끊김
-        if(!$destcity['supply']){ $ratio += 10; }
-
-        // 거리보정
-        $ratio /= Util::array_get($dist[$destination], 99);
-
-        if($ratio > $ratio2) {
-            $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에서 금과 쌀을 도둑맞았습니다.";
-            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 탈취가 성공했습니다. <1>$date</>";
-
-            // 탈취 최대 400 * 8
-            $gold = (rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount) * $destcity['level'];
-            $rice = (rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount) * $destcity['level'];
-
-            if($destcity['supply']){
-                $nation['gold'] -= $gold;
-                $nation['rice'] -= $rice;
-                if($nation['gold'] < GameConst::$minNationalGold) { $gold += ($nation['gold'] - GameConst::$minNationalGold); $nation['gold'] = GameConst::$minNationalGold; }
-                if($nation['rice'] < GameConst::$minNationalRice) { $rice += ($nation['rice'] - GameConst::$minNationalRice); $nation['rice'] = GameConst::$minNationalRice; }
-                $query = "update nation set gold='{$nation['gold']}',rice='{$nation['rice']}' where nation='{$destcity['nation']}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $db->update('city', [
-                    'state'=>34
-                ], 'city=%i', $destcity['city']);
-            }
-            else{
-                $db->update('city', [
-                    'comm'=>max(0, $destcity['comm'] - $gold / 12),
-                    'agri'=>max(0, $destcity['agri'] - $rice / 12),
-                    'state'=>34
-                ], 'city=%i', $destcity['city']);
-            }
-            
-            
-            $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            // 본국으로 회수, 재야이면 본인이 소유
-            if($general['nation'] != 0) {
-                $query = "select gold,rice from nation where nation='{$general['nation']}'";
-                $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $nation = MYDB_fetch_array($result);
-                $nation['gold'] += $gold;
-                $nation['rice'] += $rice;
-                $query = "update nation set gold='{$nation['gold']}',rice='{$nation['rice']}' where nation='{$general['nation']}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            } else {
-                $general['gold'] += $gold;
-                $general['rice'] += $rice;
-                $query = "update general set gold='{$general['gold']}',rice='{$general['rice']}' where no='{$general['no']}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            }
-            $log[] = "<C>●</>금<C>$gold</> 쌀<C>$rice</>을 획득했습니다.";
-
-//            SabotageInjury($destination);
-            $exp = rand() % 100 + 201;
-            $ded = rand() % 70 + 141;
-        } else {
-            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 탈취가 실패했습니다. <1>$date</>";
-            $exp = rand() % 100 + 1;
-            $ded = rand() % 70 + 1;
-        }
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        $general['power2']++;
-        $general['gold'] -= $admin['develcost']*5;
-        $general['rice'] -= $admin['develcost']*5;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log = checkAbility($general, $log);
+    $failReason = checkSabotageFailCondition($general, $srcCity, $destCity, $reqGold, $reqRice, $dipState);
+    if($failReason !== null){
+        $logger->pushGeneralActionLog("{$failReason} {$sabotageName} 실패. <1>{$date}</>");
+        return;
     }
-    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-    pushGenLog($general, $log);
+
+    $srcNation = getNationStaticInfo($srcNationID);
+    $destNation = getNationStaticInfo($destNationID);
+
+    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level WHERE city=%i and nation=%i', $city['city'], $city['nation']);
+
+    [
+        $srcGenScore,
+        $srcSpecialScore,
+        $srcItemScore,
+        $srcNationScore,
+    ] = calcSabotageAttackScore($statType, $general, $srcNation);
+
+    [
+        $destGenScore,
+        $destCityScore,
+        $destSupplyScore
+    ] = calcSabotageDefendScore($statType, $city, $generalList, $destNation);
+
+    $sabotageProb = (
+        GameConst::$sabotageDefaultProb 
+        + ($srcGenScore + $srcSpecialScore + $srcItemScore + $srcNationScore) 
+        - ($destGenScore + $destCityScore + $destSupplyScore)
+    );
+
+    // 거리보정
+    $sabotageProb /= Util::array_get($dist[$destCityID], 99);
+
+    if(!Util::randBool($sabotageProb)){
+        $josaYi = JosaUtil::pick($sabotageName, '이');
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 실패했습니다. <1>$date</>");
+
+        $exp = Util::randRangeInt(1, 100);
+        $exp *= getCharExpMultiplier($general['personal']);
+        $ded = Util::randRangeInt(1, 70);
+        $ded *= getCharDedMultiplier($general['personal']);
+
+        $general[$statType.'2'] += 1;
+        $general['gold'] -= $reqGold;
+        $general['rice'] -= $reqRice;
+        $db->update('general', [
+            ($statType.'2') => $general[$statType.'2'],
+            'resturn'=>'SUCCESS',
+            'gold'=>$general['gold'],
+            'rice'=>$general['rice'],
+            'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
+            'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
+        ], 'no=%i', $general['no']);
+
+        checkAbilityEx($general['no'], $logger);
+        return;
+    }
+
+    $logger->pushGlobalActionLog("<G><b>{$destCityName}</b></>에서 금과 쌀을 도둑맞았습니다.");
+    $josaYi = JosaUtil::pick($sabotageName, '이');
+    $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 성공했습니다. <1>$date</>");
+
+    // 탈취 최대 400 * 8
+    $gold = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'];
+    $rice = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'];
+
+    if($destCity['supply']){
+        [$destNationGold, $destNationRice] = $db->queryFirstList('SELECT gold,rice FROM nation WHERE nation=%i', $destCityID);
+
+        $destNationGold -= $gold;
+        $destNationRice -= $rice;
+
+        if($destNationGold < GameConst::$minNationalGold) { 
+            $gold += $destNationGold - GameConst::$minNationalGold;
+            $destNationGold = GameConst::$minNationalGold;
+        }
+        if($destNationRice < GameConst::$minNationalRice) {
+            $rice += $destNationRice - GameConst::$minNationalRice;
+            $destNationRice = GameConst::$minNationalRice;
+        }
+
+        $db->update('nation', [
+            'gold'=>$destNationGold,
+            'rice'=>$destNationRice
+        ], 'nation=%i', $destNationID);
+        $db->update('city', [
+            'state'=>34
+        ], 'city=%i', $destCityID);
+    }
+    else{
+        $db->update('city', [
+            'comm'=>Util::valueFit($destCity['comm'] - $gold / 12, 0),
+            'agri'=>Util::valueFit($destCity['agri'] - $rice / 12, 0),
+            'state'=>34
+        ], 'city=%i', $destCityID);
+    }
+    
+    // 본국으로 회수, 재야이면 본인이 소유
+    if($general['nation'] != 0) {
+        $db->update('nation', [
+            'gold' => $db->sqleval('gold + $i', $gold),
+            'rice' => $db->sqleval('rice + %i', $rice)
+        ], $srcNationID);
+    } else {
+        $general['gold'] += $gold;
+        $general['rice'] += $rice;
+    }
+
+    $logger->pushGeneralActionLog("금<C>{$gold}</> 쌀<C>{$rice}</>을 획득했습니다.", ActionLogger::PLAIN);
+
+    $exp = Util::randRangeInt(201, 300);
+    $exp *= getCharExpMultiplier($general['personal']);
+    $ded = Util::randRangeInt(141, 210);
+    $ded *= getCharDedMultiplier($general['personal']);
+
+    $general[$statType.'2'] += 1;
+    $general['gold'] -= $reqGold;
+    $general['rice'] -= $reqRice;
+    $db->update('general', [
+        'firenum' => $db->sqleval('firenum + 1'),
+        ($statType.'2') => $general[$statType.'2'],
+        'resturn'=>'SUCCESS',
+        'gold'=>$general['gold'],
+        'rice'=>$general['rice'],
+        'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
+        'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
+    ], 'no=%i', $general['no']);
+
+    checkAbilityEx($general['no'], $logger);
 }
 
 function process_34(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
 
     $date = substr($general['turntime'],11,5);
+    $sabotageName = '파괴';
+    $statType = 'power';
 
-    $admin = $gameStor->getValues(['year','month','develcost']);
+    [$year, $month, $develCost] = $gameStor->getValuesAsArray(['year','month','develcost']);
+    $logger = new ActionLogger($general['no'], $general['nation'], $year, $month);
 
-    $dist = searchDistance($general['city'], 5, false);
-    $command = DecodeCommand($general['turn0']);
-    $destination = $command[1];
+    $reqGold = $develCost * 5;
+    $reqRice = $develCost * 5;
 
-    $query = "select name,nation,def,wall,secu,secu2,supply from city where city='$destination'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $destcity = MYDB_fetch_array($result);
+    $srcCityID = $general['city'];
+    $destCityID = DecodeCommand($general['turn0'])[1];
 
-    $mynation = getNationStaticInfo($general['nation']);
+    $dist = searchDistance($srcCity, 5, false);
+    $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,nation,def,wall,secu,secu2,supply FROM city WHERE city=%i',$destCityID);
+    $destCityName = $destCity['name']??null;
 
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
+    $srcNationID = $general['nation'];
+    $destNationID = $destCity['nation'];
 
-    $query = "select state from diplomacy where me='{$general['nation']}' and you='{$destcity['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $dip = MYDB_fetch_array($result);
+    $srcNation = getNationStaticInfo($srcNationID);
+    $dipState = $db->queryFirstField('SELECT `state` FROM diplomacy WHERE me=%i AND you=%i', $srcNationID, $destNationID);
 
-    if(!$destcity) {
-        $log[] = "<C>●</>{$admin['month']}월:없는 도시입니다. 파괴 실패. <1>$date</>";
-    } elseif($general['level'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>에 파괴 실패. <1>$date</>";
-    } elseif($general['nation'] != $city['nation'] && $mynation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. <G><b>{$destcity['name']}</b></>에 파괴 실패. <1>$date</>";
-    } elseif($city['supply'] == 0 && $mynation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>에 파괴 실패. <1>$date</>";
-    } elseif($destcity['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:공백지입니다. <G><b>{$destcity['name']}</b></>에 파괴 실패. <1>$date</>";
-    } elseif($general['gold'] < $admin['develcost']*5) {
-        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. <G><b>{$destcity['name']}</b></>에 파괴 실패. <1>$date</>";
-    } elseif($general['rice'] < $admin['develcost']*5) {
-        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>에 파괴 실패. <1>$date</>";
-    } elseif($general['nation'] == $destcity['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국입니다. <G><b>{$destcity['name']}</b></>에 파괴 실패. <1>$date</>";
-    } elseif($dip['state'] >= 7) {
-        $log[] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 파괴 실패. <1>$date</>";
-    } else {
-        $query = "select leader,horse,power,weap,intel,book,injury from general where city='$destination' and nation='{$destcity['nation']}' order by power desc";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $powergen = MYDB_fetch_array($result);
+    $failReason = checkSabotageFailCondition($general, $srcCity, $destCity, $reqGold, $reqRice, $dipState);
+    if($failReason !== null){
+        $logger->pushGeneralActionLog("{$failReason} {$sabotageName} 실패. <1>{$date}</>");
+        return;
+    }    
 
-        $ratio = Util::round(((getGeneralPower($general, true, true, true, false) - getGeneralPower($powergen, true, true, true, false)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
-        $ratio2 = rand() % 100;
+    $srcNation = getNationStaticInfo($srcNationID);
+    $destNation = getNationStaticInfo($destNationID);
 
-        if($general['item'] == 5) {
-            // 이추 사용
-            $ratio += 10;
-            $query = "update general set item=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $josaUl = JosaUtil::pick($general['item'], '을');
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
-            $general['item'] = 0;
-        } elseif($general['item'] == 6) {
-            // 향낭 사용
-            $ratio += 20;
-            $query = "update general set item=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $josaUl = JosaUtil::pick($general['item'], '을');
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
-            $general['item'] = 0;
-        } elseif($general['item'] >= 21 && $general['item'] <= 22) {
-            // 육도, 삼략 사용
-            $ratio += 20;
-        }
+    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level WHERE city=%i and nation=%i', $city['city'], $city['nation']);
 
-        // 특기보정 : 신산, 귀모
-        if($general['special2'] == 41) { $ratio += 10; }
-        if($general['special'] == 31) { $ratio += 20; }
+    [
+        $srcGenScore,
+        $srcSpecialScore,
+        $srcItemScore,
+        $srcNationScore,
+    ] = calcSabotageAttackScore($statType, $general, $srcNation);
 
-        // 국가보정
-        if($mynation['type'] == 9) { $ratio += 10; }
+    [
+        $destGenScore,
+        $destCityScore,
+        $destSupplyScore
+    ] = calcSabotageDefendScore($statType, $city, $generalList, $destNation);
 
-        // 보급 끊김
-        if(!$destcity['supply']){ $ratio += 10; }
+    $sabotageProb = (
+        GameConst::$sabotageDefaultProb 
+        + ($srcGenScore + $srcSpecialScore + $srcItemScore + $srcNationScore) 
+        - ($destGenScore + $destCityScore + $destSupplyScore)
+    );
 
-        // 거리보정
-        $ratio /= Util::array_get($dist[$destination], 99);
+    // 거리보정
+    $sabotageProb /= Util::array_get($dist[$destCityID], 99);
 
-        if($ratio > $ratio2) {
-            $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$destcity['name']}</b></>의 성벽을 허물었습니다.";
-            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 파괴가 성공했습니다. <1>$date</>";
+    if(!Util::randBool($sabotageProb)){
+        $josaYi = JosaUtil::pick($sabotageName, '이');
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 실패했습니다. <1>$date</>");
 
-            // 파괴
-            $destcity['def'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
-            $destcity['wall'] -= rand() % GameConst::$sabotageAmountCoef + GameConst::$sabotageDefaultAmount;
-            if($destcity['def'] < 100) { $destcity['def'] = 100; }
-            if($destcity['wall'] < 100) { $destcity['wall'] = 100; }
-            $query = "update city set state=34,def='{$destcity['def']}',wall='{$destcity['wall']}' where city='$destination'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $exp = Util::randRangeInt(1, 100);
+        $exp *= getCharExpMultiplier($general['personal']);
+        $ded = Util::randRangeInt(1, 70);
+        $ded *= getCharDedMultiplier($general['personal']);
 
-            SabotageInjury($destination);
-            $exp = rand() % 100 + 201;
-            $ded = rand() % 70 + 141;
-        } else {
-            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 파괴가 실패했습니다. <1>$date</>";
-            $exp = rand() % 100 + 1;
-            $ded = rand() % 70 + 1;
-        }
+        $general[$statType.'2'] += 1;
+        $general['gold'] -= $reqGold;
+        $general['rice'] -= $reqRice;
+        $db->update('general', [
+            ($statType.'2') => $general[$statType.'2'],
+            'resturn'=>'SUCCESS',
+            'gold'=>$general['gold'],
+            'rice'=>$general['rice'],
+            'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
+            'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
+        ], 'no=%i', $general['no']);
 
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        $general['power2']++;
-        $general['gold'] -= $admin['develcost']*5;
-        $general['rice'] -= $admin['develcost']*5;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log = checkAbility($general, $log);
+        checkAbilityEx($general['no'], $logger);
+        return;
     }
-    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-    pushGenLog($general, $log);
+
+    $logger->pushGlobalActionLog("누군가가 <G><b>{$destCityName}</b></>의 성벽을 허물었습니다.");
+    $josaYi = JosaUtil::pick($sabotageName, '이');
+    $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 성공했습니다. <1>$date</>");
+
+    // 파괴
+    $destCity['def'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax);
+    $destCity['wall'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax);
+    if($destCity['def'] < 100) { $destCity['def'] = 100; }
+    if($destCity['wall'] < 100) { $destCity['wall'] = 100; }
+
+    $db->update('city', [
+        'state'=>32,
+        'def'=>$destCity['def'],
+        'wall'=>$destCity['wall']
+    ], 'city=%i', $destCityID);
+
+    SabotageInjury($destCityID);
+
+    $exp = Util::randRangeInt(201, 300);
+    $exp *= getCharExpMultiplier($general['personal']);
+    $ded = Util::randRangeInt(141, 210);
+    $ded *= getCharDedMultiplier($general['personal']);
+
+    $general[$statType.'2'] += 1;
+    $general['gold'] -= $reqGold;
+    $general['rice'] -= $reqRice;
+    $db->update('general', [
+        'firenum' => $db->sqleval('firenum + 1'),
+        ($statType.'2') => $general[$statType.'2'],
+        'resturn'=>'SUCCESS',
+        'gold'=>$general['gold'],
+        'rice'=>$general['rice'],
+        'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
+        'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
+    ], 'no=%i', $general['no']);
+
+    checkAbilityEx($general['no'], $logger);
 }
 
 function process_35(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
 
     $date = substr($general['turntime'],11,5);
+    $sabotageName = '선동';
+    $statType = 'leader';
 
-    $admin = $gameStor->getValues(['year','month','develcost']);
+    [$year, $month, $develCost] = $gameStor->getValuesAsArray(['year','month','develcost']);
+    $logger = new ActionLogger($general['no'], $general['nation'], $year, $month);
 
-    $dist = searchDistance($general['city'], 5, false);
-    $command = DecodeCommand($general['turn0']);
-    $destination = $command[1];
+    $reqGold = $develCost * 5;
+    $reqRice = $develCost * 5;
 
-    $query = "select name,nation,rate,secu,secu2,supply from city where city='$destination'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $destcity = MYDB_fetch_array($result);
+    $srcCityID = $general['city'];
+    $destCityID = DecodeCommand($general['turn0'])[1];
 
-    $mynation = getNationStaticInfo($general['nation']);
+    $dist = searchDistance($srcCity, 5, false);
+    $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,nation,rate,secu,secu2,supply FROM city WHERE city=%i',$destCityID);
+    $destCityName = $destCity['name']??null;
 
-    $lbonus = setLeadershipBonus($general, $mynation['level']);
+    $srcNationID = $general['nation'];
+    $destNationID = $destCity['nation'];
 
-    $query = "select nation,supply from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
+    $srcNation = getNationStaticInfo($srcNationID);
+    $dipState = $db->queryFirstField('SELECT `state` FROM diplomacy WHERE me=%i AND you=%i', $srcNationID, $destNationID);
 
-    $query = "select state from diplomacy where me='{$general['nation']}' and you='{$destcity['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $dip = MYDB_fetch_array($result);
+    $lbonus = setLeadershipBonus($general, $srcNation['level']);
 
-    if(!$destcity) {
-        $log[] = "<C>●</>{$admin['month']}월:없는 도시입니다. 선동 실패. <1>$date</>";
-    } elseif($general['level'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:재야입니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
-    } elseif($general['nation'] != $city['nation'] && $mynation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
-    } elseif($city['supply'] == 0 && $mynation['level'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
-    } elseif($destcity['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:공백지입니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
-    } elseif($general['gold'] < $admin['develcost']*5) {
-        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
-    } elseif($general['rice'] < $admin['develcost']*5) {
-        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
-    } elseif($general['nation'] == $destcity['nation']) {
-        $log[] = "<C>●</>{$admin['month']}월:아국입니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
-    } elseif($dip['state'] >= 7) {
-        $log[] = "<C>●</>{$admin['month']}월:불가침국입니다. <G><b>{$destcity['name']}</b></>에 선동 실패. <1>$date</>";
-    } else {
-        $query = "select leader,horse,power,weap,intel,book,injury from general where city='$destination' and nation='{$destcity['nation']}' order by leader desc";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gen = MYDB_fetch_array($result);
-
-        $ratio = Util::round(((getGeneralLeadership($general, true, true, true) - getGeneralLeadership($gen, true, true, true)) / GameConst::$sabotageProbCoefByStat - ($destcity['secu']/$destcity['secu2'])/5 + GameConst::$sabotageDefaultProb)*100);
-        $ratio2 = rand() % 100;
-
-        if($general['item'] == 5) {
-            // 이추 사용
-            $ratio += 10;
-            $query = "update general set item=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $josaUl = JosaUtil::pick($general['item'], '을');
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
-            $general['item'] = 0;
-        } elseif($general['item'] == 6) {
-            // 향낭 사용
-            $ratio += 20;
-            $query = "update general set item=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $josaUl = JosaUtil::pick($general['item'], '을');
-            $log[] = "<C>●</><C>".getItemName($general['item'])."</>{$josaUl} 사용!";
-            $general['item'] = 0;
-        } elseif($general['item'] >= 21 && $general['item'] <= 22) {
-            // 육도, 삼략 사용
-            $ratio += 20;
-        }
-
-        // 특기보정 : 신산, 귀모
-        if($general['special2'] == 41) { $ratio += 10; }
-        if($general['special'] == 31) { $ratio += 20; }
-
-        // 국가보정
-        if($mynation['type'] == 9) { $ratio += 10; }
-
-        // 보급 끊김
-        if(!$destcity['supply']){ $ratio += 10; }
-
-        // 거리보정
-        $ratio /= Util::array_get($dist[$destination], 99);
-
-        if($ratio > $ratio2) {
-            $alllog[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>의 백성들이 동요하고 있습니다.";
-            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 선동이 성공했습니다. <1>$date</>";
-
-            // 선동 최대 10
-            $destcity['secu'] -= rand() % Util::round(GameConst::$sabotageAmountCoef/2) + GameConst::$sabotageDefaultAmount;
-            $destcity['rate'] -= rand() % Util::round(GameConst::$sabotageAmountCoef/50) + GameConst::$sabotageDefaultAmount/50;
-            if($destcity['secu'] < 0) { $destcity['secu'] = 0; }
-            if($destcity['rate'] < 0) { $destcity['rate'] = 0; }
-            $query = "update city set state=32,rate='{$destcity['rate']}',secu='{$destcity['secu']}' where city='$destination'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update general set firenum=firenum+1 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            SabotageInjury($destination);
-            $exp = rand() % 100 + 201;
-            $ded = rand() % 70 + 141;
-        } else {
-            $log[] = "<C>●</>{$admin['month']}월:<G><b>{$destcity['name']}</b></>에 선동이 실패했습니다. <1>$date</>";
-            $exp = rand() % 100 + 1;
-            $ded = rand() % 70 + 1;
-        }
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        $general['leader2']++;
-        $general['gold'] -= $admin['develcost']*5;
-        $general['rice'] -= $admin['develcost']*5;
-        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log = checkAbility($general, $log);
+    $failReason = checkSabotageFailCondition($general, $srcCity, $destCity, $reqGold, $reqRice, $dipState);
+    if($failReason !== null){
+        $logger->pushGeneralActionLog("{$failReason} {$sabotageName} 실패. <1>{$date}</>");
+        return;
     }
-    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-    pushGenLog($general, $log);
+
+    $srcNation = getNationStaticInfo($srcNationID);
+    $destNation = getNationStaticInfo($destNationID);
+
+    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level WHERE city=%i and nation=%i', $city['city'], $city['nation']);
+
+    [
+        $srcGenScore,
+        $srcSpecialScore,
+        $srcItemScore,
+        $srcNationScore,
+    ] = calcSabotageAttackScore($statType, $general, $srcNation);
+
+    [
+        $destGenScore,
+        $destCityScore,
+        $destSupplyScore
+    ] = calcSabotageDefendScore($statType, $city, $generalList, $destNation);
+
+    $sabotageProb = (
+        GameConst::$sabotageDefaultProb 
+        + ($srcGenScore + $srcSpecialScore + $srcItemScore + $srcNationScore) 
+        - ($destGenScore + $destCityScore + $destSupplyScore)
+    );
+
+    // 거리보정
+    $sabotageProb /= Util::array_get($dist[$destCityID], 99);
+
+    if(!Util::randBool($sabotageProb)){
+        $josaYi = JosaUtil::pick($sabotageName, '이');
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 실패했습니다. <1>$date</>");
+
+        $exp = Util::randRangeInt(1, 100);
+        $exp *= getCharExpMultiplier($general['personal']);
+        $ded = Util::randRangeInt(1, 70);
+        $ded *= getCharDedMultiplier($general['personal']);
+
+        $general[$statType.'2'] += 1;
+        $general['gold'] -= $reqGold;
+        $general['rice'] -= $reqRice;
+        $db->update('general', [
+            ($statType.'2') => $general[$statType.'2'],
+            'resturn'=>'SUCCESS',
+            'gold'=>$general['gold'],
+            'rice'=>$general['rice'],
+            'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
+            'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
+        ], 'no=%i', $general['no']);
+
+        checkAbilityEx($general['no'], $logger);
+        return;
+    }
+
+    $logger->pushGlobalActionLog("<G><b>{$destCityName}</b></>의 백성들이 동요하고 있습니다.");
+    $josaYi = JosaUtil::pick($sabotageName, '이');
+    $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 성공했습니다. <1>$date</>");
+
+    // 선동 최대 10
+    $destCity['secu'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax);
+    $destCity['rate'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) / 50;
+    if($destCity['secu'] < 0) { $destCity['secu'] = 0; }
+    if($destCity['rate'] < 0) { $destCity['rate'] = 0; }
+    
+    $db->update('city', [
+        'state'=>32,
+        'secu'=>$destCity['secu'],
+        'rate'=>$destCity['rate']
+    ], 'city=%i', $destCityID);
+
+    SabotageInjury($destCityID);
+
+    $exp = Util::randRangeInt(201, 300);
+    $exp *= getCharExpMultiplier($general['personal']);
+    $ded = Util::randRangeInt(141, 210);
+    $ded *= getCharDedMultiplier($general['personal']);
+
+    $general[$statType.'2'] += 1;
+    $general['gold'] -= $reqGold;
+    $general['rice'] -= $reqRice;
+    $db->update('general', [
+        'firenum' => $db->sqleval('firenum + 1'),
+        ($statType.'2') => $general[$statType.'2'],
+        'resturn'=>'SUCCESS',
+        'gold'=>$general['gold'],
+        'rice'=>$general['rice'],
+        'experience'=>$db->sqleval('experience + %i', Util::round($exp)),
+        'dedication'=>$db->sqleval('dedication + %i', Util::round($ded))
+    ], 'no=%i', $general['no']);
+
+    checkAbilityEx($general['no'], $logger);
 }
