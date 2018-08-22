@@ -69,7 +69,7 @@ function checkSabotageFailCondition($general, $srcCity, $destCity, $reqGold, $re
     if(!$destCity){
         return '없는 도시입니다.';
     }
-    if(!$general['level'] == 0){
+    if($general['level'] == 0){
         return '재야입니다.';
     }
     if($srcNationID != $srcCity['nation']){
