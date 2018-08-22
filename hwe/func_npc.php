@@ -80,12 +80,21 @@ function SetDevelop($genType, $no, $city, $tech) {
     return;
 }
 
-function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city, $dex0, $dex10, $dex20, $dex30, $dex40) {
+function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $dex0, $dex10, $dex20, $dex30, $dex40) {
     $db = DB::db();
     $connect=$db->get();
 
+    $cities = [];
+    $regions = [];
+
+    foreach($db->queryAllLists('SELECT city, region FROM city WHERE nation = %i', $nationID) as [$cityID, $regionID]){
+        $cities[$cityID] = true;
+        $regions[$regionID] = true;
+    }
+
     $gameStor = KVStorage::getStorage($db, 'game_env');
     [$startyear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
+    $relYear = Util::valueFit($year-$startyear, 0);
 
     $type = 0;
     switch($genType) {
@@ -112,26 +121,26 @@ function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city
 
         
 
-        $type = GameUnitConst::DEFAULT_CREWTYPE;
+        $types = [];
         switch($sel) {
         case 0:
             foreach(GameUnitConst::byType(GameUnitConst::T_FOOTMAN) as $crewtype){
-                if($crewtype->isValid([$city], [$region], $year-$startyear, $tech)){
-                    $type = $crewtype->id;
+                if($crewtype->isValid($cities, $regions, $relYear, $tech)){
+                    $types[] = $crewtype->id;
                 }
             }
             break;
         case 1:
             foreach(GameUnitConst::byType(GameUnitConst::T_ARCHER) as $crewtype){
-                if($crewtype->isValid([$city], [$region], $year-$startyear, $tech)){
-                    $type = $crewtype->id;
+                if($crewtype->isValid($cities, $regions, $relYear, $tech)){
+                    $types[] = $crewtype->id;
                 }
             }
             break;
         case 2:
             foreach(GameUnitConst::byType(GameUnitConst::T_CAVALRY) as $crewtype){
-                if($crewtype->isValid([$city], [$region], $year-$startyear, $tech)){
-                    $type = $crewtype->id;
+                if($crewtype->isValid($cities, $regions, $relYear, $tech)){
+                    $types[] = $crewtype->id;
                 }
             }
             break;
@@ -140,12 +149,21 @@ function SetCrew($no, $personal, $gold, $leader, $genType, $tech, $region, $city
     case 1: //지장
     case 3: //지내정장
         foreach(GameUnitConst::byType(GameUnitConst::T_WIZARD) as $crewtype){
-            if($crewtype->isValid([$city], [$region], $year-$startyear, $tech)){
-                $type = $crewtype->id;
+            if($crewtype->isValid($cities, $regions, $relYear, $tech)){
+                $types[] = $crewtype->id;
             }
         }
         break;
     }
+
+    if($types){
+        $type = Util::choiceRandom($types);
+    }
+    else{
+        $type = GameUnitConst::DEFAULT_CREWTYPE;
+    }
+
+    
 
     $gold -= 200;   // 사기비용
 
@@ -830,22 +848,7 @@ function processAI($no) {
         SetDevelop($genType, $general['no'], $general['city'], $nation['tech']);
         return;
     case EncodeCommand(0, 0, 0, 11): //징병
-        $query = "select region from city where nation='{$general['nation']}' order by rand() limit 0,1";
-        $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
-        $selRegion = MYDB_fetch_array($result);
-
-        $selCity['city'] = 0;
-        // 90% 확률로 이민족 또는 특성병
-        if(rand()%100 < 90) {
-            $query = "select city from city where nation='{$general['nation']}' and (level='4' or level='8') order by rand() limit 0,1";
-            $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
-            $selCity = MYDB_fetch_array($result);
-        }
-        // 특병 없으면 원래대로
-        if($selCity['city'] == 0) {
-            $selCity['city'] = $general['city'];
-        }
-        SetCrew($general['no'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $selRegion['region'], $selCity['city'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
+        SetCrew($general['no'], $general['nation'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
         return;
     default:
         $query = "update general set turn0='$command' where no='{$general['no']}'";
