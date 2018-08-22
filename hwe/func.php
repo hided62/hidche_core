@@ -2846,6 +2846,8 @@ function SabotageInjury($city, $type=0) {
     $connect=$db->get();
     $log = [];
 
+    $injuryCount = 0;
+
     $admin = $gameStor->getValues(['year', 'month']);
 
     $query = "select no,name,nation from general where city='$city'";
@@ -2867,8 +2869,11 @@ function SabotageInjury($city, $type=0) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             pushGenLog($general, $log);
+            $injuryCount += 1;
         }
     }
+
+    return $injuryCount;
 }
 
 function getRandTurn($term) {

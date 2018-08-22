@@ -221,10 +221,10 @@ function process_32(&$general) {
     $josaYi = JosaUtil::pick($sabotageName, '이');
     $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 성공했습니다. <1>$date</>");
 
-    $destCity['agri'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax);
-    $destCity['comm'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax);
-    if($destCity['agri'] < 0) { $destCity['agri'] = 0; }
-    if($destCity['comm'] < 0) { $destCity['comm'] = 0; }
+    $agriAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['agri']);
+    $commAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['comm']);
+    $destCity['agri'] -= $agriAmount;
+    $destCity['comm'] -= $commAmount;
 
     $db->update('city', [
         'state'=>32,
@@ -232,7 +232,9 @@ function process_32(&$general) {
         'comm'=>$destCity['comm']
     ], 'city=%i', $destCityID);
 
-    SabotageInjury($destCityID);
+    $injuryCount = SabotageInjury($destCityID);
+
+    $logger->pushGeneralActionLog("도시의 농업이 <C>{$agriAmount}</>, 상업이 <C>{$commAmount}</>만큼 감소하고, 장수 {$injuryCount}명이 부상 당했습니다.", ActionLogger::PLAIN);
 
     $exp = Util::randRangeInt(201, 300);
     $exp *= getCharExpMultiplier($general['personal']);
@@ -525,10 +527,13 @@ function process_34(&$general) {
     $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 성공했습니다. <1>$date</>");
 
     // 파괴
-    $destCity['def'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax);
-    $destCity['wall'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax);
-    if($destCity['def'] < 100) { $destCity['def'] = 100; }
-    if($destCity['wall'] < 100) { $destCity['wall'] = 100; }
+    $defAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['def'] - 100);
+    $wallAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['wall'] - 100);
+    if($defAmount < 0){ $defAmount = 0; }
+    if($wallAmount < 0){ $wallAmount = 0; }
+
+    $destCity['def'] -= $defAmount;
+    $destCity['wall'] -= $wallAmount;
 
     $db->update('city', [
         'state'=>32,
@@ -536,7 +541,9 @@ function process_34(&$general) {
         'wall'=>$destCity['wall']
     ], 'city=%i', $destCityID);
 
-    SabotageInjury($destCityID);
+    $injuryCount = SabotageInjury($destCityID);
+
+    $logger->pushGeneralActionLog("도시의 수비가 <C>{$defAmount}</>, 성벽이 <C>{$wallAmount}</>만큼 감소하고, 장수 {$injuryCount}명이 부상 당했습니다.", ActionLogger::PLAIN);
 
     $exp = Util::randRangeInt(201, 300);
     $exp *= getCharExpMultiplier($general['personal']);
@@ -660,10 +667,10 @@ function process_35(&$general) {
     $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$sabotageName}{$josaYi} 성공했습니다. <1>$date</>");
 
     // 선동 최대 10
-    $destCity['secu'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax);
-    $destCity['rate'] -= Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) / 50;
-    if($destCity['secu'] < 0) { $destCity['secu'] = 0; }
-    if($destCity['rate'] < 0) { $destCity['rate'] = 0; }
+    $secuAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['secu']);
+    $rateAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) / 50, null, $destCity['rate']);
+    $destCity['secu'] -= $secuAmount;
+    $destCity['rate'] -= $rateAmount;
     
     $db->update('city', [
         'state'=>32,
@@ -671,7 +678,9 @@ function process_35(&$general) {
         'rate'=>$destCity['rate']
     ], 'city=%i', $destCityID);
 
-    SabotageInjury($destCityID);
+    $injuryCount = SabotageInjury($destCityID);
+
+    $logger->pushGeneralActionLog("도시의 치안이 <C>{$secuAmount}</>, 민심이 <C>{$rateAmount}</>만큼 감소하고, 장수 {$injuryCount}명이 부상 당했습니다.", ActionLogger::PLAIN);
 
     $exp = Util::randRangeInt(201, 300);
     $exp *= getCharExpMultiplier($general['personal']);
