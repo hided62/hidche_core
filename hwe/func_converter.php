@@ -8,25 +8,14 @@ namespace sammo;
  * Side effect 없이 값의 변환만을 수행하는 함수들의 모음.
  */
 
-
 function NationCharCall($call) {
-    switch($call) {
-        case '명가':    $type =13; break;
-        case '음양가':  $type =12; break;
-        case '종횡가':  $type =11; break;
-        case '불가':    $type =10; break;
-        case '도적':    $type = 9; break;
-        case '오두미도':$type = 8; break;
-        case '태평도':  $type = 7; break;
-        case '도가':    $type = 6; break;
-        case '묵가':    $type = 5; break;
-        case '덕가':    $type = 4; break;
-        case '병가':    $type = 3; break;
-        case '유가':    $type = 2; break;
-        case '법가':    $type = 1; break;
-        default:        $type = 0; break;
+    static $invTable = [];
+    if(!$invTable){
+        foreach(getNationTypeList() as $typeID => [$name, $pros, $cons]){
+            $invTable[$name] = $typeID;
+        }
     }
-    return $type;
+    return $invTable[$name]??0;
 }
 
 function CharCall($call) {
@@ -251,24 +240,17 @@ function getSpecialInfo(?int $type):?string{
     return $infoText[$type][1]??null;
 }
 
-function getNationType($type) {
-    switch($type) {
-        case 13: $call = '명 가'; break;
-        case 12: $call = '음 양 가'; break;
-        case 11: $call = '종 횡 가'; break;
-        case 10: $call = '불 가'; break;
-        case 9: $call = '도 적'; break;
-        case 8: $call = '오 두 미 도'; break;
-        case 7: $call = '태 평 도'; break;
-        case 6: $call = '도 가'; break;
-        case 5: $call = '묵 가'; break;
-        case 4: $call = '덕 가'; break;
-        case 3: $call = '병 가'; break;
-        case 2: $call = '유 가'; break;
-        case 1: $call = '법 가'; break;
-        case 0: $call = '-'; break;
+function getNationType(int $type) {
+    static $cache = [];
+    if(\key_exists($type, $cache)){
+        return $cache[$type];
     }
-    return $call;
+
+    $text = getNationTypeList()[$type][0]??'-';
+    $text = join(' ', StringUtil::splitString($text));
+    $cache[$type] = $text;
+
+    return $text;
 }
 
 
@@ -287,24 +269,9 @@ function getConnect($con) {
     return $conname;
 }
 
-function getNationType2($type) {
-    switch($type) {
-        case 13: $call = '<font color=cyan>기술↑ 인구↑</font> <font color=magenta>쌀수입↓ 수성↓</font>'; break;
-        case 12: $call = '<font color=cyan>내정↑ 인구↑</font> <font color=magenta>기술↓ 전략↓</font>'; break;
-        case 11: $call = '<font color=cyan>전략↑ 수성↑</font> <font color=magenta>금수입↓ 내정↓</font>'; break;
-        case 10: $call = '<font color=cyan>민심↑ 수성↑</font> <font color=magenta>금수입↓</font>'; break;
-        case 9: $call = '<font color=cyan>계략↑</font> <font color=magenta>금수입↓ 치안↓ 민심↓</font>'; break;
-        case 8: $call = '<font color=cyan>쌀수입↑ 인구↑</font> <font color=magenta>기술↓ 수성↓ 내정↓</font>'; break;
-        case 7: $call = '<font color=cyan>인구↑ 민심↑</font> <font color=magenta>기술↓ 수성↓</font>'; break;
-        case 6: $call = '<font color=cyan>인구↑</font> <font color=magenta>기술↓ 치안↓</font>'; break;
-        case 5: $call = '<font color=cyan>수성↑</font> <font color=magenta>기술↓</font>'; break;
-        case 4: $call = '<font color=cyan>치안↑인구↑ 민심↑</font> <font color=magenta>쌀수입↓ 수성↓</font>'; break;
-        case 3: $call = '<font color=cyan>기술↑ 수성↑</font> <font color=magenta>인구↓ 민심↓</font>'; break;
-        case 2: $call = '<font color=cyan>내정↑ 민심↑</font> <font color=magenta>쌀수입↓</font>'; break;
-        case 1: $call = '<font color=cyan>금수입↑ 치안↑</font> <font color=magenta>인구↓ 민심↓</font>'; break;
-        case 0: $call = '-'; break;
-    }
-    return $call;
+function getNationType2(int $type) {
+    [$name, $pros, $cons] = getNationTypeList()[$type]??['-', '', ''];
+    return "<font color=cyan>{$pros}</font> <font color=magenta>{$cons}</font>";
 }
 
 function getLevel($level, $nlevel=8) {
