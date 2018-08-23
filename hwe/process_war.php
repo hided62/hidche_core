@@ -637,14 +637,11 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         }
     }
 
-    $general['atmos'] *= 1.1; //사기 증가
-    if($general['atmos'] > GameConst::$maxAtmosByWar) { $general['atmos'] = GameConst::$maxAtmosByWar; }
-
     $conquerNation = getConquerNation($city);
 
     if($conquerNation == $general['nation']) {
-        // 이동 및 사기 변경
-        $query = "update general set city='{$city['city']}',atmos='{$general['atmos']}',killnum=killnum+1 where no='{$general['no']}'";
+        // 이동
+        $query = "update general set city='{$city['city']}' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         if($city['level'] > 3) {
             // 도시 소속 변경, 태수,군사,시중 초기화
@@ -662,17 +659,12 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $query = "select name,nation from nation where nation='$conquerNation'";
         $conquerResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $conquerNationArray = MYDB_fetch_array($conquerResult);
-        
-
 
         $josaUl = JosaUtil::pick($city['name'], '을');
         $josaYi = JosaUtil::pick($conquerNationArray['name'], '이');
         $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationArray['name']}</b></>{$josaYi} 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>{$josaUl} 양도받았습니다.";
         pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <D><b>{$conquerNationArray['name']}</b></>에 <Y>양도</>");
         pushNationHistory($conquerNationArray, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>{$josaUl} <S>양도</> 받음");
-        // 이동X 및 사기 변경
-        $query = "update general set atmos='{$general['atmos']}',killnum=killnum+1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         $query = [
             'supply'=>1,
