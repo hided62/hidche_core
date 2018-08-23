@@ -5,6 +5,11 @@ namespace sammo;
  * 게임 룰에 해당하는 함수 모음
  */
 
+function getNationLevelList():array{
+    $table = [
+        7 => ['황제', 8, ]
+    ];
+}
 
 function getNationTypeList():array{
     $table = [

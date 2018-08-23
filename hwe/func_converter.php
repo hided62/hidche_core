@@ -18,22 +18,33 @@ function NationCharCall($call) {
     return $invTable[$name]??0;
 }
 
+function getCharacterList(){
+    $infoText = [
+        10=>['은둔', '명성 -10%, 계급 -10%, 사기 -5, 훈련 -5, 단련 성공률 +10%'],
+        9=>['안전', '사기 -5, 징·모병 비용 -20%'],
+        8=>['유지', '훈련 -5, 징·모병 비용 -20%'],
+        7=>['재간', '명성 -10%, 징·모병 비용 -20%'],
+        6=>['출세', '명성 +10%, 징·모병 비용 +20%'],
+        5=>['할거', '명성 -10%, 훈련 +5'],
+        4=>['정복', '명성 -10%, 사기 +5'],
+        3=>['패권', '훈련 +5, 징·모병 비용 +20%'],
+        2=>['의협', '사기 +5, 징·모병 비용 +20%'],
+        1=>['대의', '명성 +10%, 훈련 -5'],
+        0=>['왕좌', '명성 +10%, 사기 -5'],
+    ];
+    return $infoText;
+}
+
 function CharCall($call) {
-    switch($call) {
-        case '은둔':    $type =10; break;
-        case '안전';    $type = 9; break;
-        case '유지';    $type = 8; break;
-        case '재간';    $type = 7; break;
-        case '출세';    $type = 6; break;
-        case '할거';    $type = 5; break;
-        case '정복';    $type = 4; break;
-        case '패권';    $type = 3; break;
-        case '의협';    $type = 2; break;
-        default:
-        case '대의';    $type = 1; break;
-        case '왕좌';    $type = 0; break;
+    static $invTable = [];
+    if(\key_exists($call, $invTable)){
+        return $invTable[$call];
     }
-    return $type;
+
+    foreach(getCharacterList() as $id => [$name, $info]){
+        $invTable[$name] = $id;
+    }
+    return $invTable[$call];
 }
 
 function SpecCall($call) {
@@ -109,42 +120,14 @@ function getNationLevel($level) {
 }
 
 function getGenChar($type) {
-    switch($type) {
-        case 10: $call = '은둔'; break;
-        case  9: $call = '안전'; break;
-        case  8: $call = '유지'; break;
-        case  7: $call = '재간'; break;
-        case  6: $call = '출세'; break;
-        case  5: $call = '할거'; break;
-        case  4: $call = '정복'; break;
-        case  3: $call = '패권'; break;
-        case  2: $call = '의협'; break;
-        case  1: $call = '대의'; break;
-        case  0: $call = '왕좌'; break;
-    }
-    return $call;
+    return getCharacterList()[$type][0];
 }
 
 function getCharInfo(?int $type):?string {
     if($type === null){
         return null;
     }
-
-    $infoText = [
-        10=>['은둔', '명성 -10%, 계급 -10%, 사기 -5, 훈련 -5, 단련 성공률 +10%'],
-        9=>['안전', '사기 -5, 징·모병 비용 -20%'],
-        8=>['유지', '훈련 -5, 징·모병 비용 -20%'],
-        7=>['재간', '명성 -10%, 징·모병 비용 -20%'],
-        6=>['출세', '명성 +10%, 징·모병 비용 +20%'],
-        5=>['할거', '명성 -10%, 훈련 +5'],
-        4=>['정복', '명성 -10%, 사기 +5'],
-        3=>['패권', '훈련 +5, 징·모병 비용 +20%'],
-        2=>['의협', '사기 +5, 징·모병 비용 +20%'],
-        1=>['대의', '명성 +10%, 훈련 -5'],
-        0=>['왕좌', '명성 +10%, 사기 -5'],
-    ];
-
-    return $infoText[$type][1]??null;
+    return getCharacterList()[$type][1]??null;
 }
 
 function getGenSpecial($type) {
