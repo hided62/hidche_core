@@ -269,6 +269,14 @@ class WarUnit{
         return;
     }
 
+    function addTrainBonus(int $trainBonus){
+        $this->trainBonus += $trainBonus;
+    }
+
+    function addAtmosBonus(int $atmosBonus){
+        $this->atmosBonus += $atmosBonus;
+    }
+
     function getComputedTrain(){
         return GameConst::$maxTrainByCommand;
     }

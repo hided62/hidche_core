@@ -311,12 +311,12 @@ class WarUnitGeneral extends WarUnit{
         }
         else if($item >= 14 && $item <= 16){
             //의적주, 두강주, 보령압주 사용
-            $this->addAtmos(5);
+            $this->addAtmosBonus(5);
             $itemActivated = true;
         }
         else if($item >= 19 && $item <= 20){
             //춘화첩, 초선화 사용
-            $this->addAtmos(7);
+            $this->addAtmosBonus(7);
             $itemActivated = true;
         }
         else if($item == 4){
@@ -327,12 +327,12 @@ class WarUnitGeneral extends WarUnit{
         }
         else if($item >= 12 && $item <= 13){
             //과실주, 이강주 사용
-            $this->addTrain(5);
+            $this->addTrainBonus(5);
             $itemActivated = true;
         }
         else if($item >= 18 && $item <= 18){
             //철벽서, 단결도 사용
-            $this->addTrain(7);
+            $this->addTrainBonus(7);
             $itemActivated = true;
         }
 
