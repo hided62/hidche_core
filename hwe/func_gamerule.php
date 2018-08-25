@@ -7,8 +7,16 @@ namespace sammo;
 
 function getNationLevelList():array{
     $table = [
-        7 => ['황제', 8, ]
+        0 => ['방랑군', 2, 0],
+        1 => ['호족', 2, 1],
+        2 => ['군벌', 4, 2],
+        3 => ['주자사', 4, 5],
+        4 => ['주목', 6, 8],
+        5 => ['공', 6, 11],
+        6 => ['왕', 8, 16],
+        7 => ['황제', 8, 21],
     ];
+    return $table;
 }
 
 function getNationTypeList():array{

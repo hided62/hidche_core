@@ -73,6 +73,14 @@ $startYear = $gameStor->getValue('startyear');
             <div class="card-body">
                 <div class="input-group mb-1">
                     <div class="input-group-prepend">
+                        <span class="input-group-text">국가 성향</span>
+                    </div>
+                    <select class="custom-select form_nation_type" style="width:25ch;">
+                        <?php foreach(getNationTypeList() as $typeID => [$name,$pros,$cons]): ?>
+                            <option value="<?=$typeID?>"><?=$name?> (<?=$pros?>, <?=$cons?>)</option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="input-group-prepend">
                         <span class="input-group-text">기술</span>
                     </div>
                     <input type="number" class="form-control form_tech" value="1" min="0" max="12">
@@ -82,25 +90,13 @@ $startYear = $gameStor->getValue('startyear');
                 </div>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">국가 성향</span>
-                    </div>
-                    <select class="custom-select form_nation_type">
-                        <?php foreach(getNationTypeList() as $typeID => [$name,$pros,$cons]): ?>
-                            <option value="<?=$typeID?>"><?=$name?> (<?=$pros?>, <?=$cons?>)</option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
                         <span class="input-group-text">국가 규모</span>
                     </div>
                     <select class="custom-select form_nation_level">
-                        <?php foreach(getNationTypeList() as $typeID => [$name,$pros,$cons]): ?>
-                            <option value="<?=$typeID?>"><?=$name?> (<?=$pros?>, <?=$cons?>)</option>
+                        <?php foreach(getNationLevelList() as $nationLevel => [$name,$chiefCnt,$cityCnt]): ?>
+                            <option value="<?=$nationLevel?>"><?=$name?></option>
                         <?php endforeach; ?>
                     </select>
-                </div>
-                <div class="input-group mb-1">
                     <div class="input-group-prepend">
                         <span class="input-group-text">도시 규모</span>
                     </div>
@@ -120,6 +116,10 @@ $startYear = $gameStor->getValue('startyear');
                             <input type="radio" name="is_attacker_capital" id="is_attacker_capital_n" autocomplete="off" checked>N
                         </label>
                     </div>
+                    
+                </div>
+                <div class="input-group mb-1">
+                    
                 </div>
             </div>
         </div>
@@ -138,21 +138,32 @@ $startYear = $gameStor->getValue('startyear');
                 </div>
             </div>
             <div class="card-body">
-                <div class="input-group mb-1">
+                <div class="input-group mb-3">
                     
                     <div class="input-group-prepend">
                         <span class="input-group-text">직위</span>
                     </div>
                     <select class="custom-select form_general_level">
-                        <option value="12">군주</option>
-                        <option value="11">참모</option>
-                        <option value="10">무장 수뇌</option>
-                        <option value="9">지장 수뇌</option>
+                        <option value="1">일반</option>
                         <option value="4">태수</option>
                         <option value="3">군사</option>
                         <option value="2">시중</option>
-                        <option value="1">일반</option>
+                        <option value="10">무장 수뇌</option>
+                        <option value="9">지장 수뇌</option>
+                        <option value="11">참모</option>
+                        <option value="12">군주</option>
                     </select>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Level</span>
+                    </div>
+                    <input type="number" class="form-control form_exp_level" value="20" min="0" max="300" step="1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">부상</span>
+                    </div>
+                    <input type="number" class="form-control form_leadership" value="0" min="0" max="80" step="1">
+                    <div class="input-group-append">
+                        <span class="input-group-text">%(<span class="injury_helptext">건강</span>)</span>
+                    </div>
                 </div>
                 <div class="input-group mb-1">
                     <div class="input-group-prepend">
@@ -194,25 +205,34 @@ $startYear = $gameStor->getValue('startyear');
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="input-group mb-1">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">부상</span>
+                <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                        <span class="input-group-text">자금</span>
                     </div>
-                    <input type="number" class="form-control form_leadership" value="50" min="1" max="300" step="1">
+                    <input type="number" class="form-control form_power" value="0" min="0" max="20000" step="50">
                     <div class="input-group-prepend">
                         <span class="input-group-text">군량</span>
                     </div>
-                    <input type="number" class="form-control form_power" value="50" min="1" max="300" step="1">
+                    <input type="number" class="form-control form_power" value="5000" min="50" max="20000" step="50">
                     <div class="input-group-prepend">
                         <span class="input-group-text">도구</span>
                     </div>
-                    <input type="number" class="form-control form_intel" value="50" min="1" max="300" step="1">
+                    <select class="custom-select form_general_item">
+                        <?php foreach(range(0, 26) as $bookID): ?>
+                            <option value="<?=$bookID?>"><?=getItemName($bookID)?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
                 <div class="input-group mb-1">
                     <div class="input-group-prepend">
                         <span class="input-group-text">병종</span>
                     </div>
-                    <input type="number" class="form-control form_crew" value="7000" min="100" step="100">
+                    <select class="custom-select form_crewtype">
+                        <?php foreach(GameUnitConst::all() as $crewTypeID => $crewType): ?>
+                            <?php if($crewTypeID < 0){ continue; } ?>
+                            <option value="<?=$crewTypeID?>"><?=$crewType->name?></option>
+                        <?php endforeach; ?>
+                    </select>
                     <div class="input-group-prepend">
                         <span class="input-group-text">병사</span>
                     </div>
@@ -226,7 +246,7 @@ $startYear = $gameStor->getValue('startyear');
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <div class="input-group mb-1">
+                <div class="input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text">훈련</span>
                     </div>
@@ -244,8 +264,58 @@ $startYear = $gameStor->getValue('startyear');
                         <?php endforeach; ?>
                     </select>
                 </div>
-                
-                레벨,보숙,궁숙,기숙,귀숙,차숙
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">보병숙련</span>
+                    </div>
+                    <select class="custom-select form_dex0">
+                        <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
+                            <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">궁병숙련</span>
+                    </div>
+                    <select class="custom-select form_dex10">
+                        <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
+                            <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">기병숙련</span>
+                    </div>
+                    <select class="custom-select form_dex20">
+                        <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
+                            <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">귀병숙련</span>
+                    </div>
+                    <select class="custom-select form_dex30">
+                        <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
+                            <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">차병숙련</span>
+                    </div>
+                    <select class="custom-select form_dex40">
+                        <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
+                            <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">수비여부</span>
+                    </div>
+                    <select class="custom-select form_defend_mode">
+                        <option value="2">훈사 80</option>
+                        <option value="3">훈사 60</option>
+                        <option value="0">안함</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div><!-- <div class="col-sm"> -->

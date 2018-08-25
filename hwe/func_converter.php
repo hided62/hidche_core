@@ -441,74 +441,73 @@ function getTechCall($tech) : string {
     return "{$techLevel}등급";
 }
 
-function getDexCall($dex) : string {
-    if($dex < 2500)        { $str = '<font color="navy">F-</font>'; }
-    elseif($dex <    7500) { $str = '<font color="navy">F</font>'; }
-    elseif($dex <   15000) { $str = '<font color="navy">F+</font>'; }
-    elseif($dex <   25000) { $str = '<font color="skyblue">E-</font>'; }
-    elseif($dex <   37500) { $str = '<font color="skyblue">E</font>'; }
-    elseif($dex <   52500) { $str = '<font color="skyblue">E+</font>'; }
-    elseif($dex <   70000) { $str = '<font color="seagreen">D-</font>'; }
-    elseif($dex <   90000) { $str = '<font color="seagreen">D</font>'; }
-    elseif($dex <  112500) { $str = '<font color="seagreen">D+</font>'; }
-    elseif($dex <  137500) { $str = '<font color="teal">C-</font>'; }
-    elseif($dex <  165000) { $str = '<font color="teal">C</font>'; }
-    elseif($dex <  195000) { $str = '<font color="teal">C+</font>'; }
-    elseif($dex <  227500) { $str = '<font color="limegreen">B-</font>'; }
-    elseif($dex <  262500) { $str = '<font color="limegreen">B</font>'; }
-    elseif($dex <  300000) { $str = '<font color="limegreen">B+</font>'; }
-    elseif($dex <  340000) { $str = '<font color="gold">A-</font>'; }
-    elseif($dex <  382500) { $str = '<font color="gold">A</font>'; }
-    elseif($dex <  427500) { $str = '<font color="gold">A+</font>'; }
-    elseif($dex <  475000) { $str = '<font color="darkorange">S-</font>'; }
-    elseif($dex <  525000) { $str = '<font color="darkorange">S</font>'; }
-    elseif($dex <  577500) { $str = '<font color="darkorange">S+</font>'; }
-    elseif($dex <  632500) { $str = '<font color="tomato">SS-</font>'; }
-    elseif($dex <  690000) { $str = '<font color="tomato">SS</font>'; }
-    elseif($dex <  750000) { $str = '<font color="tomato">SS+</font>'; }
-    elseif($dex <  812500) { $str = '<font color="red">SSS-</font>'; }
-    elseif($dex <  877500) { $str = '<font color="red">SSS</font>'; }
-    elseif($dex <  945000) { $str = '<font color="red">SSS+</font>'; }
-    elseif($dex < 1015000) { $str = '<font color="darkviolet">Z-</font>'; }
-    elseif($dex < 1087500) { $str = '<font color="darkviolet">Z</font>'; }
-    elseif($dex < 1162500) { $str = '<font color="darkviolet">Z+</font>'; }
-    else                   { $str = '<font color="white">?</font>'; }
-    return $str;
+function getDexLevelList(): array{
+    return [
+        [0, 'navy', 'F-'],
+        [2500, 'navy', 'F'],
+        [7500, 'navy', 'F+'],
+        [15000, 'skyblue', 'E-'],
+        [25000, 'skyblue', 'E'],
+        [37500, 'skyblue', 'E+'],
+        [52500, 'seagreen', 'D-'],
+        [70000, 'seagreen', 'D'],
+        [90000, 'seagreen', 'D+'],
+        [112500, 'teal', 'C-'],
+        [137500, 'teal', 'C'],
+        [165000, 'teal', 'C+'],
+        [195000, 'limegreen', 'B-'],
+        [227500, 'limegreen', 'B'],
+        [262500, 'limegreen', 'B+'],
+        [300000, 'gold', 'A-'],
+        [340000, 'gold', 'A'],
+        [382500, 'gold', 'A+'],
+        [427500, 'darkorange', 'S-'],
+        [475000, 'darkorange', 'S'],
+        [525000, 'darkorange', 'S+'],
+        [577500, 'tomato', 'SS-'],
+        [632500, 'tomato', 'SS'],
+        [690000, 'tomato', 'SS+'],
+        [750000, 'red', 'SSS-'],
+        [812500, 'red', 'SSS'],
+        [877500, 'red', 'SSS+'],
+        [945000, 'darkviolet', 'Z-'],
+        [1015000, 'darkviolet', 'Z'],
+        [1087500, 'darkviolet', 'Z+'],
+        [1162500, 'white', '?']
+    ];
 }
 
-function getDexLevel($dex) : int {
-    if($dex < 2500)        { $lvl =  0; }
-    elseif($dex <    7500) { $lvl =  1; }
-    elseif($dex <   15000) { $lvl =  2; }
-    elseif($dex <   25000) { $lvl =  3; }
-    elseif($dex <   37500) { $lvl =  4; }
-    elseif($dex <   52500) { $lvl =  5; }
-    elseif($dex <   70000) { $lvl =  6; }
-    elseif($dex <   90000) { $lvl =  7; }
-    elseif($dex <  112500) { $lvl =  8; }
-    elseif($dex <  137500) { $lvl =  9; }
-    elseif($dex <  165000) { $lvl = 10; }
-    elseif($dex <  195000) { $lvl = 11; }
-    elseif($dex <  227500) { $lvl = 12; }
-    elseif($dex <  262500) { $lvl = 13; }
-    elseif($dex <  300000) { $lvl = 14; }
-    elseif($dex <  340000) { $lvl = 15; }
-    elseif($dex <  382500) { $lvl = 16; }
-    elseif($dex <  427500) { $lvl = 17; }
-    elseif($dex <  475000) { $lvl = 18; }
-    elseif($dex <  525000) { $lvl = 19; }
-    elseif($dex <  577500) { $lvl = 20; }
-    elseif($dex <  632500) { $lvl = 21; }
-    elseif($dex <  690000) { $lvl = 22; }
-    elseif($dex <  750000) { $lvl = 23; }
-    elseif($dex <  812500) { $lvl = 24; }
-    elseif($dex <  877500) { $lvl = 25; }
-    elseif($dex <  945000) { $lvl = 26; }
-    elseif($dex < 1015000) { $lvl = 27; }
-    elseif($dex < 1087500) { $lvl = 28; }
-    elseif($dex < 1162500) { $lvl = 29; }
-    else                   { $lvl = 30; }
-    return $lvl;
+function getDexCall(int $dex) : string {
+    if($dex < 0){
+        throw new \InvalidArgumentException();
+    }
+
+    $color = null;
+    $name = null;
+    foreach(getDexLevelList() as $dexLevel => [$dexKey, $nextColor, $nextName]){
+        if($dex < $dexKey){
+            break;
+        }
+        $color = $nextColor;
+        $name = $nextName;
+    }
+
+    return "<font color='{$color}'>{$name}</font>";
+}
+
+function getDexLevel(int $dex) : int {
+    if($dex < 0){
+        throw new \InvalidArgumentException();
+    }
+
+    $retVal = null;
+    foreach(getDexLevelList() as $dexLevel => [$dexKey, $nextColor, $nextName]){
+        if($dex < $dexKey){
+            break;
+        }
+        $retVal = $dexLevel;
+    }
+    return $dexLevel;
 }
 
 function getDexLog($dex1, $dex2) {
