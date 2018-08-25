@@ -412,10 +412,10 @@ $startYear = $gameStor->getValue('startyear');
                             <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>
                     </select>
-                    <div class="input-group-prepend">
+                    <div class="input-group-prepend only_defender">
                         <span class="input-group-text">수비여부</span>
                     </div>
-                    <select class="custom-select form_defend_mode">
+                    <select class="custom-select form_defend_mode only_defender">
                         <option value="2">훈사 80</option>
                         <option value="3">훈사 60</option>
                         <option value="0">안함</option>

@@ -7,10 +7,6 @@
     display:none;
 }
 
-.attacker_form .defend_mode_text{
-    visibility: hidden;
-}
-
-.attacker_form .form_defend_mode{
+.attacker_form .only_defender{
     visibility: hidden;
 }
