@@ -56,7 +56,7 @@ $startYear = $gameStor->getValue('startyear');
                         <button type="button" class="btn btn-primary">불러오기</button>
                     </div>
                     <div class="btn-group mr-2" role="group">
-                        <button type="button" class="btn btn-info">내보내기</button>
+                        <button type="button" class="btn btn-info export_general">내보내기</button>
                         <button type="button" class="btn btn-info">가져오기</button>
                     </div>
                 </div>
@@ -132,16 +132,14 @@ $startYear = $gameStor->getValue('startyear');
                         <button type="button" class="btn btn-primary">불러오기</button>
                     </div>
                     <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-info">내보내기</button>
+                        <button type="button" class="btn btn-info export_general">내보내기</button>
                         <button type="button" class="btn btn-info">가져오기</button>
                     </div>
                 </div>
             </div>
-            <div class="card-body general_detail">
-            </div>
         </div>
     </div><!-- <div class="col-sm"> -->
-    <div class="col-sm">
+    <div class="col-sm defender-column">
         <div class="card mb-2">
             <div class="card-header">
                 수비국 설정
@@ -205,7 +203,28 @@ $startYear = $gameStor->getValue('startyear');
                 </div>
             </div>
         </div>
+        <div class="card mb-2 defender_add_form">
+            <div class="card-header">
+                <div class="float-sm-left" style="line-height:25px;">수비자 설정</div>
+                <div class="float-sm-right btn-toolbar" role="toolbar">
+                    <div class="btn-group btn-group-sm mr-2" role="group">
+                        <button type="button" class="btn btn-dark">수비 순서대로 정렬</button>
+                    </div>
+                    <div class="btn-group btn-group-sm mr-2" role="group">
+                        <button type="button" class="btn btn-primary">불러오기</button>
+                    </div>
+                    <div class="btn-group btn-group-sm mr-2" role="group">
+                        <button type="button" class="btn btn-info">가져오기</button>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-success add-defender">추가</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="card mb-2 defender_form general_form">
+        </div>
+        <div class="card mb-2 form_sample">
             <div class="card-header">
                 <div class="float-sm-left" style="line-height:25px;">수비자 설정</div>
                 <div class="float-sm-right btn-toolbar" role="toolbar">
@@ -214,31 +233,12 @@ $startYear = $gameStor->getValue('startyear');
                         <button type="button" class="btn btn-primary">불러오기</button>
                     </div>
                     <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-info">내보내기</button>
+                        <button type="button" class="btn btn-info export_general">내보내기</button>
                         <button type="button" class="btn btn-info">가져오기</button>
                     </div>
                     <div class="btn-group btn-group-sm" role="group">
                         <button type="button" class="btn btn-warning">복제</button>
-                        <button type="button" class="btn btn-danger">제거</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body general_detail">
-            </div>
-        </div>
-
-        <div class="card mb-2 defender_add_form">
-            <div class="card-header">
-                <div class="float-sm-left" style="line-height:25px;">수비자 설정</div>
-                <div class="float-sm-right btn-toolbar" role="toolbar">
-                    <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-primary">불러오기</button>
-                    </div>
-                    <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-info">가져오기</button>
-                    </div>
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-success">추가</button>
+                        <button type="button" class="btn btn-danger delete-defender">제거</button>
                     </div>
                 </div>
             </div>
@@ -265,7 +265,7 @@ $startYear = $gameStor->getValue('startyear');
                     <div class="input-group-prepend">
                         <span class="input-group-text">부상</span>
                     </div>
-                    <input type="number" class="form-control form_leadership" value="0" min="0" max="80" step="1">
+                    <input type="number" class="form-control form_injury" value="0" min="0" max="80" step="1">
                     <div class="input-group-append">
                         <span class="input-group-text">%(<span class="injury_helptext">건강</span>)</span>
                     </div>
@@ -296,7 +296,7 @@ $startYear = $gameStor->getValue('startyear');
                     <div class="input-group-prepend">
                         <span class="input-group-text">무기</span>
                     </div>
-                    <select class="custom-select form_general_horse">
+                    <select class="custom-select form_general_weap">
                         <?php foreach(range(0, 26) as $weapID): ?>
                             <option value="<?=$weapID?>"><?=getWeapName($weapID)?></option>
                         <?php endforeach; ?>
@@ -314,11 +314,11 @@ $startYear = $gameStor->getValue('startyear');
                 <div class="input-group-prepend">
                         <span class="input-group-text">자금</span>
                     </div>
-                    <input type="number" class="form-control form_power" value="0" min="0" max="20000" step="50">
+                    <input type="number" class="form-control form_gold" value="0" min="0" max="40000" step="50">
                     <div class="input-group-prepend">
                         <span class="input-group-text">군량</span>
                     </div>
-                    <input type="number" class="form-control form_power" value="5000" min="50" max="20000" step="50">
+                    <input type="number" class="form-control form_rice" value="5000" min="50" max="40000" step="50">
                     <div class="input-group-prepend">
                         <span class="input-group-text">도구</span>
                     </div>
@@ -355,11 +355,11 @@ $startYear = $gameStor->getValue('startyear');
                     <div class="input-group-prepend">
                         <span class="input-group-text">훈련</span>
                     </div>
-                    <input type="number" class="form-control form_crew" value="100" min="40" max="<?=GameConst::$maxTrainByWar?>" step="1">
+                    <input type="number" class="form-control form_train" value="100" min="40" max="<?=GameConst::$maxTrainByWar?>" step="1">
                     <div class="input-group-prepend">
                         <span class="input-group-text">사기</span>
                     </div>
-                    <input type="number" class="form-control form_crew" value="100" min="40" max="<?=GameConst::$maxAtmosByWar?>" step="1">
+                    <input type="number" class="form-control form_atmos" value="100" min="40" max="<?=GameConst::$maxAtmosByWar?>" step="1">
                     <div class="input-group-prepend">
                         <span class="input-group-text">전특</span>
                     </div>
@@ -423,6 +423,8 @@ $startYear = $gameStor->getValue('startyear');
                 </div>
             </div>
         </div>
+
+        
     </div><!-- <div class="col-sm"> -->
 </div>
 </div>

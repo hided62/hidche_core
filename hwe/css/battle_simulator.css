@@ -7,6 +7,7 @@
     display:none;
 }
 
-.attacker_form .only_defender{
-    visibility: hidden;
+
+.form_sample{
+    display:none;
 }
