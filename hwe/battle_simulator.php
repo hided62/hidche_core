@@ -70,7 +70,7 @@ $startYear = $gameStor->getValue('startyear');
             <div class="card-header">
                 출병국 설정
             </div>
-            <div class="card-body">
+            <div class="card-body nation_detail">
                 <div class="input-group mb-1">
                     <div class="input-group-prepend">
                         <span class="input-group-text">국가 성향</span>
@@ -123,7 +123,7 @@ $startYear = $gameStor->getValue('startyear');
                 </div>
             </div>
         </div>
-        <div class="card mb-2">
+        <div class="card mb-2 attacker_form general_form">
             <div class="card-header">
                 <div class="float-sm-left" style="line-height:25px;">출병자 설정</div>
                 <div class="float-sm-right btn-toolbar" role="toolbar">
@@ -137,7 +137,112 @@ $startYear = $gameStor->getValue('startyear');
                     </div>
                 </div>
             </div>
+            <div class="card-body general_detail">
+            </div>
+        </div>
+    </div><!-- <div class="col-sm"> -->
+    <div class="col-sm">
+        <div class="card mb-2">
+            <div class="card-header">
+                수비국 설정
+            </div>
             <div class="card-body">
+                <div class="input-group mb-1">
+                <div class="input-group-prepend">
+                        <span class="input-group-text">국가 성향</span>
+                    </div>
+                    <select class="custom-select form_nation_type" style="width:25ch;">
+                        <?php foreach(getNationTypeList() as $typeID => [$name,$pros,$cons]): ?>
+                            <option value="<?=$typeID?>"><?=$name?> (<?=$pros?>, <?=$cons?>)</option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">기술</span>
+                    </div>
+                    <input type="number" class="form-control form_tech" value="1" min="0" max="12">
+                    <div class="input-group-append">
+                        <span class="input-group-text">등급</span>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">국가 규모</span>
+                    </div>
+                    <select class="custom-select form_nation_level">
+                        <?php foreach(getNationLevelList() as $nationLevel => [$name,$chiefCnt,$cityCnt]): ?>
+                            <option value="<?=$nationLevel?>"><?=$name?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">도시 규모</span>
+                    </div>
+                    <select class="custom-select form_city_level">
+                        <?php foreach(getCityLevelList() as $levelID => $name): ?>
+                            <option value="<?=$levelID?>"><?=$name?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">수도</span>
+                    </div>
+                    <div class="input-group-append btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-secondary">
+                            <input type="radio" name="is_attacker_capital" id="is_attacker_capital_y" autocomplete="off">Y
+                        </label>
+                        <label class="btn btn-secondary active">
+                            <input type="radio" name="is_attacker_capital" id="is_attacker_capital_n" autocomplete="off" checked>N
+                        </label>
+                    </div>
+                </div>
+                <div class="input-group mb-1">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">수비</span>
+                    </div>
+                    <input type="number" class="form-control form_def" id="month" value="1000" min="10" step="10">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">성벽</span>
+                    </div>
+                    <input type="number" class="form-control form_wall" id="month" value="1000" min="0" step="10">
+                </div>
+            </div>
+        </div>
+        <div class="card mb-2 defender_form general_form">
+            <div class="card-header">
+                <div class="float-sm-left" style="line-height:25px;">수비자 설정</div>
+                <div class="float-sm-right btn-toolbar" role="toolbar">
+                    <div class="btn-group btn-group-sm mr-2" role="group">
+                        <button type="button" class="btn btn-primary">저장</button>
+                        <button type="button" class="btn btn-primary">불러오기</button>
+                    </div>
+                    <div class="btn-group btn-group-sm mr-2" role="group">
+                        <button type="button" class="btn btn-info">내보내기</button>
+                        <button type="button" class="btn btn-info">가져오기</button>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-warning">복제</button>
+                        <button type="button" class="btn btn-danger">제거</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body general_detail">
+            </div>
+        </div>
+
+        <div class="card mb-2 defender_add_form">
+            <div class="card-header">
+                <div class="float-sm-left" style="line-height:25px;">수비자 설정</div>
+                <div class="float-sm-right btn-toolbar" role="toolbar">
+                    <div class="btn-group btn-group-sm mr-2" role="group">
+                        <button type="button" class="btn btn-primary">불러오기</button>
+                    </div>
+                    <div class="btn-group btn-group-sm mr-2" role="group">
+                        <button type="button" class="btn btn-info">가져오기</button>
+                    </div>
+                    <div class="btn-group btn-group-sm" role="group">
+                        <button type="button" class="btn btn-success">추가</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body general_detail">
                 <div class="input-group mb-3">
                     
                     <div class="input-group-prepend">
@@ -315,103 +420,6 @@ $startYear = $gameStor->getValue('startyear');
                         <option value="3">훈사 60</option>
                         <option value="0">안함</option>
                     </select>
-                </div>
-            </div>
-        </div>
-    </div><!-- <div class="col-sm"> -->
-    <div class="col-sm">
-        <div class="card mb-2">
-            <div class="card-header">
-                수비국 설정
-            </div>
-            <div class="card-body">
-                <div class="input-group mb-1">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">기술</span>
-                    </div>
-                    <input type="number" class="form-control form_tech" value="1" min="0" max="12">
-                    <div class="input-group-append">
-                        <span class="input-group-text">등급</span>
-                    </div>
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">국가 성향</span>
-                    </div>
-                    <select class="custom-select form_nation_type">
-                        <?php foreach(getNationTypeList() as $typeID => [$name,$pros,$cons]): ?>
-                            <option value="<?=$typeID?>"><?=$name?> (<?=$pros?>, <?=$cons?>)</option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="input-group mb-1">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">도시 규모</span>
-                    </div>
-                    <select class="custom-select form_city_level">
-                        <?php foreach(getCityLevelList() as $levelID => $name): ?>
-                            <option value="<?=$levelID?>"><?=$name?></option>
-                        <?php endforeach; ?>
-                    </select>
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">수도</span>
-                    </div>
-                    <div class="input-group-append btn-group btn-group-toggle" data-toggle="buttons">
-                        <label class="btn btn-secondary">
-                            <input type="radio" name="is_defender_capital" id="is_defender_capital_y" autocomplete="off">Y
-                        </label>
-                        <label class="btn btn-secondary active">
-                            <input type="radio" name="is_defender_capital" id="is_defender_capital_n" autocomplete="off" checked>N
-                        </label>
-                    </div>
-                </div>
-                <div class="input-group mb-1">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">수비</span>
-                    </div>
-                    <input type="number" class="form-control form_def" id="month" value="1000" min="10" step="10">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">성벽</span>
-                    </div>
-                    <input type="number" class="form-control form_wall" id="month" value="1000" min="0" step="10">
-                </div>
-            </div>
-        </div>
-        <div class="card mb-2">
-            <div class="card-header">
-                <div class="float-sm-left" style="line-height:25px;">수비자 설정</div>
-                <div class="float-sm-right btn-toolbar" role="toolbar">
-                    <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-primary">저장</button>
-                        <button type="button" class="btn btn-primary">불러오기</button>
-                    </div>
-                    <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-info">내보내기</button>
-                        <button type="button" class="btn btn-info">가져오기</button>
-                    </div>
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-warning">복제</button>
-                        <button type="button" class="btn btn-danger">제거</button>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-            </div>
-        </div>
-
-        <div class="card mb-2">
-            <div class="card-header">
-                <div class="float-sm-left" style="line-height:25px;">수비자 설정</div>
-                <div class="float-sm-right btn-toolbar" role="toolbar">
-                    <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-primary">불러오기</button>
-                    </div>
-                    <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-info">가져오기</button>
-                    </div>
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-success">추가</button>
-                    </div>
                 </div>
             </div>
         </div>

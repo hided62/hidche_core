@@ -2,3 +2,15 @@
     width:1024px;
     margin:auto;
 }
+
+.defender_add_form .general_detail{
+    display:none;
+}
+
+.attacker_form .defend_mode_text{
+    visibility: hidden;
+}
+
+.attacker_form .form_defend_mode{
+    visibility: hidden;
+}
