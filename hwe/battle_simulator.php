@@ -219,7 +219,7 @@ $startYear = $gameStor->getValue('startyear');
                 <div class="float-sm-left" style="line-height:25px;">수비자 설정</div>
                 <div class="float-sm-right btn-toolbar" role="toolbar">
                     <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-dark">수비 순서대로 정렬</button>
+                        <button type="button" class="btn btn-dark btn-reorder_defender">수비 순서대로 정렬</button>
                     </div>
                     <div class="btn-group btn-group-sm mr-2" role="group">
                         <input type="file" class="form_load_general_file" style="display: none;" />

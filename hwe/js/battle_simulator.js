@@ -542,6 +542,46 @@ jQuery(function($){
         });
     }
 
+
+    var reorderDefender = function(defenderOrder){
+        $.each(defenderOrder, function(idx, generalNo){
+
+            if(!(generalNo in defenderNoList)){
+                //음..?
+                alert("{0}이 수비자 리스트에 없습니다. 버그인 듯 합니다.".format(generalNo));
+                return true;
+            }
+
+            var $defenderObj = defenderNoList[generalNo];
+            $defenderObj.detach();
+            $defenderColumn.append($defenderObj);
+        })
+    }
+
+    var requestReorderDefender = function(){
+        var data = extendAllDataForDB(exportAllData());
+        console.log(data);
+        $.ajax({
+            type:'post',
+            url:'j_simulate_battle.php',
+            dataType:'json',
+            data:{
+                action:'reorder',
+                query:JSON.stringify(data),
+            }
+        }).then(function(result){
+            console.log(result);
+            if(!result.result){
+                alert(result.reason);
+                return;
+            }
+            reorderDefender(result.order);
+            
+        }, function(result){
+            alert('재정렬 실패!');
+        });
+    }
+
     initBasicEvent();
     $attackerCard.append($generalForm.clone(true,true));
     addDefender();
@@ -549,4 +589,8 @@ jQuery(function($){
     $('.btn-begin_battle').click(function(){
         beginBattle();
     });
+
+    $('.btn-reorder_defender').click(function(){
+        requestReorderDefender();
+    })
 });

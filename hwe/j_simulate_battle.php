@@ -16,7 +16,7 @@ if($query === null){
 }
 
 $action = Util::getReq('action');
-if($action === null || in_array($action, ['reorder', 'battle'])){
+if($action === null || !in_array($action, ['reorder', 'battle'])){
     Json::die([
         'result'=>false,
         'reason'=>'원하는 동작이 지정되지 않았습니다.'
@@ -238,6 +238,23 @@ if(!$v->validate()){
     Json::die([
         'result'=>false,
         'reason'=>'[수비국]'.$v->errorStr()
+    ]);
+}
+
+if($action == 'reorder'){
+    usort($defenderGenerals, function($lhs, $rhs){
+        return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
+    });
+
+    $order = [];
+    foreach($defenderGenerals as $defenderGeneral){
+        $order[] = $defenderGeneral['no'];
+    }
+    
+    Json::die([
+        'result'=>true,
+        'reason'=>'success',
+        'order'=>$order
     ]);
 }
 
