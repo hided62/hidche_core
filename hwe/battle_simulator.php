@@ -24,6 +24,7 @@ $startYear = $gameStor->getValue('startyear');
 <?=WebUtil::printCSS('css/battle_simulator.css')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/moment.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../e_lib/download2.js')?>
 <?=WebUtil::printJS('js/common.js')?>
@@ -35,7 +36,7 @@ $startYear = $gameStor->getValue('startyear');
     <div class="card-header">
         전역 설정
     </div>
-    <div class="card-body">
+    <div class="card-body dragpad_battle">
         <div class="row">
             <div class="col-sm-6">
                 <div class="input-group">
@@ -68,9 +69,9 @@ $startYear = $gameStor->getValue('startyear');
                         <button type="button" class="btn btn-danger btn-begin_battle">전투</button>
                     </div>
                     <div class="btn-group mr-2" role="group">
-                        <button type="button" class="btn btn-info">모두 저장</button>
+                        <button type="button" class="btn btn-info btn-battle-save">모두 저장</button>
                         <input type="file" class="form_load_battle_file" style="display: none;" />
-                        <button type="button" class="btn btn-primary">모두 불러오기</button>
+                        <button type="button" class="btn btn-primary btn-battle-load">모두 불러오기</button>
                     </div>
                 </div>
             </div>
@@ -83,7 +84,7 @@ $startYear = $gameStor->getValue('startyear');
             <div class="card-header">
                 출병국 설정
             </div>
-            <div class="card-body nation_detail">
+            <div class="card-body nation_detail dragpad_battle">
                 <div class="input-group mb-1">
                     <div class="input-group-prepend">
                         <span class="input-group-text">국가 성향</span>
@@ -154,7 +155,7 @@ $startYear = $gameStor->getValue('startyear');
             <div class="card-header">
                 수비국 설정
             </div>
-            <div class="card-body">
+            <div class="card-body dragpad_battle">
                 <div class="input-group mb-1">
                 <div class="input-group-prepend">
                         <span class="input-group-text">국가 성향</span>
@@ -219,10 +220,6 @@ $startYear = $gameStor->getValue('startyear');
                 <div class="float-sm-right btn-toolbar" role="toolbar">
                     <div class="btn-group btn-group-sm mr-2" role="group">
                         <button type="button" class="btn btn-dark btn-reorder_defender">수비 순서대로 정렬</button>
-                    </div>
-                    <div class="btn-group btn-group-sm mr-2" role="group">
-                        <input type="file" class="form_load_general_file" style="display: none;" />
-                        <button type="button" class="btn btn-primary btn-general-load-new">불러오기</button>
                     </div>
                     <div class="btn-group btn-group-sm" role="group">
                         <button type="button" class="btn btn-success add-defender">추가</button>
@@ -367,6 +364,7 @@ $startYear = $gameStor->getValue('startyear');
                         <span class="input-group-text">전특</span>
                     </div>
                     <select class="custom-select form_general_special_war">
+                        <option value="0">-</option>
                         <?php foreach(SpecialityConst::WAR as $specialWarID => [$name,$buff,$cond]): ?>
                             <option value="<?=$specialWarID?>"><?=$name?></option>
                         <?php endforeach; ?>

@@ -89,6 +89,31 @@ jQuery(function($){
             download(saveData, filename, 'application/json');
         });
 
+        $('.btn-battle-load').click(function(){
+            var $file = $(this).prev();
+            $file[0].click();
+        })
+
+        $('.form_load_battle_file').on('change', function(e){
+            e.preventDefault();
+            var $this = $(this);
+            var files = e.target.files;
+
+            importBattleInfoByFile(files);
+            return false;
+        });
+
+        $('.btn-battle-save').click(function(){
+            var battleData = exportAllData();
+            var filename = "battle_{0}.json".format(moment().format('YYYYMMDD_hhmmss'));
+            var saveData = JSON.stringify({
+                objType:'battle',
+                data:battleData
+            }, null, 4);
+
+            download(saveData, filename, 'application/json');
+        })
+
         var $generals = $('.general_detail');
         $generals.bind('dragover dragleave', function(e) {
             e.stopPropagation()
@@ -102,6 +127,20 @@ jQuery(function($){
             var files = e.originalEvent.dataTransfer.files;
 
             importGeneralInfoByFile(files, $card);
+            return false;
+        });
+
+        var $battlePad = $('.dragpad_battle');
+        $battlePad.bind('dragover dragleave', function(e) {
+            e.stopPropagation()
+            e.preventDefault()
+        })
+        $battlePad.bind('drop', function(e){
+            e.preventDefault();
+
+            var files = e.originalEvent.dataTransfer.files;
+
+            importBattleInfoByFile(files);
             return false;
         });
     }
@@ -193,6 +232,64 @@ jQuery(function($){
         };
     }
 
+    var importBattleInfoByFile = function(files){
+        if(files === null){
+            alert('파일 에러!');
+            return false;
+        }
+
+        if(files.length < 1){
+            alert("파일 에러!");
+            return false;
+        }
+
+
+        var file = files[0];
+        if(file.size > 1024*1024){
+            alert('파일이 너무 큽니다!');
+            return false;
+        }
+        if(file.type === ''){
+            alert('폴더를 업로드할 수 없습니다!');
+            return false;
+        }
+
+        var reader = new FileReader();
+        reader.onload = function(){
+            var battleData = {};
+            try {
+                battleData = JSON.parse(reader.result);
+            } catch(e) {
+                alert('올바르지 않은 파일 형식입니다');
+                return false;
+            }
+
+            if(!('objType' in battleData)){
+                alert('파일 형식을 확인할 수 없습니다');
+                return false;
+            }
+
+            if(battleData.objType != 'battle'){
+                alert('전투 데이터가 아닙니다');
+                return false;
+            }
+
+            importBattleInfo(battleData.data);
+            return true;
+        };
+
+        try {
+
+            reader.readAsText(file);
+        }
+        catch(e) {
+            alert('파일을 읽는데 실패했습니다.');
+            return false;
+        }
+
+        return true;
+    }
+
     var importGeneralInfoByFile = function(files, $card){
         if($card === undefined){
             $card = addDefender();
@@ -234,6 +331,10 @@ jQuery(function($){
                 return false;
             }
 
+            if(generalData.objType == 'battle'){
+                importBattleInfo(generalData.data);
+                return true;
+            }
             if(generalData.objType != 'general'){
                 alert('장수 데이터가 아닙니다');
                 return false;
@@ -360,6 +461,60 @@ jQuery(function($){
         var generalData = exportGeneralInfo($general);
         var $newObj = addDefender($card);
         importGeneralInfo(getGeneralDetail($newObj), generalData);
+    }
+
+    var importBattleInfo = function(battleData){
+
+        $('.form_load_battle_file').val('');
+        console.log(battleData);
+
+        var $attackerNation = $('.attacker_nation');
+        var $defenderNation = $('.defender_nation');
+
+        var attackerGeneral = battleData.attackerGeneral;
+        var attackerCity = battleData.attackerCity;
+        var attackerNation = battleData.attackerNation;
+
+        var defenderGenerals = battleData.defenderGenerals;
+        var defenderCity = battleData.defenderCity;
+        var defenderNation = battleData.defenderNation;
+
+        $('#year').val(battleData.year);
+        $('#month').val(battleData.month);
+        $('#repeat_cnt').val(battleData.repeatCnt);
+        
+        $('.delete-defender').click();
+
+        $attackerNation.find('.form_nation_type').val(attackerNation.type);
+        $attackerNation.find('.form_tech').val(Math.floor(attackerNation.tech/1000));
+        $attackerNation.find('.form_nation_level').val(attackerNation.level);
+        if(attackerNation.capital == 1){
+            $attackerNation.find('.form_is_capital:first').click();
+        }
+        else{
+            $attackerNation.find('.form_is_capital:last').click();
+        }
+        $attackerNation.find('.form_city_level').val(attackerCity.level);
+
+        importGeneralInfo($('.attacker_form'), attackerGeneral);
+
+        $defenderNation.find('.form_nation_type').val(defenderNation.type);
+        $defenderNation.find('.form_tech').val(Math.floor(defenderNation.tech/1000));
+        $defenderNation.find('.form_nation_level').val(defenderNation.level);
+        if(defenderNation.capital == 1){
+            $defenderNation.find('.form_is_capital:first').click();
+        }
+        else{
+            $defenderNation.find('.form_is_capital:last').click();
+        }
+        $defenderNation.find('.form_city_level').val(defenderCity.level);
+        $('#city_def').val(defenderCity.def);
+        $('#city_wall').val(defenderCity.wall);
+
+        $.each(defenderGenerals, function(idx, defenderGeneral){
+            var $card = addDefender();
+            importGeneralInfo($card, defenderGeneral);
+        });
     }
 
     var exportAllData = function(){

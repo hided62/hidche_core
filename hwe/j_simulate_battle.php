@@ -121,7 +121,7 @@ $generalCheck = [
     ],
     'in'=>[
         ['personal', array_keys(getCharacterList())],
-        ['special2', array_keys(SpecialityConst::WAR)],
+        ['special2', array_merge(array_keys(SpecialityConst::WAR), [0])],
         ['crewtype', array_keys(GameUnitConst::all())],
     ]
 ];
