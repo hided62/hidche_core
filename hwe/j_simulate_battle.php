@@ -268,7 +268,11 @@ $startYear = $gameStor->startyear;
 $cityRate = Util::round(($year - $startYear) / 1.5) + 60;
 
 
-function simulateBattle($rawAttacker, $rawAttackerCity, $rawAttackerNation, $defenderList, $rawDefenderCity, $rawDefenderNation, $startYear, $year, $month, $cityRate){
+function simulateBattle(
+    $rawAttacker, $rawAttackerCity, $rawAttackerNation, 
+    $defenderList, $rawDefenderCity, $rawDefenderNation, 
+    $startYear, $year, $month, $cityRate
+){
     $attacker = new WarUnitGeneral($rawAttacker, $rawAttackerCity, $rawAttackerNation, true, $year, $month);
     $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
@@ -277,10 +281,17 @@ function simulateBattle($rawAttacker, $rawAttackerCity, $rawAttackerNation, $def
 
     $battleResult = [];
 
-    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($battleResult, $iterDefender, $rawDefenderCity, $rawDefenderNation, $year, $month, $db) {
+    $attackerRice = $rawAttacker['rice'];
+    $defenderRice = 0;
+
+    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) 
+        use ($iterDefender, $rawDefenderCity, $rawDefenderNation, $year, $month, &$battleResult, &$defenderRice) {
         if($prevDefender !== null){
+            $prevDefender->getLogger()->rollback();
             $battleResult[] = $prevDefender;
-            //TODO: 전투 결과!
+            if($prevDefender instanceof WarUnitGeneral){
+                $defenderRice -= $prevDefender->getVar('rice');
+            }
         }
 
         if(!$reqNext){
@@ -296,6 +307,8 @@ function simulateBattle($rawAttacker, $rawAttackerCity, $rawAttackerNation, $def
             return null;
         }
 
+        $defenderRice += $rawGeneral['rice'];
+
         $retVal = new WarUnitGeneral($rawGeneral, $rawDefenderCity, $rawDefenderNation, false, $year, $month);
         $iterDefender->next();
         return $retVal;
@@ -307,27 +320,85 @@ function simulateBattle($rawAttacker, $rawAttackerCity, $rawAttackerNation, $def
     $updateAttackerNation = [];
     $updateDefenderNation = [];
 
-    if($city->getVar('supply')){
-        if($city->getPhase() > 0){
-            $rice = $city->getKilled() / 100 * 0.8;
-            $rice *= $city->getCrewType()->rice;
-            $rice *= getTechCost($rawDefenderNation['tech']);
-            $rice *= $cityRate / 100 - 0.2;
-            Util::setRound($rice);
+    $attackerRice -= $attacker->getVar('rice');
 
-            $updateDefenderNation['rice'] = max(0, $rawDefenderNation['rice'] - $rice);
-        }
-        else if($conquerCity){
-            $updateDefenderNation['rice'] = $rawDefenderNation['rice'] + 500;
-        }
+    if($city->getPhase() > 0){
+        $rice = $city->getKilled() / 100 * 0.8;
+        $rice *= $city->getCrewType()->rice;
+        $rice *= getTechCost($rawDefenderNation['tech']);
+        $rice *= $cityRate / 100 - 0.2;
+        Util::setRound($rice);
+
+        $defenderRice += $rice;
     }
 
     $totalDead = $attacker->getKilled() + $attacker->getDead();
     $attackerCityDead = $totalDead * 0.4;
     $defenderCityDead = $totalDead * 0.6;
+
+    return [$attacker, $city, $battleResult, $conquerCity, $attackerRice, $defenderRice];
+}
+
+$lastWarLog = [];
+
+$attackerKilled = 0;
+$attackerDead = 0;
+
+$attackerAvgRice = 0;
+$defenderAvgRice = 0;
+
+$attackerActivatedSkills = [];
+$defendersActivatedSkills = [];
+
+foreach(range(1, $repeatCnt) as $repeatIdx){
+    [$attacker, $city, $battleResult, $conquerCity, $attackerRice, $defenderRice] = simulateBattle(
+        $rawAttacker, $rawAttackerCity, $rawAttackerNation, 
+        $defenderList, $rawDefenderCity, $rawDefenderNation, 
+        $startYear, $year, $month, $cityRate
+    );
+    $lastWarLog = $attacker->getLogger()->rollback();
+
+    $attackerKilled += $attacker->getKilled() / $repeatCnt;
+    $attackerDead += $attacker->getDead() / $repeatCnt;
+
+    $attackerAvgRice += $attackerRice /= $repeatCnt;
+    $defenderAvgRice += $defenderRice /= $repeatCnt;
+
+    foreach($attacker->getActivatedSkillLog() as $skillName => $skillCnt){
+        if(!key_exists($skillName, $attackerActivatedSkills)){
+            $attackerActivatedSkills[$skillName] = $skillCnt / $repeatCnt;
+        }
+        else{
+            $attackerActivatedSkills[$skillName] += $skillCnt / $repeatCnt;
+        }
+    }
+
+    foreach($battleResult as $idx=>$defender){
+        while($idx >= count($defendersActivatedSkills)){
+            $defendersActivatedSkills[] = [];
+        }
+
+        $activatedSkills = &$defendersActivatedSkills[$idx];
+        foreach($defender->getActivatedSkillLog() as $skillName => $skillCnt){
+            if(!key_exists($skillName, $activatedSkills)){
+                $activatedSkills[$skillName] = $skillCnt / $repeatCnt;
+            }
+            else{
+                $activatedSkills[$skillName] += $skillCnt / $repeatCnt;
+            }
+        }
+        
+    }
 }
 
 Json::die([
     'result'=>true,
-    'reason'=>'NYI'
+    'reason'=>'success',
+    'lastWarLog'=>$lastWarLog,
+    'attackerKilled'=>$attackerKilled,
+    'attackerDead'=>$attackerDead,
+    'attackerRice'=>$attackerAvgRice,
+    'defenderRice'=>$defenderAvgRice,
+    'attackerActivatedSkills'=>$attackerActivatedSkills,
+    'defendersActivatedSkills'=>$defendersActivatedSkills,
 ]);
