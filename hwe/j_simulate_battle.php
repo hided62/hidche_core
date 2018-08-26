@@ -69,13 +69,13 @@ $year = $query['year'];
 $month = $query['month'];
 $repeatCnt = $query['repeatCnt'];
 
-$attackerGeneral = $query['attackerGeneral'];
-$attackerCity = $query['attackerCity'];
-$attackerNation = $query['attackerNation'];
+$rawAttacker = $query['attackerGeneral'];
+$rawAttackerCity = $query['attackerCity'];
+$rawAttackerNation = $query['attackerNation'];
 
-$defenderGenerals = $query['defenderGenerals'];
-$defenderCity = $query['defenderCity'];
-$defenderNation = $query['defenderNation'];
+$defenderList = $query['defenderGenerals'];
+$rawDefenderCity = $query['defenderCity'];
+$rawDefenderNation = $query['defenderNation'];
 
 
 $generalCheck = [
@@ -125,7 +125,7 @@ $generalCheck = [
     ]
 ];
 
-$v = new Validator($attackerGeneral);
+$v = new Validator($rawAttacker);
 $v->rules($generalCheck);
 if(!$v->validate()){
     Json::die([
@@ -134,8 +134,8 @@ if(!$v->validate()){
     ]);
 }
 
-foreach($defenderGenerals as $idx=>$defenderGeneral){
-    $v = new Validator($defenderGeneral);
+foreach($defenderList as $idx=>$rawDefenderGeneral){
+    $v = new Validator($rawDefenderGeneral);
     $v->rules($generalCheck);
     if(!$v->validate()){
         $idx+=1;
@@ -178,7 +178,7 @@ $cityCheck = [
     ]
 ];
 
-$v = new Validator($attackerCity);
+$v = new Validator($rawAttackerCity);
 $v->rules($cityCheck);
 if(!$v->validate()){
     Json::die([
@@ -187,7 +187,7 @@ if(!$v->validate()){
     ]);
 }
 
-$v = new Validator($defenderCity);
+$v = new Validator($rawDefenderCity);
 $v->rules($cityCheck);
 if(!$v->validate()){
     Json::die([
@@ -223,7 +223,7 @@ $nationCheck = [
     ]
 ];
 
-$v = new Validator($attackerNation);
+$v = new Validator($rawAttackerNation);
 $v->rules($nationCheck);
 if(!$v->validate()){
     Json::die([
@@ -232,7 +232,7 @@ if(!$v->validate()){
     ]);
 }
 
-$v = new Validator($defenderNation);
+$v = new Validator($rawDefenderNation);
 $v->rules($nationCheck);
 if(!$v->validate()){
     Json::die([
@@ -242,13 +242,13 @@ if(!$v->validate()){
 }
 
 if($action == 'reorder'){
-    usort($defenderGenerals, function($lhs, $rhs){
+    usort($defenderList, function($lhs, $rhs){
         return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
     });
 
     $order = [];
-    foreach($defenderGenerals as $defenderGeneral){
-        $order[] = $defenderGeneral['no'];
+    foreach($defenderList as $rawDefenderGeneral){
+        $order[] = $rawDefenderGeneral['no'];
     }
     
     Json::die([
@@ -256,6 +256,75 @@ if($action == 'reorder'){
         'reason'=>'success',
         'order'=>$order
     ]);
+}
+
+usort($defenderList, function($lhs, $rhs){
+    return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
+});
+
+$db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
+$startYear = $gameStor->startyear;
+$cityRate = Util::round(($year - $startYear) / 1.5) + 60;
+
+
+function simulateBattle($rawAttacker, $rawAttackerCity, $rawAttackerNation, $defenderList, $rawDefenderCity, $rawDefenderNation, $startYear, $year, $month, $cityRate){
+    $attacker = new WarUnitGeneral($rawAttacker, $rawAttackerCity, $rawAttackerNation, true, $year, $month);
+    $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
+
+    $iterDefender = new \ArrayIterator($defenderList);
+    $iterDefender->rewind();
+
+    $battleResult = [];
+
+    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($battleResult, $iterDefender, $rawDefenderCity, $rawDefenderNation, $year, $month, $db) {
+        if($prevDefender !== null){
+            $battleResult[] = $prevDefender;
+            //TODO: 전투 결과!
+        }
+
+        if(!$reqNext){
+            return null;
+        }
+
+        if(!$iterDefender->valid()){
+            return null;
+        }
+
+        $rawGeneral = $iterDefender->current();
+        if(extractBattleOrder($rawGeneral) <= 0){
+            return null;
+        }
+
+        $retVal = new WarUnitGeneral($rawGeneral, $rawDefenderCity, $rawDefenderNation, false, $year, $month);
+        $iterDefender->next();
+        return $retVal;
+    };
+
+    $conquerCity = processWar_NG($attacker, $getNextDefender, $city, $year - $startYear);
+
+    $rawDefenderCity = $city->getRaw();
+    $updateAttackerNation = [];
+    $updateDefenderNation = [];
+
+    if($city->getVar('supply')){
+        if($city->getPhase() > 0){
+            $rice = $city->getKilled() / 100 * 0.8;
+            $rice *= $city->getCrewType()->rice;
+            $rice *= getTechCost($rawDefenderNation['tech']);
+            $rice *= $cityRate / 100 - 0.2;
+            Util::setRound($rice);
+
+            $updateDefenderNation['rice'] = max(0, $rawDefenderNation['rice'] - $rice);
+        }
+        else if($conquerCity){
+            $updateDefenderNation['rice'] = $rawDefenderNation['rice'] + 500;
+        }
+    }
+
+    $totalDead = $attacker->getKilled() + $attacker->getDead();
+    $attackerCityDead = $totalDead * 0.4;
+    $defenderCityDead = $totalDead * 0.6;
 }
 
 Json::die([
