@@ -519,6 +519,54 @@ jQuery(function($){
         });
     }
 
+    var parseSkillCount = function(skills){
+        var result = [];
+        $.each(skills, function(key, value){
+            result.push("{0}({1}회)".format(key, toPretty(value)));
+        })
+
+        if(result.length == 0){
+            return '-';
+        }
+        return result.join(', ');
+    }
+
+    var toPretty = function(number){
+        if(isInt(number)){
+            number = parseInt(number);
+        }
+        else{
+            number = parseFloat(number).toFixed(2);
+        }
+        return numberWithCommas(number);
+    }
+
+    var showBattleResult = function(result){
+        $('#result_datetime').html(result.datetime);
+        $('#result_warcnt').html(toPretty(result.avgWar));
+        $('#result_phase').html(toPretty(result.phase));
+        $('#result_killed').html(toPretty(result.killed));
+        $('#result_dead').html(toPretty(result.dead));
+        $('#result_attackerRice').html(toPretty(result.attackerRice));
+        $('#result_defenderRice').html(toPretty(result.defenderRice));
+        $('#result_attackerSkills').html(parseSkillCount(result.attackerSkills));
+        
+        $('.result_defenderSkills').detach();
+
+        var $summary = $('#battle_result_summary');
+
+        $.each(result.defendersSkills, function(idx, defenderSkills){
+            console.log(defenderSkills);
+            var $result = $("<tr class='result_defenderSkills'><th>수비자{0} 스킬</th><td></td></tr>".format(idx + 1));
+            $result.find('td').html(parseSkillCount(defenderSkills));
+            $summary.append($result);
+        });
+
+        $('#generalBattleResultLog').html(result.lastWarLog.generalBattleResultLog);
+        $('#generalBattleDetailLog').html(result.lastWarLog.generalBattleDetailLog);
+
+    }
+
     var beginBattle = function(){
         var data = extendAllDataForDB(exportAllData());
         console.log(data);
@@ -536,6 +584,7 @@ jQuery(function($){
                 alert(result.reason);
                 return;
             }
+            showBattleResult(result);
             
         }, function(result){
             alert('전투 개시 실패!');

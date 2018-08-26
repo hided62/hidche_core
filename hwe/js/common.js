@@ -23,6 +23,14 @@ var escapeHtml = (function (string) {
     }
 })();
 
+/**
+ * 변수가 정수인지 확인하는 함수
+ * @param {*} n 정수인지 확인하기 위한 인자
+ * @return {boolean} 정수인지 여부
+ */
+function isInt(n) {
+    return +n === n && !(n % 1);
+}
 
 /**
  * object의 array를 id를 key로 삼는 object로 재 변환
@@ -87,6 +95,11 @@ function convColorValue(color) {
 
     return color;
 
+}
+
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 /**

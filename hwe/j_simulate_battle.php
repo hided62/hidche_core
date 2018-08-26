@@ -70,6 +70,7 @@ $month = $query['month'];
 $repeatCnt = $query['repeatCnt'];
 
 $rawAttacker = $query['attackerGeneral'];
+$rawAttacker['turntime'] = date('Y-m-d H:i:s');
 $rawAttackerCity = $query['attackerCity'];
 $rawAttackerNation = $query['attackerNation'];
 
@@ -347,6 +348,9 @@ $attackerDead = 0;
 $attackerAvgRice = 0;
 $defenderAvgRice = 0;
 
+$avgPhase = 0;
+$avgWar = 0;
+
 $attackerActivatedSkills = [];
 $defendersActivatedSkills = [];
 
@@ -356,13 +360,19 @@ foreach(range(1, $repeatCnt) as $repeatIdx){
         $defenderList, $rawDefenderCity, $rawDefenderNation, 
         $startYear, $year, $month, $cityRate
     );
-    $lastWarLog = $attacker->getLogger()->rollback();
+    $lastWarLog = Util::mapWithKey(function($key, $values){
+        return ConvertLog(join('<br>', $values));
+    }, $attacker->getLogger()->rollback()); 
+
+    $avgPhase += $attacker->getPhase() / $repeatCnt;
 
     $attackerKilled += $attacker->getKilled() / $repeatCnt;
     $attackerDead += $attacker->getDead() / $repeatCnt;
 
-    $attackerAvgRice += $attackerRice /= $repeatCnt;
-    $defenderAvgRice += $defenderRice /= $repeatCnt;
+    $attackerAvgRice += $attackerRice / $repeatCnt;
+    $defenderAvgRice += $defenderRice / $repeatCnt;
+
+    $avgWar += count($battleResult) / $repeatCnt;
 
     foreach($attacker->getActivatedSkillLog() as $skillName => $skillCnt){
         if(!key_exists($skillName, $attackerActivatedSkills)){
@@ -393,12 +403,15 @@ foreach(range(1, $repeatCnt) as $repeatIdx){
 
 Json::die([
     'result'=>true,
+    'datetime'=>$rawAttacker['turntime'],
     'reason'=>'success',
     'lastWarLog'=>$lastWarLog,
-    'attackerKilled'=>$attackerKilled,
-    'attackerDead'=>$attackerDead,
+    'avgWar'=>$avgWar,
+    'phase'=>$avgPhase,
+    'killed'=>$attackerKilled,
+    'dead'=>$attackerDead,
     'attackerRice'=>$attackerAvgRice,
     'defenderRice'=>$defenderAvgRice,
-    'attackerActivatedSkills'=>$attackerActivatedSkills,
-    'defendersActivatedSkills'=>$defendersActivatedSkills,
+    'attackerSkills'=>$attackerActivatedSkills,
+    'defendersSkills'=>$defendersActivatedSkills,
 ]);

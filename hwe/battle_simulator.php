@@ -20,7 +20,6 @@ $startYear = $gameStor->getValue('startyear');
 <meta name="viewport" content="width=1100" />
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
-<?=WebUtil::printCSS('../css/config.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/battle_simulator.css')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
@@ -430,6 +429,46 @@ $startYear = $gameStor->getValue('startyear');
 
         
     </div><!-- <div class="col-sm"> -->
+</div>
+<div class="card mb-3">
+    <div class="card-header">
+        전투 요약
+    </div>
+    <table class="table">
+        <tbody id="battle_result_summary">
+            <tr><th style='width:16ch;'>전투 일시</th><td id='result_datetime'></td></tr>
+            <tr><th>전투 횟수</th><td id='result_warcnt'></td></tr>
+            <tr><th>전투 페이즈</th><td id='result_phase'></td></tr>
+            <tr><th>공격량</th><td id='result_killed'></td></tr>
+            <tr><th>피해량</th><td id='result_dead'></td></tr>
+            <tr><th>출병자 군량 소모</th><td id='result_attackerRice'></td></tr>
+            <tr><th>수비자 군량 소모</th><td id='result_defenderRice'></td></tr>
+            <tr><th>공격자 스킬</th><td id='result_attackerSkills'></td></tr>
+            <tr class='result_defenderSkills'><th>수비자1 스킬</th><td></td></tr>
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <div class="col-sm">
+        <div class="card mb-3">
+            <div class="card-header">
+                마지막 전투 로그
+            </div>
+            <div class="card-body" id="generalBattleResultLog">
+
+            </div>
+        </div>
+    </div>
+    <div class="col-sm">
+        <div class="card mb-3">
+            <div class="card-header">
+                마지막 전투 상세 로그
+            </div>
+            <div class="card-body" id="generalBattleDetailLog">
+
+            </div>
+        </div>
+    </div>
 </div>
 </div>
 </body>
