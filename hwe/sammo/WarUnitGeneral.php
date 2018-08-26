@@ -822,8 +822,8 @@ class WarUnitGeneral extends WarUnit{
                     $thisLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>{$josaUl} <R>실패</>했다!");
                     $opposeLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>{$josaUl} 간파했다!");
 
-                    $this->multiplyWarPowerMultiply($skillMultiply);
-                    $oppose->multiplyWarPowerMultiply(1/$skillMultiply);
+                    $this->multiplyWarPowerMultiply(1/$skillMultiply);
+                    $oppose->multiplyWarPowerMultiply($skillMultiply);
                     break;
                 }
             }
