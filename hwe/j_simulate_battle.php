@@ -15,6 +15,14 @@ if($query === null){
     ]);
 }
 
+$action = Util::getReq('action');
+if($action === null || in_array($action, ['reorder', 'battle'])){
+    Json::die([
+        'result'=>false,
+        'reason'=>'원하는 동작이 지정되지 않았습니다.'
+    ]);
+}
+
 $query = Json::decode($query);
 if($query === null){
     Json::die([

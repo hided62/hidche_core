@@ -527,6 +527,7 @@ jQuery(function($){
             url:'j_simulate_battle.php',
             dataType:'json',
             data:{
+                action:'battle',
                 query:JSON.stringify(data),
             }
         }).then(function(result){
