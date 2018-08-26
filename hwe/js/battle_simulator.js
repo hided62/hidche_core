@@ -418,7 +418,7 @@ jQuery(function($){
     var extendAllDataForDB = function(allData){
         var defaultNation = {
             nation:0,
-            nation:'재야',
+            name:'재야',
             capital:0,
             level:0,
             gold:0,
@@ -462,6 +462,7 @@ jQuery(function($){
 
         var attackerNation = $.extend({}, defaultNation, allData.attackerNation);
         attackerNation.nation = 1;
+        attackerNation.name = '출병국';
         attackerNation.totaltech = attackerNation.tech * attackerNation.gennum;
 
         var attackerCity = $.extend({}, defaultCity, allData.attackerCity);
@@ -481,6 +482,7 @@ jQuery(function($){
 
         var defenderNation = $.extend({}, defaultNation, allData.defenderNation);
         defenderNation.nation = 2;
+        defenderNation.name = '수비국';
         defenderNation.totaltech = defenderNation.tech * defenderNation.gennum;
 
         var defenderCity = $.extend({}, defaultCity, allData.defenderCity);
@@ -519,6 +521,7 @@ jQuery(function($){
 
     var beginBattle = function(){
         var data = extendAllDataForDB(exportAllData());
+        console.log(data);
         $.ajax({
             type:'post',
             url:'j_simulate_battle.php',
