@@ -80,7 +80,7 @@ $startYear = $gameStor->getValue('startyear');
 </div>
 <div class="row">
     <div class="col-sm">
-        <div class="card mb-2">
+        <div class="card mb-2 attacker_nation">
             <div class="card-header">
                 출병국 설정
             </div>
@@ -124,10 +124,10 @@ $startYear = $gameStor->getValue('startyear');
                     </div>
                     <div class="input-group-append btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-secondary">
-                            <input type="radio" name="is_attacker_capital" id="is_attacker_capital_y" autocomplete="off">Y
+                            <input type="radio" name="is_attacker_capital" class="form_is_capital" value="1" autocomplete="off">Y
                         </label>
                         <label class="btn btn-secondary active">
-                            <input type="radio" name="is_attacker_capital" id="is_attacker_capital_n" autocomplete="off" checked>N
+                            <input type="radio" name="is_attacker_capital" class="form_is_capital" value="2" autocomplete="off" checked>N
                         </label>
                     </div>
                     
@@ -151,7 +151,7 @@ $startYear = $gameStor->getValue('startyear');
         </div>
     </div><!-- <div class="col-sm"> -->
     <div class="col-sm defender-column">
-        <div class="card mb-2">
+        <div class="card mb-2 defender_nation">
             <div class="card-header">
                 수비국 설정
             </div>
@@ -195,10 +195,10 @@ $startYear = $gameStor->getValue('startyear');
                     </div>
                     <div class="input-group-append btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-secondary">
-                            <input type="radio" name="is_attacker_capital" id="is_attacker_capital_y" autocomplete="off">Y
+                            <input type="radio" name="is_defender_capital" class="form_is_capital" value="1" autocomplete="off">Y
                         </label>
                         <label class="btn btn-secondary active">
-                            <input type="radio" name="is_attacker_capital" id="is_attacker_capital_n" autocomplete="off" checked>N
+                            <input type="radio" name="is_defender_capital" class="form_is_capital" value="0" autocomplete="off" checked>N
                         </label>
                     </div>
                 </div>

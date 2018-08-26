@@ -257,13 +257,13 @@ jQuery(function($){
         return true;
     }
 
-    var exportGeneralInfoForDB = function($general){
-        var retVal = exportGeneralInfo($general);
+    var extendGeneralInfoForDB = function(generalData){
 
         var dbVal = {
-            nation: (retVal.no)<=1 ? 1 : 2,
-            city: (retVal.no)<=1 ? 1 : 2,
+            nation: (generalData.no)<=1 ? 1 : 2,
+            city: (generalData.no)<=1 ? 1 : 3,
             turntime:'2018-08-26 12:00',
+            special:0,
             leader2:0,
             power2:0,
             intel2:0,
@@ -271,17 +271,17 @@ jQuery(function($){
             gold:10000,
 
             dedication:0,
-            warnum:10,
-            killnum:4,
-            deathnum:4,
+            warnum:0,
+            killnum:0,
+            deathnum:0,
 
             killcrew:20000,
             deathcrew:20000,
             recwar:'SUCCESS',
-            experience:Math.pow(retVal.explevel, 2),
+            experience:Math.pow(generalData.explevel, 2),
         };
 
-        return $.merge(retVal, dbVal);
+        return $.extend({}, generalData, dbVal);
     }
 
     var getGeneralFrame = function($btn){
@@ -362,42 +362,162 @@ jQuery(function($){
         importGeneralInfo(getGeneralDetail($newObj), generalData);
     }
 
-    var exportAll = function(forDB){
-        if(forDB === undefined){
-            forDB = false;
+    var exportAllData = function(){
+        var $attackerNation = $('.attacker_nation');
+        var $defenderNation = $('.defender_nation');
+
+        var attackerGeneral = exportGeneralInfo($('.attacker_form'));
+
+        var attackerCity = {
+            level:parseInt($attackerNation.find('.form_city_level').val()),
+        };
+
+        var attackerNation = {
+            type:parseInt($attackerNation.find('.form_nation_type').val()),
+            tech:parseInt($attackerNation.find('.form_tech').val()) * 1000,
+            level:parseInt($attackerNation.find('.form_nation_level').val()),
+            capital:$attackerNation.find('.form_is_capital:checked').val()=='1'?1:2,
         }
 
-        var attackerGeneral = (forDB?exportGeneralInfoForDB:exportGeneralInfo)($('.attacker_form'));
-
         var defenderGenerals = $('.defender_form').map(function(){
-            return (forDB?exportGeneralInfoForDB:exportGeneralInfo)($(this));
+            return exportGeneralInfo($(this));
         }).toArray();
-
-        var defaultCity = {
-            nation:0,
-            def:1000,
-            wall:1000,
-        };
 
         var defenderCity = {
             def: parseInt($('#city_def').val()),
             wall: parseInt($('#city_wall').val()),
+            level:parseInt($defenderNation.find('.form_city_level').val()),
         };
+
+        var defenderNation = {
+            type:parseInt($defenderNation.find('.form_nation_type').val()),
+            tech:parseInt($defenderNation.find('.form_tech').val()) * 1000,
+            level:parseInt($defenderNation.find('.form_nation_level').val()),
+            capital:$defenderNation.find('.form_is_capital:checked').val()=='1'?3:4,
+        }
 
         var year = parseInt($('#year').val());
         var month = parseInt($('#month').val());
         var repeatCnt = parseInt($('#repeat_cnt').val());
 
+        return {
+            attackerGeneral:attackerGeneral,
+            attackerCity:attackerCity,
+            attackerNation:attackerNation,
+
+            defenderGenerals:defenderGenerals,
+            defenderCity:defenderCity,
+            defenderNation:defenderNation,
+
+            year:year,
+            month:month,
+            repeatCnt:repeatCnt,
+        };
+    }
+
+    var extendAllDataForDB = function(allData){
+        var defaultNation = {
+            nation:0,
+            nation:'재야',
+            capital:0,
+            level:0,
+            gold:0,
+            rice:2000,
+            type:0,
+            tech:0,
+            totaltech:0,
+            gennum:200,
+        };
+
+        var defaultCity = {
+            nation:0,
+            supply:1,
+            name:'도시',
+            
+            pop:500000,
+            agri:10000,
+            comm:10000,
+            secu:10000,
+            def:1000,
+            wall:1000,
+            
+            rate:100,
+            
+            pop2:600000,
+            agri2:12000,
+            comm2:12000,
+            secu2:10000,
+            def2:12000,
+            wall2:12000,
+            
+            dead:0,
+
+            state:0,
+            gen1:0,
+            gen2:0,
+            gen3:0,
+
+            conflict:'{}',
+        };
+
+        var attackerNation = $.extend({}, defaultNation, allData.attackerNation);
+        attackerNation.nation = 1;
+        attackerNation.totaltech = attackerNation.tech * attackerNation.gennum;
+
+        var attackerCity = $.extend({}, defaultCity, allData.attackerCity);
+        attackerCity.nation = 1;
+        attackerCity.city = 1;
+
+        var attackerGeneral = extendGeneralInfoForDB(allData.attackerGeneral);
+        if(attackerGeneral.level == 4){
+            attackerCity.gen1 = attackerGeneral.no;
+        }
+        if(attackerGeneral.level == 3){
+            attackerCity.gen2 = attackerGeneral.no;
+        }
+        if(attackerGeneral.level == 2){
+            attackerCity.gen3 = attackerGeneral.no;
+        }
+
+        var defenderNation = $.extend({}, defaultNation, allData.defenderNation);
+        defenderNation.nation = 2;
+        defenderNation.totaltech = defenderNation.tech * defenderNation.gennum;
+
+        var defenderCity = $.extend({}, defaultCity, allData.defenderCity);
+        defenderCity.nation = 2;
+        defenderCity.city = 3;
+
+        var defenderGenerals = [];
+        $.each(allData.defenderGenerals, function(){
+            var defenderGeneral = extendGeneralInfoForDB(this);
+            if(defenderGeneral.level == 4){
+                defenderCity.gen1 = defenderGeneral.no;
+            }
+            if(defenderGeneral.level == 3){
+                defenderCity.gen2 = defenderGeneral.no;
+            }
+            if(defenderGeneral.level == 2){
+                defenderCity.gen3 = defenderGeneral.no;
+            }
+
+            defenderGenerals.push(defenderGeneral);
+        });
+
+
+        return $.extend({}, allData, {
+            attackerGeneral:attackerGeneral,
+            attackerCity:attackerCity,
+            attackerNation:attackerNation,
+
+            defenderGenerals:defenderGenerals,
+            defenderCity:defenderCity,
+            defenderNation:defenderNation,
+        });
     }
 
     var beginBattle = function(){
-        var attackerGeneral = exportGeneralInfoForDB($('.attacker_form'));
-
-        var defenderGenerals = $('.defender_form').map(function(){
-            return exportGeneralInfoForDB($(this));
-        }).toArray();
-        console.log(attackerGeneral);
-        console.log(defenderGenerals);
+        var data = extendAllDataForDB(exportAllData());
+        console.log(data);
     }
 
     initBasicEvent();
