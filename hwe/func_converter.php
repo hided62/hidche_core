@@ -255,7 +255,10 @@ function getConnect($con) {
     return $conname;
 }
 
-function getNationType2(int $type) {
+function getNationType2(?int $type) {
+    if($type === null){
+        return '-';
+    }
     [$name, $pros, $cons] = getNationTypeList()[$type]??['-', '', ''];
     return "<font color=cyan>{$pros}</font> <font color=magenta>{$cons}</font>";
 }
