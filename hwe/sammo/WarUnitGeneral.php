@@ -475,7 +475,6 @@ class WarUnitGeneral extends WarUnit{
             $rice *= 0.8;
         }
 
-        $rice *= getCharExpMultiplier($this->getCharacter());
         $rice *= $this->crewType->rice;
         $rice *= getTechCost($this->getNationVar('tech'));
 
