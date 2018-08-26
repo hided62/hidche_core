@@ -26,6 +26,7 @@ $startYear = $gameStor->getValue('startyear');
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../e_lib/download2.js')?>
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/battle_simulator.js')?>
 </head>
@@ -39,7 +40,11 @@ $startYear = $gameStor->getValue('startyear');
         <div class="row">
             <div class="col-sm-6">
                 <div class="input-group">
-                    <input type="number" class="form-control" id="year" aria-describedby="text_year" value="183" min="<?=$startYear?>">
+                <input type="number" class="form-control" id="year" aria-describedby="text_year" value="<?=$startYear?>" min="<?=$startYear?>" disabled>
+                    <div class="input-group-append">
+                        <span class="input-group-text" id="text_year">년 시작</span>
+                    </div>
+                    <input type="number" class="form-control" id="year" aria-describedby="text_year" value="<?=$startYear+3?>" min="<?=$startYear?>">
                     <div class="input-group-append">
                         <span class="input-group-text" id="text_year">년</span>
                     </div>
@@ -52,12 +57,9 @@ $startYear = $gameStor->getValue('startyear');
             <div class="col-sm-6">
                 <div class="btn-toolbar" role="toolbar">
                     <div class="btn-group mr-2" role="group">
-                        <button type="button" class="btn btn-primary">저장</button>
-                        <button type="button" class="btn btn-primary">불러오기</button>
-                    </div>
-                    <div class="btn-group mr-2" role="group">
-                        <button type="button" class="btn btn-info export_general">내보내기</button>
-                        <button type="button" class="btn btn-info">가져오기</button>
+                        <button type="button" class="btn btn-info">모두 저장</button>
+                        <input type="file" class="form_load_battle_file" style="display: none;" />
+                        <button type="button" class="btn btn-primary">모두 불러오기</button>
                     </div>
                 </div>
             </div>
@@ -123,17 +125,14 @@ $startYear = $gameStor->getValue('startyear');
                 </div>
             </div>
         </div>
-        <div class="card mb-2 attacker_form general_form">
+        <div class="card mb-2 attacker_form general_form" data-general_no='1'>
             <div class="card-header">
                 <div class="float-sm-left" style="line-height:25px;">출병자 설정</div>
                 <div class="float-sm-right btn-toolbar" role="toolbar">
                     <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-primary">저장</button>
-                        <button type="button" class="btn btn-primary">불러오기</button>
-                    </div>
-                    <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-info export_general">내보내기</button>
-                        <button type="button" class="btn btn-info">가져오기</button>
+                        <button type="button" class="btn btn-info btn-general-save">저장</button>
+                        <input type="file" class="form_load_general_file" style="display: none;" />
+                        <button type="button" class="btn btn-primary btn-general-load">불러오기</button>
                     </div>
                 </div>
             </div>
@@ -211,10 +210,8 @@ $startYear = $gameStor->getValue('startyear');
                         <button type="button" class="btn btn-dark">수비 순서대로 정렬</button>
                     </div>
                     <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-primary">불러오기</button>
-                    </div>
-                    <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-info">가져오기</button>
+                        <input type="file" class="form_load_general_file" style="display: none;" />
+                        <button type="button" class="btn btn-primary btn-general-load-new">불러오기</button>
                     </div>
                     <div class="btn-group btn-group-sm" role="group">
                         <button type="button" class="btn btn-success add-defender">추가</button>
@@ -222,33 +219,31 @@ $startYear = $gameStor->getValue('startyear');
                 </div>
             </div>
         </div>
-        <div class="card mb-2 defender_form general_form">
-        </div>
         <div class="card mb-2 form_sample">
             <div class="card-header">
                 <div class="float-sm-left" style="line-height:25px;">수비자 설정</div>
                 <div class="float-sm-right btn-toolbar" role="toolbar">
                     <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-primary">저장</button>
-                        <button type="button" class="btn btn-primary">불러오기</button>
-                    </div>
-                    <div class="btn-group btn-group-sm mr-2" role="group">
-                        <button type="button" class="btn btn-info export_general">내보내기</button>
-                        <button type="button" class="btn btn-info">가져오기</button>
+                        <button type="button" class="btn btn-info btn-general-save">저장</button>
+                        <input type="file" class="form_load_general_file" style="display: none;" />
+                        <button type="button" class="btn btn-primary btn-general-load">불러오기</button>
                     </div>
                     <div class="btn-group btn-group-sm" role="group">
-                        <button type="button" class="btn btn-warning">복제</button>
+                        <button type="button" class="btn btn-warning copy-defender">복제</button>
                         <button type="button" class="btn btn-danger delete-defender">제거</button>
                     </div>
                 </div>
             </div>
             <div class="card-body general_detail">
                 <div class="input-group mb-3">
-                    
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">이름</span>
+                    </div>
+                    <input type="text" class="form-control form_general_name" value="무명" style="width:15ch;">
                     <div class="input-group-prepend">
                         <span class="input-group-text">직위</span>
                     </div>
-                    <select class="custom-select form_general_level">
+                    <select class="custom-select form_general_level" style="width:8ch;">
                         <option value="1">일반</option>
                         <option value="4">태수</option>
                         <option value="3">군사</option>
@@ -262,13 +257,7 @@ $startYear = $gameStor->getValue('startyear');
                         <span class="input-group-text">Level</span>
                     </div>
                     <input type="number" class="form-control form_exp_level" value="20" min="0" max="300" step="1">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">부상</span>
-                    </div>
-                    <input type="number" class="form-control form_injury" value="0" min="0" max="80" step="1">
-                    <div class="input-group-append">
-                        <span class="input-group-text">%(<span class="injury_helptext">건강</span>)</span>
-                    </div>
+                    
                 </div>
                 <div class="input-group mb-1">
                     <div class="input-group-prepend">
@@ -311,10 +300,13 @@ $startYear = $gameStor->getValue('startyear');
                     </select>
                 </div>
                 <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                        <span class="input-group-text">자금</span>
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">부상</span>
                     </div>
-                    <input type="number" class="form-control form_gold" value="0" min="0" max="40000" step="50">
+                    <input type="number" class="form-control form_injury" value="0" min="0" max="80" step="1">
+                    <div class="input-group-append">
+                        <span class="input-group-text">%(<span class="injury_helptext">건강</span>)</span>
+                    </div>
                     <div class="input-group-prepend">
                         <span class="input-group-text">군량</span>
                     </div>
