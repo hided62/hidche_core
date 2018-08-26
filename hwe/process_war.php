@@ -63,12 +63,7 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
             return null;
         }
 
-        $rawGeneral = $iterDefender->current();
-        if(extractBattleOrder($rawGeneral) <= 0){
-            return null;
-        }
-
-        $retVal = new WarUnitGeneral($rawGeneral, $rawDefenderCity, $rawDefenderNation, false, $year, $month);
+        $retVal = new WarUnitGeneral($iterDefender->current(), $rawDefenderCity, $rawDefenderNation, false, $year, $month);
         $iterDefender->next();
         return $retVal;
     };
@@ -159,26 +154,6 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
 }
 
 function extractBattleOrder($general){
-    if($general['crew'] == 0){
-        return 0;
-    }
-
-    if($general['rice'] <= $general['crew'] / 100){
-        return 0;
-    }
-
-    if($general['mode'] == 0){
-        return 0;
-    }
-
-    if($general['mode'] == 1 && ($general['train'] < 60 || $general['atmos'] < 60)){
-        return 0;
-    }
-
-    if($general['mode'] == 2 && ($general['train'] < 80 || $general['atmos'] < 80)){
-        return 0;
-    }
-
     return (
         $general['leader'] +
         $general['power'] +
@@ -421,11 +396,11 @@ function processWar_NG(
 
     if($currPhase == $attacker->getMaxPhase()){
         //마지막 페이즈의 전투 마무리
-        $attacker->logBattleResult();
-        $defender->logBattleResult();
-
         $attacker->tryWound();
         $defender->tryWound();
+
+        $attacker->logBattleResult();
+        $defender->logBattleResult();
     }
     
     if($defender instanceof WarUnitCity){
