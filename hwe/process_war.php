@@ -396,11 +396,11 @@ function processWar_NG(
 
     if($currPhase == $attacker->getMaxPhase()){
         //마지막 페이즈의 전투 마무리
-        $attacker->tryWound();
-        $defender->tryWound();
-
         $attacker->logBattleResult();
         $defender->logBattleResult();
+
+        $attacker->tryWound();
+        $defender->tryWound();
     }
     
     if($defender instanceof WarUnitCity){
