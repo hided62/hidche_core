@@ -486,6 +486,8 @@ jQuery(function($){
         var defenderCity = $.extend({}, defaultCity, allData.defenderCity);
         defenderCity.nation = 2;
         defenderCity.city = 3;
+        defenderCity.wall2 = defenderCity.wall/5*6;
+        defenderCity.def2 = defenderCity.def/5*6;
 
         var defenderGenerals = [];
         $.each(allData.defenderGenerals, function(){
@@ -517,7 +519,23 @@ jQuery(function($){
 
     var beginBattle = function(){
         var data = extendAllDataForDB(exportAllData());
-        console.log(data);
+        $.ajax({
+            type:'post',
+            url:'j_simulate_battle.php',
+            dataType:'json',
+            data:{
+                query:JSON.stringify(data),
+            }
+        }).then(function(result){
+            console.log(result);
+            if(!result.result){
+                alert(result.reason);
+                return;
+            }
+            
+        }, function(result){
+            alert('전투 개시 실패!');
+        });
     }
 
     initBasicEvent();
