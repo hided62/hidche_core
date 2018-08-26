@@ -11,3 +11,7 @@
 .form_sample{
     display:none;
 }
+
+input[type=number]{
+    text-align:right;
+}

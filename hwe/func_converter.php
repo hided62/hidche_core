@@ -15,7 +15,7 @@ function NationCharCall($call) {
             $invTable[$name] = $typeID;
         }
     }
-    return $invTable[$name]??0;
+    return $invTable[$call]??0;
 }
 
 function getCharacterList(){

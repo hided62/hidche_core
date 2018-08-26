@@ -40,22 +40,34 @@ $startYear = $gameStor->getValue('startyear');
         <div class="row">
             <div class="col-sm-6">
                 <div class="input-group">
-                <input type="number" class="form-control" id="year" aria-describedby="text_year" value="<?=$startYear?>" min="<?=$startYear?>" disabled>
+                    <input type="number" class="form-control" aria-describedby="text_year" value="<?=$startYear?>" disabled>
                     <div class="input-group-append">
-                        <span class="input-group-text" id="text_year">년 시작</span>
+                        <span class="input-group-text">년 시작</span>
                     </div>
-                    <input type="number" class="form-control" id="year" aria-describedby="text_year" value="<?=$startYear+3?>" min="<?=$startYear?>">
+                    <input type="number" class="form-control" id="year" value="<?=$startYear+3?>" min="<?=$startYear?>">
                     <div class="input-group-append">
-                        <span class="input-group-text" id="text_year">년</span>
+                        <span class="input-group-text">년</span>
                     </div>
-                    <input type="number" class="form-control" id="month" aria-describedby="text_month" value="1" min="1" max="12">
+                    <input type="number" class="form-control" id="month" value="1" min="1" max="12">
                     <div class="input-group-append">
-                        <span class="input-group-text" id="text_month">월</span>
+                        <span class="input-group-text">월</span>
                     </div>
                 </div>
             </div>
             <div class="col-sm-6">
                 <div class="btn-toolbar" role="toolbar">
+                    <div class="input-group mr-2" role="group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">반복 횟수</span>
+                        </div>
+                        <select class="custom-select" id="repeat_cnt">
+                            <option value="1">1회 (로그 표기)</option>
+                            <option value="1000">1000회 (요약 표기)</option>
+                        </select>
+                    </div>
+                    <div class="btn-group mr-2" role="group">
+                        <button type="button" class="btn btn-danger btn-begin_battle">전투</button>
+                    </div>
                     <div class="btn-group mr-2" role="group">
                         <button type="button" class="btn btn-info">모두 저장</button>
                         <input type="file" class="form_load_battle_file" style="display: none;" />
@@ -194,11 +206,11 @@ $startYear = $gameStor->getValue('startyear');
                     <div class="input-group-prepend">
                         <span class="input-group-text">수비</span>
                     </div>
-                    <input type="number" class="form-control form_def" id="month" value="1000" min="10" step="10">
+                    <input type="number" class="form-control form_def" id="city_def" value="1000" min="10" step="10">
                     <div class="input-group-prepend">
                         <span class="input-group-text">성벽</span>
                     </div>
-                    <input type="number" class="form-control form_wall" id="month" value="1000" min="0" step="10">
+                    <input type="number" class="form-control form_wall" id="city_wall" value="1000" min="0" step="10">
                 </div>
             </div>
         </div>

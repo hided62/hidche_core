@@ -257,10 +257,12 @@ jQuery(function($){
         return true;
     }
 
-    var exportGeneralInfoForDB = function($general, idx){
+    var exportGeneralInfoForDB = function($general){
         var retVal = exportGeneralInfo($general);
 
         var dbVal = {
+            nation: (retVal.no)<=1 ? 1 : 2,
+            city: (retVal.no)<=1 ? 1 : 2,
             turntime:'2018-08-26 12:00',
             leader2:0,
             power2:0,
@@ -279,16 +281,7 @@ jQuery(function($){
             experience:Math.pow(retVal.explevel, 2),
         };
 
-        if(idx <= 0){
-            dbVal['name'] = '출병자';
-            dbVal['nation'] = 1;
-        }
-        else{
-            dbVal['name'] = '수비자{0}'.format(idx);
-            dbVal['nation'] = 2;
-        }
-
-        return $.merge(retVal, defaultVal);
+        return $.merge(retVal, dbVal);
     }
 
     var getGeneralFrame = function($btn){
@@ -369,8 +362,49 @@ jQuery(function($){
         importGeneralInfo(getGeneralDetail($newObj), generalData);
     }
 
+    var exportAll = function(forDB){
+        if(forDB === undefined){
+            forDB = false;
+        }
+
+        var attackerGeneral = (forDB?exportGeneralInfoForDB:exportGeneralInfo)($('.attacker_form'));
+
+        var defenderGenerals = $('.defender_form').map(function(){
+            return (forDB?exportGeneralInfoForDB:exportGeneralInfo)($(this));
+        }).toArray();
+
+        var defaultCity = {
+            nation:0,
+            def:1000,
+            wall:1000,
+        };
+
+        var defenderCity = {
+            def: parseInt($('#city_def').val()),
+            wall: parseInt($('#city_wall').val()),
+        };
+
+        var year = parseInt($('#year').val());
+        var month = parseInt($('#month').val());
+        var repeatCnt = parseInt($('#repeat_cnt').val());
+
+    }
+
+    var beginBattle = function(){
+        var attackerGeneral = exportGeneralInfoForDB($('.attacker_form'));
+
+        var defenderGenerals = $('.defender_form').map(function(){
+            return exportGeneralInfoForDB($(this));
+        }).toArray();
+        console.log(attackerGeneral);
+        console.log(defenderGenerals);
+    }
+
     initBasicEvent();
     $attackerCard.append($generalForm.clone(true,true));
     addDefender();
     
+    $('.btn-begin_battle').click(function(){
+        beginBattle();
+    });
 });
