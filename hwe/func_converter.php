@@ -223,7 +223,10 @@ function getSpecialInfo(?int $type):?string{
     return $infoText[$type][1]??null;
 }
 
-function getNationType(int $type) {
+function getNationType(?int $type) {
+    if($type === null){
+        return '-';
+    }
     static $cache = [];
     if(\key_exists($type, $cache)){
         return $cache[$type];
