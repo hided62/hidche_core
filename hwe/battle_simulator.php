@@ -70,7 +70,7 @@ $startYear = $gameStor->getValue('startyear');
                     </div>
                     <div class="btn-group mr-2" role="group">
                         <button type="button" class="btn btn-info btn-battle-save">모두 저장</button>
-                        <input type="file" class="form_load_battle_file" style="display: none;" />
+                        <input type="file" class="form_load_battle_file" accept=".json" style="display: none;" />
                         <button type="button" class="btn btn-primary btn-battle-load">모두 불러오기</button>
                     </div>
                 </div>
@@ -143,7 +143,7 @@ $startYear = $gameStor->getValue('startyear');
                 <div class="float-sm-right btn-toolbar" role="toolbar">
                     <div class="btn-group btn-group-sm mr-2" role="group">
                         <button type="button" class="btn btn-info btn-general-save">저장</button>
-                        <input type="file" class="form_load_general_file" style="display: none;" />
+                        <input type="file" class="form_load_general_file" accept=".json" style="display: none;" />
                         <button type="button" class="btn btn-primary btn-general-load">불러오기</button>
                     </div>
                 </div>
@@ -233,7 +233,7 @@ $startYear = $gameStor->getValue('startyear');
                 <div class="float-sm-right btn-toolbar" role="toolbar">
                     <div class="btn-group btn-group-sm mr-2" role="group">
                         <button type="button" class="btn btn-info btn-general-save">저장</button>
-                        <input type="file" class="form_load_general_file" style="display: none;" />
+                        <input type="file" class="form_load_general_file" accept=".json" style="display: none;" />
                         <button type="button" class="btn btn-primary btn-general-load">불러오기</button>
                     </div>
                     <div class="btn-group btn-group-sm" role="group">
