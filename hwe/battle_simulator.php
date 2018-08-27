@@ -376,7 +376,7 @@ $startYear = $gameStor->getValue('startyear');
                     </div>
                     <select class="custom-select form_dex0">
                         <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
-                            <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
+                            <option value="<?=$dexAmount?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>
                     </select>
                     <div class="input-group-prepend">
@@ -384,7 +384,7 @@ $startYear = $gameStor->getValue('startyear');
                     </div>
                     <select class="custom-select form_dex10">
                         <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
-                            <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
+                            <option value="<?=$dexAmount?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>
                     </select>
                     <div class="input-group-prepend">
@@ -392,7 +392,7 @@ $startYear = $gameStor->getValue('startyear');
                     </div>
                     <select class="custom-select form_dex20">
                         <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
-                            <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
+                            <option value="<?=$dexAmount?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -402,7 +402,7 @@ $startYear = $gameStor->getValue('startyear');
                     </div>
                     <select class="custom-select form_dex30">
                         <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
-                            <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
+                            <option value="<?=$dexAmount?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>
                     </select>
                     <div class="input-group-prepend">
@@ -410,7 +410,7 @@ $startYear = $gameStor->getValue('startyear');
                     </div>
                     <select class="custom-select form_dex40">
                         <?php foreach(getDexLevelList() as $dexLevel => [$dexAmount, $color, $name]): ?>
-                            <option value="<?=$dexLevel?>"><?="{$name} (".number_format($dexAmount).")"?></option>
+                            <option value="<?=$dexAmount?>"><?="{$name} (".number_format($dexAmount).")"?></option>
                         <?php endforeach; ?>
                     </select>
                     <div class="input-group-prepend only_defender">
