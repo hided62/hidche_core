@@ -1,0 +1,17 @@
+#container{
+    width:1024px;
+    margin:auto;
+}
+
+.defender_add_form .general_detail{
+    display:none;
+}
+
+
+.form_sample{
+    display:none;
+}
+
+input[type=number]{
+    text-align:right;
+}

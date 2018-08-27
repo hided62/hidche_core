@@ -8,43 +8,43 @@ namespace sammo;
  * Side effect 없이 값의 변환만을 수행하는 함수들의 모음.
  */
 
-
 function NationCharCall($call) {
-    switch($call) {
-        case '명가':    $type =13; break;
-        case '음양가':  $type =12; break;
-        case '종횡가':  $type =11; break;
-        case '불가':    $type =10; break;
-        case '도적':    $type = 9; break;
-        case '오두미도':$type = 8; break;
-        case '태평도':  $type = 7; break;
-        case '도가':    $type = 6; break;
-        case '묵가':    $type = 5; break;
-        case '덕가':    $type = 4; break;
-        case '병가':    $type = 3; break;
-        case '유가':    $type = 2; break;
-        case '법가':    $type = 1; break;
-        default:        $type = 0; break;
+    static $invTable = [];
+    if(!$invTable){
+        foreach(getNationTypeList() as $typeID => [$name, $pros, $cons]){
+            $invTable[$name] = $typeID;
+        }
     }
-    return $type;
+    return $invTable[$call]??0;
+}
+
+function getCharacterList(){
+    $infoText = [
+        9=>['안전', '사기 -5, 징·모병 비용 -20%'],
+        8=>['유지', '훈련 -5, 징·모병 비용 -20%'],
+        7=>['재간', '명성 -10%, 징·모병 비용 -20%'],
+        6=>['출세', '명성 +10%, 징·모병 비용 +20%'],
+        5=>['할거', '명성 -10%, 훈련 +5'],
+        4=>['정복', '명성 -10%, 사기 +5'],
+        3=>['패권', '훈련 +5, 징·모병 비용 +20%'],
+        2=>['의협', '사기 +5, 징·모병 비용 +20%'],
+        1=>['대의', '명성 +10%, 훈련 -5'],
+        0=>['왕좌', '명성 +10%, 사기 -5'],
+        10=>['은둔', '명성 -10%, 계급 -10%, 사기 -5, 훈련 -5, 단련 성공률 +10%'],
+    ];
+    return $infoText;
 }
 
 function CharCall($call) {
-    switch($call) {
-        case '은둔':    $type =10; break;
-        case '안전';    $type = 9; break;
-        case '유지';    $type = 8; break;
-        case '재간';    $type = 7; break;
-        case '출세';    $type = 6; break;
-        case '할거';    $type = 5; break;
-        case '정복';    $type = 4; break;
-        case '패권';    $type = 3; break;
-        case '의협';    $type = 2; break;
-        default:
-        case '대의';    $type = 1; break;
-        case '왕좌';    $type = 0; break;
+    static $invTable = [];
+    if(\key_exists($call, $invTable)){
+        return $invTable[$call];
     }
-    return $type;
+
+    foreach(getCharacterList() as $id => [$name, $info]){
+        $invTable[$name] = $id;
+    }
+    return $invTable[$call];
 }
 
 function SpecCall($call) {
@@ -120,42 +120,14 @@ function getNationLevel($level) {
 }
 
 function getGenChar($type) {
-    switch($type) {
-        case 10: $call = '은둔'; break;
-        case  9: $call = '안전'; break;
-        case  8: $call = '유지'; break;
-        case  7: $call = '재간'; break;
-        case  6: $call = '출세'; break;
-        case  5: $call = '할거'; break;
-        case  4: $call = '정복'; break;
-        case  3: $call = '패권'; break;
-        case  2: $call = '의협'; break;
-        case  1: $call = '대의'; break;
-        case  0: $call = '왕좌'; break;
-    }
-    return $call;
+    return getCharacterList()[$type][0];
 }
 
 function getCharInfo(?int $type):?string {
     if($type === null){
         return null;
     }
-
-    $infoText = [
-        10=>['은둔', '명성 -10%, 계급 -10%, 사기 -5, 훈련 -5, 단련 성공률 +10%'],
-        9=>['안전', '사기 -5, 징·모병 비용 -20%'],
-        8=>['유지', '훈련 -5, 징·모병 비용 -20%'],
-        7=>['재간', '명성 -10%, 징·모병 비용 -20%'],
-        6=>['출세', '명성 +10%, 징·모병 비용 +20%'],
-        5=>['할거', '명성 -10%, 훈련 +5'],
-        4=>['정복', '명성 -10%, 사기 +5'],
-        3=>['패권', '훈련 +5, 징·모병 비용 +20%'],
-        2=>['의협', '사기 +5, 징·모병 비용 +20%'],
-        1=>['대의', '명성 +10%, 훈련 -5'],
-        0=>['왕좌', '명성 +10%, 사기 -5'],
-    ];
-
-    return $infoText[$type][1]??null;
+    return getCharacterList()[$type][1]??null;
 }
 
 function getGenSpecial($type) {
@@ -251,24 +223,20 @@ function getSpecialInfo(?int $type):?string{
     return $infoText[$type][1]??null;
 }
 
-function getNationType($type) {
-    switch($type) {
-        case 13: $call = '명 가'; break;
-        case 12: $call = '음 양 가'; break;
-        case 11: $call = '종 횡 가'; break;
-        case 10: $call = '불 가'; break;
-        case 9: $call = '도 적'; break;
-        case 8: $call = '오 두 미 도'; break;
-        case 7: $call = '태 평 도'; break;
-        case 6: $call = '도 가'; break;
-        case 5: $call = '묵 가'; break;
-        case 4: $call = '덕 가'; break;
-        case 3: $call = '병 가'; break;
-        case 2: $call = '유 가'; break;
-        case 1: $call = '법 가'; break;
-        case 0: $call = '-'; break;
+function getNationType(?int $type) {
+    if($type === null){
+        return '-';
     }
-    return $call;
+    static $cache = [];
+    if(\key_exists($type, $cache)){
+        return $cache[$type];
+    }
+
+    $text = getNationTypeList()[$type][0]??'-';
+    $text = join(' ', StringUtil::splitString($text));
+    $cache[$type] = $text;
+
+    return $text;
 }
 
 
@@ -287,24 +255,12 @@ function getConnect($con) {
     return $conname;
 }
 
-function getNationType2($type) {
-    switch($type) {
-        case 13: $call = '<font color=cyan>기술↑ 인구↑</font> <font color=magenta>쌀수입↓ 수성↓</font>'; break;
-        case 12: $call = '<font color=cyan>내정↑ 인구↑</font> <font color=magenta>기술↓ 전략↓</font>'; break;
-        case 11: $call = '<font color=cyan>전략↑ 수성↑</font> <font color=magenta>금수입↓ 내정↓</font>'; break;
-        case 10: $call = '<font color=cyan>민심↑ 수성↑</font> <font color=magenta>금수입↓</font>'; break;
-        case 9: $call = '<font color=cyan>계략↑</font> <font color=magenta>금수입↓ 치안↓ 민심↓</font>'; break;
-        case 8: $call = '<font color=cyan>쌀수입↑ 인구↑</font> <font color=magenta>기술↓ 수성↓ 내정↓</font>'; break;
-        case 7: $call = '<font color=cyan>인구↑ 민심↑</font> <font color=magenta>기술↓ 수성↓</font>'; break;
-        case 6: $call = '<font color=cyan>인구↑</font> <font color=magenta>기술↓ 치안↓</font>'; break;
-        case 5: $call = '<font color=cyan>수성↑</font> <font color=magenta>기술↓</font>'; break;
-        case 4: $call = '<font color=cyan>치안↑인구↑ 민심↑</font> <font color=magenta>쌀수입↓ 수성↓</font>'; break;
-        case 3: $call = '<font color=cyan>기술↑ 수성↑</font> <font color=magenta>인구↓ 민심↓</font>'; break;
-        case 2: $call = '<font color=cyan>내정↑ 민심↑</font> <font color=magenta>쌀수입↓</font>'; break;
-        case 1: $call = '<font color=cyan>금수입↑ 치안↑</font> <font color=magenta>인구↓ 민심↓</font>'; break;
-        case 0: $call = '-'; break;
+function getNationType2(?int $type) {
+    if($type === null){
+        return '-';
     }
-    return $call;
+    [$name, $pros, $cons] = getNationTypeList()[$type]??['-', '', ''];
+    return "<font color=cyan>{$pros}</font> <font color=magenta>{$cons}</font>";
 }
 
 function getLevel($level, $nlevel=8) {
@@ -491,74 +447,73 @@ function getTechCall($tech) : string {
     return "{$techLevel}등급";
 }
 
-function getDexCall($dex) : string {
-    if($dex < 2500)        { $str = '<font color="navy">F-</font>'; }
-    elseif($dex <    7500) { $str = '<font color="navy">F</font>'; }
-    elseif($dex <   15000) { $str = '<font color="navy">F+</font>'; }
-    elseif($dex <   25000) { $str = '<font color="skyblue">E-</font>'; }
-    elseif($dex <   37500) { $str = '<font color="skyblue">E</font>'; }
-    elseif($dex <   52500) { $str = '<font color="skyblue">E+</font>'; }
-    elseif($dex <   70000) { $str = '<font color="seagreen">D-</font>'; }
-    elseif($dex <   90000) { $str = '<font color="seagreen">D</font>'; }
-    elseif($dex <  112500) { $str = '<font color="seagreen">D+</font>'; }
-    elseif($dex <  137500) { $str = '<font color="teal">C-</font>'; }
-    elseif($dex <  165000) { $str = '<font color="teal">C</font>'; }
-    elseif($dex <  195000) { $str = '<font color="teal">C+</font>'; }
-    elseif($dex <  227500) { $str = '<font color="limegreen">B-</font>'; }
-    elseif($dex <  262500) { $str = '<font color="limegreen">B</font>'; }
-    elseif($dex <  300000) { $str = '<font color="limegreen">B+</font>'; }
-    elseif($dex <  340000) { $str = '<font color="gold">A-</font>'; }
-    elseif($dex <  382500) { $str = '<font color="gold">A</font>'; }
-    elseif($dex <  427500) { $str = '<font color="gold">A+</font>'; }
-    elseif($dex <  475000) { $str = '<font color="darkorange">S-</font>'; }
-    elseif($dex <  525000) { $str = '<font color="darkorange">S</font>'; }
-    elseif($dex <  577500) { $str = '<font color="darkorange">S+</font>'; }
-    elseif($dex <  632500) { $str = '<font color="tomato">SS-</font>'; }
-    elseif($dex <  690000) { $str = '<font color="tomato">SS</font>'; }
-    elseif($dex <  750000) { $str = '<font color="tomato">SS+</font>'; }
-    elseif($dex <  812500) { $str = '<font color="red">SSS-</font>'; }
-    elseif($dex <  877500) { $str = '<font color="red">SSS</font>'; }
-    elseif($dex <  945000) { $str = '<font color="red">SSS+</font>'; }
-    elseif($dex < 1015000) { $str = '<font color="darkviolet">Z-</font>'; }
-    elseif($dex < 1087500) { $str = '<font color="darkviolet">Z</font>'; }
-    elseif($dex < 1162500) { $str = '<font color="darkviolet">Z+</font>'; }
-    else                   { $str = '<font color="white">?</font>'; }
-    return $str;
+function getDexLevelList(): array{
+    return [
+        [0, 'navy', 'F-'],
+        [2500, 'navy', 'F'],
+        [7500, 'navy', 'F+'],
+        [15000, 'skyblue', 'E-'],
+        [25000, 'skyblue', 'E'],
+        [37500, 'skyblue', 'E+'],
+        [52500, 'seagreen', 'D-'],
+        [70000, 'seagreen', 'D'],
+        [90000, 'seagreen', 'D+'],
+        [112500, 'teal', 'C-'],
+        [137500, 'teal', 'C'],
+        [165000, 'teal', 'C+'],
+        [195000, 'limegreen', 'B-'],
+        [227500, 'limegreen', 'B'],
+        [262500, 'limegreen', 'B+'],
+        [300000, 'gold', 'A-'],
+        [340000, 'gold', 'A'],
+        [382500, 'gold', 'A+'],
+        [427500, 'darkorange', 'S-'],
+        [475000, 'darkorange', 'S'],
+        [525000, 'darkorange', 'S+'],
+        [577500, 'tomato', 'SS-'],
+        [632500, 'tomato', 'SS'],
+        [690000, 'tomato', 'SS+'],
+        [750000, 'red', 'SSS-'],
+        [812500, 'red', 'SSS'],
+        [877500, 'red', 'SSS+'],
+        [945000, 'darkviolet', 'Z-'],
+        [1015000, 'darkviolet', 'Z'],
+        [1087500, 'darkviolet', 'Z+'],
+        [1162500, 'white', '?']
+    ];
 }
 
-function getDexLevel($dex) : int {
-    if($dex < 2500)        { $lvl =  0; }
-    elseif($dex <    7500) { $lvl =  1; }
-    elseif($dex <   15000) { $lvl =  2; }
-    elseif($dex <   25000) { $lvl =  3; }
-    elseif($dex <   37500) { $lvl =  4; }
-    elseif($dex <   52500) { $lvl =  5; }
-    elseif($dex <   70000) { $lvl =  6; }
-    elseif($dex <   90000) { $lvl =  7; }
-    elseif($dex <  112500) { $lvl =  8; }
-    elseif($dex <  137500) { $lvl =  9; }
-    elseif($dex <  165000) { $lvl = 10; }
-    elseif($dex <  195000) { $lvl = 11; }
-    elseif($dex <  227500) { $lvl = 12; }
-    elseif($dex <  262500) { $lvl = 13; }
-    elseif($dex <  300000) { $lvl = 14; }
-    elseif($dex <  340000) { $lvl = 15; }
-    elseif($dex <  382500) { $lvl = 16; }
-    elseif($dex <  427500) { $lvl = 17; }
-    elseif($dex <  475000) { $lvl = 18; }
-    elseif($dex <  525000) { $lvl = 19; }
-    elseif($dex <  577500) { $lvl = 20; }
-    elseif($dex <  632500) { $lvl = 21; }
-    elseif($dex <  690000) { $lvl = 22; }
-    elseif($dex <  750000) { $lvl = 23; }
-    elseif($dex <  812500) { $lvl = 24; }
-    elseif($dex <  877500) { $lvl = 25; }
-    elseif($dex <  945000) { $lvl = 26; }
-    elseif($dex < 1015000) { $lvl = 27; }
-    elseif($dex < 1087500) { $lvl = 28; }
-    elseif($dex < 1162500) { $lvl = 29; }
-    else                   { $lvl = 30; }
-    return $lvl;
+function getDexCall(int $dex) : string {
+    if($dex < 0){
+        throw new \InvalidArgumentException();
+    }
+
+    $color = null;
+    $name = null;
+    foreach(getDexLevelList() as $dexLevel => [$dexKey, $nextColor, $nextName]){
+        if($dex < $dexKey){
+            break;
+        }
+        $color = $nextColor;
+        $name = $nextName;
+    }
+
+    return "<font color='{$color}'>{$name}</font>";
+}
+
+function getDexLevel(int $dex) : int {
+    if($dex < 0){
+        throw new \InvalidArgumentException();
+    }
+
+    $retVal = null;
+    foreach(getDexLevelList() as $dexLevel => [$dexKey, $nextColor, $nextName]){
+        if($dex < $dexKey){
+            break;
+        }
+        $retVal = $dexLevel;
+    }
+    return $dexLevel;
 }
 
 function getDexLog($dex1, $dex2) {

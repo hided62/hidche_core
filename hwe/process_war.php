@@ -37,7 +37,7 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
 
     $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
-    $defenderList = $db->query('SELECT no,name,nation,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))', $city->getVar('nation'), $city->getVar('city'));
+    $defenderList = $db->query('SELECT no,name,nation,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar,mode FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))', $city->getVar('nation'), $city->getVar('city'));
 
     if(!$defenderList){
         $defenderList = [];
@@ -63,7 +63,12 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
             return null;
         }
 
-        $retVal = new WarUnitGeneral($iterDefender->current(), $rawDefenderCity, $rawDefenderNation, false, $year, $month);
+        $rawGeneral = $iterDefender->current();
+        if(extractBattleOrder($rawGeneral) <= 0){
+            return null;
+        }
+
+        $retVal = new WarUnitGeneral($rawGeneral, $rawDefenderCity, $rawDefenderNation, false, $year, $month);
         $iterDefender->next();
         return $retVal;
     };
@@ -154,6 +159,26 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
 }
 
 function extractBattleOrder($general){
+    if($general['crew'] == 0){
+        return 0;
+    }
+
+    if($general['rice'] <= $general['crew'] / 100){
+        return 0;
+    }
+
+    if($general['mode'] == 0){
+        return 0;
+    }
+
+    if($general['mode'] == 1 && ($general['train'] < 60 || $general['atmos'] < 60)){
+        return 0;
+    }
+
+    if($general['mode'] == 2 && ($general['train'] < 80 || $general['atmos'] < 80)){
+        return 0;
+    }
+
     return (
         $general['leader'] +
         $general['power'] +

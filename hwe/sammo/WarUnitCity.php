@@ -90,6 +90,7 @@ class WarUnitCity extends WarUnit{
         if($this->isFinished){
             return;
         }
+        $this->clearActivatedSkill();
         $this->isFinished = true;
 
         $this->updateVar('def', Util::round($this->getHP() / 10));

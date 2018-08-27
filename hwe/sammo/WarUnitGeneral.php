@@ -954,6 +954,7 @@ class WarUnitGeneral extends WarUnit{
         if($this->isFinished){
             return;
         }
+        $this->clearActivatedSkill();
         $this->isFinished = true;
 
         $this->increaseVar('killcrew', $this->killed);

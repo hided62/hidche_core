@@ -608,7 +608,6 @@ function process_35(&$general) {
     $destNation = getNationStaticInfo($destNationID);
 
     $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
-
     [
         $srcGenScore,
         $srcSpecialScore,

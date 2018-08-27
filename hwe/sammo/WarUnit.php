@@ -28,11 +28,32 @@ class WarUnit{
     protected $warPowerMultiply = 1.0;
 
     protected $activatedSkill = [];
+    protected $logActivatedSkill = [];
     protected $isFinished = false;
 
     private function __construct(){
     }
     
+    protected function clearActivatedSkill(){
+        foreach($this->activatedSkill as $skillName=>$state){
+            if(!$state){
+                continue;
+            }
+
+            if(!key_exists($skillName, $this->logActivatedSkill)){
+                $this->logActivatedSkill[$skillName] = 1;
+            }
+            else{
+                $this->logActivatedSkill[$skillName] += 1;
+            }
+        }
+        $this->activatedSkill = [];
+    }
+
+    function getActivatedSkillLog():array{
+        return $this->logActivatedSkill;
+    }
+
     function getRaw():array{
         return $this->raw;
     }
@@ -183,7 +204,7 @@ class WarUnit{
         $this->oppose = $oppose;
         $this->killedCurr = 0;
         $this->deadCurr = 0;
-        $this->activatedSkill = [];
+        $this->clearActivatedSkill();
     }
 
     function getOppose():?WarUnit{
@@ -312,7 +333,7 @@ class WarUnit{
     }
 
     function beginPhase():void{
-        $this->activatedSkill = [];
+        $this->clearActivatedSkill();
         $this->computeWarPower();
     }
 

@@ -350,6 +350,8 @@ class Util extends \utilphp\util
 
         shuffle($keys);
 
+        $new = [];
+
         foreach($keys as $key) {
             $new[$key] = $array[$key];
         }

@@ -452,15 +452,7 @@ echo "
     </tr>
 ";
 
-$citylevel = [];
-$citylevel[1] = "수";
-$citylevel[2] = "진";
-$citylevel[3] = "관";
-$citylevel[4] = "이";
-$citylevel[5] = "소";
-$citylevel[6] = "중";
-$citylevel[7] = "대";
-$citylevel[8] = "특";
+$citylevel = getCityLevelList();
 
 $query = "select city,name,gen1,gen2,gen3,level,region,gen1set,gen2set,gen3set from city where nation='{$nation['nation']}' order by region,level desc,binary(name)"; // 도시 이름 목록
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

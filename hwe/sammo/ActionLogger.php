@@ -43,6 +43,16 @@ class ActionLogger{
     }
 
     public function rollback(){
+        $backup = [
+            'generalHistoryLog'=>$this->generalHistoryLog,
+            'generalActionLog'=>$this->generalActionLog,
+            'generalBattleResultLog'=>$this->generalBattleResultLog,
+            'generalBattleDetailLog'=>$this->generalBattleDetailLog,
+            'nationalHistoryLog'=>$this->nationalHistoryLog,
+            'globalHistoryLog'=>$this->globalHistoryLog,
+            'globalActionLog'=>$this->globalActionLog,
+        ];
+        
         $this->generalHistoryLog = [];
         $this->generalActionLog = [];
         $this->generalBattleResultLog = [];
@@ -50,6 +60,8 @@ class ActionLogger{
         $this->nationalHistoryLog = [];
         $this->globalHistoryLog = [];
         $this->globalActionLog = [];
+
+        return $backup;
     }
 
     public function flush(){
