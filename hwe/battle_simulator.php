@@ -434,11 +434,11 @@ $startYear = $gameStor->getValue('startyear');
     </div>
     <table class="table">
         <tbody id="battle_result_summary">
-            <tr><th style='width:16ch;'>전투 일시</th><td id='result_datetime'></td></tr>
+            <tr><th style='width:18ch;'>전투 일시</th><td id='result_datetime'></td></tr>
             <tr><th>전투 횟수</th><td id='result_warcnt'></td></tr>
             <tr><th>전투 페이즈</th><td id='result_phase'></td></tr>
-            <tr><th>공격량</th><td id='result_killed'></td></tr>
-            <tr><th>피해량</th><td id='result_dead'></td></tr>
+            <tr><th>입힌 피해</th><td id='result_killed'></td></tr>
+            <tr><th>받은 피해</th><td id='result_dead'></td></tr>
             <tr><th>출병자 군량 소모</th><td id='result_attackerRice'></td></tr>
             <tr><th>수비자 군량 소모</th><td id='result_defenderRice'></td></tr>
             <tr><th>공격자 스킬</th><td id='result_attackerSkills'></td></tr>
