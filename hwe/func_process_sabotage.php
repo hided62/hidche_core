@@ -144,7 +144,7 @@ function process_32(&$general) {
 
     $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
-    $destCity = $db->queryFirstRow('SELECT city,name,nation,supply,agri,comm FROM city WHERE city=%i',$destCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,rate FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
 
     $srcNationID = $general['nation'];
@@ -278,7 +278,7 @@ function process_33(&$general) {
 
     $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
-    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm FROM city WHERE city=%i',$destCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,rate FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
 
     $srcNationID = $general['nation'];
@@ -449,7 +449,7 @@ function process_34(&$general) {
 
     $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
-    $destCity = $db->queryFirstRow('SELECT city,name,nation,def,wall,secu,secu2,supply FROM city WHERE city=%i',$destCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,rate FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
 
     $srcNationID = $general['nation'];
@@ -587,7 +587,7 @@ function process_35(&$general) {
 
     $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
-    $destCity = $db->queryFirstRow('SELECT city,name,nation,rate,secu,secu2,supply FROM city WHERE city=%i',$destCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,rate FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
 
     $srcNationID = $general['nation'];
