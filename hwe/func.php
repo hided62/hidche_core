@@ -1148,7 +1148,7 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
         <td width=148 style='text-align:center;' class='bg1'>$when</td>
     </tr>
     <tr>
-        <td width=90 height=64 valign=top><img width='64' height='64' src={$imageTemp}/{$picture} border='0'></td>
+        <td width=90 height=64 valign=top><img width='64' height='64' src='{$imageTemp}/{$picture}' border='0'></td>
         <td width=906 colspan=2>$message[1]</td>
     </tr>";
     for($i=0; $i < $count; $i++) {
