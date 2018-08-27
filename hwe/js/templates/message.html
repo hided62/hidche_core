@@ -16,9 +16,9 @@
                 <%if(src.name == generalName){%>
                 <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;">나</span
                 ><span class="msg_from_to">▶</span
-                ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;"><%e(dest.name)%>:<%e(dest.nation)%></span>
+                ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;"><%e(dest.name)%>:<%dest.nation%></span>
                 <%}else{%>
-                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%src.nation%></span
                 ><span class="msg_from_to">▶</span
                 ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;">나</span>
                 <%}%>
@@ -28,13 +28,13 @@
                 <%if(src.nation_id == nationID){%>
                 <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%></span
                 ><span class="msg_from_to">▶</span
-                ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;"><%e(dest.nation)%></span>
+                ><span class="msg_target msg_<%dest.colorType%>" style="background-color:<%dest.color%>;"><%dest.nation%></span>
                 <%}else{%>
-                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%src.nation%></span
                 ><span class="msg_from_to"></span>
                 <%}%>
             <%} else {%>
-                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%e(src.nation)%></span>
+                <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%src.nation%></span>
             <%} %>
             <span class="msg_time">&lt;<%e(time)%>&gt;</span>
         </div>
