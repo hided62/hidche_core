@@ -161,7 +161,7 @@ function process_32(&$general) {
     $srcNation = getNationStaticInfo($srcNationID);
     $destNation = getNationStaticInfo($destNationID);
 
-    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level FROM general WHERE city=%i and nation=%i', $city['city'], $city['nation']);
+    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
 
     [
         $srcGenScore,
@@ -298,7 +298,7 @@ function process_33(&$general) {
     $srcNation = getNationStaticInfo($srcNationID);
     $destNation = getNationStaticInfo($destNationID);
 
-    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level FROM general WHERE city=%i and nation=%i', $city['city'], $city['nation']);
+    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
 
     [
         $srcGenScore,
@@ -467,7 +467,7 @@ function process_34(&$general) {
     $srcNation = getNationStaticInfo($srcNationID);
     $destNation = getNationStaticInfo($destNationID);
 
-    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level FROM general WHERE city=%i and nation=%i', $city['city'], $city['nation']);
+    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
 
     [
         $srcGenScore,
@@ -607,8 +607,7 @@ function process_35(&$general) {
     $srcNation = getNationStaticInfo($srcNationID);
     $destNation = getNationStaticInfo($destNationID);
 
-    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level FROM general WHERE city=%i and nation=%i', $city['city'], $city['nation']);
-
+    $generalList = $db->query('SELECT `no`,leader,horse,power,weap,intel,book,injury,level,special,special2 FROM general WHERE city=%i and nation=%i', $destCity['city'], $destCity['nation']);
     [
         $srcGenScore,
         $srcSpecialScore,
