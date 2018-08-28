@@ -16,7 +16,7 @@
         <a href="/bbs/history2" target="_blank"><button class="toolbarButton">개인 열전</button></a>
         <a href="/bbs/history3" target="_blank"><button class="toolbarButton">국가 열전</button></a>
         <a href="/bbs/patch" target="_blank"><button class="toolbarButton">패치 내역</button></a>
-        <a href="../i_other/help.php" target="_blank"><button class="toolbarButton">튜토리얼</button></a>
+        <a href="battle_simulator" target="_blank"><button class="toolbarButton">전투 시뮬레이터</button></a>
         <a href="<?=$site?>" target="_blank"><button class="toolbarButton"><?=$call?></button></a>
     </div>
 </div>
