@@ -2076,7 +2076,7 @@ function process_76(&$general) {
                 ) values (
                     '$npccount','$npc','$npc','$affinity','$name','$picture','{$nation['nation']}',
                     '{$general['city']}','$leader','$power','$intel','{$avgGen['exp']}','{$avgGen['ded']}',
-                    '1','100','100','0','0','0','0','0',
+                    '1','100','100','0','".GameUnitConst::DEFAULT_CREWTYPE."','0','0','0',
                     '0','0','0','$turntime','$killturn','{$avgGen['age']}','1','$personal','0','0','0','0','',
                     '0','$bornyear','$deadyear',
                     '{$avgGen['dex0']}','{$avgGen['dex10']}','{$avgGen['dex20']}','{$avgGen['dex30']}','{$avgGen['dex40']}'

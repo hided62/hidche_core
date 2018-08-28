@@ -452,7 +452,7 @@ function process_29(&$general) {
                 ) values (
                     '$npccount','$npc','$npc','$affinity','$name','$picture','$scoutNation',
                     '{$general['city']}','$leader','$power','$intel','{$avgGen['exp']}','{$avgGen['ded']}',
-                    '$scoutLevel','100','100','0','0','0','0','0',
+                    '$scoutLevel','100','100','0','".GameUnitConst::DEFAULT_CREWTYPE."','0','0','0',
                     '0','0','0','$turntime','$killturn','$age','1','$personal','0','$specage','0','$specage2','',
                     '0','$bornyear','$deadyear',
                     '{$avgGen['dex0']}','{$avgGen['dex10']}','{$avgGen['dex20']}','{$avgGen['dex30']}','{$avgGen['dex40']}'
