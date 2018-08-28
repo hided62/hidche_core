@@ -262,7 +262,7 @@ function processWar_NG(
                 $josaYi = JosaUtil::pick($attacker->getName(), '이');
                 $josaRo = JosaUtil::pick($attacker->getCrewTypeName(), '로');
                 $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>{$josaYi} {$attacker->getCrewTypeName()}{$josaRo} 성벽을 공격합니다.");
-                $logger->pushGeneralActionLog("<C>●</>{$attacker->getCrewTypeName()}{$josaRo} 성벽을 <M>공격</>합니다.", ActionLogger::PLAIN);
+                $logger->pushGeneralActionLog("{$attacker->getCrewTypeName()}{$josaRo} 성벽을 <M>공격</>합니다.", ActionLogger::PLAIN);
             }
 
             $defender->useBattleInitItem();
