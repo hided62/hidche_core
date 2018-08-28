@@ -90,6 +90,18 @@ class NPC{
     public function build($env=[]){
         //scenario에 life==1인 경우 수명 제한이 없어지는 모양.
 
+        if(!key_exists('stored_icons', $env)){
+            try{
+                $text = \file_get_contents(ServConfig::getSharedIconPath('../hook/list.json?1'));
+                $storedIcons = Json::decode($text);
+            }
+            catch(\Exception $e){
+                $storedIcons = [];
+            }
+    
+            $env['stored_icons'] = $storedIcons;
+        }
+
         $isFictionMode = (Util::array_get($env['fiction'], 0)!=0);
 
         $year = $env['year'];
