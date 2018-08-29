@@ -114,7 +114,7 @@ $(function(){
 <?=WebUtil::printCSS('css/main.css')?>
 <?=WebUtil::printCSS('css/map.css')?>
 <?=WebUtil::printCSS('css/msg.css')?>
-
+<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Nanum+Myeongjo|Nanum+Pen+Script" rel="stylesheet">
 
 </head>
 <body class="img_back">
@@ -200,7 +200,7 @@ echo "
 ?>
     <tr><td colspan=5 style="text-align:left;">접속중인 국가: <?=onlinenation()?></td></tr>
     <tr><td colspan=5 style="text-align:left;"><?=adminMsg()?></td></tr>
-    <tr><td colspan=5 style="text-align:left;"><div>【 국가방침 】</div><div style="color:orange;"><?=nationMsg()?></div></td></tr>
+    <tr><td colspan=5 style="text-align:left;"><div>【 국가방침 】</div><div><?=nationMsg()?></div></td></tr>
     <tr><td colspan=5 style="text-align:left;">【 접속자 】<?=onlinegen()?></td></tr>
 <?php
 if ($session->userGrade >= 5) {
