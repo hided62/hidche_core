@@ -314,7 +314,7 @@ function getCall($leader, $power, $intel) {
     $call = '평범';
 
     if($leader < 40){
-        if($power + $intel < $leader){
+        if($power + $intel < 40){
             return '아둔';
         }
         if($intel >= GameConst::$chiefStatMin && $power < $intel * 0.8){
@@ -336,6 +336,9 @@ function getCall($leader, $power, $intel) {
     }
     if($intel >= GameConst::$chiefStatMin - GameConst::$statGradeLevel && $power < $intel * 0.8){
         return '명장';
+    }
+    if($leader >= GameConst::$chiefStatMin - GameConst::$statGradeLevel && $power + $intel < $leader){
+        return '차장';
     }
     return '평범';
 }

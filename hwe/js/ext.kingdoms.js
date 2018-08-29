@@ -10,7 +10,7 @@ $(function(){
     var getUserType = function(통,무,지){
         var 총 = 통+무+지;
         if(통 < 40){
-            if(무+지 < 통){
+            if(무+지 < 40){
                 return "무능";
             }
             return "무지";
@@ -27,6 +27,9 @@ $(function(){
         }
         if(지 >= 60 && 무 < 지*0.8){
             return "지";
+        }
+        if(통 >= 60 && 무 + 지 < 통){
+            return "통";
         }
 
         
