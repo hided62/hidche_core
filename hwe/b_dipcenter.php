@@ -48,13 +48,20 @@ if ($me['level'] >= 5) {
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 내무부</title>
+<script>
+var editable = <?=($me['level']>=5?'true':'false')?>;
+</script>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/trumbowyg/trumbowyg.min.js')?>
+<?=WebUtil::printJS('../e_lib/trumbowyg/langs/ko.min.js')?>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/dipcenter.js')?>
 
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+<?=WebUtil::printCSS('../e_lib/trumbowyg/ui/trumbowyg.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-
+<?=WebUtil::printCSS('css/dipcenter.css')?>
 </head>
 
 <body>
@@ -223,10 +230,35 @@ if ($budgetricediff > 0) {
 <form name=form1 method=post action=c_dipcenter.php>
     <tr><td colspan=2 height=10></td></tr>
     <tr><td colspan=2 align=center bgcolor=orange>국 가 방 침 &amp; 임관 권유 메시지</td></tr>
-    <tr><td colspan=2 class=bg1>국가 방침 <textarea <?=$read?> maxlength=16000 rows="5" style="color:white;background-color:black;width:830px;" name=msg><?=$nation['msg']?></textarea><input type=<?=$btn?> name=btn value=국가방침></td></tr>
-    <tr><td colspan=2 class=bg1>임관 권유 <input type=text <?=$read?> maxlength=1000 style=color:white;background-color:black;width:830px; name=scoutmsg value='<?=$nation['scoutmsg']?>'><input type=<?=$btn?> name=btn value=임관권유></td></tr>
-    <tr><td colspan=2>870px x 200px를 넘어서는 내용은 표시되지 않습니다.</td></tr>
-    <tr><td colspan=2 height=10></td></tr>
+    <tr><td colspan='2'><div id='noticeForm'>
+        <div class='bg1' style="display: flex; justify-content: space-around">
+            <div style='flex: 1 1 auto;'>
+                국가 방침
+            </div>
+            <div>
+                <input type='submit' class='submit' name=btn value='국가방침 수정'><input type='button' class='cancel_edit' value='취소'>
+            </div>
+        </div>
+        <textarea type=hidden class='input_form' style='display:none;' name=msg><?=$nation['msg']?></textarea>
+        <div class='edit_form viewer'></div>
+    </div></td></tr>
+    <tr><td colspan='2'><div id='scoutMsgForm'>
+        <div class='bg1' style="display: flex; justify-content: space-around">
+            <div style='flex: 1 1 auto;'>
+                임관 권유
+            </div>
+            <div>
+                <input type='submit' class='submit' name=btn value='임관 권유문 수정'><input type='button' class='cancel_edit' value='취소'>
+            </div>
+        </div>
+        <div style='border-bottom:solid gray 0.5px;'>870px x 200px를 넘어서는 내용은 표시되지 않습니다.</div>
+        <textarea type=hidden class='input_form' style='display:none;' name=scoutmsg><?=$nation['scoutmsg']?></textarea>
+        <div style="width:870px;margin-left:auto;">
+            <div class='edit_form viewer'></div>
+        </div>
+        </div>
+        
+    </div></td></tr>
     <tr><td colspan=2 align=center bgcolor=green>예 산 &amp; 정 책</td></tr>
     <tr>
         <td colspan=2>

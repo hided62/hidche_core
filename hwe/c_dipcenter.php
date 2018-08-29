@@ -28,13 +28,13 @@ if($me['level'] < 5) {
     exit();
 }
 
-if($btn == "국가방침") {
+if($btn == "국가방침 수정") {
     $msg = mb_substr($msg, 0, 16384);
     //$msg = StringUtil::
     $db->update('nation', [
         'msg'=>WebUtil::htmlPurify($msg)
     ], 'nation=%i',$me['nation']);
-} elseif($btn == "임관권유") {
+} elseif($btn == "임관 권유문 수정") {
     $scoutmsg = mb_substr($scoutmsg, 0, 1000);
     $db->update('nation', [
         'scoutmsg'=>WebUtil::htmlPurify($scoutmsg)

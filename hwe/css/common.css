@@ -201,4 +201,20 @@ div.bar_out div.bar_in{
     font-size  : .875rem;
     line-height  : .5;
     border-radius : .2rem;
-  }
+}
+
+.edit_form.viewer{
+    max-height:200px;
+    overflow-y:auto;
+}
+
+.trumbowyg-box{
+    margin:0;
+    border-left:none;
+    border-right:none;
+}
+
+.edit_form.trumbowyg-editor{
+    margin:0;
+    padding:0;
+}
