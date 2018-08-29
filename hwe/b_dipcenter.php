@@ -56,7 +56,7 @@ var editable = <?=($me['level']>=5?'true':'false')?>;
 <?=WebUtil::printJS('../e_lib/trumbowyg/langs/ko.min.js')?>
 <?=WebUtil::printJS('../e_lib/trumbowyg/plugins/colors/trumbowyg.colors.min.js')?>
 <?=WebUtil::printJS('../e_lib/trumbowyg/plugins/fontfamily/trumbowyg.fontfamily.js')?>
-<?=WebUtil::printJS('../e_lib/trumbowyg/plugins/fontsize/trumbowyg.fontsize.js')?>
+<?=WebUtil::printJS('../e_lib/trumbowyg/trumbowyg.fontsize.js')?>
 
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/dipcenter.js')?>
@@ -64,6 +64,7 @@ var editable = <?=($me['level']>=5?'true':'false')?>;
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../e_lib/trumbowyg/ui/trumbowyg.min.css')?>
 <?=WebUtil::printCSS('../e_lib/trumbowyg/plugins/colors/ui/trumbowyg.colors.css')?>
+<?=WebUtil::printCSS('../e_lib/trumbowyg/trumbowyg.fontsize.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/dipcenter.css')?>
