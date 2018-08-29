@@ -93,7 +93,7 @@ class NPC{
         if(!key_exists('stored_icons', $env)){
             try{
                 $text = \file_get_contents(\sammo\ServConfig::getSharedIconPath('../hook/list.json?1'));
-                $storedIcons = Json::decode($text);
+                $storedIcons = \sammo\Json::decode($text);
             }
             catch(\Exception $e){
                 $storedIcons = [];
