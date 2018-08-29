@@ -71,6 +71,9 @@
                         trumbowyg.range.insertNode(node);
                     }
                     trumbowyg.saveRange();
+                    trumbowyg.syncCode();
+                    trumbowyg.$c.trigger('tbwchange');
+                    return true;
                 }
             });
             dropdown.push('fontsize_' + size);
@@ -98,6 +101,8 @@
                                 trumbowyg.range.insertNode(node);
                             }
                             trumbowyg.saveRange();
+                            trumbowyg.syncCode();
+                            trumbowyg.$c.trigger('tbwchange');
                             return true;
                         }
                     );
