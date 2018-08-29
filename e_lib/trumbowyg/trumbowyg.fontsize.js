@@ -7,11 +7,6 @@
             en: {
                 fontsize: 'Font size',
                 fontsizes: {
-                    'x-small': 'Extra small',
-                    'small': 'Small',
-                    'medium': 'Regular',
-                    'large': 'Large',
-                    'x-large': 'Extra large',
                     'custom': 'Custom'
                 }
             },
@@ -41,30 +36,41 @@
     function buildDropdown(trumbowyg) {
         var dropdown = [];
         var sizes = [
-            '8pt',
-            '9pt',
-            '10pt',
-            '11pt',
-            '12pt',
-            '14pt',
-            '16pt',
-            '18pt',
-            '20pt',
-            '24pt',
-            '28pt',
-            '32pt',
-            '40pt',
-            '46pt',
-            '52pt',
-            '60pt'
+            '8px',
+            '9px',
+            '10px',
+            '11px',
+            '12px',
+            '14px',
+            '16px',
+            '18px',
+            '20px',
+            '24px',
+            '28px',
+            '32px',
+            '40px',
+            '46px',
+            '52px',
+            '60px'
         ];
 
         $.each(sizes, function (index, size) {
             trumbowyg.addBtnDef('fontsize_' + size, {
-                text: '<span style="font-size: ' + size + ';line-height: ' + size + '">' + size + '</span>',
+                text: '<span style="font-size: ' + size + ';">' + size + '</span>',
                 hasIcon: false,
                 fn: function () {
-                    trumbowyg.execCmd('fontSize', index + 1, true);
+                    trumbowyg.saveRange();
+                    var text = trumbowyg.range.startContainer.parentElement;
+                    var selectedText = trumbowyg.getRangeText();
+                    if ($(text).html() === selectedText) {
+                        $(text).css('font-size', size);
+                    } else {
+                        trumbowyg.range.deleteContents();
+                        var html = '<span style="font-size: ' + size + ';">' + selectedText + '</span>';
+                        var node = $(html)[0];
+                        trumbowyg.range.insertNode(node);
+                    }
+                    trumbowyg.saveRange();
                 }
             });
             dropdown.push('fontsize_' + size);
