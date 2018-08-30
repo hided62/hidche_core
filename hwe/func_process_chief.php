@@ -1032,7 +1032,7 @@ function process_66(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:인접도시가 아닙니다. 천도 실패. <1>$date</>";
     } elseif($nation['capset'] == 1) {
         $log[] = "<C>●</>{$admin['month']}월:다음 분기에 가능합니다. 천도 실패. <1>$date</>";
-    } elseif($nation['gold']-GameConst::$basegold < $amount || $nation['rice']-GameConst::$basegold < $amount) {
+    } elseif($nation['gold']-GameConst::$basegold < $amount || $nation['rice']-GameConst::$baserice < $amount) {
         $log[] = "<C>●</>{$admin['month']}월:물자가 부족합니다. 천도 실패. <1>$date</>";
     } elseif($term < 3) {
         $log[] = "<C>●</>{$admin['month']}월:천도중... ({$term}/3) <1>$date</>";
