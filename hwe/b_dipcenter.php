@@ -52,19 +52,15 @@ if ($me['level'] >= 5) {
 var editable = <?=($me['level']>=5?'true':'false')?>;
 </script>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('../e_lib/trumbowyg/trumbowyg.min.js')?>
-<?=WebUtil::printJS('../e_lib/trumbowyg/langs/ko.min.js')?>
-<?=WebUtil::printJS('../e_lib/trumbowyg/plugins/colors/trumbowyg.colors.min.js')?>
-<?=WebUtil::printJS('../e_lib/trumbowyg/plugins/fontfamily/trumbowyg.fontfamily.js')?>
-<?=WebUtil::printJS('../e_lib/trumbowyg/trumbowyg.fontsize.js')?>
+<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../e_lib/summernote/summernote-bs4.min.js')?>
+<?=WebUtil::printJS('../e_lib/summernote/lang/summernote-ko-KR.js')?>
 
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('js/dipcenter.js')?>
 
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
-<?=WebUtil::printCSS('../e_lib/trumbowyg/ui/trumbowyg.min.css')?>
-<?=WebUtil::printCSS('../e_lib/trumbowyg/plugins/colors/ui/trumbowyg.colors.css')?>
-<?=WebUtil::printCSS('../e_lib/trumbowyg/trumbowyg.fontsize.css')?>
+<?=WebUtil::printCSS('../e_lib/summernote/summernote-bs4.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/dipcenter.css')?>
