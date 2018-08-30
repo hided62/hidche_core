@@ -397,7 +397,7 @@ function process_52(&$general) {
     $younation = MYDB_fetch_array($result);
 
     if($gold > $mynation['gold']-GameConst::$basegold) { $gold = $mynation['gold'] - GameConst::$basegold; }
-    if($rice > $mynation['rice']-GameConst::$baserice) { $rice = $mynation['rice'] - GameConst::$basegold; }
+    if($rice > $mynation['rice']-GameConst::$baserice) { $rice = $mynation['rice'] - GameConst::$baserice; }
 
     if($younation['nation'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:멸망한 국가입니다. 원조 실패. <1>$date</>";
