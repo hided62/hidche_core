@@ -1114,7 +1114,7 @@ function process_67(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 증축 실패. <1>$date</>";
     } elseif($nation['capset'] == 1) {
         $log[] = "<C>●</>{$admin['month']}월:다음 분기에 가능합니다. 증축 실패. <1>$date</>";
-    } elseif($nation['gold']-GameConst::$basegold < $amount || $nation['rice']-GameConst::$basegold < $amount) {
+    } elseif($nation['gold']-GameConst::$basegold < $amount || $nation['rice']-GameConst::$baserice < $amount) {
         $log[] = "<C>●</>{$admin['month']}월:물자가 부족합니다. 증축 실패. <1>$date</>";
     } elseif($term < 6) {
         $log[] = "<C>●</>{$admin['month']}월:증축중... ({$term}/6) <1>$date</>";
