@@ -55,8 +55,8 @@ var editable = <?=($me['level']>=5?'true':'false')?>;
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../e_lib/summernote/summernote-bs4.min.js')?>
 <?=WebUtil::printJS('../e_lib/summernote/lang/summernote-ko-KR.js')?>
-
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
+<?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/dipcenter.js')?>
 
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>

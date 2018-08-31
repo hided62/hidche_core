@@ -174,7 +174,7 @@ for ($j=0; $j < $gencount; $j++) {
         data-general-intel='{$general['intel']}'
         data-is-npc='".($general['npc']>=2?'true':'false')."'
     >
-        <td align=center><img width='64' height='64' src='{$imageTemp}/{$general['picture']}'></img></td>
+        <td align=center><img class='generalIcon' width='64' height='64' src='{$imageTemp}/{$general['picture']}'></img></td>
         <td align=center>$name</td>
         <td align=center>{$general['age']}세</td>
         <td align=center>".displayCharInfo($general['personal'])."</td>

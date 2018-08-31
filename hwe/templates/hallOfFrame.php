@@ -5,7 +5,7 @@
     <div class="hall_rank bg2 with_border">
         <?=$general['rankName']??(($rank+1).'위')?>
     </div>
-    <div class="hall_img"><img width="64" height="64" src="<?=$general['pictureFullPath']?>"></div>
+    <div class="hall_img"><img width="64" height="64" class='generalIcon' src="<?=$general['pictureFullPath']?>"></div>
     <?php if(key_exists("serverName",$general)): ?>
     <div class="hall_server obj_tooltip" data-toggle="tooltip" data-placement="top"><?=$general['serverName']?><?=$general['serverIdx']?>기
         <span class="tooltiptext">

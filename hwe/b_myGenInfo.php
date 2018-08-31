@@ -174,7 +174,7 @@ for($j=0; $j < $gencount; $j++) {
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "
     <tr>
-        <td align=center style='background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;' height=64></td>
+        <td align=center class='generalIcon' style='background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;' height=64></td>
         <td align=center>$name</td>
         <td align=center>"; echo getLevel($general['level'], $nationLevel); echo "</td>
         <td align=center>".getDed($general['dedication'])."</td>

@@ -84,6 +84,7 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/myPage.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
@@ -119,6 +120,8 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
             <a href="c_vacation.php"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>휴가 신청</button></a><br><br>
             <!--빙의 해제용 삭턴 조절<br>
             <a href="b_myPage.php?detachNPC=1"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>빙의 해체 요청</button></a>-->
+            개인용 CSS<br>
+            <textarea id='custom_css' style='color:white;background-color:black;width:420px;height:150px;'></textarea>
         </td>
     </tr>
     <tr>

@@ -73,11 +73,14 @@ uasort($troops, function($lhs, $rhs){
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 부대편성</title>
+<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
+<?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/ext.plugin_troop.js')?>
+<?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <?=WebUtil::printCSS('css/troops.css')?>
-<?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
-<?=WebUtil::printJS('js/ext.plugin_troop.js')?>
 </head>
 
 <body>
@@ -132,7 +135,7 @@ foreach ($troops as $troopNo=>$troop) {
     <tr>
         <td align=center rowspan=2><input type='radio' name='troop' value='<?=$troop['troop']?>'></td>
         <td align=center><?=$troop['name']?><br>【 <?=$cityText?> 】</td>
-        <td height=64 style='background:no-repeat center url("<?=$troopLeader['pictureFullPath']?>");background-size:64px;'>&nbsp;</td>
+        <td height=64 class='generalIcon' style='background:no-repeat center url("<?=$troopLeader['pictureFullPath']?>");background-size:64px;'>&nbsp;</td>
         <td rowspan=2 width=62><?=$genlistText?></td>
         <td rowspan=2><?=$troopLeader['turnText']?></td>
     </tr>
@@ -145,7 +148,7 @@ foreach ($troops as $troopNo=>$troop) {
     <tr>
         <td align=center rowspan=2>&nbsp;</td>
         <td align=center ><?=$troop['name']?><br>【 <?=$cityText?> 】</td>
-        <td height=64 style='background:no-repeat center url("<?=$troopLeader['pictureFullPath']?>");background-size:64px;'>&nbsp;</td>
+        <td height=64 class='generalIcon' style='background:no-repeat center url("<?=$troopLeader['pictureFullPath']?>");background-size:64px;'>&nbsp;</td>
         <td rowspan=2 width=62><?=$genlistText?></td>
         <td rowspan=2>
         <?php if ($me['no'] == $troopLeader['no']): ?>

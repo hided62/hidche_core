@@ -150,4 +150,9 @@ jQuery(function($){
         },
         html:true
     });
+
+    var customCSS = localStorage.getItem('sam_customCSS');
+    if(customCSS){
+        $('<style type="text/css">\n'+customCSS+'\n</style>').appendTo($('head'));
+    }
 });

@@ -877,7 +877,7 @@ function generalInfo($no) {
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "<table width=498 class='tb_layout bg2'>
     <tr>
-        <td width=64 height=64 rowspan=3 style='text-align:center;background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;'>&nbsp;</td>
+        <td width=64 height=64 rowspan=3 class='generalIcon' style='text-align:center;background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;'>&nbsp;</td>
         <td colspan=9 height=16 style=text-align:center;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
     </tr>
     <tr height=16>
@@ -1148,7 +1148,7 @@ function msgprint($msg, $name, $picture, $imgsvr, $when, $num, $type) {
         <td width=148 style='text-align:center;' class='bg1'>$when</td>
     </tr>
     <tr>
-        <td width=90 height=64 valign=top><img width='64' height='64' src='{$imageTemp}/{$picture}' border='0'></td>
+        <td width=90 height=64 valign=top><img width='64' height='64' class='generalIcon' src='{$imageTemp}/{$picture}' border='0'></td>
         <td width=906 colspan=2>$message[1]</td>
     </tr>";
     for($i=0; $i < $count; $i++) {

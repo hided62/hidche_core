@@ -5,7 +5,7 @@ var userFrame = '\
     <td class="small"><%emailFunc(email)%><br>(<%authType%>)</td>\
     <td><%userGradeText%><p class="small hide_text user_grade_<%userGrade%>" style="margin:0;"><%shortDate(blockUntil)%></p></td>\
     <td><%nickname%></td>\
-    <td><img src="<%icon%>" width="64" height="64"></td>\
+    <td><img class="generalIcon" src="<%icon%>" width="64" height="64"></td>\
     <td class="small"><%slotGeneralList%></td>\
     <td class="small"><%shortDate(joinDate)%></td>\
     <td class="small"><%shortDate(loginDate)%></td>\
