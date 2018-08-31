@@ -19,6 +19,14 @@ $allowReset = in_array('reset', $serverAcl);
 $allowFullReset = in_array('fullReset',$serverAcl);
 $allowReset |= $allowFullReset;
 
+$reserve_open = Util::getReq('reserve_open');
+if($reserve_open && $reserve_open < date('Y-m-d H:i')){
+    Json::die([
+        'result'=>false,
+        'reason'=>'현재 시간보다 이전 시간대를 예약 시간으로 지정했습니다.'
+    ]);
+}
+
 if($session->userGrade < 5 && !$allowReset){
     Json::die([
         'result'=>false,
@@ -85,7 +93,6 @@ $npcmode = (int)$_POST['npcmode'];
 $show_img_level = (int)$_POST['show_img_level'];
 $tournament_trig = (int)$_POST['tournament_trig'];
 
-$reserve_open = Util::getReq('reserve_open');
 if($reserve_open){
     $reserve_open = new \DateTime($reserve_open);
     $db = DB::db();
