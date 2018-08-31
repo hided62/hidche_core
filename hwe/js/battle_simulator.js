@@ -701,7 +701,24 @@ jQuery(function($){
         $('#result_warcnt').html(toPretty(result.avgWar));
         $('#result_phase').html(toPretty(result.phase));
         $('#result_killed').html(toPretty(result.killed));
+        if(result.minKilled != result.maxKilled){
+            $('#result_maxKilled').html(toPretty(result.maxKilled));
+            $('#result_minKilled').html(toPretty(result.minKilled));
+            $('#result_varKilled').show();
+        }
+        else{
+            $('#result_varKilled').hide();
+        }
         $('#result_dead').html(toPretty(result.dead));
+        if(result.minDead != result.maxDead){
+            $('#result_maxDead').html(toPretty(result.maxDead));
+            $('#result_minDead').html(toPretty(result.minDead));
+            $('#result_varDead').show();
+        }
+        else{
+            $('#result_varDead').hide();
+        }
+        
         $('#result_attackerRice').html(toPretty(result.attackerRice));
         $('#result_defenderRice').html(toPretty(result.defenderRice));
         $('#result_attackerSkills').html(parseSkillCount(result.attackerSkills));

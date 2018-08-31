@@ -345,6 +345,13 @@ $lastWarLog = [];
 $attackerKilled = 0;
 $attackerDead = 0;
 
+$attackerMaxKilled = 0;
+$attackerMinKilled = PHP_INT_MAX;
+
+$attackerMaxDead = 0;
+$attackerMinDead = PHP_INT_MAX;
+
+
 $attackerAvgRice = 0;
 $defenderAvgRice = 0;
 
@@ -366,8 +373,17 @@ foreach(range(1, $repeatCnt) as $repeatIdx){
 
     $avgPhase += $attacker->getPhase() / $repeatCnt;
 
-    $attackerKilled += $attacker->getKilled() / $repeatCnt;
-    $attackerDead += $attacker->getDead() / $repeatCnt;
+    $killed = $attacker->getKilled();
+    $dead = $attacker->getDead();
+
+    $attackerKilled += $killed / $repeatCnt;
+    $attackerDead += $dead / $repeatCnt;
+
+    $attackerMaxKilled = max($attackerMaxKilled, $killed);
+    $attackerMinKilled = min($attackerMinKilled, $killed);
+
+    $attackerMaxDead = max($attackerMaxDead, $dead);
+    $attackerMinDead = min($attackerMinDead, $dead);
 
     $attackerAvgRice += $attackerRice / $repeatCnt;
     $defenderAvgRice += $defenderRice / $repeatCnt;
@@ -409,7 +425,11 @@ Json::die([
     'avgWar'=>$avgWar,
     'phase'=>$avgPhase,
     'killed'=>$attackerKilled,
+    'maxKilled'=>$attackerMaxKilled,
+    'minKilled'=>$attackerMinKilled,
     'dead'=>$attackerDead,
+    'maxDead'=>$attackerMaxDead,
+    'minDead'=>$attackerMinDead,
     'attackerRice'=>$attackerAvgRice,
     'defenderRice'=>$defenderAvgRice,
     'attackerSkills'=>$attackerActivatedSkills,
