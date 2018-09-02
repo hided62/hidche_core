@@ -11,5 +11,12 @@ class che_묵가 implements iActionTrigger{
     static $pros = '수성↑';
     static $cons = '기술↓';
 
-
+    public function onCalcDomesticTurnScore(string $turnType, float $score, float $cost, float $successRate, float $failRate):array{
+        if($turnType == 'tech'){
+            $score *= 0.9;
+            $cost *= 1.2;
+        }
+        
+        return [$score, $cost, $successRate, $failRate];
+    }
 }

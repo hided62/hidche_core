@@ -18,4 +18,8 @@ class che_도적 implements iActionTrigger{
         
         return $amount;
     }
+
+    public function onCalcSabotageProp(float $successRate):float{
+        return $successRate + 0.1;
+    }
 }

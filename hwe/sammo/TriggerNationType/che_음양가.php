@@ -16,7 +16,15 @@ class che_음양가 implements iActionTrigger{
             $score *= 1.1;
             $cost *= 0.8;
         }
+        else if($turnType == 'tech'){
+            $score *= 0.9;
+            $cost *= 1.2;
+        }
         
         return [$score, $cost, $successRate, $failRate];
+    }
+
+    public function onCalcStragicDelay(array $nation, int $commandType, int $turn):int{
+        return $turn * 2;
     }
 }

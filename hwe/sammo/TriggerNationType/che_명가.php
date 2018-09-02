@@ -18,4 +18,13 @@ class che_명가 implements iActionTrigger{
         
         return $amount;
     }
+
+    public function onCalcDomesticTurnScore(string $turnType, float $score, float $cost, float $successRate, float $failRate):array{
+        if($turnType == 'tech'){
+            $score *= 1.1;
+            $cost *= 0.8;
+        }
+        
+        return [$score, $cost, $successRate, $failRate];
+    }
 }

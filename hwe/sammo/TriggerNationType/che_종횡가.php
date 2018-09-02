@@ -27,4 +27,8 @@ class che_종횡가 implements iActionTrigger{
         
         return $amount;
     }
+
+    public function onCalcStragicDelay(array $nation, int $commandType, int $turn):int{
+        return Util::round($turn / 2);
+    }
 }

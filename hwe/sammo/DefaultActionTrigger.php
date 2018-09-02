@@ -9,6 +9,10 @@ trait DefaultActionTrigger{
         return [$score, $cost, $successRate, $failRate];
     }
 
+    public function onCalcSabotageProp(float $successRate):float{
+        return $successRate;
+    }
+
     public function onPreGeneralStatUpdate(General $general, string $statName, $value){
         return $value;
     }
