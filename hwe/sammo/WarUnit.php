@@ -17,8 +17,6 @@ class WarUnit{
 
     protected $isAttacker = false;
 
-    protected $updatedVar = [];
-
     protected $currPhase = 0;
     protected $prePhase = 0;
 
