@@ -104,7 +104,7 @@ uasort($troops, function($lhs, $rhs){
     <?php elseif($me['troop'] == 0): ?>
         <input type=submit name=btn value='부 대 가 입'>
     <?php else: ?>
-        <input type=submit name=btn value='부 대 탈 퇴' onclick='return confirm(\"정말 부대를 탈퇴하시겠습니까?\")'>
+        <input type=submit name=btn value='부 대 탈 퇴' onclick='return confirm("정말 부대를 탈퇴하시겠습니까?")'>
     <?php endif;?>
     </td></tr></tfoot>
     <tbody>
