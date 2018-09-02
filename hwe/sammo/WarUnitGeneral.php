@@ -971,10 +971,7 @@ class WarUnitGeneral extends WarUnit{
      * @param \MeekroDB $db
      */
     function applyDB($db):bool{
-        $updateVals = [];
-        foreach(array_keys($this->updatedVar) as $key){
-            $updateVals[$key] = $this->raw[$key];
-        }
+        $updateVals = $this->getUpdatedValues();
 
         if(!$updateVals){
             return false;

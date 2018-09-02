@@ -2,6 +2,8 @@
 namespace sammo;
 
 class WarUnit{
+    use LazyVarUpdater;
+
     protected $raw;
     protected $rawNation;
 
@@ -54,74 +56,8 @@ class WarUnit{
         return $this->logActivatedSkill;
     }
 
-    function getRaw():array{
-        return $this->raw;
-    }
-
     function getRawNation():array{
         return $this->rawNation;
-    }
-
-    function getVar(string $key){
-        return $this->raw[$key];
-    }
-
-    function updateVar(string $key, $value){
-        if($this->raw[$key] === $value){
-            return;
-        }
-        $this->raw[$key] = $value;
-        $this->updatedVar[$key] = true;
-    }
-
-    function updateVarWithLimit(string $key, $value, $min = null, $max = null){
-        if($min !== null && $value < $min){
-            $value = $min;
-        }
-        if($max !== null && $value > $max){
-            $value = $max;
-        }
-        $this->updateVar($key, $value);
-    }
-
-    function increaseVar(string $key, $value)
-    {
-        if($value === 0){
-            return;
-        }
-        $this->raw[$key] += $value;
-        $this->updatedVar[$key] = true;
-    }
-
-    function increaseVarWithLimit(string $key, $value, $min = null, $max = null){
-        $targetValue = $this->raw[$key] + $value;
-        if($min !== null && $targetValue < $min){
-            $targetValue = $min;
-        }
-        if($max !== null && $targetValue > $max){
-            $targetValue = $max;
-        }
-        $this->updateVar($key, $targetValue);
-    }
-
-    function multiplyVar(string $key, $value)
-    {
-        if($value === 1){
-            return;
-        }
-        $this->raw[$key] *= $value;
-        $this->updatedVar[$key] = true;
-    }
-
-    function multiplyVarWithLimit(string $key, $value, $min = null, $max = null){
-        $targetValue = $this->raw[$key] * $value;
-        if($min !== null && $targetValue < $min){
-            $targetValue = $min;
-        }
-        if($max !== null && $targetValue > $max){
-            $targetValue = $max;
-        }
-        $this->updateVar($key, $targetValue);
     }
 
     function getNationVar(string $key){
@@ -415,15 +351,8 @@ class WarUnit{
         $this->getLogger()->pushBattleResultTemplate($this, $this->getOppose());
     }
 
-    function applyDB($db):bool{
-        throw new NotInheritedMethodException();
-    }
-
-
     function criticalDamage():float{
         //전특, 병종에 따라 필살 데미지가 달라질지도 모르므로 static 함수는 아닌 것으로
         return Util::randRange(1.3, 2.0);
     }
-
-
 }
