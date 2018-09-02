@@ -56,6 +56,9 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
         'tnmt'=>$tnmt
     ], 'owner=%i', $userID);
 
+    $me['mode'] = $mode;
+    $me['tnmt'] = $tnmt;
+
     if($me['npc'] == 1 && $detachNPC){
         $turnterm = $gameStor->turnterm;
 
