@@ -6,7 +6,6 @@ use \sammo\General;
 class che_도가 implements iActionTrigger{
     use \sammo\DefaultActionTrigger;
 
-    static $id = 6;
     static $name = '도가';
     static $info = '';
     static $pros = '인구↑';

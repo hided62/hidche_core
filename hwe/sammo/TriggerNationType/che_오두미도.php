@@ -6,11 +6,19 @@ use \sammo\General;
 class che_오두미도 implements iActionTrigger{
     use \sammo\DefaultActionTrigger;
 
-    static $id = 8;
-    static $name = '중립';
+    static $name = '오두미도';
     static $info = '';
     static $pros = '쌀수입↑ 인구↑';
     static $cons = '기술↓ 수성↓ 내정↓';
 
+
+    public function onCalcDomesticTurnScore(string $turnType, float $score, float $cost, float $successRate, float $failRate):array{
+        if($turnType == 'agri' || $turnType == 'comm'){
+            $score *= 0.9;
+            $cost *= 1.2;
+        }
+        
+        return [$score, $cost, $successRate, $failRate];
+    }
 
 }

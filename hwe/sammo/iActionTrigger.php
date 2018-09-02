@@ -11,7 +11,7 @@ interface iActionTrigger{
 
     //TODO: 능력치는?
     public function onPreTurnExecute(General $general, ?array $nation):array;
-    public function onCalcDomesticTurnScore(General $general, string $turnType, float $score, float $cost, float $successRate, float $failRate):array;
+    public function onCalcDomesticTurnScore(string $turnType, float $score, float $cost, float $successRate, float $failRate):array;
 
     public function onPreGeneralStatUpdate(General $general, string $statName, $value);
 

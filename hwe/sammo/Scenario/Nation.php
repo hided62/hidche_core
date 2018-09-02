@@ -27,7 +27,7 @@ class Nation{
         int $rice = 2000, 
         string $infoText = '국가 설명', 
         int $tech = 0, 
-        string $type = '유가', 
+        ?string $type = null, 
         int $nationLevel = 0, 
         array $cities = []
     ){

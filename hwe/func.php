@@ -31,14 +31,6 @@ require_once('func_command.php');
 function getNationStaticInfo($nationID, $forceRefresh=false)
 {
     static $nationList = null;
-    static $freeNation = [
-        'nation'=>0,
-        'name'=>'재야',
-        'color'=>'#000000',
-        'type'=>0,
-        'level'=>0,
-        'capital'=>0
-    ];
 
     if ($forceRefresh) {
         $nationList = null;
@@ -48,7 +40,14 @@ function getNationStaticInfo($nationID, $forceRefresh=false)
        return null;
     }
     if($nationID === 0){
-        return $freeNation;
+        return [
+            'nation'=>0,
+            'name'=>'재야',
+            'color'=>'#000000',
+            'type'=>GameConst::$neutralNationType,
+            'level'=>0,
+            'capital'=>0
+        ];
     }
 
     if($nationList === null){

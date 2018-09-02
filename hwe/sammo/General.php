@@ -6,7 +6,6 @@ class General{
     use LazyVarUpdater;
 
     protected $raw = [];
-    protected $rawNation;
 
     protected $logger;
 
@@ -14,13 +13,15 @@ class General{
     protected $logActivatedSkill = [];
     protected $isFinished = false;
 
+    protected $nationType;
+
     public function __construct(array $raw, int $year, int $month){
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
-        if($raw['nation']){
-            $staticNation = getNationStaticInfo($raw['nation']);
-            setLeadershipBonus($raw, $staticNation['level']);
-        }
+
+        $staticNation = getNationStaticInfo($raw['nation']);
+        setLeadershipBonus($raw, $staticNation['level']);
         $this->raw = $raw;
+
 
         $this->logger = new ActionLogger(
             $this->getVar('no'), 
@@ -29,6 +30,9 @@ class General{
             $month,
             false
         );
+
+        $nationTypeClass = getNationTypeClass($staticNation['type']);
+        $this->nationType = new $nationTypeClass;
     }
 
     protected function clearActivatedSkill(){
