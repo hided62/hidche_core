@@ -881,3 +881,8 @@ function newColor($color) : string {
 function backColor($color) : string {
     return newColor($color);
 }
+
+
+function getDomesticExpLevelBonus(int $expLevel):float{
+    return 1 + $expLevel / 500;
+}
