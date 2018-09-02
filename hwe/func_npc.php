@@ -205,7 +205,7 @@ function processAI($no) {
     $result = MYDB_query($query, $connect) or Error("processAI02 ".MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,level,tech,gold,rice,trust,type,color,name,war from nation where nation='{$general['nation']}'";
+    $query = "select nation,level,tech,gold,rice,rate,type,color,name,war from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error("processAI03 ".MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result)??[
         'nation'=>0,
