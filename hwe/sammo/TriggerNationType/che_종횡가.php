@@ -12,7 +12,12 @@ class che_종횡가 implements iActionTrigger{
     static $cons = '금수입↓ 내정↓';
 
     public function onCalcDomesticTurnScore(string $turnType, float $score, float $cost, float $successRate, float $failRate):array{
-        if($turnType == 'agri' || $turnType == 'comm'){
+        if($turnType == 'def' || $turnType == 'wall'){
+            $score *= 1.1;
+            $cost *= 0.8;
+        }
+        
+        else if($turnType == 'agri' || $turnType == 'comm'){
             $score *= 0.9;
             $cost *= 1.2;
         }

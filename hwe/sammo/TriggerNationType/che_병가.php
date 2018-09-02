@@ -16,6 +16,15 @@ class che_병가 implements iActionTrigger{
             $score *= 1.1;
             $cost *= 0.8;
         }
+        else if($turnType == 'def' || $turnType == 'wall'){
+            $score *= 1.1;
+            $cost *= 0.8;
+        }
+        
+        else if($turnType == 'trust' || $turnType == 'pop'){
+            $score *= 0.9;
+            $cost *= 1.2;
+        }
         
         return [$score, $cost, $successRate, $failRate];
     }

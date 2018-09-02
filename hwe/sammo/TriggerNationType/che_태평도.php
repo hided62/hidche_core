@@ -12,7 +12,16 @@ class che_태평도 implements iActionTrigger{
     static $cons = '기술↓ 수성↓';
 
     public function onCalcDomesticTurnScore(string $turnType, float $score, float $cost, float $successRate, float $failRate):array{
-        if($turnType == 'tech'){
+        if($turnType == 'trust' || $turnType == 'pop'){
+            $score *= 1.1;
+            $cost *= 0.8;
+        }
+
+        else if($turnType == 'tech'){
+            $score *= 0.9;
+            $cost *= 1.2;
+        }
+        else if($turnType == 'def' || $turnType == 'wall'){
             $score *= 0.9;
             $cost *= 1.2;
         }

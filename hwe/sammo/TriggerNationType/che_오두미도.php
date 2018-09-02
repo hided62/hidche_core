@@ -21,6 +21,10 @@ class che_오두미도 implements iActionTrigger{
             $score *= 0.9;
             $cost *= 1.2;
         }
+        else if($turnType == 'def' || $turnType == 'wall'){
+            $score *= 0.9;
+            $cost *= 1.2;
+        }
         
         return [$score, $cost, $successRate, $failRate];
     }

@@ -16,6 +16,10 @@ class che_도가 implements iActionTrigger{
             $score *= 0.9;
             $cost *= 1.2;
         }
+        else if($turnType == 'secu'){
+            $score *= 0.9;
+            $cost *= 1.2;
+        }
         
         return [$score, $cost, $successRate, $failRate];
     }

@@ -16,6 +16,10 @@ class che_유가 implements iActionTrigger{
             $score *= 1.1;
             $cost *= 0.8;
         }
+        else if($turnType == 'trust' || $turnType == 'pop'){
+            $score *= 1.1;
+            $cost *= 0.8;
+        }
         
         return [$score, $cost, $successRate, $failRate];
     }
