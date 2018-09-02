@@ -399,7 +399,7 @@ foreach($generalsFormat as $general){
     </tr>
     <tr>
         <td align=center class=bg1>민심</td>
-        <td align=center><?=$city['rate']?></td>
+        <td align=center><?=round($city['trust'], 1)?></td>
         <td align=center class=bg1>시세</td>
         <td align=center><?=$city['trade']?>%</td>
         <td align=center class=bg1>인구</td>

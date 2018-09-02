@@ -10,7 +10,7 @@ class ChangeCity extends \sammo\Event\Action{
         'agri'=>true,
         'comm'=>true,
         'secu'=>true,
-        'rate'=>true,
+        'trust'=>true,
         'def'=>true,
         'wall'=>true
     ];
@@ -49,8 +49,8 @@ class ChangeCity extends \sammo\Event\Action{
                 throw new \InvalidArgumentException('int, float, string이어야 합니다.');
             }
 
-            if($key == 'rate'){
-                $queries['rate'] = $this->genSQLRate($value);
+            if($key == 'trust'){
+                $queries['trust'] = $this->genSQLTrust($value);
                 continue;
             }
 
@@ -60,13 +60,13 @@ class ChangeCity extends \sammo\Event\Action{
         $this->queries = $queries;
     }
 
-    private function genSQLRate($value){
+    private function genSQLTrust($value){
         //민심은 max값이 100으로 고정이므로 처리 방식이 다름.
         if(is_float($value)){
             if($value < 0){
                 throw new \InvalidArgumentException('음수를 곱할 수 없습니다.');
             }
-            return DB::db()->sqleval('least(100, ROUND(`rate` * %d, 0))', $value);
+            return DB::db()->sqleval('least(100, `trust` * %d)', $value);
         }
         if(is_int($value)){
             return DB::db()->sqleval('%i', Util::valueFit($value, 0, 100));
@@ -84,7 +84,7 @@ class ChangeCity extends \sammo\Event\Action{
             if($op == '/' && $value == 0){
                 throw new \InvalidArgumentException('0으로 나눌 수 없습니다.');
             }
-            return DB::db()->sqleval('least(100, greatest(0, ROUND(`rate` %l %d, 0)))', $op, $value);
+            return DB::db()->sqleval('least(100, greatest(0, `trust` %l %d, 0)))', $op, $value);
         }
         
         throw new \InvalidArgumentException('알 수 없는 패턴입니다.');

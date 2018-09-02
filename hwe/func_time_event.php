@@ -150,7 +150,7 @@ function popIncrease() {
         $pop = $city['pop'];
         if($city['nation'] == 0) {
             $pop = $city['pop'];  // 공백지는 증가하지 않게
-            $cityrate = 50;
+            $citytrust = 50;
 
             $ratio = 0.99;   // 공백지는 수비 빼고 약간씩 감소
             $agri = intval($city['agri'] * $ratio);
@@ -181,10 +181,9 @@ function popIncrease() {
             $pop = $city['pop'] + (int)($city['pop'] * $ratio) + 5000;  // 기본 5000명은 증가
 
             $ratio = round($ratio*100, 2);
-            $cityrate = $city['rate'];
-            $cityrate = $cityrate + (20 - $rate[$city['nation']]);
-            if($cityrate > 100) { $cityrate = 100; }
-            if($cityrate < 0) { $cityrate = 0; }
+            $citytrust = $city['trust'];
+            $citytrust = $citytrust + (20 - $rate[$city['nation']]);
+            $citytrust = Util::valueFit($citytrust, 0, 100);
         }
         if($pop > $city['pop2']) { $pop = $city['pop2']; }
         if($pop < 0) { $pop = 0; }
@@ -195,7 +194,7 @@ function popIncrease() {
         if($wall > $city['wall2']) { $wall = $city['wall2']; }
 
         //시세
-        $query = "update city set pop='$pop',rate='$cityrate',agri='$agri',comm='$comm',secu='$secu',def='$def',wall='$wall' where city='{$city['city']}'";
+        $query = "update city set pop='$pop',trust='$citytrust',agri='$agri',comm='$comm',secu='$secu',def='$def',wall='$wall' where city='{$city['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 }
@@ -243,7 +242,7 @@ function getGoldIncome($nationNo, $rate, $admin_rate, $type) {
         $city = MYDB_fetch_array($cityresult);
 
         //민충 0~100 : 50~100 수입
-        $ratio = $city['rate'] / 2 + 50;
+        $ratio = $city['trust'] / 2 + 50;
         $tax1 = ($city['pop'] * $city['comm'] / $city['comm2'] * $ratio / 1000) / 3;
         $tax1 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
         //도시 관직 추가 세수
@@ -487,7 +486,7 @@ function getRiceIncome($nationNo, $rate, $admin_rate, $type) {
         $city = MYDB_fetch_array($cityresult);
 
         //민충 0~100 : 50~100 수입
-        $ratio = $city['rate'] / 2 + 50;
+        $ratio = $city['trust'] / 2 + 50;
         $tax1 = ($city['pop'] * $city['agri'] / $city['agri2'] * $ratio / 1000) / 3;
         $tax2 = $city['def'] * $city['wall'] / $city['wall2'] / 3;
         $tax1 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
@@ -706,7 +705,7 @@ function disaster() {
                 $ratio = 15 * $disasterratio[$i];
                 $ratio = (80 + $ratio) / 100.0; // 치안률 따라서 80~95%
         
-                $query = "update city set state='$state',pop=pop*{$ratio},rate=rate*{$ratio},agri=agri*{$ratio},comm=comm*{$ratio},secu=secu*{$ratio},def=def*{$ratio},wall=wall*{$ratio} where city='$disastercity[$i]'";
+                $query = "update city set state='$state',pop=pop*{$ratio},trust=trust*{$ratio},agri=agri*{$ratio},comm=comm*{$ratio},secu=secu*{$ratio},def=def*{$ratio},wall=wall*{$ratio} where city='$disastercity[$i]'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         
                 SabotageInjury($disastercity[$i], 1);
@@ -717,19 +716,19 @@ function disaster() {
                 $ratio = (101 + $ratio) / 100.0; // 치안률 따라서 101~105%
         
                 $city = getCity($disastercity[$i]);
-                $city['pop'] *= $ratio;   $city['rate'] *= $ratio;  $city['agri'] *= $ratio;
+                $city['pop'] *= $ratio;   $city['trust'] *= $ratio;  $city['agri'] *= $ratio;
                 $city['comm'] *= $ratio;  $city['secu'] *= $ratio;  $city['def'] *= $ratio;
                 $city['wall'] *= $ratio;
         
                 if($city['pop'] > $city['pop2']) { $city['pop'] = $city['pop2']; }
-                if($city['rate'] > 100) { $city['rate'] = 100; }
+                if($city['trust'] > 100) { $city['trust'] = 100; }
                 if($city['agri'] > $city['agri2']) { $city['agri'] = $city['agri2']; }
                 if($city['comm'] > $city['comm2']) { $city['comm'] = $city['comm2']; }
                 if($city['secu'] > $city['secu2']) { $city['secu'] = $city['secu2']; }
                 if($city['def'] > $city['def2']) { $city['def'] = $city['def2']; }
                 if($city['wall'] > $city['wall2']) { $city['wall'] = $city['wall2']; }
         
-                $query = "update city set state='$state',pop='{$city['pop']}',rate='{$city['rate']}',agri='{$city['agri']}',comm='{$city['comm']}',secu='{$city['secu']}',def='{$city['def']}',wall='{$city['wall']}' where city='$disastercity[$i]'";
+                $query = "update city set state='$state',pop='{$city['pop']}',trust='{$city['trust']}',agri='{$city['agri']}',comm='{$city['comm']}',secu='{$city['secu']}',def='{$city['def']}',wall='{$city['wall']}' where city='$disastercity[$i]'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         }

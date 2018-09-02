@@ -240,7 +240,7 @@ class CityConstBase{
     }
 
     protected static $buildInitCommon = [
-        'rate'=>50,
+        'trust'=>50,
         'trade'=>100,
         'gen1'=>0,
         'gen2'=>0,

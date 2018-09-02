@@ -344,7 +344,7 @@ function preUpdateMonthly() {
     //보급선 체크
     checkSupply();
     //미보급도시 10% 감소
-    $query = "update city set pop=pop*0.9,rate=rate*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,def=def*0.9,wall=wall*0.9 where supply='0'";
+    $query = "update city set pop=pop*0.9,trust=trust*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,def=def*0.9,wall=wall*0.9 where supply='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //미보급도시 장수 5% 감소
     $query = "select city,nation from city where supply='0'";
@@ -357,7 +357,7 @@ function preUpdateMonthly() {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     //민심30이하 공백지 처리
-    $query = "select city,name,gen1,gen2,gen3 from city where rate<='30' and supply='0'";
+    $query = "select city,name,gen1,gen2,gen3 from city where trust<=30 and supply='0'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $cityCount = MYDB_num_rows($result);
     for($i=0; $i < $cityCount; $i++) {
@@ -371,7 +371,7 @@ function preUpdateMonthly() {
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
     //민심30이하 공백지 처리
-    $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='{}',term=0,front=0 where rate<='30' and supply='0'";
+    $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='{}',term=0,front=0 where trust<=30 and supply='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
     //접률감소
@@ -786,7 +786,7 @@ function checkMerge() {
         $query = "update troop set nation='{$you['nation']}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 통합국 모든 도시 5% 감소
-        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='{$you['nation']}'";
+        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,trust=trust*0.95,def=def*0.95,wall=wall*0.95 where nation='{$you['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 외교 삭제
         $query = "delete from diplomacy where me='{$me['nation']}' or you='{$me['nation']}'";
@@ -900,10 +900,10 @@ function checkSurrender() {
         $query = "update nation set gold=gold+'{$mynation['gold']}',rice=rice+'{$mynation['rice']}',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='{$younation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //합병 당한국 모든 도시 10%감소
-        $query = "update city set pop=pop*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,rate=rate*0.9,def=def*0.9,wall=wall*0.9 where nation='{$me['nation']}'";
+        $query = "update city set pop=pop*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,trust=trust*0.9,def=def*0.9,wall=wall*0.9 where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //합병 시도국 모든 도시 5%감소
-        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,rate=rate*0.95,def=def*0.95,wall=wall*0.95 where nation='{$you['nation']}'";
+        $query = "update city set pop=pop*0.95,agri=agri*0.95,comm=comm*0.95,secu=secu*0.95,trust=trust*0.95,def=def*0.95,wall=wall*0.95 where nation='{$you['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         //국가 삭제
 

@@ -967,7 +967,7 @@ function process_65(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //성 공백지로
-        $query = "update city set pop=pop*0.1,rate=50,agri=agri*0.1,comm=comm*0.1,secu=secu*0.1,nation='0',front='0',gen1='0',gen2='0',gen3='0',conflict='{}' where city='{$destcity['city']}'";
+        $query = "update city set pop=pop*0.1,trust=50,agri=agri*0.1,comm=comm*0.1,secu=secu*0.1,nation='0',front='0',gen1='0',gen2='0',gen3='0',conflict='{}' where city='{$destcity['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //전장수 10% 삭감

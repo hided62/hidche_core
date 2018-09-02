@@ -596,7 +596,7 @@ jQuery(function($){
             def:1000,
             wall:1000,
             
-            rate:100,
+            trust:100,
             
             pop2:600000,
             agri2:12000,

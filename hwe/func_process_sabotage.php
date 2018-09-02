@@ -144,7 +144,7 @@ function process_32(&$general) {
 
     $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
-    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,rate FROM city WHERE city=%i',$destCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,trust FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
 
     $srcNationID = $general['nation'];
@@ -278,7 +278,7 @@ function process_33(&$general) {
 
     $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
-    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,rate FROM city WHERE city=%i',$destCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,trust FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
 
     $srcNationID = $general['nation'];
@@ -449,7 +449,7 @@ function process_34(&$general) {
 
     $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
-    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,rate FROM city WHERE city=%i',$destCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,trust FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
 
     $srcNationID = $general['nation'];
@@ -587,7 +587,7 @@ function process_35(&$general) {
 
     $dist = searchDistance($srcCityID, 5, false);
     $srcCity = $db->queryFirstRow('SELECT city,nation,supply FROM city WHERE city=%i', $srcCityID);
-    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,rate FROM city WHERE city=%i',$destCityID);
+    $destCity = $db->queryFirstRow('SELECT city,name,level,nation,secu,secu2,supply,agri,comm,def,wall,trust FROM city WHERE city=%i',$destCityID);
     $destCityName = $destCity['name']??null;
 
     $srcNationID = $general['nation'];
@@ -668,23 +668,23 @@ function process_35(&$general) {
 
     // 선동 최대 10
     $secuAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['secu']);
-    $rateAmount = Util::valueFit(
-        Util::round(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) / 50),
+    $trustAmount = Util::valueFit(
+        Util::randRange(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) / 50,
         null, 
-        $destCity['rate']
+        $destCity['trust']
     );
     $destCity['secu'] -= $secuAmount;
-    $destCity['rate'] -= $rateAmount;
+    $destCity['trust'] -= $trustAmount;
     
     $db->update('city', [
         'state'=>32,
         'secu'=>$destCity['secu'],
-        'rate'=>$destCity['rate']
+        'trust'=>$destCity['trust']
     ], 'city=%i', $destCityID);
 
     $injuryCount = SabotageInjury($destCityID);
 
-    $logger->pushGeneralActionLog("도시의 치안이 <C>{$secuAmount}</>, 민심이 <C>{$rateAmount}</>만큼 감소하고, 장수 <C>{$injuryCount}</>명이 부상 당했습니다.", ActionLogger::PLAIN);
+    $logger->pushGeneralActionLog("도시의 치안이 <C>{$secuAmount}</>, 민심이 <C>".round($trustAmount, 1)."</>만큼 감소하고, 장수 <C>{$injuryCount}</>명이 부상 당했습니다.", ActionLogger::PLAIN);
 
     $exp = Util::randRangeInt(201, 300);
     $exp *= getCharExpMultiplier($general['personal']);

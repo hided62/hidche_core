@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use Constraint\Constraint;
+
 /**
  * 장수의 통솔을 받아옴
  * 
@@ -195,29 +197,45 @@ function process_1(array $general, int $type){
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    [$startYear, $year, $month, $develCost] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'develcost']);
+    $date = substr($general['turntime'],11,5);
 
     if($type == 1){
         $cityKey = 'agri';
-        $keyName = '농지 개간';
+        $actionName = '농지 개간';
     }
     else{
         $cityKey = 'comm';
-        $keyName = '상업 투자';
+        $actionName = '상업 투자';
     }
+
+    $reqGold = $develCost;
+
+    [$startYear, $year, $month, $develCost] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'develcost']);
 
     $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general['city']);
     $nation = getNationStaticInfo($general['nation']);
     $lbonus = setLeadershipBonus($general, $nation['level']);
+
+    $logger = new ActionLogger($general['id'], $general['nation'], $year, $month);
 
     $constraints = [
         ['NoNeutral'], 
         ['NoWanderingNation'],
         ['OccupiedCity'],
         ['SuppliedCity'],
-        ['ReqGeneralGold', $develCost],
-        ['RemainCityCapacity', [$cityKey, $keyName]]
+        ['ReqGeneralGold', $reqGold],
+        ['RemainCityCapacity', [$cityKey, $actionName]]
     ];
+    $failReason =Constraint::testAll($constraints, [
+        'nation'=>$nation,
+        'city'=>$city,
+        'general'=>$general,
+    ]);
+
+    if($failReason !== null){
+        $logger->pushGeneralActionLog("{$failReason} {$sabotageName} 실패. <1>{$date}</>");
+        return;
+    }
 
 }
 
@@ -258,10 +276,10 @@ function process_1_old(&$general, $type) {
         $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$btype} 충분합니다. $dtype 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
-        if($city['rate'] < GameConst::$develrate) { $city['rate'] = GameConst::$develrate; }
-        $rate = $city['rate'] / 100;
+        if($city['trust'] < GameConst::$develrate) { $city['trust'] = GameConst::$develrate; }
+        $trust = $city['trust'] / 100;
 
-        $score = getGeneralIntel($general, true, true, true, false) * $rate;
+        $score = getGeneralIntel($general, true, true, true, false) * $trust;
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -281,7 +299,7 @@ function process_1_old(&$general, $type) {
         if($type == 1 && $general['special'] == 1) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
         if($type == 2 && $general['special'] == 2) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
         //민심 반영
-        if($city['rate'] < 80) { $r['succ'] *= $city['rate'] / 80; }
+        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
         //버그방지
         if($score < 1) $score = 1;
 
@@ -372,7 +390,7 @@ function process_3(&$general) {
         // 특기보정 : 발명
         if($general['special'] == 3) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
         //민심 반영
-        if($city['rate'] < 80) { $r['succ'] *= $city['rate'] / 80; }
+        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -450,12 +468,12 @@ function process_4(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 주민 선정 실패. <1>$date</>";
     } elseif($general['rice'] < $admin['develcost']*2) {
         $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 주민 선정 실패. <1>$date</>";
-    } elseif($city['rate'] >= 100) {
+    } elseif($city['trust'] >= 100) {
         $log[] = "<C>●</>{$admin['month']}월:민심은 충분합니다. 주민 선정 실패. <1>$date</>";
     } else {
         $score = getGeneralLeadership($general, true, true, true) / 10;
-        $score = $score * (100 + $general['explevel']/5)/100;
-        $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
+        $score *= (100 + $general['explevel']/5)/100;
+        $score *= (80 + rand() % 41)/100;   // 80 ~ 120%
 
         // 국가보정
         if($nation['type'] == 2 || $nation['type'] == 4 || $nation['type'] == 7 || $nation['type'] == 10) { $score *= 1.1; $admin['develcost'] *= 0.8; }
@@ -476,13 +494,12 @@ function process_4(&$general) {
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
-            $log[] = "<C>●</>{$admin['month']}월:선정을 <span class='ev_failed'>실패</span>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:선정을 <span class='ev_failed'>실패</span>하여 민심이 <C>".round($score, 1)."</> 상승했습니다. <1>$date</>";
         } elseif($r['succ'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
-            $log[] = "<C>●</>{$admin['month']}월:선정을 <S>성공</>하여 민심이 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:선정을 <S>성공</>하여 민심이 <C>".round($score, 1)."</> 상승했습니다. <1>$date</>";
         } else {
-            $score = Util::round($score);
-            $log[] = "<C>●</>{$admin['month']}월:민심이 <C>$score</> 상승했습니다. <1>$date</>";
+            $log[] = "<C>●</>{$admin['month']}월:민심이 <C>".round($score, 1)."</> 상승했습니다. <1>$date</>";
         }
 
         $exp = $score * 7;
@@ -492,10 +509,10 @@ function process_4(&$general) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
-        $score += $city['rate'];
+        $score += $city['trust'];
         if($score > 100) { $score = 100; }
         // 민심 상승
-        $query = "update city set rate='$score' where city='{$general['city']}'";
+        $query = "update city set trust='$score' where city='{$general['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 군량 하락 내정보다 2배   지력경험    경험, 공헌 상승
         $general['rice'] -= $admin['develcost'] * 2;
@@ -547,10 +564,10 @@ function process_5(&$general, $type) {
         $log[] = "<C>●</>{$admin['month']}월:{$dtype}는 충분합니다. $dtype 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
-        if($city['rate'] < GameConst::$develrate) { $city['rate'] = GameConst::$develrate; }
-        $rate = $city['rate'] / 100;
+        if($city['trust'] < GameConst::$develrate) { $city['trust'] = GameConst::$develrate; }
+        $trust = $city['trust'] / 100;
 
-        $score = getGeneralPower($general, true, true, true, false) * $rate;
+        $score = getGeneralPower($general, true, true, true, false) * $trust;
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -569,7 +586,7 @@ function process_5(&$general, $type) {
         if($type == 1 && $general['special'] == 11) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
         if($type == 2 && $general['special'] == 10) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
         //민심 반영
-        if($city['rate'] < 80) { $r['succ'] *= $city['rate'] / 80; }
+        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -736,10 +753,10 @@ function process_8(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:치안은 충분합니다. $dtype 강화 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
-        if($city['rate'] < GameConst::$develrate) { $city['rate'] = GameConst::$develrate; }
-        $rate = $city['rate'] / 100;
+        if($city['trust'] < GameConst::$develrate) { $city['trust'] = GameConst::$develrate; }
+        $trust = $city['trust'] / 100;
 
-        $score = getGeneralPower($general, true, true, true, false) * $rate;
+        $score = getGeneralPower($general, true, true, true, false) * $trust;
         $score = $score * (100 + $general['explevel']/5)/100;
         $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
 
@@ -757,7 +774,7 @@ function process_8(&$general) {
         // 특기보정 : 통찰
         if($general['special'] == 12) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
         //민심 반영
-        if($city['rate'] < 80) { $r['succ'] *= $city['rate'] / 80; }
+        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -1005,7 +1022,7 @@ function process_11(&$general, $type) {
         $actLog->pushGeneralActionLog("주민이 모자랍니다. $dtype 실패. <1>$date</>");
         return;
     }
-    if($city['rate'] < 20) {
+    if($city['trust'] < 20) {
         $actLog->pushGeneralActionLog("민심이 낮아 주민들이 도망갑니다. $dtype 실패. <1>$date</>");
         return;
     }
@@ -1027,16 +1044,16 @@ function process_11(&$general, $type) {
     $general['gold'] -= $cost;
     // 주민수 감소        // 민심 감소
     if($type === '징병') {
-        $city['rate'] -= Util::round(($crew / $city['pop'])*100); 
+        $city['trust'] -= ($crew / $city['pop'])*100; 
     }
     else {
-        $city['rate'] -= Util::round(($crew / 2 / $city['pop'])*100); 
+        $city['trust'] -= ($crew / 2 / $city['pop'])*100; 
     }
-    if($city['rate'] < 0) { $city['rate'] = 0; }
+    if($city['trust'] < 0) { $city['trust'] = 0; }
 
     $db->update('city', [
         'pop'=>$db->sqleval('pop-%i', $crew),
-        'rate'=>$city['rate']
+        'trust'=>$city['trust']
     ], 'city = %i', $general['city']);
 
     // 통솔경험, 병종 변경, 병사수 변경, 훈련치 변경, 사기치 변경, 자금 군량 하락, 공헌도, 명성 상승
@@ -1689,13 +1706,13 @@ function process_31(&$general) {
             $josaUl = JosaUtil::pick($city['name'], '을');
             $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>{$josaUl} 살피는 것 같습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 소문만 들을 수 있었습니다. <1>$date</>";
-            $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
+            $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:".round($city['trust'], 1).", 장수:$gencount, 병력:$crew";
         } elseif($dist[$destination] == 2) {
             $josaUl = JosaUtil::pick($city['name'], '을');
             $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>{$josaUl} 살피는 것 같습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<G><b>{$city['name']}</b></>의 어느정도 정보를 얻었습니다. <1>$date</>";
             $log[] = "【<M>첩보</>】농업:{$city['agri']}, 상업:{$city['comm']}, 치안:{$city['secu']}, 수비:{$city['def']}, 성벽:{$city['wall']}";
-            $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
+            $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:".round($city['trust'], 1).", 장수:$gencount, 병력:$crew";
         } else {
             $josaUl = JosaUtil::pick($city['name'], '을');
             $alllog[] = "<C>●</>{$admin['month']}월:누군가가 <G><b>{$city['name']}</b></>{$josaUl} 살피는 것 같습니다.";
@@ -1711,7 +1728,7 @@ function process_31(&$general) {
             $msg = [];
             
             $log[] = "【<M>첩보</>】농업:{$city['agri']}, 상업:{$city['comm']}, 치안:{$city['secu']}, 수비:{$city['def']}, 성벽:{$city['wall']}";
-            $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:{$city['rate']}, 장수:$gencount, 병력:$crew";
+            $log[] = "【<G>{$city['name']}</>】주민:{$city['pop']}, 민심:".round($city['trust'], 1).", 장수:$gencount, 병력:$crew";
 
             if($general['nation'] != 0 && $city['nation'] != 0) {
                 $query = "select name,tech from nation where nation='{$city['nation']}'";

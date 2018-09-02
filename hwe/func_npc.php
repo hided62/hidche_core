@@ -5,12 +5,12 @@ function SetDevelop($genType, $no, $city, $tech) {
     $db = DB::db();
     $connect=$db->get();
 
-    $query = "select rate,pop/pop2*100 as po,comm/comm2*100 as co,def/def2*100 as de,wall/wall2*100 as wa,secu/secu2*100 as se,agri/agri2*100 as ag from city where city='$city'";
+    $query = "select trust,pop/pop2*100 as po,comm/comm2*100 as co,def/def2*100 as de,wall/wall2*100 as wa,secu/secu2*100 as se,agri/agri2*100 as ag from city where city='$city'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
     // 우선 선정
-    if($city['rate'] < 95) {
+    if($city['trust'] < 95) {
         $command = EncodeCommand(0, 0, 0, 4);    // 우선 선정
         
         $query = "update general set turn0='$command' where no='$no'";
@@ -201,11 +201,11 @@ function processAI($no) {
         return;
     }
 
-    $query = "select city,region,nation,level,path,rate,gen1,gen2,gen3,pop,supply,front from city where city='{$general['city']}'";
+    $query = "select city,region,nation,level,path,trust,gen1,gen2,gen3,pop,supply,front from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error("processAI02 ".MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,level,tech,gold,rice,rate,type,color,name,war from nation where nation='{$general['nation']}'";
+    $query = "select nation,level,tech,gold,rice,trust,type,color,name,war from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error("processAI03 ".MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result)??[
         'nation'=>0,
@@ -607,7 +607,7 @@ function processAI($no) {
         } elseif($dipState <= 1 || $isStart == 1) {
         //평시이거나 선포있어도 초반이면
             if($general['gold'] + $general['rice'] < 200) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달9
-            elseif($general['rice'] > 100 && $city['rate'] < 95) { $command = EncodeCommand(0, 0, 0, 4); } //우선 선정
+            elseif($general['rice'] > 100 && $city['trust'] < 95) { $command = EncodeCommand(0, 0, 0, 4); } //우선 선정
             elseif($general['gold'] < 100) {                                      //금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 $command = EncodeCommand(0, 1, $amount, 49);                    //팜
@@ -720,8 +720,8 @@ function processAI($no) {
 
         //전시일때
             if($general['gold'] + $general['rice'] < $resrc*2) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달
-            elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
-            elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] == 1) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
+            elseif($general['rice'] > $resrc && $city['trust'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
+            elseif($general['rice'] > $resrc && $city['trust'] < 50 && $city['front'] == 1) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['gold'] < $resrc || ($general['gold'] < $resrc *2 && $general['rice'] > $resrc * 6)) {                                   // 금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }// 팜

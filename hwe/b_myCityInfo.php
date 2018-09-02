@@ -86,7 +86,7 @@ switch ($type) {
     case  1: break;
     case  2: $query .= " order by pop desc"; break;
     case  3: $query .= " order by poprate desc"; break;
-    case  4: $query .= " order by rate desc"; break;
+    case  4: $query .= " order by trust desc"; break;
     case  5: $query .= " order by agri desc"; break;
     case  6: $query .= " order by comm desc"; break;
     case  7: $query .= " order by secu desc"; break;
@@ -152,7 +152,7 @@ for ($j=0; $j < $citycount; $j++) {
     </tr>
     <tr>
         <td align=center id=bg1>민심</td>
-        <td align=center>{$city['rate']}</td>
+        <td align=center>".round($city['trust'], 1)."</td>
         <td align=center id=bg1>시세</td>
         <td align=center>{$city['trade']}%</td>
         <td align=center id=bg1>인구</td>

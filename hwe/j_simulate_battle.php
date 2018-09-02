@@ -152,12 +152,12 @@ $cityCheck = [
     'required'=>[
         'city', 'nation', 'supply', 'name', 
         'pop', 'agri', 'comm', 'secu', 'def', 'wall', 
-        'rate', 'level',
+        'trust', 'level',
         'pop2', 'agri2', 'comm2', 'secu2', 'def2', 'wall2',
         'dead', 'state', 'gen1', 'gen2', 'gen3', 'conflict', 
     ],
     'numeric'=>[
-        'pop', 'agri', 'comm', 'secu', 'def', 'wall', 'rate', 'dead'
+        'pop', 'agri', 'comm', 'secu', 'def', 'wall', 'trust', 'dead'
     ],
     'integer'=>[
         'city', 'nation', 'supply',
@@ -167,7 +167,7 @@ $cityCheck = [
     'min'=>[
         ['def', 0],
         ['wall', 0],
-        ['rate', 0],
+        ['trust', 0],
         ['pop', 0],
         ['comm', 0],
         ['secu', 0],

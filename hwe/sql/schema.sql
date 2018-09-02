@@ -457,7 +457,7 @@ create table city (
   comm2  int(5) default 0,
   secu   int(5) default 0,
   secu2  int(5) default 0,
-  rate   int(3) default 0,
+  trust  float default 0,
   trade  int(3) default 100,
   dead   int(7) default 0,
   def    int(5) default 0,

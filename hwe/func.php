@@ -153,7 +153,7 @@ function cityInfo() {
     $nation = getNationStaticInfo($city['nation']);
 
     $pop  = $city['pop'] / $city['pop2'] * 100;
-    $rate = $city['rate'];
+    $trust = $city['trust'];
     $agri = $city['agri'] / $city['agri2'] * 100;
     $comm = $city['comm'] / $city['comm2'] * 100;
     $secu = $city['secu'] / $city['secu2'] * 100;
@@ -213,13 +213,13 @@ function cityInfo() {
         <td rowspan=2 style='text-align:center;' class='bg1'><b>주민</b></td>
         <td height=7 colspan=3>".bar($pop)."</td>
         <td rowspan=2 style='text-align:center;' class='bg1'><b>민심</b></td>
-        <td height=7>".bar($rate)."</td>
+        <td height=7>".bar($trust)."</td>
         <td rowspan=2 style='text-align:center;' class='bg1'><b>태수</b></td>
         <td rowspan=2 style='text-align:center;'>{$gen1['name']}</td>
     </tr>
     <tr>
         <td colspan=3 style='text-align:center;'>{$city['pop']}/{$city['pop2']}</td>
-        <td style='text-align:center;'>{$city['rate']}</td>
+        <td style='text-align:center;'>".round($city['trust'], 1)."</td>
     </tr>
     <tr>
         <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>농업</b></td>
