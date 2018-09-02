@@ -18,6 +18,9 @@ class SpecialityConst{
 
     const REQ_DEXTERITY = 0x4000;
 
+    const WEIGHT_NORM = 1;
+    const WEIGHT_PERCENT = 2;
+
     private $invDomestic = null;
     private $invWar = null;
 

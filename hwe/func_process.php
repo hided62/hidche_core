@@ -208,14 +208,16 @@ function process_1(array $rawGeneral, int $type){
         $actionName = '상업 투자';
     }
 
-    $reqGold = $develCost;
-
     [$startYear, $year, $month, $develCost] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'develcost']);
 
-    $general = new General($rawGeneral, $yera, $month);
+    $general = new General($rawGeneral, $year, $month);
     $logger = $general->getLogger();
 
-    
+    $nationTypeObj = $general->getNationTypeObj();
+    $generalLevelObj = $general->getGeneralLevelObj();
+
+    $reqGold = $nationTypeObj->onCalcDomestic($cityKey, 'cost', $develCost);
+    $reqGold = $generalLevelObj->onCalcDomestic($cityKey, 'cost', $develCost);
 
     $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general->getCityID());
 
@@ -244,6 +246,14 @@ function process_1(array $rawGeneral, int $type){
     $score *= $trust / 100;
     $score *= getDomesticExpLevelBonus($general['explevel']);
     $score *= Util::randRange(0.8, 1.2);
+    $score = $nationTypeObj->onCalcDomestic($cityKey, 'score', $score);
+    $score = $generalLevelObj->onCalcDomestic($cityKey, 'score', $score);
+
+    ['succ'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general, 2);
+    $successRatio = $naionTypeObj->onCalcDomestic($cityKey, 'success', $successRatio);
+    $successRatio = $generalLevelObj->onCalcDomestic($cityKey, 'success', $successRatio);
+    
+
 
 }
 

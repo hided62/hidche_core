@@ -6,6 +6,7 @@ class General{
     use LazyVarUpdater;
 
     protected $raw = [];
+    protected $rawCity = null;
 
     protected $logger;
 
@@ -14,13 +15,15 @@ class General{
     protected $isFinished = false;
 
     protected $nationType;
+    protected $levelObj;
 
-    public function __construct(array $raw, int $year, int $month){
+    public function __construct(array $raw, ?array $city, int $year, int $month){
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
 
         $staticNation = getNationStaticInfo($raw['nation']);
         setLeadershipBonus($raw, $staticNation['level']);
         $this->raw = $raw;
+        $this->rawCity = $city;
 
 
         $this->logger = new ActionLogger(
@@ -33,6 +36,7 @@ class General{
 
         $nationTypeClass = getNationTypeClass($staticNation['type']);
         $this->nationType = new $nationTypeClass;
+        $this->levelObj = new TriggerGeneralLevel($this->raw, $city);
     }
 
     protected function clearActivatedSkill(){
@@ -88,6 +92,14 @@ class General{
 
     function getLogger():ActionLogger{
         return $this->logger;
+    }
+
+    public function getNationTypeObj():iActionTrigger{
+        return $this->nationType;
+    }
+
+    public function getGeneralLevelObj():iActionTrigger{
+        return $this->levelObj;
     }
 
     //TODO: 장기적으로 General 클래스로 모두 옮겨와야함.
