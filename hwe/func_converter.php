@@ -6,17 +6,8 @@ namespace sammo;
  * Value Converter
  * 
  * Side effect 없이 값의 변환만을 수행하는 함수들의 모음.
+ * (단, autoload, 정적 변수 초기화는 허용)
  */
-
-function NationCharCall($call) {
-    static $invTable = [];
-    if(!$invTable){
-        foreach(getNationTypeList() as $typeID => [$name, $pros, $cons]){
-            $invTable[$name] = $typeID;
-        }
-    }
-    return $invTable[$call]??0;
-}
 
 function getCharacterList(){
     $infoText = [
@@ -223,16 +214,9 @@ function getSpecialInfo(?int $type):?string{
     return $infoText[$type][1]??null;
 }
 
-function getNationType(?int $type) {
-    if($type === null){
-        return '-';
-    }
-    static $cache = [];
-    if(\key_exists($type, $cache)){
-        return $cache[$type];
-    }
-
-    $text = getNationTypeList()[$type][0]??'-';
+function getNationType(?string $type) {
+    $nationClass = getNationTypeClass($type);
+    $text = $nationClass::$name;
     $text = join(' ', StringUtil::splitString($text));
     $cache[$type] = $text;
 
@@ -255,12 +239,31 @@ function getConnect($con) {
     return $conname;
 }
 
-function getNationType2(?int $type) {
-    if($type === null){
-        return '-';
-    }
-    [$name, $pros, $cons] = getNationTypeList()[$type]??['-', '', ''];
+function getNationType2(?string $type) {
+    $nationClass = getNationTypeClass($type);
+
+    [$name, $pros, $cons] = [$nationClass::$name, $nationClass::$pros, $nationClass::$cons];
     return "<font color=cyan>{$pros}</font> <font color=magenta>{$cons}</font>";
+}
+
+function getNationTypeClass(?string $type){
+    if($type === null){
+        $type = GameConst::$neutralNationType;
+    }
+
+    static $path = __NAMESPACE__.'\\TriggerNationType\\';
+    $nationClass = ($path.$type);
+
+    if(class_exists($nationClass)){
+        return $nationClass;
+    }
+
+    $nationClass = ($path.'che_'.$type);
+    if(class_exists($nationClass)){
+        return $nationClass;
+    }
+
+    new \InvalidArgumentException("{$type}은 올바른 국가 타입 클래스가 아님");
 }
 
 function getLevel($level, $nlevel=8) {

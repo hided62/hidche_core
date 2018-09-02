@@ -1315,19 +1315,10 @@ function command_46($turn, $command) {
 ?>
 </select>
 성향 : <select name=third size=1>
-    <option value=1 style=background-color:black;color:white;><?=getNationType(1)?></option>
-    <option value=2 style=background-color:black;color:white;><?=getNationType(2)?></option>
-    <option value=10 style=background-color:black;color:white;><?=getNationType(10)?></option>
-    <option value=3 style=background-color:black;color:white;><?=getNationType(3)?></option>
-    <option value=4 style=background-color:black;color:white;><?=getNationType(4)?></option>
-    <option value=5 style=background-color:black;color:white;><?=getNationType(5)?></option>
-    <option value=6 style=background-color:black;color:white;><?=getNationType(6)?></option>
-    <option value=7 style=background-color:black;color:white;><?=getNationType(7)?></option>
-    <option value=8 style=background-color:black;color:white;><?=getNationType(8)?></option>
-    <option selected value=9 style=background-color:black;color:white;><?=getNationType(9)?></option>
-    <option value=11 style=background-color:black;color:white;><?=getNationType(11)?></option>
-    <option value=12 style=background-color:black;color:white;><?=getNationType(12)?></option>
-    <option value=13 style=background-color:black;color:white;><?=getNationType(13)?></option>
+<?php foreach(GameConst::$avilableNationType as $nationTypeID): ?>
+    <?php $nationClass = getNationTypeClass($nationTypeID) ?>
+<?php endforeach; ?>
+    <option value='<?=$nationTypeID?>' style=background-color:black;color:white;><?=$nationClass::$name?></option>
 </select>
 <input type=submit value=건국>
 <input type=hidden name=command value=<?=$command?>>

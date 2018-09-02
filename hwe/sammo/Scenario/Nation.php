@@ -71,8 +71,12 @@ class Nation{
             $capital = 0;
         }
         
-
-        $type = \sammo\NationCharCall($this->type);
+        if(strpos($this->type, '_') === FALSE){
+            $type = 'che_'.$this->type;
+        }
+        else{
+            $type = $this->type;
+        }
 
         $db = DB::db();
         $otherNations = $db->queryFirstColumn('SELECT nation FROM nation');
