@@ -191,7 +191,37 @@ function CriticalScore($score, $type) {
     return Util::round($score * $ratio);
 }
 
-function process_1(&$general, $type) {
+function process_1(array $general, int $type){
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+
+    [$startYear, $year, $month, $develCost] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'develcost']);
+
+    if($type == 1){
+        $cityKey = 'agri';
+        $keyName = '농지 개간';
+    }
+    else{
+        $cityKey = 'comm';
+        $keyName = '상업 투자';
+    }
+
+    $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general['city']);
+    $nation = getNationStaticInfo($general['nation']);
+    $lbonus = setLeadershipBonus($general, $nation['level']);
+
+    $constraints = [
+        ['NoNeutral'], 
+        ['NoWanderingNation'],
+        ['OccupiedCity'],
+        ['SuppliedCity'],
+        ['ReqGeneralGold', $develCost],
+        ['RemainCityCapacity', [$cityKey, $keyName]]
+    ];
+
+}
+
+function process_1_old(&$general, $type) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();

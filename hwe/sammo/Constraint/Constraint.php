@@ -172,4 +172,29 @@ abstract class Constraint{
         return $this->reason;
     }
 
+    public static function testAll(array $contraintPacks, array $input):?string{
+        foreach($contraintPacks as $constraintArgs){
+            if (!$constraintArgs){
+                continue;
+            }
+
+            $method = $constraintArgs[0].'::build';
+
+            /** @var \sammo\Constraint\Constraint $contraint */
+            $constraint = call_user_func($method,$input);
+            
+            if(count($constraintArgs) > 1){
+                $arg = $constraintArgs[1];
+                $constraint->arg($arg);
+            }
+        
+
+            if(!$constraint->test()){
+                return $constraint->reason();
+            }
+        }
+
+        return null;
+    }
+
 }

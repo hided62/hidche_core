@@ -4,7 +4,7 @@ namespace sammo\Constraint;
 
 use \sammo\JosaUtil;
 
-class NoFullCityCapacity extends Constraint{
+class RemainCityCapacity extends Constraint{
     const REQ_VALUES = Constraint::REQ_CITY|Constraint::REQ_ARRAY_ARG;
 
     protected $key;
