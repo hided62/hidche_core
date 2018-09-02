@@ -90,8 +90,9 @@ $startYear = $gameStor->getValue('startyear');
                         <span class="input-group-text">국가 성향</span>
                     </div>
                     <select class="custom-select form_nation_type" style="width:25ch;">
-                        <?php foreach(getNationTypeList() as $typeID => [$name,$pros,$cons]): ?>
-                            <option value="<?=$typeID?>"><?=$name?> (<?=$pros?>, <?=$cons?>)</option>
+                        <?php foreach(getNationTypeList() as $typeID): ?>
+                            <?php $typeRealID = '\\sammo\\TriggerNationType\\'.$typeID ?> 
+                            <option value="<?=$typeID?>"><?=($typeRealID)::$name?> (<?=($typeRealID)::$pros?>, <?=($typeRealID)::$cons?>)</option>
                         <?php endforeach; ?>
                     </select>
                     <div class="input-group-prepend">

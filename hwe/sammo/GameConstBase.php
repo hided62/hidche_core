@@ -93,4 +93,10 @@ class GameConstBase
     
     /** @var int 초반 제한 기간 */
     public static $openingPartYear = 3;
+
+    /** @var array 선택 가능한 국가 성향 */
+    public static $availableNationType = [
+        'che_명가', 'che_음양가', 'che_종횡가', 'che_불가', 'che_도적', 'che_오두미도', 'che_태평도', 'che_도가',
+        'che_묵가', 'che_덕가', 'che_병가', 'che_유가', 'che_법가'
+    ];
 }

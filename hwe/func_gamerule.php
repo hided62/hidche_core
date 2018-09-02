@@ -20,6 +20,8 @@ function getNationLevelList():array{
 }
 
 function getNationTypeList():array{
+    return GameConst::$availableNationType;
+    
     $table = [
         13=>['명가', '기술↑ 인구↑', '쌀수입↓ 수성↓'],
         12=>['음양가', '내정↑ 인구↑', '기술↓ 전략↓'],

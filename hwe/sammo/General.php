@@ -50,6 +50,22 @@ class General{
         return $this->logActivatedSkill;
     }
 
+    function hasActivatedSkill(string $skillName):bool{
+        return $this->activatedSkill[$skillName] ?? false;
+    }
+
+    function activateSkill(... $skillNames){
+        foreach($skillNames as $skillName){
+            $this->activatedSkill[$skillName] = true;
+        }
+    }
+
+    function deactivateSkill(... $skillNames){
+        foreach($skillNames as $skillName){
+            $this->activatedSkill[$skillName] = false;
+        }
+    }
+
     function getName():string{
         return $this->raw['name'];
     }
@@ -68,6 +84,19 @@ class General{
 
     function getLogger():ActionLogger{
         return $this->logger;
+    }
+
+    //TODO: 장기적으로 General 클래스로 모두 옮겨와야함.
+    function getLeadership($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
+        return getGeneralLeadership($this->raw, $withInjury, $withItem, $withStatAdjust, $useFloor);
+    }
+
+    function getPower($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
+        return getGeneralPower($this->raw, $withInjury, $withItem, $withStatAdjust, $useFloor);
+    }
+
+    function getIntel($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
+        return getGeneralIntel($this->raw, $withInjury, $withItem, $withStatAdjust, $useFloor);
     }
 
 

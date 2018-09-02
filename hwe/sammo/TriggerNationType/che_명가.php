@@ -1,6 +1,7 @@
 <?php
 namespace sammo\TriggerNationType;
 use \sammo\iActionTrigger;
+use \sammo\General;
 
 class che_명가 implements iActionTrigger{
     use \sammo\DefaultActionTrigger;

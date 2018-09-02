@@ -14,7 +14,7 @@ use Constraint\Constraint;
  * 
  * @return int|float 계산된 능력치
  */
-function getGeneralLeadership(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+function getGeneralLeadership($general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
 	if($general === null){
 		return 0;
 	}
@@ -57,7 +57,7 @@ function getGeneralLeadership(&$general, $withInjury, $withItem, $withStatAdjust
  * 
  * @return int|float 계산된 능력치
  */
-function getGeneralPower(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+function getGeneralPower($general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
 	if($general === null){
 		return 0;
 	}
@@ -91,7 +91,7 @@ function getGeneralPower(&$general, $withInjury, $withItem, $withStatAdjust, $us
  * 
  * @return int|float 계산된 능력치
  */
-function getGeneralIntel(&$general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
+function getGeneralIntel($general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
 	if($general === null){
 		return 0;
 	}
@@ -193,7 +193,7 @@ function CriticalScore($score, $type) {
     return Util::round($score * $ratio);
 }
 
-function process_1(array $general, int $type){
+function process_1(array $rawGeneral, int $type){
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
@@ -212,11 +212,12 @@ function process_1(array $general, int $type){
 
     [$startYear, $year, $month, $develCost] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'develcost']);
 
-    $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general['city']);
-    $nation = getNationStaticInfo($general['nation']);
-    $lbonus = setLeadershipBonus($general, $nation['level']);
+    $general = new General($rawGeneral, $yera, $month);
+    $logger = $general->getLogger();
 
-    $logger = new ActionLogger($general['id'], $general['nation'], $year, $month);
+    
+
+    $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general->getCityID());
 
     $constraints = [
         ['NoNeutral'], 
@@ -226,16 +227,23 @@ function process_1(array $general, int $type){
         ['ReqGeneralGold', $reqGold],
         ['RemainCityCapacity', [$cityKey, $actionName]]
     ];
-    $failReason =Constraint::testAll($constraints, [
-        'nation'=>$nation,
+    $failReason = Constraint::testAll($constraints, [
+        'nation'=>$general->getStaticNation(),
         'city'=>$city,
-        'general'=>$general,
+        'general'=>$general->getRaw(),
     ]);
 
     if($failReason !== null){
         $logger->pushGeneralActionLog("{$failReason} {$sabotageName} 실패. <1>{$date}</>");
         return;
     }
+
+    $trust = Util::valutFit($city['trust'], 50);
+
+    $score = getGeneralIntel($general, true, true, true, false);
+    $score *= $trust / 100;
+    $score *= getDomesticExpLevelBonus($general['explevel']);
+    $score *= Util::randRange(0.8, 1.2);
 
 }
 

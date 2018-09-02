@@ -5,7 +5,7 @@ trait DefaultActionTrigger{
     public function onPreTurnExecute(General $general, ?array $nation):array{
         return [];
     }
-    public function onCalcDomesticTurnScore(General $general, string $turnType, float $score, float $cost, float $successRate, float $failRate){
+    public function onCalcDomesticTurnScore(General $general, string $turnType, float $score, float $cost, float $successRate, float $failRate):array{
         return [$score, $cost, $successRate, $failRate];
     }
 

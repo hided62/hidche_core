@@ -172,8 +172,8 @@ abstract class Constraint{
         return $this->reason;
     }
 
-    public static function testAll(array $contraintPacks, array $input):?string{
-        foreach($contraintPacks as $constraintArgs){
+    public static function testAll(array $constraintPacks, array $input):?string{
+        foreach($constraintPacks as $constraintArgs){
             if (!$constraintArgs){
                 continue;
             }
