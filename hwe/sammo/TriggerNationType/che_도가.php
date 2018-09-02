@@ -23,4 +23,12 @@ class che_도가 implements iActionTrigger{
         
         return [$score, $cost, $successRate, $failRate];
     }
+
+    public function onCalcNationalIncome(string $type, int $amount):int{
+        if($type == 'pop'){
+            return $amount * 1.2;
+        }
+        
+        return $amount;
+    }
 }

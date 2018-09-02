@@ -29,7 +29,10 @@ class che_법가 implements iActionTrigger{
         if($type == 'gold'){
             return $amount * 1.1;
         }
-
+        if($type == 'pop'){
+            return $amount * 0.8;
+        }
+        
         return $amount;
     }
 }

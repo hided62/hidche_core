@@ -20,7 +20,7 @@ class che_덕가 implements iActionTrigger{
             $score *= 1.1;
             $cost *= 0.8;
         }
-        
+
         else if($turnType == 'def' || $turnType == 'wall'){
             $score *= 0.9;
             $cost *= 1.2;
@@ -32,6 +32,9 @@ class che_덕가 implements iActionTrigger{
     public function onCalcNationalIncome(string $type, int $amount):int{
         if($type == 'rice'){
             return $amount * 0.9;
+        }
+        if($type == 'pop'){
+            return $amount * 1.2;
         }
         
         return $amount;

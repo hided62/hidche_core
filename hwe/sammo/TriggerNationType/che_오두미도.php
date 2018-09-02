@@ -13,15 +13,15 @@ class che_오두미도 implements iActionTrigger{
 
 
     public function onCalcDomesticTurnScore(string $turnType, float $score, float $cost, float $successRate, float $failRate):array{
-        if($turnType == 'agri' || $turnType == 'comm'){
-            $score *= 0.9;
-            $cost *= 1.2;
-        }
-        else if($turnType == 'tech'){
+        if($turnType == 'tech'){
             $score *= 0.9;
             $cost *= 1.2;
         }
         else if($turnType == 'def' || $turnType == 'wall'){
+            $score *= 0.9;
+            $cost *= 1.2;
+        }
+        else if($turnType == 'agri' || $turnType == 'comm'){
             $score *= 0.9;
             $cost *= 1.2;
         }
@@ -32,6 +32,9 @@ class che_오두미도 implements iActionTrigger{
     public function onCalcNationalIncome(string $type, int $amount):int{
         if($type == 'rice'){
             return $amount * 1.1;
+        }
+        if($type == 'pop'){
+            return $amount * 1.2;
         }
         
         return $amount;
