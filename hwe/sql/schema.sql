@@ -202,7 +202,7 @@ CREATE TABLE `nation` (
 	`power` INT(8) NULL DEFAULT '0',
 	`spy` CHAR(255) NOT NULL DEFAULT '{}',
 	`level` INT(1) NULL DEFAULT '0',
-	`type` INT(2) NULL DEFAULT '0',
+	`type` VARCHAR(16) NULL DEFAULT 'che_중립',
 	`rule` TEXT NULL DEFAULT '',
 	`history` MEDIUMTEXT NULL DEFAULT '',
 	`board0` TEXT NULL DEFAULT '',
