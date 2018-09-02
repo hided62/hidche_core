@@ -90,4 +90,7 @@ class GameConstBase
     public static $maxTurn = 24;
 
     public static $statGradeLevel = 5;
+    
+    /** @var int 초반 제한 기간 */
+    public static $openingPartYear = 3;
 }
