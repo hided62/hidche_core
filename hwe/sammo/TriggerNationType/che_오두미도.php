@@ -21,4 +21,12 @@ class che_오두미도 implements iActionTrigger{
         return [$score, $cost, $successRate, $failRate];
     }
 
+    public function onCalcNationalIncome(string $type, int $amount):int{
+        if($type == 'rice'){
+            return $amount * 1.1;
+        }
+        
+        return $amount;
+    }
+
 }
