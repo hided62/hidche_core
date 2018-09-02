@@ -11,17 +11,17 @@ class che_도가 implements iActionTrigger{
     static $pros = '인구↑';
     static $cons = '기술↓ 치안↓';
 
-    public function onCalcDomesticTurnScore(string $turnType, float $score, float $cost, float $successRate, float $failRate):array{
+    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
         if($turnType == 'tech'){
-            $score *= 0.9;
-            $cost *= 1.2;
+            if($varType == 'score') return $value * 0.9;
+            if($varType == 'cost') return $value * 1.2;
         }
         else if($turnType == 'secu'){
-            $score *= 0.9;
-            $cost *= 1.2;
+            if($varType == 'score') return $value * 0.9;
+            if($varType == 'cost') return $value * 1.2;
         }
         
-        return [$score, $cost, $successRate, $failRate];
+        return $value;
     }
 
     public function onCalcNationalIncome(string $type, int $amount):int{

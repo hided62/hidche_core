@@ -12,21 +12,21 @@ class che_오두미도 implements iActionTrigger{
     static $cons = '기술↓ 수성↓ 내정↓';
 
 
-    public function onCalcDomesticTurnScore(string $turnType, float $score, float $cost, float $successRate, float $failRate):array{
+    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
         if($turnType == 'tech'){
-            $score *= 0.9;
-            $cost *= 1.2;
+            if($varType == 'score') return $value * 0.9;
+            if($varType == 'cost') return $value * 1.2;
         }
         else if($turnType == 'def' || $turnType == 'wall'){
-            $score *= 0.9;
-            $cost *= 1.2;
+            if($varType == 'score') return $value * 0.9;
+            if($varType == 'cost') return $value * 1.2;
         }
         else if($turnType == 'agri' || $turnType == 'comm'){
-            $score *= 0.9;
-            $cost *= 1.2;
+            if($varType == 'score') return $value * 0.9;
+            if($varType == 'cost') return $value * 1.2;
         }
         
-        return [$score, $cost, $successRate, $failRate];
+        return $value;
     }
 
     public function onCalcNationalIncome(string $type, int $amount):int{

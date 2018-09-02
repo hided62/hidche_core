@@ -11,18 +11,18 @@ class che_법가 implements iActionTrigger{
     static $pros = '금수입↑ 치안↑';
     static $cons = '인구↓ 민심↓';
 
-    public function onCalcDomesticTurnScore(string $turnType, float $score, float $cost, float $successRate, float $failRate):array{
+    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
         if($turnType == 'secu'){
-            $score *= 1.1;
-            $cost *= 0.8;
+            if($varType == 'score') return $value * 1.1;
+            if($varType == 'cost') return $value * 0.8;
         }
 
         else if($turnType == 'trust' || $turnType == 'pop'){
-            $score *= 0.9;
-            $cost *= 1.2;
+            if($varType == 'score') return $value * 0.9;
+            if($varType == 'cost') return $value * 1.2;
         } 
         
-        return [$score, $cost, $successRate, $failRate];
+        return $value;
     }
 
     public function onCalcNationalIncome(string $type, int $amount):int{
