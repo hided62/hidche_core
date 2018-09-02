@@ -111,7 +111,7 @@ function myCommandList() {
         echo "
     <tr height=28>
         <td width=24 align=center height=24 id=bg0><b>$j</b></td>
-        <td width=71 align=center height=24 id=bg1><b>{$year}年 {$month}月</b></td>
+        <td width=71 align=center height=24 id=bg1 style='overflow:hidden;'><b>{$year}年 {$month}月</b></td>
         <td width=42 align=center bgcolor=black><b>$turndate</b></td>
         <td width=150 align=center height=24 style=table-layout:fixed;>$turn[$i]</td>
     </tr>";
