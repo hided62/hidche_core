@@ -3,16 +3,16 @@
 namespace sammo\Constraint;
 
 class NoWanderingNation extends Constraint{
-    const REQ_VALUES = Constraint::REQ_NATION;
+    const REQ_VALUES = Constraint::REQ_CITY;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
             return false;
         }
 
-        if(!key_exists('level', $this->nation)){
+        if(!key_exists('supply', $this->city)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require level in nation");
+            throw new \InvalidArgumentException("require supply in city");
         }
 
         return true;
@@ -22,11 +22,11 @@ class NoWanderingNation extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->nation['level'] != 0){
+        if($this->city['supply']){
             return true;
         }
 
-        $this->reason = "방랑군은 불가능합니다.";
+        $this->reason = "고립된 도시입니다.";
         return false;
     }
 }

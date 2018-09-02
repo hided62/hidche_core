@@ -10,10 +10,13 @@ abstract class Constraint{
     const REQ_CITY = 0x20;
     const REQ_NATION = 0x40;
     const REQ_ARG = 0x80;
-    const REQ_STRING_ARG = self::REQ_ARG | 0x100;
-    const REQ_INT_ARG = self::REQ_ARG | 0x200;
-    const REQ_NUMERIC_ARG = self::REQ_ARG | 0x400;
-    const REQ_ARRAY_ARG = self::REQ_ARG | 0x800;
+    const REQ_DEST_GENERAL = 0x100;
+    const REQ_DEST_CITY = 0x200;
+    const REQ_DEST_NATION = 0x400;
+    const REQ_STRING_ARG = self::REQ_ARG | 0x1000;
+    const REQ_INT_ARG = self::REQ_ARG | 0x2000;
+    const REQ_NUMERIC_ARG = self::REQ_ARG | 0x4000;
+    const REQ_ARRAY_ARG = self::REQ_ARG | 0x8000;
     
     const REQ_VALUES = 0;
 
@@ -94,22 +97,37 @@ abstract class Constraint{
     public function checkInputValues(bool $throwExeception=true):bool{
         $valueType = static::requiredValueType();
 
-        if(($valueType&REQ_GENERAL) && $this->general === null){
+        if(($valueType&static::REQ_GENERAL) && $this->general === null){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require general');
         }
 
-        if(($valueType&REQ_CITY) && $this->city === null){
+        if(($valueType&static::REQ_CITY) && $this->city === null){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require city');
         }
 
-        if(($valueType&REQ_NATION) && $this->nation === null){
+        if(($valueType&static::REQ_NATION) && $this->nation === null){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require nation');
         }
 
-        if (!($valueType&REQ_ARG)) {
+        if(($valueType&static::REQ_DEST_GENERAL) && $this->destGeneral === null){
+            if(!$throwExeception){return false; }
+            throw new \InvalidArgumentException('require dest general');
+        }
+
+        if(($valueType&static::REQ_DEST_CITY) && $this->destCity === null){
+            if(!$throwExeception){return false; }
+            throw new \InvalidArgumentException('require dest city');
+        }
+
+        if(($valueType&static::REQ_DEST_NATION) && $this->destNation === null){
+            if(!$throwExeception){return false; }
+            throw new \InvalidArgumentException('require dest nation');
+        }
+
+        if (!($valueType&static::REQ_ARG)) {
            return true;
         }
 
@@ -118,22 +136,22 @@ abstract class Constraint{
             throw new \InvalidArgumentException('require arg');
         }
 
-        if(($valueType&REQ_STRING_ARG) && !is_string($this->arg)){
+        if(($valueType&static::REQ_STRING_ARG) && !is_string($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require string arg');
         }
 
-        if(($valueType&REQ_INT_ARG) && !is_int($this->arg)){
+        if(($valueType&static::REQ_INT_ARG) && !is_int($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require int arg');
         }
 
-        if(($valueType&REQ_NUMERIC_ARG) && !is_numeric($this->arg)){
+        if(($valueType&static::REQ_NUMERIC_ARG) && !is_numeric($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require numeric arg');
         }
 
-        if(!($valueType&REQ_ARRAY_ARG) && !is_array($this->arg)){
+        if(!($valueType&static::REQ_ARRAY_ARG) && !is_array($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require array arg');
         }

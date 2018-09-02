@@ -2,17 +2,17 @@
 
 namespace sammo\Constraint;
 
-class NoWanderingNation extends Constraint{
-    const REQ_VALUES = Constraint::REQ_NATION;
+class ReqGeneralGold extends Constraint{
+    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_NUMERIC_ARG;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
             return false;
         }
 
-        if(!key_exists('level', $this->nation)){
+        if(!key_exists('gold', $this->general)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require level in nation");
+            throw new \InvalidArgumentException("require gold in general");
         }
 
         return true;
@@ -22,11 +22,11 @@ class NoWanderingNation extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->nation['level'] != 0){
+        if($this->general['gold'] < $this->arg){
             return true;
         }
 
-        $this->reason = "방랑군은 불가능합니다.";
+        $this->reason = "자금이 모자랍니다.";
         return false;
     }
 }
