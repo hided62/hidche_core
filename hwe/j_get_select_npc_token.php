@@ -91,7 +91,7 @@ $candidates = [];
 
 $weight = [];
 foreach($db->query('SELECT `no`, `name`, leader, power, intel, imgsvr, picture, special, special2 FROM general WHERE npc=2') as $general){
-    $general['special'] = \sammo\SpecialityConst::DOMESTIC[$general['special']][0]??'-';
+    $general['special'] = (getGeneralSpecialDomesticClass($general['special']))::$name;
     $general['special2'] = \sammo\SpecialityConst::WAR[$general['special2']][0]??'-';
     $candidates[$general['no']] = $general + ['keepCnt'=>KEEP_CNT];
     $allStat = $general['leader'] + $general['power'] + $general['intel'];

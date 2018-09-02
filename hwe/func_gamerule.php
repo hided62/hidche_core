@@ -64,36 +64,37 @@ function getCityLevelList():array{
 // 20 인덕                                           = 1 통솔내정
 // 30 거상, 귀모                                     = 2 공통내정
 
+//TODO: 클래스로 이동
 function getSpecial($leader, $power, $intel) {
     //통장
     if($leader*0.9 > $power && $leader*0.9 > $intel) {
-        $type = array(20, 31);
+        $type = array('che_인덕', 'che_귀모');
         $special = $type[array_rand($type)];
         // 귀모는 50% * 5% = 2.5%
         if($special == 31 && Util::randBool(0.95)) {
-            $special = 20;
+            $special = 'che_인덕';
         }
     //무장
     } elseif($power >= $intel) {
-        $type = array(10, 11, 12, 31);
+        $type = array('che_축성', 'che_수비', 'che_통찰', 'che_귀모');
         $special = $type[array_rand($type)];
         // 귀모는 그중에 25% * 10% = 2.5%
-        if($special == 31 && Util::randBool(0.9)) {
-            $type = array(10, 11, 12);
+        if($special == 'che_귀모' && Util::randBool(0.9)) {
+            $type = array('che_축성', 'che_수비', 'che_통찰');
             $special = $type[array_rand($type)];
         }
     //지장
     } elseif($intel > $power) {
-        $type = array(1, 2, 3, 31);
+        $type = array('che_상재', 'che_경작', 'che_발명', 'che_귀모');
         $special = $type[array_rand($type)];
         // 거상, 귀모는 그중에 25% * 10% = 2.5%
-        if($special == 31 && Util::randBool(0.9)) {
-            $type = array(1, 2, 3);
+        if($special == 'che_귀모' && Util::randBool(0.9)) {
+            $type = array('che_상재', 'che_경작', 'che_발명');
             $special = $type[array_rand($type)];
         }
     } else {
         //귀모. 다만 이쪽으로 빠지지 않음.
-        $type = 31;
+        $special = 'che_귀모';
     }
     return $special;
 }

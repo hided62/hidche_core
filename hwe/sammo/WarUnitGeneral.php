@@ -53,7 +53,7 @@ class WarUnitGeneral extends WarUnit{
         return $this->rawCity[$key];
     }
     
-    function getSpecialDomestic():int{
+    function getSpecialDomestic():string{
         return $this->getVar('special');
     }
 

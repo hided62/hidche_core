@@ -2300,10 +2300,7 @@ function process_48(&$general) {
     if($isweap == 3) { $cost = getItemCost2($type); }
     else { $cost = getItemCost($type); }
 
-    //특기 보정 : 거상
-    if($general['special'] == 30 && $type != 0) { $cost *= 0.5; }
-
-    if($city['trade'] == 0 && $general['special'] != 30) {
+    if($city['trade'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:도시에 상인이 없습니다. 장비매매 실패. <1>$date</>";
     } elseif($city['secu']/1000 < $type) {
         $log[] = "<C>●</>{$admin['month']}월:이 도시에서는 구할 수 없었습니다. 구입 실패. <1>$date</>";
@@ -2415,7 +2412,7 @@ function process_49(&$general) {
     if($amount < 100) { $amount = 100; }
     elseif($amount > 10000) { $amount = 10000; }
 
-    if($city['trade'] == 0 && ($general['special'] == 30 || $general['npc'] >= 2)) {
+    if($city['trade'] == 0 && $general['npc'] >= 2) {
         $city['trade'] = 100;
     }
 
@@ -2427,26 +2424,17 @@ function process_49(&$general) {
         $dtype = "군량 판매";
         if($general['rice'] < $amount) { $amount = $general['rice']; }
         $cost = $amount * $city['trade'] / 100;
-        //특기 보정 : 거상
-        if($general['special'] == 30 && $city['trade'] > 100) { $cost = $amount * (6 * $city['trade']/100 - 5); } // 이익인 경우 5배 이득
-        if($general['special'] == 30 && $city['trade'] < 100) { $cost = $amount * (0.2 * $city['trade']/100 + 0.8); } // 손해인 경우 1/5배 손해
         $tax = $cost * GameConst::$exchangeFee;
         $cost = $cost - $tax;
     } elseif($type == 2) {
         $dtype = "군량 구입";
         $cost = $amount * $city['trade'] / 100;
-        //특기 보정 : 거상
-        if($general['special'] == 30 && $city['trade'] < 100) { $cost = $amount * (6 * $city['trade']/100 - 5); } // 이익인 경우 5배 이득
-        if($general['special'] == 30 && $city['trade'] > 100) { $cost = $amount * (0.2 * $city['trade']/100 + 0.8); } // 손해인 경우 1/5배 손해
         $tax = $cost * GameConst::$exchangeFee;
         $cost = $cost + $tax;
         if($general['gold'] < $cost) {
             $cost = $general['gold'];
             $tax = $cost * GameConst::$exchangeFee;
             $amount = ($cost-$tax) * 100 / $city['trade'];
-            //특기 보정 : 거상
-            if($general['special'] == 30 && $city['trade'] < 100) { $amount = ($cost-$tax) / (6 * $city['trade']/100 - 5); } // 이익인 경우 5배 이득
-            if($general['special'] == 30 && $city['trade'] > 100) { $amount = ($cost-$tax) / (0.2 * $city['trade']/100 + 0.8); } // 손해인 경우 1/5배 손해
         }
     }
 
@@ -2454,7 +2442,7 @@ function process_49(&$general) {
     $amount = Util::round($amount);
     $tax = Util::round($tax);
 
-    if($city['trade'] == 0 && $general['special'] != 30 && $general['npc'] < 2) {
+    if($city['trade'] == 0 && $general['npc'] < 2) {
         $log[] = "<C>●</>{$admin['month']}월:도시에 상인이 없습니다. $dtype 실패. <1>$date</>";
     } elseif($general['nation'] != $city['nation'] && $nation['level'] != 0) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";

@@ -595,7 +595,7 @@ function commandTable() {
         addCommand("단련(자금$develcost, 군량$develcost)", 41, 0);
     }
     addCommand("견문(자금?, 군량?, 경험치?)", 42);
-    if($city['trade'] > 0 || $me['special'] == 30) {
+    if($city['trade'] > 0) {
         addCommand("장비매매", 48);
         addCommand("군량매매", 49);
     } else {
@@ -847,8 +847,8 @@ function generalInfo($no) {
     else                  { $general['age'] = "<font color=red>{$general['age']} 세</font>"; }
 
     $general['connect'] = Util::round($general['connect'] / 10) * 10;
-    $special = $general['special'] == 0 ? "{$general['specage']}세" : "<font color=limegreen>".displaySpecialInfo($general['special'])."</font>";
-    $special2 = $general['special2'] == 0 ? "{$general['specage2']}세" : "<font color=limegreen>".displaySpecialInfo($general['special2'])."</font>";
+    $special = $general['special'] == GameConst::$defaultSpecial ? "{$general['specage']}세" : "<font color=limegreen>".displaySpecialDomesticInfo($general['special'])."</font>";
+    $special2 = $general['special2'] == 0 ? "{$general['specage2']}세" : "<font color=limegreen>".displaySpecialWarInfo($general['special2'])."</font>";
 
     switch($general['personal']) {
         case  2:    case  4:
@@ -1732,19 +1732,17 @@ function addAge() {
     $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     if($admin['year'] >= $admin['startyear']+3) {
-        $query = "select no,name,nation,leader,power,intel from general where specage<=age and special='0'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
-
-        for($i=0; $i < $gencount; $i++) {
-            $general = MYDB_fetch_array($result);
+        foreach($db->query('SELECT no,name,nation,leader,power,intel from general where specage<=age and special=%s', GameConst::$defaultSpecial) as $general){
             $special = getSpecial($general['leader'], $general['power'], $general['intel']);
-            $query = "update general set special='$special' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $specialClass = getGeneralSpecialDomesticClass($special);
+            $specialText = $specialClass::$name;
+            $db->update('general', [
+                'special'=>$special
+            ], 'no=%i',$general['no']);
 
-            $josaUl = JosaUtil::pick($special, '을');
-            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special)."</></b>】{$josaUl} 습득");
-            pushGenLog($general, "<C>●</>특기 【<b><L>".getGenSpecial($special)."</></b>】{$josaUl} 익혔습니다!");
+            $josaUl = JosaUtil::pick($specialText, '을');
+            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>{$specialText}</></b>】{$josaUl} 습득");
+            pushGenLog($general, "<C>●</>특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!");
         }
 
         $query = "select no,name,nation,leader,power,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where specage2<=age and special2='0'";

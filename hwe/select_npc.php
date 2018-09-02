@@ -37,10 +37,11 @@ $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg FROM nation 
 var specialInfo = 
 <?php
 $specialAll = [];
-foreach (SpecialityConst::DOMESTIC as $id=>$values) {
-   $name = $values[0];
-   $text = getSpecialInfo($id);
-   $specialAll[$name] = $text;
+foreach (GameConst::$availableSpecialDomestic as $id) {
+    $domesticClass = getGeneralSpecialDomesticClass($id);
+    $name = $domesticClass::$name;
+    $info = $domesticClass::$info;
+    $specialAll[$name] = $info;
 }
 foreach (SpecialityConst::WAR as $id=>$values) {
     $name = $values[0];

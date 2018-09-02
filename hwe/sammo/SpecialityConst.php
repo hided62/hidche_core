@@ -29,18 +29,17 @@ class SpecialityConst{
 
     //음수 : 절대값 %, 양수 : 상대적 비중
     const DOMESTIC = [
-        1 => ['경작', 1, [self::STAT_INTEL]],
-        2 => ['상재', 1, [self::STAT_INTEL]],
-        3 => ['발명', 1, [self::STAT_INTEL]],
+        'che_경작' => ['경작', 1, [self::STAT_INTEL]],
+        'che_상재' => ['상재', 1, [self::STAT_INTEL]],
+        'che_발명' => ['발명', 1, [self::STAT_INTEL]],
 
-        10 => ['축성', 1, [self::STAT_POWER]],
-        11 => ['수비', 1, [self::STAT_POWER]],
-        12 => ['통찰', 1, [self::STAT_POWER]],
+        'che_축성' => ['축성', 1, [self::STAT_POWER]],
+        'che_수비' => ['수비', 1, [self::STAT_POWER]],
+        'che_통찰' => ['통찰', 1, [self::STAT_POWER]],
 
-        20 => ['인덕', 1, [self::STAT_LEADERSHIP]],
+        'che_인덕' => ['인덕', 1, [self::STAT_LEADERSHIP]],
 
-        30 => ['거상', -2.5, [self::DISABLED]],
-        31 => ['귀모', -2.5, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
+        'che_귀모' => ['귀모', -2.5, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
     ];
 
     const WAR = [
@@ -162,7 +161,7 @@ class SpecialityConst{
         return array_keys($dex, max($dex))[0];
     }
 
-    public static function pickSpecialDomestic(array $general) : int{
+    public static function pickSpecialDomestic(array $general) : string{
         $pAbs = [];
         $pRel = [];
 
@@ -204,7 +203,7 @@ class SpecialityConst{
             return $id;
         }
 
-        return static::pickStatickWar($general);
+        throw new MustNotBeReachedException();
     }
 
     public static function pickSpecialWar(array $general) : int{
@@ -258,6 +257,6 @@ class SpecialityConst{
             return $id;
         }
 
-        return static::pickStatickWar($general);
+        throw new MustNotBeReachedException();
     }
 }

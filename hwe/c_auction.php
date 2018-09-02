@@ -66,7 +66,7 @@ if ($term > 24) {
 }
 
 $valid = 1;
-if ($session->userGrade >= 5 || ($me['special'] != 30 && $btCount < 1) || ($me['special'] == 30 && $btCount < 3)) {
+if ($session->userGrade >= 5) {
 } else {
     $msg = "ㆍ<span class='ev_warning'>더이상 등록할 수 없습니다.</span>";
     $msg2 = "ㆍ<span class='ev_warning'>더이상 등록할 수 없습니다.</span>";

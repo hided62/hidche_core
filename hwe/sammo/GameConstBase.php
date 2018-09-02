@@ -99,6 +99,12 @@ class GameConstBase
         'che_도적', 'che_명가', 'che_음양가', 'che_종횡가', 'che_불가', 'che_오두미도', 'che_태평도', 'che_도가',
         'che_묵가', 'che_덕가', 'che_병가', 'che_유가', 'che_법가'
     ];
-
+    /** @var array 기본 국가 성향 */
     public static $neutralNationType = 'che_중립';
+    /** @var array 선택 가능한 장수 내정 특기 */
+    public static $availableSpecialDomestic = [
+        'che_경작', 'che_상재', 'che_발명', 'che_축성', 'che_수비', 'che_통찰', 'che_인덕', 'che_귀모',
+    ];
+    /** @var array 기본 특기(공용) */
+    public static $defaultSpecial = 'None';
 }

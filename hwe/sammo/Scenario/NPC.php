@@ -20,7 +20,7 @@ class NPC{
     public $birth; 
     public $death; 
     public $ego;
-    public $charDomestic = 0; 
+    public $charDomestic; 
     public $charWar = 0; 
     public $npc = 2;
     public $text;
@@ -62,6 +62,8 @@ class NPC{
             'intel'=>$intel
         ];
 
+        $this->charDomestic = \sammo\GameConst::$defaultSpecial;
+
         if($char === '랜덤전특'){
             $this->charWar = \sammo\SpecialityConst::pickSpecialWar($general);
         }
@@ -76,13 +78,17 @@ class NPC{
                 $this->charDomestic = \sammo\SpecialityConst::pickSpecialDomestic($general);
             }
         }
+        else if($char !== null){
+        }
         else{
-            $char = \sammo\SpecCall($char);
-            if($char < 40){
-                $this->charDomestic = $char;
+            //TODO: 내특, 전특 구분 필요
+
+            try{
+                $domesticClass = \sammo\getGeneralSpecialDomesticClass($char);
+                $this->charDomestic = Util::getClassName($domesticClass);
             }
-            else{
-                $this->charWar = $char;
+            catch (Exception $e) {
+                $this->charWar = \sammo\SpecCall($char);
             }
         }  
     }
@@ -153,7 +159,7 @@ class NPC{
 
         if($isFictionMode){
             $charWar = 0;
-            $charDomestic = 0;
+            $charDomestic = GameConst::$defaultSpecial;
         }
 
         $name = 'ⓝ'.$this->name;

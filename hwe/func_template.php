@@ -76,7 +76,7 @@ function displayCharInfo(?int $type):string{
     ]);
 }
 
-function displaySpecialInfo(?int $type):string{
+function displaySpecialWarInfo(?int $type):string{
     $info = getSpecialInfo($type);
     $text = getGenSpecial($type);
 
@@ -84,6 +84,19 @@ function displaySpecialInfo(?int $type):string{
 
     return $templates->render('tooltip', [
         'text'=>$text,
+        'info'=>$info,
+    ]);
+}
+
+function displaySpecialDomesticInfo(?string $type):string{
+    $class = getGeneralSpecialDomesticClass($type);
+    $info = $class::$info;
+    $name = $class::$name;
+
+    $templates = new \League\Plates\Engine(__dir__.'/templates');
+
+    return $templates->render('tooltip', [
+        'text'=>$name,
         'info'=>$info,
     ]);
 }

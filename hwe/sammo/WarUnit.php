@@ -110,8 +110,8 @@ class WarUnit{
         return $this->deadCurr;
     }
 
-    function getSpecialDomestic():int{
-        return 0;
+    function getSpecialDomestic():string{
+        return GameConst::$defaultSpecial;
     }
 
     function getSpecialWar():int{

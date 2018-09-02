@@ -451,4 +451,10 @@ class Util extends \utilphp\util
     {
         return $items[array_rand($items)];
     }
+
+    function getClassName(string $classpath)
+    {
+        if ($pos = strrpos($classpath, '\\')) return substr($classpath, $pos + 1);
+        return $pos;
+    }
 };

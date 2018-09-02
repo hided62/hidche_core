@@ -28,6 +28,9 @@ $startYear = $gameStor->getValue('startyear');
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <?=WebUtil::printJS('../e_lib/download2.js')?>
 <?=WebUtil::printJS('js/common.js')?>
+<script>
+var defaultSpecial = <?=GameConst::$defaultSpecial?>;
+</script>
 <?=WebUtil::printJS('js/battle_simulator.js')?>
 </head>
 <body>

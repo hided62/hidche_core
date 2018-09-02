@@ -364,7 +364,7 @@ jQuery(function($){
             nation: (generalData.no)<=1 ? 1 : 2,
             city: (generalData.no)<=1 ? 1 : 3,
             turntime:'2018-08-26 12:00',
-            special:0,
+            special:defaultSpecial,
             leader2:0,
             power2:0,
             intel2:0,

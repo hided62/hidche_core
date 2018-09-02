@@ -186,7 +186,7 @@ for($j=0; $j < $gencount; $j++) {
         <td align=center>{$general['gold']}</td>
         <td align=center>{$general['rice']}</td>
         <td align=center>".displayCharInfo($general['personal'])."</td>
-        <td align=center>".displaySpecialInfo($general['special'])." / ".displaySpecialInfo($general['special2'])."</td>
+        <td align=center>".displaySpecialDomesticInfo($general['special'])." / ".displaySpecialWarInfo($general['special2'])."</td>
         <td align=center>{$general['belong']}</td>
         <td align=center>{$general['connect']}"; echo "<br>(".getConnect($general['connect']).")</td>
     </tr>";

@@ -16,6 +16,7 @@ class General{
 
     protected $nationType;
     protected $levelObj;
+    protected $specialDomesticObj;
 
     public function __construct(array $raw, ?array $city, int $year, int $month){
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.

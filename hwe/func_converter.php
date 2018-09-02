@@ -123,20 +123,6 @@ function getCharInfo(?int $type):?string {
 
 function getGenSpecial($type) {
     switch($type) {
-        case  0: $call = '-'; break;
-        case  1: $call = '경작'; break;
-        case  2: $call = '상재'; break;
-        case  3: $call = '발명'; break;
-
-        case 10: $call = '축성'; break;
-        case 11: $call = '수비'; break;
-        case 12: $call = '통찰'; break;
-
-        case 20: $call = '인덕'; break;
-
-        case 30: $call = '거상'; break;
-        case 31: $call = '귀모'; break;
-
         case 40: $call = '귀병'; break;
         case 41: $call = '신산'; break;
         case 42: $call = '환술'; break;
@@ -172,19 +158,6 @@ function getSpecialInfo(?int $type):?string{
 
     //앞칸은 '설명을 위해' '그냥' 적어둠
     $infoText = [
-        0 => ['-', null],
-        1 => ['경작', '[내정] 농지 개간 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-        2 => ['상재', '[내정] 상업 투자 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-        3 => ['발명', '[내정] 기술 연구 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-
-        10 => ['축성', '[내정] 성벽 보수 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-        11 => ['수비', '[내정] 수비 강화 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-        12 => ['통찰', '[내정] 치안 강화 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-
-        20 => ['인덕', '[내정] 주민 선정·정착 장려 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-        
-        31 => ['귀모', '[계략] 화계·탈취·파괴·선동 : 성공률 +20%p'],
-
         40 => ['귀병', '[군사] 귀병 계통 징·모병비 -10%<br>[전투] 계략 성공 확률 +20%p'],
         41 => ['신산', '[계략] 화계·탈취·파괴·선동 : 성공률 +10%p<br>[전투] 계략 시도 확률 +20%p, 계략 성공 확률 +20%p '],
         42 => ['환술', '[전투] 계략 성공 확률 +10%p, 계략 성공 시 대미지 +30%'],
@@ -250,19 +223,39 @@ function getNationTypeClass(?string $type){
         $type = GameConst::$neutralNationType;
     }
 
-    static $path = __NAMESPACE__.'\\TriggerNationType\\';
-    $nationClass = ($path.$type);
+    static $basePath = __NAMESPACE__.'\\TriggerNationType\\';
+    $classPath = ($basePath.$type);
 
-    if(class_exists($nationClass)){
-        return $nationClass;
+    if(class_exists($classPath)){
+        return $classPath;
     }
 
-    $nationClass = ($path.'che_'.$type);
-    if(class_exists($nationClass)){
-        return $nationClass;
+    $classPath = ($basePath.'che_'.$type);
+    if(class_exists($classPath)){
+        return $classPath;
     }
 
     new \InvalidArgumentException("{$type}은 올바른 국가 타입 클래스가 아님");
+}
+
+function getGeneralSpecialDomesticClass(?string $type){
+    if($type === null){
+        $type = GameConst::$defaultSpecial;
+    }
+
+    static $basePath = __NAMESPACE__.'\\TriggerSpecialDomestic\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    $classPath = ($basePath.'che_'.$type);
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    new \InvalidArgumentException("{$type}은 올바른 내정 특기가 아님");
 }
 
 function getLevel($level, $nlevel=8) {
