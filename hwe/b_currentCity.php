@@ -80,11 +80,11 @@ if($me['level'] == 0) {
     echo "
                     <option value={$city['city']}";
     if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
-    echo ">==================================================【".StringUtil::padString($city['name'], 4, '_')."】";
+    echo ">【".StringUtil::padString($city['name'], 4, '_')."】";
     if($city['nation'] == 0) echo "공백지";
     elseif($me['nation'] == $city['nation']) echo "본국==";
     else echo "타국==";
-    echo "============================================</option>";
+    echo "</option>";
 } else {
     // 아국 도시들 선택
     $query = "select city,name,nation from city where nation='{$me['nation']}'";
@@ -96,11 +96,11 @@ if($me['level'] == 0) {
         echo "
                         <option value={$city['city']}";
         if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
-        echo ">==================================================【".StringUtil::padString($city['name'], 4, '_')."】";
+        echo ">【".StringUtil::padString($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
         else echo "타국==";
-        echo "============================================</option>";
+        echo "</option>";
     }
 
     // 아국 장수가 있는 타국 도시들 선택
@@ -113,11 +113,11 @@ if($me['level'] == 0) {
         echo "
                         <option value={$city['city']}";
         if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
-        echo ">==================================================【".StringUtil::padString($city['name'], 4, '_')."】";
+        echo ">【".StringUtil::padString($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
         elseif($me['nation'] == $city['nation']) echo "본국==";
         else echo "타국==";
-        echo "============================================</option>";
+        echo "</option>";
     }
 }
 
@@ -145,11 +145,11 @@ if($myNation['level'] > 0) {
         foreach ($db->query('SELECT city,name,nation FROM city WHERE city in %li', $spyCities) as $city) {
             echo "<option value={$city['city']}";
             if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
-            echo ">==================================================【".StringUtil::padString($city['name'], 4, '_')."】";
+            echo ">【".StringUtil::padString($city['name'], 4, '_')."】";
             if($city['nation'] == 0) echo "공백지";
             elseif($me['nation'] == $city['nation']) echo "본국==";
             else echo "타국==";
-            echo "============================================</option>";
+            echo "</option>";
         }
     }
 
