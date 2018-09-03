@@ -1600,11 +1600,11 @@ function command_53($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("command_53 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select round(avg(power)) as power,round(avg(gennum)) as gennum from nation where level>=1";
+    $query = "select avg(power) as power,avg(gennum) as gennum from nation where level>=1";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $avgNation = MYDB_fetch_array($result);
 
-    $query = "select round(std(power)) as power,round(std(gennum)) as gennum from nation where level>=1";
+    $query = "select std(power) as power,std(gennum) as gennum from nation where level>=1";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $stdNation = MYDB_fetch_array($result);
     
@@ -1624,8 +1624,8 @@ function command_53($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
-    $cond1 = $avgNation['power']+$stdNation['power'];
-    $cond2 = $avgNation['gennum']+$stdNation['gennum'];
+    $cond1 = round((-0.25 * $stdNation['power']) + $avgNation['power'], 2);
+    $cond2 = round((-0.67 * $stdNation['gennum']) + $avgNation['gennum'], 2);
     
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
@@ -1652,8 +1652,8 @@ function command_53($turn, $command) {
 제한 조건<br>
 - 인접 국가<br>
 - 양국 모두 외교제한 없음<br>
-- 양국 국력의 합이 평균+표준편차(현재 {$cond1}) 이하<br>
-- 양국 장수수의 합이 평균+표준편차(현재 {$cond2}) 이하<br>
+- 두 국가의 국력 평균이 상위 60%(현재 {$cond1}) 이하.<br>
+- 두 국가의 장수수 평균이 상위 75%(현재 {$cond2} 이하.<br>
 ";
     ender(1);
 }
