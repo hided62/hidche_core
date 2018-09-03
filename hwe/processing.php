@@ -1633,13 +1633,13 @@ function command_53($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
 
-    $cond1 = round((-0.25 * $stdNation['power']) + $avgNation['power'], 2);
-    $cond2 = round((-0.67 * $stdNation['gennum']) + $avgNation['gennum'], 2);
+    $cond1 = (-0.25 * $stdNation['power']) + $avgNation['power'];
+    $cond2 = (-0.67 * $stdNation['gennum']) + $avgNation['gennum'];
     
     for($i=1; $i <= $count; $i++) {
         $nation = MYDB_fetch_array($result);
 
-        if($myNation['power']+$nation['power'] > $cond1 || $myNation['gennum']+$nation['gennum'] > $cond2 || !isNeighbor($me['nation'], $nation['nation'])) {
+        if(($myNation['power']+$nation['power'])/2 > $cond1 || ($myNation['gennum']+$nation['gennum'])/2 > $cond2 || !isNeighbor($me['nation'], $nation['nation'])) {
             echo "<option style=color:{$nation['color']};background-color:red; value={$nation['nation']}>【 {$nation['name']} 】</option>";
         } else {
             echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
@@ -1661,8 +1661,8 @@ function command_53($turn, $command) {
 제한 조건<br>
 - 인접 국가<br>
 - 양국 모두 외교제한 없음<br>
-- 두 국가의 국력 평균이 상위 60%(현재 {$cond1}) 이하.<br>
-- 두 국가의 장수수 평균이 상위 75%(현재 {$cond2} 이하.<br>
+- 두 국가의 국력 평균이 상위 60%(현재 ".round($cond1,2).") 이하.<br>
+- 두 국가의 장수수 평균이 상위 75%(현재 ".round($cond2,1).") 이하.<br>
 ";
     ender(1);
 }
