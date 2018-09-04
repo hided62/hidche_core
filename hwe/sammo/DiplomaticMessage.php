@@ -181,7 +181,7 @@ class DiplomaticMessage extends Message{
         $josaWa = JosaUtil::pick($this->src->nationName, '와');
         pushGeneralHistory(
             ['no'=>$this->dest->generalID],
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>{$josaWa} 통합 시도"]
+            "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->src->nationName}</b></>{$josaWa} 통합 시도"
         );
         pushGenLog(
             ['no'=>$this->dest->generalID],
@@ -200,7 +200,7 @@ class DiplomaticMessage extends Message{
         $josaWa = JosaUtil::pick($this->dest->nationName, '와');
         pushGeneralHistory(
             ['no'=>$this->src->generalID],
-            ["<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>{$josaWa} 통합 시도"]
+            "<C>●</>{$helper->year}년 {$helper->month}월:<D><b>{$this->dest->nationName}</b></>{$josaWa} 통합 시도"
         );
         $josaYi = JosaUtil::pick($this->dest->nationName, '이');
         pushGenLog(
