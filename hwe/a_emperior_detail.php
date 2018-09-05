@@ -37,7 +37,7 @@ $serverID = $emperior['server_id']??($emperior['serverID']??null);
 
 <body>
 <table align=center width=1000 class="tb_layout bg0">
-    <tr><td><?=$emperior?'역 대 왕 조':'현 재 왕 조'?><br>
+    <tr><td>역 대 왕 조<br>
         <button onclick=window.close()>창 닫기</button>
         <div style="float:right;"><a href="a_emperior.php"><button>전체보기</button></a><div>
     </td></tr>
@@ -160,7 +160,7 @@ if($emperior):
 <?php
 endif;
 
-$showServers = $serverID || (!$emperior);
+$showServers = $emperior;
 
 if(!$serverID){
     $serverID = UniqueConst::$serverID;
