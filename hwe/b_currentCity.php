@@ -11,6 +11,7 @@ extractMissingPostToGlobals();
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
+$userGrade = Session::getUserGrade();
 
 $db = DB::db();
 $connect=$db->get();
@@ -168,7 +169,7 @@ echo "
 unset($city);
 
 // 첩보된 도시까지만 허용
-if($valid == 0 && $session->userGrade < 5) {
+if($valid == 0 && $userGrade < 5) {
     $citylist = $me['city'];
 }
 
@@ -239,7 +240,7 @@ for($j=0; $j < $gencount; $j++) {
     }
     $leadershipBonusText = formatLeadershipBonus($leadershipBonus);
 
-    if($ourGeneral){
+    if($ourGeneral || $userGrade == 6){
         $defenceMode = $general['mode'];
         $defenceModeText = formatDefenceMode($defenceMode);
         $crewType = $general['crewtype'];
@@ -274,7 +275,7 @@ for($j=0; $j < $gencount; $j++) {
     }
     
     $generalsFormat[] = [
-        'ourGeneral'=>$ourGeneral,
+        'ourGeneral'=>($ourGeneral || $userGrade == 6),
         'isNPC'=>$isNPC,
         'wounded'=>$wounded,
         'name'=>$name,

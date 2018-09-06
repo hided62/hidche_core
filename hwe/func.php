@@ -1245,6 +1245,7 @@ function increaseRefresh($type="", $cnt=1) {
     $session = Session::getInstance();
     $userID = $session->userID;
     $generalID = $session->generalID;
+    $userGrade = $session->userGrade;
 
     $date = date('Y-m-d H:i:s');
 
@@ -1252,7 +1253,7 @@ function increaseRefresh($type="", $cnt=1) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $gameStor->refresh = $gameStor->refresh+$cnt; //TODO: +로 증가하는 값은 별도로 분리
 
-    if($generalID) {
+    if($generalID && $userGrade < 6) {
         $db->update('general', [
             'lastrefresh'=>$date,
             'con'=>$db->sqleval('con + %i', $cnt),
