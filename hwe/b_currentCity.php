@@ -213,6 +213,10 @@ for($j=0; $j < $gencount; $j++) {
         $ourGeneral = false;
     }
 
+    if($userGrade == 6){
+        $ourGeneral = true;
+    }
+
     $isNPC = $general['npc']>1;
     $wounded = $general['injury'];
     
@@ -240,7 +244,7 @@ for($j=0; $j < $gencount; $j++) {
     }
     $leadershipBonusText = formatLeadershipBonus($leadershipBonus);
 
-    if($ourGeneral || $userGrade == 6){
+    if($ourGeneral){
         $defenceMode = $general['mode'];
         $defenceModeText = formatDefenceMode($defenceMode);
         $crewType = $general['crewtype'];
@@ -262,7 +266,7 @@ for($j=0; $j < $gencount; $j++) {
     $nation = $general['nation'];
     $nationName = $nationInfo['name'];
 
-    if(($ourGeneral  || $userGrade == 6) && !$isNPC){
+    if($ourGeneral && !$isNPC){
         $turnText = [];
         foreach(getTurn($general, 1) as $turnRawIdx=>$turn){
             $turnIdx = $turnRawIdx+1;
@@ -275,7 +279,7 @@ for($j=0; $j < $gencount; $j++) {
     }
     
     $generalsFormat[] = [
-        'ourGeneral'=>($ourGeneral || $userGrade == 6),
+        'ourGeneral'=>$ourGeneral,
         'isNPC'=>$isNPC,
         'wounded'=>$wounded,
         'name'=>$name,
