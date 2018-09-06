@@ -262,7 +262,7 @@ for($j=0; $j < $gencount; $j++) {
     $nation = $general['nation'];
     $nationName = $nationInfo['name'];
 
-    if($ourGeneral && !$isNPC){
+    if(($ourGeneral  || $userGrade == 6) && !$isNPC){
         $turnText = [];
         foreach(getTurn($general, 1) as $turnRawIdx=>$turn){
             $turnIdx = $turnRawIdx+1;
