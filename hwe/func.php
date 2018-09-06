@@ -417,7 +417,7 @@ function addCommand($typename, $value, $valid = 1, $color=0) {
         }
     } else {
         echo "
-    <option style=color:white;background-color:red; value={$value}>{$typename}</option>";
+    <option style=color:white;background-color:red; value={$value}>{$typename}(불가)</option>";
     }
 }
 
