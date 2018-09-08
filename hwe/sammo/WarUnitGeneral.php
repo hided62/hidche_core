@@ -592,7 +592,7 @@ class WarUnitGeneral extends WarUnit{
                 }
 
                 if($oppose instanceof WarUnitCity){
-                    $magic = Util::choiceRandom(['급습', '위보',' 혼란']);
+                    $magic = Util::choiceRandom(['급습', '위보', '혼란']);
                 }
                 else{
                     $magic = Util::choiceRandom(['위보', '매복', '반목', '화계', '혼란']);
