@@ -1,0 +1,45 @@
+<?php
+namespace sammo;
+
+require(__dir__.'/../vendor/autoload.php');
+
+use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
+
+$session = Session::requireLogin([
+    'reason'=>'로그인이 되어있지 않습니다'
+]);
+
+
+$userID = Session::getUserID();
+
+$oauthInfo = Json::decode(RootDB::db()->queryFirstField('SELECT oauth_info from member where no=%i',$userID))??[];
+if(!$oauthInfo){
+    Json::die([
+        'result'=>false,
+        'reason'=>'초기화 가능한 로그인 상태가 아닙니다.'
+    ]);
+}
+
+$OTPValidUntil = $oauthInfo['OTPValidUntil']??null;
+
+$now = TimeUtil::DatetimeNow();
+$expectedDate = TimeUtil::DatetimeFromNowDay(5);
+
+if($expectedDate <= $OTPValidUntil){
+    Json::die([
+        'result'=>false,
+        'reason'=>'아직 연장 가능하지 않습니다.'
+    ]);
+}
+
+unset($oauthInfo['OTPValidUntil']);
+RootDB::db()->update('member', [
+    'oauth_info'=>Json::encode($oauthInfo)
+], 'no=%i', $userID);
+
+$session->logout();
+
+Json::die([
+    'result'=>true,
+    'reason'=>'초기화 완료.'
+]);
