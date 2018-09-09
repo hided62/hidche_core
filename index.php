@@ -100,6 +100,9 @@ function postOAuthResult(result){
     if(result == 'join'){
         window.location.href = 'oauth_kakao/join.php';
     }
+    else if(result == 'req_email'){
+        alert('이메일 정보 공유를 허가해 주셔야 합니다.');
+    }
     else if(result == 'login'){
         console.log('로그인모드');
         if(oauthMode=='change_pw'){
@@ -194,14 +197,16 @@ function postOAuthResult(result){
                 </button>
             </div>
             <div class="modal-body">
-                <div class="form-group row">
-                    인증 코드가 필요합니다. 카카오톡의 '나와의 채팅'란을 확인해 주세요.<br>
+                <div>
+                    인증 코드가 필요합니다.<br><br>
+                    카카오톡의 '나와의 채팅'란을 확인해 주세요.<br>
+                    (별도의 알림[소리, 진동, 숫자]가 발생하지 않습니다.)
                 </div>
-                <div class="form-group row">
-                    <label for="otp" class="col-5 col-md-4 col-form-label">인증 코드</label>
-                    <div class="col-7 col-md-8">
-                    <input autocomplete="off" type="number" class="form-control" name='otp' id="otp_code" autofocus="autofocus" placeholder="인증 코드">
+                <div class="input-group mt-4" role="group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">인증 코드</span>
                     </div>
+                    <input type="number" class="form-control" name='otp' id="otp_code" placeholder="인증 코드">
                 </div>
             </div>
             <div class="modal-footer">

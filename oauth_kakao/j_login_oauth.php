@@ -95,7 +95,7 @@ if(!$email){
         Json::die([
             'result'=>false,
             'reqOTP'=>false,
-            'reason'=>'이메일 정보 공유를 허락해 주셔야 합니다.',
+            'reason'=>'이메일 정보 공유를 허가해 주셔야 합니다.',
         ]);
     }
 

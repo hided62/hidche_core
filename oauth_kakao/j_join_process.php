@@ -134,6 +134,14 @@ if ($me['code']< 0) {
     ]);
 }
 
+if(!($kakao_account['has_email']??false)){
+    Json::die([
+        'result'=>false,
+        'reqOTP'=>false,
+        'reason'=>'이메일 정보 공유를 허가해 주셔야 합니다.',
+    ]);
+}
+
 $validEmail = $kakao_account['is_email_valid']??false;
 $verifiedEmail = $kakao_account['is_email_verified']??false;
 

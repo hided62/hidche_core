@@ -74,6 +74,7 @@ $(document).ready( function () {
             }
         }).then(function(obj){
             if(obj.result){
+                alert(obj.reason);
                 window.location.href = "./";
                 return;
             }

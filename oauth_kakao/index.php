@@ -64,6 +64,9 @@ function postOAuthResult(result){
     if(result == 'join'){
         window.location.href = 'join.php';
     }
+    else if(result == 'req_email'){
+        alert('이메일 정보 공유를 허가해 주셔야 합니다.');
+    }
     else if(result == 'login'){
         console.log('로그인모드');
         if(oauthMode=='change_pw'){
