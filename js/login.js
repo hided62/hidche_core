@@ -56,7 +56,9 @@ $(document).ready( function () {
                 alert(obj.reason);
                 return;
             }
-            $('#modalOTP').modal().on('shown.bs.modal', function(){
+
+            var $modal = $('#modalOTP').modal();
+            $modal.on('shown.bs.modal', function(){
                 $('#otp_code').focus();
             });
             
