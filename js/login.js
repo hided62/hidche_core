@@ -48,14 +48,43 @@ $(document).ready( function () {
                 'password':hash_pw
             }
         }).then(function(obj){
-            if(!obj.result){
+            if(obj.result){
+                window.location.href = "./";
+                return;
+            }
+            if(!obj.reqOTP){
                 alert(obj.reason);
+                return;
             }
-            else{
-                window.location.href = 'i_entrance/entrance.php';
-            }
+            $('#modalOTP').modal().on('shown.bs.modal', function(){
+                $('#otp_code').focus();
+            });
+            
 
         });
         return false;
     });
+
+    $('#otp_form').submit(function(){
+        $.post({
+            url:'oauth_kakao/j_check_OTP.php',
+            dataType:'json',
+            data:{
+                'otp':$('#otp_code').val(),
+            }
+        }).then(function(obj){
+            if(obj.result){
+                window.location.href = "./";
+                return;
+            }
+
+            alert(obj.reason);
+
+            if(obj.reset){
+                $('#modalOTP').modal('hide')
+                return;
+            }
+        });
+        return false;
+    })
 } );

@@ -47,7 +47,12 @@ $me = $restAPI->meWithEmail();
 $oauth_mode = 'login';
 
 $me['code'] = Util::array_get($me['code'], 0);
-if($me['code']< 0){
+$signed = $me['has_signed_up']??false;
+$kakao_account = $me['kakao_account']??[];
+if(!$signed){
+    $oauth_mode = 'join';
+}
+else if($me['code']< 0){
     switch(Util::array_get($me['msg'])){
     case 'NotRegisteredUserException':
         $oauth_mode = 'join';
@@ -57,7 +62,7 @@ if($me['code']< 0){
     }
 }
 else{
-    $session->kaccount_email = $me['kaccount_email'];
+    $session->kaccount_email = $$kakao_account['email'];
 }
 
 ?>

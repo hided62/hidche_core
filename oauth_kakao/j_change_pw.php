@@ -39,7 +39,7 @@ if($expires < $nowDate){
     $email = null;
 
     $result = $restAPI->refresh_access_token($refresh_token);
-    if(!isset($refresh_token)){
+    if(!isset($result)){
         Json::die([
             'result'=>false,
             'reason'=>'카카오 로그인 과정 중 추가 갱신 절차를 실패했습니다'
