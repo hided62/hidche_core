@@ -84,6 +84,7 @@ function kakaoOAuthCheck(array $userInfo) : ?array {
     }
 
     //인증 시스템 가동
+    $session = Session::getInstance();
     $session->access_token = $accessToken;
     $session->expires = $accessTokenValidUntil;
     $session->refresh_token = $refreshToken;
