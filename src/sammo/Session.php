@@ -180,8 +180,9 @@ class Session
         return $this;
     }
 
-    public function setReqOTP(bool $reqOTP=false){
+    public function setReqOTP(bool $reqOTP=false, string $tokenValidUntil){
         $this->set('reqOTP', $reqOTP);
+        $this->set('tokenValidUntil', $tokenValidUntil);
     }
 
 

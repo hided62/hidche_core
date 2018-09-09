@@ -79,7 +79,7 @@ if($OTPValue != $otp){
 }
 
 $tokenValidUntil = TimeUtil::DatetimeFromNowDay(10);
-$session->setReqOTP(false);
+$session->setReqOTP(false, $tokenValidUntil);
 RootDB::db()->update('member', [
     'oauth_info'=>Json::encode($oauthInfo),
     'token_valid_until'=>$tokenValidUntil,
