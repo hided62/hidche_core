@@ -5,7 +5,7 @@ require(__dir__.'/../vendor/autoload.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
-$nowDate = TimeUtil::DatetimeNow();
+$now = TimeUtil::DatetimeNow();
 
 $session = Session::requireLogin([
     'reason'=>'로그인이 되어있지 않습니다'
@@ -13,8 +13,6 @@ $session = Session::requireLogin([
 $userID = Session::getUserID();
 $access_token = $session->access_token;
 $expires = $session->expires;
-$refresh_token = $session->refresh_token;
-$refresh_token_expires = $session->refresh_token_expires;
 
 if(!$access_token || !$expires){
     Json::die([
@@ -27,43 +25,36 @@ if(!$access_token || !$expires){
 //TODO: join과 login의 동작이 비슷하다. helper class로 묶자.
 $restAPI = new Kakao_REST_API_Helper($access_token);
 
-if($expires < $nowDate && (!$refresh_token || ($refresh_token_expires < $nowDate))){
+$session->logout();
+
+if($expires < $now){
     Json::die([
         'result'=>false,
-        'reason'=>'로그인 토큰 만료.'.$refresh_token_expires.' 다시 카카오로그인을 수행해주세요.'
+        'reason'=>'로그인 토큰 만료. 카카오 로그인을 먼저 수행해주세요.'
     ]);
-}
-
-if($expires < $nowDate){
-    $session->kaccount_email = null;
-    $email = null;
-
-    $result = $restAPI->refresh_access_token($refresh_token);
-    if(!isset($result)){
-        Json::die([
-            'result'=>false,
-            'reason'=>'카카오 로그인 과정 중 추가 갱신 절차를 실패했습니다'
-        ]);
-    }
-
-    $access_token = $result['access_token'];
-    $expires = TimeUtil::DatetimeFromNowSecond($result['expires_in']);
-    if(isset($result['refresh_token'])){
-        $refresh_token = Util::array_get($result['refresh_token']);
-        $refresh_token_expires = TimeUtil::DatetimeFromNowSecond($result['refresh_token_expires_in']);
-    }
 }
 
 RootDB::db()->query("lock tables member write, member_log write");
 
-$isUser = RootDB::db()->queryFirstRow(
-    'SELECT count(`no`) from member where no=%i',$userID);
-if(!$isUser){
+$oauthInfo = Json::decode(RootDB::db()->queryFirstField('SELECT oauth_info from member where no=%i',$userID))??[];
+if(!$oauthInfo){
     Json::die([
         'result'=>false,
-        'reason'=>'회원이 아닙니다. 관리자에게 문의해주세요.'
+        'reason'=>'제대로 로그인이 이루어져 있지 않습니다.'
     ]);
 }
+
+$nextPasswordChange = $oauthInfo['nextPasswordChange']??null;
+if($nextPasswordChange && $now < $nextPasswordChange){
+    Json::die([
+        'result'=>false,
+        'reason'=>'비밀번호를 초기화한지 얼마 지나지 않았습니다.'
+    ]);
+}
+
+$nextPasswordChange = TimeUtil::DatetimeFromNowHour(4);
+$oauthInfo['nextPasswordChange'] = $nextPasswordChange;
+
 
 $newPassword = Util::randomStr(6);
 $tmpPassword = Util::hashPassword(RootDB::getGlobalSalt(), $newPassword);
@@ -89,12 +80,13 @@ if($sendResult['code'] < 0){
 
 RootDB::db()->update('member', [
     'pw'=>$newFinalPassword,
-    'salt'=>$newSalt
+    'salt'=>$newSalt,
+    'oauth_info'=>Json::encode($oauthInfo),
 ],'no=%i', $userID);
 
 RootDB::db()->insert('member_log', [
     'member_no'=>$userID,
-    'date'=>$nowDate,
+    'date'=>$now,
     'action_type'=>'change_pw',
     'action'=>Json::encode([
         'type'=>'kakao',

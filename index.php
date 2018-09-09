@@ -64,8 +64,17 @@ function getOAuthToken(mode, scope_list){
 
 function sendTempPasswordToKakaoTalk(){
     $.post({
-        url:'j_change_pw.php',
+        url:'oauth_kakao/j_login_oauth.php',
         dataType:'json'
+    }).then(function(obj){
+        var t = $.Deferred();
+        if(!obj.result){
+            t.reject();
+        }
+        return $.post({
+            url:'oauth_kakao/j_change_pw.php',
+            dataType:'json'
+        });
     }).then(function(obj){
         if(!obj.result){
             alert(obj.reason);
@@ -163,7 +172,15 @@ function postOAuthResult(result){
                     <div class="form-group row">
                         <div class="col-5 col-md-4 " style="position:relative;"><button type="button" onclick="getOAuthToken('login', ['account_email','talk_message']);" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
                         <div class="col-7 col-md-8">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block login-button">로그인</button>
+                            <div class="btn-group btn-group-lg d-flex login_btn_group" role="group">
+                                <button type="submit" class="btn btn-primary login-button w-100">로그인</button>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                                        <a class="dropdown-item" href="javascript:getOAuthToken('change_pw', 'talk_message');">비밀번호 초기화</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>

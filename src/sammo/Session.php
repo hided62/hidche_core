@@ -174,7 +174,6 @@ class Session
         $this->set('userGrade', $grade);
         $this->set('acl', $acl);
         $this->set('reqOTP', $reqOTP);
-        $this->set('access_token', null);
         return $this;
     }
 

@@ -52,8 +52,8 @@ input::-webkit-input-placeholder {
 
 }
 
-.login-button{
-   margin-top: 5px;
+.login_btn_group{
+    margin-top: 5px;
 }
 
 .login-register{
