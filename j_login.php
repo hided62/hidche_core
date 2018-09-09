@@ -2,7 +2,9 @@
 namespace sammo;
 
 require(__dir__.'/vendor/autoload.php');
+require(__dir__.'/oauth_kakao/lib.join.php');
 
+use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 $RootDB = RootDB::db();
 $session = Session::getInstance();
@@ -16,12 +18,86 @@ $password = Util::getReq('password');
 if(!$username || !$password){
     Json::die([
         'result'=>false,
+        'reqOTP'=>false,
         'reason'=>'올바르지 않은 입력입니다.'
     ]);
 }
 
+function kakaoOAuthCheck(array $userInfo) : ?array {
+
+    if(!\kakao\KakaoKey::REST_KEY){
+        return [false, '카카오 API 앱이 등록되지 않았습니다. 관리자에게 문의해 주세요.'];
+    }
+
+    $oauthID = $userInfo['oauth_id'];
+    $oauthInfo = Json::decode($userInfo['oauth_info'])??[];
+    if(!$oauthInfo){
+        return [false, 'OAuth 정보가 보관되어 있지 않습니다. 카카오 로그인을 수행해 주세요.'];
+    }
+    
+    $accessToken = $oauthInfo['accessToken']??null;
+    $refreshToken = $oauthInfo['refreshToken']??null;
+    $accessTokenValidUntil = $oauthInfo['accessTokenValidUntil']??null;
+    $refreshTokenValidUntil = $oauthInfo['refreshTokenValidUntil']??null;
+    $OTPValue = $oauthInfo['OTPValue']??null;
+    $OTPTrialUntil = $oauthInfo['OTPTrialUntil']??null;
+    $tokenValidUntil = $member['token_valid_until'];
+
+    if(!$accessToken || !$refreshToken || !$accessTokenValidUntil || !$refreshTokenValidUntil){
+        return [false, 'OAuth 정보가 보관되어 있지 않습니다. 카카오 로그인을 수행해 주세요.'];
+    }
+
+    $now = TimeUtil::DatetimeNow();
+
+    if($now > $refreshTokenValidUntil){
+        return [false, '로그인 토큰이 만료되었습니다. 카카오 로그인을 수행해 주세요.'];
+    }
+
+    if($now > $accessTokenValidUntil){
+        $apiHelper = new Kakao_REST_API_Helper($accessToken);
+        $refreshResult = $apiHelper->refresh_access_token($refreshToken);
+        if(!$refreshResult){
+            return [false, '로그인 토큰 자동 갱신을 실패했습니다. 카카오 로그인을 수행해 주세요.'];
+        }
+
+        $accessToken = $refreshResult['access_token'];
+        $accessTokenValidUntil = TimeUtil::DatetimeFromNowSecond($refreshResult['expires_in']);
+
+        $oauthInfo['accessToken'] = $accessToken;
+        $oauthInfo['accessTokenValidUntil'] = $accessTokenValidUntil;
+
+        $refreshToken = $refreshResult['refresh_token']??null;
+        if($refreshToken){
+            $refreshTokenValidUntil = TimeUtil::DatetimeFromNowSecond($refreshResult['refresh_token_expires_in']);
+
+            $oauthInfo['refreshToken'] = $refreshToken;
+            $oauthInfo['refresh_token_expires_in'] = $refresh_token_expires_in;
+        }
+        
+        RootDB::db()->update('member', [
+            'oauth_info'=>Json::encode($oauthInfo)
+        ], 'no=%i', $userInfo['no']);
+    }
+
+    if($tokenValidUntil && $now <= $tokenValidUntil){
+        return null;
+    }
+
+    //인증 시스템 가동
+    $session->access_token = $accessToken;
+    $session->expires = $accessTokenValidUntil;
+    $session->refresh_token = $refreshToken;
+    $session->refresh_token_expires = $refreshTokenValidUntil;
+
+    if(!createOTPbyUserNO($userInfo['no'])){
+        return [false, '인증 코드를 보내는데 실패했습니다.'];
+    }
+
+    return [true, '인증 코드를 입력해주세요'];
+}
+
 $userInfo = $RootDB->queryFirstRow(
-    'SELECT `no`, `id`, `name`, `grade`, `delete_after`, `acl` '.
+    'SELECT `no`, `id`, `name`, `grade`, `delete_after`, `acl`, oauth_id, oauth_type, oauth_info '.
     'from member where id=%s_username AND '.
     'pw=sha2(concat(salt, %s_password, salt), 512)',[
         'username'=>$username,
@@ -31,6 +107,7 @@ $userInfo = $RootDB->queryFirstRow(
 if(!$userInfo){
     Json::die([
         'result'=>false,
+        'reqOTP'=>false,
         'reason'=>'아이디나 비밀번호가 올바르지 않습니다.'
     ]);
 }
@@ -49,12 +126,14 @@ if($userInfo['delete_after']){
         $RootDB->delete('member', 'no=%i', $userInfo['no']);
         Json::die([
             'result'=>false,
+            'reqOTP'=>false,
             'reason'=>"기간 만기로 삭제되었습니다. 재 가입을 시도해주세요."
         ]);
     }
     else{
         Json::die([
             'result'=>false,
+            'reqOTP'=>false,
             'reason'=>"삭제 요청된 계정입니다.[{$userInfo['delete_after']}]"
         ]);
     }
@@ -70,10 +149,23 @@ $RootDB->insert('member_log',[
     ])
 ]);
 
+if($userInfo['oauth_type'] == 'KAKAO'){
+    $oauthFailResult = kakaoOAuthCheck($userInfo);
+    if($oauthFailResult !== null){
+        $session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], true, Json::decode($userInfo['acl']??'{}'));
+        [$oauthReqOTP, $oauthFailReason] = $oauthFailResult;
+        Json::die([
+            'result'=>false,
+            'reqOTP'=>$oauthReqOTP,
+            'reason'=>$oauthFailReason
+        ]);        
+    }
+}
 
 
-$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], Json::decode($userInfo['acl']??'{}'));
+$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], false, Json::decode($userInfo['acl']??'{}'));
 Json::die([
     'result'=>true,
+    'reqOTP'=>false,
     'reason'=>'로그인 되었습니다.'
 ]);

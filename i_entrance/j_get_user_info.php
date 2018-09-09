@@ -9,7 +9,7 @@ $userID = Session::getUserID();
 // 외부 파라미터
 
 $db = RootDB::db();
-$member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture`, reg_date, third_use, acl FROM `member` WHERE `NO` = %i', $userID);
+$member = $db->queryFirstRow('SELECT `id`, `name`, `grade`, `picture`, reg_date, third_use, acl, oauth_type, token_valid_until FROM `member` WHERE `NO` = %i', $userID);
 
 if(!$member['picture']){
     $picture = ServConfig::getSharedIconPath().'/default.jpg';
@@ -29,6 +29,8 @@ else{
         $picture = ServConfig::getSharedIconPath().'/'.$picture;
     }
 }
+
+$tokenValidUntil = $member['token_valid_until'];
 
 if($member['grade'] == 6) {
     $grade = '운영자';
@@ -81,5 +83,8 @@ Json::die([
     'global_salt'=>RootDB::getGlobalSalt(),
     'join_date'=>$member['reg_date'],
     'third_use'=>($member['third_use']!=0),
-    'acl'=>$acl
+    'acl'=>$acl,
+    'oauth_type'=>$member['oauth_type'],
+    'token_valid_until'=>$tokenValidUntil
+
 ]);

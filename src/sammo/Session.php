@@ -8,12 +8,14 @@ namespace sammo;
  * @property string $userName  유저명
  * @property int    $userGrade 유저등급
  * @property string $ip        IP
+ * @property bool   $reqOTP    인증 코드 필요
  * @property array  $acl       권한
  */
 class Session
 {
     const PROTECTED_NAMES = [
         'ip'=>true,
+        'reqOTP'=>true,
         'time'=>true,
         'userID'=>true,
         'userName'=>true,
@@ -163,7 +165,7 @@ class Session
         return Util::array_get($_SESSION[$name]);
     }
 
-    public function login(int $userID, string $userName, int $grade, array $acl): Session
+    public function login(int $userID, string $userName, int $grade, bool $reqOTP, array $acl): Session
     {
         $this->set('userID', $userID);
         $this->set('userName', $userName);
@@ -171,8 +173,12 @@ class Session
         $this->set('time', time());
         $this->set('userGrade', $grade);
         $this->set('acl', $acl);
-        $this->set('access_token', null);
+        $this->set('reqOTP', $reqOTP);
         return $this;
+    }
+
+    public function setReqOTP(bool $reqOTP=false){
+        $this->set('reqOTP', $reqOTP);
     }
 
 
@@ -189,6 +195,7 @@ class Session
         $this->set('userName', null);
         $this->set('userGrade', null);
         $this->set('acl', null);
+        $this->set('reqOTP', null);
         $this->set('time', time());
         return $this;
     }
@@ -324,9 +331,12 @@ class Session
         return $obj->userID;
     }
 
-    public function isLoggedIn(): bool
+    public function isLoggedIn(bool $ignoreOTP = false): bool
     {
-        if ($this->userID) {
+        if (!$ignoreOTP && $this->reqOTP){
+            return false;
+        }
+        else if ($this->userID) {
             return true;
         } else {
             return false;

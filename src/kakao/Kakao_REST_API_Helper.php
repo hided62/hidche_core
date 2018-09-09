@@ -25,7 +25,7 @@ class User_Management_Path
     public static $SIGNUP         = "/v1/user/signup";
     public static $UNLINK         = "/v1/user/unlink";
     public static $LOGOUT         = "/v1/user/logout";
-    public static $ME             = "/v1/user/me";
+    public static $ME             = "/v2/user/me";
     public static $UPDATE_PROFILE = "/v1/user/update_profile";
     public static $USER_IDS       = "/v1/user/ids";
 }
@@ -97,12 +97,12 @@ class Kakao_REST_API_Helper
             $requestUrl .= '?'.$params;
         }
 
-        $opts = array(
-      CURLOPT_URL => $requestUrl,
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_SSL_VERIFYPEER => false,
-      CURLOPT_SSLVERSION => 1,
-    );
+        $opts = [
+            CURLOPT_URL => $requestUrl,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSLVERSION => CURL_SSLVERSION_TLSv1,
+        ];
 
         if ($api_path != '/oauth/token') {
             if (in_array($api_path, self::$admin_apis)) {
@@ -213,8 +213,12 @@ class Kakao_REST_API_Helper
     public function meWithEmail()
     {
         $params = [
-      'propertyKeys'=>'["id","kaacount_email","kaccount_email_verified"]'
-    ];
+            'property_keys'=>'['.
+                '"id",'.
+                '"kakao_account.has_email","kakao_account.email",'.
+                '"kakao_account.is_email_valid","kakao_account.is_email_verified"'.
+            ']'
+        ];
         return $this->request(User_Management_Path::$ME);
     }
 

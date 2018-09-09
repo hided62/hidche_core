@@ -52,8 +52,8 @@ input::-webkit-input-placeholder {
 
 }
 
-.login-button{
-   margin-top: 5px;
+.login_btn_group{
+    margin-top: 5px;
 }
 
 .login-register{
@@ -96,6 +96,10 @@ input::-webkit-input-placeholder {
     margin:0;
     padding:0;
     z-index:800;
+}
+
+#login_card{
+    z-index:801;
 }
 
 #btn_kakao_login{
