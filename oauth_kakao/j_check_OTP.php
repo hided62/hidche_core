@@ -78,15 +78,15 @@ if($OTPValue != $otp){
     ]);
 }
 
-$OTPValidUntil = TimeUtil::DatetimeFromNowDay(10);
+$tokenValidUntil = TimeUtil::DatetimeFromNowDay(10);
 $session->setReqOTP(false);
-$oauthInfo['OTPValidUntil'] = $OTPValidUntil;
 RootDB::db()->update('member', [
-    'oauth_info'=>Json::encode($oauthInfo)
+    'oauth_info'=>Json::encode($oauthInfo),
+    'token_valid_until'=>$tokenValidUntil,
 ], 'no=%i', $userNo);
 
 Json::die([
     'result'=>true,
     'reset'=>false,
-    'reason'=>"로그인을 성공했습니다. {$OTPValidUntil}까지 유효합니다."
+    'reason'=>"로그인을 성공했습니다. {$tokenValidUntil}까지 유효합니다."
 ]);

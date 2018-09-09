@@ -217,7 +217,7 @@ function postOAuthResult(result){
                 <div>
                     인증 코드가 필요합니다.<br><br>
                     카카오톡의 '나와의 채팅'란을 확인해 주세요.<br>
-                    (별도의 알림[소리, 진동, 숫자]가 발생하지 않습니다.)
+                    (별도의 알림[소리, 진동, 숫자]이 발생하지 않습니다.)
                 </div>
                 <div class="input-group mt-4" role="group">
                     <div class="input-group-prepend">

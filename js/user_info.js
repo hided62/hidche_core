@@ -22,7 +22,7 @@ function fillUserInfo(result){
     }
     $('#slot_oauth_type').text(result.oauth_type);
     if(result.oauth_type != 'NONE'){
-        $('#slot_token_valid_until').text(result.login_token_valid);
+        $('#slot_token_valid_until').text(result.token_valid_until);
     }
     else{
         $('#slot_token_valid_until').parent().html('');

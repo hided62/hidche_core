@@ -12,29 +12,28 @@ $session = Session::requireLogin([
 
 $userID = Session::getUserID();
 
-$oauthInfo = Json::decode(RootDB::db()->queryFirstField('SELECT oauth_info from member where no=%i',$userID))??[];
-if(!$oauthInfo){
+$tokenValidUntil = RootDB::db()->queryFirstField('SELECT token_valid_until from member where no=%i',$userID);
+
+if(!$tokenValidUntil){
     Json::die([
         'result'=>false,
         'reason'=>'초기화 가능한 로그인 상태가 아닙니다.'
     ]);
 }
 
-$OTPValidUntil = $oauthInfo['OTPValidUntil']??null;
-
 $now = TimeUtil::DatetimeNow();
 $expectedDate = TimeUtil::DatetimeFromNowDay(5);
 
-if($expectedDate <= $OTPValidUntil){
+if($expectedDate <= $tokenValidUntil){
     Json::die([
         'result'=>false,
         'reason'=>'아직 연장 가능하지 않습니다.'
     ]);
 }
 
-unset($oauthInfo['OTPValidUntil']);
+unset($oauthInfo['tokenValidUntil']);
 RootDB::db()->update('member', [
-    'oauth_info'=>Json::encode($oauthInfo)
+    'token_valid_until'=> null
 ], 'no=%i', $userID);
 
 $session->logout();

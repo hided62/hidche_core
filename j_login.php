@@ -41,7 +41,7 @@ function kakaoOAuthCheck(array $userInfo) : ?array {
     $refreshTokenValidUntil = $oauthInfo['refreshTokenValidUntil']??null;
     $OTPValue = $oauthInfo['OTPValue']??null;
     $OTPTrialUntil = $oauthInfo['OTPTrialUntil']??null;
-    $OTPValidUntil = $oauthInfo['OTPValidUntil']??null;
+    $tokenValidUntil = $member['token_valid_until'];
 
     if(!$accessToken || !$refreshToken || !$accessTokenValidUntil || !$refreshTokenValidUntil){
         return [false, 'OAuth 정보가 보관되어 있지 않습니다. 카카오 로그인을 수행해 주세요.'];
@@ -79,7 +79,7 @@ function kakaoOAuthCheck(array $userInfo) : ?array {
         ], 'no=%i', $userInfo['no']);
     }
 
-    if($OTPValidUntil && $now <= $OTPValidUntil){
+    if($tokenValidUntil && $now <= $tokenValidUntil){
         return null;
     }
 

@@ -117,7 +117,7 @@ if(!$email){
 
 
 $userInfo = $RootDB->queryFirstRow(
-    'SELECT `no`, `id`, `name`, `grade`, `delete_after`, `acl`, oauth_info from member where email=%s',$email);
+    'SELECT `no`, `id`, `name`, `grade`, `delete_after`, `acl`, oauth_info, token_valid_until from member where email=%s',$email);
 
 if(!$userInfo){
     $restAPI->unlink();
@@ -164,9 +164,9 @@ RootDB::db()->update('member', [
 ], 'no=%i', $userInfo['no']);
 
 
-$OTPValidUntil = $oauthInfo['OTPValidUntil']??null;
+$tokenValidUntil = $userInfo['token_valid_until'];
 
-if(!$OTPValidUntil || $OTPValidUntil < $now){
+if(!$tokenValidUntil || $tokenValidUntil < $now){
     if(!createOTPbyUserNO($userInfo['no'])){
         Json::die([
             'result'=>false,
