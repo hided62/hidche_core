@@ -41,7 +41,7 @@ function kakaoOAuthCheck(array $userInfo) : ?array {
     $refreshTokenValidUntil = $oauthInfo['refreshTokenValidUntil']??null;
     $OTPValue = $oauthInfo['OTPValue']??null;
     $OTPTrialUntil = $oauthInfo['OTPTrialUntil']??null;
-    $tokenValidUntil = $member['token_valid_until'];
+    $tokenValidUntil = $userInfo['token_valid_until'];
 
     if(!$accessToken || !$refreshToken || !$accessTokenValidUntil || !$refreshTokenValidUntil){
         return [false, 'OAuth 정보가 보관되어 있지 않습니다. 카카오 로그인을 수행해 주세요.'];
@@ -97,7 +97,7 @@ function kakaoOAuthCheck(array $userInfo) : ?array {
 }
 
 $userInfo = $RootDB->queryFirstRow(
-    'SELECT `no`, `id`, `name`, `grade`, `delete_after`, `acl`, oauth_id, oauth_type, oauth_info '.
+    'SELECT `no`, `id`, `name`, `grade`, `delete_after`, `acl`, oauth_id, oauth_type, oauth_info, token_valid_until '.
     'from member where id=%s_username AND '.
     'pw=sha2(concat(salt, %s_password, salt), 512)',[
         'username'=>$username,
@@ -152,7 +152,7 @@ $RootDB->insert('member_log',[
 if($userInfo['oauth_type'] == 'KAKAO'){
     $oauthFailResult = kakaoOAuthCheck($userInfo);
     if($oauthFailResult !== null){
-        $session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], true, Json::decode($userInfo['acl']??'{}'));
+        $session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], true, $userInfo['token_valid_until'], Json::decode($userInfo['acl']??'{}'));
         [$oauthReqOTP, $oauthFailReason] = $oauthFailResult;
         Json::die([
             'result'=>false,
@@ -163,7 +163,7 @@ if($userInfo['oauth_type'] == 'KAKAO'){
 }
 
 
-$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], false, Json::decode($userInfo['acl']??'{}'));
+$session->login($userInfo['no'], $userInfo['id'], $userInfo['grade'], false, $userInfo['token_valid_until'], Json::decode($userInfo['acl']??'{}'));
 Json::die([
     'result'=>true,
     'reqOTP'=>false,

@@ -184,14 +184,6 @@ function postOAuthResult(result){
                         </div>
                     </div>
                 </form>
-<!--
-                <div class="form-group row">
-                    <div class="col-sm-4"><a href="javascript:getOAuthToken('change_pw', 'talk_message');">비밀번호 찾기<img src="oauth_kakao/kakao_to_me.png"></a></div>
-                    <div class="col-sm-8">
-                        
-                    </div>
-                </div>
--->
             </div>
         </div>
         </div>

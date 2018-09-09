@@ -10,6 +10,7 @@ namespace sammo;
  * @property string $ip        IP
  * @property bool   $reqOTP    인증 코드 필요
  * @property array  $acl       권한
+ * @property string $tokenValidUntil 로그인 토큰 길이
  */
 class Session
 {
@@ -23,6 +24,7 @@ class Session
         'writeClosed'=>true,
         'generalID'=>true,
         'generalName'=>true,
+        'tokenValidUntil'=>true,
         'acl'=>true
     ];
 
@@ -165,7 +167,7 @@ class Session
         return Util::array_get($_SESSION[$name]);
     }
 
-    public function login(int $userID, string $userName, int $grade, bool $reqOTP, array $acl): Session
+    public function login(int $userID, string $userName, int $grade, bool $reqOTP, ?string $tokenValidUntil, array $acl): Session
     {
         $this->set('userID', $userID);
         $this->set('userName', $userName);
@@ -174,6 +176,7 @@ class Session
         $this->set('userGrade', $grade);
         $this->set('acl', $acl);
         $this->set('reqOTP', $reqOTP);
+        $this->set('tokenValidUntil', $tokenValidUntil);
         return $this;
     }
 
@@ -333,10 +336,20 @@ class Session
 
     public function isLoggedIn(bool $ignoreOTP = false): bool
     {
-        if (!$ignoreOTP && $this->reqOTP){
-            return false;
+        if(!$ignoreOTP){
+            if($this->reqOTP){
+                return false;
+            }
+            if(!$this->tokenValidUntil){
+                return false;
+            }
+            $now = TimeUtil::DatetimeNow();
+            if($this->tokenValidUntil < $now){
+                return false;
+            }
         }
-        else if ($this->userID) {
+        
+        if ($this->userID) {
             return true;
         } else {
             return false;
