@@ -142,7 +142,6 @@ if(!$validEmail || !$verifiedEmail){
     Json::die([
         'result'=>false,
         'reason'=>'카카오 계정 이메일이 아직 인증되지 않았습니다',
-        'aux'=>$me
     ]);
 }
 
