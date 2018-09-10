@@ -60,7 +60,11 @@ function kakaoOAuthCheck(array $userInfo) : ?array {
             return [false, '로그인 토큰 자동 갱신을 실패했습니다. 카카오 로그인을 수행해 주세요.'];
         }
 
-        $accessToken = $refreshResult['access_token'];
+        $accessToken = $refreshResult['access_token']??null;
+
+        if(!$accessToken){
+            return [false, '로그인 토큰 자동 갱신을 실패했습니다. 카카오 로그인을 수행해 주세요.'];
+        }
         $accessTokenValidUntil = TimeUtil::DatetimeFromNowSecond($refreshResult['expires_in']);
 
         $oauthInfo['accessToken'] = $accessToken;
