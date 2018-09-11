@@ -36,9 +36,12 @@ if ($session->isLoggedIn()) {
     <?=WebUtil::printJS('js/title.js')?>
     <?=WebUtil::printCSS('e_lib/bootstrap.min.css')?>
     <?=WebUtil::printCSS('css/login.css')?>
-    <meta name="description" content="삼국지 모의전투 HiDCHe">
+    <meta name="description" content="실시간으로 진행되는 삼국지 웹게임(삼모전)입니다">
     <meta name="keywords" content="삼국지,삼모전,웹게임,힏체,히데체,HiDCHe,체섭">
-
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="삼국지 모의전투 HiDCHe">
+    <meta property="og:description" content="실시간으로 진행되는 삼국지 웹게임(삼모전)입니다">
+    <meta property="og:url" content="https://sam.hided.net">
     <script>
 
 var oauthMode = null;
