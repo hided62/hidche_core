@@ -217,8 +217,8 @@ $result = Util::generateFileUsingSimpleTemplate(
 );
 
 $result = Util::generateFileUsingSimpleTemplate(
-    __dir__.'/templates/menu.orig.js',
-    ROOT.'/d_shared/menu.js',
+    __dir__.'/templates/menu.orig.json',
+    ROOT.'/d_shared/menu.json',
     [],
     true
 );

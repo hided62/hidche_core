@@ -30,10 +30,8 @@ if ($session->isLoggedIn()) {
     <?=WebUtil::printJS('e_lib/bootstrap.bundle.min.js')?>
     <?=WebUtil::printJS('e_lib/jquery.validate.min.js')?>
     <?=WebUtil::printJS('e_lib/sha512.min.js')?>
-    <?=WebUtil::printJS('d_shared/menu.js')?>
     <?=WebUtil::printJS('js/common.js')?>
     <?=WebUtil::printJS('js/login.js')?>
-    <?=WebUtil::printJS('js/title.js')?>
     <?=WebUtil::printCSS('e_lib/bootstrap.min.css')?>
     <?=WebUtil::printCSS('css/login.css')?>
     <meta name="description" content="실시간으로 진행되는 삼국지 웹게임(삼모전)입니다">
@@ -141,6 +139,7 @@ function postOAuthResult(result){
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
+        <?=WebUtil::drawMenu(ROOT.'/d_shared/menu.json')?>
     </ul>
   </div>
 </nav>

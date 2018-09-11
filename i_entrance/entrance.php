@@ -12,6 +12,7 @@ $db = RootDB::db();
 $notice = $db->queryFirstField('SELECT `NOTICE` FROM `system` WHERE `NO`=1');
 $userGrade = $session->userGrade;
 $acl = $session->acl;
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -34,8 +35,6 @@ $acl = $session->acl;
         <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
         <?=WebUtil::printJS('../js/func.js')?>
         <?=WebUtil::printJS('../js/entrance.js')?>
-        <?=WebUtil::printJS('../d_shared/menu.js')?>
-        <?=WebUtil::printJS('../js/title.js')?>
 
 <?php if ($userGrade >= 5 || $acl): ?>
         <!-- 운영자 -->
@@ -53,6 +52,7 @@ $acl = $session->acl;
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
+    <?=WebUtil::drawMenu(ROOT.'/d_shared/menu.json')?>
     </ul>
   </div>
 </nav>
