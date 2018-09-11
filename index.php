@@ -36,6 +36,9 @@ if ($session->isLoggedIn()) {
     <?=WebUtil::printJS('js/title.js')?>
     <?=WebUtil::printCSS('e_lib/bootstrap.min.css')?>
     <?=WebUtil::printCSS('css/login.css')?>
+    <meta name="description" content="삼국지 모의전투 HiDCHe">
+    <meta name="keywords" content="삼국지,삼모전,웹게임,힏체,히데체,HiDCHe,체섭">
+
     <script>
 
 var oauthMode = null;
