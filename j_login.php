@@ -63,7 +63,7 @@ function kakaoOAuthCheck(array $userInfo) : ?array {
         $accessToken = $refreshResult['access_token']??null;
 
         if(!$accessToken){
-            trigger_error("refreshToken 에러 ".Json::encode($refreshResult).",".$refreshToken, E_USER_NOTICE);
+            trigger_error("refreshToken 에러 ".Json::encode($refreshResult).",".$refreshToken.",".substr(\kakao\KakaoKey::REST_KEY, 0, 6), E_USER_NOTICE);
             return [false, '로그인 토큰 자동 갱신을 실패했습니다. 카카오 로그인을 수행해 주세요.'];
         }
         $accessTokenValidUntil = TimeUtil::DatetimeFromNowSecond($refreshResult['expires_in']);
