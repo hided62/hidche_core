@@ -182,8 +182,7 @@ class Kakao_REST_API_Helper
         $params = [
       'grant_type'=>'refresh_token',
       'client_id'=>$this->REST_KEY,
-      'redirect_uri'=>$this->REDIRECT_URI,
-      'code'=>$refresh_token
+      'refresh_token'=>$refresh_token
     ];
         $result = $this->_create_or_refresh_access_token($params);
     
