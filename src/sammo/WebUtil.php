@@ -141,7 +141,7 @@ class WebUtil
 
         $result = [];
         foreach($json as $menuItem){
-            if (count($path) == 2) {
+            if (count($menuItem) == 2) {
                 [$url, $title] = $menuItem;
                 $targetAttr = '';
             }
