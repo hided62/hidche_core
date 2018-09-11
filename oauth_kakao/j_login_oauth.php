@@ -155,9 +155,11 @@ if($userInfo['delete_after']){
 
 $oauthInfo = Json::decode($userInfo['oauth_info'])??[];
 $oauthInfo['accessToken'] = $access_token;
-$oauthInfo['refreshToken'] = $refresh_token;
 $oauthInfo['accessTokenValidUntil'] = $expires;
-$oauthInfo['refreshTokenValidUntil'] = $refresh_token_expires;
+if($refresh_token){
+    $oauthInfo['refreshToken'] = $refresh_token;
+    $oauthInfo['refreshTokenValidUntil'] = $refresh_token_expires;
+}
 
 RootDB::db()->update('member', [
     'oauth_info'=>Json::encode($oauthInfo)
