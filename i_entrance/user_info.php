@@ -26,8 +26,6 @@ require(__dir__.'/../vendor/autoload.php');
         <?=WebUtil::printJS('../e_lib/moment.min.js')?>
         <?=WebUtil::printJS('../js/func.js')?>
         <?=WebUtil::printJS('../js/user_info.js')?>
-        <?=WebUtil::printJS('../d_shared/menu.js')?>
-        <?=WebUtil::printJS('../js/title.js')?>
     </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -37,6 +35,7 @@ require(__dir__.'/../vendor/autoload.php');
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
+        <?=WebUtil::drawMenu(ROOT.'/d_shared/menu.json')?>
         </ul>
     </div>
 </nav>

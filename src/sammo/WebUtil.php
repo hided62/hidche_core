@@ -135,4 +135,26 @@ class WebUtil
         $purifier = new \HTMLPurifier($config);
         return $purifier->purify($text);
     }
+
+    public static function drawMenu(string $path): string{
+        $json = Json::decode(file_get_contents($path));
+
+        $result = [];
+        foreach($json as $menuItem){
+            if (count($path) == 2) {
+                [$url, $title] = $menuItem;
+                $targetAttr = '';
+            }
+            else{
+                [$url, $title, $target] = $menuItem;
+                $target = htmlspecialchars($target);
+                $targetAttr = "target='$target' ";
+            }
+            $title = htmlspecialchars($title);
+            $url = htmlspecialchars($url);
+            $result[] = "<a class='nav-link' href='$url' $targetAttr>$title</a>";
+        }
+
+        return join("\n", $result);
+    }
 }
