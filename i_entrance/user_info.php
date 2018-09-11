@@ -23,6 +23,7 @@ require(__dir__.'/../vendor/autoload.php');
         <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
         <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
         <?=WebUtil::printJS('../e_lib/sha512.min.js')?>
+        <?=WebUtil::printJS('../e_lib/moment.min.js')?>
         <?=WebUtil::printJS('../js/func.js')?>
         <?=WebUtil::printJS('../js/user_info.js')?>
         <?=WebUtil::printJS('../d_shared/menu.js')?>
@@ -86,6 +87,14 @@ require(__dir__.'/../vendor/autoload.php');
                 <span id="slot_join_date"></span>
             </td>
             <td colspan="3">개인정보 3자 제공 동의 : <span id="slot_third_use"></span><button type="button" id="third_use_disallow">철회</button></td>
+        </tr>
+        <tr>
+            <th class="bg1">인증 방식</th>
+            <td colspan="2">
+                <span id="slot_oauth_type"></span>
+            </td>
+            <td colspan="3">
+                <span id="slot_token_valid_until"></span>까지 유효<button type="button" id="expand_login_token">초기화</button></td>
         </tr>
         <tr>
             <th class="bg1"></th>

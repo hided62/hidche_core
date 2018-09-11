@@ -1,5 +1,6 @@
 <?php
 namespace sammo;
+use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
 function checkUsernameDup($username){
     if(!$username){
@@ -63,3 +64,66 @@ function checkEmailDup($email){
     }
     return true;
 }
+
+function createOTPbyUserNO(int $userNo):bool{
+    $userInfo = RootDB::db()->queryFirstRow('SELECT oauth_info FROM member WHERE no=%i', $userNo);
+    if(!$userInfo){
+        return false;
+    }
+
+    $oauthInfo = Json::decode($userInfo['oauth_info']);
+    if(!$oauthInfo){
+        return false;
+    }
+
+    $accessToken = $oauthInfo['accessToken'];
+    $OTPValue = $oauthInfo['OTPValue']??null;
+    $OTPTrialUntil = $oauthInfo['OTPTrialUntil']??null;
+
+    $now = TimeUtil::DatetimeNow();
+
+
+    if($OTPTrialUntil && $OTPValue && $OTPTrialUntil > $now){
+        return true;
+    }
+
+    [$OTPValue, $OTPTrialUntil] = createOTP($accessToken);
+
+    if(!$OTPValue){
+        return false;
+    }
+
+    $oauthInfo['OTPValue'] = $OTPValue;
+    $oauthInfo['OTPTrialUntil'] = $OTPTrialUntil;
+    $oauthInfo['OTPTrialCount'] = 3;
+
+    RootDB::db()->update('member', [
+        'oauth_info'=>Json::encode($oauthInfo)
+    ], 'no=%i', $userNo);
+
+    return true;
+}
+
+function createOTP(string $accessToken):?array{
+    $restAPI = new Kakao_REST_API_Helper($accessToken);
+
+    $OTPValue = Util::randRangeInt(10000, 99999);
+    $OTPTrialUntil = TimeUtil::DatetimeFromNowSecond(180);
+
+    $sendResult = $restAPI->talk_to_me_default([
+        "object_type"=> "text",
+        "text"=> "인증 코드는 $OTPValue 입니다. $OTPTrialUntil 이내에 입력해주세요.",
+        "link"=> [
+          "web_url"=> ServConfig::getServerBasepath(),
+          "mobile_web_url" => ServConfig::getServerBasepath()
+        ],
+        "button_title"=> "로그인 페이지 열기"
+      ]);
+      $sendResult['code'] = Util::array_get($sendResult['code'], 0);
+      if($sendResult['code'] < 0){
+          return null;
+      }
+
+      return [$OTPValue, $OTPTrialUntil];
+}
+

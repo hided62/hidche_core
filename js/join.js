@@ -111,7 +111,7 @@ $(document).ready( function () {
                 alert(obj.reason);
             }
             else{
-                alert('정상적으로 가입되었습니다.');
+                alert('회원 등록되었습니다.\n첫 로그인 과정에서 인증 코드를 입력하는 것으로 계정이 활성화됩니다.');
             }
 
             window.location.href = "../";

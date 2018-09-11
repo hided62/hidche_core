@@ -8,12 +8,15 @@ namespace sammo;
  * @property string $userName  유저명
  * @property int    $userGrade 유저등급
  * @property string $ip        IP
+ * @property bool   $reqOTP    인증 코드 필요
  * @property array  $acl       권한
+ * @property string $tokenValidUntil 로그인 토큰 길이
  */
 class Session
 {
     const PROTECTED_NAMES = [
         'ip'=>true,
+        'reqOTP'=>true,
         'time'=>true,
         'userID'=>true,
         'userName'=>true,
@@ -21,6 +24,7 @@ class Session
         'writeClosed'=>true,
         'generalID'=>true,
         'generalName'=>true,
+        'tokenValidUntil'=>true,
         'acl'=>true
     ];
 
@@ -163,7 +167,7 @@ class Session
         return Util::array_get($_SESSION[$name]);
     }
 
-    public function login(int $userID, string $userName, int $grade, array $acl): Session
+    public function login(int $userID, string $userName, int $grade, bool $reqOTP, ?string $tokenValidUntil, array $acl): Session
     {
         $this->set('userID', $userID);
         $this->set('userName', $userName);
@@ -171,8 +175,14 @@ class Session
         $this->set('time', time());
         $this->set('userGrade', $grade);
         $this->set('acl', $acl);
-        $this->set('access_token', null);
+        $this->set('reqOTP', $reqOTP);
+        $this->set('tokenValidUntil', $tokenValidUntil);
         return $this;
+    }
+
+    public function setReqOTP(bool $reqOTP=false, string $tokenValidUntil){
+        $this->set('reqOTP', $reqOTP);
+        $this->set('tokenValidUntil', $tokenValidUntil);
     }
 
 
@@ -189,6 +199,7 @@ class Session
         $this->set('userName', null);
         $this->set('userGrade', null);
         $this->set('acl', null);
+        $this->set('reqOTP', null);
         $this->set('time', time());
         return $this;
     }
@@ -324,8 +335,21 @@ class Session
         return $obj->userID;
     }
 
-    public function isLoggedIn(): bool
+    public function isLoggedIn(bool $ignoreOTP = false): bool
     {
+        if(!$ignoreOTP){
+            if($this->reqOTP){
+                return false;
+            }
+            if(!$this->tokenValidUntil){
+                return false;
+            }
+            $now = TimeUtil::DatetimeNow();
+            if($this->tokenValidUntil < $now){
+                return false;
+            }
+        }
+        
         if ($this->userID) {
             return true;
         } else {

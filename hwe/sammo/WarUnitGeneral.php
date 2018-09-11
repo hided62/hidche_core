@@ -592,7 +592,7 @@ class WarUnitGeneral extends WarUnit{
                 }
 
                 if($oppose instanceof WarUnitCity){
-                    $magic = Util::choiceRandom(['급습', '위보',' 혼란']);
+                    $magic = Util::choiceRandom(['급습', '위보', '혼란']);
                 }
                 else{
                     $magic = Util::choiceRandom(['위보', '매복', '반목', '화계', '혼란']);
@@ -784,7 +784,7 @@ class WarUnitGeneral extends WarUnit{
             foreach($table as $skillKey => $skillMultiply){
                 if($oppose->hasActivatedSkill($skillKey)){
                     $josaUl = \sammo\JosaUtil::pick($skillKey, '을');
-                    $thisLogger->pushGeneralBattleDetailLog("<C>●</><C>반계</>로 상대의 <D>{$skillKey}</>{$josaUl} 되돌렸다!");
+                    $thisLogger->pushGeneralBattleDetailLog("<C>반계</>로 상대의 <D>{$skillKey}</>{$josaUl} 되돌렸다!");
                     $opposeLogger->pushGeneralBattleDetailLog("<D>{$skillKey}</>{$josaUl} <R>역으로</> 당했다!");
 
                     $this->multiplyWarPowerMultiply($skillMultiply);

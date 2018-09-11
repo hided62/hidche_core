@@ -52,6 +52,7 @@ $rootDB->insert('member',[
     'oauth_type' => 'NONE',
     'id' => $username,
     'email' => null,
+    'token_valid_until'=>'2999-01-01 00:00:00',
     'pw' => $finalPassword,
     'salt' => $userSalt,
     'grade'=> 6,

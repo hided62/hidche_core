@@ -64,8 +64,17 @@ function getOAuthToken(mode, scope_list){
 
 function sendTempPasswordToKakaoTalk(){
     $.post({
-        url:'j_change_pw.php',
+        url:'oauth_kakao/j_login_oauth.php',
         dataType:'json'
+    }).then(function(obj){
+        var t = $.Deferred();
+        if(!obj.result){
+            t.reject();
+        }
+        return $.post({
+            url:'oauth_kakao/j_change_pw.php',
+            dataType:'json'
+        });
     }).then(function(obj){
         if(!obj.result){
             alert(obj.reason);
@@ -81,18 +90,27 @@ function doLoginUsingOAuth(){
         url:'oauth_kakao/j_login_oauth.php',
         dataType:'json'
     }).then(function(obj){
-        if(!obj.result){
-            alert(obj.reason);
-        }
-        else{
+        if(obj.result){
             window.location.href = "./";
+            return;
         }
+        if(!obj.reqOTP){
+            alert(obj.reason);
+            return;
+        }
+        $('#modalOTP').modal().on('shown.bs.modal', function(){
+            $('#otp_code').focus();
+        });
+
     });
 }
 
 function postOAuthResult(result){
     if(result == 'join'){
         window.location.href = 'oauth_kakao/join.php';
+    }
+    else if(result == 'req_email'){
+        alert('이메일 정보 공유를 허가해 주셔야 합니다.');
     }
     else if(result == 'login'){
         console.log('로그인모드');
@@ -126,7 +144,7 @@ function postOAuthResult(result){
         <h1 class="row justify-content-md-center">삼국지 모의전투 HiDCHe</h1>
         <div class="row justify-content-md-center">
         <div class="col" style="max-width:450px;">
-        <div class="card">
+        <div class="card" id="login_card">
             <h3 class="card-header">
                 로그인
             </h3> 
@@ -152,29 +170,62 @@ function postOAuthResult(result){
 
                     <input type="hidden" id="global_salt" name="global_salt" value="<?=RootDB::getGlobalSalt()?>">
                     <div class="form-group row">
-                        <div class="col-5 col-md-4 " style="position:relative;"><button type="button" onclick="getOAuthToken('login');" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
+                        <div class="col-5 col-md-4 " style="position:relative;"><button type="button" onclick="getOAuthToken('login', ['account_email','talk_message']);" id="btn_kakao_login" title="카카오톡으로 가입&amp;로그인"></button></div>
                         <div class="col-7 col-md-8">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block login-button">로그인</button>
+                            <div class="btn-group btn-group-lg d-flex login_btn_group" role="group">
+                                <button type="submit" class="btn btn-primary login-button w-100">로그인</button>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </button>
+                                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                                        <a class="dropdown-item" href="javascript:getOAuthToken('change_pw', 'talk_message');">비밀번호 초기화</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
-<!--
-                <div class="form-group row">
-                    <div class="col-sm-4"><a href="javascript:getOAuthToken('change_pw', 'talk_message');">비밀번호 찾기<img src="oauth_kakao/kakao_to_me.png"></a></div>
-                    <div class="col-sm-8">
-                        
-                    </div>
-                </div>
--->
             </div>
         </div>
         </div>
         </div>
     </div>
     </div>
-</div>
     <div id="bottom_box">
     <div class="container"><a href="terms.2.html">개인정보처리방침</a> &amp; <a href="terms.1.html">이용약관</a><br>© 2018  •  HideD
     <br>크롬과 파이어폭스에 최적화되어있습니다.</div></div>
+</div>
+
+<div class="modal fade" id="modalOTP" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <form id="otp_form" method="post" action="#">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">인증 코드 필요</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    인증 코드가 필요합니다.<br><br>
+                    카카오톡의 '나와의 채팅'란을 확인해 주세요.<br>
+                    (별도의 알림[소리, 진동, 숫자]이 발생하지 않습니다.)
+                </div>
+                <div class="input-group mt-4" role="group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">인증 코드</span>
+                    </div>
+                    <input type="number" class="form-control" name='otp' id="otp_code" placeholder="인증 코드">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                <button type="submit" class="btn btn-primary">제출</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

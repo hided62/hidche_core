@@ -54,9 +54,6 @@ if ($showCurrentNation) {
     <tr>
         <td style="background-color:#333333;" align=center colspan=8>
             <font size=5>현재 (<?=$year?>年 <?=$month?>月)</font>
-            
-            <a href="a_emperior_detail.php"><button>자세히</button></a>
-            
             <a href="a_history.php"><button>역사 보기</button></a>
         </td>
     </tr>

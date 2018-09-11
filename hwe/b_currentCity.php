@@ -11,6 +11,7 @@ extractMissingPostToGlobals();
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
+$userGrade = Session::getUserGrade();
 
 $db = DB::db();
 $connect=$db->get();
@@ -168,7 +169,7 @@ echo "
 unset($city);
 
 // 첩보된 도시까지만 허용
-if($valid == 0 && $session->userGrade < 5) {
+if($valid == 0 && $userGrade < 5) {
     $citylist = $me['city'];
 }
 
@@ -210,6 +211,10 @@ for($j=0; $j < $gencount; $j++) {
     }
     else{
         $ourGeneral = false;
+    }
+
+    if($userGrade == 6){
+        $ourGeneral = true;
     }
 
     $isNPC = $general['npc']>1;

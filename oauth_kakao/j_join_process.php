@@ -125,23 +125,35 @@ if(!$kakaoID && Util::array_get($signupResult['msg'])!='already registered'){
 
 $me = $restAPI->meWithEmail();
 $me['code'] = Util::array_get($me['code'], 0);
+$kakao_account = $me['kakao_account']??[];
 if ($me['code']< 0) {
     $restAPI->unlink();
     Json::die([
         'result'=>false,
-        'reason'=>'카카오로그인이 정상적으로 수행되지 않았습니다.'
+        'reason'=>'카카오로그인이 정상적으로 수행되지 않았습니다.',
     ]);
 }
 
-if(!Util::array_get($me['kaccount_email_verified'],false)){
+if(!($kakao_account['has_email']??false)){
+    Json::die([
+        'result'=>false,
+        'reqOTP'=>false,
+        'reason'=>'이메일 정보 공유를 허가해 주셔야 합니다.',
+    ]);
+}
+
+$validEmail = $kakao_account['is_email_valid']??false;
+$verifiedEmail = $kakao_account['is_email_verified']??false;
+
+if(!$validEmail || !$verifiedEmail){
     $restAPI->unlink();
     Json::die([
         'result'=>false,
-        'reason'=>'카카오 계정 이메일이 아직 인증되지 않았습니다'
+        'reason'=>'카카오 계정 이메일이 아직 인증되지 않았습니다',
     ]);
 }
 
-$email = $me['kaccount_email'];
+$email = $kakao_account['email']??null;
 $session->kaccount_email = $email;
 $emailChk = checkEmailDup($email);
 if($emailChk !== true){
@@ -162,7 +174,13 @@ RootDB::db()->insert('member',[
     'pw' => $finalPassword,
     'salt' => $userSalt,
     'name'=>$nickname,
-    'reg_date'=>$nowDate
+    'reg_date'=>$nowDate,
+    'oauth_info'=>Json::encode([
+        'accessToken'=>$access_token,
+        'refreshToken'=>$refresh_token,
+        'accessTokenValidUntil'=>$expires,
+        'refreshTokenValidUntil'=>$refresh_token_expires
+    ])
 ]);
 $userID = RootDB::db()->insertId();
 

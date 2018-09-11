@@ -153,6 +153,8 @@ jQuery(function($){
 
     var customCSS = localStorage.getItem('sam_customCSS');
     if(customCSS){
-        $('<style type="text/css">\n'+customCSS+'\n</style>').appendTo($('head'));
+        var $style = $('<style type="text/css"></style>');
+        $style.text(customCSS); 
+        $style.appendTo($('head'));
     }
 });

@@ -20,6 +20,16 @@ function fillUserInfo(result){
     if(result.third_use){
         $('#third_use_disallow').show();
     }
+    $('#slot_oauth_type').text(result.oauth_type);
+    if(result.oauth_type != 'NONE'){
+        $('#slot_token_valid_until').text(result.token_valid_until);
+    }
+    else{
+        $('#slot_token_valid_until').parent().html('');
+    }
+    
+
+
 }
 
 function changeIconPreview(){
@@ -217,6 +227,37 @@ function deleteMe(){
     });
 }
 
+function extendAuth(){
+    var validUntil = $('#slot_token_valid_until').html();
+    var availableAt = moment(validUntil).subtract(5, 'days').format('YYYY-MM-DD HH:mm:ss');
+    var now = moment().format('YYYY-MM-DD HH:mm:ss');
+
+    if(now < availableAt){
+        alert('{0}부터 초기화할 수 있습니다.'.format(availableAt));
+        return false;
+    }
+
+    if(!confirm('로그아웃됩니다. 진행할까요?')){
+        return;
+    }
+
+    $.ajax({
+        type:'post',
+        url:'../oauth_kakao/j_reset_token.php',
+        dataType:'json',
+    }).then(function(result){
+        if(!result.result){
+            alert(result.reason);
+        }
+        else{
+            alert('초기화했습니다. 다시 로그인해 주십시오.');
+            location.href='../';
+        }
+    },function(){
+        alert('알 수 없는 이유로 로그인 토큰 연장에 실패했습니다.');
+    });
+}
+
 $(function(){
     $('#slot_icon, #slot_new_icon').attr('src', pathConfig.sharedIcon+'/default.jpg');
     $.ajax({
@@ -255,4 +296,6 @@ $(function(){
             deleteMe(e);
         }
     });
+
+    $('#expand_login_token').click(extendAuth);
 })
