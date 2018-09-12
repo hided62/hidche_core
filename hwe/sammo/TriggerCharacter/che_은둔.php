@@ -3,12 +3,12 @@ namespace sammo\TriggerCharacter;
 use \sammo\iActionTrigger;
 use \sammo\General;
 
-class che_대의 implements iActionTrigger{
+class che_은둔 implements iActionTrigger{
     use \sammo\DefaultActionTrigger;
 
-    static $id = 0;
-    static $name = '왕좌';
-    static $info = '명성 +10%, 사기 -5';
+    static $id = 10;
+    static $name = '은둔';
+    static $info = '명성 -10%, 계급 -10%, 사기 -5, 훈련 -5, 단련 성공률 +10%';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
         if($turnType == '단련'){
