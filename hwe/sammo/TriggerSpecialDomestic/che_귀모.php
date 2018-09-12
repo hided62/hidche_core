@@ -19,7 +19,12 @@ class che_귀모 implements iActionTrigger{
         SpecialityConst::STAT_INTEL
     ];
 
-    public function onCalcSabotageProp(float $successRate):float{
-        return $successRate + 0.2;
+    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
+        if($turnType == '계략'){
+            if($varType == 'succ') return $value + 0.1;
+        }
+        
+        
+        return $value;
     }
 }

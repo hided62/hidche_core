@@ -34,22 +34,22 @@ class TriggerGeneralLevel implements iActionTrigger{
     }
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
-        if($turnType == 'agri' || $turnType == 'comm'){
+        if($turnType == '농업' || $turnType == '상업'){
             if(in_array($this->generalLevel, [12, 11, 9, 7, 5, 3])){
                 return $value * 1.05;
             }
         }
-        else if($turnType == 'tech'){
+        else if($turnType == '기술'){
             if(in_array($this->generalLevel, [12, 11, 9, 7, 5])){
                 return $value * 1.05;
             }
         }
-        else if($turnType == 'trust' || $turnType == 'pop'){
+        else if($turnType == '민심' || $turnType == '인구'){
             if(in_array($this->generalLevel, [12, 11, 2])){
                 return $value * 1.05;
             }
         }
-        else if($turnType == 'def' || $turnType == 'wall' || $turnType == 'secu'){
+        else if($turnType == '수비' || $turnType == '성벽' || $turnType == '치안'){
             if(in_array($this->generalLevel, [12, 11, 10, 8, 6, 4])){
                 return $value * 1.05;
             }

@@ -79,6 +79,9 @@ abstract class Constraint{
     static public function build(array $input):this{
         $self = new static();
         foreach($input as $key=>$value){
+            if($value === null){
+                continue;
+            }
             switch($key){
                 case 'general': $self->general($value); break;
                 case 'city': $self->city($value); break;

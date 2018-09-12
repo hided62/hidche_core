@@ -12,14 +12,18 @@ class che_도적 implements iActionTrigger{
     static $cons = '금수입↓ 치안↓ 민심↓';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
-        if($turnType == 'secu'){
+        if($turnType == '치안'){
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;
         }
-        else if($turnType == 'trust' || $turnType == 'pop'){
+        else if($turnType == '민심' || $turnType == '인구'){
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;
         }
+        else if($turnType == '계략'){
+            if($varType == 'succ') return $value + 0.1;
+        }
+        
         
         return $value;
     }
@@ -30,9 +34,5 @@ class che_도적 implements iActionTrigger{
         }
         
         return $amount;
-    }
-
-    public function onCalcSabotageProp(float $successRate):float{
-        return $successRate + 0.1;
     }
 }

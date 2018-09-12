@@ -18,7 +18,7 @@ class che_발명 implements iActionTrigger{
     ];
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
-        if($turnType == 'tech'){
+        if($turnType == '기술'){
             if($varType == 'score') return $value * 1.1;
             if($varType == 'cost') return $value * 0.8;
             if($varType == 'succ') return $value + 0.1;

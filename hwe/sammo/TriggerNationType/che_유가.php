@@ -12,11 +12,11 @@ class che_유가 implements iActionTrigger{
     static $cons = '쌀수입↓';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
-        if($turnType == 'agri' || $turnType == 'comm'){
+        if($turnType == '농업' || $turnType == '상업'){
             if($varType == 'score') return $value * 1.1;
             if($varType == 'cost') return $value * 0.8;
         }
-        else if($turnType == 'trust' || $turnType == 'pop'){
+        else if($turnType == '민심' || $turnType == '인구'){
             if($varType == 'score') return $value * 1.1;
             if($varType == 'cost') return $value * 0.8;
         }

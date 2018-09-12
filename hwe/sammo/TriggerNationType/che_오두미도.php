@@ -13,15 +13,15 @@ class che_오두미도 implements iActionTrigger{
 
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
-        if($turnType == 'tech'){
+        if($turnType == '기술'){
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;
         }
-        else if($turnType == 'def' || $turnType == 'wall'){
+        else if($turnType == '수비' || $turnType == '성벽'){
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;
         }
-        else if($turnType == 'agri' || $turnType == 'comm'){
+        else if($turnType == '농업' || $turnType == '상업'){
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;
         }

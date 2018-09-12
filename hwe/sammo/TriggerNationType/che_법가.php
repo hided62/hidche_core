@@ -12,12 +12,12 @@ class che_법가 implements iActionTrigger{
     static $cons = '인구↓ 민심↓';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
-        if($turnType == 'secu'){
+        if($turnType == '치안'){
             if($varType == 'score') return $value * 1.1;
             if($varType == 'cost') return $value * 0.8;
         }
 
-        else if($turnType == 'trust' || $turnType == 'pop'){
+        else if($turnType == '민심' || $turnType == '인구'){
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;
         } 

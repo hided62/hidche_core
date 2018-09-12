@@ -18,7 +18,7 @@ class che_수비 implements iActionTrigger{
     ];
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
-        if($turnType == 'def'){
+        if($turnType == '수비'){
             if($varType == 'score') return $value * 1.1;
             if($varType == 'cost') return $value * 0.8;
             if($varType == 'succ') return $value + 0.1;

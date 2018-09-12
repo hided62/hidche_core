@@ -12,12 +12,12 @@ class che_음양가 implements iActionTrigger{
     static $cons = '기술↓ 전략↓';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
-        if($turnType == 'agri' || $turnType == 'comm'){
+        if($turnType == '농업' || $turnType == '상업'){
             if($varType == 'score') return $value * 1.1;
             if($varType == 'cost') return $value * 0.8;
         }
 
-        else if($turnType == 'tech'){
+        else if($turnType == '기술'){
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;
         }
