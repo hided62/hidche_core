@@ -12,9 +12,9 @@ trait DefaultActionTrigger{
     public function onPreGeneralStatUpdate(General $general, string $statName, $value){
         return $value;
     }
-    
-    public function onCalcStragicDelay(array $nation, int $commandType, int $turn):int{
-        return $turn;
+
+    public function onCalcStrategic(string $turnType, string $varType, $value){
+        return $value;
     }
 
     public function onCalcNationalIncome(string $type, int $amount):int{

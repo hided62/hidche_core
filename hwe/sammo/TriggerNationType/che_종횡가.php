@@ -33,7 +33,10 @@ class che_종횡가 implements iActionTrigger{
         return $amount;
     }
 
-    public function onCalcStragicDelay(array $nation, int $commandType, int $turn):int{
-        return Util::round($turn / 2);
+    public function onCalcStrategic(string $turnType, string $varType, $value){
+        if($varType == 'delay'){
+            return Util::round($value / 2);
+        }
+        return $value;
     }
 }

@@ -15,7 +15,7 @@ interface iActionTrigger{
 
     public function onPreGeneralStatUpdate(General $general, string $statName, $value);
 
-    public function onCalcStragicDelay(array $nation, int $commandType, int $turn):int;
+    public function onCalcStrategic(string $turnType, string $varType, $value);
     public function onCalcNationalIncome(string $type, int $amount):int;
 
     public function getWarPowerMultiplier(WarUnit $unit):array;

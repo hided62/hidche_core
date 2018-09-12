@@ -33,7 +33,10 @@ class che_음양가 implements iActionTrigger{
         return $amount;
     }
 
-    public function onCalcStragicDelay(array $nation, int $commandType, int $turn):int{
-        return $turn * 2;
+    public function onCalcStrategic(string $turnType, string $varType, $value){
+        if($varType == 'delay'){
+            return $value * 2;
+        }
+        return $value;
     }
 }
