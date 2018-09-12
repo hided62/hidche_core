@@ -1,14 +1,14 @@
 <?php
-namespace sammo\TriggerCharacter;
+namespace sammo\TriggerPersonality;
 use \sammo\iActionTrigger;
 use \sammo\General;
 
-class che_유지 implements iActionTrigger{
+class che_안전 implements iActionTrigger{
     use \sammo\DefaultActionTrigger;
 
-    static $id = 8;
+    static $id = 9;
     static $name = '안전';
-    static $info = '훈련 -5, 징·모병 비용 -20%';
+    static $info = '사기 -5, 징·모병 비용 -20%';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
         if(in_array($turnType, ['징병', '모병'])){
@@ -21,7 +21,7 @@ class che_유지 implements iActionTrigger{
     }
 
     public function onPreGeneralStatUpdate(General $general, string $statName, $value){
-        if($statName == 'bonusTrain'){
+        if($statName == 'bonusAtmos'){
             return $value - 5;
         }
         return $value;

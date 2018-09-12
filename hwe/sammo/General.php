@@ -20,10 +20,11 @@ class General{
     protected $logActivatedSkill = [];
     protected $isFinished = false;
 
-    
+
     protected $nationType;
     protected $levelObj;
     protected $specialDomesticObj;
+    protected $characteristicObj;
 
     public function __construct(array $raw, ?array $city, int $year, int $month){
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
@@ -44,6 +45,7 @@ class General{
 
         $nationTypeClass = getNationTypeClass($staticNation['type']);
         $this->nationType = new $nationTypeClass;
+        $this->levelObj = new TriggerGeneralLevel($this->raw, $city);
         $this->levelObj = new TriggerGeneralLevel($this->raw, $city);
     }
 

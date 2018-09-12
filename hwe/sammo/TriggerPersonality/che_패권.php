@@ -1,5 +1,5 @@
 <?php
-namespace sammo\TriggerCharacter;
+namespace sammo\TriggerPersonality;
 use \sammo\iActionTrigger;
 use \sammo\General;
 

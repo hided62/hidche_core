@@ -107,4 +107,12 @@ class GameConstBase
     ];
     /** @var array 기본 특기(공용) */
     public static $defaultSpecial = 'None';
+
+    /** @var array 기본 성향(공용) */
+    public static $neutralPersonality = 'None';
+    /** @var array 선택 가능한 성향 */
+    public static $availablePersonality = [
+        'che_안전', 'che_유지', 'che_재간', 'che_출세', 'che_할거', 'che_정복',
+        'che_패권', 'che_의협', 'che_대의', 'che_왕좌'    
+    ];
 }

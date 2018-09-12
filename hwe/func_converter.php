@@ -238,6 +238,26 @@ function getNationTypeClass(?string $type){
     new \InvalidArgumentException("{$type}은 올바른 국가 타입 클래스가 아님");
 }
 
+function getPersonalityClass(?string $type){
+    if($type === null){
+        $type = GameConst::$neutralPersonality;
+    }
+
+    static $basePath = __NAMESPACE__.'\\TriggerPersonality\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    $classPath = ($basePath.'che_'.$type);
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    new \InvalidArgumentException("{$type}은 올바른 성격 클래스가 아님");
+}
+
 function getGeneralSpecialDomesticClass(?string $type){
     if($type === null){
         $type = GameConst::$defaultSpecial;
