@@ -9,6 +9,10 @@ trait LazyVarUpdater{
         return $this->raw;
     }
 
+    function getVar(string $key){
+        return $this->raw[$key];
+    }
+
     function updateVar(string $key, $value){
         if($this->raw[$key] === $value){
             return;

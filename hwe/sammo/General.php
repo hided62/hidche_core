@@ -5,6 +5,12 @@ namespace sammo;
 class General{
     use LazyVarUpdater;
 
+    /**
+     * @var iActionTrigger $nationType
+     * @var iActionTrigger $levelObj
+     * @var iActionTrigger $specialDomesticObj
+     */
+
     protected $raw = [];
     protected $rawCity = null;
 
@@ -14,6 +20,7 @@ class General{
     protected $logActivatedSkill = [];
     protected $isFinished = false;
 
+    
     protected $nationType;
     protected $levelObj;
     protected $specialDomesticObj;
@@ -79,6 +86,10 @@ class General{
         return $this->raw['name'];
     }
 
+    function getRawCity():?array{
+        return $this->rawCity;
+    }
+
     function getCityID():int{
         return $this->raw['city'];
     }
@@ -101,6 +112,10 @@ class General{
 
     public function getGeneralLevelObj():iActionTrigger{
         return $this->levelObj;
+    }
+
+    public function onCalcDomestic(string $turnType, string $varType, float $value){
+        
     }
 
     //TODO: 장기적으로 General 클래스로 모두 옮겨와야함.
