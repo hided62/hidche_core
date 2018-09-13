@@ -2276,7 +2276,7 @@ function uniqueItemEx(int $generalID, ActionLogger $logger, string $acquireType=
 }
 
 function uniqueItem($general, $log, $vote=0) {
-    //TODO: uniqueItem 재 구현
+    //TODO: uniqueItem 을 쓰는 경우를 모두 제거.
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();

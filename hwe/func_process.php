@@ -1090,7 +1090,7 @@ function process_11(&$general, $type) {
     ], 'no=%i', $general['no']);
 
     checkAbilityEx($general['no'], $actLog);
-    $log = uniqueItem($general, []);//TODO: uniqueItem 재 구현
+    uniqueItemEx($general['no'], $actLog);
     $actLog->pushGeneralActionLog($log, ActionLogger::RAWTEXT);
 }
 
