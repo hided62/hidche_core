@@ -208,53 +208,20 @@ function process_1(array $rawGeneral, int $type){
         $actionName = '상업 투자';
     }
 
-    [$startYear, $year, $month, $develCost] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'develcost']);
+    $env = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
+    $general = new General($rawGeneral, null, $env['year'], $env['month']);
 
-    $general = new General($rawGeneral, $year, $month);
-    $logger = $general->getLogger();
-
-    $nationTypeObj = $general->getNationTypeObj();
-    $generalLevelObj = $general->getGeneralLevelObj();
-
-    $reqGold = $nationTypeObj->onCalcDomestic($cityKey, 'cost', $develCost);
-    $reqGold = $generalLevelObj->onCalcDomestic($cityKey, 'cost', $develCost);
-
-    $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general->getCityID());
-
-    $constraints = [
-        ['NoNeutral'], 
-        ['NoWanderingNation'],
-        ['OccupiedCity'],
-        ['SuppliedCity'],
-        ['ReqGeneralGold', $reqGold],
-        ['RemainCityCapacity', [$cityKey, $actionName]]
-    ];
-    $failReason = Constraint::testAll($constraints, [
-        'nation'=>$general->getStaticNation(),
-        'city'=>$city,
-        'general'=>$general->getRaw(),
-    ]);
-
-    if($failReason !== null){
-        $logger->pushGeneralActionLog("{$failReason} {$sabotageName} 실패. <1>{$date}</>");
-        return;
+    if($type == 1){
+        $cmdObj = new Command\che_농지개간($general, $env);
+    }
+    else{
+        $cmdObj = new Command\che_상업투자($general, $env);
     }
 
-    $trust = Util::valutFit($city['trust'], 50);
-
-    $score = getGeneralIntel($general, true, true, true, false);
-    $score *= $trust / 100;
-    $score *= getDomesticExpLevelBonus($general['explevel']);
-    $score *= Util::randRange(0.8, 1.2);
-    $score = $nationTypeObj->onCalcDomestic($cityKey, 'score', $score);
-    $score = $generalLevelObj->onCalcDomestic($cityKey, 'score', $score);
-
-    ['succ'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general, 2);
-    $successRatio = $naionTypeObj->onCalcDomestic($cityKey, 'success', $successRatio);
-    $successRatio = $generalLevelObj->onCalcDomestic($cityKey, 'success', $successRatio);
-    
-
-
+    if(!$cmdObj->isAvailable()){
+        return;
+    }
+    $cmdObj->run();
 }
 
 function process_1_old(&$general, $type) {

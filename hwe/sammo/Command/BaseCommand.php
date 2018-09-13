@@ -34,7 +34,7 @@ abstract class BaseCommand{
 
     protected $logger;
 
-    public function __construct(General $generalObj, array $env, $arg){
+    public function __construct(General $generalObj, array $env, $arg = null){
         $this->generalObj = $generalObj;
         $this->logger = $generalObj->getLogger();
         $this->env = $env;
@@ -50,9 +50,13 @@ abstract class BaseCommand{
                 return;
             }
             $this->city = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $this->generalObj->getVar('city'));
+            $this->generalObj->setRawCity($this->city);
             return;
         }
         $this->city = $db->queryFirstRow('SELECT %lb FROM city WHERE city=%i', $args, $this->generalObj->getVar('city'));
+        if($this->generalObj->getRawCity() === null){
+            $this->generalObj->setRawCity($this->city);
+        }
     }
 
     protected function setNation(?array $args = null){

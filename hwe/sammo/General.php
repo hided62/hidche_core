@@ -101,6 +101,10 @@ class General implements iActionTrigger{
         return $this->rawCity;
     }
 
+    function setRawCity(?array $city){
+        $this->city = $city;
+    }
+
     function getCityID():int{
         return $this->raw['city'];
     }
