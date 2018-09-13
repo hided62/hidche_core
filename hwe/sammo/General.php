@@ -48,6 +48,12 @@ class General implements iActionTrigger{
         $nationTypeClass = getNationTypeClass($staticNation['type']);
         $this->nationType = new $nationTypeClass;
         $this->levelObj = new TriggerGeneralLevel($this->raw, $city);
+
+        $specialDomesticClass = getGeneralSpecialDomesticClass($raw['special']);
+        $this->specialDomesticObj = new $specialDomesticClass;
+
+        //TODO: $specialWarClass 설정
+
         $personalityClass = getPersonalityClass($raw['personal']);
         $this->personalityObj = new $personalityClass;
     }
@@ -146,6 +152,38 @@ class General implements iActionTrigger{
         $db->update('general', $updateVals, 'no=%i', $this->raw['no']);
         $this->getLogger()->flush();
         return $db->affectedRows() > 0;
+    }
+
+    function checkStatChange():bool{
+        $logger = $this->getLogger();
+        $limit = GameConst::$upgradeLimit;
+
+        $table = [
+            ['통솔', 'leader'],
+            ['무력', 'power'],
+            ['지력', 'intel'],
+        ];
+
+        $result = false;
+
+        foreach($table as [$statNickName, $statName]){
+            $statExpName = $statName.'2';
+
+            if($this->getVar($statExpName) < 0){
+                $logger->pushGeneralActionLog("<R>{$statNickName}</>이 <C>1</> 떨어졌습니다!", ActionLogger::PLAIN);
+                $this->increaseVar($statExpName, $limit);
+                $this->increaseVar($statName, -1);
+                $result = true;
+            }
+            else if($this->getVar($statExpName) >= $limit){
+                $logger->pushGeneralActionLog("<R>{$statNickName}</>이 <C>1</> 올랐습니다!", ActionLogger::PLAIN);
+                $this->increaseVar($statExpName, -$limit);
+                $this->increaseVar($statName, 1);
+                $result = true;
+            }
+        }
+
+        return $result;
     }
 
     public function onPreTurnExecute(General $general, ?array $nation):array{

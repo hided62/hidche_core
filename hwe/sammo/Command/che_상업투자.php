@@ -2,7 +2,7 @@
 namespace sammo\Command;
 
 use \sammo\{
-    Util, JosaUtil,
+    DB, Util, JosaUtil,
     General, 
     ActionLogger,
     getGeneralIntel,
@@ -13,6 +13,7 @@ use \sammo\{
 
 use \sammo\Constraint\Constraint;
 use function sammo\CriticalScore;
+use function sammo\uniqueItemEx;
 
 
 class che_상업투자 extends BaseCommand{
@@ -46,6 +47,8 @@ class che_상업투자 extends BaseCommand{
         if(!$this->isAvailable()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
+
+        $db = DB::db();
 
         $general = $this->generalObj;
 
@@ -94,12 +97,24 @@ class che_상업투자 extends BaseCommand{
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
 
-        //TODO: 내정량 상승시 초과 가능?
+        //NOTE: 내정량 상승시 초과 가능?
+        $cityUpdated = [
+            static::$cityKey => Util::valueFit(
+                $this->city[static::$cityKey] + $score,
+                0,
+                $this->city[static::$cityKey.'2']
+            )
+        ];
 
         $general->increaseVarWithLimit('gold', -$this->reqGold, 0);
+        $general->increaseVar('experience', $exp);
+        $general->increaseVar('dedication', $ded);
+        $general->increaseVar('intel2', 1);
+        $general->updateVar('resturn', 'SUCCESS');
+        $general->applyDB($db);
 
-
-        //TODO:uniqueItemEx에 해당하는 함수 추가
+        $this->checkStatChange();
+        uniqueItemEx($general->getVar('no'), $logger);
     }
 
     

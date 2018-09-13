@@ -2184,6 +2184,96 @@ function CheckHall($no) {
     }
 }
 
+function uniqueItemEx(int $generalID, ActionLogger $logger, string $acquireType='아이템'):bool {
+    //TODO: 이름 바꾸기
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+
+    $general = $db->queryFirstRow('SELECT no,name,nation,npc,weap,book,horse,item FROM general WHERE no=%i', $generalID);
+    if(!$general){
+        return false;
+    }
+
+    if($general['npc'] >= 2) { 
+        return false;
+    }
+    if($general['horse'] > 6 || $general['weap'] > 6 || $general['book'] > 6 || $general['item'] > 6){
+        return false;
+    }
+
+    $scenario = $gameStor->scenario;
+
+    $genCount = $db->queryFirstField('SELECT count(*) FROM general WHERE npc<2');
+
+    if ($scenario < 100) {
+        $prob = 1 / ($genCount * 5); // 5~6개월에 하나씩 등장
+    }
+    else { 
+        $prob = 1 / $genCount; // 1~2개월에 하나씩 등장
+    }  
+
+    if($acquireType == '투표'){
+        $prob = 1 / ($genCount * 0.7 / 3); // 투표율 70%, 투표 한번에 2~3개 등장
+    }
+    else if($acquireType == '랜덤 임관'){
+        $prob = 1 / ($genCount / 10/ 2); // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
+    }
+    else if($acquireType == '건국'){
+        $prob = 1 / ($genCount / 10/ 4); // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
+    }
+    
+    $prob = Util::valueFit($prob, 1/3, 1);
+
+    if(!Util::randBool($prob)){
+        return false;
+    }
+
+    //아이템 습득 상황
+    $availableUnique = [];
+    $itemTypes = [
+        'horse'=>'getHorseName',
+        'weap'=>'getWeapName',
+        'book'=>'getBookName',
+        'item'=>'getItemName'
+    ];
+    $itemCodeList = range(7, 26); // [7, 26] 20개
+    
+    foreach($itemTypes as $itemType=>$itemNameFunc){
+        foreach($itemCodeList as $itemCode){
+            $availableUnique["{$itemType}_{$itemCode}"] = [$itemType, $itemCode];
+        }
+    }
+
+    //TODO: 너무 바보 같다. 장기적으로는 유니크 아이템 테이블 같은게 필요하지 않을까?
+    foreach ($itemTypes as $itemType=>$itemNameFunc) {
+        foreach($db->queryFirstColumn('SELECT %b FROM general WHERE %b > 6', $itemType, $itemType) as $itemCode){
+            unset($availableUnique["{$itemType}_{$itemCode}"]);
+        }
+    }
+
+    if(!$availableUnique){
+        return false;
+    }
+
+    [$itemType, $itemCode] = Util::choiceRandom($availableUnique);
+    
+    $nationName = getNationStaticInfo($general['nation'])['name'];
+    $generalName = $general['name'];
+    $josaYi = JosaUtil::pick($generalName, '이');
+    $itemName = ($itemTypes[$itemType])($itemCode);
+    $josaUl = JosaUtil::pick($itemName, '을');
+    
+
+    $db->update('general', [
+        $itemType=>$itemCode
+    ], 'no=%i', $generalID);
+
+    $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 습득했습니다!");
+    $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
+    $logger->pushGlobalHistoryLog("<C><b>【{$acquireType}】</b></><D><b>{$nationName}</b></>의 <Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
+
+    return true;
+}
 
 function uniqueItem($general, $log, $vote=0) {
     //TODO: uniqueItem 재 구현
