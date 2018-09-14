@@ -17,7 +17,7 @@ use function sammo\uniqueItemEx;
 use function sammo\getGeneralLeadership;
 
 
-class che_기술연구 extends BaseCommand{
+class che_기술연구 extends che_상업투자{
     static $statKey = 'intel';
     static $actionKey = '기술';
     static $actionName = '기술 연구';
@@ -41,25 +41,6 @@ class che_기술연구 extends BaseCommand{
         ];
 
         $this->reqGold = $reqGold;
-    }
-
-    protected function calcBaseScore():float{
-        $general = $this->generalObj;
-
-        if(static::$statKey == 'intel'){
-            $score = getGeneralIntel($general->getRaw(), true, true, true, false);
-        }
-        else{
-            throw new \sammo\MustNotBeReachedException();
-        }
-        
-        $trust = Util::valueFit($this->city['trust'], 50);
-        $score *= $trust / 100;
-        $score *= getDomesticExpLevelBonus($general['explevel']);
-        $score *= Util::randRange(0.8, 1.2);
-        $score = $general->onCalcDomestic(static::$actionKey, 'score', $score);
-
-        return $score;
     }
 
     public function run():bool{
