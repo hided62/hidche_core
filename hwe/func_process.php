@@ -199,15 +199,6 @@ function process_1(array $rawGeneral, int $type){
 
     $date = substr($general['turntime'],11,5);
 
-    if($type == 1){
-        $cityKey = 'agri';
-        $actionName = '농지 개간';
-    }
-    else{
-        $cityKey = 'comm';
-        $actionName = '상업 투자';
-    }
-
     $env = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
     $general = new General($rawGeneral, null, $env['year'], $env['month']);
 

@@ -5,7 +5,7 @@ use \sammo\{
     DB, Util, JosaUtil,
     General, 
     ActionLogger,
-    getGeneralIntel,
+    getGeneralLeadership,getGeneralPower,getGeneralIntel,
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, CriticalScore,
     checkAbilityEx
@@ -14,10 +14,12 @@ use \sammo\{
 use \sammo\Constraint\Constraint;
 use function sammo\CriticalScore;
 use function sammo\uniqueItemEx;
+use function sammo\getGeneralLeadership;
 
 
 class che_상업투자 extends BaseCommand{
     static $cityKey = 'comm';
+    static $statKey = 'intel';
     static $actionKey = '상업';
     static $actionName = '상업 투자';
 
@@ -43,6 +45,28 @@ class che_상업투자 extends BaseCommand{
         $this->reqGold = $reqGold;
     }
 
+    protected function calcBaseScore():float{
+        if(static::$statKey == 'intel'){
+            $score = getGeneralIntel($general->getRaw(), true, true, true, false);
+        }
+        else if(static::$statKey == 'power'){
+            $score = getGeneralPower($general->getRaw(), true, true, true, false);
+        }
+        else if(static::$statKey == 'leader'){
+            $score = getGeneralLeadership($general->getRaw(), true, true, true, false);
+        }
+        else{
+            throw new \sammo\MustNotBeReachedException();
+        }
+        
+        $score *= $trust / 100;
+        $score *= getDomesticExpLevelBonus($general['explevel']);
+        $score *= Util::randRange(0.8, 1.2);
+        $score = $general->onCalcDomestic(static::$actionKey, 'score', $score);
+
+        return $score;
+    }
+
     public function run():bool{
         if(!$this->isAvailable()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -54,11 +78,7 @@ class che_상업투자 extends BaseCommand{
 
         $trust = Util::valueFit($this->city['trust'], 50);
 
-        $score = getGeneralIntel($general->getRaw(), true, true, true, false);
-        $score *= $trust / 100;
-        $score *= getDomesticExpLevelBonus($general['explevel']);
-        $score *= Util::randRange(0.8, 1.2);
-        $score = $general->onCalcDomestic(static::$actionKey, 'score', $score);
+        $score = $this->calcBaseScore();
 
         ['succ'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general->getRaw(), 2);
         $successRatio = $naionTypeObj->onCalcDomestic(static::$cityKey, 'succ', $successRatio);
@@ -109,7 +129,7 @@ class che_상업투자 extends BaseCommand{
         $general->increaseVarWithLimit('gold', -$this->reqGold, 0);
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
-        $general->increaseVar('intel2', 1);
+        $general->increaseVar(static::$statKey.'2', 1);
         $general->updateVar('resturn', 'SUCCESS');
         $general->applyDB($db);
 
