@@ -31,6 +31,7 @@ abstract class BaseCommand{
     protected $reason = null;
 
     protected $constraints = null;
+    protected $constraintsLight = null;
 
     protected $logger;
 
@@ -41,8 +42,14 @@ abstract class BaseCommand{
         $this->arg = $arg;
         $this->init();
     }
+
+    protected function resetTestCache():void{
+        $this->reason = null;
+        $this->available = null;
+    }
     
     protected function setCity(array $args=null){
+        $this->resetTestCache();
         $db = DB::db();
         if($args == null){
             $this->city = $this->generalObj->getRawCity();
@@ -60,6 +67,7 @@ abstract class BaseCommand{
     }
 
     protected function setNation(?array $args = null){
+        $this->resetTestCache();
         if($args == null){
             $this->nation = $this->generalObj->getStaticNation();
             return;
@@ -70,15 +78,18 @@ abstract class BaseCommand{
     }
 
     protected function setDestGeneralFromObj(General $destGeneral){
+        $this->resetTestCache();
         $this->destGeneral = $destGeneral->getRaw();
     }
 
     protected function setDestGeneral(int $generalNo, array $args){
+        $this->resetTestCache();
         $db = DB::db();
         $this->destGeneral = $db->queryFirstRow('SELECT %lb FROM general WHERE no=%i', $args, $generalNo);
     }
 
     protected function setDestCity(int $cityNo, ?array $args){
+        $this->resetTestCache();
         $db = DB::db();
         if($args == null){
             $this->destCity = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $cityNo);
@@ -88,6 +99,7 @@ abstract class BaseCommand{
     }
 
     protected function setDestNation(int $nationNo, ?array $args = null){
+        $this->resetTestCache();
         if($args == null){
             $this->destNation = getNationStaticInfo($nationNo);
             return;
@@ -107,12 +119,16 @@ abstract class BaseCommand{
         return $this->logger;
     }
 
-    public function test():?string{
+    public function test(bool $fullCheck):?string{
         if($this->constraints === null){
             throw new \InvalidArgumentException('인자가 제대로 설정되지 않았습니다');
         }
 
-        $this->reason = Constraint::testAll($this->constraints, [
+        if($this->reason){
+            return $this->reason;
+        }
+
+        $constraintInput = [
             'general'=>$this->generalObj->getRaw(),
             'city'=>$this->city,
             'nation'=>$this->city,
@@ -121,17 +137,23 @@ abstract class BaseCommand{
             'destGeneral'=>$this->destGeneral,
             'destCity'=>$this->destCity,
             'destNation'=>$this->destNation,
-        ]);
+        ];
+
+        if(!$fullCheck && $this->constraintsLight){
+            return Constraint::testAll($this->constraintsLight, $constraintInput);
+        }
+
+        $this->reason = Constraint::testAll($this->constraints, $constraintInput);
         $this->available = $this->reason === null;
         return $this->reason;
         
     }
-    public function isAvailable():bool {
-        if($this->available === null){
-            $this->test();
+    public function isAvailable(bool $fullCheck=true):bool {
+        if($this->available !== null){
+            return $this->available;
         }
-        return $this->available;
-        
+
+        return $this->test($fullCheck) === null;
     }
 
     abstract public function getCost():array;
