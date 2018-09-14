@@ -46,6 +46,8 @@ class che_상업투자 extends BaseCommand{
     }
 
     protected function calcBaseScore():float{
+        $general = $this->generalObj;
+
         if(static::$statKey == 'intel'){
             $score = getGeneralIntel($general->getRaw(), true, true, true, false);
         }
@@ -80,9 +82,9 @@ class che_상업투자 extends BaseCommand{
 
         $score = $this->calcBaseScore();
 
-        ['succ'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general->getRaw(), 2);
-        $successRatio = $naionTypeObj->onCalcDomestic(static::$cityKey, 'succ', $successRatio);
-        $failRatio = $naionTypeObj->onCalcDomestic(static::$cityKey, 'fail', $failRatio);
+        ['succ'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general->getRaw(), static::$statKey);
+        $successRatio = $general->onCalcDomestic(static::$cityKey, 'succ', $successRatio);
+        $failRatio = $general->onCalcDomestic(static::$cityKey, 'fail', $failRatio);
 
         $failRatio = Util::valueFit($failRatio, 0, 1);
         $successRatio = Util::valueFit($successRatio, 0, 1 - $failRatio);
@@ -108,6 +110,7 @@ class che_상업투자 extends BaseCommand{
             $logger->pushGeneralActionLog(static::$actionName."{$josaUl} <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>");
         }
         else{
+            $score = Util::round($score);
             $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 <C>$score</> 상승했습니다. <1>$date</>");
         }
 

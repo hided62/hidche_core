@@ -564,15 +564,15 @@ function processCommand($no) {
                 $log[] = "<C>●</>{$month}월:아무것도 실행하지 않았습니다. <1>$date</>";
                 pushGenLog($general, $log);
                 break;
-            case  1: process_1($general, 1); break; //농업
-            case  2: process_1($general, 2); break; //상업
-            case  3: process_3($general); break; //기술
-            case  4: process_4($general); break; //선정
-            case  5: process_5($general, 1); break; //수비
-            case  6: process_5($general, 2); break; //성벽
-            case  7: process_7($general); break; //정착 장려
-            case  8: process_8($general); break; //치안
-            case  9: process_9($general); break; //조달
+            case 1: //농업
+            case 2: //상업
+            case 3: //기술
+            case 4: //선정
+            case 5: //수비
+            case 6: //성벽
+            case 7: //정착 장려
+            case 8: //치안
+            case 9: process_domestic($command[0], $general); break;//조달
 
             case 11: process_11($general, 1); break; //징병
             case 12: process_11($general, 2); break; //모병

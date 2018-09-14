@@ -119,7 +119,7 @@ function getGeneralIntel($general, $withInjury, $withItem, $withStatAdjust, $use
  * 내정 커맨드 사용시 성공 확률 계산
  * 
  * @param array $general 장수 정보
- * @param int $type 내정 커맨드 타입, 0 = 통솔 기반, 1 = 무력 기반, 2 = 지력 기반
+ * @param int|string $type 내정 커맨드 타입, 0|'leader' = 통솔 기반, 1|'power' = 무력 기반, 2|'intel' = 지력 기반
  * 
  * @return array 계산된 실패, 성공 확률 ('succ' => 성공 확률, 'fail' => 실패 확률)
  */
@@ -142,9 +142,14 @@ function CriticalRatioDomestic(&$general, $type) {
       505050(50%,50%), 107070(50%,50%)
     */
     switch($type) {
+    case 'leader':
     case 0: $ratio = $avg / $leader; break;
+    case 'power':
     case 1: $ratio = $avg / $power;  break;
+    case 'intel':
     case 2: $ratio = $avg / $intel; break;
+    default:
+        throw new MustNotBeReachedException();
     }
     $ratio = min($ratio, 1.2);
 
@@ -193,21 +198,30 @@ function CriticalScore($score, $type) {
     return Util::round($score * $ratio);
 }
 
-function process_1(array $rawGeneral, int $type){
+function process_domestic(array $rawGeneral, int $type){
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-
-    $date = substr($general['turntime'],11,5);
 
     $env = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
     $general = new General($rawGeneral, null, $env['year'], $env['month']);
 
-    if($type == 1){
-        $cmdObj = new Command\che_농지개간($general, $env);
+    //TODO: 최종적으로는 클래스 명 그대로 가야함
+    $commandMap = [
+        1=>'Command\che_농지개간',
+        2=>'Command\che_상업투자',
+        3=>'Command\che_기술연구',
+        4=>'Command\che_주민선정',
+        5=>'Command\che_수비강화',
+        6=>'Command\che_성벽보수',
+        7=>'Command\che_정착장려',
+        8=>'Command\che_치안강화',
+        9=>'Command\che_물자조달',
+    ];
+    $cmdClass = $commandMap[$type]??null;
+    if(!$cmdClass){
+        throw new \InvalidArgumentException('잘못된 내정 코드');
     }
-    else{
-        $cmdObj = new Command\che_상업투자($general, $env);
-    }
+    $cmdObj = new $cmdClass($general, $env);
 
     if(!$cmdObj->isAvailable()){
         return;
