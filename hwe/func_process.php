@@ -121,7 +121,7 @@ function getGeneralIntel($general, $withInjury, $withItem, $withStatAdjust, $use
  * @param array $general 장수 정보
  * @param int|string $type 내정 커맨드 타입, 0|'leader' = 통솔 기반, 1|'power' = 무력 기반, 2|'intel' = 지력 기반
  * 
- * @return array 계산된 실패, 성공 확률 ('succ' => 성공 확률, 'fail' => 실패 확률)
+ * @return array 계산된 실패, 성공 확률 ('success' => 성공 확률, 'fail' => 실패 확률)
  */
 function CriticalRatioDomestic(&$general, $type) {
     $leader = getGeneralLeadership($general, false, true, true, false);
@@ -154,14 +154,14 @@ function CriticalRatioDomestic(&$general, $type) {
     $ratio = min($ratio, 1.2);
 
     $fail = pow($ratio / 1.2, 1.4) - 0.3;
-    $succ = pow($ratio / 1.2, 1.5) - 0.25;
+    $success = pow($ratio / 1.2, 1.5) - 0.25;
 
     $fail = min(max($fail, 0), 0.5);
-    $succ = min(max($succ, 0), 0.5);
+    $success = min(max($success, 0), 0.5);
 
 
     return array(
-        'succ'=>$succ,
+        'success'=>$success,
         'fail'=>$fail
     );
 }
@@ -196,6 +196,16 @@ function CriticalScore($score, $type) {
         break;
     }
     return Util::round($score * $ratio);
+}
+
+function CriticalScoreEx(string $type):float {
+    if($type == 'success'){
+        return Util::randRange(2.2, 3.0);
+    }
+    if($type == 'fail'){
+        return  Util::randRange(0.2, 0.4);
+    }
+    return 1;
 }
 
 function process_domestic(array $rawGeneral, int $type){

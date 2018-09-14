@@ -21,7 +21,7 @@ class che_도적 implements iActionTrigger{
             if($varType == 'cost') return $value * 1.2;
         }
         else if($turnType == '계략'){
-            if($varType == 'succ') return $value + 0.1;
+            if($varType == 'success') return $value + 0.1;
         }
         
         

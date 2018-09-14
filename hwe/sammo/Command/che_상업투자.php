@@ -83,11 +83,11 @@ class che_상업투자 extends BaseCommand{
 
         $score = Util::valueFit($this->calcBaseScore(), 1);
 
-        ['succ'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general->getRaw(), static::$statKey);
+        ['success'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general->getRaw(), static::$statKey);
         if($trust < 80){
             $successRatio *= $trust / 80;
         }
-        $successRatio = $general->onCalcDomestic(static::$cityKey, 'succ', $successRatio);
+        $successRatio = $general->onCalcDomestic(static::$cityKey, 'success', $successRatio);
         $failRatio = $general->onCalcDomestic(static::$cityKey, 'fail', $failRatio);
 
         $successRatio = Util::valueFit($successRatio, 0, 1);
@@ -96,7 +96,7 @@ class che_상업투자 extends BaseCommand{
 
         $pick = Util::choiceRandomUsingWeight([
             'fail'=>$failRatio, 
-            'succ'=>$successRatio, 
+            'success'=>$successRatio, 
             'normal'=>$normalRatio
         ]);
 
@@ -104,18 +104,19 @@ class che_상업투자 extends BaseCommand{
 
         $date = substr($general->getVar('turntime'),11,5);
 
+        $score *= CriticalScoreEx($pick);
+        $score = Util::round($score);
+        $scoreText = number_format($score, 0);
+
         $josaUl = JosaUtil::pick(static::$actionName, '을');
         if($pick == 'fail'){
-            $score = CriticalScore($score, 1);
-            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>");
+            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} <span class='ev_failed'>실패</span>하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
         }
-        else if($pick == 'succ'){
-            $score = CriticalScore($score, 1);
-            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>");
+        else if($pick == 'success'){
+            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} <S>성공</>하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
         }
         else{
-            $score = Util::round($score);
-            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 <C>$score</> 상승했습니다. <1>$date</>");
+            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
         }
 
         $exp = $score * 0.7;

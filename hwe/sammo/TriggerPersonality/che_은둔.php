@@ -12,7 +12,7 @@ class che_은둔 implements iActionTrigger{
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
         if($turnType == '단련'){
-            if($varType == 'succ'){
+            if($varType == 'success'){
                 return $value + 0.1;
             } 
         }

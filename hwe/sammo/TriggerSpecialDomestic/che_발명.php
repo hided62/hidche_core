@@ -21,7 +21,7 @@ class che_발명 implements iActionTrigger{
         if($turnType == '기술'){
             if($varType == 'score') return $value * 1.1;
             if($varType == 'cost') return $value * 0.8;
-            if($varType == 'succ') return $value + 0.1;
+            if($varType == 'success') return $value + 0.1;
         }
         
         return $value;

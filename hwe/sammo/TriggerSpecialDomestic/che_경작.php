@@ -21,7 +21,7 @@ class che_경작 implements iActionTrigger{
         if($turnType == '농업'){
             if($varType == 'score') return $value * 1.1;
             if($varType == 'cost') return $value * 0.8;
-            if($varType == 'succ') return $value + 0.1;
+            if($varType == 'success') return $value + 0.1;
         }
         
         return $value;

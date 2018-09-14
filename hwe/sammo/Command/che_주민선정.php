@@ -7,7 +7,7 @@ use \sammo\{
     ActionLogger,
     getGeneralLeadership,getGeneralPower,getGeneralIntel,
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, CriticalScore, TechLimit,
+    CriticalRatioDomestic, CriticalScore,
     uniqueItemEx
 };
 
@@ -17,10 +17,11 @@ use function sammo\uniqueItemEx;
 use function sammo\getGeneralLeadership;
 
 
-class che_기술연구 extends BaseCommand{
-    static $statKey = 'intel';
-    static $actionKey = '기술';
-    static $actionName = '기술 연구';
+class che_주민선정 extends BaseCommand{
+    static $cityKey = 'trust';
+    static $statKey = 'leader';
+    static $actionKey = '민심';
+    static $actionName = '주민 선정';
 
     protected function init(){
 
@@ -29,35 +30,36 @@ class che_기술연구 extends BaseCommand{
         $this->setCity();
         $this->setNation();
         
-        $develCost = $this->env['develcost'];
-        $reqGold = $general->onCalcDomestic(static::$actionKey, 'cost', $reqGold);
+        $develCost = $this->env['develcost'] * 2;
+        $reqRice = $general->onCalcDomestic(static::$actionKey, 'cost', $reqGold);
 
         $this->constraints=[
             ['NoNeutral'], 
             ['NoWanderingNation'],
             ['OccupiedCity'],
             ['SuppliedCity'],
-            ['ReqGeneralGold', $reqGold]
+            ['ReqGeneralRice', $reqRice],
+            ['RemainCityTrust', static::$actionName]
         ];
 
-        $this->reqGold = $reqGold;
+        $this->reqRice = $reqRice;
     }
 
     protected function calcBaseScore():float{
         $general = $this->generalObj;
 
-        if(static::$statKey == 'intel'){
-            $score = getGeneralIntel($general->getRaw(), true, true, true, false);
+        if(static::$statKey == 'leader'){
+            $score = getGeneralLeadership($general->getRaw(), true, true, true, false);
         }
         else{
             throw new \sammo\MustNotBeReachedException();
         }
         
-        $trust = Util::valueFit($this->city['trust'], 50);
-        $score *= $trust / 100;
+        $score /= 10;
         $score *= getDomesticExpLevelBonus($general['explevel']);
         $score *= Util::randRange(0.8, 1.2);
         $score = $general->onCalcDomestic(static::$actionKey, 'score', $score);
+        $score = Util::valutFit($score, 1);
 
         return $score;
     }
@@ -71,14 +73,9 @@ class che_기술연구 extends BaseCommand{
 
         $general = $this->generalObj;
 
-        $trust = Util::valueFit($this->city['trust'], 50);
-
         $score = Util::valueFit($this->calcBaseScore(), 1);
 
         ['success'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general->getRaw(), static::$statKey);
-        if($trust < 80){
-            $successRatio *= $trust / 80;
-        }
         $successRatio = $general->onCalcDomestic(static::$cityKey, 'success', $successRatio);
         $failRatio = $general->onCalcDomestic(static::$cityKey, 'fail', $failRatio);
 
@@ -97,8 +94,7 @@ class che_기술연구 extends BaseCommand{
         $date = substr($general->getVar('turntime'),11,5);
 
         $score *= CriticalScoreEx($pick);
-        $score = Util::round($score);
-        $scoreText = number_format($score, 0);
+        $scoreText = number_format($score, 1);
 
         $josaUl = JosaUtil::pick(static::$actionName, '을');
         if($pick == 'fail'){
@@ -117,21 +113,17 @@ class che_기술연구 extends BaseCommand{
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
 
-        if(TechLimit($this->env['startyear'], $this->env['year'], $this->nation['tech'])){
-            $score /= 4;
-        }
-
-        $genCount = Util::valueFit(
-            $db->queryFirstField('SELECT gennum FROM nation WHERE nation=%i', $general->getVar('nation')),
-            GameConst::$initialNationGenLimit
-        );
-
-        $nationUpdated = [
-            'tech' => $this->nation['tech'] + $score/$genCount
+        //NOTE: 내정량 상승시 초과 가능?
+        $cityUpdated = [
+            static::$cityKey => Util::valueFit(
+                $this->city[static::$cityKey] + $score,
+                0,
+                100
+            )
         ];
-        $db->update('nation', $nationUpdated, 'nation=%i', $general->getVar('nation'));
+        $db->update('city', $cityUpdated, 'city=%i', $general->getVar('city'));
 
-        $general->increaseVarWithLimit('gold', -$this->reqGold, 0);
+        $general->increaseVarWithLimit('rice', -$this->reqRice, 0);
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
         $general->increaseVar(static::$statKey.'2', 1);

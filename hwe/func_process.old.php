@@ -121,7 +121,7 @@ function getGeneralIntel($general, $withInjury, $withItem, $withStatAdjust, $use
  * @param array $general 장수 정보
  * @param int|string $type 내정 커맨드 타입, 0|'leader' = 통솔 기반, 1|'power' = 무력 기반, 2|'intel' = 지력 기반
  * 
- * @return array 계산된 실패, 성공 확률 ('succ' => 성공 확률, 'fail' => 실패 확률)
+ * @return array 계산된 실패, 성공 확률 ('success' => 성공 확률, 'fail' => 실패 확률)
  */
 function CriticalRatioDomestic(&$general, $type) {
     $leader = getGeneralLeadership($general, false, true, true, false);
@@ -154,14 +154,14 @@ function CriticalRatioDomestic(&$general, $type) {
     $ratio = min($ratio, 1.2);
 
     $fail = pow($ratio / 1.2, 1.4) - 0.3;
-    $succ = pow($ratio / 1.2, 1.5) - 0.25;
+    $success = pow($ratio / 1.2, 1.5) - 0.25;
 
     $fail = min(max($fail, 0), 0.5);
-    $succ = min(max($succ, 0), 0.5);
+    $success = min(max($success, 0), 0.5);
 
 
     return array(
-        'succ'=>$succ,
+        'success'=>$success,
         'fail'=>$fail
     );
 }
@@ -286,17 +286,17 @@ function process_1_old(&$general, $type) {
         $r = CriticalRatioDomestic($general, 2);
 
         // 특기보정 : 경작, 상재
-        if($type == 1 && $general['special'] == 1) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
-        if($type == 2 && $general['special'] == 2) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($type == 1 && $general['special'] == 1) { $r['success'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($type == 2 && $general['special'] == 2) { $r['success'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
         //민심 반영
-        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
+        if($city['trust'] < 80) { $r['success'] *= $city['trust'] / 80; }
         //버그방지
         if($score < 1) $score = 1;
 
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
-        } elseif($r['succ'] + $r['fail'] > $rd) {
+        } elseif($r['success'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
@@ -378,9 +378,9 @@ function process_3(&$general) {
         $rd = Util::randF();
         $r = CriticalRatioDomestic($general, 2);
         // 특기보정 : 발명
-        if($general['special'] == 3) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($general['special'] == 3) { $r['success'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
         //민심 반영
-        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
+        if($city['trust'] < 80) { $r['success'] *= $city['trust'] / 80; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -388,7 +388,7 @@ function process_3(&$general) {
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
-        } elseif($r['succ'] + $r['fail'] > $rd) {
+        } elseif($r['success'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
@@ -477,7 +477,7 @@ function process_4(&$general) {
         $rd = Util::randF();
         $r = CriticalRatioDomestic($general, 0);
         // 특기보정 : 인덕
-        if($general['special'] == 20) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($general['special'] == 20) { $r['success'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -485,7 +485,7 @@ function process_4(&$general) {
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:선정을 <span class='ev_failed'>실패</span>하여 민심이 <C>".round($score, 1)."</> 상승했습니다. <1>$date</>";
-        } elseif($r['succ'] + $r['fail'] > $rd) {
+        } elseif($r['success'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:선정을 <S>성공</>하여 민심이 <C>".round($score, 1)."</> 상승했습니다. <1>$date</>";
         } else {
@@ -573,10 +573,10 @@ function process_5(&$general, $type) {
         $rd = Util::randF();
         $r = CriticalRatioDomestic($general, 1);
         // 특기보정 : 수비, 축성
-        if($type == 1 && $general['special'] == 11) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
-        if($type == 2 && $general['special'] == 10) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($type == 1 && $general['special'] == 11) { $r['success'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($type == 2 && $general['special'] == 10) { $r['success'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
         //민심 반영
-        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
+        if($city['trust'] < 80) { $r['success'] *= $city['trust'] / 80; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -584,7 +584,7 @@ function process_5(&$general, $type) {
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
-        } elseif($r['succ'] + $r['fail'] > $rd) {
+        } elseif($r['success'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
         } else {
@@ -666,7 +666,7 @@ function process_7(&$general) {
         $rd = Util::randF();
         $r = CriticalRatioDomestic($general, 0);
         // 특기보정 : 인덕
-        if($general['special'] == 20) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($general['special'] == 20) { $r['success'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -674,7 +674,7 @@ function process_7(&$general) {
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:장려를 <span class='ev_failed'>실패</span>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
-        } elseif($r['succ'] + $r['fail'] > $rd) {
+        } elseif($r['success'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:장려를 <S>성공</>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
         } else {
@@ -762,9 +762,9 @@ function process_8(&$general) {
         $rd = Util::randF();
         $r = CriticalRatioDomestic($general, 1);
         // 특기보정 : 통찰
-        if($general['special'] == 12) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($general['special'] == 12) { $r['success'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
         //민심 반영
-        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
+        if($city['trust'] < 80) { $r['success'] *= $city['trust'] / 80; }
 
         //버그방지
         if($score < 1) $score = 1;
@@ -772,7 +772,7 @@ function process_8(&$general) {
         if($r['fail'] > $rd) {
             $score = CriticalScore($score, 1);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <span class='ev_failed'>실패</span>하여 <C>$score</> 강화했습니다. <1>$date</>";
-        } elseif($r['succ'] + $r['fail'] > $rd) {
+        } elseif($r['success'] + $r['fail'] > $rd) {
             $score = CriticalScore($score, 0);
             $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <S>성공</>하여 <C>$score</> 강화했습니다. <1>$date</>";
         } else {
