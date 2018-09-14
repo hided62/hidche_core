@@ -55,7 +55,6 @@ class che_주민선정 extends BaseCommand{
             throw new \sammo\MustNotBeReachedException();
         }
         
-        $score /= 10;
         $score *= getDomesticExpLevelBonus($general['explevel']);
         $score *= Util::randRange(0.8, 1.2);
         $score = $general->onCalcDomestic(static::$actionKey, 'score', $score);
@@ -94,6 +93,12 @@ class che_주민선정 extends BaseCommand{
         $date = substr($general->getVar('turntime'),11,5);
 
         $score *= CriticalScoreEx($pick);
+
+        $exp = $score * 0.7;
+        $ded = $score * 1.0;
+
+        $score /= 10;
+
         $scoreText = number_format($score, 1);
 
         $josaUl = JosaUtil::pick(static::$actionName, '을');
@@ -106,9 +111,6 @@ class che_주민선정 extends BaseCommand{
         else{
             $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
         }
-
-        $exp = $score * 0.7;
-        $ded = $score * 1.0;
 
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);

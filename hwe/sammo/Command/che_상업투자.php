@@ -106,6 +106,10 @@ class che_상업투자 extends BaseCommand{
 
         $score *= CriticalScoreEx($pick);
         $score = Util::round($score);
+
+        $exp = $score * 0.7;
+        $ded = $score * 1.0;
+
         $scoreText = number_format($score, 0);
 
         $josaUl = JosaUtil::pick(static::$actionName, '을');
@@ -118,9 +122,6 @@ class che_상업투자 extends BaseCommand{
         else{
             $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
         }
-
-        $exp = $score * 0.7;
-        $ded = $score * 1.0;
 
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);

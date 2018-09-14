@@ -48,13 +48,7 @@ class che_상업투자 extends BaseCommand{
     protected function calcBaseScore():float{
         $general = $this->generalObj;
 
-        if(static::$statKey == 'intel'){
-            $score = getGeneralIntel($general->getRaw(), true, true, true, false);
-        }
-        else if(static::$statKey == 'power'){
-            $score = getGeneralPower($general->getRaw(), true, true, true, false);
-        }
-        else if(static::$statKey == 'leader'){
+        if(static::$statKey == 'leader'){
             $score = getGeneralLeadership($general->getRaw(), true, true, true, false);
         }
         else{
@@ -99,21 +93,26 @@ class che_상업투자 extends BaseCommand{
 
         $score *= CriticalScoreEx($pick);
         $score = Util::round($score);
+
+        $exp = $score * 0.7;
+        $ded = $score * 1.0;
+
+        $score *= 10;
+
         $scoreText = number_format($score, 0);
 
         $josaUl = JosaUtil::pick(static::$actionName, '을');
         if($pick == 'fail'){
-            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} <span class='ev_failed'>실패</span>하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
+            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} <span class='ev_failed'>실패</span>하여 주민이 <C>$scoreText</>명 증가했습니다. <1>$date</>");
         }
         else if($pick == 'success'){
-            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} <S>성공</>하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
+            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} <S>성공</>하여 주민이 <C>$scoreText</>명 증가했습니다. <1>$date</>");
         }
         else{
-            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
+            $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 주민이 <C>$scoreText</>명 증가했습니다. <1>$date</>");
         }
 
-        $exp = $score * 0.7;
-        $ded = $score * 1.0;
+        
 
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
