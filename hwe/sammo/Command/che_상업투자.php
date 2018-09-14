@@ -86,8 +86,8 @@ class che_상업투자 extends BaseCommand{
         $successRatio = $general->onCalcDomestic(static::$cityKey, 'succ', $successRatio);
         $failRatio = $general->onCalcDomestic(static::$cityKey, 'fail', $failRatio);
 
-        $failRatio = Util::valueFit($failRatio, 0, 1);
-        $successRatio = Util::valueFit($successRatio, 0, 1 - $failRatio);
+        $successRatio = Util::valueFit($successRatio, 0, 1);
+        $failRatio = Util::valueFit($failRatio, 0, 1 - $successRatio);
         $normalRatio = 1 - $failRatio - $successRatio;
 
         $pick = Util::choiceRandomUsingWeight([
