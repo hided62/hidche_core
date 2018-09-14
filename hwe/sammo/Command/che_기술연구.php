@@ -7,7 +7,7 @@ use \sammo\{
     ActionLogger,
     getGeneralLeadership,getGeneralPower,getGeneralIntel,
     getDomesticExpLevelBonus,
-    CriticalRatioDomestic, CriticalScore,
+    CriticalRatioDomestic, CriticalScore, TechLimit,
     uniqueItemEx
 };
 
@@ -17,11 +17,10 @@ use function sammo\uniqueItemEx;
 use function sammo\getGeneralLeadership;
 
 
-class che_상업투자 extends BaseCommand{
-    static $cityKey = 'comm';
+class che_기술연구 extends BaseCommand{
     static $statKey = 'intel';
-    static $actionKey = '상업';
-    static $actionName = '상업 투자';
+    static $actionKey = '기술';
+    static $actionName = '기술 연구';
 
     protected function init(){
 
@@ -38,30 +37,23 @@ class che_상업투자 extends BaseCommand{
             ['NoWanderingNation'],
             ['OccupiedCity'],
             ['SuppliedCity'],
-            ['ReqGeneralGold', $reqGold],
-            ['RemainCityCapacity', [static::$cityKey, static::$actionName]]
+            ['ReqGeneralGold', $reqGold]
         ];
 
         $this->reqGold = $reqGold;
     }
 
     protected function calcBaseScore():float{
-        $trust = Util::valueFit($this->city['trust'], 50);
         $general = $this->generalObj;
 
         if(static::$statKey == 'intel'){
             $score = getGeneralIntel($general->getRaw(), true, true, true, false);
         }
-        else if(static::$statKey == 'power'){
-            $score = getGeneralPower($general->getRaw(), true, true, true, false);
-        }
-        else if(static::$statKey == 'leader'){
-            $score = getGeneralLeadership($general->getRaw(), true, true, true, false);
-        }
         else{
             throw new \sammo\MustNotBeReachedException();
         }
         
+        $trust = Util::valueFit($this->city['trust'], 50);
         $score *= $trust / 100;
         $score *= getDomesticExpLevelBonus($general['explevel']);
         $score *= Util::randRange(0.8, 1.2);
@@ -124,15 +116,19 @@ class che_상업투자 extends BaseCommand{
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
 
-        //NOTE: 내정량 상승시 초과 가능?
-        $cityUpdated = [
-            static::$cityKey => Util::valueFit(
-                $this->city[static::$cityKey] + $score,
-                0,
-                $this->city[static::$cityKey.'2']
-            )
+        if(TechLimit($this->env['startyear'], $this->env['year'], $this->nation['tech'])){
+            $score /= 4;
+        }
+
+        $genCount = Util::valueFit(
+            $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i', $general->getVar('nation')),
+            GameConst::$initialNationGenLimit
+        );
+
+        $nationUpdated = [
+            'tech' => $this->nation['tech'] + $score/$genCount
         ];
-        $db->update('city', $cityUpdated, 'city=%i', $general->getVar('city'));
+        $db->update('nation', $nationUpdated, 'nation=%i', $general->getVar('nation'));
 
         $general->increaseVarWithLimit('gold', -$this->reqGold, 0);
         $general->increaseVar('experience', $exp);
