@@ -266,7 +266,7 @@ function myNationInfo() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,sabotagelimit,surlimit,tech,totaltech,level,type from nation where nation='{$me['nation']}'";
+    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,sabotagelimit,surlimit,tech,level,type from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -340,8 +340,8 @@ function myNationInfo() {
 
     $techCall = getTechCall($nation['tech']);
 
-    if(TechLimit($admin['startyear'], $admin['year'], $nation['tech'])) { $nation['tech'] = "<font color=magenta>{$nation['tech']}</font>"; }
-    else { $nation['tech'] = "<font color=limegreen>{$nation['tech']}</font>"; }
+    if(TechLimit($admin['startyear'], $admin['year'], $nation['tech'])) { $nation['tech'] = "<font color=magenta>".floor($nation['tech'])."</font>"; }
+    else { $nation['tech'] = "<font color=limegreen>".floor($nation['tech'])."</font>"; }
 
     $nation['tech'] = "$techCall / {$nation['tech']}";
     
@@ -1978,15 +1978,10 @@ function updateTurntime($no) {
             // 장수 삭제
             $query = "delete from general where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            //기존 국가 기술력 그대로
-            $query = "select no from general where nation='{$general['nation']}'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $gencount = MYDB_num_rows($result);
-            $gennum = $gencount;
-            if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
 
-            $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$general['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('nation', [
+                'gennum'=>$db->sqleval('gennum - 1')
+            ], 'nation=%i', $general['nation']);
 
             // 병, 요절, 객사, 번개, 사채, 일확천금, 호랑이, 곰, 수영, 처형, 발견
             $josaYi = JosaUtil::pick($general['name'], '이');

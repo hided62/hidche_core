@@ -139,7 +139,7 @@ echo "
         <td align=center id=bg1>병량 예산</td>
         <td align=center>{$budgetrice} ({$budgetricediff})</td>
         <td align=center id=bg1>기술력</td>
-        <td align=center>{$nation['tech']}</td>
+        <td align=center>".floor($nation['tech'])."</td>
         <td align=center id=bg1>작 위</td>
         <td align=center>".getNationLevel($nation['level'])."</td>
     </tr>

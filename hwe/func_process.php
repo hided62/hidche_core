@@ -1064,7 +1064,7 @@ function process_31(&$general) {
                 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
                 $myTech = MYDB_fetch_array($result);
 
-                $diff = $yourTech['tech'] - $myTech['tech'];   // 차이
+                $diff = floor($yourTech['tech']) - floor($myTech['tech']);   // 차이
                 if($diff >= 1000) {      $log[] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<M>↑</>압도"; }
                 elseif($diff >=  250) {  $log[] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<Y>▲</>우위"; }
                 elseif($diff >= -250) {  $log[] = "【<span class='ev_notice'>{$yourTech['name']}</span>】아국대비기술:<W>↕</>대등"; }

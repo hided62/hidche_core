@@ -92,32 +92,12 @@ class Personnel{
             return [$result, $reason];
         }
 
-        $scoutNationGeneralCnt = $db->queryFirstField(
-            'SELECT COUNT(`no`) FROM general WHERE nation = %i', 
-            $this->nation['nation']
-        );
-
-        $originalNationGeneralCnt = $db->queryFirstField(
-            'SELECT COUNT(`no`) FROM general WHERE nation = %i', 
-            $general['nation']
-        );
-
         $isTroopLeader = false;
         if($general['troop']){
             $troopLeader = $db->queryFirstField('SELECT `no` FROM troop WHERE troop = %i', $general['troop']);
             if($troopLeader == $generalID){
                 $isTroopLeader = true;
             }
-        }
-
-        $scoutNationGeneralCnt+=1;
-        if($scoutNationGeneralCnt < GameConst::$initialNationGenLimit){
-            $scoutNationGeneralCnt = GameConst::$initialNationGenLimit;
-        }
-
-        $originalNationGeneralCnt-=1;
-        if($originalNationGeneralCnt < GameConst::$initialNationGenLimit){
-            $originalNationGeneralCnt = GameConst::$initialNationGenLimit;
         }
 
         $joinedNations = Json::decode($general['nations']);
@@ -139,13 +119,11 @@ class Personnel{
         ];
 
         $setOriginalNationValues = [
-            'totaltech'=>$db->sqleval('tech * %i', $originalNationGeneralCnt),
-            'gennum'=>$originalNationGeneralCnt
+            'gennum'=>$db->sqleval('gennum - 1')
         ];
 
         $setScoutNationValues = [
-            'totaltech'=>$db->sqleval('tech * %i', $scoutNationGeneralCnt),
-            'gennum'=>$scoutNationGeneralCnt
+            'gennum'=>$db->sqleval('gennum + 1')
         ];
 
         $setOriginalCityValues = [];

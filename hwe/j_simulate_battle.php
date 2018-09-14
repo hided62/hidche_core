@@ -200,17 +200,16 @@ if(!$v->validate()){
 $nationCheck = [
     'required'=>[
         'type', 'tech', 'level', 'capital',
-        'nation', 'name', 'gold', 'rice', 'totaltech', 'gennum'
+        'nation', 'name', 'gold', 'rice', 'gennum'
     ],
     'integer'=>[
         'type', 'level', 'capital', 'nation', 'gennum',
     ],
     'numeric'=>[
-        'tech', 'gold', 'rice', 'totaltech'
+        'tech', 'gold', 'rice'
     ],
     'min'=>[
         ['tech', 0],
-        ['totaltech', 0],
         ['gold', 0],
         ['rice', 0],
         ['gennum', 1],

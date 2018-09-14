@@ -580,7 +580,6 @@ jQuery(function($){
             rice:2000,
             type:0,
             tech:0,
-            totaltech:0,
             gennum:200,
         };
 
@@ -618,7 +617,6 @@ jQuery(function($){
         var attackerNation = $.extend({}, defaultNation, allData.attackerNation);
         attackerNation.nation = 1;
         attackerNation.name = '출병국';
-        attackerNation.totaltech = attackerNation.tech * attackerNation.gennum;
 
         var attackerCity = $.extend({}, defaultCity, allData.attackerCity);
         attackerCity.nation = 1;
@@ -638,7 +636,6 @@ jQuery(function($){
         var defenderNation = $.extend({}, defaultNation, allData.defenderNation);
         defenderNation.nation = 2;
         defenderNation.name = '수비국';
-        defenderNation.totaltech = defenderNation.tech * defenderNation.gennum;
 
         var defenderCity = $.extend({}, defaultCity, allData.defenderCity);
         defenderCity.nation = 2;

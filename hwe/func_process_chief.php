@@ -2100,9 +2100,11 @@ function process_76(&$general) {
         if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
-        //전략기한, 국가 기술력 그대로
-        $query = "update nation set sabotagelimit={$term3},totaltech=tech*'$gencount',gennum='$gennum' where nation='{$general['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        //전략기한
+        $db->update('nation', [
+            'sabotagelimit'=>$term3,
+            'gennum'=>$gennum
+        ], 'nation=%i', $general['nation']);
 
         //경험치, 공헌치
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";

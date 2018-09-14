@@ -10,7 +10,7 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
     $attackerNationID = $rawAttacker['nation'];
     $defenderNationID = $rawDefenderCity['nation'];
 
-    $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,totaltech,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
+    $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
 
     if($defenderNationID == 0){
         $rawDefenderNation =  [
@@ -22,12 +22,11 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
             'rice'=>2000,
             'type'=>0,
             'tech'=>0,
-            'totaltech'=>0,
             'gennum'=>1     
         ];
     }
     else{
-        $rawDefenderNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,totaltech,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $defenderNationID);
+        $rawDefenderNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $defenderNationID);
     }
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -118,14 +117,8 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
         $defenderIncTech /= 4;
     }
 
-    $attackerTotalTech = $rawAttackerNation['totaltech'] + $attackerIncTech;
-    $defenderTotalTech = $rawDefenderNation['totaltech'] + $defenderIncTech;
-
-    $updateAttackerNation['totaltech'] = Util::round($attackerTotalTech);
-    $updateDefenderNation['totaltech'] = Util::round($defenderTotalTech);
-
-    $updateAttackerNation['tech'] = Util::round($attackerTotalTech / max(GameConst::$initialNationGenLimit, $rawAttackerNation['gennum']));
-    $updateDefenderNation['tech'] = Util::round($defenderTotalTech / max(GameConst::$initialNationGenLimit, $rawDefenderNation['gennum']));
+    $updateAttackerNation['tech'] += $attackerIncTech / max(GameConst::$initialNationGenLimit, $rawAttackerNation['gennum']);
+    $updateDefenderNation['tech'] += $defenderIncTech / max(GameConst::$initialNationGenLimit, $rawDefenderNation['gennum']);
 
     $db->update('nation', $updateAttackerNation, 'nation=%i', $attackerNationID);
     $db->update('nation', $updateDefenderNation, 'nation=%i', $defenderNationID);
@@ -144,10 +137,10 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
 
     //XXX: 새 도시점령 코드 작성하기 전까지 유지
     $rawAttackerCity = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
-    $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,totaltech,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
+    $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
 
     if($defenderNationID !== 0){
-        $rawDefenderNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,totaltech,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $defenderNationID);
+        $rawDefenderNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $defenderNationID);
     }
     
     ConquerCity([

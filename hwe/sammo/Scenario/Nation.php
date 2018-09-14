@@ -97,7 +97,6 @@ class Nation{
             'surlimit'=>72,
             'scoutmsg'=>$this->infoText,
             'tech'=>$this->tech,
-            'totaltech'=>0,
             'level'=>$this->nationLevel,
             'type'=>$type,
         ]);
@@ -139,7 +138,6 @@ class Nation{
         $db = DB::db();
         $db->update('nation', [
             'gennum'=>$npc_cnt,
-            'totaltech'=>$this->tech*$npc_cnt
         ], 'nation=%i', $this->id);
 
         //군주가 없는지 확인

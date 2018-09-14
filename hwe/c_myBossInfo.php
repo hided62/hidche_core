@@ -209,10 +209,7 @@ if($btn == "추방") {
             $msg->send();
         }
 
-        //국가 기술력 그대로
-        $query = "select no from general where nation='{$general['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
+        $gencount = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i', $general['nation']);
         $gennum = $gencount;
         if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
 
@@ -224,11 +221,11 @@ if($btn == "추방") {
             $query = "update general set injury=injury+1 where no='{$ruler['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum',chemi='{$nation['chemi']}',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
+            $query = "update nation set gennum='$gennum',chemi='{$nation['chemi']}',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
             //이번분기는 추방불가(초반 제외)
-            $query = "update nation set l{$meLevel}set=1,totaltech=tech*'$gencount',gennum='$gennum',chemi='{$nation['chemi']}',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
+            $query = "update nation set l{$meLevel}set=1,gennum='$gennum',chemi='{$nation['chemi']}',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
 

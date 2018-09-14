@@ -221,15 +221,9 @@ function process_25(&$general) {
             'belong'=>1
         ], 'no=%i', $general['no']);
 
-        //국가 기술력 그대로
-        $query = "select no from general where nation='{$nation['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
-        $gennum = $gencount;
-        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
-
-        $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$nation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('nation', [
+            'gennum'=>$gencount + 1,
+        ], 'nation=%i', $nation['nation']);
 
         if($where < 99) {
             $log = uniqueItem($general, $log);
@@ -441,40 +435,59 @@ function process_29(&$general) {
             // 10년 ~ 50년
             $killturn = rand()%480 + 120;
 
-            @MYDB_query("
-                insert into general (
-                    npcid,npc,npc_org,affinity,name,picture,nation,
-                    city,leader,power,intel,experience,dedication,
-                    level,gold,rice,crew,crewtype,train,atmos,tnmt,
-                    weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
-                    makelimit,bornyear,deadyear,
-                    dex0, dex10, dex20, dex30, dex40
-                ) values (
-                    '$npccount','$npc','$npc','$affinity','$name','$picture','$scoutNation',
-                    '{$general['city']}','$leader','$power','$intel','{$avgGen['exp']}','{$avgGen['ded']}',
-                    '$scoutLevel','100','100','0','".GameUnitConst::DEFAULT_CREWTYPE."','0','0','0',
-                    '0','0','0','$turntime','$killturn','$age','1','$personal','0','$specage','0','$specage2','',
-                    '0','$bornyear','$deadyear',
-                    '{$avgGen['dex0']}','{$avgGen['dex10']}','{$avgGen['dex20']}','{$avgGen['dex30']}','{$avgGen['dex40']}'
-                )",
-                $connect
-            ) or Error(__LINE__.MYDB_error($connect),"");
+            $db->insert('general', [
+                'npcid'=>$npccount,
+                'npc'=>$npc,
+                'npc_org'=>$npc,
+                'affinity'=>$affinity,
+                'name'=>$name,
+                'picture'=>$picture,
+                'nation'=>$scoutNation,
+                'city'=>$general['city'],
+                'leader'=>$leader,
+                'power'=>$power,
+                'intel'=>$intel,
+                'experience'=>$experience,
+                'dedication'=>$dedication,
+                'level'=>$scoutLevel,
+                'gold'=>100,
+                'rice'=>100,
+                'crew'=>0,
+                'crewtype'=>GameUnitConst::DEFAULT_CREWTYPE,
+                'train'=>0,
+                'atmos'=>0,
+                'tnmt'=>0,
+                'weap'=>0,
+                'book'=>0,
+                'horse'=>0,
+                'turntime'=>$turntime,
+                'killturn'=>$killturn,
+                'age'=>$age,
+                'belong'=>1,
+                'personal'=>$personal,
+                'special'=>0,
+                'specage'=>$specage,
+                'special2'=>0,
+                'specage2'=>$specage2,
+                'npcmsg'=>'',
+                'makelimit'=>0,
+                'bornyear'=>$bornyear,
+                'deadyear'=>$deadyear,
+                'dex0'=>$avgGen['dex0'],
+                'dex10'=>$avgGen['dex10'],
+                'dex20'=>$avgGen['dex20'],
+                'dex30'=>$avgGen['dex30'],
+                'dex40'=>$avgGen['dex40'],
+            ]);
 
             $npcid++;
 
             //npccount
             $gameStor->npccount=$npcid;
 
-            //국가 기술력 그대로
-            $query = "select no from general where nation='{$general['nation']}'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $gencount = MYDB_num_rows($result);
-            $gennum = $gencount;
-            if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
-
-            //국가 기술력 그대로
-            $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$general['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('nation', [
+                'gennum'=>$db->sqleval('gennum + 1'),
+            ], 'nation=%i', $general['nation']);
 
         }
 
@@ -596,18 +609,16 @@ function process_45(&$general) {
             $query = "update general set troop='0' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
-        //국가 기술력 그대로
-        $query = "select no from general where nation='{$general['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
-        $gennum = $gencount;
-        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
 
         $nation['chemi'] -= 1;
         if($nation['chemi'] < 0) { $nation['chemi'] = 0; }
 
-        $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum',chemi='{$nation['chemi']}',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('nation', [
+            'gennum'=>$db->sqleval('gennum - 1'),
+            'chemi'=>$nation['chemi'],
+            'gold'=>$db->sqleval('gold + %i', $gold),
+            'rice'=>$db->sqleval('rice + %i', $rice),
+        ], 'nation=%i', $general['nation']);
     }
     pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
     pushGenLog($general, $log);
@@ -750,8 +761,14 @@ function process_47(&$general) {
         //분쟁기록 모두 지움
         DeleteConflict($general['nation']);
         // 국명, 색깔 바꿈 국가 레벨 0, 성향리셋, 기술0
-        $query = "update nation set name='{$general['name']}',color='#330000',level='0',type='0',tech='0',totaltech='0',capital='0' where nation='{$general['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('nation', [
+            'name'=>$general['name'],
+            'color'=>'#330000', //TODO: 기본 방랑군색 별도 지정
+            'level'=>0,
+            'type'=>0,
+            'tech'=>0,
+            'capital'=>0
+        ], 'nation=%i', $general['nation']);
         // 본인 빼고 건국/임관제한
         $query = "update general set makelimit='12' where no!='{$general['no']}' and nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

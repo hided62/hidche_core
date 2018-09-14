@@ -706,11 +706,11 @@ function checkMerge() {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
         // 모국
-        $query = "select nation,name,surlimit,totaltech from nation where nation='{$you['nation']}'";
+        $query = "select nation,name,surlimit,tech from nation where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $younation = MYDB_fetch_array($result);
         // 아국
-        $query = "select nation,name,gold,rice,surlimit,totaltech from nation where nation='{$me['nation']}'";
+        $query = "select nation,name,gold,rice,surlimit,tech from nation where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $mynation = MYDB_fetch_array($result);
         //양국 NPC수
@@ -755,8 +755,7 @@ function checkMerge() {
 
         $newGenCount = $gencount + $gencount2;
         if($newGenCount < GameConst::$initialNationGenLimit) { $newGenCount = GameConst::$initialNationGenLimit; }
-        $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
-        $newTech = Util::round($newTotalTech / $newGenCount);
+        $newTech = ($younation['tech']*$gencount + $mynation['tech']*$gencount2)/$newGenCount;
 
         // 국가 백업
         $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $me['nation']);
@@ -765,8 +764,14 @@ function checkMerge() {
         $oldNation['aux'] = Json::decode($oldNation['aux']);
 
         // 자금 통합, 외교제한 5년, 기술유지
-        $query = "update nation set name='{$you['makenation']}',gold=gold+'{$mynation['gold']}',rice=rice+'{$mynation['rice']}',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='{$younation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('nation', [
+            'name'=>$you['makenation'],
+            'gold'=>$db->sqleval('gold+%i',$mynation['gold']),
+            'rice'=>$db->sqleval('rice+%i',$mynation['rice']),
+            'surlimit'=>24,
+            'tech'=>$newTech,
+            'gennum'=>$newGenCount
+        ], 'nation=%i',$younation['nation']);
         //국가 삭제
         $db->insert('ng_old_nations', [
             'server_id'=>UniqueConst::$serverID,
@@ -845,11 +850,11 @@ function checkSurrender() {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $you = MYDB_fetch_array($result);
         // 모국
-        $query = "select nation,name,surlimit,totaltech from nation where nation='{$you['nation']}'";
+        $query = "select nation,name,surlimit,tech from nation where nation='{$you['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $younation = MYDB_fetch_array($result);
         // 아국
-        $query = "select nation,name,gold,rice,surlimit,totaltech from nation where nation='{$me['nation']}'";
+        $query = "select nation,name,gold,rice,surlimit,tech from nation where nation='{$me['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $mynation = MYDB_fetch_array($result);
         //양국 NPC수
@@ -897,11 +902,16 @@ function checkSurrender() {
 
         $newGenCount = $gencount + $gencount2;
         if($newGenCount < GameConst::$initialNationGenLimit) { $newGenCount = GameConst::$initialNationGenLimit; }
-        $newTotalTech = $younation['totaltech'] + $mynation['totaltech'];
-        $newTech = Util::round($newTotalTech / $newGenCount);
+        $newTech = ($younation['tech'] * $gencount + $mynation['tech'] * $gencount2) / $newGenCount;
         // 자금 통합, 외교제한 5년, 기술유지
-        $query = "update nation set gold=gold+'{$mynation['gold']}',rice=rice+'{$mynation['rice']}',surlimit='24',totaltech='$newTotalTech',tech='$newTech',gennum='{$newGenCount}' where nation='{$younation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('nation', [
+            'gold'=>$db->sqleval('gold+%i',$mynation['gold']),
+            'rice'=>$db->sqleval('rice+%i',$mynation['rice']),
+            'surlimit'=>24,
+            'tech'=>$newTech,
+            'gennum'=>$newGenCount
+        ], 'nation=%i', $younation['nation']);
+
         //합병 당한국 모든 도시 10%감소
         $query = "update city set pop=pop*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,trust=trust*0.9,def=def*0.9,wall=wall*0.9 where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -965,20 +975,11 @@ function updateNationState() {
     $history = array();
     $admin = $gameStor->getValues(['year', 'month']);
 
-    $query = "select nation,name,level from nation";
-    $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nationcount = MYDB_num_rows($nationresult);
+    foreach($db->query('SELECT nation,name,level FROM nation') as $nation) {
+        //TODO: level이 진관수이소중대특 체계를 벗어날 수 있음
+        $citycount = $db->queryFirstField('SELECT count(*) FROM city WHERE nation=%i AND level>=4', $nation['nation']);
 
-    for($i=0; $i < $nationcount; $i++) {
-        $nation = MYDB_fetch_array($nationresult);
-
-        $query = "select city,level,secu from city where nation='{$nation['nation']}' and level>=4";
-        $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $citycount = MYDB_num_rows($cityresult);
-
-        $query = "select no from general where nation='{$nation['nation']}'";
-        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($genresult);
+        $gencount = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i', $nation['nation']);
 
         if($citycount == 0) {
             $nationlevel = 0;   // 방랑군
@@ -1029,11 +1030,9 @@ function updateNationState() {
 
             refreshNationStaticInfo();
         }
-        $gennum = $gencount;
-        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
-        //기술 및 변경횟수 업데이트
-        $query = "update nation set tech=totaltech/'$gencount',gennum='$gennum' where nation='{$nation['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('nation', [
+            'gennum'=>$gencount
+        ], 'nation=%i', $nation['nation']);
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
 }
@@ -1075,6 +1074,8 @@ function checkStatistic() {
         min(power) as minpower, max(power) as maxpower, avg(power) as avgpower from nation where level>0');
     $auxData['nations']['avg'] = $avgNation;
 
+    $avgNation['mintech'] = floor($avgNation['mintech']);
+    $avgNation['maxtech'] = floor($avgNation['maxtech']);
     $avgNation['avgtech'] = Util::round($avgNation['avgtech']);
     $avgNation['avgpower'] = Util::round($avgNation['avgpower']);
     $etc .= "최저/평균/최고 기술({$avgNation['mintech']}/{$avgNation['avgtech']}/{$avgNation['maxtech']}), ";
