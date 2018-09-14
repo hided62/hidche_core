@@ -192,111 +192,81 @@ class General implements iActionTrigger{
 
     public function onPreTurnExecute(General $general, ?array $nation):array{
         $chain = [];
-        if($this->nationType){
-            $chain[] = $nationType->onPreTurnExecute($general, $nation);
-        }
-        if($this->levelObj){
-            $chain[] = $levelObj->onPreTurnExecute($general, $nation);
-        }
-        if($this->specialDomesticObj){
-            $chain[] = $specialDomesticObj->onPreTurnExecute($general, $nation);
-        }
-        if($this->specialWarObj){
-            $chain[] = $specialWarObj->onPreTurnExecute($general, $nation);
-        }
-        if($this->personalityObj){
-            $chain[] = $personalityObj->onPreTurnExecute($general, $nation);
-        }
-        foreach($this->itemObjs as $itemObj){
-            $chain[] = $itemObj->onPreTurnExecute($general, $nation);
+        foreach(array_merge([
+            $this->nationType, 
+            $this->levelObj, 
+            $this->specialDomesticObj, 
+            $this->specialWarObj, 
+            $this->personalityObj, 
+        ], $this->itemObjs) as $iObj){
+            if(!$iObj){
+                continue;
+            }
+            $chain[] = $iObj->onPreTurnExecute($general, $nation);
         }
         return array_merge([], ...$chain);
     }
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
-        if($this->nationType){
-            $value = $nationType->onCalcDomestic($turnType, $varType, $value);
-        }
-        if($this->levelObj){
-            $value = $levelObj->onCalcDomestic($turnType, $varType, $value);
-        }
-        if($this->specialDomesticObj){
-            $value = $specialDomesticObj->onCalcDomestic($turnType, $varType, $value);
-        }
-        if($this->specialWarObj){
-            $value = $specialWarObj->onCalcDomestic($turnType, $varType, $value);
-        }
-        if($this->personalityObj){
-            $value = $personalityObj->onCalcDomestic($turnType, $varType, $value);
-        }
-        foreach($this->itemObjs as $itemObj){
-            $value = $itemObj->onCalcDomestic($turnType, $varType, $value);
+        foreach(array_merge([
+            $this->nationType, 
+            $this->levelObj, 
+            $this->specialDomesticObj, 
+            $this->specialWarObj, 
+            $this->personalityObj, 
+        ], $this->itemObjs) as $iObj){
+            if(!$iObj){
+                continue;
+            }
+            $value = $iObj->onCalcDomestic($turnType, $varType, $value);
         }
         return $value;
     }
 
     public function onPreGeneralStatUpdate(General $general, string $statName, $value){
         //xxx: $general?
-        if($this->nationType){
-            $value = $nationType->onPreGeneralStatUpdate($this, $statName, $value);
-        }
-        if($this->levelObj){
-            $value = $levelObj->onPreGeneralStatUpdate($this, $statName, $value);
-        }
-        if($this->specialDomesticObj){
-            $value = $specialDomesticObj->onPreGeneralStatUpdate($this, $statName, $value);
-        }
-        if($this->specialWarObj){
-            $value = $specialWarObj->onPreGeneralStatUpdate($this, $statName, $value);
-        }
-        if($this->personalityObj){
-            $value = $personalityObj->onPreGeneralStatUpdate($this, $statName, $value);
-        }
-        foreach($this->itemObjs as $itemObj){
-            $value = $itemObj->onPreGeneralStatUpdate($this, $statName, $value);
+        foreach(array_merge([
+            $this->nationType, 
+            $this->levelObj, 
+            $this->specialDomesticObj, 
+            $this->specialWarObj, 
+            $this->personalityObj, 
+        ], $this->itemObjs) as $iObj){
+            if(!$iObj){
+                continue;
+            }
+            $value = $iObj->onPreGeneralStatUpdate($this, $statName, $value);
         }
         return $value;
     }
 
     public function onCalcStrategic(string $turnType, string $varType, $value){
-        if($this->nationType){
-            $value = $nationType->onCalcStrategic($turnType, $varType, $value);
-        }
-        if($this->levelObj){
-            $value = $levelObj->onCalcStrategic($turnType, $varType, $value);
-        }
-        if($this->specialDomesticObj){
-            $value = $specialDomesticObj->onCalcStrategic($turnType, $varType, $value);
-        }
-        if($this->specialWarObj){
-            $value = $specialWarObj->onCalcStrategic($turnType, $varType, $value);
-        }
-        if($this->personalityObj){
-            $value = $personalityObj->onCalcStrategic($turnType, $varType, $value);
-        }
-        foreach($this->itemObjs as $itemObj){
-            $value = $itemObj->onCalcStrategic($turnType, $varType, $value);
+        foreach(array_merge([
+            $this->nationType, 
+            $this->levelObj, 
+            $this->specialDomesticObj, 
+            $this->specialWarObj, 
+            $this->personalityObj, 
+        ], $this->itemObjs) as $iObj){
+            if(!$iObj){
+                continue;
+            }
+            $value = $iObj->onCalcStrategic($turnType, $varType, $value);
         }
         return $value;
     }
 
     public function onCalcNationalIncome(string $type, int $amount):int{
-        if($this->nationType){
-            $amount = $nationType->onCalcNationalIncome($type, $amount);
-        }
-        if($this->levelObj){
-            $amount = $levelObj->onCalcNationalIncome($type, $amount);
-        }
-        if($this->specialDomesticObj){
-            $amount = $specialDomesticObj->onCalcNationalIncome($type, $amount);
-        }
-        if($this->specialWarObj){
-            $amount = $specialWarObj->onCalcNationalIncome($type, $amount);
-        }
-        if($this->personalityObj){
-            $amount = $personalityObj->onCalcNationalIncome($type, $amount);
-        }
-        foreach($this->itemObjs as $itemObj){
-            $amount = $itemObj->onCalcNationalIncome($type, $amount);
+        foreach(array_merge([
+            $this->nationType, 
+            $this->levelObj, 
+            $this->specialDomesticObj, 
+            $this->specialWarObj, 
+            $this->personalityObj, 
+        ], $this->itemObjs) as $iObj){
+            if(!$iObj){
+                continue;
+            }
+            $amount = $iObj->onCalcNationalIncome($type, $amount);
         }
         return $amount;
     }
@@ -305,33 +275,17 @@ class General implements iActionTrigger{
         //xxx:$unit
         $att = 1;
         $def = 1;
-        if($this->nationType){
-            [$attV, $defV] = $nationType->getWarPowerMultiplier($unit);
-            $att *= $attV;
-            $def *= $defV;
-        }
-        if($this->levelObj){
-            [$attV, $defV] = $levelObj->getWarPowerMultiplier($unit);
-            $att *= $attV;
-            $def *= $defV;
-        }
-        if($this->specialDomesticObj){
-            [$attV, $defV] = $specialDomesticObj->getWarPowerMultiplier($unit);
-            $att *= $attV;
-            $def *= $defV;
-        }
-        if($this->specialWarObj){
-            [$attV, $defV] = $specialWarObj->getWarPowerMultiplier($unit);
-            $att *= $attV;
-            $def *= $defV;
-        }
-        if($this->personalityObj){
-            [$attV, $defV] = $personalityObj->getWarPowerMultiplier($unit);
-            $att *= $attV;
-            $def *= $defV;
-        }
-        foreach($this->itemObjs as $itemObj){
-            [$attV, $defV] = $itemObj->getWarPowerMultiplier($unit);
+        foreach(array_merge([
+            $this->nationType, 
+            $this->levelObj, 
+            $this->specialDomesticObj, 
+            $this->specialWarObj, 
+            $this->personalityObj, 
+        ], $this->itemObjs) as $iObj){
+            if(!$iObj){
+                continue;
+            }
+            [$attV, $defV] = $iObj->getWarPowerMultiplier($unit);
             $att *= $attV;
             $def *= $defV;
         }
@@ -339,45 +293,33 @@ class General implements iActionTrigger{
     }
     public function getBattleInitSkillTriggerList(WarUnit $unit):array{
         $chain = [];
-        if($this->nationType){
-            $chain[] = $nationType->getBattleInitSkillTriggerList($unit);
-        }
-        if($this->levelObj){
-            $chain[] = $levelObj->getBattleInitSkillTriggerList($unit);
-        }
-        if($this->specialDomesticObj){
-            $chain[] = $specialDomesticObj->getBattleInitSkillTriggerList($unit);
-        }
-        if($this->specialWarObj){
-            $chain[] = $specialWarObj->getBattleInitSkillTriggerList($unit);
-        }
-        if($this->personalityObj){
-            $chain[] = $personalityObj->getBattleInitSkillTriggerList($unit);
-        }
-        foreach($this->itemObjs as $itemObj){
-            $chain[] = $itemObj->getBattleInitSkillTriggerList($unit);
+        foreach(array_merge([
+            $this->nationType, 
+            $this->levelObj, 
+            $this->specialDomesticObj, 
+            $this->specialWarObj, 
+            $this->personalityObj, 
+        ], $this->itemObjs) as $iObj){
+            if(!$iObj){
+                continue;
+            }
+            $chain[] = $iObj->getBattleInitSkillTriggerList($unit);
         }
         return array_merge([], ...$chain);
     }
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):array{
         $chain = [];
-        if($this->nationType){
-            $chain[] = $nationType->getBattlePhaseSkillTriggerList($unit);
-        }
-        if($this->levelObj){
-            $chain[] = $levelObj->getBattlePhaseSkillTriggerList($unit);
-        }
-        if($this->specialDomesticObj){
-            $chain[] = $specialDomesticObj->getBattlePhaseSkillTriggerList($unit);
-        }
-        if($this->specialWarObj){
-            $chain[] = $specialWarObj->getBattlePhaseSkillTriggerList($unit);
-        }
-        if($this->personalityObj){
-            $chain[] = $personalityObj->getBattlePhaseSkillTriggerList($unit);
-        }
-        foreach($this->itemObjs as $itemObj){
-            $chain[] = $itemObj->getBattlePhaseSkillTriggerList($unit);
+        foreach(array_merge([
+            $this->nationType, 
+            $this->levelObj, 
+            $this->specialDomesticObj, 
+            $this->specialWarObj, 
+            $this->personalityObj, 
+        ], $this->itemObjs) as $iObj){
+            if(!$iObj){
+                continue;
+            }
+            $chain[] = $iObj->getBattlePhaseSkillTriggerList($unit);
         }
         return array_merge([], ...$chain);
     }
