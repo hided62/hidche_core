@@ -229,6 +229,671 @@ function process_domestic(array $rawGeneral, int $type){
     $cmdObj->run();
 }
 
+function process_1_old(&$general, $type) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $log = [];
+    $alllog = [];
+    $history = [];
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
+
+    if($type == 1)     { $dtype = "농지 개간"; $atype = "을"; $btype = "은"; $stype = "agri"; }
+    elseif($type == 2) { $dtype = "상업 투자"; $atype = "를"; $btype = "는"; $stype = "comm"; }
+
+    $query = "select * from city where city='{$general['city']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $city = MYDB_fetch_array($result);
+
+    $nation = getNationStaticInfo($general['nation']);
+
+    $lbonus = setLeadershipBonus($general, $nation['level']);
+
+    if($general['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
+    } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 실패. <1>$date</>";
+    } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
+    } elseif($city['supply'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
+    } elseif($general['gold'] < $admin['develcost']) {
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
+    } elseif($city["$stype"] >= $city["$stype"."2"]) {
+        $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$btype} 충분합니다. $dtype 실패. <1>$date</>";
+    } else {
+        // 민심 50 이하이면 50과 같게
+        if($city['trust'] < GameConst::$develrate) { $city['trust'] = GameConst::$develrate; }
+        $trust = $city['trust'] / 100;
+
+        $score = getGeneralIntel($general, true, true, true, false) * $trust;
+        $score = $score * (100 + $general['explevel']/5)/100;
+        $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
+
+        // 국가보정
+        if($nation['type'] == 2 || $nation['type'] == 12) { $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($nation['type'] == 8 || $nation['type'] == 11) { $score *= 0.9; $admin['develcost'] *= 1.2; }
+
+        // 군주, 참모, 모사 보정
+        if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 9 || $general['level'] == 7 || $general['level'] == 5) { $score *= 1.05; }
+        // 군사 보정
+        if($general['level'] == 3 && $general['no'] == $city['gen2']) { $score *= 1.05; }
+
+        $rd = Util::randF();
+        $r = CriticalRatioDomestic($general, 2);
+
+        // 특기보정 : 경작, 상재
+        if($type == 1 && $general['special'] == 1) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($type == 2 && $general['special'] == 2) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        //민심 반영
+        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
+        //버그방지
+        if($score < 1) $score = 1;
+
+        if($r['fail'] > $rd) {
+            $score = CriticalScore($score, 1);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
+        } elseif($r['succ'] + $r['fail'] > $rd) {
+            $score = CriticalScore($score, 0);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
+        } else {
+            $score = Util::round($score);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$atype} 하여 <C>$score</> 상승했습니다. <1>$date</>";
+        }
+
+        $exp = $score * 0.7;
+        $ded = $score * 1.0;
+
+        // 성격 보정
+        $exp = CharExperience($exp, $general['personal']);
+        $ded = CharDedication($ded, $general['personal']);
+
+        $score += $city["$stype"];
+        if($score > $city["{$stype}2"]) { $score = $city["{$stype}2"]; }
+        // 내정 상승
+        $query = "update city set {$stype}='$score' where city='{$general['city']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        // 자금 하락, 경험치 상승
+        $general['gold'] -= $admin['develcost'];
+        $general['intel2']++;
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
+    }
+
+    pushGenLog($general, $log);
+}
+
+function process_3(&$general) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $log = [];
+    $alllog = [];
+    $history = [];
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
+
+    $dtype = "기술 연구";
+
+    $query = "select * from city where city='{$general['city']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $city = MYDB_fetch_array($result);
+
+    $query = "select level,type,tech from nation where nation='{$general['nation']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $nation = MYDB_fetch_array($result);
+
+    $lbonus = setLeadershipBonus($general, $nation['level']);
+
+    if($general['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
+    } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 실패. <1>$date</>";
+    } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
+    } elseif($city['supply'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
+    } elseif($general['gold'] < $admin['develcost']) {
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
+    } else {
+        $score = getGeneralIntel($general, true, true, true, false);
+        $score = $score * (100 + $general['explevel']/5)/100;
+        $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
+
+        // 국가보정
+        if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $score *= 0.9; $admin['develcost'] *= 1.2; }
+
+        // 군주, 참모, 모사 보정
+        if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 9 || $general['level'] == 7 || $general['level'] == 5) { $score *= 1.05; }
+
+        $rd = Util::randF();
+        $r = CriticalRatioDomestic($general, 2);
+        // 특기보정 : 발명
+        if($general['special'] == 3) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        //민심 반영
+        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
+
+        //버그방지
+        if($score < 1) $score = 1;
+
+        if($r['fail'] > $rd) {
+            $score = CriticalScore($score, 1);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
+        } elseif($r['succ'] + $r['fail'] > $rd) {
+            $score = CriticalScore($score, 0);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
+        } else {
+            $score = Util::round($score);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 하여 <C>$score</> 상승했습니다. <1>$date</>";
+        }
+
+        $exp = $score * 0.7;
+        $ded = $score * 1.0;
+
+        // 성격 보정
+        $exp = CharExperience($exp, $general['personal']);
+        $ded = CharDedication($ded, $general['personal']);
+
+        // 부드러운 기술 제한
+        if(TechLimit($admin['startyear'], $admin['year'], $nation['tech'])) { $score = intdiv($score, 4); }
+
+        //장수수 구함
+        $query = "select no from general where nation='{$general['nation']}'";
+        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $gencount = MYDB_num_rows($result);
+        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
+        // 내정 상승
+        $query = "update nation set totaltech=totaltech+'$score',tech=totaltech/'$gencount' where nation='{$general['nation']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        // 자금 하락, 경험치 상승        // 공헌도, 명성 상승 = $score * 10
+        $general['gold'] -= $admin['develcost'];
+
+        $general['intel2']++;
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
+    }
+
+    pushGenLog($general, $log);
+}
+
+function process_4(&$general) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $log = [];
+    $alllog = [];
+    $history = [];
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
+
+    $query = "select * from city where city='{$general['city']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $city = MYDB_fetch_array($result);
+
+    $nation = getNationStaticInfo($general['nation']);
+
+    $lbonus = setLeadershipBonus($general, $nation['level']);
+
+    if($general['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 주민 선정 실패. <1>$date</>";
+    } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. 주민 선정 실패. <1>$date</>";
+    } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 주민 선정 실패. <1>$date</>";
+    } elseif($city['supply'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 주민 선정 실패. <1>$date</>";
+    } elseif($general['rice'] < $admin['develcost']*2) {
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 주민 선정 실패. <1>$date</>";
+    } elseif($city['trust'] >= 100) {
+        $log[] = "<C>●</>{$admin['month']}월:민심은 충분합니다. 주민 선정 실패. <1>$date</>";
+    } else {
+        $score = getGeneralLeadership($general, true, true, true) / 10;
+        $score *= (100 + $general['explevel']/5)/100;
+        $score *= (80 + rand() % 41)/100;   // 80 ~ 120%
+
+        // 국가보정
+        if($nation['type'] == 2 || $nation['type'] == 4 || $nation['type'] == 7 || $nation['type'] == 10) { $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($nation['type'] == 1 || $nation['type'] == 3 || $nation['type'] == 9)                        { $score *= 0.9; $admin['develcost'] *= 1.2; }
+
+        // 군주, 참모 보정
+        if($general['level'] == 12 || $general['level'] == 11) { $score *= 1.05; }
+        // 시중 보정
+        if($general['level'] == 2 && $general['no'] == $city['gen3']) { $score *= 1.05; }
+
+        $rd = Util::randF();
+        $r = CriticalRatioDomestic($general, 0);
+        // 특기보정 : 인덕
+        if($general['special'] == 20) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+
+        //버그방지
+        if($score < 1) $score = 1;
+
+        if($r['fail'] > $rd) {
+            $score = CriticalScore($score, 1);
+            $log[] = "<C>●</>{$admin['month']}월:선정을 <span class='ev_failed'>실패</span>하여 민심이 <C>".round($score, 1)."</> 상승했습니다. <1>$date</>";
+        } elseif($r['succ'] + $r['fail'] > $rd) {
+            $score = CriticalScore($score, 0);
+            $log[] = "<C>●</>{$admin['month']}월:선정을 <S>성공</>하여 민심이 <C>".round($score, 1)."</> 상승했습니다. <1>$date</>";
+        } else {
+            $log[] = "<C>●</>{$admin['month']}월:민심이 <C>".round($score, 1)."</> 상승했습니다. <1>$date</>";
+        }
+
+        $exp = $score * 7;
+        $ded = $score * 10;
+
+        // 성격 보정
+        $exp = CharExperience($exp, $general['personal']);
+        $ded = CharDedication($ded, $general['personal']);
+
+        $score += $city['trust'];
+        if($score > 100) { $score = 100; }
+        // 민심 상승
+        $query = "update city set trust='$score' where city='{$general['city']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        // 군량 하락 내정보다 2배   지력경험    경험, 공헌 상승
+        $general['rice'] -= $admin['develcost'] * 2;
+        $general['leader2']++;
+        $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
+    }
+
+    pushGenLog($general, $log);
+}
+
+function process_5(&$general, $type) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $log = [];
+    $alllog = [];
+    $history = [];
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
+
+    if($type == 1) { $dtype = "수비 강화"; $stype = "def"; }
+    elseif($type == 2) { $dtype = "성벽 보수"; $stype = "wall"; }
+
+    $query = "select * from city where city='{$general['city']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $city = MYDB_fetch_array($result);
+
+    $nation = getNationStaticInfo($general['nation']);
+
+    $lbonus = setLeadershipBonus($general, $nation['level']);
+
+    if($general['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 실패. <1>$date</>";
+    } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 실패. <1>$date</>";
+    } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 실패. <1>$date</>";
+    } elseif($city['supply'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
+    } elseif($general['gold'] < $admin['develcost']) {
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
+    } elseif($city["$stype"] >= $city["$stype"."2"]) {
+        $log[] = "<C>●</>{$admin['month']}월:{$dtype}는 충분합니다. $dtype 실패. <1>$date</>";
+    } else {
+        // 민심 50 이하이면 50과 같게
+        if($city['trust'] < GameConst::$develrate) { $city['trust'] = GameConst::$develrate; }
+        $trust = $city['trust'] / 100;
+
+        $score = getGeneralPower($general, true, true, true, false) * $trust;
+        $score = $score * (100 + $general['explevel']/5)/100;
+        $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
+
+        // 국가보정
+        if($nation['type'] == 3 || $nation['type'] == 5 || $nation['type'] == 10 || $nation['type'] == 11) { $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($nation['type'] == 4 || $nation['type'] == 7 || $nation['type'] == 8  || $nation['type'] == 13) { $score *= 0.9; $admin['develcost'] *= 1.2; }
+
+        // 군주, 참모, 장군 보정
+        if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 10 || $general['level'] == 8 || $general['level'] == 6) { $score *= 1.05; }
+        // 태수 보정
+        if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
+
+        $rd = Util::randF();
+        $r = CriticalRatioDomestic($general, 1);
+        // 특기보정 : 수비, 축성
+        if($type == 1 && $general['special'] == 11) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($type == 2 && $general['special'] == 10) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        //민심 반영
+        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
+
+        //버그방지
+        if($score < 1) $score = 1;
+
+        if($r['fail'] > $rd) {
+            $score = CriticalScore($score, 1);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <span class='ev_failed'>실패</span>하여 <C>$score</> 상승했습니다. <1>$date</>";
+        } elseif($r['succ'] + $r['fail'] > $rd) {
+            $score = CriticalScore($score, 0);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 <S>성공</>하여 <C>$score</> 상승했습니다. <1>$date</>";
+        } else {
+            $score = Util::round($score);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}를 하여 <C>$score</> 상승했습니다. <1>$date</>";
+        }
+
+        $exp = $score * 0.7;
+        $ded = $score * 1.0;
+
+        // 성격 보정
+        $exp = CharExperience($exp, $general['personal']);
+        $ded = CharDedication($ded, $general['personal']);
+
+        $score += $city["$stype"];
+        if($score > $city["{$stype}2"]) { $score = $city["{$stype}2"]; }
+        // 내정 상승
+        $query = "update city set {$stype}='$score' where city='{$general['city']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        // 자금 하락, 무력 경험     경험, 공헌 상승
+        $general['gold'] -= $admin['develcost'];
+        $general['power2']++;
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
+    }
+
+    pushGenLog($general, $log);
+}
+
+function process_7(&$general) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $log = [];
+    $alllog = [];
+    $history = [];
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
+
+    $query = "select * from city where city='{$general['city']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $city = MYDB_fetch_array($result);
+
+    $nation = getNationStaticInfo($general['nation']);
+
+    $lbonus = setLeadershipBonus($general, $nation['level']);
+
+    if($general['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 정착 장려 실패. <1>$date</>";
+    } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. 정착 장려 실패. <1>$date</>";
+    } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 정착 장려 실패. <1>$date</>";
+    } elseif($city['supply'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 정착 장려 실패. <1>$date</>";
+    } elseif($general['rice'] < $admin['develcost'] * 2) {
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 정착 장려 실패. <1>$date</>";
+    } elseif($city['pop'] >= $city['pop2']) {
+        $log[] = "<C>●</>{$admin['month']}월:이미 포화상태입니다. 정착 장려 실패. <1>$date</>";
+    } else {
+        $score = getGeneralLeadership($general, true, true, true);
+        $score = $score * (100 + $general['explevel']/5)/100;
+        $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
+
+        // 국가보정
+        if($nation['type'] == 2 || $nation['type'] == 4 || $nation['type'] == 7 || $nation['type'] == 10) { $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($nation['type'] == 1 || $nation['type'] == 3 || $nation['type'] == 9)                        { $score *= 0.9; $admin['develcost'] *= 1.2; }
+
+        // 군주, 참모 보정
+        if($general['level'] == 12 || $general['level'] == 11) { $score *= 1.05; }
+        // 시중 보정
+        if($general['level'] == 2 && $general['no'] == $city['gen3']) { $score *= 1.05; }
+
+        $rd = Util::randF();
+        $r = CriticalRatioDomestic($general, 0);
+        // 특기보정 : 인덕
+        if($general['special'] == 20) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+
+        //버그방지
+        if($score < 1) $score = 1;
+
+        if($r['fail'] > $rd) {
+            $score = CriticalScore($score, 1);
+            $log[] = "<C>●</>{$admin['month']}월:장려를 <span class='ev_failed'>실패</span>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
+        } elseif($r['succ'] + $r['fail'] > $rd) {
+            $score = CriticalScore($score, 0);
+            $log[] = "<C>●</>{$admin['month']}월:장려를 <S>성공</>하여 주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
+        } else {
+            $score = Util::round($score);
+            $log[] = "<C>●</>{$admin['month']}월:주민이 <C>{$score}0</>명 증가했습니다. <1>$date</>";
+        }
+
+        $exp = $score * 0.7;
+        $ded = $score * 1.0;
+
+        // 성격 보정
+        $exp = CharExperience($exp, $general['personal']);
+        $ded = CharDedication($ded, $general['personal']);
+
+        $score = $city['pop'] + ($score * 10);
+        if($score > $city['pop2']) { $score = $city['pop2']; }
+        // 민심 상승
+        $query = "update city set pop='$score' where city='{$general['city']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        // 군량 하락 내정보다 2배   지력경험    경험, 공헌 상승
+        $general['rice'] -= $admin['develcost'] * 2;
+        $general['leader2']++;
+        $query = "update general set resturn='SUCCESS',rice='{$general['rice']}',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
+    }
+
+    pushGenLog($general, $log);
+}
+
+function process_8(&$general) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $log = [];
+    $alllog = [];
+    $history = [];
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost']);
+
+    $dtype = "치안"; $stype = "secu";
+
+    $query = "select * from city where city='{$general['city']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $city = MYDB_fetch_array($result);
+
+    $nation = getNationStaticInfo($general['nation']);
+
+    $lbonus = setLeadershipBonus($general, $nation['level']);
+
+    if($general['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. $dtype 강화 실패. <1>$date</>";
+    } elseif($admin['year'] < $admin['startyear']+3 && $nation['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:초반제한중 방랑군은 불가능합니다. $dtype 강화 실패. <1>$date</>";
+    } elseif($city['nation'] != $general['nation'] && $nation['level'] != 0) {
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. $dtype 강화 실패. <1>$date</>";
+    } elseif($city['supply'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 강화 실패. <1>$date</>";
+    } elseif($general['gold'] < $admin['develcost']) {
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 강화 실패. <1>$date</>";
+    } elseif($city['secu'] >= $city['secu2']) {
+        $log[] = "<C>●</>{$admin['month']}월:치안은 충분합니다. $dtype 강화 실패. <1>$date</>";
+    } else {
+        // 민심 50 이하이면 50과 같게
+        if($city['trust'] < GameConst::$develrate) { $city['trust'] = GameConst::$develrate; }
+        $trust = $city['trust'] / 100;
+
+        $score = getGeneralPower($general, true, true, true, false) * $trust;
+        $score = $score * (100 + $general['explevel']/5)/100;
+        $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
+
+        // 국가보정
+        if($nation['type'] == 1 || $nation['type'] == 4) { $score *= 1.1; $admin['develcost'] *= 0.8; }
+        if($nation['type'] == 6 || $nation['type'] == 9) { $score *= 0.9; $admin['develcost'] *= 1.2; }
+
+        // 군주, 참모, 장군 보정
+        if($general['level'] == 12 || $general['level'] == 11 || $general['level'] == 10 || $general['level'] == 8 || $general['level'] == 6) { $score *= 1.05; }
+        // 태수 보정
+        if($general['level'] == 4 && $general['no'] == $city['gen1']) { $score *= 1.05; }
+
+        $rd = Util::randF();
+        $r = CriticalRatioDomestic($general, 1);
+        // 특기보정 : 통찰
+        if($general['special'] == 12) { $r['succ'] += 0.1; $score *= 1.1; $admin['develcost'] *= 0.8; }
+        //민심 반영
+        if($city['trust'] < 80) { $r['succ'] *= $city['trust'] / 80; }
+
+        //버그방지
+        if($score < 1) $score = 1;
+
+        if($r['fail'] > $rd) {
+            $score = CriticalScore($score, 1);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <span class='ev_failed'>실패</span>하여 <C>$score</> 강화했습니다. <1>$date</>";
+        } elseif($r['succ'] + $r['fail'] > $rd) {
+            $score = CriticalScore($score, 0);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <S>성공</>하여 <C>$score</> 강화했습니다. <1>$date</>";
+        } else {
+            $score = Util::round($score);
+            $log[] = "<C>●</>{$admin['month']}월:{$dtype}을 <C>$score</> 강화했습니다. <1>$date</>";
+        }
+
+        $exp = $score * 0.7;
+        $ded = $score * 1.0;
+
+        // 성격 보정
+        $exp = CharExperience($exp, $general['personal']);
+        $ded = CharDedication($ded, $general['personal']);
+
+        $score += $city["$stype"];
+        if($score > $city["{$stype}2"]) { $score = $city["{$stype}2"]; }
+        // 내정 상승
+        $query = "update city set {$stype}='$score' where city='{$general['city']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        // 자금 하락, 무력 경험     경험, 공헌 상승
+        $general['gold'] -= $admin['develcost'];
+        $general['power2']++;
+        $query = "update general set resturn='SUCCESS',gold='{$general['gold']}',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $log = checkAbility($general, $log);
+        $log = uniqueItem($general, $log);
+    }
+
+    pushGenLog($general, $log);
+}
+
+function process_9(&$general) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $log = [];
+    $alllog = [];
+    $history = [];
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['year', 'month', 'develcost']);
+
+    $query = "select nation,supply from city where city='{$general['city']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $city = MYDB_fetch_array($result);
+
+    $nation = getNationStaticInfo($general['nation']);
+
+    $lbonus = setLeadershipBonus($general, $nation['level']);
+
+    if($general['level'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 물자 조달 실패. <1>$date</>";
+    } elseif($nation['level'] > 0 && $city['nation'] != $general['nation']) {
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 물자 조달 실패. <1>$date</>";
+    } elseif($city['supply'] == 0 && $city['nation'] == $general['nation']) {
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 물자 조달 실패. <1>$date</>";
+    } else {
+        if(rand() % 2 == 0) { $dtype = 0; $stype = "금"; }
+        else                { $dtype = 1; $stype = "쌀"; }
+
+        $score = getGeneralLeadership($general, true, true, true) 
+            + getGeneralPower($general, true, true, true) 
+            + getGeneralIntel($general, true, true, true);
+        $score = $score * (100 + $general['explevel']/5)/100;
+        $score = $score * (80 + rand() % 41)/100;   // 80 ~ 120%
+
+        $rd = rand() % 100;   // 현재 20%
+
+        //버그방지
+        if($score < 1) $score = 1;
+
+        if(30 > $rd) {
+            $score = CriticalScore($score, 1);
+            $log[] = "<C>●</>{$admin['month']}월:조달을 <span class='ev_failed'>실패</span>하여 {$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
+        } elseif(40 > $rd) {
+            $score = CriticalScore($score, 0);
+            $log[] = "<C>●</>{$admin['month']}월:조달을 <S>성공</>하여 {$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
+        } else {
+            $score = Util::round($score);
+            $log[] = "<C>●</>{$admin['month']}월:{$stype}을 <C>$score</> 조달했습니다. <1>$date</>";
+        }
+
+        $exp = $score * 0.7 / 3;
+        $ded = $score * 1.0 / 3;
+
+        // 성격 보정
+        $exp = CharExperience($exp, $general['personal']);
+        $ded = CharDedication($ded, $general['personal']);
+
+        // 물자 상승
+        if($dtype == 0) {
+            $query = "update nation set gold=gold+'$score' where nation='{$general['nation']}'";
+            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        } else {
+            $query = "update nation set rice=rice+'$score' where nation='{$general['nation']}'";
+            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        }
+
+        switch(Util::choiceRandomUsingWeight([$general['leader'], $general['power'], $general['intel']])) {
+            case 0:
+                $general['leader2']++;
+                $query = "update general set resturn='SUCCESS',leader2='{$general['leader2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+                break;
+            case 1:
+                $general['power2']++;
+                $query = "update general set resturn='SUCCESS',power2='{$general['power2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+                break;
+            case 2:
+                $general['intel2']++;
+                $query = "update general set resturn='SUCCESS',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+                break;
+        }
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $log = checkAbility($general, $log);
+    }
+    pushGenLog($general, $log);
+}
+
 function process_11(&$general, $type) {
     if($type == 1){
         $type = '징병';
