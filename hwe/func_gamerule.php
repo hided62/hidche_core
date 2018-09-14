@@ -501,7 +501,7 @@ function postUpdateMonthly() {
 // 명성,공헌
     $nations = $db->query('SELECT
     A.nation,
-    A.gennum, A.gennum2, A.aux,
+    A.gennum, A.aux,
     round((
         round(((A.gold+A.rice)+(select sum(gold+rice) from general where nation=A.nation))/100)
         +A.tech
@@ -536,7 +536,6 @@ function postUpdateMonthly() {
 
         $db->update('nation', [
             'power'=>$nation['power'],
-            'gennum2'=>$nation['gennum'],
             'aux'=>Json::encode($aux)
         ], 'nation=%i', $nation['nation']);
     }

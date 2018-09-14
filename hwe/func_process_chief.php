@@ -1976,10 +1976,8 @@ function process_76(&$general) {
         pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<M>의병모집</>을 발동");
         pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <M>의병모집</>을 발동");
 
-        $query = "select avg(gennum) as gennum from nation";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $avgNation = MYDB_fetch_array($result);
-        $gencount = 5 + Util::round($avgNation['gennum'] / 10);
+        $avgGenNum = $db->queryFirstField('SELECT avg(gennum) FROM nation');
+        $addGenCount = 5 + Util::round($avgGenNum / 10);
 
         $query = "select avg(age) as age, max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0) as dex0, avg(dex10) as dex10, avg(dex20) as dex20, avg(dex30) as dex30, avg(dex40) as dex40 from general where nation='{$general['nation']}'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1988,7 +1986,7 @@ function process_76(&$general) {
         //의병추가
         $npc = 4;
         $npcid = $admin['npccount'];
-        for($i=0; $i < $gencount; $i++) {
+        for($i=0; $i < $addGenCount; $i++) {
             // 무장 40%, 지장 40%, 무지장 20%
             $type = rand() % 10;
             switch($type) {
@@ -2089,13 +2087,6 @@ function process_76(&$general) {
         //npccount
         $gameStor->npccount=$npcid;
 
-        //국가 기술력 그대로
-        $query = "select no from general where nation='{$general['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
-        $gennum = $gencount;
-        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
-
         // 국가보정
         if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
@@ -2103,7 +2094,7 @@ function process_76(&$general) {
         //전략기한
         $db->update('nation', [
             'sabotagelimit'=>$term3,
-            'gennum'=>$gennum
+            'gennum'=>$db->sqleval('gennum + %i', $addGenCount),
         ], 'nation=%i', $general['nation']);
 
         //경험치, 공헌치

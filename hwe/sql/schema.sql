@@ -176,7 +176,6 @@ CREATE TABLE `nation` (
 	`capital` INT(1) NULL DEFAULT '0',
 	`capset` INT(1) NULL DEFAULT '0',
 	`gennum` INT(3) NULL DEFAULT '1',
-	`gennum2` INT(3) NULL DEFAULT '1',
 	`gold` INT(8) NULL DEFAULT '0',
 	`rice` INT(8) NULL DEFAULT '0',
 	`bill` INT(3) NULL DEFAULT '0',
