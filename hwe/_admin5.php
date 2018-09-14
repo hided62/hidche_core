@@ -155,7 +155,6 @@ SELECT
     A.nation,
     A.name,
     A.power,
-    A.chemi,
     A.color,
     A.tech,
     A.sabotagelimit,
@@ -229,7 +228,6 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=center>&nbsp;{$nation['connect']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['con']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['power']}&nbsp;</td>
-        <td align=center>&nbsp;{$nation['chemi']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$city['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['tech']}&nbsp;</td>

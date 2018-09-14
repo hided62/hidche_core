@@ -84,7 +84,7 @@ if($genlist != 0 && $me['nation'] != $general['nation']){
 }
 
 if($btn == "추방") {
-    $query = "select name,l{$meLevel}set,chemi,color from nation where nation='{$me['nation']}'";
+    $query = "select name,l{$meLevel}set,color from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -213,19 +213,17 @@ if($btn == "추방") {
         $gennum = $gencount;
         if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
 
-        $nation['chemi'] -= 1;
-        if($nation['chemi'] < 0) { $nation['chemi'] = 0; }
 
         if($admin['year'] < $admin['startyear']+3) {
             //초반엔 군주 부상 증가(엔장 임관지양)
             $query = "update general set injury=injury+1 where no='{$ruler['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-            $query = "update nation set gennum='$gennum',chemi='{$nation['chemi']}',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
+            $query = "update nation set gennum='$gennum',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
             //이번분기는 추방불가(초반 제외)
-            $query = "update nation set l{$meLevel}set=1,gennum='$gennum',chemi='{$nation['chemi']}',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
+            $query = "update nation set l{$meLevel}set=1,gennum='$gennum',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
 
@@ -240,7 +238,7 @@ if($btn == "추방") {
 }
 
 if($btn == "임명" && $level >= 5 && $level <= 11) {
-    $query = "select l{$level}set,level,chemi from nation where nation='{$me['nation']}'";
+    $query = "select l{$level}set,level from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -249,12 +247,6 @@ if($btn == "임명" && $level >= 5 && $level <= 11) {
     
     //이미 지정했다면 무시
     if($nation["l{$level}set"] == 0 && $lv <= $level) {
-        $nation['chemi'] -= 1;
-        if($nation['chemi'] < 0) { $nation['chemi'] = 0; }
-
-        $query = "update nation set chemi='{$nation['chemi']}' where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
         //기존 장수 일반으로
         $query = "update general set level=1 where nation='{$me['nation']}' and level='$level'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

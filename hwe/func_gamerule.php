@@ -501,7 +501,7 @@ function postUpdateMonthly() {
 // 명성,공헌
     $nations = $db->query('SELECT
     A.nation,
-    A.gennum, A.gennum2, A.chemi, A.aux,
+    A.gennum, A.gennum2, A.aux,
     round((
         round(((A.gold+A.rice)+(select sum(gold+rice) from general where nation=A.nation))/100)
         +A.tech
@@ -523,20 +523,6 @@ function postUpdateMonthly() {
         $genNum[$nation['nation']] = $nation['gennum'];
 
         $aux = Json::decode($nation['aux']);
-        
-        
-
-        if($nation['gennum'] > $nation['gennum2']) {
-            // 장수가 증가했을때
-            $nation['chemi'] -= ceil(($nation['gennum'] - $nation['gennum2']) / $nation['gennum'] * 100);
-        } else {
-            // 장수가 감소했을때
-            $nation['chemi'] -= ceil(($nation['gennum2'] - $nation['gennum']) / $nation['gennum2'] * 100);
-        }
-        // 매달 2씩 증가
-        $nation['chemi'] += 2;
-        if($nation['chemi'] < 0) { $nation['chemi'] = 0; }
-        if($nation['chemi'] > 100) { $nation['chemi'] = 100; }
 
         //약간의 랜덤치 부여 (95% ~ 105%)
         
@@ -551,7 +537,6 @@ function postUpdateMonthly() {
         $db->update('nation', [
             'power'=>$nation['power'],
             'gennum2'=>$nation['gennum'],
-            'chemi'=>$nation['chemi'],
             'aux'=>Json::encode($aux)
         ], 'nation=%i', $nation['nation']);
     }

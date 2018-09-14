@@ -522,7 +522,7 @@ function process_45(&$general) {
 
     $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
-    $query = "select name,chemi from nation where nation='{$general['nation']}'";
+    $query = "select name from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -610,12 +610,8 @@ function process_45(&$general) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
 
-        $nation['chemi'] -= 1;
-        if($nation['chemi'] < 0) { $nation['chemi'] = 0; }
-
         $db->update('nation', [
             'gennum'=>$db->sqleval('gennum - 1'),
-            'chemi'=>$nation['chemi'],
             'gold'=>$db->sqleval('gold + %i', $gold),
             'rice'=>$db->sqleval('rice + %i', $rice),
         ], 'nation=%i', $general['nation']);
