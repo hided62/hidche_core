@@ -2962,27 +2962,13 @@ function SabotageInjury($city, $type=0) {
 function getRandTurn($term) {
     $randSecond = Util::randRangeInt(0, 60 * $term - 1);
     $randFraction = Util::randRangeInt(0, 999999) / 1000000;//6자리 소수
-    
-    $randTime = new \DateInterval("PT0S");
-    $randTime->s = $randSecond;
-    $randTime->f = $randFraction;
 
-    $turnTime = new \DateTime();
-    $turnTime->add($randTime);
-
-    return $turnTime->format('Y-m-d H:i:s.u');
+    return TimeUtil::nowAddSeconds($randSecond + $randFraction, true);
 }
 
 function getRandTurn2($term) {
     $randSecond = Util::randRangeInt(0, 60 * $term - 1);
     $randFraction = Util::randRangeInt(0, 999999) / 1000000;//6자리 소수
     
-    $randTime = new \DateInterval("PT0S");
-    $randTime->s = $randSecond;
-    $randTime->f = $randFraction;
-
-    $turnTime = new \DateTime();
-    $turnTime->sub($randTime);
-
-    return $turnTime->format('Y-m-d H:i:s.u');
+    return TimeUtil::nowAddSeconds(- $randSecond - $randFraction, true);
 }
