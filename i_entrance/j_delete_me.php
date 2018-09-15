@@ -39,7 +39,7 @@ if($userInfo['delete_after']){
 }
 
 $db->update('member',[
-    'delete_after'=>TimeUtil::DatetimeFromNowMinute(60*24*30)
+    'delete_after'=>TimeUtil::nowAddMinutes(60*24*30)
 ], 'no=%i', $userID);
 
 if(!$db->affectedRows()){

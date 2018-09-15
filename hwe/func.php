@@ -1246,7 +1246,7 @@ function increaseRefresh($type="", $cnt=1) {
     $generalID = $session->generalID;
     $userGrade = $session->userGrade;
 
-    $date = date('Y-m-d H:i:s');
+    $date = TimeUtil::now();
 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -1336,7 +1336,7 @@ function updateTraffic() {
 
     $db->update('general', ['refresh'=>0], true);
 
-    $date = date('Y-m-d H:i:s');
+    $date = TimeUtil::now();
     //일시|년|월|총갱신|접속자|최다갱신자
     file_put_contents(__dir__."/logs/".UniqueConst::$serverID."/_traffic.txt",
         Json::encode([
@@ -1524,17 +1524,17 @@ function checkTurn() {
 
     $session = Session::getInstance();
 
-    pushLockLog(["- checkTurn()      : ".date('Y-m-d H:i:s')." : ".$session->userName]);
+    pushLockLog(["- checkTurn()      : ".TimeUtil::now()." : ".$session->userName]);
 
     // 파일락 해제
     if(!flock($fp, LOCK_UN)) { return; }
     // 세마포어 해제
     //if(!@sem_release($sema)) { echo "치명적 에러! Hide_D에게 문의하세요!"; exit(1); }
 
-    pushLockLog(["- checkTurn() 입   : ".date('Y-m-d H:i:s')." : ".$session->userName]);
+    pushLockLog(["- checkTurn() 입   : ".TimeUtil::now()." : ".$session->userName]);
     
     //if(STEP_LOG) delStepLog();
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', 진입');
+    //if(STEP_LOG) pushStepLog(TimeUtil::now().', 진입');
     
     //천통시에는 동결
     if($gameStor->isunited == 2) {
@@ -1543,17 +1543,17 @@ function checkTurn() {
     }
     $gameStor->cacheAll();
     // 1턴이상 갱신 없었으면 서버 지연
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', checkDelay');
+    //if(STEP_LOG) pushStepLog(TimeUtil::now().', checkDelay');
     checkDelay();
     // 접속자수, 접속국가, 국가별 접속장수 갱신
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', checkDelay');
+    //if(STEP_LOG) pushStepLog(TimeUtil::now().', checkDelay');
     updateOnline();
     //접속자 수 따라서 갱신제한 변경
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', CheckOverhead');
+    //if(STEP_LOG) pushStepLog(TimeUtil::now().', CheckOverhead');
     CheckOverhead();
     //서버정보
 
-    $date = date('Y-m-d H:i:s');
+    $date = TimeUtil::now();
     // 최종 처리 월턴의 다음 월턴시간 구함
     $prevTurn = cutTurn($gameStor->turntime, $gameStor->turnterm);
     $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
@@ -1570,30 +1570,30 @@ function checkTurn() {
             //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이전 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general['turn0']})";
             //if(PROCESS_LOG) pushProcessLog($processlog);
             
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', processAI');
             if($general['npc'] >= 2) { processAI($general['no']); }    // npc AI 처리
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', PreprocessCommand');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', PreprocessCommand');
             PreprocessCommand($general['no']);
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', processCommand');
             processCommand($general['no']);
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateCommand');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', updateCommand');
             updateCommand($general['no']);
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateTurntime');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', updateTurntime');
             updateTurntime($general['no']);
             
         }
         
         // 트래픽 업데이트
-        //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateTraffic');
+        //if(STEP_LOG) pushStepLog(TimeUtil::now().', updateTraffic');
         updateTraffic();
         // 1달마다 처리하는 것들, 벌점 감소 및 건국,전턴,합병 -1, 군량 소모
-        //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', preUpdateMonthly');
+        //if(STEP_LOG) pushStepLog(TimeUtil::now().', preUpdateMonthly');
         $result = preUpdateMonthly();
         if($result == false) {
-            pushLockLog(["-- checkTurn() 오류출 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
+            pushLockLog(["-- checkTurn() 오류출 : ".TimeUtil::now()." : ".$session->userName]);
 
             // 잡금 해제
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', unlock');
             $gameStor->resetCache(true);
             unlock();
             return false;
@@ -1602,7 +1602,7 @@ function checkTurn() {
         // 그 시각 년도,월 저장
         list($gameStor->year, $gameStor->month) = turnDate($nextTurn);
 
-        pushLockLog(["-- checkTurn() ".$gameStor->month."월 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
+        pushLockLog(["-- checkTurn() ".$gameStor->month."월 : ".TimeUtil::now()." : ".$session->userName]);
 
         // 이벤트 핸들러 동작
         foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
@@ -1617,46 +1617,46 @@ function checkTurn() {
         // 분기계산. 장수들 턴보다 먼저 있다면 먼저처리
         if($gameStor->month == 1) {
             // NPC 등장
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processGoldIncome');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', processGoldIncome');
             processGoldIncome();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processSpring');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', processSpring');
             processSpring();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateYearly');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', updateYearly');
             updateYearly();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', updateQuaterly');
             updateQuaterly();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', disaster');
             disaster();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', tradeRate');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', tradeRate');
             tradeRate();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', addAge');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', addAge');
             addAge();
             // 새해 알림
             $alllog[] = "<C>◆</>{$gameStor->month}월:<C>{$gameStor->year}</>년이 되었습니다.";
             pushGeneralPublicRecord($alllog, $gameStor->year, $gameStor->month);
         } elseif($gameStor->month == 4) {
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', updateQuaterly');
             updateQuaterly();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', disaster');
             disaster();
         } elseif($gameStor->month == 7) {
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processRiceIncome');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', processRiceIncome');
             processRiceIncome();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processFall');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', processFall');
             processFall();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', updateQuaterly');
             updateQuaterly();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', disaster');
             disaster();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', tradeRate');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', tradeRate');
             tradeRate();
         } elseif($gameStor->month == 10) {
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateQuaterly');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', updateQuaterly');
             updateQuaterly();
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', disaster');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', disaster');
             disaster();
         }
-        //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', postUpdateMonthly');
+        //if(STEP_LOG) pushStepLog(TimeUtil::now().', postUpdateMonthly');
         postUpdateMonthly();
 
         // 다음달로 넘김
@@ -1664,7 +1664,7 @@ function checkTurn() {
         $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
     }
 
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
+    //if(STEP_LOG) pushStepLog(TimeUtil::now().', '.__LINE__);
         
     // 이시각 정각 시까지 업데이트 완료했음
     $gameStor->turntime = $prevTurn;
@@ -1683,20 +1683,20 @@ function checkTurn() {
             //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이후 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general['turn0']})";
             //if(PROCESS_LOG) pushProcessLog($processlog);
             
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', processAI');
             if($general['npc'] >= 2) { processAI($general['no']); }    // npc AI 처리
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', PreprocessCommand');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', PreprocessCommand');
             PreprocessCommand($general['no']);
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', processCommand');
             processCommand($general['no']);
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateCommand');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', updateCommand');
             updateCommand($general['no']);
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateTurntime');
+            //if(STEP_LOG) pushStepLog(TimeUtil::now().', updateTurntime');
             updateTurntime($general['no']);
         }
     } while($gencount > 0);
 
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
+    //if(STEP_LOG) pushStepLog(TimeUtil::now().', '.__LINE__);
     
     $gameStor->turntime = $date;
 
@@ -1704,19 +1704,19 @@ function checkTurn() {
     $query = "update general set injury='80' where injury>'80'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //토너먼트 처리
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processTournament');
+    //if(STEP_LOG) pushStepLog(TimeUtil::now().', processTournament');
     processTournament();
     //거래 처리
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAuction');
+    //if(STEP_LOG) pushStepLog(TimeUtil::now().', processAuction');
     processAuction();
     // 잡금 해제
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', unlock');
+    //if(STEP_LOG) pushStepLog(TimeUtil::now().', unlock');
     $gameStor->resetCache(true);
     unlock();
 
-    pushLockLog(["- checkTurn()   출 : ".date('Y-m-d H:i:s')." : ".$session->userName]);
+    pushLockLog(["- checkTurn()   출 : ".TimeUtil::now()." : ".$session->userName]);
 
-    //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', finish');
+    //if(STEP_LOG) pushStepLog(TimeUtil::now().', finish');
     
     return true;
 }
@@ -2120,7 +2120,7 @@ function CheckHall($no) {
         return;
     }
 
-    $unitedDate = date('Y-m-d H:i:s');
+    $unitedDate = TimeUtil::now();
     $nation = getNationStaticInfo($general['nation']);
 
     $serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
@@ -2960,15 +2960,29 @@ function SabotageInjury($city, $type=0) {
 }
 
 function getRandTurn($term) {
-    $randtime = rand(0, 60 * $term - 1);
-    $turntime = date('Y-m-d H:i:s', strtotime('now') + $randtime);
+    $randSecond = Util::randRangeInt(0, 60 * $term - 1);
+    $randFraction = Util::randRangeInt(0, 999999) / 1000000;//6자리 소수
+    
+    $randTime = new \DateInterval("PT0S");
+    $randTime->s = $randSecond;
+    $randTime->f = $randFraction;
 
-    return $turntime;
+    $turnTime = new \DateTime();
+    $turnTime->add($randTime);
+
+    return $turnTime->format('Y-m-d H:i:s.u');
 }
 
 function getRandTurn2($term) {
-    $randtime = rand(0, 60 * $term - 1);
-    $turntime = date('Y-m-d H:i:s', strtotime('now') - $randtime);
+    $randSecond = Util::randRangeInt(0, 60 * $term - 1);
+    $randFraction = Util::randRangeInt(0, 999999) / 1000000;//6자리 소수
+    
+    $randTime = new \DateInterval("PT0S");
+    $randTime->s = $randSecond;
+    $randTime->f = $randFraction;
 
-    return $turntime;
+    $turnTime = new \DateTime();
+    $turnTime->sub($randTime);
+
+    return $turnTime->format('Y-m-d H:i:s.u');
 }

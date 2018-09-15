@@ -5,7 +5,7 @@ require(__dir__.'/../vendor/autoload.php');
 
 use \kakao\Kakao_REST_API_Helper as Kakao_REST_API_Helper;
 
-$now = TimeUtil::DatetimeNow();
+$now = TimeUtil::now();
 
 $session = Session::requireLogin([
     'reason'=>'로그인이 되어있지 않습니다'
@@ -52,7 +52,7 @@ if($nextPasswordChange && $now < $nextPasswordChange){
     ]);
 }
 
-$nextPasswordChange = TimeUtil::DatetimeFromNowHour(4);
+$nextPasswordChange = TimeUtil::nowAddHours(4);
 $oauthInfo['nextPasswordChange'] = $nextPasswordChange;
 
 

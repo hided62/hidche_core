@@ -21,7 +21,7 @@ if($canLogin != 'Y'){
     ]);
 }
 
-$now = TimeUtil::DatetimeNow();
+$now = TimeUtil::now();
 
 $access_token = $session->access_token;
 $expires = $session->expires;
@@ -63,10 +63,10 @@ if($expires < $now){
     }
 
     $access_token = $result['access_token'];
-    $expires = TimeUtil::DatetimeFromNowSecond($result['expires_in']);
+    $expires = TimeUtil::nowAddSeconds($result['expires_in']);
     if(isset($result['refresh_token'])){
         $refresh_token = Util::array_get($result['refresh_token']);
-        $refresh_token_expires = TimeUtil::DatetimeFromNowSecond($result['refresh_token_expires_in']);
+        $refresh_token_expires = TimeUtil::nowAddSeconds($result['refresh_token_expires_in']);
     }
 }
 

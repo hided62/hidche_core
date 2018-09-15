@@ -32,7 +32,7 @@ if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretlim
 if($me['level'] >= 5) { $btn = "submit"; $btn2 = "button"; }
 else { $btn = "hidden"; $btn2 = "hidden"; }
 
-$date = date('Y-m-d H:i:s');
+$date = TimeUtil::now();
 
 // 명령 목록
 $admin = $gameStor->getValues(['year','month','turnterm']);
@@ -106,7 +106,7 @@ function turn(type) {
 <?php
 $year = $admin['year'];
 $month = $admin['month'];
-$date = substr(date('Y-m-d H:i:s'), 14);
+$date = substr(TimeUtil::now(), 14);
 
 $totaldate = [];
 $turntime = [];

@@ -163,7 +163,7 @@ class ResetHelper{
         );
 
 
-        $turntime = date('Y-m-d H:i:s');
+        $turntime = TimeUtil::now();
         $time = substr($turntime, 11, 2);
         if($sync == 0) {
             // 현재 시간을 1월로 맞춤

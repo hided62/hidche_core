@@ -31,7 +31,7 @@ foreach($log as $i=>$value){
 }
 $year[] = $admin['year'];
 $month[] = $admin['month'];
-$date[] = date('Y-m-d H:i:s');
+$date[] = TimeUtil::now();
 
 if ($admin['maxrefresh'] == 0) {
     $admin['maxrefresh'] = 1;

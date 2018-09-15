@@ -280,7 +280,7 @@ class Session
         $db->update('general', [
             'logcnt' => $db->sqleval('logcnt+1'),
             'ip' => Util::get_client_ip(true),
-            'lastConnect' => date('Y-m-d H:i:s')
+            'lastConnect' => TimeUtil::now()
         ], 'owner = %i', $userID);
 
         $this->set($serverID.static::GAME_KEY_DATE, $now);
@@ -344,7 +344,7 @@ class Session
             if(!$this->tokenValidUntil){
                 return false;
             }
-            $now = TimeUtil::DatetimeNow();
+            $now = TimeUtil::now();
             if($this->tokenValidUntil < $now){
                 return false;
             }

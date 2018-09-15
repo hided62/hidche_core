@@ -47,7 +47,7 @@ function kakaoOAuthCheck(array $userInfo) : ?array {
         return [false, 'OAuth 정보가 보관되어 있지 않습니다. 카카오 로그인을 수행해 주세요.'];
     }
 
-    $now = TimeUtil::DatetimeNow();
+    $now = TimeUtil::now();
 
     if($now > $refreshTokenValidUntil){
         return [false, '로그인 토큰이 만료되었습니다. 카카오 로그인을 수행해 주세요.'];
@@ -66,14 +66,14 @@ function kakaoOAuthCheck(array $userInfo) : ?array {
             trigger_error("refreshToken 에러 ".Json::encode($refreshResult).",".$refreshToken.",".substr(\kakao\KakaoKey::REST_KEY, 0, 6), E_USER_NOTICE);
             return [false, '로그인 토큰 자동 갱신을 실패했습니다. 카카오 로그인을 수행해 주세요.'];
         }
-        $accessTokenValidUntil = TimeUtil::DatetimeFromNowSecond($refreshResult['expires_in']);
+        $accessTokenValidUntil = TimeUtil::nowAddSeconds($refreshResult['expires_in']);
 
         $oauthInfo['accessToken'] = $accessToken;
         $oauthInfo['accessTokenValidUntil'] = $accessTokenValidUntil;
 
         $refreshToken = $refreshResult['refresh_token']??null;
         if($refreshToken){
-            $refreshTokenValidUntil = TimeUtil::DatetimeFromNowSecond($refreshResult['refresh_token_expires_in']);
+            $refreshTokenValidUntil = TimeUtil::nowAddSeconds($refreshResult['refresh_token_expires_in']);
 
             $oauthInfo['refreshToken'] = $refreshToken;
             $oauthInfo['refresh_token_expires_in'] = $refresh_token_expires_in;
@@ -126,7 +126,7 @@ if($canLogin != 'Y' && $userInfo['grade'] < 5){
     ]);
 }
 
-$nowDate = TimeUtil::DatetimeNow();
+$nowDate = TimeUtil::now();
 if($userInfo['delete_after']){
     if($userInfo['delete_after'] < $nowDate){
         $RootDB->delete('member', 'no=%i', $userInfo['no']);

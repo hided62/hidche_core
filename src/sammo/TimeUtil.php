@@ -3,13 +3,13 @@ namespace sammo;
 
 class TimeUtil
 {
-    public static function DateToday()
+    public static function today()
     {
         $obj = new \DateTime();
         return $obj->format('Y-m-d');
     }
 
-    public static function DatetimeNow(bool $withFraction=false)
+    public static function now(bool $withFraction=false)
     {
         $obj = new \DateTime();
         if(!$withFraction){
@@ -18,67 +18,47 @@ class TimeUtil
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function DatetimeFromNowDay($day, bool $withFraction=false)
+    public static function nowAddDays($day, bool $withFraction=false)
     {
         $obj = new \DateTime();
-        $obj->modify("{$day} days");
+        $obj->add(static::secondsToDateInterval($day * 3600 * 24));
         if(!$withFraction){
             return $obj->format('Y-m-d H:i:s');
         }
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function DatetimeFromNowHour($hour, bool $withFraction=false)
+    public static function nowAddHours($hour, bool $withFraction=false)
     {
         $obj = new \DateTime();
-        $obj->modify("{$hour} hours");
+        $obj->add(static::secondsToDateInterval($hour * 3600));
         if(!$withFraction){
             return $obj->format('Y-m-d H:i:s');
         }
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function DatetimeFromNowMinute($minute, bool $withFraction=false)
+    public static function nowAddMinutes($minute, bool $withFraction=false)
     {
         $obj = new \DateTime();
-        $obj->modify("{$minute} minutes");
+        $obj->add(static::secondsToDateInterval($minute * 60));
         if(!$withFraction){
             return $obj->format('Y-m-d H:i:s');
         }
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function DatetimeFromNowSecond($second, bool $withFraction=false)
+    public static function nowAddSeconds($second, bool $withFraction=false)
     {
         $obj = new \DateTime();
-        $obj->modify("{$second} seconds");
+        $obj->add(static::secondsToDateInterval($second));
         if(!$withFraction){
             return $obj->format('Y-m-d H:i:s');
         }
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function DatetimeFromMinute($date, $minute, bool $withFraction=false)
-    {
-        $obj = new \DateTime($date);
-        $obj->modify("{$minute} minutes");
-        if(!$withFraction){
-            return $obj->format('Y-m-d H:i:s');
-        }
-        return $obj->format('Y-m-d H:i:s.u');
-    }
-
-    public static function DatetimeFromSecond($date, $second, bool $withFraction=false)
-    {
-        $obj = new \DateTime($date);
-        $obj->modify("{$second} seconds");
-        if(!$withFraction){
-            return $obj->format('Y-m-d H:i:s');
-        }
-        return $obj->format('Y-m-d H:i:s.u');
-    }
-
-    public static function SecondsToDateInterval(float $fullSeconds): \DateInterval{
+    public static function secondsToDateTime(float $fullSeconds): \DateTime{
         $seconds = floor($fullSeconds);
         $fraction = $fullSeconds - $seconds;
 
@@ -86,10 +66,21 @@ class TimeUtil
         $interval->s = $seconds;
         $interval->f = $fraction;
 
-        $d0 = new \DateTimeImmutable("@0");
-        $d1 = $d0->add($interval);
+        $dateTime = new \DateTime("@0");
+        $dateTime->add($interval);
+        return $dateTime;
+    }
 
-        return $d1->diff($d0);
+    public static function secondsToDateInterval(float $fullSeconds): \DateInterval{
+        $dateBase = new \DateTime("@0");
+
+        return static::secondsToDateTime($fullSeconds)->diff($d0);
+    }
+
+    public static function DateTimeToSeconds(\DateTime $dateTime): float{
+        $dateBase = new \DateTime("@0");
+
+        return static::DateIntervalToSeconds($dateTime->diff($dateBase));
     }
 
     public static function DateIntervalToSeconds(\DateInterval $interval): float{
@@ -112,4 +103,6 @@ class TimeUtil
         
         return $seconds;
     }
+
+    
 }

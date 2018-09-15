@@ -70,7 +70,7 @@ $month = $query['month'];
 $repeatCnt = $query['repeatCnt'];
 
 $rawAttacker = $query['attackerGeneral'];
-$rawAttacker['turntime'] = date('Y-m-d H:i:s');
+$rawAttacker['turntime'] = TimeUtil::now();
 $rawAttackerCity = $query['attackerCity'];
 $rawAttackerNation = $query['attackerNation'];
 

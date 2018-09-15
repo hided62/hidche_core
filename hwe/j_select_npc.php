@@ -98,7 +98,7 @@ pushAdminLog(["가입 : {$userID} // {$session->userName} // {$pick} // ".getenv
 
 $rootDB->insert('member_log', [
     'member_no' => $userID,
-    'date'=>date('Y-m-d H:i:s'),
+    'date'=>TimeUtil::now(),
     'action_type'=>'make_general',
     'action'=>Json::encode([
         'server'=>DB::prefix(),

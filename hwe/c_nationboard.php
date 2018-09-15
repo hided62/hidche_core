@@ -38,7 +38,7 @@ if(getBlockLevel() != 1 && getBlockLevel() != 3) {
         if($num >= 20) { $num = 0; }
         $msg = $title."|".$msg;
         $msg = addslashes(SQ2DQ($msg));
-        $date = date('Y-m-d H:i:s');
+        $date = TimeUtil::now();
         $query = "update nation set board{$num}='$msg',board{$num}_who='{$me['no']}',board{$num}_when='$date' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $query = "update nation set boardindex='$num' where nation='{$me['nation']}'";

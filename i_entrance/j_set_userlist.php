@@ -68,7 +68,7 @@ if($action == 'allow_join'){
 }
 
 if($action == 'scrub_deleted'){
-    $deleteUntil = TimeUtil::DateToday();
+    $deleteUntil = TimeUtil::today();
     $db->delete('member', 'delete_after < %s', $deleteUntil);
     $cnt = $db->affectedRows();
 
@@ -111,7 +111,7 @@ if($action == 'scrub_icon'){
 }
 
 if($action == 'scrub_old_user'){
-    $deleteUntil = TimeUtil::DatetimeFromNowMinute(-60*24*30*6);
+    $deleteUntil = TimeUtil::nowAddMinutes(-60*24*30*6);
     $targetUser = [];
     $members = $db->query('SELECT member.no, max(member_log.date) as loginDate from member 
     left join member_log on member.`NO` = member_log.member_no and 

@@ -114,7 +114,7 @@ for ($i=0; $i < $dipcount; $i++) {
         case 7: $state = "<font color=green>불가침</font>"; break;
     }
 
-    $date = date('Y-m-d H:i:s');
+    $date = TimeUtil::now();
     $note = "";
     if ($dip['fixed'] != "") {
         if ($dip['state'] == 7) {

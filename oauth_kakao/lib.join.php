@@ -50,7 +50,7 @@ function checkEmailDup($email){
 
     $userInfo = RootDB::db()->queryFirstField('SELECT `no`, `delete_after` FROM member WHERE `email` = %s LIMIT 1', $email);
     if($userInfo){
-        $nowDate = TimeUtil::DatetimeNow();
+        $nowDate = TimeUtil::now();
         if (!$userInfo['delete_after']) {
             return '이미 사용중인 이메일입니다. 관리자에게 문의해주세요.';
         }
@@ -80,7 +80,7 @@ function createOTPbyUserNO(int $userNo):bool{
     $OTPValue = $oauthInfo['OTPValue']??null;
     $OTPTrialUntil = $oauthInfo['OTPTrialUntil']??null;
 
-    $now = TimeUtil::DatetimeNow();
+    $now = TimeUtil::now();
 
 
     if($OTPTrialUntil && $OTPValue && $OTPTrialUntil > $now){
@@ -108,7 +108,7 @@ function createOTP(string $accessToken):?array{
     $restAPI = new Kakao_REST_API_Helper($accessToken);
 
     $OTPValue = Util::randRangeInt(10000, 99999);
-    $OTPTrialUntil = TimeUtil::DatetimeFromNowSecond(180);
+    $OTPTrialUntil = TimeUtil::nowAddSeconds(180);
 
     $sendResult = $restAPI->talk_to_me_default([
         "object_type"=> "text",

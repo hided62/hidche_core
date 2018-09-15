@@ -177,7 +177,7 @@ if ($admin['scenario'] >= 1000) {
 
 $turntime = getRandTurn($admin['turnterm']);
 
-$lastconnect = date('Y-m-d H:i:s');
+$lastconnect = TimeUtil::now();
 if ($lastconnect >= $turntime) {
     $turntime = addTurn($turntime, $admin['turnterm']);
 }
@@ -270,7 +270,7 @@ pushAdminLog(["가입 : {$userID} // {$name} // {$generalID}".getenv("REMOTE_ADD
 
 $rootDB->insert('member_log', [
     'member_no' => $userID,
-    'date'=>date('Y-m-d H:i:s'),
+    'date'=>TimeUtil::now(),
     'action_type'=>'make_general',
     'action'=>Json::encode([
         'server'=>DB::prefix(),

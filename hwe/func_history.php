@@ -278,7 +278,7 @@ function getGeneralPublicRecordWithDate($year, $month) {
 }
 
 function LogHistory($isFirst=0) {
-    if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', LogHistory Start');
+    if(STEP_LOG) pushStepLog(TimeUtil::now().', LogHistory Start');
 
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -329,7 +329,7 @@ function LogHistory($isFirst=0) {
         $cityStr .= "$cityCount<br>";
     }
 
-    if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', contents collected');
+    if(STEP_LOG) pushStepLog(TimeUtil::now().', contents collected');
     
     $db->insert('history', [
         'server_id' => UniqueConst::$serverID,
@@ -344,6 +344,6 @@ function LogHistory($isFirst=0) {
         'city' => $cityStr
     ]);
 
-    if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', LogHistory Finish');
+    if(STEP_LOG) pushStepLog(TimeUtil::now().', LogHistory Finish');
     return true;
 }

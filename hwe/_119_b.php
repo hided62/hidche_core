@@ -35,7 +35,7 @@ case "분당김":
     $starttime = (new \DateTimeImmutable($gameStor->starttime))->sub(new \DateInterval("PT{$minute}M"));
     $tnmt_time = (new \DateTimeImmutable($gameStor->tnmt_time))->sub(new \DateInterval("PT{$minute}M"));
 
-    $gameStor->turntime = $turntime->format('Y-m-d H:i:s');
+    $gameStor->turntime = $turntime->format('Y-m-d H:i:s.u');
     $gameStor->starttime = $starttime->format('Y-m-d H:i:s');
     $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
 
@@ -52,7 +52,7 @@ case "분지연":
     $starttime = (new \DateTimeImmutable($gameStor->starttime))->add(new \DateInterval("PT{$minute}M"));
     $tnmt_time = (new \DateTimeImmutable($gameStor->tnmt_time))->add(new \DateInterval("PT{$minute}M"));
 
-    $gameStor->turntime = $turntime->format('Y-m-d H:i:s');
+    $gameStor->turntime = $turntime->format('Y-m-d H:i:s.u');
     $gameStor->starttime = $starttime->format('Y-m-d H:i:s');
     $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
 

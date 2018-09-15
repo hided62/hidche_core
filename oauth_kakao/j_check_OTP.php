@@ -46,7 +46,7 @@ if(!$oauthInfo){
 $OTPValue = $oauthInfo['OTPValue']??null;
 $OTPTrialUntil = $oauthInfo['OTPTrialUntil']??null;
 $OTPTrialCount = $oauthInfo['OTPTrialCount']??0;
-$now = TimeUtil::DatetimeNow();
+$now = TimeUtil::now();
 
 if(!$OTPTrialUntil || $OTPTrialUntil <= $now){
     $session->logout();
@@ -78,7 +78,7 @@ if($OTPValue != $otp){
     ]);
 }
 
-$tokenValidUntil = TimeUtil::DatetimeFromNowDay(10);
+$tokenValidUntil = TimeUtil::nowAddDays(10);
 $session->setReqOTP(false, $tokenValidUntil);
 RootDB::db()->update('member', [
     'oauth_info'=>Json::encode($oauthInfo),

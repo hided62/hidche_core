@@ -21,8 +21,8 @@ if(!$tokenValidUntil){
     ]);
 }
 
-$now = TimeUtil::DatetimeNow();
-$expectedDate = TimeUtil::DatetimeFromNowDay(5);
+$now = TimeUtil::now();
+$expectedDate = TimeUtil::nowAddDays(5);
 
 if($expectedDate <= $tokenValidUntil){
     Json::die([

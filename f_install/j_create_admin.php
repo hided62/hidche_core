@@ -46,7 +46,7 @@ if($memberCnt > 0){
 
 $userSalt = bin2hex(random_bytes(8));
 $finalPassword = Util::hashPassword($userSalt, $password);
-$nowDate = TimeUtil::DatetimeNow();
+$nowDate = TimeUtil::now();
 
 $rootDB->insert('member',[
     'oauth_type' => 'NONE',

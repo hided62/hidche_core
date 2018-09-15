@@ -144,7 +144,7 @@ for ($i=0; $i < $nationcount; $i++) {
         $year--;
     }
 
-    $date = date('Y-m-d H:i:s');
+    $date = TimeUtil::now();
     $note = "";
     if ($dip['fixed'] != "") {
         if ($dip['state'] == 7) {

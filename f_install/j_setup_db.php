@@ -174,8 +174,8 @@ if ($mysqli_obj->multi_query(file_get_contents(__dir__.'/sql/common_schema.sql')
 $rootDB->insert('system', array(
     'REG'     => 'N',
     'LOGIN'    => 'N',
-    'CRT_DATE' => TimeUtil::DatetimeNow(),
-    'MDF_DATE' => TimeUtil::DatetimeNow()
+    'CRT_DATE' => TimeUtil::now(),
+    'MDF_DATE' => TimeUtil::now()
 ));
 
 $globalSalt = bin2hex(random_bytes(16));

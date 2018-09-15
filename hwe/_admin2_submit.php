@@ -48,7 +48,7 @@ switch($btn) {
         DB::db()->query('update general set block=0 where no IN %li', $genlist);
         break;
     case "1단계 블럭":
-        $date = date('Y-m-d H:i:s');
+        $date = TimeUtil::now();
         $db->update('general', [
             'block'=>1,
             'killturn'=>24
@@ -60,7 +60,7 @@ switch($btn) {
         ], 'id IN %li', $uid);
         break;
     case "2단계 블럭":
-        $date = date('Y-m-d H:i:s');
+        $date = TimeUtil::now();
         $db->update('general', [
             'gold'=>0,
             'rice'=>0,
@@ -74,7 +74,7 @@ switch($btn) {
         ], 'id IN %li', $uid);
         break;
     case "3단계 블럭":
-        $date = date('Y-m-d H:i:s');
+        $date = TimeUtil::now();
         $db->update('general', [
             'gold'=>0,
             'rice'=>0,
@@ -93,7 +93,7 @@ switch($btn) {
         ], '`no` IN %li', $genlist);
         break;
     case "강제 사망":
-        $date = date('Y-m-d H:i:s');
+        $date = TimeUtil::now();
         $db->update('general', [
             'turn0'=>EncodeCommand(0, 0, 0, 0),
             'killturn'=>0,

@@ -75,7 +75,7 @@ function myCommandList() {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $userID = Session::getUserID();
 
-    $date = date('Y-m-d H:i:s');
+    $date = TimeUtil::now();
 
     // 명령 목록
     $admin = $gameStor->getValues(['year','month','turnterm']);
