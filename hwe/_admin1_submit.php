@@ -43,10 +43,6 @@ switch ($btn) {
         $gameStor->msg = $msg;
         break;
     case "로그쓰기":
-        $lognum = $admin['historyindex'] + 1;
-        if ($lognum >= 29) {
-            $lognum = 0;
-        }
         pushWorldHistory(["<R>★</><S>{$log}</>"]);
         break;
     case "변경1":
@@ -69,6 +65,7 @@ switch ($btn) {
     case "30분턴":
     case "60분턴":
     case "120분턴":
+        $admin = $gameStor->getDBValues(['turntime', 'turnterm', 'year', 'startyear', 'month']);
         switch ($btn) {
         case   "1분턴": $turnterm = 1; break;
         case   "2분턴": $turnterm = 2; break;
@@ -79,41 +76,27 @@ switch ($btn) {
         case  "60분턴": $turnterm = 60; break;
         case "120분턴": $turnterm = 120; break;
         }
+        $oldunit = $admin['turnterm'] * 60;
         $unit = $turnterm * 60;
+
+        $unitDiff = $unit / $oldunit;
+
+        $servTurnTime = new \DateTimeImmutable($admin['turntime']);
+        foreach ($db->query('SELECT no,turntime FROM general') as $gen) {
+            $genTurnTime = new \DateTimeImmutable($gen['turntime']);
+            $timeDiff = TimeUtil::DateIntervalToSeconds($genTurnTime->diff($servTurnTime));
+            $timeDiff *= $unitDiff;
+            $newGenTurnTime = $servTurnTime->add(TimeUtil::secondsToDateInterval($timeDiff));
+
+            $db->update('general', [
+                'turntime'=>$newGenTurnTime->format('Y-m-d H:i:s.u')
+            ], 'no=%i', $gen['no']);
+        }
         $turn = ($admin['year'] - $admin['startyear']) * 12 + $admin['month'] - 1;
-        $starttime = date("Y-m-d H:i:s", strtotime($admin['turntime']) - $turn * $unit);
+        $starttime = $servTurnTime->sub(TimeUtil::secondsToDateInterval($turn * $unit))->format('Y-m-d H:i:s');
         $starttime = cutTurn($starttime, $turnterm);
         $gameStor->turnterm = $turnterm;
         $gameStor->starttime = $starttime;
-        // 턴시간이 길어지는 경우 랜덤턴 배정
-        if ($turnterm < $admin['turnterm']) {
-            $query = "select no from general";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-            $count = MYDB_num_rows($result);
-            for ($i=0; $i < $count; $i++) {
-                $gen = MYDB_fetch_array($result);
-                $turntime = getRandTurn($turnterm);
-                $db->update('general', [
-                    'turntime'=>$turntime
-                ], 'no=%i', $gen['no']);
-            }
-            // 턴시간이 너무 멀리 떨어진 선수 제대로 보정
-        } else {
-            $servTurnTime = new \DateTime($admin['turntime']);
-            $timeUnit = new \DateInterval("T{$unit}S");
-            foreach($db->query('SELECT no,turntime FROM general') as $gen){
-                $genTurnTime = new \DateTime($gen['turntime']);
-                $timeDiff = $genTurnTime->diff($servTurnTime);
-
-                $num = intdiv((strtotime($gen['turntime']) - strtotime($admin['turntime'])), $unit);
-                if ($num > 0) {
-                    $gen['turntime'] = date("Y-m-d H:i:s", strtotime($gen['turntime']) - $unit * $num);
-                    $query = "update general set turntime='{$gen['turntime']}' where no='{$gen['no']}'";
-                    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-                }
-            }
-        }
-        
         pushWorldHistory(["<R>★</>턴시간이 <C>$btn</>으로 변경됩니다."]);
         break;
 }

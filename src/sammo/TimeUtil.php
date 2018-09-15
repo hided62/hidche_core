@@ -58,13 +58,18 @@ class TimeUtil
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function secondsToDateTime(float $fullSeconds): \DateTime{
+    public static function secondsToDateTime(float $fullSeconds, bool $isDateTimeImmutable=false): \DateTime{
         $seconds = floor($fullSeconds);
         $fraction = $fullSeconds - $seconds;
 
         $interval = new \DateInterval("PT0S");
         $interval->s = $seconds;
         $interval->f = $fraction;
+
+        if($isDateTimeImmutable){
+            $dateTime = new \DateTimeImmutable("@0");
+            return $dateTime->add($interval);
+        }
 
         $dateTime = new \DateTime("@0");
         $dateTime->add($interval);
@@ -77,8 +82,8 @@ class TimeUtil
         return static::secondsToDateTime($fullSeconds)->diff($d0);
     }
 
-    public static function DateTimeToSeconds(\DateTime $dateTime): float{
-        $dateBase = new \DateTime("@0");
+    public static function DateTimeToSeconds(\DateTimeInterface $dateTime): float{
+        $dateBase = new \DateTimeImmutable("@0");
 
         return static::DateIntervalToSeconds($dateTime->diff($dateBase));
     }
