@@ -94,7 +94,7 @@ switch ($btn) {
         }
         $turn = ($admin['year'] - $admin['startyear']) * 12 + $admin['month'] - 1;
         $starttime = $servTurnTime->sub(TimeUtil::secondsToDateInterval($turn * $unit))->format('Y-m-d H:i:s');
-        $starttime = cutTurn($starttime, $turnterm);
+        $starttime = cutTurn($starttime, $turnterm, false);
         $gameStor->turnterm = $turnterm;
         $gameStor->starttime = $starttime;
         pushWorldHistory(["<R>★</>턴시간이 <C>$btn</>으로 변경됩니다."]);

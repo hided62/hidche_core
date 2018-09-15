@@ -1186,21 +1186,27 @@ function banner() {
         GameConst::$banner);
 }
 
-function addTurn($date, int $turnterm, int $turn=1) {
+function addTurn($date, int $turnterm, int $turn=1, bool $withFraction=true) {
     $date = new \DateTime($date);
     $target = $turnterm*$turn;
     $date->add(new \DateInterval("PT{$target}M"));
+    if($withFraction){
+        return $date->format('Y-m-d H:i:s.u');
+    }
     return $date->format('Y-m-d H:i:s');
 }
 
-function subTurn($date, int $turnterm, int $turn=1) {
+function subTurn($date, int $turnterm, int $turn=1, bool $withFraction=true) {
     $date = new \DateTime($date);
     $target = $turnterm*$turn;
     $date->sub(new \DateInterval("PT{$target}M"));
+    if($withFraction){
+        return $date->format('Y-m-d H:i:s.u');
+    }
     return $date->format('Y-m-d H:i:s');
 }
 
-function cutTurn($date, int $turnterm) {
+function cutTurn($date, int $turnterm, bool $withFraction=true) {
     $date = new \DateTime($date);
     
     $baseDate = new \DateTime($date->format('Y-m-d'));
@@ -1211,10 +1217,14 @@ function cutTurn($date, int $turnterm) {
     $diffMin -= $diffMin % $turnterm;
 
     $baseDate->add(new \DateInterval("PT{$diffMin}M"));
+    if($withFraction){
+        return $baseDate->format('Y-m-d H:i:s.u');
+    }
     return $baseDate->format('Y-m-d H:i:s');
+    
 }
 
-function cutDay($date, int $turnterm) {
+function cutDay($date, int $turnterm, bool $withFraction=true) {
     $date = new \DateTime($date);
     
     $baseDate = new \DateTime($date->format('Y-m-d'));
@@ -1236,7 +1246,14 @@ function cutDay($date, int $turnterm) {
     $diffMin -= $timeAdjust;
 
     $baseDate->add(new \DateInterval("PT{$diffMin}M"));
-    return [$baseDate->format('Y-m-d H:i:s'), $yearPulled, $newMonth];
+    if($withFraction){
+        $dateTimeString = $baseDate->format('Y-m-d H:i:s.u');
+    }
+    else{
+        $dateTimeString = $baseDate->format('Y-m-d H:i:s');
+    }
+    
+    return [$dateTimeString, $yearPulled, $newMonth];
 }
 
 function increaseRefresh($type="", $cnt=1) {
