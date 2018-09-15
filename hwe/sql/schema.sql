@@ -124,31 +124,7 @@ CREATE TABLE `general` (
 	`betgold` INT(8) NULL DEFAULT '0',
 	`betwingold` INT(8) NULL DEFAULT '0',
 	`term` INT(4) NULL DEFAULT '0',
-	`turn0` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn1` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn2` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn3` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn4` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn5` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn6` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn7` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn8` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn9` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn10` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn11` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn12` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn13` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn14` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn15` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn16` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn17` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn18` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn19` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn20` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn21` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn22` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`turn23` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
-	`recturn` VARCHAR(50) NULL DEFAULT '[0,0,0,0]',
+	`recturn` TEXT NULL DEFAULT '',
 	`resturn` VARCHAR(30) NULL DEFAULT '',
 	PRIMARY KEY (`no`),
 	INDEX `nation` (`nation`, `npc`),
@@ -161,6 +137,20 @@ CREATE TABLE `general` (
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=MyISAM;
+
+CREATE TABLE `general_turn` (
+	`id` INT(11) NOT NULL AUTO_INCREMENT,
+	`general_id` INT(11) NOT NULL,
+	`turn_idx` INT(4) NOT NULL,
+	`action` VARCHAR(16) NOT NULL,
+	`arg` TEXT NOT NULL,
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX `general_id` (`general_id`, `turn_idx`),
+	INDEX `action` (`action`, `turn_idx`, `general_id`)
+)
+COLLATE=utf8mb4
+ENGINE=MyISAM
+;
 
 ###########################################################################
 ## 국가 테이블
