@@ -153,7 +153,7 @@ function processAuction() {
     $alllog = [];
     $history = [];
 
-    $date = date("Y-m-d H:i:s");
+    $date = TimeUtil::now();
 
     $admin = $gameStor->getValues(['year', 'month']);
 
