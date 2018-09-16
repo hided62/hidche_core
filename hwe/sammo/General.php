@@ -58,7 +58,7 @@ class General implements iActionTrigger{
         $this->personalityObj = new $personalityClass;
     }
 
-    protected function clearActivatedSkill(){
+    function clearActivatedSkill(){
         foreach ($this->activatedSkill as $skillName=>$state) {
             if (!$state) {
                 continue;
@@ -190,7 +190,7 @@ class General implements iActionTrigger{
         return $result;
     }
 
-    public function onPreTurnExecute(General $general, ?array $nation):array{
+    public function onPreTurnExecute(General $general):array{
         $chain = [];
         foreach(array_merge([
             $this->nationType, 
@@ -202,7 +202,7 @@ class General implements iActionTrigger{
             if(!$iObj){
                 continue;
             }
-            $chain[] = $iObj->onPreTurnExecute($general, $nation);
+            $chain[] = $iObj->onPreTurnExecute($general);
         }
         return array_merge([], ...$chain);
     }

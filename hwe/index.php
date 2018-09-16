@@ -23,7 +23,7 @@ $me = $db->queryFirstRow(
 );
 
 //턴 실행.
-checkTurn();
+TurnExecutionHelper::executeAllCommand();
 
 if(!$session->isGameLoggedIn()){
     header('Location:..');

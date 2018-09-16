@@ -10,7 +10,7 @@ interface iActionTrigger{
     const PRIORITY_FINAL = 10000;
 
     //TODO: 능력치는?
-    public function onPreTurnExecute(General $general, ?array $nation):array;
+    public function onPreTurnExecute(General $general):array;
     public function onCalcDomestic(string $turnType, string $varType, float $value):float;
 
     public function onPreGeneralStatUpdate(General $general, string $statName, $value);

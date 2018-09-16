@@ -28,7 +28,7 @@ $connect=$db->get();
 
 increaseRefresh("감찰부", 2);
 //전투 추진을 위해 갱신
-checkTurn();
+TurnExecutionHelper::executeAllCommand();
 $gameStor->resetCache();
 
 $query = "select nation from general where no='$gen'";

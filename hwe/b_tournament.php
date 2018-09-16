@@ -12,7 +12,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("토너먼트", 1);
-checkTurn();
+TurnExecutionHelper::executeAllCommand();
 
 $query = "select no,tournament,con,turntime from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");

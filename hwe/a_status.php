@@ -12,7 +12,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("세력도", 2);
-checkTurn();
+TurnExecutionHelper::executeAllCommand();
 
 $mapTheme = $gameStor->map_theme??'che';
 

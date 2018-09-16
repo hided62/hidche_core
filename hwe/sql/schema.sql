@@ -126,6 +126,7 @@ CREATE TABLE `general` (
 	`term` INT(4) NULL DEFAULT '0',
 	`recturn` TEXT NULL DEFAULT '',
 	`resturn` VARCHAR(30) NULL DEFAULT '',
+	`aux` TEXT NOT NULL DEFAULT '{}' COMMENT 'JSON',
 	PRIMARY KEY (`no`),
 	INDEX `nation` (`nation`, `npc`),
 	INDEX `city` (`city`),
@@ -483,12 +484,15 @@ create table troop (
 ##  락 테이블
 ##########################################################################
 
-create table plock (
-  no          int(11) not null auto_increment,
-  plock       int(1) default 0,
-
-  PRIMARY KEY (no)
-  ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `plock` (
+	`no` INT(11) NOT NULL AUTO_INCREMENT,
+	`plock` INT(1) NOT NULL DEFAULT '0',
+	`locktime` DATETIME(6) NOT NULL,
+	PRIMARY KEY (`no`)
+)
+DEFAULT CHARSET=utf8mb4
+ENGINE=MyISAM
+;
 
 ###########################################################################
 ## 메시지 테이블
