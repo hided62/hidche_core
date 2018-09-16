@@ -101,12 +101,24 @@ class GameConstBase
     ];
     /** @var array 기본 국가 성향 */
     public static $neutralNationType = 'che_중립';
+
+    /** @var array 기본 내정 특기 */
+    public static $defaultSpecialDomestic = 'None';
     /** @var array 선택 가능한 장수 내정 특기 */
     public static $availableSpecialDomestic = [
         'che_경작', 'che_상재', 'che_발명', 'che_축성', 'che_수비', 'che_통찰', 'che_인덕', 'che_귀모',
     ];
-    /** @var array 기본 특기(공용) */
-    public static $defaultSpecial = 'None';
+
+    /** @var array 기본 전투 특기 */
+    public static $defaultSpecialWar = 'None';
+    /** @var array 선택 가능한 장수 내정 특기 */
+    public static $availableSpecialWar = [
+        'che_귀병', 'che_신산', 'che_환술', 'che_집중', 'che_신중', 'che_반계', 
+        'che_보병', 'che_궁병', 'che_기병', 'che_공성',
+        'che_돌격', 'che_무쌍', 'che_견고', 'che_위압', 
+        'che_저격', 'che_필살', 'che_징병', 'che_의술', 'che_격노', 'che_척사',
+    ];
+    
 
     /** @var array 기본 성향(공용) */
     public static $neutralPersonality = 'None';

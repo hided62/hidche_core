@@ -21,7 +21,7 @@ class che_귀모 implements iActionTrigger{
 
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
         if($turnType == '계략'){
-            if($varType == 'success') return $value + 0.1;
+            if($varType == 'success') return $value + 0.2;
         }
         
         

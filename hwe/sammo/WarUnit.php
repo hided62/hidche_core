@@ -111,7 +111,7 @@ class WarUnit{
     }
 
     function getSpecialDomestic():string{
-        return GameConst::$defaultSpecial;
+        return GameConst::$defaultSpecialDomestic;
     }
 
     function getSpecialWar():int{

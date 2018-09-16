@@ -62,7 +62,7 @@ class NPC{
             'intel'=>$intel
         ];
 
-        $this->charDomestic = \sammo\GameConst::$defaultSpecial;
+        $this->charDomestic = \sammo\GameConst::$defaultSpecialDomestic;
 
         if($char === '랜덤전특'){
             $this->charWar = \sammo\SpecialityConst::pickSpecialWar($general);
@@ -159,7 +159,7 @@ class NPC{
 
         if($isFictionMode){
             $charWar = 0;
-            $charDomestic = GameConst::$defaultSpecial;
+            $charDomestic = GameConst::$defaultSpecialDomestic;
         }
 
         $name = 'ⓝ'.$this->name;

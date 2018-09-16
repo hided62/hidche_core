@@ -166,7 +166,7 @@ if ($genius) {
 }
 //내특
 $specage = Util::round((80 - $age)/12) + $age;
-$special = GameConst::$defaultSpecial;
+$special = GameConst::$defaultSpecialDomestic;
 
 $admin = $gameStor->getValues(['scenario', 'turnterm', 'show_img_level']);
 

@@ -260,7 +260,7 @@ function getPersonalityClass(?string $type){
 
 function getGeneralSpecialDomesticClass(?string $type){
     if($type === null){
-        $type = GameConst::$defaultSpecial;
+        $type = GameConst::$defaultSpecialDomestic;
     }
 
     static $basePath = __NAMESPACE__.'\\TriggerSpecialDomestic\\';
@@ -276,6 +276,26 @@ function getGeneralSpecialDomesticClass(?string $type){
     }
 
     new \InvalidArgumentException("{$type}은 올바른 내정 특기가 아님");
+}
+
+function getGeneralSpecialWarClass(?string $type){
+    if($type === null){
+        $type = GameConst::$defaultSpecialWar;
+    }
+
+    static $basePath = __NAMESPACE__.'\\TriggerSpecialWar\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    $classPath = ($basePath.'che_'.$type);
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    new \InvalidArgumentException("{$type}은 올바른 전투 특기가 아님");
 }
 
 function getLevel($level, $nlevel=8) {

@@ -52,6 +52,8 @@ class General implements iActionTrigger{
         $specialDomesticClass = getGeneralSpecialDomesticClass($raw['special']);
         $this->specialDomesticObj = new $specialDomesticClass;
 
+        $specialWarClass = getGeneralSpecialWarClass($raw['special']);
+        $this->specialWarObj = new $specialWarClass;
         //TODO: $specialWarClass 설정
 
         $personalityClass = getPersonalityClass($raw['personal']);

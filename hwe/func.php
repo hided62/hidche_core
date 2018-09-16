@@ -847,7 +847,7 @@ function generalInfo($no) {
     else                  { $general['age'] = "<font color=red>{$general['age']} 세</font>"; }
 
     $general['connect'] = Util::round($general['connect'] / 10) * 10;
-    $special = $general['special'] == GameConst::$defaultSpecial ? "{$general['specage']}세" : "<font color=limegreen>".displaySpecialDomesticInfo($general['special'])."</font>";
+    $special = $general['special'] == GameConst::$defaultSpecialDomestic ? "{$general['specage']}세" : "<font color=limegreen>".displaySpecialDomesticInfo($general['special'])."</font>";
     $special2 = $general['special2'] == 0 ? "{$general['specage2']}세" : "<font color=limegreen>".displaySpecialWarInfo($general['special2'])."</font>";
 
     switch($general['personal']) {
@@ -1522,7 +1522,7 @@ function addAge() {
     $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
     if($admin['year'] >= $admin['startyear']+3) {
-        foreach($db->query('SELECT no,name,nation,leader,power,intel from general where specage<=age and special=%s', GameConst::$defaultSpecial) as $general){
+        foreach($db->query('SELECT no,name,nation,leader,power,intel from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general){
             $special = getSpecial($general['leader'], $general['power'], $general['intel']);
             $specialClass = getGeneralSpecialDomesticClass($special);
             $specialText = $specialClass::$name;
@@ -1535,20 +1535,18 @@ function addAge() {
             pushGenLog($general, "<C>●</>특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!");
         }
 
-        $query = "select no,name,nation,leader,power,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where specage2<=age and special2='0'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
-
-        for($i=0; $i < $gencount; $i++) {
-            $general = MYDB_fetch_array($result);
+        foreach($db->query('SELECT no,name,nation,leader,power,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where spec2age<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
             $special2 = getSpecial2($general['leader'], $general['power'], $general['intel'], 0, $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
+            $specialClass = getGeneralSpecialWarClass($special2);
+            $specialText = $specialClass::$name;
 
-            $query = "update general set special2='$special2' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('general', [
+                'special2'=>$special2
+            ], 'no=%i',$general['no']);
 
-            $josaUl = JosaUtil::pick($special2, '을');
-            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>".getGenSpecial($special2)."</></b>】{$josaUl} 습득");
-            pushGenLog($general, "<C>●</>특기 【<b><L>".getGenSpecial($special2)."</></b>】{$josaUl} 익혔습니다!");
+            $josaUl = JosaUtil::pick($specialText, '을');
+            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:특기 【<b><C>{$specialText}</></b>】{$josaUl} 습득");
+            pushGenLog($general, "<C>●</>특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!");
         }
     }
 }
