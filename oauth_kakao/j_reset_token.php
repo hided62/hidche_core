@@ -31,7 +31,6 @@ if($expectedDate <= $tokenValidUntil){
     ]);
 }
 
-unset($oauthInfo['tokenValidUntil']);
 RootDB::db()->update('member', [
     'token_valid_until'=> null
 ], 'no=%i', $userID);
