@@ -33,7 +33,7 @@ class che_주민선정 extends BaseCommand{
         $develCost = $this->env['develcost'] * 2;
         $reqRice = $general->onCalcDomestic(static::$actionKey, 'cost', $reqGold);
 
-        $this->constraints=[
+        $this->runnableConstraints=[
             ['NoNeutral'], 
             ['NoWanderingNation'],
             ['OccupiedCity'],
@@ -43,6 +43,10 @@ class che_주민선정 extends BaseCommand{
         ];
 
         $this->reqRice = $reqRice;
+    }
+
+    protected function argTest():bool{
+        return true;
     }
 
     protected function calcBaseScore():float{
@@ -64,7 +68,7 @@ class che_주민선정 extends BaseCommand{
     }
 
     public function run():bool{
-        if(!$this->isAvailable()){
+        if(!$this->isRunnable()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

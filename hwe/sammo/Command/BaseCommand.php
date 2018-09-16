@@ -27,11 +27,18 @@ abstract class BaseCommand{
     protected $destCity = null;
     protected $destNation = null;
 
-    protected $available = null;
-    protected $reason = null;
+    protected $runnable = null;
+    protected $reservable = null;
 
-    protected $constraints = null;
-    protected $constraintsLight = null;
+    protected $isArgValid=false;
+
+    protected $reasonNotRunnable = null;
+    protected $reasonNotReservable = null;
+
+    protected $runnableConstraints = null;
+    protected $reservableConstraints = null;
+
+    
 
     protected $logger;
 
@@ -40,12 +47,20 @@ abstract class BaseCommand{
         $this->logger = $generalObj->getLogger();
         $this->env = $env;
         $this->arg = $arg;
+        if ($this->argTest()) {
+           return;
+        }
+        $this->isArgValid = true;
         $this->init();
+        
     }
 
     protected function resetTestCache():void{
-        $this->reason = null;
-        $this->available = null;
+        $this->runnable = null;
+        $this->reservable = null;
+
+        $this->reasonNotRunnable = null;
+        $this->reasonNotReservable = null;
     }
     
     protected function setCity(array $args=null){
@@ -110,6 +125,7 @@ abstract class BaseCommand{
     }
 
     abstract protected function init();
+    abstract protected function argTest():bool;
     
     public function getName():string {
         return static::$name;
@@ -119,13 +135,24 @@ abstract class BaseCommand{
         return $this->logger;
     }
 
-    public function test(bool $fullCheck):?string{
-        if($this->constraints === null){
+    public function testReservable():?string{
+
+    }
+
+    public function testRunnable():?string{
+        if(!$this->isArgValid()){
             throw new \InvalidArgumentException('인자가 제대로 설정되지 않았습니다');
+        }        
+        if($this->runnableConstraints === null){
+            throw new \InvalidArgumentException('runnableConstraits가 제대로 설정되지 않았습니다');
         }
 
-        if($this->reason){
-            return $this->reason;
+        if(!$this->isReservable()){
+            return $this->testReservable();
+        }
+
+        if($this->reasonNotRunnable){
+            return $this->reasonNotRunnable;
         }
 
         $constraintInput = [
@@ -139,21 +166,30 @@ abstract class BaseCommand{
             'destNation'=>$this->destNation,
         ];
 
-        if(!$fullCheck && $this->constraintsLight){
-            return Constraint::testAll($this->constraintsLight, $constraintInput);
+        if(!$fullCheck && $this->reservableConstraints){
+            return Constraint::testAll($this->reservableConstraints, $constraintInput);
         }
 
-        $this->reason = Constraint::testAll($this->constraints, $constraintInput);
-        $this->available = $this->reason === null;
+        $this->reasonNotRunnable = Constraint::testAll($this->runnableConstraints, $constraintInput);
+        $this->runnable = $this->reason === null;
         return $this->reason;
         
     }
-    public function isAvailable(bool $fullCheck=true):bool {
-        if($this->available !== null){
-            return $this->available;
-        }
 
-        return $this->test($fullCheck) === null;
+    public function isReservable():bool{
+
+    }
+
+    public function isArgValid():bool{
+        return $this->isArgValid;
+    }
+
+    public function isRunnable():bool {
+        if($this->runnable !== null){
+            return $this->runnable;
+        }
+        
+        return $this->testRunnable() === null;
     }
 
     abstract public function getCost():array;

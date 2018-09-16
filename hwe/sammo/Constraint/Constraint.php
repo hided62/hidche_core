@@ -162,15 +162,9 @@ abstract class Constraint{
         return true;
     }
 
-    public function reason($withTest=true):?string{
+    public function reason():?string{
         if(!$this->tested === false){
-            if($withTest){
-                $this->test();
-            }
-            else{
-                throw new \RuntimeException('test가 실행되지 않음');
-            }
-            
+            throw new \RuntimeException('test가 실행되지 않음');
         }
         return $this->reason;
     }

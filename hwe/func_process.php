@@ -233,7 +233,7 @@ function process_domestic(array $rawGeneral, int $type){
     }
     $cmdObj = new $cmdClass($general, $env);
 
-    if(!$cmdObj->isAvailable()){
+    if(!$cmdObj->isRunnable()){
         return;
     }
     $cmdObj->run();

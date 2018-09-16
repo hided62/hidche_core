@@ -32,7 +32,7 @@ class che_기술연구 extends che_상업투자{
         $develCost = $this->env['develcost'];
         $reqGold = $general->onCalcDomestic(static::$actionKey, 'cost', $reqGold);
 
-        $this->constraints=[
+        $this->runnableConstraints=[
             ['NoNeutral'], 
             ['NoWanderingNation'],
             ['OccupiedCity'],
@@ -43,8 +43,12 @@ class che_기술연구 extends che_상업투자{
         $this->reqGold = $reqGold;
     }
 
+    protected function argTest():bool{
+        return true;
+    }
+
     public function run():bool{
-        if(!$this->isAvailable()){
+        if(!$this->isRunnable()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
         }
 

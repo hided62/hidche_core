@@ -11,6 +11,9 @@ namespace sammo;
  * @property bool   $reqOTP    인증 코드 필요
  * @property array  $acl       권한
  * @property string $tokenValidUntil 로그인 토큰 길이
+ * 
+ * @property int    $generalID   장수 번호 (게임 로그인 필요)
+ * @property string $generalName 장수 이름 (게임 로그인 필요)
  */
 class Session
 {

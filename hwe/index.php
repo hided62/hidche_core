@@ -235,7 +235,14 @@ else if($session->userGrade == 4){
         <td style='width:700px;height:520px;' colspan=2>
             <?=getMapHtml($mapTheme)?>
         </td>
-        <td style='width:300px;' rowspan=4><iframe seamless="seamless" name=commandlist src='commandlist.php' style='width:300px;height:700px;' frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
+        <td style='width:300px;overflow-y:scroll' rowspan=4>
+            <div id="reservedCommandList">
+                <div id="reservedCommandHeader">
+                </div>
+                <ul id="reservedCommandList">
+                </ul>
+            </div>
+        </td>
     </tr>
 <form name=form2 action=preprocessing.php method=post target=commandlist>
     <tr>
