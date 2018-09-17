@@ -1023,7 +1023,7 @@ function updateNationState() {
 
             
             $lastAssemblerID = $gameStor->assembler_id??0;
-            foreach(range(max(1, $oldLevel) + 1, $nationLevel) as $levelGen){
+            for($levelGen = max(1, $oldLevel) + 1; $levelGen < $nationLevel; $levelGen+=1){
                 if(in_array($levelGen, [4, 6])){
                     $genStep = 2;
                 }
@@ -1061,7 +1061,7 @@ function updateNationState() {
                     ], 'no=%i', $npcID);
                     $genStep -= 1;
                 }
-        }
+            }
             $gameStor->assembler_id = $lastAssemblerID;
 
             //작위 상승
