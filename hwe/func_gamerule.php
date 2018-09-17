@@ -1020,37 +1020,41 @@ function updateNationState() {
                     break;
             }
 
+            
             $lastAssemblerID = $gameStor->assemblerID??0;
-            foreach(range($nation['level'] + 1, $nationLevel) as $levelGen){
-                $lastAssemblerID += 1;
-                
-                $npcObj = new Scenario\NPC(
-                    999, '집합장'.$lastAssemblerID, null, $nation['nation'], $nation['capital'], 
-                    10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  10, 75
-                );
-                $npcObj->npc = 5;
-                $npcObj->build();
-                $npcID = $npcObj->generalID;
+            $jumpStep = $nationLevel - max(1, $nation['level']);
+            if($jumpStep > 0){
+                foreach(range(1, $jumpStep) as $levelGen){
+                    $lastAssemblerID += 1;
+                    
+                    $npcObj = new Scenario\NPC(
+                        999, '집합장'.$lastAssemblerID, null, $nation['nation'], $nation['capital'], 
+                        10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  10, 75
+                    );
+                    $npcObj->npc = 5;
+                    $npcObj->build();
+                    $npcID = $npcObj->generalID;
 
-                $db->insert('troop', [
-                    'name'=>$npcObj->realName,
-                    'nation'=>$nation['nation'],
-                    'no'=>$npcID
-                ]);
-                $troopID = $db->insertId();
-                
-                $command = EncodeCommand(0, 0, 0, 26); //집합
-                $db->update('general', [
-                    'troop'=>$troopID,
-                    'turn0'=>$command,
-                    'turn1'=>$command,
-                    'turn2'=>$command,
-                    'turn3'=>$command,
-                    'turn4'=>$command,
-                    'turn5'=>$command,
-                    'killturn'=>80
-                ], 'no=%i', $npcID);
-                
+                    $db->insert('troop', [
+                        'name'=>$npcObj->realName,
+                        'nation'=>$nation['nation'],
+                        'no'=>$npcID
+                    ]);
+                    $troopID = $db->insertId();
+
+                    $command = EncodeCommand(0, 0, 0, 26); //집합
+                    $db->update('general', [
+                        'troop'=>$troopID,
+                        'turn0'=>$command,
+                        'turn1'=>$command,
+                        'turn2'=>$command,
+                        'turn3'=>$command,
+                        'turn4'=>$command,
+                        'turn5'=>$command,
+                        'killturn'=>80
+                    ], 'no=%i', $npcID);
+                    
+                }
             }
             $gameStor->assemberlID = $lastAssemblerID;
 
