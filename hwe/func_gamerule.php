@@ -962,7 +962,7 @@ function updateNationState() {
     $history = array();
     $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm']);
 
-    $query = "select nation,name,level,capital from nation";
+    $query = "select nation,name,level from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($nationresult);
 
@@ -1022,14 +1022,14 @@ function updateNationState() {
             }
 
             
-            $lastAssemblerID = $gameStor->assemblerID??0;
+            $lastAssemblerID = $gameStor->assembler_id??0;
             $jumpStep = $nationlevel - max(1, $oldLevel);
             if($jumpStep > 0){
                 foreach(range(1, $jumpStep) as $levelGen){
                     $lastAssemblerID += 1;
                     
                     $npcObj = new Scenario\NPC(
-                        999, '부대장'.$lastAssemblerID, null, $nation['nation'], $nation['capital'], 
+                        999, '부대장'.$lastAssemblerID, null, $nation['nation'], null, 
                         10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  '은둔', '척사'
                     );
                     $npcObj->npc = 5;
@@ -1057,7 +1057,7 @@ function updateNationState() {
                     
                 }
             }
-            $gameStor->assemblerID = $lastAssemblerID;
+            $gameStor->assembler_id = $lastAssemblerID;
 
             //작위 상승
             $query = "update nation set level='{$nation['level']}' where nation='{$nation['nation']}'";
