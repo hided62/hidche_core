@@ -177,7 +177,7 @@ for($i=0; $i < $nationcount; $i++) {
 ";
 }
 ?>
-    <tr><td colspan=<?=$nationcount+1?> align=center>불가침 : <font color=limegreen>@</font>, 통합 : <font color=cyan>○</font>, 합병 : <font color=skyblue>◎</font>, 통상 : ㆍ, 선포 : <font color=magenta>▲</font>, 교전 : <font color=red>★</font></td></tr>
+    <tr><td colspan=<?=$nationcount+1?> align=center>불가침 : <font color=limegreen>@</font>, <!--통합 : <font color=cyan>○</font>, -->합병 : <font color=skyblue>◎</font>, 통상 : ㆍ, 선포 : <font color=magenta>▲</font>, 교전 : <font color=red>★</font></td></tr>
 </table>
 
 <?php if ($realConflict) : ?>

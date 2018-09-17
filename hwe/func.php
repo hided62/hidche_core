@@ -709,7 +709,7 @@ function CoreCommandTable() {
     addCommand("몰수", 24, $valid);
     commandGroup("", 1);
     commandGroup("====== 외 교 ======");
-    addCommand("통합 제의", 53, $valid);
+    //addCommand("통합 제의", 53, $valid);
 
     addCommand("항복 권고", 51, $valid);
     if($nation['level'] >= 2) {
