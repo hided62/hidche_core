@@ -196,11 +196,6 @@ function processAI($no) {
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    // 입력된 턴이 있으면 그것 실행
-    if(DecodeCommand($general['turn0'])[0] != 0) {
-        return;
-    }
-
     if($general['npc'] == 5){
         if($general['nation'] == 0 && $general['killturn'] > 1){
             $command = EncodeCommand(0, 0, 0, 0); //휴식
@@ -222,6 +217,11 @@ function processAI($no) {
             ], 'no=%i', $general['no']);
         }
 
+        return;
+    }
+
+    // 입력된 턴이 있으면 그것 실행
+    if(DecodeCommand($general['turn0'])[0] != 0) {
         return;
     }
 
