@@ -962,7 +962,7 @@ function updateNationState() {
     $history = array();
     $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm']);
 
-    $query = "select nation,name,level from nation";
+    $query = "select nation,name,level,capital from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($nationresult);
 
@@ -1030,7 +1030,7 @@ function updateNationState() {
                     
                     $npcObj = new Scenario\NPC(
                         999, '부대장'.$lastAssemblerID, null, $nation['nation'], $nation['capital'], 
-                        10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  10, 75
+                        10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  '은둔', '척사'
                     );
                     $npcObj->npc = 5;
                     $npcObj->build($admin);
