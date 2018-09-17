@@ -1023,11 +1023,16 @@ function updateNationState() {
 
             
             $lastAssemblerID = $gameStor->assembler_id??0;
-            $jumpStep = $nationlevel - max(1, $oldLevel);
-            if($jumpStep > 0){
-                foreach(range(1, $jumpStep) as $levelGen){
+            foreach(range(max(1, $oldLevel) + 1, $nationLevel) as $levelGen){
+                if(in_array($levelGen, [4, 6])){
+                    $genStep = 2;
+                }
+                else{
+                    $genStep = 1;
+                }
+                
+                while($genStep > 0){
                     $lastAssemblerID += 1;
-                    
                     $npcObj = new Scenario\NPC(
                         999, '부대장'.$lastAssemblerID, null, $nation['nation'], null, 
                         10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  '은둔', '척사'
@@ -1054,9 +1059,9 @@ function updateNationState() {
                         'turn5'=>$command,
                         'killturn'=>80
                     ], 'no=%i', $npcID);
-                    
+                    $genStep -= 1;
                 }
-            }
+        }
             $gameStor->assembler_id = $lastAssemblerID;
 
             //작위 상승
