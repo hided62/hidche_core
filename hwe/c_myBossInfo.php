@@ -76,7 +76,7 @@ if($btn == "임명") {
         exit();
     }
 
-    //집합장 추방 불가
+    //NPC 부대장 추방 불가
     if($general['npc'] == 5){
         header('location:b_myBossInfo.php');
         exit();

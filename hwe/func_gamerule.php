@@ -1029,7 +1029,7 @@ function updateNationState() {
                     $lastAssemblerID += 1;
                     
                     $npcObj = new Scenario\NPC(
-                        999, '집합장'.$lastAssemblerID, null, $nation['nation'], $nation['capital'], 
+                        999, '부대장'.$lastAssemblerID, null, $nation['nation'], $nation['capital'], 
                         10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  10, 75
                     );
                     $npcObj->npc = 5;
