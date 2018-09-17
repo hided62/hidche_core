@@ -213,7 +213,7 @@ function processAI($no) {
                 'turn3'=>$command,
                 'turn4'=>$command,
                 'turn5'=>$command,
-                'killturn'=>80
+                'killturn'=>rand(70,75),
             ], 'no=%i', $general['no']);
         }
 
