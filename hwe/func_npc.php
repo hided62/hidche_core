@@ -1279,6 +1279,9 @@ function NPCStaffWork($general, $nation, $dipState){
             if($generalCity['pop'] - 33000 > $nationGeneral['leader']){
                 continue;
             }
+            if($nationGeneral['npc'] == 5){
+                continue;
+            }
     
             $score = 5;
             if($nationGeneral['npc']<2){

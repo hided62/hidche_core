@@ -960,7 +960,7 @@ function updateNationState() {
     $connect=$db->get();
 
     $history = array();
-    $admin = $gameStor->getValues(['year', 'month']);
+    $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm']);
 
     $query = "select nation,name,level from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -996,6 +996,7 @@ function updateNationState() {
         }
 
         if($nationlevel > $nation['level']) {
+            $oldLevel = $nation['level'];
             $nation['level'] = $nationlevel;
 
             switch($nationlevel) {
@@ -1022,7 +1023,7 @@ function updateNationState() {
 
             
             $lastAssemblerID = $gameStor->assemblerID??0;
-            $jumpStep = $nationLevel - max(1, $nation['level']);
+            $jumpStep = $nationlevel - max(1, $oldLevel);
             if($jumpStep > 0){
                 foreach(range(1, $jumpStep) as $levelGen){
                     $lastAssemblerID += 1;
@@ -1032,7 +1033,7 @@ function updateNationState() {
                         10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  10, 75
                     );
                     $npcObj->npc = 5;
-                    $npcObj->build();
+                    $npcObj->build($admin);
                     $npcID = $npcObj->generalID;
 
                     $db->insert('troop', [
@@ -1056,7 +1057,7 @@ function updateNationState() {
                     
                 }
             }
-            $gameStor->assemberlID = $lastAssemblerID;
+            $gameStor->assemblerlID = $lastAssemblerID;
 
             //작위 상승
             $query = "update nation set level='{$nation['level']}' where nation='{$nation['nation']}'";
