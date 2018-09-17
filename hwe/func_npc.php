@@ -192,7 +192,7 @@ function processAI($no) {
         $isStart = 0;
     }
 
-    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,train,atmos,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
+    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -937,7 +937,7 @@ function NPCStaffWork($general, $nation, $dipState){
 
     $commandList = [];
 
-    foreach($db->query('SELECT `no`, nation, city, npc, `gold`, `rice`, leader, `power`, intel, killturn, crew, train, atmos, `level` FROM general WHERE nation = %i', $general['nation']) as $nationGeneral) {
+    foreach($db->query('SELECT `no`, nation, city, npc, `gold`, `rice`, leader, `power`, intel, killturn, crew, train, atmos, `level`, troop FROM general WHERE nation = %i', $general['nation']) as $nationGeneral) {
         $cityID = $nationGeneral['city'];
         $generalID = $nationGeneral['no'];
 
@@ -1195,13 +1195,18 @@ function NPCStaffWork($general, $nation, $dipState){
 
         if($maxDevCity['dev'] >= 95 && $targetCity['city'] != $maxDevCity['city'] && $targetCity['dev'] <= 70){
             $targetGeneral = $nationGenerals[Util::choiceRandom($maxDevCity['generals'])];
-            $commandList[EncodeCommand(0, $targetGeneral['no'], $targetCity['city'], 27)] = 2;
+            if($targetGeneral['troop'] != 0){
+                $commandList[EncodeCommand(0, $targetGeneral['no'], $targetCity['city'], 27)] = 2;
+            }
         }
 
         if(count($targetCity['generals']) < count($maxCity['generals']) - 2){
             //세명 이상 차이나야 함
             $targetGeneral = $nationGenerals[Util::choiceRandom($maxCity['generals'])];
-            if($targetGeneral['npc']>=2 || $maxCity['dev'] >= 95){
+            if($targetGeneral['npc']==5){
+                
+            }
+            else if($targetGeneral['npc']>=2 || $maxCity['dev'] >= 95 && $targetGeneral['troop'] == 0){
                 //유저장은 의도가 있을 것이므로 삽나지 않는 이상 발령 안함!
                 $commandList[EncodeCommand(0, $targetGeneral['no'], $targetCity['city'], 27)] = 5;
             }
