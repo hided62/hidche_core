@@ -202,7 +202,7 @@ function processAI($no) {
             $db->update('general', [
                 'turn0'=>$command,
                 'killturn'=>1
-            ], 'no=$i', $general['no']);
+            ], 'no=%i', $general['no']);
         }
         else{
             $command = EncodeCommand(0, 0, 0, 26); //집합
