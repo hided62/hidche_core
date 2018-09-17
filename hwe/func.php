@@ -1252,8 +1252,9 @@ function increaseRefresh($type="", $cnt=1) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $gameStor->refresh = $gameStor->refresh+$cnt; //TODO: +로 증가하는 값은 별도로 분리
+    $isunited = $gameStor->isunited;
 
-    if($generalID && $userGrade < 6) {
+    if($isunited != 2 && $generalID && $userGrade < 6) {
         $db->update('general', [
             'lastrefresh'=>$date,
             'con'=>$db->sqleval('con + %i', $cnt),
