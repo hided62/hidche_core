@@ -8,6 +8,9 @@ use \sammo\GameUnitConst;
 
 class NPC{
 
+    public $generalID = null;
+    public $realName = null;
+
     public $affinity; 
     public $name; 
     public $picturePath; 
@@ -24,6 +27,16 @@ class NPC{
     public $charWar = 0; 
     public $npc = 2;
     public $text;
+    static $prefixList = [
+        1 => 'ⓝ', //빙의 NPC
+        2 => 'ⓝ', //NPC
+        3 => 'ⓜ', //인탐 장수
+        4 => 'ⓖ', //의병장(전략)
+        5 => '㉥', //부대장
+        6 => 'ⓤ', //unselectable npc, 빙의 불가 npc
+        
+        9 => 'ⓞ', //오랑캐?
+    ];
 
     //[  1,     "헌제",1002,  1,    null, 17, 13, 61, 0, 170, 250, "안전",    null, "산 넘어 산이로구나..."],
     public function __construct(
@@ -156,7 +169,8 @@ class NPC{
             $charDomestic = 0;
         }
 
-        $name = 'ⓝ'.$this->name;
+        $name = (static::$prefixList[$this->npc]?:'ⓧ').$this->name;
+        $this->realName = $name;
 
         $picturePath = $this->picturePath;
         if($env['show_img_level'] < 3){
@@ -260,6 +274,7 @@ class NPC{
             'bornyear'=>$this->birth,
             'deadyear'=>$this->death
         ]);
+        $this->generalID = $db->insertId();
 
         return true; //생성되었다.
     }

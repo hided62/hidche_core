@@ -201,6 +201,30 @@ function processAI($no) {
         return;
     }
 
+    if($general['npc'] == 5){
+        if($general['nation'] == 0 && $general['killturn'] > 1){
+            $command = EncodeCommand(0, 0, 0, 0); //휴식
+            $db->update('general', [
+                'turn0'=>$command,
+                'killturn'=>1
+            ], 'no=$i', $general['no']);
+        }
+        else{
+            $command = EncodeCommand(0, 0, 0, 26); //집합
+            $db->update('general', [
+                'turn0'=>$command,
+                'turn1'=>$command,
+                'turn2'=>$command,
+                'turn3'=>$command,
+                'turn4'=>$command,
+                'turn5'=>$command,
+                'killturn'=>80
+            ], 'no=%i', $general['no']);
+        }
+
+        return;
+    }
+
     $query = "select city,region,nation,level,path,rate,gen1,gen2,gen3,pop,supply,front from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error("processAI02 ".MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);

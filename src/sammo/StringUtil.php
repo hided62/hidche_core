@@ -177,7 +177,7 @@ class StringUtil
     public static function removeSpecialCharacter($str)
     {
         return str_replace([
-            '"', '\'', 'ⓝ', 'ⓜ', 'ⓖ', '\\', '/', '`', '#',
+            '"', '\'', 'ⓝ', 'ⓜ', 'ⓖ', 'ⓞ', 'ⓧ', '㉥', '\\', '/', '`', '#',
             '-', '#', '|'
         ], '', $str);
     }
