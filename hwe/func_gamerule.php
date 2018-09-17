@@ -1023,7 +1023,7 @@ function updateNationState() {
 
             
             $lastAssemblerID = $gameStor->assembler_id??0;
-            for($levelGen = max(1, $oldLevel); $levelGen < $nationlevel; $levelGen+=1){
+            for($levelGen = max(1, $oldLevel) + 1; $levelGen <= $nationlevel; $levelGen+=1){
                 if(in_array($levelGen, [4, 6])){
                     $genStep = 2;
                 }
