@@ -1057,7 +1057,7 @@ function updateNationState() {
                     
                 }
             }
-            $gameStor->assemblerlID = $lastAssemblerID;
+            $gameStor->assemblerID = $lastAssemblerID;
 
             //작위 상승
             $query = "update nation set level='{$nation['level']}' where nation='{$nation['nation']}'";
