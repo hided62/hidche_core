@@ -539,7 +539,6 @@ class WarUnitGeneral extends WarUnit{
 
         if($specialWar == 60){
             $oppose->activateSkill('회피불가');
-            $oppose->activateSkill('저지불가');
         }
 
         return $activated;
