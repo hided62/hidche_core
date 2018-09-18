@@ -219,6 +219,9 @@ class WarUnitGeneral extends WarUnit{
         else if($specialWar == 61){
             $myWarPowerMultiply *= 1.10;
         }
+        else if($specialWar == 62){
+            $opposeWarPowerMultiply *= 0.95;
+        }
         else if($specialWar == 50){
             if($this->isAttacker){
                 $opposeWarPowerMultiply *= 0.9;
@@ -351,10 +354,17 @@ class WarUnitGeneral extends WarUnit{
         $oppose = $this->getOppose();
 
         $specialWar = $this->getSpecialWar();
+
+        if($specialWar == 62){
+            $oppose->activateSkill('저격불가');
+            $this->activateSkill('부상무효');
+        }
+
         if (
             $specialWar == 70 &&
             $this->oppose instanceof WarUnitGeneral &&
             !$this->hasActivatedSkill('저격') &&
+            !$this->hasActivatedSkill('저격불가') &&
             Util::randBool(1/3)
         ) {
             $this->activateSkill('저격');
@@ -380,6 +390,7 @@ class WarUnitGeneral extends WarUnit{
             $item == 2 &&
             $this->oppose instanceof WarUnitGeneral &&
             !$this->hasActivatedSkill('저격') &&
+            !$this->hasActivatedSkill('저격불가') &&
             Util::randBool(1/5)
         ){
             //수극
@@ -499,20 +510,23 @@ class WarUnitGeneral extends WarUnit{
         $item = $this->getItem();
         $crewType = $this->getCrewType();
 
+        if($specialWar == 62){
+            $oppose->activateSkill('필살불가');
+            $oppose->activateSkill('위압불가');
+            $oppose->activateSkill('격노불가');
+            $oppose->activateSkill('계략약화');
+            $activated = true;
+        }
+
         if(
             $specialWar == 63 &&
             $this->getPhase() == 0 &&
             $this->getHP() >= 1000 &&
             $this->getComputedAtmos() >= 90 &&
-            $this->getComputedTrain() >= 90
+            $this->getComputedTrain() >= 90 &&
+            !$this->hasActivatedSkill('위압불가')
         ){
             $this->activateSkill('위압');
-            $activated = true;
-        }
-
-        if($specialWar == 62){
-            $oppose->activateSkill('필살불가');
-            $oppose->activateSkill('계략약화');
             $activated = true;
         }
 
@@ -625,7 +639,11 @@ class WarUnitGeneral extends WarUnit{
         $item = $this->getItem();
         $crewType = $this->getCrewType();
 
-        if($specialWar == 74 && $oppose->hasActivatedSkill('필살')){
+        if(
+            $specialWar == 74 &&
+            $oppose->hasActivatedSkill('필살') &&
+            !$this->hasActivatedSkill('격노불가')
+        ){
             if($this->isAttacker){
                 if(Util::randBool(1/3)){
                     $this->activateSkill('진노', '격노');
@@ -646,7 +664,8 @@ class WarUnitGeneral extends WarUnit{
 
         if(
             $specialWar == 74 &&
-            $oppose->hasActivatedSkill('회피')
+            $oppose->hasActivatedSkill('회피') &&
+            !$this->hasActivatedSkill('격노불가')
         ){
             if($this->isAttacker){
                 if(Util::randBool(1/3)){
@@ -894,6 +913,9 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function tryWound():bool{
+        if($this->hasActivatedSkillOnLog('부상무효')){
+            return false;
+        }
         if(!Util::randBool(0.05)){
             return false;
         }
