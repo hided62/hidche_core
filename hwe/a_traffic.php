@@ -170,7 +170,7 @@ $max_refresh['name'] = '접속자 총합';
 $refresh_result = array_merge([$max_refresh], $db->query('SELECT `name`,refresh,`connect` FROM general ORDER BY refresh DESC LIMIT 5'));
 
 foreach ($refresh_result as $i=>$user) {
-    $w = round($user['refresh'] / $max_refresh['refresh'] * 100, 1);
+    $w = round($user['refresh'] / max(1, $max_refresh['refresh']) * 100, 1);
     $w2 = round(100 - $w, 1);
     $color = getTrafficColor($w);
 ?>
