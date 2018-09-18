@@ -594,8 +594,8 @@ function disaster() {
 
     for($i=0; $i < $citycount; $i++) {
         $city = MYDB_fetch_array($cityresult);
-        //호황 발생 도시 선택 ( 기본 3% 이므로 약 3개 도시 )
-        //재해 발생 도시 선택 ( 기본 6% 이므로 약 6개 도시 )
+        //호황 발생 도시 선택 ( 기본 2% )
+        //재해 발생 도시 선택 ( 기본 6% )
         if($isgood == 1) { $ratio = 2 + Util::round($city['secu']/$city['secu2']*5); }    // 2 ~ 7%
         else { $ratio = 6 - Util::round($city['secu']/$city['secu2']*5); }    // 1 ~ 6%
 
