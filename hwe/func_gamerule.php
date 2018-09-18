@@ -229,7 +229,7 @@ function SetNationFront($nationNo) {
 
     if($adj){
         $db->update('city', [
-            'front'=>1
+            'front'=>($enemyCities?1:2),
         ], 'nation=%i and city in %li', $nationNo, array_keys($adj));
     }
 }

@@ -248,7 +248,7 @@ function processAI($no) {
         $coreCommand = MYDB_fetch_array($result);
     }
 
-    $cityCount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND supply=1 AND front=1', $general['nation']);
+    $cityCount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND supply=1 AND front>0', $general['nation']);
     // 공격가능도시 있으면 1
     $attackable = $cityCount > 0;
 
@@ -491,7 +491,7 @@ function processAI($no) {
 
                 SetNationFront($nation['nation']);
 
-                $frontCount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND front=1', $general['nation']);
+                $frontCount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND front>0', $general['nation']);
                 if($frontCount > 0){
                     break;
                 }
@@ -745,7 +745,7 @@ function processAI($no) {
         //전시일때
             if($general['gold'] + $general['rice'] < $resrc*2) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달
             elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
-            elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] == 1) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
+            elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] > 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['gold'] < $resrc || ($general['gold'] < $resrc *2 && $general['rice'] > $resrc * 6)) {                                   // 금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }// 팜
@@ -827,9 +827,9 @@ function processAI($no) {
                 if(count($target) == 0) {
                     //전방 도시 선택, 30% 확률로 태수 있는 전방으로 워프
                     if(rand()%100 < 30) {
-                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front=1 order by gen1 desc,rand() limit 0,1";
+                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front>0 order by gen1 desc,rand() limit 0,1";
                     } else {
-                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front=1 order by rand() limit 0,1";
+                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front>0 order by rand() limit 0,1";
                     }
                     $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                     $cityCount = MYDB_num_rows($result);
