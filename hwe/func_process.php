@@ -273,7 +273,7 @@ function process_1(&$general, $type) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
-        if($city['front'] == 1){
+        if($city['front'] == 1 && $city['city'] != $nation['capital']){
             $score *= 0.5;
         }
 
@@ -562,7 +562,7 @@ function process_5(&$general, $type) {
         $exp = $score * 0.7;
         $ded = $score * 1.0;
 
-        if($city['front'] == 1){
+        if($city['front'] == 1 && $city['city'] != $nation['capital']){
             if($stype == 'def'){
                 $score *= 0.5;
             }
