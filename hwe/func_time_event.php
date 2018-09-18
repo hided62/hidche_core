@@ -596,12 +596,12 @@ function disaster() {
         $city = MYDB_fetch_array($cityresult);
         //호황 발생 도시 선택 ( 기본 3% 이므로 약 3개 도시 )
         //재해 발생 도시 선택 ( 기본 6% 이므로 약 6개 도시 )
-        if($isgood == 1) { $ratio = 3 + Util::round(1.0*$city['secu']/$city['secu2']*3); }    // 3 ~ 6%
-        else { $ratio = 6 - Util::round(1.0*$city['secu']/$city['secu2']*3); }    // 3 ~ 6%
+        if($isgood == 1) { $ratio = 2 + Util::round($city['secu']/$city['secu2']*5); }    // 2 ~ 7%
+        else { $ratio = 6 - Util::round($city['secu']/$city['secu2']*5); }    // 1 ~ 6%
 
         if(rand()%100+1 < $ratio) {
             $disastercity[] = $city['city'];
-            $disasterratio[] = 1.0 * $city['secu'] / $city['secu2'];
+            $disasterratio[] = Util::valueFit($city['secu'] / 0.8 / $city['secu2'], 0, 1);
             $disastername[] = $city['name'];
         }
     }
