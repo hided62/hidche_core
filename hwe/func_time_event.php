@@ -101,7 +101,7 @@ function processGoldIncome() {
         $query = "update nation set gold='{$nation['gold']}' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "select no,name,nation,dedication,gold from general where nation='{$nation['nation']}'";
+        $query = "select no,name,nation,dedication,gold from general where nation='{$nation['nation']}' AND npc != 5";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
 
@@ -317,7 +317,7 @@ function getGoldOutcome($nation, $bill) {
     $db = DB::db();
     $connect=$db->get();
 
-    $query = "select dedication from general where nation='$nation'"; // 장수 목록
+    $query = "select dedication from general where nation='$nation' AND npc != 5"; // 장수 목록
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
 
@@ -424,7 +424,7 @@ function processRiceIncome() {
         $query = "update nation set rice='{$nation['rice']}' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $query = "select no,name,nation,dedication,rice from general where nation='{$nation['nation']}'";
+        $query = "select no,name,nation,dedication,rice from general where nation='{$nation['nation']}' AND npc != 5";
         $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $gencount = MYDB_num_rows($genresult);
 
@@ -517,7 +517,7 @@ function getRiceOutcome($nation, $bill) {
     $db = DB::db();
     $connect=$db->get();
 
-    $query = "select dedication from general where nation='$nation'"; // 장수 목록
+    $query = "select dedication from general where nation='$nation' AND npc != 5"; // 장수 목록
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
 
