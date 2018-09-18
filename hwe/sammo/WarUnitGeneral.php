@@ -355,6 +355,13 @@ class WarUnitGeneral extends WarUnit{
 
         $specialWar = $this->getSpecialWar();
 
+        if(
+            $this->getCrewType()->armType ==  GameUnitConst::T_SIEGE &&
+            $oppose->getCrewType()->armType == GameUnitConst::T_CASTLE
+        ){
+            $this->activateSkill('부상무효');
+        }
+
         if($specialWar == 62){
             $oppose->activateSkill('저격불가');
             $this->activateSkill('부상무효');
