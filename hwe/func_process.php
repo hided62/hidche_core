@@ -273,6 +273,10 @@ function process_1(&$general, $type) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
+        if($city['front'] == 1){
+            $score *= 0.5;
+        }
+
         $score += $city["$stype"];
         if($score > $city["{$stype}2"]) { $score = $city["{$stype}2"]; }
         // 내정 상승
@@ -557,6 +561,16 @@ function process_5(&$general, $type) {
 
         $exp = $score * 0.7;
         $ded = $score * 1.0;
+
+        if($city['front'] == 1){
+            if($stype == 'def'){
+                $score *= 0.5;
+            }
+            else{
+                $score *= 0.25;
+            }
+            
+        }
 
         // 성격 보정
         $exp = CharExperience($exp, $general['personal']);
