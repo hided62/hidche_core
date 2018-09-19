@@ -962,7 +962,7 @@ function updateNationState() {
     $history = array();
     $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm']);
 
-    $query = "select nation,name,level from nation";
+    $query = "select nation,name,level,gennum,tech from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($nationresult);
 
@@ -1047,6 +1047,11 @@ function updateNationState() {
                         'no'=>$npcID
                     ]);
                     $troopID = $db->insertId();
+
+                    $db->update('nation', [
+                        'gennum'=>$nation['gennum']+1,
+                        'totaltech'=>Util::valueFit($nation['gennum']+1, GameConst::$initialNationGenLimit) * $nation['tech'],
+                    ], 'nation=%i', $nation['nation']);
 
                     $command = EncodeCommand(0, 0, 0, 26); //집합
                     $db->update('general', [
