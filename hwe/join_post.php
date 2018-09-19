@@ -183,8 +183,8 @@ else{
     $expGenCount = $db->queryFirstField('SELECT count(*) FROM general WHERE nation != 0 AND npc < 5');
     $targetGenOrder = Util::round($expGenCount * 0.2);
     $experience = $db->queryFirstField(
-        'SELECT experience FROM general WHERE nation != 0 AND npc < 5 ORDER BY experience ASC LIMIT %i - 1, 1', 
-        $targetGenOrder
+        'SELECT experience FROM general WHERE nation != 0 AND npc < 5 ORDER BY experience ASC LIMIT %i, 1', 
+        $targetGenOrder - 1
     );
     $experience *= 0.8;
 }
