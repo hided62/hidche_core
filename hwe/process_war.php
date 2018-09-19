@@ -514,6 +514,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
     pushNationHistory($destnation, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>에 의해 <G><b>{$city['name']}</b></>{$josaYiCity} <span class='ev_highlight'>함락</span>");
 
     $citycount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation = %i', $city['nation']);
+    $renewFront = false;
 
     // 국가 멸망시
     //TODO: 국가 멸망 코드를 별도로 작성
@@ -524,9 +525,6 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $josaUl = JosaUtil::pick($losenation['name'], '을');
         $history[] = "<C>●</>{$year}년 {$month}월:<R><b>【멸망】</b></><D><b>{$losenation['name']}</b></>{$josaYi} 멸망하였습니다.";
         pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<D><b>{$losenation['name']}</b></>{$josaUl} 정복");
-
-        //다굴치는 나라들 전방설정을 위해 미리 얻어옴
-        $dipNations = $db->queryFirstColumn('SELECT you FROM diplomacy WHERE me = %i', $losenation['nation']);
 
         $loseGeneralGold = 0;
         $loseGeneralRice = 0;
@@ -631,11 +629,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         // 국가 삭제
         $query = "delete from nation where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        // 아까 얻어온 다굴국들 전방설정
-        foreach($dipNations as $dip){
-            //전방설정
-            SetNationFront($dip);
-        }
+        $renewFront = true;
     // 멸망이 아니면
     } else {
         // 태수,군사,시중은 일반으로...
@@ -731,6 +725,15 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         //전방설정
         SetNationFront($destnation['nation']);
         SetNationFront($conquerNation);
+    }
+
+    if($renewFront){
+        foreach(getAllNationStaticInfo() as $nation){
+            if($nation['level'] <= 0){
+                continue;
+            }
+            SetNationFront($nation['nation']);
+        }
     }
 
     pushGenLog($general, $log);
