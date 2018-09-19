@@ -1106,7 +1106,15 @@ function NPCStaffWork($general, $nation, $dipState){
         }
     } else{    // 포상
         $compNpcWar = $npcWarGeneralsID?$nationGenerals[$npcWarGeneralsID[0]]:null; 
-        $compNpcCivil = $npcCivilGeneralsID?$nationGenerals[$npcCivilGeneralsID[0]]:null;
+        $compNpcCivil = null;
+        foreach($npcCivilGeneralsID??[] as $npcCivilID){
+            $npcCivil = $nationGenerals[$npcCivilID];
+            if($npcCivil['npc'] == 5){
+                continue;
+            }
+            $compNpcCivil = $npcCivil;
+            break;
+        }
 
         if($compNpcWar && $compNpcWar[$resName] < 21000){
             $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
