@@ -155,24 +155,38 @@ $leader = $leader + $pleader;
 $power = $power + $ppower;
 $intel = $intel + $pintel;
 
+$admin = $gameStor->getValues(['scenario', 'turnterm', 'show_img_level', 'startyear', 'year']);
+$relYear = Util::valueFit($admin['year'] - $admin['startyear'], 0);
+
 $age = 20 + ($pleader + $ppower + $pintel) * 2 - (mt_rand(0, 1));
 // 아직 남았고 천재등록상태이면 특기 부여
 if ($genius) {
     $specage2 = $age;
     $special2 = getSpecial2($leader, $power, $intel);
 } else {
-    $specage2 = Util::round((80 - $age)/3) + $age;
+    $specage2 = Util::valueFit(Util::round((80 - $age)/4 - $relYear / 2), 3) + $age;
     $special2 = 0;
 }
 //내특
-$specage = Util::round((80 - $age)/12) + $age;
+$specage = Util::valueFit(Util::round((80 - $age)/12 - $relYear / 2), 3) + $age;
 $special = 0;
-
-$admin = $gameStor->getValues(['scenario', 'turnterm', 'show_img_level']);
 
 if ($admin['scenario'] >= 1000) {
     $specage2 = $age + 3;
     $specage = $age + 3;
+}
+
+if($relYear < 3){
+    $experience = 0;
+}
+else{
+    $expGenCount = $db->queryFirstField('SELECT count(*) FROM general WHERE nation != 0 AND npc < 5');
+    $targetGenOrder = Util::round($expGenCount * 0.2);
+    $experience = $db->queryFirstField(
+        'SELECT experience FROM general WHERE nation != 0 AND npc < 5 ORDER BY experience ASC LIMIT %i - 1, 1', 
+        $targetGenOrder
+    );
+    $experience *= 0.8;
 }
 
 $turntime = getRandTurn($admin['turnterm']);
@@ -211,7 +225,7 @@ $db->insert('general', [
     'leader' => $leader,
     'power' => $power,
     'intel' => $intel,
-    'experience' => 0,
+    'experience' => $experience,
     'dedication' => 0,
     'gold' => 1000,
     'rice' => 1000,
