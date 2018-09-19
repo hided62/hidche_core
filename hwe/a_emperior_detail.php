@@ -179,7 +179,7 @@ if($showServers){
         if($nation['generals']){
             $generals = $db->query('SELECT `general_no`, `name`, `last_yearmonth` FROM ng_old_generals WHERE server_id=%s AND general_no IN %li', $serverID, $nation['generals']);
 
-            if(count($generals) != $nation['generals'] && $serverID == UniqueConst::$serverID){
+            if(count($generals) != count($nation['generals']) && $serverID == UniqueConst::$serverID){
                 $liveGenerals = $nation['generals'];
                 foreach($generals as $general){
                     if(in_array($general['general_no'], $nation['generals'])){
