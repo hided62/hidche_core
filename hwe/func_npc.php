@@ -1234,6 +1234,10 @@ function NPCStaffWork($general, $nation, $dipState){
             if($nationGeneral['train'] * $nationGeneral['atmos'] < 75 * 75){
                 continue;
             }
+
+            if($nationGeneral['troop'] != 0){
+                continue;
+            }
     
             $score = 5;
             if($nationGeneral['npc']<2){
@@ -1284,7 +1288,7 @@ function NPCStaffWork($general, $nation, $dipState){
             if($generalCity['pop'] - 33000 > $nationGeneral['leader']){
                 continue;
             }
-            if($nationGeneral['npc'] == 5){
+            if($nationGeneral['troop'] != 0){
                 continue;
             }
     
