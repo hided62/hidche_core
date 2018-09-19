@@ -562,11 +562,14 @@ function postUpdateMonthly() {
         $genCount = $genNum[$dip['me']];
         // 25% 참여율일때 두당 10턴에 4000명 소모한다고 계산
         // 4000 / 10 * 0.25 = 100
-        $term = Util::round($dip['dead'] / 100 / $genCount) + 1;
-        if($dip['term'] > $term) { $term = $dip['term']; }
-        if($term > 13) { $term = 13; }
-        $query = "update diplomacy set term='{$term}' where (me='{$dip['me']}' and you='{$dip['you']}')";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $term = floor($dip['dead'] / 100 / $genCount);
+        $dip['dead'] -= $term * 100 * $genCount;
+        $term = Util::valueFit($dip['term'] + $term, 0, 13);
+        
+        $db->update('diplomacy', [
+            'term' => $term,
+            'dead'=> $dip['dead'],
+        ], 'me = %i AND you = %i', $dip['me'], $dip['you']);
     }
 
     //개전국 로그
@@ -609,7 +612,7 @@ function postUpdateMonthly() {
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
     //사상자 초기화
-    $query = "update diplomacy set dead=0";
+    $query = "update diplomacy set dead=0 WHERE state != 0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //외교 기한-1
     $query = "update diplomacy set term=term-1 where term!=0";
