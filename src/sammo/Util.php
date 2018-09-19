@@ -60,6 +60,24 @@ class Util extends \utilphp\util
         throw new \InvalidArgumentException('올바르지 않은 type 지정');
     }
 
+    public static function zip(iterable  ...$iterators){
+        while(true){
+            $hasValue = false;
+            $values = [];
+            foreach($iterators as $iter){
+                if($iter->valid()){
+                    $values[] = $iter->send(NULL);
+                    $hasValue = true;
+                }
+            }
+            yield $values;
+
+            if(!$hasValue){
+                break;
+            }
+        }
+    }
+
     /**
      * $_POST, $_GET에서 값을 가져오는 함수. Util::array_get($_POST[$name])을 축약 가능.
      * 타입이 복잡해질 경우 이 함수를 통하지 않고 json으로 요청할 것을 권장.

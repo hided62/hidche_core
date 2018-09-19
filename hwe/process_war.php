@@ -270,8 +270,12 @@ function processWar_NG(
             $attacker->setOppose($defender);
             $defender->setOppose($attacker);
 
-            $attacker->checkBattleBeginSkill();
-            $defender->checkBattleBeginSkill();
+            foreach(Util::zip(
+                $attacker->checkBattleBeginSkill(),
+                $defender->checkBattleBeginSkill()
+                ) as $b){
+                //doNothing
+            }
 
             $attacker->checkBattleBeginItem();
             $defender->checkBattleBeginItem();
@@ -283,21 +287,33 @@ function processWar_NG(
         $attacker->beginPhase();
         $defender->beginPhase();
 
-        $attacker->checkPreActiveSkill();
-        $defender->checkPreActiveSkill();
+        foreach(Util::zip(
+            $attacker->checkPreActiveSkill(),
+            $defender->checkPreActiveSkill()
+            ) as $b){
+            //doNothing
+        }
 
-        $attacker->checkActiveSkill();
-        $defender->checkActiveSkill();
+        foreach(Util::zip(
+            $attacker->checkActiveSkill(),
+            $defender->checkActiveSkill()
+            ) as $b){
+            //doNothing
+        }
         //NOTE: 마법은 checkActiveSkill, checkPostActiveSkill 내에서 반영
 
-        $attacker->checkPostActiveSkill();
-        $defender->checkPostActiveSkill();
+        foreach(Util::zip(
+            $attacker->checkPostActiveSkill(),
+            $defender->checkPostActiveSkill()
+            ) as $b){
+            //doNothing
+        }
         //NOTE: 반계류 등의 스킬을 post에서 반영
 
-        $activeSkillIterator = new \AppendIterator();
-        $activeSkillIterator->append($attacker->applyActiveSkill());
-        $activeSkillIterator->append($defender->applyActiveSkill());
-        foreach($activeSkillIterator as $b){
+        foreach(Util::zip(
+            $attacker->applyActiveSkill(),
+            $defender->applyActiveSkill()
+            ) as $b){
             //doNothing
         }
 

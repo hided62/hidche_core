@@ -349,8 +349,7 @@ class WarUnitGeneral extends WarUnit{
     }
 
     ///전투 개시 시에 작동하여 매 장수마다 작동하는 스킬
-    function checkBattleBeginSkill():bool{
-        $skillResult = false;
+    function checkBattleBeginSkill(){
         $oppose = $this->getOppose();
 
         $specialWar = $this->getSpecialWar();
@@ -361,11 +360,13 @@ class WarUnitGeneral extends WarUnit{
         ){
             $this->activateSkill('부상무효');
         }
+        yield true;
 
         if($specialWar == 62){
             $oppose->activateSkill('저격불가');
             $this->activateSkill('부상무효');
         }
+        yield true;
 
         if (
             $specialWar == 70 &&
@@ -375,10 +376,8 @@ class WarUnitGeneral extends WarUnit{
             Util::randBool(1/3)
         ) {
             $this->activateSkill('저격');
-            $skillResult = true;
         }
-        
-        return $skillResult;
+        yield true;
     }
 
     ///전투 개시 시에 작동하여 매 장수마다 작동하는 아이템
@@ -509,7 +508,7 @@ class WarUnitGeneral extends WarUnit{
         return $this->killed;
     }
 
-    function checkPreActiveSkill():bool{
+    function checkPreActiveSkill(){
         $activated = false;
 
         $oppose = $this->getOppose();
@@ -522,8 +521,8 @@ class WarUnitGeneral extends WarUnit{
             $oppose->activateSkill('위압불가');
             $oppose->activateSkill('격노불가');
             $oppose->activateSkill('계략약화');
-            $activated = true;
         }
+        yield true;
 
         if(
             $specialWar == 63 &&
@@ -534,19 +533,16 @@ class WarUnitGeneral extends WarUnit{
             !$this->hasActivatedSkill('위압불가')
         ){
             $this->activateSkill('위압');
-            $activated = true;
         }
+        yield true;
 
         if($specialWar == 60){
             $oppose->activateSkill('회피불가');
         }
-
-        return $activated;
+        yield true;
     }
 
-    function checkActiveSkill():bool{
-        $activated = false;
-
+    function checkActiveSkill(){
         $oppose = $this->getOppose();
         $specialWar = $this->getSpecialWar();
         $item = $this->getItem();
@@ -562,9 +558,9 @@ class WarUnitGeneral extends WarUnit{
             $ratio = $this->getComputedAtmos() + $this->getComputedTrain();
             if(Util::randBool($ratio / 400)){
                 $this->activateSkill('특수', '저지');
-                $activated = true;
             }
         }
+        yield true;
 
         if(
             !$this->hasActivatedSkill('특수') &&
@@ -572,8 +568,8 @@ class WarUnitGeneral extends WarUnit{
             Util::randBool($this->getComputedCriticalRatio())
         ){
             $this->activateSkill('특수', '필살시도', '필살');
-            $activated = true;
         }
+        yield true;
 
         if(
             !$this->hasActivatedSkill('특수') &&
@@ -581,8 +577,8 @@ class WarUnitGeneral extends WarUnit{
             Util::randBool($this->getComputedAvoidRatio())
         ){
             $this->activateSkill('특수', '회피시도', '회피');
-            $activated = true;
         }
+        yield true;
 
         //계략
         if($crewType->magicCoef){
@@ -627,17 +623,16 @@ class WarUnitGeneral extends WarUnit{
                 }
             }
         }
+        yield true;
 
         //의술
         if($specialWar == 73 && Util::randBool(0.2)){
             $this->activateSkill('치료');
-            $activated = true;
         }
-
-        return $activated;
+        yield true;
     }
 
-    function checkPostActiveSkill():bool{
+    function checkPostActiveSkill(){
         $activated = false;
 
         $oppose = $this->getOppose();
@@ -667,6 +662,7 @@ class WarUnitGeneral extends WarUnit{
                 }
             }
         }
+        yield true;
 
         if(
             $specialWar == 74 &&
@@ -693,6 +689,7 @@ class WarUnitGeneral extends WarUnit{
                 }
             }
         }
+        yield true;
 
         if(
             ($item == 23 || $item == 24) &&
@@ -702,6 +699,7 @@ class WarUnitGeneral extends WarUnit{
             $this->activateSkill('치료');
             $activated = true;
         }
+        yield true;
 
         //계략
         if(
@@ -713,6 +711,7 @@ class WarUnitGeneral extends WarUnit{
             $oppose->deactivateSkill('계략');
             $activated = true;
         }
+        yield true;
 
         if(
             $specialWar == 42 && 
@@ -720,6 +719,7 @@ class WarUnitGeneral extends WarUnit{
         ){
             $this->warPowerMultiply *= 1.3;
         }
+        yield true;
 
         if(
             $specialWar == 43 && 
@@ -727,8 +727,7 @@ class WarUnitGeneral extends WarUnit{
         ){
             $this->warPowerMultiply *= 1.5;
         }
-
-        return $activated;
+        yield true;
     }
 
     function applyActiveSkill(){
