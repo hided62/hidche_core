@@ -108,7 +108,7 @@ function reloadWorldMap(option){
                 startYearText.push('{0}개월'.format(remainMonth));
             }
             
-            tooltipTexts.push('초반 제한까지 : {0} ({1}년)'.format(startYearText.join(' '), startYear + 3));
+            tooltipTexts.push('초반제한 기간 : {0} ({1}년)'.format(startYearText.join(' '), startYear + 3));
         }
 
         var currentTechLimit = Math.floor(Math.max(0, year - startYear) / 5) + 1;
