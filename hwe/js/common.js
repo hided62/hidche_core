@@ -144,11 +144,24 @@ function getIconPath(imgsvr,  picture){
 }
 
 jQuery(function($){
-    $('.obj_tooltip').tooltip({
-        title:function(){
-            return $.trim($(this).find('.tooltiptext').html());
-        },
-        html:true
+    $('.obj_tooltip').each(function(){
+        var $objTooltip = $(this);
+        var tooltipClassText = $objTooltip.data('tooltip-class');
+        if(!tooltipClassText){
+            tooltipClassText = '';
+        }
+        console.log($objTooltip.data('tooltip-class'));
+        var template = '<div class="tooltip {0}" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
+            .format(tooltipClassText);
+
+        $objTooltip.tooltip({
+            title:function(){
+                return $.trim($(this).find('.tooltiptext').html());
+            },
+            template:template,
+            html:true
+        });
+        
     });
 
     var customCSS = localStorage.getItem('sam_customCSS');
