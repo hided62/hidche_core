@@ -28,6 +28,7 @@ d_shared
 d_pic/*.jpg
 d_pic/*.gif
 d_pic/*.png
+d_pic/uploaded_image
 
 d_setting/*.php
 */d_setting/*.php
