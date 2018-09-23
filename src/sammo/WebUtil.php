@@ -132,6 +132,8 @@ class WebUtil
         }
 
         $config = \HTMLPurifier_HTML5Config::createDefault();
+        $def = $config->getHTMLDefinition();
+        $def->info_global_attr['data-flip'] = new \HTMLPurifier_AttrDef_Text;
         $purifier = new \HTMLPurifier($config);
         return $purifier->purify($text);
     }
