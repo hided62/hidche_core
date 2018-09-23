@@ -263,6 +263,14 @@ $result = Util::generateFileUsingSimpleTemplate(
     ]
 );
 
+Util::generateFileUsingSimpleTemplate(
+    __dir__.'/templates/KakaoKey.orig.php',
+    ROOT.'/d_setting/KakaoKey.php',
+    [
+    ],
+    true
+);
+
 if ($result !== true) {
     Json::die([
         'result'=>false,

@@ -137,6 +137,9 @@ class WebUtil
     }
 
     public static function drawMenu(string $path): string{
+        if(!file_exists($path)){
+            return '';
+        }
         $json = Json::decode(file_get_contents($path));
 
         $result = [];
