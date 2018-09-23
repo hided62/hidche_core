@@ -20,7 +20,7 @@ jQuery(function($){
         if(!inputText || inputText == '<p></p>'){
             inputText = '<p><br></p>';
         }
-        console.log(inputText);
+
         $editForm.removeClass('viewer').summernote({
             minHeight:200,
             maxHeight:null,
@@ -97,10 +97,12 @@ jQuery(function($){
         $editForm.summernote('destroy');
         $cancelEdit.hide();
         $editForm.html($noticeInput.val()).addClass('viewer');
+        activeFlip($editForm);
     }
 
     $cancelEdit.hide();
     $editForm.html($noticeInput.val());
+    activeFlip($editForm);
     if(editable){
         $submitBtn.prop('disabled', false);
     }

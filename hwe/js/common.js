@@ -143,6 +143,41 @@ function getIconPath(imgsvr,  picture){
     }
 }
 
+function activeFlip($obj){
+    var $result;
+    if($obj === undefined){
+        $result = $('img[data-flip]');
+    }
+    else{
+        $result = $obj.find('img[data-flip]');
+    }
+
+    $result.each(function(){
+        activeFlipItem($(this));
+    });
+
+}
+
+function activeFlipItem($img){
+    var imageList = [];
+    imageList.push($img.attr('src'));
+    imageList = imageList.concat($img.data('flip').split(','));
+    if(imageList.length <= 1){
+        return;
+    }
+    $img.data('computed_flip_array', imageList);
+    $img.data('computed_flip_idx', 0);
+
+    $img.click(function(){
+        var arr = $img.data('computed_flip_array');
+        var idx = $img.data('computed_flip_idx');
+        idx = (idx + 1)%(arr.length);
+        $img.attr('src', arr[idx]);
+        $img.data('computed_flip_idx', idx);
+    });
+    $img.css('cursor','pointer');
+}
+
 jQuery(function($){
     $('.obj_tooltip').each(function(){
         var $objTooltip = $(this);
@@ -164,10 +199,14 @@ jQuery(function($){
         
     });
 
+    activeFlip();
+
     var customCSS = localStorage.getItem('sam_customCSS');
     if(customCSS){
         var $style = $('<style type="text/css"></style>');
         $style.text(customCSS); 
         $style.appendTo($('head'));
     }
+
+    
 });
