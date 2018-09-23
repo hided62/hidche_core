@@ -9,8 +9,10 @@
   * <code>mpm_event</code> 권장
 * PHP 7.2 이상 
   * <code>php-fpm</code> 권장
-  * php에서 curl을 실행가능해야 합니다.
-* MySQL 5.6 이상, 또는 MariaDB 10.0 이상
+  * php에서 curl, pdo-sqlite을 실행가능해야 합니다. (기본값: 지원)
+  * mysqlnd가 지원되어야합니다. (기본값: 지원)
+* MariaDB 10.2.1 이상
+  * MySQL 5.6 이상도 가능하도록 할 예정입니다.
 * <code>git</code>
 * <code>curl</code>
 
@@ -47,7 +49,7 @@ Database 수는 로그인 관리 서버 1개, 내부 서버 7개로, 총 8개의
 
 현재 카카오로그인 API KEY를 입력하는 작업이 설치과정에 추가되어있지 않습니다.
 
-<code>f_install/templates/KakaoKey.orig.php</code> 를 <code>d_setting/KakaoKey.php</code>로 복사한 후 API 키를 입력하여야 합니다.
+설치 후 <code>d_setting/KakaoKey.php</code>에서 API키를 입력해야 합니다.
 
 
 ## 라이선스
