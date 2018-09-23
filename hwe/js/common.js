@@ -161,7 +161,13 @@ function activeFlip($obj){
 function activeFlipItem($img){
     var imageList = [];
     imageList.push($img.attr('src'));
-    imageList = imageList.concat($img.data('flip').split(','));
+    $.each($img.data('flip').split(','), function(idx, value){
+        var value = $.trim(value);
+        if(!value){
+            return true;
+        }
+        imageList.push(value);
+    });
     if(imageList.length <= 1){
         return;
     }

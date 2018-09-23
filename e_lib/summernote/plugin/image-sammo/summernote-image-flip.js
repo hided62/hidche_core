@@ -23,7 +23,7 @@
       'ko-KR': {
           imageFlip: {
               edit: '이미지 전환',
-              flipLabel: '대체 이미지'
+              flipLabel: '대체 이미지( , 로 구분)'
           }
       },
   });
@@ -95,7 +95,7 @@
 
           this.show = function () {
               var $img = $($editable.data('target'));
-              console.log($img);
+
               var imgInfo = {
                   imgDom: $img,
                   flip: $img.data('flip'),
@@ -104,7 +104,6 @@
                   ui.hideDialog(self.$dialog);
                   var $img = imgInfo.imgDom;
 
-                  console.log(imgInfo.flip);
                   if (imgInfo.flip) {
                       $img.attr('data-flip', imgInfo.flip);
                   }
