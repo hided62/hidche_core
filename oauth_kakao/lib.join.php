@@ -107,7 +107,7 @@ function createOTPbyUserNO(int $userNo):bool{
 function createOTP(string $accessToken):?array{
     $restAPI = new Kakao_REST_API_Helper($accessToken);
 
-    $OTPValue = Util::randRangeInt(10000, 99999);
+    $OTPValue = Util::randRangeInt(1000, 9999);
     $OTPTrialUntil = TimeUtil::DatetimeFromNowSecond(180);
 
     $sendResult = $restAPI->talk_to_me_default([
