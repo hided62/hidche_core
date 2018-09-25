@@ -1055,6 +1055,7 @@ function updateNationState() {
                         'gennum'=>$nation['gennum']+1,
                         'totaltech'=>Util::valueFit($nation['gennum']+1, GameConst::$initialNationGenLimit) * $nation['tech'],
                     ], 'nation=%i', $nation['nation']);
+                    $nation['gennum'] += 1;
 
                     $command = EncodeCommand(0, 0, 0, 26); //집합
                     $db->update('general', [
