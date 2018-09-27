@@ -84,7 +84,7 @@ function process_25(&$general) {
     $joinedNations = Json::decode($general['nations']);
 
     // 랜덤임관인 경우
-    if($general['npc'] >= 2 && $where >= 98 && !$admin['fiction'] && $admin['scenario'] >= 1000){
+    if($general['npc'] >= 2 && $where >= 98 && !$admin['fiction'] && 1000 <= $admin['scenario'] && $admin['scenario'] < 2000){
         //'사실' 모드에서는 '성향'에 우선을 두되, 장수수, 랜덤에 비중을 둠
         $nations = $db->query(
             'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %li and gennum < %i and scout = 0',
