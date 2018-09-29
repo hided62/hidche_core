@@ -257,6 +257,16 @@ function refreshMailboxList(obj){
             $optgroup.css('color', 'white');
         }
 
+        nation.general.sort(function(lhs, rhs){
+            if(lhs[1] < rhs[1]){
+                return -1;
+            }
+            if(lhs[1] > rhs[1]){
+                return 1;
+            }
+            return 0;
+        });
+
         $.each(nation.general, function(){
             var generalID = this[0];
             var generalName = this[1];

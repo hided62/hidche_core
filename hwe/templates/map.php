@@ -1,7 +1,8 @@
 <div class="world_map map_theme_<?=$mapTheme?> draw_required">
-    <div class="map_title">
-        <span class="map_title_text">
+    <div class="map_title obj_tooltip" data-toggle="tooltip" data-placement="top" data-tooltip-class="map_title_tooltiptext">
+        <span class="map_title_text ">
         </span>
+        <span class="tooltiptext"></span>
     </div>
     <div class="map_body">
         <div class="map_bglayer1"></div>

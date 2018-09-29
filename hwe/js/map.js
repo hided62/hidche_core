@@ -90,6 +90,32 @@ function reloadWorldMap(option){
             $map_title.css('color', 'yellow');
         }
 
+        $map_title_tooltip = $('.map_title .tooltiptext');
+        $map_title_tooltip.empty();
+
+        var tooltipTexts = [];
+        if(year < startYear + 3){
+            var startYearText = [];
+            var remainYear = startYear + 3 - year;
+            var remainMonth = 12 - month + 1;
+            if(remainMonth > 0){
+                remainYear -= 1;
+            }
+            if(remainYear){
+                startYearText.push('{0}년'.format(remainYear));
+            }
+            if(remainMonth){
+                startYearText.push('{0}개월'.format(remainMonth));
+            }
+            
+            tooltipTexts.push('초반제한 기간 : {0} ({1}년)'.format(startYearText.join(' '), startYear + 3));
+        }
+
+        var currentTechLimit = Math.floor(Math.max(0, year - startYear) / 5) + 1;
+        var nextTechLimitYear = currentTechLimit * 5 + startYear;
+
+        tooltipTexts.push('기술등급 제한 : {0}등급 ({1}년 해제)'.format(currentTechLimit, nextTechLimitYear, currentTechLimit+1));
+        $map_title_tooltip.html(tooltipTexts.join('<br>'));
 
         $world_map.removeClass('map_string map_summer map_fall map_winter');
         if(month <= 3){

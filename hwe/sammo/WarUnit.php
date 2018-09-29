@@ -271,8 +271,8 @@ class WarUnit{
         $this->computeWarPower();
     }
 
-    function checkBattleBeginSkill():bool{
-        return false;
+    function checkBattleBeginSkill(){
+        yield true;
     }
 
     function checkBattleBeginItem():bool{
@@ -287,6 +287,13 @@ class WarUnit{
         return $this->activatedSkill[$skillName] ?? false;
     }
 
+    function hasActivatedSkillOnLog(string $skillName):bool{
+        if(key_exists($skillName, $this->logActivatedSkill)){
+            return true;
+        }
+        return $this->hasActivatedSkill($skillName);
+    }
+
     function activateSkill(... $skillNames){
         foreach($skillNames as $skillName){
             $this->activatedSkill[$skillName] = true;
@@ -299,16 +306,16 @@ class WarUnit{
         }
     }
 
-    function checkPreActiveSkill():bool{
-        return false;
+    function checkPreActiveSkill(){
+        yield true;
     }
 
-    function checkActiveSkill():bool{
-        return false;
+    function checkActiveSkill(){
+        yield true;
     }
 
-    function checkPostActiveSkill():bool{
-        return false;
+    function checkPostActiveSkill(){
+        yield true;
     }
 
     function applyActiveSkill(){

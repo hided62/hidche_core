@@ -234,7 +234,7 @@ function SetNationFront($nationNo) {
 
     if($adj){
         $db->update('city', [
-            'front'=>1
+            'front'=>($enemyCities?1:2),
         ], 'nation=%i and city in %li', $nationNo, array_keys($adj));
     }
 }
@@ -551,11 +551,14 @@ function postUpdateMonthly() {
         $genCount = $genNum[$dip['me']];
         // 25% 참여율일때 두당 10턴에 4000명 소모한다고 계산
         // 4000 / 10 * 0.25 = 100
-        $term = Util::round($dip['dead'] / 100 / $genCount) + 1;
-        if($dip['term'] > $term) { $term = $dip['term']; }
-        if($term > 13) { $term = 13; }
-        $query = "update diplomacy set term='{$term}' where (me='{$dip['me']}' and you='{$dip['you']}')";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $term = floor($dip['dead'] / 100 / $genCount);
+        $dip['dead'] -= $term * 100 * $genCount;
+        $term = Util::valueFit($dip['term'] + $term, 0, 13);
+        
+        $db->update('diplomacy', [
+            'term' => $term,
+            'dead'=> $dip['dead'],
+        ], 'me = %i AND you = %i', $dip['me'], $dip['you']);
     }
 
     //개전국 로그
@@ -598,7 +601,7 @@ function postUpdateMonthly() {
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
     //사상자 초기화
-    $query = "update diplomacy set dead=0";
+    $query = "update diplomacy set dead=0 WHERE state != 0";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     //외교 기한-1
     $query = "update diplomacy set term=term-1 where term!=0";
@@ -959,9 +962,9 @@ function updateNationState() {
     $connect=$db->get();
 
     $history = array();
-    $admin = $gameStor->getValues(['year', 'month']);
+    $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm']);
 
-    foreach($db->query('SELECT nation,name,level FROM nation') as $nation) {
+    foreach($db->query('SELECT nation,name,level,gennum,tech FROM nation') as $nation) {
         //TODO: level이 진관수이소중대특 체계를 벗어날 수 있음
         $citycount = $db->queryFirstField('SELECT count(*) FROM city WHERE nation=%i AND level>=4', $nation['nation']);
 
@@ -986,6 +989,7 @@ function updateNationState() {
         }
 
         if($nationlevel > $nation['level']) {
+            $oldLevel = $nation['level'];
             $nation['level'] = $nationlevel;
 
             switch($nationlevel) {
@@ -1009,6 +1013,39 @@ function updateNationState() {
                     pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>로 나서다");
                     break;
             }
+
+            
+            $lastAssemblerID = $gameStor->assembler_id??0;
+            for($levelGen = max(1, $oldLevel) + 1; $levelGen <= $nationlevel; $levelGen+=1){
+                if(in_array($levelGen, [3, 5, 7])){
+                    $genStep = 2;
+                }
+                else{
+                    $genStep = 1;
+                }
+                
+                while($genStep > 0){
+                    $lastAssemblerID += 1;
+                    $npcObj = new Scenario\NPC(
+                        999, '부대장'.$lastAssemblerID, null, $nation['nation'], null, 
+                        10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  '은둔', '척사'
+                    );
+                    $npcObj->npc = 5;
+                    $npcObj->build($admin);
+                    $npcID = $npcObj->generalID;
+
+                    $db->insert('troop', [
+                        'name'=>$npcObj->realName,
+                        'nation'=>$nation['nation'],
+                        'no'=>$npcID
+                    ]);
+                    $troopID = $db->insertId();
+
+                    //TODO: 5턴간 집합턴 입력
+                    $genStep -= 1;
+                }
+            }
+            $gameStor->assembler_id = $lastAssemblerID;
 
             //작위 상승
             $query = "update nation set level='{$nation['level']}' where nation='{$nation['nation']}'";

@@ -11,6 +11,12 @@
     text-align:center;
 }
 
+.map_title_tooltiptext .tooltip-inner{
+    max-width:220px;
+    width:220px;
+    text-align: left;
+}
+
 .map_title_text{
     margin:auto;
     text-align:center;

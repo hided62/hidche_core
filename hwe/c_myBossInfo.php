@@ -75,6 +75,12 @@ if($btn == "임명") {
         header('location:b_myBossInfo.php');
         exit();
     }
+
+    //NPC 부대장 추방 불가
+    if($general['npc'] == 5){
+        header('location:b_myBossInfo.php');
+        exit();
+    }
 }
 
 //나와 대상 장수는 국가가 같아야 함

@@ -132,16 +132,21 @@ class WebUtil
         }
 
         $config = \HTMLPurifier_HTML5Config::createDefault();
+        $def = $config->getHTMLDefinition();
+        $def->info_global_attr['data-flip'] = new \HTMLPurifier_AttrDef_Text;
         $purifier = new \HTMLPurifier($config);
         return $purifier->purify($text);
     }
 
     public static function drawMenu(string $path): string{
+        if(!file_exists($path)){
+            return '';
+        }
         $json = Json::decode(file_get_contents($path));
 
         $result = [];
         foreach($json as $menuItem){
-            if (count($path) == 2) {
+            if (count($menuItem) == 2) {
                 [$url, $title] = $menuItem;
                 $targetAttr = '';
             }

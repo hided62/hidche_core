@@ -19,7 +19,7 @@ class GameUnitConst extends GameUnitConstBase
             100, 100, 7, 0, 0,   99,  9,    
             999999, null,     null,     999999, 
             [],//성벽은 공격할 수 없다.
-            [],
+            [self::T_FOOTMAN=>1.2],
             ['성벽입니다.','생성할 수 없습니다.']
         ],
         

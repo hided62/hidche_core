@@ -511,7 +511,7 @@ function processCommand($no) {
                 case 27: process_27($general); break; //발령
                 case 51: process_51($general); break; //항복권고
                 case 52: process_52($general); break; //원조
-                case 53: process_53($general); break; //통합제의
+                //case 53: process_53($general); break; //통합제의
                 case 61: process_61($general); break; //불가침제의
                 case 62: process_62($general); break; //선전 포고
                 case 63: process_63($general); break; //종전 제의

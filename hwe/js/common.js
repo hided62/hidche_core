@@ -143,13 +143,69 @@ function getIconPath(imgsvr,  picture){
     }
 }
 
-jQuery(function($){
-    $('.obj_tooltip').tooltip({
-        title:function(){
-            return $.trim($(this).find('.tooltiptext').html());
-        },
-        html:true
+function activeFlip($obj){
+    var $result;
+    if($obj === undefined){
+        $result = $('img[data-flip]');
+    }
+    else{
+        $result = $obj.find('img[data-flip]');
+    }
+
+    $result.each(function(){
+        activeFlipItem($(this));
     });
+
+}
+
+function activeFlipItem($img){
+    var imageList = [];
+    imageList.push($img.attr('src'));
+    $.each($img.data('flip').split(','), function(idx, value){
+        var value = $.trim(value);
+        if(!value){
+            return true;
+        }
+        imageList.push(value);
+    });
+    if(imageList.length <= 1){
+        return;
+    }
+    $img.data('computed_flip_array', imageList);
+    $img.data('computed_flip_idx', 0);
+
+    $img.click(function(){
+        var arr = $img.data('computed_flip_array');
+        var idx = $img.data('computed_flip_idx');
+        idx = (idx + 1)%(arr.length);
+        $img.attr('src', arr[idx]);
+        $img.data('computed_flip_idx', idx);
+    });
+    $img.css('cursor','pointer');
+}
+
+jQuery(function($){
+    $('.obj_tooltip').each(function(){
+        var $objTooltip = $(this);
+        var tooltipClassText = $objTooltip.data('tooltip-class');
+        if(!tooltipClassText){
+            tooltipClassText = '';
+        }
+        console.log($objTooltip.data('tooltip-class'));
+        var template = '<div class="tooltip {0}" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
+            .format(tooltipClassText);
+
+        $objTooltip.tooltip({
+            title:function(){
+                return $.trim($(this).find('.tooltiptext').html());
+            },
+            template:template,
+            html:true
+        });
+        
+    });
+
+    activeFlip();
 
     var customCSS = localStorage.getItem('sam_customCSS');
     if(customCSS){
@@ -157,4 +213,6 @@ jQuery(function($){
         $style.text(customCSS); 
         $style.appendTo($('head'));
     }
+
+    
 });

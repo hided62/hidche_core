@@ -173,4 +173,16 @@ jQuery(function($){
         }
         return true;
     });
+
+    var randomGenType = Math.floor(Math.random()*7);
+    if(randomGenType < 3){
+        abilityLeadpow();
+    }
+    else if(randomGenType < 6){
+        abilityLeadint();
+    }
+    else{
+        abilityPowint();
+    }
+
 });

@@ -192,9 +192,33 @@ function processAI($no) {
         $isStart = 0;
     }
 
-    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,train,atmos,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
+    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
+
+    if($general['npc'] == 5){
+        if($general['nation'] == 0 && $general['killturn'] > 1){
+            $command = EncodeCommand(0, 0, 0, 0); //휴식
+            $db->update('general', [
+                'turn0'=>$command,
+                'killturn'=>1
+            ], 'no=%i', $general['no']);
+        }
+        else{
+            $command = EncodeCommand(0, 0, 0, 26); //집합
+            $db->update('general', [
+                'turn0'=>$command,
+                'turn1'=>$command,
+                'turn2'=>$command,
+                'turn3'=>$command,
+                'turn4'=>$command,
+                'turn5'=>$command,
+                'killturn'=>rand(70,75),
+            ], 'no=%i', $general['no']);
+        }
+
+        return;
+    }
 
     // 입력된 턴이 있으면 그것 실행
     if(DecodeCommand($general['turn0'])[0] != 0) {
@@ -224,7 +248,7 @@ function processAI($no) {
         $coreCommand = MYDB_fetch_array($result);
     }
 
-    $cityCount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND supply=1 AND front=1', $general['nation']);
+    $cityCount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND supply=1 AND front>0', $general['nation']);
     // 공격가능도시 있으면 1
     $attackable = $cityCount > 0;
 
@@ -467,7 +491,7 @@ function processAI($no) {
 
                 SetNationFront($nation['nation']);
 
-                $frontCount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND front=1', $general['nation']);
+                $frontCount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i AND front>0', $general['nation']);
                 if($frontCount > 0){
                     break;
                 }
@@ -720,8 +744,8 @@ function processAI($no) {
 
         //전시일때
             if($general['gold'] + $general['rice'] < $resrc*2) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달
-            elseif($general['rice'] > $resrc && $city['trust'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
-            elseif($general['rice'] > $resrc && $city['trust'] < 50 && $city['front'] == 1) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
+            elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
+            elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] > 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['gold'] < $resrc || ($general['gold'] < $resrc *2 && $general['rice'] > $resrc * 6)) {                                   // 금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }// 팜
@@ -803,9 +827,9 @@ function processAI($no) {
                 if(count($target) == 0) {
                     //전방 도시 선택, 30% 확률로 태수 있는 전방으로 워프
                     if(rand()%100 < 30) {
-                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front=1 order by gen1 desc,rand() limit 0,1";
+                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front>0 order by gen1 desc,rand() limit 0,1";
                     } else {
-                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front=1 order by rand() limit 0,1";
+                        $query = "select city from city where nation='{$general['nation']}' and supply='1' and front>0 order by rand() limit 0,1";
                     }
                     $result = MYDB_query($query, $connect) or Error("processAI10 ".MYDB_error($connect),"");
                     $cityCount = MYDB_num_rows($result);
@@ -913,7 +937,7 @@ function NPCStaffWork($general, $nation, $dipState){
 
     $commandList = [];
 
-    foreach($db->query('SELECT `no`, nation, city, npc, `gold`, `rice`, leader, `power`, intel, killturn, crew, train, atmos, `level` FROM general WHERE nation = %i', $general['nation']) as $nationGeneral) {
+    foreach($db->query('SELECT `no`, nation, city, npc, `gold`, `rice`, leader, `power`, intel, killturn, crew, train, atmos, `level`, troop FROM general WHERE nation = %i', $general['nation']) as $nationGeneral) {
         $cityID = $nationGeneral['city'];
         $generalID = $nationGeneral['no'];
 
@@ -1082,7 +1106,15 @@ function NPCStaffWork($general, $nation, $dipState){
         }
     } else{    // 포상
         $compNpcWar = $npcWarGeneralsID?$nationGenerals[$npcWarGeneralsID[0]]:null; 
-        $compNpcCivil = $npcCivilGeneralsID?$nationGenerals[$npcCivilGeneralsID[0]]:null;
+        $compNpcCivil = null;
+        foreach($npcCivilGeneralsID??[] as $npcCivilID){
+            $npcCivil = $nationGenerals[$npcCivilID];
+            if($npcCivil['npc'] == 5){
+                continue;
+            }
+            $compNpcCivil = $npcCivil;
+            break;
+        }
 
         if($compNpcWar && $compNpcWar[$resName] < 21000){
             $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
@@ -1171,13 +1203,18 @@ function NPCStaffWork($general, $nation, $dipState){
 
         if($maxDevCity['dev'] >= 95 && $targetCity['city'] != $maxDevCity['city'] && $targetCity['dev'] <= 70){
             $targetGeneral = $nationGenerals[Util::choiceRandom($maxDevCity['generals'])];
-            $commandList[EncodeCommand(0, $targetGeneral['no'], $targetCity['city'], 27)] = 2;
+            if($targetGeneral['troop'] != 0){
+                $commandList[EncodeCommand(0, $targetGeneral['no'], $targetCity['city'], 27)] = 2;
+            }
         }
 
         if(count($targetCity['generals']) < count($maxCity['generals']) - 2){
             //세명 이상 차이나야 함
             $targetGeneral = $nationGenerals[Util::choiceRandom($maxCity['generals'])];
-            if($targetGeneral['npc']>=2 || $maxCity['dev'] >= 95){
+            if($targetGeneral['npc']==5){
+                
+            }
+            else if($targetGeneral['npc']>=2 || $maxCity['dev'] >= 95 && $targetGeneral['troop'] == 0){
                 //유저장은 의도가 있을 것이므로 삽나지 않는 이상 발령 안함!
                 $commandList[EncodeCommand(0, $targetGeneral['no'], $targetCity['city'], 27)] = 5;
             }
@@ -1203,6 +1240,10 @@ function NPCStaffWork($general, $nation, $dipState){
                 continue;
             }
             if($nationGeneral['train'] * $nationGeneral['atmos'] < 75 * 75){
+                continue;
+            }
+
+            if($nationGeneral['troop'] != 0){
                 continue;
             }
     
@@ -1253,6 +1294,9 @@ function NPCStaffWork($general, $nation, $dipState){
                 continue;
             }
             if($generalCity['pop'] - 33000 > $nationGeneral['leader']){
+                continue;
+            }
+            if($nationGeneral['troop'] != 0){
                 continue;
             }
     
