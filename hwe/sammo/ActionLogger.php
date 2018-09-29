@@ -306,4 +306,12 @@ class ActionLogger{
         $this->pushGeneralActionLog($res, self::EVENT_YEAR_MONTH);
     }
 
+    public function getYear():int{
+        return $this->year;
+    }
+
+    public function getMonth():int{
+        return $this->month;
+    }
+
 }

@@ -16,6 +16,16 @@ class TurnExecutionHelper
         $this->turn = $turn;
     }
 
+    public function __destruct()
+    {
+        $this->applyDB();
+    }
+
+    public function applyDB(){
+        $db = DB::db();
+        $this->generalObj->applyDB($db);
+    }
+
     public function getGeneral():General{
         return $this->generalObj;
     }
@@ -56,17 +66,63 @@ class TurnExecutionHelper
     }
 
     function updateTurnTime(){
+        $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+
+        $general = $this->generalObj;
+        $generalID = $general->getRaw('no');
+        $logger = $general->getLogger();
+
+        $generalName = $general->getName();
+
+        // 삭턴장수 삭제처리
+        if($general->getVar('killturn') <= 0){
+            // npc유저 삭턴시 npc로 전환
+            if($general->getVar('npc') == 1 && $general->getVar('deadyear') > $gameStor->year){
+
+                $ownerName = $general->getVar('name2');
+                $josaYi = JosaUtil::pick($ownerName, '이');
+                
+                $logger->pushGlobalActionLog("{$ownerName}</>{$josaYi} <Y>{$generalName}</>의 육체에서 <S>유체이탈</>합니다!");
+
+                $general->setVar('killturn', ($general->getVar('deadyear') - $gameStor->year) * 12);
+                $general->setVar('npc', $general->getVar('npc_org'));
+                $general->setVar('owner', 1);
+                $general->setVar('mode', 2);
+                $general->setVar('name2', null);
+            }
+            else{
+                $general->applyDB($db);
+                storeOldGeneral($generalID, $gameStor->year, $gameStor->month);
+                $general->kill($db);
+                return;
+            }
+        }
+
+        //은퇴
+        if($general->getVar('age') >= 80 && $general->getVar('npc') == 0) {
+            if($gameStor->isunited == 0) {
+                $general->applyDB($db);
+                CheckHall($generalID);
+            }
+
+            $general->rebirth();
+        }
+
+        $turntime = addTurn($general->getRaw('turntime'), $gameStor->turnterm);
+        $general->setVar('turntime', $turntime);
 
     }
 
 
     static public function executeGeneralCommandUntil(string $date, \DateTimeInterface $limitActionTime, int $year, int $month){
         $generalsTodo = $db->queryFirstRow(
-            'SELECT npc,no,name,picture,imgsvr,nation,nations,city,troop,injury,affinity,
+            'SELECT no,name,name2,picture,imgsvr,nation,nations,city,troop,injury,affinity,
 leader,leader2,power,power2,intel,intel2,weap,book,horse,item,
 experience,dedication,level,gold,rice,crew,crewtype,train,atmos,
 turntime,makenation,makelimit,killturn,block,dedlevel,explevel,
 age,belong,personal,special,special2,term,
+npc,npc_org,npcid,deadyear,
 dex0,dex10,dex20,dex30,dex40,
 warnum,killnum,deathnum,killcrew,deathcrew,recwar,
 general_turn.`action` AS `action`, general_turn.arg AS arg 
@@ -99,6 +155,7 @@ WHERE turntime < %s AND general_turn.turn_idx = 0 ORDER BY turntime ASC, `no` AS
             $turnObj->processCommand();
             $turnObj->updateCommand();
             $turnObj->updateTurntime();
+            $turnObj->applyDB();
 
             $currentTurn = $generalWork['turntime'];
         }
