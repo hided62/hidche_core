@@ -603,4 +603,21 @@ class JosaUtil{
             return JosaUtil::put($text, $wJongsung, $woJongsung);
         };
     }
+
+    public static function batch(string $text, string $key, array $decorator =[':',':']){
+        JosaUtil::init();
+
+        $search = [];
+        $replace = [];
+
+        foreach(static::DEFAULT_POSTPOSITION as [$wJong, $woJong]){
+            $value = JosaUtil::pick($key, $wJong);
+            $search[] = "{$prefix}{$wJong}{$postfix}";
+            $replace[] = $value;
+            $search[] = "{$prefix}{$woJong}{$postfix}";
+            $replace[] = $value;
+        }
+
+        return str_replace($search, $replace, $text);
+    }
 }
