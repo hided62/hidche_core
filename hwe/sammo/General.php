@@ -144,6 +144,90 @@ class General implements iActionTrigger{
         return getGeneralIntel($this->raw, $withInjury, $withItem, $withStatAdjust, $useFloor);
     }
 
+    /**
+     * @param \MeekroDB $db
+     */
+    function kill($db){
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+
+        $generalID = $this->getRaw('no');
+        $logger = $this->getLogger();
+
+        $generalName = $this->getName();
+
+        // 군주였으면 유지 이음
+        if($this->getRaw('level') == 12) {
+            nextRuler($this);
+        }
+
+        //도시의 태수, 군사, 시중직도 초기화
+        $db->update('city', [
+            'gen1'=>0,
+        ], 'gen1=%i', $generalID);
+
+        $db->update('city', [
+            'gen2'=>0,
+        ], 'gen2=%i', $generalID);
+
+        $db->update('city', [
+            'gen3'=>0,
+        ], 'gen3=%i', $generalID);
+
+        // 부대 처리
+        $troopID = $this->getRaw('troop');
+        $troopLeaderID = $db->queryFirstField('SELECT `no` FROM troop WHERE troop=%i', $troopID);
+        if($troopLeaderID == $generalID){
+            //부대장일 경우
+            // 모두 탈퇴
+            $db->update('general', [
+                'troop'=>0
+            ], 'troop=%i', $troopID);
+
+            // 부대 삭제
+            $db->delete('troop', 'troop=%i', $troopID);
+        }
+
+        $dyingMessage = new TextDecoration\DyingMessage($general['name'], $general['npc']);
+        $logger->pushGlobalActionLog($dyingMessage->getText());
+
+        $db->delete('general', 'no=%i', $generalID);
+        $this->updatedVar = [];
+
+        $db->update('nation', [
+            'gennum'=>$db->sqleval('gennum - 1')
+        ], 'nation=%i', $this->getVar('nation'));
+    }
+
+    function rebirth(){
+        $logger = $this->getLogger();
+
+        $generalName = $this->getName();
+
+        $this->multiplyVarWithLimit('leader', 0.85, 10);
+        $this->multiplyVarWithLimit('power', 0.85, 10);
+        $this->multiplyVarWithLimit('intel', 0.85, 10);
+        $this->setVar('injury', 0);
+        $this->multiplyVar('experience', 0.5);
+        $this->multiplyVar('dedication', 0.5);
+        $this->setVar('firenum', 0);
+        $this->setVar('warnum', 0);
+        $this->setVar('killnum', 0);
+        $this->setVar('killcrew', 0);
+        $this->setVar('age', 20);
+        $this->setVar('specage', 0);
+        $this->setVar('specage2', 0);
+        $this->multiplyVar('dex0', 0.5);
+        $this->multiplyVar('dex10', 0.5);
+        $this->multiplyVar('dex20', 0.5);
+        $this->multiplyVar('dex30', 0.5);
+        $this->multiplyVar('dex40', 0.5);
+
+        $josaYi = JosaUtil::pick($generalName, '이');
+        $logger->pushGlobalActionLog("{$generalName}</>{$josaYi} <R>은퇴</>하고 그 자손이 유지를 이어받았습니다.");
+        $logger->pushGeneralActionLog('나이가 들어 <R>은퇴</>하고 자손에게 자리를 물려줍니다.', ActionLogger::PLAIN);
+        $logger->pushGeneralHistoryLog('나이가 들어 은퇴하고, 자손에게 관직을 물려줌');
+    }
+
 
     /**
      * @param \MeekroDB $db
