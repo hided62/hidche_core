@@ -18,6 +18,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$generalID = $session->generalID;
 $gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
@@ -40,27 +41,11 @@ case 0://반복
     }
     $db->update('general', $valueMap, 'owner=%i', $userID);
     break;
-case 1:
-    $valueMap = [];
-    foreach(range(GameConst::$maxTurn -1, $sel, -1) as $idx){
-        $src = $idx - $sel;
-        $valueMap['turn'.$idx] = $db->sqleval('%b', 'turn'.$src);
-    }
-    foreach(range($sel -1, 0, -1) as $idx){
-        $valueMap['turn'.$idx] = EncodeCommand(0, 0, 0, 0);
-    }
-    $db->update('general', $valueMap, 'owner=%i', $userID);
+case 1://미루기
+    pushGeneralCommand($generalID, $sel);
     break;
-case 2:
-    $valueMap = [];
-    foreach(range(0, GameConst::$maxTurn - $sel - 1) as $idx){
-        $src = $idx + $sel;
-        $valueMap['turn'.$idx] = $db->sqleval('%b', 'turn'.$src);
-    }
-    foreach(range(GameConst::$maxTurn - $sel, GameConst::$maxTurn - 1) as $idx){
-        $valueMap['turn'.$idx] = EncodeCommand(0, 0, 0, 0);
-    }
-    $db->update('general', $valueMap, 'owner=%i', $userID);
+case 2://당기기
+    pullGeneralCommand($generalID, $sel);
     break;
 }
 

@@ -8,12 +8,10 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
-$connect=$db->get();
+$me = $db->queryFirstRow('SELECT no,nation,level FROM general WHERE owner=%i', $userID);
 
-$query = "select no from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
-
-backupdateCommand($me['no'], 2);
+if($me['level'] >= 5 && $me['nation'] > 0){
+    pushNationCommand($me['nation'], $me['level']);
+}
 
 header('location:b_chiefcenter.php');

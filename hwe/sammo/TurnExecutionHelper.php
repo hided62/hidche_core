@@ -61,10 +61,6 @@ class TurnExecutionHelper
 
     }
 
-    public function updateCommand(){
-
-    }
-
     function updateTurnTime(){
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -153,7 +149,10 @@ WHERE turntime < %s AND general_turn.turn_idx = 0 ORDER BY turntime ASC, `no` AS
             $turnObj = new static($generalWork, $turn, $year, $month);
             $turnObj->preprocessCommand();
             $turnObj->processCommand();
-            $turnObj->updateCommand();
+            pullGeneralCommand($generalWork['no']);
+            if($generalWork['level'] >= 5){
+                pullNationCommand($generalWork['nation'], $generalWork['level']);
+            }
             $turnObj->updateTurntime();
             $turnObj->applyDB();
 
