@@ -676,12 +676,12 @@ function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
 
     $db->update('general_turn', [
         'turn_idx'=>$db->sqleval('turn_idx + %i', $turnCnt)
-    ], 'general_id=%i', $generalID);
+    ], 'nation_id=%i AND level=%i', $nationID, $level);
     $db->update('general_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxNationTurn),
         'action'=>'휴식',
         'arg'=>'{}'
-    ], 'general_id=%i AND turn_idx >= %i', $generalID, GameConst::$maxNationTurn);
+    ], 'nation_id=%i AND level=%i AND turn_idx >= %i', $nationID, $level, GameConst::$maxNationTurn);
 }
 
 function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
@@ -701,10 +701,10 @@ function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
         'turn_idx'=>$db->sqleval('turn_idx + %i', GameConst::$maxNationTurn),
         'action'=>'휴식',
         'arg'=>'{}'
-    ], 'nation_id=%i AND turn_idx < %i', $generalID, $turnCnt);
+    ], 'nation_id=%i AND level=%i AND turn_idx < %i', $nationID, $level, $turnCnt);
     $db->update('general_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', $turnCnt)
-    ], 'nation_id=%i', $generalID);
+    ], 'nation_id=%i AND level=%i', $nationID, $level);
 }
 
 function updateCommand($no, $type=0) {
