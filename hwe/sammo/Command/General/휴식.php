@@ -1,10 +1,11 @@
 <?php
-namespace sammo\Command;
+namespace sammo\Command\General;
 
+use \sammo\Command;
 use \sammo\Util;
 use \sammo\JosaUtil;
 
-class 휴식 extends BaseCommand{
+class 휴식 extends GeneralCommand{
     protected function init(){
         //아무것도 하지 않음
     }

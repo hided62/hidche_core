@@ -1,5 +1,5 @@
 <?php
-namespace sammo\Command;
+namespace sammo\GeneralCommand;
 
 use \sammo\Util;
 use \sammo\JosaUtil;

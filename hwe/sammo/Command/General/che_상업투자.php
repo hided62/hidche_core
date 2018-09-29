@@ -1,5 +1,5 @@
 <?php
-namespace sammo\Command;
+namespace sammo\GeneralCommand;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -11,17 +11,18 @@ use \sammo\{
     uniqueItemEx
 };
 
+use \sammo\Command;
 use \sammo\Constraint\Constraint;
 use function sammo\CriticalScore;
 use function sammo\uniqueItemEx;
 use function sammo\getGeneralLeadership;
 
 
-class che_주민선정 extends BaseCommand{
-    static $cityKey = 'trust';
-    static $statKey = 'leader';
-    static $actionKey = '민심';
-    static $actionName = '주민 선정';
+class che_상업투자 extends GeneralCommand{
+    static $cityKey = 'comm';
+    static $statKey = 'intel';
+    static $actionKey = '상업';
+    static $actionName = '상업 투자';
 
     protected function init(){
 
@@ -30,19 +31,19 @@ class che_주민선정 extends BaseCommand{
         $this->setCity();
         $this->setNation();
         
-        $develCost = $this->env['develcost'] * 2;
-        $reqRice = $general->onCalcDomestic(static::$actionKey, 'cost', $reqGold);
+        $develCost = $this->env['develcost'];
+        $reqGold = $general->onCalcDomestic(static::$actionKey, 'cost', $reqGold);
 
         $this->runnableConstraints=[
             ['NoNeutral'], 
             ['NoWanderingNation'],
             ['OccupiedCity'],
             ['SuppliedCity'],
-            ['ReqGeneralRice', $reqRice],
-            ['RemainCityTrust', static::$actionName]
+            ['ReqGeneralGold', $reqGold],
+            ['RemainCityCapacity', [static::$cityKey, static::$actionName]]
         ];
 
-        $this->reqRice = $reqRice;
+        $this->reqGold = $reqGold;
     }
 
     protected function argTest():bool{
@@ -50,19 +51,26 @@ class che_주민선정 extends BaseCommand{
     }
 
     protected function calcBaseScore():float{
+        $trust = Util::valueFit($this->city['trust'], 50);
         $general = $this->generalObj;
 
-        if(static::$statKey == 'leader'){
+        if(static::$statKey == 'intel'){
+            $score = getGeneralIntel($general->getRaw(), true, true, true, false);
+        }
+        else if(static::$statKey == 'power'){
+            $score = getGeneralPower($general->getRaw(), true, true, true, false);
+        }
+        else if(static::$statKey == 'leader'){
             $score = getGeneralLeadership($general->getRaw(), true, true, true, false);
         }
         else{
             throw new \sammo\MustNotBeReachedException();
         }
         
+        $score *= $trust / 100;
         $score *= getDomesticExpLevelBonus($general['explevel']);
         $score *= Util::randRange(0.8, 1.2);
         $score = $general->onCalcDomestic(static::$actionKey, 'score', $score);
-        $score = Util::valutFit($score, 1);
 
         return $score;
     }
@@ -76,9 +84,14 @@ class che_주민선정 extends BaseCommand{
 
         $general = $this->generalObj;
 
+        $trust = Util::valueFit($this->city['trust'], 50);
+
         $score = Util::valueFit($this->calcBaseScore(), 1);
 
         ['success'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general->getRaw(), static::$statKey);
+        if($trust < 80){
+            $successRatio *= $trust / 80;
+        }
         $successRatio = $general->onCalcDomestic(static::$cityKey, 'success', $successRatio);
         $failRatio = $general->onCalcDomestic(static::$cityKey, 'fail', $failRatio);
 
@@ -97,13 +110,12 @@ class che_주민선정 extends BaseCommand{
         $date = substr($general->getVar('turntime'),11,5);
 
         $score *= CriticalScoreEx($pick);
+        $score = Util::round($score);
 
         $exp = $score * 0.7;
         $ded = $score * 1.0;
 
-        $score /= 10;
-
-        $scoreText = number_format($score, 1);
+        $scoreText = number_format($score, 0);
 
         $josaUl = JosaUtil::pick(static::$actionName, '을');
         if($pick == 'fail'){
@@ -124,12 +136,12 @@ class che_주민선정 extends BaseCommand{
             static::$cityKey => Util::valueFit(
                 $this->city[static::$cityKey] + $score,
                 0,
-                100
+                $this->city[static::$cityKey.'2']
             )
         ];
         $db->update('city', $cityUpdated, 'city=%i', $general->getVar('city'));
 
-        $general->increaseVarWithLimit('rice', -$this->reqRice, 0);
+        $general->increaseVarWithLimit('gold', -$this->reqGold, 0);
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
         $general->increaseVar(static::$statKey.'2', 1);

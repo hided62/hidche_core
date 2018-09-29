@@ -615,6 +615,98 @@ function processCommand($no) {
     }
 }
 
+function pushGeneralCommand(int $generalID, int $turnCnt=1){
+    if($turnCnt == 0){
+        return;
+    }
+    if($turnCnt < 0){
+        pullGeneralCommand($generalID, -$turnCnt);   
+    }
+    if($turnCnt >= GameConst::$maxTurn){
+        return;
+    }
+
+    $db = DB::db();
+
+    $db->update('general_turn', [
+        'turn_idx'=>$db->sqleval('turn_idx + %i', $turnCnt)
+    ], 'general_id=%i', $generalID);
+    $db->update('general_turn', [
+        'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxTurn),
+        'action'=>'휴식',
+        'arg'=>'{}'
+    ], 'general_id=%i AND turn_idx >= %i', $generalID, GameConst::$maxTurn);
+}
+
+function pullGeneralCommand(int $generalID, int $turnCnt=1){
+    if($turnCnt == 0){
+        return;
+    }
+    if($turnCnt < 0){
+        pushGeneralCommand($generalID, -$turnCnt);
+    }
+    if($turnCnt >= GameConst::$maxTurn){
+        return;
+    }
+    
+    $db = DB::db();
+
+    $db->update('general_turn', [
+        'turn_idx'=>$db->sqleval('turn_idx + %i', GameConst::$maxTurn),
+        'action'=>'휴식',
+        'arg'=>'{}'
+    ], 'general_id=%i AND turn_idx < %i', $generalID, $turnCnt);
+    $db->update('general_turn', [
+        'turn_idx'=>$db->sqleval('turn_idx - %i', $turnCnt)
+    ], 'general_id=%i', $generalID);
+}
+
+function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
+    if($turnCnt == 0){
+        return;
+    }
+    if($turnCnt < 0){
+        pullNationCommand($nationID, $level, -$turnCnt);   
+    }
+    if($turnCnt >= GameConst::$maxNationTurn){
+        return;
+    }
+
+    $db = DB::db();
+
+    $db->update('general_turn', [
+        'turn_idx'=>$db->sqleval('turn_idx + %i', $turnCnt)
+    ], 'general_id=%i', $generalID);
+    $db->update('general_turn', [
+        'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxNationTurn),
+        'action'=>'휴식',
+        'arg'=>'{}'
+    ], 'general_id=%i AND turn_idx >= %i', $generalID, GameConst::$maxNationTurn);
+}
+
+function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
+    if($turnCnt == 0){
+        return;
+    }
+    if($turnCnt < 0){
+        pushNationCommand($nationID, $level, -$turnCnt);
+    }
+    if($turnCnt >= GameConst::$maxNationTurn){
+        return;
+    }
+    
+    $db = DB::db();
+
+    $db->update('general_turn', [
+        'turn_idx'=>$db->sqleval('turn_idx + %i', GameConst::$maxNationTurn),
+        'action'=>'휴식',
+        'arg'=>'{}'
+    ], 'nation_id=%i AND turn_idx < %i', $generalID, $turnCnt);
+    $db->update('general_turn', [
+        'turn_idx'=>$db->sqleval('turn_idx - %i', $turnCnt)
+    ], 'nation_id=%i', $generalID);
+}
+
 function updateCommand($no, $type=0) {
     $db = DB::db();
     $connect=$db->get();

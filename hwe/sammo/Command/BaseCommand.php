@@ -63,10 +63,10 @@ abstract class BaseCommand{
         $this->reasonNotReservable = null;
     }
     
-    protected function setCity(array $args=null){
+    protected function setCity(?array $args=null){
         $this->resetTestCache();
         $db = DB::db();
-        if($args == null){
+        if($args === null){
             $this->city = $this->generalObj->getRawCity();
             if($this->city){
                 return;
@@ -83,7 +83,7 @@ abstract class BaseCommand{
 
     protected function setNation(?array $args = null){
         $this->resetTestCache();
-        if($args == null){
+        if($args === null){
             $this->nation = $this->generalObj->getStaticNation();
             return;
         }
@@ -158,7 +158,7 @@ abstract class BaseCommand{
         $constraintInput = [
             'general'=>$this->generalObj->getRaw(),
             'city'=>$this->city,
-            'nation'=>$this->city,
+            'nation'=>$this->nation,
             'arg'=>$this->arg,
 
             'destGeneral'=>$this->destGeneral,

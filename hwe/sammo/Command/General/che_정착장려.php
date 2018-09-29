@@ -1,5 +1,5 @@
 <?php
-namespace sammo\Command;
+namespace sammo\GeneralCommand;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -11,13 +11,14 @@ use \sammo\{
     uniqueItemEx
 };
 
+use \sammo\Command;
 use \sammo\Constraint\Constraint;
 use function sammo\CriticalScore;
 use function sammo\uniqueItemEx;
 use function sammo\getGeneralLeadership;
 
 
-class che_상업투자 extends BaseCommand{
+class che_상업투자 extends GeneralCommand{
     static $cityKey = 'pop';
     static $statKey = 'leader';
     static $actionKey = '인구';
