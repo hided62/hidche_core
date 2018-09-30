@@ -32,7 +32,9 @@ class TurnExecutionHelper
 
     public function preprocessCommand(){
         $general = $this->getGeneral();
-        $general->getPreTurnExecuteTriggerList($general);
+        $caller = $general->getPreTurnExecuteTriggerList($general);
+
+        $caller->fire();
 
         if($general->getVar('injury') && !$general->hasActivatedSkill('pre.부상경감')){
             $general->increaseVarWithLimit('injury', -10, 0);

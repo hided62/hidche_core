@@ -19,7 +19,7 @@ class che_의술 implements iAction{
         SpecialityConst::STAT_INTEL
     ];
 
-    public function getPreTurnExecuteTriggerList(General $general):array{
-        return [];
+    public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
+        return null;
     }
 }

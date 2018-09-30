@@ -2,8 +2,8 @@
 namespace sammo;
 
 trait DefaultAction{
-    public function getPreTurnExecuteTriggerList(General $general):array{
-        return [];
+    public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
+        return null;
     }
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
         return $value;
@@ -24,10 +24,10 @@ trait DefaultAction{
     public function getWarPowerMultiplier(WarUnit $unit):array{
         return [1, 1];
     }
-    public function getBattleInitSkillTriggerList(WarUnit $unit):array{
-        return [];
+    public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        return null;
     }
-    public function getBattlePhaseSkillTriggerList(WarUnit $unit):array{
-        return [];
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        return null;
     }
 }

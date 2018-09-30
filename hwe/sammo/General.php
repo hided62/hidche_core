@@ -276,8 +276,8 @@ class General implements iAction{
         return $result;
     }
 
-    public function getPreTurnExecuteTriggerList(General $general):array{
-        $chain = [];
+    public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
+        $caller = new GeneralTriggerCaller();
         foreach(array_merge([
             $this->nationType, 
             $this->levelObj, 
@@ -288,9 +288,14 @@ class General implements iAction{
             if(!$iObj){
                 continue;
             }
-            $chain[] = $iObj->getPreTurnExecuteTriggerList($general);
+            /** @var iAction $iObj */
+            $caller->merge($iObj->getPreTurnExecuteTriggerList($general));
         }
-        return array_merge([], ...$chain);
+
+        if($caller->isEmpty()){
+            return null;
+        }
+        return $caller;
     }
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{
         foreach(array_merge([
@@ -303,6 +308,7 @@ class General implements iAction{
             if(!$iObj){
                 continue;
             }
+            /** @var iAction $iObj */
             $value = $iObj->onCalcDomestic($turnType, $varType, $value);
         }
         return $value;
@@ -320,6 +326,7 @@ class General implements iAction{
             if(!$iObj){
                 continue;
             }
+            /** @var iAction $iObj */
             $value = $iObj->onPreGeneralStatUpdate($this, $statName, $value);
         }
         return $value;
@@ -336,6 +343,7 @@ class General implements iAction{
             if(!$iObj){
                 continue;
             }
+            /** @var iAction $iObj */
             $value = $iObj->onCalcStrategic($turnType, $varType, $value);
         }
         return $value;
@@ -352,6 +360,7 @@ class General implements iAction{
             if(!$iObj){
                 continue;
             }
+            /** @var iAction $iObj */
             $amount = $iObj->onCalcNationalIncome($type, $amount);
         }
         return $amount;
@@ -371,6 +380,7 @@ class General implements iAction{
             if(!$iObj){
                 continue;
             }
+            /** @var iAction $iObj */
             [$attV, $defV] = $iObj->getWarPowerMultiplier($unit);
             $att *= $attV;
             $def *= $defV;
@@ -378,7 +388,7 @@ class General implements iAction{
         return [$att, $def];
     }
     public function getBattleInitSkillTriggerList(WarUnit $unit):array{
-        $chain = [];
+        $caller = new WarUnitTriggerCaller();
         foreach(array_merge([
             $this->nationType, 
             $this->levelObj, 
@@ -389,12 +399,17 @@ class General implements iAction{
             if(!$iObj){
                 continue;
             }
-            $chain[] = $iObj->getBattleInitSkillTriggerList($unit);
+            /** @var iAction $iObj */
+            $caller->merge($iObj->getBattleInitSkillTriggerList($unit));
         }
-        return array_merge([], ...$chain);
+
+        if($caller->isEmpty()){
+            return null;
+        }
+        return $caller;
     }
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):array{
-        $chain = [];
+        $caller = new WarUnitTriggerCaller();
         foreach(array_merge([
             $this->nationType, 
             $this->levelObj, 
@@ -405,8 +420,13 @@ class General implements iAction{
             if(!$iObj){
                 continue;
             }
-            $chain[] = $iObj->getBattlePhaseSkillTriggerList($unit);
+            /** @var iAction $iObj */
+            $caller->merge($iObj->getBattlePhaseSkillTriggerList($unit));
         }
-        return array_merge([], ...$chain);
+
+        if($caller->isEmpty()){
+            return null;
+        }
+        return $caller;
     }
 }
