@@ -23,4 +23,3 @@ abstract class ObjectTrigger{
         return "{$priority}_{$fqn}_{$hash}";
     }
 }
-?>
