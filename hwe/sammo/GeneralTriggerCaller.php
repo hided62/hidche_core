@@ -1,8 +1,8 @@
 <?php
 namespace sammo;
 class GeneralTriggerCaller extends TriggerCaller{
-    function checkValidTrigger(iObjectTrigger $trigger):bool{
-        if($trigger instanceof iGeneralTrigger){
+    function checkValidTrigger(ObjectTrigger $trigger):bool{
+        if($trigger instanceof GeneralTrigger){
             return true;
         }
         return false;

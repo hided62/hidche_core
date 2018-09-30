@@ -1,8 +1,6 @@
 <?php
 namespace sammo\ActionSpecialWar;
-use \sammo\iAction;
-use \sammo\General;
-use \sammo\SpecialityConst;
+use \sammo;
 
 class che_의술 implements iAction{
     use \sammo\DefaultAction;
@@ -23,3 +21,5 @@ class che_의술 implements iAction{
         return null;
     }
 }
+
+class che_전역치료 extends 

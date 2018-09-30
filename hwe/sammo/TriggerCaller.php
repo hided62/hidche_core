@@ -5,7 +5,7 @@ abstract class TriggerCaller{
     protected $triggerListByPriority = [];
     protected $sorted = false;
 
-    abstract function checkValidTrigger(iObjectTrigger $trigger):bool;
+    abstract function checkValidTrigger(ObjectTrigger $trigger):bool;
 
     function isEmpty():bool{
         return !$this->triggerListByPriority;
@@ -18,13 +18,13 @@ abstract class TriggerCaller{
         }
 
         $sorted = true;
-        $minPriority = iObjectTrigger::PRIORITY_MAX;
+        $minPriority = ObjectTrigger::PRIORITY_MAX;
 
         foreach($triggerList as $trigger){
             if(!checkValidTrigger($trigger)){
                 throw new \InvalidArgumentException('Invalid Trigger Type');
             }
-            /** @var iObjectTrigger $trigger */
+            /** @var ObjectTrigger $trigger */
             $priority = $trigger->getPriority();
             $uniqueID = $trigger->getUniqueID();
 
@@ -51,7 +51,7 @@ abstract class TriggerCaller{
         
     }
 
-    function append(iObjectTrigger $trigger){
+    function append(ObjectTrigger $trigger){
         if(!checkValidTrigger($trigger)){
             throw new \InvalidArgumentException('Invalid Trigger Type');
         }
@@ -122,7 +122,7 @@ abstract class TriggerCaller{
         }
 
         foreach($this->triggerListByPriority as $subTriggerList){
-            /** @var iObjectTrigger[] $subTriggerList */
+            /** @var ObjectTrigger[] $subTriggerList */
             foreach($subTriggerList as $trigger){
                 $env = $trigger->action($env, $arg);
             }

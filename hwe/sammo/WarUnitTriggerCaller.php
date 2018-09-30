@@ -1,8 +1,8 @@
 <?php
 namespace sammo;
 class WarUnitTriggerCaller extends TriggerCaller{
-    function checkValidTrigger(iObjectTrigger $trigger):bool{
-        if($trigger instanceof iWarUnitTrigger){
+    function checkValidTrigger(ObjectTrigger $trigger):bool{
+        if($trigger instanceof WarUnitTrigger){
             return true;
         }
         return false;
