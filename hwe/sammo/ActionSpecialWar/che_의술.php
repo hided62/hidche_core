@@ -1,6 +1,9 @@
 <?php
 namespace sammo\ActionSpecialWar;
-use \sammo;
+use sammo\BaseGeneralTrigger;
+use sammo\SpecialityConst;
+use sammo\GeneralTriggerCaller;
+use sammo\GeneralTrigger;
 
 class che_의술 implements iAction{
     use \sammo\DefaultAction;
@@ -18,8 +21,8 @@ class che_의술 implements iAction{
     ];
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
-        return null;
+        return new GeneralTriggerCaller([
+            new GeneralTrigger\che_도시치료($general)
+        ]);
     }
 }
-
-class che_전역치료 extends 

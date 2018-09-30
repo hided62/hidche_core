@@ -52,12 +52,13 @@ class General implements iAction{
         $specialDomesticClass = getGeneralSpecialDomesticClass($raw['special']);
         $this->specialDomesticObj = new $specialDomesticClass;
 
-        $specialWarClass = getGeneralSpecialWarClass($raw['special']);
+        $specialWarClass = getGeneralSpecialWarClass($raw['special2']);
         $this->specialWarObj = new $specialWarClass;
-        //TODO: $specialWarClass 설정
 
         $personalityClass = getPersonalityClass($raw['personal']);
         $this->personalityObj = new $personalityClass;
+
+        //TODO: $specialItemClass 설정
     }
 
     function clearActivatedSkill(){
