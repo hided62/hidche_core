@@ -223,7 +223,7 @@ function getNationTypeClass(?string $type){
         $type = GameConst::$neutralNationType;
     }
 
-    static $basePath = __NAMESPACE__.'\\TriggerNationType\\';
+    static $basePath = __NAMESPACE__.'\\ActionNationType\\';
     $classPath = ($basePath.$type);
 
     if(class_exists($classPath)){
@@ -243,7 +243,7 @@ function getPersonalityClass(?string $type){
         $type = GameConst::$neutralPersonality;
     }
 
-    static $basePath = __NAMESPACE__.'\\TriggerPersonality\\';
+    static $basePath = __NAMESPACE__.'\\ActionPersonality\\';
     $classPath = ($basePath.$type);
 
     if(class_exists($classPath)){
@@ -263,7 +263,7 @@ function getGeneralSpecialDomesticClass(?string $type){
         $type = GameConst::$defaultSpecialDomestic;
     }
 
-    static $basePath = __NAMESPACE__.'\\TriggerSpecialDomestic\\';
+    static $basePath = __NAMESPACE__.'\\ActionSpecialDomestic\\';
     $classPath = ($basePath.$type);
 
     if(class_exists($classPath)){
@@ -283,7 +283,7 @@ function getGeneralSpecialWarClass(?string $type){
         $type = GameConst::$defaultSpecialWar;
     }
 
-    static $basePath = __NAMESPACE__.'\\TriggerSpecialWar\\';
+    static $basePath = __NAMESPACE__.'\\ActionSpecialWar\\';
     $classPath = ($basePath.$type);
 
     if(class_exists($classPath)){

@@ -2,13 +2,13 @@
 
 namespace sammo;
 
-class General implements iActionTrigger{
+class General implements iAction{
     use LazyVarUpdater;
 
     /**
-     * @var iActionTrigger $nationType
-     * @var iActionTrigger $levelObj
-     * @var iActionTrigger $specialDomesticObj
+     * @var iAction $nationType
+     * @var iAction $levelObj
+     * @var iAction $specialDomesticObj
      */
 
     protected $raw = [];
@@ -123,11 +123,11 @@ class General implements iActionTrigger{
         return $this->logger;
     }
 
-    public function getNationTypeObj():iActionTrigger{
+    public function getNationTypeObj():iAction{
         return $this->nationType;
     }
 
-    public function getGeneralLevelObj():iActionTrigger{
+    public function getGeneralLevelObj():iAction{
         return $this->levelObj;
     }
 
@@ -276,7 +276,7 @@ class General implements iActionTrigger{
         return $result;
     }
 
-    public function onPreTurnExecute(General $general):array{
+    public function getPreTurnExecuteTriggerList(General $general):array{
         $chain = [];
         foreach(array_merge([
             $this->nationType, 
@@ -288,7 +288,7 @@ class General implements iActionTrigger{
             if(!$iObj){
                 continue;
             }
-            $chain[] = $iObj->onPreTurnExecute($general);
+            $chain[] = $iObj->getPreTurnExecuteTriggerList($general);
         }
         return array_merge([], ...$chain);
     }

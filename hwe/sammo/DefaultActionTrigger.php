@@ -1,8 +1,8 @@
 <?php
 namespace sammo;
 
-trait DefaultActionTrigger{
-    public function onPreTurnExecute(General $general):array{
+trait DefaultAction{
+    public function getPreTurnExecuteTriggerList(General $general):array{
         return [];
     }
     public function onCalcDomestic(string $turnType, string $varType, float $value):float{

@@ -1,8 +1,8 @@
 <?php
 namespace sammo;
 
-class TriggerGeneralLevel implements iActionTrigger{
-    use DefaultActionTrigger;
+class TriggerGeneralLevel implements iAction{
+    use DefaultAction;
 
     protected $generalLevel;
 
