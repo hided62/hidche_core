@@ -33,28 +33,12 @@ class TurnExecutionHelper
     public function preprocessCommand(){
         $general = $this->getGeneral();
         $caller = $general->getPreTurnExecuteTriggerList($general);
+        $caller->merge(new GeneralTriggerCaller([
+            new GeneralTrigger\che_부상경감($general),
+            new GeneralTrigger\che_강제소집해제($general),
+        ]));
 
         $caller->fire();
-
-        if($general->getVar('injury') && !$general->hasActivatedSkill('pre.부상경감')){
-            $general->increaseVarWithLimit('injury', -10, 0);
-            $general->activateSkill('pre.부상경감');
-        }
-
-        if($general->getVar('crew') >= 100){
-            $currentRice = $general->getVar('rice');
-            $consumeRice = Util::toInt($general->getVar('crew') / 100);
-            if($consumeRice <= $currentRice){
-                $general->increaseVar('rice', -$consumeRice);
-            }
-            else{
-                $general->setVar('rice', 0);
-                $general->getLogger()->pushGeneralActionLog(
-                    '군량이 모자라 병사들이 <R>소집해제</>되었습니다!', ActionLogger::PLAIN
-                );
-            }
-            $general->activateSkill('pre.소집해제');
-        }
 
         $general->clearActivatedSkill();
     }
