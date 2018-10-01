@@ -7,7 +7,7 @@ use sammo\DB;
 use sammo\Util;
 use sammo\JosaUtil;
 
-class che_강제소집해제 extends BaseGeneralTrigger{
+class che_병력군량소모 extends BaseGeneralTrigger{
     static protected $priority = 50000;
 
     public function action(?array $env=null, $arg=null):?array{
@@ -26,8 +26,9 @@ class che_강제소집해제 extends BaseGeneralTrigger{
                 $general->getLogger()->pushGeneralActionLog(
                     '군량이 모자라 병사들이 <R>소집해제</>되었습니다!', ActionLogger::PLAIN
                 );
+                $general->activateSkill('pre.소집해제');
             }
-            $general->activateSkill('pre.소집해제');
+            $general->activateSkill('pre.병력군량소모');
         }
 
         return $env;

@@ -10,6 +10,7 @@ class TurnExecutionHelper
     protected $generalObj;
     protected $turn = null;
     protected $nationTurn = null;
+    protected $lastNationTurn = null;
 
     public function __construct(array $rawGeneral, array $turn, ?array $nationTurn, int $year, int $month)
     {
@@ -37,22 +38,59 @@ class TurnExecutionHelper
         $caller = $general->getPreTurnExecuteTriggerList($general);
         $caller->merge(new GeneralTriggerCaller([
             new GeneralTrigger\che_부상경감($general),
-            new GeneralTrigger\che_강제소집해제($general),
+            new GeneralTrigger\che_병력군량소모($general),
         ]));
 
         $caller->fire();
     }
 
-    public function processNationCommand(){
+    public function processBlocked():bool{
+        $general = $this->getGeneral();
+
+        $blocked = $general->getVar('block');
+        if($blocked < 2){
+            return false;
+        }
+
+        $date = substr($general->getVar('turntime'),11,5);
+        $logger = $general->getLogger();
+        if($blocked == 2){
+            $general->increaseVarWithLimit('killturn', -1, 0);
+            $logger->pushGeneralActionLog("현재 멀티, 또는 비매너로 인한<R>블럭</> 대상자입니다. <1>$date</>");
+        }
+        else if($blocked == 3){
+            $general->increaseVarWithLimit('killturn', -1, 0);
+            $logger->pushGeneralActionLog("현재 악성유저로 분류되어 <R>블럭</> 대상자입니다. <1>$date</>");
+        }
+        else{
+            //Hmm?
+            return false;
+        }
+        
+        return true;
+    }
+
+    public function processNationCommand():array{
         if(!$this->nationTurn){
-            return;
+            throw new \InvalidArgumentException('nationTurn이 없음');
         }
         $general = $this->getGeneral();
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
-        [$commandClassName, $commandArg] = $this->nationTurn;
+        [$commandClassName, $commandArg, $commandLast] = $this->nationTurn;
+
+        if(!$commandLast){
+            //doNothing
+        }
+        else if($commandLast['command'] != $commandClassName){
+            $commandLast = [];
+        }
+        else if($commandLast['arg'] != $commandArg){
+            $commandLast = [];
+        }
+
         $commandClass = getNationCommandClass($commandClassName);
         /** @var \sammo\Command\NationCommand $commandObj */
         $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandArg);
@@ -63,10 +101,15 @@ class TurnExecutionHelper
             $commandName = $commandObj->getName();
             $text = "{$failReason} {$commandName} 실패. <1>{$date}</>";
             $general->getLogger()->pushGeneralActionLog($text);
+
+            $commandLast = [];
         }
         else{
             $commandObj->run();
+            $commandLast = $commandObj->getLast();
         }
+
+        return $commandLast;
     }
 
     public function processCommand(){
@@ -178,19 +221,27 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
 
             $nationTurn = null;
             if($generalWork['nation'] != 0 && $generalWork['level'] >= 5){
+                $nationStor = KVStorage::getStorage($db, 'nation_env');
+                $lastNationTurnKey = "turn_last_{$generalWork['nation']}_{$generalWork['level']}";
+                $lastNationTurn = $nationStor->getDBValue($lastNationTurnKey)??[];
                 //수뇌 몇 없는데 매번 left join 하는건 낭비인것 같다.
                 $rawNationTurn = $db->queryFirstRow(
                     'SELECT action, arg FROM nation_turn WHERE nation_id = %i AND level = %i AND turn_idx =0',
                     $generalWork['nation'],
                     $generalWork['level']
                 );
-                $nationTurn = [$rawNationTurn['action'], Json::decode($rawNationTurn['arg'])];
+                $nationTurn = [$rawNationTurn['action'], Json::decode($rawNationTurn['arg']), $lastNationTurn];
             }
 
             $turnObj = new static($generalWork, $turn, $nationTurn, $year, $month);
-            $turnObj->preprocessCommand();
-            $turnObj->processNationCommand();
-            $turnObj->processCommand();
+            if(!$turnObj->processBlocked()){
+                $turnObj->preprocessCommand();
+                if($nationTurn){
+                    $lastNationTurn = $turnObj->processNationCommand();
+                    $nationStor->setValue($lastNationTurnKey, $lastNationTurn);
+                }
+                $turnObj->processCommand();
+            }
             pullNationCommand($generalWork['nation'], $generalWork['level']);
             pullGeneralCommand($generalWork['no']);
             $turnObj->updateTurntime();
@@ -208,8 +259,6 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
         $db = DB::db();
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
-
-        DB::db();
 
         if(!tryLock()){
             return;
@@ -262,7 +311,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 throw new \RuntimeException('preUpdateMonthly() 처리 에러');
             }
 
-            [$gameStor->year, $gameStor->month] = turnDate($nextTurn);
+            turnDate($nextTurn);
 
             // 이벤트 핸들러 동작
             foreach (DB::db()->query('SELECT * from event') as $rawEvent) {
@@ -312,12 +361,17 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
         // 이시각까지는 업데이트 완료했음
         $gameStor->turntime = $prevTurn;
         // 그 시각 년도,월 저장
-        [$gameStor->year, $gameStor->month] = turnDate($prevTurn);
+        turnDate($prevTurn);
         // 현재시간의 월턴시간 이후 분단위 장수 처리
 
         [$executionOver, $currentTurn] = static::executeGeneralCommandUntil(
             $nextTurn, $limitActionTime, $gameStor->year, $gameStor->month
         );
+
+        if($currentTurn !== null){
+            $gameStor->turntime = $currentTurn;
+        }
+        
 
         // 부상 과도 제한
         //TODO: 없애고, 부상 자체가 80 이상 넘지 않도록 처리
