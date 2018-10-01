@@ -2,12 +2,12 @@
 namespace sammo;
 
 abstract class ObjectTrigger{
-    const PRIORITY_MAX   = 99999;
-    const PRIORITY_BEGIN = 50000;
-    const PRIORITY_PRE   = 40000;
+    const PRIORITY_MIN   = 0;
+    const PRIORITY_BEGIN = 10000;
+    const PRIORITY_PRE   = 20000;
     const PRIORITY_BODY  = 30000;
-    const PRIORITY_POST  = 20000;
-    const PRIORITY_FINAL = 10000;
+    const PRIORITY_POST  = 40000;
+    const PRIORITY_FINAL = 50000;
 
     static protected $priority;
     protected $object = null;

@@ -3,7 +3,6 @@ namespace sammo;
 abstract class TriggerCaller{
 
     protected $triggerListByPriority = [];
-    protected $sorted = false;
 
     abstract function checkValidTrigger(ObjectTrigger $trigger):bool;
 
@@ -18,7 +17,7 @@ abstract class TriggerCaller{
         }
 
         $sorted = true;
-        $minPriority = ObjectTrigger::PRIORITY_MAX;
+        $maxPriority = ObjectTrigger::PRIORITY_MIN;
 
         foreach($triggerList as $trigger){
             if(!checkValidTrigger($trigger)){
@@ -29,10 +28,10 @@ abstract class TriggerCaller{
             $uniqueID = $trigger->getUniqueID();
 
             if($sorted){
-                if($minPriority > $priority){
-                    $minPriority = $priority;
+                if($maxPriority < $priority){
+                    $maxPriority = $priority;
                 }
-                else if($minPriority < $priority){
+                else if($maxPriority > $priority){
                     $sorted = false;
                 }
             }
@@ -46,7 +45,7 @@ abstract class TriggerCaller{
         }
 
         if(!$sorted){
-            krsort($this->triggerListByPriority);
+            ksort($this->triggerListByPriority);
         }
         
     }
@@ -64,7 +63,7 @@ abstract class TriggerCaller{
         }
 
         $lastKey = Util::array_last_key($this->triggerListByPriority);
-        if($lastKey > $priority){
+        if($lastKey < $priority){
             $this->triggerListByPriority[$priority] = [$uniqueID=>$trigger];
             return;
         }
@@ -74,7 +73,7 @@ abstract class TriggerCaller{
         }
 
         $this->triggerListByPriority[$priority] = [$uniqueID=>$trigger];
-        krsort($this->triggerListByPriority);
+        ksort($this->triggerListByPriority);
     }
 
     function merge(?TriggerCaller $other){
@@ -87,7 +86,7 @@ abstract class TriggerCaller{
         $iterRhs = new \ArrayIterator($other->triggerListByPriority);
 
         while($iterLhs->valid() && $iterRhs->valid()){
-            if($iterLhs->key() > $iterRhs->key()){
+            if($iterLhs->key() < $iterRhs->key()){
                 $newTriggerList[$iterLhs->key()] = $iterLhs->current();
                 $iterLhs->next();
                 continue;
@@ -116,11 +115,6 @@ abstract class TriggerCaller{
     }
 
     function fire(?array $env = null, $arg = null):?array{
-        if(!$this->sorted){
-            krsort($this->triggerListByPriority);
-            $this->sorted = true;
-        }
-
         foreach($this->triggerListByPriority as $subTriggerList){
             /** @var ObjectTrigger[] $subTriggerList */
             foreach($subTriggerList as $trigger){
