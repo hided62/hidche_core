@@ -176,9 +176,9 @@ function extractBattleOrder($general){
         $general['leader'] +
         $general['power'] +
         $general['intel'] +
-        $general['weap'] +
-        $general['horse'] +
-        $general['book'] +
+        getWeapEff($general['weap']) +
+        getHorseEff($general['horse']) +
+        getBookEff($general['book']) +
         $general['crew'] / 100
     );
 }
