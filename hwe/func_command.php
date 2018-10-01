@@ -662,6 +662,12 @@ function pullGeneralCommand(int $generalID, int $turnCnt=1){
 }
 
 function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
+    if($nationID == 0){
+        return;
+    }
+    if($level < 5){
+        return;
+    }
     if($turnCnt == 0){
         return;
     }
@@ -685,6 +691,12 @@ function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
 }
 
 function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
+    if($nationID == 0){
+        return;
+    }
+    if($level < 5){
+        return;
+    }
     if($turnCnt == 0){
         return;
     }

@@ -8,12 +8,14 @@ class TurnExecutionHelper
      * @var General $generalObj;
      */
     protected $generalObj;
-    protected $turn;
+    protected $turn = null;
+    protected $nationTurn = null;
 
-    public function __construct(array $rawGeneral, array $turn, int $year, int $month)
+    public function __construct(array $rawGeneral, array $turn, ?array $nationTurn, int $year, int $month)
     {
         $this->generalObj = new General($rawGeneral, null, $year, $month);
         $this->turn = $turn;
+        $this->nationTurn = $nationTurn;
     }
 
     public function __destruct()
@@ -39,12 +41,56 @@ class TurnExecutionHelper
         ]));
 
         $caller->fire();
+    }
 
-        $general->clearActivatedSkill();
+    public function processNationCommand(){
+        if(!$this->nationTurn){
+            return;
+        }
+        $general = $this->getGeneral();
+
+        $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+
+        [$commandClassName, $commandArg] = $this->nationTurn;
+        $commandClass = getNationCommandClass($commandClassName);
+        /** @var \sammo\Command\NationCommand $commandObj */
+        $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandArg);
+
+        $failReason = $commandObj->testReservable();
+        if($failReason){
+            $date = substr($general->getVar('turntime'),11,5);
+            $commandName = $commandObj->getName();
+            $text = "{$failReason} {$commandName} 실패. <1>{$date}</>";
+            $general->getLogger()->pushGeneralActionLog($text);
+        }
+        else{
+            $commandObj->run();
+        }
     }
 
     public function processCommand(){
 
+        $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+
+        [$commandClassName, $commandArg] = $this->turn;
+        $commandClass = getGeneralCommandClass($commandClassName);
+        /** @var \sammo\Command\GeneralCommand $commandObj */
+        $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandArg);
+
+        $failReason = $commandObj->testReservable();
+        if($failReason){
+            $date = substr($general->getVar('turntime'),11,5);
+            $commandName = $commandObj->getName();
+            $text = "{$failReason} {$commandName} 실패. <1>{$date}</>";
+            $general->getLogger()->pushGeneralActionLog($text);
+        }
+        else{
+            $commandObj->run();
+        }
+
+        $general->clearActivatedSkill();
     }
 
     function updateTurnTime(){
@@ -98,6 +144,7 @@ class TurnExecutionHelper
 
 
     static public function executeGeneralCommandUntil(string $date, \DateTimeInterface $limitActionTime, int $year, int $month){
+        $db = DB::db();
         $generalsTodo = $db->queryFirstRow(
             'SELECT no,name,name2,picture,imgsvr,nation,nations,city,troop,injury,affinity,
 leader,leader2,power,power2,intel,intel2,weap,book,horse,item,
@@ -107,9 +154,9 @@ age,belong,personal,special,special2,term,
 npc,npc_org,npcid,deadyear,
 dex0,dex10,dex20,dex30,dex40,
 warnum,killnum,deathnum,killcrew,deathcrew,recwar,
-general_turn.`action` AS `action`, general_turn.arg AS arg 
-FROM general LEFT JOIN general_turn ON general.`no` = general_turn.general_id
-WHERE turntime < %s AND general_turn.turn_idx = 0 ORDER BY turntime ASC, `no` ASC',
+general_turn.`action` AS `action`, general_turn.arg AS arg
+FROM general LEFT JOIN general_turn ON general.`no` = general_turn.general_id AND turn_idx = 0
+WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             $date
         );
 
@@ -121,10 +168,7 @@ WHERE turntime < %s AND general_turn.turn_idx = 0 ORDER BY turntime ASC, `no` AS
                 return [true, $currentTurn];
             }
 
-            $turn = [
-                'action'=>$generalWork['action'],
-                'arg'=>Json::decode($generalWork['arg'])
-            ];
+            $turn = [$generalWork['action'], Json::decode($generalWork['arg'])];
             unset($generalWork['action']);
             unset($generalWork['arg']);
 
@@ -132,13 +176,23 @@ WHERE turntime < %s AND general_turn.turn_idx = 0 ORDER BY turntime ASC, `no` AS
                 processAI($generalID); // npc AI 처리
             }
 
-            $turnObj = new static($generalWork, $turn, $year, $month);
-            $turnObj->preprocessCommand();
-            $turnObj->processCommand();
-            pullGeneralCommand($generalWork['no']);
-            if($generalWork['level'] >= 5){
-                pullNationCommand($generalWork['nation'], $generalWork['level']);
+            $nationTurn = null;
+            if($generalWork['nation'] != 0 && $generalWork['level'] >= 5){
+                //수뇌 몇 없는데 매번 left join 하는건 낭비인것 같다.
+                $rawNationTurn = $db->queryFirstRow(
+                    'SELECT action, arg FROM nation_turn WHERE nation_id = %i AND level = %i AND turn_idx =0',
+                    $generalWork['nation'],
+                    $generalWork['level']
+                );
+                $nationTurn = [$rawNationTurn['action'], Json::decode($rawNationTurn['arg'])];
             }
+
+            $turnObj = new static($generalWork, $turn, $nationTurn, $year, $month);
+            $turnObj->preprocessCommand();
+            $turnObj->processNationCommand();
+            $turnObj->processCommand();
+            pullNationCommand($generalWork['nation'], $generalWork['level']);
+            pullGeneralCommand($generalWork['no']);
             $turnObj->updateTurntime();
             $turnObj->applyDB();
 

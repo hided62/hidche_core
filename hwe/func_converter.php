@@ -235,7 +235,7 @@ function getNationTypeClass(?string $type){
         return $classPath;
     }
 
-    new \InvalidArgumentException("{$type}은 올바른 국가 타입 클래스가 아님");
+    throw new \InvalidArgumentException("{$type}은 올바른 국가 타입 클래스가 아님");
 }
 
 function getPersonalityClass(?string $type){
@@ -255,7 +255,7 @@ function getPersonalityClass(?string $type){
         return $classPath;
     }
 
-    new \InvalidArgumentException("{$type}은 올바른 성격 클래스가 아님");
+    throw new \InvalidArgumentException("{$type}은 올바른 성격 클래스가 아님");
 }
 
 function getGeneralSpecialDomesticClass(?string $type){
@@ -275,7 +275,7 @@ function getGeneralSpecialDomesticClass(?string $type){
         return $classPath;
     }
 
-    new \InvalidArgumentException("{$type}은 올바른 내정 특기가 아님");
+    throw new \InvalidArgumentException("{$type}은 올바른 내정 특기가 아님");
 }
 
 function getGeneralSpecialWarClass(?string $type){
@@ -295,7 +295,37 @@ function getGeneralSpecialWarClass(?string $type){
         return $classPath;
     }
 
-    new \InvalidArgumentException("{$type}은 올바른 전투 특기가 아님");
+    throw new \InvalidArgumentException("{$type}은 올바른 전투 특기가 아님");
+}
+
+function getGeneralCommandClass(?string $type){
+    if($type === null){
+        $type = '휴식';
+    }
+
+    static $basePath = __NAMESPACE__.'\\Command\\General\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    throw new \InvalidArgumentException("{$type}은 올바른 장수 커맨드가 아님");
+}
+
+function getNationCommandClass(?string $type){
+    if($type === null){
+        $type = '휴식';
+    }
+
+    static $basePath = __NAMESPACE__.'\\Command\\Nation\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    throw new \InvalidArgumentException("{$type}은 올바른 국가 커맨드가 아님");
 }
 
 function getLevel($level, $nlevel=8) {
