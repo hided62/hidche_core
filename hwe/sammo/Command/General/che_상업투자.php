@@ -18,11 +18,12 @@ use function sammo\uniqueItemEx;
 use function sammo\getGeneralLeadership;
 
 
-class che_상업투자 extends GeneralCommand{
+class che_상업투자 extends Command\GeneralCommand{
     static $cityKey = 'comm';
     static $statKey = 'intel';
     static $actionKey = '상업';
     static $actionName = '상업 투자';
+    static $debuffFront = 0.5;
 
     protected function init(){
 
@@ -130,6 +131,10 @@ class che_상업투자 extends GeneralCommand{
 
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+
+        if($this->city['front'] == 1 && $this->nation['capital'] != $this->city['city']){
+            $score *= static::$debuffFront;
+        }
 
         //NOTE: 내정량 상승시 초과 가능?
         $cityUpdated = [

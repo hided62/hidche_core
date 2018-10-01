@@ -9,4 +9,5 @@ class che_농지개간 extends che_상업투자{
     static $statKey = 'intel';
     static $actionKey = '농업';
     static $actionName = '농지 개간';
+    static $debuffFront = 0.5;
 }

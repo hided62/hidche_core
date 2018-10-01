@@ -18,7 +18,7 @@ use function sammo\uniqueItemEx;
 use function sammo\getGeneralLeadership;
 
 
-class che_주민선정 extends GeneralCommand{
+class che_주민선정 extends Command\GeneralCommand{
     static $cityKey = 'trust';
     static $statKey = 'leader';
     static $actionKey = '민심';

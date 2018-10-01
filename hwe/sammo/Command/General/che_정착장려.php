@@ -18,7 +18,7 @@ use function sammo\uniqueItemEx;
 use function sammo\getGeneralLeadership;
 
 
-class che_상업투자 extends GeneralCommand{
+class che_정착장려 extends Command\GeneralCommand{
     static $cityKey = 'pop';
     static $statKey = 'leader';
     static $actionKey = '인구';
