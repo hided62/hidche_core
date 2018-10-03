@@ -13,6 +13,19 @@ trait LazyVarUpdater{
         return $this->raw[$key];
     }
 
+    function touchVar(string $key):bool{
+        if(key_exists($key, $this->raw)){
+            return false;
+        }
+        $this->raw[$key] = null;
+
+        return true;
+    }
+
+    function setVar(string $key, $value){
+        return $this->updateVar($key, $value);
+    }
+
     function updateVar(string $key, $value){
         if($this->raw[$key] === $value){
             return;

@@ -10,9 +10,8 @@ class TurnExecutionHelper
     protected $generalObj;
     protected $turn = null;
     protected $nationTurn = null;
-    protected $lastNationTurn = null;
 
-    public function __construct(array $rawGeneral, array $turn, ?array $nationTurn, int $year, int $month)
+    public function __construct(array $rawGeneral, int $year, int $month)
     {
         $this->generalObj = new General($rawGeneral, null, $year, $month);
         $this->turn = $turn;
@@ -70,7 +69,7 @@ class TurnExecutionHelper
         return true;
     }
 
-    public function processNationCommand():array{
+    public function processNationCommand(string $commandClassName, array $commandArg, LastTurn $commandLast):LastTurn{
         if(!$this->nationTurn){
             throw new \InvalidArgumentException('nationTurn이 없음');
         }
@@ -79,21 +78,9 @@ class TurnExecutionHelper
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
-        [$commandClassName, $commandArg, $commandLast] = $this->nationTurn;
-
-        if(!$commandLast){
-            //doNothing
-        }
-        else if($commandLast['command'] != $commandClassName){
-            $commandLast = [];
-        }
-        else if($commandLast['arg'] != $commandArg){
-            $commandLast = [];
-        }
-
         $commandClass = getNationCommandClass($commandClassName);
         /** @var \sammo\Command\NationCommand $commandObj */
-        $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandArg);
+        $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandLast, $commandArg);
 
         $failReason = $commandObj->testReservable();
         if($failReason){
@@ -101,26 +88,24 @@ class TurnExecutionHelper
             $commandName = $commandObj->getName();
             $text = "{$failReason} {$commandName} 실패. <1>{$date}</>";
             $general->getLogger()->pushGeneralActionLog($text);
-
-            $commandLast = [];
         }
         else{
             $commandObj->run();
-            $commandLast = $commandObj->getLast();
         }
 
-        return $commandLast;
+        return $commandObj->getResultTurn();
     }
 
-    public function processCommand(){
+    public function processCommand(string $commandClassName, array $commandArg){
+
+        $general = $this->getGeneral();
 
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
-        [$commandClassName, $commandArg] = $this->turn;
         $commandClass = getGeneralCommandClass($commandClassName);
         /** @var \sammo\Command\GeneralCommand $commandObj */
-        $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandArg);
+        $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandArg, $commandLast);
 
         $failReason = $commandObj->testReservable();
         if($failReason){
@@ -134,17 +119,32 @@ class TurnExecutionHelper
         }
 
         $general->clearActivatedSkill();
+        return $general->getResultTurn();
     }
 
-    function updateTurnTime(){
+    function updateTurnTime($commandClassName){
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
-        $general = $this->generalObj;
+        $general = $this->getGeneral();
         $generalID = $general->getRaw('no');
         $logger = $general->getLogger();
 
         $generalName = $general->getName();
+        $killTurn = $gameStor->killturn;
+
+        if($general->getVar('npc') >= 2){
+            $general->increaseVarWithLimit('killturn', -1);
+        }
+        else if($general->getVar('killturn') > $killTurn){
+            $general->increaseVarWithLimit('killturn', -1);
+        }
+        else if($commandClassName == '휴식'){
+            $general->increaseVarWithLimit('killturn', -1);
+        }
+        else{
+            $general->setVar('killturn', $killTurn);
+        }
 
         // 삭턴장수 삭제처리
         if($general->getVar('killturn') <= 0){
@@ -196,7 +196,7 @@ turntime,makenation,makelimit,killturn,block,dedlevel,explevel,
 age,belong,personal,special,special2,term,
 npc,npc_org,npcid,deadyear,
 dex0,dex10,dex20,dex30,dex40,
-warnum,killnum,deathnum,killcrew,deathcrew,recwar,
+warnum,killnum,deathnum,killcrew,deathcrew,recwar,last_turn
 general_turn.`action` AS `action`, general_turn.arg AS arg
 FROM general LEFT JOIN general_turn ON general.`no` = general_turn.general_id AND turn_idx = 0
 WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
@@ -211,7 +211,8 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 return [true, $currentTurn];
             }
 
-            $turn = [$generalWork['action'], Json::decode($generalWork['arg'])];
+            $generalCommand = $generalWork['action'];
+            $generalArg = $generalWork['arg'];
             unset($generalWork['action']);
             unset($generalWork['arg']);
 
@@ -219,7 +220,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 processAI($generalID); // npc AI 처리
             }
 
-            $nationTurn = null;
+            $hasNationTurn = false;
             if($generalWork['nation'] != 0 && $generalWork['level'] >= 5){
                 $nationStor = KVStorage::getStorage($db, 'nation_env');
                 $lastNationTurnKey = "turn_last_{$generalWork['nation']}_{$generalWork['level']}";
@@ -230,21 +231,25 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                     $generalWork['nation'],
                     $generalWork['level']
                 );
-                $nationTurn = [$rawNationTurn['action'], Json::decode($rawNationTurn['arg']), $lastNationTurn];
+                $hasNationTurn = true;
             }
 
             $turnObj = new static($generalWork, $turn, $nationTurn, $year, $month);
             if(!$turnObj->processBlocked()){
                 $turnObj->preprocessCommand();
-                if($nationTurn){
-                    $lastNationTurn = $turnObj->processNationCommand();
-                    $nationStor->setValue($lastNationTurnKey, $lastNationTurn);
+                if($hasNationTurn){
+                    $resultNationTurn = $turnObj->processNationCommand(
+                        $rawNationTurn['action'], 
+                        Json::decode($rawNationTurn['arg']), 
+                        $lastNationTurn
+                    );
+                    $nationStor->setValue($lastNationTurnKey, $resultNationTurn->toJson());
                 }
-                $turnObj->processCommand();
+                $turnObj->processCommand($generalCommand, $generalArg);
             }
             pullNationCommand($generalWork['nation'], $generalWork['level']);
             pullGeneralCommand($generalWork['no']);
-            $turnObj->updateTurntime();
+            $turnObj->updateTurnTime();
             $turnObj->applyDB();
 
             $currentTurn = $generalWork['turntime'];

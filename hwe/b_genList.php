@@ -97,7 +97,7 @@ switch ($type) {
     case 8: $orderSQL = "order by troop desc"; break;
 }
 
-$generals = $db->query('SELECT npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,term,turn0,turn1,turn2,turn3,turn4 from general WHERE nation = %i %l', $me['nation'], $orderSQL);
+$generals = $db->query('SELECT npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,turn0,turn1,turn2,turn3,turn4 from general WHERE nation = %i %l', $me['nation'], $orderSQL);
 
 foreach ($generals as &$general) {
     $general['cityText'] = CityConst::byID($general['city'])->name;

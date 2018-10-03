@@ -6,9 +6,21 @@ class LastTurn{
     protected $arg = null;
     protected $term = null;
 
-    function __construct(string $json)
+    function __construct(?string $command=null, ?array $arg=null, ?int $term=null)
     {
+        $this->setCommand($command);
+        $this->setArg($arg);
+        $this->setTerm($term);
+    }
+
+    static function fromJson(string $json):self{
         $values = Json::decode($json);
+        $obj = new static(
+            $values['command']??null,
+            $values['arg']??null,
+            $values['term']??null
+        );
+        return $obj;
     }
 
     function setCommand(?string $command){

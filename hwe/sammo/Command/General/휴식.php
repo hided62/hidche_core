@@ -5,7 +5,7 @@ use \sammo\Command;
 use \sammo\Util;
 use \sammo\JosaUtil;
 
-class 휴식 extends GeneralCommand{
+class 휴식 extends Command\GeneralCommand{
     protected function init(){
         //아무것도 하지 않음
     }
@@ -32,7 +32,8 @@ class 휴식 extends GeneralCommand{
         $date = substr($general->getVar('turntime'),11,5);
         $logger->pushGeneralActionLog("아무것도 실행하지 않았습니다. <1>$date</>");
 
-        $general->increaseVar('killturn', -1);
+        $general->setResultTurn(new LastTurn());
+
         $general->applyDB(DB::db());
         return true;
     }

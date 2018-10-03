@@ -28,6 +28,9 @@ class General implements iAction{
     protected $personalityObj = null;
     protected $itemObjs = [];
 
+    protected $lastTurn = null;
+    protected $resultTurn = null;
+
     public function __construct(array $raw, ?array $city, int $year, int $month){
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
 
@@ -35,6 +38,11 @@ class General implements iAction{
         setLeadershipBonus($raw, $staticNation['level']);
         $this->raw = $raw;
         $this->rawCity = $city;
+
+        if(key_exists('last_turn', $this->raw)){
+            $this->lastTurn = LastTurn::fromJson($this->raw['last_turn']);
+        }
+        $this->resultTurn = new LastTurn();
 
 
         $this->logger = new ActionLogger(
@@ -59,6 +67,18 @@ class General implements iAction{
         $this->personalityObj = new $personalityClass;
 
         //TODO: $specialItemClass 설정
+    }
+
+    function getLastTurn():LastTurn{
+        return $this->lastTurn;
+    }
+
+    function setResultTurn(LastTurn $resultTurn){
+        $this->resultTurn = $resultTurn;
+    }
+
+    function getResultTurn():LastTurn{
+        return $this->resultTurn;
     }
 
     function clearActivatedSkill(){
@@ -234,6 +254,9 @@ class General implements iAction{
      * @param \MeekroDB $db
      */
     function applyDB($db):bool{
+        if($this->lastTurn && $this->getLastTurn() != $this->getResultTurn()){
+            $this->setVar('last_turn', $this->getResultTurn()->toJson());
+        }
         $updateVals = $this->getUpdatedValues();
 
         if(!$updateVals){

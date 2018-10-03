@@ -4,8 +4,9 @@ namespace sammo\Command\Nation;
 use \sammo\Command;
 use \sammo\Util;
 use \sammo\JosaUtil;
+use sammo\LastTurn;
 
-class 휴식 extends NationCommand{
+class 휴식 extends Command\NationCommand{
     protected function init(){
         //아무것도 하지 않음
     }

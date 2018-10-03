@@ -78,7 +78,7 @@ function myCommandList() {
     // 명령 목록
     $admin = $gameStor->getValues(['year','month','turnterm','turntime']);
 
-    $me = $db->queryFirstRow("SELECT `no`,turntime,term,turn0,turn1,turn2,turn3,turn4,turn5,turn6,turn7,turn8,turn9,turn10,turn11,turn12,turn13,turn14,turn15,turn16,turn17,turn18,turn19,turn20,turn21,turn22,turn23 FROM general WHERE `owner`=%s", $userID);
+    $me = $db->queryFirstRow("SELECT `no`,turntime,last_turn,turn0,turn1,turn2,turn3,turn4,turn5,turn6,turn7,turn8,turn9,turn10,turn11,turn12,turn13,turn14,turn15,turn16,turn17,turn18,turn19,turn20,turn21,turn22,turn23 FROM general WHERE `owner`=%s", $userID);
     if(!$me){
         echo "로그인 되어있지 않습니다.";
         return;
