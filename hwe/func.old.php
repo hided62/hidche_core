@@ -1393,7 +1393,7 @@ function tryLock():bool{
     $db->update('plock', [
         'plock'=>1,
         'locktime'=>TimeUtil::now(true)
-    ], 'plock=1');
+    ], 'plock=0');
 
     return $db->affectedRows() > 0;
 }
