@@ -464,157 +464,6 @@ function getCoreTurn($nation, $level) {
     return $str;
 }
 
-
-function processCommand($no) {
-    $session = Session::getInstance();
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-
-    $query = "select npc,no,name,picture,imgsvr,nation,nations,city,troop,injury,affinity,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,belong,personal,special,special2,last_turn,turn0,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar from general where no='$no'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
-    
-    list($month, $killturn) = $gameStor->getValuesAsArray(['month', 'killturn']);
-    $log = [];
-
-    // 블럭자는 미실행. 삭턴 감소
-    if($general['block'] == 2) {
-        $date = substr($general['turntime'],11,5);
-        $log[] = "<C>●</>{$month}월:현재 멀티, 또는 비매너로 인한<R>블럭</> 대상자입니다. <1>$date</>";
-        pushGenLog($general, $log);
-
-        $query = "update general set recturn='',resturn='BLOCK_2',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } elseif($general['block'] == 3) {
-        $date = substr($general['turntime'],11,5);
-        $log[] = "<C>●</>{$month}월:현재 악성유저로 분류되어 <R>블럭, 발언권 무효</> 대상자입니다. <1>$date</>";
-        pushGenLog($general, $log);
-
-        $query = "update general set recturn='',resturn='BLOCK_3',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } else {
-        if($general['level'] >= 5 && $general['level'] <= 12) {
-            $query = "select l{$general['level']}turn0,l{$general['level']}term from nation where nation='{$general['nation']}'";
-            $coreresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $core = MYDB_fetch_array($coreresult);
-            $corecommand = DecodeCommand($core["l{$general['level']}turn0"]);
-            //연속턴 아닌경우 텀 리셋
-            if($core["l{$general['level']}term"]%100 != $corecommand[0]) {
-                $query = "update nation set l{$general['level']}term=0 where nation='{$general['nation']}'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            }
-
-            switch($corecommand[0]) {
-                case 23: process_23($general); break; //포상
-                case 24: process_24($general); break; //몰수
-                case 27: process_27($general); break; //발령
-                case 51: process_51($general); break; //항복권고
-                case 52: process_52($general); break; //원조
-                //case 53: process_53($general); break; //통합제의
-                case 61: process_61($general); break; //불가침제의
-                case 62: process_62($general); break; //선전 포고
-                case 63: process_63($general); break; //종전 제의
-                case 64: process_64($general); break; //파기 제의
-                case 65: process_65($general); break; //초토화
-                case 66: process_66($general); break; //천도
-                case 67: process_67($general); break; //증축
-                case 68: process_68($general); break; //감축
-                case 71: process_71($general); break; //필사즉생
-                case 72: process_72($general); break; //백성동원
-                case 73: process_73($general); break; //수몰
-                case 74: process_74($general); break; //허보
-                case 75: process_75($general); break; //피장파장
-                case 76: process_76($general); break; //의병모집
-                case 77: process_77($general); break; //이호경식
-                case 78: process_78($general); break; //급습
-                case 81: process_81($general); break; //국기변경
-                case 99: break; //수뇌부휴식
-            }
-
-            //장수정보 재로드
-            $query = "select npc,no,name,picture,imgsvr,nation,nations,city,troop,injury,affinity,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,belong,personal,special,special2,last_turn,turn0,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar from general where no='$no'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $general = MYDB_fetch_array($result);
-        }
-
-        $command = DecodeCommand($general['turn0']);
-        //삭턴 처리
-        if($general['npc'] >= 2 || $general['killturn'] > $killturn) {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } elseif($command[0] == 0) {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } else {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn='{$killturn}' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
-        //FIXME: 운영자 같이 사망하면 안되는 인물에 대한 처리가 필요
-
-        //연속턴 아닌경우 텀 리셋
-        if($general['term']%100 != $command[0]) {
-            $query = "update general set term=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
-        //턴 처리
-        switch($command[0]) {
-            case 0: //휴식
-                $date = substr($general['turntime'],11,5);
-                $log[] = "<C>●</>{$month}월:아무것도 실행하지 않았습니다. <1>$date</>";
-                pushGenLog($general, $log);
-                break;
-            case 1: //농업
-            case 2: //상업
-            case 3: //기술
-            case 4: //선정
-            case 5: //수비
-            case 6: //성벽
-            case 7: //정착 장려
-            case 8: //치안
-            case 9: process_domestic($command[0], $general); break;//조달
-
-            case 11: process_11($general, 1); break; //징병
-            case 12: process_11($general, 2); break; //모병
-            case 13: process_13($general); break; //훈련
-            case 14: process_14($general); break; //사기진작
-            case 15: process_15($general); break; //전투태세
-            case 16: process_16($general); break; //전쟁
-            case 17: process_17($general); break; //소집해제
-
-            case 21: process_21($general); break; //이동
-            case 22: process_22($general); break; //등용
-            case 25: process_25($general); break; //임관
-            case 26: process_26($general); break; //집합
-            case 28: process_28($general); break; //귀환
-            case 29: process_29($general); break; //인재탐색
-            case 30: process_30($general); break; //강행
-            
-            case 31: process_31($general); break; //첩보
-            case 32: process_32($general); break; //화계
-            case 33: process_33($general); break; //탈취
-            case 34: process_34($general); break; //파괴
-            case 35: process_35($general); break; //선동
-
-            case 41: process_41($general); break; //단련
-            case 42: process_42($general); break; //견문
-            case 43: process_43($general); break; //증여
-            case 44: process_44($general); break; //헌납
-            case 45: process_45($general); break; //하야
-            case 46: process_46($general); break; //건국
-            case 47: process_47($general); break; //방랑
-            case 48: process_48($general); break; //장비매매
-            case 49: process_49($general); break; //군량매매
-            case 50: process_50($general); break; //요양
-
-            case 54: process_54($general); break; //선양
-            case 55: process_55($general); break; //거병
-            case 56: process_56($general); break; //해산
-            case 57: process_57($general); break; //모반 시도
-        }
-    }
-}
-
 function pushGeneralCommand(int $generalID, int $turnCnt=1){
     if($turnCnt == 0){
         return;
@@ -719,89 +568,28 @@ function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
     ], 'nation_id=%i AND level=%i', $nationID, $level);
 }
 
-function command_Single($turn, $command) {
-    if(!$turn){
-        header('location:commandlist.php');
+function setGeneralCommand(int $generalID, array $turnList, string $command, ?array $arg = null) {
+    if(!$turnList){
         return;
     }
 
     $db = DB::db();
-    $userID = Session::getUserID();
 
-    $command = EncodeCommand(0, 0, 0, $command);
-
-    $setValues = [];
-    foreach($turn as $turnIdx){
-        $setValues["turn{$turnIdx}"] = $command;
-    }
-    $db->update('general', $setValues, 'owner=%i',$userID);
-    
-    header('location:commandlist.php');
+    $db->update('general_turn', [
+        'action'=>$command,
+        'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT)
+    ], 'general_id = %i AND turn_idx IN %li', $generalID, $turnList);
 }
 
-function command_Chief($turn, $command) {
+function setNationCommand(int $nationID, int $level, array $turnList, string $command, ?array $arg = null) {
+    if(!$turnList){
+        return;
+    }
+
     $db = DB::db();
-    $connect=$db->get();
-    $userID = Session::getUserID();
 
-    $command = EncodeCommand(0, 0, 0, $command);
-
-    $query = "select nation,level from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
-
-    if($me['level'] >= 5) {
-        $count = count($turn);
-        $str = "type=type";
-        for($i=0; $i < $count; $i++) {
-            $str .= ",l{$me['level']}turn{$turn[$i]}='{$command}'";
-        }
-        $query = "update nation set {$str} where nation='{$me['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    }
-    header('location:b_chiefcenter.php');
+    $db->update('nation_turn', [
+        'action'=>$command,
+        'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT)
+    ], 'nation_id = %i AND level = %i AND turn_idx IN %li', $generalID, $level, $turnList);
 }
-
-function command_Other($turn, $commandtype) {
-
-    $target = "processing.php?commandtype={$commandtype}";
-    foreach($turn as $turnItem){
-        $target.="&turn[]={$turnItem}";
-    }
-    $target.="&".mt_rand();
-    ?>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=1024" />
-    <script>
-parent.moveProcessing(<?=$commandtype?>, <?=Json::encode($turn)?>);
-</script>
-</head>
-<body style="background-color:black;">
-
-</body>
-</html>
-<?php
-
-/*
-<form name='form1' action='processing.php' method='post' target=_parent>
-<?php foreach($turn as $turnItem): ?>
-    <input type='hidden' name='turn[]' value='<?=$turnItem?>'>
-<?php endforeach; ?>
-<input type=hidden name=commandtype value=<?=$commandtype?>>
-</form>&nbsp;
-<script>*/
-}
-
-
-function EncodeCommand($fourth, $third, $double, $command) {
-    return Json::encode([$command, $double, $third, $fourth]);
-}
-
-function DecodeCommand($str) {
-    return Json::decode($str);
-}
-
