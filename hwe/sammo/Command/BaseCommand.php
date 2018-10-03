@@ -37,8 +37,8 @@ abstract class BaseCommand{
 
     protected $runnableConstraints = null;
     protected $reservableConstraints = null;
-
     
+
 
     protected $logger;
 
@@ -193,6 +193,9 @@ abstract class BaseCommand{
     }
 
     abstract public function getCost():array;
+
+    abstract public function getPreReqTurn():int;
+    abstract public function getPostReqTurn():int;
 
     abstract public function run():bool;
 

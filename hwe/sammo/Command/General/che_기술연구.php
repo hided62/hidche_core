@@ -30,14 +30,15 @@ class che_기술연구 extends che_상업투자{
         $this->setCity();
         $this->setNation();
         
-        $develCost = $this->env['develcost'];
-        $reqGold = $general->onCalcDomestic(static::$actionKey, 'cost', $reqGold);
+        [$reqGold, $reqRice] = $this->getCost();
 
         $this->runnableConstraints=[
             ['NoNeutral'], 
             ['NoWanderingNation'],
             ['OccupiedCity'],
             ['SuppliedCity'],
+            ['ReqGeneralGold', $reqGold],
+            ['ReqGeneralRice', $reqRice],
             ['ReqGeneralGold', $reqGold]
         ];
 

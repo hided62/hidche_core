@@ -31,14 +31,14 @@ class che_주민선정 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation();
         
-        $develCost = $this->env['develcost'] * 2;
-        $reqRice = $general->onCalcDomestic(static::$actionKey, 'cost', $reqGold);
+        [$reqGold, $reqRice] = $this->getCost();
 
         $this->runnableConstraints=[
             ['NoNeutral'], 
             ['NoWanderingNation'],
             ['OccupiedCity'],
             ['SuppliedCity'],
+            ['ReqGeneralGold', $reqGold],
             ['ReqGeneralRice', $reqRice],
             ['RemainCityTrust', static::$actionName]
         ];
@@ -48,6 +48,22 @@ class che_주민선정 extends Command\GeneralCommand{
 
     protected function argTest():bool{
         return true;
+    }
+
+    public function getCost():array{
+        $develCost = $this->env['develcost'] * 2;
+        $reqGold = 0;
+        $reqRice = $general->onCalcDomestic(static::$actionKey, 'cost', $develCost);
+        
+        return [$reqGold, $reqRice];
+    }
+    
+    public function getPreReqTurn():int{
+        return 0;
+    }
+
+    public function getPostReqTurn():int{
+        return 0;
     }
 
     protected function calcBaseScore():float{

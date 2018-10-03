@@ -32,8 +32,7 @@ class che_상업투자 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation();
         
-        $develCost = $this->env['develcost'];
-        $reqGold = $general->onCalcDomestic(static::$actionKey, 'cost', $reqGold);
+        [$reqGold, $reqRice] = $this->getCost();
 
         $this->runnableConstraints=[
             ['NoNeutral'], 
@@ -41,6 +40,7 @@ class che_상업투자 extends Command\GeneralCommand{
             ['OccupiedCity'],
             ['SuppliedCity'],
             ['ReqGeneralGold', $reqGold],
+            ['ReqGeneralRice', $reqRice],
             ['RemainCityCapacity', [static::$cityKey, static::$actionName]]
         ];
 
@@ -49,6 +49,22 @@ class che_상업투자 extends Command\GeneralCommand{
 
     protected function argTest():bool{
         return true;
+    }
+
+    public function getCost():array{
+        $develCost = $this->env['develcost'];
+        $reqGold = $general->onCalcDomestic(static::$actionKey, 'cost', $develCost);
+        $reqRice = 0;
+        
+        return [$reqGold, $reqRice];
+    }
+    
+    public function getPreReqTurn():int{
+        return 0;
+    }
+
+    public function getPostReqTurn():int{
+        return 0;
     }
 
     protected function calcBaseScore():float{

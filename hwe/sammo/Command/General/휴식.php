@@ -18,6 +18,14 @@ class 휴식 extends GeneralCommand{
         return [0, 0];
     }
 
+    public function getPreReqTurn():int{
+        return 0;
+    }
+
+    public function getPostReqTurn():int{
+        return 0;
+    }
+
     public function run():bool{
         $general = $this->generalObj;
         $logger = $general->getLogger();

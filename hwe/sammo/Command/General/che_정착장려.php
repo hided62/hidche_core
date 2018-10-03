@@ -31,15 +31,15 @@ class che_정착장려 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation();
         
-        $develCost = $this->env['develcost'] * 2;
-        $reqRice = $general->onCalcDomestic(static::$actionKey, 'cost', $reqRice);
+        [$reqGold, $reqRice] = $this->getCost();
 
         $this->runnableConstraints=[
             ['NoNeutral'], 
             ['NoWanderingNation'],
             ['OccupiedCity'],
             ['SuppliedCity'],
-            ['ReqGeneralGold', $reqRice],
+            ['ReqGeneralGold', $reqGold],
+            ['ReqGeneralRice', $reqRice],
             ['RemainCityCapacity', [static::$cityKey, static::$actionName]]
         ];
 
@@ -48,6 +48,22 @@ class che_정착장려 extends Command\GeneralCommand{
 
     protected function argTest():bool{
         return true;
+    }
+
+    public function getCost():array{
+        $develCost = $this->env['develcost'] * 2;
+        $reqGold = 0;
+        $reqRice = $general->onCalcDomestic(static::$actionKey, 'cost', $develCost);
+        
+        return [$reqGold, $reqRice];
+    }
+    
+    public function getPreReqTurn():int{
+        return 0;
+    }
+
+    public function getPostReqTurn():int{
+        return 0;
     }
 
     protected function calcBaseScore():float{
