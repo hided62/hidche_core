@@ -442,6 +442,9 @@ class Util extends \utilphp\util
     {
         $sum = 0;
         foreach ($items as $value) {
+            if($value <= 0){
+                continue;
+            }
             $sum += $value;
         }
 
@@ -459,6 +462,36 @@ class Util extends \utilphp\util
     }
 
     /**
+     * 각 값의 비중에 따라 랜덤한 값을 선택.
+     *
+     * @param array $items 각 수치와 비중. [값, weight] 으로 보관
+     *
+     * @return object 선택된 랜덤 값의 첫번째 값
+     */
+    public static function choiceRandomUsingWeightPair(array $items)
+    {
+        $sum = 0;
+        foreach ($items as [$item, $value]) {
+            if($value <= 0){
+                continue;
+            }
+            $sum += $value;
+        }
+
+        $rd = self::randF()*$sum;
+        foreach ($items as [$item, $value]) {
+            if ($rd <= $value) {
+                return $item;
+            }
+            $rd -= $value;
+        }
+
+        //fallback. 이곳으로 빠지지 않음
+        end($items);
+        return $items[key($items)][0];
+    }
+
+    /**
      * 배열의 아무거나 고름. Python의 random.choice()
      *
      * @param array $items 선택하고자 하는 배열
@@ -470,6 +503,9 @@ class Util extends \utilphp\util
         return $items[array_rand($items)];
     }
 
+    /**
+     * fqn 클래스 경로에서 클래스 이름을 받아옴
+     */
     function getClassName(string $classpath)
     {
         if ($pos = strrpos($classpath, '\\')) return substr($classpath, $pos + 1);

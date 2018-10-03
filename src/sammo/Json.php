@@ -19,7 +19,7 @@ class Json
             $value = Util::eraseNullValue($value);
         }
 
-        if(($flag & static::EMPTY_ARRAY_IS_DICT) && $value === []){
+        if($value === [] && ($flag & static::EMPTY_ARRAY_IS_DICT)){
             $value = (object)null;
         }
         return json_encode($value, $rawFlag);
