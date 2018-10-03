@@ -3,80 +3,72 @@ namespace sammo;
 
 function SetDevelop($genType, $no, $city, $tech) {
     $db = DB::db();
-    $connect=$db->get();
 
-    $query = "select trust,pop/pop2*100 as po,comm/comm2*100 as co,def/def2*100 as de,wall/wall2*100 as wa,secu/secu2*100 as se,agri/agri2*100 as ag from city where city='$city'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
+    $city = $db->queryFirstRow("SELECT trust,pop/pop2*100 as po,comm/comm2*100 as co,def/def2*100 as de,wall/wall2*100 as wa,secu/secu2*100 as se,agri/agri2*100 as ag from city where city=%i", $city);
 
     // 우선 선정
     if($city['trust'] < 95) {
-        $command = EncodeCommand(0, 0, 0, 4);    // 우선 선정
-        
-        $query = "update general set turn0='$command' where no='$no'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        setGeneralCommand($no, [0], 'che_선정');
         return;
     }
     
     $prob = rand() % 100;
-    $command = EncodeCommand(0, 0, 0, 9); //조달
+    $command = 'che_물자조달';
+    $arg = null;
+
     switch($genType) {
     case 0: //무장
     case 2: //무내정장
         if($prob < 30) {
-            if($city['de'] < 99) { $command = EncodeCommand(0, 0, 0, 5); } //수비
-            elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
-            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+            if($city['de'] < 99) { $command = 'che_수비강화'; } //수비
+            elseif($city['po'] < 99) { $command = 'che_정착장려'; } //정장
+            else { $command = 'che_물자조달'; } //조달
         } elseif($prob < 60) {
-            if($city['wa'] < 99) { $command = EncodeCommand(0, 0, 0, 6); } //성벽
-            elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
-            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+            if($city['wa'] < 99) { $command = 'che_성벽강화'; } //성벽
+            elseif($city['po'] < 99) { $command = 'che_정착장려'; } //정장
+            else { $command = 'che_물자조달'; } //조달
         } elseif($prob < 90) {
-            if($city['se'] < 99) { $command = EncodeCommand(0, 0, 0, 8); } //치안
-            elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
-            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+            if($city['se'] < 99) { $command = 'che_치안강화'; } //치안
+            elseif($city['po'] < 99) { $command = 'che_정착장려'; } //정장
+            else { $command = 'che_물자조달'; } //조달
         } else {
-            $command = EncodeCommand(0, 0, 0, 29);
+            $command = 'che_인재탐색';
         }
         break;
     case 1: //지장
     case 3: //지내정장
         if($prob < 40) {
-            if($city['ag'] < 99) { $command = EncodeCommand(0, 0, 0, 1); } //농업
-            elseif($tech < GameConst::$maxTechLevel * 1000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
-            elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
-            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+            if($city['ag'] < 99) { $command = 'che_농지개간'; } //농업
+            elseif($tech < GameConst::$maxTechLevel * 1000) { $command = 'che_기술연구'; } //기술
+            elseif($city['po'] < 99) { $command = 'che_정착장려'; } //정장
+            else { $command = 'che_물자조달'; } //조달
         } elseif($prob < 80) {
-            if($city['co'] < 99) { $command = EncodeCommand(0, 0, 0, 2); } //상업
-            elseif($tech < GameConst::$maxTechLevel * 1000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
-            elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
-            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+            if($city['co'] < 99) { $command = 'che_상업투자'; } //상업
+            elseif($tech < GameConst::$maxTechLevel * 1000) { $command = 'che_기술연구'; } //기술
+            elseif($city['po'] < 99) { $command = 'che_정착장려'; } //정장
+            else { $command = 'che_물자조달'; } //조달
         } elseif($prob < 90) {
-            if($tech < GameConst::$maxTechLevel * 1000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
-            elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
-            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+            if($tech < GameConst::$maxTechLevel * 1000) { $command = 'che_기술연구'; } //기술
+            elseif($city['po'] < 99) { $command = 'che_정착장려'; } //정장
+            else { $command = 'che_물자조달'; } //조달
         } else {
             if($tech < GameConst::$maxTechLevel * 1000) { $command = EncodeCommand(0, 0, 0, 3 + (rand() % 2) * 6); } //기술, 조달
-            else { $command = EncodeCommand(0, 0, 0, 29); }
+            else { $command = 'che_인재탐색'; }
         }
         break;
     }
 
     // 장수수가 너무 많으면 탐색 확률 감소
-    if($command == EncodeCommand(0, 0, 0, 29)) {
-        $query = "select no from general";
-        $result = MYDB_query($query, $connect) or Error("processAI04 ".MYDB_error($connect),"");
-        $genCount = MYDB_num_rows($result);
+    if($command == 'che_인재탐색') {
+        $genCount = $db->queryFirstField('SELECT count(no) FROM general');
 
         $ratio = Util::round($genCount / 600 * 100);
 
         if(rand() % 100 < $ratio) {
-            $command = EncodeCommand(0, 0, 0, 9);
+            $command = 'che_물자조달';
         }
     }
-    
-    $query = "update general set turn0='$command' where no='$no'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    setGeneralCommand($no, [0], $command);
     return;
 }
 
@@ -195,17 +187,22 @@ function processAI($no) {
     $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
+    $generalID = $general['no'];
+
+    [$command, $arg] = $db->queryFirstList('SELECT action, arg FROM general_turn WHERE general_id = %i AND turn_idx=0');
+
+    $command = 'che_물자조달';
+    $arg = null;
 
     if($general['npc'] == 5){
         if($general['nation'] == 0 && $general['killturn'] > 1){
-            $command = EncodeCommand(0, 0, 0, 0); //휴식
+            $command = 'che_휴식'; //휴식
             $db->update('general', [
-                'turn0'=>$command,
                 'killturn'=>1
-            ], 'no=%i', $general['no']);
+            ], 'no=%i', $generalID);
         }
         else{
-            $command = EncodeCommand(0, 0, 0, 26); //집합
+            $command = 'che_집합'; //집합
             $db->update('general', [
                 'turn0'=>$command,
                 'turn1'=>$command,
@@ -214,7 +211,7 @@ function processAI($no) {
                 'turn4'=>$command,
                 'turn5'=>$command,
                 'killturn'=>rand(70,75),
-            ], 'no=%i', $general['no']);
+            ], 'no=%i', $generalID);
         }
 
         return;
@@ -309,12 +306,12 @@ function processAI($no) {
 
     if($general['atmos'] >= 90 && $general['train'] >= 90) {
         if($general['mode'] == 0) {
-            $query = "update general set mode=1 where no='{$general['no']}'";
+            $query = "update general set mode=1 where no='{$generalID}'";
             MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
         }
     } else {
         if($general['mode'] == 1) {
-            $query = "update general set mode=0 where no='{$general['no']}'";
+            $query = "update general set mode=0 where no='{$generalID}'";
             MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
         }
     }
@@ -324,7 +321,7 @@ function processAI($no) {
     $term = $admin['turnterm'];
     if($general['npcmsg'] && Util::randBool($term / (6*60))) {
         $src = new MessageTarget(
-            $general['no'], 
+            $generalID, 
             $general['name'],
             $general['nation'],
             $nation['name'],
@@ -352,9 +349,9 @@ function processAI($no) {
         if($ruler) {
             $command = EncodeCommand(0, 0, $rulerNation, 25); //임관
         } else {
-            $command = EncodeCommand(0, 0, 0, 42); //견문
+            $command = 'che_견문'; //견문
         }
-        $query = "update general set turn0='$command' where no='{$general['no']}'";
+        $query = "update general set turn0='$command' where no='{$generalID}'";
         MYDB_query($query, $connect) or Error("processAI07 ".MYDB_error($connect),"");
         return;
     } elseif($general['npc'] != 9 && $general['level'] == 0) {
@@ -378,7 +375,7 @@ function processAI($no) {
             }
 
             if($general['affinity'] == 999 || !$available){
-                $command = EncodeCommand(0, 0, 0, 42); //견문
+                $command = 'che_견문'; //견문
             }
             else{
                 //랜임 커맨드 입력.
@@ -391,10 +388,10 @@ function processAI($no) {
             $ratio = ($general['leader'] + $general['power'] + $general['intel']) / 3;
             if($admin['startyear']+2 > $admin['year'] && $prop < $ratio && Util::randBool(0.014) && $general['makelimit'] == 0) {
                 //거병
-                $command = EncodeCommand(0, 0, 0, 55);
+                $command = 'che_거병';
             } else {
                 //견문
-                $command = EncodeCommand(0, 0, 0, 42);
+                $command = 'che_견문';
             }
             break;
         case 2: //이동 20%
@@ -402,10 +399,10 @@ function processAI($no) {
             $command = EncodeCommand(0, 0, $paths[rand()%count($paths)], 21);
             break;
         default:
-            $command = EncodeCommand(0, 0, 0, 42);
+            $command = 'che_견문';
             break;
         }
-        $query = "update general set turn0='$command' where no='{$general['no']}'";
+        $query = "update general set turn0='$command' where no='{$generalID}'";
         MYDB_query($query, $connect) or Error("processAI07 ".MYDB_error($connect),"");
         return;
     }
@@ -418,14 +415,14 @@ function processAI($no) {
             //방랑군이냐 아니냐
             if($nation['level'] == 0) {
                 // 해산
-                $command = EncodeCommand(0, 0, 0, 56);
-                $query = "update general set turn0='$command' where no='{$general['no']}'";
+                $command = 'che_해산';
+                $query = "update general set turn0='$command' where no='{$generalID}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             } else {
                 // 방랑
-                $command = EncodeCommand(0, 0, 0, 47);
-                $query = "update general set turn0='$command' where no='{$general['no']}'";
+                $command = 'che_방랑';
+                $query = "update general set turn0='$command' where no='{$generalID}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             }
@@ -450,8 +447,8 @@ function processAI($no) {
         if($nation['level'] == 0) {
             if($admin['startyear']+2 <= $admin['year']) {
                 // 해산
-                $command = EncodeCommand(0, 0, 0, 56);
-                $query = "update general set turn0='$command' where no='{$general['no']}'";
+                $command = 'che_해산';
+                $query = "update general set turn0='$command' where no='{$generalID}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             } elseif($city['nation'] == 0 && ($city['level'] == 5 || $city['level'] == 6)) {
@@ -461,20 +458,20 @@ function processAI($no) {
                 $command = EncodeCommand(0, $type, $color, 46);
                 $nationName = "㉿".mb_substr($general['name'], 1);
                 //건국
-                $query = "update general set turn0='$command',makenation='$nationName' where no='{$general['no']}'";
+                $query = "update general set turn0='$command',makenation='$nationName' where no='{$generalID}'";
                 MYDB_query($query, $connect) or Error("processAI08 ".MYDB_error($connect),"");
                 return;
             } elseif(rand()%4 > 0) {
                 //이동
                 $paths = explode('|', $city['path']);
                 $command = EncodeCommand(0, 0, $paths[rand()%count($paths)], 21);
-                $query = "update general set turn0='$command' where no='{$general['no']}'";
+                $query = "update general set turn0='$command' where no='{$generalID}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             } else {
                 //조달
-                $command = EncodeCommand(0, 0, 0, 9);
-                $query = "update general set turn0='$command' where no='{$general['no']}'";
+                $command = 'che_물자조달';
+                $query = "update general set turn0='$command' where no='{$generalID}'";
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             }
@@ -522,7 +519,7 @@ function processAI($no) {
     }
 
     // 입력된 턴이 있으면
-    if(!empty($coreCommand) && ($coreCommand["l{$general['level']}turn0"] != EncodeCommand(0, 0, 0, 99))) {
+    if(!empty($coreCommand) && ($coreCommand["l{$general['level']}turn0"] != 'che_휴식')) {
         $rulerCommand = 1;
     }
 
@@ -536,11 +533,11 @@ function processAI($no) {
         }
     }
 
-    $command = EncodeCommand(0, 0, 0, 1);
+    $command = 'che_농지개간';
     //일반 할일
     if($general['killturn'] < 5) {
         if($general['gold'] + $general['rice'] == 0) {
-            $command = EncodeCommand(0, 0, 0, 9); //조달
+            $command = 'che_물자조달'; //조달
         } elseif($general['gold'] > $general['rice']) {
             $command = EncodeCommand(0, 1, 100, 44); //헌납
         } else {
@@ -548,25 +545,25 @@ function processAI($no) {
         }
     } elseif($general['injury'] > 10) {
     // 부상 2달 이상이면 요양
-        $command = EncodeCommand(0, 0, 0, 50);  //요양
+        $command = 'che_요양';  //요양
     } elseif($nation['level'] == 0) {
     //방랑군일때
         if($admin['startyear']+3 <= $admin['year']) {
-            $command = EncodeCommand(0, 0, 0, 45); //하야
+            $command = 'che_하야'; //하야
         } else {
             switch(rand()%5) {
             case 0:
-                $command = EncodeCommand(0, 0, 0, 42); break; //견문 20%
+                $command = 'che_견문'; break; //견문 20%
             case 1: case 2: case 3: case 4:
-                $command = EncodeCommand(0, 0, 0, 9); break; //조달 80%
+                $command = 'che_물자조달'; break; //조달 80%
             }
         }
     } else {
     //국가일때
         //아국땅 아니면 귀환
         if($general['nation'] != $city['nation'] || $city['supply'] == 0) {
-            $command = EncodeCommand(0, 0, 0, 28);  //귀환
-            $query = "update general set turn0='$command' where no='{$general['no']}'";
+            $command = 'che_귀환';  //귀환
+            $query = "update general set turn0='$command' where no='{$generalID}'";
             MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
             return;
         }
@@ -585,7 +582,7 @@ function processAI($no) {
                 $command = EncodeCommand(0, 2, $amount, 44);  //헌납
                 $db->update('general', [
                     'turn0'=>$command
-                ], 'no=%i',$general['no']);
+                ], 'no=%i',$generalID);
                 return;
             }
 
@@ -600,7 +597,7 @@ function processAI($no) {
                 $command = EncodeCommand(0, 1, $amount, 44);  //헌납
                 $db->update('general', [
                     'turn0'=>$command
-                ], 'no=%i',$general['no']);
+                ], 'no=%i',$generalID);
                 return;
             }
         }
@@ -610,7 +607,7 @@ function processAI($no) {
             $amount = intdiv($general['rice'] - 200, 100) + 1;
             if($amount > 20) { $amount = 20; }
             $command = EncodeCommand(0, 2, $amount, 44);  //헌납
-            $query = "update general set turn0='$command' where no='{$general['no']}'";
+            $query = "update general set turn0='$command' where no='{$generalID}'";
             MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
             return;
         }
@@ -627,19 +624,19 @@ function processAI($no) {
         $target = array();
         // 평시거나 초반아니면서 공격가능 없으면서 병사 있으면 해제(25%)
         if($dipState == 0 && $isStart == 0 && !$attackable && $general['crew'] > 0 && rand()% 100 < 25) {
-            $command = EncodeCommand(0, 0, 0, 17);    //소집해제
+            $command = 'che_소집해제';    //소집해제
         } elseif($dipState <= 1 || $isStart == 1) {
         //평시이거나 선포있어도 초반이면
-            if($general['gold'] + $general['rice'] < 200) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달9
-            elseif($general['rice'] > 100 && $city['trust'] < 95) { $command = EncodeCommand(0, 0, 0, 4); } //우선 선정
+            if($general['gold'] + $general['rice'] < 200) { $command = 'che_물자조달'; } //금쌀없으면 조달9
+            elseif($general['rice'] > 100 && $city['trust'] < 95) { $command = 'che_주민선정'; } //우선 선정
             elseif($general['gold'] < 100) {                                      //금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 $command = EncodeCommand(0, 1, $amount, 49);                    //팜
-            } elseif($general['gold'] < 500 && $general['rice'] < 500) { $command = EncodeCommand(0, 0, 0, 1); } //금쌀되면 내정
+            } elseif($general['gold'] < 500 && $general['rice'] < 500) { $command = 'che_농지개간'; } //금쌀되면 내정
             elseif($general['rice'] < 100) {                                      //쌀없으면 쌀삼
                 $amount = intdiv(($general['gold'] - $general['rice'])/2, 100);  // 100단위
                 $command = EncodeCommand(0, 2, $amount, 49);                    //삼
-            } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
+            } elseif($genType >= 2) { $command = 'che_농지개간'; } //내정장일때 내정
             else {
                 //현도시가 전방이면 공격 가능성 체크
                 if($city['front'] > 0) {
@@ -652,14 +649,14 @@ function processAI($no) {
                         //공백지이면 타겟에 포함
                         if($targetCity['nation'] == 0) { $target[] = $targetCity['city']; }
                     }
-                    if(count($target) == 0 || $isStart == 1 || $nation['war'] == 1) { $command = EncodeCommand(0, 0, 0, 1); } //공격 가능도시가 없으면 내정
+                    if(count($target) == 0 || $isStart == 1 || $nation['war'] == 1) { $command = 'che_농지개간'; } //공격 가능도시가 없으면 내정
                     else { $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
                 } else {
                     //전방 아니면 내정
-                    $command = EncodeCommand(0, 0, 0, 1);
+                    $command = 'che_농지개간';
                 }
 
-                if($command == EncodeCommand(0, 0, 0, 1)) {     // 공격아닌 경우
+                if($command == 'che_농지개간') {     // 공격아닌 경우
                     $query = "select city,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev from city where city='{$general['city']}'";
                     $result = MYDB_query($query, $connect) or Error("processAI19 ".MYDB_error($connect),"");
                     $selCity = MYDB_fetch_array($result);
@@ -669,7 +666,7 @@ function processAI($no) {
                     elseif($selCity['dev'] < 70) { $sel = 0; }
                     switch($sel) {
                     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: // 그대로 내정 80 %
-                        $command = EncodeCommand(0, 0, 0, 1);
+                        $command = 'che_농지개간';
                         break;
                     case 8: case 9: // 저개발 도시로 워프 20%
                         //도시 선택, 30% 확률로 군사 있는 곳으로 워프
@@ -682,14 +679,14 @@ function processAI($no) {
                         $selCity = MYDB_fetch_array($result);
                         //이미 그 도시이거나, 그 도시도 고개발이면 내정
                         if($selCity['city'] == $general['city'] || $selCity['dev'] > 95) {
-                            $command = EncodeCommand(0, 0, 0, 1);
+                            $command = 'che_농지개간';
                         } else {
                             //워프
-                            $query = "update general set city='{$selCity['city']}' where no='{$general['no']}'";
+                            $query = "update general set city='{$selCity['city']}' where no='{$generalID}'";
                             MYDB_query($query, $connect) or Error("processAI18 ".MYDB_error($connect),"");
 
-                            $command = EncodeCommand(0, 0, 0, 50);  //요양
-                            $query = "update general set turn0='$command' where no='{$general['no']}'";
+                            $command = 'che_요양';  //요양
+                            $query = "update general set turn0='$command' where no='{$generalID}'";
                             MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
                             return;
                         }
@@ -709,8 +706,8 @@ function processAI($no) {
 
                 } else {                // 공격인 경우
                     if($general['crew'] < 1000 && $general['gold'] >= $resrc && $general['rice'] >= $resrc) { //자원되고, 병사없을때
-                        if($city['pop'] > 40000) { $command = EncodeCommand(0, 0, 0, 11); }
-                        else { $command = EncodeCommand(0, 0, 0, 1); }
+                        if($city['pop'] > 40000) { $command = 'che_징병'; }
+                        else { $command = 'che_농지개간'; }
                     } elseif($general['rice'] < $resrc && $general['rice'] <= $general['gold']) {
                         //금이 더 많으면 매매
                         $amount = intdiv(($general['gold'] - $general['rice']) / 2, 100);  // 100단위
@@ -723,9 +720,9 @@ function processAI($no) {
                         else { $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); }   // 내정, 조달
                     //자원, 병사 모두 충족
                     } elseif($general['crew'] >= 1000 && $general['train'] < 90) {
-                        $command = EncodeCommand(0, 0, 0, 13);  //훈련
+                        $command = 'che_훈련';  //훈련
                     } elseif($general['crew'] >= 1000 && $general['atmos'] < 90) {
-                        $command = EncodeCommand(0, 0, 0, 14);  //사기진작
+                        $command = 'che_사기진작';  //사기진작
                     } else {
                         //공격
                         //$command = $target[rand()%count($target)] * 100 + 16;   //있으면 공격
@@ -743,18 +740,18 @@ function processAI($no) {
 //       1000t
 
         //전시일때
-            if($general['gold'] + $general['rice'] < $resrc*2) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달
-            elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
-            elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] > 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
+            if($general['gold'] + $general['rice'] < $resrc*2) { $command = 'che_물자조달'; } //금쌀없으면 조달
+            elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0) { $command = 'che_주민선정'; }  // 우선 선정
+            elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] > 0) { $command = 'che_주민선정'; }  // 우선 선정
             elseif($general['gold'] < $resrc || ($general['gold'] < $resrc *2 && $general['rice'] > $resrc * 6)) {                                   // 금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }// 팜
-                else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
+                else { $command = 'che_물자조달'; }                  // 조달
             } elseif($general['rice'] < $resrc || ($general['rice'] < $resrc *2 && $general['gold'] > $resrc * 6)) {                                 // 쌀없으면 쌀삼
                 $amount = intdiv(($general['gold'] - $general['rice'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }// 팜
-                else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
-            } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
+                else { $command = 'che_물자조달'; }                  // 조달
+            } elseif($genType >= 2) { $command = 'che_농지개간'; } //내정장일때 내정
             elseif($general['crew'] < 1000 && $general['gold'] >= $resrc && $general['rice'] >= $resrc) {
                 $query = "select no from general where nation='{$general['nation']}'";
                 $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
@@ -774,7 +771,7 @@ function processAI($no) {
                 $ratio3 = rand() % 100;
                 // 전체 인구 대비 확률로 현지에서 징병
                 if($city['pop'] > 40000 && 100 + $ratio - $ratio2 > $ratio3) {
-                    $command = EncodeCommand(0, 0, 0, 11);  //인구 되면 징병
+                    $command = 'che_징병';  //인구 되면 징병
                 } else {
                     // 인구 안되면 4만 이상인 도시로 워프
                     $query = "select city from city where nation='{$general['nation']}' and pop>40000 and supply='1' order by rand() limit 0,1";
@@ -783,29 +780,29 @@ function processAI($no) {
                     if($cityCount > 0) {
                         $selCity = MYDB_fetch_array($result);
                         //워프
-                        $query = "update general set city='{$selCity['city']}' where no='{$general['no']}'";
+                        $query = "update general set city='{$selCity['city']}' where no='{$generalID}'";
                         MYDB_query($query, $connect) or Error("processAI18 ".MYDB_error($connect),"");
 
-                        $command = EncodeCommand(0, 0, 0, 50);  //요양
-                        $query = "update general set turn0='$command' where no='{$general['no']}'";
+                        $command = 'che_요양';  //요양
+                        $query = "update general set turn0='$command' where no='{$generalID}'";
                         MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
                         return;
                     } else {
-                        $command = EncodeCommand(0, 0, 0, 7);  //인구 안되면 정장
+                        $command = 'che_정착장려';  //인구 안되면 정장
                     }
                 }
             } elseif($general['crew'] >= 1000 && $general['train'] < 90) {
                 if($general['atmos'] >= 90 && $general['train'] >= 60 && $general['mode'] == 0) {
-                    $query = "update general set mode=1 where no='{$general['no']}'";
+                    $query = "update general set mode=1 where no='{$generalID}'";
                     MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
                 }
-                $command = EncodeCommand(0, 0, 0, 13);  //훈련
+                $command = 'che_훈련';  //훈련
             } elseif($general['crew'] >= 1000 && $general['atmos'] < 90) {
                 if($general['atmos'] >= 60 && $general['train'] >= 90 && $general['mode'] == 0) {
-                    $query = "update general set mode=1 where no='{$general['no']}'";
+                    $query = "update general set mode=1 where no='{$generalID}'";
                     MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
                 }
-                $command = EncodeCommand(0, 0, 0, 14);  //사기진작
+                $command = 'che_사기진작';  //사기진작
             } elseif($dipState <= 3) {
                 $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1);   // 준비는 됐으나 아직 선포중이면 내정, 조달
             } else {
@@ -849,11 +846,11 @@ function processAI($no) {
 
                     if($general['city'] != $selCity['city']) {
                         //워프
-                        $query = "update general set city='{$selCity['city']}' where no='{$general['no']}'";
+                        $query = "update general set city='{$selCity['city']}' where no='{$generalID}'";
                         MYDB_query($query, $connect) or Error("processAI18 ".MYDB_error($connect),"");
 
-                        $command = EncodeCommand(0, 0, 0, 50);  //요양
-                        $query = "update general set turn0='$command' where no='{$general['no']}'";
+                        $command = 'che_요양';  //요양
+                        $query = "update general set turn0='$command' where no='{$generalID}'";
                         MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
                         return;
                     } else {
@@ -868,14 +865,14 @@ function processAI($no) {
     }
 
     switch($command) {
-    case EncodeCommand(0, 0, 0, 1): //내정
-        SetDevelop($genType, $general['no'], $general['city'], $nation['tech']);
+    case 'che_농지개간': //내정
+        SetDevelop($genType, $generalID, $general['city'], $nation['tech']);
         return;
-    case EncodeCommand(0, 0, 0, 11): //징병
-        SetCrew($general['no'], $general['nation'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
+    case 'che_징병': //징병
+        SetCrew($generalID, $general['nation'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
         return;
     default:
-        $query = "update general set turn0='$command' where no='{$general['no']}'";
+        $query = "update general set turn0='$command' where no='{$generalID}'";
         MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
         return;
     }
@@ -886,6 +883,8 @@ function NPCStaffWork($general, $nation, $dipState){
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
+
+    $generalID = $general['no'];
 
     $admin = $gameStor->getValues(['startyear','year','month','turnterm','scenario','gold_rate','rice_rate', 'develcost']);
 
@@ -941,7 +940,7 @@ function NPCStaffWork($general, $nation, $dipState){
         $cityID = $nationGeneral['city'];
         $generalID = $nationGeneral['no'];
 
-        if($generalID == $general['no']){
+        if($generalID == $generalID){
             continue;
         }
 

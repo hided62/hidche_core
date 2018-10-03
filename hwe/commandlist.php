@@ -83,7 +83,7 @@ function myCommandList() {
         echo "로그인 되어있지 않습니다.";
         return;
     }
-    $turn = getTurn($me, 2);
+    $turn = getGeneralTurnBrief($me, 2);
 
     echo "<table width=300 height=700 class='tb_layout bg2'>
 <form name=clock>

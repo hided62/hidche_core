@@ -186,9 +186,27 @@ if($city['trade'] == 0) {
     $city['trade'] = "- ";
 }
 
-$query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos,turn0,turn1,turn2,turn3,turn4,turn5 from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
+$query = "select npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);
+
+$generals = $db->query(
+    'SELECT npc,mode,no,picture,imgsvr,name,injury,leader,power,intel,level,nation,crewtype,crew,train,atmos from general where city=%i order by name',
+    $city['city']
+);
+
+$generalTurnList = [];
+
+foreach($db->queryAllLists(
+    'SELECT general_id, turn_idx, action, arg FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
+    Util::pickArrayFromArrayOfDictWithKey($generals, 'no')
+    ) as [$generalID, $turnIdx, $action, $arg]
+){
+    if(!key_exists($generalID, $generalTurnList)){
+        $generalTurnList[$generalID] = [];
+    }
+    $generalTurnList[$generalID][$turnIdx] = [$action, Json::decode($arg)];
+}
 
 $nationname = [];
 $nationlevel = [];
@@ -268,7 +286,7 @@ for($j=0; $j < $gencount; $j++) {
 
     if($ourGeneral && !$isNPC){
         $turnText = [];
-        foreach(getTurn($general, 1) as $turnRawIdx=>$turn){
+        foreach(getGeneralTurnBrief($general, 1) as $turnRawIdx=>$turn){
             $turnIdx = $turnRawIdx+1;
             $turnText[] = "{$turnIdx} : $turn";
         }

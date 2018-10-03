@@ -9,22 +9,17 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("사령부", 1);
 
-$query = "select no,nation,level,con,turntime,belong from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,nation,level,con,turntime,belong FROM general WHERE owner=%i', $userID);
 
-$query = "select secretlimit from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nation = MYDB_fetch_array($result);
+[$nationLevel, $secretLimit] = $db->queryFirstList('SELECT level, secretlimit FROM nation WHERE nation = %i', $me['nation']);
 
 $con = checkLimit($me['con']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretlimit'])) {
+if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $secretLimit)) {
     echo "수뇌부가 아니거나 사관년도가 부족합니다.";
     exit();
 }
@@ -37,40 +32,37 @@ $date = TimeUtil::now();
 // 명령 목록
 $admin = $gameStor->getValues(['year','month','turnterm']);
 
-$query = "
-    select nation,level,
-    l12turn0,l12turn1,l12turn2,l12turn3,l12turn4,l12turn5,l12turn6,l12turn7,l12turn8,l12turn9,l12turn10,l12turn11,
-    l11turn0,l11turn1,l11turn2,l11turn3,l11turn4,l11turn5,l11turn6,l11turn7,l11turn8,l11turn9,l11turn10,l11turn11,
-    l10turn0,l10turn1,l10turn2,l10turn3,l10turn4,l10turn5,l10turn6,l10turn7,l10turn8,l10turn9,l10turn10,l10turn11,
-    l9turn0, l9turn1, l9turn2, l9turn3, l9turn4, l9turn5, l9turn6, l9turn7, l9turn8, l9turn9, l9turn10, l9turn11,
-    l8turn0, l8turn1, l8turn2, l8turn3, l8turn4, l8turn5, l8turn6, l8turn7, l8turn8, l8turn9, l8turn10, l8turn11,
-    l7turn0, l7turn1, l7turn2, l7turn3, l7turn4, l7turn5, l7turn6, l7turn7, l7turn8, l7turn9, l7turn10, l7turn11,
-    l6turn0, l6turn1, l6turn2, l6turn3, l6turn4, l6turn5, l6turn6, l6turn7, l6turn8, l6turn9, l6turn10, l6turn11,
-    l5turn0, l5turn1, l5turn2, l5turn3, l5turn4, l5turn5, l5turn6, l5turn7, l5turn8, l5turn9, l5turn10, l5turn11
-    from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nation = MYDB_fetch_array($result);
-
-$lv = getNationChiefLevel($nation['level']);
+$lv = getNationChiefLevel($nationLevel);
 $turn = [];
 
-for($i=12; $i >= $lv; $i--) {
-    $turn[$i] = getCoreTurn($nation, $i);
-
-    $query = "select name,turntime,npc from general where level={$i} and nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen[$i] = MYDB_fetch_array($result)??[
-        'npc'=>0,
-        'name'=>'',
-        'turntime'=>''
-    ];
+$generals = [];
+foreach($db->query('SELECT no,name,turntime,npc,city,nation,level FROM general WHERE nation = %i AND level >= 5') as $rawGeneral){
+    $generals[$rawGeneral['level']] = new General($rawGeneral, null, $admin['year'], $admin['month'], false);
 }
-for($i= $lv - 1; $i>=5; $i--){
-    $gen[$i] = [
-        'npc'=>0,
-        'name'=>'',
-        'turntime'=>''
-    ];
+
+$nationTurnList = [];
+
+foreach(
+    $db->queryAllLists(
+        'SELECT level, turn_idx, action, arg FROM nation_turn WHERE nation_id = %i ORDER BY level DESC, turn_idx ASC',
+        $me['nation']
+    ) as [$level, $turn_idx, $action, $arg]
+){
+    if(!key_exists($level, $nationTurnList)){
+        $nationTurnList[$level] = [];
+    }
+    $nationTurnList[$level][$turn_idx] = [$action, Json::decode($arg)];
+}
+
+$nationTurnBrief = [];
+foreach($nationTurnList as $level=>$turnList){
+    if(!key_exists($level, $generals)){
+        $general = Util::array_first($generals);
+    }
+    else{
+        $general = $generals[$level];
+    }
+    $nationTurnBrief[$level] = getNationTurnBrief($general, $turnList);
 }
 
 ?>
@@ -118,7 +110,7 @@ for($i=12; $i >= $lv; $i--) {
 }
 
 //FIXME: 각 칸을 div로 놓으면 네개씩 출력하는 삽질이 필요없다.
-
+//TODO: 새롭게 제작한 $nationTurnBrief와 $generals를 이용하여 출력. div로 변경(사실상 새로 짜라!)
 for($k=0; $k < 2; $k++) {
     $l4 = 12 - $k;  $l3 = 10 - $k;  $l2 =  8 - $k;  $l1 =  6 - $k;
 
@@ -134,10 +126,10 @@ for($k=0; $k < 2; $k++) {
     echo "
     <tr>
         <td align=center id=bg1>.</td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l4, $nation['level'])." : ".($gen[$l4]['name']??'')."</b></td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l3, $nation['level'])." : ".($gen[$l3]['name']??'')."</b></td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l2, $nation['level'])." : ".($gen[$l2]['name']??'')."</b></td>
-        <td colspan=2 align=center id=bg1><b>".getLevel($l1, $nation['level'])." : ".($gen[$l1]['name']??'')."</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l4, $nationLevel)." : ".($gen[$l4]['name']??'')."</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l3, $nationLevel)." : ".($gen[$l3]['name']??'')."</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l2, $nationLevel)." : ".($gen[$l2]['name']??'')."</b></td>
+        <td colspan=2 align=center id=bg1><b>".getLevel($l1, $nationLevel)." : ".($gen[$l1]['name']??'')."</b></td>
         <td align=center id=bg1>.</td>
     </tr>
     ";

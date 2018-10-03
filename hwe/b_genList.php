@@ -97,7 +97,24 @@ switch ($type) {
     case 8: $orderSQL = "order by troop desc"; break;
 }
 
-$generals = $db->query('SELECT npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,turn0,turn1,turn2,turn3,turn4 from general WHERE nation = %i %l', $me['nation'], $orderSQL);
+$generals = $db->query(
+    'SELECT npc,mode,no,level,troop,city,injury,leader,power,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,nation from general WHERE nation = %i %l',
+    $me['nation'],
+    $orderSQL
+);
+
+$generalTurnList = [];
+
+foreach($db->queryAllLists(
+    'SELECT general_id, turn_idx, action, arg FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
+    Util::pickArrayFromArrayOfDictWithKey($generals, 'no')
+    ) as [$generalID, $turnIdx, $action, $arg]
+){
+    if(!key_exists($generalID, $generalTurnList)){
+        $generalTurnList[$generalID] = [];
+    }
+    $generalTurnList[$generalID][$turnIdx] = [$action, Json::decode($arg)];
+}
 
 foreach ($generals as &$general) {
     $general['cityText'] = CityConst::byID($general['city'])->name;
@@ -157,13 +174,15 @@ foreach ($generals as &$general) {
 
     
     if ($general['npc'] < 2) {
+        $generalObj = new General($general, null, 0, 0, false);
+        $turnBrief = getGeneralTurnBrief($genralObj, $generalTurnList[$general['no']]);
         $turntext = [];
-        $turn = getTurn($general, 1, 0);
+        $turn = getGeneralTurnBrief($general, 1, 0);
 
-        for ($i=0; $i < 5; $i++) {
-            $turn[$i] = StringUtil::subStringForWidth($turn[$i], 0, 41);
-            $k = $i+1;
-            $turntext[] = "&nbsp;$k : $turn[$i]";
+        foreach($turnBrief as $turnIdx=>$text) {
+            $text = StringUtil::subStringForWidth($text, 0, 41);
+            $printIdx = $turnIdx+1;
+            $turntext[] = "&nbsp;$printIdx : $text";
         }
         $general['turntext'] = join("<br>\n", $turntext);
     }

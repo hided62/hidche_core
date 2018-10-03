@@ -1,11 +1,16 @@
 <?php
 namespace sammo;
 
-function getTurn(array $general, $type, $font=1) {
-    //TODO: 왜 'Type' 인가. 그냥 count로 하자.
-    $str = [];
-    $db = DB::db();
-    $connect=$db->get();
+function getGeneralTurnBrief(General $generalObj, array $turnList) {
+    $result = [];
+
+    foreach($turnList as $turnIdx => [$action, $arg]){
+        $commandClass = getGeneralCommandClass($action);
+        $commandObj = new $commandClass($generalObj, [], $arg);
+        $turnText = $commandObj->getBrief();
+        $result[$turnIdx] = $turnText;
+    }
+    return $result;
 
     $turn = [];
     $turn[0] = $general["turn0"];
@@ -259,11 +264,17 @@ function getTurn(array $general, $type, $font=1) {
     return $str;
 }
 
-function getCoreTurn($nation, $level) {
-    $db = DB::db();
-    $connect=$db->get();
-    $str = [];
-    $turn = [];
+function getNationTurnBrief(General $generalObj, array $turnList) {
+    $result = [];
+
+    $tmpTurn = new LastTurn();
+    foreach($turnList as $turnIdx => [$action, $arg]){
+        $commandClass = getNationCommandClass($action);
+        $commandObj = new $commandClass($generalObj, [], $tmpTurn, $arg);
+        $turnText = $commandObj->getBrief();
+        $result[$turnIdx] = $turnText;
+    }
+    return $result;
 
     $turn[0] = $nation["l{$level}turn0"];
     $turn[1] = $nation["l{$level}turn1"];

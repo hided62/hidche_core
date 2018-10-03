@@ -31,13 +31,17 @@ class General implements iAction{
     protected $lastTurn = null;
     protected $resultTurn = null;
 
-    public function __construct(array $raw, ?array $city, int $year, int $month){
+    public function __construct(array $raw, ?array $city, int $year, int $month, bool $fullConstruct=true){
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
 
         $staticNation = getNationStaticInfo($raw['nation']);
         setLeadershipBonus($raw, $staticNation['level']);
         $this->raw = $raw;
         $this->rawCity = $city;
+
+        if(!$fullConstruct){
+            return;
+        }
 
         if(key_exists('last_turn', $this->raw)){
             $this->lastTurn = LastTurn::fromJson($this->raw['last_turn']);
