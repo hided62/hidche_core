@@ -123,7 +123,7 @@ CREATE TABLE `general` (
 	`betwin` INT(8) NULL DEFAULT '0',
 	`betgold` INT(8) NULL DEFAULT '0',
 	`betwingold` INT(8) NULL DEFAULT '0',
-	`term` INT(4) NULL DEFAULT '0',
+	`last_turn` TEXT NOT NULL DEFAULT '{}',
 	`recturn` TEXT NULL DEFAULT '',
 	`resturn` VARCHAR(30) NULL DEFAULT '',
 	`aux` TEXT NOT NULL DEFAULT '{}' COMMENT 'JSON',
@@ -144,7 +144,7 @@ CREATE TABLE `general_turn` (
 	`general_id` INT(11) NOT NULL,
 	`turn_idx` INT(4) NOT NULL,
 	`action` VARCHAR(16) NOT NULL,
-	`arg` TEXT NOT NULL,
+	`arg` TEXT NULL DEFAULT NULL,
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `general_id` (`general_id`, `turn_idx`),
 	INDEX `action` (`action`, `turn_idx`, `general_id`)
