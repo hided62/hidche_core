@@ -27,6 +27,9 @@ class Json
 
     public static function decode($value)
     {
+        if($value === null){
+            return null;
+        }
         return json_decode($value, true);
     }
 
