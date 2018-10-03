@@ -93,12 +93,15 @@ switch($btn) {
         ], '`no` IN %li', $genlist);
         break;
     case "강제 사망":
-        $date = TimeUtil::now();
+        $date = TimeUtil::now(true);
         $db->update('general', [
-            'turn0'=>EncodeCommand(0, 0, 0, 0),
             'killturn'=>0,
             'turntime'=>$date,
         ], '`no` IN %li', $genlist);
+        $db->update('general_turn', [
+            'action'=>'휴식',
+            'arg'=>'{}'
+        ], 'general_id IN %li AND turn_idx = 0', $genlist);
         break;
     case "특기 부여":
         [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
@@ -309,26 +312,21 @@ switch($btn) {
             ], '`no` IN %li AND item < %i', $genlist, $weap);
         }
         break;
-    case "NPC해제":
-        $db->update('general', [
-            'npc'=>1
-        ], '`no` IN %li', $genlist);
-        break;
     case "하야입력":
-        $db->update('general', [
-            'turn0'=>EncodeCommand(0, 0, 0, 45)
-        ], '`no` IN %li', $genlist);
+        $db->update('general_turn', [
+            'action'=>'che_하야',
+            'arg'=>'{}'
+        ], 'general_id IN %li AND turn_idx = 0', $genlist);
         break;
     case "방랑해산":
-        $db->update('general', [
-            'turn0'=>EncodeCommand(0, 0, 0, 47),
-            'turn1'=>EncodeCommand(0, 0, 0, 56)
-        ], '`no` IN %li', $genlist);
-        break;
-    case "NPC설정":
-        $db->update('general', [
-            'npc'=>2
-        ], '`no` IN %li', $genlist);
+        $db->update('general_turn', [
+            'action'=>'che_방랑',
+            'arg'=>'{}'
+        ], 'general_id IN %li AND turn_idx = 0', $genlist);
+        $db->update('general_turn', [
+            'action'=>'che_해산',
+            'arg'=>'{}'
+        ], 'general_id IN %li AND turn_idx = 1', $genlist);
         break;
     case "00턴":
         $turnterm = $gameStor->turnterm;

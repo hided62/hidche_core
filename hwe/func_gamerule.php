@@ -796,10 +796,15 @@ function checkMerge() {
         } else {
             $resignCount = Util::round($npccount2*(rand()%21+90)/100);
         }
-        $resignCommand = EncodeCommand(0, 0, 0, 45); //하야
-        $query = "update general set turn0='$resignCommand' where nation='{$you['nation']}' and npc>=2 order by rand() limit {$resignCount}";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
+        $npcList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND npc>=2 AND npc != 5 ORDER BY rand() LIMIT %i', $you['nation'], $resignCount);
+        if($npcList){
+            $db->update('general_turn', [
+                'action'=>'che_하야',
+                'arg'=>null
+            ], 'general_id IN %li AND turn_idx = 0');
+        }
+        
         pushGenLog($me, $mylog);
         pushGenLog($you, $youlog);
         pushWorldHistory($history, $admin['year'], $admin['month']);
@@ -847,11 +852,11 @@ function checkSurrender() {
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $mynation = MYDB_fetch_array($result);
         //양국 NPC수
-        $query = "select no from general where nation='{$you['nation']}' and npc>=2";
+        $query = "select no from general where nation='{$you['nation']}' and npc>=2 and npc != 5";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount = MYDB_num_rows($result);
         //양국 NPC수
-        $query = "select no from general where nation='{$me['nation']}' and npc>=2";
+        $query = "select no from general where nation='{$me['nation']}' and npc>=2 and npc != 5";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount2 = MYDB_num_rows($result);
 
@@ -944,9 +949,13 @@ function checkSurrender() {
         } else {
             $resignCount = Util::round($npccount2*(rand()%21+90)/100);
         }
-        $resignCommand = EncodeCommand(0, 0, 0, 45); //하야
-        $query = "update general set turn0='$resignCommand' where nation='{$you['nation']}' and npc>=2 order by rand() limit {$resignCount}";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $npcList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND npc>=2 AND npc != 5 ORDER BY rand() LIMIT %i', $you['nation'], $resignCount);
+        if($npcList){
+            $db->update('general_turn', [
+                'action'=>'che_하야',
+                'arg'=>null
+            ], 'general_id IN %li AND turn_idx = 0');
+        }
 
         pushGenLog($me, $mylog);
         pushGenLog($you, $youlog);

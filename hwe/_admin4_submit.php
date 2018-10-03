@@ -51,8 +51,15 @@ switch($btn) {
         DB::db()->query('update general set killturn=8000 where no IN %li',$genlist);
         break;
     case "강제 사망":
-        $date = TimeUtil::now();
-        DB::db()->query('update general set turn0=%s,killturn=0,turntime=%s where no IN %li',EncodeCommand(0, 0, 0, 0),$date, $genlist);
+        $date = TimeUtil::now(true);
+        $db->update('general', [
+            'killturn'=>0,
+            'turntime'=>$date,
+        ], '`no` IN %li', $genlist);
+        $db->update('general_turn', [
+            'action'=>'휴식',
+            'arg'=>'{}'
+        ], 'general_id IN %li AND turn_idx = 0', $genlist);
         break;
     case "메세지 전달":
     //TODO:새 갠메 시스템으로 변경

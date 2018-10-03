@@ -188,12 +188,7 @@ function command_99($turn) {
     $me = MYDB_fetch_array($result);
 
     if($me['level'] >= 5) {
-        $command = EncodeCommand(0, 0, 0, 99);
-
-        for($i=0; $i < count($turn); $i++) {
-            $query = "update nation set l{$me['level']}turn{$turn[$i]}='{$command}' where nation='{$me['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
+        setNationCommand($me['nation'], $me['level'], [0], 'che_휴식');
     }
 
     header('location:b_chiefcenter.php');

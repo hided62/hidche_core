@@ -561,10 +561,8 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             }
 
             //NPC인 경우 10% 확률로 임관(엔장, 인재, 의병)
-            if($gen['npc'] >= 2 && $gen['npc'] <= 8 && rand() % 100 < 10) {
-                $commissionCommand = EncodeCommand(0, 0, $nation['nation'], 25); //임관
-                $query = "update general set turn0='$commissionCommand' where no={$gen['no']}";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            if($gen['npc'] >= 2 && $gen['npc'] <= 8 && $gen['npc'] != 5 && rand() % 100 < 10) {
+                setGeneralCommand($gen['no'], [0], 'che_임관', ['destNationID'=>$nation['nation']]);
             }
         }
         unset($genlog[1]);

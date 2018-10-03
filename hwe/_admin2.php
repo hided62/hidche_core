@@ -113,12 +113,12 @@ for($i=0; $i < 27; $i++) {
         <td><input type=submit name=btn value='접속 허용'><input type=submit name=btn value='접속 제한'></td>
     </tr>
     <tr>
-        <td align=center>턴설정</td>
+        <td align=center>턴 시각 설정</td>
         <td><input type=submit name=btn value='00턴'><input type=submit name=btn value='랜덤턴'></td>
     </tr>
     <tr>
-        <td align=center>NPC해제</td>
-        <td><input type=submit name=btn value='NPC해제'><input type=submit name=btn value='하야입력'><input type=submit name=btn value='방랑해산'><input type=submit name=btn value='NPC설정'></td>
+        <td align=center>명령 설정</td>
+        <td><input type=submit name=btn value='하야입력'><input type=submit name=btn value='방랑해산'></td>
     </tr>
     <tr>
         <td align=center>메세지 전달</td>

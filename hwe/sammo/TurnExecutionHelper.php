@@ -211,7 +211,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             }
 
             $generalCommand = $generalWork['action'];
-            $generalArg = $generalWork['arg'];
+            $generalArg = Json::decode($generalWork['arg'])??[];
             unset($generalWork['action']);
             unset($generalWork['arg']);
 
@@ -225,11 +225,11 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 $lastNationTurnKey = "turn_last_{$generalWork['nation']}_{$generalWork['level']}";
                 $lastNationTurn = $nationStor->getDBValue($lastNationTurnKey)??[];
                 //수뇌 몇 없는데 매번 left join 하는건 낭비인것 같다.
-                $rawNationTurn = $db->queryFirstRow(
+                $rawNationTurn = Json::decode($db->queryFirstRow(
                     'SELECT action, arg FROM nation_turn WHERE nation_id = %i AND level = %i AND turn_idx =0',
                     $generalWork['nation'],
                     $generalWork['level']
-                );
+                ))??[];
                 $hasNationTurn = true;
             }
 
