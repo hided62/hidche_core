@@ -19,10 +19,10 @@ use function sammo\getGeneralLeadership;
 
 
 class che_정착장려 extends Command\GeneralCommand{
-    static $cityKey = 'pop';
-    static $statKey = 'leader';
-    static $actionKey = '인구';
-    static $actionName = '정착 장려';
+    static protected $cityKey = 'pop';
+    static protected $statKey = 'leader';
+    static protected $actionKey = '인구';
+    static protected $actionName = '정착 장려';
 
     protected function init(){
 

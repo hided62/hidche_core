@@ -6,6 +6,8 @@ use \sammo\Util;
 use \sammo\JosaUtil;
 
 class 휴식 extends Command\GeneralCommand{
+    static protected $actionName = '휴식';
+    
     protected function init(){
         //아무것도 하지 않음
     }

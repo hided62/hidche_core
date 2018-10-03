@@ -19,9 +19,9 @@ use function sammo\getGeneralLeadership;
 
 
 class che_기술연구 extends che_상업투자{
-    static $statKey = 'intel';
-    static $actionKey = '기술';
-    static $actionName = '기술 연구';
+    static protected $statKey = 'intel';
+    static protected $actionKey = '기술';
+    static protected $actionName = '기술 연구';
 
     protected function init(){
 

@@ -7,6 +7,8 @@ use \sammo\JosaUtil;
 use sammo\LastTurn;
 
 class 휴식 extends Command\NationCommand{
+    static protected $actionName = '휴식';
+
     protected function init(){
         //아무것도 하지 않음
     }

@@ -14,8 +14,7 @@ abstract class BaseCommand{
      * @var General|null $generalObj
      * @var array|null $destGeneral
      */
-    protected $id = 0;
-    protected $name = 'CommandName';
+    static protected $actionName = 'CommandName';
 
     protected $generalObj = null;
     protected $city = null;
@@ -126,9 +125,13 @@ abstract class BaseCommand{
 
     abstract protected function init();
     abstract protected function argTest():bool;
+
+    public function getBrief():string{
+        return $this->getName();
+    }
     
     public function getName():string {
-        return static::$name;
+        return static::$actionName;
     }
 
     public function getLogger():ActionLogger{

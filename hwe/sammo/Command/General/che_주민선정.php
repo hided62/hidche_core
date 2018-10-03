@@ -19,10 +19,10 @@ use function sammo\getGeneralLeadership;
 
 
 class che_주민선정 extends Command\GeneralCommand{
-    static $cityKey = 'trust';
-    static $statKey = 'leader';
-    static $actionKey = '민심';
-    static $actionName = '주민 선정';
+    static protected $cityKey = 'trust';
+    static protected $statKey = 'leader';
+    static protected $actionKey = '민심';
+    static protected $actionName = '주민 선정';
 
     protected function init(){
 

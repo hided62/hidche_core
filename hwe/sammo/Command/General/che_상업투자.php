@@ -19,11 +19,11 @@ use function sammo\getGeneralLeadership;
 
 
 class che_상업투자 extends Command\GeneralCommand{
-    static $cityKey = 'comm';
-    static $statKey = 'intel';
-    static $actionKey = '상업';
-    static $actionName = '상업 투자';
-    static $debuffFront = 0.5;
+    static protected $cityKey = 'comm';
+    static protected $statKey = 'intel';
+    static protected $actionKey = '상업';
+    static protected $actionName = '상업 투자';
+    static protected $debuffFront = 0.5;
 
     protected function init(){
 
