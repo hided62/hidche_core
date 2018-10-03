@@ -8,13 +8,10 @@ class TurnExecutionHelper
      * @var General $generalObj;
      */
     protected $generalObj;
-    protected $turn = null;
-    protected $nationTurn = null;
 
     public function __construct(array $rawGeneral, int $year, int $month)
     {
         $this->generalObj = new General($rawGeneral, null, $year, $month);
-        $this->turn = $turn;
         $this->nationTurn = $nationTurn;
     }
 
@@ -119,18 +116,7 @@ class TurnExecutionHelper
         }
 
         $general->clearActivatedSkill();
-        return $general->getResultTurn();
-    }
 
-    function updateTurnTime($commandClassName){
-        $db = DB::db();
-        $gameStor = KVStorage::getStorage($db, 'game_env');
-
-        $general = $this->getGeneral();
-        $generalID = $general->getRaw('no');
-        $logger = $general->getLogger();
-
-        $generalName = $general->getName();
         $killTurn = $gameStor->killturn;
 
         if($general->getVar('npc') >= 2){
@@ -145,6 +131,19 @@ class TurnExecutionHelper
         else{
             $general->setVar('killturn', $killTurn);
         }
+
+        return $general->getResultTurn();
+    }
+
+    function updateTurnTime(){
+        $db = DB::db();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+
+        $general = $this->getGeneral();
+        $generalID = $general->getRaw('no');
+        $logger = $general->getLogger();
+
+        $generalName = $general->getName();
 
         // 삭턴장수 삭제처리
         if($general->getVar('killturn') <= 0){
@@ -234,7 +233,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 $hasNationTurn = true;
             }
 
-            $turnObj = new static($generalWork, $turn, $nationTurn, $year, $month);
+            $turnObj = new static($generalWork, $year, $month);
             if(!$turnObj->processBlocked()){
                 $turnObj->preprocessCommand();
                 if($hasNationTurn){
