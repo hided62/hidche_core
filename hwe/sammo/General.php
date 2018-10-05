@@ -124,6 +124,10 @@ class General implements iAction{
         return $this->raw['name'];
     }
 
+    function getID():int{
+        return $this->raw['no'];
+    }
+
     function getRawCity():?array{
         return $this->rawCity;
     }
