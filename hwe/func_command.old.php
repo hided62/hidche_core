@@ -5,8 +5,7 @@ function getGeneralTurnBrief(General $generalObj, array $turnList) {
     $result = [];
 
     foreach($turnList as $turnIdx => [$action, $arg]){
-        $commandClass = getGeneralCommandClass($action);
-        $commandObj = new $commandClass($generalObj, [], $arg);
+        $commandObj = buildGeneralCommandClass($action, $generalObj, [], $arg);
         $turnText = $commandObj->getBrief();
         $result[$turnIdx] = $turnText;
     }
@@ -270,8 +269,7 @@ function getNationTurnBrief(General $generalObj, array $turnList) {
 
     $tmpTurn = new LastTurn();
     foreach($turnList as $turnIdx => [$action, $arg]){
-        $commandClass = getNationCommandClass($action);
-        $commandObj = new $commandClass($generalObj, [], $tmpTurn, $arg);
+        $commandObj = buildNationCommandClass($action, $generalObj, [], $tmpTurn, $arg);
         $turnText = $commandObj->getBrief();
         $result[$turnIdx] = $turnText;
     }

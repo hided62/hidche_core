@@ -313,6 +313,11 @@ function getGeneralCommandClass(?string $type){
     throw new \InvalidArgumentException("{$type}은 올바른 장수 커맨드가 아님");
 }
 
+function buildGeneralCommandClass(?string $type, General $generalObj, array $env, $arg = null):Command\GeneralCommand{
+    $class = getGeneralCommandClass($type);
+    return new $class($generalObj, $env, $arg);
+}
+
 function getNationCommandClass(?string $type){
     if($type === null){
         $type = '휴식';
@@ -326,6 +331,11 @@ function getNationCommandClass(?string $type){
     }
 
     throw new \InvalidArgumentException("{$type}은 올바른 국가 커맨드가 아님");
+}
+
+function buildNationCommandClass(?string $type, General $generalObj, array $env, LastTurn $lastTurn, $arg = null):Command\NationCommand{
+    $class = getNationCommandClass($type);
+    return new $class($generalObj, $env, $lastTurn, $arg);
 }
 
 function getLevel($level, $nlevel=8) {

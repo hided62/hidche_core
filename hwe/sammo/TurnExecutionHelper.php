@@ -75,9 +75,7 @@ class TurnExecutionHelper
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
-        $commandClass = getNationCommandClass($commandClassName);
-        /** @var \sammo\Command\NationCommand $commandObj */
-        $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandLast, $commandArg);
+        $commandObj = buildNationCommandClass($commandClassName, $general, $gameStor->getAll(true), $commandLast, $commandArg);
 
         $failReason = $commandObj->testReservable();
         if($failReason){
