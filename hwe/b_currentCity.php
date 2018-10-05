@@ -286,7 +286,9 @@ for($j=0; $j < $gencount; $j++) {
 
     if($ourGeneral && !$isNPC){
         $turnText = [];
-        foreach(getGeneralTurnBrief($general, 1) as $turnRawIdx=>$turn){
+        $generalObj = new General($general, null, 0, 0, false);
+        $turnBrief = getGeneralTurnBrief($genralObj, $generalTurnList[$generalObj->getID()]);
+        foreach($turnBrief as $turnRawIdx=>$turn){
             $turnIdx = $turnRawIdx+1;
             $turnText[] = "{$turnIdx} : $turn";
         }

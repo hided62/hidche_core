@@ -12,6 +12,7 @@ function getGeneralTurnBrief(General $generalObj, array $turnList) {
     }
     return $result;
 
+    //TODO: 정리가 끝나면 삭제
     $turn = [];
     $turn[0] = $general["turn0"];
 

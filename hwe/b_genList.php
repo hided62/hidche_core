@@ -175,14 +175,13 @@ foreach ($generals as &$general) {
     
     if ($general['npc'] < 2) {
         $generalObj = new General($general, null, 0, 0, false);
-        $turnBrief = getGeneralTurnBrief($genralObj, $generalTurnList[$general['no']]);
+        $turnBrief = getGeneralTurnBrief($genralObj, $generalTurnList[$generalObj->getID()]);
         $turntext = [];
-        $turn = getGeneralTurnBrief($general, 1, 0);
 
-        foreach($turnBrief as $turnIdx=>$text) {
-            $text = StringUtil::subStringForWidth($text, 0, 41);
-            $printIdx = $turnIdx+1;
-            $turntext[] = "&nbsp;$printIdx : $text";
+        foreach($turnBrief as $turnRawIdx=>$turn){
+            $turn = StringUtil::subStringForWidth($turn, 0, 41);
+            $turnIdx = $turnRawIdx+1;
+            $turntext[] = "&nbsp;$turnIdx : $turn";
         }
         $general['turntext'] = join("<br>\n", $turntext);
     }

@@ -83,7 +83,9 @@ function myCommandList() {
         echo "로그인 되어있지 않습니다.";
         return;
     }
-    $turn = getGeneralTurnBrief($me, 2);
+    $generalObj = new General($me, null, 1, 1, false);
+    $turnList = $db->query('SELECT turn_idx, action, arg FROM general_turn WHERE general_id = %i ORDER BY turn_idx ASC', $generalObj->getID());
+    $turnBrief = getGeneralTurnBrief($generalObj, $turnList);
 
     echo "<table width=300 height=700 class='tb_layout bg2'>
 <form name=clock>
@@ -99,19 +101,19 @@ function myCommandList() {
 
     $totaldate = $me['turntime'];
 
-    for($i=0; $i < 24; $i++) {
+    foreach($turnBrief as $rawTurnIdx => $turn) {
         if($month == 13) {
             $month = 1;
             $year++;
         }
-        $j = $i + 1;
+        $turnIdx = $rawTurnIdx + 1;
         $turndate = substr($totaldate,11, 5);
         echo "
     <tr height=28>
-        <td width=24 align=center height=24 id=bg0><b>$j</b></td>
-        <td width=71 align=center height=24 id=bg1 style='overflow:hidden;'><b>{$year}年 {$month}月</b></td>
+        <td width=24 align=center height=24 class='bg0'><b>$turnIdx</b></td>
+        <td width=71 align=center height=24 class='bg1' style='overflow:hidden;'><b>{$year}年 {$month}月</b></td>
         <td width=42 align=center bgcolor=black><b>$turndate</b></td>
-        <td width=150 align=center height=24 style=table-layout:fixed;>$turn[$i]</td>
+        <td width=150 align=center height=24 style=table-layout:fixed;>{$turn}</td>
     </tr>";
         $month++;
         $totaldate = addTurn($totaldate, $admin['turnterm']);
