@@ -192,8 +192,8 @@ class TurnExecutionHelper
 leader,leader2,power,power2,intel,intel2,weap,book,horse,item,
 experience,dedication,level,gold,rice,crew,crewtype,train,atmos,
 turntime,makenation,makelimit,killturn,block,dedlevel,explevel,
-age,belong,personal,special,special2,term,
-npc,npc_org,npcid,deadyear,
+age,belong,personal,special,special2,term,mode,
+npc,npc_org,npcid,deadyear,npcmsg,
 dex0,dex10,dex20,dex30,dex40,
 warnum,killnum,deathnum,killcrew,deathcrew,recwar,last_turn
 general_turn.`action` AS `action`, general_turn.arg AS arg
@@ -215,9 +215,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             unset($generalWork['action']);
             unset($generalWork['arg']);
 
-            if($generalWork['npc'] >= 2){
-                processAI($generalID); // npc AI 처리
-            }
+            $turnObj = new static($generalWork, $year, $month);
 
             $hasNationTurn = false;
             if($generalWork['nation'] != 0 && $generalWork['level'] >= 5){
@@ -231,15 +229,30 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                     $generalWork['level']
                 ))??[];
                 $hasNationTurn = true;
+                $nationCommand = $rawNationTurn['action'];
+                $nationArg = Json::decode($rawNationTurn['arg']);
             }
 
-            $turnObj = new static($generalWork, $year, $month);
+            if($generalWork['npc'] >= 2){
+                $ai = new GeneralAI($turnObj->getGeneral());
+                if($hasNationTurn){
+                    [$nationCommand, $nationArg] = $ai->chooseNationTurn($generalObj, $nationCommand, $nationArg);
+                }
+
+                
+                if($hasNationTurn){
+                    [$nationCommand, $nationArg] = processAINationTurn($nationCommand, $nationArg);
+                }
+                [$generalCommand, $generalArg] = $ai->chooseGeneralTurn($generalCommand, $generalArg); // npc AI 처리
+                
+            }
+            
             if(!$turnObj->processBlocked()){
                 $turnObj->preprocessCommand();
                 if($hasNationTurn){
                     $resultNationTurn = $turnObj->processNationCommand(
-                        $rawNationTurn['action'], 
-                        Json::decode($rawNationTurn['arg']), 
+                        $nationCommand, 
+                        $nationArg, 
                         $lastNationTurn
                     );
                     $nationStor->setValue($lastNationTurnKey, $resultNationTurn->toJson());
