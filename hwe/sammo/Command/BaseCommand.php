@@ -127,10 +127,10 @@ abstract class BaseCommand{
     abstract protected function argTest():bool;
 
     public function getBrief():string{
-        return $this->getName();
+        return static::getName();
     }
     
-    public function getName():string {
+    static public function getName():string {
         return static::$actionName;
     }
 

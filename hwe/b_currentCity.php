@@ -199,7 +199,7 @@ $generalTurnList = [];
 
 foreach($db->queryAllLists(
     'SELECT general_id, turn_idx, action, arg FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
-    Util::pickArrayFromArrayOfDictWithKey($generals, 'no')
+    array_column($generals, 'no')
     ) as [$generalID, $turnIdx, $action, $arg]
 ){
     if(!key_exists($generalID, $generalTurnList)){

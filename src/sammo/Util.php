@@ -269,17 +269,6 @@ class Util extends \utilphp\util
         return $result;
     }
 
-    public static function pickArrayFromArrayOfDictWithKey(array $arrayOfDict, string $key):array{
-        $result = [];
-        foreach($arrayOfDict as $array){
-            if(!key_exist($key, $array)){
-                continue;
-            }
-            $result[] = $array[$key];
-        }
-        return $result;
-    }
-
     public static function convertArrayToDict($arr, $keyName)
     {
         $result = [];

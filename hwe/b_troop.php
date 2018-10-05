@@ -40,23 +40,38 @@ foreach($db->query(
 }
 
 if($troops){
-    foreach($db->query(
-        'SELECT no,name,picture,imgsvr,turntime,city,turn0,turn1,turn2,turn3,turn4,turn5,troop FROM general WHERE no IN %li',
+    $troopLeaders = $db->query(
+        'SELECT no,name,picture,imgsvr,turntime,city,troop FROM general WHERE no IN %li',
         array_column($troops, 'no')
-    ) as $troopLeader
+    );
+
+    foreach($db->queryAllLists(
+        'SELECT general_id, turn_idx, action, arg FROM general_turn WHERE general_id IN %li AND turn_idx < 5 ORDER BY general_id ASC, turn_idx ASC', 
+        array_column($troopLeaders, 'no')
+        ) as [$generalID, $turnIdx, $action, $arg]
     ){
+        if(!key_exists($generalID, $generalTurnList)){
+            $generalTurnList[$generalID] = [];
+        }
+        $generalTurnList[$generalID][$turnIdx] = [$action, Json::decode($arg)];
+    }
+    
+    foreach($troopLeaders as $troopLeader){
         $imageTemp = GetImageURL($troopLeader['imgsvr']);
         
         $troopLeader['pictureFullPath'] = "$imageTemp/{$troopLeader['picture']}";
         $troopLeader['cityText'] = CityConst::byID($troopLeader['city'])->name;
 
-        $troopLeader['turnText'] = join('<br>', [
-            '1 : '.((DecodeCommand($troopLeader['turn0'])[0] == 26)?'집합':'~'),
-            '2 : '.((DecodeCommand($troopLeader['turn1'])[0] == 26)?'집합':'~'),
-            '3 : '.((DecodeCommand($troopLeader['turn2'])[0] == 26)?'집합':'~'),
-            '4 : '.((DecodeCommand($troopLeader['turn3'])[0] == 26)?'집합':'~'),
-            '5 : '.((DecodeCommand($troopLeader['turn4'])[0] == 26)?'집합':'~'),
-        ]);
+        $turnText = [];
+        foreach($generalTurnList[$troopLeader['no']] as $rawTurnIdx => [$action, $arg]){
+            $actionName = getGeneralCommandClass($action)::getName();
+            if($actionName != '집합'){
+                $actionName = '~';
+            }
+            $turnIdx = $rawTurnIdx + 1;
+            $turnText[] = "{$turnIdx} : {$actionName}";
+        }
+        $troopLeader['turnText'] = join('<br>', $turnText);
         $troops[$troopLeader['troop']]['leader'] = $troopLeader;
     }
 }

@@ -31,6 +31,13 @@ class General implements iAction{
     protected $lastTurn = null;
     protected $resultTurn = null;
 
+    /**
+     * @param array $raw DB row값.
+     * @param null|array $city DB city 테이블의 row값
+     * @param int $year 게임 연도
+     * @param int $month 게임 월
+     * @param bool $fullConstruct iAction, 및 ActionLogger 초기화 여부, false인 경우 no, name, city, nation, level 정도로 초기화 가능
+     */
     public function __construct(array $raw, ?array $city, int $year, int $month, bool $fullConstruct=true){
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
 
@@ -39,15 +46,14 @@ class General implements iAction{
         $this->raw = $raw;
         $this->rawCity = $city;
 
-        if(!$fullConstruct){
-            return;
-        }
-
         if(key_exists('last_turn', $this->raw)){
             $this->lastTurn = LastTurn::fromJson($this->raw['last_turn']);
         }
         $this->resultTurn = new LastTurn();
 
+        if(!$fullConstruct){
+            return;
+        }
 
         $this->logger = new ActionLogger(
             $this->getVar('no'), 
