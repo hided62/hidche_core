@@ -325,18 +325,26 @@ class GameUnitConstBase{
         return static::$constName[$name]??null;
     }
 
+    /**
+     * @return \sammo\GameUnitDetail[]
+     */
     public static function byCity(int $city): array{
         static::_generate();
         return static::$constCity[$city]??[];
     }
 
+    /**
+     * @return \sammo\GameUnitDetail[]
+     */
     public static function byRegion(int $region): array{
         static::_generate();
         return static::$constRegion[$region]??[];
     }
 
     
-
+    /**
+     * @return \sammo\GameUnitDetail[]
+     */
     public static function byType(int $type): array{
         static::_generate();
         if(!key_exists($type, static::$constType)){

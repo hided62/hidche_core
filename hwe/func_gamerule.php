@@ -221,7 +221,7 @@ function SetNationFront($nationNo) {
     } else {
         //평시이면 공백지
         //NOTE: if, else일 경우 NPC는 전쟁시에는 공백지로 출병하지 않는다는 뜻이 된다.
-        foreach ($db->queryFirstColumn('SELECT city,path from city where nation=0') as $city) {
+        foreach ($db->queryFirstColumn('SELECT city from city where nation=0') as $city) {
             foreach(CityConst::byID($city)->path as $adjKey=>$adjVal){
                 $adj[$adjKey] = $adjVal;
             }

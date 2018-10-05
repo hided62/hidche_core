@@ -159,6 +159,14 @@ class GameUnitDetail{
         return min(50, $ratio) / 100;
     }
 
+    public function pickScore($tech){
+        $defaultWar = GameConst::$armperphase + $this->attack + $this->defence + getTechAbil($tech) * 2;
+        $defaultWar *= 1 + $this->speed / 2;
+        $defaultWar /= Util::valueFit(1 - $this->avoid / 100, 0.1);
+        $defaultWar *= 1 + $this->magicCoef / 2;
+        return sqrt($defaultWar);
+    }
+
     public function isValid($ownCities, $ownRegions, $relativeYear, $tech){
         //음수 없음
         $relativeYear = max(0, $relativeYear);

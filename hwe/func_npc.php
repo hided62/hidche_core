@@ -283,32 +283,7 @@ function processAI(General $generalObj, $command, $arg):array{
     // 교전중이면 4상태
     if($dipCount > 0) { $dipState = 4; }
 
-    //무장
-    if($general['power'] >= $general['intel']) {
-        $genType = 0;
-        if($general['intel'] >= $general['power'] * 0.8) {  //무지장
-            switch(rand() % 5) {
-            case 0: case 1: case 2: case 3: $genType = 0; break;
-            case 4:                         $genType = 1; break;
-            }
-        }
-    //지장
-    } else {
-        $genType = 1;
-        if($general['power'] >= $general['intel'] * 0.8) {  //지무장
-            switch(rand() % 5) {
-            case 0:                         $genType = 0; break;
-            case 1: case 2: case 3: case 4: $genType = 1; break;
-            }
-        }
-    }
-
-    //내정장
-    if($general['leader'] < 40) {
-        $genType += 2;
-        //$genType = 2; // 무내정장
-        //$genType = 3; // 지내정장
-    }
+    
 
     $tech = getTechCost($nation['tech']);
     $resrc = $tech * 700;//XXX: 왜 700이지?
@@ -362,7 +337,8 @@ function processAI(General $generalObj, $command, $arg):array{
         }
         $query = "update general set turn0='$command' where no='{$generalID}'";
         MYDB_query($query, $connect) or Error("processAI07 ".MYDB_error($connect),"");
-        return;
+        return [];
+
     } elseif($general['npc'] != 9 && $general['level'] == 0) {
         switch(Util::choiceRandomUsingWeight([11.4, 40, 20, 28.6])) {
         //임관 10%
@@ -413,8 +389,10 @@ function processAI(General $generalObj, $command, $arg):array{
         }
         $query = "update general set turn0='$command' where no='{$generalID}'";
         MYDB_query($query, $connect) or Error("processAI07 ".MYDB_error($connect),"");
-        return;
+        return [];
     }
+
+    //TODO:여기부터 다시 구현
 
     $rulerCommand = 0;
     //군주가 할일
