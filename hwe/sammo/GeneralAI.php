@@ -129,7 +129,7 @@ class GeneralAI{
         }
     }
 
-    protected function chooseDevelopTurn():?array{
+    protected function chooseDevelopTurn(bool &$cityFull):?array{
         $general = $this->general;
         $city = $this->city;
         $nation = $this->nation;
@@ -139,6 +139,8 @@ class GeneralAI{
         $leadership = $this->leadership;
         $power = $this->power;
         $intel = $this->intel;
+
+        $cityFull = false;
 
         $develRate = [
             'trust'=>$city['trust'],
@@ -151,7 +153,7 @@ class GeneralAI{
         ];
 
         // 우선 선정
-        if($develRate['trust'] < 95 && Util::randBool($leadership / 40)){
+        if($develRate['trust'] < 0.95 && Util::randBool($leadership / 40)){
             return ['che_선정', null];
         }
 
@@ -212,6 +214,10 @@ class GeneralAI{
             }
         }
 
+        if(!$commandList){
+            $cityFull = true;
+        }
+
         $genCount = $db->queryFirstField('SELECT count(no) FROM general');
         $commandList['che_인재탐색'] = 500 / $genCount * 10;
 
@@ -219,8 +225,6 @@ class GeneralAI{
             (GameConst::$minNationalGold + GameConst::$minNationalRice + 10000) / 
             Util::valueFit($nation['gold'] + $nation['rice'], 1000)
         ) * 10;
-        
-        //NOTE:내정 풀을 인식하는게 더 좋지 않을까?
 
         return [Util::choiceRandomUsingWeight($commandList), null];
     }
