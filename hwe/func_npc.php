@@ -392,8 +392,6 @@ function processAI(General $generalObj, $command, $arg):array{
         return [];
     }
 
-    //TODO:여기부터 다시 구현
-
     $rulerCommand = 0;
     //군주가 할일
     if($general['level'] == 12) {
@@ -462,6 +460,7 @@ function processAI(General $generalObj, $command, $arg):array{
                 MYDB_query($query, $connect) or Error("processAI09 ".MYDB_error($connect),"");
                 return;
             }
+            //NOTE: 여기까지 구현함
         } else {
             //외교 평시에 선포
 

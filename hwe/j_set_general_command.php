@@ -24,7 +24,7 @@ $defaultCheck = [
     ],
     'integer'=>[
         'destGeneralID', 'destCityID', 'destNationID',
-        'amountMoney', 'amountCrew', 'colorType'
+        'amountMoney', 'amountCrew', 'colorType', 'nationType'
     ],
     'boolean'=>[
         'isGold'

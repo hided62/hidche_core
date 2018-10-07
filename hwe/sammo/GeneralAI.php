@@ -31,7 +31,7 @@ class GeneralAI{
     public function __construct(General $general){
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        $this->env = $gameStor->getValues(['startyear','year','month','turnterm','scenario','gold_rate','rice_rate']);
+        $this->env = $gameStor->getValues(['startyear','year','month','turnterm','killturn','scenario','gold_rate','rice_rate']);
         $this->general = $general;
         if($general->getRawCity() === null){
             $city = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $general->getCityID());
@@ -311,7 +311,7 @@ class GeneralAI{
             $type = GameUnitConst::DEFAULT_CREWTYPE;
         }
     
-        
+        //NOTE: 훈련과 사기진작은 '금만 사용한다'는 가정을 하고 있음
         $obj훈련 = buildGeneralCommandClass('che_훈련', $general, $env);
         $obj사기진작 = buildGeneralCommandClass('che_사기진작', $general, $env);
 
@@ -367,9 +367,14 @@ class GeneralAI{
             return ['che_견문', null];
         }
 
-        switch(Util::choiceRandomUsingWeight([11.4, 40, 20, 28.6])) {
+        switch(Util::choiceRandomUsingWeight([
+            '임관'=>11.4,
+            '거병_견문'=>40,
+            '이동'=>20,
+            '기타'=>28.6
+        ])) {
             //임관
-            case 0:
+            case '임관':
     
                 $available = true;
     
@@ -395,7 +400,7 @@ class GeneralAI{
                     $arg = ['destNationID'=>99];
                 }
                 break;
-            case 1: //거병이나 견문
+            case '거병_견문': //거병이나 견문
                 // 초반이면서 능력이 좋은놈 위주로 1.4%확률로 거병
                 $prop = Util::randF() * (GameConst::$defaultStatNPCMax + GameConst::$chiefStatMin) / 2;
                 $ratio = ($general->getVar('leader') + $general->getVar('power') + $general->getVar('intel')) / 3;
@@ -407,7 +412,7 @@ class GeneralAI{
                     $command = 'che_견문';
                 }
                 break;
-            case 2: //이동
+            case '이동': //이동
                 
                 $paths = array_keys(CityConst::byID($city['city'])::$path);
                 $command = 'che_이동';
@@ -433,6 +438,9 @@ class GeneralAI{
         $leadership = $this->leadership;
         $power = $this->power;
         $intel = $this->intel;
+
+        $year = $env['year'];
+        $month = $env['month'];
 
         $db = DB::db();
 
@@ -499,5 +507,280 @@ class GeneralAI{
             }
         }
 
+        if($general->getVar('level') == 12){
+            $turn = $this->processLordTurn();
+            if($turn !== null){
+                return $turn;
+            }
+        }
+    }
+
+    protected function processLordTurn():?array{
+        $general = $this->getGeneralObj();
+        $city = $this->city;
+        $nation = $this->nation;
+        $env = $this->env;
+
+        $year = $env['year'];
+        $month = $env['month'];
+
+        if($general->getVar('npc') == 9 && $this->dipState == self::d평화 && !$this->attackable){
+            if($nation['level'] == 0){
+                return ['che_해산', null];
+            }
+            else{
+                return ['che_방랑', null];
+            }
+        }
+
+        if(in_array($month, [1,4,7,10])){
+            $this->calcPromotion();
+        }
+        else if($month == 12){
+            $this->calcTexRate();
+            $this->calcGoldBillRate();
+        }
+        else if($month == 6){
+            $this->calcTexRate();
+            $this->calcRiceBillRate();
+        }
+
+        if($nation['level'] == 0){
+            if($env['startyear']+1 <= $admin['year']){
+                return ['che_해산', null];
+            }
+            else if($city['nation'] == 0 && ($city['level'] == 5 || $city['level'] == 6)) {
+                $nationType = Util::choiceRandom(array_keys(getNationTypeList()));
+                $nationColor = Util::choiceRandom(array_keys(GetNationColors()));
+                return ['che_건국', [
+                    'nationName'=>"㉿".mb_substr($general->getName(), 1),
+                    'nationType'=>$nationType,
+                    'nationColor'=>$nationColor
+                ]];
+
+            }
+            else{
+                //모든 공백지 조사
+                $lordCities = $db->queryFirstColumn('SELECT city.city FROM general LEFT JOIN city ON general.city = city.city WHERE general.level = 12 AND city.nation != 0');
+                $nationCities = $db->queryFirstColumn('SELECT city FROM city WHERE nation != 0');
+
+                $occupiedCities = [];
+                foreach($lordCities as $tCityId){
+                    $occupiedCities[$tCityId] = 2;
+                }
+                foreach($nationCities as $tCityId){
+                    $occupiedCities[$tCityId] = 1;
+                }
+
+                $targetCity = [];
+                //NOTE: 최단 거리가 현재 도시에서 '어떻게 가야' 가장 짧은지 알 수가 없으므로, 한칸 간 다음 계산하기로
+                foreach(CityConst::byID($general->getVar('city'))->path as $nearCityID){
+                    $targetCity[$nearCityID] = 2.0;
+                    
+                    $nearCities = searchDistance($nearCityID, 4, true);
+                    foreach($nearCities as $distance => $distCities){
+                        foreach($distCities as $distCity){
+                            if(key_exists($distCity, $occupiedCities)){
+                                continue;
+                            }
+                            if(CistConst::byID($distCity)->level < 4){
+                                continue;
+                            }
+
+                            $targetCity[$nearCityID] += 1 / (2 ** $distance);
+                        }
+                    }
+                }
+                
+                return ['che_이동', ['destCityID'=>Util::choiceRandomUsingWeight($targetCity)]];
+            }
+        }
+        
+        return null;
+    }
+
+    protected function calcPromotion(){
+        $db = DB::db();
+
+        $nation = $this->nation;
+        $nationID = $nation['nation'];
+        $minChiefLevel = getNationChiefLevel($nation['level']);
+
+        $minKillturn = $this->env['killturn'] - Util::toInt(30 / $this->env['turnterm']);
+        $chiefCandidate = [];
+
+        //이 함수를 부르는건 군주 AI이므로, 군주는 세지 않아도 됨
+        $userChief = []; 
+
+        foreach($db->query(
+            'SELECT no, npc, level, killturn FROM general WHERE nation = %i AND 12 > level AND level > 4', $nationID
+        ) as $chief){
+
+            if($chief['npc'] < 2 && $chief['killturn'] < $minKillturn ){
+                $chiefCandidate[$cheif['level']] = $chief['no'];
+                $userChief[$chief['no']] = $chief['level'];
+            }
+        }
+
+        $db->update('general', [
+            'level'=>1
+        ], 'level < 12 AND level > 4 AND nation = %i', $nationID);
+
+        $maxBelong = $db->queryFirstField('SELECT max(belong) FROM `general` WHERE nation=%i', $nationID);
+        $maxBelong = min($maxBelong - 1, 3);
+        
+        if(!$userChief){
+            $candUserChief = $db->queryFirstField(
+                'SELECT no FROM general WHERE nation = %i AND level = 1 AND killturn > %i AND npc < 2 AND belong >= %i ORDER BY leader DESC LIMIT 1',
+                $nationID,
+                $minKillturn,
+                $maxBelong
+            );
+            if($candUserChief){
+                $userChief[$candUserChief] = 11;
+                $chiefCandidate[11] = $candUserChief;
+            }
+        }
+
+        $promoted = $userChief;
+
+        if(!key_exists(11, $chiefCandidate)){
+            $candChiefHead = $db->queryFirstField(
+                'SELECT no FROM general WHERE nation = %i AND level = 1 AND npc >= 2 AND belong >= %i ORDER BY leader DESC LIMIT 1',
+                $nationID,
+                $maxBelong
+            );
+            if($candChiefHead){
+                $chiefCandidate[11] = $candChiefHead;
+                $promoted[$candChiefHead] = 11;
+            }
+        }
+
+        if($minChiefLevel < 11){
+            //무장 수뇌 후보
+            $candChiefPower = $db->queryFirstColumn(
+                'SELECT no FROM general WHERE nation = %i AND power >= %i AND level = 1 AND belong >= %i ORDER BY power DESC LIMIT %i',
+                $nationID,
+                GameConst::$chiefStatMin,
+                $maxBelong, 12 - $minChiefLevel
+            );
+            //지장 수뇌 후보
+            $candChiefIntel = $db->queryFirstColumn(
+                'SELECT no FROM general WHERE nation = %i AND intel >= %i AND level = 1 AND belong >= %i ORDER BY intel DESC LIMIT %i',
+                $nationID,
+                GameConst::$chiefStatMin,
+                $maxBelong,
+                12 - $minChiefLevel
+            );
+            //무력, 지력이 모두 높은 장수를 고려하여..
+            
+            $iterCandChiefPower = new \ArrayIterator($candChiefPower);
+            $iterCandChiefIntel = new \ArrayIterator($candChiefIntel);
+
+            foreach(range(10, $minChiefLevel, -1) as $cheifLevel){
+                if(key_exists($cheifLevel, $chiefCandidate)){
+                    continue;
+                }
+
+                /** @var \ArrayIterator $iterCurrentType */
+                $iterCurrentType = ($cheifLevel % 2 == 0)?$iterCandChiefPower:$iterCandChiefIntel;
+                $candidate = $iterCurrentType->current();
+
+                while(key_exist($candidate, $promoted)){
+                    $iterCurrentType->next();
+                }
+
+                $chiefCandidate[$cheifLevel] = $candidate;
+                $promoted[$candidate] = $cheifLevel;
+            }
+
+            foreach($chiefCandidate as $chiefLevel=>$chiefID){
+                $db->update('general', [
+                    'level'=>$cheifLevel
+                ], 'no=%i',$chiefID);
+            }
+        }
+        
+    }
+
+    protected function calcTexRate():int{
+        $db = DB::db();
+        $nation = $this->nation;
+        $env = $this->env;
+
+        $nationID = $nation['nation'];
+
+        //도시
+        $cityCount = $db->queryFirstField('SELECT count(*) FROM city WHERE nation = %i', $nationID);
+
+        if($cityCount == 0) {
+            $db->update('nation', [
+                'war'=>0,
+                'rate'=>15
+            ], 'nation=%i', $nationID);
+            return 15;
+        } else {
+            $devRate = $db->queryFirstRow(
+                'select sum(pop)/sum(pop2)*100 as pop,(sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(agri2)+sum(comm2)+sum(secu2)+sum(def2)+sum(wall2))*100 as all from city where nation=%i',
+                $nationID
+            );
+
+            $avg = ($devRate['pop'] + $devRate['all']) / 2;
+
+            if($avg > 95) $rate = 25;
+            elseif($avg > 70) $rate = 20;
+            elseif($avg > 50) $rate = 15;
+            else $rate = 10;
+
+            $db->update('nation', [
+                'war'=>0,
+                'rate'=>$rate
+            ]);
+            return $rate;
+        }
+    }
+    
+    protected function calcGoldBillRate():int{
+        $db = DB::db();
+        $nation = $this->nation;
+        $env = $this->env;
+
+        $nationID = $nation['nation'];
+    
+        $incomeList = getGoldIncome($nation['nation'], $nation['rate'], $env['gold_rate'], $env['type']);
+        $income = $gold + $incomeList[0] + $incomeList[1];
+        $outcome = getGoldOutcome($nation['nation'], 100);    // 100%의 지급량
+        $bill = intval($income / $outcome * 80); // 수입의 80% 만 지급
+    
+        if($bill < 20)  { $bill = 20; }
+        if($bill > 200) { $bill = 200; }
+    
+        $db->update('nation', [
+            'bill'=>$bill,
+        ], 'nation=%i', $nationID);
+
+        return $bill;
+    }
+
+    protected function caclRiceBillRate():int{
+        $db = DB::db();
+        $nation = $this->nation;
+        $env = $this->env;
+
+        $nationID = $nation['nation'];
+
+        $incomeList = getRiceIncome($nation['nation'], $nation['rate'], $env['gold_rate'], $env['type']);
+        $income = $rice + $incomeList[0] + $incomeList[1];
+        $outcome = getRiceOutcome($nation['nation'], 100);    // 100%의 지급량
+        $bill = intval($income / $outcome * 80); // 수입의 80% 만 지급
+
+        if($bill < 20)  { $bill = 20; }
+        if($bill > 200) { $bill = 200; }
+
+        $db->update('nation', [
+            'bill'=>$bill,
+        ], 'nation=%i', $nationID);
+
+        return $bill;
     }
 }
