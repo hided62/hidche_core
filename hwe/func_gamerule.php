@@ -976,10 +976,6 @@ function updateNationState() {
         $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $citycount = MYDB_num_rows($cityresult);
 
-        $query = "select no from general where nation='{$nation['nation']}'";
-        $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($genresult);
-
         if($citycount == 0) {
             $nationlevel = 0;   // 방랑군
         } elseif($citycount == 1) {
@@ -1051,12 +1047,6 @@ function updateNationState() {
                     ]);
                     $troopID = $db->insertId();
 
-                    $db->update('nation', [
-                        'gennum'=>$nation['gennum']+1,
-                        'totaltech'=>Util::valueFit($nation['gennum']+1, GameConst::$initialNationGenLimit) * $nation['tech'],
-                    ], 'nation=%i', $nation['nation']);
-                    $nation['gennum'] += 1;
-
                     $command = EncodeCommand(0, 0, 0, 26); //집합
                     $db->update('general', [
                         'troop'=>$troopID,
@@ -1079,10 +1069,13 @@ function updateNationState() {
 
             refreshNationStaticInfo();
         }
+
+        $gencount = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i', $nation['nation']);
+
         $gennum = $gencount;
         if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
         //기술 및 변경횟수 업데이트
-        $query = "update nation set tech=totaltech/'$gencount',gennum='$gennum' where nation='{$nation['nation']}'";
+        $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
