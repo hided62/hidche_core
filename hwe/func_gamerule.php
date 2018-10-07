@@ -977,8 +977,6 @@ function updateNationState() {
         //TODO: level이 진관수이소중대특 체계를 벗어날 수 있음
         $citycount = $db->queryFirstField('SELECT count(*) FROM city WHERE nation=%i AND level>=4', $nation['nation']);
 
-        $gencount = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i', $nation['nation']);
-
         if($citycount == 0) {
             $nationlevel = 0;   // 방랑군
         } elseif($citycount == 1) {
@@ -1056,12 +1054,15 @@ function updateNationState() {
             }
             $gameStor->assembler_id = $lastAssemblerID;
 
-            //작위 상승
-            $query = "update nation set level='{$nation['level']}' where nation='{$nation['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
+            $db->update('nation', [
+                'level'=>$nation['level']
+            ], 'nation=%i', $nation['nation']);
+            
             refreshNationStaticInfo();
         }
+        
+        $gencount = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i', $nation['nation']);
+
         $db->update('nation', [
             'gennum'=>$gencount
         ], 'nation=%i', $nation['nation']);
