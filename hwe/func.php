@@ -1957,7 +1957,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
             'leader2'=>$db->sqleval('leader2 - %i', GameConst::$upgradeLimit),
             'leader'=>$db->sqleval('leader + 1')
         ], 'no=%i', $generalID);
-        $actLog->pushGeneralActionLog('<R>통솔</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
+        $actLog->pushGeneralActionLog('<S>통솔</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
         return;
     }
 
@@ -1966,7 +1966,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
             'power2'=>$db->sqleval('power2 - %i', GameConst::$upgradeLimit),
             'power'=>$db->sqleval('power + 1')
         ], 'no=%i', $generalID);
-        $actLog->pushGeneralActionLog('<R>무력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
+        $actLog->pushGeneralActionLog('<S>무력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
         return;
     }
 
@@ -1975,7 +1975,7 @@ function checkAbilityEx(int $generalID, ActionLogger $actLog){
             'intel2'=>$db->sqleval('intel2 - %i', GameConst::$upgradeLimit),
             'intel'=>$db->sqleval('intel + 1')
         ], 'no=%i', $generalID);
-        $actLog->pushGeneralActionLog('<R>지력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
+        $actLog->pushGeneralActionLog('<S>지력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
         return;
     }
 }
@@ -1999,7 +1999,7 @@ function checkAbility($general, $log) {
         $query = "update general set leader2=leader2-'$limit',leader=leader+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[] = "<C>●</><Y>통솔</>이 <C>1</> 올랐습니다!";
+        $log[] = "<C>●</><S>통솔</>이 <C>1</> 올랐습니다!";
     }
 
     if($general['power2'] < 0) {
@@ -2011,7 +2011,7 @@ function checkAbility($general, $log) {
         $query = "update general set power2=power2-'$limit',power=power+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[] = "<C>●</><Y>무력</>이 <C>1</> 올랐습니다!";
+        $log[] = "<C>●</><S>무력</>이 <C>1</> 올랐습니다!";
     }
 
     if($general['intel2'] < 0) {
@@ -2023,7 +2023,7 @@ function checkAbility($general, $log) {
         $query = "update general set intel2=intel2-'$limit',intel=intel+1 where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log[] = "<C>●</><Y>지력</>이 <C>1</> 올랐습니다!";
+        $log[] = "<C>●</><S>지력</>이 <C>1</> 올랐습니다!";
     }
 
     return $log;
