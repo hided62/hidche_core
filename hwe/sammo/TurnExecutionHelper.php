@@ -234,13 +234,9 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             if($generalWork['npc'] >= 2){
                 $ai = new GeneralAI($turnObj->getGeneral());
                 if($hasNationTurn){
-                    [$nationCommand, $nationArg] = $ai->chooseNationTurn($generalObj, $nationCommand, $nationArg);
+                    [$nationCommand, $nationArg] = $ai->chooseNationTurn($nationCommand, $nationArg);
                 }
 
-                
-                if($hasNationTurn){
-                    [$nationCommand, $nationArg] = processAINationTurn($nationCommand, $nationArg);
-                }
                 [$generalCommand, $generalArg] = $ai->chooseGeneralTurn($generalCommand, $generalArg); // npc AI 처리
                 
             }
