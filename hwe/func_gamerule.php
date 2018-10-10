@@ -204,21 +204,30 @@ function SetNationFront($nationNo) {
     if(!$nationNo) { return; }
     // 도시소유 국가와 선포,교전중인 국가
     
-    $adj = [];
+    $adj3 = [];
+    $adj2 = [];
+    $adj1 = [];
 
     $db = DB::db();
-    $enemyCities = $db->queryFirstColumn(
+    foreach($db->queryFirstColumn(
         'SELECT city from city where nation IN 
-            (SELECT you from diplomacy where me = %i and (state=0 or (state=1 and term<=5)))'
+            (SELECT you from diplomacy where me = %i and state=0)'
         , $nationNo
-    );
-    if($enemyCities) {
-        foreach($enemyCities as $city){
-            foreach(CityConst::byID($city)->path as $adjKey=>$adjVal){
-                $adj[$adjKey] = $adjVal;
-            }
+    ) as $city){
+        foreach(CityConst::byID($city)->path as $adjKey=>$adjVal){
+            $adj3[$adjKey] = $adjVal;
         }
-    } else {
+    };
+    foreach($db->queryFirstColumn(
+        'SELECT city from city where nation IN 
+            (SELECT you from diplomacy where me = %i and state=1 and term<=5)'
+        , $nationNo
+    ) as $city){
+        foreach(CityConst::byID($city)->path as $adjKey=>$adjVal){
+            $adj1[$adjKey] = $adjVal;
+        }
+    }
+    if(!$adj3 && !$adj1){
         //평시이면 공백지
         //NOTE: if, else일 경우 NPC는 전쟁시에는 공백지로 출병하지 않는다는 뜻이 된다.
         foreach ($db->queryFirstColumn('SELECT city from city where nation=0') as $city) {
@@ -232,10 +241,20 @@ function SetNationFront($nationNo) {
         'front'=>0
     ], 'nation=%i', $nationNo);
 
-    if($adj){
+    if($adj3){
         $db->update('city', [
-            'front'=>($enemyCities?1:2),
-        ], 'nation=%i and city in %li', $nationNo, array_keys($adj));
+            'front'=>3,
+        ], 'nation=%i and city in %li', $nationNo, array_keys($adj3));
+    }
+    if($adj2){
+        $db->update('city', [
+            'front'=>2,
+        ], 'nation=%i and city in %li', $nationNo, array_keys($adj2));
+    }
+    if($adj1){
+        $db->update('city', [
+            'front'=>1,
+        ], 'nation=%i and city in %li', $nationNo, array_keys($adj1));
     }
 }
 
