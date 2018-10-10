@@ -241,20 +241,20 @@ function SetNationFront($nationNo) {
         'front'=>0
     ], 'nation=%i', $nationNo);
 
-    if($adj3){
+    if($adj1){
         $db->update('city', [
-            'front'=>3,
-        ], 'nation=%i and city in %li', $nationNo, array_keys($adj3));
+            'front'=>1,
+        ], 'nation=%i and city in %li', $nationNo, array_keys($adj1));
     }
     if($adj2){
         $db->update('city', [
             'front'=>2,
         ], 'nation=%i and city in %li', $nationNo, array_keys($adj2));
     }
-    if($adj1){
+    if($adj3){
         $db->update('city', [
-            'front'=>1,
-        ], 'nation=%i and city in %li', $nationNo, array_keys($adj1));
+            'front'=>3,
+        ], 'nation=%i and city in %li', $nationNo, array_keys($adj3));
     }
 }
 

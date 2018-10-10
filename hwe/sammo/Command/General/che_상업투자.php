@@ -148,7 +148,7 @@ class che_상업투자 extends Command\GeneralCommand{
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
 
-        if($this->city['front'] == 1 && $this->nation['capital'] != $this->city['city']){
+        if(in_array($this->city['front'], [1, 3]) && $this->nation['capital'] != $this->city['city']){
             $score *= static::$debuffFront;
         }
 
