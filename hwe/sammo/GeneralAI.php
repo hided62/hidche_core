@@ -575,7 +575,15 @@ class GeneralAI{
                 $targetCity = [];
                 //NOTE: 최단 거리가 현재 도시에서 '어떻게 가야' 가장 짧은지 알 수가 없으므로, 한칸 간 다음 계산하기로
                 foreach(CityConst::byID($general->getVar('city'))->path as $nearCityID){
-                    $targetCity[$nearCityID] = 2.0;
+                    if(CityConst::byID($nearCityID)->level < 4){
+                        $targetCity[$nearCityID] = 0.5;
+                    }
+                    else if(!key_exists($nearCities, $occupiedCities)){
+                        $targetCity[$nearCityID] = 2;
+                    }
+                    else{
+                        $targetCity[$nearCityID] = 0;
+                    }
                     
                     $nearCities = searchDistance($nearCityID, 4, true);
                     foreach($nearCities as $distance => $distCities){
@@ -583,7 +591,7 @@ class GeneralAI{
                             if(key_exists($distCity, $occupiedCities)){
                                 continue;
                             }
-                            if(CistConst::byID($distCity)->level < 4){
+                            if(CityConst::byID($distCity)->level < 4){
                                 continue;
                             }
 
