@@ -16,6 +16,7 @@ class GeneralAI{
     protected $intel;
 
     protected $dipState;
+    protected $warTargetNation;
     protected $attackable;
     protected $onGame;
 
@@ -108,6 +109,18 @@ class GeneralAI{
         $frontStatus = $db->queryFirstField('SELECT max(front) FROM city WHERE nation=%i AND supply=1', $nationID);
         // 공격가능도시 있으면
         $this->attackable = ($frontStatus !== null)?$frontStatus:false;
+
+        $warTarget = $db->queryAllLists(
+            'SELECT you, state WHERE me = %i AND (state = 1 OR (state = 0 AND term < 5))',
+            $nationID
+        );
+
+        $warTargetNation = [];
+        foreach($warTarget as [$warNationID, $warState]){
+            $warTargetNation[$warNationID] = $warState==0?2:1;
+        }
+        $warTargetNation[0] = 0;
+        $this->warTargetNation = $warTargetNation;
 
     
         $minWarTerm = $db->queryFirstField('SELECT min(term) FROM diplomacy WHERE me = %i AND state=1', $nationID);
@@ -655,6 +668,8 @@ class GeneralAI{
         $general = $this->getGeneralObj();
         $city = $this->city;
         $nation = $this->nation;
+        $cityID = $city['city'];
+        $nationID = $nation['nation'];
         $env = $this->env;
 
         $baseArmCost = GameUnitConst::byID(GameUnitConst::DEFAULT_CREWTYPE)->costWithTech(
@@ -680,8 +695,36 @@ class GeneralAI{
             return ['che_주민선정', null];
         }
 
+        if($general->getVar('crew') < 1000){
+            if ($general->getVar('gold') <= $baseArmCost) {
+               //반징도 불가? 내정
+               return null;
+            }
+
+            $sumLeadershipInCity = $db->queryFirstField('SELECT sum(leader) FROM general WHERE nation = %i AND city = %i AND leader > 40', $nationID, $cityID);
+            if(
+                $city['pop'] > 30000 + $general->getLeadership(false) * 100 * 1.3 &&
+                Util::bool(($city['pop'] - 30000) / $sumLeadershipInCity * 100)
+            ){
+                return $this->chooseRecruitCrewType();
+            }
+
+            $recruitableCityList = $db->queryAllLists(
+                'SELECT city, (pop - 30000) as relPop FROM city WHERE nation = %i AND pop > %i AND supply = 1',
+                $nationID,
+                30000 + $general->getLeadership(false) * 100
+            );
+            
+            if(!$recruitableCityList){
+                return null;
+            }
+            return ['che_NPC능동', [
+                'optionText'=>'순간이동',
+                'destCityID'=>Util::choiceRandomUsingWeightPair($recruitableCityList),
+            ]];
+        }
+
         if(
-            $general->getVar('crew') >= 1000 &&
             $general->getVar('train') >= 90 &&
             $general->getVar('atmos') >= 90
         ){
@@ -693,27 +736,59 @@ class GeneralAI{
             ){
                 return $this->processAttack();
             }
-
+            if($city['front'] > 0){
+                //전방에 훈사까지 완료되어있으면 내정을 해야..
+                return null;
+            }
             //TODO: 전방으로
-        }
-
-        
-
-        if($general->getVar('crew') >= 1000){
-            if($general->getVar('train') < 90){
-                $turnObj = buildGeneralCommandClass('che_훈련', $general, $env, null);
-                [$reqGold, $reqRice] = $turnObj->getCost();
-                if($general->getVar('gold') >= $reqGold && $general->getVar('rice') >= $reqRice){
-                    return ['che_훈련', null];
+            $frontCities = $db->queryFirstColumn('SELECT city FROM city WHERE nation=%i AND front > 0');
+            $nearCities = [];
+            foreach($frontCities as $frontCity){
+                foreach(array_keys(CityConst::byID($frontCity)->path) as $nearCity){
+                    if(!key_exists($nearCity, $nearCities)){
+                        $nearCities[$nearCity] = [$frontCity];
+                    }
+                    else{
+                        $nearCities[$nearCity][] = $frontCity;
+                    }
+                }
+            }
+            
+            $attackableCities = [];
+            foreach($db->queryFirstColumn(
+                'SELECT city FROM city WHERE nation IN %li', 
+                array_keys($this->warTargetNation)
+            ) as $targetCity){
+                foreach($nearCities[$targetCity] as $attackableCity){
+                    if(!key_exists($attackableCity, $attackableCities)){
+                        $attackableCities[$attackableCity] = 1;
+                    }
+                    else{
+                        $attackableCities[$attackableCity] += 1;
+                    }
+                    
                 }
             }
 
-            if($general->getVar('rice') < 90){
-                $turnObj = buildGeneralCommandClass('che_사기진작', $general, $env, null);
-                [$reqGold, $reqRice] = $turnObj->getCost();
-                if($general->getVar('gold') >= $reqGold && $general->getVar('rice') >= $reqRice){
-                    return ['che_사기진작', null];
-                }
+            return ['che_NPC능동', [
+                'optionText'=>'순간이동',
+                'destCityID'=>Util::choiceRandomUsingWeight($attackableCities),
+            ]];
+        }
+
+        if($general->getVar('train') < 90){
+            $turnObj = buildGeneralCommandClass('che_훈련', $general, $env, null);
+            [$reqGold, $reqRice] = $turnObj->getCost();
+            if($general->getVar('gold') >= $reqGold && $general->getVar('rice') >= $reqRice){
+                return ['che_훈련', null];
+            }
+        }
+
+        if($general->getVar('rice') < 90){
+            $turnObj = buildGeneralCommandClass('che_사기진작', $general, $env, null);
+            [$reqGold, $reqRice] = $turnObj->getCost();
+            if($general->getVar('gold') >= $reqGold && $general->getVar('rice') >= $reqRice){
+                return ['che_사기진작', null];
             }
         }
 
@@ -721,8 +796,7 @@ class GeneralAI{
             return null;
         }
 
-        $recruitCommand = $this->chooseRecruitCrewType();
-        //TODO: 징병 가능한 도시인가? 불가능하다면?
+        
         return $recruitCommand;
     }
 
