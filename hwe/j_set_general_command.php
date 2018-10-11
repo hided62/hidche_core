@@ -27,7 +27,7 @@ $defaultCheck = [
         'amountMoney', 'amountCrew', 'colorType', 'nationType'
     ],
     'boolean'=>[
-        'isGold'
+        'isGold', 'buyRice'
     ],
     'between'=>[
         ['month', [1, 12]]

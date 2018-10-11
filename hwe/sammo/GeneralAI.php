@@ -18,7 +18,6 @@ class GeneralAI{
     protected $dipState;
     protected $warTargetNation;
     protected $attackable;
-    protected $onGame;
 
     protected $devRate = null;
 
@@ -137,10 +136,8 @@ class GeneralAI{
             $this->dipState = self::d직전;
         }
 
-        if($env['startyear']+2 > $env['year'] || ($env['startyear']+2 == $env['year'] && $env['month'] < 5)) {
-            $this->onGame = true;
-        } else {
-            $this->onGame = false;
+        if(in_array($this->dipState, [self::d평화, self::d선포]) && $env['startyear'] + 2 == $env['year'] && $env['month'] > 5){
+            $this->dipState = self::d징병;
         }
 
         if($this->attackable){
@@ -152,7 +149,7 @@ class GeneralAI{
         }
     }
 
-    protected function chooseDevelopTurn(bool &$cityFull):?array{
+    protected function chooseDevelopTurn(bool &$cityFull):array{
         $general = $this->general;
         $city = $this->city;
         $nation = $this->nation;
@@ -245,6 +242,9 @@ class GeneralAI{
                 $commandObj = buildGeneralCommandClass('che_정착장려', $general, $env);
                 if($commandObj->isRunnable()){
                     $commandList['che_정착장려'] = $leadership / 2;
+                    if(in_array($city['front'], [1,3])){
+                        $commandList['che_정착장려'] *= 2;
+                    }
                 }
             }
         }
@@ -487,8 +487,12 @@ class GeneralAI{
         if($general->getVar('gold') + $general->getVar('rice') == 0){
             return ['che_물자조달', null];
         }
+
+        [$baseArmGold, $baseArmRice] = $this->getBaseArmCost();
+
         if($this->dipState == self::d전쟁 &&
             $general->getVar('killturn') > 2 &&
+            $general->getVar('gold') >= $baseArmGold / 3 &&
             $general->getVar('rice') >= $baseArmRice &&
             $general->getVar('crew') >= $general->getLeadership(false) / 3
         ){
@@ -497,10 +501,10 @@ class GeneralAI{
             if(
                 $trainAndAtmos >= 180 &&
                 $city['front'] >= 2 &&
-                $general->getVar('rice') >= $baseArmRice
-
+                $general->getVar('rice') >= $baseArmRice &&
+                $nation['war'] == 0
             ){
-                return $this->attackCity();
+                return $this->processAttack();
             }
 
             if(180 >= $trainAndAtmos && $trainAndAtmos >= 160){
@@ -512,6 +516,7 @@ class GeneralAI{
                 }
             }
         }
+
         if($general->getVar('gold') >= $general->getVar('rice')){
             return ['che_헌납', ['isGold'=>true, 'amount'=>100]];
         }
@@ -595,17 +600,9 @@ class GeneralAI{
         $baseDevelCost = $env['develcost'] * 12;
 
         $techCost = getTechCost($nation['tech']);
-        $baseArmCost = 10 * GameUnitConst::byID(GameUnitConst::DEFAULT_CREWTYPE)->costWithTech($nation['tech']);//기본 병종 1000기
-        $baseArmCost = $general->onCalcDomestic('징병', 'cost', $baseArmCost);
 
-        if($general->getVar('atmos') >= 90 && $general->getVar('train') >= 90) {
-            if($general->getVar('mode') == 0) {
-                $general->setVar('mode', 1);
-            }
-        } else {
-            if($general->getVar('mode') == 1) {
-                $general->setVar('mode', 0);
-            }
+        if($general->getVar('mode') < 2) {
+            $general->setVar('mode', 2);
         }
 
         if($general->getVar('level') == 12){
@@ -616,7 +613,7 @@ class GeneralAI{
         }
 
         if($general->getVar('killturn') < 5){
-            return $this->chooseEndOfNPCTurn($baseArmCost);
+            return $this->chooseEndOfNPCTurn();
         }
 
         if($general->getVar('injury') > 10){
@@ -641,9 +638,11 @@ class GeneralAI{
             return ['che_귀환', null];
         }
 
+        [$baseArmGold, $baseArmRice] = $this->getBaseArmCost();
+
         if($nation['rice'] < 2000){
-            if(($genType & self::t통솔장) && $general->getVar('rice') > $baseArmCost){
-                return ['che_헌납', ['isGold'=>false, 'amount'=>intdiv(($general->getVar('rice') - $baseArmCost) / 2, 100)]];
+            if(($genType & self::t통솔장) && $general->getVar('rice') > $baseArmRice){
+                return ['che_헌납', ['isGold'=>false, 'amount'=>intdiv(($general->getVar('rice') - $baseArmRice) / 2, 100)]];
             }
             else if(!($genType & self::t통솔장)){
                 return ['che_헌납', ['isGold'=>false, 'amount'=>intdiv($general->getVar('rice') / 2, 100)]];
@@ -655,33 +654,88 @@ class GeneralAI{
             if($warTurn !== null){
                 return $warTurn;
             }
+
+            if($general->getVar('rice') < $baseArmRice && $general->getVar('gold') >= $baseArmGold * 3){
+                return ['che_군량매매', ['buyRice'=>true, 'amount'=> intdiv($general->getVar('gold') - $baseArmGold, 200)]];
+            }
+            if($general->getVar('gold') < $baseArmGold && $general->getVar('gold') >= $baseArmRice * 3){
+                return ['che_군량매매', ['buyRice'=>false, 'amount'=> intdiv($general->getVar('rice') - $baseArmRice, 200)]];
+            }
         }
-        
-        
+        else{
+            if($general->getVar('rice') < $baseDevelCost && $general->getVar('gold') >= $baseDevelCost * 3){
+                return ['che_군량매매', ['buyRice'=>true, 'amount'=> intdiv($general->getVar('gold') - $baseDevelCost, 200)]];
+            }
+            if($general->getVar('gold') < $baseDevelCost && $general->getVar('gold') >= $baseDevelCost * 3){
+                return ['che_군량매매', ['buyRice'=>false, 'amount'=> intdiv($general->getVar('rice') - $baseDevelCost, 200)]];
+            }
+        }
+
+        $cityFull = false;
+        $developTurn = $this->chooseDevelopTurn($cityFull);
+
+        if($cityFull && Util::randBool(0.2)){
+            $moveRawCities = $db->query('SELECT city,front,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev, gen2 FROM city WHERE nation=%i', $nationID);
+
+            $moveCities = [];
+            foreach($moveRawCities as $moveCity){
+                $moveCityID = $moveCity['city'];
+                if($moveCity['dev'] > 99){
+                    continue;
+                }
+                $score = 1 / $moveCity['dev'];
+                if($moveCity['gen2']){
+                    $score *= 1.3;
+                }
+                $moveCities[$moveCityID] = $score;
+
+            }
+            return ['che_NPC능동', [
+                'optionText'=>'순간이동',
+                'destCityID'=>Util::choiceRandomUsingWeight($moveCities),
+            ]];
+        }
+
+        return $developTurn;
+
+    }
+
+    protected function getBaseArmCost(){
+        //총 통솔의 절반을 징병하는 것을 기준으로 함
+        $general = $this->getGeneralObj();
+        $tech = $this->nation['tech'];
+        $crewType = GameUnitConst::byID($general->getVar('crewtype'));
+        $baseArmCost = $crewType->costWithTech(
+            $tech,
+            $general->getLeadership(false) / 2
+        );//기본 병종
+        $baseArmCost = $general->onCalcDomestic('징병', 'cost', $baseArmCost);
+        $baseArmRice = $general->getLeadership(false) / 2 * $unit->rice * getTechCost($tech);
+        if($general->getVar('deathcrew') > 500 && $general->getVar('killcrew') > 500){
+            $baseArmRice *= $general->getVar('killcrew') / $general->getVar('deathcrew');
+        }
+
+        return [$baseArmCost, $baseArmRice];
     }
 
     protected function processWar():?array{
-        if(!$this->attackable && $this->dipState == self::d평화){
+        $general = $this->getGeneralObj();
+        if(!$this->attackable && in_array($this->dipState, [self::d평화, self::d선포])){
+            if($this->dipState == self::d평화 && $general->getVar('crew')>=1000 && Util::randBool(0.25)){
+                return ['che_소집해제', null];
+            }
+
             return null;
         }
 
-        $general = $this->getGeneralObj();
         $city = $this->city;
         $nation = $this->nation;
         $cityID = $city['city'];
         $nationID = $nation['nation'];
         $env = $this->env;
 
-        $baseArmCost = GameUnitConst::byID(GameUnitConst::DEFAULT_CREWTYPE)->costWithTech(
-            $nation['tech'],
-            $general->getLeadership(false) / 2
-        );//기본 병종
-        $baseArmCost = $general->onCalcDomestic('징병', 'cost', $baseArmCost);
-
-        $baseArmRice = GameUnitConst::byID(GameUnitConst::DEFAULT_CREWTYPE)->costWithTech(
-            $nation['tech'],
-            $general->getLeadership(false) / 2
-        );
+        [$baseArmGold, $baseArmRice] = $this->getBaseArmCost();
+        
 
         $baseDevelCost = $env['develcost'] * 12;
         if($general->getVar('rice') <= $baseArmRice){
@@ -696,7 +750,7 @@ class GeneralAI{
         }
 
         if($general->getVar('crew') < 1000){
-            if ($general->getVar('gold') <= $baseArmCost) {
+            if ($general->getVar('gold') <= $baseArmGold) {
                //반징도 불가? 내정
                return null;
             }
@@ -716,8 +770,10 @@ class GeneralAI{
             );
             
             if(!$recruitableCityList){
-                return null;
+                //징병 가능한 도시가 없구려
+                return ['che_정착장려', null];
             }
+
             return ['che_NPC능동', [
                 'optionText'=>'순간이동',
                 'destCityID'=>Util::choiceRandomUsingWeightPair($recruitableCityList),
@@ -728,44 +784,58 @@ class GeneralAI{
             $general->getVar('train') >= 90 &&
             $general->getVar('atmos') >= 90
         ){
+            //출병 가능!
 
             if(
                 $this->attackable &&
                 $env['year'] >= $env['startyear'] + 3 &&
-                $city['front'] >= 2
+                $city['front'] >= 2 &&
+                $nation['war'] == 0
             ){
                 return $this->processAttack();
             }
+
             if($city['front'] > 0){
                 //전방에 훈사까지 완료되어있으면 내정을 해야..
                 return null;
             }
-            //TODO: 전방으로
-            $frontCities = $db->queryFirstColumn('SELECT city FROM city WHERE nation=%i AND front > 0');
+
+            $frontCities = $db->query('SELECT city, front, gen1 FROM city WHERE nation=%i AND front > 0 AND supply = 1');
+
+            if(!$frontCities){
+                //접경이 아직 없음
+                return null;
+            }
+
             $nearCities = [];
+            $attackableCities = [];
             foreach($frontCities as $frontCity){
-                foreach(array_keys(CityConst::byID($frontCity)->path) as $nearCity){
+                $frontCityID = $frontCity['city'];
+
+                $score = 0.2;
+                if($frontCity['front'] > 1 && $frontCity['gen1']){
+                    $score += 3;
+                }
+                $attackableCities[$frontCityID] = $score;
+                
+                foreach(array_keys(CityConst::byID($frontCityID)->path) as $nearCity){
                     if(!key_exists($nearCity, $nearCities)){
-                        $nearCities[$nearCity] = [$frontCity];
+                        $nearCities[$nearCity] = [$frontCityID];
                     }
                     else{
-                        $nearCities[$nearCity][] = $frontCity;
+                        $nearCities[$nearCity][] = $frontCityID;
                     }
                 }
-            }
+            }           
             
-            $attackableCities = [];
-            foreach($db->queryFirstColumn(
-                'SELECT city FROM city WHERE nation IN %li', 
-                array_keys($this->warTargetNation)
+            foreach($db->query(
+                'SELECT city FROM city WHERE nation IN %li AND city IN %li', 
+                array_keys($this->warTargetNation),
+                array_keys($nearCities)
             ) as $targetCity){
-                foreach($nearCities[$targetCity] as $attackableCity){
-                    if(!key_exists($attackableCity, $attackableCities)){
-                        $attackableCities[$attackableCity] = 1;
-                    }
-                    else{
-                        $attackableCities[$attackableCity] += 1;
-                    }
+                $targetCityID = $targetCity['city'];
+                foreach($nearCities[$targetCityID] as $attackableCity){
+                    $attackableCities[$attackableCity] += 1;
                     
                 }
             }
@@ -792,16 +862,41 @@ class GeneralAI{
             }
         }
 
-        if($general->getVar('gold') <= $baseArmCost){
-            return null;
-        }
 
-        
-        return $recruitCommand;
+        //훈사할 금조차도 없다고..? 아마 쌀을 팔아야 할 것.
+        return null;
     }
 
     protected function processAttack():array{
+        $general = $this->getGeneralObj();
+        $city = $this->city;
+        $nation = $this->nation;
 
+        $cityID = $city['city'];
+        $nationID = $nation['nation'];
+
+        $db = DB::db();
+
+        if($city['front'] <= 1){
+            throw new \RuntimeException('출병 불가');
+        }
+
+        $attackableNations = [];
+        foreach($this->warTargetNation as $targetNationID=>$state){
+            if($state == 1){
+                continue;
+            }
+            $attackableNations[] = $targetNationID;
+        }
+        $nearCities = array_keys(CityConst::byID($cityID)->path);
+        
+        $attackableCities = $db->queryFirstColumn(
+            'SELECT city FROM city WHERE nation IN %li AND city IN %li',
+            $attackableNations,
+            $nearCities
+        );
+
+        return ['che_출병', ['destCityID'=>Util::choiceRandom($attackableCities)]];
     }
 
     protected function proceessNeutralLordTurn():array{
