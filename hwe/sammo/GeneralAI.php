@@ -369,22 +369,16 @@ class GeneralAI{
     }
 
     public function chooseNationTurn($command, $arg):array{
-        $general = $this->getGeneralObj();
-        $city = $this->city;
-        $nation = $this->nation;
+        $generalObj = $this->getGeneralObj();
+        //NOTE: 수뇌 턴에서는 general과 city이름의 충돌 가능성이 있음
         $env = $this->env;
 
-        $cityID = $general->getCityID();
-        $nationID = $general->getNationID();
-
-        $genType = $this->genType;
-        $leadership = $this->leadership;
-        $power = $this->power;
-        $intel = $this->intel;
+        $cityID = $generalObj->getCityID();
+        $nationID = $generalObj->getNationID();
 
         $db = DB::db();
 
-        if($general->getVar('npc') == 5){
+        if($generalObj->getVar('npc') == 5){
             return [$command, $arg];
         }
 
@@ -392,12 +386,54 @@ class GeneralAI{
             return [$command, $arg];
         }
 
-        if($general->getVar('level') == 12 && $this->dipState == self::d평화 && !$this->attackable){
+        if($generalObj->getVar('level') == 12 && $this->dipState == self::d평화 && !$this->attackable){
             $targetNationID = $this->findWarTarget();
             if($targetNationID !== null){
                 return ['che_선전포고', ['destNationID'=>$targetNationID]];
             }
         }
+        
+        $cityList = [];
+        $frontCity = [];
+        foreach($db->query('SELECT * FROM city WHERE nation = %i',$nationID) as $city){
+            $cityList[$ownCity['city']] = $ownCity;
+            if($city['front'] > 0){
+                $frontCity[$city['city']] = $city['front'];
+            }
+        }
+
+        if(!key_exists($cityID, $cityList)){
+            //수뇌가 아국에 없음
+            return ['휴식', null];
+        }
+
+        $generalList = [];
+        foreach($db->query('SELECT no, npc, leader, power, intel, city, nation, level, gold, rice, troop, experience, dedication, killturn, injury, crew, crewtype, train, atmos, gold, rice FROM general WHERE nation = %i AND no != %i', $nationID, $generalObj->getID()) as $general){
+            $generalList[$general['no']] = $general;
+        }
+
+        //바깥에 있는 장수가 있나?
+        $outerGenerals = [];
+        foreach($generalList as $general){
+            if(!key_exists($general['city'], $cityList)){
+                $score = $general['npc'] < 2? 5 : 1;
+                $score *= sqrt($general['leader'] + $general['power'] + $general['intel']);
+                $outerGenerals[$general['no']] = $score;
+            }
+        }
+        if($outerGenerals){
+            return ['che_발령', [
+                'destGeneralID' => Util::choiceRandomUsingWeight($outerGenerals),
+                'destCityID' => Util::choiceRandom(array_keys($frontCity))
+            ]];
+        }
+
+
+        
+
+
+        
+
 
         return [$command, $arg];
     }
