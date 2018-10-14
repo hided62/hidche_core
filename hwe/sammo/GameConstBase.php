@@ -39,6 +39,8 @@ class GameConstBase
     public static $atmosDelta = 30;
     /** @var float 훈련시 사기 감소율*/
     public static $atmosSideEffectByTraining = 1;
+    /** @var float 사기시 훈련 감소율*/
+    public static $trainSideEffectByAtmosTurn = 1;
     /** @var float 계략 기본 성공률*/
     public static $sabotageDefaultProb = 0.35;
     /** @var int 계략시 확률 가중치(수치가 클수록 변화가 적음 : (지력차/$firing + $basefiring)*/

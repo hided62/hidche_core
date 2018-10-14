@@ -1,0 +1,102 @@
+<?php
+namespace sammo\GeneralCommand;
+
+use \sammo\{
+    DB, Util, JosaUtil,
+    General, 
+    ActionLogger,
+    GameConst,
+    getGeneralLeadership,getGeneralPower,getGeneralIntel,
+    getDomesticExpLevelBonus,
+    CriticalRatioDomestic, CriticalScore,
+    uniqueItemEx,
+    LastTurn
+};
+
+use \sammo\Command;
+use \sammo\Constraint\Constraint;
+use function sammo\CriticalScore;
+use function sammo\uniqueItemEx;
+use function sammo\getGeneralLeadership;
+use sammo\GameUnitConst;
+
+
+class che_훈련 extends Command\GeneralCommand{
+    static protected $actionName = '훈련';
+
+    protected function init(){
+
+        $general = $this->generalObj;
+
+        $this->setCity();
+        $this->setNation();
+        
+        $this->runnableConstraints=[
+            ['NoNeutral'], 
+            ['NoWanderingNation'],
+            ['OccupiedCity'],
+            ['ReqGeneralCrew'],
+            ['ReqGeneralTrainMargin'],
+        ];
+
+    }
+
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
+    public function getCost():array{
+        return [0, 0];
+    }
+    
+    public function getPreReqTurn():int{
+        return 0;
+    }
+
+    public function getPostReqTurn():int{
+        return 0;
+    }
+
+    public function run():bool{
+        if(!$this->isRunnable()){
+            throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
+        }
+
+        $db = DB::db();
+
+        $general = $this->generalObj;
+        $date = substr($general->getVar('turntime'),11,5);
+
+        $score = Util::round($general->getLeadership() * 100 / $general->getVar('crew') * GameConst::$trainDelta);
+        $scoreText = number_format($score, 0);
+
+        $sideEffect = Util::valueFit(intval($general->getVar('atmos') * GameConst::$atmosSideEffectByTraining), 0);
+
+        $logger = $general->getLogger();
+
+        $logger->pushGeneralActionLog("훈련치가 <C>$scoreText</> 상승했습니다. <1>$date</>");
+
+        $exp = 100;
+        $ded = 70;
+
+        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
+        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+
+        $general->increaseVarWithLimit('train', $score, 0, GameConst::$maxTrainByCommand);
+        $general->setVar('atmos', $sideEffect);
+
+        $general->addDex($general->getVar('crew')/100, $score, false);
+
+        $general->increaseVar('experience', $exp);
+        $general->increaseVar('dedication', $ded);
+        $general->increaseVar('leader2', 1);
+        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $general->applyDB($db);
+
+        $this->checkStatChange();
+        uniqueItemEx($general->getVar('no'), $logger);
+    }
+
+    
+}

@@ -39,8 +39,7 @@ class che_기술연구 extends che_상업투자{
             ['OccupiedCity'],
             ['SuppliedCity'],
             ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice],
-            ['ReqGeneralGold', $reqGold]
+            ['ReqGeneralRice', $reqRice]
         ];
 
         $this->reqGold = $reqGold;

@@ -166,6 +166,10 @@ class General implements iAction{
         return $this->levelObj;
     }
 
+    function getCrewTypeObj():GameUnitDetail{
+        return GameUnitConst::byID($this->getVar('crewtype'));
+    }
+
     //TODO: 장기적으로 General 클래스로 모두 옮겨와야함.
     function getLeadership($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
         return getGeneralLeadership($this->raw, $withInjury, $withItem, $withStatAdjust, $useFloor);
@@ -177,6 +181,34 @@ class General implements iAction{
 
     function getIntel($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
         return getGeneralIntel($this->raw, $withInjury, $withItem, $withStatAdjust, $useFloor);
+    }
+
+    function addDex(GameUnitDetail $crewType, float $exp, bool $affectTrainAtmos=false){
+        $armType = $crewType->armType;
+
+        if($armType == GameUnitConst::T_CASTLE){
+            $armType = GameUnitConst::T_SIEGE;
+        }
+
+        if($armType < 0){
+            return;
+        }
+
+        if($armType == GameUnitConst::T_WIZARD) {
+            $exp *= 0.9;
+        }
+        else if($armType == GameUnitConst::T_SIEGE) {
+            $exp *= 0.9;
+        }
+
+        if($affectTrainAtmos){
+            $exp *= ($this->getVar('train') + $this->getVar('atmos')) / 200;
+        }
+
+        $ntype = $armType*10;
+        $dexType = "dex{$ntype}";
+
+        $this->increaseVar($dexType, $exp);
     }
 
     /**
