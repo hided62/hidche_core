@@ -63,6 +63,10 @@ class che_NPC능동 extends Command\GeneralCommand{
         return 0;
     }
 
+    public function canDisplay():bool{
+        return false;
+    }
+
     public function run():bool{
         if(!$this->isRunnable()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');

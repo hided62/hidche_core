@@ -142,6 +142,10 @@ abstract class BaseCommand{
 
     }
 
+    public function canDisplay():bool{
+        return true;
+    }
+
     public function testRunnable():?string{
         if(!$this->isArgValid()){
             throw new \InvalidArgumentException('인자가 제대로 설정되지 않았습니다');
