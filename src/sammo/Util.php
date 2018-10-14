@@ -492,6 +492,24 @@ class Util extends \utilphp\util
     }
 
     /**
+     * 2중 배열에서 특정 키의 합
+     * 
+     * @param array $array 배열. 1차원 배열 또는 2차원 배열
+     * @param int|string|null $key 2차원 배열에서 참조할 키.
+     * @return int|float 합계
+     */
+    public static function arraySum(array $array, $key = null){
+        if($key === null){
+            return array_sum($array);
+        }
+        $sum = 0;
+        foreach($array as $val){
+            $sum += $val[$key];
+        }
+        return $sum;
+    }
+
+    /**
      * 배열의 아무거나 고름. Python의 random.choice()
      *
      * @param array $items 선택하고자 하는 배열
