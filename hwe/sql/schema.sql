@@ -124,8 +124,6 @@ CREATE TABLE `general` (
 	`betgold` INT(8) NULL DEFAULT '0',
 	`betwingold` INT(8) NULL DEFAULT '0',
 	`last_turn` TEXT NOT NULL DEFAULT '{}',
-	`recturn` TEXT NULL DEFAULT '',
-	`resturn` VARCHAR(30) NULL DEFAULT '',
 	`aux` TEXT NOT NULL DEFAULT '{}' COMMENT 'JSON',
 	PRIMARY KEY (`no`),
 	INDEX `nation` (`nation`, `npc`),

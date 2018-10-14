@@ -8,7 +8,8 @@ use \sammo\{
     getGeneralLeadership,getGeneralPower,getGeneralIntel,
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, CriticalScore, TechLimit,
-    uniqueItemEx
+    uniqueItemEx,
+    LastTurn
 };
 
 use \sammo\Command;
@@ -46,6 +47,7 @@ class che_기술연구 extends che_상업투자{
     }
 
     protected function argTest():bool{
+        $this->arg = null;
         return true;
     }
 
@@ -124,7 +126,8 @@ class che_기술연구 extends che_상업투자{
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
         $general->increaseVar(static::$statKey.'2', 1);
-        $general->updateVar('resturn', 'SUCCESS');
+
+        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
 
         $this->checkStatChange();
