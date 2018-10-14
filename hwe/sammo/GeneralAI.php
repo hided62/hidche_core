@@ -580,8 +580,7 @@ class GeneralAI{
             }
         }
 
-        $resBaseType = [['gold', 1], ['rice', 2]];
-        [$resName, $resType] = Util::choiceRandom($resBaseType);
+        $resName = Util::choiceRandom(['gold', 'rice']);
 
         usort($userGeneralsID, function($lhs, $rhs) use ($nationGenerals, $resName){
             return $nationGenerals[$lhs][$resName] - $nationGenerals[$rhs][$resName];
