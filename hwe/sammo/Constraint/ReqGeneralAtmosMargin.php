@@ -27,7 +27,7 @@ class ReqGeneralAtmosMargin extends Constraint{
             return true;
         }
 
-        $this->reason = "병사들은 이미 정예병사들입니다.";
+        $this->reason = "이미 사기는 하늘을 찌를듯 합니다.";
         return false;
     }
 }
