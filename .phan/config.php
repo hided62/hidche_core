@@ -29,7 +29,6 @@ return [
         'hwe/func_legacy.php',
         'hwe/func_map.php',
         'hwe/func_message.php',
-        'hwe/func_npc.php',
         'hwe/func_process_chief.php',
         'hwe/func_process_personnel.php',
         'hwe/func_process_sabotage.php',
