@@ -37,7 +37,7 @@ abstract class BaseCommand{
     protected $runnableConstraints = null;
     protected $reservableConstraints = null;
     
-
+    protected $generalSource = null;
 
     protected $logger;
 
@@ -52,6 +52,17 @@ abstract class BaseCommand{
         $this->isArgValid = true;
         $this->init();
         
+    }
+
+    public function setGeneralSource(?array $generalSource){
+        $this->generalSource = $generalSource;
+    }
+
+    protected function getGeneralObjFromGeneralSource(int $generalNo):?General{
+        if($this->generalSource === null){
+            return null;
+        }
+        return $this->generalSource[$generalNo]??null;
     }
 
     protected function resetTestCache():void{
@@ -105,7 +116,12 @@ abstract class BaseCommand{
     protected function setDestCity(int $cityNo, ?array $args){
         $this->resetTestCache();
         $db = DB::db();
-        if($args == null){
+        if($args === []){
+            $cityObj = \sammo\CityConst::byID($cityNo);
+            $this->destCity = ['city'=>$cityNo, 'name'=>$cityObj->name];
+            return;
+        }
+        if($args === null){
             $this->destCity = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $cityNo);
             return;
         }
@@ -114,7 +130,7 @@ abstract class BaseCommand{
 
     protected function setDestNation(int $nationNo, ?array $args = null){
         $this->resetTestCache();
-        if($args == null){
+        if($args === null || $args === []){
             $this->destNation = getNationStaticInfo($nationNo);
             return;
         }

@@ -83,7 +83,7 @@ function myCommandList() {
         echo "로그인 되어있지 않습니다.";
         return;
     }
-    $generalObj = new General($me, null, 0, 0, false);
+    $generalObj = new General($me, null, null, null, false);
     $turnList = $db->query('SELECT turn_idx, action, arg FROM general_turn WHERE general_id = %i ORDER BY turn_idx ASC', $generalObj->getID());
     $turnBrief = getGeneralTurnBrief($generalObj, $turnList);
 

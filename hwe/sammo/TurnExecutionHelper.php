@@ -8,11 +8,12 @@ class TurnExecutionHelper
      * @var General $generalObj;
      */
     protected $generalObj;
+    protected $generalSource = null;
 
-    public function __construct(array $rawGeneral, int $year, int $month)
+    public function __construct(General $general, ?array $generalSource = null)
     {
-        $this->generalObj = new General($rawGeneral, null, $year, $month);
-        $this->nationTurn = $nationTurn;
+        $this->generalObj = $general;
+        $this->generalSource = $generalSource;
     }
 
     public function __destruct()
@@ -76,6 +77,7 @@ class TurnExecutionHelper
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
         $commandObj = buildNationCommandClass($commandClassName, $general, $gameStor->getAll(true), $commandLast, $commandArg);
+        $commandObj->setGeneralSource($this->generalSource);
 
         $failReason = $commandObj->testReservable();
         if($failReason){
@@ -101,6 +103,7 @@ class TurnExecutionHelper
         $commandClass = getGeneralCommandClass($commandClassName);
         /** @var \sammo\Command\GeneralCommand $commandObj */
         $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandArg, $commandLast);
+        $commandObj->setGeneralSource($this->generalSource);
 
         $failReason = $commandObj->testReservable();
         if($failReason){
@@ -185,7 +188,7 @@ class TurnExecutionHelper
 
     static public function executeGeneralCommandUntil(string $date, \DateTimeInterface $limitActionTime, int $year, int $month){
         $db = DB::db();
-        $generalsTodo = $db->queryFirstRow(
+        $rawGeneralsTodo = $db->queryFirstRow(
             'SELECT no,name,name2,picture,imgsvr,nation,nations,city,troop,injury,affinity,
 leader,leader2,power,power2,intel,intel2,weap,book,horse,item,
 experience,dedication,level,gold,rice,crew,crewtype,train,atmos,
@@ -200,20 +203,28 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             $date
         );
 
+        $generalsTodo = [];
+        $generalSource = [];
+        foreach($rawGeneralsTodo as $rawGeneral){
+            $generalCommand = $rawGeneral['action'];
+            $generalArg = Json::decode($rawGeneral['arg'])??[];
+            unset($rawGeneral['action']);
+            unset($rawGeneral['arg']);
+            $general = new General($rawGeneral, $year, $month);
+
+            $generalsTodo[] = [$general, $generalCommand, $generalArg];
+            $generalSource[$general->getID()] = $general;
+        }
+
         $currentTurn = null;
 
-        foreach($generalsTodo as $generalWork){
+        foreach($generalsTodo as [$general, $generalCommand, $generalArg]){
             $currActionTime = new \DateTimeImmutable();
             if($currActionTime > $limitActionTime){
                 return [true, $currentTurn];
             }
 
-            $generalCommand = $generalWork['action'];
-            $generalArg = Json::decode($generalWork['arg'])??[];
-            unset($generalWork['action']);
-            unset($generalWork['arg']);
-
-            $turnObj = new static($generalWork, $year, $month);
+            $turnObj = new static($general, $generalSource);
 
             $hasNationTurn = false;
             if($generalWork['nation'] != 0 && $generalWork['level'] >= 5){

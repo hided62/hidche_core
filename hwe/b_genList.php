@@ -174,7 +174,7 @@ foreach ($generals as &$general) {
 
     
     if ($general['npc'] < 2) {
-        $generalObj = new General($general, null, 0, 0, false);
+        $generalObj = new General($general, null, null, null, false);
         $turnBrief = getGeneralTurnBrief($genralObj, $generalTurnList[$generalObj->getID()]);
         $turntext = [];
 

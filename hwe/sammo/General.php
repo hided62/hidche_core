@@ -38,7 +38,7 @@ class General implements iAction{
      * @param int $month 게임 월
      * @param bool $fullConstruct iAction, 및 ActionLogger 초기화 여부, false인 경우 no, name, city, nation, level 정도로 초기화 가능
      */
-    public function __construct(array $raw, ?array $city, int $year, int $month, bool $fullConstruct=true){
+    public function __construct(array $raw, ?array $city, ?int $year, ?int $month, bool $fullConstruct=true){
         //TODO:  밖에서 가져오도록 하면 버그 확률이 높아짐. 필요한 raw 값을 직접 구해야함.
 
         $staticNation = getNationStaticInfo($raw['nation']);
@@ -51,17 +51,21 @@ class General implements iAction{
         }
         $this->resultTurn = new LastTurn();
 
+        if($year !== null || $month !== null){
+            $this->logger = new ActionLogger(
+                $this->getVar('no'), 
+                $this->getVar('nation'), 
+                $year, 
+                $month,
+                false
+            );
+        }
+
         if(!$fullConstruct){
             return;
         }
 
-        $this->logger = new ActionLogger(
-            $this->getVar('no'), 
-            $this->getVar('nation'), 
-            $year, 
-            $month,
-            false
-        );
+        
 
         $nationTypeClass = getNationTypeClass($staticNation['type']);
         $this->nationType = new $nationTypeClass;

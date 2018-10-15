@@ -551,46 +551,6 @@ function process_16(&$general) {
     pushGenLog($general, $log);
 }
 
-function process_17(&$general) {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
-    $date = substr($general['turntime'],11,5);
-
-    $admin = $gameStor->getValues(['year', 'month']);
-
-    if($general['crew'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:병사가 없습니다. 소집해제 실패. <1>$date</>";
-    } else {
-        // 주민으로 돌아감
-        $query = "update city set pop=pop+'{$general['crew']}' where city='{$general['city']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $query = "update general set crew='0' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log[0] = "<C>●</>{$admin['month']}월:병사들을 <R>소집해제</>하였습니다. <1>$date</>";
-
-        // 경험, 공헌 상승
-        $exp = 70;
-        $ded = 100;
-
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        $query = "update general set resturn='SUCCESS',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log = checkAbility($general, $log);
-    }
-    pushGenLog($general, $log);
-}
-
 function process_21(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
