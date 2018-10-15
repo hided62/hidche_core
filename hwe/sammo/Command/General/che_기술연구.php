@@ -128,9 +128,9 @@ class che_기술연구 extends che_상업투자{
         $general->increaseVar(static::$statKey.'2', 1);
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $general->checkStatChange();
         $general->applyDB($db);
 
-        $this->checkStatChange();
         uniqueItemEx($general->getVar('no'), $logger);
     }
 

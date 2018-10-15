@@ -90,9 +90,9 @@ class che_훈련 extends Command\GeneralCommand{
         $general->increaseVar('dedication', $ded);
         $general->increaseVar('leader2', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $general->checkStatChange();
         $general->applyDB($db);
-
-        $this->checkStatChange();
+        
         uniqueItemEx($general->getVar('no'), $logger);
     }
 

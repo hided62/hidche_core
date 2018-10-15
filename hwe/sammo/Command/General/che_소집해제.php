@@ -18,8 +18,9 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 
 
-class che_사기진작 extends Command\GeneralCommand{
-    static protected $actionName = '사기진작';
+
+class che_소집해제 extends Command\GeneralCommand{
+    static protected $actionName = '소집해제';
 
     protected function init(){
 
@@ -27,17 +28,9 @@ class che_사기진작 extends Command\GeneralCommand{
 
         $this->setCity();
         $this->setNation();
-
-        [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NoNeutral'], 
-            ['NoWanderingNation'],
-            ['OccupiedCity'],
             ['ReqGeneralCrew'],
-            ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice],
-            ['ReqGeneralAtmosMargin'],
         ];
 
     }
@@ -48,7 +41,7 @@ class che_사기진작 extends Command\GeneralCommand{
     }
 
     public function getCost():array{
-        return [Util::round($this->getVar('crew')/100), 0];
+        return [0, 0];
     }
     
     public function getPreReqTurn():int{
@@ -69,34 +62,30 @@ class che_사기진작 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $date = substr($general->getVar('turntime'),11,5);
 
-        $score = Util::round($general->getLeadership() * 100 / $general->getVar('crew') * GameConst::$atmosDelta);
-        $scoreText = number_format($score, 0);
-
-        $sideEffect = Util::valueFit(intval($general->getVar('train') * GameConst::$trainSideEffectByAtmosTurn), 0);
+        $crew = $general->getVar('crew');
 
         $logger = $general->getLogger();
 
-        $logger->pushGeneralActionLog("사기치가 <C>$scoreText</> 상승했습니다. <1>$date</>");
+        $logger->pushGeneralActionLog("병사들을 <R>소집해제</>하였습니다. <1>$date</>");
 
-        $exp = 100;
-        $ded = 70;
+        $exp = 70;
+        $ded = 100;
 
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
 
-        $general->increaseVarWithLimit('atmos', $score, 0, GameConst::$maAtmosByCommand);
-        $general->setVar('train', $sideEffect);
+        $db->update('city', [
+            'pop'=>$db->sqleval('pop + %i', $crew)
+        ], 'city=%i', $general->getCityID());
 
-        $general->addDex($general->getVar('crew')/100, $score, false);
-
+        $general->setVar('crew', 0);
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
-        $general->increaseVar('leader2', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
+
         
-        uniqueItemEx($general->getVar('no'), $logger);
     }
 
     

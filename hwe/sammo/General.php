@@ -336,7 +336,7 @@ class General implements iAction{
                 $result = true;
             }
             else if($this->getVar($statExpName) >= $limit){
-                $logger->pushGeneralActionLog("<R>{$statNickName}</>이 <C>1</> 올랐습니다!", ActionLogger::PLAIN);
+                $logger->pushGeneralActionLog("<S>{$statNickName}</>이 <C>1</> 올랐습니다!", ActionLogger::PLAIN);
                 $this->increaseVar($statExpName, -$limit);
                 $this->increaseVar($statName, 1);
                 $result = true;

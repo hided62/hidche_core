@@ -120,9 +120,8 @@ class che_물자조달 extends Command\GeneralCommand{
         ], 'nation=%i',$general->getNationID());
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $general->checkStatChange();
         $general->applyDB($db);
-
-        $this->checkStatChange();
     }
 
     

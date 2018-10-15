@@ -158,9 +158,9 @@ class che_정착장려 extends Command\GeneralCommand{
         $general->increaseVar('dedication', $ded);
         $general->increaseVar(static::$statKey.'2', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $general->checkStatChange();
         $general->applyDB($db);
-
-        $this->checkStatChange();
+        
         uniqueItemEx($general->getVar('no'), $logger);
     }
 
