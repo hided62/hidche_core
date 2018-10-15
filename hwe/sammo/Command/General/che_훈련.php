@@ -5,20 +5,18 @@ use \sammo\{
     DB, Util, JosaUtil,
     General, 
     ActionLogger,
-    GameConst,
-    getGeneralLeadership,getGeneralPower,getGeneralIntel,
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, CriticalScore,
-    uniqueItemEx,
-    LastTurn
+    GameConst, GameUnitConst,
+    LastTurn,
+    Command
 };
 
-use \sammo\Command;
+
+use function \sammo\{
+    uniqueItemEx
+};
+
 use \sammo\Constraint\Constraint;
-use function sammo\CriticalScore;
-use function sammo\uniqueItemEx;
-use function sammo\getGeneralLeadership;
-use sammo\GameUnitConst;
+
 
 
 class che_훈련 extends Command\GeneralCommand{

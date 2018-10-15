@@ -6,14 +6,11 @@ use \sammo\{
     General,
     CityConst, 
     ActionLogger,
-    LastTurn
+    LastTurn,
+    Command
 };
 
-use \sammo\Command;
 use \sammo\Constraint\Constraint;
-use function sammo\CriticalScore;
-use function sammo\uniqueItemEx;
-use function sammo\getGeneralLeadership;
 
 
 class che_NPC능동 extends Command\GeneralCommand{

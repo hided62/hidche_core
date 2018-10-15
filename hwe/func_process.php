@@ -186,18 +186,6 @@ function setLeadershipBonus(&$general, $nationLevel){
     return $lbonus;
 }
 
-function CriticalScore($score, $type) {
-    switch($type) {
-    case 0:
-        $ratio = Util::randF()*0.8 + 2.2;   // 2.2~3.0
-        break;
-    case 1:
-        $ratio = Util::randF()*0.2 + 0.2;   // 0.2~0.4
-        break;
-    }
-    return Util::round($score * $ratio);
-}
-
 function CriticalScoreEx(string $type):float {
     if($type == 'success'){
         return Util::randRange(2.2, 3.0);

@@ -5,18 +5,19 @@ use \sammo\{
     DB, Util, JosaUtil,
     General, 
     ActionLogger,
-    getGeneralLeadership,getGeneralPower,getGeneralIntel,
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, CriticalScore, TechLimit,
-    uniqueItemEx,
-    LastTurn
+    LastTurn,
+    Command
 };
 
-use \sammo\Command;
+use function sammo\{
+    TechLimit,
+    getDomesticExpLevelBonus,
+    CriticalRatioDomestic, 
+    CriticalScoreEx,
+    uniqueItemEx
+};
+
 use \sammo\Constraint\Constraint;
-use function sammo\CriticalScore;
-use function sammo\uniqueItemEx;
-use function sammo\getGeneralLeadership;
 
 
 class che_기술연구 extends che_상업투자{

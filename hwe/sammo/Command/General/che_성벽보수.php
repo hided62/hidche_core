@@ -1,9 +1,6 @@
 <?php
 namespace sammo\GeneralCommand;
 
-use \sammo\Util;
-use \sammo\JosaUtil;
-
 class che_성벽보수 extends che_상업투자{
     static protected $cityKey = 'wall';
     static protected $statKey = 'power';

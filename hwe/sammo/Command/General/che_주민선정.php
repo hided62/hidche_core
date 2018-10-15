@@ -5,18 +5,20 @@ use \sammo\{
     DB, Util, JosaUtil,
     General, 
     ActionLogger,
-    getGeneralLeadership,getGeneralPower,getGeneralIntel,
-    getDomesticExpLevelBonus,
-    CriticalRatioDomestic, CriticalScore,
-    uniqueItemEx,
-    LastTurn
+    GameConst,
+    LastTurn,
+    GameUnitConst,
+    Command
 };
 
-use \sammo\Command;
+use function \sammo\{
+    getDomesticExpLevelBonus,
+    CriticalRatioDomestic, 
+    CriticalScoreEx,
+    uniqueItemEx
+};
+
 use \sammo\Constraint\Constraint;
-use function sammo\CriticalScore;
-use function sammo\uniqueItemEx;
-use function sammo\getGeneralLeadership;
 
 
 class che_주민선정 extends Command\GeneralCommand{
@@ -72,13 +74,13 @@ class che_주민선정 extends Command\GeneralCommand{
         $general = $this->generalObj;
 
         if(static::$statKey == 'leader'){
-            $score = getGeneralLeadership($general->getRaw(), true, true, true, false);
+            $score = $general->getLeadership(true, true, true, false);
         }
         else{
             throw new \sammo\MustNotBeReachedException();
         }
         
-        $score *= getDomesticExpLevelBonus($general['explevel']);
+        $score *= getDomesticExpLevelBonus($general->getVar('explevel'));
         $score *= Util::randRange(0.8, 1.2);
         $score = $general->onCalcDomestic(static::$actionKey, 'score', $score);
         $score = Util::valutFit($score, 1);
