@@ -87,7 +87,7 @@ class che_사기진작 extends Command\GeneralCommand{
         $general->increaseVarWithLimit('atmos', $score, 0, GameConst::$maAtmosByCommand);
         $general->setVar('train', $sideEffect);
 
-        $general->addDex($general->getVar('crew')/100, $score, false);
+        $general->addDex($general->getCrewTypeObj(), $score, false);
 
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
@@ -95,7 +95,7 @@ class che_사기진작 extends Command\GeneralCommand{
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
-        
+
         uniqueItemEx($general->getVar('no'), $logger);
     }
 

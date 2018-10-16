@@ -26,7 +26,7 @@ class ReqGeneralCrew extends Constraint{
             return true;
         }
 
-        $this->reason = "병사들이 없습니다.";
+        $this->reason = "병사가 모자랍니다.";
         return false;
     }
 }
