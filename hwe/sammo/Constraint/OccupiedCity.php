@@ -2,7 +2,7 @@
 
 namespace sammo\Constraint;
 
-class NoWanderingNation extends Constraint{
+class OccupiedCity extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_CITY;
 
     public function checkInputValues(bool $throwExeception=true){

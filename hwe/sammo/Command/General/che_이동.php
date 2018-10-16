@@ -92,7 +92,7 @@ class che_이동 extends Command\GeneralCommand{
         $general->setVar('city', $destCityID);
 
         if($general->getVar('level') == 12 && $this->nation['level'] == 0){
-            $generalList = $db->queryFirstColumn('SELECT no, name, city, nation, level FROM general WHERE nation=%i AND no!=%i', $general->getNationID(), $general->getID());
+            $generalList = $db->query('SELECT no, name, city, nation, level FROM general WHERE nation=%i AND no!=%i', $general->getNationID(), $general->getID());
             foreach($generalList as $targetRawGeneral){
                 $targetGeneralID = $targetRawGeneral['no'];
                 $targetGeneral = $this->getGeneralObjFromGeneralSource($targetGeneralID);
