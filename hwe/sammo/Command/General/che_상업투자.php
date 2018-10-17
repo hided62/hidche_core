@@ -174,7 +174,7 @@ class che_상업투자 extends Command\GeneralCommand{
         $general->checkStatChange();
         $general->applyDB($db);
         
-        uniqueItemEx($general->getVar('no'), $logger);
+        uniqueItemEx($general->getID(), $logger);
     }
 
     

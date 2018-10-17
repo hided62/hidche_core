@@ -27,7 +27,7 @@ class che_도시치료 extends BaseGeneralTrigger{
         $patients = $db->queryAllLists(
             'SELECT no,name,nation FROM general WHERE city=%i AND injury > 10 AND no != %i', 
             $general->getVar('city'), 
-            $general->getVar('no')
+            $general->getID()
         );
 
         if(!$patients){

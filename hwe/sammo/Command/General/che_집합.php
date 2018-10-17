@@ -81,16 +81,17 @@ class che_집합 extends Command\GeneralCommand{
 
         $logger->pushGeneralActionLog("<G><b>{$cityName}</b></>에서 집합을 실시했습니다. <1>$date</>");
 
-        $generalList = $db->query('SELECT no, name, city, nation, level FROM general WHERE nation=%i AND troop=%i AND no!=%i', $general->getNationID(), $troopID, $general->getID());
-        foreach($generalList as $targetRawGeneral){
-            $targetGeneralID = $targetRawGeneral['no'];
-            $targetGeneral = $this->getGeneralObjFromGeneralSource($targetGeneralID);
-            if($targetGeneral === null){
-                $targetGeneral = new General($targetRawGeneral, null, $env['year'], $env['month'], false);
-            }
-            $targetGeneral->setVar('city', $destCityID);
-            $targetGeneral->getLogger()->pushGeneralActionLog("{$troopName}의 부대원들은 <G><b>{$cityName}</b></>{$josaRo} 집합되었습니다.", ActionLogger::PLAIN);
-            $targetGeneral = null;
+        $generalList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND troop=%i AND no!=%i', $general->getNationID(), $troopID, $general->getID());
+        if($generalList){
+            $db->update('general', [
+                'city'=>$cityID
+            ], 'no IN %li', $generalList);
+        }
+        foreach($generalList as $targetGeneralID){
+            $targetGeneral = General::createGeneralObjFromDB($targetGeneralID, [], 1);
+            $targetLogger = new ActionLogger($targetGeneralID, $general->getNationID(), $env['year'], $env['month']);
+            $targetLogger->pushGeneralActionLog("{$troopName}의 부대원들은 <G><b>{$cityName}</b></>{$josaRo} 집합되었습니다.", ActionLogger::PLAIN);
+            $targetLogger->flush();
         }
 
         $exp = 70;
@@ -106,7 +107,7 @@ class che_집합 extends Command\GeneralCommand{
         $general->checkStatChange();
         $general->applyDB($db);
 
-        uniqueItemEx($general->getVar('no'), $logger);
+        uniqueItemEx($general->getID(), $logger);
     }
 
     

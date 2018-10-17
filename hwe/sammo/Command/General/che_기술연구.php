@@ -131,7 +131,7 @@ class che_기술연구 extends che_상업투자{
         $general->checkStatChange();
         $general->applyDB($db);
 
-        uniqueItemEx($general->getVar('no'), $logger);
+        uniqueItemEx($general->getID(), $logger);
     }
 
     

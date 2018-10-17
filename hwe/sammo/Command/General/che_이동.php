@@ -92,16 +92,17 @@ class che_이동 extends Command\GeneralCommand{
         $general->setVar('city', $destCityID);
 
         if($general->getVar('level') == 12 && $this->nation['level'] == 0){
-            $generalList = $db->query('SELECT no, name, city, nation, level FROM general WHERE nation=%i AND no!=%i', $general->getNationID(), $general->getID());
-            foreach($generalList as $targetRawGeneral){
-                $targetGeneralID = $targetRawGeneral['no'];
-                $targetGeneral = $this->getGeneralObjFromGeneralSource($targetGeneralID);
-                if($targetGeneral === null){
-                    $targetGeneral = new General($targetRawGeneral, null, $env['year'], $env['month'], false);
-                }
-                $targetGeneral->setVar('city', $destCityID);
-                $targetGeneral->getLogger()->pushGeneralActionLog("방랑군 세력이 <G><b>{$destCityName}</b></>{$josaRo} 이동했습니다.", ActionLogger::PLAIN);
-                $targetGeneral = null;
+            $generalList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no!=%i', $general->getNationID(), $general->getID());
+            if($generalList){
+                $db->update('general', [
+                    'city'=>$destCityID
+                ], 'no IN %li', $generalList);
+            }
+            foreach($generalList as $targetGeneralID){
+                $targetGeneral = General::createGeneralObjFromDB($targetGeneralID, [], 1);
+                $targetLogger = new ActionLogger($targetGeneralID, $general->getNationID(), $env['year'], $env['month']);
+                $targetLogger->pushGeneralActionLog("방랑군 세력이 <G><b>{$destCityName}</b></>{$josaRo} 이동했습니다.", ActionLogger::PLAIN);
+                $targetLogger->flush();
             }
         }
 

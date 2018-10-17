@@ -504,9 +504,9 @@ class General implements iAction{
         return $caller;
     }
 
-    static public function createGeneralObjFromDB(int $generalID, ?array $column=null, bool $fullConstruct=true):self{
+    static public function createGeneralObjFromDB(int $generalID, ?array $column=null, int $constructMode=2):self{
         $db = DB::db();
-        if($fullConstruct){
+        if($constructMode > 0){
             $gameStor = KVStorage::getStorage($db, 'game_env');
             [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
         }
@@ -533,7 +533,7 @@ class General implements iAction{
         if($column === null){
             $column = $fullColumn;
         }
-        else if($fullConstruct){
+        else if($constructMode > 1){
             $column = array_unique(array_merge($defaultEventColumn, $column));
         }
         else{
@@ -545,7 +545,7 @@ class General implements iAction{
             throw new \InvalidArgumentException("generalID에 해당하는 장수가 없음: {$generalID}");
         }
 
-        $general = new static($rawGeneral, null, $year, $month, $fullConstruct);
+        $general = new static($rawGeneral, null, $year, $month, $constructMode > 1);
         
         return $general;
     }

@@ -36,8 +36,6 @@ abstract class BaseCommand{
 
     protected $runnableConstraints = null;
     protected $reservableConstraints = null;
-    
-    protected $generalSource = null;
 
     protected $logger;
 
@@ -52,17 +50,6 @@ abstract class BaseCommand{
         $this->isArgValid = true;
         $this->init();
         
-    }
-
-    public function setGeneralSource(?array $generalSource){
-        $this->generalSource = $generalSource;
-    }
-
-    protected function getGeneralObjFromGeneralSource(int $generalNo):?General{
-        if($this->generalSource === null){
-            return null;
-        }
-        return $this->generalSource[$generalNo]??null;
     }
 
     protected function resetTestCache():void{

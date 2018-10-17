@@ -8,12 +8,10 @@ class TurnExecutionHelper
      * @var General $generalObj;
      */
     protected $generalObj;
-    protected $generalSource = null;
 
-    public function __construct(General $general, ?array $generalSource = null)
+    public function __construct(General $general)
     {
         $this->generalObj = $general;
-        $this->generalSource = $generalSource;
     }
 
     public function __destruct()
@@ -77,7 +75,6 @@ class TurnExecutionHelper
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
         $commandObj = buildNationCommandClass($commandClassName, $general, $gameStor->getAll(true), $commandLast, $commandArg);
-        $commandObj->setGeneralSource($this->generalSource);
 
         $failReason = $commandObj->testReservable();
         if($failReason){
@@ -103,7 +100,6 @@ class TurnExecutionHelper
         $commandClass = getGeneralCommandClass($commandClassName);
         /** @var \sammo\Command\GeneralCommand $commandObj */
         $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandArg, $commandLast);
-        $commandObj->setGeneralSource($this->generalSource);
 
         $failReason = $commandObj->testReservable();
         if($failReason){
@@ -188,61 +184,47 @@ class TurnExecutionHelper
 
     static public function executeGeneralCommandUntil(string $date, \DateTimeInterface $limitActionTime, int $year, int $month){
         $db = DB::db();
-        $rawGeneralsTodo = $db->queryFirstRow(
-            'SELECT no,name,name2,picture,imgsvr,nation,nations,city,troop,injury,affinity,
-leader,leader2,power,power2,intel,intel2,weap,book,horse,item,
-experience,dedication,level,gold,rice,crew,crewtype,train,atmos,
-turntime,makenation,makelimit,killturn,block,dedlevel,explevel,
-age,belong,personal,special,special2,term,mode,
-npc,npc_org,npcid,deadyear,npcmsg,
-dex0,dex10,dex20,dex30,dex40,
-warnum,killnum,deathnum,killcrew,deathcrew,recwar,last_turn
+        $generalsTodo = $db->queryFirstRow(
+            'SELECT no,name,turntime,killturn,block,npc,deadyear, 
 general_turn.`action` AS `action`, general_turn.arg AS arg
 FROM general LEFT JOIN general_turn ON general.`no` = general_turn.general_id AND turn_idx = 0
 WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             $date
         );
 
-        $generalsTodo = [];
-        $generalSource = [];
-        foreach($rawGeneralsTodo as $rawGeneral){
+        $currentTurn = null;
+
+        foreach($generalsTodo as $rawGeneral){
             $generalCommand = $rawGeneral['action'];
             $generalArg = Json::decode($rawGeneral['arg'])??[];
             unset($rawGeneral['action']);
             unset($rawGeneral['arg']);
-            $general = new General($rawGeneral, $year, $month);
-
-            $generalsTodo[] = [$general, $generalCommand, $generalArg];
-            $generalSource[$general->getID()] = $general;
-        }
-
-        $currentTurn = null;
-
-        foreach($generalsTodo as [$general, $generalCommand, $generalArg]){
+            
             $currActionTime = new \DateTimeImmutable();
             if($currActionTime > $limitActionTime){
                 return [true, $currentTurn];
             }
 
-            $turnObj = new static($general, $generalSource);
+            $general = General::createGeneralObjFromDB($rawGeneral['no']);
+            $turnObj = new static($general);
 
             $hasNationTurn = false;
-            if($generalWork['nation'] != 0 && $generalWork['level'] >= 5){
+            if($general->getVar('nation') != 0 && $general->getVar('level') >= 5){
                 $nationStor = KVStorage::getStorage($db, 'nation_env');
-                $lastNationTurnKey = "turn_last_{$generalWork['nation']}_{$generalWork['level']}";
+                $lastNationTurnKey = "turn_last_{$general->getVar('nation')}_{$general->getVar('level')}";
                 $lastNationTurn = $nationStor->getDBValue($lastNationTurnKey)??[];
                 //수뇌 몇 없는데 매번 left join 하는건 낭비인것 같다.
                 $rawNationTurn = Json::decode($db->queryFirstRow(
                     'SELECT action, arg FROM nation_turn WHERE nation_id = %i AND level = %i AND turn_idx =0',
-                    $generalWork['nation'],
-                    $generalWork['level']
+                    $general->getVar('nation'),
+                    $general->getVar('level')
                 ))??[];
                 $hasNationTurn = true;
                 $nationCommand = $rawNationTurn['action'];
                 $nationArg = Json::decode($rawNationTurn['arg']);
             }
 
-            if($generalWork['npc'] >= 2){
+            if($general->getVar('npc') >= 2){
                 $ai = new GeneralAI($turnObj->getGeneral());
                 if($hasNationTurn){
                     [$nationCommand, $nationArg] = $ai->chooseNationTurn($nationCommand, $nationArg);
@@ -264,12 +246,15 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 }
                 $turnObj->processCommand($generalCommand, $generalArg);
             }
-            pullNationCommand($generalWork['nation'], $generalWork['level']);
-            pullGeneralCommand($generalWork['no']);
+            pullNationCommand($general->getVar('nation'), $general->getVar('level'));
+            pullGeneralCommand($general->getID());
+
+            $currentTurn = $general->getVar('turntime');
+
             $turnObj->updateTurnTime();
             $turnObj->applyDB();
 
-            $currentTurn = $generalWork['turntime'];
+            
         }
 
         return [false, $currentTurn];
