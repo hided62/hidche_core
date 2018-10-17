@@ -76,15 +76,26 @@ class TurnExecutionHelper
 
         $commandObj = buildNationCommandClass($commandClassName, $general, $gameStor->getAll(true), $commandLast, $commandArg);
 
-        $failReason = $commandObj->testReservable();
-        if($failReason){
-            $date = substr($general->getVar('turntime'),11,5);
-            $commandName = $commandObj->getName();
-            $text = "{$failReason} {$commandName} 실패. <1>{$date}</>";
-            $general->getLogger()->pushGeneralActionLog($text);
-        }
-        else{
-            $commandObj->run();
+        while(true){
+            $failReason = $commandObj->testRunnable();
+            if($failReason){
+                $date = substr($general->getVar('turntime'),11,5);
+                $failString = $commandObj->getFailString();
+                $text = "{$failString} <1>{$date}</>";
+                $general->getLogger()->pushGeneralActionLog($text);
+                break;
+            }
+            
+            $result = $commandObj->run();
+            if($result){
+                break;
+            }
+            $alt = $commandObj->getAlternativeCommand();
+            if($alt === null){
+                break;
+            }
+            $commandObj = $alt;
+            $commandClassName = $alt->getName();
         }
 
         return $commandObj->getResultTurn();
@@ -97,20 +108,30 @@ class TurnExecutionHelper
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
-        $commandClass = getGeneralCommandClass($commandClassName);
-        /** @var \sammo\Command\GeneralCommand $commandObj */
-        $commandObj = new $commandClass($general, $gameStor->getAll(true), $commandArg, $commandLast);
+        $commandObj = buildGeneralCommandClass($commandClassName, $general, $gameStor->getAll(true), $commandArg);
 
-        $failReason = $commandObj->testReservable();
-        if($failReason){
-            $date = substr($general->getVar('turntime'),11,5);
-            $commandName = $commandObj->getName();
-            $text = "{$failReason} {$commandName} 실패. <1>{$date}</>";
-            $general->getLogger()->pushGeneralActionLog($text);
+        while(true){
+            $failReason = $commandObj->testRunnable();
+            if($failReason){
+                $date = substr($general->getVar('turntime'),11,5);
+                $failString = $commandObj->getFailString();
+                $text = "{$failString} <1>{$date}</>";
+                $general->getLogger()->pushGeneralActionLog($text);
+                break;
+            }
+            
+            $result = $commandObj->run();
+            if($result){
+                break;
+            }
+            $alt = $commandObj->getAlternativeCommand();
+            if($alt === null){
+                break;
+            }
+            $commandObj = $alt;
+            $commandClassName = $alt->getName();
         }
-        else{
-            $commandObj->run();
-        }
+        
 
         $general->clearActivatedSkill();
 

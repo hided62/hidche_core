@@ -39,6 +39,8 @@ abstract class BaseCommand{
 
     protected $logger;
 
+    protected $alternative = null;
+
     public function __construct(General $generalObj, array $env, $arg = null){
         $this->generalObj = $generalObj;
         $this->logger = $generalObj->getLogger();
@@ -85,8 +87,31 @@ abstract class BaseCommand{
             return;
         }
 
+        $defaultArgs = ['nation', 'name', 'color', 'type', 'level', 'capital'];
+        $args = array_unique(array_merge($defaultArgs, $args));
+        
+        $defaultValues = [
+            'nation'=>0,
+            'name'=>'재야',
+            'color'=>'#000000',
+            'type'=>GameConst::$neutralNationType,
+            'level'=>0,
+            'capital'=>0,
+            'gold'=>0,
+            'rice'=>2000,
+            'tech'=>0,
+            'gennum'=>1  
+        ];
+
         $db = DB::db();
-        $this->nation = $db->queryFirstRow('SELECT %lb FROM nation WHERE nation=%i', $args, $this->generalObj->getVar('nation'));
+        $destNation = $db->queryFirstRow('SELECT %lb FROM nation WHERE nation=%i', $args, $nationNo);
+        if($destNation === null){
+            $destNation = [];
+            foreach($args as $arg){
+                $destNation[$arg] = $defaultValues[$arg];
+            }
+        }
+        $this->destNation = $destNation;
     }
 
     protected function setDestGeneralFromObj(General $destGeneral){
@@ -122,8 +147,31 @@ abstract class BaseCommand{
             return;
         }
 
+        $defaultArgs = ['nation', 'name', 'color', 'type', 'level', 'capital'];
+        $args = array_unique(array_merge($defaultArgs, $args));
+
+        $defaultValues = [
+            'nation'=>0,
+            'name'=>'재야',
+            'color'=>'#000000',
+            'type'=>GameConst::$neutralNationType,
+            'level'=>0,
+            'capital'=>0,
+            'gold'=>0,
+            'rice'=>2000,
+            'tech'=>0,
+            'gennum'=>1  
+        ];
+
         $db = DB::db();
-        $this->destNation = $db->queryFirstRow('SELECT %lb FROM nation WHERE nation=%i', $args, $nationNo);
+        $destNation = $db->queryFirstRow('SELECT %lb FROM nation WHERE nation=%i', $args, $nationNo);
+        if($destNation === null){
+            $destNation = [];
+            foreach($args as $arg){
+                $destNation[$arg] = $defaultValues[$arg];
+            }
+        }
+        $this->destNation = $destNation;
     }
 
     abstract protected function init();
@@ -200,6 +248,19 @@ abstract class BaseCommand{
         }
         
         return $this->testRunnable() === null;
+    }
+
+    public function getFailString():string{
+        $commandName = $this->getName();
+        $failReason = $this->testRunnable();
+        if($failReason === null){
+            throw new \RuntimeException('실행 가능한 커맨드에 대해 실패 이유를 수집');
+        }
+        return "{$failReason} {$commandName} 실패.";
+    }
+
+    public function getAlternativeCommand():?self{
+        return $this->alternative;
     }
 
     abstract public function getCost():array;

@@ -122,6 +122,8 @@ class che_물자조달 extends Command\GeneralCommand{
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
+
+        return true;
     }
 
     

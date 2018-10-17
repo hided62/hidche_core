@@ -97,6 +97,8 @@ class che_사기진작 extends Command\GeneralCommand{
         $general->applyDB($db);
 
         uniqueItemEx($general->getID(), $logger);
+
+        return true;
     }
 
     

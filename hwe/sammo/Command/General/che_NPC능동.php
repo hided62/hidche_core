@@ -89,6 +89,8 @@ class che_NPC능동 extends Command\GeneralCommand{
         }
 
         $general->applyDB($db);
+
+        return true;
     }
 
     

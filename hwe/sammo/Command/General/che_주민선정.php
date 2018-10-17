@@ -159,6 +159,8 @@ class che_주민선정 extends Command\GeneralCommand{
         $general->applyDB($db);
         
         uniqueItemEx($general->getID(), $logger);
+
+        return true;
     }
 
     

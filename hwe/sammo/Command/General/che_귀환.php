@@ -95,6 +95,7 @@ class che_귀환 extends Command\GeneralCommand{
         $general->checkStatChange();
         $general->applyDB($db);
 
+        return true;
     }
 
     

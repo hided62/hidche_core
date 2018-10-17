@@ -162,6 +162,8 @@ class che_정착장려 extends Command\GeneralCommand{
         $general->applyDB($db);
         
         uniqueItemEx($general->getID(), $logger);
+
+        return true;
     }
 
     

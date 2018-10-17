@@ -85,7 +85,7 @@ class che_소집해제 extends Command\GeneralCommand{
         $general->checkStatChange();
         $general->applyDB($db);
 
-        
+        return true;
     }
 
     

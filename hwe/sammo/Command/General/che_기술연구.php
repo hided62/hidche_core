@@ -132,6 +132,8 @@ class che_기술연구 extends che_상업투자{
         $general->applyDB($db);
 
         uniqueItemEx($general->getID(), $logger);
+
+        return true;
     }
 
     

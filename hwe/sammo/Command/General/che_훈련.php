@@ -94,6 +94,8 @@ class che_훈련 extends Command\GeneralCommand{
         $general->applyDB($db);
 
         uniqueItemEx($general->getID(), $logger);
+
+        return true;
     }
 
     

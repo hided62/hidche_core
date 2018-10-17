@@ -67,6 +67,17 @@ class che_이동 extends Command\GeneralCommand{
         return 0;
     }
 
+    public function getFailString():string{
+        $commandName = $this->getName();
+        $failReason = $this->testRunnable();
+        if($failReason === null){
+            throw new \RuntimeException('실행 가능한 커맨드에 대해 실패 이유를 수집');
+        }
+        $destCityName = CityConst::byID($this->arg['destCityID'])->name;
+        $josaRo = JosaUtil::pick($destCityName, '로');
+        return "{$failReason} <G><b>{$destCityName}</b></>{$josaRo} {$commandName} 실패.";
+    }
+
     public function run():bool{
         if(!$this->isRunnable()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -114,6 +125,7 @@ class che_이동 extends Command\GeneralCommand{
         $general->checkStatChange();
         $general->applyDB($db);
 
+        return true;
     }
 
     

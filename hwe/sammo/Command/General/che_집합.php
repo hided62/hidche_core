@@ -108,6 +108,8 @@ class che_집합 extends Command\GeneralCommand{
         $general->applyDB($db);
 
         uniqueItemEx($general->getID(), $logger);
+
+        return true;
     }
 
     

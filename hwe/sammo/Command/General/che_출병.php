@@ -12,7 +12,8 @@ use \sammo\{
 
 
 use function \sammo\{
-    uniqueItemEx
+    uniqueItemEx,
+    processWar
 };
 
 use \sammo\Constraint\Constraint;
@@ -20,24 +21,29 @@ use sammo\CityConst;
 
 
 
-class che_강행 extends Command\GeneralCommand{
-    static protected $actionName = '강행';
+class che_출병 extends Command\GeneralCommand{
+    static protected $actionName = '출병';
 
     protected function init(){
 
         $general = $this->generalObj;
 
         $this->setCity();
-        $this->setNation();
+        $this->setNation(['war', 'gennum', 'tech', 'gold', 'rice']);
         $this->setDestCity($this->arg['destCityID'], []);
+        $this->setDestNation(['nation' ,'level','name','capital','gennum','tech','type','gold','rice']);
 
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NotSameCity'], 
-            ['NearCity', 3],
-            ['ReqGeneralGold', $reqGold],
+            ['NotOpeningPart'],
+            ['NearCity', 1],
+            ['NoNeutral'],
+            ['OccupiedCity'],
+            ['ReqGeneralCrew'],
             ['ReqGeneralRice', $reqRice],
+            ['AllowWar'],
+            ['BattleGroundCity', 1],
         ];
     }
 
@@ -55,8 +61,7 @@ class che_강행 extends Command\GeneralCommand{
     }
 
     public function getCost():array{
-        $env = $this->env;
-        return [$env['develcost'] * 5, 0];
+        return [0, Util::round($this->general->getVar('crew')/100)];
     }
     
     public function getPreReqTurn():int{
@@ -87,45 +92,42 @@ class che_강행 extends Command\GeneralCommand{
         $env = $this->env;
 
         $general = $this->generalObj;
+        $attackerNationID = $general->getNationID();
+        $defenderNationID = $this->destCity['nation'];
         $date = substr($general->getVar('turntime'),11,5);
 
-        $destCityName = $this->destCity['name'];
-        $destCityID = $this->destCity['city'];
+        $defenderCityName = $this->destCity['name'];
+        $defenderCityID = $this->destCity['city'];
         $josaRo = JosaUtil::pick($destCityName, '로');
 
         $logger = $general->getLogger();
 
-        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>{$josaRo} 강행했습니다. <1>$date</>");
-
-        $exp = 100;
-
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $general->setVar('city', $destCityID);
-
-        if($general->getVar('level') == 12 && $this->nation['level'] == 0){
-            
-            $generalList = $db->queryFirstColumn('SELECT no FROM general WHERE nation=%i AND no!=%i', $general->getNationID(), $general->getID());
-            if($generalList){
-                $db->update('general', [
-                    'city'=>$destCityID
-                ], 'no IN %li', $generalList);
-            }
-            foreach($generalList as $targetGeneralID){
-                $targetGeneral = General::createGeneralObjFromDB($targetGeneralID, [], 1);
-                $targetLogger = new ActionLogger($targetGeneralID, $general->getNationID(), $env['year'], $env['month']);
-                $targetLogger->pushGeneralActionLog("방랑군 세력이 <G><b>{$destCityName}</b></>{$josaRo} 강행했습니다.", ActionLogger::PLAIN);
-                $targetLogger->flush();
-            }
+        if($attackerNationID == $defenderNationID){
+            $logger->pushGeneralActionLog("본국입니다. <G><b>{$defenderCityName}</b></>{$josaRo} 으로 이동합니다. <1>$date</>");    
+            $this->alternative = new che_이동($general, $this->env, $this->arg);
+            return false;
         }
 
-        [$reqGold, $reqRice] = $this->getCost();
-        $general->increaseVarWithLimit('gold', -$reqGold, 0);
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('leader2', 1);
+        $db->update('city', [
+            'state'=>43,
+            'term'=>3
+        ], 'city=%i', $defenderCityID);
+
+        $this->destCity['state'] = 43;
+        $this->destCity['term'] = 3;
+
+        $general->addDex($general->getCrewTypeObj(), $general->getVar('crew')/100);
+        
+
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        $general->checkStatChange();
         $general->applyDB($db);
 
+        //TODO: 장기적으로 통합해야함
+        processWar($general->getRaw(), $this->destCity);
+
+        uniqueItemEx($general->getID(), $logger);
+        
+        return true;
     }
 
     
