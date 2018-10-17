@@ -503,4 +503,50 @@ class General implements iAction{
         }
         return $caller;
     }
+
+    static public function createGeneralObjFromDB(int $generalID, ?array $column=null, bool $fullConstruct=true):self{
+        $db = DB::db();
+        if($fullConstruct){
+            $gameStor = KVStorage::getStorage($db, 'game_env');
+            [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+        }
+        else{
+            $year = null;
+            $month = null;
+        }
+        $minimumColumn = ['no', 'name', 'city', 'nation', 'level'];
+        $defaultEventColumn = [
+            'no', 'name', 'city', 'nation', 'level',
+            'special', 'special2', 'personal',
+            'horse', 'weap', 'book', 'item', 'last_turn'
+        ];
+        $fullColumn = [
+            'no', 'name', 'name2', 'picture', 'imgsvr', 'nation', 'nations', 'city', 'troop', 'injury', 'affinity', 
+            'leader', 'leader2', 'power', 'power2', 'intel', 'intel2', 'weap', 'book', 'horse', 'item', 
+            'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
+            'makenation', 'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'belong',
+            'personal', 'special', 'special2', 'term', 'mode', 'npc', 'npc_org', 'npcid', 'deadyear', 'npcmsg',
+            'dex0', 'dex10', 'dex20', 'dex30', 'dex40', 
+            'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn'
+        ];
+
+        if($column === null){
+            $column = $fullColumn;
+        }
+        else if($fullConstruct){
+            $column = array_unique(array_merge($defaultEventColumn, $column));
+        }
+        else{
+            $column = array_unique(array_merge($minimumColumn, $column));
+        }
+
+        $rawGeneral = $db->queryFirstRow('SELECT $lb FROM general WHERE no = %i', $generalID);
+        if(!$rawGeneral){
+            throw new \InvalidArgumentException("generalID에 해당하는 장수가 없음: {$generalID}");
+        }
+
+        $general = new static($rawGeneral, null, $year, $month, $fullConstruct);
+        
+        return $general;
+    }
 }
