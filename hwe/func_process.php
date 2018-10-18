@@ -1333,32 +1333,6 @@ function process_49(&$general) {
     pushGenLog($general, $log);
 }
 
-function process_50(&$general) {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
-    $date = substr($general['turntime'],11,5);
-
-    $month = $gameStor->month;
-
-    $log[] = "<C>●</>{$month}월:건강 회복을 위해 요양합니다. <1>$date</>";
-    // 경험치 상승        // 공헌도, 명성 상승
-    $exp = 10;
-    $ded = 7;
-
-    // 성격 보정
-    $exp = CharExperience($exp, $general['personal']);
-    $ded = CharDedication($ded, $general['personal']);
-    $query = "update general set resturn='SUCCESS',injury='0',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-    pushGenLog($general, $log);
-}
-
 function process_99(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
