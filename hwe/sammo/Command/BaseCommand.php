@@ -12,7 +12,7 @@ use \sammo\Constraint\Constraint;
 abstract class BaseCommand{
     /**
      * @var General|null $generalObj
-     * @var array|null $destGeneral
+     * @var General|null $destGeneralObj
      */
     static protected $actionName = 'CommandName';
 
@@ -22,7 +22,7 @@ abstract class BaseCommand{
     protected $arg = null;
     protected $env = null;
 
-    protected $destGeneral = null;
+    protected $destGeneralObj = null;
     protected $destCity = null;
     protected $destNation = null;
 
@@ -114,15 +114,9 @@ abstract class BaseCommand{
         $this->destNation = $destNation;
     }
 
-    protected function setDestGeneralFromObj(General $destGeneral){
+    protected function setDestGeneral(General $destGeneralObj){
         $this->resetTestCache();
-        $this->destGeneral = $destGeneral->getRaw();
-    }
-
-    protected function setDestGeneral(int $generalNo, array $args){
-        $this->resetTestCache();
-        $db = DB::db();
-        $this->destGeneral = $db->queryFirstRow('SELECT %lb FROM general WHERE no=%i', $args, $generalNo);
+        $this->destGeneralObj = $destGeneralObj;
     }
 
     protected function setDestCity(int $cityNo, ?array $args){
@@ -219,7 +213,7 @@ abstract class BaseCommand{
             'nation'=>$this->nation,
             'arg'=>$this->arg,
 
-            'destGeneral'=>$this->destGeneral,
+            'destGeneral'=>$this->destGeneralObj->getRaw(),
             'destCity'=>$this->destCity,
             'destNation'=>$this->destNation,
         ];

@@ -542,7 +542,7 @@ class General implements iAction{
 
         $rawGeneral = $db->queryFirstRow('SELECT $lb FROM general WHERE no = %i', $generalID);
         if(!$rawGeneral){
-            throw new \InvalidArgumentException("generalID에 해당하는 장수가 없음: {$generalID}");
+            throw new NoDBResultException("generalID에 해당하는 장수가 없음: {$generalID}");
         }
 
         $general = new static($rawGeneral, null, $year, $month, $constructMode > 1);

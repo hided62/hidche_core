@@ -3,7 +3,7 @@ namespace sammo\GeneralCommand;
 
 use \sammo\{
     DB, Util, JosaUtil,
-    General, 
+    General, DummyGeneral,
     ActionLogger,
     GameConst,
     LastTurn,
@@ -21,8 +21,8 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 
 
-class che_헌납 extends Command\GeneralCommand{
-    static protected $actionName = '헌납';
+class che_증여 extends Command\GeneralCommand{
+    static protected $actionName = '증여';
 
     protected function init(){
 
@@ -30,11 +30,21 @@ class che_헌납 extends Command\GeneralCommand{
 
         $this->setCity();
         $this->setNation();
+
+        try{
+            $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'nation'], 1);
+        }
+        catch(NoDBResultException $e){
+            $destGeneral = new DummyGeneral(false);
+        }
+        $this->setDestGeneral($destGeneral);
         
         $this->runnableConstraints=[
             ['NoNeutral'], 
             ['OccupiedCity'],
             ['SuppliedCity'],
+            ['ExistsDestGeneral'],
+            ['FriendlyDestGeneral']
         ];
         if($this->arg['isGold']){
             $this->runnableConstraints[] = ['ReqGeneralGold', 1];
@@ -46,14 +56,19 @@ class che_헌납 extends Command\GeneralCommand{
     }
 
     protected function argTest():bool{
+        //NOTE: 사망 직전에 '증여' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
         if(!key_exists('isGold', $this->arg)){
             return false;
         }
         if(!key_exists('amount', $this->arg)){
             return false;
         }
+        if(!key_exists('destGeneralID', $this->arg)){
+            return false;
+        }
         $isGold = $this->arg['isGold'];
         $amount = $this->arg['amount'];
+        $destGeneralID = $this->arg['destGeneralID'];
         if(!is_int($amount)){
             return false;
         }
@@ -67,9 +82,19 @@ class che_헌납 extends Command\GeneralCommand{
         if(!is_bool($isGold)){
             return false;
         }
+        if(!is_int($destGeneralID)){
+            return false;
+        }
+        if($destGeneralID < 0){
+            return false;
+        }
+        if($destGeneralID == $this->generalObj->getID()){
+            return false;
+        }
         $this->arg = [
             'isGold'=>$isGold,
-            'amount'=>$amount
+            'amount'=>$amount,
+            'destGeneralID'=>$destGeneralID
         ];
         return true;
     }
@@ -100,19 +125,18 @@ class che_헌납 extends Command\GeneralCommand{
         $amount = $this->arg['amount'];
         $resKey = $isGold?'gold':'rice';
         $resName = $isGold?'금':'쌀';
-
+        $destGeneral = $this->destGeneralObj;
+        
         $amount = Util::valueFit($amount, $general->getVar($resKey));
         $amountText = number_format($amount, 0);
         
         $logger = $general->getLogger();
 
-        $db->update('nation', [
-            $resKey=>$db->sqleval('%b + %i', $resKey, $amount)
-        ], 'nation=%i', $general->getNationID());
-
+        $destGeneral->increaseVarWithLimit($resKey, $amount);
         $general->increaseVarWithLimit($resKey, -$amount, 0);
 
-        $logger->pushGeneralActionLog("{$resName} <C>$amountText</>을 헌납했습니다. <1>$date</>");
+        $destGeneral->getLogger()->pushGeneralActionLog("{$general->getName()}</>에게서 {$resName} <C>{$amountText}</>을 증여 받았습니다.");
+        $logger->pushGeneralActionLog("{$destGeneral->getName()}에게 {$resName} <C>$amountText</>을 증여했습니다. <1>$date</>");
 
         $exp = 70;
         $ded = 100;
@@ -127,6 +151,7 @@ class che_헌납 extends Command\GeneralCommand{
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
+        $destGeneral->applyDB($db);
 
         return true;
     }
