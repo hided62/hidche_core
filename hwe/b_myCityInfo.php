@@ -127,7 +127,7 @@ for ($j=0; $j < $citycount; $j++) {
         $level = $city['level'];
     }
 
-    if ($city['trade'] == 0) {
+    if ($city['trade'] === null) {
         $city['trade'] = "- ";
     }
 

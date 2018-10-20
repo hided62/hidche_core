@@ -258,10 +258,26 @@ function startTournament($auto, $type) {
     for($i=0;$i<16;$i+=1){
         $gameStor->setValue("bet{$i}", 0);
     }
-    $query = "update general set tournament=0,bet0=0,bet1=0,bet2=0,bet3=0,bet4=0,bet5=0,bet6=0,bet7=0,bet8=0,bet9=0,bet10=0,bet11=0,bet12=0,bet13=0,bet14=0,bet15=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $query = "truncate tournament";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        'tournament'=>0,
+        'bet0'=>0,
+        'bet1'=>0,
+        'bet2'=>0,
+        'bet3'=>0,
+        'bet4'=>0,
+        'bet5'=>0,
+        'bet6'=>0,
+        'bet7'=>0,
+        'bet8'=>0,
+        'bet9'=>0,
+        'bet10'=>0,
+        'bet11'=>0,
+        'bet12'=>0,
+        'bet13'=>0,
+        'bet14'=>0,
+        'bet15'=>0
+    ], true);
+    $db->query('TRUNCATE TABLE tournament');
 
     $history = [];
     switch($type) {
@@ -283,13 +299,18 @@ function fillLowGenAll() {
 
     $develcost = $gameStor->develcost;
 
-    $general['no'] = 0;
-    $general['name'] = "무명장수";
-    $general['npc'] = 2;
-    $general['leader'] = 10;
-    $general['power'] = 10;
-    $general['intel'] = 10;
-    $general['explevel'] = 10;
+    $dummyGeneral = [
+        'no'=>0,
+        'npc'=>2,
+        'name'=>'무명장수',
+        'leader'=>10,
+        'power'=>10,
+        'intel'=>10,
+        'explevel'=>10,
+        'horse'=>$general['horse'],
+        'weap'=>$general['weap'],
+        'book'=>$general['book']
+    ];
 
     for($i=0; $i < 8; $i++) {
         $query = "select grp from tournament where grp='$i'";
@@ -310,19 +331,32 @@ function fillLowGenAll() {
             //비었으면 채우기
             if($grpCount[$i] < 8) {
                 //자동신청 장수 있으면 채우기
-                if($genCount > 0) {
+                if ($genCount > 0) {
                     $genCount--;
-                    $gen = MYDB_fetch_array($result);
-                    $query = "update general set tournament='1' where no='{$gen['no']}'";
-                    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-                    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('{$gen['no']}', '{$gen['npc']}', '{$gen['name']}', '{$gen['leader']}', '{$gen['power']}', '{$gen['intel']}', '{$gen['explevel']}', '$i', '$grpCount[$i]')";
-                    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                //자동신청 장수 없으면 무명장수
-                } else {
-                    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['leader']}', '{$general['power']}', '{$general['intel']}', '{$general['explevel']}', '$i', '$grpCount[$i]')";
-                    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                    $general = MYDB_fetch_array($result);
+                    $db->update('general', [
+                        'tournament'=>1
+                    ], 'no=%i', $general['no']);
                 }
+                else{
+                    $general = $dummyGeneral;
+                }
+
+                $db->insert('tournament', [
+                    'no'=>$general['no'],
+                    'npc'=>$general['npc'],
+                    'name'=>$general['name'],
+                    'ldr'=>$general['leader'],
+                    'pwr'=>$general['power'],
+                    'itl'=>$general['intel'],
+                    'lvl'=>$general['explevel'],
+                    'grp'=>$i,
+                    'grp_no'=>$grpCount[$i],
+                    'h'=>$general['horse'],
+                    'w'=>$general['weap'],
+                    'b'=>$general['book']
+                ]);
+
                 $grpCount[$i]++;
             }
             //덜 찼으면 루프 다시
@@ -427,27 +461,39 @@ function selection($tnmt_type, $tnmt, $phase) {
     //시드1 배정
     if($phase < 8) {
         $grp = $phase + 10;  $grp_no = 0;
-        $query = "select * from tournament where prmt=1 order by rand() limit 0,1";
+        $general = $db->queryFirstRow('SELECT * FROM tournament WHERE prmt=1 ORDER BY rand() LIMIT 1');
     //시드2 배정
     } elseif($phase < 16) {
         $grp = $phase - 8 + 10;  $grp_no = 1;
-        $query = "select * from tournament where prmt=2 order by rand() limit 0,1";
+        $general = $db->queryFirstRow('SELECT * FROM tournament WHERE prmt=2 ORDER BY rand() LIMIT 1');
     } elseif($phase < 24) {
         $grp = $phase - 16 + 10;  $grp_no = 2;
-        $query = "select * from tournament where prmt>2 order by rand() limit 0,1";
+        $general = $db->queryFirstRow('SELECT * FROM tournament WHERE prmt>2 ORDER BY rand() LIMIT 1');
     } else {
         $grp = $phase - 24 + 10;  $grp_no = 3;
-        $query = "select * from tournament where prmt>2 order by rand() limit 0,1";
+        $general = $db->queryFirstRow('SELECT * FROM tournament WHERE prmt>2 ORDER BY rand() LIMIT 1');
     }
     //해당 시드에서 랜덤 선택
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
     //본선에 추가
-    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['ldr']}', '{$general['pwr']}', '{$general['itl']}', '{$general['lvl']}', '$grp', '$grp_no', '{$general['h']}', '{$general['w']}', '{$general['b']}')";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->insert('tournament', [
+        'no'=>$general['no'],
+        'npc'=>$general['npc'],
+        'name'=>$general['name'],
+        'ldr'=>$general['ldr'],
+        'pwr'=>$general['pwr'],
+        'itl'=>$general['itl'],
+        'lvl'=>$general['lvl'],
+        'grp'=>$grp,
+        'grp_no'=>$grp_no,
+        'h'=>$general['h'],
+        'w'=>$general['w'],
+        'b'=>$general['b']
+    ]);
+
     //시드 삭제
-    $query = "update tournament set prmt=0 where grp='{$general['grp']}' and grp_no='{$general['grp_no']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('tournament', [
+        'prmt'=>0
+    ], 'grp=%i AND grp_no=%i', $general['grp'], $general['grp_no']);
 
     if($phase < 31) {
         $gameStor->phase+=1;
@@ -511,17 +557,29 @@ function final16set() {
     $grp  = Array(10, 14, 11, 15, 12, 16, 13, 17, 14, 10, 15, 11, 16, 12, 17, 13);
     $prmt = Array( 1,  2,  1,  2,  1,  2,  1,  2,  1,  2,  1,  2,  1,  2,  1,  2);
     for($i=0; $i < 16; $i++) {
-        $query = "select * from tournament where grp='$grp[$i]' and prmt='$prmt[$i]'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $general = MYDB_fetch_array($result);
+        $general = $db->queryFirstRow('SELECT * FROM tournament WHERE grp=%i AND prmt=%i LIMIT 1', $grp[$i], $prmt[$i]);
         //16강에 추가
         $newGrp    = 20 + intdiv($i, 2);
         $newGrp_no = $i % 2;
-        $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['ldr']}', '{$general['pwr']}', '{$general['itl']}', '{$general['lvl']}', '$newGrp', '$newGrp_no', '{$general['h']}', '{$general['w']}', '{$general['b']}')";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $db->insert('tournament', [
+            'no'=>$general['no'],
+            'npc'=>$general['npc'],
+            'name'=>$general['name'],
+            'ldr'=>$general['ldr'],
+            'pwr'=>$general['pwr'],
+            'itl'=>$general['itl'],
+            'lvl'=>$general['lvl'],
+            'grp'=>$newGrp,
+            'grp_no'=>$newGrp_no,
+            'h'=>$general['h'],
+            'w'=>$general['w'],
+            'b'=>$general['b']
+        ]);
     }
-    $query = "update tournament set prmt=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('tournament', [
+        'prmt=0'
+    ], true);
 
     $gameStor->tournament=6;
     $gameStor->phase=0;
@@ -544,14 +602,24 @@ function finalFight($tnmt_type, $tnmt, $phase, $type) {
 
     $gameStor->phase+=1;
 
-    $query = "select * from tournament where grp='$grp' and win>0 and (grp_no=0 or grp_no=1)";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
+    $general = $db->queryFirstRow('SELECT * FROM tournament WHERE grp=%i AND win>0 AND (grp_no=0 OR grp_no=1) LIMIT 1', $grp);
     //x강에 추가
     $newGrp    = intdiv($phase, 2) + $offset + 10;
     $newGrp_no = $phase % 2;
-    $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['ldr']}', '{$general['pwr']}', '{$general['itl']}', '{$general['lvl']}', '$newGrp', '$newGrp_no', '{$general['h']}', '{$general['w']}', '{$general['b']}')";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->insert('tournament', [
+        'no'=>$general['no'],
+        'npc'=>$general['npc'],
+        'name'=>$general['name'],
+        'ldr'=>$general['ldr'],
+        'pwr'=>$general['pwr'],
+        'itl'=>$general['itl'],
+        'lvl'=>$general['lvl'],
+        'grp'=>$newGrp,
+        'grp_no'=>$newGrp_no,
+        'h'=>$general['h'],
+        'w'=>$general['w'],
+        'b'=>$general['b']
+    ]);
 
     if($phase >= $turn) {
         $gameStor->tournament = $next;

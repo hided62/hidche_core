@@ -182,7 +182,7 @@ $gen1 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $cit
 $gen2 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen2']);
 $gen3 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen3']);
 
-if($city['trade'] == 0) {
+if($city['trade'] === null) {
     $city['trade'] = "- ";
 }
 

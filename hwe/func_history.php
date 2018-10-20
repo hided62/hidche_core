@@ -163,16 +163,20 @@ function pushNationHistory($nation, ?string $history) {
     if(!$nation || !$nation['nation']){
         return;
     }
-    DB::db()->query("UPDATE nation set history=concat(%s, history) where nation=%i",
-        $history.'<br>', $nation['nation']);
+    $db = DB::db();
+    $db->update('nation', [
+        'history'=>$db->sqleval('concat(%s, history)', $history.'<br>')
+    ], 'nation=%i', $nation['nation']);
 }
 
 function pushGeneralHistory($me, ?string $history) {
     if(!$history){
         return;
     }
-    DB::db()->query("UPDATE general set history=concat(%s, history) where no=%i",
-        $history.'<br>', $me['no']);
+    $db = DB::db();
+    $db->update('general', [
+        'history'=>$db->sqleval('concat(%s, history)', $history.'<br>')
+    ], 'nation=%i', $me['no']);
 }
 
 function getGeneralHistoryAll(int $no) {

@@ -539,20 +539,21 @@ function tradeRate() {
         case 1: $per =   0; break;
         case 2: $per =   0; break;
         case 3: $per =   0; break;
-        case 4: $per =  20; break;
-        case 5: $per =  40; break;
-        case 6: $per =  60; break;
-        case 7: $per =  80; break;
-        case 8: $per = 100; break;
+        case 4: $per = 0.2; break;
+        case 5: $per = 0.4; break;
+        case 6: $per = 0.6; break;
+        case 7: $per = 0.8; break;
+        case 8: $per =   1; break;
         default:$per =   0; break;
         }
-        if($per > rand()%100) {
-            $trade = rand() % 11 + 95;
+        if($per > 0 && Util::randBool($per)) {
+            $trade = Util::randRangeInt(95, 105);
         } else {
-            $trade = 0;
+            $trade = null;
         }
-        $query = "update city set trade='$trade' where city='{$city['city']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $update('city', [
+            'trade'=>$trade
+        ], 'city=%i', $city['city']);
     }
 }
 

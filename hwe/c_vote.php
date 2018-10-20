@@ -74,11 +74,13 @@ if($btn == "수정") {
     $gameStor->vote_title = '-';
     $gameStor->votecomment=[];
 
-    $query = "update general set vote='0'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        'vote'=>0
+    ], true);
 } elseif($btn == "알림") {
-    $query = "update general set newvote='1' where vote=0";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        'newvote'=>1
+    ], 'vote=0');
 } elseif($btn == "숨김") {
     $gameStor->voteopen = 0;
 } elseif($btn == "전체통계만") {

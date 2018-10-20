@@ -53,35 +53,36 @@ if($btn == '참가') {
     }
     $general['gold'] -= $admin['develcost'];
 
-    $query = "select grp from tournament where grp<10 group by grp having count(*)=8";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $grpCount = MYDB_num_rows($result);
     $occupied = [];
-    for($i=0; $i < $grpCount; $i++) {
-        $grp = MYDB_fetch_array($result);
-        $occupied[$grp['grp']] = 1;
+    foreach($db->queryFirstColumn('SELECT grp FROM tournament WHERE grp < 10 GROUP BY grp HAVING count(*)=8') as $grp){
+        $occupied[$grp] = true;
     }
-    $map = [];
-    for($i=0; $i < 8; $i++) {
-        if(!Util::array_get($occupied[$i])) {
-            $map[] = $i;
-        }
-    }
-
+    $grpCount = count($occupied);
+    
     if($grpCount < 8) {
-        $grp = $map[rand() % count($map)];
-        $query = "select grp from tournament where grp='$grp'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $grpCount = MYDB_num_rows($result);
-        $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['leader']}', '{$general['power']}', '{$general['intel']}', '{$general['explevel']}', '$grp', '$grpCount', '{$general['horse']}', '{$general['weap']}', '{$general['book']}')";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set tournament=1,gold='{$general['gold']}' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $grp = Util::choiceRandom(array_keys($occupied));
+        $grpMemberCount = $db->queryFirstField('SELECT count(*) FROM tournament WHERE grp=%i', $grp);
+        $db->insert('tournament', [
+            'no'=>$general['no'],
+            'npc'=>$general['npc'],
+            'name'=>$general['name'],
+            'ldr'=>$general['leader'],
+            'pwr'=>$general['power'],
+            'itl'=>$general['intel'],
+            'lvl'=>$general['explevel'],
+            'grp'=>$grp,
+            'grp_no'=>$grpMemberCount,
+            'h'=>$general['horse'],
+            'w'=>$general['weap'],
+            'b'=>$general['book']
+        ]);
+        $db->update('general', [
+            'tournament'=>1,
+            'gold'=>$general['gold']
+        ], 'no=%i', $general['no']);
     }
 
-    $query = "select grp from tournament where grp<10 group by grp having count(*)=8";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $grpCount = MYDB_num_rows($result);
+    $grpCount = $db->queryFirstField('SELECT count(*) FROM tournament where grp<10 GROUP BY grp HAVING count(*)=8');
     if($grpCount >= 8) {
         $gameStor->tournament = 2;
         $gameStor->phase = 0;
@@ -155,38 +156,39 @@ if($btn == "자동개최설정") {
     //참가
     }
 
-    $query = "select grp from tournament where grp<10 group by grp having count(*)=8";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $grpCount = MYDB_num_rows($result);
     $occupied = [];
-    for($i=0; $i < $grpCount; $i++) {
-        $grp = MYDB_fetch_array($result);
-        $occupied[$grp['grp']] = 1;
+    foreach($db->queryFirstColumn('SELECT grp FROM tournament WHERE grp < 10 GROUP BY grp HAVING count(*)=8') as $grp){
+        $occupied[$grp] = true;
     }
-    $map = [];
-    for($i=0; $i < 8; $i++) {
-        if(!isset($occupied[$i]) || $occupied[$i] == 0) {
-            $map[] = $i;
-        }
-    }
+    $grpCount = count($occupied);
 
     if($grpCount < 8) {
-        $grp = $map[rand() % count($map)];
-        $query = "select grp from tournament where grp='$grp'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $grpCount = MYDB_num_rows($result);
-        $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['leader']}', '{$general['power']}', '{$general['intel']}', '{$general['explevel']}', '$grp', '$grpCount', '{$general['horse']}', '{$general['weap']}', '{$general['book']}')";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set tournament=1,gold='{$general['gold']}' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $grp = Util::choiceRandom(array_keys($occupied));
+        $grpMemberCount = $db->queryFirstField('SELECT count(*) FROM tournament WHERE grp=%i', $grp);
+        $db->insert('tournament', [
+            'no'=>$general['no'],
+            'npc'=>$general['npc'],
+            'name'=>$general['name'],
+            'ldr'=>$general['leader'],
+            'pwr'=>$general['power'],
+            'itl'=>$general['intel'],
+            'lvl'=>$general['explevel'],
+            'grp'=>$grp,
+            'grp_no'=>$grpMemberCount,
+            'h'=>$general['horse'],
+            'w'=>$general['weap'],
+            'b'=>$general['book']
+        ]);
+        $db->update('general', [
+            'tournament'=>1,
+            'gold'=>$general['gold']
+        ], 'no=%i', $general['no']);
     }
 
-    $query = "select grp from tournament where grp<10 group by grp having count(*)=8";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $grpCount = MYDB_num_rows($result);
+    $grpCount = $db->queryFirstField('SELECT count(*) FROM tournament where grp<10 GROUP BY grp HAVING count(*)=8');
     if($grpCount >= 8) {
-        $gameStor->tournament=2;
-        $gameStor->phase=0;
+        $gameStor->tournament = 2;
+        $gameStor->phase = 0;
     }
 
 } elseif($btn == "쪼렙전부투입" || $btn == "일반전부투입" || $btn == "굇수전부투입" || $btn == "랜덤전부투입") {
@@ -236,10 +238,24 @@ if($btn == "자동개최설정") {
 
         $grp    = intdiv($code[$i], 10);
         $grp_no = $code[$i] % 10;
-        $query = "insert into tournament (no, npc, name, ldr, pwr, itl, lvl, grp, grp_no, h, w, b) values ('{$general['no']}', '{$general['npc']}', '{$general['name']}', '{$general['leader']}', '{$general['power']}', '{$general['intel']}', '{$general['explevel']}', '$grp', '$grp_no', '{$general['horse']}', '{$general['weap']}', '{$general['book']}')";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update general set tournament=1,gold=gold-'{$admin['develcost']}' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->insert('tournament', [
+            'no'=>$general['no'],
+            'npc'=>$general['npc'],
+            'name'=>$general['name'],
+            'ldr'=>$general['leader'],
+            'pwr'=>$general['power'],
+            'itl'=>$general['intel'],
+            'lvl'=>$general['explevel'],
+            'grp'=>$grp,
+            'grp_no'=>$grp_no,
+            'h'=>$general['horse'],
+            'w'=>$general['weap'],
+            'b'=>$general['book']
+        ]);
+        $db->update('general', [
+            'tournament'=>1,
+            'gold'=>$db->sqleval('gold - %i', $admin['develcost'])
+        ], 'no=%i', $general['no']);
     }
 
     $gameStor->tournament = 2;

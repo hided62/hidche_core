@@ -157,7 +157,7 @@ function cityInfo() {
     $secu = $city['secu'] / $city['secu2'] * 100;
     $def  = $city['def'] / $city['def2'] * 100;
     $wall = $city['wall'] / $city['wall2'] * 100;
-    if($city['trade'] == 0) {
+    if($city['trade'] === null) {
         $trade = 0;
         $tradeStr = "상인없음";
     } else {
@@ -594,7 +594,7 @@ function commandTable() {
         addCommand("단련(자금$develcost, 군량$develcost)", 41, 0);
     }
     addCommand("견문(자금?, 군량?, 경험치?)", 42);
-    if($city['trade'] > 0) {
+    if($city['trade'] !== null) {
         addCommand("장비매매", 48);
         addCommand("군량매매", 49);
     } else {
