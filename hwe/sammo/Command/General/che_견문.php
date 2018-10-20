@@ -81,19 +81,19 @@ class che_견문 extends Command\GeneralCommand{
         }
         if($type & SightseeingMessage::IncGold){
             $general->increaseVar('gold', 300);
-            $text = str_replace(':amount:', '300', $text);
+            $text = str_replace(':goldAmount:', '300', $text);
         }
         if($type & SightseeingMessage::IncRice){
             $general->increaseVar('rice', 300);
-            $text = str_replace(':amount:', '300', $text);
+            $text = str_replace(':riceAmount:', '300', $text);
         }
         if($type & SightseeingMessage::DecGold){
             $general->increaseVarWithLimit('gold', -200, 0);
-            $text = str_replace(':amount:', '200', $text);
+            $text = str_replace(':goldAmount:', '200', $text);
         }
         if($type & SightseeingMessage::DecRice){
             $general->increaseVarWithLimit('rice', -200, 0);
-            $text = str_replace(':amount:', '200', $text);
+            $text = str_replace(':riceAmount:', '200', $text);
         }
         if($type & SightseeingMessage::Wounded){
             $general->increaseVarWithLimit('injury', Util::randRangeInt(10, 20), null, 80);

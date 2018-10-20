@@ -37,7 +37,7 @@ class che_사기진작 extends Command\GeneralCommand{
             ['ReqGeneralCrew'],
             ['ReqGeneralGold', $reqGold],
             ['ReqGeneralRice', $reqRice],
-            ['ReqGeneralAtmosMargin'],
+            ['ReqGeneralAtmosMargin', GameConst::$maxAtmosByCommand],
         ];
 
     }

@@ -2,17 +2,17 @@
 
 namespace sammo\Constraint;
 
-class NearCity extends Constraint{
-    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_DEST_CITY;
+class ReqCityTrader extends Constraint{
+    const REQ_VALUES = Constraint::REQ_CITY;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
             return false;
         }
 
-        if(!key_exists('city', $this->general)){
+        if(!key_exists('trade', $this->city)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require city in general");
+            throw new \InvalidArgumentException("require trade in city");
         }
 
         return true;
@@ -22,11 +22,11 @@ class NearCity extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->destCity['city'] != $this->general['city']){
+        if($this->city['trade'] !== null){
             return true;
         }
 
-        $this->reason = "같은 도시입니다.";
+        $this->reason = "도시에 상인이 없습니다.";
         return false;
     }
 }

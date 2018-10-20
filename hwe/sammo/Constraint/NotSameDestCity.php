@@ -1,19 +1,18 @@
 <?php
 
 namespace sammo\Constraint;
-use sammo\GameConst;
 
-class ReqGeneralTrainMargin extends Constraint{
-    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_INT_ARG;
+class NotSameDestCity extends Constraint{
+    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_DEST_CITY;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
             return false;
         }
 
-        if(!key_exists('train', $this->general)){
+        if(!key_exists('city', $this->general)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require train in general");
+            throw new \InvalidArgumentException("require city in general");
         }
 
         return true;
@@ -23,11 +22,11 @@ class ReqGeneralTrainMargin extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->general['train'] < $this->arg){
+        if($this->destCity['city'] != $this->general['city']){
             return true;
         }
 
-        $this->reason = "병사들은 이미 정예병사들입니다.";
+        $this->reason = "같은 도시입니다.";
         return false;
     }
 }

@@ -263,8 +263,8 @@ class Util extends \utilphp\util
     public static function mapWithKey($callback, $dict)
     {
         $result = [];
-        foreach (array_keys($dict) as $key) {
-            $result[$key] = ($callback)($key, $dict[$key]);
+        foreach ($dict as $key=>$value) {
+            $result[$key] = ($callback)($key, $value);
         }
         return $result;
     }
@@ -507,6 +507,38 @@ class Util extends \utilphp\util
             $sum += $val[$key];
         }
         return $sum;
+    }
+
+    /**
+     * 특정 키를 가진 값으로 묶음
+     * 
+     * @param array $array 배열. 1차원 배열 또는 2차원 배열
+     * @param int|string|null $key 2차원 배열에서 참조할 키.
+     * @return int|float 합계
+     */
+    public static function arrayGroupBy(array $array, $key, bool $preserveRowKey=false) {
+        $result = array();
+    
+        if($preserveRowKey){
+            foreach($array as $rowKey=>$val) {
+                if(key_exists($key, $val)){
+                    $result[$val[$key]][$rowKey] = $val;
+                }else{
+                    $result[""][$rowKey] = $val;
+                }
+            }
+        }
+        else{
+            foreach($array as $val) {
+                if(key_exists($key, $val)){
+                    $result[$val[$key]][] = $val;
+                }else{
+                    $result[""][] = $val;
+                }
+            }
+        }
+        
+        return $result;
     }
 
     /**

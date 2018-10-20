@@ -34,7 +34,7 @@ class che_강행 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NotSameCity'], 
+            ['NotSameDestCity'], 
             ['NearCity', 3],
             ['ReqGeneralGold', $reqGold],
             ['ReqGeneralRice', $reqRice],

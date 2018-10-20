@@ -47,17 +47,17 @@ class SightseeingMessage{
                 '거리에서 글 모르는 아이들을 모아 글을 가르쳤습니다.',
             ]], 2],
             [[self::IncExp|self::IncGold,[
-                '지나가는 행인에게서 금을 <C>:amount:</> 받았습니다.',
+                '지나가는 행인에게서 금을 <C>:goldAmount:</> 받았습니다.',
             ]], 1],
             [[self::IncExp|self::IncRice,[
-                '지나가는 행인에게서 쌀을 <C>:amount:</> 받았습니다.',
+                '지나가는 행인에게서 쌀을 <C>:riceAmount:</> 받았습니다.',
             ]], 1],
             [[self::IncExp|self::DecGold,[
-                '산적을 만나 금 <C>:amount:</>을 빼앗겼습니다.',
-                '돈을 <C>:amount:</> 빌려주었다가 떼어먹혔습니다.',
+                '산적을 만나 금 <C>:goldAmount:</>을 빼앗겼습니다.',
+                '돈을 <C>:goldAmount:</> 빌려주었다가 떼어먹혔습니다.',
             ]], 1],
             [[self::IncExp|self::DecRice,[
-                '쌀을 <C>:amount:</> 빌려주었다가 떼어먹혔습니다.',
+                '쌀을 <C>:riceAmount:</> 빌려주었다가 떼어먹혔습니다.',
             ]], 1],
             [[self::IncExp|self::Wounded,[
                 '호랑이에게 물려 다쳤습니다.',
@@ -74,17 +74,17 @@ class SightseeingMessage{
                 '위기에 빠진 사람을 구하다가 죽을뻔 했습니다.',
             ]], 1],
             [[self::IncHeavyExp|self::IncPower|self::IncGold,[
-                '산적과 싸워 금 <C>:amount:</>을 빼앗았습니다.',
+                '산적과 싸워 금 <C>:goldAmount:</>을 빼앗았습니다.',
             ]], 1],
             [[self::IncHeavyExp|self::IncPower|self::IncRice,[
-                '호랑이를 잡아 고기 <C>:amount:</>을 얻었습니다.',
-                '곰을 잡아 고기 <C>:amount:</>을 얻었습니다.',
+                '호랑이를 잡아 고기 <C>:riceAmount:</>을 얻었습니다.',
+                '곰을 잡아 고기 <C>:riceAmount:</>을 얻었습니다.',
             ]], 1],
             [[self::IncHeavyExp|self::IncIntel|self::IncGold,[
-                '돈을 빌려주었다가 이자 <C>:amount:</>을 받았습니다.',
+                '돈을 빌려주었다가 이자 <C>:goldAmount:</>을 받았습니다.',
             ]], 1],
             [[self::IncHeavyExp|self::IncIntel|self::IncRice,[
-                '쌀을 빌려주었다가 이자 <C>300</>을 받았습니다.',
+                '쌀을 빌려주었다가 이자 <C>:riceAmount:</>을 받았습니다.',
             ]], 1],
             
         ];

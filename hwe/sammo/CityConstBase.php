@@ -333,12 +333,10 @@ class CityConstBase{
 
         $queries = array_map(function(CityInitialDetail $city){ 
             $initValue = static::$buildInit[$city->level];
-            $path = join('|', array_keys($city->path));
             return [
                 'city'=>$city->id,
                 'name'=>$city->name,
                 'level'=>$city->level,
-                'path'=>$path,
                 'pop2'=>$city->population,
                 'agri2'=>$city->agriculture,
                 'comm2'=>$city->commerce,

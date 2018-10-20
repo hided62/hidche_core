@@ -4,7 +4,7 @@ namespace sammo\Constraint;
 use sammo\GameConst;
 
 class ReqGeneralAtmosMargin extends Constraint{
-    const REQ_VALUES = Constraint::REQ_GENERAL;
+    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_INT_ARG;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
@@ -23,7 +23,7 @@ class ReqGeneralAtmosMargin extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->general['atmos'] < GameConst::$maxAtmosByCommand){
+        if($this->general['atmos'] < $this->arg){
             return true;
         }
 

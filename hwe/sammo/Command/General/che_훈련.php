@@ -34,7 +34,7 @@ class che_훈련 extends Command\GeneralCommand{
             ['NoWanderingNation'],
             ['OccupiedCity'],
             ['ReqGeneralCrew'],
-            ['ReqGeneralTrainMargin'],
+            ['ReqGeneralTrainMargin', GameConst::$maxTrainByCommand],
         ];
 
     }
