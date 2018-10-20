@@ -3,6 +3,7 @@ namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
+use \sammo\GameUnitConst;
 
 class che_공성 implements iAction{
     use \sammo\DefaultAction;
@@ -18,4 +19,12 @@ class che_공성 implements iAction{
         SpecialityConst::STAT_POWER | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_SIEGE,
         SpecialityConst::STAT_INTEL | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_SIEGE,
     ];
+
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
+        if(in_array($turnType, ['징병', '모병'])){
+            if($varType == 'cost' && $aux['armType'] == GameUnitConst::T_SIEGE) return $value * 0.9;
+        }
+        
+        return $value;
+    }
 }

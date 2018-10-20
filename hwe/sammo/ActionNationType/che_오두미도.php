@@ -12,7 +12,7 @@ class che_오두미도 implements iAction{
     static $cons = '기술↓ 수성↓ 내정↓';
 
 
-    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '기술'){
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;

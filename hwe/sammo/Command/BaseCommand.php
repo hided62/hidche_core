@@ -41,7 +41,17 @@ abstract class BaseCommand{
 
     protected $alternative = null;
 
+    static private $isInitStatic = false;
+    protected static function initStatic(){
+
+    }
+
     public function __construct(General $generalObj, array $env, $arg = null){
+        if(!static::$isInitStatic){
+            static::initStatic();
+            static::$isInitStatic = true;
+        }
+
         $this->generalObj = $generalObj;
         $this->logger = $generalObj->getLogger();
         $this->env = $env;

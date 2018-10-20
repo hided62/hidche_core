@@ -19,7 +19,7 @@ class che_귀모 implements iAction{
         SpecialityConst::STAT_INTEL
     ];
 
-    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '계략'){
             if($varType == 'success') return $value + 0.2;
         }

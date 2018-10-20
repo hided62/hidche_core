@@ -5,7 +5,7 @@ trait DefaultAction{
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         return null;
     }
-    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         return $value;
     }
 

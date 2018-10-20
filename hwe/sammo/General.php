@@ -371,7 +371,7 @@ class General implements iAction{
         }
         return $caller;
     }
-    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         foreach(array_merge([
             $this->nationType, 
             $this->levelObj, 

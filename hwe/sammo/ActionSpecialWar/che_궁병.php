@@ -4,6 +4,8 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
 
+use \sammo\GameUnitConst;
+
 class che_궁병 implements iAction{
     use \sammo\DefaultAction;
 
@@ -17,4 +19,12 @@ class che_궁병 implements iAction{
         SpecialityConst::STAT_LEADERSHIP | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_ARCHER,
         SpecialityConst::STAT_POWER | SpecialityConst::REQ_DEXTERITY | SpecialityConst::ARMY_ARCHER
     ];
+
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
+        if(in_array($turnType, ['징병', '모병'])){
+            if($varType == 'cost' && $aux['armType'] == GameUnitConst::T_ARCHER) return $value * 0.9;
+        }
+        
+        return $value;
+    }
 }

@@ -17,7 +17,7 @@ class che_축성 implements iAction{
         SpecialityConst::STAT_POWER
     ];
 
-    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '성벽'){
             if($varType == 'score') return $value * 1.1;
             if($varType == 'cost') return $value * 0.8;

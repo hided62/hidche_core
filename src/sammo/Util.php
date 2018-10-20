@@ -415,6 +415,19 @@ class Util extends \utilphp\util
     {
         return self::randF() < $prob;
     }
+
+    /**
+     * aaa(.bbb)?% 의 텍스트를 float으로 변환. 100% = 1.0
+     * @return float|null
+     */
+    public static function convPercentStrToFloat(string $text):?float{
+        preg_match('/^(\d+(\.\d+)?)\%$/', $text, $matches);
+        if($matches === null){
+            return null;
+        }
+
+        return (float)$matches[1] / 100;
+    }
     
 
     /**

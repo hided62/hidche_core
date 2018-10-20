@@ -4,7 +4,7 @@ namespace sammo;
 interface iAction{
     //TODO: 능력치는?
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller;
-    public function onCalcDomestic(string $turnType, string $varType, float $value):float;
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float;
 
     public function onPreGeneralStatUpdate(General $general, string $statName, $value);
 

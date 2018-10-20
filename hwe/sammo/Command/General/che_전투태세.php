@@ -56,7 +56,7 @@ class che_전투태세 extends Command\GeneralCommand{
     }
     
     public function getPreReqTurn():int{
-        return 0;
+        return 3;
     }
 
     public function getPostReqTurn():int{
@@ -76,17 +76,19 @@ class che_전투태세 extends Command\GeneralCommand{
         $lastTurn = $general->getLastTurn();
         $turnResult = new LastTurn(static::getName(), $this->arg);
 
+        $reqTurn = $this->getPreReqTurn();
+
         if($lastTurn->getCommand() != static::getName()){
             $turnResult->setTerm(1);
         }
-        else if($lastTurn->getTerm() == 3){
+        else if($lastTurn->getTerm() == $reqTurn){
             $turnResult->setTerm(1);
         }
-        else if($lastTurn->getTerm() < 3){
+        else if($lastTurn->getTerm() < $reqTurn){
             $turnResult->setTerm($lastTurn->getTerm()+1);
         }
         else{
-            throw new MustNotBeReachedException('전투 태세는 1~3까지만 가능함');
+            throw new MustNotBeReachedException('전투 태세에 올바른 턴이 아님');
         }
 
         $term = $turnResult->getTerm();

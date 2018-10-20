@@ -18,4 +18,12 @@ class che_징병 implements iAction{
         SpecialityConst::STAT_POWER,
         SpecialityConst::STAT_INTEL
     ];
+
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
+        if(in_array($turnType, ['징병', '모병'])){
+            if($varType == 'cost') return $value * 0.5;
+        }
+        
+        return $value;
+    }
 }

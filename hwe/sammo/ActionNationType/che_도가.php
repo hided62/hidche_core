@@ -11,7 +11,7 @@ class che_도가 implements iAction{
     static $pros = '인구↑';
     static $cons = '기술↓ 치안↓';
 
-    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '기술'){
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;

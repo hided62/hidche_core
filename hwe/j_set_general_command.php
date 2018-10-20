@@ -20,11 +20,11 @@ if(!$action){
 
 $defaultCheck = [
     'string'=>[
-        'crewType', 'nationName', 'optionText', 'itemType'
+        'nationName', 'optionText', 'itemType'
     ],
     'integer'=>[
-        'destGeneralID', 'destCityID', 'destNationID',
-        'amountMoney', 'amountCrew', 'colorType', 'nationType'
+        'crewType', 'destGeneralID', 'destCityID', 'destNationID',
+        'amount', 'colorType', 'nationType'
     ],
     'boolean'=>[
         'isGold', 'buyRice'

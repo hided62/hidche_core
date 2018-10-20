@@ -17,7 +17,7 @@ class che_경작 implements iAction{
         SpecialityConst::STAT_INTEL
     ];
 
-    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '농업'){
             if($varType == 'score') return $value * 1.1;
             if($varType == 'cost') return $value * 0.8;

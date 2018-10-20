@@ -11,7 +11,7 @@ class che_도적 implements iAction{
     static $pros = '계략↑';
     static $cons = '금수입↓ 치안↓ 민심↓';
 
-    public function onCalcDomestic(string $turnType, string $varType, float $value):float{
+    public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '치안'){
             if($varType == 'score') return $value * 0.9;
             if($varType == 'cost') return $value * 1.2;
