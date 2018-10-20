@@ -24,10 +24,10 @@ $defaultCheck = [
     ],
     'integer'=>[
         'crewType', 'destGeneralID', 'destCityID', 'destNationID',
-        'amount', 'colorType', 'nationType'
+        'amount', 'colorType', 'nationType', 'itemCode'
     ],
     'boolean'=>[
-        'isGold', 'buyRice'
+        'isGold', 'buyRice',
     ],
     'between'=>[
         ['month', [1, 12]]

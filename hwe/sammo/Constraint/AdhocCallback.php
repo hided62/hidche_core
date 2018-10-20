@@ -2,17 +2,19 @@
 
 namespace sammo\Constraint;
 
-class ReqCityTrader extends Constraint{
-    const REQ_VALUES = Constraint::REQ_CITY|Constraint::REQ_INT_ARG;
+//일일히 클래스를 만들기 싫을 때 간단히 끝내는 Constraint
+
+class AdhocCallback extends Constraint{
+    const REQ_VALUES = Constraint::REQ_ARG;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
             return false;
         }
 
-        if(!key_exists('trade', $this->city)){
+        if(!is_callable($this->arg)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require trade in city");
+            throw new \InvalidArgumentException("require callback");
         }
 
         return true;
@@ -22,11 +24,12 @@ class ReqCityTrader extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->city['trade'] !== null || $this->arg >= 2){
+        $reason = ($this->arg)();
+        if($reason === null){
             return true;
         }
 
-        $this->reason = "도시에 상인이 없습니다.";
+        $this->reason = $reason;
         return false;
     }
 }

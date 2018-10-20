@@ -258,6 +258,43 @@ function getPersonalityClass(?string $type){
     throw new \InvalidArgumentException("{$type}은 올바른 성격 클래스가 아님");
 }
 
+function getItemClass(int $itemCode){
+    //XXX: 임시 구현임
+
+    //iAction이 필요한 것만 반환
+
+    static $basePath = __NAMESPACE__.'\\ActionItem\\';
+
+    $itemPath = [
+        1=>'che_환약_치료',
+        5=>'che_이추_계략',
+        6=>'che_향낭_계략',
+
+        7=>'che_오석산_치료',
+        8=>'che_무후행군_치료',
+        9=>'che_도소연명_치료',
+        10=>'che_칠엽청점_치료',
+        11=>'che_정력견혈_치료',
+        21=>'che_육도_계략',
+        22=>'che_삼략_계략',
+        23=>'che_청낭서_의술',
+        24=>'che_태평청령_의술',
+    ];
+
+    $itemClass = $itemPath[$itemCode]??null;
+    if($itemClass === null){
+        return null;
+    }
+
+    $classPath = ($basePath.$itemClass);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    throw new \InvalidArgumentException("{$itemCode}, {$itemClass}는 올바른 성격 클래스가 아님");
+}
+
 function getGeneralSpecialDomesticClass(?string $type){
     if($type === null){
         $type = GameConst::$defaultSpecialDomestic;
@@ -781,6 +818,14 @@ function getHorseEff($horse) : ?int {
         default: break;
     }
     return $horse;
+}
+
+function isConsumable($item) : bool{
+    //XXX: 제거할 것. 정식 아이템 구현으로 이동
+    if(1 <= $item && $item <= 6){
+        return true;
+    }
+    return false;
 }
 
 function getItemName($item) : ?string {

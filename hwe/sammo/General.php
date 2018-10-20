@@ -79,8 +79,24 @@ class General implements iAction{
 
         $personalityClass = getPersonalityClass($raw['personal']);
         $this->personalityObj = new $personalityClass;
-
+        
+        $itemClass = getItemClass($raw['item']);
+        if($itemClass !== null){
+            $this->itemObjs['item'] = new $itemClass;
+        }
+        else{
+            $this->itemObjs['item'] = new ActionItem\che_Dummy($raw['item']);
+        }
         //TODO: $specialItemClass 설정
+    }
+
+    function deleteItem(){
+        $this->setVar('item', 0);
+        $this->itemObjs['item'] = new ActionItem\che_Dummy(0);
+    }
+
+    function getItem():BaseItem{
+        return $this->itemObjs['item'];
     }
 
     function getLastTurn():LastTurn{

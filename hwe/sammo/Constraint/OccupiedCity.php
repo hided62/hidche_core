@@ -27,6 +27,11 @@ class OccupiedCity extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
+        //특수 예외로 ARG가 지정된 경우에는 재야여도 'OccupiedCity'로 허용함
+        if($this->arg && $this->general['nation'] == 0){
+            return true;
+        }
+
         if($this->city['nation'] == $this->general['nation']){
             return true;
         }

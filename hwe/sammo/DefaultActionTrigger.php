@@ -13,6 +13,10 @@ trait DefaultAction{
         return $value;
     }
 
+    public function onCalcStat(General $general, string $stat, $value){
+        return $value;
+    }
+
     public function onCalcStrategic(string $turnType, string $varType, $value){
         return $value;
     }

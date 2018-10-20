@@ -5,8 +5,8 @@ namespace sammo\Constraint;
 use \sammo\JosaUtil;
 use \sammo\Util;
 
-class ReqCityCapacity extends Constraint{
-    const REQ_VALUES = Constraint::REQ_CITY|Constraint::REQ_ARRAY_ARG;
+class RegGeneralValue extends Constraint{
+    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_ARRAY_ARG;
 
     protected $key;
     protected $maxKey;
@@ -39,7 +39,7 @@ class ReqCityCapacity extends Constraint{
 
             if(!key_exists($this->maxKey, $this->city)){
                 if(!$throwExeception){return false; }
-                throw new \InvalidArgumentException("require {$this->maxKey} in city");
+                throw new \InvalidArgumentException("require {$this->maxKey} in general");
             }
             $this->isPercent = true;
         }
@@ -52,19 +52,26 @@ class ReqCityCapacity extends Constraint{
         $this->tested = true;
 
         if($this->isPercent){
-            if($this->city[$this->key] >= $this->city[$this->maxKey] * $this->reqVal){
+            if($this->general[$this->key] >= $this->general[$this->maxKey] * $this->reqVal){
                 return true;
             }
             
         }
         else{
-            if($this->city[$this->key] >= $this->reqVal){
+            if($this->general[$this->key] >= $this->reqVal){
                 return true;
             }
         }
 
-        $josaYi = JosaUtil::pick($keyNick, '이');
-        $this->reason = "{$keyNick}{$josaUn} 부족합니다.";
+        if($this->reqVal === 1){
+            $josaYi = JosaUtil::pick($keyNick, '이');
+            $this->reason = "{$keyNick}{$josaUn} 없습니다.";
+        }
+        else{
+            $josaYi = JosaUtil::pick($keyNick, '이');
+            $this->reason = "{$keyNick}{$josaUn} 부족합니다.";
+        }
+        
         return false;
     }
 }
