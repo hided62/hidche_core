@@ -26,7 +26,6 @@ class che_요양 extends Command\GeneralCommand{
 
         $general = $this->generalObj;
 
-        $this->setCity();
         $this->setNation();
         
         $this->runnableConstraints=[

@@ -34,8 +34,8 @@ class che_단련 extends Command\GeneralCommand{
         $this->runnableConstraints=[
             ['NoNeutral'], 
             ['ReqGeneralCrew'],
-            //TODO:훈련이 너무 낮습니다?
-            //TODO:사기가 너무 낮습니다?
+            ['ReqGeneralValue', 'train', '훈련', GameConst::$defaultTrainHigh],
+            ['ReqGeneralValue', 'atmos', '사기', GameConst::$defaultAtmosHigh],
             ['ReqGeneralGold', $reqGold],
             ['ReqGeneralRice', $reqRice],
         ];

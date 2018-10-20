@@ -38,9 +38,7 @@ class che_군량매매 extends Command\GeneralCommand{
         $general = $this->generalObj;
 
         $this->setCity();
-        $this->setNation();
-
-        
+        $this->setNation();    
         
         $this->runnableConstraints=[
             ['ReqCityTrader', $general->getVar('npc')],

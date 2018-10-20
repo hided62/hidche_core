@@ -8,7 +8,8 @@ use \sammo\{
     GameConst,
     LastTurn,
     GameUnitConst,
-    Command
+    Command,
+    ScoutMessage
 };
 
 use function \sammo\{
@@ -21,8 +22,8 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 
 
-class che_증여 extends Command\GeneralCommand{
-    static protected $actionName = '증여';
+class che_등용 extends Command\GeneralCommand{
+    static protected $actionName = '등용';
 
     protected function init(){
 
@@ -32,56 +33,37 @@ class che_증여 extends Command\GeneralCommand{
         $this->setNation();
 
         try{
-            $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'nation'], 1);
+            $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['nation'], 0);
         }
         catch(NoDBResultException $e){
             $destGeneral = new DummyGeneral(false);
         }
         $this->setDestGeneral($destGeneral);
+
+        [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
             ['NoNeutral'], 
+            ['NoOpeningPart'],
             ['OccupiedCity'],
             ['SuppliedCity'],
             ['ExistsDestGeneral'],
-            ['FriendlyDestGeneral']
+            ['DifferentNationDestGeneral'],
+            ['ReqGeneralGold', $reqGold],
+            ['ReqGeneralRice', $reqRice],
         ];
-        if($this->arg['isGold']){
-            $this->runnableConstraints[] = ['ReqGeneralGold', 1];
-        }
-        else{
-            $this->runnableConstraints[] = ['ReqGeneralRice', 1];
-        }
 
+        if($this->destGeneralObj->getVar('level') == 12){
+            $this->runnableConstraints[] = ['AlwaysFail', '군주에게는 등용장을 보낼 수 없습니다.'];
+        }
     }
 
     protected function argTest():bool{
-        //NOTE: 사망 직전에 '증여' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
-        if(!key_exists('isGold', $this->arg)){
-            return false;
-        }
-        if(!key_exists('amount', $this->arg)){
-            return false;
-        }
+        //NOTE: 사망 직전에 '등용' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
         if(!key_exists('destGeneralID', $this->arg)){
             return false;
         }
-        $isGold = $this->arg['isGold'];
-        $amount = $this->arg['amount'];
         $destGeneralID = $this->arg['destGeneralID'];
-        if(!is_int($amount)){
-            return false;
-        }
-        if($amount < 100){
-            return false;
-        }
-        if($amount > 10000){
-            return false;
-        }
-        $amount = (int)$amount;
-        if(!is_bool($isGold)){
-            return false;
-        }
         if(!is_int($destGeneralID)){
             return false;
         }
@@ -92,15 +74,22 @@ class che_증여 extends Command\GeneralCommand{
             return false;
         }
         $this->arg = [
-            'isGold'=>$isGold,
-            'amount'=>$amount,
             'destGeneralID'=>$destGeneralID
         ];
         return true;
     }
 
     public function getCost():array{
-        return [0, 0];
+        $env = $this->env;
+        if(!$this->isArgValid){
+            return [$env['develcost'], 0];
+        }
+        $destGeneral = $this->destGeneralObj;
+        $reqGold = Util::round(
+            $env['develcost'] +
+            ($destGeneral->getVar('experience') + $destGeneral->getVar('dedication')) / 1000
+        ) * 10;
+        return [$reqGold, 0];
     }
     
     public function getPreReqTurn():int{
@@ -121,32 +110,33 @@ class che_증여 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $date = substr($general->getVar('turntime'),11,5);
 
-        $isGold = $this->arg['isGold'];
-        $amount = $this->arg['amount'];
-        $resKey = $isGold?'gold':'rice';
-        $resName = $isGold?'금':'쌀';
-        $destGeneral = $this->destGeneralObj;
-        
-        $amount = Util::valueFit($amount, $general->getVar($resKey));
-        $amountText = number_format($amount, 0);
-        
         $logger = $general->getLogger();
 
-        $destGeneral->increaseVarWithLimit($resKey, $amount);
-        $general->increaseVarWithLimit($resKey, -$amount, 0);
+        $destGeneralName = $this->destGeneralObj->getName();
+        $destGeneralID = $this->destGeneralObj->getID();
+        
 
-        $destGeneral->getLogger()->pushGeneralActionLog("{$general->getName()}</>에게서 {$resName} <C>{$amountText}</>을 증여 받았습니다.");
-        $logger->pushGeneralActionLog("{$destGeneral->getName()}에게 {$resName} <C>$amountText</>을 증여했습니다. <1>$date</>");
+        $msg = ScoutMessage::buildScoutMessage($general->getID(), $destGeneralID, $reason, new \DateTime($general->getVar('turntime')));
+        if($msg){
+            $logger->pushGeneralActionLog("<Y>{$destGeneralName}</>에게 등용 권유 서신을 보냈습니다. <1>$date</>");
+            $msg->send(true);
+        }
+        else{
+            $logger->pushGeneralActionLog("<Y>{$destGeneralName}</>에게 등용 권유 서신을 보내지 못했습니다. {$reason} <1>$date</>");
+        }
 
-        $exp = 70;
-        $ded = 100;
+        $exp = 100;
+        $ded = 200;
 
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
 
+        [$reqGold, $reqRice] = $this->getCost();
+
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);
-        $general->increaseVar('leader2', 1);
+        $general->increaseVar('intel2', 1);
+        $general->increaseVarWithLimit('gold', -$reqGold, 0);
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
