@@ -105,9 +105,8 @@ class che_징병 extends Command\GeneralCommand{
     }
 
     public function getCost():array{
-        if($this->reqCrewType === null || $this->reqCrew){
+        if(!$this->isArgValid){
             return [0, 0];
-            //throw new \RuntimeException('요구사항 초기화가 이뤄지지 않았음');
         }
         $reqGold = $this->reqCrewType->costWithTech($this->nation['tech'], $this->reqCrew);
         $reqGold = $general->onCalcDomestic('징병', 'cost', $reqGold, ['armType'=>$this->reqCrewType->armType]);

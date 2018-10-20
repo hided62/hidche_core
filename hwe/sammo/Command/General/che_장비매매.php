@@ -84,6 +84,10 @@ class che_장비매매 extends Command\GeneralCommand{
     }
 
     public function getCost():array{
+        if(!$this->isArgValid){
+            return [0, 0];
+        }
+        
         $itemType = $this->arg['itemType'];
         $itemCode = $this->arg['itemCode'];
         if($itemType == 'item'){
