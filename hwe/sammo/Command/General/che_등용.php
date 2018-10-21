@@ -25,6 +25,27 @@ use \sammo\Constraint\Constraint;
 class che_등용 extends Command\GeneralCommand{
     static protected $actionName = '등용';
 
+    protected function argTest():bool{
+        //NOTE: 사망 직전에 '등용' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
+        if(!key_exists('destGeneralID', $this->arg)){
+            return false;
+        }
+        $destGeneralID = $this->arg['destGeneralID'];
+        if(!is_int($destGeneralID)){
+            return false;
+        }
+        if($destGeneralID <= 0){
+            return false;
+        }
+        if($destGeneralID == $this->generalObj->getID()){
+            return false;
+        }
+        $this->arg = [
+            'destGeneralID'=>$destGeneralID
+        ];
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -56,27 +77,6 @@ class che_등용 extends Command\GeneralCommand{
         if($this->destGeneralObj->getVar('level') == 12){
             $this->runnableConstraints[] = ['AlwaysFail', '군주에게는 등용장을 보낼 수 없습니다.'];
         }
-    }
-
-    protected function argTest():bool{
-        //NOTE: 사망 직전에 '등용' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
-        if(!key_exists('destGeneralID', $this->arg)){
-            return false;
-        }
-        $destGeneralID = $this->arg['destGeneralID'];
-        if(!is_int($destGeneralID)){
-            return false;
-        }
-        if($destGeneralID <= 0){
-            return false;
-        }
-        if($destGeneralID == $this->generalObj->getID()){
-            return false;
-        }
-        $this->arg = [
-            'destGeneralID'=>$destGeneralID
-        ];
-        return true;
     }
 
     public function getCost():array{

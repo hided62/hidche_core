@@ -23,6 +23,11 @@ use sammo\CityConst;
 class che_귀환 extends Command\GeneralCommand{
     static protected $actionName = '귀환';
 
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -37,11 +42,6 @@ class che_귀환 extends Command\GeneralCommand{
             ['NoWanderingNation'],
             ['NotCapital', 1],
         ];
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

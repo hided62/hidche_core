@@ -27,6 +27,11 @@ class che_주민선정 extends Command\GeneralCommand{
     static protected $actionKey = '민심';
     static protected $actionName = '주민 선정';
 
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -47,11 +52,6 @@ class che_주민선정 extends Command\GeneralCommand{
         ];
 
         $this->reqRice = $reqRice;
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

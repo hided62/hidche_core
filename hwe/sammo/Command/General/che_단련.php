@@ -22,6 +22,11 @@ use \sammo\Constraint\Constraint;
 class che_단련 extends Command\GeneralCommand{
     static protected $actionName = '단련';
 
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -40,11 +45,6 @@ class che_단련 extends Command\GeneralCommand{
             ['ReqGeneralRice', $reqRice],
         ];
 
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

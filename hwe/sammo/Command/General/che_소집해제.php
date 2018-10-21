@@ -17,10 +17,13 @@ use function \sammo\{
 
 use \sammo\Constraint\Constraint;
 
-
-
 class che_소집해제 extends Command\GeneralCommand{
     static protected $actionName = '소집해제';
+
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
 
     protected function init(){
 
@@ -33,11 +36,6 @@ class che_소집해제 extends Command\GeneralCommand{
             ['ReqGeneralCrew'],
         ];
 
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

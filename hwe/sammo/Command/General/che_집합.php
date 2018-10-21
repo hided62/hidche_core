@@ -23,6 +23,11 @@ use sammo\CityConst;
 class che_집합 extends Command\GeneralCommand{
     static protected $actionName = '집합';
 
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -40,11 +45,6 @@ class che_집합 extends Command\GeneralCommand{
             ['MustBeTroopLeader'],
             ['ReqTroopMembers'],
         ];
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

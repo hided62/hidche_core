@@ -24,6 +24,11 @@ use \sammo\Constraint\Constraint;
 class che_물자조달 extends Command\GeneralCommand{
     static protected $actionName = '물자조달';
 
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -38,11 +43,6 @@ class che_물자조달 extends Command\GeneralCommand{
             ['SuppliedCity']
         ];
 
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

@@ -22,6 +22,11 @@ use \sammo\Constraint\Constraint;
 class che_훈련 extends Command\GeneralCommand{
     static protected $actionName = '훈련';
 
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -37,11 +42,6 @@ class che_훈련 extends Command\GeneralCommand{
             ['ReqGeneralTrainMargin', GameConst::$maxTrainByCommand],
         ];
 
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

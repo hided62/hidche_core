@@ -23,6 +23,19 @@ use sammo\CityConst;
 class che_강행 extends Command\GeneralCommand{
     static protected $actionName = '강행';
 
+    protected function argTest():bool{
+        if(!key_exists('destCityID', $this->arg)){
+            return false;
+        }
+        if(!key_exists($this->arg['destCityID'], CityConst::all())){
+            return false;
+        }
+        $this->arg = [
+            'destCityID'=>$this->arg['destCityID']
+        ];
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -40,20 +53,7 @@ class che_강행 extends Command\GeneralCommand{
             ['ReqGeneralRice', $reqRice],
         ];
     }
-
-    protected function argTest():bool{
-        if(!key_exists('destCityID', $this->arg)){
-            return false;
-        }
-        if(!key_exists($this->arg['destCityID'], CityConst::all())){
-            return false;
-        }
-        $this->arg = [
-            'destCityID'=>$this->arg['destCityID']
-        ];
-        return true;
-    }
-
+    
     public function getCost():array{
         $env = $this->env;
         return [$env['develcost'] * 5, 0];

@@ -33,6 +33,24 @@ class che_군량매매 extends Command\GeneralCommand{
         'item'=>'도구',
     ];
 
+    protected function argTest():bool{
+        $buyRice = $this->arg['buyRice']??null;
+        if(!is_bool($buyRice)){
+            return false;
+        }
+        $amount = $this->arg['amount']??null;
+        if(!is_int($amount)){
+            return false;
+        }
+        $amount = Util::valueFit($amount, 100, 10000);
+        
+        $this->arg = [
+            'buyRice'=>$buyRice,
+            'amount'=>$amount
+        ];
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -52,24 +70,6 @@ class che_군량매매 extends Command\GeneralCommand{
         else{
             $this->runnableConstraints[] = ['ReqGeneralRice', 1];
         }
-    }
-
-    protected function argTest():bool{
-        $buyRice = $this->arg['buyRice']??null;
-        if(!is_bool($buyRice)){
-            return false;
-        }
-        $amount = $this->arg['amount']??null;
-        if(!is_int($amount)){
-            return false;
-        }
-        $amount = Util::valueFit($amount, 100, 10000);
-        
-        $this->arg = [
-            'buyRice'=>$buyRice,
-            'amount'=>$amount
-        ];
-        return true;
     }
 
     public function getCost():array{

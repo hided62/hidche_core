@@ -9,14 +9,13 @@ use sammo\LastTurn;
 class 휴식 extends Command\NationCommand{
     static protected $actionName = '휴식';
 
-    protected function init(){
-        //아무것도 하지 않음
-    }
-
     protected function argTest():bool{
         return true;
     }
 
+    protected function init(){
+        //아무것도 하지 않음
+    }
     public function getCost():array{
         return [0, 0];
     }

@@ -21,6 +21,11 @@ use \sammo\Constraint\Constraint;
 class che_사기진작 extends Command\GeneralCommand{
     static protected $actionName = '사기진작';
 
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -40,11 +45,6 @@ class che_사기진작 extends Command\GeneralCommand{
             ['ReqGeneralAtmosMargin', GameConst::$maxAtmosByCommand],
         ];
 
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

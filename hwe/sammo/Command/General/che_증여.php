@@ -24,6 +24,44 @@ use \sammo\Constraint\Constraint;
 class che_증여 extends Command\GeneralCommand{
     static protected $actionName = '증여';
 
+    protected function argTest():bool{
+        //NOTE: 사망 직전에 '증여' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
+        if(!key_exists('isGold', $this->arg)){
+            return false;
+        }
+        if(!key_exists('amount', $this->arg)){
+            return false;
+        }
+        if(!key_exists('destGeneralID', $this->arg)){
+            return false;
+        }
+        $isGold = $this->arg['isGold'];
+        $amount = $this->arg['amount'];
+        $destGeneralID = $this->arg['destGeneralID'];
+        if(!is_int($amount)){
+            return false;
+        }
+        $amount = Util::valueFit($amount, 100, 10000);
+        if(!is_bool($isGold)){
+            return false;
+        }
+        if(!is_int($destGeneralID)){
+            return false;
+        }
+        if($destGeneralID <= 0){
+            return false;
+        }
+        if($destGeneralID == $this->generalObj->getID()){
+            return false;
+        }
+        $this->arg = [
+            'isGold'=>$isGold,
+            'amount'=>$amount,
+            'destGeneralID'=>$destGeneralID
+        ];
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -53,50 +91,6 @@ class che_증여 extends Command\GeneralCommand{
             $this->runnableConstraints[] = ['ReqGeneralRice', 1];
         }
 
-    }
-
-    protected function argTest():bool{
-        //NOTE: 사망 직전에 '증여' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
-        if(!key_exists('isGold', $this->arg)){
-            return false;
-        }
-        if(!key_exists('amount', $this->arg)){
-            return false;
-        }
-        if(!key_exists('destGeneralID', $this->arg)){
-            return false;
-        }
-        $isGold = $this->arg['isGold'];
-        $amount = $this->arg['amount'];
-        $destGeneralID = $this->arg['destGeneralID'];
-        if(!is_int($amount)){
-            return false;
-        }
-        if($amount < 100){
-            return false;
-        }
-        if($amount > 10000){
-            return false;
-        }
-        $amount = (int)$amount;
-        if(!is_bool($isGold)){
-            return false;
-        }
-        if(!is_int($destGeneralID)){
-            return false;
-        }
-        if($destGeneralID <= 0){
-            return false;
-        }
-        if($destGeneralID == $this->generalObj->getID()){
-            return false;
-        }
-        $this->arg = [
-            'isGold'=>$isGold,
-            'amount'=>$amount,
-            'destGeneralID'=>$destGeneralID
-        ];
-        return true;
     }
 
     public function getCost():array{

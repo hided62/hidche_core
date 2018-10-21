@@ -22,6 +22,11 @@ use \sammo\Constraint\Constraint;
 class che_요양 extends Command\GeneralCommand{
     static protected $actionName = '요양';
 
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -31,11 +36,6 @@ class che_요양 extends Command\GeneralCommand{
         $this->runnableConstraints=[
         ];
 
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

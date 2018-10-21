@@ -32,6 +32,25 @@ class che_장비매매 extends Command\GeneralCommand{
         'item'=>'도구',
     ];
 
+    protected function argTest():bool{
+        $itemType = $this->arg['itemType']??null;
+        if(!in_array($itemType, array_keys(static::$itemMap))){
+            return false;
+        }
+        $itemCode = $this->arg['itemCode']??null;
+        if(!is_int($itemCode)){
+            return false;
+        }
+        if($itemCode < 0 || 6 < $itemCode){
+            return false;
+        }
+        $this->arg = [
+            'itemType'=>$itemType,
+            'itemCode'=>$itemCode
+        ];
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -62,25 +81,6 @@ class che_장비매매 extends Command\GeneralCommand{
             $this->runnableConstraints[] = [['AlwaysFail', '이미 진귀한 것을 가지고 있습니다.']];
         }
 
-    }
-
-    protected function argTest():bool{
-        $itemType = $this->arg['itemType']??null;
-        if(!in_array($itemType, array_keys(static::$itemMap))){
-            return false;
-        }
-        $itemCode = $this->arg['itemCode']??null;
-        if(!is_int($itemCode)){
-            return false;
-        }
-        if($itemCode < 0 || 6 < $itemCode){
-            return false;
-        }
-        $this->arg = [
-            'itemType'=>$itemType,
-            'itemCode'=>$itemCode
-        ];
-        return true;
     }
 
     public function getCost():array{

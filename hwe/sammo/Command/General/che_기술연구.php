@@ -25,6 +25,11 @@ class che_기술연구 extends che_상업투자{
     static protected $actionKey = '기술';
     static protected $actionName = '기술 연구';
 
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -44,11 +49,6 @@ class che_기술연구 extends che_상업투자{
         ];
 
         $this->reqGold = $reqGold;
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function run():bool{

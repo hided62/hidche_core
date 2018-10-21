@@ -24,6 +24,19 @@ use sammo\CityConst;
 class che_첩보 extends Command\GeneralCommand{
     static protected $actionName = '첩보';
 
+    protected function argTest():bool{
+        if(!key_exists('destCityID', $this->arg)){
+            return false;
+        }
+        if(!key_exists($this->arg['destCityID'], CityConst::all())){
+            return false;
+        }
+        $this->arg = [
+            'destCityID'=>$this->arg['destCityID']
+        ];
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -40,19 +53,6 @@ class che_첩보 extends Command\GeneralCommand{
             ['ReqGeneralGold', $reqGold],
             ['ReqGeneralRice', $reqRice],
         ];
-    }
-
-    protected function argTest():bool{
-        if(!key_exists('destCityID', $this->arg)){
-            return false;
-        }
-        if(!key_exists($this->arg['destCityID'], CityConst::all())){
-            return false;
-        }
-        $this->arg = [
-            'destCityID'=>$this->arg['destCityID']
-        ];
-        return true;
     }
 
     public function getCost():array{

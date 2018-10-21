@@ -39,6 +39,36 @@ class che_징병 extends Command\GeneralCommand{
         static::$defaultAtmos = GameConst::$defaultAtmosLow;
     }
 
+    protected function argTest():bool{
+        if(!key_exists('crewType', $this->arg)){
+            return false;
+        }
+        if(!key_exists('amount', $this->arg)){
+            return false;
+        }
+        $crewType = $this->arg['crewType'];
+        $amount = $this->arg['amountCrew'];
+
+        if(!is_int($crewType)){
+            return false;
+        }
+        if(!is_int($amount)){
+            return false;
+        }
+
+        if(GameUnitConst::byID($crewType) === null){
+            return false;
+        }
+        if($amount < 100){
+            return false;
+        }
+        $this->arg = [
+            'crewType'=>$crewType,
+            'amount'=>$amount
+        ];
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -72,36 +102,6 @@ class che_징병 extends Command\GeneralCommand{
             ['AvailableRecruitCrewType', $reqCrewType->id]
         ];
 
-    }
-
-    protected function argTest():bool{
-        if(!key_exists('crewType', $this->arg)){
-            return false;
-        }
-        if(!key_exists('amount', $this->arg)){
-            return false;
-        }
-        $crewType = $this->arg['crewType'];
-        $amount = $this->arg['amountCrew'];
-
-        if(!is_int($crewType)){
-            return false;
-        }
-        if(!is_int($amount)){
-            return false;
-        }
-
-        if(GameUnitConst::byID($crewType) === null){
-            return false;
-        }
-        if($amount < 100){
-            return false;
-        }
-        $this->arg = [
-            'crewType'=>$crewType,
-            'amount'=>$amount
-        ];
-        return true;
     }
 
     public function getCost():array{

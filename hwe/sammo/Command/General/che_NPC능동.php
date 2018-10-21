@@ -16,16 +16,6 @@ use \sammo\Constraint\Constraint;
 class che_NPC능동 extends Command\GeneralCommand{
     static protected $actionName = 'NPC능동';
 
-    protected function init(){
-
-        $general = $this->generalObj;
-
-        $this->runnableConstraints=[
-            ['MustBeNPC']
-        ];
-
-    }
-
     protected function argTest():bool{
         if(!key_exists('optionText', $this->arg)){
             return false;
@@ -46,6 +36,16 @@ class che_NPC능동 extends Command\GeneralCommand{
         }
 
         return false;
+    }
+
+    protected function init(){
+
+        $general = $this->generalObj;
+
+        $this->runnableConstraints=[
+            ['MustBeNPC']
+        ];
+
     }
 
     public function getCost():array{

@@ -21,6 +21,11 @@ use \sammo\TextDecoration\SightseeingMessage;
 
 class che_견문 extends Command\GeneralCommand{
     static protected $actionName = '견문';
+    
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
 
     protected function init(){
 
@@ -29,11 +34,6 @@ class che_견문 extends Command\GeneralCommand{
         $this->runnableConstraints=[
         ];
 
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

@@ -28,6 +28,11 @@ class che_상업투자 extends Command\GeneralCommand{
     static protected $actionName = '상업 투자';
     static protected $debuffFront = 0.5;
 
+    protected function argTest():bool{
+        $this->arg = null;
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -48,11 +53,6 @@ class che_상업투자 extends Command\GeneralCommand{
         ];
 
         $this->reqGold = $reqGold;
-    }
-
-    protected function argTest():bool{
-        $this->arg = null;
-        return true;
     }
 
     public function getCost():array{

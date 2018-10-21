@@ -24,6 +24,29 @@ use \sammo\Constraint\Constraint;
 class che_헌납 extends Command\GeneralCommand{
     static protected $actionName = '헌납';
 
+    protected function argTest():bool{
+        if(!key_exists('isGold', $this->arg)){
+            return false;
+        }
+        if(!key_exists('amount', $this->arg)){
+            return false;
+        }
+        $isGold = $this->arg['isGold'];
+        $amount = $this->arg['amount'];
+        if(!is_int($amount)){
+            return false;
+        }
+        $amount = Util::valueFit($amount, 100, 10000);
+        if(!is_bool($isGold)){
+            return false;
+        }
+        $this->arg = [
+            'isGold'=>$isGold,
+            'amount'=>$amount
+        ];
+        return true;
+    }
+
     protected function init(){
 
         $general = $this->generalObj;
@@ -43,35 +66,6 @@ class che_헌납 extends Command\GeneralCommand{
             $this->runnableConstraints[] = ['ReqGeneralRice', 1];
         }
 
-    }
-
-    protected function argTest():bool{
-        if(!key_exists('isGold', $this->arg)){
-            return false;
-        }
-        if(!key_exists('amount', $this->arg)){
-            return false;
-        }
-        $isGold = $this->arg['isGold'];
-        $amount = $this->arg['amount'];
-        if(!is_int($amount)){
-            return false;
-        }
-        if($amount < 100){
-            return false;
-        }
-        if($amount > 10000){
-            return false;
-        }
-        $amount = (int)$amount;
-        if(!is_bool($isGold)){
-            return false;
-        }
-        $this->arg = [
-            'isGold'=>$isGold,
-            'amount'=>$amount
-        ];
-        return true;
     }
 
     public function getCost():array{
