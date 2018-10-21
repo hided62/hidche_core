@@ -75,10 +75,10 @@ class che_장비매매 extends Command\GeneralCommand{
             $this->runnableConstraints[] = ['ReqGeneralValue', $itemType, $itemTypeName, 1];
         }
         else if($itemCode == $general->getVar($itemType)){
-            $this->runnableConstraints = [['AlwaysFail', '이미 가지고 있습니다.']];
+            $this->runnableConstraints[] = ['AlwaysFail', '이미 가지고 있습니다.'];
         }
         else if($itemType != 'item' && $general->getVar($itemType) > 6){
-            $this->runnableConstraints[] = [['AlwaysFail', '이미 진귀한 것을 가지고 있습니다.']];
+            $this->runnableConstraints[] = ['AlwaysFail', '이미 진귀한 것을 가지고 있습니다.'];
         }
 
     }

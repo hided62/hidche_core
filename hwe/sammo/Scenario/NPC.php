@@ -5,6 +5,9 @@ use \sammo\JosaUtil;
 use \sammo\DB;
 use \sammo\CityHelper;
 use \sammo\GameUnitConst;
+use \sammo\CityConst;
+use \sammo\GameConst;
+use \sammo\SpecialityConst;
 
 class NPC{
 
@@ -24,7 +27,7 @@ class NPC{
     public $death; 
     public $ego;
     public $charDomestic; 
-    public $charWar = 0; 
+    public $charWar; 
     public $npc = 2;
     public $text;
     static $prefixList = [
@@ -38,13 +41,27 @@ class NPC{
         9 => 'ⓞ', //오랑캐?
     ];
 
-    //[  1,     "헌제",1002,  1,    null, 17, 13, 61, 0, 170, 250, "안전",    null, "산 넘어 산이로구나..."],
+    protected $gold = 1000;
+    protected $rice = 1000;
+
+    protected $specAge = null;
+    protected $specAge2 = null;
+    protected $experience = null;
+    protected $dedication = null;
+
+    //XXX: 코드 못 바꾸나?
+    protected $dex0 = 0;
+    protected $dex10 = 0;
+    protected $dex20 = 0;
+    protected $dex30 = 0;
+    protected $dex40 = 0;
+
     public function __construct(
         int $affinity, 
         string $name, 
         $picturePath, 
         int $nationID, 
-        $locatedCity, //FIXME: 7.1로 올릴 때 ?string 으로 변경
+        $locatedCity,
         int $leadership, 
         int $power, 
         int $intel, 
@@ -75,20 +92,21 @@ class NPC{
             'intel'=>$intel
         ];
 
-        $this->charDomestic = \sammo\GameConst::$defaultSpecialDomestic;
+        $this->charDomestic = GameConst::$defaultSpecialDomestic;
+        $this->charWar = GameConst::$defaultSpecialWar;
 
         if($char === '랜덤전특'){
-            $this->charWar = \sammo\SpecialityConst::pickSpecialWar($general);
+            $this->charWar = SpecialityConst::pickSpecialWar($general);
         }
         else if($char === '랜덤내특'){
-            $this->charDomestic = \sammo\SpecialityConst::pickSpecialDomestic($general);
+            $this->charDomestic = SpecialityConst::pickSpecialDomestic($general);
         }
         else if($char === '랜덤'){
             if(Util::randBool(2/3)){
-                $this->charWar = \sammo\SpecialityConst::pickSpecialWar($general);
+                $this->charWar = SpecialityConst::pickSpecialWar($general);
             }
             else{
-                $this->charDomestic = \sammo\SpecialityConst::pickSpecialDomestic($general);
+                $this->charDomestic = SpecialityConst::pickSpecialDomestic($general);
             }
         }
         else if($char !== null){
@@ -101,9 +119,36 @@ class NPC{
                 $this->charDomestic = Util::getClassName($domesticClass);
             }
             catch (Exception $e) {
-                $this->charWar = \sammo\SpecCall($char);
+                $warClass = \sammo\getGeneralSpecialWarClass($char);
+                $this->charWar = Util::getClassName($domesticClass);
             }
         }  
+    }
+
+    public function setSpecYear(?int $specAge, ?int $specAge2):self{
+        $this->specAge = $specAge;
+        $this->specAge2 = $specAge2;
+        return $this;
+    }
+
+    public function setExpDed(?int $experience, ?int $dedication):self{
+        $this->experience = $experience;
+        $this->dedication = $dedication;
+        return $this;
+    }
+
+    public function setMoney(int $gold, int $rice):self{
+        $this->gold = $gold;
+        $this->rice = $rice;
+        return $this;
+    }
+
+    public function setDex(int $footman, int $archer, int $cavalry, int $wizard, int $siege):self{
+        $this->dex0 = $footman;
+        $this->dex10 = $archer;
+        $this->dex20 = $cavalry;
+        $this->dex30 = $wizard;
+        $this->dex40 = $siege;
     }
 
     public function build($env=[]){
@@ -131,11 +176,11 @@ class NPC{
         if($this->death <= $year){
             return true; //죽었으니 넘어간다.
         }
-        if($age < \sammo\GameConst::$adultAge){
+        if($age < GameConst::$adultAge){
             return false; //예약.
         }
 
-        $isNewGeneral = ($age == \sammo\GameConst::$adultAge);
+        $isNewGeneral = ($age == GameConst::$adultAge);
 
         $nationID = $this->nationID;
         if($isFictionMode && $isNewGeneral){
@@ -171,11 +216,24 @@ class NPC{
         }
 
         if($isFictionMode){
-            $charWar = 0;
+            $charWar = GameConst::$defaultSpecialWar;
             $charDomestic = GameConst::$defaultSpecialDomestic;
         }
 
         $name = (static::$prefixList[$this->npc]?:'ⓧ').$this->name;
+
+        $duplicateCnt = $db->queryFirstField('SELECT count(no) FROM general WHERE name LIKE %s', $name.'%') + 1;
+
+        if($duplicateCnt > 1){
+            $name = "{$name}($duplicateCnt}";   
+        }
+        $this->realName = $name;
+
+        $query = "select no from general where name like '{$name}%'";
+            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $count = MYDB_num_rows($result);
+            $count++;
+
         $this->realName = $name;
 
         $picturePath = $this->picturePath;
@@ -211,8 +269,11 @@ class NPC{
         }
 
         $city = $this->locatedCity;
-        if($city !== null){
-            $city = CityHelper::getCityByName($city)['id']??null;
+        if(is_int($city)){
+            $city = CityConst::byID($city)['id']??null;
+        }
+        else if(is_string($city)){
+            $city = CityConst::byName($city)['id']??null;
         }
         if($city === null){
             if($nationID == 0 || !CityHelper::getAllNationCities($nationID)){
@@ -226,8 +287,8 @@ class NPC{
         }
         
 
-        $experience = $age * 100;
-        $dedication = $age * 100;
+        $experience = $this->experience?:$age * 100;
+        $dedication = $this->dedication?:$age * 100;
         $level = $this->level;
         if(!$level || $isNewGeneral){
             $level = $nationID?1:0;
@@ -237,13 +298,10 @@ class NPC{
 
         $killturn = ($this->death - $year) * 12 + mt_rand(0, 11);
 
-        $specage = $age + 1;
-        $specage2 = $age + 1;
-
-        $npcID = $db->queryFirstField('SELECT max(npcid)+1 FROM general');
+        $specage = $this->specAge?:$age + 1;
+        $specage2 = $this->specAge2?:$age + 1;
 
         $db->insert('general',[
-            'npcid'=>$npcID,
             'npc'=>$this->npc,
             'npc_org'=>$this->npc,
             'affinity'=>$affinity,
@@ -257,8 +315,8 @@ class NPC{
             'experience'=>$experience,
             'dedication'=>$dedication,
             'level'=>$level,
-            'gold'=>1000,
-            'rice'=>1000,
+            'gold'=>$this->gold,
+            'rice'=>$this->rice,
             'crew'=>0,
             'crewtype'=>GameUnitConst::DEFAULT_CREWTYPE,
             'train'=>0,
@@ -278,7 +336,12 @@ class NPC{
             'npcmsg'=>$this->text,
             'makelimit'=>0,
             'bornyear'=>$this->birth,
-            'deadyear'=>$this->death
+            'deadyear'=>$this->death,
+            'dex0'=>$this->dex0,
+            'dex10'=>$this->dex10,
+            'dex20'=>$this->dex20,
+            'dex30'=>$this->dex30,
+            'dex40'=>$this->dex40,
         ]);
         $this->generalID = $db->insertId();
 

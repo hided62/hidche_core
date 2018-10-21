@@ -1,0 +1,216 @@
+<?php
+namespace sammo\GeneralCommand;
+
+use \sammo\{
+    DB, Util, JosaUtil,
+    General, 
+    ActionLogger,
+    GameConst, GameUnitConst,
+    LastTurn,
+    Command
+};
+
+
+use function \sammo\{
+    tryUniqueItemLottery
+};
+
+use \sammo\Constraint\Constraint;
+use sammo\CityConst;
+use sammo\MustNotBeReachedException;
+
+
+
+class che_랜덤임관 extends Command\GeneralCommand{
+    static protected $actionName = '랜덤임관';
+
+    protected function argTest():bool{
+        
+        $destNationIDList = $this->arg['destNationIDList']??null;
+        //null은 에러, []는 정상
+
+        if($destNationIDList === null || is_array($destNationIDList)){
+            return false;
+        }
+        if(Util::isDict($destNationIDList)){
+            return false;
+        }
+        foreach($destNationIDList as $nationID){
+            if(!is_int($nationID)){
+                return false;
+            }
+            if($nationID < 1){
+                return false;
+            }
+        }
+        $this->arg = [
+            'destNationIDList' => $destNationIDList
+        ];    
+        
+        return true;
+    }
+
+    protected function init(){
+
+        $general = $this->generalObj;
+        $env = $this->env;
+
+        $this->setCity();
+        $this->setNation();
+
+        $relYear = $env['year'] - $env['startyear'];
+
+        $this->runnableConstraints=[
+            ['BeNeutral'],
+            ['ExistsDestNation'],
+            ['AllowJoinAction'],
+            ['ExistsAllowJoinNation', $relYear, [$this->arg['destNationIDList']]],
+        ];
+    }
+
+    public function getCost():array{
+        return [0, 0];
+    }
+    
+    public function getPreReqTurn():int{
+        return 0;
+    }
+
+    public function getPostReqTurn():int{
+        return 0;
+    }
+
+    public function run():bool{
+        if(!$this->isRunnable()){
+            throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
+        }
+
+        $db = DB::db();
+        $env = $this->env;
+
+        $general = $this->generalObj;
+        $date = substr($general->getVar('turntime'),11,5);
+        $generalName = $general->getName();
+        $josaYi = JosaUtil::pick($generalName, '이');
+
+        $relYear = $env['year'] - $env['startyear'];
+
+        $notIn = array_merge(Json::decode($general->getVar(['nations'])), $this->arg['destNationIDList']);
+
+        $destNation = null;
+
+        if ($general->getVar('npc') >= 2 && !$env['fiction'] && 1000 <= $admin['scenario'] && $admin['scenario'] < 2000) {
+            $nations = $db->query(
+                'SELECT nation.`name` as `name`,nation.nation as nation,scout,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE scout=0 and gennum<%i and nation.nation not in %li',
+                $notIn,
+                $relYear<3?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
+            );
+            shuffle($nations);
+
+            $allGen = Util::arraySum($nations, 'gennum');
+    
+            $maxScore = 1<<30;
+
+            $affinity = $general->getVar('affinity');
+    
+            foreach($nations as $testNation){
+                $affinity = abs($affinity - $testNation['affinity']);
+                $affinity = min($affinity, abs($affinity - 150));
+    
+                $score = log($affinity + 1, 2);//0~
+    
+                //쉐킷쉐킷
+                $score += Util::randF();
+    
+                $score += sqrt($testNation['gennum']/$allGen);
+    
+                if($score < $maxScore){
+                    $maxScore = $score;
+                    $destNation = $testNation;
+                }
+            }
+        }
+        else{   
+            $nations = $db->queryFirstColumn(
+                'SELECT nation, name, gennum, scout FROM nation WHERE scout=0 AND gennum < %i AND no NOT IN %li',
+                $relYear<3?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral,
+                $notIn
+            );
+
+            $allGen = Util::arraySum($nations, 'gennum');
+
+            $randVals = [];
+            foreach($nations as $testNation){
+                $nationID = $nations['nation'];
+                $randVals[] = [$testNation, sqrt($allGen/$testNation['gennum'])];
+            }
+
+            $destNation = Util::choiceRandomUsingWeightPair($randVals);
+        }
+
+        if(!$destNation){
+            throw new MustNotBeReachedException();
+        }
+
+        $destNation = $this->destNation;
+        $gennum = $destNation['gennum'];
+        $destNationID = $destNation['nation'];
+        $destNationName = $destNation['name'];
+
+        $logger = $general->getLogger();
+
+        $talkList = [
+            '어쩌다 보니',
+            '인연이 닿아',
+            '발길이 닿는 대로',
+            '소문을 듣고',
+            '점괘에 따라',
+        ];
+        $randomTalk = Util::choiceRandom($talkList);
+
+        $logger->pushGeneralActionLog("<D>{$destNationName}</>에 랜덤 임관했습니다. <1>$date</>");
+        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>에 랜덤 임관");
+        $logger->pushGlobalActionLog("{$generalName}</>{$josaYi} {$randomTalk} <D><b>{$destNationName}</b></>에 <S>임관</>했습니다.");
+
+        if($gennum < GameConst::$initialNationGenLimit) {
+            $exp = 700;
+        }
+        else {
+            $exp = 100;
+        }
+
+        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
+        $general->setVar('nation', $destNationID);
+        $general->setVar('level', 1);
+        $general->setVar('belong', 1);
+        
+        if($this->destGeneralObj !== null){
+            $general->setVar('city', $this->destGeneralObj->getCityID());
+        }
+        else{
+            $targetCityID = $db->queryFirstField('SELECT city FROM nation WHERE nation = %i AND level=12', $destNationID);
+            $general->setVar('city', $targetCityID);
+        }
+
+        $db->update('nation', [
+            'gennum'=>$db->sqleval('gennum + 1')
+        ], 'nation=%i', $destNationID);
+
+        $relYear = $env['year'] - $env['startyear'];
+        if($general->getVar('npc') == 1 || $relYear >= 3){
+            $joinedNations = Join::decode($general->getVar('nations'));
+            $joinedNations[] = $destNationID;
+            $general->setVar('nations', Join::encode($joinedNations));
+        }
+
+        $general->increaseVar('experience', $exp);
+        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $general->checkStatChange();
+        tryUniqueItemLottery($general, '랜덤 임관');
+        $general->applyDB($db);
+
+        return true;
+    }
+
+    
+}

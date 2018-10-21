@@ -309,16 +309,13 @@ class Util extends \utilphp\util
             if (is_string($key)) {
                 return true;
             }
-            $jmp = $key - $idx - 1;
+            if(!$idx + 1 == $key){
+                return false;
+            }
             $idx = $key;
         }
     
-        if ($jmp * 5 >= count($array)) {
-            //빈칸이 많으면 dictionary인걸로.
-            return true;
-        } else {
-            return false;
-        }
+        return true;
     }
 
     /**

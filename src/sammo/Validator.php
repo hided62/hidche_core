@@ -33,4 +33,24 @@ class Validator extends \Valitron\Validator
 
         
     }
+
+    /**
+     * Validate that a field is an integer array
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateIntegerArray($field, $value)
+    {
+        if(!is_array($value)){
+            return false;
+        }
+        foreach($value as $subItem){
+            if(!is_int($subItem)){
+                return false;
+            }
+        }
+        return true;
+    }
 }

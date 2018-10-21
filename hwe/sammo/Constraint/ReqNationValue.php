@@ -6,10 +6,10 @@ use \sammo\JosaUtil;
 use \sammo\Util;
 
 /**
- * 범용으로 사용 가능한 장수 변수 검사도구
+ * 범용으로 사용 가능한 국가 변수 검사도구
  */
 class RegGeneralValue extends Constraint{
-    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_ARRAY_ARG;
+    const REQ_VALUES = Constraint::REQ_NATION|Constraint::REQ_ARRAY_ARG;
 
     protected $key;
     protected $maxKey;
@@ -22,7 +22,7 @@ class RegGeneralValue extends Constraint{
         }
 
         if(count($this->arg) == 4){
-            [$this->key, $this->keyNick, $comp, $this->reqVal] = $this->arg;
+            [$this->key, $this->keyNick, $this->reqVal, $comp] = $this->arg;
 
             if(!in_array($comp, ['>', '>=', '==', '<=', '<', '!='])){
                 if(!$throwExeception){return false; }
@@ -38,9 +38,9 @@ class RegGeneralValue extends Constraint{
         
         $this->maxKey = $this->key.'2';
 
-        if(!key_exists($this->key, $this->general)){
+        if(!key_exists($this->key, $this->nation)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require {$this->key} in general");
+            throw new \InvalidArgumentException("require {$this->key} in nation");
         }
 
         if(is_numeric($this->reqVal)){
@@ -53,9 +53,9 @@ class RegGeneralValue extends Constraint{
                 throw new \InvalidArgumentException("require valid reqVal(percentStr|numeric) format");
             }
 
-            if(!key_exists($this->maxKey, $this->general)){
+            if(!key_exists($this->maxKey, $this->nation)){
                 if(!$throwExeception){return false; }
-                throw new \InvalidArgumentException("require {$this->maxKey} in general");
+                throw new \InvalidArgumentException("require {$this->maxKey} in nation");
             }
             $this->isPercent = true;
         }
@@ -68,7 +68,7 @@ class RegGeneralValue extends Constraint{
         $this->tested = true;
 
         if ($this->isPercent) {
-            $reqVal = $this->general[$this->maxKey] * $this->reqVal;
+            $reqVal = $this->nation[$this->maxKey] * $this->reqVal;
         }
         else{
             $reqVal = $this->reqVal;
@@ -106,7 +106,7 @@ class RegGeneralValue extends Constraint{
         ];
 
         $comp = $compList[$this->comp];
-        $result = ($comp)($this->general[$this->key], $reqVal);
+        $result = ($comp)($this->nation[$this->key], $reqVal);
 
         if($result === true){
             return true;

@@ -66,6 +66,7 @@ class che_임관 extends Command\GeneralCommand{
     protected function init(){
 
         $general = $this->generalObj;
+        $env = $this->env;
 
         $this->setCity();
         $this->setNation();
@@ -80,7 +81,7 @@ class che_임관 extends Command\GeneralCommand{
             $this->setDestNation($destNationID, ['gennum', 'scout']);
         }
 
-        $relYear = $env['year'] = $env['startyear'];
+        $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
             ['BeNeutral'],
@@ -150,7 +151,7 @@ class che_임관 extends Command\GeneralCommand{
             'gennum'=>$db->sqleval('gennum + 1')
         ], 'nation=%i', $destNationID);
 
-        $relYear = $env['year'] = $env['startyear'];
+        $relYear = $env['year'] - $env['startyear'];
         if($general->getVar('npc') == 1 || $relYear >= 3){
             $joinedNations = Join::decode($general->getVar('nations'));
             $joinedNations[] = $destNationID;

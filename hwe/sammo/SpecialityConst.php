@@ -43,43 +43,43 @@ class SpecialityConst{
     ];
 
     const WAR = [
-        40 => ['귀병', 1, [self::STAT_INTEL | self::ARMY_WIZARD | self::REQ_DEXTERITY]],
+        'che_귀병' => ['귀병', 1, [self::STAT_INTEL | self::ARMY_WIZARD | self::REQ_DEXTERITY]],
 
-        41 => ['신산', 1, [self::STAT_INTEL]],
-        42 => ['환술', -5, [self::STAT_INTEL]],
-        43 => ['집중', 1, [self::STAT_INTEL]],
-        44 => ['신중', 1, [self::STAT_INTEL]],
-        45 => ['반계', 1, [self::STAT_INTEL]],
+        'che_신산' => ['신산', 1, [self::STAT_INTEL]],
+        'che_환술' => ['환술', -5, [self::STAT_INTEL]],
+        'che_집중' => ['집중', 1, [self::STAT_INTEL]],
+        'che_신중' => ['신중', 1, [self::STAT_INTEL]],
+        'che_반계' => ['반계', 1, [self::STAT_INTEL]],
 
-        50 => ['보병', 1, [
+        'che_보병' => ['보병', 1, [
             self::STAT_LEADERSHIP | self::REQ_DEXTERITY | self::ARMY_FOOTMAN,
             self::STAT_POWER | self::REQ_DEXTERITY | self::ARMY_FOOTMAN
         ]],
-        51 => ['궁병', 1, [
+        'che_궁병' => ['궁병', 1, [
             self::STAT_LEADERSHIP | self::REQ_DEXTERITY | self::ARMY_ARCHER,
             self::STAT_POWER | self::REQ_DEXTERITY | self::ARMY_ARCHER
             ]],
-        52 => ['기병', 1, [
+        'che_기병' => ['기병', 1, [
             self::STAT_LEADERSHIP | self::REQ_DEXTERITY | self::ARMY_CAVALRY,
             self::STAT_POWER | self::REQ_DEXTERITY | self::ARMY_CAVALRY
         ]],
-        53 => ['공성', 1, [
+        'che_공성' => ['공성', 1, [
             self::STAT_LEADERSHIP | self::REQ_DEXTERITY | self::ARMY_SIEGE,
             self::STAT_POWER | self::REQ_DEXTERITY | self::ARMY_SIEGE,
             self::STAT_INTEL | self::REQ_DEXTERITY | self::ARMY_SIEGE
         ]],
 
-        60 => ['돌격', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
-        61 => ['무쌍', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
-        62 => ['견고', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
-        63 => ['위압', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
+        'che_돌격' => ['돌격', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
+        'che_무쌍' => ['무쌍', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
+        'che_견고' => ['견고', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
+        'che_위압' => ['위압', 1, [self::STAT_LEADERSHIP, self::STAT_POWER]],
 
-        70 => ['저격', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
-        71 => ['필살', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
-        72 => ['징병', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
-        73 => ['의술', -2, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
-        74 => ['격노', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
-        75 => ['척사', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
+        'che_저격' => ['저격', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
+        'che_필살' => ['필살', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
+        'che_징병' => ['징병', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
+        'che_의술' => ['의술', -2, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
+        'che_격노' => ['격노', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
+        'che_척사' => ['척사', 1, [self::STAT_LEADERSHIP, self::STAT_POWER, self::STAT_INTEL]],
     ];
 
     public static function getInvDomestic(string $name){
@@ -206,7 +206,7 @@ class SpecialityConst{
         throw new MustNotBeReachedException();
     }
 
-    public static function pickSpecialWar(array $general) : int{
+    public static function pickSpecialWar(array $general) : string{
         $reqDex = [];
         $pAbs = [];
         $pRel = [];

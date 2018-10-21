@@ -34,6 +34,9 @@ $defaultCheck = [
     ],
     'min'=>[
         ['year', 0]
+    ],
+    'integerArray'=>[
+        'destNationIDList', 'destGeneralIDList'
     ]
 ];
 

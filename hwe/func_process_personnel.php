@@ -1,182 +1,6 @@
 <?php
 namespace sammo;
 
-function process_25(&$general) {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
-    $date = substr($general['turntime'],11,5);
-
-    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'scenario', 'fiction']);
-
-    $query = "select nation from city where city='{$general['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
-
-    $command = DecodeCommand($general['turn0']);
-    $where = $command[1];
-
-    $nation = null;
-
-    $joinedNations = Json::decode($general['nations']);
-
-    // 랜덤임관인 경우
-    if($general['npc'] >= 2 && $where >= 98 && !$admin['fiction'] && 1000 <= $admin['scenario'] && $admin['scenario'] < 2000){
-        //'사실' 모드에서는 '성향'에 우선을 두되, 장수수, 랜덤에 비중을 둠
-        $nations = $db->query(
-            'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %li and gennum < %i and scout = 0',
-            $joinedNations,
-            ($admin['year'] < $admin['startyear']+3)?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
-        );
-        shuffle($nations);
-
-        $allGen = array_sum(array_map(function($item) { 
-            return $item['gennum']; 
-        }, $nations));
-
-        $maxScore = 1<<30;
-
-        foreach($nations as $testNation){
-            $affinity = abs($general['affinity'] - $testNation['affinity']);
-            $affinity = min($affinity, abs($affinity - 150));
-
-            $score = log($affinity + 1, 2);//0~
-
-            //쉐킷쉐킷
-            $score += Util::randF();
-
-            $score += sqrt($testNation['gennum']/$allGen);
-
-            if($score < $maxScore){
-                $maxScore = $score;
-                $nation = $testNation;
-            }
-        }
-            
-    }
-    else if($where >= 98) {
-        //랜임
-        $generals = [];
-        foreach($db->queryAllLists('SELECT count(no), nation FROM general WHERE npc <= 2 AND nation > 0 GROUP BY nation') as list($cnt, $nation)){
-            $generals[$nation] = $cnt;
-        }
-
-        $allGen = array_sum($generals);
-
-        $nations = $db->query(
-            'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`injury` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %li and gennum < %i and scout = 0',
-            $joinedNations,
-            ($admin['year'] < $admin['startyear']+3)?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
-        );
-        shuffle($nations);
-
-        $randVals = [];
-        foreach($nations as $idx=>$testNation){
-            // 임관금지없음 국가, 방랑군 제외
-            if($where == 98 && $testNation['level'] == 0){
-                continue;
-            }
-
-            $score = 1;
-            if($admin['startyear']+3 > $admin['year'] && $general['npc'] > 2){
-                $score *= sqrt((100-max(30, $testNation['injury']))/100);
-            }
-
-            $score *= sqrt($allGen/$generals[$testNation['nation']]);
-            $randVals[$idx] = $score;
-        }
-
-        if($randVals){
-            $nation = $nations[Util::choiceRandomUsingWeight($randVals)];
-        }
-
-    } else {
-        $nation = $db->queryFirstRow('SELECT `name`,nation,scout,`level` FROM nation WHERE nation=%i', $where);
-    }
-
-    if($nation){
-        $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE nation=%i', $nation['nation']);
-        $josaUn = JosaUtil::pick($nation['name'], '은');
-    }
-    
-    if(!$nation) {
-        $log[] = "<C>●</>{$admin['month']}월:임관할 국가가 없습니다. 임관 실패. <1>$date</>";
-    } elseif($general['nation'] != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:재야가 아닙니다. 임관 실패. <1>$date</>";
-    } elseif($nation['nation'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:없는 국가입니다. 임관 실패. <1>$date</>";
-    } elseif($nation['level'] == 0 && $gencount >= GameConst::$initialNationGenLimit) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 제한되고 있습니다. 임관 실패.";
-    } elseif($admin['year'] < $admin['startyear']+3 && $gencount >= GameConst::$initialNationGenLimit) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 제한되고 있습니다. 임관 실패.";
-    } elseif($nation['scout'] == 1 && $general['npc'] != 9) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 임관이 금지되어 있습니다. 임관 실패.";
-    } elseif($general['makelimit'] > 0 && $general['npc'] != 9) {
-        $log[] = "<C>●</>{$admin['month']}월:재야가 된지 12턴이 지나야 합니다. 임관 실패. <1>$date</>";
-    } elseif(in_array($nation['nation'], $joinedNations)) {
-        $log[] = "<C>●</>{$admin['month']}월:이미 임관했었던 국가입니다. 임관 실패. <1>$date</>";
-    } else {
-        $josaYi = JosaUtil::pick($general['name'], '이');
-        if($where == 99 || $where == 98) {
-            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 어쩌다보니 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
-            $log[] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 랜덤으로 임관했습니다. <1>$date</>";
-            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
-        } else {
-            $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
-            $log[] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 임관했습니다. <1>$date</>";
-            pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
-        }
-
-        if($gencount < GameConst::$initialNationGenLimit) { $exp = 700; }
-        else { $exp = 100; }
-        $ded = 0;
-        
-        // 성격 보정
-        $exp = CharExperience($exp, $general['personal']);
-        $ded = CharDedication($ded, $general['personal']);
-
-        // 군주가 있는 곳으로 이동
-        $query = "select city from general where nation='{$nation['nation']}' and level='12'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $king = MYDB_fetch_array($result);
-
-        
-        // NPC초반시 임관기록 추가 안함
-        if($general['npc'] > 1 && $admin['year'] < $admin['startyear']+3) {
-        } else {
-            $joinedNations[] = $nation['nation'];
-        }
-
-        // 국적 바꾸고 등급 일반으로        // 명성 상승
-        $db->update('general', [
-            'resturn'=>'SUCCESS',
-            'nation'=>$nation['nation'],
-            'nations'=>Json::encode($joinedNations),
-            'level'=>1,
-            'experience'=>$db->sqleval('experience + %i', $exp),
-            'city'=>$king['city'],
-            'belong'=>1
-        ], 'no=%i', $general['no']);
-
-        $db->update('nation', [
-            'gennum'=>$gencount + 1,
-        ], 'nation=%i', $nation['nation']);
-
-        if($where < 99) {
-            $log = uniqueItem($general, $log);
-        } else {
-            $log = uniqueItem($general, $log, 2);
-        }
-    }
-
-    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-    pushGenLog($general, $log);
-}
-
 function process_29(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -187,7 +11,7 @@ function process_29(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $admin = $gameStor->getValues(['startyear','year','month','develcost','npccount','turnterm','scenario']);
+    $admin = $gameStor->getValues(['startyear','year','month','develcost','turnterm','scenario']);
 
     $query = "select nation,name,level,gennum,scout from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -360,7 +184,6 @@ function process_29(&$general) {
 
             //인재추가
             $npc = 3;
-            $npcid = $admin['npccount'];
             $npccount = 10000 + $npcid;
             $affinity = rand() % 150 + 1;
             $picture = 'default.jpg';
@@ -377,7 +200,6 @@ function process_29(&$general) {
             $killturn = rand()%480 + 120;
 
             $db->insert('general', [
-                'npcid'=>$npccount,
                 'npc'=>$npc,
                 'npc_org'=>$npc,
                 'affinity'=>$affinity,
@@ -422,9 +244,6 @@ function process_29(&$general) {
             ]);
 
             $npcid++;
-
-            //npccount
-            $gameStor->npccount=$npcid;
 
             $db->update('nation', [
                 'gennum'=>$db->sqleval('gennum + 1'),

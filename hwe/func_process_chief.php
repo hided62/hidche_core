@@ -1907,7 +1907,7 @@ function process_76(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $admin = $gameStor->getValues(['startyear','year','month','develcost','npccount','turnterm']);
+    $admin = $gameStor->getValues(['startyear','year','month','develcost','turnterm']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1985,7 +1985,7 @@ function process_76(&$general) {
 
         //의병추가
         $npc = 4;
-        $npcid = $admin['npccount'];
+        $npcid = Util::randRangeInt(0, 9999999);
         for($i=0; $i < $addGenCount; $i++) {
             // 무장 40%, 지장 40%, 무지장 20%
             $type = rand() % 10;
@@ -2053,7 +2053,6 @@ function process_76(&$general) {
                 $intel = GameConst::$defaultStatNPCMax;
             }
 
-            $npccount = 10000 + $npcid;
             $affinity = rand() % 150 + 1;
             $name = "ⓖ의병장{$npcid}";
             $picture = 'default.jpg';
@@ -2065,14 +2064,14 @@ function process_76(&$general) {
 
             @MYDB_query("
                 insert into general (
-                    npcid,npc,npc_org,affinity,name,picture,nation,
+                    npc,npc_org,affinity,name,picture,nation,
                     city,leader,power,intel,experience,dedication,
                     level,gold,rice,crew,crewtype,train,atmos,tnmt,
                     weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
                     makelimit,bornyear,deadyear,
                     dex0, dex10, dex20, dex30, dex40
                 ) values (
-                    '$npccount','$npc','$npc','$affinity','$name','$picture','{$nation['nation']}',
+                    '$npc','$npc','$affinity','$name','$picture','{$nation['nation']}',
                     '{$general['city']}','$leader','$power','$intel','{$avgGen['exp']}','{$avgGen['ded']}',
                     '1','100','100','0','".GameUnitConst::DEFAULT_CREWTYPE."','0','0','0',
                     '0','0','0','$turntime','$killturn','{$avgGen['age']}','1','$personal','0','0','0','0','',
@@ -2084,8 +2083,6 @@ function process_76(&$general) {
 
             $npcid++;
         }
-        //npccount
-        $gameStor->npccount=$npcid;
 
         // 국가보정
         if($nation['type'] == 11) { $term3 = Util::round($term3 / 2); }

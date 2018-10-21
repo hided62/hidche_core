@@ -6,7 +6,6 @@ CREATE TABLE `general` (
 	`no` INT(11) NOT NULL AUTO_INCREMENT,
 	`owner` INT(11) NOT NULL DEFAULT '0',
 	`npcmsg` CHAR(255) NULL DEFAULT '',
-	`npcid` INT(5) NULL DEFAULT NULL,
 	`npc` INT(1) NULL DEFAULT '0',
 	`npc_org` INT(1) NULL DEFAULT '0',
 	`affinity` INT(3) NULL DEFAULT '0',
@@ -131,9 +130,9 @@ CREATE TABLE `general` (
 	INDEX `turntime` (`turntime`, `no`),
 	INDEX `no_member` (`owner`),
 	INDEX `npc` (`npc`),
-	INDEX `npcid` (`npcid`),
 	INDEX `troop` (`troop`, `turntime`),
-	INDEX `level` (`nation`, `level`)
+	INDEX `level` (`nation`, `level`),
+	INDEX `name` (`name`)
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=MyISAM;
