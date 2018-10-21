@@ -53,4 +53,49 @@ class Validator extends \Valitron\Validator
         }
         return true;
     }
+
+    /**
+     * 문자열의 '최대 너비'를 확인함. mb_strwidth 기반
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateStringWidthMax($field, $value, $params){
+        if(!is_string($value)){
+            return false;
+        }
+        $width = mb_strwidth($value);
+        return $width <= $params[0];
+    }
+
+    /**
+     * 문자열의 '최소 너비'를 확인함. mb_strwidth 기반
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateStringWidthMin($field, $value, $params){
+        if(!is_string($value)){
+            return false;
+        }
+        $width = mb_strwidth($value);
+        return $width >= $params[0];
+    }
+
+    /**
+     * 문자열의 '너비'를 확인함. mb_strwidth 기반
+     *
+     * @param  string $field
+     * @param  mixed  $value
+     * @return bool
+     */
+    protected function validateStringWidthBetween($field, $value, $params){
+        if(!is_string($value)){
+            return false;
+        }
+        $width = mb_strwidth($value);
+        return $params[0] <= $width && $width <= $params[1];
+    }
 }

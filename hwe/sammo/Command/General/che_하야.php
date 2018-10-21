@@ -20,8 +20,8 @@ use sammo\CityConst;
 
 
 
-class che_임관 extends Command\GeneralCommand{
-    static protected $actionName = '임관';
+class che_하야 extends Command\GeneralCommand{
+    static protected $actionName = '하야';
 
     protected function argTest():bool{
         $this->arg = null;
@@ -108,7 +108,7 @@ class che_임관 extends Command\GeneralCommand{
 
         $db->update('nation', [
             'gold'=>$db->sqleval('gold + %i', $lostGold),
-            'gold'=>$db->sqleval('gold + %i', $lostRice),
+            'rice'=>$db->sqleval('rice + %i', $lostRice),
             'gennum'=>$db->sqleval('gennum - 1')
         ], 'nation=%i', $nationID);
 
