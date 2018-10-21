@@ -2,17 +2,12 @@
 
 namespace sammo\Constraint;
 
-class AllowWar extends Constraint{
-    const REQ_VALUES = Constraint::REQ_NATION;
+class ExistsDestGeneral extends Constraint{
+    const REQ_VALUES = Constraint::REQ_DEST_NATION;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
             return false;
-        }
-
-        if(!key_exists('war', $this->nation)){
-            if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require war in nation");
         }
 
         return true;
@@ -22,11 +17,11 @@ class AllowWar extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->nation['war'] == 0){
+        if($this->destNation['nation']){
             return true;
         }
 
-        $this->reason = "현재 전쟁 금지입니다.";
+        $this->reason = "없는 국가입니다.";
         return false;
     }
 }

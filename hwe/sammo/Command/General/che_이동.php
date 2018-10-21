@@ -12,7 +12,7 @@ use \sammo\{
 
 
 use function \sammo\{
-    uniqueItemEx
+    tryUniqueItemLottery
 };
 
 use \sammo\Constraint\Constraint;

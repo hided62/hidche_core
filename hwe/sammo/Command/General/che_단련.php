@@ -12,7 +12,7 @@ use \sammo\{
 
 
 use function \sammo\{
-    uniqueItemEx
+    tryUniqueItemLottery
 };
 
 use \sammo\Constraint\Constraint;
@@ -37,7 +37,7 @@ class che_단련 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NoNeutral'], 
+            ['NotBeNeutral'], 
             ['ReqGeneralCrew'],
             ['ReqGeneralValue', 'train', '훈련', GameConst::$defaultTrainHigh],
             ['ReqGeneralValue', 'atmos', '사기', GameConst::$defaultAtmosHigh],
@@ -112,9 +112,8 @@ class che_단련 extends Command\GeneralCommand{
         $general->increaseVar($incStat, 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
         $general->applyDB($db);
-        
-        uniqueItemEx($general->getID(), $logger);
 
         return true;
     }

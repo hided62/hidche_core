@@ -15,7 +15,7 @@ use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
     CriticalScoreEx,
-    uniqueItemEx
+    tryUniqueItemLottery
 };
 
 use \sammo\Constraint\Constraint;
@@ -37,8 +37,8 @@ class che_물자조달 extends Command\GeneralCommand{
         $this->setNation();
         
         $this->runnableConstraints=[
-            ['NoNeutral'], 
-            ['NoWanderingNation'],
+            ['NotBeNeutral'], 
+            ['NotWanderingNation'],
             ['OccupiedCity'],
             ['SuppliedCity']
         ];

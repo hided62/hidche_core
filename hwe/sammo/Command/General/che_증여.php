@@ -15,7 +15,7 @@ use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
     CriticalScoreEx,
-    uniqueItemEx
+    tryUniqueItemLottery
 };
 
 use \sammo\Constraint\Constraint;
@@ -69,16 +69,11 @@ class che_증여 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation();
 
-        try{
-            $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'nation'], 1);
-        }
-        catch(NoDBResultException $e){
-            $destGeneral = new DummyGeneral(false);
-        }
+        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'nation'], 1);
         $this->setDestGeneral($destGeneral);
         
         $this->runnableConstraints=[
-            ['NoNeutral'], 
+            ['NotBeNeutral'], 
             ['OccupiedCity'],
             ['SuppliedCity'],
             ['ExistsDestGeneral'],

@@ -14,7 +14,7 @@ use \sammo\{
 
 
 use function \sammo\{
-    uniqueItemEx,
+    tryUniqueItemLottery,
     getItemCost, getItemCost2,
     getItemInfo,
     getHorseName, getWeapName, getBookName, getItemName

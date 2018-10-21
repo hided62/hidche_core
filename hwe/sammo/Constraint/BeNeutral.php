@@ -2,7 +2,7 @@
 
 namespace sammo\Constraint;
 
-class NoOpeningPart extends Constraint{
+class BeNeutral extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL;
 
     public function checkInputValues(bool $throwExeception=true){
@@ -10,9 +10,9 @@ class NoOpeningPart extends Constraint{
             return false;
         }
 
-        if(!key_exists('level', $this->general)){
+        if(!key_exists('nation', $this->general)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require level in general");
+            throw new \InvalidArgumentException("require nation in general");
         }
 
         return true;
@@ -22,11 +22,11 @@ class NoOpeningPart extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->general['level'] != 0){
+        if($this->general['nation'] == 0){
             return true;
         }
 
-        $this->reason = "재야입니다.";
+        $this->reason = "재야가 아닙니다.";
         return false;
     }
 }

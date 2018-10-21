@@ -1,6 +1,65 @@
 <?php
 namespace sammo;
 
+function process_22(&$general) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $connect=$db->get();
+
+    $log = [];
+    $alllog = [];
+    $history = [];
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['startyear','year','month','develcost']);
+
+    $query = "select nation,supply from city where city='{$general['city']}'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $city = MYDB_fetch_array($result);
+
+    $command = DecodeCommand($general['turn0']);
+    $who = $command[1];
+
+    $query = "select * from general where no='$who'";
+    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $you = MYDB_fetch_array($result);
+
+    $cost = Util::round($admin['develcost'] + ($you['experience'] + $you['dedication'])/1000) * 10;
+
+    if(!$you) {
+        $log[] = "<C>●</>{$admin['month']}월:없는 장수입니다. 등용 실패. <1>$date</>";
+    } elseif($admin['year'] < $admin['startyear']+3) {
+        $log[] = "<C>●</>{$admin['month']}월:초반 제한중입니다. 등용 실패. <1>$date</>";
+    } elseif($city['nation'] != $general['nation']) {
+        $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 등용 실패. <1>$date</>";
+    } elseif($city['supply'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 등용 실패. <1>$date</>";
+    } elseif($general['gold'] < $cost) {
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 등용 실패. <1>$date</>";
+    } else {
+        $log[] = "<C>●</>{$admin['month']}월:<Y>{$you['name']}</>에게 등용 권유 서신을 보냈습니다. <1>$date</>";
+        $exp = 100;
+        $ded = 200;
+
+        // 성격 보정
+        $exp = CharExperience($exp, $general['personal']);
+        $ded = CharDedication($ded, $general['personal']);
+
+        $msg = ScoutMessage::buildScoutMessage($general['no'], $who, $reason);
+        if($msg){
+            $msg->send(true);
+        }
+        
+        
+        $general['intel2']++;
+        $query = "update general set resturn='SUCCESS',gold=gold-'$cost',intel2='{$general['intel2']}',dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
+        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+        $log = checkAbility($general, $log);
+    }
+    pushGenLog($general, $log);
+}
+
 function process_25(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');

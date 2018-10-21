@@ -1,18 +1,19 @@
 <?php
 
 namespace sammo\Constraint;
+use \sammo\GameConst;
 
-class AllowWar extends Constraint{
-    const REQ_VALUES = Constraint::REQ_NATION;
+class AllowJoinAction extends Constraint{
+    const REQ_VALUES = Constraint::REQ_GENERAL;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
             return false;
         }
 
-        if(!key_exists('war', $this->nation)){
+        if(!key_exists('makelimit', $this->general)){
             if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require war in nation");
+            throw new \InvalidArgumentException("require makelimit in general");
         }
 
         return true;
@@ -22,11 +23,13 @@ class AllowWar extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->nation['war'] == 0){
+        if($this->general['makelimit'] == 0){
             return true;
         }
 
-        $this->reason = "현재 전쟁 금지입니다.";
+        $joinActionLimit = GameConst::$joinActionLimit;
+
+        $this->reason = "재야가 된지 {$joinActionLimit}턴이 지나야 합니다.";
         return false;
     }
 }

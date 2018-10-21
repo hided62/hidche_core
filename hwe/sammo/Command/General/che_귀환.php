@@ -12,7 +12,7 @@ use \sammo\{
 
 
 use function \sammo\{
-    uniqueItemEx
+    tryUniqueItemLottery
 };
 
 use \sammo\Constraint\Constraint;
@@ -38,8 +38,8 @@ class che_귀환 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NoNeutral'],
-            ['NoWanderingNation'],
+            ['NotBeNeutral'],
+            ['NotWanderingNation'],
             ['NotCapital', 1],
         ];
     }

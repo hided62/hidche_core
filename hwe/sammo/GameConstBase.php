@@ -96,6 +96,8 @@ class GameConstBase
     
     /** @var int 초반 제한 기간 */
     public static $openingPartYear = 3;
+    /** @var int 거병,임관 제한 기간 */
+    public static $joinActionLimit = 12;
 
     /** @var array 선택 가능한 국가 성향 */
     public static $availableNationType = [

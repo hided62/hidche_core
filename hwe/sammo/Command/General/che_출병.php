@@ -12,7 +12,7 @@ use \sammo\{
 
 
 use function \sammo\{
-    uniqueItemEx,
+    tryUniqueItemLottery,
     processWar
 };
 
@@ -51,7 +51,7 @@ class che_출병 extends Command\GeneralCommand{
         $this->runnableConstraints=[
             ['NotOpeningPart'],
             ['NearCity', 1],
-            ['NoNeutral'],
+            ['NotBeNeutral'],
             ['OccupiedCity'],
             ['ReqGeneralCrew'],
             ['ReqGeneralRice', $reqRice],
@@ -125,7 +125,8 @@ class che_출병 extends Command\GeneralCommand{
         //TODO: 장기적으로 통합해야함
         processWar($general->getRaw(), $this->destCity);
 
-        uniqueItemEx($general->getID(), $logger);
+        tryUniqueItemLottery($general);
+        $general->applyDB($db);
         
         return true;
     }

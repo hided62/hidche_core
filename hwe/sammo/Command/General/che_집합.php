@@ -12,7 +12,7 @@ use \sammo\{
 
 
 use function \sammo\{
-    uniqueItemEx
+    tryUniqueItemLottery
 };
 
 use \sammo\Constraint\Constraint;
@@ -39,7 +39,7 @@ class che_집합 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NoNeutral'], 
+            ['NotBeNeutral'], 
             ['OccupiedCity'],
             ['SuppliedCity'],
             ['MustBeTroopLeader'],
@@ -105,9 +105,8 @@ class che_집합 extends Command\GeneralCommand{
         $general->increaseVar('leader2', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
         $general->applyDB($db);
-
-        uniqueItemEx($general->getID(), $logger);
 
         return true;
     }

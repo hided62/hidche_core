@@ -2,18 +2,17 @@
 
 namespace sammo\Constraint;
 
-class AllowWar extends Constraint{
-    const REQ_VALUES = Constraint::REQ_NATION;
+class NotOpeningPart extends Constraint{
+    const REQ_VALUES = Constraint::REQ_INT_ARG;
+
+    protected $relYear;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
             return false;
         }
 
-        if(!key_exists('war', $this->nation)){
-            if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require war in nation");
-        }
+        $this->relYear = $this->arg;
 
         return true;
     }
@@ -22,11 +21,11 @@ class AllowWar extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->nation['war'] == 0){
+        if($relYear >= GameConst::$openingPartYear){
             return true;
         }
 
-        $this->reason = "현재 전쟁 금지입니다.";
+        $this->reason = "초반 제한 중에는 불가능합니다.";
         return false;
     }
 }

@@ -12,7 +12,7 @@ use \sammo\{
 
 
 use function \sammo\{
-    uniqueItemEx
+    tryUniqueItemLottery
 };
 
 use \sammo\Constraint\Constraint;
@@ -35,8 +35,8 @@ class che_훈련 extends Command\GeneralCommand{
         $this->setNation();
         
         $this->runnableConstraints=[
-            ['NoNeutral'], 
-            ['NoWanderingNation'],
+            ['NotBeNeutral'], 
+            ['NotWanderingNation'],
             ['OccupiedCity'],
             ['ReqGeneralCrew'],
             ['ReqGeneralTrainMargin', GameConst::$maxTrainByCommand],
@@ -91,9 +91,8 @@ class che_훈련 extends Command\GeneralCommand{
         $general->increaseVar('leader2', 1);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
+        tryUniqueItemLottery($general);
         $general->applyDB($db);
-
-        uniqueItemEx($general->getID(), $logger);
 
         return true;
     }

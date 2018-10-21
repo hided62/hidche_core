@@ -2,17 +2,18 @@
 
 namespace sammo\Constraint;
 
-class NoOpeningPart extends Constraint{
-    const REQ_VALUES = Constraint::REQ_INT_ARG;
-
-    protected $relYear;
+class NotBeNeutral extends Constraint{
+    const REQ_VALUES = Constraint::REQ_GENERAL;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
             return false;
         }
 
-        $this->relYear = $this->arg;
+        if(!key_exists('nation', $this->general)){
+            if(!$throwExeception){return false; }
+            throw new \InvalidArgumentException("require nation in general");
+        }
 
         return true;
     }
@@ -21,11 +22,11 @@ class NoOpeningPart extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($relYear >= GameConst::$openingPartYear){
+        if($this->general['nation'] != 0){
             return true;
         }
 
-        $this->reason = "초반 제한 중에는 불가능합니다.";
+        $this->reason = "재야입니다.";
         return false;
     }
 }

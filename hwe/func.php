@@ -1695,25 +1695,19 @@ function CheckHall($no) {
     }
 }
 
-function uniqueItemEx(int $generalID, ActionLogger $logger, string $acquireType='아이템'):bool {
-    //TODO: 이름 바꾸기
+function tryUniqueItemLottery(General $general, string $acquireType='아이템'):bool{
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $general = $db->queryFirstRow('SELECT no,name,nation,npc,weap,book,horse,item FROM general WHERE no=%i', $generalID);
-    if(!$general){
+    if($general->getVar('npc') >= 2){
         return false;
     }
 
-    if($general['npc'] >= 2) { 
-        return false;
-    }
-    if($general['horse'] > 6 || $general['weap'] > 6 || $general['book'] > 6 || $general['item'] > 6){
+    if($general->getVar('npc') > 6 || $general->getVar('weap') > 6 || $general->getVar('book') > 6 || $general->getVar('item') > 6){
         return false;
     }
 
     $scenario = $gameStor->scenario;
-
     $genCount = $db->queryFirstField('SELECT count(*) FROM general WHERE npc<2');
 
     if ($scenario < 100) {
@@ -1768,16 +1762,16 @@ function uniqueItemEx(int $generalID, ActionLogger $logger, string $acquireType=
 
     [$itemType, $itemCode] = Util::choiceRandom($availableUnique);
     
-    $nationName = getNationStaticInfo($general['nation'])['name'];
-    $generalName = $general['name'];
+    $nationName = $general->getStaticNation()['name'];
+    $generalName = $general->getNation();
     $josaYi = JosaUtil::pick($generalName, '이');
     $itemName = ($itemTypes[$itemType])($itemCode);
     $josaUl = JosaUtil::pick($itemName, '을');
-    
 
-    $db->update('general', [
-        $itemType=>$itemCode
-    ], 'no=%i', $generalID);
+
+    $general->setVar($itemType, $itemCode);
+
+    $logger = $general->getLogger();
 
     $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 습득했습니다!");
     $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <C>{$itemName}</>{$josaUl} 습득했습니다!");
