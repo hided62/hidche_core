@@ -540,7 +540,7 @@ class General implements iAction{
             'no', 'name', 'name2', 'picture', 'imgsvr', 'nation', 'nations', 'city', 'troop', 'injury', 'affinity', 
             'leader', 'leader2', 'power', 'power2', 'intel', 'intel2', 'weap', 'book', 'horse', 'item', 
             'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
-            'makenation', 'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'belong',
+            'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'belong',
             'personal', 'special', 'special2', 'term', 'mode', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex0', 'dex10', 'dex20', 'dex30', 'dex40', 
             'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn'
