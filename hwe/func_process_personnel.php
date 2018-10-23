@@ -11,7 +11,7 @@ function process_22(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $admin = $gameStor->getValues(['startyear','year','month','develcost']);
+    $admin = $gameStor->getValues(['startyear','year','month','develcost','join_mode']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -26,7 +26,10 @@ function process_22(&$general) {
 
     $cost = Util::round($admin['develcost'] + ($you['experience'] + $you['dedication'])/1000) * 10;
 
-    if(!$you) {
+    if($admin['join_mode'] == 'onlyRandom'){
+        $log[] = "<C>●</>{$admin['month']}월:랜덤 임관만 가능합니다. 등용 실패. <1>$date</>";
+    }
+    else if(!$you) {
         $log[] = "<C>●</>{$admin['month']}월:없는 장수입니다. 등용 실패. <1>$date</>";
     } elseif($admin['year'] < $admin['startyear']+3) {
         $log[] = "<C>●</>{$admin['month']}월:초반 제한중입니다. 등용 실패. <1>$date</>";

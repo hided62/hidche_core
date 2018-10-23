@@ -561,7 +561,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             $loseGeneralRice += $loseRice;
             
             //모두 등용장 발부
-            if(Util::randBool(0.5)) {
+            if($admin['join_mode'] != 'onlyRandom' && Util::randBool(0.5)) {
                 $msg = ScoutMessage::buildScoutMessage($general['no'], $gen['no']);
                 if($msg){
                     $msg->send(true);
