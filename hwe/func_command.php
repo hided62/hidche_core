@@ -106,10 +106,10 @@ function getTurn(array $general, $type, $font=1) {
                 $double = $command[1];
 
                 if($double == 98){
-                    $nationName = '(랜덤국가)';
+                    $nationName = '건국된 임의 국가';
                 }
                 else if($double == 99){
-                    $nationName = '[랜덤국가]';
+                    $nationName = '임의의 국가';
                 }
                 else{
                     $nationName = getNationStaticInfo($double)['name']??'?!?!';

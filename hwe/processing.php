@@ -746,7 +746,7 @@ function command_25($turn, $command) {
     
 </select>
 <input type=submit value=임관>
-<input type=hidden name=command value=$command>";
+<input type=hidden name=command value=<?=$command?>>
     <?php foreach(range(0, count(turn) - 1) as $i): ?>
             <input type=hidden name=turn[] value=<?=$turn[$i]?>>
     <?php endforeach; ?>

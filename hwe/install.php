@@ -159,8 +159,8 @@ if($session->userGrade < 5 && !$allowReset){
                                 <label class="btn btn-secondary active">
                                     <input type="radio" name="join_mode" value="full" checked>일반
                                 </label>
-                                <label class="btn btn-secondary active">
-                                    <input type="radio" name="join_mode" value="onlyRandom" checked>랜덤 임관
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="join_mode" value="onlyRandom">랜덤 임관
                                 </label>
                             </div>
                         </div>

@@ -50,7 +50,6 @@ $v->rule('required', [
     'scenario',
     'fiction',
     'extend',
-    'join_mode',
     'npcmode',
     'show_img_level',
     'tournament_trig',
