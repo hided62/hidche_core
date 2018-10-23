@@ -65,16 +65,28 @@ class TimeUtil
     }
 
     /**
-     * $year년, $month월 부터 $afterMonth 개월 이내인지. $afterMonth 포함.
+     * $baseYear, $baseMonth 부터 $afterMonth 개월 이내인지. $afterMonth 포함.
      * 
      */
-    public static function IsRangeMonth(int $baseYear, int $baseMonth, int $askYear, int $askMonth, int $afterMonth):bool{
-        if($month < 1 || $month > 12){
+    public static function IsRangeMonth(int $baseYear, int $baseMonth, int $afterMonth, int $askYear, int $askMonth):bool{
+        if($baseMonth < 1 || $baseMonth > 12){
             throw new \InvalidArgumentException('개월이 올바르지 않음');
         }
-        if($afterMonth < 0){
-            throw new \InvalidArgumentException('기간이 올바르지 않음');
+        if($askMonth < 1 || $askMonth > 12){
+            throw new \InvalidArgumentException('개월이 올바르지 않음');
         }
 
+        $minMonth = $baseYear * 12 + $baseMonth;
+        if($afterMonth < 0){
+            $maxMonth = $minMonth;
+            $minMonth = $maxMonth - $afterMonth;
+        }
+
+        $maxMonth = $minMonth + $afterMonth;
+        $askMonth = $askYear * 12 + $askMonth;
+        if($askMonth < $minMonth || $maxMonth < $askMonth){
+            return false;
+        }
+        return true;
     }
 }

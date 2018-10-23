@@ -704,7 +704,7 @@ function command_25($turn, $command) {
     $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg,gennum FROM nation ORDER BY rand()');
 
     foreach($nationList as $nation){
-        if ($gameStor->year == $gameStor->init_year && $gameStor->month <= $gameStor->init_month && $nation['gennum'] >= GameConst::$initialNationGenLimitForRandInit) {
+        if ($onlyRandom && TimeUtil::IsRangeMonth($gameStor->init_year, $gameStor->init_month, 1, $gameStor->year, $gameStor->month) && $nation['gennum'] >= GameConst::$initialNationGenLimitForRandInit) {
             $nation['availableJoin'] = false;
         }
         else if($gameStor->year < $gameStor->startyear+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit){

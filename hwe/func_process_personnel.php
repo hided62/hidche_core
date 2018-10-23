@@ -134,7 +134,7 @@ function process_25(&$general) {
         $allGen = array_sum($generals);
 
         $genLimit = GameConst::$defaultMaxGeneral;
-        if($admin['join_mode'] == 'onlyRandom' && $admin['init_year'] == $admin['year'] && in_array($admin['month'], [$admin['init_month'], ($admin['init_month'] + 1) %12])){
+        if($admin['join_mode'] == 'onlyRandom' && TimeUtil::IsRangeMonth($admin['init_year'], $admin['init_month'], 1, $admin['year'], $admin['month'])){
             $genLimit = GameConst::$initialNationGenLimitForRandInit;
         }
         else if($admin['year'] < $admin['startyear'] + 3){
