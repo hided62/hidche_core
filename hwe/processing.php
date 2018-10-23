@@ -688,7 +688,7 @@ function command_25($turn, $command) {
 
     $gameStor->cacheValues(['year','startyear','month','join_mode']);
 
-    $randomOnly = $gameStor->join_mode == 'randomOnly';
+    $randomOnly = $gameStor->join_mode == 'onlyRandom';
     starter("임관");
 
     $query = "select no,nations from general where owner='{$userID}'";
