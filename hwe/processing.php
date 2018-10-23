@@ -686,6 +686,9 @@ function command_25($turn, $command) {
     $connect=$db->get();
     $userID = Session::getUserID();
 
+    $gameStor->cacheValues(['year','startyear','month','join_mode']);
+
+    $randomOnly = $gameStor->join_mode == 'randomOnly';
     starter("임관");
 
     $query = "select no,nations from general where owner='{$userID}'";
@@ -700,7 +703,22 @@ function command_25($turn, $command) {
     
     $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg,gennum FROM nation ORDER BY rand()');
 
-    echo "
+    foreach($nationList as $nation){
+        if ($gameStor->year == $gameStor->init_year && $gameStor->month <= $gameStor->init_month && $nation['gennum'] >= GameConst::$initialNationGenLimitForRandInit) {
+            $nation['availableJoin'] = false;
+        }
+        else if($gameStor->year < $gameStor->startyear+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit){
+            $nation['availableJoin'] = false;
+        }
+        else if($nation['scout'] == 1) {
+            $nation['availableJoin'] = false;
+        }
+        else{
+            $nation['availableJoin'] = true;
+        }
+    }
+?>
+
 국가에 임관합니다.<br>
 이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br>
 바로 군주의 위치로 이동합니다.<br>
@@ -712,37 +730,24 @@ function command_25($turn, $command) {
 <form name=form1 action=c_double.php method=post>
 <select name=double size=1 style=color:white;background-color:black>
     <option value=99 style=color:white;background-color:black;>!!!</option>
-    <option value=98 style=color:white;background-color:black;>???</option>";
+    <option value=98 style=color:white;background-color:black;>???</option>
 
-    $scoutStr = "";
-    foreach($nationList as $nation){
-        if($gameStor->year < $gameStor->startyear+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit) {
-            echo "
-    <option value={$nation['nation']} style=color:{$nation['color']};background-color:red;>【 {$nation['name']} 】</option>";
-        } elseif($nation['scout'] == 1) {
-            echo "
-    <option value={$nation['nation']} style=color:{$nation['color']};background-color:red;>【 {$nation['name']} 】</option>";
-        } elseif(in_array($nation['nation'], $joinedNations)) {
-            /*
-            echo "
-    <option value={$nation['nation']} style=color:{$nation['color']};background-color:red; disabled>【 {$nation['name']} 】</option>";
-            */
-        } else {
-            echo "
-    <option value={$nation['nation']} style=color:{$nation['color']};>【 {$nation['name']} 】</option>";
-        }
-    }
-    echo "
+    <?php foreach($nationList as $nation): ?>
+        <?php if($nation['availableJoin']): ?>
+            <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;background-color:red;' <?=$randomOnly?'disabled':''?>>【 <?=$nation['name']?> 】</option>
+        <?php else: ?>
+            <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;' <?=$randomOnly?'disabled':''?>>【 <?=$nation['name']?> 】</option>
+        <?php endif; ?>
+    <?php endforeach; ?>
+    
 </select>
 <input type=submit value=임관>
 <input type=hidden name=command value=$command>";
-    for($i=0; $i < count($turn); $i++) {
-        echo "
-            <input type=hidden name=turn[] value=$turn[$i]>";
-    }
-
-    echo "
-</form>";
+    <?php foreach(range(0, count(turn) - 1) as $i): ?>
+            <input type=hidden name=turn[] value=<?=$turn[$i]?>>
+    <?php endforeach; ?>
+</form>
+<?php
     echo getInvitationList($nationList);
 
     ender();

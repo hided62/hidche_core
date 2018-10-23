@@ -75,6 +75,9 @@ class GameConstBase
     public static $maxTechLevel = 12;
 
     /** @var int 초기 제한시 장수 제한 */
+    public static $initialNationGenLimitForRandInit = 3;
+
+    /** @var int 초기 제한시 장수 제한 */
     public static $initialNationGenLimit = 10;
 
     /** @var int 초기 최대 장수수 */

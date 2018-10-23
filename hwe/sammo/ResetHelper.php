@@ -107,7 +107,8 @@ class ResetHelper{
         int $extend,
         int $npcmode,
         int $show_img_level,
-        int $tournament_trig
+        int $tournament_trig,
+        string $join_mode
     ):array{
         //FIXME: 분리할 것
         if(120 % $turnterm != 0){
@@ -193,6 +194,8 @@ class ResetHelper{
             'startyear'=>$startyear,
             'year'=> $year,
             'month'=> $month,
+            'init_year'=> $year,
+            'init_month'=>$month,
             'map_theme' => $scenarioObj->getMapTheme(),
             'msg'=>'공지사항',//TODO:공지사항
             'maxgeneral'=>GameConst::$defaultMaxGeneral,
@@ -207,6 +210,7 @@ class ResetHelper{
             'killturn'=>$killturn,
             'genius'=>GameConst::$defaultMaxGenius,
             'show_img_level'=>$show_img_level,
+            'join_mode'=>$join_mode,
             'npcmode'=>$npcmode,
             'extended_general'=>$extend,
             'fiction'=>$fiction,

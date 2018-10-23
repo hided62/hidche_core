@@ -105,12 +105,19 @@ function getTurn(array $general, $type, $font=1) {
             case 25: //임관
                 $double = $command[1];
 
-                $nation = getNationStaticInfo($double);
+                if($double == 98){
+                    $nationName = '(랜덤국가)';
+                }
+                else if($double == 99){
+                    $nationName = '[랜덤국가]';
+                }
+                else{
+                    $nationName = getNationStaticInfo($double)['name']??'?!?!';
+                }
+                
 
-                if(!$nation['name']) { $nation['name'] = '????'; }
-
-                $josaRo = JosaUtil::pick($nation['name'], '로');
-                $str[$i] = "【{$nation['name']}】{$josaRo} 임관";
+                $josaRo = JosaUtil::pick($nationName, '로');
+                $str[$i] = "【{$nationName}】{$josaRo} 임관";
                 break;
             case 26: //집합
                 $str[$i] = "집합";

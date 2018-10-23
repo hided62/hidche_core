@@ -31,7 +31,7 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
     }
 
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    [$startYear, $year, $month, $cityRate] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'city_rate']);
+    [$startYear, $year, $month, $cityRate, $joinMode] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'city_rate', 'join_mode']);
 
     $attacker = new WarUnitGeneral($rawAttacker, $rawAttackerCity, $rawAttackerNation, true, $year, $month);
 
@@ -154,7 +154,8 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
         'startyear'=>$startYear,
         'year'=>$year,
         'month'=>$month,
-        'city_rate'=>$cityRate
+        'city_rate'=>$cityRate,
+        'join_mode'=>$joinMode,
     ], $attacker->getRaw(), $city->getRaw(), $rawAttackerNation, $rawDefenderNation);
 }
 
@@ -568,7 +569,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             }
 
             //NPC인 경우 10% 확률로 임관(엔장, 인재, 의병)
-            if($gen['npc'] >= 2 && $gen['npc'] <= 8 && rand() % 100 < 10) {
+            if($admin['join_mode'] != 'randomOnly' && $gen['npc'] >= 2 && $gen['npc'] <= 8 && rand() % 100 < 10) {
                 $commissionCommand = EncodeCommand(0, 0, $nation['nation'], 25); //임관
                 $query = "update general set turn0='$commissionCommand' where no={$gen['no']}";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

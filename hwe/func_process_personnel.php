@@ -70,7 +70,7 @@ function process_25(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'scenario', 'fiction']);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'scenario', 'fiction', 'join_mode', 'init_year', 'init_month']);
 
     $query = "select nation from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -78,6 +78,10 @@ function process_25(&$general) {
 
     $command = DecodeCommand($general['turn0']);
     $where = $command[1];
+
+    if($admin['join_mode'] == 'onlyRandom' && $where < 98){
+        $where = 99;
+    }
 
     $nation = null;
 
@@ -126,10 +130,18 @@ function process_25(&$general) {
 
         $allGen = array_sum($generals);
 
+        $genLimit = GameConst::$defaultMaxGeneral;
+        if($admin['join_mode'] == 'randomOnly' && $admin['init_year'] == $admin['year'] && $admin['init_month'] + 1 <= $admin['month']){
+            $genLimit = GameConst::$initialNationGenLimitForRandInit;
+        }
+        else if($admin['year'] < $admin['startyear'] + 3){
+            $genLimit = GameConst::$initialNationGenLimit;
+        }
+
         $nations = $db->query(
             'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`injury` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %li and gennum < %i and scout = 0',
             $joinedNations,
-            ($admin['year'] < $admin['startyear']+3)?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
+            $genLimit
         );
         shuffle($nations);
 
@@ -164,6 +176,12 @@ function process_25(&$general) {
     
     if(!$nation) {
         $log[] = "<C>●</>{$admin['month']}월:임관할 국가가 없습니다. 임관 실패. <1>$date</>";
+        if($where >= 98 && $genLimit == GameConst::$initialNationGenLimitForRandInit){
+            //랜덤 모드, 초기화시에는 랜덤 임관을 대신 한턴 더 넣어준다.
+            $db->update('general', [
+                'turn1'=>EncodeCommand(0, 0, $where, 25),
+            ], '`no` = %i', $general['no']);
+        }
     } elseif($general['nation'] != 0) {
         $log[] = "<C>●</>{$admin['month']}월:재야가 아닙니다. 임관 실패. <1>$date</>";
     } elseif($nation['nation'] == 0) {
