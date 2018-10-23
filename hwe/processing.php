@@ -688,7 +688,7 @@ function command_25($turn, $command) {
 
     $gameStor->cacheValues(['year','startyear','month','join_mode']);
 
-    $randomOnly = $gameStor->join_mode == 'onlyRandom';
+    $onlyRandom = $gameStor->join_mode == 'onlyRandom';
     starter("임관");
 
     $query = "select no,nations from general where owner='{$userID}'";
@@ -722,7 +722,11 @@ function command_25($turn, $command) {
 국가에 임관합니다.<br>
 이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br>
 바로 군주의 위치로 이동합니다.<br>
+<?php if($onlyRandom): ?>
+랜덤 임관 대상 국가는 아래에서 확인할 수 있습니다.<br>
+<?php else: ?>
 임관할 국가를 목록에서 선택하세요.<br>
+<?php endif; ?>
 !!!는 방랑군을 포함한 랜덤임관입니다. 유니크를 기대하신다면!<br>
 ???는 방랑군을 제외한 랜덤임관입니다. 유니크 혜택은 없습니다.<br>
 임관 금지이거나 초기 제한중인 국가는 붉은색 배경으로 표시됩니다.<br>
@@ -734,9 +738,9 @@ function command_25($turn, $command) {
 
     <?php foreach($nationList as $nation): ?>
         <?php if($nation['availableJoin']): ?>
-            <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;background-color:red;' <?=$randomOnly?'disabled':''?>>【 <?=$nation['name']?> 】</option>
+            <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;background-color:red;' <?=$onlyRandom?'disabled':''?>>【 <?=$nation['name']?> 】</option>
         <?php else: ?>
-            <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;' <?=$randomOnly?'disabled':''?>>【 <?=$nation['name']?> 】</option>
+            <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;' <?=$onlyRandom?'disabled':''?>>【 <?=$nation['name']?> 】</option>
         <?php endif; ?>
     <?php endforeach; ?>
     
