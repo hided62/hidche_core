@@ -2008,7 +2008,7 @@ function process_42(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:호랑이에게 물려 크게 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 30 + 20;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',,experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 25:
