@@ -1910,8 +1910,7 @@ function process_42(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:호랑이에게 물려 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 11:
@@ -1925,8 +1924,7 @@ function process_42(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:곰에게 할퀴어 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 13:
@@ -1945,8 +1943,7 @@ function process_42(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:위기에 빠진 사람을 구해주다가 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 10 + 10;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 16:
@@ -2011,24 +2008,21 @@ function process_42(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:호랑이에게 물려 크게 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 30 + 20;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',,experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 25:
         $log[] = "<C>●</>{$admin['month']}월:곰에게 할퀴어 크게 다쳤습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 30 + 20;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     case 26:
         $log[] = "<C>●</>{$admin['month']}월:위기에 빠진 사람을 구하다가 죽을뻔 했습니다. <1>$date</>";
         // 경험치 하락        // 명성 상승
         $injury = rand() % 50 + 30;
-        $general['power2']--;
-        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',power2='{$general['power2']}',experience=experience+'$exp2' where no='{$general['no']}'";
+        $query = "update general set resturn='SUCCESS',injury=injury+'$injury',experience=experience+'$exp2' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         break;
     default:
