@@ -187,6 +187,9 @@ function process_25(&$general) {
             $db->update('general', [
                 'turn1'=>EncodeCommand(0, 0, $where, 25),
             ], '`no` = %i', $general['no']);
+            pushGenLog($general, $log);
+            process_42($general);
+            return;
         }
     } elseif($general['nation'] != 0) {
         $log[] = "<C>●</>{$admin['month']}월:재야가 아닙니다. 임관 실패. <1>$date</>";
