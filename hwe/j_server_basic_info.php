@@ -32,6 +32,20 @@ if(file_exists(__dir__.'/.htaccess')){
 
     $options = Json::decode($reserved['options']);
 
+    $otherTextInfo = [];
+
+    if($options['join_mode'] == 'onlyRandom'){
+        $otherTextInfo[] = '랜덤 임관 전용';
+    }
+
+    if(!$otherTextInfo){
+        $otherTextInfo = '표준';
+    }
+    else{
+        $otherTextInfo = join(', ', $otherTextInfo);
+    }
+
+
     Json::die([
         'reserved'=>[
             'scenarioName'=>$options['scenarioName'],
@@ -39,7 +53,8 @@ if(file_exists(__dir__.'/.htaccess')){
             'fictionMode'=>($options['fiction']?'가상':'사실'),
             'npcMode'=>($options['npcmode']?'가능':'불가'),
             'openDatetime'=>$reserved['date'],
-            'gameConf'=>$options['gameConf']
+            'gameConf'=>$options['gameConf'],
+            'otherTextInfo'=>$otherTextInfo
         ],
         'game'=>null,
         'me'=>null

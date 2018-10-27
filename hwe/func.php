@@ -435,7 +435,7 @@ function commandTable() {
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost', 'scenario']);
+    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost', 'scenario', 'join_mode']);
 
     $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where owner='{$userID}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -552,7 +552,10 @@ function commandTable() {
         addCommand("인재탐색(랜덤경험, 자금$develcost)", 29, 0);
     }
 
-    if($me['level'] >= 1 && $city['supply'] != 0) {
+    if($admin['join_mode'] == 'onlyRandom'){
+        //do Nothing
+    }
+    else if($me['level'] >= 1 && $city['supply'] != 0) {
         addCommand("등용(자금{$develcost5}+장수가치)", 22);
     } else {
         addCommand("등용(자금{$develcost5}+장수가치)", 22, 0);

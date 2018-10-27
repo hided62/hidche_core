@@ -41,6 +41,7 @@ $v->rule('required', [
     'scenario',
     'fiction',
     'extend',
+    'join_mode',
     'npcmode',
     'show_img_level'
 ])->rule('integer', [
@@ -51,8 +52,8 @@ $v->rule('required', [
     'extend',
     'npcmode',
     'show_img_level',
-    'tournament_trig'
-]);
+    'tournament_trig',
+])->rule('in', 'join_mode', ['onlyRandom', 'full']);
 if(!$v->validate()){
     Json::die([
         'result'=>false,
@@ -92,6 +93,7 @@ $extend = (int)$_POST['extend'];
 $npcmode = (int)$_POST['npcmode'];
 $show_img_level = (int)$_POST['show_img_level'];
 $tournament_trig = (int)$_POST['tournament_trig'];
+$join_mode = $_POST['join_mode'];
 
 if($reserve_open){
     $reserve_open = new \DateTime($reserve_open);
@@ -124,7 +126,8 @@ if($reserve_open){
             'npcmode'=>$npcmode,
             'show_img_level'=>$show_img_level,
             'tournament_trig'=>$tournament_trig,
-            'gameConf'=>$scenarioObj->getGameConf()
+            'gameConf'=>$scenarioObj->getGameConf(),
+            'join_mode'=>$join_mode,
         ]),
         'date'=>$reserve_open->format('Y-m-d H:i:s')
     ]);
@@ -143,5 +146,6 @@ Json::die(ResetHelper::buildScenario(
     $extend,
     $npcmode,
     $show_img_level,
-    $tournament_trig
+    $tournament_trig,
+    $join_mode
 ));

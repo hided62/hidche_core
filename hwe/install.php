@@ -153,6 +153,20 @@ if($session->userGrade < 5 && !$allowReset){
                     </div>
 
                     <div class="form-group row">
+                        <label for="join_mode" class="col-sm-3 col-form-label">임관 모드</label>
+                        <div class="col-sm-9">
+                            <div id="join_mode" class="btn-group btn-group-toggle" data-toggle="buttons">
+                                <label class="btn btn-secondary active">
+                                    <input type="radio" name="join_mode" value="full" checked>일반
+                                </label>
+                                <label class="btn btn-secondary">
+                                    <input type="radio" name="join_mode" value="onlyRandom">랜덤 임관
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <label for="show_img_level" class="col-sm-3 col-form-label">이미지 표기</label>
                         <div class="col-sm-9">
                             <div id="show_img_level" class="btn-group btn-group-toggle" data-toggle="buttons">

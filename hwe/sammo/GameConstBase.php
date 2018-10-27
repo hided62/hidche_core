@@ -3,13 +3,13 @@ namespace sammo;
 
 class GameConstBase
 {
-    /** @var string 게임명 */
-    public static $title = "삼국지 모의전투 PHP HiDCHe";
-    /** @var string 코드 아래에 붙는 설명 코드 */
-    public static $banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : HideD(hided62@gmail.com) / <a href='https://sam.hided.net/wiki/hidche/credit' target='_blank' style='color:white;text-decoration: underline;'>Credit</a>";
-    /** @var string 사용중인 지도명 */
-    public static $mapName = 'che';
-    /** @var string 사용중인 유닛셋 */
+     /** @var string 게임명 */
+     public static $title = "삼국지 모의전투 PHP HiDCHe";
+     /** @var string 코드 아래에 붙는 설명 코드 */
+     public static $banner = "KOEI의 이미지를 사용, 응용하였습니다 / 제작 : HideD(hided62@gmail.com) / <a href='https://sam.hided.net/wiki/hidche/credit' target='_blank' style='color:white;text-decoration: underline;'>Credit</a>";
+     /** @var string 사용중인 지도명 */
+     public static $mapName = 'che';
+     /** @var string 사용중인 유닛셋 */
     public static $unitSet = 'che';
     /** @var int 내정시 최하 민심 설정*/
     public static $develrate = 50;
@@ -77,6 +77,9 @@ class GameConstBase
     public static $maxTechLevel = 12;
 
     /** @var int 초기 제한시 장수 제한 */
+    public static $initialNationGenLimitForRandInit = 3;
+
+    /** @var int 초기 제한시 장수 제한 */
     public static $initialNationGenLimit = 10;
 
     /** @var int 초기 최대 장수수 */
@@ -93,7 +96,7 @@ class GameConstBase
     public static $maxNationTurn = 12;
 
     public static $statGradeLevel = 5;
-    
+      
     /** @var int 초반 제한 기간 */
     public static $openingPartYear = 3;
     /** @var int 거병,임관 제한 기간 */
