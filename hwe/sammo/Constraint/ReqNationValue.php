@@ -8,13 +8,14 @@ use \sammo\Util;
 /**
  * 범용으로 사용 가능한 국가 변수 검사도구
  */
-class RegGeneralValue extends Constraint{
+class ReqNationValue extends Constraint{
     const REQ_VALUES = Constraint::REQ_NATION|Constraint::REQ_ARRAY_ARG;
 
     protected $key;
     protected $maxKey;
     protected $keyNick;
     protected $reqVal;
+    protected $comp;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
@@ -24,7 +25,7 @@ class RegGeneralValue extends Constraint{
         if(count($this->arg) == 4){
             [$this->key, $this->keyNick, $this->reqVal, $comp] = $this->arg;
 
-            if(!in_array($comp, ['>', '>=', '==', '<=', '<', '!='])){
+            if(!in_array($comp, ['>', '>=', '==', '<=', '<', '!=', '===', '!=='])){
                 if(!$throwExeception){return false; }
                 throw new \InvalidArgumentException("invalid comparator");
             }
@@ -85,7 +86,13 @@ class RegGeneralValue extends Constraint{
                 return ($target == $src)?true:"올바르지 않은 {$keyNick} 입니다.";
             },
             '!='=>function($targeta, $src)use($keyNick){
-                return ($target == $src)?true:"올바르지 않은 {$keyNick} 입니다.";
+                return ($target != $src)?true:"올바르지 않은 {$keyNick} 입니다.";
+            },
+            '==='=>function($target, $src)use($keyNick){
+                return ($target === $src)?true:"올바르지 않은 {$keyNick} 입니다.";
+            },
+            '!=='=>function($targeta, $src)use($keyNick){
+                return ($target !== $src)?true:"올바르지 않은 {$keyNick} 입니다.";
             },
             '>='=>function($target, $src){
                 if($target >= $src){
@@ -97,7 +104,7 @@ class RegGeneralValue extends Constraint{
                 return '부족합니다.';
             },
             '>'=>function($target, $src){
-                return $target >= $src;
+                return $target > $src;
                 if($src == 0){
                     return '없습니다';
                 }
