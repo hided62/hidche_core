@@ -59,6 +59,7 @@ class che_등용 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
+            ['ReqEnvValue', 'join_mode', '==', 'onlyRandom', '랜덤 임관만 가능합니다'],
             ['NotBeNeutral'], 
             ['NotOpeningPart'],
             ['OccupiedCity'],

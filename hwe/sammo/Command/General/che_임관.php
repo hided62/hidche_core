@@ -84,6 +84,7 @@ class che_임관 extends Command\GeneralCommand{
         $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
+            ['ReqEnvValue', 'join_mode', '==', 'onlyRandom', '랜덤 임관만 가능합니다'],
             ['BeNeutral'],
             ['ExistsDestNation'],
             ['AllowJoinDestNation', $relYear],
