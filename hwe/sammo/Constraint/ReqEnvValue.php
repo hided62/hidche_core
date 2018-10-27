@@ -7,7 +7,7 @@ use \sammo\Util;
 use \sammo\DB;
 
 /**
- * 범용으로 사용 가능한 국가 변수 검사도구
+ * 범용으로 사용 가능한 환경 변수 검사도구
  */
 class ReqEnvValue extends Constraint{
     const REQ_VALUES = Constraint::REQ_ARRAY_ARG;
