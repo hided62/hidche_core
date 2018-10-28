@@ -37,7 +37,7 @@ class che_건국 extends Command\GeneralCommand{
             return false;
         }
 
-        if(mb_strwidth($nationName) > 18){
+        if(mb_strwidth($nationName) > 18 || $nationName == ''){
             return false;
         }
 
@@ -62,6 +62,10 @@ class che_건국 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $env = $this->env;
 
+        $nationName = $this->arg['nationName'];
+        $nationType = $this->arg['nationType'];
+        $colorType = $this->arg['colorType'];
+
         $this->setCity();
         $this->setNation();
 
@@ -78,10 +82,13 @@ class che_건국 extends Command\GeneralCommand{
         $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
-            ['BeNeutral'],
-            ['ExistsDestNation'],
-            ['AllowJoinDestNation', $relYear],
-            ['AllowJoinAction']
+            ['ReqNationValue', 'gennum', '수하 장수', '>=', 2],
+            ['BeOpeningPart'],
+            ['WanderingNation'],
+            ['CheckNationNameDuplicate', $nationName],
+            ['BeLord'],
+            ['AllowJoinAction'],
+            ['ConstructableCity']
         ];
     }
 
