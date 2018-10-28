@@ -1,4 +1,10 @@
 $(document).ready( function () {
+    jQuery.validator.addMethod("minwidth", function(value, element, params) {
+        return this.optional(element) || mb_strwidth(value) >= params;
+    }, "글자 너비가 알파벳 {0} 자보다 길어야합니다");
+    jQuery.validator.addMethod("maxwidth", function(value, element, params) {
+        return this.optional(element) || mb_strwidth(value) <= params;
+    }, "글자 너비가 알파벳 {0} 자보다 짧아야합니다");
     $( "#main_form" ).validate( {
         rules: {
             username: {
@@ -28,7 +34,7 @@ $(document).ready( function () {
             },
             nickname:{
                 required: true,
-                maxlength: 9,
+                maxwidth: 18,
                 remote: {
                     url: "j_check_dup.php",
                     type: "post",

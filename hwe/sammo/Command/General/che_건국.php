@@ -17,6 +17,7 @@ use function \sammo\{
 
 use \sammo\Constraint\Constraint;
 use sammo\CityConst;
+use function sammo\getNationTypeClass;
 
 
 
@@ -26,7 +27,7 @@ class che_건국 extends Command\GeneralCommand{
     protected function argTest():bool{
         $nationName = $this->arg['nationName']??null;
         $nationType = $this->arg['nationType']??null;
-        $colorType = $this->arg['colotType']??null;
+        $colorType = $this->arg['colorType']??null;
 
         if($nationName === null || $nationType === null || $colorType === null){
             return false;
@@ -35,6 +36,23 @@ class che_건국 extends Command\GeneralCommand{
         if(!is_string($nationName) || !is_string($nationType) || !is_int($colorType)){
             return false;
         }
+
+        if(mb_strwidth($nationName) > 18){
+            return false;
+        }
+
+        try{
+            $nationTypeClass = getNationTypeClass($nationType);
+        }
+        catch(InvalidArgumentException $e){
+            return false;
+        }
+        
+        $this->arg = [
+            'nationName'=>$nationName,
+            'nationType'=>$nationType,
+            'colorType'=>$colorType
+        ];
 
         return true;
     }

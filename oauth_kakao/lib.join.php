@@ -25,8 +25,8 @@ function checkNicknameDup($nickname){
         return '닉네임을 입력해주세요';
     }
 
-    $length = mb_strlen($nickname, 'utf-8');
-    if($length < 1 || $length > 9){
+    $length = mb_strwidth($nickname, 'utf-8');
+    if($length < 1 || $length > 18){
         return '적절하지 않은 길이입니다.';
     }
 

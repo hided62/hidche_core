@@ -18,7 +18,7 @@ $v
     'intel',
     'character',
 ])
-->rule('lengthBetween', 'name', 1, 9)
+->rule('stringWidthBetween', 'name', 1, 18)
 ->rule('min', [
     'leader',
     'power',
@@ -98,14 +98,14 @@ if ($gameStor->maxgeneral <= $gencount) {
       </script>");
     exit;
 }
-if (mb_strlen($name) < 1) {
+if ($name == '') {
     echo("<script>
       window.alert('이름이 짧습니다. 다시 가입해주세요!')
       history.go(-1)
       </script>");
     exit;
 }
-if (mb_strlen($name) > 9) {
+if (mb_strwidth($name) > 18) {
     echo("<script>
       window.alert('이름이 유효하지 않습니다. 다시 가입해주세요!')
       history.go(-1)

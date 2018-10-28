@@ -42,6 +42,13 @@ function changeInstallMode(){
 }
 
 $(document).ready( function () {
+    jQuery.validator.addMethod("minwidth", function(value, element, params) {
+        return this.optional(element) || mb_strwidth(value) >= params;
+    }, "글자 너비가 알파벳 {0} 자보다 길어야합니다");
+    jQuery.validator.addMethod("maxwidth", function(value, element, params) {
+        return this.optional(element) || mb_strwidth(value) <= params;
+    }, "글자 너비가 알파벳 {0} 자보다 짧아야합니다");
+    
     changeInstallMode();
     var parentPathname = location.pathname.split('/').slice(0,-2).join('/');
     $('#serv_host').val(
@@ -133,7 +140,7 @@ $(document).ready( function () {
             },
             nickname:{
                 required: true,
-                maxlength: 9,
+                maxwidth: 18,
             }
         },
         messages: {

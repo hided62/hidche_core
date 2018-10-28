@@ -1306,7 +1306,7 @@ function command_46($turn, $command) {
 - 명 가 : <font color=cyan>기술↑ 인구↑</font> <font color=magenta>쌀수입↓ 수성↓</font><br>
 
 <form name=form1 action=c_double.php method=post>
-국명 : <input type=text name=name size=18 maxlength=9 style=text-align:right;color:white;background-color:black>
+국명 : <input type=text name=name size=18 maxlength=18 style=text-align:right;color:white;background-color:black>
 색깔 : <select name=double size=1>
 <?php
         foreach(GetNationColors() as $idx=>$color) {
@@ -1643,7 +1643,7 @@ function command_53($turn, $command) {
 
     echo "
             </select>
-        통합국명 : <input type=text name=nationname size=18 maxlength=9 style=text-align:right;color:white;background-color:black>
+        통합국명 : <input type=text name=nationname size=18 maxlength=18 style=text-align:right;color:white;background-color:black>
         <input type=submit value=통합제의>
         <input type=hidden name=command value=$command>";
     for($i=0; $i < count($turn); $i++) {

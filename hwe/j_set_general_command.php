@@ -38,8 +38,8 @@ $defaultCheck = [
     'integerArray'=>[
         'destNationIDList', 'destGeneralIDList'
     ],
-    'lengthBetween'=>[
-        ['nationName', 1, 9]
+    'stringWidthBetween'=>[
+        ['nationName', 1, 18]
     ]
 ];
 

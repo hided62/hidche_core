@@ -164,7 +164,24 @@ jQuery(function($){
         }
     });
 
+    var $generalName = $('#generalName');
+    if($generalName.on('change keyup paste', function(){
+        var generalName = $generalName.val();
+        var len = mb_strwidth(generalName);
+        if(len == 0 || len > 18){
+            $generalName.css('color','red');
+        }
+        else{
+            $generalName.css('color','white');
+        }
+    }));
+
     $('#join_form').submit(function(){
+        var generalName = $generalName.val();
+        if(mb_strwidth(generalName) > 18){
+            alert('장수 이름이 너무 깁니다!');
+            return false;
+        }
         var currentStatTotal = parseInt($leader.val()) + parseInt($power.val()) + parseInt($intel.val());
         if(currentStatTotal < defaultStatTotal){
             if(!confirm('현재 능력치 총합은 {0}으로, {1}보다 낮습니다. 장수 생성을 진행할까요?'.format(currentStatTotal, defaultStatTotal))){

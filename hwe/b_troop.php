@@ -196,7 +196,7 @@ foreach ($troops as $troopNo=>$troop) {
 <table width=1000 class='tb_layout bg0'>
     <tr>
         <td width=80 id=bg1>부 대 명</td>
-        <td width=130><input type=text style=color:white;background-color:black; size=18 maxlength=9 name=name></td>
+        <td width=130><input type=text style=color:white;background-color:black; size=18 maxlength=18 name=name></td>
     <?php if($me['troop'] == 0): ?>
         <td><input type=submit name=btn value='부 대 창 설'></td>
     <?php else: ?>

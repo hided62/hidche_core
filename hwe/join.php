@@ -92,7 +92,7 @@ echo getInvitationList($nationList);
         <tr>
             <td width=498 align=right id=bg1>장수명</td>
             <td colspan=2>
-                <input type=text name=name maxlength=9 size=18 style=color:white;background-color:black; value=<?=$member['name']?>>(9글자 이내)
+                <input id="generalName" type=text name=name maxlength=18 size=18 style="color:white;background-color:black;" value="<?=$member['name']?>">(전각 9글자, 반각 18글자 이내)
             </td>
         </tr>
 <?php

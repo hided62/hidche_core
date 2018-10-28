@@ -19,6 +19,11 @@ $db = DB::db();
 
 $me = $db->queryFirstRow('SELECT `no`, nation, troop FROM general WHERE `owner`=%i', $userID);
 
+
+if($name && mb_strwidth($name) > 18){
+    $name = mb_strimwidth($name, 0, 18);
+}
+
 $name = trim($name);
 if($btn == "부 대 창 설" && $name != "" && $me['troop'] == 0) {
     $db->insert('troop',[
