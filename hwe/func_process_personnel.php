@@ -664,6 +664,8 @@ function process_46(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nationcount = MYDB_num_rows($result);
 
+    $currNationLevel = $db->queryFirstField('SELECT level FROM nation WHERE nation=%i', $general['nation']);
+
     $command = DecodeCommand($general['turn0']);
     $color = $command[1];
     $type = $command[2];    // 1 ~ 13
@@ -681,6 +683,8 @@ function process_46(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:건국 기간이 지났습니다. 건국 실패. <1>$date</>";
     } elseif($city['nation'] != 0) {
         $log[] = "<C>●</>{$admin['month']}월:공백지가 아닙니다. 건국 실패. <1>$date</>";
+    } elseif($currNationLevel != 0) {
+        $log[] = "<C>●</>{$admin['month']}월:방랑군이 아닙니다. 건국 실패. <1>$date</>";
     } elseif($nationcount > 0) {
         $log[] = "<C>●</>{$admin['month']}월:존재하는 국가명입니다. 건국 실패. <1>$date</>";
     } elseif($general['makelimit'] > 0) {
