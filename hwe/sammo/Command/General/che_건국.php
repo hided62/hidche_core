@@ -18,6 +18,8 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use sammo\CityConst;
 use function sammo\getNationTypeClass;
+use function sammo\refreshNationStaticInfo;
+use function sammo\GetNationColors;
 
 
 
@@ -79,6 +81,10 @@ class che_건국 extends Command\GeneralCommand{
             $this->setDestNation($destNationID, ['gennum', 'scout']);
         }
 
+        if(!key_exists($colorType, GetNationColors())){
+            return false;
+        }
+
         $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
@@ -117,52 +123,55 @@ class che_건국 extends Command\GeneralCommand{
         $generalName = $general->getName();
         $josaYi = JosaUtil::pick($generalName, '이');
 
-        $destNation = $this->destNation;
-        $gennum = $destNation['gennum'];
-        $destNationID = $destNation['nation'];
-        $destNationName = $destNation['name'];
+        $nationName = $this->arg['nationName'];
+        $nationType = $this->arg['nationType'];
+        $nationColor = GetNationColors()[$this->arg['colorType']];
+
+        $cityName = $this->city['name'];
+
+        $josaUl = JosaUtil::pick($nationName, '을');
 
         $logger = $general->getLogger();
 
-        $logger->pushGeneralActionLog("<D>{$destNationName}</>에 임관했습니다. <1>$date</>");
-        $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>에 임관");
-        $logger->pushGlobalActionLog("{$generalName}</>{$josaYi} <D><b>{$destNationName}</b></>에 <S>임관</>했습니다.");
+        $nationTypeClass = getNationTypeClass($nationType);
+        $nationTypeName = $nationTypeClass::$name;
 
-        if($gennum < GameConst::$initialNationGenLimit) {
-            $exp = 700;
-        }
-        else {
-            $exp = 100;
-        }
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $general->setVar('nation', $destNationID);
-        $general->setVar('level', 1);
-        $general->setVar('belong', 1);
+        $logger->pushGeneralActionLog("<D><b>{$nationName}</></>{$josaUl} 건국하였습니다. <1>$date</>");
+        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$cityName}</b></>에 국가를 건설하였습니다.");
+
+        $josaNationYi = JosaUtil::pick($nationName, '이');
+        $logger->pushGlobalHistoryLog("<Y><b>【건국】</b></>{$nationTypeName} <D><b>{$nationName}</b></>{$josaNationYi} 새로이 등장하였습니다.");
+        $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaUl} 건국");
+        $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>{$josaUl} 건국");
+
+        $exp = 1000;
+        $ded = 1000;
         
-        if($this->destGeneralObj !== null){
-            $general->setVar('city', $this->destGeneralObj->getCityID());
-        }
-        else{
-            $targetCityID = $db->queryFirstField('SELECT city FROM nation WHERE nation = %i AND level=12', $destNationID);
-            $general->setVar('city', $targetCityID);
-        }
-
-        $db->update('nation', [
-            'gennum'=>$db->sqleval('gennum + 1')
-        ], 'nation=%i', $destNationID);
-
-        $relYear = $env['year'] - $env['startyear'];
-        if($general->getVar('npc') == 1 || $relYear >= 3){
-            $joinedNations = Join::decode($general->getVar('nations'));
-            $joinedNations[] = $destNationID;
-            $general->setVar('nations', Join::encode($joinedNations));
-        }
+        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
+        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
 
         $general->increaseVar('experience', $exp);
+        $general->increaseVar('dedication', $ded);
+
+        $db->update('city', [
+            'nation'=>$general->getNationID(),
+            'conflict'=>'{}'
+        ], $general->getCityID());
+
+        $db->update('nation', [
+            'nation'=>$nationName,
+            'color'=>$nationColor,
+            'level'=>1,
+            'type'=>$nationType,
+            'capital'=>$general->getCityID()
+        ], 'nation=%i', $destNationID);
+
+        refreshNationStaticInfo();
+
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
-        tryUniqueItemLottery($general);
+        tryUniqueItemLottery($general, '건국');
         $general->applyDB($db);
 
         return true;
