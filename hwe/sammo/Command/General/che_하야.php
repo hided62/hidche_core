@@ -80,12 +80,12 @@ class che_하야 extends Command\GeneralCommand{
         if(key_exists('3', $dipState) || key_exists('4', $dipState)){
             $logger->pushGeneralActionLog("통합에 반대하며 <D><b>{$nationName}</b></>에서 떠났습니다. <1>$date</>");
             $logger->pushGeneralHistoryLog("통합에 반대하며 <D><b>{$nationName}</b></>{$josaUl} 떠남");
-            $logger->pushGlobalActionLog("{$generalName}</>{$josaYi} 통합에 반대하며 <D><b>{$nationName}</b></>{$josaUl} <R>떠났</>습니다.");
+            $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} 통합에 반대하며 <D><b>{$nationName}</b></>{$josaUl} <R>떠났</>습니다.");
         }
         else if(key_exists('5', $dipState) || key_exists('6', $dipState)){
             $logger->pushGeneralActionLog("합병에 반대하며 <D><b>{$nationName}</b></>에서 떠났습니다. <1>$date</>");
             $logger->pushGeneralHistoryLog("합병에 반대하며 <D><b>{$nationName}</b></>{$josaUl} 떠남");
-            $logger->pushGlobalActionLog("{$generalName}</>{$josaYi} 합병에 반대하며 <D><b>{$nationName}</b></>{$josaUl} <R>떠났</>습니다.");
+            $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} 합병에 반대하며 <D><b>{$nationName}</b></>{$josaUl} <R>떠났</>습니다.");
         }
         else{
             $logger->pushGeneralActionLog("<D><b>{$nationName}</b></>에서 하야했습니다. <1>$date</>");
