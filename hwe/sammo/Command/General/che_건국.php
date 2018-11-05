@@ -43,6 +43,10 @@ class che_건국 extends Command\GeneralCommand{
             return false;
         }
 
+        if(!key_exists($colorType, GetNationColors())){
+            return false;
+        }
+
         try{
             $nationTypeClass = getNationTypeClass($nationType);
         }
@@ -71,25 +75,11 @@ class che_건국 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation();
 
-        $destGeneralID = $this->arg['destGeneralID']??null;
-        $destNationID = $this->arg['destNationID']??null;
-        if($destGeneralID !== null){
-            $this->setDestGeneral($destGeneralID);
-            $this->setDestNation($this->destGeneralObj->getVar('nation'));
-        }
-        else{
-            $this->setDestNation($destNationID, ['gennum', 'scout']);
-        }
-
-        if(!key_exists($colorType, GetNationColors())){
-            return false;
-        }
-
         $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
             ['ReqNationValue', 'gennum', '수하 장수', '>=', 2],
-            ['BeOpeningPart'],
+            ['BeOpeningPart', $relYear],
             ['WanderingNation'],
             ['CheckNationNameDuplicate', $nationName],
             ['BeLord'],

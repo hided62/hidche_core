@@ -84,6 +84,18 @@ abstract class BaseCommand{
             $this->generalObj->setRawCity($this->city);
             return;
         }
+        
+        $this->city = $this->generalObj->getRawCity();
+        $hasArgs = true;
+        foreach($args as $arg){
+            if(!key_exists($arg, $this->city)){
+                $hasArgs = false;
+                break;
+            }
+        }
+        if($hasArgs){
+            return;
+        }
         $this->city = $db->queryFirstRow('SELECT %lb FROM city WHERE city=%i', $args, $this->generalObj->getVar('city'));
         if($this->generalObj->getRawCity() === null){
             $this->generalObj->setRawCity($this->city);
