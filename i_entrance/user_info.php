@@ -93,7 +93,7 @@ require(__dir__.'/../vendor/autoload.php');
                 <span id="slot_oauth_type"></span>
             </td>
             <td colspan="3">
-                <span id="slot_token_valid_until"></span>까지 유효<button type="button" id="expand_login_token">초기화</button></td>
+                <span id="slot_token_valid_until"></span>까지 유효<button type="button" id="expand_login_token">연장</button></td>
         </tr>
         <tr>
             <th class="bg1"></th>

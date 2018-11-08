@@ -17,7 +17,7 @@ $tokenValidUntil = RootDB::db()->queryFirstField('SELECT token_valid_until from 
 if(!$tokenValidUntil){
     Json::die([
         'result'=>false,
-        'reason'=>'초기화 가능한 로그인 상태가 아닙니다.'
+        'reason'=>'연장 가능한 로그인 상태가 아닙니다.'
     ]);
 }
 
@@ -39,5 +39,5 @@ $session->logout();
 
 Json::die([
     'result'=>true,
-    'reason'=>'초기화 완료.'
+    'reason'=>'연장 완료.'
 ]);
