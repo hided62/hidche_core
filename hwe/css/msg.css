@@ -164,6 +164,7 @@
 .msg_content{
     margin-left:10px;
     margin-right:5px;
+    overflow:hidden;
 }
 
 .msg_prompt{
