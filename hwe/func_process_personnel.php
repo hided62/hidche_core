@@ -74,60 +74,6 @@ function process_47(&$general) {
     pushGenLog($general, $log);
 }
 
-function process_56(&$general) {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-
-    $log = [];
-    $alllog = [];
-    $history = [];
-    $date = substr($general['turntime'],11,5);
-
-    $admin = $gameStor->getValues(['year','month']);
-
-    $nation = getNationStaticInfo($general['nation']);
-
-    $query = "select city from city where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($result);
-
-    if($general['level'] != 12) {
-        $log[] = "<C>●</>{$admin['month']}월:군주가 아닙니다. <1>$date</>";
-    } elseif($citycount != 0) {
-        $log[] = "<C>●</>{$admin['month']}월:방랑군이 아닙니다. <1>$date</>";
-    } else {
-        $josaYi = JosaUtil::pick($general['name'], '이');
-        $log[] = "<C>●</>{$admin['month']}월:세력을 해산했습니다. <1>$date</>";
-        $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 세력을 해산했습니다.";
-        $josaUl = JosaUtil::pick($nation['name'], '을');
-        pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>{$josaUl} 해산");
-
-        $query = "select no from general where nation='{$general['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $genCount = MYDB_num_rows($result);
-
-        // 수동 해산인 국가 페널티, 자금, 군량
-        if($genCount > 1) {
-            $query = "update general set resturn='SUCCESS' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update general set gold=1000 where nation='{$general['nation']}' and gold>1000";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update general set rice=1000 where nation='{$general['nation']}' and rice>1000";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
-
-        //분쟁기록 모두 지움
-        DeleteConflict($general['nation']);
-        deleteNation($general);
-
-        refreshNationStaticInfo();
-    }
-    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-    pushGenLog($general, $log);
-}
-
-
 function process_57(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');

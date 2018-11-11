@@ -82,14 +82,15 @@ class che_해산 extends Command\GeneralCommand{
         $nationName = $nation['name'];
         $josaUl = JosaUtil::pick($nationName, '을');
 
-        if($nation['gennum'] > 1){
-            $db->update('general', [
-                'gold'=>GameConst::$defaultGold
-            ], 'nation=%i AND gold>%i', $nationID, GameConst::$defaultGold);
-            $db->update('general', [
-                'rice'=>GameConst::$defaultRice
-            ], 'nation=%i AND gold>%i', $nationID, GameConst::$defaultRice);
-        }
+        $db->update('general', [
+            'gold'=>GameConst::$defaultGold
+        ], 'nation=%i AND gold>%i', $nationID, GameConst::$defaultGold);
+        $db->update('general', [
+            'rice'=>GameConst::$defaultRice
+        ], 'nation=%i AND gold>%i', $nationID, GameConst::$defaultRice);
+
+        $general->increaseVarWithLimit('gold', 0, 0, GameConst::$defaultGold);
+        $general->increaseVarWithLimit('rice', 0, 0, GameConst::$defaultRice);
 
         DeleteConflict($nationID);
         deleteNation($general);
