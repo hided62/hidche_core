@@ -130,15 +130,15 @@ class Personnel{
 
         // 재야가 아니면 명성N*10% 공헌N*10%감소
         if($general['nation'] != 0){
-            // 1000 1000 남기고 환수
-            if($general['gold'] > 1000){//XXX: 상수.
-                $setValues['gold'] = 1000;
-                $setOriginalNationValues['gold'] = $db->sqleval('gold + %i', $general['gold'] - 1000);
+            // 기본 금액 남기고 환수
+            if($general['gold'] > GameConst::$defaultGold){
+                $setValues['gold'] = GameConst::$defaultGold;
+                $setOriginalNationValues['gold'] = $db->sqleval('gold + %i', $general['gold'] - GameConst::$defaultGold);
             }
 
-            if($general['rice'] > 1000){//XXX: 상수.
-                $setValues['rice'] = 1000;
-                $setOriginalNationValues['rice'] = $db->sqleval('rice + %i', $general['rice'] - 1000);
+            if($general['rice'] > GameConst::$defaultRice){//XXX: 상수.
+                $setValues['rice'] = GameConst::$defaultRice;
+                $setOriginalNationValues['rice'] = $db->sqleval('rice + %i', $general['rice'] - GameConst::$defaultRice);
             }
 
             //관직 해제

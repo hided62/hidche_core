@@ -143,7 +143,7 @@ $types = [
     ["베 팅 당 첨", "int", function($v){$v['value'] = $v['betwin']; return $v; }],
     ["베 팅 수 익 금", "int", function($v){$v['value'] = $v['betwingold']; return $v; }],
     ["베 팅 수 익 률", "percent", function($v){
-        if($v['betgold'] < 1000){
+        if($v['betgold'] < GameConst::$defaultGold){
             $v['value'] = 0;
         }
         else{

@@ -99,8 +99,8 @@ if ($btn == "판매") {
         $msg = "ㆍ<span class='ev_warning'>즉시판매가는 시작판매가의 110% 이상이어야 합니다.</span>";
         $valid = 0;
     }
-    if ($amount > $me['rice'] - 1000) {
-        $msg = "ㆍ<span class='ev_warning'>기본 군량 1000은 거래할 수 없습니다.</span>";
+    if ($amount > $me['rice'] - GameConst::$defaultRice) {
+        $msg = "ㆍ<span class='ev_warning'>기본 군량 ".GameConst::$defaultRice."은 거래할 수 없습니다.</span>";
         $valid = 0;
     }
     if ($valid == 1) {
@@ -148,8 +148,8 @@ if ($btn == "판매") {
         $msg = "ㆍ<span class='ev_warning'>즉시판매가보다 높을 수 없습니다.</span>";
         $valid = 0;
     }
-    if ($value > $me['gold'] - 1000) {
-        $msg = "ㆍ<span class='ev_warning'>기본 자금 1000은 거래할 수 없습니다.</span>";
+    if ($value > $me['gold'] - GameConst::$defaultGold) {
+        $msg = "ㆍ<span class='ev_warning'>기본 자금 ".GameConst::$defaultGold."은 거래할 수 없습니다.</span>";
         $valid = 0;
     }
     if ($valid == 1) {
@@ -201,8 +201,8 @@ if ($btn == "판매") {
         $msg2 = "ㆍ<span class='ev_warning'>즉시구매가는 시작구매가의 90% 이하이어야 합니다.</span>";
         $valid = 0;
     }
-    if ($cost > $me['gold'] - 1000) {
-        $msg2 = "ㆍ<span class='ev_warning'>기본 자금 1000은 거래할 수 없습니다.</span>";
+    if ($cost > $me['gold'] - GameConst::$defaultGold) {
+        $msg2 = "ㆍ<span class='ev_warning'>기본 자금 ".GameConst::$defaultGold."은 거래할 수 없습니다.</span>";
         $valid = 0;
     }
     if ($valid == 1) {
@@ -249,8 +249,8 @@ if ($btn == "판매") {
         $msg2 = "ㆍ<span class='ev_warning'>즉시구매가보다 낮을 수 없습니다.</span>";
         $valid = 0;
     }
-    if ($value > $me['rice'] - 1000) {
-        $msg2 = "ㆍ<span class='ev_warning'>기본 군량 1000은 거래할 수 없습니다.</span>";
+    if ($value > $me['rice'] - GameConst::$defaultRice) {
+        $msg2 = "ㆍ<span class='ev_warning'>기본 군량 ".GameConst::$defaultRice."은 거래할 수 없습니다.</span>";
         $valid = 0;
     }
     if ($valid == 1) {

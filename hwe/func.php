@@ -2118,20 +2118,19 @@ function getNation($nation) {
     return $nation;
 }
 
-function deleteNation($general) {
+function deleteNation(General $general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
-    $history = [];
-    $date = substr($general['turntime'],11,5);
+    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+    $nation = $general->getStaticNation();
+    $nationName = $nation['name'];
+    $nationID = $nation['nation'];
 
-    $admin = $gameStor->getValues(['year', 'month']);
+    $logger = $general->getLogger();
 
-    $nation = getNationStaticInfo($general['nation']);
-
-    $josaUn = JosaUtil::pick($nation['name'], '은');
-    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<R><b>【멸망】</b></><D><b>{$nation['name']}</b></>{$josaUn} <R>멸망</>했습니다.";
+    $josaUn = JosaUtil::pick($nationName, '은');
+    $logger->pushGlobalHistoryLog("<R><b>【멸망】</b></><D><b>{$nationName}</b></>{$josaUn} <R>멸망</>했습니다.");
 
     $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $general['nation']);
     $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $general['nation']);
@@ -2139,14 +2138,23 @@ function deleteNation($general) {
     $oldNation['aux'] = Json::decode($oldNation['aux']);
 
     // 전 장수 재야로    // 전 장수 소속 무소속으로
-    $query = "update general set belong=0,troop=0,level=0,nation=0,makelimit=12 where nation='{$general['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        'belong'=>0,
+        'troop'=>0,
+        'level'=>0,
+        'nation'=>0,
+        'makelimit'=>12,
+    ], 'nation=%i', $nationID);
     // 도시 공백지로
-    $query = "update city set nation=0,front=0,gen1=0,gen2=0,gen3=0 where nation='{$general['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('city', [
+        'nation'=>0,
+        'front'=>0,
+        'gen1'=>0,
+        'gen2'=>0,
+        'gen3'=>0,
+    ], 'nation=%i', $nationID);
     // 부대 삭제
-    $query = "delete from troop where nation='{$general['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->delete('troop', 'nation=%i', $nationID);
     // 국가 삭제
 
     $db->insert('ng_old_nations', [
@@ -2154,14 +2162,10 @@ function deleteNation($general) {
         'nation'=>$general['nation'],
         'data'=>Json::encode($oldNation)
     ]);
-
-    $query = "delete from nation where nation='{$general['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->delete('nation', 'nation=%i', $nationID);
     // 외교 삭제
-    $query = "delete from diplomacy where me='{$general['nation']}' or you='{$general['nation']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->delete('diplomacy', 'me = %i OR you = %i', $nationID, $nationID);
 
-    pushWorldHistory($history, $admin['year'], $admin['month']);
     refreshNationStaticInfo();
 }
 
@@ -2169,21 +2173,18 @@ function nextRuler(General $general) {
     //TODO: General로 변경
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
+    
+    [$year, $month] = $gameStor->getValuesAsArray(['year', 'month']);
+    $nation = $general->getStaticNation();
+    $nationName = $nation['name'];
+    $nationID = $nation['nation'];
 
-    $admin = $gameStor->getValues(['year', 'month']);
 
-    $query = "select nation,name from nation where nation='{$general['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    $query = "select no,name from general where nation='{$general['nation']}' and level!='12' and level>='9' order by level desc";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $corecount = MYDB_num_rows($result);
+    $chiefList = $db->query('SELECT no,name,npc FROM general WHERE nation=%i and level!= 12 AND level >= 9 order by level desc');
 
     //npc or npc유저인 경우 후계 찾기
-    if($general['npc'] > 0) {
-        $query = "select no,name,nation,IF(ABS(affinity-'{$general['affinity']}')>75,150-ABS(affinity-'{$general['affinity']}'),ABS(affinity-'{$general['affinity']}')) as npcmatch2 from general where nation='{$general['nation']}' and level!=12 and npc>0 order by npcmatch2,rand() limit 0,1";
+    if($general->getVar('npc') > 0) {
+        $npcList = $db->query$query = "select no,name,nation,IF(ABS(affinity-'{$general['affinity']}')>75,150-ABS(affinity-'{$general['affinity']}'),ABS(affinity-'{$general['affinity']}')) as npcmatch2 from general where nation='{$general['nation']}' and level!=12 and npc>0 order by npcmatch2,rand() limit 0,1";
         $npcresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $npccount = MYDB_num_rows($npcresult);
     } else {

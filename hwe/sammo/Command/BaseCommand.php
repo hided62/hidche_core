@@ -111,6 +111,10 @@ abstract class BaseCommand{
 
         $defaultArgs = ['nation', 'name', 'color', 'type', 'level', 'capital'];
         $args = array_unique(array_merge($defaultArgs, $args));
+        if($args == $defaultArgs){
+            $this->nation = $this->generalObj->getStaticNation();
+            return;
+        }
         
         $defaultValues = [
             'nation'=>0,

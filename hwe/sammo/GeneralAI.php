@@ -263,7 +263,7 @@ class GeneralAI{
 
         $commandList['che_물자조달'] = (
             (GameConst::$minNationalGold + GameConst::$minNationalRice + 10000) / 
-            Util::valueFit($nation['gold'] + $nation['rice'], 1000)
+            Util::valueFit($nation['gold'] + $nation['rice'], (GameConst::$defaultGold + GameConst::$defaultRice)/2)
         ) * 10;
 
         return [Util::choiceRandomUsingWeight($commandList), null];

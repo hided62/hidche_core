@@ -109,13 +109,13 @@ if($btn == "추방") {
         $gold = 0;
         $rice = 0;
         // 금쌀1000이상은 남김
-        if($general['gold'] > 1000) {
-            $gold = $general['gold'] - 1000;
-            $general['gold'] = 1000;
+        if($general['gold'] > GameConst::$defaultGold) {
+            $gold = $general['gold'] - GameConst::$defaultGold;
+            $general['gold'] = GameConst::$defaultGold;
         }
-        if($general['rice'] > 1000) {
-            $rice = $general['rice'] - 1000;
-            $general['rice'] = 1000;
+        if($general['rice'] > GameConst::$defaultRice) {
+            $rice = $general['rice'] - GameConst::$defaultRice;
+            $general['rice'] = GameConst::$defaultRice;
         }
 
         if($dipcount1 > 0) {

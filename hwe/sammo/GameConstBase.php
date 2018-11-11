@@ -91,6 +91,11 @@ class GameConstBase
     /** @var int 초기 시작 년도. 실제 값은 시나리오에서 정해지므로 딱히 의미는 없음. */
     public static $defaultStartYear = 180;
 
+    /** @var int 시작시 금 */
+    public static $defaultGold = 1000;
+    /** @var int 시작시 쌀 */
+    public static $defaultRice = 1000;
+
     /** @var int 최대 턴 */
     public static $maxTurn = 30;
     public static $maxNationTurn = 12;

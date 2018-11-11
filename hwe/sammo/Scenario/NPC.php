@@ -41,8 +41,8 @@ class NPC{
         9 => 'ⓞ', //오랑캐?
     ];
 
-    protected $gold = 1000;
-    protected $rice = 1000;
+    protected $gold;
+    protected $rice;
 
     protected $specAge = null;
     protected $specAge2 = null;
@@ -85,6 +85,9 @@ class NPC{
         $this->death = $death;
         $this->ego = $ego;
         $this->text = $text;
+
+        $this->gold = GameConst::$defaultGold;
+        $this->rice = GameConst::$defaultRice;
 
         $general = [
             'leader'=>$leadership,

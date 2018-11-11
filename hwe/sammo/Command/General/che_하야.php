@@ -97,8 +97,8 @@ class che_하야 extends Command\GeneralCommand{
 
         }
 
-        $newGold = Util::valueFit($general->getVar('gold'), null, 1000);
-        $newRice = Util::valueFit($general->getVar('rice'), null, 1000);
+        $newGold = Util::valueFit($general->getVar('gold'), null, GameConst::$defaultGold);
+        $newRice = Util::valueFit($general->getVar('rice'), null, GameConst::$defaultRice);
 
         $lostGold = $general->getVar('gold') - $newGold;
         $lostRice = $general->getVar('rice') - $newRice;

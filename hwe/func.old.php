@@ -2149,7 +2149,7 @@ function CheckHall($no) {
         //토너승률인데 50회 미만시 스킵
         if($typeName === 'tirate' && $general['ti'] < 50) { continue; }
         //수익률인데 1000미만시 스킵
-        if($typeName === 'betrate' && $general['betgold'] < 1000) { continue; }
+        if($typeName === 'betrate' && $general['betgold'] < GameConst::$defaultGold) { continue; }
 
         if($general[$typeName]<=0){
             continue;
