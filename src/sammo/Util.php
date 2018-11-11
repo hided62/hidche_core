@@ -460,6 +460,9 @@ class Util extends \utilphp\util
 
         $rd = self::randF()*$sum;
         foreach ($items as $key=>$value) {
+            if($value <= 0){
+                $value = 0;
+            }
             if ($rd <= $value) {
                 return $key;
             }
@@ -490,6 +493,9 @@ class Util extends \utilphp\util
 
         $rd = self::randF()*$sum;
         foreach ($items as [$item, $value]) {
+            if($value <= 0){
+                $value = 0;
+            }
             if ($rd <= $value) {
                 return $item;
             }
