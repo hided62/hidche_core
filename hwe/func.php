@@ -2176,7 +2176,6 @@ function deleteNation(General $general) {
 }
 
 function nextRuler(General $general) {
-    //TODO: General로 변경
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     
@@ -2185,60 +2184,60 @@ function nextRuler(General $general) {
     $nationName = $nation['name'];
     $nationID = $nation['nation'];
 
-
-    $chiefList = $db->query('SELECT no,name,npc FROM general WHERE nation=%i and level!= 12 AND level >= 9 order by level desc');
+    $candidate = null;
 
     //npc or npc유저인 경우 후계 찾기
     if($general->getVar('npc') > 0) {
-        $npcList = $db->query$query = "select no,name,nation,IF(ABS(affinity-'{$general['affinity']}')>75,150-ABS(affinity-'{$general['affinity']}'),ABS(affinity-'{$general['affinity']}')) as npcmatch2 from general where nation='{$general['nation']}' and level!=12 and npc>0 order by npcmatch2,rand() limit 0,1";
-        $npcresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $npccount = MYDB_num_rows($npcresult);
-    } else {
-        $npccount = 0;
+        $candidate = $db->queryFirstRow(
+            'SELECT no,name,nation,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and level!=12 and npc>0 order by npcmatch2,rand() LIMIT 1',
+            $general->getVar('affinity'),
+            $general->getVar('affinity'),
+            $nationID
+        );
+    }
+    if(!$candidate){
+        $candidate = $db->queryFirstRow(
+            'SELECT no,name,npc FROM general WHERE nation=%i and level!= 12 AND level >= 9 ORDER BY level DESC LIMIT 1',
+            $nationID
+        );
+    }
+    if(!$candidate){
+        $candidate = $db->queryFirstRow(
+            'SELECT no,name,npc FROM general WHERE nation=%i and level!= 12 ORDER BY dedication DESC LIMIT 1',
+            $nationID
+        );
     }
 
-    // 수뇌부가 없으면 공헌도 최고 장수
-    if($npccount > 0) {
-        $nextruler = MYDB_fetch_array($npcresult);
-        //국명 교체
-        //$query = "update nation set name='{$nextruler['name']}' where nation='{$general['nation']}'";
-        //MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    } elseif($corecount == 0) {
-        $query = "select no,name from general where nation='{$general['nation']}' and level!='12' order by dedication desc";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $corecount = MYDB_num_rows($result);
 
-        // 아무도 없으면 국가 삭제
-        if($corecount == 0) {
-            //분쟁기록 모두 지움
-            DeleteConflict($general['nation']);
-            deleteNation($general);
-            return;
-        } else {
-            $nextruler = MYDB_fetch_array($result);
-        }
-    } else {
-        $nextruler = MYDB_fetch_array($result);
+    if(!$candidate){
+        DeleteConflict($general['nation']);
+        deleteNation($general);
+        return;
     }
 
-    //군주 교체
-    $query = "update general set level='12' where no='{$nextruler['no']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //도시관직해제
-    $query = "update city set gen1=0 where gen1='{$nextruler['no']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //도시관직해제
-    $query = "update city set gen2=0 where gen2='{$nextruler['no']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //도시관직해제
-    $query = "update city set gen3=0 where gen3='{$nextruler['no']}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $nextRulerID = $candidate['no'];
+    $nextRulerName = $candidate['name'];
 
-    $josaYi = JosaUtil::pick($nextruler['name'], '이');
-    $history = ["<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>{$josaYi} <D><b>{$nation['name']}</b></>의 유지를 이어 받았습니다"];
+    $general->setVar('level', 1);
 
-    pushWorldHistory($history, $admin['year'], $admin['month']);
-    pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【유지】</b></><Y>{$nextruler['name']}</>{$josaYi} <D><b>{$nation['name']}</b></>의 유지를 이어 받음.");
+    $db->update('general', [
+        'level'=>12
+    ], 'no=%i', $nextRulerID);
+    $db->update('city', [
+        'gen1'=>0
+    ], 'gen1=%i', $nextRulerID);
+    $db->update('city', [
+        'gen2'=>0
+    ], 'gen2=%i', $nextRulerID);
+    $db->update('city', [
+        'gen3'=>0
+    ], 'gen3=%i', $nextRulerID);
+
+    $josaYi = JosaUtil::pick($nextRulerName, '이');
+
+    $logger = $general->getLogger();
+    $logger->pushGlobalHistoryLog("<C><b>【유지】</b></><Y>{$nextRulerName}</>{$josaYi} <D><b>{$nationName}</b></>의 유지를 이어 받았습니다");
+    $logger->pushGlobalHistoryLog("<C><b>【유지】</b></><Y>{$nextRulerName}</>{$josaYi} <D><b>{$nationName}</b></>의 유지를 이어 받음.");
     // 장수 삭제 및 부대처리는 checkTurn에서
 }
 
