@@ -2,7 +2,7 @@
 namespace sammo\GeneralCommand;
 
 use \sammo\{
-    DB, Util, JosaUtil,
+    DB, Util, JosaUtil, TimeUtil,
     General, 
     ActionLogger,
     GameConst, GameUnitConst,
@@ -130,17 +130,48 @@ class che_랜덤임관 extends Command\GeneralCommand{
                 }
             }
         }
-        else{   
-            $nations = $db->queryFirstColumn(
-                'SELECT nation, name, gennum, scout FROM nation WHERE scout=0 AND gennum < %i AND no NOT IN %li',
-                $relYear<3?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral,
+        else{
+            $onlyRandom = $env['join_mode'] == 'onlyRandom';
+            $genLimit = GameConst::$defaultMaxGeneral;
+            if($onlyRandom && TimeUtil::IsRangeMonth($env['init_year'], $env['init_month'], 1, $env['year'], $env['month'])){
+                $genLimit = GameConst::$initialNationGenLimitForRandInit;
+            }
+            else if($relYear < 3){
+                $genLimit = GameConst::$initialNationGenLimit;
+            }
+
+            $generalsCnt = [];
+            $rawGeneralsCnt = $db->query(
+                'SELECT general.nation as nation, nation.gennum, nation.name, npc, count(*) as cnt FROM general JOIN nation ON general.nation = nation.nation WHERE npc < 5 AND nation.gennum < %i AND nation.nation NOT IN %li GROUP BY general.nation, general.npc',
+                $genLimit,
                 $notIn
             );
 
+            foreach($rawGeneralsCnt as $nation){
+                $nationID = $nation['nation'];
+                if(!\key_exists($nationID, $generalsCnt)){
+                    $generalsCnt[$nationID] = [
+                        'nation'=>$nationID,
+                        'gennum'=>$nation['gennum'],
+                        'name'=>$nation['name'],
+                        'cnt'=>0,
+                    ];
+                    $generalsCnt[$nationID]['cnt'] = 0;
+                }
+                
+                if($nation['npc'] <= 2){
+                    $calcCnt = $nation['cnt'];
+                }
+                else{
+                    $calcCnt = $nation['cnt'] / 2;
+                }
+
+                $generalsCnt[$nationID]['cnt'] += $calcCnt;
+            }
+
             $randVals = [];
-            foreach($nations as $testNation){
-                $nationID = $nations['nation'];
-                $randVals[] = [$testNation, 1/$testNation['gennum']];
+            foreach($generalsCnt as $testNation){
+                $randVals[] += [$testNation, 1/$testNation['cnt']];
             }
 
             $destNation = Util::choiceRandomUsingWeightPair($randVals);

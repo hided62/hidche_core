@@ -18,6 +18,7 @@ use function sammo\refreshNationStaticInfo;
 use function sammo\GetNationColors;
 use function sammo\getAllNationStaticInfo;
 use function sammo\DeleteConflict;
+use function sammo\deleteNation;
 
 
 
