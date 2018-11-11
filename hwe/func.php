@@ -2137,6 +2137,12 @@ function deleteNation(General $general) {
     $oldNation['generals'] = $oldNationGenerals;
     $oldNation['aux'] = Json::decode($oldNation['aux']);
 
+    $general->setVar('belong', 0);
+    $general->setVar('troop', 0);
+    $general->setVar('level', 0);
+    $general->setVar('nation', 0);
+    $general->setVar('makelimit', 12);
+
     // 전 장수 재야로    // 전 장수 소속 무소속으로
     $db->update('general', [
         'belong'=>0,

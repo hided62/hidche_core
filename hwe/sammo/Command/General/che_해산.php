@@ -80,6 +80,7 @@ class che_해산 extends Command\GeneralCommand{
         $nation = $this->nation;
         $nationID = $nation['nation'];
         $nationName = $nation['name'];
+        $josaUl = JosaUtil::pick($nationName, '을');
 
         if($nation['gennum'] > 1){
             $db->update('general', [
@@ -93,62 +94,14 @@ class che_해산 extends Command\GeneralCommand{
         DeleteConflict($nationID);
         deleteNation($general);
 
-        $diplomacyInit = [];
-        foreach(getAllNationStaticInfo() as $destNation){
-            $destNationID = $destNation['nation'];
-            $diplomacyInit[] = [
-                'me'=>$destNationID,
-                'you'=>$nationID,
-                'state'=>2,
-                'term'=>0,
-            ];
-
-            $diplomacyInit[] = [
-                'me'=>$nationID,
-                'you'=>$destNationID,
-                'state'=>2,
-                'term'=>0,
-            ];
-        }
-        $db->insert('diplomacy', $diplomacyInit);
-
-        DB::db()->insert('nation', [
-            'name'=>$nationName,
-            'color'=>'#330000', 
-            'gold'=>0, 
-            'rice'=>GameConst::$baserice, 
-            'rate'=>20, 
-            'bill'=>100, 
-            'sabotagelimit'=>12, 
-            'surlimit'=>72, 
-            'type'=>0, 
-            'gennum'=>1
-        ]);
-        $nationID = DB::db()->insertId();
-
         refreshNationStaticInfo();
 
-        $logger->pushGeneralActionLog("거병에 성공하였습니다. <1>$date</>");
-        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} <G><b>{$cityName}</b></>에 거병하였습니다.");
+        $logger->pushGeneralActionLog("세력을 해산했습니다. <1>$date</>");
+        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} 세력을 해산했습니다.");
 
-        $logger->pushGlobalHistoryLog("<Y><b>【거병】</b></><D><b>{$generalName}</b></>{$josaYi} 세력을 결성하였습니다.");
-        $logger->pushGeneralHistoryLog("<G><b>{$cityName}</b></>에서 거병");
-        $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <G><b>{$cityName}</b></>에서 거병");
-
-        $exp = 100;
-        $ded = 100;
-        
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
-
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
-        $general->setVar('belong', 1);
-        $general->setVar('level', 12);
-        $general->setVar('nation', $nationID);
+        $logger->pushGeneralHistoryLog("<D><b>{$nationName}</b></>{$josaUl} 해산");
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        $general->checkStatChange();
         $general->applyDB($db);
 
         return true;
