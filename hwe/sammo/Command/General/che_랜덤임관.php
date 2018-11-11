@@ -137,12 +137,10 @@ class che_랜덤임관 extends Command\GeneralCommand{
                 $notIn
             );
 
-            $allGen = Util::arraySum($nations, 'gennum');
-
             $randVals = [];
             foreach($nations as $testNation){
                 $nationID = $nations['nation'];
-                $randVals[] = [$testNation, sqrt($allGen/$testNation['gennum'])];
+                $randVals[] = [$testNation, 1/$testNation['gennum']];
             }
 
             $destNation = Util::choiceRandomUsingWeightPair($randVals);
