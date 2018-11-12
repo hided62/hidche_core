@@ -11,8 +11,6 @@ $genlist = Util::getReq('genlist', 'int');
 $outlist = Util::getReq('outlist', 'int');
 $citylist = Util::getReq('citylist', 'int');
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

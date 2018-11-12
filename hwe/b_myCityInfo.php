@@ -9,8 +9,6 @@ if ($type <= 0 || $type > 12) {
     $type = 10;
 }
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

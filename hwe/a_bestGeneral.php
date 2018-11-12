@@ -6,8 +6,6 @@ include "func.php";
 
 $btn = Util::getReq('btn');
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

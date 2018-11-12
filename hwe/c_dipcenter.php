@@ -12,8 +12,6 @@ $rate = Util::getReq('rate', 'int');
 $bill = Util::getReq('bill', 'int');
 $secretlimit = Util::getReq('secretlimit', 'int');
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

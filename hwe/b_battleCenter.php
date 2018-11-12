@@ -16,8 +16,6 @@ if ($type < 0 || $type > 3) {
     $type = 0;
 }
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
