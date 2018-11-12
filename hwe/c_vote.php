@@ -10,8 +10,6 @@ $comment = Util::getReq('comment');
 $title = Util::getReq('title');
 $str = Util::getReq('str');
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

@@ -10,8 +10,6 @@ $tnmt = Util::getReq('tnmt', 'int', 1);
 //$detachNPC = Util::getReq('detachNPC', 'bool');
 $detachNPC = false;
 
-extractMissingPostToGlobals();
-
 if($mode < 0 || $mode > 2){
     $mode = 2;
 }

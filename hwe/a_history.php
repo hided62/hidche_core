@@ -7,8 +7,6 @@ $btn = Util::getReq('btn');
 $yearmonth = Util::getReq('yearmonth', 'int');
 $serverID = Util::getReq('serverID', 'string', null);
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

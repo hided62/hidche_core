@@ -9,8 +9,6 @@ $name = Util::getReq('name');
 $gen = Util::getReq('gen', 'int');
 $troop = Util::getReq('troop', 'int');
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = $session::getUserID();

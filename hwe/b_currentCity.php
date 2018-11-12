@@ -6,8 +6,6 @@ include "func.php";
 
 $citylist = Util::getReq('citylist', 'int');
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

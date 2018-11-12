@@ -14,8 +14,6 @@ $gen = Util::getReq('gen', 'int');
 $sel = Util::getReq('sel', 'int');
 $trig = Util::getReq('trig', 'int');
 
-extractMissingPostToGlobals();
-
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();

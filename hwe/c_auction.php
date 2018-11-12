@@ -27,7 +27,6 @@ $sel = Util::getReq('sel', 'int');
 $msg = '';
 $msg2 = '';
 
-extractMissingPostToGlobals();
 
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();

@@ -6,8 +6,6 @@ include "func.php";
 
 $type = Util::getReq('type', 'int', 1);
 
-extractMissingPostToGlobals();
-
 if($type <= 0 || $type > 8){
     $type = 1;
 }
