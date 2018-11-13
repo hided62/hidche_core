@@ -7,6 +7,7 @@ jQuery(function($){
     function guiEditorInit($obj, editable){
     var $submitBtn = $obj.find('.submit');
     var $noticeInput = $obj.find('.input_form');
+    var globalVariableName = $noticeInput.data('global');
     var $editForm = $obj.find('.edit_form');
     var $cancelEdit = $obj.find('.cancel_edit');
 
@@ -16,7 +17,7 @@ jQuery(function($){
         editMode = true;
         $cancelEdit.show();
 
-        var inputText = $noticeInput.val();
+        var inputText = window[globalVariableName];
         if(!inputText || inputText == '<p></p>'){
             inputText = '<p><br></p>';
         }
@@ -96,12 +97,12 @@ jQuery(function($){
         editMode = false;
         $editForm.summernote('destroy');
         $cancelEdit.hide();
-        $editForm.html($noticeInput.val()).addClass('viewer');
+        $editForm.html(window[globalVariableName]).addClass('viewer');
         activeFlip($editForm);
     }
 
     $cancelEdit.hide();
-    $editForm.html($noticeInput.val());
+    $editForm.html(window[globalVariableName]);
     activeFlip($editForm);
     if(editable){
         $submitBtn.prop('disabled', false);
@@ -116,7 +117,9 @@ jQuery(function($){
             enableEditor();
             return false;
         }
-        $noticeInput.val($editForm.summernote('code'));
+        var text = $editForm.summernote('code');
+        window[globalVariableName] = text;
+        $noticeInput.val(text);
     });
 
     $cancelEdit.click(function(e){
