@@ -13,13 +13,9 @@ $connect=$db->get();
 
 increaseRefresh("내무부", 1);
 
-$query = "select no,nation,level,con,turntime,belong from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no, nation, level, con, turntime, belong FROM general WHERE owner=%i', $userID);
 
-$query = "select secretlimit from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$nation = MYDB_fetch_array($result);
+$nation = $db->queryFirstRow('SELECT secretlimit, msg, scoutmsg FROM nation WHERE nation = %i', $me['nation']);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -50,6 +46,8 @@ if ($me['level'] >= 5) {
 <title><?=UniqueConst::$serverName?>: 내무부</title>
 <script>
 var editable = <?=($me['level']>=5?'true':'false')?>;
+var nationMsg = <?=Json::encode($nation['msg']??'')?>;
+var scoutmsg = <?=Json::encode($nation['scoutmsg']??'')?>;
 </script>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
@@ -198,7 +196,7 @@ echo "
 </table>
 ";
 
-$query = "select nation,name,color,type,msg,gold,rice,bill,rate,scout,war,scoutmsg,secretlimit from nation where nation='{$me['nation']}'";
+$query = "select nation,name,color,type,gold,rice,bill,rate,scout,war,secretlimit from nation where nation='{$me['nation']}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $nation = MYDB_fetch_array($result);
 
@@ -243,7 +241,7 @@ if ($budgetricediff > 0) {
                 <input type='submit' class='submit' name=btn value='국가방침 수정'><input type='button' class='cancel_edit' value='취소'>
             </div>
         </div>
-        <textarea type=hidden class='input_form' style='display:none;' name=msg><?=$nation['msg']?></textarea>
+        <input type='hidden' class='input_form' name='msg' data-global='nationMsg'>
         <div class='edit_form viewer'></div>
     </div></td></tr>
     <tr><td colspan='2'><div id='scoutMsgForm'>
@@ -256,7 +254,7 @@ if ($budgetricediff > 0) {
             </div>
         </div>
         <div style='border-bottom:solid gray 0.5px;'>870px x 200px를 넘어서는 내용은 표시되지 않습니다.</div>
-        <textarea type=hidden class='input_form' style='display:none;' name=scoutmsg><?=$nation['scoutmsg']?></textarea>
+        <input type='hidden' class='input_form' name='scoutmsg' data-global='scoutmsg'>
         <div style="width:870px;margin-left:auto;">
             <div class='edit_form viewer'></div>
         </div>
