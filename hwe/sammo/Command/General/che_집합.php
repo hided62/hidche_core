@@ -16,6 +16,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 
 
@@ -39,11 +40,11 @@ class che_집합 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['OccupiedCity'],
-            ['SuppliedCity'],
-            ['MustBeTroopLeader'],
-            ['ReqTroopMembers'],
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::MustBeTroopLeader(),
+            ConstraintHelper::ReqTroopMembers(),
         ];
     }
 

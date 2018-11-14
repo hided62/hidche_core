@@ -8,6 +8,7 @@ use \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 abstract class BaseCommand{
     /**

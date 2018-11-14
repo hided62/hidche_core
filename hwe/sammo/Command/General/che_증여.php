@@ -19,6 +19,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 class che_증여 extends Command\GeneralCommand{
@@ -73,17 +74,17 @@ class che_증여 extends Command\GeneralCommand{
         $this->setDestGeneral($destGeneral);
         
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['OccupiedCity'],
-            ['SuppliedCity'],
-            ['ExistsDestGeneral'],
-            ['FriendlyDestGeneral']
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::ExistsDestGeneral(),
+            ConstraintHelper::FriendlyDestGeneral()
         ];
         if($this->arg['isGold']){
-            $this->runnableConstraints[] = ['ReqGeneralGold', 1];
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralGold(1);
         }
         else{
-            $this->runnableConstraints[] = ['ReqGeneralRice', 1];
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(1);
         }
 
     }

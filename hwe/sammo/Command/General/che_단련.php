@@ -16,6 +16,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 
@@ -37,12 +38,12 @@ class che_단련 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['ReqGeneralCrew'],
-            ['ReqGeneralValue', 'train', '훈련', GameConst::$defaultTrainHigh],
-            ['ReqGeneralValue', 'atmos', '사기', GameConst::$defaultAtmosHigh],
-            ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice],
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::ReqGeneralCrew(),
+            ConstraintHelper::ReqGeneralValue('train', '훈련', '<', GameConst::$defaultTrainHigh),
+            ConstraintHelper::ReqGeneralValue('atmos', '사기', '<', GameConst::$defaultAtmosHigh),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice),
         ];
 
     }

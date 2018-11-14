@@ -16,6 +16,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 class che_사기진작 extends Command\GeneralCommand{
@@ -36,13 +37,13 @@ class che_사기진작 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['NotWanderingNation'],
-            ['OccupiedCity'],
-            ['ReqGeneralCrew'],
-            ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice],
-            ['ReqGeneralAtmosMargin', GameConst::$maxAtmosByCommand],
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotWanderingNation(),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::ReqGeneralCrew(),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice),
+            ConstraintHelper::ReqGeneralAtmosMargin(GameConst::$maxAtmosByCommand),
         ];
 
     }

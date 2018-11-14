@@ -16,6 +16,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 
 
@@ -47,10 +48,10 @@ class che_강행 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NotSameDestCity'], 
-            ['NearCity', 3],
-            ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice],
+            ConstraintHelper::NotSameDestCity(), 
+            ConstraintHelper::NearCity(3),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice),
         ];
     }
     

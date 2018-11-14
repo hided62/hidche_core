@@ -11,6 +11,7 @@ use \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 class che_NPC능동 extends Command\GeneralCommand{
@@ -43,7 +44,7 @@ class che_NPC능동 extends Command\GeneralCommand{
         $general = $this->generalObj;
 
         $this->runnableConstraints=[
-            ['MustBeNPC']
+            ConstraintHelper::MustBeNPC()
         ];
 
     }

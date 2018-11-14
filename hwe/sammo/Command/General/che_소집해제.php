@@ -16,6 +16,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 class che_소집해제 extends Command\GeneralCommand{
     static protected $actionName = '소집해제';
@@ -33,7 +34,7 @@ class che_소집해제 extends Command\GeneralCommand{
         $this->setNation();
         
         $this->runnableConstraints=[
-            ['ReqGeneralCrew'],
+            ConstraintHelper::ReqGeneralCrew(),
         ];
 
     }

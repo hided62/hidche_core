@@ -3,7 +3,7 @@
 namespace sammo\Constraint;
 
 class OccupiedCity extends Constraint{
-    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_CITY;
+    const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_CITY|Constraint::REQ_BOOLEAN_ARG;
 
     public function checkInputValues(bool $throwExeception=true){
         if(!parent::checkInputValues($throwExeception) && !$throwException){
@@ -27,8 +27,8 @@ class OccupiedCity extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        //특수 예외로 ARG가 지정된 경우에는 재야여도 'OccupiedCity'로 허용함
-        if($this->arg && $this->general['nation'] == 0){
+        //재야여도 허용하는 경우
+        if($this->arg[0] && $this->general['nation'] == 0){
             return true;
         }
 

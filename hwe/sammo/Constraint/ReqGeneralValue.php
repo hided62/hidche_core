@@ -8,7 +8,7 @@ use \sammo\Util;
 /**
  * 범용으로 사용 가능한 장수 변수 검사도구
  */
-class RegGeneralValue extends Constraint{
+class ReqGeneralValue extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_ARRAY_ARG;
 
     protected $key;

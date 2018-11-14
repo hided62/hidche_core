@@ -19,6 +19,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 class che_인재탐색 extends Command\GeneralCommand{
@@ -39,17 +40,17 @@ class che_인재탐색 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['NotWanderingNation'],
-            ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice],  
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotWanderingNation(),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice),  
         ];
 
         $relYear = $env['year'] - $env['startyear'];
         if($relYear < 3 && $this->nation['gennum'] >= GameConst::$initialNationGenLimit){
             $nationName = $this->nation['name'];
             $josaUn = JosaUtil::pick($nationName, '은');
-            $this->runnableConstraints[] = ['AlwaysFail', "현재 <D>{$nationName}</>{$josaUn} 탐색이 제한되고 있습니다."];
+            $this->runnableConstraints[] = ConstraintHelper::AlwaysFail("현재 <D>{$nationName}</>{$josaUn} 탐색이 제한되고 있습니다.");
         }
 
     }

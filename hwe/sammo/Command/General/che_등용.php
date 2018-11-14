@@ -20,6 +20,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 class che_등용 extends Command\GeneralCommand{
@@ -57,17 +58,18 @@ class che_등용 extends Command\GeneralCommand{
         $this->setDestGeneral($destGeneral);
 
         [$reqGold, $reqRice] = $this->getCost();
+        $relYear = $this->env['year'] - $this->env['startyear'];
         
         $this->runnableConstraints=[
-            ['ReqEnvValue', 'join_mode', '==', 'onlyRandom', '랜덤 임관만 가능합니다'],
-            ['NotBeNeutral'], 
-            ['NotOpeningPart'],
-            ['OccupiedCity'],
-            ['SuppliedCity'],
-            ['ExistsDestGeneral'],
-            ['DifferentNationDestGeneral'],
-            ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice],
+            ConstraintHelper::ReqEnvValue('join_mode', '==', 'onlyRandom', '랜덤 임관만 가능합니다'),
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotOpeningPart($relYear),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::ExistsDestGeneral(),
+            ConstraintHelper::DifferentNationDestGeneral(),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice),
         ];
 
         if($this->destGeneralObj->getVar('level') == 12){

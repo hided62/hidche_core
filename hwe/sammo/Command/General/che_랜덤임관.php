@@ -16,6 +16,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use sammo\MustNotBeReachedException;
 
@@ -61,10 +62,10 @@ class che_랜덤임관 extends Command\GeneralCommand{
         $relYear = $env['year'] - $env['startyear'];
 
         $this->runnableConstraints=[
-            ['BeNeutral'],
-            ['ExistsDestNation'],
-            ['AllowJoinAction'],
-            ['ExistsAllowJoinNation', $relYear, [$this->arg['destNationIDList']]],
+            ConstraintHelper::BeNeutral(),
+            ConstraintHelper::ExistsDestNation(),
+            ConstraintHelper::AllowJoinAction(),
+            ConstraintHelper::ExistsAllowJoinNation($relYear, $this->arg['destNationIDList']),
         ];
     }
 

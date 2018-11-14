@@ -19,6 +19,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 class che_헌납 extends Command\GeneralCommand{
@@ -55,15 +56,15 @@ class che_헌납 extends Command\GeneralCommand{
         $this->setNation();
         
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['OccupiedCity'],
-            ['SuppliedCity'],
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
         ];
         if($this->arg['isGold']){
-            $this->runnableConstraints[] = ['ReqGeneralGold', 1];
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralGold(1);
         }
         else{
-            $this->runnableConstraints[] = ['ReqGeneralRice', 1];
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(1);
         }
 
     }

@@ -12,6 +12,7 @@ use \sammo\{
 
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use function sammo\getNationTypeClass;
 use function sammo\refreshNationStaticInfo;
@@ -46,8 +47,8 @@ class che_해산 extends Command\GeneralCommand{
         $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
-            ['BeLord'],
-            ['WanderingNation'],
+            ConstraintHelper::BeLord(),
+            ConstraintHelper::WanderingNation(),
         ];
     }
 

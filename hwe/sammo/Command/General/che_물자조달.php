@@ -19,6 +19,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 class che_물자조달 extends Command\GeneralCommand{
@@ -37,10 +38,10 @@ class che_물자조달 extends Command\GeneralCommand{
         $this->setNation();
         
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['NotWanderingNation'],
-            ['OccupiedCity'],
-            ['SuppliedCity']
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotWanderingNation(),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity()
         ];
 
     }

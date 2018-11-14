@@ -16,6 +16,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 
 
@@ -38,9 +39,9 @@ class che_하야 extends Command\GeneralCommand{
         $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
-            ['NotBeNeutral'],
-            ['NotOpeningPart', $relYear],
-            ['NotLord'],
+            ConstraintHelper::NotBeNeutral(),
+            ConstraintHelper::NotOpeningPart($relYear),
+            ConstraintHelper::NotLord(),
         ];
     }
 

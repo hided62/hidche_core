@@ -18,6 +18,7 @@ use function sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 class che_기술연구 extends che_상업투자{
@@ -40,12 +41,12 @@ class che_기술연구 extends che_상업투자{
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['NotWanderingNation'],
-            ['OccupiedCity'],
-            ['SuppliedCity'],
-            ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice]
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotWanderingNation(),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice)
         ];
 
         $this->reqGold = $reqGold;

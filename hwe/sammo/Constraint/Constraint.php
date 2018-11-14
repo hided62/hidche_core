@@ -16,7 +16,8 @@ abstract class Constraint{
     const REQ_STRING_ARG = self::REQ_ARG | 0x1000;
     const REQ_INT_ARG = self::REQ_ARG | 0x2000;
     const REQ_NUMERIC_ARG = self::REQ_ARG | 0x4000;
-    const REQ_ARRAY_ARG = self::REQ_ARG | 0x8000;
+    const REQ_BOOLEAN_ARG = self::REQ_ARG | 0x8000;
+    const REQ_ARRAY_ARG = self::REQ_ARG | 0x10000;
     
     const REQ_VALUES = 0;
 
@@ -142,6 +143,11 @@ abstract class Constraint{
         if(($valueType&static::REQ_STRING_ARG) && !is_string($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require string arg');
+        }
+
+        if(($valueType&static::REQ_BOOLEAN_ARG) && !is_bool($this->arg)){
+            if(!$throwExeception){return false; }
+            throw new \InvalidArgumentException('require bool arg');
         }
 
         if(($valueType&static::REQ_INT_ARG) && !is_int($this->arg)){

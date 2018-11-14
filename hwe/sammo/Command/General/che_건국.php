@@ -16,6 +16,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 use function sammo\getNationTypeClass;
 use function sammo\refreshNationStaticInfo;
@@ -78,13 +79,13 @@ class che_건국 extends Command\GeneralCommand{
         $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
-            ['ReqNationValue', 'gennum', '수하 장수', '>=', 2],
-            ['BeOpeningPart', $relYear],
-            ['WanderingNation'],
-            ['CheckNationNameDuplicate', $nationName],
-            ['BeLord'],
-            ['AllowJoinAction'],
-            ['ConstructableCity']
+            ConstraintHelper::ReqNationValue('gennum', '수하 장수', '>=', 2),
+            ConstraintHelper::BeOpeningPart($relYear),
+            ConstraintHelper::WanderingNation(),
+            ConstraintHelper::CheckNationNameDuplicate($nationName),
+            ConstraintHelper::BeLord(),
+            ConstraintHelper::AllowJoinAction(),
+            ConstraintHelper::ConstructableCity(),
         ];
     }
 

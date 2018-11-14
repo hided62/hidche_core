@@ -21,6 +21,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 class che_장비매매 extends Command\GeneralCommand{
     static protected $actionName = '장비매매';
@@ -65,20 +66,20 @@ class che_장비매매 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['ReqCityTrader', $general->getVar('npc')],
-            ['ReqCityCapacity', 'secu', '치안 수치', $itemCode * 1000],
-            ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice],
+            ConstraintHelper::ReqCityTrader($general->getVar('npc')),
+            ConstraintHelper::ReqCityCapacity('secu', '치안 수치', $itemCode * 1000),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice),
         ];
 
         if($itemCode == 0){
-            $this->runnableConstraints[] = ['ReqGeneralValue', $itemType, $itemTypeName, 1];
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralValue($itemType, $itemTypeName, '>=', 1);
         }
         else if($itemCode == $general->getVar($itemType)){
-            $this->runnableConstraints[] = ['AlwaysFail', '이미 가지고 있습니다.'];
+            $this->runnableConstraints[] = ConstraintHelper::AlwaysFail('이미 가지고 있습니다.');
         }
         else if($itemType != 'item' && $general->getVar($itemType) > 6){
-            $this->runnableConstraints[] = ['AlwaysFail', '이미 진귀한 것을 가지고 있습니다.'];
+            $this->runnableConstraints[] = ConstraintHelper::AlwaysFail('이미 진귀한 것을 가지고 있습니다.');
         }
 
     }

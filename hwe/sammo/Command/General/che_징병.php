@@ -16,6 +16,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 
@@ -92,14 +93,14 @@ class che_징병 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['OccupiedCity'],
-            ['ReqCityCapacity', 'pop', '주민', 30000 + $reqCrew],
-            ['ReqCityTrust', 20],
-            ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice],
-            ['ReqGeneralCrewMargin', $reqCrewType->id],
-            ['AvailableRecruitCrewType', $reqCrewType->id]
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::ReqCityCapacity('pop', '주민', 30000 + $reqCrew),
+            ConstraintHelper::ReqCityTrust(20),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice),
+            ConstraintHelper::ReqGeneralCrewMargin($reqCrewType->id),
+            ConstraintHelper::AvailableRecruitCrewType($reqCrewType->id)
         ];
 
     }

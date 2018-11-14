@@ -21,6 +21,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 use sammo\MustNotBeReachedException;
 
 class che_군량매매 extends Command\GeneralCommand{
@@ -59,16 +60,16 @@ class che_군량매매 extends Command\GeneralCommand{
         $this->setNation();    
         
         $this->runnableConstraints=[
-            ['ReqCityTrader', $general->getVar('npc')],
-            ['OccupiedCity', true],
-            ['SuppliedCity'],
+            ConstraintHelper::ReqCityTrader($general->getVar('npc')),
+            ConstraintHelper::OccupiedCity(true),
+            ConstraintHelper::SuppliedCity(),
         ];
 
         if($this->arg['buyRice']){
-            $this->runnableConstraints[] = ['ReqGeneralGold', 1];
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralGold(1);
         }
         else{
-            $this->runnableConstraints[] = ['ReqGeneralRice', 1];
+            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(1);
         }
     }
 

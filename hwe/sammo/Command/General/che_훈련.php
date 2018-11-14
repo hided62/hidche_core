@@ -16,6 +16,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 
@@ -35,11 +36,11 @@ class che_훈련 extends Command\GeneralCommand{
         $this->setNation();
         
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['NotWanderingNation'],
-            ['OccupiedCity'],
-            ['ReqGeneralCrew'],
-            ['ReqGeneralTrainMargin', GameConst::$maxTrainByCommand],
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotWanderingNation(),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::ReqGeneralCrew(),
+            ConstraintHelper::ReqGeneralTrainMargin(GameConst::$maxTrainByCommand),
         ];
 
     }

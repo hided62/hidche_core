@@ -19,6 +19,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 
 
 class che_주민선정 extends Command\GeneralCommand{
@@ -42,13 +43,13 @@ class che_주민선정 extends Command\GeneralCommand{
         [$reqGold, $reqRice] = $this->getCost();
 
         $this->runnableConstraints=[
-            ['NotBeNeutral'], 
-            ['NotWanderingNation'],
-            ['OccupiedCity'],
-            ['SuppliedCity'],
-            ['ReqGeneralGold', $reqGold],
-            ['ReqGeneralRice', $reqRice],
-            ['RemainCityTrust', static::$actionName]
+            ConstraintHelper::NotBeNeutral(), 
+            ConstraintHelper::NotWanderingNation(),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice),
+            ConstraintHelper::RemainCityTrust(static::$actionName)
         ];
 
         $this->reqRice = $reqRice;

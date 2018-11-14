@@ -17,6 +17,7 @@ use function \sammo\{
 };
 
 use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
 use sammo\CityConst;
 
 
@@ -47,16 +48,17 @@ class che_출병 extends Command\GeneralCommand{
         $this->setDestNation(['nation' ,'level','name','capital','gennum','tech','type','gold','rice']);
 
         [$reqGold, $reqRice] = $this->getCost();
+        $relYear = $this->env['year'] - $this->env['startyear'];
         
         $this->runnableConstraints=[
-            ['NotOpeningPart'],
-            ['NearCity', 1],
-            ['NotBeNeutral'],
-            ['OccupiedCity'],
-            ['ReqGeneralCrew'],
-            ['ReqGeneralRice', $reqRice],
-            ['AllowWar'],
-            ['BattleGroundCity', 1],
+            ConstraintHelper::NotOpeningPart($relYear),
+            ConstraintHelper::NearCity(1),
+            ConstraintHelper::NotBeNeutral(),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::ReqGeneralCrew(),
+            ConstraintHelper::ReqGeneralRice($reqRice),
+            ConstraintHelper::AllowWar(),
+            ConstraintHelper::BattleGroundCity(true),
         ];
     }
 

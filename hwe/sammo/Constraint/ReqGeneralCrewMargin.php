@@ -13,6 +13,11 @@ class ReqGeneralCrewMargin extends Constraint{
             return false;
         }
 
+        if(GameUnitConst::byID($this->arg) === null){
+            if(!$throwExeception){return false; }
+            throw new \InvalidArgumentException("{$this->arg} is invalid crewtype");
+        }
+
         foreach(['leader','power','intel','crew','crewtype','nation','level'] as $key){
             if(!key_exists($key, $this->general)){
                 if(!$throwExeception){return false; }
@@ -33,6 +38,13 @@ class ReqGeneralCrewMargin extends Constraint{
 
         //XXX: 왜 General -> obj -> General 변환을 하고 있나?
         $generalObj = new General($this->general, null, null, null, false);
+
+        $reqCrewType = GameUnitConst::byID($this->arg);
+
+        if($reqCrewType->id != $generalObj->getCrewTypeObj()->id){
+            return true;
+        }
+
         $leadership = $generalObj->getLeadership();
         $crew = $this->general['crew'];
 

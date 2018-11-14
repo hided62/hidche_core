@@ -21,28 +21,11 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-
-class che_선양 extends Command\GeneralCommand{
-    static protected $actionName = '선양';
+class che_모반 extends Command\GeneralCommand{
+    static protected $actionName = '모반';
 
     protected function argTest():bool{
-        //NOTE: 사망 직전에 '선양' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
-        if(!key_exists('destGeneralID', $this->arg)){
-            return false;
-        }
-        $destGeneralID = $this->arg['destGeneralID'];
-        if(!is_int($destGeneralID)){
-            return false;
-        }
-        if($destGeneralID <= 0){
-            return false;
-        }
-        if($destGeneralID == $this->generalObj->getID()){
-            return false;
-        }
-        $this->arg = [
-            'destGeneralID'=>$destGeneralID
-        ];
+        $this->arg = null;
         return true;
     }
 
@@ -56,10 +39,12 @@ class che_선양 extends Command\GeneralCommand{
         $this->setDestGeneral($destGeneral);
         
         $this->runnableConstraints=[
-            ConstraintHelper::BeLord(), 
-            ConstraintHelper::ExistsDestGeneral(),
-            ConstraintHelper::FriendlyDestGeneral(),
-            ConstraintHelper::DisallowDiplomacyStatus([4], '현재 통합 진행중입니다.')
+            ConstraintHelper::NotBeNeutral(),
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::NotLord(),
+            ConstraintHelper::AllowRebellion(),
         ];
     }
 
