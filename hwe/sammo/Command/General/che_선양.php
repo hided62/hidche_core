@@ -109,9 +109,6 @@ class che_선양 extends Command\GeneralCommand{
             'gen3'=>0
         ], 'gen3=%i', $destGeneral->getID());
 
-        $destGeneral->increaseVarWithLimit($resKey, $amount);
-        $general->increaseVarWithLimit($resKey, -$amount, 0);
-
         $josaYi = JosaUtil::pick($generalName, '이');
         $logger->pushGlobalHistoryLog("<Y><b>【선양】</b></><Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>의 군주 자리를 <Y>{$destGeneralName}</>에게 선양했습니다.");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <Y>{$destGeneralName}</>에게 선양");
