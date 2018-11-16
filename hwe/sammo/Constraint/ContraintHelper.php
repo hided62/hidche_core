@@ -112,7 +112,11 @@ class ConstraintHelper{
         return [__FUNCTION__];
     }
 
-    static function NotOccupiedCity():array{
+    static function NotNeutralDestCity():array{
+        return [__FUNCTION__];
+    }
+
+    static function NotOccupiedDestCity():array{
         return [__FUNCTION__];
     }
 
@@ -128,7 +132,7 @@ class ConstraintHelper{
         return [__FUNCTION__];
     }
 
-    static function OccupiedCity(bool $allowNeutral=true):array{
+    static function OccupiedCity(bool $allowNeutral=false):array{
         return [__FUNCTION__, $allowNeutral];
     }
     

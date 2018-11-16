@@ -23,8 +23,9 @@ function getGeneralLeadership($general, $withInjury, $withItem, $withStatAdjust,
         $leadership *= (100 - $general['injury']) / 100;
     }
 
+    //xxx: 징병 전특 때문에 새로 고쳐야함
     if($withStatAdjust){
-        if($general['special2'] == 72){
+        if($general['special2'] == 'che_징병'){
             $leadership *= 1.15;
         }
     }

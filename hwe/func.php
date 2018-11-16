@@ -2442,6 +2442,37 @@ function CharCritical($rate, $personal) {
     return $rate;
 }
 
+function SabotageInjuryEx(array $cityGeneralList, bool $isSabotage):int{
+    $injuryCount = 0;
+    if($isSabotage){
+        $text = '<M>계략</>으로 인해 <R>부상</>을 당했습니다.';
+    }
+    else{
+        $text = '<M>재난</>으로 인해 <R>부상</>을 당했습니다.';
+    }
+
+    $db = DB::db();
+
+    foreach($cityGeneralList as $general){
+        /** @var General $general */
+        if(!Util::randBool(0.3)){
+            continue;
+        }
+        $general->getLogger()->pushGeneralActionLog($text);
+
+        $general->increaseVarWithLimit('injury', Util::randRangeInt(1, 16), 0, 80);
+        $general->multiplyVar('crew', 0.98);
+        $general->multiplyVar('atmos', 0.98);
+        $general->multiplyVar('train', 0.98);
+        
+        $general->applyDB($db);
+
+        $injuryCount += 1;
+    }
+
+    return $injuryCount;
+}
+
 function SabotageInjury($city, $type=0) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');

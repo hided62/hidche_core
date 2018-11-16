@@ -145,7 +145,41 @@ class che_화계 extends Command\GeneralCommand{
     }
 
     protected function affectDestCity(int $injuryCount){
-        
+        $general = $this->generalObj;
+        $date = substr($general->getVar('turntime'),11,5);
+
+        $logger = $general->getLogger();
+
+        $destCity = $this->destCity;
+
+        $destCityName = $destCity['name'];
+        $destCityID = $destCity['city'];
+
+        $commandName = $this->getName();
+
+        $agriAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['agri']);
+        $commAmount = Util::valueFit(Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax), null, $destCity['comm']);
+        $destCity['agri'] -= $agriAmount;
+        $destCity['comm'] -= $commAmount;
+
+        $db->update('city', [
+            'state'=>32,
+            'agri'=>$destCity['agri'],
+            'comm'=>$destCity['comm']
+        ], 'city=%i', $destCityID);
+
+        $agriAmountText = number_format($agriAmount);
+        $commAmountText = number_format($commAmount);
+
+        $josaYi = JosaUtil::pick($destCityName, '이');
+        $logger->pushGlobalActionLog("<G><b>{$destCityName}</b></>{$josaYi} 불타고 있습니다.");
+        $josaYi = JosaUtil::pick($commandName, '이');
+        $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$commandName}{$josaYi} 성공했습니다. <1>$date</>");
+
+        $logger->pushGeneralActionLog(
+            "도시의 농업이 <C>{$agriAmountText}</>, 상업이 <C>{$commAmountText}</>만큼 감소하고, 장수 <C>{$injuryCount}</>명이 부상 당했습니다.",
+            ActionLogger::PLAIN
+        );
     }
 
     public function run():bool{
@@ -164,7 +198,6 @@ class che_화계 extends Command\GeneralCommand{
         $destCityName = $destCity['name'];
         $destCityID = $destCity['city'];
         $destNationID = $destCity['nation'];
-        $josaUl = JosaUtil::pick($destCityName, '을');
 
         $commandName = $this->getName();
         $statType = static::$statType;
