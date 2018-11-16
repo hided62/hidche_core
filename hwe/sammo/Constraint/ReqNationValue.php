@@ -23,7 +23,7 @@ class ReqNationValue extends Constraint{
         }
 
         if(count($this->arg) == 4){
-            [$this->key, $this->keyNick, $this->reqVal, $comp] = $this->arg;
+            [$this->key, $this->keyNick, $comp, $this->reqVal] = $this->arg;
 
             if(!in_array($comp, ['>', '>=', '==', '<=', '<', '!=', '===', '!=='])){
                 if(!$throwExeception){return false; }

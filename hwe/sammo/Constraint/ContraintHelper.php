@@ -4,6 +4,10 @@ namespace sammo\Constraint;
 
 class ConstraintHelper{
     
+    static function AdhocCallback(callable $callback):array{
+        return [__FUNCTION__, $callback];
+    }
+    
     static function AllowJoinAction():array{
         return [__FUNCTION__];
     }
@@ -80,16 +84,16 @@ class ConstraintHelper{
         return [__FUNCTION__];
     }
 
-    static function NearCity(int $distance):array{
-        return [__FUNCTION__, $distance];
-    }
-
     static function MustBeNPC():array{
         return [__FUNCTION__];
     }
 
     static function MustBeTroopLeader():array{
         return [__FUNCTION__];
+    }
+    
+    static function NearCity(int $distance):array{
+        return [__FUNCTION__, $distance];
     }
 
     static function NotBeNeutral():array{
@@ -98,6 +102,14 @@ class ConstraintHelper{
 
     static function NotCapital(bool $ignoreOfficer=false):array{
         return [__FUNCTION__, $ignoreOfficer];
+    }
+
+    static function NotChief():array{
+        return [__FUNCTION__];
+    }
+
+    static function NotLord():array{
+        return [__FUNCTION__];
     }
 
     static function NotOccupiedCity():array{
@@ -109,10 +121,6 @@ class ConstraintHelper{
     }
 
     static function NotSameDestCity():array{
-        return [__FUNCTION__];
-    }
-
-    static function NotLord():array{
         return [__FUNCTION__];
     }
 
@@ -128,6 +136,10 @@ class ConstraintHelper{
         return [__FUNCTION__, $key, $actionName];
     }
     
+    static function RemainCityTrust(string $actionName):array{
+        return [__FUNCTION__, $actionName];
+    }
+
     static function ReqCityCapacity($key, string $keyNick, $reqVal):array{
         return [__FUNCTION__, $key, $keyNick, $reqVal];
     }
@@ -169,6 +181,10 @@ class ConstraintHelper{
     }
 
     static function ReqGeneralValue($key, string $keyNick, string $comp, $reqVal):array{
+        return [__FUNCTION__, $key, $keyNick, $comp, $reqVal];
+    }
+
+    static function ReqNationValue($key, string $keyNick, string $comp, $reqVal):array{
         return [__FUNCTION__, $key, $keyNick, $comp, $reqVal];
     }
 
