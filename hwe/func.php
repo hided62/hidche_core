@@ -4,7 +4,6 @@ namespace sammo;
 require_once 'process_war.php';
 require_once 'func_gamerule.php';
 require_once 'func_process.php';
-require_once 'func_process_sabotage.php';
 require_once 'func_process_chief.php';
 require_once 'func_tournament.php';
 require_once 'func_auction.php';

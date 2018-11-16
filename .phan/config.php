@@ -30,7 +30,6 @@ return [
         'hwe/func_map.php',
         'hwe/func_message.php',
         'hwe/func_process_chief.php',
-        'hwe/func_process_sabotage.php',
         'hwe/func_process.php',
         'hwe/func_string.php',
         'hwe/func_template.php',
