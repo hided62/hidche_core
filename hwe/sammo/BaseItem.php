@@ -10,6 +10,7 @@ class BaseItem implements iAction{
     static $id = 0;
     static $name = '-';
     static $info = '';
+    static $cost = null;
     static $consumable = false;
 
     function isValidTurnItem(string $actionType, string $command):bool{

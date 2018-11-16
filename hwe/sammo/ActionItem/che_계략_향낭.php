@@ -5,11 +5,11 @@ use \sammo\General;
 
 class che_계략_향낭 extends \sammo\BaseItem{
 
-    public $id = 5;
-    public $name = '항냥(계략)';
-    public $info = '[계략] 화계·탈취·파괴·선동 : 성공률 +20%p';
-    public $cost = 3000;
-    public $consumable = true;
+    static $id = 5;
+    static $name = '항냥(계략)';
+    static $info = '[계략] 화계·탈취·파괴·선동 : 성공률 +20%p';
+    static $cost = 3000;
+    static $consumable = true;
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '계략'){

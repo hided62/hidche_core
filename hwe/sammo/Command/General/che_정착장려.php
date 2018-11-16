@@ -20,7 +20,6 @@ use function \sammo\{
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
-use function sammo\getGeneralLeadership;
 
 
 class che_정착장려 extends Command\GeneralCommand{

@@ -10,11 +10,11 @@ use function sammo\getItemCost2;
 //XXX:임시용!
 class che_Dummy extends \sammo\BaseItem{
 
-    public $id;
-    public $name;
-    public $info;
-    public $cost;
-    public $consumable = false;
+    static $id;
+    static $name;
+    static $info;
+    static $cost;
+    static $consumable = false;
 
     public function __construct(int $itemCode)
     {

@@ -1,0 +1,254 @@
+<?php
+namespace sammo\GeneralCommand;
+
+use \sammo\{
+    DB, Util, JosaUtil,
+    General, 
+    ActionLogger,
+    GameConst, GameUnitConst,
+    LastTurn,
+    Command
+};
+
+
+use function \sammo\{
+    searchDistance
+};
+
+use \sammo\Constraint\Constraint;
+use \sammo\Constraint\ConstraintHelper;
+use sammo\CityConst;
+
+
+
+class che_화계 extends Command\GeneralCommand{
+    static protected $actionName = '화계';
+
+    static protected $statType = 'intel';
+    static protected $injuryGeneral = true;
+
+    protected function argTest():bool{
+        if(!key_exists('destCityID', $this->arg)){
+            return false;
+        }
+        if(!key_exists($this->arg['destCityID'], CityConst::all())){
+            return false;
+        }
+        $this->arg = [
+            'destCityID'=>$this->arg['destCityID']
+        ];
+        return true;
+    }
+
+    protected function calcSabotageAttackProb():float{
+        $statType = static::$statType;
+        $general = $this->generalObj;
+        $nation = $this->nation;
+
+        if($statType === 'leader'){
+            $genScore = $general->getLeadership();
+        }
+        else if($statType === 'power'){
+            $genScore = $general->getPower();
+        }
+        else if($statType === 'intel'){
+            $genScore = $general->getIntel();
+        }
+        else{
+            throw new MustNotBeReachedException();
+        }
+
+        $prob = $genScore / GameConst::$sabotageProbCoefByStat;
+        $prob = $general->onCalcDomestic('계략', 'success', $prob);
+        return $prob;
+    }
+
+    protected function calcSabotageDefenceProb(array $destCityGeneralList):float{
+        $statType = static::$statType;
+        $destCity = $this->destCity;
+        $destNation = $this->destNation;
+        $destNationID = $destNation['nation'];
+
+        $maxGenScore = 0;
+        foreach($destCityGeneralList as $destGeneral){
+            /** @var General $destGeneral */
+            if($destGeneral->getNationID() != $destNationID){
+                continue;
+            }
+
+            if($statType === 'leader'){
+                $genScore = $destGeneral->getLeadership();
+            }
+            else if($statType === 'power'){
+                $genScore = $destGeneral->getPower();
+            }
+            else if($statType === 'intel'){
+                $genScore = $destGeneral->getIntel();
+            }
+            else{
+                throw new MustNotBeReachedException();
+            }
+            $maxGenScore = max($maxGenScore, $genScore);
+        }
+
+        $prob = $maxGenScore / GameConst::$sabotageProbCoefByStat;
+
+        $prob += $city['secu'] / $city['secu2'] / 5; //최대 20%p
+        $prob += $city['supply'] ? 0.1 : 0;
+        return $prob;
+    }
+
+    protected function init(){
+
+        $general = $this->generalObj;
+
+        $this->setCity();
+        $this->setDestCity($this->arg['destCityID'], null); //xxx: 이대로라면 메인 페이지 갱신시마다 DB query를 하게 된다.
+        $this->setDestNation($this->destCity['nation']);
+
+        [$reqGold, $reqRice] = $this->getCost();
+        
+        $this->runnableConstraints=[
+            ConstraintHelper::NotBeNeutral(),
+            ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::SuppliedCity(),
+            ConstraintHelper::NotOccupiedDestCity(),
+            ConstraintHelper::NotNeutralDestCity(),
+            ConstraintHelper::ReqGeneralGold($reqGold),
+            ConstraintHelper::ReqGeneralRice($reqRice),
+            ConstraintHelper::DisallowDiplomacyStatus([7], '불가침국입니다.'),
+        ];
+    }
+
+    public function getCost():array{
+        $env = $this->env;
+        $cost = $env['develcost'] * 5;
+        return [$cost, $cost];
+    }
+    
+    public function getPreReqTurn():int{
+        return 0;
+    }
+
+    public function getPostReqTurn():int{
+        return 0;
+    }
+
+    public function getFailString():string{
+        $commandName = $this->getName();
+        $failReason = $this->testRunnable();
+        if($failReason === null){
+            throw new \RuntimeException('실행 가능한 커맨드에 대해 실패 이유를 수집');
+        }
+        $destCityName = CityConst::byID($this->arg['destCityID'])->name;
+        return "{$failReason} <G><b>{$destCityName}</b></>에 {$commandName} 실패.";
+    }
+
+    protected function affectDestCity(int $injuryCount){
+        
+    }
+
+    public function run():bool{
+        if(!$this->isRunnable()){
+            throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
+        }
+
+        $db = DB::db();
+        $env = $this->env;
+
+        $general = $this->generalObj;
+        $date = substr($general->getVar('turntime'),11,5);
+
+        $destCity = $this->destCity;
+
+        $destCityName = $destCity['name'];
+        $destCityID = $destCity['city'];
+        $destNationID = $destCity['nation'];
+        $josaUl = JosaUtil::pick($destCityName, '을');
+
+        $commandName = $this->getName();
+        $statType = static::$statType;
+
+        $logger = $general->getLogger();
+
+        $dist = searchDistance($general->getCityID(), 5, false)[$destCityID]??99;
+
+        $destCityGeneralList = [];
+        
+        [$year, $month] = [$env['year'], $env['month']];
+        
+        foreach($db->query(
+            'SELECT `no`,name,city,nation,level,leader,horse,power,weap,intel,book,item,last_turn,injury,special,special2 FROM general WHERE city = %i',
+            $destCityID,
+            $destNationID
+        ) as $rawDestCityGeneral){
+            $destCityGeneralList[] = new General($rawDestGeneral, $destCity, $year, $month, true);
+            //계략에 성공할 경우 logger를 사용해야 하므로 해야하므로, 미리 초기화한다.
+            //실패하면 날리는거지 뭐~
+        };
+
+        $prob = GameConst::$sabotageDefaultProb + $this->calcSabotageAttackProb() - $this->calcSabotageDefenceProb($destCityGeneralList);
+        $prob /= $dist[$destCityID];
+
+        if(!Util::randBool($prob)){
+            $josaYi = JosaUtil::pick($commandName, '이');
+            $logger->pushGeneralActionLog("<G><b>{$destCityName}</b></>에 {$commandName}{$josaYi} 실패했습니다. <1>$date</>");
+
+            $exp = Util::randRangeInt(1, 100);
+            $ded = Util::randRangeInt(1, 70);
+
+            $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
+            $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+
+            [$reqGold, $reqRice] = $this->getCost();
+            $general->increaseVarWithLimit('gold', -$reqGold, 0);
+            $general->increaseVarWithLimit('rice', -$reqRice, 0);
+            $general->increaseVar('experience', $exp);
+            $general->increaseVar('dedication', $ded);
+            $general->increaseVar($statType.'2', 1);
+
+            $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+            $general->checkStatChange();
+            $general->applyDB($db);
+            return false;
+        }
+
+        if(static::$injuryGeneral){
+            $injuryCount = \sammo\SabotageInjuryEx($destCityGeneralList, true);
+        }
+        else{
+            $injuryCount = 0;
+        }
+
+        $this->affectDestCity($injuryCount);
+
+        $itemObj = $general->getItem();
+        if($itemObj->isValidTurnItem('GeneralCommand', '계략') && $itemObj::$consumable){
+            $itemName = $itemObj->$name;
+            $josaUl = JosaUtil::pick($itemName, '을');
+            $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
+            $general->deleteItem();
+        }
+
+        $exp = Util::randRangeInt(201, 300);
+        $ded = Util::randRangeInt(141, 210);
+
+        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
+        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        
+        [$reqGold, $reqRice] = $this->getCost();
+        $general->increaseVarWithLimit('gold', -$reqGold, 0);
+        $general->increaseVarWithLimit('rice', -$reqRice, 0);
+        $general->increaseVar('experience', $exp);
+        $general->increaseVar('dedication', $ded);
+        $general->increaseVar($statType.'2', 1);
+        $general->increaseVar('firenum', 1);
+        $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
+        $general->checkStatChange();
+        $general->applyDB($db);
+
+        return true;
+    }
+
+    
+}

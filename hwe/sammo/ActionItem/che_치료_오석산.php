@@ -6,11 +6,11 @@ use \sammo\GeneralTrigger;
 
 class che_치료_오석산 extends \sammo\BaseItem{
 
-    public $id = 7;
-    public $name = '오석산(치료)';
-    public $info = '[군사] 턴 실행 전 부상 회복.';
-    public $cost = 200;
-    public $consumable = false;
+    static $id = 7;
+    static $name = '오석산(치료)';
+    static $info = '[군사] 턴 실행 전 부상 회복.';
+    static $cost = 200;
+    static $consumable = false;
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         return new GeneralTriggerCaller([
