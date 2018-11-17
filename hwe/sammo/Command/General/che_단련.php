@@ -72,9 +72,9 @@ class che_단련 extends Command\GeneralCommand{
         $date = substr($general->getVar('turntime'),11,5);
 
         [$pick, $multiplier] = Util::choiceRandomUsingWeightPair([
-            [['success', 1], 0.34],
+            [['success', 3], 0.34],
             [['normal', 2], 0.33],
-            [['fail', 3], 0.33]
+            [['fail', 1], 0.33]
         ]);
 
         $score = Util::round($general->getVar('crew') * $general->getVar('train') * $general->getVar('atmos') / 20 / 10000);
