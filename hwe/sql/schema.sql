@@ -180,7 +180,7 @@ CREATE TABLE `nation` (
 	`l5set` INT(1) NULL DEFAULT '0',
 	`scout` INT(1) NULL DEFAULT '0',
 	`war` INT(1) NULL DEFAULT '0',
-	`sabotagelimit` INT(4) NULL DEFAULT '36',
+	`strategic_cmd_limit` INT(4) NULL DEFAULT '36',
 	`surlimit` INT(4) NULL DEFAULT '72',
 	`scoutmsg` TEXT NULL DEFAULT '',
 	`tech` float NULL DEFAULT '0',

@@ -117,7 +117,7 @@ class che_거병 extends Command\GeneralCommand{
             'rice'=>GameConst::$baserice, 
             'rate'=>20, 
             'bill'=>100, 
-            'sabotagelimit'=>12, 
+            'strategic_cmd_limit'=>12, 
             'surlimit'=>72, 
             'type'=>0, 
             'gennum'=>1

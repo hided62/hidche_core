@@ -157,7 +157,7 @@ SELECT
     A.power,
     A.color,
     A.tech,
-    A.sabotagelimit,
+    A.strategic_cmd_limit,
     A.gold,
     A.rice,
     COUNT(B.nation) AS gennum,
@@ -231,7 +231,7 @@ for($i=0; $i < $nationCount; $i++) {
         <td align=center>&nbsp;{$gen['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$city['cnt']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['tech']}&nbsp;</td>
-        <td align=center>&nbsp;{$nation['sabotagelimit']}&nbsp;</td>
+        <td align=center>&nbsp;{$nation['strategic_cmd_limit']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['gold']}&nbsp;</td>
         <td align=center>&nbsp;{$nation['rice']}&nbsp;</td>
         <td align=center>&nbsp;{$gen['avgg']}&nbsp;</td>

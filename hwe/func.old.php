@@ -266,7 +266,7 @@ function myNationInfo() {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,sabotagelimit,surlimit,tech,level,type from nation where nation='{$me['nation']}'";
+    $query = "select nation,name,color,power,msg,gold,rice,bill,rate,scout,war,strategic_cmd_limit,surlimit,tech,level,type from nation where nation='{$me['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -346,14 +346,14 @@ function myNationInfo() {
     $nation['tech'] = "$techCall / {$nation['tech']}";
     
     if($me['nation']==0){
-        $nation['sabotagelimit'] = "<font color=white>해당 없음</font>";
+        $nation['strategic_cmd_limit'] = "<font color=white>해당 없음</font>";
         $nation['surlimit'] = "<font color=white>해당 없음</font>";
         $nation['scout'] = "<font color=white>해당 없음</font>";
         $nation['war'] = "<font color=white>해당 없음</font>";
         $nation['power'] = "<font color=white>해당 없음</font>";
     } else {
-        if($nation['sabotagelimit'] != 0) { $nation['sabotagelimit'] = "<font color=red>{$nation['sabotagelimit']}턴</font>"; }
-        else { $nation['sabotagelimit'] = "<font color=limegreen>가 능</font>"; }
+        if($nation['strategic_cmd_limit'] != 0) { $nation['strategic_cmd_limit'] = "<font color=red>{$nation['strategic_cmd_limit']}턴</font>"; }
+        else { $nation['strategic_cmd_limit'] = "<font color=limegreen>가 능</font>"; }
     
         if($nation['surlimit'] != 0) { $nation['surlimit'] = "<font color=red>{$nation['surlimit']}턴</font>"; }
         else { $nation['surlimit'] = "<font color=limegreen>가 능</font>"; }
@@ -384,7 +384,7 @@ function myNationInfo() {
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>전 략</b></td>
-        <td style='text-align:center;'>{$nation['sabotagelimit']}</td>
+        <td style='text-align:center;'>{$nation['strategic_cmd_limit']}</td>
         <td style='text-align:center;' class='bg1'><b>외 교</b></td>
         <td style='text-align:center;'>{$nation['surlimit']}</td>
     </tr>

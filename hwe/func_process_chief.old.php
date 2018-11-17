@@ -1281,7 +1281,7 @@ function process_71(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,sabotagelimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -1314,7 +1314,7 @@ function process_71(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 필사즉생 실패. <1>$date</>";
     } elseif($dipCount == 0) {
         $log[] = "<C>●</>{$admin['month']}월:전쟁중이 아닙니다. 필사즉생 실패. <1>$date</>";
-    } elseif($nation['sabotagelimit'] > 0) {
+    } elseif($nation['strategic_cmd_limit'] > 0) {
         $log[] = "<C>●</>{$admin['month']}월:전략기한이 남았습니다. 필사즉생 실패. <1>$date</>";
     } elseif($term < $term2) {
         $log[] = "<C>●</>{$admin['month']}월:필사즉생 수행중... ({$term}/{$term2}) <1>$date</>";
@@ -1357,7 +1357,7 @@ function process_71(&$general) {
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
-        $query = "update nation set sabotagelimit={$term3} where nation='{$general['nation']}'";
+        $query = "update nation set strategic_cmd_limit={$term3} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //경험치, 공헌치
@@ -1389,7 +1389,7 @@ function process_72(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,sabotagelimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -1429,7 +1429,7 @@ function process_72(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 백성동원 실패. <1>$date</>";
     } elseif($dipCount == 0) {
         $log[] = "<C>●</>{$admin['month']}월:전쟁중이 아닙니다. 백성동원 실패. <1>$date</>";
-    } elseif($nation['sabotagelimit'] > 0) {
+    } elseif($nation['strategic_cmd_limit'] > 0) {
         $log[] = "<C>●</>{$admin['month']}월:전략기한이 남았습니다. 백성동원 실패. <1>$date</>";
     } elseif($destcity['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국 도시만 가능합니다. 백성동원 실패. <1>$date</>";
@@ -1474,7 +1474,7 @@ function process_72(&$general) {
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
-        $query = "update nation set sabotagelimit={$term3} where nation='{$general['nation']}'";
+        $query = "update nation set strategic_cmd_limit={$term3} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //경험치, 공헌치
@@ -1506,7 +1506,7 @@ function process_73(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,sabotagelimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -1554,7 +1554,7 @@ function process_73(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:대상도시가 아국입니다. 수몰 실패. <1>$date</>";
     } elseif($dip['state'] > 0) {
         $log[] = "<C>●</>{$admin['month']}월:전쟁중인 상대국에만 가능합니다. 수몰 실패. <1>$date</>";
-    } elseif($nation['sabotagelimit'] > 0) {
+    } elseif($nation['strategic_cmd_limit'] > 0) {
         $log[] = "<C>●</>{$admin['month']}월:전략기한이 남았습니다. 수몰 실패. <1>$date</>";
     } elseif($term < $term2) {
         $log[] = "<C>●</>{$admin['month']}월:수몰 수행중... ({$term}/{$term2}) <1>$date</>";
@@ -1607,7 +1607,7 @@ function process_73(&$general) {
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
-        $query = "update nation set sabotagelimit={$term3} where nation='{$general['nation']}'";
+        $query = "update nation set strategic_cmd_limit={$term3} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //경험치, 공헌치
@@ -1639,7 +1639,7 @@ function process_74(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,sabotagelimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -1687,7 +1687,7 @@ function process_74(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:대상도시가 아국입니다. 허보 실패. <1>$date</>";
     } elseif($dip['state'] > 1) {
         $log[] = "<C>●</>{$admin['month']}월:선포,전쟁중인 상대국에만 가능합니다. 허보 실패. <1>$date</>";
-    } elseif($nation['sabotagelimit'] > 0) {
+    } elseif($nation['strategic_cmd_limit'] > 0) {
         $log[] = "<C>●</>{$admin['month']}월:전략기한이 남았습니다. 허보 실패. <1>$date</>";
     } elseif($term < $term2) {
         $log[] = "<C>●</>{$admin['month']}월:허보 수행중... ({$term}/{$term2}) <1>$date</>";
@@ -1753,7 +1753,7 @@ function process_74(&$general) {
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
-        $query = "update nation set sabotagelimit={$term3} where nation='{$general['nation']}'";
+        $query = "update nation set strategic_cmd_limit={$term3} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //경험치, 공헌치
@@ -1785,7 +1785,7 @@ function process_75(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,sabotagelimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -1827,7 +1827,7 @@ function process_75(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 피장파장 실패. <1>$date</>";
     } elseif($dip['state'] > 1) {
         $log[] = "<C>●</>{$admin['month']}월:선포,전쟁중인 상대국에만 가능합니다. 피장파장 실패. <1>$date</>";
-    } elseif($nation['sabotagelimit'] > 0) {
+    } elseif($nation['strategic_cmd_limit'] > 0) {
         $log[] = "<C>●</>{$admin['month']}월:전략기한이 남았습니다. 피장파장 실패. <1>$date</>";
     } elseif($term < $term2) {
         $log[] = "<C>●</>{$admin['month']}월:피장파장 수행중... ({$term}/{$term2}) <1>$date</>";
@@ -1872,7 +1872,7 @@ function process_75(&$general) {
         pushNationHistory($destnation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} 아국에 <M>피장파장</>을 발동");
 
         //전략기한+60
-        $query = "update nation set sabotagelimit=sabotagelimit+60 where nation='{$destnation['nation']}'";
+        $query = "update nation set strategic_cmd_limit=strategic_cmd_limit+60 where nation='{$destnation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         // 국가보정
@@ -1881,7 +1881,7 @@ function process_75(&$general) {
 
         //전략기한, 최소72
         if($term3 < 72) { $term3 = 72; }
-        $query = "update nation set sabotagelimit={$term3} where nation='{$general['nation']}'";
+        $query = "update nation set strategic_cmd_limit={$term3} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //경험치, 공헌치
@@ -1913,7 +1913,7 @@ function process_76(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,sabotagelimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -1942,7 +1942,7 @@ function process_76(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 의병모집 실패. <1>$date</>";
     } elseif($general['level'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 의병모집 실패. <1>$date</>";
-    } elseif($nation['sabotagelimit'] > 0) {
+    } elseif($nation['strategic_cmd_limit'] > 0) {
         $log[] = "<C>●</>{$admin['month']}월:전략기한이 남았습니다. 의병모집 실패. <1>$date</>";
     } elseif($term < $term2) {
         $log[] = "<C>●</>{$admin['month']}월:의병모집 수행중... ({$term}/{$term2}) <1>$date</>";
@@ -2090,7 +2090,7 @@ function process_76(&$general) {
 
         //전략기한
         $db->update('nation', [
-            'sabotagelimit'=>$term3,
+            'strategic_cmd_limit'=>$term3,
             'gennum'=>$db->sqleval('gennum + %i', $addGenCount),
         ], 'nation=%i', $general['nation']);
 
@@ -2123,7 +2123,7 @@ function process_77(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,sabotagelimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -2163,7 +2163,7 @@ function process_77(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 이호경식 실패. <1>$date</>";
     } elseif($dip['state'] > 1) {
         $log[] = "<C>●</>{$admin['month']}월:선포,전쟁중인 상대국에만 가능합니다. 이호경식 실패. <1>$date</>";
-    } elseif($nation['sabotagelimit'] > 0) {
+    } elseif($nation['strategic_cmd_limit'] > 0) {
         $log[] = "<C>●</>{$admin['month']}월:전략기한이 남았습니다. 이호경식 실패. <1>$date</>";
     } elseif($term < $term2) {
         $log[] = "<C>●</>{$admin['month']}월:이호경식 수행중... ({$term}/{$term2}) <1>$date</>";
@@ -2221,7 +2221,7 @@ function process_77(&$general) {
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
-        $query = "update nation set sabotagelimit={$term3} where nation='{$general['nation']}'";
+        $query = "update nation set strategic_cmd_limit={$term3} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //경험치, 공헌치
@@ -2253,7 +2253,7 @@ function process_78(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,name,type,sabotagelimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -2295,7 +2295,7 @@ function process_78(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:선포중인 상대국에만 가능합니다. 급습 실패. <1>$date</>";
     } elseif($dip['term'] < 12) {
         $log[] = "<C>●</>{$admin['month']}월:선포 12개월 이상인 상대국에만 가능합니다. 급습 실패. <1>$date</>";
-    } elseif($nation['sabotagelimit'] > 0) {
+    } elseif($nation['strategic_cmd_limit'] > 0) {
         $log[] = "<C>●</>{$admin['month']}월:전략기한이 남았습니다. 급습 실패. <1>$date</>";
     } elseif($term < $term2) {
         $log[] = "<C>●</>{$admin['month']}월:급습 수행중... ({$term}/{$term2}) <1>$date</>";
@@ -2348,7 +2348,7 @@ function process_78(&$general) {
         if($nation['type'] == 12) { $term3 = $term3 * 2; }
 
         //전략기한
-        $query = "update nation set sabotagelimit={$term3} where nation='{$general['nation']}'";
+        $query = "update nation set strategic_cmd_limit={$term3} where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //경험치, 공헌치
@@ -2379,7 +2379,7 @@ function process_81(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
 
-    $query = "select nation,can_change_flag,name,type,sabotagelimit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
+    $query = "select nation,can_change_flag,name,type,strategic_cmd_limit,l{$general['level']}term,l{$general['level']}turn0 from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 

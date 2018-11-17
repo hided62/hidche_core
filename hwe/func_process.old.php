@@ -1272,7 +1272,7 @@ function process_16(&$general) {
 
     $admin = $gameStor->getValues(['startyear', 'year', 'month']);
 
-    $query = "select nation,war,sabotagelimit,tech from nation where nation='{$general['nation']}'";
+    $query = "select nation,war,strategic_cmd_limit,tech from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $nation = MYDB_fetch_array($result);
 
@@ -1287,7 +1287,7 @@ function process_16(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
-    $query = "select nation,sabotagelimit,tech from nation where nation='{$destcity['nation']}'";
+    $query = "select nation,strategic_cmd_limit,tech from nation where nation='{$destcity['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $dnation = MYDB_fetch_array($result);
 

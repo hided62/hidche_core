@@ -692,7 +692,7 @@ function command_25($turn, $command) {
     
     $joinedNations = Json::decode($me['nations']);
 
-    $query = "select nation,name,color,scout,scoutmsg,sabotagelimit,gennum from nation order by gennum";
+    $query = "select nation,name,color,scout,scoutmsg,strategic_cmd_limit,gennum from nation order by gennum";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     
