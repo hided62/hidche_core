@@ -2,7 +2,7 @@
 
 namespace sammo\Constraint;
 
-class NotOccupiedDestCity extends Constraint{
+class OccupiedDestCity extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_DEST_CITY;
 
     public function checkInputValues(bool $throwExeception=true){
@@ -27,11 +27,11 @@ class NotOccupiedDestCity extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->destCity['nation'] != $this->general['nation']){
+        if($this->destCity['nation'] == $this->general['nation']){
             return true;
         }
 
-        $this->reason = "아국입니다.";
+        $this->reason = "아국이 아닙니다.";
         return false;
     }
 }

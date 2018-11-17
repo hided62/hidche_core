@@ -135,6 +135,10 @@ class ConstraintHelper{
     static function OccupiedCity(bool $allowNeutral=false):array{
         return [__FUNCTION__, $allowNeutral];
     }
+
+    static function OccupiedDestCity():array{
+        return [__FUNCTION__];
+    }
     
     static function RemainCityCapacity($key, string $actionName):array{
         return [__FUNCTION__, $key, $actionName];
@@ -205,6 +209,10 @@ class ConstraintHelper{
     }
 
     static function SuppliedCity():array{
+        return [__FUNCTION__];
+    }
+
+    static function SuppliedDestCity():array{
         return [__FUNCTION__];
     }
     

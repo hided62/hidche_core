@@ -55,6 +55,9 @@ class che_임관 extends Command\GeneralCommand{
             if($destGeneralID < 1){
                 return false;
             }
+            if($destGeneralID == $this->generalObj->getID()){
+                return false;
+            }
 
             $this->arg = [
                 'destGeneralID' => $destGeneralID
