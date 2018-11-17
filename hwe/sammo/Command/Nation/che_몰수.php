@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\Nation;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -14,19 +14,17 @@ use \sammo\{
 use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
-    CriticalScoreEx,
-    tryUniqueItemLottery
+    CriticalScoreEx
 };
 
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-
-class che_증여 extends Command\GeneralCommand{
-    static protected $actionName = '증여';
+class che_몰수 extends Command\NationCommand{
+    static protected $actionName = '몰수';
 
     protected function argTest():bool{
-        //NOTE: 사망 직전에 '증여' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
+        //NOTE: 사망 직전에 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음
         if(!key_exists('isGold', $this->arg)){
             return false;
         }
@@ -64,31 +62,29 @@ class che_증여 extends Command\GeneralCommand{
     }
 
     protected function init(){
-
         $general = $this->generalObj;
 
+        $env = $this->env;
+
         $this->setCity();
-        $this->setNation();
+        $this->setNation(['gold', 'rice']);
 
         $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'nation'], 1);
         $this->setDestGeneral($destGeneral);
+
+        $relYear = $env['year'] - $env['startyear'];
         
         $this->runnableConstraints=[
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::OccupiedCity(),
+            ConstraintHelper::BeChief(),
+            ConstraintHelper::NotOpeningPart($relYear),
             ConstraintHelper::SuppliedCity(),
             ConstraintHelper::ExistsDestGeneral(),
             ConstraintHelper::FriendlyDestGeneral()
         ];
-        if($this->arg['isGold']){
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralGold(1);
-        }
-        else{
-            $this->runnableConstraints[] = ConstraintHelper::ReqGeneralRice(1);
-        }
-
     }
-
+    
     public function getCost():array{
         return [0, 0];
     }
@@ -101,6 +97,7 @@ class che_증여 extends Command\GeneralCommand{
         return 0;
     }
 
+
     public function run():bool{
         if(!$this->isRunnable()){
             throw new \RuntimeException('불가능한 커맨드를 강제로 실행 시도');
@@ -111,40 +108,61 @@ class che_증여 extends Command\GeneralCommand{
         $general = $this->generalObj;
         $date = substr($general->getVar('turntime'),11,5);
 
+        $nation = $this->nation;
+        $nationID = $nation['nation'];
+
         $isGold = $this->arg['isGold'];
         $amount = $this->arg['amount'];
         $resKey = $isGold?'gold':'rice';
         $resName = $isGold?'금':'쌀';
         $destGeneral = $this->destGeneralObj;
         
-        $amount = Util::valueFit($amount, 0, $general->getVar($resKey));
+        $amount = Util::valueFit($amount, 0, $general->getVar[$resKey]);
         $amountText = number_format($amount, 0);
+
+        if($destGeneral->getVar('npc') >= 2 && Util::randBool(0.01)){
+            $npcTexts = [
+                '몰수를 하다니... 이것이 윗사람이 할 짓이란 말입니까...',
+                '사유재산까지 몰수해가면서 이 나라가 잘 될거라 믿습니까? 정말 이해할 수가 없군요...',
+                '내 돈 내놔라! 내 돈! 몰수가 왠 말이냐!',
+                '몰수해간 내 자금... 언젠가 몰래 다시 빼내올 것이다...',
+                '몰수로 인한 사기 저하는 몰수로 얻은 물자보다 더 손해란걸 모른단 말인가!'  
+            ];
+            $text = Util::choiceRandom($npcTexts);
+            $src = new MessageTarget(
+                $general->getID(), 
+                $general->getName(),
+                $nationID,
+                $nation['name'],
+                $nation['color'],
+                GetImageURL($general->getVar('imgsvr'), $general->getVar('picture'))
+            );
+            $msg = new Message(
+                Message::MSGTYPE_PUBLIC, 
+                $src,
+                $src,
+                $str,
+                new \DateTime(),
+                new \DateTime('9999-12-31'),
+                []
+            );
+            $msg->send();
+        }
         
         $logger = $general->getLogger();
 
-        $destGeneral->increaseVarWithLimit($resKey, $amount);
-        $general->increaseVarWithLimit($resKey, -$amount, 0);
+        $destGeneral->increaseVarWithLimit($resKey, -$amount);
+        $db->update('nation', [
+            $resKey=>$db->sqleval('%b + %i', $resKey, $amount)
+        ], 'nation=%i', $nationID);
 
-        $destGeneral->getLogger()->pushGeneralActionLog("{$general->getName()}</>에게서 {$resName} <C>{$amountText}</>을 증여 받았습니다.", ActionLogger::PLAIN);
-        $logger->pushGeneralActionLog("{$destGeneral->getName()}에게 {$resName} <C>$amountText</>을 증여했습니다. <1>$date</>");
-
-        $exp = 70;
-        $ded = 100;
-
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
-
-        $general->increaseVar('experience', $exp);
-        $general->increaseVar('dedication', $ded);
-        $general->increaseVar('leader2', 1);
+        $destGeneral->getLogger()->pushGeneralActionLog("{$resName} {$amountText}을 몰수 당했습니다.", ActionLogger::PLAIN);
+        $logger->pushGeneralActionLog("{$destGeneral->getName()}에게서 {$resName} <C>$amountText</>을 몰수했습니다. <1>$date</>");
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
-        $general->checkStatChange();
         $general->applyDB($db);
         $destGeneral->applyDB($db);
 
         return true;
     }
-
-    
 }

@@ -188,6 +188,14 @@ class ConstraintHelper{
         return [__FUNCTION__, $key, $keyNick, $comp, $reqVal];
     }
 
+    static function ReqNationGold(int $reqGold):array{
+        return [__FUNCTION__, $reqGold];
+    }
+
+    static function ReqNationRice(int $reqRice):array{
+        return [__FUNCTION__, $reqRice];
+    }
+
     static function ReqNationValue($key, string $keyNick, string $comp, $reqVal):array{
         return [__FUNCTION__, $key, $keyNick, $comp, $reqVal];
     }
