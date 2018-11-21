@@ -116,7 +116,10 @@ class che_화계 extends Command\GeneralCommand{
             ConstraintHelper::NotNeutralDestCity(),
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
-            ConstraintHelper::DisallowDiplomacyStatus([7], '불가침국입니다.'),
+            ConstraintHelper::DisallowDiplomacyStatus(
+                $this->generalObj->getNationID(),
+                [7 => '불가침국입니다.']
+            ),
         ];
     }
 

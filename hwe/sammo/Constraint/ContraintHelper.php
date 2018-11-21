@@ -64,8 +64,12 @@ class ConstraintHelper{
         return [__FUNCTION__];
     }
 
-    static function DisallowDiplomacyStatus(array $disallowStatus, string $failMessage):array{
-        return [__FUNCTION__, $disallowStatus, $failMessage];
+    static function DisallowDiplomacyBetweenStatus(array $disallowList):array{
+        return [__FUNCTION__, $disallowList];
+    }
+
+    static function DisallowDiplomacyStatus(int $nationID, array $disallowList):array{
+        return [__FUNCTION__, $nationID, $disallowList];
     }
 
     static function ExistsAllowJoinNation(int $relYear, array $excludeNationList):array{

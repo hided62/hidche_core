@@ -4,10 +4,11 @@ namespace sammo\Constraint;
 
 use \sammo\JosaUtil;
 use \sammo\DB;
-class DisallowDiplomacyStatus extends Constraint{
-    const REQ_VALUES = Constraint::REQ_ARRAY_ARG;
+class DisallowDiplomacyBetweenStatus extends Constraint{
+    const REQ_VALUES = Constraint::REQ_ARRAY_ARG|Constraint::REQ_NATION|Constraint::REQ_DEST_NATION;
 
     protected $nationID;
+    protected $destNationID;
     protected $disallowStatus = [];
 
     public function checkInputValues(bool $throwExeception=true){
@@ -15,21 +16,9 @@ class DisallowDiplomacyStatus extends Constraint{
             return false;
         }
 
-        if(count($this->arg) != 2){
-            if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("require nationID, disallowStatus pair");
-        }
-
-        [$this->nationID, $this->disallowStatus] = $this->arg;
-        if(!is_int($this->nationID)){
-            if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("nationID {$this->nationID} must be int");
-        }
-
-        if(!is_array($this->disallowStatus)){
-            if(!$throwExeception){return false; }
-            throw new \InvalidArgumentException("disallowStatus {$this->disallowStatus} must be array");
-        }
+        $this->nationID = $this->nation['nation'];
+        $this->destNationID = $this->destNation['nation'];
+        $this->disallowStatus = $this->arg;
 
         foreach($this->disallowStatus as $dipCode => $errMsg){
             if(!is_int($dipCode)){
@@ -52,8 +41,9 @@ class DisallowDiplomacyStatus extends Constraint{
         $db = DB::db();
 
         $state = $db->queryFirstField(
-            'SELECT state FROM diplomacy WHERE me = %i AND `state` IN %li LIMIT 1', 
+            'SELECT state FROM diplomacy WHERE me = %i AND you = %i AND `state` IN %li LIMIT 1', 
             $this->nationID, 
+            $this->destNationID, 
             array_keys($this->disallowStatus)
         );
         if($state === null){

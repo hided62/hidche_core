@@ -59,7 +59,10 @@ class che_선양 extends Command\GeneralCommand{
             ConstraintHelper::BeLord(), 
             ConstraintHelper::ExistsDestGeneral(),
             ConstraintHelper::FriendlyDestGeneral(),
-            ConstraintHelper::DisallowDiplomacyStatus([4], '현재 통합 진행중입니다.')
+            ConstraintHelper::DisallowDiplomacyStatus(
+                $this->generalObj->getNationID(),
+                [4 => '현재 통합 진행중입니다.']
+            )
         ];
     }
 

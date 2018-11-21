@@ -44,7 +44,14 @@ class che_방랑 extends Command\GeneralCommand{
             ConstraintHelper::BeLord(),
             ConstraintHelper::NotWanderingNation(),
             ConstraintHelper::NotOpeningPart($relYear),
-            ConstraintHelper::DisallowDiplomacyStatus([0, 1, 3, 4, 5, 6], '방랑할 수 없는 외교상태입니다.'),
+            ConstraintHelper::DisallowDiplomacyStatus($this->generalObj->getNationID(), [
+                0 => '방랑할 수 없는 외교상태입니다.',
+                1 => '방랑할 수 없는 외교상태입니다.',
+                3 => '방랑할 수 없는 외교상태입니다.',
+                4 => '방랑할 수 없는 외교상태입니다.',
+                5 => '방랑할 수 없는 외교상태입니다.',
+                6 => '방랑할 수 없는 외교상태입니다.'
+            ]),
             //TODO:diplomacy status 상수화
         ];
     }

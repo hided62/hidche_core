@@ -21,7 +21,7 @@ class ExistsDestNation extends Constraint{
             return true;
         }
 
-        $this->reason = "없는 국가입니다.";
+        $this->reason = "멸망한 국가입니다.";
         return false;
     }
 }
