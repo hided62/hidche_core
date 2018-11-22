@@ -218,3 +218,25 @@ div.bar_out div.bar_in{
     margin:0;
     padding:0;
 }
+
+.commandBasic{
+    background-color:black;
+    color:white;
+}
+
+.compensatePositive{
+    color:skyblue;
+}
+
+.compensateNegative{
+    color:orange;
+}
+
+.compensateNeutral{
+    color:white;
+}
+
+.commandBasic.commandImpossible{
+    background-color:red;
+    color:white;
+}

@@ -572,9 +572,14 @@ class Util extends \utilphp\util
     /**
      * fqn 클래스 경로에서 클래스 이름을 받아옴
      */
-    function getClassName(string $classpath)
+    public static function getClassName(string $classpath)
     {
         if ($pos = strrpos($classpath, '\\')) return substr($classpath, $pos + 1);
         return $pos;
+    }
+
+    public static function getClassNameFromObj($object){
+        $reflect = new ReflectionClass($object);
+        return $reflect->getShortName();
     }
 };

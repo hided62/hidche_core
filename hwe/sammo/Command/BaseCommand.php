@@ -18,6 +18,10 @@ abstract class BaseCommand{
     static protected $actionName = 'CommandName';
     static public $reqArg = false;
 
+    public function getCommandDetailTitle():string{
+        return $this->getName();
+    }
+
     protected $generalObj = null;
     protected $city = null;
     protected $nation = null;
@@ -202,6 +206,15 @@ abstract class BaseCommand{
     public function getBrief():string{
         return static::getName();
     }
+
+    public function getCompensationStyle():?int{
+        //1 : Positive
+        //0 : Neutral
+        //-1 : Negative
+        //null : can't calculate
+        //TODO: 구현
+        return 0;
+    }
     
     static public function getName():string {
         return static::$actionName;
@@ -212,7 +225,28 @@ abstract class BaseCommand{
     }
 
     public function testReservable():?string{
+        if($this->reservableConstraints === null){
+            return true;
+        }
 
+        if($this->reasonNotReservable){
+            return $this->reasonNotReservable;
+        }
+
+        $constraintInput = [
+            'general'=>$this->generalObj->getRaw(),
+            'city'=>$this->city,
+            'nation'=>$this->nation,
+            'arg'=>$this->arg,
+
+            'destGeneral'=>$this->destGeneralObj->getRaw(),
+            'destCity'=>$this->destCity,
+            'destNation'=>$this->destNation,
+        ];
+
+        $this->reasonNotReservable = Constraint::testAll($this->reservableConstraints, $constraintInput);
+        $this->reservable = $this->reasonNotReservable === null;
+        return $this->reasonNotReservable;
     }
 
     public function canDisplay():bool{
@@ -246,13 +280,9 @@ abstract class BaseCommand{
             'destNation'=>$this->destNation,
         ];
 
-        if(!$fullCheck && $this->reservableConstraints){
-            return Constraint::testAll($this->reservableConstraints, $constraintInput);
-        }
-
         $this->reasonNotRunnable = Constraint::testAll($this->runnableConstraints, $constraintInput);
-        $this->runnable = $this->reason === null;
-        return $this->reason;
+        $this->runnable = $this->reasonNotRunnable === null;
+        return $this->reasonNotRunnable;
         
     }
 

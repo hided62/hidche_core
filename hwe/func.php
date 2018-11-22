@@ -427,246 +427,61 @@ function commandGroup($typename, $type=0) {
     }
 }
 
-function commandTable() {
+function printCommandTable() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
     $userID = Session::getUserID();
 
-    $admin = $gameStor->getValues(['startyear', 'year', 'month', 'develcost', 'scenario', 'join_mode']);
+    $gameStor->cacheAll();
+    $env = $gameStor->getAll();
+    $admin = $gameStor->getAll();
 
-    $query = "select no,npc,troop,city,nation,level,crew,makelimit,special from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
+    $session = Session::getInstance();
+    $generalID = $session->generalID;
 
-    $troop = getTroop($me['troop']);
-    $city = getCity($me['city']);
+    $generalObj = General::createGeneralObjFromDB($generalID);
 
-    $nationcount = count(getAllNationStaticInfo());
+?>
+<select id='generalCommandList' name='commandtype' size=1 style='height:20px;width:260px;color:white;background-color:black;font-size:12px;'>";
+<?php
 
-    $query = "select city from city where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($result);
+    $getCompensateClassName = function($value){
+        if($value > 0){
+            return 'compensatePositive';
+        }
+        else if($value < 0){
+            return 'compensateNegative';
+        }
+        return 'compensateNeutral';
+    };
 
-    $query = "select no from general where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($result);
+    foreach(GameConst::$availableGeneralCommand as $commandCategory => $commandList){
+        if($commandCategory){
+            commandGroup("========= {$commandCategory} ==========");
+        }
 
-    $nation = getNationStaticInfo($me['nation']);
+        foreach($commandList as $commandClassName){
+            $commandObj = buildGeneralCommandClass($commandClassName, $generalObj, $env);
+            if(!$commandObj->canDisplay()){
+                continue;
+            }
+?>
+<option 
+    class='commandBasic <?=$commandObj->getCompensationStyle()?> <?=$commandObj->isReservable()?'':'commandImpossible'?>'
+    value='<?=Util::getClassNameFromObj($commandObj)?>'
+><?=$commandObj->getCommandDetailTitle()?><?=$commandObj->isReservable()?'':'(불가)'?></option>
+<?php
+        }
 
-    $develcost = $admin['develcost'];
-    $develcostA = $admin['develcost'];    $colorA = 0;
-    $develcostB = $admin['develcost'];    $colorB = 0;
-    $develcostC = $admin['develcost'];    $colorC = 0;
-    $develcostD = $admin['develcost'];    $colorD = 0;
-    $develcostE = $admin['develcost']*2;  $colorE = 0;
-    $develcost3 = $admin['develcost']*3;
-    $develcost5 = $admin['develcost']*5;
-
-    // 농상 국가보정
-    if($nation['type'] == 2 || $nation['type'] == 12)                                             { $develcostA *= 0.8;   $colorA = 1; }
-    if($nation['type'] == 8 || $nation['type'] == 11)                                                                   { $develcostA *= 1.2;   $colorA = 2; }
-    // 기술 국가보정
-    if($nation['type'] == 3 || $nation['type'] == 13)                                                                   { $develcostB *= 0.8;   $colorB = 1; }
-    if($nation['type'] == 5 || $nation['type'] == 6 || $nation['type'] == 7 || $nation['type'] == 8 || $nation['type'] == 12) { $develcostB *= 1.2;   $colorB = 2; }
-    // 수성 국가보정
-    if($nation['type'] == 3 || $nation['type'] == 5 || $nation['type'] == 10 || $nation['type'] == 11)                      { $develcostC *= 0.8;   $colorC = 1; }
-    if($nation['type'] == 4 || $nation['type'] == 7 || $nation['type'] == 8  || $nation['type'] == 13)                      { $develcostC *= 1.2;   $colorC = 2; }
-    // 치안 국가보정
-    if($nation['type'] == 1 || $nation['type'] == 4)                                                                    { $develcostD *= 0.8;   $colorD = 1; }
-    if($nation['type'] == 6 || $nation['type'] == 9)                                                                    { $develcostD *= 1.2;   $colorD = 2; }
-    // 민심,정착장려 국가보정
-    if($nation['type'] == 2 || $nation['type'] == 4 || $nation['type'] == 7 || $nation['type'] == 10) { $develcostE *= 0.8;   $colorE = 1; }
-    if($nation['type'] == 1 || $nation['type'] == 3 || $nation['type'] == 9)                                                                    { $develcostE *= 1.2;   $colorE = 2; }
-
-    $develcostA = Util::round($develcostA);
-    $develcostB = Util::round($develcostB);
-    $develcostC = Util::round($develcostC);
-    $develcostD = Util::round($develcostD);
-    $develcostE = Util::round($develcostE);
-
-    echo "
-<select name=commandtype size=1 style='height:20px;width:260px;color:white;background-color:black;font-size:12px;'>";
-    addCommand("휴 식", 0);
-    addCommand("요 양", 50);
-    commandGroup("========= 내 정 ==========");
-    if($me['level'] >= 1 && ($citycount != 0 || $admin['year'] >= $admin['startyear']+3) && $city['supply'] != 0) {
-        addCommand("농지개간(지력경험, 자금$develcostA)", 1, 1, $colorA);
-        addCommand("상업투자(지력경험, 자금$develcostA)", 2, 1, $colorA);
-        addCommand("기술연구(지력경험, 자금$develcostB)", 3, 1, $colorB);
-        addCommand("수비강화(무력경험, 자금$develcostC)", 5, 1, $colorC);
-        addCommand("성벽보수(무력경험, 자금$develcostC)", 6, 1, $colorC);
-        addCommand("치안강화(무력경험, 자금$develcostD)", 8, 1, $colorD);
-        addCommand("정착장려(통솔경험, 군량$develcostE)", 7, 1, $colorE);
-        addCommand("주민선정(통솔경험, 군량$develcostE)", 4, 1, $colorE);
-    } else {
-        addCommand("농지개간(지력경험, 자금$develcostA)", 1, 0);
-        addCommand("상업투자(지력경험, 자금$develcostA)", 2, 0);
-        addCommand("기술연구(지력경험, 자금$develcostB)", 3, 0);
-        addCommand("수비강화(무력경험, 자금$develcostC)", 5, 0);
-        addCommand("성벽보수(무력경험, 자금$develcostC)", 6, 0);
-        addCommand("치안강화(무력경험, 자금$develcostD)", 8, 0);
-        addCommand("정착장려(통솔경험, 군량$develcostE)", 7, 0);
-        addCommand("주민선정(통솔경험, 군량$develcostE)", 4, 0);
-    }
-    if($me['level'] >= 1 && (($nation['level'] > 0 && $city['nation'] == $me['nation'] && $city['supply'] != 0) || $nation['level'] == 0)) {
-        addCommand("물자조달(랜덤경험)", 9, 1);
-    } else {
-        addCommand("물자조달(랜덤경험)", 9, 0);
-    }
-    commandGroup("", 1);
-    commandGroup("========= 군 사 ==========");
-    if($me['level'] >= 1 && $citycount > 0) {
-        addCommand("첩보(통솔경험, 자금$develcost3, 군량$develcost3)", 31);
-        addCommand("징병(통솔경험)", 11);
-        addCommand("모병(통솔경험, 자금x2)", 12);
-        addCommand("훈련(통솔경험)", 13);
-        addCommand("사기진작(통솔경험, 자금↓)", 14);
-        //addCommand("전투태세/3턴(통솔경험, 자금↓)", 15);
-        addCommand("출병", 16);
-    } else {
-        addCommand("첩보(통솔경험, 자금$develcost3, 군량$develcost3)", 31, 0);
-        addCommand("징병(통솔경험)", 11, 0);
-        addCommand("모병(통솔경험, 자금x2)", 12, 0);
-        addCommand("훈련(통솔경험)", 13, 0);
-        addCommand("사기진작(통솔경험, 자금↓)", 14, 0);
-        //addCommand("전투태세/3턴(통솔경험, 자금↓)", 15, 0);
-        addCommand("출병", 16, 0);
-    }
-    if($me['crew'] > 0) {
-        addCommand("소집해제(병사↓, 주민↑)", 17);
-    } else {
-        addCommand("소집해제(병사↓, 주민↑)", 17, 0);
-    }
-
-    commandGroup("", 1);
-    commandGroup("========= 인 사 ==========");
-    addCommand("이동(통솔경험, 자금$develcost, 사기↓)", 21);
-    addCommand("강행(통솔경험, 자금$develcost5, 병력/사기/훈련↓)", 30);
-    
-    if($nation['level'] > 0 && $me['level'] >= 1) {
-        addCommand("인재탐색(랜덤경험, 자금$develcost)", 29);
-    } else {
-        addCommand("인재탐색(랜덤경험, 자금$develcost)", 29, 0);
-    }
-
-    if($admin['join_mode'] == 'onlyRandom'){
-        //do Nothing
-    }
-    else if($me['level'] >= 1 && $city['supply'] != 0) {
-        addCommand("등용(자금{$develcost5}+장수가치)", 22);
-    } else {
-        addCommand("등용(자금{$develcost5}+장수가치)", 22, 0);
-    }
-    
-    if($me['no'] == $troop['no'] && $citycount > 0 && $city['supply'] != 0 && $city['nation'] == $me['nation']) {
-        addCommand("집합(통솔경험)", 26);
-    } else {
-        addCommand("집합(통솔경험)", 26, 0);
-    }
-    if($me['level'] >= 1 && $me['level'] <= 12 && $nation['level'] > 0) {
-        addCommand("귀환(통솔경험)", 28);
-    } else {
-        addCommand("귀환(통솔경험)", 28, 0);
-    }
-    if($me['level'] == 0 && $nationcount != 0 && $me['makelimit'] == 0) {
-        addCommand("임관", 25);
-    } else {
-        addCommand("임관", 25, 0);
-    }
-    commandGroup("", 1);
-    commandGroup("========= 계 략 ==========");
-    if($me['level'] >= 1 && (($nation['level'] > 0 && $city['nation'] == $me['nation'] && $city['supply'] != 0) || $nation['level'] == 0)) {
-        addCommand("화계(지력경험, 자금$develcost5, 군량$develcost5)", 32);
-        addCommand("탈취(무력경험, 자금$develcost5, 군량$develcost5)", 33);
-        addCommand("파괴(무력경험, 자금$develcost5, 군량$develcost5)", 34);
-        addCommand("선동(통솔경험, 자금$develcost5, 군량$develcost5)", 35);
-    } else {
-        addCommand("화계(지력경험, 자금$develcost5, 군량$develcost5)", 32, 0);
-        addCommand("탈취(무력경험, 자금$develcost5, 군량$develcost5)", 33, 0);
-        addCommand("파괴(무력경험, 자금$develcost5, 군량$develcost5)", 34, 0);
-        addCommand("선동(통솔경험, 자금$develcost5, 군량$develcost5)", 35, 0);
-    }
-    commandGroup("", 1);
-    commandGroup("========= 개 인 ==========");
-    if($me['level'] >= 1) {
-        addCommand("단련(자금$develcost, 군량$develcost)", 41);
-    } else {
-        addCommand("단련(자금$develcost, 군량$develcost)", 41, 0);
-    }
-    addCommand("견문(자금?, 군량?, 경험치?)", 42);
-    if($city['trade'] !== null) {
-        addCommand("장비매매", 48);
-        addCommand("군량매매", 49);
-    } else {
-        addCommand("장비매매", 48, 0);
-        addCommand("군량매매", 49, 0);
-    }
-    if($city['supply'] != 0 && $city['nation'] == $me['nation']) {
-        addCommand("증여(통솔경험)", 43);
-    } else {
-        addCommand("증여(통솔경험)", 43, 0);
-    }
-
-    if($me['level'] >= 1 && $city['supply'] != 0 && $city['nation'] == $me['nation']) {
-        addCommand("헌납(통솔경험)", 44);
-    } else {
-        addCommand("헌납(통솔경험)", 44, 0);
-    }
-    if($me['npc'] == 0) {
-        if($me['level'] >= 1 && $me['level'] < 12) {
-            addCommand("하야", 45);
-        } else {
-            addCommand("하야", 45, 0);
+        if($commandCategory){
+            commandGroup('', 1);
         }
     }
-    if($me['level'] == 0) {
-        addCommand("거병", 55);
-    } else {
-        addCommand("거병", 55, 0);
-    }
-    if($me['level'] == 12 &&
-        ($city['level'] == 5 || $city['level'] == 6) &&
-        $city['nation'] == 0 &&
-        $me['makelimit'] == 0 &&
-        $gencount >= 2 &&
-        $citycount == 0 &&
-        $admin['year'] < $admin['startyear']+2
-    ) {
-        addCommand("건국", 46);
-    } else {
-        addCommand("건국", 46, 0);
-    }
-    if($me['level'] == 12) {
-        addCommand("선양", 54);
-        if($citycount != 0) {
-            if ($admin['year'] + 3 < $admin['startyear']) {
-                addCommand("방랑", 47, 0);
-            }
-            else{
-                addCommand("방랑", 47);
-            }
-            
-            addCommand("해산", 56, 0);
-        } else {
-            addCommand("방랑", 47, 0);
-            addCommand("해산", 56);
-        }
-    } else {
-        addCommand("선양", 54, 0);
-        addCommand("방랑", 47, 0);
-        addCommand("해산", 56, 0);
-    }
-    if($me['level'] > 1 && $me['level'] < 12) {
-        addCommand("모반시도", 57);
-    } else {
-        addCommand("모반시도", 57, 0);
-    }
-    commandGroup("", 1);
 
-    echo "
+?>
 </select>
-";
+<?php
 }
 
 function CoreCommandTable() {
