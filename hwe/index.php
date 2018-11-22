@@ -213,7 +213,6 @@ if ($session->userGrade >= 5) {
         <input type=button value=접속정보 onclick=window.open('_admin6.php')>
         <input type=button value=로그정보 onclick=window.open('_admin7.php')>
         <input type=button value=외교정보 onclick=window.open('_admin8.php')>
-        <input type=button value=시뮬 onclick=window.open('_simul.php')>
         <input type=button value=119 onclick=window.open('_119.php')>
     </td></tr>
 ";
@@ -221,7 +220,6 @@ if ($session->userGrade >= 5) {
 else if($session->userGrade == 4){
     echo "
     <tr><td colspan=5>
-        <input type=button value=시뮬 onclick=window.open('_simul.php')>
         <input type=button value=119 onclick=window.open('_119.php')>
     </td></tr>
 ";

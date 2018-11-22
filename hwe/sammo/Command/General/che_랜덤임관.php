@@ -24,6 +24,7 @@ use sammo\MustNotBeReachedException;
 
 class che_랜덤임관 extends Command\GeneralCommand{
     static protected $actionName = '랜덤임관';
+    static public $reqArg = true;
 
     protected function argTest():bool{
         

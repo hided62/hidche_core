@@ -24,6 +24,7 @@ use sammo\CityConst;
 
 class che_첩보 extends Command\GeneralCommand{
     static protected $actionName = '첩보';
+    static public $reqArg = true;
 
     protected function argTest():bool{
         if(!key_exists('destCityID', $this->arg)){

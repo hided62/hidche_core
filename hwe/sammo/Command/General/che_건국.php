@@ -26,6 +26,7 @@ use function sammo\GetNationColors;
 
 class che_건국 extends Command\GeneralCommand{
     static protected $actionName = '건국';
+    static public $reqArg = true;
 
     protected function argTest():bool{
         $nationName = $this->arg['nationName']??null;

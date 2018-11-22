@@ -11,7 +11,7 @@ use \sammo\{
 };
 
 
-class che_모병 extends Command\GeneralCommand{
+class che_모병 extends che_징병{
     static protected $actionName = '모병';
     static protected $costOffset = 2;
 

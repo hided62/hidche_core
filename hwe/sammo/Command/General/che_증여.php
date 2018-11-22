@@ -24,6 +24,7 @@ use \sammo\Constraint\ConstraintHelper;
 
 class che_증여 extends Command\GeneralCommand{
     static protected $actionName = '증여';
+    static public $reqArg = true;
 
     protected function argTest():bool{
         //NOTE: 사망 직전에 '증여' 턴을 넣을 수 있으므로, 존재하지 않는 장수여도 argTest에서 바로 탈락시키지 않음

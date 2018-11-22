@@ -16,6 +16,7 @@ abstract class BaseCommand{
      * @var General|null $destGeneralObj
      */
     static protected $actionName = 'CommandName';
+    static public $reqArg = false;
 
     protected $generalObj = null;
     protected $city = null;

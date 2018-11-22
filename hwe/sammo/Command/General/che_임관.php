@@ -23,6 +23,7 @@ use sammo\CityConst;
 
 class che_임관 extends Command\GeneralCommand{
     static protected $actionName = '임관';
+    static public $reqArg = true;
 
     protected function argTest():bool{
         $destNationID = $this->arg['destNationID']??null;

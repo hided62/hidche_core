@@ -26,6 +26,7 @@ use sammo\MustNotBeReachedException;
 
 class che_군량매매 extends Command\GeneralCommand{
     static protected $actionName = '군량매매';
+    static public $reqArg = true;
 
     static $itemMap = [
         'horse'=>'명마',

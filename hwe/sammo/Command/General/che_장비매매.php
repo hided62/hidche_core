@@ -25,6 +25,7 @@ use \sammo\Constraint\ConstraintHelper;
 
 class che_장비매매 extends Command\GeneralCommand{
     static protected $actionName = '장비매매';
+    static public $reqArg = true;
 
     static $itemMap = [
         'horse'=>'명마',

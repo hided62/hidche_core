@@ -24,6 +24,7 @@ use \sammo\Constraint\ConstraintHelper;
 
 class che_헌납 extends Command\GeneralCommand{
     static protected $actionName = '헌납';
+    static public $reqArg = true;
 
     protected function argTest():bool{
         if(!key_exists('isGold', $this->arg)){

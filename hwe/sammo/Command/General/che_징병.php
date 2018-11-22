@@ -26,6 +26,7 @@ class che_징병 extends Command\GeneralCommand{
      */
     static protected $actionName = '징병';
     static protected $costOffset = 1;
+    static public $reqArg = true;
 
     static protected $defaultTrain;
     static protected $defaultAtmos;

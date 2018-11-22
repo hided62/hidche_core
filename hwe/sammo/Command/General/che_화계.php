@@ -23,6 +23,7 @@ use sammo\CityConst;
 
 class che_화계 extends Command\GeneralCommand{
     static protected $actionName = '화계';
+    static public $reqArg = true;
 
     static protected $statType = 'intel';
     static protected $injuryGeneral = true;

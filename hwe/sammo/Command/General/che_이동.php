@@ -23,6 +23,7 @@ use sammo\CityConst;
 
 class che_이동 extends Command\GeneralCommand{
     static protected $actionName = '이동';
+    static public $reqArg = true;
 
     protected function argTest():bool{
         if(!key_exists('destCityID', $this->arg)){
