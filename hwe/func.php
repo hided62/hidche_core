@@ -470,6 +470,7 @@ function printCommandTable() {
 <option 
     class='commandBasic <?=$commandObj->getCompensationStyle()?> <?=$commandObj->isReservable()?'':'commandImpossible'?>'
     value='<?=Util::getClassNameFromObj($commandObj)?>'
+    data-reqArg='<?=($commandObj::$reqArg)?'true':'false'?>'
 ><?=$commandObj->getCommandDetailTitle()?><?=$commandObj->isReservable()?'':'(불가)'?></option>
 <?php
         }
