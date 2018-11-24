@@ -69,7 +69,11 @@ class ResetHelper{
             if($basename == 'preserved'){
                 continue;
             }
-            rename($servRoot.'/logs/'.$basename, $servRoot.'/logs/preserved/'.$basename);
+            if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+                exec("move ".escapeshellarg($servRoot.'/logs/'.$basename)." ".escapeshellarg($servRoot.'/logs/preserved/'.$basename));
+            } else {
+                exec("mv ".escapeshellarg($servRoot.'/logs/'.$basename)." ".escapeshellarg($servRoot.'/logs/preserved/'.$basename));
+            }
         }
 
         $prefix = DB::prefix();
