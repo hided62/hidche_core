@@ -63,7 +63,7 @@ class ResetHelper{
             if($basename == 'preserved'){
                 continue;
             }
-            rename($fileinfo->getPathname(), $servRoot.'/logs/preserved/'.$basename);
+            rename($servRoot.'/logs/'.$basename, $servRoot.'/logs/preserved/'.$basename);
         }
 
         $prefix = DB::prefix();
