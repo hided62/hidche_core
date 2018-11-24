@@ -17,7 +17,12 @@ $me = $db->queryFirstRow('SELECT no,nation,level,con,turntime,belong FROM genera
 [$nationLevel, $secretLimit] = $db->queryFirstList('SELECT level, secretlimit FROM nation WHERE nation = %i', $me['nation']);
 
 $con = checkLimit($me['con']);
-if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
+if($con >= 2) { 
+    Json::die([
+        'result'=>false,
+        'reason'=>"접속 제한중입니다. 1턴 이내에 너무 많은 갱신을 하셨습니다. (다음 접속 가능 시각 : {$me['turntime']})"
+    ]);
+}
 
 if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $secretLimit)) {
     Json::die([
