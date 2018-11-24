@@ -435,7 +435,7 @@ $(function() {
                             
                             var enabled = cityInfo['p'+text]&&userInfo['p'+text];
                             var cityVal = cityInfo.val;
-                            var $btn = $('<button>'+text.substr(0,1)+'</button>');
+                            var $btn = $('<button type="button">'+text.substr(0,1)+'</button>');
                             $btn.addClass('mode_'+type);
                             $btn.addClass('for_duty');
                             
@@ -488,7 +488,7 @@ $(function() {
                         
                         //특수 버튼!
                         if(userInfo.p태수||userInfo.p군사||userInfo.p시중){
-                            var $btn = $('<button>...</button>');
+                            var $btn = $('<button type="button">...</button>');
                             $btn.addClass('for_duty');
                             if(userInfo.is수뇌){
                                 $btn.css('color','red');
@@ -796,7 +796,7 @@ $(function() {
         });
         
         
-        var $onGenList = $('<button>암행부 연동</button>');
+        var $onGenList = $('<button type="button">암행부 연동</button>');
         $onGenList.click(function(){
             loadUser();
             return false;
@@ -840,63 +840,63 @@ $(function() {
         
         var $btn;
         
-        $btn = $('<button>도시명</button>').click(function(){
+        $btn = $('<button type="button">도시명</button>').click(function(){
             sortIt(function(a,b){
                 return a.이름.localeCompare(b.이름);
             });
         });
         $sort_more.append($btn);
         
-        $btn = $('<button>인구율</button>').click(function(){
+        $btn = $('<button type="button">인구율</button>').click(function(){
             sortIt(function(a,b){
                 return 1.0*a.주민/a.max주민 - 1.0*b.주민/b.max주민;
             });
         });
         $sort_more.append($btn);
         
-        $btn = $('<button>남은 주민</button>').click(function(){
+        $btn = $('<button type="button">남은 주민</button>').click(function(){
             sortIt(function(a,b){
                 return a.remain주민 - b.remain주민;
             });
         });
         $sort_more.append($btn);
         
-        $btn = $('<button>남은 농업</button>').click(function(){
+        $btn = $('<button type="button">남은 농업</button>').click(function(){
             sortIt(function(a,b){
                 return a.remain농업 - b.remain농업;
             });
         });
         $sort_more.append($btn);
         
-        $btn = $('<button>남은 상업</button>').click(function(){
+        $btn = $('<button type="button">남은 상업</button>').click(function(){
             sortIt(function(a,b){
                 return a.remain상업 - b.remain상업;
             });
         });
         $sort_more.append($btn);
         
-        $btn = $('<button>남은 치안</button>').click(function(){
+        $btn = $('<button type="button">남은 치안</button>').click(function(){
             sortIt(function(a,b){
                 return a.remain치안 - b.remain치안;
             });
         });
         $sort_more.append($btn);
         
-        $btn = $('<button>남은 수비</button>').click(function(){
+        $btn = $('<button type="button">남은 수비</button>').click(function(){
             sortIt(function(a,b){
                 return a.remain수비 - b.remain수비;
             });
         });
         $sort_more.append($btn);
         
-        $btn = $('<button>남은 성벽</button>').click(function(){
+        $btn = $('<button type="button">남은 성벽</button>').click(function(){
             sortIt(function(a,b){
                 return a.remain성벽 - b.remain성벽;
             });
         });
         $sort_more.append($btn);
         
-        $btn = $('<button>배치 장수 수</button>').click(function(){
+        $btn = $('<button type="button">배치 장수 수</button>').click(function(){
             sortIt(function(a,b){
                 return b.userCnt - a.userCnt;
             });

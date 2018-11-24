@@ -22,15 +22,15 @@ var serverFullTemplate = "\
 var serverCreateAndSelectTemplate = "\
 <td colspan='2' class='not_registered'>- 미 등 록 -</td>\
 <td class='ignore_border'>\
-<a href='<%serverPath%>/select_npc.php'><button class='general_select with_skin'>장수선택</button></a>\
-<a href='<%serverPath%>/join.php'><button class='general_create with_skin'>장수생성</button></a>\
+<a href='<%serverPath%>/select_npc.php'><button type='button' class='general_select with_skin'>장수선택</button></a>\
+<a href='<%serverPath%>/join.php'><button type='button' class='general_create with_skin'>장수생성</button></a>\
 </td>\
 ";
 
 var serverCreateTemplate = "\
 <td colspan='2' class='not_registered'>- 미 등 록 -</div>\
 <td class='ignore_border'>\
-<a href='<%serverPath%>/join.php'><button class='general_create with_skin'>장수생성</button></a>\
+<a href='<%serverPath%>/join.php'><button type='button' class='general_create with_skin'>장수생성</button></a>\
 </td>\
 ";
 
@@ -38,7 +38,7 @@ var serverLoginTemplate = "\
 <td style='background:url(<%picture%>);background-size: 64px 64px;'></td>\
 <td><%name%></td>\
 <td class='ignore_border'>\
-<a href='<%serverPath%>/'><button class='general_login with_skin'>입장</button></a>\
+<a href='<%serverPath%>/'><button type='button' class='general_login with_skin'>입장</button></a>\
 </td>\
 ";
 

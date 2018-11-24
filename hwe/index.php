@@ -204,25 +204,25 @@ echo "
     <tr><td colspan=5 style="text-align:left;">【 접속자 】<?=onlinegen()?></td></tr>
 <?php
 if ($session->userGrade >= 5) {
-    echo "
+?>
     <tr><td colspan=5>
-        <input type=button value=게임관리 onclick=location.replace('_admin1.php')>
-        <input type=button value=회원관리 onclick=location.replace('_admin2.php')>
-        <input type=button value=멀티관리 onclick=location.replace('_admin4.php')>
-        <input type=button value=일제정보 onclick=window.open('_admin5.php')>
-        <input type=button value=접속정보 onclick=window.open('_admin6.php')>
-        <input type=button value=로그정보 onclick=window.open('_admin7.php')>
-        <input type=button value=외교정보 onclick=window.open('_admin8.php')>
-        <input type=button value=119 onclick=window.open('_119.php')>
+        <a href='_admin1.php' target='_blank'><button type='button'>게임관리</button></a>
+        <a href='_admin2.php' target='_blank'><button type='button'>회원관리</button></a>
+        <a href='_admin4.php' target='_blank'><button type='button'>멀티관리</button></a>
+        <a href='_admin5.php' target='_blank'><button type='button'>일제정보</button></a>
+        <a href='_admin6.php' target='_blank'><button type='button'>접속정보</button></a>
+        <a href='_admin7.php' target='_blank'><button type='button'>로그정보</button></a>
+        <a href='_admin8.php' target='_blank'><button type='button'>외교정보</button></a>
+        <a href='_119.php' target='_blank'><button type='button'>119</button></a>
     </td></tr>
-";
+<?php
 }
 else if($session->userGrade == 4){
-    echo "
+    ?>
     <tr><td colspan=5>
-        <input type=button value=119 onclick=window.open('_119.php')>
+        <a href='_119.php' target='_blank'><button type='button'>119</button></a>
     </td></tr>
-";
+<?php
 }
 
 ?>

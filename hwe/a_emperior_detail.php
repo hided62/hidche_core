@@ -39,7 +39,7 @@ $serverID = $emperior['server_id']??($emperior['serverID']??null);
 <table align=center width=1000 class="tb_layout bg0">
     <tr><td>역 대 왕 조<br>
         <button onclick=window.close()>창 닫기</button>
-        <div style="float:right;"><a href="a_emperior.php"><button>전체보기</button></a><div>
+        <div style="float:right;"><a href="a_emperior.php"><button type='button'>전체보기</button></a><div>
     </td></tr>
 
 </table>

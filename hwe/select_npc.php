@@ -95,7 +95,7 @@ history.go(-1);
 </form>
 </div>
 <div class="with_border legacy_layout" style="text-align:center">
-    <button id="btn_pick_more" disabled="disabled" class="with_skin with_border">다른 장수 보기</button><br>
+    <button type="button" id="btn_pick_more" disabled="disabled" class="with_skin with_border">다른 장수 보기</button><br>
 </div>
 <div class="with_border legacy_layout"><?=backButton()?></div>
 <div class="with_border legacy_layout"><?=banner()?></div>

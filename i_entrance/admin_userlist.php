@@ -27,7 +27,7 @@ require(__dir__.'/../vendor/autoload.php');
 <div class="container">
     <div class="card">
         <div class="card-header">
-            <a href="entrance.php"><button class="btn btn-primary" style="float:right;">돌아가기</button></a>
+            <a href="entrance.php"><button type="button" class="btn btn-primary" style="float:right;">돌아가기</button></a>
             <h3>회원 관리</h3>
             
         </div>

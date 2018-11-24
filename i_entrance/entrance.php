@@ -108,8 +108,8 @@ if ($userGrade >= 5) {
 <div id="user_info">
     <div class="bg2 section_title with_border">계 정 관 리</div>
     <div class="center_ordered_items with_border bg0">
-        <a href="user_info.php"><button id="btn_user_manage" class="with_skin">비밀번호 &amp; 전콘 &amp; 탈퇴</button></a>
-        <button id="btn_logout" class="with_skin">로 그 아 웃</button>
+        <a href="user_info.php"><button type="button" id="btn_user_manage" class="with_skin">비밀번호 &amp; 전콘 &amp; 탈퇴</button></a>
+        <button type="button" id="btn_logout" class="with_skin">로 그 아 웃</button>
     </div>
 </div>
 

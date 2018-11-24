@@ -43,7 +43,7 @@ require(__dir__.'/../vendor/autoload.php');
 <table class="bg0" id="user_info_table">
     <caption class="bg2 section_title with_border">
         계 정 관 리
-        <a href="entrance.php"><button id="btn_back1" class="with_skin">돌아가기</button></a>
+        <a href="entrance.php"><button type="button" id="btn_back1" class="with_skin">돌아가기</button></a>
     </caption>
     <colgroup>
         <col style="width:90px;min-width:90px;" />

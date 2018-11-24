@@ -54,7 +54,7 @@ if ($showCurrentNation) {
     <tr>
         <td style="background-color:#333333;" align=center colspan=8>
             <font size=5>현재 (<?=$year?>年 <?=$month?>月)</font>
-            <a href="a_history.php"><button>역사 보기</button></a>
+            <a href="a_history.php"><button type='button'>역사 보기</button></a>
         </td>
     </tr>
 </table>
@@ -71,10 +71,10 @@ foreach($emperiors as $emperior){
         <td bgcolor=skyblue align=center colspan=8>
             <font size=5><?=$emperior['phase']?></font>
             
-            <a href="a_emperior_detail.php?select=<?=$emperior['no']?>"><button>자세히</button></a>
+            <a href="a_emperior_detail.php?select=<?=$emperior['no']?>"><button type='button'>자세히</button></a>
             
             <?php if($emperior['server_id']): ?>
-            <a href="a_history.php?serverID=<?=$emperior['server_id']?>"><button>역사 보기</button></a>
+            <a href="a_history.php?serverID=<?=$emperior['server_id']?>"><button type='button'>역사 보기</button></a>
             <?php endif ?>
         </td>
     </tr>
