@@ -83,7 +83,7 @@ function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
     if($turnCnt < 0){
         pullNationCommand($nationID, $level, -$turnCnt);   
     }
-    if($turnCnt >= GameConst::$maxNationTurn){
+    if($turnCnt >= GameConst::$maxChiefTurn){
         return;
     }
 
@@ -93,10 +93,10 @@ function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
         'turn_idx'=>$db->sqleval('turn_idx + %i', $turnCnt)
     ], 'nation_id=%i AND level=%i', $nationID, $level);
     $db->update('general_turn', [
-        'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxNationTurn),
+        'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxChiefTurn),
         'action'=>'휴식',
         'arg'=>'{}'
-    ], 'nation_id=%i AND level=%i AND turn_idx >= %i', $nationID, $level, GameConst::$maxNationTurn);
+    ], 'nation_id=%i AND level=%i AND turn_idx >= %i', $nationID, $level, GameConst::$maxChiefTurn);
 }
 
 function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
@@ -112,14 +112,14 @@ function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
     if($turnCnt < 0){
         pushNationCommand($nationID, $level, -$turnCnt);
     }
-    if($turnCnt >= GameConst::$maxNationTurn){
+    if($turnCnt >= GameConst::$maxChiefTurn){
         return;
     }
     
     $db = DB::db();
 
     $db->update('general_turn', [
-        'turn_idx'=>$db->sqleval('turn_idx + %i', GameConst::$maxNationTurn),
+        'turn_idx'=>$db->sqleval('turn_idx + %i', GameConst::$maxChiefTurn),
         'action'=>'휴식',
         'arg'=>'{}'
     ], 'nation_id=%i AND level=%i AND turn_idx < %i', $nationID, $level, $turnCnt);

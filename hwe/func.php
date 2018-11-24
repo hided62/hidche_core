@@ -485,7 +485,7 @@ function printCommandTable() {
 <?php
 }
 
-function CoreCommandTable() {
+function chiefCommandTable() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();

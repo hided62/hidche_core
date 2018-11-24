@@ -98,7 +98,7 @@ class GameConstBase
 
     /** @var int 최대 턴 */
     public static $maxTurn = 30;
-    public static $maxNationTurn = 12;
+    public static $maxChiefTurn = 12;
 
     public static $statGradeLevel = 5;
       

@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+#chiefTurnSelector{
+    width:50px;
+    color:white;
+    background-color:black;
+    font-size:13px;
+}
+
+
+.chiefTurnTable{
+    display:flex;
+    flex-flow:row nowrap;
+}
+
+.chiefTurnTable .flexDisplay{
+    justify-content: center;
+}
+
+.chiefTurnBox{
+    width:240px;
+}
+
+.chiefTurnBox .turnHeader{
+    font-weight: bold;
+    text-align: center;
+}
+
+.chiefTurnBox .turnList{
+    
+}
+
+.chiefNamePlate{
+    font-weight: bold;
+    text-align: center;
+    
+}
+
+.turnIdxHeader{
+    font-weight: bold;
+    text-align: center;
+    width:20px;
+}
+
+.chiefTurnTime{
+    font-weight: bold;
+    background: black;
+    text-align: center;
+    width:43px;
+}
+
+.chiefTurnText{
+    table-layout: fixed;
+    width:192px;
+}

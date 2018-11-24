@@ -68,3 +68,10 @@ color:white;
 .nation_info td{
     height:18px;
 }
+
+#generalTurnSelector{
+    width:50px;
+    color:white;
+    background-color:black;
+    font-size:13px;
+}

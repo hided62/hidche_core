@@ -925,7 +925,23 @@ function getItemCost($weap) : int {
     return $weapcost;
 }
 
-
+function getNameColor(int $npcType):?string{
+    if($npcType >= 2){
+        return 'cyan';
+    }
+    if($npcType == 1){
+        return 'skyblue';
+    }
+    return null;
+}
+function getColoredName(string $name, int $npcType):string{
+    $color = nameColor($npcType);
+    if($color === null){
+        return $name;
+    }
+    //TODO: font 폐기.
+    return "<font color='{$color}'>{$name}</font>";
+}
 
 function ConvertLog(?string $str, $type=1) : string {
     if(!$str){

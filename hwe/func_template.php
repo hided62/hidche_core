@@ -12,54 +12,39 @@ namespace sammo;
 
 
 function turnTable() {
+
+    $turnList = [];
+    $turnList[] = "<option selected value='0'>1턴</option>";
+    foreach(range(1, GameConst::$maxTurn - 1) as $turnIdx){
+        $turnText = $turnIdx + 1;
+        $turnList[] = "<option value='{$turnIdx}'>{$turnText}턴</option>";
+    }
+
+    $turnText = join("\n", $turnList);
+
     return "
-<select name=turn[] size=11 multiple style=width:50px;color:white;background-color:black;font-size:13px;>
-    <option value=100>전체</option>
-    <option value=99>홀턴</option>
-    <option value=98>짝턴</option>
-    <option selected value=0> 1턴</option>
-    <option value=1> 2턴</option>
-    <option value=2> 3턴</option>
-    <option value=3> 4턴</option>
-    <option value=4> 5턴</option>
-    <option value=5> 6턴</option>
-    <option value=6> 7턴</option>
-    <option value=7> 8턴</option>
-    <option value=8> 9턴</option>
-    <option value=9>10턴</option>
-    <option value=10>11턴</option>
-    <option value=11>12턴</option>
-    <option value=12>13턴</option>
-    <option value=13>14턴</option>
-    <option value=14>15턴</option>
-    <option value=15>16턴</option>
-    <option value=16>17턴</option>
-    <option value=17>18턴</option>
-    <option value=18>19턴</option>
-    <option value=19>20턴</option>
-    <option value=20>21턴</option>
-    <option value=21>22턴</option>
-    <option value=22>23턴</option>
-    <option value=23>24턴</option>
+<select id='generalTurnSelector' name=turn[] size=11 multiple>
+    <option value='-3'>전체</option>
+    <option value='-1'>홀턴</option>
+    <option value='-2'>짝턴</option>
+    {$turnText}
 </select>
 ";
 }
 
-function CoreTurnTable() {
-    return "
-<select name=turn[] size=3 multiple style=color:white;background-color:black;font-size:13px;>
-    <option selected value=0> 1턴</option>
-    <option value=1> 2턴</option>
-    <option value=2> 3턴</option>
-    <option value=3> 4턴</option>
-    <option value=4> 5턴</option>
-    <option value=5> 6턴</option>
-    <option value=6> 7턴</option>
-    <option value=7> 8턴</option>
-    <option value=8> 9턴</option>
-    <option value=9>10턴</option>
-    <option value=10>11턴</option>
-    <option value=11>12턴</option>
+function chiefTurnTable() {
+$turnList = [];
+$turnList[] = "<option selected value='0'>1턴</option>";
+foreach(range(1, GameConst::$maxChiefTurn - 1) as $turnIdx){
+    $turnText = $turnIdx + 1;
+    $turnList[] = "<option value='{$turnIdx}'>{$turnText}턴</option>";
+}
+
+$turnText = join("\n", $turnList);
+
+return "
+<select id='chiefTurnSelector' name=turn[] size=3 multiple>
+{$turnText}
 </select>
 ";
 }
