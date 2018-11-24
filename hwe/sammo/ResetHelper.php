@@ -60,6 +60,12 @@ class ResetHelper{
                 continue;
             }
             $basename = $fileinfo->getFilename();
+            trigger_error(Json::encode([
+                $fileinfo->getPathname(),
+                $basename,
+                $servRoot.'/logs/'.$basename,
+                $servRoot.'/logs/preserved/'.$basename,
+            ]), E_USER_NOTICE);
             if($basename == 'preserved'){
                 continue;
             }
