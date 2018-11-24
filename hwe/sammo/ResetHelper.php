@@ -59,7 +59,7 @@ class ResetHelper{
             if (!$fileinfo->isDir() || $fileinfo->isDot()) {
                 continue;
             }
-            $basename = $fileinfo->getBasename();
+            $basename = $fileinfo->getFilename();
             if($basename == 'preserved'){
                 continue;
             }
