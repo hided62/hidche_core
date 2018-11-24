@@ -41,12 +41,29 @@ class ResetHelper{
             ];
         }
 
+        if(!file_exists($servRoot.'/logs/preserved')){
+            mkdir($servRoot.'/logs/preserved', 0755);
+        }
+
         if(!file_exists($servRoot.'/logs/.htaccess')){
             @file_put_contents($servRoot.'/logs/.htaccess', 'Deny from  all');
         }
 
         if(!file_exists($servRoot.'/data/.htaccess')){
             @file_put_contents($servRoot.'/data/.htaccess', 'Deny from  all');
+        }
+
+        $dir = new \DirectoryIterator($servRoot.'/logs');
+        foreach ($dir as $fileinfo) {
+            /** @var \DirectoryIterator $fileinfo */
+            if (!$fileinfo->isDir() || $fileinfo->isDot()) {
+                continue;
+            }
+            $basename = $fileinfo->getBasename();
+            if($basename == 'preserved'){
+                continue;
+            }
+            rename($dir->getPathname(), $servRoot.'/logs/preserved'.$basename);
         }
 
         $prefix = DB::prefix();
