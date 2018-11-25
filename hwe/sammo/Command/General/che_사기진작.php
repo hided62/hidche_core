@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -49,7 +49,8 @@ class che_사기진작 extends Command\GeneralCommand{
     }
 
     public function getCost():array{
-        return [Util::round($this->getVar('crew')/100), 0];
+        $general = $this->generalObj;
+        return [Util::round($general->getVar('crew')/100), 0];
     }
     
     public function getPreReqTurn():int{

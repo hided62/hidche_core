@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -35,7 +35,6 @@ class che_집합 extends Command\GeneralCommand{
 
         $this->setCity();
         $this->setNation();
-        $this->setDestCity($this->arg['destCityID'], []);
 
         [$reqGold, $reqRice] = $this->getCost();
         

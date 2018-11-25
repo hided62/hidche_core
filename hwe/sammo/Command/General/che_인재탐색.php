@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -47,7 +47,7 @@ class che_인재탐색 extends Command\GeneralCommand{
         ];
 
         $relYear = $env['year'] - $env['startyear'];
-        if($relYear < 3 && $this->nation['gennum'] >= GameConst::$initialNationGenLimit){
+        if($this->nation['nation'] != 0 && $relYear < 3 && $this->nation['gennum'] >= GameConst::$initialNationGenLimit){
             $nationName = $this->nation['name'];
             $josaUn = JosaUtil::pick($nationName, '은');
             $this->runnableConstraints[] = ConstraintHelper::AlwaysFail("현재 <D>{$nationName}</>{$josaUn} 탐색이 제한되고 있습니다.");

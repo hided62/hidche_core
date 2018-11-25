@@ -49,9 +49,10 @@ return "
 ";
 }
 
-function displayCharInfo(?int $type):string{
-    $info = getCharInfo($type);
-    $text = getGenChar($type);
+function displayCharInfo(string $type):string{
+    $class = getPersonalityClass($type);
+    $info = $class::$info;
+    $text = $class::$name;
 
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 

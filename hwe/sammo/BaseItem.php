@@ -7,11 +7,27 @@ use \sammo\General;
 class BaseItem implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 0;
-    static $name = '-';
-    static $info = '';
-    static $cost = null;
-    static $consumable = false;
+    protected static $id = 0;
+    protected static $name = '-';
+    protected static $info = '';
+    protected static $cost = null;
+    protected static $consumable = false;
+
+    function getID(){
+        return $this->id;
+    }
+    function getName(){
+        return $this->name;
+    }
+    function getInfo(){
+        return $this->info;
+    }
+    function getCost(){
+        return $this->cost;
+    }
+    function isConsumable(){
+        return $this->consumable;
+    }
 
     function isValidTurnItem(string $actionType, string $command):bool{
         return false;

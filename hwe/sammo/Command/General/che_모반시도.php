@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -21,8 +21,8 @@ use function \sammo\{
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
-class che_모반 extends Command\GeneralCommand{
-    static protected $actionName = '모반';
+class che_모반시도 extends Command\GeneralCommand{
+    static protected $actionName = '모반시도';
 
     protected function argTest():bool{
         $this->arg = null;
@@ -34,9 +34,6 @@ class che_모반 extends Command\GeneralCommand{
         $general = $this->generalObj;
 
         $this->setNation();
-
-        $destGeneral = General::createGeneralObjFromDB($this->arg['destGeneralID'], ['gold', 'nation'], 1);
-        $this->setDestGeneral($destGeneral);
         
         $this->runnableConstraints=[
             ConstraintHelper::NotBeNeutral(),

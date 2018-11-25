@@ -203,10 +203,10 @@ class NPC{
         }
 
         if($this->ego == null || $isFictionMode){
-            $ego = mt_rand(0, 9);//TODO: 나중에 성격을 따로 분리할 경우 클래스를 참조.
+            $ego = Util::choiceRandom(GameConst::$availablePersonality);
         }
         else{
-            $ego = \sammo\CharCall($this->ego);
+            $ego = Util::getClassName(\sammo\getPersonalityClass($this->ego));
         }
         
         $affinity = $this->affinity;

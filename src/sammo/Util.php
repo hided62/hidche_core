@@ -579,7 +579,7 @@ class Util extends \utilphp\util
     }
 
     public static function getClassNameFromObj($object){
-        $reflect = new ReflectionClass($object);
+        $reflect = new \ReflectionClass($object);
         return $reflect->getShortName();
     }
 
@@ -602,5 +602,26 @@ class Util extends \utilphp\util
             }
         }
         return true;
+    }
+
+    /**
+     * MeekroDB에서 %lb의 처리가 이상하여 따로 만든 코드
+     */
+    public static function formatListOfBackticks(array $array):string{
+        if(!$array){
+            throw new MustNotBeReachedException('backtick 목록에 없음');
+        }
+        //.이 들어간 경우에는 분리해서 묶어야함.
+        return join(',', array_map(function($value){
+            $value = trim($value, " \t\r\n\0\x0b`");
+            if(strpos($value, '.') !== false){
+                $value = explode('.', $value);
+                $value = array_map(function($str){
+                    return trim($value, " \t\r\n\0\x0b`");
+                }, $value);
+                $value = join('`.`', $value);
+            }
+            return "`{$value}`";
+        }, $array));
     }
 };

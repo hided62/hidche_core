@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -18,6 +18,9 @@ class che_NPC능동 extends Command\GeneralCommand{
     static protected $actionName = 'NPC능동';
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         if(!key_exists('optionText', $this->arg)){
             return false;
         }

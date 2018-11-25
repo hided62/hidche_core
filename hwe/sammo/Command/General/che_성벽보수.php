@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 class che_성벽보수 extends che_상업투자{
     static protected $cityKey = 'wall';

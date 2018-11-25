@@ -71,7 +71,7 @@ CREATE TABLE `general` (
 	`history` MEDIUMTEXT NULL DEFAULT '',
 	`belong` INT(2) NULL DEFAULT '1',
 	`betray` INT(2) NULL DEFAULT '0',
-	`personal` INT(2) NULL DEFAULT '0',
+	`personal` VARCHAR(20) NOT NULL DEFAULT 'None',
 	`special` VARCHAR(20) NOT NULL DEFAULT 'None',
 	`specage` INT(2) NULL DEFAULT '0',
 	`special2` VARCHAR(20) NOT NULL DEFAULT 'None',

@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -36,7 +36,7 @@ class che_상업투자 extends Command\GeneralCommand{
             'power'=>'무력경험',
             'intel'=>'지력경험',
         ];
-        $statType = $statType[static::$statKey];
+        $statType = $statTypeBase[static::$statKey];
         [$reqGold, $reqRice] = $this->getCost();
 
         $title = "{$name}({$statType}";
@@ -79,7 +79,7 @@ class che_상업투자 extends Command\GeneralCommand{
 
     public function getCost():array{
         $develCost = $this->env['develcost'];
-        $reqGold = $general->onCalcDomestic(static::$actionKey, 'cost', $develCost);
+        $reqGold = $this->generalObj->onCalcDomestic(static::$actionKey, 'cost', $develCost);
         $reqRice = 0;
         
         return [$reqGold, $reqRice];

@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 //TODO: 아이템 클래스 재확정 후 재 구현!
 
@@ -35,6 +35,9 @@ class che_장비매매 extends Command\GeneralCommand{
     ];
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         $itemType = $this->arg['itemType']??null;
         if(!in_array($itemType, array_keys(static::$itemMap))){
             return false;

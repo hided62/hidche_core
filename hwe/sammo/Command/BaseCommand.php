@@ -3,7 +3,7 @@ namespace sammo\Command;
 
 use \sammo\{
     Util, JosaUtil, DB,
-    General, 
+    General, GameConst,
     ActionLogger
 };
 
@@ -47,7 +47,7 @@ abstract class BaseCommand{
 
     protected $alternative = null;
 
-    static private $isInitStatic = false;
+    static protected $isInitStatic = false;
     protected static function initStatic(){
 
     }
@@ -62,7 +62,7 @@ abstract class BaseCommand{
         $this->logger = $generalObj->getLogger();
         $this->env = $env;
         $this->arg = $arg;
-        if ($this->argTest()) {
+        if (!$this->argTest()) {
            return;
         }
         $this->isArgValid = true;
@@ -102,7 +102,8 @@ abstract class BaseCommand{
         if($hasArgs){
             return;
         }
-        $this->city = $db->queryFirstRow('SELECT %lb FROM city WHERE city=%i', $args, $this->generalObj->getVar('city'));
+        
+        $this->city = $db->queryFirstRow('SELECT %l FROM city WHERE city=%i', Util::formatListOfBackticks($args), $this->generalObj->getVar('city'));
         if($this->generalObj->getRawCity() === null){
             $this->generalObj->setRawCity($this->city);
         }
@@ -111,6 +112,12 @@ abstract class BaseCommand{
     protected function setNation(?array $args = null){
         $this->resetTestCache();
         if($args === null){
+            $this->nation = $this->generalObj->getStaticNation();
+            return;
+        }
+
+        $nationID = $this->generalObj->getNationID();
+        if($nationID == 0){
             $this->nation = $this->generalObj->getStaticNation();
             return;
         }
@@ -135,8 +142,10 @@ abstract class BaseCommand{
             'gennum'=>1  
         ];
 
+        
+
         $db = DB::db();
-        $destNation = $db->queryFirstRow('SELECT %lb FROM nation WHERE nation=%i', $args, $nationNo);
+        $destNation = $db->queryFirstRow('SELECT %l FROM nation WHERE nation=%i', Util::formatListOfBackticks($args), $nationID);
         if($destNation === null){
             $destNation = [];
             foreach($args as $arg){
@@ -163,13 +172,13 @@ abstract class BaseCommand{
             $this->destCity = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $cityNo);
             return;
         }
-        $this->destCity = $db->queryFirstRow('SELECT %lb FROM city WHERE city=%i', $args, $cityNo);
+        $this->destCity = $db->queryFirstRow('SELECT %l FROM city WHERE city=%i', Util::formatListOfBackticks($args), $cityNo);
     }
 
-    protected function setDestNation(int $nationNo, ?array $args = null){
+    protected function setDestNation(int $nationID, ?array $args = null){
         $this->resetTestCache();
         if($args === null || $args === []){
-            $this->destNation = getNationStaticInfo($nationNo);
+            $this->destNation = getNationStaticInfo($nationID);
             return;
         }
 
@@ -190,7 +199,7 @@ abstract class BaseCommand{
         ];
 
         $db = DB::db();
-        $destNation = $db->queryFirstRow('SELECT %lb FROM nation WHERE nation=%i', $args, $nationNo);
+        $destNation = $db->queryFirstRow('SELECT %l FROM nation WHERE nation=%i', Util::formatListOfBackticks($args), $nationID);
         if($destNation === null){
             $destNation = [];
             foreach($args as $arg){
@@ -287,7 +296,11 @@ abstract class BaseCommand{
     }
 
     public function isReservable():bool{
+        if($this->reservable !== null){
+            return $this->reservable;
+        }
 
+        return $this->testReservable() === null;
     }
 
     public function isArgValid():bool{

@@ -17,11 +17,6 @@ if (!$userID) {
     die();
 }
 
-$me = $db->queryFirstRow(
-    'SELECT no,con,turntime,newmsg,newvote,`level` from general where owner = %i',
-    $userID
-);
-
 //턴 실행.
 TurnExecutionHelper::executeAllCommand();
 
@@ -30,6 +25,11 @@ if(!$session->isGameLoggedIn()){
     die();
 }
 
+$me = $db->queryFirstRow(
+    'SELECT no,con,turntime,newmsg,newvote,`level` from general where owner = %i',
+    $userID
+);
+
 //그새 사망이면
 if ($me === null) {
     $session->logoutGame();
@@ -37,14 +37,14 @@ if ($me === null) {
     die();
 }
 
+$gameStor->cacheAll(true);
+
 if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
     $db->update('general', [
         'newmsg'=>0,
         'newvote'=>0
     ], 'owner=%i', $userID);
 }
-
-$admin = $gameStor->getValues(['develcost','online','conlimit','tournament','tnmt_type','turnterm','scenario','scenario_text','extended_general','fiction','npcmode','vote','vote_title','map_theme']);
 
 $plock = $db->queryFirstField('SELECT plock FROM plock LIMIT 1');
 
@@ -54,29 +54,31 @@ if ($con >= 2) {
     exit();
 }
 
-$scenario = $admin['scenario_text'];
+$generalObj = General::createGeneralObjFromDB($me['no']);
+$generalObj->setRawCity($db->queryFirstRow('SELECT * FROM city WHERE city = %i', $generalObj->getCityID()));
+$scenario = $gameStor->scenario_text;
 
 $valid = 0;
-if ($admin['extended_general'] == 0) {
+if ($gameStor->extended_general == 0) {
     $extend = "표준";
 } else {
     $extend = "확장";
     $valid = 1;
 }
-if ($admin['fiction'] == 0) {
+if ($gameStor->fiction == 0) {
     $fiction = "사실";
 } else {
     $fiction = "가상";
     $valid = 1;
 }
-if ($admin['npcmode'] == 0) {
+if ($gameStor->npcmode == 0) {
     $npcmode = "불가능";
 } else {
     $npcmode = "가능";
     $valid = 1;
 }
 $color = "cyan";
-$mapTheme = $admin['map_theme'];
+$mapTheme = $gameStor->map_theme;
 ?>
 <!DOCTYPE html>
 <html>
@@ -136,8 +138,8 @@ $(function(){
 
     <tr height=30>
         <td width=198><?=info(2)?></td>
-        <td width=198>전체 접속자 수 : <?=$admin['online']?> 명</td>
-        <td width=198>턴당 갱신횟수 : <?=$admin['conlimit']?>회</td>
+        <td width=198>전체 접속자 수 : <?=$gameStor->online?> 명</td>
+        <td width=198>턴당 갱신횟수 : <?=$gameStor->conlimit?>회</td>
         <td width=398 colspan=2><?=info(3)?></td>
     </tr>
     <tr height=30>
@@ -154,15 +156,15 @@ echo "
         <td align=center>
 ";
 
-switch ($admin['tnmt_type']) {
+switch ($gameStor->tnmt_type) {
 case 0:  $str = "전력전"; break;
 case 1:  $str = "통솔전"; break;
 case 2:  $str = "일기토"; break;
 case 3:  $str = "설전"; break;
 }
-$str2 = getTournament($admin['tournament']);
+$str2 = getTournament($gameStor->tournament);
 $str3 = getTournamentTime();
-if ($admin['tournament'] == 0) {
+if ($gameStor->tournament == 0) {
     echo "<font color=magenta>현재 토너먼트 경기 없음</font>";
 } else {
     echo "<marquee scrollamount=2>↑<font color=cyan>{$str}</font> {$str2} {$str3}↑</marquee>";
@@ -185,8 +187,8 @@ echo "
         <td colspan=2 align=center>
 ";
 
-$vote = $admin['vote']?:[''];
-$vote_title = Tag2Code($admin['vote_title']??'-');
+$vote = $gameStor->vote?:[''];
+$vote_title = Tag2Code($gameStor->vote_title??'-');
 if ($vote[0] == "") {
     echo "<font color=magenta>진행중 설문 없음</font>";
 } else {
@@ -198,9 +200,9 @@ echo "
         </td>
     </tr>";
 ?>
-    <tr><td colspan=5 style="text-align:left;">접속중인 국가: <?=onlinenation()?></td></tr>
-    <tr><td colspan=5 style="text-align:left;"><?=adminMsg()?></td></tr>
-    <tr><td colspan=5 style="text-align:left;"><div>【 국가방침 】</div><div><?=nationMsg()?></div></td></tr>
+    <tr><td colspan=5 style="text-align:left;">접속중인 국가: <?=$gameStor->onlinenation?></td></tr>
+    <tr><td colspan=5 style="text-align:left;">운영자 메세지 : <span style='color:yellow;'><?=$gameStor->msg?></span></td></tr>
+    <tr><td colspan=5 style="text-align:left;"><div>【 국가방침 】</div><div><?=nationMsg($generalObj)?></div></td></tr>
     <tr><td colspan=5 style="text-align:left;">【 접속자 】<?=onlinegen()?></td></tr>
 <?php
 if ($session->userGrade >= 5) {
@@ -244,7 +246,7 @@ else if($session->userGrade == 4){
     </tr>
     <tr>
         <td rowspan=3 width=50 valign=top><?=turnTable()?></td>
-        <td style="width:650px;border:none;text-align:center;"><?php cityInfo(); ?></td>
+        <td style="width:650px;border:none;text-align:center;"><?php cityInfo($generalObj); ?></td>
     </tr>
     <tr>
         <td style='width:650px;' align=right>
@@ -267,7 +269,7 @@ else if($session->userGrade == 4){
     </tr>
     <tr>
         <td align=right style="'width:650px;border:none;">
-            <?php printCommandTable()?>
+            <?php printCommandTable($generalObj)?>
             <input id="mainBtnSubmit" type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;font-size:13px; value='로비로' onclick=location.replace('../')><br>
         </td>
     </tr>
@@ -275,7 +277,7 @@ else if($session->userGrade == 4){
 <table class="tb_layout bg0" style="width:1000px;">
     <tr>
         <td width=498 style="border:none;"><?php myNationInfo(); ?></td>
-        <td width=498 style="border:none;"><?php myInfo(); ?></td>
+        <td width=498 style="border:none;"><?php myInfo($generalObj); ?></td>
     </tr>
     <tr><td colspan=2><?=commandButton()?></td></tr>
 </table>
@@ -326,7 +328,7 @@ if ($me['newmsg'] == 1) {
     MessageBox("개인 서신이 도착했습니다!");
 }
 if ($me['newvote'] == 1) {
-    $develcost = $admin['develcost']*5;
+    $develcost = $gameStor->develcost*5;
     MessageBox("설문조사에 참여하시면 금{$develcost}과 유니크템을 드립니다! (우측 상단 설문조사 메뉴)");
 }
 ?>

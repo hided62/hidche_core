@@ -3,7 +3,7 @@ namespace sammo\ActionPersonality;
 use \sammo\iAction;
 use \sammo\General;
 
-class che_대의 implements iAction{
+class che_왕좌 implements iAction{
     use \sammo\DefaultAction;
 
     static $id = 0;

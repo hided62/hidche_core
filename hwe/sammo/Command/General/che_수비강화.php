@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 class che_수비강화 extends che_상업투자{
     static protected $cityKey = 'def';

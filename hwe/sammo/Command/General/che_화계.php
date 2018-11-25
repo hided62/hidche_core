@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -29,6 +29,9 @@ class che_화계 extends Command\GeneralCommand{
     static protected $injuryGeneral = true;
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         if(!key_exists('destCityID', $this->arg)){
             return false;
         }

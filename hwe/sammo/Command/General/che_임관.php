@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -26,6 +26,9 @@ class che_임관 extends Command\GeneralCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         $destNationID = $this->arg['destNationID']??null;
         $destGeneralID = $this->arg['destGeneralID']??null;
 

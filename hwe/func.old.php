@@ -137,17 +137,11 @@ function getRandGenName() {
 
 
 
-function cityInfo() {
+function cityInfo(General $generalObj) {
     $db = DB::db();
-    $connect=$db->get();
-    $userID = Session::getUserID();
-
-    $query = "select no,city from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
 
     // 도시 정보
-    $city = getCity($me['city']);
+    $city = $generalObj->getRawCity();
 
     $nation = getNationStaticInfo($city['nation']);
 
@@ -181,29 +175,35 @@ function cityInfo() {
         echo "지배 국가 【 {$nation['name']} 】";
     }
 
-    if($city['gen1'] > 0) {
-        $query = "select name from general where no='{$city['gen1']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gen1 = MYDB_fetch_array($result);
-    } else {
-        $gen1 = ['name'=>'-'];
+    $officers = [];
+    $reqOfficersID = [];
+
+    if ($city['gen1'] > 0) {
+        $reqOfficersID[] = $city['gen1'];
+    }
+    else{
+        $officers[1] = '-';
     }
 
-    if($city['gen2'] > 0) {
-        $query = "select name from general where no='{$city['gen2']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gen2 = MYDB_fetch_array($result);
-    } else {
-        $gen2 = ['name'=>'-'];
+    if ($city['gen2'] > 0) {
+        $reqOfficersID[] = $city['gen2'];
+    }
+    else{
+        $officers[2] = '-';
     }
 
-    if($city['gen3'] > 0) {
-        $query = "select name from general where no='{$city['gen3']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gen3 = MYDB_fetch_array($result);
-    } else {
-        $gen3 = ['name'=>'-'];
+    if ($city['gen3'] > 0) {
+        $reqOfficersID[] = $city['gen3'];
     }
+    else{
+        $officers[3] = '-';
+    }
+
+    foreach($db->queryAllLists('SELECT level, name FROM general WHERE no IN %li', $reqOfficersID) as [$level, $name]){
+        $officers[$level] = $name;
+    }
+
+
 
     echo "
         </b></td>
@@ -214,7 +214,7 @@ function cityInfo() {
         <td rowspan=2 style='text-align:center;' class='bg1'><b>민심</b></td>
         <td height=7>".bar($trust)."</td>
         <td rowspan=2 style='text-align:center;' class='bg1'><b>태수</b></td>
-        <td rowspan=2 style='text-align:center;'>{$gen1['name']}</td>
+        <td rowspan=2 style='text-align:center;'>{$officers[1]}</td>
     </tr>
     <tr>
         <td colspan=3 style='text-align:center;'>{$city['pop']}/{$city['pop2']}</td>
@@ -228,7 +228,7 @@ function cityInfo() {
         <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>치안</b></td>
         <td width=100 height=7>".bar($secu)."</td>
         <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>군사</b></td>
-        <td rowspan=2 style='text-align:center;'>{$gen2['name']}</td>
+        <td rowspan=2 style='text-align:center;'>{$officers[2]}</td>
     </tr>
     <tr>
         <td style='text-align:center;'>{$city['agri']}/{$city['agri2']}</td>
@@ -243,7 +243,7 @@ function cityInfo() {
         <td rowspan=2 style='text-align:center;' class='bg1'><b>시세</b></td>
         <td height=7>".bar($trade)."</td>
         <td rowspan=2 style='text-align:center;' class='bg1'><b>시중</b></td>
-        <td rowspan=2 style='text-align:center;'>{$gen3['name']}</td>
+        <td rowspan=2 style='text-align:center;'>{$officers[3]}</td>
     </tr>
     <tr>
         <td style='text-align:center;'>{$city['def']}/{$city['def2']}</td>

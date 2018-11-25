@@ -42,9 +42,9 @@ var defaultStatMax = <?=GameConst::$defaultStatMax?>;
 var charInfoText = <?php
 
 $charInfoText = [];
-for($i=0;$i<=9;$i++){
-    //XXX:하드코딩 금지!
-    $charInfoText[$i] = getCharInfo($i);
+foreach(GameConst::$availablePersonality as $personalityID){
+    $personalityInfo = getPersonalityClass($personalityID)::$info;
+    $charInfoText[$personalityID];
 }
 echo Json::encode((object)$charInfoText);
 ?>;
@@ -120,20 +120,11 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
             <td width=498 align=right id=bg1>성격</td>
             <td colspan=2>
                 <select id="selChar" name=character size=1 maxlength=15 style=color:white;background-color:black;>
-                    <option selected value=11>????</option>
-<!--
-                    <option value=10>은둔</option>
--->
-                    <option value=9>안전</option>
-                    <option value=8>유지</option>
-                    <option value=7>재간</option>
-                    <option value=6>출세</option>
-                    <option value=5>할거</option>
-                    <option value=4>정복</option>
-                    <option value=3>패권</option>
-                    <option value=2>의협</option>
-                    <option value=1>대의</option>
-                    <option value=0>왕좌</option>
+                    <option selected value='Random'>????</option>
+<?php foreach(GameConst::$availablePersonality as $personalityID): ?>
+<?php $personalityName = getPersonalityClass($personalityID)::$name; ?>
+                    <option value='<?=$personalityID?>'><?=$personalityName?></option>
+<?php endforeach; ?>
                 </select> <span id="charInfoText"></span>
             </td>
         </tr>

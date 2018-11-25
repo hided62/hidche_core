@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -40,12 +40,6 @@ class che_해산 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation(['gennum']);
 
-        if(!key_exists($colorType, GetNationColors())){
-            return false;
-        }
-
-        $relYear = $env['year'] - $env['startyear'];
-        
         $this->runnableConstraints=[
             ConstraintHelper::BeLord(),
             ConstraintHelper::WanderingNation(),

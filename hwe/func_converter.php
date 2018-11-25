@@ -10,19 +10,11 @@ namespace sammo;
  */
 
 function getCharacterList(){
-    $infoText = [
-        9=>['안전', '사기 -5, 징·모병 비용 -20%'],
-        8=>['유지', '훈련 -5, 징·모병 비용 -20%'],
-        7=>['재간', '명성 -10%, 징·모병 비용 -20%'],
-        6=>['출세', '명성 +10%, 징·모병 비용 +20%'],
-        5=>['할거', '명성 -10%, 훈련 +5'],
-        4=>['정복', '명성 -10%, 사기 +5'],
-        3=>['패권', '훈련 +5, 징·모병 비용 +20%'],
-        2=>['의협', '사기 +5, 징·모병 비용 +20%'],
-        1=>['대의', '명성 +10%, 훈련 -5'],
-        0=>['왕좌', '명성 +10%, 사기 -5'],
-        10=>['은둔', '명성 -10%, 계급 -10%, 사기 -5, 훈련 -5, 단련 성공률 +10%'],
-    ];
+    $infoText = [];
+    foreach(GameConst::$allPersonality as $personalityID){
+        $class = getPersonalityClass($personalityID);
+        $infoText[$personalityID] = [$class::$name, $class::$info];
+    }
     return $infoText;
 }
 
@@ -34,6 +26,9 @@ function CharCall($call) {
 
     foreach(getCharacterList() as $id => [$name, $info]){
         $invTable[$name] = $id;
+    }
+    if(!key_exists($call, $invTable)){
+        throw new \InvalidArgumentException("{$call}은 올바른 성격이 아님");
     }
     return $invTable[$call];
 }

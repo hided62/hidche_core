@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 //TODO: 아이템 클래스 재확정 후 재 구현!
 
@@ -36,6 +36,9 @@ class che_군량매매 extends Command\GeneralCommand{
     ];
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         $buyRice = $this->arg['buyRice']??null;
         if(!is_bool($buyRice)){
             return false;

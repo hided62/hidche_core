@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil, TimeUtil,
@@ -27,7 +27,9 @@ class che_랜덤임관 extends Command\GeneralCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
-        
+        if($this->arg === null){
+            return false;
+        }
         $destNationIDList = $this->arg['destNationIDList']??null;
         //null은 에러, []는 정상
 

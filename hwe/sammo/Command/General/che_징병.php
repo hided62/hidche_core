@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -42,6 +42,9 @@ class che_징병 extends Command\GeneralCommand{
     }
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         if(!key_exists('crewType', $this->arg)){
             return false;
         }
@@ -111,7 +114,7 @@ class che_징병 extends Command\GeneralCommand{
             return [0, 0];
         }
         $reqGold = $this->reqCrewType->costWithTech($this->nation['tech'], $this->reqCrew);
-        $reqGold = $general->onCalcDomestic('징병', 'cost', $reqGold, ['armType'=>$this->reqCrewType->armType]);
+        $reqGold = $this->generalObj->onCalcDomestic('징병', 'cost', $reqGold, ['armType'=>$this->reqCrewType->armType]);
         $reqGold *= static::$costOffset;
         $reqRice = $this->reqCrew / 100;
         return [$reqGold, $reqRice];

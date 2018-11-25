@@ -10,17 +10,33 @@ use function sammo\getItemCost2;
 //XXX:임시용!
 class che_Dummy extends \sammo\BaseItem{
 
-    static $id;
-    static $name;
-    static $info;
-    static $cost;
-    static $consumable = false;
+    protected $_id;
+    protected $_name;
+    protected $_info;
+    protected $_cost;
+    protected $_consumable = false;
+
+    function getID(){
+        return $this->_id;
+    }
+    function getName(){
+        return $this->_name;
+    }
+    function getInfo(){
+        return $this->_info;
+    }
+    function getCost(){
+        return $this->_cost;
+    }
+    function isConsumable(){
+        return $this->_consumable;
+    }
 
     public function __construct(int $itemCode)
     {
-        $this->id = $itemCode = true;
-        [$this->name, $this->info] = getItemInfo($itemCode);
-        $this->cost = getItemCost2($itemCode);
-        $this->consumable = isConsumable($itemCode);
+        $this->_id = $itemCode = true;
+        [$this->_name, $this->_info] = getItemInfo($itemCode);
+        $this->_cost = getItemCost2($itemCode);
+        $this->_consumable = isConsumable($itemCode);
     }
 }

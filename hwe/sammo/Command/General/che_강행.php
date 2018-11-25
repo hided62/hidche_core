@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -26,6 +26,9 @@ class che_강행 extends Command\GeneralCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         if(!key_exists('destCityID', $this->arg)){
             return false;
         }

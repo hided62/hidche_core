@@ -547,7 +547,7 @@ class General implements iAction{
             'leader', 'leader2', 'power', 'power2', 'intel', 'intel2', 'weap', 'book', 'horse', 'item', 
             'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'belong',
-            'personal', 'special', 'special2', 'term', 'mode', 'npc', 'npc_org', 'deadyear', 'npcmsg',
+            'personal', 'special', 'special2', 'mode', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex0', 'dex10', 'dex20', 'dex30', 'dex40', 
             'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn'
         ];
@@ -562,7 +562,7 @@ class General implements iAction{
             $column = array_unique(array_merge($minimumColumn, $column));
         }
 
-        $rawGeneral = $db->queryFirstRow('SELECT $lb FROM general WHERE no = %i', $generalID);
+        $rawGeneral = $db->queryFirstRow('SELECT %l FROM general WHERE no = %i', Util::formatListOfBackticks($column), $generalID);
         if(!$rawGeneral){
             return new DummyGeneral($constructMode > 0);
         }

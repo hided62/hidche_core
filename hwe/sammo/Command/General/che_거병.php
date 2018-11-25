@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -37,10 +37,6 @@ class che_거병 extends Command\GeneralCommand{
 
         $this->setCity();
         $this->setNation();
-
-        if(!key_exists($colorType, GetNationColors())){
-            return false;
-        }
 
         $relYear = $env['year'] - $env['startyear'];
         

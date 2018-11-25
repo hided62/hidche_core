@@ -427,20 +427,13 @@ function commandGroup($typename, $type=0) {
     }
 }
 
-function printCommandTable() {
+function printCommandTable(General $generalObj) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
     $userID = Session::getUserID();
 
-    $gameStor->cacheAll();
+    $gameStor->turnOnCache();
     $env = $gameStor->getAll();
-    $admin = $gameStor->getAll();
-
-    $session = Session::getInstance();
-    $generalID = $session->generalID;
-
-    $generalObj = General::createGeneralObjFromDB($generalID);
 
 ?>
 <select id='generalCommandList' name='commandtype' size=1 style='height:20px;width:260px;color:white;background-color:black;font-size:12px;'>";
@@ -575,16 +568,8 @@ function chiefCommandTable() {
 ";
 }
 
-function myInfo() {
-    $db = DB::db();
-    $connect=$db->get();
-    $userID = Session::getUserID();
-    
-    $query = "select no from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
-
-    generalInfo($me['no']);
+function myInfo(General $generalObj) {
+    generalInfo($generalObj->getID());
 }
 
 function generalInfo($no) {
@@ -893,14 +878,6 @@ function generalInfo2($no) {
 </table>";
 }
 
-function adminMsg() {
-    $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-    $msg = $gameStor->msg;
-
-    return "운영자 메세지 : <span style='color:yellow;'>$msg</span>";
-}
-
 function getOnlineNum() {
     return KVStorage::getStorage(DB::db(), 'game_env')->online;
 }
@@ -920,21 +897,11 @@ function onlinegen() {
     return $onlinegen;
 }
 
-function onlineNation() {
+function nationMsg(General $general) {
     $db = DB::db();
-    $gameStor = KVStorage::getStorage($db, 'game_env');
-
-    return $gameStor->onlinenation;
-}
-
-function nationMsg() {
-    $db = DB::db();
-    $connect=$db->get();
-    $userID = Session::getUserID();
-
     $msg = $db->queryFirstField(
-        'SELECT msg FROM nation WHERE nation = (SELECT nation FROM general WHERE `owner` = %i)',
-        $userID
+        'SELECT msg FROM nation WHERE nation = %i',
+        $general->getNationID()
     );
 
     return $msg?:'';

@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -27,6 +27,9 @@ class che_헌납 extends Command\GeneralCommand{
     static public $reqArg = true;
 
     protected function argTest():bool{
+        if($this->arg === null){
+            return false;
+        }
         if(!key_exists('isGold', $this->arg)){
             return false;
         }

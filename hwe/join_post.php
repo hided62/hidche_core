@@ -204,8 +204,8 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
 }
 
 //성격 랜덤시
-if ($character == 11) {
-    $character = rand()%10;
+if (!in_array($character, GameConst::$availablePersonality)){
+    $character = Util::choiceRandom(GameConst::$availablePersonality);
 }
 //상성 랜덤
 $affinity = rand()%150 + 1;

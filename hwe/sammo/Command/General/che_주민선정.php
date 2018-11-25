@@ -1,5 +1,5 @@
 <?php
-namespace sammo\GeneralCommand;
+namespace sammo\Command\General;
 
 use \sammo\{
     DB, Util, JosaUtil,
@@ -58,7 +58,7 @@ class che_주민선정 extends Command\GeneralCommand{
     public function getCost():array{
         $develCost = $this->env['develcost'] * 2;
         $reqGold = 0;
-        $reqRice = $general->onCalcDomestic(static::$actionKey, 'cost', $develCost);
+        $reqRice = $this->generalObj->onCalcDomestic(static::$actionKey, 'cost', $develCost);
         
         return [$reqGold, $reqRice];
     }
