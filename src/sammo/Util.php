@@ -582,4 +582,25 @@ class Util extends \utilphp\util
         $reflect = new ReflectionClass($object);
         return $reflect->getShortName();
     }
+
+    /**
+     * 배열의 원소에 대해서 테스트를 수행하고 모두 true인지 확인
+     */
+    public static function testArrayValues(array $array, ?callable $callback):bool{
+        if($callback === null){
+            foreach($array as $value){
+                if(!$value){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        foreach($array as $value){
+            if(!($callback)($value)){
+                return false;
+            }
+        }
+        return true;
+    }
 };

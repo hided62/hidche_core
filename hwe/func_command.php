@@ -128,7 +128,7 @@ function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
     ], 'nation_id=%i AND level=%i', $nationID, $level);
 }
 
-function setGeneralCommand(int $generalID, array $turnList, string $command, ?array $arg = null) {
+function _setGeneralCommand(int $generalID, array $turnList, string $command, ?array $arg = null) {
     if(!$turnList){
         return;
     }
@@ -141,7 +141,7 @@ function setGeneralCommand(int $generalID, array $turnList, string $command, ?ar
     ], 'general_id = %i AND turn_idx IN %li', $generalID, $turnList);
 }
 
-function setNationCommand(int $nationID, int $level, array $turnList, string $command, ?array $arg = null) {
+function _setNationCommand(int $nationID, int $level, array $turnList, string $command, ?array $arg = null) {
     if(!$turnList){
         return;
     }
@@ -152,4 +152,181 @@ function setNationCommand(int $nationID, int $level, array $turnList, string $co
         'action'=>$command,
         'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT)
     ], 'nation_id = %i AND level = %i AND turn_idx IN %li', $generalID, $level, $turnList);
+}
+
+function checkCommandArg(?array $arg):?string{
+    if($arg === null){
+        return null;
+    }
+    $defaultCheck = [
+        'string'=>[
+            'nationName', 'optionText', 'itemType', 'nationType'
+        ],
+        'integer'=>[
+            'crewType', 'destGeneralID', 'destCityID', 'destNationID',
+            'amount', 'colorType', 'itemCode'
+        ],
+        'boolean'=>[
+            'isGold', 'buyRice',
+        ],
+        'between'=>[
+            ['month', [1, 12]]
+        ],
+        'min'=>[
+            ['year', 0],
+            ['itemCode', 0],
+            ['destGeneralID', 1],
+            ['destCityID', 1],
+            ['destNationID', 1],
+            ['amount', 1],
+            ['crewType', 0]
+        ],
+        'integerArray'=>[
+            'destNationIDList', 'destGeneralIDList'
+        ],
+        'stringWidthBetween'=>[
+            ['nationName', 1, 18]
+        ]
+    ];
+    $v = new Validator($arg);
+    $v->rules($defaultCheck);
+    if (!$v->validate()){
+        return $v->errorStr();
+    }
+    return null;
+}
+
+function setGeneralCommand(int $generalID, array $turnList, string $command, ?array $arg = null):array{
+    $turnList = array_unique($turnList);
+    foreach($turnList as $turnIdx){
+        if(!is_int($turnIdx) || $turnIdx < 0 || $turnIdx >= GameConst::$maxTurn){
+            return [
+                'result'=>false,
+                'reason'=>'올바른 턴이 아닙니다. : '.$turnIdx
+            ];
+        }
+    }
+
+    $argBasicTestResult = checkCommandArg($arg);
+    if($argBasicTestResult !== null){
+        return [
+            'result'=>false,
+            'reason'=>'턴이 입력되지 않았습니다.'
+        ];
+    }
+
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $env = $gameStor->getAll();
+    $general = General::createGeneralObjFromDB($generalID);
+
+    try{
+        $commandObj = buildGeneralCommandClass($action, $general, $env, $arg);
+    }
+    catch (\InvalidArgumentException $e){
+        return [
+            'result'=>false,
+            'reason'=>$e->getMessage(),
+        ];
+    }
+    catch (\Exception $e){
+        return [
+            'result'=>false,
+            'reason'=>$e->getCode().$e->getMessage()
+        ];
+    }
+
+    if(!$commandObj->isArgValid()){
+        return [
+            'result'=>false,
+            'arg_test'=>false,
+            'reason'=>'올바르지 않은 argument'
+        ];
+    }
+
+    if(!$commandObj->isReservable()){
+        return [
+            'result'=>false,
+            'arg_test'=>true,
+            'reason'=>'예약 불가능한 커맨드 :'.$commandObj->testReservable()
+        ];
+    }
+
+    _setGeneralCommand($generalID, $turnList, $command, $arg);
+    return [
+        'result'=>true,
+        'arg_test'=>true,
+        'reason'=>'success'
+    ];
+}
+
+function setNationCommand(int $generalID, array $turnList, string $command, ?array $arg = null):array{
+    $turnList = array_unique($turnList);
+    foreach($turnList as $turnIdx){
+        if(!is_int($turnIdx) || $turnIdx < 0 || $turnIdx >= GameConst::$maxChiefTurn){
+            return [
+                'result'=>false,
+                'reason'=>'올바른 턴이 아닙니다. : '.$turnIdx
+            ];
+        }
+    }
+
+    $argBasicTestResult = checkCommandArg($arg);
+    if($argBasicTestResult !== null){
+        return [
+            'result'=>false,
+            'reason'=>'턴이 입력되지 않았습니다.'
+        ];
+    }
+
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    $env = $gameStor->getAll();
+    $general = General::createGeneralObjFromDB($generalID);
+
+    if($general->getVar('level') < 5){
+        return [
+            'result'=>false,
+            'reason'=>'수뇌가 아닙니다'
+        ];
+    }
+
+    try{
+        $commandObj = buildNationCommandClass($action, $general, $env, $arg);
+    }
+    catch (\InvalidArgumentException $e){
+        return [
+            'result'=>false,
+            'reason'=>$e->getMessage(),
+        ];
+    }
+    catch (\Exception $e){
+        return [
+            'result'=>false,
+            'reason'=>$e->getCode().$e->getMessage()
+        ];
+    }
+
+    if(!$commandObj->isArgValid()){
+        return [
+            'result'=>false,
+            'arg_test'=>false,
+            'reason'=>'올바르지 않은 argument'
+        ];
+    }
+
+    if(!$commandObj->isReservable()){
+        return [
+            'result'=>false,
+            'arg_test'=>true,
+            'reason'=>'예약 불가능한 커맨드 :'.$commandObj->testReservable()
+        ];
+    }
+
+    _setNationCommand($general->getNationID(), $general->getVar('level'), $turnList, $command, $arg);
+    return [
+        'result'=>true,
+        'arg_test'=>true,
+        'reason'=>'success'
+    ];
 }

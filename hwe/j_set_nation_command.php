@@ -34,7 +34,7 @@ if($arg === null || !is_array($arg)){
     ]);
 }
 
-$result = setGeneralCommand($generalID, $turnList, $action, $arg);
+$result = setNationCommand($generalID, $turnList, $action, $arg);
 if(!key_exists('result', $result)){
     $result['result'] = false;
 }

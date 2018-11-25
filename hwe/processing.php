@@ -188,7 +188,7 @@ function command_99($turn) {
     $me = MYDB_fetch_array($result);
 
     if($me['level'] >= 5) {
-        setNationCommand($me['nation'], $me['level'], range(0, $turn - 1), 'che_휴식');
+        _setNationCommand($me['nation'], $me['level'], range(0, $turn - 1), 'che_휴식');
     }
 
     header('location:b_chiefcenter.php');
