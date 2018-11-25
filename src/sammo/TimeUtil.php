@@ -58,7 +58,7 @@ class TimeUtil
         return $obj->format('Y-m-d H:i:s.u');
     }
 
-    public static function secondsToDateTime(float $fullSeconds, bool $isDateTimeImmutable=false): \DateTime{
+    public static function secondsToDateTime(float $fullSeconds, bool $isDateTimeImmutable=false): \DateTimeInterface{
         $seconds = floor($fullSeconds);
         $fraction = $fullSeconds - $seconds;
 
@@ -77,15 +77,15 @@ class TimeUtil
     }
 
     public static function secondsToDateInterval(float $fullSeconds): \DateInterval{
-        $dateBase = new \DateTime("@0");
+        $d0 = new \DateTime("@0");
 
-        return static::secondsToDateTime($fullSeconds)->diff($d0);
+        return static::secondsToDateTime($fullSeconds, true)->diff($d0);
     }
 
     public static function DateTimeToSeconds(\DateTimeInterface $dateTime): float{
-        $dateBase = new \DateTimeImmutable("@0");
+        $d0 = new \DateTimeImmutable("@0");
 
-        return static::DateIntervalToSeconds($dateTime->diff($dateBase));
+        return static::DateIntervalToSeconds($dateTime->diff($d0));
     }
 
     public static function DateIntervalToSeconds(\DateInterval $interval): float{

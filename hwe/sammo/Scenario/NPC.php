@@ -112,7 +112,7 @@ class NPC{
                 $this->charDomestic = SpecialityConst::pickSpecialDomestic($general);
             }
         }
-        else if($char !== null){
+        else if($char === null){
         }
         else{
             //TODO: 내특, 전특 구분 필요
@@ -121,9 +121,9 @@ class NPC{
                 $domesticClass = \sammo\getGeneralSpecialDomesticClass($char);
                 $this->charDomestic = Util::getClassName($domesticClass);
             }
-            catch (Exception $e) {
+            catch (\Exception $e) {
                 $warClass = \sammo\getGeneralSpecialWarClass($char);
-                $this->charWar = Util::getClassName($domesticClass);
+                $this->charWar = Util::getClassName($warClass);
             }
         }  
     }
@@ -230,12 +230,6 @@ class NPC{
         if($duplicateCnt > 1){
             $name = "{$name}($duplicateCnt}";   
         }
-        $this->realName = $name;
-
-        $query = "select no from general where name like '{$name}%'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $count = MYDB_num_rows($result);
-            $count++;
 
         $this->realName = $name;
 

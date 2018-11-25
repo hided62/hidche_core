@@ -1,9 +1,9 @@
 # 장수 테이블 삭제
 DROP TABLE IF EXISTS general;
-
+DROP TABLE IF EXISTS `general_turn`;
 # 국가 테이블 삭제
 DROP TABLE IF EXISTS nation;
-
+DROP TABLE IF EXISTS `nation_turn`;
 # 도시 테이블 삭제
 DROP TABLE IF EXISTS city;
 
@@ -41,6 +41,8 @@ DROP TABLE IF EXISTS world_history;
 # 전체 이벤트 테이블 삭제(연감 대체?)
 DROP TABLE IF EXISTS general_public_record;
 
+DROP TABLE IF EXISTS select_npc_token;
+
 DROP TABLE IF EXISTS reserved_open;
 CREATE TABLE `reserved_open` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
@@ -51,5 +53,3 @@ CREATE TABLE `reserved_open` (
 )
 DEFAULT CHARSET=utf8mb4
 ENGINE=MyISAM;
-
-DROP TABLE IF EXISTS select_npc_token;

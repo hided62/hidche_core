@@ -422,6 +422,11 @@ class General implements iAction{
         return $value;
     }
 
+    public function onCalcStat(General $general, string $stat, $value){
+        //xxx: $general?
+        return $value;
+    }
+
     public function onCalcStrategic(string $turnType, string $varType, $value){
         foreach(array_merge([
             $this->nationType, 
@@ -477,7 +482,7 @@ class General implements iAction{
         }
         return [$att, $def];
     }
-    public function getBattleInitSkillTriggerList(WarUnit $unit):array{
+    public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         $caller = new WarUnitTriggerCaller();
         foreach(array_merge([
             $this->nationType, 
@@ -498,7 +503,7 @@ class General implements iAction{
         }
         return $caller;
     }
-    public function getBattlePhaseSkillTriggerList(WarUnit $unit):array{
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         $caller = new WarUnitTriggerCaller();
         foreach(array_merge([
             $this->nationType, 

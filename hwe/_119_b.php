@@ -80,10 +80,15 @@ case "쌀지급":
     processRiceIncome();
     break;
 case "락걸기":
-    $db->update('plock', ['plock'=>1], true);
+    $db->update('plock', [
+        'plock'=>1,
+        'locktime'=>TimeUtil::now(true)
+    ], true);
     break;
 case "락풀기":
-    $db->update('plock', ['plock'=>0], true);
+    $db->update('plock', [
+        'plock'=>0
+    ], true);
     break;
 }
 

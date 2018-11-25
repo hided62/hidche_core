@@ -4,7 +4,7 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
 
-class che_통찰 implements iAction{
+class che_인덕 implements iAction{
     use \sammo\DefaultAction;
 
     static $id = 20;

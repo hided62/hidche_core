@@ -3,6 +3,7 @@ namespace sammo\ActionNationType;
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\GeneralTrigger;
+use \sammo\GeneralTriggerCaller;
 
 class che_치료_칠엽청점 extends \sammo\BaseItem{
 

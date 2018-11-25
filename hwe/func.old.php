@@ -1548,7 +1548,10 @@ function checkTurn() {
     
     
     if($gameStor->isunited == 2) {
-        $db->update('plock', ['plock'=>1], true);
+        $db->update('plock', [
+            'plock'=>1,
+            'locktime'=>TimeUtil::now(true)
+        ], true);
         return;
     }
     $gameStor->cacheAll();

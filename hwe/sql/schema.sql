@@ -74,7 +74,7 @@ CREATE TABLE `general` (
 	`personal` INT(2) NULL DEFAULT '0',
 	`special` VARCHAR(20) NOT NULL DEFAULT 'None',
 	`specage` INT(2) NULL DEFAULT '0',
-	`special2` INT(2) NULL DEFAULT '0',
+	`special2` VARCHAR(20) NOT NULL DEFAULT 'None',
 	`specage2` INT(2) NULL DEFAULT '0',
 	`mode` INT(1) NULL DEFAULT '2',
 	`tnmt` INT(1) NULL DEFAULT '1',
@@ -146,7 +146,7 @@ CREATE TABLE `general_turn` (
 	UNIQUE INDEX `general_id` (`general_id`, `turn_idx`),
 	INDEX `action` (`action`, `turn_idx`, `general_id`)
 )
-COLLATE=utf8mb4
+DEFAULT CHARSET=utf8mb4
 ENGINE=MyISAM
 ;
 

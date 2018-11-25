@@ -3,6 +3,7 @@ namespace sammo\ActionNationType;
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\GeneralTrigger;
+use \sammo\GeneralTriggerCaller;
 
 class che_의술_청낭서 extends \sammo\BaseItem{
 

@@ -2,6 +2,8 @@
 namespace sammo\ActionNationType;
 use \sammo\iAction;
 use \sammo\General;
+use \sammo\GeneralTrigger;
+use \sammo\GeneralTriggerCaller;
 
 class che_의술_태평청령 extends \sammo\BaseItem{
 
