@@ -11,7 +11,7 @@ interface iAction{
     public function onCalcStrategic(string $turnType, string $varType, $value);
     public function onCalcNationalIncome(string $type, int $amount):int;
 
-    public function getWarPowerMultiplier(WarUnit $unit):?WarUnitTriggerCaller;
+    public function getWarPowerMultiplier(WarUnit $unit):array;
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller;
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller;
 }
