@@ -123,6 +123,20 @@ class che_거병 extends Command\GeneralCommand{
             'gennum'=>1
         ]);
         $nationID = DB::db()->insertId();
+        $turnRows = [];
+        foreach([12, 11] as $chiefLevel){
+            foreach(range(0, GameConst::$maxChiefTurn - 1) as $turnIdx){
+                $turnRows[] = [
+                    'nation_id'=>$nationID,
+                    'level'=>$chiefLevel,
+                    'turn_idx'=>$turnIdx,
+                    'action'=>'휴식',
+                    'arg'=>null,
+                ];
+            }
+            
+        }
+        $db->insert('nation_turn', $turnRows);
 
         refreshNationStaticInfo();
 

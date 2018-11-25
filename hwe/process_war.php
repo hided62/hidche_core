@@ -621,6 +621,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         // 국가 삭제
         $query = "delete from nation where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->delete('nation_turn', 'nation_id=%i', $city['nation']);
         $renewFront = true;
     // 멸망이 아니면
     } else {

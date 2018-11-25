@@ -245,7 +245,16 @@ $db->insert('general', [
     'special2' => $special2
 ]);
 $generalID = $db->insertId();
-
+$turnRows = [];
+foreach(range(0, GameConst::$maxTurn - 1) as $turnIdx){
+    $turnRows[] = [
+        'general_id'=>$generalID,
+        'turn_idx'=>$turnIdx,
+        'action'=>'휴식',
+        'arg'=>null,
+    ];
+}
+$db->insert('general_turn', $turnRows);
 $cityname = CityConst::byID($city)->name;
 
 $me = [

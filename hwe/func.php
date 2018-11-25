@@ -1983,6 +1983,7 @@ function deleteNation(General $general) {
         'data'=>Json::encode($oldNation)
     ]);
     $db->delete('nation', 'nation=%i', $nationID);
+    $db->delete('nation_turn', 'nation_id=%i', $nationID);
     // 외교 삭제
     $db->delete('diplomacy', 'me = %i OR you = %i', $nationID, $nationID);
 

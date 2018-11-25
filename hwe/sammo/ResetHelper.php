@@ -186,8 +186,7 @@ class ResetHelper{
         );
 
 
-        $turntime = TimeUtil::now();
-        $time = substr($turntime, 11, 2);
+        $turntime = TimeUtil::now(true);
         if($sync == 0) {
             // 현재 시간을 1월로 맞춤
             $starttime = cutTurn($turntime, $turnterm);
@@ -249,6 +248,17 @@ class ResetHelper{
                 'killturn'=>9999,
                 'crewtype'=>GameUnitConst::DEFAULT_CREWTYPE
             ]);
+            $generalID = $db->insertId();
+            $turnRows = [];
+            foreach(range(0, GameConst::$maxTurn - 1) as $turnIdx){
+                $turnRows[] = [
+                    'general_id'=>$generalID,
+                    'turn_idx'=>$turnIdx,
+                    'action'=>'휴식',
+                    'arg'=>null,
+                ];
+            }
+            $db->insert('general_turn', $turnRows);
         }
 
         foreach($env as $key=>$value){

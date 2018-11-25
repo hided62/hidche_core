@@ -789,6 +789,7 @@ function checkMerge() {
 
         $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->delete('nation_turn', 'nation_id=%i', $me['nation']);
         // 아국 모든 도시들 상대국 소속으로
         $query = "update city set nation='{$you['nation']}',gen1='0',gen2='0',gen3='0',conflict='{}' where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -941,6 +942,7 @@ function checkSurrender() {
 
         $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->delete('nation_turn', 'nation_id=%i', $me['nation']);
         // 군주가 있는 위치 구함
         $query = "select city from general where nation='{$you['nation']}' and level='12'";
         $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1072,6 +1074,20 @@ function updateNationState() {
                 }
             }
             $gameStor->assembler_id = $lastAssemblerID;
+
+            $turnRows = [];
+            foreach(range(getNationChiefLevel($oldLevel) - 1, getNationChiefLevel($nation['level']), -1) as $chiefLevel){
+                foreach(range(0, GameConst::$maxChiefTurn - 1) as $turnIdx){
+                    $turnRows[] = [
+                        'nation_id'=>$nation['nation'],
+                        'level'=>$chiefLevel,
+                        'turn_idx'=>$turnIdx,
+                        'action'=>'휴식',
+                        'arg'=>null,
+                    ];
+                }
+            }
+            $db->insertIgnore('nation_turn', $turnRows);
 
             $db->update('nation', [
                 'level'=>$nation['level']

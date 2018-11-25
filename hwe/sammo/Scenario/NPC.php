@@ -341,6 +341,16 @@ class NPC{
             'dex40'=>$this->dex40,
         ]);
         $this->generalID = $db->insertId();
+        $turnRows = [];
+        foreach(range(0, GameConst::$maxTurn - 1) as $turnIdx){
+            $turnRows[] = [
+                'general_id'=>$this->generalID,
+                'turn_idx'=>$turnIdx,
+                'action'=>'휴식',
+                'arg'=>null,
+            ];
+        }
+        $db->insert('general_turn', $turnRows);
 
         return true; //생성되었다.
     }
