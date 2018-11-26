@@ -524,6 +524,11 @@ class WarUnitGeneral extends WarUnit{
         }
         yield true;
 
+        if($specialWar == 45){
+            $oppose->activateSkill('계략약화');
+        }
+        yield true;
+
         if(
             $specialWar == 63 &&
             $this->getPhase() == 0 &&
@@ -705,7 +710,7 @@ class WarUnitGeneral extends WarUnit{
         if(
             $specialWar == 45 &&
             $oppose->hasActivatedSkill('계략') &&
-            Util::randBool(0.3)
+            Util::randBool(0.4)
         ){
             $this->activateSkill('반계');
             $oppose->deactivateSkill('계략');
