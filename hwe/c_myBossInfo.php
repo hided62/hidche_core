@@ -150,11 +150,12 @@ if($btn == "추방") {
                     'level'=>0,
                     'nation'=>0,
                     'belong'=>0,
-                    'betray'=>$db->sqleval('betray + 1'),
                     'makelimit'=>12,
                     'gold'=>$general['gold'],
                     'rice'=>$general['rice'],
+                    'experience'=>$db->sqleval('experience * (1 - 0.1*betray)'),
                     'dedication'=>$db->sqleval('dedication * (1 - 0.1*betray)'),
+                    'betray'=>$db->sqleval('betray + 1'),
                 ], 'no=%i', $general['no']);
             }
         }
