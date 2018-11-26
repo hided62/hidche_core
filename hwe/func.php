@@ -493,7 +493,7 @@ function commandTable() {
 <select name=commandtype size=1 style='height:20px;width:260px;color:white;background-color:black;font-size:12px;'>";
     addCommand("휴 식", 0);
     addCommand("요 양", 50);
-    commandGroup("========= 내 정 ==========");
+    commandGroup("======= 내 정 ========");
     if($me['level'] >= 1 && ($citycount != 0 || $admin['year'] >= $admin['startyear']+3) && $city['supply'] != 0) {
         addCommand("농지개간(지력경험, 자금$develcostA)", 1, 1, $colorA);
         addCommand("상업투자(지력경험, 자금$develcostA)", 2, 1, $colorA);
@@ -519,7 +519,7 @@ function commandTable() {
         addCommand("물자조달(랜덤경험)", 9, 0);
     }
     commandGroup("", 1);
-    commandGroup("========= 군 사 ==========");
+    commandGroup("======= 군 사 ========");
     if($me['level'] >= 1 && $citycount > 0) {
         addCommand("첩보(통솔경험, 자금$develcost3, 군량$develcost3)", 31);
         addCommand("징병(통솔경험)", 11);
@@ -544,7 +544,7 @@ function commandTable() {
     }
 
     commandGroup("", 1);
-    commandGroup("========= 인 사 ==========");
+    commandGroup("======= 인 사 ========");
     addCommand("이동(통솔경험, 자금$develcost, 사기↓)", 21);
     addCommand("강행(통솔경험, 자금$develcost5, 병력/사기/훈련↓)", 30);
     
@@ -579,7 +579,7 @@ function commandTable() {
         addCommand("임관", 25, 0);
     }
     commandGroup("", 1);
-    commandGroup("========= 계 략 ==========");
+    commandGroup("======= 계 략 ========");
     if($me['level'] >= 1 && (($nation['level'] > 0 && $city['nation'] == $me['nation'] && $city['supply'] != 0) || $nation['level'] == 0)) {
         addCommand("화계(지력경험, 자금$develcost5, 군량$develcost5)", 32);
         addCommand("탈취(무력경험, 자금$develcost5, 군량$develcost5)", 33);
@@ -592,7 +592,7 @@ function commandTable() {
         addCommand("선동(통솔경험, 자금$develcost5, 군량$develcost5)", 35, 0);
     }
     commandGroup("", 1);
-    commandGroup("========= 개 인 ==========");
+    commandGroup("======= 개 인 ========");
     if($me['level'] >= 1) {
         addCommand("단련(자금$develcost, 군량$develcost)", 41);
     } else {
