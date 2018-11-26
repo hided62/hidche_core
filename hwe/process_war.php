@@ -180,15 +180,16 @@ function extractBattleOrder($general){
         return 0;
     }
 
-    return (
-        $general['leader'] +
-        $general['power'] +
-        $general['intel'] +
-        getWeapEff($general['weap']) +
-        getHorseEff($general['horse']) +
-        getBookEff($general['book']) +
-        $general['crew'] / 100
-    );
+    $staticNation = getNationStaticInfo($general['nation']);
+    setLeadershipBonus($general, $staticNation['level']);
+
+    $totalStat = 
+        getGeneralLeadership($general, true, true, true, true) +
+        getGeneralPower($general, true, true, true, true) +
+        getGeneralIntel($general, true, true, true, true);
+
+    $totalCrew = $general['crew'] / 10000 * $general['train'] * $general['atmos'];
+    return $totalStat + $totalCrew / 100;
 }
 
 function processWar_NG(
