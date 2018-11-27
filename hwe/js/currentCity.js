@@ -5,10 +5,11 @@ $(function() {
         allowClear: false,
         language: "ko",
         containerCss: {
-            display: "inline-block !important"
+            display: "inline-block !important",
+            color: 'white !important'
         },
-        containerCssClass: 'simple-select2-align-center',
-        dropdownCssClass: 'simple-select2-align-center',
+        containerCssClass: 'simple-select2-align-center bg-secondary text-secondary',
+        dropdownCssClass: 'simple-select2-align-center bg-secondary text-secondary',
     });
     $('#citySelector').on('select2:select', function(e){
         var data = e.params.data;

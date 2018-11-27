@@ -226,3 +226,11 @@ div.bar_out div.bar_in{
 .select2-dropdown.simple-select2-align-center li.select2-results__option{
     text-align: center;
 }
+
+.select2-container--bootstrap4 .select2-selection--single.text-secondary .select2-selection__rendered{
+    color:white;
+}
+
+.select2-container--bootstrap4 .text-secondary .select2-results__option[aria-selected=false]{
+    color:white;
+}
