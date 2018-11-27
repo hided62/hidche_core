@@ -156,11 +156,11 @@ function process_25(&$general) {
             }
 
             $score = 1;
-            if($admin['startyear']+3 > $admin['year'] && $general['npc'] > 2){
+            if($admin['startyear']+3 > $admin['year'] && $general['npc'] == 2){
                 $score *= sqrt((100-max(30, $testNation['injury']))/100);
             }
 
-            $score *= sqrt($allGen/$generals[$testNation['nation']]);
+            $score *= $allGen/$generals[$testNation['nation']];
             $randVals[$idx] = $score;
         }
 
