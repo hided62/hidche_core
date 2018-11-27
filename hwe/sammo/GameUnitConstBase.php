@@ -68,7 +68,7 @@ class GameUnitConstBase{
         ],
         [
             3, self::T_FOOTMAN, '자객병',   
-            100, 150, 7, 20, 0,  10, 10, 
+            100, 150, 8, 20, 0,  10, 10, 
             2000, ['저'],   null,     0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
