@@ -84,7 +84,7 @@ class GameUnitConstBase{
         ],
         [
             5, self::T_FOOTMAN, '등갑병',   
-            100, 250, 7,  5, 0,  13, 10, 
+            100, 225, 7,  5, 0,  13, 10, 
             1000, null,     ['남중'], 0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
@@ -181,7 +181,7 @@ class GameUnitConstBase{
         ],
         [
             26, self::T_CAVALRY, '맹수병',   
-            250, 200, 6,  0, 0,  16, 16, 
+            250, 175, 6,  0, 0,  16, 16, 
             2000, ['남만'], null,     0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
