@@ -787,6 +787,10 @@ function checkMerge() {
             'data'=>Json::encode($oldNation)
         ]);
 
+        $db->update('general', [
+            'nation'=>0,
+        ], 'nation=%i AND npc = 5', $me['nation']);
+
         $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $db->delete('nation_turn', 'nation_id=%i', $me['nation']);
@@ -939,6 +943,10 @@ function checkSurrender() {
             'nation'=>$me['nation'],
             'data'=>Json::encode($oldNation)
         ]);
+
+        $db->update('general', [
+            'nation'=>0,
+        ], 'nation=%i AND npc = 5', $me['nation']);
 
         $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
