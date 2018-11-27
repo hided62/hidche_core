@@ -35,8 +35,12 @@ $templates = new \League\Plates\Engine('templates');
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
 <?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/currentCity.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+<?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>
+<?=WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <style>
@@ -63,8 +67,9 @@ $templates = new \League\Plates\Engine('templates');
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=998>
-            <form name=cityselect method=get>도시선택 :
-                <select name=citylist size=1 style=color:white;background-color:black;width:798px;>
+            <form name=cityselect method=get>
+                <div style='text-align:center;'>도시선택 :
+                <select id="citySelector" name=citylist size=1 style='display:inline-block;min-width:400px;'>
 <?php
 if(!$citylist){
     $citylist = $me['city'];
@@ -81,8 +86,8 @@ if($me['level'] == 0) {
     if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
     echo ">【".StringUtil::padString($city['name'], 4, '_')."】";
     if($city['nation'] == 0) echo "공백지";
-    elseif($me['nation'] == $city['nation']) echo "본국==";
-    else echo "타국==";
+    elseif($me['nation'] == $city['nation']) echo "본국";
+    else echo "타국";
     echo "</option>";
 } else {
     // 아국 도시들 선택
@@ -97,8 +102,8 @@ if($me['level'] == 0) {
         if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
         echo ">【".StringUtil::padString($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
-        elseif($me['nation'] == $city['nation']) echo "본국==";
-        else echo "타국==";
+        elseif($me['nation'] == $city['nation']) echo "본국";
+        else echo "타국";
         echo "</option>";
     }
 
@@ -114,8 +119,8 @@ if($me['level'] == 0) {
         if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
         echo ">【".StringUtil::padString($city['name'], 4, '_')."】";
         if($city['nation'] == 0) echo "공백지";
-        elseif($me['nation'] == $city['nation']) echo "본국==";
-        else echo "타국==";
+        elseif($me['nation'] == $city['nation']) echo "본국";
+        else echo "타국";
         echo "</option>";
     }
 }
@@ -146,8 +151,8 @@ if($myNation['level'] > 0) {
             if($city['city'] == $citylist) { echo " selected"; $valid = 1; }
             echo ">【".StringUtil::padString($city['name'], 4, '_')."】";
             if($city['nation'] == 0) echo "공백지";
-            elseif($me['nation'] == $city['nation']) echo "본국==";
-            else echo "타국==";
+            elseif($me['nation'] == $city['nation']) echo "본국";
+            else echo "타국";
             echo "</option>";
         }
     }
@@ -155,8 +160,7 @@ if($myNation['level'] > 0) {
 }
 
 echo "
-                </select>
-                <input type=submit value='도 시 선 택'>
+                </select></div>
                 <p align=center>명령 화면에서 도시를 클릭하셔도 됩니다.</p>
             </form>
         </td>

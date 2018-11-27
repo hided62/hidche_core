@@ -240,3 +240,10 @@ div.bar_out div.bar_in{
     background-color:red;
     color:white;
 }
+.select2-selection--single.simple-select2-align-center .select2-selection__rendered {
+    text-align: center;
+}
+
+.select2-dropdown.simple-select2-align-center li.select2-results__option{
+    text-align: center;
+}
