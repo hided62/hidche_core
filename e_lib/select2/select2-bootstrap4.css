@@ -1,5 +1,5 @@
 /* select2-bootstrap4 with Darkly */
-.select2-container--bootstrap4 { display: block; color: black; }
+.select2-container--bootstrap4 { color: black; }
 
 .select2-container--bootstrap4 .select2-selection { background-color: #fff; border: 1px solid #ced4da; border-radius: 0.25rem; color: #495057; font-size: 1rem; outline: 0; }
 

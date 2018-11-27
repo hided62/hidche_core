@@ -218,3 +218,11 @@ div.bar_out div.bar_in{
     margin:0;
     padding:0;
 }
+
+.select2-selection--single.simple-select2-align-center .select2-selection__rendered {
+    text-align: center;
+}
+
+.select2-dropdown.simple-select2-align-center li.select2-results__option{
+    text-align: center;
+}
