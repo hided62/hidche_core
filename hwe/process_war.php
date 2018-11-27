@@ -111,6 +111,30 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
     $attackerIncTech = $attacker->getDead() * 0.01 * getNationTechMultiplier($rawAttackerNation['type']);
     $defenderIncTech = $attacker->getKilled() * 0.01 * getNationTechMultiplier($rawDefenderNation['type']);
 
+    $attackerGenCnt = $rawAttackerNation['gennum'];
+    $defenderGenCnt = $rawDefenderNation['gennum'];
+    $attackerGenCnt_eff = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc != 5', $rawAttackerNation['nation']);
+    $defenderGenCnt_eff = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc != 5', $rawDefenderNation['nation']);
+
+    if($attackerGenCnt_eff < GameConst::$initialNationGenLimit){
+        $attackerGenCnt = GameConst::$initialNationGenLimit;
+        $attackerGenCnt_eff = GameConst::$initialNationGenLimit;
+    }
+
+    if($defenderGenCnt_eff < GameConst::$initialNationGenLimit){
+        $defenderGenCnt = GameConst::$initialNationGenLimit;
+        $defenderGenCnt_eff = GameConst::$initialNationGenLimit;
+    }
+
+    if($attackerGenCnt != $attackerGenCnt_eff){
+        $attackerIncTech *= $attackerGenCnt / $attackerGenCnt_eff;
+    }
+
+    if($defenderGenCnt != $defenderGenCnt_eff){
+        $defenderIncTech *= $defenderGenCnt / $defenderGenCnt_eff;
+    }
+
+
     if(TechLimit($startYear, $year, $rawAttackerNation['tech'])){
         $attackerIncTech /= 4;
     }
@@ -124,8 +148,8 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
     $updateAttackerNation['totaltech'] = Util::round($attackerTotalTech);
     $updateDefenderNation['totaltech'] = Util::round($defenderTotalTech);
 
-    $updateAttackerNation['tech'] = Util::round($attackerTotalTech / max(GameConst::$initialNationGenLimit, $rawAttackerNation['gennum']));
-    $updateDefenderNation['tech'] = Util::round($defenderTotalTech / max(GameConst::$initialNationGenLimit, $rawDefenderNation['gennum']));
+    $updateAttackerNation['tech'] = Util::round($attackerTotalTech / $attackerGenCnt);
+    $updateDefenderNation['tech'] = Util::round($defenderTotalTech / $defenderGenCnt);
 
     $db->update('nation', $updateAttackerNation, 'nation=%i', $attackerNationID);
     $db->update('nation', $updateDefenderNation, 'nation=%i', $defenderNationID);

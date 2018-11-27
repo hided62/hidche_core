@@ -369,17 +369,26 @@ function process_3(&$general) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
-        // 부드러운 기술 제한
-        if(TechLimit($admin['startyear'], $admin['year'], $nation['tech'])) { $score = intdiv($score, 4); }
-
         //장수수 구함
-        $query = "select no from general where nation='{$general['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
-        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
+        $gencount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i', $general['nation']);
+        $gencnt_eff = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc != 5', $general['nation']);
+        if ($gencnt_eff < GameConst::$initialNationGenLimit) {
+            $gencount = GameConst::$initialNationGenLimit;
+            $gencnt_eff = GameConst::$initialNationGenLimit;
+        }
+
+        if($gencount != $gencnt_eff){
+            $score *= $gencount / $gencnt_eff;
+        }
+        
+        // 부드러운 기술 제한
+        if(TechLimit($admin['startyear'], $admin['year'], $nation['tech'])) { $score /= 4; }
+
         // 내정 상승
-        $query = "update nation set totaltech=totaltech+'$score',tech=totaltech/'$gencount' where nation='{$general['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('nation', [
+            'totaltech'=>$db->sqleval('totaltech + %i', Util::round($score)),
+            'tech'=>$db->sqleval('totaltech / %i', $gencount)
+        ], 'nation=%i', $general['nation']);
         // 자금 하락, 경험치 상승        // 공헌도, 명성 상승 = $score * 10
         $general['gold'] -= $admin['develcost'];
 
