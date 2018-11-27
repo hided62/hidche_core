@@ -774,6 +774,10 @@ function checkMerge() {
             'data'=>Json::encode($oldNation)
         ]);
 
+        $db->update('general', [
+            'nation'=>0,
+        ], 'nation=%i AND npc = 5', $me['nation']);
+
         $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 아국 모든 도시들 상대국 소속으로
@@ -915,6 +919,10 @@ function checkSurrender() {
             'nation'=>$me['nation'],
             'data'=>Json::encode($oldNation)
         ]);
+
+        $db->update('general', [
+            'nation'=>0,
+        ], 'nation=%i AND npc = 5', $me['nation']);
 
         $query = "delete from nation where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
