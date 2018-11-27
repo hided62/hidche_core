@@ -703,7 +703,7 @@ function command_25($turn, $command) {
     
     $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg,gennum FROM nation ORDER BY rand()');
 
-    foreach($nationList as $nation){
+    foreach($nationList as &$nation){
         if ($onlyRandom && TimeUtil::IsRangeMonth($gameStor->init_year, $gameStor->init_month, 1, $gameStor->year, $gameStor->month) && $nation['gennum'] >= GameConst::$initialNationGenLimitForRandInit) {
             $nation['availableJoin'] = false;
         }
@@ -717,6 +717,7 @@ function command_25($turn, $command) {
             $nation['availableJoin'] = true;
         }
     }
+    unset($nation);
 ?>
 
 국가에 임관합니다.<br>
@@ -737,7 +738,7 @@ function command_25($turn, $command) {
     <option value=98 style=color:white;background-color:black;>???</option>
 
     <?php foreach($nationList as $nation): ?>
-        <?php if($nation['availableJoin']): ?>
+        <?php if(!$nation['availableJoin']): ?>
             <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;background-color:red;' <?=$onlyRandom?'disabled':''?>>【 <?=$nation['name']?> 】</option>
         <?php else: ?>
             <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;' <?=$onlyRandom?'disabled':''?>>【 <?=$nation['name']?> 】</option>
@@ -747,7 +748,7 @@ function command_25($turn, $command) {
 </select>
 <input type=submit value=임관>
 <input type=hidden name=command value=<?=$command?>>
-    <?php foreach(range(0, count(turn) - 1) as $i): ?>
+    <?php foreach(range(0, count($turn) - 1) as $i): ?>
             <input type=hidden name=turn[] value=<?=$turn[$i]?>>
     <?php endforeach; ?>
 </form>
