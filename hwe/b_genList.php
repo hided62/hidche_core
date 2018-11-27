@@ -116,9 +116,14 @@ foreach($db->queryAllLists(
     $generalTurnList[$generalID][$turnIdx] = [$action, Json::decode($arg)];
 }
 
+$genCntEff = 0;
 foreach ($generals as &$general) {
     $general['cityText'] = CityConst::byID($general['city'])->name;
     $general['troopText'] = $troopName[$general['troop']]??'-';
+
+    if($general['npc'] != 5){
+        $genCntEff += 1;
+    }
 
     if ($general['level'] == 12) {
         $lbonus = $nation['level'] * 2;
@@ -238,11 +243,11 @@ foreach($generals as $general){
 <tr>
 <td class='bg1'>전체 금</td><td><?=number_format($totalGold)?></td>
 <td class='bg1'>전체 쌀</td><td><?=number_format($totalRice)?></td>
-<td class='bg1'>평균 금</td><td><?=number_format($totalGold/$genCnt, 2)?></td>
-<td class='bg1'>평균 쌀</td><td><?=number_format($totalRice/$genCnt, 2)?></td>
+<td class='bg1'>평균 금</td><td><?=number_format($totalGold/$genCntEff, 2)?></td>
+<td class='bg1'>평균 쌀</td><td><?=number_format($totalRice/$genCntEff, 2)?></td>
 </tr>
 <tr>
-<td class='bg1'>전체 병력/장수</td><td><?=number_format($crewTotal)?>/<?=number_format($genCnt)?></td>
+<td class='bg1'>전체 병력/장수</td><td><?=number_format($crewTotal)?>/<?=number_format($genCntEff)?></td>
 <td class='bg1'>훈사 90 병력/장수</td><td><?=number_format($crew90)?>/<?=number_format($gen90)?></td>
 <td class='bg1'>훈사 80 병력/장수</td><td><?=number_format($crew80)?>/<?=number_format($gen80)?></td>
 <td class='bg1'>훈사 60 병력/장수</td><td><?=number_format($crew60)?>/<?=number_format($gen60)?></td>
