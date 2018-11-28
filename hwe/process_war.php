@@ -207,10 +207,15 @@ function extractBattleOrder($general){
     $staticNation = getNationStaticInfo($general['nation']);
     setLeadershipBonus($general, $staticNation['level']);
 
-    $totalStat = 
+    $realStat = 
         getGeneralLeadership($general, true, true, true, true) +
         getGeneralPower($general, true, true, true, true) +
         getGeneralIntel($general, true, true, true, true);
+    $fullStat = 
+        getGeneralLeadership($general, false, true, true, true) +
+        getGeneralPower($general, false, true, true, true) +
+        getGeneralIntel($general, false, true, true, true);
+    $totalStat = ($realStat + $fullStat) / 2;
 
     $totalCrew = $general['crew'] / 10000 * $general['train'] * $general['atmos'];
     return $totalStat + $totalCrew / 100;
