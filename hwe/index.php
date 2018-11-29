@@ -105,7 +105,7 @@ $(function(){
 
     setInterval(function(){
         refreshMsg();
-    }, 10000);
+    }, 5000);
 });
 </script>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
