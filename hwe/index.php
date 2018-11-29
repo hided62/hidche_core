@@ -308,15 +308,20 @@ else if($session->userGrade == 4){
 <div><?=allButton()?></div>
 <div id="message_board"><div style="left:0;" class="board_side bg0">
         <div class="board_header bg0">전체 메시지(최고99자)</div>
-        <section class="public_message"></section>
+        <section class="public_message">
+        <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="public">이전 메시지 불러오기</button>
+        </section>
         <div class="board_header bg0">개인 메시지(최고99자)</div>
-        <section class="private_message"></section>
+        <section class="private_message">
+        <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="private">이전 메시지 불러오기</button>
+        </section>
     </div><div style="right:0;" class="board_side bg0">
         <section class="diplomacy_message">
-
         </section>
         <div class="board_header bg0">국가 메시지(최고99자)</div>
-        <section class="national_message"></section>
+        <section class="national_message">
+        <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="national">이전 메시지 불러오기</button>
+        </section>
  </div></div>
 <div style="clear:left;"><?=allButton()?><?=banner()?></div>
 </div>
