@@ -80,6 +80,11 @@ function showOldMsg(msgType){
 
 function redrawMsg(deferred, addFront){
     function checkClear(obj){
+        if(!obj.result){
+            var t = $.Deferred();
+            t.reject();
+            return t;
+        }
         if(!obj.keepRecent){
             var t = $.Deferred();
             $('.msg_plate').detach();
