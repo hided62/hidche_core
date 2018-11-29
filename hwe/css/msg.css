@@ -59,12 +59,16 @@
     height:667px;
 }
 
-.private_message{
-    height:667px;
+.diplomacy_message{
+    max-height:667px;
 }
 
 .national_message{
-    height:1350px;
+    flex: 1;
+}
+
+.private_message{
+    flex: 1;
 }
 
 .msg_icon{
@@ -129,6 +133,12 @@
     outline-style:solid;
     outline-width:1px;
     outline-color: gray;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+.board_side > div{
+    height: 1.2em;
 }
 
 .msg_body{
