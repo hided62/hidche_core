@@ -217,8 +217,42 @@ class Message
         $where->add('type = %s', $msgType);
         $where->add('valid_until > %s', $date);
         if ($fromSeq > 0) {
-            $where->add('id > %i', $fromSeq);
+            $where->add('id >= %i', $fromSeq);
         }
+
+        if ($limit > 0) {
+            $limitSql = $db->sqleval('LIMIT %i', $limit);
+        } else {
+            $limitSql = new \MeekroDBEval('');
+        }
+
+        return array_map(function ($row) {
+            return static::buildFromArray($row);
+        }, $db->query('SELECT * FROM `message` WHERE %l ORDER BY id DESC %? ', $where, $limitSql));
+    }
+
+    /**
+     * @param int $mailbox 메일 사서함.
+     * @param string $msgType 메일 타입. MSGTYPE 중 하나.
+     * @param int $toSeq 가져오고자 하는 위치. $toSeq보다 '작은' seq만 가져온다.
+     * @param int $limit 가져오고자 하는 수. 
+     * @return Message[]
+     */
+    public static function getMessagesFromMailBoxOld(int $mailbox, string $msgType, int $toSeq, int $limit = 20)
+    {
+        $db = DB::db();
+
+        if (!static::isValidMsgType($msgType)) {
+            throw new \InvalidArgumentException('올바르지 않은 $msgType');
+        }
+
+        $date = (new \DateTime())->format('Y-m-d H:i:s');
+
+        $where = new \WhereClause('and');
+        $where->add('mailbox = %i', $mailbox);
+        $where->add('type = %s', $msgType);
+        $where->add('valid_until > %s', $date);
+        $where->add('id < %i', $toSeq);
 
         if ($limit > 0) {
             $limitSql = $db->sqleval('LIMIT %i', $limit);

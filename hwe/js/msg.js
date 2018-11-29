@@ -23,9 +23,13 @@ function isBrightColor(color){
 var messageTemplate = '';
 var myGeneralID=null;
 var isChief = false;
-var sequence =null;
+var lastSequence = 0;
 var myNation = null;
-var lastMsg = null;
+var minMsgSeq = {
+    'private':0x7fffffff,
+    'public':0x7fffffff,
+    'national':0x7fffffff,
+}
 
 var generalList = {};
 
@@ -47,28 +51,62 @@ function refreshMsg(result){
     if(result && !result.result){
         alert(result.reason);
     }
-    return redrawMsg(fetchMsg());
+    return redrawMsg(fetchRecentMsg(), true);
 }
 
-function fetchMsg(){
+function fetchRecentMsg(){
     return $.ajax({
         url: 'j_msg_get_recent.php',
         type: 'post',
         dataType:'json',
         data: {
-            sequence:sequence
+            sequence:lastSequence
         }
     });
 }
 
-function redrawMsg(deferred){
+function showOldMsg(msgType){
+    var oldMsg = $.ajax({
+        url: 'j_msg_get_old.php',
+        type: 'post',
+        dataType:'json',
+        data: {
+            to:minMsgSeq[msgType],
+            type:msgType,
+        }
+    });
+    redrawMsg(oldMsg, false);
+}
 
+function redrawMsg(deferred, addFront){
+    function checkClear(obj){
+        if(!obj.keepRecent){
+            var t = $.Deferred();
+            $('.msg_plate').detach();
+            lastSequence = null;
+            console.log('refresh!');
+            redrawMsg(fetchRecentMsg(), true);
+            t.reject();
+            return t;
+        }
+        return obj;
+    }
     function registerSequence(obj){
         if(!obj.result){
-            deferred.reject();
-            return;
+            var t = $.Deferred();
+            t.reject();
+            return t;
         }
-        sequence = obj.sequence;
+        lastSequence = Math.max(lastSequence, obj.sequence);
+        $.each(['public', 'private', 'national'], function (_, msgType) { 
+             var msgList = obj[msgType];
+             if(msgList === undefined || msgList.length == 0){
+                 return true;
+             }
+             var lastMsg = msgList[msgList.length - 1];
+             console.log(msgType, lastMsg.id);
+             minMsgSeq[msgType] = Math.min(minMsgSeq[msgType], lastMsg.id);
+        });
         return obj;
     }
 
@@ -198,12 +236,19 @@ function redrawMsg(deferred){
                 
             });
 
-            $msgBoard.prepend($msgs);
+            if(addFront){
+                $msgBoard.prepend($msgs);
+            }
+            else{
+                $msgBoard.find('.load_old_message').before($msgs);
+            }
+            
         });
 
     }
 
     deferred
+        .then(checkClear)
         .then(registerSequence)
         .then(refineMessageObjs)
         .then(printTemplate);
@@ -353,9 +398,6 @@ function registerGlobal(basicInfo){
         'color':'#000000',
         'nation':'재야'
     };
-    window.lastMsg = {
-        id : basicInfo.lastContact
-    };
     window.myGeneralID = basicInfo.generalID;
     window.isChief = basicInfo.isChief;
     window.myGeneralLevel = basicInfo.generalLevel;
@@ -430,7 +472,7 @@ jQuery(function($){
         dataType:'json',
     });
 
-    var MessageList = fetchMsg();
+    var MessageList = fetchRecentMsg();
         
     senderList = $.when(senderList, basicInfo)
         .then(refreshMailboxList)
@@ -438,6 +480,12 @@ jQuery(function($){
     
     $.when(MessageList, getTemplate, basicInfo, senderList)
         .then(function(){
-            redrawMsg(MessageList);
+            redrawMsg(MessageList, true);
+        }).then(function(){
+            $('.load_old_message').click(function(){
+                var $this = $(this);
+                var msgType = $this.data('msg_type');
+                showOldMsg(msgType);
+            })
         });
 });
