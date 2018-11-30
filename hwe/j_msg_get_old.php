@@ -10,7 +10,7 @@ $userID = Session::getUserID();
 $reqTo = Util::getReq('to', 'int');
 $reqType = Util::getReq('type', 'string');
 
-if(!$reqTo === null){
+if($reqTo === null){
     Json::die([
         'result'=>false,
         'reason'=>'올바르지 않은 범위 입니다.'

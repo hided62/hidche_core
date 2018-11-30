@@ -47,6 +47,17 @@ function responseMessage(msgID, response){
     }).then(refreshMsg);
 }
 
+function deleteMessage(msgID){
+    $.ajax({
+        url: 'j_msg_delete.php',
+        type: 'post',
+        dataType:'json',
+        data: {
+            msgID:msgID
+        }
+    }).then(refreshMsg);
+}
+
 function refreshMsg(result){
     if(result && !result.result){
         alert(result.reason);
@@ -79,6 +90,18 @@ function showOldMsg(msgType){
 }
 
 function redrawMsg(deferred, addFront){
+    function checkErasable(obj){
+
+        var now = moment().format('YYYY-MM-DD HH:mm:ss');
+        $('.btn-delete-msg').each(function(){
+            var $btn = $(this);
+            var eraseUntil = $btn.data('erase_until');
+            if(eraseUntil < now){
+                $btn.detach();
+            }
+        })
+        return obj;
+    }
     function checkClear(obj){
         if(!obj.result){
             var t = $.Deferred();
@@ -167,6 +190,7 @@ function redrawMsg(deferred, addFront){
 
             var needRefreshLastContact = (msgType == 'private');
 
+            var now = moment().format('YYYY-MM-DD HH:mm:ss');
             //list의 맨 앞이 가장 최신 메시지임.
             var $msgs = msgSource.map(function(msg){
 
@@ -199,6 +223,15 @@ function redrawMsg(deferred, addFront){
                 else{
                     msg.allowButton = true;
                 }
+                msg.myGeneralID = myGeneralID;
+                msg.last5min = moment(msg.time).add(5, 'minute').format('YYYY-MM-DD HH:mm:ss');
+                msg.now = now;
+                if(msg.option && msg.option.invalid){
+                    msg.invalidType = 'msg_invalid';
+                }
+                else{
+                    msg.invalidType = 'msg_valid';
+                }
                 var msgHtml = TemplateEngine(messageTemplate, msg);
                 
 
@@ -212,10 +245,38 @@ function redrawMsg(deferred, addFront){
                     $msg = $existMsg;
                 }
 
-                if(msg.option && msg.option.parent){
-                    //parent는 삭제.
-                    $('#msg_{0}'.format(msg.option.parent)).detach();
+                var hideMsg = false;
+                if(msg.option){
+                    console.log(msg.option);
+                    if(msg.option.delete !== undefined){
+                        //delete는 삭제.
+                        $('#msg_{0}'.format(msg.option.delete)).detach();
+                    }
+                    if(msg.option.overwrite !== undefined){
+                        //overwrite는 숨기기.
+                        $.map(msg.option.overwrite, function (overwriteID) {
+                            console.log(overwriteID);
+                            var $msg = $('#msg_{0}'.format(overwriteID));
+                            $msg.find('.btn-delete-msg').detach();
+                            $msg.find('.msg_content').html('삭제된 메시지입니다.').removeClass('msg_valid').addClass('msg_invalid');
+                        });
+                        
+                    }
+                    if(msg.option.hide){
+                        hideMsg = true;
+                    }
                 }
+
+                if(hideMsg){
+                    return null;
+                }
+
+                $msg.find('.btn-delete-msg').click(function(){
+                    if(!confirm("삭제하시겠습니까?")){
+                        return false;
+                    }
+                    deleteMessage(msg.id);
+                });
 
                 $msg.find('button.prompt_yes').click(function(){
                     if(!confirm("수락하시겠습니까?")){
@@ -253,6 +314,7 @@ function redrawMsg(deferred, addFront){
     }
 
     deferred
+        .then(checkErasable)
         .then(checkClear)
         .then(registerSequence)
         .then(refineMessageObjs)
@@ -459,7 +521,7 @@ function activateMessageForm(){
 jQuery(function($){
 
     //tmp_template.html은 추후 msg.js에 통합될 수 있음
-    var getTemplate = $.get('js/templates/message.html?3',function(obj){
+    var getTemplate = $.get('js/templates/message.html?7',function(obj){
         messageTemplate = obj;
     });
 

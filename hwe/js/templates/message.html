@@ -12,6 +12,9 @@
     </div>
     <div class="msg_body">
         <div class="msg_header">
+            <%if(msgType != 'diplomacy' && src.id == myGeneralID && now <= last5min && invalidType == 'msg_valid'){%>
+                <button type="button" data-erase_until="<%last5min%>" class="btn btn btn-outline-warning btn-sm btn-delete-msg" style='float:right'>❌</button>
+            <%}%>
             <%if(msgType == 'private') {%>
                 <%if(src.name == generalName){%>
                 <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;">나</span
@@ -37,9 +40,8 @@
                 <span class="msg_target msg_<%src.colorType%>" style="background-color:<%src.color%>;"><%e(src.name)%>:<%src.nation%></span>
             <%} %>
             <span class="msg_time">&lt;<%e(time)%>&gt;</span>
-        </div>
-
-        <div class="msg_content"><%e(text)%></div>
+        </div>        
+        <div class="msg_content <%invalidType%>"><%e(text)%></div>
         <%if(this.option && this.option.action) {%>
         <div class="msg_prompt">
             <button class="prompt_yes btn_prompt" <%allowButton?'':'disabled="disabled"'%>>>수락</button> <button class="prompt_no btn_prompt" <%allowButton?'':'disabled="disabled"'%>>거절</button>
