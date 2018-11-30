@@ -30,11 +30,11 @@ if(count($lastMsgGet) >= 10){
 }
 $lastMsgGet[] = $now;
 $session->lastMsgGet = Json::encode($lastMsgGet);
-$session->setReadOnly();
 
 if($delayTime){
-    sleep(0.1);
+    sleep(0.2);
 }
+$session->setReadOnly();
 
 
 list($generalID, $nationID, $generalName) = DB::db()->queryFirstList(
