@@ -289,11 +289,15 @@ class Message
         ];
 
         if($msgObj->msgType == Message::MSGTYPE_PRIVATE || $msgObj->msgType == Message::MSGTYPE_NATIONAL){
-            $msgObj2 = static::getMessageByID($msgObj->msgOption['receiverMessageID']);
-            if($msgObj2 !== null){
-                $msgObj2->invalidate(null, false);
-                $msgOption['overwrite'][] = [$msgObj2->id];
+            $receiveID = $msgObj->msgOption['receiverMessageID']??null;
+            if($receiveID !== null){
+                $msgObj2 = static::getMessageByID($receiveID);
+                if($msgObj2 !== null){
+                    $msgObj2->invalidate(null, false);
+                    $msgOption['overwrite'][] = [$msgObj2->id];
+                }
             }
+            
         }
 
         $in1min = new \DateTime();
