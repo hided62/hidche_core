@@ -184,7 +184,7 @@ class Message
         return false;
     }
 
-    public static function getMessageByID(int $messageID) : Message
+    public static function getMessageByID(int $messageID) : ?Message
     {
         $db = DB::db();
         $now = new \DateTime();
@@ -265,6 +265,53 @@ class Message
         }, $db->query('SELECT * FROM `message` WHERE %l ORDER BY id DESC %? ', $where, $limitSql));
     }
 
+    public static function deleteMsg(int $msgID, int $generalID):?string{
+        $msgObj = static::getMessageByID($msgID);
+        if($msgObj=== null){
+            return '메시지가 없습니다';
+        }
+
+        if($msgObj->src->generalID != $generalID){
+            return '본인의 메시지만 삭제할 수 있습니다.';
+        }
+
+        $prev5min = new \DateTime();
+        $prev5min->sub(new \DateInterval('PT5M'));
+
+        if($msgObj->date < $prev5min){
+            return '5분 이내의 메시지만 삭제할 수 있습니다.';
+        }
+
+        $msgOption = [
+            'hide'=>true,   
+            'silence'=>true,
+            'overwrite'=>[$msgObj->id]
+        ];
+
+        if($msgObj->msgType == Message::MSGTYPE_PRIVATE || $msgObj->msgType == Message::MSGTYPE_NATIONAL){
+            $msgObj2 = static::getMessageByID($msgObj->msgOption['receiverMessageID']);
+            if($msgObj2 !== null){
+                $msgObj2->invalidate(null, false);
+                $msgOption['overwrite'][] = [$msgObj2->id];
+            }
+        }
+
+        $in1min = new \DateTime();
+        $in1min->add(new \DateInterval('PT1M'));
+        $newMsg = new Message(
+            $msgObj->msgType, 
+            $msgObj->src, 
+            $msgObj->dest, 
+            "req_del_msg",
+            new \DateTime(),
+            $in1min,
+            $msgOption
+        );
+        $msgObj->invalidate(null, false);
+        $newMsg->send(false);
+        return null;
+    }
+
     protected function sendRaw(int $mailbox):array{
         //NOTE:: 여기선 검증하지 않는다.
 
@@ -302,7 +349,7 @@ class Message
     }
 
     private function sendToSender():array{
-        if($this->sendCnt > 0){
+        if($this->sendCnt > 1){
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
         if($this->msgType === self::MSGTYPE_PRIVATE && $this->src->generalID !== $this->dest->generalID){
@@ -315,15 +362,17 @@ class Message
     }
 
     private function sendToReceiver() : array{
-        if($this->sendCnt > 1 || $this->isInboxMail){
+        if($this->sendCnt > 0 || $this->isInboxMail){
             throw new \RuntimeException('이미 전송한 메일입니다.');
         }
 
         if($this->msgType === self::MSGTYPE_PRIVATE){
-            //XXX: 알림을 이런식으로 보내는게 맞는가에 대한 의문 있음
-            DB::db()->update('general', [
-                'newmsg'=>1
-            ], 'no=%i',$this->dest->generalID);
+            if(!($this->msgOption['silence']??false)){
+                //XXX: 알림을 이런식으로 보내는게 맞는가에 대한 의문 있음
+                DB::db()->update('general', [
+                    'newmsg'=>1
+                ], 'no=%i',$this->dest->generalID);
+            }
             return $this->sendRaw($this->dest->generalID);
         }
 
@@ -339,18 +388,7 @@ class Message
     }
 
     public function send(bool $sendDestOnly=false):int{
-        if(!$sendDestOnly){
-            list($senderMailbox, $sendID) = $this->sendToSender();
-            if($sendID){
-                $this->mailbox = $senderMailbox;
-                $this->isInboxMail = false;
-                $this->id = $sendID;
-                $this->msgOption['senderMessageID'] = $sendID;
-                $this->sendCnt = 1;
-            }
-        }
-        
-        list($receiverMailbox, $receiveID) = $this->sendToReceiver();
+        [$receiverMailbox, $receiveID] = $this->sendToReceiver();
         if(!$receiveID && !$sendDestOnly){
             return $sendID;
         }
@@ -358,17 +396,39 @@ class Message
         $this->isInboxMail = true;
         $this->id = $receiveID;
         $this->msgOption['receiverMessageID'] = $receiveID;
-        $this->sendCnt = 2;
+        $this->sendCnt = 1;
+
+        if(!$sendDestOnly){
+            [$senderMailbox, $sendID] = $this->sendToSender();
+            if($sendID){
+                $this->mailbox = $senderMailbox;
+                $this->isInboxMail = false;
+                $this->id = $sendID;
+                $this->msgOption['senderMessageID'] = $sendID;
+                $this->sendCnt = 2;
+            }
+        }
         
         return $receiveID;
     }
 
-    public function invalidate(array $newMsgOption=null){
+    public function invalidate(?array $newMsgOption=null, bool $hideMsg=true){
         if($newMsgOption !== null){
             $this->msgOption = $newMsgOption;
         }
 
-        $this->validUntil = new \DateTime('2000-12-31');
+        $this->msgOption['invalid'] = true;
+
+        if($hideMsg){
+            $this->validUntil = new \DateTime('2000-12-31');
+        }
+        else{
+            if(key_exists('receiverMessageID', $this->msgOption)){
+                $this->msgOption['originalText'] = $this->msg;
+            }
+            $this->msg = '삭제된 메시지입니다.';
+        }
+        
         
         $db = DB::db();
         $db->update('message', [

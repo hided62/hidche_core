@@ -333,7 +333,6 @@ class DiplomaticMessage extends Message{
         $this->dest->generalID = $receiverID;
         $this->dest->generalName = $general['name'];
         $this->msgOption['used'] = true;
-        $this->invalidate();
         $this->validDiplomacy = false;
 
         $josaYi = JosaUtil::pick($this->src->nationName, '이');
@@ -345,9 +344,11 @@ class DiplomaticMessage extends Message{
             new \DateTime(),
             new \DateTime('9999-12-31'),
             [
-                'delete'=>$this->id
+                'delete'=>$this->id,
+                'silence'=>true,
             ]
         );
+        $this->invalidate();
         $newMsg->send();
 
         return self::ACCEPTED;

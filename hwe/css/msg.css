@@ -87,6 +87,7 @@
     font-weight: bold;
     margin-bottom:3px;
     color:white;
+    position: relative;
 }
 
 .message_input_form{
@@ -141,6 +142,10 @@
     height: 1.2em;
 }
 
+.msg_invalid{
+    color:rgba(255,255,255,0.5);
+}
+
 .msg_body{
     padding-left:64px;
 }
@@ -151,6 +156,14 @@
     display:inline-block;
     box-shadow: 2px 2px black;
     border-radius: 3px;
+}
+
+.btn-delete-msg{
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin:2px 2px 0 2px;
+    font-size:8px;
 }
 
 /*
