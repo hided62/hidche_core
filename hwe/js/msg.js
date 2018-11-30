@@ -132,7 +132,6 @@ function redrawMsg(deferred, addFront){
                  return true;
              }
              var lastMsg = msgList[msgList.length - 1];
-             console.log(msgType, lastMsg.id);
              minMsgSeq[msgType] = Math.min(minMsgSeq[msgType], lastMsg.id);
         });
         return obj;
@@ -247,7 +246,6 @@ function redrawMsg(deferred, addFront){
 
                 var hideMsg = false;
                 if(msg.option){
-                    console.log(msg.option);
                     if(msg.option.delete !== undefined){
                         //delete는 삭제.
                         $('#msg_{0}'.format(msg.option.delete)).detach();
@@ -255,7 +253,6 @@ function redrawMsg(deferred, addFront){
                     if(msg.option.overwrite !== undefined){
                         //overwrite는 숨기기.
                         $.map(msg.option.overwrite, function (overwriteID) {
-                            console.log(overwriteID);
                             var $msg = $('#msg_{0}'.format(overwriteID));
                             $msg.find('.btn-delete-msg').detach();
                             $msg.find('.msg_content').html('삭제된 메시지입니다.').removeClass('msg_valid').addClass('msg_invalid');
