@@ -42,7 +42,7 @@ if($btn == "국가방침 수정") {
     $db->update('nation', [
         'rate'=>$rate,
     ], 'nation=%i', $me['nation']);
-} elseif($btn == "지급율") {
+} elseif($btn == "지급률") {
     $bill = Util::valueFit($bill, 20, 200);
     $db->update('nation', [
         'bill'=>$bill

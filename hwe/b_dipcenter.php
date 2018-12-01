@@ -302,8 +302,8 @@ if ($budgetricediff > 0) {
                 <tr>
                     <td align=right class=bg1>세율 (5 ~ 30%)&nbsp;&nbsp;&nbsp;</td>
                     <td align=center><input type=text <?=$read?> name=rate style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['rate']?>>% <input type=<?=$btn?> name=btn value=세율></td>
-                    <td align=right class=bg1>봉급 지급율 (20 ~ 200%)&nbsp;&nbsp;&nbsp;</td>
-                    <td align=center><input type=text <?=$read?> name=bill style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['bill']?>>% <input type=<?=$btn?> name=btn value=지급율></td>
+                    <td align=right class=bg1>봉급 지급률 (20 ~ 200%)&nbsp;&nbsp;&nbsp;</td>
+                    <td align=center><input type=text <?=$read?> name=bill style=text-align:right;color:white;background-color:black; size=3 maxlength=3 value=<?=$nation['bill']?>>% <input type=<?=$btn?> name=btn value=지급률></td>
                 </tr>
                 <tr>
                     <td align=right class=bg1>기밀 권한 (1 ~ 99년)&nbsp;&nbsp;&nbsp;</td>

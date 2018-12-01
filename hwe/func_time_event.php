@@ -68,25 +68,25 @@ function processGoldIncome() {
         // 기본량도 안될경우
         if($nation['gold'] < GameConst::$basegold) {
             $realoutcome = 0;
-            // 실지급율
+            // 실지급률
             $ratio = 0;
         //기본량은 넘지만 요구량이 안될경우
         } elseif($nation['gold'] - GameConst::$basegold < $outcome) {
             $realoutcome = $nation['gold'] - GameConst::$basegold;
             $nation['gold'] = GameConst::$basegold;
-            // 실지급율
+            // 실지급률
             $ratio = $realoutcome / $originoutcome;
         } else {
             $realoutcome = $outcome;
             $nation['gold'] -= $realoutcome;
-            // 실지급율
+            // 실지급률
             $ratio = $realoutcome / $originoutcome;
         }
         $adminLog[] = StringUtil::padStringAlignRight((string)$nation['name'],12," ")
             ." // 세금 : ".StringUtil::padStringAlignRight((string)$income,6," ")
             ." // 세출 : ".StringUtil::padStringAlignRight((string)$originoutcome,6," ")
             ." // 실제 : ".tab2((string)$realoutcome,6," ")
-            ." // 지급율 : ".tab2((string)round($ratio*100,2),5," ")
+            ." // 지급률 : ".tab2((string)round($ratio*100,2),5," ")
             ." % // 결과금 : ".tab2((string)$nation['gold'],6," ");
 
         $query = "select no,name,nation from general where nation='{$nation['nation']}' and level>='9'";
@@ -391,25 +391,25 @@ function processRiceIncome() {
         // 기본량도 안될경우
         if($nation['rice'] < GameConst::$baserice) {
             $realoutcome = 0;
-            // 실지급율
+            // 실지급률
             $ratio = 0;
         //기본량은 넘지만 요구량이 안될경우
         } elseif($nation['rice'] - GameConst::$baserice < $outcome) {
             $realoutcome = $nation['rice'] - GameConst::$baserice;
             $nation['rice'] = GameConst::$baserice;
-            // 실지급율
+            // 실지급률
             $ratio = $realoutcome / $originoutcome;
         } else {
             $realoutcome = $outcome;
             $nation['rice'] -= $realoutcome;
-            // 실지급율
+            // 실지급률
             $ratio = $realoutcome / $originoutcome;
         }
         $adminLog[] = StringUtil::padStringAlignRight($nation['name'],12," ")
             ." // 세곡 : ".StringUtil::padStringAlignRight((string)$income,6," ")
             ." // 세출 : ".StringUtil::padStringAlignRight((string)$originoutcome,6," ")
             ." // 실제 : ".tab2((string)$realoutcome,6," ")
-            ." // 지급율 : ".tab2((string)round($ratio*100,2),5," ")
+            ." // 지급률 : ".tab2((string)round($ratio*100,2),5," ")
             ." % // 결과곡 : ".tab2((string)$nation['rice'],6," ");
 
         $query = "select no,name,nation from general where nation='{$nation['nation']}' and level>='9'";

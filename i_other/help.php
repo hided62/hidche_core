@@ -534,7 +534,7 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 군주와 참모의 작위와 이름<br>
 　<font class=bullet>☞</font> 국가 총주민수와 총병사수<br>
 　<font class=bullet>☞</font> 국가소유 자금과 병량<br>
-　<font class=bullet>☞</font> 지급율 : 1월과 7월에 지급하는 봉록의 정도입니다.<br>
+　<font class=bullet>☞</font> 지급률 : 1월과 7월에 지급하는 봉록의 정도입니다.<br>
 　<font class=bullet>☞</font> 세율 : 1월과 7월에 백성들에게서 거두어 들이는 세금의 정도입니다.<br>
 　<font class=bullet>☞</font> 속령 : 아국이 소유한 거점의 개수입니다.<br>
 　<font class=bullet>☞</font> 장수 : 아국 소속의 장수수입니다.<br>
@@ -681,16 +681,16 @@ if ($category == 0) {
 　<font class=bullet>☞</font> 세율이 낮으면 인구가 늘고 내정이 증가해요. 다만 거두어 들이는 자금이 적어요.<br>
 　<font class=bullet>☞</font> 세율이 높으면 인구가 줄고 내정이 감소해요. 다만 거두어 들이는 자금이 늘어나요. 군주라면 세율을 적절히 잘 조절해야겠죠?<br>
 <br>
-<font class=title>지급율이 뭐지요?</font><br>
-　<font class=bullet>☞</font> 지급율은 국가 수뇌부가 결정하는건데요. 100%일때 자기 자신의 제대로된 봉급을 받을 수 있어요.<br>
+<font class=title>지급률이 뭐지요?</font><br>
+　<font class=bullet>☞</font> 지급률은 국가 수뇌부가 결정하는건데요. 100%일때 자기 자신의 제대로된 봉급을 받을 수 있어요.<br>
 　<font class=bullet>☞</font> 예를 들어 200%로 정해져 있다면 보너스를 받아서 봉급의 2배를 받게 되는거죠!<br>
-　<font class=bullet>☞</font> 군주라면 장수들의 사기진작과 충성을 위해 재정이 충분할때는 지급율을 높여야겠죠!<br>
-　<font class=bullet>☞</font> 반대로 재정이 어렵다면 안타깝지만 국고를 유지하기 위해 지급율을 낮춰야 해요ㅠㅠ<br>
+　<font class=bullet>☞</font> 군주라면 장수들의 사기진작과 충성을 위해 재정이 충분할때는 지급률을 높여야겠죠!<br>
+　<font class=bullet>☞</font> 반대로 재정이 어렵다면 안타깝지만 국고를 유지하기 위해 지급률을 낮춰야 해요ㅠㅠ<br>
 <br>
 <font class=title>수지와 예산이 뭐지요?</font><br>
 　<font class=bullet>☞</font> 예산은 국가정보나 사령부에 들어가면 볼 수 있어요. 우리나라의 총 수입과 지출을 나타내는것이 수지에요.<br>
 　<font class=bullet>☞</font> 총 수입은 도시에서 거둬들이는 금이나 쌀의 양을 나타내구요, 총 지출은 장수들의 봉급으로 나가는 금이나 쌀의 양을 뜻해요.<br>
-　<font class=bullet>☞</font> 예산이 +라면 장수들의 봉급을 주고도 남아서 국고로 쌓이게 되는 것이지요! 이럴땐 지급율을 늘려서 장수들에게 고루 나누어줄수도 있을거에요!<br>
+　<font class=bullet>☞</font> 예산이 +라면 장수들의 봉급을 주고도 남아서 국고로 쌓이게 되는 것이지요! 이럴땐 지급률을 늘려서 장수들에게 고루 나누어줄수도 있을거에요!<br>
 <br>
 <font class=title>전쟁에 대해 알고 싶어요.</font><br>
 　<font class=bullet>☞</font> 전쟁에 영향을 미치는 요소는 아주 많답니다. 1번의 전투는 총6~9페이즈로 이루어진답니다.<br>

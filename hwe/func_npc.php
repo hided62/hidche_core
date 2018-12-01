@@ -437,12 +437,12 @@ function processAI($no) {
         } elseif($admin['month'] == 12) {
             //세율
             $nation['rate'] = TaxRate($general['nation']);
-            //지급율
+            //지급률
             GoldBillRate($nation['nation'], $nation['rate'], $admin['gold_rate'], $nation['type'], $nation['gold']);
         } elseif($admin['month'] == 6) {
             //세율
             $nation['rate'] = TaxRate($general['nation']);
-            //지급율
+            //지급률
             RiceBillRate($nation['nation'], $nation['rate'], $admin['rice_rate'], $nation['type'], $nation['rice']);
         }
 
@@ -1338,7 +1338,7 @@ function NPCStaffWork($general, $nation, $dipState){
     return Util::choiceRandomUsingWeight($commandList);
 }
 
-//종전하기, 지급율
+//종전하기, 지급률
 //$command = $fourth * 100000000 + $type * 100000 + $crew * 100 + 11;
 
 function Promotion($nation, $level) {

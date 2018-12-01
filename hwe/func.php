@@ -322,7 +322,7 @@ function myNationInfo() {
         <td class='center'>";echo $me['nation']==0?"해당 없음":"{$nation['rice']}";echo "</td>
     </tr>
     <tr>
-        <td class='bg1 center'><b>지급율</b></td>
+        <td class='bg1 center'><b>지급률</b></td>
         <td class='center'>";
     if($me['nation'] == 0) {
         echo "해당 없음";
