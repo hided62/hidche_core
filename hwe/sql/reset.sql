@@ -21,6 +21,7 @@ DROP TABLE IF EXISTS message;
 
 # 외교 테이블 삭제
 DROP TABLE IF EXISTS diplomacy;
+DROP TABLE IF EXISTS ng_diplomacy;
 
 # 토너먼트 테이블 삭제
 DROP TABLE IF EXISTS tournament;
