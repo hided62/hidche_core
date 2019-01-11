@@ -548,6 +548,7 @@ create table diplomacy (
   UNIQUE INDEX `me` (`me`, `you`)
   ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
+<<<<<<< HEAD
 CREATE TABLE `diplomacy_ticket` (
 	`id` INT(11) NOT NULL,
 	`src_nation_id` INT(11) NOT NULL,
@@ -559,6 +560,25 @@ CREATE TABLE `diplomacy_ticket` (
 	PRIMARY KEY (`id`),
 	INDEX `ticket` (`src_nation_id`, `dest_nation_id`, `type`, `until`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+=======
+CREATE TABLE `ng_diplomacy` (
+	`no` INT(11) NOT NULL AUTO_INCREMENT,
+	`src_nation_id` INT(11) NOT NULL,
+	`dest_nation_id` INT(11) NOT NULL,
+	`group_id` INT(11) NOT NULL,
+	`revision` INT(11) NOT NULL DEFAULT '1',
+	`state` ENUM('proposed','activaed','cancelled') NOT NULL DEFAULT 'proposed',
+	`text_brief` TEXT NOT NULL,
+	`text_detail` TEXT NOT NULL,
+	`date` DATETIME NOT NULL,
+	`src_signer` INT(11) NOT NULL,
+	`dest_signer` INT(11) NULL DEFAULT NULL,
+	`aux` TEXT NULL DEFAULT NULL,
+	PRIMARY KEY (`no`),
+	INDEX `by_group` (`src_nation_id`, `dest_nation_id`, `group_id`, `revision`)
+)
+ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+>>>>>>> 51e9de0e... DB 스키마 준비
 
 ###########################################################################
 ## 토너먼트 테이블
