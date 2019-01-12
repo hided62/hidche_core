@@ -203,7 +203,6 @@ CREATE TABLE `nation` (
 	`spy` CHAR(255) NOT NULL DEFAULT '{}',
 	`level` INT(1) NULL DEFAULT '0',
 	`type` INT(2) NULL DEFAULT '0',
-	`rule` TEXT NULL DEFAULT '',
 	`history` MEDIUMTEXT NULL DEFAULT '',
 	`board0` TEXT NULL DEFAULT '',
 	`board0_who` INT(6) NULL DEFAULT '0',
