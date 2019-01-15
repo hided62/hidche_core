@@ -93,11 +93,6 @@ if($command == 61) {
     $me = MYDB_fetch_array($result);
 
     if($me['level'] >= 5) {
-        $note = StringUtil::neutralize($note, 90);
-
-        $query = "update diplomacy set reserved='{$note}' where me='{$me['nation']}' and you='$double'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
         $count = count($turn);
         $str = "type=type";
         for($i=0; $i < $count; $i++) {

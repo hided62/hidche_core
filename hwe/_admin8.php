@@ -73,7 +73,6 @@ $sel[$type] = "selected";
         <td width=130 align=center id=bg1>국 가 명</td>
         <td width=80  align=center id=bg1>상 태</td>
         <td width=60  align=center id=bg1>기 간</td>
-        <td align=center id=bg1>비 고</td>
     </tr>
 <?php
 
@@ -95,11 +94,7 @@ for ($i=0; $i < $dipcount; $i++) {
     $me = $dip['me'];
     $you = $dip['you'];
 
-    $query = "select reserved,showing from diplomacy where you='$me' and me='$you'";
-    $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $dip2 = MYDB_fetch_array($result2);
-
-    if ($dip['state'] == 2 && $dip['fixed'] == "" && $dip['reserved'] == "" && $dip2['reserved'] == "") {
+    if ($dip['state'] == 2) {
         continue;
     }
 
@@ -115,37 +110,6 @@ for ($i=0; $i < $dipcount; $i++) {
     }
 
     $date = date('Y-m-d H:i:s');
-    $note = "";
-    if ($dip['fixed'] != "") {
-        if ($dip['state'] == 7) {
-            $note .= $dip['fixed'];
-        } else {
-            $note .= "<font color=gray>{$dip['fixed']}</font>";
-        }
-        if ($dip['reserved'] != "" || $dip2['reserved'] != "") {
-            $note .= "<br>";
-        }
-    }
-    if ($dip['reserved'] != "") {
-        if ($dip['showing'] >= $date) {
-            $note .= "<font color=skyblue>아국측 제의</font>: {$dip['reserved']}";
-        } else {
-            $note .= "<font color=gray>아국측 제의: {$dip['reserved']}</font>";
-        }
-        if ($dip2['reserved'] != "") {
-            $note .= "<br>";
-        }
-    }
-    if ($dip2['reserved'] != "") {
-        if ($dip2['showing'] >= $date) {
-            $note .= "<font color=limegreen>상대측 제의</font>: {$dip2['reserved']}";
-        } else {
-            $note .= "<font color=gray>상대측 제의: {$dip2['reserved']}</font>";
-        }
-    }
-    if ($note == "") {
-        $note = "&nbsp;";
-    }
 
     echo "
     <tr>
@@ -153,7 +117,6 @@ for ($i=0; $i < $dipcount; $i++) {
         <td align=center style=color:".newColor($nationColor[$you]).";background-color:{$nationColor[$you]};>$nationName[$you]</td>
         <td align=center>$state</td>
         <td align=center>{$dip['term']} 개월</td>
-        <td align=left style=font-size:7px;>{$note}</td>
     </tr>";
 }
 ?>

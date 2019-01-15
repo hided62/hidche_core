@@ -106,19 +106,15 @@ for ($i=0; $i < $nationcount; $i++) {
         <td align=center>-</td>
         <td align=center>-</td>
         <td align=center>-</td>
-        <td align=left style=font-size:7px;>-</td>
     </tr>";
 
         continue;
     }
 
-    $query = "select state,term,fixed,reserved,showing from diplomacy where me='{$me['nation']}' and you='{$nation['nation']}'";
+    $query = "select state,term from diplomacy where me='{$me['nation']}' and you='{$nation['nation']}'";
     $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
     $dip = MYDB_fetch_array($result2);
 
-    $query = "select reserved,showing from diplomacy where you='{$me['nation']}' and me='{$nation['nation']}'";
-    $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $dip2 = MYDB_fetch_array($result2);
     //속령수
     $query = "select city from city where nation='{$nation['nation']}'";
     $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
@@ -144,33 +140,6 @@ for ($i=0; $i < $nationcount; $i++) {
     }
 
     $date = date('Y-m-d H:i:s');
-    $note = "";
-    if ($dip['fixed'] != "") {
-        if ($dip['state'] == 7) {
-            $note .= $dip['fixed'];
-        } else {
-            $note .= "<font color=gray>{$dip['fixed']}</font>";
-        }
-        if ($dip['reserved'] != "" || $dip2['reserved'] != "") {
-            $note .= "<br>";
-        }
-    }
-    if ($dip['showing'] >= $date) {
-        if ($dip['reserved'] != "") {
-            $note .= "<font color=skyblue>아국측 제의</font>: ".$dip['reserved'];
-            if ($dip2['reserved'] != "") {
-                $note .= "<br>";
-            }
-        }
-    }
-    if ($dip2['showing'] >= $date) {
-        if ($dip2['reserved'] != "") {
-            $note .= "<font color=limegreen>상대측 제의</font>: ".$dip2['reserved'];
-        }
-    }
-    if ($note == "") {
-        $note = "&nbsp;";
-    }
 
     echo "
     <tr>
@@ -188,9 +157,7 @@ for ($i=0; $i < $nationcount; $i++) {
         <td align=center>-</td>
         <td align=center>-</td>";
     }
-    echo "
-        <td align=left style=font-size:7px;>{$note}</td>
-    </tr>";
+    echo "</tr>";
 }
 echo "
 </table>

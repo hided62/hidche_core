@@ -605,11 +605,6 @@ function process_61(&$general) {
     $validMinutes = max(30, $turnterm*3);
     $validUntil->add(new \DateInterval("PT{$validMinutes}M"));
 
-    //FIXME: 현재 command가 숫자로만 이루어져 있어서 문자열을 처리할 수 없다.
-    //XXX: 으악.
-    //TODO: 커맨드 처리 방식을 json으로 변경
-    $option = $db->queryFirstField('SELECT reserved FROM diplomacy WHERE me=%i AND you=%i', $src->nationID, $dest->nationID);
-
     $msg = new DiplomaticMessage(
         Message::MSGTYPE_DIPLOMACY,
         $src,
@@ -619,18 +614,10 @@ function process_61(&$general) {
         $validUntil,
         [
             'action'=>DiplomaticMessage::TYPE_NO_AGGRESSION,
-            'year'=>$when,
-            'option'=>$option
+            'year'=>$when
         ]
     );
     $msg->send();
-
-    //NOTE: 현재 내무부 외교란의 비고는 diplomacy가 기준이니까 유지할 필요는 있다.
-    //FIXME: 외교란도 message란의 diplomacy를 참조하든가 하도록.
-    $db->update('diplomacy', [
-        'showing'=>$validUntil->format('Y-m-d H:i:s')
-    ], 'me=%i AND you=%i', $src->nationID, $dest->nationID);
-    // 3턴후
 
     pushGenLog($general, ["<C>●</>{$month}월:<D><b>{$destNation['name']}</b></>으로 불가침 제의 서신을 보냈습니다.<1>$date</>"]);
 }
