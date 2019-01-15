@@ -395,6 +395,58 @@ function myNationInfo() {
 ";
 }
 
+function checkSecretPermission($me){
+    if(!key_exists($me['penalty']) || !key_exists($me['permission'])){
+        trigger_error ('canAccessSecret() 함수에 필요한 인자가 부족');
+    }
+    $penalty = Json::decode($me['penalty'])??[];
+    $permission = $me['permission'];
+
+    if(!$me['nation']){
+        return 0;
+    }
+
+    if($me['level'] == 0){
+        return 0;
+    }
+
+    $secretLimit = $db->queryFirstField('SELECT secretlimit FROM nation WHERE nation = %i', $me['nation']);
+
+    if($pernalty['noSecret']??false){
+        return 0;
+    }
+
+    $secretMin = 0;
+    $secretMax = 3;
+    if($penalty['noTopSecret']??false){
+        $secretMax = 1;
+    }
+    else if($penalty['noChief']??false){
+        $secretMax = 1;
+    }
+    else if($penalty['noAmbassador']??false){
+        $secretMax = 2;
+    }    
+
+    if($me['permission'] == 'auditor' || $me['permission'] == 'ambassador'){
+        $secretMin = 3;
+    }
+    else if($me['level'] == 12){
+        $secretMin = 3;
+    }
+    else if($me['level'] >= 5){
+        $secretMin = 2;
+    }
+    else if($me['level'] > 1){
+        $secretMin = 1;
+    }
+    else if($me['belong'] >= $secretLimit){
+        $secretMin = 1;
+    }
+
+    return min($secretMin, $secretMax);
+}
+
 function addCommand($typename, $value, $valid = 1, $color=0) {
     if($valid == 1) {
         switch($color) {
