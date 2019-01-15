@@ -37,11 +37,6 @@ class che_불가침제의 extends Command\NationCommand{
             return false;
         }
 
-        $optionText = $this->arg['optionText']??'';
-        if(!is_string($optionText)){
-            return false;
-        }
-
         if(!key_exists('year', $this->arg) || !key_exists('month', $this->arg) ){
             return false;
         }
@@ -61,7 +56,6 @@ class che_불가침제의 extends Command\NationCommand{
 
         $this->arg = [
             'destNationID'=>$destNationID,
-            'optionText'=>$optionText,
             'year'=>$year,
             'month'=>$month,
         ];
@@ -177,16 +171,9 @@ class che_불가침제의 extends Command\NationCommand{
                 'action'=>DiplomaticMessage::TYPE_NO_AGGRESSION,
                 'year'=>$year,
                 'month'=>$month,
-                'option'=>$this->arg['optionText'],
             ]
         );
         $msg->send();
-
-        //FIXME: 현재 내무부, 외교란이 구형 코드임. diplomacy_ticket을 이용하여 재구현
-        $db->update('diplomacy', [
-            'showing'=>$validUntil->format('Y-m-d H:i:s'),
-            'reserved'=>$this->arg['optionText'],
-        ], 'me=%i AND you=%i', $nationID, $destNationID);
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);

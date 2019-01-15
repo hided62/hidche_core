@@ -540,8 +540,6 @@ create table diplomacy (
   `state` INT(6) NULL DEFAULT '0',
   `term` INT(6) NULL DEFAULT '0',
   `dead` INT(8) NULL DEFAULT '0',
-  `fixed` CHAR(128) NULL DEFAULT '',
-  `reserved` CHAR(128) NULL DEFAULT '',
   `showing` DATETIME NULL DEFAULT NULL,
 
   PRIMARY KEY (`no`),
@@ -552,17 +550,17 @@ CREATE TABLE `ng_diplomacy` (
 	`no` INT(11) NOT NULL AUTO_INCREMENT,
 	`src_nation_id` INT(11) NOT NULL,
 	`dest_nation_id` INT(11) NOT NULL,
-	`group_id` INT(11) NOT NULL,
-	`revision` INT(11) NOT NULL DEFAULT '1',
+	`prev_no` INT(11) NULL DEFAULT NULL,
 	`state` ENUM('proposed','activaed','cancelled') NOT NULL DEFAULT 'proposed',
 	`text_brief` TEXT NOT NULL,
 	`text_detail` TEXT NOT NULL,
-	`date` DATETIME NOT NULL,
+	`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`src_signer` INT(11) NOT NULL,
 	`dest_signer` INT(11) NULL DEFAULT NULL,
 	`aux` TEXT NULL DEFAULT NULL,
 	PRIMARY KEY (`no`),
-	INDEX `by_group` (`src_nation_id`, `dest_nation_id`, `group_id`, `revision`)
+	INDEX `by_nation_src` (`src_nation_id`, `dest_nation_id`, `state`, `date`),
+	INDEX `by_nation_dest` (`dest_nation_id`, `src_nation_id`, `state`, `date`)
 )
 ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 

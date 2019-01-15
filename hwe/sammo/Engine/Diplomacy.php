@@ -273,7 +273,7 @@ class Diplomacy{
         return $prev;
     }
 
-    public function noAggression(int $when, string $option){
+    public function noAggression(int $when){
         $chk = $this->checkValidNation();
         $chk = $this->checkNotWar($chk);
         $chk = $this->checkAlreadyMerging($chk);
@@ -286,8 +286,7 @@ class Diplomacy{
         $db = DB::db();
         $db->update('diplomacy',[
             'state'=>7,
-            'term'=>$when*12,
-            'fixed'=>$option
+            'term'=>$when*12
         ],
         '(me=%i AND you=%i) OR (you=%i AND me=%i)', 
         $this->srcNation['nation'], $this->destNation['nation'],
@@ -308,8 +307,7 @@ class Diplomacy{
         $db = DB::db();
         $db->update('diplomacy',[
             'state'=>2,
-            'term'=>0,
-            'fixed'=>''
+            'term'=>0
         ],
         '(me=%i AND you=%i) OR (you=%i AND me=%i)', 
         $this->srcNation['nation'], $this->destNation['nation'],
@@ -330,8 +328,7 @@ class Diplomacy{
         $db = DB::db();
         $db->update('diplomacy',[
             'state'=>2,
-            'term'=>0,
-            'fixed'=>''
+            'term'=>0
         ],
         '(me=%i AND you=%i) OR (you=%i AND me=%i)', 
         $this->srcNation['nation'], $this->destNation['nation'],
@@ -356,16 +353,14 @@ class Diplomacy{
         $db = DB::db();
         $db->update('diplomacy',[
             'state'=>4,
-            'term'=>24,
-            'fixed'=>''
+            'term'=>24
         ],
         'me=%i AND you=%i', 
         $this->srcNation['nation'], $this->destNation['nation']);
 
         $db->update('diplomacy',[
             'state'=>3,
-            'term'=>24,
-            'fixed'=>''
+            'term'=>24
         ],
         'you=%i AND me=%i', 
         $this->srcNation['nation'], $this->destNation['nation']);
@@ -389,16 +384,14 @@ class Diplomacy{
         $db = DB::db();
         $db->update('diplomacy',[
             'state'=>6,
-            'term'=>24,
-            'fixed'=>''
+            'term'=>24
         ],
         'me=%i AND you=%i', 
         $this->srcNation['nation'], $this->destNation['nation']);
 
         $db->update('diplomacy',[
             'state'=>5,
-            'term'=>24,
-            'fixed'=>''
+            'term'=>24
         ],
         'you=%i AND me=%i', 
         $this->srcNation['nation'], $this->destNation['nation']);

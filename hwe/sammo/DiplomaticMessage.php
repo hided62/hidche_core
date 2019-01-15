@@ -73,7 +73,6 @@ class DiplomaticMessage extends Message{
 
     protected function noAggression(){
         $year = Util::array_get($this->msgOption['year']);
-        $option = Util::array_get($this->msgOption['option'])??'';
         if($year < 1 || $year > 30){
             return [self::INVALID, '올바르지 않은 불가침 서신입니다.'];
         }
@@ -81,7 +80,7 @@ class DiplomaticMessage extends Message{
         $this->diplomacyDetail = "{$year}년";
 
         $helper = new Engine\Diplomacy($this->src->nationID, $this->dest->nationID);
-        $chk = $helper->noAggression($year, $option);
+        $chk = $helper->noAggression($year);
         if($chk[0] !== self::ACCEPTED){
             return $chk;
         }
@@ -284,13 +283,6 @@ class DiplomaticMessage extends Message{
         
 
         list($result, $reason) = $this->checkDiplomaticMessageValidation($general);
-        $db->update('diplomacy', [
-            'reserved'=>'',
-            'showing'=>null
-        ], '(me=%s AND you=%s) OR (you=%s AND me=%s)',
-            $this->src->nationID, $this->dest->nationID,
-            $this->src->nationID, $this->dest->nationID
-        );
         if($result !== self::ACCEPTED){
             pushGenLog(['no'=>$receiverID], ["<C>●</>{$reason} {$this->diplomacyName} 실패."]);
             if($result === self::DECLINED){

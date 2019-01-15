@@ -1725,7 +1725,6 @@ function command_61($turn, $command) {
 타국에게 불가침을 제의합니다.<br>
 제의할 국가를 목록에서 선택하세요.<br>
 배경색은 현재 제의가 불가능한 국가는 <font color=red>붉은색</font>, 현재 불가침중인 국가는 <font color=blue>푸른색</font>으로 표시됩니다.<br>
-비고는 불가침시 세부 조건등을 지정하는 곳입니다.(최대 45자) <font color=magenta>※유저 편의를 위한 것일뿐 시스템적으로 보장하지는 않습니다.</font><br>
 <form name=form1 action=c_double.php method=post>
  대상 국가 <select name=double size=1 style=color:white;background-color:black>";
 
@@ -1782,7 +1781,6 @@ function command_61($turn, $command) {
     <option value=20>20</option>
 </select>
 년<br>
-비고 : <input type=text name=note size=45 maxlength=45 style=text-align:left;color:white;background-color:black>
 <input type=submit value=불가침>
 <input type=hidden name=command value=$command>";
     for($i=0; $i < count($turn); $i++) {
