@@ -437,6 +437,36 @@ CREATE TABLE `nation` (
 )
 ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
+##회의실
+CREATE TABLE `board` (
+	`no` INT(11) NOT NULL AUTO_INCREMENT,
+	`nation_no` INT(11) NOT NULL,
+	`is_secret` TINYINT(1) NOT NULL,
+	`date` DATETIME NOT NULL,
+	`general_no` INT(11) NOT NULL,
+	`author` VARCHAR(32) NOT NULL,
+	`title` TEXT NOT NULL,
+	`text` TEXT NOT NULL,
+	PRIMARY KEY (`no`),
+	INDEX `nation_no` (`nation_no`, `is_secret`, `date`)
+)
+ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `comment` (
+	`no` INT(11) NOT NULL AUTO_INCREMENT,
+	`nation_no` INT(11) NOT NULL,
+	`is_secret` TINYINT(1) NOT NULL,
+	`date` DATETIME NOT NULL,
+	`document_no` INT(11) NOT NULL,
+	`general_no` INT(11) NOT NULL,
+	`author` VARCHAR(32) NOT NULL,
+	`text` TEXT NOT NULL,
+	PRIMARY KEY (`no`),
+	INDEX `nation_no` (`nation_no`, `is_secret`, `date`),
+	INDEX `document_no` (`document_no`, `date`)
+)
+ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
 ###########################################################################
 ## 도시 테이블
 ###########################################################################

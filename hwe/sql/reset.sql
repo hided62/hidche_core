@@ -4,6 +4,10 @@ DROP TABLE IF EXISTS general;
 # 국가 테이블 삭제
 DROP TABLE IF EXISTS nation;
 
+# 회의실 테이블 삭제
+DROP TABLE IF EXISTS board;
+DROP TABLE IF EXISTS comment;
+
 # 도시 테이블 삭제
 DROP TABLE IF EXISTS city;
 
