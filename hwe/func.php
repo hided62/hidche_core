@@ -407,11 +407,11 @@ function checkSecretPermission($me){
     $permission = $me['permission'];
 
     if(!$me['nation']){
-        return 0;
+        return -1;
     }
 
     if($me['level'] == 0){
-        return 0;
+        return -1;
     }
 
     $secretLimit = $db->queryFirstField('SELECT secretlimit FROM nation WHERE nation = %i', $me['nation']);
