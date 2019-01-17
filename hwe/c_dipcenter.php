@@ -21,7 +21,12 @@ $db = DB::db();
 $me = $db->queryFirstRow('SELECT `no`,nation,`level` FROM general WHERE `owner`=%i', $userID);
 
 //내가 수뇌부이어야함
-if($me['level'] < 5) {
+$permission = checkSecretPermission($me);
+if($permission < 0){
+    header('location:b_myBossInfo.php');
+    exit();
+}
+else if ($me['level'] < 5 && $permission != 4) {
     header('location:b_myBossInfo.php');
     exit();
 }

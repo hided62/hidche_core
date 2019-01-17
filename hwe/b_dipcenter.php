@@ -15,7 +15,7 @@ increaseRefresh("내무부", 1);
 
 $me = $db->queryFirstRow('SELECT no, nation, level, con, turntime, belong FROM general WHERE owner=%i', $userID);
 
-$nation = $db->queryFirstRow('SELECT secretlimit, msg, scoutmsg FROM nation WHERE nation = %i', $me['nation']);
+$nation = $db->queryFirstRow('SELECT msg, scoutmsg FROM nation WHERE nation = %i', $me['nation']);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -23,9 +23,14 @@ if ($con >= 2) {
     exit();
 }
 
-if ($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretlimit'])) {
-    echo "수뇌부가 아니거나 사관년도가 부족합니다.";
-    exit();
+$permission = checkSecretPermission($me);
+if($permission < 0){
+    echo '국가에 소속되어있지 않습니다.';
+    die();
+}
+else if ($permission < 1) {
+    echo "권한이 부족합니다. 수뇌부가 아니거나 사관년도가 부족합니다.";
+    die();
 }
 
 if ($me['level'] >= 5) {
@@ -45,7 +50,7 @@ if ($me['level'] >= 5) {
 <meta name="viewport" content="width=1024" />
 <title><?=UniqueConst::$serverName?>: 내무부</title>
 <script>
-var editable = <?=($me['level']>=5?'true':'false')?>;
+var editable = <?=(($me['level']>=5||$permission==4)?'true':'false')?>;
 var nationMsg = <?=Json::encode($nation['msg']??'')?>;
 var scoutmsg = <?=Json::encode($nation['scoutmsg']??'')?>;
 </script>

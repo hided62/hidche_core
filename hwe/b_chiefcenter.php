@@ -17,16 +17,17 @@ $query = "select no,nation,level,con,turntime,belong from general where owner='{
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
-$query = "select secretlimit from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nation = MYDB_fetch_array($result);
-
 $con = checkLimit($me['con']);
 if($con >= 2) { printLimitMsg($me['turntime']); exit(); }
 
-if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $nation['secretlimit'])) {
-    echo "수뇌부가 아니거나 사관년도가 부족합니다.";
-    exit();
+$permission = checkSecretPermission($me);
+if($permission < 0){
+    echo '국가에 소속되어있지 않습니다.';
+    die();
+}
+else if ($permission < 1) {
+    echo "권한이 부족합니다. 수뇌부가 아니거나 사관년도가 부족합니다.";
+    die();
 }
 
 if($me['level'] >= 5) { $btn = "submit"; $btn2 = "button"; }

@@ -138,7 +138,7 @@ function commandButton() {
     $db = DB::db();
     $me = $db->queryFirstRow("select no,nation,level,belong from general where owner=%i", $userID);
 
-    $nation = $db->queryFirstRow("select nation,level,color,secretlimit from nation where nation=%i",$me['nation'])??[
+    $nation = $db->queryFirstRow("select permission,penalty,nation,level,color,secretlimit from nation where nation=%i",$me['nation'])??[
         'nation'=>0,
         'level'=>0,
         'secretlimit'=>99,
@@ -150,14 +150,12 @@ function commandButton() {
 
     $templates = new \League\Plates\Engine(__dir__.'/templates');
     $showSecret = false;
-    if($me['level'] >= 2){
+    $permission = checkSecretPermission($me);
+    if($permission >= 1){
         $showSecret = true;
     }
     else if($me['level']== 0){
         $showSecret = false;
-    }
-    else if($me['belong'] >= $nation['secretlimit']){
-        $showSecret = true;
     }
     
     return $templates->render('commandButton', [

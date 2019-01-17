@@ -49,7 +49,7 @@ $now = new \DateTime();
 $unlimited = new \DateTime('9999-12-31');
 
 $db = DB::db();
-$me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr` FROM general WHERE `owner`=%i', $userID);
+$me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,penalty,permission FROM general WHERE `owner`=%i', $userID);
 
 if(!$me){
     $session->logoutGame();
@@ -70,7 +70,7 @@ if($con >= 2) {
  }
 
 $me['icon'] = GetImageURL($me['imgsvr'], $me['picture']);
-
+$permission = checkSecretPermission($me);
 $srcNation = getNationStaticInfo($me['nation']);
 
 $src = new MessageTarget($me['no'], $me['name'], $srcNation['nation'], $srcNation['name'], $srcNation['color'], $me['icon']);
@@ -99,7 +99,7 @@ if($mailbox == Message::MAILBOX_PUBLIC) {
 // 국가 메세지
 if($mailbox >= Message::MAILBOX_NATIONAL) {
 
-    if($me['level'] < 5){
+    if($me < 3){
         $destNationID = $me['nation'];
     }
     else{

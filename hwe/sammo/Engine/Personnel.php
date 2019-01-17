@@ -191,6 +191,8 @@ class Personnel{
             $setValues['killturn'] = $this->killturn;
         }
 
+        $setValues['permission'] = 'normal';
+
         $db->update('general', $setValues, 'no=%i', $generalID);
         $db->update('general', $setSenderValues, 'no=%i', $this->senderID);
         $db->update('nation', $setOriginalNationValues, 'nation=%i', $general['nation']);
