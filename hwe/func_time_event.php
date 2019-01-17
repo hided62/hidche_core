@@ -223,7 +223,7 @@ function getGoldIncome($nationNo, $rate, $admin_rate, $type) {
         $gen = MYDB_fetch_array($result);
         $level3[$gen['no']] = $gen['city'];
     }
-    $query = "select no,city from general where nation='$nationNo' and level=2"; // 시중
+    $query = "select no,city from general where nation='$nationNo' and level=2"; // 종사
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($j=0; $j < $count; $j++) {
@@ -467,7 +467,7 @@ function getRiceIncome($nationNo, $rate, $admin_rate, $type) {
         $gen = MYDB_fetch_array($result);
         $level3[$gen['no']] = $gen['city'];
     }
-    $query = "select no,city from general where nation='$nationNo' and level=2"; // 시중
+    $query = "select no,city from general where nation='$nationNo' and level=2"; // 종사
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $count = MYDB_num_rows($result);
     for($j=0; $j < $count; $j++) {

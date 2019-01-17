@@ -243,7 +243,7 @@ function cityInfo() {
         <td height=7>".bar($wall)."</td>
         <td rowspan=2 style='text-align:center;' class='bg1'><b>시세</b></td>
         <td height=7>".bar($trade)."</td>
-        <td rowspan=2 style='text-align:center;' class='bg1'><b>시중</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>종사</b></td>
         <td rowspan=2 style='text-align:center;'>{$gen3['name']}</td>
     </tr>
     <tr>

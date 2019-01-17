@@ -663,7 +663,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $renewFront = true;
     // 멸망이 아니면
     } else {
-        // 태수,군사,시중은 일반으로...
+        // 태수,군사,종사은 일반으로...
         $db->update('general',[
             'level'=>1
         ], 'no IN %li',[$city['gen1'], $city['gen2'], $city['gen3']]);
@@ -710,11 +710,11 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $query = "update general set city='{$city['city']}' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         if($city['level'] > 3) {
-            // 도시 소속 변경, 태수,군사,시중 초기화
+            // 도시 소속 변경, 태수,군사,종사 초기화
             $query = "update city set supply=1,conflict='{}',term=0,agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=1000,wall=1000,nation='{$general['nation']}',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         } else {
-            // 도시 소속 변경, 태수,군사,시중 초기화
+            // 도시 소속 변경, 태수,군사,종사 초기화
             $query = "update city set supply=1,conflict='{}',term=0,agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=def2/2,wall=wall2/2,nation='{$general['nation']}',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
@@ -748,7 +748,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             $query['def'] = 1000;
             $query['wall'] = 1000;
         } else {
-            // 도시 소속 변경, 태수,군사,시중 초기화
+            // 도시 소속 변경, 태수,군사,종사 초기화
             $query['def'] = $db->sqleval('def2/2');
             $query['wall'] = $db->sqleval('wall2/2');
         }

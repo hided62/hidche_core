@@ -446,7 +446,7 @@ function process_4(&$general) {
 
         // 군주, 참모 보정
         if($general['level'] == 12 || $general['level'] == 11) { $score *= 1.05; }
-        // 시중 보정
+        // 종사 보정
         if($general['level'] == 2 && $general['no'] == $city['gen3']) { $score *= 1.05; }
 
         $rd = Util::randF();
@@ -646,7 +646,7 @@ function process_7(&$general) {
 
         // 군주, 참모 보정
         if($general['level'] == 12 || $general['level'] == 11) { $score *= 1.05; }
-        // 시중 보정
+        // 종사 보정
         if($general['level'] == 2 && $general['no'] == $city['gen3']) { $score *= 1.05; }
 
         $rd = Util::randF();

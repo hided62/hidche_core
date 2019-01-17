@@ -302,7 +302,7 @@ function getLevel($level, $nlevel=8) {
 
         case   4: $call =     '태수'; break;
         case   3: $call =     '군사'; break;
-        case   2: $call =     '시중'; break;
+        case   2: $call =     '종사'; break;
         case   1: $call =     '일반'; break;
         case   0: $call =     '재야'; break;
         default:  $call =        '-'; break;
