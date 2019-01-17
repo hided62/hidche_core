@@ -385,11 +385,11 @@ function getLevel($level, $nlevel=8) {
 
         case 712: $call =     '황제'; break;    case 612: $call =       '왕'; break;
         case 711: $call =     '승상'; break;    case 611: $call =   '광록훈'; break;
-        case 710: $call =   '위장군'; break;    case 610: $call =   '전장군'; break;
+        case 710: $call = '표기장군'; break;    case 610: $call =   '전장군'; break;
         case 709: $call =     '사공'; break;    case 609: $call =   '상서령'; break;
-        case 708: $call = '표기장군'; break;    case 608: $call =   '좌장군'; break;
+        case 708: $call = '거기장군'; break;    case 608: $call =   '좌장군'; break;
         case 707: $call =     '태위'; break;    case 607: $call =   '중서령'; break;
-        case 706: $call = '거기장군'; break;    case 606: $call =   '우장군'; break;
+        case 706: $call =   '위장군'; break;    case 606: $call =   '우장군'; break;
         case 705: $call =     '사도'; break;    case 605: $call =   '비서령'; break;
 
         case 512: $call =       '공'; break;    case 412: $call =     '주목'; break;
