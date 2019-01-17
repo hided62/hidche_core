@@ -428,10 +428,13 @@ function checkSecretPermission($me){
         $secretMax = 2;
     }    
 
-    if($me['permission'] == 'auditor' || $me['permission'] == 'ambassador'){
-        $secretMin = 3;
+    if($me['level'] == 12){
+        $secretMin = 4;
     }
-    else if($me['level'] == 12){
+    else if($me['permission'] == 'ambassador'){
+        $secretMin = 4;
+    }
+    else if($me['permission'] == 'auditor'){
         $secretMin = 3;
     }
     else if($me['level'] >= 5){

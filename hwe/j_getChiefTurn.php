@@ -12,9 +12,9 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("사령부", 1);
 
-$me = $db->queryFirstRow('SELECT no,nation,level,con,turntime,belong FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no,nation,level,con,turntime,belong,penalty,permission FROM general WHERE owner=%i', $userID);
 
-[$nationLevel, $secretLimit] = $db->queryFirstList('SELECT level, secretlimit FROM nation WHERE nation = %i', $me['nation']);
+$nationLevel = $db->queryFirstField('SELECT level FROM nation WHERE nation = %i', $me['nation']);
 
 $con = checkLimit($me['con']);
 if($con >= 2) { 
@@ -24,11 +24,21 @@ if($con >= 2) {
     ]);
 }
 
-if($me['level'] == 0 || ($me['level'] == 1 && $me['belong'] < $secretLimit)) {
+$permission = checkSecretPermission($me);
+if($permission < 0){
     Json::die([
         'result'=>false,
-        'reason'=>'수뇌부가 아니거나 사관년도가 부족합니다'
+        'reason'=>'국가에 소속되어있지 않습니다.'
     ]);
+    echo '국가에 소속되어있지 않습니다.';
+    die();
+}
+else if ($permission < 1) {
+    Json::die([
+        'result'=>false,
+        'reason'=>'수뇌부가 아니거나 사관년도가 부족합니다.'
+    ]);
+    die();
 }
 
 $date = TimeUtil::now();

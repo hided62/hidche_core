@@ -59,7 +59,7 @@ if($btn == "임명") {
         header('location:b_myBossInfo.php');
         exit();
     }
-    $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr from general where no='$outlist'";
+    $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr,permission,penalty from general where no='$outlist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -70,6 +70,13 @@ if($btn == "임명") {
 
     //추방할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($general['level'] == 12 || $meLevel < 5 || ($general['nation'] != $me['nation'] && $outlist != 0)) {
+        header('location:b_myBossInfo.php');
+        exit();
+    }
+
+    //추방할사람이 외교권자이면 불가
+    $permission = checkSecretPermission($general);
+    if($permission == 4){
         header('location:b_myBossInfo.php');
         exit();
     }
@@ -148,6 +155,7 @@ if($btn == "추방") {
             else{
                 $db->update('general', [
                     'level'=>0,
+                    'permission'=>'normal',
                     'nation'=>0,
                     'belong'=>0,
                     'makelimit'=>12,
