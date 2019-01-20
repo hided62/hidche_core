@@ -44,19 +44,19 @@ $boardName = $isSecretBoard?'회의실':'기밀실';
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
-<?=WebUtil::printCSS('../e_lib/tui.editor/tui-editor.min.css')?>
-<?=WebUtil::printCSS('../e_lib/tui.editor/tui-editor-contents.min.css')?>
+<!--<?=WebUtil::printCSS('../e_lib/tui.editor/tui-editor.min.css')?>-->
+<!--<?=WebUtil::printCSS('../e_lib/tui.editor/tui-editor-contents.min.css')?>-->
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('../css/config.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
-<?=WebUtil::printCSS('css/select_npc.css')?>
+<?=WebUtil::printCSS('css/board.css')?>
 <script>
 var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 </script>
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
-<?=WebUtil::printJS('../e_lib/tui.editor/tui-editor-Editor-all.min.js')?>
+<!--<?=WebUtil::printJS('../e_lib/tui.editor/tui-editor-Editor-all.min.js')?>-->
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/board.js')?>
 
@@ -64,11 +64,14 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 <body>
 
 <div id='newArticle'>
-<div><span class='articleTitle'>제목</span><input class='commentText' type='text' maxlength='250'></input></div>
+<div><span class='articleTitle'>제목</span><input class='titleInput' type='text' maxlength='250'></input></div>
 <div class='boardArticle'>
-
+<textarea class="contentInput" rows="10" cols="50"></textarea>
 </div>
-<button type='button' class='submitArticle'>등록</button>
+<button type='button' id='submitArticle'>등록</button>
+</div>
+
+<div id="board">
 </div>
 
 <template id='articleTemplate'>
@@ -84,7 +87,7 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 
     </ul>
     <div>
-        <input class='commentText' type='textarea' maxlength='250'></input>
+        <input class='commentText' type='text' maxlength='250'></input>
         <button type='button' class='submitComment'>등록</button>
     </div>
 </div>
