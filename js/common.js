@@ -182,3 +182,16 @@ function getIconPath(imgsvr,  picture){
         return pathConfig.root+'/d_pic/'+picture;
     }
 }
+
+function errUnknown(){
+    alert('작업을 실패했습니다.');
+}
+
+function quickReject(errMsg){
+    if(errMsg === undefined){
+        errMsg = '작업을 실패했습니다.';
+    }
+    var deferred = $.Deferred();
+    deferred.reject(errMsg);
+    return deferred.promise();
+}
