@@ -19,6 +19,7 @@ function submitArticle(){
         url:'j_add_board_article.php',
         dataType:'json',
         data:{
+            isSecret:isSecretBoard,
             title:title,
             text:text
         }
@@ -137,7 +138,7 @@ function loadArticles(){
         url:'j_get_board_articles.php',
         dataType:'json',
         data:{
-            isSecretBoard:isSecretBoard, //첫 버전이니까 전체 다 불러오자
+            isSecret:isSecretBoard, //첫 버전이니까 전체 다 불러오자
         }
     });
 }
