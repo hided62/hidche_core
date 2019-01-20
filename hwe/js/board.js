@@ -16,7 +16,7 @@ function submitArticle(){
     $text.val('');
 
     $.post({
-        url:'j_add_board_article.php',
+        url:'j_board_article_add.php',
         dataType:'json',
         data:{
             isSecret:isSecretBoard,
@@ -60,7 +60,7 @@ function submitComment(){
     $text.val('');
 
     $.post({
-        url:'j_add_board_comment.php',
+        url:'j_board_comment_add.php',
         dataType:'json',
         data:{
             articleNo:articleNo,
@@ -135,7 +135,7 @@ function drawArticles(articlesObj){
 
 function loadArticles(){
     return $.post({
-        url:'j_get_board_articles.php',
+        url:'j_board_get_articles.php',
         dataType:'json',
         data:{
             isSecret:isSecretBoard, //첫 버전이니까 전체 다 불러오자
