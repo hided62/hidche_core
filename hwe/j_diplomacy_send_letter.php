@@ -52,7 +52,7 @@ if(!$textBrief){
 
 
 $permission = checkSecretPermission($me);
-if ($permission < 2) {
+if ($permission < 4) {
     Json::die([
         'result'=>false,
         'reason'=>'권한이 부족합니다. 수뇌부가 아닙니다.'
@@ -89,7 +89,8 @@ if($prevNo !== null){
         $prevAux = Json::decode($prevLetter['aux']);
         $prevAux['reason'] = [
             'who'=>$me['no'],
-            'action'=>'new_letter'
+            'action'=>'new_letter',
+            'reason'=>'new_letter'
         ];
         $db->update('ng_diplomacy', [
             'state'=>'cancelled',
@@ -131,8 +132,11 @@ $db->insert('ng_diplomacy', [
     ]),
 ]);
 
+
+//TODO: 외교 서신에 대한 메시지를 양국에 발송해야함
+
 Json::die([
-    'result'=>false,
+    'result'=>true,
     'reason'=>'success',
     'row_id'=>$db->insertId()
 ]);
