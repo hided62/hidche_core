@@ -68,6 +68,7 @@ $db->insert('board', [
 ]);
 
 Json::die([
-    'result'=>false,
-    'reason'=>'success'
+    'result'=>true,
+    'reason'=>'success',
+    'row_id'=>$db->insertId()
 ]);
