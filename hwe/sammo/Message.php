@@ -149,7 +149,7 @@ class Message
         ];
 
         $action = Util::array_get($option['action'], null);
-        if ($msgType === self::MSGTYPE_DIPLOMACY) {
+        if ($msgType === self::MSGTYPE_DIPLOMACY && $action !== null) {
             $objMessage = new DiplomaticMessage(...$args);
         } elseif ($action === 'scout') {
             $objMessage = new ScoutMessage(...$args);
