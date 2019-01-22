@@ -99,11 +99,18 @@ if($mailbox == Message::MAILBOX_PUBLIC) {
 // 국가 메세지
 if($mailbox >= Message::MAILBOX_NATIONAL) {
 
-    if($me < 3){
+    if($permission < 4){
         $destNationID = $me['nation'];
     }
     else{
         $destNationID = $mailbox - Message::MAILBOX_NATIONAL;
+    }
+
+    if($destNationID == $me['nation']){
+        $msgType = Message::MSGTYPE_NATIONAL;
+    }
+    else{
+        $msgType = Message::MSGTYPE_DIPLOMACY;
     }
 
     $destNation = getNationStaticInfo($destNationID);
@@ -111,7 +118,7 @@ if($mailbox >= Message::MAILBOX_NATIONAL) {
     $dest = new MessageTarget(0, '', $destNation['nation'], $destNation['name'], $destNation['color']);
 
     $msg = new Message(
-        Message::MSGTYPE_NATIONAL,
+        $msgType,
         $src,
         $dest,
         $text,

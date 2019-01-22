@@ -64,8 +64,10 @@ class DiplomaticMessage extends Message{
             return [self::INVALID, '송신자가 외교서신을 처리할 수 없습니다.'];
         }
 
-        if(!$general || $general['level'] < 5){
-            return [self::INVALID, '해당 국가의 수뇌가 아닙니다.'];
+        $permission = checkSecretPermission($general);
+
+        if(!$general || $permission < 4){
+            return [self::INVALID, '해당 국가의 외교권자 아닙니다.'];
         }
 
         return [self::ACCEPTED, ''];
@@ -271,7 +273,7 @@ class DiplomaticMessage extends Message{
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
         $general = $db->queryFirstRow(
-            'SELECT `name`, `level` FROM general WHERE `no`=%i AND nation=%i', 
+            'SELECT `name`, `level`, `permission`, `penalty` FROM general WHERE `no`=%i AND nation=%i', 
             $receiverID, 
             $this->dest->nationID
         );

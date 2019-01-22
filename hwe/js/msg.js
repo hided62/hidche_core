@@ -126,7 +126,7 @@ function redrawMsg(deferred, addFront){
             return t;
         }
         lastSequence = Math.max(lastSequence, obj.sequence);
-        $.each(['public', 'private', 'national'], function (_, msgType) { 
+        $.each(['public', 'private', 'national', 'diplomacy'], function (_, msgType) { 
              var msgList = obj[msgType];
              if(msgList === undefined || msgList.length == 0){
                  return true;
@@ -420,7 +420,7 @@ function refreshMailboxList(obj){
     $favorite.append($lastContact);
     //TODO:운영자를 추가하는 코드도 넣을 것.
 
-    if(myGeneralLevel >= 5){
+    if(permissionLevel >= 4){
         $.each(obj.nation, function(){
             var nation = this;
             //console.log(nation);
@@ -514,7 +514,7 @@ function activateMessageForm(){
 jQuery(function($){
 
     //tmp_template.html은 추후 msg.js에 통합될 수 있음
-    var getTemplate = $.get('js/templates/message.html?8',function(obj){
+    var getTemplate = $.get('js/templates/message.html?9',function(obj){
         messageTemplate = obj;
     });
 
