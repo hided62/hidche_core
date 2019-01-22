@@ -16,6 +16,10 @@ $textDetail = Util::getReq('textDetail');
 
 increaseRefresh("외교부", 1);
 
+if($prevNo < 1){
+    $prevNo = null;
+}
+
 $me = $db->queryFirstRow('SELECT no, nation, level, permission, con, turntime, belong, penalty FROM general WHERE owner=%i', $userID);
 
 $con = checkLimit($me['con']);
