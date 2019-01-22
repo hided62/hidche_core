@@ -181,11 +181,6 @@ function redrawMsg(deferred, addFront){
                 return true;
             }
 
-            if(msgType == 'diplomacy'){
-                //외교는 항상 새로 그린다
-                $msgBoard.empty();
-            }
-
 
             var needRefreshLastContact = (msgType == 'private');
 
@@ -217,7 +212,7 @@ function redrawMsg(deferred, addFront){
 
                 msg.defaultIcon = pathConfig.sharedIcon+'/default.jpg';
                 if(msgType == 'diplomacy'){
-                    msg.allowButton = myGeneralLevel>4;
+                    msg.allowButton = permissionLevel>=4;
                 }
                 else{
                     msg.allowButton = true;
@@ -465,6 +460,7 @@ function registerGlobal(basicInfo){
     window.myGeneralID = basicInfo.generalID;
     window.isChief = basicInfo.isChief;
     window.myGeneralLevel = basicInfo.generalLevel;
+    window.permissionLevel = basicInfo.permissionLevel;
 }
 
 function activateMessageForm(){
