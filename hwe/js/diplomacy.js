@@ -98,6 +98,8 @@ function drawLetter(letterObj){
 
     //TODO: 국가명, 수뇌명 입력
     $letter.find('.date').text(letterObj.date);
+    $letter.find('.letterNo').text('#'+letterObj.no);
+    $letter.find('.srcNation').text(letterObj.aux[''])
     $letter.find('.brief').html(nl2br(escapeHtml(letterObj.brief)));
     $letter.find('.detail').html(nl2br(escapeHtml(letterObj.detail)));
     //TODO: 바꿀 것
