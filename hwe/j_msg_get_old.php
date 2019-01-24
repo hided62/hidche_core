@@ -16,7 +16,7 @@ if($reqTo === null){
         'reason'=>'올바르지 않은 범위 입니다.'
     ]);
 }
-if($reqType === null || !in_array($reqType, ['private', 'public', 'national'])){
+if($reqType === null || !in_array($reqType, ['private', 'public', 'national', 'diplomacy'])){
     Json::die([
         'result'=>false,
         'reason'=>'올바르지 않은 타입입니다.'
@@ -95,13 +95,21 @@ else if($reqType == 'public'){
         return $msg->toArray();
     }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_PUBLIC, Message::MSGTYPE_PUBLIC, $reqTo, 20));
 }
-else{
+else if($reqType == 'national'){
     $result['national'] = array_map(function(Message $msg)use (&$nextSequence){
         if($msg->id > $nextSequence){
             $nextSequence = $msg->id;
         }
         return $msg->toArray();
-    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, $reqTo, 40));
+    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, $reqTo, 20));
+}
+else{
+    $result['diplomacy'] = array_map(function(Message $msg)use (&$nextSequence){
+        if($msg->id > $nextSequence){
+            $nextSequence = $msg->id;
+        }
+        return $msg->toArray();
+    }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, $reqTo, 20));
 }
 
 Json::die($result);
