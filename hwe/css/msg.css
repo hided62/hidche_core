@@ -60,11 +60,11 @@
 }
 
 .diplomacy_message{
-    height:667px;
+    flex: 1;
 }
 
 .national_message{
-    flex: 1;
+    height:667px;
 }
 
 .private_message{

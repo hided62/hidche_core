@@ -400,7 +400,7 @@ function myNationInfo() {
 }
 
 function checkSecretPermission($me){
-    if(!key_exists($me['penalty']) || !key_exists($me['permission'])){
+    if(!key_exists('penalty', $me) || !key_exists('permission', $me)){
         trigger_error ('canAccessSecret() 함수에 필요한 인자가 부족');
     }
     $penalty = Json::decode($me['penalty'])??[];
