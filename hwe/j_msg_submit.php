@@ -150,12 +150,21 @@ if($mailbox > 0) {
     
     $session->lastMsg = $now->format('Y-m-d H:i:s');
 
-    $destUser = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`con`,`picture`,`imgsvr` FROM general WHERE `no`=%i',$mailbox);
-
+    $destUser = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,permission,penalty FROM general WHERE `no`=%i',$mailbox);
+    
     if(!$destUser){
         Json::die([
             'result' => false,
             'reason' => '존재하지 않는 유저입니다.',
+            'msgID' => null
+        ]);
+    }
+
+    $destPermission = checkSecretPermission($destUser, false);
+    if($permission == 4 && $destPermission == 4){
+        Json::die([
+            'result' => false,
+            'reason' => '외교권자끼리는 메시지를 보낼 수 없습니다.',
             'msgID' => null
         ]);
     }

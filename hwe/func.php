@@ -395,7 +395,7 @@ function myNationInfo() {
 ";
 }
 
-function checkSecretPermission($me){
+function checkSecretPermission($me, $checkSecretLimit=true){
     if(!key_exists('penalty', $me) || !key_exists('permission', $me)){
         trigger_error ('canAccessSecret() 함수에 필요한 인자가 부족');
     }
@@ -409,15 +409,14 @@ function checkSecretPermission($me){
     if($me['level'] == 0){
         return -1;
     }
-
-    $secretLimit = $db->queryFirstField('SELECT secretlimit FROM nation WHERE nation = %i', $me['nation']);
+    
 
     if($pernalty['noSecret']??false){
         return 0;
     }
 
     $secretMin = 0;
-    $secretMax = 3;
+    $secretMax = 4;
     if($penalty['noTopSecret']??false){
         $secretMax = 1;
     }
@@ -443,8 +442,12 @@ function checkSecretPermission($me){
     else if($me['level'] > 1){
         $secretMin = 1;
     }
-    else if($me['belong'] >= $secretLimit){
-        $secretMin = 1;
+    else if($checkSecretLimit){
+        $db = DB::db();
+        $secretLimit = $db->queryFirstField('SELECT secretlimit FROM nation WHERE nation = %i', $me['nation']);
+        if ($me['belong'] >= $secretLimit) {
+            $secretMin = 1;
+        }
     }
 
     return min($secretMin, $secretMax);
