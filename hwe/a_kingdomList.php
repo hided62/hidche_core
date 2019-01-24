@@ -130,6 +130,14 @@ for($i=1; $i <= $count; $i++) {
     elseif($level5['npc'] == 1) { $l5 = "<font color=skyblue>{$level5['name']}</font>"; }
     else { $l5 = $level5['name']; }
 
+    $generals = $db->query('SELECT no,nation,npc,name,level,penalty,permission FROM general WHERE nation=%i ORDER BY no ASC', $nation['nation']);
+    $ambassadors = [];
+    foreach($generals as $general){
+        if(checkSecretPermission($general, false) == 4){
+            $ambassadors[] = $general['name'];
+        }
+    }
+
     echo "
 <table align=center width=1000 class='tb_layout bg2'>
     <tr>
@@ -143,7 +151,7 @@ for($i=1; $i <= $count; $i++) {
         <td width=80 align=center id=bg1>국 력</td>
         <td width=170 align=center>{$nation['power']}</td>
         <td width=80 align=center id=bg1>장수 / 속령</td>
-        <td width=170 align=center>{$gencount} / {$citycount}</td>
+        <td width=170 align=center>".count($generals)." / {$citycount}</td>
     </tr>
     <tr>
         <td align=center id=bg1>".getLevel(12, $nation['level'])."</td>
@@ -164,6 +172,11 @@ for($i=1; $i <= $count; $i++) {
         <td align=center>$l6</td>
         <td align=center id=bg1>".getLevel( 5, $nation['level'])."</td>
         <td align=center>$l5</td>
+    </tr>
+    <tr>
+        <td align=center id=bg1>외교권자</td><td colspan=7>";
+    echo join(', ', $ambassadors);
+    echo "</td>
     </tr>
     <tr>
         <td colspan=8>";
@@ -190,8 +203,7 @@ for($i=1; $i <= $count; $i++) {
     </tr>
     <tr>
         <td colspan=8> 장수 일람 : ";
-    for($j=0; $j < $gencount; $j++) {
-        $general = MYDB_fetch_array($genresult);
+    foreach($generals as $general){
         if($general['npc'] >= 2) { echo "<font color=cyan>{$general['name']}</font>, "; }
         elseif($general['npc'] == 1) { echo "<font color=skyblue>{$general['name']}</font>, "; }
         else { echo "{$general['name']}, "; }
