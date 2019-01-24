@@ -48,7 +48,8 @@ function submitArticle(){
 
 function submitComment(){
     var $this = $(this);
-    var $article = $this.parents('.article').eq(0);
+    
+    var $article = $this.closest('.articleObj').eq(0);
     var articleNo = $article.data('no');
     var $text = $article.find('input.commentText');
     var text = $.trim($text.val());
@@ -96,8 +97,8 @@ function drawArticle(idx, articleObj){
         .data('no', articleObj.no)
         .data('author', articleObj.general_no);
 
-    console.log(articleObj);
-
+    
+    $article.find('.articleNo').text(articleObj.no);
     $article.find('.authorName').text(articleObj.author);
     $article.find('.articleTitle').text(articleObj.title);
     $article.find('.date').text(articleObj.date);
@@ -107,7 +108,7 @@ function drawArticle(idx, articleObj){
 
     var $articleComment = $article.find('ul.commentList');
     
-    $.each(articleObj.comment, function(commentObj){
+    $.each(articleObj.comment, function(_, commentObj){
         var $comment = $commentFrame.clone();
         $comment.find('.author').text(commentObj.author);
         //$comment.find('.text').text(commentObj.text);
@@ -115,6 +116,8 @@ function drawArticle(idx, articleObj){
         $comment.find('.date').text(commentObj.date);
         $articleComment.append($comment);
     });
+
+    $article.find('.submitComment').click(submitComment);
 
     var $board = $('#board');
 
@@ -150,7 +153,6 @@ function loadArticles(){
 $(function(){
 
 $('#submitArticle').click(submitArticle);
-$('.submitComment').click(submitComment);
 
 loadArticles()
 .then(drawArticles, errUnknown)
