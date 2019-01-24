@@ -29,6 +29,7 @@ var minMsgSeq = {
     'private':0x7fffffff,
     'public':0x7fffffff,
     'national':0x7fffffff,
+    'diplomacy':0x7fffffff,
 }
 
 var generalList = {};
