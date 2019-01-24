@@ -376,6 +376,7 @@ function refreshMailboxList(obj){
             var generalName = this[1];
             var isNPC = !!(this[2] & 0x2);
             var isRuler = !!(this[2] & 0x1);
+            var isAmbassador = !!(this[2] & 0x4);
 
             
 
@@ -386,6 +387,9 @@ function refreshMailboxList(obj){
             var textName = generalName;
             if(isRuler){
                 textName = '*{0}*'.format(textName);
+            }
+            else if(isAmbassador){
+                textName = '#{0}#'.format(textName);
             }
 
             generalList[generalID] = {
@@ -398,6 +402,10 @@ function refreshMailboxList(obj){
             };
 
             var $item = $('<option value="{0}">{1}</option>'.format(generalID, textName));
+
+            if(permissionLevel == 4 && isAmbassador){
+                $item.prop('disabled', true);
+            }
             $optgroup.append($item);
         });
 
@@ -460,7 +468,7 @@ function registerGlobal(basicInfo){
     window.myGeneralID = basicInfo.generalID;
     window.isChief = basicInfo.isChief;
     window.myGeneralLevel = basicInfo.generalLevel;
-    window.permissionLevel = basicInfo.permissionLevel;
+    window.permissionLevel = basicInfo.permission;
 }
 
 function activateMessageForm(){
