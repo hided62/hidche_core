@@ -2,6 +2,7 @@
 namespace sammo;
 
 include('lib.php');
+include 'func.php';
 
 $result = [
     "generalID"=>null,

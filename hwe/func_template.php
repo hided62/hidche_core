@@ -136,9 +136,9 @@ function commandButton() {
     }
     
     $db = DB::db();
-    $me = $db->queryFirstRow("select no,nation,level,belong from general where owner=%i", $userID);
+    $me = $db->queryFirstRow("select no,nation,level,belong,permission,penalty from general where owner=%i", $userID);
 
-    $nation = $db->queryFirstRow("select permission,penalty,nation,level,color,secretlimit from nation where nation=%i",$me['nation'])??[
+    $nation = $db->queryFirstRow("select nation,level,color,secretlimit from nation where nation=%i",$me['nation'])??[
         'nation'=>0,
         'level'=>0,
         'secretlimit'=>99,

@@ -90,7 +90,7 @@ $result['national'] = array_map(function(Message $msg)use (&$nextSequence, &$min
         $lastType = 'national';
     }
     return $msg->toArray();
-}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, 40, $reqSequence));
+}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, 20, $reqSequence));
 
 $result['diplomacy']= array_map(function(Message $msg)use (&$nextSequence, &$minSequence, &$lastType, $permission){
     if($msg->id > $nextSequence){
@@ -105,7 +105,7 @@ $result['diplomacy']= array_map(function(Message $msg)use (&$nextSequence, &$min
         $values['text'] = '(외교 문서입니다)';//TODO: 외교서신이라 읽을 수 없음을 보여줘야함
     }
     return $values;
-}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, 40, $reqSequence));
+}, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, 20, $reqSequence));
 
 if($lastType !== null){
     array_pop($result[$lastType]);
