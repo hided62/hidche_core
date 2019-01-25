@@ -85,7 +85,6 @@ var scoutmsg = <?=Json::encode($nation['scoutmsg']??'')?>;
         <td width=80  align=center class=bg1>상태</td>
         <td width=60  align=center class=bg1>기간</td>
         <td width=100 align=center class=bg1>종 료 시 점</td>
-        <td align=center class=bg1>비 고</td>
     </tr>
 <?php
 $admin = $gameStor->getValues(['year','month']);
