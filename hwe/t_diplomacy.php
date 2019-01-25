@@ -36,6 +36,8 @@ if ($permission < 1) {
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+<?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>
+<?=WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css')?>
 <!--<?=WebUtil::printCSS('../e_lib/tui.editor/tui-editor.min.css')?>-->
 <!--<?=WebUtil::printCSS('../e_lib/tui.editor/tui-editor-contents.min.css')?>-->
 <?=WebUtil::printCSS('../d_shared/common.css')?>
@@ -48,6 +50,7 @@ var permissionLevel = <?=$permission?>; //
 <?=WebUtil::printJS('../d_shared/common_path.js')?>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
 <!--<?=WebUtil::printJS('../e_lib/tui.editor/tui-editor-Editor-all.min.js')?>-->
 <?=WebUtil::printJS('js/common.js')?>
 <?=WebUtil::printJS('js/diplomacy.js')?>
@@ -72,6 +75,8 @@ var permissionLevel = <?=$permission?>; //
     </tfoot>
 </table>
 
+<div id='letters'></div>
+
 <!-- 설계미스. template와 shadowdom으로 변경 -->
 <div id='letterTemplate' style='display:none;'>
     <table class='letterFrame bg0'>
@@ -79,8 +84,8 @@ var permissionLevel = <?=$permission?>; //
             <tr><td colspan='2' class='letterHeader'>홍길동<span class='letterNationName'></span>국과의 외교 문서<span class='letterDate'>2099-12-31 23:59:59</span></td>
         </thead>
         <tbody>
-            <tr><th class='bg1'>문서 번호</th><td>#<span class='letterNo'></span></td></tr>
-            <tr><th class='bg1'>이전 문서</th><td>#<span class='letterPrevNo'></span></td></tr>
+            <tr><th class='bg1'>문서 번호</th><td><span class='letterNo'></span></td></tr>
+            <tr><th class='bg1'>이전 문서</th><td><span class='letterPrevNo'></span></td></tr>
             <tr><th class='bg1'>상태</th><td><span class='letterStatus'></span></td></tr>
             <tr><th class='bg1'>내용(공개)</th><td><div class='letterBrief'></div></td></tr>
             <tr><th class='bg1'>내용(비밀)</th><td><div class='letterDetail'></div></td></tr>
@@ -98,9 +103,10 @@ var permissionLevel = <?=$permission?>; //
                 </div>
             </td></tr>
             <tr class='letterActionPlate'><th class='bg1'>동작</th><td>
-                <button type='button' class='btnAgree'>승락</button>
-                <button type='button' class='btnDisagree'>거절</button>
-                <button type='button' class='btnRenew'>갱신</button>
+                <button type='button' class='btnAgree' style='display:none;'>승인</button>
+                <button type='button' class='btnDisagree' style='display:none;'>거부</button>
+                <button type='button' class='btnRollback' style='display:none;'>회수</button>
+                <button type='button' class='btnRenew'>추가 문서 작성</button>
             </td></tr>
         </tfoot>
     </table>

@@ -11,8 +11,8 @@ $db = DB::db();
 
 $destNationNo = Util::getReq('destNation', 'int', 0);
 $prevNo = Util::getReq('prevNo', 'int', null);
-$textBrief = Util::getReq('textBrief');
-$textDetail = Util::getReq('textDetail');
+$textBrief = Util::getReq('brief');
+$textDetail = Util::getReq('detail');
 
 increaseRefresh("외교부", 1);
 
@@ -20,7 +20,7 @@ if($prevNo < 1){
     $prevNo = null;
 }
 
-$me = $db->queryFirstRow('SELECT no, nation, level, permission, con, turntime, belong, penalty FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no, name, nation, level, permission, con, turntime, belong, penalty, picture, imgsvr FROM general WHERE owner=%i', $userID);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -131,6 +131,8 @@ else{
     $destNation = $nations[0];
 }
 
+$me['icon'] = GetImageURL($me['imgsvr'], $me['picture']);
+
 $db->insert('ng_diplomacy', [
     'src_nation_id'=>$srcNation['nation'],
     'dest_nation_id'=>$destNation['nation'],
@@ -145,7 +147,8 @@ $db->insert('ng_diplomacy', [
         'src'=>[
             'nationName'=>$srcNation['name'],
             'nationColor'=>$srcNation['color'],
-            'generalName'=>$me['name']
+            'generalName'=>$me['name'],
+            'generalIcon'=>$me['icon']
         ],
         'dest'=>[
             'nationName'=>$destNation['name'],
@@ -153,9 +156,33 @@ $db->insert('ng_diplomacy', [
         ]
     ]),
 ]);
+$newLetterNo = $db->insertId();
+
+$src = new MessageTarget($me['no'], $me['name'], $srcNation['nation'], $srcNation['name'], $srcNation['color'], $me['icon']);
+$dest = new MessageTarget(0, '', $destNation['nation'], $destNation['name'], $destNation['color']);
+
+$now = new \DateTime();
+$unlimited = new \DateTime('9999-12-31');
+
+$josaYi = JosaUtil::pick($newLetterNo, '이');
+if($prevNo){
+    $msgText = "문서 #{$prevNo}의 새로운 외교 문서 #{$newLetterNo}{$josaYi} 준비되었습니다. 외교부에서 확인해주세요.";
+}
+else{
+    $msgText = "새로운 외교 문서 #{$newLetterNo}{$josaYi} 준비되었습니다. 외교부에서 확인해주세요.";
+}
 
 
-//TODO: 외교 서신에 대한 메시지를 양국에 발송해야함
+$msg = new Message(
+    Message::MSGTYPE_DIPLOMACY,
+    $src,
+    $dest,
+    $msgText,
+    $now,
+    $unlimited,
+    ['invalid' => true]
+);
+$msgID = $msg->send();
 
 Json::die([
     'result'=>true,
