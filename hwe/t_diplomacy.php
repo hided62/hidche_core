@@ -84,7 +84,7 @@ var permissionLevel = <?=$permission?>; //
 <div id='letterTemplate' style='display:none;'>
     <table class='letterFrame bg0'>
         <thead>
-            <tr><td colspan='2' class='letterHeader'>홍길동<span class='letterNationName'></span>국과의 외교 문서<span class='letterDate'>2099-12-31 23:59:59</span></td>
+            <tr><td colspan='2' class='letterHeader'><span class='letterNationName'></span>국과의 외교 문서<span class='letterDate'>2099-12-31 23:59:59</span></td>
         </thead>
         <tbody>
             <tr><th class='bg1'>문서 번호</th><td><span class='letterNo'></span></td></tr>

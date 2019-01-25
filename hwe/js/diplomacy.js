@@ -160,7 +160,8 @@ function drawLetter(idx, letterObj){
         .attr('id', 'letter_'+letterObj.no);
 
     $letter.find('.letterHeader').css(targetColor);
-    $letter.find('.date').text(letterObj.date);
+    $letter.find('.letterNationName').text(targetNation.nationName);
+    $letter.find('.letterDate').text(letterObj.date);
     $letter.find('.letterNo').text('#'+letterObj.no);
 
     var stateText = {
