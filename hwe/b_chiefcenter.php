@@ -13,7 +13,7 @@ $connect=$db->get();
 
 increaseRefresh("사령부", 1);
 
-$query = "select no,nation,level,con,turntime,belong from general where owner='{$userID}'";
+$query = "select no,nation,level,con,turntime,belong,permission,penalty from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $me = MYDB_fetch_array($result);
 
