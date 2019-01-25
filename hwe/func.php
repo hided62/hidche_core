@@ -1953,6 +1953,7 @@ function updateTurntime($no) {
                 'npc'=>$general['npc_org'],
                 'killturn'=>$general['killturn'],
                 'mode'=>2,
+                'permission'=>'normal',
                 'name2'=>null
             ], 'no=%i',$no);
 
