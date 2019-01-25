@@ -132,9 +132,14 @@ for($i=1; $i <= $count; $i++) {
 
     $generals = $db->query('SELECT no,nation,npc,name,level,penalty,permission FROM general WHERE nation=%i ORDER BY no ASC', $nation['nation']);
     $ambassadors = [];
+    $auditors = [];
     foreach($generals as $general){
-        if(checkSecretPermission($general, false) == 4){
+        $generalPermission = checkSecretPermission($general, false);
+        if($generalPermission == 4){
             $ambassadors[] = $general['name'];
+        }
+        else if($generalPermission == 3){
+            $auditors[] = $general['name'];
         }
     }
 
@@ -174,10 +179,11 @@ for($i=1; $i <= $count; $i++) {
         <td align=center>$l5</td>
     </tr>
     <tr>
-        <td align=center id=bg1>외교권자</td><td colspan=7>";
+        <td align=center id=bg1>외교권자</td><td colspan=5>";
     echo join(', ', $ambassadors);
-    echo "</td>
-    </tr>
+    echo "</td><td align=center id=bg1>조언자</td><td align=center >";
+    echo count($auditors).'명';
+    echo "</td></tr>
     <tr>
         <td colspan=8>";
     if($nation['level'] > 0) {
