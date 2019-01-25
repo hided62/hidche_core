@@ -11,18 +11,19 @@ $isAmbassador = Util::getReq('isAmbassador', bool);
 $genlist = Util::getReq('genlist', 'array_int');
 
 //로그인 검사
-$session = Session::requireGameLogin()->setReadOnly();
+$session = Session::requireGameLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-$me = $db->query('SELECT no, level, nation FROM general WHERE owner = %i', $userID);
+$me = $db->queryFirstRow('SELECT no, level, nation FROM general WHERE owner = %i', $userID);
 
 if(!$me || $me['level'] != 12){
     Json::die([
         'result'=>false,
-        'reason'=>'군주가 아닙니다'
+        'reason'=>'군주가 아닙니다',
+        'tmp'=>$me
     ]);
 }
 
@@ -73,9 +74,7 @@ $db->update('general', [
     'permission'=>$targetType,
 ], 'no IN %li', $realCandidates);
 
-if(!$realCandidates){
-    Json::die([
-        'result'=>true,
-        'reason'=>'success'
-    ]);
-}
+Json::die([
+    'result'=>true,
+    'reason'=>'success'
+]);
