@@ -50,21 +50,61 @@ var permissionLevel = <?=$permission?>; //
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
 <!--<?=WebUtil::printJS('../e_lib/tui.editor/tui-editor-Editor-all.min.js')?>-->
 <?=WebUtil::printJS('js/common.js')?>
-<?=WebUtil::printJS('js/board.js')?>
+<?=WebUtil::printJS('js/diplomacy.js')?>
 
 </head>
 <body>
 
-<template id='diplomacyTemplate'>
-<div class='diplomacyFrame'>
-<div><span class='articleTitle'></span></div>
-<div class='authorPlate'><span class='authorIcon'></span><span class='authorName'><span><span class='date'></span></div>    
-<div class='boardArticle'>
+<table id='newLetter' class='bg0' style='display:none;'>
+    <thead>
+        <tr><td colspan='2' class='newLetterHeader'>새 외교문서 작성</td>
+    </thead>
+    <tbody>
+        <tr><th class='bg1'>이전 문서</th><td><select id='inputPrevNo'></select></td></tr>
+        <tr><th class='bg1'>대상 국가</th><td><select id='inputDestNation'></select></td></tr>
+        <tr><th class='bg1'>내용(공개)</th><td><textarea id='inputBrief' class='autosize'></textarea></td></tr>
+        <tr><th class='bg1'>내용(비밀)</th><td><textarea id='inputDetail' class='autosize'></textarea></td></tr>
+    </tbody>
+    <tfoot>
+        <tr class='letterActionPlate'><th class='bg1'>동작</th><td>
+            <button type='button' id='btnSend'>전송</button>
+        </td></tr>
+    </tfoot>
+</table>
 
+<!-- 설계미스. template와 shadowdom으로 변경 -->
+<div id='letterTemplate' style='display:none;'>
+    <table class='letterFrame bg0'>
+        <thead>
+            <tr><td colspan='2' class='letterHeader'>홍길동<span class='letterNationName'></span>국과의 외교 문서<span class='letterDate'>2099-12-31 23:59:59</span></td>
+        </thead>
+        <tbody>
+            <tr><th class='bg1'>문서 번호</th><td>#<span class='letterNo'></span></td></tr>
+            <tr><th class='bg1'>이전 문서</th><td>#<span class='letterPrevNo'></span></td></tr>
+            <tr><th class='bg1'>상태</th><td><span class='letterStatus'></span></td></tr>
+            <tr><th class='bg1'>내용(공개)</th><td><div class='letterBrief'></div></td></tr>
+            <tr><th class='bg1'>내용(비밀)</th><td><div class='letterDetail'></div></td></tr>
+        </tbody>
+        <tfoot>
+            <tr><th class='bg1'>서명인</th><td class='letterSignerPlate'>
+                <div class='letterSrc'>
+                    <div class="signerImg"><img class='generalIcon' width='64px' height='64px'></div>
+                    <div class="signerNation">&nbsp;</div>
+                    <div class="signerName">&nbsp;</div>
+                </div><div class='letterDest'>
+                    <div class="signerImg"><img class='generalIcon' width='64px' height='64px'></div>
+                    <div class="signerNation">&nbsp;</div>
+                    <div class="signerName">&nbsp;</div>
+                </div>
+            </td></tr>
+            <tr class='letterActionPlate'><th class='bg1'>동작</th><td>
+                <button type='button' class='btnAgree'>승락</button>
+                <button type='button' class='btnDisagree'>거절</button>
+                <button type='button' class='btnRenew'>갱신</button>
+            </td></tr>
+        </tfoot>
+    </table>
 </div>
-</div>
-</div>
-</template>
 
 <div style='width=1000px;' class='tb_layout bg0'>
     <?=backButton()?><br>

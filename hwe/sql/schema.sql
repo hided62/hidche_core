@@ -565,7 +565,7 @@ CREATE TABLE `ng_diplomacy` (
 	`src_nation_id` INT(11) NOT NULL,
 	`dest_nation_id` INT(11) NOT NULL,
 	`prev_no` INT(11) NULL DEFAULT NULL,
-	`state` ENUM('proposed','activated','cancelled') NOT NULL DEFAULT 'proposed',
+	`state` ENUM('proposed','activated','cancelled','replaced') NOT NULL DEFAULT 'proposed',
 	`text_brief` TEXT NOT NULL,
 	`text_detail` TEXT NOT NULL,
 	`date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

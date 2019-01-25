@@ -1,0 +1,58 @@
+#newLetter {
+    width:1000px;
+    margin: 10px auto;
+}
+
+#newLetter th{
+    width:16ch;
+}
+
+#newLetter textarea{
+    width:100%;
+    min-height:6em;
+    color:white;
+    background-color:transparent;
+    border:none;
+}
+
+.letterFrame{
+    width:1000px;
+    margin: 10px auto;
+}
+
+.letterFrame th{
+    width:16ch;
+}
+
+.letterHeader{
+    position: relative;
+    font-size:200%;
+}
+
+.letterDate{
+    position: absolute;
+    right:1ch;
+    bottom:0.2em;
+    font-size:50%;
+
+}
+
+.letterBrief, .letterDetail{
+    text-align: left;
+}
+
+.letterSignerPlate{
+    text-align:center;
+}
+
+.letterSrc, .letterDest{
+    display:inline-block;
+    margin: 0 10px;
+    border: 1px solid gray;
+    width:110px;
+    text-align:center;
+}
+
+.signerNation, .signerName{
+    border-top: 1px solid gray;
+}

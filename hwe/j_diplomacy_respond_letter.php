@@ -64,6 +64,12 @@ if($isAgree){
         'aux'=>Json::encode($aux)
     ], 'no=%i', $letterNo);
     //TODO: 외교 서신에 대한 메시지를 양국에 발송해야함
+
+    if($letter['prev_no'] !== null){
+        $db->update('ng_diplomacy', [
+            'state'=>'replaced',
+        ], 'no=%i', $letter['prev_no']);
+    }
 }
 else{
     $aux['reason'] = [
@@ -74,7 +80,7 @@ else{
     $db->update('ng_diplomacy', [
         'state'=>'cancelled',
         'aux'=>Json::encode($aux)
-    ]);
+    ], 'no=%i', $letterNo);
     //TODO: 외교 서신에 대한 메시지를 양국에 발송해야함
 }
 

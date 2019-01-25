@@ -101,7 +101,7 @@ $result['diplomacy']= array_map(function(Message $msg)use (&$nextSequence, &$min
         $lastType = 'diplomacy';
     }
     $values = $msg->toArray();
-    if($permission < 3){
+    if($msg->dest->nationID != 0 && $permission < 3){
         $values['text'] = '(외교 문서입니다)';//TODO: 외교서신이라 읽을 수 없음을 보여줘야함
     }
     return $values;

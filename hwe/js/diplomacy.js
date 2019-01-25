@@ -135,6 +135,10 @@ function loadLetters(){
 
 $(function(){
 
+$('textarea.autosize').on('keydown keyup', function(){
+    $(this).height(1).height( $(this).prop('scrollHeight')+12 );
+})
+
 $('#submitLetter').click(submitLetter);
 $('.respondAgree').click(function(){
     return repondLetter(true);
@@ -143,10 +147,11 @@ $('.respondDisagree').click(function(){
     return repondLetter(false);
 });
 
+/*
 loadLetters()
 .then(drawLetters, errUnknown)
 .fail(function(reason){
     alert(reason);
-});
+});*/
 
 });

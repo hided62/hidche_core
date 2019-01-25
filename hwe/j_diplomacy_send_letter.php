@@ -65,18 +65,10 @@ if ($permission < 4) {
 
 $srcNationNo = $me['nation'];
 
-$nations = $db->query('SELECT nation, name, color FROM nation WHERE nation IN (%i, %i)', $srcNationNo, $destNationNo);
-if(count($nations) != 2){
-    Json::die([
-        'result'=>false,
-        'reason'=>'올바르지 않은 국가입니다.'
-    ]);
-}
-
 if($prevNo !== null){
     //state는 체크하지 않는걸로 하자. 파기한 것을 재 송신하는 경우도 있을 수 있음.
     $prevLetter = $db->queryFirstRow(
-        'SELECT no, state, aux FROM ng_diplomacy WHERE no = %i AND src_nation_id IN (%i, %i) AND dest_nation_id IN (%i, %i)',
+        'SELECT no, src_nation_id, dest_nation_id, state, aux FROM ng_diplomacy WHERE no = %i AND src_nation_id IN (%i, %i) AND dest_nation_id IN (%i, %i)',
         $prevNo,
         $srcNationNo, $destNationNo,
         $srcNationNo, $destNationNo
@@ -89,6 +81,24 @@ if($prevNo !== null){
         ]);
     }
 
+    //새로 나온 문서가 있는지 확인하자
+    $newerLetter = $db->queryFirstField(
+        'SELECT count(no) FROM ng_diplomacy WHERE prev_no = %i AND state != \'cancelled\'', $prevNo
+    );
+    if($newerLetter){
+        Json::die([
+            'result'=>false,
+            'reason'=>'해당 문서에 대한 새로운 문서가 이미 있습니다.'
+        ]);
+    }
+
+    if($prevLetter['src_nation_id'] != $srcNationNo){
+        $destNationNo = $prevLetter['src_nation_id'];
+    }
+    else{
+        $destNationNo = $prevLetter['dest_nation_id'];
+    }
+
     if($prevLetter['state'] == 'proposed'){
         $prevAux = Json::decode($prevLetter['aux']);
         $prevAux['reason'] = [
@@ -97,10 +107,18 @@ if($prevNo !== null){
             'reason'=>'new_letter'
         ];
         $db->update('ng_diplomacy', [
-            'state'=>'cancelled',
+            'state'=>'replaced',
             'aux'=>Json::encode($prevAux)
         ], 'no=%i', $prevNo);
     }
+}
+
+$nations = $db->query('SELECT nation, name, color FROM nation WHERE nation IN (%i, %i)', $srcNationNo, $destNationNo);
+if(count($nations) != 2){
+    Json::die([
+        'result'=>false,
+        'reason'=>'올바르지 않은 국가입니다.'
+    ]);
 }
 
 if($nations[0]['nation'] == $me['nation']){
