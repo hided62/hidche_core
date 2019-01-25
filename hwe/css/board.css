@@ -1,0 +1,25 @@
+#newArticle{
+    width:1000px;
+    margin: 0 auto;
+}
+
+.contentInput{
+    width:100%;
+}
+
+.articleFrame{
+    width:1000px;
+    margin: 20px auto;
+}
+
+.commentText{
+    width:800px;
+}
+
+.authorPlate .date{
+    float:right;
+}
+
+.comment .date{
+    float:right;
+}
