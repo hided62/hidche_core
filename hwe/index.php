@@ -328,7 +328,7 @@ if ($con == 1) {
     MessageBox("접속제한이 얼마 남지 않았습니다!");
 }
 if ($me['newmsg'] == 1) {
-    MessageBox("개인 서신이 도착했습니다!");
+    MessageBox("새로운 서신이 도착했습니다!");
 }
 if ($me['newvote'] == 1) {
     $develcost = $admin['develcost']*5;

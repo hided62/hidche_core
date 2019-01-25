@@ -387,7 +387,17 @@ class Message
             return $this->sendRaw($this->dest->generalID);
         }
 
-        if($this->msgType === self::MSGTYPE_NATIONAL || $this->msgType === self::MSGTYPE_DIPLOMACY){
+        if($this->msgType === self::MSGTYPE_NATIONAL){
+            return $this->sendRaw($this->dest->nationID + self::MAILBOX_NATIONAL);
+        }
+
+        if($this->msgType === self::MSGTYPE_DIPLOMACY){
+            if(!($this->msgOption['silence']??false)){
+                //XXX: 알림을 이런식으로 보내는게 맞는가에 대한 의문 있음
+                DB::db()->update('general', [
+                    'newmsg'=>1
+                ], 'nation = %i AND (level = 12 OR permission IN (\'ambassador\', \'auditor\')) ',$this->dest->nationID);
+            }
             return $this->sendRaw($this->dest->nationID + self::MAILBOX_NATIONAL);
         }
 
