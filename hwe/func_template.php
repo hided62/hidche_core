@@ -163,7 +163,8 @@ function commandButton() {
         'fgColor'=>$fgColor,
         'meLevel'=>$me['level'],
         'nationLevel'=>$nation['level'],
-        'showSecret'=>$showSecret
+        'showSecret'=>$showSecret,
+        'permission'=>$permission,
     ]);
 }
 
