@@ -121,7 +121,7 @@ function drawArticle(idx, articleObj){
 
     var $board = $('#board');
 
-    $board.append($article);
+    $board.prepend($article);
 }
 
 function drawArticles(articlesObj){
