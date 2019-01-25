@@ -125,7 +125,7 @@ function rollbackLetter(letterNo){
 
 function drawLetter(idx, letterObj){
     
-    if(letterObj.state == 'cancelled' || letterObj.state == 'replaced'){
+    if(letterObj.state == 'cancelled'){
         //TODO: 취소되거나, 대체된 문서도 보여줄 방법을 찾아볼 것
         return;
     }
@@ -148,6 +148,11 @@ function drawLetter(idx, letterObj){
     var targetColor = letterObj.src.nationID==myNationID?destColorFormat:srcColorFormat;
 
     var $letter = $letterFrame.clone();
+
+    if(letterObj.state == 'replaced'){
+        $letter.hide();
+    }
+
     $letter.addClass('letterObj')
         .data('no', letterObj.no)
         .data('brief', letterObj.brief)
@@ -166,7 +171,11 @@ function drawLetter(idx, letterObj){
     };
     $letter.find('.letterStatus').text(stateText[letterObj.state]);
     if(letterObj.prev_no !== null){
-        $letter.find('.letterPrevNo').text('#'+letterObj.prev_no);
+        var $showPrev = $('<a href="#">#{0}</a>'.format(letterObj.prev_no));
+        $showPrev.click(function(){
+            $('#letter_'+letterObj.prev_no).toggle();
+        })
+        $letter.find('.letterPrevNo').html($showPrev);
     }
     else{
         $letter.find('.letterPrevNo').text('신규');

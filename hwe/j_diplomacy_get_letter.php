@@ -38,7 +38,7 @@ $letters = [];
 
 foreach(
     $db->query(
-        'SELECT * FROM ng_diplomacy WHERE src_nation_id = %i OR dest_nation_id = %i ORDER BY date desc',
+        'SELECT * FROM ng_diplomacy WHERE (src_nation_id = %i OR dest_nation_id = %i) AND state != \'cancelled\' ORDER BY date desc',
         $me['nation'], $me['nation']
     ) as $letter
 ){
@@ -52,7 +52,7 @@ foreach(
 
     $letter['src']['nationID'] = $letter['src_nation_id'];
     $letter['dest']['nationID'] = $letter['dest_nation_id'];
-    
+
     $letters[$letter['no']] = [
         'no'=>$letter['no'],
         'src'=>$letter['src'],
