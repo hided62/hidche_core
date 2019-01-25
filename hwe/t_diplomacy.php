@@ -57,6 +57,9 @@ var permissionLevel = <?=$permission?>; //
 
 </head>
 <body>
+<table style='width:1000px;margin:auto;' class='tb_layout bg0'>
+    <tr><td style='text-align:left;'>외 교 부<br><?=backButton()?></td></tr>
+</table>
 
 <table id='newLetter' class='bg0' style='display:none;'>
     <thead>
@@ -112,9 +115,11 @@ var permissionLevel = <?=$permission?>; //
     </table>
 </div>
 
-<div style='width=1000px;' class='tb_layout bg0'>
+<table style='width:1000px;margin:auto;' class='tb_layout bg0'>
+<tr><td style='text-align:left;'>
     <?=backButton()?><br>
     <?=banner()?>
-</div>
+</td></tr>
+</table>
 </body>
 </html>
