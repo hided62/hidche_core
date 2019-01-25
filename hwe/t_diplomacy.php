@@ -68,8 +68,8 @@ var permissionLevel = <?=$permission?>; //
     <tbody>
         <tr><th class='bg1'>이전 문서</th><td><select id='inputPrevNo'></select></td></tr>
         <tr><th class='bg1'>대상 국가</th><td><select id='inputDestNation'></select></td></tr>
-        <tr><th class='bg1'>내용(공개)</th><td><textarea id='inputBrief' class='autosize'></textarea></td></tr>
-        <tr><th class='bg1'>내용(비밀)</th><td><textarea id='inputDetail' class='autosize'></textarea></td></tr>
+        <tr><th class='bg1'>내용(국가 내 공개)</th><td><textarea id='inputBrief' class='autosize'></textarea></td></tr>
+        <tr><th class='bg1'>내용(외교권자 전용)</th><td><textarea id='inputDetail' class='autosize'></textarea></td></tr>
     </tbody>
     <tfoot>
         <tr class='letterActionPlate'><th class='bg1'>동작</th><td>
@@ -90,8 +90,8 @@ var permissionLevel = <?=$permission?>; //
             <tr><th class='bg1'>문서 번호</th><td><span class='letterNo'></span></td></tr>
             <tr><th class='bg1'>이전 문서</th><td><span class='letterPrevNo'></span></td></tr>
             <tr><th class='bg1'>상태</th><td><span class='letterStatus'></span></td></tr>
-            <tr><th class='bg1'>내용(공개)</th><td><div class='letterBrief'></div></td></tr>
-            <tr><th class='bg1'>내용(비밀)</th><td><div class='letterDetail'></div></td></tr>
+            <tr><th class='bg1'>내용(국가 내 공개)</th><td><div class='letterBrief'></div></td></tr>
+            <tr><th class='bg1'>내용(외교권자 전용)</th><td><div class='letterDetail'></div></td></tr>
         </tbody>
         <tfoot>
             <tr><th class='bg1'>서명인</th><td class='letterSignerPlate'>
