@@ -102,7 +102,8 @@ $result['diplomacy']= array_map(function(Message $msg)use (&$nextSequence, &$min
     }
     $values = $msg->toArray();
     if($msg->dest->nationID != 0 && $permission < 3){
-        $values['text'] = '(외교 문서입니다)';//TODO: 외교서신이라 읽을 수 없음을 보여줘야함
+        $values['text'] = '(외교 메시지입니다)';//TODO: 외교서신이라 읽을 수 없음을 보여줘야함
+        $values['option']['invalid'] = true;
     }
     return $values;
 }, Message::getMessagesFromMailBox(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, 20, $reqSequence));
