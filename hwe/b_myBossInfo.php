@@ -467,7 +467,7 @@ if($meLevel >= 5) {
 </form>
 <form method=post action=c_myBossInfo.php>
     <tr>
-        <td colspan=3 align=right id=bg2>시 중 임 명</td>
+        <td colspan=3 align=right id=bg2>종 사 임 명</td>
         <td colspan=2>
             <select name=citylist size=1 style=color:white;background-color:black;>
     ";
@@ -527,7 +527,7 @@ echo "
         <td width=158 align=center id=bg1 colspan=2><font size=4>도 시</font></td>
         <td width=278 align=center id=bg1><font size=4>태 수 (사관) 【현재도시】</font></td>
         <td width=278 align=center id=bg1><font size=4>군 사 (사관) 【현재도시】</font></td>
-        <td width=278 align=center id=bg1><font size=4>시 중 (사관) 【현재도시】</font></td>
+        <td width=278 align=center id=bg1><font size=4>종 사 (사관) 【현재도시】</font></td>
     </tr>
 ";
 

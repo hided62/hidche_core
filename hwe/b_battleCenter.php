@@ -161,7 +161,7 @@ for ($i=0; $i < $gencount; $i++) {
             <?=getBatResRecent($gen, 24)?>
         </td>
     </tr>
-<?php if($npc > 1 || $meLevel >= 5): ?>
+<?php if($npc > 1 || $permission >= 2): ?>
     <tr>
         <td align=center id=bg1><font color=orange size=3>개인 기록</font></td>
         <td align=center id=bg1><font color=orange size=3>&nbsp;</font></td>
