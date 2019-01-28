@@ -76,10 +76,12 @@ if($isAgree){
     ], 'no=%i', $letterNo);
     //TODO: 외교 서신에 대한 메시지를 양국에 발송해야함
 
-    if($letter['prev_no'] !== null){
+    $prevLetterNo = $letter['prev_no'];
+    while($prevLetterNo !== null){
         $db->update('ng_diplomacy', [
             'state'=>'replaced',
         ], 'no=%i', $letter['prev_no']);
+        $prevLetterNo = $db->queryFirstField('SELECT prev_no FROM ng_diplomacy WHERE state != \'replaced\' AND no = %i', $prevLetterNo);
     }
     $msgText = "외교 서신 #{$letterNo}가 승인되었습니다.";
 }

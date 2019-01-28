@@ -119,9 +119,9 @@ function rollbackLetter(letterNo){
     return false;
 }
 
-function destoryLetter(letterNo){
+function destroyLetter(letterNo){
     $.post({
-        url:'j_diplomacy_destory_letter.php',
+        url:'j_diplomacy_destroy_letter.php',
         dataType:'json',
         data:{
             letterNo:letterNo,
@@ -141,44 +141,6 @@ function destoryLetter(letterNo){
         else{
             alert('파기 되었습니다.');
         }
-
-        location.reload();
-        return false;
-
-    }, errUnknown)
-    .fail(function(reason){
-        alert(reason);
-    });
-
-    return false;
-}
-
-function destroyLetter(letterNo){
-    var actionName = '회수를 ';
-    var target = 'j_diplomacy_rollback_letter.php';
-    if(!isRollback){
-        actionName = '파기 요청을 '
-        target = 'j_diplomacy_destroy_letter.php';
-    }
-    $.post({
-        url:target,
-        dataType:'json',
-        data:{
-            letterNo:letterNo,
-        }
-    }).then(function(data){
-        if(!data){
-            alert()
-            return quickReject(actionName+'실패했습니다.');
-        }
-        if(!data.result){
-            return quickReject(actionName+'실패했습니다. : '+data.reason);
-        }
-
-        if(isRollback){
-            
-        }
-        alert(actionName+'했습니다.');
 
         location.reload();
         return false;
