@@ -59,6 +59,7 @@ foreach(
         'dest'=>$letter['dest'],
         'prev_no'=>$letter['prev_no'],
         'state'=>$letter['state'],
+        'state_opt'=>($letter['aux']['state_opt']??null),
         'brief'=>$letter['text_brief'],
         'detail'=>$letter['text_detail'],
         'date'=>$letter['date']

@@ -65,12 +65,10 @@ function repondLetter(letterNo, isAgree, reason){
         }
     }).then(function(data){
         if(!data){
-            $text.val(text);
             alert()
             return quickReject('응답을 실패했습니다.');
         }
         if(!data.result){
-            $text.val(text);
             return quickReject('응답을 실패했습니다. : '+data.reason);
         }
 
@@ -101,16 +99,86 @@ function rollbackLetter(letterNo){
         }
     }).then(function(data){
         if(!data){
-            $text.val(text);
             alert()
             return quickReject('회수를 실패했습니다.');
         }
         if(!data.result){
-            $text.val(text);
             return quickReject('회수를 실패했습니다. : '+data.reason);
         }
 
-        alert('회수했습니다.');
+        alert('회수 했습니다.');
+
+        location.reload();
+        return false;
+
+    }, errUnknown)
+    .fail(function(reason){
+        alert(reason);
+    });
+
+    return false;
+}
+
+function destoryLetter(letterNo){
+    $.post({
+        url:'j_diplomacy_destory_letter.php',
+        dataType:'json',
+        data:{
+            letterNo:letterNo,
+        }
+    }).then(function(data){
+        if(!data){
+            alert()
+            return quickReject('파기를 실패했습니다.');
+        }
+        if(!data.result){
+            return quickReject('파기를 실패했습니다. : '+data.reason);
+        }
+
+        if(data.state == 'activated'){
+            alert('파기를 요청 했습니다.');
+        }
+        else{
+            alert('파기 되었습니다.');
+        }
+
+        location.reload();
+        return false;
+
+    }, errUnknown)
+    .fail(function(reason){
+        alert(reason);
+    });
+
+    return false;
+}
+
+function destroyLetter(letterNo){
+    var actionName = '회수를 ';
+    var target = 'j_diplomacy_rollback_letter.php';
+    if(!isRollback){
+        actionName = '파기 요청을 '
+        target = 'j_diplomacy_destroy_letter.php';
+    }
+    $.post({
+        url:target,
+        dataType:'json',
+        data:{
+            letterNo:letterNo,
+        }
+    }).then(function(data){
+        if(!data){
+            alert()
+            return quickReject(actionName+'실패했습니다.');
+        }
+        if(!data.result){
+            return quickReject(actionName+'실패했습니다. : '+data.reason);
+        }
+
+        if(isRollback){
+            
+        }
+        alert(actionName+'했습니다.');
 
         location.reload();
         return false;
@@ -170,7 +238,16 @@ function drawLetter(idx, letterObj){
         'cancelled':'거부됨',
         'replaced':'대체됨',
     };
+
+    var stateOptionText = {
+        'try_destroy_src':'송신측의 파기 요청',
+        'try_destroy_dest':'수신측의 파기 요청',
+    }
     $letter.find('.letterStatus').text(stateText[letterObj.state]);
+
+    if(letterObj.state_opt !== null){
+        $letter.find('.letterStatusOpt').text('('+stateOptionText[letterObj.state_opt]+')');
+    }
     if(letterObj.prev_no !== null){
         var $showPrev = $('<a href="#">#{0}</a>'.format(letterObj.prev_no));
         $showPrev.click(function(){
@@ -216,9 +293,26 @@ function drawLetter(idx, letterObj){
             if(!confirm('회수하시겠습니까?')){
                 return false;
             }
-            return rollbackLetter(letterObj.no, false);
+            return rollbackLetter(letterObj.no);
         });
-    }   
+    }
+
+    if(letterObj.state == 'activated'){
+        var $btnDestroy = $letter.find('.btnDestroy');
+        if((letterObj.src.nationID==myNationID && letterObj.state_opt == 'try_destroy_src') || 
+            (letterObj.dest.nationID==myNationID && letterObj.state_opt == 'try_destroy_dest')){
+            $btnDestroy.show().prop('disabled', true);
+        }
+        else{
+            $btnDestroy.show().click(function(){
+                if(!confirm('본 문서를 파기하겠습니까? (상호 동의 필요)')){
+                    return false;
+                }
+                return destroyLetter(letterObj.no);
+            })
+            
+        }
+    }
     
 
     $letter.find('.btnRenew').click(function(){
@@ -320,6 +414,7 @@ function drawLetters(lettersObj){
 
     if(permissionLevel == 4){
         initNewLetterForm(lettersObj);
+        $('.letterActionPlate').show();
     }
 
     $('.letterObj').detach();//첫 버전이니까 일괄 삭제 일괄 로드

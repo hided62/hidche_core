@@ -89,7 +89,7 @@ var permissionLevel = <?=$permission?>; //
         <tbody>
             <tr><th class='bg1'>문서 번호</th><td><span class='letterNo'></span></td></tr>
             <tr><th class='bg1'>이전 문서</th><td><span class='letterPrevNo'></span></td></tr>
-            <tr><th class='bg1'>상태</th><td><span class='letterStatus'></span></td></tr>
+            <tr><th class='bg1'>상태</th><td><span class='letterStatus'></span><span class='letterStatusOpt'></span></td></tr>
             <tr><th class='bg1'>내용(국가 내 공개)</th><td><div class='letterBrief'></div></td></tr>
             <tr><th class='bg1'>내용(외교권자 전용)</th><td><div class='letterDetail'></div></td></tr>
         </tbody>
@@ -105,10 +105,11 @@ var permissionLevel = <?=$permission?>; //
                     <div class="signerName">&nbsp;</div>
                 </div>
             </td></tr>
-            <tr class='letterActionPlate'><th class='bg1'>동작</th><td>
+            <tr class='letterActionPlate' style='display:none;'><th class='bg1'>동작</th><td>
                 <button type='button' class='btnAgree' style='display:none;'>승인</button>
                 <button type='button' class='btnDisagree' style='display:none;'>거부</button>
                 <button type='button' class='btnRollback' style='display:none;'>회수</button>
+                <button type='button' class='btnDestroy' style='display:none;'>파기</button>
                 <button type='button' class='btnRenew'>추가 문서 작성</button>
             </td></tr>
         </tfoot>
