@@ -90,7 +90,7 @@ function submitComment(){
 
 function drawArticle(idx, articleObj){
     var $articleFrame = $('#articleTemplate > .articleFrame');
-    var $commentFrame = $('#commentTemplate > .comment');
+    var $commentFrame = $($('#commentTemplate').prop('content'));
 
     var $article = $articleFrame.clone();
     $article.addClass('articleObj')
@@ -102,11 +102,14 @@ function drawArticle(idx, articleObj){
     $article.find('.authorName').text(articleObj.author);
     $article.find('.articleTitle').text(articleObj.title);
     $article.find('.date').text(articleObj.date);
+    if(articleObj.author_icon){
+        $article.find('.authorIcon').attr('src', articleObj.author_icon);
+    }
     //$article.find('.text').text(articleObj.text);
     $article.find('.text').html(nl2br(escapeHtml(articleObj.text)));
     //TODO: 바꿀 것
 
-    var $articleComment = $article.find('ul.commentList');
+    var $articleComment = $article.find('.commentList');
     
     $.each(articleObj.comment, function(_, commentObj){
         var $comment = $commentFrame.clone();
@@ -150,8 +153,15 @@ function loadArticles(){
     });
 }
 
-$(function(){
+function resizeTextarea($obj){
+    $obj.height(1).height($obj.prop('scrollHeight')+12 );
+}
 
+$(function(){
+    $('textarea.autosize').on('keydown keyup', function(){
+        resizeTextarea($(this));
+    })
+    
 $('#submitArticle').click(submitArticle);
 
 loadArticles()

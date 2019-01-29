@@ -63,44 +63,55 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 </head>
 <body>
 
-<div id='newArticle'>
-<div><span class='articleTitle'>제목</span><input class='titleInput' type='text' maxlength='250'></input></div>
-<div class='boardArticle'>
-<textarea class="contentInput" rows="10" cols="50"></textarea>
-</div>
+<table id='newArticle' class='bg0'>
+<thead>
+        <tr><td colspan='2' class='newArticleHeader bg2'>새 게시물 작성</td>
+    </thead>
+<tbody>
+<tr><th class='bg1' style='width:66px;'><span class='articleTitle'>제목</span></th><td><input class='titleInput' type='text' maxlength='250' placeholder='제목'></input></td></tr>
+<tr><th class='bg1'>내용</th><td class='boardArticle'>
+<textarea class="contentInput autosize" placeholder='내용'></textarea>
+</td></tr>
+</tbody>
+<tfoot>
+<tr><td colspan="2">
 <button type='button' id='submitArticle'>등록</button>
-</div>
+</td></tr>
+</tfoot>
+</table>
 
 <div id="board">
 </div>
 
 <!-- 설계미스. template와 shadowdom으로 변경 -->
 <div id='articleTemplate' style='display:none;'>
-<div class='articleFrame'>
-<div>#<span class='articleNo'></span> <span class='articleTitle'></span></div>
-<div class='authorPlate'><span class='authorIcon'></span><span class='authorName'></span><span class='date'></span></div>    
-<div class='text'>
+<table class='articleFrame bg0'>
+<thead>
+<tr class='bg1'>
+<th class='authorName'></th><th class='articleTitle'></th><th class='date'></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img class='authorIcon generalIcon' width='64' height='64'></td>
+<td class='text' colspan='2'></td> 
+</tr>
+</tbody>
+<tbody class='commentList'>
+</tbody>
+<tfoot>
+<tr><td class='bg2'>댓글 달기</td><td><input class='commentText' type='text' maxlength='250'></td><td><button type='button' class='submitComment'>등록</button></td></tr>
+</tfoot>
+</table>
+</div>
 
-</div>
-<div class='commentFrame'>
-    <ul class='commentList'>
-
-    </ul>
-    <div>
-        <input class='commentText' type='text' maxlength='250'>
-        <button type='button' class='submitComment'>등록</button>
-    </div>
-</div>
-</div>
-</div>
-
-<div id='commentTemplate' style='display:none;'>
-<li class='comment'>
-<span class='author'></span>
-<span class='text'></span>
-<span class='date'></span>
-</li>
-</div>
+<template id='commentTemplate' style='display:none;'>
+<tr class='comment'>
+<th class='author'></th>
+<td class='text'></td>
+<td class='date'></td>
+</tr>
+</template>
 
 <div style='width=1000px;' class='tb_layout bg0'>
     <?=backButton()?><br>

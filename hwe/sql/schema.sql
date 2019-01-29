@@ -323,6 +323,7 @@ CREATE TABLE `board` (
 	`date` DATETIME NOT NULL,
 	`general_no` INT(11) NOT NULL,
 	`author` VARCHAR(32) NOT NULL,
+	`author_icon` VARCHAR(128) NULL DEFAULT NULL,
 	`title` TEXT NOT NULL,
 	`text` TEXT NOT NULL,
 	PRIMARY KEY (`no`),

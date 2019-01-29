@@ -15,7 +15,7 @@ $text = Util::getReq('text');
 
 increaseRefresh("회의실", 1);
 
-$me = $db->queryFirstRow('SELECT no, nation, name, level, permission, con, turntime, belong, penalty FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no, nation, name, level, permission, con, turntime, belong, penalty, `picture`,`imgsvr` FROM general WHERE owner=%i', $userID);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -57,12 +57,15 @@ else if ($isSecretBoard && $permission < 2) {
     ]);
 }
 
+$icon = GetImageURL($me['imgsvr'], $me['picture']);
+
 $db->insert('board', [
     'nation_no'=>$me['nation'],
     'is_secret'=>$isSecretBoard,
     'date'=>TimeUtil::DatetimeNow(),
     'general_no'=>$me['no'],
     'author'=>$me['name'],
+    'author_icon'=>$icon,
     'title'=>$title,
     'text'=>$text
 ]);

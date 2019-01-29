@@ -3,8 +3,21 @@
     margin: 0 auto;
 }
 
+.titleInput{
+    width:100%;
+    color:white;
+    background-color:transparent;
+    border:none;
+    margin:1px 5px;
+}
+
 .contentInput{
     width:100%;
+    min-height:3em;
+    color:white;
+    background-color:transparent;
+    border:none;
+    padding:1px 5px;
 }
 
 .articleFrame{
@@ -13,13 +26,24 @@
 }
 
 .commentText{
-    width:800px;
+    width:100%;
 }
 
-.authorPlate .date{
-    float:right;
+.authorName, .comment .author{
+    width:110px;
+    font-size:85%;
 }
 
-.comment .date{
-    float:right;
+.date{
+    width:125px;
+    font-size:85%;
+}
+
+.text{
+    text-align:left;
+    padding:1px 5px;
+}
+
+.submitComment{
+    width:100%;
 }
