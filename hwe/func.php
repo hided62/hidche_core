@@ -2560,7 +2560,7 @@ function deleteNation($general) {
     $oldNation['aux'] = Json::decode($oldNation['aux']);
 
     // 전 장수 재야로    // 전 장수 소속 무소속으로
-    $query = "update general set belong=0,troop=0,level=0,nation=0,makelimit=12 where nation='{$general['nation']}'";
+    $query = "update general set belong=0,troop=0,level=0,nation=0,permission='normal',makelimit=12 where nation='{$general['nation']}'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     // 도시 공백지로
     $query = "update city set nation=0,front=0,gen1=0,gen2=0,gen3=0 where nation='{$general['nation']}'";
