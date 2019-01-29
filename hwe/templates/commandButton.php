@@ -3,7 +3,7 @@
     <a href='t_board.php'><button class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>회 의 실</button></a>
     <a href='t_board.php?isSecret=true'><button class='commandButton' <?=$permission>=2?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>기 밀 실</button></a>
     <a href='b_troop.php'><button class='commandButton' <?=($meLevel>=1&&$nationLevel>=1)?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>부대 편성</button></a>
-    <a href='t_diplomacy.php'><button class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>외 교 부</button></a>
+    <a href='t_diplomacy.php'><button class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>외 교 부</button></a>
     <a href='b_myBossInfo.php'><button class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>인 사 부</button></a>
     <a href='b_dipcenter.php'><button class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>내 무 부</button></a>
     <a href='b_chiefcenter.php'><button class='commandButton' <?=$showSecret?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>사 령 부</button></a>
