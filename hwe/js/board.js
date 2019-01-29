@@ -125,7 +125,10 @@ function drawArticle(idx, articleObj){
         if(e.which === 13){
             $article.find('.submitComment').click();
         }
-  });
+    });
+    $article.find('.inputCommentHeader').click(function(){
+        $article.find('.commentText').focus();
+    })
 
     var $board = $('#board');
 

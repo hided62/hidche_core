@@ -100,7 +100,7 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 <tbody class='commentList'>
 </tbody>
 <tfoot>
-<tr><td class='bg2'>댓글 달기</td><td><input class='commentText' type='text' maxlength='250'></td><td><button type='button' class='submitComment'>등록</button></td></tr>
+<tr><td class='bg2 inputCommentHeader'>댓글 달기</td><td><input class='commentText' type='text' maxlength='250' placeholder='새 댓글 내용'></td><td><button type='button' class='submitComment'>등록</button></td></tr>
 </tfoot>
 </table>
 </div>
