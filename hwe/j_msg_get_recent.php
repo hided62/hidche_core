@@ -48,7 +48,7 @@ if($me === null){
 }
 
 [$generalID, $nationID, $generalName] = [$me['no'], $me['nation'], $me['name']];
-$permission = checkSecretPermission($me);
+$permission = checkSecretPermission($me, false);
 
 $result = [];
 $result['result'] = true;
