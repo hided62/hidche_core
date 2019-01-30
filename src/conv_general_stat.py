@@ -184,6 +184,8 @@ def extractGeneralList(generalSheet, nationList={}, nationChiefInfo={}):
         if len(row) < 13:
             row.append('')
         row[12] = row[12].strip()
+        if len(row[12]) > 99:
+            row[12] = row[12][:99]
         if row[12] == '':
             row.pop()
 
