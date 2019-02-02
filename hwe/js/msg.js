@@ -504,7 +504,7 @@ function activateMessageForm(){
 jQuery(function($){
 
     //tmp_template.html은 추후 msg.js에 통합될 수 있음
-    var getTemplate = $.get('js/templates/message.html?10',function(obj){
+    var getTemplate = $.get('js/templates/message.html?11',function(obj){
         messageTemplate = obj;
     });
 

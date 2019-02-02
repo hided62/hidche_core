@@ -123,6 +123,10 @@ function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function linkifyStrWithOpt(text){
+    return linkifyStr(text, {});
+}
+
 /**
  * 단순한 Template 함수.  <%변수명%>으로 template 가능
  * @see  https://github.com/krasimir/absurd/blob/master/lib/processors/html/helpers/TemplateEngine.js
@@ -143,6 +147,7 @@ var TemplateEngine = function (html, options) {
         return add;
     }
     options.e = escapeHtml;
+    options.linkifyStr = linkifyStrWithOpt;
     while (match = re.exec(html)) {
         add(html.slice(cursor, match.index))(match[1], true);
         cursor = match.index + match[0].length;
