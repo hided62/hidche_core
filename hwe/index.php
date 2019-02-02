@@ -266,7 +266,7 @@ else if($session->userGrade == 4){
         </td>
     </tr>
     <tr>
-        <td align=right style="'width:650px;border:none;">
+        <td align=right style="'width:650px;border:none;"><br>
             <?php commandTable(); ?>
             <input id="mainBtnSubmit" type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='실 행' onclick='refreshing(this, 3,form2)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:110px;font-size:13px; value='갱 신' onclick='refreshing(this, 0,0)'><input type=button style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;font-size:13px; value='로비로' onclick=location.replace('../')><br>
         </td>
