@@ -117,6 +117,7 @@ $(function(){
 <?=WebUtil::printCSS('css/main.css')?>
 <?=WebUtil::printCSS('css/map.css')?>
 <?=WebUtil::printCSS('css/msg.css')?>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css?family=Nanum+Gothic|Nanum+Myeongjo|Nanum+Pen+Script" rel="stylesheet">
 
 </head>
@@ -233,7 +234,7 @@ else if($session->userGrade == 4){
 ?>
 
 </table>
-<table class="tb_layout bg0" style="width:1000px;">
+<table class="tb_layout bg0" style="width:1000px;" id='map_position'>
     <tr>
         <td style='width:700px;height:520px;' colspan=2>
             <?=getMapHtml($mapTheme)?>
@@ -279,7 +280,7 @@ else if($session->userGrade == 4){
     </tr>
     <tr><td colspan=2><?=commandButton()?></td></tr>
 </table>
-<table class="tb_layout bg0">
+<table class="tb_layout bg0" id='history_position'>
     <tr>
         <td width=498 class='bg1 center'><b>장수 동향</b></td>
         <td width=498 class='bg1 center'><b>개인 기록</b></td>
@@ -305,11 +306,11 @@ else if($session->userGrade == 4){
 </div>
 <div><?=allButton()?></div>
 <div id="message_board"><div style="left:0;" class="board_side bg0">
-        <div class="board_header bg0">전체 메시지(최고99자)</div>
+        <div class="board_header bg0" id='public_talk_position'>전체 메시지(최고99자)</div>
         <section class="public_message">
         <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="public">이전 메시지 불러오기</button>
         </section>
-        <div class="board_header bg0">개인 메시지(최고99자)</div>
+        <div class="board_header bg0" id='secret_talk_position'>개인 메시지(최고99자)</div>
         <section class="private_message">
         <button type="button" class="load_old_message btn btn-secondary btn-block" data-msg_type="private">이전 메시지 불러오기</button>
         </section>
@@ -324,6 +325,13 @@ else if($session->userGrade == 4){
         </section>
  </div></div>
 <div style="clear:left;"><?=allButton()?><?=banner()?></div>
+</div>
+<div id='sidebar' class='btn-group-vertical'>
+<button type="button" class="btn btn-primary" onclick='refreshing(this, 0,0)'><i class="fas fa-sync-alt"></i>&nbsp;갱신</button>
+<a class="btn btn-secondary" href="#map_position" role="button">지도 & 턴입력</a>
+<a class="btn btn-secondary" href="#history_position" role="button">장수 동향</a>
+<a class="btn btn-secondary" href="#public_talk_position" role="button">국가 메시지</a>
+<a class="btn btn-secondary" href="#secret_talk_position" role="button">개인 메시지</a>
 </div>
 <?php
 if ($con == 1) {

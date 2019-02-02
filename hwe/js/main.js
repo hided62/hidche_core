@@ -36,6 +36,7 @@ function refreshing(obj, arg1, arg2) {
             message.msg.focus();
             break;
     }
+    return false;
 }
 
 function moveProcessing(commandtype, turn){
