@@ -43,8 +43,8 @@ foreach(
     ) as $letter
 ){
 
-    if($permission < 3 && $letter['detail']){
-        $letter['detail'] = '(권한이 부족합니다)';
+    if($permission < 3 && $letter['text_detail']){
+        $letter['text_detail'] = '(권한이 부족합니다)';
     }
     $letter['aux'] = Json::decode($letter['aux']);
     $letter['src'] = $letter['aux']['src'];
