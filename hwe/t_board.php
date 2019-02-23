@@ -33,7 +33,7 @@ else if ($isSecretBoard && $permission < 2) {
     die();
 }
 
-$boardName = $isSecretBoard?'회의실':'기밀실';
+$boardName = $isSecretBoard?'기밀실':'회의실';
 
 ?>
 <!DOCTYPE html>
