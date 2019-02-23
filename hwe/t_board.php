@@ -63,6 +63,13 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 </head>
 <body>
 
+
+<div style='width:1000px;' class='tb_layout bg0'>
+    <?=$boardName?><br>
+    <?=backButton()?>
+</div>
+
+
 <table id='newArticle' class='bg0'>
 <thead>
         <tr><td colspan='2' class='newArticleHeader bg2'>새 게시물 작성</td>
@@ -113,7 +120,7 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 </tr>
 </template>
 
-<div style='width=1000px;' class='tb_layout bg0'>
+<div style='width:1000px;' class='tb_layout bg0'>
     <?=backButton()?><br>
     <?=banner()?>
 </div>
