@@ -345,6 +345,20 @@ class DiplomaticMessage extends Message{
         $this->invalidate();
         $newMsg->send();
 
+        $newMsg = new Message(
+            self::MSGTYPE_DIPLOMACY, 
+            $this->dest, 
+            $this->src, 
+            "【외교】{$year}년 {$month}월: {$this->src->nationName}{$josaYi} {$this->dest->nationName}에게 제안한 {$this->diplomacyDetail}{$this->diplomacyName} 동의.",
+            new \DateTime(),
+            new \DateTime('9999-12-31'),
+            [
+                'delete'=>$this->id,
+                'silence'=>true,
+            ]
+        );
+        $newMsg->send();
+
         return self::ACCEPTED;
 
     }
