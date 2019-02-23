@@ -64,7 +64,7 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 <body>
 
 
-<div style='width:1000px;' class='tb_layout bg0'>
+<div style='width:1000px;margin:auto;' class='tb_layout bg0'>
     <?=$boardName?><br>
     <?=backButton()?>
 </div>
@@ -120,7 +120,7 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 </tr>
 </template>
 
-<div style='width:1000px;' class='tb_layout bg0'>
+<div style='width:1000px;margin:auto;' class='tb_layout bg0'>
     <?=backButton()?><br>
     <?=banner()?>
 </div>
