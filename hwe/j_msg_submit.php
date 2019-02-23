@@ -161,7 +161,7 @@ if($mailbox > 0) {
     }
 
     $destPermission = checkSecretPermission($destUser, false);
-    if($permission == 4 && $destPermission == 4){
+    if($permission == 4 && $destPermission == 4 && $destUser['nation'] != $me['nation']){
         Json::die([
             'result' => false,
             'reason' => '외교권자끼리는 메시지를 보낼 수 없습니다.',
