@@ -1416,6 +1416,10 @@ function Promotion($nation, $level) {
         $query = "update general set level={$i2} where no='{$level['no']}'";
         MYDB_query($query, $connect) or Error("Promotion_02 ".MYDB_error($connect),"");
     }
+
+    $db->update('general', [
+        'permission'=>'ambassador',
+    ], 'nation=%i AND npc < 2 AND level > 4', $nation);
 }
 
 function TaxRate($nation) {
