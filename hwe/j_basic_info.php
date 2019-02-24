@@ -12,7 +12,7 @@ $result = [
 $session = Session::requireGameLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
-$generalInfo = DB::db()->queryFirstRow('SELECT `no`, `nation`, `level`, penalty, permission from `general` where `owner`=%i', $userID);
+$generalInfo = DB::db()->queryFirstRow('SELECT `no`, `nation`, `level`, belong, penalty, permission from `general` where `owner`=%i', $userID);
 if(!$generalInfo){
     Json::die($result);
 }
