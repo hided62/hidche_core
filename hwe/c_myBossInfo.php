@@ -59,7 +59,7 @@ if($btn == "임명") {
         header('location:b_myBossInfo.php');
         exit();
     }
-    $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr,permission,penalty from general where no='$outlist'";
+    $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr,permission,penalty,belong from general where no='$outlist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
