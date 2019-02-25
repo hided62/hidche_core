@@ -853,13 +853,13 @@ function process_54(&$general) {
         ], 'no=%i', $who);
 
         // 태수,군사,종사이었다면 해제
-        $db->update('general', [
+        $db->update('city', [
             'gen1'=>0,
         ], 'gen1=%i', $who);
-        $db->update('general', [
+        $db->update('city', [
             'gen2'=>0,
         ], 'gen2=%i', $who);
-        $db->update('general', [
+        $db->update('city', [
             'gen3'=>0,
         ], 'gen3=%i', $who);
         
