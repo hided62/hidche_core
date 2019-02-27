@@ -49,7 +49,7 @@ $now = new \DateTime();
 $unlimited = new \DateTime('9999-12-31');
 
 $db = DB::db();
-$me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,penalty,permission FROM general WHERE `owner`=%i', $userID);
+$me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,penalty,permission,belong FROM general WHERE `owner`=%i', $userID);
 
 if(!$me){
     $session->logoutGame();

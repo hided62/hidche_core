@@ -332,7 +332,7 @@ if($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
         //기존 자리 공석으로
         $db->update('city', [
             $genlv=>0
-        ], 'city = %i AND nation = %i', $citylist , $general['nation']);
+        ], 'city = %i AND nation = %i', $citylist , $me['nation']);
     }
     if($genlist != 0) {
         $valid = 0;
