@@ -330,16 +330,7 @@ $(function() {
                 //window.$html = $html;
                 
                 var cnt =0;
-                var $tmpTable = null;
-                $html.each(function(idx){
-                    if(this.tagName == "TABLE"){
-                        cnt+=1;
-                        if(cnt==5){
-                            $tmpTable = $(this);
-                            return false;
-                        }
-                    }
-                });
+                var $tmpTable = $html.filter('#officer_list').eq(0);
                 
                 $selects = $tmpTable.find("select");
                 if($selects.length == 0){

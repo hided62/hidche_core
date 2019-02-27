@@ -351,7 +351,7 @@ if($meLevel == 12):
 <?php
 endif;
 ?>
-<table align=center width=1000 class='tb_layout bg0'>
+<table align=center width=1000 id='officer_list' class='tb_layout bg0'>
     <tr><td colspan=5 height=5></td></tr>
 <?php
 if($meLevel >= 5) {
