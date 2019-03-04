@@ -66,8 +66,11 @@ foreach (getAllNationStaticInfo() as $nation) {
 $types = [
     ["명 성", "int", function($v){$v['value'] = $v['experience']; return $v; }],
     ["계 급", "int", function($v){$v['value'] = $v['dedication']; return $v; }],
-    ["계 략 성 공", "int", function($v){
+    ["계 략 성 공", "int", function($v) use ($gameStor){
         $v['value'] = $v['firenum'];
+        if($gameStor->isunited){
+            return $v;
+        }
         $v['nationName'] = '???';
         $v['pictureFullPath'] = GetImageURL(0)."/default.jpg";
         $v['name'] = '???'; 
