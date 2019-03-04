@@ -2151,6 +2151,11 @@ function CheckHall($no) {
 
     [$scenarioIdx, $scenarioName, $startTime] = $gameStor->getValuesAsArray(['scenario', 'scenario_text', 'starttime']);
 
+    $ownerName = $general['name2'];
+    if($general['owner']){
+        $ownerName = RootDB::db()->queryFirstField('SELECT name FROM member WHERE no = %i', $general['owner']);
+    }
+
     foreach($types as $idx=>$typeName) {
         
 
@@ -2180,7 +2185,7 @@ function CheckHall($no) {
             'imgsvr'=>$general['imgsvr'],
             'startTime'=>$startTime,
             'unitedTime'=>$unitedDate,
-            'owner_name'=>$general['name2'],
+            'owner_name'=>$ownerName,
             'serverID'=>UniqueConst::$serverID,
             'serverIdx'=>$serverCnt,
             'serverName'=>UniqueConst::$serverName,

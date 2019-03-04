@@ -92,12 +92,22 @@ $types = [
 
 $templates = new \League\Plates\Engine('templates');
 
+$ownerNameList = [];
+foreach(RootDB::db()->queryAllLists('SELECT no, name FROM member') as [$ownerID, $ownerName]){
+    $ownerNameList[$ownerID] = $ownerName;
+}
+
 foreach($types as $idx=>[$typeName, $typeValue]) {
     $hallResult = $db->query('SELECT * FROM ng_hall WHERE `type`=%i AND %? ORDER BY `value` DESC LIMIT 10', $idx, $searchFilter);
 
-    $hallResult = array_map(function($general)use($typeValue){
+    $hallResult = array_map(function($general)use($typeValue, $ownerNameList){
         $aux = Json::decode($general['aux']);
         $general += $aux;
+
+        if(key_exists($general['owner'], $ownerNameList)){
+            $general['owner_name'] = $ownerNameList[$general['owner']];
+        }
+
         if(!key_exists('bgColor', $general)){
             if(!key_exists('color', $general)){
                 $general['bgColor'] = GameConst::$basecolor4;
