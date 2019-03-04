@@ -49,6 +49,12 @@ increaseRefresh("명장일람", 1);
 <div style="margin:auto;width=1000px;">
 <?php
 
+$ownerNameList = [];
+if($gameStor->isunited){
+    foreach(RootDB::db()->queryAllLists('SELECT no, name FROM member') as [$ownerID, $ownerName]){
+        $ownerNameList[$ownerID] = $ownerName;
+    }
+}
 
 $nationName = [0=>'재야'];
 $nationColor = [0=>'#000000'];
@@ -166,7 +172,7 @@ $generals = array_map(function($general) use($nationColor, $nationName) {
 
     return $general;
 }, $db->query(
-    "SELECT nation,no,name,name2 as owner_name, picture, imgsvr, 
+    "SELECT nation,no,name,name2 as owner_name, owner, picture, imgsvr, 
     experience, dedication, firenum, warnum, killnum, killcrew, deathcrew, 
     dex0, dex10, dex20, dex30, dex40, 
     ttw, ttd, ttl, tlw, tld, tll, tpw, tpd, tpl, tiw, tid, til,
@@ -179,7 +185,7 @@ $templates = new \League\Plates\Engine('templates');
 
 foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
     $validCnt = 0;
-    $typeGenerals = array_map(function($general) use($typeValue, $typeFunc, &$validCnt){
+    $typeGenerals = array_map(function($general) use($typeValue, $typeFunc, &$validCnt, $ownerNameList){
         $general = ($typeFunc)($general);
         $value = $general['value'];
 
@@ -193,6 +199,7 @@ foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
         else {
             $general['printValue'] = number_format($value);
         }
+        $general['owner_name'] = $ownerNameList[$general['owner']]??null;
         return $general;
     }, $generals);
 
@@ -231,6 +238,7 @@ foreach($generals as $general){
         $itemName = ($itemFunc)($itemCode);
         $general['rankName'] = $itemName;
         $general['value'] = $itemCode;
+        $general['owner_name'] = $ownerNameList[$general['owner']]??null;
         $itemTypes[$itemIdx][5][$itemCode] = $general;
     }
 }
@@ -252,6 +260,7 @@ foreach($itemTypes as [$itemNameType, $itemType, $itemFunc, $itemMinCode, $itemM
         }
 
         $general = $itemOwners[$itemCode];
+        $general['owner_name'] = $ownerNameList[$general['owner']]??null;
         $itemRanker[$itemCode] = $general;
     }
 
