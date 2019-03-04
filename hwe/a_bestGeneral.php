@@ -238,7 +238,6 @@ foreach($generals as $general){
         $itemName = ($itemFunc)($itemCode);
         $general['rankName'] = $itemName;
         $general['value'] = $itemCode;
-        $general['owner_name'] = $ownerNameList[$general['owner']]??null;
         $itemTypes[$itemIdx][5][$itemCode] = $general;
     }
 }
@@ -260,7 +259,6 @@ foreach($itemTypes as [$itemNameType, $itemType, $itemFunc, $itemMinCode, $itemM
         }
 
         $general = $itemOwners[$itemCode];
-        $general['owner_name'] = $ownerNameList[$general['owner']]??null;
         $itemRanker[$itemCode] = $general;
     }
 
