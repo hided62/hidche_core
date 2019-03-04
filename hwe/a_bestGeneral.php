@@ -186,6 +186,7 @@ $templates = new \League\Plates\Engine('templates');
 foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
     $validCnt = 0;
     $typeGenerals = array_map(function($general) use($typeValue, $typeFunc, &$validCnt, $ownerNameList){
+        $general['owner_name'] = $ownerNameList[$general['owner']]??null;
         $general = ($typeFunc)($general);
         $value = $general['value'];
 
@@ -199,7 +200,6 @@ foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
         else {
             $general['printValue'] = number_format($value);
         }
-        $general['owner_name'] = $ownerNameList[$general['owner']]??null;
         return $general;
     }, $generals);
 
