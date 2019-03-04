@@ -204,6 +204,21 @@ function processAI($no) {
                 'killturn'=>1
             ], 'no=%i', $general['no']);
         }
+        else if($general['level'] == 12){
+            $newRuler = $db->queryFirstField('SELECT `no` FROM general WHERE nation = %i AND no != %i ORDER BY RAND() LIMIT 1', $general['nation'], $general['no']);
+            if($newRuler){
+                $command = EncodeCommand(0, 0, $newRuler, 54); //선양
+                $db->update('general', [
+                    'turn0'=>$command,
+                    'turn1'=>$command,
+                    'turn2'=>$command,
+                    'turn3'=>$command,
+                    'turn4'=>$command,
+                    'killturn'=>rand(70,75),
+                ], 'no=%i', $general['no']);
+            }
+            
+        }
         else{
             $command = EncodeCommand(0, 0, 0, 26); //집합
             $db->update('general', [
