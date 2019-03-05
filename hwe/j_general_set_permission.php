@@ -7,7 +7,7 @@ include "func.php";
 
 //TODO: 변경이 완료되면 항상 공지되어야함
 
-$isAmbassador = Util::getReq('isAmbassador', bool);
+$isAmbassador = Util::getReq('isAmbassador', 'bool');
 $genlist = Util::getReq('genlist', 'array_int');
 
 //로그인 검사
