@@ -478,9 +478,7 @@ function processCommand($no) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $query = "select npc,no,name,picture,imgsvr,nation,nations,city,troop,injury,affinity,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,belong,personal,special,special2,term,turn0,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar from general where no='$no'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
+    $general = $db->queryFirstRow('SELECT npc,no,name,picture,imgsvr,nation,nations,city,troop,injury,affinity,leader,leader2,power,power2,intel,intel2,experience,dedication,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,makenation,makelimit,killturn,block,dedlevel,explevel,age,belong,personal,special,special2,term,turn0,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar,myset from general where no = %i', $no);
     
     list($month, $killturn) = $gameStor->getValuesAsArray(['month', 'killturn']);
     $log = [];
@@ -546,17 +544,24 @@ function processCommand($no) {
         }
 
         $command = DecodeCommand($general['turn0']);
+        $newKillturn = $killturn;
         //삭턴 처리
         if($general['npc'] >= 2 || $general['killturn'] > $killturn) {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $newKillturn = $general['killturn'] - 1;
         } elseif($command[0] == 0) {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn=killturn-1 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $newKillturn = $general['killturn'] - 1;
         } else {
-            $query = "update general set recturn=turn0,resturn='FAIL',myset=3,con=0,killturn='{$killturn}' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $newKillturn = $killturn;
         }
+
+        $newMySet = min($general['myset'] + 1, 3);
+        $db->update('general', [
+            'recturn'=>$db->sqleval('turn0'),
+            'resturn'=>'FAIL',
+            'con'=>0,
+            'killturn'=>$newKillturn,
+            'myset'=>$newMySet
+        ], 'no = %i', $general['no']);
         //FIXME: 운영자 같이 사망하면 안되는 인물에 대한 처리가 필요
 
         //연속턴 아닌경우 텀 리셋
