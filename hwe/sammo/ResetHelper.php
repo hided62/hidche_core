@@ -164,6 +164,8 @@ class ResetHelper{
             'plock'=>1
         ]);
 
+        $prevWinner = $db->queryFirstField('SELECT l12name FROM emperior ORDER BY `no` DESC LIMIT 1');
+
         CityConst::build();
         $cityPositions = [];
         foreach(CityConst::all() as $city){
@@ -235,7 +237,8 @@ class ResetHelper{
             'npcmode'=>$npcmode,
             'extended_general'=>$extend,
             'fiction'=>$fiction,
-            'tnmt_trig'=>$tournament_trig
+            'tnmt_trig'=>$tournament_trig,
+            'prev_winner'=>$prevWinner
         ];
 
         foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
