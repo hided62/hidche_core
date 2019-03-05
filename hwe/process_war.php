@@ -217,7 +217,7 @@ function extractBattleOrder($general){
         getGeneralIntel($general, false, true, true, true);
     $totalStat = ($realStat + $fullStat) / 2;
 
-    $totalCrew = $general['crew'] / 10000 * $general['train'] * $general['atmos'];
+    $totalCrew = $general['crew'] / 1000000 * (($general['train'] * $general['atmos']) ** 1.5);
     return $totalStat + $totalCrew / 100;
 }
 
