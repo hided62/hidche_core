@@ -1978,11 +1978,12 @@ function process_76(&$general) {
             $stat_tier1 = GameConst::$defaultStatMax - 10 + rand()%11;
             $stat_tier3 = GameConst::$defaultStatMin + rand()%6;
             $stat_tier2 = GameConst::$defaultStatTotal - $stat_tier1 - $stat_tier3;
-            switch(Util::choiceRandomUsingWeight([
+            $type = Util::choiceRandomUsingWeight([
                 'power'=>4,
                 'intel'=>4,
                 'neutral'=>2
-            ])){
+            ]);
+            switch($type){
             case 'power':
                 $leader = $stat_tier1;
                 $power = $stat_tier2;
@@ -2030,7 +2031,7 @@ function process_76(&$general) {
                 $intel -= $over3;
             }
             // 낮은 능치쪽으로 합산
-            if($type == 0) {
+            if($type == 'power') {
                 $intel = $intel + $over1 + $over2 + $over3;
             } else {
                 $power = $power + $over1 + $over2 + $over3;
