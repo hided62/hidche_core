@@ -1968,31 +1968,35 @@ function process_76(&$general) {
         $avgNation = MYDB_fetch_array($result);
         $gencount = 5 + Util::round($avgNation['gennum'] / 10);
 
-        $query = "select avg(age) as age, max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0) as dex0, avg(dex10) as dex10, avg(dex20) as dex20, avg(dex30) as dex30, avg(dex40) as dex40 from general where nation='{$general['nation']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $avgGen = MYDB_fetch_array($result);
+        $avgGen = $db->queryFirstRow('SELECT max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) * 1.5 / 4 as dex_t, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
 
         //의병추가
         $npc = 4;
         $npcid = $admin['npccount'];
         for($i=0; $i < $gencount; $i++) {
-            // 무장 40%, 지장 40%, 무지장 20%
-            $type = rand() % 10;
-            switch($type) {
-            case 0: case 1: case 2: case 3:
-                $leader = GameConst::$defaultStatMax - 10 + rand()%11;
-                $intel = GameConst::$defaultStatMin + rand()%6;
-                $power = GameConst::$defaultStatTotal - $leader - $intel;
+            //무장 40%, 지장 40%, 무지장 20%
+            $stat_tier1 = GameConst::$defaultStatMax - 10 + rand()%11;
+            $stat_tier3 = GameConst::$defaultStatMin + rand()%6;
+            $stat_tier2 = GameConst::$defaultStatTotal - $stat_tier1 - $stat_tier3;
+            switch(Util::choiceRandomUsingWeight([
+                'power'=>4,
+                'intel'=>4,
+                'neutral'=>2
+            ])){
+            case 'power':
+                $leader = $stat_tier1;
+                $power = $stat_tier2;
+                $intel = $stat_tier3;
                 break;
-            case 4: case 5: case 6: case 7:
-                $leader = GameConst::$defaultStatMax - 10 + rand()%11;
-                $power = GameConst::$defaultStatMin + rand()%6;
-                $intel = GameConst::$defaultStatTotal - $leader - $power;
+            case 'intel':
+                $leader = $stat_tier1;
+                $power = $stat_tier3;
+                $intel = $stat_tier2;
                 break;
-            case 8: case 9:
-                $leader = GameConst::$defaultStatMin + rand()%6;
-                $power = GameConst::$defaultStatMax - 10 + rand()%11;
-                $intel = GameConst::$defaultStatTotal - $leader - $power;
+            case 'neutral':
+                $leader = $stat_tier3;
+                $power = $stat_tier1;
+                $intel = $stat_tier2;
                 break;
             }
             // 국내 최고능치 기준으로 랜덤성 스케일링
@@ -2066,7 +2070,7 @@ function process_76(&$general) {
                     '1','100','100','0','".GameUnitConst::DEFAULT_CREWTYPE."','0','0','0',
                     '0','0','0','$turntime','$killturn','{$avgGen['age']}','1','$personal','0','0','0','0','',
                     '0','$bornyear','$deadyear',
-                    '{$avgGen['dex0']}','{$avgGen['dex10']}','{$avgGen['dex20']}','{$avgGen['dex30']}','{$avgGen['dex40']}'
+                    '{$avgGen['dex_t']}','{$avgGen['dex_t']}','{$avgGen['dex_t']}','{$avgGen['dex_t']}','{$avgGen['dex40']}'
                 )",
                 $connect
             ) or Error(__LINE__.MYDB_error($connect),"");

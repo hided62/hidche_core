@@ -290,7 +290,7 @@ function process_29(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $admin = $gameStor->getValues(['startyear','year','month','develcost','npccount','turnterm','scenario']);
+    $admin = $gameStor->getValues(['startyear','year','month','develcost','npccount','turnterm','scenario','maxgeneral']);
 
     $query = "select nation,name,level,gennum,scout from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -306,25 +306,20 @@ function process_29(&$general) {
     } elseif($general['gold'] < $admin['develcost']) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 인재탐색 실패. <1>$date</>";
     } else {
-        $query = "select no from general where nation='{$general['nation']}' and npc<2";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gencount = MYDB_num_rows($result);
 
-        $query = "select no from general where nation='{$general['nation']}' and npc=3";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $npccount = MYDB_num_rows($result);
+        $max_gen_cnt = $admin['maxgeneral'];
 
-        $query = "select no from general where nation!='{$general['nation']}' and npc=3";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $otherNpccount = MYDB_num_rows($result);
-        $otherNpccount = Util::round(sqrt($otherNpccount + 1)) - 1;
-        
-        if($gencount <= 0) { $gencount = 1; }
-        if($npccount <= 0) { $npccount = 1; }
-        $criteria = $gencount * $npccount + $otherNpccount;
+        $total_gen_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc <= 2');
+        $total_npc_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE 3 <= npc AND npc <= 4');
+
+        $curr_cnt = Util::toInt($total_gen_cnt + $total_npc_cnt / 2);
+        $remain_slot = $max_gen_cnt - $curr_cnt;
+
+        $found_prop = max(pow($remain_slot / $max_gen_cnt, 5), 1 / $max_gen_cnt);
+        $found_npc = Util::randBool($found_prop);
 
         // 탐색 실패
-        if(rand() % $criteria > 0) {
+        if(!$found_npc) {
             $exp = 100;
             $ded = 70;
             switch(Util::choiceRandomUsingWeight([$general['leader'], $general['power'], $general['intel']])) {
@@ -354,7 +349,12 @@ function process_29(&$general) {
                 $name = "{$name}{$count}";
             }
 
-            if($nation['scout'] != 0) {
+            $gen_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc <= 2 AND nation = %i', $general['nation']);
+            $npc_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE 3 <= npc AND npc <= 4 AND nation = %i', $general['nation']);
+
+            $join_prop = 0.3 + 0.7 * (($gen_cnt + $npc_cnt / 2) / $curr_cnt);
+
+            if($nation['scout'] != 0 || !Util::randBool($join_prop)) {
                 $scoutType = "발견";
                 $scoutLevel = 0;
                 $scoutNation = 0;
@@ -370,50 +370,34 @@ function process_29(&$general) {
             $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <Y>$name</>{$josaRa}는 <C>인재</>를 {$scoutType}하였습니다!";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>$name</>{$josaRa}는 <C>인재</>를 {$scoutType}");
 
-            $query = "select max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0) as dex0, avg(dex10) as dex10, avg(dex20) as dex20, avg(dex30) as dex30, avg(dex40) as dex40 from general where nation='{$general['nation']}'";
-            $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $avgGen = MYDB_fetch_array($result);
+            $avgGen = $db->queryFirstRow('SELECT max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) * 1.5 / 4 as dex_t, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
 
-            // 체섭시 무장 20%, 지장 20%, 무지장 60%
-            // 마이너 무장 40%, 지장 40%, 무지장 20%
-            $type = rand() % 10;
-            if($admin['scenario'] < 100) {
-                switch($type) {
-                case 0: case 1:
-                    $leader = GameConst::$defaultStatMax - 10 + rand()%11;
-                    $intel = GameConst::$defaultStatMin + rand()%6;
-                    $power = GameConst::$defaultStatTotal - $leader - $intel;
-                    break;
-                case 2: case 3:
-                    $leader = GameConst::$defaultStatMax - 10 + rand()%11;
-                    $power = GameConst::$defaultStatMin + rand()%6;
-                    $intel = GameConst::$defaultStatTotal - $leader - $power;
-                    break;
-                case 4: case 5: case 6: case 7: case 8: case 9:
-                    $leader = GameConst::$defaultStatMin + rand()%6;
-                    $power = GameConst::$defaultStatMax - 10 + rand()%11;
-                    $intel = GameConst::$defaultStatTotal - $leader - $power;
-                    break;
-                }
-            } else {
-                switch($type) {
-                case 0: case 1: case 2: case 3:
-                    $leader = GameConst::$defaultStatMax - 10 + rand()%11;
-                    $intel = GameConst::$defaultStatMin + rand()%6;
-                    $power = GameConst::$defaultStatTotal - $leader - $intel;
-                    break;
-                case 4: case 5: case 6: case 7:
-                    $leader = GameConst::$defaultStatMax - 10 + rand()%11;
-                    $power = GameConst::$defaultStatMin + rand()%6;
-                    $intel = GameConst::$defaultStatTotal - $leader - $power;
-                    break;
-                case 8: case 9:
-                    $leader = GameConst::$defaultStatMin + rand()%6;
-                    $power = GameConst::$defaultStatMax - 10 + rand()%11;
-                    $intel = GameConst::$defaultStatTotal - $leader - $power;
-                    break;
-                }
+            //무장 40%, 지장 40%, 무지장 20%
+            $stat_tier1 = GameConst::$defaultStatMax - 10 + rand()%11;
+            $stat_tier3 = GameConst::$defaultStatMin + rand()%6;
+            $stat_tier2 = GameConst::$defaultStatTotal - $stat_tier1 - $stat_tier3;
+            switch(Util::choiceRandomUsingWeight([
+                'power'=>4,
+                'intel'=>4,
+                'neutral'=>2
+            ])){
+            case 'power':
+                $leader = $stat_tier1;
+                $power = $stat_tier2;
+                $intel = $stat_tier3;
+                break;
+            case 'intel':
+                $leader = $stat_tier1;
+                $power = $stat_tier3;
+                $intel = $stat_tier2;
+                break;
+            case 'neutral':
+                $leader = $stat_tier3;
+                $power = $stat_tier1;
+                $intel = $stat_tier2;
+                break;
             }
+
             // 국내 최고능치 기준으로 랜덤성 스케일링
             if($avgGen['lpi'] > 210) {
                 $leader = Util::round($leader * $avgGen['lpi'] / GameConst::$defaultStatTotal * (60+rand()%31)/100);
@@ -476,8 +460,8 @@ function process_29(&$general) {
             $specage2 = Util::round((80 - $age)/3) + $age;
             //$specage = $age + 1 + rand() % 3;
             //$specage2 = $age + 5 + rand() % 5;
-            // 10년 ~ 50년
-            $killturn = rand()%480 + 120;
+            // 20년 ~ 50년
+            $killturn = Util::randRangeInt(20, 50) * 12;
 
             @MYDB_query("
                 insert into general (
@@ -493,7 +477,7 @@ function process_29(&$general) {
                     '$scoutLevel','100','100','0','".GameUnitConst::DEFAULT_CREWTYPE."','0','0','0',
                     '0','0','0','$turntime','$killturn','$age','1','$personal','0','$specage','0','$specage2','',
                     '0','$bornyear','$deadyear',
-                    '{$avgGen['dex0']}','{$avgGen['dex10']}','{$avgGen['dex20']}','{$avgGen['dex30']}','{$avgGen['dex40']}'
+                    '{$avgGen['dex_t']}','{$avgGen['dex_t']}','{$avgGen['dex_t']}','{$avgGen['dex_t']}','{$avgGen['dex40']}'
                 )",
                 $connect
             ) or Error(__LINE__.MYDB_error($connect),"");
