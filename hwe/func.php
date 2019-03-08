@@ -468,20 +468,20 @@ function addCommand($typename, $value, $valid = 1, $color=0) {
         switch($color) {
             case 0:
                 echo "
-    <option style=color:white;background-color:black; value={$value}>{$typename}</option>";
+    <option style='color:white;background-color:black;' value='{$value}'>{$typename}</option>";
                 break;
             case 1:
                 echo "
-    <option style=color:skyblue;background-color:black; value={$value}>{$typename}</option>";
+    <option style='color:skyblue;background-color:black;' value='{$value}'>{$typename}</option>";
                 break;
             case 2:
                 echo "
-    <option style=color:orange;background-color:black; value={$value}>{$typename}</option>";
+    <option style='color:orange;background-color:black;' value='{$value}'>{$typename}</option>";
                 break;
         }
     } else {
         echo "
-    <option style=color:white;background-color:red; value={$value}>{$typename}(불가)</option>";
+    <option style='color:white;background-color:red;' value='{$value}'>{$typename}(불가)</option>";
     }
 }
 
