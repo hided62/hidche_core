@@ -131,6 +131,16 @@ function process_25(&$general) {
             $generals[$nation] = $cnt;
         }
 
+        foreach($db->queryAllLists('SELECT count(no), nation FROM general WHERE 3 <= npc and npc <= 4 AND nation > 0 GROUP BY nation') as list($cnt, $nation)){
+            //의병, 인탐장은 1/3로 카운트
+            if(key_exists($nation, $generals)){
+                $generals[$nation] += $cnt / 3;
+            }
+            else{
+                $generals[$nation] = $cnt / 3;
+            }
+        }
+
         $allGen = array_sum($generals);
 
         $genLimit = GameConst::$defaultMaxGeneral;
