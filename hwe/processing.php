@@ -495,7 +495,7 @@ function command_22($turn, $command) {
     }
 
     foreach(getAllNationStaticInfo() as $nation){
-        echo "<option style=color:{$nation['color']}>【 {$nation['name']} 】</option>";
+        echo "<option style='color:{$nation['color']}'>【 {$nation['name']} 】</option>";
 
         $query = "select no,name,npc from general where nation='{$nation['nation']}' and level!='12' and npc<2 order by npc,binary(name)";
         $genresult = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
@@ -1506,9 +1506,9 @@ function command_51($turn, $command) {
         $nation = MYDB_fetch_array($result);
 
         if($myNation['power'] <= $nation['power'] * 3 || !isNeighbor($me['nation'], $nation['nation'])) {
-            echo "<option style=color:{$nation['color']};background-color:red; value={$nation['nation']}>【 {$nation['name']} 】</option>";
+            echo "<option style='color:{$nation['color']};background-color:red;' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
         } else {
-            echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
+            echo "<option style='color:{$nation['color']}' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
         }
     }
     echo "
@@ -1559,7 +1559,7 @@ function command_52($turn, $command) {
 
     foreach(getAllNationStaticInfo() as $nation) {
 
-        echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
+        echo "<option style='color:{$nation['color']}' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -1650,9 +1650,9 @@ function command_53($turn, $command) {
         $nation = MYDB_fetch_array($result);
 
         if(($myNation['power']+$nation['power'])/2 > $cond1 || ($myNation['gennum']+$nation['gennum'])/2 > $cond2 || !isNeighbor($me['nation'], $nation['nation'])) {
-            echo "<option style=color:{$nation['color']};background-color:red; value={$nation['nation']}>【 {$nation['name']} 】</option>";
+            echo "<option style='color:{$nation['color']};background-color:red;' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
         } else {
-            echo "<option style=color:{$nation['color']} value={$nation['nation']}>【 {$nation['name']} 】</option>";
+            echo "<option style='color:{$nation['color']}' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
         }
     }
 
@@ -1768,7 +1768,7 @@ function command_61($turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
+        echo "<option style='background-color:$color;color:{$nation['color']};' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -1860,7 +1860,7 @@ function command_62($turn, $command) {
             case 6: $color = "black"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
+        echo "<option style='background-color:$color;color:{$nation['color']};' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -1921,7 +1921,7 @@ function command_63($turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "red"; break;
         }
-        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
+        echo "<option style='background-color:$color;color:{$nation['color']};' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -1982,7 +1982,7 @@ function command_64($turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
+        echo "<option style='background-color:$color;color:{$nation['color']};' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2330,7 +2330,7 @@ function command_75($turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
+        echo "<option style='background-color:$color;color:{$nation['color']};' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2392,7 +2392,7 @@ function command_77($turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
+        echo "<option style='background-color:$color;color:{$nation['color']};' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
@@ -2454,7 +2454,7 @@ function command_78($turn, $command) {
             case 6: $color = "red"; break;
             case 7: $color = "blue"; break;
         }
-        echo "<option style=background-color:$color;color:{$nation['color']}; value={$nation['nation']}>【 {$nation['name']} 】</option>";
+        echo "<option style='background-color:$color;color:{$nation['color']};' value='{$nation['nation']}'>【 {$nation['name']} 】</option>";
     }
     echo "
 </select>
