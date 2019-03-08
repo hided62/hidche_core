@@ -312,9 +312,18 @@ function process_29(&$general) {
         $total_gen_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc <= 2');
         $total_npc_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE 3 <= npc AND npc <= 4');
 
+        $gen_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc <= 2 AND nation = %i', $general['nation']);
+        $npc_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE 3 <= npc AND npc <= 4 AND nation = %i', $general['nation']);
+
         $curr_cnt = Util::toInt($total_gen_cnt + $total_npc_cnt / 2);
         $remain_slot = $max_gen_cnt - $curr_cnt;
 
+        if($npc_cnt < 2){
+            $found_prop = 1 / ($npc_cnt + 1);
+        }
+        else{
+            $found_prop = max(pow($remain_slot / $max_gen_cnt, 5), 1 / $max_gen_cnt);    
+        }
         $found_prop = max(pow($remain_slot / $max_gen_cnt, 5), 1 / $max_gen_cnt);
         $found_npc = Util::randBool($found_prop);
 
@@ -348,9 +357,6 @@ function process_29(&$general) {
             if($count > 1) {
                 $name = "{$name}{$count}";
             }
-
-            $gen_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc <= 2 AND nation = %i', $general['nation']);
-            $npc_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE 3 <= npc AND npc <= 4 AND nation = %i', $general['nation']);
 
             $join_prop = 0.3 + 0.7 * (($gen_cnt + $npc_cnt / 2) / $curr_cnt);
 
