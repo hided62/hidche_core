@@ -324,7 +324,6 @@ function process_29(&$general) {
         else{
             $found_prop = max(pow($remain_slot / $max_gen_cnt, 5), 1 / $max_gen_cnt);    
         }
-        $found_prop = max(pow($remain_slot / $max_gen_cnt, 5), 1 / $max_gen_cnt);
         $found_npc = Util::randBool($found_prop);
 
         // 탐색 실패
