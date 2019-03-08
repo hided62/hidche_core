@@ -318,7 +318,7 @@ function process_29(&$general) {
         $curr_cnt = Util::toInt($total_gen_cnt + $total_npc_cnt / 2);
         $remain_slot = $max_gen_cnt - $curr_cnt;
 
-        if($npc_cnt < 2){
+        if($nation['scout'] == 0 && $npc_cnt < 2){
             $found_prop = 1 / ($npc_cnt + 1);
         }
         else{
