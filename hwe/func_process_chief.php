@@ -1974,14 +1974,14 @@ function process_76(&$general) {
         $npc = 4;
         $npcid = $admin['npccount'];
         for($i=0; $i < $gencount; $i++) {
-            //무장 40%, 지장 40%, 무지장 20%
+            //무장 50%, 지장 50%, 무지장 0%
             $stat_tier1 = GameConst::$defaultStatMax - 10 + rand()%11;
             $stat_tier3 = GameConst::$defaultStatMin + rand()%6;
             $stat_tier2 = GameConst::$defaultStatTotal - $stat_tier1 - $stat_tier3;
             $type = Util::choiceRandomUsingWeight([
-                'power'=>4,
-                'intel'=>4,
-                'neutral'=>2
+                'power'=>5,
+                'intel'=>5,
+                'neutral'=>0
             ]);
             switch($type){
             case 'power':
