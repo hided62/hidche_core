@@ -379,7 +379,7 @@ function process_29(&$general) {
             $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <Y>$name</>{$josaRa}는 <C>인재</>를 {$scoutType}하였습니다!";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y>$name</>{$josaRa}는 <C>인재</>를 {$scoutType}");
 
-            $avgGen = $db->queryFirstRow('SELECT max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) * 1.5 / 4 as dex_t, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
+            $avgGen = $db->queryFirstRow('SELECT max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) / 4 as dex_t, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
 
             //무장 40%, 지장 40%, 무지장 20%
             $stat_tier1 = GameConst::$defaultStatMax - 10 + rand()%11;

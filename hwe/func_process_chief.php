@@ -1968,7 +1968,7 @@ function process_76(&$general) {
         $avgNation = MYDB_fetch_array($result);
         $gencount = 5 + Util::round($avgNation['gennum'] / 10);
 
-        $avgGen = $db->queryFirstRow('SELECT max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) * 1.5 / 4 as dex_t, avg(age) as age, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
+        $avgGen = $db->queryFirstRow('SELECT max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) / 4 as dex_t, avg(age) as age, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
 
         //의병추가
         $npc = 4;
