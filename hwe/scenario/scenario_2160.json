@@ -11,6 +11,9 @@
         "min": 40,
         "max": 90
     },
+    "const":{
+        "defaultMaxGeneral":1000
+    },
     "iconPath": ".",
     "fiction": 1,
     "nation":[

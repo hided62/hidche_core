@@ -12,6 +12,9 @@
         "max":95,
         "npcMax":95
     },
+    "const":{
+        "defaultMaxGeneral":600
+    },
     "general":[
         [0, "김일융", null, 0, null, 88, 83, 79, 0, 160, 300, null, null],
 [0, "이승엽", null, 0, null, 90, 108, 37, 0, 160, 300, null, "위압", "안녕하세요 국민타자 이승엽입니다."],

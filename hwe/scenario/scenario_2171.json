@@ -11,6 +11,9 @@
         "min": 50,
         "max": 105
       },
+      "const":{
+          "defaultMaxGeneral":700
+      },
       "iconPath": "루드라사움",
       "fiction": 0,
       "nation":[
