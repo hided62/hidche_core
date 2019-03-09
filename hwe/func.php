@@ -910,8 +910,8 @@ function generalInfo($no) {
 
     if($nation['color'] == "") { $nation['color'] = "#000000"; }
 
-    if($general['age'] < 60)     { $general['age'] = "<font color=limegreen>{$general['age']} 세</font>"; }
-    elseif($general['age'] < 80) { $general['age'] = "<font color=yellow>{$general['age']} 세</font>"; }
+    if($general['age'] < GameConst::$retirementYear*0.75)     { $general['age'] = "<font color=limegreen>{$general['age']} 세</font>"; }
+    elseif($general['age'] < GameConst::$retirementYear) { $general['age'] = "<font color=yellow>{$general['age']} 세</font>"; }
     else                  { $general['age'] = "<font color=red>{$general['age']} 세</font>"; }
 
     $general['connect'] = Util::round($general['connect'] / 10) * 10;
@@ -2078,7 +2078,7 @@ function updateTurntime($no) {
         }
     }
 
-    if($general['age'] >= 80 && $general['npc'] == 0) {
+    if($general['age'] >= GameConst::$retirementYear && $general['npc'] == 0) {
         if($admin['isunited'] == 0) {
             CheckHall($no);
         }

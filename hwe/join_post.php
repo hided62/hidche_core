@@ -162,11 +162,11 @@ if ($genius) {
     $specage2 = $age;
     $special2 = getSpecial2($leader, $power, $intel);
 } else {
-    $specage2 = Util::valueFit(Util::round((80 - $age)/4 - $relYear / 2), 3) + $age;
+    $specage2 = Util::valueFit(Util::round((GameConst::$retirementYear - $age)/4 - $relYear / 2), 3) + $age;
     $special2 = 0;
 }
 //내특
-$specage = Util::valueFit(Util::round((80 - $age)/12 - $relYear / 2), 3) + $age;
+$specage = Util::valueFit(Util::round((GameConst::$retirementYear - $age)/12 - $relYear / 2), 3) + $age;
 $special = 0;
 
 if ($admin['scenario'] >= 1000) {

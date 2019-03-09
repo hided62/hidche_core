@@ -93,4 +93,5 @@ class GameConstBase
     public static $maxTurn = 24;
 
     public static $statGradeLevel = 5;
+    public static $retirementYear = 80;
 }

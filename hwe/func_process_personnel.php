@@ -466,8 +466,8 @@ function process_29(&$general) {
             $bornyear = $admin['year'];
             $deadyear = $admin['year'] + 3;
             $age = 20;
-            $specage = Util::round((80 - $age)/12) + $age;
-            $specage2 = Util::round((80 - $age)/3) + $age;
+            $specage = Util::round((GameConst::$retirementYear - $age)/12) + $age;
+            $specage2 = Util::round((GameConst::$retirementYear - $age)/3) + $age;
             //$specage = $age + 1 + rand() % 3;
             //$specage2 = $age + 5 + rand() % 5;
             // 20년 ~ 50년
