@@ -322,7 +322,7 @@ function process_29(&$general) {
         $found_prop_small = 1 / ($total_npc_cnt / 3 + 1);
         $found_prop_big = 1 / $max_gen_cnt;
 
-        if($total_npc_cnt < 30){
+        if($total_npc_cnt < 50){
             $found_prop = max($found_prop_main, $found_prop_small);
         }
         else{
