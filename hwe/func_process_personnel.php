@@ -318,11 +318,15 @@ function process_29(&$general) {
         $curr_cnt = Util::toInt($total_gen_cnt + $total_npc_cnt / 2);
         $remain_slot = $max_gen_cnt - $curr_cnt;
 
-        if($total_npc_cnt < 20 && $nation['scout'] == 0 && $npc_cnt < 2){
-            $found_prop = 1 / ($npc_cnt + 1);
+        $found_prop_main = pow($remain_slot / $max_gen_cnt, 6);
+        $found_prop_small = 1 / ($total_npc_cnt / 3 + 1);
+        $found_prop_big = 1 / $max_gen_cnt;
+
+        if($total_npc_cnt < 30){
+            $found_prop = max($found_prop_main, $found_prop_small);
         }
         else{
-            $found_prop = max(pow($remain_slot / $max_gen_cnt, 5), 1 / $max_gen_cnt);    
+            $found_prop = max($found_prop_main, $found_prop_big);
         }
         $found_npc = Util::randBool($found_prop);
 
