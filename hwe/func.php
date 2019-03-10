@@ -1442,10 +1442,10 @@ function checkDelay() {
         $threshold = 1;
     }
     else if($term >= 10){
-        $threshold = 2;
+        $threshold = 3;
     }
     else{
-        $threshold = 3;
+        $threshold = 6;
     }
     //지연 해야할 밀린 턴 횟수
     $iter = intdiv($timeMinDiff, $term);
