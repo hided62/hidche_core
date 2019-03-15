@@ -315,8 +315,12 @@ function process_29(&$general) {
         $gen_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc <= 2 AND nation = %i', $general['nation']);
         $npc_cnt = $db->queryFirstField('SELECT count(`no`) FROM general WHERE 3 <= npc AND npc <= 4 AND nation = %i', $general['nation']);
 
+        $nation_cnt = $db->queryFirstField('SELECT count(`nation`) FROM nation WHERE `level` > 0');
+
         $curr_cnt = Util::toInt($total_gen_cnt + $total_npc_cnt / 2);
         $remain_slot = $max_gen_cnt - $curr_cnt;
+
+        $avg_cnt = $curr_cnt / $nation_cnt;
 
         $found_prop_main = pow($remain_slot / $max_gen_cnt, 6);
         $found_prop_small = 1 / ($total_npc_cnt / 3 + 1);
@@ -361,7 +365,7 @@ function process_29(&$general) {
                 $name = "{$name}{$count}";
             }
 
-            $join_prop = 0.3 + 0.7 * (($gen_cnt + $npc_cnt / 2) / $curr_cnt);
+            $join_prop = 0.7 * $avg_cnt / ($gen_cnt + $npc_cnt / 2);
 
             if($nation['scout'] != 0 || !Util::randBool($join_prop)) {
                 $scoutType = "발견";
