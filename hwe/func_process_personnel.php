@@ -365,7 +365,7 @@ function process_29(&$general) {
                 $name = "{$name}{$count}";
             }
 
-            $join_prop = 0.7 * $avg_cnt / ($gen_cnt + $npc_cnt / 2);
+            $join_prop = 0.55 * $avg_cnt / ($gen_cnt + $npc_cnt / 2);
 
             if($nation['scout'] != 0 || !Util::randBool($join_prop)) {
                 $scoutType = "발견";
