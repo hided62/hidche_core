@@ -7,8 +7,7 @@ include "func.php";
 $session = Session::requireGameLogin()->setReadOnly();
 
 if($session->userGrade < 5) {
-    header('location:_admin4.php');
-    die();
+    die('권한 부족');
 }
 
 $db = DB::db();
