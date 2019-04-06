@@ -30,6 +30,13 @@ if ($type <= 0 || $type > 15) {
     $type = 9;
 }
 
+$ownerNameList = [];
+if($gameStor->isunited){
+    foreach(RootDB::db()->queryAllLists('SELECT no, name FROM member') as [$ownerID, $ownerName]){
+        $ownerNameList[$ownerID] = $ownerName;
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -82,26 +89,26 @@ foreach (getAllNationStaticInfo() as $nation) {
     $nationlevel[$nation['nation']] = $nation['level'];
 }
 
-switch ($type) { //FIXME:  $query 처리 조심.
-    case  1: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by nation"; break;
-    case  2: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by leader desc"; break;
-    case  3: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by power desc"; break;
-    case  4: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by intel desc"; break;
-    case  5: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by experience desc"; break;
-    case  6: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by dedication desc"; break;
-    case  7: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by level desc"; break;
-    case  8: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by killturn"; break;
-    default:
-    case  9: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by connect desc"; break;
-    case 10: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by experience desc"; break;
-    case 11: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by personal"; break;
-    case 12: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by special desc"; break;
-    case 13: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by special2 desc"; break;
-    case 14: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by age desc"; break;
-    case 15: $query = "select no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by npc desc"; break;
-}
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$gencount = MYDB_num_rows($genresult);
+
+[$orderKey, $orderDesc] = [
+    1=>['nation', false],
+    2=>['leader', true],
+    3=>['power', true],
+    4=>['intel', true],
+    5=>['experience', true],
+    6=>['dedication', true],
+    7=>['level', true],
+    8=>['killturn', false],
+    9=>['connect', true],
+    10=>['experience', true],
+    11=>['personal', true],
+    12=>['special', true],
+    13=>['special2', true],
+    14=>['age', true],
+    15=>['npc', true],
+][$type];
+
+$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect from general order by %b %l', $orderKey, $orderDesc?'desc':'');
 
 echo"
 <table align=center width=1000 class='tb_layout bg0'>
@@ -122,8 +129,7 @@ echo"
         <td width=45 align=center id=bg1>삭턴</td>
         <td width=70 align=center id=bg1>벌점</td>
     </tr>";
-for ($j=0; $j < $gencount; $j++) {
-    $general = MYDB_fetch_array($genresult);
+foreach($generalList as $general){
     $nation = $nationname[$general['nation']];
 
     if ($general['level'] == 12) {
@@ -152,12 +158,18 @@ for ($j=0; $j < $gencount; $j++) {
         $intel = "{$general['intel']}";
     }
 
+    
+
     if ($general['npc'] >= 2) {
         $name = "<font color=cyan>{$general['name']}</font>";
     } elseif ($general['npc'] == 1) {
         $name = "<font color=skyblue>{$general['name']}</font>";
     } else {
         $name =  "{$general['name']}";
+    }
+
+    if(key_exists($general['owner'], $ownerNameList)){
+        $name = $name.'<br><small>('.$ownerNameList[$general['owner']].')</small>';
     }
 
     $general['connect'] = Util::round($general['connect'] / 10) * 10;
