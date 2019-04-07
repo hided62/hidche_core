@@ -102,7 +102,7 @@ $nationLevel = DB::db()->queryFirstField('select level from nation where nation 
     15=>['npc', true],
 ][$type];
 
-$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect,gold,rice,crew,belong from general order by %b %l', $orderKey, $orderDesc?'desc':'');
+$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect,gold,rice,crew,belong from general where nation = %i order by %b %l', $me['nation'], $orderKey, $orderDesc?'desc':'');
 
 echo"
 <table align=center class='tb_layout bg0'>
