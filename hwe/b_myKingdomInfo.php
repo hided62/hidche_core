@@ -120,7 +120,7 @@ echo "
         <td align=center>+$goldincomeList[0] / +$deadIncome</td>
         <td align=center id=bg1>세곡/둔전</td>
         <td align=center>+$riceincomeList[0] / +$riceincomeList[1]</td>
-        <td align=center id=bg1>지급율</td>
+        <td align=center id=bg1>지급률</td>
         <td align=center colspan=3>"; echo $me['nation']==0?"해당 없음":"{$nation['bill']} %"; echo "</td>
     </tr>
     <tr>
