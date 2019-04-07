@@ -14,6 +14,7 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
+$gameStor = KVStorage::getStorage($db, 'game_env');
 $connect=$db->get();
 
 increaseRefresh("세력장수", 1);
@@ -28,6 +29,14 @@ if($me['level'] == 0) {
 }
 
 $sel = [$type => "selected"];
+
+$ownerNameList = [];
+if($gameStor->isunited){
+    foreach(RootDB::db()->queryAllLists('SELECT no, name FROM member') as [$ownerID, $ownerName]){
+        $ownerNameList[$ownerID] = $ownerName;
+    }
+}
+
 
 ?>
 <!DOCTYPE html>
@@ -74,48 +83,26 @@ $sel = [$type => "selected"];
 <?php
 
 $nationLevel = DB::db()->queryFirstField('select level from nation where nation = %i', $me['nation']);
-$orderByText = '';//FIXME: 쿼리 재작성
-switch($type) {
-    case  1: $orderByText = " order by level desc"; break;
-    case  2: $orderByText = " order by dedication desc"; break;
-    case  3: $orderByText = " order by experience desc"; break;
-    case  4: $orderByText = " order by leader desc"; break;
-    case  5: $orderByText = " order by power desc"; break;
-    case  6: $orderByText = " order by intel desc"; break;
-    case  7: $orderByText = " order by gold desc"; break;
-    case  8: $orderByText = " order by rice desc"; break;
-    case  9: $orderByText = " order by crew desc"; break;
-    case 10: $orderByText = " order by connect desc"; break;
-    case 11: $orderByText = " order by personal"; break;
-    case 12: $orderByText = " order by special desc"; break;
-    case 13: $orderByText = " order by special2 desc"; break;
-    case 14: $orderByText = " order by belong desc"; break;
-    case 15: $orderByText = " order by npc desc"; break;
-}
-$query = 
-    "select 
-        npc,
-        special,
-        special2,
-        personal,
-        picture,
-        imgsvr,
-        name,
-        level,
-        dedication,
-        experience,
-        injury,
-        leader,
-        power,
-        intel,
-        gold,
-        rice,
-        belong,
-        connect,
-        killturn
-    from general where nation='{$me['nation']}' ".$orderByText;
-$genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$gencount = MYDB_num_rows($genresult);
+
+[$orderKey, $orderDesc] = [
+    1=>['level', true],
+    2=>['dedication', true],
+    3=>['experience', true],
+    4=>['leader', true],
+    5=>['power', true],
+    6=>['intel', true],
+    7=>['gold', true],
+    8=>['rice', true],
+    9=>['crew', true],
+    10=>['connect', true],
+    11=>['personal', true],
+    12=>['special', true],
+    13=>['special2', true],
+    14=>['belong', true],
+    15=>['npc', true],
+][$type];
+
+$generalList = $db->query('SELECT owner,no,picture,imgsvr,npc,age,nation,special,special2,personal,name,injury,leader,power,intel,experience,dedication,level,killturn,connect,gold,rice,crew,belong from general where nation = %i order by %b %l', $me['nation'], $orderKey, $orderDesc?'desc':'');
 
 echo"
 <table align=center class='tb_layout bg0'>
@@ -136,8 +123,7 @@ echo"
         <td width=48 align=center id=bg1>사 관</td>
         <td width=70 align=center id=bg1>벌점</td>
     </tr>";
-for($j=0; $j < $gencount; $j++) {
-    $general = MYDB_fetch_array($genresult);
+foreach($generalList as $general){
 
     if($general['level'] == 12) {
         $lbonus = $nationLevel * 2;
@@ -168,6 +154,10 @@ for($j=0; $j < $gencount; $j++) {
     if($general['npc'] >= 2) { $name = "<font color=cyan>{$general['name']}</font>"; }
     elseif($general['npc'] == 1) { $name = "<font color=skyblue>{$general['name']}</font>"; }
     else { $name =  "{$general['name']}"; }
+
+    if(key_exists($general['owner'], $ownerNameList)){
+        $name = $name.'<br><small>('.$ownerNameList[$general['owner']].')</small>';
+    }
 
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "

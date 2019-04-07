@@ -26,8 +26,6 @@ define('STEP_LOG', true);
 define('PROCESS_LOG', true);
 
 ob_start();
-session_cache_limiter('nocache');//NOTE: 캐시가 가능하도록 설정해야 할 수도 있음. 주의!
-//FIXME: 이곳에서 설정하면 안될 듯 하다. 옮기자.
 
 // 에러 메세지 출력
 function Error($message='', $url="")

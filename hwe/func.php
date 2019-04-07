@@ -1495,7 +1495,7 @@ function CheckHall($no) {
                 'value'=>$general[$typeName]??0,
                 'aux'=>$jsonAux
             ], 
-            'server_id = %s AND scenario = %i AND general_no = %i AND type = %i AND value < %?', 
+            'server_id = %s AND scenario = %i AND general_no = %i AND type = %i AND value < %d', 
             UniqueConst::$serverID,
             $scenarioIdx,
             $no,
