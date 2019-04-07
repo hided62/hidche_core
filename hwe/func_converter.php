@@ -453,36 +453,32 @@ function getTechCall($tech) : string {
 function getDexLevelList(): array{
     return [
         [0, 'navy', 'F-'],
-        [2500, 'navy', 'F'],
-        [7500, 'navy', 'F+'],
-        [15000, 'skyblue', 'E-'],
-        [25000, 'skyblue', 'E'],
-        [37500, 'skyblue', 'E+'],
-        [52500, 'seagreen', 'D-'],
-        [70000, 'seagreen', 'D'],
-        [90000, 'seagreen', 'D+'],
-        [112500, 'teal', 'C-'],
-        [137500, 'teal', 'C'],
-        [165000, 'teal', 'C+'],
-        [195000, 'limegreen', 'B-'],
-        [227500, 'limegreen', 'B'],
-        [262500, 'limegreen', 'B+'],
-        [300000, 'gold', 'A-'],
-        [340000, 'gold', 'A'],
-        [382500, 'gold', 'A+'],
-        [427500, 'darkorange', 'S-'],
-        [475000, 'darkorange', 'S'],
-        [525000, 'darkorange', 'S+'],
-        [577500, 'tomato', 'SS-'],
-        [632500, 'tomato', 'SS'],
-        [690000, 'tomato', 'SS+'],
-        [750000, 'red', 'SSS-'],
-        [812500, 'red', 'SSS'],
-        [877500, 'red', 'SSS+'],
-        [945000, 'darkviolet', 'Z-'],
-        [1015000, 'darkviolet', 'Z'],
-        [1087500, 'darkviolet', 'Z+'],
-        [1162500, 'white', '?']
+        [350, 'navy', 'F'],
+        [1375, 'navy', 'F+'],
+        [3500, 'skyblue', 'E-'],
+        [7125, 'skyblue', 'E'],
+        [12650, 'skyblue', 'E+'],
+        [20475, 'seagreen', 'D-'],
+        [31000, 'seagreen', 'D'],
+        [44625, 'seagreen', 'D+'],
+        [61750, 'teal', 'C-'],
+        [82775, 'teal', 'C'],
+        [108100, 'teal', 'C+'],
+        [138125, 'limegreen', 'B-'],
+        [173250, 'limegreen', 'B'],
+        [213875, 'limegreen', 'B+'],
+        [260400, 'darkorange', 'A-'],
+        [313225, 'darkorange', 'A'],
+        [372750, 'darkorange', 'A+'],
+        [439375, 'tomato', 'S-'],
+        [513500, 'tomato', 'S'],
+        [595525, 'tomato', 'S+'],
+        [685850, 'darkviolet', 'Z-'],
+        [784875, 'darkviolet', 'Z'],
+        [893000, 'darkviolet', 'Z+'],
+        [1010625, 'gold', 'EX-'],
+        [1138150, 'gold', 'EX'],
+        [1275975, 'white', 'EX+'],
     ];
 }
 
@@ -520,7 +516,7 @@ function getDexLevel(int $dex) : int {
 }
 
 function getDexLog($dex1, $dex2) {
-    $ratio = (getDexLevel($dex1) - getDexLevel($dex2)) / 50 + 1;
+    $ratio = (getDexLevel($dex1) - getDexLevel($dex2)) / 55 + 1;
     return $ratio;
 }
 
