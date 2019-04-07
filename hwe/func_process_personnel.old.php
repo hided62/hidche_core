@@ -243,6 +243,7 @@ function process_25(&$general) {
             'nation'=>$nation['nation'],
             'nations'=>Json::encode($joinedNations),
             'level'=>1,
+            'permission'=>'normal',
             'experience'=>$db->sqleval('experience + %i', $exp),
             'city'=>$king['city'],
             'belong'=>1

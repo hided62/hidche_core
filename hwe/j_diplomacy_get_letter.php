@@ -38,17 +38,32 @@ $letters = [];
 
 foreach(
     $db->query(
-        'SELECT * FROM ng_diplomacy WHERE src_nation_id = %i OR dest_nation_id = %i ORDER BY date desc',
+        'SELECT * FROM ng_diplomacy WHERE (src_nation_id = %i OR dest_nation_id = %i) AND state != \'cancelled\' ORDER BY date desc',
         $me['nation'], $me['nation']
     ) as $letter
 ){
 
-    if($permission < 3){
+    if($permission < 3 && $letter['detail']){
         $letter['detail'] = '(권한이 부족합니다)';
     }
-    $letter['comment'] = [];
     $letter['aux'] = Json::decode($letter['aux']);
-    $letters[$letter['no']] = $letter;
+    $letter['src'] = $letter['aux']['src'];
+    $letter['dest'] = $letter['aux']['dest'];
+
+    $letter['src']['nationID'] = $letter['src_nation_id'];
+    $letter['dest']['nationID'] = $letter['dest_nation_id'];
+
+    $letters[$letter['no']] = [
+        'no'=>$letter['no'],
+        'src'=>$letter['src'],
+        'dest'=>$letter['dest'],
+        'prev_no'=>$letter['prev_no'],
+        'state'=>$letter['state'],
+        'state_opt'=>($letter['aux']['state_opt']??null),
+        'brief'=>$letter['text_brief'],
+        'detail'=>$letter['text_detail'],
+        'date'=>$letter['date']
+    ];
 }
 
 $nations = [];
@@ -63,6 +78,7 @@ Json::die([
     'result'=>true,
     'nations'=>$nations,
     'letters'=>$letters,
+    'myNationID'=>$me['nation'],
     'reason'=>'success'
 ]);
 

@@ -11,8 +11,8 @@ $db = DB::db();
 
 $destNationNo = Util::getReq('destNation', 'int', 0);
 $prevNo = Util::getReq('prevNo', 'int', null);
-$textBrief = Util::getReq('textBrief');
-$textDetail = Util::getReq('textDetail');
+$textBrief = Util::getReq('brief');
+$textDetail = Util::getReq('detail');
 
 increaseRefresh("외교부", 1);
 
@@ -20,7 +20,7 @@ if($prevNo < 1){
     $prevNo = null;
 }
 
-$me = $db->queryFirstRow('SELECT no, nation, level, permission, con, turntime, belong, penalty FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no, name, nation, level, permission, con, turntime, belong, penalty, picture, imgsvr FROM general WHERE owner=%i', $userID);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
@@ -65,18 +65,10 @@ if ($permission < 4) {
 
 $srcNationNo = $me['nation'];
 
-$nations = $db->query('SELECT nation, name, color FROM nation WHERE nation IN (%i, %i)', $srcNationNo, $destNationNo);
-if(count($nations) != 2){
-    Json::die([
-        'result'=>false,
-        'reason'=>'올바르지 않은 국가입니다.'
-    ]);
-}
-
 if($prevNo !== null){
     //state는 체크하지 않는걸로 하자. 파기한 것을 재 송신하는 경우도 있을 수 있음.
     $prevLetter = $db->queryFirstRow(
-        'SELECT no, state, aux FROM ng_diplomacy WHERE no = %i AND src_nation_id IN (%i, %i) AND dest_nation_id IN (%i, %i)',
+        'SELECT no, src_nation_id, dest_nation_id, state, aux FROM ng_diplomacy WHERE no = %i AND src_nation_id IN (%i, %i) AND dest_nation_id IN (%i, %i)',
         $prevNo,
         $srcNationNo, $destNationNo,
         $srcNationNo, $destNationNo
@@ -89,6 +81,24 @@ if($prevNo !== null){
         ]);
     }
 
+    //새로 나온 문서가 있는지 확인하자
+    $newerLetter = $db->queryFirstField(
+        'SELECT count(no) FROM ng_diplomacy WHERE prev_no = %i AND state != \'cancelled\'', $prevNo
+    );
+    if($newerLetter){
+        Json::die([
+            'result'=>false,
+            'reason'=>'해당 문서에 대한 새로운 문서가 이미 있습니다.'
+        ]);
+    }
+
+    if($prevLetter['src_nation_id'] != $srcNationNo){
+        $destNationNo = $prevLetter['src_nation_id'];
+    }
+    else{
+        $destNationNo = $prevLetter['dest_nation_id'];
+    }
+
     if($prevLetter['state'] == 'proposed'){
         $prevAux = Json::decode($prevLetter['aux']);
         $prevAux['reason'] = [
@@ -97,10 +107,18 @@ if($prevNo !== null){
             'reason'=>'new_letter'
         ];
         $db->update('ng_diplomacy', [
-            'state'=>'cancelled',
+            'state'=>'replaced',
             'aux'=>Json::encode($prevAux)
         ], 'no=%i', $prevNo);
     }
+}
+
+$nations = $db->query('SELECT nation, name, color FROM nation WHERE nation IN (%i, %i)', $srcNationNo, $destNationNo);
+if(count($nations) != 2){
+    Json::die([
+        'result'=>false,
+        'reason'=>'올바르지 않은 국가입니다.'
+    ]);
 }
 
 if($nations[0]['nation'] == $me['nation']){
@@ -112,6 +130,8 @@ else{
     $srcNation = $nations[1];
     $destNation = $nations[0];
 }
+
+$me['icon'] = GetImageURL($me['imgsvr'], $me['picture']);
 
 $db->insert('ng_diplomacy', [
     'src_nation_id'=>$srcNation['nation'],
@@ -127,7 +147,8 @@ $db->insert('ng_diplomacy', [
         'src'=>[
             'nationName'=>$srcNation['name'],
             'nationColor'=>$srcNation['color'],
-            'generalName'=>$me['name']
+            'generalName'=>$me['name'],
+            'generalIcon'=>$me['icon']
         ],
         'dest'=>[
             'nationName'=>$destNation['name'],
@@ -135,9 +156,33 @@ $db->insert('ng_diplomacy', [
         ]
     ]),
 ]);
+$newLetterNo = $db->insertId();
+
+$src = new MessageTarget($me['no'], $me['name'], $srcNation['nation'], $srcNation['name'], $srcNation['color'], $me['icon']);
+$dest = new MessageTarget(0, '', $destNation['nation'], $destNation['name'], $destNation['color']);
+
+$now = new \DateTime();
+$unlimited = new \DateTime('9999-12-31');
+
+$josaYi = JosaUtil::pick($newLetterNo, '이');
+if($prevNo){
+    $msgText = "문서 #{$prevNo}의 새로운 외교 문서 #{$newLetterNo}{$josaYi} 준비되었습니다. 외교부에서 확인해주세요.";
+}
+else{
+    $msgText = "새로운 외교 문서 #{$newLetterNo}{$josaYi} 준비되었습니다. 외교부에서 확인해주세요.";
+}
 
 
-//TODO: 외교 서신에 대한 메시지를 양국에 발송해야함
+$msg = new Message(
+    Message::MSGTYPE_DIPLOMACY,
+    $src,
+    $dest,
+    $msgText,
+    $now,
+    $unlimited,
+    ['invalid' => true]
+);
+$msgID = $msg->send();
 
 Json::die([
     'result'=>true,

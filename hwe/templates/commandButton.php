@@ -1,7 +1,7 @@
 <div class='buttonPlate bg2'>
     <div>
     <a href='t_board.php'><button type="button" class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>회 의 실</button></a>
-    <a href='t_board.php?isSecret=true'><button type="button" class='commandButton' <?=$meLevel>=5?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>기 밀 실</button></a>
+    <a href='t_board.php?isSecret=true'><button type="button" class='commandButton' <?=$permission>=2?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>기 밀 실</button></a>
     <a href='b_troop.php'><button type="button" class='commandButton' <?=($meLevel>=1&&$nationLevel>=1)?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>부대 편성</button></a>
     <a href='t_diplomacy.php'><button type="button" class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>외 교 부</button></a>
     <a href='b_myBossInfo.php'><button type="button" class='commandButton' <?=$meLevel>=1?'':'disabled'?> style='background-color:<?=$bgColor?>;color:<?=$fgColor?>;'>인 사 부</button></a>

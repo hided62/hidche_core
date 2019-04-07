@@ -1942,6 +1942,7 @@ function deleteNation(General $general) {
         'level'=>0,
         'nation'=>0,
         'makelimit'=>12,
+        'permission'=>'normal',
     ], 'nation=%i', $nationID);
     // 도시 공백지로
     $db->update('city', [

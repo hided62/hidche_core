@@ -33,7 +33,7 @@ $query = "select nation from general where no='$gen'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $general = MYDB_fetch_array($result);
 
-$query = "select no,nation,level,con,turntime,belong from general where owner='{$userID}'";
+$query = "select no,nation,level,con,turntime,belong,permission,penalty from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
@@ -161,7 +161,7 @@ for ($i=0; $i < $gencount; $i++) {
             <?=getBatResRecent($gen, 24)?>
         </td>
     </tr>
-<?php if($npc > 1 || $meLevel >= 5): ?>
+<?php if($npc > 1 || $permission >= 2): ?>
     <tr>
         <td align=center id=bg1><font color=orange size=3>개인 기록</font></td>
         <td align=center id=bg1><font color=orange size=3>&nbsp;</font></td>

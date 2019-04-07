@@ -1,0 +1,49 @@
+#newArticle{
+    width:1000px;
+    margin: 0 auto;
+}
+
+.titleInput{
+    width:100%;
+    color:white;
+    background-color:transparent;
+    border:none;
+    margin:1px 5px;
+}
+
+.contentInput{
+    width:100%;
+    min-height:3em;
+    color:white;
+    background-color:transparent;
+    border:none;
+    padding:1px 5px;
+}
+
+.articleFrame{
+    width:1000px;
+    margin: 20px auto;
+}
+
+.commentText{
+    width:100%;
+}
+
+.authorName, .comment .author{
+    width:110px;
+    font-size:85%;
+}
+
+.date{
+    width:125px;
+    font-size:85%;
+}
+
+.text{
+    text-align:left;
+    padding:1px 5px;
+}
+
+.submitComment{
+    width:100%;
+}

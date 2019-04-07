@@ -13,7 +13,7 @@ $connect=$db->get();
 
 increaseRefresh("내무부", 1);
 
-$me = $db->queryFirstRow('SELECT no, nation, level, con, turntime, belong FROM general WHERE owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no, nation, level, con, turntime, belong, permission, penalty FROM general WHERE owner=%i', $userID);
 
 $nation = $db->queryFirstRow('SELECT msg, scoutmsg FROM nation WHERE nation = %i', $me['nation']);
 

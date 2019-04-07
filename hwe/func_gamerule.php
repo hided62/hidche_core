@@ -788,6 +788,7 @@ function checkMerge() {
 
         $db->update('general', [
             'nation'=>0,
+            'permission'=>'normal',
         ], 'nation=%i AND npc = 5', $me['nation']);
 
         $query = "delete from nation where nation='{$me['nation']}'";
@@ -944,6 +945,7 @@ function checkSurrender() {
 
         $db->update('general', [
             'nation'=>0,
+            'permission'=>'normal',
         ], 'nation=%i AND npc = 5', $me['nation']);
 
         $query = "delete from nation where nation='{$me['nation']}'";

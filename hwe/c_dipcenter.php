@@ -18,7 +18,7 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 
-$me = $db->queryFirstRow('SELECT `no`,nation,`level` FROM general WHERE `owner`=%i', $userID);
+$me = $db->queryFirstRow('SELECT `no`,nation,`level`,permission,penalty FROM general WHERE `owner`=%i', $userID);
 
 //내가 수뇌부이어야함
 $permission = checkSecretPermission($me);

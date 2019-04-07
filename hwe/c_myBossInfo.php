@@ -150,6 +150,7 @@ if($btn == "추방") {
                     'level'=>0,
                     'nation'=>0,
                     'belong'=>0,
+                    'permission'=>'normal',
                 ], 'no=%i', $general['no']);
             }
             else{
