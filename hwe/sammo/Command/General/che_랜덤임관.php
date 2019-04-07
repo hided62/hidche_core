@@ -99,7 +99,7 @@ class che_랜덤임관 extends Command\GeneralCommand{
 
         $relYear = $env['year'] - $env['startyear'];
 
-        $notIn = array_merge(Json::decode($general->getVar(['nations'])), $this->arg['destNationIDList']);
+        $notIn = array_merge(Json::decode($general->getVar('nations')), $this->arg['destNationIDList']);
 
         $destNation = null;
 
