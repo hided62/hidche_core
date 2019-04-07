@@ -548,19 +548,6 @@ create table diplomacy (
   UNIQUE INDEX `me` (`me`, `you`)
   ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
 
-<<<<<<< HEAD
-CREATE TABLE `diplomacy_ticket` (
-	`id` INT(11) NOT NULL,
-	`src_nation_id` INT(11) NOT NULL,
-	`dest_nation_id` INT(11) NOT NULL,
-	`type` VARCHAR(16) NOT NULL,
-	`until` INT(11) NOT NULL,
-	`is_request` BIT(1) NULL DEFAULT NULL,
-	`option` TEXT NULL DEFAULT NULL COMMENT 'json',
-	PRIMARY KEY (`id`),
-	INDEX `ticket` (`src_nation_id`, `dest_nation_id`, `type`, `until`)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
-=======
 CREATE TABLE `ng_diplomacy` (
 	`no` INT(11) NOT NULL AUTO_INCREMENT,
 	`src_nation_id` INT(11) NOT NULL,
@@ -578,7 +565,6 @@ CREATE TABLE `ng_diplomacy` (
 	INDEX `by_group` (`src_nation_id`, `dest_nation_id`, `group_id`, `revision`)
 )
 ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
->>>>>>> 51e9de0e... DB 스키마 준비
 
 ###########################################################################
 ## 토너먼트 테이블

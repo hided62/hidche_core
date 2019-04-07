@@ -20,13 +20,8 @@ DROP TABLE IF EXISTS message;
 # 왕조 테이블은 삭제하지 않음
 
 # 외교 테이블 삭제
-<<<<<<< HEAD
-DROP TABLE IF EXISTS `diplomacy`;
-DROP TABLE IF EXISTS `diplomacy_ticket`;
-=======
 DROP TABLE IF EXISTS diplomacy;
 DROP TABLE IF EXISTS ng_diplomacy;
->>>>>>> 51e9de0e... DB 스키마 준비
 
 # 토너먼트 테이블 삭제
 DROP TABLE IF EXISTS tournament;
