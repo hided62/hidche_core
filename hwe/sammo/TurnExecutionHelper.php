@@ -271,6 +271,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             pullGeneralCommand($general->getID());
 
             $currentTurn = $general->getVar('turntime');
+            $general->increaseVarWithLimit('myset', 1, null, 3);
 
             $turnObj->updateTurnTime();
             $turnObj->applyDB();

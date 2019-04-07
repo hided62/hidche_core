@@ -235,6 +235,8 @@ function startTournament($auto, $type) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
+    $prevWinner = $gameStor->prev_winner;
+
     eraseTnmtFightLogAll();
 
     switch($auto) {
@@ -279,12 +281,24 @@ function startTournament($auto, $type) {
     ], true);
     $db->query('TRUNCATE TABLE tournament');
 
+    $opener = $db->queryFirstField('SELECT `general`.`name` FROM `general` JOIN `nation` ON `general`.`nation` = `nation`.`nation` WHERE `general`.`level` = 12 AND `nation`.`level` = 7 ORDER BY rand() LIMIT 1');
+    if(!$opener){
+        $opener = $gameStor->prev_winner;
+    }
+
+    if($opener){
+        $openerText = "황제 <Y>{$opener}</>의 명으로 ";
+    }
+    else{
+        $openerText = '';
+    }
+
     $history = [];
     switch($type) {
-    case 0: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>전력전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>영웅</span>들을 모집하고 있습니다!"; break;
-    case 1: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>통솔전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>명사</span>들을 모집하고 있습니다!"; break;
-    case 2: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>일기토</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>용사</span>들을 모집하고 있습니다!"; break;
-    case 3: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: <C>설전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>책사</span>들을 모집하고 있습니다!"; break;
+    case 0: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: $openerText<C>전력전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>영웅</span>들을 모집하고 있습니다!"; break;
+    case 1: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: $openerText<C>통솔전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>명사</span>들을 모집하고 있습니다!"; break;
+    case 2: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: $openerText<C>일기토</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>용사</span>들을 모집하고 있습니다!"; break;
+    case 3: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: $openerText<C>설전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>책사</span>들을 모집하고 있습니다!"; break;
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
 }

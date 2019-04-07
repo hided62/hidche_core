@@ -210,7 +210,7 @@ function extractBattleOrder($general){
         getGeneralIntel($general, false, true, true, true);
     $totalStat = ($realStat + $fullStat) / 2;
 
-    $totalCrew = $general['crew'] / 10000 * $general['train'] * $general['atmos'];
+    $totalCrew = $general['crew'] / 1000000 * (($general['train'] * $general['atmos']) ** 1.5);
     return $totalStat + $totalCrew / 100;
 }
 
@@ -697,59 +697,47 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
 
     $conquerNation = getConquerNation($city);
 
-    if($conquerNation == $general['nation']) {
+    if ($conquerNation == $general['nation']) {
         // 이동
-        $query = "update general set city='{$city['city']}' where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        if($city['level'] > 3) {
-            // 도시 소속 변경, 태수,군사,종사 초기화
-            $query = "update city set supply=1,conflict='{}',term=0,agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=1000,wall=1000,nation='{$general['nation']}',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } else {
-            // 도시 소속 변경, 태수,군사,종사 초기화
-            $query = "update city set supply=1,conflict='{}',term=0,agri=agri*0.7,comm=comm*0.7,secu=secu*0.7,def=def2/2,wall=wall2/2,nation='{$general['nation']}',gen1=0,gen2=0,gen3=0 where city='{$city['city']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        }
-        //전방설정
-        SetNationFront($nation['nation']);
-        SetNationFront($destnation['nation']);
-    } else {
-        $query = "select name,nation from nation where nation='$conquerNation'";
-        $conquerResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $conquerNationArray = MYDB_fetch_array($conquerResult);
+        $db->update('general', [
+            'city'=>$city['city']
+        ], 'no=%i', $general['no']);
+    }
+    else{
+        $conquerNationName = $db->queryFirstField('SELECT `name` FROM nation WHERE nation=%i', $conquerNation);
 
         $josaUl = JosaUtil::pick($city['name'], '을');
-        $josaYi = JosaUtil::pick($conquerNationArray['name'], '이');
-        $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationArray['name']}</b></>{$josaYi} 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>{$josaUl} 양도받았습니다.";
-        pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <D><b>{$conquerNationArray['name']}</b></>에 <Y>양도</>");
-        pushNationHistory($conquerNationArray, "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>{$josaUl} <S>양도</> 받음");
-
-        $query = [
-            'supply'=>1,
-            'term'=>0,
-            'conflict'=>'{}',
-            'agri'=>$db->sqleval('agri*0.7'),
-            'comm'=>$db->sqleval('comm*0.7'),
-            'secu'=>$db->sqleval('secu*0.7'),
-            'nation'=>$conquerNation,
-            'gen1'=>0,
-            'gen2'=>0,
-            'gen3'=>0
-        ];
-        if($city['level'] > 3) {
-            $query['def'] = 1000;
-            $query['wall'] = 1000;
-        } else {
-            // 도시 소속 변경, 태수,군사,종사 초기화
-            $query['def'] = $db->sqleval('def2/2');
-            $query['wall'] = $db->sqleval('wall2/2');
-        }
-        $db->update('city', $query, 'city=%i', (int)$city['city']);
-        //전방설정
-        SetNationFront($destnation['nation']);
-        SetNationFront($conquerNation);
+        $josaYi = JosaUtil::pick($conquerNationName, '이');
+        $history[] = "<C>●</>{$year}년 {$month}월:<Y><b>【분쟁협상】</b></><D><b>{$conquerNationName}</b></>{$josaYi} 영토분쟁에서 우위를 점하여 <G><b>{$city['name']}</b></>{$josaUl} 양도받았습니다.";
+        pushNationHistory($nation, "<C>●</>{$year}년 {$month}월:<G><b>{$city['name']}</b></>{$josaUl} <D><b>{$conquerNationName}</b></>에 <Y>양도</>");
+        pushNationHistory(['nation'=>$conquerNation], "<C>●</>{$year}년 {$month}월:<D><b>{$nation['name']}</b></>에서 <G><b>{$city['name']}</b></>{$josaUl} <S>양도</> 받음");
     }
-
+    
+    $query = [
+        'supply'=>1,
+        'term'=>0,
+        'conflict'=>'{}',
+        'agri'=>$db->sqleval('agri*0.7'),
+        'comm'=>$db->sqleval('comm*0.7'),
+        'secu'=>$db->sqleval('secu*0.7'),
+        'nation'=>$conquerNation,
+        'gen1'=>0,
+        'gen2'=>0,
+        'gen3'=>0,
+        'gen1set'=>0,
+        'gen2set'=>0,
+        'gen3set'=>0
+    ];
+    if($city['level'] > 3) {
+        $query['def'] = 1000;
+        $query['wall'] = 1000;
+    } else {
+        $query['def'] = $db->sqleval('def2/2');
+        $query['wall'] = $db->sqleval('wall2/2');
+    }
+    
+    $db->update('city', $query, 'city=%i', (int)$city['city']);
+    //전방설정
     if($renewFront){
         foreach(getAllNationStaticInfo() as $nation){
             if($nation['level'] <= 0){
@@ -757,6 +745,10 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
             }
             SetNationFront($nation['nation']);
         }
+    }
+    else{
+        SetNationFront($destnation['nation']);
+        SetNationFront($conquerNation);
     }
 
     pushGenLog($general, $log);

@@ -242,4 +242,5 @@ class GameConstBase
             //'che_국기변경'
         ]
     ];
+    public static $retirementYear = 80;
 }

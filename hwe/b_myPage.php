@@ -28,7 +28,7 @@ $connect=$db->get();
 
 increaseRefresh("내정보", 1);
 
-$query = "select no,npc,mode,tnmt,myset from general where owner='{$userID}'";
+$query = "select no,npc,mode,tnmt,myset,train,atmos from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
 
@@ -46,13 +46,30 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
         $submit = 'hidden';
     }
 
-    $me['myset'] -= 1;
+    if($mode == 0){
+        $db->update('general', [
+            'myset'=>$db->sqleval('myset-1'),
+            'mode'=>$mode,
+            'train'=>max(0, $me['train'] - 3),
+            'atmos'=>max(0, $me['atmos'] - 3),
+        ], 'owner=%i AND mode!=%i', $userID, $mode);
+    }
+    else{
+        $db->update('general', [
+            'myset'=>$db->sqleval('myset-1'),
+            'mode'=>$mode
+        ], 'owner=%i AND mode!=%i', $userID, $mode);
+    }
 
-    $db->update('general', [
-        'myset'=>$db->sqleval('myset-1'),
-        'mode'=>$mode,
-        'tnmt'=>$tnmt
-    ], 'owner=%i', $userID);
+    if($db->affectedRows()){
+        $me['myset'] -= 1;
+    }
+
+    if($me['tnmt'] != $tnmt){
+        $db->update('general', [
+            'tnmt'=>$tnmt
+        ], 'owner=%i', $userID);
+    }
 
     $me['mode'] = $mode;
     $me['tnmt'] = $tnmt;

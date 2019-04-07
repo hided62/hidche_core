@@ -464,20 +464,20 @@ function addCommand($typename, $value, $valid = 1, $color=0) {
         switch($color) {
             case 0:
                 echo "
-    <option style=color:white;background-color:black; value={$value}>{$typename}</option>";
+    <option style='color:white;background-color:black;' value='{$value}'>{$typename}</option>";
                 break;
             case 1:
                 echo "
-    <option style=color:skyblue;background-color:black; value={$value}>{$typename}</option>";
+    <option style='color:skyblue;background-color:black;' value='{$value}'>{$typename}</option>";
                 break;
             case 2:
                 echo "
-    <option style=color:orange;background-color:black; value={$value}>{$typename}</option>";
+    <option style='color:orange;background-color:black;' value='{$value}'>{$typename}</option>";
                 break;
         }
     } else {
         echo "
-    <option style=color:white;background-color:red; value={$value}>{$typename}(불가)</option>";
+    <option style='color:white;background-color:red;' value='{$value}'>{$typename}(불가)</option>";
     }
 }
 
@@ -707,8 +707,8 @@ function generalInfo($no) {
 
     if($nation['color'] == "") { $nation['color'] = "#000000"; }
 
-    if($general['age'] < 60)     { $general['age'] = "<font color=limegreen>{$general['age']} 세</font>"; }
-    elseif($general['age'] < 80) { $general['age'] = "<font color=yellow>{$general['age']} 세</font>"; }
+    if($general['age'] < GameConst::$retirementYear*0.75)     { $general['age'] = "<font color=limegreen>{$general['age']} 세</font>"; }
+    elseif($general['age'] < GameConst::$retirementYear) { $general['age'] = "<font color=yellow>{$general['age']} 세</font>"; }
     else                  { $general['age'] = "<font color=red>{$general['age']} 세</font>"; }
 
     $general['connect'] = Util::round($general['connect'] / 10) * 10;
@@ -1232,10 +1232,10 @@ function checkDelay() {
         $threshold = 1;
     }
     else if($term >= 10){
-        $threshold = 2;
+        $threshold = 3;
     }
     else{
-        $threshold = 3;
+        $threshold = 6;
     }
     //지연 해야할 밀린 턴 횟수
     $iter = intdiv($timeMinDiff, $term);
@@ -1438,6 +1438,11 @@ function CheckHall($no) {
 
     [$scenarioIdx, $scenarioName, $startTime] = $gameStor->getValuesAsArray(['scenario', 'scenario_text', 'starttime']);
 
+    $ownerName = $general['name2'];
+    if($general['owner']){
+        $ownerName = RootDB::db()->queryFirstField('SELECT name FROM member WHERE no = %i', $general['owner']);
+    }
+
     foreach($types as $idx=>$typeName) {
         
 
@@ -1467,7 +1472,7 @@ function CheckHall($no) {
             'imgsvr'=>$general['imgsvr'],
             'startTime'=>$startTime,
             'unitedTime'=>$unitedDate,
-            'owner_name'=>$general['name2'],
+            'owner_name'=>$ownerName,
             'serverID'=>UniqueConst::$serverID,
             'serverIdx'=>$serverCnt,
             'serverName'=>UniqueConst::$serverName,

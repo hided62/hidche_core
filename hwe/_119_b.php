@@ -40,10 +40,10 @@ case "분당김":
     $gameStor->tnmt_time = $tnmt_time->format('Y-m-d H:i:s');
 
     $db->update('general', [
-        'turntime'=>$db->sqleval('DATE_ADD(turntime, INTERVAL %i MINUTE)', $minute)
+        'turntime'=>$db->sqleval('DATE_SUB(turntime, INTERVAL %i MINUTE)', $minute)
     ], true);
     $db->update('auction', [
-        'expire'=>$db->sqleval('DATE_ADD(expire, INTERVAL %i MINUTE)', $minute)
+        'expire'=>$db->sqleval('DATE_SUB(expire, INTERVAL %i MINUTE)', $minute)
     ], true);
     break;
 case "분지연":

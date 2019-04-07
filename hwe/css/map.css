@@ -63,6 +63,7 @@
     position:absolute;
     right:0;
     bottom:0;
+    text-align:right;
 }
 
 .map_body .map_toggle_cityname::after{
@@ -70,6 +71,18 @@
 }
 
 .map_body .map_toggle_cityname.active::after{
+    content: "켜기"
+}
+
+.map_body .map_toggle_single_tap{
+    display:none;
+}
+
+.map_body .map_toggle_single_tap::after{
+    content: "끄기"
+}
+
+.map_body .map_toggle_single_tap.active::after{
     content: "켜기"
 }
 

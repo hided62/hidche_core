@@ -19,6 +19,9 @@
         "mapName":"ludo_rathowm",
         "unitSet":"ludo_rathowm"
     },
+    "const":{
+        "defaultMaxGeneral":900
+    },
     "diplomacy":[],
     "general":[
         [0, "아회남", null, 0, null, 65, 74, 26, 0, 160, 300, null, null],

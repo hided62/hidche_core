@@ -6,6 +6,9 @@
     ],
     "diplomacy":[
     ],
+    "const":{
+        "defaultMaxGeneral":600
+    },
     "general":[
         [ 25,       "이수만",9009,  0,    null, 81, 20, 74, 0, 160, 300,    null,    null, "SM이 갑이제"],
         [ 25,         "강타",  -1,  0,    null, 83, 61, 66, 0, 160, 300,    null,    null],
