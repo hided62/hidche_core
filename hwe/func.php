@@ -1475,7 +1475,7 @@ function CheckHall($no) {
         ];
         $jsonAux = Json::encode($aux);
 
-        $db->insertUpdate('ng_hall', [
+        $db->insertIgnore('ng_hall', [
             'server_id'=>UniqueConst::$serverID,
             'scenario'=>$scenarioIdx,
             'general_no'=>$no,
@@ -1483,10 +1483,21 @@ function CheckHall($no) {
             'value'=>$general[$typeName]??0,
             'owner'=>$general['owner']??null,
             'aux'=>$jsonAux
-        ],[
-            'value'=>$general[$typeName]??0,
-            'aux'=>$jsonAux
         ]);
+
+        if($db->affectedRows() == 0){
+            $db->update('ng_hall', [
+                'value'=>$general[$typeName]??0,
+                'aux'=>$jsonAux
+            ], 
+            'server_id = %s AND scenario = %i AND general_no = %i AND type = %i AND value < %?', 
+            UniqueConst::$serverID,
+            $scenarioIdx,
+            $no,
+            $idx,
+            $general[$typeName]??0);
+        }
+        
     }
 }
 

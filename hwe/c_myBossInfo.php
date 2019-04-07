@@ -59,7 +59,7 @@ if($btn == "임명") {
         header('location:b_myBossInfo.php');
         exit();
     }
-    $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr,permission,penalty from general where no='$outlist'";
+    $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr,permission,penalty,belong from general where no='$outlist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -302,27 +302,29 @@ if($btn == "임명" && $level >= 5 && $level <= 11) {
 
 if($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
     switch($level) {
-    case 4: $lv = 1; break;
-    case 3: $lv = 2; break;
-    case 2: $lv = 3; break;
+    case 4: $genlv = 'gen1'; $genlvset = 'gen1set'; break;
+    case 3: $genlv = 'gen2'; $genlvset = 'gen2set'; break;
+    case 2: $genlv = 'gen3'; $genlvset = 'gen3set'; break;
     }
 
-    $query = "select gen{$lv} from city where nation='{$me['nation']}' and city='$citylist'";
+    $query = "select {$genlv} from city where nation='{$me['nation']}' and city='$citylist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
     if(!$city){
         header('location:b_myBossInfo.php');
         die();
     }
-    $oldlist = $city["gen{$lv}"];
+    $oldlist = $city[$genlv];
 
     if($oldlist != 0) {
         //기존 장수 일반으로
-        $query = "update general set level=1 where no='$oldlist'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('general', [
+            'level'=>1
+        ], 'no=%i', $oldlist);
         //기존 자리 공석으로
-        $query = "update city set gen{$lv}=0 where city='$citylist'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('city', [
+            $genlv=>0
+        ], 'city = %i AND nation = %i', $citylist , $me['nation']);
     }
     if($genlist != 0) {
         $valid = 0;
@@ -334,17 +336,26 @@ if($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
 
         if($valid == 1) {
             // 신임 장수의 원래 자리 해제
-            $query = "update city set gen1=0 where gen1='$genlist'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update city set gen2=0 where gen2='$genlist'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update city set gen3=0 where gen3='$genlist'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('city', [
+                'gen1'=>0,
+            ], 'gen1=%i', $genlist);
+            $db->update('city', [
+                'gen2'=>0,
+            ], 'gen2=%i', $genlist);
+            $db->update('city', [
+                'gen3'=>0,
+            ], 'gen3=%i', $genlist);
+
             //신임 장수
-            $query = "update general set level='$level' where no='$genlist'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            $query = "update city set gen{$lv}='$genlist',gen{$lv}set='1' where city='$citylist'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('city', [
+                $genlv=>$genlist,
+                $genlvset=>1
+            ], 'city=%i AND nation=%i', $citylist, $general['nation']);
+            if($db->affectedRows() > 0){
+                $db->update('general',[
+                    'level'=>$level
+                ], 'no=%i', $genlist);
+            }
         }
     }
     header('location:b_myBossInfo.php');

@@ -385,7 +385,7 @@ function refreshMailboxList(obj){
 
             var $item = $('<option value="{0}">{1}</option>'.format(generalID, textName));
 
-            if(permissionLevel == 4 && isAmbassador){
+            if(permissionLevel == 4 && isAmbassador && myNation.mailbox != nation.mailbox){
                 $item.prop('disabled', true);
             }
             $optgroup.append($item);

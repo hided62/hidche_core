@@ -36,7 +36,7 @@ function processSpring() {
 
     $admin = $gameStor->getValues(['year', 'month']);
 
-    pushWorldHistory(["<R>★</>{$admin['year']}년 {$admin['month']}월: <S>모두들 즐거운 게임 하고 계신가요? ^^ <Y>삼국일보</> 애독해 주시고, <M>훼접</>은 삼가주세요~</>"], $admin['year'], $admin['month']);
+    pushWorldHistory(["<R>★</>{$admin['year']}년 {$admin['month']}월: <S>모두들 즐거운 게임 하고 계신가요? ^^ <Y>매너 있는 플레이</> 부탁드리고, <M>지나친 훼접</>은 삼가주세요~</>"], $admin['year'], $admin['month']);
 }
 
 function processGoldIncome() {

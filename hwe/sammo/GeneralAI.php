@@ -1107,6 +1107,12 @@ class GeneralAI{
                 $arg = null;
                 $generalObj->setVar('killturn', 1);
             }
+            else if($general->getVar('level') == 12){
+                $command = 'che_선양';
+                $arg = [
+                    'destGeneralID'=> $db->queryFirstField('SELECT `no` FROM general WHERE nation = %i AND npc != 5 ORDER BY RAND() LIMIT 1', $general->getNationID())
+                ];
+            }
             else{
                 $command = 'che_집합'; //집합
                 $arg = [];
@@ -1617,6 +1623,10 @@ class GeneralAI{
 
         //이 함수를 부르는건 군주 AI이므로, 군주는 세지 않아도 됨
         $userChief = []; 
+
+        $db->update('general', [
+            'permission'=>'ambassador',
+        ], 'nation=%i AND npc < 2 AND level > 4', $nationID);
 
         foreach($db->query(
             'SELECT no, npc, level, killturn FROM general WHERE nation = %i AND 12 > level AND level > 4', $nationID

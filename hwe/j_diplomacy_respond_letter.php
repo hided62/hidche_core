@@ -112,6 +112,17 @@ $msg = new Message(
 );
 $msgID = $msg->send();
 
+$msg = new Message(
+    Message::MSGTYPE_NATIONAL,
+    $src,
+    $dest,
+    $msgText,
+    $now,
+    $unlimited,
+    ['invalid' => true]
+);
+$msgID = $msg->send();
+
 Json::die([
     'result'=>true,
     'reason'=>'success'

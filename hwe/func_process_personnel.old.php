@@ -860,18 +860,28 @@ function process_54(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:현재 통합 진행중입니다. 선양 실패.";
     } else {
         //군주 교체
-        $query = "update general set level='12' where no='$who'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        // 태수,군사,종사이었다면 해제
-        $query = "update city set gen1='0' where gen1='$who'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update city set gen2='0' where gen2='$who'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update city set gen3='0' where gen3='$who'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('general', [
+            'level'=>12,
+            'permission'=>'normal'
+        ], 'no=%i', $who);
 
-        $query = "update general set resturn='SUCCESS',level='1',experience=experience*0.7 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        // 태수,군사,종사이었다면 해제
+        $db->update('city', [
+            'gen1'=>0,
+        ], 'gen1=%i', $who);
+        $db->update('city', [
+            'gen2'=>0,
+        ], 'gen2=%i', $who);
+        $db->update('city', [
+            'gen3'=>0,
+        ], 'gen3=%i', $who);
+        
+        $db->update('general', [
+            'resturn'=>'SUCCESS',
+            'level'=>1,
+            'permission'=>'auditor',
+            'experience'=>$db->sqleval('experience*0.7'),
+        ], 'no=%i', $general['no']);
 
         $josaYi = JosaUtil::pick($general['name'], '이');
         $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【선양】</b></><Y>{$general['name']}</>{$josaYi} <D><b>{$nation['name']}</b></>의 군주 자리를 <Y>{$nextruler['name']}</>에게 선양했습니다.";

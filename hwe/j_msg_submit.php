@@ -49,7 +49,7 @@ $now = new \DateTime();
 $unlimited = new \DateTime('9999-12-31');
 
 $db = DB::db();
-$me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,penalty,permission FROM general WHERE `owner`=%i', $userID);
+$me = $db->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,penalty,permission,belong FROM general WHERE `owner`=%i', $userID);
 
 if(!$me){
     $session->logoutGame();
@@ -161,7 +161,7 @@ if($mailbox > 0) {
     }
 
     $destPermission = checkSecretPermission($destUser, false);
-    if($permission == 4 && $destPermission == 4){
+    if($permission == 4 && $destPermission == 4 && $destUser['nation'] != $me['nation']){
         Json::die([
             'result' => false,
             'reason' => '외교권자끼리는 메시지를 보낼 수 없습니다.',

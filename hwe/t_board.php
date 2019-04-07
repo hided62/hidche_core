@@ -33,7 +33,7 @@ else if ($isSecretBoard && $permission < 2) {
     die();
 }
 
-$boardName = $isSecretBoard?'회의실':'기밀실';
+$boardName = $isSecretBoard?'기밀실':'회의실';
 
 ?>
 <!DOCTYPE html>
@@ -62,6 +62,13 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 
 </head>
 <body>
+
+
+<div style='width:1000px;margin:auto;' class='tb_layout bg0'>
+    <?=$boardName?><br>
+    <?=backButton()?>
+</div>
+
 
 <table id='newArticle' class='bg0'>
 <thead>
@@ -113,7 +120,7 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 </tr>
 </template>
 
-<div style='width=1000px;' class='tb_layout bg0'>
+<div style='width:1000px;margin:auto;' class='tb_layout bg0'>
     <?=backButton()?><br>
     <?=banner()?>
 </div>
