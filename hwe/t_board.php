@@ -74,11 +74,12 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 <div id="board">
 </div>
 
-<template id='articleTemplate'>
+<!-- 설계미스. template와 shadowdom으로 변경 -->
+<div id='articleTemplate' style='display:none;'>
 <div class='articleFrame'>
 <div><span class='articleTitle'></span></div>
-<div class='authorPlate'><span class='authorIcon'></span><span class='authorName'><span><span class='date'></span></div>    
-<div class='boardArticle'>
+<div class='authorPlate'><span class='authorIcon'></span><span class='authorName'></span><span class='date'></span></div>    
+<div class='text'>
 
 </div>
 </div>
@@ -92,15 +93,15 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
     </div>
 </div>
 </div>
-</template>
+</div>
 
-<template id='commentTemplate'>
+<div id='commentTemplate' style='display:none;'>
 <li class='comment'>
 <span class='author'></span>
 <span class='text'></span>
 <span class='date'></span>
 </li>
-</template>
+</div>
 
 <div style='width=1000px;' class='tb_layout bg0'>
     <?=backButton()?><br>

@@ -2,8 +2,8 @@
 
 function submitArticle(){
     var $article = $('#newArticle');
-    var $title = $article.find('input.titleInput');
-    var $text = $article.find('input.contentInput');
+    var $title = $article.find('.titleInput');
+    var $text = $article.find('.contentInput');
     var title = $.trim($title.val());
     var text = $.trim($text.val());
 
@@ -87,7 +87,7 @@ function submitComment(){
     return false;
 }
 
-function drawArticle(articleObj){
+function drawArticle(idx, articleObj){
     var $articleFrame = $('#articleTemplate > .articleFrame');
     var $commentFrame = $('#commentTemplate > .comment');
 
@@ -96,8 +96,10 @@ function drawArticle(articleObj){
         .data('no', articleObj.no)
         .data('author', articleObj.general_no);
 
-    $article.find('.author').text(articleObj.author);
-    $article.find('.title').text(articleObj.title);
+    console.log(articleObj);
+
+    $article.find('.authorName').text(articleObj.author);
+    $article.find('.articleTitle').text(articleObj.title);
     $article.find('.date').text(articleObj.date);
     //$article.find('.text').text(articleObj.text);
     $article.find('.text').html(nl2br(escapeHtml(articleObj.text)));
@@ -114,7 +116,9 @@ function drawArticle(articleObj){
         $articleComment.append($comment);
     });
 
-    $('#board').append($article);
+    var $board = $('#board');
+
+    $board.append($article);
 }
 
 function drawArticles(articlesObj){
