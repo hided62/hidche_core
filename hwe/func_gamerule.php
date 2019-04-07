@@ -762,7 +762,6 @@ function checkMerge() {
         pushNationHistory($younation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$mynation['name']}</b></>과 <D><b>{$you['makenation']}</b></>로 통합");
 
         $newGenCount = $gencount + $gencount2;
-        if($newGenCount < GameConst::$initialNationGenLimit) { $newGenCount = GameConst::$initialNationGenLimit; }
         $newTech = ($younation['tech']*$gencount + $mynation['tech']*$gencount2)/$newGenCount;
 
         // 국가 백업
@@ -919,7 +918,6 @@ function checkSurrender() {
         $oldNation['aux'] = Json::decode($oldNation['aux']);
 
         $newGenCount = $gencount + $gencount2;
-        if($newGenCount < GameConst::$initialNationGenLimit) { $newGenCount = GameConst::$initialNationGenLimit; }
         $newTech = ($younation['tech'] * $gencount + $mynation['tech'] * $gencount2) / $newGenCount;
         // 자금 통합, 외교제한 5년, 기술유지
         $db->update('nation', [
@@ -1002,7 +1000,7 @@ function updateNationState() {
     $history = array();
     $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm']);
 
-    foreach($db->query('SELECT nation,name,level,gennum,tech FROM nation') as $nation) {
+    foreach($db->query('SELECT nation,name,level,tech FROM nation') as $nation) {
         //TODO: level이 진관수이소중대특 체계를 벗어날 수 있음
         $citycount = $db->queryFirstField('SELECT count(*) FROM city WHERE nation=%i AND level>=4', $nation['nation']);
 
@@ -1103,12 +1101,6 @@ function updateNationState() {
             
             refreshNationStaticInfo();
         }
-        
-        $gencount = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i', $nation['nation']);
-
-        $db->update('nation', [
-            'gennum'=>$gencount
-        ], 'nation=%i', $nation['nation']);
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
 }

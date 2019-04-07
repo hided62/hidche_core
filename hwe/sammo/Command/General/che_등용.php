@@ -65,7 +65,7 @@ class che_등용 extends Command\GeneralCommand{
         $relYear = $this->env['year'] - $this->env['startyear'];
         
         $this->runnableConstraints=[
-            ConstraintHelper::ReqEnvValue('join_mode', '==', 'onlyRandom', '랜덤 임관만 가능합니다'),
+            ConstraintHelper::ReqEnvValue('join_mode', '장수 수', '==', 'onlyRandom', '랜덤 임관만 가능합니다'),
             ConstraintHelper::NotBeNeutral(), 
             ConstraintHelper::NotOpeningPart($relYear),
             ConstraintHelper::OccupiedCity(),

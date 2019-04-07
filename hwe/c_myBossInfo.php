@@ -214,22 +214,25 @@ if($btn == "추방") {
             $msg->send();
         }
 
-        $gencount = $db->queryFirstField('SELECT count(*) FROM general WHERE nation=%i', $general['nation']);
-        $gennum = $gencount;
-        if($gencount < GameConst::$initialNationGenLimit) $gencount = GameConst::$initialNationGenLimit;
-
-
         if($admin['year'] < $admin['startyear']+3) {
             //초반엔 군주 부상 증가(엔장 임관지양)
-            $query = "update general set injury=injury+1 where no='{$ruler['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('general', [
+                'injury'=>$db->sqleval('injury + 1'),
+            ], 'no=%i', $ruler['no']);
 
-            $query = "update nation set gennum='$gennum',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('nation', [
+                'gennum'=>$db->sqleval('gennum - 1'),
+                'gold'=>$db->sqleval('gold + %i', $gold),
+                'rice'=>$db->sqleval('rice + %i', $rice),
+            ], 'nation = %i', $general['nation']);
         } else {
             //이번분기는 추방불가(초반 제외)
-            $query = "update nation set l{$meLevel}set=1,gennum='$gennum',gold=gold+'$gold',rice=rice+'$rice' where nation='{$general['nation']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('nation', [
+                "l{$meLevel}set"=>1,
+                'gennum'=>$db->sqleval('gennum - 1'),
+                'gold'=>$db->sqleval('gold + %i', $gold),
+                'rice'=>$db->sqleval('rice + %i', $rice),
+            ], 'nation = %i', $general['nation']);
         }
 
         list($year, $month) = $gameStor->getValuesAsArray(['year','month']);

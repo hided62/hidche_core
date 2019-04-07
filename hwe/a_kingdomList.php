@@ -86,7 +86,7 @@ for($i=1; $i <= $count; $i++) {
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $level5 = MYDB_fetch_array($genresult);
 
-    $query = "select npc,name from general where nation='{$nation['nation']}' order by dedication desc";    // 장수 목록
+    $query = "select npc,name from general where nation='{$nation['nation']}' and npc != 5 order by dedication desc";    // 장수 목록
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gencount = MYDB_num_rows($genresult);
 

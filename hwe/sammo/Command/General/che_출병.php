@@ -49,7 +49,7 @@ class che_출병 extends Command\GeneralCommand{
         $this->setCity();
         $this->setNation(['war', 'gennum', 'tech', 'gold', 'rice']);
         $this->setDestCity($this->arg['destCityID'], []);
-        $this->setDestNation(['nation' ,'level','name','capital','gennum','tech','type','gold','rice']);
+        $this->setDestNation($this->arg['destNationID'], ['nation' ,'level','name','capital','gennum','tech','type','gold','rice']);
 
         [$reqGold, $reqRice] = $this->getCost();
         $relYear = $this->env['year'] - $this->env['startyear'];
