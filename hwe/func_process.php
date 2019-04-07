@@ -373,7 +373,7 @@ function process_3(&$general) {
         $gencount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i', $general['nation']);
         $gencnt_eff = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc != 5', $general['nation']);
         if ($gencnt_eff < GameConst::$initialNationGenLimit) {
-            $gencount = GameConst::$initialNationGenLimit;
+            $gencount = max(GameConst::$initialNationGenLimit, $gencount);
             $gencnt_eff = GameConst::$initialNationGenLimit;
         }
 
