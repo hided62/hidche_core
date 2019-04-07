@@ -299,10 +299,6 @@ function process_29(&$general) {
     $josaUn = JosaUtil::pick($nation['name'], '은');
     if($general['level'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:재야입니다. 인재탐색 실패. <1>$date</>";
-    } elseif($nation['level'] <= 0) {
-        $log[] = "<C>●</>{$admin['month']}월:방랑군입니다. 인재탐색 실패. <1>$date</>";
-    } elseif($admin['year'] < $admin['startyear']+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit) {
-        $log[] = "<C>●</>{$admin['month']}월:현재 <D>{$nation['name']}</>{$josaUn} 탐색이 제한되고 있습니다. 인재탐색 실패.";
     } elseif($general['gold'] < $admin['develcost']) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 인재탐색 실패. <1>$date</>";
     } else {
@@ -367,7 +363,18 @@ function process_29(&$general) {
 
             $join_prop = 0.55 * $avg_cnt / ($gen_cnt + $npc_cnt / 2);
 
-            if($nation['scout'] != 0 || !Util::randBool($join_prop)) {
+            $no_scout = false;
+            if($nation['scout'] != 0){
+                $no_scout = true;
+            }
+            else if($nation['level'] <= 0){
+                $no_scout = true;
+            }
+            else if($admin['year'] < $admin['startyear']+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit){
+                $no_scout = true;
+            }
+
+            if($no_scout || !Util::randBool($join_prop)) {
                 $scoutType = "발견";
                 $scoutLevel = 0;
                 $scoutNation = 0;
