@@ -188,7 +188,7 @@ class TurnExecutionHelper
         }
 
         //은퇴
-        if($general->getVar('age') >= 80 && $general->getVar('npc') == 0) {
+        if($general->getVar('age') >= GameConst::$retirementYear && $general->getVar('npc') == 0) {
             if($gameStor->isunited == 0) {
                 $general->applyDB($db);
                 CheckHall($generalID);
