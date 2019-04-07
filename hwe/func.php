@@ -451,7 +451,7 @@ function printCommandTable(General $generalObj) {
 
     foreach(GameConst::$availableGeneralCommand as $commandCategory => $commandList){
         if($commandCategory){
-            commandGroup("========= {$commandCategory} ==========");
+            commandGroup("======= {$commandCategory} =======");
         }
 
         foreach($commandList as $commandClassName){
