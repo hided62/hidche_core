@@ -62,7 +62,7 @@ foreach(
     ) as $comment
 ){
     //TODO:아이콘 받아오기?
-    $articles[$article['no']]['comment'] = $comment;
+    $articles[$comment['document_no']]['comment'][] = $comment;
 }
 
 Json::die([

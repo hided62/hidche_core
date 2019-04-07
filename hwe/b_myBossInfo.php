@@ -35,14 +35,63 @@ if($meLevel == 0) {
 <title><?=UniqueConst::$serverName?>: 인사부</title>
 <?=WebUtil::printJS('../e_lib/jquery-3.3.1.min.js')?>
 <?=WebUtil::printJS('../e_lib/bootstrap.bundle.min.js')?>
+<?=WebUtil::printJS('../e_lib/select2/select2.full.min.js')?>
 <?=WebUtil::printJS('js/common.js')?>
+<?=WebUtil::printJS('js/bossInfo.js')?>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
+<?=WebUtil::printCSS('../e_lib/select2/select2.min.css')?>
+<?=WebUtil::printCSS('../e_lib/select2/select2-bootstrap4.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
 <script type="text/javascript">
 function out() {
     return confirm('정말 추방하시겠습니까?');
 }
+</script>
+
+<?php 
+
+$query = "select nation,name,level,color,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set from nation where nation='{$me['nation']}'";
+$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+$nation = MYDB_fetch_array($result);   //국가정보
+
+$ambassadors = $db->query('SELECT no, name, level, penalty, permission FROM general WHERE permission = \'ambassador\' AND nation = %i', $nation['nation']);
+$auditors = $db->query('SELECT no, name, level, penalty, permission FROM general WHERE permission = \'auditor\' AND nation = %i', $nation['nation']);
+$candidateAmbassadors = [];
+$candidateAuditors = [];
+foreach($ambassadors as $ambassador){
+    $candidateAmbassadors[] = $ambassador;
+}
+foreach($auditors as $auditor){
+    $candidateAuditors[] = $auditor;
+}
+foreach($db->query('SELECT no, name, nation, level, penalty, permission FROM general WHERE nation = %i AND permission = \'normal\' AND level != 12', $nation['nation']) as $candidate){
+    $maxPermission = checkSecretMaxPermission($candidate);
+    if($maxPermission == 4){
+        $candidateAmbassadors[] = $candidate;
+    }
+    if($maxPermission >= 3){
+        $candidateAuditors[] = $candidate;
+    }
+}
+
+?>
+<script>
+var candidateAmbassadors = <?=Json::encode(array_map(function($value){
+    return [
+        'id'=>$value['no'],
+        'text'=>$value['name'],
+        "selected"=>($value['permission']!='normal')
+    ];
+}, $candidateAmbassadors))?>;
+
+var candidateAuditors = <?=Json::encode(array_map(function($value){
+    return [
+        'id'=>$value['no'],
+        'text'=>$value['name'],
+        "selected"=>($value['permission']!='normal')
+    ];
+}, $candidateAuditors))?>;
 </script>
 
 </head>
@@ -54,10 +103,6 @@ function out() {
 <br>
 
 <?php
-
-$query = "select nation,name,level,color,l12set,l11set,l10set,l9set,l8set,l7set,l6set,l5set from nation where nation='{$me['nation']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$nation = MYDB_fetch_array($result);   //국가정보
 
 $lv = getNationChiefLevel($nation['level']);
 if($meLevel >= 5) { $btn = "submit"; }
@@ -76,6 +121,7 @@ $tigerresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connec
 
 $query = "select name,picture,firenum from general where nation='{$nation['nation']}' order by firenum desc limit 7";   // 건안칠자
 $eagleresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
 
 echo "
 <table align=center width=1000 class='tb_layout bg0'>
@@ -279,9 +325,35 @@ for($i=10; $i >= $lv; $i--) {
 echo "
     <tr><td colspan=4>※ <font color=red>빨간색</font>은 현재 임명중인 장수, <font color=orange>노란색</font>은 다른 관직에 임명된 장수, 하얀색은 일반 장수를 뜻합니다.</td></tr>
 </table>
+
+";
+
+if($meLevel == 12):
+?>
+<table align='center' width='1000' class='tb_layout bg0'>
+    <tr><td colspan='4' height='5'></td></tr>
+<tr><td colspan='4' align='center' bgcolor='purple'>외 교 권 자 임 명</td></tr>
+    <tr>
+        <td width=98  align=right id=bg1>외교권자</td>
+        <td width=398>
+<select id="selectAmbassador" multiple="multiple">
+</select>
+    <button id='changeAmbassador' type='button'>임명</button>
+        </td>
+        <td width=98  align=right id=bg1>조언자</td>
+        <td width=398>
+<select id="selectAuditor" multiple="multiple">
+</select>
+        <button id='changeAuditor' type='button'>임명</button>
+        </td>
+    </tr>
+</table>
+<?php
+endif;
+?>
 <table align=center width=1000 class='tb_layout bg0'>
     <tr><td colspan=5 height=5></td></tr>
-";
+<?php
 if($meLevel >= 5) {
     echo "
     <tr><td colspan=5 align=center bgcolor=orange>도 시 관 직 임 명</td></tr>

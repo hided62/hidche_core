@@ -77,18 +77,17 @@ var isSecretBoard = <?=($isSecretBoard?'true':'false')?>; //
 <!-- 설계미스. template와 shadowdom으로 변경 -->
 <div id='articleTemplate' style='display:none;'>
 <div class='articleFrame'>
-<div><span class='articleTitle'></span></div>
+<div>#<span class='articleNo'></span> <span class='articleTitle'></span></div>
 <div class='authorPlate'><span class='authorIcon'></span><span class='authorName'></span><span class='date'></span></div>    
 <div class='text'>
 
-</div>
 </div>
 <div class='commentFrame'>
     <ul class='commentList'>
 
     </ul>
     <div>
-        <input class='commentText' type='text' maxlength='250'></input>
+        <input class='commentText' type='text' maxlength='250'>
         <button type='button' class='submitComment'>등록</button>
     </div>
 </div>

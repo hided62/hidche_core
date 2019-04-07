@@ -275,8 +275,8 @@ class Message
             return '본인의 메시지만 삭제할 수 있습니다.';
         }
 
-        if($msgObj->msgType == Message::MSGTYPE_DIPLOMACY){
-            return '외교 메시지는 삭제할 수 없습니다.';
+        if($msgObj instanceof DiplomaticMessage){
+            return '시스템 외교 메시지는 삭제할 수 없습니다.';
         }
 
         $prev5min = new \DateTime();

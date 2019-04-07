@@ -395,6 +395,20 @@ function myNationInfo() {
 ";
 }
 
+function checkSecretMaxPermission($me){
+    $secretMax = 4;
+    if($penalty['noTopSecret']??false){
+        $secretMax = 1;
+    }
+    else if($penalty['noChief']??false){
+        $secretMax = 1;
+    }
+    else if($penalty['noAmbassador']??false){
+        $secretMax = 2;
+    }
+    return $secretMax;
+}
+
 function checkSecretPermission($me, $checkSecretLimit=true){
     if(!key_exists('penalty', $me) || !key_exists('permission', $me)){
         trigger_error ('canAccessSecret() 함수에 필요한 인자가 부족');
@@ -416,16 +430,8 @@ function checkSecretPermission($me, $checkSecretLimit=true){
     }
 
     $secretMin = 0;
-    $secretMax = 4;
-    if($penalty['noTopSecret']??false){
-        $secretMax = 1;
-    }
-    else if($penalty['noChief']??false){
-        $secretMax = 1;
-    }
-    else if($penalty['noAmbassador']??false){
-        $secretMax = 2;
-    }    
+    $secretMax = checkSecretMaxPermission($me);
+    
 
     if($me['level'] == 12){
         $secretMin = 4;
