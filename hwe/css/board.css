@@ -47,3 +47,10 @@
 .submitComment{
     width:100%;
 }
+
+.commentText{
+    color:white;
+    background-color:transparent;
+    border:none;
+    padding:1px 5px;
+}

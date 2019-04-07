@@ -50,19 +50,17 @@ if($delayTime){
 }
 $session->setReadOnly();
 
-list($generalID, $nationID, $generalName) = DB::db()->queryFirstList(
-    'select `no`, `nation`, `name` from `general` where owner = %i',
-    $userID
-);
+$me = DB::db()->queryFirstRow('SELECT `no`,`name`,`nation`,`level`,`con`,`picture`,`imgsvr`,penalty,permission FROM general WHERE `owner`=%i', $userID);
 
-
-
-if($nationID === null){
+if($me === null){
     Json::die([
         'result'=>false,
         'reason'=>'장수가 사망했습니다.'
     ]);
 }
+
+[$generalID, $nationID, $generalName] = [$me['no'], $me['nation'], $me['name']];
+$permission = checkSecretPermission($me, false);
 
 $result = [
     'private'=>[],
@@ -104,11 +102,16 @@ else if($reqType == 'national'){
     }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_NATIONAL, $reqTo, 20));
 }
 else{
-    $result['diplomacy'] = array_map(function(Message $msg)use (&$nextSequence){
+    $result['diplomacy'] = array_map(function(Message $msg)use (&$nextSequence, $permission){
         if($msg->id > $nextSequence){
             $nextSequence = $msg->id;
         }
-        return $msg->toArray();
+        $values = $msg->toArray();
+        if($msg->dest->nationID != 0 && $permission < 3){
+            $values['text'] = '(외교 메시지입니다)';//TODO: 외교서신이라 읽을 수 없음을 보여줘야함
+            $values['option']['invalid'] = true;
+        }
+        return $values;
     }, Message::getMessagesFromMailBoxOld(Message::MAILBOX_NATIONAL + $nationID, Message::MSGTYPE_DIPLOMACY, $reqTo, 20));
 }
 

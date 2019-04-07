@@ -75,3 +75,14 @@ color:white;
     background-color:black;
     font-size:13px;
 }
+
+#sidebar{
+    position:fixed;
+    right:0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#sidebar button{
+    /*width:100px;*/
+}

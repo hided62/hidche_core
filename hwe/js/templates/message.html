@@ -41,7 +41,7 @@
             <%} %>
             <span class="msg_time">&lt;<%e(time)%>&gt;</span>
         </div>        
-        <div class="msg_content <%invalidType%>"><%e(text)%></div>
+        <div class="msg_content <%invalidType%>"><%linkifyStr(text)%></div>
         <%if(this.option && this.option.action) {%>
         <div class="msg_prompt">
             <button type="button" class="prompt_yes btn_prompt" <%allowButton?'':'disabled="disabled"'%>>수락</button> <button type="button" class="prompt_no btn_prompt" <%allowButton?'':'disabled="disabled"'%>>거절</button>

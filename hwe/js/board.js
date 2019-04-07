@@ -121,6 +121,14 @@ function drawArticle(idx, articleObj){
     });
 
     $article.find('.submitComment').click(submitComment);
+    $article.find('.commentText').on('keypress', function (e) {
+        if(e.which === 13){
+            $article.find('.submitComment').click();
+        }
+    });
+    $article.find('.inputCommentHeader').click(function(){
+        $article.find('.commentText').focus();
+    })
 
     var $board = $('#board');
 
@@ -161,7 +169,7 @@ $(function(){
     $('textarea.autosize').on('keydown keyup', function(){
         resizeTextarea($(this));
     })
-    
+
 $('#submitArticle').click(submitArticle);
 
 loadArticles()
