@@ -260,7 +260,7 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                         <option value="1">일반</option>
                         <option value="4">태수</option>
                         <option value="3">군사</option>
-                        <option value="2">시중</option>
+                        <option value="2">종사</option>
                         <option value="10">무장 수뇌</option>
                         <option value="9">지장 수뇌</option>
                         <option value="11">참모</option>

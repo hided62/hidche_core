@@ -242,7 +242,7 @@ function cityInfo(General $generalObj) {
         <td height=7>".bar($wall)."</td>
         <td rowspan=2 style='text-align:center;' class='bg1'><b>시세</b></td>
         <td height=7>".bar($trade)."</td>
-        <td rowspan=2 style='text-align:center;' class='bg1'><b>시중</b></td>
+        <td rowspan=2 style='text-align:center;' class='bg1'><b>종사</b></td>
         <td rowspan=2 style='text-align:center;'>{$officers[3]}</td>
     </tr>
     <tr>
@@ -1961,7 +1961,7 @@ function updateTurntime($no) {
                 nextRuler($general);
             }
 
-            //도시의 태수, 군사, 시중직도 초기화
+            //도시의 태수, 군사, 종사직도 초기화
             $query = "update city set gen1='0' where gen1='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             $query = "update city set gen2='0' where gen2='{$general['no']}'";

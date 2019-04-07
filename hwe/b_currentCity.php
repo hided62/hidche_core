@@ -179,7 +179,7 @@ if($valid == 0 && $userGrade < 5) {
 $city = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $citylist);
 $cityNation = getNationStaticInfo($city['nation']);
 
-//태수, 군사, 시중
+//태수, 군사, 종사
 $gen1 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen1']);
 $gen2 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen2']);
 $gen3 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen3']);
@@ -435,7 +435,7 @@ foreach($generalsFormat as $general){
         <td align=center><?=$gen1['name']??'-'?></td>
         <td align=center class=bg1>군사</td>
         <td align=center><?=$gen2['name']??'-'?></td>
-        <td align=center class=bg1>시중</td>
+        <td align=center class=bg1>종사</td>
         <td align=center><?=$gen3['name']??'-'?></td>
     </tr>
     <tr>

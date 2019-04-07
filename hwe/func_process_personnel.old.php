@@ -585,7 +585,7 @@ function process_45(&$general) {
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         }
 
-        //도시의 태수, 군사, 시중직도 초기화
+        //도시의 태수, 군사, 종사직도 초기화
         $query = "update city set gen1='0' where gen1='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $query = "update city set gen2='0' where gen2='{$general['no']}'";
@@ -830,7 +830,7 @@ function process_54(&$general) {
         //군주 교체
         $query = "update general set level='12' where no='$who'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        // 태수,군사,시중이었다면 해제
+        // 태수,군사,종사이었다면 해제
         $query = "update city set gen1='0' where gen1='$who'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $query = "update city set gen2='0' where gen2='$who'";
@@ -1041,7 +1041,7 @@ function process_57(&$general) {
         //군주 교체
         $query = "update general set resturn='SUCCESS',level='12' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        // 태수,군사,시중이었다면 해제
+        // 태수,군사,종사이었다면 해제
         $query = "update city set gen1='0' where gen1='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         $query = "update city set gen2='0' where gen2='{$general['no']}'";

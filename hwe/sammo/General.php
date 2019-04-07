@@ -247,7 +247,7 @@ class General implements iAction{
             nextRuler($this);
         }
 
-        //도시의 태수, 군사, 시중직도 초기화
+        //도시의 태수, 군사, 종사직도 초기화
         $db->update('city', [
             'gen1'=>0,
         ], 'gen1=%i', $generalID);

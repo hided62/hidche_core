@@ -81,13 +81,13 @@ $(function() {
             
             var $win = $('<div id="ext_win" style="padding:0;" title="관직 임명"><table style="padding:0;margin:0;" cellspacing="0" cellpadding="0" border="0"><tr><td width="700px" style="padding:0;"><iframe id="in_frame" src="map.php?type=1&amp;graphic=1" width="700" height="520" frameborder="0" marginwidth="0" marginheight="0" topmargin="0" scrolling="no"></iframe></td>'+
                          '<td width="305px" style="padding:0;vertical-align:top;height:520px;"><div style="height:520px;width:305px;overflow-y:scroll;overflow-x:hidden;">'+
-                         '<table id="inner_table"><thead><tr><th width="35">도시</th><th width="85">태수</th><th width="85">군사</th><th width="85">시중</th></tr></thead><tbody class="content">'+
+                         '<table id="inner_table"><thead><tr><th width="35">도시</th><th width="85">태수</th><th width="85">군사</th><th width="85">종사</th></tr></thead><tbody class="content">'+
                          '</tbody></table></div></td></tr></table>'+
                          '<form name="form1" id="fake_form"><span id="user_name"></span> : <select name="double" id="city_select"></select>'+
                          '<div id="duty_radio" style="display:inline;">'+
                          '<input type="radio" id="duty_type1" value="4" name="duty_radio"><label for="duty_type1">태수</label>'+
 						 '<input type="radio" id="duty_type2" value="3" name="duty_radio"><label for="duty_type2">군사</label>'+
-						 '<input type="radio" id="duty_type3" value="2" name="duty_radio"><label for="duty_type3">시중</label>'+
+						 '<input type="radio" id="duty_type3" value="2" name="duty_radio"><label for="duty_type3">종사</label>'+
                          '</div></form></div>');
         	$win.hide();
             
@@ -135,17 +135,17 @@ $(function() {
                 
                 var p태수 = cityInfo.p태수 && currUser.p태수;
             	var p군사 = cityInfo.p군사 && currUser.p군사;
-            	var p시중 = cityInfo.p시중 && currUser.p시중;
+            	var p종사 = cityInfo.p종사 && currUser.p종사;
                 
-                //console.log(p태수,p군사,p시중);
+                //console.log(p태수,p군사,p종사);
                 
                 $('#duty_type1').button({disabled:!p태수});   
                 $('#duty_type2').button({disabled:!p군사});  
-                $('#duty_type3').button({disabled:!p시중});  
+                $('#duty_type3').button({disabled:!p종사});  
                 
                 var $태수 = cityInfo.$태수;
                 var $군사 = cityInfo.$군사;
-                var $시중 = cityInfo.$시중;
+                var $종사 = cityInfo.$종사;
                 
                 
                 
@@ -222,7 +222,7 @@ $(function() {
             
             var p태수 = cityInfo.p태수 && currUser.p태수;
             var p군사 = cityInfo.p군사 && currUser.p군사;
-            var p시중 = cityInfo.p시중 && currUser.p시중;
+            var p종사 = cityInfo.p종사 && currUser.p종사;
             
             var newInfo = {
                 지역 : 지역,
@@ -232,12 +232,12 @@ $(function() {
                 city : cityInfo,
                 p태수 : p태수,
                 p군사 : p군사,
-                p시중 : p시중
+                p종사 : p종사
             };
             
             //console.log(newInfo);
             
-            if(p태수 || p군사 || p시중){
+            if(p태수 || p군사 || p종사){
                 if(typeof subCityGroupList[지역] == 'undefined'){
                     subCityGroupList[지역] = [];
                 }
@@ -296,11 +296,11 @@ $(function() {
                     }).css('cursor','pointer');
                 }
                 
-                var $시중 = cityInfo.$시중.clone();
-                $city.append($시중);
-                if(!newInfo.p시중)$시중.css('color','red');
+                var $종사 = cityInfo.$종사.clone();
+                $city.append($종사);
+                if(!newInfo.p종사)$종사.css('color','red');
                 else{
-                    $시중.click(function(){
+                    $종사.click(function(){
                         $('#duty_radio :radio:eq(2)').attr('checked','checked');
                         $('#duty_radio :radio').button('refresh');
                     }).css('cursor','pointer');
@@ -389,22 +389,22 @@ $(function() {
                 $.each(cityList,function(idx,cityInfo){
                 	cityInfo.p태수=false;
                     cityInfo.p군사=false;
-                    cityInfo.p시중=false;
+                    cityInfo.p종사=false;
                 });
                 
                 $.each(userList,function(idx,userInfo){
                     userInfo.p태수=false;
                     userInfo.p군사=false;
-                    userInfo.p시중=false;
+                    userInfo.p종사=false;
                 });
                 
                 setUserAvailable($selects.eq(1).find("option"),"p태수");
                 setUserAvailable($selects.eq(3).find("option"),"p군사");
-                setUserAvailable($selects.eq(5).find("option"),"p시중");
+                setUserAvailable($selects.eq(5).find("option"),"p종사");
                 
                 setCityAvailiable($selects.eq(0).find("option"),"p태수");
                 setCityAvailiable($selects.eq(2).find("option"),"p군사");
-                setCityAvailiable($selects.eq(4).find("option"),"p시중");
+                setCityAvailiable($selects.eq(4).find("option"),"p종사");
 
                 
                 $.each(cityList,function(idx,cityInfo){
@@ -484,10 +484,10 @@ $(function() {
                         
                         addBtn($name,cityInfo,userInfo,4,'태수');
                         addBtn($name,cityInfo,userInfo,3,'군사');
-                        addBtn($name,cityInfo,userInfo,2,'시중');
+                        addBtn($name,cityInfo,userInfo,2,'종사');
                         
                         //특수 버튼!
-                        if(userInfo.p태수||userInfo.p군사||userInfo.p시중){
+                        if(userInfo.p태수||userInfo.p군사||userInfo.p종사){
                             var $btn = $('<button type="button">...</button>');
                             $btn.addClass('for_duty');
                             if(userInfo.is수뇌){
@@ -594,8 +594,8 @@ $(function() {
                 if(cityList[cityName].$군사.text() == name){
                     cityList[cityName].$군사.css('color','lightgreen');
                 }
-                if(cityList[cityName].$시중.text() == name){
-                    cityList[cityName].$시중.css('color','lightgreen');
+                if(cityList[cityName].$종사.text() == name){
+                    cityList[cityName].$종사.css('color','lightgreen');
                 }
                 
                 userList[name]={
@@ -606,7 +606,7 @@ $(function() {
                     val:'-1',
                     p태수:false,
                     p군사:false,
-                    p시중:false,
+                    p종사:false,
                     is수뇌:is수뇌
                 };
                 
@@ -680,7 +680,7 @@ $(function() {
                 
                 cityInfo.p태수 = false;
                 cityInfo.p군사 = false;
-                cityInfo.p시중 = false;
+                cityInfo.p종사 = false;
                 
             }
             
@@ -777,12 +777,12 @@ $(function() {
                 
             }
             
-            //태수,군사,시중
+            //태수,군사,종사
             {
                 var $baseTr = $this.find('tr:eq(2)');
                 cityInfo.$태수 = $baseTr.find('td:eq(7)');
                 cityInfo.$군사 = $baseTr.find('td:eq(9)');
-                cityInfo.$시중 = $baseTr.find('td:eq(11)');
+                cityInfo.$종사 = $baseTr.find('td:eq(11)');
             }
             
             //기타

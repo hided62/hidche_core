@@ -113,7 +113,7 @@ for ($j=0; $j < $citycount; $j++) {
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
     $gen2 = MYDB_fetch_array($genresult);
 
-    $query = "select name from general where no='{$city['gen3']}'";    // 시중
+    $query = "select name from general where no='{$city['gen3']}'";    // 종사
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
     $gen3 = MYDB_fetch_array($genresult);
 
@@ -163,7 +163,7 @@ for ($j=0; $j < $citycount; $j++) {
         <td align=center>";
     echo $gen2['name']==''?"-":"{$gen2['name']}";
     echo "</td>
-        <td align=center id=bg1>시중</td>
+        <td align=center id=bg1>종사</td>
         <td align=center>";
     echo $gen3['name']==''?"-":"{$gen3['name']}";
     echo "</td>
