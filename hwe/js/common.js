@@ -211,13 +211,16 @@ function activeFlipItem($img){
 }
 
 jQuery(function($){
-    $('.obj_tooltip').each(function(){
+    $('.obj_tooltip').mouseover(function(){
         var $objTooltip = $(this);
+        if($objTooltip.data('setObjTooltip')){
+            return true;
+        }
+
         var tooltipClassText = $objTooltip.data('tooltip-class');
         if(!tooltipClassText){
             tooltipClassText = '';
         }
-        console.log($objTooltip.data('tooltip-class'));
         var template = '<div class="tooltip {0}" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
             .format(tooltipClassText);
 
@@ -227,9 +230,15 @@ jQuery(function($){
             },
             template:template,
             html:true
-        });
-        
+        }).tooltip('show');
+
+        $objTooltip.data('setObjTooltip', true);
     });
+    /*each(function(){
+        var $objTooltip = $(this);
+        
+        
+    });*/
 
     activeFlip();
 
