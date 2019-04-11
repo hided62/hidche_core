@@ -89,7 +89,7 @@ function showAdjustServerModal(serverList){
         var serverKey = server[0];
         var serverKorName = server[1];
 
-        var $item = $('<div style="display:inline-block" class="custom-control custom-checkbox">\
+        var $item = $('<div style="display:inline-block;margin-right:7px;" class="custom-control custom-checkbox">\
         <input type="checkbox" checked class="custom-control-input" name="{1}" id="switch_{1}">\
         <label class="custom-control-label" for="switch_{1}">{0}</label>\
       </div>'.format(serverKorName, serverKey));
