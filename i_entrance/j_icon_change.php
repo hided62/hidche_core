@@ -90,7 +90,7 @@ if(!is_uploaded_file($image['tmp_name'])) {
 
         foreach(AppConf::getList() as $key=>$setting){
             if($setting->isRunning()){
-                $servers[] = $key;
+                $servers[] = [$key, $setting->getKorName()];
             }
         }
 
