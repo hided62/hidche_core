@@ -187,7 +187,8 @@ function setLeadershipBonus(&$general, $nationLevel){
 }
 
 function CriticalScoreEx(string $type):float {
-    if($type == 'success'){
+    if ($type == 'success') {
         return Util::randRange(2.2, 3.0);
+    }
 }
 

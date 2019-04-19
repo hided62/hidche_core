@@ -207,6 +207,9 @@ CREATE TABLE `nation_turn` (
 	PRIMARY KEY (`id`),
 	UNIQUE INDEX `nation` (`nation_id`, `level`, `turn_idx`),
 	INDEX `action` (`action`, `turn_idx`, `nation_id`, `level`)
+)
+ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
+
 ##회의실
 CREATE TABLE `board` (
 	`no` INT(11) NOT NULL AUTO_INCREMENT,
@@ -638,4 +641,4 @@ CREATE TABLE IF NOT EXISTS `storage` (
 	UNIQUE INDEX `key` (`namespace`, `key`)
 )
 COLLATE='utf8mb4_general_ci'
-ENGINE=MyISAM
+ENGINE=MyISAM;
