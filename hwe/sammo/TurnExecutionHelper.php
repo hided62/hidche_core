@@ -101,7 +101,7 @@ class TurnExecutionHelper
         return $commandObj->getResultTurn();
     }
 
-    public function processCommand(string $commandClassName, array $commandArg){
+    public function processCommand(string $commandClassName, ?array $commandArg){
 
         $general = $this->getGeneral();
 
@@ -158,7 +158,7 @@ class TurnExecutionHelper
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
         $general = $this->getGeneral();
-        $generalID = $general->getRaw('no');
+        $generalID = $general->getID();
         $logger = $general->getLogger();
 
         $generalName = $general->getName();
@@ -197,7 +197,7 @@ class TurnExecutionHelper
             $general->rebirth();
         }
 
-        $turntime = addTurn($general->getRaw('turntime'), $gameStor->turnterm);
+        $turntime = addTurn($general->getVar('turntime'), $gameStor->turnterm);
         $general->setVar('turntime', $turntime);
 
     }
@@ -205,7 +205,7 @@ class TurnExecutionHelper
 
     static public function executeGeneralCommandUntil(string $date, \DateTimeInterface $limitActionTime, int $year, int $month){
         $db = DB::db();
-        $generalsTodo = $db->queryFirstRow(
+        $generalsTodo = $db->query(
             'SELECT no,name,turntime,killturn,block,npc,deadyear, 
 general_turn.`action` AS `action`, general_turn.arg AS arg
 FROM general LEFT JOIN general_turn ON general.`no` = general_turn.general_id AND turn_idx = 0

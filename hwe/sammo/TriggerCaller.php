@@ -20,7 +20,7 @@ abstract class TriggerCaller{
         $maxPriority = ObjectTrigger::PRIORITY_MIN;
 
         foreach($triggerList as $trigger){
-            if(!checkValidTrigger($trigger)){
+            if(!$this->checkValidTrigger($trigger)){
                 throw new \InvalidArgumentException('Invalid Trigger Type');
             }
             /** @var ObjectTrigger $trigger */
@@ -51,7 +51,7 @@ abstract class TriggerCaller{
     }
 
     function append(ObjectTrigger $trigger){
-        if(!checkValidTrigger($trigger)){
+        if(!$this->checkValidTrigger($trigger)){
             throw new \InvalidArgumentException('Invalid Trigger Type');
         }
         $priority = $trigger->getPriority();

@@ -1197,7 +1197,7 @@ function checkStatistic() {
     $nationHist = '';
     foreach(GameConst::$availableNationType as $nationType){
         if(!Util::array_get($nationHists[$nationType])) { $nationHists[$nationType] = '-'; }
-        $nationHist .= getNationType($nationType)."({$nationHists[$i]}), ";
+        $nationHist .= getNationType($nationType)."({$nationHists[$nationType]}), ";
     }
 
     $generals = $db->query('SELECT `no`,npc,personal,special,special2,crewtype FROM general');

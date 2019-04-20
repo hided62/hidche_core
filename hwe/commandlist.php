@@ -90,7 +90,7 @@ function myCommandList() {
     echo "<table width=300 height=700 class='tb_layout bg2'>
 <form name=clock>
     <tr>
-        <td colspan=4 align=center id=bg0><b>- 명령 목록 - <input value='$date' type=text name=clock size=19 style=background-color:black;color:white;border-style:none;></b></td>
+        <td colspan=4 align=center id=bg0><b>- 명령 목록 - <input value='' type=text name=clock size=19 style=background-color:black;color:white;border-style:none;></b></td>
     </tr>";
 
     $year = $admin['year'];

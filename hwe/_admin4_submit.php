@@ -71,7 +71,7 @@ switch($btn) {
                 $src,
                 MessageTarget::buildQuick($genlist[$i]),
                 $msg,
-                new DateTime(),
+                new \DateTime(),
                 new \DateTime('9999-12-31'),
                 []
             );

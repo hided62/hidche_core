@@ -395,7 +395,7 @@ function myNationInfo() {
 ";
 }
 
-function checkSecretMaxPermission($me){
+function checkSecretMaxPermission($penalty){
     $secretMax = 4;
     if($penalty['noTopSecret']??false){
         $secretMax = 1;
@@ -425,12 +425,12 @@ function checkSecretPermission($me, $checkSecretLimit=true){
     }
     
 
-    if($pernalty['noSecret']??false){
+    if($penalty['noSecret']??false){
         return 0;
     }
 
     $secretMin = 0;
-    $secretMax = checkSecretMaxPermission($me);
+    $secretMax = checkSecretMaxPermission($me, $penalty);
     
 
     if($me['level'] == 12){
@@ -1320,7 +1320,7 @@ function addAge() {
         }
 
         foreach($db->query('SELECT no,name,nation,leader,power,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where spec2age<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
-            $special2 = getSpecial2($general['leader'], $general['power'], $general['intel'], 0, $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
+            $special2 = SpecialityConst::pickSpecialWar($general);
             $specialClass = getGeneralSpecialWarClass($special2);
             $specialText = $specialClass::$name;
 

@@ -138,7 +138,7 @@ if($myNation['level'] > 0) {
         $spyCities = array_map(function($val){
             $val = intval($val);
             return intdiv($val, 10);
-        }, 'intval',explode('|', $myNation['spy']));
+        }, explode('|', $myNation['spy']));
     }
     else{
         $spyCities = array_keys(Json::decode($rawSpy));

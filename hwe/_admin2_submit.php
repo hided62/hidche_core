@@ -208,7 +208,7 @@ switch($btn) {
         ], '`no` IN %li', $genlist);
         break;
     case "메세지 전달":
-        $text = $msg;
+        $text = $msg??'';
         foreach($genlist as $generalID){
             $msg = new Message(Message::MSGTYPE_PRIVATE, $src, MessageTarget::buildQuick($generalID), $text, new \DateTime(), new \DateTime('9999-12-31'), []);
             $msg->send(true);

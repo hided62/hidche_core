@@ -274,7 +274,7 @@ class General implements iAction{
             $db->delete('troop', 'troop=%i', $troopID);
         }
 
-        $dyingMessage = new TextDecoration\DyingMessage($general['name'], $general['npc']);
+        $dyingMessage = new TextDecoration\DyingMessage($this->getName(), $this->getVar('npc'));
         $logger->pushGlobalActionLog($dyingMessage->getText());
 
         $db->delete('general', 'no=%i', $generalID);
@@ -376,16 +376,17 @@ class General implements iAction{
             $this->specialWarObj, 
             $this->personalityObj, 
         ], $this->itemObjs) as $iObj){
+            
             if(!$iObj){
+                continue;
+            }
+            if($caller->isEmpty()){
                 continue;
             }
             /** @var iAction $iObj */
             $caller->merge($iObj->getPreTurnExecuteTriggerList($general));
         }
 
-        if($caller->isEmpty()){
-            return null;
-        }
         return $caller;
     }
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
