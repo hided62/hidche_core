@@ -34,7 +34,6 @@ extractMissingPostToGlobals();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 $admin = getAdmin();
 

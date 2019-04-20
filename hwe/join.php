@@ -24,7 +24,6 @@ if (!$member) {
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 ?>
 <!DOCTYPE html>
@@ -69,9 +68,7 @@ echo Json::encode((object)$charInfoText);
 <?php
 $admin = $gameStor->getValues(['show_img_level','maxgeneral']);
 
-$query = "select no from general where npc<2";
-$result = MYDB_query($query, $connect) or Error("join ".MYDB_error($connect), "");
-$gencount = MYDB_num_rows($result);
+$gencount = $db->queryFirstField('SELECT count(no) FROM general WHERE npc<2');
 
 if ($gencount >= $admin['maxgeneral']) {
     echo "<script>alert('더 이상 등록할 수 없습니다.');</script>";

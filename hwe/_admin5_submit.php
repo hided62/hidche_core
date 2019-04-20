@@ -19,7 +19,6 @@ if($session->userGrade < 5) {
 }
 
 $db = DB::db();
-$connect=$db->get();
 
 switch($btn) {
     case "국가변경":

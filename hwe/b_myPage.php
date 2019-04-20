@@ -24,13 +24,10 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("내정보", 1);
 
-$query = "select no,npc,mode,tnmt,myset,train,atmos from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,npc,mode,tnmt,myset,train,atmos from general WHERE owner = %i', $userID);
 
 
 if ($me['myset'] > 0) {

@@ -33,7 +33,6 @@ if(!$serverID){
 $session = Session::requireGameLogin([])->setReadOnly();
 
 $db = DB::db();
-$connect=$db->get();
 
 $map = $db->queryFirstField('SELECT map FROM history WHERE server_id=%s AND year=%i AND month=%i', $serverID, $year, $month);
 

@@ -8,7 +8,6 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
-$connect=$db->get();
 
 increaseRefresh("부대편성", 1);
 

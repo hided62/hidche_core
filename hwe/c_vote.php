@@ -19,18 +19,17 @@ $isVoteAdmin |= $session->userGrade >= 5;
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 $admin = $gameStor->getValues(['develcost', 'cost', 'vote_title', 'vote', 'votecomment']);
 
-$query = "select no,vote,name,nation,horse,weap,book,item,npc from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,vote,name,nation,horse,weap,book,item,npc from general where owner=%i', $userID);
 
 if($btn == "투표" && $me['vote'] == 0 && $sel > 0) {
     $develcost = $admin['develcost'] * 5;
-    $query = "update general set gold=gold+{$develcost},vote='{$sel}' where owner='{$userID}'";
-    MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    $db->update('general', [
+        'gold'=>$db->sqleval('gold + %i', $develcost),
+        'vote'=>$sel
+    ], 'owner=%i', $userID);
 
     $log = [];
     $log = uniqueItem($me, $log, 1);

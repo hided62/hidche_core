@@ -15,13 +15,10 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("세력장수", 1);
 
-$query = "select no,nation,level from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,nation,level from general where owner=%i', $userID);
 
 if($me['level'] == 0) {
     echo "재야입니다.";

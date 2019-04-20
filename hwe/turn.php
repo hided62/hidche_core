@@ -18,7 +18,6 @@ $userID = Session::getUserID();
 $db = DB::db();
 $generalID = $session->generalID;
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("턴반복", 1);
 

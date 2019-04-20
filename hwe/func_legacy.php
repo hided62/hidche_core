@@ -109,19 +109,13 @@ function printCitiesBasedOnDistance(int $cityNo, int $maxDistance=1) {
 function info($type=0) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $admin = $gameStor->getValues(['year', 'month', 'turnterm', 'maxgeneral']);
 
     $termtype = "{$admin['turnterm']}분 턴";
 
-    $query = "select no from general where npc<2";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gencount = MYDB_num_rows($result);
-
-    $query = "select no from general where npc>=2";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $npccount = MYDB_num_rows($result);
+    $gencount = $db->queryFirstField('SELECT count(no) FROM general WHERE npc < 2');
+    $npccount = $db->queryFirstField('SELECT count(no) FROM general WHERE npc >= 2');
 
     switch($type) {
     case 0:

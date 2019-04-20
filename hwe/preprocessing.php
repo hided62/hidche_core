@@ -8,7 +8,6 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
-$connect=$db->get();
 
 $turn = Util::getReq('turn', 'array_int');
 $sel = Util::getReq('sel', 'int');

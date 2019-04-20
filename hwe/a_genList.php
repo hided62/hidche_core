@@ -12,13 +12,10 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("장수일람", 2);
 
-$query = "select con,turntime from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT con,turntime FROM general WHERE owner = %i', $userID);
 
 $con = checkLimit($me['con']);
 if ($con >= 2) {
