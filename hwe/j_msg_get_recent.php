@@ -14,7 +14,7 @@ $now = new \DateTime();
 $delayTime = false;
 if(count($lastMsgGet) >= 10){
     try{
-        if($lastMsgGet[0] !== 'string'){
+        if(!is_string($lastMsgGet[0])){
             throw new \Exception('Why not string?');
         }
         $first = new \DateTime($lastMsgGet[0]);
