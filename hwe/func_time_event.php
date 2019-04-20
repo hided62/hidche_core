@@ -526,14 +526,8 @@ function getRiceOutcome($nation, $bill) {
 
 function tradeRate() {
     $db = DB::db();
-    $connect=$db->get();
 
-    $query = "select city,level,trade from city"; // 도시 목록
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($cityresult);
-
-    for($i=0; $i < $citycount; $i++) {
-        $city = MYDB_fetch_array($cityresult);
+    foreach($db->query('SELECT city,level FROM city') as $city){
         //시세
         switch($city['level']) {
         case 1: $per =   0; break;
@@ -551,7 +545,7 @@ function tradeRate() {
         } else {
             $trade = null;
         }
-        $update('city', [
+        $db->update('city', [
             'trade'=>$trade
         ], 'city=%i', $city['city']);
     }
