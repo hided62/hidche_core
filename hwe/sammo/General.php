@@ -174,7 +174,7 @@ class General implements iAction{
         return getNationStaticInfo($this->raw['nation']);
     }
 
-    function getLogger():ActionLogger{
+    function getLogger():?ActionLogger{
         return $this->logger;
     }
 
