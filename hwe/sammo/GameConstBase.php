@@ -71,6 +71,8 @@ class GameConstBase
     public static $exchangeFee = 0.01;
     /** @var float 성인 연령 */
     public static $adultAge = 14;
+    /** @var float 명전 등록 가능 연령 */
+    public static $minPushHallAge = 40;
     /** @var int 최대 계급 */
     public static $maxDedLevel = 30;
     /** @var int 최대 기술 레벨 */
