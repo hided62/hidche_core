@@ -59,23 +59,7 @@ function deleteIcon(){
             return;
         }
 
-        var ajaxResults = result.servers.map(function(server){
-            return $.ajax({
-                type:'post',
-                url:'../{0}/j_adjust_icon.php'.format(server),
-                dataType:'json'
-            });
-        });
-
-        $.when.apply($, ajaxResults).then(function(){
-            alert('이미지를 삭제했습니다.');
-            location.reload();
-        },function(){
-            //서버 폐쇄등으로 접근하지 못할 수도 있음.
-            alert('이미지를 삭제했습니다.');
-            location.reload();
-        });
-        
+        showAdjustServerModal(result.servers);
     },function(){
         alert('알 수 없는 이유로 아이콘 삭제를 실패했습니다.');
         location.reload();
@@ -94,6 +78,57 @@ function disallowThirdUse(){
         alert('알 수 없는 이유로 철회를 실패했습니다.');
         location.reload();
     });
+}
+
+function showAdjustServerModal(serverList){
+
+    var $form = $('#chooseServerForm');
+    $form.empty();
+
+    serverList.map(function(server){
+        var serverKey = server[0];
+        var serverKorName = server[1];
+
+        var $item = $('<div style="display:inline-block;margin-right:7px;" class="custom-control custom-checkbox">\
+        <input type="checkbox" checked class="custom-control-input" name="{1}" id="switch_{1}">\
+        <label class="custom-control-label" for="switch_{1}">{0}</label>\
+      </div>'.format(serverKorName, serverKey));
+        $form.append($item);
+    });
+
+
+    var $modal = $('#chooseServer');
+    $modal.modal({
+        backdrop:'static'
+    });
+    $modal.on('hidden.bs.modal', function (event) {
+        location.reload();
+        return;
+    });
+
+    $("#modal-apply").off("click").on("click", function(){
+        var events = [];
+        $form.find('input:checked').each(function(){
+            var $input = $(this);
+            var server = $input.attr('name');
+            console.log(server);
+            events.push($.ajax({
+                type:'post',
+                url:'../{0}/j_adjust_icon.php'.format(server),
+                dataType:'json'
+            }));
+        })
+
+        $.when.apply($, events).then(function(){
+            alert('적용되었습니다.');
+            location.reload();
+        },function(){
+            //서버 폐쇄등으로 접근하지 못할 수도 있음.
+            alert('적용되었습니다.');
+            location.reload();
+        });
+    });
+
 }
 
 function changeIcon(e){
@@ -122,23 +157,7 @@ function changeIcon(e){
             return;
         }
 
-        var ajaxResults = result.servers.map(function(server){
-            return $.ajax({
-                type:'post',
-                url:'../{0}/j_adjust_icon.php'.format(server),
-                dataType:'json'
-            });
-        });
-
-        $.when.apply($, ajaxResults).then(function(){
-            alert('이미지를 업로드했습니다.');
-            location.reload();
-        },function(){
-            //서버 폐쇄등으로 접근하지 못할 수도 있음.
-            alert('이미지를 업로드했습니다.');
-            location.reload();
-        });
-        
+        showAdjustServerModal(result.servers);
     },function(){
         alert('알 수 없는 이유로 아이콘 업로드를 실패했습니다.');
         location.reload();

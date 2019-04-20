@@ -163,7 +163,30 @@ require(__dir__.'/../vendor/autoload.php');
         </tr>
     </tfoot>
 </table>
-
 </div>
+
+<div class="modal fade" id="chooseServer" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">완료되었습니다.<br>새 아이콘을 적용할 서버를 선택하세요.</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form id="chooseServerForm">
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+        <button type="button" class="btn btn-primary" id="modal-apply">서버 적용</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
