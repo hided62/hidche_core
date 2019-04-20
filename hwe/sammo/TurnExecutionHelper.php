@@ -326,12 +326,17 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             // 트래픽 업데이트
             updateTraffic();
 
+            /*
+            TODO: executionOver 재설계
             if($executionOver){
                 if($currentTurn !== null){
                     $gameStor->turntime = $currentTurn;
                 }
+                unlock();
                 return;
             }
+            */
+            
 
             // 1달마다 처리하는 것들, 벌점 감소 및 건국,전턴,합병 -1, 군량 소모
             if(!preUpdateMonthly()){

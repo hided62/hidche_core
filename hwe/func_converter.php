@@ -214,7 +214,7 @@ function getNationType2(?string $type) {
 }
 
 function getNationTypeClass(?string $type){
-    if($type === null){
+    if($type === null || $type === ''){
         $type = GameConst::$neutralNationType;
     }
 
@@ -234,7 +234,7 @@ function getNationTypeClass(?string $type){
 }
 
 function getPersonalityClass(?string $type){
-    if($type === null){
+    if($type === null || $type === ''){
         $type = GameConst::$neutralPersonality;
     }
 
@@ -291,7 +291,7 @@ function getItemClass(int $itemCode){
 }
 
 function getGeneralSpecialDomesticClass(?string $type){
-    if($type === null){
+    if($type === null || $type === ''){
         $type = GameConst::$defaultSpecialDomestic;
     }
 
@@ -311,7 +311,7 @@ function getGeneralSpecialDomesticClass(?string $type){
 }
 
 function getGeneralSpecialWarClass(?string $type){
-    if($type === null){
+    if($type === null || $type === ''){
         $type = GameConst::$defaultSpecialWar;
     }
 
@@ -331,7 +331,7 @@ function getGeneralSpecialWarClass(?string $type){
 }
 
 function getGeneralCommandClass(?string $type){
-    if($type === null){
+    if($type === null || $type === ''){
         $type = '휴식';
     }
 
@@ -351,7 +351,7 @@ function buildGeneralCommandClass(?string $type, General $generalObj, array $env
 }
 
 function getNationCommandClass(?string $type){
-    if($type === null){
+    if($type === null || $type === ''){
         $type = '휴식';
     }
 
