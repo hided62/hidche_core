@@ -8,16 +8,13 @@ $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("설문조사", 1);
 
 $isVoteAdmin = in_array('vote', $session->acl[DB::prefix()]??[]);
 $isVoteAdmin |= $session->userGrade >= 5;
 
-$query = "select no,vote from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,vote from general where owner=%i', $userID);
 
 $admin = $gameStor->getValues(['develcost','voteopen','vote_title','vote','votecomment']);
 $vote_title = $admin['vote_title']??'-';
@@ -84,13 +81,8 @@ echo "
     </tr>
 ";
 
-$query = "select no from general where vote>0 and npc<2";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$voteCount = MYDB_num_rows($result);
-
-$query = "select no from general where npc<2";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$allCount = MYDB_num_rows($result);
+$voteCount = $db->queryFirstField('SELECT count(no) FROM general WHERE vote>0 AND npc<2');
+$allCount = $db->queryFirstField('SELECT count(no) FROM general WHERE npc<2');
 
 $percentage = round($voteCount / $allCount * 100, 1);
 
@@ -106,9 +98,7 @@ for ($i=1; $i < $voteTypeCount; $i++) {
             <input type=radio name=sel value={$i}>
         ";
     } elseif ($admin['voteopen'] >= 1 || $isVoteAdmin) {
-        $query = "select no from general where vote='{$i}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-        $vCount = MYDB_num_rows($result);
+        $vCount = $db->queryFirstField('SELECT count(no) FROM general WHERE vote=%i', $i);
 
         $per = @round($vCount / $voteCount * 100, 1);
         echo "{$vCount} 표 ({$per}%)";
@@ -268,9 +258,7 @@ if ($admin['voteopen'] >= 1 || $isVoteAdmin) {
 }
 
 if ($admin['voteopen'] >= 2 || $isVoteAdmin) {
-    $query = "select no from general where nation=0 and npc<2";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $memCount = MYDB_num_rows($result);
+    $memCount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=0 AND npc <2');
     if ($memCount == 0) {
         $memCount = 1;
     }
@@ -312,15 +300,8 @@ if ($admin['voteopen'] >= 2 || $isVoteAdmin) {
     </tr>
     ";
 
-    $query = "select nation,color,name,gennum from nation order by gennum desc";
-    $nationResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $nationcount = MYDB_num_rows($nationResult);
-    for ($i=0; $i < $nationcount; $i++) {
-        $nation = MYDB_fetch_array($nationResult);
-
-        $query = "select no from general where nation='{$nation['nation']}' and npc<2";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-        $memCount = MYDB_num_rows($result);
+    foreach($db->query('SELECT nation,color,name,gennum from nation order by gennum desc') as $i=>$nation){
+        $memCount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc<2', $nation['nation']);
 
         
 

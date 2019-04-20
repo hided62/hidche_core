@@ -327,9 +327,7 @@ function fillLowGenAll() {
     ];
 
     for($i=0; $i < 8; $i++) {
-        $query = "select grp from tournament where grp='$i'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $grpCount[$i] = MYDB_num_rows($result);
+        $grpCount[$i] = $db->queryFirstField('SELECT count(grp) FROM tournament WHERE grp=%i', $i);
     }
 
     //자동신청하고, 돈 있고, 아직 참가 안한 장수

@@ -95,12 +95,11 @@ $nationcount = MYDB_num_rows($result);
 for ($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($result);
 
+    //속령수
+    $citycount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i', $nation['nation']);
+
     // 아국표시
     if ($nation['nation'] == $me['nation']) {
-        //속령수
-        $query = "select city from city where nation='{$nation['nation']}'";
-        $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-        $citycount = MYDB_num_rows($result2);
         echo "
     <tr>
         <td align=center style=color:".newColor($nation['color']).";background-color:{$nation['color']};>{$nation['name']}</td>
@@ -115,14 +114,9 @@ for ($i=0; $i < $nationcount; $i++) {
         continue;
     }
 
-    $query = "select state,term from diplomacy where me='{$me['nation']}' and you='{$nation['nation']}'";
-    $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $dip = MYDB_fetch_array($result2);
+    $dip = $db->queryFirstRow('SELECT state,term FROM diplomacy WHERE me = %i AND you = %i', $me['nation'], $nation['nation']);
 
-    //속령수
-    $query = "select city from city where nation='{$nation['nation']}'";
-    $result2 = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $citycount = MYDB_num_rows($result2);
+    
     switch ($dip['state']) {
         case 0: $state = "<font color=red>교 전</font>"; break;
         case 1: $state = "<font color=magenta>선포중</font>"; break;

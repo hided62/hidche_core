@@ -103,13 +103,8 @@ if($btn == "추방") {
 
     //이미 지정했다면 무시
     if($nation["l{$meLevel}set"] == 0 && $general['level'] > 0 && $general['level'] < 12) {
-        $query = "select no from diplomacy where me='{$general['nation']}' and state>='3' and state<='4'";
-        $dipresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $dipcount1 = MYDB_num_rows($dipresult);
-
-        $query = "select no from diplomacy where me='{$general['nation']}' and state>='5' and state<='6'";
-        $dipresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $dipcount2 = MYDB_num_rows($dipresult);
+        $dipcount1 = $db->queryFirstField('SELECT count(no) FROM diplomacy WHERE me=%i AND state>=3 AND state<=4', $general['nation']);
+        $dipcount2 = $db->queryFirstField('SELECT count(no) FROM diplomacy WHERE me=%i AND state>=5 AND state<=6', $general['nation']);
 
         $gold = 0;
         $rice = 0;

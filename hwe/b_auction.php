@@ -27,13 +27,8 @@ if ($con >= 2) {
     exit();
 }
 
-$query = "select no from auction where no1='{$me['no']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$tradeCount = MYDB_num_rows($result);
-
-$query = "select no from auction where no2='{$me['no']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$bidCount = MYDB_num_rows($result);
+$tradeCount = $db->queryFirstField('SELECT count(no) FROM auction WHERE no1=%i', $me['no']);
+$bidCount = $db->queryFirstField('SELECT count(no) FROM auction where no2=%i', $me['no']);
 
 $btCount = $tradeCount + $bidCount;
 

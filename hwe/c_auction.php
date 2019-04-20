@@ -34,23 +34,15 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$connect=$db->get();
 
 increaseRefresh("입찰", 1);
 
 $turnterm = $gameStor->turnterm;
 
-$query = "select no,name,gold,rice,special from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
+$me = $db->queryFirstRow('SELECT no,name,gold,rice,special from general where owner=%i', $userID);
 
-$query = "select no from auction where no1='{$me['no']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$tradeCount = MYDB_num_rows($result);
-
-$query = "select no from auction where no2='{$me['no']}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$bidCount = MYDB_num_rows($result);
+$tradeCount = $db->queryFirstField('SELECT count(no) FROM auction WHERE no1=%i', $me['no']);
+$bidCount = $db->queryFirstField('SELECT count(no) FROM auction WHERE no2=%i', $me['no']);
 
 $btCount = $tradeCount + $bidCount;
 
@@ -118,9 +110,7 @@ if ($btn == "판매") {
         ]);
     }
 } elseif ($btn == "구매시도") {
-    $query = "select no2,value,topv,expire,amount from auction where no='$sel'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $auction = MYDB_fetch_array($result);
+    $auction = $db->queryFirstRow('SELECT no2,value,topv,expire,amount FROM auction WHERE no=%i LIMIT 1', $sel);
 
     if ($value == $auction['topv']) {
         $valid = 2;
@@ -221,9 +211,7 @@ if ($btn == "판매") {
         ]);
     }
 } elseif ($btn == "판매시도") {
-    $query = "select no2,value,topv,expire,amount from auction where no='$sel'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $auction = MYDB_fetch_array($result);
+    $auction = $db->queryFirstRow('SELECT no2,value,topv,expire,amount FROM auction WHERE no=%i LIMIT 1', $sel);
 
     if ($value == $auction['topv']) {
         $valid = 2;

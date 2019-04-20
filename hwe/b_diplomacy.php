@@ -32,9 +32,7 @@ $cityStr = "";
 for($i=0; $i < $nationcount; $i++) {
     $nation = MYDB_fetch_array($result);
 
-    $query = "select city from city where nation='{$nation['nation']}'";
-    $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $citycount = MYDB_num_rows($cityresult);
+    $citycount = $db->queryFirstField('SELECT count(city) FROM city WHERE nation=%i', $nation['nation']);
 
 
     $nationnum[] = $nation['nation'];

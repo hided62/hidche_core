@@ -35,66 +35,7 @@ function registerAuction() {
     if($general['rice'] <  1000) { $general['rice'] =  1000; }
     if($general['rice'] > 20000) { $general['rice'] = 20000; }
 
-/*
-    // 유닉템 등록
-    $query = "select * from auction where stuff!='0'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
-
-    // 유닉템 거래가 없을 경우 1% 확률로 등장
-    if($count == 0 && rand()%100 < 1) {
-        // 유닉템 선택
-        $sel = rand() % 4 + 1;
-        switch($sel) {
-        case 1: $type = "weap"; break;
-        case 2: $type = "book"; break;
-        case 3: $type = "horse"; break;
-        case 4: $type = "item"; break;
-        }
-        $query = "select no,{$type} from general where {$type}>6";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $count = MYDB_num_rows($result);
-        if($count < 20) {
-            for($i=0; $i < $count; $i++) {
-                $gen = MYDB_fetch_array($result);
-                $occupied[$gen[$type]] = 1;
-            }
-            for($i=7; $i <= 26; $i++) {
-                if($occupied[$i] == 0) {
-                    $item[] = $i;
-                }
-            }
-            $it = $item[rand() % count($item)];
-            $stuff = $it * 10 + $sel;
-
-            //평균 금의 100%
-            $amount = 1;
-            $cost = $general['gold'];
-            $topv = $general['maxgold'] * 10;
-            if($cost < 5000)  { $cost = 5000; }
-            if($topv < 10000) { $topv = 10000; }
-
-            $cost = Util::round($cost / 10) * 10;
-            $topv = Util::round($topv / 10) * 10;
-
-            $term = 12;
-            $date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")) + $unit * $term);
-            $query = "insert into auction (type, no1, name1, stuff, amount, cost, value, topv, expire) values (0, '0', 'ⓝ암시장상인', '$stuff', '$amount', '$cost', '$cost', '$topv', '$date')";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-            $josaYi = JosaUtil::pick(GetStuffName($stuff), '이');
-            $alllog[0] = "<C>●</>{$admin['month']}월:<C>".GetStuffName($stuff)."</>{$josaYi} 거래장에 등장했습니다!";
-            $josaUl = JosaUtil::pick(GetStuffName($stuff), '을');
-            $history[0] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【암시장】</b></><Y>ⓝ암시장상인</>이 <C>".GetStuffName($stuff)."</>{$josaUl} 판다는 소문이 돌고 있습니다!";
-            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-            pushWorldHistory($history, $admin['year'], $admin['month']);
-        }
-    }
-*/
-
-    $query = "select * from auction where type='0' and stuff='0' and no1='0'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
+    $count = $db->queryFirstField('SELECT count(*) FROM auction WHERE type=0 AND stuff=0 AND no1=0');
     $count += 5;
     // 판매건 등록
     if(rand()%$count == 0) {
@@ -116,9 +57,7 @@ function registerAuction() {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-    $query = "select * from auction where type='1' and stuff='0' and no1='0'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $count = MYDB_num_rows($result);
+    $count = $db->queryFirstField('SELECT count(*) FROM auction WHERE type=1 AND stuff=0 AND no1=0');
     $count += 5;
     // 구매건 등록
     if(rand()%$count == 0) {

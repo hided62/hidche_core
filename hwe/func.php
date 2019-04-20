@@ -545,30 +545,19 @@ function printCommandTable(General $generalObj) {
 function chiefCommandTable() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
     $userID = Session::getUserID();
 
     $develcost = $gameStor->develcost;
 
-    $query = "select no,nation,city,level from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
+    $me = $db->queryFirstRow('select no,nation,city,level from general where owner=%i', $userID);
+    $nation = $db->queryFirstRow('SELECT level,can_change_flag,gennum FROM nation WHERE nation=%i', $me['nation']);
 
-    $query = "select level,can_change_flag from nation where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    $query = "select no from general where nation='{$me['nation']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $genCount = MYDB_num_rows($result);
-
-    $query = "select supply from city where city='{$me['city']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $city = MYDB_fetch_array($result);
+    $genCount = $nation['gennum'];
+    $citySupply = $db->queryFirstField('SELECT supply FROM city WHERE city=%i', $me['city']);
 
     if($nation['level'] > 0) { $valid = 1; }
     else { $valid = 0; }
-    if($city['supply'] == 0) { $valid = 0; }
+    if($citySupply == 0) { $valid = 0; }
 
     echo "
 <select name=commandtype size=1 style='height:20px;color:white;background-color:black;font-size:13px;'>";
