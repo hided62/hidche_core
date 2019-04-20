@@ -33,7 +33,8 @@ function Error($message='', $url="")
     if (!$url) {
         $url = $_SERVER['REQUEST_URI'];
     }
-    file_put_contents(__dir__."/logs/".UniqueConst::$serverID."/_db_bug.txt", "{\"url\":\"$url\",\"msg\":\"$message\"}\n", FILE_APPEND);
+    $e = new \Exception();
+    logError("aux_err", $message, getExceptionTraceAsString($e));
 
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 
