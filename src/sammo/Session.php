@@ -204,6 +204,7 @@ class Session
         $this->set('acl', null);
         $this->set('reqOTP', null);
         $this->set('time', time());
+        $this->set('lastMsgGet', null);
         return $this;
     }
 

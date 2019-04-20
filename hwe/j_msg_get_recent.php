@@ -28,7 +28,7 @@ if(count($lastMsgGet) >= 10){
         $lastMsgGet = [];
     } 
 }
-$lastMsgGet[] = $now;
+$lastMsgGet[] = TimeUtil::now();
 $session->lastMsgGet = Json::encode($lastMsgGet);
 
 if($delayTime){
