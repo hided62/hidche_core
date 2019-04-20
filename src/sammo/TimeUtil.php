@@ -79,13 +79,13 @@ class TimeUtil
     public static function secondsToDateInterval(float $fullSeconds): \DateInterval{
         $d0 = new \DateTime("@0");
 
-        return static::secondsToDateTime($fullSeconds, true)->diff($d0);
+        return $d0->diff(static::secondsToDateTime($fullSeconds, true));
     }
 
     public static function DateTimeToSeconds(\DateTimeInterface $dateTime): float{
         $d0 = new \DateTimeImmutable("@0");
 
-        return static::DateIntervalToSeconds($dateTime->diff($d0));
+        return static::DateIntervalToSeconds($d0->diff($dateTime));
     }
 
     public static function DateIntervalToSeconds(\DateInterval $interval): float{

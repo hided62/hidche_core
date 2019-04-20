@@ -312,7 +312,13 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
         $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
 
         $maxActionTime = ini_get('max_execution_time');
-        $maxActionTime = max($maxActionTime * 2 / 3, $maxActionTime - 10);
+        if($maxActionTime == 0){
+            $maxActionTime = 60;
+        }
+        else {
+            $maxActionTime = max($maxActionTime * 2 / 3, $maxActionTime - 10);
+        }
+        
         $limitActionTime = (new \DateTimeImmutable())->add(TimeUtil::secondsToDateInterval($maxActionTime));
 
         // 현재 턴 이전 월턴까지 모두처리.
@@ -326,8 +332,6 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             // 트래픽 업데이트
             updateTraffic();
 
-            /*
-            TODO: executionOver 재설계
             if($executionOver){
                 if($currentTurn !== null){
                     $gameStor->turntime = $currentTurn;
@@ -335,7 +339,6 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 unlock();
                 return;
             }
-            */
             
 
             // 1달마다 처리하는 것들, 벌점 감소 및 건국,전턴,합병 -1, 군량 소모
