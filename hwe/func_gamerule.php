@@ -1059,7 +1059,7 @@ function updateNationState() {
             ], 'nation=%i', $nation['nation']);
 
             $turnRows = [];
-            foreach(range(getNationChiefLevel($oldLevel) - 1, getNationChiefLevel($nation['level']), -1) as $chiefLevel){
+            foreach(range(12, getNationChiefLevel($nation['level']), -1) as $chiefLevel){
                 foreach(range(0, GameConst::$maxChiefTurn - 1) as $turnIdx){
                     $turnRows[] = [
                         'nation_id'=>$nation['nation'],

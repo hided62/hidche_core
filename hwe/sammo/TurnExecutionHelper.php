@@ -65,10 +65,7 @@ class TurnExecutionHelper
         return true;
     }
 
-    public function processNationCommand(string $commandClassName, array $commandArg, LastTurn $commandLast):LastTurn{
-        if(!$this->nationTurn){
-            throw new \InvalidArgumentException('nationTurn이 없음');
-        }
+    public function processNationCommand(string $commandClassName, ?array $commandArg, LastTurn $commandLast):LastTurn{
         $general = $this->getGeneral();
 
         $db = DB::db();
@@ -233,7 +230,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
             if($general->getVar('nation') != 0 && $general->getVar('level') >= 5){
                 $nationStor = KVStorage::getStorage($db, 'nation_env');
                 $lastNationTurnKey = "turn_last_{$general->getVar('nation')}_{$general->getVar('level')}";
-                $lastNationTurn = $nationStor->getValue($lastNationTurnKey)??[];
+                $lastNationTurn = $nationStor->getValue($lastNationTurnKey);
                 //수뇌 몇 없는데 매번 left join 하는건 낭비인것 같다.
                 $rawNationTurn = Json::decode($db->queryFirstRow(
                     'SELECT action, arg FROM nation_turn WHERE nation_id = %i AND level = %i AND turn_idx =0',
@@ -242,7 +239,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                 ))??[];
                 $hasNationTurn = true;
                 $nationCommand = $rawNationTurn['action'];
-                $nationArg = Json::decode($rawNationTurn['arg']);
+                $nationArg = Json::decode($rawNationTurn['arg']??null);
             }
 
             if($general->getVar('npc') >= 2){
@@ -261,7 +258,7 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
                     $resultNationTurn = $turnObj->processNationCommand(
                         $nationCommand, 
                         $nationArg, 
-                        $lastNationTurn
+                        LastTurn::fromJson($lastNationTurn)
                     );
                     $nationStor->setValue($lastNationTurnKey, $resultNationTurn->toJson());
                 }

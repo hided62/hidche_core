@@ -13,7 +13,10 @@ class LastTurn{
         $this->setTerm($term);
     }
 
-    static function fromJson(string $json):self{
+    static function fromJson(?string $json):self{
+        if($json === null || $json === ''){
+            return new static();
+        }
         $values = Json::decode($json);
         $obj = new static(
             $values['command']??null,

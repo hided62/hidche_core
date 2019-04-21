@@ -118,7 +118,7 @@ function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
     
     $db = DB::db();
 
-    $db->update('general_turn', [
+    $db->update('nation_turn', [
         'turn_idx'=>$db->sqleval('turn_idx + %i', GameConst::$maxChiefTurn),
         'action'=>'휴식',
         'arg'=>'{}'

@@ -727,7 +727,7 @@ class GeneralAI{
                 
             }
         } else{    // 포상
-            $compNpcWar = Util::array_fist($npcWarGenerals); 
+            $compNpcWar = Util::array_first($npcWarGenerals); 
             $compNpcCivil = null;
             foreach($npcCivilGenerals as $npcCivil){
                 if($npcCivil->npc == 5){
@@ -1733,7 +1733,7 @@ class GeneralAI{
                 $iterCurrentType = ($cheifLevel % 2 == 0)?$iterCandChiefPower:$iterCandChiefIntel;
                 $candidate = $iterCurrentType->current();
 
-                while(key_exist($candidate, $promoted)){
+                while(key_exists($candidate, $promoted)){
                     $iterCurrentType->next();
                 }
 

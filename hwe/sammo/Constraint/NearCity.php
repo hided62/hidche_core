@@ -27,7 +27,7 @@ class NearCity extends Constraint{
         $this->tested = true;
 
         $dist = \sammo\searchDistance($this->general['city'], $this->arg, false);
-        if(key_exist($this->destCity['city'], $dist)){
+        if(key_exists($this->destCity['city'], $dist)){
             return true;
         }
 

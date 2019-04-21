@@ -142,7 +142,7 @@ class che_몰수 extends Command\NationCommand{
                 Message::MSGTYPE_PUBLIC, 
                 $src,
                 $src,
-                $str,
+                $text,
                 new \DateTime(),
                 new \DateTime('9999-12-31'),
                 []

@@ -1,6 +1,8 @@
 <?php
 namespace sammo\Scenario;
 use \sammo\DB;
+use \sammo\GameConst;
+use function \sammo\getNationChiefLevel;
 
 class Nation{
     private $id;
@@ -146,6 +148,20 @@ class Nation{
             $newRuler = $db->queryFirstField('SELECT `no` FROM general WHERE nation=%i ORDER BY leader+power+intel DESC LIMIT 1', $this->id);
             $db->update('general',['level'=>12], 'no=%i', $newRuler);
         }
+
+        $turnRows = [];
+        foreach(range(getNationChiefLevel(0) - 1, getNationChiefLevel($this->nationLevel), -1) as $chiefLevel){
+            foreach(range(0, GameConst::$maxChiefTurn - 1) as $turnIdx){
+                $turnRows[] = [
+                    'nation_id'=>$nation['nation'],
+                    'level'=>$chiefLevel,
+                    'turn_idx'=>$turnIdx,
+                    'action'=>'휴식',
+                    'arg'=>null,
+                ];
+            }
+        }
+        $db->insertIgnore('nation_turn', $turnRows);
     }
 
     public function getBrief(){

@@ -1,5 +1,7 @@
 <?php
 namespace sammo\Command;
+use \sammo\General;
+use \sammo\LastTurn;
 
 abstract class NationCommand extends BaseCommand{
     protected $lastTurn;
