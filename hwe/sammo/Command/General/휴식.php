@@ -4,6 +4,7 @@ namespace sammo\Command\General;
 use \sammo\Command;
 use \sammo\Util;
 use \sammo\JosaUtil;
+use \sammo\LastTurn;
 
 class 휴식 extends Command\GeneralCommand{
     static protected $actionName = '휴식';
@@ -13,7 +14,8 @@ class 휴식 extends Command\GeneralCommand{
     }
 
     protected function init(){
-        //아무것도 하지 않음
+        $this->runnableConstraints=[
+        ];
     }
 
     public function getCost():array{

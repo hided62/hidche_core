@@ -160,7 +160,7 @@ class che_건국 extends Command\GeneralCommand{
             'level'=>1,
             'type'=>$nationType,
             'capital'=>$general->getCityID()
-        ], 'nation=%i', $destNationID);
+        ], 'nation=%i', $general->getNationID());
 
         refreshNationStaticInfo();
 

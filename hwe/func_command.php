@@ -151,7 +151,7 @@ function _setNationCommand(int $nationID, int $level, array $turnList, string $c
     $db->update('nation_turn', [
         'action'=>$command,
         'arg'=>Json::encode($arg, JSON::EMPTY_ARRAY_IS_DICT)
-    ], 'nation_id = %i AND level = %i AND turn_idx IN %li', $generalID, $level, $turnList);
+    ], 'nation_id = %i AND level = %i AND turn_idx IN %li', $nationID, $level, $turnList);
 }
 
 function checkCommandArg(?array $arg):?string{
@@ -221,7 +221,7 @@ function setGeneralCommand(int $generalID, array $turnList, string $command, ?ar
     $general = General::createGeneralObjFromDB($generalID);
 
     try{
-        $commandObj = buildGeneralCommandClass($action, $general, $env, $arg);
+        $commandObj = buildGeneralCommandClass($command, $general, $env, $arg);
     }
     catch (\InvalidArgumentException $e){
         return [
@@ -292,7 +292,7 @@ function setNationCommand(int $generalID, array $turnList, string $command, ?arr
     }
 
     try{
-        $commandObj = buildNationCommandClass($action, $general, $env, $arg);
+        $commandObj = buildNationCommandClass($command, $general, $env, $general->getLastTurn(), $arg);
     }
     catch (\InvalidArgumentException $e){
         return [

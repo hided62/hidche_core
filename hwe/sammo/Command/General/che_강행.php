@@ -131,6 +131,8 @@ class che_강행 extends Command\GeneralCommand{
         $general->checkStatChange();
         $general->applyDB($db);
 
+        return true;
+
     }
 
     

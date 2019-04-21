@@ -66,11 +66,11 @@ class GeneralAI{
             'name'=>'재야',
         ];
 
-        $this->calcGenType();
-
         $this->leadership = $general->getLeadership(true, true, true, true);
         $this->power = $general->getPower(true, true, true, true);
         $this->intel = $general->getIntel(true, true, true, true);
+
+        $this->calcGenType();
 
         $this->calcDiplomacyState();
 
@@ -97,7 +97,7 @@ class GeneralAI{
             //지장
         } else {
             $genType = self::t지장;
-            if ($power >= $intel * 0.8 && Util::randBol(0.2)) {  //지무장
+            if ($power >= $intel * 0.8 && Util::randBool(0.2)) {  //지무장
                 if(Util::randBool($power / $intel / 2)){
                     $genType |= self::t무장;
                 }
@@ -545,9 +545,9 @@ class GeneralAI{
         $npcCivilGenerals = [];
         $npcWarGenerals = [];
         
-        foreach($db->query('SELECT `no`, nation, city, npc, `gold`, `rice`, leader, `power`, intel, killturn, crew, train, atmos, `level`, troop FROM general WHERE nation = %i', $nationID) as $nationGeneral) {
+        foreach($db->query('SELECT `no`, nation, city, npc, `gold`, `rice`, leader, `power`, intel, killturn, crew, train, atmos, `level`, troop FROM general WHERE nation = %i', $nationID) as $rawNationGeneral) {
 
-            $nationGeneralObj = (object)$nationGeneral;
+            $nationGeneral = (object)$rawNationGeneral;
             $cityID = $nationGeneral->city;
             $generalID = $nationGeneral->no;
     
@@ -556,24 +556,24 @@ class GeneralAI{
             }
     
             if(key_exists($cityID, $nationCities)){
-                $nationCities[$cityID]['generals'][] = $nationGeneralObj;
+                $nationCities[$cityID]['generals'][] = $nationGeneral;
                 if(!$nationCities[$cityID]['supply']){
-                    $lostGenerals[] = $nationGeneralObj;    
+                    $lostGenerals[] = $nationGeneral;    
                 }
             }
             else{
-                $lostGenerals[] = $nationGeneralObj;
+                $lostGenerals[] = $nationGeneral;
             }
     
-            if($nationGeneral['npc']<2 && $nationGeneral['killturn'] >= 5){
-                $userGenerals[] = $nationGeneralObj;
+            if($nationGeneral->npc<2 && $nationGeneral->killturn >= 5){
+                $userGenerals[] = $nationGeneral;
             }
-            else if($nationGeneral['leader']>=40 && $nationGeneral['killturn'] >= 5){
-                $npcWarGenerals[] = $nationGeneralObj;
+            else if($nationGeneral->leader>=40 && $nationGeneral->killturn >= 5){
+                $npcWarGenerals[] = $nationGeneral;
             }
             else{
                 //삭턴이 몇 안남은 장수는 '내정장 npc'로 처리
-                $npcCivilGenerals[] = $nationGeneralObj;
+                $npcCivilGenerals[] = $nationGeneral;
             }
     
             $nationGenerals[$generalID] = $nationGeneral;
@@ -609,15 +609,15 @@ class GeneralAI{
 
         $resName = Util::choiceRandom(['gold', 'rice']);
 
-        usort($this->userGenerals, function($lhs, $rhs) use ($nationGenerals, $resName){
+        usort($userGenerals, function($lhs, $rhs) use ($resName){
             return $lhs->$resName <=> $rhs->$resName;
         });
 
-        usort($npcWarGeneralsID, function($lhs, $rhs) use ($nationGenerals, $resName){
+        usort($npcWarGenerals, function($lhs, $rhs) use ($resName){
             return $lhs->$resName <=> $rhs->$resName;
         });
 
-        usort($npcCivilGeneralsID, function($lhs, $rhs) use ($nationGenerals, $resName){
+        usort($npcCivilGenerals, function($lhs, $rhs) use ($resName){
             return $lhs->$resName <=> $rhs->$resName;
         });
 
@@ -628,16 +628,16 @@ class GeneralAI{
         $avgUserRes /= max(1, count($userGenerals));
 
         $avgNpcWarRes = 0;
-        foreach ($npcWarGeneralsID as $id){
-            $avgNpcWarRes += $nationGenerals[$id][$resName];
+        foreach ($npcWarGenerals as $npcWarGeneral){
+            $avgNpcWarRes += $npcWarGeneral->$resName;
         }
-        $avgNpcWarRes /= max(1, count($npcWarGeneralsID));
+        $avgNpcWarRes /= max(1, count($npcWarGenerals));
 
         $avgNpcCivilRes = 0;
-        foreach ($npcCivilGeneralsID as $id){
-            $avgNpcCivilRes += $nationGenerals[$id][$resName];
+        foreach ($npcCivilGenerals as $npcCivilGeneral){
+            $avgNpcCivilRes += $npcCivilGeneral->$resName;
         }
-        $avgNpcCivilRes /= max(1, count($npcCivilGeneralsID));
+        $avgNpcCivilRes /= max(1, count($npcCivilGenerals));
 
         //금쌀이 부족한 '유저장' 먼저 포상
         while ($nation[$resName] > ($resName=='gold'?1:2)*3000 && $userGenerals) {
@@ -727,29 +727,28 @@ class GeneralAI{
                 
             }
         } else{    // 포상
-            $compNpcWar = $npcWarGeneralsID?$nationGenerals[$npcWarGeneralsID[0]]:null; 
+            $compNpcWar = Util::array_fist($npcWarGenerals); 
             $compNpcCivil = null;
-            foreach($npcCivilGeneralsID??[] as $npcCivilID){
-                $npcCivil = $nationGenerals[$npcCivilID];
-                if($npcCivil['npc'] == 5){
+            foreach($npcCivilGenerals as $npcCivil){
+                if($npcCivil->npc == 5){
                     continue;
                 }
                 $compNpcCivil = $npcCivil;
                 break;
             }
     
-            if($compNpcWar && $compNpcWar[$resName] < 21000){
+            if($compNpcWar && $compNpcWar->$resName < 21000){
                 $amount = min(100, intdiv(($nation[$resName]-($resName=='rice'?(GameConst::$baserice):(GameConst::$basegold))), 5000)*10 + 10);
                 $commandList[] = [['che_몰수', [
-                    'destGeneralID'=>$compNpcWar['no'],
+                    'destGeneralID'=>$compNpcWar->no,
                     'isGold'=>$resName=='gold',
                     'amount'=>$amount
                 ]], 3];
             }
-            if($compNpcCivil && $compNpcCivil[$resName] < $minRes){
+            if($compNpcCivil && $compNpcCivil->$resName < $minRes){
                 $amount = intdiv($minRes+99, 100);
                 $commandList[] = [['che_몰수', [
-                    'destGeneralID'=>$compNpcCivil['no'],
+                    'destGeneralID'=>$compNpcCivil->no,
                     'isGold'=>$resName=='gold',
                     'amount'=>$amount
                 ]], 2];
@@ -758,7 +757,7 @@ class GeneralAI{
 
         //고립 도시 장수 발령
         foreach($lostGenerals as $lostGeneral){
-            if($lostGeneral['npc']<2){
+            if($lostGeneral->npc<2){
                 //고립 유저 장수는 이미 세팅했음
                 continue;
             }
@@ -864,29 +863,29 @@ class GeneralAI{
         if($frontCitiesID){
             $workRemain = 3;
             foreach($nationGenerals as $nationGeneral){
-                $generalCity = $nationCities[$nationGeneral['city']]??null;
+                $generalCity = $nationCities[$nationGeneral->city]??null;
                 if(!$generalCity){
                     continue;
                 }
-                if($nationGeneral['crew'] < 2000){
+                if($nationGeneral->crew < 2000){
                     continue;
                 }
-                if($nationGeneral['rice'] < 700 * $tech){
+                if($nationGeneral->rice < 700 * $tech){
                     continue;
                 }
-                if($generalCity['front']){
+                if($generalCity->front){
                     continue;
                 }
-                if($nationGeneral['train'] * $nationGeneral['atmos'] < 75 * 75){
+                if($nationGeneral->train * $nationGeneral->atmos < 75 * 75){
                     continue;
                 }
 
-                if($nationGeneral['troop'] != 0){
+                if($nationGeneral->troop != 0){
                     continue;
                 }
         
                 $score = 5;
-                if($nationGeneral['npc']<2){
+                if($nationGeneral->npc<2){
                     $score *= 4;
                 }
         
@@ -898,7 +897,7 @@ class GeneralAI{
                 }
                 
                 $command = [['che_발령', [
-                    'destGeneralID'=>$nationGeneral['no'],
+                    'destGeneralID'=>$nationGeneral->no,
                     'destCityID'=>$targetCityID
                 ]], 5];
 
@@ -959,15 +958,15 @@ class GeneralAI{
                 
                 
                 $command = [['che_발령', [
-                    'destGeneralID'=>$nationGeneral['no'],
+                    'destGeneralID'=>$nationGeneral->no,
                     'destCityID'=>$targetCity['city']
                 ]], 5];
 
-                if($nationGeneral['npc']<2 && ($workRemain&2)){
+                if($nationGeneral->npc<2 && ($workRemain&2)){
                     $workRemain ^= 2;
                     $commandList[] = [$command, $score];
                 }
-                else if($nationGeneral['npc']>=2 && ($workRemain&1)){
+                else if($nationGeneral->npc>=2 && ($workRemain&1)){
                     $workRemain ^= 1;
                     $commandList[] = [$command, $score];
                 }
@@ -1606,7 +1605,7 @@ class GeneralAI{
         $nationID = $this->nation['nation'];
 
         $this->devRate = $db->queryFirstRow(
-            'SELECT sum(pop)/sum(pop2)*100 as pop,(sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(agri2)+sum(comm2)+sum(secu2)+sum(def2)+sum(wall2))*100 as all from city where nation=%i',
+            'SELECT sum(pop)/sum(pop2)*100 as pop_p,(sum(agri)+sum(comm)+sum(secu)+sum(def)+sum(wall))/(sum(agri2)+sum(comm2)+sum(secu2)+sum(def2)+sum(wall2))*100 as all_p from city where nation=%i',
             $nationID
         );
         return $this->devRate;
@@ -1626,7 +1625,7 @@ class GeneralAI{
         }
 
         $devRate = $this->getNationDevelopedRate();
-        if(($devRate['pop'] + $devRate['all']) / 2 < 80){
+        if(($devRate['pop_p'] + $devRate['all_p']) / 2 < 80){
             return null;
         }
 
@@ -1770,7 +1769,7 @@ class GeneralAI{
         } else {
             $devRate = $this->getNationDevelopedRate();
 
-            $avg = ($devRate['pop'] + $devRate['all']) / 2;
+            $avg = ($devRate['pop_p'] + $devRate['all_p']) / 2;
 
             if($avg > 95) $rate = 25;
             elseif($avg > 70) $rate = 20;
