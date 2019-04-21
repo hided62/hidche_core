@@ -10,7 +10,7 @@ class DisallowDiplomacyStatus extends Constraint{
     protected $nationID;
     protected $disallowStatus = [];
 
-    public function checkInputValues(bool $throwExeception=true){
+    public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }

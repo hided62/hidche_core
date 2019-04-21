@@ -6,7 +6,7 @@ use sammo\GameConst;
 class ReqGeneralTrainMargin extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_INT_ARG;
 
-    public function checkInputValues(bool $throwExeception=true){
+    public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }

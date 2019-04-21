@@ -5,7 +5,7 @@ namespace sammo\Constraint;
 class ReqGeneralGold extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_NUMERIC_ARG;
 
-    public function checkInputValues(bool $throwExeception=true){
+    public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }

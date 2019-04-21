@@ -17,7 +17,7 @@ class ReqGeneralValue extends Constraint{
     protected $reqVal;
     protected $comp;
 
-    public function checkInputValues(bool $throwExeception=true){
+    public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }

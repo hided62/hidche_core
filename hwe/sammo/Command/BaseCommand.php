@@ -235,7 +235,7 @@ abstract class BaseCommand{
 
     public function testReservable():?string{
         if($this->reservableConstraints === null){
-            return true;
+            return null;
         }
 
         if($this->reasonNotReservable){
@@ -284,7 +284,7 @@ abstract class BaseCommand{
             'nation'=>$this->nation,
             'arg'=>$this->arg,
 
-            'destGeneral'=>$this->destGeneralObj->getRaw(),
+            'destGeneral'=>$this->destGeneralObj?$this->destGeneralObj->getRaw():null,
             'destCity'=>$this->destCity,
             'destNation'=>$this->destNation,
         ];
@@ -300,7 +300,8 @@ abstract class BaseCommand{
             return $this->reservable;
         }
 
-        return $this->testReservable() === null;
+        $this->reservable = $this->testReservable() === null;
+        return $this->reservable;
     }
 
     public function isArgValid():bool{

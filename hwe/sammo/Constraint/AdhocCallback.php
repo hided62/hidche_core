@@ -7,7 +7,7 @@ namespace sammo\Constraint;
 class AdhocCallback extends Constraint{
     const REQ_VALUES = Constraint::REQ_ARG;
 
-    public function checkInputValues(bool $throwExeception=true){
+    public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }

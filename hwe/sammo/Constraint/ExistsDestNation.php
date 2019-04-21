@@ -5,7 +5,7 @@ namespace sammo\Constraint;
 class ExistsDestNation extends Constraint{
     const REQ_VALUES = Constraint::REQ_DEST_NATION;
 
-    public function checkInputValues(bool $throwExeception=true){
+    public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }

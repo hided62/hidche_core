@@ -77,7 +77,7 @@ abstract class Constraint{
         $this->reason = null;
     }
 
-    static public function build(array $input):this{
+    static public function build(array $input):self{
         $self = new static();
         foreach($input as $key=>$value){
             if($value === null){
@@ -140,27 +140,27 @@ abstract class Constraint{
             throw new \InvalidArgumentException('require arg');
         }
 
-        if(($valueType&static::REQ_STRING_ARG) && !is_string($this->arg)){
+        if(($valueType&static::REQ_STRING_ARG===static::REQ_STRING_ARG) && !is_string($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require string arg');
         }
 
-        if(($valueType&static::REQ_BOOLEAN_ARG) && !is_bool($this->arg)){
+        if(($valueType&static::REQ_BOOLEAN_ARG===static::REQ_BOOLEAN_ARG) && !is_bool($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require bool arg');
         }
 
-        if(($valueType&static::REQ_INT_ARG) && !is_int($this->arg)){
+        if(($valueType&static::REQ_INT_ARG===static::REQ_INT_ARG) && !is_int($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require int arg');
         }
 
-        if(($valueType&static::REQ_NUMERIC_ARG) && !is_numeric($this->arg)){
+        if(($valueType&static::REQ_NUMERIC_ARG===static::REQ_NUMERIC_ARG) && !is_numeric($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require numeric arg');
         }
 
-        if(!($valueType&static::REQ_ARRAY_ARG) && !is_array($this->arg)){
+        if(($valueType&static::REQ_ARRAY_ARG===static::REQ_ARRAY_ARG) && !is_array($this->arg)){
             if(!$throwExeception){return false; }
             throw new \InvalidArgumentException('require array arg');
         }
@@ -170,7 +170,7 @@ abstract class Constraint{
 
     public function reason():?string{
         if(!$this->tested === false){
-            throw new \RuntimeException('test가 실행되지 않음');
+            throw new \RuntimeException(get_class($this).'::test가 실행되지 않음');
         }
         return $this->reason;
     }
@@ -181,10 +181,12 @@ abstract class Constraint{
                 continue;
             }
 
-            $method = $constraintArgs[0].'::build';
+            $method = __NAMESPACE__.'\\'.$constraintArgs[0].'::build';
 
             /** @var \sammo\Constraint\Constraint $contraint */
             $constraint = call_user_func($method,$input);
+
+            assert($constraint instanceof Constraint);
             
             if(count($constraintArgs) > 1){
                 $arg = $constraintArgs[1];

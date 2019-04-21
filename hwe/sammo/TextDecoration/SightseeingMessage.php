@@ -1,5 +1,6 @@
 <?php
 namespace sammo\TextDecoration;
+use \sammo\Util;
 
 class SightseeingMessage{
 
@@ -98,7 +99,7 @@ class SightseeingMessage{
     {
         //TODO: 장수 이름이 들어가는 경우도 고려?
         if(static::$messages === null){
-            static::buildMessageList();
+            static::initMessageList();
         }
     }
 

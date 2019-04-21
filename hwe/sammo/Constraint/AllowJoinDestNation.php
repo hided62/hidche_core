@@ -9,7 +9,7 @@ class AllowJoinDestNation extends Constraint{
 
     protected $relYear;
 
-    public function checkInputValues(bool $throwExeception=true){
+    public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }

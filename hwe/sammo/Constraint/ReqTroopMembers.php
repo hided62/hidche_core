@@ -6,7 +6,7 @@ use sammo\DB;
 class ReqTroopMembers extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL;
 
-    public function checkInputValues(bool $throwExeception=true){
+    public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }

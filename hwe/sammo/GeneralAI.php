@@ -989,6 +989,7 @@ class GeneralAI{
 
         $db = DB::db();
 
+        $arg = null;
 
         // 오랑캐는 바로 임관
         if($general->getVar('npc') == 9) {

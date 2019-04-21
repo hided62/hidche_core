@@ -5,7 +5,7 @@ namespace sammo\Constraint;
 class NotCapital extends Constraint{
     const REQ_VALUES = Constraint::REQ_GENERAL|Constraint::REQ_NATION|Constraint::REQ_BOOLEAN_ARG;
 
-    public function checkInputValues(bool $throwExeception=true){
+    public function checkInputValues(bool $throwExeception=true):bool{
         if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
