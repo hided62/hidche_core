@@ -34,7 +34,7 @@ function Error($message='', $url="")
         $url = $_SERVER['REQUEST_URI'];
     }
     $e = new \Exception();
-    logError("aux_err", $message, getExceptionTraceAsString($e));
+    logError("aux_err", $message, '', getExceptionTraceAsString($e));
 
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 

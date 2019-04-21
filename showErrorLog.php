@@ -29,7 +29,9 @@ $err_logs = $fdb->select('err_log', [
     'date',
     'err',
     'errstr',
-    'trace'
+    'errpath',
+    'trace',
+    'webuser'
 ], [
     'ORDER'=>['id'=>'DESC'],
     'LIMIT'=>100
@@ -61,9 +63,13 @@ $err_logs = $fdb->select('err_log', [
         <div class="card-body">
             <div class="card-title"><?=htmlspecialchars($err['errstr'])?></div>
             <ul class="list-group list-group-flush">
+                <?php if($err['errpath']): ?>
+                <li class="list-group-item"><?=htmlspecialchars($err['errpath'])?></li>
+                <?php endif; ?>
                 <?php foreach(Json::decode($err['trace']) as $trace): ?>
                 <li class="list-group-item"><?=htmlspecialchars($trace)?></li>
                 <?php endforeach; ?>
+                <li class="list-group-item"><?=htmlspecialchars($err['webuser'])?></li>
             </ul>
         </div>
     </div>
