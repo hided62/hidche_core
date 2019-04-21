@@ -75,6 +75,7 @@ class che_거병 extends Command\GeneralCommand{
 
         $nationName = $generalName;
         $cityName = $this->city['name'];
+        $logger = $general->getLogger();
 
         $nationNameExistsCnt = $db->queryFirstField('SELECT count(*) FROM nation WHERE name = %s', $nationName);
         if($nationNameExistsCnt){
@@ -85,6 +86,20 @@ class che_거병 extends Command\GeneralCommand{
             //여전히 중복된다면, 그냥 글자 길이 넘어가든 말든 신경쓰지 말고 넘기기.
             $nationName = '㉥'.$nationName;
         }
+
+        DB::db()->insert('nation', [
+            'name'=>$nationName,
+            'color'=>'#330000', 
+            'gold'=>0, 
+            'rice'=>GameConst::$baserice, 
+            'rate'=>20, 
+            'bill'=>100, 
+            'strategic_cmd_limit'=>12, 
+            'surlimit'=>72, 
+            'type'=>0, 
+            'gennum'=>1
+        ]);
+        $nationID = DB::db()->insertId();
 
 
         $diplomacyInit = [];
@@ -106,19 +121,7 @@ class che_거병 extends Command\GeneralCommand{
         }
         $db->insert('diplomacy', $diplomacyInit);
 
-        DB::db()->insert('nation', [
-            'name'=>$nationName,
-            'color'=>'#330000', 
-            'gold'=>0, 
-            'rice'=>GameConst::$baserice, 
-            'rate'=>20, 
-            'bill'=>100, 
-            'strategic_cmd_limit'=>12, 
-            'surlimit'=>72, 
-            'type'=>0, 
-            'gennum'=>1
-        ]);
-        $nationID = DB::db()->insertId();
+        
         $turnRows = [];
         foreach([12, 11] as $chiefLevel){
             foreach(range(0, GameConst::$maxChiefTurn - 1) as $turnIdx){

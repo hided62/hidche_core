@@ -267,10 +267,10 @@ class NPC{
 
         $city = $this->locatedCity;
         if(is_int($city)){
-            $city = CityConst::byID($city)['id']??null;
+            $city = CityConst::byID($city)->id??null;
         }
         else if(is_string($city)){
-            $city = CityConst::byName($city)['id']??null;
+            $city = CityConst::byName($city)->id??null;
         }
         if($city === null){
             if($nationID == 0 || !CityHelper::getAllNationCities($nationID)){

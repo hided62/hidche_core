@@ -51,7 +51,7 @@ CREATE TABLE `general` (
 	`book` INT(2) NOT NULL DEFAULT '0',
 	`horse` INT(2) NOT NULL DEFAULT '0',
 	`item` INT(2) NOT NULL DEFAULT '0',
-	`turntime` DATETIME(6) NOT NULL DEFAULT NULL,
+	`turntime` DATETIME(6) NOT NULL,
 	`recwar` DATETIME(6) NULL DEFAULT NULL,
 	`makelimit` INT(2) NULL DEFAULT '0',
 	`killturn` INT(3) NULL DEFAULT NULL,

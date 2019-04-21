@@ -297,25 +297,31 @@ class Util extends \utilphp\util
         return $result;
     }
 
-    public static function isDict(&$array)
+    public static function isDict($array)
     {
+        if($array === null){
+            return false;
+        }
         if (!is_array($array)) {
             //배열이 아니면 dictionary 조차 아님.
             return false;
         }
+        if(count($array) === 0){
+            return true;
+        }
+
         $idx = 0;
-        $jmp = 0;
-        foreach ($array as $key=>$value) {
+        foreach (array_keys($array) as $key) {
             if (is_string($key)) {
                 return true;
             }
-            if(!$idx + 1 == $key){
-                return false;
+            if($idx !== $key){
+                return true;
             }
-            $idx = $key;
+            $idx = $key + 1;
         }
     
-        return true;
+        return false;
     }
 
     /**

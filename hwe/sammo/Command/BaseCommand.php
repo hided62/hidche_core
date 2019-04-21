@@ -201,10 +201,7 @@ abstract class BaseCommand{
         $db = DB::db();
         $destNation = $db->queryFirstRow('SELECT %l FROM nation WHERE nation=%i', Util::formatListOfBackticks($args), $nationID);
         if($destNation === null){
-            $destNation = [];
-            foreach($args as $arg){
-                $destNation[$arg] = $defaultValues[$arg];
-            }
+            $destNation = $defaultValues;
         }
         $this->destNation = $destNation;
     }

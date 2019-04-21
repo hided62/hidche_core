@@ -164,8 +164,8 @@ class ConstraintHelper{
         return [__FUNCTION__, $npcType];
     }
 
-    static function ReqEnvValue($key, string $keyNick, string $comp, $reqVal, string $failMessage):array{
-        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $failMessage]];
+    static function ReqEnvValue($key, string $comp, $reqVal, string $failMessage):array{
+        return [__FUNCTION__, [$key, $comp, $reqVal, $failMessage]];
     }
 
     static function ReqGeneralAtmosMargin(int $maxAtmos):array{

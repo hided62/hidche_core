@@ -190,5 +190,9 @@ function CriticalScoreEx(string $type):float {
     if ($type == 'success') {
         return Util::randRange(2.2, 3.0);
     }
+    if ($type == 'fail') {
+        return  Util::randRange(0.2, 0.4);
+    }
+    return 1;
 }
 

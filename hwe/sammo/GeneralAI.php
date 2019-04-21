@@ -598,7 +598,7 @@ class GeneralAI{
 
         //타 도시에 있는 '유저장' 발령
         foreach($lostGenerals as $lostGeneral){
-            if($lostGeneral['npc'] < 2){
+            if($lostGeneral->npc < 2){
                 if(in_array($this->dipState, [self::d직전, self::d전쟁]) && $frontCitiesID){
                     $selCityID = Util::choiceRandom($frontCitiesID);
                 }
@@ -903,11 +903,11 @@ class GeneralAI{
                     'destCityID'=>$targetCityID
                 ]], 5];
 
-                if($nationGeneral['npc']<2 && ($workRemain&2)){
+                if($nationGeneral->npc<2 && ($workRemain&2)){
                     $workRemain ^= 2;
                     $commandList[] = [$command, $score];
                 }
-                else if($nationGeneral['npc']>=2 && ($workRemain&1)){
+                else if($nationGeneral->npc>=2 && ($workRemain&1)){
                     $workRemain ^= 1;
                     $commandList[] = [$command, $score];
                 }
@@ -922,35 +922,35 @@ class GeneralAI{
         if($frontCitiesID && $backupCitiesID){
             $workRemain = 3;
             foreach($nationGenerals as $nationGeneral){
-                $generalCity = $nationCities[$nationGeneral['city']]??null;
+                $generalCity = $nationCities[$nationGeneral->city]??null;
                 if(!$generalCity){                
                     continue;
                 }
-                if($nationGeneral['crew'] >= 1000){
+                if($nationGeneral->crew >= 1000){
                     continue;
                 }
-                if($nationGeneral['rice'] < 700 * $tech){
+                if($nationGeneral->rice < 700 * $tech){
                     continue;
                 }
                 if(!$generalCity['front']){
                     continue;
                 }
-                if($generalCity['pop'] - 33000 > $nationGeneral['leader']){
+                if($generalCity['pop'] - 33000 > $nationGeneral->leader){
                     continue;
                 }
-                if($nationGeneral['troop'] != 0){
+                if($nationGeneral->troop != 0){
                     continue;
                 }
         
                 $score = 5;
-                if($nationGeneral['npc']<2){
+                if($nationGeneral->npc<2){
                     $score *= 4;
                 }
         
                 $popTrial = 5;
                 for($popTrial = 0; $popTrial < 5; $popTrial++){
                     $targetCity = $nationCities[Util::choiceRandom($backupCitiesID)];
-                    if($targetCity['pop'] < 33000 + $nationGeneral['leader']){
+                    if($targetCity['pop'] < 33000 + $nationGeneral->leader){
                         continue;
                     }
                     if (Util::randBool($targetCity['pop'] / $targetCity['pop2'])) {
@@ -1035,8 +1035,10 @@ class GeneralAI{
                 }
                 else{
                     //랜임 커맨드 입력.
-                    $command = 'che_임관';
-                    $arg = ['destNationID'=>99];
+                    $command = 'che_랜덤임관';
+                    $arg = [
+                        'destNationIDList'=>[]
+                    ];
                 }
                 break;
             case '거병_견문': //거병이나 견문
@@ -1531,7 +1533,7 @@ class GeneralAI{
 
         $targetCity = [];
         //NOTE: 최단 거리가 현재 도시에서 '어떻게 가야' 가장 짧은지 알 수가 없으므로, 한칸 간 다음 계산하기로
-        foreach(CityConst::byID($general->getVar('city'))->path as $nearCityID){
+        foreach(array_keys(CityConst::byID($general->getVar('city'))->path) as $nearCityID){
             if(CityConst::byID($nearCityID)->level < 4){
                 $targetCity[$nearCityID] = 0.5;
             }
@@ -1738,11 +1740,17 @@ class GeneralAI{
 
                 while(key_exists($candidate, $promoted)){
                     $iterCurrentType->next();
+                    if(!$iterCurrentType->valid()){
+                        break;
+                    }
                     $candidate = $iterCurrentType->current();
                 }
 
-                $chiefCandidate[$cheifLevel] = $candidate;
-                $promoted[$candidate] = $cheifLevel;
+                if($candidate){
+                    $chiefCandidate[$cheifLevel] = $candidate;
+                    $promoted[$candidate] = $cheifLevel;
+                }
+                
             }
 
             foreach($chiefCandidate as $chiefLevel=>$chiefID){

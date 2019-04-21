@@ -2,7 +2,7 @@
 namespace sammo\Command\General;
 
 use \sammo\{
-    DB, Util, JosaUtil, TimeUtil,
+    DB, Util, JosaUtil, TimeUtil, Json,
     General, 
     ActionLogger,
     GameConst, GameUnitConst,
@@ -33,10 +33,10 @@ class che_랜덤임관 extends Command\GeneralCommand{
         $destNationIDList = $this->arg['destNationIDList']??null;
         //null은 에러, []는 정상
 
-        if($destNationIDList === null || is_array($destNationIDList)){
+        if($destNationIDList === null || !is_array($destNationIDList)){
             return false;
         }
-        if(Util::isDict($destNationIDList)){
+        if($destNationIDList && Util::isDict($destNationIDList)){
             return false;
         }
         foreach($destNationIDList as $nationID){
@@ -66,10 +66,12 @@ class che_랜덤임관 extends Command\GeneralCommand{
 
         $this->runnableConstraints=[
             ConstraintHelper::BeNeutral(),
-            ConstraintHelper::ExistsDestNation(),
             ConstraintHelper::AllowJoinAction(),
-            ConstraintHelper::ExistsAllowJoinNation($relYear, $this->arg['destNationIDList']),
         ];
+
+        if($this->arg['destNationIDList']){
+            $this->runnableConstraints[] = ConstraintHelper::ExistsAllowJoinNation($relYear, $this->arg['destNationIDList']);
+        }
     }
 
     public function getCost():array{
@@ -103,12 +105,21 @@ class che_랜덤임관 extends Command\GeneralCommand{
 
         $destNation = null;
 
-        if ($general->getVar('npc') >= 2 && !$env['fiction'] && 1000 <= $admin['scenario'] && $admin['scenario'] < 2000) {
-            $nations = $db->query(
-                'SELECT nation.`name` as `name`,nation.nation as nation,scout,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE scout=0 and gennum<%i and nation.nation not in %li',
-                $notIn,
-                $relYear<3?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
-            );
+        if ($general->getVar('npc') >= 2 && !$env['fiction'] && 1000 <= $env['scenario'] && $env['scenario'] < 2000) {
+            if($notIn){
+                $nations = $db->query(
+                    'SELECT nation.`name` as `name`,nation.nation as nation,scout,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE scout=0 and gennum<%i and nation.nation not in %li',
+                    $relYear<3?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral,
+                    $notIn
+                );
+            }
+            else{
+                $nations = $db->query(
+                    'SELECT nation.`name` as `name`,nation.nation as nation,scout,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE scout=0 and gennum<%i',
+                    $relYear<3?GameConst::$initialNationGenLimit:GameConst::$defaultMaxGeneral
+                );
+            }
+            
             shuffle($nations);
 
             $allGen = Util::arraySum($nations, 'gennum');
@@ -145,11 +156,20 @@ class che_랜덤임관 extends Command\GeneralCommand{
             }
 
             $generalsCnt = [];
-            $rawGeneralsCnt = $db->query(
-                'SELECT general.nation as nation, nation.gennum, nation.name, npc, count(*) as cnt FROM general JOIN nation ON general.nation = nation.nation WHERE npc < 5 AND nation.gennum < %i AND nation.nation NOT IN %li GROUP BY general.nation, general.npc',
-                $genLimit,
-                $notIn
-            );
+            if($notIn){
+                $rawGeneralsCnt = $db->query(
+                    'SELECT general.nation as nation, nation.gennum, nation.name, npc, count(*) as cnt FROM general JOIN nation ON general.nation = nation.nation WHERE npc < 5 AND nation.gennum < %i AND nation.nation NOT IN %li GROUP BY general.nation, general.npc',
+                    $genLimit,
+                    $notIn
+                );
+            }
+            else{
+                $rawGeneralsCnt = $db->query(
+                    'SELECT general.nation as nation, nation.gennum, nation.name, npc, count(*) as cnt FROM general JOIN nation ON general.nation = nation.nation WHERE npc < 5 AND nation.gennum < %i GROUP BY general.nation, general.npc',
+                    $genLimit
+                );
+            }
+            
 
             foreach($rawGeneralsCnt as $nation){
                 $nationID = $nation['nation'];
@@ -175,7 +195,7 @@ class che_랜덤임관 extends Command\GeneralCommand{
 
             $randVals = [];
             foreach($generalsCnt as $testNation){
-                $randVals[] += [$testNation, 1/$testNation['cnt']];
+                $randVals[] = [$testNation, 1/$testNation['cnt']];
             }
 
             $destNation = Util::choiceRandomUsingWeightPair($randVals);
@@ -185,7 +205,6 @@ class che_랜덤임관 extends Command\GeneralCommand{
             throw new MustNotBeReachedException();
         }
 
-        $destNation = $this->destNation;
         $gennum = $destNation['gennum'];
         $destNationID = $destNation['nation'];
         $destNationName = $destNation['name'];
@@ -203,7 +222,7 @@ class che_랜덤임관 extends Command\GeneralCommand{
 
         $logger->pushGeneralActionLog("<D>{$destNationName}</>에 랜덤 임관했습니다. <1>$date</>");
         $logger->pushGeneralHistoryLog("<D><b>{$destNationName}</b></>에 랜덤 임관");
-        $logger->pushGlobalActionLog("{$generalName}</>{$josaYi} {$randomTalk} <D><b>{$destNationName}</b></>에 <S>임관</>했습니다.");
+        $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} {$randomTalk} <D><b>{$destNationName}</b></>에 <S>임관</>했습니다.");
 
         if($gennum < GameConst::$initialNationGenLimit) {
             $exp = 700;
@@ -221,7 +240,7 @@ class che_랜덤임관 extends Command\GeneralCommand{
             $general->setVar('city', $this->destGeneralObj->getCityID());
         }
         else{
-            $targetCityID = $db->queryFirstField('SELECT city FROM nation WHERE nation = %i AND level=12', $destNationID);
+            $targetCityID = $db->queryFirstField('SELECT city FROM general WHERE nation = %i AND level=12', $destNationID);
             $general->setVar('city', $targetCityID);
         }
 

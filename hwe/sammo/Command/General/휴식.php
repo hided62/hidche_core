@@ -5,6 +5,7 @@ use \sammo\Command;
 use \sammo\Util;
 use \sammo\JosaUtil;
 use \sammo\LastTurn;
+use \sammo\DB;
 
 class 휴식 extends Command\GeneralCommand{
     static protected $actionName = '휴식';
