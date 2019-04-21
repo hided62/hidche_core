@@ -8,6 +8,7 @@ use \sammo\{
     GameConst,
     LastTurn,
     GameUnitConst,
+    CityConst,
     Command
 };
 

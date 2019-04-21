@@ -123,7 +123,7 @@ function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
         'action'=>'휴식',
         'arg'=>'{}'
     ], 'nation_id=%i AND level=%i AND turn_idx < %i', $nationID, $level, $turnCnt);
-    $db->update('general_turn', [
+    $db->update('nation_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', $turnCnt)
     ], 'nation_id=%i AND level=%i', $nationID, $level);
 }

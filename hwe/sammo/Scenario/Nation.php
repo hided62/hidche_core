@@ -153,15 +153,15 @@ class Nation{
         foreach(range(getNationChiefLevel(0) - 1, getNationChiefLevel($this->nationLevel), -1) as $chiefLevel){
             foreach(range(0, GameConst::$maxChiefTurn - 1) as $turnIdx){
                 $turnRows[] = [
-                    'nation_id'=>$nation['nation'],
+                    'nation_id'=>$this->id,
                     'level'=>$chiefLevel,
                     'turn_idx'=>$turnIdx,
                     'action'=>'휴식',
-                    'arg'=>null,
+                    'arg'=>'{}',
                 ];
             }
         }
-        $db->insertIgnore('nation_turn', $turnRows);
+        $db->insert('nation_turn', $turnRows);
     }
 
     public function getBrief(){

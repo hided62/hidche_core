@@ -1735,6 +1735,7 @@ class GeneralAI{
 
                 while(key_exists($candidate, $promoted)){
                     $iterCurrentType->next();
+                    $candidate = $iterCurrentType->current();
                 }
 
                 $chiefCandidate[$cheifLevel] = $candidate;
@@ -1779,7 +1780,7 @@ class GeneralAI{
             $db->update('nation', [
                 'war'=>0,
                 'rate'=>$rate
-            ]);
+            ], 'nation=%i', $nationID);
             return $rate;
         }
     }
@@ -1806,7 +1807,7 @@ class GeneralAI{
         return $bill;
     }
 
-    protected function caclRiceBillRate():int{
+    protected function calcRiceBillRate():int{
         $db = DB::db();
         $nation = $this->nation;
         $env = $this->env;
