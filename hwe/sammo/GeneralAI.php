@@ -44,7 +44,7 @@ class GeneralAI{
     public function __construct(General $general){
         $db = DB::db();
         $gameStor = KVStorage::getStorage($db, 'game_env');
-        $this->env = $gameStor->getValues(['startyear','year','month','turnterm','killturn','scenario','gold_rate','rice_rate']);
+        $this->env = $gameStor->getValues(['startyear','year','month','turnterm','killturn','scenario','gold_rate','rice_rate', 'develcost']);
         $this->baseDevelCost = $this->env['develcost'] * 12;
         $this->general = $general;
         if($general->getRawCity() === null){
@@ -1051,7 +1051,7 @@ class GeneralAI{
                 break;
             case '이동': //이동
                 
-                $paths = array_keys(CityConst::byID($city['city'])::$path);
+                $paths = array_keys(CityConst::byID($city['city'])->path);
                 $command = 'che_이동';
                 $arg = ['destCityID'=>Util::choiceRandom($paths)];
                 break;

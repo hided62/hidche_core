@@ -159,7 +159,7 @@ class General implements iAction{
     }
 
     function setRawCity(?array $city){
-        $this->city = $city;
+        $this->rawCity = $city;
     }
 
     function getCityID():int{
@@ -401,7 +401,7 @@ class General implements iAction{
                 continue;
             }
             /** @var iAction $iObj */
-            $value = $iObj->onCalcDomestic($turnType, $varType, $value);
+            $value = $iObj->onCalcDomestic($turnType, $varType, $value, $aux);
         }
         return $value;
     }
@@ -550,7 +550,7 @@ class General implements iAction{
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'belong',
             'personal', 'special', 'special2', 'mode', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex0', 'dex10', 'dex20', 'dex30', 'dex40', 
-            'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn'
+            'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn', 'myset'
         ];
 
         if($column === null){
