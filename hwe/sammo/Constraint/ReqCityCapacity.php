@@ -14,7 +14,7 @@ class ReqCityCapacity extends Constraint{
     protected $reqVal;
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 
@@ -50,6 +50,7 @@ class ReqCityCapacity extends Constraint{
     public function test():bool{
         $this->checkInputValues();
         $this->tested = true;
+        $keyNick = $this->keyNick;
 
         if($this->isPercent){
             if($this->city[$this->key] >= $this->city[$this->maxKey] * $this->reqVal){
@@ -64,7 +65,7 @@ class ReqCityCapacity extends Constraint{
         }
 
         $josaYi = JosaUtil::pick($keyNick, '이');
-        $this->reason = "{$keyNick}{$josaUn} 부족합니다.";
+        $this->reason = "{$keyNick}{$josaYi} 부족합니다.";
         return false;
     }
 }

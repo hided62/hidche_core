@@ -12,7 +12,7 @@ class DisallowDiplomacyBetweenStatus extends Constraint{
     protected $disallowStatus = [];
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 

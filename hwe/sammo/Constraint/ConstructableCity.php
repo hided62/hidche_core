@@ -8,7 +8,7 @@ class ConstructableCity extends Constraint{
     protected $relYear;
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 
@@ -29,7 +29,7 @@ class ConstructableCity extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        $city = $this->city();
+        $city = $this->city;
 
         if($city['nation'] != 0){
             $this->reason = '공백지가 아닙니다.';

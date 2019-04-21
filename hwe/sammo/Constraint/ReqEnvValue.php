@@ -18,7 +18,7 @@ class ReqEnvValue extends Constraint{
     protected $msg;
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 
@@ -62,13 +62,13 @@ class ReqEnvValue extends Constraint{
             '=='=>function($target, $src){
                 return ($target == $src);
             },
-            '!='=>function($targeta, $src){
+            '!='=>function($target, $src){
                 return ($target != $src);
             },
             '==='=>function($target, $src){
                 return ($target === $src);
             },
-            '!=='=>function($targeta, $src){
+            '!=='=>function($target, $src){
                 return ($target !== $src);
             },
             '>='=>function($target, $src){

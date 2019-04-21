@@ -6,7 +6,7 @@ class ExistsDestNation extends Constraint{
     const REQ_VALUES = Constraint::REQ_DEST_NATION;
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 

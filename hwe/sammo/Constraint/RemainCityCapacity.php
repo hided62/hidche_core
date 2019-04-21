@@ -12,7 +12,7 @@ class RemainCityCapacity extends Constraint{
     protected $keyNick;
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 
@@ -35,6 +35,7 @@ class RemainCityCapacity extends Constraint{
     public function test():bool{
         $this->checkInputValues();
         $this->tested = true;
+        $keyNick = $this->keyNick;
 
         if($this->city[$this->key] < $this->city[$this->maxKey]){
             return true;

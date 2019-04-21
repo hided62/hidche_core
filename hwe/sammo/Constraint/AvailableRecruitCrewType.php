@@ -9,7 +9,7 @@ class AvailableRecruitCrewType extends Constraint{
     const REQ_VALUES = Constraint::REQ_NATION|Constraint::REQ_INT_ARG;
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 

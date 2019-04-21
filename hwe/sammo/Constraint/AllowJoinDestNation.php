@@ -10,7 +10,7 @@ class AllowJoinDestNation extends Constraint{
     protected $relYear;
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 
@@ -40,7 +40,7 @@ class AllowJoinDestNation extends Constraint{
 
         $db = DB::db();
 
-        if($relYear < GameConst::$openingPartYear && $this->destNation['gennum'] >= GameConst::$initialNationGenLimit){
+        if($this->relYear < GameConst::$openingPartYear && $this->destNation['gennum'] >= GameConst::$initialNationGenLimit){
             $this->reason = "임관이 제한되고 있습니다.";
             return false;
         }

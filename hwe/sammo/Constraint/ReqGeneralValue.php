@@ -18,7 +18,7 @@ class ReqGeneralValue extends Constraint{
     protected $comp;
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 
@@ -67,6 +67,7 @@ class ReqGeneralValue extends Constraint{
     public function test():bool{
         $this->checkInputValues();
         $this->tested = true;
+        $keyNick = $this->keyNick;
 
         if ($this->isPercent) {
             $reqVal = $this->general[$this->maxKey] * $this->reqVal;
@@ -85,13 +86,13 @@ class ReqGeneralValue extends Constraint{
             '=='=>function($target, $src)use($keyNick){
                 return ($target == $src)?true:"올바르지 않은 {$keyNick} 입니다.";
             },
-            '!='=>function($targeta, $src)use($keyNick){
+            '!='=>function($target, $src)use($keyNick){
                 return ($target != $src)?true:"올바르지 않은 {$keyNick} 입니다.";
             },
             '==='=>function($target, $src)use($keyNick){
                 return ($target === $src)?true:"올바르지 않은 {$keyNick} 입니다.";
             },
-            '!=='=>function($targeta, $src)use($keyNick){
+            '!=='=>function($target, $src)use($keyNick){
                 return ($target !== $src)?true:"올바르지 않은 {$keyNick} 입니다.";
             },
             '>='=>function($target, $src){

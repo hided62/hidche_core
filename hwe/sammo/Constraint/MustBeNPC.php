@@ -5,7 +5,7 @@ namespace sammo\Constraint;
 class MustBeNPC extends Constraint{
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 

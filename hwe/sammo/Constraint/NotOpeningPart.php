@@ -8,7 +8,7 @@ class NotOpeningPart extends Constraint{
     protected $relYear;
 
     public function checkInputValues(bool $throwExeception=true){
-        if(!parent::checkInputValues($throwExeception) && !$throwException){
+        if(!parent::checkInputValues($throwExeception) && !$throwExeception){
             return false;
         }
 
@@ -21,7 +21,7 @@ class NotOpeningPart extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($relYear >= GameConst::$openingPartYear){
+        if($this->relYear >= GameConst::$openingPartYear){
             return true;
         }
 
