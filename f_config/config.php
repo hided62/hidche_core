@@ -88,19 +88,28 @@ function getExceptionTraceAsString($exception) {
     return $rtn;
 }
 
-function logError(string $err, string $errstr, array $trace){
+function logError(string $err, string $errstr, string $errpath, array $trace){
     $fdb = FileDB::db(ROOT.'/d_log/err_log.sqlite3', ROOT.'/f_install/sql/err_log.sql');
     $date = date("Ymd_His");
 
+    $errpath = str_replace(ROOT, '{ROOT}', $errpath);
     $trace = array_map(function(string $text){
         return str_replace(ROOT, '{ROOT}', $text);
     }, $trace);
+
+    $owner = Util::get_client_ip();
+    $session = Session::getInstance();
+    if($session->isLoggedIn(true)){
+        $owner .= '('.$session->getUserID().','.$session->userName.')';
+    }
 
     $fdb->insert('err_log', [
         'date'=>$date,
         'err'=>$err,
         'errstr'=>$errstr,
-        'trace'=>Json::encode($trace)
+        'errpath'=>$errpath,
+        'trace'=>Json::encode($trace),
+        'webuser'=>$owner
     ]);
 }
 
@@ -116,6 +125,7 @@ function logErrorByCustomHandler(int $errno, string $errstr, string $errfile, in
     logError(
         getFriendlyErrorType($errno),
         $errstr,
+        $errfile.':'.$errline,
         getExceptionTraceAsString($e)
     );
 }
@@ -123,9 +133,11 @@ set_error_handler("\sammo\logErrorByCustomHandler");
 
 
 function logExceptionByCustomHandler(\Throwable $e){
+    
     logError(
         get_class($e),
         $e->getMessage(),
+        $e->getFile().':'.$e->getLine(),
         getExceptionTraceAsString($e)
     );
     
