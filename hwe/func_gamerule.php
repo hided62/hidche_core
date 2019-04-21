@@ -997,10 +997,14 @@ function checkSurrender() {
 function updateNationState() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $history = array();
     $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm']);
+
+    $assemblerCnts = [];
+    foreach($db->queryAllLists('SELECT nation,count(no) FROM general WHERE npc = 5 GROUP BY nation') as [$nationID, $assemblerCnt]){
+        $assemblerCnts[$nationID] = $assemblerCnt;
+    };
 
     foreach($db->query('SELECT nation,name,level,tech FROM nation') as $nation) {
         //TODO: level이 진관수이소중대특 체계를 벗어날 수 있음
@@ -1024,11 +1028,11 @@ function updateNationState() {
             $nationlevel = 7;   // 황제
         }
 
-        if($nationlevel > $nation['level']) {
+        if ($nationlevel > $nation['level']) {
             $oldLevel = $nation['level'];
             $nation['level'] = $nationlevel;
 
-            switch($nationlevel) {
+            switch ($nationlevel) {
                 case 7:
                     $josaUl = JosaUtil::pick(getNationLevel($nationlevel), '을');
                     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<Y><b>【작위】</b></><D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>{$josaUl} 자칭하였습니다.";
@@ -1050,38 +1054,9 @@ function updateNationState() {
                     break;
             }
 
-            
-            $lastAssemblerID = $gameStor->assembler_id??0;
-            for($levelGen = max(1, $oldLevel) + 1; $levelGen <= $nationlevel; $levelGen+=1){
-                if(in_array($levelGen, [3, 5, 7])){
-                    $genStep = 2;
-                }
-                else{
-                    $genStep = 1;
-                }
-                
-                while($genStep > 0){
-                    $lastAssemblerID += 1;
-                    $npcObj = new Scenario\NPC(
-                        999, '부대장'.$lastAssemblerID, null, $nation['nation'], null, 
-                        10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  '은둔', '척사'
-                    );
-                    $npcObj->npc = 5;
-                    $npcObj->build($admin);
-                    $npcID = $npcObj->generalID;
-
-                    $db->insert('troop', [
-                        'name'=>$npcObj->realName,
-                        'nation'=>$nation['nation'],
-                        'no'=>$npcID
-                    ]);
-                    $troopID = $db->insertId();
-
-                    //TODO: 5턴간 집합턴 입력
-                    $genStep -= 1;
-                }
-            }
-            $gameStor->assembler_id = $lastAssemblerID;
+            $db->update('nation', [
+                'level'=>$nation['level']
+            ], 'nation=%i', $nation['nation']);
 
             $turnRows = [];
             foreach(range(getNationChiefLevel($oldLevel) - 1, getNationChiefLevel($nation['level']), -1) as $chiefLevel){
@@ -1096,13 +1071,48 @@ function updateNationState() {
                 }
             }
             $db->insertIgnore('nation_turn', $turnRows);
-
-            $db->update('nation', [
-                'level'=>$nation['level']
-            ], 'nation=%i', $nation['nation']);
             
             refreshNationStaticInfo();
         }
+
+        $assemblerCnt = $assemblerCnt[$nation['nation']]??0;
+        $maxAssemblerCnt = [
+            1=>0,
+            2=>1,
+            3=>3,
+            4=>4,
+            5=>6,
+            6=>7,
+            7=>9
+        ][$nationlevel]??0;
+
+        if($assemblerCnt < $maxAssemblerCnt){
+            $lastAssemblerID = $gameStor->assembler_id??0;
+
+            while($assemblerCnt < $maxAssemblerCnt){
+                $lastAssemblerID += 1;
+                $npcObj = new Scenario\NPC(
+                    999, '부대장'.$lastAssemblerID, null, $nation['nation'], null, 
+                    10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  '은둔', '척사'
+                );
+                $npcObj->npc = 5;
+                $npcObj->build($admin);
+                $npcID = $npcObj->generalID;
+    
+                $db->insert('troop', [
+                    'name'=>$npcObj->realName,
+                    'nation'=>$nation['nation'],
+                    'no'=>$npcID
+                ]);
+                $troopID = $db->insertId();
+    
+                //TODO: 5턴간 집합턴 입력
+                $assemblerCnt += 1;
+                $gameStor->assembler_id = $lastAssemblerID;
+            }
+            refreshNationStaticInfo();
+        }
+            
     }
     pushWorldHistory($history, $admin['year'], $admin['month']);
 }
