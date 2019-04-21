@@ -157,14 +157,14 @@ class che_불가침제의 extends Command\NationCommand{
 
         $now = new \DateTime($date);
         $validUntil = new \DateTime($date);
-        $validMinutes = max(30, $turnterm*3);
+        $validMinutes = max(30, $env['turnterm']*3);
         $validUntil->add(new \DateInterval("PT{$validMinutes}M"));
 
         $msg = new DiplomaticMessage(
             Message::MSGTYPE_DIPLOMACY,
             $src,
             $dest,
-            "{$srcNation['name']}의 {$year}년 {$month}까지 불가침 제의 서신",
+            "{$nationName}의 {$year}년 {$month}까지 불가침 제의 서신",
             $now,
             $validUntil,
             [
@@ -177,7 +177,7 @@ class che_불가침제의 extends Command\NationCommand{
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
-        $destGeneral->applyDB($db);
+        $destLogger->flush();
 
         return true;
     }

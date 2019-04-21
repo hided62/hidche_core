@@ -145,14 +145,14 @@ abstract class BaseCommand{
         
 
         $db = DB::db();
-        $destNation = $db->queryFirstRow('SELECT %l FROM nation WHERE nation=%i', Util::formatListOfBackticks($args), $nationID);
-        if($destNation === null){
-            $destNation = [];
+        $nation = $db->queryFirstRow('SELECT %l FROM nation WHERE nation=%i', Util::formatListOfBackticks($args), $nationID);
+        if($nation === null){
+            $nation = [];
             foreach($args as $arg){
-                $destNation[$arg] = $defaultValues[$arg];
+                $nation[$arg] = $defaultValues[$arg];
             }
         }
-        $this->destNation = $destNation;
+        $this->nation = $nation;
     }
 
     protected function setDestGeneral(General $destGeneralObj){
@@ -246,7 +246,7 @@ abstract class BaseCommand{
             'general'=>$this->generalObj->getRaw(),
             'city'=>$this->city,
             'nation'=>$this->nation,
-            'arg'=>$this->arg,
+            'cmd_arg'=>$this->arg,
 
             'destGeneral'=>$this->destGeneralObj->getRaw(),
             'destCity'=>$this->destCity,
@@ -282,7 +282,7 @@ abstract class BaseCommand{
             'general'=>$this->generalObj->getRaw(),
             'city'=>$this->city,
             'nation'=>$this->nation,
-            'arg'=>$this->arg,
+            'cmd_arg'=>$this->arg,
 
             'destGeneral'=>$this->destGeneralObj?$this->destGeneralObj->getRaw():null,
             'destCity'=>$this->destCity,

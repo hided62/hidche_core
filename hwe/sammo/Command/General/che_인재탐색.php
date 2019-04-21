@@ -191,6 +191,8 @@ class che_인재탐색 extends Command\GeneralCommand{
 
         $isOurNation = $this->nation['scout'] == 0;
 
+        $age = $env['year'] - 20;
+
         $newNPC = new \sammo\Scenario\NPC(
             Util::randRangeInt(1, 150),
             \sammo\getRandGenName(),
@@ -201,7 +203,7 @@ class che_인재탐색 extends Command\GeneralCommand{
             $power,
             $intel,
             $isOurNation?1:0,
-            $env['year'] - 20,
+            $age,
             $env['year'] + Util::randRangeInt(10, 50),
             null,
             null

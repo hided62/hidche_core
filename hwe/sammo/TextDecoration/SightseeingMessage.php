@@ -104,7 +104,7 @@ class SightseeingMessage{
     }
 
     public function pickAction():array{
-        [$type, $texts] = Util::choiceRandomUsingWeightPair(static::$messages);
+        [$type, $texts] = Util::choiceRandomUsingWeightPair(static::$messages??[]);
         $text = Util::choiceRandom($texts);
 
         return [$type, $text];

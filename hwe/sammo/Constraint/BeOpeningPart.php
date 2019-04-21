@@ -1,6 +1,7 @@
 <?php
 
 namespace sammo\Constraint;
+use \sammo\GameConst;
 
 class BeOpeningPart extends Constraint{
     const REQ_VALUES = Constraint::REQ_INT_ARG;

@@ -26,6 +26,8 @@ abstract class Constraint{
     protected $nation = null;
     protected $arg = null;
 
+    protected $cmd_arg = null;
+
     protected $destGeneral = null;
     protected $destCity = null;
     protected $destNation = null;
@@ -40,38 +42,43 @@ abstract class Constraint{
         return static::REQ_VALUES;
     }
 
-    public function general(array $general){
+    public function setGeneral(array $general){
         $this->general = $general;
         $this->tested = false;
         $this->reason = null;
     }
-    public function city(array $city){
+    public function setCity(array $city){
         $this->city = $city;
         $this->tested = false;
         $this->reason = null;
     }
-    public function nation(array $nation){
+    public function setNation(array $nation){
         $this->nation = $nation;
         $this->tested = false;
         $this->reason = null;
     }
-    public function arg($arg){
+    public function setArg($arg){
         $this->arg = $arg;
         $this->tested = false;
         $this->reason = null;
     }
+    public function setCmdArg($cmd_arg){
+        $this->cmd_arg = $cmd_arg;
+        $this->tested = false;
+        $this->reason = null;
+    }
 
-    public function destGeneral(array $general){
+    public function setDestGeneral(array $general){
         $this->destGeneral = $general;
         $this->tested = false;
         $this->reason = null;
     }
-    public function destCity(array $city){
+    public function setDestCity(array $city){
         $this->destCity = $city;
         $this->tested = false;
         $this->reason = null;
     }
-    public function destNation(array $nation){
+    public function setDestNation(array $nation){
         $this->destNation = $nation;
         $this->tested = false;
         $this->reason = null;
@@ -84,14 +91,14 @@ abstract class Constraint{
                 continue;
             }
             switch($key){
-                case 'general': $self->general($value); break;
-                case 'city': $self->city($value); break;
-                case 'nation': $self->nation($value); break;
-                case 'arg': $self->arg($value); break;
+                case 'general': $self->setGeneral($value); break;
+                case 'city': $self->setCity($value); break;
+                case 'nation': $self->setNation($value); break;
+                case 'cmd_arg': $self->setCmdArg($value); break;
 
-                case 'destGeneral': $self->destGeneral($value); break;
-                case 'destCity': $self->destCity($value); break;
-                case 'destNation': $self->destNation($value); break;
+                case 'destGeneral': $self->setDestGeneral($value); break;
+                case 'destCity': $self->setDestCity($value); break;
+                case 'destNation': $self->setDestNation($value); break;
             }
         }
         
@@ -169,7 +176,7 @@ abstract class Constraint{
     }
 
     public function reason():?string{
-        if(!$this->tested === false){
+        if($this->tested === false){
             throw new \RuntimeException(get_class($this).'::test가 실행되지 않음');
         }
         return $this->reason;
@@ -186,11 +193,13 @@ abstract class Constraint{
             /** @var \sammo\Constraint\Constraint $contraint */
             $constraint = call_user_func($method,$input);
 
+            assert($constraint !== null);
             assert($constraint instanceof Constraint);
+            assert(count($constraintArgs) < 3);
             
-            if(count($constraintArgs) > 1){
+            if(count($constraintArgs) == 2){
                 $arg = $constraintArgs[1];
-                $constraint->arg($arg);
+                $constraint->setArg($arg);
             }
         
 

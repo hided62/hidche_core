@@ -278,7 +278,7 @@ class GeneralAI{
         return [Util::choiceRandomUsingWeight($commandList), null];
     }
 
-    public function chooseRecruitCrewType():array{
+    public function chooseRecruitCrewType():?array{
         $general = $this->getGeneralObj();
         $city = $this->city;
         $nation = $this->nation;
@@ -374,7 +374,9 @@ class GeneralAI{
         $cost = $general->onCalcDomestic('징병', 'cost', $cost);
     
         $crew = intdiv($gold, $cost);
-        if($leadership < $crew) { $crew = $leadership; }
+        if($leadership*100 < $crew) { $crew = $leadership; }
+        $crew *= 100;
+
         $arg = [
             'crewType'=>$type,
             'amountCrew'=>$crew

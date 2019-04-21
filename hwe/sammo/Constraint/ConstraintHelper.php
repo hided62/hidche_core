@@ -69,11 +69,11 @@ class ConstraintHelper{
     }
 
     static function DisallowDiplomacyStatus(int $nationID, array $disallowList):array{
-        return [__FUNCTION__, $nationID, $disallowList];
+        return [__FUNCTION__, [$nationID, $disallowList]];
     }
 
     static function ExistsAllowJoinNation(int $relYear, array $excludeNationList):array{
-        return [__FUNCTION__, $relYear, $excludeNationList];
+        return [__FUNCTION__, [$relYear, $excludeNationList]];
     }
 
     static function ExistsDestGeneral():array{
@@ -145,7 +145,7 @@ class ConstraintHelper{
     }
     
     static function RemainCityCapacity($key, string $actionName):array{
-        return [__FUNCTION__, $key, $actionName];
+        return [__FUNCTION__, [$key, $actionName]];
     }
     
     static function RemainCityTrust(string $actionName):array{
@@ -153,7 +153,7 @@ class ConstraintHelper{
     }
 
     static function ReqCityCapacity($key, string $keyNick, $reqVal):array{
-        return [__FUNCTION__, $key, $keyNick, $reqVal];
+        return [__FUNCTION__, [$key, $keyNick, $reqVal]];
     }
     
     static function ReqCityTrust(float $minTrust):array{
@@ -165,7 +165,7 @@ class ConstraintHelper{
     }
 
     static function ReqEnvValue($key, string $keyNick, string $comp, $reqVal, string $failMessage):array{
-        return [__FUNCTION__, $key, $keyNick, $comp, $reqVal, $failMessage];
+        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal, $failMessage]];
     }
 
     static function ReqGeneralAtmosMargin(int $maxAtmos):array{
@@ -193,7 +193,7 @@ class ConstraintHelper{
     }
 
     static function ReqGeneralValue($key, string $keyNick, string $comp, $reqVal):array{
-        return [__FUNCTION__, $key, $keyNick, $comp, $reqVal];
+        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal]];
     }
 
     static function ReqNationGold(int $reqGold):array{
@@ -205,7 +205,7 @@ class ConstraintHelper{
     }
 
     static function ReqNationValue($key, string $keyNick, string $comp, $reqVal):array{
-        return [__FUNCTION__, $key, $keyNick, $comp, $reqVal];
+        return [__FUNCTION__, [$key, $keyNick, $comp, $reqVal]];
     }
 
     static function ReqTroopMembers():array{

@@ -57,14 +57,15 @@ class che_징병 extends Command\GeneralCommand{
         if(!is_int($crewType)){
             return false;
         }
-        if(!is_int($amount)){
+        if(!is_numeric($amount)){
             return false;
         }
+        $amount = (int)$amount;
 
         if(GameUnitConst::byID($crewType) === null){
             return false;
         }
-        if($amount < 100){
+        if($amount < 0){
             return false;
         }
         $this->arg = [

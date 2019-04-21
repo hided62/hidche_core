@@ -134,7 +134,7 @@ class che_선전포고 extends Command\NationCommand{
         ], '(me=%i AND you=%i) OR (me=%i AND you=%i)', $nationID, $destNationID, $destNationID, $nationID);
 
         //국메로 저장
-        $text = "【외교】{$env['year']}년 {$env['month']}월:{$nationNation}에서 {$destNationName}에 선전포고";
+        $text = "【외교】{$env['year']}년 {$env['month']}월:{$nationName}에서 {$destNationName}에 선전포고";
 
         $src = new MessageTarget(
             $general->getID(), 
@@ -164,7 +164,7 @@ class che_선전포고 extends Command\NationCommand{
 
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->applyDB($db);
-        $destGeneral->applyDB($db);
+        $destLogger->flush();
 
         return true;
     }
