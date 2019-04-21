@@ -237,13 +237,13 @@ class General implements iAction{
     function kill($db){
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
-        $generalID = $this->getRaw('no');
+        $generalID = $this->getID();
         $logger = $this->getLogger();
 
         $generalName = $this->getName();
 
         // 군주였으면 유지 이음
-        if($this->getRaw('level') == 12) {
+        if($this->getVar('level') == 12) {
             nextRuler($this);
         }
 
@@ -261,7 +261,7 @@ class General implements iAction{
         ], 'gen3=%i', $generalID);
 
         // 부대 처리
-        $troopID = $this->getRaw('troop');
+        $troopID = $this->getVar('troop');
         $troopLeaderID = $db->queryFirstField('SELECT `no` FROM troop WHERE troop=%i', $troopID);
         if($troopLeaderID == $generalID){
             //부대장일 경우

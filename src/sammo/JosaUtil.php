@@ -610,7 +610,7 @@ class JosaUtil{
         $search = [];
         $replace = [];
 
-        foreach(static::DEFAULT_POSTPOSITION as [$wJong, $woJong]){
+        foreach(static::DEFAULT_POSTPOSITION as $wJong => $woJong){
             $value = JosaUtil::pick($key, $wJong);
             $search[] = "{$prefix}{$wJong}{$postfix}";
             $replace[] = $value;

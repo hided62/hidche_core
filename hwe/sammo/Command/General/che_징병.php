@@ -48,7 +48,7 @@ class che_징병 extends Command\GeneralCommand{
         if(!key_exists('crewType', $this->arg)){
             return false;
         }
-        if(!key_exists('amount', $this->arg)){
+        if(!key_exists('amountCrew', $this->arg)){
             return false;
         }
         $crewType = $this->arg['crewType'];
@@ -69,7 +69,7 @@ class che_징병 extends Command\GeneralCommand{
         }
         $this->arg = [
             'crewType'=>$crewType,
-            'amount'=>$amount
+            'amountCrew'=>$amount
         ];
         return true;
     }
@@ -89,7 +89,7 @@ class che_징병 extends Command\GeneralCommand{
         if($reqCrewType->id == $currCrewType->id){
             $maxCrew -= $general->getVar('crew');
         }
-        $reqCrew = Util::valueFit($this->arg['amount'], 100, $maxCrew);
+        $reqCrew = Util::valueFit($this->arg['amountCrew'], 100, $maxCrew);
         $this->reqCrew = $reqCrew;
         $this->reqCrewType = $reqCrewType;
         $this->currCrewType = $currCrewType;

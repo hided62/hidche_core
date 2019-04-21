@@ -321,20 +321,20 @@ class GeneralAI{
             $types = [];
             foreach(GameUnitConst::byType(GameUnitConst::T_FOOTMAN) as $crewtype){
                 if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                    $score = $dex[GameConst::T_FOOTMAN] * $crewtype->pickScore($tech);
+                    $score = $dex[GameUnitConst::T_FOOTMAN] * $crewtype->pickScore($tech);
                     $types[] = [$crewtype->id, $score];
                 }
             }
             foreach(GameUnitConst::byType(GameUnitConst::T_ARCHER) as $crewtype){
                 if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                    $score = $dex[GameConst::T_ARCHER] * $crewtype->pickScore($tech);
+                    $score = $dex[GameUnitConst::T_ARCHER] * $crewtype->pickScore($tech);
                     $types[] = [$crewtype->id, $score];
                 }
             }
             foreach(GameUnitConst::byType(GameUnitConst::T_CAVALRY) as $crewtype){
                 if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                    $score = $dex[GameConst::T_CAVALRY] * $crewtype->pickScore($tech);
-                    $types[] = [$crewtype->id, $dex[GameConst::T_CAVALRY] + 500];
+                    $score = $dex[GameUnitConst::T_CAVALRY] * $crewtype->pickScore($tech);
+                    $types[] = [$crewtype->id, $dex[GameUnitConst::T_CAVALRY] + 500];
                 }
             }
             foreach($types as [$crewtype, $score]){
@@ -346,7 +346,7 @@ class GeneralAI{
             $types = [];
             foreach(GameUnitConst::byType(GameUnitConst::T_WIZARD) as $crewtype){
                 if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                    $score = $dex[GameConst::T_WIZARD] * $crewtype->pickScore($tech);
+                    $score = $dex[GameUnitConst::T_WIZARD] * $crewtype->pickScore($tech);
                     $types[] = [$crewtype->id, $score];
                 }
             }
@@ -1345,7 +1345,7 @@ class GeneralAI{
             $sumLeadershipInCity = $db->queryFirstField('SELECT sum(leader) FROM general WHERE nation = %i AND city = %i AND leader > 40', $nationID, $cityID);
             if(
                 $city['pop'] > 30000 + $general->getLeadership(false) * 100 * 1.3 &&
-                Util::bool(($city['pop'] - 30000) / $sumLeadershipInCity * 100)
+                Util::randBool(($city['pop'] - 30000) / $sumLeadershipInCity * 100)
             ){
                 return $this->chooseRecruitCrewType();
             }

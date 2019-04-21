@@ -101,7 +101,7 @@ class DyingMessage{
     function __construct($name, ?int $npc = null)
     {
         if(static::$messages === null){
-            static::buildMessageList();
+            static::initMessageList();
         }
         if($name instanceof General){
             $this->_constructWithObj($name);
@@ -112,17 +112,17 @@ class DyingMessage{
     }
 
     public function getText():string{
-        $name = $this->general->getName();
-        $npc = $this->general->getVar('npc');
+        $name = $this->name ;
+        $npc = $this->npc;
 
         if($npc == 0){
-            $text = Util::choiceRandom(static::$messages);
+            $text = Util::choiceRandom(static::$messages??[]);
         }
         else if($npc == 2 || $npc == 6){
-            $text = Util::choiceRandom(static::$scenarioNPCMessages);
+            $text = Util::choiceRandom(static::$scenarioNPCMessages??[]);
         }
         else if($npc == 3 || $npc == 4){
-            $text = Util::choiceRandom(static::$utilNPCMessages);
+            $text = Util::choiceRandom(static::$utilNPCMessages??[]);
         }
         else{
             $text = static::$defaultMessage;
@@ -131,5 +131,6 @@ class DyingMessage{
         $text = str_replace(':name:', $name, $text);
 
         JosaUtil::batch($text, $name);
+        return $text;
     }
 }
