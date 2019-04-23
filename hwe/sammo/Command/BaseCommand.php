@@ -49,7 +49,7 @@ abstract class BaseCommand{
 
     protected $alternative = null;
 
-    static protected $isInitStatic = false;
+    static protected $isInitStatic = true;
     protected static function initStatic(){
 
     }

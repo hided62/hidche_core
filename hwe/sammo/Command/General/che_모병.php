@@ -15,6 +15,7 @@ class che_모병 extends che_징병{
     static protected $actionName = '모병';
     static protected $costOffset = 2;
 
+    static protected $isInitStatic = false;
     protected static function initStatic()
     {
         static::$defaultTrain = GameConst::$defaultTrainHigh;

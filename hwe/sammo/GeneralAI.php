@@ -1253,18 +1253,42 @@ class GeneralAI{
             }
 
             if($general->getVar('rice') < $baseArmRice && $general->getVar('gold') >= $baseArmGold * 3){
-                return ['che_군량매매', ['buyRice'=>true, 'amount'=> $general->getVar('gold') - $baseArmGold]];
+                return [
+                    'che_군량매매',
+                    [
+                        'buyRice'=>true,
+                        'amount'=> Util::toInt($general->getVar('gold') - $baseArmGold)
+                    ]
+                ];
             }
             if($general->getVar('gold') < $baseArmGold && $general->getVar('gold') >= $baseArmRice * 3){
-                return ['che_군량매매', ['buyRice'=>false, 'amount'=> $general->getVar('rice') - $baseArmRice]];
+                return [
+                    'che_군량매매', 
+                    [
+                        'buyRice'=>false,
+                        'amount'=> Util::toInt($general->getVar('rice') - $baseArmRice)
+                    ]
+                ];
             }
         }
         else{
             if($general->getVar('rice') < $this->baseDevelCost && $general->getVar('gold') >= $this->baseDevelCost * 3){
-                return ['che_군량매매', ['buyRice'=>true, 'amount'=> $general->getVar('gold') - $this->baseDevelCost]];
+                return [
+                    'che_군량매매',
+                    [
+                        'buyRice'=>true,
+                        'amount'=> Util::toInt($general->getVar('gold') - $this->baseDevelCost)
+                    ]
+                ];
             }
             if($general->getVar('gold') < $this->baseDevelCost && $general->getVar('gold') >= $this->baseDevelCost * 3){
-                return ['che_군량매매', ['buyRice'=>false, 'amount'=> $general->getVar('rice') - $this->baseDevelCost]];
+                return [
+                    'che_군량매매',
+                    [
+                        'buyRice'=>false,
+                        'amount'=> Util::toInt($general->getVar('rice') - $this->baseDevelCost)
+                    ]
+                ];
             }
         }
 

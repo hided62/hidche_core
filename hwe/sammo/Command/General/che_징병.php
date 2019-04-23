@@ -35,6 +35,7 @@ class che_징병 extends Command\GeneralCommand{
     protected $reqCrewType;
     protected $currCrewType;
     
+    static protected $isInitStatic = false;
     protected static function initStatic()
     {
         static::$defaultTrain = GameConst::$defaultTrainLow;

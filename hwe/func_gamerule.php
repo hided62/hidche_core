@@ -1,6 +1,8 @@
 <?php
 namespace sammo;
 
+use Monolog\Logger;
+
 /**
  * 게임 룰에 해당하는 함수 모음
  */
@@ -51,117 +53,6 @@ function getCityLevelList():array{
         7 => '대',
         8 => '특'
     ];
-}
-
- /**
- * 게임 내부에 사용하는 유틸리티 함수들을 분리
- */
-
- 
-//       0     1     2     3     4     5     6     7
-//  0    -, 경작, 상재, 발명                         = 3 지력내정
-// 10 축성, 수비, 통찰                               = 3 무력내정
-// 20 인덕                                           = 1 통솔내정
-// 30 거상, 귀모                                     = 2 공통내정
-
-//TODO: 클래스로 이동
-function getSpecial($leader, $power, $intel) {
-    throw new \sammo\NotImplementedException();
-    //통장
-    if($leader*0.9 > $power && $leader*0.9 > $intel) {
-        $type = array('che_인덕', 'che_귀모');
-        $special = $type[array_rand($type)];
-        // 귀모는 50% * 5% = 2.5%
-        if($special == 31 && Util::randBool(0.95)) {
-            $special = 'che_인덕';
-        }
-    //무장
-    } elseif($power >= $intel) {
-        $type = array('che_축성', 'che_수비', 'che_통찰', 'che_귀모');
-        $special = $type[array_rand($type)];
-        // 귀모는 그중에 25% * 10% = 2.5%
-        if($special == 'che_귀모' && Util::randBool(0.9)) {
-            $type = array('che_축성', 'che_수비', 'che_통찰');
-            $special = $type[array_rand($type)];
-        }
-    //지장
-    } elseif($intel > $power) {
-        $type = array('che_상재', 'che_경작', 'che_발명', 'che_귀모');
-        $special = $type[array_rand($type)];
-        // 거상, 귀모는 그중에 25% * 10% = 2.5%
-        if($special == 'che_귀모' && Util::randBool(0.9)) {
-            $type = array('che_상재', 'che_경작', 'che_발명');
-            $special = $type[array_rand($type)];
-        }
-    } else {
-        //귀모. 다만 이쪽으로 빠지지 않음.
-        $special = 'che_귀모';
-    }
-    return $special;
-}
-
-//       0     1     2     3     4     5     6     7
-// 40 귀병, 신산, 환술, 집중, 신중, 반계             = 6 지력전투
-// 50 보병, 궁병, 기병, 공성                         = 4 무력전투
-// 60 돌격, 무쌍, 견고, 위압                         = 4 무장전투
-// 70 저격, 필살, 징병, 의술, 격노, 척사             = 6 공통전투
-
-function getSpecial2($leader, $power, $intel, $nodex=1, $dex0=0, $dex10=0, $dex20=0, $dex30=0, $dex40=0) {
-    throw new \sammo\NotImplementedException();
-    $special2 = 70;
-    // 숙련 10,000: 25%, 40,000: 50%, 100,000: 79%, 160,000: 100%
-    $dex = sqrt($dex0 + $dex10 + $dex20 + $dex30 + $dex40);
-    $dex = Util::round($dex / 4);
-    // 숙련 10,000: 75%, 40,000: 50%, 100,000: 21%, 160,000: 0%
-    // 그중 20%만
-    if($nodex == 0 && rand()%100 < 20 && rand()%100 > $dex) {
-        if(max($dex0, $dex10, $dex20, $dex30, $dex40) == $dex0) {
-            $special2 = 50;
-            // 숙련이 아얘 없을시 재분배
-            if($dex0 <= 0) {
-                if($power >= $intel) {
-                    $special2 = 50 + rand()%4;
-                } else {
-                    $special2 = 40;
-                }
-            }
-        } elseif(max($dex0, $dex10, $dex20, $dex30, $dex40) == $dex10) {
-            $special2 = 51;
-        } elseif(max($dex0, $dex10, $dex20, $dex30, $dex40) == $dex20) {
-            $special2 = 52;
-        } elseif(max($dex0, $dex10, $dex20, $dex30, $dex40) == $dex30) {
-            $special2 = 40;
-        } elseif(max($dex0, $dex10, $dex20, $dex30, $dex40) == $dex40) {
-            $special2 = 53;
-        }
-    //무장
-    } elseif($power >= $intel) {
-        $type = array(60, 61, 62, 63, 70, 71, 72, 73, 74, 75);
-        $special2 = $type[rand()%10];
-        // 의술은 그중에 10% * 20% = 2%
-        if(($special2 == 73) && rand()%100 > 20) {
-            $type = array(60, 61, 62, 63, 70, 71, 72, 74, 75);
-            $special2 = $type[rand()%9];
-        }
-    //지장
-    } elseif($intel > $power) {
-        $type = array(41, 42, 43, 44, 45, 70, 71, 72, 73, 74, 75);
-        $special2 = $type[rand()%11];
-        // 환술은 그중에 9% * 50% = 4.5%
-        if(($special2 == 42) && rand()%100 > 50) {
-            $type = array(41, 43, 44, 45, 70, 71, 72, 74, 75);
-            $special2 = $type[rand()%9];
-        }
-        // 의술은 그중에 9% * 20% = 1.8%
-        if(($special2 == 73) && rand()%100 > 20) {
-            $type = array(41, 42, 43, 44, 45, 70, 71, 72, 74, 75);
-            $special2 = $type[rand()%10];
-        }
-    } else {
-        $type = array(70, 71, 72, 73, 74, 75);
-        $special2 = $type[rand()%6];
-    }
-    return $special2;
 }
 
 function getGenDex($general, $type) {
@@ -660,29 +551,23 @@ function postUpdateMonthly() {
 function checkWander() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $admin = $gameStor->getValues(['year', 'month']);
 
-    $needRefresh = false;
+    $wanderers = $db->queryFirstColumn('SELECT general.`no` FROM general LEFT JOIN nation ON general.nation = nation.nation WHERE nation.`level` = 0 AND general.`level` = 12');
 
-    // 국가정보, 장수수
-    foreach(getAllNationStaticInfo() as $nation){
-        if($nation['level'] != 0){
-            continue;
+    foreach($wanderers as $wandererID){
+        $wanderer = General::createGeneralObjFromDB($wandererID);
+
+        $wanderCmd = buildGeneralCommandClass('che_해산', $wanderer, $admin);
+        if($wanderCmd->isRunnable()){
+            $logger = $wanderer->getLogger();
+            $logger->pushGeneralActionLog('초반 제한후 방랑군은 자동 해산됩니다.', ActionLogger::PLAIN);
+            $wanderCmd->run();
         }
-
-        $needRefresh = true;
-
-        $query = "select no,name,nation,level,turntime from general where nation='{$nation['nation']}' and level=12";
-        $kingResult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $king = MYDB_fetch_array($kingResult);
-
-        pushGenLog($king, ["<C>●</>초반 제한후 방랑군은 자동 해산됩니다."]);
-        process_56($king);
     }
 
-    if($needRefresh){
+    if($wanderers){
         refreshNationStaticInfo();
     }
 }

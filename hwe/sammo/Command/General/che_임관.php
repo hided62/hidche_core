@@ -162,9 +162,9 @@ class che_임관 extends Command\GeneralCommand{
 
         $relYear = $env['year'] - $env['startyear'];
         if($general->getVar('npc') == 1 || $relYear >= 3){
-            $joinedNations = Join::decode($general->getVar('nations'));
+            $joinedNations = Json::decode($general->getVar('nations'));
             $joinedNations[] = $destNationID;
-            $general->setVar('nations', Join::encode($joinedNations));
+            $general->setVar('nations', Json::encode($joinedNations));
         }
 
         $general->increaseVar('experience', $exp);

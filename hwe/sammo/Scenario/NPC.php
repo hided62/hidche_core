@@ -229,7 +229,7 @@ class NPC{
         $duplicateCnt = $db->queryFirstField('SELECT count(no) FROM general WHERE name LIKE %s', $name.'%') + 1;
 
         if($duplicateCnt > 1){
-            $name = "{$name}($duplicateCnt}";   
+            $name = "{$name}{$duplicateCnt}";   
         }
 
         $this->realName = $name;

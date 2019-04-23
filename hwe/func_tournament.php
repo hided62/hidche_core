@@ -5,7 +5,6 @@ namespace sammo;
 function processTournament() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $admin = $gameStor->getValues(['tournament', 'phase', 'tnmt_type', 'tnmt_auto', 'tnmt_time']);
     $now = new \DateTime();
@@ -116,7 +115,6 @@ function processTournament() {
 function getTournamentTerm() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $tnmt_auto = $gameStor->tnmt_auto;
 
@@ -136,7 +134,6 @@ function getTournamentTerm() {
 function getTournamentTime() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     list($tnmt, $tnmt_time) = $gameStor->getValuesAsArray(['tournament', 'tnmt_time']);
     $dt = substr($tnmt_time, 11, 5);
@@ -154,21 +151,20 @@ function getTournamentTime() {
     return $tnmt;
 }
 
-function getTournament($tnmt) {
-    switch($tnmt) {
-    case  0: $tnmt = "<font color=magenta>경기 없음</font>"; break;
-    case  1: $tnmt = "<font color=orange>참가 모집중</font>"; break;
-    case  2: $tnmt = "<font color=orange>예선 진행중</font>"; break;
-    case  3: $tnmt = "<font color=orange>본선 추첨중</font>"; break;
-    case  4: $tnmt = "<font color=orange>본선 진행중</font>"; break;
-    case  5: $tnmt = "<font color=orange>16강 배정중</font>"; break;
-    case  6: $tnmt = "<font color=orange>베팅 진행중</font>"; break;
-    case  7: $tnmt = "<font color=orange>16강 진행중</font>"; break;
-    case  8: $tnmt = "<font color=orange>8강 진행중</font>"; break;
-    case  9: $tnmt = "<font color=orange>4강 진행중</font>"; break;
-    case 10: $tnmt = "<font color=orange>결승 진행중</font>"; break;
-    }
-    return $tnmt;
+function getTournament(int $tnmt) {
+    return [
+        "<font color=magenta>경기 없음</font>",
+        "<font color=orange>참가 모집중</font>",
+        "<font color=orange>예선 진행중</font>",
+        "<font color=orange>본선 추첨중</font>",
+        "<font color=orange>본선 진행중</font>",
+        "<font color=orange>16강 배정중</font>",
+        "<font color=orange>베팅 진행중</font>",
+        "<font color=orange>16강 진행중</font>",
+        "<font color=orange>8강 진행중</font>",
+        "<font color=orange>4강 진행중</font>",
+        "<font color=orange>결승 진행중</font>",
+    ][$tnmt]??"TOURNAMENT_TYPE_ERR_{$tnmt}";
 }
 
 function printRow($k, $npc, $name, $abil, $tgame, $win, $draw, $lose, $gd, $gl, $prmt) {
@@ -233,9 +229,6 @@ function printFighting($tournament, $phase) {
 function startTournament($auto, $type) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
-
-    $prevWinner = $gameStor->prev_winner;
 
     eraseTnmtFightLogAll();
 
@@ -294,24 +287,23 @@ function startTournament($auto, $type) {
     }
 
     $history = [];
-    switch($type) {
-    case 0: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: $openerText<C>전력전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>영웅</span>들을 모집하고 있습니다!"; break;
-    case 1: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: $openerText<C>통솔전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>명사</span>들을 모집하고 있습니다!"; break;
-    case 2: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: $openerText<C>일기토</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>용사</span>들을 모집하고 있습니다!"; break;
-    case 3: $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월: $openerText<C>설전</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>책사</span>들을 모집하고 있습니다!"; break;
-    }
+    [$typeText, $genTypeText] = [
+        ['전력전','영웅'],
+        ['통솔전','명사'],
+        ['일기토','용사'],
+        ['설전','책사'],
+    ][$type];
+
+    $history[] = "<S>◆</>{$admin['year']}년 {$admin['month']}월:{$openerText}<C>{$typeText}</> 대회가 개최됩니다! 천하의 <span class='ev_highlight'>{$genTypeText}</span>들을 모집하고 있습니다!";
+    
     pushWorldHistory($history, $admin['year'], $admin['month']);
 }
 
 function fillLowGenAll() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
-    $general = [];
     $grpCount = [];
-
-    $develcost = $gameStor->develcost;
 
     $dummyGeneral = [
         'no'=>0,
@@ -321,65 +313,71 @@ function fillLowGenAll() {
         'power'=>10,
         'intel'=>10,
         'explevel'=>10,
-        'horse'=>$general['horse'],
-        'weap'=>$general['weap'],
-        'book'=>$general['book']
+        'horse'=>0,
+        'weap'=>0,
+        'book'=>0
     ];
 
-    for($i=0; $i < 8; $i++) {
-        $grpCount[$i] = $db->queryFirstField('SELECT count(grp) FROM tournament WHERE grp=%i', $i);
+    for($i=0;$i<8;$i++){
+        $grpCount[$i] = 0;
     }
 
-    //자동신청하고, 돈 있고, 아직 참가 안한 장수
-    $query = "select no,npc,name,leader,power,intel,explevel from general where tnmt='1' and tournament='0' order by rand() limit 0,64";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $genCount = MYDB_num_rows($result);
-
-    $valid = 1;
-    while($valid == 1) {
-        $valid = 0;
-        //조마다 돌아가며
-        for($i=0; $i < 8; $i++) {
-            //비었으면 채우기
-            if($grpCount[$i] < 8) {
-                //자동신청 장수 있으면 채우기
-                if ($genCount > 0) {
-                    $genCount--;
-                    $general = MYDB_fetch_array($result);
-                    $db->update('general', [
-                        'tournament'=>1
-                    ], 'no=%i', $general['no']);
-                }
-                else{
-                    $general = $dummyGeneral;
-                }
-
-                $db->insert('tournament', [
-                    'no'=>$general['no'],
-                    'npc'=>$general['npc'],
-                    'name'=>$general['name'],
-                    'ldr'=>$general['leader'],
-                    'pwr'=>$general['power'],
-                    'itl'=>$general['intel'],
-                    'lvl'=>$general['explevel'],
-                    'grp'=>$i,
-                    'grp_no'=>$grpCount[$i],
-                    'h'=>$general['horse'],
-                    'w'=>$general['weap'],
-                    'b'=>$general['book']
-                ]);
-
-                $grpCount[$i]++;
-            }
-            //덜 찼으면 루프 다시
-            if($grpCount[$i] < 8) {
-                $valid = 1;
-            }
-        }
+    foreach($db->queryAllLists('SELECT grp, count(grp) FROM tournament GROUP BY grp') as [$grpIdx, $grpCnt]){
+        $grpCount[$grpIdx] = $grpCnt;
     }
 
     $gameStor->tournament = 2;
     $gameStor->phase = 0;
+
+    $currentJoinerCnt = sum($grpCount);
+    if($currentJoinerCnt == 64){
+        return;
+    }
+
+    $toBeFilledCnt = 8*8-$currentJoinerCnt;
+
+    //자동신청하고, 돈 있고, 아직 참가 안한 장수
+    $freeJoiners = $db->query(
+        'SELECT no,npc,name,leader,power,intel,explevel,horse,weap,book from general where tnmt=1 and tournament=0 order by rand() limit %d',
+        $toBeFilledCnt
+    );
+
+    $joinersValues = [];
+    $joinersIdx = [];
+
+    foreach($freeJoiners as $general){
+        $grpIdx = array_keys($grpCount, min($grpCount))[0];
+        $grpCnt = $grpCount[$grpIdx];
+        $joinersValues[] = [
+            'no'=>$general['no'],
+            'npc'=>$general['npc'],
+            'name'=>$general['name'],
+            'ldr'=>$general['leader'],
+            'pwr'=>$general['power'],
+            'itl'=>$general['intel'],
+            'lvl'=>$general['explevel'],
+            'grp'=>$grpIdx,
+            'grp_no'=>$grpCnt,
+            'h'=>$general['horse'],
+            'w'=>$general['weap'],
+            'b'=>$general['book']
+        ];
+
+        $joinersIdx[] = $general['no'];
+        $grpCount[$grpIdx] += 1;
+    }
+
+    foreach($grpCount as $grpIdx=>$grpCnt){
+        while($grpCnt < 8){
+            $joinersValues[] = $dummyGeneral;
+        }
+    }
+
+    $db->update('general', [
+        'tournament'=>1
+    ], 'no IN %li', $joinersIdx);
+
+    $db->insert('tournament', $joinersValues);
 }
 
 //0 경기없음
@@ -590,7 +588,7 @@ function final16set() {
         ]);
     }
     $db->update('tournament', [
-        'prmt=0'
+        'prmt'=>0
     ], true);
 
     $gameStor->tournament=6;

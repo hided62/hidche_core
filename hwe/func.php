@@ -114,22 +114,25 @@ function getBlockLevel() {
 }
 
 function getRandGenName() {
-    $first = array('가', '간', '감', '강', '고', '공', '공손', '곽', '관', '괴', '교', '금', '노', '뇌', '능', '도', '동', '두',
+    $first = ['가', '간', '감', '강', '고', '공', '공손', '곽', '관', '괴', '교', '금', '노', '뇌', '능', '도', '동', '두',
         '등', '마', '맹', '문', '미', '반', '방', '부', '비', '사', '사마', '서', '설', '성', '소', '손', '송', '순', '신', '심',
         '악', '안', '양', '엄', '여', '염', '오', '왕', '요', '우', '원', '위', '유', '육', '윤', '이', '장', '저', '전', '정',
         '제갈', '조', '종', '주', '진', '채', '태사', '하', '하후', '학', '한', '향', '허', '호', '화', '황',
-        '공손', '손', '왕', '유', '장', '조');
-    $last = array('가', '간', '강', '거', '건', '검', '견', '경', '공', '광', '권', '규', '녕', '단', '대', '도', '등', '람',
+        '공손', '손', '왕', '유', '장', '조'];
+    $middle = [''];
+    $last = [
+        '가', '간', '강', '거', '건', '검', '견', '경', '공', '광', '권', '규', '녕', '단', '대', '도', '등', '람',
         '량', '례', '로', '료', '모', '민', '박', '범', '보', '비', '사', '상', '색', '서', '소', '속', '송', '수', '순', '습',
         '승', '양', '연', '영', '온', '옹', '완', '우', '웅', '월', '위', '유', '윤', '융', '이', '익', '임', '정', '제', '조',
         '주', '준', '지', '찬', '책', '충', '탁', '택', '통', '패', '평', '포', '합', '해', '혁', '현', '화', '환', '회', '횡',
-        '후', '훈', '휴', '흠', '흥');
+        '후', '훈', '휴', '흠', '흥'
+    ];
 
-    $firstname = $first[rand()%count($first)];
-    $lastname = $last[rand()%count($last)];
+    $firstname = Util::choiceRandom($first);
+    $middlename = Util::choiceRandom($middle);
+    $lastname = Util::choiceRandom($last);
 
-    $fullname = "{$firstname}{$lastname}";
-    return $fullname;
+    return "{$firstname}{$middlename}{$lastname}";
 }
 
 
@@ -1307,7 +1310,7 @@ function addAge() {
 
     if($admin['year'] >= $admin['startyear']+3) {
         foreach($db->query('SELECT no,name,nation,leader,power,intel from general where specage<=age and special=%s', GameConst::$defaultSpecialDomestic) as $general){
-            $special = getSpecial($general['leader'], $general['power'], $general['intel']);
+            $special = SpecialityConst::pickSpecialDomestic($general);
             $specialClass = getGeneralSpecialDomesticClass($special);
             $specialText = $specialClass::$name;
             $db->update('general', [
@@ -1319,7 +1322,7 @@ function addAge() {
             pushGenLog($general, "<C>●</>특기 【<b><L>{$specialText}</></b>】{$josaUl} 익혔습니다!");
         }
 
-        foreach($db->query('SELECT no,name,nation,leader,power,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where spec2age<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
+        foreach($db->query('SELECT no,name,nation,leader,power,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
             $special2 = SpecialityConst::pickSpecialWar($general);
             $specialClass = getGeneralSpecialWarClass($special2);
             $specialText = $specialClass::$name;
