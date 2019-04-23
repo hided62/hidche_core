@@ -130,7 +130,7 @@ class che_첩보 extends Command\GeneralCommand{
                 $crewTypeText = mb_substr(GameUnitConst::byID($crewType)->name, 0, 2);
                 $cnt = count($value);
                 return "{$crewTypeText}:{$cnt}";
-            })), ActionLogger::RAWTEXT);
+            }, $destCityGeneralList)), ActionLogger::RAWTEXT);
 
             if($this->destNation['nation'] && $general->getNationID()){
                 $techDiff = floor($this->destNation['tech']) - floor($this->nation['tech']);
