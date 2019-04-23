@@ -26,7 +26,7 @@ function refreshing(obj, arg1, arg2) {
     }
 //    if(term <= 0) {
     switch(arg1) {
-        case 0: location.reload(); break;
+        case 0: location.reload(true); break;
         case 2: turn(arg2); break;
         case 3: arg2.submit(); break;
         case 4:
