@@ -16,4 +16,4 @@ $me = MYDB_fetch_array($result);
 
 updateCommand($me['no'], 2);
 
-header('location:b_chiefcenter.php');
+header('location:b_chiefcenter.php', true, 303);

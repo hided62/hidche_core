@@ -87,4 +87,4 @@ case "락풀기":
     break;
 }
 
-header('Location:_119.php');
+header('Location:_119.php', true, 303);

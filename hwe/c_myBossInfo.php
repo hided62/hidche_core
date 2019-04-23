@@ -32,7 +32,7 @@ $ruler = MYDB_fetch_array($result);
 
 //수뇌가 아니면 아무것도 할 수 없음
 if($meLevel < 5){
-    header('location:b_myBossInfo.php');
+    header('location:b_myBossInfo.php', true, 303);
     exit();
 }
 
@@ -45,18 +45,18 @@ if($btn == "임명") {
     }
 
     if($genlist != 0 && !$general){
-        header('location:b_myBossInfo.php');
+        header('location:b_myBossInfo.php', true, 303);
         exit();
     }
 
     //임명할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($meLevel < 5 || ($genlist != 0 && $general['nation'] != $me['nation']) || ($genlist != 0 && $general['level'] == 12)) {
-        header('location:b_myBossInfo.php');
+        header('location:b_myBossInfo.php', true, 303);
         exit();
     }
 } elseif($btn == "추방") {
     if(!$outlist){
-        header('location:b_myBossInfo.php');
+        header('location:b_myBossInfo.php', true, 303);
         exit();
     }
     $query = "select no,name,gold,rice,nation,troop,level,npc,picture,imgsvr,permission,penalty,belong from general where no='$outlist'";
@@ -64,33 +64,33 @@ if($btn == "임명") {
     $general = MYDB_fetch_array($result);
 
     if(!$general){
-        header('location:b_myBossInfo.php');
+        header('location:b_myBossInfo.php', true, 303);
         exit();
     }
 
     //추방할사람이 군주이면 불가, 내가 수뇌부이어야함, 공석아닌때는 국가가 같아야함
     if($general['level'] == 12 || $meLevel < 5 || ($general['nation'] != $me['nation'] && $outlist != 0)) {
-        header('location:b_myBossInfo.php');
+        header('location:b_myBossInfo.php', true, 303);
         exit();
     }
 
     //추방할사람이 외교권자이면 불가
     $permission = checkSecretPermission($general);
     if($permission == 4){
-        header('location:b_myBossInfo.php');
+        header('location:b_myBossInfo.php', true, 303);
         exit();
     }
 
     //NPC 부대장 추방 불가
     if($general['npc'] == 5){
-        header('location:b_myBossInfo.php');
+        header('location:b_myBossInfo.php', true, 303);
         exit();
     }
 }
 
 //나와 대상 장수는 국가가 같아야 함
 if($genlist != 0 && $me['nation'] != $general['nation']){
-    header('location:b_myBossInfo.php');
+    header('location:b_myBossInfo.php', true, 303);
     exit();
 }
 
@@ -252,7 +252,7 @@ if($btn == "추방") {
         pushGenLog($general, $log);
         pushGeneralPublicRecord($alllog, $year, $month);
     }
-    header('location:b_myBossInfo.php');
+    header('location:b_myBossInfo.php', true, 303);
     die();
 }
 
@@ -303,7 +303,7 @@ if($btn == "임명" && $level >= 5 && $level <= 11) {
             }
         }
     }
-    header('location:b_myBossInfo.php');
+    header('location:b_myBossInfo.php', true, 303);
     die();
 } 
 
@@ -319,7 +319,7 @@ if($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
     if(!$city){
-        header('location:b_myBossInfo.php');
+        header('location:b_myBossInfo.php', true, 303);
         die();
     }
     $oldlist = $city[$genlv];
@@ -366,11 +366,11 @@ if($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
             }
         }
     }
-    header('location:b_myBossInfo.php');
+    header('location:b_myBossInfo.php', true, 303);
     die();
 }
 
 
-header('location:b_myBossInfo.php');
+header('location:b_myBossInfo.php', true, 303);
 
 

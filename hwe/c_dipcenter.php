@@ -23,11 +23,11 @@ $me = $db->queryFirstRow('SELECT `no`,nation,`level`,permission,penalty FROM gen
 //내가 수뇌부이어야함
 $permission = checkSecretPermission($me);
 if($permission < 0){
-    header('location:b_myBossInfo.php');
+    header('location:b_myBossInfo.php', true, 303);
     exit();
 }
 else if ($me['level'] < 5 && $permission != 4) {
-    header('location:b_myBossInfo.php');
+    header('location:b_myBossInfo.php', true, 303);
     exit();
 }
 

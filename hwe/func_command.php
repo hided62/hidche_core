@@ -707,7 +707,7 @@ where nation='{$general['nation']}'
 
 function command_Single($turn, $command) {
     if(!$turn){
-        header('location:commandlist.php');
+        header('location:commandlist.php', true, 303);
         return;
     }
 
@@ -722,7 +722,7 @@ function command_Single($turn, $command) {
     }
     $db->update('general', $setValues, 'owner=%i',$userID);
     
-    header('location:commandlist.php');
+    header('location:commandlist.php', true, 303);
 }
 
 function command_Chief($turn, $command) {
@@ -745,7 +745,7 @@ function command_Chief($turn, $command) {
         $query = "update nation set {$str} where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    header('location:b_chiefcenter.php');
+    header('location:b_chiefcenter.php', true, 303);
 }
 
 function command_Other($turn, $commandtype) {

@@ -55,7 +55,7 @@ if($command == 46) {
         $query['turn'.$turnIdx] = $comStr;
     }
     $db->update('general', $query, 'owner=%i', $userID);
-    header('Location:./');
+    header('Location:./', true, 303);
     die();
 
 }
@@ -82,7 +82,7 @@ if($command == 53) {
         $query = "update nation set {$str} where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    header('location:b_chiefcenter.php');
+    header('location:b_chiefcenter.php', true, 303);
     die();
 }
 
@@ -102,7 +102,7 @@ if($command == 61) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
 
-    header('location:b_chiefcenter.php');
+    header('location:b_chiefcenter.php', true, 303);
     die();
 } 
 
@@ -126,7 +126,7 @@ if($command == 23 || $command == 24 || $command == 27 || $command == 51 || $comm
         $query = "update nation set {$str} where nation='{$me['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     }
-    header('location:b_chiefcenter.php');
+    header('location:b_chiefcenter.php', true, 303);
     die();  
 }
 
@@ -136,5 +136,5 @@ foreach($turn as $turnIdx){
     $query['turn'.$turnIdx] = $comStr;
 }
 $db->update('general', $query, 'owner=%i', $userID);
-header('Location:./');
+header('Location:./', true, 303);
 

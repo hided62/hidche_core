@@ -9,7 +9,7 @@ $commandtype = Util::getReq('commandtype', 'int');
 $turn = Util::getReq('turn', 'array_int');
 
 if(!$turn || $commandtype === null){
-    header('location:commandlist.php');
+    header('location:commandlist.php', true, 303);
     die();
 }
 
@@ -196,7 +196,7 @@ function command_99($turn) {
         }
     }
 
-    header('location:b_chiefcenter.php');
+    header('location:b_chiefcenter.php', true, 303);
 }
 
 function command_11($turn, $command, bool $is모병 = false) {

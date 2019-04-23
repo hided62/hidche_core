@@ -17,7 +17,7 @@ $commandtype = Util::getReq('commandtype', 'int');
 increaseRefresh("턴입력", 1);
 
 if(!$turn || $commandtype === null || $sel === null){
-    header('location:commandlist.php');
+    header('location:commandlist.php', true, 303);
     die();
 }
 
