@@ -22,7 +22,7 @@ class ReqGeneralGold extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->general['gold'] < $this->arg){
+        if($this->general['gold'] >= $this->arg){
             return true;
         }
 

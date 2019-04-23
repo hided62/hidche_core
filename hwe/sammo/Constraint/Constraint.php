@@ -193,9 +193,7 @@ abstract class Constraint{
             /** @var \sammo\Constraint\Constraint $contraint */
             $constraint = call_user_func($method,$input);
 
-            assert($constraint !== null);
             assert($constraint instanceof Constraint);
-            assert(count($constraintArgs) < 3);
             
             if(count($constraintArgs) == 2){
                 $arg = $constraintArgs[1];

@@ -4,7 +4,7 @@ namespace sammo\Constraint;
 
 use \sammo\JosaUtil;
 
-class RemainCityTrust extends Constraint{
+class ReqCityTrust extends Constraint{
     const REQ_VALUES = Constraint::REQ_CITY|Constraint::REQ_NUMERIC_ARG;
 
     protected $key;

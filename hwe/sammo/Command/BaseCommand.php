@@ -7,6 +7,8 @@ use \sammo\{
     ActionLogger
 };
 
+use function \sammo\getNationStaticInfo;
+
 use \sammo\Constraint\Constraint;
 use \sammo\Constraint\ConstraintHelper;
 
@@ -261,7 +263,7 @@ abstract class BaseCommand{
 
     public function testRunnable():?string{
         if(!$this->isArgValid()){
-            throw new \InvalidArgumentException('인자가 제대로 설정되지 않았습니다');
+            throw new \InvalidArgumentException('인자가 제대로 설정되지 않았습니다'.\sammo\Json::encode($this->arg));
         }        
         if($this->runnableConstraints === null){
             throw new \InvalidArgumentException('runnableConstraits가 제대로 설정되지 않았습니다');

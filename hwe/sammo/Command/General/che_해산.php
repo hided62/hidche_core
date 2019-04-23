@@ -92,6 +92,8 @@ class che_해산 extends Command\GeneralCommand{
 
         refreshNationStaticInfo();
 
+        $logger = $general->getLogger();
+
         $logger->pushGeneralActionLog("세력을 해산했습니다. <1>$date</>");
         $logger->pushGlobalActionLog("<Y>{$generalName}</>{$josaYi} 세력을 해산했습니다.");
 

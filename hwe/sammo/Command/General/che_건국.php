@@ -34,13 +34,13 @@ class che_건국 extends Command\GeneralCommand{
         }
         $nationName = $this->arg['nationName']??null;
         $nationType = $this->arg['nationType']??null;
-        $colorType = $this->arg['colorType']??null;
+        $nationColor = $this->arg['nationColor']??null;
 
-        if($nationName === null || $nationType === null || $colorType === null){
+        if($nationName === null || $nationType === null || $nationColor === null){
             return false;
         }
 
-        if(!is_string($nationName) || !is_string($nationType) || !is_int($colorType)){
+        if(!is_string($nationName) || !is_string($nationType) || !is_int($nationColor)){
             return false;
         }
 
@@ -48,7 +48,7 @@ class che_건국 extends Command\GeneralCommand{
             return false;
         }
 
-        if(!key_exists($colorType, GetNationColors())){
+        if(!key_exists($nationColor, GetNationColors())){
             return false;
         }
 
@@ -62,7 +62,7 @@ class che_건국 extends Command\GeneralCommand{
         $this->arg = [
             'nationName'=>$nationName,
             'nationType'=>$nationType,
-            'colorType'=>$colorType
+            'nationColor'=>$nationColor
         ];
 
         return true;
@@ -75,10 +75,10 @@ class che_건국 extends Command\GeneralCommand{
 
         $nationName = $this->arg['nationName'];
         $nationType = $this->arg['nationType'];
-        $colorType = $this->arg['colorType'];
+        $nationColor = $this->arg['nationColor'];
 
         $this->setCity();
-        $this->setNation();
+        $this->setNation(['gennum']);
 
         $relYear = $env['year'] - $env['startyear'];
         
@@ -120,7 +120,7 @@ class che_건국 extends Command\GeneralCommand{
 
         $nationName = $this->arg['nationName'];
         $nationType = $this->arg['nationType'];
-        $nationColor = GetNationColors()[$this->arg['colorType']];
+        $nationColor = GetNationColors()[$this->arg['nationColor']];
 
         $cityName = $this->city['name'];
 
@@ -152,10 +152,10 @@ class che_건국 extends Command\GeneralCommand{
         $db->update('city', [
             'nation'=>$general->getNationID(),
             'conflict'=>'{}'
-        ], $general->getCityID());
+        ], 'city=%i', $general->getCityID());
 
         $db->update('nation', [
-            'nation'=>$nationName,
+            'name'=>$nationName,
             'color'=>$nationColor,
             'level'=>1,
             'type'=>$nationType,

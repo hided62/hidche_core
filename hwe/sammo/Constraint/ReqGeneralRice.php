@@ -22,7 +22,7 @@ class ReqGeneralRice extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->general['rice'] < $this->arg){
+        if($this->general['rice'] >= $this->arg){
             return true;
         }
 

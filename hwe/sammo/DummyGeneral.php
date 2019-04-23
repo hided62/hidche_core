@@ -1,7 +1,6 @@
 <?php
 
 namespace sammo;
-
 class DummyGeneral extends General{
     public function __construct(bool $initLogger=true){
         $raw = [
@@ -12,7 +11,6 @@ class DummyGeneral extends General{
             'level'=>0,
         ];
 
-        $staticNation = getNationStaticInfo($raw['nation']);
         $this->raw = $raw;
 
         $this->resultTurn = new LastTurn();

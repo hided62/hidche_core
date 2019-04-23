@@ -123,7 +123,7 @@ function getGeneralIntel($general, $withInjury, $withItem, $withStatAdjust, $use
  * 
  * @return array 계산된 실패, 성공 확률 ('success' => 성공 확률, 'fail' => 실패 확률)
  */
-function CriticalRatioDomestic(&$general, $type) {
+function CriticalRatioDomestic($general, $type) {
     $leader = getGeneralLeadership($general, false, true, true, false);
     $power = getGeneralPower($general, false, true, true, false);
     $intel = getGeneralIntel($general, false, true, true, false);

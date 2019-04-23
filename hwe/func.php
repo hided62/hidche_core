@@ -1929,8 +1929,8 @@ function deleteNation(General $general) {
     $josaUn = JosaUtil::pick($nationName, '은');
     $logger->pushGlobalHistoryLog("<R><b>【멸망】</b></><D><b>{$nationName}</b></>{$josaUn} <R>멸망</>했습니다.");
 
-    $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $general['nation']);
-    $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $general['nation']);
+    $oldNation = $db->queryFirstRow('SELECT * FROM nation WHERE nation=%i', $nationID);
+    $oldNationGenerals = $db->queryFirstColumn('SELECT `no` FROM general WHERE nation=%i', $nationID);
     $oldNation['generals'] = $oldNationGenerals;
     $oldNation['aux'] = Json::decode($oldNation['aux']);
 
@@ -1963,7 +1963,7 @@ function deleteNation(General $general) {
 
     $db->insert('ng_old_nations', [
         'server_id'=>UniqueConst::$serverID,
-        'nation'=>$general['nation'],
+        'nation'=>$nationID,
         'data'=>Json::encode($oldNation)
     ]);
     $db->delete('nation', 'nation=%i', $nationID);

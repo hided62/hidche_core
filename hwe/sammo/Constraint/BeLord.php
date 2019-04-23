@@ -22,7 +22,7 @@ class BeLord extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->general['level'] != 12){
+        if($this->general['level'] == 12){
             return true;
         }
 

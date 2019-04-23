@@ -81,8 +81,8 @@ class che_인재탐색 extends Command\GeneralCommand{
         $nationID = $general->getNationID();
 
         $genCount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc < 2', $nationID);
-        $npcCount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc == 3', $nationID);
-        $npcOtherCount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation!=%i AND npc == 32', $nationID);
+        $npcCount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation=%i AND npc = 3', $nationID);
+        $npcOtherCount = $db->queryFirstField('SELECT count(no) FROM general WHERE nation!=%i AND npc = 3', $nationID);
 
 
         $genCount = Util::valueFit($genCount, 1);

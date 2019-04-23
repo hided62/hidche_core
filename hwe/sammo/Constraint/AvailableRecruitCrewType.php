@@ -4,6 +4,8 @@ namespace sammo\Constraint;
 
 use \sammo\GameUnitConst;
 use \sammo\DB;
+use \sammo\KVStorage;
+use \sammo\CityConst;
 
 class AvailableRecruitCrewType extends Constraint{
     const REQ_VALUES = Constraint::REQ_NATION|Constraint::REQ_INT_ARG;

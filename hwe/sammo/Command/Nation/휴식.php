@@ -15,6 +15,8 @@ class 휴식 extends Command\NationCommand{
 
     protected function init(){
         //아무것도 하지 않음
+        $this->runnableConstraints=[];
+        
     }
 
     public function getPreReqTurn():int{
@@ -24,7 +26,7 @@ class 휴식 extends Command\NationCommand{
     public function getPostReqTurn():int{
         return 0;
     }
-    
+
     public function getCost():array{
         return [0, 0];
     }

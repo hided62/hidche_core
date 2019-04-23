@@ -8,13 +8,15 @@ use \sammo\{
     GameConst,
     LastTurn,
     GameUnitConst,
-    Command
+    Command,
+    Message, MessageTarget
 };
 
 use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
-    CriticalScoreEx
+    CriticalScoreEx,
+    GetImageURL
 };
 
 use \sammo\Constraint\Constraint;

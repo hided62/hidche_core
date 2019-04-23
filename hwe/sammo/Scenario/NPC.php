@@ -152,6 +152,7 @@ class NPC{
         $this->dex20 = $cavalry;
         $this->dex30 = $wizard;
         $this->dex40 = $siege;
+        return $this;
     }
 
     public function build($env=[]){

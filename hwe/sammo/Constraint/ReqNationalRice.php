@@ -22,7 +22,7 @@ class ReqNationRice extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->nation['rice'] < $this->arg){
+        if($this->nation['rice'] >= $this->arg){
             return true;
         }
 

@@ -201,15 +201,20 @@ class che_랜덤임관 extends Command\GeneralCommand{
             $destNation = Util::choiceRandomUsingWeightPair($randVals);
         }
 
+        $logger = $general->getLogger();
+
         if(!$destNation){
-            throw new MustNotBeReachedException();
+            //임관 가능한 국가가 없다!
+            $logger->pushGeneralActionLog("임관 가능한 국가가 없습니다. <1>$date</>");    
+            $this->alternative = new che_요양($general, $this->env, null);
+            return false;
         }
 
         $gennum = $destNation['gennum'];
         $destNationID = $destNation['nation'];
         $destNationName = $destNation['name'];
 
-        $logger = $general->getLogger();
+        
 
         $talkList = [
             '어쩌다 보니',

@@ -15,8 +15,7 @@ class 휴식 extends Command\GeneralCommand{
     }
 
     protected function init(){
-        $this->runnableConstraints=[
-        ];
+        $this->runnableConstraints=[];
     }
 
     public function getCost():array{

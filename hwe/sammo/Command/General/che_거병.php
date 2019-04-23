@@ -96,7 +96,7 @@ class che_거병 extends Command\GeneralCommand{
             'bill'=>100, 
             'strategic_cmd_limit'=>12, 
             'surlimit'=>72, 
-            'type'=>0, 
+            'type'=>GameConst::$neutralNationType, 
             'gennum'=>1
         ]);
         $nationID = DB::db()->insertId();

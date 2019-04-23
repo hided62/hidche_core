@@ -33,7 +33,7 @@ class che_발령 extends Command\NationCommand{
         if(!key_exists('destCityID', $this->arg)){
             return false;
         }
-        if(!key_exists($this->arg['destCityID'], CityConst::all())){
+        if(CityConst::byID($this->arg['destCityID']) === null){
             return false;
         }
         $destGeneralID = $this->arg['destGeneralID'];

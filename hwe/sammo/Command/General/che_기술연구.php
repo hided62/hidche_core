@@ -6,7 +6,7 @@ use \sammo\{
     General, 
     ActionLogger,
     LastTurn,
-    Command
+    Command, GameConst
 };
 
 use function sammo\{

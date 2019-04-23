@@ -492,6 +492,10 @@ class GeneralAI{
             return [$command, $arg];
         }
 
+        if($this->nation['level'] == 0){
+            return ['휴식', null];
+        }
+
         if($generalObj->getVar('level') == 12 && $this->dipState == self::d평화 && !$this->attackable){
             $targetNationID = $this->findWarTarget();
             if($targetNationID !== null){
@@ -536,6 +540,8 @@ class GeneralAI{
         Util::shuffle_assoc($nationCities);
         shuffle($frontCitiesID);
         shuffle($supplyCitiesID);
+
+        assert($supplyCitiesID);
 
         
         $commandList = [];
@@ -1281,10 +1287,13 @@ class GeneralAI{
                 $moveCities[$moveCityID] = $score;
 
             }
-            return ['che_NPC능동', [
-                'optionText'=>'순간이동',
-                'destCityID'=>Util::choiceRandomUsingWeight($moveCities),
-            ]];
+            if($moveCities){
+                return ['che_NPC능동', [
+                    'optionText'=>'순간이동',
+                    'destCityID'=>Util::choiceRandomUsingWeight($moveCities),
+                ]];
+            }
+            
         }
 
         return $developTurn;
@@ -1432,10 +1441,13 @@ class GeneralAI{
                 }
             }
 
-            return ['che_NPC능동', [
-                'optionText'=>'순간이동',
-                'destCityID'=>Util::choiceRandomUsingWeight($attackableCities),
-            ]];
+            if($attackableCities){
+                return ['che_NPC능동', [
+                    'optionText'=>'순간이동',
+                    'destCityID'=>Util::choiceRandomUsingWeight($attackableCities),
+                ]];
+            }
+            
         }
 
         if($general->getVar('train') < 90){
@@ -1509,7 +1521,7 @@ class GeneralAI{
         }
 
         if($city['nation'] == 0 && ($city['level'] == 5 || $city['level'] == 6)) {
-            $nationType = Util::choiceRandom(array_keys(getNationTypeList()));
+            $nationType = Util::choiceRandom(GameConst::$availableNationType);
             $nationColor = Util::choiceRandom(array_keys(GetNationColors()));
             return ['che_건국', [
                 'nationName'=>"㉿".mb_substr($general->getName(), 1),

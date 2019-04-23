@@ -1075,7 +1075,7 @@ function updateNationState() {
             refreshNationStaticInfo();
         }
 
-        $assemblerCnt = $assemblerCnt[$nation['nation']]??0;
+        $assemblerCnt = $assemblerCnts[$nation['nation']]??0;
         $maxAssemblerCnt = [
             1=>0,
             2=>1,
@@ -1105,6 +1105,9 @@ function updateNationState() {
                     'no'=>$npcID
                 ]);
                 $troopID = $db->insertId();
+                $db->update('general', [
+                    'troop'=>$troopID
+                ], 'no=%i', $npcID);
     
                 //TODO: 5턴간 집합턴 입력
                 $assemblerCnt += 1;

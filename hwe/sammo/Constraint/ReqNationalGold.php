@@ -22,7 +22,7 @@ class ReqNationGold extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        if($this->nation['gold'] < $this->arg){
+        if($this->nation['gold'] >= $this->arg){
             return true;
         }
 

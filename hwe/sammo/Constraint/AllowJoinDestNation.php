@@ -45,7 +45,7 @@ class AllowJoinDestNation extends Constraint{
             return false;
         }
 
-        if($this->destNation['scout'] == 0){
+        if($this->destNation['scout'] == 1){
             $this->reason = "임관이 금지되어 있습니다.";
             return false;
         }

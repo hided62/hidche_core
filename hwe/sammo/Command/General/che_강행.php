@@ -113,7 +113,7 @@ class che_강행 extends Command\GeneralCommand{
             if($generalList){
                 $db->update('general', [
                     'city'=>$destCityID
-                ], 'no IN %li', $generalList);
+                ], 'no IN %li and nation=%i', $generalList, $general->getNationID());
             }
             foreach($generalList as $targetGeneralID){
                 $targetGeneral = General::createGeneralObjFromDB($targetGeneralID, [], 1);

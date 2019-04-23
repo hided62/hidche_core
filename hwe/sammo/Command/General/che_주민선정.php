@@ -84,7 +84,7 @@ class che_주민선정 extends Command\GeneralCommand{
         $score *= getDomesticExpLevelBonus($general->getVar('explevel'));
         $score *= Util::randRange(0.8, 1.2);
         $score = $general->onCalcDomestic(static::$actionKey, 'score', $score);
-        $score = Util::valutFit($score, 1);
+        $score = Util::valueFit($score, 1);
 
         return $score;
     }

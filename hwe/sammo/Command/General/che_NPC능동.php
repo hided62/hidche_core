@@ -29,7 +29,7 @@ class che_NPC능동 extends Command\GeneralCommand{
             if(!key_exists('destCityID', $this->arg)){
                 return false;
             }
-            if(!key_exists($this->arg['destCityID'], CityConst::all())){
+            if(CityConst::byID($this->arg['destCityID']) === null){
                 return false;
             }
             $this->arg = [
@@ -45,6 +45,8 @@ class che_NPC능동 extends Command\GeneralCommand{
     protected function init(){
 
         $general = $this->generalObj;
+        $this->setNation();
+        
 
         $this->runnableConstraints=[
             ConstraintHelper::MustBeNPC()
