@@ -44,7 +44,7 @@ function pushGeneralCommand(int $generalID, int $turnCnt=1){
         'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxTurn),
         'action'=>'휴식',
         'arg'=>'{}'
-    ], 'general_id=%i AND turn_idx >= %i', $generalID, GameConst::$maxTurn);
+    ], 'general_id=%i AND turn_idx >= %i ORDER BY turn_idx ASC', $generalID, GameConst::$maxTurn);
 }
 
 function pullGeneralCommand(int $generalID, int $turnCnt=1){
@@ -67,7 +67,7 @@ function pullGeneralCommand(int $generalID, int $turnCnt=1){
     ], 'general_id=%i AND turn_idx < %i', $generalID, $turnCnt);
     $db->update('general_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', $turnCnt)
-    ], 'general_id=%i', $generalID);
+    ], 'general_id=%i ORDER BY turn_idx ASC', $generalID);
 }
 
 function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
@@ -89,14 +89,14 @@ function pushNationCommand(int $nationID, int $level, int $turnCnt=1){
 
     $db = DB::db();
 
-    $db->update('general_turn', [
+    $db->update('nation_turn', [
         'turn_idx'=>$db->sqleval('turn_idx + %i', $turnCnt)
     ], 'nation_id=%i AND level=%i', $nationID, $level);
-    $db->update('general_turn', [
+    $db->update('nation_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', GameConst::$maxChiefTurn),
         'action'=>'휴식',
         'arg'=>'{}'
-    ], 'nation_id=%i AND level=%i AND turn_idx >= %i', $nationID, $level, GameConst::$maxChiefTurn);
+    ], 'nation_id=%i AND level=%i AND turn_idx >= %i ORDER BY turn_idx ASC', $nationID, $level, GameConst::$maxChiefTurn);
 }
 
 function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
@@ -125,7 +125,7 @@ function pullNationCommand(int $nationID, int $level, int $turnCnt=1){
     ], 'nation_id=%i AND level=%i AND turn_idx < %i', $nationID, $level, $turnCnt);
     $db->update('nation_turn', [
         'turn_idx'=>$db->sqleval('turn_idx - %i', $turnCnt)
-    ], 'nation_id=%i AND level=%i', $nationID, $level);
+    ], 'nation_id=%i AND level=%i ORDER BY turn_idx ASC', $nationID, $level);
 }
 
 function _setGeneralCommand(int $generalID, array $turnList, string $command, ?array $arg = null) {

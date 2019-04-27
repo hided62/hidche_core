@@ -119,7 +119,10 @@ class che_거병 extends Command\GeneralCommand{
                 'term'=>0,
             ];
         }
-        $db->insert('diplomacy', $diplomacyInit);
+        if($diplomacyInit){
+            $db->insert('diplomacy', $diplomacyInit);
+        }
+        
 
         
         $turnRows = [];

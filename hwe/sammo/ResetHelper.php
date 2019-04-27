@@ -113,6 +113,7 @@ class ResetHelper{
         }
 
         (KVStorage::getStorage($db, 'game_env'))->resetValues();
+        (KVStorage::getStorage($db, 'nation_env'))->resetValues();
 
         return [
             'result'=>true,
@@ -238,7 +239,8 @@ class ResetHelper{
             'extended_general'=>$extend,
             'fiction'=>$fiction,
             'tnmt_trig'=>$tournament_trig,
-            'prev_winner'=>$prevWinner
+            'prev_winner'=>$prevWinner,
+            'tournament'=>0,
         ];
 
         foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
