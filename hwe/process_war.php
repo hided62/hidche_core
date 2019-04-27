@@ -2,15 +2,11 @@
 namespace sammo;
 
 
-function processWar(array $rawAttacker, array $rawDefenderCity){
+function processWar(General $attacker, array $rawNation, array $rawDefenderCity){
 
     $db = DB::db();
-    $rawAttackerCity = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
 
-    $attackerNationID = $rawAttacker['nation'];
     $defenderNationID = $rawDefenderCity['nation'];
-
-    $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
 
     if($defenderNationID == 0){
         $rawDefenderNation =  [
@@ -32,7 +28,7 @@ function processWar(array $rawAttacker, array $rawDefenderCity){
     $gameStor = KVStorage::getStorage($db, 'game_env');
     [$startYear, $year, $month, $cityRate, $joinMode] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'city_rate', 'join_mode']);
 
-    $attacker = new WarUnitGeneral($rawAttacker, $rawAttackerCity, $rawAttackerNation, true, $year, $month);
+    $attacker = new WarUnitGeneral($attacker, $rawNation, true, $year, $month);
 
     $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 

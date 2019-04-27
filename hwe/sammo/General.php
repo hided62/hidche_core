@@ -406,7 +406,7 @@ class General implements iAction{
         return $value;
     }
 
-    public function onPreGeneralStatUpdate(General $general, string $statName, $value){
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
         //xxx: $general?
         foreach(array_merge([
             $this->nationType, 
@@ -419,13 +419,8 @@ class General implements iAction{
                 continue;
             }
             /** @var iAction $iObj */
-            $value = $iObj->onPreGeneralStatUpdate($this, $statName, $value);
+            $value = $iObj->onCalcStat($this, $statName, $value, $aux);
         }
-        return $value;
-    }
-
-    public function onCalcStat(General $general, string $stat, $value){
-        //xxx: $general?
         return $value;
     }
 

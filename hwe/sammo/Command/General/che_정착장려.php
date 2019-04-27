@@ -140,8 +140,8 @@ class che_정착장려 extends Command\GeneralCommand{
 
         
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         //NOTE: 내정량 상승시 초과 가능?
         $cityUpdated = [

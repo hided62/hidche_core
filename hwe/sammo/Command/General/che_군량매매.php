@@ -157,8 +157,8 @@ class che_군량매매 extends Command\GeneralCommand{
         $exp = 30;
         $ded = 50;
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         $incStat = Util::choiceRandomUsingWeight([
             'leader2'=>$general->getLeadership(false, false, false, false),

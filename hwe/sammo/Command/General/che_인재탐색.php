@@ -107,8 +107,8 @@ class che_인재탐색 extends Command\GeneralCommand{
             $exp = 100;
             $ded = 70;
 
-            $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-            $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+            $exp = $general->onCalcStat($general, 'experience', $exp);
+            $ded = $general->onCalcStat($general, 'dedication', $ded);
 
             $general->increaseVarWithLimit('gold', -$reqGold, 0);
             $general->increaseVarWithLimit('rice', -$reqRice, 0);
@@ -254,8 +254,8 @@ class che_인재탐색 extends Command\GeneralCommand{
         $exp = 200;
         $ded = 300;
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         $general->increaseVarWithLimit('gold', -$reqGold, 0);
         $general->increaseVarWithLimit('rice', -$reqRice, 0);

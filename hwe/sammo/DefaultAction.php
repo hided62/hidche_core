@@ -9,11 +9,7 @@ trait DefaultAction{
         return $value;
     }
 
-    public function onPreGeneralStatUpdate(General $general, string $statName, $value){
-        return $value;
-    }
-
-    public function onCalcStat(General $general, string $stat, $value){
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
         return $value;
     }
 

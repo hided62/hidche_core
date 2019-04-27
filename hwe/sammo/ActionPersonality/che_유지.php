@@ -20,7 +20,7 @@ class che_유지 implements iAction{
         return $value;
     }
 
-    public function onPreGeneralStatUpdate(General $general, string $statName, $value){
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName == 'bonusTrain'){
             return $value - 5;
         }

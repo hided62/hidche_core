@@ -10,7 +10,7 @@ class che_대의 implements iAction{
     static $name = '대의';
     static $info = '명성 +10%, 훈련 -5';
 
-    public function onPreGeneralStatUpdate(General $general, string $statName, $value){
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName == 'experience'){
             return $value * 1.1;
         }

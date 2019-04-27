@@ -171,8 +171,8 @@ class che_상업투자 extends Command\GeneralCommand{
             $logger->pushGeneralActionLog(static::$actionName."{$josaUl} 하여 <C>$scoreText</> 상승했습니다. <1>$date</>");
         }
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         if(in_array($this->city['front'], [1, 3]) && $this->nation['capital'] != $this->city['city']){
             $score *= static::$debuffFront;

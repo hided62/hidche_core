@@ -18,4 +18,11 @@ class che_필살 implements iAction{
         SpecialityConst::STAT_POWER,
         SpecialityConst::STAT_INTEL
     ];
+
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        if($statName === 'warCriticalRatio'){
+            return $value += 0.2;
+        }
+        return $value;
+    }
 }

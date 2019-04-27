@@ -236,7 +236,7 @@ class che_랜덤임관 extends Command\GeneralCommand{
             $exp = 100;
         }
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
         $general->setVar('nation', $destNationID);
         $general->setVar('level', 1);
         $general->setVar('belong', 1);

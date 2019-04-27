@@ -96,7 +96,7 @@ class che_단련 extends Command\GeneralCommand{
         }
 
         $exp = $general->getVar('crew') / 400;
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
 
         $general->addDex($general->getCrewTypeObj(), $score, false);
 

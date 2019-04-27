@@ -179,8 +179,8 @@ class che_징병 extends Command\GeneralCommand{
         $exp = Util::round($reqCrew / 100);
         $ded = Util::round($reqCrew / 100);
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         $general->addDex($general->getCrewTypeObj(), $reqCrew / 100, false);
 

@@ -130,8 +130,8 @@ class che_등용 extends Command\GeneralCommand{
         $exp = 100;
         $ded = 200;
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         [$reqGold, $reqRice] = $this->getCost();
 

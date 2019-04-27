@@ -97,8 +97,8 @@ class che_집합 extends Command\GeneralCommand{
         $exp = 70;
         $ded = 100;
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);

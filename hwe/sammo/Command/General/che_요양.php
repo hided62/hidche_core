@@ -71,8 +71,8 @@ class che_요양 extends Command\GeneralCommand{
         $exp = 10;
         $ded = 7;
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         $general->setVar('injury', 0);
         $general->increaseVar('experience', $exp);

@@ -103,8 +103,8 @@ class che_물자조달 extends Command\GeneralCommand{
         $exp = $score * 0.7 / 3;
         $ded = $score * 1.0 / 3;
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         $incStat = Util::choiceRandomUsingWeight([
             'leader2'=>$general->getLeadership(false, false, false, false),

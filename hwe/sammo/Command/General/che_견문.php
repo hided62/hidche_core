@@ -107,7 +107,7 @@ class che_견문 extends Command\GeneralCommand{
 
         $logger->pushGeneralActionLog("{$text} <1>$date</>");
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
 
         $general->increaseVar('experience', $exp);
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));

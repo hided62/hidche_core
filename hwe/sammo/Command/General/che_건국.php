@@ -143,8 +143,8 @@ class che_건국 extends Command\GeneralCommand{
         $exp = 1000;
         $ded = 1000;
         
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         $general->increaseVar('experience', $exp);
         $general->increaseVar('dedication', $ded);

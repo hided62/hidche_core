@@ -17,4 +17,11 @@ class che_무쌍 implements iAction{
         SpecialityConst::STAT_LEADERSHIP,
         SpecialityConst::STAT_POWER
     ];
+
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        if($statName === 'warCriticalRatio' && $aux['isAttacker']??false){
+            return $value += 0.1;
+        }
+        return $value;
+    }
 }

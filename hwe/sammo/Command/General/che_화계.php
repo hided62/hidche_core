@@ -237,8 +237,8 @@ class che_화계 extends Command\GeneralCommand{
             $exp = Util::randRangeInt(1, 100);
             $ded = Util::randRangeInt(1, 70);
 
-            $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-            $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+            $exp = $general->onCalcStat($general, 'experience', $exp);
+            $ded = $general->onCalcStat($general, 'dedication', $ded);
 
             [$reqGold, $reqRice] = $this->getCost();
             $general->increaseVarWithLimit('gold', -$reqGold, 0);
@@ -273,8 +273,8 @@ class che_화계 extends Command\GeneralCommand{
         $exp = Util::randRangeInt(201, 300);
         $ded = Util::randRangeInt(141, 210);
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
         
         [$reqGold, $reqRice] = $this->getCost();
         $general->increaseVarWithLimit('gold', -$reqGold, 0);

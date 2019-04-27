@@ -10,7 +10,7 @@ class che_왕좌 implements iAction{
     static $name = '왕좌';
     static $info = '명성 +10%, 사기 -5';
 
-    public function onPreGeneralStatUpdate(General $general, string $statName, $value){
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName == 'experience'){
             return $value * 1.1;
         }

@@ -2,9 +2,8 @@
 namespace sammo;
 
 class WarUnit{
-    use LazyVarUpdater;
 
-    protected $raw = [];
+    protected $general;
     protected $rawNation;
 
     protected $logger;
@@ -31,7 +30,8 @@ class WarUnit{
     protected $logActivatedSkill = [];
     protected $isFinished = false;
 
-    private function __construct(){
+    private function __construct(General $general){
+        $this->general = $general;
     }
     
     protected function clearActivatedSkill(){
@@ -110,16 +110,12 @@ class WarUnit{
         return $this->deadCurr;
     }
 
-    function getSpecialDomestic():string{
-        return GameConst::$defaultSpecialDomestic;
+    function getGeneral():General{
+        return $this->general;
     }
 
-    function getSpecialWar():string{
-        return 0;
-    }
-
-    function getItem():int{
-        return 0;
+    function getVar(string $key){
+        return $this->general->getVar($key);
     }
 
     function getMaxPhase():int{
@@ -241,7 +237,7 @@ class WarUnit{
     }
 
     function getComputedCriticalRatio():float{
-        return $this->getCrewType()->getCriticalRatio($this->getRaw());
+        return $this->getCrewType()->getCriticalRatio($this->general);
     }
 
     function getComputedAvoidRatio():float{
@@ -324,16 +320,19 @@ class WarUnit{
 
     function getHP():int{
         throw new NotInheritedMethodException();
+        return 0;
     }
 
     function decreaseHP(int $damage):int{
         $this->dead += $damage;
         throw new NotInheritedMethodException();
+        return 0;
     }
 
     function increaseKilled(int $damage):int{
         $this->killed += $damage;
         throw new NotInheritedMethodException();
+        return 0;
     }
 
     function calcDamage():int{

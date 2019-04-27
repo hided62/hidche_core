@@ -124,7 +124,7 @@ class GameUnitDetail{
         return $def * $crew / 100;
     }
 
-    public function getCriticalRatio(array $general){
+    public function getCriticalRatio(General $general){
         if($this->armType == GameUnitConst::T_CASTLE){
             //성벽은 필살을 사용하지 않는다.
             return 0;
@@ -134,26 +134,26 @@ class GameUnitDetail{
         //  지장 지력 : 65 5%, 70  8%, 75 10%, 80 13%
         //충차장 통솔:  65 5%, 70  8%, 75 10%, 80 13%
         if($this->armType == GameUnitConst::T_WIZARD){
-            $mainstat = getGeneralIntel($general, false, true, true, false);
+            $mainstat = $general->getIntel(false, true, true, false);
             $coef = 0.4;
         }
         else if($this->armType == GameUnitConst::T_SIEGE){
-            $mainstat = getGeneralLeadership($general, false, true, true, false);
+            $mainstat = $general->getLeadership(false, true, true, false);
             $coef = 0.4;
         }
         else if($this->armType == GameUnitConst::T_MISC){
-            $mainstat = getGeneralIntel($general, false, true, true, false) +
-            getGeneralLeadership($general, false, true, true, false) +
-            getGeneralPower($general, false, true, true, false);
+            $mainstat = $general->getIntel(false, true, true, false) +
+            $general->getLeadership(false, true, true, false) +
+            $general->getPower(false, true, true, false);
             $mainstat /= 3;
             $coef = 0.4;
         }
         else{
-            $mainstat = getGeneralPower($general, false, true, true, false);
+            $mainstat = $general->getPower(false, true, true, false);
             $coef = 0.5;
         }
 
-        $ratio = max($mainstat - 65, 0);
+        $ratio = Util::valueFit($mainstat - 65, 0);
         $ratio *= $coef;
 
         return min(50, $ratio) / 100;

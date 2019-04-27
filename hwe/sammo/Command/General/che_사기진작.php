@@ -83,8 +83,8 @@ class che_사기진작 extends Command\GeneralCommand{
         $exp = 100;
         $ded = 70;
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         $general->increaseVarWithLimit('atmos', $score, 0, GameConst::$maxAtmosByCommand);
         $general->setVar('train', $sideEffect);

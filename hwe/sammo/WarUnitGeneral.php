@@ -2,26 +2,16 @@
 namespace sammo;
 
 class WarUnitGeneral extends WarUnit{
-    protected $rawCity;
-
     protected $bonusPhase = 0;
 
-    function __construct($raw, $rawCity, $rawNation, $isAttacker, $year, $month){
-        setLeadershipBonus($raw, $rawNation['level']);
-
-        $this->raw = $raw;
-        $this->rawCity = $rawCity; //read-only
+    function __construct(General $general, array $rawNation, bool $isAttacker, int $year, int $month){
+        $this->general = $general;
+        $this->raw = $general->getRaw();
         $this->rawNation = $rawNation; //read-only
         $this->isAttacker = $isAttacker;
 
-        $this->logger = new ActionLogger(
-            $this->getVar('no'), 
-            $this->getVar('nation'), 
-            $year, 
-            $month,
-            false
-        );
-        $this->crewType = GameUnitConst::byID($this->getVar('crewtype'));
+        $this->logger = $this->general->getLogger();
+        $this->crewType = $this->general->getCrewTypeObj();
 
         $cityLevel = $this->getCityVar('level');
 
@@ -46,86 +36,62 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function getName():string{
-        return $this->getVar('name');
+        return $this->general->getName();
     }
 
     function getCityVar(string $key){
-        return $this->rawCity[$key];
+        return $this->general->getRawCity()[$key];
     }
     
-    function getSpecialDomestic():string{
-        return $this->getVar('special');
-    }
-
     function setOppose(?WarUnit $oppose){
         parent::setOppose($oppose);
-        $this->increaseVar('warnum', 1);
+        $general = $this->general;
+        $this->general->increaseVar('warnum', 1);
 
         if($this->isAttacker){
-            $this->updateVar('recwar', $this->getVar('turntime'));
+            $general->updateVar('recwar', $general->getVar('turntime'));
         }
         else if($oppose !== null){
-            $this->updateVar('recwar', $oppose->getVar('turntime'));
+            $general->updateVar('recwar', $oppose->getVar('turntime'));
         }
-    }
-
-    function getSpecialWar():int{
-        return $this->getVar('special2');
-    }
-
-    function getCharacter():int{
-        return $this->getVar('personal');
-    }
-
-    function getItem():int{
-        return $this->getVar('item');
     }
 
     function getMaxPhase():int{
         $phase = $this->getCrewType()->speed;
-        if($this->getSpecialWar() == 60){
-            $phase += 1;
-        }
+        $phase = $this->general->onCalcStat($this->general, 'initWarPhase', $phase);
         return $phase + $this->bonusPhase;
     }
 
     function addTrain(int $train){
-        $this->increaseVarWithLimit('train', $train, 0, GameConst::$maxTrainByWar);
+        $this->general->increaseVarWithLimit('train', $train, 0, GameConst::$maxTrainByWar);
     }
 
     function addAtmos(int $atmos){
-        $this->increaseVarWithLimit('atmos', $atmos, 0, GameConst::$maxAtmosByWar);
+        $this->general->increaseVarWithLimit('atmos', $atmos, 0, GameConst::$maxAtmosByWar);
     }
 
     function getComputedTrain(){
-        $train = $this->getVar('train');
+        $train = $this->general->getVar('train');
+        $train = $this->general->onCalcStat($this->general, 'bonusTrain', $train);
         $train += $this->trainBonus;
         
         return $train;
     }
 
     function getComputedAtmos(){
-        $atmos = $this->getVar('atmos');
+        $atmos = $this->general->getVar('atmos');
+        $atmos = $this->general->onCalcStat($this->general, 'bonusAtmos', $atmos);
         $atmos += $this->atmosBonus;
         
         return $atmos;
     }
 
     function getComputedCriticalRatio():float{
-        $critialRatio = $this->getCrewType()->getCriticalRatio($this->getRaw());
+        $general = $this->general;
+        $criticalRatio = $this->getCrewType()->getCriticalRatio($general);
 
-        $specialWar = $this->getSpecialWar();
-        $item = $this->getItem();
-
-        if($specialWar == 61){
-            if($this->isAttacker){
-                $critialRatio += 0.1;
-            }
-        }
-        else if($specialWar == 71){
-            $critialRatio += 0.2;
-        }
-        return $critialRatio;
+        $criticalRatio = $general->onCalcStat($general, 'warCriticalRatio', $criticalRatio, ['isAttacker'=>$this->isAttacker]);
+        return $criticalRatio;
     }
 
     function getComputedAvoidRatio():float{

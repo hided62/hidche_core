@@ -20,7 +20,7 @@ class che_재간 implements iAction{
         return $value;
     }
 
-    public function onPreGeneralStatUpdate(General $general, string $statName, $value){
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName == 'experience'){
             return $value * 0.9;
         }

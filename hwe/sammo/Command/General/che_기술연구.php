@@ -106,8 +106,8 @@ class che_기술연구 extends che_상업투자{
         }
 
 
-        $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
-        $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
+        $exp = $general->onCalcStat($general, 'experience', $exp);
+        $ded = $general->onCalcStat($general, 'dedication', $ded);
 
         if(TechLimit($this->env['startyear'], $this->env['year'], $this->nation['tech'])){
             $score /= 4;
