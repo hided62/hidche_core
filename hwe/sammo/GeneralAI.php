@@ -904,10 +904,10 @@ class GeneralAI{
                     $targetCityID = Util::choiceRandom($frontCitiesID);
                 }
                 
-                $command = [['che_발령', [
+                $command = ['che_발령', [
                     'destGeneralID'=>$nationGeneral->no,
                     'destCityID'=>$targetCityID
-                ]], 5];
+                ]];
 
                 if($nationGeneral->npc<2 && ($workRemain&2)){
                     $workRemain ^= 2;
@@ -965,10 +965,10 @@ class GeneralAI{
                 }
                 
                 
-                $command = [['che_발령', [
+                $command = ['che_발령', [
                     'destGeneralID'=>$nationGeneral->no,
                     'destCityID'=>$targetCity['city']
-                ]], 5];
+                ]];
 
                 if($nationGeneral->npc<2 && ($workRemain&2)){
                     $workRemain ^= 2;
@@ -1482,7 +1482,7 @@ class GeneralAI{
             }
         }
 
-        if($general->getVar('rice') < 90){
+        if($general->getVar('atmos') < 90 ){
             $turnObj = buildGeneralCommandClass('che_사기진작', $general, $env, null);
             [$reqGold, $reqRice] = $turnObj->getCost();
             if($general->getVar('gold') >= $reqGold && $general->getVar('rice') >= $reqRice){
@@ -1839,7 +1839,7 @@ class GeneralAI{
 
         $nationID = $nation['nation'];
     
-        $incomeList = getGoldIncome($nation['nation'], $nation['rate'], $env['gold_rate'], $env['type']);
+        $incomeList = getGoldIncome($nation['nation'], $nation['rate'], $env['gold_rate'], $nation['type']);
         $income = $nation['gold'] + $incomeList[0] + $incomeList[1];
         $outcome = getGoldOutcome($nation['nation'], 100);    // 100%의 지급량
         $bill = intval($income / $outcome * 80); // 수입의 80% 만 지급
@@ -1861,7 +1861,7 @@ class GeneralAI{
 
         $nationID = $nation['nation'];
 
-        $incomeList = getRiceIncome($nation['nation'], $nation['rate'], $env['gold_rate'], $env['type']);
+        $incomeList = getRiceIncome($nation['nation'], $nation['rate'], $env['gold_rate'], $nation['type']);
         $income = $nation['rice'] + $incomeList[0] + $incomeList[1];
         $outcome = getRiceOutcome($nation['nation'], 100);    // 100%의 지급량
         $bill = intval($income / $outcome * 80); // 수입의 80% 만 지급

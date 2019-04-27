@@ -101,8 +101,7 @@ function SetNationFront($nationNo) {
 
     $db = DB::db();
     foreach($db->queryFirstColumn(
-        'SELECT city from city where nation IN 
-            (SELECT you from diplomacy where me = %i and state=0)'
+        'SELECT city FROM city JOIN diplomacy ON diplomacy.you = city.nation WHERE diplomacy.state = 0 AND me = %i'
         , $nationNo
     ) as $city){
         foreach(CityConst::byID($city)->path as $adjKey=>$adjVal){
@@ -110,8 +109,7 @@ function SetNationFront($nationNo) {
         }
     };
     foreach($db->queryFirstColumn(
-        'SELECT city from city where nation IN 
-            (SELECT you from diplomacy where me = %i and state=1 and term<=5)'
+        'SELECT city FROM city JOIN diplomacy ON diplomacy.you = city.nation WHERE diplomacy.state = 1 AND diplomacy.term <= 5 AND me = %i'
         , $nationNo
     ) as $city){
         foreach(CityConst::byID($city)->path as $adjKey=>$adjVal){
@@ -123,7 +121,7 @@ function SetNationFront($nationNo) {
         //NOTE: if, else일 경우 NPC는 전쟁시에는 공백지로 출병하지 않는다는 뜻이 된다.
         foreach ($db->queryFirstColumn('SELECT city from city where nation=0') as $city) {
             foreach(CityConst::byID($city)->path as $adjKey=>$adjVal){
-                $adj[$adjKey] = $adjVal;
+                $adj2[$adjKey] = $adjVal;
             }
         }
     }

@@ -86,7 +86,7 @@ class che_사기진작 extends Command\GeneralCommand{
         $exp = $general->onPreGeneralStatUpdate($general, 'experience', $exp);
         $ded = $general->onPreGeneralStatUpdate($general, 'dedication', $ded);
 
-        $general->increaseVarWithLimit('atmos', $score, 0, GameConst::$maAtmosByCommand);
+        $general->increaseVarWithLimit('atmos', $score, 0, GameConst::$maxAtmosByCommand);
         $general->setVar('train', $sideEffect);
 
         $general->addDex($general->getCrewTypeObj(), $score, false);

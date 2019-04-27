@@ -4,7 +4,7 @@ namespace sammo;
 class WarUnit{
     use LazyVarUpdater;
 
-    protected $raw;
+    protected $raw = [];
     protected $rawNation;
 
     protected $logger;
@@ -114,7 +114,7 @@ class WarUnit{
         return GameConst::$defaultSpecialDomestic;
     }
 
-    function getSpecialWar():int{
+    function getSpecialWar():string{
         return 0;
     }
 

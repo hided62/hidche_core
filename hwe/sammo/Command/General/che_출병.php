@@ -48,8 +48,7 @@ class che_출병 extends Command\GeneralCommand{
 
         $this->setCity();
         $this->setNation(['war', 'gennum', 'tech', 'gold', 'rice']);
-        $this->setDestCity($this->arg['destCityID'], []);
-        $this->setDestNation($this->arg['destNationID'], ['nation' ,'level','name','capital','gennum','tech','type','gold','rice']);
+        $this->setDestCity($this->arg['destCityID'], ['city', 'name', 'nation']);
 
         [$reqGold, $reqRice] = $this->getCost();
         $relYear = $this->env['year'] - $this->env['startyear'];
@@ -67,7 +66,7 @@ class che_출병 extends Command\GeneralCommand{
     }
 
     public function getCost():array{
-        return [0, Util::round($this->general->getVar('crew')/100)];
+        return [0, Util::round($this->generalObj->getVar('crew')/100)];
     }
     
     public function getPreReqTurn():int{
@@ -104,7 +103,7 @@ class che_출병 extends Command\GeneralCommand{
 
         $defenderCityName = $this->destCity['name'];
         $defenderCityID = $this->destCity['city'];
-        $josaRo = JosaUtil::pick($destCityName, '로');
+        $josaRo = JosaUtil::pick($defenderCityName, '로');
 
         $logger = $general->getLogger();
 
