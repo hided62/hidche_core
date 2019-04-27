@@ -156,8 +156,8 @@ function CriticalRatioDomestic($general, $type) {
     $fail = pow($ratio / 1.2, 1.4) - 0.3;
     $success = pow($ratio / 1.2, 1.5) - 0.25;
 
-    $fail = min(max($fail, 0), 0.5);
-    $success = min(max($success, 0), 0.5);
+    $fail = Util::valueFit($fail, 0, 0.5);
+    $success = Util::valueFit($success, 0, 0.5);
 
 
     return array(

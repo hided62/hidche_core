@@ -329,7 +329,7 @@ function fillLowGenAll() {
     $gameStor->tournament = 2;
     $gameStor->phase = 0;
 
-    $currentJoinerCnt = sum($grpCount);
+    $currentJoinerCnt = array_sum($grpCount);
     if($currentJoinerCnt == 64){
         return;
     }
