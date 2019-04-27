@@ -1239,10 +1239,10 @@ class GeneralAI{
 
         if($nation['rice'] < 2000){
             if(($genType & self::t통솔장) && $general->getVar('rice') > $baseArmRice){
-                return ['che_헌납', ['isGold'=>false, 'amount'=>($general->getVar('rice') - $baseArmRice) / 2]];
+                return ['che_헌납', ['isGold'=>false, 'amount'=>Util::toInt(($general->getVar('rice') - $baseArmRice) / 2)]];
             }
             else if(!($genType & self::t통솔장)){
-                return ['che_헌납', ['isGold'=>false, 'amount'=>$general->getVar('rice') / 2]];
+                return ['che_헌납', ['isGold'=>false, 'amount'=>Util::toInt($general->getVar('rice') / 2)]];
             }
         }
 

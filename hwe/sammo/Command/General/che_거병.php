@@ -105,6 +105,11 @@ class che_거병 extends Command\GeneralCommand{
         $diplomacyInit = [];
         foreach(getAllNationStaticInfo() as $destNation){
             $destNationID = $destNation['nation'];
+
+            if($nationID == $destNationID){
+                continue;
+            }
+            
             $diplomacyInit[] = [
                 'me'=>$destNationID,
                 'you'=>$nationID,
