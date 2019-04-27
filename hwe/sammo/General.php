@@ -52,13 +52,7 @@ class General implements iAction{
         $this->resultTurn = new LastTurn();
 
         if($year !== null || $month !== null){
-            $this->logger = new ActionLogger(
-                $this->getVar('no'), 
-                $this->getVar('nation'), 
-                $year, 
-                $month,
-                false
-            );
+            $this->initLogger($year, $month);
         }
 
         if(!$fullConstruct){
@@ -88,6 +82,16 @@ class General implements iAction{
             $this->itemObjs['item'] = new ActionItem\che_Dummy($raw['item']);
         }
         //TODO: $specialItemClass 설정
+    }
+
+    function initLogger(int $year, int $month){
+        $this->logger = new ActionLogger(
+            $this->getVar('no'), 
+            $this->getVar('nation'), 
+            $year, 
+            $month,
+            false
+        );
     }
 
     function deleteItem(){

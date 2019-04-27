@@ -27,4 +27,11 @@ class che_궁병 implements iAction{
         
         return $value;
     }
+
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        if($statName === 'warAvoidRatio'){
+            return $value += 0.2;
+        }
+        return $value;
+    }
 }

@@ -3,6 +3,7 @@ namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
+use \sammo\WarUnit;
 
 class che_반계 implements iAction{
     use \sammo\DefaultAction;

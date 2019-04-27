@@ -2,24 +2,24 @@
 namespace sammo;
 
 class WarUnitCity extends WarUnit{
+    use LazyVarUpdater;
+
     protected $hp;
 
     protected $cityRate;
 
-    function __construct($raw, $rawNation, $year, $month, $cityRate){
+    function __construct($raw, $rawNation, int $year, int $month, $cityRate){
+        $general = new DummyGeneral(false);
+        $general->setVar('city', $raw['city']);
+        $general->setVar('nation', $raw['nation']);
+        $general->initLogger($year, $month);
         $this->raw = $raw;
         $this->rawNation = $rawNation;
 
         $this->isAttacker = false;
         $this->cityRate = $cityRate;
 
-        $this->logger = new ActionLogger(
-            0, 
-            $this->getVar('nation'), 
-            $year, 
-            $month, 
-            false
-        );
+        $this->logger = $general->getLogger();
         $this->crewType = GameUnitConst::byID(GameUnitConst::T_CASTLE);
 
         $this->hp = $this->getVar('def') * 10; 
@@ -39,6 +39,14 @@ class WarUnitCity extends WarUnit{
 
     function getCityVar(string $key){
         return $this->raw[$key];
+    }
+
+    function getComputedAttack(){
+        return ($this->raw['def'] + $this->raw['wall'] * 9) / 500 + 200;
+    }
+
+    function getComputedDefence(){
+        return ($this->raw['def'] + $this->raw['wall'] * 9) / 500 + 200;
     }
 
     function increaseKilled(int $damage):int{
@@ -138,13 +146,13 @@ class WarUnitCity extends WarUnit{
 
     function applyDB($db):bool{
         $updateVals = $this->getUpdatedValues();
+        $this->getLogger()->rollback(); //수비 도시의 로그는 기록하지 않음
 
         if(!$updateVals){
             return false;
         }
         
         $db->update('city', $updateVals, 'city=%i', $this->raw['city']);
-        $this->getLogger()->rollback(); //수비 도시의 로그는 기록하지 않음
         return $db->affectedRows() > 0;
     }
 

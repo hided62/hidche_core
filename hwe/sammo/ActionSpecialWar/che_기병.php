@@ -4,6 +4,7 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
 use \sammo\GameUnitConst;
+use \sammo\WarUnit;
 
 class che_기병 implements iAction{
     use \sammo\DefaultAction;
@@ -25,5 +26,12 @@ class che_기병 implements iAction{
         }
         
         return $value;
+    }
+
+    public function getWarPowerMultiplier(WarUnit $unit):array{
+        if($unit->isAttacker()){
+            return [1.2, 1];
+        }
+        return [1.1, 1];
     }
 }

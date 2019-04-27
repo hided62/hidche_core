@@ -3,6 +3,7 @@ namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
+use \sammo\WarUnit;
 
 class che_필살 implements iAction{
     use \sammo\DefaultAction;

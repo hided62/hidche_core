@@ -3,6 +3,7 @@ namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
+use \sammo\WarUnit;
 
 class che_무쌍 implements iAction{
     use \sammo\DefaultAction;
@@ -23,5 +24,9 @@ class che_무쌍 implements iAction{
             return $value += 0.1;
         }
         return $value;
+    }
+
+    public function getWarPowerMultiplier(WarUnit $unit):array{
+        return [1.1, 1];
     }
 }

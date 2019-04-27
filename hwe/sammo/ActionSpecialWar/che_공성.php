@@ -4,6 +4,8 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
 use \sammo\GameUnitConst;
+use \sammo\WarUnit;
+use \sammo\WarUnitCity;
 
 class che_공성 implements iAction{
     use \sammo\DefaultAction;
@@ -26,5 +28,12 @@ class che_공성 implements iAction{
         }
         
         return $value;
+    }
+
+    public function getWarPowerMultiplier(WarUnit $unit):array{
+        if($unit->getOppose() instanceof WarUnitCity){
+            return [2, 1];
+        }
+        return [1, 1];
     }
 }

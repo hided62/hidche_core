@@ -16,13 +16,7 @@ class DummyGeneral extends General{
         $this->resultTurn = new LastTurn();
 
         if($initLogger){
-            $this->logger = new ActionLogger(
-                $this->getVar('no'), 
-                $this->getVar('nation'), 
-                1, 
-                1,
-                false
-            );
+            $this->initLogger(1, 1);
         }
     }
 

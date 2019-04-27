@@ -4,6 +4,7 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
 use \sammo\GameUnitConst;
+use \sammo\WarUnit;
 
 class che_귀병 implements iAction{
     use \sammo\DefaultAction;

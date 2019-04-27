@@ -6,6 +6,7 @@ use sammo\SpecialityConst;
 use \sammo\General;
 use \sammo\GeneralTrigger;
 use \sammo\GeneralTriggerCaller;
+use \sammo\WarUnit;
 
 class che_의술 implements iAction{
     use \sammo\DefaultAction;

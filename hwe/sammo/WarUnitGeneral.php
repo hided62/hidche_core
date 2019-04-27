@@ -95,21 +95,11 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function getComputedAvoidRatio():float{
-        $specialWar = $this->getSpecialWar();
-        $item = $this->getItem();
 
         $avoidRatio = $this->getCrewType()->avoid / 100;
         $avoidRatio *= $this->getComputedTrain() / 100;
 
-        //특기보정 : 궁병
-        if($specialWar == 51){
-            $avoidRatio += 0.2;
-        }
-
-        //도구 보정 : 둔갑천서, 태평요술
-        if($item == 26 || $item == 25){
-            $avoidRatio += 0.2;
-        }
+        $avoidRatio = $general->onCalcStat($general, 'warAvoidRatio', $avoidRatio, ['isAttacker'=>$this->isAttacker]);
 
         if($this->getOppose()->getCrewType()->armType == GameUnitConst::T_FOOTMAN){
             $avoidRatio *= 0.75;
@@ -119,100 +109,51 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function addWin(){
-        $this->increaseVar('killnum', 1);
-        $this->multiplyVarWithLimit('atmos', 1.1, null, GameConst::$maxAtmosByWar);
+        $general = $this->general;
+        $general->increaseVar('killnum', 1);
+        $general->multiplyVarWithLimit('atmos', 1.1, null, GameConst::$maxAtmosByWar);
 
         $this->addStatExp(1);
     }
 
     function addStatExp(int $value = 1){
+        $general = $this->general;
         if($this->crewType->armType == GameUnitConst::T_WIZARD) {   // 귀병
-            $this->increaseVar('intel2', $value);
+            $general->increaseVar('intel2', $value);
         } elseif($this->crewType->armType == GameUnitConst::T_SIEGE) {   // 차병
-            $this->increaseVar('leader2', $value);
+            $general->increaseVar('leader2', $value);
         } else {
-            $this->increaseVar('power2', $value);
+            $general->increaseVar('power2', $value);
         }
     }
 
     function addLevelExp(float $value){
+        $general = $this->general;
         if(!$this->isAttacker){
             $value *= 0.8;
         }
-        $value *= getCharExpMultiplier($this->getCharacter());
-        $this->increaseVar('experience', $value);
+        $value = $general->onCalcStat($general, 'experience', $value);
+        $general->increaseVar('experience', $value);
     }
 
     function addDedication(float $value){
-        $value *= getCharDedMultiplier($this->getCharacter());
-        $this->increaseVar('dedication', $value);
+        $general = $this->general;
+        $value = $general->onCalcStat($general, 'dedication', $value);
+        $general->increaseVar('dedication', $value);
     }
 
     function addLose(){
-        $this->increaseVar('deathnum', 1);
+        $general = $this->general;
+        $general->increaseVar('deathnum', 1);
         $this->addStatExp(1);
-    }
-
-    
-
-    protected function getWarPowerMultiplyBySpecialWar():array{
-        //TODO: 장기적으로 if문이 아니라 객체를 이용하여 처리해야함
-        $myWarPowerMultiply = 1.0;
-        $opposeWarPowerMultiply = 1.0;
-
-        $specialWar = $this->getSpecialWar();
-
-        if($specialWar == 53){
-            if($this->getOppose() instanceof WarUnitCity){
-                $myWarPowerMultiply *= 2;
-            }
-        }
-        else if($specialWar == 52){
-            if($this->isAttacker){
-                $myWarPowerMultiply *= 1.20;
-            }
-            else{
-                $myWarPowerMultiply *= 1.10;
-            }
-            
-        }
-        else if($specialWar == 60){
-            if($this->isAttacker){
-                $myWarPowerMultiply *= 1.10;
-            }
-            
-        }
-        else if($specialWar == 61){
-            $myWarPowerMultiply *= 1.10;
-        }
-        else if($specialWar == 62){
-            $opposeWarPowerMultiply *= 0.95;
-        }
-        else if($specialWar == 50){
-            if($this->isAttacker){
-                $opposeWarPowerMultiply *= 0.9;
-            }
-            else{
-                $opposeWarPowerMultiply *= 0.8;
-            }
-        }
-        else if($specialWar == 75){
-            $opposeCrewType = $this->oppose->getCrewType();
-            if($opposeCrewType->reqCities || $opposeCrewType->reqRegions){
-                $myWarPowerMultiply *= 1.1;
-                $opposeWarPowerMultiply *= 0.9;
-            }
-        }
-
-
-        return [$myWarPowerMultiply, $opposeWarPowerMultiply];
     }
 
     function computeWarPower(){
         [$warPower,$opposeWarPowerMultiply] = parent::computeWarPower();
 
-        $generalNo = $this->getVar('no');
-        $genLevel = $this->getVar('level');
+        $general = $this->general;
+        $generalNo = $general->getVar('no');
+        $genLevel = $general->getVar('level');
 
         if($this->isAttacker){
             if($genLevel == 12){
@@ -240,7 +181,7 @@ class WarUnitGeneral extends WarUnit{
             }
         }
 
-        $expLevel = $this->getVar('explevel');
+        $expLevel = $general->getVar('explevel');
 
         if($this->getOppose() instanceof WarUnitCity){
             $warPower *= 1 + $expLevel / 600;
@@ -251,7 +192,7 @@ class WarUnitGeneral extends WarUnit{
         }
         
 
-        [$specialMyWarPowerMultiply, $specialOpposeWarPowerMultiply] = $this->getWarPowerMultiplyBySpecialWar();
+        [$specialMyWarPowerMultiply, $specialOpposeWarPowerMultiply] = $this->general->getWarPowerMultiplier($this);
         $warPower *= $specialMyWarPowerMultiply;
         $opposeWarPowerMultiply *= $specialOpposeWarPowerMultiply;
 
@@ -271,6 +212,7 @@ class WarUnitGeneral extends WarUnit{
         $itemActivated = false;
         $itemConsumed = false;
         $itemName = getItemName($item);
+        $general = $this->general;
 
         if($item == 3){
             //탁주 사용
@@ -306,7 +248,7 @@ class WarUnitGeneral extends WarUnit{
         }
 
         if($itemConsumed){
-            $this->updateVar('item', 0);
+            $general->updateVar('item', 0);
             $josaUl = JosaUtil::pick($itemName, '을');
             $this->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
         }
@@ -373,7 +315,7 @@ class WarUnitGeneral extends WarUnit{
 
         if($itemConsumed){
             //NOTE: 소비 아이템은 하나인가?, 1회용인가?
-            $this->updateVar('item', 0);
+            $this->general->updateVar('item', 0);
             $josaUl = JosaUtil::pick($itemName, '을');
             $this->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
         }
@@ -384,6 +326,7 @@ class WarUnitGeneral extends WarUnit{
     function applyBattleBeginSkillAndItem():bool{
         $result = false;
         $oppose = $this->getOppose();
+        $general = $this->general;
 
         if($oppose->hasActivatedSkill('저격')){
             $result = true;
@@ -394,10 +337,10 @@ class WarUnitGeneral extends WarUnit{
             $this->getLogger()->pushGeneralBattleDetailLog("상대에게 <R>저격</>당했다!", ActionLogger::PLAIN);
 
             if($oppose->hasActivatedSkill('수극')){
-                $this->increaseVarWithLimit('injury', Util::randRangeInt(20, 40), null, 80);
+                $general->increaseVarWithLimit('injury', Util::randRangeInt(20, 40), null, 80);
             }
             else{
-                $this->increaseVarWithLimit('injury', Util::randRangeInt(20, 60), null, 80);
+                $general->increaseVarWithLimit('injury', Util::randRangeInt(20, 60), null, 80);
             }
             
         }
@@ -406,10 +349,11 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function getHP():int{
-        return $this->getVar('crew');
+        return $this->general->getVar('crew');
     }
 
     function addDex(GameUnitDetail $crewType, float $exp){
+        $general = $this->general;
         $armType = $crewType->armType;
 
         if($armType == GameUnitConst::T_CASTLE){
@@ -431,15 +375,16 @@ class WarUnitGeneral extends WarUnit{
         $ntype = $armType*10;
         $dexType = "dex{$ntype}";
 
-        $this->increaseVar($dexType, $exp);
+        $general->increaseVar($dexType, $exp);
     }
 
     function decreaseHP(int $damage):int{
-        $damage = min($damage, $this->getVar('crew'));
+        $general = $this->general;
+        $damage = min($damage, $general->getVar('crew'));
 
         $this->dead += $damage;
         $this->deadCurr += $damage;
-        $this->increaseVar('crew', -$damage);
+        $general->increaseVar('crew', -$damage);
 
         $addDex = $damage;
         if(!$this->isAttacker){
@@ -447,10 +392,11 @@ class WarUnitGeneral extends WarUnit{
         }
         $this->addDex($this->oppose->getCrewType(), $addDex);
 
-        return $this->getVar('crew');
+        return $general->getVar('crew');
     }
 
     function increaseKilled(int $damage):int{
+        $general = $this->general;
         $this->addLevelExp($damage / 50);
 
         $rice = $damage / 100;
@@ -461,7 +407,7 @@ class WarUnitGeneral extends WarUnit{
         $rice *= $this->crewType->rice;
         $rice *= getTechCost($this->getNationVar('tech'));
 
-        $this->increaseVarWithLimit('rice', -$rice, 0);
+        $general->increaseVarWithLimit('rice', -$rice, 0);
         
         $addDex = $damage;
         if(!$this->isAttacker){
@@ -889,6 +835,7 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function tryWound():bool{
+        $general = $this->general;
         if($this->hasActivatedSkillOnLog('부상무효')){
             return false;
         }
@@ -896,56 +843,27 @@ class WarUnitGeneral extends WarUnit{
             return false;
         }
 
-        $this->increaseVarWithLimit('injury', Util::randRangeInt(10, 80), null, 80);
+        $general->increaseVarWithLimit('injury', Util::randRangeInt(10, 80), null, 80);
         $this->getLogger()->pushGeneralActionLog("전투중 <R>부상</>당했다!", ActionLogger::PLAIN);
 
         return true;
     }
 
     function continueWar(&$noRice):bool{
+        $general = $this->general;
         if($this->getHP() <= 0){
             $noRice = false;
             return false;
         }
-        if($this->getVar('rice') <= $this->getHP() / 100){
+        if($general->getVar('rice') <= $this->getHP() / 100){
             $noRice = true;
             return false;
         }
         return true;
     }
 
-    ///checkAbility의 method 버전
     function checkStatChange():bool{
-        //FIXME: 장기적으로는 General 클래스가 별도로 있어야 함
-        $logger = $this->getLogger();
-        $limit = GameConst::$upgradeLimit;
-
-        $table = [
-            ['통솔', 'leader'],
-            ['무력', 'power'],
-            ['지력', 'intel'],
-        ];
-
-        $result = false;
-
-        foreach($table as [$statNickName, $statName]){
-            $statExpName = $statName.'2';
-
-            if($this->getVar($statExpName) < 0){
-                $logger->pushGeneralActionLog("<R>{$statNickName}</>이 <C>1</> 떨어졌습니다!", ActionLogger::PLAIN);
-                $this->increaseVar($statExpName, $limit);
-                $this->increaseVar($statName, -1);
-                $result = true;
-            }
-            else if($this->getVar($statExpName) >= $limit){
-                $logger->pushGeneralActionLog("<S>{$statNickName}</>이 <C>1</> 올랐습니다!", ActionLogger::PLAIN);
-                $this->increaseVar($statExpName, -$limit);
-                $this->increaseVar($statName, 1);
-                $result = true;
-            }
-        }
-
-        return $result;
+        return $this->general->checkStatChange();
     }
 
     function finishBattle(){    
@@ -954,13 +872,14 @@ class WarUnitGeneral extends WarUnit{
         }
         $this->clearActivatedSkill();
         $this->isFinished = true;
+        $general = $this->general;
 
-        $this->increaseVar('killcrew', $this->killed);
-        $this->increaseVar('deathcrew', $this->dead);
+        $general->increaseVar('killcrew', $this->killed);
+        $general->increaseVar('deathcrew', $this->dead);
         
-        $this->updateVar('rice', Util::round($this->getVar('rice')));
-        $this->updateVar('experience', Util::round($this->getVar('experience')));
-        $this->updateVar('dedication', Util::round($this->getVar('dedication')));
+        $general->updateVar('rice', Util::round($general->getVar('rice')));
+        $general->updateVar('experience', Util::round($general->getVar('experience')));
+        $general->updateVar('dedication', Util::round($general->getVar('dedication')));
 
         $this->checkStatChange();
     }

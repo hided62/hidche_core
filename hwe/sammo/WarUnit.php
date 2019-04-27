@@ -33,6 +33,53 @@ class WarUnit{
     private function __construct(General $general){
         $this->general = $general;
     }
+
+    /* XXX:Dirty wrapper */
+    function getRaw():array{
+        return $this->general->getRaw();
+    }
+
+    function getVar(string $key){
+        return $this->general->getVar($key);
+    }
+
+    function touchVar(string $key):bool{
+        return $this->general->touchVar($key);
+    }
+
+    function setVar(string $key, $value){
+        return $this->general->setVar($key, $value);
+    }
+
+    function updateVar(string $key, $value){
+        return $this->general->updateVar($key, $value);
+    }
+
+    function updateVarWithLimit(string $key, $value, $min = null, $max = null){
+        return $this->general->updateVarWithLimit($key, $value, $min, $max);
+    }
+
+    function increaseVar(string $key, $value)
+    {
+        return $this->general->increaseVar($key, $value);
+    }
+
+    function increaseVarWithLimit(string $key, $value, $min = null, $max = null){
+        return $this->general->increaseVarWithLimit($key, $value, $min, $max);
+    }
+
+    function multiplyVar(string $key, $value)
+    {
+        return $this->general->multiplyVar($key, $value);
+    }
+
+    function multiplyVarWithLimit(string $key, $value, $min = null, $max = null){
+        return $this->general->multiplyVarWithLimit($key, $value, $min, $max);
+    }
+
+    function getUpdatedValues():array {
+        return $this->general->getUpdatedValues();
+    }
     
     protected function clearActivatedSkill(){
         foreach($this->activatedSkill as $skillName=>$state){
@@ -91,7 +138,7 @@ class WarUnit{
     }
 
     function getLogger():ActionLogger{
-        return $this->logger;
+        return $this->general->logger;
     }
 
     function getKilled():int{
@@ -112,10 +159,6 @@ class WarUnit{
 
     function getGeneral():General{
         return $this->general;
-    }
-
-    function getVar(string $key){
-        return $this->general->getVar($key);
     }
 
     function getMaxPhase():int{
@@ -161,11 +204,21 @@ class WarUnit{
         $this->warPowerMultiply *= $multiply;
     }
 
-    function computeWarPower(){
-        $oppose = $this->oppose;
+    function getComputedAttack(){
+        return $this->getCrewType()->getComputedAttack($this->general, $this->getNationVar('tech'));
+    }
 
-        $myAtt = $this->getCrewType()->getComputedAttack($this->getRaw(), $this->getNationVar('tech'));
-        $opDef = $oppose->getCrewType()->getComputedDefence($oppose->getRaw(), $oppose->getNationVar('tech'));
+    function getComputedDefence(){
+        return $this->getCrewType()->getComputedDefence($this->general, $this->getNationVar('tech'));
+    }
+
+    function computeWarPower(){
+        $oppose = $this->getOppose();
+        $general = $this->general;
+        $opposeGeneral = $oppose->getGeneral();
+
+        $myAtt = $this->getComputedAttack();
+        $opDef = $oppose->getComputedDefence();
         // 감소할 병사 수
         $warPower = GameConst::$armperphase + $myAtt - $opDef;
         $opposeWarPowerMultiply = 1.0;
@@ -177,15 +230,8 @@ class WarUnit{
             $warPower = rand($warPower, 100);
         }
 
-        $warPower *= CharAtmos(
-            $this->getComputedAtmos(), 
-            $this->getCharacter()
-        );
-        
-        $warPower /= CharTrain(
-            $oppose->getComputedTrain(), 
-            $oppose->getCharacter()
-        );
+        $warPower *= $this->getComputedAtmos();
+        $warPower /= $oppose->getComputedTrain();
 
         if($this instanceof WarUnitGeneral){
             $genDexAtt = getGenDex($this->getRaw(), $this->getCrewType()->id);
@@ -252,10 +298,6 @@ class WarUnit{
 
     function finishBattle(){
         throw new NotInheritedMethodException();
-    }
-
-    function getCharacter():int{
-        return 0;
     }
 
     function useBattleInitItem():bool{

@@ -3,6 +3,7 @@ namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
+use \sammo\WarUnit;
 
 class che_돌격 implements iAction{
     use \sammo\DefaultAction;
@@ -23,5 +24,12 @@ class che_돌격 implements iAction{
             return $value += 1;
         }
         return $value;
+    }
+
+    public function getWarPowerMultiplier(WarUnit $unit):array{
+        if($unit->isAttacker()){
+            return [1.1, 1];
+        }
+        return [1, 1];
     }
 }

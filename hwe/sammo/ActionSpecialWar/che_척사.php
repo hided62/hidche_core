@@ -3,6 +3,7 @@ namespace sammo\ActionSpecialWar;
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
+use \sammo\WarUnit;
 
 class che_척사 implements iAction{
     use \sammo\DefaultAction;
@@ -18,4 +19,12 @@ class che_척사 implements iAction{
         SpecialityConst::STAT_POWER,
         SpecialityConst::STAT_INTEL
     ];
+
+    public function getWarPowerMultiplier(WarUnit $unit):array{
+        $opposeCrewType = $unit->getOppose()->getCrewType();
+        if($opposeCrewType->reqCities || $opposeCrewType->reqRegions){
+            return [1.1, 0.9];
+        }
+        return [1, 1];
+    }
 }

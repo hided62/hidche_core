@@ -82,26 +82,21 @@ class GameUnitDetail{
         return $this->defenceCoef[$armType]??1;
     }
 
-    public function getComputedAttack(array $general, int $tech){
-        if($this->armType == GameUnitConst::T_CASTLE){
-            assert(isset($general['def']) && isset($general['wall']), '도시 정보가 입력되어야 함');
-            return ($general['def'] + $general['wall']*9) / 500 + 200;
-        }
-
+    public function getComputedAttack(General $general, int $tech){
         if($this->armType == GameUnitConst::T_WIZARD){
-            $ratio = getGeneralIntel($general, true, true, true)*2 - 40;
+            $ratio = $general->getIntel(true, true, true)*2 - 40;
         }
         else if($this->armType == GameUnitConst::T_SIEGE){
-            $ratio = getGeneralLeadership($general, true, true, true)*2 - 40;
+            $ratio = $general->getLeadership(true, true, true)*2 - 40;
         }
         else if($this->armType == GameUnitConst::T_MISC){
-            $ratio = getGeneralIntel($general, true, true, true) +
-                getGeneralLeadership($general, true, true, true) + 
-                getGeneralPower($general, true, true, true);
+            $ratio = $general->getIntel(true, true, true) +
+                $general->getLeadership(true, true, true) + 
+                $general->getPower(true, true, true);
             $ratio = $ratio*2/3 - 40;
         }
         else{
-            $ratio = getGeneralPower($general, true, true, true)*2 - 40;
+            $ratio = $general->getPower(true, true, true)*2 - 40;
         }
         if($ratio < 10){
             $ratio = 10;
@@ -114,13 +109,9 @@ class GameUnitDetail{
         return $att * $ratio / 100;
     }
 
-    public function getComputedDefence(array $general, int $tech){
-        if($this->armType == GameUnitConst::T_CASTLE){
-            assert(isset($general['def']) && isset($general['wall']), '도시 정보가 입력되어야 함');
-            return ($general['def'] + $general['wall']*9) / 500 + 200;
-        }
+    public function getComputedDefence(General $general, int $tech){
         $def = $this->defence + getTechAbil($tech);
-        $crew = ($general['crew'] / (7000 / 30)) + 70;
+        $crew = ($general->getVar('crew') / (7000 / 30)) + 70;
         return $def * $crew / 100;
     }
 
