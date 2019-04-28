@@ -95,6 +95,7 @@ class WarUnitGeneral extends WarUnit{
     }
 
     function getComputedAvoidRatio():float{
+        $general = $this->general;
 
         $avoidRatio = $this->getCrewType()->avoid / 100;
         $avoidRatio *= $this->getComputedTrain() / 100;

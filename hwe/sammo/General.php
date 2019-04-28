@@ -377,6 +377,7 @@ class General implements iAction{
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
+            $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             
             if(!$iObj){
@@ -398,6 +399,7 @@ class General implements iAction{
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
+            $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -416,6 +418,7 @@ class General implements iAction{
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
+            $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -433,6 +436,7 @@ class General implements iAction{
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
+            $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -450,6 +454,7 @@ class General implements iAction{
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
+            $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -470,6 +475,7 @@ class General implements iAction{
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
+            $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -489,6 +495,7 @@ class General implements iAction{
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
+            $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;
@@ -510,6 +517,7 @@ class General implements iAction{
             $this->specialDomesticObj, 
             $this->specialWarObj, 
             $this->personalityObj, 
+            $this->getCrewTypeObj(),
         ], $this->itemObjs) as $iObj){
             if(!$iObj){
                 continue;

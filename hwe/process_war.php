@@ -2,10 +2,11 @@
 namespace sammo;
 
 
-function processWar(General $attackerGeneral, array $rawNation, array $rawDefenderCity){
+function processWar(General $attackerGeneral, array $rawAttackerNation, array $rawDefenderCity){
 
     $db = DB::db();
 
+    $attackerNationID = $attackerGeneral->getNationID();
     $defenderNationID = $rawDefenderCity['nation'];
 
     if($defenderNationID == 0){
@@ -28,7 +29,7 @@ function processWar(General $attackerGeneral, array $rawNation, array $rawDefend
     $gameStor = KVStorage::getStorage($db, 'game_env');
     [$startYear, $year, $month, $cityRate, $joinMode] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'city_rate', 'join_mode']);
 
-    $attacker = new WarUnitGeneral($attackerGeneral, $rawNation, true);
+    $attacker = new WarUnitGeneral($attackerGeneral, $rawAttackerNation, true);
 
     $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
@@ -101,7 +102,7 @@ function processWar(General $attackerGeneral, array $rawNation, array $rawDefend
 
     $db->update('city', [
         'dead' => $db->sqleval('dead + %i', $totalDead * 0.4)
-    ], 'city=%i', $rawAttackerCity['city']);
+    ], 'city=%i', $attackerGeneral->getCityID());
 
     $db->update('city', [
         'dead' => $db->sqleval('dead + %i', $totalDead * 0.6)
@@ -160,7 +161,7 @@ function processWar(General $attackerGeneral, array $rawNation, array $rawDefend
     }
 
     //XXX: 새 도시점령 코드 작성하기 전까지 유지
-    $rawAttackerCity = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $rawAttacker['city']);
+    $rawAttackerCity = $db->queryFirstRow('SELECT * FROM city WHERE city = %i', $attackerGeneral->getCityID());
     $rawAttackerNation = $db->queryFirstRow('SELECT nation,`level`,`name`,capital,gennum,tech,`type`,gold,rice FROM nation WHERE nation = %i', $attackerNationID);
 
     if($defenderNationID !== 0){
@@ -262,22 +263,30 @@ function processWar_NG(
             $attacker->addTrain(1);
             $defender->addTrain(1);
 
+            $attackerName = $attacker->getName();
+            $attackerCrewTypeName = $attacker->getCrewTypeName();
+
             if($defender instanceof WarUnitGeneral){
-                $josaWa = JosaUtil::pick($attacker->getCrewTypeName(), '와');
-                $josaYi = JosaUtil::pick($defender->getCrewTypeName(), '이');
-                $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaWa} <Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaYi} 대결합니다.");
-                $josaRo = JosaUtil::pick($attacker->getCrewTypeName(), '로');
-                $josaUl = JosaUtil::pick($defender->getCrewTypeName(), '을');
-                $attacker->getLogger()->pushGeneralActionLog("{$attacker->getCrewTypeName()}{$josaRo} <Y>{$defender->getName()}</>의 {$defender->getCrewTypeName()}{$josaUl} <M>공격</>합니다.");
-                $josaRo = JosaUtil::pick($defender->getCrewTypeName(), '로');
-                $josaUl = JosaUtil::pick($attacker->getCrewTypeName(), '을');
-                $defender->getLogger()->pushGeneralActionLog("{$defender->getCrewTypeName()}{$josaRo} <Y>{$attacker->getName()}</>의 {$attacker->getCrewTypeName()}{$josaUl} <M>수비</>합니다.");
+                $defenderName = $defender->getName();
+                $defenderCrewTypeName = $defender->getCrewTypeName();
+
+                $josaWa = JosaUtil::pick($attackerCrewTypeName, '와');
+                $josaYi = JosaUtil::pick($defenderCrewTypeName, '이');
+                $logger->pushGlobalActionLog("<Y>{$attackerName}</>의 {$attackerCrewTypeName}{$josaWa} <Y>{$defenderName}</>의 {$defenderCrewTypeName}{$josaYi} 대결합니다.");
+
+                $josaRo = JosaUtil::pick($attackerCrewTypeName, '로');
+                $josaUl = JosaUtil::pick($defenderCrewTypeName, '을');
+                $attacker->getLogger()->pushGeneralActionLog("{$attackerCrewTypeName}{$josaRo} <Y>{$defenderName}</>의 {$defenderCrewTypeName}{$josaUl} <M>공격</>합니다.");
+
+                $josaRo = JosaUtil::pick($defenderCrewTypeName, '로');
+                $josaUl = JosaUtil::pick($attackerCrewTypeName, '을');
+                $defender->getLogger()->pushGeneralActionLog("{$defenderCrewTypeName}{$josaRo} <Y>{$attackerName}</>의 {$attackerCrewTypeName}{$josaUl} <M>수비</>합니다.");
             }
             else{
-                $josaYi = JosaUtil::pick($attacker->getName(), '이');
-                $josaRo = JosaUtil::pick($attacker->getCrewTypeName(), '로');
-                $logger->pushGlobalActionLog("<Y>{$attacker->getName()}</>{$josaYi} {$attacker->getCrewTypeName()}{$josaRo} 성벽을 공격합니다.");
-                $logger->pushGeneralActionLog("{$attacker->getCrewTypeName()}{$josaRo} 성벽을 <M>공격</>합니다.", ActionLogger::PLAIN);
+                $josaYi = JosaUtil::pick($attackerName, '이');
+                $josaRo = JosaUtil::pick($attackerCrewTypeName, '로');
+                $logger->pushGlobalActionLog("<Y>{$attackerName}</>{$josaYi} {$attackerCrewTypeName}{$josaRo} 성벽을 공격합니다.");
+                $logger->pushGeneralActionLog("{$attackerCrewTypeName}{$josaRo} 성벽을 <M>공격</>합니다.", ActionLogger::PLAIN);
             }
 
             $defender->useBattleInitItem();

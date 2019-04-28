@@ -1,7 +1,8 @@
 <?php
 namespace sammo;
 
-class GameUnitDetail{
+class GameUnitDetail extends GameUnitActionBase{
+
     public $id;
     public $armType;
     public $name;

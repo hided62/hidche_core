@@ -18,11 +18,11 @@ class GameUnitConstBase{
     
     
 
-    protected static $constID = null;
-    protected static $constName = null;
-    protected static $constCity = null;
-    protected static $constRegion = null;
-    protected static $constType = null;
+    protected static $constID = [];
+    protected static $constName = [];
+    protected static $constCity = [];
+    protected static $constRegion = [];
+    protected static $constType = [];
 
     protected static $typeData = [
         self::T_FOOTMAN => '보병',
@@ -303,6 +303,34 @@ class GameUnitConstBase{
         ]
     ];
 
+    public static function addGameUnit(GameUnitDetail $unitType){
+        static::_generate();
+
+        static::$constID[$unitType->id] = $unitType;
+        static::$constName[$unitType->name] = $unitType;
+
+        if(!key_exists($unitType->armType, static::$constType)){
+            static::$constType[$unitType->armType] = [];
+        }
+        static::$constType[$unitType->armType][] = $unitType;
+
+        foreach($unitType->reqCities as $reqCity){
+            if(!key_exists($reqCity, static::$constCity)){
+                static::$constCity[$reqCity] = [];
+            }
+            static::$constCity[$reqCity][] = $unitType;
+        }
+
+        if($unitType->reqRegions){
+            foreach($unitType->reqRegions as $reqRegion){
+                if(!key_exists($reqRegion, static::$constRegion)){
+                    static::$constRegion[$reqRegion] = [];
+                }
+                static::$constRegion[$reqRegion][] = $unitType;
+            }
+        }
+    }
+
     /**
      * @return \sammo\GameUnitDetail[]
      */
@@ -352,6 +380,10 @@ class GameUnitConstBase{
         }
 
         return static::$constType[$type];
+    }
+
+    protected static function _generateOptional(){
+        //for inheritance
     }
 
     protected static function _generate(){
@@ -462,6 +494,7 @@ class GameUnitConstBase{
         static::$constCity = $constCity;
         static::$constRegion = $constRegion;
         static::$constType = $constType;
-        
+
+        static::_generateOptional();
     }
 }
