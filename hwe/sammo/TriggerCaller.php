@@ -81,6 +81,8 @@ abstract class TriggerCaller{
             return;
         }
 
+        //NOTE: array_merge로 계속 가야하는가? merge가 많으면 SPL의 LinkedList가 낫지 않나?
+
         $newTriggerList = [];
         $iterLhs = new \ArrayIterator($this->triggerListByPriority);
         $iterRhs = new \ArrayIterator($other->triggerListByPriority);
@@ -96,7 +98,7 @@ abstract class TriggerCaller{
                 $iterRhs->next();
                 continue;
             }
-            $newTriggerList[$iterLhs->key()] = $iterLhs->current() + $iterRhs->current();
+            $newTriggerList[$iterLhs->key()] = array_merge($iterLhs->current(), $iterRhs->current());
             $iterLhs->next();
             $iterRhs->next();
         }

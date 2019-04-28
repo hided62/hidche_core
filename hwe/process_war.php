@@ -294,6 +294,13 @@ function processWar_NG(
             $attacker->setOppose($defender);
             $defender->setOppose($attacker);
 
+            $initCaller = $attacker->getGeneral()->getBattleInitSkillTriggerList($attacker);
+            $initCaller->merge($defender->getGeneral()->getBattleInitSkillTriggerList($defender));
+
+            $initCaller->fire([], [$attacker, $defender]);
+            //스킬류, 아이템, 스킬 및 아이템 적용 순이어야 할 것
+
+            /*
             foreach(Util::zip(
                 $attacker->checkBattleBeginSkill(),
                 $defender->checkBattleBeginSkill()
@@ -306,6 +313,7 @@ function processWar_NG(
 
             $attacker->applyBattleBeginSkillAndItem();
             $defender->applyBattleBeginSkillAndItem();
+            */
         }
 
         $attacker->beginPhase();
