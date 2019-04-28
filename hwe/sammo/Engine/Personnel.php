@@ -92,13 +92,7 @@ class Personnel{
             return [$result, $reason];
         }
 
-        $isTroopLeader = false;
-        if($general['troop']){
-            $troopLeader = $db->queryFirstField('SELECT `no` FROM troop WHERE troop = %i', $general['troop']);
-            if($troopLeader == $generalID){
-                $isTroopLeader = true;
-            }
-        }
+        $isTroopLeader = ($generalID == $general['troop']);
 
         $joinedNations = Json::decode($general['nations']);
         $joinedNations[] = $this->nation['nation'];
@@ -183,9 +177,9 @@ class Personnel{
             // 모두 탈퇴
             $db->update('general', [
                 'troop'=>0,
-            ], 'troop=%i', $general['troop']);
+            ], 'troop_leader=%i', $generalID);
             // 부대 삭제
-            $db->delete('troop', 'troop=%i', $general['troop']);
+            $db->delete('troop', 'troop_leader=%i', $generalID);
         }
         
         return [ScoutMessage::ACCEPTED, ''];

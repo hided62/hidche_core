@@ -654,7 +654,7 @@ function generalInfo($no) {
         $lbonus = "";
     }
 
-    $troop = getTroop($general['troop']);
+    $troopName = getTroopName($general['troop'])??'-';
 
     $level = getLevel($general['level'], $nation['level']);
     if($general['level'] == 2)     {
@@ -723,7 +723,6 @@ function generalInfo($no) {
         default:
             $train = "{$general['train']}"; break;
     }
-    if($general['troop'] == 0)    { $troop['name'] = "-"; }
     if($general['mode'] == 2)     { $general['mode'] = "<font color=limegreen>수비 함(훈사80)</font>"; }
     elseif($general['mode'] == 1) { $general['mode'] = "<font color=limegreen>수비 함(훈사60)</font>"; }
     else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
@@ -797,7 +796,7 @@ function generalInfo($no) {
     </tr>
     <tr height=20>
         <td style='text-align:center;' class='bg1'><b>부대</b></td>
-        <td style='text-align:center;' colspan=3>{$troop['name']}</td>
+        <td style='text-align:center;' colspan=3>{$troopName}</td>
         <td style='text-align:center;' class='bg1'><b>벌점</b></td>
         <td style='text-align:center;' colspan=5>".getConnect($general['connect'])." {$general['connect']}({$general['con']})</td>
     </tr>
@@ -1885,15 +1884,13 @@ function getMe() {
     return $me;
 }
 
-function getTroop($troop) {
+function getTroopName(int $troopLeader):?string {
+    if($troopLeader == 0){
+        return null;
+    }
     $db = DB::db();
-    $connect=$db->get();
 
-    $query = "select * from troop where troop='$troop'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $troop = MYDB_fetch_array($result);
-
-    return $troop;
+    return $db->queryFirstField('SELECT `name` FROM troop WHERE troop_leader = %i', $troopLeader);
 }
 
 function getCity($city, $sel="*") {

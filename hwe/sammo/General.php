@@ -265,17 +265,15 @@ class General implements iAction{
         ], 'gen3=%i', $generalID);
 
         // 부대 처리
-        $troopID = $this->getVar('troop');
-        $troopLeaderID = $db->queryFirstField('SELECT `no` FROM troop WHERE troop=%i', $troopID);
+        $troopLeaderID = $this->getVar('troop');
         if($troopLeaderID == $generalID){
             //부대장일 경우
             // 모두 탈퇴
             $db->update('general', [
                 'troop'=>0
-            ], 'troop=%i', $troopID);
-
+            ], 'troop_leader=%i', $troopLeaderID);
             // 부대 삭제
-            $db->delete('troop', 'troop=%i', $troopID);
+            $db->delete('troop', 'troop_leader=%i', $troopLeaderID);
         }
 
         $dyingMessage = new TextDecoration\DyingMessage($this->getName(), $this->getVar('npc'));

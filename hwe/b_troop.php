@@ -14,11 +14,9 @@ increaseRefresh("부대편성", 1);
 $me = $db->queryFirstRow('SELECT no,nation,troop FROM general WHERE owner=%i', $userID);
 
 $troops = [];
-foreach($db->query('SELECT troop,name,no FROM troop WHERE nation = %i', $me['nation']) as $rawTroop){
-    $troops[$rawTroop['troop']] = [
-        'troop'=>$rawTroop['troop'],
+foreach($db->query('SELECT troop_leader,name FROM troop WHERE nation = %i', $me['nation']) as $rawTroop){
+    $troops[$rawTroop['troop_leader']] = [
         'name'=>$rawTroop['name'],
-        'no'=>$rawTroop['no'],
         'users'=>[]
     ];
 }
@@ -41,7 +39,7 @@ foreach($db->query(
 if($troops){
     $troopLeaders = $db->query(
         'SELECT no,name,picture,imgsvr,turntime,city,troop FROM general WHERE no IN %li',
-        array_column($troops, 'no')
+        array_keys($troops)
     );
 
     foreach($db->queryAllLists(
@@ -147,7 +145,7 @@ foreach ($troops as $troopNo=>$troop) {
 
 <?php if ($me['troop'] == 0): ?>
     <tr>
-        <td align=center rowspan=2><input type='radio' name='troop' value='<?=$troop['troop']?>'></td>
+        <td align=center rowspan=2><input type='radio' name='troop' value='<?=$troopNo?>'></td>
         <td align=center><?=$troop['name']?><br>【 <?=$cityText?> 】</td>
         <td height=64 class='generalIcon' style='background:no-repeat center url("<?=$troopLeader['pictureFullPath']?>");background-size:64px;'>&nbsp;</td>
         <td rowspan=2 width=62><?=$genlistText?></td>

@@ -163,22 +163,19 @@ if($btn == "추방") {
                 ], 'no=%i', $general['no']);
             }
         }
-        // 부대 처리
-        $query = "select no from troop where troop='{$general['troop']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $troop = MYDB_fetch_array($result);
 
         //부대장일 경우
-        if($troop['no'] == $general['no']) {
+        if($general['troop'] == $general['no']){
             // 모두 탈퇴
-            $query = "update general set troop='0' where troop='{$general['troop']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-            // 부대 삭제
-            $query = "delete from troop where troop='{$general['troop']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        } else {
-            $query = "update general set troop='0' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+            $db->update('general', [
+                'troop'=>0,
+            ], 'troop = %i', $general['no']);
+            $db->delete('troop', 'troop_leader=%i', $general['no']);
+        }
+        else {
+            $db->update('general', [
+                'troop'=>0,
+            ], 'no=%i', $general['no']);
         }
 
         // 도시관직해제

@@ -286,14 +286,12 @@ CREATE TABLE `city` (
 ## 부대 테이블
 ###########################################################################
 
-create table troop (
-  troop int(6) not null auto_increment,
-  name char(64) not null,
-  nation int(6) not null,
-  no int(6) not null,
-
-  PRIMARY KEY (troop)
-) ENGINE=INNODB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `troop` (
+	`troop_leader` INT(6) NOT NULL,
+	`nation` INT(6) NOT NULL,
+	`name` VARCHAR(50) NOT NULL,
+	PRIMARY KEY (`troop_leader`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4;
 
 ##########################################################################
 ##  락 테이블

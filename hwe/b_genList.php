@@ -86,7 +86,7 @@ $templates = new \League\Plates\Engine('templates');
 </table>
 <?php
 $troopName = [];
-foreach($db->queryAllLists('SELECT troop, name FROM troop WHERE nation=%i', $me['nation']) as [$troopID, $tName]){
+foreach($db->queryAllLists('SELECT troop_leader, name FROM troop WHERE nation=%i', $me['nation']) as [$troopID, $tName]){
     $troopName[$troopID] = $tName;
 }
 
@@ -99,7 +99,7 @@ switch ($type) {
     case 5: $orderSQL = "order by crew desc"; break;
     case 6: $orderSQL = "order by killturn"; break;
     case 7: $orderSQL = "order by turntime"; break;
-    case 8: $orderSQL = "order by troop desc"; break;
+    case 8: $orderSQL = "order by troop_leader desc"; break;
 }
 
 $generals = $db->query(

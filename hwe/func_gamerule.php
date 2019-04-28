@@ -983,13 +983,12 @@ function updateNationState() {
                 $npcID = $npcObj->generalID;
     
                 $db->insert('troop', [
+                    'troop_leader'=>$npcID,
                     'name'=>$npcObj->realName,
                     'nation'=>$nation['nation'],
-                    'no'=>$npcID
                 ]);
-                $troopID = $db->insertId();
                 $db->update('general', [
-                    'troop'=>$troopID
+                    'troop'=>$npcID
                 ], 'no=%i', $npcID);
     
                 //TODO: 5턴간 집합턴 입력

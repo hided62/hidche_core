@@ -24,11 +24,7 @@ class MustBeTroopLeader extends Constraint{
         $this->checkInputValues();
         $this->tested = true;
 
-        //XXX: 부대장인지 알 수가 없음
-        $db = DB::db();
-        $troopLeader = $db->queryFirstField('SELECT no FROM troop WHERE troop = %i', $this->general['troop']);
-
-        if($troopLeader == $this->general['no']){
+        if($this->general['no'] == $this->general['troop']){
             return true;
         }
 

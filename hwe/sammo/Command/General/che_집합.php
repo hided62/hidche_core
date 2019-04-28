@@ -74,8 +74,8 @@ class che_집합 extends Command\GeneralCommand{
         $cityName = $this->city['name'];
         $josaRo = JosaUtil::pick($cityName, '로');
 
-        $troopID = $general->getVar('troop');
-        $troopName = $db->queryFirstField('SELECT name FROM troop WHERE troop = %i', $troopID);
+        $troopID = $general->getID();
+        $troopName = $db->queryFirstField('SELECT name FROM troop WHERE troop_leader = %i', $troopID);
 
         $logger = $general->getLogger();
 
@@ -88,7 +88,6 @@ class che_집합 extends Command\GeneralCommand{
             ], 'no IN %li', $generalList);
         }
         foreach($generalList as $targetGeneralID){
-            $targetGeneral = General::createGeneralObjFromDB($targetGeneralID, [], 1);
             $targetLogger = new ActionLogger($targetGeneralID, $general->getNationID(), $env['year'], $env['month']);
             $targetLogger->pushGeneralActionLog("{$troopName}의 부대원들은 <G><b>{$cityName}</b></>{$josaRo} 집합되었습니다.", ActionLogger::PLAIN);
             $targetLogger->flush();

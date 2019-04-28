@@ -25,7 +25,7 @@ class ReqTroopMembers extends Constraint{
 
         $db = DB::db();
         //NOTE:이 경우에 DB를 사용하지 않을 수 있는가?
-        $troopMember = $db->queryFirstField('SELECT no FROM troop WHERE troop = %i AND no != %i LIMIT 1', $this->general['troop'], $this->general['no']);
+        $troopMember = $db->queryFirstField('SELECT no FROM general WHERE troop = %i AND no != %i LIMIT 1', $this->general['troop'], $this->general['troop']);
 
         if($troopMember !== null){
             return true;
