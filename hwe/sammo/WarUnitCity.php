@@ -88,7 +88,7 @@ class WarUnitCity extends WarUnit{
         return true;
     }
 
-    function heavyDecreseWealth(){
+    function heavyDecreaseWealth(){
         $this->multiplyVar('agri', 0.5);
         $this->multiplyVar('comm', 0.5);
         $this->multiplyVar('secu', 0.5);

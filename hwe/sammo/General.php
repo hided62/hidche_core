@@ -524,6 +524,8 @@ class General implements iAction{
         return $caller;
     }
 
+    //TODO:createGeneralObjListFromDB로, 조건으로 select query나 generalIDList가 들어가는 녀석이 필요할 수 있음
+
     static public function createGeneralObjFromDB(int $generalID, ?array $column=null, int $constructMode=2):self{
         $db = DB::db();
         if($constructMode > 0){

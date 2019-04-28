@@ -4,7 +4,7 @@ namespace sammo;
 class WarUnitGeneral extends WarUnit{
     protected $bonusPhase = 0;
 
-    function __construct(General $general, array $rawNation, bool $isAttacker, int $year, int $month){
+    function __construct(General $general, array $rawNation, bool $isAttacker){
         $this->general = $general;
         $this->raw = $general->getRaw();
         $this->rawNation = $rawNation; //read-only

@@ -74,7 +74,7 @@ $rawAttacker['turntime'] = TimeUtil::now();
 $rawAttackerCity = $query['attackerCity'];
 $rawAttackerNation = $query['attackerNation'];
 
-$defenderList = $query['defenderGenerals'];
+$rawdefenderList = $query['defenderGenerals'];
 $rawDefenderCity = $query['defenderCity'];
 $rawDefenderNation = $query['defenderNation'];
 
@@ -135,7 +135,9 @@ if(!$v->validate()){
     ]);
 }
 
-foreach($defenderList as $idx=>$rawDefenderGeneral){
+$defenderList = [];
+
+foreach($rawDefenderList as $idx=>$rawDefenderGeneral){
     $v = new Validator($rawDefenderGeneral);
     $v->rules($generalCheck);
     if(!$v->validate()){
@@ -145,6 +147,7 @@ foreach($defenderList as $idx=>$rawDefenderGeneral){
             'reason'=>"[수비자{$idx}]".$v->errorStr()
         ]);
     }
+    $defenderList[] = new General($rawDefenderGeneral, $rawDefenderCity, $year, $month, true);
 }
 
 
@@ -242,7 +245,7 @@ if(!$v->validate()){
 }
 
 if($action == 'reorder'){
-    usort($defenderList, function($lhs, $rhs){
+    usort($defenderList, function(General $lhs, General $rhs){
         return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
     });
 
@@ -258,7 +261,7 @@ if($action == 'reorder'){
     ]);
 }
 
-usort($defenderList, function($lhs, $rhs){
+usort($defenderList, function(General $lhs, General $rhs){
     return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
 });
 
@@ -273,7 +276,11 @@ function simulateBattle(
     $defenderList, $rawDefenderCity, $rawDefenderNation, 
     $startYear, $year, $month, $cityRate
 ){
-    $attacker = new WarUnitGeneral($rawAttacker, $rawAttackerCity, $rawAttackerNation, true, $year, $month);
+    $attacker = new WarUnitGeneral(
+        new General($rawAttacker, $rawAttackerCity, $year, $month),
+        $rawAttackerNation,
+        true
+    );
     $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
     $iterDefender = new \ArrayIterator($defenderList);
@@ -309,7 +316,11 @@ function simulateBattle(
 
         $defenderRice += $rawGeneral['rice'];
 
-        $retVal = new WarUnitGeneral($rawGeneral, $rawDefenderCity, $rawDefenderNation, false, $year, $month);
+        $retVal = new WarUnitGeneral(
+            new General($rawGeneral, $rawDefenderCity, $year, $month),
+            $rawDefenderNation,
+            false
+        );
         $iterDefender->next();
         return $retVal;
     };

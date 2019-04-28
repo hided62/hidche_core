@@ -128,7 +128,7 @@ class che_출병 extends Command\GeneralCommand{
         $general->applyDB($db);
 
         //TODO: 장기적으로 통합해야함
-        processWar($general->getRaw(), $this->destCity);
+        processWar($general, $general->getStaticNation(), $this->destCity);
 
         tryUniqueItemLottery($general);
         $general->applyDB($db);

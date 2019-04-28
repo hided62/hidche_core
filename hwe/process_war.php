@@ -2,7 +2,7 @@
 namespace sammo;
 
 
-function processWar(General $attacker, array $rawNation, array $rawDefenderCity){
+function processWar(General $attackerGeneral, array $rawNation, array $rawDefenderCity){
 
     $db = DB::db();
 
@@ -28,24 +28,23 @@ function processWar(General $attacker, array $rawNation, array $rawDefenderCity)
     $gameStor = KVStorage::getStorage($db, 'game_env');
     [$startYear, $year, $month, $cityRate, $joinMode] = $gameStor->getValuesAsArray(['startyear', 'year', 'month', 'city_rate', 'join_mode']);
 
-    $attacker = new WarUnitGeneral($attacker, $rawNation, true, $year, $month);
+    $attacker = new WarUnitGeneral($attackerGeneral, $rawNation, true);
 
     $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
-    $defenderList = $db->query('SELECT no,name,nation,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar,mode FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))', $city->getVar('nation'), $city->getVar('city'));
-
-    if(!$defenderList){
-        $defenderList = [];
+    $defenderList = [];
+    foreach ($db->query('SELECT no,name,nation,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,power,power2,weap,injury,leader,leader2,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar,mode FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))', $city->getVar('nation'), $city->getVar('city')) as $rawGeneral){
+        $defenderList[] = new General($rawGeneral, $rawDefenderCity, $year, $month);
     }
 
-    usort($defenderList, function($lhs, $rhs){
+    usort($defenderList, function(General $lhs, General $rhs){
         return -(extractBattleOrder($lhs) <=> extractBattleOrder($rhs));
     });
 
     $iterDefender = new \ArrayIterator($defenderList);
     $iterDefender->rewind();
 
-    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $rawDefenderCity, $rawDefenderNation, $year, $month, $db) {
+    $getNextDefender = function(?WarUnit $prevDefender, bool $reqNext) use ($iterDefender, $rawDefenderNation, $db) {
         if($prevDefender !== null){
             $prevDefender->applyDB($db);
         }
@@ -58,12 +57,17 @@ function processWar(General $attacker, array $rawNation, array $rawDefenderCity)
             return null;
         }
 
-        $rawGeneral = $iterDefender->current();
-        if(extractBattleOrder($rawGeneral) <= 0){
+        $nextDefender = $iterDefender->current();
+        if(extractBattleOrder($nextDefender) <= 0){
             return null;
         }
 
-        $retVal = new WarUnitGeneral($rawGeneral, $rawDefenderCity, $rawDefenderNation, false, $year, $month);
+
+        $retVal = new WarUnitGeneral(
+            $nextDefender,
+            $rawDefenderNation,
+            false
+        );
         $iterDefender->next();
         return $retVal;
     };
@@ -172,41 +176,32 @@ function processWar(General $attacker, array $rawNation, array $rawDefenderCity)
     ], $attacker->getRaw(), $city->getRaw(), $rawAttackerNation, $rawDefenderNation);
 }
 
-function extractBattleOrder($general){
-    if($general['crew'] == 0){
+function extractBattleOrder(General $general){
+    if($general->getVar('crew') == 0){
         return 0;
     }
 
-    if($general['rice'] <= $general['crew'] / 100){
+    if($general->getVar('rice') <= $general->getVar('crew') / 100){
         return 0;
     }
 
-    if($general['mode'] == 0){
+    if($general->getVar('mode') == 0){
         return 0;
     }
 
-    if($general['mode'] == 1 && ($general['train'] < 60 || $general['atmos'] < 60)){
+    if($general->getVar('mode') == 1 && ($general->getVar('train') < 60 || $general->getVar('atmos') < 60)){
         return 0;
     }
 
-    if($general['mode'] == 2 && ($general['train'] < 80 || $general['atmos'] < 80)){
+    if($general->getVar('mode') == 2 && ($general->getVar('train') < 80 || $general->getVar('atmos') < 80)){
         return 0;
     }
 
-    $staticNation = getNationStaticInfo($general['nation']);
-    setLeadershipBonus($general, $staticNation['level']);
-
-    $realStat = 
-        getGeneralLeadership($general, true, true, true, true) +
-        getGeneralPower($general, true, true, true, true) +
-        getGeneralIntel($general, true, true, true, true);
-    $fullStat = 
-        getGeneralLeadership($general, false, true, true, true) +
-        getGeneralPower($general, false, true, true, true) +
-        getGeneralIntel($general, false, true, true, true);
+    $realStat = $general->getLeadership() + $general->getPower() + $general->getIntel();
+    $fullStat = $general->getLeadership(false) + $general->getPower(false) + $general->getIntel(false);
     $totalStat = ($realStat + $fullStat) / 2;
 
-    $totalCrew = $general['crew'] / 1000000 * (($general['train'] * $general['atmos']) ** 1.5);
+    $totalCrew = $general->getVar('crew') / 1000000 * (($general->getVar('train') * $general->getVar('atmos')) ** 1.5);
     return $totalStat + $totalCrew / 100;
 }
 
@@ -249,7 +244,7 @@ function processWar_NG(
 
                 $attacker->addWin();
                 $defender->addLose();
-                $defender->heavyDecreseWealth();
+                $defender->heavyDecreaseWealth();
 
                 $logger->pushGlobalActionLog("병량 부족으로 <G><b>{$defender->getName()}</b></>의 수비병들이 <R>패퇴</>합니다.");
                 $josaUl = JosaUtil::pick($defender->getName(), '을');
