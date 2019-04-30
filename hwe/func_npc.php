@@ -220,6 +220,8 @@ function processAI($no) {
             
         }
         else{
+            $newKillTurn = ($general['killturn'] + Util::randRangeInt(1, 4)) % 5;
+            $newKillTurn += 70;
             $command = EncodeCommand(0, 0, 0, 26); //집합
             $db->update('general', [
                 'turn0'=>$command,
@@ -228,7 +230,7 @@ function processAI($no) {
                 'turn3'=>$command,
                 'turn4'=>$command,
                 'turn5'=>$command,
-                'killturn'=>rand(70,75),
+                'killturn'=>$newKillTurn,
             ], 'no=%i', $general['no']);
         }
 
