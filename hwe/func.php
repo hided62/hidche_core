@@ -2251,10 +2251,10 @@ function uniqueItem($general, $log, $vote=0) {
     if(rand() % $prob == 0) {
         //셋중 선택
         $selGroup = [
-            20 - $db->queryFirstField('SELECT count(*) from general where weap > 7'),
-            20 - $db->queryFirstField('SELECT count(*) from general where book > 7'),
-            20 - $db->queryFirstField('SELECT count(*) from general where horse > 7'),
-            20 - $db->queryFirstField('SELECT count(*) from general where item > 7')
+            20 - $db->queryFirstField('SELECT count(*) from general where weap > 6'),
+            20 - $db->queryFirstField('SELECT count(*) from general where book > 6'),
+            20 - $db->queryFirstField('SELECT count(*) from general where horse > 6'),
+            20 - $db->queryFirstField('SELECT count(*) from general where item > 6')
         ];
         $sel = Util::choiceRandomUsingWeight($selGroup);
         switch($sel) {
