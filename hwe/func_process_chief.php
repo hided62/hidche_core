@@ -1968,7 +1968,9 @@ function process_76(&$general) {
         $avgNation = MYDB_fetch_array($result);
         $gencount = 5 + Util::round($avgNation['gennum'] / 10);
 
-        $avgGen = $db->queryFirstRow('SELECT max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) / 4 as dex_t, avg(age) as age, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
+        $avgGen = $db->queryFirstRow('SELECT max(leader+power+intel) as lpi, avg(dedication) as ded,avg(experience) as exp, avg(dex0+dex10+dex20+dex30) as dex_t, avg(age) as age, avg(dex40) as dex40 from general where npc < 5 and nation = %i', $general['nation']);
+
+        $dexTotal = $avgGen['dex_t'];
 
         //의병추가
         $npc = 4;
@@ -1979,25 +1981,42 @@ function process_76(&$general) {
             $stat_tier3 = GameConst::$defaultStatMin + rand()%6;
             $stat_tier2 = GameConst::$defaultStatTotal - $stat_tier1 - $stat_tier3;
             $type = Util::choiceRandomUsingWeight([
-                'power'=>5,
-                'intel'=>5,
+                'power0'=>1,
+                'power1'=>1,
+                'power2'=>1,
+                'intel'=>3,
                 'neutral'=>0
             ]);
             switch($type){
-            case 'power':
+            case 'power0':
                 $leader = $stat_tier1;
                 $power = $stat_tier2;
                 $intel = $stat_tier3;
+                $dexVal = [$dexTotal*5/8, $dexTotal/8, $dexTotal/8, $dexTotal/8];
+                break;
+            case 'power1':
+                $leader = $stat_tier1;
+                $power = $stat_tier2;
+                $intel = $stat_tier3;
+                $dexVal = [$dexTotal/8, $dexTotal*5/8, $dexTotal/8, $dexTotal/8];
+                break;
+            case 'power2':
+                $leader = $stat_tier1;
+                $power = $stat_tier2;
+                $intel = $stat_tier3;
+                $dexVal = [$dexTotal/8, $dexTotal/8, $dexTotal*5/8, $dexTotal/8];
                 break;
             case 'intel':
                 $leader = $stat_tier1;
                 $power = $stat_tier3;
                 $intel = $stat_tier2;
+                $dexVal = [$dexTotal/8, $dexTotal/8, $dexTotal/8, $dexTotal*5/8];
                 break;
-            case 'neutral':
+            default:
                 $leader = $stat_tier3;
                 $power = $stat_tier1;
                 $intel = $stat_tier2;
+                $dexVal = [$dexTotal/4, $dexTotal/4, $dexTotal/4, $dexTotal/4];
                 break;
             }
             // 국내 최고능치 기준으로 랜덤성 스케일링
@@ -2071,7 +2090,7 @@ function process_76(&$general) {
                     '1','100','100','0','".GameUnitConst::DEFAULT_CREWTYPE."','0','0','0',
                     '0','0','0','$turntime','$killturn','{$avgGen['age']}','1','$personal','0','0','0','0','',
                     '0','$bornyear','$deadyear',
-                    '{$avgGen['dex_t']}','{$avgGen['dex_t']}','{$avgGen['dex_t']}','{$avgGen['dex_t']}','{$avgGen['dex40']}'
+                    '{$dexVal[0]}','{$dexVal[1]}','{$dexVal[2]}','{$dexVal[3]}','{$avgGen['dex40']}'
                 )",
                 $connect
             ) or Error(__LINE__.MYDB_error($connect),"");
