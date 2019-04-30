@@ -273,8 +273,15 @@ function process_1(&$general, $type) {
         $exp = CharExperience($exp, $general['personal']);
         $ded = CharDedication($ded, $general['personal']);
 
-        if($city['front'] == 1 && $city['city'] != $nation['capital']){
-            $score *= 0.5;
+        if($city['front'] == 1){
+            if($city['city'] == $nation['capital']){
+                $degrade = 1 - ($admin['year'] - $admin['startyear'] - 5) * 0.025;
+                $score *= Util::valueFit($degrade, 0.5, 1);
+            }
+            else{
+                $score *= 0.5;
+            }
+            
         }
 
         $score += $city["$stype"];
@@ -571,13 +578,26 @@ function process_5(&$general, $type) {
         $exp = $score * 0.7;
         $ded = $score * 1.0;
 
-        if($city['front'] == 1 && $city['city'] != $nation['capital']){
-            if($stype == 'def'){
-                $score *= 0.5;
+        if($city['front'] == 1){
+            if($city['city'] == $nation['capital']){
+                if($stype == 'def'){
+                    $degrade = 1 - ($admin['year'] - $admin['startyear'] - 5) * 0.025;
+                    $score *= Util::valueFit($degrade, 0.5, 1);
+                }
+                else{
+                    $degrade = 1 - ($admin['year'] - $admin['startyear'] - 5) * 0.0375;
+                    $score *= Util::valueFit($degrade, 0.25, 1);
+                }
             }
             else{
-                $score *= 0.25;
+                if($stype == 'def'){
+                    $score *= 0.5;
+                }
+                else{
+                    $score *= 0.25;
+                }
             }
+            
             
         }
 
