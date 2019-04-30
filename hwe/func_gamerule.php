@@ -1043,7 +1043,7 @@ function updateNationState() {
                 while($genStep > 0){
                     $lastAssemblerID += 1;
                     $npcObj = new Scenario\NPC(
-                        999, '부대장'.$lastAssemblerID, null, $nation['nation'], null, 
+                        999, sprintf('부대장%3d',$lastAssemblerID), null, $nation['nation'], null, 
                         10, 10, 10, 1, $admin['year'] - 15, $admin['year'] + 15,  '은둔', '척사'
                     );
                     $npcObj->npc = 5;
