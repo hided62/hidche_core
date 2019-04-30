@@ -282,6 +282,7 @@ for($j=0; $j < $gencount; $j++) {
     
     $generalsFormat[] = [
         'ourGeneral'=>$ourGeneral,
+        'iconPath'=>GetImageURL($general['imgsvr']).'/'.$general['picture'],
         'isNPC'=>$isNPC,
         'wounded'=>$wounded,
         'name'=>$name,
