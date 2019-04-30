@@ -385,7 +385,7 @@ function reloadWorldMap(option){
 
         //터치스크린 탭
 
-        if(is_touch_device()){
+        if(!option.neutralView && is_touch_device()){
             $objs.on('touchstart', function(e){
                 if(window.sam_toggleSingleTap){
                     return true;
