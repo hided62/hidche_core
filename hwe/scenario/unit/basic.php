@@ -3,7 +3,7 @@ namespace sammo;
 
 class GameUnitConst extends GameUnitConstBase
 {
-    const DEFAULT_CREWTYPE = 1000;
+    const DEFAULT_CREWTYPE = 0;
 
     protected static $_buildData = [
         [
@@ -16,7 +16,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
 
         [
-            1000, self::T_FOOTMAN, '보병',
+            0, self::T_FOOTMAN, '보병',
             100, 150, 7, 10, 0,   9,  9,    
             0, null,     null,     0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
@@ -25,7 +25,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
 
         [
-            1010, self::T_ARCHER, '궁병',     
+            10, self::T_ARCHER, '궁병',     
             100, 100, 7, 20, 0,  10, 10,    
             0, null,     null,     0, 
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
@@ -34,7 +34,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
 
         [
-            1020, self::T_CAVALRY, '기병',     
+            20, self::T_CAVALRY, '기병',     
             150, 100, 7,  5, 0,  11, 11,    
             0, null,     null,     0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
@@ -43,7 +43,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
 
         [
-            1030, self::T_WIZARD, '귀병',      
+            30, self::T_WIZARD, '귀병',      
             80,  80, 7,  5, 0.5,  9,  9,    
             0, null,     null,     0, 
             [self::T_SIEGE=>1.2],
@@ -51,7 +51,7 @@ class GameUnitConst extends GameUnitConstBase
             ['계략을 사용하는 병종입니다.']
         ],
         [
-            1035, self::T_WIZARD, '남귀병',    
+            35, self::T_WIZARD, '남귀병',    
             60,  60, 7, 10, 0.8,  8,  8, 
             1000, null,     null,     0, 
             [self::T_SIEGE=>1.2],
@@ -60,7 +60,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
 
         [
-            1040, self::T_SIEGE, '정란',     
+            40, self::T_SIEGE, '정란',     
             100, 100, 6,  0, 0,  15,  5,    
             0, null,     null,     3, 
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>1.8],
@@ -68,7 +68,7 @@ class GameUnitConst extends GameUnitConstBase
             ['높은 구조물 위에서 공격합니다.']
         ],
         [
-            1041, self::T_SIEGE, '충차',     
+            41, self::T_SIEGE, '충차',     
             150, 100, 6,  0, 0,  20,  5, 
             1000, null,     null,     3, 
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>2.4],
