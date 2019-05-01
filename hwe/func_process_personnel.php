@@ -495,8 +495,8 @@ function process_29(&$general) {
             $bornyear = $admin['year'];
             $deadyear = $admin['year'] + 3;
             $age = 20;
-            $specage = Util::round((GameConst::$retirementYear - $age)/12) + $age;
-            $specage2 = Util::round((GameConst::$retirementYear - $age)/3) + $age;
+            $specage = $age;
+            $specage2 = $age;
             //$specage = $age + 1 + rand() % 3;
             //$specage2 = $age + 5 + rand() % 5;
             // 20년 ~ 50년
@@ -514,7 +514,7 @@ function process_29(&$general) {
                     '$npccount','$npc','$npc','$affinity','$name','$picture','$scoutNation',
                     '{$general['city']}','$leader','$power','$intel','{$avgGen['exp']}','{$avgGen['ded']}',
                     '$scoutLevel','100','100','0','".GameUnitConst::DEFAULT_CREWTYPE."','0','0','0',
-                    '0','0','0','$turntime','$killturn','$age','1','$personal','0','$specage','0','$specage2','',
+                    '0','0','0','$turntime','$killturn','$age','1','$personal','20','$specage','70','$specage2','',
                     '0','$bornyear','$deadyear',
                     '{$dexVal[0]}','{$dexVal[1]}','{$dexVal[2]}','{$dexVal[3]}','{$avgGen['dex40']}'
                 )",
