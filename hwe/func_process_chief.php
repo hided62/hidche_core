@@ -55,8 +55,6 @@ function process_23(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 포상 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 포상 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 포상 실패. <1>$date</>";
     } elseif($what == 1 && $amount <= 0) {
         $log[] = "<C>●</>{$admin['month']}월:국고가 부족합니다. 포상 실패. <1>$date</>";
     } elseif($what == 2 && $amount <= 0) {
@@ -150,8 +148,6 @@ function process_24(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 몰수 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 몰수 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 몰수 실패. <1>$date</>";
     } elseif($gen['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국 장수가 아닙니다. 몰수 실패. <1>$date</>";
     } else {
@@ -257,10 +253,6 @@ function process_27(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. <Y>{$you['name']}</> 발령 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. <Y>{$you['name']}</> 발령 실패. <1>$date</>";
-    } elseif($destcity['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <Y>{$you['name']}</> 발령 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. <Y>{$you['name']}</> 발령 실패. <1>$date</>";
     } elseif($destcity['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국 도시가 아닙니다. <Y>{$you['name']}</> 발령 실패. <1>$date</>";
     } elseif($general['nation'] != $you['nation']) {
@@ -317,12 +309,7 @@ function process_51(&$general) {
         pushGenLog($general, ["<C>●</>{$month}월:아국이 아닙니다. 권고 실패. <1>$date</>"]);
         return;
     } 
-    
-    if($supply === 0) {
-        pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 권고 실패. <1>$date</>"]);
-        return;
-    }
-    
+        
     // 상대에게 발송
     $src = new MessageTarget(
         $general['no'], 
@@ -415,8 +402,6 @@ function process_52(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:상대국이 외교제한중입니다. 원조 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 원조 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 원조 실패. <1>$date</>";
     } else {
         // 본국 자원 감소
         $query = "update nation set gold=gold-'$gold',rice=rice-'$rice',surlimit=surlimit+12 where nation='{$general['nation']}'";
@@ -502,11 +487,6 @@ function process_53(&$general) {
         return;
     }
     
-    if($supply === 0) {
-        pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 제의 실패. <1>$date</>"]);
-        return;
-    }
-
     // 상대에게 발송
     $src = new MessageTarget(
         $general['no'], 
@@ -576,12 +556,7 @@ function process_61(&$general) {
         pushGenLog($general, ["<C>●</>{$month}월:아국이 아닙니다. 제의 실패. <1>$date</>"]);
         return;
     }
-    
-    if($supply === 0) {
-        pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 제의 실패. <1>$date</>"]);
-        return;
-    }
-    
+        
     // 상대에게 발송
     $src = new MessageTarget(
         $general['no'], 
@@ -668,8 +643,6 @@ function process_62(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 선포 실패. <1>$date</>";
     } elseif($city['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 선포 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 선포 실패. <1>$date</>";
     } elseif($dip['state'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:아국과 이미 교전중입니다. 선포 실패. <1>$date</>";
     } elseif($dip['state'] == 1) {
@@ -765,11 +738,6 @@ function process_63(&$general) {
         return;
     }
     
-    if($supply === 0) {
-        pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 제의 실패. <1>$date</>"]);
-        return;
-    }
-
     // 상대에게 발송
     $src = new MessageTarget(
         $general['no'], 
@@ -837,11 +805,6 @@ function process_64(&$general) {
         return;
     }
     
-    if($supply === 0) {
-        pushGenLog($general, ["<C>●</>{$month}월:고립된 도시입니다. 제의 실패. <1>$date</>"]);
-        return;
-    }
-
     // 상대에게 발송
     $src = new MessageTarget(
         $general['no'], 
@@ -922,8 +885,6 @@ function process_65(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 초토화 실패. <1>$date</>";
     } elseif($nation['capital'] == $destcity['city']) {
         $log[] = "<C>●</>{$admin['month']}월:수도입니다. 초토화 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 초토화 실패. <1>$date</>";
     } elseif($destcity['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국 영토가 아닙니다. 초토화 실패. <1>$date</>";
     } elseif($citycount <= 4) {
@@ -1011,8 +972,6 @@ function process_66(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:아국이 아닙니다. 천도 실패. <1>$date</>";
     } elseif($general['level'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 천도 실패. <1>$date</>";
-    } elseif($city['supply'] == 0) {
-        $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 천도 실패. <1>$date</>";
     } elseif($destcity['nation'] != $general['nation']) {
         $log[] = "<C>●</>{$admin['month']}월:아국 영토가 아닙니다. 천도 실패. <1>$date</>";
     } elseif($destcity['city'] == $nation['capital'] || !key_exists($destcity['city'], $nearCities)){
