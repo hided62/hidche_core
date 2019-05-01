@@ -346,16 +346,85 @@ function preUpdateMonthly() {
     //미보급도시 10% 감소
     $query = "update city set pop=pop*0.9,rate=rate*0.9,agri=agri*0.9,comm=comm*0.9,secu=secu*0.9,def=def*0.9,wall=wall*0.9 where supply='0'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    //미보급도시 장수 5% 감소
-    $query = "select city,nation from city where supply='0'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $cityCount = MYDB_num_rows($result);
-    for($i=0; $i < $cityCount; $i++) {
-        $city = MYDB_fetch_array($result);
-        //병 훈 사 5%감소
-        $query = "update general set crew=crew*0.95,atmos=atmos*0.95,train=train*0.95 where city='{$city['city']}' and nation='{$city['nation']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+
+
+    $relYear = $admin['year'] - $admin['startyear'];
+    $relMaxTech = Util::valueFit(
+        floor($relYear / 5) + 1,
+        1, 
+        GameConst::$maxTechLevel
+    );
+
+    foreach($db->queryAllLists('SELECT count(no), nation FROM general GROUP BY nation') as [$genCnt, $nationID]){
+        $genCnt = Util::valueFit($genCnt, GameConst::$initialNationGenLimit);
+        $nationType = getNationStaticInfo($nationID)['type'];
+
+        //자동 기술연구
+        $techOffset = 18;
+        if(in_array($nationType, [3, 13])){
+            $techOffset *= 1.1;
+        }
+        else if(in_array($nationType, [5, 6, 7, 8, 12])){
+            $techOffset *= 0.9;
+        }
+        $db->update('nation', [
+            'totaltech'=>$db->sqleval(
+                'if(tech >= %i, totaltech, totaltech + %i)',
+                $relMaxTech,
+                $techOffset * $genCnt
+            ),
+            'tech'=>$db->sqleval('totaltech / %i', $genCnt)
+        ], 'nation = %i', $nationID);
+
+        //내정이 덜 찬곳은 1%p씩 증가. 내정이 오버된 곳은 1%씩 감소.
+        $setValues = [];
+
+        //인구는 고정
+        $setValues['pop'] = $db->sqleval('if(pop > pop2, max(pop2, pop*0.99), pop');
+
+        //농지, 상업
+        if(in_array($nationType, [2, 12])){    
+            $agriOffset = 0.011;
+        }
+        else if(in_array($nationType, [8, 11])){
+            $agriOffset = 0.009;
+        }
+        else{
+            $agriOffset = 0.01;
+        }
+        
+        $setValues['agri'] = $db->sqleval('if(agri > agri2, max(agri2, agri*0.99), min(agri2, agri + agri2*%d))', $agriOffset);
+        $setValues['comm'] = $db->sqleval('if(comm > comm2, max(comm2, comm*0.99), min(comm2, comm + comm2*%d))', $agriOffset);
+
+        //치안
+        if(in_array($nationType, [1, 4])){    
+            $secuOffset = 0.011;
+        }
+        else if(in_array($nationType, [6, 9])){
+            $secuOffset = 0.009;
+        }
+        else{
+            $secuOffset = 0.01;
+        }
+        $setValues['secu'] = $db->sqleval('if(secu > secu2, max(secu2, secu*0.99), min(secu2, secu + secu2*%d))', $secuOffset);
+
+        //수비, 성벽
+        if(in_array($nationType, [3, 5, 10, 11])){
+            $defOffset = 0.011; 
+        }
+        else if(in_array($nationType, [4, 7, 8, 13])){
+            $defOffset = 0.009;
+        }
+        else{
+            $defOffset = 0.01;
+            
+        }
+        $setValues['def'] = $db->sqleval('if(def > def2, max(def2, def*0.99), min(def2, def + def2*%d))', $defOffset);
+        $setValues['wall'] = $db->sqleval('if(wall > wall2, max(wall2, wall*0.99), min(wall2, wall + wall2*%d))', $defOffset);
+
+        $db->update('city', $setValues, 'nation = %i AND supply = 1', $nationID);
     }
+
     //민심30이하 공백지 처리
     $query = "select city,name,gen1,gen2,gen3 from city where rate<='30' and supply='0'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
