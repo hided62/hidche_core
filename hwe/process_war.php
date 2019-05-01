@@ -725,9 +725,9 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         'supply'=>1,
         'term'=>0,
         'conflict'=>'{}',
-        'agri'=>$db->sqleval('agri*0.7'),
-        'comm'=>$db->sqleval('comm*0.7'),
-        'secu'=>$db->sqleval('secu*0.7'),
+        'agri'=>$db->sqleval('GREATEST(agri*0.7, agri2*0.25)'),
+        'comm'=>$db->sqleval('GREATEST(comm*0.7, comm2*0.25)'),
+        'secu'=>$db->sqleval('GREATEST(secu*0.7, secu2*0.25)'),
         'nation'=>$conquerNation,
         'gen1'=>0,
         'gen2'=>0,
@@ -736,13 +736,8 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         'gen2set'=>0,
         'gen3set'=>0
     ];
-    if($city['level'] > 3) {
-        $query['def'] = 1000;
-        $query['wall'] = 1000;
-    } else {
-        $query['def'] = $db->sqleval('def2/2');
-        $query['wall'] = $db->sqleval('wall2/2');
-    }
+    $query['def'] = $db->sqleval('def2/2');
+    $query['wall'] = $db->sqleval('wall2/2');
     
     $db->update('city', $query, 'city=%i', (int)$city['city']);
     //전방설정

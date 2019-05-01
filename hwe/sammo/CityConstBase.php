@@ -349,6 +349,12 @@ class CityConstBase{
             ] + $initValue + static::$buildInitCommon;
         }, array_values(static::$constID));
 
-        DB::db()->insert('city', $queries);
+        $db = DB::db();
+        $db->insert('city', $queries);
+        $db->update('city', [
+            'agri'=>$db->sqleval('agri2 * 0.25'),
+            'comm'=>$db->sqleval('comm2 * 0.25'),
+            'secu'=>$db->sqleval('secu2 * 0.25'),
+        ], true);
     }
 }
