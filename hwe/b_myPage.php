@@ -46,20 +46,10 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
         $submit = 'hidden';
     }
 
-    if($mode == 0){
-        $db->update('general', [
-            'myset'=>$db->sqleval('myset-1'),
-            'mode'=>$mode,
-            'train'=>max(0, $me['train'] - 3),
-            'atmos'=>max(0, $me['atmos'] - 3),
-        ], 'owner=%i AND mode!=%i', $userID, $mode);
-    }
-    else{
-        $db->update('general', [
-            'myset'=>$db->sqleval('myset-1'),
-            'mode'=>$mode
-        ], 'owner=%i AND mode!=%i', $userID, $mode);
-    }
+    $db->update('general', [
+        'myset'=>$db->sqleval('myset-1'),
+        'mode'=>$mode
+    ], 'owner=%i AND mode!=%i', $userID, $mode);
 
     if($db->affectedRows()){
         $me['myset'] -= 1;

@@ -224,8 +224,6 @@ function process_1(&$general, $type) {
         $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
-    } elseif($city["$stype"] >= $city["$stype"."2"]) {
-        $log[] = "<C>●</>{$admin['month']}월:{$dtype}{$btype} 충분합니다. $dtype 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
         if($city['rate'] < GameConst::$develrate) { $city['rate'] = GameConst::$develrate; }
@@ -533,8 +531,6 @@ function process_5(&$general, $type) {
         $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. $dtype 실패. <1>$date</>";
     } elseif($general['gold'] < $admin['develcost']) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. $dtype 실패. <1>$date</>";
-    } elseif($city["$stype"] >= $city["$stype"."2"]) {
-        $log[] = "<C>●</>{$admin['month']}월:{$dtype}는 충분합니다. $dtype 실패. <1>$date</>";
     } else {
         // 민심 50 이하이면 50과 같게
         if($city['rate'] < GameConst::$develrate) { $city['rate'] = GameConst::$develrate; }
@@ -653,8 +649,6 @@ function process_7(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 정착 장려 실패. <1>$date</>";
     } elseif($general['rice'] < $admin['develcost'] * 2) {
         $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 정착 장려 실패. <1>$date</>";
-    } elseif($city['pop'] >= $city['pop2']) {
-        $log[] = "<C>●</>{$admin['month']}월:이미 포화상태입니다. 정착 장려 실패. <1>$date</>";
     } else {
         $score = getGeneralLeadership($general, true, true, true);
         $score = $score * (100 + $general['explevel']/5)/100;
