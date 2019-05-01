@@ -3,7 +3,7 @@ namespace sammo;
 
 class GameUnitConst extends GameUnitConstBase
 {
-    const DEFAULT_CREWTYPE = 217001;
+    const DEFAULT_CREWTYPE = 9040;
 
     protected static $_buildData = [
         [
