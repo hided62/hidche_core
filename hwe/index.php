@@ -326,13 +326,6 @@ else if($session->userGrade == 4){
  </div></div>
 <div style="clear:left;"><?=allButton()?><?=banner()?></div>
 </div>
-<div id='sidebar' class='btn-group-vertical'>
-<button type="button" class="btn btn-primary" onclick='refreshing(this, 0,0)'><i class="fas fa-sync-alt"></i>&nbsp;갱신</button>
-<a class="btn btn-secondary" href="#map_position" role="button">지도 & 턴입력</a>
-<a class="btn btn-secondary" href="#history_position" role="button">장수 동향</a>
-<a class="btn btn-secondary" href="#public_talk_position" role="button">국가 메시지</a>
-<a class="btn btn-secondary" href="#secret_talk_position" role="button">개인 메시지</a>
-</div>
 <?php
 if ($con == 1) {
     MessageBox("접속제한이 얼마 남지 않았습니다!");

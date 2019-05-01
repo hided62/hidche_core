@@ -68,14 +68,3 @@ color:white;
 .nation_info td{
     height:18px;
 }
-
-#sidebar{
-    position:fixed;
-    right:0;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-#sidebar button{
-    /*width:100px;*/
-}
