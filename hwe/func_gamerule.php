@@ -362,10 +362,10 @@ function preUpdateMonthly() {
         //자동 기술연구
         $techOffset = 20;
         if(in_array($nationType, [3, 13])){
-            $techOffset *= 1.1;
+            $techOffset *= 1.05;
         }
         else if(in_array($nationType, [5, 6, 7, 8, 12])){
-            $techOffset *= 0.9;
+            $techOffset *= 0.95;
         }
         $db->update('nation', [
             'totaltech'=>$db->sqleval(
