@@ -77,15 +77,15 @@ class GameUnitConst extends GameUnitConstBase
         [
             42, self::T_SIEGE, '벽력거',   
             200, 100, 6,  0, 0,  20,  4, 
-            3000, ['업'],   null,     0, 
+            3000, null,   null,     0, 
             [self::T_CASTLE=>1.8],
             [],
             ['상대에게 돌덩이를 날립니다.']
         ],
         [
             43, self::T_SIEGE, '목우',      
-            50, 200, 5,  0, 0,  15,  3, 
-            3000, ['성도'], null,     0, 
+            50, 300, 5,  0, 0,  15,  3, 
+            3000, null, null,     0, 
             [],
             [],
             ['상대를 저지하는 특수병기입니다.']
