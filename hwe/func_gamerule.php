@@ -360,7 +360,7 @@ function preUpdateMonthly() {
         $nationType = getNationStaticInfo($nationID)['type'];
 
         //자동 기술연구
-        $techOffset = 18;
+        $techOffset = 20;
         if(in_array($nationType, [3, 13])){
             $techOffset *= 1.1;
         }
