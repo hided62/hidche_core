@@ -186,13 +186,7 @@ function popIncrease() {
             if($cityrate > 100) { $cityrate = 100; }
             if($cityrate < 0) { $cityrate = 0; }
         }
-        if($pop > $city['pop2']) { $pop = $city['pop2']; }
         if($pop < 0) { $pop = 0; }
-        if($agri > $city['agri2']) { $agri = $city['agri2']; }
-        if($comm > $city['comm2']) { $comm = $city['comm2']; }
-        if($secu > $city['secu2']) { $secu = $city['secu2']; }
-        if($def > $city['def2']) { $def= $city['def2']; }
-        if($wall > $city['wall2']) { $wall = $city['wall2']; }
 
         //시세
         $query = "update city set pop='$pop',rate='$cityrate',agri='$agri',comm='$comm',secu='$secu',def='$def',wall='$wall' where city='{$city['city']}'";

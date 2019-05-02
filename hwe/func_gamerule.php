@@ -380,7 +380,7 @@ function preUpdateMonthly() {
         $setValues = [];
 
         //인구는 고정
-        $setValues['pop'] = $db->sqleval('if(pop > pop2, GREATEST(pop2, pop*0.99), pop');
+        $setValues['pop'] = $db->sqleval('if(pop > pop2, GREATEST(pop2, pop*0.99), pop)');
 
         //농지, 상업
         if(in_array($nationType, [2, 12])){    

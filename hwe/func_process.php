@@ -272,7 +272,6 @@ function process_1(&$general, $type) {
         $ded = CharDedication($ded, $general['personal']);
 
         $score += $city["$stype"];
-        if($score > $city["{$stype}2"]) { $score = $city["{$stype}2"]; }
         // 내정 상승
         $query = "update city set {$stype}='$score' where city='{$general['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -568,7 +567,6 @@ function process_5(&$general, $type) {
         $ded = CharDedication($ded, $general['personal']);
 
         $score += $city["$stype"];
-        if($score > $city["{$stype}2"]) { $score = $city["{$stype}2"]; }
         // 내정 상승
         $query = "update city set {$stype}='$score' where city='{$general['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -656,7 +654,6 @@ function process_7(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         $score = $city['pop'] + ($score * 10);
-        if($score > $city['pop2']) { $score = $city['pop2']; }
         // 민심 상승
         $query = "update city set pop='$score' where city='{$general['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -754,7 +751,6 @@ function process_8(&$general) {
         $ded = CharDedication($ded, $general['personal']);
 
         $score += $city["$stype"];
-        if($score > $city["{$stype}2"]) { $score = $city["{$stype}2"]; }
         // 내정 상승
         $query = "update city set {$stype}='$score' where city='{$general['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
