@@ -715,13 +715,7 @@ function disaster() {
                 $city['comm'] *= $ratio;  $city['secu'] *= $ratio;  $city['def'] *= $ratio;
                 $city['wall'] *= $ratio;
         
-                if($city['pop'] > $city['pop2']) { $city['pop'] = $city['pop2']; }
                 if($city['rate'] > 100) { $city['rate'] = 100; }
-                if($city['agri'] > $city['agri2']) { $city['agri'] = $city['agri2']; }
-                if($city['comm'] > $city['comm2']) { $city['comm'] = $city['comm2']; }
-                if($city['secu'] > $city['secu2']) { $city['secu'] = $city['secu2']; }
-                if($city['def'] > $city['def2']) { $city['def'] = $city['def2']; }
-                if($city['wall'] > $city['wall2']) { $city['wall'] = $city['wall2']; }
         
                 $query = "update city set state='$state',pop='{$city['pop']}',rate='{$city['rate']}',agri='{$city['agri']}',comm='{$city['comm']}',secu='{$city['secu']}',def='{$city['def']}',wall='{$city['wall']}' where city='$disastercity[$i]'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

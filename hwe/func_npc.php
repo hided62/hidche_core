@@ -23,15 +23,15 @@ function SetDevelop($genType, $no, $city, $tech) {
     switch($genType) {
     case 0: //무장
         if($prob < 30) {
-            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            if($city['po'] < $city['de']) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             elseif($city['de'] < 99) { $command = EncodeCommand(0, 0, 0, 5); } //수비
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
         } elseif($prob < 60) {
-            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            if($city['po'] < $city['wa']) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             elseif($city['wa'] < 99) { $command = EncodeCommand(0, 0, 0, 6); } //성벽
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
         } elseif($prob < 90) {
-            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            if($city['po'] < $city['se']) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             elseif($city['se'] < 99) { $command = EncodeCommand(0, 0, 0, 8); } //치안
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
         } else {
@@ -57,12 +57,12 @@ function SetDevelop($genType, $no, $city, $tech) {
         break;
     case 1: //지장
         if($prob < 40) {
-            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            if($city['po'] < $city['ag']) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             elseif($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
             elseif($city['ag'] < 99) { $command = EncodeCommand(0, 0, 0, 1); } //농업
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
         } elseif($prob < 80) {
-            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            if($city['po'] < $city['co']) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             elseif($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
             elseif($city['co'] < 99) { $command = EncodeCommand(0, 0, 0, 2); } //상업
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
