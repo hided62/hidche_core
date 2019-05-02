@@ -22,6 +22,22 @@ function SetDevelop($genType, $no, $city, $tech) {
     $command = EncodeCommand(0, 0, 0, 9); //조달
     switch($genType) {
     case 0: //무장
+        if($prob < 30) {
+            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            elseif($city['de'] < 99) { $command = EncodeCommand(0, 0, 0, 5); } //수비
+            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+        } elseif($prob < 60) {
+            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            elseif($city['wa'] < 99) { $command = EncodeCommand(0, 0, 0, 6); } //성벽
+            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+        } elseif($prob < 90) {
+            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            elseif($city['se'] < 99) { $command = EncodeCommand(0, 0, 0, 8); } //치안
+            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+        } else {
+            $command = EncodeCommand(0, 0, 0, 29);
+        }
+        break;
     case 2: //무내정장
         if($prob < 30) {
             if($city['de'] < 99) { $command = EncodeCommand(0, 0, 0, 5); } //수비
@@ -40,15 +56,34 @@ function SetDevelop($genType, $no, $city, $tech) {
         }
         break;
     case 1: //지장
+        if($prob < 40) {
+            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            elseif($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
+            elseif($city['ag'] < 99) { $command = EncodeCommand(0, 0, 0, 1); } //농업
+            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+        } elseif($prob < 80) {
+            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            elseif($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
+            elseif($city['co'] < 99) { $command = EncodeCommand(0, 0, 0, 2); } //상업
+            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+        } elseif($prob < 90) {
+            if($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
+            elseif($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
+            else { $command = EncodeCommand(0, 0, 0, 9); } //조달
+        } else {
+            if($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3 + (rand() % 2) * 6); } //기술, 조달
+            else { $command = EncodeCommand(0, 0, 0, 29); }
+        }
+        break;
     case 3: //지내정장
         if($prob < 40) {
-            if($city['ag'] < 99) { $command = EncodeCommand(0, 0, 0, 1); } //농업
-            elseif($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
+            if($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
+            elseif($city['ag'] < 99) { $command = EncodeCommand(0, 0, 0, 1); } //농업
             elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
         } elseif($prob < 80) {
-            if($city['co'] < 99) { $command = EncodeCommand(0, 0, 0, 2); } //상업
-            elseif($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
+            if($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
+            elseif($city['co'] < 99) { $command = EncodeCommand(0, 0, 0, 2); } //상업
             elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
         } elseif($prob < 90) {
@@ -96,72 +131,7 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
     [$startyear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
     $relYear = Util::valueFit($year-$startyear, 0);
 
-    $type = 0;
-    switch($genType) {
-    case 0: //무장
-    case 2: //무내정장
-        $dex0 = $dex0 + rand()%1000;
-        $dex10 = $dex10 + rand()%1000;
-        $dex20 = $dex20 + rand()%1000;
-        $sel = 0;
-        // 보궁기 선택
-        if($dex0 > $dex10) {
-            if($dex0 > $dex20) {
-                $sel = 0;
-            } else {
-                $sel = 2;
-            }
-        } else {
-            if($dex10 > $dex20) {
-                $sel = 1;
-            } else {
-                $sel = 2;
-            }
-        }
-
-        
-
-        $types = [];
-        switch($sel) {
-        case 0:
-            foreach(GameUnitConst::byType(GameUnitConst::T_FOOTMAN) as $crewtype){
-                if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                    $types[] = $crewtype->id;
-                }
-            }
-            break;
-        case 1:
-            foreach(GameUnitConst::byType(GameUnitConst::T_ARCHER) as $crewtype){
-                if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                    $types[] = $crewtype->id;
-                }
-            }
-            break;
-        case 2:
-            foreach(GameUnitConst::byType(GameUnitConst::T_CAVALRY) as $crewtype){
-                if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                    $types[] = $crewtype->id;
-                }
-            }
-            break;
-        }
-        break;
-    case 1: //지장
-    case 3: //지내정장
-        foreach(GameUnitConst::byType(GameUnitConst::T_WIZARD) as $crewtype){
-            if($crewtype->isValid($cities, $regions, $relYear, $tech)){
-                $types[] = $crewtype->id;
-            }
-        }
-        break;
-    }
-
-    if($types){
-        $type = Util::choiceRandom($types);
-    }
-    else{
-        $type = GameUnitConst::DEFAULT_CREWTYPE;
-    }
+    $type = GameUnitConst::DEFAULT_CREWTYPE;
 
     
 
