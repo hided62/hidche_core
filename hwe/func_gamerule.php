@@ -353,7 +353,7 @@ function preUpdateMonthly() {
         floor($relYear / 5) + 1,
         1, 
         GameConst::$maxTechLevel
-    );
+    ) * 1000;
 
     foreach($db->queryAllLists('SELECT count(no), nation FROM general GROUP BY nation') as [$genCnt, $nationID]){
         $genCnt = Util::valueFit($genCnt, GameConst::$initialNationGenLimit);
