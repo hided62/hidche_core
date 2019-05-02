@@ -1367,7 +1367,7 @@ function command_48($turn, $command) {
 
     $color = [];
 
-    for($i=1; $i <= 6; $i++) {
+    for($i=1; $i <= 10; $i++) {
         if($city['secu'] >= $i*1000) {
             $color[$i] = "white";
         } else {
@@ -1402,6 +1402,10 @@ function command_48($turn, $command) {
     <option value=204 style=color:$color[4]>".getHorseName(4)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(4)."</option>
     <option value=205 style=color:$color[5]>".getHorseName(5)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(5)."</option>
     <option value=206 style=color:$color[6]>".getHorseName(6)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(6)."</option>
+    <option value=207 style=color:$color[7]>".getHorseName(7)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(7)."</option>
+    <option value=208 style=color:$color[8]>".getHorseName(8)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(8)."</option>
+    <option value=209 style=color:$color[9]>".getHorseName(9)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(9)."</option>
+    <option value=210 style=color:$color[10]>".getHorseName(10)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(10)."</option>
     <option value=300 style=color:skyblue>_____도구매각(반값)____</option>
     <option value=301 style=color:$color[1]>".getItemName(1)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost2(1)."</option>
     <option value=302 style=color:$color[2]>".getItemName(2)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost2(2)."</option>

@@ -2251,72 +2251,43 @@ function uniqueItem($general, $log, $vote=0) {
     if(rand() % $prob == 0) {
         //셋중 선택
         $selGroup = [
-            20 - $db->queryFirstField('SELECT count(*) from general where weap > 6'),
-            20 - $db->queryFirstField('SELECT count(*) from general where book > 6'),
-            20 - $db->queryFirstField('SELECT count(*) from general where horse > 6'),
-            20 - $db->queryFirstField('SELECT count(*) from general where item > 6')
+            'horse'=>30 - $db->queryFirstField('SELECT count(*) from general where horse > 10'),
+            'item'=>20 - $db->queryFirstField('SELECT count(*) from general where item > 6')
         ];
-        $sel = Util::choiceRandomUsingWeight($selGroup);
-        switch($sel) {
-        case 0: $type = "weap"; break;
-        case 1: $type = "book"; break;
-        case 2: $type = "horse"; break;
-        case 3: $type = "item"; break;
-        }
-        $query = "select no,{$type} from general where {$type}>6";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $count = MYDB_num_rows($result);
-        if($count < 20) {
-            for($i=0; $i < $count; $i++) {
-                $gen = MYDB_fetch_array($result);
-                $occupied[$gen[$type]] = 1;
+        $type = Util::choiceRandomUsingWeight($selGroup);
+
+        if($type == 'horse'){
+            foreach($db->queryFirstColumn('SELECT horse FROM general WHERE horse > 10') as $horse){
+                $occupied[$horse] = 1;
             }
-            for($i=7; $i <= 26; $i++) {
+            for($i = 11; $i <= 40; $i++){
                 if(!Util::array_get($occupied[$i])) {
-                    $item[] = $i;
+                    $remainItems[] = $i;
                 }
             }
-            $it = $item[rand() % count($item)]??0;
+        }
+        else{
+            foreach($db->queryFirstColumn('SELECT item FROM general WHERE item > 6') as $item){
+                $occupied[$item] = 1;
+            }
+            for($i = 7; $i <= 26; $i++){
+                if(!Util::array_get($occupied[$i])) {
+                    $remainItems[] = $i;
+                }
+            }
+        }
+
+        if($remainItems) {
+            
+            $it = Util::choiceRandom($remainItems);
 
             $query = "update general set {$type}='$it' where no='{$general['no']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
             $nation = getNationStaticInfo($general['nation']);
 
-            switch($sel) {
-            case 0:
-                $josaUl = JosaUtil::pick(getWeapName($it), '을');
-                $josaYi = JosaUtil::pick($general['name'], '이');
-                $log[] = "<C>●</><C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getWeapName($it)."</>{$josaUl} 습득");
-                if($vote == 0) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                }
-                break;
-            case 1:
-                $josaUl = JosaUtil::pick(getBookName($it), '을');
-                $josaYi = JosaUtil::pick($general['name'], '이');
-                $log[] = "<C>●</><C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getBookName($it)."</>{$josaUl} 습득");
-                if($vote == 0) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                }
-                break;
-            case 2:
+            switch($type) {
+            case 'horse':
                 $josaUl = JosaUtil::pick(getHorseName($it), '을');
                 $josaYi = JosaUtil::pick($general['name'], '이');
                 $log[] = "<C>●</><C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
@@ -2332,7 +2303,7 @@ function uniqueItem($general, $log, $vote=0) {
                     $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
                 }
                 break;
-            case 3:
+            case 'item':
                 $josaUl = JosaUtil::pick(getItemName($it), '을');
                 $josaYi = JosaUtil::pick($general['name'], '이');
                 $log[] = "<C>●</><C>".getItemName($it)."</>{$josaUl} 습득했습니다!";

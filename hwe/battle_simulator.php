@@ -286,7 +286,7 @@ $startYear = $gameStor->getValue('startyear');
                         <span class="input-group-text">명마</span>
                     </div>
                     <select class="custom-select form_general_horse">
-                        <?php foreach(range(0, 26) as $horseID): ?>
+                        <?php foreach(range(0, 40) as $horseID): ?>
                             <option value="<?=$horseID?>"><?=getHorseName($horseID)?></option>
                         <?php endforeach; ?>
                     </select>
@@ -294,7 +294,7 @@ $startYear = $gameStor->getValue('startyear');
                         <span class="input-group-text">무기</span>
                     </div>
                     <select class="custom-select form_general_weap">
-                        <?php foreach(range(0, 26) as $weapID): ?>
+                        <?php foreach(range(0, 6) as $weapID): ?>
                             <option value="<?=$weapID?>"><?=getWeapName($weapID)?></option>
                         <?php endforeach; ?>
                     </select>
@@ -302,7 +302,7 @@ $startYear = $gameStor->getValue('startyear');
                         <span class="input-group-text">서적</span>
                     </div>
                     <select class="custom-select form_general_book">
-                        <?php foreach(range(0, 26) as $bookID): ?>
+                        <?php foreach(range(0, 6) as $bookID): ?>
                             <option value="<?=$bookID?>"><?=getBookName($bookID)?></option>
                         <?php endforeach; ?>
                     </select>

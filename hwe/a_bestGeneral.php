@@ -223,9 +223,7 @@ foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
 <?php
 //유니크 아이템 소유자
 $itemTypes = [
-    ["명 마", 'horse', function($v){return getHorseName($v);}, 7, 26, []],
-    ["명 검", 'weap', function($v){return getWeapName($v);}, 7, 26, []],
-    ["명 서", 'book', function($v){return getBookName($v);}, 7, 26, []],
+    ["명 마", 'horse', function($v){return getHorseName($v);}, 11, 40, []],
     ["도 구", 'item', function($v){return displayItemInfo($v);}, 7, 26, []],
 ];
 

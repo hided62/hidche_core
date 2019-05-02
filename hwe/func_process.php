@@ -2235,7 +2235,7 @@ function process_48(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:도시에 상인이 없습니다. 장비매매 실패. <1>$date</>";
     } elseif($city['secu']/1000 < $type) {
         $log[] = "<C>●</>{$admin['month']}월:이 도시에서는 구할 수 없었습니다. 구입 실패. <1>$date</>";
-    } elseif($type > 6 || $type < 0) {
+    } elseif(($isweap == 2 && $type > 10) || ($isweap != 2 && $type > 6) || $type < 0) {
         $log[] = "<C>●</>{$admin['month']}월:구입할 수 있는 물건이 아닙니다. 구입 실패. <1>$date</>";
     } elseif($general['gold'] < $cost && $type != 0) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 구입 실패. <1>$date</>";

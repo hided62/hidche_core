@@ -530,60 +530,16 @@ function getWeapName($weap) : ?string {
         case  4: $weapname = '목검(+4)'; break;
         case  5: $weapname = '죽창(+5)'; break;
         case  6: $weapname = '소부(+6)'; break;
-
-        case  7: $weapname = '동추(+7)'; break;
-        case  8: $weapname = '철편(+7)'; break;
-        case  9: $weapname = '철쇄(+7)'; break;
-        case 10: $weapname = '맥궁(+7)'; break;
-        case 11: $weapname = '유성추(+8)'; break;
-        case 12: $weapname = '철질여골(+8)'; break;
-        case 13: $weapname = '쌍철극(+9)'; break;
-        case 14: $weapname = '동호비궁(+9)'; break;
-        case 15: $weapname = '삼첨도(+10)'; break;
-        case 16: $weapname = '대부(+10)'; break;
-        case 17: $weapname = '고정도(+11)'; break;
-        case 18: $weapname = '이광궁(+11)'; break;
-        case 19: $weapname = '철척사모(+12)'; break;
-        case 20: $weapname = '칠성검(+12)'; break;
-        case 21: $weapname = '사모(+13)'; break;
-        case 22: $weapname = '양유기궁(+13)'; break;
-        case 23: $weapname = '언월도(+14)'; break;
-        case 24: $weapname = '방천화극(+14)'; break;
-        case 25: $weapname = '청홍검(+15)'; break;
-        case 26: $weapname = '의천검(+15)'; break;
     }
     return $weapname;
 }
 
 function getWeapEff($weap) : ?int{
-    switch($weap) {
-        case  7: $weap =  7; break;
-        case  8: $weap =  7; break;
-        case  9: $weap =  7; break;
-        case 10: $weap =  7; break;
-        case 11: $weap =  8; break;
-        case 12: $weap =  8; break;
-        case 13: $weap =  9; break;
-        case 14: $weap =  9; break;
-        case 15: $weap = 10; break;
-        case 16: $weap = 10; break;
-        case 17: $weap = 11; break;
-        case 18: $weap = 11; break;
-        case 19: $weap = 12; break;
-        case 20: $weap = 12; break;
-        case 21: $weap = 13; break;
-        case 22: $weap = 13; break;
-        case 23: $weap = 14; break;
-        case 24: $weap = 14; break;
-        case 25: $weap = 15; break;
-        case 26: $weap = 15; break;
-        default: break;
-    }
     return $weap;
 }
 
 function getBookName($book) : ?string {
-    switch($book) {
+    switch ($book) {
         case  0: $bookname = '-'; break;
         case  1: $bookname = '효경전(+1)'; break;
         case  2: $bookname = '회남자(+2)'; break;
@@ -591,55 +547,11 @@ function getBookName($book) : ?string {
         case  4: $bookname = '건상역주(+4)'; break;
         case  5: $bookname = '여씨춘추(+5)'; break;
         case  6: $bookname = '사민월령(+6)'; break;
-
-        case  7: $bookname = '위료자(+7)'; break;
-        case  8: $bookname = '사마법(+7)'; break;
-        case  9: $bookname = '한서(+7)'; break;
-        case 10: $bookname = '논어(+7)'; break;
-        case 11: $bookname = '전론(+8)'; break;
-        case 12: $bookname = '사기(+8)'; break;
-        case 13: $bookname = '장자(+9)'; break;
-        case 14: $bookname = '역경(+9)'; break;
-        case 15: $bookname = '시경(+10)'; break;
-        case 16: $bookname = '구국론(+10)'; break;
-        case 17: $bookname = '상군서(+11)'; break;
-        case 18: $bookname = '춘추전(+11)'; break;
-        case 19: $bookname = '산해경(+12)'; break;
-        case 20: $bookname = '맹덕신서(+12)'; break;
-        case 21: $bookname = '관자(+13)'; break;
-        case 22: $bookname = '병법24편(+13)'; break;
-        case 23: $bookname = '한비자(+14)'; break;
-        case 24: $bookname = '오자병법(+14)'; break;
-        case 25: $bookname = '노자(+15)'; break;
-        case 26: $bookname = '손자병법(+15)'; break;
     }
     return $bookname;
 }
 
 function getBookEff($book) : ?int {
-    switch($book) {
-        case  7: $book =  7; break;
-        case  8: $book =  7; break;
-        case  9: $book =  7; break;
-        case 10: $book =  7; break;
-        case 11: $book =  8; break;
-        case 12: $book =  8; break;
-        case 13: $book =  9; break;
-        case 14: $book =  9; break;
-        case 15: $book = 10; break;
-        case 16: $book = 10; break;
-        case 17: $book = 11; break;
-        case 18: $book = 11; break;
-        case 19: $book = 12; break;
-        case 20: $book = 12; break;
-        case 21: $book = 13; break;
-        case 22: $book = 13; break;
-        case 23: $book = 14; break;
-        case 24: $book = 14; break;
-        case 25: $book = 15; break;
-        case 26: $book = 15; break;
-        default: break;
-    }
     return $book;
 }
 
@@ -652,56 +564,77 @@ function getHorseName($horse) : ?string {
         case  4: $horsename = '나귀(+4)'; break;
         case  5: $horsename = '갈색마(+5)'; break;
         case  6: $horsename = '흑색마(+6)'; break;
-
         case  7: $horsename = '백마(+7)'; break;
-        case  8: $horsename = '백마(+7)'; break;
-        case  9: $horsename = '기주마(+7)'; break;
-        case 10: $horsename = '기주마(+7)'; break;
-        case 11: $horsename = '양주마(+8)'; break;
-        case 12: $horsename = '양주마(+8)'; break;
-        case 13: $horsename = '과하마(+9)'; break;
-        case 14: $horsename = '과하마(+9)'; break;
-        case 15: $horsename = '대완마(+10)'; break;
-        case 16: $horsename = '대완마(+10)'; break;
-        case 17: $horsename = '서량마(+11)'; break;
-        case 18: $horsename = '서량마(+11)'; break;
-        case 19: $horsename = '사륜거(+12)'; break;
-        case 20: $horsename = '사륜거(+12)'; break;
-        case 21: $horsename = '절영(+13)'; break;
-        case 22: $horsename = '적로(+13)'; break;
-        case 23: $horsename = '적란마(+14)'; break;
-        case 24: $horsename = '조황비전(+14)'; break;
-        case 25: $horsename = '한혈마(+15)'; break;
-        case 26: $horsename = '적토마(+15)'; break;
+        case  8: $horsename = '기주마(+8)'; break;
+        case  9: $horsename = '양주마(+9)'; break;
+        case 10: $horsename = '과하마(+10)'; break;
+        case 11: $horsename = '대완마(+11)'; break;
+        case 12: $horsename = '대완마(+11)'; break;
+        case 13: $horsename = '대완마(+11)'; break;
+        case 14: $horsename = '서량마(+12)'; break;
+        case 15: $horsename = '서량마(+12)'; break;
+        case 16: $horsename = '서량마(+12)'; break;
+        case 17: $horsename = '화종마(+13)'; break;
+        case 18: $horsename = '화종마(+13)'; break;
+        case 19: $horsename = '화종마(+13)'; break;
+        case 20: $horsename = '옥룡마(+14)'; break;
+        case 21: $horsename = '옥룡마(+14)'; break;
+        case 22: $horsename = '옥룡마(+14)'; break;
+        case 23: $horsename = '사륜거(+15)'; break;
+        case 24: $horsename = '사륜거(+15)'; break;
+        case 25: $horsename = '사륜거(+15)'; break;
+        case 26: $horsename = '적로(+16)'; break;
+        case 27: $horsename = '적로(+16)'; break;
+        case 28: $horsename = '적로(+16)'; break;
+        case 29: $horsename = '적란마(+17)'; break;
+        case 30: $horsename = '적란마(+17)'; break;
+        case 31: $horsename = '적란마(+17)'; break;
+        case 32: $horsename = '조황비전(+18)'; break;
+        case 33: $horsename = '조황비전(+18)'; break;
+        case 34: $horsename = '조황비전(+18)'; break;
+        case 35: $horsename = '한혈마(+19)'; break;
+        case 36: $horsename = '한혈마(+19)'; break;
+        case 37: $horsename = '한혈마(+19)'; break;
+        case 38: $horsename = '적토마(+20)'; break;
+        case 39: $horsename = '적토마(+20)'; break;
+        case 40: $horsename = '적토마(+20)'; break;
     }
     return $horsename;
 }
 
 function getHorseEff($horse) : ?int {
-    switch($horse) {
-        case  7: $horse =  7; break;
-        case  8: $horse =  7; break;
-        case  9: $horse =  7; break;
-        case 10: $horse =  7; break;
-        case 11: $horse =  8; break;
-        case 12: $horse =  8; break;
-        case 13: $horse =  9; break;
-        case 14: $horse =  9; break;
-        case 15: $horse = 10; break;
-        case 16: $horse = 10; break;
-        case 17: $horse = 11; break;
-        case 18: $horse = 11; break;
-        case 19: $horse = 12; break;
-        case 20: $horse = 12; break;
-        case 21: $horse = 13; break;
-        case 22: $horse = 13; break;
-        case 23: $horse = 14; break;
-        case 24: $horse = 14; break;
-        case 25: $horse = 15; break;
-        case 26: $horse = 15; break;
-        default: break;
-    }
-    return $horse;
+    return [
+        11=>11,
+        12=>11,
+        13=>11,
+        14=>12,
+        15=>12,
+        16=>12,
+        17=>13,
+        18=>13,
+        19=>13,
+        20=>14,
+        21=>14,
+        22=>14,
+        23=>15,
+        24=>15,
+        25=>15,
+        26=>16,
+        27=>16,
+        28=>16,
+        29=>17,
+        30=>17,
+        31=>17,
+        32=>18,
+        33=>18,
+        34=>18,
+        35=>19,
+        36=>19,
+        37=>19,
+        38=>20,
+        39=>20,
+        40=>20,
+    ][$horse]??$horse;
 }
 
 function getItemName($item) : ?string {
@@ -796,6 +729,10 @@ function getItemCost($weap) : int {
         case  4: $weapcost = 10000; break;
         case  5: $weapcost = 15000; break;
         case  6: $weapcost = 21000; break;
+        case  7: $weapcost = 28000; break;
+        case  8: $weapcost = 36000; break;
+        case  9: $weapcost = 45000; break;
+        case  10: $weapcost = 55000; break;
         default: $weapcost = 200; break;
     }
     return $weapcost;

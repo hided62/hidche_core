@@ -111,9 +111,9 @@ $generalCheck = [
     'between'=>[
         ['train', [40, GameConst::$maxTrainByWar]],
         ['atmos', [40, GameConst::$maxAtmosByWar]],
-        ['book', [0, 26]],
-        ['weap', [0, 26]],
-        ['horse', [0, 26]],
+        ['book', [0, 6]],
+        ['weap', [0, 6]],
+        ['horse', [0, 40]],
         ['item', [0, 26]],
         ['explevel', [0, 300]],
         ['injury', [0, 80]],
