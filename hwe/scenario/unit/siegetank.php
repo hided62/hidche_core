@@ -60,7 +60,7 @@ class GameUnitConst extends GameUnitConstBase
 
         [
             40, self::T_SIEGE, '정란',     
-            100, 100, 6,  0, 0,  7,  3,    
+            100, 100, 6,  0, 0,  7,  5,    
             0, null,     null,     0, 
             [self::T_CASTLE=>1.8],
             [],
@@ -68,7 +68,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
         [
             41, self::T_SIEGE, '충차',     
-            150, 100, 6,  0, 0,  10,  3, 
+            150, 100, 6,  0, 0,  10,  5, 
             1000, null,     null,     3, 
             [self::T_CASTLE=>2.4],
             [],
@@ -76,7 +76,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
         [
             42, self::T_SIEGE, '벽력거',   
-            200, 100, 6,  0, 0,  20,  4, 
+            200, 100, 6,  0, 0,  20,  5, 
             3000, null,   null,     0, 
             [self::T_CASTLE=>1.8],
             [],
@@ -84,7 +84,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
         [
             43, self::T_SIEGE, '목우',      
-            50, 250, 5,  0, 0,  15,  3, 
+            50, 250, 5,  0, 0,  15,  5, 
             3000, null, null,     0, 
             [],
             [],
