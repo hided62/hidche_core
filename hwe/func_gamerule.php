@@ -384,43 +384,43 @@ function preUpdateMonthly() {
 
         //농지, 상업
         if(in_array($nationType, [2, 12])){    
-            $agriOffset = 0.011;
+            $agriOffset = 1.1;
         }
         else if(in_array($nationType, [8, 11])){
-            $agriOffset = 0.009;
+            $agriOffset = 0.9;
         }
         else{
-            $agriOffset = 0.01;
+            $agriOffset = 1;
         }
         
-        $setValues['agri'] = $db->sqleval('if(agri > agri2, GREATEST(agri2, agri*0.99), LEAST(agri2, agri + agri2*%d))', $agriOffset);
-        $setValues['comm'] = $db->sqleval('if(comm > comm2, GREATEST(comm2, comm*0.99), LEAST(comm2, comm + comm2*%d))', $agriOffset);
+        $setValues['agri'] = $db->sqleval('if(agri > agri2, GREATEST(agri2, agri*0.99), LEAST(agri2, agri + 80*%d))', $agriOffset);
+        $setValues['comm'] = $db->sqleval('if(comm > comm2, GREATEST(comm2, comm*0.99), LEAST(comm2, comm + 80*%d))', $agriOffset);
 
         //치안
         if(in_array($nationType, [1, 4])){    
-            $secuOffset = 0.011;
+            $secuOffset = 1.1;
         }
         else if(in_array($nationType, [6, 9])){
-            $secuOffset = 0.009;
+            $secuOffset = 0.9;
         }
         else{
-            $secuOffset = 0.01;
+            $secuOffset = 1;
         }
-        $setValues['secu'] = $db->sqleval('if(secu > secu2, GREATEST(secu2, secu*0.99), LEAST(secu2, secu + secu2*%d))', $secuOffset);
+        $setValues['secu'] = $db->sqleval('if(secu > secu2, GREATEST(secu2, secu*0.99), LEAST(secu2, secu + 60*%d))', $secuOffset);
 
         //수비, 성벽
         if(in_array($nationType, [3, 5, 10, 11])){
-            $defOffset = 0.011; 
+            $defOffset = 1.1; 
         }
         else if(in_array($nationType, [4, 7, 8, 13])){
-            $defOffset = 0.009;
+            $defOffset = 0.9;
         }
         else{
-            $defOffset = 0.01;
+            $defOffset = 1;
             
         }
-        $setValues['def'] = $db->sqleval('if(def > def2, GREATEST(def2, def*0.99), LEAST(def2, def + def2*%d))', $defOffset);
-        $setValues['wall'] = $db->sqleval('if(wall > wall2, GREATEST(wall2, wall*0.99), LEAST(wall2, wall + wall2*%d))', $defOffset);
+        $setValues['def'] = $db->sqleval('if(def > def2, GREATEST(def2, def*0.99), LEAST(def2, def + 80*%d))', $defOffset);
+        $setValues['wall'] = $db->sqleval('if(wall > wall2, GREATEST(wall2, wall*0.99), LEAST(wall2, wall + 80*%d))', $defOffset);
 
         $db->update('city', $setValues, 'nation = %i AND supply = 1', $nationID);
     }
