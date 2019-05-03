@@ -84,7 +84,7 @@ class GameUnitConst extends GameUnitConstBase
         ],
         [
             43, self::T_SIEGE, '목우',      
-            50, 250, 5,  0, 0,  15,  5, 
+            100, 250, 6,  0, 0,  15,  5, 
             3000, null, null,     0, 
             [],
             [],
