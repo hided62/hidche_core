@@ -160,11 +160,16 @@ function popIncrease() {
             $wall = $city['wall'];
         } else {
             $ratio = (20 - $rate[$city['nation']])/200;  // 20일때 0% 0일때 10% 100일때 -40%
-            $agri = $city['agri'] + intval($city['agri'] * $ratio);  //내정도 증감
-            $comm = $city['comm'] + intval($city['comm'] * $ratio);
-            $secu = $city['secu'] + intval($city['secu'] * $ratio);
-            $def  = $city['def']  + intval($city['def']  * $ratio);
-            $wall = $city['wall'] + intval($city['wall'] * $ratio);
+            $agri = $city['agri'];  //내정도 증감
+            $comm = $city['comm'];
+            $secu = $city['secu'];
+            $def  = $city['def'] ;
+            $wall = $city['wall'];
+            if($ratio < 0 || $city['agri'] < $city['agri2']) $agri += intval($city['agri'] * $ratio);  //내정도 증감
+            if($ratio < 0 || $city['comm'] < $city['comm2']) $comm += intval($city['comm'] * $ratio);
+            if($ratio < 0 || $city['secu'] < $city['secu2']) $secu += intval($city['secu'] * $ratio);
+            if($ratio < 0 || $city['def']  < $city['def2'] ) $def  += intval($city['def']  * $ratio);
+            if($ratio < 0 || $city['wall'] < $city['wall2']) $wall += intval($city['wall'] * $ratio);
             $ratio = (30 - $rate[$city['nation']])/200;  // 20일때 5% 5일때 12.5% 50일때 -10%
             if($ratio >= 0) {
                 // 국가보정
@@ -178,7 +183,10 @@ function popIncrease() {
                 $ratio *= (1 - $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 경감
             }
 
-            $pop = $city['pop'] + (int)($city['pop'] * $ratio) + 5000;  // 기본 5000명은 증가
+            if($ratio < 0 || $city['pop'] < $city['pop2']){
+                $pop = $city['pop'] + (int)($city['pop'] * $ratio) + 5000;  // 기본 5000명은 증가
+            }
+            
 
             $ratio = round($ratio*100, 2);
             $cityrate = $city['rate'];
