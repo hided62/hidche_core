@@ -2239,7 +2239,7 @@ function uniqueItem($general, $log, $vote=0) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $gen = MYDB_fetch_array($result);
 
-    if($admin['scenario'] < 100)  { $prob = $gen['cnt'] * 5; }  // 5~6개월에 하나씩 등장
+    if($admin['scenario'] < 1000)  { $prob = $gen['cnt'] * 5; }  // 5~6개월에 하나씩 등장
     else { $prob = $gen['cnt']; }  // 1~2개월에 하나씩 등장
 
     if($vote == 1) { $prob = Util::round($gen['cnt'] * 0.7 / 3); }     // 투표율 70%, 투표 한번에 2~3개 등장
