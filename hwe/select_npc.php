@@ -103,10 +103,10 @@ history.go(-1);
 </form>
 </div>
 <div class="with_border legacy_layout" style="text-align:center">
-    <button id="btn_pick_more" disabled="disabled" class="with_skin with_border">다른 장수 보기</button><button id="btn_load_general_list" class="with_skin with_border" style='margin-left:2ch;'>장수 목록 보기</button><br>
+    <button type="button" id="btn_pick_more" disabled="disabled" class="with_skin with_border">다른 장수 보기</button><button type="button" id="btn_load_general_list" class="with_skin with_border" style='margin-left:2ch;'>장수 목록 보기</button><br>
 </div>
 
-<table style='width:970px;table-layout: fixed;' class="tb_layout bg0" id='tb_general_list'>
+<table style='width:970px;table-layout: fixed;display:none;' class="tb_layout bg0" id='tb_general_list'>
 <thead>
 <tr class='bg1'>
         <th style='width:64px;'>얼 굴</td>
@@ -128,6 +128,11 @@ history.go(-1);
 </thead>
 <tbody id='general_list'>
 </tbody>
+<tfoot id='row_print_more' style='display:none;'>
+<tr>
+<td colspan="15"><button type="button" class="with_skin with_border" id="btn_print_more" style="width:100%;">장수 더 보기</button></td>
+</tr>
+</tfoot>
 </table>
 <div class="with_border legacy_layout"><?=backButton()?></div>
 <div class="with_border legacy_layout"><?=banner()?></div>

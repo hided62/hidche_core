@@ -251,18 +251,31 @@ function printGeneralList(value){
     });
 
     window.generalList = generalList;
-    _printGeneralList(generalList);
-
-    
+    _printGeneralList(true);
 }
 
-function _printGeneralList(generalList){
+function _printGeneralList(clear){
     var $generalTable = $('#general_list');
-    $generalTable.empty();
+    if(clear){
+        $generalTable.empty();
+        $generalTable.data('lastIdx', 0);
+        $('#row_print_more').show();
+    }
 
-    $.each(generalList, function(idx, general){
+    generalList = window.generalList;
+
+    var idxFrom = $generalTable.data('lastIdx');
+    var idxTo = Math.min(idxFrom + 50, generalList.length);
+    $generalTable.data('lastIdx', idxTo);
+
+    for(var idx = idxFrom; idx < idxFrom + 50; idx++){
+        var general = generalList[idx];
         $generalTable.append(TemplateEngine(templateGeneralRow, general));
-    });
+    }
+
+    if(idxTo == generalList.length){
+        $('#row_print_more').hide();
+    }
 
     $generalTable.find('.obj_tooltip').tooltip({
         title:function(){
@@ -323,5 +336,9 @@ $('#btn_load_general_list').click(function(){
         printGeneralList(result);
     });
 });
+
+$('#btn_print_more').click(function(){
+    _printGeneralList();
+})
 
 });
