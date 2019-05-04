@@ -36,7 +36,7 @@ var serverCreateTemplate = "\
 ";
 
 var serverLoginTemplate = "\
-<td style='background:url(<%picture%>);background-size: 64px 64px;'></td>\
+<td style='background:url(\"<%picture%>\");background-size: 64px 64px;'></td>\
 <td><%name%></td>\
 <td class='ignore_border'>\
 <a href='<%serverPath%>/'><button class='general_login with_skin'>입장</button></a>\
