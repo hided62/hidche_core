@@ -39,7 +39,39 @@ function doServerModeSet($server, $action, &$response, $session){
     $serverPath = $settingObj->getBasePath();
     $realServerPath = realpath(dirname(__FILE__)).'/'.$serverPath;
 
-    if($action == 'close' && ($userGrade >= 5 || in_array('openClose', $serverAcl))) { //폐쇄
+    if($action == 'close') { //폐쇄
+        $doClose = false;
+        if($userGrade >= 5){
+            $doClose = true;
+        }
+        else if(in_array('openClose', $serverAcl)){
+            $doClose = true;
+        }
+
+        if(!$doClose && in_array('reset', $serverAcl) && file_exists($serverPath.'/d_setting/DB.php')){
+            require($serverPath.'/lib.php');
+            $localGameStorage = KVStorage::getStorage(DB::db(), 'game_env');
+            //천통 이후, 오픈 직후는 닫을 수 있음
+            $localGameStorage->cacheValues(['isunited', 'startyear', 'year']);
+
+            if($localGameStorage->isunited){
+                $doClose = true;
+            }
+            else if($localGameStorage->year < $localGameStorage->startyear + 2){
+                $doClose = true;
+            }
+
+        }
+
+        if(!$doClose){
+            if(in_array('reset', $serverAcl)){
+                $response['msg'] = '서버 시작 직후, 또는 천하통일 이후에만 닫을 수 있습니다.';
+            }
+            else{
+                $response['msg'] = '서버 닫기 권한이 부족합니다.';
+            }
+            return false;
+        }
         return $settingObj->closeServer();
     } elseif($action == 'reset' && $userGrade >= 6) {//리셋
         //FIXME: reset, reset_full 구현
