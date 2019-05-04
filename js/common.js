@@ -142,3 +142,50 @@ function quickReject(errMsg){
     deferred.reject(errMsg);
     return deferred.promise();
 }
+
+function initTooltip($obj){
+    if($obj === undefined){
+        $obj = $('.obj_tooltip');
+    }
+    else if(!$obj.hasClass('obj_tooltip')){
+        $obj = $obj.find('.obj_tooltip');
+    }
+    console.log($obj);
+
+    $obj.each(function(){
+        $target = $(this);
+        
+        if($target.data('installHandler')){
+            return true;
+        }
+        $target.data('installHandler', true);
+
+        $target.mouseover(function(){
+            var $objTooltip = $(this);
+            if($objTooltip.data('setObjTooltip')){
+                return true;
+            }
+    
+            var tooltipClassText = $objTooltip.data('tooltip-class');
+            if(!tooltipClassText){
+                tooltipClassText = '';
+            }
+            var template = '<div class="tooltip {0}" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>'
+                .format(tooltipClassText);
+    
+            $objTooltip.tooltip({
+                title:function(){
+                    return $.trim($(this).find('.tooltiptext').html());
+                },
+                template:template,
+                html:true
+            }).tooltip('show');
+    
+            $objTooltip.data('setObjTooltip', true);
+        });
+    });
+}
+
+jQuery(function($){
+    initTooltip();
+});
