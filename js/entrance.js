@@ -1,8 +1,9 @@
 var serverListTemplate = "\
 <tr class='server_item bg0 server_name_<%name%>' data-server='<%name%>'>\
-    <td class='server_name'>\
+    <td class='server_name obj_tooltip' data-toggle='tooltip' data-placement='bottom'>\
         <span style='font-weight:bold;font-size:1.4em;color:<%color%>'><%korName%>섭</span><br>\
-        <span class='obj_tooltip' data-toggle='tooltip' data-placement='top'><span class='n_country'></span><span class='tooltiptext server_date'></span></span>\
+        <span class='n_country'></span>\
+        <span class='tooltiptext server_date'></span>\
     </td>\
     <td colspan='4' class='server_down'>- 폐 쇄 중 -</td>\
 </tr>\
