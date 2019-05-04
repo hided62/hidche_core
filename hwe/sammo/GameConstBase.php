@@ -72,7 +72,7 @@ class GameConstBase
     /** @var int 최대 계급 */
     public static $maxDedLevel = 30;
     /** @var int 최대 기술 레벨 */
-    public static $maxTechLevel = 12;
+    public static $maxTechLevel = 15;
 
     /** @var int 초기 제한시 장수 제한 */
     public static $initialNationGenLimitForRandInit = 3;
