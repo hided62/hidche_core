@@ -16,6 +16,25 @@ var templateSpecial =
 </span>\
 ';
 
+var templateGeneralRow = 
+'<tr>\
+    <td><img class="generalIcon" width="64" height="64" src="<%iconPath%>"></td>\
+    <td style="<%userCSS%>"><%name%><%nameAux%></td>\
+    <td><%age%>세</td>\
+    <td><%personalWithTooltip%></td>\
+    <td><%specialDomesticWithTooltip%> / <%speicalWarWithTooltip%></td>\
+    <td>Lv <%explevel%></td>\
+    <td><%nation%></td>\
+    <td><%experience%></td>\
+    <td><%dedication%></td>\
+    <td><%level%></td>\
+    <td><%total%></td>\
+    <td><%leader%></td>\
+    <td><%power%></td>\
+    <td><%intel%></td>\
+    <td><%killturn%></td>\
+</tr>';
+
 function pickGeneral(){
     $btn = $(this);
 
@@ -115,7 +134,6 @@ function printGenerals(value){
         
 
         var $card = $(TemplateEngine(templateGeneralCard, cardData));
-        console.log($card);
 
         $('.card_holder').append($card);
         $card.find('.select_btn').click(pickGeneral);
@@ -131,7 +149,132 @@ function printGenerals(value){
     updateOutdateTimer();
 }
 
+function printGeneralList(value){
+    var tokenList = value.token;
+    var generalList = $.map(value.list, function(general){
+        general = {
+            no:general[0],
+            picture:general[1],
+            imgsvr:general[2],
+            npc:general[3],
+            age:general[4],
+            nation:general[5],
+            special:general[6],
+            special2:general[7],
+            personal:general[8],
+            name:general[9],
+            name2:general[10],
+            injury:general[11],
+            leader:general[12],
+            lbonus:general[13],
+            power:general[14],
+            intel:general[15],
+            explevel:general[16],
+            experience:general[17],
+            dedication:general[18],
+            level:general[19],
+            killturn:general[20],
+            connect:general[21],
+            reserved:0
+        };
+        if(general.npc < 2){
+            general.reserved = 2;
+        }
+        if(general.no in tokenList){
+            general.reserved = 1;
+        }
+
+        general.userCSS = "";
+        general.nameAux = "";
+
+        if(general.reserved == 1){
+            general.userCSS = 'color:violet';
+        }
+        else if(general.npc >= 2){
+            general.userCSS = 'color:cyan';
+        }
+        else if(general.npc == 1){
+            general.userCSS = 'color:skyblue';
+        }
+
+        if(general.name2){
+            general.nameAux += '<br><small>({0})</small>'.format(general.name2);
+        }
+
+        if(general.reserved == 1){
+            general.nameAux += '<br><small>({0}회)</small>'.format(tokenList[general.no]);
+        }
+
+
+        general.total = general.leader + general.power + general.intel;
+        general.iconPath = getIconPath(general.imgsvr, general.picture);
+
+        general.specialDomesticWithTooltip = TemplateEngine(templateSpecial, {
+            text:general.special,
+            info:specialInfo[general.special]
+        });
+
+        general.speicalWarWithTooltip = TemplateEngine(templateSpecial, {
+            text:general.special2,
+            info:specialInfo[general.special2]
+        });
+
+        general.personalWithTooltip = TemplateEngine(templateSpecial, {
+            text:general.personal,
+            info:characterInfo[general.personal]
+        });
+
+        return general;
+    });
+
+    generalList.sort(function(lhs, rhs){
+        if(lhs.reserved > rhs.reserved){
+            return -1;
+        }
+        if(lhs.reserved < rhs.reserved){
+            return 1;
+        }
+        if(lhs.total != rhs.total){
+            return rhs.total - lhs.total;
+        }
+        if(lhs.leader != rhs.leader){
+            return rhs.leader - lhs.total;
+        }
+        
+        if(lhs.name < rhs.name){
+            return -1;
+        }
+        if(lhs.name > rhs.name){
+            return 1;
+        }
+        return 0;
+    });
+
+    window.generalList = generalList;
+    _printGeneralList(generalList);
+
+    
+}
+
+function _printGeneralList(generalList){
+    var $generalTable = $('#general_list');
+    $generalTable.empty();
+
+    $.each(generalList, function(idx, general){
+        $generalTable.append(TemplateEngine(templateGeneralRow, general));
+    });
+
+    $generalTable.find('.obj_tooltip').tooltip({
+        title:function(){
+            return $.trim($(this).find('.tooltiptext').html());
+        },
+        html:true
+    });
+    $('#tb_general_list').show();
+}
+
 $(function($){
+window.generalList = [];
 
 $.post('j_get_select_npc_token.php').then(function(value){
     if(!value.result){
@@ -162,6 +305,22 @@ $('#btn_pick_more').click(function(){
         }
         console.log(result);
         printGenerals(result);
+    });
+});
+
+$('#btn_load_general_list').click(function(){
+    $.post({
+        url:'j_get_general_list.php',
+        dataType:'json',
+        data:{
+            with_token:true
+        }
+    }).then(function(result){
+        if(!result.result){
+            alert(result.reason);
+            return false;
+        }
+        printGeneralList(result);
     });
 });
 
