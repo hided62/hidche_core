@@ -131,7 +131,7 @@ function drawServerAdminList(serverList){
                 if(!server.installed){
                     return true;
                 }
-                $tr.find('.serv_act_reset').prop('disabled', false);
+                $tr.find('.serv_act_reset, .serv_act_close').prop('disabled', false);
             }
         });
     });
