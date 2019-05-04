@@ -3,6 +3,8 @@ var templateGeneralCard =
     <h4 class="bg1 with_border"><%name%></h4>\
     <h4><img src="<%iconPath%>" height=64 width=64></h4>\
     <p><%leader%> / <%power%> / <%intel%><br>\
+    <%nation%><br>\
+    <%personalText%><br>\
     <%specialText%> / <%special2Text%></p>\
     <button type="subject" class="with_skin with_border select_btn" data-name="<%name%>" value="<%no%>" name="pick">빙의하기</button>\
     <label><input <%keepCnt?"":disabled="disabled"%> type="checkbox" value="<%no%>" name="keep[]" class="keep_select">보관(<%keepCnt%>회)</label>\
@@ -134,6 +136,16 @@ function printGenerals(value){
         }
         else{
             cardData.special2Text = cardData.special2;
+        }
+
+        if(cardData.personal in characterInfo){
+            cardData.personalText = TemplateEngine(templateSpecial, {
+                text:cardData.personal,
+                info:characterInfo[cardData.personal]
+            });
+        }
+        else{
+            cardData.personalText = cardData.personal;
         }
         
 
