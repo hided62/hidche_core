@@ -50,7 +50,16 @@ foreach (SpecialityConst::WAR as $id=>$values) {
 $specialAll['-'] = '없음';
 echo Json::encode($specialAll);
 ?>
-;    
+;
+var characterInfo = 
+<?php
+$characterAll = [];
+foreach(getCharacterList() as $id=>[$name, $info]){
+    $characterAll[$name] = $info;
+}
+echo Json::encode($characterAll);
+?>
+;
 </script>
 
 <?=WebUtil::printJS('../d_shared/common_path.js')?>

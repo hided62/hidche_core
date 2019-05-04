@@ -174,13 +174,10 @@ function getGenSpecial($type) {
     return $call;
 }
 
-function getSpecialInfo(?int $type):?string{
-    if($type === null){
-        return null;
-    }
-
+function getSpecialTextList():array{
+    
     //앞칸은 '설명을 위해' '그냥' 적어둠
-    $infoText = [
+    return [
         0 => ['-', null],
         1 => ['경작', '[내정] 농지 개간 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
         2 => ['상재', '[내정] 상업 투자 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
@@ -219,6 +216,14 @@ function getSpecialInfo(?int $type):?string{
         74 => ['격노', '[전투] 상대방 필살 및 회피 시도시 일정 확률로 격노(필살) 발동, 공격 시 일정 확률로 진노(1페이즈 추가)'],
         75 => ['척사', '[전투] 지역·도시 병종 상대로 대미지 +10%, 아군 피해 -10%']
     ];
+}
+
+function getSpecialInfo(?int $type):?string{
+    if($type === null){
+        return null;
+    }
+
+    $infoText = getSpecialTextList();
 
     return $infoText[$type][1]??null;
 }
