@@ -92,7 +92,6 @@ $result = [
 ];
 
 if($withToken){
-    $result['list'][] ='aserasdrgtlkjsdrgltjsrdt1!!!!!!!!!!!!!!!!!!';
     $now = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
     $tokens = [];
     foreach($db->query('SELECT * FROM select_npc_token WHERE `valid_until`>=%s', $now) as $token){
