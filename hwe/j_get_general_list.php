@@ -36,7 +36,7 @@ else{
         ]);
     }
     
-    $availableNextCall = $now->add(new \DateInterval('PT1S'))->format('Y-m-d H:i:s');
+    $availableNextCall = $now->add(new \DateInterval('PT10S'))->format('Y-m-d H:i:s');
     $session->availableNextCallGetGeneralList = $availableNextCall;
 }
 
