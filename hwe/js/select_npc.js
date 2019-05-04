@@ -4,7 +4,7 @@ var templateGeneralCard =
     <h4><img src="<%iconPath%>" height=64 width=64></h4>\
     <p><%leader%> / <%power%> / <%intel%><br>\
     <%specialText%> / <%special2Text%></p>\
-    <button type="subject" class="with_skin with_border select_btn" value="<%no%>" name="pick">빙의하기</button>\
+    <button type="subject" class="with_skin with_border select_btn" data-name="<%name%>" value="<%no%>" name="pick">빙의하기</button>\
     <label><input <%keepCnt?"":disabled="disabled"%> type="checkbox" value="<%no%>" name="keep[]" class="keep_select">보관(<%keepCnt%>회)</label>\
 </div>';
 
@@ -37,6 +37,10 @@ var templateGeneralRow =
 
 function pickGeneral(){
     $btn = $(this);
+
+    if (!confirm('빙의할까요? : {0}'.format($btn.data('name')))) {
+        return false;
+    }
 
     $.post({
         url:'j_select_npc.php',
