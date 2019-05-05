@@ -44,7 +44,7 @@ if ($me['newmsg'] == 1 || $me['newvote'] == 1) {
     ], 'owner=%i', $userID);
 }
 
-$admin = $gameStor->getValues(['develcost','online','conlimit','tournament','tnmt_type','turnterm','scenario','scenario_text','extended_general','fiction','npcmode','vote','vote_title','map_theme']);
+$admin = $gameStor->getValues(['develcost','online','conlimit','tournament','tnmt_type','turnterm','turntime','scenario','scenario_text','extended_general','fiction','npcmode','vote','vote_title','map_theme']);
 
 $plock = $db->queryFirstField('SELECT plock FROM plock LIMIT 1');
 
@@ -145,12 +145,12 @@ $(function(){
         <td width=398 colspan=2><?=info(3)?></td>
     </tr>
     <tr height=30>
-        <td>
+        <td style='text-align:center;'>
 <?php
 if (!$plock) {
-    echo "<marquee scrollamount=2><font color=cyan>서버 가동중</font></marquee>";
+    echo "<span style='color:cyan;'>동작 시각: ".substr($admin['turntime'], 5)."</span>";
 } else {
-    echo "<font color=magenta>서버 동결중</font>";
+    echo "<span style='color:magenta;'>동작 시각: ".substr($admin['turntime'], 5)."</span>";
 }
 
 echo "
