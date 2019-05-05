@@ -20,7 +20,7 @@
     data-general-nation="<?=$nation?>"
     data-general-nation-name="<?=$nationName?>"
 >
-    <td height="64"></td>
+    <td height="64"><img class='generalIcon' width='64' height='64' src='<?=$iconPath?>'></td>
     <td><?=$nameText?></td>
     <td><?=$leadershipText?><?=$leadershipBonusText?></td>
     <td><?=$powerText?></td>

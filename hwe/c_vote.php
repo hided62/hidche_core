@@ -48,7 +48,7 @@ else if($btn == "댓글" && trim($comment) != "") {
 }
 
 if(!$isVoteAdmin){
-    header('location:a_vote.php');
+    header('location:a_vote.php', true, 303);
     die();
 }
 
@@ -86,4 +86,4 @@ if($btn == "수정") {
     $gameStor->voteopen = 2;
 }
 
-header('location:a_vote.php');
+header('location:a_vote.php', true, 303);

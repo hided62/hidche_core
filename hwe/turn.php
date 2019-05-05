@@ -25,7 +25,7 @@ $myActionCnt = $db->queryFirstField('SELECT con FROM general WHERE `owner`=%i', 
 
 $con = checkLimit($myActionCnt);
 if($con >= 2) { 
-    header('location:commandlist.php');
+    header('location:commandlist.php', true, 303);
     exit();
  }
 
@@ -46,4 +46,4 @@ case 2://당기기
     break;
 }
 
-header('location:commandlist.php');
+header('location:commandlist.php', true, 303);

@@ -165,3 +165,7 @@ a.samButton.disabled {
 .samCommandButton.disabled > .samButtonOuter > .samButtonInner::after{
     content:'】'
 }
+
+.tooltiptext {
+    display: none;
+}

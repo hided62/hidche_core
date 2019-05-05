@@ -17,5 +17,5 @@ $db->update('general', [
 ], 'owner=%i', $userID);
 
 
-header('location:b_myPage.php');
+header('location:b_myPage.php', true, 303);
 

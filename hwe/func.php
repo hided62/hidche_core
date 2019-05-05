@@ -1612,7 +1612,13 @@ function uniqueItem($general, $log, $vote=0) {
     //아이템 습득 상황
     if(rand() % $prob == 0) {
         //셋중 선택
-        $sel = rand() % 4;
+        $selGroup = [
+            20 - $db->queryFirstField('SELECT count(*) from general where weap > 6'),
+            20 - $db->queryFirstField('SELECT count(*) from general where book > 6'),
+            20 - $db->queryFirstField('SELECT count(*) from general where horse > 6'),
+            20 - $db->queryFirstField('SELECT count(*) from general where item > 6')
+        ];
+        $sel = Util::choiceRandomUsingWeight($selGroup);
         switch($sel) {
         case 0: $type = "weap"; break;
         case 1: $type = "book"; break;

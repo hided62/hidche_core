@@ -76,7 +76,7 @@ function kakaoOAuthCheck(array $userInfo) : ?array {
             $refreshTokenValidUntil = TimeUtil::nowAddSeconds($refreshResult['refresh_token_expires_in']);
 
             $oauthInfo['refreshToken'] = $refreshToken;
-            $oauthInfo['refresh_token_expires_in'] = $refresh_token_expires_in;
+            $oauthInfo['refresh_token_expires_in'] = $refreshTokenValidUntil;
         }
         
         RootDB::db()->update('member', [

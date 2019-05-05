@@ -166,6 +166,17 @@ function CriticalRatioDomestic($general, $type) {
     );
 }
 
+function calcLeadershipBonus($generalLevel, $nationLevel):int{
+    if($generalLevel == 12) {
+        $lbonus = $nationLevel * 2;
+    } elseif($generalLevel >= 5) {
+        $lbonus = $nationLevel;
+    } else {
+        $lbonus = 0;
+    }
+    return $lbonus;
+}
+
 /**
  * 수뇌직 통솔 보너스 계산
  * 
@@ -175,13 +186,7 @@ function CriticalRatioDomestic($general, $type) {
  * @return int 계산된 $general['lbonus'] 값
  */
 function setLeadershipBonus(&$general, $nationLevel){
-    if($general['level'] == 12) {
-        $lbonus = $nationLevel * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nationLevel;
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = calcLeadershipBonus($general['level'], $nationLevel);
     $general['lbonus'] = $lbonus;
     return $lbonus;
 }

@@ -64,4 +64,4 @@ if($btn == "부 대 창 설" && $name != "" && $me['troop'] == 0) {
     }
 }
 
-header('Location:b_troop.php');
+header('Location:b_troop.php', true, 303);

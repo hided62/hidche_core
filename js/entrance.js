@@ -1,8 +1,9 @@
 var serverListTemplate = "\
 <tr class='server_item bg0 server_name_<%name%>' data-server='<%name%>'>\
-    <td class='server_name'>\
+    <td class='server_name obj_tooltip' data-toggle='tooltip' data-placement='bottom'>\
         <span style='font-weight:bold;font-size:1.4em;color:<%color%>'><%korName%>섭</span><br>\
         <span class='n_country'></span>\
+        <span class='tooltiptext server_date'></span>\
     </td>\
     <td colspan='4' class='server_down'>- 폐 쇄 중 -</td>\
 </tr>\
@@ -35,7 +36,7 @@ var serverCreateTemplate = "\
 ";
 
 var serverLoginTemplate = "\
-<td style='background:url(<%picture%>);background-size: 64px 64px;'></td>\
+<td style='background:url(\"<%picture%>\");background-size: 64px 64px;'></td>\
 <td><%name%></td>\
 <td class='ignore_border'>\
 <a href='<%serverPath%>/'><button type='button' class='general_login with_skin'>입장</button></a>\
@@ -96,12 +97,15 @@ function Entrance_drawServerList(serverInfos){
             var game= result.game;
             //TODO: 서버 폐쇄 방식을 새롭게 변경
             $serverHtml.find('.server_down').detach();
+            var serverTime = '%s ~ %s'.format(game.startFrom)
 
             if(game.isUnited == 2){
                 $serverHtml.find('.n_country').html('§천하통일§');
+                $serverHtml.find('.server_date').html('{0} <br>~ {1}'.format(game.starttime, game.turntime));
             }
             else{
                 $serverHtml.find('.n_country').html('<{0}국 경쟁중>'.format(game.nationCnt));
+                $serverHtml.find('.server_date').html('{0} ~'.format(game.starttime));
             }
 
             $serverHtml.append(
@@ -131,7 +135,7 @@ function Entrance_drawServerList(serverInfos){
                 );
             }
 
-            
+            initTooltip($serverHtml);
         });
     });
 }

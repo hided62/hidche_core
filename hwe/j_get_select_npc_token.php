@@ -90,9 +90,11 @@ if($token && !$refresh){
 $candidates = [];
 
 $weight = [];
-foreach($db->query('SELECT `no`, `name`, leader, power, intel, imgsvr, picture, special, special2 FROM general WHERE npc=2') as $general){
+foreach($db->query('SELECT `no`, `name`, leader, power, intel, nation, imgsvr, picture, personal, special, special2 FROM general WHERE npc=2') as $general){
     $general['special'] = (getGeneralSpecialDomesticClass($general['special']))::$name;
     $general['special2'] = (getGeneralSpecialWarClass($general['special2']))::$name;
+    $general['personal'] = (getPersonalityClass($general['personal']));
+    $general['nation'] = getNationStaticInfo($general['nation'])['name'];
     $candidates[$general['no']] = $general + ['keepCnt'=>KEEP_CNT];
     $allStat = $general['leader'] + $general['power'] + $general['intel'];
     $weight[$general['no']] = pow($allStat, 1.5);

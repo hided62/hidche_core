@@ -14,4 +14,4 @@ if($me['level'] >= 5 && $me['nation'] > 0){
     pullNationCommand($me['nation'], $me['level']);
 }
 
-header('location:b_chiefcenter.php');
+header('location:b_chiefcenter.php', true, 303);
