@@ -147,12 +147,12 @@ $(function(){
         <td width=398 colspan=2><?=info(3)?></td>
     </tr>
     <tr height=30>
-        <td>
+        <td style='text-align:center;'>
 <?php
 if (!$plock) {
-    echo "<marquee scrollamount=2><font color=cyan>서버 가동중</font></marquee>";
+    echo "<span style='color:cyan;'>동작 시각: ".substr($gameStor->turntime, 5)."</span>";
 } else {
-    echo "<font color=magenta>서버 동결중</font>";
+    echo "<span style='color:magenta;'>동작 시각: ".substr($gameStor->turntime, 5)."</span>";
 }
 
 echo "
