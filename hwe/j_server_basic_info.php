@@ -53,6 +53,7 @@ if(file_exists(__dir__.'/.htaccess')){
             'fictionMode'=>($options['fiction']?'가상':'사실'),
             'npcMode'=>($options['npcmode']?'가능':'불가'),
             'openDatetime'=>$reserved['date'],
+            'starttime'=>$options['starttime'],
             'gameConf'=>$options['gameConf'],
             'otherTextInfo'=>$otherTextInfo
         ],

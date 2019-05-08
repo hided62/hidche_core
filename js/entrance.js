@@ -46,7 +46,8 @@ var serverLoginTemplate = "\
 
 var serverReservedTemplate = "\
 <td colspan='4' class='server_reserved'>\
-- 오픈 일시 : <%openDatetime%> - <br>\
+<%openDatetime==starttime?'':'- 가오픈 일시 : '+openDatetime+ '- <br>'%>\
+- 오픈 일시 : <%starttime%> - <br>\
 <span style='color:orange;'><%scenarioName%></span> <span style='color:limegreen;'><%turnterm%>분 턴 서버</span><br>\
 (상성 설정:<%fictionMode%>), (빙의 여부:<%npcMode%>), (최대 스탯:<%gameConf.defaultStatTotal%>), (기타 설정:<%otherTextInfo%>)</td>\
 ";
