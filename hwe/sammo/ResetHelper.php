@@ -228,6 +228,7 @@ class ResetHelper{
             'develcost'=>$develcost,
             'turntime'=>$turntime,
             'starttime'=>$starttime,
+            'opentime'=>$turntime,
             'turnterm'=>$turnterm,
             'killturn'=>$killturn,
             'genius'=>GameConst::$defaultMaxGenius,
