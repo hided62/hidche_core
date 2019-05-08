@@ -1894,7 +1894,7 @@ function process_76(&$general) {
 
     $date = substr($general['turntime'],11,5);
 
-    $admin = $gameStor->getValues(['startyear','year','month','develcost','npccount','turnterm']);
+    $admin = $gameStor->getValues(['startyear','year','month','develcost','npccount','turnterm','turntime']);
 
     $query = "select nation,supply from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -2070,7 +2070,7 @@ function process_76(&$general) {
             $affinity = rand() % 150 + 1;
             $name = "ⓖ의병장{$npcid}";
             $picture = 'default.jpg';
-            $turntime = getRandTurn($admin['turnterm']);
+            $turntime = getRandTurn($admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
             $personal = rand() % 10;
             $bornyear = $admin['year'];
             $deadyear = $admin['year'] + 3;

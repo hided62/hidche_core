@@ -78,7 +78,7 @@ function myCommandList() {
     $date = date('Y-m-d H:i:s');
 
     // 명령 목록
-    $admin = $gameStor->getValues(['year','month','turnterm']);
+    $admin = $gameStor->getValues(['year','month','turnterm','turntime']);
 
     $me = $db->queryFirstRow("SELECT `no`,turntime,term,turn0,turn1,turn2,turn3,turn4,turn5,turn6,turn7,turn8,turn9,turn10,turn11,turn12,turn13,turn14,turn15,turn16,turn17,turn18,turn19,turn20,turn21,turn22,turn23 FROM general WHERE `owner`=%s", $userID);
     if(!$me){
@@ -97,7 +97,7 @@ function myCommandList() {
     $month = $admin['month'];
     // 실행된 턴시간이면 +1
     $cutTurn = cutTurn($me['turntime'], $admin['turnterm']);
-    if($date <= $cutTurn) { $month++; }
+    if($date <= $cutTurn && $date < $admin['tuntime']) { $month++; }
 
     $totaldate = $me['turntime'];
 

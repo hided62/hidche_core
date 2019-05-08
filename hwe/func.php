@@ -1523,6 +1523,11 @@ function checkTurn() {
 
     $alllog = [];
 
+    if(date('Y-m-d H:i:s') < $gameStor->turntime){
+        //턴 시각 이전이면 아무것도 하지 않음
+        return true;
+    }
+
     // 잦은 갱신 금지 현재 5초당 1회
     if(!timeover()) { return; }
     // 현재 처리중이면 접근 불가
@@ -1557,7 +1562,12 @@ function checkTurn() {
         $db->update('plock', ['plock'=>1], true);
         return;
     }
+
+    $date = date('Y-m-d H:i:s');
+
     $gameStor->cacheAll();
+
+    
     // 1턴이상 갱신 없었으면 서버 지연
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', checkDelay');
     checkDelay();
@@ -1569,10 +1579,11 @@ function checkTurn() {
     CheckOverhead();
     //서버정보
 
-    $date = date('Y-m-d H:i:s');
+    
     // 최종 처리 월턴의 다음 월턴시간 구함
     $prevTurn = cutTurn($gameStor->turntime, $gameStor->turnterm);
     $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
+    $computedPrevTurn = false;
     // 현재 턴 이전 월턴까지 모두처리.
     //최종 처리 이후 다음 월턴이 현재 시간보다 전이라면
     while($nextTurn <= $date) {
@@ -1678,12 +1689,16 @@ function checkTurn() {
         // 다음달로 넘김
         $prevTurn = $nextTurn;
         $nextTurn = addTurn($prevTurn, $gameStor->turnterm);
+        $computedPrevTurn = true;
     }
 
     //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', '.__LINE__);
         
     // 이시각 정각 시까지 업데이트 완료했음
-    $gameStor->turntime = $prevTurn;
+    if($computedPrevTurn){
+        $gameStor->turntime = $prevTurn;
+    }
+    
 
     // 그 시각 년도,월 저장
     list($gameStor->year, $gameStor->month) = turnDate($prevTurn);
@@ -2915,16 +2930,24 @@ function SabotageInjury($city, $type=0) {
     return $injuryCount;
 }
 
-function getRandTurn($term) {
+function getRandTurn($term, ?\DateTimeInterface $baseDateTime = null) {
+    if($baseDateTime === null){
+        $baseDateTime = new \DateTimeImmutable();
+    }
+    else if($baseDateTime instanceof \DateTime){
+        $baseDateTime = DateTimeImmutable::createFromMutable($baseDateTime);
+    }
     $randtime = rand(0, 60 * $term - 1);
-    $turntime = date('Y-m-d H:i:s', strtotime('now') + $randtime);
-
-    return $turntime;
+    return $baseDateTime->add(new \DateInterval('PT'.$randtime.'S'))->format('Y-m-d H:i:s');
 }
 
-function getRandTurn2($term) {
+function getRandTurn2($term, ?\DateTimeInterface $baseDateTime = null) {
+    if($baseDateTime === null){
+        $baseDateTime = new \DateTimeImmutable();
+    }
+    else if($baseDateTime instanceof \DateTime){
+        $baseDateTime = DateTimeImmutable::createFromMutable($baseDateTime);
+    }
     $randtime = rand(0, 60 * $term - 1);
-    $turntime = date('Y-m-d H:i:s', strtotime('now') - $randtime);
-
-    return $turntime;
+    return $baseDateTime->sub(new \DateInterval('PT'.$randtime.'S'))->format('Y-m-d H:i:s');
 }

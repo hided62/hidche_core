@@ -973,7 +973,7 @@ function updateNationState() {
     $connect=$db->get();
 
     $history = array();
-    $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm']);
+    $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm', 'turntime']);
 
     $query = "select nation,name,level,gennum,tech from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");

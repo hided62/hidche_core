@@ -155,6 +155,7 @@ function formSetup(){
                 show_img_level:$('#show_img_level input:radio:checked').val(),
                 tournament_trig:$('#tournament_trig input:radio:checked').val(),
                 reserve_open:$('#reserve_open').val(),
+                pre_reserve_open:$('#pre_reserve_open').val(),
                 join_mode:$('#join_mode input:radio:checked').val(),
             }
         }).then(function(result){

@@ -290,7 +290,7 @@ function process_29(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $admin = $gameStor->getValues(['startyear','year','month','develcost','npccount','turnterm','scenario','maxgeneral']);
+    $admin = $gameStor->getValues(['startyear','year','month','develcost','npccount','turnterm','scenario','maxgeneral', 'turntime']);
 
     $query = "select nation,name,level,gennum,scout from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -490,7 +490,7 @@ function process_29(&$general) {
             $npccount = 10000 + $npcid;
             $affinity = rand() % 150 + 1;
             $picture = 'default.jpg';
-            $turntime = getRandTurn($admin['turnterm']);
+            $turntime = getRandTurn($admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
             $personal = rand() % 10;
             $bornyear = $admin['year'];
             $deadyear = $admin['year'] + 3;

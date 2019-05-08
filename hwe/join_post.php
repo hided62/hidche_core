@@ -68,7 +68,7 @@ if (!$member) {
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$gameStor->cacheValues(['year','month','maxgeneral','scenario','show_img_level','turnterm','genius','npcmode']);
+$gameStor->cacheValues(['year','month','maxgeneral','scenario','show_img_level','turnterm','turntime','genius','npcmode']);
 ########## 동일 정보 존재여부 확인. ##########
 
 $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
@@ -153,7 +153,7 @@ $leader = $leader + $pleader;
 $power = $power + $ppower;
 $intel = $intel + $pintel;
 
-$admin = $gameStor->getValues(['scenario', 'turnterm', 'show_img_level', 'startyear', 'year']);
+$admin = $gameStor->getValues(['scenario', 'turnterm', 'turntime', 'show_img_level', 'startyear', 'year']);
 $relYear = Util::valueFit($admin['year'] - $admin['startyear'], 0);
 
 $age = 20 + ($pleader + $ppower + $pintel) * 2 - (mt_rand(0, 1));
@@ -187,7 +187,7 @@ else{
     $experience *= 0.8;
 }
 
-$turntime = getRandTurn($admin['turnterm']);
+$turntime = getRandTurn($admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
 
 $lastconnect = date('Y-m-d H:i:s');
 if ($lastconnect >= $turntime) {

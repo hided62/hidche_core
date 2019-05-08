@@ -27,6 +27,20 @@ if($reserve_open && $reserve_open < date('Y-m-d H:i')){
     ]);
 }
 
+$pre_reserve_open = Util::getReq('pre_reserve_open');
+if($pre_reserve_open && !$reserve_open){
+    Json::die([
+        'result'=>false,
+        'reason'=>'가오픈 예약을 위해선 오픈 예약을 지정해야합니다.'
+    ]);
+}
+if($pre_reserve_open && $pre_reserve_open >= $reserve_open){
+    Json::die([
+        'result'=>false,
+        'reason'=>'가오픈 시간이 오픈 예약 시점보다 이전이어야 합니다.'
+    ]);
+}
+
 if($session->userGrade < 5 && !$allowReset){
     Json::die([
         'result'=>false,
@@ -114,22 +128,35 @@ if($reserve_open){
     }
 
     $scenarioObj = new Scenario($scenario, true);
+    $open_date = $reserve_open->format('Y-m-d H:i:s');
+
+    $reserveInfo = [
+        'turnterm'=>$turnterm,
+        'sync'=>$sync,
+        'scenario'=>$scenario,
+        'scenarioName'=>$scenarioObj->getTitle(),
+        'fiction'=>$fiction,
+        'extend'=>$extend,
+        'npcmode'=>$npcmode,
+        'show_img_level'=>$show_img_level,
+        'tournament_trig'=>$tournament_trig,
+        'gameConf'=>$scenarioObj->getGameConf(),
+        'join_mode'=>$join_mode,
+        'starttime'=>$open_date,
+    ];
+
+    
+    if($pre_reserve_open){
+        $pre_reserve_open = new \DateTime($pre_reserve_open);
+        $open_date = $pre_reserve_open->format('Y-m-d H:i:s');
+    }
+
+
+    
     $db->delete('reserved_open', true);
     $db->insert('reserved_open', [
-        'options'=>Json::encode([
-            'turnterm'=>$turnterm,
-            'sync'=>$sync,
-            'scenario'=>$scenario,
-            'scenarioName'=>$scenarioObj->getTitle(),
-            'fiction'=>$fiction,
-            'extend'=>$extend,
-            'npcmode'=>$npcmode,
-            'show_img_level'=>$show_img_level,
-            'tournament_trig'=>$tournament_trig,
-            'gameConf'=>$scenarioObj->getGameConf(),
-            'join_mode'=>$join_mode,
-        ]),
-        'date'=>$reserve_open->format('Y-m-d H:i:s')
+        'options'=>Json::encode($reserveInfo),
+        'date'=>$open_date
     ]);
     AppConf::getList()[DB::prefix()]->closeServer();
     Json::die([
@@ -147,5 +174,6 @@ Json::die(ResetHelper::buildScenario(
     $npcmode,
     $show_img_level,
     $tournament_trig,
-    $join_mode
+    $join_mode,
+    TimeUtil::DatetimeNow()
 ));
