@@ -64,12 +64,12 @@ if(file_exists(__dir__.'/.htaccess')){
 
 //TODO: 천통시에도 예약 오픈 알림이 필요..?
 
-$admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'starttime', 'turntime']);
+$admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'opentime', 'turntime']);
 $admin['maxUserCnt'] = $admin['maxgeneral'];
 $admin['npcMode'] = $admin['npcmode'];
 $admin['turnTerm'] = $admin['turnterm'];
 $admin['isUnited'] = $admin['isunited'];
-$admin['starttime'] = substr($admin['starttime'], 5, 11);
+$admin['starttime'] = substr($admin['opentime'], 5, 11);
 $admin['turntime'] = substr($admin['turntime'], 5, 11);
 unset($admin['npcmode']);
 unset($admin['maxgeneral']);
