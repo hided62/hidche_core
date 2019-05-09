@@ -286,6 +286,11 @@ WHERE turntime < %s ORDER BY turntime ASC, `no` ASC',
 
         $gameStor = KVStorage::getStorage($db, 'game_env');
 
+        if(TimeUtil::now(true) < $gameStor->turntime){
+            //턴 시각 이전이면 아무것도 하지 않음
+            return true;
+        }
+
         if(!tryLock()){
             return;
         }

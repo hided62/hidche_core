@@ -76,7 +76,7 @@ function myCommandList() {
     $userID = Session::getUserID();
 
     // 명령 목록
-    $admin = $gameStor->getValues(['year','month','turnterm','turntime']);
+    $admin = $gameStor->getValues(['year','month','turnterm','turntime','opentime']);
 
     $me = $db->queryFirstRow("SELECT `no`,name,city,nation,level,turntime,last_turn FROM general WHERE `owner`=%s", $userID);
     if(!$me){
@@ -95,9 +95,10 @@ function myCommandList() {
 
     $year = $admin['year'];
     $month = $admin['month'];
+    $date = TimeUtil::now(true);
     // 실행된 턴시간이면 +1
     $cutTurn = cutTurn($me['turntime'], $admin['turnterm']);
-    if($admin['turntime'] <= $cutTurn) { $month++; }
+    if($date <= $cutTurn && $date >= $admin['opentime']) { $month++; }
 
     $totaldate = $me['turntime'];
 

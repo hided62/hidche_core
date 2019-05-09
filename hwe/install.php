@@ -226,6 +226,13 @@ if($session->userGrade < 5 && !$allowReset){
                     </div>
 
                     <div class="form-group row">
+                        <label for="pre_reserve_open" class="col-sm-3 col-form-label">가오픈 예약</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="pre_reserve_open" id="pre_reserve_open"  placeholder="YYYY-MM-DD hh:mm" value="" />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9">
                             <input type="submit" class="btn btn-primary btn-lg btn-block login-button" value="리셋 개시">

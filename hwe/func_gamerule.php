@@ -882,7 +882,7 @@ function updateNationState() {
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
     $history = array();
-    $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm']);
+    $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm', 'turntime']);
 
     $assemblerCnts = [];
     foreach($db->queryAllLists('SELECT nation,count(no) FROM general WHERE npc = 5 GROUP BY nation') as [$nationID, $assemblerCnt]){

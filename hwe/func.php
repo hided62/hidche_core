@@ -2315,16 +2315,30 @@ function SabotageInjury($city, $type=0) {
     return $injuryCount;
 }
 
-function getRandTurn($term) {
+function getRandTurn($term, ?\DateTimeInterface $baseDateTime = null) {
+    if($baseDateTime === null){
+        $baseDateTime = new \DateTimeImmutable();
+    }
+    else if($baseDateTime instanceof \DateTime){
+        $baseDateTime = DateTimeImmutable::createFromMutable($baseDateTime);
+    }
+
     $randSecond = Util::randRangeInt(0, 60 * $term - 1);
     $randFraction = Util::randRangeInt(0, 999999) / 1000000;//6자리 소수
 
-    return TimeUtil::nowAddSeconds($randSecond + $randFraction, true);
+    return $baseDateTime->add(TimeUtil::secondsToDateInterval($randSecond + $randFraction))->format('Y-m-d H:i:s');
 }
 
-function getRandTurn2($term) {
+function getRandTurn2($term, ?\DateTimeInterface $baseDateTime = null)
+{
+    if($baseDateTime === null){
+        $baseDateTime = new \DateTimeImmutable();
+    }
+    else if($baseDateTime instanceof \DateTime){
+        $baseDateTime = DateTimeImmutable::createFromMutable($baseDateTime);
+    }
     $randSecond = Util::randRangeInt(0, 60 * $term - 1);
     $randFraction = Util::randRangeInt(0, 999999) / 1000000;//6자리 소수
     
-    return TimeUtil::nowAddSeconds(- $randSecond - $randFraction, true);
+    return $baseDateTime->sub(TimeUtil::secondsToDateInterval($randSecond + $randFraction))->format('Y-m-d H:i:s');
 }

@@ -292,7 +292,7 @@ class NPC{
             $level = $nationID?1:0;
         }
 
-        $turntime = \sammo\getRandTurn($env['turnterm']);
+        $turntime = \sammo\getRandTurn($env['turnterm'], new \DateTimeImmutable($env['turntime']));
 
         $killturn = ($this->death - $year) * 12 + mt_rand(0, 11);
 

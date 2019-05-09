@@ -130,7 +130,8 @@ class ResetHelper{
         int $npcmode,
         int $show_img_level,
         int $tournament_trig,
-        string $join_mode
+        string $join_mode,
+        string $turntime
     ):array{
         //FIXME: 분리할 것
         if(120 % $turnterm != 0){
@@ -188,8 +189,6 @@ class ResetHelper{
             true
         );
 
-
-        $turntime = TimeUtil::now(true);
         if($sync == 0) {
             // 현재 시간을 1월로 맞춤
             $starttime = cutTurn($turntime, $turnterm);
@@ -230,6 +229,7 @@ class ResetHelper{
             'develcost'=>$develcost,
             'turntime'=>$turntime,
             'starttime'=>$starttime,
+            'opentime'=>$turntime,
             'turnterm'=>$turnterm,
             'killturn'=>$killturn,
             'genius'=>GameConst::$defaultMaxGenius,

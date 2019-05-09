@@ -88,7 +88,8 @@ $result = ResetHelper::buildScenario(
     $options['npcmode'],
     $options['show_img_level'],
     $options['tournament_trig'],
-    $options['join_mode']
+    $options['join_mode'],
+    $options['starttime']
 );
 
 $result['affected']=1;
