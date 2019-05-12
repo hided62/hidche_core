@@ -4,6 +4,9 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
 use \sammo\WarUnit;
+use sammo\WarUnitTriggerCaller;
+use \sammo\WarUnitTrigger\che_저격시도;
+use \sammo\WarUnitTrigger\che_저격발동;
 
 class che_저격 implements iAction{
     use \sammo\DefaultAction;
@@ -19,4 +22,11 @@ class che_저격 implements iAction{
         SpecialityConst::STAT_POWER,
         SpecialityConst::STAT_INTEL
     ];
+
+    public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        return new WarUnitTriggerCaller([
+            new che_저격시도($unit, che_저격시도::TYPE_NONE, 1/3, 20, 60),
+            new che_저격발동($unit)
+        ]);
+    }
 }

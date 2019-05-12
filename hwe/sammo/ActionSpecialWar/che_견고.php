@@ -4,6 +4,7 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
 use \sammo\WarUnit;
+use sammo\WarUnitTriggerCaller;
 
 class che_견고 implements iAction{
     use \sammo\DefaultAction;

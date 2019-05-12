@@ -90,6 +90,7 @@ class WarUnitGeneral extends WarUnit{
         $general = $this->general;
         $criticalRatio = $this->getCrewType()->getCriticalRatio($general);
 
+        /** @var float $criticalRatio */
         $criticalRatio = $general->onCalcStat($general, 'warCriticalRatio', $criticalRatio, ['isAttacker'=>$this->isAttacker]);
         return $criticalRatio;
     }
@@ -100,6 +101,7 @@ class WarUnitGeneral extends WarUnit{
         $avoidRatio = $this->getCrewType()->avoid / 100;
         $avoidRatio *= $this->getComputedTrain() / 100;
 
+        /** @var float $avoidRatio */
         $avoidRatio = $general->onCalcStat($general, 'warAvoidRatio', $avoidRatio, ['isAttacker'=>$this->isAttacker]);
 
         if($this->getOppose()->getCrewType()->armType == GameUnitConst::T_FOOTMAN){

@@ -1,5 +1,5 @@
 <?php
-namespace sammo\ActionNationType;
+namespace sammo\ActionItem;
 use \sammo\iAction;
 use \sammo\General;
 

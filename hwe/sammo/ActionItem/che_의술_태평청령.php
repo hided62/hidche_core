@@ -1,5 +1,5 @@
 <?php
-namespace sammo\ActionNationType;
+namespace sammo\ActionItem;
 use \sammo\iAction;
 use \sammo\General;
 use \sammo\GeneralTrigger;
@@ -16,6 +16,15 @@ class che_의술_태평청령 extends \sammo\BaseItem{
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         return new GeneralTriggerCaller([
             new GeneralTrigger\che_도시치료($general)
+        ]);
+    }
+
+    public function getBattlePhaseSkillTriggerList(\sammo\WarUnit $unit): ?WarUnitTriggerCaller
+    {
+        return new WarUnitTriggerCaller([
+            new che_전투치료시도($unit, BaseWarUnitTrigger::TYPE_ITEM),
+            new che_전투치료발동($unit, BaseWarUnitTrigger::TYPE_ITEM)
+            
         ]);
     }
 }

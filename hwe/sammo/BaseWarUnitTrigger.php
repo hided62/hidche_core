@@ -16,16 +16,6 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
     }
 
     public function action(?array $env=null, $arg=null):?array{
-        /** @var WarUnitGeneral $attacker */
-        /** @var WarUnit $defender */
-        [$attacker, $defender] = $arg;
-
-        
-        /** @var WarUnit $self */
-        $self = $this->object;
-        $isAttacker = $self->isAttacker();
-        $oppose = $isAttacker?$defender:$attacker;
-
         if($env === null){
             $env = [];
         }
@@ -36,16 +26,66 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
             $env['e_defender'] = [];
         }
 
+        if($env['stopNextAction']??false){
+            return $env;
+        }
+
+        /** @var WarUnitGeneral $attacker */
+        /** @var WarUnit $defender */
+        [$attacker, $defender] = $arg;
+        
+        /** @var WarUnit $self */
+        $self = $this->object;
+        $isAttacker = $self->isAttacker();
+        $oppose = $isAttacker?$defender:$attacker;
+
         $selfEnv = $isAttacker?$env['e_attacker']:$env['e_defender'];
         $opposeEnv = $isAttacker?$env['e_defender']:$env['e_attacker'];
 
-        $this->actionWar($self, $oppose, $selfEnv, $opposeEnv);
+        $callNextAction = $this->actionWar($self, $oppose, $selfEnv, $opposeEnv);
 
         $env['e_attacker'] = $isAttacker?$selfEnv:$opposeEnv;
         $env['e_defender'] = $isAttacker?$opposeEnv:$selfEnv;
+
+        if($callNextAction){
+            $env['stopNextAction'] = true;
+        }
 
         return $env;
     }
 
     abstract protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):void;
+
+    public function processConsumableItem():bool{
+        if(!($this->raiseType & static::TYPE_ITEM)){
+            return false;
+        }
+
+        /** @var WarUnit $self */
+        $self = $this->object;
+
+        if($self->hasActivatedSkill('아이템사용')){
+            return false;
+        }
+
+        $self->activateSkill('아이템사용');
+        $item = $self->getGeneral()->getItem();
+        $itemName = $item->getName();
+        $self->activateSkill($itemName);
+
+        if (!($this->raiseType & static::TYPE_CONSUMABLE_ITEM)) {
+            return false;
+        }
+
+        if($self->hasActivatedSkill('아이템소모')){
+            return false;
+        }
+
+        $self->activateSkill('아이템소모');
+        $josaUl = JosaUtil::pick($itemName, '을');
+        $self->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
+        $self->general->deleteItem();
+
+        return true;
+    }
 }

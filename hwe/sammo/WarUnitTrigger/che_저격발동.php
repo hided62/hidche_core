@@ -1,22 +1,23 @@
 <?php
-namespace sammo\WarInitTrigger;
+namespace sammo\WarUnitTrigger;
 use sammo\BaseWarUnitTrigger;
 use sammo\WarUnitGeneral;
 use sammo\WarUnitCity;
 use sammo\WarUnit;
 use sammo\GameUnitDetail;
 use sammo\Util;
+use sammo\ObjectTrigger;
 
 class che_저격발동 extends BaseWarUnitTrigger{
-    static protected $priority = 20000;
+    static protected $priority = ObjectTrigger::PRIORITY_POST + 100;
 
-    protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):void{
+    protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$oppose->hasActivatedSkill('저격')){
-            return;
+            return true;
         }
 
-        if($selfEnv['저격발동']){
-            return;
+        if($selfEnv['저격발동']??false){
+            return true;
         }
         $selfEnv['저격발동'] = true;
 
@@ -28,5 +29,9 @@ class che_저격발동 extends BaseWarUnitTrigger{
         $self->getLogger()->pushGeneralBattleDetailLog("상대에게 <R>저격</>당했다!", ActionLogger::PLAIN);
 
         $general->increaseVarWithLimit('injury', Util::randRangeInt($opposeEnv['woundMin'], $opposeEnv['woundMax']), null, 80);
+
+        $this->processConsumableItem();
+
+        return true;
     }
 }

@@ -7,6 +7,9 @@ use \sammo\General;
 use \sammo\GeneralTrigger;
 use \sammo\GeneralTriggerCaller;
 use \sammo\WarUnit;
+use sammo\WarUnitTrigger\che_전투치료발동;
+use sammo\WarUnitTrigger\che_전투치료시도;
+use sammo\WarUnitTriggerCaller;
 
 class che_의술 implements iAction{
     use \sammo\DefaultAction;
@@ -26,6 +29,14 @@ class che_의술 implements iAction{
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         return new GeneralTriggerCaller([
             new GeneralTrigger\che_도시치료($general)
+        ]);
+    }
+
+    public function getBattlePhaseSkillTriggerList(\sammo\WarUnit $unit): ?WarUnitTriggerCaller
+    {
+        return new WarUnitTriggerCaller([
+            new che_전투치료시도($unit),
+            new che_전투치료발동($unit)
         ]);
     }
 }
