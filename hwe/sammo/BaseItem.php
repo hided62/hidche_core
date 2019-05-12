@@ -12,6 +12,7 @@ class BaseItem implements iAction{
     protected static $info = '';
     protected static $cost = null;
     protected static $consumable = false;
+    protected static $buyable = false;
 
     function getID(){
         return $this->id;
@@ -27,6 +28,10 @@ class BaseItem implements iAction{
     }
     function isConsumable(){
         return $this->consumable;
+    }
+
+    function isBuyable(){
+        return $this->buyable;
     }
 
     function isValidTurnItem(string $actionType, string $command):bool{

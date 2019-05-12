@@ -10,6 +10,7 @@ class che_훈련_청주 extends \sammo\BaseItem{
     protected static $info = '[전투] 훈련 +3. 1회용';
     protected static $cost = 1000;
     protected static $consumable = true;
+    protected static $buyable = true;
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller([

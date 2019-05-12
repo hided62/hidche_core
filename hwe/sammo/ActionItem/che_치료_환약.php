@@ -12,6 +12,7 @@ class che_치료_환약 extends \sammo\BaseItem{
     protected static $info = '[군사] 턴 실행 전 부상 회복. 1회용';
     protected static $cost = 100;
     protected static $consumable = true;
+    protected static $buyable = true;
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         return new GeneralTriggerCaller([

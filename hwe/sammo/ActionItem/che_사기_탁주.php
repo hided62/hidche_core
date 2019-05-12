@@ -11,6 +11,7 @@ class che_사기_탁주 extends \sammo\BaseItem{
     protected static $info = '[전투] 사기 +3. 1회용';
     protected static $cost = 1000;
     protected static $consumable = true;
+    protected static $buyable = true;
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller([

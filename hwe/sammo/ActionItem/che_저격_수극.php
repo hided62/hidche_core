@@ -15,6 +15,7 @@ class che_저격_수극 extends \sammo\BaseItem{
     protected static $info = '[전투] 전투 개시 전 20% 확률로 저격 시도. 1회용';
     protected static $cost = 1000;
     protected static $consumable = true;
+    protected static $buyable = true;
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller([

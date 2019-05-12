@@ -10,6 +10,7 @@ class che_계략_이추 extends \sammo\BaseItem{
     protected static $info = '[계략] 화계·탈취·파괴·선동 : 성공률 +10%p';
     protected static $cost = 1000;
     protected static $consumable = true;
+    protected static $buyable = true;
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '계략'){
