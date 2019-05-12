@@ -34,7 +34,7 @@ class che_Dummy extends \sammo\BaseItem{
 
     public function __construct(int $itemCode)
     {
-        $this->_id = $itemCode = true;
+        $this->_id = $itemCode;
         [$this->_name, $this->_info] = getItemInfo($itemCode);
         $this->_cost = getItemCost2($itemCode);
         $this->_consumable = isConsumable($itemCode);

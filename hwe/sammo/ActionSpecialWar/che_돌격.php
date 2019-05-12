@@ -21,7 +21,7 @@ class che_돌격 implements iAction{
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName === 'initWarPhase'){
-            return $value += 1;
+            return $value + 1;
         }
         return $value;
     }

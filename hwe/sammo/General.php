@@ -74,14 +74,10 @@ class General implements iAction{
         $personalityClass = getPersonalityClass($raw['personal']);
         $this->personalityObj = new $personalityClass;
         
-        $itemClass = getItemClass($raw['item']);
-        if($itemClass !== null){
-            $this->itemObjs['item'] = new $itemClass;
-        }
-        else{
-            $this->itemObjs['item'] = new ActionItem\che_Dummy($raw['item']);
-        }
-        //TODO: $specialItemClass 설정
+        $this->itemObjs['horse'] = buildItemClass($raw['horse']);
+        $this->itemObjs['weapon'] = buildItemClass($raw['weap']);
+        $this->itemObjs['book'] = buildItemClass($raw['book']);
+        $this->itemObjs['item'] = buildItemClass($raw['item']);
     }
 
     function initLogger(int $year, int $month){

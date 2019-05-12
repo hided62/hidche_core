@@ -13,7 +13,7 @@ class che_회피_태평요술 extends \sammo\BaseItem{
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName === 'warAvoidRatio'){
-            return $value += 0.2;
+            return $value + 0.2;
         }
         return $value;
     }

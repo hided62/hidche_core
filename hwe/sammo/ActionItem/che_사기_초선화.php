@@ -3,17 +3,17 @@ namespace sammo\ActionItem;
 use \sammo\iAction;
 use \sammo\General;
 
-class che_회피_둔갑천서 extends \sammo\BaseItem{
+class che_사기_초선화 extends \sammo\BaseItem{
 
-    protected static $id = 26;
-    protected static $name = '둔갑천서(회피)';
-    protected static $info = '[전투] 회피 확률 +20%p';
+    protected static $id = 20;
+    protected static $name = '초선화(사기)';
+    protected static $info = '[전투] 사기 보정 +7';
     protected static $cost = 200;
     protected static $consumable = false;
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
-        if($statName === 'warAvoidRatio'){
-            return $value + 0.2;
+        if($statName === 'bonusAtmos'){
+            return $value + 7;
         }
         return $value;
     }

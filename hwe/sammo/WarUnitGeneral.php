@@ -204,13 +204,27 @@ class WarUnitGeneral extends WarUnit{
         return [$warPower,$opposeWarPowerMultiply];
     }
 
-    ///전투 개시 시에 작동하여 1회에만 작동하는 아이템
+    ///전투 개시 시에 작동하여 1회에만 작동하는 아이템, 자체적인 Consumable을 처리하지 않는 경우에만
     function useBattleInitItem():bool{
-        $item = $this->getItem();
+        $general = $this->getGeneral();
+        $item = $general->getItem();
 
-        if($item == 0){
+        if($item === null){
             return false;
         }
+
+        if(!$item->isConsumable()){
+            return false;
+        }
+
+        if(!$item->isValidTurnItem('Battle', 'NonHandledConsumable')){
+            return false;
+        }
+
+        $itemName = $item->getName();
+        $josaUl = JosaUtil::pick($itemName, '을');
+        $this->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
+        return true;
 
         $itemActivated = false;
         $itemConsumed = false;
@@ -250,11 +264,7 @@ class WarUnitGeneral extends WarUnit{
             $itemActivated = true;
         }
 
-        if($itemConsumed){
-            $general->updateVar('item', 0);
-            $josaUl = JosaUtil::pick($itemName, '을');
-            $this->getLogger()->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
-        }
+        
 
         return $itemActivated;
     }

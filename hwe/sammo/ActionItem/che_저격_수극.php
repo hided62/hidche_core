@@ -6,6 +6,7 @@ use \sammo\WarUnitTriggerCaller;
 use \sammo\WarUnit;
 use \sammo\WarUnitTrigger\che_저격시도;
 use \sammo\WarUnitTrigger\che_저격발동;
+use \sammo\BaseWarUnitTrigger;
 
 class che_저격_수극 extends \sammo\BaseItem{
 
@@ -17,7 +18,7 @@ class che_저격_수극 extends \sammo\BaseItem{
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller([
-            new che_저격시도($unit, che_저격시도::TYPE_CONSUMABLE_ITEM, 0.2, 20, 40),
+            new che_저격시도($unit, BaseWarUnitTrigger::TYPE_CONSUMABLE_ITEM, 0.2, 20, 40),
             new che_저격발동($unit)
         ]);
     }

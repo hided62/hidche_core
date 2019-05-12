@@ -3,17 +3,17 @@ namespace sammo\ActionItem;
 use \sammo\iAction;
 use \sammo\General;
 
-class che_회피_둔갑천서 extends \sammo\BaseItem{
+class che_훈련_과실주 extends \sammo\BaseItem{
 
-    protected static $id = 26;
-    protected static $name = '둔갑천서(회피)';
-    protected static $info = '[전투] 회피 확률 +20%p';
+    protected static $id = 12;
+    protected static $name = '과실주(훈련)';
+    protected static $info = '[전투] 훈련 보정 +5';
     protected static $cost = 200;
     protected static $consumable = false;
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
-        if($statName === 'warAvoidRatio'){
-            return $value + 0.2;
+        if($statName === 'bonusTrain'){
+            return $value + 5;
         }
         return $value;
     }

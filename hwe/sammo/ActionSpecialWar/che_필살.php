@@ -22,7 +22,7 @@ class che_필살 implements iAction{
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName === 'warCriticalRatio'){
-            return $value += 0.2;
+            return $value + 0.2;
         }
         return $value;
     }
