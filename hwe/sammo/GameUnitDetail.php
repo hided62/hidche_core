@@ -1,7 +1,8 @@
 <?php
 namespace sammo;
 
-class GameUnitDetail extends GameUnitActionBase{
+class GameUnitDetail implements iAction{
+    use DefaultAction;
 
     public $id;
     public $armType;
@@ -20,6 +21,8 @@ class GameUnitDetail extends GameUnitActionBase{
     public $attackCoef;
     public $defenceCoef;
     public $info;
+    public $initSkillTrigger;
+    public $phaseSkillTrigger;
 
     public function __construct(
         int $id,
@@ -38,7 +41,9 @@ class GameUnitDetail extends GameUnitActionBase{
         int $reqYear,
         array $attackCoef,
         array $defenceCoef,
-        array $info
+        array $info,
+        ?array $initSkillTrigger,
+        ?array $phaseSkillTrigger
     ){
         $this->id = $id;
         $this->name = $name;
@@ -57,6 +62,9 @@ class GameUnitDetail extends GameUnitActionBase{
         $this->attackCoef = $attackCoef;
         $this->defenceCoef = $defenceCoef;
         $this->info = $info;
+        $this->initSkillTrigger = $initSkillTrigger;
+        $this->phaseSkillTrigger = $phaseSkillTrigger;
+
     }
 
     public function getShortName():string{
@@ -198,5 +206,46 @@ class GameUnitDetail extends GameUnitActionBase{
         }
 
         return true;
+    }
+
+    //iAction
+    public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        if(!$this->initSkillTrigger){
+            return null;
+        }
+        $triggerList = [];
+        foreach($this->initSkillTrigger as $triggerArgs){
+            if(is_string($triggerArgs)){
+                $typeName = $triggerArgs;
+                $triggerList[] = buildWarUnitTriggerClass($typeName, $unit);
+            }
+            else{
+                $typeName = $triggerArgs[0];
+                //WarUnit 다음 인자는 $raiseType이며, 0이어야할 것이다
+                $triggerArgs[0] = 0;
+                $triggerList[] = buildWarUnitTriggerClass($typeName, $unit, $triggerArgs);
+            }
+        }
+        return new WarUnitTriggerCaller($triggerList);
+    }
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        if(!$this->phaseSkillTrigger){
+            return null;
+        }
+        $triggerList = [];
+        foreach($this->phaseSkillTrigger as $triggerArgs){
+            if(is_string($triggerArgs)){
+                $typeName = $triggerArgs;
+                $triggerList[] = buildWarUnitTriggerClass($typeName, $unit);
+            }
+            else{
+                $typeName = $triggerArgs[0];
+                //WarUnit 다음 인자는 $raiseType이며, 0이어야할 것이다
+                $triggerArgs[0] = 0;
+                $triggerList[] = buildWarUnitTriggerClass($typeName, $unit, $triggerArgs);
+            }
+        }
+        return new WarUnitTriggerCaller($triggerList);
+        
     }
 }

@@ -12,7 +12,8 @@ class GameUnitConst extends GameUnitConstBase
             999999, null,     null,     999999, 
             [],//성벽은 공격할 수 없다.
             [self::T_FOOTMAN=>1.2],
-            ['성벽입니다.','생성할 수 없습니다.']
+            ['성벽입니다.','생성할 수 없습니다.'],
+            null, null
         ],
 
         [
@@ -21,7 +22,8 @@ class GameUnitConst extends GameUnitConstBase
             0, null,     null,     0, 
             [self::T_ARCHER=>1.2, self::T_CAVALRY=>0.8, self::T_SIEGE=>1.2],
             [self::T_ARCHER=>0.8, self::T_CAVALRY=>1.2, self::T_SIEGE=>0.8],
-            ['표준적인 보병입니다.','보병은 방어특화이며, 상대가 회피하기 어렵습니다.']
+            ['표준적인 보병입니다.','보병은 방어특화이며, 상대가 회피하기 어렵습니다.'],
+            null, null
         ],
 
         [
@@ -30,7 +32,8 @@ class GameUnitConst extends GameUnitConstBase
             0, null,     null,     0, 
             [self::T_CAVALRY=>1.2, self::T_FOOTMAN=>0.8, self::T_SIEGE=>1.2],
             [self::T_CAVALRY=>0.8, self::T_FOOTMAN=>1.2, self::T_SIEGE=>0.8],
-            ['표준적인 궁병입니다.','궁병은 회피특화입니다.']
+            ['표준적인 궁병입니다.','궁병은 회피특화입니다.'],
+            null, null
         ],
 
         [
@@ -39,7 +42,8 @@ class GameUnitConst extends GameUnitConstBase
             0, null,     null,     0, 
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>0.8, self::T_SIEGE=>1.2],
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>1.2, self::T_SIEGE=>0.8],
-            ['표준적인 기병입니다.','기병은 공격특화입니다.']
+            ['표준적인 기병입니다.','기병은 공격특화입니다.'],
+            null, null
         ],
 
         [
@@ -48,7 +52,8 @@ class GameUnitConst extends GameUnitConstBase
             0, null,     null,     0, 
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
-            ['계략을 사용하는 병종입니다.']
+            ['계략을 사용하는 병종입니다.'],
+            null, null
         ],
         [
             35, self::T_WIZARD, '남귀병',    
@@ -56,7 +61,8 @@ class GameUnitConst extends GameUnitConstBase
             1000, null,     null,     0, 
             [self::T_SIEGE=>1.2],
             [self::T_SIEGE=>0.8],
-            ['전투를 포기하고 계략에 몰두합니다.']
+            ['전투를 포기하고 계략에 몰두합니다.'],
+            null, null
         ],
 
         [
@@ -65,7 +71,8 @@ class GameUnitConst extends GameUnitConstBase
             0, null,     null,     3, 
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>1.8],
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2],
-            ['높은 구조물 위에서 공격합니다.']
+            ['높은 구조물 위에서 공격합니다.'],
+            ['che_성벽부상무효'], null
         ],
         [
             41, self::T_SIEGE, '충차',     
@@ -73,7 +80,8 @@ class GameUnitConst extends GameUnitConstBase
             1000, null,     null,     3, 
             [self::T_FOOTMAN=>0.8, self::T_ARCHER=>0.8, self::T_CAVALRY=>0.8, self::T_WIZARD=>0.8, self::T_CASTLE=>2.4],
             [self::T_FOOTMAN=>1.2, self::T_ARCHER=>1.2, self::T_CAVALRY=>1.2, self::T_WIZARD=>1.2],
-            ['엄청난 위력으로 성벽을 부수어버립니다.']
+            ['엄청난 위력으로 성벽을 부수어버립니다.'],
+            ['che_성벽부상무효'], null
         ]
     ];
 }

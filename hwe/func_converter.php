@@ -389,6 +389,27 @@ function buildNationCommandClass(?string $type, General $generalObj, array $env,
     return new $class($generalObj, $env, $lastTurn, $arg);
 }
 
+function getWarUnitTriggerClass(string $type){
+    static $basePath = __NAMESPACE__.'\\WarUnitTrigger\\';
+    $classPath = ($basePath.$type);
+
+    if(class_exists($classPath)){
+        return $classPath;
+    }
+
+    throw new \InvalidArgumentException("{$type}은 WarUnitTrigger가 아님");
+}
+
+function buildWarUnitTriggerClass(?string $type, WarUnit $unit, ?array $args = null):BaseWarUnitTrigger{
+    $classPath = getNationCommandClass($type);
+    if(!$args){
+        return new $classPath($unit);
+    }
+
+    $class = new \ReflectionClass($classPath);
+    return $class->newInstanceArgs(array_merge([$unit], $args));
+}
+
 function getLevel($level, $nlevel=8) {
     if($level >= 0 && $level <= 4) { $nlevel = 0; }
     $code = $nlevel * 100 + $level;
