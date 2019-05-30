@@ -17,4 +17,14 @@ class che_환술 implements iAction{
     static $type = [
         SpecialityConst::STAT_INTEL,
     ];
+
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        if($statName === 'warMagicSuccessProb'){
+            return $value + 0.1;
+        }
+        if($statName === 'warMagicSuccessDamage'){
+            return $value * 1.3;
+        }
+        return $value;
+    }
 }

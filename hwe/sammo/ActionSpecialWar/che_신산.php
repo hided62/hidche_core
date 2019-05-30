@@ -25,4 +25,14 @@ class che_신산 implements iAction{
         
         return $value;
     }
+
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        if($statName === 'warMagicTrialProb'){
+            return $value + 0.2;
+        }
+        if($statName === 'warMagicSuccessProb'){
+            return $value + 0.2;
+        }
+        return $value;
+    }
 }

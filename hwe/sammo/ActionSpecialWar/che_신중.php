@@ -17,4 +17,11 @@ class che_신중 implements iAction{
     static $type = [
         SpecialityConst::STAT_INTEL,
     ];
+
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        if($statName === 'warMagicSuccessProb'){
+            return $value + 1;
+        }
+        return $value;
+    }
 }

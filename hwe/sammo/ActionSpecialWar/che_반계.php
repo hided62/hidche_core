@@ -5,6 +5,9 @@ use \sammo\General;
 use \sammo\SpecialityConst;
 use \sammo\WarUnit;
 use sammo\WarUnitTriggerCaller;
+use \sammo\WarUnitTrigger\WarActivateSkills;
+use \sammo\WarUnitTrigger\che_반목시도;
+use \sammo\WarUnitTrigger\che_반목발동;
 
 class che_반계 implements iAction{
     use \sammo\DefaultAction;
@@ -18,4 +21,19 @@ class che_반계 implements iAction{
     static $type = [
         SpecialityConst::STAT_INTEL,
     ];
+
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        if($statName === 'warMagicSuccessDamage' && $aux === '반목'){
+            return $value + 0.4;
+        }
+        return $value;
+    }
+
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        return new WarUnitTriggerCaller([
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '계략약화'),
+            new che_반목시도($unit),
+            new che_반목발동($unit)
+        ]);
+    }
 }

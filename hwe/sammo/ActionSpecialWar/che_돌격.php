@@ -32,4 +32,10 @@ class che_돌격 implements iAction{
         }
         return [1, 1];
     }
+
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        return new WarUnitTriggerCaller([
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '회피불가')
+        ]);
+    }
 }

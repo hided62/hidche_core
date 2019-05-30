@@ -5,6 +5,8 @@ use \sammo\General;
 use \sammo\SpecialityConst;
 use \sammo\WarUnit;
 use sammo\WarUnitTriggerCaller;
+use \sammo\WarUnitTrigger\che_위압시도;
+use \sammo\WarUnitTrigger\che_위압발동;
 
 class che_위압 implements iAction{
     use \sammo\DefaultAction;
@@ -19,4 +21,14 @@ class che_위압 implements iAction{
         SpecialityConst::STAT_LEADERSHIP,
         SpecialityConst::STAT_POWER
     ];
+
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        if($unit->getPhase() != 0){
+            return null;
+        }
+        return new WarUnitTriggerCaller([
+            new che_위압시도(),
+            new che_위압발동()
+        ]);
+    }
 }

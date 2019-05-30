@@ -26,4 +26,11 @@ class che_귀병 implements iAction{
         
         return $value;
     }
+
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        if($statName === 'warMagicSuccessProb'){
+            return $value + 0.2;
+        }
+        return $value;
+    }
 }

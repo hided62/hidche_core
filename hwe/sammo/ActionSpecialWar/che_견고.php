@@ -5,6 +5,8 @@ use \sammo\General;
 use \sammo\SpecialityConst;
 use \sammo\WarUnit;
 use sammo\WarUnitTriggerCaller;
+use sammo\BaseWarUnitTrigger;
+use sammo\WarUnitTrigger\WarActivateSkills;
 
 class che_견고 implements iAction{
     use \sammo\DefaultAction;
@@ -19,4 +21,10 @@ class che_견고 implements iAction{
         SpecialityConst::STAT_LEADERSHIP,
         SpecialityConst::STAT_POWER
     ];
+
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        return new WarUnitTriggerCaller([
+            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '필살불가', '위압불가', '격노불가', '계략약화')
+        ]);
+    }
 }

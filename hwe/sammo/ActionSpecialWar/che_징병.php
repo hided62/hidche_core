@@ -27,4 +27,11 @@ class che_징병 implements iAction{
         
         return $value;
     }
+
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        if($statName === 'rawLeadership'){
+            return $value *= 1.15;
+        }
+        return $value;
+    }
 }
