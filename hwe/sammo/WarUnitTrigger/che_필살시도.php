@@ -7,22 +7,25 @@ use sammo\WarUnit;
 use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
 
-class che_전투치료시도 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_PRE + 300;
+class che_필살시도 extends BaseWarUnitTrigger{
+    static protected $priority = ObjectTrigger::PRIORITY_PRE + 100;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
-        assert($self instanceof WarUnitGeneral, 'General만 발동 가능');
-        if($self->hasActivatedSkill('치료')){
+        if(!($self instanceof WarUnitGeneral)){
             return true;
         }
-        if($self->hasActivatedSkill('치료불가')){
+        if($self->hasActivatedSkill('특수')){
             return true;
         }
-        if(!Util::randBool(1/5)){
+        if($self->hasActivatedSkill('필살불가')){
             return true;
         }
 
-        $this->activateSkill('치료');
+        if(!Util::randBool($self->getComputedCriticalRatio())){
+            return true;
+        }
+
+        $this->activateSkill('특수', '필살시도', '필살');
 
         
         return true;
