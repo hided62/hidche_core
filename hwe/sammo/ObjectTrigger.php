@@ -18,8 +18,8 @@ abstract class ObjectTrigger{
     abstract public function action(?array $env=null, $arg=null):?array;
     public function getUniqueID():string{
         $priority = static::$priority;
-        $hash = spl_object_hash($this->object);
+        $objID = spl_object_id($this->object);
         $fqn = static::class;
-        return "{$priority}_{$fqn}_{$hash}";
+        return "{$priority}_{$fqn}_{$objID}";
     }
 }
