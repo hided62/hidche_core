@@ -8,7 +8,7 @@ use sammo\Util;
 use sammo\JosaUtil;
 
 class che_병력군량소모 extends BaseGeneralTrigger{
-    static protected $priority = 50000;
+    protected $priority = 50000;
 
     public function action(?array $env=null, $arg=null):?array{
 

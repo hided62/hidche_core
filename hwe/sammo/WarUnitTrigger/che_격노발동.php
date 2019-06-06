@@ -9,7 +9,7 @@ use sammo\Util;
 use sammo\ObjectTrigger;
 
 class che_격노발동 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_POST + 600;
+    protected $priority = ObjectTrigger::PRIORITY_POST + 600;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$self->hasActivatedSkill('격노') && !$self->hasActivatedSkill('진노')){

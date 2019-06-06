@@ -8,7 +8,7 @@ use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
 
 class 능력치변경 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_BEGIN;
+    protected $priority = ObjectTrigger::PRIORITY_BEGIN;
 
     protected $variable;
     protected $operator;

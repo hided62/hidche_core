@@ -23,8 +23,8 @@ class che_견고 implements iAction{
     ];
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
-        return new WarUnitTriggerCaller([
+        return new WarUnitTriggerCaller(
             new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '필살불가', '위압불가', '격노불가', '계략약화')
-        ]);
+        );
     }
 }

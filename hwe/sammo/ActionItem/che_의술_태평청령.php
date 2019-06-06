@@ -4,6 +4,7 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\GeneralTrigger;
 use \sammo\GeneralTriggerCaller;
+use \sammo\BaseWarUnitTrigger;
 
 class che_의술_태평청령 extends \sammo\BaseItem{
 
@@ -14,17 +15,17 @@ class che_의술_태평청령 extends \sammo\BaseItem{
     protected static $consumable = false;
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
-        return new GeneralTriggerCaller([
+        return new GeneralTriggerCaller(
             new GeneralTrigger\che_도시치료($general)
-        ]);
+        );
     }
 
     public function getBattlePhaseSkillTriggerList(\sammo\WarUnit $unit): ?WarUnitTriggerCaller
     {
-        return new WarUnitTriggerCaller([
+        return new WarUnitTriggerCaller(
             new che_전투치료시도($unit, BaseWarUnitTrigger::TYPE_ITEM),
             new che_전투치료발동($unit, BaseWarUnitTrigger::TYPE_ITEM)
             
-        ]);
+        );
     }
 }

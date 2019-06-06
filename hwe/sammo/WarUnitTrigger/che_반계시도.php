@@ -8,7 +8,7 @@ use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
 
 class che_반계시도 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_BODY + 300;
+    protected $priority = ObjectTrigger::PRIORITY_BODY + 300;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$oppose->hasActivatedSkill('계략')){

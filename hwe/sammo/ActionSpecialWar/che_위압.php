@@ -26,9 +26,9 @@ class che_위압 implements iAction{
         if($unit->getPhase() != 0){
             return null;
         }
-        return new WarUnitTriggerCaller([
-            new che_위압시도(),
-            new che_위압발동()
-        ]);
+        return new WarUnitTriggerCaller(
+            new che_위압시도($unit),
+            new che_위압발동($unit)
+        );
     }
 }

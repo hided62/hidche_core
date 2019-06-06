@@ -8,7 +8,7 @@ use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
 
 class che_계략시도 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_PRE + 300;
+    protected $priority = ObjectTrigger::PRIORITY_PRE + 300;
 
     static protected $tableToGeneral = [
         '위보'=>[1.2, 1.1],

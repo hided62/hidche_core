@@ -9,7 +9,7 @@ use sammo\Util;
 use sammo\ObjectTrigger;
 
 class che_필살발동 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_POST + 400;
+    protected $priority = ObjectTrigger::PRIORITY_POST + 400;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$self->hasActivatedSkill('필살')){

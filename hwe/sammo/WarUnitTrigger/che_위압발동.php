@@ -9,7 +9,7 @@ use sammo\Util;
 use sammo\ObjectTrigger;
 
 class che_위압발동 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_POST + 700;
+    protected $priority = ObjectTrigger::PRIORITY_POST + 700;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$self->hasActivatedSkill('위압')){

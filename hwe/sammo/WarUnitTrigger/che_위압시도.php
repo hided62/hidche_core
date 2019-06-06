@@ -7,26 +7,32 @@ use sammo\WarUnit;
 use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
 
-class che_저지시도 extends BaseWarUnitTrigger{
-    protected $priority = ObjectTrigger::PRIORITY_PRE; //최 우선 순위
+class che_위압시도 extends BaseWarUnitTrigger{
+    protected $priority = ObjectTrigger::PRIORITY_BEGIN + 100;
+
+    protected $woundMin;
+    protected $woundMax;
+    protected $ratio;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         assert($self instanceof WarUnitGeneral, 'General만 발동 가능');
-        if($self->isAttacker()){
+        if($self->getPhase() != 0){
             return true;
         }
-        if($self->hasActivatedSkill('특수')){
+        if($self->getHP() < 1000){
             return true;
         }
-        if($self->hasActivatedSkill('저지불가')){
+        if($self->getComputedAtmos() < 90){
             return true;
         }
-        
-        $ratio = $self->getComputedAtmos() + $self->getComputedTrain();
-        if(Util::randBool($ratio / 400)){
-            $self->activateSkill('특수', '저지');
+        if($self->getComputedTrain() < 90){
+            return true;
         }
-        
+        if($self->hasActivatedSkill('위압불가')){
+            return true;
+        }
+
+        $this->activateSkill('위압');
         return true;
     }
 }

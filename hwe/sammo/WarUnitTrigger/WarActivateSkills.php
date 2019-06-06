@@ -9,7 +9,7 @@ use sammo\Util;
 use sammo\ObjectTrigger;
 
 class WarActivateSkills extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_INIT;
+    protected $priority = ObjectTrigger::PRIORITY_INIT;
 
     protected $isSelf;
     protected $activeSkills;

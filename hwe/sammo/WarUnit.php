@@ -344,22 +344,6 @@ class WarUnit{
         }
     }
 
-    function checkPreActiveSkill(){
-        yield true;
-    }
-
-    function checkActiveSkill(){
-        yield true;
-    }
-
-    function checkPostActiveSkill(){
-        yield true;
-    }
-
-    function applyActiveSkill(){
-        yield true;
-    }
-
     function getHP():int{
         throw new NotInheritedMethodException();
         return 0;

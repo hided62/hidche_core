@@ -2,6 +2,7 @@
 namespace sammo\ActionItem;
 use \sammo\iAction;
 use \sammo\General;
+use \sammo\BaseWarUnitTrigger;
 
 class che_훈련_청주 extends \sammo\BaseItem{
 
@@ -13,8 +14,8 @@ class che_훈련_청주 extends \sammo\BaseItem{
     protected static $buyable = true;
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
-        return new WarUnitTriggerCaller([
-            new 능력치변경($unit, BaseWarUnitTrigger::TYPE_CONSUMABLE_ITEM, 'train', '+', 3),
-        ]);
+        return new WarUnitTriggerCaller(
+            new 능력치변경($unit, BaseWarUnitTrigger::TYPE_CONSUMABLE_ITEM, 'train', '+', 3)
+        );
     }
 }

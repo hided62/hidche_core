@@ -10,7 +10,7 @@ abstract class TriggerCaller{
         return !$this->triggerListByPriority;
     }
 
-    function __construct(?array $triggerList=null)
+    function __construct(ObjectTrigger ...$triggerList)
     {
         if(!$triggerList){
             return;

@@ -8,7 +8,7 @@ use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
 
 class che_저격시도 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_PRE + 100;
+    protected $priority = ObjectTrigger::PRIORITY_PRE + 100;
 
     protected $woundMin;
     protected $woundMax;

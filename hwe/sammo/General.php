@@ -1,6 +1,7 @@
 <?php
 
 namespace sammo;
+use sammo\WarUnitTrigger as WarUnitTrigger;
 
 class General implements iAction{
     use LazyVarUpdater;
@@ -506,7 +507,15 @@ class General implements iAction{
         return $caller;
     }
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
-        $caller = new WarUnitTriggerCaller();
+        $caller = new WarUnitTriggerCaller(
+            new WarUnitTrigger\che_필살시도($unit),
+            new WarUnitTrigger\che_필살발동($unit),
+            new WarUnitTrigger\che_회피시도($unit),
+            new WarUnitTrigger\che_회피발동($unit),
+            new WarUnitTrigger\che_계략시도($unit),
+            new WarUnitTrigger\che_계략발동($unit),
+            new WarUnitTrigger\che_계략실패($unit)
+        );
         foreach(array_merge([
             $this->nationType, 
             $this->levelObj, 

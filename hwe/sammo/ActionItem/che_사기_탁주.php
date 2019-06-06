@@ -14,8 +14,8 @@ class che_사기_탁주 extends \sammo\BaseItem{
     protected static $buyable = true;
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
-        return new WarUnitTriggerCaller([
-            new 능력치변경($unit, BaseWarUnitTrigger::TYPE_CONSUMABLE_ITEM, 'atmos', '+', 3),
-        ]);
+        return new WarUnitTriggerCaller(
+            new 능력치변경($unit, BaseWarUnitTrigger::TYPE_CONSUMABLE_ITEM, 'atmos', '+', 3)
+        );
     }
 }

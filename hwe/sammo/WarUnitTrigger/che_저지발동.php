@@ -9,7 +9,7 @@ use sammo\Util;
 use sammo\ObjectTrigger;
 
 class che_저지발동 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_POST; //최우선 순위
+    protected $priority = ObjectTrigger::PRIORITY_POST; //최우선 순위
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$self->hasActivatedSkill('저지')){

@@ -298,57 +298,16 @@ function processWar_NG(
             $initCaller->merge($defender->getGeneral()->getBattleInitSkillTriggerList($defender));
 
             $initCaller->fire([], [$attacker, $defender]);
-            //스킬류, 아이템, 스킬 및 아이템 적용 순이어야 할 것
-
-            /*
-            foreach(Util::zip(
-                $attacker->checkBattleBeginSkill(),
-                $defender->checkBattleBeginSkill()
-                ) as $b){
-                //doNothing
-            }
-
-            $attacker->checkBattleBeginItem();
-            $defender->checkBattleBeginItem();
-
-            $attacker->applyBattleBeginSkillAndItem();
-            $defender->applyBattleBeginSkillAndItem();
-            */
         }
 
         $attacker->beginPhase();
         $defender->beginPhase();
 
-        foreach(Util::zip(
-            $attacker->checkPreActiveSkill(),
-            $defender->checkPreActiveSkill()
-            ) as $b){
-            //doNothing
-        }
+        $battleCaller = $attacker->getGeneral()->getBattlePhaseSkillTriggerList($attacker);
+        $battleCaller->merge($defender->getGeneral()->getBattlePhaseSkillTriggerList($defender));
 
-        foreach(Util::zip(
-            $attacker->checkActiveSkill(),
-            $defender->checkActiveSkill()
-            ) as $b){
-            //doNothing
-        }
-        //NOTE: 마법은 checkActiveSkill, checkPostActiveSkill 내에서 반영
-
-        foreach(Util::zip(
-            $attacker->checkPostActiveSkill(),
-            $defender->checkPostActiveSkill()
-            ) as $b){
-            //doNothing
-        }
-        //NOTE: 반계류 등의 스킬을 post에서 반영
-
-        foreach(Util::zip(
-            $attacker->applyActiveSkill(),
-            $defender->applyActiveSkill()
-            ) as $b){
-            //doNothing
-        }
-
+        $battleCaller->fire([], [$attacker, $defender]);
+        
         $deadDefender = $attacker->calcDamage();
         $deadAttacker = $defender->calcDamage();
 

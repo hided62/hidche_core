@@ -8,7 +8,7 @@ use sammo\Util;
 use sammo\JosaUtil;
 
 class che_아이템치료 extends BaseGeneralTrigger{
-    static protected $priority = 20010;
+    protected $priority = 20010;
 
     public function action(?array $env=null, $arg=null):?array{
 

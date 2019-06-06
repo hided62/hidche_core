@@ -4,6 +4,7 @@ use \sammo\iAction;
 use \sammo\General;
 use \sammo\SpecialityConst;
 use \sammo\WarUnit;
+use \sammo\BaseWarUnitTrigger;
 
 class che_돌격 implements iAction{
     use \sammo\DefaultAction;
@@ -34,8 +35,8 @@ class che_돌격 implements iAction{
     }
 
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
-        return new WarUnitTriggerCaller([
-            new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '회피불가')
-        ]);
+        return new WarUnitTriggerCaller(
+            (new WarActivateSkills($unit, BaseWarUnitTrigger::TYPE_NONE, false, '회피불가'))->setPriority(BaseWarUnitTrigger::PRIORITY_BEGIN + 200)
+        );
     }
 }

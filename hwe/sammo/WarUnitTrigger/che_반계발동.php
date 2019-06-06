@@ -8,8 +8,8 @@ use sammo\GameUnitDetail;
 use sammo\Util;
 use sammo\ObjectTrigger;
 
-class che_계략발동 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_POST + 150;
+class che_반계발동 extends BaseWarUnitTrigger{
+    protected $priority = ObjectTrigger::PRIORITY_POST + 150;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$self->hasActivatedSkill('반계')){

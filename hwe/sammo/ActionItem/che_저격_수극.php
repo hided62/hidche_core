@@ -18,9 +18,9 @@ class che_저격_수극 extends \sammo\BaseItem{
     protected static $buyable = true;
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
-        return new WarUnitTriggerCaller([
+        return new WarUnitTriggerCaller(
             new che_저격시도($unit, BaseWarUnitTrigger::TYPE_CONSUMABLE_ITEM, 0.2, 20, 40),
             new che_저격발동($unit)
-        ]);
+        );
     }
 }

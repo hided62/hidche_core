@@ -8,11 +8,17 @@ abstract class BaseWarUnitTrigger extends ObjectTrigger{
     const TYPE_ITEM  = 1;
     const TYPE_CONSUMABLE_ITEM = 2;
 
-    protected $raiseType;
+    protected $raiseType = self::TYPE_NONE;
 
     public function __construct(WarUnit $unit, int $raiseType = 0){
         $this->object = $unit;
         $this->raiseType = $raiseType;
+    }
+
+    public function getUniqueID():string{
+        $priority = $this->priority;
+        $fqn = static::class;
+        return "{$priority}_{$fqn}_{$this->raiseType}";
     }
 
     public function action(?array $env=null, $arg=null):?array{

@@ -8,7 +8,7 @@ use sammo\Util;
 use sammo\JosaUtil;
 
 class che_부상경감 extends BaseGeneralTrigger{
-    static protected $priority = 30010;
+    protected $priority = 30010;
 
     public function action(?array $env=null, $arg=null):?array{
 

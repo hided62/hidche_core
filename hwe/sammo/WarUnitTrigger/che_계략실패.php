@@ -9,7 +9,7 @@ use sammo\Util;
 use sammo\ObjectTrigger;
 
 class che_계략실패 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_POST + 200;
+    protected $priority = ObjectTrigger::PRIORITY_POST + 200;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!$self->hasActivatedSkill('계략실패')){

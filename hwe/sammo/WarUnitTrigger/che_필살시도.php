@@ -8,7 +8,7 @@ use sammo\GameUnitDetail;
 use sammo\ObjectTrigger;
 
 class che_필살시도 extends BaseWarUnitTrigger{
-    static protected $priority = ObjectTrigger::PRIORITY_PRE + 100;
+    protected $priority = ObjectTrigger::PRIORITY_PRE + 100;
 
     protected function actionWar(WarUnit $self, WarUnit $oppose, array &$selfEnv, array &$opposeEnv):bool{
         if(!($self instanceof WarUnitGeneral)){
