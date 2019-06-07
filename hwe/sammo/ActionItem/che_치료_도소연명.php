@@ -14,9 +14,9 @@ class che_치료_도소연명 extends \sammo\BaseItem{
     protected static $consumable = false;
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
-        return new GeneralTriggerCaller([
+        return new GeneralTriggerCaller(
             new GeneralTrigger\che_아이템치료($general)
-        ]);
+        );
     }
 
     function isValidTurnItem(string $actionType, string $command):bool{

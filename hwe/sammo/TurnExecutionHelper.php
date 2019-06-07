@@ -31,10 +31,10 @@ class TurnExecutionHelper
     public function preprocessCommand(){
         $general = $this->getGeneral();
         $caller = $general->getPreTurnExecuteTriggerList($general);
-        $caller->merge(new GeneralTriggerCaller([
+        $caller->merge(new GeneralTriggerCaller(
             new GeneralTrigger\che_부상경감($general),
-            new GeneralTrigger\che_병력군량소모($general),
-        ]));
+            new GeneralTrigger\che_병력군량소모($general)
+        ));
 
         $caller->fire();
     }

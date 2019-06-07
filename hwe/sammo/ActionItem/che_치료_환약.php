@@ -15,9 +15,9 @@ class che_치료_환약 extends \sammo\BaseItem{
     protected static $buyable = true;
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
-        return new GeneralTriggerCaller([
+        return new GeneralTriggerCaller(
             new GeneralTrigger\che_아이템치료($general)
-        ]);
+        );
     }
 
     function isValidTurnItem(string $actionType, string $command):bool{
