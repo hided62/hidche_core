@@ -226,7 +226,7 @@ class GameUnitDetail implements iAction{
                 $triggerList[] = buildWarUnitTriggerClass($typeName, $unit, $triggerArgs);
             }
         }
-        return new WarUnitTriggerCaller($triggerList);
+        return new WarUnitTriggerCaller(...$triggerList);
     }
     public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         if(!$this->phaseSkillTrigger){
@@ -245,7 +245,7 @@ class GameUnitDetail implements iAction{
                 $triggerList[] = buildWarUnitTriggerClass($typeName, $unit, $triggerArgs);
             }
         }
-        return new WarUnitTriggerCaller($triggerList);
+        return new WarUnitTriggerCaller(...$triggerList);
         
     }
 }
