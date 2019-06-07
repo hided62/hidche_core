@@ -50,7 +50,7 @@ abstract class TriggerCaller{
         
     }
 
-    function append(ObjectTrigger $trigger){
+    function append(ObjectTrigger $trigger):self{
         if(!$this->checkValidTrigger($trigger)){
             throw new \InvalidArgumentException('Invalid Trigger Type');
         }
@@ -59,13 +59,13 @@ abstract class TriggerCaller{
 
         if(!$this->triggerListByPriority){
             $this->triggerListByPriority[$priority] = [$uniqueID=>$trigger];
-            return;
+            return $this;
         }
 
         $lastKey = Util::array_last_key($this->triggerListByPriority);
         if($lastKey < $priority){
             $this->triggerListByPriority[$priority] = [$uniqueID=>$trigger];
-            return;
+            return $this;
         }
 
         if(key_exists($priority, $this->triggerListByPriority)){
@@ -74,11 +74,12 @@ abstract class TriggerCaller{
 
         $this->triggerListByPriority[$priority] = [$uniqueID=>$trigger];
         ksort($this->triggerListByPriority);
+        return $this;
     }
 
-    function merge(?TriggerCaller $other){
+    function merge(?TriggerCaller $other):self{
         if($other === null){
-            return;
+            return $this;
         }
 
         //NOTE: array_merge로 계속 가야하는가? merge가 많으면 SPL의 LinkedList가 낫지 않나?
@@ -114,6 +115,7 @@ abstract class TriggerCaller{
         }
 
         $this->triggerListByPriority = $newTriggerList;
+        return $this;
     }
 
     function fire(?array $env = null, $arg = null):?array{
