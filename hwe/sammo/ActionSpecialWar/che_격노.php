@@ -5,6 +5,8 @@ use \sammo\General;
 use \sammo\SpecialityConst;
 use \sammo\WarUnit;
 use sammo\WarUnitTriggerCaller;
+use sammo\WarUnitTrigger\che_격노시도;
+use sammo\WarUnitTrigger\che_격노발동;
 
 class che_격노 implements iAction{
     use \sammo\DefaultAction;
@@ -20,4 +22,11 @@ class che_격노 implements iAction{
         SpecialityConst::STAT_POWER,
         SpecialityConst::STAT_INTEL
     ];
+
+    public function getBattlePhaseSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
+        return new WarUnitTriggerCaller(
+            new che_격노시도($unit),
+            new che_격노발동($unit)
+        );
+    }
 }
