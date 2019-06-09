@@ -506,7 +506,6 @@ create table auction (
   type   int(6) default 0,
   no1    int(6) default 0,
   name1  char(64) default '-',
-  stuff  int(6) default 0,
   amount int(6) default 0,
   cost   int(6) default 0,
   value  int(6) default 0,

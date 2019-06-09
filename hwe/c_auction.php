@@ -11,7 +11,6 @@ $v->rule('integer', [
     'topv',
     'value',
     'term',
-    'stuff',
     'sel'
 ]);
 
@@ -21,7 +20,6 @@ $cost = Util::getReq('cost', 'int');
 $topv = Util::getReq('topv', 'int');
 $value = Util::getReq('value', 'int');
 $term = Util::getReq('term', 'int');
-$stuff = Util::getReq('stuff', 'int');
 $sel = Util::getReq('sel', 'int');
 
 $msg = '';
@@ -66,10 +64,6 @@ if ($session->userGrade >= 5) {
 }
 
 if ($btn == "판매") {
-    if ($stuff != 0) {
-        $msg = "ㆍ<span class='ev_warning'>현재 쌀만 거래 가능합니다.</span>";
-        $valid = 0;
-    }
     if ($term < 0 || $term > 24) {
         $msg = "ㆍ<span class='ev_warning'>종료기한은 1 ~ 24 턴 이어야 합니다.</span>";
         $valid = 0;
@@ -101,7 +95,6 @@ if ($btn == "판매") {
             'type'=>0,
             'no1'=>$me['no'],
             'name1'=>$me['name'],
-            'stuff'=>$stuff,
             'amount'=>$amount,
             'cost'=>$cost,
             'value'=>$cost,
@@ -119,12 +112,6 @@ if ($btn == "판매") {
         $msg = "ㆍ<span class='ev_warning'>종료된 거래입니다.</span>";
         $valid = 0;
     }
-    /*
-        if($stuff != 0) {
-            $msg = "ㆍ<span class='ev_warning'>현재 쌀만 거래 가능합니다.</span>";
-            $valid = 0;
-        }
-    */
     if ($auction['no2'] > 0 && $value <= $auction['value']) {
         $msg = "ㆍ<span class='ev_warning'>현재판매가보다 높게 입찰해야 합니다.</span>";
         $valid = 0;
@@ -166,10 +153,6 @@ if ($btn == "판매") {
         ], 'no=%i', $sel);
     }
 } elseif ($btn == "구매") {
-    if ($stuff != 0) {
-        $msg2 = "ㆍ<span class='ev_warning'>현재 쌀만 거래 가능합니다.</span>";
-        $valid = 0;
-    }
     if ($term < 0 || $term > 24) {
         $msg2 = "ㆍ<span class='ev_warning'>종료기한은 1 ~ 24 턴 이어야 합니다.</span>";
         $valid = 0;
@@ -202,7 +185,6 @@ if ($btn == "판매") {
             'type'=>1,
             'no1'=>$me['no'],
             'name1'=>$me['name'],
-            'stuff'=>$stuff, 
             'amount'=>$amount, 
             'cost'=>$cost, 
             'value'=>$cost, 
@@ -218,10 +200,6 @@ if ($btn == "판매") {
     }
     if (!$auction) {
         $msg2 = "ㆍ<span class='ev_warning'>종료된 거래입니다.</span>";
-        $valid = 0;
-    }
-    if ($stuff != 0) {
-        $msg2 = "ㆍ<span class='ev_warning'>현재 쌀만 거래 가능합니다.</span>";
         $valid = 0;
     }
     if ($auction['no2'] > 0 && $value >= $auction['value']) {
