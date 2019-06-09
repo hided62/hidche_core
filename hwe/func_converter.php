@@ -18,179 +18,74 @@ function getCharacterList(){
     return $infoText;
 }
 
-function CharCall($call) {
-    static $invTable = [];
-    if(\key_exists($call, $invTable)){
-        return $invTable[$call];
-    }
-
-    foreach(getCharacterList() as $id => [$name, $info]){
-        $invTable[$name] = $id;
-    }
-    if(!key_exists($call, $invTable)){
-        throw new \InvalidArgumentException("{$call}은 올바른 성격이 아님");
-    }
-    return $invTable[$call];
+function getNationChiefLevel(int $level) {
+    return [
+        7=>5,
+        6=>5,
+        5=>7,
+        4=>7,
+        3=>9,
+        2=>9,
+        1=>11,
+        0=>11,
+    ][$level];
 }
 
-function SpecCall($call) {
-    switch($call) {
-        case '-':       $type =  0; break;
-        case '경작':    $type =  1; break;
-        case '상재':    $type =  2; break;
-        case '발명':    $type =  3; break;
-
-        case '축성':    $type = 10; break;
-        case '수비':    $type = 11; break;
-        case '통찰':    $type = 12; break;
-
-        case '인덕':    $type = 20; break;
-
-        case '거상':    $type = 30; break;
-        case '귀모':    $type = 31; break;
-
-        case '귀병':    $type = 40; break;
-        case '신산':    $type = 41; break;
-        case '환술':    $type = 42; break;
-        case '집중':    $type = 43; break;
-        case '신중':    $type = 44; break;
-        case '반계':    $type = 45; break;
-
-        case '보병':    $type = 50; break;
-        case '궁병':    $type = 51; break;
-        case '기병':    $type = 52; break;
-        case '공성':    $type = 53; break;
-
-        case '돌격':    $type = 60; break;
-        case '무쌍':    $type = 61; break;
-        case '견고':    $type = 62; break;
-        case '위압':    $type = 63; break;
-
-        case '저격':    $type = 70; break;
-        case '필살':    $type = 71; break;
-        case '징병':    $type = 72; break;
-        case '의술':    $type = 73; break;
-        case '격노':    $type = 74; break;
-        case '척사':    $type = 75; break;
-        default: $type = 0; break;
-    }
-    return $type;
+function getNationLevel(int $level) {
+    return [
+        7=>'황제',
+        6=>'왕',
+        5=>'공',
+        4=>'주목',
+        3=>'주자사',
+        2=>'군벌',
+        1=>'호족',
+        0=>'방랑군',
+    ][$level];
 }
 
-function getNationChiefLevel($level) {
-    switch($level) {
-        case 7: $lv = 5; break;
-        case 6: $lv = 5; break;
-        case 5: $lv = 7; break;
-        case 4: $lv = 7; break;
-        case 3: $lv = 9; break;
-        case 2: $lv = 9; break;
-        case 1: $lv = 11; break;
-        case 0: $lv = 11; break;
-    }
-    return $lv;
-}
-
-function getNationLevel($level) {
-    switch($level) {
-        case 7: $call = '황제'; break;
-        case 6: $call = '왕'; break;
-        case 5: $call = '공'; break;
-        case 4: $call = '주목'; break;
-        case 3: $call = '주자사'; break;
-        case 2: $call = '군벌'; break;
-        case 1: $call = '호족'; break;
-        case 0: $call = '방랑군'; break;
-    }
-    return $call;
-}
-
-function getGenChar($type) {
-    return getCharacterList()[$type][0];
-}
-
-function getCharInfo(?int $type):?string {
+function getGenChar(?string $type) {
     if($type === null){
-        return null;
+        return '-';
     }
-    return getCharacterList()[$type][1]??null;
+    return getPersonalityClass($type)::$name;
 }
 
-function getGenSpecial($type) {
-    switch($type) {
-        case 40: $call = '귀병'; break;
-        case 41: $call = '신산'; break;
-        case 42: $call = '환술'; break;
-        case 43: $call = '집중'; break;
-        case 44: $call = '신중'; break;
-        case 45: $call = '반계'; break;
-
-        case 50: $call = '보병'; break;
-        case 51: $call = '궁병'; break;
-        case 52: $call = '기병'; break;
-        case 53: $call = '공성'; break;
-
-        case 60: $call = '돌격'; break;
-        case 61: $call = '무쌍'; break;
-        case 62: $call = '견고'; break;
-        case 63: $call = '위압'; break;
-
-        case 70: $call = '저격'; break;
-        case 71: $call = '필살'; break;
-        case 72: $call = '징병'; break;
-        case 73: $call = '의술'; break;
-        case 74: $call = '격노'; break;
-        case 75: $call = '척사'; break;
-        default: $call = null;
+function getGeneralSpecialDomesticName(?string $type):string{
+    if($type === null){
+        return '-';
     }
-    return $call;
+    return (getGeneralSpecialDomesticClass($type)::$name)??'-';
+}
+
+function getGeneralSpecialWarName(?string $type):string{
+    if($type === null){
+        return '-';
+    }
+    return (getGeneralSpecialWarClass($type)::$name)??'-';
 }
 
 function getSpecialTextList():array{
-    
-    //앞칸은 '설명을 위해' '그냥' 적어둠
-    return [
-        0 => ['-', null],
-        1 => ['경작', '[내정] 농지 개간 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-        2 => ['상재', '[내정] 상업 투자 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-        3 => ['발명', '[내정] 기술 연구 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
+    static $list = null;
+    if($list !== null){
+        return $list;
+    }
 
-        10 => ['축성', '[내정] 성벽 보수 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-        11 => ['수비', '[내정] 수비 강화 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
-        12 => ['통찰', '[내정] 치안 강화 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
+    $list = ['None' => ['-', null]];
+    foreach(GameConst::$availableSpecialDomestic as $specialKey){
+        $specialClass = getGeneralSpecialDomesticClass($specialKey);
+        $list[$specialKey] = [$specialClass::$name, $specialClass::$info];
+    }
 
-        20 => ['인덕', '[내정] 주민 선정·정착 장려 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%'],
+    foreach(GameConst::$availableSpecialWar as $specialKey){
+        $specialClass = getGeneralSpecialWarClass($specialKey);
+        $list[$specialKey] = [$specialClass::$name, $specialClass::$info];
+    }
 
-        30 => ['거상', '이것 저것'],
-        31 => ['귀모', '[계략] 화계·탈취·파괴·선동 : 성공률 +20%p'],
-
-        40 => ['귀병', '[군사] 귀병 계통 징·모병비 -10%<br>[전투] 계략 성공 확률 +20%p'],
-        41 => ['신산', '[계략] 화계·탈취·파괴·선동 : 성공률 +10%p<br>[전투] 계략 시도 확률 +20%p, 계략 성공 확률 +20%p '],
-        42 => ['환술', '[전투] 계략 성공 확률 +10%p, 계략 성공 시 대미지 +30%'],
-        43 => ['집중', '[전투] 계략 성공 시 대미지 +50%'],
-        44 => ['신중', '[전투] 계략 성공 확률 100%'],
-        45 => ['반계', '[전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 40% 확률로 되돌림, 반목 성공시 대미지 추가(+60% → +100%)'],
-
-        50 => ['보병', '[군사] 보병 계통 징·모병비 -10%<br>[전투] 공격 시 아군 피해 -10%, 수비 시 아군 피해 -20%'],
-        51 => ['궁병', '[군사] 궁병 계통 징·모병비 -10%<br>[전투] 회피 확률 +20%p'],
-        52 => ['기병', '[군사] 기병 계통 징·모병비 -10%<br>[전투] 수비 시 대미지 +10%, 공격 시 대미지 +20%'],
-        53 => ['공성', '[군사] 차병 계통 징·모병비 -10%<br>[전투] 성벽 공격 시 대미지 +100%'],
-
-        60 => ['돌격', '[전투] 상대 회피 불가, 공격 시 전투 페이즈 +1, 공격 시 대미지 +10%'],
-        61 => ['무쌍', '[전투] 대미지 +10%, 공격 시 필살 확률 +10%p'],
-        62 => ['견고', '[전투] 상대 필살, 격노, 위압, 저격 불가, 상대 계략 시도시 성공 확률 -10%p, 부상 없음, 아군 피해 -5%'],
-        63 => ['위압', '[전투] 훈련/사기≥90, 병력≥1,000 일 때 첫 페이즈 위압 발동(적 공격 불가)'],
-
-        70 => ['저격', '[전투] 전투 개시 시 1/3 확률로 저격 발동'],
-        71 => ['필살', '[전투] 필살 확률 +20%p'],
-        72 => ['징병', '[군사] 징·모병비 -50%, 통솔 순수 능력치 보정 +15%'],
-        73 => ['의술', '[군사] 매 턴마다 자신(100%)과 소속 도시 장수(적 포함 50%) 부상 회복<br>[전투] 페이즈마다 20% 확률로 치료 발동(아군 피해 1/3 감소)'],
-        74 => ['격노', '[전투] 상대방 필살 및 회피 시도시 일정 확률로 격노(필살) 발동, 공격 시 일정 확률로 진노(1페이즈 추가)'],
-        75 => ['척사', '[전투] 지역·도시 병종 상대로 대미지 +10%, 아군 피해 -10%']
-    ];
+    return $list;
 }
 
-function getSpecialInfo(?int $type):?string{
+function getSpecialInfo(?string $type):?string{
     if($type === null){
         return null;
     }
@@ -397,53 +292,49 @@ function buildWarUnitTriggerClass(?string $type, WarUnit $unit, ?array $args = n
 function getLevel($level, $nlevel=8) {
     if($level >= 0 && $level <= 4) { $nlevel = 0; }
     $code = $nlevel * 100 + $level;
-    switch($code) {
-        case 812: $call =     '군주'; break;
-        case 811: $call =     '참모'; break;
-        case 810: $call =  '제1장군'; break;
-        case 809: $call =  '제1모사'; break;
-        case 808: $call =  '제2장군'; break;
-        case 807: $call =  '제2모사'; break;
-        case 806: $call =  '제3장군'; break;
-        case 805: $call =  '제3모사'; break;
+    return [
+        812 =>     '군주',
+        811 =>     '참모',
+        810 =>  '제1장군',
+        809 =>  '제1모사',
+        808 =>  '제2장군',
+        807 =>  '제2모사',
+        806 =>  '제3장군',
+        805 =>  '제3모사',
 
-        case 712: $call =     '황제'; break;    case 612: $call =       '왕'; break;
-        case 711: $call =     '승상'; break;    case 611: $call =   '광록훈'; break;
-        case 710: $call = '표기장군'; break;    case 610: $call =   '좌장군'; break;
-        case 709: $call =     '사공'; break;    case 609: $call =   '상서령'; break;
-        case 708: $call = '거기장군'; break;    case 608: $call =   '우장군'; break;
-        case 707: $call =     '태위'; break;    case 607: $call =   '중서령'; break;
-        case 706: $call =   '위장군'; break;    case 606: $call =   '전장군'; break;
-        case 705: $call =     '사도'; break;    case 605: $call =   '비서령'; break;
+        712 =>     '황제',    612 =>       '왕',
+        711 =>     '승상',    611 =>   '광록훈',
+        710 => '표기장군',    610 =>   '좌장군',
+        709 =>     '사공',    609 =>   '상서령',
+        708 => '거기장군',    608 =>   '우장군',
+        707 =>     '태위',    607 =>   '중서령',
+        706 =>   '위장군',    606 =>   '전장군',
+        705 =>     '사도',    605 =>   '비서령',
 
-        case 512: $call =       '공'; break;    case 412: $call =     '주목'; break;
-        case 511: $call = '광록대부'; break;    case 411: $call =   '태사령'; break;
-        case 510: $call = '안국장군'; break;    case 410: $call = '아문장군'; break;
-        case 509: $call =   '집금오'; break;    case 409: $call =     '낭중'; break;
-        case 508: $call = '파로장군'; break;    case 408: $call =     '호군'; break;
-        case 507: $call =     '소부'; break;    case 407: $call = '종사중랑'; break;
+        512 =>       '공',    412 =>     '주목',
+        511 => '광록대부',    411 =>   '태사령',
+        510 => '안국장군',    410 => '아문장군',
+        509 =>   '집금오',    409 =>     '낭중',
+        508 => '파로장군',    408 =>     '호군',
+        507 =>     '소부',    407 => '종사중랑',
 
-        case 312: $call =   '주자사'; break;    case 212: $call =     '군벌'; break;
-        case 311: $call =     '주부'; break;    case 211: $call =     '참모'; break;
-        case 310: $call =   '편장군'; break;    case 210: $call =   '비장군'; break;
-        case 309: $call = '간의대부'; break;    case 209: $call =   '부참모'; break;
+        312 =>   '주자사',    212 =>     '군벌',
+        311 =>     '주부',    211 =>     '참모',
+        310 =>   '편장군',    210 =>   '비장군',
+        309 => '간의대부',    209 =>   '부참모',
 
-        case 112: $call =     '영주'; break;    case  12: $call =     '두목'; break;
-        case 111: $call =     '참모'; break;    case  11: $call =   '부두목'; break;
+        112 =>     '영주',     12 =>     '두목',
+        111 =>     '참모',     11 =>   '부두목',
 
-        case   4: $call =     '태수'; break;
-        case   3: $call =     '군사'; break;
-        case   2: $call =     '종사'; break;
-        case   1: $call =     '일반'; break;
-        case   0: $call =     '재야'; break;
-        default:  $call =        '-'; break;
-    }
-    return $call;
+          4 =>     '태수',
+          3 =>     '군사',
+          2 =>     '종사',
+          1 =>     '일반',
+          0 =>     '재야',
+    ][$code]??'-';
 }
 
 function getCall($leader, $power, $intel) {
-    $call = '평범';
-
     if($leader < 40){
         if($power + $intel < 40){
             return '아둔';
@@ -636,14 +527,14 @@ function getDexLevel(int $dex) : int {
         throw new \InvalidArgumentException();
     }
 
-    $retVal = null;
+    $retVal = 0;
     foreach(getDexLevelList() as $dexLevel => [$dexKey, $nextColor, $nextName]){
         if($dex < $dexKey){
             break;
         }
         $retVal = $dexLevel;
     }
-    return $dexLevel;
+    return $retVal;
 }
 
 function getDexLog($dex1, $dex2) {
@@ -652,38 +543,12 @@ function getDexLog($dex1, $dex2) {
 }
 
 
-function getWeapName($weap) : ?string {
-    switch($weap) {
-        case  0: $weapname = '-'; break;
-        case  1: $weapname = '단도(+1)'; break;
-        case  2: $weapname = '단궁(+2)'; break;
-        case  3: $weapname = '단극(+3)'; break;
-        case  4: $weapname = '목검(+4)'; break;
-        case  5: $weapname = '죽창(+5)'; break;
-        case  6: $weapname = '소부(+6)'; break;
-
-        case  7: $weapname = '동추(+7)'; break;
-        case  8: $weapname = '철편(+7)'; break;
-        case  9: $weapname = '철쇄(+7)'; break;
-        case 10: $weapname = '맥궁(+7)'; break;
-        case 11: $weapname = '유성추(+8)'; break;
-        case 12: $weapname = '철질여골(+8)'; break;
-        case 13: $weapname = '쌍철극(+9)'; break;
-        case 14: $weapname = '동호비궁(+9)'; break;
-        case 15: $weapname = '삼첨도(+10)'; break;
-        case 16: $weapname = '대부(+10)'; break;
-        case 17: $weapname = '고정도(+11)'; break;
-        case 18: $weapname = '이광궁(+11)'; break;
-        case 19: $weapname = '철척사모(+12)'; break;
-        case 20: $weapname = '칠성검(+12)'; break;
-        case 21: $weapname = '사모(+13)'; break;
-        case 22: $weapname = '양유기궁(+13)'; break;
-        case 23: $weapname = '언월도(+14)'; break;
-        case 24: $weapname = '방천화극(+14)'; break;
-        case 25: $weapname = '청홍검(+15)'; break;
-        case 26: $weapname = '의천검(+15)'; break;
+function getItemName(?string $item) : ?string {
+    if($item === null){
+        return '-';
     }
-    return $weapname;
+    $itemClass = buildItemClass($item);
+    return $itemClass->getName();
 }
 
 function getWeapEff($weap) : ?int{
@@ -713,40 +578,6 @@ function getWeapEff($weap) : ?int{
     return $weap;
 }
 
-function getBookName($book) : ?string {
-    switch($book) {
-        case  0: $bookname = '-'; break;
-        case  1: $bookname = '효경전(+1)'; break;
-        case  2: $bookname = '회남자(+2)'; break;
-        case  3: $bookname = '변도론(+3)'; break;
-        case  4: $bookname = '건상역주(+4)'; break;
-        case  5: $bookname = '여씨춘추(+5)'; break;
-        case  6: $bookname = '사민월령(+6)'; break;
-
-        case  7: $bookname = '위료자(+7)'; break;
-        case  8: $bookname = '사마법(+7)'; break;
-        case  9: $bookname = '한서(+7)'; break;
-        case 10: $bookname = '논어(+7)'; break;
-        case 11: $bookname = '전론(+8)'; break;
-        case 12: $bookname = '사기(+8)'; break;
-        case 13: $bookname = '장자(+9)'; break;
-        case 14: $bookname = '역경(+9)'; break;
-        case 15: $bookname = '시경(+10)'; break;
-        case 16: $bookname = '구국론(+10)'; break;
-        case 17: $bookname = '상군서(+11)'; break;
-        case 18: $bookname = '춘추전(+11)'; break;
-        case 19: $bookname = '산해경(+12)'; break;
-        case 20: $bookname = '맹덕신서(+12)'; break;
-        case 21: $bookname = '관자(+13)'; break;
-        case 22: $bookname = '병법24편(+13)'; break;
-        case 23: $bookname = '한비자(+14)'; break;
-        case 24: $bookname = '오자병법(+14)'; break;
-        case 25: $bookname = '노자(+15)'; break;
-        case 26: $bookname = '손자병법(+15)'; break;
-    }
-    return $bookname;
-}
-
 function getBookEff($book) : ?int {
     switch($book) {
         case  7: $book =  7; break;
@@ -772,40 +603,6 @@ function getBookEff($book) : ?int {
         default: break;
     }
     return $book;
-}
-
-function getHorseName($horse) : ?string {
-    switch($horse) {
-        case  0: $horsename = '-'; break;
-        case  1: $horsename = '노기(+1)'; break;
-        case  2: $horsename = '조랑(+2)'; break;
-        case  3: $horsename = '노새(+3)'; break;
-        case  4: $horsename = '나귀(+4)'; break;
-        case  5: $horsename = '갈색마(+5)'; break;
-        case  6: $horsename = '흑색마(+6)'; break;
-
-        case  7: $horsename = '백마(+7)'; break;
-        case  8: $horsename = '백마(+7)'; break;
-        case  9: $horsename = '기주마(+7)'; break;
-        case 10: $horsename = '기주마(+7)'; break;
-        case 11: $horsename = '양주마(+8)'; break;
-        case 12: $horsename = '양주마(+8)'; break;
-        case 13: $horsename = '과하마(+9)'; break;
-        case 14: $horsename = '과하마(+9)'; break;
-        case 15: $horsename = '대완마(+10)'; break;
-        case 16: $horsename = '대완마(+10)'; break;
-        case 17: $horsename = '서량마(+11)'; break;
-        case 18: $horsename = '서량마(+11)'; break;
-        case 19: $horsename = '사륜거(+12)'; break;
-        case 20: $horsename = '사륜거(+12)'; break;
-        case 21: $horsename = '절영(+13)'; break;
-        case 22: $horsename = '적로(+13)'; break;
-        case 23: $horsename = '적란마(+14)'; break;
-        case 24: $horsename = '조황비전(+14)'; break;
-        case 25: $horsename = '한혈마(+15)'; break;
-        case 26: $horsename = '적토마(+15)'; break;
-    }
-    return $horsename;
 }
 
 function getHorseEff($horse) : ?int {
@@ -835,109 +632,29 @@ function getHorseEff($horse) : ?int {
     return $horse;
 }
 
-function isConsumable($item) : bool{
-    //XXX: 제거할 것. 정식 아이템 구현으로 이동
-    if(1 <= $item && $item <= 6){
-        return true;
+function isConsumable(?string $item) : bool{
+    if($item === null){
+        return false;
     }
-    return false;
+    $itemClass = buildItemClass($item);
+    return $itemClass->isConsumable();
 }
 
-function getItemName($item) : ?string {
-    switch($item) {
-        case  0: $itemname = '-'; break;
-        case  1: $itemname = '환약(치료)'; break;
-        case  2: $itemname = '수극(저격)'; break;
-        case  3: $itemname = '탁주(사기)'; break;
-        case  4: $itemname = '청주(훈련)'; break;
-        case  5: $itemname = '이추(계략)'; break;
-        case  6: $itemname = '향낭(계략)'; break;
-
-        case  7: $itemname = '오석산(치료)'; break;
-        case  8: $itemname = '무후행군(치료)'; break;
-        case  9: $itemname = '도소연명(치료)'; break;
-        case 10: $itemname = '칠엽청점(치료)'; break;
-        case 11: $itemname = '정력견혈(치료)'; break;
-        case 12: $itemname = '과실주(훈련)'; break;
-        case 13: $itemname = '이강주(훈련)'; break;
-        case 14: $itemname = '의적주(사기)'; break;
-        case 15: $itemname = '두강주(사기)'; break;
-        case 16: $itemname = '보령압주(사기)'; break;
-        case 17: $itemname = '철벽서(훈련)'; break;
-        case 18: $itemname = '단결도(훈련)'; break;
-        case 19: $itemname = '춘화첩(사기)'; break;
-        case 20: $itemname = '초선화(사기)'; break;
-        case 21: $itemname = '육도(계략)'; break;
-        case 22: $itemname = '삼략(계략)'; break;
-        case 23: $itemname = '청낭서(의술)'; break;
-        case 24: $itemname = '태평청령(의술)'; break;
-        case 25: $itemname = '태평요술(회피)'; break;
-        case 26: $itemname = '둔갑천서(회피)'; break;
-        default: $itemname = null;
+function getItemInfo(?string $item):?array{
+    if($item === null){
+        return ['-', null];
     }
-    return $itemname;
+
+    $itemClass = buildItemClass($item);
+    return [$itemClass->getName(), $itemClass->getInfo()];
 }
 
-function getItemInfo(?int $item):?array{
-    $itemInfo = [
-        1=>['환약(치료)', '[군사] 턴 실행 전 부상 회복. 1회용'],
-        2=>['수극(저격)', '[전투] 전투 개시 전 20% 확률로 저격 시도. 1회용'],
-        3=>['탁주(사기)', '[전투] 사기 보정 +3. 1회용'],
-        4=>['청주(훈련)', '[전투] 훈련 보정 +3. 1회용'],
-        5=>['이추(계략)', '[계략] 화계·탈취·파괴·선동 : 성공률 +10%p. 1회용'],
-        6=>['향낭(계략)', '[계략] 화계·탈취·파괴·선동 : 성공률 +20%p. 1회용'],
-        
-        7=>['오석산(치료)', '[군사] 턴 실행 전 부상 회복.'],
-        8=>['무후행군(치료)', '[군사] 턴 실행 전 부상 회복.'],
-        9=>['도소연명(치료)', '[군사] 턴 실행 전 부상 회복.'],
-        10=>['칠엽청점(치료)', '[군사] 턴 실행 전 부상 회복.'],
-        11=>['정력견혈(치료)', '[군사] 턴 실행 전 부상 회복.'],
-        12=>['과실주(훈련)', '[전투] 훈련 보정 +5'],
-        13=>['이강주(훈련)', '[전투] 훈련 보정 +5'],
-        14=>['의적주(사기)', '[전투] 사기 보정 +5'],
-        15=>['두강주(사기)', '[전투] 사기 보정 +5'],
-        16=>['보령압주(사기)', '[전투] 사기 보정 +5'],
-        17=>['철벽서(훈련)', '[전투] 훈련 보정 +7'],
-        18=>['단결도(훈련)', '[전투] 훈련 보정 +7'],
-        19=>['춘화첩(사기)', '[전투] 사기 보정 +7'],
-        20=>['초선화(사기)', '[전투] 사기 보정 +7'],
-        21=>['육도(계략)', '[계략] 화계·탈취·파괴·선동 : 성공률 +20%p'],
-        22=>['삼략(계략)', '[계략] 화계·탈취·파괴·선동 : 성공률 +20%p'],
-        23=>['청낭서(의술)', '[군사] 매 턴마다 자신(100%)과 소속 도시 장수(적 포함 50%) 부상 회복<br>[전투] 페이즈마다 20% 확률로 치료 발동(아군 피해 1/3 감소)'],
-        24=>['태평청령(의술)', '[군사] 매 턴마다 자신(100%)과 소속 도시 장수(적 포함 50%) 부상 회복<br>[전투] 페이즈마다 20% 확률로 치료 발동(아군 피해 1/3 감소)'],
-        25=>['태평요술(회피)', '[전투] 회피 확률 +20%p'],
-        26=>['둔갑천서(회피)', '[전투] 회피 확률 +20%p'],
-    ];
-
-    return $itemInfo[$item][1]??null;
-}
-
-function getItemCost2($weap) : int {
-    switch($weap) {
-        case  0: $weapcost = 0; break;
-        case  1: $weapcost = 100; break;
-        case  2: $weapcost = 1000; break;
-        case  3: $weapcost = 1000; break;
-        case  4: $weapcost = 1000; break;
-        case  5: $weapcost = 1000; break;
-        case  6: $weapcost = 3000; break;
-        default: $weapcost = 200; break;
+function getItemCost(?string $item) : int {
+    if($item === null){
+        return 0;
     }
-    return $weapcost;
-}
-
-function getItemCost($weap) : int {
-    switch($weap) {
-        case  0: $weapcost = 0; break;
-        case  1: $weapcost = 1000; break;
-        case  2: $weapcost = 3000; break;
-        case  3: $weapcost = 6000; break;
-        case  4: $weapcost = 10000; break;
-        case  5: $weapcost = 15000; break;
-        case  6: $weapcost = 21000; break;
-        default: $weapcost = 200; break;
-    }
-    return $weapcost;
+    $itemClass = buildItemClass($item);
+    return $itemClass->getCost();
 }
 
 function getNameColor(int $npcType):?string{

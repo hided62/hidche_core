@@ -2270,7 +2270,7 @@ function process_48(&$general) {
     elseif($type < 400) { $type -= 300; $isweap = 3; }
     else { $type = 7; }
 
-    if($isweap == 3) { $cost = getItemCost2($type); }
+    if($isweap == 3) { $cost = getItemCost($type); }
     else { $cost = getItemCost($type); }
 
     if($city['trade'] == 0) {
@@ -2292,40 +2292,40 @@ function process_48(&$general) {
     } else {
         if($isweap == 0) {
             if($type != 0) {
-                $josaUl = JosaUtil::pick(getWeapName($type), '을');
-                $log[] = "<C>●</>{$admin['month']}월:<C>".getWeapName($type)."</>{$josaUl} 구입했습니다. <1>$date</>";
+                $josaUl = JosaUtil::pick(getItemName($type), '을');
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($type)."</>{$josaUl} 구입했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',weap='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
                 $cost = Util::round(getItemCost($general['weap']) / 2);
-                $josaUl = JosaUtil::pick(getWeapName($general['weap']), '을');
-                $log[] = "<C>●</>{$admin['month']}월:<C>".getWeapName($general['weap'])."</>{$josaUl} 판매했습니다. <1>$date</>";
+                $josaUl = JosaUtil::pick(getItemName($general['weap']), '을');
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($general['weap'])."</>{$josaUl} 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',weap='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         } elseif($isweap == 1) {
             if($type != 0) {
-                $josaUl = JosaUtil::pick(getBookName($type), '을');
-                $log[] = "<C>●</>{$admin['month']}월:<C>".getBookName($type)."</>{$josaUl} 구입했습니다. <1>$date</>";
+                $josaUl = JosaUtil::pick(getItemName($type), '을');
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($type)."</>{$josaUl} 구입했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',book='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
                 $cost = Util::round(getItemCost($general['book']) / 2);
-                $josaUl = JosaUtil::pick(getBookName($general['book']), '을');
-                $log[] = "<C>●</>{$admin['month']}월:<C>".getBookName($general['book'])."</>{$josaUl} 판매했습니다. <1>$date</>";
+                $josaUl = JosaUtil::pick(getItemName($general['book']), '을');
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($general['book'])."</>{$josaUl} 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',book='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         } elseif($isweap == 2) {
             if($type != 0) {
-                $josaUl = JosaUtil::pick(getHorseName($type), '을');
-                $log[] = "<C>●</>{$admin['month']}월:<C>".getHorseName($type)."</>{$josaUl} 구입했습니다. <1>$date</>";
+                $josaUl = JosaUtil::pick(getItemName($type), '을');
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($type)."</>{$josaUl} 구입했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',horse='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
                 $cost = Util::round(getItemCost($general['horse']) / 2);
-                $josaUl = JosaUtil::pick(getHorseName($general['horse']), '을');
-                $log[] = "<C>●</>{$admin['month']}월:<C>".getHorseName($general['horse'])."</>{$josaUl} 판매했습니다. <1>$date</>";
+                $josaUl = JosaUtil::pick(getItemName($general['horse']), '을');
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($general['horse'])."</>{$josaUl} 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',horse='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
@@ -2336,7 +2336,7 @@ function process_48(&$general) {
                 $query = "update general set resturn='SUCCESS',item='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
-                $cost = Util::round(getItemCost2($general['item']) / 2);
+                $cost = Util::round(getItemCost($general['item']) / 2);
                 $josaUl = JosaUtil::pick(getItemName($general['item']), '을');
                 $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($general['item'])."</>{$josaUl} 판매했습니다. <1>$date</>";
                 $query = "update general set resturn='SUCCESS',item='0',gold=gold+'$cost' where no='{$general['no']}'";

@@ -276,7 +276,7 @@ $mylog = [];
 $josaRa = JosaUtil::pick($name, '라');
 if ($genius) {
     $log[0] = "<C>●</>{$gameStor->month}월:<G><b>{$cityname}</b></>에서 <Y>{$name}</>{$josaRa}는 기재가 천하에 이름을 알립니다.";
-    $log[1] = "<C>●</>{$gameStor->month}월:<C>".getGenSpecial($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
+    $log[1] = "<C>●</>{$gameStor->month}월:<C>".getGeneralSpecialWarName($special2)."</> 특기를 가진 <C>천재</>의 등장으로 온 천하가 떠들썩합니다.";
 
     pushWorldHistory(["<C>●</>{$gameStor->year}년 {$gameStor->month}월:<L><b>【천재】</b></><G><b>{$cityname}</b></>에 천재가 등장했습니다."], $gameStor->year, $gameStor->month);
 } else {
@@ -290,8 +290,8 @@ $mylog[] = "<C>●</>부디 즐거운 삼모전 되시길 바랍니다 ^^";
 $mylog[] = "<C>●</>통솔 <C>$pleader</> 무력 <C>$ppower</> 지력 <C>$pintel</> 의 보너스를 받으셨습니다.";
 $mylog[] = "<C>●</>연령은 <C>$age</>세로 시작합니다.";
 if ($genius) {
-    $mylog[] = "<C>●</>축하합니다! 천재로 태어나 처음부터 <C>".getGenSpecial($special2)."</> 특기를 가지게 됩니다!";
-    pushGeneralHistory($me, "<C>●</>{$gameStor->year}년 {$gameStor->month}월:<C>".getGenSpecial($special2)."</> 특기를 가진 천재로 탄생.");
+    $mylog[] = "<C>●</>축하합니다! 천재로 태어나 처음부터 <C>".getGeneralSpecialWarName($special2)."</> 특기를 가지게 됩니다!";
+    pushGeneralHistory($me, "<C>●</>{$gameStor->year}년 {$gameStor->month}월:<C>".getGeneralSpecialWarName($special2)."</> 특기를 가진 천재로 탄생.");
 }
 pushGenLog($me, $mylog);
 pushGeneralPublicRecord($log, $gameStor->year, $gameStor->month);

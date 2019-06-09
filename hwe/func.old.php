@@ -818,9 +818,9 @@ function generalInfo($no) {
     }
     $call = getCall($general['leader'], $general['power'], $general['intel']);
     $typename = GameUnitConst::byId($general['crewtype'])->name;
-    $weapname = getWeapName($general['weap']);
-    $bookname = getBookName($general['book']);
-    $horsename = getHorseName($general['horse']);
+    $weapname = getItemName($general['weap']);
+    $bookname = getItemName($general['book']);
+    $horsename = getItemName($general['horse']);
     $itemname = displayItemInfo($general['item']);
     if($general['injury'] > 0) {
         $leader = intdiv($general['leader'] * (100 - $general['injury']), 100);
@@ -2237,9 +2237,9 @@ function uniqueItemEx(int $generalID, ActionLogger $logger, string $acquireType=
     //아이템 습득 상황
     $availableUnique = [];
     $itemTypes = [
-        'horse'=>'getHorseName',
-        'weap'=>'getWeapName',
-        'book'=>'getBookName',
+        'horse'=>'getItemName',
+        'weap'=>'getItemName',
+        'book'=>'getItemName',
         'item'=>'getItemName'
     ];
     $itemCodeList = range(7, 26); // [7, 26] 20개
@@ -2340,51 +2340,51 @@ function uniqueItem($general, $log, $vote=0) {
 
             switch($sel) {
             case 0:
-                $josaUl = JosaUtil::pick(getWeapName($it), '을');
+                $josaUl = JosaUtil::pick(getItemName($it), '을');
                 $josaYi = JosaUtil::pick($general['name'], '이');
-                $log[] = "<C>●</><C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getWeapName($it)."</>{$josaUl} 습득");
+                $log[] = "<C>●</><C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
+                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getItemName($it)."</>{$josaUl} 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 }
                 break;
             case 1:
-                $josaUl = JosaUtil::pick(getBookName($it), '을');
+                $josaUl = JosaUtil::pick(getItemName($it), '을');
                 $josaYi = JosaUtil::pick($general['name'], '이');
-                $log[] = "<C>●</><C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getBookName($it)."</>{$josaUl} 습득");
+                $log[] = "<C>●</><C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
+                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getItemName($it)."</>{$josaUl} 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 }
                 break;
             case 2:
-                $josaUl = JosaUtil::pick(getHorseName($it), '을');
+                $josaUl = JosaUtil::pick(getItemName($it), '을');
                 $josaYi = JosaUtil::pick($general['name'], '이');
-                $log[] = "<C>●</><C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
-                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getHorseName($it)."</>{$josaUl} 습득");
+                $log[] = "<C>●</><C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
+                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
+                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getItemName($it)."</>{$josaUl} 습득");
                 if($vote == 0) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
+                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
                 }
                 break;
             case 3:

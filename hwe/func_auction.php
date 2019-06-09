@@ -7,9 +7,9 @@ function GetStuffName($stuff) {
 
     switch($type1) {
     case 0: $str = "쌀"; break;
-    case 1: $str = getWeapName($type2); break;
-    case 2: $str = getBookName($type2); break;
-    case 3: $str = getHorseName($type2); break;
+    case 1: $str = getItemName($type2); break;
+    case 2: $str = getItemName($type2); break;
+    case 3: $str = getItemName($type2); break;
     case 4: $str = getItemName($type2); break;
     default:$str = "?"; break;
     }

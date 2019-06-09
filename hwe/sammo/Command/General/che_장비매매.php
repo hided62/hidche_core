@@ -15,9 +15,9 @@ use \sammo\{
 
 use function \sammo\{
     tryUniqueItemLottery,
-    getItemCost, getItemCost2,
+    getItemCost,
     getItemInfo,
-    getHorseName, getWeapName, getBookName, getItemName
+    getItemName
 };
 
 use \sammo\Constraint\Constraint;
@@ -95,12 +95,8 @@ class che_장비매매 extends Command\GeneralCommand{
         
         $itemType = $this->arg['itemType'];
         $itemCode = $this->arg['itemCode'];
-        if($itemType == 'item'){
-            $reqGold = getItemCost2($itemCode);
-        }
-        else{
-            $reqGold = getItemCost($itemCode);
-        }
+
+        $reqGold = getItemCost($itemCode);
         return [$reqGold, 0];
     }
     
@@ -128,30 +124,15 @@ class che_장비매매 extends Command\GeneralCommand{
         if($itemCode == 0){
             $buying = false;
             $itemCode = $general->getVar($itemType);
-            if($itemType == 'item'){
-                $cost = getItemCost2($itemCode);
-            }
-            else{
-                $cost = getItemCost($itemCode);
-            }
+            $cost = getItemCost($itemCode);
         }
         else{
             $buying = true;
             $cost = $this->getCost()[0];
         }
 
-        if($itemType == 'horse'){
-            $itemName = getHorseName($itemCode);
-        }
-        else if($itemType == 'weap'){
-            $itemName = getWeapName($itemCode);
-        }
-        else if($itemType == 'book'){
-            $itemName = getBookName($itemCode);
-        }
-        else{
-            $itemName = getItemName($itemCode);
-        }
+        $itemName = getItemName($itemCode);
+
         $josaUl = JosaUtil::pick($itemName, '을');
 
         $logger = $general->getLogger();

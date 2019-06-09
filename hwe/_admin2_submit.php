@@ -220,7 +220,7 @@ switch($btn) {
             $text = "무기 회수!";
         }
         else { 
-            $text = getWeapName($weap)." 지급!"; 
+            $text = getItemName($weap)." 지급!"; 
         }
 
         foreach($genlist as $generalID){
@@ -244,7 +244,7 @@ switch($btn) {
             $text = "책 회수!";
         }
         else { 
-            $text = getBookName($weap)." 지급!"; 
+            $text = getItemName($weap)." 지급!"; 
         }
 
         foreach($genlist as $generalID){
@@ -268,7 +268,7 @@ switch($btn) {
             $text = "말 회수!";
         }
         else { 
-            $text = getHorseName($weap)." 지급!"; 
+            $text = getItemName($weap)." 지급!"; 
         }
 
         foreach($genlist as $generalID){

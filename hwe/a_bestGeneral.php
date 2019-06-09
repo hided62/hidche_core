@@ -14,6 +14,7 @@ $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("명장일람", 1);
+$templates = new \League\Plates\Engine(__dir__.'/templates');
 
 ?>
 <!DOCTYPE html>
@@ -223,23 +224,34 @@ foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
 <?php
 //유니크 아이템 소유자
 $itemTypes = [
-    ["명 마", 'horse', function($v){return getHorseName($v);}, 7, 26, []],
-    ["명 검", 'weap', function($v){return getWeapName($v);}, 7, 26, []],
-    ["명 서", 'book', function($v){return getBookName($v);}, 7, 26, []],
-    ["도 구", 'item', function($v){return displayItemInfo($v);}, 7, 26, []],
+    'horse'=>'명 마',
+    'weap'=>'명 검',
+    'book'=>'명 서',
+    'item'=>'도 구'
 ];
 
-$simpleItemTypes = array_map(function($itemType){return $itemType[1];}, $itemTypes);
+$simpleItemTypes = array_keys($itemTypes); array_map(function($itemType){return $itemType[1];}, $itemTypes);
 
 foreach($generals as $general){
     foreach($itemTypes as $itemIdx=>[,$itemType, $itemFunc,,,]){
         $itemCode = $general[$itemType];
-        if($itemCode <= 6){
+        $itemClass = buildItemClass($itemCode);
+        if(!$itemClass->isBuyable()){
             continue;
         }
 
-        $itemName = ($itemFunc)($itemCode);
-        $general['rankName'] = $itemName;
+        $info = $itemClass->getInfo();
+        $name = $itemClass->getName();
+        
+        if($info){
+            $name = $templates->render('tooltip', [
+                'text'=>$text,
+                'info'=>$info,
+            ]);
+        }
+        
+
+        $general['rankName'] = $name;
         $general['value'] = $itemCode;
         $itemTypes[$itemIdx][5][$itemCode] = $general;
     }

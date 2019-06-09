@@ -292,7 +292,7 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                     </div>
                     <select class="custom-select form_general_horse">
                         <?php foreach(range(0, 26) as $horseID): ?>
-                            <option value="<?=$horseID?>"><?=getHorseName($horseID)?></option>
+                            <option value="<?=$horseID?>"><?=getItemName($horseID)?></option>
                         <?php endforeach; ?>
                     </select>
                     <div class="input-group-prepend">
@@ -300,7 +300,7 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                     </div>
                     <select class="custom-select form_general_weap">
                         <?php foreach(range(0, 26) as $weapID): ?>
-                            <option value="<?=$weapID?>"><?=getWeapName($weapID)?></option>
+                            <option value="<?=$weapID?>"><?=getItemName($weapID)?></option>
                         <?php endforeach; ?>
                     </select>
                     <div class="input-group-prepend">
@@ -308,7 +308,7 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                     </div>
                     <select class="custom-select form_general_book">
                         <?php foreach(range(0, 26) as $bookID): ?>
-                            <option value="<?=$bookID?>"><?=getBookName($bookID)?></option>
+                            <option value="<?=$bookID?>"><?=getItemName($bookID)?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>

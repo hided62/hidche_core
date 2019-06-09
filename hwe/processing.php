@@ -1368,33 +1368,33 @@ function command_48($turn, $command) {
 <form name=form1 action=c_double.php method=post>
 장비 : <select name=double size=1 style=color:white;background-color:black>
     <option value=0   style=color:skyblue>_____무기매각(반값)____</option>
-    <option value=1   style=color:$color[1]>".getWeapName(1)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(1)."</option>
-    <option value=2   style=color:$color[2]>".getWeapName(2)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(2)."</option>
-    <option value=3   style=color:$color[3]>".getWeapName(3)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(3)."</option>
-    <option value=4   style=color:$color[4]>".getWeapName(4)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(4)."</option>
-    <option value=5   style=color:$color[5]>".getWeapName(5)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(5)."</option>
-    <option value=6   style=color:$color[6]>".getWeapName(6)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(6)."</option>
+    <option value=1   style=color:$color[1]>".getItemName(1)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(1)."</option>
+    <option value=2   style=color:$color[2]>".getItemName(2)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(2)."</option>
+    <option value=3   style=color:$color[3]>".getItemName(3)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(3)."</option>
+    <option value=4   style=color:$color[4]>".getItemName(4)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(4)."</option>
+    <option value=5   style=color:$color[5]>".getItemName(5)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(5)."</option>
+    <option value=6   style=color:$color[6]>".getItemName(6)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(6)."</option>
     <option value=100 style=color:skyblue>_____서적매각(반값)____</option>
-    <option value=101 style=color:$color[1]>".getBookName(1)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(1)."</option>
-    <option value=102 style=color:$color[2]>".getBookName(2)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(2)."</option>
-    <option value=103 style=color:$color[3]>".getBookName(3)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(3)."</option>
-    <option value=104 style=color:$color[4]>".getBookName(4)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(4)."</option>
-    <option value=105 style=color:$color[5]>".getBookName(5)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(5)."</option>
-    <option value=106 style=color:$color[6]>".getBookName(6)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(6)."</option>
+    <option value=101 style=color:$color[1]>".getItemName(1)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(1)."</option>
+    <option value=102 style=color:$color[2]>".getItemName(2)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(2)."</option>
+    <option value=103 style=color:$color[3]>".getItemName(3)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(3)."</option>
+    <option value=104 style=color:$color[4]>".getItemName(4)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(4)."</option>
+    <option value=105 style=color:$color[5]>".getItemName(5)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(5)."</option>
+    <option value=106 style=color:$color[6]>".getItemName(6)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(6)."</option>
     <option value=200 style=color:skyblue>_____명마매각(반값)____</option>
-    <option value=201 style=color:$color[1]>".getHorseName(1)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(1)."</option>
-    <option value=202 style=color:$color[2]>".getHorseName(2)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(2)."</option>
-    <option value=203 style=color:$color[3]>".getHorseName(3)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(3)."</option>
-    <option value=204 style=color:$color[4]>".getHorseName(4)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(4)."</option>
-    <option value=205 style=color:$color[5]>".getHorseName(5)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(5)."</option>
-    <option value=206 style=color:$color[6]>".getHorseName(6)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(6)."</option>
+    <option value=201 style=color:$color[1]>".getItemName(1)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(1)."</option>
+    <option value=202 style=color:$color[2]>".getItemName(2)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(2)."</option>
+    <option value=203 style=color:$color[3]>".getItemName(3)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(3)."</option>
+    <option value=204 style=color:$color[4]>".getItemName(4)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(4)."</option>
+    <option value=205 style=color:$color[5]>".getItemName(5)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(5)."</option>
+    <option value=206 style=color:$color[6]>".getItemName(6)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(6)."</option>
     <option value=300 style=color:skyblue>_____도구매각(반값)____</option>
-    <option value=301 style=color:$color[1]>".getItemName(1)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost2(1)."</option>
-    <option value=302 style=color:$color[2]>".getItemName(2)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost2(2)."</option>
-    <option value=303 style=color:$color[3]>".getItemName(3)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost2(3)."</option>
-    <option value=304 style=color:$color[4]>".getItemName(4)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost2(4)."</option>
-    <option value=305 style=color:$color[5]>".getItemName(5)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost2(5)."</option>
-    <option value=306 style=color:$color[6]>".getItemName(6)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost2(6)."</option>
+    <option value=301 style=color:$color[1]>".getItemName(1)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(1)."</option>
+    <option value=302 style=color:$color[2]>".getItemName(2)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(2)."</option>
+    <option value=303 style=color:$color[3]>".getItemName(3)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(3)."</option>
+    <option value=304 style=color:$color[4]>".getItemName(4)."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(4)."</option>
+    <option value=305 style=color:$color[5]>".getItemName(5)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(5)."</option>
+    <option value=306 style=color:$color[6]>".getItemName(6)."&nbsp;&nbsp;&nbsp;&nbsp;가격: ".getItemCost(6)."</option>
 </select>
 <input type=submit value=거래>
 <input type=hidden name=command value=$command>";

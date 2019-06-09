@@ -5,7 +5,7 @@ use \sammo\General;
 use \sammo\GeneralTrigger;
 use function sammo\isConsumable;
 use function sammo\getItemInfo;
-use function sammo\getItemCost2;
+use function sammo\getItemCost;
 
 //XXX:임시용!
 class che_Dummy extends \sammo\BaseItem{
@@ -32,11 +32,11 @@ class che_Dummy extends \sammo\BaseItem{
         return $this->_consumable;
     }
 
-    public function __construct(int $itemCode)
+    public function __construct(string $itemCode)
     {
         $this->_id = $itemCode;
         [$this->_name, $this->_info] = getItemInfo($itemCode);
-        $this->_cost = getItemCost2($itemCode);
+        $this->_cost = getItemCost($itemCode);
         $this->_consumable = isConsumable($itemCode);
     }
 }

@@ -1151,19 +1151,19 @@ function checkStatistic() {
 
     $specialHistsStr = join(', ', array_map(function($histPair){
         [$histKey, $cnt] = $histPair;
-        return getGenSpecial($histKey).'('.$cnt.')';
+        return getGeneralSpecialDomesticName($histKey).'('.$cnt.')';
     }, Util::convertDictToArray($specialHists)));
 
     $specialHists2Str = join(', ', array_map(function($histPair){
         [$histKey, $cnt] = $histPair;
-        return getGenSpecial($histKey).'('.$cnt.')';
+        return getGeneralSpecialWarName($histKey).'('.$cnt.')';
     }, Util::convertDictToArray($specialHists2)));
 
     $specialHistsAllStr = "$specialHistsStr // $specialHists2Str";
 
     $crewtypeHistsStr = join(', ', array_map(function($histPair){
         [$histKey, $cnt] = $histPair;
-        return getGenSpecial($histKey).'('.$cnt.')';
+        return GameUnitConst::byID($hisKey)->getShortName().'('.$cnt.')';
     }, Util::convertDictToArray($crewtypeHists)));
     
     $db->insert('statistic', [

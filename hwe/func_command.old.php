@@ -207,14 +207,14 @@ function getGeneralTurnBrief(General $generalObj, array $turnList) {
                 } elseif($double == 300) {
                     $str[$i] = "도구를 판매";
                 } elseif($double < 100) {
-                    $josaUl = JosaUtil::pick(getWeapName($double), '을');
-                    $str[$i] = "【".getWeapName($double)."】{$josaUl} 구입";
+                    $josaUl = JosaUtil::pick(getItemName($double), '을');
+                    $str[$i] = "【".getItemName($double)."】{$josaUl} 구입";
                 } elseif($double < 200) {
-                    $josaUl = JosaUtil::pick(getBookName($double-100), '을');
-                    $str[$i] = "【".getBookName($double-100)."】{$josaUl} 구입";
+                    $josaUl = JosaUtil::pick(getItemName($double-100), '을');
+                    $str[$i] = "【".getItemName($double-100)."】{$josaUl} 구입";
                 } elseif($double < 300) {
-                    $josaUl = JosaUtil::pick(getHorseName($double-200), '을');
-                    $str[$i] = "【".getHorseName($double-200)."】{$josaUl} 구입";
+                    $josaUl = JosaUtil::pick(getItemName($double-200), '을');
+                    $str[$i] = "【".getItemName($double-200)."】{$josaUl} 구입";
                 } elseif($double < 400) {
                     $josaUl = JosaUtil::pick(getItemName($double-300), '을');
                     $str[$i] = "【".getItemName($double-300)."】{$josaUl} 구입";
