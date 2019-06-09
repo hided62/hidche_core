@@ -5,7 +5,7 @@ include "lib.php";
 include "func.php";
 
 $btn = Util::getReq('btn');
-$weap = Util::getReq('weap', 'int');
+$item = Util::getReq('item', 'string');
 $genlist = Util::getReq('genlist', 'array_int');
 $msg = Util::getReq('msg', 'string');
 
@@ -216,11 +216,11 @@ switch($btn) {
         break;
     case "무기지급":
 
-        if($weap == 0) {
+        if($item == 0) {
             $text = "무기 회수!";
         }
         else { 
-            $text = getItemName($weap)." 지급!"; 
+            $text = getItemName($item)." 지급!"; 
         }
 
         foreach($genlist as $generalID){
@@ -228,23 +228,23 @@ switch($btn) {
             $msg->send(true);
         }
 
-        if($weap == 0){
+        if($item === 'None'){
             $db->update('general', [
-                'weap'=>0
+                'weap'=>'None'
             ], '`no` IN %li', $genlist);
         }
         else{
             $db->update('general', [
-                'weap'=>$weap
-            ], '`no` IN %li AND weap < %i', $genlist, $weap);
+                'weap'=>$item
+            ], '`no` IN %li', $genlist, $item);
         }
         break;
     case "책지급":
-        if($weap == 0) {
+        if($item == 0) {
             $text = "책 회수!";
         }
         else { 
-            $text = getItemName($weap)." 지급!"; 
+            $text = getItemName($item)." 지급!"; 
         }
 
         foreach($genlist as $generalID){
@@ -252,23 +252,23 @@ switch($btn) {
             $msg->send(true);
         }
 
-        if($weap == 0){
+        if($item == 0){
             $db->update('general', [
-                'book'=>0
+                'book'=>'None'
             ], '`no` IN %li', $genlist);
         }
         else{
             $db->update('general', [
-                'book'=>$weap
-            ], '`no` IN %li AND book < %i', $genlist, $weap);
+                'book'=>$item
+            ], '`no` IN %li', $genlist);
         }
         break;
     case "말지급":
-        if($weap == 0) {
+        if($item == 0) {
             $text = "말 회수!";
         }
         else { 
-            $text = getItemName($weap)." 지급!"; 
+            $text = getItemName($item)." 지급!"; 
         }
 
         foreach($genlist as $generalID){
@@ -276,23 +276,23 @@ switch($btn) {
             $msg->send(true);
         }
 
-        if($weap == 0){
+        if($item == 0){
             $db->update('general', [
-                'horse'=>0
+                'horse'=>'None'
             ], '`no` IN %li', $genlist);
         }
         else{
             $db->update('general', [
-                'horse'=>$weap
-            ], '`no` IN %li AND horse < %i', $genlist, $weap);
+                'horse'=>$item
+            ], '`no` IN %li', $genlist);
         }
         break;
     case "도구지급":
-        if($weap == 0) {
+        if($item == 0) {
             $text = "특수도구 회수!";
         }
         else { 
-            $text = getItemName($weap)." 지급!"; 
+            $text = getItemName($item)." 지급!"; 
         }
 
         foreach($genlist as $generalID){
@@ -300,15 +300,15 @@ switch($btn) {
             $msg->send(true);
         }
 
-        if($weap == 0){
+        if($item == 0){
             $db->update('general', [
-                'item'=>0
+                'item'=>'None'
             ], '`no` IN %li', $genlist);
         }
         else{
             $db->update('general', [
-                'item'=>$weap
-            ], '`no` IN %li AND item < %i', $genlist, $weap);
+                'item'=>$item
+            ], '`no` IN %li AND item < %i', $genlist, $item);
         }
         break;
     case "하야입력":

@@ -169,7 +169,7 @@ function getPersonalityClass(?string $type){
 
 function getItemClass(?string $itemClass){
     if($itemClass === null){
-        return null;
+        $itemClass = 'None';
     }
 
     static $basePath = __NAMESPACE__.'\\ActionItem\\';
@@ -180,11 +180,14 @@ function getItemClass(?string $itemClass){
         return $classPath;
     }
 
-    throw new \InvalidArgumentException("{$itemClass}는 올바른 성격 클래스가 아님");
+    throw new \InvalidArgumentException("{$itemClass}는 올바른 아이템 클래스가 아님");
 }
 
 function buildItemClass(?string $itemClass):BaseItem{
-    $class = getGeneralCommandClass($itemClass);
+    if($itemClass === null){
+        $itemClass = 'None';
+    }
+    $class = getItemClass($itemClass);
     return new $class();
 }
 
