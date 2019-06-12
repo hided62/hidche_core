@@ -62,7 +62,7 @@ $icon = GetImageURL($me['imgsvr'], $me['picture']);
 $db->insert('board', [
     'nation_no'=>$me['nation'],
     'is_secret'=>$isSecretBoard,
-    'date'=>TimeUtil::DatetimeNow(),
+    'date'=>TimeUtil::now(),
     'general_no'=>$me['no'],
     'author'=>$me['name'],
     'author_icon'=>$icon,

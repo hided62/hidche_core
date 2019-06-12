@@ -97,7 +97,7 @@ if(!file_exists($dest)){
 $storedStatus = $imgStor->$newPicName??[];
 $imgKey = "$serverID:$userID";
 if(!key_exists($imgKey, $storedStatus)){
-    $storedStatus[$imgKey] = TimeUtil::DatetimeNow();
+    $storedStatus[$imgKey] = TimeUtil::now();
 }
 
 $imgStor->$newPicName = $storedStatus;

@@ -140,7 +140,7 @@ $db->insert('ng_diplomacy', [
     'state'=>'proposed',
     'text_brief'=>$textBrief,
     'text_detail'=>$textDetail,
-    'date'=>TimeUtil::DatetimeNow(),
+    'date'=>TimeUtil::now(),
     'src_signer'=>$me['no'],
     'dest_signer'=>null,
     'aux'=>Json::encode([

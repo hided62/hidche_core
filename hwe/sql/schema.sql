@@ -483,7 +483,7 @@ create table tournament (
   name char(64) default '',
   w    varchar(20) default 'None',
   b    varchar(20) default 'None',
-  h    varchar(20)) default 'None',
+  h    varchar(20) default 'None',
   ldr  int(3) default 0,
   pwr  int(3) default 0,
   itl  int(3) default 0,

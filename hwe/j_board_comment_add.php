@@ -68,7 +68,7 @@ else if ($isSecretBoard && $permission < 2) {
 $db->insert('comment', [
     'nation_no'=>$me['nation'],
     'is_secret'=>$isSecretBoard,
-    'date'=>TimeUtil::DatetimeNow(),
+    'date'=>TimeUtil::now(),
     'document_no'=>$articleNo,
     'general_no'=>$me['no'],
     'author'=>$me['name'],

@@ -5,6 +5,9 @@ use \sammo\General;
 use \sammo\GeneralTrigger;
 use \sammo\GeneralTriggerCaller;
 use \sammo\BaseWarUnitTrigger;
+use \sammo\WarUnitTriggerCaller;
+use sammo\WarUnitTrigger\che_전투치료발동;
+use sammo\WarUnitTrigger\che_전투치료시도;
 
 class che_의술_태평청령 extends \sammo\BaseItem{
 

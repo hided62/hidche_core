@@ -175,5 +175,5 @@ Json::die(ResetHelper::buildScenario(
     $show_img_level,
     $tournament_trig,
     $join_mode,
-    TimeUtil::DatetimeNow()
+    TimeUtil::now()
 ));

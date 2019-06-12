@@ -19,14 +19,14 @@
                 "agri":"70%",
                 "comm":"70%",
                 "secu":"70%",
-                "rate":80
+                "trust":80
             }],
             ["ChangeCity", "occupied", {
                 "pop":"70%",
                 "agri":"70%",
                 "comm":"70%",
                 "secu":"70%",
-                "rate":80,
+                "trust":80,
                 "def":"70%",
                 "wall":"70%"
             }]
