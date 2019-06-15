@@ -251,7 +251,9 @@ function getTurn(array $general, $type, $font=1) {
             case 57: //모반 시도
                 $str[$i] = "모반 시도";
                 break;
-
+            case 58: //숙련 전환
+                $str[$i] = "숙련 전환";
+                break;
             default:
                 $str[$i] = "????";
                 break;
@@ -623,6 +625,8 @@ function processCommand($no) {
             case 55: process_55($general); break; //거병
             case 56: process_56($general); break; //해산
             case 57: process_57($general); break; //모반 시도
+
+            case 58: process_58($general); break; //숙련 전환
         }
     }
 }

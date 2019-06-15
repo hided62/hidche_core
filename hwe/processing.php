@@ -95,6 +95,7 @@ switch($commandtype) {
     case 55: command_Single($turn, 55); break; //거병
     case 56: command_Single($turn, 56); break; //해산
     case 57: command_Single($turn, 57); break; //모반 시도
+    case 58: command_58(    $turn, 58); break; //숙련 전환
 
     case 61: command_61($turn, 61); break; //불가침
     case 62: command_62($turn, 62); break; //선포
@@ -1711,6 +1712,56 @@ function command_54($turn, $command) {
     echo "
 </select>
 <input type=submit value=선양>
+<input type=hidden name=command value=$command>";
+    for($i=0; $i < count($turn); $i++) {
+        echo "
+            <input type=hidden name=turn[] value=$turn[$i]>";
+    }
+
+    echo "
+</form>
+";
+
+    ender();
+}
+
+function command_58($turn, $command) {
+    $db = DB::db();
+    $connect=$db->get();
+    $userID = Session::getUserID();
+
+    starter("숙련 전환");
+
+    $dexVals = $db->queryFirstList('SELECT dex0, dex10, dex20, dex30, dex40 FROM general WHERE owner = %i', $userID);
+
+    $dexTexts = [];
+    foreach($dexVals as $idx => $val){
+        $prevDexLevel = getDexCall($val);
+        $newDexLevel = getDexCall(Util::toInt($val * 0.7));
+        $addDex = Util::toInt(($val - $val * 0.7) * 0.5);
+        $dexTexts[$idx] = "$prevDexLevel ⇒ $newDexLevel, {$addDex} 전환";
+    }
+
+    echo "
+본인의 특정 병종 숙련을 30% 줄이고, 줄어든 숙련 중 2/3(20%p)를 다른 병종 숙련으로 전환합니다.<br>
+<form name=form1 action=c_double.php method=post>
+<select name=double size=1 style=color:white;background-color:black>
+    <option value=0>보병 ({$dexTexts[0]})</option>
+    <option value=1>궁병 ({$dexTexts[1]})</option>
+    <option value=2>기병 ({$dexTexts[2]})</option>
+    <option value=3>귀병 ({$dexTexts[3]})</option>
+    <option value=4>차병 ({$dexTexts[4]})</option>
+</select>
+숙련을 
+<select name=third size=1 style=color:white;background-color:black>
+    <option value=0>보병 ({$dexVals[0]})</option>
+    <option value=1>궁병 ({$dexVals[1]})</option>
+    <option value=2>기병 ({$dexVals[2]})</option>
+    <option value=3>귀병 ({$dexVals[3]})</option>
+    <option value=4>차병 ({$dexVals[4]})</option>
+</select>
+으로
+<input type=submit value=전환>
 <input type=hidden name=command value=$command>";
     for($i=0; $i < count($turn); $i++) {
         echo "

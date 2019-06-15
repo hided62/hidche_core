@@ -659,8 +659,10 @@ function commandTable() {
     commandGroup("======= 개 인 ========");
     if($me['level'] >= 1) {
         addCommand("단련(자금$develcost, 군량$develcost)", 41);
+        addCommand("숙련전환(통솔경험, 자금$develcost, 군량$develcost)", 58);
     } else {
         addCommand("단련(자금$develcost, 군량$develcost)", 41, 0);
+        addCommand("숙련전환(통솔경험, 자금$develcost, 군량$develcost)", 58, 0);
     }
     addCommand("견문(자금?, 군량?, 경험치?)", 42);
     if($city['trade'] > 0 || $me['special'] == 30) {

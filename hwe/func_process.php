@@ -2528,6 +2528,73 @@ function process_50(&$general) {
     pushGenLog($general, $log);
 }
 
+
+function process_58(&$general) {
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+
+    $log = [];
+    $alllog = [];
+    $history = [];
+    $date = substr($general['turntime'],11,5);
+
+    $admin = $gameStor->getValues(['year', 'month', 'develcost']);
+
+    $command = DecodeCommand($general['turn0']);
+
+    $fromDexIdx = $command[1];
+    $toDexIdx = $command[2];
+
+
+    
+
+    if($general['nation'] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:재야입니다. 숙련 전환 실패. <1>$date</>";
+    } elseif($general['gold'] < $admin['develcost']) {
+        $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 숙련 전환 실패. <1>$date</>";
+    } elseif($general['rice'] < $admin['develcost']) {
+        $log[] = "<C>●</>{$admin['month']}월:군량이 모자랍니다. 숙련 전환 실패. <1>$date</>";
+    } elseif($fromDexIdx < 0 || $fromDexIdx > 4 || $toDexIdx < 0 || $toDexIdx > 4){
+        $log[] = "<C>●</>{$admin['month']}월:올바르지 않은 병종 코드입니다. 숙련 전환 실패. <1>$date</>";
+    } elseif($general['dex'.($fromDexIdx*10)] == 0) {
+        $log[] = "<C>●</>{$admin['month']}월:전환할 병종 숙련이 없습니다. 숙련 전환 실패. <1>$date</>";
+    } else {
+
+        $fromOrigDex = $general['dex'.($fromDexIdx*10)];
+        $toOrigDex = $general['dex'.($toDexIdx*10)];
+
+        $cutDex = Util::toInt($fromOrigDex * 0.3);
+        $fromNewDex = $fromOrigDex - $cutDex;
+        $addDex = Util::toInt($cutDex * 2 / 3);
+        $toNewDex = $toOrigDex + $addDex;
+
+        $exp = 10;
+        $exp = CharExperience($exp, $general['personal']);
+
+        $fromCrewStr = GameUnitConst::allType()[$fromDexIdx];
+        $toCrewStr = GameUnitConst::allType()[$toDexIdx];
+
+
+        $josaUl = JosaUtil::pick($cutDex, '을');
+        $josaRo = JosaUtil::pick($addDex, '로');
+        $log[] = "<C>●</>{$admin['month']}월:$fromCrewStr 숙련 {$cutDex}{$josaUl} $toCrewStr 숙련 {$addDex}{$josaRo} 전환했습니다. <1>$date</>";
+
+        $general['leader2'] += 2;
+
+        $db->update('general', [
+            'resturn'=>'SUCCESS',
+            'gold'=>$db->sqleval('gold-%i', $admin['develcost']),
+            'rice'=>$db->sqleval('rice-%i', $admin['develcost']),
+            'experience'=>$db->sqleval('experience+%i',$exp),
+            'leader2'=>$general['leader2'],
+            'dex'.($fromDexIdx*10)=>$fromNewDex,
+            'dex'.($toDexIdx*10)=>$toNewDex,
+        ], 'no=%i', $general['no']);
+    }
+    pushGenLog($general, $log);
+}
+
+
 function process_99(&$general) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');

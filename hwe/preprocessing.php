@@ -98,6 +98,7 @@ switch($commandtype) {
     case 55: command_Single($turn, 55); break; //거병
     case 56: command_Single($turn, 56); break; //해산
     case 57: command_Single($turn, 57); break; //모반 시도
+//    case 58: command_Single($turn, 58); break; //숙련 전환
 
 //    case 61: command_61($turn, 61); break; //불가침
 //    case 62: command_62($turn, 62); break; //선포
