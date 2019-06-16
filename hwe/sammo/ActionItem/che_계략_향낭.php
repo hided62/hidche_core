@@ -11,6 +11,7 @@ class che_계략_향낭 extends \sammo\BaseItem{
     protected static $cost = 3000;
     protected static $consumable = true;
     protected static $buyable = true;
+    protected static $reqSecu = 2000;
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '계략'){

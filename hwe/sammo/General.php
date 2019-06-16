@@ -100,6 +100,10 @@ class General implements iAction{
         return $this->itemObjs['item'];
     }
 
+    function getItems():array{
+        return $this->itemObjs;
+    }
+
     function getLastTurn():LastTurn{
         return $this->lastTurn;
     }

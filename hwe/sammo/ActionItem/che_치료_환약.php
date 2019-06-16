@@ -13,6 +13,7 @@ class che_치료_환약 extends \sammo\BaseItem{
     protected static $cost = 100;
     protected static $consumable = true;
     protected static $buyable = true;
+    protected static $reqSecu = 0;
 
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         return new GeneralTriggerCaller(

@@ -1505,8 +1505,17 @@ function tryUniqueItemLottery(General $general, string $acquireType='아이템')
         return false;
     }
 
-    if($general->getVar('npc') > 6 || $general->getVar('weap') > 6 || $general->getVar('book') > 6 || $general->getVar('item') > 6){
+    if($general->getVar('npc') > 6){
         return false;
+    }
+    
+    foreach($general->getItems() as $item){
+        if(!$item){
+            continue;
+        }
+        if(!$item->isBuyable()){
+            return false;
+        }
     }
 
     $scenario = $gameStor->scenario;
@@ -1537,24 +1546,35 @@ function tryUniqueItemLottery(General $general, string $acquireType='아이템')
 
     //아이템 습득 상황
     $availableUnique = [];
-    $itemTypes = [
-        'horse'=>'getItemName',
-        'weap'=>'getItemName',
-        'book'=>'getItemName',
-        'item'=>'getItemName'
-    ];
-    $itemCodeList = range(7, 26); // [7, 26] 20개
     
-    foreach($itemTypes as $itemType=>$itemNameFunc){
-        foreach($itemCodeList as $itemCode){
-            $availableUnique["{$itemType}_{$itemCode}"] = [$itemType, $itemCode];
+    //TODO: 너무 바보 같다. 장기적으로는 유니크 아이템 테이블 같은게 필요하지 않을까?
+    //일단은 '획득' 시에만 동작하므로 이대로 사용하기로...
+    $occupiedUnique = [];
+    
+    foreach (array_keys(GameConst::$allItems) as $itemType) {
+        foreach($db->queryAllLists('SELECT %b, count(*) as cnt FROM general GROUP BY %b', $itemType, $itemType) as [$itemCode, $cnt]){
+            $itemClass = buildItemClass($itemCode);
+            if(!$itemClass){
+                continue;
+            }
+            if($itemClass->isBuyable()){
+                continue;
+            }
+            $occupiedUnique[$itemCode] = $cnt;
         }
     }
 
-    //TODO: 너무 바보 같다. 장기적으로는 유니크 아이템 테이블 같은게 필요하지 않을까?
-    foreach ($itemTypes as $itemType=>$itemNameFunc) {
-        foreach($db->queryFirstColumn('SELECT %b FROM general WHERE %b > 6', $itemType, $itemType) as $itemCode){
-            unset($availableUnique["{$itemType}_{$itemCode}"]);
+    foreach(GameConst::$allItems as $itemType=>$itemCategories){
+        foreach($itemCategories as $itemCode => $cnt){
+            if(!key_exists($itemCode, $occupiedUnique)){
+                $availableUnique[] = [[$itemType, $itemCode], $cnt];
+                continue;
+            }
+
+            $remain = $cnt - $occupiedUnique[$itemCode];
+            if($remain > 0){
+                $availableUnique[] = [[$itemType, $itemCode], $cnt];
+            }
         }
     }
 
@@ -1562,12 +1582,12 @@ function tryUniqueItemLottery(General $general, string $acquireType='아이템')
         return false;
     }
 
-    [$itemType, $itemCode] = Util::choiceRandom($availableUnique);
+    [$itemType, $itemCode] = Util::choiceRandomUsingWeightPair($availableUnique);
     
     $nationName = $general->getStaticNation()['name'];
     $generalName = $general->getNation();
     $josaYi = JosaUtil::pick($generalName, '이');
-    $itemName = ($itemTypes[$itemType])($itemCode);
+    $itemName = getItemName($itemCode);
     $josaUl = JosaUtil::pick($itemName, '을');
 
 

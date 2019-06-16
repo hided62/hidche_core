@@ -12,6 +12,7 @@ class che_훈련_청주 extends \sammo\BaseItem{
     protected static $cost = 1000;
     protected static $consumable = true;
     protected static $buyable = true;
+    protected static $reqSecu = 1000;
 
     public function getBattleInitSkillTriggerList(WarUnit $unit):?WarUnitTriggerCaller{
         return new WarUnitTriggerCaller(
