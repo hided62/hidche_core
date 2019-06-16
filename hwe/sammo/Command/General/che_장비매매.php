@@ -187,7 +187,7 @@ EOT;
         foreach(GameConst::$allItems as $itemType=>$itemCategories){
             //매각
             $typeName = static::$itemMap[$itemType];
-            $form[] = "<option value='None' data-itemType='{$itemType}' style='color:skyblue'>_____{$typeName}매각(반값)____</option>";
+            $form[] = "<option value='None' data-itemType='{$itemType}' onclick='updateItemType(this);' style='color:skyblue'>_____{$typeName}매각(반값)____</option>";
 
             //구입
             foreach($itemCategories as $itemCode=>$cnt){
