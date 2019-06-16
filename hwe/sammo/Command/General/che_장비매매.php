@@ -172,8 +172,8 @@ class che_장비매매 extends Command\GeneralCommand{
         $gold = $this->generalObj->getVar('gold');
         $form[] = <<<EOT
 <script>
-function updateItemType(elem){
-    $('#itemType').val($(elem).data('itemType'));
+function updateItemType(){
+    $('#itemType').val($('#itemCode option:selected').data('itemType'));
 }
 </script>
 EOT;
@@ -182,12 +182,12 @@ EOT;
 장비를 구입하거나 매각합니다.<br>
 현재 구입 불가능한 것은 <font color=red>붉은색</font>으로 표시됩니다.<br>
 현재 도시 치안 : {$citySecu} &nbsp;&nbsp;&nbsp;현재 자금 : {$gold}<br>
-장비 : <select class='formInput' name="itemCode" id="itemCode" size='1' style='color:white;background-color:black;'>
+장비 : <select class='formInput' name="itemCode" id="itemCode" onchange='updateItemType();' size='1' style='color:white;background-color:black;'>
 EOT;
         foreach(GameConst::$allItems as $itemType=>$itemCategories){
             //매각
             $typeName = static::$itemMap[$itemType];
-            $form[] = "<option value='None' data-itemType='{$itemType}' onclick='updateItemType(this);' style='color:skyblue'>_____{$typeName}매각(반값)____</option>";
+            $form[] = "<option value='None' data-itemType='{$itemType}' style='color:skyblue'>_____{$typeName}매각(반값)____</option>";
 
             //구입
             foreach($itemCategories as $itemCode=>$cnt){
