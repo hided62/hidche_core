@@ -127,6 +127,27 @@ class WebUtil
         return "<link rel='stylesheet' type='text/css' href='{$path}{$tail}' />\n";
     }
 
+    protected static $jsFilesList = [];
+    public static function pushJSFile(string $path){
+        static::$jsFilesList[] = $path;
+    }
+
+    protected static $cssFilesList = [];
+    public static function pushCSSFile(string $path){
+        static::$cssFilesList[] = $path;
+    }
+
+    public static function printResourceFiles(){
+        foreach(static::$jsFilesList as $path){
+            static::printJS($path);
+        }
+        foreach(static::$cssFilesList as $path){
+            static::printCSS($path);
+        }
+        static::$jsFilesList = [];
+        static::$cssFilesList = [];
+    }
+
     public static function htmlPurify(?string $text): string{
         if(!$text){
             return '';
