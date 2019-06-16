@@ -165,7 +165,6 @@ class che_장비매매 extends Command\GeneralCommand{
     public function getForm(): string
     {
         $form = [];
-        $form[] = \sammo\getMapHtml();
 
         $db = DB::db();
 
