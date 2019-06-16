@@ -85,8 +85,9 @@ function closeButton() {
 }
 
 
-function printCitiesBasedOnDistance(int $cityNo, int $maxDistance=1) {
+function printCitiesBasedOnDistance(int $cityNo, int $maxDistance=1):string {
     $distanceList = searchDistance($cityNo, $maxDistance, true);
+    $result = [];
 
     for($dist = 1; $dist <= $maxDistance; $dist++){
         $cityList = array_map(function($cityID){
@@ -101,8 +102,9 @@ function printCitiesBasedOnDistance(int $cityNo, int $maxDistance=1) {
             default: $color = "yellow"; break;
         }
 
-        echo "{$dist}칸 떨어진 도시 : <span style='color:{$color};font-weight:bold;'>{$cityStr}</span><br>";
+        $result[] = "{$dist}칸 떨어진 도시 : <span style='color:{$color};font-weight:bold;'>{$cityStr}</span>";
     }
+    return join("<br>\n", $result);
 }
 
 

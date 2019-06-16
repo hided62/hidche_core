@@ -6,7 +6,7 @@ include "func.php";
 //로그인 검사
 
 $commandType = Util::getReq('commandtype', 'string');
-$turn = Util::getReq('turn', 'array_int');
+$turnList = Util::getReq('turn', 'array_int');
 
 if(!$turn || $commandtype === null){
     header('location:index.php', true, 303);
@@ -77,7 +77,13 @@ foreach($cssList as $css){
 </td></tr></table>
 
 <div class="tb_layout bg0" style="width:100px;margin:auto;">
+<form method='post' id='submitForm'>
+<input type='hidden' name='command' value='<?=$commandType?>'>
+<?php foreach($turnList as $turnIdx): ?>
+    <input type=hidden name='turn[]' value=<?=$turnIdx?>>
+<?php endforeach; ?>
 <?=$commandObj->getForm()?>
+</form>
 </div>
 
 <table class="tb_layout bg0" style="width:1000px;margin:auto;">
