@@ -37,7 +37,7 @@ class che_파괴 extends che_화계{
         $destCity['def'] -= $defAmount;
         $destCity['wall'] -= $wallAmount;
 
-        $db->update('city', [
+        DB::db()->update('city', [
             'state'=>32,
             'def'=>$destCity['def'],
             'wall'=>$destCity['wall']

@@ -97,8 +97,8 @@ class che_화계 extends Command\GeneralCommand{
 
         $prob = $maxGenScore / GameConst::$sabotageProbCoefByStat;
 
-        $prob += $city['secu'] / $city['secu2'] / 5; //최대 20%p
-        $prob += $city['supply'] ? 0.1 : 0;
+        $prob += $destCity['secu'] / $destCity['secu2'] / 5; //최대 20%p
+        $prob += $destCity['supply'] ? 0.1 : 0;
         return $prob;
     }
 
@@ -169,7 +169,7 @@ class che_화계 extends Command\GeneralCommand{
         $destCity['agri'] -= $agriAmount;
         $destCity['comm'] -= $commAmount;
 
-        $db->update('city', [
+        DB::db()->update('city', [
             'state'=>32,
             'agri'=>$destCity['agri'],
             'comm'=>$destCity['comm']
@@ -222,7 +222,7 @@ class che_화계 extends Command\GeneralCommand{
             $destCityID,
             $destNationID
         ) as $rawDestCityGeneral){
-            $destCityGeneralList[] = new General($rawDestGeneral, $destCity, $year, $month, true);
+            $destCityGeneralList[] = new General($rawDestCityGeneral, $destCity, $year, $month, true);
             //계략에 성공할 경우 logger를 사용해야 하므로 해야하므로, 미리 초기화한다.
             //실패하면 날리는거지 뭐~
         };
@@ -264,7 +264,7 @@ class che_화계 extends Command\GeneralCommand{
 
         $itemObj = $general->getItem();
         if($itemObj->isValidTurnItem('GeneralCommand', '계략') && $itemObj::$consumable){
-            $itemName = $itemObj->$name;
+            $itemName = $itemObj->name;
             $josaUl = JosaUtil::pick($itemName, '을');
             $logger->pushGeneralActionLog("<C>{$itemName}</>{$josaUl} 사용!", ActionLogger::PLAIN);
             $general->deleteItem();

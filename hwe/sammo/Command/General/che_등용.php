@@ -143,7 +143,7 @@ class che_등용 extends Command\GeneralCommand{
         $general->setResultTurn(new LastTurn(static::getName(), $this->arg));
         $general->checkStatChange();
         $general->applyDB($db);
-        $destGeneral->applyDB($db);
+        $this->destGeneralObj->applyDB($db);
 
         return true;
     }

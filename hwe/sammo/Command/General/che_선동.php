@@ -38,7 +38,7 @@ class che_선동 extends che_화계{
         $destCity['secu'] -= $secuAmount;
         $destCity['trust'] -= $trustAmount;
         
-        $db->update('city', [
+        DB::db()->update('city', [
             'state'=>32,
             'secu'=>$destCity['secu'],
             'trust'=>$destCity['trust']

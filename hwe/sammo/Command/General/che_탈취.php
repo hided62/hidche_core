@@ -26,8 +26,10 @@ class che_탈취 extends che_화계{
 
         $destCityName = $destCity['name'];
         $destCityID = $destCity['city'];
+        $destNationID = $destCity['nation'];
 
         $commandName = $this->getName();
+        $db = DB::db();
 
         // 탈취 최대 400 * 8
         $gold = Util::randRangeInt(GameConst::$sabotageDamageMin, GameConst::$sabotageDamageMax) * $destCity['level'];
