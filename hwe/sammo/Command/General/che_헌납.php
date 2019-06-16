@@ -130,5 +130,44 @@ class che_헌납 extends Command\GeneralCommand{
         return true;
     }
 
-    
+    public function getForm(): string
+    {
+        //TODO: 암행부처럼 보여야...
+        $form = [];
+
+        $form[] = <<<EOT
+        자신의 자금이나 군량을 국가 재산으로 헌납합니다.<br>
+<select class='formInput' name="isGold" id="isGold" size='1' style='color:white;background-color:black;'>
+    <option value="true">금</option>
+    <option value="false">쌀</option>
+</select>
+</select>
+<select class='formInput' name="amount" id="amount" size='1' style='color:white;background-color:black;'>
+    <option value=1>100</option>
+    <option value=2>200</option>
+    <option value=3>300</option>
+    <option value=4>400</option>
+    <option value=5>500</option>
+    <option value=6>600</option>
+    <option value=7>700</option>
+    <option value=8>800</option>
+    <option value=9>900</option>
+    <option value=10>1000</option>
+    <option value=12>1200</option>
+    <option value=15>1500</option>
+    <option value=20>2000</option>
+    <option value=25>2500</option>
+    <option value=30>3000</option>
+    <option value=40>4000</option>
+    <option value=50>5000</option>
+    <option value=60>6000</option>
+    <option value=70>7000</option>
+    <option value=80>8000</option>
+    <option value=90>9000</option>
+    <option value=100>10000</option>
+</select>
+<input type="submit" value="헌납">
+EOT;
+        return join("\n",$form);
+    }
 }

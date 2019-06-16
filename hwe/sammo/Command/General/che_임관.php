@@ -12,7 +12,8 @@ use \sammo\{
 
 
 use function \sammo\{
-    tryUniqueItemLottery
+    tryUniqueItemLottery,
+    getInvitationList
 };
 
 use \sammo\Constraint\Constraint;
@@ -176,5 +177,61 @@ class che_임관 extends Command\GeneralCommand{
         return true;
     }
 
-    
+    public function getForm(): string
+    {
+        $db = DB::db();
+        $form = [];
+
+        $generalObj = $this->generalObj;
+
+        $env = $this->env;
+
+        $joinedNations = Json::decode($db->queryFirstField('SELECT nations FROM general WHERE no = %i', $generalObj->getID()));
+
+        $nationList = $db->query('SELECT nation,`name`,color,scout,scoutmsg,gennum FROM nation');
+        shuffle($nationList);
+
+        $onlyRandom = $env['join_mode'] == 'onlyRandom';
+
+        foreach($nationList as &$nation){
+            if ($onlyRandom && TimeUtil::IsRangeMonth($env['init_year'], $env['init_month'], 1, $env['year'], $env['month']) && $nation['gennum'] >= GameConst::$initialNationGenLimitForRandInit) {
+                $nation['availableJoin'] = false;
+            }
+            else if($env['year'] < $env['startyear']+3 && $nation['gennum'] >= GameConst::$initialNationGenLimit){
+                $nation['availableJoin'] = false;
+            }
+            else if($nation['scout'] == 1) {
+                $nation['availableJoin'] = false;
+            }
+            else{
+                $nation['availableJoin'] = true;
+            }
+
+            if(in_array($nation['nation'], $joinedNations)){
+                $nation['availableJoin'] = false;
+            }
+        }
+        unset($nation);
+
+        $form[] = <<<EOT
+국가에 임관합니다.<br>
+이미 임관/등용되었던 국가는 다시 임관할 수 없습니다.<br>
+바로 군주의 위치로 이동합니다.<br>
+임관할 국가를 목록에서 선택하세요.<br>   
+<select class='formInput' name="destNationID" id="destNationID" size='1' style='color:white;background-color:black;'>
+EOT;
+        foreach($nationList as $nation){
+            $css = "color:{$nation['color']};";
+            if(!$nation['availableJoin']){
+                $css.= 'background-color:red;';
+            }
+            $form[] = "<option value='{$nation['nation']}' style='$css'>【 {$nation['name']} 】</option>";
+        }
+        $form[] = <<<EOT
+</select>
+<input type=submit value='임관'>
+EOT;
+        $form[] = getInvitationList($nationList);
+        return join("\n",$form);
+    }
 }

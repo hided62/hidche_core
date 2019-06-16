@@ -13,7 +13,8 @@ use \sammo\{
 
 use function \sammo\{
     tryUniqueItemLottery,
-    searchDistance
+    searchDistance,
+    printCitiesBasedOnDistance
 };
 
 use \sammo\Constraint\Constraint;
@@ -180,6 +181,32 @@ class che_첩보 extends Command\GeneralCommand{
         $general->applyDB($db);
 
         return true;
+    }
+
+    public function getJSFiles(): array
+    {
+        return [
+            'js/defaultSelectCityByMap.js'
+        ];
+    }
+
+    public function getForm(): string
+    {
+        $form = [];
+        $form[] = \sammo\getMapHtml();
+
+        $form[] = <<<EOT
+선택된 도시에 첩보를 실행합니다.<br>
+인접도시일 경우 많은 정보를 얻을 수 있습니다.<br>
+목록을 선택하거나 도시를 클릭하세요.<br>
+<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
+EOT;
+        $form[] = \sammo\optionsForCities();
+        $form[] = '</select>';
+        $form[] = '<input type=submit value="첩보">';
+        $form[] = printCitiesBasedOnDistance($this->generalObj->getCityID(), 3);
+        
+        return join("\n",$form);
     }
 
     

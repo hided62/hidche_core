@@ -16,7 +16,9 @@ use function \sammo\{
     getDomesticExpLevelBonus,
     CriticalRatioDomestic, 
     CriticalScoreEx,
-    tryUniqueItemLottery
+    tryUniqueItemLottery,
+    getAllNationStaticInfo,
+    getNationStaticInfo
 };
 
 use \sammo\Constraint\Constraint;
@@ -148,5 +150,47 @@ class che_등용 extends Command\GeneralCommand{
         return true;
     }
 
-    
+    public function getForm(): string
+    {
+        $db = DB::db();
+        $form = [];
+
+        $form[] = <<<EOT
+재야나 타국의 장수를 등용합니다.<br>
+서신은 개인 메세지로 전달됩니다.<br>
+등용할 장수를 목록에서 선택하세요.<br>
+<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
+EOT;
+        $destGenerals = [];
+        $destRawGenerals = $db->query('SELECT no,name,npc,nation FROM general WHERE npc < 2 AND no != %i AND level != 12 ORDER BY npc,binary(name)',$this->generalObj->getID());
+        foreach($destRawGenerals as $destGeneral){
+            $destNationID = $destGeneral['nation'];
+            if(!key_exists($destNationID, $destGenerals)){
+                $destGenerals[$destNationID] = [];
+            }
+            $destGenerals[$destNationID] = [$destGeneral];
+        }
+
+        $nationList = array_merge([0=>getNationStaticInfo(0)], getAllNationStaticInfo());
+        foreach($nationList as $destNation){
+            $form[] = "<option style='color:{$destNation['color']}'>【 {$destNation['name']} 】</option>";
+            $destNationID = $destNation['nation'];
+            if(!key_exists($destNationID, $destGenerals)){
+                continue;
+            }
+
+            foreach($destGenerals[$destNationID] as $destGeneral){
+                $nameColor = \sammo\getNameColor($destGeneral['npc']);
+                if($nameColor){
+                    $nameColor = " style='color:{$nameColor}'";
+                }
+                $form[] = "<option value='{$destGeneral['no']}' {$nameColor}>{$destGeneral['name']}</option>";
+            }
+        }
+
+        $form[] = '</select>';
+        $form[] = '<input type="submit" value="등용">';
+        
+        return join("\n",$form);
+    }
 }

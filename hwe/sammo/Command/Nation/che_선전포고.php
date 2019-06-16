@@ -170,4 +170,20 @@ class che_선전포고 extends Command\NationCommand{
 
         return true;
     }
+
+    public function getJSFiles(): array
+    {
+        return [
+            'js/defaultSelectNationByMap.js'
+        ];
+    }
+
+    public function getForm(): string
+    {
+        $form = [];
+        $form[] = \sammo\getMapHtml();
+
+
+        return join("\n",$form);
+    }
 }

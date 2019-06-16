@@ -12,7 +12,8 @@ use \sammo\{
 
 
 use function \sammo\{
-    tryUniqueItemLottery
+    tryUniqueItemLottery,
+    getAllNationStaticInfo
 };
 
 use \sammo\Constraint\Constraint;
@@ -21,7 +22,7 @@ use sammo\CityConst;
 use function sammo\getNationTypeClass;
 use function sammo\refreshNationStaticInfo;
 use function sammo\GetNationColors;
-
+use function sammo\newColor;
 
 
 class che_건국 extends Command\GeneralCommand{
@@ -172,5 +173,82 @@ class che_건국 extends Command\GeneralCommand{
         return true;
     }
 
+    public function getForm(): string
+    {
+
+        if(count(getAllNationStaticInfo()) >= $this->env['maxnation']){
+            return '더 이상 건국은 불가능합니다.';
+        }
+
+
+        //NOTE: 새로운 방법이 생기기 전까진 아무색이나 선택 가능하도록 하자.
+        /*
+        foreach(GetNationColors() as $color){
+            $colorUsed[$color] = 0;
+        }
     
+        foreach(getAllNationStaticInfo() as $nation){
+            if($nation['level'] <= 0){
+                continue;
+            }
+            $colorUsed[$nation['color']]++;
+        }
+    
+        $colorUsedCnt = 0;
+        foreach($colorUsed as $color=>$used){
+            if($used){
+                continue;
+            }
+            $colorUsedCnt += 1;
+        }
+    
+        //색깔이 다 쓰였으면 그냥 모두 허용
+        if($colorUsedCnt === count($colorUsed)){
+            foreach(array_keys($colorUsed) as $color){
+                $colorUsed[$color] = 0;
+            }
+        }
+        */
+        
+
+        $form = [];
+
+        $form[] = '현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.<br><br>';
+
+        foreach(GameConst::$availableNationType as $nationType){
+            $nationClass = getNationTypeClass($nationType);
+
+            [$name, $pros, $cons] = [$nationClass::$name, $nationClass::$pros, $nationClass::$cons];
+            $form[] = "- $name : <span style='color:cyan;'>{$pros}</span> <span style='color:magenta;'>{$cons}</span><br>";
+
+        }
+        $form[] = <<<EOT
+<br>
+국명 : <input type='text' class='formInput' name="nationName" id="nationName" size='18' maxlength='18' style='color:white;background-color:black;'>
+색깔 : <select class='formInput' name='nationColor' id='nationColor' size='1'>
+EOT;
+        foreach(GetNationColors() as $idx=>$color) {
+            /*
+            if($colorUsed[$color] > 0){
+                continue;
+            }
+            */
+            $form[] = "<option value={$idx} style='background-color:{$color};color:".newColor($color)."';>국가명</option>";
+        }
+        $form[] = <<<EOT
+</select>
+성향 : <select class='formInput' name='nationType' id='nationType' size='1'>
+EOT;
+        foreach(GameConst::$availableNationType as $nationType){
+            $nationClass = getNationTypeClass($nationType);
+
+            $name = $nationClass::$name;
+            $form[] = "<option value='{$nationType}' style=background-color:black;color:white;>{$name}</option>";
+
+        }
+        $form[] = '</select>';
+        $form[] = '<input type="submit" value="건국">';
+        
+        return join("\n",$form);
+    }
 }

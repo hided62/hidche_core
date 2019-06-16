@@ -128,4 +128,49 @@ class che_발령 extends Command\NationCommand{
 
         return true;
     }
+    
+    public function getJSFiles(): array
+    {
+        return [
+            'js/defaultSelectCityByMap.js'
+        ];
+    }
+
+    public function getForm(): string
+    {
+        $form = [];
+        $form[] = \sammo\getMapHtml();
+
+        $db = DB::db();
+
+        $form[] = <<<EOT
+선택된 도시로 아국 장수를 발령합니다.<br>
+아국 도시로만 발령이 가능합니다.<br>
+목록을 선택하거나 도시를 클릭하세요.<br>
+<select class='formInput' name="destGeneralID" id="destGeneralID" size='1' style='color:white;background-color:black;'>
+EOT;
+        $destRawGenerals = $db->query('SELECT no,name,level,npc,gold,rice FROM general WHERE nation = %i AND no != %i ORDER BY npc,binary(name)',$this->generalObj->getNationID(), $this->generalObj->getID());
+        foreach($destRawGenerals as $destGeneral){
+            $nameColor = \sammo\getNameColor($destGeneral['npc']);
+            if($nameColor){
+                $nameColor = " style='color:{$nameColor}'";
+            }
+
+            $name = $destGeneral['name'];
+            if($destGeneral['level'] >= 5){
+                $name = "*{$name}*";
+            }
+
+            $form[] = "<option value='{$destGeneral['no']}' {$nameColor}>{$name}(금:{$destGeneral['gold']}, 쌀:{$destGeneral['rice']})</option>";
+        }
+        $form[] = <<<EOT
+</select>
+<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
+EOT;
+        $form[] = \sammo\optionsForCities();
+        $form[] = '</select>';
+        $form[] = '<input type=submit value="발령">';
+        
+        return join("\n",$form);
+    }
 }

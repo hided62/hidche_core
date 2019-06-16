@@ -17,7 +17,8 @@ use function \sammo\{
     tryUniqueItemLottery,
     getItemCost,
     getItemInfo,
-    getItemName
+    getItemName,
+    buildItemClass
 };
 
 use \sammo\Constraint\Constraint;
@@ -43,12 +44,14 @@ class che_장비매매 extends Command\GeneralCommand{
             return false;
         }
         $itemCode = $this->arg['itemCode']??null;
-        if(!is_int($itemCode)){
+        if(!key_exists($itemCode, GameConst::$allItems[$itemType])){
             return false;
         }
-        if($itemCode < 0 || 6 < $itemCode){
+        $itemClass = buildItemClass($itemCode);
+        if(!$itemClass->isBuyable()){
             return false;
         }
+
         $this->arg = [
             'itemType'=>$itemType,
             'itemCode'=>$itemCode
@@ -66,12 +69,13 @@ class che_장비매매 extends Command\GeneralCommand{
         $itemType = $this->arg['itemType'];
         $itemTypeName = static::$itemMap[$itemType];
         $itemCode = $this->arg['itemCode'];
+        $itemClass = buildItemClass($itemCode);
 
         [$reqGold, $reqRice] = $this->getCost();
         
         $this->runnableConstraints=[
             ConstraintHelper::ReqCityTrader($general->getVar('npc')),
-            ConstraintHelper::ReqCityCapacity('secu', '치안 수치', $itemCode * 1000),
+            ConstraintHelper::ReqCityCapacity('secu', '치안 수치', $itemClass->getReqSecu()),
             ConstraintHelper::ReqGeneralGold($reqGold),
             ConstraintHelper::ReqGeneralRice($reqRice),
         ];
@@ -82,7 +86,7 @@ class che_장비매매 extends Command\GeneralCommand{
         else if($itemCode == $general->getVar($itemType)){
             $this->runnableConstraints[] = ConstraintHelper::AlwaysFail('이미 가지고 있습니다.');
         }
-        else if($itemType != 'item' && $general->getVar($itemType) > 6){
+        else if($itemType != 'item' && !buildItemClass($general->getVar($itemType))->isBuyable()){
             $this->runnableConstraints[] = ConstraintHelper::AlwaysFail('이미 진귀한 것을 가지고 있습니다.');
         }
 
@@ -93,7 +97,6 @@ class che_장비매매 extends Command\GeneralCommand{
             return [0, 0];
         }
         
-        $itemType = $this->arg['itemType'];
         $itemCode = $this->arg['itemCode'];
 
         $reqGold = getItemCost($itemCode);
@@ -121,7 +124,7 @@ class che_장비매매 extends Command\GeneralCommand{
         $itemType = $this->arg['itemType'];
         $itemCode = $this->arg['itemCode'];
 
-        if($itemCode == 0){
+        if($itemCode == 'None'){
             $buying = false;
             $itemCode = $general->getVar($itemType);
             $cost = getItemCost($itemCode);
@@ -159,5 +162,58 @@ class che_장비매매 extends Command\GeneralCommand{
         return true;
     }
 
-    
+    public function getForm(): string
+    {
+        $form = [];
+        $form[] = \sammo\getMapHtml();
+
+        $db = DB::db();
+
+        $citySecu = $db->queryFirstField('SELECT secu FROM city WHERE city = %i', $this->generalObj->getCityID());
+        $gold = $this->generalObj->getVar('gold');
+        $form[] = <<<EOT
+<script>
+function updateItemType(elem){
+    $('#itemType').val($(elem).data('itemType'));
+}
+</script>
+EOT;
+        $form[] = '<input type="hidden" class="formInput" name="itemType" id="itemType" value="item">';
+        $form[] = <<<EOT
+장비를 구입하거나 매각합니다.<br>
+현재 구입 불가능한 것은 <font color=red>붉은색</font>으로 표시됩니다.<br>
+현재 도시 치안 : {$citySecu} &nbsp;&nbsp;&nbsp;현재 자금 : {$gold}<br>
+장비 : <select class='formInput' name="itemCode" id="itemCode" size='1' style='color:white;background-color:black;'>
+EOT;
+        foreach(GameConst::$allItems as $itemType=>$itemCategories){
+            //매각
+            $typeName = static::$itemMap[$itemType];
+            $form[] = "<option value='None' data-itemType='{$itemType}' style='color:skyblue'>_____{$typeName}매각(반값)____</option>";
+
+            //구입
+            foreach($itemCategories as $itemCode=>$cnt){
+                if($cnt > 0){
+                    continue;
+                }
+                $itemClass = buildItemClass($itemCode);
+                if(!$itemClass->isBuyable()){
+                    continue;
+                }
+                $itemName = $itemClass->getName();
+                $reqSecu = $itemClass->getReqSecu();
+                $reqGold = $itemClass->getCost();
+                $css = '';
+                if($reqSecu < $citySecu){
+                    $css = 'color:red;';
+                }
+                $form[] = "<option value='{$itemCode}' data-itemType='{$itemType}' style='{$css}'>{$itemName} 가격: {$reqGold}</option>";
+            }
+        }
+        $form[] = <<<EOT
+</select>
+<input type=submit value=거래>
+EOT;
+        
+        return join("\n",$form);
+    }
 }

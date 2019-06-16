@@ -290,5 +290,32 @@ class che_화계 extends Command\GeneralCommand{
         return true;
     }
 
+    public function getJSFiles(): array
+    {
+        return [
+            'js/defaultSelectCityByMap.js'
+        ];
+    }
+
+    public function getForm(): string
+    {
+        $form = [];
+        $form[] = \sammo\getMapHtml();
+
+        $josaUl = JosaUtil::pick($this->getName(), '을');
+
+        $form[] = <<<EOT
+선택된 도시에 {$this->getName()}{$josaUl} 실행합니다.<br>
+목록을 선택하거나 도시를 클릭하세요.<br>
+<select class='formInput' name="destCityID" id="destCityID" size='1' style='color:white;background-color:black;'>
+EOT;
+        $form[] = \sammo\optionsForCities();
+        $form[] = '</select>';
+        $form[] = "<input type=submit value='{$this->getName()}>";
+        $form[] = printCitiesBasedOnDistance($this->generalObj->getCityID(), 2);
+        
+        return join("\n",$form);
+    }
+
     
 }
