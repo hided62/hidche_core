@@ -1,7 +1,10 @@
 jQuery(function($){
     $('#by_scenario').change(function(){
-        var scenarioIdx = $(this).val();
-        $.redirect('a_hallOfFame.php', {scenarioIdx:scenarioIdx}, 'get');
+        var $this = $(this);
+        var scenarioIdx = $this.val();
+        var seasonIdx = $(this).find('option:selected').data('season');
+        
+        
+        $.redirect('a_hallOfFame.php', {scenarioIdx:scenarioIdx, seasonIdx:seasonIdx}, 'get');
     })
-    //$.redirect("processing.php",{ commandtype: commandtype, turn: turn}, 'post'); 
 });

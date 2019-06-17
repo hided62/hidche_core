@@ -167,6 +167,7 @@ class ResetHelper{
         }
 
         $serverID = $clearResult['serverID'];
+        $seasonIdx = $clearResult['seasonIdx'];
         
         $scenarioObj = new Scenario($scenario, false);
         $scenarioObj->buildConf();
@@ -276,6 +277,7 @@ class ResetHelper{
             'date'=>$turntime,
             'winner_nation'=>null,
             'map'=>$scenarioObj->getMapTheme(),
+            'season'=>$seasonIdx,
             'scenario'=>$scenario,
             'scenario_name'=>$scenarioObj->getTitle(),
             'env'=>Json::encode($env)
