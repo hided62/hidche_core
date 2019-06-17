@@ -438,6 +438,7 @@ ENGINE=InnoDB;
 CREATE TABLE IF NOT EXISTS `ng_hall` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,
 	`server_id` CHAR(20) NOT NULL,
+	`season` INT(11) NOT NULL,
 	`scenario` INT(11) NOT NULL,
 	`general_no` INT(11) NOT NULL,
 	`type` INT(11) NOT NULL,
@@ -448,7 +449,7 @@ CREATE TABLE IF NOT EXISTS `ng_hall` (
 	UNIQUE INDEX `server_general` (`server_id`, `type`, `general_no`),
 	UNIQUE INDEX `owner` (`owner`, `server_id`, `type`),
 	INDEX `server_show` (`server_id`, `type`, `value`),
-	INDEX `scenario` (`scenario`, `type`, `value`)
+	INDEX `scenario` (`season`, `scenario`, `type`, `value`)
 )
 ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPRESSED;
 
@@ -463,6 +464,7 @@ CREATE TABLE IF NOT EXISTS `ng_games` (
 	`date` DATETIME NOT NULL,
 	`winner_nation` INT(11) NULL DEFAULT NULL,
 	`map` VARCHAR(50) NULL DEFAULT NULL,
+	`season` INT(11) NOT NULL,
 	`scenario` INT(11) NOT NULL,
 	`scenario_name` TEXT NOT NULL,
 	`env` TEXT NOT NULL COMMENT 'json',

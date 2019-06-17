@@ -2212,6 +2212,7 @@ function CheckHall($no) {
 
         $db->insertIgnore('ng_hall', [
             'server_id'=>UniqueConst::$serverID,
+            'season'=>UniqueConst::$seasonIdx,
             'scenario'=>$scenarioIdx,
             'general_no'=>$no,
             'type'=>$idx,
