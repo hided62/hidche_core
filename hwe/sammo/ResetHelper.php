@@ -81,11 +81,22 @@ class ResetHelper{
         mkdir($servRoot.'/logs/'.$serverID, 0755);
         mkdir($servRoot.'/data/'.$serverID, 0755);
 
+        $seasonIdx = 1;
+        if($db->queryFirstField('SHOW TABLES LIKE %s', 'storage') !== null){
+            $gameStor = KVStorage::getStorage($db, 'game_env');
+            $nextSeasonIdx = $gameStor->next_season_idx;
+            if($nextSeasonIdx !== null){
+                $seasonIdx = $nextSeasonIdx;
+            }
+            $gameStor->resetCache();
+        }
+
         $result = Util::generateFileUsingSimpleTemplate(
             $servRoot.'/d_setting/UniqueConst.orig.php',
             $servRoot.'/d_setting/UniqueConst.php',[
                 'serverID'=>$serverID,
                 'serverName'=>AppConf::getList()[$prefix]->getKorName(),
+                'seasonIdx'=>$seasonIdx
             ], true
         );
 
@@ -112,11 +123,14 @@ class ResetHelper{
             }
         }
 
-        (KVStorage::getStorage($db, 'game_env'))->resetValues();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $gameStor->resetValues();
+        $gameStor->next_season_idx = $seasonIdx;
 
         return [
             'result'=>true,
-            'serverID'=>$serverID
+            'serverID'=>$serverID,
+            'seasonIdx'=>$seasonIdx
         ];
     }
 

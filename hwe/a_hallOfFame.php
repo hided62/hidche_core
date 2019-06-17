@@ -5,6 +5,7 @@ include "lib.php";
 include "func.php";
 
 $session = Session::getInstance()->setReadOnly();
+$seasonIdx = Util::getReq('seasonIdx', 'int', null);
 $scenarioIdx = Util::getReq('scenarioIdx', 'int', null);
 
 $db = DB::db();
