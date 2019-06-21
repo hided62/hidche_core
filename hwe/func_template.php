@@ -47,7 +47,7 @@ function turnTable() {
 
 function CoreTurnTable() {
     return "
-<select name=turn[] size=3 multiple style=color:white;background-color:black;font-size:13px;>
+<select name=turn[] size=6 multiple style=color:white;background-color:black;font-size:13px;>
     <option selected value=0> 1턴</option>
     <option value=1> 2턴</option>
     <option value=2> 3턴</option>
