@@ -867,8 +867,6 @@ function generalInfo($no) {
         $lbonus = "";
     }
 
-    $troop = getTroop($general['troop']);
-
     $level = getLevel($general['level'], $nation['level']);
     if($general['level'] == 2)     {
         $query = "select name from city where gen3='{$general['no']}'";
@@ -936,7 +934,23 @@ function generalInfo($no) {
         default:
             $train = "{$general['train']}"; break;
     }
-    if($general['troop'] == 0)    { $troop['name'] = "-"; }
+    if($general['troop'] == 0){
+        $troopInfo = '-';
+    }
+    else{
+        $troop = getTroop($general['troop']);
+        $troopLeader = $db->queryFirstRow('SELECT city,turn0 FROM general WHERE no=%i', $troop['no']);
+        $troopInfo = $troop['name'];
+
+        if(DecodeCommand($troopLeader['turn0'])[0] != 26){
+            $troopInfo = "<strike style='color:gray;'>{$troopInfo}</strike>";
+        }
+        else if($troopLeader['city'] != $general['city']){
+            $troopCityName = CityConst::byID($troopLeader['city'])->name;
+            $troopInfo = "<span style='color:orange;'>{$troopInfo}({$troopCityName})</span>";
+        }
+        
+    }
     if($general['mode'] == 2)     { $general['mode'] = "<font color=limegreen>수비 함(훈사80)</font>"; }
     elseif($general['mode'] == 1) { $general['mode'] = "<font color=limegreen>수비 함(훈사60)</font>"; }
     else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
@@ -1010,7 +1024,7 @@ function generalInfo($no) {
     </tr>
     <tr height=20>
         <td style='text-align:center;' class='bg1'><b>부대</b></td>
-        <td style='text-align:center;' colspan=3>{$troop['name']}</td>
+        <td style='text-align:center;' colspan=3>{$troopInfo}</td>
         <td style='text-align:center;' class='bg1'><b>벌점</b></td>
         <td style='text-align:center;' colspan=5>".getConnect($general['connect'])." {$general['connect']}({$general['con']})</td>
     </tr>
