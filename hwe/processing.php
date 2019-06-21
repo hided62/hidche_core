@@ -536,7 +536,7 @@ function command_23($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select no,name,level,npc from general where nation='{$general['nation']}' and no!='{$general['no']}' order by npc,binary(name)";
+    $query = "select no,name,level,gold,rice,npc from general where nation='{$general['nation']}' and no!='{$general['no']}' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -552,10 +552,10 @@ function command_23($turn, $command) {
         else                       { $style = ""; }
         if($general['level'] >= 5) {
             echo "
-    <option value={$general['no']} {$style}>*{$general['name']}*</option>";
+    <option value={$general['no']} {$style}>*{$general['name']}*(금:{$general['gold']}, 쌀:{$general['rice']})</option>";
         } else {
             echo "
-    <option value={$general['no']} {$style}>{$general['name']}</option>";
+    <option value={$general['no']} {$style}>{$general['name']}(금:{$general['gold']}, 쌀:{$general['rice']})</option>";
         }
     }
 
@@ -613,7 +613,7 @@ function command_24($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
-    $query = "select no,name,level,npc from general where nation='{$general['nation']}' and no!='{$general['no']}' order by npc,binary(name)";
+    $query = "select no,name,level,gold,rice,npc from general where nation='{$general['nation']}' and no!='{$general['no']}' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -629,11 +629,9 @@ function command_24($turn, $command) {
         elseif($general['npc'] == 1) { $style = "style=color:skyblue;"; }
         else                       { $style = ""; }
         if($general['level'] >= 5) {
-            echo "
-    <option value={$general['no']} {$style}>*{$general['name']}*</option>";
+            echo "<option value={$general['no']} {$style}>*{$general['name']}*(금:{$general['gold']}, 쌀:{$general['rice']})</option>";
         } else {
-            echo "
-    <option value={$general['no']} {$style}>{$general['name']}</option>";
+            echo "<option value={$general['no']} {$style}>{$general['name']}(금:{$general['gold']}, 쌀:{$general['rice']})</option>";
         }
     }
 
@@ -770,7 +768,7 @@ function command_27($turn, $command) {
     $result = MYDB_query($query, $connect) or Error("command_27 ".MYDB_error($connect),"");
     $me = MYDB_fetch_array($result);
 
-    $query = "select no,name,level,npc from general where nation='{$me['nation']}' and no!='{$me['no']}' order by npc,binary(name)";
+    $query = "select no,name,city,level,npc from general where nation='{$me['nation']}' and no!='{$me['no']}' order by npc,binary(name)";
     $result = MYDB_query($query, $connect) or Error("aaa_processing.php ".MYDB_error($connect),"");
     $gencount = MYDB_num_rows($result);
 
@@ -784,15 +782,16 @@ function command_27($turn, $command) {
 
     for($i=0; $i < $gencount; $i++) {
         $general = MYDB_fetch_array($result);
+        $cityName = CityConst::byID($general['city'])->name;
         if    ($general['npc'] >= 2) { $style = "style=color:cyan;"; }
         elseif($general['npc'] == 1) { $style = "style=color:skyblue;"; }
         else                       { $style = ""; }
         if($general['level'] >= 5) {
             echo "
-    <option value={$general['no']} {$style}>*{$general['name']}*</option>";
+    <option value={$general['no']} {$style}>*{$general['name']}*({$cityName})</option>";
         } else {
             echo "
-    <option value={$general['no']} {$style}>{$general['name']}</option>";
+    <option value={$general['no']} {$style}>{$general['name']}({$cityName})</option>";
         }
     }
 
