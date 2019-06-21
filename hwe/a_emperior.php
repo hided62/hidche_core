@@ -98,10 +98,20 @@ foreach($emperiors as $emperior){
         <td align=center><?=$emperior['l12name']?></td>
         <td id=bg1 align=center>승 상</td>
         <td align=center><?=$emperior['l11name']?></td>
-        <td id=bg1 align=center>위 장 군</td>
+        <td id=bg1 align=center>표 기 장 군</td>
         <td align=center><?=$emperior['l10name']?></td>
         <td id=bg1 align=center>사 공</td>
         <td align=center><?=$emperior['l9name']?></td>
+    </tr>
+    <tr>
+        <td id=bg1 align=center>거 기 장 군</td>
+        <td align=center><?=$emperior['l8name']?></td>
+        <td id=bg1 align=center>태 위</td>
+        <td align=center><?=$emperior['l7name']?></td>
+        <td id=bg1 align=center>위 장 군</td>
+        <td align=center><?=$emperior['l6name']?></td>
+        <td id=bg1 align=center>사 도</td>
+        <td align=center><?=$emperior['l5name']?></td>
     </tr>
 </table>
 
