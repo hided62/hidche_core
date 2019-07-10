@@ -77,11 +77,12 @@ if ($admin['npcmode'] == 0) {
 }
 $color = "cyan";
 $mapTheme = $admin['map_theme'];
+$serverName = UniqueConst::$serverName;
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title><?=UniqueConst::$serverName?>: 메인</title>
+<title><?=$serverName?>: 메인</title>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=1024" />
@@ -127,7 +128,7 @@ $(function(){
 <div><?=allButton()?></div>
 <table class="tb_layout bg0" style="width:1000px;">
     <tr height=50>
-        <td colspan=5 align=center><font size=4>삼국지 모의전투 HiDCHe (<font color=cyan><?=$scenario?></font>)</font></td>
+        <td colspan=5 align=center><font size=4>삼국지 모의전투 HiDCHe <?=$serverName?> <?=$serverName.$serverCnt?>기 (<font color=cyan><?=$scenario?></font>)</font></td>
     </tr>
 <?php if ($valid == 1): ?>
     <tr height=30>
