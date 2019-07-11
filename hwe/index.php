@@ -129,7 +129,7 @@ $(function(){
 <div><?=allButton()?></div>
 <table class="tb_layout bg0" style="width:1000px;">
     <tr height=50>
-        <td colspan=5 align=center><font size=4>삼국지 모의전투 HiDCHe <?=$serverName.$serverCnt?>기 (<font color=cyan><?=$scenario?></font>)</font></td>
+        <td colspan=5 id="server_title" align=center><font size=4>삼국지 모의전투 HiDCHe <?=$serverName.$serverCnt?>기 (<font color=cyan><?=$scenario?></font>)</font></td>
     </tr>
 <?php if ($valid == 1): ?>
     <tr height=30>
