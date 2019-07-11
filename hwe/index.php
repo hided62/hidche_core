@@ -78,6 +78,7 @@ if ($admin['npcmode'] == 0) {
 $color = "cyan";
 $mapTheme = $admin['map_theme'];
 $serverName = UniqueConst::$serverName;
+$serverCnt = $db->queryFirstField('SELECT count(*) FROM ng_games');
 ?>
 <!DOCTYPE html>
 <html>
@@ -128,7 +129,7 @@ $(function(){
 <div><?=allButton()?></div>
 <table class="tb_layout bg0" style="width:1000px;">
     <tr height=50>
-        <td colspan=5 align=center><font size=4>삼국지 모의전투 HiDCHe <?=$serverName?> <?=$serverName.$serverCnt?>기 (<font color=cyan><?=$scenario?></font>)</font></td>
+        <td colspan=5 align=center><font size=4>삼국지 모의전투 HiDCHe <?=$serverName.$serverCnt?>기 (<font color=cyan><?=$scenario?></font>)</font></td>
     </tr>
 <?php if ($valid == 1): ?>
     <tr height=30>
