@@ -103,21 +103,30 @@ function getTurn(array $general, $type, $font=1) {
                 $str[$i] = "【{$general['name']}】{$josaUl} 등용";
                 break;
             case 25: //임관
+                $third = $command[2];
                 $double = $command[1];
 
-                if($double == 98){
-                    $nationName = '건국된 임의 국가';
+                if($third == 98){
+                    $str[$i] = "【건국된 임의 국가】로 임관";
                 }
-                else if($double == 99){
-                    $nationName = '임의의 국가';
+                else if($third == 99){
+                    $str[$i] = "【임의의 국가】로 임관";
+                }
+                else if($third == 1){
+                    $generalName = $db->queryFirstField('SELECT name FROM general WHERE no=%i', $double)??'?!?!';
+                    $josaUl = JosaUtil::pick($generalName, '을');
+                    $str[$i] = "【{$generalName}】{$josaUl} 따라 임관";
+                }
+                else if($third == 0){
+                    $nationName = getNationStaticInfo($double)['name']??'?!?!';
+    
+                    $josaRo = JosaUtil::pick($nationName, '로');
+                    $str[$i] = "【{$nationName}】{$josaRo} 임관";
                 }
                 else{
-                    $nationName = getNationStaticInfo($double)['name']??'?!?!';
+                    $str[$i] = "????";
                 }
                 
-
-                $josaRo = JosaUtil::pick($nationName, '로');
-                $str[$i] = "【{$nationName}】{$josaRo} 임관";
                 break;
             case 26: //집합
                 $str[$i] = "집합";

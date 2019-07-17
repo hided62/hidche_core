@@ -80,10 +80,11 @@ function process_25(&$general) {
     $city = MYDB_fetch_array($result);
 
     $command = DecodeCommand($general['turn0']);
+    $type = $command[2];
     $where = $command[1];
 
-    if($admin['join_mode'] == 'onlyRandom' && $where < 98){
-        $where = 99;
+    if($admin['join_mode'] == 'onlyRandom' && $type < 98){
+        $type = 99;
     }
 
     $nation = null;
@@ -91,7 +92,7 @@ function process_25(&$general) {
     $joinedNations = Json::decode($general['nations']);
 
     // 랜덤임관인 경우
-    if($general['npc'] >= 2 && $where >= 98 && !$admin['fiction'] && 1000 <= $admin['scenario'] && $admin['scenario'] < 2000){
+    if($general['npc'] >= 2 && $type >= 98 && !$admin['fiction'] && 1000 <= $admin['scenario'] && $admin['scenario'] < 2000){
         //'사실' 모드에서는 '성향'에 우선을 두되, 장수수, 랜덤에 비중을 둠
         $nations = $db->query(
             'SELECT nation.`name` as `name`,nation.nation as nation,scout,nation.`level` as `level`,gennum,`affinity` FROM nation join general on general.nation = nation.nation and general.level = 12 WHERE nation.nation not in %li and gennum < %i and scout = 0',
@@ -124,7 +125,7 @@ function process_25(&$general) {
         }
             
     }
-    else if($where >= 98) {
+    else if($type >= 98) {
         //랜임
         $generals = [];
         foreach($db->queryAllLists('SELECT count(no), nation FROM general WHERE npc <= 2 AND nation > 0 GROUP BY nation') as list($cnt, $nation)){
@@ -161,7 +162,7 @@ function process_25(&$general) {
         $randVals = [];
         foreach($nations as $idx=>$testNation){
             // 임관금지없음 국가, 방랑군 제외
-            if($where == 98 && $testNation['level'] == 0){
+            if($type == 98 && $testNation['level'] == 0){
                 continue;
             }
 
@@ -181,7 +182,10 @@ function process_25(&$general) {
             $nation = null;
         }
 
-    } else {
+    } else if($type == 0) {
+        $nation = $db->queryFirstRow('SELECT `name`,nation,scout,`level` FROM nation WHERE nation=%i', $where);
+    } else if($type == 1){
+        $where = $db->queryFirstField('SELECT nation FROM general WHERE no=%i', $where)??0;
         $nation = $db->queryFirstRow('SELECT `name`,nation,scout,`level` FROM nation WHERE nation=%i', $where);
     }
 

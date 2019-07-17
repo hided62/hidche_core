@@ -399,7 +399,7 @@ function processAI($no) {
             }
             else{
                 //랜임 커맨드 입력.
-                $command = EncodeCommand(0, 0, 99, 25); //임관
+                $command = EncodeCommand(0, 99, 0, 25); //임관
             }
             break;
         case 1: //거병이나 견문 40%

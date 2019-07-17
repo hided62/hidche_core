@@ -717,6 +717,8 @@ function command_25($turn, $command) {
         }
     }
     unset($nation);
+
+    $generalList = $db->query('SELECT no,name,nation,npc FROM general WHERE owner!=%i ORDER BY name ASC', $userID);
 ?>
 
 국가에 임관합니다.<br>
@@ -727,22 +729,31 @@ function command_25($turn, $command) {
 <?php else: ?>
 임관할 국가를 목록에서 선택하세요.<br>
 <?php endif; ?>
-!!!는 방랑군을 포함한 랜덤임관입니다. 유니크를 기대하신다면!<br>
-???는 방랑군을 제외한 랜덤임관입니다. 유니크 혜택은 없습니다.<br>
+임의의 국가로 임관할 경우 유니크 아이템을 얻을 기회가 높습니다.
 임관 금지이거나 초기 제한중인 국가는 붉은색 배경으로 표시됩니다.<br>
 870px x 200px를 넘어서는 내용은 표시되지 않습니다.<br>
 <form name=form1 action=c_double.php method=post>
-<select name=double size=1 style=color:white;background-color:black>
-    <option value=99 style=color:white;background-color:black;>!!!</option>
-    <option value=98 style=color:white;background-color:black;>???</option>
-
-    <?php foreach($nationList as $nation): ?>
-        <?php if(!$nation['availableJoin']): ?>
-            <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;background-color:red;' <?=$onlyRandom?'disabled':''?>>【 <?=$nation['name']?> 】</option>
-        <?php else: ?>
-            <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;' <?=$onlyRandom?'disabled':''?>>【 <?=$nation['name']?> 】</option>
-        <?php endif; ?>
-    <?php endforeach; ?>
+<input id='double' name='double' type='hidden'>
+<input id='third' name='third' type='hidden'>
+<select id='selectorV' name=value size=1 style=color:white;background-color:black>
+    <optgroup label='랜덤 임관'>
+        <option value=99 style=color:white;background-color:black;>임의의 국가</option>
+        <option value=98 style=color:white;background-color:black;>건국된 임의 국가</option>
+    </optgroup>
+    <optgroup label='국가로 임관'>
+        <?php foreach($nationList as $nation): ?>
+            <?php if(!$nation['availableJoin']): ?>
+                <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;background-color:red;' <?=$onlyRandom?'disabled':''?>>【 <?=$nation['name']?> 】</option>
+            <?php else: ?>
+                <option value='<?=$nation['nation']?>' style='color:<?=$nation['color']?>;' <?=$onlyRandom?'disabled':''?>>【 <?=$nation['name']?> 】</option>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </optgroup>
+    <optgroup label='장수를 따라 임관'>
+        <?php foreach($generalList as $targetGeneral): ?>
+            <option value='-<?=$targetGeneral['no']?>' <?=$onlyRandom?'disabled':''?>><?=formatName($targetGeneral['name'],$targetGeneral['npc'])?>【<?=getNationStaticInfo($targetGeneral['nation'])['name']??'재야'?>】</option>
+        <?php endforeach; ?>
+    </optgroup>
     
 </select>
 <input type=submit value=임관>
@@ -751,6 +762,29 @@ function command_25($turn, $command) {
             <input type=hidden name=turn[] value=<?=$turn[$i]?>>
     <?php endforeach; ?>
 </form>
+<script>
+$(function(){
+    var $third = $('#third');
+    var $double = $('#double');
+    var $selector = $('#selectorV');
+    $selector.on('change', function(){
+        var value=$selector.val();
+        if(value >= 98){
+            $third.val(value);
+            $double.val(0);
+        }
+        else if(value>0){
+            $third.val(0);
+            $double.val(value);
+        }
+        else{
+            $third.val(1);
+            $double.val(-value);
+        }
+    });
+    $selector.val(99).trigger('change');
+});
+</script>
 <?php
     echo getInvitationList($nationList);
 
