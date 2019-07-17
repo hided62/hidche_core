@@ -32,7 +32,7 @@ $nationID = $me['nation'];
 if($isAmbassador){
     $targetType = 'ambassador';
     $targetLevel = 4;
-    if(count($genlist) > 2){
+    if($genlist && count($genlist) > 2){
         Json::die([
             'result'=>false,
             'reason'=>'외교권자는 최대 둘까지만 설정 가능합니다.'
