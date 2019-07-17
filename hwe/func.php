@@ -1968,7 +1968,7 @@ function updateTurntime($no) {
 
     $admin = $gameStor->getValues(['year', 'month', 'isunited', 'turnterm']);
 
-    $query = "select no,name,name2,nation,troop,age,turntime,killturn,level,deadyear,npc,npc_org,affinity,npcid from general where no='$no'";
+    $query = "select no,owner,name,name2,nation,troop,age,startage,turntime,killturn,level,deadyear,npc,npc_org,affinity,npcid from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -2038,68 +2038,77 @@ function updateTurntime($no) {
             $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$general['nation']}'";
             MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
+            $generalName = $general['name'];
+
             // 병, 요절, 객사, 번개, 사채, 일확천금, 호랑이, 곰, 수영, 처형, 발견
-            $josaYi = JosaUtil::pick($general['name'], '이');
+            $josaYi = JosaUtil::pick($generalName, '이');
+
+            if($general['owner'] > 0 && $general['startage'] + 1 < $general['age']){
+                
+                $realName = RootDB::db()->queryFirstField('SELECT name FROM member WHERE no = %i', $general['owner'])??'??';
+                $generalName .= "({$realName})";
+            }
+
             switch(rand()%42) {
-            case 0:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 역병에 걸려 <R>죽고</> 말았습니다."; break;
-            case 1:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <R>요절</>하고 말았습니다."; break;
-            case 2:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 거리에서 갑자기 <R>객사</>하고 말았습니다."; break;
-            case 3:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 안타깝게도 번개에 맞아 <R>죽고</> 말았습니다."; break;
-            case 4:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 고리대금에 시달리다가 <R>자살</>하고 말았습니다."; break;
-            case 5:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 일확천금에 놀라 심장마비로 <R>죽고</> 말았습니다."; break;
-            case 6:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 산속에서 호랑이에게 물려 <R>죽고</> 말았습니다."; break;
-            case 7:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 산책중 곰에게 할퀴어 <R>죽고</> 말았습니다."; break;
-            case 8:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 수영을 하다 <R>익사</>하고 말았습니다."; break;
-            case 9:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 황제를 모독하다가 <R>처형</>당하고 말았습니다."; break;
-            case 10: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 이튿날 침실에서 <R>죽은채로</>발견되었습니다."; break;
-            case 11: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 색에 빠져 기력이 쇠진해 <R>죽고</>말았습니다."; break;
-            case 12: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 미녀를 보고 심장마비로 <R>죽고</>말았습니다."; break;
-            case 13: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 우울증에 걸려 <R>자살</>하고 말았습니다."; break;
-            case 14: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 천하 정세를 비관하며 <R>분신</>하고 말았습니다."; break;
-            case 15: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 어떤 관심도 못받고 쓸쓸히 <R>죽고</>말았습니다."; break;
-            case 16: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 유산 상속 문제로 다투다가 <R>살해</>당했습니다."; break;
-            case 17: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 누군가의 사주로 자객에게 <R>암살</>당했습니다."; break;
-            case 18: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 바람난 배우자에게 <R>독살</>당하고 말았습니다."; break;
-            case 19: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 농약을 술인줄 알고 마셔 <R>죽고</>말았습니다."; break;
-            case 20: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 아무 이유 없이 <R>죽고</>말았습니다."; break;
-            case 21: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 전재산을 잃고 화병으로 <R>죽고</>말았습니다."; break;
-            case 22: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 단식운동을 하다가 굶어 <R>죽고</>말았습니다."; break;
-            case 23: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 귀신에게 홀려 시름 앓다가 <R>죽고</>말았습니다."; break;
-            case 24: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 사람들에게 집단으로 맞아서 <R>죽고</>말았습니다."; break;
-            case 25: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 갑자기 성벽에서 뛰어내려 <R>죽고</>말았습니다."; break;
-            case 26: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 농사중 호미에 머리를 맞아 <R>죽고</>말았습니다."; break;
-            case 27: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 저세상이 궁금하다며 <R>자살</>하고 말았습니다."; break;
-            case 28: $alllog[0] = "<C>●</>{$admin['month']}월:운좋기로 소문난 <Y>{$general['name']}</>{$josaYi} 불운하게도 <R>죽고</>말았습니다."; break;
-            case 29: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 무리하게 단련을 하다가 <R>죽고</>말았습니다."; break;
-            case 30: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 생활고를 비관하며 <R>자살</>하고 말았습니다."; break;
-            case 31: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 평생 결혼도 못해보고 <R>죽고</> 말았습니다."; break;
-            case 32: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 과식하다 배가 터져 <R>죽고</> 말았습니다."; break;
-            case 33: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 웃다가 숨이 넘어가 <R>죽고</> 말았습니다."; break;
-            case 34: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 추녀를 보고 놀라서 <R>죽고</> 말았습니다."; break;
-            case 35: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 물에 빠진 사람을 구하려다 같이 <R>죽고</> 말았습니다."; break;
-            case 36: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 독살을 준비하다 독에 걸려 <R>죽고</> 말았습니다."; break;
-            case 37: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 뒷간에서 너무 힘을 주다가 <R>죽고</> 말았습니다."; break;
-            case 38: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 돌팔이 의사에게 치료받다가 <R>죽고</> 말았습니다."; break;
-            case 39: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 남의 보약을 훔쳐먹다 부작용으로 <R>죽고</> 말았습니다."; break;
-            case 40: $alllog[0] = "<C>●</>{$admin['month']}월:희대의 사기꾼 <Y>{$general['name']}</>{$josaYi} <R>사망</>했습니다."; break;
-            case 41: $alllog[0] = "<C>●</>{$admin['month']}월:희대의 호색한 <Y>{$general['name']}</>{$josaYi} <R>사망</>했습니다."; break;
-            default: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <R>사망</>했습니다."; break;
+            case 0:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 역병에 걸려 <R>죽고</> 말았습니다."; break;
+            case 1:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} <R>요절</>하고 말았습니다."; break;
+            case 2:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 거리에서 갑자기 <R>객사</>하고 말았습니다."; break;
+            case 3:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 안타깝게도 번개에 맞아 <R>죽고</> 말았습니다."; break;
+            case 4:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 고리대금에 시달리다가 <R>자살</>하고 말았습니다."; break;
+            case 5:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 일확천금에 놀라 심장마비로 <R>죽고</> 말았습니다."; break;
+            case 6:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 산속에서 호랑이에게 물려 <R>죽고</> 말았습니다."; break;
+            case 7:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 산책중 곰에게 할퀴어 <R>죽고</> 말았습니다."; break;
+            case 8:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 수영을 하다 <R>익사</>하고 말았습니다."; break;
+            case 9:  $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 황제를 모독하다가 <R>처형</>당하고 말았습니다."; break;
+            case 10: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 이튿날 침실에서 <R>죽은채로</>발견되었습니다."; break;
+            case 11: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 색에 빠져 기력이 쇠진해 <R>죽고</>말았습니다."; break;
+            case 12: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 미녀를 보고 심장마비로 <R>죽고</>말았습니다."; break;
+            case 13: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 우울증에 걸려 <R>자살</>하고 말았습니다."; break;
+            case 14: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 천하 정세를 비관하며 <R>분신</>하고 말았습니다."; break;
+            case 15: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 어떤 관심도 못받고 쓸쓸히 <R>죽고</>말았습니다."; break;
+            case 16: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 유산 상속 문제로 다투다가 <R>살해</>당했습니다."; break;
+            case 17: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 누군가의 사주로 자객에게 <R>암살</>당했습니다."; break;
+            case 18: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 바람난 배우자에게 <R>독살</>당하고 말았습니다."; break;
+            case 19: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 농약을 술인줄 알고 마셔 <R>죽고</>말았습니다."; break;
+            case 20: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 아무 이유 없이 <R>죽고</>말았습니다."; break;
+            case 21: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 전재산을 잃고 화병으로 <R>죽고</>말았습니다."; break;
+            case 22: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 단식운동을 하다가 굶어 <R>죽고</>말았습니다."; break;
+            case 23: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 귀신에게 홀려 시름 앓다가 <R>죽고</>말았습니다."; break;
+            case 24: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 사람들에게 집단으로 맞아서 <R>죽고</>말았습니다."; break;
+            case 25: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 갑자기 성벽에서 뛰어내려 <R>죽고</>말았습니다."; break;
+            case 26: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 농사중 호미에 머리를 맞아 <R>죽고</>말았습니다."; break;
+            case 27: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 저세상이 궁금하다며 <R>자살</>하고 말았습니다."; break;
+            case 28: $alllog[0] = "<C>●</>{$admin['month']}월:운좋기로 소문난 <Y>{$generalName}</>{$josaYi} 불운하게도 <R>죽고</>말았습니다."; break;
+            case 29: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 무리하게 단련을 하다가 <R>죽고</>말았습니다."; break;
+            case 30: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 생활고를 비관하며 <R>자살</>하고 말았습니다."; break;
+            case 31: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 평생 결혼도 못해보고 <R>죽고</> 말았습니다."; break;
+            case 32: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 과식하다 배가 터져 <R>죽고</> 말았습니다."; break;
+            case 33: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 웃다가 숨이 넘어가 <R>죽고</> 말았습니다."; break;
+            case 34: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 추녀를 보고 놀라서 <R>죽고</> 말았습니다."; break;
+            case 35: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 물에 빠진 사람을 구하려다 같이 <R>죽고</> 말았습니다."; break;
+            case 36: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 독살을 준비하다 독에 걸려 <R>죽고</> 말았습니다."; break;
+            case 37: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 뒷간에서 너무 힘을 주다가 <R>죽고</> 말았습니다."; break;
+            case 38: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 돌팔이 의사에게 치료받다가 <R>죽고</> 말았습니다."; break;
+            case 39: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 남의 보약을 훔쳐먹다 부작용으로 <R>죽고</> 말았습니다."; break;
+            case 40: $alllog[0] = "<C>●</>{$admin['month']}월:희대의 사기꾼 <Y>{$generalName}</>{$josaYi} <R>사망</>했습니다."; break;
+            case 41: $alllog[0] = "<C>●</>{$admin['month']}월:희대의 호색한 <Y>{$generalName}</>{$josaYi} <R>사망</>했습니다."; break;
+            default: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} <R>사망</>했습니다."; break;
             }
             // 엔피씨,엠피씨,의병 사망로그
             if($general['npc'] == 2 || $general['npc'] == 6) {
-                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <R>사망</>했습니다.";
+                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} <R>사망</>했습니다.";
             } elseif($general['npc'] >= 3) {
                 switch(rand()%10) {
-                case 0: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 푸대접에 실망하여 떠났습니다."; break;
-                case 1: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 갑자기 화를 내며 떠났습니다."; break;
-                case 2: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 의견차이를 좁히지 못하고 떠났습니다."; break;
-                case 3: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 판단 착오였다며 떠났습니다."; break;
-                case 4: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 생활고가 나아지지 않는다며 떠났습니다."; break;
-                case 5: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 기대가 너무 컸다며 떠났습니다."; break;
-                case 6: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 아무 이유 없이 떠났습니다."; break;
-                case 7: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 자기 목적은 달성했다며 떠났습니다."; break;
-                case 8: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 자기가 없어도 될것 같다며 떠났습니다."; break;
-                case 9: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 처자식이 그립다며 떠났습니다."; break;
+                case 0: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 푸대접에 실망하여 떠났습니다."; break;
+                case 1: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 갑자기 화를 내며 떠났습니다."; break;
+                case 2: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 의견차이를 좁히지 못하고 떠났습니다."; break;
+                case 3: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 판단 착오였다며 떠났습니다."; break;
+                case 4: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 생활고가 나아지지 않는다며 떠났습니다."; break;
+                case 5: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 기대가 너무 컸다며 떠났습니다."; break;
+                case 6: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 아무 이유 없이 떠났습니다."; break;
+                case 7: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 자기 목적은 달성했다며 떠났습니다."; break;
+                case 8: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 자기가 없어도 될것 같다며 떠났습니다."; break;
+                case 9: $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$generalName}</>{$josaYi} 처자식이 그립다며 떠났습니다."; break;
                 }
             }
 
