@@ -196,10 +196,10 @@ function process_25(&$general) {
     
     if(!$nation) {
         $log[] = "<C>●</>{$admin['month']}월:임관할 국가가 없습니다. 임관 실패. <1>$date</>";
-        if($where >= 98 && $genLimit == GameConst::$initialNationGenLimitForRandInit){
+        if($type >= 98 && $genLimit == GameConst::$initialNationGenLimitForRandInit){
             //랜덤 모드, 초기화시에는 랜덤 임관을 대신 한턴 더 넣어준다.
             $db->update('general', [
-                'turn1'=>EncodeCommand(0, 0, $where, 25),
+                'turn1'=>EncodeCommand(0, 0, $type, 25),
             ], '`no` = %i', $general['no']);
             pushGenLog($general, $log);
             process_42($general);
@@ -221,7 +221,7 @@ function process_25(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:이미 임관했었던 국가입니다. 임관 실패. <1>$date</>";
     } else {
         $josaYi = JosaUtil::pick($general['name'], '이');
-        if($where == 99 || $where == 98) {
+        if($type == 99 || $type == 98) {
             $alllog[] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} 어쩌다보니 <D><b>{$nation['name']}</b></>에 <S>임관</>했습니다.";
             $log[] = "<C>●</>{$admin['month']}월:<D>{$nation['name']}</>에 랜덤으로 임관했습니다. <1>$date</>";
             pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>에 임관");
@@ -273,7 +273,7 @@ function process_25(&$general) {
         $query = "update nation set totaltech=tech*'$gencount',gennum='$gennum' where nation='{$nation['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        if($where < 99) {
+        if($type < 99) {
             $log = uniqueItem($general, $log);
         } else {
             $log = uniqueItem($general, $log, 2);
