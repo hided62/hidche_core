@@ -43,7 +43,7 @@ foreach(range(1, GameConst::$maxChiefTurn - 1) as $turnIdx){
 $turnText = join("\n", $turnList);
 
 return "
-<select id='chiefTurnSelector' name=turn[] size=3 multiple>
+<select id='chiefTurnSelector' name=turn[] size=6 multiple>
 {$turnText}
 </select>
 ";

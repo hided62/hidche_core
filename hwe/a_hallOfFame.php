@@ -5,26 +5,36 @@ include "lib.php";
 include "func.php";
 
 $session = Session::getInstance()->setReadOnly();
+$seasonIdx = Util::getReq('seasonIdx', 'int', UniqueConst::$seasonIdx);
 $scenarioIdx = Util::getReq('scenarioIdx', 'int', null);
 
 $db = DB::db();
 
 increaseRefresh("명예의전당", 1);
 
-$scenarioList= [];
-foreach($db->query('SELECT scenario_name as name, count(scenario) as cnt, scenario from ng_games group by scenario order by scenario asc') as $scenarioInfo){
-    $scenarioList[$scenarioInfo['scenario']] = $scenarioInfo;
-}
+$scenarioList = (function(){
+    $db = DB::db();
+    $scenarioList= [];
+    foreach($db->query('SELECT season, scenario_name as name, count(scenario) as cnt, scenario from ng_games group by season, scenario order by season desc, scenario asc') as $scenarioInfo){
+        $seasonIdx = $scenarioInfo['season'];
+        $scenarioIdx = $scenarioInfo['scenario'];
+        if(!key_exists($seasonIdx, $scenarioList)){
+            $scenarioList[$seasonIdx] = [];
+        }
+        $scenarioList[$seasonIdx][$scenarioIdx] = $scenarioInfo;
+    }
+    return $scenarioList;
+})();
 
 
 
 if($scenarioIdx !== null || key_exists($scenarioIdx, $scenarioList)){
-    $searchScenarioName = $scenarioList[$scenarioIdx]['name'];
-    $searchFilter = $db->sqleval('scenario = %i', $scenarioIdx);
+    $searchScenarioName = $scenarioList[$seasonIdx][$scenarioIdx]['name'];
+    $searchFilter = $db->sqleval('season = %i AND scenario = %i', $seasonIdx, $scenarioIdx);
 }
 else{
     $searchScenarioName = '* 모두 *';
-    $searchFilter = $db->sqleval(true);
+    $searchFilter = $db->sqleval('season = %i', $seasonIdx);
 }
 
 ?>
@@ -53,12 +63,19 @@ else{
     <tr><td>명 예 의 전 당<br><?=closeButton()?></td></tr>
     <tr><td>
 시나리오 검색 : <select id="by_scenario" name="by_scenario">
-    <option value="" <?=$scenarioIdx?"selected='selected'":''?>>* 종합 *</option>
-<?php foreach($scenarioList as $info): ?>
-    <option
-        value="<?=$info['scenario']?>"
-        <?=($info['scenario']===$scenarioIdx)?"selected='selected'":''?>
-    ><?=$info['name']?>(<?=$info['cnt']?>회)</option>
+<?php foreach($scenarioList as $iterSeasonIdx=>$subScenarioList): ?>
+    <option 
+        data-season="<?=$iterSeasonIdx?>" 
+        value="" 
+        <?=($iterSeasonIdx == $seasonIdx && $scenarioIdx === null)?"selected='selected'":''?>
+    >* 시즌 : <?=$iterSeasonIdx?> 종합 *</option>
+    <?php foreach($subScenarioList as $info): ?>
+        <option
+        data-season="<?=$iterSeasonIdx?>" 
+            value="<?=$info['scenario']?>"
+            <?=($iterSeasonIdx == $seasonIdx && $info['scenario']===$scenarioIdx)?"selected='selected'":''?>
+        ><?=$info['name']?>(<?=$info['cnt']?>회)</option>
+    <?php endforeach; ?>
 <?php endforeach; ?>
 ?>
 </select>

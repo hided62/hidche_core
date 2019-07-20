@@ -81,11 +81,23 @@ class ResetHelper{
         mkdir($servRoot.'/logs/'.$serverID, 0755);
         mkdir($servRoot.'/data/'.$serverID, 0755);
 
+        $seasonIdx = 1;
+        if($db->queryFirstField('SHOW TABLES LIKE %s', 'storage') !== null){
+            $gameStor = KVStorage::getStorage($db, 'game_env');
+            $nextSeasonIdx = $gameStor->next_season_idx;
+            if($nextSeasonIdx !== null){
+                $seasonIdx = $nextSeasonIdx;
+            }
+            $gameStor->resetCache();
+        }
+
+
         $result = Util::generateFileUsingSimpleTemplate(
             $servRoot.'/d_setting/UniqueConst.orig.php',
             $servRoot.'/d_setting/UniqueConst.php',[
                 'serverID'=>$serverID,
                 'serverName'=>AppConf::getList()[$prefix]->getKorName(),
+                'seasonIdx'=>$seasonIdx,
             ], true
         );
 
@@ -112,12 +124,15 @@ class ResetHelper{
             }
         }
 
-        (KVStorage::getStorage($db, 'game_env'))->resetValues();
+        $gameStor = KVStorage::getStorage($db, 'game_env');
+        $gameStor->resetValues();
+        $gameStor->next_season_idx = $seasonIdx;
         (KVStorage::getStorage($db, 'nation_env'))->resetValues();
 
         return [
             'result'=>true,
-            'serverID'=>$serverID
+            'serverID'=>$serverID,
+            'seasonIdx'=>$seasonIdx
         ];
     }
 
@@ -154,6 +169,7 @@ class ResetHelper{
         }
 
         $serverID = $clearResult['serverID'];
+        $seasonIdx = $clearResult['seasonIdx'];
         
         $scenarioObj = new Scenario($scenario, false);
         $scenarioObj->buildConf();
@@ -220,6 +236,7 @@ class ResetHelper{
             'init_year'=> $year,
             'init_month'=>$month,
             'map_theme' => $scenarioObj->getMapTheme(),
+            'season'=>$seasonIdx,
             'msg'=>'공지사항',//TODO:공지사항
             'maxgeneral'=>GameConst::$defaultMaxGeneral,
             'maxnation'=>GameConst::$defaultMaxNation,
