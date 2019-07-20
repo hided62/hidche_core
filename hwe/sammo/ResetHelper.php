@@ -241,6 +241,7 @@ class ResetHelper{
             'tnmt_trig'=>$tournament_trig,
             'prev_winner'=>$prevWinner,
             'tournament'=>0,
+            'server_cnt'=>$db->queryFirstField('SELECT count(*) FROM ng_games')
         ];
 
         foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
