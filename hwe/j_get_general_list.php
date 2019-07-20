@@ -73,7 +73,7 @@ foreach($rawGeneralList as $rawGeneral){
         getGeneralSpecialWarName($special2),
         getGenChar($personal),
         $name,
-        $name2,
+        $npc==1?$name2:null,
         $injury,
         $leader,
         $lbonus,
