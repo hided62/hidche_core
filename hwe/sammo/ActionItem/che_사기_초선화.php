@@ -7,13 +7,13 @@ class che_사기_초선화 extends \sammo\BaseItem{
 
     protected static $id = 20;
     protected static $name = '초선화(사기)';
-    protected static $info = '[전투] 사기 보정 +7';
+    protected static $info = '[전투] 사기 보정 +14';
     protected static $cost = 200;
     protected static $consumable = false;
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName === 'bonusAtmos'){
-            return $value + 7;
+            return $value + 14;
         }
         return $value;
     }
