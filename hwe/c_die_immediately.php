@@ -13,7 +13,7 @@ $userID = Session::getUserID();
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
-$general = $db->queryFirstRow('SELECT no,name,name2,npc,lastrefresh FROM general WHERE owner=%i', $userID);
+$general = $db->queryFirstRow('SELECT no,name,name2,npc,lastrefresh FROM general WHERE owner=%i AND npc = 0', $userID);
 
 if(!$general){
     header('location:b_myPage.php');
@@ -36,31 +36,13 @@ if(!$availableDieImmediately){
 }
 
 
-if($general['npc'] == 0){
-    if(!$db->query('DELETE FROM general WHERE owner=%i AND npc=0', $userID)){
-        trigger_error("올바르지 않은 삭제 프로세스 $userID", E_USER_WARNING);
-    }
-    $generalName = $general['name'];
-    $josaYi = JosaUtil::pick($generalName, '이');
-    pushGeneralPublicRecord(["<C>●</>{$gameStor->month}월:<Y>{$generalName}</>{$josaYi} 이 홀연히 모습을 <R>감추었습니다</>"], $gameStor->year, $gameStor->month);
+if(!$db->query('DELETE FROM general WHERE owner=%i AND npc=0', $userID)){
+    trigger_error("올바르지 않은 삭제 프로세스 $userID", E_USER_WARNING);
 }
-else{
-    $turnterm = $gameStor->turnterm;
-    if($turnterm < 10){
-        $targetKillTurn = 30 / $turnterm;
-    }
-    else{
-        $targetKillTurn = 60 / $turnterm;
-    }
-    if(!$db->update('general', [
-        'killturn'=>$targetKillTurn
-    ], 'owner=%i AND npc=1', $userID)){
-        trigger_error("올바르지 않은 빙의 해제 프로세스 $userID", E_USER_WARNING);
-    }
-    $generalName = $general['name2'];
-    $josaYi = JosaUtil::pick($generalName, '이');
-    pushGeneralPublicRecord(["<C>●</>{$gameStor->month}월:<Y>{$generalName}</>{$josaYi} 이 홀연히 모습을 <R>감추었습니다</>"], $gameStor->year, $gameStor->month);
-}
+$generalName = $general['name'];
+$josaYi = JosaUtil::pick($generalName, '이');
+pushGeneralPublicRecord(["<C>●</>{$gameStor->month}월:<Y>{$generalName}</>{$josaYi} 이 홀연히 모습을 <R>감추었습니다</>"], $gameStor->year, $gameStor->month);
+
 
 
 $session->logoutGame();

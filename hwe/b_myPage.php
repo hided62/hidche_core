@@ -96,9 +96,12 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
 
 if($gameStor->turntime <= $gameStor->opentime){
     //서버 가오픈시 할 수 있는 행동
-    $showDieImmediatelyBtn = true;
-    if(addTurn($me['lastrefresh'], $gameStor->turnterm, 2) <= TimeUtil::DatetimeNow()){
-        $availableDieImmediately = true;
+
+    if($me['npc'] == 0){
+        $showDieImmediatelyBtn = true;
+        if(addTurn($me['lastrefresh'], $gameStor->turnterm, 2) <= TimeUtil::DatetimeNow()){
+            $availableDieImmediately = true;
+        }
     }
 }
 ?>
