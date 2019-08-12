@@ -5,6 +5,9 @@ function SetDevelop($genType, $no, $city, $tech) {
     $db = DB::db();
     $connect=$db->get();
 
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+    [$startyear, $year] = $gameStor->getValuesAsArray(['startyear', 'year']);
+
     $query = "select rate,pop/pop2*100 as po,comm/comm2*100 as co,def/def2*100 as de,wall/wall2*100 as wa,secu/secu2*100 as se,agri/agri2*100 as ag from city where city='$city'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
@@ -52,11 +55,11 @@ function SetDevelop($genType, $no, $city, $tech) {
             elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
         } elseif($prob < 90) {
-            if($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
+            if(!TechLimit($startyear, $year, $tech)) { $command = EncodeCommand(0, 0, 0, 3); } //기술
             elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
         } else {
-            if($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3 + (rand() % 2) * 6); } //기술, 조달
+            if(!TechLimit($startyear, $year, $tech)) { $command = EncodeCommand(0, 0, 0, 3 + (rand() % 2) * 6); } //기술, 조달
             else { $command = EncodeCommand(0, 0, 0, 29); }
         }
         break;
