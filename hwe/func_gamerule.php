@@ -1049,10 +1049,10 @@ function updateNationState() {
                         $score += 200; //NOTE: 꼬우면 군주하세요.
                     }
                     else if($nationGen['level'] == 11){
-                        $score += 100;
+                        $score += 70;
                     }
                     else if($nationGen['level'] > 4){
-                        $score += 50;
+                        $score += 35;
                     }
                     $uniqueLotteryWeightList[$nationGen['no']] = $score;
                 }
