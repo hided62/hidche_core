@@ -64,7 +64,7 @@ if(file_exists(__dir__.'/.htaccess')){
 
 //TODO: 천통시에도 예약 오픈 알림이 필요..?
 
-$admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'opentime', 'turntime']);
+$admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'opentime', 'turntime', 'join_mode', 'fiction']);
 $admin['maxUserCnt'] = $admin['maxgeneral'];
 $admin['npcMode'] = $admin['npcmode'];
 $admin['turnTerm'] = $admin['turnterm'];
@@ -85,6 +85,23 @@ $admin['userCnt'] = $genCnt;
 $admin['npcCnt'] = $npcCnt;
 $admin['nationCnt'] = $nationCnt;
 
+$admin['npcMode'] = $admin['npcMode']?'가능':'불가';
+$admin['fictionMode'] = $admin['fiction']?'가상':'사실';
+
+$otherTextInfo = [];
+
+if($options['join_mode'] == 'onlyRandom'){
+    $otherTextInfo[] = '랜덤 임관 전용';
+}
+
+if(!$otherTextInfo){
+    $otherTextInfo = '표준';
+}
+else{
+    $otherTextInfo = join(', ', $otherTextInfo);
+}
+$admin['otherTextInfo'] = $otherTextInfo;
+$admin['defaultStatTotal'] = GameConst::$defaultStatTotal;
 $me = [];
 
 $general = $db->queryFirstRow('SELECT name, picture, imgsvr from general where owner=%i', $userID);

@@ -12,7 +12,8 @@ var serverListTemplate = "\
 var serverTextInfo = "\
 <td>\
 서기 <%year%>년 <%month%>월 (<span style='color:orange;'><%scenario%></span>)<br>\
-유저 : <%userCnt%> / <%maxUserCnt%>명 <span style='color:cyan;'>NPC : <%npcCnt%>명</span> (<span style='color:limegreen;'><%turnTerm%>분 턴 서버</span>)\
+유저 : <%userCnt%> / <%maxUserCnt%>명 <span style='color:cyan;'>NPC : <%npcCnt%>명</span> (<span style='color:limegreen;'><%turnTerm%>분 턴 서버</span>)<br>\
+(상성 설정:<%fictionMode%>), (기타 설정:<%otherTextInfo%>)\
 </td>\
 ";
 
@@ -20,7 +21,9 @@ var serverProvisionalInfo = "\
 <td>\
 - 오픈 일시 : <%opentime%> -<br>\
 서기 <%year%>년 <%month%>월 (<span style='color:orange;'><%scenario%></span>)<br>\
-유저 : <%userCnt%> / <%maxUserCnt%>명 <span style='color:cyan;'>NPC : <%npcCnt%>명</span> (<span style='color:limegreen;'><%turnTerm%>분 턴 서버</span>)\
+유저 : <%userCnt%> / <%maxUserCnt%>명 <span style='color:cyan;'>NPC : <%npcCnt%>명</span> (<span style='color:limegreen;'><%turnTerm%>분 턴 서버</span>)<br>\
+(상성 설정:<%fictionMode%>), (기타 설정:<%otherTextInfo%>)\
+</td>\
 ";
 
 var serverFullTemplate = "\
@@ -56,7 +59,8 @@ var serverReservedTemplate = "\
 <%openDatetime==starttime?'':'- 가오픈 일시 : '+openDatetime+ '- <br>'%>\
 - 오픈 일시 : <%starttime%> - <br>\
 <span style='color:orange;'><%scenarioName%></span> <span style='color:limegreen;'><%turnterm%>분 턴 서버</span><br>\
-(상성 설정:<%fictionMode%>), (빙의 여부:<%npcMode%>), (최대 스탯:<%gameConf.defaultStatTotal%>), (기타 설정:<%otherTextInfo%>)</td>\
+(상성 설정:<%fictionMode%>), (빙의 여부:<%npcMode%>), (최대 스탯:<%gameConf.defaultStatTotal%>), (기타 설정:<%otherTextInfo%>)\
+</td>\
 ";
 
 $(function(){
@@ -121,7 +125,6 @@ function Entrance_drawServerList(serverInfos){
                 $serverHtml.find('.server_date').html('{0} ~'.format(game.starttime));
             }
 
-            console.log(game.opentime, now);
             if(game.opentime <= now){
                 $serverHtml.append(
                     TemplateEngine(serverTextInfo, game)
@@ -146,7 +149,7 @@ function Entrance_drawServerList(serverInfos){
                     TemplateEngine(serverFullTemplate, {})
                 );
             }
-            else if(game.npcMode == 1){
+            else if(game.npcMode == '가눙'){
                 $serverHtml.append(
                     TemplateEngine(serverCreateAndSelectTemplate, {serverPath:serverPath})
                 ).addClass('server_create_and_select');
