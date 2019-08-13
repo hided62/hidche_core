@@ -1032,7 +1032,7 @@ function updateNationState() {
 
             //유니크 아이템 하나 돌리자
             $targetKillTurn = $admin['killturn'];
-            $targetKillTurn -= Util::toInt($targetKillTurn / 10);
+            $targetKillTurn -= 24 * 60 / $admin['turnterm'];
             $nationGenList = $db->query('SELECT no, level, belong, horse, weap, book, item FROM general WHERE nation = %i AND killturn >= %i AND npc < 2', $nation['nation'], $targetKillTurn);
             $uniqueLotteryWeightList = [];
 
