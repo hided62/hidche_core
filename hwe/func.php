@@ -2261,7 +2261,7 @@ function CheckHall($no) {
 }
 
 
-function GuaranteedUniqueItemLottery(array $weightedArray, string $headerText='아이템'):?int{
+function guaranteedUniqueItemLottery(array $weightedArray, string $headerText='아이템'):?int{
     //NOTE: Util::choiceRandomUsingWeight 사용
     //TODO: 또 재 구현해야함.... ㅜㅜ
 
@@ -2293,14 +2293,14 @@ function GuaranteedUniqueItemLottery(array $weightedArray, string $headerText='�
 
     $sel = Util::choiceRandomUsingWeight($selGroup);
     switch($sel) {
-    case 0: [$type, $nameFunc] = ["weap", 'getWeapName']; break;
-    case 1: [$type, $nameFunc] = ["book", 'getBookName']; break;
-    case 2: [$type, $nameFunc] = ["horse", 'getHorseName']; break;
-    case 3: [$type, $nameFunc] = ["item", 'getItemName']; break;
+    case 0: [$type, $nameFunc] = ["weap", 'sammo\getWeapName']; break;
+    case 1: [$type, $nameFunc] = ["book", 'sammo\getBookName']; break;
+    case 2: [$type, $nameFunc] = ["horse", 'sammo\getHorseName']; break;
+    case 3: [$type, $nameFunc] = ["item", 'sammo\getItemName']; break;
     }
 
-    foreach($db->queryFirstColumn('SELECT %b FROM general WHERE %b > 6', $type) as $item){
-        $occupied[$item] = 1;
+    foreach($db->queryFirstColumn('SELECT %b FROM general WHERE %b > 6', $type, $type) as $itemIdx){
+        $occupied[$itemIdx] = 1;
     }
     for($i=7; $i <= 26; $i++) {
         if(!Util::array_get($occupied[$i])) {
@@ -2383,8 +2383,8 @@ function uniqueItem($general, $log, $vote=0) {
     default: $voteTypeText = '아이템'; break;
     }
 
-    foreach($db->queryFirstColumn('SELECT %b FROM general WHERE %b > 6', $type, $type) as $item){
-        $occupied[$item] = 1;
+    foreach($db->queryFirstColumn('SELECT %b FROM general WHERE %b > 6', $type, $type) as $itemIdx){
+        $occupied[$itemIdx] = 1;
     }
     for($i=7; $i <= 26; $i++) {
         if(!Util::array_get($occupied[$i])) {

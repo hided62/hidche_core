@@ -90,7 +90,7 @@ $admin['fictionMode'] = $admin['fiction']?'가상':'사실';
 
 $otherTextInfo = [];
 
-if($options['join_mode'] == 'onlyRandom'){
+if($admin['join_mode'] == 'onlyRandom'){
     $otherTextInfo[] = '랜덤 임관 전용';
 }
 

@@ -973,7 +973,7 @@ function updateNationState() {
     $connect=$db->get();
 
     $history = array();
-    $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm', 'turntime']);
+    $admin = $gameStor->getValues(['year', 'month', 'fiction', 'startyear', 'show_img_level', 'turnterm', 'turntime', 'killturn']);
 
     $query = "select nation,name,level,gennum,tech from nation";
     $nationresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1029,6 +1029,28 @@ function updateNationState() {
                     pushNationHistory($nation, "<C>●</>{$admin['year']}년 {$admin['month']}월:<D><b>{$nation['name']}</b></>의 군주가 <Y>".getNationLevel($nationlevel)."</>로 나서다");
                     break;
             }
+
+            //유니크 아이템 하나 돌리자
+            $nationGenList = $db->query('SELECT no, level, belong, horse, weap, book, item FROM general WHERE nation = %i AND killturn >= %i AND npc < 2', $nation['nation'], $admin['killturn']);
+            $uniqueLotteryWeightList = [];
+
+            foreach($nationGenList as $nationGen){
+                if($nationGen['horse'] > 6 || $nationGen['weap'] > 6 || $nationGen['book'] > 6 || $nationGen['item'] > 6){
+                    continue;
+                }
+                $score = $nationGen['belong'] + 5; //임관 년도 + 5
+                if($nationGen['level'] == 12){
+                    $score += 200; //NOTE: 꼬우면 군주하세요.
+                }
+                else if($nationGen['level'] == 11){
+                    $score += 100;
+                }
+                else if($nationGen['level'] > 4){
+                    $score += 50;
+                }
+                $uniqueLotteryWeightList[$nationGen['no']] = $score;
+            }
+            guaranteedUniqueItemLottery($uniqueLotteryWeightList, '작위보상');
 
             
             $lastAssemblerID = $gameStor->assembler_id??0;
