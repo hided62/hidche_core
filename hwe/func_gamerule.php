@@ -1005,8 +1005,10 @@ function updateNationState() {
         }
 
         if($nationlevel > $nation['level']) {
+            $levelDiff = $nationlevel - $nation['level'];
             $oldLevel = $nation['level'];
             $nation['level'] = $nationlevel;
+            
 
             switch($nationlevel) {
                 case 7:
@@ -1030,29 +1032,33 @@ function updateNationState() {
                     break;
             }
 
-            //유니크 아이템 하나 돌리자
-            $targetKillTurn = $admin['killturn'];
-            $targetKillTurn -= 24 * 60 / $admin['turnterm'];
-            $nationGenList = $db->query('SELECT no, level, belong, horse, weap, book, item FROM general WHERE nation = %i AND killturn >= %i AND npc < 2', $nation['nation'], $targetKillTurn);
-            $uniqueLotteryWeightList = [];
+            
+            foreach(range(1, $levelDiff) as $idx){
+                //유니크 아이템 하나 돌리자
+                $targetKillTurn = $admin['killturn'];
+                $targetKillTurn -= 24 * 60 / $admin['turnterm'];
+                $nationGenList = $db->query('SELECT no, level, belong, horse, weap, book, item FROM general WHERE nation = %i AND killturn >= %i AND npc < 2', $nation['nation'], $targetKillTurn);
+                $uniqueLotteryWeightList = [];
 
-            foreach($nationGenList as $nationGen){
-                if($nationGen['horse'] > 6 || $nationGen['weap'] > 6 || $nationGen['book'] > 6 || $nationGen['item'] > 6){
-                    continue;
+                foreach($nationGenList as $nationGen){
+                    if($nationGen['horse'] > 6 || $nationGen['weap'] > 6 || $nationGen['book'] > 6 || $nationGen['item'] > 6){
+                        continue;
+                    }
+                    $score = $nationGen['belong'] + 5; //임관 년도 + 5
+                    if($nationGen['level'] == 12){
+                        $score += 200; //NOTE: 꼬우면 군주하세요.
+                    }
+                    else if($nationGen['level'] == 11){
+                        $score += 100;
+                    }
+                    else if($nationGen['level'] > 4){
+                        $score += 50;
+                    }
+                    $uniqueLotteryWeightList[$nationGen['no']] = $score;
                 }
-                $score = $nationGen['belong'] + 5; //임관 년도 + 5
-                if($nationGen['level'] == 12){
-                    $score += 200; //NOTE: 꼬우면 군주하세요.
-                }
-                else if($nationGen['level'] == 11){
-                    $score += 100;
-                }
-                else if($nationGen['level'] > 4){
-                    $score += 50;
-                }
-                $uniqueLotteryWeightList[$nationGen['no']] = $score;
+                guaranteedUniqueItemLottery($uniqueLotteryWeightList, '작위보상');
             }
-            guaranteedUniqueItemLottery($uniqueLotteryWeightList, '작위보상');
+            
 
             
             $lastAssemblerID = $gameStor->assembler_id??0;
