@@ -16,6 +16,13 @@ var serverTextInfo = "\
 </td>\
 ";
 
+var serverProvisionalInfo = "\
+<td>\
+- 오픈 일시 : <%opentime%> -<br>\
+서기 <%year%>년 <%month%>월 (<span style='color:orange;'><%scenario%></span>)<br>\
+유저 : <%userCnt%> / <%maxUserCnt%>명 <span style='color:cyan;'>NPC : <%npcCnt%>명</span> (<span style='color:limegreen;'><%turnTerm%>분 턴 서버</span>)\
+";
+
 var serverFullTemplate = "\
 <td colspan='4' class='server_full'>- 장수 등록 마감 -</td>\
 ";
@@ -71,6 +78,7 @@ function Entrance_UpdateServer() {
 
 function Entrance_drawServerList(serverInfos){
     var $serverList = $('#server_list');
+    var now = moment().format('YYYY-MM-DD HH:mm:ss');
     $.each(serverInfos, function(idx, serverInfo){
         var $serverHtml = $(TemplateEngine(serverListTemplate, serverInfo));
         $serverList.append($serverHtml);
@@ -104,14 +112,27 @@ function Entrance_drawServerList(serverInfos){
                 $serverHtml.find('.n_country').html('§천하통일§');
                 $serverHtml.find('.server_date').html('{0} <br>~ {1}'.format(game.starttime, game.turntime));
             }
-            else{
+            else if(game.opentime <= now){
                 $serverHtml.find('.n_country').html('<{0}국 경쟁중>'.format(game.nationCnt));
                 $serverHtml.find('.server_date').html('{0} ~'.format(game.starttime));
             }
+            else{
+                $serverHtml.find('.n_country').html('-가오픈 중-');
+                $serverHtml.find('.server_date').html('{0} ~'.format(game.starttime));
+            }
 
-            $serverHtml.append(
-                TemplateEngine(serverTextInfo, game)
-            );
+            console.log(game.opentime, now);
+            if(game.opentime <= now){
+                $serverHtml.append(
+                    TemplateEngine(serverTextInfo, game)
+                );
+            }
+            else{
+                $serverHtml.append(
+                    TemplateEngine(serverProvisionalInfo, game)
+                );
+            }
+            
 
             if(result.me && result.me.name){
                 var me = result.me;
