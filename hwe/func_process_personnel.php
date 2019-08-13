@@ -770,7 +770,7 @@ function process_46(&$general) {
         $query = "update general set resturn='SUCCESS',dedication=dedication+'$ded', experience=experience+'$exp' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $log = uniqueItem($general, $log, 3);
+        $log = uniqueItem($general, $log);
     }
 
     pushWorldHistory($history, $admin['year'], $admin['month']);
