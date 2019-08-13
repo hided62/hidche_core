@@ -1042,13 +1042,13 @@ function updateNationState() {
                 }
                 $score = $nationGen['belong'] + 5; //임관 년도 + 5
                 if($nationGen['level'] == 12){
-                    $score += 100; //NOTE: 꼬우면 군주하세요.
+                    $score += 200; //NOTE: 꼬우면 군주하세요.
                 }
                 else if($nationGen['level'] == 11){
-                    $score += 50;
+                    $score += 100;
                 }
                 else if($nationGen['level'] > 4){
-                    $score += 25;
+                    $score += 50;
                 }
                 $uniqueLotteryWeightList[$nationGen['no']] = $score;
             }
