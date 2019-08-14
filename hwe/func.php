@@ -2350,6 +2350,7 @@ function uniqueItem($general, $log, $vote=0) {
 
     if($vote == 1) { $prob = Util::round($genCnt * 0.7 / 3); }     // 투표율 70%, 투표 한번에 2~3개 등장
     elseif($vote == 2) { $prob = Util::round($genCnt / 10 / 2); }   // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
+    elseif($vote == 3) { $prob = Util::round($genCnt / 10 / 4); }   // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
 
     if($prob < 3) { $prob = 3; }
     //아이템 습득 상황
@@ -2380,6 +2381,7 @@ function uniqueItem($general, $log, $vote=0) {
     switch($vote){
     case 1: $voteTypeText = '설문상품'; break;
     case 2: $voteTypeText = '랜덤임관상품'; break;
+    case 3: $voteTypeText = '건국상품'; break;
     default: $voteTypeText = '아이템'; break;
     }
 
