@@ -46,12 +46,12 @@ function SetDevelop($genType, $no, $city, $tech) {
     case 3: //지내정장
         if($prob < 40) {
             if($city['ag'] < 99) { $command = EncodeCommand(0, 0, 0, 1); } //농업
-            elseif($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
+            elseif(!TechLimit($startyear, $year, $tech)) { $command = EncodeCommand(0, 0, 0, 3); } //기술
             elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
         } elseif($prob < 80) {
             if($city['co'] < 99) { $command = EncodeCommand(0, 0, 0, 2); } //상업
-            elseif($tech < 10000) { $command = EncodeCommand(0, 0, 0, 3); } //기술
+            elseif(!TechLimit($startyear, $year, $tech)) { $command = EncodeCommand(0, 0, 0, 3); } //기술
             elseif($city['po'] < 99) { $command = EncodeCommand(0, 0, 0, 7); } //정장
             else { $command = EncodeCommand(0, 0, 0, 9); } //조달
         } elseif($prob < 90) {
