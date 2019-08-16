@@ -20,6 +20,7 @@ function myCommandList() {
     $userID = Session::getUserID();
 
     $date = date('Y-m-d H:i:s');
+    $date_precise = (new \DateTime())->format("Y-m-d H:i:s.u");
 
     // 명령 목록
     $admin = $gameStor->getValues(['year','month','turnterm','turntime','opentime']);
@@ -33,7 +34,7 @@ function myCommandList() {
 
     echo "<table width=300 height=700 class='tb_layout bg2'>
     <tr>
-        <td colspan=4 align=center id=bg0><b>- 명령 목록 - <input value='$date' type=text id=clock size=19 style=background-color:black;color:white;border-style:none;></b></td>
+        <td colspan=4 align=center id=bg0><b>- 명령 목록 - <input value='$date' type=text id=clock size=19 style=background-color:black;color:white;border-style:none; data-server-time='{$date_precise}'></b></td>
     </tr>";
 
     $year = $admin['year'];

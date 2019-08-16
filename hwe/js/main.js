@@ -66,11 +66,21 @@ function reloadCommandList(){
 
 function myclock() {
 
-    $('#clock').val(moment().tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss'));
+    var $clock = $('#clock');
+    var now_clock = moment();
+
+    if(!$clock.attr('data-time-diff')){
+        var base_clock = moment($clock.attr('data-server-time'));
+        $clock.attr('data-time-diff', base_clock.diff(now_clock));
+    }
+
+    var game_clock = now_clock.add(parseInt($clock.attr('data-time-diff')), 'milliseconds');
+
+    $('#clock').val(game_clock.format('YYYY-MM-DD HH:mm:ss'));
     
     window.setTimeout(function(){
         myclock();
-    }, 1000);
+    }, 500);
 }
 
 jQuery(function($){
