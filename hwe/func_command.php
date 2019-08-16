@@ -720,8 +720,11 @@ where nation='{$general['nation']}'
 
 function command_Single($turn, $command) {
     if(!$turn){
-        header('location:commandlist.php', true, 303);
-        return;
+        Json::die([
+            'result'=>true,
+            'nextPage'=>null,
+            'reason'=>'invalid turn'
+        ]);
     }
 
     $db = DB::db();
@@ -735,7 +738,11 @@ function command_Single($turn, $command) {
     }
     $db->update('general', $setValues, 'owner=%i',$userID);
     
-    header('location:commandlist.php', true, 303);
+    Json::die([
+        'result'=>true,
+        'nextPage'=>null,
+        'reason'=>'success'
+    ]);
 }
 
 function command_Chief($turn, $command) {
@@ -762,37 +769,22 @@ function command_Chief($turn, $command) {
 }
 
 function command_Other($turn, $commandtype) {
-
-    $target = "processing.php?commandtype={$commandtype}";
-    foreach($turn as $turnItem){
-        $target.="&turn[]={$turnItem}";
+    if(!$turn){
+        Json::die([
+            'result'=>true,
+            'nextPage'=>null,
+            'reason'=>'invalid turn'
+        ]);
     }
-    $target.="&".mt_rand();
-    ?>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=1024" />
-    <script>
-parent.moveProcessing(<?=$commandtype?>, <?=Json::encode($turn)?>);
-</script>
-</head>
-<body style="background-color:black;">
 
-</body>
-</html>
-<?php
+    $unixNow = time();
+    $turnArg = join('&turn[]=', $turn);
 
-/*
-<form name='form1' action='processing.php' method='post' target=_parent>
-<?php foreach($turn as $turnItem): ?>
-    <input type='hidden' name='turn[]' value='<?=$turnItem?>'>
-<?php endforeach; ?>
-<input type=hidden name=commandtype value=<?=$commandtype?>>
-</form>&nbsp;
-<script>*/
+    Json::die([
+        'result'=>true,
+        'nextPage'=>"processing.php?commandtype={$commandtype}&turn[]={$turnArg}&t={$unixNow}",
+        'reason'=>'success'
+    ]);
 }
 
 
