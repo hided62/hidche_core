@@ -149,7 +149,7 @@ function Entrance_drawServerList(serverInfos){
                     TemplateEngine(serverFullTemplate, {})
                 );
             }
-            else if(game.npcMode == '가눙'){
+            else if(game.npcMode == '가능'){
                 $serverHtml.append(
                     TemplateEngine(serverCreateAndSelectTemplate, {serverPath:serverPath})
                 ).addClass('server_create_and_select');

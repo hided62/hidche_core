@@ -71,7 +71,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 $gameStor->cacheValues(['year','month','maxgeneral','scenario','show_img_level','turnterm','turntime','genius','npcmode']);
 ########## 동일 정보 존재여부 확인. ##########
 
-$db->query("lock tables plock write");
+$db->query("lock tables general write, city read, storage read");
 
 $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
 $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', $userID);
