@@ -71,6 +71,8 @@ if ($gencount >= $maxgeneral) {
     ]);
 }
 
+$db->query("lock tables plock write");
+
 //등록 시작
 $db->update('general', [
     'name2'=>$userNick,
@@ -80,6 +82,8 @@ $db->update('general', [
     'permission'=>'normal',
     'owner'=>$userID,
 ], 'owner <= 0 AND npc = 2 AND no = %i', $pick);
+
+$db->query("unlock tables");
 
 if(!$db->affectedRows()){
     Json::die([
