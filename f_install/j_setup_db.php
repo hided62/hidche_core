@@ -280,5 +280,6 @@ if ($result !== true) {
 
 Json::die([
     'result'=>true,
-    'reason'=>'success'
+    'reason'=>'success',
+    'globalSalt'=>$globalSalt
 ]);
