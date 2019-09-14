@@ -12,8 +12,8 @@ $servHost = Util::getReq('serv_host');
 $sharedIconPath = Util::getReq('shared_icon_path');
 $gameImagePath = Util::getReq('game_image_path');
 
-$kakaoRESTKey = Util::getReq('kakao_rest_key', '');
-$kakaoAdminKey = Util::getReq('kakao_admin_key', '');
+$kakaoRESTKey = Util::getReq('kakao_rest_key', 'string', '');
+$kakaoAdminKey = Util::getReq('kakao_admin_key', 'string', '');
 
 
 if (!$host || !$port || !$username || !$password || !$dbName || !$servHost || !$sharedIconPath || !$gameImagePath) {
