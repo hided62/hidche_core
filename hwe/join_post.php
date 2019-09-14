@@ -71,6 +71,8 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 $gameStor->cacheValues(['year','month','maxgeneral','scenario','show_img_level','turnterm','turntime','genius','npcmode']);
 ########## 동일 정보 존재여부 확인. ##########
 
+$db->query("lock tables general write, city read, storage read");
+
 $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
 $oldGeneral = $db->queryFirstField('SELECT `no` FROM general WHERE `owner`=%i', $userID);
 $oldName = $db->queryFirstField('SELECT `no` FROM general WHERE `name`=%s', $name);
@@ -80,6 +82,7 @@ if ($oldGeneral) {
       window.alert('이미 등록하셨습니다!')
       history.go(-1)
       </script>");
+    $db->query("unlock tables");
     exit;
 }
 if ($oldName) {
@@ -87,6 +90,7 @@ if ($oldName) {
       window.alert('이미 있는 장수입니다. 다른 이름으로 등록해 주세요!')
       history.go(-1)
       </script>");
+    $db->query("unlock tables");
     exit;
 }
 if ($gameStor->maxgeneral <= $gencount) {
@@ -94,6 +98,7 @@ if ($gameStor->maxgeneral <= $gencount) {
       window.alert('더이상 등록할 수 없습니다!')
       history.go(-1)
       </script>");
+    $db->query("unlock tables");
     exit;
 }
 if (mb_strlen($name) < 1) {
@@ -101,6 +106,7 @@ if (mb_strlen($name) < 1) {
       window.alert('이름이 짧습니다. 다시 가입해주세요!')
       history.go(-1)
       </script>");
+    $db->query("unlock tables");
     exit;
 }
 if (mb_strlen($name) > 9) {
@@ -108,6 +114,7 @@ if (mb_strlen($name) > 9) {
       window.alert('이름이 유효하지 않습니다. 다시 가입해주세요!')
       history.go(-1)
       </script>");
+    $db->query("unlock tables");
     exit;
 }
 if ($leader + $power + $intel > GameConst::$defaultStatTotal) {
@@ -115,6 +122,7 @@ if ($leader + $power + $intel > GameConst::$defaultStatTotal) {
       window.alert('능력치가 ".GameConst::$defaultStatTotal."을 넘어섰습니다. 다시 가입해주세요!')
       history.go(-1)
       </script>");
+    $db->query("unlock tables");
     exit;
 }
 
@@ -189,8 +197,8 @@ else{
 
 $turntime = getRandTurn($admin['turnterm'], new \DateTimeImmutable($admin['turntime']));
 
-$lastconnect = date('Y-m-d H:i:s');
-if ($lastconnect >= $turntime) {
+$now = date('Y-m-d H:i:s');
+if ($now >= $turntime) {
     $turntime = addTurn($turntime, $admin['turnterm']);
 }
 
@@ -233,7 +241,8 @@ $db->insert('general', [
     'level' => 0,
     'turntime' => $turntime,
     'killturn' => 6,
-    'lastconnect' => $lastconnect,
+    'lastconnect' => $now,
+    'lastrefresh' => $now,
     'crewtype'=>GameUnitConst::DEFAULT_CREWTYPE,
     'makelimit' => 0,
     'age' => $age,
@@ -245,6 +254,8 @@ $db->insert('general', [
     'special2' => $special2
 ]);
 $generalID = $db->insertId();
+
+$db->query("unlock tables");
 
 $cityname = CityConst::byID($city)->name;
 

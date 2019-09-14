@@ -28,7 +28,7 @@ function refreshing(obj, arg1, arg2) {
     switch(arg1) {
         case 0: document.location.reload(); break;
         case 2: turn(arg2); break;
-        case 3: arg2.submit(); break;
+        case 3: $(arg2).submit(); break;
         case 4:
             arg2.submit();
             message.msg.value = "";
@@ -39,14 +39,48 @@ function refreshing(obj, arg1, arg2) {
     return false;
 }
 
-function moveProcessing(commandtype, turn){
-    console.log(commandtype, turn);
-    $.redirect("processing.php",{ commandtype: commandtype, turn: turn}, 'post'); 
+function turn(type) {
+    $.post({
+        url:'j_turn.php',
+        dataType:'json',
+        data:{
+            type:type,
+            sel:form2.sel.value
+        }
+    }).then(function(data){
+        if(!data.result){
+            alert(data.reason);
+        }
+        reloadCommandList();
+    });
 }
 
-function turn(type) {
-    num = form2.sel.value;
-    commandlist.location.replace('turn.php?type=' + type + '&sel=' + num);
+function reloadCommandList(){
+    $.get({
+        url:'commandlist.php',
+        cache: false,
+    }).then(function(rdata){
+        $('#commandlist').html(rdata);
+    });
+}
+
+function myclock() {
+
+    var $clock = $('#clock');
+    var now_clock = moment();
+
+    if(!$clock.attr('data-time-diff')){
+        var base_clock = moment($clock.attr('data-server-time'));
+        $clock.attr('data-time-diff', base_clock.diff(now_clock));
+    }
+
+    var game_clock = now_clock.add(parseInt($clock.attr('data-time-diff')), 'milliseconds');
+
+    $('#clock').val(game_clock.format('YYYY-MM-DD HH:mm:ss'));
+    
+    window.setTimeout(function(){
+        myclock();
+    }, 500);
 }
 
 jQuery(function($){
@@ -54,11 +88,40 @@ jQuery(function($){
         var $this = $(this);
         var target = $('[name="genlist"]').val();
         var msg = $('#msg').val();
-        console.log(target, msg);
         return false;
     });
 
     $('#mainBtnSubmit').click(function(){
 
     });
+
+    $('#form2').submit(function(){
+        var values = $(this).serializeArray();
+        console.log(values);
+        $.post({
+            url:'j_preprocessing.php',
+            dataType:'json',
+            data:values
+        }).then(function(data){
+            if(!data.result){
+                alert(data.reason);
+                reloadCommandList();
+                return;
+            }
+
+            if(!data.nextPage){
+                reloadCommandList();
+                return;
+            }
+
+            document.location = data.nextPage;
+            return;
+        }, function(){
+            alert('알 수 없는 에러');
+            location.reload();
+        });
+        return false;
+    });
+
+    myclock();
 });

@@ -18,20 +18,23 @@ if($tnmt < 0 || $tnmt > 1){
     $tnmt = 1;
 }
 
+$showDieImmediatelyBtn = false;
+$availableDieImmediately = false;
+
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
+$gameStor->cacheValues(['turnterm', 'opentime', 'turntime']);
 $connect=$db->get();
 
 increaseRefresh("내정보", 1);
 
-$query = "select no,npc,mode,tnmt,myset,train,atmos from general where owner='{$userID}'";
+$query = "select no,npc,mode,tnmt,myset,train,atmos,lastrefresh from general where owner='{$userID}'";
 $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
 $me = MYDB_fetch_array($result);
-
 
 if ($me['myset'] > 0) {
     $submit = 'submit';
@@ -91,6 +94,16 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
     }
 }
 
+if($gameStor->turntime <= $gameStor->opentime){
+    //서버 가오픈시 할 수 있는 행동
+
+    if($me['npc'] == 0){
+        $showDieImmediatelyBtn = true;
+        if(addTurn($me['lastrefresh'], $gameStor->turnterm, 2) <= TimeUtil::DatetimeNow()){
+            $availableDieImmediately = true;
+        }
+    }
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -106,7 +119,21 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
 <?=WebUtil::printCSS('../d_shared/common.css')?>
 <?=WebUtil::printCSS('css/common.css')?>
+<script>
+var availableDieImmediately = <?=$availableDieImmediately?'true':'false'?>;
+jQuery(function($){
 
+$('#die_immediately').click(function(){
+    if(!availableDieImmediately){
+        alert('삭제를 위해서는 생성 후 2턴 가량의 시간이 필요합니다.');
+        location.reload();
+        return false;
+    }
+    return confirm('정말로 삭제하시겠습니까?');
+});
+
+});
+</script>
 </head>
 
 <body>
@@ -138,6 +165,12 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
             <a href="c_vacation.php"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>휴가 신청</button></a><br><br>
             <!--빙의 해제용 삭턴 조절<br>
             <a href="b_myPage.php?detachNPC=1"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>빙의 해체 요청</button></a>-->
+
+<?php if($showDieImmediatelyBtn): ?>
+            가오픈 기간 내 장수 삭제<br>
+            <a href="c_die_immediately.php" id='die_immediately'><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>장수 삭제</button></a><br><br>
+<?php endif; ?>
+
             개인용 CSS<br>
             <textarea id='custom_css' style='color:white;background-color:black;width:420px;height:150px;'></textarea>
         </td>

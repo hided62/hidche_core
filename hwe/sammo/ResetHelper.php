@@ -237,7 +237,7 @@ class ResetHelper{
             'msg'=>'공지사항',//TODO:공지사항
             'maxgeneral'=>GameConst::$defaultMaxGeneral,
             'maxnation'=>GameConst::$defaultMaxNation,
-            'conlimit'=>300,
+            'conlimit'=>30000,
             'gold_rate'=>100,
             'rice_rate'=>100,
             'develcost'=>$develcost,

@@ -22,6 +22,13 @@ $rootDB = RootDB::db();
 $oNow = new \DateTimeImmutable();
 $now = $oNow->format('Y-m-d H:i:s');
 
+list(
+    $year,
+    $month,
+    $maxgeneral,
+    $npcmode
+) = $gameStor->getValuesAsArray(['year', 'month', 'maxgeneral', 'npcmode']);
+
 $userNick = RootDB::db()->queryFirstField('SELECT `NAME` FROM member WHERE `NO`=%i',$userID);
 if(!$userNick){
     Json::die([
@@ -30,6 +37,8 @@ if(!$userNick){
     ]);
 }
 
+$db->query("lock tables general write, select_npc_token write");
+
 $pickResult = $db->queryFirstField('SELECT pick_result FROM select_npc_token WHERE `owner`=%i AND `valid_until`>=%s', $userID, $now);
 if(!$pickResult){
     Json::die([
@@ -37,7 +46,6 @@ if(!$pickResult){
         'reason'=>'유효한 장수 목록이 없습니다.'
     ]);
 }
-
 
 $pickResult = Json::decode($pickResult);
 if(!key_exists($pick, $pickResult)){
@@ -50,14 +58,9 @@ $pickedNPC = $pickResult[$pick];
 
 
 $gencount = $db->queryFirstField('SELECT count(`no`) FROM general WHERE npc<2');
-list(
-    $year,
-    $month,
-    $maxgeneral,
-    $npcmode
-) = $gameStor->getValuesAsArray(['year', 'month', 'maxgeneral', 'npcmode']);
 
 if(!$npcmode){
+    $db->query("unlock tables");
     Json::die([
         'result'=>false,
         'reason'=>'빙의 가능한 서버가 아닙니다'
@@ -65,11 +68,14 @@ if(!$npcmode){
 }
 
 if ($gencount >= $maxgeneral) {
+    $db->query("unlock tables");
     Json::die([
         'result'=>false,
         'reason'=>'더 이상 등록 할 수 없습니다.'
     ]);
 }
+
+
 
 //등록 시작
 $db->update('general', [
@@ -81,7 +87,10 @@ $db->update('general', [
     'owner'=>$userID,
 ], 'owner <= 0 AND npc = 2 AND no = %i', $pick);
 
+
+
 if(!$db->affectedRows()){
+    $db->query("unlock tables");
     Json::die([
         'result'=>false,
         'reason'=>'장수 등록에 실패했습니다.'
@@ -89,6 +98,8 @@ if(!$db->affectedRows()){
 }
 
 $db->delete('select_npc_token', 'owner=%i or valid_until < %s', $userID, $now);
+
+$db->query("unlock tables");
 
 $josaYi = JosaUtil::pick($userNick, '이');
 pushGeneralHistory($pickedNPC, "<C>●</>{$year}년 {$month}월:<Y>{$pickedNPC['name']}</>의 육체에 <Y>{$userNick}</>{$josaYi} 빙의되다.");

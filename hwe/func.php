@@ -1283,8 +1283,9 @@ function increaseRefresh($type="", $cnt=1) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $gameStor->refresh = $gameStor->refresh+$cnt; //TODO: +로 증가하는 값은 별도로 분리
     $isunited = $gameStor->isunited;
+    $opentime = $gameStor->opentime;
 
-    if($isunited != 2 && $generalID && $userGrade < 6) {
+    if($isunited != 2 && $generalID && $userGrade < 6 && $opentime <= TimeUtil::DatetimeNow()) {
         $db->update('general', [
             'lastrefresh'=>$date,
             'con'=>$db->sqleval('con + %i', $cnt),
@@ -2261,11 +2262,78 @@ function CheckHall($no) {
 }
 
 
+function guaranteedUniqueItemLottery(array $weightedArray, string $headerText='아이템'):?int{
+    //NOTE: Util::choiceRandomUsingWeight 사용
+    //TODO: 또 재 구현해야함.... ㅜㅜ
+
+    if(!$weightedArray){
+        return null;
+    }
+    $db = DB::db();
+    $gameStor = KVStorage::getStorage($db, 'game_env');
+
+    $targetGeneralID = Util::choiceRandomUsingWeight($weightedArray);
+    
+    $alllog = [];
+    $history = [];
+    $occupied = [];
+    $item = [];
+
+    $admin = $gameStor->getValues(['year', 'month', 'scenario']);
+
+    $selGroup = [
+        20 - $db->queryFirstField('SELECT count(*) from general where weap > 6'),
+        20 - $db->queryFirstField('SELECT count(*) from general where book > 6'),
+        20 - $db->queryFirstField('SELECT count(*) from general where horse > 6'),
+        20 - $db->queryFirstField('SELECT count(*) from general where item > 6')
+    ];
+
+    if(array_sum($selGroup) == 0){
+        return null;
+    }
+
+    $sel = Util::choiceRandomUsingWeight($selGroup);
+    switch($sel) {
+    case 0: [$type, $nameFunc] = ["weap", 'sammo\getWeapName']; break;
+    case 1: [$type, $nameFunc] = ["book", 'sammo\getBookName']; break;
+    case 2: [$type, $nameFunc] = ["horse", 'sammo\getHorseName']; break;
+    case 3: [$type, $nameFunc] = ["item", 'sammo\getItemName']; break;
+    }
+
+    foreach($db->queryFirstColumn('SELECT %b FROM general WHERE %b > 6', $type, $type) as $itemIdx){
+        $occupied[$itemIdx] = 1;
+    }
+    for($i=7; $i <= 26; $i++) {
+        if(!Util::array_get($occupied[$i])) {
+            $item[] = $i;
+        }
+    }
+    $it = Util::choiceRandom($item);
+
+    $general = $db->queryFirstRow('SELECT no, name, nation FROM general WHERE no = %i', $targetGeneralID);
+
+    $db->update('general', [$type=>$it], 'no=%i', $general['no']);
+
+    $nation = getNationStaticInfo($general['nation']);
+
+
+    $josaUl = JosaUtil::pick(($nameFunc)($it), '을');
+    $josaYi = JosaUtil::pick($general['name'], '이');
+    $log[] = "<C>●</><C>".($nameFunc)($it)."</>{$josaUl} 습득했습니다!";
+    $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".($nameFunc)($it)."</>{$josaUl} 습득했습니다!";
+    pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".($nameFunc)($it)."</>{$josaUl} 습득");
+    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【{$headerText}】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".($nameFunc)($it)."</>{$josaUl} 습득했습니다!";
+
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
+    pushGenLog($general, $log);
+    return $targetGeneralID;
+}
+
 function uniqueItem($general, $log, $vote=0) {
     //TODO: uniqueItem 재 구현
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
     $alllog = [];
     $history = [];
     $occupied = [];
@@ -2276,124 +2344,71 @@ function uniqueItem($general, $log, $vote=0) {
 
     $admin = $gameStor->getValues(['year', 'month', 'scenario']);
 
-    $query = "select count(*) as cnt from general where npc<2";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen = MYDB_fetch_array($result);
+    $genCnt = $db->queryFirstField('SELECT count(*) FROM general WHERE npc < 2');
 
-    if($admin['scenario'] < 100)  { $prob = $gen['cnt'] * 5; }  // 5~6개월에 하나씩 등장
-    else { $prob = $gen['cnt']; }  // 1~2개월에 하나씩 등장
+    if($admin['scenario'] < 100)  { $prob = $genCnt * 5; }  // 5~6개월에 하나씩 등장
+    else { $prob = $genCnt; }  // 1~2개월에 하나씩 등장
 
-    if($vote == 1) { $prob = Util::round($gen['cnt'] * 0.7 / 3); }     // 투표율 70%, 투표 한번에 2~3개 등장
-    elseif($vote == 2) { $prob = Util::round($gen['cnt'] / 10 / 2); }   // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
-    elseif($vote == 3) { $prob = Util::round($gen['cnt'] / 10 / 4); }   // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
+    if($vote == 1) { $prob = Util::round($genCnt * 0.7 / 3); }     // 투표율 70%, 투표 한번에 2~3개 등장
+    elseif($vote == 2) { $prob = Util::round($genCnt / 10 / 2); }   // 랜임시 2개(10%) 등장(200명중 20명 랜임시도?)
+    elseif($vote == 3) { $prob = Util::round($genCnt / 10 / 4); }   // 건국시 4개(20%) 등장(200명시 20국 정도 됨)
 
     if($prob < 3) { $prob = 3; }
     //아이템 습득 상황
-    if(rand() % $prob == 0) {
-        //셋중 선택
-        $selGroup = [
-            20 - $db->queryFirstField('SELECT count(*) from general where weap > 6'),
-            20 - $db->queryFirstField('SELECT count(*) from general where book > 6'),
-            20 - $db->queryFirstField('SELECT count(*) from general where horse > 6'),
-            20 - $db->queryFirstField('SELECT count(*) from general where item > 6')
-        ];
-        $sel = Util::choiceRandomUsingWeight($selGroup);
-        switch($sel) {
-        case 0: $type = "weap"; break;
-        case 1: $type = "book"; break;
-        case 2: $type = "horse"; break;
-        case 3: $type = "item"; break;
-        }
-        $query = "select no,{$type} from general where {$type}>6";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $count = MYDB_num_rows($result);
-        if($count < 20) {
-            for($i=0; $i < $count; $i++) {
-                $gen = MYDB_fetch_array($result);
-                $occupied[$gen[$type]] = 1;
-            }
-            for($i=7; $i <= 26; $i++) {
-                if(!Util::array_get($occupied[$i])) {
-                    $item[] = $i;
-                }
-            }
-            $it = $item[rand() % count($item)]??0;
+    if (rand() % $prob != 0) {
+        return $log;
 
-            $query = "update general set {$type}='$it' where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+    }
+    //셋중 선택
+    $selGroup = [
+        20 - $db->queryFirstField('SELECT count(*) from general where weap > 6'),
+        20 - $db->queryFirstField('SELECT count(*) from general where book > 6'),
+        20 - $db->queryFirstField('SELECT count(*) from general where horse > 6'),
+        20 - $db->queryFirstField('SELECT count(*) from general where item > 6')
+    ];
 
-            $nation = getNationStaticInfo($general['nation']);
+    if(array_sum($selGroup) == 0){
+        return $log;
+    }
 
-            switch($sel) {
-            case 0:
-                $josaUl = JosaUtil::pick(getWeapName($it), '을');
-                $josaYi = JosaUtil::pick($general['name'], '이');
-                $log[] = "<C>●</><C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getWeapName($it)."</>{$josaUl} 습득");
-                if($vote == 0) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getWeapName($it)."</>{$josaUl} 습득했습니다!";
-                }
-                break;
-            case 1:
-                $josaUl = JosaUtil::pick(getBookName($it), '을');
-                $josaYi = JosaUtil::pick($general['name'], '이');
-                $log[] = "<C>●</><C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getBookName($it)."</>{$josaUl} 습득");
-                if($vote == 0) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getBookName($it)."</>{$josaUl} 습득했습니다!";
-                }
-                break;
-            case 2:
-                $josaUl = JosaUtil::pick(getHorseName($it), '을');
-                $josaYi = JosaUtil::pick($general['name'], '이');
-                $log[] = "<C>●</><C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
-                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getHorseName($it)."</>{$josaUl} 습득");
-                if($vote == 0) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getHorseName($it)."</>{$josaUl} 습득했습니다!";
-                }
-                break;
-            case 3:
-                $josaUl = JosaUtil::pick(getItemName($it), '을');
-                $josaYi = JosaUtil::pick($general['name'], '이');
-                $log[] = "<C>●</><C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
-                $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
-                pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".getItemName($it)."</>{$josaUl} 습득");
-                if($vote == 0) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【아이템】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 1) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【설문상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 2) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【랜덤임관상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
-                } elseif($vote == 3) {
-                    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【건국상품】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".getItemName($it)."</>{$josaUl} 습득했습니다!";
-                }
-                break;
-            }
-            pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
-            pushWorldHistory($history, $admin['year'], $admin['month']);
+    $sel = Util::choiceRandomUsingWeight($selGroup);
+    switch($sel) {
+    case 0: [$type, $nameFunc] = ["weap", 'sammo\getWeapName']; break;
+    case 1: [$type, $nameFunc] = ["book", 'sammo\getBookName']; break;
+    case 2: [$type, $nameFunc] = ["horse", 'sammo\getHorseName']; break;
+    case 3: [$type, $nameFunc] = ["item", 'sammo\getItemName']; break;
+    }
+
+    switch($vote){
+    case 1: $voteTypeText = '설문상품'; break;
+    case 2: $voteTypeText = '랜덤임관상품'; break;
+    case 3: $voteTypeText = '건국상품'; break;
+    default: $voteTypeText = '아이템'; break;
+    }
+
+    foreach($db->queryFirstColumn('SELECT %b FROM general WHERE %b > 6', $type, $type) as $itemIdx){
+        $occupied[$itemIdx] = 1;
+    }
+    for($i=7; $i <= 26; $i++) {
+        if(!Util::array_get($occupied[$i])) {
+            $item[] = $i;
         }
     }
+    $it = Util::choiceRandom($item);
+
+    $db->update('general', [$type=>$it], 'no=%i', $general['no']);
+
+    $nation = getNationStaticInfo($general['nation']);
+
+    $josaUl = JosaUtil::pick(($nameFunc)($it), '을');
+    $josaYi = JosaUtil::pick($general['name'], '이');
+    $log[] = "<C>●</><C>".($nameFunc)($it)."</>{$josaUl} 습득했습니다!";
+    $alllog[0] = "<C>●</>{$admin['month']}월:<Y>{$general['name']}</>{$josaYi} <C>".($nameFunc)($it)."</>{$josaUl} 습득했습니다!";
+    pushGeneralHistory($general, "<C>●</>{$admin['year']}년 {$admin['month']}월:<C>".($nameFunc)($it)."</>{$josaUl} 습득");
+    $history[] = "<C>●</>{$admin['year']}년 {$admin['month']}월:<C><b>【{$voteTypeText}】</b></><D><b>{$nation['name']}</b></>의 <Y>{$general['name']}</>{$josaYi} <C>".($nameFunc)($it)."</>{$josaUl} 습득했습니다!";
+
+    pushGeneralPublicRecord($alllog, $admin['year'], $admin['month']);
+    pushWorldHistory($history, $admin['year'], $admin['month']);
     return $log;
 }
 

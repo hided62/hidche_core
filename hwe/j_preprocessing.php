@@ -4,7 +4,7 @@ namespace sammo;
 include "lib.php";
 include "func.php";
 //로그인 검사
-$session = Session::requireGameLogin()->setReadOnly();
+$session = Session::requireGameLogin([])->setReadOnly();
 $userID = Session::getUserID();
 
 $db = DB::db();
@@ -17,8 +17,10 @@ $commandtype = Util::getReq('commandtype', 'int');
 increaseRefresh("턴입력", 1);
 
 if(!$turn || $commandtype === null || $sel === null){
-    header('location:commandlist.php', true, 303);
-    die();
+    Json::die([
+        'result'=>true,
+        'reason'=>'empty command'
+    ]);
 }
 
 $count = count($turn);

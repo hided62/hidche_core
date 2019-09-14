@@ -111,6 +111,8 @@ $(function(){
     setInterval(function(){
         refreshMsg();
     }, 5000);
+
+    reloadCommandList();
 });
 </script>
 <?=WebUtil::printCSS('../e_lib/bootstrap.min.css')?>
@@ -241,9 +243,9 @@ else if($session->userGrade == 4){
         <td style='width:700px;height:520px;' colspan=2>
             <?=getMapHtml($mapTheme)?>
         </td>
-        <td style='width:300px;' rowspan=4><iframe seamless="seamless" name=commandlist src='commandlist.php' style='width:300px;height:700px;' frameborder=0 marginwidth=0 marginheight=0 topmargin=0 scrolling=no></iframe></td>
+        <td style='width:300px;' rowspan=4 id='commandlist'></td>
     </tr>
-<form name=form2 action=preprocessing.php method=post target=commandlist>
+<form id='form2' name=form2>
     <tr>
         <td rowspan=3 width=50 valign=top><?=turnTable()?></td>
         <td style="width:650px;border:none;text-align:center;"><?php cityInfo(); ?></td>
