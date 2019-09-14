@@ -12,6 +12,10 @@ $servHost = Util::getReq('serv_host');
 $sharedIconPath = Util::getReq('shared_icon_path');
 $gameImagePath = Util::getReq('game_image_path');
 
+$kakaoRESTKey = Util::getReq('kakao_rest_key', '');
+$kakaoAdminKey = Util::getReq('kakao_admin_key', '');
+
+
 if (!$host || !$port || !$username || !$password || !$dbName || !$servHost || !$sharedIconPath || !$gameImagePath) {
     Json::die([
         'result'=>false,
@@ -263,10 +267,15 @@ $result = Util::generateFileUsingSimpleTemplate(
     ]
 );
 
+$kakaoRedirectURI = WebUtil::resolveRelativePath('oauth_kakao/oauth.php', $servHost);
+
 Util::generateFileUsingSimpleTemplate(
     __dir__.'/templates/KakaoKey.orig.php',
     ROOT.'/d_setting/KakaoKey.php',
     [
+        'REST_API_KEY'=>$kakaoRESTKey,
+        'ADMIN_KEY'=>$kakaoAdminKey,
+        'REDIRECT_URI'=>$kakaoRedirectURI
     ],
     true
 );
