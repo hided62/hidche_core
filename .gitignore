@@ -1,11 +1,4 @@
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-
-
 
 # 체섭 ignore
 *.log
@@ -48,3 +41,4 @@ test.php
 phpinfo.php
 vendor/ezyang/htmlpurifier/library/HTMLPurifier/DefinitionCache/*
 *.sqlite3
+
