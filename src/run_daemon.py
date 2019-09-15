@@ -51,10 +51,12 @@ def main():
         for resetPath in autoResetList:
             future = executor.submit(run, resetPath)
             waiters.append(future)
-        for _ in range(4):
+        for idx in range(4):
             for webPath in servList:
                 future = executor.submit(run, webPath)
                 waiters.append(future)
+            if idx == 3:
+                break
             time.sleep(15)
         for future in waiters:
             future.done()
