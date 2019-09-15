@@ -20,7 +20,11 @@ Linux는 Ubuntu 16.04, Windows는 Windows 10에서 XAMPP를 사용한 환경에�
 
 Docker를 이용한 설치는 계획중입니다.
 
-## 설치
+## Docker를 이용한 설치
+
+https://storage.hided.net/gogs/devsam/docker 를 참고해 주세요.
+
+## 수동 설치
 
 본 게임은 <code>git</code>을 이용한 업그레이드 시스템을 구현하였으므로, <code>git</code>이 필요합니다.
 또한 웹 서비스 데몬을 운영중인 사용자(일반적으로 <code>www-data</code>, <code>apache</code>)에게 디렉토리 권한이 주어져야합니다.
@@ -30,8 +34,8 @@ Docker를 이용한 설치는 계획중입니다.
 웹 데몬 user가 <code>www-data</code>인 경우 다음과 같이 입력하여 최신 배포버전과 이미지 파일을 얻을 수 있습니다.
 
 ```
-sudo -u www-data git clone ssh://git@storage.hided.net:2525/devsam/core.git
-git clone ssh://git@storage.hided.net:2525/devsam/image.git
+sudo -u www-data git clone https://storage.hided.net/gogs/devsam/core.git
+git clone https://storage.hided.net/gogs/devsam/image.git
 ```
 
 > 이미지는 git hook을 이용한 업데이트 기능을 제공하지만 아직 범용성 있는 설계가 되어있진 않습니다.
