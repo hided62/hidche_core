@@ -153,6 +153,95 @@ if($session->userGrade < 5 && !$allowReset){
                     </div>
 
                     <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">휴식 턴 시 장수 턴</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <div class="input-group-prepend btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-secondary">
+                                        <input type="checkbox" class="autorun_user_chk" data-key="internal" name="autorun_internal" id="autorun_internal">내정
+                                    </label>
+                                    <label class="btn btn-secondary">
+                                        <input type="checkbox" class="autorun_user_chk" data-key="warp" name="autorun_warp" id="autorun_warp">순간이동
+                                    </label>
+                                    <label class="btn btn-secondary">
+                                        <input type="checkbox" class="autorun_user_chk" data-key="recruit" name="autorun_recruit" id="autorun_recruit">징훈사
+                                    </label>
+                                    <label class="btn btn-secondary">
+                                        <input type="checkbox" class="autorun_user_chk" data-key="battle" name="autorun_battle" id="autorun_battle">출병
+                                    </label>
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">유효 시간</span>
+                                </div>
+                                <select class="custom-select" name="autorun_user_minutes" id="autorun_user_minutes">
+                                        <option value="0" selected>꺼짐</option>
+                                        <option value="43200">항상</option>
+                                        <option value="10">10분</option>
+                                        <option value="20">20분</option>
+                                        <option value="30">30분</option>
+                                        <option value="60">1시간</option>
+                                        <option value="120">2시간</option>
+                                        <option value="180">3시간</option>
+                                        <option value="240">4시간</option>
+                                        <option value="360">6시간</option>
+                                        <option value="480">8시간</option>
+                                        <option value="600">10시간</option>
+                                        <option value="720">12시간</option>
+                                        <option value="1440">24시간</option>
+                                        <option value="2160">36시간</option>
+                                        <option value="2880">48시간</option>
+                                        <option value="3600">60시간</option>
+                                        <option value="4320">72시간</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">휴식 턴 시 사령 턴</label>
+                        <div class="col-sm-9">
+                            <div class="input-group">
+                                <div class="input-group-prepend btn-group btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-secondary">
+                                        <input type="radio" name="autorun_chief_reward" id="autorun_chief_reward">포상/몰수
+                                    </label>
+                                    <label class="btn btn-secondary">
+                                        <input type="radio" name="autorun_chief_warp" id="autorun_chief_warp">발령
+                                    </label>
+                                    <label class="btn btn-secondary">
+                                        <input type="radio" name="autorun_chief_declaration" id="autorun_chief_declaration">선포
+                                    </label>
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">유효 시간</span>
+                                </div>
+                                <select class="custom-select" name="autorun_chief_minutes" id="autorun_chief_minutes">
+                                        <option value="0" selected>꺼짐</option>
+                                        <option value="43200">항상</option>
+                                        <option value="10">10분</option>
+                                        <option value="20">20분</option>
+                                        <option value="30">30분</option>
+                                        <option value="60">1시간</option>
+                                        <option value="120">2시간</option>
+                                        <option value="180">3시간</option>
+                                        <option value="240">4시간</option>
+                                        <option value="360">6시간</option>
+                                        <option value="480">8시간</option>
+                                        <option value="600">10시간</option>
+                                        <option value="720">12시간</option>
+                                        <option value="1440">24시간</option>
+                                        <option value="2160">36시간</option>
+                                        <option value="2880">48시간</option>
+                                        <option value="3600">60시간</option>
+                                        <option value="4320">72시간</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    -->
+
+                    <div class="form-group row">
                         <label for="join_mode" class="col-sm-3 col-form-label">임관 모드</label>
                         <div class="col-sm-9">
                             <div id="join_mode" class="btn-group btn-group-toggle" data-toggle="buttons">

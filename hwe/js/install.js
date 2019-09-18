@@ -105,6 +105,17 @@ function scenarioPreview(){
 }
 
 function formSetup(){
+    $.validator.addMethod("autorun_user", function(value,element){
+        if(value <= 0){
+            return true;
+        }
+
+        var parent = $(element).parent('.input-group');
+        if(parent.find('input:checked').length == 0){
+            return false;
+        }
+        return true;
+    }, "적어도 하나는 선택을 해야합니다.");
     $('#game_form').validate({
         rules:{
             turnterm:"required",
@@ -116,6 +127,7 @@ function formSetup(){
             show_img_level:"required",
             tournament_trig:"required",
             join_mode:'required',
+            autorun_user_minutes:{required: true, autorun_user: true, min:0}
         },
         errorElement: "div",
         errorPlacement: function ( error, element ) {
@@ -140,6 +152,15 @@ function formSetup(){
         if(!$("#game_form").valid()){
             return;
         }
+        
+        var autorun_user_minutes = parseInt($('#autorun_user_minutes').val());
+        var autorun_user = [];
+        if(autorun_user_minutes > 0){
+            $('.autorun_user_chk:checked').each(function(){
+                autorun_user.push($(this).data('key'));
+            });
+        }
+
         $.ajax({
             cache:false,
             type:'post',
@@ -157,6 +178,8 @@ function formSetup(){
                 reserve_open:$('#reserve_open').val(),
                 pre_reserve_open:$('#pre_reserve_open').val(),
                 join_mode:$('#join_mode input:radio:checked').val(),
+                autorun_user_minutes:autorun_user_minutes,
+                autorun_user:autorun_user
             }
         }).then(function(result){
             var deferred = $.Deferred();
