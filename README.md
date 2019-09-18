@@ -11,14 +11,15 @@
   * <code>php-fpm</code> 권장
   * php에서 curl, pdo-sqlite을 실행가능해야 합니다. (기본값: 지원)
   * mysqlnd가 지원되어야합니다. (기본값: 지원)
+  * mysqli
+  * gd
 * MariaDB 10.2.1 이상
-  * MySQL 5.6 이상도 가능하도록 할 예정입니다.
+  * 현재 MySQL은 지원하지 않습니다.
 * <code>git</code>
 * <code>curl</code>
 
-Linux는 Ubuntu 16.04, Windows는 Windows 10에서 XAMPP를 사용한 환경에서 테스트되었습니다.
+Linux는 Ubuntu 16.04, 18.04, Windows는 Windows 10에서 XAMPP를 사용한 환경에서 테스트되었습니다.
 
-Docker를 이용한 설치는 계획중입니다.
 
 ## Docker를 이용한 설치
 
