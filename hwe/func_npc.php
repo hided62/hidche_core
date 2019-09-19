@@ -1,6 +1,70 @@
 <?php
 namespace sammo;
 
+class AIAllowedAction{
+
+    public $develop = true;
+    public $warp = true;
+
+    public $randomRecruit = true;
+    public $recruit = true;
+    public $recruit_high = false;
+    public $train = true;
+    public $atmos = true;
+    public $battle = true;
+
+    public $appointment = true;
+    public $changeWarCondition = true;
+    public $donation = true;
+    public $buySellRice = true;
+
+    public $staffAction = true;
+
+    function __construct($npc, $aiOptions){
+        if($npc >= 2){
+            return;
+        }
+
+        $this->develop = false;
+        $this->warp = false;
+
+        $this->randomRecruit = false;
+        $this->recruit = false;
+        $this->recruit_high = false;
+        $this->train = false;
+        $this->atmos = false;
+        $this->battle = false;
+
+        $this->appointment = false;
+        $this->changeWarCondition = false;
+        $this->donation = false;
+        $this->buySellRice = false;
+
+        $this->staffAction = false;
+
+        foreach($aiOptions as $key=>$value){
+            assert($value);
+            switch($key){
+            case 'develop':
+                $this->develop = true;
+                break;
+            case 'warp':
+                $this->warp = true;
+                break;
+            case 'recruit': 
+                $this->recruit = true;
+                $this->changeWarCondition = true;
+                $this->train = true;
+                $this->atmos = true;
+                break;
+            case 'battle':
+                $this->battle = true;
+                break;
+            }
+        }
+    }
+}
+
 function SetDevelop($genType, $no, $city, $tech) {
     $db = DB::db();
     $connect=$db->get();
@@ -187,13 +251,15 @@ function processAI($no) {
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
 
-    $admin = $gameStor->getValues(['startyear','year','month','turnterm','scenario','gold_rate','rice_rate']);
+    $admin = $gameStor->getValues(['startyear','year','month','turnterm','scenario','gold_rate','rice_rate','killturn','autorun_user']);
     // 초반 여부
     if($admin['startyear']+2 > $admin['year'] || ($admin['startyear']+2 == $admin['year'] && $admin['month'] < 5)) {
         $isStart = 1;
     } else {
         $isStart = 0;
     }
+
+
 
     $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
@@ -240,10 +306,29 @@ function processAI($no) {
         return;
     }
 
+    $autorun_user = $admin['autorun_user'];
+    
+    if($general['npc'] < 2){
+        $autorun_limit_minutes = $autorun_user['limit_minutes']??0;
+        if(!$autorun_limit_minutes){
+            return;
+        }
+        if($general['nation'] == 0){
+            return;
+        }
+        $blankTurnCnt = $admin['killturn']-$general['killturn'];
+        if($blankTurnCnt * $admin['turnterm'] > $autorun_limit_minutes){
+            return;
+        }
+    }
+
     // 입력된 턴이 있으면 그것 실행
     if(DecodeCommand($general['turn0'])[0] != 0) {
         return;
     }
+
+    $allowedAction = new AIAllowedAction($general['npc'], $autorun_user['options']??[]);
+
 
     $query = "select city,region,nation,level,path,rate,gen1,gen2,gen3,pop,supply,front from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error("processAI02 ".MYDB_error($connect),"");
@@ -327,17 +412,20 @@ function processAI($no) {
     $tech = getTechCost($nation['tech']);
     $resrc = $tech * 700;//XXX: 왜 700이지?
 
-    if($general['atmos'] >= 90 && $general['train'] >= 90) {
-        if($general['mode'] == 0) {
-            $query = "update general set mode=1 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
-        }
-    } else {
-        if($general['mode'] == 1) {
-            $query = "update general set mode=0 where no='{$general['no']}'";
-            MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
+    if($allowedAction->changeWarCondition){
+        if($general['atmos'] >= 90 && $general['train'] >= 90) {
+            if($general['mode'] == 0) {
+                $query = "update general set mode=1 where no='{$general['no']}'";
+                MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
+            }
+        } else {
+            if($general['mode'] == 1) {
+                $query = "update general set mode=0 where no='{$general['no']}'";
+                MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
+            }
         }
     }
+    
 
     //운영자메시지 출력 하루 6번..?
     //특별 메세지 있는 경우 출력 하루 4번
@@ -369,7 +457,7 @@ function processAI($no) {
 
         $rulerNation = $db->queryFirstField('SELECT nation FROM general WHERE `level`=12 AND npc=9 and nation not in %li ORDER BY RAND() limit 1', Json::decode($general['nations']));
         
-        if($ruler) {
+        if($rulerNation) {
             $command = EncodeCommand(0, 0, $rulerNation, 25); //임관
         } else {
             $command = EncodeCommand(0, 0, 0, 42); //견문
@@ -377,7 +465,7 @@ function processAI($no) {
         $query = "update general set turn0='$command' where no='{$general['no']}'";
         MYDB_query($query, $connect) or Error("processAI07 ".MYDB_error($connect),"");
         return;
-    } elseif($general['npc'] != 9 && $general['level'] == 0) {
+    } elseif($general['npc'] != 9 && $general['level'] == 0 && $allowedAction->appointment) {
         switch(Util::choiceRandomUsingWeight([11.4, 40, 20, 28.6])) {
         //임관 10%
         case 0:
@@ -432,7 +520,7 @@ function processAI($no) {
 
     $rulerCommand = 0;
     //군주가 할일
-    if($general['level'] == 12) {
+    if($general['level'] == 12 && $allowedAction->staffAction) {
         //오랑캐인데 공격 못하면 바로 방랑/해산
         if($general['npc'] == 9 && $dipState == 0 && !$attackable) {
             //방랑군이냐 아니냐
@@ -547,7 +635,7 @@ function processAI($no) {
     }
 
     //방랑군 아니고, 입력된 턴이 없을때 수뇌부가 할일
-    if($nation['level'] != 0 && $general['level'] >= 5 && $rulerCommand == 0) {
+    if($nation['level'] != 0 && $general['level'] >= 5 && $rulerCommand == 0 && $allowedAction->staffAction) {
         $command = NPCStaffWork($general, $nation, $dipState);
         if($command){
             $db->update('nation', [
@@ -569,7 +657,7 @@ function processAI($no) {
     } elseif($general['injury'] > 10) {
     // 부상 2달 이상이면 요양
         $command = EncodeCommand(0, 0, 0, 50);  //요양
-    } elseif($nation['level'] == 0) {
+    } elseif($nation['level'] == 0 && $allowedAction->appointment) {
     //방랑군일때
         if($admin['startyear']+3 <= $admin['year']) {
             $command = EncodeCommand(0, 0, 0, 45); //하야
@@ -591,7 +679,7 @@ function processAI($no) {
             return;
         }
 
-        if($general['leader'] < 40){
+        if($general['leader'] < 40 && $allowedAction->donation){
             //무지장인데
             
             if(
@@ -626,7 +714,7 @@ function processAI($no) {
         }
 
         //국가 병량이 없을때 바로 헌납
-        if($nation['rice'] < 2000 && $general['rice'] > 200) {
+        if($nation['rice'] < 2000 && $general['rice'] > 200 && $allowedAction->donation) {
             $amount = intdiv($general['rice'] - 200, 100) + 1;
             if($amount > 20) { $amount = 20; }
             $command = EncodeCommand(0, 2, $amount, 44);  //헌납
@@ -646,23 +734,23 @@ function processAI($no) {
         
         $target = array();
         // 평시거나 초반아니면서 공격가능 없으면서 병사 있으면 해제(25%)
-        if($dipState == 0 && $isStart == 0 && !$attackable && $general['crew'] > 0 && rand()% 100 < 25) {
+        if($allowedAction->recruit && $dipState == 0 && $isStart == 0 && !$attackable && $general['crew'] > 0 && rand()% 100 < 25) {
             $command = EncodeCommand(0, 0, 0, 17);    //소집해제
         } elseif($dipState <= 1 || $isStart == 1) {
         //평시이거나 선포있어도 초반이면
             if($general['gold'] + $general['rice'] < 200) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달9
-            elseif($general['rice'] > 100 && $city['rate'] < 95) { $command = EncodeCommand(0, 0, 0, 4); } //우선 선정
-            elseif($general['gold'] < 100) {                                      //금없으면 쌀팜
+            elseif($general['rice'] > 100 && $city['rate'] < 95 && $allowedAction->develop) { $command = EncodeCommand(0, 0, 0, 4); } //우선 선정
+            elseif($general['gold'] < 100 && $allowedAction->buySellRice) {                                      //금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 $command = EncodeCommand(0, 1, $amount, 49);                    //팜
-            } elseif($general['gold'] < 500 && $general['rice'] < 500) { $command = EncodeCommand(0, 0, 0, 1); } //금쌀되면 내정
-            elseif($general['rice'] < 100) {                                      //쌀없으면 쌀삼
+            } elseif($general['gold'] < 500 && $general['rice'] < 500 && $allowedAction->develop) { $command = EncodeCommand(0, 0, 0, 1); } //금쌀되면 내정
+            elseif($general['rice'] < 100 && $allowedAction->buySellRice) {                                      //쌀없으면 쌀삼
                 $amount = intdiv(($general['gold'] - $general['rice'])/2, 100);  // 100단위
                 $command = EncodeCommand(0, 2, $amount, 49);                    //삼
-            } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
+            } elseif($genType >= 2 && $allowedAction->develop) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
             else {
                 //현도시가 전방이면 공격 가능성 체크
-                if($city['front'] > 0) {
+                if($city['front'] > 0 && $allowedAction->battle) {
                     //주변도시 체크
                     $paths = explode('|', $city['path']);
                     for($i=0; $i < count($paths); $i++) {
@@ -687,6 +775,11 @@ function processAI($no) {
                     $sel = rand() % 10;
                     if($selCity['dev'] > 95) { $sel = 9; }
                     elseif($selCity['dev'] < 70) { $sel = 0; }
+
+                    if(!$allowedAction->warp && !$general['troop']){
+                        $sel = 0;
+                    }
+
                     switch($sel) {
                     case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7: // 그대로 내정 80 %
                         $command = EncodeCommand(0, 0, 0, 1);
@@ -729,22 +822,22 @@ function processAI($no) {
 
                 } else {                // 공격인 경우
                     if($general['crew'] < 1000 && $general['gold'] >= $resrc && $general['rice'] >= $resrc) { //자원되고, 병사없을때
-                        if($city['pop'] > 40000) { $command = EncodeCommand(0, 0, 0, 11); }
+                        if($city['pop'] > 40000 && $allowedAction->recruit) { $command = EncodeCommand(0, 0, 0, 11); }
                         else { $command = EncodeCommand(0, 0, 0, 1); }
-                    } elseif($general['rice'] < $resrc && $general['rice'] <= $general['gold']) {
+                    } elseif($general['rice'] < $resrc && $general['rice'] <= $general['gold'] && $allowedAction->buySellRice) {
                         //금이 더 많으면 매매
                         $amount = intdiv(($general['gold'] - $general['rice']) / 2, 100);  // 100단위
                         if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }//삼
                         else { $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); }   // 내정, 조달
-                    } elseif($general['gold'] < $resrc && $general['rice'] > $general['gold']) {
+                    } elseif($general['gold'] < $resrc && $general['rice'] > $general['gold'] && $allowedAction->buySellRice) {
                         //쌀이 더 많으면 매매
                         $amount = intdiv(($general['rice'] - $general['gold']) / 2, 100);  // 100단위
                         if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }//팜
                         else { $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); }   // 내정, 조달
                     //자원, 병사 모두 충족
-                    } elseif($general['crew'] >= 1000 && $general['train'] < 90) {
+                    } elseif($general['crew'] >= 1000 && $general['train'] < 90 && $allowedAction->train) {
                         $command = EncodeCommand(0, 0, 0, 13);  //훈련
-                    } elseif($general['crew'] >= 1000 && $general['atmos'] < 90) {
+                    } elseif($general['crew'] >= 1000 && $general['atmos'] < 90 && $allowedAction->atmos) {
                         $command = EncodeCommand(0, 0, 0, 14);  //사기진작
                     } else {
                         //공격
@@ -764,18 +857,18 @@ function processAI($no) {
 
         //전시일때
             if($general['gold'] + $general['rice'] < $resrc*2) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달
-            elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
-            elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] > 0) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
-            elseif($general['gold'] < $resrc || ($general['gold'] < $resrc *2 && $general['rice'] > $resrc * 6)) {                                   // 금없으면 쌀팜
+            elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0 && $allowedAction->develop) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
+            elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] > 0 && $allowedAction->develop) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
+            elseif($general['gold'] < $resrc || ($general['gold'] < $resrc *2 && $general['rice'] > $resrc * 6) && $allowedAction->buySellRice) {                                   // 금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
-            } elseif($general['rice'] < $resrc || ($general['rice'] < $resrc *2 && $general['gold'] > $resrc * 6)) {                                 // 쌀없으면 쌀삼
+            } elseif($general['rice'] < $resrc || ($general['rice'] < $resrc *2 && $general['gold'] > $resrc * 6) && $allowedAction->buySellRice) {                                 // 쌀없으면 쌀삼
                 $amount = intdiv(($general['gold'] - $general['rice'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
             } elseif($genType >= 2) { $command = EncodeCommand(0, 0, 0, 1); } //내정장일때 내정
-            elseif($general['crew'] < 1000 && $general['gold'] >= $resrc && $general['rice'] >= $resrc) {
+            elseif($general['crew'] < 1000 && $general['gold'] >= $resrc && $general['rice'] >= $resrc && $allowedAction->recruit) {
                 $query = "select no from general where nation='{$general['nation']}'";
                 $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
                 $genCount = MYDB_num_rows($result);
@@ -795,12 +888,12 @@ function processAI($no) {
                 // 전체 인구 대비 확률로 현지에서 징병
                 if($city['pop'] > 40000 && 100 + $ratio - $ratio2 > $ratio3) {
                     $command = EncodeCommand(0, 0, 0, 11);  //인구 되면 징병
-                } else {
+                } else{
                     // 인구 안되면 4만 이상인 도시로 워프
                     $query = "select city from city where nation='{$general['nation']}' and pop>40000 and supply='1' order by rand() limit 0,1";
                     $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
                     $cityCount = MYDB_num_rows($result);
-                    if($cityCount > 0) {
+                    if($cityCount > 0 && $allowedAction->warp && !$general['troop']) {
                         $selCity = MYDB_fetch_array($result);
                         //워프
                         $query = "update general set city='{$selCity['city']}' where no='{$general['no']}'";
@@ -810,17 +903,17 @@ function processAI($no) {
                         $query = "update general set turn0='$command' where no='{$general['no']}'";
                         MYDB_query($query, $connect) or Error("processAI23 ".MYDB_error($connect),"");
                         return;
-                    } else {
+                    } else if($allowedAction->develop){
                         $command = EncodeCommand(0, 0, 0, 7);  //인구 안되면 정장
                     }
                 }
-            } elseif($general['crew'] >= 1000 && $general['train'] < 90) {
+            } elseif($general['crew'] >= 1000 && $general['train'] < 90 && $allowedAction->train) {
                 if($general['atmos'] >= 90 && $general['train'] >= 60 && $general['mode'] == 0) {
                     $query = "update general set mode=1 where no='{$general['no']}'";
                     MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
                 }
                 $command = EncodeCommand(0, 0, 0, 13);  //훈련
-            } elseif($general['crew'] >= 1000 && $general['atmos'] < 90) {
+            } elseif($general['crew'] >= 1000 && $general['atmos'] < 90 && $allowedAction->atmos) {
                 if($general['atmos'] >= 60 && $general['train'] >= 90 && $general['mode'] == 0) {
                     $query = "update general set mode=1 where no='{$general['no']}'";
                     MYDB_query($query, $connect) or Error("processAI05 ".MYDB_error($connect),"");
@@ -844,7 +937,7 @@ function processAI($no) {
                         if($dip['state'] == 0) $target[] = $targetCity['city'];
                     }
                 }
-                if(count($target) == 0) {
+                if(count($target) == 0 && $allowedAction->warp && !$general['troop']) {
                     //전방 도시 선택, 30% 확률로 태수 있는 전방으로 워프
                     if(rand()%100 < 30) {
                         $query = "select city from city where nation='{$general['nation']}' and supply='1' and front>0 order by gen1 desc,rand() limit 0,1";
@@ -879,7 +972,7 @@ function processAI($no) {
                     } else {
                         $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1); //공격 가능도시가 없고 워프도 안되면 내정, 조달
                     }
-                } elseif($nation['war'] == 1) {
+                } elseif($nation['war'] == 1 || !$allowedAction->battle) {
                     //전금이면 내정, 조달
                     $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1);   //내정, 조달
                 } else { $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
@@ -889,10 +982,26 @@ function processAI($no) {
 
     switch($command) {
     case EncodeCommand(0, 0, 0, 1): //내정
-        SetDevelop($genType, $general['no'], $general['city'], $nation['tech']);
+        if($allowedAction->develop){
+            SetDevelop($genType, $general['no'], $general['city'], $nation['tech']);
+        }
+        else{
+            $db->update('general', [
+                'turn0'=>EncodeCommand(0, 0, 0, 29)
+            ], 'no=%i', $general['no']);
+        }
+        
         return;
     case EncodeCommand(0, 0, 0, 11): //징병
-        SetCrew($general['no'], $general['nation'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
+        if ($allowedAction->recruit) {
+            SetCrew($general['no'], $general['nation'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
+        }
+        else{
+            $db->update('general', [
+                'turn0'=>EncodeCommand(0, 0, 0, 29)
+            ], 'no=%i', $general['no']);
+        }
+        
         return;
     default:
         $query = "update general set turn0='$command' where no='{$general['no']}'";

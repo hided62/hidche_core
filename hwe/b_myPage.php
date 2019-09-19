@@ -27,7 +27,7 @@ $userID = Session::getUserID();
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
-$gameStor->cacheValues(['turnterm', 'opentime', 'turntime']);
+$gameStor->cacheValues(['turnterm', 'opentime', 'turntime','autorun_user']);
 $connect=$db->get();
 
 increaseRefresh("내정보", 1);
@@ -161,8 +161,10 @@ $('#die_immediately').click(function(){
                 <input type=<?=$submit?> name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px; value=설정저장><br>
                 ∞<font color=orange>설정저장은 이달중 <?=$me['myset']?>회 남았습니다.</font><br><br>
             </form>
+            <?php if(!($gameStor->autorun_user['limit_minutes']??false)): ?>
             휴 가 신 청<br>
             <a href="c_vacation.php"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>휴가 신청</button></a><br><br>
+            <?php endif; ?>
             <!--빙의 해제용 삭턴 조절<br>
             <a href="b_myPage.php?detachNPC=1"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>빙의 해체 요청</button></a>-->
 

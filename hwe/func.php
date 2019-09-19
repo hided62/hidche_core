@@ -1596,6 +1596,7 @@ function checkTurn() {
     CheckOverhead();
     //서버정보
 
+    $autorun_user = $gameStor->autorun_user;
     
     // 최종 처리 월턴의 다음 월턴시간 구함
     $prevTurn = cutTurn($gameStor->turntime, $gameStor->turnterm);
@@ -1617,7 +1618,8 @@ function checkTurn() {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', PreprocessCommand');
             PreprocessCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
-            if($general['npc'] >= 2) { processAI($general['no']); }    // npc AI 처리
+            
+            if($general['npc'] >= 2 || ($autorun_user['limit_minutes']??false)) { processAI($general['no']); }    // npc AI 처리
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
             processCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateCommand');

@@ -158,7 +158,7 @@ if($session->userGrade < 5 && !$allowReset){
                             <div class="input-group">
                                 <div class="input-group-prepend btn-group btn-group-toggle" data-toggle="buttons">
                                     <label class="btn btn-secondary">
-                                        <input type="checkbox" class="autorun_user_chk" data-key="internal" name="autorun_internal" id="autorun_internal">내정
+                                        <input type="checkbox" class="autorun_user_chk" data-key="develop" name="autorun_develop" id="autorun_develop">내정
                                     </label>
                                     <label class="btn btn-secondary">
                                         <input type="checkbox" class="autorun_user_chk" data-key="warp" name="autorun_warp" id="autorun_warp">순간이동
