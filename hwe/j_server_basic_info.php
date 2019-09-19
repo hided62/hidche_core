@@ -38,6 +38,21 @@ if(file_exists(__dir__.'/.htaccess')){
         $otherTextInfo[] = '랜덤 임관 전용';
     }
 
+    if($options['autorun_user']['limit_minutes']??false){
+        $auto_info = [];
+        foreach($options['autorun_user']['option'] as $auto_option => $value){
+            assert($value);
+            switch($auto_option){
+                case 'internal': $auto_info[] = '내정'; break;
+                case 'warp': $auto_info[] = '순간이동'; break;
+                case 'recruit': $auto_info[] = '징훈사'; break;
+                case 'battle': $auto_info[] = '출병'; break;
+            }
+        }
+        $auto_info = join(',', $auto_info);
+        $otherTextInfo[] = "자동행동({$auto_info})";
+    }
+
     if(!$otherTextInfo){
         $otherTextInfo = '표준';
     }
@@ -64,7 +79,7 @@ if(file_exists(__dir__.'/.htaccess')){
 
 //TODO: 천통시에도 예약 오픈 알림이 필요..?
 
-$admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'opentime', 'turntime', 'join_mode', 'fiction']);
+$admin = $gameStor->getValues(['isunited', 'npcmode', 'year', 'month', 'scenario', 'scenario_text', 'maxgeneral', 'turnterm', 'opentime', 'turntime', 'join_mode', 'fiction', 'autorun_user']);
 $admin['maxUserCnt'] = $admin['maxgeneral'];
 $admin['npcMode'] = $admin['npcmode'];
 $admin['turnTerm'] = $admin['turnterm'];
@@ -94,12 +109,30 @@ if($admin['join_mode'] == 'onlyRandom'){
     $otherTextInfo[] = '랜덤 임관 전용';
 }
 
+
+if($admin['autorun_user']['limit_minutes']??false){
+    $auto_info = [];
+    foreach($admin['autorun_user']['option'] as $auto_option => $value){
+        assert($value);
+        switch($auto_option){
+            case 'internal': $auto_info[] = '내정'; break;
+            case 'warp': $auto_info[] = '순간이동'; break;
+            case 'recruit': $auto_info[] = '징훈사'; break;
+            case 'battle': $auto_info[] = '출병'; break;
+        }
+    }
+    $auto_info = join(', ', $auto_info);
+    $otherTextInfo[] = "자동행동({$auto_info})";
+}
+
 if(!$otherTextInfo){
     $otherTextInfo = '표준';
 }
 else{
     $otherTextInfo = join(', ', $otherTextInfo);
 }
+
+
 $admin['otherTextInfo'] = $otherTextInfo;
 $admin['defaultStatTotal'] = GameConst::$defaultStatTotal;
 $me = [];

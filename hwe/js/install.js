@@ -106,16 +106,21 @@ function scenarioPreview(){
 
 function formSetup(){
     $.validator.addMethod("autorun_user", function(value,element){
+        var parent = $(element).parent('.input-group');
+        var checkCnt = parent.find('input:checked').length;
         if(value <= 0){
+            if(checkCnt > 0){
+                return false;
+            }
             return true;
         }
 
-        var parent = $(element).parent('.input-group');
-        if(parent.find('input:checked').length == 0){
+        
+        if(checkCnt == 0){
             return false;
         }
         return true;
-    }, "적어도 하나는 선택을 해야합니다.");
+    }, "유효 시간과 옵션은 동시에 설정해야합니다.");
     $('#game_form').validate({
         rules:{
             turnterm:"required",
