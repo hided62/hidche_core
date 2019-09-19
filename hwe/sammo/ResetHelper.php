@@ -144,7 +144,8 @@ class ResetHelper{
         int $show_img_level,
         int $tournament_trig,
         string $join_mode,
-        string $turntime
+        string $turntime,
+        ?array $autorun_user
     ):array{
         //FIXME: 분리할 것
         if(120 % $turnterm != 0){
@@ -253,7 +254,8 @@ class ResetHelper{
             'extended_general'=>$extend,
             'fiction'=>$fiction,
             'tnmt_trig'=>$tournament_trig,
-            'prev_winner'=>$prevWinner
+            'prev_winner'=>$prevWinner,
+            'autorun_user'=>$autorun_user
         ];
 
         foreach(RootDB::db()->query('SELECT `no`, `name`, `picture`, `imgsvr` FROM member WHERE grade >= 5') as $admin){
