@@ -260,7 +260,7 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
     return;
 }
 
-function processAI($no) {
+function processAI($no, &$reduce_turn) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     $connect=$db->get();
@@ -338,6 +338,8 @@ function processAI($no) {
     if(DecodeCommand($general['turn0'])[0] != 0) {
         return;
     }
+
+    $reduce_turn = true;
 
     $allowedAction = new AIAllowedAction($general['npc'], $autorun_user['options']??[]);
 

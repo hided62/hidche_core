@@ -1619,9 +1619,8 @@ function checkTurn() {
             PreprocessCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
             $reduce_turn = false;
-            if(($general['npc'] >= 2 || ($autorun_user['limit_minutes']??false)) && DecodeCommand($general['turn0'])[0] == 0) {
-                processAI($general['no']); 
-                $reduce_turn = true;
+            if($general['npc'] >= 2 || ($autorun_user['limit_minutes']??false)) {
+                processAI($general['no'], $reduce_turn); 
             }    // npc AI 처리
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
             processCommand($general['no'], $reduce_turn);
@@ -1739,11 +1738,9 @@ function checkTurn() {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', PreprocessCommand');
             PreprocessCommand($general['no']);
             $reduce_turn = false;
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
-            if($general['npc'] >= 2 || ($autorun_user['limit_minutes']??false)) { 
-                processAI($general['no']); 
-                $reduce_turn = true;
-            }    // npc AI 처리
+            if($general['npc'] >= 2 || ($autorun_user['limit_minutes']??false)) {
+                processAI($general['no'], $reduce_turn); 
+            } 
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
             processCommand($general['no'], $reduce_turn);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateCommand');
