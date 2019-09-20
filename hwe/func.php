@@ -1618,10 +1618,13 @@ function checkTurn() {
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', PreprocessCommand');
             PreprocessCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
-            
-            if($general['npc'] >= 2 || ($autorun_user['limit_minutes']??false)) { processAI($general['no']); }    // npc AI 처리
+            $reduce_turn = false;
+            if($general['npc'] >= 2 || ($autorun_user['limit_minutes']??false)) {
+                processAI($general['no']); 
+                $reduce_turn = true;
+            }    // npc AI 처리
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
-            processCommand($general['no']);
+            processCommand($general['no'], $reduce_turn);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateCommand');
             updateCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateTurntime');
@@ -1733,12 +1736,16 @@ function checkTurn() {
             //if(PROCESS_LOG) $processlog[0] = "[{$date}] 월턴 이후 갱신: name({$general['name']}), no({$general['no']}), turntime({$general['turntime']}), turn0({$general['turn0']})";
             //if(PROCESS_LOG) pushProcessLog($processlog);
             
-            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
-            if($general['npc'] >= 2) { processAI($general['no']); }    // npc AI 처리
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', PreprocessCommand');
             PreprocessCommand($general['no']);
+            $reduce_turn = false;
+            //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
+            if($general['npc'] >= 2 || ($autorun_user['limit_minutes']??false)) { 
+                processAI($general['no']); 
+                $reduce_turn = true;
+            }    // npc AI 처리
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processCommand');
-            processCommand($general['no']);
+            processCommand($general['no'], $reduce_turn);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateCommand');
             updateCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', updateTurntime');

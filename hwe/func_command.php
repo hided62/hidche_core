@@ -483,7 +483,7 @@ function getCoreTurn($nation, $level) {
 }
 
 
-function processCommand($no) {
+function processCommand($no, $reduceTurn) {
     $session = Session::getInstance();
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -560,6 +560,8 @@ function processCommand($no) {
         if($general['npc'] >= 2 || $general['killturn'] > $killturn) {
             $newKillturn = $general['killturn'] - 1;
         } elseif($command[0] == 0) {
+            $newKillturn = $general['killturn'] - 1;
+        } elseif($reduceTurn = true){
             $newKillturn = $general['killturn'] - 1;
         } else {
             $newKillturn = $killturn;

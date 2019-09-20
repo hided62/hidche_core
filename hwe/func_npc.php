@@ -274,7 +274,6 @@ function processAI($no) {
     }
 
 
-
     $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
@@ -321,7 +320,6 @@ function processAI($no) {
     }
 
     $autorun_user = $admin['autorun_user'];
-    
     if($general['npc'] < 2){
         $autorun_limit_minutes = $autorun_user['limit_minutes']??0;
         if(!$autorun_limit_minutes){
@@ -342,7 +340,6 @@ function processAI($no) {
     }
 
     $allowedAction = new AIAllowedAction($general['npc'], $autorun_user['options']??[]);
-
 
     $query = "select city,region,nation,level,path,rate,gen1,gen2,gen3,pop,supply,front from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error("processAI02 ".MYDB_error($connect),"");

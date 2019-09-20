@@ -132,7 +132,7 @@ if($autorun_user_minutes < 0){
 
 $autorun_user = $autorun_user_minutes?[
     'limit_minutes'=>$autorun_user_minutes,
-    'option'=>$autorun_user_options
+    'options'=>$autorun_user_options
 ]:null;
 
 if($reserve_open){
