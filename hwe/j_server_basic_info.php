@@ -16,6 +16,8 @@ if(!class_exists('\\sammo\\DB')){
     ]);
 }
 
+$templates = new \League\Plates\Engine(__dir__.'/templates');
+
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
@@ -51,7 +53,10 @@ if(file_exists(__dir__.'/.htaccess')){
             }
         }
         $auto_info = join(', ', array_values($auto_info));
-        $otherTextInfo[] = "자동행동({$auto_info})";
+        $otherTextInfo[] = $templates->render('tooltip', [
+            'text'=>'자동행동',
+            'info'=>$auto_info,
+        ]);
     }
 
     if(!$otherTextInfo){
@@ -112,6 +117,7 @@ if($admin['join_mode'] == 'onlyRandom'){
 
 
 if($admin['autorun_user']['limit_minutes']??false){
+    
     $auto_info = [];
     foreach($admin['autorun_user']['options'] as $auto_option => $value){
         assert($value);
@@ -124,7 +130,10 @@ if($admin['autorun_user']['limit_minutes']??false){
         }
     }
     $auto_info = join(', ', array_values($auto_info));
-    $otherTextInfo[] = "자동행동({$auto_info})";
+    $otherTextInfo[] = $templates->render('tooltip', [
+        'text'=>'자동행동',
+        'info'=>$auto_info,
+    ]);
 }
 
 if(!$otherTextInfo){
