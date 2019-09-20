@@ -43,13 +43,14 @@ if(file_exists(__dir__.'/.htaccess')){
         foreach($options['autorun_user']['option'] as $auto_option => $value){
             assert($value);
             switch($auto_option){
-                case 'develop': $auto_info[] = '내정'; break;
-                case 'warp': $auto_info[] = '순간이동'; break;
-                case 'recruit': $auto_info[] = '징훈사'; break;
-                case 'battle': $auto_info[] = '출병'; break;
+                case 'develop': $auto_info['내정'] = '내정'; break;
+                case 'warp': $auto_info['순간이동'] = '순간이동'; break;
+                case 'recruit': $auto_info['징훈사'] = $auto_info['징훈사']??'징훈사'; break;
+                case 'recruit_high': $auto_info['징훈사'] = '모훈사'; break;
+                case 'battle': $auto_info['출병'] = '출병'; break;
             }
         }
-        $auto_info = join(',', $auto_info);
+        $auto_info = join(', ', array_values($auto_info));
         $otherTextInfo[] = "자동행동({$auto_info})";
     }
 
@@ -115,13 +116,14 @@ if($admin['autorun_user']['limit_minutes']??false){
     foreach($admin['autorun_user']['option'] as $auto_option => $value){
         assert($value);
         switch($auto_option){
-            case 'develop': $auto_info[] = '내정'; break;
-            case 'warp': $auto_info[] = '순간이동'; break;
-            case 'recruit': $auto_info[] = '징훈사'; break;
-            case 'battle': $auto_info[] = '출병'; break;
+            case 'develop': $auto_info['내정'] = '내정'; break;
+            case 'warp': $auto_info['순간이동'] = '순간이동'; break;
+            case 'recruit': $auto_info['징훈사'] = $auto_info['징훈사']??'징훈사'; break;
+            case 'recruit_high': $auto_info['징훈사'] = '모훈사'; break;
+            case 'battle': $auto_info['출병'] = '출병'; break;
         }
     }
-    $auto_info = join(', ', $auto_info);
+    $auto_info = join(', ', array_values($auto_info));
     $otherTextInfo[] = "자동행동({$auto_info})";
 }
 

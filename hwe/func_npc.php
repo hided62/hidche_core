@@ -51,6 +51,8 @@ class AIAllowedAction{
             case 'warp':
                 $this->warp = true;
                 break;
+            case 'recruit_high': 
+                $this->recruit_high = true;
             case 'recruit': 
                 $this->recruit = true;
                 $this->changeWarCondition = true;
@@ -147,7 +149,7 @@ function SetDevelop($genType, $no, $city, $tech) {
     return;
 }
 
-function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $dex0, $dex10, $dex20, $dex30, $dex40) {
+function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $dex0, $dex10, $dex20, $dex30, $dex40, $currentCrewType, AIAllowedAction $allowedAction) {
     $db = DB::db();
     $connect=$db->get();
 
@@ -224,7 +226,13 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
     }
 
     if($types){
-        $type = Util::choiceRandom($types);
+        if(!$allowedAction->randomRecruit && in_array($currentCrewType, $types)){
+            $type = $currentCrewType;
+        }
+        else{
+            $type = Util::choiceRandom($types);
+        }
+        
     }
     else{
         $type = GameUnitConst::DEFAULT_CREWTYPE;
@@ -239,7 +247,13 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
 
     $crew = intdiv($gold, $cost);
     if($leader < $crew) { $crew = $leader; }
-    $command = EncodeCommand(0, $type, $crew, 11);
+
+    if($allowedAction->recruit_high && $crew * $cost * 8 < $gold){
+        $command = EncodeCommand(0, $type, $crew, 12);
+    }
+    else{
+        $command = EncodeCommand(0, $type, $crew, 11);
+    }
 
     $query = "update general set turn0='$command' where no='$no'";
     MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -994,7 +1008,7 @@ function processAI($no) {
         return;
     case EncodeCommand(0, 0, 0, 11): //징병
         if ($allowedAction->recruit) {
-            SetCrew($general['no'], $general['nation'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40']);
+            SetCrew($general['no'], $general['nation'], $general['personal'], $general['gold'], $general['leader'], $genType, $nation['tech'], $general['dex0'], $general['dex10'], $general['dex20'], $general['dex30'], $general['dex40'], $general['crewtype'], $allowedAction);
         }
         else{
             $db->update('general', [
