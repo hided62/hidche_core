@@ -40,7 +40,7 @@ if(file_exists(__dir__.'/.htaccess')){
 
     if($options['autorun_user']['limit_minutes']??false){
         $auto_info = [];
-        foreach($options['autorun_user']['option'] as $auto_option => $value){
+        foreach($options['autorun_user']['options'] as $auto_option => $value){
             assert($value);
             switch($auto_option){
                 case 'develop': $auto_info['내정'] = '내정'; break;
@@ -113,7 +113,7 @@ if($admin['join_mode'] == 'onlyRandom'){
 
 if($admin['autorun_user']['limit_minutes']??false){
     $auto_info = [];
-    foreach($admin['autorun_user']['option'] as $auto_option => $value){
+    foreach($admin['autorun_user']['options'] as $auto_option => $value){
         assert($value);
         switch($auto_option){
             case 'develop': $auto_info['내정'] = '내정'; break;
