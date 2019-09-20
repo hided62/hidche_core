@@ -226,7 +226,7 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
     }
 
     if($types){
-        if(!$allowedAction->randomRecruit && in_array($currentCrewType, $types)){
+        if(!$allowedAction->randomRecruit && in_array($currentCrewType, $types) && $type == GameUnitConst::DEFAULT_CREWTYPE){
             $type = $currentCrewType;
         }
         else{
