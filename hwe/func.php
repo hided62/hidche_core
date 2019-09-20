@@ -1619,7 +1619,7 @@ function checkTurn() {
             PreprocessCommand($general['no']);
             //if(STEP_LOG) pushStepLog(date('Y-m-d H:i:s').', processAI');
             $reduce_turn = false;
-            if($general['npc'] >= 2 || ($autorun_user['limit_minutes']??false) && DecodeCommand($general['turn0'])[0] == 0) {
+            if(($general['npc'] >= 2 || ($autorun_user['limit_minutes']??false)) && DecodeCommand($general['turn0'])[0] == 0) {
                 processAI($general['no']); 
                 $reduce_turn = true;
             }    // npc AI 처리
