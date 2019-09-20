@@ -561,7 +561,7 @@ function processCommand($no, $reduceTurn) {
             $newKillturn = $general['killturn'] - 1;
         } elseif($command[0] == 0) {
             $newKillturn = $general['killturn'] - 1;
-        } elseif($reduceTurn = true){
+        } elseif($reduceTurn == true){
             $newKillturn = $general['killturn'] - 1;
         } else {
             $newKillturn = $killturn;
