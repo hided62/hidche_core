@@ -38,22 +38,20 @@ function serverUpdate(caller){
         return;
     }
 
-    if(isRoot){
-        if(!confirm('서버 라이브러리, 루트 서버에 대해 git pull을 실행합니다.')){
-            return;
-        }
-    }
-    else if(!allowFullUpdate){
-        if (!confirm('다음 git tree-ish 주소로 업데이트를 시도합니다 : ' + target)) {
-            return;
-        }
-    }
-    else {
+    
+    if(allowFullUpdate){
         target = prompt('가져올 git tree-ish 명을 입력해주세요.', target)
         if(!target){
             return;
         }
-
+    }
+    else if(isRoot){
+        if(!confirm('서버 라이브러리, 루트 서버에 대해 git pull을 실행합니다.')){
+            return;
+        }
+    }
+    else if (!confirm('다음 git tree-ish 주소로 업데이트를 시도합니다 : ' + target)) {
+        return;
     }
     
     $.ajax({
