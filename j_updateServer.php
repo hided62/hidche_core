@@ -115,8 +115,9 @@ if(!file_exists($server)){
 
 
 if($server == $baseServerName){
-    exec("git pull -q 2>&1", $output);
-    if($output && $output[0] != 'Already up-to-date.'){
+
+    exec("git fetch 2>&1", $output);
+    if($output){
         Json::die([
             'result'=>false,
             'reason'=>'git pull 작업 : '.join(', ', $output)
@@ -134,6 +135,14 @@ if($server == $baseServerName){
         }
     }
 
+    exec("git pull -q 2>&1", $output);
+    if($output && $output[0] != 'Already up-to-date.'){
+        Json::die([
+            'result'=>false,
+            'reason'=>'git pull 작업 : '.join(', ', $output)
+        ]);
+    }
+
     $version = getVersion();
     $result = Util::generateFileUsingSimpleTemplate(
         __DIR__.'/'.$server.'/d_setting/VersionGit.orig.php',
@@ -142,7 +151,7 @@ if($server == $baseServerName){
         ], true
     );
 
-    $storage->$server = [null, $version];
+    $storage->$server = [$target, $version];
 
     Json::die([
         'server'=>$server,

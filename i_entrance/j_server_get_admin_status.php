@@ -76,7 +76,7 @@ foreach (AppConf::getList() as $setting) {
         'korName' => $serverKorName,
         'color' => $serverColor,
         'isRoot' => $serverDir == $rootServer,
-        'lastGitPath' => ($serverGitPath[$serverDir][0])??'origin/devel'
+        'lastGitPath' => ($serverGitPath[$serverDir][0])??($serverDir == $rootServer?'devel':'origin/devel')
     ];
     $server[] = $state;
 }  
