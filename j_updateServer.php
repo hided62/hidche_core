@@ -116,7 +116,7 @@ if(!file_exists($server)){
 
 if($server == $baseServerName){
 
-    exec("git fetch 2>&1", $output);
+    exec("git fetch -q 2>&1", $output);
     if($output){
         Json::die([
             'result'=>false,
