@@ -1009,7 +1009,7 @@ function processAI($no, &$reduce_turn) {
                 } elseif($nation['war'] == 1 || !$allowedAction->battle) {
                     //전금이면 내정, 조달
                     $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1);   //내정, 조달
-                } else { $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
+                } else if($target){ $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
             }
         }
     }
