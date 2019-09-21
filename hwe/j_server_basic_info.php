@@ -54,8 +54,9 @@ if(file_exists(__dir__.'/.htaccess')){
         }
         $auto_info = join(', ', array_values($auto_info));
         $otherTextInfo[] = $templates->render('tooltip', [
-            'text'=>'자동행동',
+            'text'=>'자율행동',
             'info'=>$auto_info,
+            'style'=>'text-decoration:underline'
         ]);
     }
 
@@ -131,8 +132,9 @@ if($admin['autorun_user']['limit_minutes']??false){
     }
     $auto_info = join(', ', array_values($auto_info));
     $otherTextInfo[] = $templates->render('tooltip', [
-        'text'=>'자동행동',
+        'text'=>'자율행동',
         'info'=>$auto_info,
+        'style'=>'text-decoration:underline'
     ]);
 }
 

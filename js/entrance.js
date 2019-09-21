@@ -99,6 +99,7 @@ function Entrance_drawServerList(serverInfos){
                 $serverHtml.append(
                     TemplateEngine(serverReservedTemplate, result.reserved)
                 );
+                initTooltip($serverHtml);
                 return;
             }
 
