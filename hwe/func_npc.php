@@ -248,7 +248,7 @@ function SetCrew($no, $nationID, $personal, $gold, $leader, $genType, $tech, $de
     $crew = intdiv($gold, $cost);
     if($leader < $crew) { $crew = $leader; }
 
-    if($allowedAction->recruit_high && $crew * $cost * 8 < $gold){
+    if($allowedAction->recruit_high && $crew * $cost * 6 < $gold){
         $command = EncodeCommand(0, $type, $crew, 12);
     }
     else{
