@@ -164,10 +164,13 @@ if($session->userGrade < 5 && !$allowReset){
                                         <input type="checkbox" class="autorun_user_chk" data-key="warp" name="autorun_warp" id="autorun_warp">순간이동
                                     </label>
                                     <label class="btn btn-secondary">
-                                        <input type="checkbox" class="autorun_user_chk" data-key="recruit" name="autorun_recruit" id="autorun_recruit">징훈사
+                                        <input type="checkbox" class="autorun_user_chk" data-key="recruit" name="autorun_recruit" id="autorun_recruit">징병
                                     </label>
                                     <label class="btn btn-secondary">
                                         <input type="checkbox" class="autorun_user_chk" data-key="recruit_high" name="autorun_recruit_high" id="autorun_recruit_high">모병
+                                    </label>
+                                    <label class="btn btn-secondary">
+                                        <input type="checkbox" class="autorun_user_chk" data-key="train" name="autorun_train" id="autorun_train">훈사
                                     </label>
                                     <label class="btn btn-secondary">
                                         <input type="checkbox" class="autorun_user_chk" data-key="battle" name="autorun_battle" id="autorun_battle">출병
