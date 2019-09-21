@@ -38,7 +38,7 @@ class AIAllowedAction{
         $this->appointment = false;
         $this->changeWarCondition = false;
         $this->donation = false;
-        $this->buySellRice = false;
+        $this->buySellRice = true;
 
         $this->staffAction = false;
 
@@ -342,10 +342,31 @@ function processAI($no, &$reduce_turn) {
     $reduce_turn = true;
 
     $allowedAction = new AIAllowedAction($general['npc'], $autorun_user['options']??[]);
+    if($general['troop'] && $allowedAction->warp){
+        $troopLeader = $db->query(
+            'SELECT general.no,general.name,general.city,turn0,troop,general.nation, city.nation AS city_nation FROM general JOIN city ON city.city = general.city WHERE troop = %i', $general['troop']
+        );
 
-    $query = "select city,region,nation,level,path,rate,gen1,gen2,gen3,pop,supply,front from city where city='{$general['city']}'";
+        if(DecodeCommand($troopLeader['turn0'])[0] != 26){
+            //valid
+        }
+        else if($troopLeader['nation'] == $troopLeader['city_nation']){
+            //valid
+        }
+        else{
+            $allowedAction->warp = false;
+        }
+    }
+
+    $query = "select city,region,nation,level,path,rate,gen1,gen2,gen3,pop,supply,front,trade from city where city='{$general['city']}'";
     $result = MYDB_query($query, $connect) or Error("processAI02 ".MYDB_error($connect),"");
     $city = MYDB_fetch_array($result);
+
+    if ($general['npc'] < 2 && $allowedAction->buySellRice) {
+        if($city['trade'] == 0){
+            $allowedAction->buySellRice = false;
+        }
+    }
 
     $query = "select nation,level,tech,gold,rice,rate,type,color,name,war from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error("processAI03 ".MYDB_error($connect),"");
@@ -789,7 +810,7 @@ function processAI($no, &$reduce_turn) {
                     if($selCity['dev'] > 95) { $sel = 9; }
                     elseif($selCity['dev'] < 70) { $sel = 0; }
 
-                    if(!$allowedAction->warp && !$general['troop']){
+                    if(!$allowedAction->warp){
                         $sel = 0;
                     }
 
@@ -872,11 +893,11 @@ function processAI($no, &$reduce_turn) {
             if($general['gold'] + $general['rice'] < $resrc*2) { $command = EncodeCommand(0, 0, 0, 9); } //금쌀없으면 조달
             elseif($general['rice'] > $resrc && $city['rate'] < 95 && $city['front'] == 0 && $allowedAction->develop) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
             elseif($general['rice'] > $resrc && $city['rate'] < 50 && $city['front'] > 0 && $allowedAction->develop) { $command = EncodeCommand(0, 0, 0, 4); }  // 우선 선정
-            elseif($general['gold'] < $resrc || ($general['gold'] < $resrc *2 && $general['rice'] > $resrc * 6) && $allowedAction->buySellRice) {                                   // 금없으면 쌀팜
+            elseif(($general['gold'] < $resrc || ($general['gold'] < $resrc *2 && $general['rice'] > $resrc * 6)) && $allowedAction->buySellRice) {                                   // 금없으면 쌀팜
                 $amount = intdiv(($general['rice'] - $general['gold'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 1, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
-            } elseif($general['rice'] < $resrc || ($general['rice'] < $resrc *2 && $general['gold'] > $resrc * 6) && $allowedAction->buySellRice) {                                 // 쌀없으면 쌀삼
+            } elseif(($general['rice'] < $resrc || ($general['rice'] < $resrc *2 && $general['gold'] > $resrc * 6)) && $allowedAction->buySellRice) {                                 // 쌀없으면 쌀삼
                 $amount = intdiv(($general['gold'] - $general['rice'])/2, 100);   // 100단위
                 if($amount > 0) { $command = EncodeCommand(0, 2, $amount, 49); }// 팜
                 else { $command = EncodeCommand(0, 0, 0, 9); }                  // 조달
@@ -906,7 +927,7 @@ function processAI($no, &$reduce_turn) {
                     $query = "select city from city where nation='{$general['nation']}' and pop>40000 and supply='1' order by rand() limit 0,1";
                     $result = MYDB_query($query, $connect) or Error("processAI16 ".MYDB_error($connect),"");
                     $cityCount = MYDB_num_rows($result);
-                    if($cityCount > 0 && $allowedAction->warp && !$general['troop']) {
+                    if($cityCount > 0 && $allowedAction->warp) {
                         $selCity = MYDB_fetch_array($result);
                         //워프
                         $query = "update general set city='{$selCity['city']}' where no='{$general['no']}'";
@@ -950,7 +971,7 @@ function processAI($no, &$reduce_turn) {
                         if($dip['state'] == 0) $target[] = $targetCity['city'];
                     }
                 }
-                if(count($target) == 0 && $allowedAction->warp && !$general['troop']) {
+                if(count($target) == 0 && $allowedAction->warp) {
                     //전방 도시 선택, 30% 확률로 태수 있는 전방으로 워프
                     if(rand()%100 < 30) {
                         $query = "select city from city where nation='{$general['nation']}' and supply='1' and front>0 order by gen1 desc,rand() limit 0,1";
