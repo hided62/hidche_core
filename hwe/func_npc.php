@@ -56,8 +56,11 @@ class AIAllowedAction{
             case 'recruit': 
                 $this->recruit = true;
                 $this->changeWarCondition = true;
+                break;
+            case 'train':
                 $this->train = true;
                 $this->atmos = true;
+                $this->changeWarCondition = true;
                 break;
             case 'battle':
                 $this->battle = true;

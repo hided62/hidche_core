@@ -47,8 +47,9 @@ if(file_exists(__dir__.'/.htaccess')){
             switch($auto_option){
                 case 'develop': $auto_info['내정'] = '내정'; break;
                 case 'warp': $auto_info['순간이동'] = '순간이동'; break;
-                case 'recruit': $auto_info['징훈사'] = $auto_info['징훈사']??'징훈사'; break;
-                case 'recruit_high': $auto_info['징훈사'] = '모훈사'; break;
+                case 'recruit': $auto_info['징병'] = $auto_info['징병']??'징병'; break;
+                case 'recruit_high': $auto_info['징병'] = '모병'; break;
+                case 'train': $auto_info['훈사'] = '훈련/사기진작'; break;
                 case 'battle': $auto_info['출병'] = '출병'; break;
             }
         }
@@ -125,8 +126,9 @@ if($admin['autorun_user']['limit_minutes']??false){
         switch($auto_option){
             case 'develop': $auto_info['내정'] = '내정'; break;
             case 'warp': $auto_info['순간이동'] = '순간이동'; break;
-            case 'recruit': $auto_info['징훈사'] = $auto_info['징훈사']??'징훈사'; break;
-            case 'recruit_high': $auto_info['징훈사'] = '모훈사'; break;
+            case 'recruit': $auto_info['징병'] = $auto_info['징병']??'징병'; break;
+            case 'recruit_high': $auto_info['징병'] = '모병'; break;
+            case 'train': $auto_info['훈사'] = '훈련/사기진작'; break;
             case 'battle': $auto_info['출병'] = '출병'; break;
         }
     }
