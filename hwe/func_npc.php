@@ -274,7 +274,7 @@ function processAI($no, &$reduce_turn) {
     }
 
 
-    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
+    $query = "select no,turn0,npcid,name,nation,nations,city,level,npcmsg,personal,leader,intel,power,gold,rice,crew,crewtype,train,atmos,troop,npc,affinity,mode,injury,picture,imgsvr,killturn,makelimit,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error("processAI01 ".MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
