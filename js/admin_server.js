@@ -64,7 +64,11 @@ function serverUpdate(caller){
         }
     }).then(function(response) {
             if(response.result) {
-                alert('{0} 서버가 {1} 버전으로 업데이트 되었습니다.'.format(response.server, response.version));
+                var aux = '';
+                if(isRoot){
+                    aux = ' (이미지 서버 갱신:{0}, {1})'.format(response.imgResult, response.imgDetail);
+                }
+                alert('{0} 서버가 {1} 버전으로 업데이트 되었습니다.{2}'.format(response.server, response.version, aux));
                 location.reload();
             } else {
                 alert(response.reason);

@@ -150,13 +150,44 @@ if($server == $baseServerName){
             'verionGit'=>$version
         ], true
     );
+    
+    if(ServConfig::$imageRequestKey){
+        try {
+            $imagePullPath = ServConfig::getImagePullURI();
+            $pullResult = @file_get_contents($imagePullPath);
+            if($pullResult === false){
+                throw new \ErrorException('Invalid URI');
+            }
+            $pullResult = Json::decode($pullResult);
+            if($pullResult['result']){
+                $imgResult = true;
+                $imgDetail = $pullResult['version'];
+            }
+            else{
+                $imgResult = false;
+                $imgDetail = $pullResult['reason'];
+            }
+        }
+        catch(\Exception $e){
+            $imgResult = false;
+            $imgDetail = $e->getMessage();
+        }
+    }
+    else{
+        $imgResult = true;
+        $imgDetail = 'No key';
+    }
+    
+    
 
     $storage->$server = [$target, $version];
 
     Json::die([
         'server'=>$server,
         'result'=>true,
-        'version'=>$version
+        'version'=>$version,
+        'imgResult'=>$imgResult,
+        'imgDetail'=>$imgDetail,
     ]);
 
 }

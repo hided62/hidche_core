@@ -47,6 +47,16 @@ $(document).ready( function () {
     $('#serv_host').val(
         [location.protocol, '//', location.host, parentPathname].join('')
     );
+
+    $('#btn_random_generate_key').click(function(){
+        var token = '';
+        while(token.length < 24){
+            token += (Math.random() + 1).toString(36).substring(7); 
+        }
+        token = token.substr(0,24);
+        $('#image_request_key').val(token);
+    });
+
     $('#db_form').validate({
         rules:{
             db_host:"required",
@@ -56,7 +66,11 @@ $(document).ready( function () {
             db_name:"required",
             serv_host:"required",
             shared_icon_path:"required",
-            game_image_path:"required"
+            game_image_path:"required",
+            image_request_key:{
+                required:false,
+                minlength:16
+            }
         },
         errorElement: "div",
         errorPlacement: function ( error, element ) {
@@ -94,7 +108,10 @@ $(document).ready( function () {
                 db_name:$('#db_name').val(),
                 serv_host:$('#serv_host').val(),
                 shared_icon_path:$('#shared_icon_path').val(),
-                game_image_path:$('#game_image_path').val()
+                game_image_path:$('#game_image_path').val(),
+                image_request_key:$('#image_request_key').val(),
+                kakao_rest_key:$('#kakao_rest_key').val(),
+                kakao_admin_key:$('#kakao_admin_key').val(),
             }
         }).then(function(result){
             var deferred = $.Deferred();

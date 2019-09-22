@@ -10,6 +10,8 @@ class ServConfig
     public static $serverWebPath = '_tK_serverBasePath_';
     public static $sharedIconPath = '_tK_sharedIconPath_';
     public static $gameImagePath = "_tK_gameImagePath_";
+    public static $imageRequestPath = "_tK_imageRequestPath_";
+    public static $imageRequestKey = '_tK_imageRequestKey_';
 
     public static function getSharedIconPath(string $filepath='') : string
     {
@@ -30,6 +32,13 @@ class ServConfig
             return static::$gameImagePath."/{$filepath}";
         }
         return static::$gameImagePath;
+    }
+
+    public static function getImagePullURI() : string
+    {
+        $now = time();
+        $req_hash = Util::hashPassword(sprintf("%016x",$now), static::$imageRequestKey);
+        return static::$imageRequestPath."?req={$req_hash}&time={$now}";
     }
 
 
