@@ -36,10 +36,10 @@ https://storage.hided.net/gogs/devsam/docker 를 참고해 주세요.
 
 ```
 sudo -u www-data git clone https://storage.hided.net/gogs/devsam/core.git
-git clone https://storage.hided.net/gogs/devsam/image.git
+sudo -u www-data git clone https://storage.hided.net/gogs/devsam/image.git
 ```
 
-> 이미지는 git hook을 이용한 업데이트 기능을 제공하지만 아직 범용성 있는 설계가 되어있진 않습니다.
+> 이미지는 hook/git_hook.php을 통해 동기화되며, 서버 설치 과정에 이미지 갱신 키를 지정하는 것으로 '훼' 서버 업데이트 시 동기화됩니다. 이미지 서버가 게임 서버와 별개여도 동작하나, php와 git을 지원해야합니다.
 
 ### 설치
 
@@ -52,9 +52,9 @@ Database 수는 로그인 관리 서버 1개, 내부 서버 7개로, 총 8개의
 
 ## 카카오로그인 연동
 
-현재 카카오로그인 API KEY를 입력하는 작업이 설치과정에 추가되어있지 않습니다.
+서버 설치 시 카카오 로그인 연동을 위한 API KEY를 입력받습니다.
 
-설치 후 <code>d_setting/KakaoKey.php</code>에서 API키를 입력해야 합니다.
+만약 설치 이후 API KEY를 변경하고자 하는 경우 <code>d_setting/KakaoKey.php</code>에서 API키를 변경해야 합니다.
 
 
 ## 라이선스
