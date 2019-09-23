@@ -350,7 +350,10 @@ function processAI($no, &$reduce_turn) {
             'SELECT general.no,general.name,general.city,turn0,troop,general.nation, city.nation AS city_nation FROM general JOIN city ON city.city = general.city WHERE troop = %i', $general['troop']
         );
 
-        if(DecodeCommand($troopLeader['turn0'])[0] != 26){
+        if(!$troopLeader){
+            //부대장 사망..?
+        }
+        else if(DecodeCommand($troopLeader['turn0'])[0] != 26){
             //valid
         }
         else if($troopLeader['nation'] == $troopLeader['city_nation']){
