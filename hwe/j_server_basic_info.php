@@ -3,6 +3,38 @@ namespace sammo;
 
 include "lib.php";
 
+$templates = new \League\Plates\Engine(__dir__.'/templates');
+
+function getAutorunInfo($autorunOption){
+    global $templates;
+    $auto_info = [];
+    foreach($autorunOption['options'] as $auto_option => $value){
+        assert($value);
+        switch($auto_option){
+            case 'develop': $auto_info['내정'] = '내정'; break;
+            case 'warp': $auto_info['순간이동'] = '순간이동'; break;
+            case 'recruit': $auto_info['징병'] = $auto_info['징병']??'징병'; break;
+            case 'recruit_high': $auto_info['징병'] = '모병'; break;
+            case 'train': $auto_info['훈사'] = '훈련/사기진작'; break;
+            case 'battle': $auto_info['출병'] = '출병'; break;
+        }
+    }
+    $limit = Util::toInt($autorunOption['limit_minutes']);
+    if($limit % 60 == 0){
+        $auto_info['제한'] = ($limit/60).'시간 유효';
+    }
+    else{
+        $auto_info['제한'] = ($limit).'분 유효';
+    }
+    $auto_info = join(', ', array_values($auto_info));
+    return $templates->render('tooltip', [
+        'text'=>'자율행동',
+        'info'=>$auto_info,
+        'style'=>'text-decoration:underline',
+        'copyable_info'=>true
+    ]);
+}
+
 $session = Session::requireLogin([
     'game'=>null,
     'me'=>null
@@ -16,7 +48,6 @@ if(!class_exists('\\sammo\\DB')){
     ]);
 }
 
-$templates = new \League\Plates\Engine(__dir__.'/templates');
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -41,24 +72,7 @@ if(file_exists(__dir__.'/.htaccess')){
     }
 
     if($options['autorun_user']['limit_minutes']??false){
-        $auto_info = [];
-        foreach($options['autorun_user']['options'] as $auto_option => $value){
-            assert($value);
-            switch($auto_option){
-                case 'develop': $auto_info['내정'] = '내정'; break;
-                case 'warp': $auto_info['순간이동'] = '순간이동'; break;
-                case 'recruit': $auto_info['징병'] = $auto_info['징병']??'징병'; break;
-                case 'recruit_high': $auto_info['징병'] = '모병'; break;
-                case 'train': $auto_info['훈사'] = '훈련/사기진작'; break;
-                case 'battle': $auto_info['출병'] = '출병'; break;
-            }
-        }
-        $auto_info = join(', ', array_values($auto_info));
-        $otherTextInfo[] = $templates->render('tooltip', [
-            'text'=>'자율행동',
-            'info'=>$auto_info,
-            'style'=>'text-decoration:underline'
-        ]);
+        $otherTextInfo[] = getAutorunInfo($options['autorun_user']);
     }
 
     if(!$otherTextInfo){
@@ -117,27 +131,8 @@ if($admin['join_mode'] == 'onlyRandom'){
     $otherTextInfo[] = '랜덤 임관 전용';
 }
 
-
 if($admin['autorun_user']['limit_minutes']??false){
-    
-    $auto_info = [];
-    foreach($admin['autorun_user']['options'] as $auto_option => $value){
-        assert($value);
-        switch($auto_option){
-            case 'develop': $auto_info['내정'] = '내정'; break;
-            case 'warp': $auto_info['순간이동'] = '순간이동'; break;
-            case 'recruit': $auto_info['징병'] = $auto_info['징병']??'징병'; break;
-            case 'recruit_high': $auto_info['징병'] = '모병'; break;
-            case 'train': $auto_info['훈사'] = '훈련/사기진작'; break;
-            case 'battle': $auto_info['출병'] = '출병'; break;
-        }
-    }
-    $auto_info = join(', ', array_values($auto_info));
-    $otherTextInfo[] = $templates->render('tooltip', [
-        'text'=>'자율행동',
-        'info'=>$auto_info,
-        'style'=>'text-decoration:underline'
-    ]);
+    $otherTextInfo[] = getAutorunInfo($admin['autorun_user']);
 }
 
 if(!$otherTextInfo){

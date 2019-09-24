@@ -192,8 +192,19 @@ div.bar_out div.bar_in{
     font-family: '맑은 고딕';
 }
 
+.tooltip_copyable_info .tooltiptext{
+    display: inline;
+    color: rgba(0,0,0,0);
+    font-size: 0;
+}
+
 .tooltiptext {
     display: none;
+}
+
+.hidden_but_copyable{
+    color: rgba(0,0,0,0);
+    font-size: 0;
 }
 
 .btn-group-xs > .btn, .btn-xs {

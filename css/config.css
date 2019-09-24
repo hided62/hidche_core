@@ -166,6 +166,17 @@ a.samButton.disabled {
     content:'】'
 }
 
+.tooltip_copyable_info .tooltiptext{
+    display: inline;
+    color: rgba(0,0,0,0);
+    font-size: 0;
+}
+
 .tooltiptext {
     display: none;
+}
+
+.hidden_but_copyable{
+    color: rgba(0,0,0,0);
+    font-size: 0;
 }
