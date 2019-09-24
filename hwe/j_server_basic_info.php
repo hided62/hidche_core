@@ -20,7 +20,10 @@ function getAutorunInfo($autorunOption){
         }
     }
     $limit = Util::toInt($autorunOption['limit_minutes']);
-    if($limit % 60 == 0){
+    if($limit >= 43200){
+        $auto_info['제한'] = '항상 유효';
+    }
+    else if($limit % 60 == 0){
         $auto_info['제한'] = ($limit/60).'시간 유효';
     }
     else{
