@@ -199,7 +199,7 @@ function process_25(&$general) {
         if($type >= 98 && $genLimit == GameConst::$initialNationGenLimitForRandInit){
             //랜덤 모드, 초기화시에는 랜덤 임관을 대신 한턴 더 넣어준다.
             $db->update('general', [
-                'turn1'=>EncodeCommand(0, 0, $type, 25),
+                'turn1'=>EncodeCommand(0, $type, 0, 25),
             ], '`no` = %i', $general['no']);
             pushGenLog($general, $log);
             process_42($general);
