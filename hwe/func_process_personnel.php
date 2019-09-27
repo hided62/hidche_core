@@ -1075,7 +1075,7 @@ function process_57(&$general) {
     $history = [];
     $date = substr($general['turntime'],11,5);
 
-    $admin = $gameStor->getValues(['year', 'month', 'killturn']);
+    $admin = $gameStor->getValues(['year', 'month', 'killturn', 'autorun_user', 'turn_term']);
 
     $query = "select nation,name from nation where nation='{$general['nation']}'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -1089,6 +1089,19 @@ function process_57(&$general) {
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $ruler = MYDB_fetch_array($result);
 
+    $killTurnLimit = $admin['killturn'];
+    $autorunLimit = $admin['autorun_user']['limit_minutes']??0;
+    if($autorunLimit){
+        $autorunLimit /= $admin['turn_term'];
+        if($autorunLimit < GameConst::$maxTurn){
+            $killTurnLimit -= $autorunLimit;
+        }
+        else{
+            $killTurnLimit -= Util::toInt(sqrt(GameConst::$maxTurn * $autorunLimit));
+        }
+    }
+
+
     if($general['level'] == 0) {
         $log[] = "<C>●</>{$admin['month']}월:재야 입니다. 모반 실패. <1>$date</>";
     } elseif($general['level'] < 5) {
@@ -1099,7 +1112,7 @@ function process_57(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:고립된 도시입니다. 모반 실패. <1>$date</>";
     } elseif($general['level'] == 12) {
         $log[] = "<C>●</>{$admin['month']}월:이미 군주 입니다. 모반 실패. <1>$date</>";
-    } elseif($ruler['killturn'] >= $admin['killturn']) {
+    } elseif($ruler['killturn'] >= $killTurnLimit) {
         $log[] = "<C>●</>{$admin['month']}월:군주가 활동중입니다. 모반 실패. <1>$date</>";
     } elseif($ruler['npc'] >= 2) {
         $log[] = "<C>●</>{$admin['month']}월:군주가 NPC입니다. 모반 실패. <1>$date</>";
