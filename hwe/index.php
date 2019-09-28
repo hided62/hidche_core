@@ -304,7 +304,7 @@ else if($session->userGrade == 4){
 
 
     </select>
-    <input type="textarea" id="msg_input" maxlength="99">
+    <input type="textarea" id="msg_input" maxlength="99" value="">
     <button id="msg_submit">서신전달&amp;갱신</button><br>
     내용 없이 '서신전달&amp;갱신'을 누르면 메세지창이 갱신됩니다.
 </div>
