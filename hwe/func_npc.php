@@ -801,7 +801,7 @@ function processAI($no, &$reduce_turn) {
                         if($targetCity['nation'] == 0) { $target[] = $targetCity['city']; }
                     }
                     if(count($target) == 0 || $isStart == 1 || $nation['war'] == 1) { $command = EncodeCommand(0, 0, 0, 1); } //공격 가능도시가 없으면 내정
-                    else { $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
+                    else if ($general['crew'] >= 1000) { $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
                 } else {
                     //전방 아니면 내정
                     $command = EncodeCommand(0, 0, 0, 1);
@@ -1015,7 +1015,7 @@ function processAI($no, &$reduce_turn) {
                 } elseif($nation['war'] == 1 || !$allowedAction->battle) {
                     //전금이면 내정, 조달
                     $command = EncodeCommand(0, 0, 0, (rand()%2)*8 + 1);   //내정, 조달
-                } else if($target){ $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
+                } else if($target && $general['crew'] >= 1000){ $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
             }
         }
     }
