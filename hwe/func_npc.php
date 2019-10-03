@@ -346,7 +346,7 @@ function processAI($no, &$reduce_turn) {
 
     $allowedAction = new AIAllowedAction($general['npc'], $autorun_user['options']??[]);
     if($general['troop'] && $allowedAction->warp){
-        $troopLeader = $db->query(
+        $troopLeader = $db->queryFirstRow(
             'SELECT general.no,general.name,general.city,turn0,troop,general.nation, city.nation AS city_nation FROM general JOIN city ON city.city = general.city WHERE troop = %i', $general['troop']
         );
 
@@ -801,7 +801,7 @@ function processAI($no, &$reduce_turn) {
                         if($targetCity['nation'] == 0) { $target[] = $targetCity['city']; }
                     }
                     if(count($target) == 0 || $isStart == 1 || $nation['war'] == 1) { $command = EncodeCommand(0, 0, 0, 1); } //공격 가능도시가 없으면 내정
-                    else if ($general['crew'] >= 1000) { $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
+                    else { $command = EncodeCommand(0, 0, $target[rand()%count($target)], 16); }  //있으면 공격
                 } else {
                     //전방 아니면 내정
                     $command = EncodeCommand(0, 0, 0, 1);
