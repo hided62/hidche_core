@@ -178,7 +178,7 @@ function popIncrease() {
                 $ratio *= (1 - $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 경감
             }
 
-            $pop = $city['pop'] + (int)($city['pop'] * $ratio) + 5000;  // 기본 5000명은 증가
+            $pop = $city['pop'] + (int)($city['pop'] * $ratio) + GameConst::$basePopIncreaseAmount;  // 기본인구는 증가
 
             $ratio = round($ratio*100, 2);
             $cityrate = $city['rate'];

@@ -1131,8 +1131,16 @@ function process_67(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //수도 증축
-        $query = "update city set upgrading=upgrading+1,level=level+1,pop2=pop2+100000,agri2=agri2+2000,comm2=comm2+2000,def2=def2+2000,wall2=wall2+2000,secu2=secu2+2000 where city='{$destcity['city']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('city', [
+            'upgrading'=>$db->sqleval('upgrading+1'),
+            'level'=>$db->sqleval('level+1'),
+            'pop2'=>$db->sqleval('pop2 + %i', GameConst::$expandCityPopIncreaseAmount),
+            'agri2'=>$db->sqleval('agri2 + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'comm2'=>$db->sqleval('comm2 + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'secu2'=>$db->sqleval('secu2 + %i', GameConst::$expandCityDevelIncreaseAmount),
+            'def2'=>$db->sqleval('def2 + %i', GameConst::$expandCityWallIncreaseAmount),
+            'wall2'=>$db->sqleval('wall2 + %i', GameConst::$expandCityWallIncreaseAmount),
+        ], 'city=%i', $destcity['city']);
 
         //경험치, 공헌치
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
@@ -1187,12 +1195,10 @@ function process_68(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:수도에서 실행해야 합니다. 감축 실패. <1>$date</>";
     } elseif($nation['capital'] != $destcity['city']) {
         $log[] = "<C>●</>{$admin['month']}월:수도만 가능합니다. 감축 실패. <1>$date</>";
-    } elseif($destcity['level'] <= 3) {
-        $log[] = "<C>●</>{$admin['month']}월:수진, 진, 관문은 불가능합니다. 감축 실패. <1>$date</>";
-    } elseif($destcity['level'] <= 6) {
-        $log[] = "<C>●</>{$admin['month']}월:더이상 감축할 수 없습니다. 감축 실패. <1>$date</>";
     } elseif($destcity['upgrading'] <= 0) {
         $log[] = "<C>●</>{$admin['month']}월:증축된 도시가 아닙니다. 감축 실패. <1>$date</>";
+    } elseif($destcity['level'] <= 4) {
+        $log[] = "<C>●</>{$admin['month']}월:수, 진, 관문, 이성은 불가능합니다. 감축 실패. <1>$date</>";
     } elseif($general['level'] < 5) {
         $log[] = "<C>●</>{$admin['month']}월:수뇌부가 아닙니다. 감축 실패. <1>$date</>";
     } elseif($nation['capset'] == 1) {
@@ -1224,12 +1230,12 @@ function process_68(&$general) {
         $query = "update nation set l{$general['level']}term='0',capset='1',gold=gold+'$amount',rice=rice+'$amount' where nation='{$general['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
-        $pop  = $destcity['pop']  - 100000;
-        $agri = $destcity['agri'] - 2000;
-        $comm = $destcity['comm'] - 2000;
-        $def  = $destcity['def']  - 2000;
-        $wall = $destcity['wall'] - 2000;
-        $secu = $destcity['secu'] - 2000;
+        $pop  = $destcity['pop']  - GameConst::$expandCityPopIncreaseAmount;
+        $agri = $destcity['agri'] - GameConst::$expandCityDevelIncreaseAmount;
+        $comm = $destcity['comm'] - GameConst::$expandCityDevelIncreaseAmount;
+        $def  = $destcity['def']  - GameConst::$expandCityWallIncreaseAmount;
+        $wall = $destcity['wall'] - GameConst::$expandCityWallIncreaseAmount;
+        $secu = $destcity['secu'] - GameConst::$expandCityDevelIncreaseAmount;
         if($pop  < 30000) { $pop  = 30000; }
         if($agri < 0)  { $agri = 0;  }
         if($comm < 0)  { $comm = 0;  }
@@ -1237,8 +1243,22 @@ function process_68(&$general) {
         if($wall < 0)  { $wall = 0;  }
         if($secu < 0)  { $secu = 0;  }
         //수도 감축
-        $query = "update city set upgrading=upgrading-1,level=level-1,pop2=pop2-100000,agri2=agri2-2000,comm2=comm2-2000,def2=def2-2000,wall2=wall2-2000,secu2=secu2-2000,pop='$pop',agri='$agri',comm='$comm',def='$def',wall='$wall',secu='$secu' where city='{$destcity['city']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        $db->update('city', [
+            'upgrading'=>$db->sqleval('upgrading-1'),
+            'level'=>$db->sqleval('level-1'),
+            'pop2'=>$db->sqleval('pop2 - %i', GameConst::$expandCityPopIncreaseAmount),
+            'agri2'=>$db->sqleval('agri2 - %i', GameConst::$expandCityDevelIncreaseAmount),
+            'comm2'=>$db->sqleval('comm2 - %i', GameConst::$expandCityDevelIncreaseAmount),
+            'secu2'=>$db->sqleval('secu2 - %i', GameConst::$expandCityDevelIncreaseAmount),
+            'def2'=>$db->sqleval('def2 - %i', GameConst::$expandCityWallIncreaseAmount),
+            'wall2'=>$db->sqleval('wall2 - %i', GameConst::$expandCityWallIncreaseAmount),
+            'pop'=>$pop,
+            'agri'=>$agri,
+            'comm'=>$comm,
+            'secu'=>$secu,
+            'def'=>$def,
+            'wall'=>$wall
+        ], 'city=%i', $destcity['city']);
 
         //경험치, 공헌치
         $query = "update general set dedication=dedication+'$ded',experience=experience+'$exp' where no='{$general['no']}'";
