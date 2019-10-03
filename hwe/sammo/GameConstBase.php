@@ -77,7 +77,7 @@ class GameConstBase
     /** @var int 최소 인구 증가량 */
     public static $basePopIncreaseAmount = 5000;
     /** @var int 증축시 인구 증가량 */
-    public static $expandCityPopIncreaseAmount = 10000;
+    public static $expandCityPopIncreaseAmount = 100000;
     /** @var int 증축시 내정 증가량 */
     public static $expandCityDevelIncreaseAmount = 2000;
     /** @var int 증축시 성벽 증가량 */
