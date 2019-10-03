@@ -110,3 +110,10 @@
     background: url('_tK_gameImagePath_/map/chess/chessboard.png') no-repeat;
     background-size: 700px 500px;
 }
+
+
+/*포켓몬 v1 지도*/
+.map_theme_pokemon_v1 .map_bglayer1{
+    background: url('_tK_gameImagePath_/map/pokemon_v1/back_pal8.png') no-repeat;
+    background-size: 700px 500px;
+}
