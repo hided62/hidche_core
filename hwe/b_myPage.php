@@ -21,57 +21,48 @@ if($tnmt < 0 || $tnmt > 1){
 //로그인 검사
 $session = Session::requireGameLogin()->setReadOnly();
 $userID = Session::getUserID();
+$generalID = $session->generalID;
 
 $db = DB::db();
 $gameStor = KVStorage::getStorage($db, 'game_env');
 
 increaseRefresh("내정보", 1);
 
-$me = $db->queryFirstRow('SELECT no,npc,mode,tnmt,myset,train,atmos from general WHERE owner = %i', $userID);
+$me = General::createGeneralObjFromDB($generalID);
 
-
-if ($me['myset'] > 0) {
+$myset = $me->getVar('myset');
+if ($myset > 0) {
     $submit = 'submit';
 } else {
     $submit = 'hidden';
 }
 
-if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
-    if ($me['myset'] > 1) {
+if (($btn == "설정저장" || $detachNPC) && $myset > 0) {
+    if ($myset > 1) {
         $submit = 'submit';
     } else {
         $submit = 'hidden';
     }
 
-    if($mode == 0){
-        $db->update('general', [
-            'myset'=>$db->sqleval('myset-1'),
-            'mode'=>$mode,
-            'train'=>max(0, $me['train'] - 3),
-            'atmos'=>max(0, $me['atmos'] - 3),
-        ], 'owner=%i AND mode!=%i', $userID, $mode);
+    if($mode != $me->getVar('mode')){
+        if($mode == 0){
+            $me->increaseVar('myset', -1);
+            $me->setVar('mode', $mode);
+            $me->increaseVar('train', -3);
+            $me->increaseVar('atmos', -3);
+        }
+        else{
+            $me->increaseVar('myset', -1);
+            $me->setVar('mode', $mode);
+        }
+        $myset -= 1;
     }
-    else{
-        $db->update('general', [
-            'myset'=>$db->sqleval('myset-1'),
-            'mode'=>$mode
-        ], 'owner=%i AND mode!=%i', $userID, $mode);
-    }
-
-    if($db->affectedRows()){
-        $me['myset'] -= 1;
-    }
-
-    if($me['tnmt'] != $tnmt){
-        $db->update('general', [
-            'tnmt'=>$tnmt
-        ], 'owner=%i', $userID);
+    
+    if($me->getVar('tnmt') != $tnmt){
+        $me->setVar('tnmt', $tnmt);
     }
 
-    $me['mode'] = $mode;
-    $me['tnmt'] = $tnmt;
-
-    if($me['npc'] == 1 && $detachNPC){
+    if($me->getVar('npc') == 1 && $detachNPC){
         $turnterm = $gameStor->turnterm;
 
         if($turnterm < 10){
@@ -80,13 +71,10 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
         else{
             $targetKillTurn = 60 / $turnterm;
         }
-        $db->update('general', [
-            'killturn'=>$targetKillTurn
-        ], 'owner=%i AND npc=1', $userID);
-
-        $me['killturn']=$targetKillTurn;
+        $me->setVar('killturn', $targetKillTurn);
     }
 }
+$me->applyDB($db);
 
 ?>
 <!DOCTYPE html>
@@ -113,23 +101,23 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=50%>
-            <?php myInfo(); ?>
+            <?php myInfo($me); ?>
             <?php myInfo2(); ?>
         </td>
         <td width=50% valign=top style="padding-left:4ch;">
             <form name=form1 action=b_myPage.php method=post>
                 토너먼트 【
-                <input type=radio name=tnmt value=0 <?=$me['tnmt']==0?"checked":""; ?>>수동참여
-                <input type=radio name=tnmt value=1 <?=$me['tnmt']==1?"checked":""; ?>>자동참여
+                <input type=radio name=tnmt value=0 <?=$me->getVar('tnmt')==0?"checked":""; ?>>수동참여
+                <input type=radio name=tnmt value=1 <?=$me->getVar('tnmt')==1?"checked":""; ?>>자동참여
                 】<br>
                ∞<font color=orange>개막직전 남는자리가 있을경우 랜덤하게 참여합니다.</font><br><br>
                 수비 【
-                <input type=radio name=mode  value=2 <?=$me['mode']==2?"checked":""; ?>>◎(훈사80)
-                <input type=radio name=mode  value=1 <?=$me['mode']==1?"checked":""; ?>>○(훈사60)
-                <input type=radio name=mode  value=0 <?=$me['mode']==0?"checked":""; ?>>×
+                <input type=radio name=mode  value=2 <?=$me->getVar('mode')==2?"checked":""; ?>>◎(훈사80)
+                <input type=radio name=mode  value=1 <?=$me->getVar('mode')==1?"checked":""; ?>>○(훈사60)
+                <input type=radio name=mode  value=0 <?=$me->getVar('mode')==0?"checked":""; ?>>×
                 】<br><br>
                 <input type=<?=$submit?> name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px; value=설정저장><br>
-                ∞<font color=orange>설정저장은 이달중 <?=$me['myset']?>회 남았습니다.</font><br><br>
+                ∞<font color=orange>설정저장은 이달중 <?=$myset?>회 남았습니다.</font><br><br>
             </form>
             휴 가 신 청<br>
             <a href="c_vacation.php"><button type="button" style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px;>휴가 신청</button></a><br><br>
@@ -145,10 +133,10 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
     </tr>
     <tr>
         <td valign=top>
-            <?=getGenLogRecent($me['no'], 24)?>
+            <?=getGenLogRecent($generalID, 24)?>
         </td>
         <td valign=top>
-            <?=getBatLogRecent($me['no'], 24)?>
+            <?=getBatLogRecent($generalID, 24)?>
         </td>
     </tr>
     <tr>
@@ -157,10 +145,10 @@ if (($btn == "설정저장" || $detachNPC) && $me['myset'] > 0) {
     </tr>
     <tr>
         <td valign=top>
-            <?=getGeneralHistoryAll($me['no'])?>
+            <?=getGeneralHistoryAll($generalID)?>
         </td>
         <td valign=top>
-            <?=getBatResRecent($me['no'], 24)?>
+            <?=getBatResRecent($generalID, 24)?>
         </td>
     </tr>
 </table>

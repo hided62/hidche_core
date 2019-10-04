@@ -619,7 +619,7 @@ class General implements iAction{
             'leadership', 'leadership2', 'strength', 'strength2', 'intel', 'intel2', 'weapon', 'book', 'horse', 'item', 
             'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
-            'personal', 'special', 'special2', 'mode', 'npc', 'npc_org', 'deadyear', 'npcmsg',
+            'personal', 'special', 'special2', 'mode', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex0', 'dex10', 'dex20', 'dex30', 'dex40', 
             'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn', 'myset'
         ];

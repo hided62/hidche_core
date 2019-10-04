@@ -744,7 +744,7 @@ function generalInfo($no) {
     echo "<table width=498 class='tb_layout bg2'>
     <tr>
         <td width=64 height=64 rowspan=3 class='generalIcon' style='text-align:center;background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;'>&nbsp;</td>
-        <td colspan=9 height=16 style=text-align:center;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11)."</td>
+        <td colspan=9 height=16 style=text-align:center;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11, 8)."</td>
     </tr>
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>통솔</b></td>

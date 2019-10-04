@@ -152,9 +152,9 @@ $(function(){
         <td style='text-align:center;'>
 <?php
 if (!$plock) {
-    echo "<span style='color:cyan;'>동작 시각: ".substr($gameStor->turntime, 5)."</span>";
+    echo "<span style='color:cyan;'>동작 시각: ".substr($gameStor->turntime, 5, 14)."</span>";
 } else {
-    echo "<span style='color:magenta;'>동작 시각: ".substr($gameStor->turntime, 5)."</span>";
+    echo "<span style='color:magenta;'>동작 시각: ".substr($gameStor->turntime, 5, 14)."</span>";
 }
 
 echo "
