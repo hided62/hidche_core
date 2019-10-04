@@ -40,7 +40,7 @@ $general_schema = "
     gold  int(6) default 0,         rice  int(6) default 0,
     crew  int(5) default 0,         crewtype  int(2) default 0,
     train int(3) default 0,         atmos int(3) default 0,
-    weap  int(2) default 0,         book  int(2) default 0,
+    weapon  int(2) default 0,         book  int(2) default 0,
     horse int(2) default 0,         item  int(2) default 0,
     turntime datetime,              recwar  datetime,
     makenation char(255),           makelimit int(2) default 24,

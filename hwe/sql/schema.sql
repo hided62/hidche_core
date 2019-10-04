@@ -47,7 +47,7 @@ CREATE TABLE `general` (
 	`crewtype` INT(2) NOT NULL DEFAULT '0',
 	`train` INT(3) NOT NULL DEFAULT '0',
 	`atmos` INT(3) NOT NULL DEFAULT '0',
-	`weap` VARCHAR(20) NOT NULL DEFAULT 'None',
+	`weapon` VARCHAR(20) NOT NULL DEFAULT 'None',
 	`book` VARCHAR(20) NOT NULL DEFAULT 'None',
 	`horse` VARCHAR(20) NOT NULL DEFAULT 'None',
 	`item` VARCHAR(20) NOT NULL DEFAULT 'None',

@@ -30,7 +30,7 @@ class che_장비매매 extends Command\GeneralCommand{
 
     static $itemMap = [
         'horse'=>'명마',
-        'weap'=>'무기',
+        'weapon'=>'무기',
         'book'=>'서적',
         'item'=>'도구',
     ];

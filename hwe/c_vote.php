@@ -22,7 +22,7 @@ $gameStor = KVStorage::getStorage($db, 'game_env');
 
 $admin = $gameStor->getValues(['develcost', 'cost', 'vote_title', 'vote', 'votecomment']);
 
-$me = $db->queryFirstRow('SELECT no,vote,name,nation,horse,weap,book,item,npc from general where owner=%i', $userID);
+$me = $db->queryFirstRow('SELECT no,vote,name,nation,horse,weapon,book,item,npc from general where owner=%i', $userID);
 
 if($btn == "투표" && $me['vote'] == 0 && $sel > 0) {
     $develcost = $admin['develcost'] * 5;

@@ -78,7 +78,7 @@ class General implements iAction{
         $this->personalityObj = new $personalityClass;
         
         $this->itemObjs['horse'] = buildItemClass($raw['horse']);
-        $this->itemObjs['weapon'] = buildItemClass($raw['weap']);
+        $this->itemObjs['weapon'] = buildItemClass($raw['weapon']);
         $this->itemObjs['book'] = buildItemClass($raw['book']);
         $this->itemObjs['item'] = buildItemClass($raw['item']);
     }
@@ -612,11 +612,11 @@ class General implements iAction{
         $defaultEventColumn = [
             'no', 'name', 'city', 'nation', 'level',
             'special', 'special2', 'personal',
-            'horse', 'weap', 'book', 'item', 'last_turn'
+            'horse', 'weapon', 'book', 'item', 'last_turn'
         ];
         $fullColumn = [
             'no', 'name', 'name2', 'picture', 'imgsvr', 'nation', 'nations', 'city', 'troop', 'injury', 'affinity', 
-            'leadership', 'leadership2', 'strength', 'strength2', 'intel', 'intel2', 'weap', 'book', 'horse', 'item', 
+            'leadership', 'leadership2', 'strength', 'strength2', 'intel', 'intel2', 'weapon', 'book', 'horse', 'item', 
             'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
             'personal', 'special', 'special2', 'mode', 'npc', 'npc_org', 'deadyear', 'npcmsg',

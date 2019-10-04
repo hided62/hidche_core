@@ -50,7 +50,7 @@ function getGeneralLeadership($general, $withInjury, $withItem, $withStatAdjust,
 /**
  * 장수의 무력을 받아옴
  * 
- * @param array $general 장수 정보, power, injury, weap 사용
+ * @param array $general 장수 정보, power, injury, weapon 사용
  * @param bool $withInjury 부상값 사용 여부
  * @param bool $withItem 아이템 적용 여부
  * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
@@ -68,7 +68,7 @@ function getGeneralStrength($general, $withInjury, $withItem, $withStatAdjust, $
     }
 
     if($withItem){
-        $power += getWeapEff($general['weap']);
+        $power += getWeapEff($general['weapon']);
     }
 
     if($withStatAdjust){
@@ -2281,7 +2281,7 @@ function process_48(&$general) {
         $log[] = "<C>●</>{$admin['month']}월:구입할 수 있는 물건이 아닙니다. 구입 실패. <1>$date</>";
     } elseif($general['gold'] < $cost && $type != 0) {
         $log[] = "<C>●</>{$admin['month']}월:자금이 모자랍니다. 구입 실패. <1>$date</>";
-    } elseif($general['weap'] == 0 && $isweap == 0 && $type == 0) {
+    } elseif($general['weapon'] == 0 && $isweap == 0 && $type == 0) {
         $log[] = "<C>●</>{$admin['month']}월:무기가 없습니다. 판매 실패. <1>$date</>";
     } elseif($general['book'] == 0 && $isweap == 1 && $type == 0) {
         $log[] = "<C>●</>{$admin['month']}월:서적이 없습니다. 판매 실패. <1>$date</>";
@@ -2294,13 +2294,13 @@ function process_48(&$general) {
             if($type != 0) {
                 $josaUl = JosaUtil::pick(getItemName($type), '을');
                 $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($type)."</>{$josaUl} 구입했습니다. <1>$date</>";
-                $query = "update general set resturn='SUCCESS',weap='$type',gold=gold-'$cost' where no='{$general['no']}'";
+                $query = "update general set resturn='SUCCESS',weapon='$type',gold=gold-'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             } else {
-                $cost = Util::round(getItemCost($general['weap']) / 2);
-                $josaUl = JosaUtil::pick(getItemName($general['weap']), '을');
-                $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($general['weap'])."</>{$josaUl} 판매했습니다. <1>$date</>";
-                $query = "update general set resturn='SUCCESS',weap='0',gold=gold+'$cost' where no='{$general['no']}'";
+                $cost = Util::round(getItemCost($general['weapon']) / 2);
+                $josaUl = JosaUtil::pick(getItemName($general['weapon']), '을');
+                $log[] = "<C>●</>{$admin['month']}월:<C>".getItemName($general['weapon'])."</>{$josaUl} 판매했습니다. <1>$date</>";
+                $query = "update general set resturn='SUCCESS',weapon='0',gold=gold+'$cost' where no='{$general['no']}'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
             }
         } elseif($isweap == 1) {

@@ -287,7 +287,7 @@ function command_11($turn, $command, bool $is모병 = false) {
                 $crewObj->img = ServConfig::$sharedIconPath."/default.jpg"; 
             }
             else{
-                $crewObj->img = ServConfig::$gameImagePath."/weap".$unit->id.".png";
+                $crewObj->img = ServConfig::$gameImagePath."/weapon".$unit->id.".png";
             }
             
             $crewObj->baseRiceShort = round($crewObj->baseRice, 1);

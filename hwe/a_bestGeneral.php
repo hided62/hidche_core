@@ -181,7 +181,7 @@ $generals = array_map(function($general) use($nationColor, $nationName) {
     dex0, dex10, dex20, dex30, dex40, 
     ttw, ttd, ttl, tlw, tld, tll, tpw, tpd, tpl, tiw, tid, til,
     betgold, betwin, betwingold,
-    horse, weap, book, item
+    horse, weapon, book, item
     FROM general WHERE %l", $btn == "NPC 보기"?"npc>=2":"npc<2"));
 
 
@@ -225,7 +225,7 @@ foreach($types as $idx=>[$typeName, $typeValue, $typeFunc]){
 //유니크 아이템 소유자
 $itemTypes = [
     'horse'=>'명 마',
-    'weap'=>'명 검',
+    'weapon'=>'명 검',
     'book'=>'명 서',
     'item'=>'도 구'
 ];

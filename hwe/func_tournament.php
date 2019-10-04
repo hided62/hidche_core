@@ -335,7 +335,7 @@ function fillLowGenAll() {
 
     //자동신청하고, 돈 있고, 아직 참가 안한 장수
     $freeJoiners = $db->query(
-        'SELECT no,npc,name,leadership,strength,intel,explevel,horse,weap,book from general where tnmt=1 and tournament=0 order by rand() limit %d',
+        'SELECT no,npc,name,leadership,strength,intel,explevel,horse,weapon,book from general where tnmt=1 and tournament=0 order by rand() limit %d',
         $toBeFilledCnt
     );
 
@@ -356,7 +356,7 @@ function fillLowGenAll() {
             'grp'=>$grpIdx,
             'grp_no'=>$grpCnt,
             'h'=>$general['horse'],
-            'w'=>$general['weap'],
+            'w'=>$general['weapon'],
             'b'=>$general['book']
         ];
 
@@ -854,7 +854,7 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
 
     foreach([$gen1, $gen2] as $gen){
         $horse = buildItemClass($gen['h']);
-        $weap = buildItemCalss($gen['w']);
+        $weapon = buildItemCalss($gen['w']);
         $book = buildItemCalss($gen['b']);
 
         //아이템 로그
@@ -876,8 +876,8 @@ function fight($tnmt_type, $tnmt, $phs, $group, $g1, $g2, $type) {
             $log[] = "<S>●</> <Y>{$gen['name']}</>의 <S>{$itemName}</>{$josaYi} 갈기를 휘날립니다!"; break;
             }
         }
-        if(!$weap->isBuyable() && ($tnmt_type == 0 || $tnmt_type == 2)) {
-            $itemName = $weap->getName();
+        if(!$weapon->isBuyable() && ($tnmt_type == 0 || $tnmt_type == 2)) {
+            $itemName = $weapon->getName();
             switch(rand()%4) {
             case 0:
             $josaYi = JosaUtil::pick($itemName, '이');

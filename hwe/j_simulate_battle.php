@@ -82,13 +82,13 @@ $rawDefenderNation = $query['defenderNation'];
 $generalCheck = [
     'required'=>[
         'no', 'name', 'nation', 'turntime', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train', 
-        'intel', 'intel2', 'book', 'strength', 'strength2', 'weap', 'injury', 'leadership', 'leadership2', 'horse', 'item', 
+        'intel', 'intel2', 'book', 'strength', 'strength2', 'weapon', 'injury', 'leadership', 'leadership2', 'horse', 'item', 
         'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex0', 'dex10', 'dex20', 'dex30', 'dex40',
         'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar'
     ],
     'integer'=>[
         'no', 'nation', 'personal', 'special2', 'crew', 'crewtype', 'atmos', 'train',
-        'intel', 'intel2', 'book', 'strength', 'strength2', 'weap', 'injury', 'leadership', 'leadership2', 'horse', 'item',
+        'intel', 'intel2', 'book', 'strength', 'strength2', 'weapon', 'injury', 'leadership', 'leadership2', 'horse', 'item',
         'explevel', 'experience', 'dedication', 'level', 'gold', 'rice', 'dex0', 'dex10', 'dex20', 'dex30', 'dex40',
         'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew'
     ],
@@ -112,7 +112,7 @@ $generalCheck = [
         ['train', [40, GameConst::$maxTrainByWar]],
         ['atmos', [40, GameConst::$maxAtmosByWar]],
         ['book', [0, 26]],
-        ['weap', [0, 26]],
+        ['weapon', [0, 26]],
         ['horse', [0, 26]],
         ['item', [0, 26]],
         ['explevel', [0, 300]],

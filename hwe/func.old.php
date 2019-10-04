@@ -778,7 +778,7 @@ function generalInfo($no) {
 
     $show_img_level = $gameStor->show_img_level;
 
-    $query = "select block,no,name,picture,imgsvr,injury,nation,city,troop,leadership,leadership2,strength,strength2,intel,intel2,explevel,experience,level,gold,rice,crew,crewtype,train,atmos,weap,book,horse,item,turntime,killturn,age,personal,special,specage,special2,specage2,mode,con,connect from general where no='$no'";
+    $query = "select block,no,name,picture,imgsvr,injury,nation,city,troop,leadership,leadership2,strength,strength2,intel,intel2,explevel,experience,level,gold,rice,crew,crewtype,train,atmos,weapon,book,horse,item,turntime,killturn,age,personal,special,specage,special2,specage2,mode,con,connect from general where no='$no'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $general = MYDB_fetch_array($result);
 
@@ -818,7 +818,7 @@ function generalInfo($no) {
     }
     $call = getCall($general['leadership'], $general['power'], $general['intel']);
     $typename = GameUnitConst::byId($general['crewtype'])->name;
-    $weapname = getItemName($general['weap']);
+    $weapname = getItemName($general['weapon']);
     $bookname = getItemName($general['book']);
     $horsename = getItemName($general['horse']);
     $itemname = displayItemInfo($general['item']);
@@ -871,7 +871,7 @@ function generalInfo($no) {
     elseif($general['mode'] == 1) { $general['mode'] = "<font color=limegreen>수비 함(훈사60)</font>"; }
     else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
 
-    $weapImage = ServConfig::$gameImagePath."/weap{$general['crewtype']}.png";
+    $weapImage = ServConfig::$gameImagePath."/weapon{$general['crewtype']}.png";
     if($show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
     $imageTemp = GetImageURL($general['imgsvr']);
     echo "<table width=498 class='tb_layout bg2'>
@@ -2195,7 +2195,7 @@ function uniqueItemEx(int $generalID, ActionLogger $logger, string $acquireType=
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
 
-    $general = $db->queryFirstRow('SELECT no,name,nation,npc,weap,book,horse,item FROM general WHERE no=%i', $generalID);
+    $general = $db->queryFirstRow('SELECT no,name,nation,npc,weapon,book,horse,item FROM general WHERE no=%i', $generalID);
     if(!$general){
         return false;
     }
@@ -2203,7 +2203,7 @@ function uniqueItemEx(int $generalID, ActionLogger $logger, string $acquireType=
     if($general['npc'] >= 2) { 
         return false;
     }
-    if($general['horse'] > 6 || $general['weap'] > 6 || $general['book'] > 6 || $general['item'] > 6){
+    if($general['horse'] > 6 || $general['weapon'] > 6 || $general['book'] > 6 || $general['item'] > 6){
         return false;
     }
 
@@ -2238,7 +2238,7 @@ function uniqueItemEx(int $generalID, ActionLogger $logger, string $acquireType=
     $availableUnique = [];
     $itemTypes = [
         'horse'=>'getItemName',
-        'weap'=>'getItemName',
+        'weapon'=>'getItemName',
         'book'=>'getItemName',
         'item'=>'getItemName'
     ];
@@ -2292,7 +2292,7 @@ function uniqueItem($general, $log, $vote=0) {
     $item = [];
 
     if($general['npc'] >= 2) { return $log; }
-    if($general['weap'] > 6 || $general['book'] > 6 || $general['horse'] > 6 || $general['item'] > 6) { return $log; }
+    if($general['weapon'] > 6 || $general['book'] > 6 || $general['horse'] > 6 || $general['item'] > 6) { return $log; }
 
     $admin = $gameStor->getValues(['year', 'month', 'scenario']);
 
@@ -2313,7 +2313,7 @@ function uniqueItem($general, $log, $vote=0) {
         //셋중 선택
         $sel = rand() % 4;
         switch($sel) {
-        case 0: $type = "weap"; break;
+        case 0: $type = "weapon"; break;
         case 1: $type = "book"; break;
         case 2: $type = "horse"; break;
         case 3: $type = "item"; break;

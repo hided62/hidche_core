@@ -230,12 +230,12 @@ switch($btn) {
 
         if($item === 'None'){
             $db->update('general', [
-                'weap'=>'None'
+                'weapon'=>'None'
             ], '`no` IN %li', $genlist);
         }
         else{
             $db->update('general', [
-                'weap'=>$item
+                'weapon'=>$item
             ], '`no` IN %li', $genlist, $item);
         }
         break;

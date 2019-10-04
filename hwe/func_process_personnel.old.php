@@ -501,7 +501,7 @@ function process_29(&$general) {
                     npcid,npc,npc_org,affinity,name,picture,nation,
                     city,leadership,power,intel,experience,dedication,
                     level,gold,rice,crew,crewtype,train,atmos,tnmt,
-                    weap,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
+                    weapon,book,horse,turntime,killturn,age,belong,personal,special,specage,special2,specage2,npcmsg,
                     makelimit,bornyear,deadyear,
                     dex0, dex10, dex20, dex30, dex40
                 ) values (

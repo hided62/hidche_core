@@ -159,7 +159,7 @@ jQuery(function($){
         setVal('.form_leadership', data.leadership);
         setVal('.form_general_horse', data.horse);
         setVal('.form_strength', data.strength);
-        setVal('.form_general_weap', data.weap);
+        setVal('.form_general_weap', data.weapon);
         setVal('.form_intel', data.intel);
         setVal('.form_general_book', data.book);
         setVal('.form_general_item', data.item);
@@ -206,7 +206,7 @@ jQuery(function($){
             leadership:getInt('.form_leadership'),
             horse:getInt('.form_general_horse'),
             strength:getInt('.form_strength'),
-            weap:getInt('.form_general_weap'),
+            weapon:getInt('.form_general_weap'),
             intel:getInt('.form_intel'),
             book:getInt('.form_general_book'),
             item:getInt('.form_general_item'),
