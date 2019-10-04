@@ -129,8 +129,8 @@ class che_건국 extends Command\GeneralCommand{
 
         $logger = $general->getLogger();
 
-        $nationTypeClass = getNationTypeClass($nationType);
-        $nationTypeName = $nationTypeClass::$name;
+        $nationTypeClass = buildNationTypeClass($nationType);
+        $nationTypeName = $nationTypeClass->getName();
 
 
         $logger->pushGeneralActionLog("<D><b>{$nationName}</></>{$josaUl} 건국하였습니다. <1>$date</>");
@@ -216,9 +216,9 @@ class che_건국 extends Command\GeneralCommand{
         $form[] = '현재 도시에서 나라를 세웁니다. 중, 소도시에서만 가능합니다.<br><br>';
 
         foreach(GameConst::$availableNationType as $nationType){
-            $nationClass = getNationTypeClass($nationType);
+            $nationClass = buildNationTypeClass($nationType);
 
-            [$name, $pros, $cons] = [$nationClass::$name, $nationClass::$pros, $nationClass::$cons];
+            [$name, $pros, $cons] = [$nationClass->getName(), $nationClass::$pros, $nationClass::$cons];
             $form[] = "- $name : <span style='color:cyan;'>{$pros}</span> <span style='color:magenta;'>{$cons}</span><br>";
 
         }
@@ -240,9 +240,9 @@ EOT;
 성향 : <select class='formInput' name='nationType' id='nationType' size='1'>
 EOT;
         foreach(GameConst::$availableNationType as $nationType){
-            $nationClass = getNationTypeClass($nationType);
+            $nationClass = buildNationTypeClass($nationType);
 
-            $name = $nationClass::$name;
+            $name = $nationClass->getName();
             $form[] = "<option value='{$nationType}' style=background-color:black;color:white;>{$name}</option>";
 
         }

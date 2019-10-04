@@ -93,9 +93,9 @@ function displaySpecialWarInfo(?string $type):string{
 }
 
 function displaySpecialDomesticInfo(?string $type):string{
-    $class = getGeneralSpecialDomesticClass($type);
-    $info = $class::$info;
-    $name = $class::$name;
+    $class = buildGeneralSpecialDomesticClass($type);
+    $info = $class->getInfo();
+    $name = $class->getName();
 
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 

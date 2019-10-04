@@ -13,7 +13,7 @@ function getCharacterList(){
     $infoText = [];
     foreach(GameConst::$allPersonality as $personalityID){
         $class = buildPersonalityClass($personalityID);
-        $infoText[$personalityID] = [$class->getName(), $class::$info];
+        $infoText[$personalityID] = [$class->getName(), $class->getInfo()];
     }
     return $infoText;
 }

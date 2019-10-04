@@ -38,9 +38,9 @@ var specialInfo =
 <?php
 $specialAll = [];
 foreach (GameConst::$availableSpecialDomestic as $id) {
-    $domesticClass = getGeneralSpecialDomesticClass($id);
-    $name = $domesticClass::$name;
-    $info = $domesticClass::$info;
+    $domesticClass = buildGeneralSpecialDomesticClass($id);
+    $name = $domesticClass->getName();
+    $info = $domesticClass->getInfo();
     $specialAll[$name] = $info;
 }
 foreach (SpecialityConst::WAR as $id=>$values) {
