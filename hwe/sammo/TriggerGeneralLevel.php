@@ -5,9 +5,13 @@ class TriggerGeneralLevel implements iAction{
     use DefaultAction;
 
     protected $generalLevel;
+    protected $nationLevel;
+    protected $lbonus;
 
-    public function __construct(array $general, ?array $city){
+    public function __construct(array $general, int $nationLevel, ?array $city){
         $this->generalLevel = $general['level'];
+
+        $this->nationLevel = $nationLevel;
 
         if($city === null){
             if(2 <= $this->generalLevel || $this->generalLevel <= 4){
@@ -31,6 +35,8 @@ class TriggerGeneralLevel implements iAction{
                 }
             }
         }
+
+        $this->lbonus = calcLeadershipBonus($this->generalLevel, $nationLevel);
     }
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
@@ -55,6 +61,13 @@ class TriggerGeneralLevel implements iAction{
             }
         }
         
+        return $value;
+    }
+
+    public function onCalcStat(General $general, string $statName, $value, $aux=null){
+        if($statName == 'leadership'){
+            return $value + $this->lbonus;
+        }
         return $value;
     }
 }

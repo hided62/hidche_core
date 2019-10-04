@@ -62,20 +62,6 @@ function calcLeadershipBonus($generalLevel, $nationLevel):int{
     return $lbonus;
 }
 
-/**
- * 수뇌직 통솔 보너스 계산
- * 
- * @param array &$general 장수 정보. 'lbonus' 값에 통솔 보너스가 입력 됨
- * @param int $nationLevel 국가 등급
- * 
- * @return int 계산된 $general['lbonus'] 값
- */
-function setLeadershipBonus(&$general, $nationLevel){
-    $lbonus = calcLeadershipBonus($general['level'], $nationLevel);
-    $general['lbonus'] = $lbonus;
-    return $lbonus;
-}
-
 function CriticalScoreEx(string $type):float {
     if ($type == 'success') {
         return Util::randRange(2.2, 3.0);

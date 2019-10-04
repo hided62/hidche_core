@@ -641,13 +641,7 @@ function generalInfo($no) {
 
     $nation = getNationStaticInfo($general['nation']);
 
-    if($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = calcLeadershipBonus($general['level'], $nation['level']);
     if($lbonus > 0) {
         $lbonus = "<font color=cyan>+{$lbonus}</font>";
     } else {

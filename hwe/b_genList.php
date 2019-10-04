@@ -130,13 +130,7 @@ foreach ($generals as &$general) {
         $genCntEff += 1;
     }
 
-    if ($general['level'] == 12) {
-        $lbonus = $nation['level'] * 2;
-    } elseif ($general['level'] >= 5) {
-        $lbonus = $nation['level'];
-    } else {
-        $lbonus = 0;
-    }
+    $lbonus = calcLeadershipBonus($general['level'], $nationlevel[$general['nation']]);
     if ($lbonus > 0) {
         $lbonusText = "<font color=cyan>+{$lbonus}</font>";
     } else {
