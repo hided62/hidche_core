@@ -512,7 +512,7 @@ class WarUnitGeneral extends WarUnit{
 
         //계략
         if($crewType->magicCoef){
-            $magicRatio = getGeneralIntel($this->raw, true, true, true, false) / 100;
+            $magicRatio = $this->getGeneral()->getIntel(true, true, true, false) / 100;
             $magicRatio *= $crewType->magicCoef;
 
             if($specialWar == 41){

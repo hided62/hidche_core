@@ -4,129 +4,17 @@ namespace sammo;
 use Constraint\Constraint;
 
 /**
- * 장수의 통솔을 받아옴
- * 
- * @param array $general 장수 정보, leader, injury, lbonus, horse 사용
- * @param bool $withInjury 부상값 사용 여부
- * @param bool $withItem 아이템 적용 여부
- * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
- * @param bool $useFloor 내림 사용 여부, false시 float 값을 반환할 수도 있음
- * 
- * @return int|float 계산된 능력치
- */
-function getGeneralLeadership($general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
-	if($general === null){
-		return 0;
-	}
-    $leadership = $general['leader'];
-    if($withInjury){
-        $leadership *= (100 - $general['injury']) / 100;
-    }
-
-    if($withStatAdjust){
-        if($general['special2'] == 72){
-            $leadership *= 1.15;
-        }
-    }
-
-    if(isset($general['lbonus'])){
-        $leadership += $general['lbonus'];
-    }
-
-    if($withItem){
-        $leadership += getHorseEff($general['horse']);
-    }
-
-    //$withStatAdjust는 통솔에서 미사용
-
-    if($useFloor){
-        return intval($leadership);
-    }
-    return $leadership;
-    
-}
-
-/**
- * 장수의 무력을 받아옴
- * 
- * @param array $general 장수 정보, power, injury, weap 사용
- * @param bool $withInjury 부상값 사용 여부
- * @param bool $withItem 아이템 적용 여부
- * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
- * @param bool $useFloor 내림 사용 여부, false시 float 값을 반환할 수도 있음
- * 
- * @return int|float 계산된 능력치
- */
-function getGeneralPower($general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
-	if($general === null){
-		return 0;
-	}
-    $power = $general['power'];
-    if($withInjury){
-        $power *= (100 - $general['injury']) / 100;
-    }
-
-    if($withItem){
-        $power += getWeapEff($general['weap']);
-    }
-
-    if($withStatAdjust){
-        $power += Util::round(getGeneralIntel($general, $withInjury, $withItem, false, false) / 4);
-    }
-
-    if($useFloor){
-        return intval($power);
-    }
-    return $power;
-}
-
-/**
- * 장수의 지력을 받아옴
- * 
- * @param array $general 장수 정보, intel, injury, book 사용
- * @param bool $withInjury 부상값 사용 여부
- * @param bool $withItem 아이템 적용 여부
- * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
- * @param bool $useFloor 내림 사용 여부, false시 float 값을 반환할 수도 있음
- * 
- * @return int|float 계산된 능력치
- */
-function getGeneralIntel($general, $withInjury, $withItem, $withStatAdjust, $useFloor = true){
-	if($general === null){
-		return 0;
-	}
-	
-    $intel = $general['intel'];
-    if($withInjury){
-        $intel *= (100 - $general['injury']) / 100;
-    }
-
-    if($withItem){
-        $intel += getBookEff($general['book']);
-    }
-
-    if($withStatAdjust){
-        $intel += Util::round(getGeneralPower($general, $withInjury, $withItem, false, false) / 4);
-    }
-    
-    if($useFloor){
-        return intval($intel);
-    }
-    return $intel;
-}
-
-/**
  * 내정 커맨드 사용시 성공 확률 계산
  * 
  * @param array $general 장수 정보
- * @param int|string $type 내정 커맨드 타입, 0|'leader' = 통솔 기반, 1|'power' = 무력 기반, 2|'intel' = 지력 기반
+ * @param string $type 내정 커맨드 타입, 'leader' = 통솔 기반, 'power' = 무력 기반, 'intel' = 지력 기반
  * 
  * @return array 계산된 실패, 성공 확률 ('success' => 성공 확률, 'fail' => 실패 확률)
  */
-function CriticalRatioDomestic($general, $type) {
-    $leader = getGeneralLeadership($general, false, true, true, false);
-    $power = getGeneralPower($general, false, true, true, false);
-    $intel = getGeneralIntel($general, false, true, true, false);
+function CriticalRatioDomestic(General $general, string $type) {
+    $leader = $general->getLeadership(false, true, true, false);
+    $power = $general->getPower(false, true, true, false);
+    $intel = $general->getIntel(false, true, true, false);
 
     $avg = ($leader+$power+$intel) / 3;
     /*
@@ -142,12 +30,9 @@ function CriticalRatioDomestic($general, $type) {
       505050(50%,50%), 107070(50%,50%)
     */
     switch($type) {
-    case 'leader':
-    case 0: $ratio = $avg / $leader; break;
-    case 'power':
-    case 1: $ratio = $avg / $power;  break;
-    case 'intel':
-    case 2: $ratio = $avg / $intel; break;
+    case 'leader': $ratio = $avg / $leader; break;
+    case 'power': $ratio = $avg / $power;  break;
+    case 'intel': $ratio = $avg / $intel; break;
     default:
         throw new MustNotBeReachedException();
     }

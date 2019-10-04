@@ -10,6 +10,9 @@ class General implements iAction{
      * @var iAction $nationType
      * @var iAction $levelObj
      * @var iAction $specialDomesticObj
+     * @var iAction $specialWarObj
+     * @var iAction $personalityObj
+     * @var iAction[] $itemObjs
      */
 
     protected $raw = [];
@@ -195,17 +198,70 @@ class General implements iAction{
         return GameUnitConst::byID($this->getVar('crewtype'));
     }
 
-    //TODO: 장기적으로 General 클래스로 모두 옮겨와야함.
+    /**
+     * 장수의 스탯을 계산해옴
+     * 
+     * @param string $statName 스탯값, leadership, power, intel 가능
+     * @param bool $withInjury 부상값 사용 여부
+     * @param bool $withItem 아이템 적용 여부
+     * @param bool $withStatAdjust 추가 능력치 보정 사용 여부
+     * @param bool $useFloor 내림 사용 여부, false시 float 값을 반환할 수도 있음
+     * 
+     * @return int|float 계산된 능력치
+     */
+
+    protected function getStatValue(string $statName, $withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
+        $statValue = $this->getVar($statName);
+
+        if($withInjury){
+            $statValue *= (100 - $this->getVar('injury')) / 100;
+        }
+
+        if($withStatAdjust){
+            if($statName === 'power'){
+                $statValue *= Util::round($this->getStatValue('intel', $withInjury, $withItem, false, false) / 4);
+            }
+            else if($statName === 'intel'){
+                $statValue *= Util::round($this->getStatValue('power', $withInjury, $withItem, false, false) / 4);
+            }
+        }
+
+        foreach([
+            $this->nationType,
+            $this->levelObj,
+            $this->specialDomesticObj,
+            $this->specialWarObj,
+            $this->personalityObj
+        ] as $actionObj){
+            if($actionObj !== null){
+                $statValue = $actionObj->onCalcStat($this, $statName, $statValue);
+            }
+        }
+
+        if($withItem){
+            foreach($this->itemObjs as $actionObj){
+                if($actionObj !== null){
+                    $statValue = $actionObj->onCalcStat($this, $statName, $statValue);
+                }
+            }
+        }
+
+        if($useFloor){
+            return Util::toInt($statValue);
+        }
+        return $statValue;
+    }
+
     function getLeadership($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
-        return getGeneralLeadership($this->raw, $withInjury, $withItem, $withStatAdjust, $useFloor);
+        return $this->getStatValue('leadership', $withInjury, $withItem, $withStatAdjust, $useFloor);
     }
 
     function getPower($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
-        return getGeneralPower($this->raw, $withInjury, $withItem, $withStatAdjust, $useFloor);
+        return $this->getStatValue('power', $withInjury, $withItem, $withStatAdjust, $useFloor);
     }
 
     function getIntel($withInjury = true, $withItem = true, $withStatAdjust = true, $useFloor = true):float{
-        return getGeneralIntel($this->raw, $withInjury, $withItem, $withStatAdjust, $useFloor);
+        return $this->getStatValue('intel', $withInjury, $withItem, $withStatAdjust, $useFloor);
     }
 
     function addDex(GameUnitDetail $crewType, float $exp, bool $affectTrainAtmos=false){

@@ -99,7 +99,7 @@ class che_정착장려 extends Command\GeneralCommand{
 
         $score = Util::valueFit($this->calcBaseScore(), 1);
 
-        ['success'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general->getRaw(), static::$statKey);
+        ['success'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general, static::$statKey);
         $successRatio = $general->onCalcDomestic(static::$cityKey, 'success', $successRatio);
         $failRatio = $general->onCalcDomestic(static::$cityKey, 'fail', $failRatio);
 

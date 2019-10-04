@@ -65,7 +65,7 @@ class che_기술연구 extends che_상업투자{
 
         $score = Util::valueFit($this->calcBaseScore(), 1);
 
-        ['success'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general->getRaw(), static::$statKey);
+        ['success'=>$successRatio, 'fail'=>$failRatio] = CriticalRatioDomestic($general, static::$statKey);
         if($trust < 80){
             $successRatio *= $trust / 80;
         }
