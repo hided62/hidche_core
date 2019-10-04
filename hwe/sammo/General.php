@@ -228,10 +228,10 @@ class General implements iAction{
 
         if($withStatAdjust){
             if($statName === 'strength'){
-                $statValue *= Util::round($this->getStatValue('intel', $withInjury, $withItem, false, false) / 4);
+                $statValue += Util::round($this->getStatValue('intel', $withInjury, $withItem, false, false) / 4);
             }
             else if($statName === 'intel'){
-                $statValue *= Util::round($this->getStatValue('strength', $withInjury, $withItem, false, false) / 4);
+                $statValue += Util::round($this->getStatValue('strength', $withInjury, $withItem, false, false) / 4);
             }
         }
 

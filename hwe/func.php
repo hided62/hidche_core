@@ -667,9 +667,9 @@ function generalInfo(General $generalObj) {
     $horsename = $generalObj->getItem('horse')->getName();
     $itemname = $generalObj->getItem('item')->getName();
 
-    $leadership = $generalObj->getLeadership(true, false, true);
-    $strength = $generalObj->getStrength(true, false, true);
-    $intel = $generalObj->getIntel(true, false, true);
+    $leadership = $generalObj->getLeadership(true, false, false);
+    $strength = $generalObj->getStrength(true, false, false);
+    $intel = $generalObj->getIntel(true, false, false);
     
     
     $injury = $generalObj->getVar('injury');
