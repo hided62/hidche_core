@@ -65,21 +65,23 @@ class RaiseInvader extends \sammo\Event\Action{
         }
 
         $generals = [];
-        foreach($db->query('SELECT gen1, gen2, gen3 from city where city in %li', $cities) as $city){
-            list($gen1, $gen2, $gen3) = $city;
-            if($gen1 != 0) $generals[]=$gen1;
-            if($gen2 != 0) $generals[]=$gen2;
-            if($gen3 != 0) $generals[]=$gen3;
+        foreach($db->query('SELECT officer4, officer3, officer2 from city where city in %li', $cities) as $city){
+            list($officer4, $officer3, $officer2) = $city;
+            if($officer4 != 0) $generals[]=$officer4;
+            if($officer3 != 0) $generals[]=$officer3;
+            if($officer2 != 0) $generals[]=$officer2;
         }
 
-        $db->update('general', [
-            'level'=>1
-        ], 'no in %li', $generals);
+        if($generals){
+            $db->update('general', [
+                'level'=>1
+            ], 'no in %li', $generals);
+        }
 
         $db->update('city', [
-            'gen1'=>0,
-            'gen2'=>0,
-            'gen3'=>0,
+            'officer4'=>0,
+            'officer3'=>0,
+            'officer2'=>0,
             'nation'=>0
         ], 'city in %li', $cities);
     }

@@ -107,8 +107,8 @@ $me->applyDB($db);
 <table align=center width=1000 class='tb_layout bg0'>
     <tr>
         <td width=50%>
-            <?php myInfo($me); ?>
-            <?php myInfo2(); ?>
+            <?php generalInfo($me); ?>
+            <?php generalInfo2($me); ?>
         </td>
         <td width=50% valign=top style="padding-left:4ch;">
             <form name=form1 action=b_myPage.php method=post>

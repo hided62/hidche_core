@@ -157,7 +157,7 @@ $cityCheck = [
         'pop', 'agri', 'comm', 'secu', 'def', 'wall', 
         'trust', 'level',
         'pop2', 'agri2', 'comm2', 'secu2', 'def2', 'wall2',
-        'dead', 'state', 'gen1', 'gen2', 'gen3', 'conflict', 
+        'dead', 'state', 'officer4', 'officer3', 'officer2', 'conflict', 
     ],
     'numeric'=>[
         'pop', 'agri', 'comm', 'secu', 'def', 'wall', 'trust', 'dead'
@@ -165,7 +165,7 @@ $cityCheck = [
     'integer'=>[
         'city', 'nation', 'supply',
         'pop2', 'agri2', 'comm2', 'secu2', 'def2', 'wall2',
-        'state', 'gen1', 'gen2', 'gen3'
+        'state', 'officer4', 'officer3', 'officer2'
     ],
     'min'=>[
         ['def', 0],
@@ -216,9 +216,9 @@ $nationCheck = [
         ['gold', 0],
         ['rice', 0],
         ['gennum', 1],
-        ['gen1', 0],
-        ['gen2', 0],
-        ['gen3', 0],
+        ['officer4', 0],
+        ['officer3', 0],
+        ['officer2', 0],
     ],
     'in'=>[
         ['type', array_keys(getNationTypeList())],

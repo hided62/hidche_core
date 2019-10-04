@@ -72,9 +72,6 @@ $sel = [$type => "selected"];
     </td></tr>
 </table>
 <?php
-$query = "select nation from general where owner='{$userID}'";
-$result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-$me = MYDB_fetch_array($result);
 
 $nation = getNationStaticInfo($me['nation']);  //국가정보
 
@@ -105,17 +102,28 @@ for ($j=0; $j < $citycount; $j++) {
     if ($city['city'] == $nation['capital']) {
         $city['name'] = "<font color=cyan>[{$city['name']}]</font>";
     }
-    $query = "select name from general where no='{$city['gen1']}'";    // 태수
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $gen1 = MYDB_fetch_array($genresult);
 
-    $query = "select name from general where no='{$city['gen2']}'";    // 군사
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $gen2 = MYDB_fetch_array($genresult);
+    $officerQuery = [];
+    $officerName = [
+        2=>'-',
+        3=>'-',
+        4=>'-'
+    ];
+    if ($city['officer4'] > 0) {
+        $officerQuery[] = $city['officer4'];
+    }
+    if ($city['officer3'] > 0) {
+        $officerQuery[] = $city['officer3'];
+    }
+    if ($city['officer2'] > 0) {
+        $officerQuery[] = $city['officer2'];
+    }
 
-    $query = "select name from general where no='{$city['gen3']}'";    // 종사
-    $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect), "");
-    $gen3 = MYDB_fetch_array($genresult);
+    if($officerQuery){
+        foreach($db->query('SELECT `level`, `name` FROM general WHERE `no` IN %li', $officerQuery) as $genOfficer){
+            $officerName[$genOfficer['level']] = $genOfficer['name'];
+        }
+    }
 
     if ($type == 10 && $city['region'] != $region) {
         echo "<br>";
@@ -157,15 +165,15 @@ for ($j=0; $j < $citycount; $j++) {
         <td align=center>".round($city['pop']/$city['pop2']*100, 2)." %</td>
         <td align=center id=bg1>태수</td>
         <td align=center>";
-    echo $gen1['name']==''?"-":"{$gen1['name']}";
+    echo $officerName[4];
     echo "</td>
         <td align=center id=bg1>군사</td>
         <td align=center>";
-    echo $gen2['name']==''?"-":"{$gen2['name']}";
+    echo $officerName[3];
     echo "</td>
         <td align=center id=bg1>종사</td>
         <td align=center>";
-    echo $gen3['name']==''?"-":"{$gen3['name']}";
+    echo $officerName[2];
     echo "</td>
     </tr>
     <tr>

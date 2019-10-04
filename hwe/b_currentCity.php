@@ -180,9 +180,20 @@ $city = $db->queryFirstRow('SELECT * FROM city WHERE city=%i', $citylist);
 $cityNation = getNationStaticInfo($city['nation']);
 
 //태수, 군사, 종사
-$gen1 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen1']);
-$gen2 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen2']);
-$gen3 = $db->queryFirstRow('SELECT `name`, npc FROM general WHERE `no`=%i', $city['gen3']);
+$officer = [
+    4=>['name'=>'-', 'npc'=>0],
+    3=>['name'=>'-', 'npc'=>0],
+    2=>['name'=>'-', 'npc'=>0]
+];
+$officerQuery = [];
+if($city['officer4']){ $officerQuery[] = $city['officer4']; }
+if($city['officer3']){ $officerQuery[] = $city['officer3']; }
+if($city['officer2']){ $officerQuery[] = $city['officer2']; }
+if($officerQuery){
+    foreach($db->query('SELECT `name`, npc, `level` FROM general WHERE `no` IN %li', $city['officer4']) as $officerInfo){
+        $officer[$officerInfo['level']] = $officerInfo;
+    }
+}
 
 if($city['trade'] === null) {
     $city['trade'] = "- ";
@@ -433,11 +444,11 @@ foreach($generalsFormat as $general){
         <td align=center class=bg1>인구</td>
         <td align=center><?=round($city['pop']/$city['pop2']*100, 2)?>%</td>
         <td align=center class=bg1>태수</td>
-        <td align=center><?=$gen1['name']??'-'?></td>
+        <td align=center><?=$officer[4]['name']?></td>
         <td align=center class=bg1>군사</td>
-        <td align=center><?=$gen2['name']??'-'?></td>
+        <td align=center><?=$officer[3]['name']?></td>
         <td align=center class=bg1>종사</td>
-        <td align=center><?=$gen3['name']??'-'?></td>
+        <td align=center><?=$officer[2]['name']?></td>
     </tr>
     <tr>
         <td align=center class=bg1>도시명</td>

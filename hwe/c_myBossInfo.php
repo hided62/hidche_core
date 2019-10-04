@@ -179,12 +179,11 @@ if($btn == "추방") {
         }
 
         // 도시관직해제
-        $query = "update city set gen1='0' where gen1='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update city set gen2='0' where gen2='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $query = "update city set gen3='0' where gen3='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+        if(2 <= $general['level'] && $general['level'] <= 4){
+            $db->update('city', [
+                'officer'.$general['level']=>0
+            ], "officer{$general['level']} = %i", $general['no']);
+        }
 
         if($general['npc'] >= 2 && ($admin['scenario'] < 100 || rand()%100 == 0)) {
             switch(rand()%5) {
@@ -272,12 +271,11 @@ if($btn == "임명" && $level >= 5 && $level <= 11) {
             }
             if($valid == 1) {
                 // 신임 장수의 원래 자리 해제
-                $query = "update city set gen1=0 where gen1='$genlist'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $query = "update city set gen2=0 where gen2='$genlist'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-                $query = "update city set gen3=0 where gen3='$genlist'";
-                MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
+                if(2 <= $general['level'] && $general['level'] <= 4){
+                    $db->update('city', [
+                        'officer'.$general['level']=>0
+                    ], "officer{$general['level']} = %i", $general['no']);
+                }
                 //신임 장수
                 $query = "update general set level='$level' where no='$genlist'";
                 MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -293,11 +291,8 @@ if($btn == "임명" && $level >= 5 && $level <= 11) {
 
 
 if($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
-    switch($level) {
-    case 4: $genlv = 'gen1'; $genlvset = 'gen1set'; break;
-    case 3: $genlv = 'gen2'; $genlvset = 'gen2set'; break;
-    case 2: $genlv = 'gen3'; $genlvset = 'gen3set'; break;
-    }
+    $genlv = 'officer'.$level;
+    $genlvset = 'officer'.$level.'set';
 
     $query = "select {$genlv} from city where nation='{$me['nation']}' and city='$citylist'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
@@ -328,15 +323,11 @@ if($btn == "임명" && $level >= 2 && $level <= 4 && $citylist > 0) {
 
         if($valid == 1) {
             // 신임 장수의 원래 자리 해제
-            $db->update('city', [
-                'gen1'=>0,
-            ], 'gen1=%i', $genlist);
-            $db->update('city', [
-                'gen2'=>0,
-            ], 'gen2=%i', $genlist);
-            $db->update('city', [
-                'gen3'=>0,
-            ], 'gen3=%i', $genlist);
+            if(2 <= $general['level'] && $general['level'] <= 4){
+                $db->update('city', [
+                    'officer'.$general['level']=>0
+                ], "officer{$general['level']} = %i", $general['no']);
+            }
 
             //신임 장수
             $db->update('city', [

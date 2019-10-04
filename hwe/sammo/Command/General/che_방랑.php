@@ -121,9 +121,9 @@ class che_방랑 extends Command\GeneralCommand{
         $db->update('city', [
             'nation'=>0,
             'front'=>0,
-            'gen1'=>0,
-            'gen2'=>0,
-            'gen3'=>0,
+            'officer4'=>0,
+            'officer3'=>0,
+            'officer2'=>0,
             'conflict'=>'{}'
         ], 'nation=%i', $nationID);
 

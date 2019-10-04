@@ -364,7 +364,7 @@ if($meLevel >= 5) {
             <select name=citylist size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='{$nation['nation']}' and gen1set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='{$nation['nation']}' and officer4set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -418,7 +418,7 @@ if($meLevel >= 5) {
             <select name=citylist size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='{$nation['nation']}' and gen2set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='{$nation['nation']}' and officer3set=0 order by region,level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -472,7 +472,7 @@ if($meLevel >= 5) {
             <select name=citylist size=1 style=color:white;background-color:black;>
     ";
 
-    $query = "select city,name,region from city where nation='{$nation['nation']}' and gen3set=0 order by region, level desc,binary(name)"; // 도시 이름 목록
+    $query = "select city,name,region from city where nation='{$nation['nation']}' and officer2set=0 order by region, level desc,binary(name)"; // 도시 이름 목록
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $citycount = MYDB_num_rows($result);
 
@@ -533,7 +533,7 @@ echo "
 
 $citylevel = getCityLevelList();
 
-$query = "select city,name,gen1,gen2,gen3,level,region,gen1set,gen2set,gen3set from city where nation='{$nation['nation']}' order by region,level desc,binary(name)"; // 도시 이름 목록
+$query = "select city,name,officer4,officer3,officer2,level,region,officer4set,officer3set,officer2set from city where nation='{$nation['nation']}' order by region,level desc,binary(name)"; // 도시 이름 목록
 $cityresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $citycount = MYDB_num_rows($cityresult);
 
@@ -541,15 +541,15 @@ $region = 0;
 for($j=0; $j < $citycount; $j++) {
     $city = MYDB_fetch_array($cityresult);
 
-    $query = "select name,belong,city from general where no='{$city['gen1']}'";
+    $query = "select name,belong,city from general where no='{$city['officer4']}'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen1 = MYDB_fetch_array($genresult);
-    $query = "select name,belong,city from general where no='{$city['gen2']}'";
+    $officer4 = MYDB_fetch_array($genresult);
+    $query = "select name,belong,city from general where no='{$city['officer3']}'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen2 = MYDB_fetch_array($genresult);
-    $query = "select name,belong,city from general where no='{$city['gen3']}'";
+    $officer3 = MYDB_fetch_array($genresult);
+    $query = "select name,belong,city from general where no='{$city['officer2']}'";
     $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $gen3 = MYDB_fetch_array($genresult);
+    $officer2 = MYDB_fetch_array($genresult);
 
     if($region != $city['region']) {
         echo "
@@ -558,19 +558,19 @@ for($j=0; $j < $citycount; $j++) {
         $region = $city['region'];
     }
 
-    $gen1['name'] = $gen1['name']==""?"-":$gen1['name']." ({$gen1['belong']}년) 【".CityConst::byID($gen1['city'])->name."】";
-    $gen2['name'] = $gen2['name']==""?"-":$gen2['name']." ({$gen2['belong']}년) 【".CityConst::byID($gen2['city'])->name."】";
-    $gen3['name'] = $gen3['name']==""?"-":$gen3['name']." ({$gen3['belong']}년) 【".CityConst::byID($gen3['city'])->name."】";
-    if($city['gen1set'] == 1) { $gen1['name'] = "<font color=orange>".$gen1['name']."</font>"; }
-    if($city['gen2set'] == 1) { $gen2['name'] = "<font color=orange>".$gen2['name']."</font>"; }
-    if($city['gen3set'] == 1) { $gen3['name'] = "<font color=orange>".$gen3['name']."</font>"; }
+    $officer4['name'] = $officer4['name']==""?"-":$officer4['name']." ({$officer4['belong']}년) 【".CityConst::byID($officer4['city'])->name."】";
+    $officer3['name'] = $officer3['name']==""?"-":$officer3['name']." ({$officer3['belong']}년) 【".CityConst::byID($officer3['city'])->name."】";
+    $officer2['name'] = $officer2['name']==""?"-":$officer2['name']." ({$officer2['belong']}년) 【".CityConst::byID($officer2['city'])->name."】";
+    if($city['officer4set'] == 1) { $officer4['name'] = "<font color=orange>".$officer4['name']."</font>"; }
+    if($city['officer3set'] == 1) { $officer3['name'] = "<font color=orange>".$officer3['name']."</font>"; }
+    if($city['officer2set'] == 1) { $officer2['name'] = "<font color=orange>".$officer2['name']."</font>"; }
     echo "
     <tr>
         <td width=78 align=center style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=3>【{$citylevel[$city['level']]}】</font></td>
         <td width=78 align=right  style=color:".newColor($nation['color'])."; bgcolor={$nation['color']}><font size=3>{$city['name']}&nbsp;&nbsp;</font></td>
-        <td align=center>{$gen1['name']}</td>
-        <td align=center>{$gen2['name']}</td>
-        <td align=center>{$gen3['name']}</td>
+        <td align=center>{$officer4['name']}</td>
+        <td align=center>{$officer3['name']}</td>
+        <td align=center>{$officer2['name']}</td>
     </tr>
     ";
 }

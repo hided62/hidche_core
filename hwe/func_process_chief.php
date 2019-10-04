@@ -431,7 +431,7 @@ function process_65(&$general) {
     $command = DecodeCommand($nation["l{$general['level']}turn0"]);
     $which = $command[1];
 
-    $query = "select city,name,nation,pop,gen1,gen2,gen3 from city where city='$which'";
+    $query = "select city,name,nation,pop,officer4,officer3,officer2 from city where city='$which'";
     $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
     $destcity = MYDB_fetch_array($result);
 
@@ -474,11 +474,11 @@ function process_65(&$general) {
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //직위해제
-        $query = "update general set level=1 where no='{$destcity['gen1']}' or no='{$destcity['gen2']}' or no='{$destcity['gen3']}'";
+        $query = "update general set level=1 where no='{$destcity['officer4']}' or no='{$destcity['officer3']}' or no='{$destcity['officer2']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //성 공백지로
-        $query = "update city set pop=pop*0.1,trust=50,agri=agri*0.1,comm=comm*0.1,secu=secu*0.1,nation='0',front='0',gen1='0',gen2='0',gen3='0',conflict='{}' where city='{$destcity['city']}'";
+        $query = "update city set pop=pop*0.1,trust=50,agri=agri*0.1,comm=comm*0.1,secu=secu*0.1,nation='0',front='0',officer4='0',officer3='0',officer2='0',conflict='{}' where city='{$destcity['city']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 
         //전장수 10% 삭감

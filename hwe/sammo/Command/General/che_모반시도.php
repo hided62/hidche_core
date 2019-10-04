@@ -81,20 +81,17 @@ class che_모반시도 extends Command\GeneralCommand{
         $logger = $general->getLogger();
         $lordLogger = $this->destGeneralObj->getLogger();
 
+        $generalLevel = $general->getVar('level');
         $general->setVar('level', 12);
         $lordGeneral->setVar('level', 1);
         $lordGeneral->multiplyVar('experience', 0.7);
-
-        $db->update('city', [
-            'gen1'=>0
-        ], 'gen1=%i', $general->getID());
-        $db->update('city', [
-            'gen2'=>0
-        ], 'gen2=%i', $general->getID());
-        $db->update('city', [
-            'gen3'=>0
-        ], 'gen3=%i', $general->getID());
-
+        
+        if(2 <= $generalLevel && $generalLevel <= 4){
+            $db->update('city', [
+                'officer'.$generalLevel=>0
+            ], "officer{$generalLevel}=%i", $general->getID());
+        }
+        
         $josaYi = JosaUtil::pick($generalName, '이');
         $logger->pushGlobalHistoryLog("<Y><b>【모반】</b></><Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>의 군주 자리를 찬탈했습니다.");
         $logger->pushNationalHistoryLog("<Y>{$generalName}</>{$josaYi} <Y>{$lordName}</>에게서 군주자리를 찬탈");

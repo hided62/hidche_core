@@ -313,22 +313,17 @@ class General implements iAction{
         $generalName = $this->getName();
 
         // 군주였으면 유지 이음
-        if($this->getVar('level') == 12) {
+        $generalLevel = $this->getVar('level');
+        if($generalLevel == 12) {
             nextRuler($this);
         }
 
         //도시의 태수, 군사, 종사직도 초기화
-        $db->update('city', [
-            'gen1'=>0,
-        ], 'gen1=%i', $generalID);
-
-        $db->update('city', [
-            'gen2'=>0,
-        ], 'gen2=%i', $generalID);
-
-        $db->update('city', [
-            'gen3'=>0,
-        ], 'gen3=%i', $generalID);
+        if(2 <= $generalLevel && $generalLevel <= 4){
+            $db->update('city', [
+                'officer'.$generalLevel=>0
+            ], "officer{$generalLevel} = %i", $generalID);
+        }
 
         // 부대 처리
         $troopLeaderID = $this->getVar('troop');

@@ -139,14 +139,8 @@ class Personnel{
             if(5 <= $general['level'] && $general['level'] <= 11){
                 $setOriginalNationValues["l{$general['level']}set"] = 0;
             }
-            else if($general['level'] == 4){
-                $setOriginalCityValues['gen1'] = 0;
-            }
-            else if($general['level'] == 3){
-                $setOriginalCityValues['gen2'] = 0;
-            }
-            else if($general['level'] == 2){
-                $setOriginalCityValues['gen3'] = 0;
+            else if(2 <= $general['level'] && $general['level'] <= 4){
+                $setOriginalCityValues['officer'.$general['level']] = 0;
             }
 
             $setValues['experience'] = $db->sqleval('experience * (1 - 0.1 * betray)');//XXX: 상수

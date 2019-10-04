@@ -173,13 +173,7 @@ class WarUnitGeneral extends WarUnit{
             else if($genLevel == 11 || $genLevel == 9 || $genLevel == 7 || $genLevel == 5){
                 $opposeWarPowerMultiply *= 0.95;
             }
-            else if($genLevel == 4 && $generalNo == $this->getCityVar('gen1')){
-                $opposeWarPowerMultiply *= 0.95;
-            }
-            else if($genLevel == 3 && $generalNo == $this->getCityVar('gen2')){
-                $opposeWarPowerMultiply *= 0.95;
-            }
-            else if($genLevel == 2 && $generalNo == $this->getCityVar('gen3')){
+            else if(2 <= $genLevel && $genLevel <= 4 && $generalNo == $this->getCityVar('officer'.$genLevel)){
                 $opposeWarPowerMultiply *= 0.95;
             }
         }

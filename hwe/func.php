@@ -123,121 +123,50 @@ function getRandGenName() {
 
 
 
-function cityInfo() {
+function cityInfo(General $generalObj) {
     $db = DB::db();
-    $connect=$db->get();
-    $userID = Session::getUserID();
-
-    $query = "select no,city from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
 
     // 도시 정보
-    $city = getCity($me['city']);
+    $city = $generalObj->getRawCity();
 
     $nation = getNationStaticInfo($city['nation']);
-
-    $pop  = $city['pop'] / $city['pop2'] * 100;
-    $trust = $city['trust'];
-    $agri = $city['agri'] / $city['agri2'] * 100;
-    $comm = $city['comm'] / $city['comm2'] * 100;
-    $secu = $city['secu'] / $city['secu2'] * 100;
-    $def  = $city['def'] / $city['def2'] * 100;
-    $wall = $city['wall'] / $city['wall2'] * 100;
-    if($city['trade'] === null) {
-        $trade = 0;
-        $tradeStr = "상인없음";
-    } else {
-        $trade = ($city['trade']-95) * 10;
-        $tradeStr = $city['trade'] . "%";
-    }
 
     if(!$nation){
         $nation = getNationStaticInfo(0);
     }
 
-    if($nation['color'] == "" ) { $nation['color'] = "#000000"; }
-    echo "<table style='width:100%;' class='tb_layout bg2'>
-    <tr><td colspan=8 style=text-align:center;height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>【 ".CityConst::$regionMap[$city['region']]." | ".CityConst::$levelMap[$city['level']]." 】 {$city['name']}</td></tr>
-    <tr><td colspan=8 style=text-align:center;height:20px;color:".newColor($nation['color']).";background-color:{$nation['color']}><b>";
+    $city['nationName'] = $nation['name'];
+    $city['nationTextColor'] = newColor($nation['color']);
+    $city['nationColor'] = $nation['color'];
+    $city['region'] = CityConst::$regionMap[$city['region']];
+    $city['level'] = CityConst::$levelMap[$city['level']];
 
-    if($city['nation'] == 0) {
-        echo "공 백 지";
-    } else {
-        echo "지배 국가 【 {$nation['name']} 】";
+    $officerQuery = [];
+    $officerName = [
+        2=>'-',
+        3=>'-',
+        4=>'-'
+    ];
+    if ($city['officer4'] > 0) {
+        $officerQuery[] = $city['officer4'];
+    }
+    if ($city['officer3'] > 0) {
+        $officerQuery[] = $city['officer3'];
+    }
+    if ($city['officer2'] > 0) {
+        $officerQuery[] = $city['officer2'];
     }
 
-    if($city['gen1'] > 0) {
-        $query = "select name from general where no='{$city['gen1']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gen1 = MYDB_fetch_array($result);
-    } else {
-        $gen1 = ['name'=>'-'];
+    if($officerQuery){
+        foreach($db->query('SELECT `level`, `name` FROM general WHERE `no` IN %li', $officerQuery) as $genOfficer){
+            $officerName[$genOfficer['level']] = $genOfficer['name'];
+        }
     }
+    $city['officerName'] = $officerName;
 
-    if($city['gen2'] > 0) {
-        $query = "select name from general where no='{$city['gen2']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gen2 = MYDB_fetch_array($result);
-    } else {
-        $gen2 = ['name'=>'-'];
-    }
-
-    if($city['gen3'] > 0) {
-        $query = "select name from general where no='{$city['gen3']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $gen3 = MYDB_fetch_array($result);
-    } else {
-        $gen3 = ['name'=>'-'];
-    }
-
-    echo "
-        </b></td>
-    </tr>
-    <tr>
-        <td rowspan=2 style='text-align:center;' class='bg1'><b>주민</b></td>
-        <td height=7 colspan=3>".bar($pop)."</td>
-        <td rowspan=2 style='text-align:center;' class='bg1'><b>민심</b></td>
-        <td height=7>".bar($trust)."</td>
-        <td rowspan=2 style='text-align:center;' class='bg1'><b>태수</b></td>
-        <td rowspan=2 style='text-align:center;'>{$gen1['name']}</td>
-    </tr>
-    <tr>
-        <td colspan=3 style='text-align:center;'>{$city['pop']}/{$city['pop2']}</td>
-        <td style='text-align:center;'>".round($city['trust'], 1)."</td>
-    </tr>
-    <tr>
-        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>농업</b></td>
-        <td width=100 height=7>".bar($agri)."</td>
-        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>상업</b></td>
-        <td width=100 height=7>".bar($comm)."</td>
-        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>치안</b></td>
-        <td width=100 height=7>".bar($secu)."</td>
-        <td width=50  rowspan=2 style='text-align:center;' class='bg1'><b>군사</b></td>
-        <td rowspan=2 style='text-align:center;'>{$gen2['name']}</td>
-    </tr>
-    <tr>
-        <td style='text-align:center;'>{$city['agri']}/{$city['agri2']}</td>
-        <td style='text-align:center;'>{$city['comm']}/{$city['comm2']}</td>
-        <td style='text-align:center;'>{$city['secu']}/{$city['secu2']}</td>
-    </tr>
-    <tr>
-        <td rowspan=2 style='text-align:center;' class='bg1'><b>수비</b></td>
-        <td height=7>".bar($def)."</td>
-        <td rowspan=2 style='text-align:center;' class='bg1'><b>성벽</b></td>
-        <td height=7>".bar($wall)."</td>
-        <td rowspan=2 style='text-align:center;' class='bg1'><b>시세</b></td>
-        <td height=7>".bar($trade)."</td>
-        <td rowspan=2 style='text-align:center;' class='bg1'><b>종사</b></td>
-        <td rowspan=2 style='text-align:center;'>{$gen3['name']}</td>
-    </tr>
-    <tr>
-        <td style='text-align:center;'>{$city['def']}/{$city['def2']}</td>
-        <td style='text-align:center;'>{$city['wall']}/{$city['wall2']}</td>
-        <td style='text-align:center;'>{$tradeStr}</td>
-    </tr>
-</table>
-";
+    $templates = new \League\Plates\Engine('templates');
+    $templates->registerFunction('bar', '\sammo\bar');
+    return $templates->render('mainCityInfo', $city);
 }
 
 function myNationInfo() {
@@ -610,10 +539,6 @@ function chiefCommandTable() {
 ";
 }
 
-function myInfo(General $generalObj) {
-    generalInfo($generalObj);
-}
-
 function generalInfo(General $generalObj) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
@@ -651,11 +576,7 @@ function generalInfo(General $generalObj) {
     $levelText = getLevelText($generalLevel, $nation['level']);
 
     if(2 <= $generalLevel && $generalLevel <= 4){
-        $cityOfficerKey = [
-            2=>'gen3',
-            3=>'gen2',
-            4=>'gen1'
-        ][$generalLevel];
+        $cityOfficerKey = 'officer'.$generalLevel;
         $cityOfficerName = $db->queryFirstField('SELECT name FROM city where %b = %i',$cityOfficerKey, $generalObj->getID());
         $levelText = "{$cityOfficerName} {$levelText}";
     }
@@ -805,42 +726,32 @@ function generalInfo(General $generalObj) {
 </table>";
 }
 
-function myInfo2() {
-    $db = DB::db();
-    $connect=$db->get();
-    $userID = Session::getUserID();
-
-    $query = "select no from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
-
-    generalInfo2($me['no']);
-}
-
-function generalInfo2($no) {
-    $db = DB::db();
-    $connect=$db->get();
-
-    $query = "select personal,experience,dedication,firenum,warnum,killnum,deathnum,killcrew,deathcrew,belong,killnum*100/warnum as winrate,killcrew/deathcrew*100 as killrate,dex0,dex10,dex20,dex30,dex40 from general where no='$no'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
+function generalInfo2(General $generalObj) {
+    $general = $generalObj->getRaw();
 
     $general['winrate'] = round($general['winrate'], 2);
     $general['killrate'] = round($general['killrate'], 2);
 
-    switch($general['personal']) {
-        case  0:    case  1;    case  6:
-            $experience = "<font color=cyan>".getHonor($general['experience'])." ({$general['experience']})</font>"; break;
-        case  4:    case  5:    case  7:    case 10:
-            $experience = "<font color=magenta>".getHonor($general['experience'])." ({$general['experience']})</font>"; break;
-        default:
-            $experience = getHonor($general['experience'])." ({$general['experience']})"; break;
+    $experienceBonus = $generalObj->onCalcStat($generalObj, 'experience', 10000) - 10000;
+    if($experienceBonus > 0){
+        $experience = "<font color=cyan>".getHonor($general['experience'])." ({$general['experience']})</font>";
     }
-    switch($general['personal']) {
-        case 10:
-            $dedication = "<font color=magenta>".getDed($general['dedication'])." ({$general['dedication']})</font>"; break;
-        default:
-            $dedication = getDed($general['dedication'])." ({$general['dedication']})"; break;
+    else if($experienceBonus < 0){
+        $experience = "<font color=magenta>".getHonor($general['experience'])." ({$general['experience']})</font>";
+    }
+    else{
+        $experience = getHonor($general['experience'])." ({$general['experience']})";
+    }
+
+    $dedicationBonus = $generalObj->onCalcStat($generalObj, 'dedication', 10000) - 10000;
+    if($dedicationBonus > 0){
+        $dedication = "<font color=cyan>".getHonor($general['dedication'])." ({$general['dedication']})</font>";
+    }
+    else if($dedicationBonus < 0){
+        $dedication = "<font color=magenta>".getHonor($general['dedication'])." ({$general['dedication']})</font>";
+    }
+    else{
+        $dedication = getHonor($general['dedication'])." ({$general['dedication']})";
     }
 
     $dex0  = $general['dex0']  / GameConst::$dexLimit * 100;
@@ -1741,118 +1652,6 @@ function uniqueItem($general, $log, $vote=0) {
     return $log;
 }
 
-function checkAbilityEx(int $generalID, ActionLogger $actLog){
-    $db = DB::db();
-    $general = $db->queryFirstRow('SELECT leadership,leadership2,strength,strength2,intel,intel2 FROM general WHERE no = %i',$generalID);
-
-    if(!$general){
-        return;
-    }
-
-    if($general['leadership2'] < 0){
-        $db->update('general',[
-            'leadership2'=>$db->sqleval('leadership2 + %i', GameConst::$upgradeLimit),
-            'leadership'=>$db->sqleval('leadership - 1')
-        ], 'no=%i', $generalID);
-        $actLog->pushGeneralActionLog('<R>통솔</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
-        return;
-    }
-
-    if($general['strength2'] < 0){
-        $db->update('general',[
-            'strength2'=>$db->sqleval('strength2 + %i', GameConst::$upgradeLimit),
-            'strength'=>$db->sqleval('strength - 1')
-        ], 'no=%i', $generalID);
-        $actLog->pushGeneralActionLog('<R>무력</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
-        return;
-    }
-
-    if($general['intel2'] < 0){
-        $db->update('general',[
-            'intel2'=>$db->sqleval('intel2 + %i', GameConst::$upgradeLimit),
-            'intel'=>$db->sqleval('intel - 1')
-        ], 'no=%i', $generalID);
-        $actLog->pushGeneralActionLog('<R>지력</>이 <C>1</> 떨어졌습니다!', ActionLogger::PLAIN);
-        return;
-    }
-
-    if($general['leadership2'] >= GameConst::$upgradeLimit){
-        $db->update('general',[
-            'leadership2'=>$db->sqleval('leadership2 - %i', GameConst::$upgradeLimit),
-            'leadership'=>$db->sqleval('leadership + 1')
-        ], 'no=%i', $generalID);
-        $actLog->pushGeneralActionLog('<S>통솔</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
-        return;
-    }
-
-    if($general['strength2'] >= GameConst::$upgradeLimit){
-        $db->update('general',[
-            'strength2'=>$db->sqleval('strength2 - %i', GameConst::$upgradeLimit),
-            'strength'=>$db->sqleval('strength + 1')
-        ], 'no=%i', $generalID);
-        $actLog->pushGeneralActionLog('<S>무력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
-        return;
-    }
-
-    if($general['intel2'] >= GameConst::$upgradeLimit){
-        $db->update('general',[
-            'intel2'=>$db->sqleval('intel2 - %i', GameConst::$upgradeLimit),
-            'intel'=>$db->sqleval('intel + 1')
-        ], 'no=%i', $generalID);
-        $actLog->pushGeneralActionLog('<S>지력</>이 <C>1</> 올랐습니다!', ActionLogger::PLAIN);
-        return;
-    }
-}
-
-function checkAbility($general, $log) {
-    $db = DB::db();
-    $connect=$db->get();
-
-    $limit = GameConst::$upgradeLimit;
-
-    $query = "select no,leadership,leadership2,strength,strength2,intel,intel2 from general where no='{$general['no']}'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
-
-    if($general['leadership2'] < 0) {
-        $query = "update general set leadership2='$limit'+leadership2,leadership=leadership-1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log[] = "<C>●</><R>통솔</>이 <C>1</> 떨어졌습니다!";
-    } elseif($general['leadership2'] >= $limit) {
-        $query = "update general set leadership2=leadership2-'$limit',leadership=leadership+1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log[] = "<C>●</><S>통솔</>이 <C>1</> 올랐습니다!";
-    }
-
-    if($general['strength2'] < 0) {
-        $query = "update general set strength2='$limit'+strength2,strength=strength-1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log[] = "<C>●</><R>무력</>이 <C>1</> 떨어졌습니다!";
-    } elseif($general['strength2'] >= $limit) {
-        $query = "update general set strength2=strength2-'$limit',strength=strength+1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log[] = "<C>●</><S>무력</>이 <C>1</> 올랐습니다!";
-    }
-
-    if($general['intel2'] < 0) {
-        $query = "update general set intel2='$limit'+intel2,intel=intel-1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log[] = "<C>●</><R>지력</>이 <C>1</> 떨어졌습니다!";
-    } elseif($general['intel2'] >= $limit) {
-        $query = "update general set intel2=intel2-'$limit',intel=intel+1 where no='{$general['no']}'";
-        MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-
-        $log[] = "<C>●</><S>지력</>이 <C>1</> 올랐습니다!";
-    }
-
-    return $log;
-}
-
 function checkDedication($general, $log) {
     $db = DB::db();
     $connect=$db->get();
@@ -1899,18 +1698,6 @@ function getAdmin() {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
     return $gameStor->getAll();
-}
-
-function getMe() {
-    $db = DB::db();
-    $connect=$db->get();
-    $userID = Session::getUserID();
-
-    $query = "select * from general where owner='{$userID}'";
-    $result = MYDB_query($query, $connect) or Error("접속자가 많아 접속을 중단합니다. 잠시후 갱신해주세요.<br>getMe : ".MYDB_error($connect),"");
-    $me = MYDB_fetch_array($result);
-
-    return $me;
 }
 
 function getCity($city, $sel="*") {
@@ -1962,9 +1749,9 @@ function deleteNation(General $general) {
     $db->update('city', [
         'nation'=>0,
         'front'=>0,
-        'gen1'=>0,
-        'gen2'=>0,
-        'gen3'=>0,
+        'officer4'=>0,
+        'officer3'=>0,
+        'officer2'=>0,
     ], 'nation=%i', $nationID);
     // 부대 삭제
     $db->delete('troop', 'nation=%i', $nationID);
@@ -1997,7 +1784,7 @@ function nextRuler(General $general) {
     //npc or npc유저인 경우 후계 찾기
     if($general->getVar('npc') > 0) {
         $candidate = $db->queryFirstRow(
-            'SELECT no,name,nation,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and level!=12 and npc>0 order by npcmatch2,rand() LIMIT 1',
+            'SELECT no,name,nation,level,IF(ABS(affinity-%i)>75,150-ABS(affinity-%i),ABS(affinity-%i)) as npcmatch2 from general where nation=%i and level!=12 and npc>0 order by npcmatch2,rand() LIMIT 1',
             $general->getVar('affinity'),
             $general->getVar('affinity'),
             $nationID
@@ -2005,13 +1792,13 @@ function nextRuler(General $general) {
     }
     if(!$candidate){
         $candidate = $db->queryFirstRow(
-            'SELECT no,name,npc FROM general WHERE nation=%i and level!= 12 AND level >= 9 ORDER BY level DESC LIMIT 1',
+            'SELECT no,name,npc,level FROM general WHERE nation=%i and level!= 12 AND level >= 9 ORDER BY level DESC LIMIT 1',
             $nationID
         );
     }
     if(!$candidate){
         $candidate = $db->queryFirstRow(
-            'SELECT no,name,npc FROM general WHERE nation=%i and level!= 12 ORDER BY dedication DESC LIMIT 1',
+            'SELECT no,name,npc,level FROM general WHERE nation=%i and level!= 12 ORDER BY dedication DESC LIMIT 1',
             $nationID
         );
     }
@@ -2031,15 +1818,11 @@ function nextRuler(General $general) {
     $db->update('general', [
         'level'=>12
     ], 'no=%i', $nextRulerID);
-    $db->update('city', [
-        'gen1'=>0
-    ], 'gen1=%i', $nextRulerID);
-    $db->update('city', [
-        'gen2'=>0
-    ], 'gen2=%i', $nextRulerID);
-    $db->update('city', [
-        'gen3'=>0
-    ], 'gen3=%i', $nextRulerID);
+    if(2 <= $candidate['level'] && $candidate['level'] <= 4){
+        $db->update('city', [
+            'officer'.$candidate['level']=>0
+        ], "officer{$candidate['level']}=%i", $nextRulerID);
+    }
 
     $josaYi = JosaUtil::pick($nextRulerName, '이');
 

@@ -19,20 +19,8 @@ class TriggerGeneralLevel implements iAction{
             }
         }
         else{
-            if($this->generalLevel == 2){
-                if($city['gen3'] != $general['no']){
-                    $this->generalLevel = 1;
-                }
-            }
-            else if($this->generalLevel == 3){
-                if($city['gen2'] != $general['no']){
-                    $this->generalLevel = 1;
-                }
-            }
-            else if($this->generalLevel == 4){
-                if($city['gen1'] != $general['no']){
-                    $this->generalLevel = 1;
-                }
+            if(2 <= $this->generalLevel && $this->generalLevel <= 4 && $city['officer'.$this->generalLevel] != $general['no']){
+                $this->generalLevel = 1;
             }
         }
 

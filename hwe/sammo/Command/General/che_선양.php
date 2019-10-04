@@ -102,19 +102,16 @@ class che_선양 extends Command\GeneralCommand{
         $logger = $general->getLogger();
         $destLogger = $destGeneral->getLogger();
 
+        $destGeneralLevel = $destGeneral->getVar('level');
         $destGeneral->setVar('level', 12);
         $general->setVar('level', 1);
         $general->multiplyVar('experience', 0.7);
 
-        $db->update('city', [
-            'gen1'=>0
-        ], 'gen1=%i', $destGeneral->getID());
-        $db->update('city', [
-            'gen2'=>0
-        ], 'gen2=%i', $destGeneral->getID());
-        $db->update('city', [
-            'gen3'=>0
-        ], 'gen3=%i', $destGeneral->getID());
+        if(2 <= $destGeneralLevel && $destGeneralLevel <= 4){
+            $db->update('city', [
+                'officer'.$destGeneralLevel=>0
+            ], "officer{$destGeneralLevel}=%i", $destGeneral->getID());
+        }
 
         $josaYi = JosaUtil::pick($generalName, '이');
         $logger->pushGlobalHistoryLog("<Y><b>【선양】</b></><Y>{$generalName}</>{$josaYi} <D><b>{$nationName}</b></>의 군주 자리를 <Y>{$destGeneralName}</>에게 선양했습니다.");

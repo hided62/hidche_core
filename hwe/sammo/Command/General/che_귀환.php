@@ -69,13 +69,19 @@ class che_귀환 extends Command\GeneralCommand{
         $generalID = $general->getID();
         $date = substr($general->getVar('turntime'),11,5);
 
-        switch($general->getVar('level')){
-            case 2: [$cityID, $cityName] = $db->queryFirstList('SELECT city, name FROM city WHERE gen3=%i', $generalID); break;
-            case 3: [$cityID, $cityName] = $db->queryFirstList('SELECT city, name FROM city WHERE gen2=%i', $generalID); break;
-            case 4: [$cityID, $cityName] = $db->queryFirstList('SELECT city, name FROM city WHERE gen1=%i', $generalID); break;
-            default: [$cityID, $cityName] = $db->queryFirstList('SELECT city, name FROM city WHERE city=%i', $this->nation['capital']); break;
+        $generalLevel = $general->getVar('level');
+        $target = null;
+        if(2 <= $generalLevel && 4 <= $generalLevel){
+            $target = $db->queryFirstList(
+                'SELECT city, name FROM city WHERE %b=%i AND nation = %i',
+                'officer'.$general->getVar('level'), $generalID, $general->getNationID()
+            );
+        }
+        if(!$target){
+            $target = $db->queryFirstList('SELECT city, name FROM city WHERE city=%i', $this->nation['capital']);
         }
 
+        [$cityID, $cityName] = $target;
         $josaRo = JosaUtil::pick($cityName, '로');
 
         $logger = $general->getLogger();

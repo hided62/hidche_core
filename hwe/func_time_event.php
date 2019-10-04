@@ -242,9 +242,9 @@ function getGoldIncome($nationNo, $rate, $admin_rate, $type) {
         $tax1 = ($city['pop'] * $city['comm'] / $city['comm2'] * $ratio / 1000) / 3;
         $tax1 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
         //도시 관직 추가 세수
-        if(Util::array_get($level4[$city['gen1']]) == $city['city']) { $tax1 *= 1.05;  }
-        if(Util::array_get($level3[$city['gen2']]) == $city['city']) { $tax1 *= 1.05;  }
-        if(Util::array_get($level2[$city['gen3']]) == $city['city']) { $tax1 *= 1.05;  }
+        if(Util::array_get($level4[$city['officer4']]) == $city['city']) { $tax1 *= 1.05;  }
+        if(Util::array_get($level3[$city['officer3']]) == $city['city']) { $tax1 *= 1.05;  }
+        if(Util::array_get($level2[$city['officer2']]) == $city['city']) { $tax1 *= 1.05;  }
         //수도 추가 세수 130%~105%
         if($city['city'] == $nation['capital']) { $tax1 *= 1+(1/3/$nation['level']); };
 
@@ -484,9 +484,9 @@ function getRiceIncome($nationNo, $rate, $admin_rate, $type) {
         $tax1 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
         $tax2 *= (1 + $city['secu']/$city['secu2']/10);    //치안에 따라 최대 10% 추가
         //도시 관직 추가 세수
-        if(Util::array_get($level4[$city['gen1']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if(Util::array_get($level3[$city['gen2']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
-        if(Util::array_get($level2[$city['gen3']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if(Util::array_get($level4[$city['officer4']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if(Util::array_get($level3[$city['officer3']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
+        if(Util::array_get($level2[$city['officer2']]) == $city['city']) { $tax1 *= 1.05; $tax2 *= 1.05; }
         //수도 추가 세수 130%~105%
         if($city['city'] == $nation['capital']) { $tax1 *= 1+(1/3/$nation['level']); $tax2 *= 1+(1/3/$nation['level']); }
         $income[0] += $tax1;

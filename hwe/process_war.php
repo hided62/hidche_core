@@ -595,7 +595,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         $query = "update general set dedication=dedication*0.5,experience=experience*0.9 where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 전 도시 공백지로
-        $query = "update city set nation='0',gen1='0',gen2='0',gen3='0',conflict='{}',term=0 where nation='{$city['nation']}'";
+        $query = "update city set nation='0',officer4='0',officer3='0',officer2='0',conflict='{}',term=0 where nation='{$city['nation']}'";
         MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
         // 전 장수 소속 무소속으로, 재야로, 부대 탈퇴
         $query = "update general set nation='0',belong='0',level='0',troop='0' where nation='{$city['nation']}'";
@@ -622,7 +622,7 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         // 태수,군사,종사은 일반으로...
         $db->update('general',[
             'level'=>1
-        ], 'no IN %li',[$city['gen1'], $city['gen2'], $city['gen3']]);
+        ], 'no IN %li',[$city['officer4'], $city['officer3'], $city['officer2']]);
         
         //수도였으면 긴급 천도
         if(isset($destnation['capital']) && $destnation['capital'] == $city['city']) {
@@ -685,12 +685,12 @@ function ConquerCity($admin, $general, $city, $nation, $destnation) {
         'comm'=>$db->sqleval('comm*0.7'),
         'secu'=>$db->sqleval('secu*0.7'),
         'nation'=>$conquerNation,
-        'gen1'=>0,
-        'gen2'=>0,
-        'gen3'=>0,
-        'gen1set'=>0,
-        'gen2set'=>0,
-        'gen3set'=>0
+        'officer4'=>0,
+        'officer3'=>0,
+        'officer2'=>0,
+        'officer4set'=>0,
+        'officer3set'=>0,
+        'officer2set'=>0
     ];
     if($city['level'] > 3) {
         $query['def'] = 1000;

@@ -532,7 +532,7 @@ class GeneralAI{
                 $supplyCitiesID[] = $cityID;
                 if($nationCity['front']){
                     $frontCitiesID[] = $cityID;
-                    if($nationCity['gen1']){
+                    if($nationCity['officer4']){
                         $frontImportantCitiesID[] = $cityID;
                     }
                 }
@@ -1300,7 +1300,7 @@ class GeneralAI{
         $developTurn = $this->chooseDevelopTurn($cityFull);
 
         if($cityFull && Util::randBool(0.2)){
-            $moveRawCities = $db->query('SELECT city,front,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev, gen2 FROM city WHERE nation=%i', $nationID);
+            $moveRawCities = $db->query('SELECT city,front,(pop/10+agri+comm+secu+def+wall)/(pop2/10+agri2+comm2+secu2+def2+wall2)*100 as dev, officer3 FROM city WHERE nation=%i', $nationID);
 
             $moveCities = [];
             foreach($moveRawCities as $moveCity){
@@ -1309,7 +1309,7 @@ class GeneralAI{
                     continue;
                 }
                 $score = 1 / $moveCity['dev'];
-                if($moveCity['gen2']){
+                if($moveCity['officer3']){
                     $score *= 1.3;
                 }
                 $moveCities[$moveCityID] = $score;
@@ -1429,7 +1429,7 @@ class GeneralAI{
                 return null;
             }
 
-            $frontCities = $db->query('SELECT city, front, gen1 FROM city WHERE nation=%i AND front > 0 AND supply = 1');
+            $frontCities = $db->query('SELECT city, front, officer4 FROM city WHERE nation=%i AND front > 0 AND supply = 1');
 
             if(!$frontCities){
                 //접경이 아직 없음
@@ -1442,7 +1442,7 @@ class GeneralAI{
                 $frontCityID = $frontCity['city'];
 
                 $score = 0.2;
-                if($frontCity['front'] > 1 && $frontCity['gen1']){
+                if($frontCity['front'] > 1 && $frontCity['officer4']){
                     $score += 3;
                 }
                 $attackableCities[$frontCityID] = $score;

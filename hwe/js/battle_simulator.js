@@ -607,9 +607,9 @@ jQuery(function($){
             dead:0,
 
             state:0,
-            gen1:0,
-            gen2:0,
-            gen3:0,
+            officer4:0,
+            officer3:0,
+            officer2:0,
 
             conflict:'{}',
         };
@@ -624,13 +624,13 @@ jQuery(function($){
 
         var attackerGeneral = extendGeneralInfoForDB(allData.attackerGeneral);
         if(attackerGeneral.level == 4){
-            attackerCity.gen1 = attackerGeneral.no;
+            attackerCity.officer4 = attackerGeneral.no;
         }
         if(attackerGeneral.level == 3){
-            attackerCity.gen2 = attackerGeneral.no;
+            attackerCity.officer3 = attackerGeneral.no;
         }
         if(attackerGeneral.level == 2){
-            attackerCity.gen3 = attackerGeneral.no;
+            attackerCity.officer2 = attackerGeneral.no;
         }
 
         var defenderNation = $.extend({}, defaultNation, allData.defenderNation);
@@ -647,13 +647,13 @@ jQuery(function($){
         $.each(allData.defenderGenerals, function(){
             var defenderGeneral = extendGeneralInfoForDB(this);
             if(defenderGeneral.level == 4){
-                defenderCity.gen1 = defenderGeneral.no;
+                defenderCity.officer4 = defenderGeneral.no;
             }
             if(defenderGeneral.level == 3){
-                defenderCity.gen2 = defenderGeneral.no;
+                defenderCity.officer3 = defenderGeneral.no;
             }
             if(defenderGeneral.level == 2){
-                defenderCity.gen3 = defenderGeneral.no;
+                defenderCity.officer2 = defenderGeneral.no;
             }
 
             defenderGenerals.push(defenderGeneral);
