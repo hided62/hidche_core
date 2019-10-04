@@ -7,6 +7,7 @@ use \sammo\JosaUtil;
 
 class DyingMessage{
     private $name;
+    private $realName;
     private $npc;
 
     static protected $defaultMessage = '<Y>:name:</>:이: <R>사망</>했습니다.';
@@ -88,31 +89,21 @@ class DyingMessage{
         static::$utilNPCMessages = static::getUtilNPCMessageList();
     }
 
-    protected function _constructWithObj(General $general){
-        $this->name = $general->getName();
-        $this->npc = $general->getVar('npc');
-    }
-
-    protected function _constructWithRawValue(string $name, int $npc){
-        $this->name = $name;
-        $this->npc = $npc;
-    }
-
-    function __construct($name, ?int $npc = null)
+    function __construct(General $general)
     {
         if(static::$messages === null){
             static::initMessageList();
         }
-        if($name instanceof General){
-            $this->_constructWithObj($name);
-        }
-        else{
-            $this->_constructWithRawValue($name, $npc);
+        $this->general = $general;
+        $this->name = $general->getName();
+        $this->npc = $general->getVar('npc');
+        if($general['owner'] > 0 && $general->getVar('startage') - $general->getVar('age') > 1){
+            $this->realName = $general->getVar('name2');
         }
     }
 
     public function getText():string{
-        $name = $this->name ;
+        $name = $this->name;
         $npc = $this->npc;
 
         if($npc == 0){
@@ -128,7 +119,12 @@ class DyingMessage{
             $text = static::$defaultMessage;
         }
 
-        $text = str_replace(':name:', $name, $text);
+        if($this->realName){
+            $text = str_replace(':name:', $name."({$this->realName})", $text);
+        }
+        else{
+            $text = str_replace(':name:', $name, $text);
+        }
 
         JosaUtil::batch($text, $name);
         return $text;

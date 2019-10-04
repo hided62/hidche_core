@@ -654,7 +654,24 @@ function generalInfo($no) {
         $lbonus = "";
     }
 
-    $troopName = getTroopName($general['troop'])??'-';
+    if($general['troop'] == 0){
+        $troopInfo = '-';
+    }
+    else{
+        $troopCity = $db->queryFirstField('SELECT city FROM general WHERE no=%i', $general['troop']);
+        $troopTurn = $db->queryFirstField('SELECT `action` FROM general_turn WHERE general_id = %i AND turn_idx = 0', $general['troop']);
+        $troopInfo = $db->queryFirstField('SELECT name FROM troop WHERE troop_leader = %i', $general['troop']);
+        
+        $troopInfo = $troop['name'];
+
+        if($troopTurn == 'che_집합'){
+            $troopInfo = "<strike style='color:gray;'>{$troopInfo}</strike>";
+        }
+        else if($troopCity != $general['city']){
+            $troopCityName = CityConst::byID($troopCity)->name;
+            $troopInfo = "<span style='color:orange;'>{$troopInfo}({$troopCityName})</span>";
+        }
+    }
 
     $level = getLevel($general['level'], $nation['level']);
     if($general['level'] == 2)     {
@@ -796,7 +813,7 @@ function generalInfo($no) {
     </tr>
     <tr height=20>
         <td style='text-align:center;' class='bg1'><b>부대</b></td>
-        <td style='text-align:center;' colspan=3>{$troopName}</td>
+        <td style='text-align:center;' colspan=3>{$troopInfo}</td>
         <td style='text-align:center;' class='bg1'><b>벌점</b></td>
         <td style='text-align:center;' colspan=5>".getConnect($general['connect'])." {$general['connect']}({$general['con']})</td>
     </tr>

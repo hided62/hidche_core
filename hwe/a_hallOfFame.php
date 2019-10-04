@@ -26,6 +26,8 @@ $scenarioList = (function(){
     return $scenarioList;
 })();
 
+
+
 if($scenarioIdx !== null || key_exists($scenarioIdx, $scenarioList)){
     $searchScenarioName = $scenarioList[$seasonIdx][$scenarioIdx]['name'];
     $searchFilter = $db->sqleval('season = %i AND scenario = %i', $seasonIdx, $scenarioIdx);

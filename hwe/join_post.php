@@ -223,6 +223,7 @@ $affinity = rand()%150 + 1;
 $db->insert('general', [
     'owner' => $userID,
     'name' => $name,
+    'name2' => $member['name'],
     'picture' => $face,
     'imgsvr' => $imgsvr,
     'nation' => 0,
