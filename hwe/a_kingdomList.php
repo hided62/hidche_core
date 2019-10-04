@@ -159,23 +159,23 @@ for($i=1; $i <= $count; $i++) {
         <td width=170 align=center>".count($generals)." / {$citycount}</td>
     </tr>
     <tr>
-        <td align=center id=bg1>".getLevel(12, $nation['level'])."</td>
+        <td align=center id=bg1>".getLevelText(12, $nation['level'])."</td>
         <td align=center>$l12</td>
-        <td align=center id=bg1>".getLevel(11, $nation['level'])."</td>
+        <td align=center id=bg1>".getLevelText(11, $nation['level'])."</td>
         <td align=center>$l11</td>
-        <td align=center id=bg1>".getLevel(10, $nation['level'])."</td>
+        <td align=center id=bg1>".getLevelText(10, $nation['level'])."</td>
         <td align=center>$l10</td>
-        <td align=center id=bg1>".getLevel( 9, $nation['level'])."</td>
+        <td align=center id=bg1>".getLevelText( 9, $nation['level'])."</td>
         <td align=center>$l9</td>
     </tr>
     <tr>
-        <td align=center id=bg1>".getLevel( 8, $nation['level'])."</td>
+        <td align=center id=bg1>".getLevelText( 8, $nation['level'])."</td>
         <td align=center>$l8</td>
-        <td align=center id=bg1>".getLevel( 7, $nation['level'])."</td>
+        <td align=center id=bg1>".getLevelText( 7, $nation['level'])."</td>
         <td align=center>$l7</td>
-        <td align=center id=bg1>".getLevel( 6, $nation['level'])."</td>
+        <td align=center id=bg1>".getLevelText( 6, $nation['level'])."</td>
         <td align=center>$l6</td>
-        <td align=center id=bg1>".getLevel( 5, $nation['level'])."</td>
+        <td align=center id=bg1>".getLevelText( 5, $nation['level'])."</td>
         <td align=center>$l5</td>
     </tr>
     <tr>

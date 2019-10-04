@@ -6,8 +6,8 @@ use \sammo\General;
 class che_묵가 implements iAction{
     use \sammo\DefaultAction;
 
-    static $name = '묵가';
-    static $info = '';
+    protected $name = '묵가';
+    protected $info = '';
     static $pros = '수성↑';
     static $cons = '기술↓';
 

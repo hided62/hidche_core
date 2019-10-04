@@ -6,9 +6,9 @@ use \sammo\General;
 class che_출세 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 6;
-    static $name = '출세';
-    static $info = '명성 +10%, 징·모병 비용 +20%';
+    protected $id = 6;
+    protected $name = '출세';
+    protected $info = '명성 +10%, 징·모병 비용 +20%';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if(in_array($turnType, ['징병', '모병'])){

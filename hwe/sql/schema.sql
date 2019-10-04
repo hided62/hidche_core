@@ -77,7 +77,7 @@ CREATE TABLE `general` (
 	`specage` INT(2) NULL DEFAULT '0',
 	`special2` VARCHAR(20) NOT NULL DEFAULT 'None',
 	`specage2` INT(2) NULL DEFAULT '0',
-	`mode` INT(1) NULL DEFAULT '2',
+	`defence_train` INT(3) NULL DEFAULT '80',
 	`tnmt` INT(1) NULL DEFAULT '1',
 	`myset` INT(1) NULL DEFAULT '3',
 	`tournament` INT(1) NULL DEFAULT '0',

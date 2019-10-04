@@ -1,11 +1,12 @@
 <?php
-namespace sammo\ActionPersonality;
+namespace sammo\ActionNationType;
 use \sammo\iAction;
 
 class None implements iAction{
     use \sammo\DefaultAction;
 
-    protected $id = -1;
     protected $name = '-';
     protected $info = '';
+    static $pros = '';
+    static $cons = '';
 }

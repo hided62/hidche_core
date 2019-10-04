@@ -29,7 +29,7 @@
     data-general-intel="<?=$general['intel']?>"
     data-general-level="<?=$general['expLevelText']?>"
     data-general-leadership-bonus="<?=$general['lbonus']?>"
-    data-general-defence-mode="<?=$general['mode']?>"
+    data-general-defence-train="<?=$general['defence_train']?>"
     data-general-crew-type="<?=$general['crewtype']?>"
     data-general-crew="<?=$general['crew']?>"
     data-general-train="<?=$general['train']?>"

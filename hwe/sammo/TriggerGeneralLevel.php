@@ -39,6 +39,10 @@ class TriggerGeneralLevel implements iAction{
         $this->lbonus = calcLeadershipBonus($this->generalLevel, $nationLevel);
     }
 
+    public function getLbonus():int{
+        return $this->lbonus;
+    }
+
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '농업' || $turnType == '상업'){
             if(in_array($this->generalLevel, [12, 11, 9, 7, 5, 3])){

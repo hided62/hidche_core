@@ -7,9 +7,9 @@ use \sammo\SpecialityConst;
 class None implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 0;
-    static $name = '-';
-    static $info = null;
+    protected $id = 0;
+    protected $name = '-';
+    protected $info = null;
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 0;

@@ -2,6 +2,15 @@
 namespace sammo;
 
 trait DefaultAction{
+
+    public function getName():string{
+        return $this->name;
+    }
+
+    public function getInfo():string{
+        return $this->info;
+    }
+
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller{
         return null;
     }

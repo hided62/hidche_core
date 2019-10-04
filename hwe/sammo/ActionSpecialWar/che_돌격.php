@@ -10,9 +10,9 @@ use \sammo\WarUnitTriggerCaller;
 class che_돌격 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 60;
-    static $name = '돌격';
-    static $info = '[전투] 상대 회피 불가, 공격 시 전투 페이즈 +1, 공격 시 대미지 +10%';
+    protected $id = 60;
+    protected $name = '돌격';
+    protected $info = '[전투] 상대 회피 불가, 공격 시 전투 페이즈 +1, 공격 시 대미지 +10%';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

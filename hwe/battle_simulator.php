@@ -94,8 +94,8 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                     </div>
                     <select class="custom-select form_nation_type" style="width:25ch;">
                         <?php foreach(GameConst::$availableNationType as $typeID): ?>
-                            <?php $nationTypeClass = getNationTypeClass($typeID) ?> 
-                            <option value="<?=$typeID?>"><?=$nationTypeClass::$name?> (<?=$nationTypeClass::$pros?>, <?=$nationTypeClass::$cons?>)</option>
+                            <?php $nationTypeClass = buildNationTypeClass($typeID) ?> 
+                            <option value="<?=$typeID?>"><?=$nationTypeClass->getName()?> (<?=$nationTypeClass::$pros?>, <?=$nationTypeClass::$cons?>)</option>
                         <?php endforeach; ?>
                     </select>
                     <div class="input-group-prepend">
@@ -166,8 +166,8 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                     </div>
                     <select class="custom-select form_nation_type" style="width:25ch;">
                         <?php foreach(GameConst::$availableNationType as $typeID): ?>
-                            <?php $nationTypeClass = getNationTypeClass($typeID) ?> 
-                            <option value="<?=$typeID?>"><?=$nationTypeClass::$name?> (<?=$nationTypeClass::$pros?>, <?=$nationTypeClass::$cons?>)</option>
+                            <?php $nationTypeObj = buildNationTypeClass($typeID) ?> 
+                            <option value="<?=$typeID?>"><?=$nationTypeObj->name?> (<?=$nationTypeClass::$pros?>, <?=$nationTypeClass::$cons?>)</option>
                         <?php endforeach; ?>
                     </select>
                     <div class="input-group-prepend">
@@ -421,10 +421,10 @@ var defaultSpecialDomestic = <?=GameConst::$defaultSpecialDomestic?>;
                     <div class="input-group-prepend only_defender">
                         <span class="input-group-text">수비여부</span>
                     </div>
-                    <select class="custom-select form_defend_mode only_defender">
-                        <option value="2">훈사 80</option>
-                        <option value="3">훈사 60</option>
-                        <option value="0">안함</option>
+                    <select class="custom-select form_defence_train only_defender">
+                        <option value="80">훈사 80</option>
+                        <option value="60">훈사 60</option>
+                        <option value="999">안함</option>
                     </select>
                 </div>
             </div>

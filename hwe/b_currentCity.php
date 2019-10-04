@@ -188,12 +188,12 @@ if($city['trade'] === null) {
     $city['trade'] = "- ";
 }
 
-$query = "select npc,mode,no,picture,imgsvr,name,injury,leadership,strength,intel,level,nation,crewtype,crew,train,atmos from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
+$query = "select npc,defence_train,no,picture,imgsvr,name,injury,leadership,strength,intel,level,nation,crewtype,crew,train,atmos from general where city='{$city['city']}' order by dedication desc";    // 장수 목록
 $genresult = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
 $gencount = MYDB_num_rows($genresult);
 
 $generals = $db->query(
-    'SELECT npc,mode,no,picture,imgsvr,name,injury,leadership,strength,intel,level,nation,crewtype,crew,train,atmos from general where city=%i order by name',
+    'SELECT npc,defence_train,no,picture,imgsvr,name,injury,leadership,strength,intel,level,nation,crewtype,crew,train,atmos from general where city=%i order by name',
     $city['city']
 );
 
@@ -253,7 +253,7 @@ for($j=0; $j < $gencount; $j++) {
     $intelText = formatWounded($intel, $general['injury']);
 
     $level = $general['level'];
-    $levelText = getLevel($general['level']);
+    $levelText = getLevelText($general['level']);
 
     if($general['level'] == 12) {
         $leadershipBonus = $nationInfo['level'] * 2;
@@ -265,8 +265,8 @@ for($j=0; $j < $gencount; $j++) {
     $leadershipBonusText = formatLeadershipBonus($leadershipBonus);
 
     if($ourGeneral){
-        $defenceMode = $general['mode'];
-        $defenceModeText = formatDefenceMode($defenceMode);
+        $defenceTrain = $general['defence_train'];
+        $defenceTrainText = formatDefenceTrain($defenceTrain);
         $crewType = $general['crewtype'];
         $crewTypeText = GameUnitConst::byId($crewType)->name;
         $crew = $general['crew'];
@@ -274,8 +274,8 @@ for($j=0; $j < $gencount; $j++) {
         $atmos = $general['atmos'];
     }
     else{
-        $defenceMode = 0;
-        $defenceModeText = '';
+        $defenceTrain = 0;
+        $defenceTrainText = '';
         $crewType = 0;
         $crewTypeText = '';
         $crew = $general['crew'];
@@ -317,8 +317,8 @@ for($j=0; $j < $gencount; $j++) {
         'strengthText'=>$strengthText,
         'intel'=>$intel,
         'intelText'=>$intelText,
-        'defenceMode'=>$defenceMode,
-        'defenceModeText'=>$defenceModeText,
+        'defenceTrain'=>$defenceTrain,
+        'defenceTrainText'=>$defenceTrainText,
         'crewType'=>$crewType,
         'crewTypeText'=>$crewTypeText,
         'crew'=>$crew,
@@ -371,32 +371,32 @@ foreach($generalsFormat as $general){
     }
     $armedGenTotal += 1;
 
-    if($general['train'] >= 90 && $general['atmos'] >= 90){
+    $minTrain = min($general['train'], $general['atmos']);
+
+    if($minTrain >= 90){
         $crew90 += $general['crew'];
         $gen90 += 1;
     }
 
     $chkDef = false;
-    if($general['train'] >= 80 && $general['atmos'] >= 80){
+    
+    if($minTrain >= 80){
         $crew80 += $general['crew'];
         $gen80 += 1;
-        if($general['defenceMode'] == 2){
-            $crewDef += $general['crew'];
-            $genDef += 1;
-            $chkDef = true;
-        }
     }
 
-    if($general['train'] >= 60 && $general['atmos'] >= 60){
+    if($minTrain >= 60){
         $crew60 += $general['crew'];
         $gen60 += 1;
-
-        if($general['defenceMode'] == 1 && !$chkDef){
-            $crewDef += $general['crew'];
-            $genDef += 1;
-            $chkDef = true;
-        }
     }
+
+    if($minTrain >= $general['defenceTrain']){
+        $crewDef += $general['crew'];
+        $genDef += 1;
+        $chkDef = true;
+    }
+
+    
 
 }
 

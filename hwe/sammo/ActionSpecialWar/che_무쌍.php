@@ -8,9 +8,9 @@ use \sammo\WarUnit;
 class che_무쌍 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 61;
-    static $name = '무쌍';
-    static $info = '[전투] 대미지 +10%, 공격 시 필살 확률 +10%p';
+    protected $id = 61;
+    protected $name = '무쌍';
+    protected $info = '[전투] 대미지 +10%, 공격 시 필살 확률 +10%p';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

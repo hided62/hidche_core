@@ -13,9 +13,9 @@ use \sammo\WarUnitTrigger\che_반계발동;
 class che_반계 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 45;
-    static $name = '반계';
-    static $info = '[전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 40% 확률로 되돌림, 반목 성공시 대미지 추가(+60% → +100%)';
+    protected $id = 45;
+    protected $name = '반계';
+    protected $info = '[전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 40% 확률로 되돌림, 반목 성공시 대미지 추가(+60% → +100%)';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

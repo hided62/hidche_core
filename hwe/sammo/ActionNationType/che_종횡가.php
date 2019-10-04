@@ -6,8 +6,8 @@ use \sammo\General;
 class che_종횡가 implements iAction{
     use \sammo\DefaultAction;
 
-    static $name = '종횡가';
-    static $info = '';
+    protected $name = '종횡가';
+    protected $info = '';
     static $pros = '전략↑ 수성↑';
     static $cons = '금수입↓ 내정↓';
 

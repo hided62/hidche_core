@@ -8,9 +8,9 @@ use \sammo\WarUnit;
 class che_징병 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 72;
-    static $name = '징병';
-    static $info = '[군사] 징·모병비 -50%, 통솔 순수 능력치 보정 +15%';
+    protected $id = 72;
+    protected $name = '징병';
+    protected $info = '[군사] 징·모병비 -50%, 통솔 순수 능력치 보정 +15%';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

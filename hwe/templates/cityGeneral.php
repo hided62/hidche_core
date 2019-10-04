@@ -9,7 +9,7 @@
     data-general-level="<?=$level?>"
     data-general-leadership-bonus="<?=$leadershipBonus?>"
 <?php if($ourGeneral): ?>
-    data-general-defence-mode="<?=$defenceMode?>"
+    data-general-defence-train="<?=$defenceTrain?>"
     data-general-crew-type="<?=$crewType?>"
     data-general-crew="<?=$crew?>"
     data-general-train="<?=$train?>"
@@ -27,7 +27,7 @@
     <td><?=$intelText?></td>
     <td class="general_level"><?=$levelText?></td>
 <?php if($ourGeneral): ?>
-    <td><?=$defenceModeText?></td>
+    <td><?=$defenceTrainText?></td>
     <td class="general_crew_type"><?=$crewTypeText?></td>
     <td><?=$crew?></td>
     <td><?=$train?></td>

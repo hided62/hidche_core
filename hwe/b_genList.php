@@ -103,7 +103,7 @@ switch ($type) {
 }
 
 $generals = $db->query(
-    'SELECT npc,mode,no,level,troop,city,injury,leadership,strength,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,nation from general WHERE nation = %i %l',
+    'SELECT npc,defence_train,no,level,troop,city,injury,leadership,strength,intel,experience,name,gold,rice,crewtype,crew,train,atmos,killturn,turntime,nation from general WHERE nation = %i %l',
     $me['nation'],
     $orderSQL
 );
@@ -168,12 +168,7 @@ foreach ($generals as &$general) {
     //TODO: npc 코드를 일원화
     $general['nameText'] = $name;
 
-    switch ($general['mode']) {
-        case 0: $mode = "×"; break;
-        case 1: $mode = "○"; break;
-        case 2: $mode = "◎"; break;
-    }
-    $general['modeText'] = $mode;
+    $general['modeText'] = formatDefenceTrain($general['defence_train']);
     $general['crewtypeText'] = GameUnitConst::byId($general['crewtype'])->name??'-';
 
     

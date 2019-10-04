@@ -18,12 +18,7 @@ class BaseItem implements iAction{
     function getID(){
         return $this->id;
     }
-    function getName(){
-        return $this->name;
-    }
-    function getInfo(){
-        return $this->info;
-    }
+    
     function getCost(){
         return $this->cost;
     }

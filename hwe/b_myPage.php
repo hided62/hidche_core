@@ -5,13 +5,19 @@ include "lib.php";
 include "func.php";
 
 $btn = Util::getReq('btn');
-$mode = Util::getReq('mode', 'int', 2);
+$defence_train = Util::getReq('defence_train', 'int', 2);
 $tnmt = Util::getReq('tnmt', 'int', 1);
 //$detachNPC = Util::getReq('detachNPC', 'bool');
 $detachNPC = false;
 
-if($mode < 0 || $mode > 2){
-    $mode = 2;
+if ($defence_train <= 60) {
+    $defence_train = 60;
+}
+else if($defence_train <= 80){
+    $defence_train = 80;
+}
+else{
+    $defence_train = 999;
 }
 
 if($tnmt < 0 || $tnmt > 1){
@@ -44,16 +50,16 @@ if (($btn == "설정저장" || $detachNPC) && $myset > 0) {
         $submit = 'hidden';
     }
 
-    if($mode != $me->getVar('mode')){
-        if($mode == 0){
+    if($defence_train != $me->getVar('defence_train')){
+        if($defence_train == 999){
             $me->increaseVar('myset', -1);
-            $me->setVar('mode', $mode);
+            $me->setVar('defence_train', $defence_train);
             $me->increaseVar('train', -3);
             $me->increaseVar('atmos', -3);
         }
         else{
             $me->increaseVar('myset', -1);
-            $me->setVar('mode', $mode);
+            $me->setVar('defence_train', $defence_train);
         }
         $myset -= 1;
     }
@@ -112,9 +118,9 @@ $me->applyDB($db);
                 】<br>
                ∞<font color=orange>개막직전 남는자리가 있을경우 랜덤하게 참여합니다.</font><br><br>
                 수비 【
-                <input type=radio name=mode  value=2 <?=$me->getVar('mode')==2?"checked":""; ?>>◎(훈사80)
-                <input type=radio name=mode  value=1 <?=$me->getVar('mode')==1?"checked":""; ?>>○(훈사60)
-                <input type=radio name=mode  value=0 <?=$me->getVar('mode')==0?"checked":""; ?>>×
+                <input type=radio name=defence_train  value=80 <?=$me->getVar('defence_train')==80?"checked":""; ?>>◎(훈사80)
+                <input type=radio name=defence_train  value=60 <?=$me->getVar('defence_train')==60?"checked":""; ?>>○(훈사60)
+                <input type=radio name=defence_train  value=999 <?=$me->getVar('defence_train')==999?"checked":""; ?>>×
                 】<br><br>
                 <input type=<?=$submit?> name=btn style=background-color:<?=GameConst::$basecolor2?>;color:white;width:160px;height:30px;font-size:13px; value=설정저장><br>
                 ∞<font color=orange>설정저장은 이달중 <?=$myset?>회 남았습니다.</font><br><br>

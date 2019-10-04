@@ -9,9 +9,9 @@ use \sammo\WarUnit;
 class che_기병 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 52;
-    static $name = '기병';
-    static $info = '[군사] 기병 계통 징·모병비 -10%<br>[전투] 수비 시 대미지 +10%, 공격 시 대미지 +20%';
+    protected $id = 52;
+    protected $name = '기병';
+    protected $info = '[군사] 기병 계통 징·모병비 -10%<br>[전투] 수비 시 대미지 +10%, 공격 시 대미지 +20%';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

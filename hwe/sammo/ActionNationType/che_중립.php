@@ -6,8 +6,8 @@ use \sammo\General;
 class che_중립 implements iAction{
     use \sammo\DefaultAction;
 
-    static $name = '-';
-    static $info = '';
+    protected $name = '-';
+    protected $info = '';
     static $pros = '';
     static $cons = '';
 

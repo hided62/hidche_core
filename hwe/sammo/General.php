@@ -62,20 +62,13 @@ class General implements iAction{
             return;
         }
 
-        
-
-        $nationTypeClass = getNationTypeClass($staticNation['type']);
-        $this->nationType = new $nationTypeClass;
+        $this->nationType = buildNationTypeClass($staticNation['type']);
         $this->levelObj = new TriggerGeneralLevel($this->raw, $staticNation['level'], $city);
 
-        $specialDomesticClass = getGeneralSpecialDomesticClass($raw['special']);
-        $this->specialDomesticObj = new $specialDomesticClass;
+        $this->specialDomesticObj = buildGeneralSpecialDomesticClass($raw['special']);
+        $this->specialWarObj = buildGeneralSpecialWarClass($raw['special2']);
 
-        $specialWarClass = getGeneralSpecialWarClass($raw['special2']);
-        $this->specialWarObj = new $specialWarClass;
-
-        $personalityClass = getPersonalityClass($raw['personal']);
-        $this->personalityObj = new $personalityClass;
+        $this->personalityObj = buildPersonalityClass($raw['personal']);
         
         $this->itemObjs['horse'] = buildItemClass($raw['horse']);
         $this->itemObjs['weapon'] = buildItemClass($raw['weapon']);
@@ -93,17 +86,29 @@ class General implements iAction{
         );
     }
 
-    function deleteItem(){
-        $this->setVar('item', 0);
-        $this->itemObjs['item'] = new ActionItem\che_Dummy(0);
+    function deleteItem(string $itemKey='item'){
+        $this->setVar($itemKey, 0);
+        $this->itemObjs[$itemKey] = new ActionItem\None();
     }
 
-    function getItem():BaseItem{
-        return $this->itemObjs['item'];
+    function getItem(string $itemKey='item'):BaseItem{
+        return $this->itemObjs[$itemKey];
     }
 
     function getItems():array{
         return $this->itemObjs;
+    }
+
+    function getPersonality():iAction{
+        return $this->personalityObj;
+    }
+
+    function getSpecialDomestic():iAction{
+        return $this->specialDomesticObj;
+    }
+
+    function getSpecialWar():iAction{
+        return $this->specialWarObj;
     }
 
     function getLastTurn():LastTurn{
@@ -155,6 +160,11 @@ class General implements iAction{
 
     function getName():string{
         return $this->raw['name'];
+    }
+
+    function getInfo():string{
+        //iAction용 info로는 적절하지 않음
+        return '';
     }
 
     function getID():int{
@@ -619,9 +629,10 @@ class General implements iAction{
             'leadership', 'leadership2', 'strength', 'strength2', 'intel', 'intel2', 'weapon', 'book', 'horse', 'item', 
             'experience', 'dedication', 'level', 'gold', 'rice', 'crew', 'crewtype', 'train', 'atmos', 'turntime',
             'makelimit', 'killturn', 'block', 'dedlevel', 'explevel', 'age', 'startage', 'belong',
-            'personal', 'special', 'special2', 'mode', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
+            'personal', 'special', 'special2', 'defence_train', 'tnmt', 'npc', 'npc_org', 'deadyear', 'npcmsg',
             'dex0', 'dex10', 'dex20', 'dex30', 'dex40', 
-            'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn', 'myset'
+            'warnum', 'killnum', 'deathnum', 'killcrew', 'deathcrew', 'recwar', 'last_turn', 'myset',
+            'specage', 'specage2', 'con', 'connect'
         ];
 
         if($column === null){

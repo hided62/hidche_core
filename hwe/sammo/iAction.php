@@ -2,6 +2,10 @@
 namespace sammo;
 
 interface iAction{
+
+    public function getName():string;
+    public function getInfo():string;
+
     public function getPreTurnExecuteTriggerList(General $general):?GeneralTriggerCaller;
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float;
 

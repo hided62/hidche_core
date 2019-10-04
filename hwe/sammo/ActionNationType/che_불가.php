@@ -6,8 +6,8 @@ use \sammo\General;
 class che_불가 implements iAction{
     use \sammo\DefaultAction;
 
-    static $name = '불가';
-    static $info = '';
+    protected $name = '불가';
+    protected $info = '';
     static $pros = '민심↑ 수성↑';
     static $cons = '금수입↓';
 

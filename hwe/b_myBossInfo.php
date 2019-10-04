@@ -137,10 +137,10 @@ for($i=12; $i >= $lv; $i-=2) {
     $imageTemp2 = GetImageURL($level[$i2]['imgsvr']??0);
     ?>
     <tr>
-        <td width=98 align=center id=bg1><font size=4><?=getLevel($i1, $nation['level'])?></font></td>
+        <td width=98 align=center id=bg1><font size=4><?=getLevelText($i1, $nation['level'])?></font></td>
         <td width=64 class='generalIcon' height=64 style='background:no-repeat center url("<?=$imageTemp1?>/<?=$level[$i1]['picture']??'default.jpg'?>");background-size:64px;'></td>
         <td width=332><font size=4><?=$level[$i1]['name']??'-'?>(<?=$level[$i1]['belong']??'-'?>년)</font></td>
-        <td width=98 align=center id=bg1><font size=4><?=getLevel($i2, $nation['level'])?></font></td>
+        <td width=98 align=center id=bg1><font size=4><?=getLevelText($i2, $nation['level'])?></font></td>
         <td width=64 class='generalIcon' height=64 style='background:no-repeat center url("<?=$imageTemp2?>/<?=$level[$i2]['picture']??'default.jpg'?>");background-size:64px;'></td>
         <td width=332><font size=4><?=$level[$i2]['name']??'-'?>(<?=$level[$i2]['belong']??'-'?>년)</font></td>
     </tr>
@@ -226,9 +226,9 @@ echo "
     <tr><td colspan=4 height=5></td></tr>
     <tr><td colspan=4 align=center bgcolor=blue>수 뇌 부 임 명</td></tr>
     <tr>
-        <td width=98  align=right id=bg1>".getLevel(12, $nation['level'])."</td>
+        <td width=98  align=right id=bg1>".getLevelText(12, $nation['level'])."</td>
         <td width=398>{$general['name']} 【".CityConst::byID($general['city'])->name."】</td>
-        <td width=98  align=right id=bg1>".getLevel(11, $nation['level'])."</td>
+        <td width=98  align=right id=bg1>".getLevelText(11, $nation['level'])."</td>
 <form method=post action=c_myBossInfo.php>
         <td width=398>
 ";
@@ -282,7 +282,7 @@ $queries[5]  = "select no,name,level,city from general where nation='{$me['natio
 for($i=10; $i >= $lv; $i--) {
     if($i % 2 == 0) { echo "<tr>"; }
     echo "
-        <td width=98 align=right id=bg1>".getLevel($i, $nation['level'])."</td>
+        <td width=98 align=right id=bg1>".getLevelText($i, $nation['level'])."</td>
 <form method=post action=c_myBossInfo.php>
         <td width=398>
     ";

@@ -11,9 +11,9 @@ use \sammo\WarUnitTrigger\che_위압발동;
 class che_위압 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 63;
-    static $name = '위압';
-    static $info = '[전투] 훈련/사기≥90, 병력≥1,000 일 때 첫 페이즈 위압 발동(적 공격 불가)';
+    protected $id = 63;
+    protected $name = '위압';
+    protected $info = '[전투] 훈련/사기≥90, 병력≥1,000 일 때 첫 페이즈 위압 발동(적 공격 불가)';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

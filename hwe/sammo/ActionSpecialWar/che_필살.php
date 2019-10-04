@@ -8,9 +8,9 @@ use \sammo\WarUnit;
 class che_필살 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 71;
-    static $name = '필살';
-    static $info = '[전투] 필살 확률 +20%p';
+    protected $id = 71;
+    protected $name = '필살';
+    protected $info = '[전투] 필살 확률 +20%p';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

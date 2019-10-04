@@ -34,7 +34,7 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
     $city = new WarUnitCity($rawDefenderCity, $rawDefenderNation, $year, $month, $cityRate);
 
     $defenderList = [];
-    foreach ($db->query('SELECT no,name,nation,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,strength,strength2,weapon,injury,leadership,leadership2,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar,mode FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and ((train>=60 and atmos>=60 and mode=1) or (train>=80 and atmos>=80 and mode=2))', $city->getVar('nation'), $city->getVar('city')) as $rawGeneral){
+    foreach ($db->query('SELECT no,name,nation,turntime,personal,special2,crew,crewtype,atmos,train,intel,intel2,book,strength,strength2,weapon,injury,leadership,leadership2,horse,item,explevel,experience,dedication,level,gold,rice,dex0,dex10,dex20,dex30,dex40,warnum,killnum,deathnum,killcrew,deathcrew,recwar,defence_train FROM general WHERE nation=%i AND city=%i AND nation!=0 and crew > 0 and rice>(crew/100) and train>=defence_train and atmos>=defence_train', $city->getVar('nation'), $city->getVar('city')) as $rawGeneral){
         $defenderList[] = new General($rawGeneral, $rawDefenderCity, $year, $month);
     }
 
@@ -108,8 +108,8 @@ function processWar(General $attackerGeneral, array $rawAttackerNation, array $r
         'dead' => $db->sqleval('dead + %i', $totalDead * 0.6)
     ], 'city=%i', $rawDefenderCity['city']);
 
-    $attackerIncTech = $attacker->getDead() * 0.01 * getNationTechMultiplier($rawAttackerNation['type']);
-    $defenderIncTech = $attacker->getKilled() * 0.01 * getNationTechMultiplier($rawDefenderNation['type']);
+    $attackerIncTech = buildNationTypeClass($rawAttackerNation['type'])->onCalacDomestic('기술', 'score', $attacker->getDead() * 0.01);
+    $defenderIncTech = buildNationTypeClass($rawDefenderNation['type'])->onCalcDomestic('기술', 'score', $attacker->getKilled() * 0.01);
 
     $attackerGenCnt = $rawAttackerNation['gennum'];
     $defenderGenCnt = $rawDefenderNation['gennum'];
@@ -186,15 +186,12 @@ function extractBattleOrder(General $general){
         return 0;
     }
 
-    if($general->getVar('mode') == 0){
+    $defence_train = $general->getVar('defence_train');
+    if($general->getVar('train') < $defence_train){
         return 0;
     }
 
-    if($general->getVar('mode') == 1 && ($general->getVar('train') < 60 || $general->getVar('atmos') < 60)){
-        return 0;
-    }
-
-    if($general->getVar('mode') == 2 && ($general->getVar('train') < 80 || $general->getVar('atmos') < 80)){
+    if($general->getVar('atmos') < $defence_train){
         return 0;
     }
 

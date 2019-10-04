@@ -173,7 +173,7 @@ class TurnExecutionHelper
                 $general->setVar('killturn', ($general->getVar('deadyear') - $gameStor->year) * 12);
                 $general->setVar('npc', $general->getVar('npc_org'));
                 $general->setVar('owner', 1);
-                $general->setVar('mode', 2);
+                $general->setVar('defence_train', 80);
                 $general->setVar('name2', null);
             }
             else{

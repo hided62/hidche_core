@@ -7,9 +7,9 @@ use \sammo\SpecialityConst;
 class che_상재 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 2;
-    static $name = '상재';
-    static $info = '[내정] 상업 투자 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%';
+    protected $id = 2;
+    protected $name = '상재';
+    protected $info = '[내정] 상업 투자 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

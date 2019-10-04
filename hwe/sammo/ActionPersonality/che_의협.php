@@ -6,9 +6,9 @@ use \sammo\General;
 class che_의협 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 2;
-    static $name = '의협';
-    static $info = '사기 +5, 징·모병 비용 +20%';
+    protected $id = 2;
+    protected $name = '의협';
+    protected $info = '사기 +5, 징·모병 비용 +20%';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if(in_array($turnType, ['징병', '모병'])){

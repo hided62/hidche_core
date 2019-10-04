@@ -82,7 +82,7 @@ foreach($rawGeneralList as $rawGeneral){
         getExpLevel($experience),
         getHonor($experience),
         getDed($dedication),
-        getLevel($level, $nationArr['level']),
+        getLevelText($level, $nationArr['level']),
         $killturn,
         $connect
     ];

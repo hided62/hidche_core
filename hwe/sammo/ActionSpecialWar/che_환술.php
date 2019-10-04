@@ -8,9 +8,9 @@ use \sammo\WarUnit;
 class che_환술 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 42;
-    static $name = '환술';
-    static $info = '[전투] 계략 성공 확률 +10%p, 계략 성공 시 대미지 +30%';
+    protected $id = 42;
+    protected $name = '환술';
+    protected $info = '[전투] 계략 성공 확률 +10%p, 계략 성공 시 대미지 +30%';
 
     static $selectWeightType = SpecialityConst::WEIGHT_PERCENT;
     static $selectWeight = 5;

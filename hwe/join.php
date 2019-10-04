@@ -42,7 +42,7 @@ var charInfoText = <?php
 
 $charInfoText = [];
 foreach(GameConst::$availablePersonality as $personalityID){
-    $personalityInfo = getPersonalityClass($personalityID)::$info;
+    $personalityInfo = buildPersonalityClass($personalityID)->getInfo();
     $charInfoText[$personalityID];
 }
 echo Json::encode((object)$charInfoText);
@@ -119,7 +119,7 @@ if ($admin['show_img_level'] >= 1 && $member['grade'] >= 1 && $member['picture']
                 <select id="selChar" name=character size=1 maxlength=15 style=color:white;background-color:black;>
                     <option selected value='Random'>????</option>
 <?php foreach(GameConst::$availablePersonality as $personalityID): ?>
-<?php $personalityName = getPersonalityClass($personalityID)::$name; ?>
+<?php $personalityName = buildPersonalityClass($personalityID)->getName(); ?>
                     <option value='<?=$personalityID?>'><?=$personalityName?></option>
 <?php endforeach; ?>
                 </select> <span id="charInfoText"></span>

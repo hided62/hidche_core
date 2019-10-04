@@ -49,10 +49,27 @@ return "
 ";
 }
 
+function displayiActionObjInfo(?iAction $action){
+    if($action === null){
+        $info = '';
+        $text = '-';
+    }
+    else{
+        $info = $action->getInfo();
+        $text = $action->getName();
+    }
+
+    $templates = new \League\Plates\Engine(__dir__.'/templates');
+
+    return $templates->render('tooltip', [
+        'text'=>$text,
+        'info'=>$info,
+    ]);
+}
 function displayCharInfo(string $type):string{
-    $class = getPersonalityClass($type);
-    $info = $class::$info;
-    $text = $class::$name;
+    $class = buildPersonalityClass($type);
+    $info = $class->getInfo();
+    $text = $class->getName();
 
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 
@@ -63,9 +80,9 @@ function displayCharInfo(string $type):string{
 }
 
 function displaySpecialWarInfo(?string $type):string{
-    $class = getGeneralSpecialWarClass($type);
-    $info = $class::$info;
-    $name = $class::$name;
+    $class = buildGeneralSpecialWarClass($type);
+    $info = $class->getInfo();
+    $name = $class->getName();
 
     $templates = new \League\Plates\Engine(__dir__.'/templates');
 
@@ -175,13 +192,16 @@ function formatWounded(int $value, int $wound): string{
     return "<font color=red>$woundedValue</font>";
 }
 
-function formatDefenceMode(int $value): string{
-    switch($value) {
-    case 0: return "×"; break;
-    case 1: return "○"; break;
-    case 2: return "◎"; break;
+function formatDefenceTrain(int $value): string{
+    if($value === 999){
+        return "×";
     }
-    return '??';
+    else if($value >= 80){
+        return "◎";
+    }
+    else{
+        return "○";
+    }
 }
 
 function formatLeadershipBonus(int $value): string{

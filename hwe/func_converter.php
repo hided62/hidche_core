@@ -12,8 +12,8 @@ namespace sammo;
 function getCharacterList(){
     $infoText = [];
     foreach(GameConst::$allPersonality as $personalityID){
-        $class = getPersonalityClass($personalityID);
-        $infoText[$personalityID] = [$class::$name, $class::$info];
+        $class = buildPersonalityClass($personalityID);
+        $infoText[$personalityID] = [$class->getName(), $class::$info];
     }
     return $infoText;
 }
@@ -48,21 +48,21 @@ function getGenChar(?string $type) {
     if($type === null){
         return '-';
     }
-    return getPersonalityClass($type)::$name;
+    return buildPersonalityClass($type)->getName();
 }
 
 function getGeneralSpecialDomesticName(?string $type):string{
     if($type === null){
         return '-';
     }
-    return (getGeneralSpecialDomesticClass($type)::$name)??'-';
+    return buildGeneralSpecialDomesticClass($type)->getName();
 }
 
 function getGeneralSpecialWarName(?string $type):string{
     if($type === null){
         return '-';
     }
-    return (getGeneralSpecialWarClass($type)::$name)??'-';
+    return buildGeneralSpecialWarClass($type)->getName();
 }
 
 function getSpecialTextList():array{
@@ -73,13 +73,13 @@ function getSpecialTextList():array{
 
     $list = ['None' => ['-', null]];
     foreach(GameConst::$availableSpecialDomestic as $specialKey){
-        $specialClass = getGeneralSpecialDomesticClass($specialKey);
-        $list[$specialKey] = [$specialClass::$name, $specialClass::$info];
+        $specialClass = buildGeneralSpecialDomesticClass($specialKey);
+        $list[$specialKey] = [$specialClass->getName(), $specialClass->getInfo()];
     }
 
     foreach(GameConst::$availableSpecialWar as $specialKey){
-        $specialClass = getGeneralSpecialWarClass($specialKey);
-        $list[$specialKey] = [$specialClass::$name, $specialClass::$info];
+        $specialClass = buildGeneralSpecialWarClass($specialKey);
+        $list[$specialKey] = [$specialClass->getName(), $specialClass->getInfo()];
     }
 
     return $list;
@@ -96,8 +96,8 @@ function getSpecialInfo(?string $type):?string{
 }
 
 function getNationType(?string $type) {
-    $nationClass = getNationTypeClass($type);
-    $text = $nationClass::$name;
+    $nationClass = buildNationTypeClass($type);
+    $text = $nationClass->getName();
     $text = join(' ', StringUtil::splitString($text));
     $cache[$type] = $text;
 
@@ -123,7 +123,7 @@ function getConnect($con) {
 function getNationType2(?string $type) {
     $nationClass = getNationTypeClass($type);
 
-    [$name, $pros, $cons] = [$nationClass::$name, $nationClass::$pros, $nationClass::$cons];
+    [$pros, $cons] = [$nationClass::$pros, $nationClass::$cons];
     return "<font color=cyan>{$pros}</font> <font color=magenta>{$cons}</font>";
 }
 
@@ -147,6 +147,21 @@ function getNationTypeClass(?string $type){
     throw new \InvalidArgumentException("{$type}은 올바른 국가 타입 클래스가 아님");
 }
 
+function buildNationTypeClass(?string $type):iAction{
+    static $cache = [];
+    if($type === null){
+        $type = 'None';
+    }
+    if(key_exists($type, $cache)){
+        return $cache[$type];
+    }
+    $class = getNationTypeClass($type);
+    
+    $obj = new $class();
+    $cache[$type]= $obj;
+    return $obj;
+}
+
 function getPersonalityClass(?string $type){
     if($type === null || $type === ''){
         $type = GameConst::$neutralPersonality;
@@ -167,28 +182,50 @@ function getPersonalityClass(?string $type){
     throw new \InvalidArgumentException("{$type}은 올바른 성격 클래스가 아님");
 }
 
-function getItemClass(?string $itemClass){
-    if($itemClass === null){
-        $itemClass = 'None';
+function buildPersonalityClass(?string $type):iAction{
+    static $cache = [];
+    if($type === null){
+        $type = 'None';
+    }
+    if(key_exists($type, $cache)){
+        return $cache[$type];
+    }
+    $class = getPersonalityClass($type);
+
+    $obj = new $class();
+    $cache[$type]= $obj;
+    return $obj;
+}
+
+function getItemClass(?string $type){
+    if($type === null){
+        $type = 'None';
     }
 
     static $basePath = __NAMESPACE__.'\\ActionItem\\';
 
-    $classPath = ($basePath.$itemClass);
+    $classPath = ($basePath.$type);
 
     if(class_exists($classPath)){
         return $classPath;
     }
 
-    throw new \InvalidArgumentException("{$itemClass}는 올바른 아이템 클래스가 아님");
+    throw new \InvalidArgumentException("{$type}는 올바른 아이템 클래스가 아님");
 }
 
-function buildItemClass(?string $itemClass):BaseItem{
-    if($itemClass === null){
-        $itemClass = 'None';
+function buildItemClass(?string $type):BaseItem{
+    static $cache = [];
+    if($type === null){
+        $type = 'None';
     }
-    $class = getItemClass($itemClass);
-    return new $class();
+    if(key_exists($type, $cache)){
+        return $cache[$type];
+    }
+    $class = getItemClass($type);
+    
+    $obj = new $class();
+    $cache[$type]= $obj;
+    return $obj;
 }
 
 function getGeneralSpecialDomesticClass(?string $type){
@@ -211,6 +248,21 @@ function getGeneralSpecialDomesticClass(?string $type){
     throw new \InvalidArgumentException("{$type}은 올바른 내정 특기가 아님");
 }
 
+function buildGeneralSpecialDomesticClass(?string $type):iAction{
+    static $cache = [];
+    if($type === null){
+        $type = 'None';
+    }
+    if(key_exists($type, $cache)){
+        return $cache[$type];
+    }
+    $class = getGeneralSpecialDomesticClass($type);
+    
+    $obj = new $class();
+    $cache[$type]= $obj;
+    return $obj;
+}
+
 function getGeneralSpecialWarClass(?string $type){
     if($type === null || $type === ''){
         $type = GameConst::$defaultSpecialWar;
@@ -229,6 +281,21 @@ function getGeneralSpecialWarClass(?string $type){
     }
 
     throw new \InvalidArgumentException("{$type}은 올바른 전투 특기가 아님");
+}
+
+function buildGeneralSpecialWarClass(?string $type):iAction{
+    static $cache = [];
+    if($type === null){
+        $type = 'None';
+    }
+    if(key_exists($type, $cache)){
+        return $cache[$type];
+    }
+    $class = getGeneralSpecialWarClass($type);
+    
+    $obj = new $class();
+    $cache[$type]= $obj;
+    return $obj;
 }
 
 function getGeneralCommandClass(?string $type){
@@ -292,7 +359,7 @@ function buildWarUnitTriggerClass(?string $type, WarUnit $unit, ?array $args = n
     return $class->newInstanceArgs(array_merge([$unit], $args));
 }
 
-function getLevel($level, $nlevel=8) {
+function getLevelText($level, $nlevel=8) {
     if($level >= 0 && $level <= 4) { $nlevel = 0; }
     $code = $nlevel * 100 + $level;
     return [

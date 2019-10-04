@@ -181,7 +181,7 @@ jQuery(function($){
         setVal('.form_dex20', data.dex20);
         setVal('.form_dex30', data.dex30);
         setVal('.form_dex40', data.dex40);
-        setVal('.form_defend_mode', data.mode);
+        setVal('.form_defence_train', data.defence_train);
 
         if(!setGeneralNo($general, data.no)){
             setGeneralNo($general, generateNewGeneralNo());
@@ -228,7 +228,7 @@ jQuery(function($){
             dex20:getInt('.form_dex20'),
             dex30:getInt('.form_dex30'),
             dex40:getInt('.form_dex40'),
-            mode:getInt('.form_defend_mode'),
+            defence_train:getInt('.form_defence_train'),
         };
     }
 

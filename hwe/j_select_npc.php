@@ -76,7 +76,7 @@ $db->update('general', [
     'name2'=>$userNick,
     'npc'=>1,
     'killturn'=>6,
-    'mode'=>2,
+    'defence_train'=>80,
     'permission'=>'normal',
     'owner'=>$userID,
 ], 'owner <= 0 AND npc = 2 AND no = %i', $pick);

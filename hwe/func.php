@@ -114,23 +114,9 @@ function getBlockLevel() {
 }
 
 function getRandGenName() {
-    $first = ['가', '간', '감', '강', '고', '공', '공손', '곽', '관', '괴', '교', '금', '노', '뇌', '능', '도', '동', '두',
-        '등', '마', '맹', '문', '미', '반', '방', '부', '비', '사', '사마', '서', '설', '성', '소', '손', '송', '순', '신', '심',
-        '악', '안', '양', '엄', '여', '염', '오', '왕', '요', '우', '원', '위', '유', '육', '윤', '이', '장', '저', '전', '정',
-        '제갈', '조', '종', '주', '진', '채', '태사', '하', '하후', '학', '한', '향', '허', '호', '화', '황',
-        '공손', '손', '왕', '유', '장', '조'];
-    $middle = [''];
-    $last = [
-        '가', '간', '강', '거', '건', '검', '견', '경', '공', '광', '권', '규', '녕', '단', '대', '도', '등', '람',
-        '량', '례', '로', '료', '모', '민', '박', '범', '보', '비', '사', '상', '색', '서', '소', '속', '송', '수', '순', '습',
-        '승', '양', '연', '영', '온', '옹', '완', '우', '웅', '월', '위', '유', '윤', '융', '이', '익', '임', '정', '제', '조',
-        '주', '준', '지', '찬', '책', '충', '탁', '택', '통', '패', '평', '포', '합', '해', '혁', '현', '화', '환', '회', '횡',
-        '후', '훈', '휴', '흠', '흥'
-    ];
-
-    $firstname = Util::choiceRandom($first);
-    $middlename = Util::choiceRandom($middle);
-    $lastname = Util::choiceRandom($last);
+    $firstname = Util::choiceRandom(GameConst::$randGenFirstName);
+    $middlename = Util::choiceRandom(GameConst::$randGenMiddleName);
+    $lastname = Util::choiceRandom(GameConst::$randGenLastName);
 
     return "{$firstname}{$middlename}{$lastname}";
 }
@@ -302,9 +288,9 @@ function myNationInfo() {
         </td>
     </tr>
     <tr>
-        <td width=68 class='bg1 center'><b>".getLevel(12, $nation['level'])."</b></td>
+        <td width=68 class='bg1 center'><b>".getLevelText(12, $nation['level'])."</b></td>
         <td width=178 class='center'>";echo $level12?$level12['name']:"-"; echo "</td>
-        <td width=68 class='bg1 center'><b>".getLevel(11, $nation['level'])."</b></td>
+        <td width=68 class='bg1 center'><b>".getLevelText(11, $nation['level'])."</b></td>
         <td width=178 class='center'>";echo $level11?$level11['name']:"-"; echo "</td>
     </tr>
     <tr>
@@ -625,152 +611,157 @@ function chiefCommandTable() {
 }
 
 function myInfo(General $generalObj) {
-    generalInfo($generalObj->getID());
+    generalInfo($generalObj);
 }
 
-function generalInfo($no) {
+function generalInfo(General $generalObj) {
     $db = DB::db();
     $gameStor = KVStorage::getStorage($db, 'game_env');
-    $connect=$db->get();
 
     $show_img_level = $gameStor->show_img_level;
 
-    $query = "select block,no,name,picture,imgsvr,injury,nation,city,troop,leadership,leadership2,strength,strength2,intel,intel2,explevel,experience,level,gold,rice,crew,crewtype,train,atmos,weapon,book,horse,item,turntime,killturn,age,personal,special,specage,special2,specage2,mode,con,connect from general where no='$no'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $general = MYDB_fetch_array($result);
 
-    $nation = getNationStaticInfo($general['nation']);
+    $nation = getNationStaticInfo($generalObj->getNationID());
 
-    $lbonus = calcLeadershipBonus($general['level'], $nation['level']);
+    $lbonus = calcLeadershipBonus($generalObj->getVar('level'), $nation['level']);
     if($lbonus > 0) {
         $lbonus = "<font color=cyan>+{$lbonus}</font>";
     } else {
         $lbonus = "";
     }
 
-    if($general['troop'] == 0){
+    if($generalObj->getVar('troop') == 0){
         $troopInfo = '-';
     }
     else{
-        $troopCity = $db->queryFirstField('SELECT city FROM general WHERE no=%i', $general['troop']);
-        $troopTurn = $db->queryFirstField('SELECT `action` FROM general_turn WHERE general_id = %i AND turn_idx = 0', $general['troop']);
-        $troopInfo = $db->queryFirstField('SELECT name FROM troop WHERE troop_leader = %i', $general['troop']);
-        
-        $troopInfo = $troop['name'];
-
+        $troopCity = $db->queryFirstField('SELECT city FROM general WHERE no=%i', $generalObj->getVar('troop'));
+        $troopTurn = $db->queryFirstField('SELECT `action` FROM general_turn WHERE general_id = %i AND turn_idx = 0', $generalObj->getVar('troop'));
+        $troopInfo = $db->queryFirstField('SELECT name FROM troop WHERE troop_leader = %i', $generalObj->getVar('troop'));
+    
         if($troopTurn == 'che_집합'){
             $troopInfo = "<strike style='color:gray;'>{$troopInfo}</strike>";
         }
-        else if($troopCity != $general['city']){
+        else if($troopCity != $generalObj->getCityID()){
             $troopCityName = CityConst::byID($troopCity)->name;
             $troopInfo = "<span style='color:orange;'>{$troopInfo}({$troopCityName})</span>";
         }
     }
 
-    $level = getLevel($general['level'], $nation['level']);
-    if($general['level'] == 2)     {
-        $query = "select name from city where gen3='{$general['no']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $city = MYDB_fetch_array($result);
-        $level = $city['name']." ".$level;
-    } elseif($general['level'] == 3) {
-        $query = "select name from city where gen2='{$general['no']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $city = MYDB_fetch_array($result);
-        $level = $city['name']." ".$level;
-    } elseif($general['level'] == 4) {
-        $query = "select name from city where gen1='{$general['no']}'";
-        $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-        $city = MYDB_fetch_array($result);
-        $level = $city['name']." ".$level;
+    $generalLevel = $generalObj->getVar('level');
+    $levelText = getLevelText($generalLevel, $nation['level']);
+
+    if(2 <= $generalLevel && $generalLevel <= 4){
+        $cityOfficerKey = [
+            2=>'gen3',
+            3=>'gen2',
+            4=>'gen1'
+        ][$generalLevel];
+        $cityOfficerName = $db->queryFirstField('SELECT name FROM city where %b = %i',$cityOfficerKey, $generalObj->getID());
+        $levelText = "{$cityOfficerName} {$levelText}";
     }
-    $call = getCall($general['leadership'], $general['strength'], $general['intel']);
-    $typename = GameUnitConst::byId($general['crewtype'])->name;
-    $weapname = getItemName($general['weapon']);
-    $bookname = getItemName($general['book']);
-    $horsename = getItemName($general['horse']);
-    $itemname = displayItemInfo($general['item']);
-    if($general['injury'] > 0) {
-        $leadership = intdiv($general['leadership'] * (100 - $general['injury']), 100);
-        $strength = intdiv($general['strength'] * (100 - $general['injury']), 100);
-        $intel = intdiv($general['intel'] * (100 - $general['injury']), 100);
-    } else {
-        $leadership = $general['leadership'];
-        $strength = $general['strength'];
-        $intel = $general['intel'];
-    }
-    if($general['injury'] > 60)     { $color = "<font color=red>";     $injury = "위독"; }
-    elseif($general['injury'] > 40) { $color = "<font color=magenta>"; $injury = "심각"; }
-    elseif($general['injury'] > 20) { $color = "<font color=orange>";  $injury = "중상"; }
-    elseif($general['injury'] > 0)  { $color = "<font color=yellow>";  $injury = "경상"; }
+
+    $call = getCall(...$generalObj->getVars('leadership', 'strength', 'intel'));
+    $typename = $generalObj->getCrewTypeObj()->name;
+    $weaponname = $generalObj->getItem('weapon')->getName();
+    $bookname = $generalObj->getItem('book')->getName();
+    $horsename = $generalObj->getItem('horse')->getName();
+    $itemname = $generalObj->getItem('item')->getName();
+
+    $leadership = $generalObj->getLeadership(true, false, true);
+    $strength = $generalObj->getStrength(true, false, true);
+    $intel = $generalObj->getIntel(true, false, true);
+    
+    
+    $injury = $generalObj->getVar('injury');
+    if($injury > 60)     { $color = "<font color=red>";     $injury = "위독"; }
+    elseif($injury > 40) { $color = "<font color=magenta>"; $injury = "심각"; }
+    elseif($injury > 20) { $color = "<font color=orange>";  $injury = "중상"; }
+    elseif($injury > 0)  { $color = "<font color=yellow>";  $injury = "경상"; }
     else                     { $color = "<font color=white>";   $injury = "건강"; }
 
-    $remaining = substr($general['turntime'], 14, 2) - date('i');
-    if($remaining < 0) { $remaining = 60 + $remaining; }
+    $remaining = (new \DateTimeImmutable($generalObj->getVar('turntime')))->diff(new \DateTimeImmutable())->i;
 
     if($nation['color'] == "") { $nation['color'] = "#000000"; }
 
-    if($general['age'] < GameConst::$retirementYear*0.75)     { $general['age'] = "<font color=limegreen>{$general['age']} 세</font>"; }
-    elseif($general['age'] < GameConst::$retirementYear) { $general['age'] = "<font color=yellow>{$general['age']} 세</font>"; }
-    else                  { $general['age'] = "<font color=red>{$general['age']} 세</font>"; }
+    $age = $generalObj->getVar('age');
+    if($age < GameConst::$retirementYear*0.75)     {$age = "<font color=limegreen>{$age} 세</font>"; }
+    elseif($age < GameConst::$retirementYear) { $age = "<font color=yellow>{$age} 세</font>"; }
+    else                  { $age = "<font color=red>{$age} 세</font>"; }
 
-    $general['connect'] = Util::round($general['connect'] / 10) * 10;
-    $special = $general['special'] == GameConst::$defaultSpecialDomestic ? "{$general['specage']}세" : "<font color=limegreen>".displaySpecialDomesticInfo($general['special'])."</font>";
-    $special2 = $general['special2'] == 0 ? "{$general['specage2']}세" : "<font color=limegreen>".displaySpecialWarInfo($general['special2'])."</font>";
+    $connectCnt = round($generalObj->getVar('connect'), -1);
+    $specialDomestic = $generalObj->getVar('special')===GameConst::$defaultSpecialDomestic
+        ?"{$generalObj->getVar('specage')}세"
+        : "<font color=limegreen>".displayiActionObjInfo($generalObj->getSpecialDomestic())."</font>";
+    $specialWar = $generalObj->getVar('special2')===GameConst::$defaultSpecialDomestic
+        ?"{$generalObj->getVar('specage2')}세"
+        : "<font color=limegreen>".displayiActionObjInfo($generalObj->getSpecialWar())."</font>";
 
-    switch($general['personal']) {
-        case  2:    case  4:
-            $atmos = "<font color=cyan>{$general['atmos']} (+5)</font>"; break;
-        case  0:    case  9:    case 10:
-            $atmos = "<font color=magenta>{$general['atmos']} (-5)</font>"; break;
-        default:
-            $atmos = "{$general['atmos']}"; break;
+    $atmos = $generalObj->getVar('atmos');
+    $atmosBonus = $generalObj->onCalcStat($generalObj, 'bonusAtmos', $atmos) - $atmos;
+    if($atmosBonus > 0){
+        $atmos = "<font color=cyan>{$atmos} (+{$atmosBonus})</font>";
     }
-    switch($general['personal']) {
-        case  3:    case  5:
-            $train = "<font color=cyan>{$general['train']} (+5)</font>"; break;
-        case  1:    case  8:    case 10:
-            $train = "<font color=magenta>{$general['train']} (-5)</font>"; break;
-        default:
-            $train = "{$general['train']}"; break;
+    else if($atmosBonus < 0){
+        $atmos = "<font color=magenta>{$atmos} ({$atmosBonus})</font>";
     }
-    if($general['mode'] == 2)     { $general['mode'] = "<font color=limegreen>수비 함(훈사80)</font>"; }
-    elseif($general['mode'] == 1) { $general['mode'] = "<font color=limegreen>수비 함(훈사60)</font>"; }
-    else                        { $general['mode'] = "<font color=red>수비 안함</font>"; }
+    else{
+        $atmos = "$atmos";
+    }
 
-    $weapImage = ServConfig::$gameImagePath."/weapon{$general['crewtype']}.png";
+    $train = $generalObj->getVar('train');
+    $trainBonus = $generalObj->onCalcStat($generalObj, 'bonusTrain', $train) - $train;
+    if($trainBonus > 0){
+        $train = "<font color=cyan>{$train} (+{$trainBonus})</font>";
+    }
+    else if($trainBonus < 0){
+        $train = "<font color=magenta>{$train} ({$trainBonus})</font>";
+    }
+    else{
+        $train = "$train";
+    }
+
+    if($generalObj->getVar('defence_train') === 999){
+        $defenceTrain = "<font color=red>수비 안함</font>";
+    }
+    else{
+        $defenceTrain = "<font color=limegreen>수비 함(훈사{$generalObj->getVar('defence_train')})</font>";
+    }
+
+    $crewType = $generalObj->getCrewTypeObj();
+
+    $weapImage = ServConfig::$gameImagePath."/weap{$crewType->id}.png";
     if($show_img_level < 2) { $weapImage = ServConfig::$sharedIconPath."/default.jpg"; };
-    $imageTemp = GetImageURL($general['imgsvr']);
+    $imagePath = GetImageURL(...$generalObj->getVars('imgsvr', 'picture'));
     echo "<table width=498 class='tb_layout bg2'>
     <tr>
-        <td width=64 height=64 rowspan=3 class='generalIcon' style='text-align:center;background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;'>&nbsp;</td>
-        <td colspan=9 height=16 style=text-align:center;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$general['name']} 【 {$level} | {$call} | {$color}{$injury}</font> 】 ".substr($general['turntime'], 11, 8)."</td>
+        <td width=64 height=64 rowspan=3 class='generalIcon' style='text-align:center;background:no-repeat center url(\"{$imagePath}\");background-size:64px;'>&nbsp;</td>
+        <td colspan=9 height=16 style=text-align:center;color:".newColor($nation['color']).";background-color:{$nation['color']};font-weight:bold;font-size:13px;>{$generalObj->getName()} 【 {$levelText} | {$call} | {$color}{$injury}</font> 】 ".substr($generalObj->getVar('turntime'), 11, 8)."</td>
     </tr>
     <tr height=16>
         <td style='text-align:center;' class='bg1'><b>통솔</b></td>
         <td style='text-align:center;'>&nbsp;{$color}{$leadership}</font>{$lbonus}&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($general['leadership2']), 20)."</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('leadership2')), 20)."</td>
         <td style='text-align:center;' class='bg1'><b>무력</b></td>
         <td style='text-align:center;'>&nbsp;{$color}{$strength}</font>&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($general['strength2']), 20)."</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('strength2')), 20)."</td>
         <td style='text-align:center;' class='bg1'><b>지력</b></td>
         <td style='text-align:center;'>&nbsp;{$color}{$intel}</font>&nbsp;</td>
-        <td style='text-align:center;' width=45>".bar(expStatus($general['intel2']), 20)."</td>
+        <td style='text-align:center;' width=45>".bar(expStatus($generalObj->getVar('intel2')), 20)."</td>
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>명마</b></td>
         <td style='text-align:center;' colspan=2><font size=1>$horsename</font></td>
         <td style='text-align:center;' class='bg1'><b>무기</b></td>
-        <td style='text-align:center;' colspan=2><font size=1>$weapname</font></td>
+        <td style='text-align:center;' colspan=2><font size=1>$weaponname</font></td>
         <td style='text-align:center;' class='bg1'><b>서적</b></td>
         <td style='text-align:center;' colspan=2><font size=1>$bookname</font></td>
     </tr>
     <tr>
         <td height=64 rowspan=3 style='text-align:center;background:no-repeat center url(\"{$weapImage}\");background-size:64px;'></td>
         <td style='text-align:center;' class='bg1'><b>자금</b></td>
-        <td style='text-align:center;' colspan=2>{$general['gold']}</td>
+        <td style='text-align:center;' colspan=2>{$generalObj->getVar('gold')}</td>
         <td style='text-align:center;' class='bg1'><b>군량</b></td>
-        <td style='text-align:center;' colspan=2>{$general['rice']}</td>
+        <td style='text-align:center;' colspan=2>{$generalObj->getVar('rice')}</td>
         <td style='text-align:center;' class='bg1'><b>도구</b></td>
         <td style='text-align:center;' colspan=2><font size=1>$itemname</font></td>
     </tr>
@@ -778,9 +769,9 @@ function generalInfo($no) {
         <td style='text-align:center;' class='bg1'><b>병종</b></td>
         <td style='text-align:center;' colspan=2>$typename</td>
         <td style='text-align:center;' class='bg1'><b>병사</b></td>
-        <td style='text-align:center;' colspan=2>{$general['crew']}</td>
+        <td style='text-align:center;' colspan=2>{$generalObj->getVar('crew')}</td>
         <td style='text-align:center;' class='bg1'><b>성격</b></td>
-        <td style='text-align:center;' colspan=2>".displayCharInfo($general['personal'])."</td>
+        <td style='text-align:center;' colspan=2>".displayiActionObjInfo($generalObj->getPersonality())."</td>
     </tr>
     <tr>
         <td style='text-align:center;' class='bg1'><b>훈련</b></td>
@@ -788,20 +779,20 @@ function generalInfo($no) {
         <td style='text-align:center;' class='bg1'><b>사기</b></td>
         <td style='text-align:center;' colspan=2>$atmos</td>
         <td style='text-align:center;' class='bg1'><b>특기</b></td>
-        <td style='text-align:center;' colspan=2>$special / $special2</td>
+        <td style='text-align:center;' colspan=2>$specialDomestic / $specialWar</td>
     </tr>
     <tr height=20>
         <td style='text-align:center;' class='bg1'><b>Lv</b></td>
-        <td style='text-align:center;'>&nbsp;{$general['explevel']}&nbsp;</td>
-        <td style='text-align:center;' colspan=5>".bar(getLevelPer($general['experience'], $general['explevel']), 20)."</td>
+        <td style='text-align:center;'>&nbsp;{$generalObj->getVar('explevel')}&nbsp;</td>
+        <td style='text-align:center;' colspan=5>".bar(getLevelPer(...$generalObj->getVars('experience', 'explevel')), 20)."</td>
         <td style='text-align:center;' class='bg1'><b>연령</b></td>
-        <td style='text-align:center;' colspan=2>{$general['age']}</td>
+        <td style='text-align:center;' colspan=2>{$age}</td>
     </tr>
     <tr height=20>
         <td style='text-align:center;' class='bg1'><b>수비</b></td>
-        <td style='text-align:center;' colspan=3>{$general['mode']}</td>
+        <td style='text-align:center;' colspan=3>{$defenceTrain}</td>
         <td style='text-align:center;' class='bg1'><b>삭턴</b></td>
-        <td style='text-align:center;' colspan=2>{$general['killturn']} 턴</td>
+        <td style='text-align:center;' colspan=2>{$generalObj->getVar('killturn')} 턴</td>
         <td style='text-align:center;' class='bg1'><b>실행</b></td>
         <td style='text-align:center;' colspan=2>$remaining 분 남음</td>
     </tr>
@@ -809,7 +800,7 @@ function generalInfo($no) {
         <td style='text-align:center;' class='bg1'><b>부대</b></td>
         <td style='text-align:center;' colspan=3>{$troopInfo}</td>
         <td style='text-align:center;' class='bg1'><b>벌점</b></td>
-        <td style='text-align:center;' colspan=5>".getConnect($general['connect'])." {$general['connect']}({$general['con']})</td>
+        <td style='text-align:center;' colspan=5>".getConnect($connectCnt)." {$connectCnt}({$generalObj->getVar('con')})</td>
     </tr>
 </table>";
 }
@@ -1334,8 +1325,8 @@ function addAge() {
 
         foreach($db->query('SELECT no,name,nation,leadership,strength,intel,npc,dex0,dex10,dex20,dex30,dex40 from general where specage2<=age and special2=%s', GameConst::$defaultSpecialWar) as $general){
             $special2 = SpecialityConst::pickSpecialWar($general);
-            $specialClass = getGeneralSpecialWarClass($special2);
-            $specialText = $specialClass::$name;
+            $specialClass = buildGeneralSpecialWarClass($special2);
+            $specialText = $specialClass->getName();
 
             $db->update('general', [
                 'special2'=>$special2
@@ -1922,15 +1913,6 @@ function getMe() {
     return $me;
 }
 
-function getTroopName(int $troopLeader):?string {
-    if($troopLeader == 0){
-        return null;
-    }
-    $db = DB::db();
-
-    return $db->queryFirstField('SELECT `name` FROM troop WHERE troop_leader = %i', $troopLeader);
-}
-
 function getCity($city, $sel="*") {
     $db = DB::db();
     $connect=$db->get();
@@ -1940,17 +1922,6 @@ function getCity($city, $sel="*") {
     $city = MYDB_fetch_array($result);
 
     return $city;
-}
-
-function getNation($nation) {
-    $db = DB::db();
-    $connect=$db->get();
-
-    $query = "select * from nation where nation='$nation'";
-    $result = MYDB_query($query, $connect) or Error(__LINE__.MYDB_error($connect),"");
-    $nation = MYDB_fetch_array($result);
-
-    return $nation;
 }
 
 function deleteNation(General $general) {
@@ -2153,131 +2124,6 @@ function isNeighbor(int $nation1, int $nation2, bool $includeNoSupply=true) {
     }
 
     return false;
-}
-
-function CharExperience($exp, $personal) {
-    switch($personal) {
-        case  0:    case  1;    case  6:
-            $exp *= 1.1; break;
-        case  4:    case  5:    case  7:    case 10:
-            $exp *= 0.9; break;
-    }
-    $exp = Util::round($exp);
-
-    return $exp;
-}
-
-function getCharExpMultiplier($personal):float{
-    static $table = [
-        0 => 1.1,
-        1 => 1.1,
-        4 => 0.9,
-        5 => 0.9,
-        6 => 1.1,
-        7 => 0.9,
-        10 => 0.9
-    ];
-    return $table[$personal] ?? 1;
-}
-
-function getNationTechMultiplier($nationType):float{
-    static $table = [
-        3 => 1.1,
-        5 => 0.9,
-        6 => 0.9,
-        7 => 0.9,
-        8 => 0.9,
-        12 => 0.9,
-        13 => 1.1,
-    ];
-    return $table[$nationType] ?? 1;
-}
-
-function getNationWallMultiplier($nationType):float{
-    static $table = [
-        3 => 1.1,
-        5 => 1.1,
-        10 => 1.1,
-        11 => 1.1,
-        4 => 0.9,
-        7 => 0.9,
-        8 => 0.9,
-        13 => 0.9,
-    ];
-    return $table[$nationType] ?? 1;
-}
-
-function getNationPeopleMultiplier($nationType):float{
-    static $table = [
-        1 => 0.9,
-        2 => 1.1,
-        3 => 0.9,
-        4 => 1.1,
-        7 => 1.1,
-        9 => 0.9,
-        10 => 1.1,
-    ];
-    return $table[$nationType] ?? 1;
-}
-
-
-function CharDedication($ded, $personal) {
-    switch($personal) {
-        case 10:
-            $ded *= 0.9; break;
-    }
-    $ded = Util::round($ded);
-
-    return $ded;
-}
-
-function getCharDedMultiplier($personal):float{
-    static $table = [
-        10 => 0.9
-    ];
-    return $table[$personal] ?? 1;
-}
-
-function CharAtmos($atmos, $personal) {
-    switch($personal) {
-        case  2:    case  4:
-            $atmos += 5; break;
-        case  0:    case  9:    case 10:
-            $atmos -= 5; break;
-    }
-
-    return $atmos;
-}
-
-function CharTrain($train, $personal) {
-    switch($personal) {
-        case  3:    case  5:
-            $train += 5; break;
-        case  1:    case  8:    case 10:
-            $train -= 5; break;
-    }
-
-    return $train;
-}
-
-function CharCost($cost, $personal) {
-    switch($personal) {
-        case  7:    case  8:    case 9:
-            $cost *= 0.8; break;
-        case  2:    case  3:    case 6:
-            $cost *= 1.2; break;
-    }
-
-    return $cost;
-}
-
-function CharCritical($rate, $personal) {
-    switch($personal) {
-        case 10:
-            $rate += 10; break;
-    }
-
-    return $rate;
 }
 
 function SabotageInjuryEx(array $cityGeneralList, bool $isSabotage):int{

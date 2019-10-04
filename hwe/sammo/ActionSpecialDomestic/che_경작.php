@@ -7,9 +7,9 @@ use \sammo\SpecialityConst;
 class che_경작 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 1;
-    static $name = '경작';
-    static $info = '[내정] 농지 개간 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%';
+    protected $id = 1;
+    protected $name = '경작';
+    protected $info = '[내정] 농지 개간 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

@@ -11,9 +11,9 @@ use \sammo\WarUnitTrigger\che_저격발동;
 class che_저격 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 70;
-    static $name = '저격';
-    static $info = '[전투] 전투 개시 시 1/3 확률로 저격 발동';
+    protected $id = 70;
+    protected $name = '저격';
+    protected $info = '[전투] 전투 개시 시 1/3 확률로 저격 발동';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

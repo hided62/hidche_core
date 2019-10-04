@@ -185,7 +185,7 @@ foreach($generalList as $general){
         <td align=center>".getHonor($general['experience'])."</td>
         <td align=center>".getDed($general['dedication'])."</td>
         <td align=center>";
-    echo getLevel($general['level']);
+    echo getLevelText($general['level']);
     echo "</td>
         <td align=center>$leadership</td>
         <td align=center>$strength</td>

@@ -6,9 +6,9 @@ use \sammo\General;
 class che_은둔 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 10;
-    static $name = '은둔';
-    static $info = '명성 -10%, 계급 -10%, 사기 -5, 훈련 -5, 단련 성공률 +10%';
+    protected $id = 10;
+    protected $name = '은둔';
+    protected $info = '명성 -10%, 계급 -10%, 사기 -5, 훈련 -5, 단련 성공률 +10%';
 
     public function onCalcDomestic(string $turnType, string $varType, float $value, $aux=null):float{
         if($turnType == '단련'){

@@ -155,7 +155,7 @@ foreach($generalList as $general){
     <tr>
         <td align=center class='generalIcon' style='background:no-repeat center url(\"{$imageTemp}/{$general['picture']}\");background-size:64px;' height=64></td>
         <td align=center>$name</td>
-        <td align=center>"; echo getLevel($general['level'], $nationLevel); echo "</td>
+        <td align=center>"; echo getLevelText($general['level'], $nationLevel); echo "</td>
         <td align=center>".getDed($general['dedication'])."</td>
         <td align=center>".getHonor($general['experience'])."</td>
         <td align=center>".getBill($general['dedication'])."</td>

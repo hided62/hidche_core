@@ -6,9 +6,9 @@ use \sammo\General;
 class che_정복 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 4;
-    static $name = '정복';
-    static $info = '명성 -10%, 사기 +5';
+    protected $id = 4;
+    protected $name = '정복';
+    protected $info = '명성 -10%, 사기 +5';
 
     public function onCalcStat(General $general, string $statName, $value, $aux=null){
         if($statName == 'experience'){

@@ -8,9 +8,9 @@ use \sammo\WarUnit;
 class che_척사 implements iAction{
     use \sammo\DefaultAction;
 
-    static $id = 75;
-    static $name = '척사';
-    static $info = '[전투] 지역·도시 병종 상대로 대미지 +10%, 아군 피해 -10%';
+    protected $id = 75;
+    protected $name = '척사';
+    protected $info = '[전투] 지역·도시 병종 상대로 대미지 +10%, 아군 피해 -10%';
 
     static $selectWeightType = SpecialityConst::WEIGHT_NORM;
     static $selectWeight = 1;

@@ -6,8 +6,8 @@ use \sammo\General;
 class che_명가 implements iAction{
     use \sammo\DefaultAction;
 
-    static $name = '명가';
-    static $info = '';
+    protected $name = '명가';
+    protected $info = '';
     static $pros = '기술↑ 인구↑';
     static $cons = '쌀수입↓ 수성↓';
 

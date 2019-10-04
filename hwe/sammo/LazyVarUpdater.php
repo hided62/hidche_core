@@ -13,6 +13,10 @@ trait LazyVarUpdater{
         return $this->raw[$key];
     }
 
+    function getVars(string ...$keys){
+        return array_map([$this, 'getVar'], $keys);
+    }
+
     function touchVar(string $key):bool{
         if(key_exists($key, $this->raw)){
             return false;

@@ -1202,8 +1202,8 @@ class GeneralAI{
 
         $techCost = getTechCost($nation['tech']);
 
-        if($general->getVar('mode') < 2) {
-            $general->setVar('mode', 2);
+        if($general->getVar('defence_train') < 80) {
+            $general->setVar('defence_train', 80);
         }
 
         if($general->getVar('level') == 12){
